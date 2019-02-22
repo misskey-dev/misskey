@@ -52,7 +52,7 @@ export const meta = {
 	},
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
 
 	let users: IUser[] = [];
@@ -80,5 +80,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	}
 
-	res(await Promise.all(users.map(user => pack(user, me, { detail: ps.detail }))));
-}));
+	return await Promise.all(users.map(user => pack(user, me, { detail: ps.detail })));
+});

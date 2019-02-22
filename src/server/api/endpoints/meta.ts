@@ -24,7 +24,7 @@ export const meta = {
 	},
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const instance = await fetchMeta();
 
 	const emojis = await Emoji.find({ host: null }, {
@@ -118,5 +118,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		response.swPrivateKey = instance.swPrivateKey;
 	}
 
-	res(response);
-}));
+	return response;
+});

@@ -5,6 +5,7 @@ import User, { pack } from '../../../../models/user';
 import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -32,15 +33,35 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '5b12c78d-2b28-4dca-99d2-f56139b42ff8'
+		},
+
+		followeeIsYourself: {
+			message: 'Followee is yourself.',
+			code: 'FOLLOWEE_IS_YOURSELF',
+			id: 'd9e400b9-36b0-4808-b1d8-79e707f1296c'
+		},
+
+		notFollowing: {
+			message: 'You are not following that user.',
+			code: 'NOT_FOLLOWING',
+			id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const follower = user;
 
 	// Check if the followee is yourself
 	if (user._id.equals(ps.userId)) {
-		return rej('followee is yourself');
+		throw new ApiError(meta.errors.followeeIsYourself);
 	}
 
 	// Get followee
@@ -54,7 +75,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (followee === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	// Check not following
@@ -64,12 +85,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (exist === null) {
-		return rej('already not following');
+		throw new ApiError(meta.errors.notFollowing);
 	}
 
-	// Delete following
 	await deleteFollowing(follower, followee);
 
-	// Send response
-	res(await pack(followee._id, user));
-}));
+	return await pack(followee._id, user);
+});

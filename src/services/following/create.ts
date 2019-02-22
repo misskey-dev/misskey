@@ -15,6 +15,7 @@ import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
 import Logger from '../../misc/logger';
 import FollowRequest from '../../models/follow-request';
+import { IdentifiableError } from '../../misc/identifiable-error';
 
 const logger = new Logger('following/create');
 
@@ -142,8 +143,8 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		});
 	} else {
 		// それ以外は単純に例外
-		if (blocking != null) throw new Error('blocking');
-		if (blocked != null) throw new Error('blocked');
+		if (blocking != null) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
+		if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 	}
 
 	// フォロー対象が鍵アカウントである or

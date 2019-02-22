@@ -4,10 +4,10 @@ import Note from '../../../../models/note';
 import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../services/chart/active-users';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -90,18 +90,21 @@ export const meta = {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		},
+	},
+
+	errors: {
+		stlDisabled: {
+			message: 'Social timeline has been disabled.',
+			code: 'STL_DISABLED',
+			id: '620763f4-f621-4533-ab33-0577a1a3c342'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const meta = await fetchMeta();
-	if (meta.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
-		return rej('local timeline disabled');
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
+export default define(meta, async (ps, user) => {
+	const m = await fetchMeta();
+	if (m.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
+		throw new ApiError(meta.errors.stlDisabled);
 	}
 
 	const [followings, hideUserIds] = await Promise.all([
@@ -266,13 +269,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 	//#endregion
 
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(timeline, user));
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
 	activeUsersChart.update(user);
-}));
+
+	return await packMany(timeline, user);
+});

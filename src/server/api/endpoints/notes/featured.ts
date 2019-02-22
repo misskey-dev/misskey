@@ -23,29 +23,28 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const day = 1000 * 60 * 60 * 24 * 2;
 
 	const hideUserIds = await getHideUserIds(user);
 
-	const notes = await Note
-		.find({
-			createdAt: {
-				$gt: new Date(Date.now() - day)
-			},
-			deletedAt: null,
-			visibility: { $in: ['public', 'home'] },
-			'_user.host': null,
-			...(hideUserIds && hideUserIds.length > 0 ? { userId: { $nin: hideUserIds } } : {})
-		}, {
-			limit: ps.limit,
-			sort: {
-				score: -1
-			},
-			hint: {
-				score: -1
-			}
-		});
+	const notes = await Note.find({
+		createdAt: {
+			$gt: new Date(Date.now() - day)
+		},
+		deletedAt: null,
+		visibility: { $in: ['public', 'home'] },
+		'_user.host': null,
+		...(hideUserIds && hideUserIds.length > 0 ? { userId: { $nin: hideUserIds } } : {})
+	}, {
+		limit: ps.limit,
+		sort: {
+			score: -1
+		},
+		hint: {
+			score: -1
+		}
+	});
 
-	res(await packMany(notes, user));
-}));
+	return await packMany(notes, user);
+});

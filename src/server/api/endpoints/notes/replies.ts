@@ -35,7 +35,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
@@ -85,5 +85,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		skip: ps.offset
 	});
 
-	res(await packMany(notes, user));
-}));
+	return await packMany(notes, user);
+});

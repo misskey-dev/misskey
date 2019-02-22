@@ -26,7 +26,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get tokens
 	const tokens = await AccessToken
 		.find({
@@ -39,7 +39,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			}
 		});
 
-	res(await Promise.all(tokens.map(token => pack(token.appId, user, {
+	return await Promise.all(tokens.map(token => pack(token.appId, user, {
 		detail: true
-	}))));
-}));
+	})));
+});

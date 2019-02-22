@@ -32,7 +32,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const instance = await fetchMeta();
 
 	if (instance.enableExternalUserRecommendation) {
@@ -48,7 +48,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			.replace('{{limit}}', limit.toString())
 			.replace('{{offset}}', offset.toString());
 
-		request({
+		const users = await request({
 			url: url,
 			proxy: config.proxy,
 			timeout: timeout,
@@ -56,37 +56,36 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			followRedirect: true,
 			followAllRedirects: true
 		})
-			.then(body => convertUsers(body, me))
-			.then(packed => res(packed))
-			.catch(e => rej(e));
+		.then(body => convertUsers(body, me));
+
+		return users;
 	} else {
 		// ID list of the user itself and other users who the user follows
 		const followingIds = await getFriendIds(me._id);
 
-	// 隠すユーザーを取得
-	const hideUserIds = await getHideUserIds(me);
+		// 隠すユーザーを取得
+		const hideUserIds = await getHideUserIds(me);
 
-		const users = await User
-			.find({
-				_id: {
-					$nin: followingIds.concat(hideUserIds)
-				},
-				isLocked: { $ne: true },
-				updatedAt: {
-					$gte: new Date(Date.now() - ms('7days'))
-				},
-				host: null
-			}, {
-				limit: ps.limit,
-				skip: ps.offset,
-				sort: {
-					followersCount: -1
-				}
-			});
+		const users = await User.find({
+			_id: {
+				$nin: followingIds.concat(hideUserIds)
+			},
+			isLocked: { $ne: true },
+			updatedAt: {
+				$gte: new Date(Date.now() - ms('7days'))
+			},
+			host: null
+		}, {
+			limit: ps.limit,
+			skip: ps.offset,
+			sort: {
+				followersCount: -1
+			}
+		});
 
-		res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
+		return await Promise.all(users.map(user => pack(user, me, { detail: true })));
 	}
-}));
+});
 
 type IRecommendUser = {
 	name: string;

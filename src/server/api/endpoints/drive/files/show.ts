@@ -4,6 +4,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile, { pack, IDriveFile } from '../../../../../models/drive-file';
 import define from '../../../define';
 import config from '../../../../../config';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -34,10 +35,30 @@ export const meta = {
 				'en-US': 'Target file URL'
 			}
 		}
+	},
+
+	errors: {
+		noSuchFile: {
+			message: 'No such file.',
+			code: 'NO_SUCH_FILE',
+			id: '067bc436-2718-4795-b0fb-ecbe43949e31'
+		},
+
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '25b73c73-68b1-41d0-bad1-381cfdf6579f'
+		},
+
+		fileIdOrUrlRequired: {
+			message: 'fileId or url required.',
+			code: 'INVALID_PARAM',
+			id: '89674805-722c-440c-8d88-5641830dc3e4'
+		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	let file: IDriveFile;
 
 	if (ps.fileId) {
@@ -69,22 +90,19 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			});
 		}
 	} else {
-		return rej('fileId or url required');
+		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}
 
 	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
-		return rej('access denied');
+		throw new ApiError(meta.errors.accessDenied);
 	}
 
 	if (file === null) {
-		return rej('file-not-found');
+		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	// Serialize
-	const _file = await pack(file, {
+	return await pack(file, {
 		detail: true,
 		self: true
 	});
-
-	res(_file);
-}));
+});

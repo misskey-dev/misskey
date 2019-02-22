@@ -60,7 +60,7 @@ const sort: any = {
 	'-attachedRemoteUsers': { attachedRemoteUsersCount: 1 },
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const q = {} as any;
 	if (ps.attachedToUserOnly) q.attachedUsersCount = { $ne: 0 };
 	if (ps.attachedToLocalUserOnly) q.attachedLocalUsersCount = { $ne: 0 };
@@ -80,5 +80,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			}
 		});
 
-	res(tags);
-}));
+	return tags;
+});

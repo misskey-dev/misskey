@@ -17,7 +17,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Remove documents
 	await NoteUnread.remove({
 		userId: user._id
@@ -34,5 +34,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	publishMainStream(user._id, 'readAllUnreadMentions');
 	publishMainStream(user._id, 'readAllUnreadSpecifiedNotes');
 
-	res();
-}));
+	return;
+});

@@ -3,9 +3,9 @@ import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -49,20 +49,23 @@ export const meta = {
 		untilDate: {
 			validator: $.optional.num
 		},
+	},
+
+	errors: {
+		gtlDisabled: {
+			message: 'Global timeline has been disabled.',
+			code: 'GTL_DISABLED',
+			id: '0332fc13-6ab2-4427-ae80-a9fadffd1a6b'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const meta = await fetchMeta();
-	if (meta.disableGlobalTimeline) {
+export default define(meta, async (ps, user) => {
+	const m = await fetchMeta();
+	if (m.disableGlobalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {
-			return rej('global timeline disabled');
+			throw new ApiError(meta.errors.gtlDisabled);
 		}
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
 	// 隠すユーザーを取得
@@ -123,11 +126,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 	//#endregion
 
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	res(await packMany(timeline, user));
-}));
+	return await packMany(timeline, user);
+});

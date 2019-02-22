@@ -7,6 +7,7 @@ import { createPerson } from '../../../../remote/activitypub/models/person';
 import Note, { pack as packNote, INote } from '../../../../models/note';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -23,13 +24,24 @@ export const meta = {
 			}
 		},
 	},
+
+	errors: {
+		noSuchObject: {
+			message: 'No such object.',
+			code: 'NO_SUCH_OBJECT',
+			id: 'dc94d745-1262-4e63-a17d-fecaa57efc82'
+		}
+	}
 };
 
-export default define(meta, (ps) => new Promise((res, rej) => {
-	fetchAny(ps.uri)
-		.then(object => object != null ? res(object) : rej('object not found'))
-		.catch(e => rej(e));
-}));
+export default define(meta, async (ps) => {
+	const object = await fetchAny(ps.uri);
+	if (object) {
+		return object;
+	} else {
+		throw new ApiError(meta.errors.noSuchObject);
+	}
+});
 
 /***
  * URIからUserかNoteを解決する

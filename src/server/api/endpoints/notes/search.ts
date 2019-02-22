@@ -4,7 +4,7 @@ import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';
 import define from '../../define';
-import { apiLogger } from '../../logger';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -28,13 +28,21 @@ export const meta = {
 			validator: $.optional.num.min(0),
 			default: 0
 		}
+	},
+
+	errors: {
+		searchingNotAvailable: {
+			message: 'Searching not available.',
+			code: 'SEARCHING_NOT_AVAILABLE',
+			id: '7ee9c119-16a1-479f-a6fd-6fab00ed946f'
+		}
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	if (es == null) return rej('searching not available');
+export default define(meta, async (ps, me) => {
+	if (es == null) throw new ApiError(meta.errors.searchingNotAvailable);
 
-	es.search({
+	const response = await es.search({
 		index: 'misskey',
 		type: 'note',
 		body: {
@@ -51,29 +59,24 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 				{ _doc: 'desc' }
 			]
 		}
-	}, async (error, response) => {
-		if (error) {
-			apiLogger.error(error);
-			return res(500);
-		}
-
-		if (response.hits.total === 0) {
-			return res([]);
-		}
-
-		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
-
-		// Fetch found notes
-		const notes = await Note.find({
-			_id: {
-				$in: hits
-			}
-		}, {
-				sort: {
-					_id: -1
-				}
-			});
-
-		res(await packMany(notes, me));
 	});
-}));
+
+	if (response.hits.total === 0) {
+		return [];
+	}
+
+	const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
+
+	// Fetch found notes
+	const notes = await Note.find({
+		_id: {
+			$in: hits
+		}
+	}, {
+		sort: {
+			_id: -1
+		}
+	});
+
+	return await packMany(notes, me);
+});

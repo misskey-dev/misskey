@@ -26,7 +26,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const emoji = await Emoji.insert({
 		updatedAt: new Date(),
 		name: ps.name,
@@ -35,7 +35,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		url: ps.url
 	});
 
-	res({
+	return {
 		id: emoji._id
-	});
-}));
+	};
+});

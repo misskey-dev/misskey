@@ -4,6 +4,7 @@ import AuthSess from '../../../../../models/auth-session';
 import AccessToken from '../../../../../models/access-token';
 import { pack } from '../../../../../models/user';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	requireCredential: false,
@@ -16,17 +17,37 @@ export const meta = {
 		token: {
 			validator: $.str
 		}
+	},
+
+	errors: {
+		noSuchApp: {
+			message: 'No such app.',
+			code: 'NO_SUCH_APP',
+			id: 'fcab192a-2c5a-43b7-8ad8-9b7054d8d40d'
+		},
+
+		noSuchSession: {
+			message: 'No such session.',
+			code: 'NO_SUCH_SESSION',
+			id: '5b5a1503-8bc8-4bd0-8054-dc189e8cdcb3'
+		},
+
+		pendingSession: {
+			message: 'This session is not completed yet.',
+			code: 'PENDING_SESSION',
+			id: '8c8a4145-02cc-4cca-8e66-29ba60445a8e'
+		}
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	// Lookup app
 	const app = await App.findOne({
 		secret: ps.appSecret
 	});
 
 	if (app == null) {
-		return rej('app not found');
+		throw new ApiError(meta.errors.noSuchApp);
 	}
 
 	// Fetch token
@@ -37,11 +58,11 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		});
 
 	if (session === null) {
-		return rej('session not found');
+		throw new ApiError(meta.errors.noSuchSession);
 	}
 
 	if (session.userId == null) {
-		return rej('this session is not allowed yet');
+		throw new ApiError(meta.errors.pendingSession);
 	}
 
 	// Lookup access token
@@ -61,11 +82,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		_id: session._id
 	});
 
-	// Response
-	res({
+	return {
 		accessToken: accessToken.token,
 		user: await pack(session.userId, null, {
 			detail: true
 		})
-	});
-}));
+	};
+});

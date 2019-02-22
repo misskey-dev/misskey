@@ -23,12 +23,11 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const query = {
 		userId: user._id
 	};
 
-	// Execute query
 	const apps = await App
 		.find(query, {
 			limit: ps.limit,
@@ -38,8 +37,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			}
 		});
 
-	// Reply
-	res(await Promise.all(apps.map(app => pack(app, user, {
+	return await Promise.all(apps.map(app => pack(app, user, {
 		detail: true
-	}))));
-}));
+	})));
+});

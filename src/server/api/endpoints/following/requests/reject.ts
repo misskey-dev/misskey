@@ -3,6 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import rejectFollowRequest from '../../../../../services/following/requests/reject';
 import User from '../../../../../models/user';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -23,20 +24,28 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'abc2ffa6-25b2-4380-ba99-321ff3a94555'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Fetch follower
 	const follower = await User.findOne({
 		_id: ps.userId
 	});
 
 	if (follower === null) {
-		return rej('follower not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	await rejectFollowRequest(user, follower);
 
-	res();
-}));
+	return;
+});

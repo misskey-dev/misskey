@@ -31,12 +31,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
+export default define(meta, async (ps, user) => {
 	const query = {
 		userId: user._id
 	} as any;
@@ -63,5 +58,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			sort: sort
 		});
 
-	res(await packMany(favorites, user));
-}));
+	return await packMany(favorites, user);
+});

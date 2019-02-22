@@ -27,7 +27,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 
@@ -42,9 +42,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		secret: secret
 	});
 
-	// Response
-	res(await pack(app, null, {
+	return await pack(app, null, {
 		detail: true,
 		includeSecret: true
-	}));
-}));
+	});
+});

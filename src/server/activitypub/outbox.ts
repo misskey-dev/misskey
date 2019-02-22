@@ -78,7 +78,6 @@ export default async (ctx: Router.IRouterContext) => {
 		}
 		//#endregion
 
-		// Issue query
 		const notes = await Note
 			.find(query, {
 				limit: limit,

@@ -2,6 +2,8 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
+import { getValiedNote } from '../../common/getters';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -35,23 +37,22 @@ export const meta = {
 			validator: $.optional.type(ID),
 			transform: transform,
 		}
+	},
+
+	errors: {
+		noSuchNote: {
+			message: 'No such note.',
+			code: 'NO_SUCH_NOTE',
+			id: '12908022-2e21-46cd-ba6a-3edaf6093f46'
+		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	// Lookup note
-	const note = await Note.findOne({
-		_id: ps.noteId
+export default define(meta, async (ps, user) => {
+	const note = await getValiedNote(ps.noteId).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
 	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
 
 	const sort = {
 		_id: -1
@@ -72,11 +73,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		};
 	}
 
-	const renotes = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const renotes = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	res(await packMany(renotes, user));
-}));
+	return await packMany(renotes, user);
+});

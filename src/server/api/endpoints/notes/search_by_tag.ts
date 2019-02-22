@@ -103,7 +103,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const visibleQuery = me == null ? [{
 		visibility: { $in: [ 'public', 'home' ] }
 	}] : [{
@@ -317,15 +317,13 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	}
 
 	// Search notes
-	const notes = await Note
-		.find(q, {
-			sort: {
-				_id: -1
-			},
-			limit: ps.limit,
-			skip: ps.offset
-		});
+	const notes = await Note.find(q, {
+		sort: {
+			_id: -1
+		},
+		limit: ps.limit,
+		skip: ps.offset
+	});
 
-	// Serialize
-	res(await packMany(notes, me));
-}));
+	return await packMany(notes, me);
+});

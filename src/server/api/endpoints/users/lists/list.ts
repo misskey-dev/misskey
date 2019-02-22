@@ -11,11 +11,10 @@ export const meta = {
 	kind: 'account-read'
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	// Fetch lists
+export default define(meta, async (ps, me) => {
 	const userLists = await UserList.find({
 		userId: me._id,
 	});
 
-	res(await Promise.all(userLists.map(x => pack(x))));
-}));
+	return await Promise.all(userLists.map(x => pack(x)));
+});

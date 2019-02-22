@@ -5,6 +5,7 @@ import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -47,10 +48,18 @@ export const meta = {
 			validator: $.optional.bool,
 			default: false,
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '63e4aba4-4156-4e53-be25-c9559e42d71b'
+		}
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const q: any = ps.userId != null
 		? { _id: ps.userId }
 		: { usernameLower: ps.username.toLowerCase(), host: ps.host };
@@ -58,10 +67,9 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const user = await User.findOne(q);
 
 	if (user === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	// Construct query
 	const query = {
 		followerId: user._id
 	} as any;
@@ -98,8 +106,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 
 	const users = await Promise.all(following.map(f => pack(f.followeeId, me, { detail: true })));
 
-	res({
+	return {
 		users: users,
 		next: inStock ? following[following.length - 1]._id : null,
-	});
-}));
+	};
+});

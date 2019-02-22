@@ -4,6 +4,7 @@ import User, { pack, isRemoteUser } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
+import { ApiError } from '../../error';
 
 const cursorOption = { fields: { data: false } };
 
@@ -39,10 +40,25 @@ export const meta = {
 		host: {
 			validator: $.optional.nullable.str
 		}
+	},
+
+	errors: {
+		failedToResolveRemoteUser: {
+			message: 'Failed to resolve remote user.',
+			code: 'FAILED_TO_RESOLVE_REMOTE_USER',
+			id: 'ef7b9be4-9cba-4e6f-ab41-90ed171c7d3c',
+			kind: 'server' as 'server'
+		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '4362f8dc-731f-4ad8-a694-be5a88922a24'
+		},
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	let user;
 
 	if (ps.userIds) {
@@ -52,18 +68,16 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 			}
 		});
 
-		res(await Promise.all(users.map(u => pack(u, me, {
+		return await Promise.all(users.map(u => pack(u, me, {
 			detail: true
-		}))));
+		})));
 	} else {
 		// Lookup user
 		if (typeof ps.host === 'string') {
-			try {
-				user = await resolveRemoteUser(ps.username, ps.host, cursorOption);
-			} catch (e) {
+			user = await resolveRemoteUser(ps.username, ps.host, cursorOption).catch(e => {
 				apiLogger.warn(`failed to resolve remote user: ${e}`);
-				return rej('failed to resolve remote user');
-			}
+				throw new ApiError(meta.errors.failedToResolveRemoteUser);
+			});
 		} else {
 			const q: any = ps.userId != null
 				? { _id: ps.userId }
@@ -73,18 +87,18 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 
 		if (user === null) {
-			return rej('user not found');
+			throw new ApiError(meta.errors.noSuchUser);
 		}
 
-		// Send response
-		res(await pack(user, me, {
-			detail: true
-		}));
-
+		// ユーザー情報更新
 		if (isRemoteUser(user)) {
 			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 				resolveRemoteUser(ps.username, ps.host, { }, true);
 			}
 		}
+
+		return await pack(user, me, {
+			detail: true
+		});
 	}
-}));
+});

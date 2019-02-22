@@ -36,7 +36,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const hashtags = await Hashtag
 		.find({
 			tag: new RegExp('^' + escapeRegexp(ps.query.toLowerCase()))
@@ -48,5 +48,5 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 			skip: ps.offset
 		});
 
-	res(hashtags.map(tag => tag.tag));
-}));
+	return hashtags.map(tag => tag.tag);
+});

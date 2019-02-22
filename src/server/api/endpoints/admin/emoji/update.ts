@@ -30,12 +30,12 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const emoji = await Emoji.findOne({
 		_id: ps.id
 	});
 
-	if (emoji == null) return rej('emoji not found');
+	if (emoji == null) throw new Error('emoji not found');
 
 	await Emoji.update({ _id: emoji._id }, {
 		$set: {
@@ -46,5 +46,5 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

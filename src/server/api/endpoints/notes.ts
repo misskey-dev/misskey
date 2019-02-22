@@ -68,13 +68,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	// Construct query
+export default define(meta, async (ps) => {
 	const sort = {
 		_id: -1
 	};
@@ -119,13 +113,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	//	query.isBot = bot;
 	//}
 
-	// Issue query
-	const notes = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const notes = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	// Serialize
-	res(await packMany(notes));
-}));
+	return await packMany(notes);
+});

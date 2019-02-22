@@ -5,6 +5,7 @@ import User, { pack } from '../../../../models/user';
 import Blocking from '../../../../models/blocking';
 import create from '../../../../services/blocking/create';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -32,15 +33,35 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '7cc4f851-e2f1-4621-9633-ec9e1d00c01e'
+		},
+
+		blockeeIsYourself: {
+			message: 'Blockee is yourself.',
+			code: 'BLOCKEE_IS_YOURSELF',
+			id: '88b19138-f28d-42c0-8499-6a31bbd0fdc6'
+		},
+
+		alreadyBlocking: {
+			message: 'You are already blocking that user.',
+			code: 'ALREADY_BLOCKING',
+			id: '787fed64-acb9-464a-82eb-afbd745b9614'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const blocker = user;
 
 	// 自分自身
 	if (user._id.equals(ps.userId)) {
-		return rej('blockee is yourself');
+		throw new ApiError(meta.errors.blockeeIsYourself);
 	}
 
 	// Get blockee
@@ -54,7 +75,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (blockee === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	// Check if already blocking
@@ -64,14 +85,13 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (exist !== null) {
-		return rej('already blocking');
+		throw new ApiError(meta.errors.alreadyBlocking);
 	}
 
 	// Create blocking
 	await create(blocker, blockee);
 
-	// Send response
-	res(await pack(blockee._id, user, {
+	return await pack(blockee._id, user, {
 		detail: true
-	}));
-}));
+	});
+});

@@ -5,6 +5,7 @@ import User, { pack } from '../../../../models/user';
 import define from '../../define';
 import { maximum } from '../../../../prelude/array';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	requireCredential: false,
@@ -23,10 +24,18 @@ export const meta = {
 			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'e6965129-7b2a-40a4-bae2-cd84cd434822'
+		}
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	// Lookup user
 	const user = await User.findOne({
 		_id: ps.userId
@@ -37,7 +46,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	});
 
 	if (user === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	// Fetch recent notes
@@ -60,7 +69,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 
 	// 投稿が少なかったら中断
 	if (recentNotes.length === 0) {
-		return res([]);
+		return [];
 	}
 
 	const hideUserIds = await getHideUserIds(me);
@@ -106,5 +115,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		weight: repliedUsers[user] / peak
 	})));
 
-	res(repliesObj);
-}));
+	return repliesObj;
+});

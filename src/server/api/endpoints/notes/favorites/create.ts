@@ -3,6 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import Favorite from '../../../../../models/favorite';
 import Note from '../../../../../models/note';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -25,17 +26,31 @@ export const meta = {
 				'en-US': 'Target note ID.'
 			}
 		}
+	},
+
+	errors: {
+		noSuchNote: {
+			message: 'No such note.',
+			code: 'NO_SUCH_NOTE',
+			id: '6dd26674-e060-4816-909a-45ba3f4da458'
+		},
+
+		alreadyFavorited: {
+			message: 'The note has already been marked as a favorite.',
+			code: 'ALREADY_FAVORITED',
+			id: 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get favoritee
 	const note = await Note.findOne({
 		_id: ps.noteId
 	});
 
 	if (note === null) {
-		return rej('note not found');
+		throw new ApiError(meta.errors.noSuchNote);
 	}
 
 	// if already favorited
@@ -45,7 +60,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (exist !== null) {
-		return rej('already favorited');
+		throw new ApiError(meta.errors.alreadyFavorited);
 	}
 
 	// Create favorite
@@ -55,6 +70,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		userId: user._id
 	});
 
-	// Send response
-	res();
-}));
+	return;
+});

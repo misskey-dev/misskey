@@ -7,6 +7,7 @@ import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -32,10 +33,30 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		},
+	},
+
+	errors: {
+		noSuchList: {
+			message: 'No such list.',
+			code: 'NO_SUCH_LIST',
+			id: '2214501d-ac96-4049-b717-91e42272a711'
+		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'a89abd3d-f0bc-4cce-beb1-2f446f4f1e6a'
+		},
+
+		alreadyAdded: {
+			message: 'That user has already been added to that list.',
+			code: 'ALREADY_ADDED',
+			id: '1de7c884-1595-49e9-857e-61f12f4d4fc5'
+		}
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
@@ -43,7 +64,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	});
 
 	if (userList == null) {
-		return rej('list not found');
+		throw new ApiError(meta.errors.noSuchList);
 	}
 
 	// Fetch the user
@@ -52,11 +73,11 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	if (userList.userIds.map(id => id.toHexString()).includes(user._id.toHexString())) {
-		return rej('the user already added');
+		throw new ApiError(meta.errors.alreadyAdded);
 	}
 
 	// Push the user
@@ -66,8 +87,6 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	});
 
-	res();
-
 	publishUserListStream(userList._id, 'userAdded', await packUser(user));
 
 	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
@@ -76,4 +95,4 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		const content = renderActivity(renderFollow(proxy, user));
 		deliver(proxy, content, user.inbox);
 	}
-}));
+});

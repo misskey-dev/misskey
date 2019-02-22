@@ -3,10 +3,10 @@ import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../services/chart/active-users';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -65,20 +65,23 @@ export const meta = {
 		untilDate: {
 			validator: $.optional.num,
 		},
+	},
+
+	errors: {
+		ltlDisabled: {
+			message: 'Local timeline has been disabled.',
+			code: 'LTL_DISABLED',
+			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const meta = await fetchMeta();
-	if (meta.disableLocalTimeline) {
+export default define(meta, async (ps, user) => {
+	const m = await fetchMeta();
+	if (m.disableLocalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {
-			return rej('local timeline disabled');
+			throw new ApiError(meta.errors.ltlDisabled);
 		}
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
 	// 隠すユーザーを取得
@@ -157,15 +160,14 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 	//#endregion
 
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(timeline, user));
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
 	if (user) {
 		activeUsersChart.update(user);
 	}
-}));
+
+	return await packMany(timeline, user);
+});

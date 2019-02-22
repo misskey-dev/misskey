@@ -31,12 +31,12 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Compare password
 	const same = await bcrypt.compare(ps.password, user.password);
 
 	if (!same) {
-		return rej('incorrect password');
+		throw new Error('incorrect password');
 	}
 
 	await User.update(user._id, {
@@ -47,14 +47,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}
 	});
 
-	// Serialize
 	const iObj = await pack(user._id, user, {
 		detail: true,
 		includeSecrets: true
 	});
-
-	// Send response
-	res(iObj);
 
 	// Publish meUpdated event
 	publishMainStream(user._id, 'meUpdated', iObj);
@@ -99,4 +95,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			apiLogger.info('Message sent: %s', info.messageId);
 		});
 	}
-}));
+
+	return iObj;
+});

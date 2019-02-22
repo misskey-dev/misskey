@@ -21,7 +21,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const mute = await Mute.find({
 		muterId: user._id,
 		deletedAt: { $exists: false }
@@ -58,5 +58,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}
 	}
 
-	res(await Promise.all(history.map(h => pack(h._id, user))));
-}));
+	return await Promise.all(history.map(h => pack(h._id, user)));
+});

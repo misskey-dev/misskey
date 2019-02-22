@@ -10,6 +10,7 @@ import { publishMainStream } from '../../../../../services/stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../services/stream';
 import pushSw from '../../../../../services/push-notification';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -39,13 +40,39 @@ export const meta = {
 			validator: $.optional.type(ID),
 			transform: transform,
 		}
+	},
+
+	errors: {
+		recipientIsYourself: {
+			message: 'You can not send a message to yourself.',
+			code: 'RECIPIENT_IS_YOURSELF',
+			id: '17e2ba79-e22a-4cbc-bf91-d327643f4a7e'
+		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '11795c64-40ea-4198-b06e-3c873ed9039d'
+		},
+
+		noSuchFile: {
+			message: 'No such file.',
+			code: 'NO_SUCH_FILE',
+			id: '4372b8e2-185d-4146-8749-2f68864a3e5f'
+		},
+
+		contentRequired: {
+			message: 'Content required. You need to set text or fileId.',
+			code: 'CONTENT_REQUIRED',
+			id: '25587321-b0e6-449c-9239-f8925092942c'
+		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Myself
 	if (ps.userId.equals(user._id)) {
-		return rej('cannot send message to myself');
+		throw new ApiError(meta.errors.recipientIsYourself);
 	}
 
 	// Fetch recipient
@@ -58,7 +85,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (recipient === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	let file = null;
@@ -69,16 +96,15 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		});
 
 		if (file === null) {
-			return rej('file not found');
+			throw new ApiError(meta.errors.noSuchFile);
 		}
 	}
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
 	if (ps.text == null && file == null) {
-		return rej('text or file is required');
+		throw new ApiError(meta.errors.contentRequired);
 	}
 
-	// メッセージを作成
 	const message = await Message.insert({
 		createdAt: new Date(),
 		fileId: file ? file._id : undefined,
@@ -88,11 +114,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		isRead: false
 	});
 
-	// Serialize
 	const messageObj = await pack(message);
-
-	// Reponse
-	res(messageObj);
 
 	// 自分のストリーム
 	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
@@ -131,4 +153,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			pushSw(message.recipientId, 'unreadMessagingMessage', messageObj);
 		}
 	}, 2000);
-}));
+
+	return messageObj;
+});

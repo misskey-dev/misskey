@@ -25,7 +25,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get votes
 	const votes = await Vote.find({
 		userId: user._id
@@ -41,29 +41,28 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// 隠すユーザーを取得
 	const hideUserIds = await getHideUserIds(user);
 
-	const notes = await Note
-		.find({
-			'_user.host': null,
-			_id: {
-				$nin: nin
-			},
-			userId: {
-				$ne: user._id,
-				$nin: hideUserIds
-			},
-			poll: {
-				$exists: true,
-				$ne: null
-			}
-		}, {
-			limit: ps.limit,
-			skip: ps.offset,
-			sort: {
-				_id: -1
-			}
-		});
+	const notes = await Note.find({
+		'_user.host': null,
+		_id: {
+			$nin: nin
+		},
+		userId: {
+			$ne: user._id,
+			$nin: hideUserIds
+		},
+		poll: {
+			$exists: true,
+			$ne: null
+		}
+	}, {
+		limit: ps.limit,
+		skip: ps.offset,
+		sort: {
+			_id: -1
+		}
+	});
 
-	res(await Promise.all(notes.map(note => pack(note, user, {
+	return await Promise.all(notes.map(note => pack(note, user, {
 		detail: true
-	}))));
-}));
+	})));
+});

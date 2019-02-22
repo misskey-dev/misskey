@@ -5,10 +5,10 @@ export const meta = {
 	requireCredential: true
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	await Matching.remove({
 		parentId: user._id
 	});
 
-	res();
-}));
+	return;
+});

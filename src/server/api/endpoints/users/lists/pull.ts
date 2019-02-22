@@ -4,6 +4,7 @@ import UserList from '../../../../../models/user-list';
 import User, { pack as packUser } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../services/stream';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -29,10 +30,24 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		},
+	},
+
+	errors: {
+		noSuchList: {
+			message: 'No such list.',
+			code: 'NO_SUCH_LIST',
+			id: '7f44670e-ab16-43b8-b4c1-ccd2ee89cc02'
+		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '588e7f72-c744-4a61-b180-d354e912bda2'
+		}
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
@@ -40,7 +55,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	});
 
 	if (userList == null) {
-		return rej('list not found');
+		throw new ApiError(meta.errors.noSuchList);
 	}
 
 	// Fetch the user
@@ -49,7 +64,7 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	// Pull the user
@@ -59,7 +74,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	});
 
-	res();
-
 	publishUserListStream(userList._id, 'userRemoved', await packUser(user));
-}));
+});

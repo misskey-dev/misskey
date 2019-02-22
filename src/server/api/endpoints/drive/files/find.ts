@@ -24,7 +24,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const files = await DriveFile
 		.find({
 			filename: ps.name,
@@ -32,5 +32,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			'metadata.folderId': ps.folderId
 		});
 
-	res(await Promise.all(files.map(file => pack(file, { self: true }))));
-}));
+	return await Promise.all(files.map(file => pack(file, { self: true })));
+});

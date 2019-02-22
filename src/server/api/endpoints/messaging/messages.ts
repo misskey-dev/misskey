@@ -5,6 +5,7 @@ import User from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -45,15 +46,18 @@ export const meta = {
 			validator: $.optional.bool,
 			default: true
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '11795c64-40ea-4198-b06e-3c873ed9039d'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
+export default define(meta, async (ps, user) => {
 	// Fetch recipient
 	const recipient = await User.findOne({
 		_id: ps.userId
@@ -64,7 +68,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		});
 
 	if (recipient === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	const query = {
@@ -98,16 +102,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			sort: sort
 		});
 
-	res(await Promise.all(messages.map(message => pack(message, user, {
-		populateRecipient: false
-	}))));
-
-	if (messages.length === 0) {
-		return;
-	}
-
 	// Mark all as read
 	if (ps.markAsRead) {
 		read(user._id, recipient._id, messages);
 	}
-}));
+
+	return await Promise.all(messages.map(message => pack(message, user, {
+		populateRecipient: false
+	})));
+});

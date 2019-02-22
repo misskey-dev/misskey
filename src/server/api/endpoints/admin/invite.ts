@@ -13,7 +13,7 @@ export const meta = {
 	params: {}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const code = rndstr({ length: 5, chars: '0-9' });
 
 	await RegistrationTicket.insert({
@@ -21,7 +21,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 		code: code
 	});
 
-	res({
+	return {
 		code: code
-	});
-}));
+	};
+});
