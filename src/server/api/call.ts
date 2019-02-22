@@ -34,6 +34,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 			message: 'Credential required.',
 			code: 'CREDENTIAL_REQUIRED',
 			id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+			httpStatusCode: 401
 		});
 	}
 
