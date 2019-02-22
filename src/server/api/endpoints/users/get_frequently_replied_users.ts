@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
-import User, { pack } from '../../../../models/user';
+import { pack } from '../../../../models/user';
 import define from '../../define';
 import { maximum } from '../../../../prelude/array';
 import { getHideUserIds } from '../../common/get-hide-users';

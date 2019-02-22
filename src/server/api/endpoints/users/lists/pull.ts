@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
-import User, { pack as packUser } from '../../../../../models/user';
+import { pack as packUser } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';

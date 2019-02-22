@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import rejectFollowRequest from '../../../../../services/following/requests/reject';
-import User from '../../../../../models/user';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';

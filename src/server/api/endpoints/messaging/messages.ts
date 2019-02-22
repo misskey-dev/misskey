@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import Message from '../../../../models/messaging-message';
-import User from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 import define from '../../define';

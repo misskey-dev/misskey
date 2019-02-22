@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import User, { pack } from '../../../../models/user';
+import { pack } from '../../../../models/user';
 import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
 import define from '../../define';
