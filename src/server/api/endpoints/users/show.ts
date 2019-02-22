@@ -44,6 +44,10 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'User',
+	},
+
 	errors: {
 		failedToResolveRemoteUser: {
 			message: 'Failed to resolve remote user.',

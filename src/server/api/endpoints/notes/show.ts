@@ -28,6 +28,10 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'Note',
+	},
+
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',

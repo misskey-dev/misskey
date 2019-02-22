@@ -41,7 +41,14 @@ export const meta = {
 		visibility: {
 			validator: $.optional.str,
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

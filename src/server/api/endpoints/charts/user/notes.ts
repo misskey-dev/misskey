@@ -36,7 +36,14 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

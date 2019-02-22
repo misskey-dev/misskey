@@ -102,7 +102,14 @@ export const meta = {
 			validator: $.optional.num.range(1, 30),
 			default: 10
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {

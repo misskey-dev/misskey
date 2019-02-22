@@ -126,6 +126,13 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',

@@ -34,7 +34,14 @@ export const meta = {
 			validator: $.optional.num.min(0),
 			default: 0
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

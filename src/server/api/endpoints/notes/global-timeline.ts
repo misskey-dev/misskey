@@ -53,6 +53,13 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		gtlDisabled: {
 			message: 'Global timeline has been disabled.',

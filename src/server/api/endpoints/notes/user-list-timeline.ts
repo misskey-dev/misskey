@@ -104,6 +104,13 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		noSuchList: {
 			message: 'No such list.',

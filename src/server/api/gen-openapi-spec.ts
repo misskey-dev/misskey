@@ -168,23 +168,26 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		}
 	};
 
-	function genProps(props: { [key: string]: Context & { desc: any }; }) {
+	function genProps(props: { [key: string]: Context & { desc: any, default: any }; }) {
 		const properties = {} as any;
 
 		const kvs = Object.entries(props);
 
 		for (const kv of kvs) {
-			properties[kv[0]] = genProp(kv[1], kv[1].desc);
+			properties[kv[0]] = genProp(kv[1], kv[1].desc, kv[1].default);
 		}
 
 		return properties;
 	}
 
-	function genProp(param: Context, desc?: string): any {
+	function genProp(param: Context, desc?: string, _default?: any): any {
 		const required = param.name === 'Object' ? (param as any).props ? Object.entries((param as any).props).filter(([k, v]: any) => !v.isOptional).map(([k, v]) => k) : [] : [];
 		return {
 			description: desc,
+			default: _default,
+			...(_default ? { default: _default } : {}),
 			type: param.name === 'ID' ? 'string' : param.name.toLowerCase(),
+			...(param.name === 'ID' ? { example: 'xxxxxxxxxxxxxxxxxxxxxxxx' } : {}),
 			nullable: param.isNullable,
 			...(param.name === 'Object' ? {
 				...(required.length > 0 ? { required } : {}),
@@ -213,6 +216,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		if (endpoint.meta.params) {
 			for (const kv of Object.entries(endpoint.meta.params)) {
 				if (kv[1].desc) (kv[1].validator as any).desc = kv[1].desc[lang];
+				if (kv[1].default) (kv[1].validator as any).default = kv[1].default;
 				porops[kv[0]] = kv[1].validator;
 			}
 		}
@@ -228,11 +232,18 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 				res['$ref'] = `#/components/schemas/${x.type}`;
 			} else if (x.type === 'object') {
 				res['type'] = 'object';
-				const props = {} as any;
-				for (const kv of Object.entries(x.props)) {
-					props[kv[0]] = renderType(kv[1]);
+				if (x.props) {
+					const props = {} as any;
+					for (const kv of Object.entries(x.props)) {
+						props[kv[0]] = renderType(kv[1]);
+					}
+					res['properties'] = props;
 				}
-				res['properties'] = props;
+			} else if (x.type === 'array') {
+				res['type'] = 'array';
+				if (x.items) {
+					res['items'] = renderType(x.items);
+				}
 			} else {
 				res['type'] = x.type;
 			}

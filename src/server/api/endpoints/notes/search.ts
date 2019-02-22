@@ -32,6 +32,13 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		searchingNotAvailable: {
 			message: 'Searching not available.',

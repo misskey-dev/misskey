@@ -94,6 +94,13 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		stlDisabled: {
 			message: 'Social timeline has been disabled.',

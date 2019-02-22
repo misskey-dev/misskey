@@ -36,6 +36,13 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		noSuchNote: {
 			message: 'No such note.',

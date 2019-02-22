@@ -33,7 +33,14 @@ export const meta = {
 				'ja-JP': '対象のハッシュタグ'
 			}
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

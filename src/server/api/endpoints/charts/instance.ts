@@ -34,7 +34,14 @@ export const meta = {
 				'en-US': 'Target instance host'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

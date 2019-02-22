@@ -69,6 +69,13 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		ltlDisabled: {
 			message: 'Local timeline has been disabled.',
