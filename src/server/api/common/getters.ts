@@ -25,7 +25,11 @@ export async function getNote(noteId: mongo.ObjectID) {
 export async function getUser(userId: mongo.ObjectID) {
 	const user = await User.findOne({
 		_id: userId,
-		isDeleted: false
+		$or: [{
+			isDeleted: { $exists: false }
+		}, {
+			isDeleted: false
+		}]
 	}, {
 		fields: {
 			data: false,
