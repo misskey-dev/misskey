@@ -8,12 +8,12 @@ common:
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   intro:
     title: "What is Misskey?"
-    about: "Misskey is an open-source, <b>decentralized microblogging software</b>. It has a sophisticated, fully customizable user interface, a variety of ways for expressing a reaction to posts, free file storage providing an integrated management system, and other advanced features are available. In addition, Misskey connects to a network system called the “Fediverse” enables us to communicate with users on other SNSs. For example, when you post something, it will be sent not only to Misskey users, but also those on Mastodon and Pleroma. Just imagine that the planet is sending a radio transmission to another planet, in order to communicate."
+    about: "Misskey is an open-source, <b>decentralized microblogging software</b>. It has a sophisticated, fully customizable user interface, a variety of ways for expressing a reaction to posts, free file storage providing an integrated management system, and other advanced features are available. In addition, Misskey connects to a network system called the “Fediverse”, which enables us to communicate with users on other SNSs. For example, when you post something, it will be sent not only to Misskey users, but also those on Mastodon and Pleroma. Just imagine that the planet is sending a radio transmission to another planet, in order to communicate."
     features: "Features"
     rich-contents: "Post"
     rich-contents-desc: "Just post your idea, hot topics, and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files, including videos, or create a poll - those are some of the things you can do with Misskey!"
     reaction: "Reactions"
-    reaction-desc: "Easiest way to tell your emotions. Misskey allows you to add various type of reactions to other’s post. The emotional experience on Misskey will never be on other SNSs which only able to push “likes”."
+    reaction-desc: "The easiest way to express your emotions. Misskey allows you to add various kinds of reactions to other's posts. The emotional experience on Misskey will never be on other SNSs, which are only able to push “likes”."
     ui: "Interface"
     ui-desc: "No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. Make your original home by editing, adjusting layouts of timeline and placing selectable widgets you can easily customize."
     drive: "Drive"
@@ -60,7 +60,7 @@ common:
   messaging: "Talk"
   deck: "Deck"
   timeline: "Timeline"
-  explore: "Discover"
+  explore: "Explore"
   following: "Following"
   followers: "Followers"
   empty-timeline-info:

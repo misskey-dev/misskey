@@ -144,7 +144,7 @@ common:
   is-remote-post: "이 글 정보는 복사본입니다."
   view-on-remote: "정확한 정보 보기"
   renoted-by: "{user}이(가) 리노트"
-  no-notes: "投稿がありません"
+  no-notes: "글이 없습니다"
   error:
     title: "오류가 발생했습니다"
     retry: "다시 시도"
@@ -538,10 +538,10 @@ common/views/components/profile-editor.vue:
     mute-list: "뮤트"
     blocking-list: "차단"
   export-requested: "내보내기를 요청하였습니다. 이 작업은 시간이 걸릴 수 있습니다. 내보내기가 완료되면 드라이브에 파일이 추가됩니다."
-  enter-password: "パスワードを入力してください"
-  danger-zone: "危険な設定"
-  delete-account: "アカウントを削除"
-  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
+  enter-password: "비밀번호를 입력하여 주십시오"
+  danger-zone: "위험한 설정"
+  delete-account: "계정 삭제"
+  account-deleted: "계정이 삭제되었습니다. 데이터가 사라질 때까지 시간이 걸릴 수 있습니다."
 common/views/components/user-list-editor.vue:
   users: "사용자"
   rename: "리스트 이름 바꾸기"
