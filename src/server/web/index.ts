@@ -84,16 +84,17 @@ router.get('/manifest.json', async ctx => {
 
 // Docs
 router.use('/docs', docs.routes());
+router.get('/api-doc', async ctx => {
+	await send(ctx as any, '/assets/redoc.html', {
+		root: client
+	});
+});
 
 // URL preview endpoint
 router.get('/url', require('./url-preview'));
 
 router.get('/api.json', async ctx => {
 	ctx.body = genOpenapiSpec();
-});
-
-router.get('/redoc', async ctx => {
-	await send(ctx as any, '/assets/redoc.html');
 });
 
 const getFeed = async (acct: string) => {
