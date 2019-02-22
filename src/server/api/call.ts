@@ -4,7 +4,6 @@ import { IApp } from '../../models/app';
 import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
-import { Response } from './define';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -58,24 +57,18 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 	}
 
 	if (ep.meta.requireCredential && ep.meta.limit) {
-		try {
-			await limiter(ep, user); // Rate limit
-		} catch (e) {
-			// drop request if limit exceeded
+		// Rate limit
+		await limiter(ep, user).catch(e => {
 			throw new ApiError({
 				message: 'Rate limit exceeded. Please try again later.',
 				code: 'RATE_LIMIT_EXCEEDED',
 				id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
 			});
-		}
+		});
 	}
 
-	let res: Response;
-
 	// API invoking
-	try {
-		res = await ep.exec(data, user, app, file);
-	} catch (e) {
+	return await ep.exec(data, user, app, file).catch(e => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
@@ -88,7 +81,5 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 				}
 			});
 		}
-	}
-
-	return res;
+	});
 };
