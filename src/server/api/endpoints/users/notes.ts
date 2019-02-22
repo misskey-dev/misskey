@@ -6,6 +6,7 @@ import User from '../../../../models/user';
 import define from '../../define';
 import { countIf } from '../../../../prelude/array';
 import Following from '../../../../models/following';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -14,23 +15,12 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.optional.type(ID),
+			validator: $.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}
-		},
-
-		username: {
-			validator: $.optional.str,
-			desc: {
-				'ja-JP': 'ユーザー名'
-			}
-		},
-
-		host: {
-			validator: $.optional.nullable.str,
 		},
 
 		includeReplies: {
@@ -134,32 +124,27 @@ export const meta = {
 				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
 			}
 		},
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '27e494ba-2ac2-48e8-893b-10d4d8c2387b'
+		}
 	}
 };
 
 export default define(meta, async (ps, me) => {
-	if (ps.userId === undefined && ps.username === undefined) {
-		return rej('userId or username is required');
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
-	}
-
-	const q = ps.userId != null
-		? { _id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: getHostLower(ps.host) } ;
-
 	// Lookup user
-	const user = await User.findOne(q, {
+	const user = await User.findOne({ _id: ps.userId }, {
 		fields: {
 			_id: true
 		}
 	});
 
 	if (user === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
 	const isFollowing = me == null ? false : ((await Following.findOne({
@@ -259,11 +244,10 @@ export default define(meta, async (ps, me) => {
 	}
 	//#endregion
 
-	const notes = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const notes = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	res(await packMany(notes, me));
-}));
+	return await packMany(notes, me);
+});

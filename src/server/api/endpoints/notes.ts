@@ -74,7 +74,6 @@ export default define(meta, async (ps) => {
 		return rej('cannot set sinceId and untilId');
 	}
 
-	// Construct query
 	const sort = {
 		_id: -1
 	};

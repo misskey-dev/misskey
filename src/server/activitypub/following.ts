@@ -48,7 +48,6 @@ export default async (ctx: Router.IRouterContext) => {
 	const partOf = `${config.url}/users/${userId}/following`;
 
 	if (page) {
-		// Construct query
 		const query = {
 			followerId: user._id
 		} as any;

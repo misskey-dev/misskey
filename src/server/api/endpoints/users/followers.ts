@@ -5,6 +5,7 @@ import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -47,6 +48,14 @@ export const meta = {
 			validator: $.optional.bool,
 			default: false,
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '27fa5435-88ab-43de-9360-387de88727cd'
+		}
 	}
 };
 
@@ -58,10 +67,9 @@ export default define(meta, async (ps, me) => {
 	const user = await User.findOne(q);
 
 	if (user === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	// Construct query
 	const query = {
 		followeeId: user._id
 	} as any;
@@ -98,8 +106,8 @@ export default define(meta, async (ps, me) => {
 
 	const users = await Promise.all(following.map(f => pack(f.followerId, me, { detail: true })));
 
-	res({
+	return {
 		users: users,
 		next: inStock ? following[following.length - 1]._id : null,
-	});
-}));
+	};
+});
