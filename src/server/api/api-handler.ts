@@ -15,7 +15,7 @@ export default async (endpoint: IEndpoint, ctx: Koa.BaseContext) => {
 			ctx.status = 204;
 		} else if (typeof x === 'number') {
 			ctx.status = x;
-			ctx.body = y;
+			ctx.body = { error: y };
 		} else {
 			ctx.body = x;
 		}
