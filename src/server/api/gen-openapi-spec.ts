@@ -89,6 +89,7 @@ const schemas = {
 					},
 					id: {
 						type: 'string',
+						format: 'uuid',
 						description: 'An error ID.',
 					}
 				},
@@ -103,6 +104,7 @@ const schemas = {
 		properties: {
 			id: {
 				type: 'string',
+				format: 'id',
 				description: 'The unique identifier for this User.'
 			},
 			username: {
@@ -125,6 +127,7 @@ const schemas = {
 			},
 			createdAt: {
 				type: 'string',
+				format: 'date-time',
 				description: 'The date that the user account was created on Misskey.'
 			},
 			followersCount: {
@@ -163,18 +166,47 @@ const schemas = {
 		properties: {
 			id: {
 				type: 'string',
+				format: 'id',
 				description: 'The unique identifier for this Note.'
 			},
-			text: { type: 'string' },
-			cw: { type: 'string' },
-			userId: { type: 'string' },
-			user: { $ref: '#/components/schemas/User' },
-			replyId: { type: 'string' },
-			renoteId: { type: 'string' },
-			reply: { $ref: '#/components/schemas/Note' },
-			renote: { $ref: '#/components/schemas/Note' },
-			viaMobile: { type: 'boolean' },
-			visibility: { type: 'string' },
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the Note was created on Misskey.'
+			},
+			text: {
+				type: 'string'
+			},
+			cw: {
+				type: 'string'
+			},
+			userId: {
+				type: 'string',
+				format: 'id',
+			},
+			user: {
+				$ref: '#/components/schemas/User'
+			},
+			replyId: {
+				type: 'string',
+				format: 'id',
+			},
+			renoteId: {
+				type: 'string',
+				format: 'id',
+			},
+			reply: {
+				$ref: '#/components/schemas/Note'
+			},
+			renote: {
+				$ref: '#/components/schemas/Note'
+			},
+			viaMobile: {
+				type: 'boolean'
+			},
+			visibility: {
+				type: 'string'
+			},
 		},
 		required: ['id', 'userId']
 	}
@@ -229,8 +261,17 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			default: _default,
 			...(_default ? { default: _default } : {}),
 			type: param.name === 'ID' ? 'string' : param.name.toLowerCase(),
-			...(param.name === 'ID' ? { example: 'xxxxxxxxxxxxxxxxxxxxxxxx' } : {}),
+			...(param.name === 'ID' ? { example: 'xxxxxxxxxxxxxxxxxxxxxxxx', format: 'id' } : {}),
 			nullable: param.isNullable,
+			...(param.name === 'String' ? {
+				...((param as any).enum ? { enum: (param as any).enum } : {}),
+				...((param as any).minLength ? { minLength: (param as any).minLength } : {}),
+				...((param as any).maxLength ? { maxLength: (param as any).maxLength } : {}),
+			} : {}),
+			...(param.name === 'Number' ? {
+				...((param as any).minimum ? { minimum: (param as any).minimum } : {}),
+				...((param as any).maximum ? { maximum: (param as any).maximum } : {}),
+			} : {}),
 			...(param.name === 'Object' ? {
 				...(required.length > 0 ? { required } : {}),
 				properties: (param as any).props ? genProps((param as any).props) : {}
