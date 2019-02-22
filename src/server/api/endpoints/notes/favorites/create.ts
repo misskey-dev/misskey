@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import Favorite from '../../../../../models/favorite';
-import Note from '../../../../../models/note';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { getNote } from '../../../common/getters';
 
 export const meta = {
 	stability: 'stable',
@@ -45,13 +45,10 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Get favoritee
-	const note = await Note.findOne({
-		_id: ps.noteId
+	const note = await getNote(ps.noteId).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
 	});
-
-	if (note === null) {
-		throw new ApiError(meta.errors.noSuchNote);
-	}
 
 	// if already favorited
 	const exist = await Favorite.findOne({

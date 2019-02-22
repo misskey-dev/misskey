@@ -10,6 +10,7 @@ import define from '../../../define';
 import createNote from '../../../../../services/note/create';
 import User from '../../../../../models/user';
 import { ApiError } from '../../../error';
+import { getNote } from '../../../common/getters';
 
 export const meta = {
 	desc: {
@@ -65,13 +66,10 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Get votee
-	const note = await Note.findOne({
-		_id: ps.noteId
+	const note = await getNote(ps.noteId).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
 	});
-
-	if (note === null) {
-		throw new ApiError(meta.errors.noSuchNote);
-	}
 
 	if (note.poll == null) {
 		throw new ApiError(meta.errors.noPoll);
