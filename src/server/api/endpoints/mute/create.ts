@@ -4,6 +4,7 @@ import User from '../../../../models/user';
 import Mute from '../../../../models/mute';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	desc: {
@@ -56,18 +57,10 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Get mutee
-	const mutee = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			data: false,
-			profile: false
-		}
+	const mutee = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (mutee === null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	// Check if already muting
 	const exist = await Mute.findOne({

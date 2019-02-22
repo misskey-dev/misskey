@@ -6,6 +6,7 @@ import Blocking from '../../../../models/blocking';
 import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	stability: 'stable',
@@ -65,18 +66,10 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Get blockee
-	const blockee = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			data: false,
-			'profile': false
-		}
+	const blockee = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (blockee === null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	// Check not blocking
 	const exist = await Blocking.findOne({

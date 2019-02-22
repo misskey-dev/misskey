@@ -5,6 +5,7 @@ import User from '../../../../models/user';
 import define from '../../define';
 import Following from '../../../../models/following';
 import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	desc: {
@@ -135,15 +136,10 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	// Lookup user
-	const user = await User.findOne({ _id: ps.userId }, {
-		fields: {
-			_id: true
-		}
+	const user = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (user === null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	const isFollowing = me == null ? false : ((await Following.findOne({
 		followerId: me._id,

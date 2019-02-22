@@ -5,6 +5,7 @@ import User, { pack as packUser } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { getUser } from '../../../common/getters';
 
 export const meta = {
 	desc: {
@@ -59,13 +60,10 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Fetch the user
-	const user = await User.findOne({
-		_id: ps.userId
+	const user = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (user == null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	// Pull the user
 	await UserList.update({ _id: userList._id }, {

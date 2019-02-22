@@ -3,7 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import * as ms from 'ms';
 import deleteReaction from '../../../../../services/note/reaction/delete';
-import { getValiedNote } from '../../../common/getters';
+import { getNote } from '../../../common/getters';
 import { ApiError } from '../../../error';
 
 export const meta = {
@@ -49,7 +49,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const note = await getValiedNote(ps.noteId).catch(e => {
+	const note = await getNote(ps.noteId).catch(e => {
 		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 		throw e;
 	});

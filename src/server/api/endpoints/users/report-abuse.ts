@@ -5,6 +5,7 @@ import User from '../../../../models/user';
 import AbuseUserReport from '../../../../models/abuse-user-report';
 import { publishAdminStream } from '../../../../services/stream';
 import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	desc: {
@@ -54,13 +55,10 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	// Lookup user
-	const user = await User.findOne({
-		_id: ps.userId
+	const user = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (user === null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	if (user._id.equals(me._id)) {
 		throw new ApiError(meta.errors.cannotReportYourself);

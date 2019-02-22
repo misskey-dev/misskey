@@ -4,6 +4,7 @@ import cancelFollowRequest from '../../../../../services/following/requests/canc
 import User, { pack } from '../../../../../models/user';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { getUser } from '../../../common/getters';
 
 export const meta = {
 	desc: {
@@ -43,13 +44,10 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch followee
-	const followee = await User.findOne({
-		_id: ps.userId
+	const followee = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (followee === null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	try {
 		await cancelFollowRequest(followee, user);

@@ -6,6 +6,7 @@ import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	stability: 'stable',
@@ -65,18 +66,10 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Get followee
-	const followee = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			data: false,
-			'profile': false
-		}
+	const followee = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (followee === null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	// Check not following
 	const exist = await Following.findOne({

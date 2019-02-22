@@ -6,6 +6,7 @@ import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	desc: {
@@ -59,17 +60,10 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch recipient
-	const recipient = await User.findOne({
-		_id: ps.userId
-	}, {
-			fields: {
-				_id: true
-			}
-		});
-
-	if (recipient === null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
+	const recipient = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
+	});
 
 	const query = {
 		$or: [{

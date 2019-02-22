@@ -8,6 +8,7 @@ import renderFollow from '../../../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../../../queue';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { getUser } from '../../../common/getters';
 
 export const meta = {
 	desc: {
@@ -68,13 +69,10 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Fetch the user
-	const user = await User.findOne({
-		_id: ps.userId
+	const user = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (user == null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
 
 	if (userList.userIds.map(id => id.toHexString()).includes(user._id.toHexString())) {
 		throw new ApiError(meta.errors.alreadyAdded);
