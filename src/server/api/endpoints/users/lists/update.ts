@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -30,6 +31,14 @@ export const meta = {
 				'en-US': 'name of this user list'
 			}
 		}
+	},
+
+	errors: {
+		noSuchList: {
+			message: 'No such list.',
+			code: 'NO_SUCH_LIST',
+			id: '796666fe-3dff-4d39-becb-8a5932c1d5b7'
+		},
 	}
 };
 
@@ -41,7 +50,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	if (userList == null) {
-		return rej('list not found');
+		throw new ApiError(meta.errors.noSuchList);
 	}
 
 	await UserList.update({ _id: userList._id }, {
@@ -50,5 +59,5 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	res(await pack(userList._id));
-}));
+	return await pack(userList._id);
+});

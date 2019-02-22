@@ -12,10 +12,9 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	// Fetch lists
 	const userLists = await UserList.find({
 		userId: me._id,
 	});
 
-	res(await Promise.all(userLists.map(x => pack(x))));
-}));
+	return await Promise.all(userLists.map(x => pack(x)));
+});

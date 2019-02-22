@@ -20,14 +20,12 @@ export default define(meta, async (ps, user) => {
 		notifieeId: user._id,
 		isRead: false
 	}, {
-			$set: {
-				isRead: true
-			}
-		}, {
-			multi: true
-		});
-
-	res();
+		$set: {
+			isRead: true
+		}
+	}, {
+		multi: true
+	});
 
 	// Update flag
 	User.update({ _id: user._id }, {
@@ -38,4 +36,4 @@ export default define(meta, async (ps, user) => {
 
 	// 全ての通知を読みましたよというイベントを発行
 	publishMainStream(user._id, 'readAllNotifications');
-}));
+});

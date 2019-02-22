@@ -20,7 +20,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// insert
 	const userList = await UserList.insert({
 		createdAt: new Date(),
 		userId: user._id,
@@ -28,5 +27,5 @@ export default define(meta, async (ps, user) => {
 		userIds: []
 	});
 
-	res(await pack(userList));
-}));
+	return await pack(userList);
+});

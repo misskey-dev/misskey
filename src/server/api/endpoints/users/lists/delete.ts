@@ -2,6 +2,7 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -22,6 +23,14 @@ export const meta = {
 				'en-US': 'ID of target user list'
 			}
 		}
+	},
+
+	errors: {
+		noSuchList: {
+			message: 'No such list.',
+			code: 'NO_SUCH_LIST',
+			id: '78436795-db79-42f5-b1e2-55ea2cf19166'
+		}
 	}
 };
 
@@ -32,12 +41,10 @@ export default define(meta, async (ps, user) => {
 	});
 
 	if (userList == null) {
-		return rej('list not found');
+		throw new ApiError(meta.errors.noSuchList);
 	}
 
 	await UserList.remove({
 		_id: userList._id
 	});
-
-	res();
-}));
+});
