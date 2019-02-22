@@ -47,7 +47,6 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	// Serialize
 	const iObj = await pack(user._id, user, {
 		detail: true,
 		includeSecrets: true

@@ -70,12 +70,10 @@ export default define(meta, async (ps, user) => {
 		userId: user._id
 	});
 
-	// Serialize
 	const folderObj = await pack(folder);
 
 	// Publish folderCreated event
 	publishDriveStream(user._id, 'folderCreated', folderObj);
 
-	// Response
 	return folderObj;
 });

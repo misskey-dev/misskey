@@ -43,11 +43,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
 	// フォローを取得
 	const followings = await getFriends(user._id);
 
@@ -131,15 +126,14 @@ export default define(meta, async (ps, user) => {
 		};
 	}
 
-	const mentions = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(mentions, user));
+	const mentions = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
 	for (const note of mentions) {
 		read(user._id, note._id);
 	}
-}));
+
+	return await packMany(mentions, user);
+});

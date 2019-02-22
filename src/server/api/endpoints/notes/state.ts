@@ -42,8 +42,8 @@ export default define(meta, async (ps, user) => {
 		})
 	]);
 
-	res({
+	return {
 		isFavorited: favorite !== 0,
 		isWatching: watching !== 0
-	});
-}));
+	};
+});

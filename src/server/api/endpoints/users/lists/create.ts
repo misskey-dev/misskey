@@ -28,6 +28,5 @@ export default define(meta, async (ps, user) => {
 		userIds: []
 	});
 
-	// Response
 	res(await pack(userList));
 }));

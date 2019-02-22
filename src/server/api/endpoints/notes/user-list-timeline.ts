@@ -6,6 +6,7 @@ import UserList from '../../../../models/user-list';
 import define from '../../define';
 import { getFriends } from '../../common/get-friends';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -99,6 +100,14 @@ export const meta = {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		},
+	},
+
+	errors: {
+		noSuchList: {
+			message: 'No such list.',
+			code: 'NO_SUCH_LIST',
+			id: '8fb1fbd5-e476-4c37-9fb0-43d55b63a2ff'
+		}
 	}
 };
 
@@ -120,13 +129,11 @@ export default define(meta, async (ps, user) => {
 	]);
 
 	if (list == null) {
-		rej('list not found');
-		return;
+		throw new ApiError(meta.errors.noSuchList);
 	}
 
 	if (list.userIds.length == 0) {
-		res([]);
-		return;
+		return [];
 	}
 
 	//#region Construct query
@@ -274,13 +281,10 @@ export default define(meta, async (ps, user) => {
 	}
 	//#endregion
 
-	// Issue query
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	// Serialize
-	res(await packMany(timeline, user));
-}));
+	return await packMany(timeline, user);
+});

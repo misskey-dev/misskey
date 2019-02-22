@@ -119,13 +119,11 @@ export default define(meta, async (ps) => {
 	//	query.isBot = bot;
 	//}
 
-	// Issue query
 	const notes = await Note
 		.find(query, {
 			limit: ps.limit,
 			sort: sort
 		});
 
-	// Serialize
 	res(await packMany(notes));
 }));

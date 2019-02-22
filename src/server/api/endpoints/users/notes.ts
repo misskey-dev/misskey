@@ -259,13 +259,11 @@ export default define(meta, async (ps, me) => {
 	}
 	//#endregion
 
-	// Issue query
 	const notes = await Note
 		.find(query, {
 			limit: ps.limit,
 			sort: sort
 		});
 
-	// Serialize
 	res(await packMany(notes, me));
 }));

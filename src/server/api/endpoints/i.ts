@@ -21,7 +21,6 @@ export const meta = {
 export default define(meta, async (ps, user, app) => {
 	const isSecure = user != null && app == null;
 
-	// Serialize
 	res(await pack(user, user, {
 		detail: true,
 		includeHasUnreadNotes: true,

@@ -96,12 +96,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
-		return;
-	}
-
 	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
@@ -255,15 +249,12 @@ export default define(meta, async (ps, user) => {
 	}
 	//#endregion
 
-	// Issue query
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	// Serialize
-	res(await packMany(timeline, user));
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
 	activeUsersChart.update(user);
-}));
+
+	return await packMany(timeline, user);
+});

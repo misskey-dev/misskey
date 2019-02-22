@@ -260,7 +260,6 @@ export default define(meta, async (ps, user, app) => {
 		$set: updates
 	});
 
-	// Serialize
 	const iObj = await pack(user._id, user, {
 		detail: true,
 		includeSecrets: isSecure

@@ -27,7 +27,6 @@ export default define(meta, async (ps, user) => {
 			multi: true
 		});
 
-	// Response
 	res();
 
 	// Update flag

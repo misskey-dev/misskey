@@ -44,13 +44,11 @@ export default define(meta, async (ps, user) => {
 		return rej('list not found');
 	}
 
-	// update
 	await UserList.update({ _id: userList._id }, {
 		$set: {
 			title: ps.title
 		}
 	});
 
-	// Response
 	res(await pack(userList._id));
 }));

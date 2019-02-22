@@ -85,5 +85,5 @@ export default define(meta, async (ps, user) => {
 		skip: ps.offset
 	});
 
-	res(await packMany(notes, user));
-}));
+	return await packMany(notes, user);
+});
