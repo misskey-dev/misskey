@@ -73,7 +73,7 @@ If you're still encountering errors about some modules, use node-gyp:
 Well done! Now, you have an environment that run to Misskey.
 
 ### Launch normally
-Just `npm start`. GLHF!
+Just `NODE_ENV=production npm start`. GLHF!
 
 ### Launch with systemd
 

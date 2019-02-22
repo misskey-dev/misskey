@@ -79,7 +79,7 @@ Debianをお使いであれば、`build-essential`パッケージをインスト
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
 
 ### 通常起動
-`npm start`するだけです。GLHF!
+`NODE_ENV=production npm start`するだけです。GLHF!
 
 ### systemdを用いた起動
 1. systemdサービスのファイルを作成: `/etc/systemd/system/misskey.service`

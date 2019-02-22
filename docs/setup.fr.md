@@ -73,7 +73,7 @@ Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 Excellent ! Maintenant, vous avez un environnement prêt pour lancer Misskey
 
 ### Lancement conventionnel
-Lancez tout simplement `npm start`. Bonne chance et amusez-vous bien !
+Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-vous bien !
 
 ### Démarrage avec systemd
 
