@@ -14,6 +14,8 @@ export const meta = {
 		'en-US': 'Delete a message.'
 	},
 
+	tags: ['messaging'],
+
 	requireCredential: true,
 
 	kind: 'messaging-write',

@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Mark as read a message of messaging.'
 	},
 
+	tags: ['messaging'],
+
 	requireCredential: true,
 
 	kind: 'messaging-write',

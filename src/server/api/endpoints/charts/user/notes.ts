@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': 'ユーザーごとの投稿のチャートを取得します。'
 	},
 
+	tags: ['charts', 'users', 'notes'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

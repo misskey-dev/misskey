@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Get replies of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {

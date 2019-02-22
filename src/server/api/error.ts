@@ -11,7 +11,8 @@ export class ApiError extends Error {
 			message: 'Internal error occurred. Please contact us if the error persists.',
 			code: 'INTERNAL_ERROR',
 			id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
-			kind: 'server'
+			kind: 'server',
+			httpStatusCode: 500
 		};
 
 		super(e.message);

@@ -6,6 +6,8 @@ export const meta = {
 		'ja-JP': '自分の作成したユーザーリスト一覧を取得します。'
 	},
 
+	tags: ['lists', 'account'],
+
 	requireCredential: true,
 
 	kind: 'account-read'

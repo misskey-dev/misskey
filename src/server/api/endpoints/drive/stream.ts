@@ -4,6 +4,8 @@ import DriveFile, { packMany } from '../../../../models/drive-file';
 import define from '../../define';
 
 export const meta = {
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',

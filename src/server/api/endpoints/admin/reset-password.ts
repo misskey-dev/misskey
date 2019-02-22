@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーのパスワードをリセットします。',
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

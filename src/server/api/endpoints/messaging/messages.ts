@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get messages of messaging.'
 	},
 
+	tags: ['messaging'],
+
 	requireCredential: true,
 
 	kind: 'messaging-read',

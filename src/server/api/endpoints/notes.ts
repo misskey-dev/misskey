@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': '投稿を取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		local: {
 			validator: $.optional.bool,

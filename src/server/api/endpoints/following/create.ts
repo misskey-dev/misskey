@@ -16,6 +16,8 @@ export const meta = {
 		'en-US': 'Follow a user.'
 	},
 
+	tags: ['following', 'users'],
+
 	limit: {
 		duration: ms('1hour'),
 		max: 100

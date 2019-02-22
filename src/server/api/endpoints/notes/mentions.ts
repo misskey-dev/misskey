@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get mentions of myself.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {

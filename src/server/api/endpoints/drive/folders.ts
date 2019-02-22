@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Get folders of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',

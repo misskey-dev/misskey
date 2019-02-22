@@ -9,6 +9,8 @@ export const meta = {
 		'ja-JP': 'フェデレーションのチャートを取得します。'
 	},
 
+	tags: ['charts'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

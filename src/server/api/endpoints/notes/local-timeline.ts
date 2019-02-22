@@ -13,6 +13,8 @@ export const meta = {
 		'ja-JP': 'ローカルタイムラインを取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		withFiles: {
 			validator: $.optional.bool,

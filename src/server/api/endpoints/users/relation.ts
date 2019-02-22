@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': 'ユーザー間のリレーションを取得します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: true,
 
 	params: {

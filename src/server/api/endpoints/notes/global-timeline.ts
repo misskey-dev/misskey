@@ -12,6 +12,8 @@ export const meta = {
 		'ja-JP': 'グローバルタイムラインを取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		withFiles: {
 			validator: $.optional.bool,

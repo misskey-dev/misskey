@@ -7,6 +7,8 @@ export const meta = {
 		'ja-JP': '招待コードを発行します。'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

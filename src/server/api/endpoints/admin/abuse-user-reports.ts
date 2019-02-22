@@ -4,6 +4,8 @@ import Report, { packMany } from '../../../../models/abuse-user-report';
 import define from '../../define';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

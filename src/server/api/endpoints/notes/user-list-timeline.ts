@@ -14,6 +14,8 @@ export const meta = {
 		'en-US': 'Get timeline of a user list.'
 	},
 
+	tags: ['notes', 'lists'],
+
 	requireCredential: true,
 
 	params: {

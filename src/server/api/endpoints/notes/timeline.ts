@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get timeline of myself.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {

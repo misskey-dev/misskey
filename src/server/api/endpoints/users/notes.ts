@@ -11,6 +11,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーのタイムラインを取得します。'
 	},
 
+	tags: ['users', 'notes'],
+
 	params: {
 		userId: {
 			validator: $.type(ID),

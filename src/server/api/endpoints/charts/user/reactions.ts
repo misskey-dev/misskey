@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': 'ユーザーごとの被リアクション数のチャートを取得します。'
 	},
 
+	tags: ['charts', 'users', 'reactions'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

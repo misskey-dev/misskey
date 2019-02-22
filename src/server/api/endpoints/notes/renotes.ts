@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Show a renotes of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {

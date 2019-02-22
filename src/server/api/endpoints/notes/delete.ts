@@ -15,6 +15,8 @@ export const meta = {
 		'en-US': 'Delete a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	kind: 'note-write',

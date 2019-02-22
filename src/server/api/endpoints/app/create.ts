@@ -4,6 +4,8 @@ import App, { pack } from '../../../../models/app';
 import define from '../../define';
 
 export const meta = {
+	tags: ['app'],
+
 	requireCredential: false,
 
 	params: {

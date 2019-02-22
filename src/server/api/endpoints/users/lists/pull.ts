@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Remove a user to a user list.'
 	},
 
+	tags: ['lists', 'users'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

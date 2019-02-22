@@ -10,6 +10,8 @@ export const meta = {
 		'en-US': 'Get featured notes.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {

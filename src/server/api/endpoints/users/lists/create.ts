@@ -8,6 +8,8 @@ export const meta = {
 		'en-US': 'Create a user list'
 	},
 
+	tags: ['lists'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

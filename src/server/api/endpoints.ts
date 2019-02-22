@@ -15,6 +15,8 @@ export interface IEndpointMeta {
 
 	desc?: { [key: string]: string };
 
+	tags?: string[];
+
 	params?: {
 		[key: string]: Param;
 	};

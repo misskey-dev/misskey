@@ -4,6 +4,8 @@ import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import define from '../../../define';
 
 export const meta = {
+	tags: ['games'],
+
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),

@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get following users of a user.'
 	},
 
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {

@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': '自分のアカウント情報を取得します。'
 	},
 
+	tags: ['account'],
+
 	requireCredential: true,
 
 	params: {},

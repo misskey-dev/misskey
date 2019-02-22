@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーの情報を取得します。',
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

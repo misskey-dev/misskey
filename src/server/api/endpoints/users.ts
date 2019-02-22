@@ -7,6 +7,8 @@ import { getHideUserIds } from '../common/get-hide-users';
 const nonnull = { $ne: null as any };
 
 export const meta = {
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {

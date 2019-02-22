@@ -10,6 +10,8 @@ export const meta = {
 		'en-US': 'Show a user list.'
 	},
 
+	tags: ['lists', 'account'],
+
 	requireCredential: true,
 
 	kind: 'account-read',

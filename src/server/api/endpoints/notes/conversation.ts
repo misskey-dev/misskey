@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Show conversation of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {

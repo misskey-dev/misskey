@@ -9,6 +9,8 @@ export const meta = {
 		'ja-JP': 'ハッシュタグごとのチャートを取得します。'
 	},
 
+	tags: ['charts', 'hashtags'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

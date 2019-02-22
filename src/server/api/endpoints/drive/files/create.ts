@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Upload a file to drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	limit: {

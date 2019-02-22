@@ -14,6 +14,8 @@ export const meta = {
 		'ja-JP': 'ハイブリッドタイムラインを取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),

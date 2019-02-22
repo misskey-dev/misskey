@@ -9,6 +9,8 @@ export const meta = {
 		'ja-JP': 'アクティブユーザーのチャートを取得します。'
 	},
 
+	tags: ['charts', 'users'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

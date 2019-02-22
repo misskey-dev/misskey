@@ -25,6 +25,8 @@ export const meta = {
 		'ja-JP': '投稿します。'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	limit: {

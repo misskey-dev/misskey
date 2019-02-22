@@ -16,6 +16,8 @@ const requiredUsers = 3; // 最低何人がそのタグを投稿している必�
 const max = 5;
 
 export const meta = {
+	tags: ['hashtags'],
+
 	requireCredential: false,
 };
 

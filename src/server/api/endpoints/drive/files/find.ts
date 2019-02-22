@@ -6,6 +6,8 @@ import define from '../../../define';
 export const meta = {
 	requireCredential: true,
 
+	tags: ['drive'],
+
 	kind: 'drive-read',
 
 	params: {

@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Get blocking users.'
 	},
 
+	tags: ['blocking', 'account'],
+
 	requireCredential: true,
 
 	kind: 'following-read',

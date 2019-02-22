@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Make silence a user.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

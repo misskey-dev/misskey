@@ -4,6 +4,8 @@ import { validateUsername } from '../../../../models/user';
 import define from '../../define';
 
 export const meta = {
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {

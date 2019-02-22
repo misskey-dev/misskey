@@ -16,6 +16,8 @@ export const meta = {
 		'en-US': 'Add a user to a user list.'
 	},
 
+	tags: ['lists', 'users'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

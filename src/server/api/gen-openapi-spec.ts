@@ -29,6 +29,15 @@ const basicErrors = {
 				id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
 			}
 		}
+	},
+	'500': {
+		'INTERNAL_ERROR': {
+			value: {
+				message: 'Internal error occurred. Please contact us if the error persists.',
+				code: 'INTERNAL_ERROR',
+				id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
+			}
+		}
 	}
 };
 
@@ -48,8 +57,20 @@ const schemas = {
 		properties: {
 			id: { type: 'string' },
 			username: { type: 'string' },
+			name: { type: 'string', nullable: true },
+			host: { type: 'string', nullable: true },
+			description: { type: 'string', nullable: true },
+			createdAt: { type: 'string' },
+			followersCount: { type: 'number' },
+			followingCount: { type: 'number' },
+			notesCount: { type: 'number' },
+			isBot: { type: 'boolean' },
+			isCat: { type: 'boolean' },
+			isAdmin: { type: 'boolean' },
+			isVerified: { type: 'boolean' },
+			isLocked: { type: 'boolean' },
 		},
-		required: ['id', 'username']
+		required: ['id', 'name', 'username', 'createdAt']
 	},
 
 	Note: {
@@ -57,9 +78,17 @@ const schemas = {
 		properties: {
 			id: { type: 'string' },
 			text: { type: 'string' },
-			user: { $ref: '#/components/schemas/User' }
+			cw: { type: 'string' },
+			userId: { type: 'string' },
+			user: { $ref: '#/components/schemas/User' },
+			replyId: { type: 'string' },
+			renoteId: { type: 'string' },
+			reply: { $ref: '#/components/schemas/Note' },
+			renote: { $ref: '#/components/schemas/Note' },
+			viaMobile: { type: 'boolean' },
+			visibility: { type: 'string' },
 		},
-		required: ['id']
+		required: ['id', 'userId']
 	}
 };
 
@@ -120,7 +149,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		};
 	}
 
-	for (const endpoint of endpoints) {
+	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
 		const porops = {} as any;
 		const errors = {} as any;
 
@@ -165,6 +194,9 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		const info = {
 			summary: endpoint.name,
 			description: endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.',
+			...(endpoint.meta.tags ? {
+				tags: endpoint.meta.tags
+			} : {}),
 			...(endpoint.meta.requireCredential ? {
 				security: [{
 					ApiKeyAuth: []
@@ -231,7 +263,18 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 							}
 						}
 					}
-				} : {})
+				} : {}),
+				'500': {
+					description: 'Internal server error',
+					content: {
+						'application/json': {
+							schema: {
+								$ref: '#/components/schemas/Error'
+							},
+							examples: basicErrors['500']
+						}
+					}
+				},
 			}
 		};
 

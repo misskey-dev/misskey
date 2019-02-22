@@ -12,6 +12,8 @@ export const meta = {
 		'en-US': 'Search notes.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {

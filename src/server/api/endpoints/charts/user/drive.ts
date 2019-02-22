@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': 'ユーザーごとのドライブのチャートを取得します。'
 	},
 
+	tags: ['charts', 'drive', 'users'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

@@ -9,6 +9,8 @@ export const meta = {
 		'ja-JP': 'ドライブのチャートを取得します。'
 	},
 
+	tags: ['charts', 'drive'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

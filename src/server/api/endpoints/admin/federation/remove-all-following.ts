@@ -5,6 +5,8 @@ import User from '../../../../../models/user';
 import deleteFollowing from '../../../../../services/following/delete';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

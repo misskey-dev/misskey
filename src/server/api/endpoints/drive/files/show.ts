@@ -14,6 +14,8 @@ export const meta = {
 		'en-US': 'Get specified file of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',

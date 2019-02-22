@@ -9,6 +9,8 @@ export const meta = {
 		'ja-JP': 'ネットワークのチャートを取得します。'
 	},
 
+	tags: ['charts'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

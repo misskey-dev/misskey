@@ -7,6 +7,8 @@ export const meta = {
 		'ja-JP': 'インスタンスの設定を更新します。'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

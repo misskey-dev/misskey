@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {

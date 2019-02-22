@@ -12,6 +12,8 @@ export const meta = {
 		'en-US': 'Cancel a follow request.'
 	},
 
+	tags: ['following', 'account'],
+
 	requireCredential: true,
 
 	kind: 'following-write',

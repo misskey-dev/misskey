@@ -7,6 +7,8 @@ export const meta = {
 		'ja-JP': 'カスタム絵文字を取得します。'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

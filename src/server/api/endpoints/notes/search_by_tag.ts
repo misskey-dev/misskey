@@ -11,6 +11,8 @@ export const meta = {
 		'ja-JP': '指定されたタグが付けられた投稿を取得します。'
 	},
 
+	tags: ['notes', 'hashtags'],
+
 	params: {
 		tag: {
 			validator: $.optional.str,

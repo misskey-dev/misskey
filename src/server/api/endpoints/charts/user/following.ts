@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': 'ユーザーごとのフォロー/フォロワーのチャートを取得します。'
 	},
 
+	tags: ['charts', 'users', 'following'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),

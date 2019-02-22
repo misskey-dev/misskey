@@ -13,6 +13,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーの情報を取得します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {
