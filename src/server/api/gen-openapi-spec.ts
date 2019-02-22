@@ -101,20 +101,59 @@ const schemas = {
 	User: {
 		type: 'object',
 		properties: {
-			id: { type: 'string' },
-			username: { type: 'string' },
-			name: { type: 'string', nullable: true },
-			host: { type: 'string', nullable: true },
-			description: { type: 'string', nullable: true },
-			createdAt: { type: 'string' },
-			followersCount: { type: 'number' },
-			followingCount: { type: 'number' },
-			notesCount: { type: 'number' },
-			isBot: { type: 'boolean' },
-			isCat: { type: 'boolean' },
-			isAdmin: { type: 'boolean' },
-			isVerified: { type: 'boolean' },
-			isLocked: { type: 'boolean' },
+			id: {
+				type: 'string',
+				description: 'The unique identifier for this User.'
+			},
+			username: {
+				type: 'string',
+				description: 'The screen name, handle, or alias that this user identifies themselves with.'
+			},
+			name: {
+				type: 'string',
+				nullable: true,
+				description: 'The name of the user, as they’ve defined it.'
+			},
+			host: {
+				type: 'string',
+				nullable: true
+			},
+			description: {
+				type: 'string',
+				nullable: true,
+				description: 'The user-defined UTF-8 string describing their account.'
+			},
+			createdAt: {
+				type: 'string',
+				description: 'The date that the user account was created on Misskey.'
+			},
+			followersCount: {
+				type: 'number',
+				description: 'The number of followers this account currently has.'
+			},
+			followingCount: {
+				type: 'number',
+				description: 'The number of users this account is following.'
+			},
+			notesCount: {
+				type: 'number',
+				description: 'The number of Notes (including renotes) issued by the user.'
+			},
+			isBot: {
+				type: 'boolean'
+			},
+			isCat: {
+				type: 'boolean'
+			},
+			isAdmin: {
+				type: 'boolean'
+			},
+			isVerified: {
+				type: 'boolean'
+			},
+			isLocked: {
+				type: 'boolean'
+			},
 		},
 		required: ['id', 'name', 'username', 'createdAt']
 	},
@@ -122,7 +161,10 @@ const schemas = {
 	Note: {
 		type: 'object',
 		properties: {
-			id: { type: 'string' },
+			id: {
+				type: 'string',
+				description: 'The unique identifier for this Note.'
+			},
 			text: { type: 'string' },
 			cw: { type: 'string' },
 			userId: { type: 'string' },
