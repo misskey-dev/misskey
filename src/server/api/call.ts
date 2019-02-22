@@ -68,7 +68,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 	}
 
 	// API invoking
-	return await ep.exec(data, user, app, file).catch(e => {
+	return await ep.exec(data, user, app, file).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
@@ -76,7 +76,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 			throw new ApiError(null, {
 				e: {
 					message: e.message,
-					code: e.code,
+					code: e.name,
 					stack: e.stack
 				}
 			});
