@@ -26,5 +26,5 @@ export default define(meta, async () => {
 	const federationStats = await federationChart.getChart('hour', 1);
 	stats.instances = federationStats.instance.total[0];
 
-	res(stats);
-}));
+	return stats;
+});

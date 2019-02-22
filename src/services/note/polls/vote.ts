@@ -27,7 +27,6 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 		choice: choice
 	});
 
-	// Send response
 	res();
 
 	const inc: any = {};

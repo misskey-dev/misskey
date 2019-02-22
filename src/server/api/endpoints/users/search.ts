@@ -80,5 +80,5 @@ export default define(meta, async (ps, me) => {
 		}
 	}
 
-	res(await Promise.all(users.map(user => pack(user, me, { detail: ps.detail }))));
-}));
+	return await Promise.all(users.map(user => pack(user, me, { detail: ps.detail })));
+});

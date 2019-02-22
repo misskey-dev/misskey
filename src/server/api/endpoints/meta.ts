@@ -118,5 +118,5 @@ export default define(meta, async (ps, me) => {
 		response.swPrivateKey = instance.swPrivateKey;
 	}
 
-	res(response);
-}));
+	return response;
+});

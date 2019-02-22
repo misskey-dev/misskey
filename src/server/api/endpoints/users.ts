@@ -102,5 +102,5 @@ export default define(meta, async (ps, me) => {
 			skip: ps.offset
 		});
 
-	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
-}));
+	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
+});

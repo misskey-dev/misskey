@@ -7,7 +7,7 @@ import renderAdd from '../../remote/activitypub/renderer/add';
 import renderRemove from '../../remote/activitypub/renderer/remove';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
-import { ApiError } from '../../server/api/error';
+import { IdentifiableError } from '../../misc/identifiable-error';
 
 /**
  * 指定した投稿をピン留めします
@@ -22,11 +22,7 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 	});
 
 	if (note === null) {
-		throw new ApiError({
-			message: 'No such note.',
-			code: 'NO_SUCH_NOTE',
-			id: '70c4e51f-5bea-449c-a030-53bee3cce202',
-		});
+		throw new IdentifiableError('70c4e51f-5bea-449c-a030-53bee3cce202', 'No such note.');
 	}
 
 	let pinnedNoteIds = user.pinnedNoteIds || [];
@@ -40,19 +36,11 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 	//#endregion
 
 	if (pinnedNoteIds.length >= 5) {
-		throw new ApiError({
-			message: 'You can not pin notes any more.',
-			code: 'PIN_LIMIT_EXCEEDED',
-			id: '15a018eb-58e5-4da1-93be-330fcc5e4e1a',
-		});
+		throw new IdentifiableError('15a018eb-58e5-4da1-93be-330fcc5e4e1a', 'You can not pin notes any more.');
 	}
 
 	if (pinnedNoteIds.some(id => id.equals(note._id))) {
-		throw new ApiError({
-			message: 'That note has already been pinned.',
-			code: 'ALREADY_PINNED',
-			id: '23f0cf4e-59a3-4276-a91d-61a5891c1514',
-		});
+		throw new IdentifiableError('23f0cf4e-59a3-4276-a91d-61a5891c1514', 'That note has already been pinned.');
 	}
 
 	pinnedNoteIds.unshift(note._id);
@@ -82,11 +70,7 @@ export async function removePinned(user: IUser, noteId: mongo.ObjectID) {
 	});
 
 	if (note === null) {
-		throw new ApiError({
-			message: 'No such note.',
-			code: 'NO_SUCH_NOTE',
-			id: 'b302d4cf-c050-400a-bbb3-be208681f40c',
-		});
+		throw new IdentifiableError('b302d4cf-c050-400a-bbb3-be208681f40c', 'No such note.');
 	}
 
 	const pinnedNoteIds = (user.pinnedNoteIds || []).filter(id => !id.equals(note._id));
