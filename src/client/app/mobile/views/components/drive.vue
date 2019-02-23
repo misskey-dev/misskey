@@ -468,7 +468,7 @@ export default Vue.extend({
 		deleteFolder() {
 			if (this.folder == null) {
 				alert(this.$t('root-delete-alert'));
-				return	
+				return;
 			}
 			this.$root.api('drive/folders/delete', {
 				folderId: this.folder.id
