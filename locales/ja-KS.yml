@@ -1403,6 +1403,7 @@ mobile/views/components/drive.vue:
   folder-name: "フォルダー名"
   root-rename-alert: "現在おる場所はルートで、フォルダとちゃうから名前の変更はできへん。名前を変更したいフォルダに移動してからやってな。"
   root-move-alert: "現在おる場所はルートで、フォルダとちゃうから移動はできへん。移動したいフォルダに移動してからやってな。"
+  root-delete-alert: "現在いる場所はルートで、フォルダではないため削除はできません。削除したいフォルダに移動してからやってください。"
   url-prompt: "このURLのファイルをアップロードしたいねん"
   uploading: "アップロードをリクエストしたで。アップロードが完了するまで時間がかかるかも分からん、知らんけど。"
 mobile/views/components/drive-file-chooser.vue:
