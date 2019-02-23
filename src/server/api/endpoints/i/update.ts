@@ -227,7 +227,7 @@ export default define(meta, async (ps, user, app) => {
 
 			updates.wallpaperUrl = getDriveFileUrl(wallpaper);
 
-			if (wallpaper.metadata.properties.avgColor) {
+			if (wallpaper.metadata && wallpaper.metadata.properties.avgColor) {
 				updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
 			}
 		}
