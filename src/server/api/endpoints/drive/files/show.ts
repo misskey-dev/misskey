@@ -39,6 +39,10 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'DriveFile',
+	},
+
 	errors: {
 		noSuchFile: {
 			message: 'No such file.',

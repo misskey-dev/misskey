@@ -56,6 +56,10 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'DriveFile',
+	},
+
 	errors: {
 		invalidFileName: {
 			message: 'Invalid file name.',
