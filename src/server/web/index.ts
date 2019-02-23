@@ -55,7 +55,6 @@ router.get('/assets/*', async ctx => {
 	await send(ctx as any, ctx.path, {
 		root: client,
 		maxage: ms('7 days'),
-		immutable: true
 	});
 });
 
