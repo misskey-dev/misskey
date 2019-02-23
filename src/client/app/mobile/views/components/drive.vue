@@ -423,7 +423,7 @@ export default Vue.extend({
 			if (this.folder == null) {
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('root-rename-alert')
+					text: this.$t('here-is-root')
 				});
 				return;
 			}
@@ -441,7 +441,7 @@ export default Vue.extend({
 			if (this.folder == null) {
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('root-move-alert')
+					text: this.$t('here-is-root')
 				});
 				return;
 			}
@@ -478,7 +478,7 @@ export default Vue.extend({
 			if (this.folder == null) {
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('root-delete-alert')
+					text: this.$t('here-is-root')
 				});
 				return;
 			}
