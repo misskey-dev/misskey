@@ -1401,9 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
   deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
-  root-rename-alert: "You're in the root; it can't be renamed because it's not a folder. Navigate to a folder you want to rename and try again."
-  root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
-  root-delete-alert: "現在いる場所はルートで、フォルダではないため削除はできません。削除したいフォルダに移動してからやってください。"
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "URL of the file you want to upload"
   uploading: "Upload requested. It may take a while for the upload to finish."
 mobile/views/components/drive-file-chooser.vue:
