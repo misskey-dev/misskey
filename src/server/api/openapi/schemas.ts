@@ -9,7 +9,7 @@ export const schemas = {
 				properties: {
 					code: {
 						type: 'string',
-						description: 'An error code.',
+						description: 'An error code. Unique within the endpoint.',
 					},
 					message: {
 						type: 'string',
