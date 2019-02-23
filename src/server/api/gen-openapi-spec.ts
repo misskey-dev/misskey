@@ -392,6 +392,10 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		const info = {
 			summary: endpoint.name,
 			description: endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.',
+			externalDocs: {
+				description: 'Source code',
+				url: `https://github.com/syuilo/misskey/blob/develop/src/server/api/endpoints/${endpoint.name}.ts`
+			},
 			...(endpoint.meta.tags ? {
 				tags: endpoint.meta.tags
 			} : {}),
