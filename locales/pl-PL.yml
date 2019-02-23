@@ -1403,6 +1403,7 @@ mobile/views/components/drive.vue:
   folder-name: "Nazwa katalogu"
   root-rename-alert: "Nie można zmienić nazwy katalogu głównego. Przejdź do katalogu, którego nazwę chcesz zmienić."
   root-move-alert: "Nie można przenieść tego katalogu, ponieważ jest on katalogiem głównym. Przejdź do katalogu, który chcesz przenieść."
+  root-delete-alert: "現在いる場所はルートで、フォルダではないため削除はできません。削除したいフォルダに移動してからやってください。"
   url-prompt: "Adres URL pliku, który chcesz wysłać"
   uploading: "Rozpoczęto wysyłanie. Może to trochę potrwać."
 mobile/views/components/drive-file-chooser.vue:
