@@ -48,16 +48,19 @@
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
 				<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton" @click="renote()" :title="$t('renote')">
-					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+					<fa icon="retweet"/>
+					<p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="inhibitedButton">
 					<fa icon="ban"/>
 				</button>
 				<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 					<fa icon="plus"/>
+					<p class="count" v-if="Object.values(appearNote.reactionCounts).some(x => x)">{{ Object.values(appearNote.reactionCounts).reduce((a, c) => a + c, 0) }}</p>
 				</button>
 				<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton" :title="$t('undo-reaction')">
 					<fa icon="minus"/>
+					<p class="count" v-if="Object.values(appearNote.reactionCounts).some(x => x)">{{ Object.values(appearNote.reactionCounts).reduce((a, c) => a + c, 0) }}</p>
 				</button>
 				<button @click="menu()" ref="menuButton">
 					<fa icon="ellipsis-h"/>
