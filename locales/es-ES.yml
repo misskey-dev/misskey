@@ -58,6 +58,7 @@ common:
   trash: "Papelera"
   drive: "Drive"
   messaging: "Conversación"
+  home: "ホーム"
   deck: "デッキ"
   timeline: "タイムライン"
   explore: "みつける"
