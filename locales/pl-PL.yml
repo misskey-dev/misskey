@@ -1401,9 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "Co chcesz zrobić? (wprowadź odpowiednią cyfrę): <1 → Wysłać plik | 2 → Wysłać plik z adresu URL | 3 → Utworzyć katalog | 4 → Zmienić nazwę tego katalogu | 5 → Przenieść ten katalog | 6 → Usunąć ten katalog>"
   deletion-alert: "Przepraszamy. Usuwanie katalogów nie zostało jeszcze zaimplementowane."
   folder-name: "Nazwa katalogu"
-  root-rename-alert: "Nie można zmienić nazwy katalogu głównego. Przejdź do katalogu, którego nazwę chcesz zmienić."
-  root-move-alert: "Nie można przenieść tego katalogu, ponieważ jest on katalogiem głównym. Przejdź do katalogu, który chcesz przenieść."
-  root-delete-alert: "現在いる場所はルートで、フォルダではないため削除はできません。削除したいフォルダに移動してからやってください。"
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "Adres URL pliku, który chcesz wysłać"
   uploading: "Rozpoczęto wysyłanie. Może to trochę potrwać."
 mobile/views/components/drive-file-chooser.vue:
