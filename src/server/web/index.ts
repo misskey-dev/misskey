@@ -21,7 +21,7 @@ import getNoteSummary from '../../misc/get-note-summary';
 import fetchMeta from '../../misc/fetch-meta';
 import Emoji from '../../models/emoji';
 import * as pkg from '../../../package.json';
-import { genOpenapiSpec } from '../api/gen-openapi-spec';
+import { genOpenapiSpec } from '../api/openapi/gen-spec';
 
 const client = `${__dirname}/../../client/`;
 
