@@ -399,7 +399,7 @@ export default Vue.extend({
 					this.moveFolder();
 					break;
 				case '6':
-					alert(this.$t('deletion-alert'));
+					this.deleteFolder();
 					break;
 			}
 		},
@@ -463,6 +463,18 @@ export default Vue.extend({
 			for (const f of Array.from((this.$refs.file as any).files)) {
 				(this.$refs.uploader as any).upload(f, this.folder);
 			}
+		},
+
+		deleteFolder() {
+			if (this.folder == null) {
+				alert(this.$t('root-delete-alert'));
+				return	
+			}
+			this.$root.api('drive/folders/delete', {
+				folderId: this.folder.id
+			}).then(folder => {
+				this.cd(this.folder.parentId);
+			});
 		}
 	}
 });
