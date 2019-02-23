@@ -159,24 +159,6 @@ export const meta = {
 			message: 'The file specified as a banner is not an image.',
 			code: 'BANNER_NOT_AN_IMAGE',
 			id: '75aedb19-2afd-4e6d-87fc-67941256fa60'
-		},
-
-		avatarImageIsBroken: {
-			message: '',
-			code: 'AVATAR_IMAGE_IS_BROKEN',
-			id: 'c6503011-dc56-4403-8382-aa37bb83528f'
-		},
-
-		bannerImageIsBroken: {
-			message: '',
-			code: 'AVATAR_IMAGE_IS_BROKEN',
-			id: '7aeea3a9-4237-4819-9762-3e4d235d2e50'
-		},
-
-		wallpaperImageIsBroken: {
-			message: '',
-			code: 'AVATAR_IMAGE_IS_BROKEN',
-			id: '5ce3e0e9-a179-4478-8001-d123871cd6d7'
 		}
 	}
 };
