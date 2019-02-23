@@ -13,7 +13,15 @@ export default (endpoint: IEndpoint, ctx: Koa.BaseContext) => new Promise((res) 
 			ctx.status = 204;
 		} else if (typeof x === 'number') {
 			ctx.status = x;
-			ctx.body = { error: y };
+			ctx.body = {
+				error: {
+					message: y.message,
+					code: y.code,
+					id: y.id,
+					kind: y.kind,
+					...(y.info ? { info: y.info } : {})
+				}
+			};
 		} else {
 			ctx.body = x;
 		}
