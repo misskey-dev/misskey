@@ -1403,6 +1403,7 @@ mobile/views/components/drive.vue:
   folder-name: "文件夹名称"
   root-rename-alert: "您目前在root模式; 它无法重命名，因为它不是文件夹。 导航到要重命名的文件夹，然后重试。"
   root-move-alert: "您目前在root模式; 它无法移动，因为它不是文件夹。 导航到要移动的文件夹，然后重试。"
+  root-delete-alert: "現在いる場所はルートで、フォルダではないため削除はできません。削除したいフォルダに移動してからやってください。"
   url-prompt: "要上传的文件的URL"
   uploading: "已请求上传。 上传完成可能需要一段时间。"
 mobile/views/components/drive-file-chooser.vue:
