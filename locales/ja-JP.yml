@@ -60,6 +60,7 @@ common:
   trash: "ゴミ箱"
   drive: "ドライブ"
   messaging: "トーク"
+  home: "ホーム"
   deck: "デッキ"
   timeline: "タイムライン"
   explore: "みつける"
