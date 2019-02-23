@@ -3,6 +3,8 @@ import App, { pack } from '../../../../models/app';
 import define from '../../define';
 
 export const meta = {
+	tags: ['account', 'app'],
+
 	desc: {
 		'ja-JP': '自分のアプリケーション一覧を取得します。',
 		'en-US': 'Get my apps'

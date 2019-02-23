@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Unfavorite a note.'
 	},
 
+	tags: ['favorites'],
+
 	requireCredential: true,
 
 	kind: 'favorite-write',

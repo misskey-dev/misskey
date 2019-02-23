@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Mark all notifications as read.'
 	},
 
+	tags: ['notifications', 'account'],
+
 	requireCredential: true,
 
 	kind: 'notification-write'

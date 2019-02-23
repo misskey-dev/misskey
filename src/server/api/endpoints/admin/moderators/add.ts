@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Mark a user as moderator.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireAdmin: true,
 

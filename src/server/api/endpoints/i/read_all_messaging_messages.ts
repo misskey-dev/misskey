@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Mark all talk messages as read.'
 	},
 
+	tags: ['account', 'messaging'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

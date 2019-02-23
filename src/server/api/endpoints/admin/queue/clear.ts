@@ -2,6 +2,8 @@ import define from '../../../define';
 import { destroy } from '../../../../../queue';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

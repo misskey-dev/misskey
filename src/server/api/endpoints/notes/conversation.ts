@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Show conversation of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {
@@ -31,6 +33,13 @@ export const meta = {
 		offset: {
 			validator: $.optional.num.min(0),
 			default: 0
+		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
 		},
 	},
 

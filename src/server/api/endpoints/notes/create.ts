@@ -25,6 +25,8 @@ export const meta = {
 		'ja-JP': '投稿します。'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	limit: {
@@ -175,7 +177,7 @@ export const meta = {
 		type: 'object',
 		props: {
 			createdNote: {
-				type: 'entity(Note)',
+				type: 'Note',
 				desc: {
 					'ja-JP': '作成した投稿'
 				}

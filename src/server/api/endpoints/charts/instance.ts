@@ -9,6 +9,8 @@ export const meta = {
 		'ja-JP': 'インスタンスごとのチャートを取得します。'
 	},
 
+	tags: ['charts'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),
@@ -32,7 +34,14 @@ export const meta = {
 				'en-US': 'Target instance host'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+		},
+	},
 };
 
 export default define(meta, async (ps) => {

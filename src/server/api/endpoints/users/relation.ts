@@ -8,11 +8,13 @@ export const meta = {
 		'ja-JP': 'ユーザー間のリレーションを取得します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: true,
 
 	params: {
 		userId: {
-			validator: $.or($.type(ID), $.arr($.type(ID)).unique()),
+			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
 			transform: (v: any): ObjectId | ObjectId[] => Array.isArray(v) ? v.map(x => transform(x)) : transform(v),
 			desc: {
 				'ja-JP': 'ユーザーID (配列でも可)'

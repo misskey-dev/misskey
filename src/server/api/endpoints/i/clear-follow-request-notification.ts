@@ -2,6 +2,8 @@ import User from '../../../../models/user';
 import define from '../../define';
 
 export const meta = {
+	tags: ['account', 'following'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

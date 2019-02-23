@@ -16,6 +16,8 @@ export const meta = {
 		'en-US': 'Block a user.'
 	},
 
+	tags: ['blocking', 'users'],
+
 	limit: {
 		duration: ms('1hour'),
 		max: 100

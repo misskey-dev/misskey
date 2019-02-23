@@ -12,6 +12,8 @@ export const meta = {
 		'en-US': 'Get state of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {

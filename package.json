@@ -102,7 +102,7 @@
 		"bcryptjs": "2.4.3",
 		"bee-queue": "1.2.2",
 		"bootstrap-vue": "2.0.0-rc.11",
-		"cafy": "14.0.1",
+		"cafy": "15.1.0",
 		"chai": "4.2.0",
 		"chai-http": "4.2.1",
 		"chalk": "2.4.2",

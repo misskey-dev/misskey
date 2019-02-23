@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Show reactions of a note.'
 	},
 
+	tags: ['notes', 'reactions'],
+
 	requireCredential: false,
 
 	params: {

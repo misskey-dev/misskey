@@ -12,6 +12,8 @@ export const meta = {
 		'en-US': 'Unreact to a note.'
 	},
 
+	tags: ['reactions', 'notes'],
+
 	requireCredential: true,
 
 	kind: 'reaction-write',

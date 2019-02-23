@@ -10,6 +10,8 @@ export const meta = {
 		'en-US': 'Update a user list'
 	},
 
+	tags: ['lists'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

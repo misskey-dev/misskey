@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Get favorited notes'
 	},
 
+	tags: ['account', 'notes', 'favorites'],
+
 	requireCredential: true,
 
 	kind: 'favorites-read',

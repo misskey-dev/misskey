@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Show messaging history.'
 	},
 
+	tags: ['messaging'],
+
 	requireCredential: true,
 
 	kind: 'messaging-read',

@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get the notes that specified file of drive attached.'
 	},
 
+	tags: ['drive', 'notes'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',

@@ -15,6 +15,8 @@ export const meta = {
 		'ja-JP': 'おすすめのユーザー一覧を取得します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: true,
 
 	kind: 'account-read',

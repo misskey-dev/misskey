@@ -20,6 +20,8 @@ export const meta = {
 		'en-US': 'Update myself'
 	},
 
+	tags: ['account'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

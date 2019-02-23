@@ -11,6 +11,8 @@ export const meta = {
 		'ja-JP': '指定されたタグが付けられた投稿を取得します。'
 	},
 
+	tags: ['notes', 'hashtags'],
+
 	params: {
 		tag: {
 			validator: $.optional.str,
@@ -100,7 +102,14 @@ export const meta = {
 			validator: $.optional.num.range(1, 30),
 			default: 10
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {

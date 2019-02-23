@@ -2,6 +2,8 @@ import Matching, { pack as packMatching } from '../../../../../models/games/reve
 import define from '../../../define';
 
 export const meta = {
+	tags: ['games'],
+
 	requireCredential: true
 };
 

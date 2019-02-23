@@ -12,6 +12,8 @@ export const meta = {
 		'ja-JP': '指定した投稿のピン留めを解除します。'
 	},
 
+	tags: ['account', 'notes'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Update specified file of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-write',

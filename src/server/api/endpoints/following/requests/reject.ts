@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Reject a follow request.'
 	},
 
+	tags: ['following', 'account'],
+
 	requireCredential: true,
 
 	kind: 'following-write',

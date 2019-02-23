@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Unwatch a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

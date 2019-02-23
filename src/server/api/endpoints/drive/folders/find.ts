@@ -4,6 +4,8 @@ import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import define from '../../../define';
 
 export const meta = {
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',

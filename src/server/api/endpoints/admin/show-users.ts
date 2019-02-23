@@ -4,6 +4,8 @@ import define from '../../define';
 import { fallback } from '../../../../prelude/symbol';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

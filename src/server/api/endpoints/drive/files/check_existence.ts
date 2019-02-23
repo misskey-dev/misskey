@@ -8,6 +8,8 @@ export const meta = {
 		'en-US': 'Returns whether the file with the given MD5 hash exists in the user\'s drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',

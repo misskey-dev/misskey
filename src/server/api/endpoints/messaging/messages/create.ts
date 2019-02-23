@@ -19,6 +19,8 @@ export const meta = {
 		'en-US': 'Create a message of messaging.'
 	},
 
+	tags: ['messaging'],
+
 	requireCredential: true,
 
 	kind: 'messaging-write',

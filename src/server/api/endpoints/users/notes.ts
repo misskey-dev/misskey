@@ -11,6 +11,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーのタイムラインを取得します。'
 	},
 
+	tags: ['users', 'notes'],
+
 	params: {
 		userId: {
 			validator: $.type(ID),
@@ -121,6 +123,13 @@ export const meta = {
 			desc: {
 				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
 			}
+		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
 		},
 	},
 

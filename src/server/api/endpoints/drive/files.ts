@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Get files of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',
@@ -38,7 +40,14 @@ export const meta = {
 		type: {
 			validator: $.optional.str.match(/^[a-zA-Z\/\-\*]+$/)
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'DriveFile',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

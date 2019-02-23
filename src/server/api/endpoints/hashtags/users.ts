@@ -5,6 +5,8 @@ import define from '../../define';
 export const meta = {
 	requireCredential: false,
 
+	tags: ['hashtags', 'users'],
+
 	params: {
 		tag: {
 			validator: $.str,

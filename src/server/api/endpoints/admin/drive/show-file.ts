@@ -5,6 +5,8 @@ import DriveFile from '../../../../../models/drive-file';
 import { ApiError } from '../../../error';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get mentions of myself.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {
@@ -39,7 +41,14 @@ export const meta = {
 		visibility: {
 			validator: $.optional.str,
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

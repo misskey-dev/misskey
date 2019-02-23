@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': 'ドライブに指定されたURLに存在するファイルをアップロードします。'
 	},
 
+	tags: ['drive'],
+
 	limit: {
 		duration: ms('1hour'),
 		max: 60

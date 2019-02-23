@@ -8,6 +8,8 @@ import define from '../../define';
 import { ApiError } from '../../error';
 
 export const meta = {
+	tags: ['auth'],
+
 	requireCredential: true,
 
 	secure: true,

@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': 'ハッシュタグを検索します。'
 	},
 
+	tags: ['hashtags'],
+
 	requireCredential: false,
 
 	params: {

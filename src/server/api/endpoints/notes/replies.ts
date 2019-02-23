@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Get replies of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {
@@ -32,7 +34,14 @@ export const meta = {
 			validator: $.optional.num.min(0),
 			default: 0
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

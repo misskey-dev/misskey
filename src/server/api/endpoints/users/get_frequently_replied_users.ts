@@ -9,6 +9,8 @@ import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 
 export const meta = {
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {

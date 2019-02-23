@@ -5,6 +5,8 @@ import define from '../../define';
 import { ApiError } from '../../error';
 
 export const meta = {
+	tags: ['app'],
+
 	params: {
 		appId: {
 			validator: $.type(ID),

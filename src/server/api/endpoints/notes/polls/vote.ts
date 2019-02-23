@@ -18,6 +18,8 @@ export const meta = {
 		'en-US': 'Vote poll of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	kind: 'vote-write',

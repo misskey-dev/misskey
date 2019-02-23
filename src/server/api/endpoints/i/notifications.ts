@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Get notifications.'
 	},
 
+	tags: ['account', 'notifications'],
+
 	requireCredential: true,
 
 	kind: 'account-read',

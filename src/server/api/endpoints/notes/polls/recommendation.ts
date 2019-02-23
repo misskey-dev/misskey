@@ -10,6 +10,8 @@ export const meta = {
 		'en-US': 'Get recommended polls.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {

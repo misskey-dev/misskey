@@ -10,6 +10,8 @@ export const meta = {
 		'en-US': 'Get featured notes.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {
@@ -20,7 +22,14 @@ export const meta = {
 				'ja-JP': '最大数'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

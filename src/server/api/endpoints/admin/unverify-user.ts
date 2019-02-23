@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Mark a user as unverified.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

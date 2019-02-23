@@ -6,6 +6,8 @@ import define from '../../../../define';
 import { ApiError } from '../../../../error';
 
 export const meta = {
+	tags: ['games'],
+
 	desc: {
 		'ja-JP': '指定したリバーシの対局で投了します。'
 	},

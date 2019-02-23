@@ -16,6 +16,8 @@ export const meta = {
 		'en-US': 'Unblock a user.'
 	},
 
+	tags: ['blocking', 'users'],
+
 	limit: {
 		duration: ms('1hour'),
 		max: 100

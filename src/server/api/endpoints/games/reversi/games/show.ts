@@ -6,6 +6,8 @@ import define from '../../../../define';
 import { ApiError } from '../../../../error';
 
 export const meta = {
+	tags: ['games'],
+
 	params: {
 		gameId: {
 			validator: $.type(ID),

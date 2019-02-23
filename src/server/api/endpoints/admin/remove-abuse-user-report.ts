@@ -4,6 +4,8 @@ import define from '../../define';
 import AbuseUserReport from '../../../../models/abuse-user-report';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Create a folder of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-write',

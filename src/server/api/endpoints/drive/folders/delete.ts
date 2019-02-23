@@ -14,6 +14,8 @@ export const meta = {
 		'en-US': 'Delete specified folder of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-write',

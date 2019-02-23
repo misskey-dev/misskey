@@ -13,6 +13,8 @@ export const meta = {
 		'ja-JP': 'ローカルタイムラインを取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		withFiles: {
 			validator: $.optional.bool,
@@ -64,6 +66,13 @@ export const meta = {
 
 		untilDate: {
 			validator: $.optional.num,
+		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
 		},
 	},
 

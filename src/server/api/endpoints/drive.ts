@@ -8,6 +8,8 @@ export const meta = {
 		'en-US': 'Get drive information.'
 	},
 
+	tags: ['drive', 'account'],
+
 	requireCredential: true,
 
 	kind: 'drive-read'

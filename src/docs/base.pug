@@ -17,17 +17,6 @@ html(lang= lang)
 			ul
 				each doc in docs
 					li: a(href=`/docs/${lang}/${doc.name}`)= doc.title[lang] || doc.title['ja-JP']
-			section
-				h2 API
-				ul
-					li Entities
-						ul
-							each entity in entities
-								li: a(href=`/docs/${lang}/api/entities/${kebab(entity)}`)= entity
-					li Endpoints
-						ul
-							each endpoint in endpoints
-								li: a(href=`/docs/${lang}/api/endpoints/${kebab(endpoint.name)}`)= endpoint.name
 		main
 			article
 				block main

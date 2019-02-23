@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': 'ユーザーを検索します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {

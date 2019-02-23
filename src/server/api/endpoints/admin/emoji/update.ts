@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': 'カスタム絵文字を更新します。'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

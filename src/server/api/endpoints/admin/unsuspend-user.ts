@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Unsuspend a user.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

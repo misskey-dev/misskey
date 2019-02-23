@@ -14,6 +14,8 @@ export const meta = {
 		'ja-JP': 'ハイブリッドタイムラインを取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
@@ -89,6 +91,13 @@ export const meta = {
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
+		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
 		},
 	},
 

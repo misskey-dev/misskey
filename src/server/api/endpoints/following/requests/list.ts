@@ -7,6 +7,8 @@ export const meta = {
 		'en-US': 'Get all pending received follow requests.'
 	},
 
+	tags: ['following', 'account'],
+
 	requireCredential: true,
 
 	kind: 'following-read'

@@ -10,6 +10,8 @@ import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
 
 export const meta = {
+	tags: ['federation'],
+
 	desc: {
 		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。'
 	},

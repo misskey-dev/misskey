@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Mark all messages as read.'
 	},
 
+	tags: ['account'],
+
 	requireCredential: true,
 
 	kind: 'account-write',

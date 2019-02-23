@@ -3,6 +3,8 @@ import define from '../../define';
 import Hashtag from '../../../../models/hashtag';
 
 export const meta = {
+	tags: ['hashtags'],
+
 	requireCredential: false,
 
 	params: {

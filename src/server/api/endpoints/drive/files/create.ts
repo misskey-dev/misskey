@@ -13,6 +13,8 @@ export const meta = {
 		'en-US': 'Upload a file to drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	limit: {
@@ -35,7 +37,7 @@ export const meta = {
 		},
 
 		isSensitive: {
-			validator: $.optional.or($.bool, $.str),
+			validator: $.optional.either($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
 			desc: {
@@ -45,13 +47,17 @@ export const meta = {
 		},
 
 		force: {
-			validator: $.optional.or($.bool, $.str),
+			validator: $.optional.either($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
 			desc: {
 				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
 			}
 		}
+	},
+
+	res: {
+		type: 'DriveFile',
 	},
 
 	errors: {

@@ -12,6 +12,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーを迷惑なユーザーであると報告します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: true,
 
 	params: {

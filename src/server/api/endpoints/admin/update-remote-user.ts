@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Update specified remote user information.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 

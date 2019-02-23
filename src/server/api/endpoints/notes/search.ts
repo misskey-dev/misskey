@@ -12,6 +12,8 @@ export const meta = {
 		'en-US': 'Search notes.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {
@@ -28,6 +30,13 @@ export const meta = {
 			validator: $.optional.num.min(0),
 			default: 0
 		}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
 	},
 
 	errors: {

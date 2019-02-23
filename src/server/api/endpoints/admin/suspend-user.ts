@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Suspend a user.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
