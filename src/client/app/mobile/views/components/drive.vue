@@ -421,7 +421,10 @@ export default Vue.extend({
 
 		renameFolder() {
 			if (this.folder == null) {
-				alert(this.$t('root-rename-alert'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('root-rename-alert')
+				});
 				return;
 			}
 			const name = window.prompt(this.$t('folder-name'), this.folder.name);
@@ -436,7 +439,10 @@ export default Vue.extend({
 
 		moveFolder() {
 			if (this.folder == null) {
-				alert(this.$t('root-move-alert'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('root-move-alert')
+				});
 				return;
 			}
 			this.$chooseDriveFolder().then(folder => {
@@ -456,7 +462,10 @@ export default Vue.extend({
 				url: url,
 				folderId: this.folder ? this.folder.id : undefined
 			});
-			alert(this.$t('uploading'));
+			this.$root.dialog({
+				type: 'info',
+				text: this.$t('uploading')
+			});
 		},
 
 		onChangeLocalFile() {
@@ -467,7 +476,10 @@ export default Vue.extend({
 
 		deleteFolder() {
 			if (this.folder == null) {
-				alert(this.$t('root-delete-alert'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('root-delete-alert')
+				});
 				return;
 			}
 			this.$root.api('drive/folders/delete', {
