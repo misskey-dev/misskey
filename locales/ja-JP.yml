@@ -929,6 +929,7 @@ desktop/views/components/settings.vue:
   circle-icons: "円形のアイコンを使用"
   contrasted-acct: "ユーザー名にコントラストを付ける"
   post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
+  customize: "ホームのカスタマイズ"
   show-clock-on-header: "右上に時計を表示する"
   show-reply-target: "リプライ先を表示する"
   timeline: "タイムライン"
