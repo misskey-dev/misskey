@@ -1403,6 +1403,7 @@ mobile/views/components/drive.vue:
   folder-name: "폴더 이름"
   root-rename-alert: "현재 위치가 루트이고, 폴더가 아니므로 이름을 변경할 수 없습니다. 이름을 바꾸고 싶은 폴더로 이동하여 주십시오."
   root-move-alert: "현재 위치가 루트이므로, 폴더가 아니므로 이동할 수 없습니다. 이동하고 싶은 폴더로 이동하여 주십시오."
+  root-delete-alert: "現在いる場所はルートで、フォルダではないため削除はできません。削除したいフォルダに移動してからやってください。"
   url-prompt: "업로드 하려는 파일의 URL"
   uploading: "업로드를 요청하였습니다. 업로드가 완료될 때까지 시간이 소요될 수 있습니다."
 mobile/views/components/drive-file-chooser.vue:
