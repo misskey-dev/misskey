@@ -15,8 +15,7 @@ export const meta = {
 	params: {},
 
 	res: {
-		type: 'entity',
-		entity: 'User'
+		type: 'User',
 	}
 };
 
