@@ -3,7 +3,7 @@
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
-		<button v-if="bodyTogglable" @click="() => showBody = !showBody">
+		<button v-if="bodyTogglable" @click="toggleContent(!showBody)">
 			<template v-if="showBody"><fa icon="angle-up"/></template>
 			<template v-else><fa icon="angle-down"/></template>
 		</button>
@@ -48,6 +48,7 @@ export default Vue.extend({
 	methods: {
 		toggleContent(show: boolean) {
 			this.showBody = show;
+			this.$emit('toggle', show);
 		}
 	}
 });
