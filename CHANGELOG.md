@@ -3,6 +3,7 @@ ChangeLog
 
 unreleasded
 ----------
+* APIドキュメント刷新
 * /api/v1/instance/peers 復活
 * 「返信が遷移後も残り続ける問題を修正」([9beddc9](https://github.com/syuilo/misskey/commit/9beddc941a716f1322ae0b7d71d159edd642a399)) によって遷移前に返信が表示されなくなった問題を修正
 * デッキモードにてユーザーのプロフィールを連続で見たとき、アクティビティや画像が前のユーザーのもののまま表示される問題を修正
