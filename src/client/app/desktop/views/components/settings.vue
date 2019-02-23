@@ -71,7 +71,7 @@
 
 			<section>
 				<ui-switch v-model="showPostFormOnTopOfTl">{{ $t('post-form-on-timeline') }}</ui-switch>
-				<ui-button @click="customizeHome">{{ $t('customize') }}</ui-button>
+				<ui-button @click="customizeHome">{{ $t('@.customize-home') }}</ui-button>
 			</section>
 			<section>
 				<header>{{ $t('wallpaper') }}</header>
