@@ -15,7 +15,7 @@ common:
     reaction: "Reactions"
     reaction-desc: "The easiest way to express your emotions. Misskey allows you to add various kinds of reactions to other's posts. The emotional experience on Misskey will never be on other SNSs, which are only able to push “likes”."
     ui: "Interface"
-    ui-desc: "No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. Make your original home by editing, adjusting layouts of timeline and placing selectable widgets you can easily customize."
+    ui-desc: "No single UI can suit everyone. Therefore, Misskey has a highly customizable UI for your tastes. You can make your home original by editing the layout of your timeline, and moving around selectable widgets that you can easily adjust to make this place your own."
     drive: "Drive"
     drive-desc: "Wanna post a picture you have already uploaded? Wish to organize, name and create a folder for your uploaded files? Misskey Drive is the best solution for you. Very easy to share your files online."
     outro: "Check Misskey-unique features by seeing them with your own eyes! If you feel like this instance is not for you, try other instances, as Misskey is a decentralized SNS, so that you can easily find your mates. Then, GLHF!"
