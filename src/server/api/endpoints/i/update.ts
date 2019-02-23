@@ -194,7 +194,7 @@ export default define(meta, async (ps, user, app) => {
 
 		updates.avatarUrl = getDriveFileUrl(avatar, true);
 
-		if (avatar.metadata.properties.avgColor) {
+		if (avatar.metadata && avatar.metadata.properties.avgColor) {
 			updates.avatarColor = avatar.metadata.properties.avgColor;
 		}
 	}
@@ -209,7 +209,7 @@ export default define(meta, async (ps, user, app) => {
 
 		updates.bannerUrl = getDriveFileUrl(banner, false);
 
-		if (banner.metadata.properties.avgColor) {
+		if (banner.metadata && banner.metadata.properties.avgColor) {
 			updates.bannerColor = banner.metadata.properties.avgColor;
 		}
 	}
