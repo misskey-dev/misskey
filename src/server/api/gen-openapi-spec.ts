@@ -390,6 +390,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		}
 
 		const info = {
+			operationId: endpoint.name,
 			summary: endpoint.name,
 			description: endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.',
 			externalDocs: {
