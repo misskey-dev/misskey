@@ -10,13 +10,15 @@
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
-			<template #desc v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner" pulse fixed-width/> {{ $t('checking') }}</template>
-			<template #desc v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('available') }}</template>
-			<template #desc v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('unavailable') }}</template>
-			<template #desc v-if="usernameState == 'error'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('error') }}</template>
-			<template #desc v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('invalid-format') }}</template>
-			<template #desc v-if="usernameState == 'min-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-short') }}</template>
-			<template #desc v-if="usernameState == 'max-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-long') }}</template>
+			<template #desc>
+				<span v-if="usernameState == 'wait'" style="color:#999"><fa icon="spinner" pulse fixed-width/> {{ $t('checking') }}</span>
+				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('available') }}</span>
+				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('unavailable') }}</span>
+				<span v-if="usernameState == 'error'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('error') }}</span>
+				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('invalid-format') }}</span>
+				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-short') }}</span>
+				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-long') }}</span>
+			</template>
 		</ui-input>
 		<ui-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword" :with-password-meter="true" styl="fill">
 			<span>{{ $t('password') }}</span>
