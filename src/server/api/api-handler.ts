@@ -26,7 +26,7 @@ export default (endpoint: IEndpoint, ctx: Koa.BaseContext) => new Promise((res) 
 		call(endpoint.name, user, app, body, (ctx.req as any).file).then(res => {
 			reply(res);
 		}).catch(e => {
-			reply(e.httpStatusCode ? e.httpStatusCode :  e.kind == 'client' ? 400 : 500, e);
+			reply(e.httpStatusCode ? e.httpStatusCode : e.kind == 'client' ? 400 : 500, e);
 		});
 	}).catch(() => {
 		reply(403, new ApiError({
