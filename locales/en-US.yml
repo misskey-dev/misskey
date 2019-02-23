@@ -58,6 +58,7 @@ common:
   trash: "Trash"
   drive: "Drive"
   messaging: "Talk"
+  home: "ホーム"
   deck: "Deck"
   timeline: "Timeline"
   explore: "Explore"
