@@ -9,10 +9,10 @@ common:
   intro:
     title: "Czym jest Misskey?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
-    features: "特徴"
+    features: "Funkcje"
     rich-contents: "Wpis"
     rich-contents-desc: "Po prostu opublikuj swój pomysł, gorące tematy i wszystko, co chcesz udostępnić. Możesz ozdobić swoje słowa, dołączyć swoje ulubione zdjęcia, wysłać pliki, w tym filmy i utworzyć ankietę - to są rzeczy, które możesz zrobić w Misskey!"
-    reaction: "Reakcje"
+    reaction: "Reakcja"
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
     ui: "Interfejs"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
@@ -22,7 +22,7 @@ common:
   adblock:
     detected: "Spróbuj wyłączyć blokadę reklam."
     warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
-  application-authorization: "アプリの連携"
+  application-authorization: "Współpraca aplikacji"
   close: "Zamknij"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   load-more: "Załaduj więcej"
@@ -58,9 +58,10 @@ common:
   trash: "Kosz"
   drive: "Dysk"
   messaging: "Rozmowy"
+  home: "ホーム"
   deck: "デッキ"
   timeline: "タイムライン"
-  explore: "みつける"
+  explore: "Znajdź"
   following: "フォロー中"
   followers: "フォロワー"
   empty-timeline-info:
@@ -1400,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "Co chcesz zrobić? (wprowadź odpowiednią cyfrę): <1 → Wysłać plik | 2 → Wysłać plik z adresu URL | 3 → Utworzyć katalog | 4 → Zmienić nazwę tego katalogu | 5 → Przenieść ten katalog | 6 → Usunąć ten katalog>"
   deletion-alert: "Przepraszamy. Usuwanie katalogów nie zostało jeszcze zaimplementowane."
   folder-name: "Nazwa katalogu"
-  root-rename-alert: "Nie można zmienić nazwy katalogu głównego. Przejdź do katalogu, którego nazwę chcesz zmienić."
-  root-move-alert: "Nie można przenieść tego katalogu, ponieważ jest on katalogiem głównym. Przejdź do katalogu, który chcesz przenieść."
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "Adres URL pliku, który chcesz wysłać"
   uploading: "Rozpoczęto wysyłanie. Może to trochę potrwać."
 mobile/views/components/drive-file-chooser.vue:

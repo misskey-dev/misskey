@@ -15,7 +15,7 @@ common:
     reaction: "Reactions"
     reaction-desc: "The easiest way to express your emotions. Misskey allows you to add various kinds of reactions to other's posts. The emotional experience on Misskey will never be on other SNSs, which are only able to push “likes”."
     ui: "Interface"
-    ui-desc: "No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. Make your original home by editing, adjusting layouts of timeline and placing selectable widgets you can easily customize."
+    ui-desc: "No single UI can suit everyone. Therefore, Misskey has a highly customizable UI for your tastes. You can make your home original by editing the layout of your timeline, and moving around selectable widgets that you can easily adjust to make this place your own."
     drive: "Drive"
     drive-desc: "Wanna post a picture you have already uploaded? Wish to organize, name and create a folder for your uploaded files? Misskey Drive is the best solution for you. Very easy to share your files online."
     outro: "Check Misskey-unique features by seeing them with your own eyes! If you feel like this instance is not for you, try other instances, as Misskey is a decentralized SNS, so that you can easily find your mates. Then, GLHF!"
@@ -28,7 +28,7 @@ common:
   load-more: "Load more"
   enter-password: "Please enter the Password"
   2fa: "Two-factor authentication"
-  customize-home: "Customize your home layout"
+  customize-home: "Customize home layout"
   featured-notes: "Featured notes"
   got-it: "Got it!"
   customization-tips:
@@ -58,6 +58,7 @@ common:
   trash: "Trash"
   drive: "Drive"
   messaging: "Talk"
+  home: "Home"
   deck: "Deck"
   timeline: "Timeline"
   explore: "Explore"
@@ -577,7 +578,7 @@ common/views/widgets/memo.vue:
   memo: "Write here!"
   save: "Save"
 common/views/widgets/slideshow.vue:
-  folder-customize-mode: "To specify a folder, please exit customize mode"
+  folder-customize-mode: "To specify a folder, please exit customization mode"
   folder: "Please click and specify a folder"
   no-image: "There is no image in this folder"
 common/views/widgets/tips.vue:
@@ -588,7 +589,7 @@ common/views/widgets/tips.vue:
   tips-line5: "You can upload files by dragging and dropping them to Drive."
   tips-line6: "You can move a folder by dragging it within the Drive."
   tips-line7: "You can move folders by dragging them within the Drive."
-  tips-line8: "Home can be customized from the settings."
+  tips-line8: "The Home layout can be customized from the settings."
   tips-line9: "Misskey is licensed under AGPLv3."
   tips-line10: "Using the Time Machine widget makes it easy to trace back to the past timeline."
   tips-line11: "You can pin posts to user page by clicking on \"...\""
@@ -1400,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
   deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
-  root-rename-alert: "You're in the root; it can't be renamed because it's not a folder. Navigate to a folder you want to rename and try again."
-  root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
+  here-is-root: "Currently, you are on the root, not inside of any folder."
   url-prompt: "URL of the file you want to upload"
   uploading: "Upload requested. It may take a while for the upload to finish."
 mobile/views/components/drive-file-chooser.vue:

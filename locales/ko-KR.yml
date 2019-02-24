@@ -58,6 +58,7 @@ common:
   trash: "휴지통"
   drive: "드라이브"
   messaging: "대화"
+  home: "ホーム"
   deck: "덱"
   timeline: "타임라인"
   explore: "발견"
@@ -1400,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "무엇을 하시겠습니까? (숫자를 입력하여 주십시오): <1 → 파일 업로드 | 2 → 파일을 URL에서 업로드 | 3 → 폴더 만들기 | 4 → 이 폴더의 이름을 변경 | 5 → 현재 폴더 이동| 6 → 현재 폴더 삭제>"
   deletion-alert: "죄송합니다! 폴더 삭제는 아직 구현되지 않았습니다..."
   folder-name: "폴더 이름"
-  root-rename-alert: "현재 위치가 루트이고, 폴더가 아니므로 이름을 변경할 수 없습니다. 이름을 바꾸고 싶은 폴더로 이동하여 주십시오."
-  root-move-alert: "현재 위치가 루트이므로, 폴더가 아니므로 이동할 수 없습니다. 이동하고 싶은 폴더로 이동하여 주십시오."
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "업로드 하려는 파일의 URL"
   uploading: "업로드를 요청하였습니다. 업로드가 완료될 때까지 시간이 소요될 수 있습니다."
 mobile/views/components/drive-file-chooser.vue:

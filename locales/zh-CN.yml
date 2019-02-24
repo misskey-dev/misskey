@@ -58,6 +58,7 @@ common:
   trash: "垃圾箱"
   drive: "网盘"
   messaging: "聊天"
+  home: "ホーム"
   deck: "Deck"
   timeline: "时间线"
   explore: "发现"
@@ -1400,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "您想要干什么呢？(请输入数字):<1 → 上传文件 | 2 → 从URL上传文件 | 3 → 创建新文件夹 | 4 → 更改这个文件夹的名称 | 5 → 移动这个文件夹 | 6 → 删除这个文件夹>"
   deletion-alert: "抱歉！ 删除文件夹功能尚未实现。"
   folder-name: "文件夹名称"
-  root-rename-alert: "您目前在root模式; 它无法重命名，因为它不是文件夹。 导航到要重命名的文件夹，然后重试。"
-  root-move-alert: "您目前在root模式; 它无法移动，因为它不是文件夹。 导航到要移动的文件夹，然后重试。"
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "要上传的文件的URL"
   uploading: "已请求上传。 上传完成可能需要一段时间。"
 mobile/views/components/drive-file-chooser.vue:
