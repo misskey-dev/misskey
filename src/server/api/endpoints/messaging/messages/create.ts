@@ -45,6 +45,10 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'MessagingMessage',
+	},
+
 	errors: {
 		recipientIsYourself: {
 			message: 'You can not send a message to yourself.',

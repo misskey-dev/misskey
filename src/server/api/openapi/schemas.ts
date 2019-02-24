@@ -119,6 +119,39 @@ export const schemas = {
 		required: ['id', 'createdAt', 'title']
 	},
 
+	MessagingMessage: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'id',
+				description: 'The unique identifier for this MessagingMessage.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			},
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the MessagingMessage was created.'
+			},
+			text: {
+				type: 'string',
+				nullable: true
+			},
+			file: {
+				type: 'DriveFile',
+				nullable: true
+			},
+			recipientId: {
+				type: 'string',
+				format: 'id',
+			},
+			recipient: {
+				$ref: '#/components/schemas/User'
+			},
+		},
+		required: ['id', 'createdAt']
+	},
+
 	Note: {
 		type: 'object',
 		properties: {

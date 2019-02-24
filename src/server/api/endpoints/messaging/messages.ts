@@ -50,6 +50,13 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'MessagingMessage',
+		},
+	},
+
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',

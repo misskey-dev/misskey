@@ -20,7 +20,14 @@ export const meta = {
 			validator: $.optional.num.range(1, 100),
 			default: 10
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'MessagingMessage',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
