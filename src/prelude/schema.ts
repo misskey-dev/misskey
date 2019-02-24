@@ -28,6 +28,9 @@ export function convertOpenApiSchema(schema: Schema) {
 	if (!['string', 'number', 'boolean', 'array', 'object'].includes(x.type)) {
 		x['$ref'] = `#/components/schemas/${x.type}`;
 	}
+	if (x.type === 'array' && x.items) {
+		x.items = convertOpenApiSchema(x.items);
+	}
 	if (x.type === 'object' && x.properties) {
 		x.required = Object.entries(x.properties).filter(([k, v]: any) => !v.isOptional).map(([k, v]: any) => k);
 		for (const k of Object.keys(x.properties)) {
