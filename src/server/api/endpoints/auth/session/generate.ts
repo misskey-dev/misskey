@@ -21,6 +21,20 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'object',
+		properties: {
+			token: {
+				type: 'string',
+				description: 'セッションのトークン'
+			},
+			url: {
+				type: 'string',
+				description: 'セッションのURL'
+			},
+		}
+	},
+
 	errors: {
 		noSuchApp: {
 			message: 'No such app.',

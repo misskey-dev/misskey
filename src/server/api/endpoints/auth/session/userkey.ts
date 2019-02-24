@@ -29,6 +29,21 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'object',
+		properties: {
+			accessToken: {
+				type: 'string',
+				description: 'ユーザーのアクセストークン',
+			},
+
+			user: {
+				type: 'User',
+				description: '認証したユーザー'
+			},
+		}
+	},
+
 	errors: {
 		noSuchApp: {
 			message: 'No such app.',

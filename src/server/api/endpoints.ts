@@ -7,6 +7,7 @@ export type Param = {
 	validator: Context<any>;
 	transform?: any;
 	default?: any;
+	deprecated?: boolean;
 	desc?: { [key: string]: string };
 	ref?: string;
 };

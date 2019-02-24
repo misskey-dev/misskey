@@ -138,6 +138,7 @@ export const meta = {
 		mediaIds: {
 			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			transform: transformMany,
+			deprecated: true,
 			desc: {
 				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
 			}

@@ -64,6 +64,7 @@ export const meta = {
 		media: {
 			validator: $.optional.nullable.bool,
 			default: null as any,
+			deprecated: true,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}

@@ -105,6 +105,7 @@ export const meta = {
 		mediaOnly: {
 			validator: $.optional.bool,
 			default: false,
+			deprecated: true,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
