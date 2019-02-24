@@ -146,8 +146,8 @@ common:
   view-on-remote: "查看准确的信息"
   renoted-by: "由 {user} Renote"
   no-notes: "没有帖子"
-  turn-on-darkmode: "切换到暗色主题模式"
-  turn-off-darkmode: "亮色模式"
+  turn-on-darkmode: "切换暗色主题"
+  turn-off-darkmode: "切换亮色主题"
   error:
     title: "出现问题"
     retry: "重试"
