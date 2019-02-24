@@ -146,6 +146,8 @@ common:
   view-on-remote: "정확한 정보 보기"
   renoted-by: "{user}이(가) 리노트"
   no-notes: "글이 없습니다"
+  turn-on-darkmode: "闇に飲まれる"
+  turn-off-darkmode: "光あれ"
   error:
     title: "오류가 발생했습니다"
     retry: "다시 시도"
