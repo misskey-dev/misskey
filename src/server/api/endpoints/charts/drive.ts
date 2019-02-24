@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import driveChart from '../../../../services/chart/drive';
+import driveChart, { driveLogSchema } from '../../../../services/chart/drive';
+import { convertLog } from '../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -28,12 +29,7 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(driveLogSchema),
 };
 
 export default define(meta, async (ps) => {
