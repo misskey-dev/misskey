@@ -42,7 +42,7 @@ export default define(meta, async (ps, user) => {
 			$gt: new Date(Date.now() - day)
 		},
 		deletedAt: null,
-		visibility: { $in: ['public', 'home'] },
+		visibility: 'public',
 		'_user.host': null,
 		...(hideUserIds && hideUserIds.length > 0 ? { userId: { $nin: hideUserIds } } : {})
 	}, {
