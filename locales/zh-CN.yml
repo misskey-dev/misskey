@@ -146,6 +146,8 @@ common:
   view-on-remote: "查看准确的信息"
   renoted-by: "由 {user} Renote"
   no-notes: "没有帖子"
+  turn-on-darkmode: "闇に飲まれる"
+  turn-off-darkmode: "光あれ"
   error:
     title: "出现问题"
     retry: "重试"
