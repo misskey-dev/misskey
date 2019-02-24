@@ -96,10 +96,10 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		}
 
 		if (endpoint.meta.params) {
-			for (const kv of Object.entries(endpoint.meta.params)) {
-				if (kv[1].desc) (kv[1].validator as any).desc = kv[1].desc[lang];
-				if (kv[1].default) (kv[1].validator as any).default = kv[1].default;
-				porops[kv[0]] = kv[1].validator;
+			for (const [k, v] of Object.entries(endpoint.meta.params)) {
+				if (v.desc) (v.validator as any).desc = v.desc[lang];
+				if (v.default) (v.validator as any).default = v.default;
+				porops[k] = v.validator;
 			}
 		}
 
