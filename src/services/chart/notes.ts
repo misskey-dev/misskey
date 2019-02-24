@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import Chart, { Obj } from '.';
 import Note, { INote } from '../../models/note';
 import { isLocalUser } from '../../models/user';
-import { SchemaType } from '../../prelude/schema';
+import { SchemaType } from '../../misc/schema';
 
 const logSchema = {
 	total: {

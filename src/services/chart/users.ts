@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
 import User, { IUser, isLocalUser } from '../../models/user';
-import { SchemaType } from '../../prelude/schema';
+import { SchemaType } from '../../misc/schema';
 
 const logSchema = {
 	/**

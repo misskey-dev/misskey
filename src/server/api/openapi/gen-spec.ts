@@ -4,7 +4,7 @@ import config from '../../../config';
 import { errors as basicErrors } from './errors';
 import { schemas } from './schemas';
 import { description } from './description';
-import { convertOpenApiSchema } from '../../../prelude/schema';
+import { convertOpenApiSchema } from '../../../misc/schema';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
 	const spec = {
