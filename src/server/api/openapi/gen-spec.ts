@@ -4,6 +4,7 @@ import config from '../../../config';
 import { errors as basicErrors } from './errors';
 import { schemas } from './schemas';
 import { description } from './description';
+import { convertOpenApiSchema } from '../../../prelude/schema';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
 	const spec = {
@@ -104,33 +105,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 
 		const required = endpoint.meta.params ? Object.entries(endpoint.meta.params).filter(([k, v]) => !v.validator.isOptional).map(([k, v]) => k) : [];
 
-		const resSchema = endpoint.meta.res ? renderType(endpoint.meta.res) : {};
-
-		function renderType(x: any) {
-			const res = {} as any;
-
-			if (['User', 'Note', 'DriveFile'].includes(x.type)) {
-				res['$ref'] = `#/components/schemas/${x.type}`;
-			} else if (x.type === 'object') {
-				res['type'] = 'object';
-				if (x.props) {
-					const props = {} as any;
-					for (const kv of Object.entries(x.props)) {
-						props[kv[0]] = renderType(kv[1]);
-					}
-					res['properties'] = props;
-				}
-			} else if (x.type === 'array') {
-				res['type'] = 'array';
-				if (x.items) {
-					res['items'] = renderType(x.items);
-				}
-			} else {
-				res['type'] = x.type;
-			}
-
-			return res;
-		}
+		const resSchema = endpoint.meta.res ? convertOpenApiSchema(endpoint.meta.res) : {};
 
 		const info = {
 			operationId: endpoint.name,
