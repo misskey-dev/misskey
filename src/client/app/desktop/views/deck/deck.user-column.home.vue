@@ -212,13 +212,6 @@ export default Vue.extend({
 				this.chart.render();
 			});
 		},
-
-		togglePhotos(expanded: boolean) {
-			this.$store.commit('device/set', { key: 'expandUsersPhotos', value: expanded });
-		},
-		toggleActivity(expanded: boolean) {
-			this.$store.commit('device/set', { key: 'expandUsersActivity', value: expanded });
-		},
 	}
 });
 </script>
