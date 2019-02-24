@@ -33,7 +33,7 @@
 					<li><a @click="search"><i><fa icon="search" fixed-width/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog" fixed-width/></i>{{ $t('settings') }}<i><fa icon="angle-right"/></i></router-link></li>
 					<li v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)"><a href="/admin"><i><fa icon="terminal" fixed-width/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
-					<li @click="dark"><p><template v-if="$store.state.device.darkmode"><i><fa icon="moon" fixed-width/></i></template><template v-else><i><fa :icon="['far', 'moon']"/></i></template><span>{{ $t('darkmode') }}</span></p></li>
+					<li @click="dark"><p><template><i><fa :icon="$store.state.device.darkmode ? faSun : faMoon" fixed-width/></i></template><span>{{ $store.state.device.darkmode ? $t('@.turn-off-darkmode') : $t('@.turn-on-darkmode') }}</span></p></li>
 				</ul>
 			</div>
 			<div class="announcements" v-if="announcements && announcements.length > 0">
@@ -53,6 +53,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { lang } from '../../../config';
 import { faNewspaper, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/ui.nav.vue'),
@@ -65,7 +66,7 @@ export default Vue.extend({
 			aboutUrl: `/docs/${lang}/about`,
 			announcements: [],
 			searching: false,
-			faNewspaper, faHashtag
+			faNewspaper, faHashtag, faMoon, faSun
 		};
 	},
 

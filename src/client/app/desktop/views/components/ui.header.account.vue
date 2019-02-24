@@ -68,9 +68,8 @@
 				</li>
 				<li @click="dark">
 					<p>
-						<span>{{ $t('dark') }}</span>
-						<template v-if="$store.state.device.darkmode"><i><fa icon="moon"/></i></template>
-						<template v-else><i><fa :icon="['far', 'moon']"/></i></template>
+						<span>{{ $store.state.device.darkmode ? $t('@.turn-off-darkmode') : $t('@.turn-on-darkmode') }}</span>
+						<template><i><fa :icon="$store.state.device.darkmode ? faSun : faMoon"/></i></template>
 					</p>
 				</li>
 			</ul>
@@ -97,13 +96,14 @@ import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 import { faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
+import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.account.vue'),
 	data() {
 		return {
 			isOpen: false,
-			faHome, faColumns
+			faHome, faColumns, faMoon, faSun
 		};
 	},
 	computed: {
