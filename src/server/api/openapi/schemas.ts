@@ -33,7 +33,8 @@ export const schemas = {
 			id: {
 				type: 'string',
 				format: 'id',
-				description: 'The unique identifier for this User.'
+				description: 'The unique identifier for this User.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			username: {
 				type: 'string',
@@ -102,7 +103,8 @@ export const schemas = {
 			id: {
 				type: 'string',
 				format: 'id',
-				description: 'The unique identifier for this Note.'
+				description: 'The unique identifier for this Note.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -125,10 +127,12 @@ export const schemas = {
 			replyId: {
 				type: 'string',
 				format: 'id',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			renoteId: {
 				type: 'string',
 				format: 'id',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			reply: {
 				$ref: '#/components/schemas/Note'
@@ -152,7 +156,8 @@ export const schemas = {
 			id: {
 				type: 'string',
 				format: 'id',
-				description: 'The unique identifier for this notification.'
+				description: 'The unique identifier for this notification.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -174,7 +179,8 @@ export const schemas = {
 			id: {
 				type: 'string',
 				format: 'id',
-				description: 'The unique identifier for this Drive file.'
+				description: 'The unique identifier for this Drive file.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -207,6 +213,7 @@ export const schemas = {
 				format: 'id',
 				nullable: true,
 				description: 'The parent folder ID of this Drive file.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			isSensitive: {
 				type: 'boolean',
