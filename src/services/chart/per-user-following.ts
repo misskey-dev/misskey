@@ -2,55 +2,89 @@ import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
 import Following from '../../models/following';
 import { IUser, isLocalUser } from '../../models/user';
+import { SchemaType } from '../../misc/schema';
 
-/**
- * ユーザーごとのフォローに関するチャート
- */
-type PerUserFollowingLog = {
-	local: {
-		/**
-		 * フォローしている
-		 */
-		followings: {
+export const logSchema = {
+	/**
+	 * フォローしている
+	 */
+	followings: {
+		type: 'object' as 'object',
+		properties: {
 			/**
-			 * 合計
+			 * フォローしている合計
 			 */
-			total: number;
+			total: {
+				type: 'number',
+				description: 'フォローしている合計',
+			},
 
 			/**
 			 * フォローした数
 			 */
-			inc: number;
+			inc: {
+				type: 'number',
+				description: 'フォローした数',
+			},
 
 			/**
 			 * フォロー解除した数
 			 */
-			dec: number;
-		};
+			dec: {
+				type: 'number',
+				description: 'フォロー解除した数',
+			},
+		}
+	},
 
-		/**
-		 * フォローされている
-		 */
-		followers: {
+	/**
+	 * フォローされている
+	 */
+	followers: {
+		type: 'object' as 'object',
+		properties: {
 			/**
-			 * 合計
+			 * フォローされている合計
 			 */
-			total: number;
+			total: {
+				type: 'number',
+				description: 'フォローされている合計',
+			},
 
 			/**
 			 * フォローされた数
 			 */
-			inc: number;
+			inc: {
+				type: 'number',
+				description: 'フォローされた数',
+			},
 
 			/**
 			 * フォロー解除された数
 			 */
-			dec: number;
-		};
-	};
-
-	remote: PerUserFollowingLog['local'];
+			dec: {
+				type: 'number',
+				description: 'フォロー解除された数',
+			},
+		}
+	},
 };
+
+export const perUserFollowingLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		local: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+		remote: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+	}
+};
+
+type PerUserFollowingLog = SchemaType<typeof perUserFollowingLogSchema>;
 
 class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	constructor() {
