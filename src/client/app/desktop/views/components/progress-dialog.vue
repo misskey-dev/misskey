@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" :is-modal="false" :can-close="false" width="500px" @closed="destroyDom">
-	<span slot="header">{{ title }}<mk-ellipsis/></span>
+	<template #header>{{ title }}<mk-ellipsis/></template>
 	<div :class="$style.body">
 		<p :class="$style.init" v-if="isNaN(value)">{{ $t('waiting') }}<mk-ellipsis/></p>
 		<p :class="$style.percentage" v-if="!isNaN(value)">{{ Math.floor((value / max) * 100) }}</p>

@@ -15,11 +15,11 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const _token = ps.token.replace(/\s/g, '');
 
 	if (user.twoFactorTempSecret == null) {
-		return rej('二段階認証の設定が開始されていません');
+		throw new Error('二段階認証の設定が開始されていません');
 	}
 
 	const verified = (speakeasy as any).totp.verify({
@@ -29,7 +29,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (!verified) {
-		return rej('not verified');
+		throw new Error('not verified');
 	}
 
 	await User.update(user._id, {
@@ -39,5 +39,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

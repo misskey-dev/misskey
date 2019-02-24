@@ -3,6 +3,8 @@ import define from '../../../define';
 import Instance from '../../../../../models/instance';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -21,11 +23,11 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const instance = await Instance.findOne({ host: ps.host });
 
 	if (instance == null) {
-		return rej('instance not found');
+		throw new Error('instance not found');
 	}
 
 	Instance.update({ host: ps.host }, {
@@ -35,5 +37,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	});
 
-	res();
-}));
+	return;
+});

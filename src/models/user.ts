@@ -15,6 +15,10 @@ import Emoji from './emoji';
 
 const User = db.get<IUser>('users');
 
+User.createIndex('createdAt');
+User.createIndex('updatedAt');
+User.createIndex('followersCount');
+User.createIndex('tags');
 User.createIndex('username');
 User.createIndex('usernameLower');
 User.createIndex('host');
@@ -50,6 +54,8 @@ type IUserBase = {
 	pinnedNoteIds: mongo.ObjectID[];
 	emojis?: string[];
 	tags?: string[];
+
+	isDeleted: boolean;
 
 	/**
 	 * 凍結されているか否か
@@ -166,7 +172,7 @@ export const isRemoteUser = (user: any): user is IRemoteUser =>
 	!isLocalUser(user);
 
 //#region Validators
-export function validateUsername(username: string, remote?: boolean): boolean {
+export function validateUsername(username: string, remote = false): boolean {
 	return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
 }
 
@@ -344,7 +350,7 @@ export const pack = (
 	}
 
 	if (_user.avatarUrl == null) {
-		_user.avatarUrl = `${config.drive_url}/default-avatar.jpg`;
+		_user.avatarUrl = `${config.driveUrl}/default-avatar.jpg`;
 	}
 
 	if (!meId || !meId.equals(_user.id) || !opts.detail) {

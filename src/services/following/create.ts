@@ -15,6 +15,7 @@ import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
 import Logger from '../../misc/logger';
 import FollowRequest from '../../models/follow-request';
+import { IdentifiableError } from '../../misc/identifiable-error';
 
 const logger = new Logger('following/create');
 
@@ -46,10 +47,18 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 		}
 	});
 
-	await FollowRequest.remove({
+	const removed = await FollowRequest.remove({
 		followeeId: followee._id,
 		followerId: follower._id
 	});
+
+	if (removed.deletedCount === 1) {
+		await User.update({ _id: followee._id }, {
+			$inc: {
+				pendingReceivedFollowRequestsCount: -1
+			}
+		});
+	}
 
 	if (alreadyFollowed) return;
 
@@ -134,8 +143,8 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		});
 	} else {
 		// それ以外は単純に例外
-		if (blocking != null) throw new Error('blocking');
-		if (blocked != null) throw new Error('blocked');
+		if (blocking != null) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
+		if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 	}
 
 	// フォロー対象が鍵アカウントである or
@@ -145,8 +154,17 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (isLocalUser(follower) && isRemoteUser(followee))) {
 		let autoAccept = false;
 
+		// 鍵アカウントであっても、既にフォローされていた場合はスルー
+		const following = await Following.findOne({
+			followerId: follower._id,
+			followeeId: followee._id,
+		});
+		if (following) {
+			autoAccept = true;
+		}
+
 		// フォローしているユーザーは自動承認オプション
-		if (isLocalUser(followee) && followee.autoAcceptFollowed) {
+		if (!autoAccept && (isLocalUser(followee) && followee.autoAcceptFollowed)) {
 			const followed = await Following.findOne({
 				followerId: followee._id,
 				followeeId: follower._id

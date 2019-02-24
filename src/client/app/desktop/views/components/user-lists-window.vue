@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="450px" height="500px" @closed="destroyDom">
-	<span slot="header"><fa icon="list"/> {{ $t('title') }}</span>
+	<template #header><fa icon="list"/> {{ $t('title') }}</template>
 
 	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
 		<button class="ui" @click="add">{{ $t('create-list') }}</button>

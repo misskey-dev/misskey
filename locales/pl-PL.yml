@@ -9,10 +9,10 @@ common:
   intro:
     title: "Czym jest Misskey?"
     about: "Misskeyはオープンソースの<b>分散型マイクロブログSNS</b>です。リッチで高度にカスタマイズできるUI、投稿へのリアクション、ファイルを一元管理できるドライブなど、先進的な機能を揃えています。また、Fediverseと呼ばれるネットワークに接続できるため、他のSNSともやり取りできます。例えば、あなたが何か投稿すると、その投稿はMisskeyだけでなく他のSNSにも伝わります。ちょうどある惑星から他の惑星に電波を発信している様子をイメージしてください。"
-    features: "特徴"
+    features: "Funkcje"
     rich-contents: "Wpis"
     rich-contents-desc: "Po prostu opublikuj swój pomysł, gorące tematy i wszystko, co chcesz udostępnić. Możesz ozdobić swoje słowa, dołączyć swoje ulubione zdjęcia, wysłać pliki, w tym filmy i utworzyć ankietę - to są rzeczy, które możesz zrobić w Misskey!"
-    reaction: "Reakcje"
+    reaction: "Reakcja"
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
     ui: "Interfejs"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
@@ -22,12 +22,14 @@ common:
   adblock:
     detected: "Spróbuj wyłączyć blokadę reklam."
     warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
-  application-authorization: "アプリの連携"
+  application-authorization: "Współpraca aplikacji"
   close: "Zamknij"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
   load-more: "Załaduj więcej"
   enter-password: "Wprowadź Hasło"
   2fa: "Uwierzytelnienie dwuetapowe"
+  customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -56,6 +58,15 @@ common:
   trash: "Kosz"
   drive: "Dysk"
   messaging: "Rozmowy"
+  home: "ホーム"
+  deck: "デッキ"
+  timeline: "タイムライン"
+  explore: "Znajdź"
+  following: "フォロー中"
+  followers: "フォロワー"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
+    explore: "ユーザーを探索する"
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -134,6 +145,7 @@ common:
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "Dla dopełnienia, zobacz to zdalnie."
   renoted-by: "{user} udostępnił(a)"
+  no-notes: "投稿がありません"
   error:
     title: "Coś poszło nie tak"
     retry: "Ponów próbę"
@@ -197,6 +209,17 @@ auth/views/index.vue:
   please-go-back: "Wróć do aplikacji."
   error: "Sesja nie istnieje."
   sign-in: "Proszę zalogować się."
+common/views/pages/explore.vue:
+  verified-users: "公式アカウント"
+  popular-users: "人気のユーザー"
+  recently-updated-users: "最近投稿したユーザー"
+  recently-registered-users: "新規ユーザー"
+  popular-tags: "人気のタグ"
+  federated: "連合"
+  explore: "{host}を探索"
+  users-info: "現在{users}ユーザーが登録されています"
+common/views/components/user-list.vue:
+  no-users: "ユーザーがいません"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Oczekiwanie na {}"
@@ -516,6 +539,10 @@ common/views/components/profile-editor.vue:
     mute-list: "ミュート"
     blocking-list: "ブロック"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
+  enter-password: "パスワードを入力してください"
+  danger-zone: "危険な設定"
+  delete-account: "アカウントを削除"
+  account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
 common/views/components/user-list-editor.vue:
   users: "Użytkownicy"
   rename: "Zmień nazwę listy"
@@ -684,12 +711,6 @@ desktop/views/components/following-window.vue:
   following: "Śledzeni przez {}"
 desktop/views/components/following.vue:
   empty: "Nikt Cię nie śledzi."
-desktop/views/components/friends-maker.vue:
-  title: "Zacznij śledzić ludzi takich jak Ty:"
-  empty: "Nie znaleziono podobnych użytkowników."
-  fetching: "Ładowanie…"
-  refresh: "Więcej"
-  close: "Zamknij"
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
@@ -798,13 +819,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Np: https://www.google.com/?#q={{query}}"
   auto-popout: "Automatycznie pojawiające się okna"
   auto-popout-desc: "ウィンドウが開かれるとき、ポップアウト(ブラウザ外に切り離す)可能なら自動でポップアウトします。この設定はブラウザに記憶されます。"
-  deck-nav: "デッキ内ナビゲーション"
-  deck-nav-desc: "デッキを使用しているとき、ナビゲーションが発生する際にページ遷移を行わずに一時的なカラムで受けるようにします。"
   keep-cw: "CW保持"
   keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
-  deck-default: "Użyj Talię jako domyślne UI"
   display: "Wygląd i wyświetlanie"
-  customize: "Dostosuj stronę główną"
   wallpaper: "Tapeta"
   choose-wallpaper: "Wybierz tło"
   delete-wallpaper: "Usuń tło"
@@ -961,14 +978,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Ulubione"
   lists: "Listy"
   follow-requests: "Prośby o śledzenie"
-  customize: "Dostosuj stronę główną"
   admin: "Admin"
   settings: "Ustawienia"
   signout: "Wyloguj się"
   dark: "Sprowadź ciemność"
 desktop/views/components/ui.header.nav.vue:
-  home: "Strona główna"
-  deck: "Talia"
   game: "Gra"
 desktop/views/components/ui.header.notifications.vue:
   title: "Powiadomienia"
@@ -1091,6 +1105,7 @@ admin/views/instance.vue:
   smtp-secure-info: "STARTTLS使用時はオフにします。"
   smtp-host: "SMTPホスト"
   smtp-port: "SMTPポート"
+  smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTPユーザー"
   smtp-pass: "SMTPパスワード"
   serviceworker-config: "ServiceWorker"
@@ -1186,6 +1201,7 @@ admin/views/users.vue:
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"
       verified: "公式アカウント"
+      silenced: "サイレンス済み"
       suspended: "凍結済み"
     origin:
       title: "Źródło"
@@ -1305,8 +1321,6 @@ desktop/views/pages/welcome.vue:
   info: "Informacje"
 desktop/views/pages/drive.vue:
   title: "Dysk Misskey"
-desktop/views/pages/home-customize.vue:
-  title: "Dostosuj stronę główną"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -1338,24 +1352,22 @@ desktop/views/pages/user/user.photos.vue:
   title: "Zdjęcia"
   loading: "Ładowanie"
   no-photos: "Brak zdjęć"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Śledzi Cię"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Wpisy"
   following: "Śledzeni"
   followers: "Śledzący"
   is-bot: "To konto jest botem"
+  no-description: "自己紹介はありません"
   years-old: "{age} lat"
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "フォローされています"
 desktop/views/pages/user/user.timeline.vue:
   default: "Wpisy"
   with-replies: "Wpisy i odpowiedzi"
   with-media: "Multimedia"
   my-posts: "Moje wpisy"
-  empty: "Ten użytkownik nie umieścił jeszcze niczego."
 desktop/views/widgets/messaging.vue:
   title: "Wiadomości"
 desktop/views/widgets/notifications.vue:
@@ -1389,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "Co chcesz zrobić? (wprowadź odpowiednią cyfrę): <1 → Wysłać plik | 2 → Wysłać plik z adresu URL | 3 → Utworzyć katalog | 4 → Zmienić nazwę tego katalogu | 5 → Przenieść ten katalog | 6 → Usunąć ten katalog>"
   deletion-alert: "Przepraszamy. Usuwanie katalogów nie zostało jeszcze zaimplementowane."
   folder-name: "Nazwa katalogu"
-  root-rename-alert: "Nie można zmienić nazwy katalogu głównego. Przejdź do katalogu, którego nazwę chcesz zmienić."
-  root-move-alert: "Nie można przenieść tego katalogu, ponieważ jest on katalogiem głównym. Przejdź do katalogu, który chcesz przenieść."
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "Adres URL pliku, który chcesz wysłać"
   uploading: "Rozpoczęto wysyłanie. Może to trochę potrwać."
 mobile/views/components/drive-file-chooser.vue:
@@ -1417,12 +1428,6 @@ common/views/components/follow-button.vue:
   request-pending: "フォロー許可待ち"
   follow-processing: "Przetwarzanie"
   follow-request: "Poproś o śledzenie"
-mobile/views/components/friends-maker.vue:
-  title: "Zacznij śledzić ludzi takich jak Ty"
-  empty: "Nie znaleziono podobnych użytkowników."
-  fetching: "Ładowanie…"
-  refresh: "Więcej"
-  close: "Zamknij"
 mobile/views/components/note.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
@@ -1459,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "ten wpis został usunięty"
   media-count: "{}zawartości multimedialnej"
   poll: "Ankieta"
-mobile/views/components/timeline.vue:
-  empty: "Brak wpisów"
 mobile/views/components/ui.header.vue:
   welcome-back: "Witaj ponownie, "
   adjective: "さん"
@@ -1477,12 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "Ustawienia"
   admin: "Admin"
   about: "O Misskey"
-mobile/views/components/user-timeline.vue:
-  no-notes: "Wygląda na to, że ten użytkownik nie opublikował jeszcze niczego"
-  no-notes-with-media: "Brak wpisów z zawartością multimedialną"
-mobile/views/components/users-list.vue:
-  all: "Wszyscy"
-  known: "Znasz"
 mobile/views/pages/favorites.vue:
   title: "Ulubione"
 mobile/views/pages/user-lists.vue:
@@ -1590,15 +1587,9 @@ mobile/views/pages/user/home.vue:
   activity: "Aktywność"
   keywords: "Słowa kluczowe"
   domains: "Domeny"
-  frequently-replied-users: "Często aktywni użytkownicy"
+  frequently-replied-users: "よく話すユーザー"
   followers-you-know: "Śledzący których znasz"
   last-used-at: "Ostatnio aktywny"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "Brak użytkowników"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "Brak użytkowników"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "Brak wpisów"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Brak zdjęć"
 deck:
@@ -1621,11 +1612,14 @@ deck:
   rename: "Zmień nazwę"
   stack-left: "Przypnij do lewej"
   pop-right: "右に出す"
+  disabled-timeline:
+    title: "無効化されたタイムライン"
+    description: "サーバーの運営者により、このタイムラインは使用できない状態に設定されています。"
 deck/deck.tl-column.vue:
   is-media-only: "Tylko wpisy z zawartością multimedialną"
-  is-media-view: "Widok multimediów"
   edit: "Opcje"
 deck/deck.user-column.vue:
+  follows-you: "フォローされています"
   posts: "Wpisy"
   following: "Śledzeni"
   followers: "Śledzący"

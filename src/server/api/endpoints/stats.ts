@@ -10,11 +10,13 @@ export const meta = {
 		'en-US': 'Get the instance\'s statistics'
 	},
 
+	tags: ['meta'],
+
 	params: {
 	}
 };
 
-export default define(meta, () => new Promise(async (res, rej) => {
+export default define(meta, async () => {
 	const instance = await fetchMeta();
 
 	const stats: any = instance.stats;
@@ -26,5 +28,5 @@ export default define(meta, () => new Promise(async (res, rej) => {
 	const federationStats = await federationChart.getChart('hour', 1);
 	stats.instances = federationStats.instance.total[0];
 
-	res(stats);
-}));
+	return stats;
+});

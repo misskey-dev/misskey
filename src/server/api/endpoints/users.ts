@@ -1,23 +1,29 @@
 import $ from 'cafy';
 import User, { pack } from '../../../models/user';
 import define from '../define';
+import { fallback } from '../../../prelude/symbol';
+import { getHideUserIds } from '../common/get-hide-users';
+
+const nonnull = { $ne: null as any };
 
 export const meta = {
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		sort: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'+follower',
 				'-follower',
 				'+createdAt',
@@ -27,8 +33,20 @@ export const meta = {
 			]),
 		},
 
+		state: {
+			validator: $.optional.str.or([
+				'all',
+				'admin',
+				'moderator',
+				'adminOrModerator',
+				'verified',
+				'alive'
+			]),
+			default: 'all'
+		},
+
 		origin: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'combined',
 				'local',
 				'remote',
@@ -38,51 +56,53 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let _sort;
-	if (ps.sort) {
-		if (ps.sort == '+follower') {
-			_sort = {
-				followersCount: -1
-			};
-		} else if (ps.sort == '-follower') {
-			_sort = {
-				followersCount: 1
-			};
-		} else if (ps.sort == '+createdAt') {
-			_sort = {
-				createdAt: -1
-			};
-		} else if (ps.sort == '+updatedAt') {
-			_sort = {
-				updatedAt: -1
-			};
-		} else if (ps.sort == '-createdAt') {
-			_sort = {
-				createdAt: 1
-			};
-		} else if (ps.sort == '-updatedAt') {
-			_sort = {
-				updatedAt: 1
-			};
-		}
-	} else {
-		_sort = {
-			_id: -1
-		};
-	}
+const state: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
+	'admin': { isAdmin: true },
+	'moderator': { isModerator: true },
+	'adminOrModerator': {
+		$or: [
+			{ isAdmin: true },
+			{ isModerator: true }
+		]
+	},
+	'verified': { isVerified: true },
+	'alive': {
+		updatedAt: { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }
+	},
+	[fallback]: {}
+};
 
-	const q =
-		ps.origin == 'local' ? { host: null } :
-		ps.origin == 'remote' ? { host: { $ne: null } } :
-		{};
+const origin: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
+	'local': { host: null },
+	'remote': { host: nonnull },
+	[fallback]: {}
+};
+
+const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
+	'+follower': { followersCount: -1 },
+	'-follower': { followersCount: 1 },
+	'+createdAt': { createdAt: -1 },
+	'-createdAt': { createdAt: 1 },
+	'+updatedAt': { updatedAt: -1 },
+	'-updatedAt': { updatedAt: 1 },
+	[fallback]: { _id: -1 }
+};
+
+export default define(meta, async (ps, me) => {
+	const hideUserIds = await getHideUserIds(me);
 
 	const users = await User
-		.find(q, {
+		.find({
+			$and: [
+				state[ps.state] || state[fallback],
+				origin[ps.origin] || origin[fallback]
+			],
+			...(hideUserIds && hideUserIds.length > 0 ? { _id: { $nin: hideUserIds } } : {})
+		}, {
 			limit: ps.limit,
-			sort: _sort,
+			sort: sort[ps.sort] || sort[fallback],
 			skip: ps.offset
 		});
 
-	res(await Promise.all(users.map(user => pack(user, me, { detail: true }))));
-}));
+	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
+});

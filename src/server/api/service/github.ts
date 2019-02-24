@@ -171,7 +171,7 @@ router.get('/gh/cb', async ctx => {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',
 					'Authorization': `bearer ${accessToken}`,
-					'User-Agent': config.user_agent
+					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
 				if (err)
@@ -234,7 +234,7 @@ router.get('/gh/cb', async ctx => {
 				headers: {
 					'Accept': 'application/vnd.github.v3+json',
 					'Authorization': `bearer ${accessToken}`,
-					'User-Agent': config.user_agent
+					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
 				if (err)

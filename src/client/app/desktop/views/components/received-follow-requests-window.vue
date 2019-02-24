@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" is-modal width="450px" height="500px" @closed="destroyDom">
-	<span slot="header"><fa :icon="['far', 'envelope']"/> {{ $t('title') }}</span>
+	<template #header><fa :icon="['far', 'envelope']"/> {{ $t('title') }}</template>
 
 	<div class="slpqaxdoxhvglersgjukmvizkqbmbokc">
 		<div v-for="req in requests">

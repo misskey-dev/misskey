@@ -4,6 +4,7 @@ import DriveFile from '../../../../../models/drive-file';
 import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -12,6 +13,8 @@ export const meta = {
 		'ja-JP': 'ドライブのファイルを削除します。',
 		'en-US': 'Delete a file of drive.'
 	},
+
+	tags: ['drive'],
 
 	requireCredential: true,
 
@@ -26,10 +29,24 @@ export const meta = {
 				'en-US': 'Target file ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchFile: {
+			message: 'No such file.',
+			code: 'NO_SUCH_FILE',
+			id: '908939ec-e52b-4458-b395-1025195cea58'
+		},
+
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '5eb8d909-2540-4970-90b8-dd6f86088121'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
@@ -37,11 +54,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		});
 
 	if (file === null) {
-		return rej('file-not-found');
+		throw new ApiError(meta.errors.noSuchFile);
 	}
 
 	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
-		return rej('access denied');
+		throw new ApiError(meta.errors.accessDenied);
 	}
 
 	// Delete
@@ -50,5 +67,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// Publish fileDeleted event
 	publishDriveStream(user._id, 'fileDeleted', file._id);
 
-	res();
-}));
+	return;
+});

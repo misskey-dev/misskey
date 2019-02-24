@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーのパスワードをリセットします。',
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -25,17 +27,17 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const user = await User.findOne({
 		_id: ps.userId
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	if (user.isAdmin) {
-		return rej('cannot reset password of admin');
+		throw new Error('cannot reset password of admin');
 	}
 
 	const passwd = rndstr('a-zA-Z0-9', 8);
@@ -46,12 +48,12 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	await User.findOneAndUpdate({
 		_id: user._id
 	}, {
-			$set: {
-				password: hash
-			}
-		});
-
-	res({
-		password: passwd
+		$set: {
+			password: hash
+		}
 	});
-}));
+
+	return {
+		password: passwd
+	};
+});

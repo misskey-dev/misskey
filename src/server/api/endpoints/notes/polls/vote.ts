@@ -9,12 +9,16 @@ import notify from '../../../../../services/create-notification';
 import define from '../../../define';
 import createNote from '../../../../../services/note/create';
 import User from '../../../../../models/user';
+import { ApiError } from '../../../error';
+import { getNote } from '../../../common/getters';
 
 export const meta = {
 	desc: {
 		'ja-JP': '指定した投稿のアンケートに投票します。',
 		'en-US': 'Vote poll of a note.'
 	},
+
+	tags: ['notes'],
 
 	requireCredential: true,
 
@@ -33,24 +37,49 @@ export const meta = {
 		choice: {
 			validator: $.num
 		},
+	},
+
+	errors: {
+		noSuchNote: {
+			message: 'No such note.',
+			code: 'NO_SUCH_NOTE',
+			id: 'ecafbd2e-c283-4d6d-aecb-1a0a33b75396'
+		},
+
+		noPoll: {
+			message: 'The note does not attach a poll.',
+			code: 'NO_POLL',
+			id: '5f979967-52d9-4314-a911-1c673727f92f'
+		},
+
+		invalidChoice: {
+			message: 'Choice ID is invalid.',
+			code: 'INVALID_CHOICE',
+			id: 'e0cc9a04-f2e8-41e4-a5f1-4127293260cc'
+		},
+
+		alreadyVoted: {
+			message: 'You have already voted.',
+			code: 'ALREADY_VOTED',
+			id: '0963fc77-efac-419b-9424-b391608dc6d8'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get votee
-	const note = await Note.findOne({
-		_id: ps.noteId
+	const note = await getNote(ps.noteId).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
 	});
 
-	if (note === null) {
-		return rej('note not found');
-	}
-
 	if (note.poll == null) {
-		return rej('poll not found');
+		throw new ApiError(meta.errors.noPoll);
 	}
 
-	if (!note.poll.choices.some(x => x.id == ps.choice)) return rej('invalid choice param');
+	if (!note.poll.choices.some(x => x.id == ps.choice)) {
+		throw new ApiError(meta.errors.invalidChoice);
+	}
 
 	// if already voted
 	const exist = await Vote.findOne({
@@ -59,7 +88,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (exist !== null) {
-		return rej('already voted');
+		throw new ApiError(meta.errors.alreadyVoted);
 	}
 
 	// Create vote
@@ -69,9 +98,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		userId: user._id,
 		choice: ps.choice
 	});
-
-	// Send response
-	res();
 
 	const inc: any = {};
 	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == ps.choice)}.votes`] = 1;
@@ -132,4 +158,6 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			visibleUsers: [ pollOwner ],
 		});
 	}
-}));
+
+	return;
+});

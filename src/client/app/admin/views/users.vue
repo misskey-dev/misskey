@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<div slot="title"><fa :icon="faTerminal"/> {{ $t('operation') }}</div>
+		<template #title><fa :icon="faTerminal"/> {{ $t('operation') }}</template>
 		<section class="fit-top">
 			<ui-input class="target" v-model="target" type="text" @enter="showUser">
 				<span>{{ $t('username-or-userid') }}</span>
@@ -32,26 +32,27 @@
 	</ui-card>
 
 	<ui-card>
-		<div slot="title"><fa :icon="faUsers"/> {{ $t('users.title') }}</div>
+		<template #title><fa :icon="faUsers"/> {{ $t('users.title') }}</template>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
 				<ui-select v-model="sort">
-					<span slot="label">{{ $t('users.sort.title') }}</span>
+					<template #label>{{ $t('users.sort.title') }}</template>
 					<option value="-createdAt">{{ $t('users.sort.createdAtAsc') }}</option>
 					<option value="+createdAt">{{ $t('users.sort.createdAtDesc') }}</option>
 					<option value="-updatedAt">{{ $t('users.sort.updatedAtAsc') }}</option>
 					<option value="+updatedAt">{{ $t('users.sort.updatedAtDesc') }}</option>
 				</ui-select>
 				<ui-select v-model="state">
-					<span slot="label">{{ $t('users.state.title') }}</span>
+					<template #label>{{ $t('users.state.title') }}</template>
 					<option value="all">{{ $t('users.state.all') }}</option>
 					<option value="admin">{{ $t('users.state.admin') }}</option>
 					<option value="moderator">{{ $t('users.state.moderator') }}</option>
 					<option value="verified">{{ $t('users.state.verified') }}</option>
+					<option value="silenced">{{ $t('users.state.silenced') }}</option>
 					<option value="suspended">{{ $t('users.state.suspended') }}</option>
 				</ui-select>
 				<ui-select v-model="origin">
-					<span slot="label">{{ $t('users.origin.title') }}</span>
+					<template #label>{{ $t('users.origin.title') }}</template>
 					<option value="combined">{{ $t('users.origin.combined') }}</option>
 					<option value="local">{{ $t('users.origin.local') }}</option>
 					<option value="remote">{{ $t('users.origin.remote') }}</option>
@@ -89,7 +90,7 @@ export default Vue.extend({
 			unsuspending: false,
 			sort: '+createdAt',
 			state: 'all',
-			origin: 'combined',
+			origin: 'local',
 			limit: 10,
 			offset: 0,
 			users: [],
@@ -129,16 +130,25 @@ export default Vue.extend({
 				const usernamePromise = this.$root.api('users/show', parseAcct(this.target));
 				const idPromise = this.$root.api('users/show', { userId: this.target });
 
-				usernamePromise.then(res);
-				idPromise.then(res);
-
-				idPromise.catch(e => {
-					if (e == 'user not found') {
+				let _notFound = false;
+				const notFound = () => {
+					if (_notFound) {
 						this.$root.dialog({
 							type: 'error',
 							text: this.$t('user-not-found')
 						});
+					} else {
+						_notFound = true;
 					}
+				};
+
+				usernamePromise.then(res).catch(e => {
+					if (e == 'user not found') {
+						notFound();
+					}
+				});
+				idPromise.then(res).catch(e => {
+					notFound();
 				});
 			});
 		},
@@ -329,7 +339,7 @@ export default Vue.extend({
 			});
 
 			return !confirm.canceled;
-		}
+		},
 
 		fetchUsers() {
 			this.$root.api('admin/show-users', {

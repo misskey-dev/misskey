@@ -2,45 +2,73 @@ import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
 import DriveFile, { IDriveFile } from '../../models/drive-file';
 import { isLocalUser } from '../../models/user';
+import { SchemaType } from '../../prelude/schema';
 
-/**
- * ドライブに関するチャート
- */
-type DriveLog = {
-	local: {
-		/**
-		 * 集計期間時点での、全ドライブファイル数
-		 */
-		totalCount: number;
+const logSchema = {
+	/**
+	 * 集計期間時点での、全ドライブファイル数
+	 */
+	totalCount: {
+		type: 'number' as 'number',
+		description: '集計期間時点での、全ドライブファイル数'
+	},
 
-		/**
-		 * 集計期間時点での、全ドライブファイルの合計サイズ
-		 */
-		totalSize: number;
+	/**
+	 * 集計期間時点での、全ドライブファイルの合計サイズ
+	 */
+	totalSize: {
+		type: 'number' as 'number',
+		description: '集計期間時点での、全ドライブファイルの合計サイズ'
+	},
 
-		/**
-		 * 増加したドライブファイル数
-		 */
-		incCount: number;
+	/**
+	 * 増加したドライブファイル数
+	 */
+	incCount: {
+		type: 'number' as 'number',
+		description: '増加したドライブファイル数'
+	},
 
-		/**
-		 * 増加したドライブ使用量
-		 */
-		incSize: number;
+	/**
+	 * 増加したドライブ使用量
+	 */
+	incSize: {
+		type: 'number' as 'number',
+		description: '増加したドライブ使用量'
+	},
 
-		/**
-		 * 減少したドライブファイル数
-		 */
-		decCount: number;
+	/**
+	 * 減少したドライブファイル数
+	 */
+	decCount: {
+		type: 'number' as 'number',
+		description: '減少したドライブファイル数'
+	},
 
-		/**
-		 * 減少したドライブ使用量
-		 */
-		decSize: number;
-	};
-
-	remote: DriveLog['local'];
+	/**
+	 * 減少したドライブ使用量
+	 */
+	decSize: {
+		type: 'number' as 'number',
+		description: '減少したドライブ使用量'
+	},
 };
+
+export const driveLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		local: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+		remote: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+	}
+};
+
+type DriveLog = SchemaType<typeof driveLogSchema>;
 
 class DriveChart extends Chart<DriveLog> {
 	constructor() {

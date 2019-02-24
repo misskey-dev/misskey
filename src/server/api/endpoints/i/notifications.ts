@@ -13,54 +13,51 @@ export const meta = {
 		'en-US': 'Get notifications.'
 	},
 
+	tags: ['account', 'notifications'],
+
 	requireCredential: true,
 
 	kind: 'account-read',
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		following: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false
 		},
 
 		markAsRead: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true
 		},
 
 		includeTypes: {
-			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])),
 			default: [] as string[]
 		},
 
 		excludeTypes: {
-			validator: $.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])).optional,
+			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])),
 			default: [] as string[]
 		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
+export default define(meta, async (ps, user) => {
 	const hideUserIds = await getHideUserIds(user);
 
 	const query = {
@@ -114,10 +111,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			sort: sort
 		});
 
-	res(await packMany(notifications));
-
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {
 		read(user._id, notifications);
 	}
-}));
+
+	return await packMany(notifications);
+});

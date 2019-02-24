@@ -9,6 +9,8 @@ export const meta = {
 		'ja-JP': 'インスタンスごとのチャートを取得します。'
 	},
 
+	tags: ['charts'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),
@@ -18,7 +20,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 500),
+			validator: $.optional.num.range(1, 500),
 			default: 30,
 			desc: {
 				'ja-JP': '最大数。例えば 30 を指定したとすると、スパンが"day"の場合は30日分のデータが、スパンが"hour"の場合は30時間分のデータが返ります。'
@@ -32,11 +34,16 @@ export const meta = {
 				'en-US': 'Target instance host'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+		},
+	},
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const stats = await instanceChart.getChart(ps.span as any, ps.limit, ps.host);
-
-	res(stats);
-}));
+export default define(meta, async (ps) => {
+	return await instanceChart.getChart(ps.span as any, ps.limit, ps.host);
+});

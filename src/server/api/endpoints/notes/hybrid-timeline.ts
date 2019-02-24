@@ -4,19 +4,21 @@ import Note from '../../../../models/note';
 import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../services/chart/active-users';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
 		'ja-JP': 'ハイブリッドタイムラインを取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
@@ -24,7 +26,7 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
@@ -32,7 +34,7 @@ export const meta = {
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
@@ -40,21 +42,21 @@ export const meta = {
 		},
 
 		sinceDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		},
 
 		untilDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		},
 
 		includeMyRenotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': '自分の行ったRenoteを含めるかどうか'
@@ -62,7 +64,7 @@ export const meta = {
 		},
 
 		includeRenotedMyNotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
@@ -70,7 +72,7 @@ export const meta = {
 		},
 
 		includeLocalRenotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
@@ -78,30 +80,40 @@ export const meta = {
 		},
 
 		withFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
 		},
 
 		mediaOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
+	errors: {
+		stlDisabled: {
+			message: 'Social timeline has been disabled.',
+			code: 'STL_DISABLED',
+			id: '620763f4-f621-4533-ab33-0577a1a3c342'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const meta = await fetchMeta();
-	if (meta.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
-		return rej('local timeline disabled');
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
+export default define(meta, async (ps, user) => {
+	const m = await fetchMeta();
+	if (m.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
+		throw new ApiError(meta.errors.stlDisabled);
 	}
 
 	const [followings, hideUserIds] = await Promise.all([
@@ -266,13 +278,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 	//#endregion
 
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(timeline, user));
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
 	activeUsersChart.update(user);
-}));
+
+	return await packMany(timeline, user);
+});

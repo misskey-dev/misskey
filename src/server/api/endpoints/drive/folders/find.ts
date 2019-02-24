@@ -4,6 +4,8 @@ import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import define from '../../../define';
 
 export const meta = {
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',
@@ -14,7 +16,7 @@ export const meta = {
 		},
 
 		parentId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			transform: transform,
 			default: null as any,
 			desc: {
@@ -24,7 +26,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const folders = await DriveFolder
 		.find({
 			name: ps.name,
@@ -32,5 +34,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			parentId: ps.parentId
 		});
 
-	res(await Promise.all(folders.map(folder => pack(folder))));
-}));
+	return await Promise.all(folders.map(folder => pack(folder)));
+});

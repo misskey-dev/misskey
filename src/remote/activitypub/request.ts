@@ -45,7 +45,7 @@ export default (user: ILocalUser, url: string, object: any) => new Promise(async
 		timeout,
 		headers: {
 			'Host': host,
-			'User-Agent': config.user_agent,
+			'User-Agent': config.userAgent,
 			'Content-Type': 'application/activity+json',
 			'Digest': `SHA-256=${hash}`
 		}

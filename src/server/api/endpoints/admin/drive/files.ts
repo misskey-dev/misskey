@@ -1,24 +1,27 @@
 import $ from 'cafy';
 import File, { packMany } from '../../../../../models/drive-file';
 import define from '../../../define';
+import { fallback } from '../../../../../prelude/symbol';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: false,
 	requireModerator: true,
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
 
 		sort: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'+createdAt',
 				'-createdAt',
 				'+size',
@@ -27,7 +30,7 @@ export const meta = {
 		},
 
 		origin: {
-			validator: $.str.optional.or([
+			validator: $.optional.str.or([
 				'combined',
 				'local',
 				'remote',
@@ -37,32 +40,15 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	let _sort;
-	if (ps.sort) {
-		if (ps.sort == '+createdAt') {
-			_sort = {
-				uploadDate: -1
-			};
-		} else if (ps.sort == '-createdAt') {
-			_sort = {
-				uploadDate: 1
-			};
-		} else if (ps.sort == '+size') {
-			_sort = {
-				length: -1
-			};
-		} else if (ps.sort == '-size') {
-			_sort = {
-				length: 1
-			};
-		}
-	} else {
-		_sort = {
-			_id: -1
-		};
-	}
+const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
+	'+createdAt': { uploadDate: -1 },
+	'-createdAt': { uploadDate: 1 },
+	'+size': { length: -1 },
+	'-size': { length: 1 },
+	[fallback]: { _id: -1 }
+};
 
+export default define(meta, async (ps, me) => {
 	const q = {
 		'metadata.deletedAt': { $exists: false },
 	} as any;
@@ -73,9 +59,9 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	const files = await File
 		.find(q, {
 			limit: ps.limit,
-			sort: _sort,
+			sort: sort[ps.sort] || sort[fallback],
 			skip: ps.offset
 		});
 
-	res(await packMany(files, { detail: true, withUser: true, self: true }));
-}));
+	return await packMany(files, { detail: true, withUser: true, self: true });
+});

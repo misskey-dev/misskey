@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" @closed="destroyDom">
-	<span slot="header" :class="$style.header"><fa icon="comments"/>{{ $t('title') }}</span>
+	<template #header :class="$style.header"><fa icon="comments"/>{{ $t('title') }}</template>
 	<x-messaging :class="$style.content" @navigate="navigate"/>
 </mk-window>
 </template>

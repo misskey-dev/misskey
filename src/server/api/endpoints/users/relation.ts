@@ -8,11 +8,13 @@ export const meta = {
 		'ja-JP': 'ユーザー間のリレーションを取得します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: true,
 
 	params: {
 		userId: {
-			validator: $.or($.type(ID), $.arr($.type(ID)).unique()),
+			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
 			transform: (v: any): ObjectId | ObjectId[] => Array.isArray(v) ? v.map(x => transform(x)) : transform(v),
 			desc: {
 				'ja-JP': 'ユーザーID (配列でも可)'
@@ -21,10 +23,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
 	const relations = await Promise.all(ids.map(id => getRelation(me._id, id)));
 
-	res(Array.isArray(ps.userId) ? relations : relations[0]);
-}));
+	return Array.isArray(ps.userId) ? relations : relations[0];
+});

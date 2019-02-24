@@ -16,10 +16,12 @@ const requiredUsers = 3; // 最低何人がそのタグを投稿している必�
 const max = 5;
 
 export const meta = {
+	tags: ['hashtags'],
+
 	requireCredential: false,
 };
 
-export default define(meta, () => new Promise(async (res, rej) => {
+export default define(meta, async () => {
 	const instance = await fetchMeta();
 	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
 
@@ -49,7 +51,7 @@ export default define(meta, () => new Promise(async (res, rej) => {
 	//#endregion
 
 	if (data.length == 0) {
-		return res([]);
+		return [];
 	}
 
 	const tags: {
@@ -141,5 +143,5 @@ export default define(meta, () => new Promise(async (res, rej) => {
 		usersCount: totalCounts[i].length
 	}));
 
-	res(stats);
-}));
+	return stats;
+});

@@ -9,31 +9,28 @@ import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import perUserReactionsChart from '../../../services/chart/per-user-reactions';
+import { IdentifiableError } from '../../../misc/identifiable-error';
 
-export default async (user: IUser, note: INote, reaction: string) => new Promise(async (res, rej) => {
+export default async (user: IUser, note: INote, reaction: string) => {
 	// Myself
 	if (note.userId.equals(user._id)) {
-		return rej('cannot react to my note');
+		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
 	}
 
 	// Create reaction
-	try {
-		await NoteReaction.insert({
-			createdAt: new Date(),
-			noteId: note._id,
-			userId: user._id,
-			reaction
-		});
-	} catch (e) {
+	await NoteReaction.insert({
+		createdAt: new Date(),
+		noteId: note._id,
+		userId: user._id,
+		reaction
+	}).catch(e => {
 		// duplicate key error
 		if (e.code === 11000) {
-			return rej('already reacted');
+			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298', 'already reacted');
 		}
 
-		return rej('something happened');
-	}
-
-	res();
+		throw e;
+	});
 
 	// Increment reactions count
 	await Note.update({ _id: note._id }, {
@@ -89,4 +86,6 @@ export default async (user: IUser, note: INote, reaction: string) => new Promise
 		deliver(user, content, note._user.inbox);
 	}
 	//#endregion
-});
+
+	return;
+};

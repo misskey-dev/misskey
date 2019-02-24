@@ -10,22 +10,24 @@ export const meta = {
 		'en-US': 'Get recommended polls.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get votes
 	const votes = await Vote.find({
 		userId: user._id
@@ -41,29 +43,28 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	// 隠すユーザーを取得
 	const hideUserIds = await getHideUserIds(user);
 
-	const notes = await Note
-		.find({
-			'_user.host': null,
-			_id: {
-				$nin: nin
-			},
-			userId: {
-				$ne: user._id,
-				$nin: hideUserIds
-			},
-			poll: {
-				$exists: true,
-				$ne: null
-			}
-		}, {
-			limit: ps.limit,
-			skip: ps.offset,
-			sort: {
-				_id: -1
-			}
-		});
+	const notes = await Note.find({
+		'_user.host': null,
+		_id: {
+			$nin: nin
+		},
+		userId: {
+			$ne: user._id,
+			$nin: hideUserIds
+		},
+		poll: {
+			$exists: true,
+			$ne: null
+		}
+	}, {
+		limit: ps.limit,
+		skip: ps.offset,
+		sort: {
+			_id: -1
+		}
+	});
 
-	res(await Promise.all(notes.map(note => pack(note, user, {
+	return await Promise.all(notes.map(note => pack(note, user, {
 		detail: true
-	}))));
-}));
+	})));
+});

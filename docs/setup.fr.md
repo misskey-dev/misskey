@@ -57,7 +57,7 @@ En root :
 
 Construisez Misskey comme ceci :
 
-`npm run build`
+`NODE_ENV=production npm run build`
 
 Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential` et `python`.
 
@@ -66,14 +66,14 @@ Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 1. `npm install -g node-gyp`
 2. `node-gyp configure`
 3. `node-gyp build`
-4. `npm run build`
+4. `NODE_ENV=production npm run build`
 
 *7.* C'est tout.
 ----------------------------------------------------------------
 Excellent ! Maintenant, vous avez un environnement prêt pour lancer Misskey
 
 ### Lancement conventionnel
-Lancez tout simplement `npm start`. Bonne chance et amusez-vous bien !
+Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-vous bien !
 
 ### Démarrage avec systemd
 
@@ -89,6 +89,7 @@ Type=simple
 User=misskey
 ExecStart=/usr/bin/npm start
 WorkingDirectory=/home/misskey/misskey
+Environment="NODE_ENV=production"
 TimeoutSec=60
 StandardOutput=syslog
 StandardError=syslog
@@ -108,7 +109,7 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 1. `git fetch`
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
 3. `npm install`
-4. `npm run build`
+4. `NODE_ENV=production npm run build`
 5. Consultez [ChangeLog](../CHANGELOG.md) pour les information de migration.
 
 ----------------------------------------------------------------

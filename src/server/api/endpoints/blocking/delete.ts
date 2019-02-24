@@ -1,10 +1,12 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import User, { pack } from '../../../../models/user';
+import { pack } from '../../../../models/user';
 import Blocking from '../../../../models/blocking';
 import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
+import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	stability: 'stable',
@@ -13,6 +15,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーのブロックを解除します。',
 		'en-US': 'Unblock a user.'
 	},
+
+	tags: ['blocking', 'users'],
 
 	limit: {
 		duration: ms('1hour'),
@@ -32,30 +36,42 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '8621d8bf-c358-4303-a066-5ea78610eb3f'
+		},
+
+		blockeeIsYourself: {
+			message: 'Blockee is yourself.',
+			code: 'BLOCKEE_IS_YOURSELF',
+			id: '06f6fac6-524b-473c-a354-e97a40ae6eac'
+		},
+
+		notBlocking: {
+			message: 'You are not blocking that user.',
+			code: 'NOT_BLOCKING',
+			id: '291b2efa-60c6-45c0-9f6a-045c8f9b02cd'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const blocker = user;
 
 	// Check if the blockee is yourself
 	if (user._id.equals(ps.userId)) {
-		return rej('blockee is yourself');
+		throw new ApiError(meta.errors.blockeeIsYourself);
 	}
 
 	// Get blockee
-	const blockee = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			data: false,
-			'profile': false
-		}
+	const blockee = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (blockee === null) {
-		return rej('user not found');
-	}
 
 	// Check not blocking
 	const exist = await Blocking.findOne({
@@ -64,14 +80,13 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	});
 
 	if (exist === null) {
-		return rej('already not blocking');
+		throw new ApiError(meta.errors.notBlocking);
 	}
 
 	// Delete blocking
 	await deleteBlocking(blocker, blockee);
 
-	// Send response
-	res(await pack(blockee._id, user, {
+	return await pack(blockee._id, user, {
 		detail: true
-	}));
-}));
+	});
+});

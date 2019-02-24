@@ -9,6 +9,8 @@ export const meta = {
 		'en-US': 'Mark a user as unverified.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -24,22 +26,22 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const user = await User.findOne({
 		_id: ps.userId
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	await User.findOneAndUpdate({
 		_id: user._id
 	}, {
-			$set: {
-				isVerified: false
-			}
-		});
+		$set: {
+			isVerified: false
+		}
+	});
 
-	res();
-}));
+	return;
+});

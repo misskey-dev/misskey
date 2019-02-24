@@ -8,79 +8,76 @@ export const meta = {
 		'ja-JP': '投稿を取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		local: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ローカルの投稿に限定するか否か'
 			}
 		},
 
 		reply: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': '返信に限定するか否か'
 			}
 		},
 
 		renote: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'Renoteに限定するか否か'
 			}
 		},
 
 		withFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
 			}
 		},
 
 		media: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		},
 
 		poll: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
 			}
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	// Construct query
+export default define(meta, async (ps) => {
 	const sort = {
 		_id: -1
 	};
 	const query = {
 		deletedAt: null,
-		visibility: 'public'
+		visibility: 'public',
+		localOnly: { $ne: true },
 	} as any;
 	if (ps.sinceId) {
 		sort._id = 1;
@@ -118,13 +115,10 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	//	query.isBot = bot;
 	//}
 
-	// Issue query
-	const notes = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const notes = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	// Serialize
-	res(await packMany(notes));
-}));
+	return await packMany(notes);
+});

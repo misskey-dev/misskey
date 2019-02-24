@@ -399,7 +399,7 @@ export default Vue.extend({
 					this.moveFolder();
 					break;
 				case '6':
-					alert(this.$t('deletion-alert'));
+					this.deleteFolder();
 					break;
 			}
 		},
@@ -421,7 +421,10 @@ export default Vue.extend({
 
 		renameFolder() {
 			if (this.folder == null) {
-				alert(this.$t('root-rename-alert'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('here-is-root')
+				});
 				return;
 			}
 			const name = window.prompt(this.$t('folder-name'), this.folder.name);
@@ -436,7 +439,10 @@ export default Vue.extend({
 
 		moveFolder() {
 			if (this.folder == null) {
-				alert(this.$t('root-move-alert'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('here-is-root')
+				});
 				return;
 			}
 			this.$chooseDriveFolder().then(folder => {
@@ -456,13 +462,31 @@ export default Vue.extend({
 				url: url,
 				folderId: this.folder ? this.folder.id : undefined
 			});
-			alert(this.$t('uploading'));
+			this.$root.dialog({
+				type: 'info',
+				text: this.$t('uploading')
+			});
 		},
 
 		onChangeLocalFile() {
 			for (const f of Array.from((this.$refs.file as any).files)) {
 				(this.$refs.uploader as any).upload(f, this.folder);
 			}
+		},
+
+		deleteFolder() {
+			if (this.folder == null) {
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('here-is-root')
+				});
+				return;
+			}
+			this.$root.api('drive/folders/delete', {
+				folderId: this.folder.id
+			}).then(folder => {
+				this.cd(this.folder.parentId);
+			});
 		}
 	}
 });

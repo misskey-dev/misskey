@@ -4,6 +4,8 @@ import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
+	tags: ['account'],
+
 	requireCredential: true,
 
 	params: {
@@ -21,7 +23,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// if already subscribed
 	const exist = await Subscription.findOne({
 		userId: user._id,
@@ -34,10 +36,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	const instance = await fetchMeta();
 
 	if (exist != null) {
-		return res({
+		return {
 			state: 'already-subscribed',
 			key: instance.swPublicKey
-		});
+		};
 	}
 
 	await Subscription.insert({
@@ -47,8 +49,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		publickey: ps.publickey
 	});
 
-	res({
+	return {
 		state: 'subscribed',
 		key: instance.swPublicKey
-	});
-}));
+	};
+});

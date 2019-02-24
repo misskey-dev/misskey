@@ -4,6 +4,8 @@ import { validateUsername } from '../../../../models/user';
 import define from '../../define';
 
 export const meta = {
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {
@@ -13,18 +15,16 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	// Get exist
-	const exist = await User
-		.count({
-			host: null,
-			usernameLower: ps.username.toLowerCase()
-		}, {
-			limit: 1
-		});
-
-	// Reply
-	res({
-		available: exist === 0
+	const exist = await User.count({
+		host: null,
+		usernameLower: ps.username.toLowerCase()
+	}, {
+		limit: 1
 	});
-}));
+
+	return {
+		available: exist === 0
+	};
+});

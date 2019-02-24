@@ -10,23 +10,23 @@ export const meta = {
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10,
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0,
 		},
 
 		sort: {
-			validator: $.str.optional.or('desc|asc'),
+			validator: $.optional.str.or('desc|asc'),
 			default: 'desc',
 		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Get tokens
 	const tokens = await AccessToken
 		.find({
@@ -39,7 +39,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			}
 		});
 
-	res(await Promise.all(tokens.map(token => pack(token.appId, user, {
+	return await Promise.all(tokens.map(token => pack(token.appId, user, {
 		detail: true
-	}))));
-}));
+	})));
+});

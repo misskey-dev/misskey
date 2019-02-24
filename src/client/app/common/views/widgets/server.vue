@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-server">
-	<mk-widget-container :show-header="props.design == 0" :naked="props.design == 2">
-		<template slot="header"><fa icon="server"/>{{ $t('title') }}</template>
-		<button slot="func" @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button>
+	<ui-container :show-header="props.design == 0" :naked="props.design == 2">
+		<template #header><fa icon="server"/>{{ $t('title') }}</template>
+		<template #func><button @click="toggle" :title="$t('toggle')"><fa icon="sort"/></button></template>
 
 		<p :class="$style.fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 		<template v-if="!fetching">
@@ -13,7 +13,7 @@
 			<x-uptimes v-show="props.view == 4" :connection="connection"/>
 			<x-info v-show="props.view == 5" :connection="connection" :meta="meta"/>
 		</template>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

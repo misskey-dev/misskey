@@ -8,6 +8,8 @@ export const meta = {
 		'en-US': 'Create a user list'
 	},
 
+	tags: ['lists'],
+
 	requireCredential: true,
 
 	kind: 'account-write',
@@ -19,8 +21,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// insert
+export default define(meta, async (ps, user) => {
 	const userList = await UserList.insert({
 		createdAt: new Date(),
 		userId: user._id,
@@ -28,6 +29,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		userIds: []
 	});
 
-	// Response
-	res(await pack(userList));
-}));
+	return await pack(userList);
+});

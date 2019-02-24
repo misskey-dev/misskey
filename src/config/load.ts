@@ -144,16 +144,16 @@ export default function load() {
 		host: url.host,
 		hostname: url.hostname,
 		scheme,
-		ws_scheme,
-		ws_url: `${ws_scheme}://${url.host}`,
-		api_url: `${scheme}://${url.host}/api`,
-		auth_url: `${scheme}://${url.host}/auth`,
-		dev_url: `${scheme}://${url.host}/dev`,
-		docs_url: `${scheme}://${url.host}/docs`,
-		stats_url: `${scheme}://${url.host}/stats`,
-		status_url: `${scheme}://${url.host}/status`,
-		drive_url: `${scheme}://${url.host}/files`,
-		user_agent: `Misskey/${pkg.version} (${config.url})`
+		wsScheme,
+		wsUrl: `${wsScheme}://${url.host}`,
+		apiUrl: `${scheme}://${url.host}/api`,
+		authUrl: `${scheme}://${url.host}/auth`,
+		devUrl: `${scheme}://${url.host}/dev`,
+		docsUrl: `${scheme}://${url.host}/docs`,
+		statsUrl: `${scheme}://${url.host}/stats`,
+		statusUrl: `${scheme}://${url.host}/status`,
+		driveUrl: `${scheme}://${url.host}/files`,
+		userAgent: `Misskey/${pkg.version} (${config.url})`
 	};
 
 	if (config.autoAdmin == null) config.autoAdmin = false;

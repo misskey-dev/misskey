@@ -1,16 +1,19 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import Message from '../../../../models/messaging-message';
-import User from '../../../../models/user';
 import { pack } from '../../../../models/messaging-message';
 import read from '../../common/read-messaging-message';
 import define from '../../define';
+import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	desc: {
 		'ja-JP': '指定したユーザーとのMessagingのメッセージ一覧を取得します。',
 		'en-US': 'Get messages of messaging.'
 	},
+
+	tags: ['messaging'],
 
 	requireCredential: true,
 
@@ -27,45 +30,41 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		markAsRead: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '11795c64-40ea-4198-b06e-3c873ed9039d'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
+export default define(meta, async (ps, user) => {
 	// Fetch recipient
-	const recipient = await User.findOne({
-		_id: ps.userId
-	}, {
-			fields: {
-				_id: true
-			}
-		});
-
-	if (recipient === null) {
-		return rej('user not found');
-	}
+	const recipient = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
+	});
 
 	const query = {
 		$or: [{
@@ -98,16 +97,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			sort: sort
 		});
 
-	res(await Promise.all(messages.map(message => pack(message, user, {
-		populateRecipient: false
-	}))));
-
-	if (messages.length === 0) {
-		return;
-	}
-
 	// Mark all as read
 	if (ps.markAsRead) {
 		read(user._id, recipient._id, messages);
 	}
-}));
+
+	return await Promise.all(messages.map(message => pack(message, user, {
+		populateRecipient: false
+	})));
+});

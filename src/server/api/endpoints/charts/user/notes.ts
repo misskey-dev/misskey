@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserNotesChart from '../../../../../services/chart/per-user-notes';
+import perUserNotesChart, { perUserNotesLogSchema } from '../../../../../services/chart/per-user-notes';
 import ID, { transform } from '../../../../../misc/cafy-id';
+import { convertLog } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -9,6 +10,8 @@ export const meta = {
 	desc: {
 		'ja-JP': 'ユーザーごとの投稿のチャートを取得します。'
 	},
+
+	tags: ['charts', 'users', 'notes'],
 
 	params: {
 		span: {
@@ -19,7 +22,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 500),
+			validator: $.optional.num.range(1, 500),
 			default: 30,
 			desc: {
 				'ja-JP': '最大数。例えば 30 を指定したとすると、スパンが"day"の場合は30日分のデータが、スパンが"hour"の場合は30時間分のデータが返ります。'
@@ -34,11 +37,11 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
-	}
+	},
+
+	res: convertLog(perUserNotesLogSchema),
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const stats = await perUserNotesChart.getChart(ps.span as any, ps.limit, ps.userId);
-
-	res(stats);
-}));
+export default define(meta, async (ps) => {
+	return await perUserNotesChart.getChart(ps.span as any, ps.limit, ps.userId);
+});

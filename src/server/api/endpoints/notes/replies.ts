@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Get replies of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: false,
 
 	params: {
@@ -24,18 +26,25 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
@@ -85,5 +94,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		skip: ps.offset
 	});
 
-	res(await packMany(notes, user));
-}));
+	return await packMany(notes, user);
+});

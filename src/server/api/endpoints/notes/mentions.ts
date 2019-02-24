@@ -13,41 +13,45 @@ export const meta = {
 		'en-US': 'Get mentions of myself.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {
 		following: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		visibility: {
-			validator: $.str.optional,
+			validator: $.optional.str,
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
+export default define(meta, async (ps, user) => {
 	// フォローを取得
 	const followings = await getFriends(user._id);
 
@@ -131,15 +135,14 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		};
 	}
 
-	const mentions = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(mentions, user));
+	const mentions = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
 	for (const note of mentions) {
 		read(user._id, note._id);
 	}
-}));
+
+	return await packMany(mentions, user);
+});

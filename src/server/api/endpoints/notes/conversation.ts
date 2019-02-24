@@ -2,12 +2,16 @@ import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import Note, { packMany, INote } from '../../../../models/note';
 import define from '../../define';
+import { ApiError } from '../../error';
+import { getNote } from '../../common/getters';
 
 export const meta = {
 	desc: {
 		'ja-JP': '指定した投稿の文脈を取得します。',
 		'en-US': 'Show conversation of a note.'
 	},
+
+	tags: ['notes'],
 
 	requireCredential: false,
 
@@ -22,26 +26,37 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0
 		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
+	errors: {
+		noSuchNote: {
+			message: 'No such note.',
+			code: 'NO_SUCH_NOTE',
+			id: 'e1035875-9551-45ec-afa8-1ded1fcb53c8'
+		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Lookup note
-	const note = await Note.findOne({
-		_id: ps.noteId
+export default define(meta, async (ps, user) => {
+	const note = await getNote(ps.noteId).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
 	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
 
 	const conversation: INote[] = [];
 	let i = 0;
@@ -67,5 +82,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		await get(note.replyId);
 	}
 
-	res(await packMany(conversation, user));
-}));
+	return await packMany(conversation, user);
+});

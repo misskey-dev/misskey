@@ -5,7 +5,7 @@
 		<b>{{ $t('sensitive') }}</b>
 		<span>{{ $t('click-to-show') }}</span>
 	</div>
-	<div class="audio" v-else-if="media.type.startsWith('audio')">
+	<div class="audio" v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'">
 		<audio class="audio"
 			:src="media.url"
 			:title="media.name"
@@ -44,7 +44,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		const audioTag = this.$refs.audio as HTMLAudioElement;
-		audioTag.volume = this.$store.state.device.mediaVolume;
+		if (audioTag) audioTag.volume = this.$store.state.device.mediaVolume;
 	},
 	methods: {
 		volumechange() {

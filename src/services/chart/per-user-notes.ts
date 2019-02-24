@@ -2,43 +2,49 @@ import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
 import Note, { INote } from '../../models/note';
 import { IUser } from '../../models/user';
+import { SchemaType } from '../../prelude/schema';
 
-/**
- * ユーザーごとの投稿に関するチャート
- */
-type PerUserNotesLog = {
-	/**
-	 * 集計期間時点での、全投稿数
-	 */
-	total: number;
+export const perUserNotesLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		total: {
+			type: 'number' as 'number',
+			description: '集計期間時点での、全投稿数'
+		},
 
-	/**
-	 * 増加した投稿数
-	 */
-	inc: number;
+		inc: {
+			type: 'number' as 'number',
+			description: '増加した投稿数'
+		},
 
-	/**
-	 * 減少した投稿数
-	 */
-	dec: number;
+		dec: {
+			type: 'number' as 'number',
+			description: '減少した投稿数'
+		},
 
-	diffs: {
-		/**
-		 * 通常の投稿数の差分
-		 */
-		normal: number;
+		diffs: {
+			type: 'object' as 'object',
+			properties: {
+				normal: {
+					type: 'number' as 'number',
+					description: '通常の投稿数の差分'
+				},
 
-		/**
-		 * リプライの投稿数の差分
-		 */
-		reply: number;
+				reply: {
+					type: 'number' as 'number',
+					description: 'リプライの投稿数の差分'
+				},
 
-		/**
-		 * Renoteの投稿数の差分
-		 */
-		renote: number;
-	};
+				renote: {
+					type: 'number' as 'number',
+					description: 'Renoteの投稿数の差分'
+				},
+			}
+		},
+	}
 };
+
+type PerUserNotesLog = SchemaType<typeof perUserNotesLogSchema>;
 
 class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	constructor() {

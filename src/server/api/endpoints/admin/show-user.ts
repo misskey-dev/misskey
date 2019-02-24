@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': '指定したユーザーの情報を取得します。',
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -23,18 +25,18 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const user = await User.findOne({
 		_id: ps.userId
 	});
 
 	if (user == null) {
-		return rej('user not found');
+		throw new Error('user not found');
 	}
 
 	if (me.isModerator && user.isAdmin) {
-		return rej('cannot show info of admin');
+		throw new Error('cannot show info of admin');
 	}
 
-	res(user);
-}));
+	return user;
+});

@@ -1,5 +1,3 @@
-type Locale = { [key: string]: string };
+declare const locales: { [lang: string]: any };
 
-declare const locales: { [lang: string]: Locale };
-
-export default locales;
+export = locales;

@@ -48,7 +48,7 @@ export async function exportMute(job: bq.Job, done: any): Promise<void> {
 
 		if (mutes.length === 0) {
 			ended = true;
-			job.reportProgress(100);
+			if (job.reportProgress) job.reportProgress(100);
 			break;
 		}
 
@@ -74,7 +74,7 @@ export async function exportMute(job: bq.Job, done: any): Promise<void> {
 			muterId: user._id,
 		});
 
-		job.reportProgress(exportedCount / total);
+		if (job.reportProgress) job.reportProgress(exportedCount / total);
 	}
 
 	stream.end();

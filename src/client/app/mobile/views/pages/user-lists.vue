@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header"><fa icon="list"/>{{ $t('title') }}</span>
-	<template slot="func"><button @click="fn"><fa icon="plus"/></button></template>
+	<template #header><fa icon="list"/>{{ $t('title') }}</template>
+	<template #func><button @click="fn"><fa icon="plus"/></button></template>
 
 	<main>
 		<ul>
@@ -53,20 +53,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-
-
-main
-	width 100%
-	max-width 680px
-	margin 0 auto
-	padding 8px
-
-	@media (min-width 500px)
-		padding 16px
-
-	@media (min-width 600px)
-		padding 32px
-
-</style>

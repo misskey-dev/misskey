@@ -1,8 +1,9 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
-import Note from '../../../../../models/note';
 import define from '../../../define';
 import unwatch from '../../../../../services/note/unwatch';
+import { getNote } from '../../../common/getters';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -11,6 +12,8 @@ export const meta = {
 		'ja-JP': '指定した投稿のウォッチを解除します。',
 		'en-US': 'Unwatch a note.'
 	},
+
+	tags: ['notes'],
 
 	requireCredential: true,
 
@@ -25,21 +28,22 @@ export const meta = {
 				'en-US': 'Target note ID.'
 			}
 		}
+	},
+
+	errors: {
+		noSuchNote: {
+			message: 'No such note.',
+			code: 'NO_SUCH_NOTE',
+			id: '09b3695c-f72c-4731-a428-7cff825fc82e'
+		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Get note
-	const note = await Note.findOne({
-		_id: ps.noteId
+export default define(meta, async (ps, user) => {
+	const note = await getNote(ps.noteId).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
 	});
 
-	if (note === null) {
-		return rej('note not found');
-	}
-
 	await unwatch(user._id, note);
-
-	// Send response
-	res();
-}));
+});

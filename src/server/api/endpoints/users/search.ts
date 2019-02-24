@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': 'ユーザーを検索します。'
 	},
 
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {
@@ -19,7 +21,7 @@ export const meta = {
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0,
 			desc: {
 				'ja-JP': 'オフセット'
@@ -27,7 +29,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '取得する数'
@@ -35,7 +37,7 @@ export const meta = {
 		},
 
 		localOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'ローカルユーザーのみ検索対象にするか否か'
@@ -43,7 +45,7 @@ export const meta = {
 		},
 
 		detail: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': '詳細なユーザー情報を含めるか否か'
@@ -52,7 +54,7 @@ export const meta = {
 	},
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
 
 	let users: IUser[] = [];
@@ -80,5 +82,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		}
 	}
 
-	res(await Promise.all(users.map(user => pack(user, me, { detail: ps.detail }))));
-}));
+	return await Promise.all(users.map(user => pack(user, me, { detail: ps.detail })));
+});

@@ -5,6 +5,7 @@ import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
 import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
@@ -12,11 +13,13 @@ export const meta = {
 		'en-US': 'Get following users of a user.'
 	},
 
+	tags: ['users'],
+
 	requireCredential: false,
 
 	params: {
 		userId: {
-			validator: $.type(ID),
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
@@ -24,39 +27,51 @@ export const meta = {
 			}
 		},
 
+		username: {
+			validator: $.optional.str
+		},
+
+		host: {
+			validator: $.optional.nullable.str
+		},
+
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		cursor: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			default: null as any,
 			transform: transform,
 		},
 
 		iknow: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
+		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '63e4aba4-4156-4e53-be25-c9559e42d71b'
 		}
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	// Lookup user
-	const user = await User.findOne({
-		_id: ps.userId
-	}, {
-		fields: {
-			_id: true
-		}
-	});
+export default define(meta, async (ps, me) => {
+	const q: any = ps.userId != null
+		? { _id: ps.userId }
+		: { usernameLower: ps.username.toLowerCase(), host: ps.host };
+
+	const user = await User.findOne(q);
 
 	if (user === null) {
-		return rej('user not found');
+		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	// Construct query
 	const query = {
 		followerId: user._id
 	} as any;
@@ -93,8 +108,8 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 
 	const users = await Promise.all(following.map(f => pack(f.followeeId, me, { detail: true })));
 
-	res({
+	return {
 		users: users,
 		next: inStock ? following[following.length - 1]._id : null,
-	});
-}));
+	};
+});

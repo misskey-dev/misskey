@@ -3,6 +3,8 @@ import define from '../../define';
 import Instance from '../../../../models/instance';
 
 export const meta = {
+	tags: ['federation'],
+
 	requireCredential: false,
 
 	params: {
@@ -12,9 +14,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const instance = await Instance
 		.findOne({ host: ps.host });
 
-	res(instance);
-}));
+	return instance;
+});

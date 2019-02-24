@@ -8,6 +8,8 @@ export const meta = {
 		'ja-JP': 'カスタム絵文字を削除します。'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -18,14 +20,14 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const emoji = await Emoji.findOne({
 		_id: ps.id
 	});
 
-	if (emoji == null) return rej('emoji not found');
+	if (emoji == null) throw new Error('emoji not found');
 
 	await Emoji.remove({ _id: emoji._id });
 
-	res();
-}));
+	return;
+});

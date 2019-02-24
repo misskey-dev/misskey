@@ -5,7 +5,6 @@
 import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
-import rndstr from 'rndstr';
 const { VueLoaderPlugin } = require('vue-loader');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -18,7 +17,6 @@ const constants = require('./src/const.json');
 
 const locales = require('./locales');
 const meta = require('./package.json');
-const version = isProduction ? meta.clientVersion : meta.clientVersion + '-' + rndstr({ length: 8, chars: '0-9a-z' });
 const codename = meta.codename;
 
 const postcss = {
@@ -116,7 +114,6 @@ module.exports = {
 		new webpack.DefinePlugin({
 			_COPYRIGHT_: JSON.stringify(constants.copyright),
 			_VERSION_: JSON.stringify(meta.version),
-			_CLIENT_VERSION_: JSON.stringify(version),
 			_CODENAME_: JSON.stringify(codename),
 			_LANGS_: JSON.stringify(Object.keys(locales).map(l => [l, locales[l].meta.lang])),
 			_ENV_: JSON.stringify(process.env.NODE_ENV)
@@ -126,7 +123,7 @@ module.exports = {
 		}),
 		new WebpackOnBuildPlugin((stats: any) => {
 			fs.writeFileSync('./built/client/meta.json', JSON.stringify({
-				version
+				version: meta.version
 			}), 'utf-8');
 		}),
 		new VueLoaderPlugin(),
@@ -134,7 +131,7 @@ module.exports = {
 	],
 	output: {
 		path: __dirname + '/built/client/assets',
-		filename: `[name].${version}.js`,
+		filename: `[name].${meta.version}.js`,
 		publicPath: `/assets/`
 	},
 	resolve: {

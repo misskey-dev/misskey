@@ -1,10 +1,10 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="palette"/> {{ $t('theme') }}</div>
+	<template #title><fa icon="palette"/> {{ $t('theme') }}</template>
 	<section class="nicnklzforebnpfgasiypmpdaaglujqm fit-top">
 		<label>
 			<ui-select v-model="light" :placeholder="$t('light-theme')">
-				<span slot="label"><fa :icon="faSun"/> {{ $t('light-theme') }}</span>
+				<template #label><fa :icon="faSun"/> {{ $t('light-theme') }}</template>
 				<optgroup :label="$t('light-themes')">
 					<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 				</optgroup>
@@ -16,7 +16,7 @@
 
 		<label>
 			<ui-select v-model="dark" :placeholder="$t('dark-theme')">
-				<span slot="label"><fa :icon="faMoon"/> {{ $t('dark-theme') }}</span>
+				<template #label><fa :icon="faMoon"/> {{ $t('dark-theme') }}</template>
 				<optgroup :label="$t('dark-themes')">
 					<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 				</optgroup>

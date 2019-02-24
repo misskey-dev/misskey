@@ -179,7 +179,7 @@ router.get('/dc/cb', async ctx => {
 				url: 'https://discordapp.com/api/users/@me',
 				headers: {
 					'Authorization': `Bearer ${accessToken}`,
-					'User-Agent': config.user_agent
+					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
 				if (err)
@@ -263,7 +263,7 @@ router.get('/dc/cb', async ctx => {
 				url: 'https://discordapp.com/api/users/@me',
 				headers: {
 					'Authorization': `Bearer ${accessToken}`,
-					'User-Agent': config.user_agent
+					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
 				if (err)

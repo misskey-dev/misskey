@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>{{ $t('notifications') }}</span>
-	<template slot="func"><button @click="fn"><fa icon="check"/></button></template>
+	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'bell']"/></span>{{ $t('notifications') }}</template>
+	<template #func><button @click="fn"><fa icon="check"/></button></template>
 
 	<main>
 		<mk-notifications @fetched="onFetched"/>
@@ -39,18 +39,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-main
-	width 100%
-	max-width 680px
-	margin 0 auto
-	padding 8px
-
-	@media (min-width 500px)
-		padding 16px
-
-	@media (min-width 600px)
-		padding 32px
-
-</style>

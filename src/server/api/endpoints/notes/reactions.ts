@@ -1,14 +1,17 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
-import Note from '../../../../models/note';
 import Reaction, { pack } from '../../../../models/note-reaction';
 import define from '../../define';
+import { getNote } from '../../common/getters';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
 		'ja-JP': '指定した投稿のリアクション一覧を取得します。',
 		'en-US': 'Show reactions of a note.'
 	},
+
+	tags: ['notes', 'reactions'],
 
 	requireCredential: false,
 
@@ -23,41 +26,40 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		offset: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 			default: 0
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
+	},
+
+	errors: {
+		noSuchNote: {
+			message: 'No such note.',
+			code: 'NO_SUCH_NOTE',
+			id: '263fff3d-d0e1-4af4-bea7-8408059b451a'
+		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
-	// Lookup note
-	const note = await Note.findOne({
-		_id: ps.noteId
+export default define(meta, async (ps, user) => {
+	const note = await getNote(ps.noteId).catch(e => {
+		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+		throw e;
 	});
-
-	if (note === null) {
-		return rej('note not found');
-	}
 
 	const query = {
 		noteId: note._id
@@ -78,13 +80,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		};
 	}
 
-	const reactions = await Reaction
-		.find(query, {
-			limit: ps.limit,
-			skip: ps.offset,
-			sort: sort
-		});
+	const reactions = await Reaction.find(query, {
+		limit: ps.limit,
+		skip: ps.offset,
+		sort: sort
+	});
 
-	// Serialize
-	res(await Promise.all(reactions.map(reaction => pack(reaction, user))));
-}));
+	return await Promise.all(reactions.map(reaction => pack(reaction, user)));
+});

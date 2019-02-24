@@ -1,14 +1,17 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import rejectFollowRequest from '../../../../../services/following/requests/reject';
-import User from '../../../../../models/user';
 import define from '../../../define';
+import { ApiError } from '../../../error';
+import { getUser } from '../../../common/getters';
 
 export const meta = {
 	desc: {
 		'ja-JP': '自分に届いた、指定したフォローリクエストを拒否します。',
 		'en-US': 'Reject a follow request.'
 	},
+
+	tags: ['following', 'account'],
 
 	requireCredential: true,
 
@@ -23,20 +26,25 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'abc2ffa6-25b2-4380-ba99-321ff3a94555'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Fetch follower
-	const follower = await User.findOne({
-		_id: ps.userId
+	const follower = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (follower === null) {
-		return rej('follower not found');
-	}
 
 	await rejectFollowRequest(user, follower);
 
-	res();
-}));
+	return;
+});

@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': 'ユーザーごとの被リアクション数のチャートを取得します。'
 	},
 
+	tags: ['charts', 'users', 'reactions'],
+
 	params: {
 		span: {
 			validator: $.str.or(['day', 'hour']),
@@ -19,7 +21,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 500),
+			validator: $.optional.num.range(1, 500),
 			default: 30,
 			desc: {
 				'ja-JP': '最大数。例えば 30 を指定したとすると、スパンが"day"の場合は30日分のデータが、スパンが"hour"の場合は30時間分のデータが返ります。'
@@ -34,11 +36,16 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'object',
+		},
+	},
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
-	const stats = await perUserReactionsChart.getChart(ps.span as any, ps.limit, ps.userId);
-
-	res(stats);
-}));
+export default define(meta, async (ps) => {
+	return await perUserReactionsChart.getChart(ps.span as any, ps.limit, ps.userId);
+});

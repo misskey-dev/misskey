@@ -1,30 +1,49 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
 import User, { IUser, isLocalUser } from '../../models/user';
+import { SchemaType } from '../../prelude/schema';
 
-/**
- * ユーザーに関するチャート
- */
-type UsersLog = {
-	local: {
-		/**
-		 * 集計期間時点での、全ユーザー数
-		 */
-		total: number;
+const logSchema = {
+	/**
+	 * 集計期間時点での、全ユーザー数
+	 */
+	total: {
+		type: 'number' as 'number',
+		description: '集計期間時点での、全ユーザー数'
+	},
 
-		/**
-		 * 増加したユーザー数
-		 */
-		inc: number;
+	/**
+	 * 増加したユーザー数
+	 */
+	inc: {
+		type: 'number' as 'number',
+		description: '増加したユーザー数'
+	},
 
-		/**
-		 * 減少したユーザー数
-		 */
-		dec: number;
-	};
-
-	remote: UsersLog['local'];
+	/**
+	 * 減少したユーザー数
+	 */
+	dec: {
+		type: 'number' as 'number',
+		description: '減少したユーザー数'
+	},
 };
+
+export const usersLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		local: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+		remote: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+	}
+};
+
+type UsersLog = SchemaType<typeof usersLogSchema>;
 
 class UsersChart extends Chart<UsersLog> {
 	constructor() {

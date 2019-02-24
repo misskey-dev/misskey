@@ -3,6 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -11,6 +12,8 @@ export const meta = {
 		'ja-JP': '指定したドライブのフォルダの情報を更新します。',
 		'en-US': 'Update specified folder of drive.'
 	},
+
+	tags: ['drive'],
 
 	requireCredential: true,
 
@@ -27,7 +30,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.str.optional.pipe(isValidFolderName),
+			validator: $.optional.str.pipe(isValidFolderName),
 			desc: {
 				'ja-JP': 'フォルダ名',
 				'en-US': 'Folder name'
@@ -35,17 +38,37 @@ export const meta = {
 		},
 
 		parentId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchFolder: {
+			message: 'No such folder.',
+			code: 'NO_SUCH_FOLDER',
+			id: 'f7974dac-2c0d-4a27-926e-23583b28e98e'
+		},
+
+		noSuchParentFolder: {
+			message: 'No such parent folder.',
+			code: 'NO_SUCH_PARENT_FOLDER',
+			id: 'ce104e3a-faaf-49d5-b459-10ff0cbbcaa1'
+		},
+
+		recursiveNesting: {
+			message: 'It can not be structured like nesting folders recursively.',
+			code: 'NO_SUCH_PARENT_FOLDER',
+			id: 'ce104e3a-faaf-49d5-b459-10ff0cbbcaa1'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
@@ -54,7 +77,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		});
 
 	if (folder === null) {
-		return rej('folder-not-found');
+		throw new ApiError(meta.errors.noSuchFolder);
 	}
 
 	if (ps.name) folder.name = ps.name;
@@ -71,7 +94,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 				});
 
 			if (parent === null) {
-				return rej('parent-folder-not-found');
+				throw new ApiError(meta.errors.noSuchParentFolder);
 			}
 
 			// Check if the circular reference will occur
@@ -95,7 +118,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 			if (parent.parentId !== null) {
 				if (await checkCircle(parent.parentId)) {
-					return rej('detected-circular-definition');
+					throw new ApiError(meta.errors.recursiveNesting);
 				}
 			}
 
@@ -111,12 +134,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		}
 	});
 
-	// Serialize
 	const folderObj = await pack(folder);
-
-	// Response
-	res(folderObj);
 
 	// Publish folderUpdated event
 	publishDriveStream(user._id, 'folderUpdated', folderObj);
-}));
+
+	return folderObj;
+});

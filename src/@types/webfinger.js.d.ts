@@ -26,14 +26,14 @@ declare module 'webfinger.js' {
 	}
 
 	interface IIDXLinks {
-    'avatar': IJRDLink[];
-    'remotestorage': IJRDLink[];
-    'blog': IJRDLink[];
-    'vcard': IJRDLink[];
-    'updates': IJRDLink[];
-    'share': IJRDLink[];
-    'profile': IJRDLink[];
-    'webfist': IJRDLink[];
+		'avatar': IJRDLink[];
+		'remotestorage': IJRDLink[];
+		'blog': IJRDLink[];
+		'vcard': IJRDLink[];
+		'updates': IJRDLink[];
+		'share': IJRDLink[];
+		'profile': IJRDLink[];
+		'webfist': IJRDLink[];
 		'camlistore': IJRDLink[];
 		[type: string]: IJRDLink[];
 	}

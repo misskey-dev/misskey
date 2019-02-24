@@ -1,9 +1,9 @@
 import * as Router from 'koa-router';
 import config from '../config';
 import fetchMeta from '../misc/fetch-meta';
-import User from '../models/user';
+// import User from '../models/user';
 import { name as softwareName, version, repository } from '../../package.json';
-import Note from '../models/note';
+// import Note from '../models/note';
 
 const router = new Router();
 
@@ -21,18 +21,18 @@ export const links = [/* (awaiting release) {
 const nodeinfo2 = async () => {
 	const [
 		{ name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker },
-		total,
-		activeHalfyear,
-		activeMonth,
-		localPosts,
-		localComments
+		// total,
+		// activeHalfyear,
+		// activeMonth,
+		// localPosts,
+		// localComments
 	] = await Promise.all([
 		fetchMeta(),
-		User.count({ host: null }),
-		User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
-		User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
-		Note.count({ '_user.host': null, replyId: null }),
-		Note.count({ '_user.host': null, replyId: { $ne: null } })
+		// User.count({ host: null }),
+		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
+		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
+		// Note.count({ '_user.host': null, replyId: null }),
+		// Note.count({ '_user.host': null, replyId: { $ne: null } })
 	]);
 
 	return {
@@ -48,9 +48,9 @@ const nodeinfo2 = async () => {
 		},
 		openRegistrations: !disableRegistration,
 		usage: {
-			users: { total, activeHalfyear, activeMonth },
-			localPosts,
-			localComments
+			users: {} // { total, activeHalfyear, activeMonth },
+			// localPosts,
+			// localComments
 		},
 		metadata: { name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker }
 	};

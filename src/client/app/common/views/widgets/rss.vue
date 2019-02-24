@@ -1,8 +1,8 @@
 <template>
 <div class="mkw-rss">
-	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa icon="rss-square"/>RSS</template>
-		<button slot="func" title="設定" @click="setting"><fa icon="cog"/></button>
+	<ui-container :show-header="!props.compact">
+		<template #header><fa icon="rss-square"/>RSS</template>
+		<template #func><button title="設定" @click="setting"><fa icon="cog"/></button></template>
 
 		<div class="mkw-rss--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
@@ -10,7 +10,7 @@
 				<a v-for="item in items" :href="item.link" target="_blank">{{ item.title }}</a>
 			</div>
 		</div>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

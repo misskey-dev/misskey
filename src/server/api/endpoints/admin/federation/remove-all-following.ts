@@ -5,6 +5,8 @@ import User from '../../../../../models/user';
 import deleteFollowing from '../../../../../services/following/delete';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -15,7 +17,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, me) => {
 	const followings = await Following.find({
 		'_follower.host': ps.host
 	});
@@ -29,5 +31,5 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 		deleteFollowing(pair[0], pair[1]);
 	}
 
-	res();
-}));
+	return;
+});

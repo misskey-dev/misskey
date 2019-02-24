@@ -14,9 +14,9 @@ export default function(file: IDriveFile, thumbnail = false): string {
 		}
 	} else {
 		if (thumbnail) {
-			return `${config.drive_url}/${file._id}?thumbnail`;
+			return `${config.driveUrl}/${file._id}?thumbnail`;
 		} else {
-			return `${config.drive_url}/${file._id}?web`;
+			return `${config.driveUrl}/${file._id}?web`;
 		}
 	}
 }
@@ -27,5 +27,5 @@ export function getOriginalUrl(file: IDriveFile) {
 	}
 
 	const accessKey = file.metadata ? file.metadata.accessKey : null;
-	return `${config.drive_url}/${file._id}${accessKey ? '?original=' + accessKey : ''}`;
+	return `${config.driveUrl}/${file._id}${accessKey ? '?original=' + accessKey : ''}`;
 }

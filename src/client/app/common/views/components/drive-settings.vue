@@ -1,6 +1,6 @@
 <template>
 <ui-card>
-	<div slot="title"><fa icon="cloud"/> {{ $t('@.drive') }}</div>
+	<template #title><fa icon="cloud"/> {{ $t('@.drive') }}</template>
 
 	<section v-if="!fetching" class="juakhbxthdewydyreaphkepoxgxvfogn">
 		<div class="meter"><div :style="meterStyle"></div></div>

@@ -6,7 +6,7 @@
 		<header v-if="title" v-html="title"></header>
 		<div class="body" v-if="text" v-html="text"></div>
 		<ui-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></ui-input>
-		<ui-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><span slot="prefix">@</span></ui-input>
+		<ui-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></ui-input>
 		<ui-select v-if="select" v-model="selectedValue">
 			<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 		</ui-select>
@@ -128,15 +128,16 @@ export default Vue.extend({
 		},
 
 		close() {
+			this.$el.style.pointerEvents = 'none';
 			(this.$refs.bg as any).style.pointerEvents = 'none';
+			(this.$refs.main as any).style.pointerEvents = 'none';
+
 			anime({
 				targets: this.$refs.bg,
 				opacity: 0,
 				duration: 300,
 				easing: 'linear'
 			});
-
-			(this.$refs.main as any).style.pointerEvents = 'none';
 			anime({
 				targets: this.$refs.main,
 				opacity: 0,

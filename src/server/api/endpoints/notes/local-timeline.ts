@@ -3,40 +3,42 @@ import ID, { transform } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../services/chart/active-users';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
 		'ja-JP': 'ローカルタイムラインを取得します。'
 	},
 
+	tags: ['notes'],
+
 	params: {
 		withFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
 			}
 		},
 
 		mediaOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		},
 
 		fileType: {
-			validator: $.arr($.str).optional,
+			validator: $.optional.arr($.str),
 			desc: {
 				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
 			}
 		},
 
 		excludeNsfw: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
@@ -44,41 +46,51 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		sinceDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 		},
 
 		untilDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
+		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
+	errors: {
+		ltlDisabled: {
+			message: 'Local timeline has been disabled.',
+			code: 'LTL_DISABLED',
+			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd'
 		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	const meta = await fetchMeta();
-	if (meta.disableLocalTimeline) {
+export default define(meta, async (ps, user) => {
+	const m = await fetchMeta();
+	if (m.disableLocalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {
-			return rej('local timeline disabled');
+			throw new ApiError(meta.errors.ltlDisabled);
 		}
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		return rej('only one of sinceId, untilId, sinceDate, untilDate can be specified');
 	}
 
 	// 隠すユーザーを取得
@@ -157,15 +169,14 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 	//#endregion
 
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	res(await packMany(timeline, user));
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
 	if (user) {
 		activeUsersChart.update(user);
 	}
-}));
+
+	return await packMany(timeline, user);
+});

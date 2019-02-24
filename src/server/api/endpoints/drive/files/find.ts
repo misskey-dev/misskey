@@ -6,6 +6,8 @@ import define from '../../../define';
 export const meta = {
 	requireCredential: true,
 
+	tags: ['drive'],
+
 	kind: 'drive-read',
 
 	params: {
@@ -14,7 +16,7 @@ export const meta = {
 		},
 
 		folderId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			transform: transform,
 			default: null as any,
 			desc: {
@@ -24,7 +26,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const files = await DriveFile
 		.find({
 			filename: ps.name,
@@ -32,5 +34,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			'metadata.folderId': ps.folderId
 		});
 
-	res(await Promise.all(files.map(file => pack(file, { self: true }))));
-}));
+	return await Promise.all(files.map(file => pack(file, { self: true })));
+});

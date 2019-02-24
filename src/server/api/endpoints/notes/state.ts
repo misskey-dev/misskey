@@ -12,6 +12,8 @@ export const meta = {
 		'en-US': 'Get state of a note.'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	params: {
@@ -26,7 +28,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const [favorite, watching] = await Promise.all([
 		Favorite.count({
 			userId: user._id,
@@ -42,8 +44,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		})
 	]);
 
-	res({
+	return {
 		isFavorited: favorite !== 0,
 		isWatching: watching !== 0
-	});
-}));
+	};
+});

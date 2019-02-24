@@ -3,14 +3,18 @@ import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
+	tags: ['hashtags'],
+
 	requireCredential: false,
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const instance = await fetchMeta();
 	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
 
-	const span = 1000 * 60 * 60 * 24 * 7; // 1週間
+	// 重い
+	//const span = 1000 * 60 * 60 * 24 * 7; // 1週間
+	const span = 1000 * 60 * 60 * 24; // 1日
 
 	//#region 1. 指定期間の内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{
@@ -38,7 +42,7 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 	//#endregion
 
 	if (data.length == 0) {
-		return res([]);
+		return [];
 	}
 
 	let tags: {
@@ -64,5 +68,5 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 
 	tags = tags.slice(0, 30);
 
-	res(tags);
-}));
+	return tags;
+});

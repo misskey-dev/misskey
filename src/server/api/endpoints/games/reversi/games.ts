@@ -4,35 +4,32 @@ import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import define from '../../../define';
 
 export const meta = {
+	tags: ['games'],
+
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		my: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false
 		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
+export default define(meta, async (ps, user) => {
 	const q: any = ps.my ? {
 		isStarted: true,
 		$or: [{
@@ -65,8 +62,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		limit: ps.limit
 	});
 
-	// Reponse
-	res(Promise.all(games.map(async (g) => await pack(g, user, {
+	return await Promise.all(games.map((g) => pack(g, user, {
 		detail: false
-	}))));
-}));
+	})));
+});

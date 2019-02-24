@@ -4,6 +4,8 @@ import App, { pack } from '../../../../models/app';
 import define from '../../define';
 
 export const meta = {
+	tags: ['app'],
+
 	requireCredential: false,
 
 	params: {
@@ -21,13 +23,13 @@ export const meta = {
 
 		// TODO: Check it is valid url
 		callbackUrl: {
-			validator: $.str.optional.nullable,
+			validator: $.optional.nullable.str,
 			default: null as any
 		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 
@@ -42,9 +44,8 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		secret: secret
 	});
 
-	// Response
-	res(await pack(app, null, {
+	return await pack(app, null, {
 		detail: true,
 		includeSecret: true
-	}));
-}));
+	});
+});

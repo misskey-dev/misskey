@@ -9,40 +9,37 @@ export const meta = {
 		'en-US': 'Get folders of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-read',
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 		},
 
 		folderId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			default: null as any,
 			transform: transform,
 		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	// Check if both of sinceId and untilId is specified
-	if (ps.sinceId && ps.untilId) {
-		return rej('cannot set sinceId and untilId');
-	}
-
+export default define(meta, async (ps, user) => {
 	const sort = {
 		_id: -1
 	};
@@ -67,5 +64,5 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			sort: sort
 		});
 
-	res(await Promise.all(folders.map(folder => pack(folder))));
-}));
+	return await Promise.all(folders.map(folder => pack(folder)));
+});

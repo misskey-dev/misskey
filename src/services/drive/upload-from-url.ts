@@ -58,7 +58,7 @@ export default async (
 			proxy: config.proxy,
 			timeout: 10 * 1000,
 			headers: {
-				'User-Agent': config.user_agent
+				'User-Agent': config.userAgent
 			}
 		});
 

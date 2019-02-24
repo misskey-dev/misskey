@@ -8,11 +8,13 @@ export const meta = {
 		'ja-JP': 'ハッシュタグを検索します。'
 	},
 
+	tags: ['hashtags'],
+
 	requireCredential: false,
 
 	params: {
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
@@ -27,7 +29,7 @@ export const meta = {
 		},
 
 		offset: {
-			validator: $.num.optional.min(0),
+			validator: $.optional.num.min(0),
 			default: 0,
 			desc: {
 				'ja-JP': 'オフセット'
@@ -36,7 +38,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise(async (res, rej) => {
+export default define(meta, async (ps) => {
 	const hashtags = await Hashtag
 		.find({
 			tag: new RegExp('^' + escapeRegexp(ps.query.toLowerCase()))
@@ -48,5 +50,5 @@ export default define(meta, (ps) => new Promise(async (res, rej) => {
 			skip: ps.offset
 		});
 
-	res(hashtags.map(tag => tag.tag));
-}));
+	return hashtags.map(tag => tag.tag);
+});

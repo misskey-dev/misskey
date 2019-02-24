@@ -1,12 +1,14 @@
 <template>
 <mk-window class="mk-post-form-window" ref="window" is-modal @closed="onWindowClosed" :animation="animation">
-	<span slot="header" class="mk-post-form-window--header">
-		<span class="icon" v-if="geo"><fa icon="map-marker-alt"/></span>
-		<span v-if="!reply">{{ $t('note') }}</span>
-		<span v-if="reply">{{ $t('reply') }}</span>
-		<span class="count" v-if="files.length != 0">{{ this.$t('attaches').replace('{}', files.length) }}</span>
-		<span class="count" v-if="uploadings.length != 0">{{ this.$t('uploading-media').replace('{}', uploadings.length) }}<mk-ellipsis/></span>
-	</span>
+	<template #header>
+		<span class="mk-post-form-window--header">
+			<span class="icon" v-if="geo"><fa icon="map-marker-alt"/></span>
+			<span v-if="!reply">{{ $t('note') }}</span>
+			<span v-if="reply">{{ $t('reply') }}</span>
+			<span class="count" v-if="files.length != 0">{{ this.$t('attaches').replace('{}', files.length) }}</span>
+			<span class="count" v-if="uploadings.length != 0">{{ this.$t('uploading-media').replace('{}', uploadings.length) }}<mk-ellipsis/></span>
+		</span>
+	</template>
 
 	<div class="mk-post-form-window--body">
 		<mk-note-preview v-if="reply" class="notePreview" :note="reply"/>

@@ -11,6 +11,8 @@ export const meta = {
 		'en-US': 'Update specified remote user information.'
 	},
 
+	tags: ['admin'],
+
 	requireCredential: true,
 	requireModerator: true,
 
@@ -26,9 +28,10 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps) => new Promise((res, rej) => {
-	updatePersonById(ps.userId).then(() => res(), e => rej(e));
-}));
+export default define(meta, async (ps) => {
+	await updatePersonById(ps.userId);
+	return;
+});
 
 async function updatePersonById(userId: mongo.ObjectID) {
 	const user = await getRemoteUser(userId);

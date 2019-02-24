@@ -76,8 +76,8 @@ export const pack = (
 	}
 
 	_app.iconUrl = _app.icon != null
-		? `${config.drive_url}/${_app.icon}`
-		: `${config.drive_url}/app-default.jpg`;
+		? `${config.driveUrl}/${_app.icon}`
+		: `${config.driveUrl}/app-default.jpg`;
 
 	if (me) {
 		// 既に連携しているか

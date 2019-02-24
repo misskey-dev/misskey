@@ -8,14 +8,14 @@ common:
   about: "Thank you for finding Misskey. Misskey is a <b>decentralized microblogging platform</b> born on Earth. Since it exists within the Fediverse (a universe where various social media platforms are organized), it is mutually linked with other social media platforms. Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet?"
   intro:
     title: "What is Misskey?"
-    about: "Misskey is an open-source, <b>decentralized microblogging service</b>. Sophisticated, fully customizable UI, varieties of reactions for posts, free file storage providing an integrated management system and other advanced features are available. In addition, Misskey connects to a network system called the “Fediverse”, that enables us to communicate with users on other SNSs. For example, when you post something, it will be sent not only to Misskey, but also to Mastodon, Osada and Pleroma. Just imagine that the planet is sending a radio transmission to another planet to communicate."
+    about: "Misskey is an open-source, <b>decentralized microblogging software</b>. It has a sophisticated, fully customizable user interface, a variety of ways for expressing a reaction to posts, free file storage providing an integrated management system, and other advanced features are available. In addition, Misskey connects to a network system called the “Fediverse”, which enables us to communicate with users on other SNSs. For example, when you post something, it will be sent not only to Misskey users, but also those on Mastodon and Pleroma. Just imagine that the planet is sending a radio transmission to another planet, in order to communicate."
     features: "Features"
     rich-contents: "Post"
     rich-contents-desc: "Just post your idea, hot topics, and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files, including videos, or create a poll - those are some of the things you can do with Misskey!"
     reaction: "Reactions"
-    reaction-desc: "Easiest way to tell your emotions. Misskey allows you to add various type of reactions to other’s post. The emotional experience on Misskey will never be on other SNSs which only able to push “likes”."
+    reaction-desc: "The easiest way to express your emotions. Misskey allows you to add various kinds of reactions to other's posts. The emotional experience on Misskey will never be on other SNSs, which are only able to push “likes”."
     ui: "Interface"
-    ui-desc: "No UI fits for everyone. Therefore, Misskey has a highly customizable UI for your taste. Make your original home by editing, adjusting layouts of timeline and placing selectable widgets you can easily customize."
+    ui-desc: "No single UI can suit everyone. Therefore, Misskey has a highly customizable UI for your tastes. You can make your home original by editing the layout of your timeline, and moving around selectable widgets that you can easily adjust to make this place your own."
     drive: "Drive"
     drive-desc: "Wanna post a picture you have already uploaded? Wish to organize, name and create a folder for your uploaded files? Misskey Drive is the best solution for you. Very easy to share your files online."
     outro: "Check Misskey-unique features by seeing them with your own eyes! If you feel like this instance is not for you, try other instances, as Misskey is a decentralized SNS, so that you can easily find your mates. Then, GLHF!"
@@ -28,6 +28,8 @@ common:
   load-more: "Load more"
   enter-password: "Please enter the Password"
   2fa: "Two-factor authentication"
+  customize-home: "Customize home layout"
+  featured-notes: "Featured notes"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -56,6 +58,15 @@ common:
   trash: "Trash"
   drive: "Drive"
   messaging: "Talk"
+  home: "Home"
+  deck: "Deck"
+  timeline: "Timeline"
+  explore: "Explore"
+  following: "Following"
+  followers: "Followers"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
+    explore: "Find users"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -134,6 +145,7 @@ common:
   is-remote-post: "These post contents are mirrored."
   view-on-remote: "For completion, view it remotely."
   renoted-by: "Renoted by {user}"
+  no-notes: "Without any notes"
   error:
     title: "Something happened :("
     retry: "Retry"
@@ -197,6 +209,17 @@ auth/views/index.vue:
   please-go-back: "Please go back to the application."
   error: "Session does not exist."
   sign-in: "Please sign in."
+common/views/pages/explore.vue:
+  verified-users: "Verified accounts"
+  popular-users: "Popular users"
+  recently-updated-users: "Recently active users"
+  recently-registered-users: "Users who joined recently"
+  popular-tags: "Popular Tags"
+  federated: "From the fediverse"
+  explore: "Explore {host}"
+  users-info: "Currently, {users} users are registered here"
+common/views/components/user-list.vue:
+  no-users: "There are no users."
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Waiting for {}"
@@ -516,6 +539,10 @@ common/views/components/profile-editor.vue:
     mute-list: "List of muted accounts"
     blocking-list: "List of blocked accounts"
   export-requested: "You have requested an export. This may take a while. After the export is complete, the resulting file will be added to the drive."
+  enter-password: "Please enter your password"
+  danger-zone: "Cautious options"
+  delete-account: "Remove the account"
+  account-deleted: "The account has been deleted. It may take some time until all of the data disappears."
 common/views/components/user-list-editor.vue:
   users: "User"
   rename: "Rename list"
@@ -551,7 +578,7 @@ common/views/widgets/memo.vue:
   memo: "Write here!"
   save: "Save"
 common/views/widgets/slideshow.vue:
-  folder-customize-mode: "To specify a folder, please exit customize mode"
+  folder-customize-mode: "To specify a folder, please exit customization mode"
   folder: "Please click and specify a folder"
   no-image: "There is no image in this folder"
 common/views/widgets/tips.vue:
@@ -562,7 +589,7 @@ common/views/widgets/tips.vue:
   tips-line5: "You can upload files by dragging and dropping them to Drive."
   tips-line6: "You can move a folder by dragging it within the Drive."
   tips-line7: "You can move folders by dragging them within the Drive."
-  tips-line8: "Home can be customized from the settings."
+  tips-line8: "The Home layout can be customized from the settings."
   tips-line9: "Misskey is licensed under AGPLv3."
   tips-line10: "Using the Time Machine widget makes it easy to trace back to the past timeline."
   tips-line11: "You can pin posts to user page by clicking on \"...\""
@@ -684,12 +711,6 @@ desktop/views/components/following-window.vue:
   following: "Following {}"
 desktop/views/components/following.vue:
   empty: "It seems you don't have any following users…"
-desktop/views/components/friends-maker.vue:
-  title: "Recommended users:"
-  empty: "Couldn't find any recommended users."
-  fetching: "Loading"
-  refresh: "More"
-  close: "Close"
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
@@ -798,13 +819,9 @@ desktop/views/components/settings.vue:
   web-search-engine-desc: "Example: https://www.google.com/?#q={{query}}"
   auto-popout: "Auto pop-out window"
   auto-popout-desc: "If it's possible, pop-out display will be used instead of opening a new window. This setting is stored in your browser."
-  deck-nav: "Transitionless deck navigation"
-  deck-nav-desc: "You get a temporary column without page transitions during navigation when using the deck."
   keep-cw: "Preserve content warning"
   keep-cw-desc: "When replying to a post, the same content warning is set by default to the reply, as has been set by the original post."
-  deck-default: "Use Deck view as the default UI"
   display: "Design and display"
-  customize: "Customize home layout"
   wallpaper: "Wallpaper"
   choose-wallpaper: "Choose a background"
   delete-wallpaper: "Remove background"
@@ -961,14 +978,11 @@ desktop/views/components/ui.header.account.vue:
   favorites: "Favorites"
   lists: "Lists"
   follow-requests: "Follow requests"
-  customize: "Customize home layout"
   admin: "Admin"
   settings: "Settings"
   signout: "Sign out"
   dark: "Toggle dark mode"
 desktop/views/components/ui.header.nav.vue:
-  home: "Home"
-  deck: "Deck"
   game: "Games"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
@@ -982,7 +996,7 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create list"
+  create-list: "Create a list"
   list-name: "List name"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
@@ -1091,6 +1105,7 @@ admin/views/instance.vue:
   smtp-secure-info: "Turn off STARTTLS when used that."
   smtp-host: "SMTP Host"
   smtp-port: "SMTP Port"
+  smtp-auth: "Perform SMTP authentication"
   smtp-user: "SMTP User"
   smtp-pass: "SMTP Password"
   serviceworker-config: "ServiceWorker"
@@ -1118,7 +1133,7 @@ admin/views/charts.vue:
     users: "The number of users: increase/decrease"
     users-total: "Total users"
     active-users: "Active users"
-    drive: "Capacity used as the storage: increase/decrease"
+    drive: "Increase and decrease in storage capacity use"
     drive-total: "Total usage of Drive"
     drive-files: "The number of files on the storage: increase/decrease"
     drive-files-total: "Total number of files on Drive"
@@ -1186,6 +1201,7 @@ admin/views/users.vue:
       moderator: "Moderator"
       adminOrModerator: "Admin/Moderator"
       verified: "Verified account"
+      silenced: "Already silenced"
       suspended: "Suspended"
     origin:
       title: "Origin"
@@ -1244,7 +1260,7 @@ admin/views/federation.vue:
   latest-request-sent-at: "Time of last request sent"
   latest-request-received-at: "Last request received at"
   remove-all-following: "Withold all followers"
-  remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  remove-all-following-info: "Unfollow all accounts from {host}. Please run this if the instance no longer exists."
   block: "Block"
   marked-as-closed: "Marked as closed"
   lookup: "Look up"
@@ -1254,8 +1270,8 @@ admin/views/federation.vue:
   sorts:
     caughtAtAsc: "Date of discovery (Ascending)"
     caughtAtDesc: "Date of discovery (Descending)"
-    lastCommunicatedAtAsc: "最後にやり取りした日時が古い順"
-    lastCommunicatedAtDesc: "最後にやり取りした日時が新しい順"
+    lastCommunicatedAtAsc: "The date and time of the older interactions"
+    lastCommunicatedAtDesc: "The date and time of the newer interactions"
     notesAsc: "Order by least Notes posted"
     notesDesc: "Order by most Notes posted"
     usersAsc: "Less followers"
@@ -1264,10 +1280,10 @@ admin/views/federation.vue:
     followingDesc: "Has more followers"
     followersAsc: "Sort by having less followers"
     followersDesc: "Sort by the larger number of followers"
-    driveUsageAsc: "ドライブ使用量が少ない順"
-    driveUsageDesc: "ドライブ使用量が多い順"
-    driveFilesAsc: "ドライブのファイル数が少ない順"
-    driveFilesDesc: "ドライブのファイル数が多い順"
+    driveUsageAsc: "Least storage used"
+    driveUsageDesc: "Most storage used"
+    driveFilesAsc: "By the smallest number of files stored on Drive"
+    driveFilesDesc: "By the largest number of files stored on Drive"
   state: "Status"
   states:
     all: "All"
@@ -1282,12 +1298,12 @@ admin/views/federation.vue:
     users-total: "Total number of users"
     notes: "Increase, or decrease in the number of notes"
     notes-total: "Total number of notes"
-    ff: "フォロー/フォロワーの増減"
-    ff-total: "フォロー/フォロワーの積算"
-    drive-usage: "ドライブ使用量の増減"
-    drive-usage-total: "ドライブ使用量の積算"
-    drive-files: "ドライブファイル数の増減"
-    drive-files-total: "ドライブファイル数の積算"
+    ff: "Increase of followers"
+    ff-total: "Total number of follows accumulated"
+    drive-usage: "Increase and decrease in storage use"
+    drive-usage-total: "Total usage of the Drive"
+    drive-files: "Increase, or decrease in the number of files stored on Drive"
+    drive-files-total: "The number of files accumulated on Drive"
   chart-spans:
     hour: "Hourly"
     day: "Daily"
@@ -1305,8 +1321,6 @@ desktop/views/pages/welcome.vue:
   info: "Information"
 desktop/views/pages/drive.vue:
   title: "Misskey storage"
-desktop/views/pages/home-customize.vue:
-  title: "Customize home layout"
 desktop/views/pages/note.vue:
   prev: "Previous post"
   next: "Next post"
@@ -1338,24 +1352,22 @@ desktop/views/pages/user/user.photos.vue:
   title: "Photos"
   loading: "Loading"
   no-photos: "No photos"
-desktop/views/pages/user/user.profile.vue:
-  follows-you: "Follows you"
-  menu: "Menu"
 desktop/views/pages/user/user.header.vue:
   posts: "Notes"
   following: "Following"
   followers: "Followers"
   is-bot: "This account is a Bot"
+  no-description: "The user has not written their profile introduction"
   years-old: "{age} years old"
   year: "/"
   month: "/"
   day: "-"
+  follows-you: "Follows you"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
   with-media: "Media"
   my-posts: "My posts"
-  empty: "This user doesn't seem to have posted anything yet."
 desktop/views/widgets/messaging.vue:
   title: "Message"
 desktop/views/widgets/notifications.vue:
@@ -1389,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
   deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
-  root-rename-alert: "You're in the root; it can't be renamed because it's not a folder. Navigate to a folder you want to rename and try again."
-  root-move-alert: "You're in the root; it can't be moved because it's not a folder. Navigate to a folder you want to move and try again."
+  here-is-root: "Currently, you are on the root, not inside of any folder."
   url-prompt: "URL of the file you want to upload"
   uploading: "Upload requested. It may take a while for the upload to finish."
 mobile/views/components/drive-file-chooser.vue:
@@ -1417,12 +1428,6 @@ common/views/components/follow-button.vue:
   request-pending: "Pending"
   follow-processing: "Processing"
   follow-request: "Follow request"
-mobile/views/components/friends-maker.vue:
-  title: "Let's follow them"
-  empty: "Featured user was not found."
-  fetching: "Loading"
-  refresh: "See more"
-  close: "Close"
 mobile/views/components/note.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
@@ -1459,8 +1464,6 @@ mobile/views/components/sub-note-content.vue:
   deleted: "This post has been deleted"
   media-count: "{} media attached"
   poll: "Poll"
-mobile/views/components/timeline.vue:
-  empty: "No notes"
 mobile/views/components/ui.header.vue:
   welcome-back: "Welcome back, "
   adjective: "Sir"
@@ -1477,12 +1480,6 @@ mobile/views/components/ui.nav.vue:
   settings: "Settings"
   admin: "Admin"
   about: "About Misskey"
-mobile/views/components/user-timeline.vue:
-  no-notes: "It seems this user hasn't posted anything yet."
-  no-notes-with-media: "There are no notes with media attachments"
-mobile/views/components/users-list.vue:
-  all: "All"
-  known: "In common"
 mobile/views/pages/favorites.vue:
   title: "Favorites"
 mobile/views/pages/user-lists.vue:
@@ -1542,7 +1539,7 @@ mobile/views/pages/settings.vue:
   timeline: "Timeline"
   show-reply-target: "Show reply target"
   show-my-renotes: "Show my reposts"
-  show-renoted-my-notes: "Show renoted posts of mine"
+  show-renoted-my-notes: "Show the renotes of my posts"
   show-local-renotes: "Show renoted local posts"
   post-style: "Post design"
   post-style-standard: "Standard"
@@ -1590,15 +1587,9 @@ mobile/views/pages/user/home.vue:
   activity: "Activity"
   keywords: "Keywords"
   domains: "Domains"
-  frequently-replied-users: "Frequently mentioned users"
+  frequently-replied-users: "Frequent mentions"
   followers-you-know: "Followers you know"
   last-used-at: "Last active:"
-mobile/views/pages/user/home.followers-you-know.vue:
-  no-users: "No users you know"
-mobile/views/pages/user/home.friends.vue:
-  no-users: "There are no users that you know"
-mobile/views/pages/user/home.notes.vue:
-  no-notes: "No notes"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "No photos"
 deck:
@@ -1621,11 +1612,14 @@ deck:
   rename: "Rename"
   stack-left: "Stack to the left"
   pop-right: "Dock on the right"
+  disabled-timeline:
+    title: "Timeline has been disabled"
+    description: "This timeline has been disabled by the server administrator."
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
-  is-media-view: "Media view"
   edit: "Options"
 deck/deck.user-column.vue:
+  follows-you: "Follows you"
   posts: "Posts"
   following: "Following"
   followers: "Followers"

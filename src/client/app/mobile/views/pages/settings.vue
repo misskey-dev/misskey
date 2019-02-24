@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<span slot="header"><span style="margin-right:4px;"><fa icon="cog"/></span>{{ $t('settings') }}</span>
+	<template #header><span style="margin-right:4px;"><fa icon="cog"/></span>{{ $t('settings') }}</template>
 	<main>
 		<div class="signed-in-as">
 			<mfm :text="$t('signed-in-as').replace('{}', name)" :should-break="false" :plain-text="true" :custom-emojis="$store.state.i.emojis"/>
@@ -11,7 +11,7 @@
 			<x-theme/>
 
 			<ui-card>
-				<div slot="title"><fa icon="poll-h"/> {{ $t('design') }}</div>
+				<template #title><fa icon="poll-h"/> {{ $t('design') }}</template>
 
 				<section>
 					<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
@@ -63,7 +63,7 @@
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa icon="sliders-h"/> {{ $t('behavior') }}</div>
+				<template #title><fa icon="sliders-h"/> {{ $t('behavior') }}</template>
 
 				<section>
 					<ui-switch v-model="fetchOnScroll">{{ $t('fetch-on-scroll') }}</ui-switch>
@@ -93,7 +93,7 @@
 
 				<section>
 					<header>{{ $t('web-search-engine') }}</header>
-					<ui-input v-model="webSearchEngine">{{ $t('web-search-engine') }}<span slot="desc">{{ $t('web-search-engine-desc') }}</span></ui-input>
+					<ui-input v-model="webSearchEngine">{{ $t('web-search-engine') }}<template #desc>{{ $t('web-search-engine-desc') }}</template></ui-input>
 				</section>
 			</ui-card>
 
@@ -104,7 +104,7 @@
 			<x-mute-and-block/>
 
 			<ui-card>
-				<div slot="title"><fa icon="volume-up"/> {{ $t('sound') }}</div>
+				<template #title><fa icon="volume-up"/> {{ $t('sound') }}</template>
 
 				<section>
 					<ui-switch v-model="enableSounds">{{ $t('enable-sounds') }}</ui-switch>
@@ -118,14 +118,14 @@
 			<x-api-settings />
 
 			<ui-card>
-				<div slot="title"><fa icon="unlock-alt"/> {{ $t('password') }}</div>
+				<template #title><fa icon="unlock-alt"/> {{ $t('password') }}</template>
 				<section>
 					<x-password-settings/>
 				</section>
 			</ui-card>
 
 			<ui-card>
-				<div slot="title"><fa icon="sync-alt"/> {{ $t('update') }}</div>
+				<template #title><fa icon="sync-alt"/> {{ $t('update') }}</template>
 
 				<section>
 					<div>{{ $t('version') }} <i>{{ version }}</i></div>
@@ -152,7 +152,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { apiUrl, clientVersion as version, codename } from '../../../config';
+import { apiUrl, version, codename } from '../../../config';
 import checkForUpdate from '../../../common/scripts/check-for-update';
 import XTheme from '../../../common/views/components/theme.vue';
 import XDriveSettings from '../../../common/views/components/drive-settings.vue';
@@ -383,9 +383,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 main
-	margin 0 auto
-	max-width 600px
-	width 100%
 
 	> .signed-in-as
 		margin 16px

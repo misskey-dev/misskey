@@ -60,7 +60,7 @@ export default class Resolver {
 			proxy: config.proxy,
 			timeout: this.timeout,
 			headers: {
-				'User-Agent': config.user_agent,
+				'User-Agent': config.userAgent,
 				Accept: 'application/activity+json, application/ld+json'
 			},
 			json: true

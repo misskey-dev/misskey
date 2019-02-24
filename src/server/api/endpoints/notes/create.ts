@@ -8,6 +8,7 @@ import DriveFile, { IDriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { ApiError } from '../../error';
 
 let maxNoteTextLength = 1000;
 
@@ -24,6 +25,8 @@ export const meta = {
 		'ja-JP': '投稿します。'
 	},
 
+	tags: ['notes'],
+
 	requireCredential: true,
 
 	limit: {
@@ -35,7 +38,7 @@ export const meta = {
 
 	params: {
 		visibility: {
-			validator: $.str.optional.or(['public', 'home', 'followers', 'specified', 'private']),
+			validator: $.optional.str.or(['public', 'home', 'followers', 'specified', 'private']),
 			default: 'public',
 			desc: {
 				'ja-JP': '投稿の公開範囲'
@@ -43,7 +46,7 @@ export const meta = {
 		},
 
 		visibleUserIds: {
-			validator: $.arr($.type(ID)).optional.unique().min(0),
+			validator: $.optional.arr($.type(ID)).unique().min(0),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
@@ -51,7 +54,7 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.str.optional.nullable.pipe(text =>
+			validator: $.optional.nullable.str.pipe(text =>
 				length(text.trim()) <= maxNoteTextLength && text.trim() != ''
 			),
 			default: null as any,
@@ -61,14 +64,14 @@ export const meta = {
 		},
 
 		cw: {
-			validator: $.str.optional.nullable.pipe(isValidCw),
+			validator: $.optional.nullable.str.pipe(isValidCw),
 			desc: {
 				'ja-JP': 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
 			}
 		},
 
 		viaMobile: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'モバイルデバイスからの投稿か否か。'
@@ -76,7 +79,7 @@ export const meta = {
 		},
 
 		localOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'ローカルのみに投稿か否か。'
@@ -84,7 +87,7 @@ export const meta = {
 		},
 
 		noExtractMentions: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': '本文からメンションを展開しないか否か。'
@@ -92,7 +95,7 @@ export const meta = {
 		},
 
 		noExtractHashtags: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': '本文からハッシュタグを展開しないか否か。'
@@ -100,7 +103,7 @@ export const meta = {
 		},
 
 		noExtractEmojis: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': '本文からカスタム絵文字を展開しないか否か。'
@@ -108,16 +111,16 @@ export const meta = {
 		},
 
 		geo: {
-			validator: $.obj({
+			validator: $.optional.nullable.obj({
 				coordinates: $.arr().length(2)
 					.item(0, $.num.range(-180, 180))
 					.item(1, $.num.range(-90, 90)),
-				altitude: $.num.nullable,
-				accuracy: $.num.nullable,
-				altitudeAccuracy: $.num.nullable,
-				heading: $.num.nullable.range(0, 360),
-				speed: $.num.nullable
-			}).optional.nullable.strict(),
+				altitude: $.nullable.num,
+				accuracy: $.nullable.num,
+				altitudeAccuracy: $.nullable.num,
+				heading: $.nullable.num.range(0, 360),
+				speed: $.nullable.num
+			}).strict(),
 			desc: {
 				'ja-JP': '位置情報'
 			},
@@ -125,7 +128,7 @@ export const meta = {
 		},
 
 		fileIds: {
-			validator: $.arr($.type(ID)).optional.unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '添付するファイル'
@@ -133,7 +136,7 @@ export const meta = {
 		},
 
 		mediaIds: {
-			validator: $.arr($.type(ID)).optional.unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			transform: transformMany,
 			desc: {
 				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
@@ -141,7 +144,7 @@ export const meta = {
 		},
 
 		replyId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '返信対象'
@@ -149,7 +152,7 @@ export const meta = {
 		},
 
 		renoteId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': 'Renote対象'
@@ -157,12 +160,12 @@ export const meta = {
 		},
 
 		poll: {
-			validator: $.obj({
+			validator: $.optional.obj({
 				choices: $.arr($.str)
 					.unique()
 					.range(2, 10)
 					.each(c => c.length > 0 && c.length < 50)
-			}).optional.strict(),
+			}).strict(),
 			desc: {
 				'ja-JP': 'アンケート'
 			},
@@ -172,18 +175,48 @@ export const meta = {
 
 	res: {
 		type: 'object',
-		props: {
+		properties: {
 			createdNote: {
-				type: 'entity(Note)',
-				desc: {
-					'ja-JP': '作成した投稿'
-				}
+				type: 'Note',
+				description: '作成した投稿'
 			}
 		}
+	},
+
+	errors: {
+		noSuchRenoteTarget: {
+			message: 'No such renote target.',
+			code: 'NO_SUCH_RENOTE_TARGET',
+			id: 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4'
+		},
+
+		cannotReRenote: {
+			message: 'You can not Renote a pure Renote.',
+			code: 'CANNOT_RENOTE_TO_A_PURE_RENOTE',
+			id: 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a'
+		},
+
+		noSuchReplyTarget: {
+			message: 'No such reply target.',
+			code: 'NO_SUCH_REPLY_TARGET',
+			id: '749ee0f6-d3da-459a-bf02-282e2da4292c'
+		},
+
+		cannotReplyToPureRenote: {
+			message: 'You can not reply to a pure Renote.',
+			code: 'CANNOT_REPLY_TO_A_PURE_RENOTE',
+			id: '3ac74a84-8fd5-4bb0-870f-01804f82ce15'
+		},
+
+		contentRequired: {
+			message: 'Content required. You need to set text, fileIds, renoteId or poll.',
+			code: 'CONTENT_REQUIRED',
+			id: '6f57e42b-c348-439b-bc45-993995cc515a'
+		},
 	}
 };
 
-export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user, app) => {
 	let visibleUsers: IUser[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => User.findOne({
@@ -212,9 +245,9 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		});
 
 		if (renote == null) {
-			return rej('renoteee is not found');
+			throw new ApiError(meta.errors.noSuchRenoteTarget);
 		} else if (renote.renoteId && !renote.text && !renote.fileIds) {
-			return rej('cannot renote to renote');
+			throw new ApiError(meta.errors.cannotReRenote);
 		}
 	}
 
@@ -226,12 +259,12 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		});
 
 		if (reply === null) {
-			return rej('in reply to note is not found');
+			throw new ApiError(meta.errors.noSuchReplyTarget);
 		}
 
 		// 返信対象が引用でないRenoteだったらエラー
 		if (reply.renoteId && !reply.text && !reply.fileIds) {
-			return rej('cannot reply to renote');
+			throw new ApiError(meta.errors.cannotReplyToPureRenote);
 		}
 	}
 
@@ -245,7 +278,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
 	if (!(ps.text || files.length || renote || ps.poll)) {
-		return rej('text, fileIds, renoteId or poll is required');
+		throw new ApiError(meta.errors.contentRequired);
 	}
 
 	// 後方互換性のため
@@ -254,7 +287,7 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 	}
 
 	// 投稿を作成
-	create(user, {
+	const note = await create(user, {
 		createdAt: new Date(),
 		files: files,
 		poll: ps.poll,
@@ -271,14 +304,9 @@ export default define(meta, (ps, user, app) => new Promise(async (res, rej) => {
 		apHashtags: ps.noExtractHashtags ? [] : undefined,
 		apEmojis: ps.noExtractEmojis ? [] : undefined,
 		geo: ps.geo
-	})
-	.then(note => pack(note, user))
-	.then(noteObj => {
-		res({
-			createdNote: noteObj
-		});
-	})
-	.catch(e => {
-		rej(e);
 	});
-}));
+
+	return {
+		createdNote: await pack(note, user)
+	};
+});

@@ -359,7 +359,7 @@ root(fill)
 				display none
 
 			> *
-				display block
+				display inline-block
 				min-width 16px
 				max-width 150px
 				overflow hidden

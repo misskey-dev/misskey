@@ -3,6 +3,7 @@ import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	stability: 'stable',
@@ -12,13 +13,15 @@ export const meta = {
 		'en-US': 'Create a folder of drive.'
 	},
 
+	tags: ['drive'],
+
 	requireCredential: true,
 
 	kind: 'drive-write',
 
 	params: {
 		name: {
-			validator: $.str.optional.pipe(isValidFolderName),
+			validator: $.optional.str.pipe(isValidFolderName),
 			default: 'Untitled',
 			desc: {
 				'ja-JP': 'フォルダ名',
@@ -27,17 +30,25 @@ export const meta = {
 		},
 
 		parentId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'
 			}
 		}
+	},
+
+	errors: {
+		noSuchFolder: {
+			message: 'No such folder.',
+			code: 'NO_SUCH_FOLDER',
+			id: '53326628-a00d-40a6-a3cd-8975105c0f95'
+		},
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// If the parent folder is specified
 	let parent = null;
 	if (ps.parentId) {
@@ -49,7 +60,7 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 			});
 
 		if (parent === null) {
-			return rej('parent-not-found');
+			throw new ApiError(meta.errors.noSuchFolder);
 		}
 	}
 
@@ -61,12 +72,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		userId: user._id
 	});
 
-	// Serialize
 	const folderObj = await pack(folder);
-
-	// Response
-	res(folderObj);
 
 	// Publish folderCreated event
 	publishDriveStream(user._id, 'folderCreated', folderObj);
-}));
+
+	return folderObj;
+});

@@ -10,6 +10,8 @@ export const meta = {
 		'ja-JP': 'ドライブに指定されたURLに存在するファイルをアップロードします。'
 	},
 
+	tags: ['drive'],
+
 	limit: {
 		duration: ms('1hour'),
 		max: 60
@@ -26,13 +28,13 @@ export const meta = {
 		},
 
 		folderId: {
-			validator: $.type(ID).optional.nullable,
+			validator: $.optional.nullable.type(ID),
 			default: null as any,
 			transform: transform
 		},
 
 		isSensitive: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
@@ -41,7 +43,7 @@ export const meta = {
 		},
 
 		force: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
@@ -50,6 +52,6 @@ export const meta = {
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
-	res(pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force), { self: true }));
-}));
+export default define(meta, async (ps, user) => {
+	return await pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force), { self: true });
+});

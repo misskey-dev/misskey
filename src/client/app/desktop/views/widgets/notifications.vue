@@ -1,11 +1,11 @@
 <template>
 <div class="mkw-notifications">
-	<mk-widget-container :show-header="!props.compact">
-		<template slot="header"><fa :icon="['far', 'bell']"/>{{ $t('title') }}</template>
-		<!-- <button slot="func" :title="$t('title')" @click="settings"><fa icon="cog"/></button> -->
+	<ui-container :show-header="!props.compact">
+		<template #header><fa :icon="['far', 'bell']"/>{{ $t('title') }}</template>
+		<!-- <button #func :title="$t('title')" @click="settings"><fa icon="cog"/></button> -->
 
 		<mk-notifications :class="$style.notifications"/>
-	</mk-widget-container>
+	</ui-container>
 </div>
 </template>
 

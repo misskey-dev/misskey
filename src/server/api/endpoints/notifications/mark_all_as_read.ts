@@ -9,26 +9,25 @@ export const meta = {
 		'en-US': 'Mark all notifications as read.'
 	},
 
+	tags: ['notifications', 'account'],
+
 	requireCredential: true,
 
 	kind: 'notification-write'
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	// Update documents
 	await Notification.update({
 		notifieeId: user._id,
 		isRead: false
 	}, {
-			$set: {
-				isRead: true
-			}
-		}, {
-			multi: true
-		});
-
-	// Response
-	res();
+		$set: {
+			isRead: true
+		}
+	}, {
+		multi: true
+	});
 
 	// Update flag
 	User.update({ _id: user._id }, {
@@ -39,4 +38,4 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 
 	// 全ての通知を読みましたよというイベントを発行
 	publishMainStream(user._id, 'readAllNotifications');
-}));
+});

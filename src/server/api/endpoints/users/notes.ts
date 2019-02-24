@@ -1,20 +1,21 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
-import getHostLower from '../../common/get-host-lower';
 import Note, { packMany } from '../../../../models/note';
-import User from '../../../../models/user';
 import define from '../../define';
-import { countIf } from '../../../../prelude/array';
 import Following from '../../../../models/following';
+import { ApiError } from '../../error';
+import { getUser } from '../../common/getters';
 
 export const meta = {
 	desc: {
 		'ja-JP': '指定したユーザーのタイムラインを取得します。'
 	},
 
+	tags: ['users', 'notes'],
+
 	params: {
 		userId: {
-			validator: $.type(ID).optional,
+			validator: $.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
@@ -22,19 +23,8 @@ export const meta = {
 			}
 		},
 
-		username: {
-			validator: $.str.optional,
-			desc: {
-				'ja-JP': 'ユーザー名'
-			}
-		},
-
-		host: {
-			validator: $.str.optional.nullable,
-		},
-
 		includeReplies: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 
 			desc: {
@@ -43,7 +33,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
@@ -51,7 +41,7 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
@@ -59,7 +49,7 @@ export const meta = {
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
@@ -67,21 +57,21 @@ export const meta = {
 		},
 
 		sinceDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		},
 
 		untilDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		},
 
 		includeMyRenotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': '自分の行ったRenoteを含めるかどうか'
@@ -89,7 +79,7 @@ export const meta = {
 		},
 
 		includeRenotedMyNotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
@@ -97,7 +87,7 @@ export const meta = {
 		},
 
 		includeLocalRenotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
@@ -105,7 +95,7 @@ export const meta = {
 		},
 
 		withFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
@@ -113,7 +103,7 @@ export const meta = {
 		},
 
 		mediaOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
@@ -121,46 +111,43 @@ export const meta = {
 		},
 
 		fileType: {
-			validator: $.arr($.str).optional,
+			validator: $.optional.arr($.str),
 			desc: {
 				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
 			}
 		},
 
 		excludeNsfw: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: false,
 			desc: {
 				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
 			}
 		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '27e494ba-2ac2-48e8-893b-10d4d8c2387b'
+		}
 	}
 };
 
-export default define(meta, (ps, me) => new Promise(async (res, rej) => {
-	if (ps.userId === undefined && ps.username === undefined) {
-		return rej('userId or username is required');
-	}
-
-	// Check if only one of sinceId, untilId, sinceDate, untilDate specified
-	if (countIf(x => x != null, [ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate]) > 1) {
-		throw 'only one of sinceId, untilId, sinceDate, untilDate can be specified';
-	}
-
-	const q = ps.userId != null
-		? { _id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: getHostLower(ps.host) } ;
-
+export default define(meta, async (ps, me) => {
 	// Lookup user
-	const user = await User.findOne(q, {
-		fields: {
-			_id: true
-		}
+	const user = await getUser(ps.userId).catch(e => {
+		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+		throw e;
 	});
-
-	if (user === null) {
-		return rej('user not found');
-	}
 
 	const isFollowing = me == null ? false : ((await Following.findOne({
 		followerId: me._id,
@@ -259,13 +246,10 @@ export default define(meta, (ps, me) => new Promise(async (res, rej) => {
 	}
 	//#endregion
 
-	// Issue query
-	const notes = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const notes = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	// Serialize
-	res(await packMany(notes, me));
-}));
+	return await packMany(notes, me);
+});

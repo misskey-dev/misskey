@@ -6,12 +6,15 @@ import UserList from '../../../../models/user-list';
 import define from '../../define';
 import { getFriends } from '../../common/get-friends';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { ApiError } from '../../error';
 
 export const meta = {
 	desc: {
 		'ja-JP': '指定したユーザーリストのタイムラインを取得します。',
 		'en-US': 'Get timeline of a user list.'
 	},
+
+	tags: ['notes', 'lists'],
 
 	requireCredential: true,
 
@@ -25,7 +28,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.num.optional.range(1, 100),
+			validator: $.optional.num.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
@@ -33,7 +36,7 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
@@ -41,7 +44,7 @@ export const meta = {
 		},
 
 		untilId: {
-			validator: $.type(ID).optional,
+			validator: $.optional.type(ID),
 			transform: transform,
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
@@ -49,21 +52,21 @@ export const meta = {
 		},
 
 		sinceDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		},
 
 		untilDate: {
-			validator: $.num.optional,
+			validator: $.optional.num,
 			desc: {
 				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
 			}
 		},
 
 		includeMyRenotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': '自分の行ったRenoteを含めるかどうか'
@@ -71,7 +74,7 @@ export const meta = {
 		},
 
 		includeRenotedMyNotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
@@ -79,7 +82,7 @@ export const meta = {
 		},
 
 		includeLocalRenotes: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			default: true,
 			desc: {
 				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
@@ -87,22 +90,37 @@ export const meta = {
 		},
 
 		withFiles: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
 		},
 
 		mediaOnly: {
-			validator: $.bool.optional,
+			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
 			}
 		},
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
+	errors: {
+		noSuchList: {
+			message: 'No such list.',
+			code: 'NO_SUCH_LIST',
+			id: '8fb1fbd5-e476-4c37-9fb0-43d55b63a2ff'
+		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const [list, followings, hideUserIds] = await Promise.all([
 		// リストを取得
 		// Fetch the list
@@ -119,9 +137,12 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		getHideUserIds(user)
 	]);
 
+	if (list == null) {
+		throw new ApiError(meta.errors.noSuchList);
+	}
+
 	if (list.userIds.length == 0) {
-		res([]);
-		return;
+		return [];
 	}
 
 	//#region Construct query
@@ -269,13 +290,10 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 	}
 	//#endregion
 
-	// Issue query
-	const timeline = await Note
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const timeline = await Note.find(query, {
+		limit: ps.limit,
+		sort: sort
+	});
 
-	// Serialize
-	res(await packMany(timeline, user));
-}));
+	return await packMany(timeline, user);
+});

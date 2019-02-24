@@ -14,12 +14,12 @@ export const meta = {
 		},
 
 		value: {
-			validator: $.any.nullable
+			validator: $.nullable.any
 		}
 	}
 };
 
-export default define(meta, (ps, user) => new Promise(async (res, rej) => {
+export default define(meta, async (ps, user) => {
 	const x: any = {};
 	x[`clientSettings.${ps.name}`] = ps.value;
 
@@ -27,11 +27,11 @@ export default define(meta, (ps, user) => new Promise(async (res, rej) => {
 		$set: x
 	});
 
-	res();
-
 	// Publish event
 	publishMainStream(user._id, 'clientSettingUpdated', {
 		key: ps.name,
 		value: ps.value
 	});
-}));
+
+	return;
+});
