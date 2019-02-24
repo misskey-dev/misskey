@@ -30,6 +30,13 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		},
+	},
+
 	errors: {
 		noSuchFile: {
 			message: 'No such file.',

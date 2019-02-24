@@ -54,7 +54,14 @@ export const meta = {
 			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])),
 			default: [] as string[]
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Notification',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

@@ -146,6 +146,28 @@ export const schemas = {
 		required: ['id', 'userId', 'createdAt']
 	},
 
+	Notification: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'id',
+				description: 'The unique identifier for this notification.'
+			},
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the notification was created.'
+			},
+			type: {
+				type: 'string',
+				enum: ['follow', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote'],
+				description: 'The type of the notification.'
+			},
+		},
+		required: ['id', 'createdAt', 'type']
+	},
+
 	DriveFile: {
 		type: 'object',
 		properties: {

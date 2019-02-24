@@ -21,7 +21,11 @@ export const meta = {
 				'ja-JP': 'ファイルのMD5ハッシュ'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'DriveFile',
+	},
 };
 
 export default define(meta, async (ps, user) => {

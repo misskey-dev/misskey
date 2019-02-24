@@ -29,7 +29,14 @@ export const meta = {
 		type: {
 			validator: $.optional.str.match(/^[a-zA-Z\/\-\*]+$/)
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'DriveFile',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
