@@ -67,7 +67,14 @@ export const meta = {
 			validator: $.optional.type(ID),
 			transform: transform,
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Note',
+		}
+	},
 };
 
 export default define(meta, async (ps) => {

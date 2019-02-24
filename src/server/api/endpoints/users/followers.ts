@@ -52,6 +52,23 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'object',
+		properties: {
+			users: {
+				type: 'array',
+				items: {
+					type: 'User',
+				}
+			},
+			next: {
+				type: 'string',
+				format: 'id',
+				nullable: true
+			}
+		}
+	},
+
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',

@@ -53,7 +53,14 @@ export const meta = {
 			]),
 			default: 'local'
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'User',
+		}
+	},
 };
 
 const state: any = { // < https://github.com/Microsoft/TypeScript/issues/1863

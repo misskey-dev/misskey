@@ -52,6 +52,13 @@ export const meta = {
 			}
 		},
 	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'User',
+		}
+	},
 };
 
 export default define(meta, async (ps, me) => {

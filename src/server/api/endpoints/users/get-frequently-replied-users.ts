@@ -29,6 +29,13 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'array',
+		items: {
+			type: 'User',
+		}
+	},
+
 	errors: {
 		noSuchUser: {
 			message: 'No such user.',
