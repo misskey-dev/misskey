@@ -41,24 +41,22 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		}
 	};
 
-	function genProps(props: { [key: string]: Context & { desc: any, default: any }; }) {
+	function genProps(props: { [key: string]: Context; }) {
 		const properties = {} as any;
 
-		const kvs = Object.entries(props);
-
-		for (const kv of kvs) {
-			properties[kv[0]] = genProp(kv[1], kv[1].desc, kv[1].default);
+		for (const [k, v] of Object.entries(props)) {
+			properties[k] = genProp(v);
 		}
 
 		return properties;
 	}
 
-	function genProp(param: Context, desc?: string, _default?: any): any {
+	function genProp(param: Context): any {
 		const required = param.name === 'Object' ? (param as any).props ? Object.entries((param as any).props).filter(([k, v]: any) => !v.isOptional).map(([k, v]) => k) : [] : [];
 		return {
-			description: desc,
-			default: _default,
-			...(_default ? { default: _default } : {}),
+			description: (param.data || {}).desc,
+			default: (param.data || {}).default,
+			...((param.data || {}).default ? { default: (param.data || {}).default } : {}),
 			type: param.name === 'ID' ? 'string' : param.name.toLowerCase(),
 			...(param.name === 'ID' ? { example: 'xxxxxxxxxxxxxxxxxxxxxxxx', format: 'id' } : {}),
 			nullable: param.isNullable,
@@ -97,8 +95,9 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 
 		if (endpoint.meta.params) {
 			for (const [k, v] of Object.entries(endpoint.meta.params)) {
-				if (v.desc) (v.validator as any).desc = v.desc[lang];
-				if (v.default) (v.validator as any).default = v.default;
+				if (v.validator.data == null) v.validator.data = {};
+				if (v.desc) v.validator.data.desc = v.desc[lang];
+				if (v.default) v.validator.data.default = v.default;
 				porops[k] = v.validator;
 			}
 		}
