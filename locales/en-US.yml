@@ -146,6 +146,8 @@ common:
   view-on-remote: "For completion, view it remotely."
   renoted-by: "Renoted by {user}"
   no-notes: "Without any notes"
+  turn-on-darkmode: "闇に飲まれる"
+  turn-off-darkmode: "光あれ"
   error:
     title: "Something happened :("
     retry: "Retry"
