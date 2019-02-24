@@ -10,7 +10,11 @@ export const meta = {
 
 	params: {
 		token: {
-			validator: $.str
+			validator: $.str,
+			desc: {
+				'ja-JP': 'セッションのトークン',
+				'en-US': 'The token of a session.'
+			}
 		}
 	},
 

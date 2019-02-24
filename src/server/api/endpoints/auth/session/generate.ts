@@ -13,7 +13,11 @@ export const meta = {
 
 	params: {
 		appSecret: {
-			validator: $.str
+			validator: $.str,
+			desc: {
+				'ja-JP': 'アプリケーションのシークレットキー',
+				'en-US': 'The secret key of your application.'
+			}
 		}
 	},
 
