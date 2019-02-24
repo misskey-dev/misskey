@@ -146,6 +146,8 @@ common:
   view-on-remote: " Consulter le profil complet"
   renoted-by: "Renoté par {user}"
   no-notes: "投稿がありません"
+  turn-on-darkmode: "闇に飲まれる"
+  turn-off-darkmode: "光あれ"
   error:
     title: "Une erreur est survenue"
     retry: "Réessayer"
