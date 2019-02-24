@@ -97,6 +97,28 @@ export const schemas = {
 		required: ['id', 'name', 'username', 'createdAt']
 	},
 
+	UserList: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'id',
+				description: 'The unique identifier for this UserList.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			},
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the UserList was created.'
+			},
+			title: {
+				type: 'string',
+				description: 'The name of the UserList.'
+			},
+		},
+		required: ['id', 'createdAt', 'title']
+	},
+
 	Note: {
 		type: 'object',
 		properties: {

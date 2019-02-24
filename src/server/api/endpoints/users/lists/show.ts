@@ -23,6 +23,10 @@ export const meta = {
 		},
 	},
 
+	res: {
+		type: 'UserList'
+	},
+
 	errors: {
 		noSuchList: {
 			message: 'No such list.',

@@ -10,7 +10,14 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-read'
+	kind: 'account-read',
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'UserList',
+		},
+	},
 };
 
 export default define(meta, async (ps, me) => {
