@@ -22,7 +22,7 @@ export default define({
 	name: 'rss',
 	props: () => ({
 		compact: false,
-		url: 'http://news.yahoo.co.jp/pickup/rss.xml'
+		url: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews'
 	})
 }).extend({
 	i18n: i18n(),
@@ -78,6 +78,9 @@ export default define({
 				padding 4px 0
 				color var(--text)
 				border-bottom dashed var(--lineWidth) var(--faceDivider)
+				white-space nowrap
+				text-overflow ellipsis
+				overflow hidden
 
 				&:last-child
 					border-bottom none
