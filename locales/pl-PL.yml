@@ -146,6 +146,8 @@ common:
   view-on-remote: "Dla dopełnienia, zobacz to zdalnie."
   renoted-by: "{user} udostępnił(a)"
   no-notes: "投稿がありません"
+  turn-on-darkmode: "闇に飲まれる"
+  turn-off-darkmode: "光あれ"
   error:
     title: "Coś poszło nie tak"
     retry: "Ponów próbę"

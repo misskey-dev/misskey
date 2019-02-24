@@ -58,7 +58,7 @@ common:
   trash: "垃圾箱"
   drive: "网盘"
   messaging: "聊天"
-  home: "ホーム"
+  home: "首页"
   deck: "Deck"
   timeline: "时间线"
   explore: "发现"
@@ -146,6 +146,8 @@ common:
   view-on-remote: "查看准确的信息"
   renoted-by: "由 {user} Renote"
   no-notes: "没有帖子"
+  turn-on-darkmode: "切换暗色主题"
+  turn-off-darkmode: "切换亮色主题"
   error:
     title: "出现问题"
     retry: "重试"
@@ -1401,7 +1403,7 @@ mobile/views/components/drive.vue:
   prompt: "您想要干什么呢？(请输入数字):<1 → 上传文件 | 2 → 从URL上传文件 | 3 → 创建新文件夹 | 4 → 更改这个文件夹的名称 | 5 → 移动这个文件夹 | 6 → 删除这个文件夹>"
   deletion-alert: "抱歉！ 删除文件夹功能尚未实现。"
   folder-name: "文件夹名称"
-  here-is-root: "現在いる場所はルートで、フォルダではありません。"
+  here-is-root: "当前位置为根目录。"
   url-prompt: "要上传的文件的URL"
   uploading: "已请求上传。 上传完成可能需要一段时间。"
 mobile/views/components/drive-file-chooser.vue:

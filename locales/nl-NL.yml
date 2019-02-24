@@ -146,6 +146,8 @@ common:
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
   no-notes: "投稿がありません"
+  turn-on-darkmode: "闇に飲まれる"
+  turn-off-darkmode: "光あれ"
   error:
     title: "問題が発生しました"
     retry: "やり直す"
