@@ -1,5 +1,7 @@
 <template>
-<ui-container :body-togglable="true">
+<ui-container :body-togglable="true"
+	:expanded="$store.state.device.expandUsersPhotos"
+	@toggle="expanded => $store.commit('device/set', { key: 'expandUsersPhotos', value: expanded })">
 	<template #header><fa icon="camera"/> {{ $t('title') }}</template>
 
 	<div class="dzsuvbsrrrwobdxifudxuefculdfiaxd">

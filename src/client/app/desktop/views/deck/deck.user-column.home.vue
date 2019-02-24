@@ -6,7 +6,9 @@
 			<x-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
 		</div>
 	</ui-container>
-	<ui-container v-if="images.length > 0" :body-togglable="true">
+	<ui-container v-if="images.length > 0" :body-togglable="true"
+		:expanded="$store.state.device.expandUsersPhotos"
+		@toggle="expanded => $store.commit('device/set', { key: 'expandUsersPhotos', value: expanded })">
 		<template #header><fa :icon="['far', 'images']"/> {{ $t('images') }}</template>
 		<div class="sainvnaq">
 			<router-link v-for="image in images"
@@ -17,7 +19,9 @@
 			></router-link>
 		</div>
 	</ui-container>
-	<ui-container :body-togglable="true">
+	<ui-container :body-togglable="true"
+		:expanded="$store.state.device.expandUsersActivity"
+		@toggle="expanded => $store.commit('device/set', { key: 'expandUsersActivity', value: expanded })">
 		<template #header><fa :icon="['far', 'chart-bar']"/> {{ $t('activity') }}</template>
 		<div>
 			<div ref="chart"></div>
