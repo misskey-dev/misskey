@@ -146,6 +146,8 @@ common:
   view-on-remote: "For completion, view it remotely."
   renoted-by: "Renoted by {user}"
   no-notes: "Without any notes"
+  turn-on-darkmode: "Switch to Dark mode"
+  turn-off-darkmode: "Light mode"
   error:
     title: "Something happened :("
     retry: "Retry"
@@ -292,7 +294,7 @@ common/views/components/media-banner.vue:
   click-to-show: "Click to show"
 common/views/components/theme.vue:
   theme: "Theme"
-  light-theme: "Theme"
+  light-theme: "Theme to use in Light mode"
   dark-theme: "Theme during dark mode"
   light-themes: "Light theme"
   dark-themes: "Dark theme"
@@ -1614,7 +1616,7 @@ deck:
   pop-right: "Dock on the right"
   disabled-timeline:
     title: "Timeline has been disabled"
-    description: "This timeline has been disabled by the server administrator."
+    description: "Timeline has been disabled by the administrator."
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   edit: "Options"
