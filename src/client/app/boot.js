@@ -108,11 +108,6 @@
 		app = isMobile ? 'mobile' : 'desktop';
 	}
 
-	// Get salt query
-	const salt = localStorage.getItem('salt')
-		? `?salt=${localStorage.getItem('salt')}`
-		: '';
-
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
@@ -154,9 +149,6 @@
 		localStorage.setItem('shouldFlush', 'false');
 
 		localStorage.removeItem('locale');
-
-		// Random
-		localStorage.setItem('salt', Math.random().toString().substr(2, 8));
 
 		// Clear cache (service worker)
 		try {
