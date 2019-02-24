@@ -25,7 +25,7 @@ export const description = `
 #### 2.ユーザーに認証させる
 アプリを使ってもらうには、ユーザーにアカウントへのアクセスの許可をもらう必要があります。
 
-認証セッションを開始するには、[${config.api_url}/auth/session/generate](#operation/auth/session/generate) へパラメータに appSecret としてシークレットキーを含めたリクエストを送信します。
+認証セッションを開始するには、[${config.apiUrl}/auth/session/generate](#operation/auth/session/generate) へパラメータに appSecret としてシークレットキーを含めたリクエストを送信します。
 リクエスト形式はJSONで、メソッドはPOSTです。
 レスポンスとして認証セッションのトークンや認証フォームのURLが取得できるので、認証フォームのURLをブラウザで表示し、ユーザーにフォームを提示してください。
 
@@ -35,7 +35,7 @@ export const description = `
 あなたのアプリがコールバックURLを設定していない場合、ユーザーがあなたのアプリの連携を許可したことを(何らかの方法で(たとえばボタンを押させるなど))確認出来るようにしてください。
 
 #### 3.ユーザートークンを取得する
-ユーザーが連携を許可したら、[${config.api_url}/auth/session/userkey](#operation/auth/session/userkey) へリクエストを送信します。
+ユーザーが連携を許可したら、[${config.apiUrl}/auth/session/userkey](#operation/auth/session/userkey) へリクエストを送信します。
 
 上手くいけば、認証したユーザーのユーザートークンがレスポンスとして取得できます。おめでとうございます！
 

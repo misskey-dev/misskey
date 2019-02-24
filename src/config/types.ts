@@ -49,16 +49,12 @@ export type Mixin = {
 	host: string;
 	hostname: string;
 	scheme: string;
-	ws_scheme: string;
-	api_url: string;
-	ws_url: string;
-	auth_url: string;
-	docs_url: string;
-	stats_url: string;
-	status_url: string;
-	dev_url: string;
-	drive_url: string;
-	user_agent: string;
+	wsScheme: string;
+	apiUrl: string;
+	wsUrl: string;
+	authUrl: string;
+	driveUrl: string;
+	userAgent: string;
 };
 
 export type Config = Source & Mixin;

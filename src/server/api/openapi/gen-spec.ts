@@ -23,7 +23,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		},
 
 		servers: [{
-			url: config.api_url
+			url: config.apiUrl
 		}],
 
 		paths: {} as any,

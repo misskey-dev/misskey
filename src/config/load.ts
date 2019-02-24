@@ -32,16 +32,12 @@ export default function load() {
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');
-	mixin.ws_scheme = mixin.scheme.replace('http', 'ws');
-	mixin.ws_url = `${mixin.ws_scheme}://${mixin.host}`;
-	mixin.api_url = `${mixin.scheme}://${mixin.host}/api`;
-	mixin.auth_url = `${mixin.scheme}://${mixin.host}/auth`;
-	mixin.dev_url = `${mixin.scheme}://${mixin.host}/dev`;
-	mixin.docs_url = `${mixin.scheme}://${mixin.host}/docs`;
-	mixin.stats_url = `${mixin.scheme}://${mixin.host}/stats`;
-	mixin.status_url = `${mixin.scheme}://${mixin.host}/status`;
-	mixin.drive_url = `${mixin.scheme}://${mixin.host}/files`;
-	mixin.user_agent = `Misskey/${pkg.version} (${config.url})`;
+	mixin.wsScheme = mixin.scheme.replace('http', 'ws');
+	mixin.wsUrl = `${mixin.wsScheme}://${mixin.host}`;
+	mixin.apiUrl = `${mixin.scheme}://${mixin.host}/api`;
+	mixin.authUrl = `${mixin.scheme}://${mixin.host}/auth`;
+	mixin.driveUrl = `${mixin.scheme}://${mixin.host}/files`;
+	mixin.userAgent = `Misskey/${pkg.version} (${config.url})`;
 
 	if (config.autoAdmin == null) config.autoAdmin = false;
 

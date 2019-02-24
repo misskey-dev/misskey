@@ -79,13 +79,13 @@ router.get('/*/*', async ctx => {
 	showdown.extension('wsUrlExtension', () => ({
 		type: 'output',
 		regex: /%WS_URL%/g,
-		replace: config.ws_url
+		replace: config.wsUrl
 	}));
 
 	showdown.extension('apiUrlExtension', () => ({
 		type: 'output',
 		regex: /%API_URL%/g,
-		replace: config.api_url
+		replace: config.apiUrl
 	}));
 
 	const conv = new showdown.Converter({

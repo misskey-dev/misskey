@@ -52,6 +52,6 @@ export default define(meta, async (ps) => {
 
 	return {
 		token: doc.token,
-		url: `${config.auth_url}/${doc.token}`
+		url: `${config.authUrl}/${doc.token}`
 	};
 });
