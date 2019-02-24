@@ -56,7 +56,7 @@ export const meta = {
 						},
 					}
 				},
-				description: 'The description of this instance.',
+				description: 'The announcements of this instance.',
 			},
 			disableRegistration: {
 				type: 'boolean',
