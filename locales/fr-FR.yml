@@ -58,6 +58,7 @@ common:
   trash: "Corbeille"
   drive: "Drive"
   messaging: "Conversations"
+  home: "ホーム"
   deck: "Deck"
   timeline: "Fil"
   explore: "Découvrir"
@@ -1400,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "Que veux-tu faire ? (Entrez un nombre): <1 → Télécharger le fichier | 2 → Télécharger le fichier avec l'URL | 3 → Créer le dossier | 4 → Modifier le nom du dossier | 5 → Déplacer ce dossier | 6 → Supprimer ce dossier >"
   deletion-alert: "Désolé ! La suppression d’un dossier n’est pas encore implémentée."
   folder-name: "Nom du dossier"
-  root-rename-alert: "L'emplacement actuel est la racine, pas le dossier, vous ne pouvez donc pas le renommer. Veuillez vous déplacer dans le dossier dont vous souhaitez modifier le nom."
-  root-move-alert: "L'emplacement actuel est la racine, ce n'est pas un dossier et il ne peut pas être déplacé. Veuillez vous déplacer dans le dossier que vous souhaitez déplacer."
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "URL du fichier que vous souhaitez téléverser"
   uploading: "Envoi demandé. Le téléversement pourrait prendre un certain temps avant de s'achever."
 mobile/views/components/drive-file-chooser.vue:

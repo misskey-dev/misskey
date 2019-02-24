@@ -58,6 +58,7 @@ common:
   trash: "Papirkurv"
   drive: "ドライブ"
   messaging: "トーク"
+  home: "ホーム"
   deck: "デッキ"
   timeline: "タイムライン"
   explore: "みつける"
@@ -1400,8 +1401,7 @@ mobile/views/components/drive.vue:
   prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
   deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
   folder-name: "フォルダー名"
-  root-rename-alert: "現在いる場所はルートで、フォルダではないため名前の変更はできません。名前を変更したいフォルダに移動してからやってください。"
-  root-move-alert: "現在いる場所はルートで、フォルダではないため移動はできません。移動したいフォルダに移動してからやってください。"
+  here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
 mobile/views/components/drive-file-chooser.vue:
