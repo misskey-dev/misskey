@@ -13,6 +13,32 @@ export const meta = {
 	tags: ['meta'],
 
 	params: {
+	},
+
+	res: {
+		type: 'object',
+		properties: {
+			notesCount: {
+				type: 'number',
+				description: 'The count of all (local/remote) notes of this instance.',
+			},
+			originalNotesCount: {
+				type: 'number',
+				description: 'The count of all local notes of this instance.',
+			},
+			usersCount: {
+				type: 'number',
+				description: 'The count of all (local/remote) accounts of this instance.',
+			},
+			originalUsersCount: {
+				type: 'number',
+				description: 'The count of all local accounts of this instance.',
+			},
+			instances: {
+				type: 'number',
+				description: 'The count of federated instances.',
+			},
+		}
 	}
 };
 
