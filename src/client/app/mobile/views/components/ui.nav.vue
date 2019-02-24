@@ -82,7 +82,7 @@ export default Vue.extend({
 
 	mounted() {
 		this.$root.getMeta().then(meta => {
-			this.announcements = meta.broadcasts;
+			this.announcements = meta.announcements;
 		});
 
 		if (this.$store.getters.isSignedIn) {

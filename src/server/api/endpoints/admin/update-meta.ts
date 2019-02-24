@@ -13,10 +13,10 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		broadcasts: {
+		announcements: {
 			validator: $.optional.nullable.arr($.obj()),
 			desc: {
-				'ja-JP': 'ブロードキャスト'
+				'ja-JP': 'お知らせ'
 			}
 		},
 
@@ -328,8 +328,8 @@ export const meta = {
 export default define(meta, async (ps) => {
 	const set = {} as any;
 
-	if (ps.broadcasts) {
-		set.broadcasts = ps.broadcasts;
+	if (ps.announcements) {
+		set.announcements = ps.announcements;
 	}
 
 	if (typeof ps.disableRegistration === 'boolean') {

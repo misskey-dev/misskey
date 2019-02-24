@@ -174,7 +174,7 @@ export default Vue.extend({
 			this.meta = meta;
 			this.name = meta.name;
 			this.description = meta.description;
-			this.announcements = meta.broadcasts;
+			this.announcements = meta.announcements;
 			this.banner = meta.bannerUrl;
 		});
 

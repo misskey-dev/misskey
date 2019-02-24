@@ -151,6 +151,15 @@ if ((config as any).sw) {
 		}
 	});
 }
+Meta.findOne({}).then(m => {
+	if (m != null && (m as any).broadcasts != null) {
+		Meta.update({}, {
+			$rename: {
+				broadcasts: 'announcements'
+			}
+		});
+	}
+});
 
 export type IMeta = {
 	name?: string;
@@ -173,7 +182,7 @@ export type IMeta = {
 
 	langs?: string[];
 
-	broadcasts?: any[];
+	announcements?: any[];
 
 	stats?: {
 		notesCount: number;

@@ -20,7 +20,7 @@ export const links = [/* (awaiting release) {
 
 const nodeinfo2 = async () => {
 	const [
-		{ name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker },
+		{ name, description, maintainer, langs, announcements, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker },
 		// total,
 		// activeHalfyear,
 		// activeMonth,
@@ -52,7 +52,7 @@ const nodeinfo2 = async () => {
 			// localPosts,
 			// localComments
 		},
-		metadata: { name, description, maintainer, langs, broadcasts, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker }
+		metadata: { name, description, maintainer, langs, announcements, disableRegistration, disableLocalTimeline, disableGlobalTimeline, enableRecaptcha, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, enableEmail, enableServiceWorker }
 	};
 };
 

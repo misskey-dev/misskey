@@ -12,7 +12,19 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-read'
+	kind: 'drive-read',
+
+	res: {
+		type: 'object',
+		properties: {
+			capacity: {
+				type: 'number'
+			},
+			usage: {
+				type: 'number'
+			}
+		}
+	}
 };
 
 export default define(meta, async (ps, user) => {

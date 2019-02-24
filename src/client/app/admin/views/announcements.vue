@@ -35,7 +35,7 @@ export default Vue.extend({
 
 	created() {
 		this.$root.getMeta().then(meta => {
-			this.announcements = meta.broadcasts;
+			this.announcements = meta.announcements;
 		});
 	},
 
@@ -65,7 +65,7 @@ export default Vue.extend({
 
 		save(silent) {
 			this.$root.api('admin/update-meta', {
-				broadcasts: this.announcements
+				announcements: this.announcements
 			}).then(() => {
 				if (!silent) {
 					this.$root.dialog({
