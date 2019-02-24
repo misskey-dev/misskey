@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserNotesChart from '../../../../../services/chart/per-user-notes';
+import perUserNotesChart, { perUserNotesLogSchema } from '../../../../../services/chart/per-user-notes';
 import ID, { transform } from '../../../../../misc/cafy-id';
+import { convertLog } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -38,12 +39,7 @@ export const meta = {
 		}
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(perUserNotesLogSchema),
 };
 
 export default define(meta, async (ps) => {
