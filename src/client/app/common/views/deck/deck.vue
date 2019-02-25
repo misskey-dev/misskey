@@ -81,16 +81,20 @@ export default Vue.extend({
 					widgets: []
 				}, */{
 					id: uuid(),
-					type: 'home'
+					type: 'home',
+					name: null,
 				}, {
 					id: uuid(),
-					type: 'notifications'
+					type: 'notifications',
+					name: null,
 				}, {
 					id: uuid(),
-					type: 'local'
+					type: 'local',
+					name: null,
 				}, {
 					id: uuid(),
-					type: 'global'
+					type: 'global',
+					name: null,
 				}]
 			};
 

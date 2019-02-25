@@ -165,6 +165,7 @@ export default (os: MiOS) => new Vuex.Store({
 				},
 
 				addDeckColumn(state, column) {
+					if (column.name == undefined) column.name = null;
 					state.deck.columns.push(column);
 					state.deck.layout.push([column.id]);
 				},
