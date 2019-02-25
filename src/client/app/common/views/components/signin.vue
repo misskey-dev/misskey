@@ -1,16 +1,16 @@
 <template>
 <form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
-	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange" styl="fill">
+	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
 		<span>{{ $t('username') }}</span>
 		<template #prefix>@</template>
 		<template #suffix>@{{ host }}</template>
 	</ui-input>
-	<ui-input v-model="password" type="password" :with-password-toggle="true" required styl="fill">
+	<ui-input v-model="password" type="password" :with-password-toggle="true" required>
 		<span>{{ $t('password') }}</span>
 		<template #prefix><fa icon="lock"/></template>
 	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required styl="fill">
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required>
 		<span>{{ $t('@.2fa') }}</span>
 		<template #prefix><fa icon="gavel"/></template>
 	</ui-input>

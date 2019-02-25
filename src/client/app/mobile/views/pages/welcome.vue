@@ -10,8 +10,8 @@
 			<p v-html="description || this.$t('@.about')"></p>
 			<router-link class="signup" to="/signup">{{ $t('signup') }}</router-link>
 		</div>
-		<div class="login">
-			<mk-signin :with-avatar="false"/>
+		<div class="signin">
+			<a href="/signin" @click.prevent="signin()">{{ $t('signin') }}</a>
 		</div>
 		<div class="tl">
 			<mk-welcome-timeline/>
@@ -120,6 +120,13 @@ export default Vue.extend({
 			const files = concat(notes.map((n: any): any[] => n.files));
 			this.photos = files.filter(f => image.includes(f.type)).slice(0, 6);
 		});
+	},
+	methods: {
+		signin() {
+			this.$root.dialog({
+				type: 'signin'
+			});
+		}
 	}
 });
 </script>
@@ -185,31 +192,8 @@ export default Vue.extend({
 			> .signup
 				font-weight bold
 
-		> .login
+		> .signin
 			margin 16px 0
-
-			> form
-
-				button
-					display block
-					width 100%
-					padding 10px
-					margin 0
-					color #333
-					font-size 1em
-					text-align center
-					text-decoration none
-					text-shadow 0 1px 0 rgba(255, 255, 255, 0.9)
-					background-image linear-gradient(#fafafa, #eaeaea)
-					border 1px solid #ddd
-					border-bottom-color #cecece
-					border-radius 4px
-
-					&:active
-						background-color #767676
-						background-image none
-						border-color #444
-						box-shadow 0 1px 3px rgba(#000, 0.075), inset 0 0 5px rgba(#000, 0.2)
 
 		> .tl
 			margin 16px 0

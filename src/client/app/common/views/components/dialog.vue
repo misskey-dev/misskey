@@ -2,18 +2,23 @@
 <div class="felqjxyj" :class="{ splash }">
 	<div class="bg" ref="bg" @click="onBgClick"></div>
 	<div class="main" ref="main">
-		<div class="icon" v-if="!input && !select && !user" :class="type"><fa :icon="icon"/></div>
-		<header v-if="title" v-html="title"></header>
-		<div class="body" v-if="text" v-html="text"></div>
-		<ui-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></ui-input>
-		<ui-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></ui-input>
-		<ui-select v-if="select" v-model="selectedValue">
-			<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
-		</ui-select>
-		<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash">
-			<ui-button @click="ok" primary :autofocus="!input && !select && !user">OK</ui-button>
-			<ui-button @click="cancel" v-if="showCancelButton || input || select || user">Cancel</ui-button>
-		</ui-horizon-group>
+		<template v-if="type == 'signin'">
+			<mk-signin/>
+		</template>
+		<template v-else>
+			<div class="icon" v-if="!input && !select && !user" :class="type"><fa :icon="icon"/></div>
+			<header v-if="title" v-html="title"></header>
+			<div class="body" v-if="text" v-html="text"></div>
+			<ui-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></ui-input>
+			<ui-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></ui-input>
+			<ui-select v-if="select" v-model="selectedValue">
+				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
+			</ui-select>
+			<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash">
+				<ui-button @click="ok" primary :autofocus="!input && !select && !user">{{ $t('@.ok') }}</ui-button>
+				<ui-button @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('@.cancel') }}</ui-button>
+			</ui-horizon-group>
+		</template>
 	</div>
 </div>
 </template>
@@ -23,8 +28,10 @@ import Vue from 'vue';
 import anime from 'animejs';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import parseAcct from "../../../../../misc/acct/parse";
+import i18n from '../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n(),
 	props: {
 		type: {
 			type: String,
