@@ -1,5 +1,5 @@
 <template>
-<div class="nav">
+<div class="fquwcbxs">
 	<transition name="back">
 		<div class="backdrop"
 			v-if="isOpen"
@@ -182,7 +182,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.nav
+.fquwcbxs
 	$color = var(--text)
 
 	.backdrop
