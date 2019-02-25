@@ -115,7 +115,7 @@ common:
   search: "Search"
   delete: "Delete"
   loading: "Loading"
-  ok: "OK"
+  ok: "It's OK"
   cancel: "Quit"
   update-available-title: "Update available"
   update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
