@@ -66,10 +66,11 @@ export default Vue.extend({
 		},
 
 		async pushList() {
+			const t = this.$t('select-list'); // なぜか後で参照すると null になるので最初にメモリに確保しておく
 			const lists = await this.$root.api('users/lists/list');
 			const { canceled, result: listId } = await this.$root.dialog({
 				type: null,
-				title: this.$t('select-list'),
+				title: t,
 				select: {
 					items: lists.map(list => ({
 						value: list.id, text: list.title
