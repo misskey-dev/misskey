@@ -15,7 +15,7 @@
 				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 			</ui-select>
 			<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash">
-				<ui-button @click="ok" primary :autofocus="!input && !select && !user">{{ $t('@.ok') }}</ui-button>
+				<ui-button @click="ok" primary :autofocus="!input && !select && !user">{{ (showCancelButton || input || select || user) ? $t('@.ok') : $t('@.got-it') }}</ui-button>
 				<ui-button @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('@.cancel') }}</ui-button>
 			</ui-horizon-group>
 		</template>
