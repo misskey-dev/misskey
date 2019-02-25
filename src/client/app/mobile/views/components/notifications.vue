@@ -131,15 +131,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-notifications
-	margin 0 auto
-	background var(--face)
-	border-radius 8px
-	box-shadow 0 0 2px rgba(#000, 0.1)
-	overflow hidden
-
-	@media (min-width 500px)
-		box-shadow 0 8px 32px rgba(#000, 0.1)
-
 	.transition
 		.mk-notifications-enter
 		.mk-notifications-leave-to
@@ -187,10 +178,7 @@ export default Vue.extend({
 		color var(--text)
 
 	> .placeholder
-		padding 16px
+		padding 32px
 		opacity 0.3
-
-		@media (min-width 500px)
-			padding 32px
 
 </style>

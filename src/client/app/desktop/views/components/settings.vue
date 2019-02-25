@@ -115,18 +115,18 @@
 				<ui-switch v-model="remainDeletedNote">{{ $t('remain-deleted-note') }}</ui-switch>
 			</section>
 			<section>
-				<header>{{ $t('deck-column-align') }}</header>
-				<ui-radio v-model="deckColumnAlign" value="center">{{ $t('deck-column-align-center') }}</ui-radio>
-				<ui-radio v-model="deckColumnAlign" value="left">{{ $t('deck-column-align-left') }}</ui-radio>
-				<ui-radio v-model="deckColumnAlign" value="flexible">{{ $t('deck-column-align-flexible') }}</ui-radio>
+				<header>{{ $t('@.deck-column-align') }}</header>
+				<ui-radio v-model="deckColumnAlign" value="center">{{ $t('@.deck-column-align-center') }}</ui-radio>
+				<ui-radio v-model="deckColumnAlign" value="left">{{ $t('@.deck-column-align-left') }}</ui-radio>
+				<ui-radio v-model="deckColumnAlign" value="flexible">{{ $t('@.deck-column-align-flexible') }}</ui-radio>
 			</section>
 			<section>
-				<header>{{ $t('deck-column-width') }}</header>
-				<ui-radio v-model="deckColumnWidth" value="narrow">{{ $t('deck-column-width-narrow') }}</ui-radio>
-				<ui-radio v-model="deckColumnWidth" value="narrower">{{ $t('deck-column-width-narrower') }}</ui-radio>
-				<ui-radio v-model="deckColumnWidth" value="normal">{{ $t('deck-column-width-normal') }}</ui-radio>
-				<ui-radio v-model="deckColumnWidth" value="wider">{{ $t('deck-column-width-wider') }}</ui-radio>
-				<ui-radio v-model="deckColumnWidth" value="wide">{{ $t('deck-column-width-wide') }}</ui-radio>
+				<header>{{ $t('@.deck-column-width') }}</header>
+				<ui-radio v-model="deckColumnWidth" value="narrow">{{ $t('@.deck-column-width-narrow') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="narrower">{{ $t('@.deck-column-width-narrower') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="normal">{{ $t('@.deck-column-width-normal') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="wider">{{ $t('@.deck-column-width-wider') }}</ui-radio>
+				<ui-radio v-model="deckColumnWidth" value="wide">{{ $t('@.deck-column-width-wide') }}</ui-radio>
 			</section>
 			<section>
 				<ui-switch v-model="games_reversi_showBoardLabels">{{ $t('@.show-reversi-board-labels') }}</ui-switch>

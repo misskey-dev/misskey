@@ -1,6 +1,6 @@
 <template>
-<div class="mk-ui">
-	<x-header>
+<div class="mk-ui" :class="{ deck: $store.state.device.inDeckMode }">
+	<x-header v-if="!$store.state.device.inDeckMode">
 		<template #func><slot name="func"></slot></template>
 		<slot name="header"></slot>
 	</x-header>
@@ -9,6 +9,8 @@
 		<slot></slot>
 	</div>
 	<mk-stream-indicator v-if="$store.getters.isSignedIn"/>
+	<button class="nav button" v-if="$store.state.device.inDeckMode" @click="isDrawerOpening = !isDrawerOpening"><fa icon="bars"/><i v-if="indicate"><fa icon="circle"/></i></button>
+	<button class="post button" v-if="$store.state.device.inDeckMode" @click="$post()"><fa icon="pencil-alt"/></button>
 </div>
 </template>
 
@@ -28,9 +30,24 @@ export default Vue.extend({
 
 	data() {
 		return {
+			hasGameInvitation: false,
 			isDrawerOpening: false,
 			connection: null
 		};
+	},
+
+	computed: {
+		hasUnreadNotification(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
+		},
+
+		hasUnreadMessagingMessage(): boolean {
+			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
+		},
+
+		indicate(): boolean {
+			return this.hasUnreadNotification || this.hasUnreadMessagingMessage || this.hasGameInvitation;
+		}
 	},
 
 	watch: {
@@ -46,6 +63,8 @@ export default Vue.extend({
 			this.connection = this.$root.stream.useSharedConnection('main');
 
 			this.connection.on('notification', this.onNotification);
+			this.connection.on('reversiInvited', this.onReversiInvited);
+			this.connection.on('reversiNoInvites', this.onReversiNoInvites);
 		}
 	},
 
@@ -65,6 +84,14 @@ export default Vue.extend({
 			this.$root.new(MkNotify, {
 				notification
 			});
+		},
+
+		onReversiInvited() {
+			this.hasGameInvitation = true;
+		},
+
+		onReversiNoInvites() {
+			this.hasGameInvitation = false;
 		}
 	}
 });
@@ -72,13 +99,37 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-ui
-	display flex
-	flex 1
-	flex-direction column
-	padding-top 48px
+	&:not(.deck)
+		padding-top 48px
 
-	> .content
-		display flex
-		flex 1
-		flex-direction column
+	> .button
+		position fixed
+		z-index 1000
+		bottom 28px
+		padding 0
+		width 64px
+		height 64px
+		border-radius 100%
+		box-shadow 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12)
+
+		> *
+			font-size 24px
+
+		&.nav
+			left 28px
+			background var(--secondary)
+			color var(--text)
+
+			> i
+				position absolute
+				top 0
+				left 0
+				color var(--primary)
+				font-size 16px
+
+		&.post
+			right 28px
+			background var(--primary)
+			color var(--primaryForeground)
+
 </style>

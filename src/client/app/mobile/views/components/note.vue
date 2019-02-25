@@ -3,14 +3,14 @@
 	class="note"
 	v-show="appearNote.deletedAt == null && !hideThisNote"
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
-	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }"
+	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart', mini: narrow }"
 	v-hotkey="keymap"
 >
 	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="appearNote.reply"/>
 	</div>
-	<mk-renote class="renote" v-if="isRenote" :note="note" mini/>
-	<article>
+	<mk-renote class="renote" v-if="isRenote" :note="note"/>
+	<article class="article">
 		<mk-avatar class="avatar" :user="appearNote.user" v-if="$store.state.device.postStyle != 'smart'"/>
 		<div class="main">
 			<mk-note-header class="header" :note="appearNote" :mini="true"/>
@@ -30,7 +30,7 @@
 						<mk-media-list :media-list="appearNote.files"/>
 					</div>
 					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
-					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="compact"/>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="true"/>
 					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
 					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote"/></div>
 				</div>
@@ -91,19 +91,20 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
-		compact: {
-			type: Boolean,
-			required: false,
+	},
+
+	inject: {
+		narrow: {
 			default: false
 		}
-	}
+	},
 });
 </script>
 
 <style lang="stylus" scoped>
 .note
 	overflow hidden
-	font-size 12px
+	font-size 13px
 	border-bottom solid var(--lineWidth) var(--faceDivider)
 
 	&:focus
@@ -123,28 +124,52 @@ export default Vue.extend({
 	&:last-of-type
 		border-bottom none
 
-	@media (min-width 350px)
-		font-size 14px
+	&:not(.mini)
 
-	@media (min-width 500px)
-		font-size 16px
+		@media (min-width 350px)
+			font-size 14px
+
+		@media (min-width 500px)
+			font-size 16px
+
+		> .article
+			@media (min-width 600px)
+				padding 32px 32px 22px
+
+			> .avatar
+				@media (min-width 350px)
+					width 48px
+					height 48px
+					border-radius 6px
+
+				@media (min-width 500px)
+					margin-right 16px
+					width 58px
+					height 58px
+					border-radius 8px
+
+			> .main
+				> .header
+					@media (min-width 500px)
+						margin-bottom 2px
+
+				> .body
+					@media (min-width 700px)
+						font-size 1.1em
 
 	&.smart
-		> article
+		> .article
 			> .main
 				> header
 					align-items center
 					margin-bottom 4px
 
-	> .renote + article
+	> .renote + .article
 		padding-top 8px
 
-	> article
+	> .article
 		display flex
 		padding 16px 16px 9px
-
-		@media (min-width 600px)
-			padding 32px 32px 22px
 
 		> .avatar
 			flex-shrink 0
@@ -157,29 +182,11 @@ export default Vue.extend({
 			//position sticky
 			//top 62px
 
-			@media (min-width 350px)
-				width 48px
-				height 48px
-				border-radius 6px
-
-			@media (min-width 500px)
-				margin-right 16px
-				width 58px
-				height 58px
-				border-radius 8px
-
 		> .main
 			flex 1
 			min-width 0
 
-			> .header
-				@media (min-width 500px)
-					margin-bottom 2px
-
 			> .body
-				@media (min-width 700px)
-					font-size 1.1em
-
 				> .cw
 					cursor default
 					display block

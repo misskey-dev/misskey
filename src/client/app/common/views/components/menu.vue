@@ -64,6 +64,10 @@ export default Vue.extend({
 				this.hukidasi = false;
 			}
 
+			if (top < 0) {
+				top = 0;
+			}
+
 			popover.style.left = left + 'px';
 			popover.style.top = top + 'px';
 

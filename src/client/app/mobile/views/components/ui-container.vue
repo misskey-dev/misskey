@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj" :class="{ naked, hideHeader: !showHeader }">
+<div class="ukygtjoj" :class="{ naked, inDeck, hideHeader: !showHeader }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -35,6 +35,11 @@ export default Vue.extend({
 			default: true
 		},
 	},
+	inject: {
+		inDeck: {
+			default: false
+		}
+	},
 	data() {
 		return {
 			showBody: this.expanded
@@ -50,49 +55,69 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .ukygtjoj
-	background var(--face)
-	border-radius 8px
-	box-shadow 0 4px 16px rgba(#000, 0.1)
 	overflow hidden
 
-	& + .ukygtjoj
-		margin-top 16px
+	&:not(.inDeck)
+		background var(--face)
+		border-radius 8px
+		box-shadow 0 4px 16px rgba(#000, 0.1)
 
-		@media (max-width 500px)
-			margin-top 8px
+		& + .ukygtjoj
+			margin-top 16px
 
-	&.naked
-		background transparent !important
-		box-shadow none !important
+			@media (max-width 500px)
+				margin-top 8px
 
-	> header
-		> .title
+		&.naked
+			background transparent !important
+			box-shadow none !important
+
+		> header
+			> .title
+				margin 0
+				padding 8px 10px
+				font-size 15px
+				font-weight normal
+				color var(--faceHeaderText)
+				background var(--faceHeader)
+				border-radius 8px 8px 0 0
+
+				> [data-icon]
+					margin-right 6px
+
+				&:empty
+					display none
+
+			> button
+				position absolute
+				z-index 2
+				top 0
+				right 0
+				padding 0
+				width 42px
+				height 100%
+				font-size 15px
+				color var(--faceTextButton)
+
+		> div
+			color var(--text)
+
+	&.inDeck
+		background var(--face)
+
+		> header
 			margin 0
-			padding 8px 10px
-			font-size 15px
-			font-weight normal
-			color var(--faceHeaderText)
-			background var(--faceHeader)
-			border-radius 8px 8px 0 0
+			padding 8px 16px
+			font-size 12px
+			color var(--text)
+			background var(--deckColumnBg)
 
-			> [data-icon]
-				margin-right 6px
-
-			&:empty
-				display none
-
-		> button
-			position absolute
-			z-index 2
-			top 0
-			right 0
-			padding 0
-			width 42px
-			height 100%
-			font-size 15px
-			color var(--faceTextButton)
-
-	> div
-		color var(--text)
+			> button
+				position absolute
+				top 0
+				right 8px
+				padding 8px 6px
+				font-size 14px
+				color var(--text)
 
 </style>

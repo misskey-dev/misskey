@@ -9,7 +9,6 @@ import getNoteSummary from '../../misc/get-note-summary';
 const defaultSettings = {
 	home: null,
 	mobileHome: [],
-	deck: null,
 	keepCw: false,
 	tagTimelines: [],
 	fetchOnScroll: true,
@@ -45,6 +44,10 @@ const defaultSettings = {
 };
 
 const defaultDeviceSettings = {
+	deck: null,
+	deckMode: false,
+	deckColumnAlign: 'center',
+	deckColumnWidth: 'normal',
 	reduceMotion: false,
 	autoPopout: false,
 	darkmode: false,
@@ -63,10 +66,7 @@ const defaultDeviceSettings = {
 	alwaysShowNsfw: false,
 	postStyle: 'standard',
 	navbar: 'top',
-	deckColumnAlign: 'center',
-	deckColumnWidth: 'normal',
 	mobileNotificationPosition: 'bottom',
-	deckMode: false,
 	useOsDefaultEmojis: false,
 	disableShowingAnimatedImages: false,
 	expandUsersPhotos: true,
@@ -162,73 +162,10 @@ export default (os: MiOS) => new Vuex.Store({
 
 				setVisibility(state, visibility) {
 					state.visibility = visibility;
-				}
-			}
-		},
-
-		settings: {
-			namespaced: true,
-
-			state: defaultSettings,
-
-			mutations: {
-				set(state, x: { key: string; value: any }) {
-					nestedProperty.set(state, x.key, x.value);
-				},
-
-				setHome(state, data) {
-					state.home = data;
-				},
-
-				addHomeWidget(state, widget) {
-					state.home.unshift(widget);
-				},
-
-				setMobileHome(state, data) {
-					state.mobileHome = data;
-				},
-
-				setWidget(state, x) {
-					let w;
-
-					//#region Decktop home
-					if (state.home) {
-						w = state.home.find(w => w.id == x.id);
-						if (w) {
-							w.data = x.data;
-						}
-					}
-					//#endregion
-
-					//#region Mobile home
-					if (state.mobileHome) {
-						w = state.mobileHome.find(w => w.id == x.id);
-						if (w) {
-							w.data = x.data;
-						}
-					}
-					//#endregion
-
-					//#region Deck
-					if (state.deck && state.deck.columns) {
-						for (const c of state.deck.columns.filter(c => c.type == 'widgets')) {
-							for (const w of c.widgets.filter(w => w.id == x.id)) {
-								w.data = x.data;
-							}
-						}
-					}
-					//#endregion
-				},
-
-				addMobileHomeWidget(state, widget) {
-					state.mobileHome.unshift(widget);
-				},
-
-				removeMobileHomeWidget(state, widget) {
-					state.mobileHome = state.mobileHome.filter(w => w.id != widget.id);
 				},
 
 				addDeckColumn(state, column) {
+					if (column.name == undefined) column.name = null;
 					state.deck.columns.push(column);
 					state.deck.layout.push([column.id]);
 				},
@@ -255,8 +192,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (ids.indexOf(id) != -1) {
 							const left = state.deck.layout[i - 1];
 							if (left) {
-								state.deck.layout[i - 1] = state.deck.layout[i];
-								state.deck.layout[i] = left;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//state.deck.layout[i - 1] = state.deck.layout[i];
+								//state.deck.layout[i] = left;
+								state.deck.layout.splice(i - 1, 1, state.deck.layout[i]);
+								state.deck.layout.splice(i, 1, left);
 							}
 							return true;
 						}
@@ -268,8 +208,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (ids.indexOf(id) != -1) {
 							const right = state.deck.layout[i + 1];
 							if (right) {
-								state.deck.layout[i + 1] = state.deck.layout[i];
-								state.deck.layout[i] = right;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//state.deck.layout[i + 1] = state.deck.layout[i];
+								//state.deck.layout[i] = right;
+								state.deck.layout.splice(i + 1, 1, state.deck.layout[i]);
+								state.deck.layout.splice(i, 1, right);
 							}
 							return true;
 						}
@@ -282,8 +225,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (x == id) {
 							const up = ids[i - 1];
 							if (up) {
-								ids[i - 1] = id;
-								ids[i] = up;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//ids[i - 1] = id;
+								//ids[i] = up;
+								ids.splice(i - 1, 1, id);
+								ids.splice(i, 1, up);
 							}
 							return true;
 						}
@@ -296,8 +242,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (x == id) {
 							const down = ids[i + 1];
 							if (down) {
-								ids[i + 1] = id;
-								ids[i] = down;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//ids[i + 1] = id;
+								//ids[i] = down;
+								ids.splice(i + 1, 1, id);
+								ids.splice(i, 1, down);
 							}
 							return true;
 						}
@@ -335,7 +284,67 @@ export default (os: MiOS) => new Vuex.Store({
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
 					column.name = x.name;
+				},
+
+				updateDeckColumn(state, x) {
+					let column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column = x;
 				}
+			}
+		},
+
+		settings: {
+			namespaced: true,
+
+			state: defaultSettings,
+
+			mutations: {
+				set(state, x: { key: string; value: any }) {
+					nestedProperty.set(state, x.key, x.value);
+				},
+
+				setHome(state, data) {
+					state.home = data;
+				},
+
+				addHomeWidget(state, widget) {
+					state.home.unshift(widget);
+				},
+
+				setMobileHome(state, data) {
+					state.mobileHome = data;
+				},
+
+				updateWidget(state, x) {
+					let w;
+
+					//#region Desktop home
+					if (state.home) {
+						w = state.home.find(w => w.id == x.id);
+						if (w) {
+							w.data = x.data;
+						}
+					}
+					//#endregion
+
+					//#region Mobile home
+					if (state.mobileHome) {
+						w = state.mobileHome.find(w => w.id == x.id);
+						if (w) {
+							w.data = x.data;
+						}
+					}
+					//#endregion
+				},
+
+				addMobileHomeWidget(state, widget) {
+					state.mobileHome.unshift(widget);
+				},
+
+				removeMobileHomeWidget(state, widget) {
+					state.mobileHome = state.mobileHome.filter(w => w.id != widget.id);
+				},
 			},
 
 			actions: {
@@ -355,73 +364,6 @@ export default (os: MiOS) => new Vuex.Store({
 							value: x.value
 						});
 					}
-				},
-
-				saveDeck(ctx) {
-					os.api('i/update_client_setting', {
-						name: 'deck',
-						value: ctx.state.deck
-					});
-				},
-
-				addDeckColumn(ctx, column) {
-					ctx.commit('addDeckColumn', column);
-					ctx.dispatch('saveDeck');
-				},
-
-				removeDeckColumn(ctx, id) {
-					ctx.commit('removeDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				swapDeckColumn(ctx, id) {
-					ctx.commit('swapDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				swapLeftDeckColumn(ctx, id) {
-					ctx.commit('swapLeftDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				swapRightDeckColumn(ctx, id) {
-					ctx.commit('swapRightDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				swapUpDeckColumn(ctx, id) {
-					ctx.commit('swapUpDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				swapDownDeckColumn(ctx, id) {
-					ctx.commit('swapDownDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				stackLeftDeckColumn(ctx, id) {
-					ctx.commit('stackLeftDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				popRightDeckColumn(ctx, id) {
-					ctx.commit('popRightDeckColumn', id);
-					ctx.dispatch('saveDeck');
-				},
-
-				addDeckWidget(ctx, x) {
-					ctx.commit('addDeckWidget', x);
-					ctx.dispatch('saveDeck');
-				},
-
-				removeDeckWidget(ctx, x) {
-					ctx.commit('removeDeckWidget', x);
-					ctx.dispatch('saveDeck');
-				},
-
-				renameDeckColumn(ctx, x) {
-					ctx.commit('renameDeckColumn', x);
-					ctx.dispatch('saveDeck');
 				},
 
 				addHomeWidget(ctx, widget) {

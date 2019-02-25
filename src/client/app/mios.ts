@@ -283,7 +283,7 @@ export default class MiOS extends EventEmitter {
 			});
 
 			main.on('widgetUpdated', x => {
-				this.store.commit('settings/setWidget', {
+				this.store.commit('settings/updateWidget', {
 					id: x.id,
 					data: x.data
 				});

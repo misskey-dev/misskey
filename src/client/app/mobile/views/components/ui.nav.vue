@@ -1,5 +1,5 @@
 <template>
-<div class="nav">
+<div class="fquwcbxs">
 	<transition name="back">
 		<div class="backdrop"
 			v-if="isOpen"
@@ -8,41 +8,52 @@
 		></div>
 	</transition>
 	<transition name="nav">
-		<div class="body" v-if="isOpen">
-			<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
-				<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
-				<p class="name"><mk-user-name :user="$store.state.i"/></p>
-			</router-link>
-			<div class="links">
-				<ul>
-					<li><router-link to="/" :data-active="$route.name == 'index'"><i><fa icon="home" fixed-width/></i>{{ $t('timeline') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><fa :icon="['far', 'bell']" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']" fixed-width/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-					<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/featured" :data-active="$route.name == 'featured'"><i><fa :icon="faNewspaper" fixed-width/></i>{{ $t('@.featured-notes') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/explore" :data-active="$route.name == 'explore' || $route.name == 'explore-tag'"><i><fa :icon="faHashtag" fixed-width/></i>{{ $t('@.explore') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/games/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-				</ul>
-				<ul>
-					<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']" fixed-width/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><i><fa icon="star" fixed-width/></i>{{ $t('favorites') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'"><i><fa icon="list" fixed-width/></i>{{ $t('user-lists') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><i><fa icon="cloud" fixed-width/></i>{{ $t('@.drive') }}<i><fa icon="angle-right"/></i></router-link></li>
-				</ul>
-				<ul>
-					<li><a @click="search"><i><fa icon="search" fixed-width/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
-					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog" fixed-width/></i>{{ $t('settings') }}<i><fa icon="angle-right"/></i></router-link></li>
-					<li v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)"><a href="/admin"><i><fa icon="terminal" fixed-width/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
-					<li @click="dark"><p><template><i><fa :icon="$store.state.device.darkmode ? faSun : faMoon" fixed-width/></i></template><span>{{ $store.state.device.darkmode ? $t('@.turn-off-darkmode') : $t('@.turn-on-darkmode') }}</span></p></li>
-				</ul>
+		<div class="body" :class="{ notifications: showNotifications }" v-if="isOpen">
+			<div class="nav" v-show="!showNotifications">
+				<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
+					<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
+					<p class="name"><mk-user-name :user="$store.state.i"/></p>
+				</router-link>
+				<div class="links">
+					<ul>
+						<li><router-link to="/" :data-active="$route.name == 'index'"><i><fa icon="home" fixed-width/></i>{{ $t('timeline') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><p @click="showNotifications = true"><i><fa :icon="['far', 'bell']" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></p></li>
+						<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']" fixed-width/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+						<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/featured" :data-active="$route.name == 'featured'"><i><fa :icon="faNewspaper" fixed-width/></i>{{ $t('@.featured-notes') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/explore" :data-active="$route.name == 'explore' || $route.name == 'explore-tag'"><i><fa :icon="faHashtag" fixed-width/></i>{{ $t('@.explore') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/games/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+					</ul>
+					<ul>
+						<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']" fixed-width/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><i><fa icon="star" fixed-width/></i>{{ $t('favorites') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'"><i><fa icon="list" fixed-width/></i>{{ $t('user-lists') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><i><fa icon="cloud" fixed-width/></i>{{ $t('@.drive') }}<i><fa icon="angle-right"/></i></router-link></li>
+					</ul>
+					<ul>
+						<li><a @click="search"><i><fa icon="search" fixed-width/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
+						<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog" fixed-width/></i>{{ $t('settings') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)"><a href="/admin"><i><fa icon="terminal" fixed-width/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
+					</ul>
+					<ul>
+						<li @click="toggleDeckMode"><p><i><fa :icon="$store.state.device.inDeckMode ? faHome : faColumns"/></i><span>{{ $store.state.device.inDeckMode ? $t('@.home') : $t('@.deck') }}</span></p></li>
+						<li @click="dark"><p><i><fa :icon="$store.state.device.darkmode ? faSun : faMoon" fixed-width/></i><span>{{ $store.state.device.darkmode ? $t('@.turn-off-darkmode') : $t('@.turn-on-darkmode') }}</span></p></li>
+					</ul>
+				</div>
+				<div class="announcements" v-if="announcements && announcements.length > 0">
+					<article v-for="announcement in announcements">
+						<span v-html="announcement.title" class="title"></span>
+						<div v-html="announcement.text"></div>
+					</article>
+				</div>
+				<a :href="aboutUrl"><p class="about">{{ $t('about') }}</p></a>
 			</div>
-			<div class="announcements" v-if="announcements && announcements.length > 0">
-				<article v-for="announcement in announcements">
-					<span v-html="announcement.title" class="title"></span>
-					<div v-html="announcement.text"></div>
-				</article>
+			<div class="notifications" v-if="showNotifications">
+				<header>
+					<button @click="$parent.isDrawerOpening = false"><fa icon="times"/></button>
+				</header>
+				<mk-notifications/>
 			</div>
-			<a :href="aboutUrl"><p class="about">{{ $t('about') }}</p></a>
 		</div>
 	</transition>
 </div>
@@ -52,12 +63,17 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { lang } from '../../../config';
-import { faNewspaper, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faHashtag, faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/ui.nav.vue'),
+
 	props: ['isOpen'],
+
+	provide: {
+		narrow: true
+	},
 
 	data() {
 		return {
@@ -66,7 +82,8 @@ export default Vue.extend({
 			aboutUrl: `/docs/${lang}/about`,
 			announcements: [],
 			searching: false,
-			faNewspaper, faHashtag, faMoon, faSun
+			showNotifications: false,
+			faNewspaper, faHashtag, faMoon, faSun, faHome, faColumns
 		};
 	},
 
@@ -77,6 +94,12 @@ export default Vue.extend({
 
 		hasUnreadMessagingMessage(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadMessagingMessage;
+		}
+	},
+
+	watch: {
+		isOpen() {
+			this.showNotifications = false;
 		}
 	},
 
@@ -148,13 +171,18 @@ export default Vue.extend({
 				key: 'darkmode',
 				value: !this.$store.state.device.darkmode
 			});
-		}
+		},
+
+		toggleDeckMode() {
+			this.$store.commit('device/set', { key: 'deckMode', value: !this.$store.state.device.inDeckMode });
+			location.replace('/');
+		},
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.nav
+.fquwcbxs
 	$color = var(--text)
 
 	.backdrop
@@ -178,102 +206,126 @@ export default Vue.extend({
 		background var(--secondary)
 		font-size 15px
 
-	.me
-		display block
-		margin 0
-		padding 16px
+		&.notifications
+			width 340px
 
-		.avatar
-			display inline
-			max-width 64px
-			border-radius 32px
-			vertical-align middle
+		> .notifications
+			padding-top 42px
 
-		.name
-			display block
-			margin 0 16px
-			position absolute
-			top 0
-			left 80px
-			padding 0
-			width calc(100% - 112px)
-			color $color
-			line-height 96px
-			overflow hidden
-			text-overflow ellipsis
-			white-space nowrap
+			> header
+				position fixed
+				top 0
+				left 0
+				z-index 1000
+				width 340px
+				line-height 42px
+				background var(--secondary)
 
-	ul
-		display block
-		margin 16px 0
-		padding 0
-		list-style none
+				> button
+					display block
+					padding 0 14px
+					font-size 20px
+					line-height 42px
+					color var(--text)
 
-		&:first-child
-			margin-top 0
+		> .nav
 
-		&:last-child
-			margin-bottom 0
-
-		> li
-			display block
-			font-size 1em
-			line-height 1em
-
-			a, p
+			> .me
 				display block
 				margin 0
-				padding 0 20px
-				line-height 3rem
-				line-height calc(1rem + 30px)
-				color $color
-				text-decoration none
+				padding 16px
 
-				&[data-active]
-					color var(--primaryForeground)
-					background var(--primary)
+				.avatar
+					display inline
+					max-width 64px
+					border-radius 32px
+					vertical-align middle
 
-					> i:last-child
-						color var(--primaryForeground)
-
-				> i:first-child
-					margin-right 0.5em
-					width 20px
-					text-align center
-
-				> i.circle
-					margin-left 6px
-					font-size 10px
-					color var(--notificationIndicator)
-
-				> i:last-child
+				.name
+					display block
+					margin 0 16px
 					position absolute
 					top 0
-					right 0
-					padding 0 20px
-					font-size 1.2em
-					line-height calc(1rem + 30px)
+					left 80px
+					padding 0
+					width calc(100% - 112px)
 					color $color
-					opacity 0.5
+					line-height 96px
+					overflow hidden
+					text-overflow ellipsis
+					white-space nowrap
 
-	.announcements
-		> article
-			background var(--mobileAnnouncement)
-			color var(--mobileAnnouncementFg)
-			padding 16px
-			margin 8px 0
-			font-size 12px
+			ul
+				display block
+				margin 16px 0
+				padding 0
+				list-style none
 
-			> .title
-				font-weight bold
+				&:first-child
+					margin-top 0
 
-	.about
-		margin 0 0 8px 0
-		padding 1em 0
-		text-align center
-		font-size 0.8em
-		color $color
-		opacity 0.5
+				&:last-child
+					margin-bottom 0
+
+				> li
+					display block
+					font-size 1em
+					line-height 1em
+
+					a, p
+						display block
+						margin 0
+						padding 0 20px
+						line-height 3rem
+						line-height calc(1rem + 30px)
+						color $color
+						text-decoration none
+
+						&[data-active]
+							color var(--primaryForeground)
+							background var(--primary)
+
+							> i:last-child
+								color var(--primaryForeground)
+
+						> i:first-child
+							margin-right 0.5em
+							width 20px
+							text-align center
+
+						> i.circle
+							margin-left 6px
+							font-size 10px
+							color var(--notificationIndicator)
+
+						> i:last-child
+							position absolute
+							top 0
+							right 0
+							padding 0 20px
+							font-size 1.2em
+							line-height calc(1rem + 30px)
+							color $color
+							opacity 0.5
+
+			.announcements
+				> article
+					background var(--mobileAnnouncement)
+					color var(--mobileAnnouncementFg)
+					padding 16px
+					margin 8px 0
+					font-size 12px
+
+					> .title
+						font-weight bold
+
+			.about
+				margin 0 0 8px 0
+				padding 1em 0
+				text-align center
+				font-size 0.8em
+				color $color
+				opacity 0.5
 
 .nav-enter-active,
 .nav-leave-active {

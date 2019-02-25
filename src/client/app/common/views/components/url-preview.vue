@@ -8,7 +8,7 @@
 	</blockquote>
 </div>
 <div v-else class="mk-url-preview">
-	<a :class="{ mini, compact }" :href="url" target="_blank" :title="url" v-if="!fetching">
+	<a :class="{ mini: narrow, compact }" :href="url" target="_blank" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`"></div>
 		<article>
 			<header>
@@ -125,10 +125,10 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+	},
 
-		mini: {
-			type: Boolean,
-			required: false,
+	inject: {
+		narrow: {
 			default: false
 		}
 	},
@@ -350,7 +350,7 @@ export default Vue.extend({
 
 			&.compact
 				> .thumbnail
-					position: absolute
+					position absolute
 					width 56px
 					height 100%
 
@@ -368,7 +368,7 @@ export default Vue.extend({
 		&.compact
 			> article
 				> header h1, p, footer
-					overflow: hidden;
-					white-space: nowrap;
-					text-overflow: ellipsis;
+					overflow hidden
+					white-space nowrap
+					text-overflow ellipsis
 </style>

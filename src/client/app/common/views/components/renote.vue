@@ -1,5 +1,5 @@
 <template>
-<div class="puqkfets" :class="{ mini }">
+<div class="puqkfets" :class="{ mini: narrow }">
 	<mk-avatar class="avatar" :user="note.user"/>
 	<fa icon="retweet"/>
 	<i18n path="@.renoted-by" tag="span">
@@ -30,13 +30,13 @@ export default Vue.extend({
 		note: {
 			type: Object,
 			required: true
-		},
-		mini: {
-			type: Boolean,
-			required: false,
+		}
+	},
+	inject: {
+		narrow: {
 			default: false
 		}
-	}
+	},
 });
 </script>
 
@@ -44,25 +44,20 @@ export default Vue.extend({
 .puqkfets
 	display flex
 	align-items center
-	padding 16px 32px 8px 32px
+	padding 8px 16px
 	line-height 28px
 	white-space pre
 	color var(--renoteText)
 	background linear-gradient(to bottom, var(--renoteGradient) 0%, var(--face) 100%)
 
-	&.mini
+	&:not(.mini)
 		padding 8px 16px
 
 		@media (min-width 500px)
-			padding 16px
+			padding 8px 16px
 
 		@media (min-width 600px)
-			padding 16px 32px
-
-		> .avatar
-			@media (min-width 500px)
-				width 28px
-				height 28px
+			padding 16px 32px 8px 32px
 
 	> .avatar
 		flex-shrink 0

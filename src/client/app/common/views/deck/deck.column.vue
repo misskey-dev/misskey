@@ -30,6 +30,8 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import Menu from '../../../common/views/components/menu.vue';
 import { countIf } from '../../../../../prelude/array';
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('deck'),
@@ -71,7 +73,8 @@ export default Vue.extend({
 			active: true,
 			dragging: false,
 			draghover: false,
-			dropready: false
+			dropready: false,
+			faArrowUp, faArrowDown
 		};
 	},
 
@@ -143,7 +146,7 @@ export default Vue.extend({
 
 		toggleActive() {
 			if (!this.isStacked) return;
-			const vms = this.$store.state.settings.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
+			const vms = this.$store.state.device.deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
 			if (this.active && countIf(vm => vm.$el.classList.contains('active'), vms) == 1) return;
 			this.active = !this.active;
 		},
@@ -176,50 +179,50 @@ export default Vue.extend({
 						}
 					}).then(({ canceled, result: name }) => {
 						if (canceled) return;
-						this.$store.dispatch('settings/renameDeckColumn', { id: this.column.id, name });
+						this.$store.commit('device/renameDeckColumn', { id: this.column.id, name });
 					});
 				}
 			}, null, {
 				icon: 'arrow-left',
 				text: this.$t('swap-left'),
 				action: () => {
-					this.$store.dispatch('settings/swapLeftDeckColumn', this.column.id);
+					this.$store.commit('device/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
 				icon: 'arrow-right',
 				text: this.$t('swap-right'),
 				action: () => {
-					this.$store.dispatch('settings/swapRightDeckColumn', this.column.id);
+					this.$store.commit('device/swapRightDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: 'arrow-up',
+				icon: faArrowUp,
 				text: this.$t('swap-up'),
 				action: () => {
-					this.$store.dispatch('settings/swapUpDeckColumn', this.column.id);
+					this.$store.commit('device/swapUpDeckColumn', this.column.id);
 				}
 			} : undefined, this.isStacked ? {
-				icon: 'arrow-down',
+				icon: faArrowDown,
 				text: this.$t('swap-down'),
 				action: () => {
-					this.$store.dispatch('settings/swapDownDeckColumn', this.column.id);
+					this.$store.commit('device/swapDownDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
 				icon: ['far', 'window-restore'],
 				text: this.$t('stack-left'),
 				action: () => {
-					this.$store.dispatch('settings/stackLeftDeckColumn', this.column.id);
+					this.$store.commit('device/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: ['far', 'window-maximize'],
+				icon: faWindowMaximize,
 				text: this.$t('pop-right'),
 				action: () => {
-					this.$store.dispatch('settings/popRightDeckColumn', this.column.id);
+					this.$store.commit('device/popRightDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
 				icon: ['far', 'trash-alt'],
 				text: this.$t('remove'),
 				action: () => {
-					this.$store.dispatch('settings/removeDeckColumn', this.column.id);
+					this.$store.commit('device/removeDeckColumn', this.column.id);
 				}
 			}];
 
@@ -303,7 +306,7 @@ export default Vue.extend({
 
 			const id = e.dataTransfer.getData('mk-deck-column');
 			if (id != null && id != '') {
-				this.$store.dispatch('settings/swapDeckColumn', {
+				this.$store.commit('device/swapDeckColumn', {
 					a: this.column.id,
 					b: id
 				});
@@ -418,5 +421,6 @@ export default Vue.extend({
 		height "calc(100% - %s)" % $header-height
 		overflow auto
 		overflow-x hidden
+		-webkit-overflow-scrolling touch
 
 </style>

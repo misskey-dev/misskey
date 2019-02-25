@@ -116,15 +116,6 @@ export default Vue.extend({
 		font-size 12px
 		overflow-wrap break-word
 
-		@media (min-width 350px)
-			font-size 14px
-
-		@media (min-width 500px)
-			font-size 16px
-
-		@media (min-width 600px)
-			padding 24px 32px
-
 		&:after
 			content ""
 			display block
@@ -137,17 +128,10 @@ export default Vue.extend({
 			height 36px
 			border-radius 6px
 
-			@media (min-width 500px)
-				width 42px
-				height 42px
-
 		> div
 			float right
 			width calc(100% - 36px)
 			padding-left 8px
-
-			@media (min-width 500px)
-				width calc(100% - 42px)
 
 			> header
 				display flex

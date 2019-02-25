@@ -9,6 +9,10 @@ export default function <T extends object>(data: {
 			widget: {
 				type: Object
 			},
+			column: {
+				type: Object,
+				default: null
+			},
 			platform: {
 				type: String,
 				required: true
@@ -65,10 +69,14 @@ export default function <T extends object>(data: {
 
 				this.bakeProps();
 
-				this.$root.api('i/update_widget', {
-					id: this.id,
-					data: this.props
-				});
+				if (this.platform == 'deck') {
+					this.$store.commit('device/updateDeckColumn', this.column);
+				} else {
+					this.$root.api('i/update_widget', {
+						id: this.id,
+						data: this.props
+					});
+				}
 			}
 		}
 	});
