@@ -1,6 +1,6 @@
 <template>
 <mk-ui :class="$style.root">
-	<div class="qlvquzbjribqcaozciifydkngcwtyzje" ref="body" :style="style" :class="`${$store.state.device.deckColumnAlign} ${$store.state.device.deckColumnWidth}`" v-hotkey.global="keymap">
+	<div class="qlvquzbjribqcaozciifydkngcwtyzje" :data-mobile="$root.isMobile" ref="body" :style="style" :class="`${$store.state.device.deckColumnAlign} ${$store.state.device.deckColumnWidth}`" v-hotkey.global="keymap">
 		<template v-for="ids in layout">
 			<div v-if="ids.length > 1" class="folder">
 				<template v-for="id, i in ids">
@@ -68,6 +68,7 @@ export default Vue.extend({
 
 	provide() {
 		return {
+			inDeck: true,
 			getColumnVm: this.getColumnVm,
 			narrow: true
 		};
@@ -330,6 +331,16 @@ export default Vue.extend({
 	overflow auto
 	overflow-y hidden
 	-webkit-overflow-scrolling touch
+
+	&[data-mobile]
+		padding 0
+
+		> div
+			margin-right 0
+
+			&.folder
+				> *:not(:last-child)
+					margin-bottom 0
 
 	> div
 		margin-right 8px

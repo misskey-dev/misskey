@@ -1,5 +1,6 @@
 <template>
 <div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
+		:data-mobile="$root.isMobile"
 		@dragover.prevent.stop="onDragover"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
@@ -113,7 +114,7 @@ export default Vue.extend({
 			column: this,
 			isScrollTop: this.isScrollTop,
 			count: v => this.count = v,
-			inDeck: !this.naked
+			inNakedDeckColumn: !this.naked
 		};
 	},
 
@@ -325,6 +326,13 @@ export default Vue.extend({
 	border-radius var(--round)
 	box-shadow var(--shadow)
 	overflow hidden
+
+	&[data-mobile]
+		border-radius 0
+		box-shadow none
+
+		> header
+			box-shadow none
 
 	&.draghover
 		box-shadow 0 0 0 2px var(--primaryAlpha08)

@@ -1,5 +1,5 @@
 <template>
-<div class="kedshtep" :class="{ naked, inDeck }">
+<div class="kedshtep" :class="{ naked, inNakedDeckColumn }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -36,7 +36,7 @@ export default Vue.extend({
 		},
 	},
 	inject: {
-		inDeck: {
+		inNakedDeckColumn: {
 			default: false
 		}
 	},
@@ -58,7 +58,7 @@ export default Vue.extend({
 .kedshtep
 	overflow hidden
 
-	&:not(.inDeck)
+	&:not(.inNakedDeckColumn)
 		background var(--face)
 		box-shadow var(--shadow)
 		border-radius var(--round)
@@ -106,7 +106,7 @@ export default Vue.extend({
 				&:active
 					color var(--faceTextButtonActive)
 
-	&.inDeck
+	&.inNakedDeckColumn
 		background var(--face)
 
 		> header

@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj" :class="{ naked, inDeck, hideHeader: !showHeader }">
+<div class="ukygtjoj" :class="{ naked, inDeck, inNakedDeckColumn, hideHeader: !showHeader }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -38,6 +38,9 @@ export default Vue.extend({
 	inject: {
 		inDeck: {
 			default: false
+		},
+		inNakedDeckColumn: {
+			default: false
 		}
 	},
 	data() {
@@ -57,7 +60,10 @@ export default Vue.extend({
 .ukygtjoj
 	overflow hidden
 
-	&:not(.inDeck)
+	&.inDeck
+		box-shadow none !important
+
+	&:not(.inNakedDeckColumn)
 		background var(--face)
 		border-radius 8px
 		box-shadow 0 4px 16px rgba(#000, 0.1)
@@ -102,7 +108,7 @@ export default Vue.extend({
 		> div
 			color var(--text)
 
-	&.inDeck
+	&.inNakedDeckColumn
 		background var(--face)
 
 		> header
