@@ -1711,10 +1711,6 @@ mobile/views/pages/note.vue:
   prev: "前の投稿"
   next: "次の投稿"
 
-mobile/views/pages/notifications.vue:
-  notifications: "通知"
-  read-all: "すべての通知を既読にしますか？"
-
 mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 

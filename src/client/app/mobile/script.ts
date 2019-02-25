@@ -15,7 +15,6 @@ import MkDeck from '../common/views/deck/deck.vue';
 import MkSignup from './views/pages/signup.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
-import MkNotifications from './views/pages/notifications.vue';
 import MkWidgets from './views/pages/widgets.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
@@ -135,7 +134,6 @@ init((launch, os) => {
 		]),
 			{ path: '/signup', name: 'signup', component: MkSignup },
 			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
-			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
 			{ path: '/i/lists', name: 'user-lists', component: MkUserLists },
 			{ path: '/i/lists/:list', name: 'user-list', component: MkUserList },

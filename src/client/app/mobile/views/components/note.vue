@@ -10,7 +10,7 @@
 		<x-sub :note="appearNote.reply"/>
 	</div>
 	<mk-renote class="renote" v-if="isRenote" :note="note" mini/>
-	<article>
+	<article class="article">
 		<mk-avatar class="avatar" :user="appearNote.user" v-if="$store.state.device.postStyle != 'smart'"/>
 		<div class="main">
 			<mk-note-header class="header" :note="appearNote" :mini="true"/>
@@ -132,7 +132,7 @@ export default Vue.extend({
 	&.mini
 		font-size 14px !important
 
-		> article
+		> .article
 			padding 16px 16px 9px !important
 
 			> .avatar
@@ -149,16 +149,16 @@ export default Vue.extend({
 					font-size 1em !important
 
 	&.smart
-		> article
+		> .article
 			> .main
 				> header
 					align-items center
 					margin-bottom 4px
 
-	> .renote + article
+	> .renote + .article
 		padding-top 8px
 
-	> article
+	> .article
 		display flex
 		padding 16px 16px 9px
 

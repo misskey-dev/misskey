@@ -14,7 +14,7 @@
 		<x-sub :note="appearNote.reply" :mini="mini"/>
 	</div>
 	<mk-renote class="renote" v-if="isRenote" :note="note"/>
-	<article>
+	<article class="article">
 		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<mk-note-header class="header" :note="appearNote" :mini="mini"/>
@@ -161,7 +161,7 @@ export default Vue.extend({
 				width 20px
 				height 20px
 
-		> article
+		> .article
 			padding 16px 16px 4px
 
 			> .avatar
@@ -189,7 +189,7 @@ export default Vue.extend({
 	> .renote + article
 		padding-top 8px
 
-	> article
+	> .article
 		display flex
 		padding 28px 32px 18px 32px
 
