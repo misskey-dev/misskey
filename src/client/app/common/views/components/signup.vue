@@ -150,7 +150,7 @@ export default Vue.extend({
 					password: this.password
 				}).then(res => {
 					localStorage.setItem('i', res.i);
-					location.reload();
+					location.href = '/';
 				});
 			}).catch(() => {
 				alert(this.$t('some-error'));
