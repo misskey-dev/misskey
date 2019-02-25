@@ -1799,6 +1799,7 @@ deck:
   direct: "ダイレクト投稿"
   notifications: "通知"
   list: "リスト"
+  select-list: "リストを選択してください"
   swap-left: "左に移動"
   swap-right: "右に移動"
   swap-up: "上に移動"

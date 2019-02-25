@@ -191,16 +191,24 @@ export default Vue.extend({
 				}, {
 					icon: 'list',
 					text: this.$t('@deck.list'),
-					action: () => {
-						/*const w = this.$root.new(MkUserListsWindow);
-						w.$once('choosen', list => {
-							this.$store.commit('device/addDeckColumn', {
-								id: uuid(),
-								type: 'list',
-								list: list
-							});
-							w.close();
-						});*/
+					action: async () => {
+						const lists = await this.$root.api('users/lists/list');
+						const { canceled, result: listId } = await this.$root.dialog({
+							type: null,
+							title: this.$t('@deck.select-list'),
+							select: {
+								items: lists.map(list => ({
+									value: list.id, text: list.title
+								}))
+							},
+							showCancelButton: true
+						});
+						if (canceled) return;
+						this.$store.commit('device/addDeckColumn', {
+							id: uuid(),
+							type: 'list',
+							list: lists.find(l => l.id === listId)
+						});
 					}
 				}, {
 					icon: 'hashtag',

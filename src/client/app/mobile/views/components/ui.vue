@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui">
+<div class="mk-ui" :class="{ deck: $store.state.device.inDeckMode }">
 	<x-header v-if="!$store.state.device.inDeckMode">
 		<template #func><slot name="func"></slot></template>
 		<slot name="header"></slot>
@@ -74,15 +74,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-ui
-	display flex
-	flex 1
-	flex-direction column
-	padding-top 48px
-
-	> .content
-		display flex
-		flex 1
-		flex-direction column
+	&:not(.deck)
+		padding-top 48px
 
 	> .button
 		position fixed
