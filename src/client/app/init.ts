@@ -438,6 +438,13 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 			});
 			//#endregion
 
+			// Deck mode
+			os.store.commit('device/set', {
+				key: 'inDeckMode',
+				value: os.store.getters.isSignedIn && os.store.state.device.deckMode
+					&& (document.location.pathname === '/' || window.performance.navigation.type === 1)
+			});
+
 			document.addEventListener('visibilitychange', () => {
 				if (!document.hidden) {
 					os.store.commit('clearBehindNotes');

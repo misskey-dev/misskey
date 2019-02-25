@@ -33,7 +33,10 @@
 					<li><a @click="search"><i><fa icon="search" fixed-width/></i>{{ $t('search') }}<i><fa icon="angle-right"/></i></a></li>
 					<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog" fixed-width/></i>{{ $t('settings') }}<i><fa icon="angle-right"/></i></router-link></li>
 					<li v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)"><a href="/admin"><i><fa icon="terminal" fixed-width/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
-					<li @click="dark"><p><template><i><fa :icon="$store.state.device.darkmode ? faSun : faMoon" fixed-width/></i></template><span>{{ $store.state.device.darkmode ? $t('@.turn-off-darkmode') : $t('@.turn-on-darkmode') }}</span></p></li>
+				</ul>
+				<ul>
+					<li @click="toggleDeckMode"><p><i><fa :icon="$store.state.device.inDeckMode ? faHome : faColumns"/></i><span>{{ $store.state.device.inDeckMode ? $t('@.home') : $t('@.deck') }}</span></p></li>
+					<li @click="dark"><p><i><fa :icon="$store.state.device.darkmode ? faSun : faMoon" fixed-width/></i><span>{{ $store.state.device.darkmode ? $t('@.turn-off-darkmode') : $t('@.turn-on-darkmode') }}</span></p></li>
 				</ul>
 			</div>
 			<div class="announcements" v-if="announcements && announcements.length > 0">
@@ -52,11 +55,12 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { lang } from '../../../config';
-import { faNewspaper, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faHashtag, faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/ui.nav.vue'),
+
 	props: ['isOpen'],
 
 	data() {
@@ -66,7 +70,7 @@ export default Vue.extend({
 			aboutUrl: `/docs/${lang}/about`,
 			announcements: [],
 			searching: false,
-			faNewspaper, faHashtag, faMoon, faSun
+			faNewspaper, faHashtag, faMoon, faSun, faHome, faColumns
 		};
 	},
 
@@ -148,7 +152,12 @@ export default Vue.extend({
 				key: 'darkmode',
 				value: !this.$store.state.device.darkmode
 			});
-		}
+		},
+
+		toggleDeckMode() {
+			this.$store.commit('device/set', { key: 'deckMode', value: !this.$store.state.device.inDeckMode });
+			location.replace('/');
+		},
 	}
 });
 </script>

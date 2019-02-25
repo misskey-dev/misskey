@@ -20,7 +20,6 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../common/views/components/menu.vue';
-import MkUserListsWindow from '../components/user-lists-window.vue';
 
 import * as uuid from 'uuid';
 
@@ -188,7 +187,7 @@ export default Vue.extend({
 					icon: 'list',
 					text: this.$t('@deck.list'),
 					action: () => {
-						const w = this.$root.new(MkUserListsWindow);
+						/*const w = this.$root.new(MkUserListsWindow);
 						w.$once('choosen', list => {
 							this.$store.dispatch('settings/addDeckColumn', {
 								id: uuid(),
@@ -196,7 +195,7 @@ export default Vue.extend({
 								list: list
 							});
 							w.close();
-						});
+						});*/
 					}
 				}, {
 					icon: 'hashtag',

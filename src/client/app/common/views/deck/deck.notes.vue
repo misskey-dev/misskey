@@ -13,7 +13,7 @@
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="transition notes" ref="notes" tag="div">
 		<template v-for="(note, i) in _notes">
-			<x-note
+			<mk-note
 				:note="note"
 				:key="note.id"
 				@update:note="onNoteUpdated(i, $event)"
@@ -39,16 +39,11 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import shouldMuteNote from '../../../common/scripts/should-mute-note';
-import XNote from '../components/note.vue';
 
 const displayLimit = 20;
 
 export default Vue.extend({
 	i18n: i18n(),
-
-	components: {
-		XNote
-	},
 
 	inject: ['column', 'isScrollTop', 'count'],
 
