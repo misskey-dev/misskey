@@ -71,6 +71,10 @@ export default Vue.extend({
 
 	props: ['isOpen'],
 
+	provide: {
+		narrow: true
+	},
+
 	data() {
 		return {
 			hasGameInvitation: false,

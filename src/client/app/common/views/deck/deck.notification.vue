@@ -81,15 +81,15 @@
 	</div>
 
 	<template v-if="notification.type == 'quote'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated" :mini="true"/>
+		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated" :mini="true"/>
+		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
 	</template>
 
 	<template v-if="notification.type == 'mention'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated" :mini="true"/>
+		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
 	</template>
 </div>
 </template>

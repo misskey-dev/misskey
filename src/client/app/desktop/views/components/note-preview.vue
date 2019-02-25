@@ -1,6 +1,6 @@
 <template>
 <div class="qiziqtywpuaucsgarwajitwaakggnisj" :title="title">
-	<mk-avatar class="avatar" :user="note.user" v-if="!mini"/>
+	<mk-avatar class="avatar" :user="note.user" v-if="!narrow"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note" :mini="true"/>
 		<div class="body">
@@ -25,9 +25,10 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
-		mini: {
-			type: Boolean,
-			required: false,
+	},
+
+	inject: {
+		narrow: {
 			default: false
 		}
 	},

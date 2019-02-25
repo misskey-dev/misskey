@@ -1,5 +1,5 @@
 <template>
-<div class="zlrxdaqttccpwhpaagdmkawtzklsccam" :class="{ smart: $store.state.device.postStyle == 'smart' }">
+<div class="zlrxdaqttccpwhpaagdmkawtzklsccam" :class="{ smart: $store.state.device.postStyle == 'smart', mini: narrow }">
 	<mk-avatar class="avatar" :user="note.user" v-if="$store.state.device.postStyle != 'smart'"/>
 	<div class="main">
 		<mk-note-header class="header" :note="note" :mini="true"/>
@@ -32,6 +32,12 @@ export default Vue.extend({
 		}
 	},
 
+	inject: {
+		narrow: {
+			default: false
+		}
+	},
+
 	data() {
 		return {
 			showContent: false
@@ -47,14 +53,28 @@ export default Vue.extend({
 	font-size 10px
 	background var(--subNoteBg)
 
-	@media (min-width 350px)
-		font-size 12px
+	&:not(.mini)
 
-	@media (min-width 500px)
-		font-size 14px
+		@media (min-width 350px)
+			font-size 12px
 
-	@media (min-width 600px)
-		padding 24px 32px
+		@media (min-width 500px)
+			font-size 14px
+
+		@media (min-width 600px)
+			padding 24px 32px
+
+		> .avatar
+
+			@media (min-width 350px)
+				margin-right 10px
+				width 42px
+				height 42px
+
+			@media (min-width 500px)
+				margin-right 14px
+				width 50px
+				height 50px
 
 	&.smart
 		> .main
@@ -70,16 +90,6 @@ export default Vue.extend({
 		width 38px
 		height 38px
 		border-radius 8px
-
-		@media (min-width 350px)
-			margin-right 10px
-			width 42px
-			height 42px
-
-		@media (min-width 500px)
-			margin-right 14px
-			width 50px
-			height 50px
 
 	> .main
 		flex 1

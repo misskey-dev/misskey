@@ -11,7 +11,7 @@
 				<a :href="note.url || note.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
 			</details>
 		</div>
-		<mk-note :note="note" :detail="true" :mini="true"/>
+		<mk-note :note="note" :detail="true"/>
 	</div>
 </x-column>
 </template>

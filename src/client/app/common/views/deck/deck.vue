@@ -68,7 +68,8 @@ export default Vue.extend({
 
 	provide() {
 		return {
-			getColumnVm: this.getColumnVm
+			getColumnVm: this.getColumnVm,
+			narrow: true
 		};
 	},
 

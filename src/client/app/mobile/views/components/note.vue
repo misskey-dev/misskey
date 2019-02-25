@@ -3,13 +3,13 @@
 	class="note"
 	v-show="appearNote.deletedAt == null && !hideThisNote"
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
-	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart', mini }"
+	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart', mini: narrow }"
 	v-hotkey="keymap"
 >
 	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="appearNote.reply"/>
 	</div>
-	<mk-renote class="renote" v-if="isRenote" :note="note" mini/>
+	<mk-renote class="renote" v-if="isRenote" :note="note"/>
 	<article class="article">
 		<mk-avatar class="avatar" :user="appearNote.user" v-if="$store.state.device.postStyle != 'smart'"/>
 		<div class="main">
@@ -91,19 +91,20 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
-		mini: {
-			type: Boolean,
-			required: false,
+	},
+
+	inject: {
+		narrow: {
 			default: false
 		}
-	}
+	},
 });
 </script>
 
 <style lang="stylus" scoped>
 .note
 	overflow hidden
-	font-size 12px
+	font-size 13px
 	border-bottom solid var(--lineWidth) var(--faceDivider)
 
 	&:focus
@@ -123,30 +124,38 @@ export default Vue.extend({
 	&:last-of-type
 		border-bottom none
 
-	@media (min-width 350px)
-		font-size 14px
+	&:not(.mini)
 
-	@media (min-width 500px)
-		font-size 16px
+		@media (min-width 350px)
+			font-size 14px
 
-	&.mini
-		font-size 14px !important
+		@media (min-width 500px)
+			font-size 16px
 
 		> .article
-			padding 16px 16px 9px !important
+			@media (min-width 600px)
+				padding 32px 32px 22px
 
 			> .avatar
-				margin-right 10px !important
-				width 48px !important
-				height 48px !important
-				border-radius 6px !important
+				@media (min-width 350px)
+					width 48px
+					height 48px
+					border-radius 6px
+
+				@media (min-width 500px)
+					margin-right 16px
+					width 58px
+					height 58px
+					border-radius 8px
 
 			> .main
 				> .header
-					margin-bottom 0 !important
+					@media (min-width 500px)
+						margin-bottom 2px
 
 				> .body
-					font-size 1em !important
+					@media (min-width 700px)
+						font-size 1.1em
 
 	&.smart
 		> .article
@@ -162,9 +171,6 @@ export default Vue.extend({
 		display flex
 		padding 16px 16px 9px
 
-		@media (min-width 600px)
-			padding 32px 32px 22px
-
 		> .avatar
 			flex-shrink 0
 			display block
@@ -176,29 +182,11 @@ export default Vue.extend({
 			//position sticky
 			//top 62px
 
-			@media (min-width 350px)
-				width 48px
-				height 48px
-				border-radius 6px
-
-			@media (min-width 500px)
-				margin-right 16px
-				width 58px
-				height 58px
-				border-radius 8px
-
 		> .main
 			flex 1
 			min-width 0
 
-			> .header
-				@media (min-width 500px)
-					margin-bottom 2px
-
 			> .body
-				@media (min-width 700px)
-					font-size 1.1em
-
 				> .cw
 					cursor default
 					display block

@@ -3,7 +3,7 @@
 	<ui-container v-if="user.pinnedNotes && user.pinnedNotes.length > 0" :body-togglable="true">
 		<template #header><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</template>
 		<div>
-			<mk-note v-for="n in user.pinnedNotes" :key="n.id" :note="n" :mini="true"/>
+			<mk-note v-for="n in user.pinnedNotes" :key="n.id" :note="n"/>
 		</div>
 	</ui-container>
 	<ui-container v-if="images.length > 0" :body-togglable="true"
