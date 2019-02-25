@@ -30,6 +30,8 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import Menu from '../../../common/views/components/menu.vue';
 import { countIf } from '../../../../../prelude/array';
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('deck'),
@@ -71,7 +73,8 @@ export default Vue.extend({
 			active: true,
 			dragging: false,
 			draghover: false,
-			dropready: false
+			dropready: false,
+			faArrowUp, faArrowDown
 		};
 	},
 
@@ -192,13 +195,13 @@ export default Vue.extend({
 					this.$store.commit('device/swapRightDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: 'arrow-up',
+				icon: faArrowUp,
 				text: this.$t('swap-up'),
 				action: () => {
 					this.$store.commit('device/swapUpDeckColumn', this.column.id);
 				}
 			} : undefined, this.isStacked ? {
-				icon: 'arrow-down',
+				icon: faArrowDown,
 				text: this.$t('swap-down'),
 				action: () => {
 					this.$store.commit('device/swapDownDeckColumn', this.column.id);
@@ -210,7 +213,7 @@ export default Vue.extend({
 					this.$store.commit('device/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: ['far', 'window-maximize'],
+				icon: faWindowMaximize,
 				text: this.$t('pop-right'),
 				action: () => {
 					this.$store.commit('device/popRightDeckColumn', this.column.id);

@@ -191,8 +191,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (ids.indexOf(id) != -1) {
 							const left = state.deck.layout[i - 1];
 							if (left) {
-								state.deck.layout[i - 1] = state.deck.layout[i];
-								state.deck.layout[i] = left;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//state.deck.layout[i - 1] = state.deck.layout[i];
+								//state.deck.layout[i] = left;
+								state.deck.layout.splice(i - 1, 1, state.deck.layout[i]);
+								state.deck.layout.splice(i, 1, left);
 							}
 							return true;
 						}
@@ -204,8 +207,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (ids.indexOf(id) != -1) {
 							const right = state.deck.layout[i + 1];
 							if (right) {
-								state.deck.layout[i + 1] = state.deck.layout[i];
-								state.deck.layout[i] = right;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//state.deck.layout[i + 1] = state.deck.layout[i];
+								//state.deck.layout[i] = right;
+								state.deck.layout.splice(i + 1, 1, state.deck.layout[i]);
+								state.deck.layout.splice(i, 1, right);
 							}
 							return true;
 						}
@@ -218,8 +224,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (x == id) {
 							const up = ids[i - 1];
 							if (up) {
-								ids[i - 1] = id;
-								ids[i] = up;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//ids[i - 1] = id;
+								//ids[i] = up;
+								ids.splice(i - 1, 1, id);
+								ids.splice(i, 1, up);
 							}
 							return true;
 						}
@@ -232,8 +241,11 @@ export default (os: MiOS) => new Vuex.Store({
 						if (x == id) {
 							const down = ids[i + 1];
 							if (down) {
-								ids[i + 1] = id;
-								ids[i] = down;
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//ids[i + 1] = id;
+								//ids[i] = down;
+								ids.splice(i + 1, 1, id);
+								ids.splice(i, 1, down);
 							}
 							return true;
 						}
