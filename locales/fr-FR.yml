@@ -542,7 +542,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "Liste des comptes bloqués"
   export-requested: "Vous avez demandé une exportation. Cela peut prendre un certain temps. Une fois l'exportation terminée, le fichier résultant sera ajouté dans le Drive."
   enter-password: "Veuillez saisir votre mot de passe"
-  danger-zone: "危険な設定"
+  danger-zone: "Zone de danger"
   delete-account: "Supprimer le compte"
   account-deleted: "Le compte a été supprimé. Cela peut prendre un certain temps avant que toutes les données disparaissent."
 common/views/components/user-list-editor.vue:
@@ -979,7 +979,7 @@ desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   favorites: "Favorites"
   lists: "Listes"
-  follow-requests: "Demandes de suivi"
+  follow-requests: "Demandes d’abonnement"
   admin: "Admin"
   settings: "Réglages"
   signout: "Déconnexion"
@@ -993,7 +993,7 @@ desktop/views/components/ui.header.post.vue:
 desktop/views/components/ui.header.search.vue:
   placeholder: "Chercher"
 desktop/views/components/received-follow-requests-window.vue:
-  title: "Demandes de suivi"
+  title: "Demandes d’abonnement"
   accept: "Accepter"
   reject: "Refuser"
 desktop/views/components/user-lists-window.vue:
@@ -1272,8 +1272,8 @@ admin/views/federation.vue:
   sorts:
     caughtAtAsc: "Date d’inscription (Ascendant)"
     caughtAtDesc: "Date d’inscription (Descendant)"
-    lastCommunicatedAtAsc: "最後にやり取りした日時が古い順"
-    lastCommunicatedAtDesc: "最後にやり取りした日時が新しい順"
+    lastCommunicatedAtAsc: "La date et l'heure des interactions plus anciennes"
+    lastCommunicatedAtDesc: "La date et l'heure des nouvelles interactions"
     notesAsc: "投稿が少ない順"
     notesDesc: "Description des notes"
     usersAsc: "ユーザーが少ない順"
@@ -1282,7 +1282,7 @@ admin/views/federation.vue:
     followingDesc: "Ayant le plus d'abonné·e·s"
     followersAsc: "Ayant le moins d'abonné·e·s"
     followersDesc: "Ayant le plus d'abonné·e·s"
-    driveUsageAsc: "ドライブ使用量が少ない順"
+    driveUsageAsc: "Moins d'espace de stockage utilisé"
     driveUsageDesc: "ドライブ使用量が多い順"
     driveFilesAsc: "ドライブのファイル数が少ない順"
     driveFilesDesc: "ドライブのファイル数が多い順"
