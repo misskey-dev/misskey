@@ -316,6 +316,8 @@ export default Vue.extend({
 	flex 1
 	padding 16px 0 16px 16px
 	overflow auto
+	overflow-y hidden
+	-webkit-overflow-scrolling touch
 
 	> div
 		margin-right 8px
