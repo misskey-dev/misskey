@@ -50,7 +50,7 @@
 			</div>
 			<div class="notifications" v-if="showNotifications">
 				<header>
-					<button @click="$parent.isDrawerOpening = false"><fa icon="times"/></button>
+					<button @click="showNotifications = false"><fa icon="times"/></button>
 				</header>
 				<mk-notifications/>
 			</div>
