@@ -108,10 +108,14 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 
 		const resSchema = endpoint.meta.res ? convertOpenApiSchema(endpoint.meta.res) : {};
 
+		let desc = (endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.') + '\n\n';
+		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;
+		if (endpoint.meta.kind) desc += ` / **Permission**: *${endpoint.meta.kind}*`;
+
 		const info = {
 			operationId: endpoint.name,
 			summary: endpoint.name,
-			description: endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.',
+			description: desc,
 			externalDocs: {
 				description: 'Source code',
 				url: `https://github.com/syuilo/misskey/blob/develop/src/server/api/endpoints/${endpoint.name}.ts`
