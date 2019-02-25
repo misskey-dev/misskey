@@ -90,7 +90,7 @@ export default Vue.extend({
 
 	methods: {
 		onChangeSettings(v) {
-			this.$store.dispatch('settings/saveDeck');
+			this.$store.commit('device/updateDeckColumn', this.column);
 		},
 
 		focus() {

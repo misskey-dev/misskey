@@ -350,7 +350,7 @@ export default Vue.extend({
 
 			&.compact
 				> .thumbnail
-					position: absolute
+					position absolute
 					width 56px
 					height 100%
 
@@ -368,7 +368,7 @@ export default Vue.extend({
 		&.compact
 			> article
 				> header h1, p, footer
-					overflow: hidden;
-					white-space: nowrap;
-					text-overflow: ellipsis;
+					overflow hidden
+					white-space nowrap
+					text-overflow ellipsis
 </style>

@@ -3,7 +3,7 @@
 	class="note"
 	v-show="appearNote.deletedAt == null && !hideThisNote"
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
-	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart' }"
+	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart', mini }"
 	v-hotkey="keymap"
 >
 	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
@@ -30,7 +30,7 @@
 						<mk-media-list :media-list="appearNote.files"/>
 					</div>
 					<mk-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
-					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="compact"/>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="true"/>
 					<a class="location" v-if="appearNote.geo" :href="`https://maps.google.com/maps?q=${appearNote.geo.coordinates[1]},${appearNote.geo.coordinates[0]}`" target="_blank"><fa icon="map-marker-alt"/> {{ $t('location') }}</a>
 					<div class="renote" v-if="appearNote.renote"><mk-note-preview :note="appearNote.renote"/></div>
 				</div>
@@ -91,7 +91,7 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
-		compact: {
+		mini: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -128,6 +128,25 @@ export default Vue.extend({
 
 	@media (min-width 500px)
 		font-size 16px
+
+	&.mini
+		font-size 14px !important
+
+		> article
+			padding 16px 16px 9px !important
+
+			> .avatar
+				margin-right 10px !important
+				width 48px !important
+				height 48px !important
+				border-radius 6px !important
+
+			> .main
+				> .header
+					margin-bottom 0 !important
+
+				> .body
+					font-size 1em !important
 
 	&.smart
 		> article
