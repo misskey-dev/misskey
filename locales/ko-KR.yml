@@ -1499,10 +1499,10 @@ mobile/views/pages/home.vue:
 mobile/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 mobile/views/pages/widgets.vue:
-  dashboard: "ダッシュボード"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
-  add-widget: "追加"
-  customization-tips: "カスタマイズのヒント"
+  dashboard: "대시보드"
+  widgets-hints: "위젯을 추가 / 제거하거나 정렬할 수 있습니다. 위젯을 이동하려면 창틀의 \"☰\" 아이콘을 드래그합니다. 위젯을 삭제하려면 \"X\" 아이콘을 탭 합니다. 몇몇 위젯은 탭하면 표시형식을 바꿀 수 있습니다."
+  add-widget: "추가"
+  customization-tips: "커스터마이징 도움말"
 mobile/views/pages/widgets/activity.vue:
   activity: "활동"
 mobile/views/pages/share.vue:
