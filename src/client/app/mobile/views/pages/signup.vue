@@ -9,7 +9,8 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 export default Vue.extend({
-	i18n: i18n('mobile/views/pages/signup.vue'),});
+	i18n: i18n('mobile/views/pages/signup.vue')
+});
 </script>
 
 <style lang="stylus" scoped>
@@ -23,6 +24,6 @@ export default Vue.extend({
 		padding 8px 0 0 0
 		font-size 1.5em
 		font-weight bold
-		color #444
+		color var(--text)
 
 </style>
