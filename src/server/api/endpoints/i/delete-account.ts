@@ -29,7 +29,6 @@ export default define(meta, async (ps, user) => {
 	await User.update({ _id: user._id }, {
 		$set: {
 			isDeleted: true,
-			token: null,
 			name: null,
 			description: null,
 			pinnedNoteIds: [],
