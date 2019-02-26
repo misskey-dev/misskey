@@ -107,20 +107,6 @@ export default Vue.extend({
 	font-size 13px
 	border-bottom solid var(--lineWidth) var(--faceDivider)
 
-	&:focus
-		z-index 1
-
-		&:after
-			content ""
-			pointer-events none
-			position absolute
-			top 2px
-			right 2px
-			bottom 2px
-			left 2px
-			border 2px solid var(--primaryAlpha03)
-			border-radius 4px
-
 	&:last-of-type
 		border-bottom none
 
