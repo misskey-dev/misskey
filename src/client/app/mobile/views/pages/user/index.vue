@@ -59,7 +59,7 @@
 				</div>
 			</div>
 		</header>
-		<nav v-if="$route.name == 'user'">
+		<nav v-if="$route.name == 'user'" :class="{ shadow: $store.state.device.useShadow }">
 			<div class="nav-container">
 				<a :data-active="page == 'home'" @click="page = 'home'"><fa icon="home"/> {{ $t('overview') }}</a>
 				<a :data-active="page == 'notes'" @click="page = 'notes'"><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</a>
@@ -315,9 +315,11 @@ export default Vue.extend({
 		position -webkit-sticky
 		position sticky
 		top 47px
-		box-shadow 0 4px 4px var(--mobileUserPageHeaderShadow)
 		background-color $bg
 		z-index 2
+
+		&.shadow
+			box-shadow 0 4px 4px var(--mobileUserPageHeaderShadow)
 
 		> .nav-container
 			display flex

@@ -1,5 +1,5 @@
 <template>
-<div class="ivaojijs">
+<div class="ivaojijs" :class="{ shadow: $store.state.device.useShadow }">
 	<div class="empty" v-if="notes.length == 0 && !fetching && inited">{{ $t('@.no-notes') }}</div>
 
 	<mk-error v-if="!fetching && !inited" @retry="init()"/>
@@ -192,10 +192,12 @@ export default Vue.extend({
 	overflow hidden
 	background var(--face)
 	border-radius 8px
-	box-shadow 0 4px 16px rgba(#000, 0.1)
 
-	@media (min-width 500px)
-		box-shadow 0 8px 32px rgba(#000, 0.1)
+	&.shadow
+		box-shadow 0 4px 16px rgba(#000, 0.1)
+
+		@media (min-width 500px)
+			box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	> .empty
 		padding 16px
@@ -239,13 +241,7 @@ export default Vue.extend({
 		padding 32px
 		max-width 400px
 		text-align center
-		color #999
-
-		> [data-icon]
-			display block
-			margin-bottom 16px
-			font-size 3em
-			color #ccc
+		color var(--text)
 
 	> footer
 		text-align center
@@ -258,7 +254,7 @@ export default Vue.extend({
 			margin 0
 			padding 16px
 			width 100%
-			color #ccc
+			color var(--text)
 
 			@media (min-width 500px)
 				padding 20px

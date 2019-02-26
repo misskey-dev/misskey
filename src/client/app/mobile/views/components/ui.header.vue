@@ -1,5 +1,5 @@
 <template>
-<div class="header" ref="root">
+<div class="header" ref="root" :class="{ shadow: $store.state.device.useShadow }">
 	<p class="warn" v-if="env != 'production'">{{ $t('@.do-not-use-in-production') }} <a href="/assets/flush.html?force">Flush</a></p>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
@@ -47,7 +47,9 @@ export default Vue.extend({
 	z-index 1024
 	width calc(100% + 16px)
 	padding 0 8px
-	box-shadow 0 0px 8px rgba(0, 0, 0, 0.25)
+
+	&.shadow
+		box-shadow 0 0px 8px rgba(0, 0, 0, 0.25)
 
 	&, *
 		user-select none

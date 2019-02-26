@@ -1,5 +1,5 @@
 <template>
-<div class="mk-note-detail" tabindex="-1">
+<div class="mk-note-detail" tabindex="-1" :class="{ shadow: $store.state.device.useShadow }">
 	<button
 		class="more"
 		v-if="appearNote.reply && appearNote.reply.replyId && conversation.length == 0"
@@ -165,10 +165,12 @@ export default Vue.extend({
 	text-align left
 	background var(--face)
 	border-radius 8px
-	box-shadow 0 4px 16px rgba(#000, 0.1)
 
-	@media (min-width 500px)
-		box-shadow 0 8px 32px rgba(#000, 0.1)
+	&.shadow
+		box-shadow 0 4px 16px rgba(#000, 0.1)
+
+		@media (min-width 500px)
+			box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	> .fetching
 		padding 64px 0
@@ -180,7 +182,7 @@ export default Vue.extend({
 		width 100%
 		font-size 1em
 		text-align center
-		color #999
+		color var(--text)
 		cursor pointer
 		background var(--subNoteBg)
 		outline none
@@ -289,7 +291,7 @@ export default Vue.extend({
 				> .location
 					margin 4px 0
 					font-size 12px
-					color #ccc
+					color var(--text)
 
 				> .map
 					width 100%
