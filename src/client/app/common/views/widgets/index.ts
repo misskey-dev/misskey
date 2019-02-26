@@ -14,6 +14,7 @@ import wTips from './tips.vue';
 import wNav from './nav.vue';
 import wHashtags from './hashtags.vue';
 import wInstance from './instance.vue';
+import wPostForm from './post-form.vue';
 
 Vue.component('mkw-analog-clock', wAnalogClock);
 Vue.component('mkw-nav', wNav);
@@ -29,3 +30,4 @@ Vue.component('mkw-rss', wRss);
 Vue.component('mkw-version', wVersion);
 Vue.component('mkw-hashtags', wHashtags);
 Vue.component('mkw-instance', wInstance);
+Vue.component('mkw-post-form', wPostForm);

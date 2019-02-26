@@ -17,7 +17,7 @@
 					ref="text"
 					v-autocomplete="{ model: 'text' }"
 				></textarea>
-				<button class="emoji" @click="emoji" ref="emoji">
+				<button class="emoji" @click="emoji" ref="emoji" v-if="!$root.isMobile">
 					<fa :icon="['far', 'laugh']"/>
 				</button>
 			</div>
@@ -161,7 +161,7 @@ export default define({
 		},
 
 		async emoji() {
-			const Picker = await import('../components/emoji-picker-dialog.vue').then(m => m.default);
+			const Picker = await import('../../../desktop/views/components/emoji-picker-dialog.vue').then(m => m.default);
 			const button = this.$refs.emoji;
 			const rect = button.getBoundingClientRect();
 			const vm = this.$root.new(Picker, {
@@ -186,6 +186,9 @@ export default define({
 				alert('Something happened');
 			}).then(() => {
 				this.posting = false;
+				this.$nextTick(() => {
+					this.$refs.text.focus();
+				});
 			});
 		},
 
