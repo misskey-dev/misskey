@@ -33,7 +33,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const day = 1000 * 60 * 60 * 24 * 2;
+	const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
 	const hideUserIds = await getHideUserIds(user);
 

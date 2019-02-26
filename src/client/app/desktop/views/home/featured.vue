@@ -28,7 +28,7 @@ export default Vue.extend({
 			this.fetching = true;
 
 			this.$root.api('notes/featured', {
-				limit: 20
+				limit: 30
 			}).then(notes => {
 				notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 				this.notes = notes;
