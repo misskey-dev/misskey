@@ -14,18 +14,18 @@
 				<template #title><fa icon="poll-h"/> {{ $t('design') }}</template>
 
 				<section>
-					<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
-					<ui-switch v-model="useShadow">{{ $t('use-shadow') }}</ui-switch>
-					<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
-					<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
+					<ui-switch v-model="darkmode">{{ $t('@.dark-mode') }}</ui-switch>
+					<ui-switch v-model="useShadow">{{ $t('@.use-shadow') }}</ui-switch>
+					<ui-switch v-model="roundedCorners">{{ $t('@.rounded-corners') }}</ui-switch>
+					<ui-switch v-model="circleIcons">{{ $t('@.circle-icons') }}</ui-switch>
 					<section>
 						<header>{{ $t('@.line-width') }}</header>
 						<ui-radio v-model="lineWidth" :value="0.5">{{ $t('@.line-width-thin') }}</ui-radio>
 						<ui-radio v-model="lineWidth" :value="1">{{ $t('@.line-width-normal') }}</ui-radio>
 						<ui-radio v-model="lineWidth" :value="2">{{ $t('@.line-width-thick') }}</ui-radio>
 					</section>
-					<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }} ({{ $t('@.this-setting-is-this-device-only') }})</ui-switch>
-					<ui-switch v-model="contrastedAcct">{{ $t('contrasted-acct') }}</ui-switch>
+					<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }}</ui-switch>
+					<ui-switch v-model="contrastedAcct">{{ $t('@.contrasted-acct') }}</ui-switch>
 					<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
 					<ui-switch v-model="showVia">{{ $t('@.show-via') }}</ui-switch>
 					<ui-switch v-model="useOsDefaultEmojis">{{ $t('@.use-os-default-emojis') }}</ui-switch>
@@ -157,7 +157,7 @@
 			</ui-card>
 		</div>
 
-		<div class="signout" @click="signout">{{ $t('signout') }}</div>
+		<div class="signout" @click="signout">{{ $t('@.signout') }}</div>
 
 		<footer>
 			<small>ver {{ version }} ({{ codename }})</small>

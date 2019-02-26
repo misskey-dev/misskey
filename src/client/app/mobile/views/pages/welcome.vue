@@ -8,10 +8,10 @@
 		<div class="about">
 			<h2>{{ name }}</h2>
 			<p v-html="description || this.$t('@.about')"></p>
-			<router-link class="signup" to="/signup">{{ $t('signup') }}</router-link>
+			<router-link class="signup" to="/signup">{{ $t('@.signup') }}</router-link>
 		</div>
 		<div class="signin">
-			<a href="/signin" @click.prevent="signin()">{{ $t('signin') }}</a>
+			<a href="/signin" @click.prevent="signin()">{{ $t('@.signin') }}</a>
 		</div>
 		<div class="tl">
 			<mk-welcome-timeline/>

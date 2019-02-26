@@ -77,7 +77,7 @@
 				<li @click="signout">
 					<p class="signout">
 						<i><fa icon="power-off"/></i>
-						<span>{{ $t('signout') }}</span>
+						<span>{{ $t('@.signout') }}</span>
 					</p>
 				</li>
 			</ul>

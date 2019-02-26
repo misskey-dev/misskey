@@ -30,9 +30,9 @@
 					</div>
 
 					<p class="sign">
-						<span class="signup" @click="signup">{{ $t('signup') }}</span>
+						<span class="signup" @click="signup">{{ $t('@.signup') }}</span>
 						<span class="divider">|</span>
-						<span class="signin" @click="signin">{{ $t('signin') }}</span>
+						<span class="signin" @click="signin">{{ $t('@.signin') }}</span>
 					</p>
 
 					<img :src="meta.mascotImageUrl" alt="" title="藍" class="char">
@@ -135,12 +135,12 @@
 	</modal>
 
 	<modal name="signup" class="modal" width="450px" height="auto" scrollable>
-		<header class="formHeader">{{ $t('signup') }}</header>
+		<header class="formHeader">{{ $t('@.signup') }}</header>
 		<mk-signup class="form"/>
 	</modal>
 
 	<modal name="signin" class="modal" width="450px" height="auto" scrollable>
-		<header class="formHeader">{{ $t('signin') }}</header>
+		<header class="formHeader">{{ $t('@.signin') }}</header>
 		<mk-signin class="form"/>
 	</modal>
 </div>
