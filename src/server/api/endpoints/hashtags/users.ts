@@ -44,7 +44,14 @@ export const meta = {
 			]),
 			default: 'local'
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'User'
+		}
+	},
 };
 
 const sort: any = {

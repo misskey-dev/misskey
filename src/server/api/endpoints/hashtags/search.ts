@@ -35,7 +35,14 @@ export const meta = {
 				'ja-JP': 'オフセット'
 			}
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'string'
+		}
+	},
 };
 
 export default define(meta, async (ps) => {

@@ -44,7 +44,14 @@ export const meta = {
 				'-attachedRemoteUsers',
 			]),
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'Hashtag'
+		}
+	},
 };
 
 const sort: any = {

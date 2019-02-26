@@ -361,4 +361,48 @@ export const schemas = {
 		},
 		required: ['id', 'createdAt', 'blockee']
 	},
+
+	Hashtag: {
+		type: 'object',
+		properties: {
+			tag: {
+				type: 'string',
+				description: 'The hashtag name. No # prefixed.',
+				example: 'misskey',
+			},
+			mentionedUsersCount: {
+				type: 'number',
+				description: 'Number of all users using this hashtag.'
+			},
+			mentionedLocalUsersCount: {
+				type: 'number',
+				description: 'Number of local users using this hashtag.'
+			},
+			mentionedRemoteUsersCount: {
+				type: 'number',
+				description: 'Number of remote users using this hashtag.'
+			},
+			attachedUsersCount: {
+				type: 'number',
+				description: 'Number of all users who attached this hashtag to profile.'
+			},
+			attachedLocalUsersCount: {
+				type: 'number',
+				description: 'Number of local users who attached this hashtag to profile.'
+			},
+			attachedRemoteUsersCount: {
+				type: 'number',
+				description: 'Number of remote users who attached this hashtag to profile.'
+			},
+		},
+		required: [
+			'tag',
+			'mentionedUsersCount',
+			'mentionedLocalUsersCount',
+			'mentionedRemoteUsersCount',
+			'attachedUsersCount',
+			'attachedLocalUsersCount',
+			'attachedRemoteUsersCount',
+		]
+	},
 };
