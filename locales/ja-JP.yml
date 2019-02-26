@@ -1682,7 +1682,7 @@ mobile/views/pages/home.vue:
 mobile/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
-  mobile/views/pages/widgets.vue:
+mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
   add-widget: "追加"
