@@ -60,7 +60,7 @@ export function something(foo: string): string {
 ## Directory structure
 ```
 src ... Source code
-	@types ... Type definitions of libraries and others
+	@types ... Type definitions
 	prelude ... Independence utils for coding JavaScript without side effects
 	misc ... Independence utils for Misskey without side effects
 	service ... Common functions with side effects
