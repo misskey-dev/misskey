@@ -278,6 +278,46 @@ export const schemas = {
 		required: ['id', 'createdAt', 'name', 'type', 'datasize', 'md5']
 	},
 
+	DriveFolder: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'id',
+				description: 'The unique identifier for this Drive folder.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			},
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the Drive folder was created.'
+			},
+			name: {
+				type: 'string',
+				description: 'The folder name.',
+			},
+			foldersCount: {
+				type: 'number',
+				description: 'The count of child folders.',
+			},
+			filesCount: {
+				type: 'number',
+				description: 'The count of child files.',
+			},
+			parentId: {
+				type: 'string',
+				format: 'id',
+				nullable: true,
+				description: 'The parent folder ID of this folder.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			},
+			parent: {
+				type: 'DriveFolder',
+			},
+		},
+		required: ['id', 'createdAt', 'name']
+	},
+
 	Muting: {
 		type: 'object',
 		properties: {

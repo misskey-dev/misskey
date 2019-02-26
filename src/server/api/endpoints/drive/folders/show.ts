@@ -29,6 +29,10 @@ export const meta = {
 		}
 	},
 
+	res: {
+		type: 'DriveFolder',
+	},
+
 	errors: {
 		noSuchFolder: {
 			message: 'No such folder.',

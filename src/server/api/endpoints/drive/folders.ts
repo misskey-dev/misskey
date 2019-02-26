@@ -36,7 +36,14 @@ export const meta = {
 			default: null as any,
 			transform: transform,
 		}
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'DriveFolder',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {

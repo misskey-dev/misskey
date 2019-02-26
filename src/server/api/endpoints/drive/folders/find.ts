@@ -23,7 +23,14 @@ export const meta = {
 				'ja-JP': 'フォルダID'
 			}
 		},
-	}
+	},
+
+	res: {
+		type: 'array',
+		items: {
+			type: 'DriveFolder',
+		},
+	},
 };
 
 export default define(meta, async (ps, user) => {
