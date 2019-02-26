@@ -1499,10 +1499,10 @@ mobile/views/pages/home.vue:
 mobile/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 mobile/views/pages/widgets.vue:
-  dashboard: "ダッシュボード"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
-  add-widget: "追加"
-  customization-tips: "カスタマイズのヒント"
+  dashboard: "仪表盘"
+  widgets-hints: "您可以添加/删除/重新排列小部件。 要移动小部件，请拖动“三”。 点击“×”删除小部件。 某些小部件可以通过点击来更改显示。"
+  add-widget: "添加"
+  customization-tips: "定制提示"
 mobile/views/pages/widgets/activity.vue:
   activity: "活动"
 mobile/views/pages/share.vue:
