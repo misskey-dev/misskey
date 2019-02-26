@@ -59,16 +59,16 @@ export function something(foo: string): string {
 
 ## Directory structure
 ```
-src ... ソースコード
-	@types ... 外部ライブラリなどの型定義
-	prelude ... Misskeyに関係ないかつ副作用なし
-	misc ... 副作用なしのユーティリティ処理
-	service ... 副作用ありの共通処理
-	queue ... ジョブキューとジョブ
-	server ... Webサーバー
-	client ... クライアント
+src ... Source code
+	@types ... Type definitions of libraries and others
+	prelude ... Independence utils for coding JavaScript without side effects
+	misc ... Independence utils for Misskey without side effects
+	service ... Common functions with side effects
+	queue ... Job queues and Jobs
+	server ... Web Server
+	client ... Client
 	mfm ... MFM
 
-test ... テスト
+test ... Test code
 
 ```
