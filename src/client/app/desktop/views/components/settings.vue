@@ -387,13 +387,13 @@ export default Vue.extend({
 		},
 
 		useShadow: {
-			get() { return this.$store.state.settings.useShadow; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'useShadow', value }); }
+			get() { return this.$store.state.device.useShadow; },
+			set(value) { this.$store.commit('device/set', { key: 'useShadow', value }); }
 		},
 
 		roundedCorners: {
-			get() { return this.$store.state.settings.roundedCorners; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'roundedCorners', value }); }
+			get() { return this.$store.state.device.roundedCorners; },
+			set(value) { this.$store.commit('device/set', { key: 'roundedCorners', value }); }
 		},
 
 		lineWidth: {

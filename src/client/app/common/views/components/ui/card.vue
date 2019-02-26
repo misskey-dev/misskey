@@ -1,5 +1,5 @@
 <template>
-<div class="ui-card" :class="{ shadow: $store.state.settings.useShadow }">
+<div class="ui-card" :class="{ shadow: $store.state.device.useShadow }">
 	<header>
 		<slot name="title"></slot>
 	</header>

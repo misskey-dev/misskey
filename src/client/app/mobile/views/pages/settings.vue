@@ -15,6 +15,8 @@
 
 				<section>
 					<ui-switch v-model="darkmode">{{ $t('dark-mode') }}</ui-switch>
+					<ui-switch v-model="useShadow">{{ $t('use-shadow') }}</ui-switch>
+					<ui-switch v-model="roundedCorners">{{ $t('rounded-corners') }}</ui-switch>
 					<ui-switch v-model="circleIcons">{{ $t('circle-icons') }}</ui-switch>
 					<section>
 						<header>{{ $t('@.line-width') }}</header>
@@ -212,6 +214,16 @@ export default Vue.extend({
 		darkmode: {
 			get() { return this.$store.state.device.darkmode; },
 			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
+		},
+
+		useShadow: {
+			get() { return this.$store.state.device.useShadow; },
+			set(value) { this.$store.commit('device/set', { key: 'useShadow', value }); }
+		},
+
+		roundedCorners: {
+			get() { return this.$store.state.device.roundedCorners; },
+			set(value) { this.$store.commit('device/set', { key: 'roundedCorners', value }); }
 		},
 
 		useOsDefaultEmojis: {
