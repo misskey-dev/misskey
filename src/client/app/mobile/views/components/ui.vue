@@ -124,7 +124,7 @@ export default Vue.extend({
 				position absolute
 				top 0
 				left 0
-				color var(--primary)
+				color var(--notificationIndicator)
 				font-size 16px
 
 		&.post
