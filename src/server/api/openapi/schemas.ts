@@ -362,6 +362,44 @@ export const schemas = {
 		required: ['id', 'createdAt', 'blockee']
 	},
 
+	Reaction: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'id',
+				description: 'The unique identifier for this reaction.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			},
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the reaction was created.'
+			},
+			user: {
+				$ref: '#/components/schemas/User',
+				description: 'User who performed this reaction.'
+			},
+			type: {
+				type: 'string',
+				enum: [
+					'like',
+					'love',
+					'laugh',
+					'hmm',
+					'surprise',
+					'congrats',
+					'angry',
+					'confused',
+					'rip',
+					'pudding'
+				],
+				description: 'The reaction type.'
+			},
+		},
+		required: ['id', 'createdAt', 'user', 'type']
+	},
+
 	Hashtag: {
 		type: 'object',
 		properties: {
