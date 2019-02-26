@@ -30,6 +30,14 @@ common:
   2fa: "2단계 인증"
   customize-home: "홈 커스터마이징"
   featured-notes: "하이라이트"
+  dark-mode: "다크 모드"
+  use-shadow: "UI에 그림자 효과 적용"
+  rounded-corners: "UI의 모서리를 둥글게 설정"
+  circle-icons: "원형 아이콘 사용"
+  contrasted-acct: "사용자명에 대비 추가"
+  signin: "로그인"
+  signup: "신규 등록"
+  signout: "로그아웃"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -433,7 +441,6 @@ common/views/components/signin.vue:
   password: "비밀번호"
   token: "토큰"
   signing-in: "로그인 중입니다..."
-  signin: "로그인"
   or: "또는"
   signin-with-twitter: "Twitter로 로그인"
   signin-with-github: "GitHub으로 로그인"
@@ -838,11 +845,6 @@ desktop/views/components/settings.vue:
   wallpaper: "배경"
   choose-wallpaper: "배경 설정"
   delete-wallpaper: "배경 제거"
-  dark-mode: "다크 모드"
-  use-shadow: "UI에 그림자 효과 적용"
-  rounded-corners: "UI의 모서리를 둥글게 설정"
-  circle-icons: "원형 아이콘 사용"
-  contrasted-acct: "사용자명에 대비 추가"
   post-form-on-timeline: "타임라인 상단에 글 작성란을 표시"
   show-clock-on-header: "오른쪽 상단에 시계 표시"
   show-reply-target: "답글 대상 표시"
@@ -983,8 +985,6 @@ desktop/views/components/ui.header.account.vue:
   follow-requests: "팔로우 요청"
   admin: "관리"
   settings: "설정"
-  signout: "로그아웃"
-  dark: "어둠에 삼켜져라"
 desktop/views/components/ui.header.nav.vue:
   game: "게임"
 desktop/views/components/ui.header.notifications.vue:
@@ -1312,11 +1312,6 @@ admin/views/federation.vue:
     day: "1일마다"
 desktop/views/pages/welcome.vue:
   about: "자세히..."
-  gotit: "알겠습니다"
-  signin: "로그인"
-  signup: "신규 등록"
-  signin-button: "로그인 중"
-  signup-button: "등록"
   timeline: "타임라인"
   announcements: "공지사항"
   photos: "최근 이미지"
@@ -1503,8 +1498,6 @@ mobile/views/pages/home.vue:
   messages: "메시지"
 mobile/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
-mobile/views/pages/welcome.vue:
-  signup: "신규 등록"
 mobile/views/pages/widgets.vue:
   dashboard: "대시보드"
   widgets-hints: "위젯을 추가 / 제거하거나 정렬할 수 있습니다. 위젯을 이동하려면 창틀의 \"☰\" 아이콘을 드래그합니다. 위젯을 삭제하려면 \"X\" 아이콘을 탭 합니다. 몇몇 위젯은 탭하면 표시형식을 바꿀 수 있습니다."
@@ -1532,10 +1525,7 @@ mobile/views/pages/selectdrive.vue:
 mobile/views/pages/settings.vue:
   signed-in-as: "{}(으)로 로그인"
   design: "디자인 및 표시"
-  dark-mode: "다크 모드"
   i-am-under-limited-internet: "저는 통신 대역폭이 제한되어 있습니다"
-  circle-icons: "원형 아이콘 사용"
-  contrasted-acct: "사용자명에 대비 추가"
   timeline: "타임라인"
   show-reply-target: "답글 대상 표시"
   show-my-renotes: "자신이 한 리노트 표시"
@@ -1568,7 +1558,6 @@ mobile/views/pages/settings.vue:
   update-available: "새 버전을 사용할 수 있습니다"
   update-available-desc: "페이지를 다시 로드하면 업데이트가 적용됩니다."
   settings: "설정"
-  signout: "로그아웃"
   sound: "소리"
   enable-sounds: "소리 사용"
   password: "비밀번호"
