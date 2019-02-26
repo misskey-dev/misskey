@@ -312,7 +312,7 @@ export const schemas = {
 				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
 			},
 			parent: {
-				type: 'DriveFolder',
+				$ref: '#/components/schemas/DriveFolder'
 			},
 		},
 		required: ['id', 'createdAt', 'name']
