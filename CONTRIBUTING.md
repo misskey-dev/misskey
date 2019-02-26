@@ -40,10 +40,10 @@ Stands for _**M**iss**k**ey_.
 Stands for _**S**ervice**W**orker_.
 
 ### Nyaize
-な を にゃ にすること
+Convert な(na) to にゃ(nya)
 
 #### Denyaize
-Nyaizeを解除すること
+Revert Nyaize
 
 ## Code style
 ### Don't use `export default`
