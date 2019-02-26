@@ -1499,10 +1499,10 @@ mobile/views/pages/home.vue:
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/widgets.vue:
-  dashboard: "ダッシュボード"
-  widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
-  add-widget: "追加"
-  customization-tips: "カスタマイズのヒント"
+  dashboard: "Dashboard"
+  widgets-hints: "You can add/delete/rearrange widgets. To move the widget, drag \"三\". Tap \"x\" to delete the widget. Some widgets can change display by tapping."
+  add-widget: "Add"
+  customization-tips: "Customization tips"
 mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
