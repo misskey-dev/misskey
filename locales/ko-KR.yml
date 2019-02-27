@@ -123,7 +123,7 @@ common:
   search: "검색"
   delete: "삭제"
   loading: "로드 중"
-  ok: "5K"
+  ok: "ㅇㅇ"
   cancel: "그만두기"
   update-available-title: "업데이트가 있습니다"
   update-available: "Misskey의 새로운 버전이 있습니다 ({newer}. 현재 {current}을 사용 중). 페이지를 다시 로드하면 업데이트가 적용됩니다."
