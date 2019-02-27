@@ -1,5 +1,5 @@
 <template>
-<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
+<div class="dnpfarvgbnfmyzbdquhhzyxcmstpdqzs" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready, isMobile: $root.isMobile }"
 		@dragover.prevent.stop="onDragover"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
@@ -365,6 +365,10 @@ export default Vue.extend({
 
 			> button
 				color var(--text)
+
+	&.isMobile
+		> header
+			box-shadow none
 
 	> header
 		display flex
