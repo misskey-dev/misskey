@@ -38,6 +38,7 @@ common:
   signin: "Log In"
   signup: "Sign up"
   signout: "Logout"
+  reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
