@@ -240,7 +240,7 @@ common/views/pages/explore.vue:
   explore: "{host}을(를) 탐색"
   users-info: "현재 {users} 사용자가 등록되어 있습니다"
 common/views/components/url-preview.vue:
-  enable-player: "プレイヤーを開く"
+  enable-player: "플레이어 열기"
 common/views/components/user-list.vue:
   no-users: "사용자가 없습니다"
 common/views/components/games/reversi/reversi.vue:
