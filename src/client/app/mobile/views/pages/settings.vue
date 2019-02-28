@@ -308,7 +308,10 @@ export default Vue.extend({
 
 		circleIcons: {
 			get() { return this.$store.state.settings.circleIcons; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'circleIcons', value }); }
+			set(value) {
+				this.$store.dispatch('settings/set', { key: 'circleIcons', value });
+				this.reload();
+			}
 		},
 
 		lineWidth: {
@@ -318,12 +321,18 @@ export default Vue.extend({
 
 		contrastedAcct: {
 			get() { return this.$store.state.settings.contrastedAcct; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'contrastedAcct', value }); }
+			set(value) {
+				this.$store.dispatch('settings/set', { key: 'contrastedAcct', value });
+				this.reload();
+			}
 		},
 
 		showFullAcct: {
 			get() { return this.$store.state.settings.showFullAcct; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'showFullAcct', value }); }
+			set(value) {
+				this.$store.dispatch('settings/set', { key: 'showFullAcct', value });
+				this.reload();
+			}
 		},
 
 		showVia: {
@@ -394,6 +403,18 @@ export default Vue.extend({
 	methods: {
 		signout() {
 			this.$root.signout();
+		},
+
+		reload() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('@.reload-to-apply-the-setting'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (!canceled) {
+					location.reload();
+				}
+			});
 		},
 
 		checkForUpdate() {
