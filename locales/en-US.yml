@@ -38,7 +38,7 @@ common:
   signin: "Log In"
   signup: "Sign up"
   signout: "Logout"
-  reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
+  reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -241,7 +241,7 @@ common/views/pages/explore.vue:
   explore: "Explore {host}"
   users-info: "Currently, {users} users are registered here"
 common/views/components/url-preview.vue:
-  enable-player: "プレイヤーを開く"
+  enable-player: "Enable playback"
 common/views/components/user-list.vue:
   no-users: "There are no users."
 common/views/components/games/reversi/reversi.vue:
