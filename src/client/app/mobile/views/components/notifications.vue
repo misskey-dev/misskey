@@ -61,7 +61,7 @@ export default Vue.extend({
 
 		this.connection.on('notification', this.onNotification);
 
-		const max = 10;
+		const max = 15;
 
 		this.$root.api('i/notifications', {
 			limit: max + 1
