@@ -55,12 +55,18 @@ export default define({
 			});
 		},
 		setting() {
-			const url = window.prompt('URL', this.props.url);
-			if (url && url != '') {
+			this.$root.dialog({
+				title: 'URL',
+				input: {
+					type: 'url',
+					default: this.props.url
+				}
+			}).then(({ canceled, result: url }) => {
+				if (canceled) return;
 				this.props.url = url;
 				this.save();
 				this.fetch();
-			}
+			});
 		}
 	}
 });
