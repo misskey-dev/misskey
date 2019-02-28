@@ -97,6 +97,14 @@
 					<ui-radio v-model="lineWidth" :value="1">{{ $t('@.line-width-normal') }}</ui-radio>
 					<ui-radio v-model="lineWidth" :value="2">{{ $t('@.line-width-thick') }}</ui-radio>
 				</section>
+				<section>
+					<header>{{ $t('@.font-size') }}</header>
+					<ui-radio v-model="fontSize" :value="-2">{{ $t('@.font-size-x-small') }}</ui-radio>
+					<ui-radio v-model="fontSize" :value="-1">{{ $t('@.font-size-small') }}</ui-radio>
+					<ui-radio v-model="fontSize" :value="0">{{ $t('@.font-size-medium') }}</ui-radio>
+					<ui-radio v-model="fontSize" :value="1">{{ $t('@.font-size-large') }}</ui-radio>
+					<ui-radio v-model="fontSize" :value="2">{{ $t('@.font-size-x-large') }}</ui-radio>
+				</section>
 				<ui-switch v-model="reduceMotion">{{ $t('@.reduce-motion') }}</ui-switch>
 				<ui-switch v-model="contrastedAcct">{{ $t('@.contrasted-acct') }}</ui-switch>
 				<ui-switch v-model="showFullAcct">{{ $t('@.show-full-acct') }}</ui-switch>
@@ -399,6 +407,11 @@ export default Vue.extend({
 		lineWidth: {
 			get() { return this.$store.state.device.lineWidth; },
 			set(value) { this.$store.commit('device/set', { key: 'lineWidth', value }); }
+		},
+
+		fontSize: {
+			get() { return this.$store.state.device.fontSize; },
+			set(value) { this.$store.commit('device/set', { key: 'fontSize', value }); }
 		},
 
 		fetchOnScroll: {

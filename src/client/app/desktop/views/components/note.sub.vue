@@ -97,6 +97,7 @@ export default Vue.extend({
 					margin 0
 					padding 0
 					color var(--subNoteText)
+					font-size calc(1em + var(--fontSize))
 
 					pre
 						max-height 120px

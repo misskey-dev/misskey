@@ -410,6 +410,15 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 			});
 			//#endregion
 
+			//#region fontSize
+			document.documentElement.style.setProperty('--fontSize', `${os.store.state.device.fontSize}px`);
+			os.store.watch(s => {
+				return s.device.fontSize;
+			}, v => {
+				document.documentElement.style.setProperty('--fontSize', `${os.store.state.device.fontSize}px`);
+			});
+			//#endregion
+
 			document.addEventListener('visibilitychange', () => {
 				if (!document.hidden) {
 					os.store.commit('clearBehindNotes');

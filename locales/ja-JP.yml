@@ -156,6 +156,12 @@ common:
   line-width-thin: "細い"
   line-width-normal: "普通"
   line-width-thick: "太い"
+  font-size: "文字の大きさ"
+  font-size-x-small: "小さい"
+  font-size-small: "少し小さい"
+  font-size-medium: "普通"
+  font-size-large: "少し大きい"
+  font-size-x-large: "大きい"
   hide-password: "パスワードを隠す"
   show-password: "パスワードを表示する"
 
