@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as mongo from 'mongodb';
 
 import { queueLogger } from '../logger';
-import addFile from '../../services/drive/add-file';
+import { addDriveFile } from '../../services/drive/add-file';
 import User from '../../models/user';
 import dateFormat = require('dateformat');
 import Following from '../../models/following';
@@ -81,7 +81,7 @@ export async function exportFollowing(job: bq.Job, done: any): Promise<void> {
 	logger.succ(`Exported to: ${path}`);
 
 	const fileName = 'following-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
-	const driveFile = await addFile(user, path, fileName);
+	const driveFile = await addDriveFile(user, path, fileName);
 
 	logger.succ(`Exported to: ${driveFile._id}`);
 	cleanup();

@@ -5,7 +5,7 @@ import * as mongo from 'mongodb';
 
 import { queueLogger } from '../logger';
 import Note, { INote } from '../../models/note';
-import addFile from '../../services/drive/add-file';
+import { addDriveFile } from '../../services/drive/add-file';
 import User from '../../models/user';
 import dateFormat = require('dateformat');
 
@@ -101,7 +101,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 	logger.succ(`Exported to: ${path}`);
 
 	const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.json';
-	const driveFile = await addFile(user, path, fileName);
+	const driveFile = await addDriveFile(user, path, fileName);
 
 	logger.succ(`Exported to: ${driveFile._id}`);
 	cleanup();

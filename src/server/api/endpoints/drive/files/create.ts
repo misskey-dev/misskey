@@ -2,7 +2,7 @@ import * as ms from 'ms';
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import { validateFileName, pack } from '../../../../../models/drive-file';
-import create from '../../../../../services/drive/add-file';
+import { addDriveFile } from '../../../../../services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
@@ -87,7 +87,7 @@ export default define(meta, async (ps, user, app, file, cleanup) => {
 
 	try {
 		// Create file
-		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
+		const driveFile = await addDriveFile(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
 		return pack(driveFile, { self: true });
 	} catch (e) {
 		apiLogger.error(e);

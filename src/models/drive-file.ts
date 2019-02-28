@@ -4,14 +4,48 @@ import { pack as packFolder } from './drive-folder';
 import { pack as packUser } from './user';
 import monkDb, { nativeDbConn, dbLogger } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
+import config from '../config';
+import uuid = require('uuid');
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
 DriveFile.createIndex('metadata.uri');
+DriveFile.createIndex('metadata.url');
+DriveFile.createIndex('metadata.webpublicUrl');
+DriveFile.createIndex('metadata.thumbnailUrl');
 DriveFile.createIndex('metadata.userId');
 DriveFile.createIndex('metadata.folderId');
 DriveFile.createIndex('metadata._user.host');
 export default DriveFile;
+
+// 後方互換性のため
+DriveFile.findOne({
+	$or: [{
+		'metadata.url': { $exists: false }
+	}, {
+		'metadata.url': null
+	}]
+}).then(x => {
+	if (x != null) {
+		DriveFile.find({
+			$or: [{
+				'metadata.url': { $exists: false }
+			}, {
+				'metadata.url': null
+			}]
+		}, { fields: { _id: true } }).then(xs => {
+			for (const x of xs) {
+				DriveFile.update({ _id: x._id }, {
+					$set: {
+						'metadata.url': `${config.driveUrl}/${uuid.v4()}`,
+						'metadata.webpublicUrl': `${config.driveUrl}/${uuid.v4()}?web`,
+						'metadata.thumbnailUrl': `${config.driveUrl}/${uuid.v4()}?thumbnail`,
+					}
+				});
+			}
+		});
+	}
+});
 
 export const DriveFileChunk = monkDb.get('driveFiles.chunks');
 

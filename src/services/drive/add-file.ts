@@ -276,7 +276,7 @@ async function deleteOldFile(user: IRemoteUser) {
  * @param sensitive Mark file as sensitive
  * @return Created drive file
  */
-export default async function(
+export async function addDriveFile(
 	user: IUser,
 	path: string,
 	name: string = null,

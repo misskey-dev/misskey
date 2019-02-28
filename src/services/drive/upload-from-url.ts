@@ -4,7 +4,7 @@ import * as tmp from 'tmp';
 import * as request from 'request';
 
 import { IDriveFile, validateFileName } from '../../models/drive-file';
-import create from './add-file';
+import { addDriveFile } from './add-file';
 import config from '../../config';
 import { IUser } from '../../models/user';
 import * as mongodb from 'mongodb';
@@ -83,7 +83,7 @@ export default async (
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
+		driveFile = await addDriveFile(user, path, name, null, folderId, force, link, url, uri, sensitive);
 		logger.succ(`Got: ${driveFile._id}`);
 	} catch (e) {
 		error = e;
