@@ -1,5 +1,5 @@
 export default function(me, settings, note) {
-	const isMyNote = note.userId == me.id;
+	const isMyNote = me && (note.userId == me.id);
 	const isPureRenote = note.renoteId != null && note.text == null && note.fileIds.length == 0 && note.poll == null;
 
 	const includesMutedWords = (text: string) =>
