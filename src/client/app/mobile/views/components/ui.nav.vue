@@ -208,7 +208,7 @@ export default Vue.extend({
 		font-size 15px
 
 		&.notifications
-			width 340px
+			width 330px
 
 		> .notifications
 			padding-top 42px
@@ -218,7 +218,7 @@ export default Vue.extend({
 				top 0
 				left 0
 				z-index 1000
-				width 340px
+				width 330px
 				line-height 42px
 				background var(--secondary)
 
