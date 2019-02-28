@@ -154,7 +154,7 @@ export default Vue.extend({
 				> .mk-time
 					margin-left auto
 					color var(--noteHeaderInfo)
-					font-size 0.9em
+					font-size 1em
 
 			> .note-preview
 				color var(--noteText)
