@@ -38,6 +38,7 @@ common:
   signin: "登录"
   signup: "注册"
   signout: "退出"
+  reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
   got-it: "没问题"
   customization-tips:
     title: "自定义提示"
