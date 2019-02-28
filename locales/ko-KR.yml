@@ -239,6 +239,8 @@ common/views/pages/explore.vue:
   federated: "연합"
   explore: "{host}을(를) 탐색"
   users-info: "현재 {users} 사용자가 등록되어 있습니다"
+common/views/components/url-preview.vue:
+  enable-player: "プレイヤーを開く"
 common/views/components/user-list.vue:
   no-users: "사용자가 없습니다"
 common/views/components/games/reversi/reversi.vue:
