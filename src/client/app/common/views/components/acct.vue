@@ -1,5 +1,5 @@
 <template>
-<span class="mk-acct">
+<span class="mk-acct" v-once>
 	<span class="name">@{{ user.username }}</span>
 	<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }" v-if="user.host || detail || $store.state.settings.showFullAcct">@{{ user.host || host }}</span>
 	<fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/>
