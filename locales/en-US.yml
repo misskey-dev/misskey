@@ -239,6 +239,8 @@ common/views/pages/explore.vue:
   federated: "From the fediverse"
   explore: "Explore {host}"
   users-info: "Currently, {users} users are registered here"
+common/views/components/url-preview.vue:
+  enable-player: "プレイヤーを開く"
 common/views/components/user-list.vue:
   no-users: "There are no users."
 common/views/components/games/reversi/reversi.vue:
