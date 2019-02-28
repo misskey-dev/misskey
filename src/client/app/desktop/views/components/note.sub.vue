@@ -51,12 +51,12 @@ export default Vue.extend({
 .tkfdzaxtkdeianobciwadajxzbddorql
 	display flex
 	padding 16px 32px
-	font-size 0.9em
+	font-size 1em
 	background var(--subNoteBg)
 
 	&.mini
 		padding 16px
-		font-size 10px
+		font-size 12px
 
 		> .avatar
 			margin 0 8px 0 0
