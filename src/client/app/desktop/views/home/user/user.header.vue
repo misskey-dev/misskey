@@ -1,5 +1,5 @@
 <template>
-<div class="header">
+<div class="header" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 	<div class="banner-container" :style="style">
 		<div class="banner" ref="banner" :style="style" @click="onBannerClick"></div>
 		<div class="fade"></div>
@@ -126,9 +126,13 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .header
 	background var(--face)
-	box-shadow var(--shadow)
-	border-radius var(--round)
 	overflow hidden
+
+	&.round
+		border-radius 6px
+
+	&.shadow
+		box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 	> .banner-container
 		height 250px

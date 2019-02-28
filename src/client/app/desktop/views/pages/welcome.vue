@@ -344,8 +344,6 @@ export default Vue.extend({
 		.block
 			color var(--text)
 			background var(--face)
-			box-shadow var(--shadow)
-			//border-radius 8px
 			overflow auto
 
 			> header

@@ -1,5 +1,5 @@
 <template>
-<div class="kedshtep" :class="{ naked, inNakedDeckColumn }">
+<div class="kedshtep" :class="{ naked, inNakedDeckColumn, shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -60,8 +60,12 @@ export default Vue.extend({
 
 	&:not(.inNakedDeckColumn)
 		background var(--face)
-		box-shadow var(--shadow)
-		border-radius var(--round)
+
+		&.round
+			border-radius 6px
+
+		&.shadow
+			box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 		& + .kedshtep
 			margin-top 16px

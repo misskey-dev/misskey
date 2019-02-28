@@ -1,5 +1,5 @@
 <template>
-<div class="mk-note-detail" :title="title" tabindex="-1">
+<div class="mk-note-detail" :title="title" tabindex="-1" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 	<button
 		class="read-more"
 		v-if="appearNote.reply && appearNote.reply.replyId && conversation.length == 0"
@@ -159,8 +159,15 @@ export default Vue.extend({
 	overflow hidden
 	text-align left
 	background var(--face)
-	box-shadow var(--shadow)
-	border-radius var(--round)
+
+	&.round
+		border-radius 6px
+
+		> .read-more
+			border-radius 6px 6px 0 0
+
+	&.shadow
+		box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 	> .read-more
 		display block
@@ -175,7 +182,6 @@ export default Vue.extend({
 		outline none
 		border none
 		border-bottom solid 1px var(--faceDivider)
-		border-radius var(--round) var(--round) 0 0
 
 		&:hover
 			box-shadow 0 0 0 100px inset rgba(0, 0, 0, 0.05)

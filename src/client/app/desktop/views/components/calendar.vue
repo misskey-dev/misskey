@@ -1,5 +1,5 @@
 <template>
-<div class="mk-calendar" :data-melt="design == 4 || design == 5">
+<div class="mk-calendar" :data-melt="design == 4 || design == 5" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 	<template v-if="design == 0 || design == 1">
 		<button @click="prev" :title="$t('prev')"><fa icon="chevron-circle-left"/></button>
 		<p class="title">{{ $t('title', { year, month }) }}</p>
@@ -133,9 +133,13 @@ export default Vue.extend({
 .mk-calendar
 	color var(--calendarDay)
 	background var(--face)
-	box-shadow var(--shadow)
-	border-radius var(--round)
 	overflow hidden
+
+	&.round
+		border-radius 6px
+
+	&.shadow
+		box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 	&[data-melt]
 		background transparent !important

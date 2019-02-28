@@ -80,7 +80,7 @@ export default Vue.extend({
 
 	> div
 		background-color var(--text)
-		border-radius var(--round)
+		border-radius 6px
 		color var(--secondary)
 		display inline-block
 		font-size 14px

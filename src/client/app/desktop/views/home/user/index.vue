@@ -1,7 +1,11 @@
 <template>
 <div class="omechnps" v-if="!fetching">
-	<div class="is-suspended" v-if="user.isSuspended"><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</div>
-	<div class="is-remote" v-if="user.host != null"><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></div>
+	<div class="is-suspended" v-if="user.isSuspended" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
+		<fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}
+	</div>
+	<div class="is-remote" v-if="user.host != null" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
+		<fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
+	</div>
 	<div class="main">
 		<x-header class="header" :user="user"/>
 		<router-view :user="user"></router-view>
@@ -61,8 +65,12 @@ export default Vue.extend({
 		margin-bottom 16px
 		padding 14px 16px
 		font-size 14px
-		box-shadow var(--shadow)
-		border-radius var(--round)
+
+		&.round
+			border-radius 6px
+
+		&.shadow
+			box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 		&.is-suspended
 			color var(--suspendedInfoFg)

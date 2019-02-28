@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notes">
+<div class="mk-notes" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 	<slot name="header"></slot>
 
 	<div class="newer-indicator" :style="{ top: $store.state.uiHeaderHeight + 'px' }" v-show="queue.length > 0"></div>
@@ -191,9 +191,13 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-notes
 	background var(--face)
-	box-shadow var(--shadow)
-	border-radius var(--round)
 	overflow hidden
+
+	&.round
+		border-radius 6px
+
+	&.shadow
+		box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 	.transition
 		.mk-notes-enter

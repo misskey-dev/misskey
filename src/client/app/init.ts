@@ -401,34 +401,6 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 				console.log(`Cannot reapply theme. ${e}`);
 			}
 
-			//#region shadow
-			const shadow = '0 3px 8px rgba(0, 0, 0, 0.2)';
-			const shadowRight = '4px 0 4px rgba(0, 0, 0, 0.1)';
-			const shadowLeft = '-4px 0 4px rgba(0, 0, 0, 0.1)';
-			if (os.store.state.device.useShadow) {
-				document.documentElement.style.setProperty('--shadow', shadow);
-				document.documentElement.style.setProperty('--shadowRight', shadowRight);
-				document.documentElement.style.setProperty('--shadowLeft', shadowLeft);
-			}
-			os.store.watch(s => {
-				return s.device.useShadow;
-			}, v => {
-				document.documentElement.style.setProperty('--shadow', v ? shadow : 'none');
-				document.documentElement.style.setProperty('--shadowRight', v ? shadowRight : 'none');
-				document.documentElement.style.setProperty('--shadowLeft', v ? shadowLeft : 'none');
-			});
-			//#endregion
-
-			//#region rounded corners
-			const round = '6px';
-			if (os.store.state.device.roundedCorners) document.documentElement.style.setProperty('--round', round);
-			os.store.watch(s => {
-				return s.device.roundedCorners;
-			}, v => {
-				document.documentElement.style.setProperty('--round', v ? round : '0');
-			});
-			//#endregion
-
 			//#region line width
 			document.documentElement.style.setProperty('--lineWidth', `${os.store.state.device.lineWidth}px`);
 			os.store.watch(s => {

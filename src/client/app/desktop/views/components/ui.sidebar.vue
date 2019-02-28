@@ -1,5 +1,5 @@
 <template>
-<div class="header" :class="navbar">
+<div class="header" :class="navbar" :data-shadow="$store.state.device.useShadow">
 	<div class="body">
 		<div class="post">
 			<button @click="post" :title="$t('title')"><fa icon="pencil-alt"/></button>
@@ -62,7 +62,7 @@
 	</div>
 
 	<transition :name="`slide-${navbar}`">
-		<div class="notifications" v-if="showNotifications" ref="notifications" :class="navbar">
+		<div class="notifications" v-if="showNotifications" ref="notifications" :class="navbar" :data-shadow="$store.state.device.useShadow">
 			<mk-notifications/>
 		</div>
 	</transition>
@@ -226,11 +226,15 @@ export default Vue.extend({
 
 	&.left
 		left 0
-		box-shadow var(--shadowRight)
+
+		&[data-shadow]
+			box-shadow 4px 0 4px rgba(0, 0, 0, 0.1)
 
 	&.right
 		right 0
-		box-shadow var(--shadowLeft)
+
+		&[data-shadow]
+			box-shadow -4px 0 4px rgba(0, 0, 0, 0.1)
 
 	> .body
 		position fixed
@@ -302,11 +306,15 @@ export default Vue.extend({
 
 		&.left
 			left $width
-			box-shadow var(--shadowRight)
+
+			&[data-shadow]
+				box-shadow 4px 0 4px rgba(0, 0, 0, 0.1)
 
 		&.right
 			right $width
-			box-shadow var(--shadowLeft)
+
+			&[data-shadow]
+				box-shadow -4px 0 4px rgba(0, 0, 0, 0.1)
 
 	.nav
 		> *

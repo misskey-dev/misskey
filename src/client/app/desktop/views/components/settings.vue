@@ -603,9 +603,6 @@ export default Vue.extend({
 		z-index 1
 		font-size 15px
 
-		&.inWindow
-			box-shadow var(--shadowRight)
-
 		> p
 			display block
 			padding 10px 16px
