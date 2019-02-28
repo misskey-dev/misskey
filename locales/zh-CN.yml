@@ -38,7 +38,7 @@ common:
   signin: "登录"
   signup: "注册"
   signout: "退出"
-  reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
+  reload-to-apply-the-setting: "必须重新加载页面以应用此设置。 确实要立即重新加载吗？"
   got-it: "没问题"
   customization-tips:
     title: "自定义提示"
@@ -241,7 +241,7 @@ common/views/pages/explore.vue:
   explore: "查找{host}"
   users-info: "当前有{users}个注册用户"
 common/views/components/url-preview.vue:
-  enable-player: "プレイヤーを開く"
+  enable-player: "打开播放器"
 common/views/components/user-list.vue:
   no-users: "无用户"
 common/views/components/games/reversi/reversi.vue:
