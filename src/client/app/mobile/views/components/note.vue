@@ -36,26 +36,26 @@
 				</div>
 				<span class="app" v-if="appearNote.app && $store.state.settings.showVia">via <b>{{ appearNote.app.name }}</b></span>
 			</div>
-			<footer v-if="appearNote.deletedAt == null">
+			<footer v-if="appearNote.deletedAt == null" class="footer">
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
-				<button @click="reply()">
+				<button @click="reply()" class="button">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 					<template v-else><fa icon="reply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button v-if="['public', 'home'].includes(appearNote.visibility)" @click="renote()" title="Renote">
+				<button v-if="['public', 'home'].includes(appearNote.visibility)" @click="renote()" title="Renote" class="button">
 					<fa icon="retweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button v-else>
+				<button v-else class="button">
 					<fa icon="ban"/>
 				</button>
-				<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton">
+				<button v-if="!isMyNote && appearNote.myReaction == null" class="button" @click="react()" ref="reactButton">
 					<fa icon="plus"/>
 				</button>
-				<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton">
+				<button v-if="!isMyNote && appearNote.myReaction != null" class="button reacted" @click="undoReact(appearNote)" ref="reactButton">
 					<fa icon="minus"/>
 				</button>
-				<button class="menu" @click="menu()" ref="menuButton">
+				<button class="button" @click="menu()" ref="menuButton">
 					<fa icon="ellipsis-h"/>
 				</button>
 			</footer>
@@ -237,8 +237,8 @@ export default Vue.extend({
 					font-size 12px
 					color #ccc
 
-			> footer
-				> button
+			> .footer
+				> .button
 					margin 0
 					padding 8px
 					background transparent

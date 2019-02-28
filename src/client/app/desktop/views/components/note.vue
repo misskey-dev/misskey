@@ -39,30 +39,30 @@
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="compact"/>
 				</div>
 			</div>
-			<footer v-if="appearNote.deletedAt == null">
+			<footer v-if="appearNote.deletedAt == null" class="footer">
 				<span class="app" v-if="appearNote.app && narrow && $store.state.settings.showVia">via <b>{{ appearNote.app.name }}</b></span>
 				<mk-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
-				<button class="replyButton" @click="reply()" :title="$t('reply')">
+				<button class="replyButton button" @click="reply()" :title="$t('reply')">
 					<template v-if="appearNote.reply"><fa icon="reply-all"/></template>
 					<template v-else><fa icon="reply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton" @click="renote()" :title="$t('renote')">
+				<button v-if="['public', 'home'].includes(appearNote.visibility)" class="renoteButton button" @click="renote()" :title="$t('renote')">
 					<fa icon="retweet"/>
 					<p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
-				<button v-else class="inhibitedButton">
+				<button v-else class="inhibitedButton button">
 					<fa icon="ban"/>
 				</button>
-				<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton" @click="react()" ref="reactButton" :title="$t('add-reaction')">
+				<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton button" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 					<fa icon="plus"/>
 					<p class="count" v-if="Object.values(appearNote.reactionCounts).some(x => x)">{{ Object.values(appearNote.reactionCounts).reduce((a, c) => a + c, 0) }}</p>
 				</button>
-				<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted" @click="undoReact(appearNote)" ref="reactButton" :title="$t('undo-reaction')">
+				<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted button" @click="undoReact(appearNote)" ref="reactButton" :title="$t('undo-reaction')">
 					<fa icon="minus"/>
 					<p class="count" v-if="Object.values(appearNote.reactionCounts).some(x => x)">{{ Object.values(appearNote.reactionCounts).reduce((a, c) => a + c, 0) }}</p>
 				</button>
-				<button @click="menu()" ref="menuButton">
+				<button @click="menu()" ref="menuButton" class="button">
 					<fa icon="ellipsis-h"/>
 				</button>
 			</footer>
@@ -274,7 +274,7 @@ export default Vue.extend({
 							border dashed var(--lineWidth) var(--quoteBorder)
 							border-radius 8px
 
-			> footer
+			> .footer
 				> .app
 					display block
 					margin-top 0.5em
@@ -282,7 +282,7 @@ export default Vue.extend({
 					color var(--noteHeaderInfo)
 					font-size 0.8em
 
-				> button
+				> .button
 					margin 0 28px 0 0
 					padding 0 8px
 					line-height 32px

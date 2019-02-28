@@ -1,5 +1,5 @@
 <template>
-<mfm-core v-bind="$attrs" class="havbbuyv"/>
+<mfm-core v-bind="$attrs" class="havbbuyv" v-once/>
 </template>
 
 <script lang="ts">
