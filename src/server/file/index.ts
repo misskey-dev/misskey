@@ -33,8 +33,7 @@ router.get('/app-default.jpg', ctx => {
 	ctx.body = file;
 });
 
-router.get('/:id', sendDriveFile);
-router.get('/:id/*', sendDriveFile);
+router.get('/*', sendDriveFile);
 
 // Register router
 app.use(router.routes());

@@ -1,9 +1,7 @@
 import $ from 'cafy';
-import * as mongo from 'mongodb';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile, { pack, IDriveFile } from '../../../../../models/drive-file';
 import define from '../../../define';
-import config from '../../../../../config';
 import { ApiError } from '../../../error';
 
 export const meta = {
@@ -73,28 +71,16 @@ export default define(meta, async (ps, user) => {
 			'metadata.deletedAt': { $exists: false }
 		});
 	} else if (ps.url) {
-		const isInternalStorageUrl = ps.url.startsWith(config.driveUrl);
-		if (isInternalStorageUrl) {
-			// Extract file ID from url
-			// e.g.
-			// http://misskey.local/files/foo?original=bar --> foo
-			const fileId = new mongo.ObjectID(ps.url.replace(config.driveUrl, '').replace(/\?(.*)$/, '').replace(/\//g, ''));
-			file = await DriveFile.findOne({
-				_id: fileId,
-				'metadata.deletedAt': { $exists: false }
-			});
-		} else {
-			file = await DriveFile.findOne({
-				$or: [{
-					'metadata.url': ps.url
-				}, {
-					'metadata.webpublicUrl': ps.url
-				}, {
-					'metadata.thumbnailUrl': ps.url
-				}],
-				'metadata.deletedAt': { $exists: false }
-			});
-		}
+		file = await DriveFile.findOne({
+			$or: [{
+				'metadata.url': ps.url
+			}, {
+				'metadata.webpublicUrl': ps.url
+			}, {
+				'metadata.thumbnailUrl': ps.url
+			}],
+			'metadata.deletedAt': { $exists: false }
+		});
 	} else {
 		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}

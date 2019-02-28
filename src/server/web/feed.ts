@@ -2,7 +2,6 @@ import { Feed } from 'feed';
 import config from '../../config';
 import Note from '../../models/note';
 import { IUser } from '../../models/user';
-import { getOriginalUrl } from '../../misc/get-drive-file-url';
 
 export default async function(user: IUser) {
 	const author: Author = {
@@ -38,7 +37,7 @@ export default async function(user: IUser) {
 	} as FeedOptions);
 
 	for (const note of notes) {
-		const file = note._files && note._files.find(file => file.contentType.startsWith('image/'));
+		const file = note._files ? note._files.find(file => file.contentType.startsWith('image/')) : null;
 
 		feed.addItem({
 			title: `New note by ${author.name}`,
@@ -46,7 +45,7 @@ export default async function(user: IUser) {
 			date: note.createdAt,
 			description: note.cw,
 			content: note.text,
-			image: file && getOriginalUrl(file)
+			image: file ? file.metadata.webpublicUrl : null
 		});
 	}
 

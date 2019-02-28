@@ -1,6 +1,5 @@
 import * as Koa from 'koa';
 import * as send from 'koa-send';
-import * as mongodb from 'mongodb';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
@@ -14,16 +13,18 @@ const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): voi
 };
 
 export default async function(ctx: Koa.BaseContext) {
-	// Validate id
-	if (!mongodb.ObjectID.isValid(ctx.params.id)) {
-		ctx.throw(400, 'incorrect id');
-		return;
-	}
-
-	const fileId = new mongodb.ObjectID(ctx.params.id);
+	const url = ctx.href;
 
 	// Fetch drive file
-	const file = await DriveFile.findOne({ _id: fileId });
+	const file = await DriveFile.findOne({
+		$or: [{
+			'metadata.url': url
+		}, {
+			'metadata.webpublicUrl': url
+		}, {
+			'metadata.thumbnailUrl': url
+		}],
+	});
 
 	if (file == null) {
 		ctx.status = 404;
@@ -43,21 +44,16 @@ export default async function(ctx: Koa.BaseContext) {
 	}
 
 	const sendRaw = async () => {
-		if (file.metadata && file.metadata.accessKey && file.metadata.accessKey != ctx.query['original']) {
-			ctx.status = 403;
-			return;
-		}
-
 		const bucket = await getDriveFileBucket();
-		const readable = bucket.openDownloadStream(fileId);
+		const readable = bucket.openDownloadStream(file._id);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
 		ctx.set('Content-Type', file.contentType);
 		ctx.body = readable;
 	};
 
-	if ('thumbnail' in ctx.query) {
+	if (file.metadata.thumbnailUrl === url) {
 		const thumb = await DriveFileThumbnail.findOne({
-			'metadata.originalId': fileId
+			'metadata.originalId': file._id
 		});
 
 		if (thumb != null) {
@@ -72,9 +68,9 @@ export default async function(ctx: Koa.BaseContext) {
 				await send(ctx as any, '/dummy.png', { root: assets });
 			}
 		}
-	} else if ('web' in ctx.query) {
+	} else if (file.metadata.webpublicUrl === url) {
 		const web = await DriveFileWebpublic.findOne({
-			'metadata.originalId': fileId
+			'metadata.originalId': file._id
 		});
 
 		if (web != null) {

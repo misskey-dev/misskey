@@ -4,7 +4,6 @@ import { pack as packFolder } from './drive-folder';
 import { pack as packUser } from './user';
 import monkDb, { nativeDbConn, dbLogger } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
-import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
 
 const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
 DriveFile.createIndex('md5');
@@ -36,25 +35,9 @@ export type IMetadata = {
 	 */
 	uri?: string;
 
-	/**
-	 * URL for web(生成されている場合) or original
-	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
-	 */
-	url?: string;
-
-	/**
-	 * URL for thumbnail (thumbnailがなければなし)
-	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
-	 */
+	url: string;
 	thumbnailUrl?: string;
-
-	/**
-	 * URL for original (web用が生成されてない場合はurlがoriginalを指す)
-	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
-	 */
 	webpublicUrl?: string;
-
-	accessKey?: string;
 
 	src?: string;
 	deletedAt?: Date;
@@ -188,8 +171,8 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
-	_target.url = getDriveFileUrl(_file);
-	_target.thumbnailUrl = getDriveFileUrl(_file, true);
+	_target.url = _file.metadata.webpublicUrl;
+	_target.thumbnailUrl = _file.metadata.thumbnailUrl;
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
@@ -224,7 +207,7 @@ export const pack = (
 	delete _target._user;
 
 	if (opts.self) {
-		_target.url = getOriginalUrl(_file);
+		_target.url = _file.metadata.url;
 	}
 
 	resolve(_target);

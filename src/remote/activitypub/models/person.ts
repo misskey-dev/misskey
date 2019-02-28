@@ -16,7 +16,6 @@ import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import Instance from '../../../models/instance';
-import getDriveFileUrl from '../../../misc/get-drive-file-url';
 import { IEmoji } from '../../../models/emoji';
 import { ITag, extractHashtags } from './tag';
 import Following from '../../../models/following';
@@ -227,8 +226,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const avatarId = avatar ? avatar._id : null;
 	const bannerId = banner ? banner._id : null;
-	const avatarUrl = getDriveFileUrl(avatar, true);
-	const bannerUrl = getDriveFileUrl(banner, false);
+	const avatarUrl = avatar.metadata.thumbnailUrl;
+	const bannerUrl = banner.metadata.webpublicUrl;
 	const avatarColor = avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
 	const bannerColor = banner && avatar.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
 
@@ -373,13 +372,13 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	if (avatar) {
 		updates.avatarId = avatar._id;
-		updates.avatarUrl = getDriveFileUrl(avatar, true);
+		updates.avatarUrl = avatar.metadata.thumbnailUrl;
 		updates.avatarColor = avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
 	}
 
 	if (banner) {
 		updates.bannerId = banner._id;
-		updates.bannerUrl = getDriveFileUrl(banner, true);
+		updates.bannerUrl = banner.metadata.webpublicUrl;
 		updates.bannerColor = banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
 	}
 

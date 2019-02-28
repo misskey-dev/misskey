@@ -1,8 +1,7 @@
 import { IDriveFile } from '../../../models/drive-file';
-import getDriveFileUrl from '../../../misc/get-drive-file-url';
 
 export default (file: IDriveFile) => ({
 	type: 'Image',
-	url: getDriveFileUrl(file),
+	url: file.metadata.webpublicUrl,
 	sensitive: file.metadata.isSensitive
 });

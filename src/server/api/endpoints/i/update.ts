@@ -6,7 +6,6 @@ import DriveFile from '../../../../models/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
-import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
 import extractHashtags from '../../../../misc/extract-hashtags';
@@ -195,7 +194,7 @@ export default define(meta, async (ps, user, app) => {
 		if (avatar.metadata.deletedAt) {
 			updates.avatarUrl = null;
 		} else {
-			updates.avatarUrl = getDriveFileUrl(avatar, true);
+			updates.avatarUrl = avatar.metadata.thumbnailUrl;
 
 			if (avatar.metadata.properties.avgColor) {
 				updates.avatarColor = avatar.metadata.properties.avgColor;
@@ -214,7 +213,7 @@ export default define(meta, async (ps, user, app) => {
 		if (banner.metadata.deletedAt) {
 			updates.bannerUrl = null;
 		} else {
-			updates.bannerUrl = getDriveFileUrl(banner, false);
+			updates.bannerUrl = banner.metadata.webpublicUrl;
 
 			if (banner.metadata.properties.avgColor) {
 				updates.bannerColor = banner.metadata.properties.avgColor;
@@ -236,7 +235,7 @@ export default define(meta, async (ps, user, app) => {
 			if (wallpaper.metadata.deletedAt) {
 				updates.wallpaperUrl = null;
 			} else {
-				updates.wallpaperUrl = getDriveFileUrl(wallpaper);
+				updates.wallpaperUrl = wallpaper.metadata.webpublicUrl;
 
 				if (wallpaper.metadata.properties.avgColor) {
 					updates.wallpaperColor = wallpaper.metadata.properties.avgColor;

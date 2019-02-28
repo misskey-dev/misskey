@@ -117,11 +117,14 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		return file;
 	} else {	// use MongoDB GridFS
+		Object.assign(metadata, {
+			url: `${config.driveUrl}/${uuid.v4()}`,
+			webpublicUrl: `${config.driveUrl}/${uuid.v4()}?web`,
+			thumbnailUrl: `${config.driveUrl}/${uuid.v4()}?thumbnail`,
+		} as IMetadata);
+
 		// #region store original
 		const originalDst = await getDriveFileBucket();
-
-		// web用(Exif削除済み)がある場合はオリジナルにアクセス制限
-		if (alts.webpublic) metadata.accessKey = uuid.v4();
 
 		const originalFile = await storeOriginal(originalDst, name, path, type, metadata);
 
