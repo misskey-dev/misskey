@@ -61,7 +61,7 @@
 		<div>
 			<ui-switch v-model="isCat" @change="save(false)">{{ $t('is-cat') }}</ui-switch>
 			<ui-switch v-model="isBot" @change="save(false)">{{ $t('is-bot') }}</ui-switch>
-			<ui-switch v-model="alwaysMarkNsfw">{{ $t('@.always-mark-nsfw') }}</ui-switch>
+			<ui-switch v-model="alwaysMarkNsfw">{{ $t('@._settings.always-mark-nsfw') }}</ui-switch>
 		</div>
 	</section>
 
@@ -113,11 +113,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
-import { apiUrl, host } from '../../../config';
+import i18n from '../../../../i18n';
+import { apiUrl, host } from '../../../../config';
 import { toUnicode } from 'punycode';
 import langmap from 'langmap';
-import { unique } from '../../../../../prelude/array';
+import { unique } from '../../../../../../prelude/array';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({

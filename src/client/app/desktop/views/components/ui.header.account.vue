@@ -24,7 +24,7 @@
 				<li>
 					<router-link to="/i/favorites">
 						<i><fa icon="star"/></i>
-						<span>{{ $t('favorites') }}</span>
+						<span>{{ $t('@.favorites') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
@@ -47,7 +47,7 @@
 				<li>
 					<router-link to="/i/settings">
 						<i><fa icon="cog"/></i>
-						<span>{{ $t('settings') }}</span>
+						<span>{{ $t('@.settings') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>

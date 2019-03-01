@@ -410,6 +410,15 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 			});
 			//#endregion
 
+			//#region fontSize
+			document.documentElement.style.setProperty('--fontSize', `${os.store.state.device.fontSize}px`);
+			os.store.watch(s => {
+				return s.device.fontSize;
+			}, v => {
+				document.documentElement.style.setProperty('--fontSize', `${os.store.state.device.fontSize}px`);
+			});
+			//#endregion
+
 			document.addEventListener('visibilitychange', () => {
 				if (!document.hidden) {
 					os.store.commit('clearBehindNotes');
@@ -465,12 +474,9 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 			app.$mount('#app');
 
 			//#region 更新チェック
-			const preventUpdate = os.store.state.device.preventUpdate;
-			if (!preventUpdate) {
-				setTimeout(() => {
-					checkForUpdate(app);
-				}, 3000);
-			}
+			setTimeout(() => {
+				checkForUpdate(app);
+			}, 3000);
 			//#endregion
 
 			return [app, os] as [Vue, MiOS];

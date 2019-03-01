@@ -58,4 +58,12 @@ export default Vue.extend({
 			margin-bottom 16px
 			font-weight bold
 			color var(--faceText)
+
+		> section
+			margin 16px 0
+
+			> header
+				font-weight bold
+				color var(--text)
+
 </style>
