@@ -20,8 +20,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
-import { langs } from '../../../config';
+import i18n from '../../../../i18n';
+import { langs } from '../../../../config';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/language-settings.vue'),

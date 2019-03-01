@@ -62,4 +62,8 @@ export default Vue.extend({
 		> section
 			margin 16px 0
 
+			> header
+				font-weight bold
+				color var(--text)
+
 </style>

@@ -1,6 +1,6 @@
 <template>
 <mk-ui>
-	<template #header><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('title') }}</template>
+	<template #header><span style="margin-right:4px;"><fa icon="star"/></span>{{ $t('@.favorites') }}</template>
 
 	<main>
 		<sequential-entrance animation="entranceFromTop" delay="25">
@@ -19,7 +19,7 @@ import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
-	i18n: i18n('mobile/views/pages/favorites.vue'),
+	i18n: i18n(),
 	data() {
 		return {
 			fetching: true,

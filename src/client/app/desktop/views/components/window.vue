@@ -89,12 +89,6 @@ export default Vue.extend({
 		}
 	},
 
-	data() {
-		return {
-			preventMount: false
-		};
-	},
-
 	computed: {
 		isFlexible(): boolean {
 			return this.height == 'auto';
@@ -105,21 +99,11 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.$store.state.device.autoPopout && this.popoutUrl) {
-			this.popout();
-			this.preventMount = true;
-		} else {
-			// ウィンドウをウィンドウシステムに登録
-			this.$root.os.windows.add(this);
-		}
+		// ウィンドウをウィンドウシステムに登録
+		this.$root.os.windows.add(this);
 	},
 
 	mounted() {
-		if (this.preventMount) {
-			this.destroyDom();
-			return;
-		}
-
 		this.$nextTick(() => {
 			const main = this.$refs.main as any;
 			main.style.top = '15%';

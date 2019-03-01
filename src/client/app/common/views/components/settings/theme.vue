@@ -103,8 +103,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
-import { lightTheme, darkTheme, builtinThemes, applyTheme, Theme } from '../../../theme';
+import i18n from '../../../../i18n';
+import { lightTheme, darkTheme, builtinThemes, applyTheme, Theme } from '../../../../theme';
 import { Chrome } from 'vue-color';
 import * as uuid from 'uuid';
 import * as tinycolor from 'tinycolor2';

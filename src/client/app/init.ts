@@ -474,12 +474,9 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 			app.$mount('#app');
 
 			//#region 更新チェック
-			const preventUpdate = os.store.state.device.preventUpdate;
-			if (!preventUpdate) {
-				setTimeout(() => {
-					checkForUpdate(app);
-				}, 3000);
-			}
+			setTimeout(() => {
+				checkForUpdate(app);
+			}, 3000);
 			//#endregion
 
 			return [app, os] as [Vue, MiOS];
