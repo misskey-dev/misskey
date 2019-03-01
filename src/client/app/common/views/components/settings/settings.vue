@@ -29,7 +29,6 @@
 				<ui-radio v-model="navbar" value="right">{{ $t('@._settings.navbar-position-right') }}</ui-radio>
 			</section>
 			<section>
-				<ui-switch v-model="darkmode">{{ $t('@.dark-mode') }}</ui-switch>
 				<ui-switch v-model="useShadow">{{ $t('@._settings.use-shadow') }}</ui-switch>
 				<ui-switch v-model="roundedCorners">{{ $t('@._settings.rounded-corners') }}</ui-switch>
 				<ui-switch v-model="circleIcons">{{ $t('@._settings.circle-icons') }}</ui-switch>
@@ -312,11 +311,6 @@ export default Vue.extend({
 		keepCw: {
 			get() { return this.$store.state.settings.keepCw; },
 			set(value) { this.$store.commit('settings/set', { key: 'keepCw', value }); }
-		},
-
-		darkmode: {
-			get() { return this.$store.state.device.darkmode; },
-			set(value) { this.$store.commit('device/set', { key: 'darkmode', value }); }
 		},
 
 		navbar: {
