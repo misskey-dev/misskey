@@ -33,13 +33,21 @@ DriveFile.findOne({
 			}, {
 				'metadata.url': null
 			}]
-		}, { fields: { _id: true } }).then(xs => {
+		}, { fields: { _id: true, filename: true, contentType: true } }).then(xs => {
 			for (const x of xs) {
+				let [ext] = (x.filename.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
+
+				if (ext === '') {
+					if (x.contentType === 'image/jpeg') ext = '.jpg';
+					if (x.contentType === 'image/png') ext = '.png';
+					if (x.contentType === 'image/webp') ext = '.webp';
+				}
+
 				DriveFile.update({ _id: x._id }, {
 					$set: {
-						'metadata.url': `${config.driveUrl}/${uuid.v4()}`,
-						'metadata.webpublicUrl': `${config.driveUrl}/${uuid.v4()}?web`,
-						'metadata.thumbnailUrl': `${config.driveUrl}/${uuid.v4()}?thumbnail`,
+						'metadata.url': `${config.driveUrl}/${uuid.v4()}${ext}`,
+						'metadata.webpublicUrl': `${config.driveUrl}/${uuid.v4()}.jpg`,
+						'metadata.thumbnailUrl': `${config.driveUrl}/${uuid.v4()}.jpg`,
 					}
 				});
 			}

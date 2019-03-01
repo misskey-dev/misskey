@@ -42,16 +42,16 @@ async function save(path: string, name: string, type: string, hash: string, size
 	// thunbnail, webpublic を必要なら生成
 	const alts = await generateAlts(path, type, !metadata.uri);
 
+	let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
+
+	if (ext === '') {
+		if (type === 'image/jpeg') ext = '.jpg';
+		if (type === 'image/png') ext = '.png';
+		if (type === 'image/webp') ext = '.webp';
+	}
+
 	if (config.drive && config.drive.storage == 'minio') {
 		//#region ObjectStorage params
-		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
-
-		if (ext === '') {
-			if (type === 'image/jpeg') ext = '.jpg';
-			if (type === 'image/png') ext = '.png';
-			if (type === 'image/webp') ext = '.webp';
-		}
-
 		const baseUrl = config.drive.baseUrl
 			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
 
@@ -118,9 +118,9 @@ async function save(path: string, name: string, type: string, hash: string, size
 		return file;
 	} else {	// use MongoDB GridFS
 		Object.assign(metadata, {
-			url: `${config.driveUrl}/${uuid.v4()}`,
-			webpublicUrl: `${config.driveUrl}/${uuid.v4()}?web`,
-			thumbnailUrl: `${config.driveUrl}/${uuid.v4()}?thumbnail`,
+			url: `${config.driveUrl}/${uuid.v4()}${ext}`,
+			webpublicUrl: `${config.driveUrl}/${uuid.v4()}.${alts.webpublic.ext}`,
+			thumbnailUrl: `${config.driveUrl}/${uuid.v4()}.${alts.thumbnail.ext}`,
 		} as IMetadata);
 
 		// #region store original
