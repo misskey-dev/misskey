@@ -5,6 +5,7 @@ import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
 import { ApiError } from '../../error';
+import DriveFile from '../../../../models/drive-file';
 
 const cursorOption = { fields: { data: false } };
 
@@ -101,6 +102,33 @@ export default define(meta, async (ps, me) => {
 			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 				resolveRemoteUser(ps.username, ps.host, { }, true);
 			}
+		}
+
+		// 後方互換性のため
+		// TODO: そのうち削除
+		if (user.avatarId) {
+			const avatar = await DriveFile.findOne({ _id: user.avatarId });
+			User.update({ _id: user._id }, {
+				$set: {
+					avatarUrl: avatar.metadata.thumbnailUrl,
+				}
+			});
+		}
+		if (user.bannerId) {
+			const banner = await DriveFile.findOne({ _id: user.bannerId });
+			User.update({ _id: user._id }, {
+				$set: {
+					bannerUrl: banner.metadata.webpublicUrl,
+				}
+			});
+		}
+		if (user.wallpaperId) {
+			const wallpaper = await DriveFile.findOne({ _id: user.wallpaperId });
+			User.update({ _id: user._id }, {
+				$set: {
+					wallpaperUrl: wallpaper.metadata.webpublicUrl,
+				}
+			});
 		}
 
 		return await pack(user, me, {
