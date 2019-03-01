@@ -6,6 +6,7 @@
 	:class="{ renote: isRenote, smart: $store.state.device.postStyle == 'smart', mini: narrow }"
 	v-hotkey="keymap"
 >
+	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
 	<div class="reply-to" v-if="appearNote.reply && (!$store.getters.isSignedIn || $store.state.settings.showReplyTarget)">
 		<x-sub :note="appearNote.reply"/>
 	</div>
@@ -62,6 +63,7 @@
 			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
+	<x-sub v-for="note in replies" :key="note.id" :note="note"/>
 </div>
 </template>
 
@@ -91,6 +93,11 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
+		detail: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	inject: {
@@ -98,6 +105,30 @@ export default Vue.extend({
 			default: false
 		}
 	},
+
+	data() {
+		return {
+			conversation: [],
+			replies: []
+		};
+	},
+
+	created() {
+		if (this.detail) {
+			this.$root.api('notes/replies', {
+				noteId: this.appearNote.id,
+				limit: 8
+			}).then(replies => {
+				this.replies = replies;
+			});
+
+			this.$root.api('notes/conversation', {
+				noteId: this.appearNote.replyId
+			}).then(conversation => {
+				this.conversation = conversation.reverse();
+			});
+		}
+	}
 });
 </script>
 

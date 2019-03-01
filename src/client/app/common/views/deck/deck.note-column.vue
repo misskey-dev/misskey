@@ -11,7 +11,7 @@
 				<a :href="note.url || note.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
 			</details>
 		</div>
-		<mk-note :note="note" :detail="true"/>
+		<mk-note :note="note" :detail="true" :key="note.id"/>
 	</div>
 </x-column>
 </template>
@@ -20,13 +20,11 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
-import XNotes from './deck.notes.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
 	components: {
 		XColumn,
-		XNotes,
 	},
 
 	data() {
