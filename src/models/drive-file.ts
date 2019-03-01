@@ -213,8 +213,10 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
+	const isImage = file.contentType && file.contentType.startsWith('image/');
+
 	_target.url = _file.metadata.webpublicUrl || _file.metadata.url;
-	_target.thumbnailUrl = _file.metadata.thumbnailUrl || _file.metadata.webpublicUrl;
+	_target.thumbnailUrl = _file.metadata.thumbnailUrl || _file.metadata.webpublicUrl || (isImage ? _file.metadata.url : '/assets/thumbnail-not-available.png');
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
