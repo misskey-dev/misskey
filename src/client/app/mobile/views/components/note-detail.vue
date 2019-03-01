@@ -122,14 +122,14 @@ export default Vue.extend({
 		};
 	},
 
-	mounted() {
-		this.fetchReplies();
-	},
-
 	watch: {
 		note() {
 			this.fetchReplies();
 		}
+	},
+
+	mounted() {
+		this.fetchReplies();
 	},
 
 	methods: {
