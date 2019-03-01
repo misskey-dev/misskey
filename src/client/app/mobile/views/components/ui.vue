@@ -126,6 +126,7 @@ export default Vue.extend({
 				left 0
 				color var(--notificationIndicator)
 				font-size 16px
+				animation blink 1s infinite
 
 		&.post
 			right 28px
