@@ -91,6 +91,7 @@ export default Vue.extend({
 			vertical-align super
 			font-size 10px
 			color var(--notificationIndicator)
+			animation blink 1s infinite
 
 	> .pop
 		$bgcolor = var(--face)
