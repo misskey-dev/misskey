@@ -213,8 +213,8 @@ export const pack = (
 
 	_target = Object.assign(_target, _file.metadata);
 
-	_target.url = _file.metadata.webpublicUrl;
-	_target.thumbnailUrl = _file.metadata.thumbnailUrl;
+	_target.url = _file.metadata.webpublicUrl || _file.metadata.url;
+	_target.thumbnailUrl = _file.metadata.thumbnailUrl || _file.metadata.webpublicUrl;
 	_target.isRemote = _file.metadata.isRemote;
 
 	if (_target.properties == null) _target.properties = {};
