@@ -9,7 +9,9 @@ const logger = new Logger('url-preview');
 module.exports = async (ctx: Koa.BaseContext) => {
 	const meta = await fetchMeta();
 
-	logger.info(`Getting preview of ${ctx.query.url} ...`);
+	logger.info(meta.summalyProxy
+		? `(Proxy) Getting preview of ${ctx.query.url} ...`
+		: `Getting preview of ${ctx.query.url} ...`);
 
 	try {
 		const summary = meta.summalyProxy ? await request.get({
