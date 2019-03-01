@@ -3,7 +3,7 @@
 	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'sticky-note']"/></span>{{ $t('title') }}</template>
 	<main v-if="!fetching">
 		<div>
-			<mk-note-detail :note="note"/>
+			<mk-note-detail :note="note" :key="note.id"/>
 		</div>
 		<footer>
 			<router-link v-if="note.prev" :to="note.prev"><fa icon="angle-left"/> {{ $t('prev') }}</router-link>

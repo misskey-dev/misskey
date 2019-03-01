@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<template #header>
-		<fa icon="user"/><mk-user-name :user="user" v-if="user"/>
+		<fa icon="user"/><mk-user-name :user="user" v-if="user" :key="user.id"/>
 	</template>
 
 	<div class="zubukjlciycdsyynicqrnlsmdwmymzqu" v-if="user">
@@ -15,9 +15,9 @@
 			<div>
 				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
-				<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+				<mk-avatar class="avatar" :user="user" :disable-preview="true" :key="user.id"/>
 				<router-link class="name" :to="user | userPage()">
-					<mk-user-name :user="user"/>
+					<mk-user-name :user="user" :key="user.id"/>
 				</router-link>
 				<span class="acct">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
 				<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
@@ -25,7 +25,7 @@
 		</header>
 		<div class="info">
 			<div class="description">
-				<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+				<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :key="user.id"/>
 			</div>
 			<div class="fields" v-if="user.fields">
 				<dl class="field" v-for="(field, i) in user.fields" :key="i">

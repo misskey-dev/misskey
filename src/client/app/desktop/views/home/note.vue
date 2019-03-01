@@ -1,6 +1,6 @@
 <template>
 <div v-if="!fetching" class="kcthdwmv">
-	<mk-note-detail :note="note"/>
+	<mk-note-detail :note="note" :key="note.id"/>
 	<footer>
 		<router-link v-if="note.next" :to="note.next"><fa icon="angle-left"/> {{ $t('next') }}</router-link>
 		<router-link v-if="note.prev" :to="note.prev">{{ $t('prev') }} <fa icon="angle-right"/></router-link>

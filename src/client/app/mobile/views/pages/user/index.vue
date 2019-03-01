@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<template #header v-if="!fetching">
-		<img :src="avator" alt=""><mk-user-name :user="user"/>
+		<img :src="avator" alt=""><mk-user-name :user="user" :key="user.id"/>
 	</template>
 	<div class="wwtwuxyh" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</p></div>
@@ -17,12 +17,12 @@
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
 				</div>
 				<div class="title">
-					<h1><mk-user-name :user="user"/></h1>
+					<h1><mk-user-name :user="user" :key="user.id"/></h1>
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
-					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :key="user.id"/>
 					<x-integrations :user="user" style="margin:20px 0;"/>
 				</div>
 				<div class="fields" v-if="user.fields">
