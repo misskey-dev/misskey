@@ -179,6 +179,7 @@
 		<x-mute-and-block/>
 	</template>
 
+	<!--
 	<template v-if="page == null || page == 'apps'">
 		<ui-card>
 			<template #title><fa icon="puzzle-piece"/> {{ $t('@._settings.apps') }}</template>
@@ -187,6 +188,7 @@
 			</section>
 		</ui-card>
 	</template>
+	-->
 
 	<template v-if="page == null || page == 'security'">
 		<ui-card>
@@ -203,12 +205,14 @@
 			</section>
 		</ui-card>
 
+		<!--
 		<ui-card>
 			<template #title><fa icon="sign-in-alt"/> {{ $t('@._settings.signin') }}</template>
 			<section>
 				<x-signins/>
 			</section>
 		</ui-card>
+		-->
 	</template>
 
 	<template v-if="page == null || page == 'api'">
