@@ -66,7 +66,7 @@ export default Vue.extend({
 			this.$root.api('admin/logs', {
 				level: this.level === 'all' ? null : this.level,
 				domain: this.domain === '' ? null : this.domain,
-				limit: 50
+				limit: 100
 			}).then(logs => {
 				this.logs = logs.reverse();
 			});
