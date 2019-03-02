@@ -46,7 +46,7 @@ DriveFile.findOne({
 				DriveFile.update({ _id: x._id }, {
 					$set: {
 						'metadata.url': `${config.driveUrl}/${uuid.v4()}${ext}`,
-						'metadata.webpublicUrl': `${config.driveUrl}/${uuid.v4()}.jpg`,
+						'metadata.webpublicUrl': `${config.driveUrl}/${uuid.v4()}${ext}`,
 						'metadata.thumbnailUrl': `${config.driveUrl}/${uuid.v4()}.jpg`,
 					}
 				});

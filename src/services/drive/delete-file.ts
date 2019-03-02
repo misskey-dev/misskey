@@ -48,8 +48,8 @@ export default async function(file: IDriveFile, isExpired = false) {
 		set.metadata.withoutChunks = true;
 		set.metadata.isRemote = true;
 		set.metadata.url = file.metadata.uri;
-		set.metadata.thumbnailUrl = file.metadata.uri;
-		set.metadata.webpublicUrl = file.metadata.uri;
+		set.metadata.thumbnailUrl = undefined;
+		set.metadata.webpublicUrl = undefined;
 	}
 
 	await DriveFile.update({ _id: file._id }, {

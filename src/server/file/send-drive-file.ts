@@ -4,6 +4,7 @@ import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
 import { serverLogger } from '..';
+import config from '../../config';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
@@ -13,7 +14,8 @@ const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): voi
 };
 
 export default async function(ctx: Koa.BaseContext) {
-	const url = ctx.href;
+	let url = ctx.href;
+	if (url.startsWith('http://') && config.url.startsWith('https://')) url = url.replace('http://', 'https://');
 
 	// Fetch drive file
 	const file = await DriveFile.findOne({
