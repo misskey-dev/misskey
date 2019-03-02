@@ -20,7 +20,7 @@
 
 			<div class="nqjzuvev">
 				<code v-for="log in logs" :key="log._id" :class="log.level">
-					<mk-time :time="log.createdAt"/> [{{ log.domain.join(' ') }}] {{ log.message }}
+					<mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}
 				</code>
 			</div>
 		</section>

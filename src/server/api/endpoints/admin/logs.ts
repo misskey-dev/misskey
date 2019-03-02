@@ -35,7 +35,7 @@ export default define(meta, async (ps) => {
 	if (ps.level) query.level = ps.level;
 	if (ps.domain) {
 		let i = 0;
-		for (const d of ps.domain.split(' ')) {
+		for (const d of ps.domain.split('.')) {
 			query[`domain.${i}`] = d;
 			i++;
 		}
