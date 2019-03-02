@@ -15,7 +15,7 @@ const queue = initializeQueue();
 
 function initializeQueue() {
 	if (queueAvailable && enableQueue) {
-		return new Queue('misskey', {
+		return new Queue('misskey-queue', {
 			redis: {
 				port: config.redis.port,
 				host: config.redis.host,
