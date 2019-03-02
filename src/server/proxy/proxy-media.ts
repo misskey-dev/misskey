@@ -4,10 +4,10 @@ import * as tmp from 'tmp';
 import * as Koa from 'koa';
 import * as request from 'request';
 import * as fileType from 'file-type';
-import * as isSvg from 'is-svg';
 import { serverLogger } from '..';
 import config from '../../config';
 import { IImage, ConvertToPng } from '../../services/drive/image-processor';
+import checkSvg from '../../misc/check-svg';
 
 export async function proxyMedia(ctx: Koa.BaseContext) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
@@ -102,7 +102,7 @@ async function detectMine(path: string) {
 				const type = fileType(buffer);
 				if (type) {
 					res([type.mime, type.ext]);
-				} else if (isSvg(buffer)) {
+				} else if (checkSvg(path)) {
 					res(['image/svg+xml', 'svg']);
 				} else {
 					// 種類が同定できなかったら application/octet-stream にする

@@ -7,7 +7,6 @@ import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
 import * as fileType from 'file-type';
-import * as isSvg from 'is-svg';
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
@@ -26,6 +25,7 @@ import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
 import Instance from '../../models/instance';
+import checkSvg from '../../misc/check-svg';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -311,7 +311,7 @@ export default async function(
 				const type = fileType(buffer);
 				if (type) {
 					res([type.mime, type.ext]);
-				} else if (isSvg(buffer)) {
+				} else if (checkSvg(path)) {
 					res(['image/svg+xml', 'svg']);
 				} else {
 					// 種類が同定できなかったら application/octet-stream にする
