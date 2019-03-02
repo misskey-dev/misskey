@@ -34,10 +34,26 @@ export default define(meta, async (ps) => {
 
 	if (ps.level) query.level = ps.level;
 	if (ps.domain) {
-		let i = 0;
-		for (const d of ps.domain.split('.')) {
-			query[`domain.${i}`] = d;
-			i++;
+		for (const d of ps.domain.split(' ')) {
+			const qs: any[] = [];
+			let i = 0;
+			for (const sd of (d.startsWith('-') ? d.substr(1) : d).split('.')) {
+				qs.push({
+					[`domain.${i}`]: d.startsWith('-') ? { $ne: sd } : sd
+				});
+				i++;
+			}
+			if (d.startsWith('-')) {
+				if (query['$and'] == null) query['$and'] = [];
+				query['$and'].push({
+					$and: qs
+				});
+			} else {
+				if (query['$or'] == null) query['$or'] = [];
+				query['$or'].push({
+					$and: qs
+				});
+			}
 		}
 	}
 
