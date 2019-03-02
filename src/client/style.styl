@@ -20,6 +20,12 @@ html, body
 	text-size-adjust 100%
 	font-family sans-serif
 
+html.change-theme
+	&, *
+		transition-property all
+		transition-duration 0.5s
+		transition-timing-function ease
+
 a
 	text-decoration none
 	color var(--link)
