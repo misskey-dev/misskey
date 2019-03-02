@@ -118,7 +118,7 @@
 		"elasticsearch": "15.3.1",
 		"emojilib": "2.4.0",
 		"escape-regexp": "0.0.1",
-		"eslint": "5.12.0",
+		"eslint": "5.15.0",
 		"eslint-plugin-vue": "5.2.2",
 		"eventemitter3": "3.1.0",
 		"feed": "2.0.2",
