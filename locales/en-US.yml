@@ -972,7 +972,7 @@ desktop/views/components/timeline.vue:
   messages: "Messages"
   list: "Lists"
   hashtag: "Hashtag"
-  add-tag-timeline: "Add hashtag tl"
+  add-tag-timeline: "Add hashtag cloud"
   add-list: "Add list"
   list-name: "List name"
 desktop/views/components/ui.header.vue:
@@ -1023,6 +1023,7 @@ admin/views/index.vue:
   hashtags: "Hashtags"
   abuse: "Abuse"
   queue: "Job Queue"
+  logs: "Logs"
   back-to-misskey: "Back to Misskey"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
@@ -1558,8 +1559,8 @@ deck:
   stack-left: "Stack to the left"
   pop-right: "Dock on the right"
   disabled-timeline:
-    title: "Timeline has been disabled"
-    description: "Timeline has been disabled by the administrator."
+    title: "The timeline has been disabled"
+    description: "This timeline has been disabled by the server's administrator."
 deck/deck.tl-column.vue:
   is-media-only: "Only media posts"
   edit: "Options"

@@ -1023,6 +1023,7 @@ admin/views/index.vue:
   hashtags: "ハッシュタグ"
   abuse: "スパム報告"
   queue: "ジョブキュー"
+  logs: "ログ"
   back-to-misskey: "Misskeyに戻る"
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"

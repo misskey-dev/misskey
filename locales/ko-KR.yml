@@ -1023,6 +1023,7 @@ admin/views/index.vue:
   hashtags: "해시태그"
   abuse: "스팸 신고"
   queue: "작업 대기열"
+  logs: "로그"
   back-to-misskey: "Misskey로 돌아가기"
 admin/views/dashboard.vue:
   dashboard: "대시보드"
