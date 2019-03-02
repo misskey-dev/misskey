@@ -49,7 +49,7 @@ export default class Resolver {
 		}
 
 		if (this.history.has(value)) {
-			logger.error(`cannot resolve already resolved one`);
+			logger.error(`cannot resolve already resolved one: ${value}`);
 			throw new Error('cannot resolve already resolved one');
 		}
 
@@ -65,7 +65,10 @@ export default class Resolver {
 			},
 			json: true
 		}).catch(e => {
-			logger.error(`request error: ${e.message}`);
+			logger.error(`request error: ${value}: ${e.message}`, {
+				url: value,
+				e: e
+			});
 			throw new Error(`request error: ${e.message}`);
 		});
 
@@ -74,7 +77,10 @@ export default class Resolver {
 				!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		)) {
-			logger.error(`invalid response: ${value}`);
+			logger.error(`invalid response: ${value}`, {
+				url: value,
+				object: object
+			});
 			throw new Error('invalid response');
 		}
 
