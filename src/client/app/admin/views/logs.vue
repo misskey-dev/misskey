@@ -68,7 +68,7 @@ export default Vue.extend({
 				domain: this.domain === '' ? null : this.domain,
 				limit: 50
 			}).then(logs => {
-				this.logs = logs;
+				this.logs = logs.reverse();
 			});
 		}
 	}
