@@ -75,7 +75,11 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
-			apiLogger.error(e);
+			apiLogger.error(`Internal error occurred in ${ep.name}`, {
+				ep: ep.name,
+				ps: data,
+				e: e
+			});
 			throw new ApiError(null, {
 				e: {
 					message: e.message,
