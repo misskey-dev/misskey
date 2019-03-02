@@ -29,7 +29,13 @@ router.get('/default-avatar.jpg', ctx => {
 
 router.get('/app-default.jpg', ctx => {
 	const file = fs.createReadStream(`${__dirname}/assets/dummy.png`);
-	ctx.set('Content-Type', 'image/jpeg');
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = file;
+});
+
+router.get('/thumbnail-not-available.png', ctx => {
+	const file = fs.createReadStream(`${__dirname}/assets/thumbnail-not-available.png`);
+	ctx.set('Content-Type', 'image/png');
 	ctx.body = file;
 });
 

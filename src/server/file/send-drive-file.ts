@@ -67,7 +67,7 @@ export default async function(ctx: Koa.BaseContext) {
 				await sendRaw();
 			} else {
 				ctx.status = 404;
-				await send(ctx as any, '/dummy.png', { root: assets });
+				await send(ctx as any, '/thumbnail-not-available.png', { root: assets });
 			}
 		}
 	} else if (file.metadata.webpublicUrl === url) {
