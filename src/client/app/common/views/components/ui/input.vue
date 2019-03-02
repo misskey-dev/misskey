@@ -9,7 +9,22 @@
 		<span class="title" ref="title"><slot name="title"></slot></span>
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
-			<input ref="input"
+			<input v-if="debounce" ref="input"
+				v-debounce="500"
+				:type="type"
+				v-model.lazy="v"
+				:disabled="disabled"
+				:required="required"
+				:readonly="readonly"
+				:placeholder="placeholder"
+				:pattern="pattern"
+				:autocomplete="autocomplete"
+				:spellcheck="spellcheck"
+				@focus="focused = true"
+				@blur="focused = false"
+				@keydown="$emit('keydown', $event)"
+			>
+			<input v-else ref="input"
 				:type="type"
 				v-model="v"
 				:disabled="disabled"
@@ -51,9 +66,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import debounce from 'v-debounce';
 const getPasswordStrength = require('syuilo-password-strength');
 
 export default Vue.extend({
+	directives: {
+		debounce
+	},
 	inject: {
 		horizonGrouped: {
 			default: false
@@ -96,6 +115,9 @@ export default Vue.extend({
 			required: false
 		},
 		spellcheck: {
+			required: false
+		},
+		debounce: {
 			required: false
 		},
 		withPasswordMeter: {

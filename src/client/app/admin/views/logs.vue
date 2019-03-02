@@ -4,7 +4,7 @@
 		<template #title><fa :icon="faStream"/> {{ $t('logs') }}</template>
 		<section class="fit-top">
 			<ui-horizon-group inputs>
-				<ui-input v-model="domain">
+				<ui-input v-model="domain" debounce>
 					<span>{{ $t('domain') }}</span>
 				</ui-input>
 				<ui-select v-model="level">
