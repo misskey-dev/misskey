@@ -1,6 +1,6 @@
 import { nativeDbConn } from '../db/mongodb';
 import { Config } from '../config/types';
-import Logger from './logger';
+import Logger from '../services/logger';
 import { lessThan } from '../prelude/array';
 
 const requiredMongoDBVersion = [3, 6];

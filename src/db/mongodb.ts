@@ -18,7 +18,6 @@ export default db;
  * MongoDB native module (officialy)
  */
 import * as mongodb from 'mongodb';
-import Logger from '../misc/logger';
 
 let mdb: mongodb.Db;
 
@@ -38,5 +37,3 @@ const nativeDbConn = async (): Promise<mongodb.Db> => {
 };
 
 export { nativeDbConn };
-
-export const dbLogger = new Logger('db');

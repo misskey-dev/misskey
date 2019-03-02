@@ -23,10 +23,10 @@ import networkChart from '../services/chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
 import User from '../models/user';
-import Logger from '../misc/logger';
+import Logger from '../services/logger';
 import { program } from '../argv';
 
-export const serverLogger = new Logger('server', 'gray');
+export const serverLogger = new Logger('server', 'gray', false);
 
 // Init app
 const app = new Koa();

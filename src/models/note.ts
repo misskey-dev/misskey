@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
-import db, { dbLogger } from '../db/mongodb';
+import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
@@ -11,6 +11,7 @@ import Reaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
 import Following from './following';
 import Emoji from './emoji';
+import { dbLogger } from '../db/logger';
 
 const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });

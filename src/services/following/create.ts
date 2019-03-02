@@ -13,7 +13,7 @@ import perUserFollowingChart from '../../services/chart/per-user-following';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
-import Logger from '../../misc/logger';
+import Logger from '../logger';
 import FollowRequest from '../../models/follow-request';
 import { IdentifiableError } from '../../misc/identifiable-error';
 

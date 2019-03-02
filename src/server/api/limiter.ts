@@ -3,7 +3,7 @@ import limiterDB from '../../db/redis';
 import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
 import { IUser } from '../../models/user';
-import Logger from '../../misc/logger';
+import Logger from '../../services/logger';
 
 const logger = new Logger('limiter');
 

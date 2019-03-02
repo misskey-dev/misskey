@@ -1,8 +1,9 @@
 import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
-import db, { dbLogger } from '../db/mongodb';
+import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import { pack as packNote } from './note';
+import { dbLogger } from '../db/logger';
 
 const Favorite = db.get<IFavorite>('favorites');
 Favorite.createIndex('userId');

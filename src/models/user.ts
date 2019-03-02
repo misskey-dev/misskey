@@ -1,7 +1,7 @@
 import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
-import db, { dbLogger } from '../db/mongodb';
+import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import { packMany as packNoteMany } from './note';
 import Following from './following';
@@ -12,6 +12,7 @@ import config from '../config';
 import FollowRequest from './follow-request';
 import fetchMeta from '../misc/fetch-meta';
 import Emoji from './emoji';
+import { dbLogger } from '../db/logger';
 
 const User = db.get<IUser>('users');
 

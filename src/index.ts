@@ -13,7 +13,7 @@ import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
 import Xev from 'xev';
 
-import Logger from './misc/logger';
+import Logger from './services/logger';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
 import loadConfig from './config/load';
@@ -25,7 +25,7 @@ import { checkMongoDB } from './misc/check-mongodb';
 import { showMachineInfo } from './misc/show-machine-info';
 
 const logger = new Logger('core', 'cyan');
-const bootLogger = logger.createSubLogger('boot', 'magenta');
+const bootLogger = logger.createSubLogger('boot', 'magenta', false);
 const clusterLogger = logger.createSubLogger('cluster', 'orange');
 const ev = new Xev();
 
@@ -73,7 +73,7 @@ function greet() {
 	console.log(chalk`${os.hostname()} {gray (PID: ${process.pid.toString()})}`);
 
 	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${pkg.version}`, true);
+	bootLogger.info(`Misskey v${pkg.version}`, null, true);
 	bootLogger.info('Misskey is maintained by @syuilo, @AyaMorisawa, @mei23, and @acid-chicken.');
 }
 
@@ -90,21 +90,21 @@ async function masterMain() {
 		config = await init();
 
 		if (config.port == null) {
-			bootLogger.error('The port is not configured. Please configure port.', true);
+			bootLogger.error('The port is not configured. Please configure port.', null, true);
 			process.exit(1);
 		}
 
 		if (process.platform === 'linux' && isWellKnownPort(config.port) && !isRoot()) {
-			bootLogger.error('You need root privileges to listen on well-known port on Linux', true);
+			bootLogger.error('You need root privileges to listen on well-known port on Linux', null, true);
 			process.exit(1);
 		}
 
 		if (!await isPortAvailable(config.port)) {
-			bootLogger.error(`Port ${config.port} is already in use`, true);
+			bootLogger.error(`Port ${config.port} is already in use`, null, true);
 			process.exit(1);
 		}
 	} catch (e) {
-		bootLogger.error('Fatal error occurred during initialization', true);
+		bootLogger.error('Fatal error occurred during initialization', null, true);
 		process.exit(1);
 	}
 
@@ -117,7 +117,7 @@ async function masterMain() {
 	// start queue
 	require('./queue').default();
 
-	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, true);
+	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
 }
 
 /**
@@ -140,7 +140,7 @@ async function queueMain() {
 		// initialize app
 		await init();
 	} catch (e) {
-		bootLogger.error('Fatal error occurred during initialization', true);
+		bootLogger.error('Fatal error occurred during initialization', null, true);
 		process.exit(1);
 	}
 
@@ -150,7 +150,7 @@ async function queueMain() {
 	const queue = require('./queue').default();
 
 	if (queue) {
-		bootLogger.succ('Queue started', true);
+		bootLogger.succ('Queue started', null, true);
 	} else {
 		bootLogger.error('Queue not available');
 	}
@@ -175,7 +175,7 @@ function showEnvironment(): void {
 
 	if (env !== 'production') {
 		logger.warn('The environment is not in production mode.');
-		logger.warn('DO NOT USE FOR PRODUCTION PURPOSE!', true);
+		logger.warn('DO NOT USE FOR PRODUCTION PURPOSE!', null, true);
 	}
 
 	logger.info(`You ${isRoot() ? '' : 'do not '}have root privileges`);
@@ -192,7 +192,7 @@ async function init(): Promise<Config> {
 	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
 
 	if (!satisfyNodejsVersion) {
-		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`, true);
+		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`, null, true);
 		process.exit(1);
 	}
 
@@ -209,7 +209,7 @@ async function init(): Promise<Config> {
 			process.exit(1);
 		}
 		if (exception.code === 'ENOENT') {
-			configLogger.error('Configuration file not found', true);
+			configLogger.error('Configuration file not found', null, true);
 			process.exit(1);
 		}
 		throw exception;
@@ -221,7 +221,7 @@ async function init(): Promise<Config> {
 	try {
 		await checkMongoDB(config, bootLogger);
 	} catch (e) {
-		bootLogger.error('Cannot connect to database', true);
+		bootLogger.error('Cannot connect to database', null, true);
 		process.exit(1);
 	}
 

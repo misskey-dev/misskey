@@ -1,6 +1,6 @@
 import * as elasticsearch from 'elasticsearch';
 import config from '../config';
-import Logger from '../misc/logger';
+import Logger from '../services/logger';
 
 const esLogger = new Logger('es');
 

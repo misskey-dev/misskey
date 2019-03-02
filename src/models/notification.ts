@@ -1,9 +1,10 @@
 import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
-import db, { dbLogger } from '../db/mongodb';
+import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
+import { dbLogger } from '../db/logger';
 
 const Notification = db.get<INotification>('notifications');
 Notification.createIndex('notifieeId');

@@ -21,6 +21,7 @@
 			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</li>
 			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>{{ $t('instance') }}</li>
 			<li @click="nav('queue')" :class="{ active: page == 'queue' }"><fa :icon="faTasks" fixed-width/>{{ $t('queue') }}</li>
+			<li @click="nav('logs')" :class="{ active: page == 'logs' }"><fa :icon="faStream" fixed-width/>{{ $t('logs') }}</li>
 			<li @click="nav('moderators')" :class="{ active: page == 'moderators' }"><fa :icon="faHeadset" fixed-width/>{{ $t('moderators') }}</li>
 			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
 			<li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</li>
@@ -42,6 +43,7 @@
 			<div v-if="page == 'dashboard'"><x-dashboard/></div>
 			<div v-if="page == 'instance'"><x-instance/></div>
 			<div v-if="page == 'queue'"><x-queue/></div>
+			<div v-if="page == 'logs'"><x-logs/></div>
 			<div v-if="page == 'moderators'"><x-moderators/></div>
 			<div v-if="page == 'users'"><x-users/></div>
 			<div v-if="page == 'emoji'"><x-emoji/></div>
@@ -62,6 +64,7 @@ import { version } from '../../config';
 import XDashboard from "./dashboard.vue";
 import XInstance from "./instance.vue";
 import XQueue from "./queue.vue";
+import XLogs from "./logs.vue";
 import XModerators from "./moderators.vue";
 import XEmoji from "./emoji.vue";
 import XAnnouncements from "./announcements.vue";
@@ -71,7 +74,7 @@ import XDrive from "./drive.vue";
 import XAbuse from "./abuse.vue";
 import XFederation from "./federation.vue";
 
-import { faHeadset, faArrowLeft, faGlobe, faExclamationCircle, faTasks } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faArrowLeft, faGlobe, faExclamationCircle, faTasks, faStream } from '@fortawesome/free-solid-svg-icons';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
 
 // Detect the user agent
@@ -84,6 +87,7 @@ export default Vue.extend({
 		XDashboard,
 		XInstance,
 		XQueue,
+		XLogs,
 		XModerators,
 		XEmoji,
 		XAnnouncements,
@@ -107,7 +111,8 @@ export default Vue.extend({
 			faHeadset,
 			faGlobe,
 			faExclamationCircle,
-			faTasks
+			faTasks,
+			faStream
 		};
 	},
 	methods: {

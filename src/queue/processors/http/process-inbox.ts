@@ -7,7 +7,7 @@ import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
 import { publishApLogStream } from '../../../services/stream';
-import Logger from '../../../misc/logger';
+import Logger from '../../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import Instance from '../../../models/instance';
 import instanceChart from '../../../services/chart/instance';

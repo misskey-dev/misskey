@@ -1,3 +1,3 @@
-import Logger from "../../misc/logger";
+import Logger from "../logger";
 
 export const driveLogger = new Logger('drive', 'blue');

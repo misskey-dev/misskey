@@ -4,7 +4,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderBlock from '../../remote/activitypub/renderer/block';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
-import Logger from '../../misc/logger';
+import Logger from '../logger';
 
 const logger = new Logger('blocking/delete');
 

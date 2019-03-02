@@ -2,7 +2,7 @@ import * as Koa from 'koa';
 import * as request from 'request-promise-native';
 import summaly from 'summaly';
 import fetchMeta from '../../misc/fetch-meta';
-import Logger from '../../misc/logger';
+import Logger from '../../services/logger';
 
 const logger = new Logger('url-preview');
 
