@@ -68,13 +68,16 @@ function greet() {
 		console.log(' |_|_|_|_|___|___|_,_|___|_  |');
 		console.log(' ' + chalk.gray(v) + ('                        |___|\n'.substr(v.length)));
 		//#endregion
-	}
 
-	console.log(chalk`${os.hostname()} {gray (PID: ${process.pid.toString()})}`);
+		console.log(' Misskey is maintained by @syuilo, @AyaMorisawa, @mei23, and @acid-chicken.');
+		console.log(chalk.keyword('orange')(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
+
+		console.log('');
+		console.log(chalk`<${os.hostname()} {gray (PID: ${process.pid.toString()})}>`);
+	}
 
 	bootLogger.info('Welcome to Misskey!');
 	bootLogger.info(`Misskey v${pkg.version}`, null, true);
-	bootLogger.info('Misskey is maintained by @syuilo, @AyaMorisawa, @mei23, and @acid-chicken.');
 }
 
 /**
