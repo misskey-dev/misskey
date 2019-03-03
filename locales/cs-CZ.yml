@@ -13,8 +13,8 @@ common:
     rich-contents: "Příspěvky"
     rich-contents-desc: "Pouze napište svoje nápady, žhavá témata a cokoliv, co chcete sdílet. Můžete ozdobit svá slova, připojit vaše oblíbené obrázky, posílat soubory včetně videí či vytvořit hlasování – to je jen několik věcí, co můžete dělat s Misskey!"
     reaction: "Reakce"
-    reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
-    ui: "インターフェース"
+    reaction-desc: "Nejsnadnější způsob, jak vyjádřit své emoce. Misskey vám dovoluje přidávat k příspěvkům ostatních lidí různé reakce. Emoční zážitek na Misskey nebude nikdy na jiných sociálních sítích, které mohou dávat pouze „lajky“."
+    ui: "Rozhraní"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
     drive: "ドライブ"
     drive-desc: "以前投稿したことのある画像をまた投稿したくなったことはありませんか？もしくは、アップロードしたファイルをフォルダ分けして整理したくなったことはありませんか？Misskeyの根幹に組み込まれたドライブ機能によってそれらが解決します。ファイルの共有も簡単です。"
@@ -35,7 +35,7 @@ common:
   signup: "新規登録"
   signout: "ログアウト"
   reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
-  got-it: "わかった"
+  got-it: "Rozumím!"
   customization-tips:
     title: "カスタマイズのヒント"
     paragraph: "<p>ホームのカスタマイズでは、ウィジェットを追加/削除したり、ドラッグ&ドロップして並べ替えたりすることができます。</p><p>一部のウィジェットは、<strong><strong>右</strong>クリック</strong>することで表示を変更することができます。</p><p>ウィジェットを削除するには、ヘッダーの<strong>「ゴミ箱」</strong>と書かれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズを終了するには、右上の「完了」をクリックします。</p>"
@@ -50,7 +50,7 @@ common:
     quoted-by: "{}さんが引用:"
   time:
     unknown: "なぞのじかん"
-    future: "未来"
+    future: "Budoucí"
     just_now: "たった今"
     seconds_ago: "{}秒前"
     minutes_ago: "{}分前"
@@ -60,7 +60,7 @@ common:
     months_ago: "{}ヶ月前"
     years_ago: "{}年前"
   month-and-day: "{month}月 {day}日"
-  trash: "ゴミ箱"
+  trash: "Koš"
   drive: "ドライブ"
   messaging: "トーク"
   home: "ホーム"
@@ -82,12 +82,12 @@ common:
     friday: "金"
     saturday: "土"
   weekday:
-    sunday: "日曜日"
-    monday: "月曜日"
-    tuesday: "火曜日"
-    wednesday: "水曜日"
-    thursday: "木曜日"
-    friday: "金曜日"
+    sunday: "Neděle"
+    monday: "Pondělí"
+    tuesday: "Úterý"
+    wednesday: "Středa"
+    thursday: "Čtvrtek"
+    friday: "Pátek"
     saturday: "土曜日"
   reactions:
     like: "いいね"
@@ -227,7 +227,7 @@ common:
   ok: "おｋ"
   cancel: "やめる"
   update-available-title: "更新があります"
-  update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
+  update-available: "Nová verze Misskey je k dispozici({newer}, Vaše verze je {current}). Načtěte znovu stránku pro aktivování nové verze."
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   verified-user: "公式アカウント"
   hide-password: "パスワードを隠す"
@@ -292,7 +292,7 @@ auth/views/form.vue:
   drive-write: "ドライブを操作する。"
   notification-read: "通知を見る。"
   notification-write: "通知を操作する。"
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   accept: "アクセスを許可"
 auth/views/index.vue:
   loading: "読み込み中"
@@ -320,7 +320,7 @@ common/views/components/user-list.vue:
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "{}を待っています"
-    cancel: "キャンセル"
+    cancel: "Zrušit"
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "投了"
   surrendered: "投了により"
@@ -347,7 +347,7 @@ common/views/components/games/reversi/reversi.room.vue:
   choose-map: "マップを選択"
   random: "ランダム"
   black-or-white: "先手/後手"
-  black-is: "{}が黒"
+  black-is: "Černá je {}"
   rules: "ルール"
   is-llotheo: "石の少ない方が勝ち(ロセオ)"
   looped-map: "ループマップ"
@@ -357,7 +357,7 @@ common/views/components/games/reversi/reversi.room.vue:
   waiting-for-other: "相手の準備が完了するのを待っています"
   waiting-for-me: "あなたの準備が完了するのを待っています"
   waiting-for-both: "準備中"
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   ready: "準備完了"
   cancel-ready: "準備続行"
 common/views/components/connect-failed.vue:
@@ -540,7 +540,7 @@ common/views/components/signup.vue:
   strong-password: "強いパスワード"
   retype: "再入力"
   retype-placeholder: "確認のため再入力してください"
-  password-matched: "確認されました"
+  password-matched: "Potvrdit"
   password-not-matched: "一致していません"
   recaptcha: "認証"
   create: "アカウント作成"
@@ -626,7 +626,7 @@ common/views/components/profile-editor.vue:
   upload-failed: "アップロードに失敗しました"
   email: "メール設定"
   email-address: "メールアドレス"
-  email-verified: "メールアドレスが確認されました"
+  email-verified: "Vaše e-mailová adresa byla ověřena"
   email-not-verified: "メールアドレスが確認されていません。メールボックスをご確認ください。"
   export: "エクスポート"
   export-targets:
@@ -735,16 +735,16 @@ desktop/views/components/calendar.vue:
 desktop/views/components/choose-file-from-drive-window.vue:
   chosen-files: "{count}ファイル選択中"
   upload: "PCからドライブにファイルをアップロード"
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   ok: "決定"
   choose-prompt: "ファイルを選択"
 desktop/views/components/choose-folder-from-drive-window.vue:
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   ok: "決定"
   choose-prompt: "フォルダを選択"
 desktop/views/components/crop-window.vue:
   skip: "クロップをスキップ"
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   ok: "決定"
 desktop/views/components/drive-window.vue:
   used: "使用中"
@@ -814,7 +814,7 @@ desktop/views/components/home.vue:
   add-widget: "ウィジェットを追加:"
   add: "追加"
 desktop/views/input-dialog.vue:
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   ok: "決定"
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
@@ -879,7 +879,7 @@ desktop/views/components/progress-dialog.vue:
   waiting: "待機中"
 desktop/views/components/renote-form.vue:
   quote: "引用する..."
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   renote: "Renote"
   renote-home: "Renote (Home)"
   reposting: "しています..."
@@ -1324,7 +1324,7 @@ desktop/views/pages/note.vue:
 desktop/views/pages/selectdrive.vue:
   title: "ファイルを選択してください"
   ok: "決定"
-  cancel: "キャンセル"
+  cancel: "Zrušit"
   upload: "PCからドライブにファイルをアップロード"
 desktop/views/pages/search.vue:
   not-available: "検索機能はインスタンスの設定で無効になっています。"
@@ -1617,7 +1617,7 @@ dev/views/new-app.vue:
   account-read: "アカウントの情報を見る。"
   account-write: "アカウントの情報を操作する。"
   note-write: "投稿する。"
-  reaction-write: "リアクションしたりリアクションをキャンセルする。"
+  reaction-write: "Přidat nebo odebrat reakce."
   following-write: "フォローしたりフォロー解除する。"
   drive-read: "ドライブを見る。"
   drive-write: "ドライブを操作する。"
