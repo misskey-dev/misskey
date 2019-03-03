@@ -9,10 +9,10 @@ common:
   intro:
     title: "Co je Misskey?"
     about: "Misskey je open-source <b>decentralizovaný mikroblogovací software</b>. Má sofistikované, zcela přizpůsobitelné uživatelské rozhraní, různé způsoby reagování na příspěvky, bezplatné úložiště souborů nabízející integrovaný management system, a další pokročilé vlastnosti. Misskey je navíc připojeno k systému sítí zvanému „fediverse“, který nám dovoluje komunikovat s uživateli na jiných sociálních sítí. Pokud například něco napíšete, nebude to posláno pouze uživatelů Misskey, ale také lidem na sítích Mastodon a Pleroma. Jen si představte, že planeta posílá jiné planetě rádiový signál, aby s ní komunikovala."
-    features: "特徴"
-    rich-contents: "投稿"
-    rich-contents-desc: "自分の考え、話題の出来事、皆と共有したいことについて発信してください。必要であれば、様々な構文を使って投稿を装飾したり、好きな画像、動画などのファイルやアンケートを添付することもできます。"
-    reaction: "リアクション"
+    features: "Vlastnosti"
+    rich-contents: "Příspěvky"
+    rich-contents-desc: "Pouze napište svoje nápady, žhavá témata a cokoliv, co chcete sdílet. Můžete ozdobit svá slova, připojit vaše oblíbené obrázky, posílat soubory včetně videí či vytvořit hlasování – to je jen několik věcí, co můžete dělat s Misskey!"
+    reaction: "Reakce"
     reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません。"
     ui: "インターフェース"
     ui-desc: "どのようなUIが使いやすいかは人それぞれです。だから、Misskeyは自由度の高いUIを持っています。レイアウトやデザインを調整したり、カスタマイズ可能な様々なウィジェットを配置したりして、自分だけのホームを作ってください。"
@@ -470,7 +470,7 @@ common/views/components/note-menu.vue:
   pin: "ピン留め"
   unpin: "ピン留め解除"
   delete: "削除"
-  delete-confirm: "この投稿を削除しますか？"
+  delete-confirm: "Opravdu chcete smazat tento příspěvek?"
   remote: "投稿元で見る"
 common/views/components/user-menu.vue:
   mention: "メンション"
