@@ -6,10 +6,18 @@ import * as fs from 'fs';
 import * as webpack from 'webpack';
 import chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
-const WebpackOnBuildPlugin = require('on-build-webpack');
 //const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+
+class WebpackOnBuildPlugin {
+	constructor(readonly callback: (stats: any) => void) {
+	}
+
+	public apply(compiler: any) {
+		compiler.hooks.done.tap('WebpackOnBuildPlugin', this.callback);
+	}
+}
 
 const isProduction = process.env.NODE_ENV == 'production';
 
