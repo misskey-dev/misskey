@@ -20,10 +20,7 @@
 
 			<div class="nqjzuvev">
 				<code v-for="log in logs" :key="log._id" :class="log.level">
-					<details>
-						<summary><mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
-						<json-viewer v-if="log.data" :value="log.data"></json-viewer>
-					</details>
+					<mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}
 				</code>
 			</div>
 		</section>
@@ -35,14 +32,9 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faStream } from '@fortawesome/free-solid-svg-icons';
-import JsonViewer from 'vue-json-viewer';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/logs.vue'),
-
-	components: {
-		JsonViewer
-	},
 
 	data() {
 		return {
