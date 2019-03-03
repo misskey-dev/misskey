@@ -123,7 +123,7 @@ common:
     profile: "Profil"
     notification: "Oznámení"
     apps: "Aplikace"
-    tags: "Hashtagy"
+    tags: "Tagy"
     mute-and-block: "ミュート/ブロック"
     blocking: "Blokování"
     security: "Zabezpečení"
@@ -1228,7 +1228,7 @@ admin/views/emoji.vue:
     aliases-desc: "Můžete nastavit více než jeden, oddělte mezerami."
     url: "URL obrázku"
     add: "Přidat"
-    info: "Doporučujeme obrázky ve formátu PNG pod 50KB."
+    info: "Doporučujeme obrázky ve formátu PNG pod 50 kB."
     added: "Emoji bylo přidáno"
   emojis:
     title: "Seznam smajlíků"
@@ -1236,7 +1236,7 @@ admin/views/emoji.vue:
     remove: "Odstranit"
   updated: "更新しました"
   remove-emoji:
-    are-you-sure: "Odstranit \"$1\"?"
+    are-you-sure: "Odstranit „$1“?"
     removed: "Smazáno"
 admin/views/announcements.vue:
   announcements: "Oznámení"
