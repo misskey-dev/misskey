@@ -12,18 +12,32 @@
 		</li>
 	</ul>
 	<button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</button>
+	<button class="add" v-else disabled>{{ $t('no-more') }}</button>
 	<button class="destroy" @click="destroy" :title="$t('destroy')">
 		<fa icon="times"/>
 	</button>
 	<section>
-		<ui-switch v-model="this.multiple">{{ $t('multiple') }}</ui-switch>
 		<div>
-			<ui-select v-model="this.expiration">
+			<ui-switch v-model="multiple">{{ $t('multiple') }}</ui-switch>
+		</div>
+		<div>
+			<ui-select v-model="expiration">
 				<template #label>{{ $t('expiration') }}</template>
 				<option value="infinite">{{ $t('infinite') }}</option>
 				<option value="at">{{ $t('at') }}</option>
 				<option value="after">{{ $t('after') }}</option>
 			</ui-select>
+			<ui-input v-if="expiration === 'at'" v-model="at" type="date">{{ $t('deadline') }}</ui-input>
+			<section v-if="expiration === 'after'">
+				<ui-input v-model="after" type="number" min="0">{{ $t('interval') }}</ui-input>
+				<ui-select v-model="unit">
+					<template #label>{{ $t('unit') }}</template>
+					<option value="second">{{ $t('second') }}</option>
+					<option value="minute">{{ $t('minute') }}</option>
+					<option value="hour">{{ $t('hour') }}</option>
+					<option value="day">{{ $t('day') }}</option>
+				</ui-select>
+			</section>
 		</div>
 	</section>
 </div>
@@ -40,8 +54,9 @@ export default Vue.extend({
 			choices: ['', ''],
 			multiple: false,
 			expiration: 'infinite',
-			at: null,
-			after: null
+			at: new Date(Date.now() + 86400),
+			after: 0,
+			unit: 'second'
 		};
 	},
 	watch: {
@@ -72,7 +87,10 @@ export default Vue.extend({
 		get() {
 			return {
 				choices: erase('', this.choices),
-				multiple: this.multiple
+				multiple: this.multiple,
+				...(
+					this.expiration === 'at' ? { expiresAt: this.at } :
+					this.expiration === 'after' ? { expiredAfter: this.after } : {})
 			}
 		},
 
@@ -81,6 +99,15 @@ export default Vue.extend({
 			this.choices = data.choices;
 			if (data.choices.length == 1) this.choices = this.choices.concat('');
 			this.multiple = data.multiple;
+			if (data.expiresAt) {
+				this.expiration = 'at';
+				this.at = data.expiresAt;
+			} else if (typeof data.expiredAfter === 'number') {
+				this.expiration = 'after';
+				this.after = data.expiredAfter;
+			} else {
+				this.expiration = 'infinite';
+			}
 		}
 	}
 });
@@ -152,6 +179,7 @@ export default Vue.extend({
 		right 0
 		padding 4px 8px
 		color var(--primaryAlpha04)
+		z-index 1
 
 		&:hover
 			color var(--primaryAlpha06)
@@ -162,13 +190,20 @@ export default Vue.extend({
 	> section
 		align-items center
 		display flex
+		margin -16px 0
 
-		> *
-			margin 0 1ex
+		> div
+			margin 0 8px
 
 			&:last-child
 				flex 1 0 auto
+				
+				> section
+					align-items center
+					display flex
+					margin -32px 0 0
 
-				> .ui-select
-					margin 0
+					> :first-child
+						flex 1 0 auto
+						margin-right 16px
 </style>

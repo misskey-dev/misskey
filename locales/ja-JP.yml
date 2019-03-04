@@ -543,6 +543,14 @@ common/views/components/poll-editor.vue:
   infinite: "無期限"
   at: "日時指定"
   after: "経過指定"
+  no-more: "これ以上追加できません"
+  deadline: "期日"
+  interval: "期間"
+  unit: "単位"
+  second: "秒"
+  minute: "分"
+  hour: "時間"
+  day: "日"
 
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
