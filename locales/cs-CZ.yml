@@ -93,7 +93,7 @@ common:
     love: "Super"
     laugh: "Smích"
     hmm: "Hmm...?"
-    surprise: "Páni"
+    surprise: "Překvapení"
     congrats: "Gratuluji!"
     angry: "Naštvaný"
     confused: "Zmatený"
@@ -101,14 +101,14 @@ common:
     pudding: "Pudink"
   note-visibility:
     public: "Veřejná"
-    home: "Domovský"
+    home: "Domovská"
     home-desc: "Poslat pouze na domovskou časovou osu"
     followers: "Pro sledující"
     followers-desc: "Poslat pouze sledujícím"
-    specified: "Přímý"
+    specified: "Přímá"
     specified-desc: "Poslat pouze zmíněným uživatelům"
-    local-public: "Veřejný (pouze místní)"
-    local-home: "Domovský (pouze místní)"
+    local-public: "Veřejná (pouze místní)"
+    local-home: "Domovská (pouze místní)"
     local-followers: "Pro sledující (pouze místní)"
   note-placeholders:
     a: "Co právě děláte?"
@@ -122,7 +122,7 @@ common:
     profile: "Profil"
     notification: "Oznámení"
     apps: "Aplikace"
-    tags: "Tagy"
+    tags: "Hashtagy"
     blocking: "Blokování"
     security: "Zabezpečení"
     signin: "Historie přihlášení"
@@ -149,6 +149,9 @@ common:
     post-form-on-timeline: "Zobrazit formulář pro nové příspěvky nad časovou osou"
     show-clock-on-header: "Zobrazit hodiny v pravém horním rohu"
     timeline: "Časová osa"
+    show-my-renotes: "Zobrazit moje renoty v časové ose"
+    show-renoted-my-notes: "Zobrazit renoty vašich vlastních příspěvků v časové ose"
+    show-local-renotes: "Zobrazit renoty místních příspěvků v časové ose"
     remain-deleted-note: "I nadále zobrazovat odstraněné příspěvky"
     sound: "Zvuk"
     enable-sounds: "Povolit zvuk"
@@ -178,6 +181,7 @@ common:
   do-not-use-in-production: "Tohle je vývojářský build. Nepoužívejte v produkci."
   user-suspended: "Tomuto uživateli byl pozastaven účet."
   is-remote-user: "Informace o tomto uživateli nemusí být kompletní."
+  renoted-by: "{user} renotoval/a"
   error:
     retry: "Zkusit znovu"
   reversi:
@@ -211,6 +215,7 @@ common:
 auth/views/form.vue:
   share-access: "Chcete dovolit <i>{name}</i> přístup k Vašemu účtu?"
   permission-ask: "Tato aplikace vyžaduje následující oprávnění:"
+  following-write: "Sledovat a přestat sledovat"
   cancel: "Zrušit"
 auth/views/index.vue:
   loading: "Nahrávám..."
@@ -367,8 +372,8 @@ common/views/components/discord-setting.vue:
   description: "Jakmile spojíte Váš Discord účet s Vaším Misskey účtem, uvidíte informace o Vašem Discord účtu na Vašem profilu a budete se moci přihlásit skrze Discord."
   detail: "Více…"
 common/views/components/visibility-chooser.vue:
-  local-public: "Veřejný (pouze místní)"
-  local-home: "Domovský (pouze místní)"
+  local-public: "Veřejná (pouze místní)"
+  local-home: "Domovská (pouze místní)"
   local-followers: "Pro sledující (pouze místní)"
 common/views/components/profile-editor.vue:
   title: "Profil"
@@ -386,7 +391,7 @@ common/views/components/profile-editor.vue:
   email-not-verified: "Váš email není potvrzen. Prosím zkontrolujte si svou schránku."
   export: "Exportovat"
   export-targets:
-    following-list: "Seznam následovníků"
+    following-list: "Seznam sledujících"
     mute-list: "Seznam ztlumených uživatelů"
     blocking-list: "Seznam blokovaných uživatelů"
   enter-password: "Prosím, zadejte Vaše heslo"
@@ -429,6 +434,7 @@ desktop/views/components/activity.chart.vue:
   total: "Černá ... Celkem"
   notes: "Modrá ... Poznámky"
   replies: "Červená ... Odpovědi"
+  renotes: "Zelená ... Renoty"
 desktop/views/components/activity.vue:
   title: "Aktivita"
 desktop/views/components/calendar.vue:
@@ -481,8 +487,11 @@ desktop/views/components/drive.vue:
   unhandled-error: "Neznámá chyba"
 desktop/views/input-dialog.vue:
   cancel: "Zrušit"
+desktop/views/components/note-detail.vue:
+  renote: "Renotovat"
 desktop/views/components/note.vue:
   reply: "Odpovědět"
+  renote: "Renote"
   deleted: "Tento příspěvek byl odstraněn"
 desktop/views/components/notes.vue:
   error: "Načítání selhalo."
@@ -494,8 +503,11 @@ desktop/views/components/post-form.vue:
   reply-placeholder: "Odpovědět na tento příspěvěk"
   quote-placeholder: "Citovat tento příspěvek"
   reply: "Odpovědět"
+  renote: "Renotovat"
   posted: "Odesláno!"
   replied: "Odpověděno!"
+  reposted: "Renotováno!"
+  renote-failed: "Renotování neuspělo"
   insert-a-kao: "v('ω')v"
   create-poll: "Vytvořit anketu"
   text-remain: "{0} znaků zbývá"
@@ -507,7 +519,15 @@ desktop/views/components/post-form-window.vue:
   note: "Nový příspěvek"
   reply: "Odpovědět"
 desktop/views/components/renote-form.vue:
+  quote: "Citovat..."
   cancel: "Zrušit"
+  renote: "Renotovat"
+  renote-home: "Renote (domů)"
+  reposting: "Renotuji..."
+  success: "Renotováno!"
+  failure: "Renotování neuspělo"
+desktop/views/components/renote-form-window.vue:
+  title: "Chcete tohle renotovat?"
 desktop/views/components/settings.2fa.vue:
   detail: "Více…"
   url: "https://www.google.cz/landing/2step/"
@@ -728,6 +748,7 @@ mobile/views/components/note-detail.vue:
   reply: "Odpovědět"
 mobile/views/components/post-form.vue:
   reply: "Odpovědět"
+  renote: "Renotovat"
   reply-placeholder: "Odpovědět na tento příspěvěk"
 mobile/views/components/sub-note-content.vue:
   poll: "Ankety"
@@ -759,3 +780,4 @@ dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
   app-desc: "Stručný popis nebo představení vaší aplikace."
   reaction-write: "Přidat nebo odebrat reakce."
+  following-write: "Sledovat a přestat sledovat"
