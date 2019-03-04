@@ -85,7 +85,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noPoll);
 	}
 
-	if (note.poll.expiresAt < createdAt) {
+	if (note.poll.expiresAt && note.poll.expiresAt < createdAt) {
 		throw new ApiError(meta.errors.alreadyExpired);
 	}
 
