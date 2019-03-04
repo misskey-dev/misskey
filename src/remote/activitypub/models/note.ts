@@ -72,18 +72,21 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 
 	//#region Visibility
+	note.to = note.to == null ? [] : typeof note.to == 'string' ? [note.to] : note.to;
+	note.cc = note.cc == null ? [] : typeof note.cc == 'string' ? [note.cc] : note.cc;
+
 	let visibility = 'public';
 	let visibleUsers: IUser[] = [];
-	if (!Array.isArray(note.to) || !note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
-		if (Array.isArray(note.cc) && note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
+	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
+		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';
-		} else if (Array.isArray(note.to) && note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
+		} else if (note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
 			visibility = 'followers';
 		} else {
 			visibility = 'specified';
-			visibleUsers = await Promise.all(Array.isArray(note.to) ? note.to.map(uri => resolvePerson(uri, null, resolver)) : []);
+			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, null, resolver)));
 		}
-	}
+}
 	//#endergion
 
 	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
@@ -95,6 +98,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// TODO: attachmentは必ずしも配列ではない
 	// Noteがsensitiveなら添付もsensitiveにする
 	const limit = promiseLimit(2);
+
+	note.attachment = note.attachment == null ? [] : typeof note.attachment == 'object' ? [note.attachment] : note.attachment;
 	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
 		? await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<IDriveFile>))
