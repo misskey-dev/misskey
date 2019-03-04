@@ -15,13 +15,17 @@
 	<button class="destroy" @click="destroy" :title="$t('destroy')">
 		<fa icon="times"/>
 	</button>
-	<ui-switch v-model="this.multiple">{{ $t('multiple') }}</ui-switch>
-	<ui-select v-model="this.expiration">
-		<template #label>{{ $t('expiration') }}</template>
-		<option value="infinite">{{ $t('infinite') }}</option>
-		<option value="at">{{ $t('at') }}</option>
-		<option value="after">{{ $t('after') }}</option>
-	</ui-select>
+	<section>
+		<ui-switch v-model="this.multiple">{{ $t('multiple') }}</ui-switch>
+		<div>
+			<ui-select v-model="this.expiration">
+				<template #label>{{ $t('expiration') }}</template>
+				<option value="infinite">{{ $t('infinite') }}</option>
+				<option value="at">{{ $t('at') }}</option>
+				<option value="after">{{ $t('after') }}</option>
+			</ui-select>
+		</div>
+	</section>
 </div>
 </template>
 
@@ -155,4 +159,16 @@ export default Vue.extend({
 		&:active
 			color var(--primaryDarken30)
 
+	> section
+		align-items center
+		display flex
+
+		> *
+			margin 0 1ex
+
+			&:last-child
+				flex 1 0 auto
+
+				> .ui-select
+					margin 0
 </style>
