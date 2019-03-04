@@ -173,6 +173,7 @@ export default define(meta, async (ps, user) => {
 			reply: note,
 			visibility: 'specified',
 			visibleUsers: [pollOwner],
+			voting: true
 		});
 	}
 

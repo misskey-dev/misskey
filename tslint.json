@@ -31,6 +31,7 @@
 		"max-line-length": [false],
 		"max-classes-per-file": false,
 		"member-ordering": [false],
+		"radix": false,
 		"ban-types": [
 			true,
 			"Object"

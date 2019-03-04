@@ -140,6 +140,10 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		multiple = false
 	} = note.poll || {};
 
+	const asVote = note.voting ? {
+		name: choices[parseInt(note.text)]
+	} : {};
+
 	const asPoll = note.poll ? {
 		type: 'Question',
 		[expiresAt && expiresAt < new Date() ? 'closed' : 'endTime']: expiresAt,
@@ -162,7 +166,8 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		attachment: files.map(renderDocument),
 		sensitive: files.some(file => file.metadata.isSensitive),
 		tag,
-		...asPoll
+		...asPoll,
+		...asVote
 	};
 }
 

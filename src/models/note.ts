@@ -79,6 +79,8 @@ export type INote = {
 
 	uri: string;
 
+	voting: boolean;
+
 	/**
 	 * 人気の投稿度合いを表すスコア
 	 */
