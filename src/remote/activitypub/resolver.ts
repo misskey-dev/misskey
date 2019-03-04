@@ -13,6 +13,10 @@ export default class Resolver {
 		this.history = new Set();
 	}
 
+	public getHistory(): string[] {
+		return Array.from(this.history);
+	}
+
 	public async resolveCollection(value: any) {
 		const collection = typeof value === 'string'
 			? await this.resolve(value)
