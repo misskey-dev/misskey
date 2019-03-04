@@ -65,10 +65,10 @@ common:
   messaging: "トーク"
   home: "ホーム"
   deck: "デッキ"
-  timeline: "タイムライン"
+  timeline: "Linha do tempo"
   explore: "みつける"
   following: "フォロー中"
-  followers: "フォロワー"
+  followers: "Seguidores"
   favorites: "お気に入り"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
@@ -104,7 +104,7 @@ common:
     public: "公開"
     home: "ホーム"
     home-desc: "ホームタイムラインにのみ公開"
-    followers: "フォロワー"
+    followers: "Seguidores"
     followers-desc: "自分のフォロワーにのみ公開"
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
@@ -184,7 +184,7 @@ common:
     post-form-on-timeline: "タイムライン上部に投稿フォームを表示する"
     show-clock-on-header: "右上に時計を表示する"
     show-reply-target: "リプライ先を表示する"
-    timeline: "タイムライン"
+    timeline: "Linha do tempo"
     show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
     show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
     show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
@@ -279,7 +279,7 @@ common:
     hashtags: "Hashtags"
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
-  you: "あなた"
+  you: "Você"
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "Este aplicativo precisa das seguintes permissões:"
@@ -305,7 +305,7 @@ auth/views/index.vue:
   error: "A sessão não existe."
   sign-in: "Por favor, entre."
 common/views/pages/explore.vue:
-  verified-users: "公式アカウント"
+  verified-users: "Conta verificada"
   popular-users: "人気のユーザー"
   recently-updated-users: "最近投稿したユーザー"
   recently-registered-users: "新規ユーザー"
@@ -419,7 +419,7 @@ common/views/components/theme.vue:
   uninstall: "アンインストール"
   uninstalled: "「{}」をアンインストールしました"
   author: "作者"
-  desc: "説明"
+  desc: "Descrição"
   export: "エクスポート"
   import: "インポート"
   import-by-code: "またはコードをペースト"
@@ -429,7 +429,7 @@ common/views/components/cw-button.vue:
   show: "もっと見る"
   chars: "{count}文字"
   files: "{count}ファイル"
-  poll: "アンケート"
+  poll: "Enquetes"
 common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "Você"
@@ -469,7 +469,7 @@ common/views/components/note-menu.vue:
   unwatch: "ウォッチ解除"
   pin: "ピン留め"
   unpin: "ピン留め解除"
-  delete: "削除"
+  delete: "Apagar"
   delete-confirm: "この投稿を削除しますか？"
   remote: "投稿元で見る"
 common/views/components/user-menu.vue:
@@ -584,7 +584,7 @@ common/views/components/visibility-chooser.vue:
   public: "公開"
   home: "ホーム"
   home-desc: "ホームタイムラインにのみ公開"
-  followers: "フォロワー"
+  followers: "Seguidores"
   followers-desc: "自分のフォロワーにのみ公開"
   specified: "ダイレクト"
   specified-desc: "指定したユーザーにのみ公開"
@@ -604,7 +604,7 @@ common/views/components/language-settings.vue:
   info: "変更はページの再度読み込み後に反映されます。"
 common/views/components/profile-editor.vue:
   title: "プロフィール"
-  name: "名前"
+  name: "Nome"
   account: "アカウント"
   location: "場所"
   description: "自己紹介"
@@ -631,7 +631,7 @@ common/views/components/profile-editor.vue:
   export: "エクスポート"
   export-targets:
     all-notes: "すべての投稿データ"
-    following-list: "フォロー"
+    following-list: "Seguindo"
     mute-list: "ミュート"
     blocking-list: "ブロック"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
@@ -662,7 +662,7 @@ common/views/widgets/photo-stream.vue:
   title: "フォトストリーム"
   no-photos: "写真はありません"
 common/views/widgets/posts-monitor.vue:
-  title: "投稿チャート"
+  title: "Gráfico de publicações"
   toggle: "表示を切り替え"
 common/views/widgets/hashtags.vue:
   title: "ハッシュタグ"
@@ -670,7 +670,7 @@ common/views/widgets/server.vue:
   title: "サーバー情報"
   toggle: "表示を切り替え"
 common/views/widgets/memo.vue:
-  title: "付箋"
+  title: "Nota adesiva"
   memo: "ここに書いて！"
   save: "保存"
 common/views/widgets/slideshow.vue:
@@ -703,7 +703,7 @@ common/views/pages/not-found.vue:
 common/views/pages/follow.vue:
   signed-in-as: "{}としてサインイン中"
   following: "フォロー中"
-  follow: "フォロー"
+  follow: "Seguindo"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
@@ -734,18 +734,18 @@ desktop/views/components/calendar.vue:
   go: "クリックして時間遡行"
 desktop/views/components/choose-file-from-drive-window.vue:
   chosen-files: "{count}ファイル選択中"
-  upload: "PCからドライブにファイルをアップロード"
+  upload: "Envie arquivos do seu dispositivo"
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "OK"
   choose-prompt: "ファイルを選択"
 desktop/views/components/choose-folder-from-drive-window.vue:
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "OK"
   choose-prompt: "フォルダを選択"
 desktop/views/components/crop-window.vue:
   skip: "クロップをスキップ"
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "OK"
 desktop/views/components/drive-window.vue:
   used: "使用中"
 desktop/views/components/drive.file.vue:
@@ -815,7 +815,7 @@ desktop/views/components/home.vue:
   add: "追加"
 desktop/views/input-dialog.vue:
   cancel: "キャンセル"
-  ok: "決定"
+  ok: "OK"
 desktop/views/components/messaging-room-window.vue:
   title: "メッセージ:"
 desktop/views/components/messaging-window.vue:
@@ -922,7 +922,7 @@ common/views/components/api-settings.vue:
   console:
     title: "APIコンソール"
     endpoint: "エンドポイント"
-    parameter: "パラメータ"
+    parameter: "Parâmetros"
     credential-info: "「i」パラメータは自動で付与されます。"
     send: "送信"
     sending: "応答待ち"
@@ -955,7 +955,7 @@ desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
-  poll: "アンケート"
+  poll: "Enquetes"
 desktop/views/components/settings.tags.vue:
   title: "タグ"
   query: "クエリ (省略可)"
@@ -1001,14 +1001,14 @@ desktop/views/components/user-lists-window.vue:
   list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "投稿"
-  following: "フォロー"
+  following: "Seguindo"
   followers: "Seguidores"
 desktop/views/components/users-list.vue:
   all: "すべて"
   iknow: "知り合い"
   fetching: "読み込んでいます"
 desktop/views/components/users-list-item.vue:
-  followed: "フォローされています"
+  followed: "Te segue"
 desktop/views/components/window.vue:
   popout: "ポップアウト"
   close: "閉じる"
@@ -1041,7 +1041,7 @@ admin/views/abuse.vue:
   target: "対象"
   reporter: "報告者"
   details: "詳細"
-  remove-report: "削除"
+  remove-report: "Apagar"
 admin/views/instance.vue:
   instance: "インスタンス"
   instance-name: "インスタンス名"
@@ -1090,7 +1090,7 @@ admin/views/instance.vue:
   disable-local-timeline: "ローカルタイムラインを無効にする"
   disable-global-timeline: "グローバルタイムラインを無効にする"
   disabling-timelines-info: "これらのタイムラインを無効にしても、管理者およびモデレーターは引き続き利用できます。"
-  invite: "招待"
+  invite: "Convidar"
   save: "保存"
   saved: "保存しました"
   user-recommendation-config: "おすすめユーザー"
@@ -1158,7 +1158,7 @@ admin/views/drive.vue:
     combined: "ローカル+リモート"
     local: "ローカル"
     remote: "リモート"
-  delete: "削除"
+  delete: "Apagar"
   deleted: "削除しました"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
@@ -1202,7 +1202,7 @@ admin/views/users.vue:
       admin: "管理者"
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"
-      verified: "公式アカウント"
+      verified: "Conta verificada"
       silenced: "サイレンス済み"
       suspended: "凍結済み"
     origin:
@@ -1233,7 +1233,7 @@ admin/views/emoji.vue:
   emojis:
     title: "絵文字一覧"
     update: "更新"
-    remove: "削除"
+    remove: "Apagar"
   updated: "更新しました"
   remove-emoji:
     are-you-sure: "「$1」を削除しますか？"
@@ -1241,7 +1241,7 @@ admin/views/emoji.vue:
 admin/views/announcements.vue:
   announcements: "お知らせ"
   save: "保存"
-  remove: "削除"
+  remove: "Apagar"
   add: "追加"
   title: "タイトル"
   text: "内容"
@@ -1257,7 +1257,7 @@ admin/views/federation.vue:
   notes: "投稿"
   users: "ユーザー"
   following: "フォロー中"
-  followers: "フォロワー"
+  followers: "Seguidores"
   status: "ステータス"
   latest-request-sent-at: "直近のリクエスト送信"
   latest-request-received-at: "直近のリクエスト受信"
@@ -1339,38 +1339,38 @@ desktop/views/pages/user-list.users.vue:
   username: "ユーザー名"
 desktop/views/pages/user/user.followers-you-know.vue:
   title: "知り合いのフォロワー"
-  loading: "読み込み中"
+  loading: "Carregando"
   no-users: "知り合いのフォロワーはいません"
 desktop/views/pages/user/user.friends.vue:
   title: "よく話すユーザー"
-  loading: "読み込み中"
+  loading: "Carregando"
   no-users: "よく話すユーザーはいません"
 desktop/views/pages/user/user.photos.vue:
   title: "フォト"
-  loading: "読み込み中"
+  loading: "Carregando"
   no-photos: "写真はありません"
 desktop/views/pages/user/user.header.vue:
   posts: "投稿"
-  following: "フォロー"
-  followers: "フォロワー"
+  following: "Seguindo"
+  followers: "Seguidores"
   is-bot: "このアカウントはBotです"
   no-description: "自己紹介はありません"
   years-old: "{age}歳"
   year: "年"
-  month: "月"
-  day: "日"
-  follows-you: "フォローされています"
+  month: "Seg"
+  day: "Dom"
+  follows-you: "Te segue"
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
-  with-media: "メディア"
+  with-media: "Mídia"
   my-posts: "私の投稿"
 desktop/views/widgets/messaging.vue:
   title: "メッセージ"
 desktop/views/widgets/notifications.vue:
   title: "通知"
 desktop/views/widgets/polls.vue:
-  title: "アンケート"
+  title: "Enquetes"
   refresh: "他を見る"
   nothing: "ありません！"
 desktop/views/widgets/post-form.vue:
@@ -1420,7 +1420,7 @@ mobile/views/components/media-video.vue:
   click-to-show: "クリックして表示"
 common/views/components/follow-button.vue:
   following: "フォロー中"
-  follow: "フォロー"
+  follow: "Seguindo"
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
@@ -1459,12 +1459,12 @@ mobile/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   media-count: "{}つのメディア"
-  poll: "アンケート"
+  poll: "Enquetes"
 mobile/views/components/ui.header.vue:
   welcome-back: "おかえりなさい、"
   adjective: "さん"
 mobile/views/components/ui.nav.vue:
-  timeline: "タイムライン"
+  timeline: "Linha do tempo"
   notifications: "通知"
   follow-requests: "フォロー申請"
   search: "検索"
@@ -1495,7 +1495,7 @@ mobile/views/pages/widgets.vue:
   dashboard: "ダッシュボード"
   widgets-hints: "ウィジェットを追加/削除したり並べ替えたりできます。ウィジェットを移動するには「三」をドラッグします。ウィジェットを削除するには「x」をタップします。いくつかのウィジェットはタップすることで表示を変更できます。"
   add-widget: "追加"
-  customization-tips: "カスタマイズのヒント"
+  customization-tips: "Dicas de personalização"
 mobile/views/pages/widgets/activity.vue:
   activity: "アクティビティ"
 mobile/views/pages/share.vue:
@@ -1506,8 +1506,8 @@ mobile/views/pages/received-follow-requests.vue:
   reject: "拒否"
 mobile/views/pages/note.vue:
   title: "投稿"
-  prev: "前の投稿"
-  next: "次の投稿"
+  prev: "Nota anterior"
+  next: "Próxima nota"
 mobile/views/pages/games/reversi.vue:
   reversi: "リバーシ"
 mobile/views/pages/search.vue:
@@ -1565,13 +1565,13 @@ deck/deck.tl-column.vue:
   is-media-only: "メディア投稿のみ"
   edit: "オプション"
 deck/deck.user-column.vue:
-  follows-you: "フォローされています"
+  follows-you: "Te segue"
   posts: "投稿"
-  following: "フォロー"
-  followers: "フォロワー"
-  images: "画像"
+  following: "Seguindo"
+  followers: "Seguidores"
+  images: "Imagens"
   activity: "アクティビティ"
-  timeline: "タイムライン"
+  timeline: "Linha do tempo"
   pinned-notes: "ピン留めされた投稿"
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
@@ -1614,9 +1614,9 @@ dev/views/new-app.vue:
   authority: "権限"
   authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
-  account-read: "アカウントの情報を見る。"
-  account-write: "アカウントの情報を操作する。"
-  note-write: "投稿する。"
+  account-read: "Ver informações da conta."
+  account-write: "Modificar informações da conta."
+  note-write: "Publicar"
   reaction-write: "リアクションしたりリアクションをキャンセルする。"
   following-write: "フォローしたりフォロー解除する。"
   drive-read: "ドライブを見る。"
