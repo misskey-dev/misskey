@@ -15,6 +15,13 @@
 	<button class="destroy" @click="destroy" :title="$t('destroy')">
 		<fa icon="times"/>
 	</button>
+	<ui-switch v-model="this.multiple">{{ $('multiple') }}</ui-switch>
+	<ui-select v-model="this.expiration">
+		<template #label>{{ $t('expiration') }}</template>
+		<option value="infinite">{{ $('infinite') }}</option>
+		<option value="at">{{ $('at') }}</option>
+		<option value="after">{{ $('after') }}</option>
+	</ui-select>
 </div>
 </template>
 
@@ -26,7 +33,11 @@ export default Vue.extend({
 	i18n: i18n('common/views/components/poll-editor.vue'),
 	data() {
 		return {
-			choices: ['', '']
+			choices: ['', ''],
+			multiple: false,
+			expiration: 'infinite',
+			at: null,
+			after: null
 		};
 	},
 	watch: {
@@ -56,7 +67,8 @@ export default Vue.extend({
 
 		get() {
 			return {
-				choices: erase('', this.choices)
+				choices: erase('', this.choices),
+				multiple: this.multiple
 			}
 		},
 
@@ -64,6 +76,7 @@ export default Vue.extend({
 			if (data.choices.length == 0) return;
 			this.choices = data.choices;
 			if (data.choices.length == 1) this.choices = this.choices.concat('');
+			this.multiple = data.multiple
 		}
 	}
 });

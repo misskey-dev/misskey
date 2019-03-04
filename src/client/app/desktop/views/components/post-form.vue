@@ -115,6 +115,7 @@ export default Vue.extend({
 			uploadings: [],
 			poll: false,
 			pollChoices: [],
+			pollMultiple: false,
 			useCw: false,
 			cw: null,
 			geo: null,
@@ -295,7 +296,9 @@ export default Vue.extend({
 		},
 
 		onPollUpdate() {
-			this.pollChoices = this.$refs.poll.get().choices;
+			const got = this.$refs.poll.get();
+			this.pollChoices = got.choices;
+			this.pollMultiple = got.multiple;
 			this.saveDraft();
 		},
 
