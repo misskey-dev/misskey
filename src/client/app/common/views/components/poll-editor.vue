@@ -15,12 +15,12 @@
 	<button class="destroy" @click="destroy" :title="$t('destroy')">
 		<fa icon="times"/>
 	</button>
-	<ui-switch v-model="this.multiple">{{ $('multiple') }}</ui-switch>
+	<ui-switch v-model="this.multiple">{{ $t('multiple') }}</ui-switch>
 	<ui-select v-model="this.expiration">
 		<template #label>{{ $t('expiration') }}</template>
-		<option value="infinite">{{ $('infinite') }}</option>
-		<option value="at">{{ $('at') }}</option>
-		<option value="after">{{ $('after') }}</option>
+		<option value="infinite">{{ $t('infinite') }}</option>
+		<option value="at">{{ $t('at') }}</option>
+		<option value="after">{{ $t('after') }}</option>
 	</ui-select>
 </div>
 </template>
@@ -76,7 +76,7 @@ export default Vue.extend({
 			if (data.choices.length == 0) return;
 			this.choices = data.choices;
 			if (data.choices.length == 1) this.choices = this.choices.concat('');
-			this.multiple = data.multiple
+			this.multiple = data.multiple;
 		}
 	}
 });
