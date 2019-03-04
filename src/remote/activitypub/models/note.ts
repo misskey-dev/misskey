@@ -74,14 +74,14 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	//#region Visibility
 	let visibility = 'public';
 	let visibleUsers: IUser[] = [];
-	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
-		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
+	if (!Array.isArray(note.to) || !note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
+		if (Array.isArray(note.cc) && note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';
-		} else if (note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
+		} else if (Array.isArray(note.to) && note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
 			visibility = 'followers';
 		} else {
 			visibility = 'specified';
-			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, null, resolver)));
+			visibleUsers = await Promise.all(Array.isArray(note.to) ? note.to.map(uri => resolvePerson(uri, null, resolver)) : []);
 		}
 	}
 	//#endergion
