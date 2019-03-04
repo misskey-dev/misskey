@@ -310,7 +310,11 @@ export default async function(
 				readable.destroy();
 				const type = fileType(buffer);
 				if (type) {
-					res([type.mime, type.ext]);
+					if (type.mime == 'application/xml' && checkSvg(path)) {
+						res(['image/svg+xml', 'svg']);
+					} else {
+						res([type.mime, type.ext]);
+					}
 				} else if (checkSvg(path)) {
 					res(['image/svg+xml', 'svg']);
 				} else {
