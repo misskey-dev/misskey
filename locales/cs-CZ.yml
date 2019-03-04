@@ -273,13 +273,15 @@ auth/views/form.vue:
   permission-ask: "Tato aplikace vyžaduje následující oprávnění:"
   account-read: "Zobrazit informace účtu"
   following-write: "Sledovat a přestat sledovat"
+  drive-read: "Přečíst váš Disk"
   cancel: "Zrušit"
+  accept: "Povolit přístup"
 auth/views/index.vue:
   loading: "Načítám..."
 common/views/pages/explore.vue:
   verified-users: "Ověřené účty"
   popular-tags: "Populární tagy"
-  federated: "Z fediversu"
+  federated: "Z fediverse"
 common/views/components/user-list.vue:
   no-users: "Žádní uživatelé"
 common/views/components/games/reversi/reversi.vue:
@@ -840,3 +842,4 @@ dev/views/new-app.vue:
   account-read: "Zobrazit informace účtu"
   reaction-write: "Přidat nebo odebrat reakce."
   following-write: "Sledovat a přestat sledovat"
+  drive-read: "Přečíst váš Disk"
