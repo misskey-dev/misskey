@@ -1196,7 +1196,7 @@ admin/views/users.vue:
       updatedAtAsc: "Last Updated (Ascending)"
       updatedAtDesc: "Last Updated (Descending)"
     state:
-      title: "Status"
+      title: "Sort"
       all: "All"
       admin: "Administrator"
       moderator: "Moderator"
@@ -1257,7 +1257,7 @@ admin/views/federation.vue:
   users: "Users"
   following: "Following"
   followers: "Followers"
-  status: "Status"
+  status: "Statuses"
   latest-request-sent-at: "Time of last request sent"
   latest-request-received-at: "Last request received at"
   remove-all-following: "Withold all followers"
@@ -1285,7 +1285,7 @@ admin/views/federation.vue:
     driveUsageDesc: "Most storage used"
     driveFilesAsc: "By the smallest number of files stored on Drive"
     driveFilesDesc: "By the largest number of files stored on Drive"
-  state: "Status"
+  state: "Display"
   states:
     all: "All"
     blocked: "Blocked"
