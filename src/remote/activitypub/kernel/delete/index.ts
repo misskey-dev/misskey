@@ -24,6 +24,10 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<void> => {
 		deleteNote(actor, uri);
 		break;
 
+	case 'Question':
+		deleteNote(actor, uri);
+		break;
+
 	case 'Tombstone':
 		const note = await Note.findOne({ uri });
 		if (note != null) {

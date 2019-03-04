@@ -63,10 +63,18 @@ export const meta = {
 			code: 'ALREADY_VOTED',
 			id: '0963fc77-efac-419b-9424-b391608dc6d8'
 		},
+
+		alreadyExpired: {
+			message: 'The poll is already expired.',
+			code: 'ALREADY_EXPIRED',
+			id: '1022a357-b085-4054-9083-8f8de358337e'
+		},
 	}
 };
 
 export default define(meta, async (ps, user) => {
+	const createdAt = new Date();
+
 	// Get votee
 	const note = await getNote(ps.noteId).catch(e => {
 		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
@@ -77,23 +85,32 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noPoll);
 	}
 
+	if (note.poll.expiresAt < createdAt) {
+		throw new ApiError(meta.errors.alreadyExpired);
+	}
+
 	if (!note.poll.choices.some(x => x.id == ps.choice)) {
 		throw new ApiError(meta.errors.invalidChoice);
 	}
 
 	// if already voted
-	const exist = await Vote.findOne({
+	const exist = await Vote.find({
 		noteId: note._id,
 		userId: user._id
 	});
 
-	if (exist !== null) {
-		throw new ApiError(meta.errors.alreadyVoted);
+	if (exist.length) {
+		if (note.poll.multiple) {
+			if (~exist.findIndex(x => x.choice == ps.choice))
+				throw new ApiError(meta.errors.alreadyVoted);
+		} else {
+			throw new ApiError(meta.errors.alreadyVoted);
+		}
 	}
 
 	// Create vote
 	await Vote.insert({
-		createdAt: new Date(),
+		createdAt,
 		noteId: note._id,
 		userId: user._id,
 		choice: ps.choice
@@ -151,11 +168,11 @@ export default define(meta, async (ps, user) => {
 		});
 
 		createNote(user, {
-			createdAt: new Date(),
+			createdAt,
 			text: ps.choice.toString(),
 			reply: note,
 			visibility: 'specified',
-			visibleUsers: [ pollOwner ],
+			visibleUsers: [pollOwner],
 		});
 	}
 

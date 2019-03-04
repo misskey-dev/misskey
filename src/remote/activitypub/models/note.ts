@@ -52,9 +52,9 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 export async function createNote(value: any, resolver?: Resolver, silent = false): Promise<INote> {
 	if (resolver == null) resolver = new Resolver();
 
-	const object = await resolver.resolve(value) as any;
+	const object: any = await resolver.resolve(value);
 
-	if (object == null || object.type !== 'Note') {
+	if (!object || !['Note', 'Question'].includes(object.type)) {
 		logger.error(`invalid note: ${object}`);
 		return null;
 	}
@@ -113,15 +113,34 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content ? note._misskey_content : fromHtml(note.content);
+	const text = note._misskey_content || fromHtml(note.content);
 
 	// vote
-	if (reply && reply.poll && text != null) {
-		const m = text.match(/([0-9])$/);
-		if (m) {
-			logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${m[0]}`);
-			await vote(actor, reply, Number(m[1]));
+	if (reply && reply.poll) {
+		const tryCreateVote = async (name: string, index: number): Promise<null> => {
+			if (reply.poll.expiresAt && new Date(note.published) < reply.poll.expiresAt) {
+				logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+				await vote(actor, reply, index);
+			}
 			return null;
+		};
+
+		if (note.name) {
+			const reverted =
+				~reply.poll.choices.findIndex(x => x.text === note.name) ||
+				~reply.poll.choices.findIndex(x => x.text.toLocaleLowerCase() === note.name.toLocaleLowerCase());
+
+			if (reverted) {
+				return await tryCreateVote(note.name, ~reverted);
+			}
+		}
+
+		if (text) {
+			const m = text.match(/(\d+)$/);
+
+			if (m) {
+				return await tryCreateVote(m[0], Number(m[1]));
+			}
 		}
 	}
 
@@ -133,7 +152,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const apEmojis = emojis.map(emoji => emoji.name);
 
 	const questionUri = note._misskey_question;
-	const poll = questionUri ? await extractPollFromQuestion(questionUri).catch(() => undefined) : undefined;
+	const poll = await extractPollFromQuestion(note._misskey_question || note).catch(() => undefined);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -142,11 +161,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	return await post(actor, {
 		createdAt: new Date(note.published),
-		files: files,
+		files,
 		reply,
 		renote: quote,
-		cw: cw,
-		text: text,
+		cw,
+		text,
 		viaMobile: false,
 		localOnly: false,
 		geo: undefined,

@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/user';
-import createNote from './note';
 import createImage from './image';
+import createNote from './note';
 import { ICreate } from '../../type';
 import { apLogger } from '../../logger';
 
@@ -29,6 +29,10 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 		break;
 
 	case 'Note':
+		createNote(resolver, actor, object);
+		break;
+
+	case 'Question':
 		createNote(resolver, actor, object);
 		break;
 

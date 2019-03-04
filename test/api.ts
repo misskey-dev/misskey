@@ -450,6 +450,23 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 
+		it('投票できる', async(async () => {
+			const chihiro = await signup();
+			const p = await signup();
+
+			const { body } = await request('/notes/create', {
+				text: 'test',
+				poll: {
+					choices: ['sakura', 'izumi', 'ako']
+				}
+			}, chihiro);
+
+			const res = await request('/polls/vote', {
+				noteId: body.id,
+				choice: 1
+			}, p);
+		}));
+
 		it('同じユーザーに複数メンションしても内部的にまとめられる', async(async () => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });

@@ -134,6 +134,18 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		...apemojis,
 	];
 
+	const {
+		choices = [],
+		expiresAt = null,
+		multiple = false
+	} = note.poll || {};
+
+	const asPoll = note.poll ? {
+		type: 'Question',
+		[expiresAt && expiresAt < new Date() ? 'closed' : 'endTime']: expiresAt,
+		[multiple ? 'anyOf' : 'oneOf']: choices
+	} : {};
+
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
@@ -149,7 +161,8 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		inReplyTo,
 		attachment: files.map(renderDocument),
 		sensitive: files.some(file => file.metadata.isSensitive),
-		tag
+		tag,
+		...asPoll
 	};
 }
 
