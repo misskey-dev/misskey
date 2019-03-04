@@ -116,6 +116,7 @@ export default Vue.extend({
 			poll: false,
 			pollChoices: [],
 			pollMultiple: false,
+			pollExpiration: [],
 			useCw: false,
 			cw: null,
 			geo: null,
@@ -299,6 +300,7 @@ export default Vue.extend({
 			const got = this.$refs.poll.get();
 			this.pollChoices = got.choices;
 			this.pollMultiple = got.multiple;
+			this.pollExpiration = [got.expiration, got.expiresAt || got.expiredAfter];
 			this.saveDraft();
 		},
 

@@ -172,6 +172,7 @@ export default Vue.extend({
 		margin 8px 0 0 0
 		vertical-align top
 		color var(--primary)
+		z-index 1
 
 	> .destroy
 		position absolute
@@ -179,7 +180,6 @@ export default Vue.extend({
 		right 0
 		padding 4px 8px
 		color var(--primaryAlpha04)
-		z-index 1
 
 		&:hover
 			color var(--primaryAlpha06)
