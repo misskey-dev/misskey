@@ -43,10 +43,10 @@ export const builtinThemes = [
 ];
 
 export function applyTheme(theme: Theme, persisted = true) {
-	document.documentElement.classList.add('change-theme');
+	document.documentElement.classList.add('changing-theme');
 
 	setTimeout(() => {
-		document.documentElement.classList.remove('change-theme');
+		document.documentElement.classList.remove('changing-theme');
 	}, 500);
 
 	// Deep copy
