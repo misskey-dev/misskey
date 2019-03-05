@@ -61,6 +61,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const note: INoteActivityStreamsObject = object;
 
+	logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
+
 	logger.info(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
