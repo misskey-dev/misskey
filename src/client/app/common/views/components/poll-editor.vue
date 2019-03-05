@@ -27,7 +27,10 @@
 				<option value="at">{{ $t('at') }}</option>
 				<option value="after">{{ $t('after') }}</option>
 			</ui-select>
-			<ui-input v-if="expiration === 'at'" v-model="at" type="date">{{ $t('deadline') }}</ui-input>
+			<section v-if="expiration === 'at'">
+				<ui-input v-model="atDate" type="date">{{ $t('deadline-date') }}</ui-input>
+				<ui-input v-model="atTime" type="time">{{ $t('deadline-time') }}</ui-input>
+			</section>
 			<section v-if="expiration === 'after'">
 				<ui-input v-model="after" type="number" min="0">{{ $t('interval') }}</ui-input>
 				<ui-select v-model="unit">
@@ -54,10 +57,14 @@ export default Vue.extend({
 			choices: ['', ''],
 			multiple: false,
 			expiration: 'infinite',
-			at: new Date(Date.now() + 86400),
+			atDate: new Date(Date.now() + 86400),
+			atTime: new Date(Date.now() + 86400),
 			after: 0,
 			unit: 'second'
 		};
+	},
+	computed: {
+		
 	},
 	watch: {
 		choices() {
@@ -85,12 +92,29 @@ export default Vue.extend({
 		},
 
 		get() {
+			const at = () => {
+				const date = new Date(this.atDate);
+				const time = new Date(this.atTime);
+				return new Date(`${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}T${time.getUTCHours()}:${time.getUTCMinutes()}:${time.getUTCSeconds()}Z`);
+			};
+
+			const after = () => {
+				let base = parseInt(this.after);
+				switch (this.unit) {
+					case 'day': base *= 24;
+					case 'hour': base *= 60;
+					case 'minute': base *= 60;
+					case 'second': return base *= 1000;
+					default: return null;
+				}
+			};
+
 			return {
 				choices: erase('', this.choices),
 				multiple: this.multiple,
 				...(
-					this.expiration === 'at' ? { expiresAt: this.at } :
-					this.expiration === 'after' ? { expiredAfter: this.after } : {})
+					this.expiration === 'at' ? { expiresAt: at() } :
+					this.expiration === 'after' ? { expiredAfter: after() } : {})
 			}
 		},
 
@@ -101,7 +125,7 @@ export default Vue.extend({
 			this.multiple = data.multiple;
 			if (data.expiresAt) {
 				this.expiration = 'at';
-				this.at = data.expiresAt;
+				this.atDate = this.atTime = data.expiresAt;
 			} else if (typeof data.expiredAfter === 'number') {
 				this.expiration = 'after';
 				this.after = data.expiredAfter;
@@ -204,6 +228,8 @@ export default Vue.extend({
 					margin -32px 0 0
 
 					> :first-child
-						flex 1 0 auto
 						margin-right 16px
+
+					> .ui-input
+						flex 1 0 auto
 </style>

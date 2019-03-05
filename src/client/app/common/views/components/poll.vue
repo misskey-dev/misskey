@@ -10,12 +10,16 @@
 			</span>
 		</li>
 	</ul>
-	<p v-if="total > 0">
+	<p>
 		<span>{{ $t('total-users').replace('{}', total) }}</span>
-		<span>・</span>
+		<span> · </span>
 		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $t('vote') : $t('show-result') }}</a>
-		<span v-if="closed">{{ $t('closed') }}</span>
-		<span v-else-if="isVoted">{{ $t('voted') }}</span>
+		<span v-if="isVoted">{{ $t('voted') }}</span>
+		<span v-else-if="closed">{{ $t('closed') }}</span>
+		<span v-if="remaining > 86400"> · {{ $t('remaining-days').replace('{s}', remaining % 60).replace('{m}', ~~(remaining / 60) % 60).replace('{h}', ~~(remaining / 3600) % 24).replace('{d}', ~~(remaining / 86400)) }}</span>
+		<span v-else-if="remaining > 3600"> · {{ $t('remaining-hours').replace('{s}', remaining % 60).replace('{m}', ~~(remaining / 60) % 60).replace('{h}', ~~(remaining / 3600)) }}</span>
+		<span v-else-if="remaining > 60"> · {{ $t('remaining-minutes').replace('{s}', remaining % 60).replace('{m}', ~~(remaining / 60)) }}</span>
+		<span v-else-if="remaining > 0"> · {{ $t('remaining-seconds').replace('{s}', remaining) }}</span>
 	</p>
 </div>
 </template>
@@ -50,21 +54,23 @@ export default Vue.extend({
 	created() {
 		this.showResult = this.isVoted;
 
-		const update = () => {
-			if (this.remaining = Math.max((this.note.poll.expiresAt as Date).getTime() - Date.now(), 0))
-				requestAnimationFrame(update);
-			else
-				this.showResult = true;
-		};
+		if (this.note.poll.expiresAt) {
+			const update = () => {
+				if (this.remaining = ~~Math.max(new Date(this.note.poll.expiresAt).getTime() - Date.now(), 0) / 1000)
+					requestAnimationFrame(update);
+				else
+					this.showResult = true;
+			};
 
-		update();
+			update();
+		}
 	},
 	methods: {
 		toggleShowResult() {
 			this.showResult = !this.showResult;
 		},
 		vote(id) {
-			if (this.poll.choices.some(c => c.isVoted)) return;
+			if (this.closed || !this.poll.multiple && this.poll.choices.some(c => c.isVoted)) return;
 			this.$root.api('notes/polls/vote', {
 				noteId: this.note.id,
 				choice: id
@@ -75,7 +81,7 @@ export default Vue.extend({
 						Vue.set(c, 'isVoted', true);
 					}
 				}
-				this.showResult = true;
+				this.showResult = !this.poll.multiple;
 			});
 		}
 	}
