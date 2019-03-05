@@ -124,6 +124,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c8.patreon.com/2/200/17463605" alt="Sampot" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17880724/311738c8a48f4a6b9443c2445a75adde/1?token-time=2145916800&token-hash=95p8VdGX45E8BitZR_eOcDlqCjumjzNLBPQJrJdeCpI%3D" alt="takimura" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17195955/be45e5e14c3e48b2bee0456c84e19df4/4?token-time=2145916800&token-hash=SbdZeN5SmsuT9stD6v0jN1z0hftg0FmRiCTxysU0Ihw%3D" alt="Damillora" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/16900731/935a10339daa4ede8e555903a0707060/1?token-time=2145916800&token-hash=3CrpqH-XtKs_NoIlSsTyVs8wCzP1WFCsG2xwps1IJq0%3D" alt="Atsuko Tominaga" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/mydarkstar">mydarkstar</a></td>
 <td><a href="https://www.patreon.com/user?u=12718187">Peter G.</a></td>
@@ -133,6 +134,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=17463605">Sampot</a></td>
 <td><a href="https://www.patreon.com/takimura">takimura</a></td>
 <td><a href="https://www.patreon.com/damillora">Damillora</a></td>
+<td><a href="https://www.patreon.com/user?u=16900731">Atsuko Tominaga</a></td>
 </tr></table>
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/2?token-time=2145916800&token-hash=zcwFxb2zopzWwksKVU1YpfAEjsl4yKT02aQ6yiAFRiQ%3D" alt="natalie" width="100"></td>
@@ -150,7 +152,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Fri, 01 Mar 2019 23:59:07 UTC
+**Last updated:** Mon, 04 Mar 2019 09:06:05 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright

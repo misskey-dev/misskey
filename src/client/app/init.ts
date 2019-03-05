@@ -16,11 +16,11 @@ import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
 import { version, codename, lang, locale } from './config';
-import { builtinThemes, lightTheme, applyTheme } from './theme';
+import { builtinThemes, applyTheme, darkTheme } from './theme';
 import Dialog from './common/views/components/dialog.vue';
 
 if (localStorage.getItem('theme') == null) {
-	applyTheme(lightTheme);
+	applyTheme(darkTheme);
 }
 
 //#region FontAwesome

@@ -3,32 +3,31 @@
 	<header>
 		<button v-for="category in categories"
 			:title="category.text"
-			@click="go(category.ref)"
+			@click="go(category)"
 			:class="{ active: category.isActive }"
 		>
 			<fa :icon="category.icon" fixed-width/>
 		</button>
 	</header>
-	<div class="emojis" ref="emojis" @scroll.passive="onScroll">
-		<section v-for="category in categories" :ref="category.ref">
-			<header><fa :icon="category.icon" fixed-width/> {{ category.text }}</header>
-			<div v-if="category.name">
-				<button v-for="emoji in Object.entries(lib).filter(([k, v]) => v.category === category.name)"
-					:title="emoji[0]"
-					@click="chosen(emoji[1].char)"
-				>
-					<mk-emoji :emoji="emoji[1].char"/>
-				</button>
-			</div>
-			<div v-else>
-				<button v-for="emoji in customEmojis"
-					:title="emoji.name"
-					@click="chosen(`:${emoji.name}:`)"
-				>
-					<img :src="emoji.url" :alt="emoji.name"/>
-				</button>
-			</div>
-		</section>
+	<div class="emojis">
+		<header><fa :icon="categories.find(x => x.isActive).icon" fixed-width/> {{ categories.find(x => x.isActive).text }}</header>
+		<div v-if="categories.find(x => x.isActive).name">
+			<button v-for="emoji in Object.entries(lib).filter(([k, v]) => v.category === categories.find(x => x.isActive).name)"
+				:title="emoji[0]"
+				@click="chosen(emoji[1].char)"
+				:key="emoji[0]"
+			>
+				<mk-emoji :emoji="emoji[1].char"/>
+			</button>
+		</div>
+		<div v-else>
+			<button v-for="emoji in customEmojis"
+				:title="emoji.name"
+				@click="chosen(`:${emoji.name}:`)"
+			>
+				<img :src="emoji.url" :alt="emoji.name"/>
+			</button>
+		</div>
 	</div>
 </div>
 </template>
@@ -48,55 +47,46 @@ export default Vue.extend({
 			lib,
 			customEmojis: [],
 			categories: [{
-				ref: 'customEmojiSection',
 				text: this.$t('custom-emoji'),
 				icon: faAsterisk,
 				isActive: true
 			}, {
 				name: 'people',
-				ref: 'peopleSection',
 				text: this.$t('people'),
 				icon: ['far', 'laugh'],
 				isActive: false
 			}, {
 				name: 'animals_and_nature',
-				ref: 'animalsAndNatureSection',
 				text: this.$t('animals-and-nature'),
 				icon: faLeaf,
 				isActive: false
 			}, {
 				name: 'food_and_drink',
-				ref: 'foodAndDrinkSection',
 				text: this.$t('food-and-drink'),
 				icon: faUtensils,
 				isActive: false
 			}, {
 				name: 'activity',
-				ref: 'activitySection',
 				text: this.$t('activity'),
 				icon: faFutbol,
 				isActive: false
 			}, {
 				name: 'travel_and_places',
-				ref: 'travelAndPlacesSection',
 				text: this.$t('travel-and-places'),
 				icon: faCity,
 				isActive: false
 			}, {
 				name: 'objects',
-				ref: 'objectsSection',
 				text: this.$t('objects'),
 				icon: faDice,
 				isActive: false
 			}, {
 				name: 'symbols',
-				ref: 'symbolsSection',
 				text: this.$t('symbols'),
 				icon: faHeart,
 				isActive: false
 			}, {
 				name: 'flags',
-				ref: 'flagsSection',
 				text: this.$t('flags'),
 				icon: faFlag,
 				isActive: false
@@ -109,15 +99,9 @@ export default Vue.extend({
 	},
 
 	methods: {
-		go(ref) {
-			this.$refs.emojis.scrollTop = this.$refs[ref][0].offsetTop;
-		},
-
-		onScroll(e) {
-			for (const x of this.categories) {
-				const top = e.target.scrollTop;
-				const el = this.$refs[x.ref][0];
-				x.isActive = el.offsetTop <= top && el.offsetTop + el.offsetHeight > top;
+		go(category) {
+			for (const c of this.categories) {
+				c.isActive = c.name === category.name;
 			}
 		},
 
@@ -156,47 +140,46 @@ export default Vue.extend({
 		overflow-y auto
 		overflow-x hidden
 
-		> section
-			> header
-				position sticky
-				top 0
-				left 0
-				z-index 1
-				padding 8px
-				background var(--faceHeader)
-				color var(--text)
-				font-size 12px
+		> header
+			position sticky
+			top 0
+			left 0
+			z-index 1
+			padding 8px
+			background var(--faceHeader)
+			color var(--text)
+			font-size 12px
 
-			> div
-				display grid
-				grid-template-columns 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
-				gap 4px
-				padding 8px
+		> div
+			display grid
+			grid-template-columns 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+			gap 4px
+			padding 8px
 
-				> button
-					padding 0
-					width 100%
+			> button
+				padding 0
+				width 100%
 
-					&:before
-						content ''
-						display block
-						width 1px
-						height 0
-						padding-bottom 100%
+				&:before
+					content ''
+					display block
+					width 1px
+					height 0
+					padding-bottom 100%
 
-					&:hover
-						> *
-							transform scale(1.2)
-							transition transform 0s
-
+				&:hover
 					> *
-						position absolute
-						top 0
-						left 0
-						width 100%
-						height 100%
-						font-size 28px
-						transition transform 0.2s ease
-						pointer-events none
+						transform scale(1.2)
+						transition transform 0s
+
+				> *
+					position absolute
+					top 0
+					left 0
+					width 100%
+					height 100%
+					font-size 28px
+					transition transform 0.2s ease
+					pointer-events none
 
 </style>
