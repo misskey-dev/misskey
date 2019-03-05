@@ -451,51 +451,48 @@ describe('API', () => {
 		}));
 
 		it('投票できる', async(async () => {
-			const chihiro = await signup();
-			const p = await signup();
+			const me = await signup();
 
 			const { body } = await request('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako']
 				}
-			}, chihiro);
+			}, me);
 
 			const res = await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 1
-			}, p);
+			}, me);
 
 			expect(res).have.status(200);
 		}));
 
 		it('複数投票できない', async(async () => {
-			const chihiro = await signup();
-			const p = await signup();
+			const me = await signup();
 
 			const { body } = await request('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako']
 				}
-			}, chihiro);
+			}, me);
 
 			await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 0
-			}, p);
+			}, me);
 
 			const res = await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 2
-			}, p);
+			}, me);
 
 			expect(res).have.status(400);
 		}));
 
 		it('許可されている場合は複数投票できる', async(async () => {
-			const chihiro = await signup();
-			const p = await signup();
+			const me = await signup();
 
 			const { body } = await request('/notes/create', {
 				text: 'test',
@@ -503,29 +500,28 @@ describe('API', () => {
 					choices: ['sakura', 'izumi', 'ako'],
 					multiple: true
 				}
-			}, chihiro);
+			}, me);
 
 			await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 0
-			}, p);
+			}, me);
 
 			await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 1
-			}, p);
+			}, me);
 
 			const res = await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 2
-			}, p);
+			}, me);
 
 			expect(res).have.status(200);
 		}));
 
 		it('締め切られている場合は投票できない', async(async () => {
-			const chihiro = await signup();
-			const p = await signup();
+			const me = await signup();
 
 			const { body } = await request('/notes/create', {
 				text: 'test',
@@ -533,14 +529,14 @@ describe('API', () => {
 					choices: ['sakura', 'izumi', 'ako'],
 					expiredAfter: 1
 				}
-			}, chihiro);
+			}, me);
 
 			await new Promise(x => setTimeout(x, 2));
 
 			const res = await request('/notes/notes/polls/vote', {
 				noteId: body.id,
 				choice: 1
-			}, p);
+			}, me);
 
 			expect(res).have.status(400);
 		}));
