@@ -465,7 +465,7 @@ describe('API', () => {
 				choice: 1
 			}, me);
 
-			expect(res).have.status(200);
+			expect(res).have.status(204);
 		}));
 
 		it('複数投票できない', async(async () => {
@@ -517,7 +517,7 @@ describe('API', () => {
 				choice: 2
 			}, me);
 
-			expect(res).have.status(200);
+			expect(res).have.status(204);
 		}));
 
 		it('締め切られている場合は投票できない', async(async () => {
