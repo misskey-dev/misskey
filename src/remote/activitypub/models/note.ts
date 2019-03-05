@@ -101,7 +101,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// Noteがsensitiveなら添付もsensitiveにする
 	const limit = promiseLimit(2);
 
-	note.attachment = note.attachment == null ? [] : typeof note.attachment == 'object' ? [note.attachment] : note.attachment;
+	note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
 	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
 		? await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<IDriveFile>))
