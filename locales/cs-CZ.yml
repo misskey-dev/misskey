@@ -148,7 +148,7 @@ common:
     reduce-motion: "Snížit pohyb v rozhraní"
     this-setting-is-this-device-only: "Pouze pro toto zařízení"
     use-os-default-emojis: "Použít výchozí emoji systému"
-    line-width: "Výška řádku"
+    line-width: "Hrubka línie"
     line-width-thin: "Úzka"
     line-width-normal: "Běžná"
     line-width-thick: "Tlustá"
@@ -282,6 +282,7 @@ auth/views/index.vue:
   loading: "Načítám..."
 common/views/pages/explore.vue:
   verified-users: "Ověřené účty"
+  recently-registered-users: "Nedávno registrovaní uživatelé"
   popular-tags: "Populární tagy"
   federated: "Z fediverse"
 common/views/components/user-list.vue:
