@@ -461,7 +461,7 @@ describe('API', () => {
 			}, me);
 
 			const res = await request('/notes/polls/vote', {
-				noteId: body.id,
+				noteId: body.createdNote.id,
 				choice: 1
 			}, me);
 
@@ -479,12 +479,12 @@ describe('API', () => {
 			}, me);
 
 			await request('/notes/polls/vote', {
-				noteId: body.id,
+				noteId: body.createdNote.id,
 				choice: 0
 			}, me);
 
 			const res = await request('/notes/polls/vote', {
-				noteId: body.id,
+				noteId: body.createdNote.id,
 				choice: 2
 			}, me);
 
@@ -503,17 +503,17 @@ describe('API', () => {
 			}, me);
 
 			await request('/notes/polls/vote', {
-				noteId: body.id,
+				noteId: body.createdNote.id,
 				choice: 0
 			}, me);
 
 			await request('/notes/polls/vote', {
-				noteId: body.id,
+				noteId: body.createdNote.id,
 				choice: 1
 			}, me);
 
 			const res = await request('/notes/polls/vote', {
-				noteId: body.id,
+				noteId: body.createdNote.id,
 				choice: 2
 			}, me);
 
@@ -533,8 +533,8 @@ describe('API', () => {
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const res = await request('/notes/notes/polls/vote', {
-				noteId: body.id,
+			const res = await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
 				choice: 1
 			}, me);
 
