@@ -328,7 +328,7 @@ export default class MiOS extends EventEmitter {
 
 				// A public key your push server will use to send
 				// messages to client apps via a push server.
-				applicationServerKey: urlBase64ToUint8Array(this.meta.data.swPublickey)
+				applicationServerKey: this.meta.data.swPublickey && urlBase64ToUint8Array(this.meta.data.swPublickey)
 			};
 
 			// Subscribe push notification
