@@ -461,7 +461,7 @@ describe('API', () => {
 				}
 			}, chihiro);
 
-			const res = await request('/polls/vote', {
+			const res = await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 1
 			}, p);
@@ -480,12 +480,12 @@ describe('API', () => {
 				}
 			}, chihiro);
 
-			await request('/polls/vote', {
+			await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 0
 			}, p);
 
-			const res = await request('/polls/vote', {
+			const res = await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 2
 			}, p);
@@ -505,17 +505,17 @@ describe('API', () => {
 				}
 			}, chihiro);
 
-			await request('/polls/vote', {
+			await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 0
 			}, p);
 
-			await request('/polls/vote', {
+			await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 1
 			}, p);
 
-			const res = await request('/polls/vote', {
+			const res = await request('/notes/polls/vote', {
 				noteId: body.id,
 				choice: 2
 			}, p);
@@ -537,7 +537,7 @@ describe('API', () => {
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const res = await request('/polls/vote', {
+			const res = await request('/notes/notes/polls/vote', {
 				noteId: body.id,
 				choice: 1
 			}, p);
