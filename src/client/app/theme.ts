@@ -47,7 +47,7 @@ export function applyTheme(theme: Theme, persisted = true) {
 
 	setTimeout(() => {
 		document.documentElement.classList.remove('changing-theme');
-	}, 500);
+	}, 1000);
 
 	// Deep copy
 	const _theme = JSON.parse(JSON.stringify(theme));
