@@ -15,9 +15,10 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		: Promise.resolve([]);
 
 	let inReplyTo;
+	let inReplyToNote: INote;
 
 	if (note.replyId) {
-		const inReplyToNote = await Note.findOne({
+		inReplyToNote = await Note.findOne({
 			_id: note.replyId,
 		});
 
@@ -141,7 +142,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	} = note.poll || {};
 
 	const asVote = note.voting ? {
-		name: choices[parseInt(note.text)]
+		name: inReplyToNote.poll.choices[parseInt(note.text)].text
 	} : {};
 
 	const asPoll = note.poll ? {
