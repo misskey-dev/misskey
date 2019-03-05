@@ -1,7 +1,7 @@
 <template>
-<div class="mk-poll" :data-is-voted="isVoted">
+<div class="mk-poll" :data-done="closed || isVoted">
 	<ul>
-		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!isVoted ? $t('vote-to').replace('{}', choice.text) : ''">
+		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!closed && !isVoted ? $t('vote-to').replace('{}', choice.text) : ''">
 			<div class="backdrop" :style="{ 'width': (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
 			<span>
 				<template v-if="choice.isVoted"><fa icon="check"/></template>
@@ -13,8 +13,9 @@
 	<p v-if="total > 0">
 		<span>{{ $t('total-users').replace('{}', total) }}</span>
 		<span>・</span>
-		<a v-if="!isVoted" @click="toggleShowResult">{{ showResult ? $t('vote') : $t('show-result') }}</a>
-		<span v-if="isVoted">{{ $t('voted') }}</span>
+		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $t('vote') : $t('show-result') }}</a>
+		<span v-if="closed">{{ $t('closed') }}</span>
+		<span v-else-if="isVoted">{{ $t('voted') }}</span>
 	</p>
 </div>
 </template>
@@ -28,6 +29,7 @@ export default Vue.extend({
 	props: ['note'],
 	data() {
 		return {
+			remaining: -1,
 			showResult: false
 		};
 	},
@@ -38,12 +40,24 @@ export default Vue.extend({
 		total(): number {
 			return sum(this.poll.choices.map(x => x.votes));
 		},
+		closed(): boolean {
+			return !this.remaining;
+		},
 		isVoted(): boolean {
-			return this.poll.choices.some(c => c.isVoted);
+			return !this.poll.multiple && this.poll.choices.some(c => c.isVoted);
 		}
 	},
 	created() {
 		this.showResult = this.isVoted;
+
+		const update = () => {
+			if (this.remaining = Math.max((this.note.poll.expiresAt as Date).getTime() - Date.now(), 0))
+				requestAnimationFrame(update);
+			else
+				this.showResult = true;
+		};
+
+		update();
 	},
 	methods: {
 		toggleShowResult() {
@@ -114,7 +128,7 @@ export default Vue.extend({
 		a
 			color inherit
 
-	&[data-is-voted]
+	&[data-done]
 		> ul > li
 			cursor default
 
