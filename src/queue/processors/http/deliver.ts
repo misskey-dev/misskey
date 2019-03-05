@@ -6,10 +6,15 @@ import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-
 import Instance from '../../../models/instance';
 import instanceChart from '../../../services/chart/instance';
 
+let latest: string = null;
+
 export default async (job: bq.Job, done: any): Promise<void> => {
 	const { host } = new URL(job.data.to);
 
 	try {
+		if (latest !== (latest = JSON.stringify(job.data.content, null, 2)))
+			queueLogger.debug(`delivering ${latest}`);
+
 		await request(job.data.user, job.data.to, job.data.content);
 
 		// Update stats
