@@ -131,7 +131,9 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// vote
 	if (reply && reply.poll) {
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
-			if (reply.poll.expiresAt && new Date(note.published) < reply.poll.expiresAt) {
+			if (reply.poll.expiresAt != null && new Date(note.published) > new Date(reply.poll.expiresAt)) {
+				logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+			} else {
 				logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				await vote(actor, reply, index);
 			}
