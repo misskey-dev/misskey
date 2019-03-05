@@ -307,11 +307,11 @@ export default define(meta, async (ps, user, app) => {
 	const note = await create(user, {
 		createdAt: new Date(),
 		files: files,
-		poll: {
+		poll: ps.poll ? {
 			choices: ps.poll.choices,
 			multiple: ps.poll.multiple || false,
 			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null
-		},
+		} : undefined,
 		text: ps.text,
 		reply,
 		renote,
