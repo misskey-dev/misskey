@@ -101,7 +101,7 @@ export default define(meta, async (ps, user) => {
 
 	if (exist.length) {
 		if (note.poll.multiple) {
-			if (~exist.findIndex(x => x.choice == ps.choice))
+			if (exist.some(x => x.choice == ps.choice))
 				throw new ApiError(meta.errors.alreadyVoted);
 		} else {
 			throw new ApiError(meta.errors.alreadyVoted);
