@@ -16,7 +16,6 @@
 		"curly": false,
 		"no-console": [false],
 		"no-empty": false,
-		"no-bitwise": false,
 		"ordered-imports": [false],
 		"arrow-parens": false,
 		"array-type": [true, "array"],
