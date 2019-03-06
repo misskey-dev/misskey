@@ -4,10 +4,10 @@ import ms = require('ms');
 import Logger from '../../logger';
 import User, { isLocalUser, isRemoteUser } from '../../../models/user';
 import Following from '../../../models/following';
-import renderQuestion from '../../../remote/activitypub/renderer/question';
 import renderUpdate from '../../../remote/activitypub/renderer/update';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
+import renderNote from '../../../remote/activitypub/renderer/note';
 
 const logger = new Logger('pollsUpdate');
 
@@ -47,7 +47,7 @@ export async function deliverQuestionUpdate(note: INote) {
 		}
 
 		if (queue.length > 0) {
-			const content = renderActivity(renderUpdate(await renderQuestion(user, note), user));
+			const content = renderActivity(renderUpdate(await renderNote(note, false), user));
 			for (const inbox of queue) {
 				deliver(user, content, inbox);
 			}
