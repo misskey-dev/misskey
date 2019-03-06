@@ -12,7 +12,6 @@ import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
 import { deliver } from '../../../../../queue';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
-import renderCreate from '../../../../../remote/activitypub/renderer/create';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
 
 export const meta = {
