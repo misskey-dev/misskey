@@ -66,15 +66,14 @@ export async function updateQuestion(uri: string) {
 		}
 	}
 
-	if (changed) {
-		await Note.update({
-			_id: note._id
-		}, {
-			$set: {
-				'poll.choices': dbChoices
-			}
-		});
-	}
+	await Note.update({
+		_id: note._id
+	}, {
+		$set: {
+			'poll.choices': dbChoices,
+			updatedAt: new Date(),
+		}
+	});
 
 	return changed;
 }

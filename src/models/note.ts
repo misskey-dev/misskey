@@ -35,6 +35,7 @@ export type INote = {
 	_id: mongo.ObjectID;
 	createdAt: Date;
 	deletedAt: Date;
+	updatedAt?: Date;
 	fileIds: mongo.ObjectID[];
 	replyId: mongo.ObjectID;
 	renoteId: mongo.ObjectID;
