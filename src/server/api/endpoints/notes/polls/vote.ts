@@ -7,14 +7,12 @@ import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../services/stream';
 import notify from '../../../../../services/create-notification';
 import define from '../../../define';
-import createNote from '../../../../../services/note/create';
 import User, { IRemoteUser } from '../../../../../models/user';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
 import { deliver } from '../../../../../queue';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderCreate from '../../../../../remote/activitypub/renderer/create';
-import renderNote from '../../../../../remote/activitypub/renderer/note';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
 
 export const meta = {
