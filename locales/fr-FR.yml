@@ -383,7 +383,6 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
-  total-votes: "{} utilisateur·rice·s ont voté"
   vote: "Vote"
   show-result: "Montrer les résultats"
   voted: "Voté"
@@ -393,6 +392,7 @@ common/views/components/poll-editor.vue:
   remove: "Supprimer ce choix"
   add: "+ Ajouter un choix"
   destroy: "Annuler ce sondage"
+  day: "D"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Choisissez votre réaction"
 common/views/components/emoji-picker.vue:

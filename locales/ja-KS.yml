@@ -344,7 +344,6 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "「{}」に投票や！"
   vote-count: "{}票"
-  total-votes: "{}人が投票"
   vote: "投票するで"
   show-result: "結果を見よか"
   voted: "投票済みや"
@@ -354,6 +353,7 @@ common/views/components/poll-editor.vue:
   remove: "この選択肢を消すで"
   add: "+選択肢を追加"
   destroy: "アンケートをほかそ"
+  day: "日"
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクション、どれにするんや？"
 common/views/components/emoji-picker.vue:

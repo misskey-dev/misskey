@@ -270,7 +270,6 @@ common/views/components/note-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Stimme für '{}'"
   vote-count: "{} Stimmen"
-  total-votes: "{} Nutzer haben abgestimmt"
   vote: "Abstimmen"
   show-result: "Zeige Ergebnis"
   voted: "Abgestimmt"
@@ -280,6 +279,7 @@ common/views/components/poll-editor.vue:
   remove: "Diese Auswahl entfernen"
   add: "+ Eine Auswahl hinzufügen"
   destroy: "Diese Abstimmung löschen"
+  day: "So"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wähle eine Reaktion aus"
 common/views/components/emoji-picker.vue:

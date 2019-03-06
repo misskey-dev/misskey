@@ -303,7 +303,6 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "'{}' para votar"
   vote-count: "{} votos"
-  total-votes: "{} usuario(s) que ha(n) votado"
   vote: "Vota"
   show-result: "Mostrar resultados"
   voted: "Votado"
@@ -313,6 +312,7 @@ common/views/components/poll-editor.vue:
   remove: "Borra la opción"
   add: "+ Añade una opción"
   destroy: "Cancelar la encuesta"
+  day: "domingo"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Escoge una reacción"
 common/views/components/emoji-picker.vue:

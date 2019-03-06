@@ -346,7 +346,6 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Zagłosuj na '{}'"
   vote-count: "{} głosów"
-  total-votes: "{} głosujących"
   vote: "Zagłosuj"
   show-result: "Pokaż wyniki"
   voted: "Zagłosowano"
@@ -356,6 +355,7 @@ common/views/components/poll-editor.vue:
   remove: "Usuń tą opcję"
   add: "+ Dodaj opcję"
   destroy: "Usuń tę ankietę"
+  day: "N"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Wybierz reakcję"
 common/views/components/emoji-picker.vue:

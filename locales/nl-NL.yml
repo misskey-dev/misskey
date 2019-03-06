@@ -131,7 +131,6 @@ common/views/components/note-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Stemmen op '{}'"
   vote-count: "{} stemmen"
-  total-votes: "{} gebruikers hebben gestemd"
   vote: "Stemmen"
   show-result: "Resultaten tonen"
   voted: "Gestemd"
@@ -141,6 +140,7 @@ common/views/components/poll-editor.vue:
   remove: "Deze keuze verwijderen"
   add: "+ Keuze toevoegen"
   destroy: "Deze peiling vernietigen"
+  day: "Z"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Kies een reactie"
 common/views/components/emoji-picker.vue:
