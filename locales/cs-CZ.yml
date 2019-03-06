@@ -375,6 +375,8 @@ common/views/components/user-menu.vue:
   mute: "Umlčet"
   unmute: "Zrušit umlčení"
   block: "Blokován"
+common/views/components/poll-editor.vue:
+  day: "Ne"
 common/views/components/emoji-picker.vue:
   people: "Lidé"
   animals-and-nature: "Zvířata a příroda"
