@@ -133,7 +133,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
 			if (reply.poll.expiresAt != null && new Date(note.published) > new Date(reply.poll.expiresAt)) {
 				logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
-			} else {
+			} else if (index >= 0) {
 				logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				await vote(actor, reply, index);
 			}
@@ -141,17 +141,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		};
 
 		if (note.name) {
-			const formal = reply.poll.choices.findIndex(x => x.text === note.name);
-
-			if (formal !== -1) {
-				return await tryCreateVote(note.name, formal);
-			} else {
-				const rough = reply.poll.choices.findIndex(x => x.text.toLocaleLowerCase() === note.name.toLocaleLowerCase());
-
-				if (rough !== -1) {
-					return await tryCreateVote(note.name, rough);
-				}
-			}
+			return await tryCreateVote(note.name, reply.poll.choices.findIndex(x => x.text === note.name));
 		}
 
 		// 後方互換性のため
