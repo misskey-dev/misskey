@@ -141,10 +141,6 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		multiple = false
 	} = note.poll || {};
 
-	const asVote = note.voting ? {
-		name: inReplyToNote.poll.choices[parseInt(note.text)].text
-	} : {};
-
 	const asPoll = note.poll ? {
 		type: 'Question',
 		content: toHtml(Object.assign({}, note, {
@@ -178,8 +174,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		attachment: files.map(renderDocument),
 		sensitive: files.some(file => file.metadata.isSensitive),
 		tag,
-		...asPoll,
-		...asVote
+		...asPoll
 	};
 }
 
