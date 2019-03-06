@@ -63,9 +63,6 @@ export default Vue.extend({
 			unit: 'second'
 		};
 	},
-	computed: {
-		
-	},
 	watch: {
 		choices() {
 			this.$emit('updated');
