@@ -151,6 +151,7 @@ common/views/components/poll.vue:
   voted: "Stemt"
 common/views/components/poll-editor.vue:
   choice-n: "Valg {}"
+  day: "S"
 common/views/components/signin.vue:
   username: "Brukernavn"
   password: "Passord"
