@@ -30,7 +30,7 @@
 				<ui-input v-model="atTime" type="time">{{ $t('deadline-time') }}</ui-input>
 			</section>
 			<section v-if="expiration === 'after'">
-				<ui-input v-model="after" type="number" min="0">{{ $t('interval') }}</ui-input>
+				<ui-input v-model="after" type="number">{{ $t('interval') }}</ui-input>
 				<ui-select v-model="unit">
 					<template #label>{{ $t('unit') }}</template>
 					<option value="second">{{ $t('second') }}</option>
@@ -56,8 +56,8 @@ export default Vue.extend({
 			choices: ['', ''],
 			multiple: false,
 			expiration: 'infinite',
-			atDate: new Date(Date.now() + 86400),
-			atTime: new Date(Date.now() + 86400),
+			atDate: moment().add(1, 'day').toISOString().split('T')[0],
+			atTime: '00:00',
 			after: 0,
 			unit: 'second'
 		};
