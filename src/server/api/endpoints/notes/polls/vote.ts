@@ -8,9 +8,14 @@ import { publishNoteStream } from '../../../../../services/stream';
 import notify from '../../../../../services/create-notification';
 import define from '../../../define';
 import createNote from '../../../../../services/note/create';
-import User from '../../../../../models/user';
+import User, { IRemoteUser } from '../../../../../models/user';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
+import { deliver } from '../../../../../queue';
+import { renderActivity } from '../../../../../remote/activitypub/renderer';
+import renderCreate from '../../../../../remote/activitypub/renderer/create';
+import renderNote from '../../../../../remote/activitypub/renderer/note';
+import renderVote from '../../../../../remote/activitypub/renderer/vote';
 
 export const meta = {
 	desc: {
@@ -163,18 +168,11 @@ export default define(meta, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note._user.host != null) {
-		const pollOwner = await User.findOne({
+		const pollOwner: IRemoteUser = await User.findOne({
 			_id: note.userId
 		});
 
-		createNote(user, {
-			createdAt,
-			text: ps.choice.toString(),
-			reply: note,
-			visibility: 'specified',
-			visibleUsers: [pollOwner],
-			voting: true
-		});
+		deliver(user, renderActivity(renderCreate(await renderVote(user, ps.choice, note, pollOwner), note)), pollOwner.inbox);
 	}
 
 	return;
