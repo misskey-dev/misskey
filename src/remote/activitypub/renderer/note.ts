@@ -147,6 +147,10 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	const asPoll = note.poll ? {
 		type: 'Question',
+		content: toHtml(Object.assign({}, note, {
+			text: text
+		})),
+		_misskey_fallback_content: content,
 		[expiresAt && expiresAt < new Date() ? 'closed' : 'endTime']: expiresAt,
 		[multiple ? 'anyOf' : 'oneOf']: choices.map(({ text, votes }) => ({
 			type: 'Note',

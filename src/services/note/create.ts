@@ -608,6 +608,7 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 			const asNote = deepcopy(noteActivity);
 
 			asNote.object.type = 'Note';
+			asNote.object.content = asNote.object._misskey_fallback_content;
 
 			for (const inbox of queue) {
 				deliver(user as any, asNote, inbox);
