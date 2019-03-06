@@ -248,7 +248,7 @@
 		"vuex-persistedstate": "2.5.4",
 		"web-push": "3.3.3",
 		"webfinger.js": "2.7.0",
-		"webpack": "4.28.4",
+		"webpack": "4.29.6",
 		"webpack-cli": "3.2.1",
 		"websocket": "1.0.28",
 		"ws": "6.1.4",
