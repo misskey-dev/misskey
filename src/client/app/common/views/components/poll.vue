@@ -2,7 +2,7 @@
 <div class="mk-poll" :data-done="closed || isVoted">
 	<ul>
 		<li v-for="choice in poll.choices" :key="choice.id" @click="vote(choice.id)" :class="{ voted: choice.voted }" :title="!closed && !isVoted ? $t('vote-to').replace('{}', choice.text) : ''">
-			<div class="backdrop" :style="{ 'width': (showResult ? (choice.votes / total * 100) : 0) + '%' }"></div>
+			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
 				<template v-if="choice.isVoted"><fa icon="check"/></template>
 				<mfm :text="choice.text" :should-break="false" :plain-text="true" :custom-emojis="note.emojis"/>
@@ -16,10 +16,7 @@
 		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $t('vote') : $t('show-result') }}</a>
 		<span v-if="isVoted">{{ $t('voted') }}</span>
 		<span v-else-if="closed">{{ $t('closed') }}</span>
-		<span v-if="remaining > 86400"> · {{ $t('remaining-days').replace('{s}', remaining % 60).replace('{m}', ~~(remaining / 60) % 60).replace('{h}', ~~(remaining / 3600) % 24).replace('{d}', ~~(remaining / 86400)) }}</span>
-		<span v-else-if="remaining > 3600"> · {{ $t('remaining-hours').replace('{s}', remaining % 60).replace('{m}', ~~(remaining / 60) % 60).replace('{h}', ~~(remaining / 3600)) }}</span>
-		<span v-else-if="remaining > 60"> · {{ $t('remaining-minutes').replace('{s}', remaining % 60).replace('{m}', ~~(remaining / 60)) }}</span>
-		<span v-else-if="remaining > 0"> · {{ $t('remaining-seconds').replace('{s}', remaining) }}</span>
+		<span v-if="remaining > 0"> · {{ timer() }}</span>
 	</p>
 </div>
 </template>
@@ -47,6 +44,16 @@ export default Vue.extend({
 		closed(): boolean {
 			return !this.remaining;
 		},
+		timer(): string {
+			return this.$t(
+				this.remaining > 86400 ? 'remaining-days' :
+				this.remaining > 3600 ? 'remaining-hours' :
+				this.remaining > 60 ? 'remaining-minutes' : 'remaining-seconds')
+				.replace('{s}', Math.floor(this.remaining % 60))
+				.replace('{m}', Math.floor(this.remaining / 60) % 60)
+				.replace('{h}', Math.floor(this.remaining / 3600) % 24)
+				.replace('{d}', Math.floor(this.remaining / 86400));
+		},
 		isVoted(): boolean {
 			return !this.poll.multiple && this.poll.choices.some(c => c.isVoted);
 		}
@@ -56,7 +63,7 @@ export default Vue.extend({
 
 		if (this.note.poll.expiresAt) {
 			const update = () => {
-				if (this.remaining = ~~Math.max(new Date(this.note.poll.expiresAt).getTime() - Date.now(), 0) / 1000)
+				if (this.remaining = Math.floor(Math.max(new Date(this.note.poll.expiresAt).getTime() - Date.now(), 0) / 1000))
 					requestAnimationFrame(update);
 				else
 					this.showResult = true;
