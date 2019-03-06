@@ -114,7 +114,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create vote
-	await Vote.insert({
+	const vote = await Vote.insert({
 		createdAt,
 		noteId: note._id,
 		userId: user._id,
@@ -172,7 +172,7 @@ export default define(meta, async (ps, user) => {
 			_id: note.userId
 		});
 
-		deliver(user, renderActivity(renderCreate(await renderVote(user, ps.choice, note, pollOwner), note)), pollOwner.inbox);
+		deliver(user, renderActivity(renderCreate(await renderVote(user, vote, note, pollOwner), note)), pollOwner.inbox);
 	}
 
 	return;
