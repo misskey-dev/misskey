@@ -316,16 +316,14 @@ export const pack = async (
 		if (meId && _note.poll) {
 			_note.poll = (async poll => {
 				if (poll.multiple) {
-					const votes = await PollVote
-						.find({
-							userId: meId,
-							noteId: id
-						});
+					const votes = await PollVote.find({
+						userId: meId,
+						noteId: id
+					});
 
-					if (votes.length) {
-						for (const myChoice of (poll.choices as IChoice[])
-							.filter(x => votes.some(y => x.id == y.choice)) as any[])
-							myChoice.isVoted = true;
+					const myChoices = (poll.choices as IChoice[]).filter(x => votes.some(y => x.id == y.choice));
+					for (const myChoice of myChoices) {
+						(myChoice as any).isVoted = true;
 					}
 
 					return poll;
