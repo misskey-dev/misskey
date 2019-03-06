@@ -150,6 +150,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 			}
 		}
 
+		// 後方互換性のため
 		if (text) {
 			const m = text.match(/(\d+)$/);
 
