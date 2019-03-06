@@ -326,7 +326,7 @@ export const pack = async (
 
 						if (votes.length) {
 							for (const myChoice of (poll.choices as IChoice[])
-								.filter(x => ~votes.findIndex(y => x.id == y.choice)) as any[])
+								.filter(x => votes.some(y => x.id == y.choice)) as any[])
 								myChoice.isVoted = true;
 						}
 
