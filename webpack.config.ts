@@ -123,16 +123,19 @@ module.exports = {
 			_COPYRIGHT_: JSON.stringify(constants.copyright),
 			_VERSION_: JSON.stringify(meta.version),
 			_CODENAME_: JSON.stringify(codename),
-			_LANGS_: JSON.stringify(Object.keys(locales).map(l => [l, locales[l].meta.lang])),
+			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]: [string, any]) => [k, v && v.meta && v.meta.lang])),
 			_ENV_: JSON.stringify(process.env.NODE_ENV)
 		}),
 		new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
 		}),
 		new WebpackOnBuildPlugin((stats: any) => {
-			fs.writeFileSync('./built/client/meta.json', JSON.stringify({
-				version: meta.version
-			}), 'utf-8');
+			fs.writeFileSync('./built/client/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
+
+			fs.mkdirSync('./built/client/assets/locales', { recursive: true })
+
+			for (const [lang, locale] of Object.entries(locales))
+				fs.writeFileSync(`./built/client/assets/locales/${lang}.json`, JSON.stringify(locale), 'utf-8');
 		}),
 		new VueLoaderPlugin(),
 		new webpack.optimize.ModuleConcatenationPlugin()
