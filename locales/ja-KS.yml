@@ -344,7 +344,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "「{}」に投票や！"
   vote-count: "{}票"
-  total-users: "{}人が投票"
+  total-votes: "{}人が投票"
   vote: "投票するで"
   show-result: "結果を見よか"
   voted: "投票済みや"

@@ -527,7 +527,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "「{}」に投票する"
   vote-count: "{}票"
-  total-users: "計{}票"
+  total-votes: "計{}票"
   vote: "投票する"
   show-result: "結果を見る"
   voted: "投票済み"

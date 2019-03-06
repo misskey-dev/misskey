@@ -303,7 +303,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "'{}' para votar"
   vote-count: "{} votos"
-  total-users: "{} usuario(s) que ha(n) votado"
+  total-votes: "{} usuario(s) que ha(n) votado"
   vote: "Vota"
   show-result: "Mostrar resultados"
   voted: "Votado"

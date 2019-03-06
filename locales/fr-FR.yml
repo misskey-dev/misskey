@@ -383,7 +383,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
-  total-users: "{} utilisateur·rice·s ont voté"
+  total-votes: "{} utilisateur·rice·s ont voté"
   vote: "Vote"
   show-result: "Montrer les résultats"
   voted: "Voté"

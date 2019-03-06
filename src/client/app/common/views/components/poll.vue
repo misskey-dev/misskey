@@ -11,7 +11,7 @@
 		</li>
 	</ul>
 	<p>
-		<span>{{ $t('total-users').replace('{}', total) }}</span>
+		<span>{{ $t('total-votes').replace('{}', total) }}</span>
 		<span> · </span>
 		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $t('vote') : $t('show-result') }}</a>
 		<span v-if="isVoted">{{ $t('voted') }}</span>
