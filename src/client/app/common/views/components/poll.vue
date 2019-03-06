@@ -16,7 +16,7 @@
 		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $t('vote') : $t('show-result') }}</a>
 		<span v-if="isVoted">{{ $t('voted') }}</span>
 		<span v-else-if="closed">{{ $t('closed') }}</span>
-		<span v-if="remaining > 0"> · {{ timer() }}</span>
+		<span v-if="remaining > 0"> · {{ timer }}</span>
 	</p>
 </div>
 </template>
