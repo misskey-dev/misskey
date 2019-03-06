@@ -141,12 +141,12 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		};
 
 		if (note.name) {
-			const reverted =
+			const reversed =
 				~reply.poll.choices.findIndex(x => x.text === note.name) ||
 				~reply.poll.choices.findIndex(x => x.text.toLocaleLowerCase() === note.name.toLocaleLowerCase());
 
-			if (reverted) {
-				return await tryCreateVote(note.name, ~reverted);
+			if (reversed) {
+				return await tryCreateVote(note.name, ~reversed);
 			}
 		}
 
