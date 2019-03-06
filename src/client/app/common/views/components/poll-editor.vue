@@ -89,8 +89,7 @@ export default Vue.extend({
 		get() {
 			const at = () => {
 				const date = new Date(this.atDate);
-				const time = new Date(this.atTime);
-				return new Date(`${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}T${time.getUTCHours()}:${time.getUTCMinutes()}:${time.getUTCSeconds()}Z`);
+				return new Date(`${date.getUTCFullYear()}-${('00' + (date.getUTCMonth() + 1)).slice(-2)}-${('00' + date.getUTCDate()).slice(-2)}T${this.atTime}:00Z`).getTime();
 			};
 
 			const after = () => {
@@ -110,7 +109,7 @@ export default Vue.extend({
 				...(
 					this.expiration === 'at' ? { expiresAt: at() } :
 					this.expiration === 'after' ? { expiredAfter: after() } : {})
-			}
+			};
 		},
 
 		set(data) {
