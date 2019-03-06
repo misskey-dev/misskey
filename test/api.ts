@@ -450,6 +450,97 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 
+		it('投票できる', async(async () => {
+			const me = await signup();
+
+			const { body } = await request('/notes/create', {
+				text: 'test',
+				poll: {
+					choices: ['sakura', 'izumi', 'ako']
+				}
+			}, me);
+
+			const res = await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
+				choice: 1
+			}, me);
+
+			expect(res).have.status(204);
+		}));
+
+		it('複数投票できない', async(async () => {
+			const me = await signup();
+
+			const { body } = await request('/notes/create', {
+				text: 'test',
+				poll: {
+					choices: ['sakura', 'izumi', 'ako']
+				}
+			}, me);
+
+			await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
+				choice: 0
+			}, me);
+
+			const res = await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
+				choice: 2
+			}, me);
+
+			expect(res).have.status(400);
+		}));
+
+		it('許可されている場合は複数投票できる', async(async () => {
+			const me = await signup();
+
+			const { body } = await request('/notes/create', {
+				text: 'test',
+				poll: {
+					choices: ['sakura', 'izumi', 'ako'],
+					multiple: true
+				}
+			}, me);
+
+			await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
+				choice: 0
+			}, me);
+
+			await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
+				choice: 1
+			}, me);
+
+			const res = await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
+				choice: 2
+			}, me);
+
+			expect(res).have.status(204);
+		}));
+
+		it('締め切られている場合は投票できない', async(async () => {
+			const me = await signup();
+
+			const { body } = await request('/notes/create', {
+				text: 'test',
+				poll: {
+					choices: ['sakura', 'izumi', 'ako'],
+					expiredAfter: 1
+				}
+			}, me);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const res = await request('/notes/polls/vote', {
+				noteId: body.createdNote.id,
+				choice: 1
+			}, me);
+
+			expect(res).have.status(400);
+		}));
+
 		it('同じユーザーに複数メンションしても内部的にまとめられる', async(async () => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });

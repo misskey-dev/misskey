@@ -489,7 +489,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "为\"{}\"投票"
   vote-count: "{}票"
-  total-users: "{} 人投票"
+  total-votes: "{} 人投票"
   vote: "投票"
   show-result: "显示结果"
   voted: "已投票"

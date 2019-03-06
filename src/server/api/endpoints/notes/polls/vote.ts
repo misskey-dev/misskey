@@ -7,10 +7,13 @@ import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../services/stream';
 import notify from '../../../../../services/create-notification';
 import define from '../../../define';
-import createNote from '../../../../../services/note/create';
-import User from '../../../../../models/user';
+import User, { IRemoteUser } from '../../../../../models/user';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
+import { deliver } from '../../../../../queue';
+import { renderActivity } from '../../../../../remote/activitypub/renderer';
+import renderCreate from '../../../../../remote/activitypub/renderer/create';
+import renderVote from '../../../../../remote/activitypub/renderer/vote';
 
 export const meta = {
 	desc: {
@@ -63,10 +66,18 @@ export const meta = {
 			code: 'ALREADY_VOTED',
 			id: '0963fc77-efac-419b-9424-b391608dc6d8'
 		},
+
+		alreadyExpired: {
+			message: 'The poll is already expired.',
+			code: 'ALREADY_EXPIRED',
+			id: '1022a357-b085-4054-9083-8f8de358337e'
+		},
 	}
 };
 
 export default define(meta, async (ps, user) => {
+	const createdAt = new Date();
+
 	// Get votee
 	const note = await getNote(ps.noteId).catch(e => {
 		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
@@ -77,23 +88,32 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noPoll);
 	}
 
+	if (note.poll.expiresAt && note.poll.expiresAt < createdAt) {
+		throw new ApiError(meta.errors.alreadyExpired);
+	}
+
 	if (!note.poll.choices.some(x => x.id == ps.choice)) {
 		throw new ApiError(meta.errors.invalidChoice);
 	}
 
 	// if already voted
-	const exist = await Vote.findOne({
+	const exist = await Vote.find({
 		noteId: note._id,
 		userId: user._id
 	});
 
-	if (exist !== null) {
-		throw new ApiError(meta.errors.alreadyVoted);
+	if (exist.length) {
+		if (note.poll.multiple) {
+			if (exist.some(x => x.choice == ps.choice))
+				throw new ApiError(meta.errors.alreadyVoted);
+		} else {
+			throw new ApiError(meta.errors.alreadyVoted);
+		}
 	}
 
 	// Create vote
-	await Vote.insert({
-		createdAt: new Date(),
+	const vote = await Vote.insert({
+		createdAt,
 		noteId: note._id,
 		userId: user._id,
 		choice: ps.choice
@@ -146,17 +166,11 @@ export default define(meta, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note._user.host != null) {
-		const pollOwner = await User.findOne({
+		const pollOwner: IRemoteUser = await User.findOne({
 			_id: note.userId
 		});
 
-		createNote(user, {
-			createdAt: new Date(),
-			text: ps.choice.toString(),
-			reply: note,
-			visibility: 'specified',
-			visibleUsers: [ pollOwner ],
-		});
+		deliver(user, renderActivity(await renderVote(user, vote, note, pollOwner)), pollOwner.inbox);
 	}
 
 	return;

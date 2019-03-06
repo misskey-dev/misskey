@@ -97,7 +97,7 @@ async function fetchAny(uri: string) {
 		};
 	}
 
-	if (object.type === 'Note') {
+	if (['Note', 'Question'].includes(object.type)) {
 		const note = await createNote(object.id);
 		return {
 			type: 'Note',

@@ -346,7 +346,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Zagłosuj na '{}'"
   vote-count: "{} głosów"
-  total-users: "{} głosujących"
+  total-votes: "{} głosujących"
   vote: "Zagłosuj"
   show-result: "Pokaż wyniki"
   voted: "Zagłosowano"

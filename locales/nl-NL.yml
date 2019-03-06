@@ -131,7 +131,7 @@ common/views/components/note-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Stemmen op '{}'"
   vote-count: "{} stemmen"
-  total-users: "{} gebruikers hebben gestemd"
+  total-votes: "{} gebruikers hebben gestemd"
   vote: "Stemmen"
   show-result: "Resultaten tonen"
   voted: "Gestemd"

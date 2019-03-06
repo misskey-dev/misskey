@@ -11,7 +11,11 @@ export interface IObject {
 	attributedTo: string;
 	attachment?: any[];
 	inReplyTo?: any;
+	replies?: ICollection;
 	content: string;
+	name?: string;
+	startTime?: Date;
+	endTime?: Date;
 	icon?: any;
 	image?: any;
 	url?: string;

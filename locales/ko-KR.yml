@@ -489,7 +489,7 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "\"{}\"에 투표하기"
   vote-count: "{}표"
-  total-users: "{}명이 투표"
+  total-votes: "{}명이 투표"
   vote: "투표하기"
   show-result: "결과 보기"
   voted: "투표함"

@@ -10,12 +10,15 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
 
 	// if already voted
-	const exist = await Vote.findOne({
+	const exist = await Vote.find({
 		noteId: note._id,
 		userId: user._id
 	});
 
-	if (exist !== null) {
+	if (note.poll.multiple) {
+		if (exist.some(x => x.choice === choice))
+			return rej('already voted');
+	} else if (exist.length) {
 		return rej('already voted');
 	}
 

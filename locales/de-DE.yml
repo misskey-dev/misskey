@@ -270,7 +270,7 @@ common/views/components/note-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Stimme für '{}'"
   vote-count: "{} Stimmen"
-  total-users: "{} Nutzer haben abgestimmt"
+  total-votes: "{} Nutzer haben abgestimmt"
   vote: "Abstimmen"
   show-result: "Zeige Ergebnis"
   voted: "Abgestimmt"
