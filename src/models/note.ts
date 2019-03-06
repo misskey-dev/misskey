@@ -322,11 +322,11 @@ export const pack = async (
 							noteId: id
 						});
 
-						if (votes.length) {
-							for (const myChoice of (poll.choices as IChoice[])
-								.filter(x => votes.some(y => x.id == y.choice)) as any[])
-								myChoice.isVoted = true;
-						}
+					if (votes.length) {
+						for (const myChoice of (poll.choices as IChoice[])
+							.filter(x => votes.some(y => x.id == y.choice)) as any[])
+							myChoice.isVoted = true;
+					}
 
 					return poll;
 				} else {
