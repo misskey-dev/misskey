@@ -489,7 +489,6 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
-  total-users: "{} users voted"
   vote: "Vote"
   show-result: "Show results"
   voted: "Voted"
@@ -499,6 +498,7 @@ common/views/components/poll-editor.vue:
   remove: "Delete the choice"
   add: "+ Add a choice"
   destroy: "Discard the poll"
+  day: "S"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Send a reaction"
 common/views/components/emoji-picker.vue:
