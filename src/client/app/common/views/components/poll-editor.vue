@@ -46,6 +46,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as moment from 'moment';
 import i18n from '../../../i18n';
 import { erase } from '../../../../../prelude/array';
 export default Vue.extend({
@@ -88,8 +89,9 @@ export default Vue.extend({
 
 		get() {
 			const at = () => {
-				const date = new Date(this.atDate);
-				return new Date(`${date.getUTCFullYear()}-${('00' + (date.getUTCMonth() + 1)).slice(-2)}-${('00' + date.getUTCDate()).slice(-2)}T${this.atTime}:00Z`).getTime();
+				const [date] = moment(this.atDate).toISOString().split('T');
+				const [hour, minute] = this.atTime.split(':');
+				return moment(`${date}T${hour}:${minute}Z`).valueOf();
 			};
 
 			const after = () => {
