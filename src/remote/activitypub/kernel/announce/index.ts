@@ -27,6 +27,10 @@ export default async (actor: IRemoteUser, activity: IAnnounce): Promise<void> =>
 		announceNote(resolver, actor, activity, object as INote);
 		break;
 
+	case 'Question':
+		announceNote(resolver, actor, activity, object as INote);
+		break;
+
 	default:
 		logger.warn(`Unknown announce type: ${object.type}`);
 		break;

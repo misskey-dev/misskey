@@ -105,6 +105,7 @@ export default Vue.extend({
 			files: [],
 			poll: false,
 			pollChoices: [],
+			pollMultiple: false,
 			geo: null,
 			visibility: 'public',
 			visibleUsers: [],
@@ -273,7 +274,9 @@ export default Vue.extend({
 		},
 
 		onPollUpdate() {
-			this.pollChoices = this.$refs.poll.get().choices;
+			const got = this.$refs.poll.get();
+			this.pollChoices = got.choices;
+			this.pollMultiple = got.multiple;
 		},
 
 		upload(file) {

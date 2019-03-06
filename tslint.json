@@ -24,12 +24,14 @@
 		"triple-equals": [false],
 		"no-shadowed-variable": false,
 		"no-string-literal": false,
+		"no-conditional-assignment": false,
 		"variable-name": [false],
 		"comment-format": [false],
 		"interface-over-type-literal": false,
 		"max-line-length": [false],
 		"max-classes-per-file": false,
 		"member-ordering": [false],
+		"radix": false,
 		"ban-types": [
 			true,
 			"Object"

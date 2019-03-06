@@ -527,10 +527,15 @@ common/views/components/user-menu.vue:
 common/views/components/poll.vue:
   vote-to: "「{}」に投票する"
   vote-count: "{}票"
-  total-users: "{}人が投票"
+  total-votes: "計{}票"
   vote: "投票する"
   show-result: "結果を見る"
   voted: "投票済み"
+  closed: "終了済み"
+  remaining-days: "終了まであと{d}日{h}時間"
+  remaining-hours: "終了まであと{h}時間{m}分"
+  remaining-minutes: "終了まであと{m}分{s}秒"
+  remaining-seconds: "終了まであと{s}秒"
 
 common/views/components/poll-editor.vue:
   no-only-one-choice: "アンケートには、選択肢が最低2つ必要です"
@@ -538,6 +543,20 @@ common/views/components/poll-editor.vue:
   remove: "この選択肢を削除"
   add: "+選択肢を追加"
   destroy: "アンケートを破棄"
+  multiple: "複数回答可"
+  expiration: "期限"
+  infinite: "無期限"
+  at: "日時指定"
+  after: "経過指定"
+  no-more: "これ以上追加できません"
+  deadline-date: "期日"
+  deadline-time: "時間"
+  interval: "期間"
+  unit: "単位"
+  second: "秒"
+  minute: "分"
+  hour: "時間"
+  day: "日"
 
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"

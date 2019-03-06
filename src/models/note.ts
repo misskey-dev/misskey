@@ -99,7 +99,9 @@ export type INote = {
 };
 
 export type IPoll = {
-	choices: IChoice[]
+	choices: IChoice[];
+	multiple?: boolean;
+	expiresAt?: Date;
 };
 
 export type IChoice = {
@@ -313,15 +315,31 @@ export const pack = async (
 		// Poll
 		if (meId && _note.poll) {
 			_note.poll = (async poll => {
+				if (poll.multiple) {
+					const votes = await PollVote.find({
+						userId: meId,
+						noteId: id
+					});
+
+					const myChoices = (poll.choices as IChoice[]).filter(x => votes.some(y => x.id == y.choice));
+					for (const myChoice of myChoices) {
+						(myChoice as any).isVoted = true;
+					}
+
+					return poll;
+				} else {
+					poll.multiple = false;
+				}
+
 				const vote = await PollVote
 					.findOne({
 						userId: meId,
 						noteId: id
 					});
 
-				if (vote != null) {
-					const myChoice = poll.choices
-						.filter((c: any) => c.id == vote.choice)[0];
+				if (vote) {
+					const myChoice = (poll.choices as IChoice[])
+						.filter(x => x.id == vote.choice)[0] as any;
 
 					myChoice.isVoted = true;
 				}

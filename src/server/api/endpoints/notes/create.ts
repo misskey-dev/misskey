@@ -165,7 +165,10 @@ export const meta = {
 				choices: $.arr($.str)
 					.unique()
 					.range(2, 10)
-					.each(c => c.length > 0 && c.length < 50)
+					.each(c => c.length > 0 && c.length < 50),
+				multiple: $.optional.bool,
+				expiresAt: $.optional.nullable.num.int(),
+				expiredAfter: $.optional.nullable.num.int().min(1)
 			}).strict(),
 			desc: {
 				'ja-JP': 'アンケート'
@@ -214,6 +217,12 @@ export const meta = {
 			code: 'CONTENT_REQUIRED',
 			id: '6f57e42b-c348-439b-bc45-993995cc515a'
 		},
+
+		cannotCreateAlreadyExpiredPoll: {
+			message: 'Poll is already expired.',
+			code: 'CANNOT_CREATE_ALREADY_EXPIRED_POLL',
+			id: '04da457d-b083-4055-9082-955525eda5a5'
+		}
 	}
 };
 
@@ -275,6 +284,13 @@ export default define(meta, async (ps, user, app) => {
 			text: choice.trim(),
 			votes: 0
 		}));
+
+		if (typeof ps.poll.expiresAt === 'number') {
+			if (ps.poll.expiresAt < Date.now())
+				throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
+		} else if (typeof ps.poll.expiredAfter === 'number') {
+			ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
+		}
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRenoteも無いかつ投票も無かったらエラー
@@ -291,7 +307,11 @@ export default define(meta, async (ps, user, app) => {
 	const note = await create(user, {
 		createdAt: new Date(),
 		files: files,
-		poll: ps.poll,
+		poll: ps.poll ? {
+			choices: ps.poll.choices,
+			multiple: ps.poll.multiple || false,
+			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null
+		} : undefined,
 		text: ps.text,
 		reply,
 		renote,

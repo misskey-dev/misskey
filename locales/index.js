@@ -5,22 +5,45 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 
-const langs = ['de-DE', 'en-US', 'fr-FR', 'ja-JP', 'ja-KS', 'pl-PL', 'es-ES', 'nl-NL', 'zh-CN', 'ko-KR'];
+const merge = (...args) => args.reduce((a, c) => ({
+	...a,
+	...c,
+	...Object.entries(a)
+		.filter(([k]) => c && typeof c[k] === 'object')
+		.reduce((a, [k, v]) => (a[k] = merge(v, c[k]), a), {})
+}), {});
 
-const loadLocale = lang => yaml.safeLoad(fs.readFileSync(`${__dirname}/${lang}.yml`, 'utf-8'));
-const locales = langs
-	.map(lang => [lang, loadLocale(lang)])
-	.map(([lang, locale], _, locales) => {
-		switch (lang) {
-			case 'ja-JP': return [lang, locale];
-			case 'en-US': return [lang, { ...locales['ja-JP'], ...locale }];
-			default: return [lang, {
-				...(lang.startsWith('ja-') ? {} : locales['en-US']),
-				...locales['ja-JP'],
-				...locale
-		}];
+const languages = [
+	'de-DE',
+	'en-US',
+	'es-ES',
+	'fr-FR',
+	'ja-JP',
+	'ja-KS',
+	'ko-KR',
+	'nl-NL',
+	'pl-PL',
+	'zh-CN',
+];
+
+const primaries = {
+	'ja': 'JP',
+};
+
+const locales = languages.reduce((a, c) => (a[c] = yaml.safeLoad(fs.readFileSync(`${__dirname}/${c}.yml`, 'utf-8')) || {}, a), {});
+
+module.exports = Object.entries(locales)
+	.reduce((a, [k ,v]) => (a[k] = (() => {
+		const [lang] = k.split('-');
+		switch (k) {
+			case 'ja-JP': return v;
+			case 'ja-KS':
+			case 'en-US': return merge(locales['ja-JP'], v);
+			default: return merge(
+				locales['ja-JP'],
+				locales['en-US'],
+				locales[`${lang}-${primaries[lang]}`] || {},
+				v
+			);
 		}
-	})
-	.map(([lang, locale]) => ({ [lang]: loadLocale(lang) }));
-
-module.exports = locales.reduce((a, b) => ({ ...a, ...b }));
+	})(), a), {});

@@ -15,9 +15,10 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		: Promise.resolve([]);
 
 	let inReplyTo;
+	let inReplyToNote: INote;
 
 	if (note.replyId) {
-		const inReplyToNote = await Note.findOne({
+		inReplyToNote = await Note.findOne({
 			_id: note.replyId,
 		});
 
@@ -134,6 +135,29 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		...apemojis,
 	];
 
+	const {
+		choices = [],
+		expiresAt = null,
+		multiple = false
+	} = note.poll || {};
+
+	const asPoll = note.poll ? {
+		type: 'Question',
+		content: toHtml(Object.assign({}, note, {
+			text: text
+		})),
+		_misskey_fallback_content: content,
+		[expiresAt && expiresAt < new Date() ? 'closed' : 'endTime']: expiresAt,
+		[multiple ? 'anyOf' : 'oneOf']: choices.map(({ text, votes }) => ({
+			type: 'Note',
+			name: text,
+			replies: {
+				type: 'Collection',
+				totalItems: votes
+			}
+		}))
+	} : {};
+
 	return {
 		id: `${config.url}/notes/${note._id}`,
 		type: 'Note',
@@ -149,7 +173,8 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		inReplyTo,
 		attachment: files.map(renderDocument),
 		sensitive: files.some(file => file.metadata.isSensitive),
-		tag
+		tag,
+		...asPoll
 	};
 }
 

@@ -52,9 +52,9 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 export async function createNote(value: any, resolver?: Resolver, silent = false): Promise<INote> {
 	if (resolver == null) resolver = new Resolver();
 
-	const object = await resolver.resolve(value) as any;
+	const object: any = await resolver.resolve(value);
 
-	if (object == null || object.type !== 'Note') {
+	if (!object || !['Note', 'Question'].includes(object.type)) {
 		logger.error(`invalid note: ${value}`, {
 			resolver: {
 				history: resolver.getHistory()
@@ -67,6 +67,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const note: INoteActivityStreamsObject = object;
 
+	logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
+
 	logger.info(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
@@ -78,6 +80,9 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 
 	//#region Visibility
+	note.to = note.to == null ? [] : typeof note.to == 'string' ? [note.to] : note.to;
+	note.cc = note.cc == null ? [] : typeof note.cc == 'string' ? [note.cc] : note.cc;
+
 	let visibility = 'public';
 	let visibleUsers: IUser[] = [];
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
@@ -89,7 +94,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 			visibility = 'specified';
 			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, null, resolver)));
 		}
-	}
+}
 	//#endergion
 
 	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
@@ -101,6 +106,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	// TODO: attachmentは必ずしも配列ではない
 	// Noteがsensitiveなら添付もsensitiveにする
 	const limit = promiseLimit(2);
+
+	note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
 	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
 		? await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<IDriveFile>))
@@ -119,15 +126,31 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content ? note._misskey_content : fromHtml(note.content);
+	const text = note._misskey_content || fromHtml(note.content);
 
 	// vote
-	if (reply && reply.poll && text != null) {
-		const m = text.match(/([0-9])$/);
-		if (m) {
-			logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${m[0]}`);
-			await vote(actor, reply, Number(m[1]));
+	if (reply && reply.poll) {
+		const tryCreateVote = async (name: string, index: number): Promise<null> => {
+			if (reply.poll.expiresAt && Date.now() > new Date(reply.poll.expiresAt).getTime()) {
+				logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+			} else if (index >= 0) {
+				logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
+				await vote(actor, reply, index);
+			}
 			return null;
+		};
+
+		if (note.name) {
+			return await tryCreateVote(note.name, reply.poll.choices.findIndex(x => x.text === note.name));
+		}
+
+		// 後方互換性のため
+		if (text) {
+			const m = text.match(/(\d+)$/);
+
+			if (m) {
+				return await tryCreateVote(m[0], Number(m[1]));
+			}
 		}
 	}
 
@@ -139,7 +162,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const apEmojis = emojis.map(emoji => emoji.name);
 
 	const questionUri = note._misskey_question;
-	const poll = questionUri ? await extractPollFromQuestion(questionUri).catch(() => undefined) : undefined;
+	const poll = await extractPollFromQuestion(note._misskey_question || note).catch(() => undefined);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -148,11 +171,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	return await post(actor, {
 		createdAt: new Date(note.published),
-		files: files,
+		files,
 		reply,
 		renote: quote,
-		cw: cw,
-		text: text,
+		cw,
+		text,
 		viaMobile: false,
 		localOnly: false,
 		geo: undefined,
