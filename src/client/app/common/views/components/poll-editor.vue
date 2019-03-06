@@ -17,9 +17,7 @@
 		<fa icon="times"/>
 	</button>
 	<section>
-		<div>
-			<ui-switch v-model="multiple">{{ $t('multiple') }}</ui-switch>
-		</div>
+		<ui-switch v-model="multiple">{{ $t('multiple') }}</ui-switch>
 		<div>
 			<ui-select v-model="expiration">
 				<template #label>{{ $t('expiration') }}</template>
@@ -209,16 +207,14 @@ export default Vue.extend({
 			color var(--primaryDarken30)
 
 	> section
-		align-items center
-		display flex
-		margin -16px 0
+		margin 16px 0 -16px 0
 
 		> div
 			margin 0 8px
 
 			&:last-child
 				flex 1 0 auto
-				
+
 				> section
 					align-items center
 					display flex
