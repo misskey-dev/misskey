@@ -141,12 +141,16 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		};
 
 		if (note.name) {
-			const reversed =
-				-reply.poll.choices.findIndex(x => x.text === note.name) - 1 ||
-				-reply.poll.choices.findIndex(x => x.text.toLocaleLowerCase() === note.name.toLocaleLowerCase()) - 1;
+			const formal = reply.poll.choices.findIndex(x => x.text === note.name);
 
-			if (reversed) {
-				return await tryCreateVote(note.name, -reversed - 1);
+			if (formal !== -1) {
+				return await tryCreateVote(note.name, formal);
+			} else {
+				const rough = reply.poll.choices.findIndex(x => x.text.toLocaleLowerCase() === note.name.toLocaleLowerCase());
+
+				if (rough !== -1) {
+					return await tryCreateVote(note.name, rough);
+				}
 			}
 		}
 
