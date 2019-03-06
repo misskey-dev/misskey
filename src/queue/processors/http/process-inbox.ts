@@ -82,7 +82,7 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 		}) as IRemoteUser;
 	}
 
-	// Update activityの場合は、ここで署名検証/更新処理まで実施して終了
+	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
 	if (activity.type === 'Update') {
 		if (activity.object && activity.object.type === 'Person') {
 			if (user == null) {
@@ -92,9 +92,9 @@ export default async (job: bq.Job, done: any): Promise<void> => {
 			} else {
 				updatePerson(activity.actor, null, activity.object);
 			}
+			done();
+			return;
 		}
-		done();
-		return;
 	}
 
 	// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する

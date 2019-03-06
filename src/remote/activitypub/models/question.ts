@@ -32,8 +32,8 @@ export async function extractPollFromQuestion(source: string | IQuestion): Promi
  * @param uri URI of AP Question object
  * @returns true if updated
  */
-export async function updateQuestion(uri: string) {
-	if (typeof uri !== 'string') throw 'uri is not string';
+export async function updateQuestion(value: any) {
+	const uri = value == 'string' ? value : value.id;
 
 	// URIがこのサーバーを指しているならスキップ
 	if (uri.startsWith(config.url + '/')) throw 'uri points local';
@@ -44,9 +44,9 @@ export async function updateQuestion(uri: string) {
 	if (note == null) throw 'Question is not registed';
 	//#endregion
 
-	// fetch new Question object
+	// resolve new Question object
 	const resolver = new Resolver();
-	const question = await resolver.resolve(uri) as IQuestion;
+	const question = await resolver.resolve(value) as IQuestion;
 	apLogger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
 
 	if (question.type !== 'Question') throw 'object is not a Question';

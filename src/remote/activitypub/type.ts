@@ -97,6 +97,10 @@ export interface IDelete extends IActivity {
 	type: 'Delete';
 }
 
+export interface IUpdate extends IActivity {
+	type: 'Update';
+}
+
 export interface IUndo extends IActivity {
 	type: 'Undo';
 }
@@ -139,6 +143,7 @@ export type Object =
 	IOrderedCollection |
 	ICreate |
 	IDelete |
+	IUpdate |
 	IUndo |
 	IFollow |
 	IAccept |
