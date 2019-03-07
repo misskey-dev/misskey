@@ -916,7 +916,11 @@ admin/views/users.vue:
   verify-confirm: "Chcete aby toto byl ověřený účet?"
   verified: "Účet se nyní ověřuje"
   unverify: "Zrušit ověření účtu"
+  unverify-confirm: "Opravdu chcete zrušit designaci \"ověřený účet\"?"
+  unverified: "Ruší se potvrzení účtu"
+  update-remote-user: "Aktualizovat informace o vzdáleném účtu"
   users:
+    title: "Uživatel"
     state:
       all: "Všechny"
       moderator: "Moderátor"
@@ -975,6 +979,8 @@ admin/views/federation.vue:
   states:
     all: "Všechny"
     blocked: "Blokován"
+    not-responding: "Bez odpovědi"
+    marked-as-closed: "Označeno jako uzavřené"
   charts: "Graf"
   chart-srcs:
     requests: "Požadavek"
@@ -983,20 +989,46 @@ admin/views/federation.vue:
   chart-spans:
     hour: "za hodinu"
     day: "za den"
+desktop/views/pages/welcome.vue:
+  about: "O Misskey"
+  timeline: "Časová osa"
+  announcements: "Oznámení"
+  photos: "Nedávné obrázky"
+  powered-by-misskey: "Běží na <b>Misskey</b>."
+  info: "Informace"
 desktop/views/pages/drive.vue:
   title: "Misskey Disk"
+desktop/views/pages/note.vue:
+  prev: "Předchozí příspěvěk"
+  next: "Následující příspěvek"
 desktop/views/pages/selectdrive.vue:
+  title: "Vyberte soubor(y)"
+  ok: "OK"
   cancel: "Zrušit"
+  upload: "Nahrajte soubory z vašeho zařízení"
+desktop/views/pages/search.vue:
+  not-available: "Vyhledávání je vypnuté pro tuto instanci."
+  not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
+desktop/views/pages/share.vue:
+  share-with: "Sdílet na {name}"
+desktop/views/pages/tag.vue:
+  no-posts-found: "Nebyly nalezeny žádné příspěvky s \"{q}\"."
 desktop/views/pages/user-list.users.vue:
+  users: "Uživatel"
+  add-user: "Přidat uživatele"
   username: "Přezdívka"
 desktop/views/pages/user/user.followers-you-know.vue:
   loading: "Načítám..."
 desktop/views/pages/user/user.friends.vue:
+  title: "Častá zmínění"
   loading: "Načítám..."
+  no-users: "Žádná častá zmínění"
 desktop/views/pages/user/user.photos.vue:
+  title: "Fotky"
   loading: "Načítám..."
   no-photos: "Žádné obrázky"
 desktop/views/pages/user/user.header.vue:
+  posts: "Poznámky"
   month: "Po"
   day: "Ne"
 desktop/views/widgets/messaging.vue:
@@ -1009,6 +1041,7 @@ desktop/views/widgets/users.vue:
   title: "Doporučení uživatelé"
 mobile/views/components/drive.vue:
   used: "využito"
+  file-count: "Soubor(ů)"
   folder-name: "Název složky"
   url-prompt: "URL adresa souboru, který chcete nahrát"
 mobile/views/components/drive.file-detail.vue:
@@ -1024,6 +1057,7 @@ mobile/views/components/note-detail.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
 mobile/views/components/post-form.vue:
+  add-visible-user: "Přidat uživatele"
   reply: "Odpovědět"
   renote: "Renotovat"
   reply-placeholder: "Odpovědět na tento příspěvěk"
@@ -1048,18 +1082,28 @@ mobile/views/pages/home.vue:
   global: "Globální"
   mentions: "Zmínění"
   messages: "Zprávy"
+mobile/views/pages/tag.vue:
+  no-posts-found: "Nebyly nalezeny žádné příspěvky s \"{q}\"."
 mobile/views/pages/widgets.vue:
   add-widget: "Přidat"
   customization-tips: "Tipy pro přizpůsobení"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivita"
+mobile/views/pages/share.vue:
+  share-with: "Sdílet na {name}"
 mobile/views/pages/received-follow-requests.vue:
   accept: "Přijmout"
   reject: "Odmítnout"
+mobile/views/pages/note.vue:
+  prev: "Předchozí příspěvěk"
+  next: "Následující příspěvek"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
+mobile/views/pages/search.vue:
+  not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
 mobile/views/pages/user/home.vue:
   activity: "Aktivita"
+  frequently-replied-users: "Častá zmínění"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Žádné obrázky"
 deck:
