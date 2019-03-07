@@ -1,4 +1,5 @@
-import { INote } from '../../../models/note';
+import * as mongo from 'mongodb';
+import Note, { INote } from '../../../models/note';
 import { updateQuestion } from '../../../remote/activitypub/models/question';
 import ms = require('ms');
 import Logger from '../../logger';
@@ -24,7 +25,11 @@ export async function triggerUpdate(note: INote) {
 	}
 }
 
-export async function deliverQuestionUpdate(note: INote) {
+export async function deliverQuestionUpdate(noteId: mongo.ObjectID) {
+	const note = await Note.findOne({
+		_id: noteId,
+	});
+
 	const user = await User.findOne({
 		_id: note.userId
 	});

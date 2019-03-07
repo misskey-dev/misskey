@@ -174,11 +174,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// リモートフォロワーにUpdate配信
-	const newNote = await Note.findOne({
-		_id: note._id
-	});
-
-	deliverQuestionUpdate(newNote);
+	deliverQuestionUpdate(note._id);
 
 	return;
 });

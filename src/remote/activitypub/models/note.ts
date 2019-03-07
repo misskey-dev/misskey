@@ -138,11 +138,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 				logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				await vote(actor, reply, index);
 
-				const newNote = await Note.findOne({
-					_id: reply._id
-				});
-
-				deliverQuestionUpdate(newNote);
+				// リモートフォロワーにUpdate配信
+				deliverQuestionUpdate(reply._id);
 			}
 			return null;
 		};
