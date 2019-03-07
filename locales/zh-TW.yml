@@ -1,1 +1,15 @@
 ---
+meta:
+  lang: "中文（繁体）"
+common:
+  intro:
+    title: "什麽是 Misskey 呢?"
+    drive: "雲端硬碟"
+  dark-mode: "夜間模式"
+  signup: "註冊"
+  signout: "登出"
+  drive: "雲端硬碟"
+admin/views/dashboard.vue:
+  drive: "雲端硬碟"
+admin/views/charts.vue:
+  drive: "雲端硬碟"
