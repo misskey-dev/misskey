@@ -8,6 +8,7 @@ import { program } from '../argv';
 import processDeliver from './processors/deliver';
 import processInbox from './processors/process-inbox';
 import processDb from './processors/db';
+import { queueLogger } from './logger';
 
 function initializeQueue(name: string) {
 	return new Queue(name, config.redis != null ? {
@@ -124,8 +125,13 @@ export default function() {
 }
 
 export function destroy() {
-	/*
-	queue.destroy().then(n => {
-		queueLogger.succ(`All job removed (${n} jobs)`);
-	});*/
+	deliverQueue.once('cleaned', (jobs, status) => {
+		queueLogger.succ(`[deliver] Cleaned ${jobs.length} ${status} jobs`);
+	});
+	deliverQueue.clean(0, 'wait');
+
+	inboxQueue.once('cleaned', (jobs, status) => {
+		queueLogger.succ(`[inbox] Cleaned ${jobs.length} ${status} jobs`);
+	});
+	inboxQueue.clean(0, 'wait');
 }
