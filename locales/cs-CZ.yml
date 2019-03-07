@@ -895,6 +895,7 @@ admin/views/drive.vue:
   sort:
     title: "Seřadit"
     createdAtAsc: "Věk - od nejstaršího"
+    createdAtDesc: "Věk - od nejmladšího"
     sizeAsc: "Velikost - od nejmenších"
     sizeDesc: "Velikost – od největších"
   origin:
@@ -911,6 +912,10 @@ admin/views/users.vue:
   reset-password: "Resetovat heslo"
   reset-password-confirm: "Opravdu chcete resetovat Vaše heslo?"
   password-updated: "Heslo je nyní \"{password}\""
+  verify: "Ověřit účet"
+  verify-confirm: "Chcete aby toto byl ověřený účet?"
+  verified: "Účet se nyní ověřuje"
+  unverify: "Zrušit ověření účtu"
   users:
     state:
       all: "Všechny"
