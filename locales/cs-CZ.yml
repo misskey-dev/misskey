@@ -346,6 +346,15 @@ common/views/components/connect-failed.troubleshooter.vue:
 common/views/components/media-banner.vue:
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/theme.vue:
+  light-theme: "Šablona pro použití ve světlém vzhledu"
+  dark-theme: "Šablona pro použití v tmavém vzhledu"
+  light-themes: "Světlý vzhled"
+  dark-themes: "Tmavý vzhled"
+  install-a-theme: "Nainstalovat šablonu"
+  theme-code: "Kód šablony"
+  install: "Nainstalovat"
+  installed: "\"{}\" byl nainstalován"
+  create-a-theme: "Vytvořit motiv"
   base-theme: "Základní vzhled"
   find-more-theme: "Najít další vzhledy"
   theme-name: "Jméno vzhledu"
@@ -392,6 +401,7 @@ common/views/components/nav.vue:
   donors: "Dárci"
   repository: "Úložiště"
   develop: "Vývojáři"
+  feedback: "Zpětná vazba"
 common/views/components/note-menu.vue:
   mention: "Zmínění"
   copy-content: "Zkopírovat obsah"
@@ -402,6 +412,7 @@ common/views/components/note-menu.vue:
   unwatch: "Přestat sledovat"
   delete: "Odstranit"
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
+  remote: "Ukázat originální poznámku"
 common/views/components/user-menu.vue:
   mention: "Zmínění"
   mute: "Umlčet"
@@ -699,6 +710,7 @@ desktop/views/components/post-form.vue:
   text-remain: "{0} znaků zbývá"
   recent-tags: "Nejnovější"
   visibility: "Viditelnost"
+  geolocation-alert: "Vaše zařízení nepodporuje lokační službu"
   error: "Chyba"
   enter-username: "Zadejte své uživatelské jméno..."
 desktop/views/components/post-form-window.vue:
@@ -1042,25 +1054,52 @@ desktop/views/widgets/users.vue:
 mobile/views/components/drive.vue:
   used: "využito"
   file-count: "Soubor(ů)"
+  folder-is-empty: "Tato složka je prázdná"
+  deletion-alert: "Omlouváme se, ale mazání složek ještě nebylo implementováno."
   folder-name: "Název složky"
   url-prompt: "URL adresa souboru, který chcete nahrát"
+  uploading: "Byl zahájen upload. Může chvilku trvat než bude dokončen."
+mobile/views/components/drive-file-chooser.vue:
+  select-file: "Vybrat soubory"
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: "Vyberte složku"
 mobile/views/components/drive.file-detail.vue:
   download: "Stáhnout"
   rename: "Přejmenovat"
+  move: "Přesunout"
+  hash: "Hash (md5)"
+  exif: "EXIF"
 mobile/views/components/media-video.vue:
   click-to-show: "Klikněte pro zobrazení"
+common/views/components/follow-button.vue:
+  follow-processing: "Zpracovávám"
 mobile/views/components/note.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
+  location: "Lokace"
 mobile/views/components/note-detail.vue:
   reply: "Odpovědět"
+  reaction: "Reakce"
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
+  location: "Lokace"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "kočka"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "kočka"
 mobile/views/components/post-form.vue:
   add-visible-user: "Přidat uživatele"
+  submit: "Příspěvek"
   reply: "Odpovědět"
   renote: "Renotovat"
   reply-placeholder: "Odpovědět na tento příspěvěk"
+  location-alert: "Vaše zařízení nepodporuje lokační službu"
+  error: "Chyba"
+  username-prompt: "Zadejte uživatelské jméno"
 mobile/views/components/sub-note-content.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
@@ -1069,13 +1108,18 @@ mobile/views/components/ui.header.vue:
   welcome-back: "Vítejte zpátky,"
   adjective: "Pán"
 mobile/views/components/ui.nav.vue:
+  timeline: "Časová osa"
   notifications: "Oznámení"
+  search: "Vyhledávání"
   user-lists: "Seznamy"
+  widgets: "Widgety"
   game: "Hry"
   admin: "Administrace"
   about: "O Misskey"
 mobile/views/pages/user-lists.vue:
   title: "Seznamy"
+mobile/views/pages/signup.vue:
+  lets-start: "Váš účet je připraven! 📦"
 mobile/views/pages/home.vue:
   home: "Domů"
   local: "Lokální"
@@ -1101,12 +1145,15 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
+mobile/views/pages/selectdrive.vue:
+  select-file: "Vybrat soubory"
 mobile/views/pages/user/home.vue:
   activity: "Aktivita"
   frequently-replied-users: "Častá zmínění"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Žádné obrázky"
 deck:
+  widgets: "Widgety"
   home: "Domů"
   local: "Lokální"
   hashtag: "Hashtagy"
