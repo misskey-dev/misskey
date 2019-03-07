@@ -1,5 +1,5 @@
 ---
-name: Bug Report (Client specific)
+name: 🐛 Bug Report (🖥️Client specific)
 about: Create a report to help us improve
 title: ''
 labels: ⚠️bug?, 🖥️Client

@@ -1,5 +1,5 @@
 ---
-name: Feature Request (Server specific)
+name: ✨ Feature Request (⚙️Server specific)
 about: Suggest an idea for this project
 title: ''
 labels: ✨Feature, ⚙️Server

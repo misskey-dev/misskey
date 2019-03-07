@@ -1,5 +1,5 @@
 ---
-name: Bug Report (Server specific)
+name: 🐛 Bug Report (⚙️Server specific)
 about: Create a report to help us improve
 title: ''
 labels: ⚠️bug?, ⚙️Server
