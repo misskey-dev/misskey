@@ -15,6 +15,8 @@ const jobs = {
 	exportBlocking,
 } as any;
 
-export default function(job: Bull.Job, done: any) {
-	jobs[job.data.type](job, done);
+export default function(dbQueue: Bull.Queue) {
+	for (const [k, v] of Object.entries(jobs)) {
+		dbQueue.process(k, v as any);
+	}
 }

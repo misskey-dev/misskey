@@ -62,72 +62,54 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 }
 
 export function createDeleteNotesJob(user: ILocalUser) {
-	const data = {
-		type: 'deleteNotes',
+	return dbQueue.add('deleteNotes', {
 		user: user
-	};
-
-	return dbQueue.add(data, {
+	}, {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
 }
 
 export function createDeleteDriveFilesJob(user: ILocalUser) {
-	const data = {
-		type: 'deleteDriveFiles',
+	return dbQueue.add('deleteDriveFiles', {
 		user: user
-	};
-
-	return dbQueue.add(data, {
+	}, {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
 }
 
 export function createExportNotesJob(user: ILocalUser) {
-	const data = {
-		type: 'exportNotes',
+	return dbQueue.add('exportNotes', {
 		user: user
-	};
-
-	return dbQueue.add(data, {
+	}, {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
 }
 
 export function createExportFollowingJob(user: ILocalUser) {
-	const data = {
-		type: 'exportFollowing',
+	return dbQueue.add('exportFollowing', {
 		user: user
-	};
-
-	return dbQueue.add(data, {
+	}, {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
 }
 
 export function createExportMuteJob(user: ILocalUser) {
-	const data = {
-		type: 'exportMute',
+	return dbQueue.add('exportMute', {
 		user: user
-	};
-
-	return dbQueue.add(data, {
+	}, {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
 }
 
 export function createExportBlockingJob(user: ILocalUser) {
-	const data = {
-		type: 'exportBlocking',
+	return dbQueue.add('exportBlocking', {
 		user: user
-	};
-
-	return dbQueue.add(data, {
+	}, {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
@@ -137,7 +119,7 @@ export default function() {
 	if (!program.onlyServer) {
 		deliverQueue.process(processDeliver);
 		inboxQueue.process(processInbox);
-		dbQueue.process(processDb);
+		processDb(dbQueue);
 	}
 }
 
