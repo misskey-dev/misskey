@@ -1,21 +1,21 @@
-import * as bq from 'bee-queue';
+import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
-import parseAcct from '../../../misc/acct/parse';
-import User, { IRemoteUser } from '../../../models/user';
-import perform from '../../../remote/activitypub/perform';
-import { resolvePerson, updatePerson } from '../../../remote/activitypub/models/person';
+import parseAcct from '../../misc/acct/parse';
+import User, { IRemoteUser } from '../../models/user';
+import perform from '../../remote/activitypub/perform';
+import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
 import { URL } from 'url';
-import { publishApLogStream } from '../../../services/stream';
-import Logger from '../../../services/logger';
-import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
-import Instance from '../../../models/instance';
-import instanceChart from '../../../services/chart/instance';
+import { publishApLogStream } from '../../services/stream';
+import Logger from '../../services/logger';
+import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
+import Instance from '../../models/instance';
+import instanceChart from '../../services/chart/instance';
 
 const logger = new Logger('inbox');
 
 // ユーザーのinboxにアクティビティが届いた時の処理
-export default async (job: bq.Job, done: any): Promise<void> => {
+export default async (job: Bull.Job, done: any): Promise<void> => {
 	const signature = job.data.signature;
 	const activity = job.data.activity;
 

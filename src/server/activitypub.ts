@@ -16,7 +16,7 @@ import Followers from './activitypub/followers';
 import Following from './activitypub/following';
 import Featured from './activitypub/featured';
 import renderQuestion from '../remote/activitypub/renderer/question';
-import { processInbox } from '../queue';
+import { inbox as processInbox } from '../queue';
 
 // Init router
 const router = new Router();

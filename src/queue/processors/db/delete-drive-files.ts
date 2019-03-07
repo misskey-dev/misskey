@@ -1,14 +1,14 @@
-import * as bq from 'bee-queue';
+import * as Bull from 'bull';
 import * as mongo from 'mongodb';
 
-import { queueLogger } from '../logger';
-import User from '../../models/user';
-import DriveFile from '../../models/drive-file';
-import deleteFile from '../../services/drive/delete-file';
+import { queueLogger } from '../../logger';
+import User from '../../../models/user';
+import DriveFile from '../../../models/drive-file';
+import deleteFile from '../../../services/drive/delete-file';
 
 const logger = queueLogger.createSubLogger('delete-drive-files');
 
-export async function deleteDriveFiles(job: bq.Job, done: any): Promise<void> {
+export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Deleting drive files of ${job.data.user._id} ...`);
 
 	const user = await User.findOne({
@@ -32,7 +32,7 @@ export async function deleteDriveFiles(job: bq.Job, done: any): Promise<void> {
 
 		if (files.length === 0) {
 			ended = true;
-			if (job.reportProgress) job.reportProgress(100);
+			job.progress(100);
 			break;
 		}
 
@@ -47,7 +47,7 @@ export async function deleteDriveFiles(job: bq.Job, done: any): Promise<void> {
 			userId: user._id,
 		});
 
-		if (job.reportProgress) job.reportProgress(deletedCount / total);
+		job.progress(deletedCount / total);
 	}
 
 	logger.succ(`All drive files (${deletedCount}) of ${user._id} has been deleted.`);

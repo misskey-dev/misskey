@@ -1,14 +1,13 @@
-import * as bq from 'bee-queue';
-
-import request from '../../../remote/activitypub/request';
-import { queueLogger } from '../../logger';
-import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
-import Instance from '../../../models/instance';
-import instanceChart from '../../../services/chart/instance';
+import * as Bull from 'bull';
+import request from '../../remote/activitypub/request';
+import { queueLogger } from '../logger';
+import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
+import Instance from '../../models/instance';
+import instanceChart from '../../services/chart/instance';
 
 let latest: string = null;
 
-export default async (job: bq.Job, done: any): Promise<void> => {
+export default async (job: Bull.Job, done: any): Promise<void> => {
 	const { host } = new URL(job.data.to);
 
 	try {

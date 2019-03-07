@@ -1,17 +1,17 @@
-import * as bq from 'bee-queue';
+import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 import * as mongo from 'mongodb';
 
-import { queueLogger } from '../logger';
-import Note, { INote } from '../../models/note';
-import addFile from '../../services/drive/add-file';
-import User from '../../models/user';
+import { queueLogger } from '../../logger';
+import Note, { INote } from '../../../models/note';
+import addFile from '../../../services/drive/add-file';
+import User from '../../../models/user';
 import dateFormat = require('dateformat');
 
 const logger = queueLogger.createSubLogger('export-notes');
 
-export async function exportNotes(job: bq.Job, done: any): Promise<void> {
+export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting notes of ${job.data.user._id} ...`);
 
 	const user = await User.findOne({
@@ -58,7 +58,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 
 		if (notes.length === 0) {
 			ended = true;
-			if (job.reportProgress) job.reportProgress(100);
+			job.progress(100);
 			break;
 		}
 
@@ -83,7 +83,7 @@ export async function exportNotes(job: bq.Job, done: any): Promise<void> {
 			userId: user._id,
 		});
 
-		if (job.reportProgress) job.reportProgress(exportedNotesCount / total);
+		job.progress(exportedNotesCount / total);
 	}
 
 	await new Promise((res, rej) => {

@@ -1,14 +1,14 @@
-import * as bq from 'bee-queue';
+import * as Bull from 'bull';
 import * as mongo from 'mongodb';
 
-import { queueLogger } from '../logger';
-import Note from '../../models/note';
-import deleteNote from '../../services/note/delete';
-import User from '../../models/user';
+import { queueLogger } from '../../logger';
+import Note from '../../../models/note';
+import deleteNote from '../../../services/note/delete';
+import User from '../../../models/user';
 
 const logger = queueLogger.createSubLogger('delete-notes');
 
-export async function deleteNotes(job: bq.Job, done: any): Promise<void> {
+export async function deleteNotes(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Deleting notes of ${job.data.user._id} ...`);
 
 	const user = await User.findOne({
@@ -32,7 +32,7 @@ export async function deleteNotes(job: bq.Job, done: any): Promise<void> {
 
 		if (notes.length === 0) {
 			ended = true;
-			if (job.reportProgress) job.reportProgress(100);
+			job.progress(100);
 			break;
 		}
 
@@ -47,7 +47,7 @@ export async function deleteNotes(job: bq.Job, done: any): Promise<void> {
 			userId: user._id,
 		});
 
-		if (job.reportProgress) job.reportProgress(deletedCount / total);
+		job.progress(deletedCount / total);
 	}
 
 	logger.succ(`All notes (${deletedCount}) of ${user._id} has been deleted.`);

@@ -1,19 +1,19 @@
-import * as bq from 'bee-queue';
+import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 import * as mongo from 'mongodb';
 
-import { queueLogger } from '../logger';
-import addFile from '../../services/drive/add-file';
-import User from '../../models/user';
+import { queueLogger } from '../../logger';
+import addFile from '../../../services/drive/add-file';
+import User from '../../../models/user';
 import dateFormat = require('dateformat');
-import Mute from '../../models/mute';
-import config from '../../config';
+import Following from '../../../models/following';
+import config from '../../../config';
 
-const logger = queueLogger.createSubLogger('export-mute');
+const logger = queueLogger.createSubLogger('export-following');
 
-export async function exportMute(job: bq.Job, done: any): Promise<void> {
-	logger.info(`Exporting mute of ${job.data.user._id} ...`);
+export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
+	logger.info(`Exporting following of ${job.data.user._id} ...`);
 
 	const user = await User.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
@@ -36,8 +36,8 @@ export async function exportMute(job: bq.Job, done: any): Promise<void> {
 	let cursor: any = null;
 
 	while (!ended) {
-		const mutes = await Mute.find({
-			muterId: user._id,
+		const followings = await Following.find({
+			followerId: user._id,
 			...(cursor ? { _id: { $gt: cursor } } : {})
 		}, {
 			limit: 100,
@@ -46,16 +46,16 @@ export async function exportMute(job: bq.Job, done: any): Promise<void> {
 			}
 		});
 
-		if (mutes.length === 0) {
+		if (followings.length === 0) {
 			ended = true;
-			if (job.reportProgress) job.reportProgress(100);
+			job.progress(100);
 			break;
 		}
 
-		cursor = mutes[mutes.length - 1]._id;
+		cursor = followings[followings.length - 1]._id;
 
-		for (const mute of mutes) {
-			const u = await User.findOne({ _id: mute.muteeId }, { fields: { username: true, host: true } });
+		for (const following of followings) {
+			const u = await User.findOne({ _id: following.followeeId }, { fields: { username: true, host: true } });
 			const content = u.host ? `${u.username}@${u.host}` : `${u.username}@${config.host}`;
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
@@ -70,17 +70,17 @@ export async function exportMute(job: bq.Job, done: any): Promise<void> {
 			exportedCount++;
 		}
 
-		const total = await Mute.count({
-			muterId: user._id,
+		const total = await Following.count({
+			followerId: user._id,
 		});
 
-		if (job.reportProgress) job.reportProgress(exportedCount / total);
+		job.progress(exportedCount / total);
 	}
 
 	stream.end();
 	logger.succ(`Exported to: ${path}`);
 
-	const fileName = 'mute-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
+	const fileName = 'following-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
 	const driveFile = await addFile(user, path, fileName);
 
 	logger.succ(`Exported to: ${driveFile._id}`);
