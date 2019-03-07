@@ -88,7 +88,7 @@ export default Vue.extend({
 						Vue.set(c, 'isVoted', true);
 					}
 				}
-				this.showResult = !this.poll.multiple;
+				if (!this.showResult) this.showResult = !this.poll.multiple;
 			});
 		}
 	}
