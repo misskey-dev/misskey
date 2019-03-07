@@ -198,6 +198,8 @@ common:
     update-available: "Je dostupná nová verze"
     update-available-desc: "Aktualizace budou aplikovány po znovunačtení stránky."
     advanced-settings: "Pokročilá nastavení"
+    debug-mode: "Povolit režim ladění"
+    debug-mode-desc: "Toto nastavení je uloženo v prohlížeči."
     navbar-position: "Poloha navigačního panelu"
     navbar-position-top: "Nahoře"
     navbar-position-left: "Vlevo"
@@ -276,6 +278,7 @@ auth/views/form.vue:
   account-read: "Zobrazit informace účtu"
   following-write: "Sledovat a přestat sledovat"
   drive-read: "Přečíst váš Disk"
+  notification-read: "Sledovat oznámení."
   cancel: "Zrušit"
   accept: "Povolit přístup"
 auth/views/index.vue:
@@ -848,3 +851,4 @@ dev/views/new-app.vue:
   reaction-write: "Přidat nebo odebrat reakce."
   following-write: "Sledovat a přestat sledovat"
   drive-read: "Přečíst váš Disk"
+  notification-read: "Sledovat oznámení."
