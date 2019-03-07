@@ -249,7 +249,7 @@
 		"web-push": "3.3.3",
 		"webfinger.js": "2.7.0",
 		"webpack": "4.28.4",
-		"webpack-cli": "3.2.1",
+		"webpack-cli": "3.2.3",
 		"websocket": "1.0.28",
 		"ws": "6.1.4",
 		"xev": "2.0.1"
