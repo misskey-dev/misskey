@@ -66,7 +66,7 @@
 		"@types/mkdirp": "0.5.2",
 		"@types/mocha": "5.2.5",
 		"@types/mongodb": "3.1.20",
-		"@types/node": "10.12.24",
+		"@types/node": "11.10.4",
 		"@types/nodemailer": "4.6.6",
 		"@types/nprogress": "0.0.29",
 		"@types/oauth": "0.9.1",
