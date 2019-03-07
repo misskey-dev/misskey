@@ -278,6 +278,7 @@ auth/views/form.vue:
   account-read: "Zobrazit informace účtu"
   following-write: "Sledovat a přestat sledovat"
   drive-read: "Přečíst váš Disk"
+  notification-read: "Sledovat oznámení."
   cancel: "Zrušit"
   accept: "Povolit přístup"
 auth/views/index.vue:
@@ -850,3 +851,4 @@ dev/views/new-app.vue:
   reaction-write: "Přidat nebo odebrat reakce."
   following-write: "Sledovat a přestat sledovat"
   drive-read: "Přečíst váš Disk"
+  notification-read: "Sledovat oznámení."
