@@ -115,9 +115,9 @@ export default Vue.extend({
 
 	created() {
 		if (this.detail) {
-			this.$root.api('notes/replies', {
+			this.$root.api('notes/children', {
 				noteId: this.appearNote.id,
-				limit: 8
+				limit: 30
 			}).then(replies => {
 				this.replies = replies;
 			});
