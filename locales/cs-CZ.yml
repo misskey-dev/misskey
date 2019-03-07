@@ -424,6 +424,7 @@ common/views/components/poll-editor.vue:
   no-only-one-choice: "Musíte vybrat alespoň dvě možnosti"
   day: "Ne"
 common/views/components/emoji-picker.vue:
+  custom-emoji: "Emoji"
   people: "Lidé"
   animals-and-nature: "Zvířata a příroda"
   food-and-drink: "Jídlo a pití"
@@ -786,11 +787,31 @@ desktop/views/components/ui.header.post.vue:
   post: "Nový příspěvek"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Vyhledávání"
+desktop/views/components/received-follow-requests-window.vue:
+  accept: "Přijmout"
+  reject: "Odmítnout"
 desktop/views/components/user-lists-window.vue:
-  title: "Seznamy"
+  title: "Seznamy uživatelů"
+  create-list: "Vytvořit seznam"
+  list-name: "Název seznamu"
+desktop/views/components/user-preview.vue:
+  notes: "Příspěvky"
+desktop/views/components/users-list.vue:
+  all: "Všechny"
+  iknow: "Znáte"
+  fetching: "Načítám…"
+desktop/views/components/window.vue:
+  close: "Zavřít"
 admin/views/index.vue:
+  instance: "Instance"
+  emoji: "Emoji"
+  moderators: "Moderátoři"
+  users: "Uživatelé"
   federation: "Z fediversu"
+  announcements: "Oznámení"
   hashtags: "Hashtagy"
+  queue: "Fronta úloh"
+  logs: "Logy"
   back-to-misskey: "Zpět na Misskey"
 admin/views/dashboard.vue:
   accounts: "Účty"
@@ -841,9 +862,19 @@ admin/views/instance.vue:
   saved: "Uloženo"
   user-recommendation-config: "Doporučení uživatelé"
   email: "Emailová adresa"
+  smtp-port: "SMTP Port"
+  smtp-auth: "Provést SMTP autentikaci"
+  smtp-user: "SMTP uživatel"
+  smtp-pass: "SMTP heslo"
+  serviceworker-config: "ServiceWorker"
+  enable-serviceworker: "Povolit ServiceWorker"
+  vapid-publickey: "VAPID veřejný klíč"
+  vapid-privatekey: "VAPID osobní klíč"
 admin/views/charts.vue:
+  title: "Graf"
   per-day: "za den"
   per-hour: "za hodinu"
+  federation: "Federace"
   notes: "Příspěvky"
   users: "Uživatelé"
   drive: "Disk"
@@ -851,11 +882,19 @@ admin/views/charts.vue:
   charts:
     federation-instances: "Počet instancí: zvýšení/snížení"
     federation-instances-total: "Celkový počet instancí"
+    notes-total: "Celkem příspěvků"
+    users-total: "Celkem uživatelů"
+    active-users: "Aktivní uživatelé"
+    network-requests: "Požadavek"
     network-time: "Doba odezvy"
+    network-usage: "Síťový provoz"
 admin/views/drive.vue:
   operation: "Operace"
+  fileid-or-url: "ID nebo URL souboru"
   file-not-found: "Soubor nebyl nalezen"
   sort:
+    title: "Seřadit"
+    createdAtAsc: "Věk - od nejstaršího"
     sizeAsc: "Velikost - od nejmenších"
     sizeDesc: "Velikost – od největších"
   origin:
@@ -874,6 +913,7 @@ admin/views/users.vue:
   password-updated: "Heslo je nyní \"{password}\""
   users:
     state:
+      all: "Všechny"
       moderator: "Moderátor"
       adminOrModerator: "Admin/Moderátor"
       verified: "Ověřený účet"
@@ -926,8 +966,15 @@ admin/views/federation.vue:
   status: "Status"
   latest-request-received-at: "Poslední požadavek přijat"
   block: "Blokován"
+  instances: "Instance"
   states:
+    all: "Všechny"
     blocked: "Blokován"
+  charts: "Graf"
+  chart-srcs:
+    requests: "Požadavek"
+    users-total: "Celkem uživatelů"
+    notes-total: "Celkem příspěvků"
   chart-spans:
     hour: "za hodinu"
     day: "za den"
@@ -1001,6 +1048,9 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Tipy pro přizpůsobení"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivita"
+mobile/views/pages/received-follow-requests.vue:
+  accept: "Přijmout"
+  reject: "Odmítnout"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/user/home.vue:
