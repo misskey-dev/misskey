@@ -2,7 +2,7 @@
 name: Feature Request (Server specific)
 about: Suggest an idea for this project
 title: ''
-labels: feature, server-side
+labels: ✨Feature, ⚙️Server
 assignees: ''
 
 ---
