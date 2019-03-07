@@ -33,7 +33,7 @@ export async function extractPollFromQuestion(source: string | IQuestion): Promi
  * @returns true if updated
  */
 export async function updateQuestion(value: any) {
-	const uri = value == 'string' ? value : value.id;
+	const uri = typeof value == 'string' ? value : value.id;
 
 	// URIがこのサーバーを指しているならスキップ
 	if (uri.startsWith(config.url + '/')) throw 'uri points local';
