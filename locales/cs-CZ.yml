@@ -143,7 +143,9 @@ common:
     i-like-sushi: "Mam radši sushi (než puding)"
     show-reversi-board-labels: "Zobrazit označení řad a sloupců v Reversi"
     use-avatar-reversi-stones: "Použít avatar jako figurku v Reversi"
+    disable-animated-mfm: "Vypnout pohyblivé texty v příspěvku"
     disable-showing-animated-images: "Nepřehrávat animované obrázky"
+    always-show-nsfw: "Vždycky ukázat NSFW obsah"
     show-via: "zobrazit přes"
     reduce-motion: "Snížit pohyb v rozhraní"
     this-setting-is-this-device-only: "Pouze pro toto zařízení"
@@ -279,12 +281,16 @@ auth/views/form.vue:
   following-write: "Sledovat a přestat sledovat"
   drive-read: "Přečíst váš Disk"
   notification-read: "Sledovat oznámení."
+  notification-write: "Zpravovat notifikace."
   cancel: "Zrušit"
   accept: "Povolit přístup"
 auth/views/index.vue:
   loading: "Načítám..."
+  already-authorized: "Tato aplikace byla již autorizována."
+  sign-in: "Prosím přihlaste se."
 common/views/pages/explore.vue:
   verified-users: "Ověřené účty"
+  popular-users: "Populární uživatelé"
   recently-registered-users: "Nedávno registrovaní uživatelé"
   popular-tags: "Populární tagy"
   federated: "Z fediverse"
@@ -292,6 +298,7 @@ common/views/components/user-list.vue:
   no-users: "Žádní uživatelé"
 common/views/components/games/reversi/reversi.vue:
   matching:
+    waiting-for: "Čeká se na {}"
     cancel: "Zrušit"
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Vzdát se"
@@ -305,14 +312,21 @@ common/views/components/games/reversi/reversi.index.vue:
   my-games: "Moje hra"
   all-games: "Všechny hry"
   enter-username: "Zadejte své uživatelské jméno"
+  game-state:
+    ended: "Ukončené"
+    playing: "Probíhají"
 common/views/components/games/reversi/reversi.room.vue:
   settings-of-the-game: "Nastavení hry"
   choose-map: "Vybrat mapu"
   random: "Náhodně"
+  black-or-white: "Černé/bílé"
   black-is: "Černá je {}"
   rules: "Pravidla"
   looped-map: "Zacyklená mapa"
+  settings-of-the-bot: "Nastavení Botu"
   this-game-is-started-soon: "Hra začne za pár vteřin"
+  waiting-for-other: "Čeká se na protivníka"
+  waiting-for-me: "Čeká se na Vás"
   waiting-for-both: "Připravuji"
   cancel: "Zrušit"
   ready: "Připraveno"
@@ -325,6 +339,12 @@ common/views/components/connect-failed.troubleshooter.vue:
   checking-network: "Prověřit síťové připojení"
   internet: "Připojení k internetu"
   checking-internet: "Ověřuji připojení k internetu."
+  server: "Připojení k serveru"
+  no-network-desc: "Ujistěte se že jste připojeni k Internetu."
+  no-internet: "Nejste připojeni k internetu"
+  no-internet-desc: "Jste připojen k síti, ale zdá se že stále chybí připojení k Internetu. Prosím zkontrolujte Vaše připojení k Internetu."
+common/views/components/media-banner.vue:
+  click-to-show: "Klikněte pro zobrazení"
 common/views/components/theme.vue:
   base-theme: "Základní vzhled"
   find-more-theme: "Najít další vzhledy"
@@ -359,6 +379,7 @@ common/views/components/messaging-room.vue:
   only-one-file-attached: "Jenom JEDEN soubor může být přiložen ke zprávě."
 common/views/components/messaging-room.form.vue:
   send: "Odeslat"
+  attach-from-local: "Přiložit soubory z Vašeho zařízení"
   only-one-file-attached: "Jenom JEDEN soubor může být přiložen ke zprávě."
 common/views/components/messaging-room.message.vue:
   is-read: "Přečtené"
@@ -372,13 +393,35 @@ common/views/components/nav.vue:
   repository: "Úložiště"
   develop: "Vývojáři"
 common/views/components/note-menu.vue:
+  mention: "Zmínění"
+  copy-content: "Zkopírovat obsah"
+  copy-link: "Zkopírovat odkaz"
+  favorite: "Přidat do oblíbených"
+  unfavorite: "Odebrat z oblízených"
+  watch: "Sledovat"
+  unwatch: "Přestat sledovat"
   delete: "Odstranit"
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
 common/views/components/user-menu.vue:
+  mention: "Zmínění"
   mute: "Umlčet"
   unmute: "Zrušit umlčení"
   block: "Blokován"
+  unblock: "Odblokovat"
+  push-to-list: "Přidat do seznamu"
+  select-list: "Vyberte seznam"
+  report-abuse-reported: "Problém byl nahlášen administrátorovi. Děkujeme za Vaší kooperaci."
+common/views/components/poll.vue:
+  vote-count: "{} hlasů"
+  vote: "Hlasovat"
+  show-result: "Podívat se na výsledky"
+  voted: "Už jste hlasovaly"
+  remaining-days: "zbývá {d} dnů, {h} hodin"
+  remaining-hours: "zbývá {h} hodin, a {m} minut"
+  remaining-minutes: "zbývá {m} minut, a {s} sekund"
+  remaining-seconds: "zbývá {s} sekund"
 common/views/components/poll-editor.vue:
+  no-only-one-choice: "Musíte vybrat alespoň dvě možnosti"
   day: "Ne"
 common/views/components/emoji-picker.vue:
   people: "Lidé"
@@ -433,20 +476,53 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-notifications: "Označit všechna oznámení za přečtená"
   mark-as-read-all-unread-notes: "Označit všechny příspěvky za přečtené"
   mark-as-read-all-talk-messages: "Označit všechny zprávy za přečtené"
+common/views/components/integration-settings.vue:
+  connect: "Připojit"
+  disconnect: "Odpojit"
 common/views/components/github-setting.vue:
   description: "Jakmile spojíte Váš GitHub účet s Vaším Misskey účtem, uvidíte informace o Vašem GitHub účtu na Vašem profilu a budete se moci přihlásit skrze GitHub."
+  connected-to: "Je připojen k tomuto GitHub účtu"
   detail: "Více…"
+  reconnect: "Znovu připojit"
+  connect: "Připojit Váš GitHub účet"
+  disconnect: "Odpojit"
 common/views/components/discord-setting.vue:
   description: "Jakmile spojíte Váš Discord účet s Vaším Misskey účtem, uvidíte informace o Vašem Discord účtu na Vašem profilu a budete se moci přihlásit skrze Discord."
+  connected-to: "Je připojen k tomuto Discord účtu"
   detail: "Více…"
+  reconnect: "Znovu připojit"
+  connect: "Připojit Váš Discord účet"
+  disconnect: "Odpojit"
+common/views/components/uploader.vue:
+  waiting: "Čekáme"
 common/views/components/visibility-chooser.vue:
+  public: "Veřejné"
+  home: "Domů"
+  specified-desc: "Poslat pouze zmíněným uživatelům"
   local-public: "Veřejná (pouze místní)"
   local-home: "Domovská (pouze místní)"
   local-followers: "Pro sledující (pouze místní)"
+common/views/components/trends.vue:
+  count: "{} zmíněných uživatelů"
+  empty: "Žádný trend"
+common/views/components/language-settings.vue:
+  title: "Zobrazit jazyky"
+  pick-language: "Zvolte jazyk"
+  recommended: "Doporučené"
+  info: "Pro aktivování změn musíte znovu načíst stránky."
 common/views/components/profile-editor.vue:
   title: "Profil"
+  name: "Jméno"
+  account: "Účet"
+  location: "Lokace"
+  description: "O mně"
+  you-can-include-hashtags: "V popisku o Vás můžete použít i hastagy."
+  language: "Jazyk"
+  birthday: "Datum narození"
   avatar: "Avatar"
   banner: "Baner"
+  is-cat: "Tento účet je kočka"
+  is-bot: "Tento účet je Bot"
   advanced: "Ostatní"
   privacy: "Osobní údaje"
   save: "Uložit"
@@ -474,6 +550,7 @@ common/views/components/user-list-editor.vue:
   delete-are-you-sure: "Smazat seznam \"$1\"?"
   deleted: "Smazáno"
 common/views/widgets/broadcast.vue:
+  fetching: "Načítám"
   next: "Další"
 common/views/widgets/calendar.vue:
   year: "Rok {}"
@@ -486,10 +563,12 @@ common/views/widgets/photo-stream.vue:
   no-photos: "Žádné obrázky"
 common/views/widgets/posts-monitor.vue:
   title: "Grafy příspěvků"
+  toggle: "Přepnout zobrazení"
 common/views/widgets/hashtags.vue:
   title: "Hashtagy"
 common/views/widgets/server.vue:
   title: "Informace o serveru"
+  toggle: "Přepnout zobrazení"
 common/views/widgets/memo.vue:
   title: "Poznámky"
   memo: "Pište sem!"
@@ -498,6 +577,11 @@ common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
 desktop:
   banner: "Baner"
+  avatar-crop-title: "Vyberte část, která se zobrazí jako avatar"
+  avatar: "Avatar"
+  uploading-avatar: "Nahrál nový avatar"
+  avatar-updated: "Vaše avatar byl aktualizován"
+  invalid-filetype: "Tento formát souboru není podporován"
 desktop/views/components/activity.chart.vue:
   total: "Černá ... Celkem"
   notes: "Modrá ... Poznámky"
@@ -505,6 +589,7 @@ desktop/views/components/activity.chart.vue:
   renotes: "Zelená ... Renoty"
 desktop/views/components/activity.vue:
   title: "Aktivita"
+  toggle: "Přepnout zobrazení"
 desktop/views/components/calendar.vue:
   title: "{month}. {year}"
   prev: "Předchozí měsíc"
@@ -522,6 +607,8 @@ desktop/views/components/choose-folder-from-drive-window.vue:
 desktop/views/components/crop-window.vue:
   cancel: "Zrušit"
   ok: "OK"
+desktop/views/components/drive-window.vue:
+  used: "využito"
 desktop/views/components/drive.file.vue:
   avatar: "Avatar"
   banner: "Baner"
@@ -553,13 +640,37 @@ desktop/views/components/drive.vue:
   empty-folder: "Tato složka je prázdná"
   unable-to-process: "Operace nemohla být dokončena."
   unhandled-error: "Neznámá chyba"
+  url-upload: "Nahrát z URL adresy"
+  url-of-file: "URL adresa souboru, který chcete nahrát"
+  may-take-time: "Může trvat nějakou dobu, dokud nebude dokončeno nahrávání."
+  create-folder: "Vytvořit složku"
+  folder-name: "Název složky"
+  contextmenu:
+    create-folder: "Vytvořit složku"
+    upload: "Nahrát soubor"
+    url-upload: "Nahrát z URL"
+desktop/views/components/media-video.vue:
+  click-to-show: "Klikněte pro zobrazení"
+desktop/views/components/game-window.vue:
+  game: "Reversi"
+desktop/views/components/home.vue:
+  done: "Hotovo"
+  add: "Přidat"
 desktop/views/input-dialog.vue:
   cancel: "Zrušit"
+  ok: "OK"
+desktop/views/components/messaging-room-window.vue:
+  title: "Zprávy:"
+desktop/views/components/messaging-window.vue:
+  title: "Zprávy"
 desktop/views/components/note-detail.vue:
+  private: "Tento příspěvek je soukromý"
+  deleted: "Tento příspěvek byl odstraněn"
   renote: "Renotovat"
 desktop/views/components/note.vue:
   reply: "Odpovědět"
   renote: "Renote"
+  private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
 desktop/views/components/notes.vue:
   error: "Načítání selhalo."
@@ -586,6 +697,8 @@ desktop/views/components/post-form.vue:
 desktop/views/components/post-form-window.vue:
   note: "Nový příspěvek"
   reply: "Odpovědět"
+desktop/views/components/progress-dialog.vue:
+  waiting: "Čekáme"
 desktop/views/components/renote-form.vue:
   quote: "Citovat..."
   cancel: "Zrušit"
@@ -599,6 +712,8 @@ desktop/views/components/renote-form-window.vue:
 desktop/views/components/settings.2fa.vue:
   detail: "Více…"
   url: "https://www.google.cz/landing/2step/"
+common/views/components/media-image.vue:
+  click-to-show: "Klikněte pro zobrazení"
 common/views/components/api-settings.vue:
   console:
     title: "API konzole"
@@ -607,6 +722,7 @@ common/views/components/api-settings.vue:
     sending: "Odesílám"
     response: "Výsledek"
 common/views/components/drive-settings.vue:
+  in-use: "využito"
   stats: "Statistiky"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Umlčet/blokovat"
@@ -636,6 +752,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   local: "Lokální"
   global: "Globální"
+  messages: "Zprávy"
   list: "Seznamy"
   hashtag: "Hashtag"
   add-list: "Přidat do seznamu"
@@ -805,20 +922,35 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "Po"
   day: "Ne"
+desktop/views/widgets/messaging.vue:
+  title: "Zprávy"
 desktop/views/widgets/polls.vue:
   title: "Ankety"
 desktop/views/widgets/users.vue:
   title: "Doporučení uživatelé"
+mobile/views/components/drive.vue:
+  used: "využito"
+  folder-name: "Název složky"
+  url-prompt: "URL adresa souboru, který chcete nahrát"
 mobile/views/components/drive.file-detail.vue:
   download: "Stáhnout"
   rename: "Přejmenovat"
+mobile/views/components/media-video.vue:
+  click-to-show: "Klikněte pro zobrazení"
+mobile/views/components/note.vue:
+  private: "Tento příspěvek je soukromý"
+  deleted: "Tento příspěvek byl odstraněn"
 mobile/views/components/note-detail.vue:
   reply: "Odpovědět"
+  private: "Tento příspěvek je soukromý"
+  deleted: "Tento příspěvek byl odstraněn"
 mobile/views/components/post-form.vue:
   reply: "Odpovědět"
   renote: "Renotovat"
   reply-placeholder: "Odpovědět na tento příspěvěk"
 mobile/views/components/sub-note-content.vue:
+  private: "Tento příspěvek je soukromý"
+  deleted: "Tento příspěvek byl odstraněn"
   poll: "Ankety"
 mobile/views/components/ui.header.vue:
   welcome-back: "Vítejte zpátky,"
@@ -827,10 +959,14 @@ mobile/views/components/ui.nav.vue:
 mobile/views/pages/home.vue:
   local: "Lokální"
   global: "Globální"
+  messages: "Zprávy"
 mobile/views/pages/widgets.vue:
+  add-widget: "Přidat"
   customization-tips: "Tipy pro přizpůsobení"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivita"
+mobile/views/pages/games/reversi.vue:
+  reversi: "Reversi"
 mobile/views/pages/user/home.vue:
   activity: "Aktivita"
 mobile/views/pages/user/home.photos.vue:
@@ -839,6 +975,7 @@ deck:
   local: "Lokální"
   hashtag: "Hashtagy"
   global: "Globální"
+  select-list: "Vyberte seznam"
   swap-left: "Posunout doleva"
   swap-right: "Posunout doprava"
   rename: "Přejmenovat"
@@ -852,3 +989,4 @@ dev/views/new-app.vue:
   following-write: "Sledovat a přestat sledovat"
   drive-read: "Přečíst váš Disk"
   notification-read: "Sledovat oznámení."
+  notification-write: "Zpravovat notifikace."
