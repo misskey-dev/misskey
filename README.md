@@ -139,6 +139,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/2?token-time=2145916800&token-hash=zcwFxb2zopzWwksKVU1YpfAEjsl4yKT02aQ6yiAFRiQ%3D" alt="natalie" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13034746/c711c7f58e204ecfbc2fd646bc8a4eee/1?token-time=2145916800&token-hash=5T8XcaAf9Zyzfg3QubR06s_kJZkArVEM2dwObrBVAU4%3D" alt="Hiratake" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/18072312/98e894d960314fa7bc236a72a39488fe/1?token-time=2145916800&token-hash=D6QK3fPyqiYKJfOzc-QqaSSairUrWdjld-ewp2waj6s%3D" alt="@Hekovic@gyutte.site" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1?token-time=2145916800&token-hash=Ksk_2l3gjPDbnzMUOCSW1E-hdPJsNs2tSR4_RAakRK8%3D" alt="dansup" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/619786/32cf01444db24e578cd1982c197f6fc6/1?token-time=2145916800&token-hash=CXe9AqlZy9AsYfiWd3OBYVOzvODoN47Litz0Tu4BFpU%3D" alt="Gargron" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5731881/4b6038e6cda34c04b83a5fcce3806a93/1?token-time=2145916800&token-hash=xhR1n6NAAyEb-IUXLD6_dshkFa3mefU5ZZuk1L8qKTs%3D" alt="Nokotaro Takeda" width="100"></td>
@@ -146,13 +147,14 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr><tr>
 <td><a href="https://www.patreon.com/user?u=4389829">natalie</a></td>
 <td><a href="https://www.patreon.com/hiratake">Hiratake</a></td>
+<td><a href="https://www.patreon.com/user?u=18072312">@Hekovic@gyutte.site</a></td>
 <td><a href="https://www.patreon.com/dansup">dansup</a></td>
 <td><a href="https://www.patreon.com/mastodon">Gargron</a></td>
 <td><a href="https://www.patreon.com/takenoko">Nokotaro Takeda</a></td>
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Mon, 04 Mar 2019 09:06:05 UTC
+**Last updated:** Wed, 06 Mar 2019 23:40:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
