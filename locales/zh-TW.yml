@@ -49,6 +49,17 @@ common/views/components/theme.vue:
   dark-themes: "深色主題"
   install-a-theme: "安裝主題"
   save-created-theme: "保存主題"
+common/views/components/signin.vue:
+  signin-with-twitter: "用 Twitter 帳號登入"
+  signin-with-github: "用 GitHub 帳號登入"
+  signin-with-discord: "用 Discord 帳號登入"
+  login-failed: "登錄失敗。 請檢查用戶名和密碼。"
+common/views/components/signup.vue:
+  invitation-code: "邀請碼"
+  username: "用戶名"
+  available: "可用"
+  too-long: "請不要超過20個字元"
+  password: "密碼"
 admin/views/dashboard.vue:
   drive: "雲端硬碟"
 admin/views/charts.vue:
