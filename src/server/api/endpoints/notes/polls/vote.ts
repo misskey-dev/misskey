@@ -13,6 +13,7 @@ import { getNote } from '../../../common/getters';
 import { deliver } from '../../../../../queue';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
+import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
 
 export const meta = {
 	desc: {
@@ -171,6 +172,9 @@ export default define(meta, async (ps, user) => {
 
 		deliver(user, renderActivity(await renderVote(user, vote, note, pollOwner)), pollOwner.inbox);
 	}
+
+	// リモートフォロワーにUpdate配信
+	deliverQuestionUpdate(note._id);
 
 	return;
 });

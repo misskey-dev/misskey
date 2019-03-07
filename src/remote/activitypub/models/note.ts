@@ -18,6 +18,7 @@ import { extractPollFromQuestion } from './question';
 import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
 import { IDriveFile } from '../../../models/drive-file';
+import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 
 const logger = apLogger;
 
@@ -136,6 +137,9 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 			} else if (index >= 0) {
 				logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 				await vote(actor, reply, index);
+
+				// リモートフォロワーにUpdate配信
+				deliverQuestionUpdate(reply._id);
 			}
 			return null;
 		};

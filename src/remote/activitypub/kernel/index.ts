@@ -2,6 +2,7 @@ import { Object } from '../type';
 import { IRemoteUser } from '../../../models/user';
 import create from './create';
 import performDeleteActivity from './delete';
+import performUpdateActivity from './update';
 import follow from './follow';
 import undo from './undo';
 import like from './like';
@@ -21,6 +22,10 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 
 	case 'Delete':
 		await performDeleteActivity(actor, activity);
+		break;
+
+	case 'Update':
+		await performUpdateActivity(actor, activity);
 		break;
 
 	case 'Follow':
