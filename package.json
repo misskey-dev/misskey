@@ -101,7 +101,7 @@
 		"autwh": "0.1.0",
 		"bcryptjs": "2.4.3",
 		"bee-queue": "1.2.2",
-		"bootstrap-vue": "2.0.0-rc.11",
+		"bootstrap-vue": "2.0.0-rc.13",
 		"cafy": "15.1.0",
 		"chai": "4.2.0",
 		"chai-http": "4.2.1",
