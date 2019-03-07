@@ -1,0 +1,4 @@
+user-agent: *
+allow: /
+
+# todo: sitemap
