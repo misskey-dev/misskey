@@ -667,9 +667,13 @@ desktop/views/components/note-detail.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
   renote: "Renotovat"
+  add-reaction: "Přidat reakci"
+  undo-reaction: "Odebrat reakci"
 desktop/views/components/note.vue:
   reply: "Odpovědět"
   renote: "Renote"
+  add-reaction: "Přidat reakci"
+  undo-reaction: "Odebrat reakci"
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
 desktop/views/components/notes.vue:
@@ -681,11 +685,13 @@ desktop/views/components/post-form.vue:
   hide-contents: "Schovat obsah"
   reply-placeholder: "Odpovědět na tento příspěvěk"
   quote-placeholder: "Citovat tento příspěvek"
+  submit: "Příspěvek"
   reply: "Odpovědět"
   renote: "Renotovat"
   posted: "Odesláno!"
   replied: "Odpověděno!"
   reposted: "Renotováno!"
+  note-failed: "Nepodařilo se přidat příspěvek"
   renote-failed: "Renotování neuspělo"
   insert-a-kao: "v('ω')v"
   create-poll: "Vytvořit anketu"
@@ -715,13 +721,19 @@ desktop/views/components/settings.2fa.vue:
 common/views/components/media-image.vue:
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/api-settings.vue:
+  token: "Token:"
+  enter-password: "Prosím zadejte heslo"
   console:
     title: "API konzole"
+    endpoint: "Endpoint"
     parameter: "Parametry"
     send: "Odeslat"
     sending: "Odesílám"
     response: "Výsledek"
+desktop/views/components/settings.apps.vue:
+  no-apps: "Žádné připojené aplikace"
 common/views/components/drive-settings.vue:
+  max: "Velikost úložiště"
   in-use: "využito"
   stats: "Statistiky"
 common/views/components/mute-and-block.vue:
@@ -750,8 +762,10 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/taskmanager.vue:
   title: "Správce úloh"
 desktop/views/components/timeline.vue:
+  home: "Domů"
   local: "Lokální"
   global: "Globální"
+  mentions: "Zmínění"
   messages: "Zprávy"
   list: "Seznamy"
   hashtag: "Hashtag"
@@ -759,10 +773,21 @@ desktop/views/components/timeline.vue:
   list-name: "Název seznamu"
 desktop/views/components/ui.header.vue:
   welcome-back: "Vítejte zpátky,"
+  adjective: "Pán"
 desktop/views/components/ui.header.account.vue:
   profile: "Váš profil"
+  lists: "Seznamy"
+  admin: "Administrace"
+desktop/views/components/ui.header.nav.vue:
+  game: "Hry"
+desktop/views/components/ui.header.notifications.vue:
+  title: "Oznámení"
 desktop/views/components/ui.header.post.vue:
   post: "Nový příspěvek"
+desktop/views/components/ui.header.search.vue:
+  placeholder: "Vyhledávání"
+desktop/views/components/user-lists-window.vue:
+  title: "Seznamy"
 admin/views/index.vue:
   federation: "Z fediversu"
   hashtags: "Hashtagy"
@@ -924,6 +949,8 @@ desktop/views/pages/user/user.header.vue:
   day: "Ne"
 desktop/views/widgets/messaging.vue:
   title: "Zprávy"
+desktop/views/widgets/notifications.vue:
+  title: "Oznámení"
 desktop/views/widgets/polls.vue:
   title: "Ankety"
 desktop/views/widgets/users.vue:
@@ -954,11 +981,20 @@ mobile/views/components/sub-note-content.vue:
   poll: "Ankety"
 mobile/views/components/ui.header.vue:
   welcome-back: "Vítejte zpátky,"
+  adjective: "Pán"
 mobile/views/components/ui.nav.vue:
+  notifications: "Oznámení"
+  user-lists: "Seznamy"
+  game: "Hry"
+  admin: "Administrace"
   about: "O Misskey"
+mobile/views/pages/user-lists.vue:
+  title: "Seznamy"
 mobile/views/pages/home.vue:
+  home: "Domů"
   local: "Lokální"
   global: "Globální"
+  mentions: "Zmínění"
   messages: "Zprávy"
 mobile/views/pages/widgets.vue:
   add-widget: "Přidat"
@@ -972,9 +1008,13 @@ mobile/views/pages/user/home.vue:
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Žádné obrázky"
 deck:
+  home: "Domů"
   local: "Lokální"
   hashtag: "Hashtagy"
   global: "Globální"
+  mentions: "Zmínění"
+  notifications: "Oznámení"
+  list: "Seznamy"
   select-list: "Vyberte seznam"
   swap-left: "Posunout doleva"
   swap-right: "Posunout doprava"
