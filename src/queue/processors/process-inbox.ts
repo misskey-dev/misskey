@@ -15,7 +15,7 @@ import instanceChart from '../../services/chart/instance';
 const logger = new Logger('inbox');
 
 // ユーザーのinboxにアクティビティが届いた時の処理
-export default async (job: Bull.Job, done: any): Promise<void> => {
+export default async (job: Bull.Job): Promise<void> => {
 	const signature = job.data.signature;
 	const activity = job.data.activity;
 
@@ -33,7 +33,6 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 		const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
 		if (host === null) {
 			logger.warn(`request was made by local user: @${username}`);
-			done();
 			return;
 		}
 
@@ -42,7 +41,6 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 			ValidateActivity(activity, host);
 		} catch (e) {
 			logger.warn(e.message);
-			done();
 			return;
 		}
 
@@ -51,7 +49,6 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 		const instance = await Instance.findOne({ host: host.toLowerCase() });
 		if (instance && instance.isBlocked) {
 			logger.warn(`Blocked request: ${host}`);
-			done();
 			return;
 		}
 
@@ -63,7 +60,6 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 			ValidateActivity(activity, host);
 		} catch (e) {
 			logger.warn(e.message);
-			done();
 			return;
 		}
 
@@ -72,7 +68,6 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 		const instance = await Instance.findOne({ host: host.toLowerCase() });
 		if (instance && instance.isBlocked) {
 			logger.warn(`Blocked request: ${host}`);
-			done();
 			return;
 		}
 
@@ -92,7 +87,6 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 			} else {
 				updatePerson(activity.actor, null, activity.object);
 			}
-			done();
 			return;
 		}
 	}
@@ -103,13 +97,11 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 	}
 
 	if (user === null) {
-		done(new Error('failed to resolve user'));
-		return;
+		throw new Error('failed to resolve user');
 	}
 
 	if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
 		logger.error('signature verification failed');
-		done();
 		return;
 	}
 
@@ -136,12 +128,7 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 	});
 
 	// アクティビティを処理
-	try {
-		await perform(user, activity);
-		done();
-	} catch (e) {
-		done(e);
-	}
+	await perform(user, activity);
 };
 
 /**

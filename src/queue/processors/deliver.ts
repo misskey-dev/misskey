@@ -7,7 +7,7 @@ import instanceChart from '../../services/chart/instance';
 
 let latest: string = null;
 
-export default async (job: Bull.Job, done: any): Promise<void> => {
+export default async (job: Bull.Job): Promise<void> => {
 	const { host } = new URL(job.data.to);
 
 	try {
@@ -29,8 +29,6 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 
 			instanceChart.requestSent(i.host, true);
 		});
-
-		done();
 	} catch (res) {
 		// Update stats
 		registerOrFetchInstanceDoc(host).then(i => {
@@ -51,13 +49,12 @@ export default async (job: Bull.Job, done: any): Promise<void> => {
 			if (res.statusCode >= 400 && res.statusCode < 500) {
 				// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
 				// 何回再送しても成功することはないということなのでエラーにはしないでおく
-				done();
-			} else {
-				done(res.statusMessage);
+				return;
 			}
+
+			return res.statusMessage;
 		} else {
 			queueLogger.warn(`deliver failed: ${res} to=${job.data.to}`);
-			done();
 		}
 	}
 };
