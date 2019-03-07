@@ -60,6 +60,28 @@ common/views/components/signup.vue:
   available: "可用"
   too-long: "請不要超過20個字元"
   password: "密碼"
+  password-placeholder: "建議至少8個字元"
+common/views/components/stream-indicator.vue:
+  connecting: "正在連線"
+  reconnecting: "正在重新連線"
+  connected: "已建立連線"
+common/views/components/integration-settings.vue:
+  disconnect: "中斷連線"
+common/views/components/github-setting.vue:
+  reconnect: "重新連線"
+  disconnect: "中斷連線"
+common/views/components/discord-setting.vue:
+  reconnect: "重新連線"
+  disconnect: "中斷連線"
+common/views/components/language-settings.vue:
+  recommended: "推薦"
+  auto: "自動"
+  specify-language: "指定語言"
+common/views/components/profile-editor.vue:
+  title: "個人資料"
+  name: "名稱"
+  birthday: "生日:"
+  privacy: "隱私"
 admin/views/dashboard.vue:
   drive: "雲端硬碟"
 admin/views/charts.vue:
