@@ -103,7 +103,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12190916/fb7fa7983c14425f890369535b1506a4/1?token-time=2145916800&token-hash=WeuDzzz24cRXJogyIkU-mxARqkdyms-rcZKbO-GpGjw%3D" alt="weep" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/12059069" alt="naga_rus" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/3?token-time=2145916800&token-hash=c8HeVqLtmdgH-gSBJg8i10gmOcwllM87MDHeznl3el0%3D" alt="Melilot" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/4?token-time=2145916800&token-hash=vZdDTTF-ahiKBjjgppS2ev4rkD8H7TTKkXXoxsucs6Y%3D" alt="Melilot" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/16869916" alt="見当かなみ" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12999811/5f349fafcce44dd1824a8b1ebbec4564/3?token-time=2145916800&token-hash=LtV2lRi3L2jOWMLwccr9qWYfPrFlzIo2jYZHKzHEb6k%3D" alt="Xeltica" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12021162/963128bb8d14476dbd8407943db8f31a/1?token-time=2145916800&token-hash=1FlxS9MEgmNGH_RHUVHbO5hIXB5I1z0lvA33CTvYvjA%3D" alt="gutfuckllc" width="100"></td>
@@ -154,7 +154,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Wed, 06 Mar 2019 23:40:06 UTC
+**Last updated:** Thu, 07 Mar 2019 11:30:05 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
