@@ -3,7 +3,7 @@ import * as URL from 'url';
 import * as tmp from 'tmp';
 import * as Koa from 'koa';
 import * as request from 'request';
-import * as fileType from 'file-type';
+import fileType from 'file-type';
 import { serverLogger } from '..';
 import config from '../../config';
 import { IImage, ConvertToPng } from '../../services/drive/image-processor';

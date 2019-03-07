@@ -6,7 +6,7 @@ import * as crypto from 'crypto';
 import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
-import * as fileType from 'file-type';
+import fileType from 'file-type';
 
 import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
 import DriveFolder from '../../models/drive-folder';
