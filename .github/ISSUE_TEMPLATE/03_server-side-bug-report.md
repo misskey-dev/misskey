@@ -1,8 +1,8 @@
 ---
-name: Server-side Bug Report
+name: Bug Report (Server specific)
 about: Create a report to help us improve
 title: ''
-labels: bug, server-side
+labels: bug?, server-side
 assignees: ''
 
 ---

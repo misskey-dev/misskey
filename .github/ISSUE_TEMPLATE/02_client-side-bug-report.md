@@ -1,8 +1,8 @@
 ---
-name: Client-side Bug Report
+name: Bug Report (Client specific)
 about: Create a report to help us improve
 title: ''
-labels: bug, client-side
+labels: bug?, client-side
 assignees: ''
 
 ---

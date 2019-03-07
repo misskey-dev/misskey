@@ -1,5 +1,5 @@
 ---
-name: Client-side Feature Request
+name: Feature Request (Client specific)
 about: Suggest an idea for this project
 title: ''
 labels: client-side, feature
