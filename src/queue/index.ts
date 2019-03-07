@@ -40,6 +40,7 @@ export function deliver(user: ILocalUser, content: any, to: any) {
 			type: 'exponential',
 			delay: 1000
 		},
+		lifo: true,
 		removeOnComplete: true,
 		removeOnFail: true
 	});
@@ -57,6 +58,7 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 			type: 'exponential',
 			delay: 1000
 		},
+		lifo: true,
 		removeOnComplete: true,
 		removeOnFail: true
 	});
