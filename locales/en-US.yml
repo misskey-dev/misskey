@@ -508,7 +508,7 @@ common/views/components/poll-editor.vue:
   expiration: "Valid until"
   infinite: "Indefinitely"
   at: "Date and time pick"
-  after: "Specificity of progress"
+  after: "Progression specifics"
   no-more: "You cannot add any more"
   deadline-date: "Finish date"
   deadline-time: "Time duration"
