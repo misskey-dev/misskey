@@ -84,7 +84,7 @@
 		"@types/seedrandom": "2.4.27",
 		"@types/sharp": "0.21.2",
 		"@types/showdown": "1.9.2",
-		"@types/speakeasy": "2.0.3",
+		"@types/speakeasy": "2.0.4",
 		"@types/systeminformation": "3.23.1",
 		"@types/tinycolor2": "1.4.1",
 		"@types/tmp": "0.0.33",
