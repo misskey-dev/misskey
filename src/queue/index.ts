@@ -35,7 +35,7 @@ export function deliver(user: ILocalUser, content: any, to: any) {
 	};
 
 	return deliverQueue.add(data, {
-		attempts: 4,
+		attempts: 8,
 		backoff: {
 			type: 'exponential',
 			delay: 1000
@@ -52,7 +52,7 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 	};
 
 	return inboxQueue.add(data, {
-		attempts: 4,
+		attempts: 8,
 		backoff: {
 			type: 'exponential',
 			delay: 1000
