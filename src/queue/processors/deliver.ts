@@ -7,7 +7,7 @@ import instanceChart from '../../services/chart/instance';
 
 let latest: string = null;
 
-export default async (job: Bull.Job): Promise<void> => {
+export default async (job: Bull.Job) => {
 	const { host } = new URL(job.data.to);
 
 	try {
@@ -29,6 +29,8 @@ export default async (job: Bull.Job): Promise<void> => {
 
 			instanceChart.requestSent(i.host, true);
 		});
+
+		return 'Success';
 	} catch (res) {
 		// Update stats
 		registerOrFetchInstanceDoc(host).then(i => {
@@ -46,15 +48,19 @@ export default async (job: Bull.Job): Promise<void> => {
 		if (res != null && res.hasOwnProperty('statusCode')) {
 			queueLogger.warn(`deliver failed: ${res.statusCode} ${res.statusMessage} to=${job.data.to}`);
 
+			// 4xx
 			if (res.statusCode >= 400 && res.statusCode < 500) {
 				// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
 				// 何回再送しても成功することはないということなのでエラーにはしないでおく
-				return;
+				return `${res.statusCode} ${res.statusMessage}`;
 			}
 
-			return res.statusMessage;
+			// 5xx etc.
+			throw `${res.statusCode} ${res.statusMessage}`;
 		} else {
+			// DNS error, socket error, timeout ...
 			queueLogger.warn(`deliver failed: ${res} to=${job.data.to}`);
+			throw res;
 		}
 	}
 };
