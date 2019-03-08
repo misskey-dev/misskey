@@ -1,4 +1,4 @@
-<img src="https://github.com/syuilo/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/>
+<a href="https://ai.misskey.xyz/"><img src="https://github.com/syuilo/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/></a>
 
 [![Misskey](/assets/title.png)](https://misskey.xyz/)
 ================================================================
