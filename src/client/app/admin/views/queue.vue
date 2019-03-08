@@ -51,8 +51,18 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.api('admin/queue/stats').then(stats => {
-			this.stats = stats;
+		const fetchStats = () => {
+			this.$root.api('admin/queue/stats', {}, true).then(stats => {
+				this.stats = stats;
+			});
+		};
+
+		fetchStats();
+
+		const clock = setInterval(fetchStats, 1000);
+
+		this.$once('hook:beforeDestroy', () => {
+			clearInterval(clock);
 		});
 	},
 
