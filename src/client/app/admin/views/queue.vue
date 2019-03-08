@@ -8,11 +8,11 @@
 				<ui-input :value="stats.deliver.waiting | number" type="text" readonly>
 					<span>Waiting</span>
 				</ui-input>
-				<ui-input :value="stats.deliver.active | number" type="text" readonly>
-					<span>Active</span>
-				</ui-input>
 				<ui-input :value="stats.deliver.delayed | number" type="text" readonly>
 					<span>Delayed</span>
+				</ui-input>
+				<ui-input :value="stats.deliver.active | number" type="text" readonly>
+					<span>Active</span>
 				</ui-input>
 			</ui-horizon-group>
 		</section>
@@ -22,11 +22,11 @@
 				<ui-input :value="stats.inbox.waiting | number" type="text" readonly>
 					<span>Waiting</span>
 				</ui-input>
-				<ui-input :value="stats.inbox.active | number" type="text" readonly>
-					<span>Active</span>
-				</ui-input>
 				<ui-input :value="stats.inbox.delayed | number" type="text" readonly>
 					<span>Delayed</span>
+				</ui-input>
+				<ui-input :value="stats.inbox.active | number" type="text" readonly>
+					<span>Active</span>
 				</ui-input>
 			</ui-horizon-group>
 		</section>
