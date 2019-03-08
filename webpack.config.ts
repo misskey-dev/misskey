@@ -132,7 +132,7 @@ module.exports = {
 		new WebpackOnBuildPlugin((stats: any) => {
 			fs.writeFileSync('./built/client/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
 
-			fs.mkdirSync('./built/client/assets/locales', { recursive: true })
+			fs.mkdirSync('./built/client/assets/locales', { recursive: true });
 
 			for (const [lang, locale] of Object.entries(locales))
 				fs.writeFileSync(`./built/client/assets/locales/${lang}.json`, JSON.stringify(locale), 'utf-8');
