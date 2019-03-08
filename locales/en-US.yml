@@ -223,8 +223,8 @@ common:
   search: "Search"
   delete: "Delete"
   loading: "Loading"
-  ok: "It's OK"
-  cancel: "Quit"
+  ok: "Confirm"
+  cancel: "Exit"
   update-available-title: "Update available"
   update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
@@ -539,7 +539,7 @@ common/views/components/signin.vue:
   signin-with-twitter: "Log in with Twitter"
   signin-with-github: "Sign in with GitHub"
   signin-with-discord: "Sign in with Discord"
-  login-failed: "Log in failed. Make sure you have entered your correct username and password."
+  login-failed: "Logging in has failed. Make sure you have entered the correct username and password."
 common/views/components/signup.vue:
   invitation-code: "Invitation code"
   invitation-info: "If you do not have an invitation code, please contact an <a href=\"{}\">administrator</a>."
@@ -1384,7 +1384,7 @@ desktop/views/pages/user/user.timeline.vue:
   with-media: "Media"
   my-posts: "My posts"
 desktop/views/widgets/messaging.vue:
-  title: "Message"
+  title: "Messaging"
 desktop/views/widgets/notifications.vue:
   title: "Notifications"
 desktop/views/widgets/polls.vue:

@@ -26,6 +26,7 @@ common:
   dark-mode: "Tryb ciemny"
   signin: "Zaloguj się"
   signup: "Rejestracja"
+  signout: "Wyloguj się"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -120,6 +121,7 @@ common:
     other: "Inne"
     appearance: "Wygląd"
     behavior: "Zachowanie"
+    note-visibility: "Widoczność wpisów"
     timeline: "Oś czasu"
   search: "Szukaj"
   delete: "Usuń"
