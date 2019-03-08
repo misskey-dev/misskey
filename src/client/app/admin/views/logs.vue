@@ -85,11 +85,10 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .nqjzuvev
-	white-space nowrap
-	overflow auto
 	padding 8px
 	background #000
 	color #fff
+	font-size 14px
 
 	> code
 		display block
