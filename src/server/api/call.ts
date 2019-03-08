@@ -1,3 +1,4 @@
+import { performance } from 'perf_hooks';
 import limiter from './limiter';
 import { IUser } from '../../models/user';
 import { IApp } from '../../models/app';
@@ -71,6 +72,7 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 	}
 
 	// API invoking
+	const before = performance.now();
 	return await ep.exec(data, user, app, file).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
@@ -87,6 +89,12 @@ export default async (endpoint: string, user: IUser, app: IApp, data: any, file?
 					stack: e.stack
 				}
 			});
+		}
+	}).finally(() => {
+		const after = performance.now();
+		const time = after - before;
+		if (time > 1000) {
+			apiLogger.warn(`SLOW API CALL DETECTED: ${ep.name} (${time}ms)`);
 		}
 	});
 };
