@@ -148,6 +148,7 @@ common:
     suggest-recent-hashtags: "Navrhovat nedávné hashtagy v rámci psacího pole"
     always-show-nsfw: "Vždycky ukázat NSFW obsah"
     always-mark-nsfw: "Označovat všechny příspěvky za delikátní"
+    show-full-acct: "Zaradit hostovací server jako součast přezdívky"
     show-via: "zobrazit přes"
     reduce-motion: "Snížit pohyb v rozhraní"
     this-setting-is-this-device-only: "Pouze pro toto zařízení"
@@ -290,13 +291,17 @@ auth/views/form.vue:
 auth/views/index.vue:
   loading: "Načítám..."
   already-authorized: "Tato aplikace byla již autorizována."
+  error: "Taková relace neexistuje."
   sign-in: "Prosím přihlaste se."
 common/views/pages/explore.vue:
   verified-users: "Ověřené účty"
   popular-users: "Populární uživatelé"
+  recently-updated-users: "Nedávno aktívni uživatelé"
   recently-registered-users: "Nedávno registrovaní uživatelé"
   popular-tags: "Populární tagy"
   federated: "Z fediverse"
+common/views/components/url-preview.vue:
+  enable-player: "Otevřít v přehrávači"
 common/views/components/user-list.vue:
   no-users: "Žádní uživatelé"
 common/views/components/games/reversi/reversi.vue:
