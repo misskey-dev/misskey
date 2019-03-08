@@ -73,7 +73,7 @@ function greet() {
 		console.log(chalk.keyword('orange')(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
 
 		console.log('');
-		console.log(chalk`<${os.hostname()} {gray (PID: ${process.pid.toString()})}>`);
+		console.log(chalk`< ${os.hostname()} {gray (PID: ${process.pid.toString()})} >`);
 	}
 
 	bootLogger.info('Welcome to Misskey!');
