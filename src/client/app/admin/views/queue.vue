@@ -3,6 +3,34 @@
 	<ui-card>
 		<template #title>{{ $t('operation') }}</template>
 		<section>
+			<header>Deliver</header>
+			<ui-horizon-group inputs v-if="stats">
+				<ui-input :value="stats.deliver.waiting | number" type="text" readonly>
+					<span>Waiting</span>
+				</ui-input>
+				<ui-input :value="stats.deliver.active | number" type="text" readonly>
+					<span>Active</span>
+				</ui-input>
+				<ui-input :value="stats.deliver.delayed | number" type="text" readonly>
+					<span>Delayed</span>
+				</ui-input>
+			</ui-horizon-group>
+		</section>
+		<section>
+			<header>Inbox</header>
+			<ui-horizon-group inputs v-if="stats">
+				<ui-input :value="stats.inbox.waiting | number" type="text" readonly>
+					<span>Waiting</span>
+				</ui-input>
+				<ui-input :value="stats.inbox.active | number" type="text" readonly>
+					<span>Active</span>
+				</ui-input>
+				<ui-input :value="stats.inbox.delayed | number" type="text" readonly>
+					<span>Delayed</span>
+				</ui-input>
+			</ui-horizon-group>
+		</section>
+		<section>
 			<ui-button @click="removeAllJobs">{{ $t('remove-all-jobs') }}</ui-button>
 		</section>
 	</ui-card>
@@ -18,7 +46,14 @@ export default Vue.extend({
 
 	data() {
 		return {
+			stats: null
 		};
+	},
+
+	created() {
+		this.$root.api('admin/queue/stats').then(stats => {
+			this.stats = stats;
+		});
 	},
 
 	methods: {
