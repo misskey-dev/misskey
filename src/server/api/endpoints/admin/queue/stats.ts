@@ -1,5 +1,5 @@
 import define from '../../../define';
-import { deliverQueue } from '../../../../../queue';
+import { deliverQueue, inboxQueue } from '../../../../../queue';
 
 export const meta = {
 	tags: ['admin'],
@@ -12,7 +12,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const deliverJobCounts = await deliverQueue.getJobCounts();
-	const inboxJobCounts = await deliverQueue.getJobCounts();
+	const inboxJobCounts = await inboxQueue.getJobCounts();
 
 	return {
 		deliver: deliverJobCounts,
