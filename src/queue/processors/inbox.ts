@@ -48,7 +48,7 @@ export default async (job: Bull.Job): Promise<void> => {
 		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 		const instance = await Instance.findOne({ host: host.toLowerCase() });
 		if (instance && instance.isBlocked) {
-			logger.warn(`Blocked request: ${host}`);
+			logger.info(`Blocked request: ${host}`);
 			return;
 		}
 
