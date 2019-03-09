@@ -16,8 +16,9 @@ function initializeQueue(name: string) {
 			port: config.redis.port,
 			host: config.redis.host,
 			password: config.redis.pass,
-			db: 1
-		}
+			db: config.redis.db || 0,
+		},
+		prefix: config.redis.prefix ? `${config.redis.prefix}:queue` : 'queue'
 	} : null);
 }
 

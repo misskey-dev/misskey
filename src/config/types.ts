@@ -19,6 +19,8 @@ export type Source = {
 		host: string;
 		port: number;
 		pass: string;
+		db?: number;
+		prefix?: string;
 	};
 	elasticsearch: {
 		host: string;
