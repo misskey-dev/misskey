@@ -6,7 +6,7 @@ import { ILocalUser } from '../models/user';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
-import processInbox from './processors/process-inbox';
+import processInbox from './processors/inbox';
 import processDb from './processors/db';
 import { queueLogger } from './logger';
 
