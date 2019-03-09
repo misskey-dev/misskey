@@ -1,9 +1,11 @@
 import * as Bull from 'bull';
 import request from '../../remote/activitypub/request';
-import { queueLogger } from '../logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
+import Logger from '../../services/logger';
+
+const logger = new Logger('deliver');
 
 let latest: string = null;
 
@@ -11,8 +13,9 @@ export default async (job: Bull.Job) => {
 	const { host } = new URL(job.data.to);
 
 	try {
-		if (latest !== (latest = JSON.stringify(job.data.content, null, 2)))
-			queueLogger.debug(`delivering ${latest}`);
+		if (latest !== (latest = JSON.stringify(job.data.content, null, 2))) {
+			logger.debug(`delivering ${latest}`);
+		}
 
 		await request(job.data.user, job.data.to, job.data.content);
 
@@ -46,7 +49,7 @@ export default async (job: Bull.Job) => {
 		});
 
 		if (res != null && res.hasOwnProperty('statusCode')) {
-			queueLogger.warn(`deliver failed: ${res.statusCode} ${res.statusMessage} to=${job.data.to}`);
+			logger.warn(`deliver failed: ${res.statusCode} ${res.statusMessage} to=${job.data.to}`);
 
 			// 4xx
 			if (res.statusCode >= 400 && res.statusCode < 500) {
@@ -59,7 +62,7 @@ export default async (job: Bull.Job) => {
 			throw `${res.statusCode} ${res.statusMessage}`;
 		} else {
 			// DNS error, socket error, timeout ...
-			queueLogger.warn(`deliver failed: ${res} to=${job.data.to}`);
+			logger.warn(`deliver failed: ${res} to=${job.data.to}`);
 			throw res;
 		}
 	}
