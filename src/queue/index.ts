@@ -38,11 +38,11 @@ deliverQueue
 
 inboxQueue
 	.on('waiting', (jobId) => inboxLogger.debug(`waiting id=${jobId}`))
-	.on('active', (job) => inboxLogger.debug(`active id=${job.id} to=${job.data.to}`))
-	.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) id=${job.id} to=${job.data.to}`))
-	.on('failed', (job, err) => inboxLogger.debug(`failed(${err}) id=${job.id} to=${job.data.to}`))
+	.on('active', (job) => inboxLogger.debug(`active id=${job.id}`))
+	.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) id=${job.id}`))
+	.on('failed', (job, err) => inboxLogger.debug(`failed(${err}) id=${job.id}`))
 	.on('error', (error) => inboxLogger.error(`error ${error}`))
-	.on('stalled', (job) => inboxLogger.warn(`stalled id=${job.id} to=${job.data.to}`));
+	.on('stalled', (job) => inboxLogger.warn(`stalled id=${job.id}`));
 
 export function deliver(user: ILocalUser, content: any, to: any) {
 	if (content == null) return null;
