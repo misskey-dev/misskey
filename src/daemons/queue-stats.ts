@@ -21,14 +21,8 @@ export default function() {
 		const inboxJobCounts = await inboxQueue.getJobCounts();
 
 		const stats = {
-			deliver: {
-				active: Math.floor(Math.random() * 100),
-				delayed: Math.floor(Math.random() * 1000),
-			},
-			inbox: {
-				active: Math.floor(Math.random() * 100),
-				delayed: Math.floor(Math.random() * 1000),
-			}
+			deliver: deliverJobCounts,
+			inbox: inboxJobCounts
 		};
 
 		ev.emit('queueStats', stats);
