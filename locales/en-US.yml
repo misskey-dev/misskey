@@ -304,7 +304,7 @@ auth/views/index.vue:
   error: "Session does not exist."
   sign-in: "Please sign in."
 common/views/pages/explore.vue:
-  verified-users: "Verified accounts"
+  verified-users: "Official accounts"
   popular-users: "Popular users"
   recently-updated-users: "Recently active users"
   recently-registered-users: "Users who joined recently"
