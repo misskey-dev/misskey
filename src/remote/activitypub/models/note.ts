@@ -111,11 +111,22 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
 	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
-		? await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<IDriveFile>))
+		? (await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<IDriveFile>)))
+			.filter(image => image != null)
 		: [];
 
 	// リプライ
-	const reply = note.inReplyTo ? await resolveNote(note.inReplyTo, resolver) : null;
+	const reply = note.inReplyTo
+		? await resolveNote(note.inReplyTo, resolver).catch(e => {
+			// 4xxの場合はリプライしてないことにする
+			if (e.statusCode >= 400 && e.statusCode < 500) {
+				logger.warn(`Ignored inReplyTo ${note.inReplyTo} - ${e.statusCode} `);
+				return null;
+			}
+			logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${e.statusCode || e}`);
+			throw e;
+		})
+		: null;
 
 	// 引用
 	let quote: INote;

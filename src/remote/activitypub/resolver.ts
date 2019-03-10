@@ -1,9 +1,6 @@
 import * as request from 'request-promise-native';
 import { IObject } from './type';
 import config from '../../config';
-import { apLogger } from './logger';
-
-export const logger = apLogger.createSubLogger('resolver');
 
 export default class Resolver {
 	private history: Set<string>;
@@ -34,7 +31,6 @@ export default class Resolver {
 			}
 
 			default: {
-				logger.error(`unknown collection type: ${collection.type}`);
 				throw new Error(`unknown collection type: ${collection.type}`);
 			}
 		}
@@ -44,7 +40,6 @@ export default class Resolver {
 
 	public async resolve(value: any): Promise<IObject> {
 		if (value == null) {
-			logger.error('resolvee is null (or undefined)');
 			throw new Error('resolvee is null (or undefined)');
 		}
 
@@ -53,7 +48,6 @@ export default class Resolver {
 		}
 
 		if (this.history.has(value)) {
-			logger.error(`cannot resolve already resolved one: ${value}`);
 			throw new Error('cannot resolve already resolved one');
 		}
 
@@ -68,12 +62,6 @@ export default class Resolver {
 				Accept: 'application/activity+json, application/ld+json'
 			},
 			json: true
-		}).catch(e => {
-			logger.error(`request error: ${value}: ${e.message}`, {
-				url: value,
-				e: e
-			});
-			throw new Error(`request error: ${e.message}`);
 		});
 
 		if (object === null || (
@@ -81,10 +69,6 @@ export default class Resolver {
 				!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		)) {
-			logger.error(`invalid response: ${value}`, {
-				url: value,
-				object: object
-			});
 			throw new Error('invalid response');
 		}
 
