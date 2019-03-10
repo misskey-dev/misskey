@@ -190,6 +190,7 @@ common:
     remain-deleted-note: "I nadále zobrazovat odstraněné příspěvky"
     sound: "Zvuk"
     enable-sounds: "Povolit zvuk"
+    enable-sounds-desc: "Přehrát zvuk, například při odeslání nebo přijetí příspěvku, či zprávy. Toto nastavení je uloženo v prohlížeči."
     volume: "Hlasitost"
     test: "Test"
     update: "Aktualizace Misskey"
