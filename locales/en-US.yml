@@ -114,7 +114,7 @@ common:
     a: "What are you doing?"
     b: "What's happening?"
     c: "What’s on your mind?"
-    d: "Would you post any words?"
+    d: "What do you want to say?"
     e: "Write here"
     f: "Waiting for your writing."
   settings: "Settings"
