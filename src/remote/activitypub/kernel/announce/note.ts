@@ -35,7 +35,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 		renote = await resolveNote(note);
 	} catch (e) {
 		// 対象が4xxならスキップ
-		if (e.statusCode >= 400 && e.statusCode < 500) {	// 4xx
+		if (e.statusCode >= 400 && e.statusCode < 500) {
 			logger.warn(`Ignored announce target ${note.inReplyTo} - ${e.statusCode}`);
 			return;
 		}
