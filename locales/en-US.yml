@@ -285,7 +285,7 @@ auth/views/form.vue:
   account-read: "View account information."
   account-write: "Modify account information."
   note-write: "Post."
-  like-write: "React to a post by expressing how you feel about it."
+  like-write: "Express yourself about the post."
   following-write: "Follow and unfollow."
   drive-read: "Read your drive."
   drive-write: "Upload/delete files in your drive."
