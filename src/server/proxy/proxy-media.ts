@@ -6,7 +6,7 @@ import * as request from 'request';
 import fileType from 'file-type';
 import { serverLogger } from '..';
 import config from '../../config';
-import { IImage, ConvertToPng } from '../../services/drive/image-processor';
+import { IImage, ConvertToPng, ConvertToJpeg } from '../../services/drive/image-processor';
 import checkSvg from '../../misc/check-svg';
 
 export async function proxyMedia(ctx: Koa.BaseContext) {
@@ -29,6 +29,8 @@ export async function proxyMedia(ctx: Koa.BaseContext) {
 
 		if ('static' in ctx.query && ['image/png', 'image/gif'].includes(type)) {
 			image = await ConvertToPng(path, 498, 280);
+		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif'].includes(type)) {
+			image = await ConvertToJpeg(path, 200, 200);
 		} else {
 			image = {
 				data: fs.readFileSync(path),
