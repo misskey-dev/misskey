@@ -16,6 +16,7 @@ import Xev from 'xev';
 import Logger from './services/logger';
 import serverStats from './daemons/server-stats';
 import notesStats from './daemons/notes-stats';
+import queueStats from './daemons/queue-stats';
 import loadConfig from './config/load';
 import { Config } from './config/types';
 import { lessThan } from './prelude/array';
@@ -50,6 +51,7 @@ function main() {
 		if (program.daemons) {
 			serverStats();
 			notesStats();
+			queueStats();
 		}
 	}
 

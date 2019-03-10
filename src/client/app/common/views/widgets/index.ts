@@ -31,3 +31,4 @@ Vue.component('mkw-version', wVersion);
 Vue.component('mkw-hashtags', wHashtags);
 Vue.component('mkw-instance', wInstance);
 Vue.component('mkw-post-form', wPostForm);
+Vue.component('mkw-queue', () => import('./queue.vue').then(m => m.default));
