@@ -652,6 +652,7 @@ common/views/components/profile-editor.vue:
     following-list: "关注列表"
     mute-list: "屏蔽列表"
     blocking-list: "黑名单"
+    user-lists: "列表"
   export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
   enter-password: "请输入您的密码"
   danger-zone: "危险选项"
