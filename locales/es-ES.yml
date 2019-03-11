@@ -421,6 +421,7 @@ common/views/components/profile-editor.vue:
   save: "Guardar"
   email-address: "Correo electrónico"
   export: "Exportar"
+  import: "Importar"
   export-targets:
     mute-list: "Silenciar"
     blocking-list: "Bloquear"
