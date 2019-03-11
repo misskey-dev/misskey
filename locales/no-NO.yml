@@ -187,6 +187,7 @@ common/views/components/profile-editor.vue:
   save: "Lagre"
   export-targets:
     following-list: "Følger"
+    user-lists: "Lister"
 common/views/components/user-list-editor.vue:
   users: "Bruker"
 common/views/widgets/broadcast.vue:
