@@ -424,6 +424,7 @@ common/views/components/profile-editor.vue:
   export-targets:
     mute-list: "Silenciar"
     blocking-list: "Bloquear"
+    user-lists: "Listas"
   enter-password: "Escribe una contraseña"
 common/views/components/user-list-editor.vue:
   users: "Usuarios"
