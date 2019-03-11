@@ -27,7 +27,17 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 	const instance = await fetchMeta();
 	const cache = instance.cacheRemoteFiles;
 
-	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
+	let file;
+	try {
+		file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
+	} catch (e) {
+		// 4xxの場合は添付されてなかったことにする
+		if (e >= 400 && e < 500) {
+			logger.warn(`Ignored image: ${image.url} - ${e}`);
+			return null;
+		}
+		throw e;
+	}
 
 	if (file.metadata.isRemote) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、

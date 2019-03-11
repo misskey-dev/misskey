@@ -29,7 +29,19 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 		return;
 	}
 
-	const renote = await resolveNote(note);
+	// Announce対象をresolve
+	let renote;
+	try {
+		renote = await resolveNote(note);
+	} catch (e) {
+		// 対象が4xxならスキップ
+		if (e.statusCode >= 400 && e.statusCode < 500) {
+			logger.warn(`Ignored announce target ${note.inReplyTo} - ${e.statusCode}`);
+			return;
+		}
+		logger.warn(`Error in announce target ${note.inReplyTo} - ${e.statusCode || e}`);
+		throw e;
+	}
 
 	logger.info(`Creating the (Re)Note: ${uri}`);
 

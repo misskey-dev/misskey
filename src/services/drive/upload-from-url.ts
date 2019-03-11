@@ -42,7 +42,7 @@ export default async (
 		const writable = fs.createWriteStream(path);
 
 		writable.on('finish', () => {
-			logger.succ(`Download succeeded: ${chalk.cyan(url)}`);
+			logger.succ(`Download finished: ${chalk.cyan(url)}`);
 			res();
 		});
 
