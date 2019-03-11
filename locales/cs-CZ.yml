@@ -301,6 +301,7 @@ common/views/pages/explore.vue:
   recently-registered-users: "Nedávno registrovaní uživatelé"
   popular-tags: "Populární tagy"
   federated: "Z fediverse"
+  explore: "Prozkoumat {host}"
 common/views/components/url-preview.vue:
   enable-player: "Otevřít v přehrávači"
 common/views/components/user-list.vue:
