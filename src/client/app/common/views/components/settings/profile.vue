@@ -97,6 +97,7 @@
 				<option value="following">{{ $t('export-targets.following-list') }}</option>
 				<option value="mute">{{ $t('export-targets.mute-list') }}</option>
 				<option value="blocking">{{ $t('export-targets.blocking-list') }}</option>
+				<option value="user-lists">{{ $t('export-targets.user-lists') }}</option>
 			</ui-select>
 			<ui-button @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</ui-button>
 		</div>
@@ -284,6 +285,7 @@ export default Vue.extend({
 				this.exportTarget == 'following' ? 'i/export-following' :
 				this.exportTarget == 'mute' ? 'i/export-mute' :
 				this.exportTarget == 'blocking' ? 'i/export-blocking' :
+				this.exportTarget == 'user-lists' ? 'i/export-user-lists' :
 				null, {});
 
 			this.$root.dialog({

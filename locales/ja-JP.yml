@@ -706,6 +706,7 @@ common/views/components/profile-editor.vue:
     following-list: "フォロー"
     mute-list: "ミュート"
     blocking-list: "ブロック"
+    user-lists: "リスト"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
   enter-password: "パスワードを入力してください"
   danger-zone: "危険な設定"

@@ -136,6 +136,15 @@ export function createExportBlockingJob(user: ILocalUser) {
 	});
 }
 
+export function createExportUserListsJob(user: ILocalUser) {
+	return dbQueue.add('exportUserLists', {
+		user: user
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
 export default function() {
 	if (!program.onlyServer) {
 		deliverQueue.process(128, processDeliver);
