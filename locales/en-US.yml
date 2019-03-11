@@ -647,6 +647,7 @@ common/views/components/profile-editor.vue:
   email-verified: "Your email has been verified."
   email-not-verified: "Email address is not confirmed. Please check your inbox."
   export: "Export"
+  import: "Import"
   export-targets:
     all-notes: "All posted Notes"
     following-list: "List of followers"
