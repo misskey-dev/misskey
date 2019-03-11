@@ -490,6 +490,7 @@ common/views/components/profile-editor.vue:
   email-address: "Adres e-mail"
   email-verified: "Twój adres e-mail został zweryfikowany."
   export: "Eksportuj"
+  import: "Importuj"
   export-targets:
     following-list: "Śledzeni"
     mute-list: "Wycisz"
