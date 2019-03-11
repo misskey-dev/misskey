@@ -652,6 +652,7 @@ common/views/components/profile-editor.vue:
     following-list: "팔로잉"
     mute-list: "뮤트"
     blocking-list: "차단"
+    user-lists: "리스트"
   export-requested: "내보내기를 요청하였습니다. 이 작업은 시간이 걸릴 수 있습니다. 내보내기가 완료되면 드라이브에 파일이 추가됩니다."
   enter-password: "비밀번호를 입력하여 주십시오"
   danger-zone: "위험한 설정"

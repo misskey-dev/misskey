@@ -480,6 +480,7 @@ common/views/components/profile-editor.vue:
     following-list: "フォロー"
     mute-list: "ミュート"
     blocking-list: "ブロック"
+    user-lists: "リスト"
   enter-password: "パスワードを入れてや"
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
