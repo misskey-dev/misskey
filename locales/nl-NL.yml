@@ -196,6 +196,7 @@ common/views/components/profile-editor.vue:
   banner: "Omslagfoto"
   export-targets:
     following-list: "Volgend"
+    user-lists: "Lijsten"
   enter-password: "Voer het wachtwoord in"
 common/views/components/user-list-editor.vue:
   users: "Gebruiker"
