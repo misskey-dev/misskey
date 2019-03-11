@@ -701,6 +701,8 @@ common/views/components/profile-editor.vue:
   email-verified: "メールアドレスが確認されました"
   email-not-verified: "メールアドレスが確認されていません。メールボックスをご確認ください。"
   export: "エクスポート"
+  import: "インポート"
+  export-and-import: "エクスポートとインポート"
   export-targets:
     all-notes: "すべての投稿データ"
     following-list: "フォロー"
@@ -708,6 +710,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "ブロック"
     user-lists: "リスト"
   export-requested: "エクスポートをリクエストしました。これには時間がかかる場合があります。エクスポートが終わると、ドライブにファイルが追加されます。"
+  import-requested: "インポートをリクエストしました。これには時間がかかる場合があります。"
   enter-password: "パスワードを入力してください"
   danger-zone: "危険な設定"
   delete-account: "アカウントを削除"

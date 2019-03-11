@@ -89,7 +89,7 @@
 	</section>
 
 	<section>
-		<header>{{ $t('export') }}</header>
+		<header>{{ $t('export-and-import') }}</header>
 
 		<div>
 			<ui-select v-model="exportTarget">
@@ -99,7 +99,10 @@
 				<option value="blocking">{{ $t('export-targets.blocking-list') }}</option>
 				<option value="user-lists">{{ $t('export-targets.user-lists') }}</option>
 			</ui-select>
-			<ui-button @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</ui-button>
+			<ui-horizon-group class="fit-bottom">
+				<ui-button @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</ui-button>
+				<ui-button @click="doImport()" :disabled="!['user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</ui-button>
+			</ui-horizon-group>
 		</div>
 	</section>
 
@@ -119,7 +122,7 @@ import { apiUrl, host } from '../../../../config';
 import { toUnicode } from 'punycode';
 import langmap from 'langmap';
 import { unique } from '../../../../../../prelude/array';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/profile-editor.vue'),
@@ -148,7 +151,7 @@ export default Vue.extend({
 			avatarUploading: false,
 			bannerUploading: false,
 			exportTarget: 'notes',
-			faDownload
+			faDownload, faUpload
 		};
 	},
 
@@ -291,6 +294,21 @@ export default Vue.extend({
 			this.$root.dialog({
 				type: 'info',
 				text: this.$t('export-requested')
+			});
+		},
+
+		doImport() {
+			this.$chooseDriveFile().then(file => {
+				this.$root.api(
+					this.exportTarget == 'user-lists' ? 'i/import-user-lists' :
+					null, {
+						fileId: file.id
+					});
+
+				this.$root.dialog({
+					type: 'info',
+					text: this.$t('import-requested')
+				});
 			});
 		},
 

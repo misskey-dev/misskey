@@ -9,6 +9,7 @@ import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
 import processDb from './processors/db';
 import { queueLogger } from './logger';
+import { IDriveFile } from '../models/drive-file';
 
 function initializeQueue(name: string) {
 	return new Queue(name, config.redis != null ? {
@@ -139,6 +140,16 @@ export function createExportBlockingJob(user: ILocalUser) {
 export function createExportUserListsJob(user: ILocalUser) {
 	return dbQueue.add('exportUserLists', {
 		user: user
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
+export function createImportUserListsJob(user: ILocalUser, fileId: IDriveFile['_id']) {
+	return dbQueue.add('importUserLists', {
+		user: user,
+		fileId: fileId
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
