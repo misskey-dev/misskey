@@ -339,6 +339,7 @@ common/views/components/profile-editor.vue:
   banner: "Banner"
   save: "Speichern"
   export: "Exportieren"
+  import: "Importieren"
   export-targets:
     user-lists: "Listen"
   enter-password: "Bitte Passwort eingeben"
