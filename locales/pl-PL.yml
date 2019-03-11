@@ -494,6 +494,7 @@ common/views/components/profile-editor.vue:
     following-list: "Śledzeni"
     mute-list: "Wycisz"
     blocking-list: "Zablokuj"
+    user-lists: "Listy"
   enter-password: "Wprowadź hasło"
 common/views/components/user-list-editor.vue:
   users: "Użytkownicy"
