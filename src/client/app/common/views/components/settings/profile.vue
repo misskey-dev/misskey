@@ -56,7 +56,7 @@
 	</section>
 
 	<section>
-		<header>{{ $t('advanced') }}</header>
+		<header><fa :icon="faCogs"/> {{ $t('advanced') }}</header>
 
 		<div>
 			<ui-switch v-model="isCat" @change="save(false)">{{ $t('is-cat') }}</ui-switch>
@@ -66,7 +66,7 @@
 	</section>
 
 	<section>
-		<header>{{ $t('privacy') }}</header>
+		<header><fa :icon="faUnlockAlt"/> {{ $t('privacy') }}</header>
 
 		<div>
 			<ui-switch v-model="isLocked" @change="save(false)">{{ $t('is-locked') }}</ui-switch>
@@ -76,7 +76,7 @@
 	</section>
 
 	<section v-if="enableEmail">
-		<header>{{ $t('email') }}</header>
+		<header><fa :icon="faEnvelope"/> {{ $t('email') }}</header>
 
 		<div>
 			<template v-if="$store.state.i.email != null">
@@ -89,7 +89,7 @@
 	</section>
 
 	<section>
-		<header>{{ $t('export-and-import') }}</header>
+		<header><fa :icon="faBoxes"/> {{ $t('export-and-import') }}</header>
 
 		<div>
 			<ui-select v-model="exportTarget">
@@ -122,8 +122,8 @@ import { apiUrl, host } from '../../../../config';
 import { toUnicode } from 'punycode';
 import langmap from 'langmap';
 import { unique } from '../../../../../../prelude/array';
-import { faDownload, faUpload } from '@fortawesome/free-solid-svg-icons';
-import { faSave } from '@fortawesome/free-regular-svg-icons';
+import { faDownload, faUpload, faUnlockAlt, faBoxes, faCogs } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/profile-editor.vue'),
@@ -152,7 +152,7 @@ export default Vue.extend({
 			avatarUploading: false,
 			bannerUploading: false,
 			exportTarget: 'notes',
-			faDownload, faUpload, faSave
+			faDownload, faUpload, faSave, faEnvelope, faUnlockAlt, faBoxes, faCogs
 		};
 	},
 
