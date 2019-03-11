@@ -527,6 +527,7 @@ common/views/components/profile-editor.vue:
     following-list: "Liste des abonnements"
     mute-list: "Liste des comptes mis en sourdine"
     blocking-list: "Liste des comptes bloqués"
+    user-lists: "Listes"
   export-requested: "Vous avez demandé une exportation. Cela peut prendre un certain temps. Une fois l'exportation terminée, le fichier résultant sera ajouté dans le Drive."
   enter-password: "Veuillez saisir votre mot de passe"
   danger-zone: "Zone de danger"
