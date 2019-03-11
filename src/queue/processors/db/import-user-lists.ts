@@ -6,7 +6,7 @@ import * as mongo from 'mongodb';
 import * as request from 'request';
 
 import { queueLogger } from '../../logger';
-import User, { isRemoteUser, fetchProxyAccount } from '../../../models/user';
+import User from '../../../models/user';
 import config from '../../../config';
 import UserList from '../../../models/user-list';
 import DriveFile from '../../../models/drive-file';
@@ -14,9 +14,7 @@ import chalk from 'chalk';
 import { getOriginalUrl } from '../../../misc/get-drive-file-url';
 import parseAcct from '../../../misc/acct/parse';
 import resolveUser from '../../../remote/resolve-user';
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import renderFollow from '../../../remote/activitypub/renderer/follow';
-import { deliver } from '../..';
+import { pushUserToUserList } from '../../../services/user-list/push';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
@@ -130,18 +128,7 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 			target = await resolveUser(username, host);
 		}
 
-		await UserList.update({ _id: list._id }, {
-			$push: {
-				userIds: target._id
-			}
-		});
-
-		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
-		if (isRemoteUser(target)) {
-			const proxy = await fetchProxyAccount();
-			const content = renderActivity(renderFollow(proxy, user));
-			deliver(proxy, content, target.inbox);
-		}
+		pushUserToUserList(target, list);
 	}
 
 	logger.succ('Imported');

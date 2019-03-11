@@ -1,14 +1,10 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
-import { pack as packUser, isRemoteUser, fetchProxyAccount } from '../../../../../models/user';
-import { publishUserListStream } from '../../../../../services/stream';
-import { renderActivity } from '../../../../../remote/activitypub/renderer';
-import renderFollow from '../../../../../remote/activitypub/renderer/follow';
-import { deliver } from '../../../../../queue';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
+import { pushUserToUserList } from '../../../../../services/user-list/push';
 
 export const meta = {
 	desc: {
@@ -81,18 +77,5 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Push the user
-	await UserList.update({ _id: userList._id }, {
-		$push: {
-			userIds: user._id
-		}
-	});
-
-	publishUserListStream(userList._id, 'userAdded', await packUser(user));
-
-	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
-	if (isRemoteUser(user)) {
-		const proxy = await fetchProxyAccount();
-		const content = renderActivity(renderFollow(proxy, user));
-		deliver(proxy, content, user.inbox);
-	}
+	pushUserToUserList(user, userList);
 });
