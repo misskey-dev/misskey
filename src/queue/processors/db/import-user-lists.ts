@@ -1,20 +1,16 @@
 import * as Bull from 'bull';
-import * as tmp from 'tmp';
-import * as fs from 'fs';
-import * as util from 'util';
 import * as mongo from 'mongodb';
-import * as request from 'request';
 
 import { queueLogger } from '../../logger';
 import User from '../../../models/user';
 import config from '../../../config';
 import UserList from '../../../models/user-list';
 import DriveFile from '../../../models/drive-file';
-import chalk from 'chalk';
 import { getOriginalUrl } from '../../../misc/get-drive-file-url';
 import parseAcct from '../../../misc/acct/parse';
 import resolveUser from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
+import { downloadTextFile } from '../../../misc/download-text-file';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
@@ -31,69 +27,7 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 
 	const url = getOriginalUrl(file);
 
-	// Create temp file
-	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-		tmp.file((e, path, fd, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
-
-	logger.info(`Temp file is ${path}`);
-
-	// write content at URL to temp file
-	await new Promise((res, rej) => {
-		logger.info(`Downloading ${chalk.cyan(url)} ...`);
-
-		const writable = fs.createWriteStream(path);
-
-		writable.on('finish', () => {
-			logger.succ(`Download finished: ${chalk.cyan(url)}`);
-			res();
-		});
-
-		writable.on('error', error => {
-			logger.error(`Download failed: ${chalk.cyan(url)}: ${error}`, {
-				url: url,
-				e: error
-			});
-			rej(error);
-		});
-
-		const requestUrl = new URL(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
-
-		const req = request({
-			url: requestUrl,
-			proxy: config.proxy,
-			timeout: 10 * 1000,
-			headers: {
-				'User-Agent': config.userAgent
-			}
-		});
-
-		req.pipe(writable);
-
-		req.on('response', response => {
-			if (response.statusCode !== 200) {
-				logger.error(`Got ${response.statusCode} (${url})`);
-				writable.close();
-				rej(response.statusCode);
-			}
-		});
-
-		req.on('error', error => {
-			logger.error(`Failed to start download: ${chalk.cyan(url)}: ${error}`, {
-				url: url,
-				e: error
-			});
-			writable.close();
-			rej(error);
-		});
-	});
-
-	logger.succ(`Downloaded to: ${path}`);
-
-	const csv = await util.promisify(fs.readFile)(path, 'utf8');
+	const csv = await downloadTextFile(url);
 
 	for (const line of csv.trim().split('\n')) {
 		const listName = line.split(',')[0].trim();
@@ -132,6 +66,5 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 	}
 
 	logger.succ('Imported');
-	cleanup();
 	done();
 }
