@@ -146,6 +146,16 @@ export function createExportUserListsJob(user: ILocalUser) {
 	});
 }
 
+export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['_id']) {
+	return dbQueue.add('importFollowing', {
+		user: user,
+		fileId: fileId
+	}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
 export function createImportUserListsJob(user: ILocalUser, fileId: IDriveFile['_id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,

@@ -101,7 +101,7 @@
 			</ui-select>
 			<ui-horizon-group class="fit-bottom">
 				<ui-button @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</ui-button>
-				<ui-button @click="doImport()" :disabled="!['user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</ui-button>
+				<ui-button @click="doImport()" :disabled="!['following', 'user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</ui-button>
 			</ui-horizon-group>
 		</div>
 	</section>
@@ -301,6 +301,7 @@ export default Vue.extend({
 		doImport() {
 			this.$chooseDriveFile().then(file => {
 				this.$root.api(
+					this.exportTarget == 'following' ? 'i/import-following' :
 					this.exportTarget == 'user-lists' ? 'i/import-user-lists' :
 					null, {
 						fileId: file.id
