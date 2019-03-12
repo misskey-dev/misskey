@@ -3,13 +3,13 @@ import * as mongo from 'mongodb';
 
 import { queueLogger } from '../../logger';
 import User from '../../../models/user';
-import config from '../../../config';
 import follow from '../../../services/following/create';
 import DriveFile from '../../../models/drive-file';
 import { getOriginalUrl } from '../../../misc/get-drive-file-url';
 import parseAcct from '../../../misc/acct/parse';
 import resolveUser from '../../../remote/resolve-user';
 import { downloadTextFile } from '../../../misc/download-text-file';
+import { isSelfHost, toDbHost } from '../../../misc/convert-host';
 
 const logger = queueLogger.createSubLogger('import-following');
 
@@ -31,11 +31,11 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 	for (const line of csv.trim().split('\n')) {
 		const { username, host } = parseAcct(line.trim());
 
-		let target = host === config.host ? await User.findOne({
+		let target = isSelfHost(host) ? await User.findOne({
 			host: null,
 			usernameLower: username.toLowerCase()
 		}) : await User.findOne({
-			host: host,
+			host: toDbHost(host),
 			usernameLower: username.toLowerCase()
 		});
 

@@ -8,7 +8,7 @@ import addFile from '../../../services/drive/add-file';
 import User from '../../../models/user';
 import dateFormat = require('dateformat');
 import Following from '../../../models/following';
-import config from '../../../config';
+import { getFullApAccount } from '../../../misc/convert-host';
 
 const logger = queueLogger.createSubLogger('export-following');
 
@@ -56,7 +56,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 
 		for (const following of followings) {
 			const u = await User.findOne({ _id: following.followeeId }, { fields: { username: true, host: true } });
-			const content = u.host ? `${u.username}@${u.host}` : `${u.username}@${config.host}`;
+			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
 					if (err) {
