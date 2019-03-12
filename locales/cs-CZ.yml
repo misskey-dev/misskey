@@ -1033,8 +1033,6 @@ desktop/views/pages/selectdrive.vue:
 desktop/views/pages/search.vue:
   not-available: "Vyhledávání je vypnuté pro tuto instanci."
   not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
-desktop/views/pages/share.vue:
-  share-with: "Sdílet na {name}"
 desktop/views/pages/tag.vue:
   no-posts-found: "Nebyly nalezeny žádné příspěvky s \"{q}\"."
 desktop/views/pages/user-list.users.vue:
