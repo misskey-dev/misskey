@@ -1351,8 +1351,6 @@ desktop/views/pages/selectdrive.vue:
 desktop/views/pages/search.vue:
   not-available: "在此实例的设置中关闭搜索功能。"
   not-found: "没有找到“{q}”的帖子"
-desktop/views/pages/share.vue:
-  share-with: "共享{name}"
 desktop/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 desktop/views/pages/user-list.users.vue:

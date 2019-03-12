@@ -1209,8 +1209,6 @@ desktop/views/pages/selectdrive.vue:
 desktop/views/pages/search.vue:
   not-available: "La fonction de recherche est désactivée dans les paramètres de l’instance."
   not-found: "Aucune publication trouvée pour « {q} »."
-desktop/views/pages/share.vue:
-  share-with: "Partager avec {name}"
 desktop/views/pages/tag.vue:
   no-posts-found: "Aucune publication contenant « {q} » n’a été trouvée."
 desktop/views/pages/user-list.users.vue:

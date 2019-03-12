@@ -1351,8 +1351,6 @@ desktop/views/pages/selectdrive.vue:
 desktop/views/pages/search.vue:
   not-available: "검색 기능은 인스턴스 설정에서 비활성화되어 있습니다."
   not-found: "\"{q}\" 와 일치하는 글을 찾을 수 없습니다."
-desktop/views/pages/share.vue:
-  share-with: "{name}(으)로 공유"
 desktop/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 desktop/views/pages/user-list.users.vue:
