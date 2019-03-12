@@ -7,18 +7,22 @@
 			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
 				<ui-input :value="latestStats.deliver.activeSincePrevTick | number" type="text" readonly>
 					<span>Process</span>
+					<template #prefix><fa :icon="fasPlayCircle"/></template>
 					<template #suffix>jobs/s</template>
 				</ui-input>
 				<ui-input :value="latestStats.deliver.active | number" type="text" readonly>
 					<span>Active</span>
+					<template #prefix><fa :icon="farPlayCircle"/></template>
 					<template #suffix>jobs</template>
 				</ui-input>
 				<ui-input :value="latestStats.deliver.waiting | number" type="text" readonly>
 					<span>Waiting</span>
+					<template #prefix><fa :icon="faStopCircle"/></template>
 					<template #suffix>jobs</template>
 				</ui-input>
 				<ui-input :value="latestStats.deliver.delayed | number" type="text" readonly>
 					<span>Delayed</span>
+					<template #prefix><fa :icon="faStopwatch"/></template>
 					<template #suffix>jobs</template>
 				</ui-input>
 			</ui-horizon-group>
@@ -29,18 +33,22 @@
 			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
 				<ui-input :value="latestStats.inbox.activeSincePrevTick | number" type="text" readonly>
 					<span>Process</span>
+					<template #prefix><fa :icon="fasPlayCircle"/></template>
 					<template #suffix>jobs/s</template>
 				</ui-input>
 				<ui-input :value="latestStats.inbox.active | number" type="text" readonly>
 					<span>Active</span>
+					<template #prefix><fa :icon="farPlayCircle"/></template>
 					<template #suffix>jobs</template>
 				</ui-input>
 				<ui-input :value="latestStats.inbox.waiting | number" type="text" readonly>
 					<span>Waiting</span>
+					<template #prefix><fa :icon="faStopCircle"/></template>
 					<template #suffix>jobs</template>
 				</ui-input>
 				<ui-input :value="latestStats.inbox.delayed | number" type="text" readonly>
 					<span>Delayed</span>
+					<template #prefix><fa :icon="faStopwatch"/></template>
 					<template #suffix>jobs</template>
 				</ui-input>
 			</ui-horizon-group>
@@ -58,8 +66,8 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
-import { faTasks, faInbox } from '@fortawesome/free-solid-svg-icons';
-import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { faTasks, faInbox, faStopwatch, faPlayCircle as fasPlayCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faStopCircle, faPlayCircle as farPlayCircle } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/queue.vue'),
@@ -69,7 +77,7 @@ export default Vue.extend({
 			stats: [],
 			deliverChart: null,
 			inboxChart: null,
-			faTasks, faPaperPlane, faInbox
+			faTasks, faPaperPlane, faInbox, faStopwatch, faStopCircle, farPlayCircle, fasPlayCircle
 		};
 	},
 
