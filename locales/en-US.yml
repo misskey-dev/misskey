@@ -1351,8 +1351,6 @@ desktop/views/pages/selectdrive.vue:
 desktop/views/pages/search.vue:
   not-available: "Search feature is turned off in the settings for this instance."
   not-found: "No posts were found for '{q}'"
-desktop/views/pages/share.vue:
-  share-with: "Share on {name}"
 desktop/views/pages/tag.vue:
   no-posts-found: "No posts contains \"{q}\" found."
 desktop/views/pages/user-list.users.vue:
