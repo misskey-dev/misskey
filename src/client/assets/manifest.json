@@ -43,6 +43,11 @@
 		}
 	],
 	"share_target": {
-		"url_template": "share?text=【{title}】%0A{text}%0A{url}"
+		"action": "/share/",
+		"params": {
+			"title": "title",
+			"text": "text",
+			"url": "url"
+		}
 	}
 }
