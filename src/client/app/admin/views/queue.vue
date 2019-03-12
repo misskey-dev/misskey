@@ -147,7 +147,7 @@ export default Vue.extend({
 				},
 			},
 			series: [] as any,
-			colors: ['#00E396', '#00BCD4', '#FFEB3B', '#e53935'],
+			colors: ['#00E396', '#00BCD4', '#FDD835', '#e53935'],
 			xaxis: {
 				type: 'numeric',
 				labels: {
