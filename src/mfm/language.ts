@@ -160,7 +160,7 @@ export const mfmLanguage = P.createLanguage({
 				const match = text.match(/^<(https?:\/\/.*?)>/);
 				if (!match)
 					return P.makeFailure(i, 'not a url');
-				url = match[0];
+				url = match[1];
 			} else
 				url = match[0];
 			url = removeOrphanedBrackets(url);
