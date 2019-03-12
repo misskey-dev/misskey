@@ -73,6 +73,10 @@
 		<x-charts ref="charts"/>
 	</div>
 
+	<div class="queue">
+		<x-queue/>
+	</div>
+
 	<div class="cpu-memory">
 		<x-cpu-memory :connection="connection"/>
 	</div>
@@ -87,6 +91,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import XCpuMemory from "./cpu-memory.vue";
+import XQueue from "./dashboard.queue-charts.vue";
 import XCharts from "./charts.vue";
 import XApLog from "./ap-log.vue";
 import { faDatabase } from '@fortawesome/free-solid-svg-icons';
@@ -98,6 +103,7 @@ export default Vue.extend({
 
 	components: {
 		XCpuMemory,
+		XQueue,
 		XCharts,
 		XApLog,
 		MarqueeText
@@ -272,6 +278,9 @@ export default Vue.extend({
 				margin-bottom 16px
 
 	> .charts
+		margin-bottom 16px
+
+	> .queue
 		margin-bottom 16px
 
 	> .cpu-memory
