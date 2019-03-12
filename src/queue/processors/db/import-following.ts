@@ -10,7 +10,6 @@ import { getOriginalUrl } from '../../../misc/get-drive-file-url';
 import parseAcct from '../../../misc/acct/parse';
 import resolveUser from '../../../remote/resolve-user';
 import { downloadTextFile } from '../../../misc/download-text-file';
-import Following from '../../../models/following';
 
 const logger = queueLogger.createSubLogger('import-following');
 
@@ -45,14 +44,6 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 		if (target == null) {
 			target = await resolveUser(username, host);
 		}
-
-		// Check if already following
-		const exist = await Following.findOne({
-			followerId: user._id,
-			followeeId: target._id
-		});
-
-		if (exist) continue;
 
 		follow(user, target);
 	}
