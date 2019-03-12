@@ -1,5 +1,5 @@
 import { mfmLanguage } from './language';
-import { MfmForest } from './types';
+import { MfmForest } from './prelude';
 import { normalize } from './normalize';
 
 export function parse(source: string): MfmForest {

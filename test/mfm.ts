@@ -840,6 +840,20 @@ describe('MFM', () => {
 					text(')')
 				]);
 			});
+
+			it('ignore non-ascii characters contained url without angle brackets', () => {
+				const tokens = parse('https://大石泉すき.example.com');
+				assert.deepStrictEqual(tokens, [
+					text('https://大石泉すき.example.com')
+				]);
+			});
+
+			it('match non-ascii characters contained url with angle brackets', () => {
+				const tokens = parse('<https://大石泉すき.example.com>');
+				assert.deepStrictEqual(tokens, [
+					leaf('url', { url: 'https://大石泉すき.example.com' })
+				]);
+			});
 		});
 
 		describe('link', () => {
