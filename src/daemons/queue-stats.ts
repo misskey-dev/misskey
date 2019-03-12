@@ -33,12 +33,14 @@ export default function() {
 
 		const stats = {
 			deliver: {
-				active: activeDeliverJobs,
+				activeSincePrevTick: activeDeliverJobs,
+				active: deliverJobCounts.active,
 				waiting: deliverJobCounts.waiting,
 				delayed: deliverJobCounts.delayed
 			},
 			inbox: {
-				active: activeInboxJobs,
+				activeSincePrevTick: activeInboxJobs,
+				active: inboxJobCounts.active,
 				waiting: inboxJobCounts.waiting,
 				delayed: inboxJobCounts.delayed
 			}

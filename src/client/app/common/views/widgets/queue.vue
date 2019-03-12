@@ -6,12 +6,12 @@
 		<div class="mntrproz">
 			<div>
 				<b>In</b>
-				<span v-if="latestStats">{{ latestStats.inbox.active | number }} / {{ latestStats.inbox.delayed | number }}</span>
+				<span v-if="latestStats">{{ latestStats.inbox.activeSincePrevTick | number }} / {{ latestStats.inbox.delayed | number }}</span>
 				<div ref="in"></div>
 			</div>
 			<div>
 				<b>Out</b>
-				<span v-if="latestStats">{{ latestStats.deliver.active | number }} / {{ latestStats.deliver.delayed | number }}</span>
+				<span v-if="latestStats">{{ latestStats.deliver.activeSincePrevTick | number }} / {{ latestStats.deliver.delayed | number }}</span>
 				<div ref="out"></div>
 			</div>
 		</div>
@@ -42,12 +42,12 @@ export default define({
 	watch: {
 		stats(stats) {
 			this.inChart.updateSeries([{
-				data: stats.map((x, i) => ({ x: i, y: x.inbox.active }))
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.activeSincePrevTick }))
 			}, {
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.delayed }))
 			}]);
 			this.outChart.updateSeries([{
-				data: stats.map((x, i) => ({ x: i, y: x.deliver.active }))
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.activeSincePrevTick }))
 			}, {
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.delayed }))
 			}]);
