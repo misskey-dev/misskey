@@ -301,6 +301,7 @@ common/views/pages/explore.vue:
   recently-registered-users: "Nedávno registrovaní uživatelé"
   popular-tags: "Populární tagy"
   federated: "Z fediverse"
+  explore: "Prozkoumat {host}"
 common/views/components/url-preview.vue:
   enable-player: "Otevřít v přehrávači"
 common/views/components/user-list.vue:
@@ -555,6 +556,7 @@ common/views/components/profile-editor.vue:
   email-verified: "Váš e-mail byl ověřen"
   email-not-verified: "Váš email není potvrzen. Prosím zkontrolujte si svou schránku."
   export: "Exportovat"
+  import: "Importovat"
   export-targets:
     following-list: "Seznam sledujících"
     mute-list: "Seznam ztlumených uživatelů"

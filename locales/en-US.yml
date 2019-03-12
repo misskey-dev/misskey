@@ -647,6 +647,8 @@ common/views/components/profile-editor.vue:
   email-verified: "Your email has been verified."
   email-not-verified: "Email address is not confirmed. Please check your inbox."
   export: "Export"
+  import: "Import"
+  export-and-import: "Export and Import"
   export-targets:
     all-notes: "All posted Notes"
     following-list: "List of followers"
@@ -654,6 +656,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "List of blocked accounts"
     user-lists: "Lists"
   export-requested: "You have requested an export. This may take a while. After the export is complete, the resulting file will be added to the drive."
+  import-requested: "You have initiated an import. This may take quite some time."
   enter-password: "Please enter your password"
   danger-zone: "Cautious options"
   delete-account: "Remove the account"

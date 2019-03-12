@@ -522,6 +522,7 @@ common/views/components/profile-editor.vue:
   email-verified: "L’adresse du courrier électronique a été vérifiée."
   email-not-verified: "Adresse de courriel n’est pas confirmée. Veuillez vérifier votre boite de réception."
   export: "Exporter"
+  import: "Importer"
   export-targets:
     all-notes: "Toutes les notes publiées"
     following-list: "Liste des abonnements"

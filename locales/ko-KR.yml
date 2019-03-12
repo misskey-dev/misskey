@@ -647,6 +647,8 @@ common/views/components/profile-editor.vue:
   email-verified: "매일 주소가 확인되었습니다"
   email-not-verified: "메일 주소가 확인되지 않았습니다. 받은 편지함을 확인하여 주시기 바랍니다."
   export: "내보내기"
+  import: "가져오기"
+  export-and-import: "내보내기와 가져오기"
   export-targets:
     all-notes: "모든 글 데이터"
     following-list: "팔로잉"
@@ -654,6 +656,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "차단"
     user-lists: "리스트"
   export-requested: "내보내기를 요청하였습니다. 이 작업은 시간이 걸릴 수 있습니다. 내보내기가 완료되면 드라이브에 파일이 추가됩니다."
+  import-requested: "가져오기를 요청하였습니다. 이 작업에는 시간이 걸릴 수 있습니다."
   enter-password: "비밀번호를 입력하여 주십시오"
   danger-zone: "위험한 설정"
   delete-account: "계정 삭제"

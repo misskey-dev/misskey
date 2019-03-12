@@ -647,6 +647,8 @@ common/views/components/profile-editor.vue:
   email-verified: "电子邮件地址已验证"
   email-not-verified: "邮件地址尚未验证。 请检查您的邮箱。"
   export: "导出"
+  import: "导入"
+  export-and-import: "导出/导入"
   export-targets:
     all-notes: "所有发帖"
     following-list: "关注列表"
@@ -654,6 +656,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "黑名单"
     user-lists: "列表"
   export-requested: "导出请求已提交。可能需要花一些时间。导出的文件将保存到网盘中。"
+  import-requested: "导入请求已提交。这可能需要花一点时间。"
   enter-password: "请输入您的密码"
   danger-zone: "危险选项"
   delete-account: "删除帐户"

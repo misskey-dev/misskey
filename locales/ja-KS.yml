@@ -476,6 +476,7 @@ common/views/components/profile-editor.vue:
   email-verified: "このメールアドレスOKや！"
   email-not-verified: "メールアドレスが確認されとらん。メールボックスもっぺん見てくれへん？"
   export: "エクスポート"
+  import: "インポート"
   export-targets:
     following-list: "フォロー"
     mute-list: "ミュート"
