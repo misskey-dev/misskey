@@ -116,7 +116,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		: [];
 
 	// リプライ
-	const reply = note.inReplyTo
+	const reply: INote = note.inReplyTo
 		? await resolveNote(note.inReplyTo, resolver).catch(e => {
 			// 4xxの場合はリプライしてないことにする
 			if (e.statusCode >= 400 && e.statusCode < 500) {
