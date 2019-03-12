@@ -147,14 +147,14 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr><tr>
 <td><a href="https://www.patreon.com/user?u=4389829">natalie</a></td>
 <td><a href="https://www.patreon.com/hiratake">Hiratake</a></td>
-<td><a href="https://www.patreon.com/user?u=18072312">Hekovic</a></td>
+<td><a href="https://www.patreon.com/hekovic">Hekovic</a></td>
 <td><a href="https://www.patreon.com/dansup">dansup</a></td>
 <td><a href="https://www.patreon.com/mastodon">Gargron</a></td>
 <td><a href="https://www.patreon.com/takenoko">Nokotaro Takeda</a></td>
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Mon, 11 Mar 2019 16:03:05 UTC
+**Last updated:** Tue, 12 Mar 2019 00:50:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
