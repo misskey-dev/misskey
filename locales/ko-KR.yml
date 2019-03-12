@@ -1056,7 +1056,6 @@ admin/views/dashboard.vue:
   this-instance: "이 인스턴스"
   federated: "연합"
 admin/views/queue.vue:
-  operation: "동작"
   remove-all-jobs: "모든 작업 제거"
 admin/views/abuse.vue:
   title: "스팸 신고"
