@@ -1,5 +1,5 @@
-import { toUnicode, toASCII } from 'punycode';
 import config from '../config';
+import { toUnicode, toASCII } from 'punycode';
 
 export function getFullApAccount(username: string, host: string) {
 	return host ? `${username}@${toApHost(host)}` : `${username}@${toApHost(config.host)}`;
