@@ -52,10 +52,18 @@ export default define(meta, async (ps, user) => {
 			$ne: user._id,
 			$nin: hideUserIds
 		},
+		visibility: 'public',
 		poll: {
 			$exists: true,
 			$ne: null
-		}
+		},
+		$or: [{
+			'poll.expiresAt': null
+		}, {
+			'poll.expiresAt': {
+				$gt: new Date()
+			}
+		}],
 	}, {
 		limit: ps.limit,
 		skip: ps.offset,
