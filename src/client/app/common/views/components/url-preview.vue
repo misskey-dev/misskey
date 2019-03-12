@@ -1,5 +1,6 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
+	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disable-player')"><fa icon="times"/></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
 <div v-else-if="tweetUrl && detail" class="twitter">
@@ -125,6 +126,22 @@ export default Vue.extend({
 .player
 	position relative
 	width 100%
+
+	> button
+		position absolute
+		top -1.5em
+		right 0
+		font-size 1em
+		width 1.5em
+		height 1.5em
+		padding 0
+		margin 0
+		color var(--text)
+		background rgba(128, 128, 128, 0.2)
+		opacity 0.7
+
+		&:hover
+			opacity 0.9
 
 	> iframe
 		height 100%
