@@ -28,9 +28,10 @@ export default Vue.extend({
 	computed: {
 		template(): string {
 			let t = '';
-			if (this.title) t += `【${title}】\n`;
+			if (this.title && this.url) t += `【[${title}](${url})】\n`;
+			if (this.title && !this.url) t += `【${title}】\n`;
 			if (this.text) t += `${text}\n`;
-			if (this.url) t += `${url}`;
+			if (!this.title && this.url) t += `${url}`;
 			return t.trim();
 		}
 	},
