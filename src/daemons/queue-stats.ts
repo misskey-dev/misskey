@@ -19,11 +19,11 @@ export default function() {
 	let activeDeliverJobs = 0;
 	let activeInboxJobs = 0;
 
-	deliverQueue.on('active', () => {
+	deliverQueue.on('global:active', () => {
 		activeDeliverJobs++;
 	});
 
-	inboxQueue.on('active', () => {
+	inboxQueue.on('global:active', () => {
 		activeInboxJobs++;
 	});
 
