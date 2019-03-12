@@ -860,8 +860,6 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "ワイのインスタンス"
   federated: "連合"
-admin/views/queue.vue:
-  operation: "操作"
 admin/views/abuse.vue:
   details: "もっと"
   remove-report: "削除"
