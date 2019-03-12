@@ -3,7 +3,6 @@ import * as mongo from 'mongodb';
 
 import { queueLogger } from '../../logger';
 import User from '../../../models/user';
-import config from '../../../config';
 import UserList from '../../../models/user-list';
 import DriveFile from '../../../models/drive-file';
 import { getOriginalUrl } from '../../../misc/get-drive-file-url';
@@ -11,6 +10,7 @@ import parseAcct from '../../../misc/acct/parse';
 import resolveUser from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '../../../misc/download-text-file';
+import { isSelfHost, toDbHost } from '../../../misc/convert-host';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
@@ -47,11 +47,11 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 			});
 		}
 
-		let target = host === config.host ? await User.findOne({
+		let target = isSelfHost(host) ? await User.findOne({
 			host: null,
 			usernameLower: username.toLowerCase()
 		}) : await User.findOne({
-			host: host,
+			host: toDbHost(host),
 			usernameLower: username.toLowerCase()
 		});
 

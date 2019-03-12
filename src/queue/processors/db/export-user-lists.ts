@@ -7,8 +7,8 @@ import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
 import User from '../../../models/user';
 import dateFormat = require('dateformat');
-import config from '../../../config';
 import UserList from '../../../models/user-list';
+import { getFullApAccount } from '../../../misc/convert-host';
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 
@@ -46,7 +46,7 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 		});
 
 		for (const u of users) {
-			const acct = u.host ? `${u.username}@${u.host}` : `${u.username}@${config.host}`;
+			const acct = getFullApAccount(u.username, u.host);
 			const content = `${list.title},${acct}`;
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
