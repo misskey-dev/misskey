@@ -1,9 +1,9 @@
 <template>
 <div>
 	<ui-card>
-		<template #title>{{ $t('operation') }}</template>
+		<template #title><fa :icon="faTasks"/> {{ $t('title') }}</template>
 		<section class="wptihjuy">
-			<header>Deliver</header>
+			<header><fa :icon="faPaperPlane"/> Deliver</header>
 			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
 				<ui-input :value="latestStats.deliver.waiting | number" type="text" readonly>
 					<span>Waiting</span>
@@ -18,7 +18,7 @@
 			<div ref="deliverChart" class="chart"></div>
 		</section>
 		<section class="wptihjuy">
-			<header>Inbox</header>
+			<header><fa :icon="faInbox"/> Inbox</header>
 			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
 				<ui-input :value="latestStats.inbox.waiting | number" type="text" readonly>
 					<span>Waiting</span>
@@ -44,6 +44,8 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
+import { faTasks, faInbox } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/queue.vue'),
@@ -53,6 +55,7 @@ export default Vue.extend({
 			stats: [],
 			deliverChart: null,
 			inboxChart: null,
+			faTasks, faPaperPlane, faInbox
 		};
 	},
 

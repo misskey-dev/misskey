@@ -1180,7 +1180,7 @@ admin/views/dashboard.vue:
   federated: "連合"
 
 admin/views/queue.vue:
-  operation: "操作"
+  title: "キュー"
   remove-all-jobs: "すべてのジョブをクリア"
 
 admin/views/abuse.vue:
