@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+If you encounter any problems with updating, please try the following:
+1. `npm run clean` or `npm run cleanall`
+2. Retry update (Don't forget `npm i`)
+
 10.92.4
 ----------
 * リストのエクスポートをできるように

@@ -118,7 +118,7 @@ CentOSで1024以下のポートを使用してMisskeyを使用する場合は`Ex
 4. `NODE_ENV=production npm run build`
 5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
 
-なにか問題が発生した場合は、`npm run clean`すると直る場合があります。
+なにか問題が発生した場合は、`npm run clean`または`npm run cleanall`すると直る場合があります。
 
 ----------------------------------------------------------------
 
