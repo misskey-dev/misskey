@@ -1056,7 +1056,6 @@ admin/views/dashboard.vue:
   this-instance: "此实例"
   federated: "联合"
 admin/views/queue.vue:
-  operation: "操作"
   remove-all-jobs: "清除所有作业"
 admin/views/abuse.vue:
   title: "举报垃圾信息"
