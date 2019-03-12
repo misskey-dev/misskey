@@ -5,14 +5,21 @@
 		<section class="wptihjuy">
 			<header><fa :icon="faPaperPlane"/> Deliver</header>
 			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
-				<ui-input :value="latestStats.deliver.waiting | number" type="text" readonly>
-					<span>Waiting</span>
-				</ui-input>
-				<ui-input :value="latestStats.deliver.delayed | number" type="text" readonly>
-					<span>Delayed</span>
+				<ui-input :value="latestStats.deliver.activeSincePrevTick | number" type="text" readonly>
+					<span>Process</span>
+					<template #suffix>jobs/s</template>
 				</ui-input>
 				<ui-input :value="latestStats.deliver.active | number" type="text" readonly>
 					<span>Active</span>
+					<template #suffix>jobs</template>
+				</ui-input>
+				<ui-input :value="latestStats.deliver.waiting | number" type="text" readonly>
+					<span>Waiting</span>
+					<template #suffix>jobs</template>
+				</ui-input>
+				<ui-input :value="latestStats.deliver.delayed | number" type="text" readonly>
+					<span>Delayed</span>
+					<template #suffix>jobs</template>
 				</ui-input>
 			</ui-horizon-group>
 			<div ref="deliverChart" class="chart"></div>
@@ -20,14 +27,21 @@
 		<section class="wptihjuy">
 			<header><fa :icon="faInbox"/> Inbox</header>
 			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
-				<ui-input :value="latestStats.inbox.waiting | number" type="text" readonly>
-					<span>Waiting</span>
-				</ui-input>
-				<ui-input :value="latestStats.inbox.delayed | number" type="text" readonly>
-					<span>Delayed</span>
+				<ui-input :value="latestStats.inbox.activeSincePrevTick | number" type="text" readonly>
+					<span>Process</span>
+					<template #suffix>jobs/s</template>
 				</ui-input>
 				<ui-input :value="latestStats.inbox.active | number" type="text" readonly>
 					<span>Active</span>
+					<template #suffix>jobs</template>
+				</ui-input>
+				<ui-input :value="latestStats.inbox.waiting | number" type="text" readonly>
+					<span>Waiting</span>
+					<template #suffix>jobs</template>
+				</ui-input>
+				<ui-input :value="latestStats.inbox.delayed | number" type="text" readonly>
+					<span>Delayed</span>
+					<template #suffix>jobs</template>
 				</ui-input>
 			</ui-horizon-group>
 			<div ref="inboxChart" class="chart"></div>
@@ -68,8 +82,11 @@ export default Vue.extend({
 	watch: {
 		stats(stats) {
 			this.inboxChart.updateSeries([{
-				name: 'Active',
+				name: 'Process',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.activeSincePrevTick }))
+			}, {
+				name: 'Active',
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.active }))
 			}, {
 				name: 'Waiting',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.waiting }))
@@ -78,8 +95,11 @@ export default Vue.extend({
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.delayed }))
 			}]);
 			this.deliverChart.updateSeries([{
-				name: 'Active',
+				name: 'Process',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.activeSincePrevTick }))
+			}, {
+				name: 'Active',
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.active }))
 			}, {
 				name: 'Waiting',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.waiting }))
@@ -127,7 +147,7 @@ export default Vue.extend({
 				},
 			},
 			series: [] as any,
-			colors: ['#00BCD4', '#FFEB3B', '#e53935'],
+			colors: ['#00E396', '#00BCD4', '#FFEB3B', '#e53935'],
 			xaxis: {
 				type: 'numeric',
 				labels: {
