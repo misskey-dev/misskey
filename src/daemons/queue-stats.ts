@@ -35,12 +35,12 @@ export default function() {
 			deliver: {
 				active: activeDeliverJobs,
 				waiting: deliverJobCounts.waiting,
-				delyaed: deliverJobCounts.delayed
+				delayed: deliverJobCounts.delayed
 			},
 			inbox: {
 				active: activeInboxJobs,
 				waiting: inboxJobCounts.waiting,
-				delyaed: inboxJobCounts.delayed
+				delayed: inboxJobCounts.delayed
 			}
 		};
 
