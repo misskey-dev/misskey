@@ -2,33 +2,35 @@
 <div>
 	<ui-card>
 		<template #title>{{ $t('operation') }}</template>
-		<section>
+		<section class="wptihjuy">
 			<header>Deliver</header>
-			<ui-horizon-group inputs v-if="stats">
-				<ui-input :value="stats.deliver.waiting | number" type="text" readonly>
+			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
+				<ui-input :value="latestStats.deliver.waiting | number" type="text" readonly>
 					<span>Waiting</span>
 				</ui-input>
-				<ui-input :value="stats.deliver.delayed | number" type="text" readonly>
+				<ui-input :value="latestStats.deliver.delayed | number" type="text" readonly>
 					<span>Delayed</span>
 				</ui-input>
-				<ui-input :value="stats.deliver.active | number" type="text" readonly>
+				<ui-input :value="latestStats.deliver.active | number" type="text" readonly>
 					<span>Active</span>
 				</ui-input>
 			</ui-horizon-group>
+			<div ref="deliverChart" class="chart"></div>
 		</section>
-		<section>
+		<section class="wptihjuy">
 			<header>Inbox</header>
-			<ui-horizon-group inputs v-if="stats">
-				<ui-input :value="stats.inbox.waiting | number" type="text" readonly>
+			<ui-horizon-group inputs v-if="latestStats" class="fit-bottom">
+				<ui-input :value="latestStats.inbox.waiting | number" type="text" readonly>
 					<span>Waiting</span>
 				</ui-input>
-				<ui-input :value="stats.inbox.delayed | number" type="text" readonly>
+				<ui-input :value="latestStats.inbox.delayed | number" type="text" readonly>
 					<span>Delayed</span>
 				</ui-input>
-				<ui-input :value="stats.inbox.active | number" type="text" readonly>
+				<ui-input :value="latestStats.inbox.active | number" type="text" readonly>
 					<span>Active</span>
 				</ui-input>
 			</ui-horizon-group>
+			<div ref="inboxChart" class="chart"></div>
 		</section>
 		<section>
 			<ui-button @click="removeAllJobs">{{ $t('remove-all-jobs') }}</ui-button>
@@ -40,29 +42,122 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
+import ApexCharts from 'apexcharts';
+import * as tinycolor from 'tinycolor2';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/queue.vue'),
 
 	data() {
 		return {
-			stats: null
+			stats: [],
+			deliverChart: null,
+			inboxChart: null,
 		};
 	},
 
-	created() {
-		const fetchStats = () => {
-			this.$root.api('admin/queue/stats', {}, true).then(stats => {
-				this.stats = stats;
-			});
+	computed: {
+		latestStats(): any {
+			return this.stats[this.stats.length - 1];
+		}
+	},
+
+	watch: {
+		stats(stats) {
+			this.inboxChart.updateSeries([{
+				name: 'Active',
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.activeSincePrevTick }))
+			}, {
+				name: 'Waiting',
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.waiting }))
+			}, {
+				name: 'Delayed',
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.delayed }))
+			}]);
+			this.deliverChart.updateSeries([{
+				name: 'Active',
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.activeSincePrevTick }))
+			}, {
+				name: 'Waiting',
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.waiting }))
+			}, {
+				name: 'Delayed',
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.delayed }))
+			}]);
+		}
+	},
+
+	mounted() {
+		const chartOpts = {
+			chart: {
+				type: 'area',
+				height: 200,
+				animations: {
+					dynamicAnimation: {
+						enabled: false
+					}
+				},
+				toolbar: {
+					show: false
+				},
+				zoom: {
+					enabled: false
+				}
+			},
+			dataLabels: {
+				enabled: false
+			},
+			grid: {
+				clipMarkers: false,
+				borderColor: 'rgba(0, 0, 0, 0.1)'
+			},
+			stroke: {
+				curve: 'straight',
+				width: 2
+			},
+			tooltip: {
+				enabled: false
+			},
+			legend: {
+				labels: {
+					colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
+				},
+			},
+			series: [] as any,
+			colors: ['#00BCD4', '#FFEB3B', '#e53935'],
+			xaxis: {
+				type: 'numeric',
+				labels: {
+					show: false
+				},
+				tooltip: {
+					enabled: false
+				}
+			},
+			yaxis: {
+				show: false,
+				min: 0,
+			}
 		};
 
-		fetchStats();
+		this.inboxChart = new ApexCharts(this.$refs.inboxChart, chartOpts);
+		this.deliverChart = new ApexCharts(this.$refs.deliverChart, chartOpts);
 
-		const clock = setInterval(fetchStats, 1000);
+		this.inboxChart.render();
+		this.deliverChart.render();
+
+		const connection = this.$root.stream.useSharedConnection('queueStats');
+		connection.on('stats', this.onStats);
+		connection.on('statsLog', this.onStatsLog);
+		connection.send('requestLog', {
+			id: Math.random().toString().substr(2, 8),
+			length: 100
+		});
 
 		this.$once('hook:beforeDestroy', () => {
-			clearInterval(clock);
+			connection.dispose();
+			this.inboxChart.destroy();
+			this.deliverChart.destroy();
 		});
 	},
 
@@ -83,6 +178,24 @@ export default Vue.extend({
 				});
 			});
 		},
+
+		onStats(stats) {
+			this.stats.push(stats);
+			if (this.stats.length > 100) this.stats.shift();
+		},
+
+		onStatsLog(statsLog) {
+			for (const stats of statsLog.reverse()) {
+				this.onStats(stats);
+			}
+		}
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.wptihjuy
+	> .chart
+		min-height 200px !important
+
+</style>
