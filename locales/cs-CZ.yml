@@ -414,12 +414,15 @@ common/views/components/nav.vue:
   feedback: "Zpětná vazba"
 common/views/components/note-menu.vue:
   mention: "Zmínění"
+  detail: "Více"
   copy-content: "Zkopírovat obsah"
   copy-link: "Zkopírovat odkaz"
   favorite: "Přidat do oblíbených"
   unfavorite: "Odebrat z oblízených"
   watch: "Sledovat"
   unwatch: "Přestat sledovat"
+  pin: "Připnout"
+  unpin: "Odepnout"
   delete: "Odstranit"
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
   remote: "Ukázat originální poznámku"
@@ -698,6 +701,7 @@ desktop/views/components/note.vue:
   renote: "Renote"
   add-reaction: "Přidat reakci"
   undo-reaction: "Odebrat reakci"
+  detail: "Více"
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
 desktop/views/components/notes.vue:
@@ -1033,8 +1037,6 @@ desktop/views/pages/selectdrive.vue:
 desktop/views/pages/search.vue:
   not-available: "Vyhledávání je vypnuté pro tuto instanci."
   not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
-desktop/views/pages/share.vue:
-  share-with: "Sdílet na {name}"
 desktop/views/pages/tag.vue:
   no-posts-found: "Nebyly nalezeny žádné příspěvky s \"{q}\"."
 desktop/views/pages/user-list.users.vue:
