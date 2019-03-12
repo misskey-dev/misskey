@@ -1490,9 +1490,6 @@ desktop/views/pages/search.vue:
   not-available: "検索機能はインスタンスの設定で無効になっています。"
   not-found: "「{q}」に関する投稿は見つかりませんでした。"
 
-desktop/views/pages/share.vue:
-  share-with: "{name}で共有"
-
 desktop/views/pages/tag.vue:
   no-posts-found: "ハッシュタグ「{q}」が付けられた投稿は見つかりませんでした。"
 
