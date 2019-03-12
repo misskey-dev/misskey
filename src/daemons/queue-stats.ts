@@ -16,19 +16,41 @@ export default function() {
 		ev.emit(`queueStatsLog:${x.id}`, log.toArray().slice(0, x.length || 50));
 	});
 
+	let activeDeliverJobs = 0;
+	let activeInboxJobs = 0;
+
+	deliverQueue.on('active', () => {
+		activeDeliverJobs++;
+	});
+
+	inboxQueue.on('active', () => {
+		activeInboxJobs++;
+	});
+
 	async function tick() {
 		const deliverJobCounts = await deliverQueue.getJobCounts();
 		const inboxJobCounts = await inboxQueue.getJobCounts();
 
 		const stats = {
-			deliver: deliverJobCounts,
-			inbox: inboxJobCounts
+			deliver: {
+				active: activeDeliverJobs,
+				waiting: deliverJobCounts.waiting,
+				delyaed: deliverJobCounts.delayed
+			},
+			inbox: {
+				active: activeInboxJobs,
+				waiting: inboxJobCounts.waiting,
+				delyaed: inboxJobCounts.delayed
+			}
 		};
 
 		ev.emit('queueStats', stats);
 
 		log.unshift(stats);
 		if (log.length > 200) log.pop();
+
+		activeDeliverJobs = 0;
+		activeInboxJobs = 0;
 	}
 
 	tick();
