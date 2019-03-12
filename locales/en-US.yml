@@ -314,6 +314,7 @@ common/views/pages/explore.vue:
   users-info: "Currently, {users} users are registered here"
 common/views/components/url-preview.vue:
   enable-player: "Enable playback"
+  disable-player: "Close the player"
 common/views/components/user-list.vue:
   no-users: "There are no users."
 common/views/components/games/reversi/reversi.vue:
