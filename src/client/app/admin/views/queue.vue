@@ -69,6 +69,8 @@ import * as tinycolor from 'tinycolor2';
 import { faTasks, faInbox, faStopwatch, faPlayCircle as fasPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { faPaperPlane, faStopCircle, faPlayCircle as farPlayCircle } from '@fortawesome/free-regular-svg-icons';
 
+const limit = 150;
+
 export default Vue.extend({
 	i18n: i18n('admin/views/queue.vue'),
 
@@ -91,28 +93,36 @@ export default Vue.extend({
 		stats(stats) {
 			this.inboxChart.updateSeries([{
 				name: 'Process',
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.activeSincePrevTick }))
 			}, {
 				name: 'Active',
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.active }))
 			}, {
 				name: 'Waiting',
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.waiting }))
 			}, {
 				name: 'Delayed',
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.delayed }))
 			}]);
 			this.deliverChart.updateSeries([{
 				name: 'Process',
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.activeSincePrevTick }))
 			}, {
 				name: 'Active',
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.active }))
 			}, {
 				name: 'Waiting',
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.waiting }))
 			}, {
 				name: 'Delayed',
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.delayed }))
 			}]);
 		}
@@ -182,7 +192,7 @@ export default Vue.extend({
 		connection.on('statsLog', this.onStatsLog);
 		connection.send('requestLog', {
 			id: Math.random().toString().substr(2, 8),
-			length: 100
+			length: limit
 		});
 
 		this.$once('hook:beforeDestroy', () => {
@@ -212,7 +222,7 @@ export default Vue.extend({
 
 		onStats(stats) {
 			this.stats.push(stats);
-			if (this.stats.length > 100) this.stats.shift();
+			if (this.stats.length > limit) this.stats.shift();
 		},
 
 		onStatsLog(statsLog) {

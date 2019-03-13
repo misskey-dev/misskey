@@ -23,6 +23,8 @@ import { faInbox } from '@fortawesome/free-solid-svg-icons';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import ApexCharts from 'apexcharts';
 
+const limit = 150;
+
 export default Vue.extend({
 	data() {
 		return {
@@ -124,7 +126,7 @@ export default Vue.extend({
 		connection.on('statsLog', this.onStatsLog);
 		connection.send('requestLog', {
 			id: Math.random().toString().substr(2, 8),
-			length: 100
+			length: limit
 		});
 
 		this.$once('hook:beforeDestroy', () => {
@@ -137,7 +139,7 @@ export default Vue.extend({
 	methods: {
 		onStats(stats) {
 			this.stats.push(stats);
-			if (this.stats.length > 100) this.stats.shift();
+			if (this.stats.length > limit) this.stats.shift();
 		},
 
 		onStatsLog(statsLog) {

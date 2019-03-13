@@ -42,21 +42,29 @@ export default define({
 	watch: {
 		stats(stats) {
 			this.inChart.updateSeries([{
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.activeSincePrevTick }))
 			}, {
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.active }))
 			}, {
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.waiting }))
 			}, {
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.delayed }))
 			}]);
 			this.outChart.updateSeries([{
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.activeSincePrevTick }))
 			}, {
+				type: 'area',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.active }))
 			}, {
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.waiting }))
 			}, {
+				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.delayed }))
 			}]);
 		}
