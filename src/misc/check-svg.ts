@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as isSvg from 'is-svg';
+import isSvg from 'is-svg';
 
 export default function(path: string) {
 	try {
