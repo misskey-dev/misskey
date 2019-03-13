@@ -44,10 +44,18 @@ export default Vue.extend({
 			this.inChart.updateSeries([{
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.activeSincePrevTick }))
 			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.active }))
+			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.waiting }))
+			}, {
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.delayed }))
 			}]);
 			this.outChart.updateSeries([{
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.activeSincePrevTick }))
+			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.active }))
+			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.waiting }))
 			}, {
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.delayed }))
 			}]);
@@ -88,7 +96,8 @@ export default Vue.extend({
 			legend: {
 				show: false
 			},
-			series: [{ data: [] }, { data: [] }] as any,
+			colors: ['#00E396', '#00BCD4', '#FFB300', '#e53935'],
+			series: [{ data: [] }, { data: [] }, { data: [] }, { data: [] }] as any,
 			xaxis: {
 				type: 'numeric',
 				labels: {

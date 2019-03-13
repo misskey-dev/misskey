@@ -44,10 +44,18 @@ export default define({
 			this.inChart.updateSeries([{
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.activeSincePrevTick }))
 			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.active }))
+			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.inbox.waiting }))
+			}, {
 				data: stats.map((x, i) => ({ x: i, y: x.inbox.delayed }))
 			}]);
 			this.outChart.updateSeries([{
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.activeSincePrevTick }))
+			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.active }))
+			}, {
+				data: stats.map((x, i) => ({ x: i, y: x.deliver.waiting }))
 			}, {
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.delayed }))
 			}]);
@@ -81,11 +89,8 @@ export default define({
 				curve: 'straight',
 				width: 1
 			},
-			series: [{
-				data: [] as any
-			}, {
-				data: [] as any
-			}],
+			colors: ['#00E396', '#00BCD4', '#FFB300', '#e53935'],
+			series: [{ data: [] }, { data: [] }, { data: [] }, { data: [] }] as any,
 			yaxis: {
 				min: 0,
 			}
