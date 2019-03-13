@@ -19,6 +19,8 @@ import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
 import { IDriveFile } from '../../../models/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
+import Instance from '../../../models/instance';
+import { extractDbHost } from '../../../misc/convert-host';
 
 const logger = apLogger;
 
@@ -132,7 +134,15 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	let quote: INote;
 
 	if (note._misskey_quote && typeof note._misskey_quote == 'string') {
-		quote = await resolveNote(note._misskey_quote).catch(() => null);
+		quote = await resolveNote(note._misskey_quote).catch(e => {
+			// 4xxの場合は引用してないことにする
+			if (e.statusCode >= 400 && e.statusCode < 500) {
+				logger.warn(`Ignored quote target ${note.inReplyTo} - ${e.statusCode} `);
+				return null;
+			}
+			logger.warn(`Error in quote target ${note.inReplyTo} - ${e.statusCode || e}`);
+			throw e;
+		});
 	}
 
 	const cw = note.summary === '' ? null : note.summary;
@@ -213,6 +223,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
  */
 export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<INote> {
 	const uri = typeof value == 'string' ? value : value.id;
+
+	// ブロックしてたら中断
+	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+	const instance = await Instance.findOne({ host: extractDbHost(uri) });
+	if (instance && instance.isBlocked) throw { statusCode: 451 };
 
 	//#region このサーバーに既に登録されていたらそれを返す
 	const exist = await fetchNote(uri);
