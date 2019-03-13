@@ -5,6 +5,8 @@ import { IAnnounce, INote } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
 import { apLogger } from '../../logger';
+import { extractDbHost } from '../../../../misc/convert-host';
+import Instance from '../../../../models/instance';
 
 const logger = apLogger;
 
@@ -22,6 +24,11 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	if (typeof uri !== 'string') {
 		throw new Error('invalid announce');
 	}
+
+	// アナウンス先をブロックしてたら中断
+	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+	const instance = await Instance.findOne({ host: extractDbHost(uri) });
+	if (instance && instance.isBlocked) return;
 
 	// 既に同じURIを持つものが登録されていないかチェック
 	const exist = await fetchNote(uri);
