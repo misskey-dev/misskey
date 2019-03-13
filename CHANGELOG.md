@@ -5,6 +5,11 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.93.1
+----------
+* データのエクスポートとインポートの動作を修正
+* デザインの調整
+
 10.93.0
 ----------
 * フォローリストをインポートできるように
