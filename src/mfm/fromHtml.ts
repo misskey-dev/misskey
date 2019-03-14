@@ -39,10 +39,11 @@ export function fromHtml(html: string): string {
 				const txt = getText(node);
 				const rel = node.attrs.find((x: any) => x.name == 'rel');
 				const href = node.attrs.find((x: any) => x.name == 'href');
+				const isHashtag = rel && rel.value.match('tag') !== null;
 
 				// ハッシュタグ / hrefがない / txtがURL
-				if ((rel && rel.value.match('tag') !== null) || !href || href.value == txt) {
-					text += txt.match(urlRegex) ? txt : `<${txt}>`;
+				if (isHashtag || !href || href.value == txt) {
+					text += isHashtag || txt.match(urlRegex) ? txt : `<${txt}>`;
 				// メンション
 				} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
 					const part = txt.split('@');
