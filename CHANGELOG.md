@@ -5,6 +5,10 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+unreleased
+----------
+* シェアページが機能していない問題を修正
+
 10.93.1
 ----------
 * データのエクスポートとインポートの動作を修正
