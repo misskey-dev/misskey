@@ -366,9 +366,6 @@ root(fill)
 			&[type='file']
 				display none
 
-			&[type='number']
-				text-align right
-
 		> .prefix
 		> .suffix
 			display block
