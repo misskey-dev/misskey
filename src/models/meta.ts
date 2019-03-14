@@ -198,6 +198,7 @@ export type IMeta = {
 	mascotImageUrl?: string;
 	bannerUrl?: string;
 	errorImageUrl?: string;
+	iconUrl?: string;
 
 	cacheRemoteFiles?: boolean;
 

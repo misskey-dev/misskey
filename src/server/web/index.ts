@@ -250,7 +250,10 @@ router.get('/reversi', async ctx => ctx.redirect(override(ctx.URL.pathname, 'gam
 router.get('*', async ctx => {
 	const meta = await fetchMeta();
 	await ctx.render('base', {
-		img: meta.bannerUrl
+		img: meta.bannerUrl,
+		title: meta.name,
+		desc: meta.description,
+		icon: meta.iconUrl
 	});
 	ctx.set('Cache-Control', 'public, max-age=300');
 });

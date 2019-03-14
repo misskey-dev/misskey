@@ -8,17 +8,18 @@ html
 
 	head
 		meta(charset='utf-8')
-		meta(name='application-name' content='Misskey')
+		meta(name='application-name' content= title || 'Misskey')
 		meta(name='referrer' content='origin')
-		meta(property='og:site_name' content='Misskey')
+		meta(property='og:site_name' content= title || 'Misskey')
+		link(rel='icon' href= icon || '/favicon.ico')
 		link(rel='manifest' href='/manifest.json')
 
 		title
 			block title
-				| Misskey
+				= title || 'Misskey'
 
 		block desc
-			meta(name='description' content='✨🌎✨ A federated blogging platform ✨🚀✨')
+			meta(name='description' content= desc || '✨🌎✨ A federated blogging platform ✨🚀✨')
 
 		block meta
 
