@@ -57,7 +57,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const object: any = await resolver.resolve(value);
 
-	if (!object || !['Note', 'Question'].includes(object.type)) {
+	if (!object || !['Note', 'Question', 'Article'].includes(object.type)) {
 		logger.error(`invalid note: ${value}`, {
 			resolver: {
 				history: resolver.getHistory()
@@ -199,6 +199,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		files,
 		reply,
 		renote: quote,
+		name: note.name,
 		cw,
 		text,
 		viaMobile: false,

@@ -21,10 +21,8 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<void> => {
 
 	switch (object.type) {
 	case 'Note':
-		deleteNote(actor, uri);
-		break;
-
 	case 'Question':
+	case 'Article':
 		deleteNote(actor, uri);
 		break;
 
