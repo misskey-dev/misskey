@@ -270,7 +270,7 @@ export default Vue.extend({
 				mascotImageUrl: this.mascotImageUrl,
 				bannerUrl: this.bannerUrl,
 				errorImageUrl: this.errorImageUrl,
-				iconImageUrl: this.iconImageUrl,
+				iconUrl: this.iconUrl,
 				name: this.name,
 				description: this.description,
 				langs: this.languages.split(' '),
