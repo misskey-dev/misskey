@@ -1,5 +1,5 @@
 import * as P from 'parsimmon';
-import { createLeaf, createTree } from './types';
+import { createLeaf, createTree, urlRegex } from './prelude';
 import { takeWhile, cumulativeSum } from '../prelude/array';
 import parseAcct from '../misc/acct/parse';
 import { toUnicode } from 'punycode';
@@ -154,9 +154,16 @@ export const mfmLanguage = P.createLanguage({
 	url: () => {
 		return P((input, i) => {
 			const text = input.substr(i);
-			const match = text.match(/^https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.,=\+\-]+/);
-			if (!match) return P.makeFailure(i, 'not a url');
-			let url = match[0];
+			const match = text.match(urlRegex);
+			let url: string;
+			if (!match) {
+				const match = text.match(/^<(https?:\/\/.*?)>/);
+				if (!match)
+					return P.makeFailure(i, 'not a url');
+				url = match[1];
+				i += 2;
+			} else
+				url = match[0];
 			url = removeOrphanedBrackets(url);
 			if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
 			if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));

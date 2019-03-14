@@ -1,6 +1,6 @@
 // test is located in test/extract-mentions
 
-import { MentionNode, MfmForest } from '../mfm/types';
+import { MentionNode, MfmForest } from '../mfm/prelude';
 import { preorderF } from '../prelude/tree';
 
 export default function(mfmForest: MfmForest): MentionNode['props'][] {

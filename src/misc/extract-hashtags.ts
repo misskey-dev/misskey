@@ -1,4 +1,4 @@
-import { HashtagNode, MfmForest } from '../mfm/types';
+import { HashtagNode, MfmForest } from '../mfm/prelude';
 import { preorderF } from '../prelude/tree';
 import { unique } from '../prelude/array';
 

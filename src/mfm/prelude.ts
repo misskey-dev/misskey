@@ -35,3 +35,5 @@ export function createLeaf(type: string, props: any): MfmTree {
 export function createTree(type: string, children: MfmForest, props: any): MfmTree {
 	return T.createTree({ type, props }, children);
 }
+
+export const urlRegex = /^https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.,=\+\-]+/;

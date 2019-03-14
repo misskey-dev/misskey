@@ -12,7 +12,7 @@ import * as assert from 'assert';
 
 import { parse, parsePlain } from '../src/mfm/parse';
 import { toHtml } from '../src/mfm/toHtml';
-import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/types';
+import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/prelude';
 import { removeOrphanedBrackets } from '../src/mfm/language';
 
 function text(text: string): MfmTree {
@@ -838,6 +838,20 @@ describe('MFM', () => {
 					text('('),
 					leaf('url', { url: 'https://example.com/foo(bar)' }),
 					text(')')
+				]);
+			});
+
+			it('ignore non-ascii characters contained url without angle brackets', () => {
+				const tokens = parse('https://大石泉すき.example.com');
+				assert.deepStrictEqual(tokens, [
+					text('https://大石泉すき.example.com')
+				]);
+			});
+
+			it('match non-ascii characters contained url with angle brackets', () => {
+				const tokens = parse('<https://大石泉すき.example.com>');
+				assert.deepStrictEqual(tokens, [
+					leaf('url', { url: 'https://大石泉すき.example.com' })
 				]);
 			});
 		});

@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import config from '../config';
 import { INote } from '../models/note';
 import { intersperse } from '../prelude/array';
-import { MfmForest, MfmTree } from './types';
+import { MfmForest, MfmTree } from './prelude';
 
 export function toHtml(tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) {
 	if (tokens == null) {
