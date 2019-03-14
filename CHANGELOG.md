@@ -5,9 +5,13 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
-unreleased
+10.94.0
 ----------
+* Faviconを設定できるように
+* アカウントを凍結したときすべてのフォローを解除するように
 * シェアページが機能していない問題を修正
+* インスタンスブロックをしていてもRenote等すると取得されてしまう問題を修正
+* デザインの調整
 
 10.93.1
 ----------
