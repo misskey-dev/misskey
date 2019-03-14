@@ -72,6 +72,6 @@ async function unFollowAll(follower: IUser) {
 			throw `Cant find followee ${following.followeeId}`;
 		}
 
-		await deleteFollowing(follower, followee);
+		await deleteFollowing(follower, followee, true);
 	}
 }
