@@ -29,10 +29,8 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 		break;
 
 	case 'Note':
-		createNote(resolver, actor, object);
-		break;
-
 	case 'Question':
+	case 'Article':
 		createNote(resolver, actor, object);
 		break;
 

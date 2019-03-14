@@ -91,6 +91,7 @@ class NotificationManager {
 
 type Option = {
 	createdAt?: Date;
+	name?: string;
 	text?: string;
 	reply?: INote;
 	renote?: INote;
@@ -437,6 +438,7 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 		fileIds: data.files ? data.files.map(file => file._id) : [],
 		replyId: data.reply ? data.reply._id : null,
 		renoteId: data.renote ? data.renote._id : null,
+		name: data.name,
 		text: data.text,
 		poll: data.poll,
 		cw: data.cw == null ? null : data.cw,
