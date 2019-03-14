@@ -13,7 +13,7 @@ import instanceChart from '../../services/chart/instance';
 
 const logger = new Logger('following/delete');
 
-export default async function(follower: IUser, followee: IUser) {
+export default async function(follower: IUser, followee: IUser, silent = false) {
 	const following = await Following.findOne({
 		followerId: follower._id,
 		followeeId: followee._id
@@ -71,7 +71,7 @@ export default async function(follower: IUser, followee: IUser) {
 	perUserFollowingChart.update(follower, followee, false);
 
 	// Publish unfollow event
-	if (isLocalUser(follower)) {
+	if (!silent && isLocalUser(follower)) {
 		packUser(followee, follower, {
 			detail: true
 		}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
