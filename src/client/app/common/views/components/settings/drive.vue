@@ -93,12 +93,17 @@ export default Vue.extend({
 					},
 					plotOptions: {
 						bar: {
-							columnWidth: '90%'
+							columnWidth: '80%'
 						}
 					},
 					grid: {
 						clipMarkers: false,
-						borderColor: 'rgba(0, 0, 0, 0.1)'
+						borderColor: 'rgba(0, 0, 0, 0.1)',
+						xaxis: {
+							lines: {
+								show: true,
+							}
+						},
 					},
 					tooltip: {
 						shared: true,

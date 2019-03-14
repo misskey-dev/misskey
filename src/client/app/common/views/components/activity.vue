@@ -69,7 +69,7 @@ export default Vue.extend({
 				},
 				plotOptions: {
 					bar: {
-						columnWidth: '90%'
+						columnWidth: '80%'
 					}
 				},
 				grid: {

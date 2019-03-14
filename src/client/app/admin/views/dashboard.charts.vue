@@ -181,7 +181,12 @@ export default Vue.extend({
 				},
 				grid: {
 					clipMarkers: false,
-					borderColor: 'rgba(0, 0, 0, 0.1)'
+					borderColor: 'rgba(0, 0, 0, 0.1)',
+					xaxis: {
+						lines: {
+							show: true,
+						}
+					},
 				},
 				stroke: {
 					curve: 'straight',
