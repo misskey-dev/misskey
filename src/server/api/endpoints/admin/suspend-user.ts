@@ -1,7 +1,13 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/user';
+import User, { IUser, isLocalUser, isRemoteUser } from '../../../../models/user';
+import Following from '../../../../models/following';
+import perUserFollowingChart from '../../../../services/chart/per-user-following';
+import { renderActivity } from '../../../../remote/activitypub/renderer';
+import renderFollow from '../../../../remote/activitypub/renderer/follow';
+import renderUndo from '../../../../remote/activitypub/renderer/undo';
+import { deliver } from '../../../../queue';
 
 export const meta = {
 	desc: {
@@ -51,5 +57,51 @@ export default define(meta, async (ps) => {
 		}
 	});
 
+	unFollowAll(user);
+
 	return;
 });
+
+async function unFollowAll(follower: IUser) {
+	const followings = await Following.find({
+		followerId: follower._id
+	});
+
+	for (const following of followings) {
+		const followee = await User.findOne({
+			_id: following.followeeId
+		});
+
+		if (followee == null) {
+			throw `Cant find followee ${following.followeeId}`;
+		}
+
+		Following.remove({
+			_id: following._id
+		});
+
+		//#region Decrement following count
+		User.update({ _id: follower._id }, {
+			$inc: {
+				followingCount: -1
+			}
+		});
+		//#endregion
+
+		//#region Decrement followers count
+		User.update({ _id: followee._id }, {
+			$inc: {
+				followersCount: -1
+			}
+		});
+		//#endregion
+
+		perUserFollowingChart.update(follower, followee, false);
+
+		// リモートにフォローをしていたらUndoFollow送信
+		if (isLocalUser(follower) && isRemoteUser(followee)) {
+			const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
+			deliver(follower, content, followee.inbox);
+		}
+	}
+}
