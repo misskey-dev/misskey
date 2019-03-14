@@ -178,10 +178,10 @@ export function destroy() {
 	deliverQueue.once('cleaned', (jobs, status) => {
 		deliverLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 	});
-	deliverQueue.clean(0, 'wait');
+	deliverQueue.clean(0, 'delayed');
 
 	inboxQueue.once('cleaned', (jobs, status) => {
 		inboxLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 	});
-	inboxQueue.clean(0, 'wait');
+	inboxQueue.clean(0, 'delayed');
 }
