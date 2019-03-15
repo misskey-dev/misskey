@@ -944,13 +944,14 @@ admin/views/announcements.vue:
     are-you-sure: "Usunąć \"$1\"?"
     removed: "Usunięto"
 admin/views/federation.vue:
+  instance: "Instancja"
   notes: "Wpis"
   users: "Użytkownicy"
   following: "Śledzisz"
   followers: "Śledzący"
+  caught-at: "Utworzono"
   status: "Stan"
   block: "Zablokuj"
-  instances: "Instancja"
   sort: "Sortuj"
   states:
     all: "Wszyscy"
