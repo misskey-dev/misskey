@@ -70,7 +70,8 @@ export default define(meta, async (ps, me) => {
 		users = await User
 			.find({
 				host: null,
-				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase()))
+				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
+				isSuspended: false
 			}, {
 				limit: ps.limit,
 				skip: ps.offset
@@ -80,7 +81,8 @@ export default define(meta, async (ps, me) => {
 			const otherUsers = await User
 				.find({
 					host: { $ne: null },
-					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase()))
+					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
+					isSuspended: false
 				}, {
 					limit: ps.limit - users.length
 				});

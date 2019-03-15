@@ -20,6 +20,7 @@ User.createIndex('createdAt');
 User.createIndex('updatedAt');
 User.createIndex('followersCount');
 User.createIndex('tags');
+User.createIndex('isSuspended');
 User.createIndex('username');
 User.createIndex('usernameLower');
 User.createIndex('host');
