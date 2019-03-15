@@ -1408,12 +1408,13 @@ admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 
 admin/views/federation.vue:
-  federation: "連合"
+  instance: "インスタンス"
   host: "ホスト"
   notes: "投稿"
   users: "ユーザー"
   following: "フォロー中"
   followers: "フォロワー"
+  caught-at: "登録日時"
   status: "ステータス"
   latest-request-sent-at: "直近のリクエスト送信"
   latest-request-received-at: "直近のリクエスト受信"
@@ -1422,7 +1423,7 @@ admin/views/federation.vue:
   block: "ブロック"
   marked-as-closed: "閉鎖されているとマーク"
   lookup: "照会"
-  instances: "インスタンス"
+  instances: "連合"
   instance-not-registered: "そのインスタンスは登録されていません"
   sort: "ソート"
   sorts:

@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<template #title><fa :icon="faTerminal"/> {{ $t('federation') }}</template>
+		<template #title><fa :icon="faTerminal"/> {{ $t('instance') }}</template>
 		<section class="fit-top">
 			<ui-input class="target" v-model="target" type="text" @enter="showInstance()">
 				<span>{{ $t('host') }}</span>
@@ -9,9 +9,14 @@
 			<ui-button @click="showInstance()"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 
 			<div class="instance" v-if="instance">
-				<ui-input :value="instance.host" type="text" readonly>
-					<span>{{ $t('host') }}</span>
-				</ui-input>
+				<ui-horizon-group inputs>
+					<ui-input :value="instance.host" type="text" readonly>
+						<span>{{ $t('host') }}</span>
+					</ui-input>
+					<ui-input :value="instance.caughtAt | date" type="text" readonly>
+						<span>{{ $t('caught-at') }}</span>
+					</ui-input>
+				</ui-horizon-group>
 				<ui-horizon-group inputs>
 					<ui-input :value="instance.notesCount | number" type="text" readonly>
 						<span>{{ $t('notes') }}</span>
@@ -29,14 +34,14 @@
 					</ui-input>
 				</ui-horizon-group>
 				<ui-horizon-group inputs>
-					<ui-input :value="instance.latestRequestSentAt" type="text" readonly>
+					<ui-input :value="instance.latestRequestSentAt | date" type="text" readonly>
 						<span>{{ $t('latest-request-sent-at') }}</span>
 					</ui-input>
 					<ui-input :value="instance.latestStatus" type="text" readonly>
 						<span>{{ $t('status') }}</span>
 					</ui-input>
 				</ui-horizon-group>
-				<ui-input :value="instance.latestRequestReceivedAt" type="text" readonly>
+				<ui-input :value="instance.latestRequestReceivedAt | date" type="text" readonly>
 					<span>{{ $t('latest-request-received-at') }}</span>
 				</ui-input>
 				<ui-switch v-model="instance.isBlocked" @change="updateInstance()">{{ $t('block') }}</ui-switch>
@@ -143,6 +148,10 @@ const negate = arr => arr.map(x => -x);
 
 export default Vue.extend({
 	i18n: i18n('admin/views/federation.vue'),
+
+	filters: {
+		date: v => v ? new Date(v).toLocaleString() : 'N/A'
+	},
 
 	data() {
 		return {
