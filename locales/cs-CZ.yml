@@ -995,14 +995,15 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Skryté tagy"
 admin/views/federation.vue:
-  federation: "Z fediversu"
+  instance: "Instance"
   host: "Hostitel"
   notes: "Poznámky"
   users: "Uživatelé"
+  caught-at: "Vytvořeno"
   status: "Status"
   latest-request-received-at: "Poslední požadavek přijat"
   block: "Blokován"
-  instances: "Instance"
+  instances: "Z fediversu"
   states:
     all: "Všechny"
     blocked: "Blokován"
