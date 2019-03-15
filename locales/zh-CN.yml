@@ -1275,12 +1275,13 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "隐藏标签"
 admin/views/federation.vue:
-  federation: "联合"
+  instance: "例"
   host: "主机名"
   notes: "帖子"
   users: "用户"
   following: "正在关注"
   followers: "关注者"
+  caught-at: "注册日期"
   status: "状态"
   latest-request-sent-at: "上次发送的请求"
   latest-request-received-at: "上次收到的请求"
@@ -1289,7 +1290,7 @@ admin/views/federation.vue:
   block: "拉黑"
   marked-as-closed: "标记为已关闭"
   lookup: "查询"
-  instances: "实例"
+  instances: "联合"
   instance-not-registered: "实例未注册"
   sort: "排序"
   sorts:
