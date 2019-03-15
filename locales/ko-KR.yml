@@ -1275,12 +1275,13 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 admin/views/federation.vue:
-  federation: "연합"
+  instance: "인스턴스"
   host: "호스트"
   notes: "글"
   users: "사용자"
   following: "팔로우 중"
   followers: "팔로워"
+  caught-at: "등록 날짜"
   status: "상태"
   latest-request-sent-at: "마지막으로 요청을 전송한 시간"
   latest-request-received-at: "마지막으로 요청을 받은 시간"
@@ -1289,7 +1290,7 @@ admin/views/federation.vue:
   block: "차단"
   marked-as-closed: "폐쇄된 것으로 표시"
   lookup: "조회"
-  instances: "인스턴스"
+  instances: "연합"
   instance-not-registered: "해당 인스턴스가 등록되어 있지 않습니다"
   sort: "정렬"
   sorts:
