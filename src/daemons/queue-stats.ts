@@ -4,7 +4,7 @@ import { deliverQueue, inboxQueue } from '../queue';
 
 const ev = new Xev();
 
-const interval = 1000;
+const interval = 2000;
 
 /**
  * Report queue stats regularly

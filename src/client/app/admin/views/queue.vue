@@ -9,7 +9,7 @@
 				<ui-input :value="latestStats.deliver.activeSincePrevTick | number" type="text" readonly>
 					<span>Process</span>
 					<template #prefix><fa :icon="fasPlayCircle"/></template>
-					<template #suffix>jobs/s</template>
+					<template #suffix>jobs/tick</template>
 				</ui-input>
 				<ui-input :value="latestStats.deliver.active | number" type="text" readonly>
 					<span>Active</span>
@@ -36,7 +36,7 @@
 				<ui-input :value="latestStats.inbox.activeSincePrevTick | number" type="text" readonly>
 					<span>Process</span>
 					<template #prefix><fa :icon="fasPlayCircle"/></template>
-					<template #suffix>jobs/s</template>
+					<template #suffix>jobs/tick</template>
 				</ui-input>
 				<ui-input :value="latestStats.inbox.active | number" type="text" readonly>
 					<span>Active</span>
@@ -131,8 +131,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		const chartOpts = {
+		const chartOpts = id => ({
 			chart: {
+				id,
+				group: 'queue',
 				type: 'area',
 				height: 200,
 				animations: {
@@ -186,10 +188,10 @@ export default Vue.extend({
 				show: false,
 				min: 0,
 			}
-		};
+		});
 
-		this.inboxChart = new ApexCharts(this.$refs.inboxChart, chartOpts);
-		this.deliverChart = new ApexCharts(this.$refs.deliverChart, chartOpts);
+		this.inboxChart = new ApexCharts(this.$refs.inboxChart, chartOpts('a'));
+		this.deliverChart = new ApexCharts(this.$refs.deliverChart, chartOpts('b'));
 
 		this.inboxChart.render();
 		this.deliverChart.render();
