@@ -170,7 +170,7 @@ export default Vue.extend({
 			target: null,
 			sort: '+lastCommunicatedAt',
 			state: 'all',
-			limit: 50,
+			limit: 100,
 			instances: [],
 			chart: null,
 			chartSrc: 'requests',
