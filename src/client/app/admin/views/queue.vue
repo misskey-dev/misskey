@@ -247,5 +247,6 @@ export default Vue.extend({
 .wptihjuy
 	> .chart
 		min-height 200px !important
+		margin 0 -8px
 
 </style>
