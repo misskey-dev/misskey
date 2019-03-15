@@ -1142,12 +1142,13 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Tags cachés"
 admin/views/federation.vue:
-  federation: "Fédération"
+  instance: "Instance"
   host: "Hôte"
   notes: "Notes"
   users: "Utilisateur·rice·s"
   following: "Abonnements"
   followers: "Abonné·e·s"
+  caught-at: "Créé le"
   status: "Statuts"
   latest-request-sent-at: "Dernière requête envoyée"
   latest-request-received-at: "Dernière requête reçue"
@@ -1155,7 +1156,7 @@ admin/views/federation.vue:
   block: "Bloquer"
   marked-as-closed: "Marquées comme fermées"
   lookup: "Recherche"
-  instances: "Instances"
+  instances: "Fédérées"
   sort: "Trier par"
   sorts:
     caughtAtAsc: "Date d’inscription (Ascendant)"
