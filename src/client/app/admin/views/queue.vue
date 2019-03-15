@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<template #title><fa :icon="faTasks"/> {{ $t('title') }}</template>
+		<template #title><fa :icon="faChartBar"/> {{ $t('title') }}</template>
 		<section class="wptihjuy">
 			<header><fa :icon="faPaperPlane"/> Deliver</header>
 			<ui-info warn v-if="latestStats && latestStats.deliver.waiting > 0">The queue is jammed.</ui-info>
@@ -60,6 +60,35 @@
 			<ui-button @click="removeAllJobs">{{ $t('remove-all-jobs') }}</ui-button>
 		</section>
 	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faTasks"/> {{ $t('jobs') }}</template>
+		<section class="fit-top">
+			<ui-horizon-group inputs>
+				<ui-select v-model="domain">
+					<template #label>{{ $t('queue') }}</template>
+					<option value="deliver">{{ $t('domains.deliver') }}</option>
+					<option value="inbox">{{ $t('domains.inbox') }}</option>
+				</ui-select>
+				<ui-select v-model="state">
+					<template #label>{{ $t('state') }}</template>
+					<option value="delayed">{{ $t('states.delayed') }}</option>
+				</ui-select>
+			</ui-horizon-group>
+			<sequential-entrance animation="entranceFromTop" delay="25">
+				<div class="xvvuvgsv" v-for="job in jobs">
+					<b>{{ job.id }}</b>
+					<template v-if="domain === 'deliver'">
+						<span>{{ job.data.to }}</span>
+					</template>
+					<template v-if="domain === 'inbox'">
+						<span>{{ job.activity.id }}</span>
+					</template>
+				</div>
+			</sequential-entrance>
+			<ui-info v-if="jobs.length == jobsLimit">{{ $t('result-is-truncated', { n: jobsLimit }) }}</ui-info>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -69,7 +98,7 @@ import i18n from '../../i18n';
 import ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
 import { faTasks, faInbox, faStopwatch, faPlayCircle as fasPlayCircle } from '@fortawesome/free-solid-svg-icons';
-import { faPaperPlane, faStopCircle, faPlayCircle as farPlayCircle } from '@fortawesome/free-regular-svg-icons';
+import { faPaperPlane, faStopCircle, faPlayCircle as farPlayCircle, faChartBar } from '@fortawesome/free-regular-svg-icons';
 
 const limit = 150;
 
@@ -81,7 +110,11 @@ export default Vue.extend({
 			stats: [],
 			deliverChart: null,
 			inboxChart: null,
-			faTasks, faPaperPlane, faInbox, faStopwatch, faStopCircle, farPlayCircle, fasPlayCircle
+			jobs: [],
+			jobsLimit: 50,
+			domain: 'deliver',
+			state: 'delayed',
+			faTasks, faPaperPlane, faInbox, faStopwatch, faStopCircle, farPlayCircle, fasPlayCircle, faChartBar
 		};
 	},
 
@@ -127,10 +160,22 @@ export default Vue.extend({
 				type: 'line',
 				data: stats.map((x, i) => ({ x: i, y: x.deliver.delayed }))
 			}]);
-		}
+		},
+
+		domain() {
+			this.jobs = [];
+			this.fetchJobs();
+		},
+
+		state() {
+			this.jobs = [];
+			this.fetchJobs();
+		},
 	},
 
 	mounted() {
+		this.fetchJobs();
+
 		const chartOpts = id => ({
 			chart: {
 				id,
@@ -238,7 +283,17 @@ export default Vue.extend({
 			for (const stats of statsLog.reverse()) {
 				this.onStats(stats);
 			}
-		}
+		},
+
+		fetchJobs() {
+			this.$root.api('admin/queue/jobs', {
+				domain: this.domain,
+				state: this.state,
+				limit: this.jobsLimit
+			}).then(jobs => {
+				this.jobs = jobs;
+			});
+		},
 	}
 });
 </script>
@@ -248,5 +303,9 @@ export default Vue.extend({
 	> .chart
 		min-height 200px !important
 		margin 0 -8px
+
+.xvvuvgsv
+	> b
+		margin-right 16px
 
 </style>
