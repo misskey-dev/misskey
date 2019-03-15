@@ -815,11 +815,11 @@ admin/views/announcements.vue:
   remove: "eliminar"
   add: "Agregar"
 admin/views/federation.vue:
+  instance: "Instancia"
   host: "Host"
   following: "Siguiendo"
   status: "Estado"
   block: "Bloquear"
-  instances: "Instancia"
   states:
     all: "Todo"
     blocked: "Bloquear"
