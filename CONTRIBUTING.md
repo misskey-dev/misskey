@@ -46,6 +46,9 @@ Convert な(na) to にゃ(nya)
 Revert Nyaize
 
 ## Code style
+### Use semicolon
+To avoid ASI Hazard
+
 ### Don't use `export default`
 Bad:
 ``` ts
