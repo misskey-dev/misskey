@@ -71,7 +71,7 @@ export default define(meta, async (ps, me) => {
 			.find({
 				host: null,
 				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-				isSuspended: false
+				isSuspended: { $ne: true }
 			}, {
 				limit: ps.limit,
 				skip: ps.offset
@@ -82,7 +82,7 @@ export default define(meta, async (ps, me) => {
 				.find({
 					host: { $ne: null },
 					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-					isSuspended: false
+					isSuspended: { $ne: true }
 				}, {
 					limit: ps.limit - users.length
 				});
