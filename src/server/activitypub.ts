@@ -17,6 +17,7 @@ import Following from './activitypub/following';
 import Featured from './activitypub/featured';
 import renderQuestion from '../remote/activitypub/renderer/question';
 import { inbox as processInbox } from '../queue';
+import { isSelfHost } from '../misc/convert-host';
 
 // Init router
 const router = new Router();
@@ -79,6 +80,16 @@ router.get('/notes/:note', async (ctx, next) => {
 		return;
 	}
 
+	// リモートだったらリダイレクト
+	if (note._user.host != null) {
+		if (note.uri == null || isSelfHost(note._user.host)) {
+			ctx.status = 500;
+			return;
+		}
+		ctx.redirect(note.uri);
+		return;
+	}
+
 	ctx.body = renderActivity(await renderNote(note, false));
 	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
@@ -93,6 +104,7 @@ router.get('/notes/:note/activity', async ctx => {
 
 	const note = await Note.findOne({
 		_id: new ObjectID(ctx.params.note),
+		'_user.host': null,
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
 	});
@@ -116,6 +128,7 @@ router.get('/questions/:question', async (ctx, next) => {
 
 	const poll = await Note.findOne({
 		_id: new ObjectID(ctx.params.question),
+		'_user.host': null,
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true },
 		poll: {
