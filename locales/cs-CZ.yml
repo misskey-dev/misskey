@@ -304,6 +304,7 @@ common/views/pages/explore.vue:
   explore: "Prozkoumat {host}"
 common/views/components/url-preview.vue:
   enable-player: "Otevřít v přehrávači"
+  disable-player: "Zavřít přehrávač"
 common/views/components/user-list.vue:
   no-users: "Žádní uživatelé"
 common/views/components/games/reversi/reversi.vue:
@@ -848,8 +849,6 @@ admin/views/dashboard.vue:
   instances: "Instance"
   this-instance: "Tato instance"
   federated: "Z fediversu"
-admin/views/queue.vue:
-  operation: "Akce"
 admin/views/abuse.vue:
   details: "Popis"
   remove-report: "Odstranit"

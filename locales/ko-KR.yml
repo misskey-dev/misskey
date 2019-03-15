@@ -314,6 +314,7 @@ common/views/pages/explore.vue:
   users-info: "현재 {users} 사용자가 등록되어 있습니다"
 common/views/components/url-preview.vue:
   enable-player: "플레이어 열기"
+  disable-player: "플레이어 닫기"
 common/views/components/user-list.vue:
   no-users: "사용자가 없습니다"
 common/views/components/games/reversi/reversi.vue:
@@ -1056,7 +1057,7 @@ admin/views/dashboard.vue:
   this-instance: "이 인스턴스"
   federated: "연합"
 admin/views/queue.vue:
-  operation: "동작"
+  title: "큐"
   remove-all-jobs: "모든 작업 제거"
 admin/views/abuse.vue:
   title: "스팸 신고"

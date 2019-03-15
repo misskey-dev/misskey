@@ -169,9 +169,9 @@ common:
     deck-column-align-flexible: "Flexible"
     deck-column-width: "Deck column width"
     deck-column-width-narrow: "Narrow"
-    deck-column-width-narrower: "Somewhat narrow"
+    deck-column-width-narrower: "Narrower"
     deck-column-width-normal: "Regular"
-    deck-column-width-wider: "Somewhat wide"
+    deck-column-width-wider: "Slightly wide"
     deck-column-width-wide: "Wide"
     use-shadow: "Use shadows in the UI"
     rounded-corners: "Round the corners of the UI"
@@ -1057,7 +1057,7 @@ admin/views/dashboard.vue:
   this-instance: "This instance"
   federated: "Federated"
 admin/views/queue.vue:
-  operation: "Action(s)"
+  title: "Queue"
   remove-all-jobs: "Clear all queued jobs"
 admin/views/abuse.vue:
   title: "Abuse"

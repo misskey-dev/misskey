@@ -927,7 +927,6 @@ admin/views/dashboard.vue:
   this-instance: "Cette instance"
   federated: "Fédérées"
 admin/views/queue.vue:
-  operation: "Action(s)"
   remove-all-jobs: "Enlever toutes les tâches en attente"
 admin/views/abuse.vue:
   title: "Abus"
