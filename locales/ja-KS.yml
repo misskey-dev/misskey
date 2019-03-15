@@ -988,7 +988,7 @@ admin/views/announcements.vue:
   add: "増やす"
   saved: "保存したで！"
 admin/views/federation.vue:
-  federation: "連合"
+  instance: "インスタンス"
   host: "ホスト"
   notes: "投稿"
   users: "ユーザー"
@@ -997,7 +997,7 @@ admin/views/federation.vue:
   status: "ステータス"
   block: "ブロック"
   lookup: "照会"
-  instances: "インスタンス"
+  instances: "連合"
   states:
     all: "すべて"
     blocked: "ブロック"
