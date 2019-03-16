@@ -100,7 +100,7 @@ import * as tinycolor from 'tinycolor2';
 import { faTasks, faInbox, faStopwatch, faPlayCircle as fasPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { faPaperPlane, faStopCircle, faPlayCircle as farPlayCircle, faChartBar } from '@fortawesome/free-regular-svg-icons';
 
-const limit = 150;
+const limit = 200;
 
 export default Vue.extend({
 	i18n: i18n('admin/views/queue.vue'),
