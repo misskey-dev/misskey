@@ -5,6 +5,16 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.96.0
+----------
+* 連合ユーザーの投稿に対してActivityPubオブジェクトを要求されたら元のインスタンスにリダイレクトするように
+* updatePersonを試行した時点でもlastFetchedAtを更新するように
+* 管理画面でリモートインスタンスの登録日時を表示
+* ユーザーサジェストが機能しなくなっていた問題を修正
+* 最近使ったハッシュタグ表示が機能していない問題を修正
+* バグ修正
+* デザインの調整
+
 10.95.0
 ----------
 * ジョブを一覧できるように
