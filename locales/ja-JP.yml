@@ -621,7 +621,7 @@ common/views/components/notification-settings.vue:
   title: "通知"
   mark-as-read-all-notifications: "すべての通知を既読にする"
   mark-as-read-all-unread-notes: "すべての投稿を既読にする"
-  mark-as-read-all-talk-messages: "すべてのトークを既読にする"
+  mark-as-read-all-talk-messages: "すべてのトークのメッセージを既読にする"
   auto-watch: "投稿の自動ウォッチ"
   auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
 
@@ -1477,6 +1477,9 @@ desktop/views/pages/welcome.vue:
 
 desktop/views/pages/drive.vue:
   title: "Misskey Drive"
+
+desktop/views/pages/messaging-room.vue:
+  title: "{0}とのトーク"
 
 desktop/views/pages/note.vue:
   prev: "前の投稿"
