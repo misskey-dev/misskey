@@ -15,7 +15,7 @@
 			<button @click="react('rip')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="9" :title="$t('@.reactions.rip')" v-particle><mk-reaction-icon reaction="rip"/></button>
 			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" :title="$t('@.reactions.pudding')" v-particle><mk-reaction-icon reaction="pudding"/></button>
 		</div>
-		<div v-if="enableCustom" class="text">
+		<div v-if="enableEmojiReaction" class="text">
 			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" v-autocomplete="{ model: 'text' }">
 			<button class="ok" @click="reactText"><fa icon="check"/></button>
 		</div>
@@ -61,7 +61,7 @@ export default Vue.extend({
 		return {
 			title: this.$t('choose-reaction'),
 			text: null,
-			enableCustom: false,
+			enableEmojiReaction: false,
 			focus: null
 		};
 	},
@@ -101,7 +101,7 @@ export default Vue.extend({
 
 	mounted() {
 		this.$root.getMeta().then(meta => {
-			this.enableCustom = !meta.disableCustomReaction;
+			this.enableEmojiReaction = meta.enableEmojiReaction;
 		});
 
 		this.$nextTick(() => {

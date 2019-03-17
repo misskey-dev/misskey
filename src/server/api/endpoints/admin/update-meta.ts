@@ -41,10 +41,10 @@ export const meta = {
 			}
 		},
 
-		disableCustomReaction: {
+		enableEmojiReaction: {
 			validator: $.optional.nullable.bool,
 			desc: {
-				'ja-JP': 'カスタムリアクションを無効にするか否か'
+				'ja-JP': '絵文字リアクションを有効にするか否か'
 			}
 		},
 
@@ -358,8 +358,8 @@ export default define(meta, async (ps) => {
 		set.disableGlobalTimeline = ps.disableGlobalTimeline;
 	}
 
-	if (typeof ps.disableCustomReaction === 'boolean') {
-		set.disableCustomReaction = ps.disableCustomReaction;
+	if (typeof ps.enableEmojiReaction === 'boolean') {
+		set.enableEmojiReaction = ps.enableEmojiReaction;
 	}
 
 	if (Array.isArray(ps.hidedTags)) {

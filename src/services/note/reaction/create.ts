@@ -20,7 +20,7 @@ export default async (user: IUser, note: INote, reaction: string) => {
 	}
 
 	const meta = await fetchMeta();
-	reaction = toDbReaction(reaction, meta.disableCustomReaction);
+	reaction = toDbReaction(reaction, meta.enableEmojiReaction);
 
 	// Create reaction
 	await NoteReaction.insert({
