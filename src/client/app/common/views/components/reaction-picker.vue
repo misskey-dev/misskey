@@ -16,7 +16,7 @@
 			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" :title="$t('@.reactions.pudding')" v-particle><mk-reaction-icon reaction="pudding"/></button>
 		</div>
 		<div v-if="enableEmojiReaction" class="text">
-			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" @input="reactText" v-autocomplete="{ model: 'text' }">
+			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
 			<button class="ok" @click="reactText"><fa icon="check"/></button>
 		</div>
 	</div>
@@ -27,6 +27,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import anime from 'animejs';
+import { emojiRegex } from '../../../../../misc/reaction-lib';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/reaction-picker.vue'),
@@ -156,6 +157,12 @@ export default Vue.extend({
 		reactText() {
 			if (!this.text) return;
 			this.react(this.text);
+		},
+
+		tryReactText() {
+			if (!this.text) return;
+			if (!this.text.match(emojiRegex)) return;
+			this.reactText();
 		},
 
 		onMouseover(e) {
