@@ -298,6 +298,9 @@ export default Vue.extend({
 				font-size 24px
 				border-radius 2px
 
+				> *
+					height 1em
+
 				&:hover
 					background var(--reactionPickerButtonHoverBg)
 
