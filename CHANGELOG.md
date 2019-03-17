@@ -5,6 +5,12 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.97.0
+----------
+* リアクションに絵文字やカスタム絵文字を使えるように
+* 不明なリアクションのフォールバックに star を使えるように
+* デザインの調整
+
 10.96.0
 ----------
 * 連合ユーザーの投稿に対してActivityPubオブジェクトを要求されたら元のインスタンスにリダイレクトするように
