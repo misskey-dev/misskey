@@ -73,6 +73,14 @@ describe('toDbReaction', async () => {
 		assert.strictEqual(await toDbReaction('㊗'), '㊗');
 	});
 
+	it('fallback - undefined', async () => {
+		assert.strictEqual(await toDbReaction(undefined), 'like');
+	});
+
+	it('fallback - null', async () => {
+		assert.strictEqual(await toDbReaction(null), 'like');
+	});
+
 	it('fallback - empty', async () => {
 		assert.strictEqual(await toDbReaction(''), 'like');
 	});

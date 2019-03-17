@@ -19,6 +19,8 @@ export async function getFallbackReaction(): Promise<string> {
 }
 
 export async function toDbReaction(reaction: string, enableEmoji = true): Promise<string> {
+	if (reaction == null) return await getFallbackReaction();
+
 	// 既存の文字列リアクションはそのまま
 	if (Object.values(basic10).includes(reaction)) return reaction;
 

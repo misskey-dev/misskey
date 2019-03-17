@@ -3,7 +3,6 @@ import Note from '../../../models/note';
 import { IRemoteUser } from '../../../models/user';
 import { ILike } from '../type';
 import create from '../../../services/note/reaction/create';
-import { getFallbackReaction } from '../../../misc/reaction-lib';
 
 export default async (actor: IRemoteUser, activity: ILike) => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
@@ -18,7 +17,5 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 		throw new Error();
 	}
 
-	const reaction = activity._misskey_reaction ? activity._misskey_reaction : await getFallbackReaction();
-
-	await create(actor, note, reaction);
+	await create(actor, note, activity._misskey_reaction);
 };
