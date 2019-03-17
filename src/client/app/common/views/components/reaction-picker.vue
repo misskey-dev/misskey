@@ -15,6 +15,10 @@
 			<button @click="react('rip')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="9" :title="$t('@.reactions.rip')" v-particle><mk-reaction-icon reaction="rip"/></button>
 			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" :title="$t('@.reactions.pudding')" v-particle><mk-reaction-icon reaction="pudding"/></button>
 		</div>
+		<div class="text">
+			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" v-autocomplete="{ model: 'text' }">
+			<button class="ok" @click="reactText"><fa icon="check"/></button>
+		</div>
 	</div>
 </div>
 </template>
@@ -56,6 +60,7 @@ export default Vue.extend({
 	data() {
 		return {
 			title: this.$t('choose-reaction'),
+			text: null,
 			focus: null
 		};
 	},
@@ -141,6 +146,11 @@ export default Vue.extend({
 				this.$emit('closed');
 				this.destroyDom();
 			});
+		},
+
+		reactText() {
+			if (!this.text) return;
+			this.react(this.text);
 		},
 
 		onMouseover(e) {
@@ -290,4 +300,39 @@ export default Vue.extend({
 					background var(--primary)
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
+		> .text
+			display flex
+			justify-content center
+			align-items center
+
+			> input
+				width 100%
+				padding 12px
+				margin 0
+				font-size 16px
+				color var(--desktopPostFormTextareaFg)
+				background var(--desktopPostFormTextareaBg)
+				outline none
+				border solid 1px var(--primaryAlpha01)
+				border-radius 4px
+				transition border-color .2s ease
+
+				&:hover
+					border-color var(--primaryAlpha02)
+					transition border-color .1s ease
+
+				&:focus
+					border-color var(--primaryAlpha05)
+					transition border-color 0s ease
+
+			> button
+				cursor pointer
+				padding 0
+				margin 0px 4px
+				font-size 1em
+				color var(--desktopPostFormTransparentButtonFg)
+				background transparent
+				outline none
+				border solid 1px transparent
+				border-radius 4px
 </style>

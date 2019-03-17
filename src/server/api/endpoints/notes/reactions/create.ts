@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import createReaction from '../../../../../services/note/reaction/create';
-import { validateReaction } from '../../../../../models/note-reaction';
 import define from '../../../define';
 import { getNote } from '../../../common/getters';
 import { ApiError } from '../../../error';
@@ -30,7 +29,7 @@ export const meta = {
 		},
 
 		reaction: {
-			validator: $.str.pipe(validateReaction.ok),
+			validator: $.optional.str,
 			desc: {
 				'ja-JP': 'リアクションの種類'
 			}
