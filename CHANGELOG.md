@@ -5,6 +5,10 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.97.1
+----------
+* デザインの調整
+
 10.97.0
 ----------
 * リアクションに絵文字やカスタム絵文字を使えるように
