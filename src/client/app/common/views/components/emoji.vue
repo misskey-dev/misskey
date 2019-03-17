@@ -29,7 +29,11 @@ export default Vue.extend({
 		customEmojis: {
 			required: false,
 			default: () => []
-		}
+		},
+		isReaction: {
+			type: Boolean,
+			default: false
+		},
 	},
 
 	data() {
@@ -46,7 +50,7 @@ export default Vue.extend({
 		},
 
 		useOsDefaultEmojis(): boolean {
-			return this.$store.state.device.useOsDefaultEmojis;
+			return this.$store.state.device.useOsDefaultEmojis && !this.isReaction;
 		}
 	},
 

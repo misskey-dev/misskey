@@ -1,5 +1,5 @@
 <template>
-<mfm :text="str" :should-break="false" :plain-text="true"/>
+<mfm :text="str" :should-break="false" :plain-text="true" :isReaction="true"/>
 </template>
 
 <script lang="ts">
