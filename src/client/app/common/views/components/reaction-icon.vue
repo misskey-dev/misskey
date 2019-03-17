@@ -31,6 +31,7 @@ export default Vue.extend({
 				case 'confused': return '😥';
 				case 'rip': return '😇';
 				case 'pudding': return (this.$store.getters.isSignedIn && this.$store.state.settings.iLikeSushi) ? '🍣' : '🍮';
+				case 'star': return '⭐';
 				default: return this.reaction;
 			}
 		},

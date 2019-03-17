@@ -20,19 +20,6 @@ export interface INoteReaction {
 	reaction: string;
 }
 
-export const validateReaction = $.str.or([
-	'like',
-	'love',
-	'laugh',
-	'hmm',
-	'surprise',
-	'congrats',
-	'angry',
-	'confused',
-	'rip',
-	'pudding'
-]);
-
 /**
  * Pack a reaction for API response
  */

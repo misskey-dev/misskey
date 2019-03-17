@@ -392,7 +392,8 @@ export const schemas = {
 					'angry',
 					'confused',
 					'rip',
-					'pudding'
+					'pudding',
+					'star'
 				],
 				description: 'The reaction type.'
 			},

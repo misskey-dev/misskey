@@ -152,6 +152,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (me && (me.isAdmin || me.isModerator)) {
+		response.useStarForReactionFallback = instance.useStarForReactionFallback;
 		response.hidedTags = instance.hidedTags;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;

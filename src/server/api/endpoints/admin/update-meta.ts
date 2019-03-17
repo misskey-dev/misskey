@@ -48,6 +48,13 @@ export const meta = {
 			}
 		},
 
+		useStarForReactionFallback: {
+			validator: $.optional.nullable.bool,
+			desc: {
+				'ja-JP': '不明なリアクションのフォールバックに star リアクションを使うか'
+			}
+		},
+
 		hidedTags: {
 			validator: $.optional.nullable.arr($.str),
 			desc: {
@@ -360,6 +367,10 @@ export default define(meta, async (ps) => {
 
 	if (typeof ps.enableEmojiReaction === 'boolean') {
 		set.enableEmojiReaction = ps.enableEmojiReaction;
+	}
+
+	if (typeof ps.useStarForReactionFallback === 'boolean') {
+		set.useStarForReactionFallback = ps.useStarForReactionFallback;
 	}
 
 	if (Array.isArray(ps.hidedTags)) {

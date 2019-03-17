@@ -10,6 +10,7 @@ export default function(reaction: string): string {
 		case 'confused': return '😥';
 		case 'rip': return '😇';
 		case 'pudding': return '🍮';
-		default: return '';
+		case 'star': return '⭐';
+		default: return reaction;
 	}
 }
