@@ -269,7 +269,7 @@ export default Vue.component('misskey-flavored-markdown', {
 						},
 						props: {
 							customEmojis: this.customEmojis || customEmojis,
-							normal: this.plainText,
+							normal: this.plainText
 						}
 					})];
 				}
