@@ -17,7 +17,6 @@
 		</div>
 		<div v-if="enableEmojiReaction" class="text">
 			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
-			<button class="ok" @click="reactText"><fa icon="check"/></button>
 		</div>
 	</div>
 </div>
@@ -316,14 +315,11 @@ export default Vue.extend({
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
 		> .text
-			display flex
-			justify-content center
-			align-items center
-
 			> input
 				width 100%
 				padding 12px
 				margin 0
+				text-align center
 				font-size 16px
 				color var(--desktopPostFormTextareaFg)
 				background var(--desktopPostFormTextareaBg)
@@ -340,14 +336,4 @@ export default Vue.extend({
 					border-color var(--primaryAlpha05)
 					transition border-color 0s ease
 
-			> button
-				cursor pointer
-				padding 0
-				margin 0px 4px
-				font-size 1em
-				color var(--desktopPostFormTransparentButtonFg)
-				background transparent
-				outline none
-				border solid 1px transparent
-				border-radius 4px
 </style>
