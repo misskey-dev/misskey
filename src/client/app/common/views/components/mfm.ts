@@ -45,10 +45,6 @@ export default Vue.component('misskey-flavored-markdown', {
 			type: Boolean,
 			default: true
 		},
-		isReaction: {
-			type: Boolean,
-			default: false
-		},
 	},
 
 	render(createElement) {
@@ -274,7 +270,6 @@ export default Vue.component('misskey-flavored-markdown', {
 						props: {
 							customEmojis: this.customEmojis || customEmojis,
 							normal: this.plainText,
-							isReaction: this.isReaction,
 						}
 					})];
 				}

@@ -1,5 +1,5 @@
 <template>
-<mfm :text="str" :should-break="false" :plain-text="true" :isReaction="true"/>
+<mk-emoji :emoji="str" :is-reaction="true"/>
 </template>
 
 <script lang="ts">
