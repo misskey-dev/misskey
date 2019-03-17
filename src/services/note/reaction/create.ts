@@ -11,6 +11,7 @@ import { renderActivity } from '../../../remote/activitypub/renderer';
 import perUserReactionsChart from '../../../services/chart/per-user-reactions';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
+import fetchMeta from '../../../misc/fetch-meta';
 
 export default async (user: IUser, note: INote, reaction: string) => {
 	// Myself
@@ -18,7 +19,8 @@ export default async (user: IUser, note: INote, reaction: string) => {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
 	}
 
-	reaction = toDbReaction(reaction);
+	const meta = await fetchMeta();
+	reaction = toDbReaction(reaction, meta.disableCustomReaction);
 
 	// Create reaction
 	await NoteReaction.insert({

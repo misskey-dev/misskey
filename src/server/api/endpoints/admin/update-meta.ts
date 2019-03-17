@@ -41,6 +41,13 @@ export const meta = {
 			}
 		},
 
+		disableCustomReaction: {
+			validator: $.optional.nullable.bool,
+			desc: {
+				'ja-JP': 'カスタムリアクションを無効にするか否か'
+			}
+		},
+
 		hidedTags: {
 			validator: $.optional.nullable.arr($.str),
 			desc: {
@@ -349,6 +356,10 @@ export default define(meta, async (ps) => {
 
 	if (typeof ps.disableGlobalTimeline === 'boolean') {
 		set.disableGlobalTimeline = ps.disableGlobalTimeline;
+	}
+
+	if (typeof ps.disableCustomReaction === 'boolean') {
+		set.disableCustomReaction = ps.disableCustomReaction;
 	}
 
 	if (Array.isArray(ps.hidedTags)) {

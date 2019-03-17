@@ -70,6 +70,10 @@ export const meta = {
 				type: 'boolean',
 				description: 'Whether disabled GTL.',
 			},
+			disableCustomReaction: {
+				type: 'boolean',
+				description: 'Whether custom reaction.',
+			},
 		}
 	}
 };
@@ -107,6 +111,7 @@ export default define(meta, async (ps, me) => {
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,
+		disableCustomReaction: instance.disableCustomReaction,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
@@ -131,6 +136,7 @@ export default define(meta, async (ps, me) => {
 			registration: !instance.disableRegistration,
 			localTimeLine: !instance.disableLocalTimeline,
 			globalTimeLine: !instance.disableGlobalTimeline,
+			customReaction: !instance.disableCustomReaction,
 			elasticsearch: config.elasticsearch ? true : false,
 			recaptcha: instance.enableRecaptcha,
 			objectStorage: config.drive && config.drive.storage === 'minio',
