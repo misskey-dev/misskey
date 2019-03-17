@@ -3,18 +3,37 @@
 
 	name: 'Future',
 	author: 'syuilo',
+	desc: 'Sci-fi flavored',
 
 	base: 'dark',
 
 	vars: {
-		primary: 'rgb(94, 158, 185)',
-		secondary: 'rgb(22, 24, 30)',
-		text: 'rgb(214, 218, 224)',
+		c0: '#0c0c0c',
+		c1: 'rgb(255, 105, 78)',
+		c2: 'rgb(99, 197, 210)',
+		c4: 'rgb(253, 254, 214)',
+		c3: 'rgb(204, 254, 253)',
+		primary: '$c1',
+		secondary: '#131313',
+		text: '$c3',
 	},
 
 	props: {
-		renoteGradient: '#0a2d3c',
-		renoteText: '$primary',
-		quoteBorder: '$primary',
+		bg: '$c0',
+		noteText: '$c4',
+		noteHeaderAcct: '$c4',
+		noteHeaderInfo: '$c4',
+		subNoteText: ':alpha<0.7<$c4',
+		renoteGradient: 'rgba(0, 0, 0, 0)',
+		renoteText: '#7bb54a',
+		quoteBorder: 'rgb(78, 148, 94)',
+		mfmHashtag: '$c1',
+		mfmUrl: '#5b8bbd',
+		mfmLink: '#5b8bbd',
+		mfmMention: '$c2',
+		mfmMentionForeground: '#fff',
+		notificationIndicator: '$c2',
+		link: '$c3',
+		desktopHeaderBg: '$secondary',
 	},
 }
