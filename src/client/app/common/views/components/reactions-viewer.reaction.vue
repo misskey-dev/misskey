@@ -136,12 +136,8 @@ export default Vue.extend({
 		&:hover
 			background var(--reactionViewerButtonHoverBg)
 
-	> .mk-reaction-icon
-		font-size 1.4em
-
 	> span
 		font-size 1.1em
 		line-height 32px
-		vertical-align middle
 		color var(--text)
 </style>

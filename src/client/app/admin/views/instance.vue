@@ -25,6 +25,7 @@
 			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
 			<ui-switch v-model="disableGlobalTimeline">{{ $t('disable-global-timeline') }}</ui-switch>
 			<ui-info>{{ $t('disabling-timelines-info') }}</ui-info>
+			<ui-switch v-model="enableEmojiReaction">{{ $t('enable-emoji-reaction') }}</ui-switch>
 		</section>
 		<section class="fit-bottom">
 			<header><fa icon="cloud"/> {{ $t('drive-config') }}</header>
@@ -155,6 +156,7 @@ export default Vue.extend({
 			disableRegistration: false,
 			disableLocalTimeline: false,
 			disableGlobalTimeline: false,
+			enableEmojiReaction: true,
 			mascotImageUrl: null,
 			bannerUrl: null,
 			errorImageUrl: null,
@@ -206,6 +208,7 @@ export default Vue.extend({
 			this.disableRegistration = meta.disableRegistration;
 			this.disableLocalTimeline = meta.disableLocalTimeline;
 			this.disableGlobalTimeline = meta.disableGlobalTimeline;
+			this.enableEmojiReaction = meta.enableEmojiReaction;
 			this.mascotImageUrl = meta.mascotImageUrl;
 			this.bannerUrl = meta.bannerUrl;
 			this.errorImageUrl = meta.errorImageUrl;
@@ -267,6 +270,7 @@ export default Vue.extend({
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
 				disableGlobalTimeline: this.disableGlobalTimeline,
+				enableEmojiReaction: this.enableEmojiReaction,
 				mascotImageUrl: this.mascotImageUrl,
 				bannerUrl: this.bannerUrl,
 				errorImageUrl: this.errorImageUrl,

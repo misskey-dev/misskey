@@ -41,6 +41,13 @@ export const meta = {
 			}
 		},
 
+		enableEmojiReaction: {
+			validator: $.optional.nullable.bool,
+			desc: {
+				'ja-JP': '絵文字リアクションを有効にするか否か'
+			}
+		},
+
 		hidedTags: {
 			validator: $.optional.nullable.arr($.str),
 			desc: {
@@ -349,6 +356,10 @@ export default define(meta, async (ps) => {
 
 	if (typeof ps.disableGlobalTimeline === 'boolean') {
 		set.disableGlobalTimeline = ps.disableGlobalTimeline;
+	}
+
+	if (typeof ps.enableEmojiReaction === 'boolean') {
+		set.enableEmojiReaction = ps.enableEmojiReaction;
 	}
 
 	if (Array.isArray(ps.hidedTags)) {

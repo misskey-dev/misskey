@@ -3,7 +3,7 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ isMobile: $root.isMobile }" ref="popover">
 		<p v-if="!$root.isMobile">{{ title }}</p>
-		<div ref="buttons" :class="{ showFocus }">
+		<div class="buttons" ref="buttons" :class="{ showFocus }">
 			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" :title="$t('@.reactions.like')" v-particle><mk-reaction-icon reaction="like"/></button>
 			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" :title="$t('@.reactions.love')" v-particle><mk-reaction-icon reaction="love"/></button>
 			<button @click="react('laugh')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="3" :title="$t('@.reactions.laugh')" v-particle><mk-reaction-icon reaction="laugh"/></button>
@@ -15,6 +15,9 @@
 			<button @click="react('rip')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="9" :title="$t('@.reactions.rip')" v-particle><mk-reaction-icon reaction="rip"/></button>
 			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" :title="$t('@.reactions.pudding')" v-particle><mk-reaction-icon reaction="pudding"/></button>
 		</div>
+		<div v-if="enableEmojiReaction" class="text">
+			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
+		</div>
 	</div>
 </div>
 </template>
@@ -23,6 +26,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import anime from 'animejs';
+import { emojiRegex } from '../../../../../misc/emoji-regex';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/reaction-picker.vue'),
@@ -56,6 +60,8 @@ export default Vue.extend({
 	data() {
 		return {
 			title: this.$t('choose-reaction'),
+			text: null,
+			enableEmojiReaction: false,
 			focus: null
 		};
 	},
@@ -94,6 +100,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		this.$root.getMeta().then(meta => {
+			this.enableEmojiReaction = meta.enableEmojiReaction;
+		});
+
 		this.$nextTick(() => {
 			this.focus = 0;
 
@@ -141,6 +151,17 @@ export default Vue.extend({
 				this.$emit('closed');
 				this.destroyDom();
 			});
+		},
+
+		reactText() {
+			if (!this.text) return;
+			this.react(this.text);
+		},
+
+		tryReactText() {
+			if (!this.text) return;
+			if (!this.text.match(emojiRegex)) return;
+			this.reactText();
 		},
 
 		onMouseover(e) {
@@ -256,9 +277,9 @@ export default Vue.extend({
 			color var(--popupFg)
 			border-bottom solid var(--lineWidth) var(--faceDivider)
 
-		> div
+		> .buttons
 			padding 4px
-			width 240px
+			width 216px
 			text-align center
 
 			&.showFocus
@@ -283,11 +304,39 @@ export default Vue.extend({
 				font-size 24px
 				border-radius 2px
 
+				> *
+					height 1em
+
 				&:hover
 					background var(--reactionPickerButtonHoverBg)
 
 				&:active
 					background var(--primary)
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
+
+		> .text
+			width 216px
+			padding 4px 8px 8px 8px
+
+			> input
+				width 100%
+				padding 10px
+				margin 0
+				text-align center
+				font-size 16px
+				color var(--desktopPostFormTextareaFg)
+				background var(--desktopPostFormTextareaBg)
+				outline none
+				border solid 1px var(--primaryAlpha01)
+				border-radius 4px
+				transition border-color .2s ease
+
+				&:hover
+					border-color var(--primaryAlpha02)
+					transition border-color .1s ease
+
+				&:focus
+					border-color var(--primaryAlpha05)
+					transition border-color 0s ease
 
 </style>

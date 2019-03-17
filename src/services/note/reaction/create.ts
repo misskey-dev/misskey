@@ -10,12 +10,17 @@ import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import perUserReactionsChart from '../../../services/chart/per-user-reactions';
 import { IdentifiableError } from '../../../misc/identifiable-error';
+import { toDbReaction } from '../../../misc/reaction-lib';
+import fetchMeta from '../../../misc/fetch-meta';
 
 export default async (user: IUser, note: INote, reaction: string) => {
 	// Myself
 	if (note.userId.equals(user._id)) {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
 	}
+
+	const meta = await fetchMeta();
+	reaction = await toDbReaction(reaction, meta.enableEmojiReaction);
 
 	// Create reaction
 	await NoteReaction.insert({

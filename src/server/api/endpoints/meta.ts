@@ -70,6 +70,10 @@ export const meta = {
 				type: 'boolean',
 				description: 'Whether disabled GTL.',
 			},
+			enableEmojiReaction: {
+				type: 'boolean',
+				description: 'Whether enabled emoji reaction.',
+			},
 		}
 	}
 };
@@ -107,6 +111,7 @@ export default define(meta, async (ps, me) => {
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,
+		enableEmojiReaction: instance.enableEmojiReaction,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
