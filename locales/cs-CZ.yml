@@ -2,12 +2,12 @@
 meta:
   lang: "Čeština"
 common:
-  misskey: "⭐ ve fediverse"
-  about-title: "⭐ ve fediverse."
-  about: "Děkujeme, že jste našli Misskey. Misskey je <b>decentralizovaná mikroblogovací platforma</b> zrozená na Zemi. Neboť existuje ve Fediverse (vesmíru, kde jsou organizovány různé sociální sítě), je vzájemně propojena s jinými sociálními sítěmi. Co takhle si chvilku odpočinout od ruchu a shonu města a ponořit se do nového internetu?"
+  misskey: "⭐ ve fedivesmíru"
+  about-title: "⭐ ve fedivesmíru."
+  about: "Děkujeme, že jste našli Misskey. Misskey je <b>decentralizovaná mikroblogovací platforma</b> zrozená na Zemi. Neboť existuje ve fedivesmíru (vesmíru, kde jsou organizovány různé sociální sítě), je vzájemně propojena s jinými sociálními sítěmi. Co takhle si chvilku odpočinout od ruchu a shonu města a ponořit se do nového internetu?"
   intro:
     title: "Co je Misskey?"
-    about: "Misskey je open-source <b>decentralizovaný mikroblogovací software</b>. Má sofistikované, zcela přizpůsobitelné uživatelské rozhraní, různé způsoby reagování na příspěvky, bezplatné úložiště souborů nabízející integrovaný management system, a další pokročilé vlastnosti. Misskey je navíc připojeno k systému sítí zvanému „fediverse“, který nám dovoluje komunikovat s uživateli na jiných sociálních sítí. Pokud například něco napíšete, nebude to posláno pouze uživatelů Misskey, ale také lidem na sítích Mastodon a Pleroma. Jen si představte, že planeta posílá jiné planetě rádiový signál, aby s ní komunikovala."
+    about: "Misskey je open-source <b>decentralizovaný mikroblogovací software</b>. Má sofistikované, zcela přizpůsobitelné uživatelské rozhraní, různé způsoby reagování na příspěvky, bezplatné úložiště souborů nabízející integrovaný management system, a další pokročilé vlastnosti. Misskey je navíc připojeno k systému sítí zvanému „fedivesmír“ nebo „fediverse“, který nám dovoluje komunikovat s uživateli na jiných sociálních sítí. Pokud například něco napíšete, nebude to posláno pouze uživatelů Misskey, ale také lidem na sítích Mastodon a Pleroma. Jen si představte, že planeta posílá jiné planetě rádiový signál, aby s ní komunikovala."
     features: "Vlastnosti"
     rich-contents: "Příspěvky"
     rich-contents-desc: "Pouze napište svoje nápady, žhavá témata a cokoliv, co chcete sdílet. Můžete ozdobit svá slova, připojit vaše oblíbené obrázky, posílat soubory včetně videí či vytvořit hlasování – to je jen několik věcí, co můžete dělat s Misskey!"
@@ -300,7 +300,7 @@ common/views/pages/explore.vue:
   recently-updated-users: "Nedávno aktívni uživatelé"
   recently-registered-users: "Nedávno registrovaní uživatelé"
   popular-tags: "Populární tagy"
-  federated: "Z fediverse"
+  federated: "Z fedivesmíru"
   explore: "Prozkoumat {host}"
 common/views/components/url-preview.vue:
   enable-player: "Otevřít v přehrávači"
@@ -836,7 +836,7 @@ admin/views/index.vue:
   emoji: "Emoji"
   moderators: "Moderátoři"
   users: "Uživatelé"
-  federation: "Z fediversu"
+  federation: "Federovaná"
   announcements: "Oznámení"
   hashtags: "Hashtagy"
   queue: "Fronta úloh"
@@ -848,7 +848,7 @@ admin/views/dashboard.vue:
   drive: "Disk"
   instances: "Instance"
   this-instance: "Tato instance"
-  federated: "Z fediversu"
+  federated: "Federovaná"
 admin/views/abuse.vue:
   details: "Popis"
   remove-report: "Odstranit"
@@ -995,14 +995,15 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Skryté tagy"
 admin/views/federation.vue:
-  federation: "Z fediversu"
+  instance: "Instance"
   host: "Hostitel"
   notes: "Poznámky"
   users: "Uživatelé"
+  caught-at: "Vytvořeno"
   status: "Status"
   latest-request-received-at: "Poslední požadavek přijat"
   block: "Blokován"
-  instances: "Instance"
+  instances: "Federovaná"
   states:
     all: "Všechny"
     blocked: "Blokován"

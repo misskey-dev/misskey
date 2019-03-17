@@ -1113,6 +1113,7 @@ admin/views/instance.vue:
   disable-local-timeline: "Disable the Local Timeline"
   disable-global-timeline: "Disable global timeline"
   disabling-timelines-info: "Even if you disable these timelines, the administrator as well as moderators can use them continually."
+  enable-emoji-reaction: "Enable pictograms for reactions"
   invite: "Invite"
   save: "Save"
   saved: "Saved"
@@ -1275,12 +1276,13 @@ admin/views/announcements.vue:
 admin/views/hashtags.vue:
   hided-tags: "Hidden Tags"
 admin/views/federation.vue:
-  federation: "Federation"
+  instance: "Instance"
   host: "Host"
   notes: "Notes"
   users: "Users"
   following: "Following"
   followers: "Followers"
+  caught-at: "Created at"
   status: "Statuses"
   latest-request-sent-at: "Time of last request sent"
   latest-request-received-at: "Last request received at"
@@ -1289,7 +1291,7 @@ admin/views/federation.vue:
   block: "Block"
   marked-as-closed: "Marked as closed"
   lookup: "Look up"
-  instances: "Instances"
+  instances: "Federated"
   instance-not-registered: "The instance has not been discovered"
   sort: "Sort by"
   sorts:
