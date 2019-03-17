@@ -5,6 +5,10 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.97.2
+----------
+* ビルド時に警告が出ないように修正
+
 10.97.1
 ----------
 * デザインの調整
