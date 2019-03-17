@@ -14,13 +14,15 @@ const basic10: Record<string, string> = {
 	'🍮': 'pudding',
 };
 
-export async function toDbReaction(reaction: string, enableEmoji = true): Promise<string> {
-	const fallback = 'like';
+export async function getFallbackReaction(): Promise<string> {
+	return 'like';
+}
 
+export async function toDbReaction(reaction: string, enableEmoji = true): Promise<string> {
 	// 既存の文字列リアクションはそのまま
 	if (Object.values(basic10).includes(reaction)) return reaction;
 
-	if (!enableEmoji) return fallback;
+	if (!enableEmoji) return await getFallbackReaction();
 
 	// Unicode絵文字
 	const match = emojiRegex.exec(reaction);
@@ -51,5 +53,5 @@ export async function toDbReaction(reaction: string, enableEmoji = true): Promis
 		if (emoji) return reaction;
 	}
 
-	return fallback;
+	return await getFallbackReaction();
 }
