@@ -16,7 +16,7 @@
 			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" :title="$t('@.reactions.pudding')" v-particle><mk-reaction-icon reaction="pudding"/></button>
 		</div>
 		<div v-if="enableEmojiReaction" class="text">
-			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" v-autocomplete="{ model: 'text' }">
+			<input v-model="text" placeholder="または絵文字を入力" @keyup.enter="reactText" @input="reactText" v-autocomplete="{ model: 'text' }">
 			<button class="ok" @click="reactText"><fa icon="check"/></button>
 		</div>
 	</div>
