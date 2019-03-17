@@ -3,7 +3,7 @@
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ isMobile: $root.isMobile }" ref="popover">
 		<p v-if="!$root.isMobile">{{ title }}</p>
-		<div ref="buttons" :class="{ showFocus }">
+		<div class="buttons" ref="buttons" :class="{ showFocus }">
 			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" :title="$t('@.reactions.like')" v-particle><mk-reaction-icon reaction="like"/></button>
 			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" :title="$t('@.reactions.love')" v-particle><mk-reaction-icon reaction="love"/></button>
 			<button @click="react('laugh')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="3" :title="$t('@.reactions.laugh')" v-particle><mk-reaction-icon reaction="laugh"/></button>
@@ -277,9 +277,9 @@ export default Vue.extend({
 			color var(--popupFg)
 			border-bottom solid var(--lineWidth) var(--faceDivider)
 
-		> div
+		> .buttons
 			padding 4px
-			width 240px
+			width 216px
 			text-align center
 
 			&.showFocus
@@ -315,9 +315,12 @@ export default Vue.extend({
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
 		> .text
+			width 216px
+			padding 4px 8px 8px 8px
+
 			> input
 				width 100%
-				padding 12px
+				padding 10px
 				margin 0
 				text-align center
 				font-size 16px
