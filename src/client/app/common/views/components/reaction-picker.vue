@@ -27,7 +27,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import anime from 'animejs';
-import { emojiRegex } from '../../../../../misc/reaction-lib';
+import { emojiRegex } from '../../../../../misc/emoji-regex';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/reaction-picker.vue'),
