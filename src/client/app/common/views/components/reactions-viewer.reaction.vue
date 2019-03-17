@@ -142,6 +142,5 @@ export default Vue.extend({
 	> span
 		font-size 1.1em
 		line-height 32px
-		vertical-align middle
 		color var(--text)
 </style>
