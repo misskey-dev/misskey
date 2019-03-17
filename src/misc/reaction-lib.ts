@@ -15,8 +15,6 @@ const basic10: Record<string, string> = {
 };
 
 export async function toDbReaction(reaction: string, enableEmoji = true): Promise<string> {
-	if (reaction == null) return enableEmoji ? 'star' : 'like';
-
 	// 既存の文字列リアクションはそのまま
 	if (Object.values(basic10).includes(reaction)) return reaction;
 
@@ -51,5 +49,5 @@ export async function toDbReaction(reaction: string, enableEmoji = true): Promis
 		if (emoji) return reaction;
 	}
 
-	return 'star';
+	return 'like';
 }

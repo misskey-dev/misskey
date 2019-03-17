@@ -17,5 +17,5 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 		throw new Error();
 	}
 
-	await create(actor, note, activity._misskey_reaction);
+	await create(actor, note, activity._misskey_reaction || 'like');
 };

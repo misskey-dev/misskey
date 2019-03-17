@@ -73,23 +73,11 @@ describe('toDbReaction', async () => {
 		assert.strictEqual(await toDbReaction('㊗'), '㊗');
 	});
 
-	it('fallback star - undefined', async () => {
-		assert.strictEqual(await toDbReaction(undefined), 'star');
+	it('fallback - empty', async () => {
+		assert.strictEqual(await toDbReaction(''), 'like');
 	});
 
-	it('fallback star - null', async () => {
-		assert.strictEqual(await toDbReaction(null), 'star');
-	});
-
-	it('fallback star - empty', async () => {
-		assert.strictEqual(await toDbReaction(''), 'star');
-	});
-
-	it('fallback star - unknown', async () => {
-		assert.strictEqual(await toDbReaction('unknown'), 'star');
-	});
-
-	it('Unicode star は fallback star ではない', async () => {
-		assert.strictEqual(await toDbReaction('⭐'), '⭐');
+	it('fallback - unknown', async () => {
+		assert.strictEqual(await toDbReaction('unknown'), 'like');
 	});
 });
