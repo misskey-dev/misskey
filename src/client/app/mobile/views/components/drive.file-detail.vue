@@ -90,7 +90,7 @@ export default Vue.extend({
 		},
 
 		dlUrl(): string {
-			return appendQuery(this.file.url, 'download')
+			return appendQuery(this.file.url, 'download');
 		}
 	},
 
