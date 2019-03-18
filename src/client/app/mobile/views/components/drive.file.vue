@@ -1,7 +1,7 @@
 <template>
 <a class="vupkuhvjnjyqaqhsiogfbywvjxynrgsm" @click.prevent="onClick" :href="`/i/drive/file/${ file.id }`" :data-is-selected="isSelected">
 	<div class="container">
-		<x-file-thumbnail class="thumbnail" :file="file" fit="cover"/>
+		<x-file-thumbnail class="thumbnail" :file="file" :isSelected="isSelected" fit="cover"/>
 		<div class="body">
 			<p class="name">
 				<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
@@ -149,6 +149,6 @@ export default Vue.extend({
 		background var(--primary)
 
 		&, *
-			color #fff !important
+			color var(--primaryForeground) !important
 
 </style>

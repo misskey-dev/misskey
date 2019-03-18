@@ -22,7 +22,7 @@
 		<p>{{ $t('nsfw') }}</p>
 	</div>
 
-	<x-file-thumbnail class="thumbnail" :file="file" fit="contain"/>
+	<x-file-thumbnail class="thumbnail" :isSelected="isSelected" :file="file" fit="contain"/>
 
 	<p class="name">
 		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>

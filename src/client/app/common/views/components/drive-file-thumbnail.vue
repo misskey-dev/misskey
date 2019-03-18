@@ -1,5 +1,5 @@
 <template>
-<div class="aqzdnzwsdgwhmztnueknzkwkjygptfcv" :class="{ detail }" ref="thumbnail" :style="`background-color: ${ background }`">
+<div class="aqzdnzwsdgwhmztnueknzkwkjygptfcv" :class="{ detail, isSelected }" ref="thumbnail" :style="`background-color: ${ background }`">
 	<img
 		:src="file.url"
 		:alt="file.name"
@@ -51,7 +51,7 @@ import {
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/drive-file-icon.vue'),
-	props: ['file', 'fit', 'detail'],
+	props: ['file', 'fit', 'detail', 'isSelected'],
 	data() {
 		return {
 			isContextmenuShowing: false,
@@ -132,8 +132,10 @@ export default Vue.extend({
 		margin auto
 		object-fit cover
 
-	> svg.svg-inline--fa:not(.file-icon-sub)
+	> svg.svg-inline--fa
 		color var(--driveFileIcon)
+
+	> svg.svg-inline--fa:not(.file-icon-sub)
 		height 65%
 		width 65%
 		margin auto
@@ -142,8 +144,7 @@ export default Vue.extend({
 	> audio
 		width 100%
 
-	> svg.file-icon-sub
-		color var(--driveFileIcon)
+	> svg.svg-inline--fa.file-icon-sub
 		position absolute
 		width 30%
 		height auto
@@ -156,4 +157,9 @@ export default Vue.extend({
 		> svg.svg-inline--fa
 			height 100px
 			margin 16px auto
+
+	&.isSelected
+		> svg.svg-inline--fa
+			color var(--primaryForeground) !important
+			
 </style>
