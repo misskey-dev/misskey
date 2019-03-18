@@ -1113,6 +1113,8 @@ admin/views/instance.vue:
   disable-local-timeline: "로컬 타임라인 비활성화"
   disable-global-timeline: "글로벌 타임라인 비활성화"
   disabling-timelines-info: "이 타임라인들을 비활성화해도 관리자 및 모더레이터는 계속 사용할 수 있습니다."
+  enable-emoji-reaction: "리액션에 이모지를 사용할 수 있게 함"
+  use-star-for-reaction-fallback: "알 수 없는 리액션을 star로 대체하여 사용"
   invite: "초대"
   save: "저장"
   saved: "저장하였습니다"
