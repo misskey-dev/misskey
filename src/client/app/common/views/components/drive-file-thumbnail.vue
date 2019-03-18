@@ -29,7 +29,7 @@
 	<fa :icon="faFileArchive" v-else-if="is === 'archive'"/>
 	<fa :icon="faFile" v-else/>
 
-	<fa :icon="faPlay" v-if="!detail && isThumbnailAvailable && (is === 'video' || is === 'audio')"/>
+	<fa :icon="faFilm" class='file-icon-sub' v-if="!detail && isThumbnailAvailable && is === 'video'"/>
 </div>
 </template>
 
@@ -37,7 +37,17 @@
 import Vue from 'vue';
 import anime from 'animejs';
 import i18n from '../../../i18n';
-import { faFile, faFileAlt, faFileImage, faMusic, faFileVideo, faFileCsv, faFilePdf, faFileArchive, faPlay } from '@fortawesome/free-solid-svg-icons';
+import {
+	faFile,
+	faFileAlt,
+	faFileImage,
+	faMusic,
+	faFileVideo,
+	faFileCsv,
+	faFilePdf,
+	faFileArchive,
+	faFilm
+	} from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/drive-file-icon.vue'),
@@ -46,7 +56,16 @@ export default Vue.extend({
 		return {
 			isContextmenuShowing: false,
 			isDragging: false,
-			faFile, faFileAlt, faFileImage, faMusic, faFileVideo, faFileCsv, faFilePdf, faFileArchive, faPlay
+			
+			faFile,
+			faFileAlt,
+			faFileImage,
+			faMusic,
+			faFileVideo,
+			faFileCsv,
+			faFilePdf,
+			faFileArchive,
+			faFilm
 		};
 	},
 	computed: {
@@ -113,7 +132,7 @@ export default Vue.extend({
 		margin auto
 		object-fit cover
 
-	> svg.svg-inline--fa:not(.fa-play)
+	> svg.svg-inline--fa:not(.file-icon-sub)
 		color var(--driveFileIcon)
 		height 65%
 		width 65%
@@ -123,7 +142,7 @@ export default Vue.extend({
 	> audio
 		width 100%
 
-	> svg.fa-play
+	> svg.file-icon-sub
 		color var(--driveFileIcon)
 		position absolute
 		width 30%
