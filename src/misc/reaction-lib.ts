@@ -47,7 +47,7 @@ export async function toDbReaction(reaction: string, enableEmoji = true): Promis
 		return normalized;
 	}
 
-	const custom = reaction.match(/:([\w+-]+):/);
+	const custom = reaction.match(/^:([\w+-]+):$/);
 	if (custom) {
 		const emoji = await Emoji.findOne({
 			host: null,
