@@ -8,13 +8,13 @@
 	base: 'dark',
 
 	vars: {
-		c0: '#0c0c0c',
+		c0: '#0e0e0e',
 		c1: 'rgb(255, 105, 78)',
 		c2: 'rgb(99, 197, 210)',
 		c4: 'rgb(253, 254, 214)',
 		c3: 'rgb(204, 254, 253)',
 		primary: '$c1',
-		secondary: '#131313',
+		secondary: '#191919',
 		text: '$c3',
 	},
 
