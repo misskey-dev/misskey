@@ -115,7 +115,7 @@ export default Vue.extend({
 			}
 		},
 		volumechange() {
-			const audioTag = this.$refs.audio as HTMLAudioElement;
+			const audioTag = this.$refs.volumectrl as HTMLAudioElement;
 			this.$store.commit('device/set', { key: 'mediaVolume', value: audioTag.volume });
 		}
 	}
