@@ -38,6 +38,7 @@ import anime from 'animejs';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import updateAvatar from '../../api/update-avatar';
 import updateBanner from '../../api/update-banner';
+import { appendQuery } from '../../../../../prelude/url';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/drive.file.vue'),
@@ -88,9 +89,10 @@ export default Vue.extend({
 				action: this.copyUrl
 			}, {
 				type: 'link',
-				href: `${this.file.url}?download`,
+				href: appendQuery(this.file.url, 'download'),
 				text: this.$t('contextmenu.download'),
 				icon: 'download',
+				download: this.file.name
 			}, null, {
 				type: 'item',
 				text: this.$t('@.delete'),
