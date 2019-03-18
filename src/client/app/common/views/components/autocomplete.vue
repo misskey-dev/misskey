@@ -30,6 +30,7 @@
 import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
+import { twemojiBase } from '../../../../../misc/twemoji-base';
 
 type EmojiDef = {
 	emoji: string;
@@ -54,7 +55,7 @@ const emjdb: EmojiDef[] = lib.map((x: any) => ({
 	emoji: x[1].char,
 	name: x[0],
 	aliasOf: null,
-	url: `https://twemoji.maxcdn.com/2/svg/${char2file(x[1].char)}.svg`
+	url: `${twemojiBase}/2/svg/${char2file(x[1].char)}.svg`
 }));
 
 for (const x of lib as any) {
@@ -64,7 +65,7 @@ for (const x of lib as any) {
 				emoji: x[1].char,
 				name: k,
 				aliasOf: x[0],
-				url: `https://twemoji.maxcdn.com/2/svg/${char2file(x[1].char)}.svg`
+				url: `${twemojiBase}/2/svg/${char2file(x[1].char)}.svg`
 			});
 		}
 	}
