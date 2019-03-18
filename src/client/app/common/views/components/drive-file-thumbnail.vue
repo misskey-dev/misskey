@@ -4,30 +4,32 @@
 		:src="file.url"
 		:alt="file.name"
 		:title="file.name"
-		v-if="detail && isImage"/>
+		v-if="detail && is === 'image'"/>
 	<video
 		:src="file.url"
 		ref="volumectrl"
 		preload="metadata"
 		controls
-		v-else-if="detail && isVideo"/>
+		v-else-if="detail && is === 'video'"/>
 	<img :src="file.thumbnailUrl" alt="" @load="onThumbnailLoaded" :style="`object-fit: ${ fit }`" v-else-if="isThumbnailAvailable"/>
-	<fa :icon="faFileImage" v-else-if="isImage"/>
-	<fa :icon="faFileVideo" v-else-if="isVideo"/>
+	<fa :icon="faFileImage" v-else-if="is === 'image'"/>
+	<fa :icon="faFileVideo" v-else-if="is === 'video'"/>
 
 	<audio
 		:src="file.url"
 		ref="volumectrl"
 		preload="metadata"
 		controls
-		v-else-if="detail && isAudio"/>
-	<fa :icon="faFileAudio" v-else-if="isAudio"/>
+		v-else-if="detail && is === 'audio'"/>
+	<fa :icon="faMusic" v-else-if="is === 'audio' || is === 'midi'"/>
 
-	<fa :icon="faFileCsv" v-else-if="file.type.endsWith('/csv')"/>
-	<fa :icon="faFilePdf" v-else-if="file.type.endsWith('/pdf')"/>
-	<fa :icon="faFileAlt" v-else-if="file.type.startsWith('text/')"/>
-	<fa :icon="faFileArchive" v-else-if="isArchive"/>
+	<fa :icon="faFileCsv" v-else-if="is === 'csv'"/>
+	<fa :icon="faFilePdf" v-else-if="is === 'pdf'"/>
+	<fa :icon="faFileAlt" v-else-if="is === 'textfile'"/>
+	<fa :icon="faFileArchive" v-else-if="is === 'archive'"/>
 	<fa :icon="faFile" v-else/>
+
+	<fa :icon="faPlay" v-if="!detail && isThumbnailAvailable && (is === 'video' || is === 'audio')"/>
 </div>
 </template>
 
@@ -35,7 +37,7 @@
 import Vue from 'vue';
 import anime from 'animejs';
 import i18n from '../../../i18n';
-import { faFile, faFileAlt, faFileImage, faFileAudio, faFileVideo, faFileCsv, faFilePdf, faFileArchive } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faFileAlt, faFileImage, faMusic, faFileVideo, faFileCsv, faFilePdf, faFileArchive, faPlay } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/drive-file-icon.vue'),
@@ -44,39 +46,38 @@ export default Vue.extend({
 		return {
 			isContextmenuShowing: false,
 			isDragging: false,
-			faFile, faFileAlt, faFileImage, faFileAudio, faFileVideo, faFileCsv, faFilePdf, faFileArchive
+			faFile, faFileAlt, faFileImage, faMusic, faFileVideo, faFileCsv, faFilePdf, faFileArchive, faPlay
 		};
 	},
 	computed: {
-		isImage(): boolean {
-			return this.file.type.startsWith('image/');
-		},
-		isVideo(): boolean {
-			return this.file.type.startsWith('video/');
-		},
-		isAudio(): boolean {
-			return this.file.type.startsWith('audio/') && this.file.type !== 'audio/midi';
+		is(): 'image' | 'video' | 'midi' | 'audio' | 'csv' | 'pdf' | 'textfile' | 'archive' | 'unknown' {
+			if (this.file.type.startsWith('image/')) return 'image';
+			if (this.file.type.startsWith('video/')) return 'video';
+			if (this.file.type === 'audio/midi') return 'midi';
+			if (this.file.type.startsWith('audio/')) return 'audio';
+			if (this.file.type.endsWith('/csv')) return 'csv';
+			if (this.file.type.endsWith('/pdf')) return 'pdf';
+			if (this.file.type.startsWith('text/')) return 'textfile';
+			if ([
+					"application/zip",
+					"application/x-cpio",
+					"application/x-bzip",
+					"application/x-bzip2",
+					"application/java-archive",
+					"application/x-rar-compressed",
+					"application/x-tar",
+					"application/gzip",
+					"application/x-7z-compressed"
+				].some(e => e === this.file.type)) return 'archive';
+			return 'unknown';
 		},
 		isThumbnailAvailable(): boolean {
-			return this.file.thumbnailUrl.endsWith('?thumbnail') ? (this.isImage || this.isVideo) : true;
+			return this.file.thumbnailUrl.endsWith('?thumbnail') ? (this.is === 'image' || this.is === 'video') : true;
 		},
 		background(): string {
 			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3
 				? `rgb(${this.file.properties.avgColor.join(',')})`
 				: 'transparent';
-		},
-		isArchive(): boolean {
-			return [
-				"application/zip",
-				"application/x-cpio",
-				"application/x-bzip",
-				"application/x-bzip2",
-				"application/java-archive",
-				"application/x-rar-compressed",
-				"application/x-tar",
-				"application/gzip",
-				"application/x-7z-compressed"
-			].some(e => e === this.file.type);
 		}
 	},
 	mounted() {
@@ -112,8 +113,8 @@ export default Vue.extend({
 		margin auto
 		object-fit cover
 
-	> svg
-		color var(--text)
+	> svg.svg-inline--fa:not(.fa-play)
+		color var(--driveFileIcon)
 		height 65%
 		width 65%
 		margin auto
@@ -122,8 +123,18 @@ export default Vue.extend({
 	> audio
 		width 100%
 
+	> svg.fa-play
+		color var(--driveFileIcon)
+		position absolute
+		width 30%
+		height auto
+		margin 0
+		right 4%
+		bottom 4%
+		filter drop-shadow(0 0 2px var(--driveFileThumbnailPlayIconShadow))
+
 	&.detail
-		> svg
+		> svg.svg-inline--fa
 			height 100px
 			margin 16px auto
 </style>

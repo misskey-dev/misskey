@@ -154,10 +154,6 @@ export default Vue.extend({
 			margin 0 auto
 			box-shadow 1px 1px 4px rgba(#000, 0.2)
 
-			svg.svg-inline--fa
-				height 100px
-				margin 16px auto
-
 		> footer
 			padding 8px 8px 0 8px
 			text-align center

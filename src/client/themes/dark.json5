@@ -153,6 +153,10 @@
 		messagingRoomMessageBg: '$secondary',
 		messagingRoomMessageFg: '#fff',
 
+		driveBg: '@bg',
+		driveFileThumbnailPlayIconShadow: '@bg',
+		driveFileIcon: '$text',
+
 		formButtonBorder: 'rgba(255, 255, 255, 0.1)',
 		formButtonHoverBg: ':alpha<0.2<$primary',
 		formButtonHoverBorder: ':alpha<0.5<$primary',
@@ -179,7 +183,6 @@
 		desktopTimelineSrcHover: '@faceTextButtonHover',
 		desktopWindowTitle: '@faceHeaderText',
 		desktopWindowShadow: 'rgba(0, 0, 0, 0.5)',
-		desktopDriveBg: '@bg',
 		desktopDriveFolderBg: ':alpha<0.2<$primary',
 		desktopDriveFolderHoverBg: ':alpha<0.3<$primary',
 		desktopDriveFolderActiveBg: ':alpha<0.3<:darken<10<$primary',

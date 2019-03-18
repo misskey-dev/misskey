@@ -494,7 +494,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .kmmwchoexgckptowjmjgfsygeltxfeqs
-	background var(--face)
+	background var(--driveBg)
 
 	> nav
 		display block
