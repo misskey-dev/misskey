@@ -10,6 +10,7 @@ import Vue from 'vue';
 // スクリプトサイズがデカい
 //import { lib } from 'emojilib';
 import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
+import { twemojiBase } from '../../../../../misc/twemoji-base';
 
 export default Vue.extend({
 	props: {
@@ -77,7 +78,7 @@ export default Vue.extend({
 			if (!codes.includes('200d')) codes = codes.filter(x => x != 'fe0f');
 			codes = codes.filter(x => x && x.length);
 
-			this.url = `https://twemoji.maxcdn.com/2/svg/${codes.join('-')}.svg`;
+			this.url = `${twemojiBase}/2/svg/${codes.join('-')}.svg`;
 		}
 	}
 });
