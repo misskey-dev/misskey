@@ -161,5 +161,7 @@ export default Vue.extend({
 	&.isSelected
 		> svg.svg-inline--fa
 			color var(--primaryForeground) !important
-			
+		
+		> svg.svg-inline--fa.file-icon-sub
+			filter drop-shadow(0 0 2px var(--primary))
 </style>
