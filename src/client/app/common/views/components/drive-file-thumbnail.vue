@@ -126,6 +126,10 @@ export default Vue.extend({
 .aqzdnzwsdgwhmztnueknzkwkjygptfcv
 	display flex
 
+	> img,
+	> svg.svg-inline-fa
+		pointer-events none
+
 	> img
 		height 100%
 		width 100%
