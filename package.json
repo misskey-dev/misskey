@@ -108,6 +108,7 @@
 		"chai-http": "4.2.1",
 		"chalk": "2.4.2",
 		"commander": "2.19.0",
+		"content-disposition": "0.5.3",
 		"crc-32": "1.2.0",
 		"css-loader": "2.1.1",
 		"cssnano": "4.1.10",
