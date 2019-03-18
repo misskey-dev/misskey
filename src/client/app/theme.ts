@@ -10,26 +10,26 @@ export type Theme = {
 	props: { [key: string]: string };
 };
 
-export const lightTheme: Theme = require('../theme/light.json5');
-export const darkTheme: Theme = require('../theme/dark.json5');
-export const pinkTheme: Theme = require('../theme/pink.json5');
-export const blackTheme: Theme = require('../theme/black.json5');
-export const halloweenTheme: Theme = require('../theme/halloween.json5');
-export const cafeTheme: Theme = require('../theme/cafe.json5');
-export const japaneseSushiSetTheme: Theme = require('../theme/japanese-sushi-set.json5');
-export const gruvboxDarkTheme: Theme = require('../theme/gruvbox-dark.json5');
-export const monokaiTheme: Theme = require('../theme/monokai.json5');
-export const colorfulTheme: Theme = require('../theme/colorful.json5');
-export const rainyTheme: Theme = require('../theme/rainy.json5');
-export const mauveTheme: Theme = require('../theme/mauve.json5');
-export const grayTheme: Theme = require('../theme/gray.json5');
-export const tweetDeckTheme: Theme = require('../theme/tweet-deck.json5');
+export const lightTheme: Theme = require('../themes/light.json5');
+export const darkTheme: Theme = require('../themes/dark.json5');
+export const lavenderTheme: Theme = require('../themes/lavender.json5');
+export const futureTheme: Theme = require('../themes/future.json5');
+export const halloweenTheme: Theme = require('../themes/halloween.json5');
+export const cafeTheme: Theme = require('../themes/cafe.json5');
+export const japaneseSushiSetTheme: Theme = require('../themes/japanese-sushi-set.json5');
+export const gruvboxDarkTheme: Theme = require('../themes/gruvbox-dark.json5');
+export const monokaiTheme: Theme = require('../themes/monokai.json5');
+export const colorfulTheme: Theme = require('../themes/colorful.json5');
+export const rainyTheme: Theme = require('../themes/rainy.json5');
+export const mauveTheme: Theme = require('../themes/mauve.json5');
+export const grayTheme: Theme = require('../themes/gray.json5');
+export const tweetDeckTheme: Theme = require('../themes/tweet-deck.json5');
 
 export const builtinThemes = [
 	lightTheme,
 	darkTheme,
-	pinkTheme,
-	blackTheme,
+	lavenderTheme,
+	futureTheme,
 	halloweenTheme,
 	cafeTheme,
 	japaneseSushiSetTheme,
@@ -42,41 +42,41 @@ export const builtinThemes = [
 	tweetDeckTheme,
 ];
 
-export function applyTheme(theme: Theme, persisted = true) {
-	document.documentElement.classList.add('changing-theme');
+export function applyTheme(themes: Theme, persisted = true) {
+	document.documentElement.classList.add('changing-themes');
 
 	setTimeout(() => {
-		document.documentElement.classList.remove('changing-theme');
+		document.documentElement.classList.remove('changing-themes');
 	}, 1000);
 
 	// Deep copy
-	const _theme = JSON.parse(JSON.stringify(theme));
+	const _themes = JSON.parse(JSON.stringify(themes));
 
-	if (_theme.base) {
-		const base = [lightTheme, darkTheme].find(x => x.id == _theme.base);
-		_theme.vars = Object.assign({}, base.vars, _theme.vars);
-		_theme.props = Object.assign({}, base.props, _theme.props);
+	if (_themes.base) {
+		const base = [lightTheme, darkTheme].find(x => x.id == _themes.base);
+		_themes.vars = Object.assign({}, base.vars, _themes.vars);
+		_themes.props = Object.assign({}, base.props, _themes.props);
 	}
 
-	const props = compile(_theme);
+	const props = compile(_themes);
 
 	for (const [k, v] of Object.entries(props)) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}
 
 	if (persisted) {
-		localStorage.setItem('theme', JSON.stringify(props));
+		localStorage.setItem('themes', JSON.stringify(props));
 	}
 }
 
-function compile(theme: Theme): { [key: string]: string } {
+function compile(themes: Theme): { [key: string]: string } {
 	function getColor(code: string): tinycolor.Instance {
 		// ref
 		if (code[0] == '@') {
-			return getColor(theme.props[code.substr(1)]);
+			return getColor(themes.props[code.substr(1)]);
 		}
 		if (code[0] == '$') {
-			return getColor(theme.vars[code.substr(1)]);
+			return getColor(themes.vars[code.substr(1)]);
 		}
 
 		// func
@@ -98,7 +98,7 @@ function compile(theme: Theme): { [key: string]: string } {
 
 	const props = {};
 
-	for (const [k, v] of Object.entries(theme.props)) {
+	for (const [k, v] of Object.entries(themes.props)) {
 		props[k] = genValue(getColor(v));
 	}
 
