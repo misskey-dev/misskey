@@ -69,7 +69,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 		//#region Uploads
 		logger.info(`uploading original: ${key}`);
 		const uploads = [
-			upload(key, fs.createReadStream(path), type)
+			upload(key, fs.createReadStream(path), type, name)
 		];
 
 		if (alts.webpublic) {
@@ -77,7 +77,7 @@ async function save(path: string, name: string, type: string, hash: string, size
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
-			uploads.push(upload(webpublicKey, alts.webpublic.data, alts.webpublic.type));
+			uploads.push(upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
 		}
 
 		if (alts.thumbnail) {
@@ -198,13 +198,17 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 /**
  * Upload to ObjectStorage
  */
-async function upload(key: string, stream: fs.ReadStream | Buffer, type: string) {
+async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
 	const minio = new Minio.Client(config.drive.config);
 
-	await minio.putObject(config.drive.bucket, key, stream, null, {
+	const metadata = {
 		'Content-Type': type,
 		'Cache-Control': 'max-age=31536000, immutable'
-	});
+	} as Minio.ItemBucketMetadata;
+
+	if (filename) metadata['Content-Disposition'] = `filename="${filename}"`;
+
+	await minio.putObject(config.drive.bucket, key, stream, null, metadata);
 }
 
 /**
