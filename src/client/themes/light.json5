@@ -153,7 +153,6 @@
 		messagingRoomMessageBg: '#eee',
 		messagingRoomMessageFg: '#333',
 
-		driveBg: '@bg',
 		driveFileThumbnailPlayIconShadow: '@bg',
 		driveFileIcon: '$text',
 
@@ -183,6 +182,7 @@
 		desktopTimelineSrcHover: ':darken<7<$text',
 		desktopWindowTitle: '$text',
 		desktopWindowShadow: 'rgba(0, 0, 0, 0.2)',
+		desktopDriveBg: '@bg',
 		desktopDriveFolderBg: ':lighten<31<$primary',
 		desktopDriveFolderHoverBg: ':lighten<27<$primary',
 		desktopDriveFolderActiveBg: ':lighten<25<$primary',

@@ -668,7 +668,7 @@ export default Vue.extend({
 		padding 8px
 		height calc(100% - 38px)
 		overflow auto
-		background var(--driveBg)
+		background var(--desktopDriveBg)
 
 		&, *
 			user-select none
