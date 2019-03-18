@@ -1,6 +1,7 @@
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as mongodb from 'mongodb';
+import * as rename from 'rename';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
 import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
@@ -62,7 +63,7 @@ export default async function(ctx: Koa.BaseContext) {
 
 		if (thumb != null) {
 			ctx.set('Content-Type', 'image/jpeg');
-			ctx.set('Content-Disposition', `filename="thumb-${file.filename}"`);
+			ctx.set('Content-Disposition', `filename="${rename(file.filename, { suffix: '-thumb', extname: '.jpeg' })}"`);
 			const bucket = await getDriveFileThumbnailBucket();
 			ctx.body = bucket.openDownloadStream(thumb._id);
 		} else {
@@ -81,7 +82,7 @@ export default async function(ctx: Koa.BaseContext) {
 
 		if (web != null) {
 			ctx.set('Content-Type', file.contentType);
-			ctx.set('Content-Disposition', `filename="web-${file.filename}"`);
+			ctx.set('Content-Disposition', `filename="${rename(file.filename, { suffix: '-web' })}"`);
 
 			const bucket = await getDriveFileWebpublicBucket();
 			ctx.body = bucket.openDownloadStream(web._id);
