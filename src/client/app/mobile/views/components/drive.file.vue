@@ -91,7 +91,6 @@ export default Vue.extend({
 
 		> .body
 			display block
-			float left
 
 			> .name
 				display block
