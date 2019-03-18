@@ -38,7 +38,7 @@
 	<div class="menu">
 		<div>
 			<ui-input readonly :value="file.url">URL</ui-input>
-			<ui-button link :href="`${file.url}?download`" :download="file.name"><fa icon="download"/> {{ $t('download') }}</ui-button>
+			<ui-button link :href="dlUrl" :download="file.name"><fa icon="download"/> {{ $t('download') }}</ui-button>
 			<ui-button @click="rename"><fa icon="pencil-alt"/> {{ $t('rename') }}</ui-button>
 			<ui-button @click="move"><fa :icon="['far', 'folder-open']"/> {{ $t('move') }}</ui-button>
 			<ui-button @click="toggleSensitive" v-if="file.isSensitive"><fa :icon="['far', 'eye']"/> {{ $t('unmark-as-sensitive') }}</ui-button>
@@ -61,6 +61,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { gcd } from '../../../../../prelude/math';
+import { appendQuery } from '../../../../../prelude/url';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/drive.file-detail.vue'),
@@ -86,6 +87,10 @@ export default Vue.extend({
 			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3 ? {
 				'background-color': `rgb(${ this.file.properties.avgColor.join(',') })`
 			} : {};
+		},
+
+		dlUrl(): string {
+			return appendQuery(this.file.url, 'download');
 		}
 	},
 
