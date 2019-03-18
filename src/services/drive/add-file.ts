@@ -26,6 +26,7 @@ import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
 import Instance from '../../models/instance';
 import checkSvg from '../../misc/check-svg';
+import { contentDisposition } from '../../misc/content-disposition';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -206,7 +207,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 		'Cache-Control': 'max-age=31536000, immutable'
 	} as Minio.ItemBucketMetadata;
 
-	if (filename) metadata['Content-Disposition'] = `filename="${filename}"`;
+	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
 
 	await minio.putObject(config.drive.bucket, key, stream, null, metadata);
 }
