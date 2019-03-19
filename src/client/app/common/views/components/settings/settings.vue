@@ -148,7 +148,7 @@
 			<section v-if="!$root.isMobile">
 				<header>{{ $t('@._settings.paste') }}</header>
 				<ui-input v-model="pastedFileName">{{ $t('@._settings.pasted-file-name') }}
-					<template #desc>{{ $t('@._settings.web-search-engine-desc') }}</template>
+					<template #desc>{{ $t('@._settings.pasted-file-name-desc') }}</template>
 				</ui-input>
 				<ui-switch v-model="pasteDialog">{{ $t('@._settings.paste-dialog') }}</ui-switch>
 			</section>
