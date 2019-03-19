@@ -153,6 +153,8 @@
 		messagingRoomMessageBg: '#eee',
 		messagingRoomMessageFg: '#333',
 
+		driveFileIcon: '$text',
+
 		formButtonBorder: 'rgba(0, 0, 0, 0.1)',
 		formButtonHoverBg: ':alpha<0.12<$primary',
 		formButtonHoverBorder: ':alpha<0.3<$primary',
@@ -179,7 +181,7 @@
 		desktopTimelineSrcHover: ':darken<7<$text',
 		desktopWindowTitle: '$text',
 		desktopWindowShadow: 'rgba(0, 0, 0, 0.2)',
-		desktopDriveBg: '#fff',
+		desktopDriveBg: '@bg',
 		desktopDriveFolderBg: ':lighten<31<$primary',
 		desktopDriveFolderHoverBg: ':lighten<27<$primary',
 		desktopDriveFolderActiveBg: ':lighten<25<$primary',

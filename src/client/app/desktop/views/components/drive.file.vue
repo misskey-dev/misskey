@@ -21,9 +21,9 @@
 		<img src="/assets/label-red.svg"/>
 		<p>{{ $t('nsfw') }}</p>
 	</div>
-	<div class="thumbnail" ref="thumbnail" :style="`background-color: ${ background }`">
-		<img :src="file.thumbnailUrl" alt="" @load="onThumbnailLoaded"/>
-	</div>
+
+	<x-file-thumbnail class="thumbnail" :file="file" fit="contain"/>
+
 	<p class="name">
 		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
 		<span class="ext" v-if="file.name.lastIndexOf('.') != -1">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
@@ -34,15 +34,18 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import anime from 'animejs';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import updateAvatar from '../../api/update-avatar';
 import updateBanner from '../../api/update-banner';
 import { appendQuery } from '../../../../../prelude/url';
+import XFileThumbnail from '../../../common/views/components/drive-file-thumbnail.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/drive.file.vue'),
 	props: ['file'],
+	components: {
+		XFileThumbnail
+	},
 	data() {
 		return {
 			isContextmenuShowing: false,
@@ -58,11 +61,6 @@ export default Vue.extend({
 		},
 		title(): string {
 			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.datasize)}`;
-		},
-		background(): string {
-			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3
-				? `rgb(${this.file.properties.avgColor.join(',')})`
-				: 'transparent';
 		}
 	},
 	methods: {
@@ -256,6 +254,9 @@ export default Vue.extend({
 		> .name
 			color var(--primaryForeground)
 
+		> .thumbnail
+			color var(--primaryForeground)
+
 	&[data-is-contextmenu-showing]
 		&:after
 			content ""
@@ -321,18 +322,7 @@ export default Vue.extend({
 		width 128px
 		height 128px
 		margin auto
-
-		> img
-			display block
-			position absolute
-			top 0
-			left 0
-			right 0
-			bottom 0
-			margin auto
-			max-width 128px
-			max-height 128px
-			pointer-events none
+		color var(--driveFileIcon)
 
 	> .name
 		display block

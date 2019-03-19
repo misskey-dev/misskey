@@ -1,7 +1,7 @@
 <template>
 <a class="vupkuhvjnjyqaqhsiogfbywvjxynrgsm" @click.prevent="onClick" :href="`/i/drive/file/${ file.id }`" :data-is-selected="isSelected">
 	<div class="container">
-		<div class="thumbnail" :style="thumbnail"></div>
+		<x-file-thumbnail class="thumbnail" :file="file" fit="cover"/>
 		<div class="body">
 			<p class="name">
 				<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
@@ -26,9 +26,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
+import XFileThumbnail from '../../../common/views/components/drive-file-thumbnail.vue';
+
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/drive.file.vue'),
 	props: ['file'],
+	components: {
+		XFileThumbnail
+	},
 	data() {
 		return {
 			isSelected: false
@@ -37,12 +42,6 @@ export default Vue.extend({
 	computed: {
 		browser(): any {
 			return this.$parent;
-		},
-		thumbnail(): any {
-			return {
-				'background-color': this.file.properties.avgColor && this.file.properties.avgColor.length == 3 ? `rgb(${this.file.properties.avgColor.join(',')})` : 'transparent',
-				'background-image': `url(${this.file.thumbnailUrl})`
-			};
 		}
 	},
 	created() {
@@ -74,9 +73,12 @@ export default Vue.extend({
 		pointer-events none
 
 	> .container
+		display grid
 		max-width 500px
 		margin 0 auto
 		padding 16px
+		grid-template-columns 64px 1fr
+		grid-column-gap 10px
 
 		&:after
 			content ""
@@ -84,18 +86,13 @@ export default Vue.extend({
 			clear both
 
 		> .thumbnail
-			display block
-			float left
 			width 64px
 			height 64px
-			background-size cover
-			background-position center center
+			color var(--driveFileIcon)
 
 		> .body
 			display block
-			float left
-			width calc(100% - 74px)
-			margin-left 10px
+			word-break break-all
 
 			> .name
 				display block
@@ -154,6 +151,6 @@ export default Vue.extend({
 		background var(--primary)
 
 		&, *
-			color #fff !important
+			color var(--primaryForeground) !important
 
 </style>
