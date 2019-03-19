@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-messaging">
 	<ui-container :show-header="props.design == 0">
-		<template #header><fa icon="comments"/>{{ $t('title') }}</template>
+		<template #header><fa icon="comments"/>{{ $t('@.messaging') }}</template>
 		<template #func><button @click="add"><fa icon="plus"/></button></template>
 
 		<x-messaging ref="index" compact @navigate="navigate"/>
@@ -21,7 +21,7 @@ export default define({
 		design: 0
 	})
 }).extend({
-	i18n: i18n('desktop/views/widgets/messaging.vue'),
+	i18n: i18n(''),
 	components: {
 		XMessaging: () => import('../../../common/views/components/messaging.vue').then(m => m.default)
 	},
