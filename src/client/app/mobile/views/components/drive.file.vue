@@ -88,9 +88,11 @@ export default Vue.extend({
 		> .thumbnail
 			width 64px
 			height 64px
+			color var(--driveFileIcon)
 
 		> .body
 			display block
+			word-break break-all
 
 			> .name
 				display block
