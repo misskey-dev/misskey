@@ -436,17 +436,23 @@ common/views/components/user-menu.vue:
   push-to-list: "Přidat do seznamu"
   select-list: "Vyberte seznam"
   report-abuse-reported: "Problém byl nahlášen administrátorovi. Děkujeme za Vaší kooperaci."
+  silence: "Ztlumit"
+  suspend: "Zmrazit"
 common/views/components/poll.vue:
   vote-count: "{} hlasů"
   vote: "Hlasovat"
   show-result: "Podívat se na výsledky"
   voted: "Už jste hlasovaly"
+  closed: "Ukončeno"
   remaining-days: "zbývá {d} dnů, {h} hodin"
   remaining-hours: "zbývá {h} hodin, a {m} minut"
   remaining-minutes: "zbývá {m} minut, a {s} sekund"
   remaining-seconds: "zbývá {s} sekund"
 common/views/components/poll-editor.vue:
   no-only-one-choice: "Musíte vybrat alespoň dvě možnosti"
+  destroy: "Zahodit dotazník"
+  infinite: "Nekonečne"
+  at: "Výběr data a času"
   day: "Ne"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Emoji"
