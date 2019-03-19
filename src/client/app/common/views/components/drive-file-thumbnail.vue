@@ -103,9 +103,11 @@ export default Vue.extend({
 			return 'unknown';
 		},
 		isThumbnailAvailable(): boolean {
-			return this.file.thumbnailUrl ? this.file.thumbnailUrl.endsWith('?thumbnail') ? (this.is === 'image' || this.is === 'video')
-																																										: true
-																		: false;
+			return this.file.thumbnailUrl
+				? this.file.thumbnailUrl.endsWith('?thumbnail')
+					? (this.is === 'image' || this.is === 'video')
+					: true
+				: false;
 		},
 		background(): string {
 			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3
