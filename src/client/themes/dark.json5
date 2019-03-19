@@ -153,6 +153,8 @@
 		messagingRoomMessageBg: '$secondary',
 		messagingRoomMessageFg: '#fff',
 
+		driveFileIcon: '$text',
+
 		formButtonBorder: 'rgba(255, 255, 255, 0.1)',
 		formButtonHoverBg: ':alpha<0.2<$primary',
 		formButtonHoverBorder: ':alpha<0.5<$primary',

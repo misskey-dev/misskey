@@ -1,11 +1,7 @@
 <template>
 <div class="pyvicwrksnfyhpfgkjwqknuururpaztw">
 	<div class="preview">
-		<img v-if="kind == 'image'" ref="img"
-			:src="file.url"
-			:alt="file.name"
-			:title="file.name"
-			:style="style">
+		<x-file-thumbnail class="preview" :file="file" fit="cover" :detail="true"/>
 		<template v-if="kind != 'image'"><fa icon="file"/></template>
 		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
 			<span class="size">
@@ -62,10 +58,15 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { gcd } from '../../../../../prelude/math';
 import { appendQuery } from '../../../../../prelude/url';
+import XFileThumbnail from '../../../common/views/components/drive-file-thumbnail.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/drive.file-detail.vue'),
 	props: ['file'],
+
+	components: {
+		XFileThumbnail
+	},
 
 	data() {
 		return {
@@ -147,8 +148,7 @@ export default Vue.extend({
 		padding 8px
 		background var(--bg)
 
-		> img
-			display block
+		> .preview
 			max-width 100%
 			max-height 300px
 			margin 0 auto
