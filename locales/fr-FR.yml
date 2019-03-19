@@ -710,10 +710,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Annuler"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Messages :"
-desktop/views/components/messaging-window.vue:
-  title: "Messagerie"
 desktop/views/components/note-detail.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
@@ -863,7 +859,7 @@ desktop/views/components/timeline.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "Messages"
+  messages: "Messages directs"
   list: "Listes"
   hashtag: "Hashtag"
   add-tag-timeline: "Ajouter un fil de hashtags"
@@ -1243,8 +1239,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Publications et réponses"
   with-media: "Média"
   my-posts: "Mes Messages"
-desktop/views/widgets/messaging.vue:
-  title: "Messagerie"
 desktop/views/widgets/notifications.vue:
   title: "Notifications"
 desktop/views/widgets/polls.vue:
@@ -1365,7 +1359,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "Messages"
+  messages: "Messages directs"
 mobile/views/pages/tag.vue:
   no-posts-found: "Aucune publication ayant pour hashtag « {q} » n’a été trouvée."
 mobile/views/pages/widgets.vue:
