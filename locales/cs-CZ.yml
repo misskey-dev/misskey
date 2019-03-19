@@ -687,10 +687,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Zrušit"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Zprávy:"
-desktop/views/components/messaging-window.vue:
-  title: "Zprávy"
 desktop/views/components/note-detail.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
@@ -796,7 +792,6 @@ desktop/views/components/timeline.vue:
   local: "Lokální"
   global: "Globální"
   mentions: "Zmínění"
-  messages: "Zprávy"
   list: "Seznamy"
   hashtag: "Hashtag"
   add-list: "Přidat do seznamu"
@@ -1057,8 +1052,6 @@ desktop/views/pages/user/user.header.vue:
   posts: "Poznámky"
   month: "Po"
   day: "Ne"
-desktop/views/widgets/messaging.vue:
-  title: "Zprávy"
 desktop/views/widgets/notifications.vue:
   title: "Oznámení"
 desktop/views/widgets/polls.vue:
@@ -1139,7 +1132,6 @@ mobile/views/pages/home.vue:
   local: "Lokální"
   global: "Globální"
   mentions: "Zmínění"
-  messages: "Zprávy"
 mobile/views/pages/tag.vue:
   no-posts-found: "Nebyly nalezeny žádné příspěvky s \"{q}\"."
 mobile/views/pages/widgets.vue:
