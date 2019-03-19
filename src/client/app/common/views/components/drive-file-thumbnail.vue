@@ -1,5 +1,5 @@
 <template>
-<div class="aqzdnzwsdgwhmztnueknzkwkjygptfcv" :class="{ detail, isSelected }" ref="thumbnail" :style="`background-color: ${ background }`">
+<div class="aqzdnzwsdgwhmztnueknzkwkjygptfcv" :class="{ detail }" ref="thumbnail" :style="`background-color: ${ background }`">
 	<img
 		:src="file.url"
 		:alt="file.name"
@@ -12,8 +12,8 @@
 		controls
 		v-else-if="detail && is === 'video'"/>
 	<img :src="file.thumbnailUrl" alt="" @load="onThumbnailLoaded" :style="`object-fit: ${ fit }`" v-else-if="isThumbnailAvailable"/>
-	<fa :icon="faFileImage" v-else-if="is === 'image'"/>
-	<fa :icon="faFileVideo" v-else-if="is === 'video'"/>
+	<fa :icon="faFileImage" class="icon" v-else-if="is === 'image'"/>
+	<fa :icon="faFileVideo" class="icon" v-else-if="is === 'video'"/>
 
 	<audio
 		:src="file.url"
@@ -21,15 +21,15 @@
 		preload="metadata"
 		controls
 		v-else-if="detail && is === 'audio'"/>
-	<fa :icon="faMusic" v-else-if="is === 'audio' || is === 'midi'"/>
+	<fa :icon="faMusic" class="icon" v-else-if="is === 'audio' || is === 'midi'"/>
 
-	<fa :icon="faFileCsv" v-else-if="is === 'csv'"/>
-	<fa :icon="faFilePdf" v-else-if="is === 'pdf'"/>
-	<fa :icon="faFileAlt" v-else-if="is === 'textfile'"/>
-	<fa :icon="faFileArchive" v-else-if="is === 'archive'"/>
-	<fa :icon="faFile" v-else/>
+	<fa :icon="faFileCsv" class="icon" v-else-if="is === 'csv'"/>
+	<fa :icon="faFilePdf" class="icon" v-else-if="is === 'pdf'"/>
+	<fa :icon="faFileAlt" class="icon" v-else-if="is === 'textfile'"/>
+	<fa :icon="faFileArchive" class="icon" v-else-if="is === 'archive'"/>
+	<fa :icon="faFile" class="icon" v-else/>
 
-	<fa :icon="faFilm" class='file-icon-sub' v-if="!detail && isThumbnailAvailable && is === 'video'"/>
+	<fa :icon="faFilm" class="icon-sub" v-if="!detail && isThumbnailAvailable && is === 'video'"/>
 </div>
 </template>
 
@@ -51,12 +51,12 @@ import {
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/drive-file-icon.vue'),
-	props: ['file', 'fit', 'detail', 'isSelected'],
+	props: ['file', 'fit', 'detail'],
 	data() {
 		return {
 			isContextmenuShowing: false,
 			isDragging: false,
-			
+
 			faFile,
 			faFileAlt,
 			faFileImage,
@@ -127,7 +127,7 @@ export default Vue.extend({
 	display flex
 
 	> img,
-	> svg.svg-inline-fa
+	> .icon
 		pointer-events none
 
 	> img
@@ -136,10 +136,7 @@ export default Vue.extend({
 		margin auto
 		object-fit cover
 
-	> svg.svg-inline--fa
-		color var(--driveFileIcon)
-
-	> svg.svg-inline--fa:not(.file-icon-sub)
+	> .icon
 		height 65%
 		width 65%
 		margin auto
@@ -148,7 +145,7 @@ export default Vue.extend({
 	> audio
 		width 100%
 
-	> svg.svg-inline--fa.file-icon-sub
+	> .icon-sub
 		position absolute
 		width 30%
 		height auto
@@ -157,12 +154,8 @@ export default Vue.extend({
 		bottom 4%
 
 	&.detail
-		> svg.svg-inline--fa
+		> .icon
 			height 100px
 			margin 16px auto
-
-	&.isSelected
-		> svg.svg-inline--fa
-			color var(--primaryForeground) !important
 
 </style>
