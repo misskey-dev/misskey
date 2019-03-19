@@ -5,6 +5,14 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.98.0
+----------
+* ドライブのファイルダウンロード時に元のファイル名を尊重するように
+* ドライブで画像以外のファイルを分かりやすく表示するように
+* TwemojiのCDNを変更
+* モバイルで通知の設定がない問題を修正
+* デザインの調整
+
 10.97.2
 ----------
 * ビルド時に警告が出ないように修正
