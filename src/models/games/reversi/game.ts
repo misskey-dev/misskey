@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import { deepcopy } from '../../../misc/deepcopy';
+import * as deepcopy from 'deepcopy';
 import db from '../../../db/mongodb';
 import isObjectId from '../../../misc/is-objectid';
 import { IUser, pack as packUser } from '../../user';
