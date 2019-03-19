@@ -205,7 +205,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .gvfdktuvdgwhmztnuekzkswkjygptfcv
 	padding 8px 0 0 0
-	height 180px
+	min-height 180px
 	border-radius 4px
 
 	&, *

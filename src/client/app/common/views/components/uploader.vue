@@ -3,12 +3,14 @@
 	<ol v-if="uploads.length > 0">
 		<li v-for="ctx in uploads" :key="ctx.id">
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
-			<p class="name"><fa icon="spinner" pulse/>{{ ctx.name }}</p>
-			<p class="status">
-				<span class="initing" v-if="ctx.progress == undefined">{{ $t('waiting') }}<mk-ellipsis/></span>
-				<span class="kb" v-if="ctx.progress != undefined">{{ String(Math.floor(ctx.progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
-				<span class="percentage" v-if="ctx.progress != undefined">{{ Math.floor((ctx.progress.value / ctx.progress.max) * 100) }}</span>
-			</p>
+			<div class="top">
+				<p class="name"><fa icon="spinner" pulse/>{{ ctx.name }}</p>
+				<p class="status">
+					<span class="initing" v-if="ctx.progress == undefined">{{ $t('waiting') }}<mk-ellipsis/></span>
+					<span class="kb" v-if="ctx.progress != undefined">{{ String(Math.floor(ctx.progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
+					<span class="percentage" v-if="ctx.progress != undefined">{{ Math.floor((ctx.progress.value / ctx.progress.max) * 100) }}</span>
+				</p>
+			</div>
 			<progress v-if="ctx.progress != undefined && ctx.progress.value != ctx.progress.max" :value="ctx.progress.value" :max="ctx.progress.max"></progress>
 			<div class="progress initing" v-if="ctx.progress == undefined"></div>
 			<div class="progress waiting" v-if="ctx.progress != undefined && ctx.progress.value == ctx.progress.max"></div>
@@ -116,12 +118,17 @@ export default Vue.extend({
 		list-style none
 
 		> li
-			display block
+			display grid
 			margin 8px 0 0 0
 			padding 0
 			height 36px
+			width: 100%
 			box-shadow 0 -1px 0 var(--primaryAlpha01)
 			border-top solid 8px transparent
+			grid-template-columns 36px calc(100% - 44px)
+			grid-template-rows 1fr 8px
+			column-gap 8px
+			box-sizing content-box
 
 			&:first-child
 				margin 0
@@ -130,68 +137,62 @@ export default Vue.extend({
 
 			> .img
 				display block
-				position absolute
-				top 0
-				left 0
-				width 36px
-				height 36px
 				background-size cover
 				background-position center center
+				grid-column 1 / 2
+				grid-row 1 / 3
 
-			> .name
-				display block
-				position absolute
-				top 0
-				left 44px
-				margin 0
-				padding 0
-				max-width 256px
-				font-size 0.8em
-				color var(--primaryAlpha07)
-				white-space nowrap
-				text-overflow ellipsis
-				overflow hidden
+			> .top
+				display flex
+				grid-column 2 / 3
+				grid-row 1 / 2
 
-				> [data-icon]
-					margin-right 4px
-
-			> .status
-				display block
-				position absolute
-				top 0
-				right 0
-				margin 0
-				padding 0
-				font-size 0.8em
-
-				> .initing
-					color var(--primaryAlpha05)
-
-				> .kb
-					color var(--primaryAlpha05)
-
-				> .percentage
-					display inline-block
-					width 48px
-					text-align right
-
+				> .name
+					display block
+					padding 0 8px 0 0
+					margin 0
+					font-size 0.8em
 					color var(--primaryAlpha07)
+					white-space nowrap
+					text-overflow ellipsis
+					overflow hidden
+					flex-shrink 1
 
-					&:after
-						content '%'
+					> [data-icon]
+						margin-right 4px
+
+				> .status
+					display block
+					margin 0 0 0 auto
+					padding 0
+					font-size 0.8em
+					flex-shrink 0
+
+					> .initing
+						color var(--primaryAlpha05)
+
+					> .kb
+						color var(--primaryAlpha05)
+
+					> .percentage
+						display inline-block
+						width 48px
+						text-align right
+
+						color var(--primaryAlpha07)
+
+						&:after
+							content '%'
 
 			> progress
 				display block
-				position absolute
-				bottom 0
-				right 0
-				margin 0
-				width calc(100% - 44px)
-				height 8px
 				background transparent
 				border none
 				border-radius 4px
 				overflow hidden
+				grid-column 2 / 3
+				grid-row 2 / 3
+				z-index 2
 
 				&::-webkit-progress-value
 					background var(--primary)
@@ -201,12 +202,6 @@ export default Vue.extend({
 
 			> .progress
 				display block
-				position absolute
-				bottom 0
-				right 0
-				margin 0
-				width calc(100% - 44px)
-				height 8px
 				border none
 				border-radius 4px
 				background linear-gradient(
@@ -221,6 +216,9 @@ export default Vue.extend({
 				)
 				background-size 32px 32px
 				animation bg 1.5s linear infinite
+				grid-column 2 / 3
+				grid-row 2 / 3
+				z-index 1
 
 				&.initing
 					opacity 0.3

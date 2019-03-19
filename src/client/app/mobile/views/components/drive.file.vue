@@ -101,8 +101,7 @@ export default Vue.extend({
 				font-size 0.9em
 				font-weight bold
 				color var(--text)
-				text-overflow ellipsis
-				overflow-wrap break-word
+				word-break break-word
 
 				> .ext
 					opacity 0.5
