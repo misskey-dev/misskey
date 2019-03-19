@@ -839,10 +839,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "취소"
   ok: "확인"
-desktop/views/components/messaging-room-window.vue:
-  title: "메시지:"
-desktop/views/components/messaging-window.vue:
-  title: "메시지"
 desktop/views/components/note-detail.vue:
   private: "이 글은 비공개입니다"
   deleted: "이 글은 삭제되었습니다"
@@ -992,7 +988,7 @@ desktop/views/components/timeline.vue:
   hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
-  messages: "메시지"
+  messages: "다이렉트 게시글"
   list: "리스트"
   hashtag: "해시태그"
   add-tag-timeline: "해시태그 추가"
@@ -1389,8 +1385,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "글과 답글"
   with-media: "미디어"
   my-posts: "내 글"
-desktop/views/widgets/messaging.vue:
-  title: "메시지"
 desktop/views/widgets/notifications.vue:
   title: "알림"
 desktop/views/widgets/polls.vue:
@@ -1512,7 +1506,7 @@ mobile/views/pages/home.vue:
   hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
-  messages: "메시지"
+  messages: "다이렉트 게시글"
 mobile/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 mobile/views/pages/widgets.vue:
