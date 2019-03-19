@@ -1,5 +1,5 @@
 <template>
-<div class="aqzdnzwsdgwhmztnueknzkwkjygptfcv" :class="{ detail }" ref="thumbnail" :style="`background-color: ${ background }`">
+<div class="zdjebgpv" :class="{ detail }" ref="thumbnail" :style="`background-color: ${ background }`">
 	<img
 		:src="file.url"
 		:alt="file.name"
@@ -50,7 +50,6 @@ import {
 	} from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/drive-file-icon.vue'),
 	props: ['file', 'fit', 'detail'],
 	data() {
 		return {
@@ -123,7 +122,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.aqzdnzwsdgwhmztnueknzkwkjygptfcv
+.zdjebgpv
 	display flex
 
 	> img,
