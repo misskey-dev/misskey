@@ -159,7 +159,7 @@
 	</template>
 
 	<template v-if="page == null || page == 'notification'">
-		<x-notification v-show="page == 'notification'"/>
+		<x-notification/>
 	</template>
 
 	<template v-if="page == null || page == 'drive'">
