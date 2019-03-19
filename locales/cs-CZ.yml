@@ -609,6 +609,8 @@ common/views/widgets/memo.vue:
   save: "Uložit"
 common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
+common/views/pages/not-found.vue:
+  page-not-found: "Stránka nenalezena"
 desktop:
   banner: "Baner"
   avatar-crop-title: "Vyberte část, která se zobrazí jako avatar"
