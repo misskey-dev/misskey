@@ -50,7 +50,21 @@ import {
 	} from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	props: ['file', 'fit', 'detail'],
+	props: {
+		file: {
+			type: Object,
+			required: true
+		},
+		fit: {
+			type: String,
+			required: true
+		},
+		detail: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 	data() {
 		return {
 			isContextmenuShowing: false,
