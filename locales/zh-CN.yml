@@ -839,10 +839,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "取消"
   ok: "确定"
-desktop/views/components/messaging-room-window.vue:
-  title: "信息："
-desktop/views/components/messaging-window.vue:
-  title: "正在聊天"
 desktop/views/components/note-detail.vue:
   private: "私密投稿"
   deleted: "投稿已删除"
@@ -992,7 +988,7 @@ desktop/views/components/timeline.vue:
   hybrid: "社交"
   global: "全球"
   mentions: "提到的"
-  messages: "信息"
+  messages: "直接发布"
   list: "列表"
   hashtag: "标签"
   add-tag-timeline: "添加标签"
@@ -1389,8 +1385,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "帖子与回复"
   with-media: "媒体"
   my-posts: "我的帖子"
-desktop/views/widgets/messaging.vue:
-  title: "信息"
 desktop/views/widgets/notifications.vue:
   title: "通知"
 desktop/views/widgets/polls.vue:
@@ -1512,7 +1506,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "信息"
+  messages: "直接发布"
 mobile/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 mobile/views/pages/widgets.vue:
