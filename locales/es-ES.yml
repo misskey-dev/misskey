@@ -595,10 +595,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Cancelar"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Mensajes:"
-desktop/views/components/messaging-window.vue:
-  title: "Mensajes"
 desktop/views/components/note-detail.vue:
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
@@ -714,7 +710,6 @@ desktop/views/components/timeline.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
-  messages: "Mensajes"
   list: "Listas"
   hashtag: "Hashtags"
   list-name: "Nombre de lista"
@@ -841,8 +836,6 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "lunes"
   day: "domingo"
-desktop/views/widgets/messaging.vue:
-  title: "Mensajes"
 desktop/views/widgets/notifications.vue:
   title: "Notificaciones"
 desktop/views/widgets/polls.vue:
@@ -907,7 +900,6 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
-  messages: "Mensajes"
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
   add-widget: "Agregar"
