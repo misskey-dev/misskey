@@ -143,6 +143,12 @@ export function toHtml(tokens: MfmForest, mentionedRemoteUsers: INote['mentioned
 			return a;
 		},
 
+		bubble(token) {
+			const el = doc.createElement('div');
+			appendChildren(token.children, el);
+			return el;
+		},
+
 		quote(token) {
 			const el = doc.createElement('blockquote');
 			appendChildren(token.children, el);

@@ -1,8 +1,8 @@
 <template>
-<img v-if="customEmoji" class="fvgwvorwhxigeolkkrcderjzcawqrscl custom" :class="{ normal: normal }" :src="url" :alt="alt" :title="alt"/>
-<img v-else-if="char && !useOsDefaultEmojis" class="fvgwvorwhxigeolkkrcderjzcawqrscl" :src="url" :alt="alt" :title="alt"/>
-<span v-else-if="char && useOsDefaultEmojis">{{ char }}</span>
-<span v-else>:{{ name }}:</span>
+<img v-if="customEmoji" class="fvgwvorwhxigeolkkrcderjzcawqrscl custom" :class="{ normal }" :src="url" :alt="alt" :title="alt"/>
+<img v-else-if="!char" class="fvgwvorwhxigeolkkrcderjzcawqrscl custom unknown" :class="{ normal }" :src="`${config.url}/assets/emojis/${name}`" :alt="`:${name}:`" :title="`:${name}:`"/>
+<span v-else-if="useOsDefaultEmojis">{{ char }}</span>
+<img v-else class="fvgwvorwhxigeolkkrcderjzcawqrscl" :src="url" :alt="alt" :title="alt"/>
 </template>
 
 <script lang="ts">
@@ -35,6 +35,10 @@ export default Vue.extend({
 			type: Boolean,
 			default: false
 		},
+		config: {
+			required: false,
+			default: {}
+		}
 	},
 
 	data() {
@@ -104,4 +108,7 @@ export default Vue.extend({
 			&:hover
 				transform none
 
+		&.unknown::before
+			display inline-block
+			margin 12px 0 0
 </style>

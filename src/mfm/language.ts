@@ -25,6 +25,7 @@ export const mfmLanguage = P.createLanguage({
 	block: r => P.alt(
 		r.title,
 		r.quote,
+		r.bubble,
 		r.search,
 		r.blockCode,
 		r.mathBlock,
@@ -39,11 +40,12 @@ export const mfmLanguage = P.createLanguage({
 	}),
 	title: r => r.startOfLine.then(P((input, i) => {
 		const text = input.substr(i);
-		const match = text.match(/^([【\[]([^【\[】\]\n]+?)[】\]])(\n|$)/);
+		const match = text.match(/^(\[([^\[\]\n]+?)\])(\n|$)/) || text.match(/^(【([^【】\n]+?)】)(\n|$)/);
 		if (!match) return P.makeFailure(i, 'not a title');
+		const raw = match[0].trim();
 		const q = match[2].trim();
 		const contents = r.inline.atLeast(1).tryParse(q);
-		return P.makeSuccess(i + match[0].length, createTree('title', contents, {}));
+		return P.makeSuccess(i + match[0].length, createTree('title', contents, { raw }));
 	})),
 	quote: r => r.startOfLine.then(P((input, i) => {
 		const text = input.substr(i);
@@ -53,6 +55,46 @@ export const mfmLanguage = P.createLanguage({
 		if (qInner == '') return P.makeFailure(i, 'not a quote');
 		const contents = r.root.tryParse(qInner);
 		return P.makeSuccess(i + quote.join('\n').length + 1, createTree('quote', contents, {}));
+	})),
+	bubble: r => r.startOfLine.then(P((input, i) => {
+		const text = input.substr(i);
+		const match = [
+			['\'', '\''],
+			['"', '"'],
+			['‘', '’'],
+			['“', '”'],
+			['‚', '‘'],
+			['„', '“'],
+			['‚', '’'],
+			['„', '”'],
+			['‹', '›'],
+			['«', '»'],
+			['›', '‹'],
+			['»', '«'],
+			['｢', '｣'],
+			['「', '」'],
+			['『', '』'],
+			['“', '”'],
+			['‘', '’'],
+			['《', '》'],
+			['〈', '〉'],
+			['〝', '〟'],
+			['〝', '〞'],
+			['“', '„']
+		].map(([s, e]) => [
+			[new RegExp(`^((?::\\w+:)+[^:\\n]*(?::\\w+:)*|(?::\\w+:)*[^:\\n]+(?::\\w+:)*|(?::\\w+:)*[^:\\n]*(?::\\w+:)+): ${s}(.+?)${e}(?:\\n|$)`)],
+			...['：', '―', '—'].map(x => [
+				new RegExp(`^([^${s}${e}\\n]+)${s}(.+?)${e}(?:\\n|$)`),
+				new RegExp(`^([^${x}\\n]+)${x}${s}(.+?)${e}(?:\\n|$)`)
+			])
+		]).reduce((a, c) => [...a, ...c], [])
+			.reduce((a, c) => [...a, ...c], [])
+			.reduce<RegExpMatchArray>((a, c) => a || text.match(c), null);
+		if (!match) return P.makeFailure(i, 'not a bubble');
+		const raw = match[0].trim();
+		const speaker = r.inline.atLeast(1).tryParse(match[1].trim());
+		const contents = r.inline.atLeast(1).tryParse(match[2].trim());
+		return P.makeSuccess(i + match[0].length, createTree('bubble', contents, { speaker, raw }));
 	})),
 	search: r => r.startOfLine.then(P((input, i) => {
 		const text = input.substr(i);
