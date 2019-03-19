@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+import { deepcopy } from '../misc/deepcopy';
 import { pack as packUser } from './user';
 import { pack as packFile } from './drive-file';
 import db from '../db/mongodb';

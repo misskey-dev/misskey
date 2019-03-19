@@ -1,5 +1,5 @@
 import * as mongo from 'mongodb';
-import * as deepcopy from 'deepcopy';
+import { deepcopy } from '../misc/deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';

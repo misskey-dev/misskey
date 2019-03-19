@@ -25,7 +25,7 @@ import notesChart from '../../services/chart/notes';
 import perUserNotesChart from '../../services/chart/per-user-notes';
 import activeUsersChart from '../../services/chart/active-users';
 import instanceChart from '../../services/chart/instance';
-import * as deepcopy from 'deepcopy';
+import { deepcopy } from '../../misc/deepcopy';
 
 import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
