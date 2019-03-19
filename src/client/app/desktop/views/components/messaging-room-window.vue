@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" :popout-url="popout" @closed="destroyDom">
-	<template #header><fa icon="comments"/> {{ $t('title') }} <mk-user-name :user="user"/></template>
+	<template #header><fa icon="comments"/> {{ $t('@.messaging') }}: <mk-user-name :user="user"/></template>
 	<x-messaging-room :user="user" :class="$style.content"/>
 </mk-window>
 </template>
@@ -12,7 +12,7 @@ import { url } from '../../../config';
 import getAcct from '../../../../../misc/acct/render';
 
 export default Vue.extend({
-	i18n: i18n('desktop/views/components/messaging-room-window.vue'),
+	i18n: i18n(),
 	components: {
 		XMessagingRoom: () => import('../../../common/views/components/messaging-room.vue').then(m => m.default)
 	},

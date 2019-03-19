@@ -12,7 +12,7 @@ import parseAcct from '../../../../../misc/acct/parse';
 import getUserName from '../../../../../misc/get-user-name';
 
 export default Vue.extend({
-	i18n: i18n('.vue'),
+	i18n: i18n(),
 	components: {
 		XMessagingRoom: () => import('../../../common/views/components/messaging-room.vue').then(m => m.default)
 	},
@@ -51,7 +51,7 @@ export default Vue.extend({
 				this.user = user;
 				this.fetching = false;
 
-				document.title = `メッセージ: ${getUserName(this.user)}`;
+				document.title = this.$t('@.messaging') + ': ' + getUserName(this.user);
 
 				Progress.done();
 			});
