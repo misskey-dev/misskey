@@ -25,6 +25,9 @@ import { program } from './argv';
 import { checkMongoDB } from './misc/check-mongodb';
 import { showMachineInfo } from './misc/show-machine-info';
 
+// for typeorm
+import 'reflect-metadata';
+
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
 const clusterLogger = logger.createSubLogger('cluster', 'orange');
