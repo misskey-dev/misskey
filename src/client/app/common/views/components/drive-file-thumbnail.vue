@@ -155,7 +155,6 @@ export default Vue.extend({
 		margin 0
 		right 4%
 		bottom 4%
-		filter drop-shadow(0 0 2px var(--driveFileThumbnailPlayIconShadow))
 
 	&.detail
 		> svg.svg-inline--fa
@@ -165,7 +164,5 @@ export default Vue.extend({
 	&.isSelected
 		> svg.svg-inline--fa
 			color var(--primaryForeground) !important
-		
-		> svg.svg-inline--fa.file-icon-sub
-			filter drop-shadow(0 0 2px var(--primary))
+
 </style>

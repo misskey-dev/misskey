@@ -153,7 +153,6 @@
 		messagingRoomMessageBg: '#eee',
 		messagingRoomMessageFg: '#333',
 
-		driveFileThumbnailPlayIconShadow: '@bg',
 		driveFileIcon: '$text',
 
 		formButtonBorder: 'rgba(0, 0, 0, 0.1)',
