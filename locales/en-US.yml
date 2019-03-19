@@ -839,10 +839,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Cancel"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Messages:"
-desktop/views/components/messaging-window.vue:
-  title: "Messaging"
 desktop/views/components/note-detail.vue:
   private: "Post is private"
   deleted: "Post has been removed"
@@ -992,7 +988,7 @@ desktop/views/components/timeline.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "Messages"
+  messages: "Direct posts"
   list: "Lists"
   hashtag: "Hashtag"
   add-tag-timeline: "Add hashtag cloud"
@@ -1388,8 +1384,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Posts and replies"
   with-media: "Media"
   my-posts: "My posts"
-desktop/views/widgets/messaging.vue:
-  title: "Messaging"
 desktop/views/widgets/notifications.vue:
   title: "Notifications"
 desktop/views/widgets/polls.vue:
@@ -1511,7 +1505,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "Messages"
+  messages: "Direct posts"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/widgets.vue:
