@@ -109,10 +109,23 @@ export default define({
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && !this.posting && this.text) this.post();
 		},
 
-		onPaste(e) {
-			for (const item of Array.from(e.clipboardData.items)) {
+		async onPaste(e: ClipboardEvent) {
+			for (const { item, i } of Array.from(e.clipboardData.items).map((item, i) => ({item, i}))) {
 				if (item.kind == 'file') {
-					this.upload(item.getAsFile());
+					const file = item.getAsFile();
+					const lio = file.name.lastIndexOf('.');
+					const ext = lio >= 0 ? file.name.slice(lio) : '';
+					const formatted = `${moment(file.lastModified).format(this.$store.state.settings.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+					const name = this.$store.state.settings.pasteDialog
+						? await this.$root.dialog({
+								title: this.$t('enter-file-name'),
+								input: {
+									default: formatted
+								},
+								allowEmpty: false
+							}).then(({ canceled, result }) => canceled ? false : result)
+						: formatted;
+					if (name) this.upload(file, name);
 				}
 			}
 		},
@@ -121,8 +134,8 @@ export default define({
 			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
 		},
 
-		upload(file) {
-			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder);
+		upload(file: any, name?: string) {
+			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
 		},
 
 		onDragover(e) {
