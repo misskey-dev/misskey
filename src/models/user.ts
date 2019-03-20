@@ -61,6 +61,11 @@ export class User extends Model<User> {
 	@Column(Sequelize.DATE)
 	public updatedAt: Date | null;
 
+	@Comment('The username of the User.')
+	@AllowNull(false)
+	@Column(Sequelize.STRING)
+	public username: string;
+
 	@Comment('The name of the User.')
 	@AllowNull(true)
 	@Column(Sequelize.STRING)
