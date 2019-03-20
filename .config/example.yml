@@ -43,12 +43,41 @@ url: https://example.tld/
 ################################################################
 
 
-mongodb:
+################################################################
+#[ PostgreSQL configuration ]###################################
+
+db:
   host: localhost
-  port: 27017
+  port: 5432
+
+  # Database name
   db: misskey
+
+  # Auth
   user: example-misskey-user
   pass: example-misskey-pass
+
+
+################################################################
+#[ Redis configuration ]########################################
+
+#redis:
+#  host: localhost
+#  port: 6379
+#  pass: example-pass
+
+
+################################################################
+#[ Elasticsearch configuration ]################################
+
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  pass: null
+
+
+################################################################
+#[ File storage (Drive) configuration ]#########################
 
 drive:
   storage: 'db'
@@ -88,25 +117,13 @@ drive:
   #   accessKey: XXX
   #   secretKey: YYY
 
+
+################################################################
+#[ Other configuration ]########################################
+
 # If enabled:
 #  The first account created is automatically marked as Admin.
 autoAdmin: true
-
-#
-# Below settings are optional
-#
-
-# Redis
-#redis:
-#  host: localhost
-#  port: 6379
-#  pass: example-pass
-
-# Elasticsearch
-#elasticsearch:
-#  host: localhost
-#  port: 9200
-#  pass: null
 
 # Whether disable HSTS
 #disableHsts: true

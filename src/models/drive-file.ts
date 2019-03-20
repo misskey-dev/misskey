@@ -3,7 +3,6 @@ import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 's
 import * as deepcopy from 'deepcopy';
 import { pack as packFolder } from './drive-folder';
 import { pack as packUser } from './user';
-import monkDb, { nativeDbConn } from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
 import { dbLogger } from '../db/logger';
