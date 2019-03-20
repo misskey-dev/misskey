@@ -131,7 +131,7 @@ common:
     other: "Ostatní"
     appearance: "Vzhled"
     behavior: "Chování"
-    fetch-on-scroll: "Nekonečné rolování"
+    fetch-on-scroll: "Nekonečné načítaní posuvem"
     fetch-on-scroll-desc: "Pokud budete rolovat dolů po stránce, automaticky bude načten další obsah."
     note-visibility: "Viditelnost příspěvku"
     default-note-visibility: "Výchozí viditelnost příspěvku"
