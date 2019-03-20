@@ -1,27 +1,30 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
+import * as Sequelize from 'sequelize';
+import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
 
-const Following = db.get<IFollowing>('following');
-Following.createIndex('followerId');
-Following.createIndex('followeeId');
-Following.createIndex(['followerId', 'followeeId'], { unique: true });
-export default Following;
+@Table({
+	indexes: [{
+		unique: true,
+		fields: ['followerId', 'followeeId']
+	}, {
+		fields: ['followeeId']
+	}, {
+		fields: ['followerId']
+	}]
+})
+export class Following extends Model<Following> {
+	@AllowNull(false)
+	@Column(Sequelize.DATE)
+	public createdAt: Date;
 
-export type IFollowing = {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	followeeId: mongo.ObjectID;
-	followerId: mongo.ObjectID;
+	@Comment('The followee user ID.')
+	@AllowNull(false)
+	@ForeignKey(() => User)
+	@Column(Sequelize.INTEGER)
+	public followeeId: number;
 
-	// 非正規化
-	_followee: {
-		host: string;
-		inbox?: string;
-		sharedInbox?: string;
-	},
-	_follower: {
-		host: string;
-		inbox?: string;
-		sharedInbox?: string;
-	}
-};
+	@Comment('The follower user ID.')
+	@AllowNull(false)
+	@ForeignKey(() => User)
+	@Column(Sequelize.INTEGER)
+	public followerId: number;
+}
