@@ -9,7 +9,15 @@ import { dbLogger } from '../db/logger';
 
 @Table({
 	indexes: [{
-		fields: ['md5', 'uri', 'createdAt', 'userId', 'folderId']
+		fields: ['md5']
+	}, {
+		fields: ['uri']
+	}, {
+		fields: ['createdAt']
+	}, {
+		fields: ['userId']
+	}, {
+		fields: ['folderId']
 	}]
 })
 export class DriveFile extends Model<DriveFile> {

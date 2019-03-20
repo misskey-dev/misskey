@@ -19,7 +19,13 @@ import * as Sequelize from 'sequelize';
 		unique: true,
 		fields: ['uri']
 	}, {
-		fields: ['createdAt', 'userId', 'replyId', 'renoteId']
+		fields: ['createdAt']
+	}, {
+		fields: ['userId']
+	}, {
+		fields: ['replyId']
+	}, {
+		fields: ['renoteId']
 	}]
 })
 export class Note extends Model<Note> {
