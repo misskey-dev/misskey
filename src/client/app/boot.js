@@ -84,7 +84,7 @@
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
-	const isMobile = /mobile|iphone|ipad|android/.test(ua);
+	const isMobile = /mobile|iphone|ipad|android/.test(ua) || window.innerWidth < 576;
 
 	// Get the <head> element
 	const head = document.getElementsByTagName('head')[0];
