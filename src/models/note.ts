@@ -1,4 +1,4 @@
-import { Table, Column, Model, AllowNull, BelongsTo, Default } from 'sequelize-typescript';
+import { Table, Column, Model, AllowNull, BelongsTo, Default, HasMany } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import isObjectId from '../misc/is-objectid';
@@ -14,24 +14,14 @@ import { dbLogger } from '../db/logger';
 import { unique, concat } from '../prelude/array';
 import * as Sequelize from 'sequelize';
 
-Note.createIndex('uri', { sparse: true, unique: true });
-Note.createIndex('userId');
-Note.createIndex('mentions');
-Note.createIndex('visibleUserIds');
-Note.createIndex('replyId');
-Note.createIndex('renoteId');
-Note.createIndex('tagsLower');
-Note.createIndex('_user.host');
-Note.createIndex('_files._id');
-Note.createIndex('_files.contentType');
-Note.createIndex({ createdAt: -1 });
-Note.createIndex({ score: -1 }, { sparse: true });
-
-export function isValidCw(text: string): boolean {
-	return length(text.trim()) <= 100;
-}
-
-@Table
+@Table({
+	indexes: [{
+		unique: true,
+		fields: ['uri']
+	}, {
+		fields: ['createdAt', 'userId', 'replyId', 'renoteId']
+	}]
+})
 export class Note extends Model<Note> {
 	@Column
 	@AllowNull(false)
@@ -79,13 +69,19 @@ export class Note extends Model<Note> {
 	@Default(false)
 	public localOnly: boolean;
 
-	@Column('number', { default: 0 })
+	@Column
+	@AllowNull(false)
+	@Default(0)
 	public renoteCount: number;
 
-	@Column('number', { default: 0 })
+	@Column
+	@AllowNull(false)
+	@Default(0)
 	public repliesCount: number;
 
-	@Column('jsonb', { default: {} })
+	@Column(Sequelize.JSONB)
+	@AllowNull(false)
+	@Default({})
 	public reactionCounts: Record<string, number>;
 
 	/**
@@ -94,74 +90,21 @@ export class Note extends Model<Note> {
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
 	 */
-	@Column({ name: 'action', type: 'enum', enum: ['public', 'home', 'followers', 'specified'] })
+	@Column({ type: Sequelize.ENUM, values: ['public', 'home', 'followers', 'specified'] })
 	public action: 'public' | 'home' | 'followers' | 'specified';
 
-	@Column('text', { nullable: true })
+	@Column
+	@AllowNull(true)
 	public uri: string | null;
 
-	@Column('number', { default: 0 })
+	@Column
+	@AllowNull(false)
+	@Default(0)
 	public score: number;
 
 	@HasMany(() => DriveFile)
 	public files: DriveFile[];
 }
-
-export type INote = {
-	fileIds: mongo.ObjectID[];
-	poll: IPoll;
-	tags: string[];
-	tagsLower: string[];
-	emojis: string[];
-	appId: mongo.ObjectID;
-	mentions: mongo.ObjectID[];
-	mentionedRemoteUsers: {
-		uri: string;
-		username: string;
-		host: string;
-	}[];
-
-	visibleUserIds: mongo.ObjectID[];
-
-	geo: {
-		coordinates: number[];
-		altitude: number;
-		accuracy: number;
-		altitudeAccuracy: number;
-		heading: number;
-		speed: number;
-	};
-
-	/**
-	 * 人気の投稿度合いを表すスコア
-	 */
-	score: number;
-
-	// 非正規化
-	_reply?: {
-		userId: mongo.ObjectID;
-	};
-	_renote?: {
-		userId: mongo.ObjectID;
-	};
-	_user: {
-		host: string;
-		inbox?: string;
-	};
-	_files?: IDriveFile[];
-};
-
-export type IPoll = {
-	choices: IChoice[];
-	multiple?: boolean;
-	expiresAt?: Date;
-};
-
-export type IChoice = {
-	id: number;
-	text: string;
-	votes: number;
-};
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;
