@@ -1,15 +1,12 @@
-import * as fs from 'fs';
 import * as URL from 'url';
-import * as tmp from 'tmp';
-import * as request from 'request';
 
 import { IDriveFile, validateFileName } from '../../models/drive-file';
 import create from './add-file';
-import config from '../../config';
 import { IUser } from '../../models/user';
 import * as mongodb from 'mongodb';
 import { driveLogger } from './logger';
-import chalk from 'chalk';
+import { createTemp } from '../../misc/create-temp';
+import { downloadUrl } from '../../misc/donwload-url';
 
 const logger = driveLogger.createSubLogger('downloader');
 
@@ -28,62 +25,10 @@ export default async (
 	}
 
 	// Create temp file
-	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
-		tmp.file((e, path, fd, cleanup) => {
-			if (e) return rej(e);
-			res([path, cleanup]);
-		});
-	});
+	const [path, cleanup] = await createTemp();
 
 	// write content at URL to temp file
-	await new Promise((res, rej) => {
-		logger.info(`Downloading ${chalk.cyan(url)} ...`);
-
-		const writable = fs.createWriteStream(path);
-
-		writable.on('finish', () => {
-			logger.succ(`Download finished: ${chalk.cyan(url)}`);
-			res();
-		});
-
-		writable.on('error', error => {
-			logger.error(`Download failed: ${chalk.cyan(url)}: ${error}`, {
-				url: url,
-				e: error
-			});
-			rej(error);
-		});
-
-		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
-
-		const req = request({
-			url: requestUrl,
-			proxy: config.proxy,
-			timeout: 10 * 1000,
-			headers: {
-				'User-Agent': config.userAgent
-			}
-		});
-
-		req.pipe(writable);
-
-		req.on('response', response => {
-			if (response.statusCode !== 200) {
-				logger.error(`Got ${response.statusCode} (${url})`);
-				writable.close();
-				rej(response.statusCode);
-			}
-		});
-
-		req.on('error', error => {
-			logger.error(`Failed to start download: ${chalk.cyan(url)}: ${error}`, {
-				url: url,
-				e: error
-			});
-			writable.close();
-			rej(error);
-		});
-	});
+	await downloadUrl(url, path);
 
 	let driveFile: IDriveFile;
 	let error;
