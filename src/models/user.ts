@@ -2,8 +2,6 @@ import * as Sequelize from 'sequelize';
 import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
 import { packMany as packNoteMany } from './note';
 import Following from './following';
 import Blocking from './blocking';
@@ -14,23 +12,6 @@ import FollowRequest from './follow-request';
 import fetchMeta from '../misc/fetch-meta';
 import Emoji from './emoji';
 import { dbLogger } from '../db/logger';
-
-const User = db.get<IUser>('users');
-
-User.createIndex('createdAt');
-User.createIndex('updatedAt');
-User.createIndex('followersCount');
-User.createIndex('tags');
-User.createIndex('isSuspended');
-User.createIndex('username');
-User.createIndex('usernameLower');
-User.createIndex('host');
-User.createIndex(['username', 'host'], { unique: true });
-User.createIndex(['usernameLower', 'host'], { unique: true });
-User.createIndex('token', { sparse: true, unique: true });
-User.createIndex('uri', { sparse: true, unique: true });
-
-export default User;
 
 @Table({
 	indexes: [{
@@ -150,6 +131,18 @@ export class User extends Model<User> {
 	@Default(false)
 	@Column(Sequelize.BOOLEAN)
 	public isCat: boolean;
+
+	@Comment('Whether the User is the admin.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isAdmin: boolean;
+
+	@Comment('Whether the User is a moderator.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isModerator: boolean;
 
 	@Comment('The host of the User. It will be null if the origin of the user is local.')
 	@AllowNull(true)

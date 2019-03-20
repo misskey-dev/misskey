@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
-import User, { IUser, validateUsername, validatePassword, pack } from '../../../models/user';
+import { User, IUser, validateUsername, validatePassword, pack } from '../../../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';
@@ -68,21 +68,6 @@ export default async (ctx: Koa.BaseContext) => {
 
 	const usersCount = await User.count({});
 
-	// Fetch exist user that same username
-	const usernameExist = await User
-		.count({
-			usernameLower: username.toLowerCase(),
-			host: null
-		}, {
-			limit: 1
-		});
-
-	// Check username already used
-	if (usernameExist !== 0) {
-		ctx.status = 400;
-		return;
-	}
-
 	// Generate hash of password
 	const salt = await bcrypt.genSalt(8);
 	const hash = await bcrypt.hash(password, salt);
@@ -90,33 +75,18 @@ export default async (ctx: Koa.BaseContext) => {
 	// Generate secret
 	const secret = generateUserToken();
 
-	// Create account
-	const account: IUser = await User.insert({
-		avatarId: null,
-		bannerId: null,
+	const account = new User({
 		createdAt: new Date(),
-		description: null,
-		followersCount: 0,
-		followingCount: 0,
-		name: null,
-		notesCount: 0,
 		username: username,
 		usernameLower: username.toLowerCase(),
-		host: null,
 		keypair: generateKeypair(),
 		token: secret,
 		password: hash,
 		isAdmin: config.autoAdmin && usersCount === 0,
 		autoAcceptFollowed: true,
-		profile: {
-			bio: null,
-			birthday: null,
-			location: null
-		},
-		settings: {
-			autoWatch: false
-		}
+		autoWatch: false
 	});
+	account.save();
 
 	//#region Increment users count
 	Meta.update({}, {
