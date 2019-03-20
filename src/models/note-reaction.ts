@@ -2,7 +2,6 @@ import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
-import Reaction from './note-reaction';
 import { pack as packUser } from './user';
 
 const NoteReaction = db.get<INoteReaction>('noteReactions');
@@ -30,11 +29,11 @@ export const pack = (
 
 	// Populate the reaction if 'reaction' is ID
 	if (isObjectId(reaction)) {
-		_reaction = await Reaction.findOne({
+		_reaction = await NoteReaction.findOne({
 			_id: reaction
 		});
 	} else if (typeof reaction === 'string') {
-		_reaction = await Reaction.findOne({
+		_reaction = await NoteReaction.findOne({
 			_id: new mongo.ObjectID(reaction)
 		});
 	} else {
