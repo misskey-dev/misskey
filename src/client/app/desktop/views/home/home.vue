@@ -39,7 +39,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="main" :class="{ side: !customize && (widgets.left.length == 0 || widgets.right.length == 0) }">
+		<div class="main" :class="{ side: widgets.left.length == 0 || widgets.right.length == 0 }">
 			<template v-if="customize">
 				<x-draggable v-for="place in ['left', 'right']"
 					:list="widgets[place]"
