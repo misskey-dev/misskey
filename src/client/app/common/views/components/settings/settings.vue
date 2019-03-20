@@ -150,7 +150,9 @@
 				<ui-input v-model="pastedFileName">{{ $t('@._settings.pasted-file-name') }}
 					<template #desc>{{ $t('@._settings.pasted-file-name-desc') }}</template>
 				</ui-input>
-				<ui-switch v-model="pasteDialog">{{ $t('@._settings.paste-dialog') }}</ui-switch>
+				<ui-switch v-model="pasteDialog">{{ $t('@._settings.paste-dialog') }}
+					<template #desc>{{ $t('@._settings.paste-dialog-desc') }}</template>
+				</ui-switch>
 			</section>
 		</ui-card>
 
