@@ -46,10 +46,22 @@ export class Note extends Model<Note> {
 	@Column(Sequelize.INTEGER)
 	public replyId: number | null;
 
+	@BelongsTo(() => Note, {
+		foreignKey: 'replyId',
+		onDelete: 'CASCADE'
+	})
+	public reply: Note;
+
 	@AllowNull(true)
 	@ForeignKey(() => Note)
 	@Column(Sequelize.INTEGER)
 	public renoteId: number | null;
+
+	@BelongsTo(() => Note, {
+		foreignKey: 'renoteId',
+		onDelete: 'CASCADE'
+	})
+	public renote: Note;
 
 	@AllowNull(true)
 	@Column(Sequelize.TEXT)
@@ -70,6 +82,7 @@ export class Note extends Model<Note> {
 	public userId: number;
 
 	@BelongsTo(() => User, {
+		foreignKey: 'userId',
 		onDelete: 'CASCADE'
 	})
 	public user: User;
