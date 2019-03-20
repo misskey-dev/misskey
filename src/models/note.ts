@@ -1,7 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne } from 'typeorm';
+import { Table, Column, Model, AllowNull, BelongsTo, Default } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
-import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
@@ -13,6 +12,7 @@ import Following from './following';
 import Emoji from './emoji';
 import { dbLogger } from '../db/logger';
 import { unique, concat } from '../prelude/array';
+import * as Sequelize from 'sequelize';
 
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
@@ -31,42 +31,52 @@ export function isValidCw(text: string): boolean {
 	return length(text.trim()) <= 100;
 }
 
-@Entity()
-export class Note {
-	@PrimaryGeneratedColumn()
-	public id: number;
+@Table
+export class Note extends Model<Note> {
+	@Column
+	@AllowNull(false)
+	public createdAt: Date;
 
-	@Column('timestamp')
-	public createdAt: number;
+	@Column
+	@AllowNull(true)
+	public deletedAt: Date | null;
 
-	@Column('timestamp', { nullable: true })
-	public deletedAt: number | null;
+	@Column
+	@AllowNull(true)
+	public updatedAt: Date | null;
 
-	@Column('timestamp', { nullable: true })
-	public updatedAt: number | null;
-
-	@OneToOne(type => Note, { nullable: true })
-	@JoinColumn()
+	@BelongsTo(() => Note)
+	@AllowNull(true)
 	public reply: Note | null;
 
-	@OneToOne(type => Note, { nullable: true })
-	@JoinColumn()
+	@BelongsTo(() => Note)
+	@AllowNull(true)
 	public renote: Note | null;
 
-	@Column('text', { nullable: true })
+	@Column(Sequelize.TEXT)
+	@AllowNull(true)
+	public text: string | null;
+
+	@Column
+	@AllowNull(true)
 	public name: string | null;
 
-	@Column('text', { nullable: true })
+	@Column
+	@AllowNull(true)
 	public cw: string | null;
 
-	@OneToOne(type => User)
-	@JoinColumn()
+	@BelongsTo(() => User)
+	@AllowNull(false)
 	public user: User;
 
-	@Column('boolean', { default: false })
+	@Column
+	@AllowNull(false)
+	@Default(false)
 	public viaMobile: boolean;
 
-	@Column('boolean', { default: false })
+	@Column
+	@AllowNull(false)
+	@Default(false)
 	public localOnly: boolean;
 
 	@Column('number', { default: 0 })
@@ -92,6 +102,9 @@ export class Note {
 
 	@Column('number', { default: 0 })
 	public score: number;
+
+	@HasMany(() => DriveFile)
+	public files: DriveFile[];
 }
 
 export type INote = {
@@ -118,8 +131,6 @@ export type INote = {
 		heading: number;
 		speed: number;
 	};
-
-	uri: string;
 
 	/**
 	 * 人気の投稿度合いを表すスコア
