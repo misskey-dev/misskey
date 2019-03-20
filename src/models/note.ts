@@ -69,7 +69,9 @@ export class Note extends Model<Note> {
 	@Column(Sequelize.INTEGER)
 	public userId: number;
 
-	@BelongsTo(() => User)
+	@BelongsTo(() => User, {
+		onDelete: 'CASCADE'
+	})
 	public user: User;
 
 	@AllowNull(false)
