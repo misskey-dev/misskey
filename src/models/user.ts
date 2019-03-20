@@ -1,4 +1,5 @@
-import * as mongo from 'mongodb';
+import * as Sequelize from 'sequelize';
+import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
@@ -30,6 +31,153 @@ User.createIndex('token', { sparse: true, unique: true });
 User.createIndex('uri', { sparse: true, unique: true });
 
 export default User;
+
+@Table({
+	indexes: [{
+		unique: true,
+		fields: ['token']
+	}, {
+		unique: true,
+		fields: ['uri']
+	}, {
+		unique: true,
+		fields: ['username', 'host']
+	}, {
+		fields: ['createdAt']
+	}, {
+		fields: ['updatedAt']
+	}, {
+		fields: ['username']
+	}, {
+		fields: ['host']
+	}]
+})
+export class User extends Model<User> {
+	@AllowNull(false)
+	@Column(Sequelize.DATE)
+	public createdAt: Date;
+
+	@AllowNull(true)
+	@Column(Sequelize.DATE)
+	public updatedAt: Date | null;
+
+	@Comment('The name of the User.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public name: string | null;
+
+	@Comment('The location of the User.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public location: string | null;
+
+	@Comment('The birthday (YYYY-MM-DD) of the User.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public birthday: string | null;
+
+	@Comment('The count of followers.')
+	@AllowNull(false)
+	@Default(0)
+	@Column(Sequelize.INTEGER)
+	public followersCount: number;
+
+	@Comment('The count of following.')
+	@AllowNull(false)
+	@Default(0)
+	@Column(Sequelize.INTEGER)
+	public followingCount: number;
+
+	@Comment('The count of notes.')
+	@AllowNull(false)
+	@Default(0)
+	@Column(Sequelize.INTEGER)
+	public notesCount: number;
+
+	@Comment('The ID of avatar DriveFile.')
+	@AllowNull(true)
+	@ForeignKey(() => DriveFile)
+	@Column(Sequelize.INTEGER)
+	public avatarId: number | null;
+
+	@Comment('The ID of banner DriveFile.')
+	@AllowNull(true)
+	@ForeignKey(() => DriveFile)
+	@Column(Sequelize.INTEGER)
+	public bannerId: number | null;
+
+	@Comment('The description (bio) of the User.')
+	@AllowNull(true)
+	@Column(Sequelize.TEXT)
+	public description: string | null;
+
+	@Comment('The email address of the User.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public email: string | null;
+
+	@Comment('Whether the User is suspended.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isSuspended: boolean;
+
+	@Comment('Whether the User is silenced.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isSilenced: boolean;
+
+	@Comment('Whether the User is locked.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isLocked: boolean;
+
+	@Comment('Whether the User is a bot.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isBot: boolean;
+
+	@Comment('Whether the User is a cat.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isCat: boolean;
+
+	@Comment('The host of the User. It will be null if the origin of the user is local.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public host: string | null;
+
+	@Comment('The password hash of the User. It will be null if the origin of the user is local.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public password: string | null;
+
+	@Comment('The native access token of the User. It will be null if the origin of the user is local.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public token: string | null;
+
+	@Comment('The keypair of the User. It will be null if the origin of the user is local.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public keypair: string | null;
+
+	@Comment('The client-specific data of the User.')
+	@AllowNull(false)
+	@Default({})
+	@Column(Sequelize.JSONB)
+	public clientData: Record<string, any>;
+
+	@Comment('The external service links of the User.')
+	@AllowNull(false)
+	@Default({})
+	@Column(Sequelize.JSONB)
+	public services: Record<string, any>;
+}
 
 type IUserBase = {
 	_id: mongo.ObjectID;
