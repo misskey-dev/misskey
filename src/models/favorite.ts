@@ -1,21 +1,46 @@
-import * as mongo from 'mongodb';
+import * as Sequelize from 'sequelize';
+import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
-import { pack as packNote } from './note';
+import { pack as packNote, Note } from './note';
 import { dbLogger } from '../db/logger';
 
-const Favorite = db.get<IFavorite>('favorites');
-Favorite.createIndex('userId');
-Favorite.createIndex(['userId', 'noteId'], { unique: true });
-export default Favorite;
+@Table({
+	indexes: [{
+		unique: true,
+		fields: ['userId', 'noteId']
+	}, {
+		fields: ['userId']
+	}]
+})
+export class Favorite extends Model<Favorite> {
+	@AllowNull(false)
+	@Column(Sequelize.DATE)
+	public createdAt: Date;
 
-export type IFavorite = {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	userId: mongo.ObjectID;
-	noteId: mongo.ObjectID;
-};
+	@Comment('The user ID.')
+	@AllowNull(false)
+	@ForeignKey(() => User)
+	@Column(Sequelize.INTEGER)
+	public userId: number;
+
+	@BelongsTo(() => User, {
+		foreignKey: 'userId',
+		onDelete: 'CASCADE'
+	})
+	public user: User;
+
+	@Comment('The note ID.')
+	@AllowNull(false)
+	@ForeignKey(() => Note)
+	@Column(Sequelize.INTEGER)
+	public noteId: number;
+
+	@BelongsTo(() => Note, {
+		foreignKey: 'noteId',
+		onDelete: 'CASCADE'
+	})
+	public note: Note;
+}
 
 export const packMany = (
 	favorites: any[],
