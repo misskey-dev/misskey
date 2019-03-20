@@ -1,4 +1,4 @@
-import * as mongo from 'mongodb';
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import db from '../db/mongodb';
@@ -14,7 +14,6 @@ import Emoji from './emoji';
 import { dbLogger } from '../db/logger';
 import { unique, concat } from '../prelude/array';
 
-const Note = db.get<INote>('notes');
 Note.createIndex('uri', { sparse: true, unique: true });
 Note.createIndex('userId');
 Note.createIndex('mentions');
@@ -27,40 +26,57 @@ Note.createIndex('_files._id');
 Note.createIndex('_files.contentType');
 Note.createIndex({ createdAt: -1 });
 Note.createIndex({ score: -1 }, { sparse: true });
-export default Note;
 
 export function isValidCw(text: string): boolean {
 	return length(text.trim()) <= 100;
 }
 
-export type INote = {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	deletedAt: Date;
-	updatedAt?: Date;
-	fileIds: mongo.ObjectID[];
-	replyId: mongo.ObjectID;
-	renoteId: mongo.ObjectID;
-	poll: IPoll;
-	name?: string;
-	text: string;
-	tags: string[];
-	tagsLower: string[];
-	emojis: string[];
-	cw: string;
-	userId: mongo.ObjectID;
-	appId: mongo.ObjectID;
-	viaMobile: boolean;
-	localOnly: boolean;
-	renoteCount: number;
-	repliesCount: number;
-	reactionCounts: Record<string, number>;
-	mentions: mongo.ObjectID[];
-	mentionedRemoteUsers: {
-		uri: string;
-		username: string;
-		host: string;
-	}[];
+@Entity()
+export class Note {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Column('timestamp')
+	public createdAt: number;
+
+	@Column('timestamp', { nullable: true })
+	public deletedAt: number | null;
+
+	@Column('timestamp', { nullable: true })
+	public updatedAt: number | null;
+
+	@OneToOne(type => Note, { nullable: true })
+	@JoinColumn()
+	public reply: Note | null;
+
+	@OneToOne(type => Note, { nullable: true })
+	@JoinColumn()
+	public renote: Note | null;
+
+	@Column('text', { nullable: true })
+	public name: string | null;
+
+	@Column('text', { nullable: true })
+	public cw: string | null;
+
+	@OneToOne(type => User)
+	@JoinColumn()
+	public user: User;
+
+	@Column('boolean', { default: false })
+	public viaMobile: boolean;
+
+	@Column('boolean', { default: false })
+	public localOnly: boolean;
+
+	@Column('number', { default: 0 })
+	public renoteCount: number;
+
+	@Column('number', { default: 0 })
+	public repliesCount: number;
+
+	@Column('jsonb', { default: {} })
+	public reactionCounts: Record<string, number>;
 
 	/**
 	 * public ... 公開
@@ -68,7 +84,29 @@ export type INote = {
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
 	 */
-	visibility: 'public' | 'home' | 'followers' | 'specified';
+	@Column({ name: 'action', type: 'enum', enum: ['public', 'home', 'followers', 'specified'] })
+	public action: 'public' | 'home' | 'followers' | 'specified';
+
+	@Column('text', { nullable: true })
+	public uri: string | null;
+
+	@Column('number', { default: 0 })
+	public score: number;
+}
+
+export type INote = {
+	fileIds: mongo.ObjectID[];
+	poll: IPoll;
+	tags: string[];
+	tagsLower: string[];
+	emojis: string[];
+	appId: mongo.ObjectID;
+	mentions: mongo.ObjectID[];
+	mentionedRemoteUsers: {
+		uri: string;
+		username: string;
+		host: string;
+	}[];
 
 	visibleUserIds: mongo.ObjectID[];
 
