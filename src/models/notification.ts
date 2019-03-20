@@ -1,4 +1,5 @@
-import * as mongo from 'mongodb';
+import * as Sequelize from 'sequelize';
+import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import db from '../db/mongodb';
 import isObjectId from '../misc/is-objectid';
@@ -6,33 +7,33 @@ import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
 import { dbLogger } from '../db/logger';
 
-const Notification = db.get<INotification>('notifications');
-Notification.createIndex('notifieeId');
-export default Notification;
-
-export interface INotification {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-
-	/**
-	 * 通知の受信者
-	 */
-	notifiee?: IUser;
+@Table({
+	indexes: [{
+		fields: ['notifieeId']
+	}]
+})
+export class Notification extends Model<Notification> {
+	@AllowNull(false)
+	@Column(Sequelize.DATE)
+	public createdAt: Date;
 
 	/**
 	 * 通知の受信者
 	 */
-	notifieeId: mongo.ObjectID;
+	@Comment('The ID of recipient user of the Notification.')
+	@AllowNull(false)
+	@ForeignKey(() => User)
+	@Column(Sequelize.INTEGER)
+	public notifieeId: number;
 
 	/**
-	 * イニシエータ(initiator)、Origin。通知を行う原因となったユーザー
+	 * 通知の送信者(initiator)
 	 */
-	notifier?: IUser;
-
-	/**
-	 * イニシエータ(initiator)、Origin。通知を行う原因となったユーザー
-	 */
-	notifierId: mongo.ObjectID;
+	@Comment('The ID of sender user of the Notification.')
+	@AllowNull(false)
+	@ForeignKey(() => User)
+	@Column(Sequelize.INTEGER)
+	public notifierId: number;
 
 	/**
 	 * 通知の種類。
@@ -42,14 +43,21 @@ export interface INotification {
 	 * renote - (自分または自分がWatchしている)投稿がRenoteされた
 	 * quote - (自分または自分がWatchしている)投稿が引用Renoteされた
 	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
-	 * poll_vote - (自分または自分がWatchしている)投稿の投票に投票された
+	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
 	 */
-	type: 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'poll_vote';
+	@Comment('The type of the Notification.')
+	@AllowNull(false)
+	@Column(Sequelize.STRING)
+	public type: string;
 
 	/**
 	 * 通知が読まれたかどうか
 	 */
-	isRead: boolean;
+	@Comment('Whether the Notification is read.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isRead: boolean;
 }
 
 export const packMany = (
