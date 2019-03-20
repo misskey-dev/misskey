@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
-import Reaction, { pack } from '../../../../models/note-reaction';
+import NoteReaction, { pack } from '../../../../models/note-reaction';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
@@ -87,7 +87,7 @@ export default define(meta, async (ps, user) => {
 		};
 	}
 
-	const reactions = await Reaction.find(query, {
+	const reactions = await NoteReaction.find(query, {
 		limit: ps.limit,
 		skip: ps.offset,
 		sort: sort
