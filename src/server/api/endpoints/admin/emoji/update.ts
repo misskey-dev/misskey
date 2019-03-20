@@ -2,6 +2,7 @@ import $ from 'cafy';
 import Emoji from '../../../../../models/emoji';
 import define from '../../../define';
 import ID from '../../../../../misc/cafy-id';
+import { detectUrlMine } from '../../../../../misc/detect-url-mine';
 
 export const meta = {
 	desc: {
@@ -39,12 +40,15 @@ export default define(meta, async (ps) => {
 
 	if (emoji == null) throw new Error('emoji not found');
 
+	const type = await detectUrlMine(ps.url);
+
 	await Emoji.update({ _id: emoji._id }, {
 		$set: {
 			updatedAt: new Date(),
 			name: ps.name,
 			aliases: ps.aliases,
-			url: ps.url
+			url: ps.url,
+			type,
 		}
 	});
 
