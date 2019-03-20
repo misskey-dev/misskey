@@ -1,6 +1,6 @@
 import { IUser, isLocalUser, isRemoteUser } from '../../../models/user';
 import Note, { INote } from '../../../models/note';
-import Reaction from '../../../models/note-reaction';
+import NoteReaction from '../../../models/note-reaction';
 import { publishNoteStream } from '../../stream';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
@@ -10,7 +10,7 @@ import { IdentifiableError } from '../../../misc/identifiable-error';
 
 export default async (user: IUser, note: INote) => {
 	// if already unreacted
-	const exist = await Reaction.findOne({
+	const exist = await NoteReaction.findOne({
 		noteId: note._id,
 		userId: user._id,
 		deletedAt: { $exists: false }
@@ -21,7 +21,7 @@ export default async (user: IUser, note: INote) => {
 	}
 
 	// Delete reaction
-	await Reaction.remove({
+	await NoteReaction.remove({
 		_id: exist._id
 	});
 
