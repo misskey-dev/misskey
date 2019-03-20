@@ -1,4 +1,4 @@
-import { Table, Column, Model, AllowNull, BelongsTo, Default, HasMany, BelongsToMany } from 'sequelize-typescript';
+import { Table, Column, Model, AllowNull, BelongsTo, Default, HasMany, BelongsToMany, ForeignKey, Comment } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import isObjectId from '../misc/is-objectid';
@@ -57,6 +57,7 @@ export class Note extends Model<Note> {
 	@Column(Sequelize.STRING)
 	public cw: string | null;
 
+	@Comment('The ID of author.')
 	@AllowNull(false)
 	@ForeignKey(() => User)
 	@Column(Sequelize.INTEGER)
@@ -99,6 +100,7 @@ export class Note extends Model<Note> {
 	@Column({ type: Sequelize.ENUM, values: ['public', 'home', 'followers', 'specified'] })
 	public visibility: 'public' | 'home' | 'followers' | 'specified';
 
+	@Comment('The URI of a note. it will be null when the note is local.')
 	@AllowNull(true)
 	@Column(Sequelize.STRING)
 	public uri: string | null;

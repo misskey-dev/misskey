@@ -1,4 +1,5 @@
-import * as mongo from 'mongodb';
+import * as Sequelize from 'sequelize';
+import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import { pack as packFolder } from './drive-folder';
 import { pack as packUser } from './user';
@@ -7,117 +8,89 @@ import isObjectId from '../misc/is-objectid';
 import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
 import { dbLogger } from '../db/logger';
 
-const DriveFile = monkDb.get<IDriveFile>('driveFiles.files');
-DriveFile.createIndex('md5');
-DriveFile.createIndex('metadata.uri');
-DriveFile.createIndex('metadata.userId');
-DriveFile.createIndex('metadata.folderId');
-DriveFile.createIndex('metadata._user.host');
-export default DriveFile;
+@Table({
+	indexes: [{
+		fields: ['md5', 'uri', 'createdAt', 'userId', 'folderId']
+	}]
+})
+export class DriveFile extends Model<DriveFile> {
+	@AllowNull(false)
+	@Column(Sequelize.DATE)
+	public createdAt: Date;
 
-export const DriveFileChunk = monkDb.get('driveFiles.chunks');
+	@AllowNull(true)
+	@Column(Sequelize.DATE)
+	public deletedAt: Date | null;
 
-export const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
-	const db = await nativeDbConn();
-	const bucket = new mongo.GridFSBucket(db, {
-		bucketName: 'driveFiles'
-	});
-	return bucket;
-};
+	@Comment('The owner ID.')
+	@AllowNull(false)
+	@ForeignKey(() => User)
+	@Column(Sequelize.INTEGER)
+	public userId: number;
 
-export type IMetadata = {
-	properties: any;
-	userId: mongo.ObjectID;
-	_user: any;
-	folderId: mongo.ObjectID;
-	comment: string;
+	@Comment('The MD5 hash of the DriveFile.')
+	@AllowNull(false)
+	@Column(Sequelize.STRING)
+	public md5: string;
 
-	/**
-	 * リモートインスタンスから取得した場合の元URL
-	 */
-	uri?: string;
+	@Comment('The file name of the DriveFile.')
+	@AllowNull(false)
+	@Column(Sequelize.STRING)
+	public name: string;
 
-	/**
-	 * URL for web(生成されている場合) or original
-	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
-	 */
-	url?: string;
+	@Comment('The contentType (MIME) of the DriveFile.')
+	@AllowNull(false)
+	@Column(Sequelize.STRING)
+	public contentType: string;
 
-	/**
-	 * URL for thumbnail (thumbnailがなければなし)
-	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
-	 */
-	thumbnailUrl?: string;
+	@Comment('The file size (bytes) of the DriveFile.')
+	@AllowNull(false)
+	@Column(Sequelize.INTEGER)
+	public size: number;
 
-	/**
-	 * URL for original (web用が生成されてない場合はurlがoriginalを指す)
-	 * * オブジェクトストレージを利用している or リモートサーバーへの直リンクである 場合のみ
-	 */
-	webpublicUrl?: string;
+	@Comment('The comment of the DriveFile.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public comment: string | null;
 
-	accessKey?: string;
+	@Comment('The any properties of the DriveFile. For example, it includes image width/height.')
+	@AllowNull(false)
+	@Default({})
+	@Column(Sequelize.JSONB)
+	public properties: Record<string, any>;
 
-	src?: string;
-	deletedAt?: Date;
+	@Comment('The storage information of the DriveFile.')
+	@AllowNull(false)
+	@Default({})
+	@Column(Sequelize.JSONB)
+	public storage: Record<string, any>;
 
-	/**
-	 * このファイルの中身データがMongoDB内に保存されていないか否か
-	 * オブジェクトストレージを利用している or リモートサーバーへの直リンクである
-	 * な場合は true になります
-	 */
-	withoutChunks?: boolean;
+	@Comment('The URI of the DriveFile. it will be null when the DriveFile is local.')
+	@AllowNull(true)
+	@Column(Sequelize.STRING)
+	public uri: string | null;
 
-	storage?: string;
+	@Comment('The parent folder ID. If null, it means the DriveFile is located in root.')
+	@AllowNull(true)
+	@ForeignKey(() => DriveFolder)
+	@Column(Sequelize.INTEGER)
+	public folderId: number | null;
 
-	/***
-	 * ObjectStorage の格納先の情報
-	 */
-	storageProps?: IStorageProps;
-	isSensitive?: boolean;
-
-	/**
-	 * このファイルが添付された投稿のID一覧
-	 */
-	attachedNoteIds?: mongo.ObjectID[];
+	@Comment('Whether the DriveFile is NSFW.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isSensitive: boolean;
 
 	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か
 	 */
-	isRemote?: boolean;
-};
-
-export type IStorageProps = {
-	/**
-	 * ObjectStorage key for original
-	 */
-	key: string;
-
-	/***
-	 * ObjectStorage key for thumbnail (thumbnailがなければなし)
-	 */
-	thumbnailKey?: string;
-
-	/***
-	 * ObjectStorage key for webpublic (webpublicがなければなし)
-	 */
-	webpublicKey?: string;
-
-	id?: string;
-};
-
-export type IDriveFile = {
-	_id: mongo.ObjectID;
-	uploadDate: Date;
-	md5: string;
-	filename: string;
-	contentType: string;
-	metadata: IMetadata;
-
-	/**
-	 * ファイルサイズ
-	 */
-	length: number;
-};
+	@Comment('Whether the DriveFile is direct link to remote server.')
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public isRemote: boolean;
+}
 
 export function validateFileName(name: string): boolean {
 	return (
