@@ -1,5 +1,5 @@
 <template>
-<x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked">
+<x-column :menu="menu" :name="name" :column="column" :is-stacked="isStacked" :columnNumber="columnNumber">
 	<template #header>
 		<fa v-if="column.type == 'home'" icon="home"/>
 		<fa v-if="column.type == 'local'" :icon="['far', 'comments']"/>
@@ -57,7 +57,12 @@ export default Vue.extend({
 		isStacked: {
 			type: Boolean,
 			required: true
+		},
+		columnNumber: {
+			type: Number,
+			required: true
 		}
+		
 	},
 
 	data() {

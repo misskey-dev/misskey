@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import Menu from '../../../common/views/components/menu.vue';
+import Menu from '../components/menu.vue';
 import { countIf } from '../../../../../prelude/array';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
@@ -64,6 +64,10 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		columnNumber: {
+			type: Number,
+			required: true
 		}
 	},
 
@@ -206,19 +210,19 @@ export default Vue.extend({
 				action: () => {
 					this.$store.commit('device/swapDownDeckColumn', this.column.id);
 				}
-			} : undefined, null, {
+			} : undefined, null, this.columnNumber > 0 ? {
 				icon: ['far', 'window-restore'],
 				text: this.$t('stack-left'),
 				action: () => {
 					this.$store.commit('device/stackLeftDeckColumn', this.column.id);
 				}
-			}, this.isStacked ? {
+			} : undefined, this.isStacked ? {
 				icon: faWindowMaximize,
 				text: this.$t('pop-right'),
 				action: () => {
 					this.$store.commit('device/popRightDeckColumn', this.column.id);
 				}
-			} : undefined, null, {
+			} : undefined, this.columnNumber > 0 || this.isStacked ? null : undefined, {
 				icon: ['far', 'trash-alt'],
 				text: this.$t('remove'),
 				action: () => {
