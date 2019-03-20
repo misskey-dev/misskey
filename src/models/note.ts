@@ -1,4 +1,4 @@
-import { Table, Column, Model, AllowNull, BelongsTo, Default, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, AllowNull, BelongsTo, Default, HasMany, BelongsToMany } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import isObjectId from '../misc/is-objectid';
@@ -23,65 +23,71 @@ import * as Sequelize from 'sequelize';
 	}]
 })
 export class Note extends Model<Note> {
-	@Column
 	@AllowNull(false)
+	@Column(Sequelize.DATE)
 	public createdAt: Date;
 
-	@Column
 	@AllowNull(true)
+	@Column(Sequelize.DATE)
 	public deletedAt: Date | null;
 
-	@Column
 	@AllowNull(true)
+	@Column(Sequelize.DATE)
 	public updatedAt: Date | null;
 
-	@BelongsTo(() => Note)
 	@AllowNull(true)
-	public reply: Note | null;
+	@ForeignKey(() => Note)
+	@Column(Sequelize.INTEGER)
+	public replyId: number | null;
 
-	@BelongsTo(() => Note)
 	@AllowNull(true)
-	public renote: Note | null;
+	@ForeignKey(() => Note)
+	@Column(Sequelize.INTEGER)
+	public renoteId: number | null;
 
+	@AllowNull(true)
 	@Column(Sequelize.TEXT)
-	@AllowNull(true)
 	public text: string | null;
 
-	@Column
 	@AllowNull(true)
+	@Column(Sequelize.STRING)
 	public name: string | null;
 
-	@Column
 	@AllowNull(true)
+	@Column(Sequelize.STRING)
 	public cw: string | null;
 
-	@BelongsTo(() => User)
 	@AllowNull(false)
+	@ForeignKey(() => User)
+	@Column(Sequelize.INTEGER)
+	public userId: number;
+
+	@BelongsTo(() => User)
 	public user: User;
 
-	@Column
 	@AllowNull(false)
 	@Default(false)
+	@Column(Sequelize.BOOLEAN)
 	public viaMobile: boolean;
 
-	@Column
 	@AllowNull(false)
 	@Default(false)
+	@Column(Sequelize.BOOLEAN)
 	public localOnly: boolean;
 
-	@Column
 	@AllowNull(false)
 	@Default(0)
+	@Column(Sequelize.INTEGER)
 	public renoteCount: number;
 
-	@Column
 	@AllowNull(false)
 	@Default(0)
+	@Column(Sequelize.INTEGER)
 	public repliesCount: number;
 
-	@Column(Sequelize.JSONB)
 	@AllowNull(false)
 	@Default({})
+	@Column(Sequelize.JSONB)
 	public reactionCounts: Record<string, number>;
 
 	/**
@@ -91,19 +97,19 @@ export class Note extends Model<Note> {
 	 * specified ... visibleUserIds で指定したユーザーのみ
 	 */
 	@Column({ type: Sequelize.ENUM, values: ['public', 'home', 'followers', 'specified'] })
-	public action: 'public' | 'home' | 'followers' | 'specified';
+	public visibility: 'public' | 'home' | 'followers' | 'specified';
 
-	@Column
 	@AllowNull(true)
+	@Column(Sequelize.STRING)
 	public uri: string | null;
 
-	@Column
 	@AllowNull(false)
 	@Default(0)
+	@Column(Sequelize.INTEGER)
 	public score: number;
-
-	@HasMany(() => DriveFile)
-	public files: DriveFile[];
+/*
+	@BelongsToMany(() => DriveFile, () => NoteDriveFileAttaching)
+	public files: DriveFile[];*/
 }
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
