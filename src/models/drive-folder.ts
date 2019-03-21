@@ -1,17 +1,45 @@
 import * as deepcopy from 'deepcopy';
-import DriveFile from './drive-file';
+import { JoinColumn, ManyToOne, Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
+import { User } from './user';
 
-const DriveFolder = db.get<IDriveFolder>('driveFolders');
-DriveFolder.createIndex('userId');
-export default DriveFolder;
+@Entity()
+export class DriveFolder {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export type IDriveFolder = {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	name: string;
-	userId: mongo.ObjectID;
-	parentId: mongo.ObjectID;
-};
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the DriveFolder.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 24, nullable: true,
+		comment: 'The owner ID.'
+	})
+	public userId: string | null;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column({
+		type: 'integer', nullable: true,
+		comment: 'The parent folder ID. If null, it means the DriveFolder is located in root.'
+	})
+	public parentId: number | null;
+
+	@ManyToOne(type => DriveFolder, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public parent: DriveFolder | null;
+}
 
 export function isValidFolderName(name: string): boolean {
 	return (
