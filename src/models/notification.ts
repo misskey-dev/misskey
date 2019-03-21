@@ -1,8 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
 import { IUser, pack as packUser } from './user';
 import { pack as packNote } from './note';
 import { dbLogger } from '../db/logger';
@@ -58,6 +56,16 @@ export class Notification extends Model<Notification> {
 	@Default(false)
 	@Column(Sequelize.BOOLEAN)
 	public isRead: boolean;
+
+	/**
+	 * 通知の追加データ
+	 * 通知の種類ごとに異なり、例えばリアクションの通知ならリアクションの種類が入るなど
+	 */
+	@Comment('The additional information of the Notification.')
+	@AllowNull(false)
+	@Default({})
+	@Column(Sequelize.JSONB)
+	public data: Record<string, any>;
 }
 
 export const packMany = (

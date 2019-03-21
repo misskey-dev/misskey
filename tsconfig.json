@@ -16,6 +16,7 @@
     "strict": true,
     "strictNullChecks": false,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "typeRoots": [
       "node_modules/@types",

@@ -1,5 +1,4 @@
-import * as Sequelize from 'sequelize';
-import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import { packMany as packNoteMany } from './note';
@@ -33,302 +32,207 @@ import { dbLogger } from '../db/logger';
 		fields: ['host']
 	}]
 })
-export class User extends Model<User> {
-	@Comment('The ID of the User.')
-	@AllowNull(false)
-	@Column(Sequelize.STRING(24))
+
+@Entity()
+@Index(['usernameLower', 'host'], { unique: true })
+export class User {
+	@Column({
+		type: 'char', length: 24, unique: true, primary: true,
+		comment: 'The ID of the User.'
+	})
 	public id: string;
 
-	@AllowNull(false)
-	@Column(Sequelize.DATE)
+	@Column({
+		type: 'date',
+		comment: 'The created date of the User.'
+	})
 	public createdAt: Date;
 
-	@AllowNull(true)
-	@Column(Sequelize.DATE)
+	@Column({
+		type: 'date', nullable: true,
+		comment: 'The updated date of the User.'
+	})
 	public updatedAt: Date | null;
 
-	@Comment('The username of the User.')
-	@AllowNull(false)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128,
+		comment: 'The username of the User.'
+	})
 	public username: string;
 
-	@Comment('The username (lowercased) of the User.')
-	@AllowNull(false)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128,
+		comment: 'The username (lowercased) of the User.'
+	})
 	public usernameLower: string;
 
-	@Comment('The name of the User.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128, nullable: true,
+		comment: 'The name of the User.'
+	})
 	public name: string | null;
 
-	@Comment('The location of the User.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128, nullable: true,
+		comment: 'The location of the User.'
+	})
 	public location: string | null;
 
-	@Comment('The birthday (YYYY-MM-DD) of the User.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'char', length: 10, nullable: true,
+		comment: 'The birthday (YYYY-MM-DD) of the User.'
+	})
 	public birthday: string | null;
 
-	@Comment('The count of followers.')
-	@AllowNull(false)
-	@Default(0)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'integer', default: 0,
+		comment: 'The count of followers.'
+	})
 	public followersCount: number;
 
-	@Comment('The count of following.')
-	@AllowNull(false)
-	@Default(0)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'integer', default: 0,
+		comment: 'The count of following.'
+	})
 	public followingCount: number;
 
-	@Comment('The count of notes.')
-	@AllowNull(false)
-	@Default(0)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'integer', default: 0,
+		comment: 'The count of notes.'
+	})
 	public notesCount: number;
 
-	@Comment('The ID of avatar DriveFile.')
-	@AllowNull(true)
-	@ForeignKey(() => DriveFile)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'integer', nullable: true,
+		comment: 'The ID of avatar DriveFile.'
+	})
 	public avatarId: number | null;
 
-	@Comment('The ID of banner DriveFile.')
-	@AllowNull(true)
-	@ForeignKey(() => DriveFile)
-	@Column(Sequelize.INTEGER)
+	@OneToOne(type => DriveFile, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public avatar: DriveFile | null;
+
+	@Column({
+		type: 'integer', nullable: true,
+		comment: 'The ID of banner DriveFile.'
+	})
 	public bannerId: number | null;
 
-	@Comment('The description (bio) of the User.')
-	@AllowNull(true)
-	@Column(Sequelize.TEXT)
+	@OneToOne(type => DriveFile, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public banner: DriveFile | null;
+
+	@Column({
+		type: 'varchar', length: 1024, nullable: true,
+		comment: 'The description (bio) of the User.'
+	})
 	public description: string | null;
 
-	@Comment('The email address of the User.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128, nullable: true,
+		comment: 'The email address of the User.'
+	})
 	public email: string | null;
 
-	@Comment('Whether the User is suspended.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+		comment: 'Whether the User is suspended.'
+	})
 	public isSuspended: boolean;
 
-	@Comment('Whether the User is silenced.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+		comment: 'Whether the User is silenced.'
+	})
 	public isSilenced: boolean;
 
-	@Comment('Whether the User is locked.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+		comment: 'Whether the User is locked.'
+	})
 	public isLocked: boolean;
 
-	@Comment('Whether the User is a bot.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+		comment: 'Whether the User is a bot.'
+	})
 	public isBot: boolean;
 
-	@Comment('Whether the User is a cat.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+		comment: 'Whether the User is a cat.'
+	})
 	public isCat: boolean;
 
-	@Comment('Whether the User is the admin.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+		comment: 'Whether the User is the admin.'
+	})
 	public isAdmin: boolean;
 
-	@Comment('Whether the User is a moderator.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+		comment: 'Whether the User is a moderator.'
+	})
 	public isModerator: boolean;
 
-	@Comment('The host of the User. It will be null if the origin of the user is local.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128, nullable: true,
+		comment: 'The host of the User. It will be null if the origin of the user is local.'
+	})
 	public host: string | null;
 
-	@Comment('The password hash of the User. It will be null if the origin of the user is local.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128, nullable: true,
+		comment: 'The password hash of the User. It will be null if the origin of the user is local.'
+	})
 	public password: string | null;
 
-	@Comment('The native access token of the User. It will be null if the origin of the user is local.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 32, nullable: true,
+		comment: 'The native access token of the User. It will be null if the origin of the user is local.'
+	})
 	public token: string | null;
 
-	@Comment('The keypair of the User. It will be null if the origin of the user is local.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 256, nullable: true,
+		comment: 'The keypair of the User. It will be null if the origin of the user is local.'
+	})
 	public keypair: string | null;
 
-	@Comment('The client-specific data of the User.')
-	@AllowNull(false)
-	@Default({})
-	@Column(Sequelize.JSONB)
+	@Column({
+		type: 'jsonb', nullable: false, default: {},
+		comment: 'The client-specific data of the User.'
+	})
 	public clientData: Record<string, any>;
 
-	@Comment('The external service links of the User.')
-	@AllowNull(false)
-	@Default({})
-	@Column(Sequelize.JSONB)
+	@Column({
+		type: 'jsonb', nullable: false, default: {},
+		comment: 'The external service links of the User.'
+	})
 	public services: Record<string, any>;
 
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+	})
 	public autoWatch: boolean;
 
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', nullable: false, default: false,
+	})
 	public autoAcceptFollowed: boolean;
 }
 
-type IUserBase = {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	updatedAt?: Date;
-	deletedAt?: Date;
-	followersCount: number;
-	followingCount: number;
-	name?: string;
-	notesCount: number;
-	username: string;
-	usernameLower: string;
-	avatarId: mongo.ObjectID;
-	bannerId: mongo.ObjectID;
-	avatarUrl?: string;
-	bannerUrl?: string;
-	avatarColor?: any;
-	bannerColor?: any;
-	wallpaperId: mongo.ObjectID;
-	wallpaperUrl?: string;
-	data: any;
-	description: string;
-	lang?: string;
-	pinnedNoteIds: mongo.ObjectID[];
-	emojis?: string[];
-	tags?: string[];
-
-	isDeleted: boolean;
-
-	/**
-	 * 凍結されているか否か
-	 */
-	isSuspended: boolean;
-
-	/**
-	 * サイレンスされているか否か
-	 */
-	isSilenced: boolean;
-
-	/**
-	 * 鍵アカウントか否か
-	 */
-	isLocked: boolean;
-
-	/**
-	 * Botか否か
-	 */
-	isBot: boolean;
-
-	/**
-	 * Botからのフォローを承認制にするか
-	 */
-	carefulBot: boolean;
-
-	/**
-	 * フォローしているユーザーからのフォローリクエストを自動承認するか
-	 */
-	autoAcceptFollowed: boolean;
-
-	/**
-	 * このアカウントに届いているフォローリクエストの数
-	 */
-	pendingReceivedFollowRequestsCount: number;
-
-	host: string;
-};
-
-export interface ILocalUser extends IUserBase {
+export interface ILocalUser extends User {
 	host: null;
-	keypair: string;
-	email: string;
-	emailVerified?: boolean;
-	emailVerifyCode?: string;
-	password: string;
-	token: string;
-	twitter: {
-		accessToken: string;
-		accessTokenSecret: string;
-		userId: string;
-		screenName: string;
-	};
-	github: {
-		accessToken: string;
-		id: string;
-		login: string;
-	};
-	discord: {
-		accessToken: string;
-		refreshToken: string;
-		expiresDate: number;
-		id: string;
-		username: string;
-		discriminator: string;
-	};
-	profile: {
-		location: string;
-		birthday: string; // 'YYYY-MM-DD'
-		tags: string[];
-	};
-	fields?: {
-		name: string;
-		value: string;
-	}[];
-	isCat: boolean;
-	isAdmin?: boolean;
-	isModerator?: boolean;
-	isVerified?: boolean;
-	twoFactorSecret: string;
-	twoFactorEnabled: boolean;
-	twoFactorTempSecret?: string;
-	clientSettings: any;
-	settings: {
-		autoWatch: boolean;
-		alwaysMarkNsfw?: boolean;
-	};
-	hasUnreadNotification: boolean;
-	hasUnreadMessagingMessage: boolean;
 }
 
-export interface IRemoteUser extends IUserBase {
-	inbox: string;
-	sharedInbox?: string;
-	featured?: string;
-	endpoints: string[];
-	uri: string;
-	url?: string;
-	publicKey: {
-		id: string;
-		publicKeyPem: string;
-	};
-	lastFetchedAt: Date;
-	isAdmin: false;
-	isModerator: false;
+export interface IRemoteUser extends User {
+	host: string;
 }
 
 export type IUser = ILocalUser | IRemoteUser;
