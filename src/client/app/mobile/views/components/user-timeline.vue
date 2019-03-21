@@ -21,13 +21,13 @@ export default Vue.extend({
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				withFiles: this.withMedia,
-				untilId: cursor ? cursor : undefined
+				untilDate: cursor ? cursor : new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();
 					return {
 						notes: notes,
-						cursor: notes[notes.length - 1].id
+						cursor: new Date(notes[notes.length - 1].createdAt).getTime()
 					};
 				} else {
 					return {
