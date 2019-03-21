@@ -5,6 +5,7 @@ import { Log } from '../models/log';
 import { User } from '../models/user';
 import { DriveFile } from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
+import { AccessToken } from '../models/access-token';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -45,6 +46,12 @@ export function initPostgre() {
 		synchronize: true,
 		logging: !['production', 'test'].includes(process.env.NODE_ENV),
 		logger: new MyCustomLogger(),
-		entities: [Log, User, DriveFile, DriveFolder]
+		entities: [
+			Log,
+			User,
+			DriveFile,
+			DriveFolder,
+			AccessToken,
+		]
 	});
 }

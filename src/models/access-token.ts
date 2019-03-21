@@ -1,13 +1,48 @@
-const AccessToken = db.get<IAccessToken>('accessTokens');
-AccessToken.createIndex('token');
-AccessToken.createIndex('hash');
-export default AccessToken;
+import { Entity, PrimaryGeneratedColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './user';
 
-export type IAccessToken = {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	appId: mongo.ObjectID;
-	userId: mongo.ObjectID;
-	token: string;
-	hash: string;
-};
+@Entity()
+export class AccessToken {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Column({
+		type: 'date',
+		comment: 'The created date of the AccessToken.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 128
+	})
+	public token: string;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 128
+	})
+	public hash: string;
+
+	@Column({
+		type: 'varchar', length: 24,
+	})
+	public userId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Column({
+		type: 'integer',
+	})
+	public appId: string;
+
+	@ManyToOne(type => App, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public app: App | null;
+}
