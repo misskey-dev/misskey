@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from './';
-import Note, { INote } from '../../models/note';
-import { IUser } from '../../models/user';
-import { SchemaType } from '../../misc/schema';
+import Chart, { Obj } from '../core';
+import Note, { INote } from '../../../models/note';
+import { IUser } from '../../../models/user';
+import { SchemaType } from '../../../misc/schema';
 
 export const perUserNotesLogSchema = {
 	type: 'object' as 'object',

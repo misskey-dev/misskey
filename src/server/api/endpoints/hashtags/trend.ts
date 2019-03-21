@@ -40,10 +40,10 @@ export default define(meta, async () => {
 		$unwind: '$tagsLower'
 	}, {
 		$group: {
-			_id: { tag: '$tagsLower', userId: '$userId' }
+			id: { tag: '$tagsLower', userId: '$userId' }
 		}
 	}]) as {
-		_id: {
+		id: {
 			tag: string;
 			userId: any;
 		}

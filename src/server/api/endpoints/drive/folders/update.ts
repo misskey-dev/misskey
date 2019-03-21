@@ -72,7 +72,7 @@ export default define(meta, async (ps, user) => {
 	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: ps.folderId,
+			id: ps.folderId,
 			userId: user.id
 		});
 
@@ -89,7 +89,7 @@ export default define(meta, async (ps, user) => {
 			// Get parent folder
 			const parent = await DriveFolder
 				.findOne({
-					_id: ps.parentId,
+					id: ps.parentId,
 					userId: user.id
 				});
 
@@ -101,9 +101,9 @@ export default define(meta, async (ps, user) => {
 			async function checkCircle(folderId: any): Promise<boolean> {
 				// Fetch folder
 				const folder2 = await DriveFolder.findOne({
-					_id: folderId
+					id: folderId
 				}, {
-					_id: true,
+					id: true,
 					parentId: true
 				});
 

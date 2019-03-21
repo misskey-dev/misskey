@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import networkChart from '../../../../services/chart/network';
+import networkChart from '../../../../services/chart/charts/network';
 
 export const meta = {
 	stability: 'stable',

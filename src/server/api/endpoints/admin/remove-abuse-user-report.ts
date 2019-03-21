@@ -19,7 +19,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const report = await AbuseUserReport.findOne({
-		_id: ps.reportId
+		id: ps.reportId
 	});
 
 	if (report == null) {
@@ -27,7 +27,7 @@ export default define(meta, async (ps) => {
 	}
 
 	await AbuseUserReport.remove({
-		_id: report.id
+		id: report.id
 	});
 
 	return;

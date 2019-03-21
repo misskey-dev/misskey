@@ -8,7 +8,7 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
-import perUserReactionsChart from '../../../services/chart/per-user-reactions';
+import perUserReactionsChart from '../../chart/charts/per-user-reactions';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
 import fetchMeta from '../../../misc/fetch-meta';

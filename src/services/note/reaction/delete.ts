@@ -22,7 +22,7 @@ export default async (user: IUser, note: INote) => {
 
 	// Delete reaction
 	await NoteReaction.remove({
-		_id: exist.id
+		id: exist.id
 	});
 
 	const dec: any = {};

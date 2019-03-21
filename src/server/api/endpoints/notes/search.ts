@@ -77,12 +77,12 @@ export default define(meta, async (ps, me) => {
 
 	// Fetch found notes
 	const notes = await Note.find({
-		_id: {
+		id: {
 			$in: hits
 		}
 	}, {
 		sort: {
-			_id: -1
+			id: -1
 		}
 	});
 

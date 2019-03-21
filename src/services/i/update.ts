@@ -7,7 +7,7 @@ import { deliver } from '../../queue';
 
 export async function publishToFollowers(userId: mongo.ObjectID) {
 	const user = await Users.findOne({
-		_id: userId
+		id: userId
 	});
 
 	const followers = await Following.find({

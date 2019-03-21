@@ -15,7 +15,7 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user.id.toString())
+		id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	const lists = await UserList.find({
@@ -36,7 +36,7 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 
 	for (const list of lists) {
 		const users = await Users.find({
-			_id: { $in: list.userIds }
+			id: { $in: list.userIds }
 		}, {
 			fields: {
 				username: true,

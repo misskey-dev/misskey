@@ -91,7 +91,7 @@ export default define(meta, async (ps, user) => {
 	let file = null;
 	if (ps.fileId != null) {
 		file = await DriveFile.findOne({
-			_id: ps.fileId,
+			id: ps.fileId,
 			'metadata.userId': user.id
 		});
 

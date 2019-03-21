@@ -50,7 +50,7 @@ export default define(meta, async (ps, user) => {
 	// Get folder
 	const folder = await DriveFolder
 		.findOne({
-			_id: ps.folderId,
+			id: ps.folderId,
 			userId: user.id
 		});
 

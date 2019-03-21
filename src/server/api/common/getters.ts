@@ -7,7 +7,7 @@ import { IdentifiableError } from '../../../misc/identifiable-error';
  */
 export async function getNote(noteId: mongo.ObjectID) {
 	const note = await Note.findOne({
-		_id: noteId,
+		id: noteId,
 		deletedAt: { $exists: false }
 	});
 
@@ -23,7 +23,7 @@ export async function getNote(noteId: mongo.ObjectID) {
  */
 export async function getUser(userId: mongo.ObjectID) {
 	const user = await Users.findOne({
-		_id: userId,
+		id: userId,
 		$or: [{
 			isDeleted: { $exists: false }
 		}, {

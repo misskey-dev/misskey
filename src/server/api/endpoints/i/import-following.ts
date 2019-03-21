@@ -50,7 +50,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const file = await DriveFile.findOne({
-		_id: ps.fileId
+		id: ps.fileId
 	});
 
 	if (file == null) throw new ApiError(meta.errors.noSuchFile);

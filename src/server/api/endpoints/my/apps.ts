@@ -35,7 +35,7 @@ export default define(meta, async (ps, user) => {
 			limit: ps.limit,
 			skip: ps.offset,
 			sort: {
-				_id: -1
+				id: -1
 			}
 		});
 

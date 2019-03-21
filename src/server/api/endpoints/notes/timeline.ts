@@ -4,7 +4,7 @@ import Note from '../../../../models/note';
 import { getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
 import define from '../../define';
-import activeUsersChart from '../../../../services/chart/active-users';
+import activeUsersChart from '../../../../services/chart/charts/active-users';
 import { getHideUserIds } from '../../common/get-hide-users';
 
 export const meta = {
@@ -116,7 +116,7 @@ export default define(meta, async (ps, user) => {
 
 	//#region Construct query
 	const sort = {
-		_id: -1
+		id: -1
 	};
 
 	const followQuery = followings.map(f => ({

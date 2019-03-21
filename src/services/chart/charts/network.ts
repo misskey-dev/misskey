@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Partial } from './';
+import Chart, { Partial } from '../core';
 
 /**
  * ネットワークに関するチャート

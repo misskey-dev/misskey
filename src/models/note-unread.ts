@@ -5,7 +5,7 @@ NoteUnread.createIndex(['userId', 'noteId'], { unique: true });
 export default NoteUnread;
 
 export interface INoteUnread {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	noteId: mongo.ObjectID;
 	userId: mongo.ObjectID;
 	isSpecified: boolean;

@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from './';
-import DriveFile, { IDriveFile } from '../../models/drive-file';
-import { isLocalUser } from '../../models/user';
-import { SchemaType } from '../../misc/schema';
+import Chart, { Obj } from '../core';
+import DriveFile, { IDriveFile } from '../../../models/drive-file';
+import { isLocalUser } from '../../../models/user';
+import { SchemaType } from '../../../misc/schema';
 
 const logSchema = {
 	/**
@@ -89,7 +89,7 @@ class DriveChart extends Chart<DriveLog> {
 				}
 			}, {
 				$group: {
-					_id: null,
+					id: null,
 					usage: { $sum: '$length' }
 				}
 			}])

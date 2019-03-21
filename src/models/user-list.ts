@@ -4,7 +4,7 @@ const UserList = db.get<IUserList>('userList');
 export default UserList;
 
 export interface IUserList {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	title: string;
 	userId: mongo.ObjectID;
@@ -18,11 +18,11 @@ export const pack = (
 
 	if (isObjectId(userList)) {
 		_userList = await UserList.findOne({
-			_id: userList
+			id: userList
 		});
 	} else if (typeof userList === 'string') {
 		_userList = await UserList.findOne({
-			_id: new mongo.ObjectID(userList)
+			id: new mongo.ObjectID(userList)
 		});
 	} else {
 		_userList = deepcopy(userList);

@@ -8,7 +8,7 @@ Blocking.createIndex(['blockerId', 'blockeeId'], { unique: true });
 export default Blocking;
 
 export type IBlocking = {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	blockeeId: mongo.ObjectID;
 	blockerId: mongo.ObjectID;
@@ -30,11 +30,11 @@ export const pack = (
 	// Populate the blocking if 'blocking' is ID
 	if (isObjectId(blocking)) {
 		_blocking = await Blocking.findOne({
-			_id: blocking
+			id: blocking
 		});
 	} else if (typeof blocking === 'string') {
 		_blocking = await Blocking.findOne({
-			_id: new mongo.ObjectID(blocking)
+			id: new mongo.ObjectID(blocking)
 		});
 	} else {
 		_blocking = deepcopy(blocking);

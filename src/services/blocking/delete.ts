@@ -20,7 +20,7 @@ export default async function(blocker: IUser, blockee: IUser) {
 	}
 
 	Blocking.remove({
-		_id: blocking.id
+		id: blocking.id
 	});
 
 	// deliver if remote bloking

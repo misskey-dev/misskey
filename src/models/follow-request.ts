@@ -8,7 +8,7 @@ FollowRequest.createIndex(['followerId', 'followeeId'], { unique: true });
 export default FollowRequest;
 
 export type IFollowRequest = {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	followeeId: mongo.ObjectID;
 	followerId: mongo.ObjectID;
@@ -39,11 +39,11 @@ export const pack = (
 	// Populate the request if 'request' is ID
 	if (isObjectId(request)) {
 		_request = await FollowRequest.findOne({
-			_id: request
+			id: request
 		});
 	} else if (typeof request === 'string') {
 		_request = await FollowRequest.findOne({
-			_id: new mongo.ObjectID(request)
+			id: new mongo.ObjectID(request)
 		});
 	} else {
 		_request = deepcopy(request);

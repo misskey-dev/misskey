@@ -59,11 +59,11 @@ export const pack = (
 	// Populate the reaction if 'reaction' is ID
 	if (isObjectId(reaction)) {
 		_reaction = await NoteReaction.findOne({
-			_id: reaction
+			id: reaction
 		});
 	} else if (typeof reaction === 'string') {
 		_reaction = await NoteReaction.findOne({
-			_id: new mongo.ObjectID(reaction)
+			id: new mongo.ObjectID(reaction)
 		});
 	} else {
 		_reaction = deepcopy(reaction);

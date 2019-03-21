@@ -8,7 +8,7 @@ Mute.createIndex(['muterId', 'muteeId'], { unique: true });
 export default Mute;
 
 export interface IMute {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	muterId: mongo.ObjectID;
 	muteeId: mongo.ObjectID;
@@ -30,11 +30,11 @@ export const pack = (
 	// Populate the mute if 'mute' is ID
 	if (isObjectId(mute)) {
 		_mute = await Mute.findOne({
-			_id: mute
+			id: mute
 		});
 	} else if (typeof mute === 'string') {
 		_mute = await Mute.findOne({
-			_id: new mongo.ObjectID(mute)
+			id: new mongo.ObjectID(mute)
 		});
 	} else {
 		_mute = deepcopy(mute);

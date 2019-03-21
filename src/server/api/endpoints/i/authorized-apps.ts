@@ -35,7 +35,7 @@ export default define(meta, async (ps, user) => {
 			limit: ps.limit,
 			skip: ps.offset,
 			sort: {
-				_id: ps.sort == 'asc' ? 1 : -1
+				id: ps.sort == 'asc' ? 1 : -1
 			}
 		});
 

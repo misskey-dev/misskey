@@ -18,7 +18,7 @@ export default async (actor: IRemoteUser, activity: IBlock): Promise<void> => {
 	}
 
 	const blockee = await Users.findOne({
-		_id: new mongo.ObjectID(id.split('/').pop())
+		id: new mongo.ObjectID(id.split('/').pop())
 	});
 
 	if (blockee === null) {

@@ -17,7 +17,7 @@ export type IMetadata = {
 };
 
 export type IDriveFileWebpublic = {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	uploadDate: Date;
 	md5: string;
 	filename: string;

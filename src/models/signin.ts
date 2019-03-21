@@ -4,7 +4,7 @@ const Signin = db.get<ISignin>('signin');
 export default Signin;
 
 export interface ISignin {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	userId: mongo.ObjectID;
 	ip: string;

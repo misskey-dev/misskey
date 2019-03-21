@@ -19,12 +19,12 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	if (note.replyId) {
 		inReplyToNote = await Note.findOne({
-			_id: note.replyId,
+			id: note.replyId,
 		});
 
 		if (inReplyToNote !== null) {
 			const inReplyToUser = await Users.findOne({
-				_id: inReplyToNote.userId,
+				id: inReplyToNote.userId,
 			});
 
 			if (inReplyToUser !== null) {
@@ -47,7 +47,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 
 	if (note.renoteId) {
 		const renote = await Note.findOne({
-			_id: note.renoteId,
+			id: note.renoteId,
 		});
 
 		if (renote) {
@@ -56,7 +56,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	}
 
 	const user = await Users.findOne({
-		_id: note.userId
+		id: note.userId
 	});
 
 	const attributedTo = `${config.url}/users/${user.id}`;
@@ -82,7 +82,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	}
 
 	const mentionedUsers = note.mentions ? await Users.find({
-		_id: {
+		id: {
 			$in: note.mentions
 		}
 	}) : [];

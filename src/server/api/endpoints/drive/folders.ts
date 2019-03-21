@@ -48,7 +48,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const sort = {
-		_id: -1
+		id: -1
 	};
 	const query = {
 		userId: user.id,

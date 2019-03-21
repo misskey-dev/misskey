@@ -2,7 +2,7 @@ import * as Bull from 'bull';
 import request from '../../remote/activitypub/request';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
-import instanceChart from '../../services/chart/instance';
+import instanceChart from '../../services/chart/charts/instance';
 import Logger from '../../services/logger';
 
 const logger = new Logger('deliver');

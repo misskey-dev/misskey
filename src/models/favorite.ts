@@ -61,11 +61,11 @@ export const pack = (
 	// Populate the favorite if 'favorite' is ID
 	if (isObjectId(favorite)) {
 		_favorite = await Favorite.findOne({
-			_id: favorite
+			id: favorite
 		});
 	} else if (typeof favorite === 'string') {
 		_favorite = await Favorite.findOne({
-			_id: new mongo.ObjectID(favorite)
+			id: new mongo.ObjectID(favorite)
 		});
 	} else {
 		_favorite = deepcopy(favorite);

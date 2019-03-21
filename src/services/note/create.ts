@@ -21,10 +21,10 @@ import Meta from '../../models/meta';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
 import isQuote from '../../misc/is-quote';
-import notesChart from '../../services/chart/notes';
-import perUserNotesChart from '../../services/chart/per-user-notes';
-import activeUsersChart from '../../services/chart/active-users';
-import instanceChart from '../../services/chart/instance';
+import notesChart from '../chart/charts/notes';
+import perUserNotesChart from '../chart/charts/per-user-notes';
+import activeUsersChart from '../chart/charts/active-users';
+import instanceChart from '../chart/charts/instance';
 import * as deepcopy from 'deepcopy';
 
 import { erase, concat } from '../../prelude/array';

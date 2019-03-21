@@ -5,7 +5,7 @@ const ReversiGame = db.get<IReversiGame>('reversiGames');
 export default ReversiGame;
 
 export interface IReversiGame {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	startedAt: Date;
 	user1Id: mongo.ObjectID;
@@ -62,11 +62,11 @@ export const pack = (
 	// Populate the game if 'game' is ID
 	if (isObjectId(game)) {
 		_game = await ReversiGame.findOne({
-			_id: game
+			id: game
 		});
 	} else if (typeof game === 'string') {
 		_game = await ReversiGame.findOne({
-			_id: new mongo.ObjectID(game)
+			id: new mongo.ObjectID(game)
 		});
 	} else {
 		_game = deepcopy(game);

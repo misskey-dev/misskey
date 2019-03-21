@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from './';
-import DriveFile, { IDriveFile } from '../../models/drive-file';
-import { SchemaType } from '../../misc/schema';
+import Chart, { Obj } from '../core';
+import DriveFile, { IDriveFile } from '../../../models/drive-file';
+import { SchemaType } from '../../../misc/schema';
 
 export const perUserDriveLogSchema = {
 	type: 'object' as 'object',
@@ -77,7 +77,7 @@ class PerUserDriveChart extends Chart<PerUserDriveLog> {
 				}
 			}, {
 				$group: {
-					_id: null,
+					id: null,
 					usage: { $sum: '$length' }
 				}
 			}])

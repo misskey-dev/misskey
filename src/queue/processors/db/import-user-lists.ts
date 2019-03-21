@@ -17,11 +17,11 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user.id.toString())
+		id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	const file = await DriveFile.findOne({
-		_id: new mongo.ObjectID(job.data.fileId.toString())
+		id: new mongo.ObjectID(job.data.fileId.toString())
 	});
 
 	const url = getOriginalUrl(file);

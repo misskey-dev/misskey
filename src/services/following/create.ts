@@ -9,10 +9,10 @@ import renderAccept from '../../remote/activitypub/renderer/accept';
 import renderReject from '../../remote/activitypub/renderer/reject';
 import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
-import perUserFollowingChart from '../../services/chart/per-user-following';
+import perUserFollowingChart from '../chart/charts/per-user-following';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
-import instanceChart from '../../services/chart/instance';
+import instanceChart from '../chart/charts/instance';
 import Logger from '../logger';
 import FollowRequest from '../../models/follow-request';
 import { IdentifiableError } from '../../misc/identifiable-error';
@@ -139,7 +139,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	} else if (isRemoteUser(follower) && isLocalUser(followee) && blocking) {
 		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
 		await Blocking.remove({
-			_id: blocking.id
+			id: blocking.id
 		});
 	} else {
 		// それ以外は単純に例外

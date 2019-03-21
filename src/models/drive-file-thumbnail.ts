@@ -17,7 +17,7 @@ export type IMetadata = {
 };
 
 export type IDriveFileThumbnail = {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	uploadDate: Date;
 	md5: string;
 	filename: string;

@@ -76,7 +76,7 @@ export default define(meta, async (ps, me) => {
 		const hideUserIds = await getHideUserIds(me);
 
 		const users = await Users.find({
-			_id: {
+			id: {
 				$nin: followingIds.concat(hideUserIds)
 			},
 			isLocked: { $ne: true },

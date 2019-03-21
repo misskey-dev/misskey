@@ -6,7 +6,7 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';
 import RegistrationTicket from '../../../models/registration-tickets';
-import usersChart from '../../../services/chart/users';
+import usersChart from '../../../services/chart/charts/users';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
 import rndstr from 'rndstr';
@@ -51,7 +51,7 @@ export default async (ctx: Koa.BaseContext) => {
 		}
 
 		RegistrationTicket.remove({
-			_id: ticket.id
+			id: ticket.id
 		});
 	}
 

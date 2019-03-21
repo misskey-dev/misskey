@@ -69,7 +69,7 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	const note = await Note.findOne({
-		_id: new ObjectID(ctx.params.note),
+		id: new ObjectID(ctx.params.note),
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
 	});
@@ -102,7 +102,7 @@ router.get('/notes/:note/activity', async ctx => {
 	}
 
 	const note = await Note.findOne({
-		_id: new ObjectID(ctx.params.note),
+		id: new ObjectID(ctx.params.note),
 		'_user.host': null,
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
@@ -126,7 +126,7 @@ router.get('/questions/:question', async (ctx, next) => {
 	}
 
 	const poll = await Note.findOne({
-		_id: new ObjectID(ctx.params.question),
+		id: new ObjectID(ctx.params.question),
 		'_user.host': null,
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true },
@@ -142,7 +142,7 @@ router.get('/questions/:question', async (ctx, next) => {
 	}
 
 	const user = await Users.findOne({
-			_id: poll.userId
+			id: poll.userId
 	});
 
 	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, poll));
@@ -171,7 +171,7 @@ router.get('/users/:user/publickey', async ctx => {
 	const userId = new ObjectID(ctx.params.user);
 
 	const user = await Users.findOne({
-		_id: userId,
+		id: userId,
 		host: null
 	});
 
@@ -212,7 +212,7 @@ router.get('/users/:user', async (ctx, next) => {
 	const userId = new ObjectID(ctx.params.user);
 
 	const user = await Users.findOne({
-		_id: userId,
+		id: userId,
 		host: null
 	});
 

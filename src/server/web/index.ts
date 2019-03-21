@@ -178,7 +178,7 @@ router.get('/users/:user', async ctx => {
 	const userId = new ObjectID(ctx.params.user);
 
 	const user = await Users.findOne({
-		_id: userId,
+		id: userId,
 		host: null
 	});
 
@@ -222,7 +222,7 @@ router.get('/info', async ctx => {
 	const meta = await fetchMeta();
 	const emojis = await Emoji.find({ host: null }, {
 		fields: {
-			_id: false
+			id: false
 		}
 	});
 	await ctx.render('info', {

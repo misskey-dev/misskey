@@ -75,7 +75,7 @@ export default define(meta, async (ps, user) => {
 
 	// Delete mute
 	await Mute.remove({
-		_id: exist.id
+		id: exist.id
 	});
 
 	return;

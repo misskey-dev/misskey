@@ -36,7 +36,7 @@ export default (
 
 	// Update documents
 	await Message.update({
-		_id: { $in: ids },
+		id: { $in: ids },
 		userId: otherpartyId,
 		recipientId: userId,
 		isRead: false

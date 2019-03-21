@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import usersChart, { usersLogSchema } from '../../../../services/chart/users';
-import { convertLog } from '../../../../services/chart';
+import usersChart, { usersLogSchema } from '../../../../services/chart/charts/users';
+import { convertLog } from '../../../../services/chart/core';
 
 export const meta = {
 	stability: 'stable',

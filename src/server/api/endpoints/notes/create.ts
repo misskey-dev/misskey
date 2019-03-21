@@ -230,7 +230,7 @@ export default define(meta, async (ps, user, app) => {
 	let visibleUsers: IUser[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => Users.findOne({
-			_id: id
+			id: id
 		})));
 	}
 
@@ -239,7 +239,7 @@ export default define(meta, async (ps, user, app) => {
 	if (fileIds != null) {
 		files = await Promise.all(fileIds.map(fileId => {
 			return DriveFile.findOne({
-				_id: fileId,
+				id: fileId,
 				'metadata.userId': user.id
 			});
 		}));
@@ -251,7 +251,7 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.renoteId != null) {
 		// Fetch renote to note
 		renote = await Note.findOne({
-			_id: ps.renoteId
+			id: ps.renoteId
 		});
 
 		if (renote == null) {
@@ -265,7 +265,7 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.replyId != null) {
 		// Fetch reply
 		reply = await Note.findOne({
-			_id: ps.replyId
+			id: ps.replyId
 		});
 
 		if (reply === null) {

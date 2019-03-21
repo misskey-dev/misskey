@@ -245,11 +245,11 @@ export const pack = async (
 	// Populate the note if 'note' is ID
 	if (isObjectId(note)) {
 		_note = await Note.findOne({
-			_id: note
+			id: note
 		});
 	} else if (typeof note === 'string') {
 		_note = await Note.findOne({
-			_id: new mongo.ObjectID(note)
+			id: new mongo.ObjectID(note)
 		});
 	} else {
 		_note = deepcopy(note);

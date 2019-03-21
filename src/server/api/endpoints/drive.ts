@@ -42,7 +42,7 @@ export default define(meta, async (ps, user) => {
 		}
 	}, {
 		$group: {
-			_id: null,
+			id: null,
 			usage: { $sum: '$length' }
 		}
 	}])

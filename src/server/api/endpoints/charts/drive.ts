@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import driveChart, { driveLogSchema } from '../../../../services/chart/drive';
-import { convertLog } from '../../../../services/chart';
+import driveChart, { driveLogSchema } from '../../../../services/chart/charts/drive';
+import { convertLog } from '../../../../services/chart/core';
 
 export const meta = {
 	stability: 'stable',

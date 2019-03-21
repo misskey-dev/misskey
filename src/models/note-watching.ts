@@ -5,7 +5,7 @@ NoteWatching.createIndex(['userId', 'noteId'], { unique: true });
 export default NoteWatching;
 
 export interface INoteWatching {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	userId: mongo.ObjectID;
 	noteId: mongo.ObjectID;

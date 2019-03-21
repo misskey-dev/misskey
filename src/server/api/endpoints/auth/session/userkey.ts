@@ -100,11 +100,11 @@ export default define(meta, async (ps) => {
 
 	/* https://github.com/Automattic/monk/issues/178
 	AuthSess.deleteOne({
-		_id: session.id
+		id: session.id
 	});
 	*/
 	AuthSess.remove({
-		_id: session.id
+		id: session.id
 	});
 
 	return {

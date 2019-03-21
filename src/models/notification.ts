@@ -83,11 +83,11 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 	// Populate the notification if 'notification' is ID
 	if (isObjectId(notification)) {
 		_notification = await Notification.findOne({
-			_id: notification
+			id: notification
 		});
 	} else if (typeof notification === 'string') {
 		_notification = await Notification.findOne({
-			_id: new mongo.ObjectID(notification)
+			id: new mongo.ObjectID(notification)
 		});
 	} else {
 		_notification = deepcopy(notification);

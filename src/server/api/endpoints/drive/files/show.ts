@@ -68,7 +68,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.fileId) {
 		file = await DriveFile.findOne({
-			_id: ps.fileId,
+			id: ps.fileId,
 			'metadata.deletedAt': { $exists: false }
 		});
 	} else if (ps.url) {
@@ -79,7 +79,7 @@ export default define(meta, async (ps, user) => {
 			// http://misskey.local/files/foo?original=bar --> foo
 			const fileId = new mongo.ObjectID(ps.url.replace(config.driveUrl, '').replace(/\?(.*)$/, '').replace(/\//g, ''));
 			file = await DriveFile.findOne({
-				_id: fileId,
+				id: fileId,
 				'metadata.deletedAt': { $exists: false }
 			});
 		} else {

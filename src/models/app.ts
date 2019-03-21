@@ -87,11 +87,11 @@ export const pack = (
 	// Populate the app if 'app' is ID
 	if (isObjectId(app)) {
 		_app = await App.findOne({
-			_id: app
+			id: app
 		});
 	} else if (typeof app === 'string') {
 		_app = await App.findOne({
-			_id: new mongo.ObjectID(app)
+			id: new mongo.ObjectID(app)
 		}, { fields });
 	} else {
 		_app = deepcopy(app);

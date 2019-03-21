@@ -186,7 +186,7 @@ export default define(meta, async (ps, user, app) => {
 
 	if (ps.avatarId) {
 		const avatar = await DriveFile.findOne({
-			_id: ps.avatarId
+			id: ps.avatarId
 		});
 
 		if (avatar == null) throw new ApiError(meta.errors.noSuchAvatar);
@@ -205,7 +205,7 @@ export default define(meta, async (ps, user, app) => {
 
 	if (ps.bannerId) {
 		const banner = await DriveFile.findOne({
-			_id: ps.bannerId
+			id: ps.bannerId
 		});
 
 		if (banner == null) throw new ApiError(meta.errors.noSuchBanner);
@@ -228,7 +228,7 @@ export default define(meta, async (ps, user, app) => {
 			updates.wallpaperColor = null;
 		} else {
 			const wallpaper = await DriveFile.findOne({
-				_id: ps.wallpaperId
+				id: ps.wallpaperId
 			});
 
 			if (wallpaper == null) throw new Error('wallpaper not found');

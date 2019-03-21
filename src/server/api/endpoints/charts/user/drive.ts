@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserDriveChart, { perUserDriveLogSchema } from '../../../../../services/chart/per-user-drive';
+import perUserDriveChart, { perUserDriveLogSchema } from '../../../../../services/chart/charts/per-user-drive';
 import ID, { transform } from '../../../../../misc/cafy-id';
-import { convertLog } from '../../../../../services/chart';
+import { convertLog } from '../../../../../services/chart/core';
 
 export const meta = {
 	stability: 'stable',

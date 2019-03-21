@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '.';
-import User from '../../models/user';
-import Note from '../../models/note';
-import Following from '../../models/following';
-import DriveFile, { IDriveFile } from '../../models/drive-file';
+import Chart, { Obj } from '../core';
+import User from '../../../models/user';
+import Note from '../../../models/note';
+import Following from '../../../models/following';
+import DriveFile, { IDriveFile } from '../../../models/drive-file';
 
 /**
  * インスタンスごとのチャート
@@ -146,7 +146,7 @@ class InstanceChart extends Chart<InstanceLog> {
 				}
 			}, {
 				$group: {
-					_id: null,
+					id: null,
 					usage: { $sum: '$length' }
 				}
 			}])

@@ -13,7 +13,7 @@ export default define(meta, async (ps, user) => {
 		childId: user.id
 	}, {
 		sort: {
-			_id: -1
+			id: -1
 		}
 	});
 

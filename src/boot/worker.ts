@@ -1,9 +1,12 @@
 import * as cluster from 'cluster';
+import { initPostgre } from '../db/postgre';
 
 /**
  * Init worker process
  */
 export async function workerMain() {
+	await initPostgre();
+
 	// start server
 	await require('../server').default();
 

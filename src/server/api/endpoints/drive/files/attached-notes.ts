@@ -50,7 +50,7 @@ export default define(meta, async (ps, user) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: ps.fileId,
+			id: ps.fileId,
 			'metadata.userId': user.id,
 			'metadata.deletedAt': { $exists: false }
 		});

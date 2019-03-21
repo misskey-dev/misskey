@@ -9,7 +9,7 @@ MessagingMessage.createIndex('recipientId');
 export default MessagingMessage;
 
 export interface IMessagingMessage {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	text: string;
 	userId: mongo.ObjectID;
@@ -41,11 +41,11 @@ export const pack = (
 	// Populate the message if 'message' is ID
 	if (isObjectId(message)) {
 		_message = await MessagingMessage.findOne({
-			_id: message
+			id: message
 		});
 	} else if (typeof message === 'string') {
 		_message = await MessagingMessage.findOne({
-			_id: new mongo.ObjectID(message)
+			id: new mongo.ObjectID(message)
 		});
 	} else {
 		_message = deepcopy(message);

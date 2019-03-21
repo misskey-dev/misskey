@@ -1,6 +1,6 @@
 import { IUser, isLocalUser, isRemoteUser } from '../models/user';
 import Hashtag from '../models/hashtag';
-import hashtagChart from './chart/hashtag';
+import hashtagChart from './chart/charts/hashtag';
 
 export async function updateHashtag(user: IUser, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();

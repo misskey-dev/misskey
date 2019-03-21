@@ -5,11 +5,11 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
-import perUserFollowingChart from '../../services/chart/per-user-following';
+import perUserFollowingChart from '../chart/charts/per-user-following';
 import Logger from '../logger';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
-import instanceChart from '../../services/chart/instance';
+import instanceChart from '../chart/charts/instance';
 
 const logger = new Logger('following/delete');
 
@@ -25,7 +25,7 @@ export default async function(follower: IUser, followee: IUser, silent = false) 
 	}
 
 	Following.remove({
-		_id: following.id
+		id: following.id
 	});
 
 	//#region Decrement following count

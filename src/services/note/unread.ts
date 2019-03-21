@@ -28,7 +28,7 @@ export default async function(user: IUser, note: INote, isSpecified = false) {
 		if (exist == null) return;
 
 		User.update({
-			_id: user.id
+			id: user.id
 		}, {
 			$set: isSpecified ? {
 				hasUnreadSpecifiedNotes: true,

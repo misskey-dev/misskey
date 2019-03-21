@@ -11,7 +11,7 @@ DriveFile.find({
 	'metadata.deletedAt': { $exists: false }
 }, {
 	fields: {
-		_id: true
+		id: true
 	}
 }).then(async files => {
 	console.log(`there is ${files.length} files`);

@@ -54,7 +54,7 @@ export default define(meta, async (ps, user) => {
 	if (exist) {
 		// Destroy session
 		Matching.remove({
-			_id: exist.id
+			id: exist.id
 		});
 
 		// Create game

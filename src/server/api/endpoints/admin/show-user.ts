@@ -27,7 +27,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne({
-		_id: ps.userId
+		id: ps.userId
 	});
 
 	if (user == null) {

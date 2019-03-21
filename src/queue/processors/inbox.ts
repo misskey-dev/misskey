@@ -10,7 +10,7 @@ import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
-import instanceChart from '../../services/chart/instance';
+import instanceChart from '../../services/chart/charts/instance';
 
 const logger = new Logger('inbox');
 

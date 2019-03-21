@@ -8,7 +8,7 @@ import User, { isLocalUser } from '../../../models/user';
 export default async function renderFollowUser(id: mongo.ObjectID): Promise<any> {
 
 	const user = await Users.findOne({
-		_id: id
+		id: id
 	});
 
 	return isLocalUser(user) ? `${config.url}/users/${user.id}` : user.uri;

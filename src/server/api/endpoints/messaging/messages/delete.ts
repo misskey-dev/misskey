@@ -48,7 +48,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const message = await Message.findOne({
-		_id: ps.messageId,
+		id: ps.messageId,
 		userId: user.id
 	});
 

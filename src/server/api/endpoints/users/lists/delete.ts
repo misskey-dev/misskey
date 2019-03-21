@@ -38,7 +38,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const userList = await UserList.findOne({
-		_id: ps.listId,
+		id: ps.listId,
 		userId: user.id
 	});
 
@@ -47,6 +47,6 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await UserList.remove({
-		_id: userList.id
+		id: userList.id
 	});
 });

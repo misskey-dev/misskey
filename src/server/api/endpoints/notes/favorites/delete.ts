@@ -64,7 +64,7 @@ export default define(meta, async (ps, user) => {
 
 	// Delete favorite
 	await Favorite.remove({
-		_id: exist.id
+		id: exist.id
 	});
 
 	return;

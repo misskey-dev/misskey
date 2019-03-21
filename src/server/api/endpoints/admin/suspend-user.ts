@@ -30,7 +30,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const user = await Users.findOne({
-		_id: ps.userId
+		id: ps.userId
 	});
 
 	if (user == null) {
@@ -46,7 +46,7 @@ export default define(meta, async (ps) => {
 	}
 
 	await Users.findOneAndUpdate({
-		_id: user.id
+		id: user.id
 	}, {
 		$set: {
 			isSuspended: true
@@ -65,7 +65,7 @@ async function unFollowAll(follower: IUser) {
 
 	for (const following of followings) {
 		const followee = await Users.findOne({
-			_id: following.followeeId
+			id: following.followeeId
 		});
 
 		if (followee == null) {

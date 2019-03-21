@@ -83,7 +83,7 @@ export default define(meta, async (ps, user) => {
 
 	//#region Construct query
 	const sort = {
-		_id: -1
+		id: -1
 	};
 
 	const query = {

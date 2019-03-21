@@ -16,7 +16,7 @@ import { IdentifiableError } from '../../misc/identifiable-error';
 export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 	// Fetch pinee
 	const note = await Note.findOne({
-		_id: noteId,
+		id: noteId,
 		userId: user.id
 	});
 
@@ -64,7 +64,7 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 export async function removePinned(user: IUser, noteId: mongo.ObjectID) {
 	// Fetch unpinee
 	const note = await Note.findOne({
-		_id: noteId,
+		id: noteId,
 		userId: user.id
 	});
 
@@ -88,7 +88,7 @@ export async function removePinned(user: IUser, noteId: mongo.ObjectID) {
 
 export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.ObjectID, isAddition: boolean) {
 	const user = await Users.findOne({
-		_id: userId
+		id: userId
 	});
 
 	if (!isLocalUser(user)) return;

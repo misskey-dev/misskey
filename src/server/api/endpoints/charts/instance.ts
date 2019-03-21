@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import instanceChart from '../../../../services/chart/instance';
+import instanceChart from '../../../../services/chart/charts/instance';
 
 export const meta = {
 	stability: 'stable',

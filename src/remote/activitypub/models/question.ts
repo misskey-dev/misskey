@@ -67,7 +67,7 @@ export async function updateQuestion(value: any) {
 	}
 
 	await Note.update({
-		_id: note.id
+		id: note.id
 	}, {
 		$set: {
 			'poll.choices': dbChoices,

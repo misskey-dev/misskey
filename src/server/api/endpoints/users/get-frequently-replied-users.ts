@@ -61,11 +61,11 @@ export default define(meta, async (ps, me) => {
 		}
 	}, {
 		sort: {
-			_id: -1
+			id: -1
 		},
 		limit: 1000,
 		fields: {
-			_id: false,
+			id: false,
 			replyId: true
 		}
 	});
@@ -79,7 +79,7 @@ export default define(meta, async (ps, me) => {
 	hideUserIds.push(user.id);
 
 	const replyTargetNotes = await Note.find({
-		_id: {
+		id: {
 			$in: recentNotes.map(p => p.replyId)
 		},
 		userId: {
@@ -87,7 +87,7 @@ export default define(meta, async (ps, me) => {
 		}
 	}, {
 		fields: {
-			_id: false,
+			id: false,
 			userId: true
 		}
 	});

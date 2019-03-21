@@ -206,7 +206,7 @@ export default class extends Channel {
 					}
 
 					await ReversiGame.update({
-						_id: this.gameId
+						id: this.gameId
 					}, {
 							$set: {
 								isEnded: true,
@@ -273,7 +273,7 @@ export default class extends Channel {
 		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString());
 
 		await ReversiGame.update({
-			_id: this.gameId
+			id: this.gameId
 		}, {
 				$set: {
 					crc32,

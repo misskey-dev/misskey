@@ -8,7 +8,7 @@ import renderUndo from '../../remote/activitypub/renderer/undo';
 import renderBlock from '../../remote/activitypub/renderer/block';
 import { deliver } from '../../queue';
 import renderReject from '../../remote/activitypub/renderer/reject';
-import perUserFollowingChart from '../../services/chart/per-user-following';
+import perUserFollowingChart from '../chart/charts/per-user-following';
 import Blocking from '../../models/blocking';
 
 export default async function(blocker: IUser, blockee: IUser) {
@@ -89,7 +89,7 @@ async function unFollow(follower: IUser, followee: IUser) {
 	}
 
 	Following.remove({
-		_id: following.id
+		id: following.id
 	});
 
 	//#region Decrement following count

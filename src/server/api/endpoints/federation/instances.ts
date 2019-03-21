@@ -107,7 +107,7 @@ export default define(meta, async (ps, me) => {
 		}
 	} else {
 		sort = {
-			_id: -1
+			id: -1
 		};
 	}
 

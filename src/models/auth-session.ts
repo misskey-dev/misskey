@@ -5,7 +5,7 @@ const AuthSession = db.get<IAuthSession>('authSessions');
 export default AuthSession;
 
 export interface IAuthSession {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	appId: mongo.ObjectID;
 	userId: mongo.ObjectID;

@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 	const winnerId = game.user1Id.equals(user.id) ? game.user2Id : game.user1Id;
 
 	await ReversiGame.update({
-		_id: game.id
+		id: game.id
 	}, {
 		$set: {
 			surrendered: user.id,

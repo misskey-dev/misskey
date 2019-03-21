@@ -46,7 +46,7 @@ export default define(meta, async (ps, me) => {
 	} as any;
 
 	const sort = {
-		_id: -1
+		id: -1
 	};
 
 	if (ps.sinceId) {

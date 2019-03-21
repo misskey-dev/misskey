@@ -12,7 +12,7 @@ export async function getHideUserIdsById(meId?: mongo.ObjectID) {
 			isSuspended: true
 		}, {
 			fields: {
-				_id: true
+				id: true
 			}
 		}),
 		meId ? Mute.find({

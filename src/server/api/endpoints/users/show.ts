@@ -69,7 +69,7 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.userIds) {
 		const users = await Users.find({
-			_id: {
+			id: {
 				$in: ps.userIds
 			}
 		});

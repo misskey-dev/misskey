@@ -81,7 +81,7 @@ export default define(meta, async (ps, user) => {
 	// Fetch file
 	const file = await DriveFile
 		.findOne({
-			_id: ps.fileId
+			id: ps.fileId
 		});
 
 	if (file === null) {
@@ -103,7 +103,7 @@ export default define(meta, async (ps, user) => {
 			// Fetch folder
 			const folder = await DriveFolder
 				.findOne({
-					_id: ps.folderId,
+					id: ps.folderId,
 					userId: user.id
 				});
 

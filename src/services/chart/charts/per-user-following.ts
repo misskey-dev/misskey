@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from './';
-import Following from '../../models/following';
-import { IUser, isLocalUser } from '../../models/user';
-import { SchemaType } from '../../misc/schema';
+import Chart, { Obj } from '../core';
+import Following from '../../../models/following';
+import { IUser, isLocalUser } from '../../../models/user';
+import { SchemaType } from '../../../misc/schema';
 
 export const logSchema = {
 	/**

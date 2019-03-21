@@ -34,7 +34,7 @@ export default (
 
 	// Update documents
 	await Notification.update({
-		_id: { $in: ids },
+		id: { $in: ids },
 		isRead: false
 	}, {
 			$set: {

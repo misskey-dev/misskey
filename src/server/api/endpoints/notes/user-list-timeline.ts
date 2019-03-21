@@ -126,7 +126,7 @@ export default define(meta, async (ps, user) => {
 		// リストを取得
 		// Fetch the list
 		UserList.findOne({
-			_id: ps.listId,
+			id: ps.listId,
 			userId: user.id
 		}),
 
@@ -148,7 +148,7 @@ export default define(meta, async (ps, user) => {
 
 	//#region Construct query
 	const sort = {
-		_id: -1
+		id: -1
 	};
 
 	const listQuery = list.userIds.map(u => ({

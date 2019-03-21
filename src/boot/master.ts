@@ -145,6 +145,7 @@ async function init(): Promise<Config> {
 
 	// Try to connect to DB
 	try {
+		bootLogger.info('Connecting database...');
 		await initPostgre();
 	} catch (e) {
 		bootLogger.error('Cannot connect to database', null, true);

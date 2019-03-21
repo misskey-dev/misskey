@@ -5,7 +5,7 @@ const Matching = db.get<IMatching>('reversiMatchings');
 export default Matching;
 
 export interface IMatching {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	parentId: mongo.ObjectID;
 	childId: mongo.ObjectID;

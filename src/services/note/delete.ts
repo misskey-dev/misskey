@@ -6,15 +6,15 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import Following from '../../models/following';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import notesChart from '../../services/chart/notes';
-import perUserNotesChart from '../../services/chart/per-user-notes';
+import notesChart from '../chart/charts/notes';
+import perUserNotesChart from '../chart/charts/per-user-notes';
 import config from '../../config';
 import NoteUnread from '../../models/note-unread';
 import read from './read';
 import DriveFile from '../../models/drive-file';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
-import instanceChart from '../../services/chart/instance';
+import instanceChart from '../chart/charts/instance';
 import Favorite from '../../models/favorite';
 
 /**
@@ -26,7 +26,7 @@ export default async function(user: IUser, note: INote, quiet = false) {
 	const deletedAt = new Date();
 
 	await Note.update({
-		_id: note.id,
+		id: note.id,
 		userId: user.id
 	}, {
 		$set: {

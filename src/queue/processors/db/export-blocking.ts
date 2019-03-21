@@ -15,7 +15,7 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user.id.toString())
+		id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	// Create temp file
@@ -41,7 +41,7 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 		}, {
 			limit: 100,
 			sort: {
-				_id: 1
+				id: 1
 			}
 		});
 

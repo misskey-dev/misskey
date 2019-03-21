@@ -15,9 +15,9 @@ import delFile from './delete-file';
 import config from '../../config';
 import { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
 import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
-import driveChart from '../../services/chart/drive';
-import perUserDriveChart from '../../services/chart/per-user-drive';
-import instanceChart from '../../services/chart/instance';
+import driveChart from '../chart/charts/drive';
+import perUserDriveChart from '../chart/charts/per-user-drive';
+import instanceChart from '../chart/charts/instance';
 import fetchMeta from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
@@ -246,13 +246,13 @@ export async function storeAlts(bucket: mongodb.GridFSBucket, name: string, data
 
 async function deleteOldFile(user: IRemoteUser) {
 	const oldFile = await DriveFile.findOne({
-		_id: {
+		id: {
 			$nin: [user.avatarId, user.bannerId]
 		},
 		'metadata.userId': user.id
 	}, {
 		sort: {
-			_id: 1
+			id: 1
 		}
 	});
 
@@ -347,7 +347,7 @@ export default async function(
 				}
 			}, {
 				$group: {
-					_id: null,
+					id: null,
 					usage: { $sum: '$length' }
 				}
 			}])
@@ -381,7 +381,7 @@ export default async function(
 		}
 
 		const driveFolder = await DriveFolder.findOne({
-			_id: folderId,
+			id: folderId,
 			userId: user.id
 		});
 

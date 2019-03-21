@@ -26,11 +26,11 @@ export async function triggerUpdate(note: INote) {
 
 export async function deliverQuestionUpdate(noteId: mongo.ObjectID) {
 	const note = await Note.findOne({
-		_id: noteId,
+		id: noteId,
 	});
 
 	const user = await Users.findOne({
-		_id: note.userId
+		id: note.userId
 	});
 
 	const followers = await Following.find({

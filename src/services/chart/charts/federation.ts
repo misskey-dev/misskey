@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '.';
-import Instance from '../../models/instance';
+import Chart, { Obj } from '../core';
+import Instance from '../../../models/instance';
 
 /**
  * フェデレーションに関するチャート
@@ -24,7 +24,7 @@ type FederationLog = {
 	};
 };
 
-class FederationChart extends Chart<FederationLog> {
+export class FederationChart extends Chart<FederationLog> {
 	constructor() {
 		super('federation');
 	}

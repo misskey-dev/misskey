@@ -33,7 +33,7 @@ export default define(meta, async (ps, user) => {
 		userId: user.id
 	}, {
 		fields: {
-			_id: false,
+			id: false,
 			noteId: true
 		}
 	});
@@ -45,7 +45,7 @@ export default define(meta, async (ps, user) => {
 
 	const notes = await Note.find({
 		'_user.host': null,
-		_id: {
+		id: {
 			$nin: nin
 		},
 		userId: {
@@ -68,7 +68,7 @@ export default define(meta, async (ps, user) => {
 		limit: ps.limit,
 		skip: ps.offset,
 		sort: {
-			_id: -1
+			id: -1
 		}
 	});
 

@@ -50,7 +50,7 @@ export default define(meta, async (ps, user) => {
 	if (exist === null) {
 		// Lookup app
 		const app = await App.findOne({
-			_id: session.appId
+			id: session.appId
 		});
 
 		// Generate Hash

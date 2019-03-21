@@ -41,7 +41,7 @@ export default async (ctx: Router.IRouterContext) => {
 
 	// Verify user
 	const user = await Users.findOne({
-		_id: userId,
+		id: userId,
 		host: null
 	});
 
@@ -56,7 +56,7 @@ export default async (ctx: Router.IRouterContext) => {
 	if (page) {
 		//#region Construct query
 		const sort = {
-			_id: -1
+			id: -1
 		};
 
 		const query = {

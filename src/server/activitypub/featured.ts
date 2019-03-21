@@ -17,7 +17,7 @@ export default async (ctx: Router.IRouterContext) => {
 
 	// Verify user
 	const user = await Users.findOne({
-		_id: userId,
+		id: userId,
 		host: null
 	});
 

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import hashtagChart from '../../../../services/chart/hashtag';
+import hashtagChart from '../../../../services/chart/charts/hashtag';
 
 export const meta = {
 	stability: 'stable',

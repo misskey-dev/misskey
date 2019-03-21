@@ -47,7 +47,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
-		_id: ps.listId,
+		id: ps.listId,
 		userId: user.id
 	});
 

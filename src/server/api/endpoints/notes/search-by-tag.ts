@@ -300,7 +300,7 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.untilId) {
 		push({
-			_id: {
+			id: {
 				$lt: ps.untilId
 			}
 		});
@@ -329,7 +329,7 @@ export default define(meta, async (ps, me) => {
 	// Search notes
 	const notes = await Note.find(q, {
 		sort: {
-			_id: -1
+			id: -1
 		},
 		limit: ps.limit,
 		skip: ps.offset

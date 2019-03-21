@@ -8,7 +8,7 @@ AbuseUserReport.createIndex(['userId', 'reporterId'], { unique: true });
 export default AbuseUserReport;
 
 export interface IAbuseUserReport {
-	_id: mongo.ObjectID;
+	id: mongo.ObjectID;
 	createdAt: Date;
 	userId: mongo.ObjectID;
 	reporterId: mongo.ObjectID;
@@ -28,11 +28,11 @@ export const pack = (
 
 	if (isObjectId(report)) {
 		_report = await AbuseUserReport.findOne({
-			_id: report
+			id: report
 		});
 	} else if (typeof report === 'string') {
 		_report = await AbuseUserReport.findOne({
-			_id: new mongo.ObjectID(report)
+			id: new mongo.ObjectID(report)
 		});
 	} else {
 		_report = deepcopy(report);

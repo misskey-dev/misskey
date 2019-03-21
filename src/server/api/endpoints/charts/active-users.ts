@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import activeUsersChart from '../../../../services/chart/active-users';
+import activeUsersChart from '../../../../services/chart/charts/active-users';
 
 export const meta = {
 	stability: 'stable',
