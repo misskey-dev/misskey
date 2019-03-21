@@ -1,4 +1,4 @@
-import { getRepository, Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
 
 @Entity()
 export class Log {
@@ -45,5 +45,3 @@ export class Log {
 	})
 	public data: Record<string, any>;
 }
-
-export const Logs = getRepository(Log);

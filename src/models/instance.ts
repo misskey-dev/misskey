@@ -1,87 +1,136 @@
-const Instance = db.get<IInstance>('instances');
-Instance.createIndex('host', { unique: true });
-export default Instance;
+import { Entity, PrimaryGeneratedColumn, Index, Column, getRepository } from 'typeorm';
 
-export interface IInstance {
-	_id: mongo.ObjectID;
-
-	/**
-	 * ホスト
-	 */
-	host: string;
+@Entity()
+export class Instance {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
 	/**
 	 * このインスタンスを捕捉した日時
 	 */
-	caughtAt: Date;
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The caught date of the Instance.'
+	})
+	public caughtAt: Date;
 
 	/**
-	 * このインスタンスのシステム (MastodonとかMisskeyとかPleromaとか)
+	 * ホスト
 	 */
-	system: string;
+	@Index({ unique: true })
+	@Column({
+		type: 'varchar', length: 128,
+		comment: 'The host of the Instance.'
+	})
+	public host: string;
 
 	/**
-	 * このインスタンスのユーザー数
+	 * インスタンスのシステム (MastodonとかMisskeyとかPleromaとか)
 	 */
-	usersCount: number;
+	@Column({
+		type: 'varchar', length: 64, nullable: true,
+		comment: 'The system of the Instance.'
+	})
+	public system: string | null;
 
 	/**
-	 * このインスタンスから受け取った投稿数
+	 * インスタンスのユーザー数
 	 */
-	notesCount: number;
+	@Column({
+		type: 'integer',
+		comment: 'The count of the users of the Instance.'
+	})
+	public usersCount: number;
+
+	/**
+	 * インスタンスの投稿数
+	 */
+	@Column({
+		type: 'integer',
+		comment: 'The count of the notes of the Instance.'
+	})
+	public notesCount: number;
 
 	/**
 	 * このインスタンスのユーザーからフォローされている、自インスタンスのユーザーの数
 	 */
-	followingCount: number;
+	@Column({
+		type: 'integer',
+	})
+	public followingCount: number;
 
 	/**
 	 * このインスタンスのユーザーをフォローしている、自インスタンスのユーザーの数
 	 */
-	followersCount: number;
+	@Column({
+		type: 'integer',
+	})
+	public followersCount: number;
 
 	/**
 	 * ドライブ使用量
 	 */
-	driveUsage: number;
+	@Column({
+		type: 'integer',
+	})
+	public driveUsage: number;
 
 	/**
 	 * ドライブのファイル数
 	 */
-	driveFiles: number;
+	@Column({
+		type: 'integer',
+	})
+	public driveFiles: number;
 
 	/**
 	 * 直近のリクエスト送信日時
 	 */
-	latestRequestSentAt?: Date;
+	@Column({
+		type: 'date', nullable: true,
+	})
+	public latestRequestSentAt: Date | null;
 
 	/**
 	 * 直近のリクエスト送信時のHTTPステータスコード
 	 */
-	latestStatus?: number;
+	@Column({
+		type: 'integer', nullable: true,
+	})
+	public latestStatus: number | null;
 
 	/**
 	 * 直近のリクエスト受信日時
 	 */
-	latestRequestReceivedAt?: Date;
-
-	/**
-	 * このインスタンスと不通かどうか
-	 */
-	isNotResponding: boolean;
+	@Column({
+		type: 'date', nullable: true,
+	})
+	public latestRequestReceivedAt: Date | null;
 
 	/**
 	 * このインスタンスと最後にやり取りした日時
 	 */
-	lastCommunicatedAt: Date;
+	@Column({
+		type: 'date',
+	})
+	public lastCommunicatedAt: Date;
 
 	/**
-	 * このインスタンスをブロックしているか
+	 * このインスタンスと不通かどうか
 	 */
-	isBlocked: boolean;
+	@Column({
+		type: 'boolean', default: false
+	})
+	public isNotResponding: boolean;
 
 	/**
 	 * このインスタンスが閉鎖済みとしてマークされているか
 	 */
-	isMarkedAsClosed: boolean;
+	@Column({
+		type: 'boolean', default: false
+	})
+	public isMarkedAsClosed: boolean;
 }
+
+export const Instances = getRepository(Instance);

@@ -1,30 +1,33 @@
 import { createConnection, Logger } from 'typeorm';
 import config from '../config';
 import { dbLogger } from './logger';
+import { Log } from '../models/log';
+
+const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
 class MyCustomLogger implements Logger {
 	public logQuery(query: string, parameters?: any[]) {
-		dbLogger.info(query);
+		sqlLogger.info(query);
 	}
 
 	public logQueryError(error: string, query: string, parameters?: any[]) {
-		dbLogger.error(query);
+		sqlLogger.error(query);
 	}
 
 	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		dbLogger.warn(query);
+		sqlLogger.warn(query);
 	}
 
 	public logSchemaBuild(message: string) {
-		dbLogger.info(message);
+		sqlLogger.info(message);
 	}
 
 	public log(message: string) {
-		dbLogger.info(message);
+		sqlLogger.info(message);
 	}
 
 	public logMigration(message: string) {
-		dbLogger.info(message);
+		sqlLogger.info(message);
 	}
 }
 
@@ -37,7 +40,8 @@ export function initPostgre() {
 		password: config.db.pass,
 		database: config.db.db,
 		synchronize: true,
-		logging: true,
-		logger: new MyCustomLogger()
+		logging: !['production', 'test'].includes(process.env.NODE_ENV),
+		logger: new MyCustomLogger(),
+		entities: [Log]
 	});
 }

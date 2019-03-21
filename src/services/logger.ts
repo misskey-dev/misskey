@@ -3,7 +3,8 @@ import * as os from 'os';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
 import { program } from '../argv';
-import { Log, Logs } from '../models/log';
+import { Log } from '../models/log';
+import { getRepository } from 'typeorm';
 
 type Domain = {
 	name: string;
@@ -65,6 +66,7 @@ export default class Logger {
 		console.log(important ? chalk.bold(log) : log);
 
 		if (store) {
+			const Logs = getRepository(Log);
 			const logRecord = new Log();
 			logRecord.createdAt = new Date();
 			logRecord.machine = os.hostname();
