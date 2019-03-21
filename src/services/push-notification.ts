@@ -1,5 +1,4 @@
 import * as push from 'web-push';
-import * as mongo from 'mongodb';
 import Subscription from '../models/sw-subscription';
 import config from '../config';
 import fetchMeta from '../misc/fetch-meta';

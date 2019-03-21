@@ -1,7 +1,4 @@
-import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
 
 const UserList = db.get<IUserList>('userList');
 export default UserList;

@@ -1,5 +1,4 @@
 import config from '../../../config';
-import * as mongo from 'mongodb';
 import User, { isLocalUser } from '../../../models/user';
 
 /**

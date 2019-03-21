@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import Note from '../../../models/note';
 import User, { isRemoteUser, isLocalUser } from '../../../models/user';
 import { IdentifiableError } from '../../../misc/identifiable-error';

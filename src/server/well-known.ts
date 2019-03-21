@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import * as Router from 'koa-router';
 
 import config from '../config';

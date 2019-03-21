@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import monkDb, { nativeDbConn } from '../db/mongodb';
-
 const DriveFileThumbnail = monkDb.get<IDriveFileThumbnail>('driveFileThumbnails.files');
 DriveFileThumbnail.createIndex('metadata.originalId', { sparse: true, unique: true });
 export default DriveFileThumbnail;

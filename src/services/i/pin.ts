@@ -1,5 +1,4 @@
 import config from '../../config';
-import * as mongo from 'mongodb';
 import User, { isLocalUser, isRemoteUser, ILocalUser, IUser } from '../../models/user';
 import Note, { packMany } from '../../models/note';
 import Following from '../../models/following';

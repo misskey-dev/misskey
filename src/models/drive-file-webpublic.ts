@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import monkDb, { nativeDbConn } from '../db/mongodb';
-
 const DriveFileWebpublic = monkDb.get<IDriveFileWebpublic>('driveFileWebpublics.files');
 DriveFileWebpublic.createIndex('metadata.originalId', { sparse: true, unique: true });
 export default DriveFileWebpublic;

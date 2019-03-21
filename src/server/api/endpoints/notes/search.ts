@@ -1,5 +1,4 @@
 import $ from 'cafy';
-import * as mongo from 'mongodb';
 import Note from '../../../../models/note';
 import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';

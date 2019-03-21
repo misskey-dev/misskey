@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
-
 const Instance = db.get<IInstance>('instances');
 Instance.createIndex('host', { unique: true });
 export default Instance;

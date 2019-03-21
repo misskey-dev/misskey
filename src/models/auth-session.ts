@@ -1,7 +1,4 @@
-import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
 import { pack as packApp } from './app';
 
 const AuthSession = db.get<IAuthSession>('authSessions');

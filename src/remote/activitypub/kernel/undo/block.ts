@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import User, { IRemoteUser } from '../../../../models/user';
 import config from '../../../../config';
 import { IBlock } from '../../type';

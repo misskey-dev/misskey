@@ -1,8 +1,5 @@
-import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
 import AccessToken from './access-token';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
 import config from '../config';
 import { dbLogger } from '../db/logger';
 

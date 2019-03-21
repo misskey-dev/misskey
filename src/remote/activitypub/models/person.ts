@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import * as promiseLimit from 'promise-limit';
 import { toUnicode } from 'punycode';
 

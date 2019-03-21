@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
-
 const NoteWatching = db.get<INoteWatching>('noteWatching');
 NoteWatching.createIndex('userId');
 NoteWatching.createIndex('noteId');

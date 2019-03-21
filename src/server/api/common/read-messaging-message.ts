@@ -1,5 +1,3 @@
-import * as mongo from 'mongodb';
-import isObjectId from '../../../misc/is-objectid';
 import Message from '../../../models/messaging-message';
 import { IMessagingMessage as IMessage } from '../../../models/messaging-message';
 import { publishMainStream } from '../../../services/stream';

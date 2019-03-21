@@ -1,7 +1,4 @@
-import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
 import { pack as packUser } from './user';
 
 const NoteReaction = db.get<INoteReaction>('noteReactions');

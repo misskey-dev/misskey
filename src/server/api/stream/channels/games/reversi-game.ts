@@ -1,6 +1,5 @@
 import autobind from 'autobind-decorator';
 import * as CRC32 from 'crc-32';
-import * as mongo from 'mongodb';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../../services/stream';
 import Reversi from '../../../../../games/reversi/core';

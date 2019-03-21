@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
-
 const Emoji = db.get<IEmoji>('emoji');
 Emoji.createIndex('name');
 Emoji.createIndex('host');

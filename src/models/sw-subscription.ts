@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
-
 const SwSubscription = db.get<ISwSubscription>('swSubscriptions');
 export default SwSubscription;
 

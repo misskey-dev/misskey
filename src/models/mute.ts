@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
-import isObjectId from '../misc/is-objectid';
 import * as deepcopy from 'deepcopy';
 import { pack as packUser, IUser } from './user';
 

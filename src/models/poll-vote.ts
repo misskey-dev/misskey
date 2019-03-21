@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
-
 const PollVote = db.get<IPollVote>('pollVotes');
 PollVote.dropIndex(['userId', 'noteId'], { unique: true }).catch(() => {});
 PollVote.createIndex('userId');

@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import User, { isLocalUser, isRemoteUser } from '../../models/user';
 import Following from '../../models/following';
 import renderPerson from '../../remote/activitypub/renderer/person';

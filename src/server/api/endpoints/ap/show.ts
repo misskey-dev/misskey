@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
 import config from '../../../../config';
-import * as mongo from 'mongodb';
 import User, { pack as packUser, IUser } from '../../../../models/user';
 import { createPerson } from '../../../../remote/activitypub/models/person';
 import Note, { pack as packNote, INote } from '../../../../models/note';

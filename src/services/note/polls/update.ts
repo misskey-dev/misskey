@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import Note, { INote } from '../../../models/note';
 import { updateQuestion } from '../../../remote/activitypub/models/question';
 import ms = require('ms');

@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import { IRemoteUser } from '../../../../models/user';
 import { ILike } from '../../type';
 import Note from '../../../../models/note';

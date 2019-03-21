@@ -1,5 +1,4 @@
 import * as Bull from 'bull';
-import * as mongo from 'mongodb';
 
 import { queueLogger } from '../../logger';
 import Note from '../../../models/note';

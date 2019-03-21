@@ -1,5 +1,4 @@
 import $ from 'cafy';
-import * as mongo from 'mongodb';
 import ID, { transform } from '../../../../../misc/cafy-id';
 import DriveFile, { pack, IDriveFile } from '../../../../../models/drive-file';
 import define from '../../../define';

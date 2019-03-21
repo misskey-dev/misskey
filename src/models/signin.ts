@@ -1,6 +1,4 @@
-import * as mongo from 'mongodb';
 import * as deepcopy from 'deepcopy';
-import db from '../db/mongodb';
 
 const Signin = db.get<ISignin>('signin');
 export default Signin;

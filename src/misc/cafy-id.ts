@@ -1,6 +1,4 @@
-import * as mongo from 'mongodb';
 import { Context } from 'cafy';
-import isObjectId from './is-objectid';
 
 export const isAnId = (x: any) => mongo.ObjectID.isValid(x);
 export const isNotAnId = (x: any) => !isAnId(x);

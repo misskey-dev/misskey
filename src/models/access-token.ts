@@ -1,6 +1,3 @@
-import * as mongo from 'mongodb';
-import db from '../db/mongodb';
-
 const AccessToken = db.get<IAccessToken>('accessTokens');
 AccessToken.createIndex('token');
 AccessToken.createIndex('hash');

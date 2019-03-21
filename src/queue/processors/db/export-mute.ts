@@ -1,7 +1,6 @@
 import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
-import * as mongo from 'mongodb';
 
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';

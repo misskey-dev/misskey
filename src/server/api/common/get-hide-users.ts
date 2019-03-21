@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import Mute from '../../../models/mute';
 import User, { IUser } from '../../../models/user';
 import { unique } from '../../../prelude/array';

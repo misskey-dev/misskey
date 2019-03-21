@@ -1,5 +1,4 @@
 import autobind from 'autobind-decorator';
-import * as mongo from 'mongodb';
 import Matching, { pack } from '../../../../../models/games/reversi/matching';
 import { publishMainStream } from '../../../../../services/stream';
 import Channel from '../../channel';

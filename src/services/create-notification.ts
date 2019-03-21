@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import Notification from '../models/notification';
 import Mute from '../models/mute';
 import { pack } from '../models/notification';
