@@ -1,7 +1,6 @@
 import { Buffer } from 'buffer';
 import * as fs from 'fs';
 
-import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
 import * as Minio from 'minio';
 import * as uuid from 'uuid';

@@ -9,7 +9,6 @@ import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
-import { ObjectID } from 'mongodb';
 
 import docs from './docs';
 import packFeed from './feed';

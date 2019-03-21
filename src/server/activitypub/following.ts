@@ -1,4 +1,3 @@
-import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';

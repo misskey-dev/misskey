@@ -3,7 +3,6 @@ import * as URL from 'url';
 import { IDriveFile, validateFileName } from '../../models/drive-file';
 import create from './add-file';
 import { IUser } from '../../models/user';
-import * as mongodb from 'mongodb';
 import { driveLogger } from './logger';
 import { createTemp } from '../../misc/create-temp';
 import { downloadUrl } from '../../misc/donwload-url';

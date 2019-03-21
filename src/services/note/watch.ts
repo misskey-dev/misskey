@@ -1,4 +1,3 @@
-import * as mongodb from 'mongodb';
 import Watching from '../../models/note-watching';
 
 export default async (me: mongodb.ObjectID, note: object) => {

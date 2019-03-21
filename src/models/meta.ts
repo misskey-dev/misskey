@@ -1,4 +1,3 @@
-import db from '../db/mongodb';
 import config from '../config';
 import User from './user';
 import { transform } from '../misc/cafy-id';

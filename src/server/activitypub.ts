@@ -1,4 +1,3 @@
-import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import * as json from 'koa-json-body';
 import * as httpSignature from 'http-signature';

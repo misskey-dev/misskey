@@ -1,4 +1,3 @@
-import * as mongodb from 'mongodb';
 import Following from '../../../models/following';
 
 export const getFriendIds = async (me: mongodb.ObjectID, includeMe = true) => {

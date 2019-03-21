@@ -1,7 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from './';
 import { IUser, isLocalUser } from '../../models/user';
-import db from '../../db/mongodb';
 
 /**
  * ハッシュタグに関するチャート

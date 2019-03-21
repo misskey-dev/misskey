@@ -1,6 +1,5 @@
 import * as Koa from 'koa';
 import * as send from 'koa-send';
-import * as mongodb from 'mongodb';
 import * as rename from 'rename';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
 import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
