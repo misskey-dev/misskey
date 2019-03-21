@@ -1,16 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn, PrimaryColumn, getRepository } from 'typeorm';
-import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import { packMany as packNoteMany } from './note';
-import Following from './following';
-import Blocking from './blocking';
-import Mute from './mute';
-import { getFriendIds } from '../server/api/common/get-friends';
 import config from '../config';
-import FollowRequest from './follow-request';
-import fetchMeta from '../misc/fetch-meta';
 import Emoji from './emoji';
-import { dbLogger } from '../db/logger';
+import { DriveFile } from './drive-file';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
@@ -263,61 +256,20 @@ export function isValidBirthday(birthday: string): boolean {
 }
 //#endregion
 
-export async function getRelation(me: mongo.ObjectId, target: mongo.ObjectId) {
-	const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
-		Following.findOne({
-			followerId: me,
-			followeeId: target
-		}),
-		Following.findOne({
-			followerId: target,
-			followeeId: me
-		}),
-		FollowRequest.findOne({
-			followerId: me,
-			followeeId: target
-		}),
-		FollowRequest.findOne({
-			followerId: target,
-			followeeId: me
-		}),
-		Blocking.findOne({
-			blockerId: me,
-			blockeeId: target
-		}),
-		Blocking.findOne({
-			blockerId: target,
-			blockeeId: me
-		}),
-		Mute.findOne({
-			muterId: me,
-			muteeId: target
-		})
-	]);
-
-	return {
-		id: target,
-		isFollowing: following1 !== null,
-		hasPendingFollowRequestFromYou: followReq1 !== null,
-		hasPendingFollowRequestToYou: followReq2 !== null,
-		isFollowed: following2 !== null,
-		isBlocking: toBlocking !== null,
-		isBlocked: fromBlocked !== null,
-		isMuted: mute !== null
-	};
+async function cloneOrFetch(x: string | User): Promise<User> {
+	if (typeof x === 'string') {
+		return await Users.findOne(x);
+	} else {
+		return JSON.parse(JSON.stringify(x));
+	}
 }
 
 /**
  * Pack a user for API response
- *
- * @param user target
- * @param me? serializee
- * @param options? serialize options
- * @return Packed user
  */
 export const pack = (
-	user: string | mongo.ObjectID | IUser,
-	me?: string | mongo.ObjectID | IUser,
+	user: string | User,
+	me?: string | User,
 	options?: {
 		detail?: boolean,
 		includeSecrets?: boolean,
@@ -329,7 +281,7 @@ export const pack = (
 		includeSecrets: false
 	}, options);
 
-	let _user: any;
+	const _user = await cloneOrFetch(user);
 
 	const fields = opts.detail ? {} : {
 		name: true,
@@ -344,37 +296,7 @@ export const pack = (
 		isVerified: true
 	};
 
-	// Populate the user if 'user' is ID
-	if (isObjectId(user)) {
-		_user = await Users.findOne({
-			_id: user
-		}, { fields });
-	} else if (typeof user === 'string') {
-		_user = await Users.findOne({
-			_id: new mongo.ObjectID(user)
-		}, { fields });
-	} else {
-		_user = deepcopy(user);
-	}
-
-	// (データベースの欠損などで)ユーザーがデータベース上に見つからなかったとき
-	if (_user == null) {
-		dbLogger.warn(`user not found on database: ${user}`);
-		return resolve(null);
-	}
-
-	// Me
-	const meId: mongo.ObjectID = me
-		? isObjectId(me)
-			? me as mongo.ObjectID
-			: typeof me === 'string'
-				? new mongo.ObjectID(me)
-				: (me as IUser)._id
-		: null;
-
-	// Rename _id to id
-	_user.id = _user._id;
-	delete _user._id;
+	const meId = typeof me === 'string' ? me : me.id;
 
 	delete _user.usernameLower;
 	delete _user.emailVerifyCode;
@@ -445,22 +367,6 @@ export const pack = (
 				detail: true
 			});
 		}
-
-		if (meId && !meId.equals(_user.id)) {
-			const myFollowingIds = await getFriendIds(meId);
-
-			// Get following you know count
-			_user.followingYouKnowCount = Following.count({
-				followeeId: { $in: myFollowingIds },
-				followerId: _user.id
-			});
-
-			// Get followers you know count
-			_user.followersYouKnowCount = Following.count({
-				followeeId: _user.id,
-				followerId: { $in: myFollowingIds }
-			});
-		}
 	}
 
 	if (!opts.includeHasUnreadNotes) {
@@ -483,20 +389,3 @@ export const pack = (
 
 	resolve(_user);
 });
-
-/*
-function img(url) {
-	return {
-		thumbnail: {
-			large: `${url}`,
-			medium: '',
-			small: ''
-		}
-	};
-}
-*/
-
-export async function fetchProxyAccount(): Promise<ILocalUser> {
-	const meta = await fetchMeta();
-	return await Users.findOne({ username: meta.proxyAccount, host: null }) as ILocalUser;
-}
