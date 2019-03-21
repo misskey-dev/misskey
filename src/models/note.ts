@@ -8,9 +8,8 @@ import NoteReaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
 import Following from './following';
 import Emoji from './emoji';
-import { dbLogger } from '../db/logger';
 import { unique, concat } from '../prelude/array';
-import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, getRepository, Column } from 'typeorm';
+import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, Column } from 'typeorm';
 
 @Entity()
 export class Note {
@@ -116,7 +115,7 @@ export class Note {
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
 	 */
-	@Column({ type: Sequelize.ENUM, values: ['public', 'home', 'followers', 'specified'] })
+	@Column({ type: 'enum', enum: ['public', 'home', 'followers', 'specified'] })
 	public visibility: 'public' | 'home' | 'followers' | 'specified';
 
 	@Index({ unique: true })
@@ -134,8 +133,6 @@ export class Note {
 	@BelongsToMany(() => DriveFile, () => NoteDriveFileAttaching)
 	public files: DriveFile[];*/
 }
-
-export const Notes = getRepository(Note);
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;
@@ -256,12 +253,6 @@ export const pack = async (
 		});
 	} else {
 		_note = deepcopy(note);
-	}
-
-	// (データベースの欠損などで)投稿がデータベース上に見つからなかったとき
-	if (_note == null) {
-		dbLogger.warn(`[DAMAGED DB] (missing) pkg: note :: ${note}`);
-		return null;
 	}
 
 	const id = _note._id;

@@ -1,9 +1,8 @@
-import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, getRepository, Column, ManyToOne } from 'typeorm';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
-import { pack as packFolder } from './drive-folder';
+import { pack as packFolder, DriveFolder } from './drive-folder';
 import { pack as packUser, User } from './user';
 import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
-import { dbLogger } from '../db/logger';
 
 @Entity()
 export class DriveFile {
@@ -159,12 +158,6 @@ export const pack = (
 		});
 	} else {
 		_file = deepcopy(file);
-	}
-
-	// (データベースの欠損などで)ファイルがデータベース上に見つからなかったとき
-	if (_file == null) {
-		dbLogger.warn(`[DAMAGED DB] (missing) pkg: driveFile :: ${file}`);
-		return resolve(null);
 	}
 
 	// rendered target

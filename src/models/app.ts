@@ -1,21 +1,64 @@
+import { Entity, PrimaryGeneratedColumn, Column, Index, JoinColumn, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
-import AccessToken from './access-token';
 import config from '../config';
+import { User } from './user';
 
-const App = db.get<IApp>('apps');
-App.createIndex('secret');
-export default App;
+@Entity()
+export class App {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export type IApp = {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	userId: mongo.ObjectID | null;
-	secret: string;
-	name: string;
-	description: string;
-	permission: string[];
-	callbackUrl: string;
-};
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the App.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 24, nullable: true,
+		comment: 'The owner ID.'
+	})
+	public userId: string | null;
+
+	@ManyToOne(type => User, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 64,
+		comment: 'The secret key of the App.'
+	})
+	public secret: string;
+
+	@Column({
+		type: 'varchar', length: 128,
+		comment: 'The name of the App.'
+	})
+	public name: string;
+
+	@Column({
+		type: 'varchar', length: 512,
+		comment: 'The description of the App.'
+	})
+	public description: string;
+
+	@Column({
+		type: 'simple-array',
+		comment: 'The permission of the App.'
+	})
+	public permission: string[];
+
+	@Column({
+		type: 'varchar', length: 256, nullable: true,
+		comment: 'The callbackUrl of the App.'
+	})
+	public callbackUrl: string | null;
+}
 
 /**
  * Pack an app for API response

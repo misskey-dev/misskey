@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Index, Column, getRepository } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
 
 @Entity()
 export class Instance {
@@ -132,5 +132,3 @@ export class Instance {
 	})
 	public isMarkedAsClosed: boolean;
 }
-
-export const Instances = getRepository(Instance);

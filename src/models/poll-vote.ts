@@ -1,14 +1,46 @@
-const PollVote = db.get<IPollVote>('pollVotes');
-PollVote.dropIndex(['userId', 'noteId'], { unique: true }).catch(() => {});
-PollVote.createIndex('userId');
-PollVote.createIndex('noteId');
-PollVote.createIndex(['userId', 'noteId', 'choice'], { unique: true });
-export default PollVote;
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
+import { Note } from './note';
 
-export interface IPollVote {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	userId: mongo.ObjectID;
-	noteId: mongo.ObjectID;
-	choice: number;
+@Entity()
+@Index(['userId', 'noteId', 'choice'], { unique: true })
+export class PollVote {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the PollVote.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 24,
+	})
+	public userId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column({
+		type: 'integer'
+	})
+	public noteId: number;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public note: Note | null;
+
+	@Column({
+		type: 'integer'
+	})
+	public choice: number;
 }

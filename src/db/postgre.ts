@@ -4,8 +4,13 @@ import { dbLogger } from './logger';
 import { Log } from '../models/log';
 import { User } from '../models/user';
 import { DriveFile } from '../models/drive-file';
-import DriveFolder from '../models/drive-folder';
+import { DriveFolder } from '../models/drive-folder';
 import { AccessToken } from '../models/access-token';
+import { App } from '../models/app';
+import { PollVote } from '../models/poll-vote';
+import { NoteReaction } from '../models/note-reaction';
+import { Emoji } from '../models/emoji';
+import { Note } from '../models/note';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -47,11 +52,16 @@ export function initPostgre() {
 		logging: !['production', 'test'].includes(process.env.NODE_ENV),
 		logger: new MyCustomLogger(),
 		entities: [
-			Log,
+			App,
 			User,
+			Note,
+			Log,
 			DriveFile,
 			DriveFolder,
 			AccessToken,
+			PollVote,
+			NoteReaction,
+			Emoji,
 		]
 	});
 }

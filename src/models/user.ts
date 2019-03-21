@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn, PrimaryColumn, getRepository } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import rap from '@prezzemolo/rap';
 import { packMany as packNoteMany } from './note';
 import config from '../config';
@@ -8,8 +8,7 @@ import { DriveFile } from './drive-file';
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
 export class User {
-	@PrimaryColumn()
-	@Column({
+	@PrimaryColumn({
 		type: 'char', length: 24,
 		comment: 'The ID of the User.'
 	})
@@ -211,8 +210,6 @@ export class User {
 	})
 	public autoAcceptFollowed: boolean;
 }
-
-export const Users = getRepository(User);
 
 export interface ILocalUser extends User {
 	host: null;

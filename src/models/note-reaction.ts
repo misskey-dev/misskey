@@ -1,18 +1,50 @@
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import { pack as packUser } from './user';
+import { User } from './user';
+import { Note } from './note';
 
-const NoteReaction = db.get<INoteReaction>('noteReactions');
-NoteReaction.createIndex('noteId');
-NoteReaction.createIndex('userId');
-NoteReaction.createIndex(['userId', 'noteId'], { unique: true });
-export default NoteReaction;
+@Entity()
+@Index(['userId', 'noteId'], { unique: true })
+export class NoteReaction {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface INoteReaction {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	noteId: mongo.ObjectID;
-	userId: mongo.ObjectID;
-	reaction: string;
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the NoteReaction.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 24,
+	})
+	public userId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column({
+		type: 'integer'
+	})
+	public noteId: number;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public note: Note | null;
+
+	@Column({
+		type: 'varchar', length: 32
+	})
+	public reaction: string;
 }
 
 /**
