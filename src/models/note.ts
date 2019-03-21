@@ -33,7 +33,7 @@ export class Note {
 
 	@Index()
 	@Column({
-		type: 'interger', nullable: true,
+		type: 'integer', nullable: true,
 		comment: 'The ID of reply target.'
 	})
 	public replyId: number | null;
@@ -46,7 +46,7 @@ export class Note {
 
 	@Index()
 	@Column({
-		type: 'interger', nullable: true,
+		type: 'integer', nullable: true,
 		comment: 'The ID of renote target.'
 	})
 	public renoteId: number | null;
@@ -96,12 +96,12 @@ export class Note {
 	public localOnly: boolean;
 
 	@Column({
-		type: 'interger', default: 0
+		type: 'integer', default: 0
 	})
 	public renoteCount: number;
 
 	@Column({
-		type: 'interger', default: 0
+		type: 'integer', default: 0
 	})
 	public repliesCount: number;
 
@@ -127,7 +127,7 @@ export class Note {
 	public uri: string | null;
 
 	@Column({
-		type: 'interger', default: 0
+		type: 'integer', default: 0
 	})
 	public score: number;
 /*

@@ -1,42 +1,42 @@
-import * as Sequelize from 'sequelize';
-import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, getRepository, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 
-@Table({
-	indexes: [{
-		unique: true,
-		fields: ['followerId', 'followeeId']
-	}, {
-		fields: ['followeeId']
-	}, {
-		fields: ['followerId']
-	}]
-})
-export class Following extends Model<Following> {
-	@AllowNull(false)
-	@Column(Sequelize.DATE)
+@Entity()
+@Index(['usernameLower', 'host'], { unique: true })
+export class Following {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the Following.'
+	})
 	public createdAt: Date;
 
-	@Comment('The followee user ID.')
-	@AllowNull(false)
-	@ForeignKey(() => User)
-	@Column(Sequelize.INTEGER)
-	public followeeId: number;
+	@Index()
+	@Column({
+		type: 'varchar', length: 24,
+		comment: 'The followee user ID.'
+	})
+	public followeeId: string;
 
-	@BelongsTo(() => User, {
-		foreignKey: 'followeeId',
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
 	})
-	public followee: User;
+	@JoinColumn()
+	public followee: User | null;
 
-	@Comment('The follower user ID.')
-	@AllowNull(false)
-	@ForeignKey(() => User)
-	@Column(Sequelize.INTEGER)
-	public followerId: number;
+	@Index()
+	@Column({
+		type: 'varchar', length: 24,
+		comment: 'The follower user ID.'
+	})
+	public followerId: string;
 
-	@BelongsTo(() => User, {
-		foreignKey: 'followerId',
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
 	})
-	public follower: User;
+	@JoinColumn()
+	public follower: User | null;
 }
