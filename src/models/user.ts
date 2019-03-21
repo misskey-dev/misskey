@@ -22,18 +22,23 @@ import { dbLogger } from '../db/logger';
 		fields: ['uri']
 	}, {
 		unique: true,
-		fields: ['username', 'host']
+		fields: ['usernameLower', 'host']
 	}, {
 		fields: ['createdAt']
 	}, {
 		fields: ['updatedAt']
 	}, {
-		fields: ['username']
+		fields: ['usernameLower']
 	}, {
 		fields: ['host']
 	}]
 })
 export class User extends Model<User> {
+	@Comment('The ID of the User.')
+	@AllowNull(false)
+	@Column(Sequelize.STRING(24))
+	public id: string;
+
 	@AllowNull(false)
 	@Column(Sequelize.DATE)
 	public createdAt: Date;
@@ -46,6 +51,11 @@ export class User extends Model<User> {
 	@AllowNull(false)
 	@Column(Sequelize.STRING)
 	public username: string;
+
+	@Comment('The username (lowercased) of the User.')
+	@AllowNull(false)
+	@Column(Sequelize.STRING)
+	public usernameLower: string;
 
 	@Comment('The name of the User.')
 	@AllowNull(true)
@@ -175,6 +185,16 @@ export class User extends Model<User> {
 	@Default({})
 	@Column(Sequelize.JSONB)
 	public services: Record<string, any>;
+
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public autoWatch: boolean;
+
+	@AllowNull(false)
+	@Default(false)
+	@Column(Sequelize.BOOLEAN)
+	public autoAcceptFollowed: boolean;
 }
 
 type IUserBase = {

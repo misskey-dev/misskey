@@ -9,6 +9,7 @@ import RegistrationTicket from '../../../models/registration-tickets';
 import usersChart from '../../../services/chart/users';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
+import rndstr from 'rndstr';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -76,6 +77,7 @@ export default async (ctx: Koa.BaseContext) => {
 	const secret = generateUserToken();
 
 	const account = new User({
+		id: rndstr('a-z0-9', 24),
 		createdAt: new Date(),
 		username: username,
 		usernameLower: username.toLowerCase(),
