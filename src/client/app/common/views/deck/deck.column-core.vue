@@ -37,7 +37,17 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		columnNumber: {
+			type: Number,
+			required: true
 		}
+	},
+
+	provide() {
+		return {
+			columnNumber: this.columnNumber
+		};
 	},
 
 	methods: {

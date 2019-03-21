@@ -94,7 +94,8 @@ export default Vue.extend({
 	},
 
 	inject: {
-		getColumnVm: { from: 'getColumnVm' }
+		getColumnVm: { from: 'getColumnVm' },
+		columnNumber: { from: 'columnNumber' }
 	},
 
 	watch: {
@@ -116,6 +117,7 @@ export default Vue.extend({
 			inNakedDeckColumn: !this.naked
 		};
 	},
+
 
 	mounted() {
 		this.$refs.body.addEventListener('scroll', this.onScroll, { passive: true });
@@ -206,19 +208,19 @@ export default Vue.extend({
 				action: () => {
 					this.$store.commit('device/swapDownDeckColumn', this.column.id);
 				}
-			} : undefined, null, {
+			} : undefined, null, this.columnNumber > 0 ? {
 				icon: ['far', 'window-restore'],
 				text: this.$t('stack-left'),
 				action: () => {
 					this.$store.commit('device/stackLeftDeckColumn', this.column.id);
 				}
-			}, this.isStacked ? {
+			} : undefined, this.isStacked ? {
 				icon: faWindowMaximize,
 				text: this.$t('pop-right'),
 				action: () => {
 					this.$store.commit('device/popRightDeckColumn', this.column.id);
 				}
-			} : undefined, null, {
+			} : undefined, this.columnNumber > 0 || this.isStacked ? null : undefined, {
 				icon: ['far', 'trash-alt'],
 				text: this.$t('remove'),
 				action: () => {
