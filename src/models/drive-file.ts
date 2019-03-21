@@ -1,101 +1,111 @@
-import * as Sequelize from 'sequelize';
-import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
+import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, getRepository, Column, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import { pack as packFolder } from './drive-folder';
-import { pack as packUser } from './user';
-import isObjectId from '../misc/is-objectid';
+import { pack as packUser, User } from './user';
 import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
 import { dbLogger } from '../db/logger';
 
-@Table({
-	indexes: [{
-		fields: ['md5']
-	}, {
-		fields: ['uri']
-	}, {
-		fields: ['createdAt']
-	}, {
-		fields: ['userId']
-	}, {
-		fields: ['folderId']
-	}]
-})
-export class DriveFile extends Model<DriveFile> {
-	@AllowNull(false)
-	@Column(Sequelize.DATE)
+@Entity()
+export class DriveFile {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the DriveFile.'
+	})
 	public createdAt: Date;
 
-	@AllowNull(true)
-	@Column(Sequelize.DATE)
-	public deletedAt: Date | null;
+	@Index()
+	@Column({
+		type: 'varchar', length: 24, nullable: true,
+		comment: 'The owner ID.'
+	})
+	public userId: string | null;
 
-	@Comment('The owner ID.')
-	@AllowNull(false)
-	@ForeignKey(() => User)
-	@Column(Sequelize.INTEGER)
-	public userId: number;
+	@ManyToOne(type => User, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public user: User | null;
 
-	@Comment('The MD5 hash of the DriveFile.')
-	@AllowNull(false)
-	@Column(Sequelize.STRING)
+	@Index()
+	@Column({
+		type: 'varchar', length: 32,
+		comment: 'The MD5 hash of the DriveFile.'
+	})
 	public md5: string;
 
-	@Comment('The file name of the DriveFile.')
-	@AllowNull(false)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 256,
+		comment: 'The file name of the DriveFile.'
+	})
 	public name: string;
 
-	@Comment('The contentType (MIME) of the DriveFile.')
-	@AllowNull(false)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 128,
+		comment: 'The contentType (MIME) of the DriveFile.'
+	})
 	public contentType: string;
 
-	@Comment('The file size (bytes) of the DriveFile.')
-	@AllowNull(false)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'integer',
+		comment: 'The file size (bytes) of the DriveFile.'
+	})
 	public size: number;
 
-	@Comment('The comment of the DriveFile.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 512, nullable: true,
+		comment: 'The comment of the DriveFile.'
+	})
 	public comment: string | null;
 
-	@Comment('The any properties of the DriveFile. For example, it includes image width/height.')
-	@AllowNull(false)
-	@Default({})
-	@Column(Sequelize.JSONB)
+	@Column({
+		type: 'jsonb', default: {},
+		comment: 'The any properties of the DriveFile. For example, it includes image width/height.'
+	})
 	public properties: Record<string, any>;
 
-	@Comment('The storage information of the DriveFile.')
-	@AllowNull(false)
-	@Default({})
-	@Column(Sequelize.JSONB)
+	@Column({
+		type: 'jsonb', default: {},
+		comment: 'The storage information of the DriveFile.'
+	})
 	public storage: Record<string, any>;
 
-	@Comment('The URI of the DriveFile. it will be null when the DriveFile is local.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Index()
+	@Column({
+		type: 'varchar', length: 512, nullable: true,
+		comment: 'The URI of the DriveFile. it will be null when the DriveFile is local.'
+	})
 	public uri: string | null;
 
-	@Comment('The parent folder ID. If null, it means the DriveFile is located in root.')
-	@AllowNull(true)
-	@ForeignKey(() => DriveFolder)
-	@Column(Sequelize.INTEGER)
+	@Index()
+	@Column({
+		type: 'integer', nullable: true,
+		comment: 'The parent folder ID. If null, it means the DriveFile is located in root.'
+	})
 	public folderId: number | null;
 
-	@Comment('Whether the DriveFile is NSFW.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@ManyToOne(type => DriveFolder, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public folder: DriveFolder | null;
+
+	@Column({
+		type: 'boolean', default: false,
+		comment: 'Whether the DriveFile is NSFW.'
+	})
 	public isSensitive: boolean;
 
 	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か
 	 */
-	@Comment('Whether the DriveFile is direct link to remote server.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', default: false,
+		comment: 'Whether the DriveFile is direct link to remote server.'
+	})
 	public isRemote: boolean;
 }
 

@@ -10,7 +10,7 @@ import Following from './following';
 import Emoji from './emoji';
 import { dbLogger } from '../db/logger';
 import { unique, concat } from '../prelude/array';
-import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, getRepository } from 'typeorm';
+import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, getRepository, Column } from 'typeorm';
 
 @Entity()
 export class Note {
@@ -77,7 +77,7 @@ export class Note {
 		type: 'varchar', length: 24,
 		comment: 'The ID of author.'
 	})
-	public userId: string | null;
+	public userId: string;
 
 	@OneToOne(type => User, {
 		onDelete: 'CASCADE'
