@@ -3,7 +3,7 @@ import * as os from 'os';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
 import { program } from '../argv';
-import Log from '../models/log';
+import { Log, Logs } from '../models/log';
 
 type Domain = {
 	name: string;
@@ -65,15 +65,15 @@ export default class Logger {
 		console.log(important ? chalk.bold(log) : log);
 
 		if (store) {
-			Log.insert({
-				createdAt: new Date(),
-				machine: os.hostname(),
-				worker: worker,
-				domain: [this.domain].concat(subDomains).map(d => d.name),
-				level: level,
-				message: message,
-				data: data,
-			});
+			const logRecord = new Log();
+			logRecord.createdAt = new Date();
+			logRecord.machine = os.hostname();
+			logRecord.worker = worker.toString();
+			logRecord.domain = [this.domain].concat(subDomains).map(d => d.name);
+			logRecord.level = level;
+			logRecord.message = message;
+			logRecord.data = data;
+			Logs.save(logRecord);
 		}
 	}
 
