@@ -15,7 +15,7 @@
 	const langs = LANGS;
 
 	//#region Apply theme
-	const theme = localStorage.getItem('theme');
+	const theme = localStorage.getItem('themes');
 	if (theme) {
 		for (const [k, v] of Object.entries(JSON.parse(theme))) {
 			document.documentElement.style.setProperty(`--${k}`, v.toString());

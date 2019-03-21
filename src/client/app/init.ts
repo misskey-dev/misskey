@@ -19,7 +19,7 @@ import { version, codename, lang, locale } from './config';
 import { builtinThemes, applyTheme, futureTheme } from './theme';
 import Dialog from './common/views/components/dialog.vue';
 
-if (localStorage.getItem('theme') == null) {
+if (localStorage.getItem('themes') == null) {
 	applyTheme(futureTheme);
 }
 
