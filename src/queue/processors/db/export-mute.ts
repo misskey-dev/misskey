@@ -14,7 +14,7 @@ const logger = queueLogger.createSubLogger('export-mute');
 export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting mute of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 
@@ -54,7 +54,7 @@ export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 		cursor = mutes[mutes.length - 1]._id;
 
 		for (const mute of mutes) {
-			const u = await User.findOne({ _id: mute.muteeId }, { fields: { username: true, host: true } });
+			const u = await Users.findOne({ _id: mute.muteeId }, { fields: { username: true, host: true } });
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {

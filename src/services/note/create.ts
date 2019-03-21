@@ -192,7 +192,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	tags = tags.filter(tag => tag.length <= 100);
 
 	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
-		mentionedUsers.push(await User.findOne({ _id: data.reply.userId }));
+		mentionedUsers.push(await Users.findOne({ _id: data.reply.userId }));
 	}
 
 	if (data.visibility == 'specified') {

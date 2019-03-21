@@ -68,7 +68,7 @@ export default define(meta, async (ps, me) => {
 	let user;
 
 	if (ps.userIds) {
-		const users = await User.find({
+		const users = await Users.find({
 			_id: {
 				$in: ps.userIds
 			}
@@ -89,7 +89,7 @@ export default define(meta, async (ps, me) => {
 				? { _id: ps.userId }
 				: { usernameLower: ps.username.toLowerCase(), host: null };
 
-			user = await User.findOne(q, cursorOption);
+			user = await Users.findOne(q, cursorOption);
 		}
 
 		if (user === null) {

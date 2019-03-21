@@ -6,7 +6,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 
 export async function publishToFollowers(userId: mongo.ObjectID) {
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: userId
 	});
 

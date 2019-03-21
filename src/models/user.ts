@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn, PrimaryColumn, getRepository } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import { packMany as packNoteMany } from './note';
@@ -219,6 +219,8 @@ export class User {
 	public autoAcceptFollowed: boolean;
 }
 
+export const Users = getRepository(User);
+
 export interface ILocalUser extends User {
 	host: null;
 }
@@ -344,11 +346,11 @@ export const pack = (
 
 	// Populate the user if 'user' is ID
 	if (isObjectId(user)) {
-		_user = await User.findOne({
+		_user = await Users.findOne({
 			_id: user
 		}, { fields });
 	} else if (typeof user === 'string') {
-		_user = await User.findOne({
+		_user = await Users.findOne({
 			_id: new mongo.ObjectID(user)
 		}, { fields });
 	} else {
@@ -496,5 +498,5 @@ function img(url) {
 
 export async function fetchProxyAccount(): Promise<ILocalUser> {
 	const meta = await fetchMeta();
-	return await User.findOne({ username: meta.proxyAccount, host: null }) as ILocalUser;
+	return await Users.findOne({ username: meta.proxyAccount, host: null }) as ILocalUser;
 }

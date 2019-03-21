@@ -14,7 +14,7 @@ const logger = queueLogger.createSubLogger('export-following');
 export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting following of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 
@@ -54,7 +54,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 		cursor = followings[followings.length - 1]._id;
 
 		for (const following of followings) {
-			const u = await User.findOne({ _id: following.followeeId }, { fields: { username: true, host: true } });
+			const u = await Users.findOne({ _id: following.followeeId }, { fields: { username: true, host: true } });
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {

@@ -14,7 +14,7 @@ const logger = queueLogger.createSubLogger('export-blocking');
 export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting blocking of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 
@@ -54,7 +54,7 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 		cursor = blockings[blockings.length - 1]._id;
 
 		for (const block of blockings) {
-			const u = await User.findOne({ _id: block.blockeeId }, { fields: { username: true, host: true } });
+			const u = await Users.findOne({ _id: block.blockeeId }, { fields: { username: true, host: true } });
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {

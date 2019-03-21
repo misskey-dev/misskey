@@ -7,7 +7,7 @@ import User, { isLocalUser } from '../../../models/user';
  */
 export default async function renderFollowUser(id: mongo.ObjectID): Promise<any> {
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: id
 	});
 

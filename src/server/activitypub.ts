@@ -142,7 +142,7 @@ router.get('/questions/:question', async (ctx, next) => {
 		return;
 	}
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 			_id: poll.userId
 	});
 
@@ -171,7 +171,7 @@ router.get('/users/:user/publickey', async ctx => {
 
 	const userId = new ObjectID(ctx.params.user);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: userId,
 		host: null
 	});
@@ -212,7 +212,7 @@ router.get('/users/:user', async (ctx, next) => {
 
 	const userId = new ObjectID(ctx.params.user);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: userId,
 		host: null
 	});
@@ -223,7 +223,7 @@ router.get('/users/:user', async (ctx, next) => {
 router.get('/@:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		usernameLower: ctx.params.user.toLowerCase(),
 		host: null
 	});

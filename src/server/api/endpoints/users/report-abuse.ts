@@ -79,7 +79,7 @@ export default define(meta, async (ps, me) => {
 
 	// Publish event to moderators
 	setTimeout(async () => {
-		const moderators = await User.find({
+		const moderators = await Users.find({
 			$or: [{
 				isAdmin: true
 			}, {

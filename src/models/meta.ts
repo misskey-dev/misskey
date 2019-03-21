@@ -79,7 +79,7 @@ if ((config as any).recaptcha) {
 if ((config as any).ghost) {
 	Meta.findOne({}).then(async m => {
 		if (m != null && m.proxyAccount == null) {
-			const account = await User.findOne({ _id: transform((config as any).ghost) });
+			const account = await Users.findOne({ _id: transform((config as any).ghost) });
 			Meta.update({}, {
 				$set: {
 					proxyAccount: account.username

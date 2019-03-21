@@ -39,7 +39,7 @@ router.get('/disconnect/github', async ctx => {
 		return;
 	}
 
-	const user = await User.findOneAndUpdate({
+	const user = await Users.findOneAndUpdate({
 		host: null,
 		'token': userToken
 	}, {
@@ -185,7 +185,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const user = await User.findOne({
+		const user = await Users.findOne({
 			host: null,
 			'github.id': id
 		}) as ILocalUser;
@@ -248,7 +248,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const user = await User.findOneAndUpdate({
+		const user = await Users.findOneAndUpdate({
 			host: null,
 			token: userToken
 		}, {

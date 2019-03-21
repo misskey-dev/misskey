@@ -89,11 +89,11 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<IUs
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = new mongo.ObjectID(uri.split('/').pop());
-		return await User.findOne({ _id: id });
+		return await Users.findOne({ _id: id });
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await User.findOne({ uri });
+	const exist = await Users.findOne({ uri });
 
 	if (exist) {
 		return exist;
@@ -286,7 +286,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	}
 
 	//#region このサーバーに既に登録されているか
-	const exist = await User.findOne({ uri }) as IRemoteUser;
+	const exist = await Users.findOne({ uri }) as IRemoteUser;
 
 	if (exist == null) {
 		return;
@@ -492,7 +492,7 @@ export function analyzeAttachments(attachments: ITag[]) {
 }
 
 export async function updateFeatured(userId: mongo.ObjectID) {
-	const user = await User.findOne({ _id: userId });
+	const user = await Users.findOne({ _id: userId });
 	if (!isRemoteUser(user)) return;
 	if (!user.featured) return;
 

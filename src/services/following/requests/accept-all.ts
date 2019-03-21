@@ -12,7 +12,7 @@ export default async function(user: IUser) {
 	});
 
 	for (const request of requests) {
-		const follower = await User.findOne({ _id: request.followerId });
+		const follower = await Users.findOne({ _id: request.followerId });
 		accept(user, follower);
 	}
 

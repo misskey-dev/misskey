@@ -32,7 +32,7 @@ export default async (ctx: Koa.BaseContext) => {
 	}
 
 	// Fetch user
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
 		host: null
 	}, {

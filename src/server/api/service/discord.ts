@@ -39,7 +39,7 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await User.findOneAndUpdate({
+	const user = await Users.findOneAndUpdate({
 		host: null,
 		'token': userToken
 	}, {
@@ -193,7 +193,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		let user = await User.findOne({
+		let user = await Users.findOne({
 			host: null,
 			'discord.id': id
 		}) as ILocalUser;
@@ -203,7 +203,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		user = await User.findOneAndUpdate({
+		user = await Users.findOneAndUpdate({
 			host: null,
 			'discord.id': id
 		}, {
@@ -277,7 +277,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const user = await User.findOneAndUpdate({
+		const user = await Users.findOneAndUpdate({
 			host: null,
 			token: userToken
 		}, {

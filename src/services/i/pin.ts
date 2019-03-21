@@ -87,7 +87,7 @@ export async function removePinned(user: IUser, noteId: mongo.ObjectID) {
 }
 
 export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.ObjectID, isAddition: boolean) {
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: userId
 	});
 

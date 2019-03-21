@@ -54,7 +54,7 @@ async function fetchAny(uri: string) {
 	if (uri.startsWith(config.url + '/')) {
 		const id = new mongo.ObjectID(uri.split('/').pop());
 		const [user, note] = await Promise.all([
-			User.findOne({ _id: id }),
+			Users.findOne({ _id: id }),
 			Note.findOne({ _id: id })
 		]);
 
@@ -69,7 +69,7 @@ async function fetchAny(uri: string) {
 	// URI(AP Object id)としてDB検索
 	{
 		const [user, note] = await Promise.all([
-			User.findOne({ uri: uri }),
+			Users.findOne({ uri: uri }),
 			Note.findOne({ uri: uri })
 		]);
 
@@ -85,7 +85,7 @@ async function fetchAny(uri: string) {
 	// これはDBに存在する可能性があるため再度DB検索
 	if (uri !== object.id) {
 		const [user, note] = await Promise.all([
-			User.findOne({ uri: object.id }),
+			Users.findOne({ uri: object.id }),
 			Note.findOne({ uri: object.id })
 		]);
 

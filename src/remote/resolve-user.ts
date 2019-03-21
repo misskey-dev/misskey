@@ -14,7 +14,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 
 	if (_host == null) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await User.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null });
 	}
 
 	const configHostAscii = toASCII(config.host).toLowerCase();
@@ -25,10 +25,10 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 
 	if (configHost == host) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await User.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null });
 	}
 
-	const user = await User.findOne({ usernameLower, host }, option);
+	const user = await Users.findOne({ usernameLower, host }, option);
 
 	const acctLower = `${usernameLower}@${hostAscii}`;
 
@@ -69,7 +69,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 		await updatePerson(self.href);
 
 		logger.info(`return resynced remote user: ${acctLower}`);
-		return await User.findOne({ uri: self.href });
+		return await Users.findOne({ uri: self.href });
 	}
 
 	logger.info(`return existing remote user: ${acctLower}`);

@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
-import { User, IUser, validateUsername, validatePassword, pack } from '../../../models/user';
+import { validateUsername, validatePassword, pack } from '../../../models/user';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import Meta from '../../../models/meta';

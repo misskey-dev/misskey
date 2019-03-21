@@ -15,7 +15,7 @@ const logger = queueLogger.createSubLogger('import-following');
 export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing following of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 
@@ -30,10 +30,10 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 	for (const line of csv.trim().split('\n')) {
 		const { username, host } = parseAcct(line.trim());
 
-		let target = isSelfHost(host) ? await User.findOne({
+		let target = isSelfHost(host) ? await Users.findOne({
 			host: null,
 			usernameLower: username.toLowerCase()
-		}) : await User.findOne({
+		}) : await Users.findOne({
 			host: toDbHost(host),
 			usernameLower: username.toLowerCase()
 		});

@@ -104,7 +104,7 @@ router.get('/api.json', async ctx => {
 
 const getFeed = async (acct: string) => {
 	const { username, host } = parseAcct(acct);
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
 		host
 	});
@@ -152,7 +152,7 @@ router.get('/@:user.json', async ctx => {
 // User
 router.get('/@:user', async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
 		host
 	});
@@ -178,7 +178,7 @@ router.get('/users/:user', async ctx => {
 
 	const userId = new ObjectID(ctx.params.user);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: userId,
 		host: null
 	});

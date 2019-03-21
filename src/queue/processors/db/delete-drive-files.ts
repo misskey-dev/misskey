@@ -10,7 +10,7 @@ const logger = queueLogger.createSubLogger('delete-drive-files');
 export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Deleting drive files of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 

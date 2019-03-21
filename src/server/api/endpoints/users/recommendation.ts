@@ -75,7 +75,7 @@ export default define(meta, async (ps, me) => {
 		// 隠すユーザーを取得
 		const hideUserIds = await getHideUserIds(me);
 
-		const users = await User.find({
+		const users = await Users.find({
 			_id: {
 				$nin: followingIds.concat(hideUserIds)
 			},

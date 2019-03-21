@@ -11,7 +11,7 @@ import User from '../models/user';
 import Signin from '../models/signin';
 
 async function main(username: string, headers: string[]) {
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		host: null,
 		usernameLower: username.toLowerCase(),
 	});

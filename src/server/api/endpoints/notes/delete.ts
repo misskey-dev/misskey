@@ -63,5 +63,5 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	await deleteNote(await User.findOne({ _id: note.userId }), note);
+	await deleteNote(await Users.findOne({ _id: note.userId }), note);
 });

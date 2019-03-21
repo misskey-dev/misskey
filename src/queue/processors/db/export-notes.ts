@@ -13,7 +13,7 @@ const logger = queueLogger.createSubLogger('export-notes');
 export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting notes of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 

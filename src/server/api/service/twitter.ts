@@ -38,7 +38,7 @@ router.get('/disconnect/twitter', async ctx => {
 		return;
 	}
 
-	const user = await User.findOneAndUpdate({
+	const user = await Users.findOneAndUpdate({
 		host: null,
 		'token': userToken
 	}, {
@@ -132,7 +132,7 @@ router.get('/tw/cb', async ctx => {
 
 		const result = await twAuth.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
-		const user = await User.findOne({
+		const user = await Users.findOne({
 			host: null,
 			'twitter.userId': result.userId
 		}) as ILocalUser;
@@ -161,7 +161,7 @@ router.get('/tw/cb', async ctx => {
 
 		const result = await twAuth.done(JSON.parse(twCtx), verifier);
 
-		const user = await User.findOneAndUpdate({
+		const user = await Users.findOneAndUpdate({
 			host: null,
 			token: userToken
 		}, {

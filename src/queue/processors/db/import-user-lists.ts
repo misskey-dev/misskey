@@ -16,7 +16,7 @@ const logger = queueLogger.createSubLogger('import-user-lists');
 export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 
@@ -46,10 +46,10 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 			});
 		}
 
-		let target = isSelfHost(host) ? await User.findOne({
+		let target = isSelfHost(host) ? await Users.findOne({
 			host: null,
 			usernameLower: username.toLowerCase()
-		}) : await User.findOne({
+		}) : await Users.findOne({
 			host: toDbHost(host),
 			usernameLower: username.toLowerCase()
 		});

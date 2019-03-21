@@ -166,7 +166,7 @@ export default define(meta, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note._user.host != null) {
-		const pollOwner: IRemoteUser = await User.findOne({
+		const pollOwner: IRemoteUser = await Users.findOne({
 			_id: note.userId
 		});
 

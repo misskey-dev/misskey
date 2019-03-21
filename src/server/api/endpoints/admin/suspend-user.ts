@@ -29,7 +29,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: ps.userId
 	});
 
@@ -45,7 +45,7 @@ export default define(meta, async (ps) => {
 		throw new Error('cannot suspend moderator');
 	}
 
-	await User.findOneAndUpdate({
+	await Users.findOneAndUpdate({
 		_id: user._id
 	}, {
 		$set: {
@@ -64,7 +64,7 @@ async function unFollowAll(follower: IUser) {
 	});
 
 	for (const following of followings) {
-		const followee = await User.findOne({
+		const followee = await Users.findOne({
 			_id: following.followeeId
 		});
 

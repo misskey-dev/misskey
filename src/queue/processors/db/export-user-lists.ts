@@ -14,7 +14,7 @@ const logger = queueLogger.createSubLogger('export-user-lists');
 export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting user lists of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 
@@ -35,7 +35,7 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	for (const list of lists) {
-		const users = await User.find({
+		const users = await Users.find({
 			_id: { $in: list.userIds }
 		}, {
 			fields: {

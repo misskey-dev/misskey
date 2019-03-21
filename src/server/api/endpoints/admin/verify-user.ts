@@ -27,7 +27,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: ps.userId
 	});
 
@@ -35,7 +35,7 @@ export default define(meta, async (ps) => {
 		throw new Error('user not found');
 	}
 
-	await User.findOneAndUpdate({
+	await Users.findOneAndUpdate({
 		_id: user._id
 	}, {
 		$set: {

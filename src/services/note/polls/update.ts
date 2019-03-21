@@ -29,7 +29,7 @@ export async function deliverQuestionUpdate(noteId: mongo.ObjectID) {
 		_id: noteId,
 	});
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: note.userId
 	});
 

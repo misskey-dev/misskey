@@ -83,7 +83,7 @@ export default define(meta, async (ps, me) => {
 		? { _id: ps.userId }
 		: { usernameLower: ps.username.toLowerCase(), host: ps.host };
 
-	const user = await User.findOne(q);
+	const user = await Users.findOne(q);
 
 	if (user === null) {
 		throw new ApiError(meta.errors.noSuchUser);

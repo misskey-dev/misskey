@@ -8,7 +8,7 @@ export async function getHideUserIds(me: IUser) {
 
 export async function getHideUserIdsById(meId?: mongo.ObjectID) {
 	const [suspended, muted] = await Promise.all([
-		User.find({
+		Users.find({
 			isSuspended: true
 		}, {
 			fields: {

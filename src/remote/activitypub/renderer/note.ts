@@ -23,7 +23,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		});
 
 		if (inReplyToNote !== null) {
-			const inReplyToUser = await User.findOne({
+			const inReplyToUser = await Users.findOne({
 				_id: inReplyToNote.userId,
 			});
 
@@ -55,7 +55,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		}
 	}
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: note.userId
 	});
 
@@ -81,7 +81,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		to = mentions;
 	}
 
-	const mentionedUsers = note.mentions ? await User.find({
+	const mentionedUsers = note.mentions ? await Users.find({
 		_id: {
 			$in: note.mentions
 		}

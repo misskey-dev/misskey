@@ -52,7 +52,7 @@ export default async (job: Bull.Job): Promise<void> => {
 			return;
 		}
 
-		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
+		user = await Users.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
 	} else {
 		// アクティビティ内のホストの検証
 		const host = toUnicode(new URL(signature.keyId).hostname.toLowerCase());
@@ -71,7 +71,7 @@ export default async (job: Bull.Job): Promise<void> => {
 			return;
 		}
 
-		user = await User.findOne({
+		user = await Users.findOne({
 			host: { $ne: null },
 			'publicKey.id': signature.keyId
 		}) as IRemoteUser;

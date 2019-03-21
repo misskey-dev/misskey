@@ -22,7 +22,7 @@ export async function getNote(noteId: mongo.ObjectID) {
  * Get user for API processing
  */
 export async function getUser(userId: mongo.ObjectID) {
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: userId,
 		$or: [{
 			isDeleted: { $exists: false }

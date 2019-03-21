@@ -10,7 +10,7 @@ const logger = queueLogger.createSubLogger('delete-notes');
 export async function deleteNotes(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Deleting notes of ${job.data.user._id} ...`);
 
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		_id: new mongo.ObjectID(job.data.user._id.toString())
 	});
 

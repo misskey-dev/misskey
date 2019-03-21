@@ -10,7 +10,7 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		return null;
 	}
 
-	const follower = await User.findOne({
+	const follower = await Users.findOne({
 		_id: new mongo.ObjectID(id.split('/').pop())
 	});
 
