@@ -12,7 +12,7 @@ import Following from './following';
 import Emoji from './emoji';
 import { dbLogger } from '../db/logger';
 import { unique, concat } from '../prelude/array';
-import * as Sequelize from 'sequelize';
+import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn } from 'typeorm';
 
 @Table({
 	indexes: [{
@@ -28,88 +28,100 @@ import * as Sequelize from 'sequelize';
 		fields: ['renoteId']
 	}]
 })
-export class Note extends Model<Note> {
-	@AllowNull(false)
-	@Column(Sequelize.DATE)
+
+@Entity()
+export class Note {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the Note.'
+	})
 	public createdAt: Date;
 
-	@AllowNull(true)
-	@Column(Sequelize.DATE)
-	public deletedAt: Date | null;
-
-	@AllowNull(true)
-	@Column(Sequelize.DATE)
+	@Index()
+	@Column({
+		type: 'date', nullable: true,
+		comment: 'The updated date of the Note.'
+	})
 	public updatedAt: Date | null;
 
-	@AllowNull(true)
-	@ForeignKey(() => Note)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'interger', nullable: true,
+		comment: 'The ID of reply target.'
+	})
 	public replyId: number | null;
 
-	@BelongsTo(() => Note, {
-		foreignKey: 'replyId',
+	@OneToOne(type => Note, {
 		onDelete: 'CASCADE'
 	})
-	public reply: Note;
+	@JoinColumn()
+	public reply: Note | null;
 
-	@AllowNull(true)
-	@ForeignKey(() => Note)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'interger', nullable: true,
+		comment: 'The ID of renote target.'
+	})
 	public renoteId: number | null;
 
-	@BelongsTo(() => Note, {
-		foreignKey: 'renoteId',
+	@OneToOne(type => Note, {
 		onDelete: 'CASCADE'
 	})
-	public renote: Note;
+	@JoinColumn()
+	public renote: Note | null;
 
-	@AllowNull(true)
-	@Column(Sequelize.TEXT)
+	@Column({
+		type: 'text', nullable: true
+	})
 	public text: string | null;
 
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 256, nullable: true
+	})
 	public name: string | null;
 
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 512, nullable: true
+	})
 	public cw: string | null;
 
-	@Comment('The ID of author.')
-	@AllowNull(false)
-	@ForeignKey(() => User)
-	@Column(Sequelize.INTEGER)
-	public userId: number;
+	@Column({
+		type: 'varchar', length: 24,
+		comment: 'The ID of author.'
+	})
+	public userId: string | null;
 
-	@BelongsTo(() => User, {
-		foreignKey: 'userId',
+	@OneToOne(type => User, {
 		onDelete: 'CASCADE'
 	})
-	public user: User;
+	@JoinColumn()
+	public user: User | null;
 
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', default: false
+	})
 	public viaMobile: boolean;
 
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', default: false
+	})
 	public localOnly: boolean;
 
-	@AllowNull(false)
-	@Default(0)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'interger', default: 0
+	})
 	public renoteCount: number;
 
-	@AllowNull(false)
-	@Default(0)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'interger', default: 0
+	})
 	public repliesCount: number;
 
-	@AllowNull(false)
-	@Default({})
-	@Column(Sequelize.JSONB)
+	@Column({
+		type: 'jsonb', default: {}
+	})
 	public reactionCounts: Record<string, number>;
 
 	/**
@@ -121,14 +133,16 @@ export class Note extends Model<Note> {
 	@Column({ type: Sequelize.ENUM, values: ['public', 'home', 'followers', 'specified'] })
 	public visibility: 'public' | 'home' | 'followers' | 'specified';
 
-	@Comment('The URI of a note. it will be null when the note is local.')
-	@AllowNull(true)
-	@Column(Sequelize.STRING)
+	@Index({ unique: true })
+	@Column({
+		type: 'varchar', length: 256, nullable: true,
+		comment: 'The URI of a note. it will be null when the note is local.'
+	})
 	public uri: string | null;
 
-	@AllowNull(false)
-	@Default(0)
-	@Column(Sequelize.INTEGER)
+	@Column({
+		type: 'interger', default: 0
+	})
 	public score: number;
 /*
 	@BelongsToMany(() => DriveFile, () => NoteDriveFileAttaching)
