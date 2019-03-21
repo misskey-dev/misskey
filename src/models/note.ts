@@ -1,9 +1,7 @@
-import { Table, Column, Model, AllowNull, BelongsTo, Default, HasMany, BelongsToMany, ForeignKey, Comment } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
-import isObjectId from '../misc/is-objectid';
 import { length } from 'stringz';
-import { IUser, pack as packUser } from './user';
+import { IUser, pack as packUser, User } from './user';
 import { pack as packApp } from './app';
 import PollVote from './poll-vote';
 import NoteReaction from './note-reaction';
@@ -12,22 +10,7 @@ import Following from './following';
 import Emoji from './emoji';
 import { dbLogger } from '../db/logger';
 import { unique, concat } from '../prelude/array';
-import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn } from 'typeorm';
-
-@Table({
-	indexes: [{
-		unique: true,
-		fields: ['uri']
-	}, {
-		fields: ['createdAt']
-	}, {
-		fields: ['userId']
-	}, {
-		fields: ['replyId']
-	}, {
-		fields: ['renoteId']
-	}]
-})
+import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, getRepository } from 'typeorm';
 
 @Entity()
 export class Note {
@@ -48,6 +31,7 @@ export class Note {
 	})
 	public updatedAt: Date | null;
 
+	@Index()
 	@Column({
 		type: 'interger', nullable: true,
 		comment: 'The ID of reply target.'
@@ -60,6 +44,7 @@ export class Note {
 	@JoinColumn()
 	public reply: Note | null;
 
+	@Index()
 	@Column({
 		type: 'interger', nullable: true,
 		comment: 'The ID of renote target.'
@@ -87,6 +72,7 @@ export class Note {
 	})
 	public cw: string | null;
 
+	@Index()
 	@Column({
 		type: 'varchar', length: 24,
 		comment: 'The ID of author.'
@@ -148,6 +134,8 @@ export class Note {
 	@BelongsToMany(() => DriveFile, () => NoteDriveFileAttaching)
 	public files: DriveFile[];*/
 }
+
+export const Notes = getRepository(Note);
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 	let hide = false;

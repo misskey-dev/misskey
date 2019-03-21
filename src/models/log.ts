@@ -1,16 +1,49 @@
-const Log = db.get<ILog>('logs');
-Log.createIndex('createdAt', { expireAfterSeconds: 3600 * 24 * 3 });
-Log.createIndex('level');
-Log.createIndex('domain');
-export default Log;
+import { getRepository, Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
 
-export interface ILog {
-	_id: mongo.ObjectID;
-	createdAt: Date;
-	machine: string;
-	worker: string;
-	domain: string[];
-	level: string;
-	message: string;
-	data: any;
+@Entity()
+export class Log {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the Log.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column({
+		type: 'simple-array',
+	})
+	public domain: string[];
+
+	@Index()
+	@Column({
+		type: 'enum',
+		enum: ['error', 'warning', 'info', 'success', 'debug']
+	})
+	public level: string;
+
+	@Column({
+		type: 'varchar', length: 8
+	})
+	public worker: string;
+
+	@Column({
+		type: 'varchar', length: 128
+	})
+	public machine: string;
+
+	@Column({
+		type: 'varchar', length: 1024
+	})
+	public message: string;
+
+	@Column({
+		type: 'jsonb', default: {}
+	})
+	public data: Record<string, any>;
 }
+
+export const Logs = getRepository(Log);

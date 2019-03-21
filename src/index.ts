@@ -22,11 +22,11 @@ import { Config } from './config/types';
 import { lessThan } from './prelude/array';
 import * as pkg from '../package.json';
 import { program } from './argv';
-import { checkMongoDB } from './misc/check-mongodb';
 import { showMachineInfo } from './misc/show-machine-info';
 
 // for typeorm
 import 'reflect-metadata';
+import { initPostgre } from './db/postgre';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -221,9 +221,9 @@ async function init(): Promise<Config> {
 
 	configLogger.succ('Loaded');
 
-	// Try to connect to MongoDB
+	// Try to connect to DB
 	try {
-		await checkMongoDB(config, bootLogger);
+		await initPostgre();
 	} catch (e) {
 		bootLogger.error('Cannot connect to database', null, true);
 		process.exit(1);
