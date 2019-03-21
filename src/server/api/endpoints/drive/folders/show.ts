@@ -47,7 +47,7 @@ export default define(meta, async (ps, user) => {
 	const folder = await DriveFolder
 		.findOne({
 			_id: ps.folderId,
-			userId: user._id
+			userId: user.id
 		});
 
 	if (folder === null) {

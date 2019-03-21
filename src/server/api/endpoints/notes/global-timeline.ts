@@ -116,16 +116,16 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		query._id = {
+		query.id = {
 			$lt: ps.untilId
 		};
 	} else if (ps.sinceDate) {
-		sort._id = 1;
+		sort.id = 1;
 		query.createdAt = {
 			$gt: new Date(ps.sinceDate)
 		};

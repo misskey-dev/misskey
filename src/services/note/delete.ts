@@ -26,8 +26,8 @@ export default async function(user: IUser, note: INote, quiet = false) {
 	const deletedAt = new Date();
 
 	await Note.update({
-		_id: note._id,
-		userId: user._id
+		_id: note.id,
+		userId: user.id
 	}, {
 		$set: {
 			deletedAt: deletedAt,
@@ -48,14 +48,14 @@ export default async function(user: IUser, note: INote, quiet = false) {
 				score: -1
 			},
 			$pull: {
-				_quoteIds: note._id
+				_quoteIds: note.id
 			}
 		});
 	}
 
 	// この投稿が関わる未読通知を削除
 	NoteUnread.find({
-		noteId: note._id
+		noteId: note.id
 	}).then(unreads => {
 		for (const unread of unreads) {
 			read(unread.userId, unread.noteId);
@@ -64,7 +64,7 @@ export default async function(user: IUser, note: INote, quiet = false) {
 
 	// この投稿をお気に入りから削除
 	Favorite.remove({
-		noteId: note._id
+		noteId: note.id
 	});
 
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティからこの投稿を削除
@@ -72,23 +72,23 @@ export default async function(user: IUser, note: INote, quiet = false) {
 		for (const fileId of note.fileIds) {
 			DriveFile.update({ _id: fileId }, {
 				$pull: {
-					'metadata.attachedNoteIds': note._id
+					'metadata.attachedNoteIds': note.id
 				}
 			});
 		}
 	}
 
 	if (!quiet) {
-		publishNoteStream(note._id, 'deleted', {
+		publishNoteStream(note.id, 'deleted', {
 			deletedAt: deletedAt
 		});
 
 		//#region ローカルの投稿なら削除アクティビティを配送
 		if (isLocalUser(user)) {
-			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note._id}`), user));
+			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
 
 			const followings = await Following.find({
-				followeeId: user._id,
+				followeeId: user.id,
 				'_follower.host': { $ne: null }
 			});
 
@@ -104,7 +104,7 @@ export default async function(user: IUser, note: INote, quiet = false) {
 
 		if (isRemoteUser(user)) {
 			registerOrFetchInstanceDoc(user.host).then(i => {
-				Instance.update({ _id: i._id }, {
+				Instance.update({ _id: i.id }, {
 					$inc: {
 						notesCount: -1
 					}

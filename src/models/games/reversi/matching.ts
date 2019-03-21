@@ -25,14 +25,14 @@ export const pack = (
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
-				: (me as IUser)._id
+				: (me as IUser).id
 		: null;
 
 	const _matching = deepcopy(matching);
 
 	// Rename _id to id
-	_matching.id = _matching._id;
-	delete _matching._id;
+	_matching.id = _matching.id;
+	delete _matching.id;
 
 	// Populate user
 	_matching.parent = await packUser(_matching.parentId, meId);

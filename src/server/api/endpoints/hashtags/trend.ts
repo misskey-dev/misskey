@@ -60,7 +60,7 @@ export default define(meta, async () => {
 	}[] = [];
 
 	// カウント
-	for (const x of data.map(x => x._id).filter(x => !hidedTags.includes(x.tag))) {
+	for (const x of data.map(x => x.id).filter(x => !hidedTags.includes(x.tag))) {
 		const i = tags.findIndex(tag => tag.name == x.tag);
 		if (i != -1) {
 			tags[i].count++;

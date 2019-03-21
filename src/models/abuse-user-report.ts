@@ -39,8 +39,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_report.id = _report._id;
-	delete _report._id;
+	_report.id = _report.id;
+	delete _report.id;
 
 	_report.reporter = await packUser(_report.reporterId, null, { detail: true });
 	_report.user = await packUser(_report.userId, null, { detail: true });

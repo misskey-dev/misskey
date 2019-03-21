@@ -64,7 +64,7 @@ export default class Connection {
 	@autobind
 	private async onApiRequest(payload: any) {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
-		const user = this.user ? await Users.findOne({ _id: this.user._id }) : null;
+		const user = this.user ? await Users.findOne({ _id: this.user.id }) : null;
 
 		const endpoint = payload.endpoint || payload.ep; // alias
 
@@ -79,7 +79,7 @@ export default class Connection {
 	@autobind
 	private onReadNotification(payload: any) {
 		if (!payload.id) return;
-		readNotification(this.user._id, payload.id);
+		readNotification(this.user.id, payload.id);
 	}
 
 	/**
@@ -100,7 +100,7 @@ export default class Connection {
 		}
 
 		if (payload.read) {
-			readNote(this.user._id, payload.id);
+			readNote(this.user.id, payload.id);
 		}
 	}
 

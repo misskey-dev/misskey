@@ -50,8 +50,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_request.id = _request._id;
-	delete _request._id;
+	_request.id = _request.id;
+	delete _request.id;
 
 	// Populate follower
 	_request.follower = await packUser(_request.followerId, me);

@@ -120,10 +120,10 @@ export default define(meta, async (ps, me) => {
 		visibility: { $in: [ 'public', 'home' ] }
 	}, {
 		// myself (for specified/private)
-		userId: me._id
+		userId: me.id
 	}, {
 		// to me (for specified)
-		visibleUserIds: { $in: [ me._id ] }
+		visibleUserIds: { $in: [ me.id ] }
 	}];
 
 	const q: any = {
@@ -143,12 +143,12 @@ export default define(meta, async (ps, me) => {
 	const push = (x: any) => q.$and.push(x);
 
 	if (ps.following != null && me != null) {
-		const ids = await getFriendIds(me._id, false);
+		const ids = await getFriendIds(me.id, false);
 		push({
 			userId: ps.following ? {
 				$in: ids
 			} : {
-				$nin: ids.concat(me._id)
+				$nin: ids.concat(me.id)
 			}
 		});
 	}

@@ -191,7 +191,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	// Register host
 	registerOrFetchInstanceDoc(host).then(i => {
-		Instance.update({ _id: i._id }, {
+		Instance.update({ _id: i.id }, {
 			$inc: {
 				usersCount: 1
 			}
@@ -224,14 +224,14 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 			: resolveImage(user, img).catch(() => null)
 	)));
 
-	const avatarId = avatar ? avatar._id : null;
-	const bannerId = banner ? banner._id : null;
+	const avatarId = avatar ? avatar.id : null;
+	const bannerId = banner ? banner.id : null;
 	const avatarUrl = getDriveFileUrl(avatar, true);
 	const bannerUrl = getDriveFileUrl(banner, false);
 	const avatarColor = avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
 	const bannerColor = banner && avatar.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
 
-	await User.update({ _id: user._id }, {
+	await User.update({ _id: user.id }, {
 		$set: {
 			avatarId,
 			bannerId,
@@ -258,14 +258,14 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<IU
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	await User.update({ _id: user._id }, {
+	await User.update({ _id: user.id }, {
 		$set: {
 			emojis: emojiNames
 		}
 	});
 	//#endregion
 
-	await updateFeatured(user._id).catch(err => logger.error(err));
+	await updateFeatured(user.id).catch(err => logger.error(err));
 
 	return user;
 }
@@ -294,7 +294,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	//#endregion
 
 	// 繋がらないインスタンスに何回も試行するのを防ぐ, 後続の同様処理の連続試行を防ぐ ため 試行前にも更新する
-	await User.update({ _id: exist._id }, {
+	await User.update({ _id: exist.id }, {
 		$set: {
 			lastFetchedAt: new Date(),
 		},
@@ -378,19 +378,19 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	} as any;
 
 	if (avatar) {
-		updates.avatarId = avatar._id;
+		updates.avatarId = avatar.id;
 		updates.avatarUrl = getDriveFileUrl(avatar, true);
 		updates.avatarColor = avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
 	}
 
 	if (banner) {
-		updates.bannerId = banner._id;
+		updates.bannerId = banner.id;
 		updates.bannerUrl = getDriveFileUrl(banner, true);
 		updates.bannerColor = banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
 	}
 
 	// Update user
-	await User.update({ _id: exist._id }, {
+	await User.update({ _id: exist.id }, {
 		$set: updates
 	});
 
@@ -400,7 +400,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 	await Following.update({
-		followerId: exist._id
+		followerId: exist.id
 	}, {
 		$set: {
 			'_follower.sharedInbox': person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined)
@@ -409,7 +409,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		multi: true
 	});
 
-	await updateFeatured(exist._id).catch(err => logger.error(err));
+	await updateFeatured(exist.id).catch(err => logger.error(err));
 }
 
 /**
@@ -516,9 +516,9 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver)) as Promise<INote>));
 
-	await User.update({ _id: user._id }, {
+	await User.update({ _id: user.id }, {
 		$set: {
-			pinnedNoteIds: featuredNotes.filter(note => note != null).map(note => note._id)
+			pinnedNoteIds: featuredNotes.filter(note => note != null).map(note => note.id)
 		}
 	});
 }

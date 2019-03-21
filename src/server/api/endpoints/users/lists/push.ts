@@ -59,7 +59,7 @@ export default define(meta, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
-		userId: me._id,
+		userId: me.id,
 	});
 
 	if (userList == null) {
@@ -72,7 +72,7 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	if (userList.userIds.map(id => id.toHexString()).includes(user._id.toHexString())) {
+	if (userList.userIds.map(id => id.toHexString()).includes(user.id.toHexString())) {
 		throw new ApiError(meta.errors.alreadyAdded);
 	}
 

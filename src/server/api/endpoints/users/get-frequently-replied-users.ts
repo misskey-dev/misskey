@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 
 	// Fetch recent notes
 	const recentNotes = await Note.find({
-		userId: user._id,
+		userId: user.id,
 		replyId: {
 			$exists: true,
 			$ne: null
@@ -76,7 +76,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	const hideUserIds = await getHideUserIds(me);
-	hideUserIds.push(user._id);
+	hideUserIds.push(user.id);
 
 	const replyTargetNotes = await Note.find({
 		_id: {

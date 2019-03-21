@@ -20,13 +20,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			'clientSettings.mobileHome': ps.home
 		}
 	});
 
-	publishMainStream(user._id, 'mobileHomeUpdated', ps.home);
+	publishMainStream(user.id, 'mobileHomeUpdated', ps.home);
 
 	return;
 });

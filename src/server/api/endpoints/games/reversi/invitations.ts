@@ -10,7 +10,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	// Find session
 	const invitations = await Matching.find({
-		childId: user._id
+		childId: user.id
 	}, {
 		sort: {
 			_id: -1

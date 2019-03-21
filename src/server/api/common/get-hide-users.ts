@@ -3,7 +3,7 @@ import User, { IUser } from '../../../models/user';
 import { unique } from '../../../prelude/array';
 
 export async function getHideUserIds(me: IUser) {
-	return await getHideUserIdsById(me ? me._id : null);
+	return await getHideUserIdsById(me ? me.id : null);
 }
 
 export async function getHideUserIdsById(meId?: mongo.ObjectID) {
@@ -20,5 +20,5 @@ export async function getHideUserIdsById(meId?: mongo.ObjectID) {
 		}) : Promise.resolve([])
 	]);
 
-	return unique(suspended.map(user => user._id).concat(muted.map(mute => mute.muteeId)));
+	return unique(suspended.map(user => user.id).concat(muted.map(mute => mute.muteeId)));
 }

@@ -163,7 +163,7 @@ export const pack = (
 	// rendered target
 	let _target: any = {};
 
-	_target.id = _file._id;
+	_target.id = _file.id;
 	_target.createdAt = _file.uploadDate;
 	_target.name = _file.filename;
 	_target.type = _file.contentType;

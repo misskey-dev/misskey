@@ -22,7 +22,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const userLists = await UserList.find({
-		userId: me._id,
+		userId: me.id,
 	});
 
 	return await Promise.all(userLists.map(x => pack(x)));

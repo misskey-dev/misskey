@@ -240,7 +240,7 @@ export default define(meta, async (ps, user, app) => {
 		files = await Promise.all(fileIds.map(fileId => {
 			return DriveFile.findOne({
 				_id: fileId,
-				'metadata.userId': user._id
+				'metadata.userId': user.id
 			});
 		}));
 

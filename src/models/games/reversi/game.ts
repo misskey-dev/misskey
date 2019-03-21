@@ -78,12 +78,12 @@ export const pack = (
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
-				: (me as IUser)._id
+				: (me as IUser).id
 		: null;
 
 	// Rename _id to id
-	_game.id = _game._id;
-	delete _game._id;
+	_game.id = _game.id;
+	delete _game.id;
 
 	if (opts.detail === false) {
 		delete _game.logs;

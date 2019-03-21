@@ -88,7 +88,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
+	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
@@ -104,18 +104,18 @@ export default define(meta, async (ps, user) => {
 			const folder = await DriveFolder
 				.findOne({
 					_id: ps.folderId,
-					userId: user._id
+					userId: user.id
 				});
 
 			if (folder === null) {
 				throw new ApiError(meta.errors.noSuchFolder);
 			}
 
-			file.metadata.folderId = folder._id;
+			file.metadata.folderId = folder.id;
 		}
 	}
 
-	await DriveFile.update(file._id, {
+	await DriveFile.update(file.id, {
 		$set: {
 			filename: file.filename,
 			'metadata.folderId': file.metadata.folderId,
@@ -125,11 +125,11 @@ export default define(meta, async (ps, user) => {
 
 	// ドライブのファイルが非正規化されているドキュメントも更新
 	Note.find({
-		'_files._id': file._id
+		'_files.id': file.id
 	}).then(notes => {
 		for (const note of notes) {
-			note._files[note._files.findIndex(f => f._id.equals(file._id))] = file;
-			Note.update({ _id: note._id }, {
+			note._files[note._files.findIndex(f => f.id.equals(file.id))] = file;
+			Note.update({ _id: note.id }, {
 				$set: {
 					_files: note._files
 				}
@@ -140,7 +140,7 @@ export default define(meta, async (ps, user) => {
 	const fileObj = await pack(file, { self: true });
 
 	// Publish fileUpdated event
-	publishDriveStream(user._id, 'fileUpdated', fileObj);
+	publishDriveStream(user.id, 'fileUpdated', fileObj);
 
 	return fileObj;
 });

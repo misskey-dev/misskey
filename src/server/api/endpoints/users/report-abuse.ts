@@ -62,7 +62,7 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	if (user._id.equals(me._id)) {
+	if (user.id.equals(me.id)) {
 		throw new ApiError(meta.errors.cannotReportYourself);
 	}
 
@@ -72,8 +72,8 @@ export default define(meta, async (ps, me) => {
 
 	const report = await AbuseUserReport.insert({
 		createdAt: new Date(),
-		userId: user._id,
-		reporterId: me._id,
+		userId: user.id,
+		reporterId: me.id,
 		comment: ps.comment
 	});
 
@@ -88,8 +88,8 @@ export default define(meta, async (ps, me) => {
 		});
 
 		for (const moderator of moderators) {
-			publishAdminStream(moderator._id, 'newAbuseUserReport', {
-				id: report._id,
+			publishAdminStream(moderator.id, 'newAbuseUserReport', {
+				id: report.id,
 				userId: report.userId,
 				reporterId: report.reporterId,
 				comment: report.comment

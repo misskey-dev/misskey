@@ -98,8 +98,8 @@ export default define(meta, async (ps, user) => {
 
 	// if already voted
 	const exist = await Vote.find({
-		noteId: note._id,
-		userId: user._id
+		noteId: note.id,
+		userId: user.id
 	});
 
 	if (exist.length) {
@@ -114,8 +114,8 @@ export default define(meta, async (ps, user) => {
 	// Create vote
 	const vote = await Vote.insert({
 		createdAt,
-		noteId: note._id,
-		userId: user._id,
+		noteId: note.id,
+		userId: user.id,
 		choice: ps.choice
 	});
 
@@ -123,26 +123,26 @@ export default define(meta, async (ps, user) => {
 	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == ps.choice)}.votes`] = 1;
 
 	// Increment votes count
-	await Note.update({ _id: note._id }, {
+	await Note.update({ _id: note.id }, {
 		$inc: inc
 	});
 
-	publishNoteStream(note._id, 'pollVoted', {
+	publishNoteStream(note.id, 'pollVoted', {
 		choice: ps.choice,
-		userId: user._id.toHexString()
+		userId: user.id.toHexString()
 	});
 
 	// Notify
-	notify(note.userId, user._id, 'poll_vote', {
-		noteId: note._id,
+	notify(note.userId, user.id, 'poll_vote', {
+		noteId: note.id,
 		choice: ps.choice
 	});
 
 	// Fetch watchers
 	Watching
 		.find({
-			noteId: note._id,
-			userId: { $ne: user._id },
+			noteId: note.id,
+			userId: { $ne: user.id },
 			// 削除されたドキュメントは除く
 			deletedAt: { $exists: false }
 		}, {
@@ -152,8 +152,8 @@ export default define(meta, async (ps, user) => {
 		})
 		.then(watchers => {
 			for (const watcher of watchers) {
-				notify(watcher.userId, user._id, 'poll_vote', {
-					noteId: note._id,
+				notify(watcher.userId, user.id, 'poll_vote', {
+					noteId: note.id,
 					choice: ps.choice
 				});
 			}
@@ -161,7 +161,7 @@ export default define(meta, async (ps, user) => {
 
 	// この投稿をWatchする
 	if (user.settings.autoWatch !== false) {
-		watch(user._id, note);
+		watch(user.id, note);
 	}
 
 	// リモート投票の場合リプライ送信
@@ -174,7 +174,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// リモートフォロワーにUpdate配信
-	deliverQuestionUpdate(note._id);
+	deliverQuestionUpdate(note.id);
 
 	return;
 });

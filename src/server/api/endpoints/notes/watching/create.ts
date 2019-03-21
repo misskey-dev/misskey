@@ -45,5 +45,5 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	await watch(user._id, note);
+	await watch(user.id, note);
 });

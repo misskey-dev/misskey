@@ -15,7 +15,7 @@ import fetchMeta from '../../../misc/fetch-meta';
 
 export default async (user: IUser, note: INote, reaction: string) => {
 	// Myself
-	if (note.userId.equals(user._id)) {
+	if (note.userId.equals(user.id)) {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
 	}
 
@@ -25,8 +25,8 @@ export default async (user: IUser, note: INote, reaction: string) => {
 	// Create reaction
 	await NoteReaction.insert({
 		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id,
+		noteId: note.id,
+		userId: user.id,
 		reaction
 	}).catch(e => {
 		// duplicate key error
@@ -38,7 +38,7 @@ export default async (user: IUser, note: INote, reaction: string) => {
 	});
 
 	// Increment reactions count
-	await Note.update({ _id: note._id }, {
+	await Note.update({ _id: note.id }, {
 		$inc: {
 			[`reactionCounts.${reaction}`]: 1,
 			score: 1
@@ -47,15 +47,15 @@ export default async (user: IUser, note: INote, reaction: string) => {
 
 	perUserReactionsChart.update(user, note);
 
-	publishNoteStream(note._id, 'reacted', {
+	publishNoteStream(note.id, 'reacted', {
 		reaction: reaction,
-		userId: user._id
+		userId: user.id
 	});
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成
 	if (isLocalUser(note._user)) {
-		notify(note.userId, user._id, 'reaction', {
-			noteId: note._id,
+		notify(note.userId, user.id, 'reaction', {
+			noteId: note.id,
 			reaction: reaction
 		});
 	}
@@ -63,8 +63,8 @@ export default async (user: IUser, note: INote, reaction: string) => {
 	// Fetch watchers
 	NoteWatching
 		.find({
-			noteId: note._id,
-			userId: { $ne: user._id }
+			noteId: note.id,
+			userId: { $ne: user.id }
 		}, {
 			fields: {
 				userId: true
@@ -72,8 +72,8 @@ export default async (user: IUser, note: INote, reaction: string) => {
 		})
 		.then(watchers => {
 			for (const watcher of watchers) {
-				notify(watcher.userId, user._id, 'reaction', {
-					noteId: note._id,
+				notify(watcher.userId, user.id, 'reaction', {
+					noteId: note.id,
 					reaction: reaction
 				});
 			}
@@ -81,7 +81,7 @@ export default async (user: IUser, note: INote, reaction: string) => {
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
 	if (isLocalUser(user) && user.settings.autoWatch !== false) {
-		watch(user._id, note);
+		watch(user.id, note);
 	}
 
 	//#region 配信

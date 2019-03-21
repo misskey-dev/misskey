@@ -25,8 +25,8 @@ export const pack = (
 	const _record = deepcopy(record);
 
 	// Rename _id to id
-	_record.id = _record._id;
-	delete _record._id;
+	_record.id = _record.id;
+	delete _record.id;
 
 	resolve(_record);
 });

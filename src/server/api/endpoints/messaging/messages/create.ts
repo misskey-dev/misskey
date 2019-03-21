@@ -78,7 +78,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Myself
-	if (ps.userId.equals(user._id)) {
+	if (ps.userId.equals(user.id)) {
 		throw new ApiError(meta.errors.recipientIsYourself);
 	}
 
@@ -92,7 +92,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.fileId != null) {
 		file = await DriveFile.findOne({
 			_id: ps.fileId,
-			'metadata.userId': user._id
+			'metadata.userId': user.id
 		});
 
 		if (file === null) {
@@ -107,10 +107,10 @@ export default define(meta, async (ps, user) => {
 
 	const message = await Message.insert({
 		createdAt: new Date(),
-		fileId: file ? file._id : undefined,
-		recipientId: recipient._id,
+		fileId: file ? file.id : undefined,
+		recipientId: recipient.id,
 		text: ps.text ? ps.text.trim() : undefined,
-		userId: user._id,
+		userId: user.id,
 		isRead: false
 	});
 
@@ -127,7 +127,7 @@ export default define(meta, async (ps, user) => {
 	publishMainStream(message.recipientId, 'messagingMessage', messageObj);
 
 	// Update flag
-	User.update({ _id: recipient._id }, {
+	User.update({ _id: recipient.id }, {
 		$set: {
 			hasUnreadMessagingMessage: true
 		}
@@ -135,16 +135,16 @@ export default define(meta, async (ps, user) => {
 
 	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
-		const freshMessage = await Message.findOne({ _id: message._id }, { isRead: true });
+		const freshMessage = await Message.findOne({ _id: message.id }, { isRead: true });
 		if (freshMessage == null) return; // メッセージが削除されている場合もある
 		if (!freshMessage.isRead) {
 			//#region ただしミュートされているなら発行しない
 			const mute = await Mute.find({
-				muterId: recipient._id,
+				muterId: recipient.id,
 				deletedAt: { $exists: false }
 			});
 			const mutedUserIds = mute.map(m => m.muteeId.toString());
-			if (mutedUserIds.indexOf(user._id.toString()) != -1) {
+			if (mutedUserIds.indexOf(user.id.toString()) != -1) {
 				return;
 			}
 			//#endregion

@@ -40,14 +40,14 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const message = await Message.findOne({
 		_id: ps.messageId,
-		recipientId: user._id
+		recipientId: user.id
 	});
 
 	if (message == null) {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	read(user._id, message.userId, message);
+	read(user.id, message.userId, message);
 
 	return;
 });

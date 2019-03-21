@@ -9,7 +9,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	await Matching.remove({
-		parentId: user._id
+		parentId: user.id
 	});
 
 	return;

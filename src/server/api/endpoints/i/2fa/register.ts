@@ -31,7 +31,7 @@ export default define(meta, async (ps, user) => {
 		length: 32
 	});
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			twoFactorTempSecret: secret.base32
 		}

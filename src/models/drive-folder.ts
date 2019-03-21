@@ -73,8 +73,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_folder.id = _folder._id;
-	delete _folder._id;
+	_folder.id = _folder.id;
+	delete _folder.id;
 
 	if (opts.detail) {
 		const childFoldersCount = await DriveFolder.count({

@@ -48,12 +48,12 @@ export default async (ctx: Router.IRouterContext) => {
 
 	if (page) {
 		const query = {
-			followeeId: user._id
+			followeeId: user.id
 		} as any;
 
 		// カーソルが指定されている場合
 		if (cursor) {
-			query._id = {
+			query.id = {
 				$lt: transform(cursor)
 			};
 		}
@@ -79,7 +79,7 @@ export default async (ctx: Router.IRouterContext) => {
 			null,
 			inStock ? `${partOf}?${url.query({
 				page: 'true',
-				cursor: followings[followings.length - 1]._id.toHexString()
+				cursor: followings[followings.length - 1].id.toHexString()
 			})}` : null
 		);
 

@@ -19,7 +19,7 @@ async function main(username: string, headers: string[]) {
 	if (user === null) throw 'User not found';
 
 	const history = await Signin.find({
-		userId: user._id
+		userId: user.id
 	});
 
 	for (const signin of history) {

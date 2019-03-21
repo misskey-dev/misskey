@@ -79,7 +79,7 @@ export default define(meta, async (ps) => {
 	const session = await AuthSess
 		.findOne({
 			token: ps.token,
-			appId: app._id
+			appId: app.id
 		});
 
 	if (session === null) {
@@ -92,7 +92,7 @@ export default define(meta, async (ps) => {
 
 	// Lookup access token
 	const accessToken = await AccessToken.findOne({
-		appId: app._id,
+		appId: app.id,
 		userId: session.userId
 	});
 
@@ -100,11 +100,11 @@ export default define(meta, async (ps) => {
 
 	/* https://github.com/Automattic/monk/issues/178
 	AuthSess.deleteOne({
-		_id: session._id
+		_id: session.id
 	});
 	*/
 	AuthSess.remove({
-		_id: session._id
+		_id: session.id
 	});
 
 	return {

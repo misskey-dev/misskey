@@ -14,7 +14,7 @@ export default async (actor: IRemoteUser, activity: IRemove): Promise<void> => {
 
 	if (activity.target === actor.featured) {
 		const note = await resolveNote(activity.object);
-		await removePinned(actor, note._id);
+		await removePinned(actor, note.id);
 		return;
 	}
 

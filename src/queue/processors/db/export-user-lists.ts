@@ -12,14 +12,14 @@ import { getFullApAccount } from '../../../misc/convert-host';
 const logger = queueLogger.createSubLogger('export-user-lists');
 
 export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Exporting user lists of ${job.data.user._id} ...`);
+	logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	const lists = await UserList.find({
-		userId: user._id
+		userId: user.id
 	});
 
 	// Create temp file
@@ -66,7 +66,7 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	const fileName = 'user-lists-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
 	const driveFile = await addFile(user, path, fileName);
 
-	logger.succ(`Exported to: ${driveFile._id}`);
+	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();
 	done();
 }

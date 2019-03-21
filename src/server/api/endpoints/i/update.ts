@@ -270,17 +270,17 @@ export default define(meta, async (ps, user, app) => {
 	}
 	//#endregion
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: updates
 	});
 
-	const iObj = await pack(user._id, user, {
+	const iObj = await pack(user.id, user, {
 		detail: true,
 		includeSecrets: isSecure
 	});
 
 	// Publish meUpdated event
-	publishMainStream(user._id, 'meUpdated', iObj);
+	publishMainStream(user.id, 'meUpdated', iObj);
 
 	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 	if (user.isLocked && ps.isLocked === false) {
@@ -288,7 +288,7 @@ export default define(meta, async (ps, user, app) => {
 	}
 
 	// フォロワーにUpdateを配信
-	publishToFollowers(user._id);
+	publishToFollowers(user.id);
 
 	return iObj;
 });

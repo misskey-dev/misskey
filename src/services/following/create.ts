@@ -24,8 +24,8 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 
 	await Following.insert({
 		createdAt: new Date(),
-		followerId: follower._id,
-		followeeId: followee._id,
+		followerId: follower.id,
+		followeeId: followee.id,
 
 		// 非正規化
 		_follower: {
@@ -40,7 +40,7 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 		}
 	}).catch(e => {
 		if (e.code === 11000 && isRemoteUser(follower) && isLocalUser(followee)) {
-			logger.info(`Insert duplicated ignore. ${follower._id} => ${followee._id}`);
+			logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
 			alreadyFollowed = true;
 		} else {
 			throw e;
@@ -48,12 +48,12 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 	});
 
 	const removed = await FollowRequest.remove({
-		followeeId: followee._id,
-		followerId: follower._id
+		followeeId: followee.id,
+		followerId: follower.id
 	});
 
 	if (removed.deletedCount === 1) {
-		await User.update({ _id: followee._id }, {
+		await User.update({ _id: followee.id }, {
 			$inc: {
 				pendingReceivedFollowRequestsCount: -1
 			}
@@ -63,13 +63,13 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 	if (alreadyFollowed) return;
 
 	//#region Increment counts
-	User.update({ _id: follower._id }, {
+	User.update({ _id: follower.id }, {
 		$inc: {
 			followingCount: 1
 		}
 	});
 
-	User.update({ _id: followee._id }, {
+	User.update({ _id: followee.id }, {
 		$inc: {
 			followersCount: 1
 		}
@@ -79,7 +79,7 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 	//#region Update instance stats
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
 		registerOrFetchInstanceDoc(follower.host).then(i => {
-			Instance.update({ _id: i._id }, {
+			Instance.update({ _id: i.id }, {
 				$inc: {
 					followingCount: 1
 				}
@@ -89,7 +89,7 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 		});
 	} else if (isLocalUser(follower) && isRemoteUser(followee)) {
 		registerOrFetchInstanceDoc(followee.host).then(i => {
-			Instance.update({ _id: i._id }, {
+			Instance.update({ _id: i.id }, {
 				$inc: {
 					followersCount: 1
 				}
@@ -106,15 +106,15 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 	if (isLocalUser(follower)) {
 		packUser(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower._id, 'follow', packed));
+		}).then(packed => publishMainStream(follower.id, 'follow', packed));
 	}
 
 	// Publish followed event
 	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => publishMainStream(followee._id, 'followed', packed)),
+		packUser(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
 
 		// 通知を作成
-		notify(followee._id, follower._id, 'follow');
+		notify(followee.id, follower.id, 'follow');
 	}
 }
 
@@ -122,12 +122,12 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
 		Blocking.findOne({
-			blockerId: follower._id,
-			blockeeId: followee._id,
+			blockerId: follower.id,
+			blockeeId: followee.id,
 		}),
 		Blocking.findOne({
-			blockerId: followee._id,
-			blockeeId: follower._id,
+			blockerId: followee.id,
+			blockeeId: follower.id,
 		})
 	]);
 
@@ -139,7 +139,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	} else if (isRemoteUser(follower) && isLocalUser(followee) && blocking) {
 		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
 		await Blocking.remove({
-			_id: blocking._id
+			_id: blocking.id
 		});
 	} else {
 		// それ以外は単純に例外
@@ -156,8 +156,8 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 
 		// 鍵アカウントであっても、既にフォローされていた場合はスルー
 		const following = await Following.findOne({
-			followerId: follower._id,
-			followeeId: followee._id,
+			followerId: follower.id,
+			followeeId: followee.id,
 		});
 		if (following) {
 			autoAccept = true;
@@ -166,8 +166,8 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		// フォローしているユーザーは自動承認オプション
 		if (!autoAccept && (isLocalUser(followee) && followee.autoAcceptFollowed)) {
 			const followed = await Following.findOne({
-				followerId: followee._id,
-				followeeId: follower._id
+				followerId: followee.id,
+				followeeId: follower.id
 			});
 
 			if (followed) autoAccept = true;

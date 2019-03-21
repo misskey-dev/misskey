@@ -13,7 +13,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	await User.update({ _id: user._id }, {
+	await User.update({ _id: user.id }, {
 		$set: {
 			pendingReceivedFollowRequestsCount: 0
 		}

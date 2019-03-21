@@ -90,13 +90,13 @@ export default define(meta, async (ps, me) => {
 	}
 
 	const query = {
-		followerId: user._id
+		followerId: user.id
 	} as any;
 
 	// ログインしていてかつ iknow フラグがあるとき
 	if (me && ps.iknow) {
 		// Get my friends
-		const myFriends = await getFriendIds(me._id);
+		const myFriends = await getFriendIds(me.id);
 
 		query.followeeId = {
 			$in: myFriends
@@ -105,7 +105,7 @@ export default define(meta, async (ps, me) => {
 
 	// カーソルが指定されている場合
 	if (ps.cursor) {
-		query._id = {
+		query.id = {
 			$lt: ps.cursor
 		};
 	}
@@ -127,6 +127,6 @@ export default define(meta, async (ps, me) => {
 
 	return {
 		users: users,
-		next: inStock ? following[following.length - 1]._id : null,
+		next: inStock ? following[following.length - 1].id : null,
 	};
 });

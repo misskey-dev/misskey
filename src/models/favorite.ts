@@ -72,8 +72,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_favorite.id = _favorite._id;
-	delete _favorite._id;
+	_favorite.id = _favorite.id;
+	delete _favorite.id;
 
 	// Populate note
 	_favorite.note = await packNote(_favorite.noteId, me, {

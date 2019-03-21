@@ -41,7 +41,7 @@ class ActiveUsersChart extends Chart<ActiveUsersLog> {
 
 		await this.incIfUnique({
 			[isLocalUser(user) ? 'local' : 'remote']: update
-		}, 'users', user._id.toHexString());
+		}, 'users', user.id.toHexString());
 	}
 }
 

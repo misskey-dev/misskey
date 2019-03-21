@@ -30,7 +30,7 @@ export default define(meta, async (ps, user) => {
 	// Get tokens
 	const tokens = await AccessToken
 		.find({
-			userId: user._id
+			userId: user.id
 		}, {
 			limit: ps.limit,
 			skip: ps.offset,

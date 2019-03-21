@@ -73,7 +73,7 @@ export default define(meta, async (ps, me) => {
 		return [];
 	}
 
-	const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
+	const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit.id));
 
 	// Fetch found notes
 	const notes = await Note.find({

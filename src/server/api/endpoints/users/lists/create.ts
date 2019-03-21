@@ -24,7 +24,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const userList = await UserList.insert({
 		createdAt: new Date(),
-		userId: user._id,
+		userId: user.id,
 		title: ps.title,
 		userIds: []
 	});

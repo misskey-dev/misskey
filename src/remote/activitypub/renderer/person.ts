@@ -11,7 +11,7 @@ import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
 
 export default async (user: ILocalUser) => {
-	const id = `${config.url}/users/${user._id}`;
+	const id = `${config.url}/users/${user.id}`;
 
 	const [avatar, banner] = await Promise.all([
 		DriveFile.findOne({ _id: user.avatarId }),

@@ -9,11 +9,11 @@ export default class extends Channel {
 
 	@autobind
 	public async init(params: any) {
-		const mute = await Mute.find({ muterId: this.user._id });
+		const mute = await Mute.find({ muterId: this.user.id });
 		const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe main stream channel
-		this.subscriber.on(`mainStream:${this.user._id}`, async data => {
+		this.subscriber.on(`mainStream:${this.user.id}`, async data => {
 			const { type, body } = data;
 
 			switch (type) {

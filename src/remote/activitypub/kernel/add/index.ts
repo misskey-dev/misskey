@@ -14,7 +14,7 @@ export default async (actor: IRemoteUser, activity: IAdd): Promise<void> => {
 
 	if (activity.target === actor.featured) {
 		const note = await resolveNote(activity.object);
-		await addPinned(actor, note._id);
+		await addPinned(actor, note.id);
 		return;
 	}
 

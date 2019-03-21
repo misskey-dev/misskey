@@ -20,12 +20,12 @@ export default (
 			? (message as mongo.ObjectID[])
 			: typeof message[0] === 'string'
 				? (message as string[]).map(m => new mongo.ObjectID(m))
-				: (message as INotification[]).map(m => m._id)
+				: (message as INotification[]).map(m => m.id)
 		: isObjectId(message)
 			? [(message as mongo.ObjectID)]
 			: typeof message === 'string'
 				? [new mongo.ObjectID(message)]
-				: [(message as INotification)._id];
+				: [(message as INotification).id];
 
 	const mute = await Mute.find({
 		muterId: userId

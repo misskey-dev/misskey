@@ -31,7 +31,7 @@ export default define(meta, async (ps, user) => {
 	const salt = await bcrypt.genSalt(8);
 	const hash = await bcrypt.hash(ps.newPassword, salt);
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			'password': hash
 		}

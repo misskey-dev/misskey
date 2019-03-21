@@ -39,7 +39,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const userList = await UserList.findOne({
 		_id: ps.listId,
-		userId: user._id
+		userId: user.id
 	});
 
 	if (userList == null) {
@@ -47,6 +47,6 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await UserList.remove({
-		_id: userList._id
+		_id: userList.id
 	});
 });

@@ -11,7 +11,7 @@ export default async function(user: IUser) {
 	};
 
 	const notes = await Note.find({
-		userId: user._id,
+		userId: user.id,
 		renoteId: null,
 		$or: [
 			{ visibility: 'public' },
@@ -42,7 +42,7 @@ export default async function(user: IUser) {
 
 		feed.addItem({
 			title: `New note by ${author.name}`,
-			link: `${config.url}/notes/${note._id}`,
+			link: `${config.url}/notes/${note.id}`,
 			date: note.createdAt,
 			description: note.cw,
 			content: note.text,

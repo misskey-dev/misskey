@@ -33,7 +33,7 @@ export default async function(file: IDriveFile, isExpired = false) {
 
 	// チャンクをすべて削除
 	await DriveFileChunk.remove({
-		files_id: file._id
+		files_id: file.id
 	});
 
 	const set = {
@@ -52,35 +52,35 @@ export default async function(file: IDriveFile, isExpired = false) {
 		set.metadata.webpublicUrl = undefined;
 	}
 
-	await DriveFile.update({ _id: file._id }, {
+	await DriveFile.update({ _id: file.id }, {
 		$set: set
 	});
 
 	//#region サムネイルもあれば削除
 	const thumbnail = await DriveFileThumbnail.findOne({
-		'metadata.originalId': file._id
+		'metadata.originalId': file.id
 	});
 
 	if (thumbnail) {
 		await DriveFileThumbnailChunk.remove({
-			files_id: thumbnail._id
+			files_id: thumbnail.id
 		});
 
-		await DriveFileThumbnail.remove({ _id: thumbnail._id });
+		await DriveFileThumbnail.remove({ _id: thumbnail.id });
 	}
 	//#endregion
 
 	//#region Web公開用もあれば削除
 	const webpublic = await DriveFileWebpublic.findOne({
-		'metadata.originalId': file._id
+		'metadata.originalId': file.id
 	});
 
 	if (webpublic) {
 		await DriveFileWebpublicChunk.remove({
-			files_id: webpublic._id
+			files_id: webpublic.id
 		});
 
-		await DriveFileWebpublic.remove({ _id: webpublic._id });
+		await DriveFileWebpublic.remove({ _id: webpublic.id });
 	}
 	//#endregion
 

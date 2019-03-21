@@ -70,8 +70,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_reaction.id = _reaction._id;
-	delete _reaction._id;
+	_reaction.id = _reaction.id;
+	delete _reaction.id;
 
 	// Populate user
 	_reaction.user = await packUser(_reaction.userId, me);

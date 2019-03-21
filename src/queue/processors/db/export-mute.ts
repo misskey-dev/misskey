@@ -12,10 +12,10 @@ import { getFullApAccount } from '../../../misc/convert-host';
 const logger = queueLogger.createSubLogger('export-mute');
 
 export async function exportMute(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Exporting mute of ${job.data.user._id} ...`);
+	logger.info(`Exporting mute of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	// Create temp file
@@ -36,7 +36,7 @@ export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 
 	while (!ended) {
 		const mutes = await Mute.find({
-			muterId: user._id,
+			muterId: user.id,
 			...(cursor ? { _id: { $gt: cursor } } : {})
 		}, {
 			limit: 100,
@@ -51,7 +51,7 @@ export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 			break;
 		}
 
-		cursor = mutes[mutes.length - 1]._id;
+		cursor = mutes[mutes.length - 1].id;
 
 		for (const mute of mutes) {
 			const u = await Users.findOne({ _id: mute.muteeId }, { fields: { username: true, host: true } });
@@ -70,7 +70,7 @@ export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 		}
 
 		const total = await Mute.count({
-			muterId: user._id,
+			muterId: user.id,
 		});
 
 		job.progress(exportedCount / total);
@@ -82,7 +82,7 @@ export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 	const fileName = 'mute-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
 	const driveFile = await addFile(user, path, fileName);
 
-	logger.succ(`Exported to: ${driveFile._id}`);
+	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();
 	done();
 }

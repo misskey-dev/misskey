@@ -11,7 +11,7 @@ export async function publishToFollowers(userId: mongo.ObjectID) {
 	});
 
 	const followers = await Following.find({
-		followeeId: user._id
+		followeeId: user.id
 	});
 
 	const queue: string[] = [];

@@ -53,7 +53,7 @@ class NotificationManager {
 
 	public push(notifiee: ILocalUser['_id'], reason: NotificationType) {
 		// 自分自身へは通知しない
-		if (this.notifier._id.equals(notifiee)) return;
+		if (this.notifier.id.equals(notifiee)) return;
 
 		const exist = this.queue.find(x => x.target.equals(notifiee));
 
@@ -80,9 +80,9 @@ class NotificationManager {
 			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier._id.toString())) {
-				notify(x.target, this.notifier._id, x.reason, {
-					noteId: this.note._id
+			if (!mentioneesMutedUserIds.includes(this.notifier.id.toString())) {
+				notify(x.target, this.notifier.id, x.reason, {
+					noteId: this.note.id
 				});
 			}
 		}
@@ -191,19 +191,19 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// MongoDBのインデックス対象は128文字以上にできない
 	tags = tags.filter(tag => tag.length <= 100);
 
-	if (data.reply && !user._id.equals(data.reply.userId) && !mentionedUsers.some(u => u._id.equals(data.reply.userId))) {
+	if (data.reply && !user.id.equals(data.reply.userId) && !mentionedUsers.some(u => u.id.equals(data.reply.userId))) {
 		mentionedUsers.push(await Users.findOne({ _id: data.reply.userId }));
 	}
 
 	if (data.visibility == 'specified') {
 		for (const u of data.visibleUsers) {
-			if (!mentionedUsers.some(x => x._id.equals(u._id))) {
+			if (!mentionedUsers.some(x => x.id.equals(u.id))) {
 				mentionedUsers.push(u);
 			}
 		}
 
 		for (const u of mentionedUsers) {
-			if (!data.visibleUsers.some(x => x._id.equals(u._id))) {
+			if (!data.visibleUsers.some(x => x.id.equals(u.id))) {
 				data.visibleUsers.push(u);
 			}
 		}
@@ -226,7 +226,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// Register host
 	if (isRemoteUser(user)) {
 		registerOrFetchInstanceDoc(user.host).then(i => {
-			Instance.update({ _id: i._id }, {
+			Instance.update({ _id: i.id }, {
 				$inc: {
 					notesCount: 1
 				}
@@ -242,9 +242,9 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加
 	if (data.files) {
 		for (const file of data.files) {
-			DriveFile.update({ _id: file._id }, {
+			DriveFile.update({ _id: file.id }, {
 				$push: {
-					'metadata.attachedNoteIds': note._id
+					'metadata.attachedNoteIds': note.id
 				}
 			});
 		}
@@ -308,7 +308,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.settings.autoWatch !== false) {
-			watch(user._id, data.reply);
+			watch(user.id, data.reply);
 		}
 
 		// 通知
@@ -332,11 +332,11 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 		// この投稿をWatchする
 		if (isLocalUser(user) && user.settings.autoWatch !== false) {
-			watch(user._id, data.renote);
+			watch(user.id, data.renote);
 		}
 
 		// Publish event
-		if (!user._id.equals(data.renote.userId) && isLocalUser(data.renote._user)) {
+		if (!user.id.equals(data.renote.userId) && isLocalUser(data.renote._user)) {
 			publishMainStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
@@ -357,14 +357,14 @@ async function renderNoteOrRenoteActivity(data: Option, note: INote) {
 	if (data.localOnly) return null;
 
 	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
-		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote._id}`, note)
+		? renderAnnounce(data.renote.uri ? data.renote.uri : `${config.url}/notes/${data.renote.id}`, note)
 		: renderCreate(await renderNote(note, false), note);
 
 	return renderActivity(content);
 }
 
 function incRenoteCount(renote: INote) {
-	Note.update({ _id: renote._id }, {
+	Note.update({ _id: renote.id }, {
 		$inc: {
 			renoteCount: 1,
 			score: 1
@@ -394,9 +394,9 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 			if (note.visibility == 'specified') {
 				for (const u of visibleUsers) {
-					if (!u._id.equals(user._id)) {
-						publishHomeTimelineStream(u._id, detailPackedNote);
-						publishHybridTimelineStream(u._id, detailPackedNote);
+					if (!u.id.equals(user.id)) {
+						publishHomeTimelineStream(u.id, detailPackedNote);
+						publishHybridTimelineStream(u.id, detailPackedNote);
 					}
 				}
 			}
@@ -435,9 +435,9 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 async function insertNote(user: IUser, data: Option, tags: string[], emojis: string[], mentionedUsers: IUser[]) {
 	const insert: any = {
 		createdAt: data.createdAt,
-		fileIds: data.files ? data.files.map(file => file._id) : [],
-		replyId: data.reply ? data.reply._id : null,
-		renoteId: data.renote ? data.renote._id : null,
+		fileIds: data.files ? data.files.map(file => file.id) : [],
+		replyId: data.reply ? data.reply.id : null,
+		renoteId: data.renote ? data.renote.id : null,
 		name: data.name,
 		text: data.text,
 		poll: data.poll,
@@ -445,15 +445,15 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 		tags,
 		tagsLower: tags.map(tag => tag.toLowerCase()),
 		emojis,
-		userId: user._id,
+		userId: user.id,
 		viaMobile: data.viaMobile,
 		localOnly: data.localOnly,
 		geo: data.geo || null,
-		appId: data.app ? data.app._id : null,
+		appId: data.app ? data.app.id : null,
 		visibility: data.visibility,
 		visibleUserIds: data.visibility == 'specified'
 			? data.visibleUsers
-				? data.visibleUsers.map(u => u._id)
+				? data.visibleUsers.map(u => u.id)
 				: []
 			: [],
 
@@ -481,7 +481,7 @@ async function insertNote(user: IUser, data: Option, tags: string[], emojis: str
 
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
-		insert.mentions = mentionedUsers.map(u => u._id);
+		insert.mentions = mentionedUsers.map(u => u.id);
 		insert.mentionedRemoteUsers = mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
 			uri: (u as IRemoteUser).uri,
 			username: u.username,
@@ -508,7 +508,7 @@ function index(note: INote) {
 	es.index({
 		index: 'misskey',
 		type: 'note',
-		id: note._id.toString(),
+		id: note.id.toString(),
 		body: {
 			text: note.text
 		}
@@ -517,8 +517,8 @@ function index(note: INote) {
 
 async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: NotificationManager, type: NotificationType) {
 	const watchers = await NoteWatching.find({
-		noteId: renote._id,
-		userId: { $ne: user._id }
+		noteId: renote.id,
+		userId: { $ne: user.id }
 	}, {
 			fields: {
 				userId: true
@@ -532,8 +532,8 @@ async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: Notific
 
 async function notifyToWatchersOfReplyee(reply: INote, user: IUser, nm: NotificationManager) {
 	const watchers = await NoteWatching.find({
-		noteId: reply._id,
-		userId: { $ne: user._id }
+		noteId: reply.id,
+		userId: { $ne: user.id }
 	}, {
 			fields: {
 				userId: true
@@ -553,10 +553,10 @@ async function publishToUserLists(note: INote, noteObj: any) {
 	for (const list of lists) {
 		if (note.visibility == 'specified') {
 			if (note.visibleUserIds.some(id => id.equals(list.userId))) {
-				publishUserListStream(list._id, 'note', noteObj);
+				publishUserListStream(list.id, 'note', noteObj);
 			}
 		} else {
-			publishUserListStream(list._id, 'note', noteObj);
+			publishUserListStream(list.id, 'note', noteObj);
 		}
 	}
 }
@@ -629,23 +629,23 @@ async function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: N
 			detail: true
 		});
 
-		publishMainStream(u._id, 'mention', detailPackedNote);
+		publishMainStream(u.id, 'mention', detailPackedNote);
 
 		// Create notification
-		nm.push(u._id, 'mention');
+		nm.push(u.id, 'mention');
 	}
 }
 
 function saveQuote(renote: INote, note: INote) {
-	Note.update({ _id: renote._id }, {
+	Note.update({ _id: renote.id }, {
 		$push: {
-			_quoteIds: note._id
+			_quoteIds: note.id
 		}
 	});
 }
 
 function saveReply(reply: INote, note: INote) {
-	Note.update({ _id: reply._id }, {
+	Note.update({ _id: reply.id }, {
 		$inc: {
 			repliesCount: 1
 		}
@@ -653,7 +653,7 @@ function saveReply(reply: INote, note: INote) {
 }
 
 function incNotesCountOfUser(user: IUser) {
-	User.update({ _id: user._id }, {
+	User.update({ _id: user.id }, {
 		$set: {
 			updatedAt: new Date()
 		},
@@ -696,7 +696,7 @@ async function extractMentionedUsers(user: IUser, tokens: ReturnType<typeof pars
 
 	// Drop duplicate users
 	mentionedUsers = mentionedUsers.filter((u, i, self) =>
-		i === self.findIndex(u2 => u._id.equals(u2._id))
+		i === self.findIndex(u2 => u.id.equals(u2.id))
 	);
 
 	return mentionedUsers;

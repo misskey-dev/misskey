@@ -32,20 +32,20 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const mute = await Mute.find({
-		muterId: user._id,
+		muterId: user.id,
 		deletedAt: { $exists: false }
 	});
 
 	const history: IMessagingMessage[] = [];
 
 	for (let i = 0; i < ps.limit; i++) {
-		const found = history.map(m => m.userId.equals(user._id) ? m.recipientId : m.userId);
+		const found = history.map(m => m.userId.equals(user.id) ? m.recipientId : m.userId);
 
 		const message = await Message.findOne({
 			$or: [{
-				userId: user._id
+				userId: user.id
 			}, {
-				recipientId: user._id
+				recipientId: user.id
 			}],
 			$and: [{
 				userId: { $nin: found },
@@ -67,5 +67,5 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	return await Promise.all(history.map(h => pack(h._id, user)));
+	return await Promise.all(history.map(h => pack(h.id, user)));
 });

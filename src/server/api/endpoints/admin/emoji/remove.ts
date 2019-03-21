@@ -27,7 +27,7 @@ export default define(meta, async (ps) => {
 
 	if (emoji == null) throw new Error('emoji not found');
 
-	await Emoji.remove({ _id: emoji._id });
+	await Emoji.remove({ _id: emoji.id });
 
 	return;
 });

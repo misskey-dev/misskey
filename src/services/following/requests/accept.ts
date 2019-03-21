@@ -9,8 +9,8 @@ import { insertFollowingDoc } from '../create';
 
 export default async function(followee: IUser, follower: IUser) {
 	const request = await FollowRequest.findOne({
-		followeeId: followee._id,
-		followerId: follower._id
+		followeeId: followee.id,
+		followerId: follower.id
 	});
 
 	await insertFollowingDoc(followee, follower);
@@ -22,5 +22,5 @@ export default async function(followee: IUser, follower: IUser) {
 
 	packUser(followee, followee, {
 		detail: true
-	}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
+	}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 }

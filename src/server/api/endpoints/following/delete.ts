@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 	const follower = user;
 
 	// Check if the followee is yourself
-	if (user._id.equals(ps.userId)) {
+	if (user.id.equals(ps.userId)) {
 		throw new ApiError(meta.errors.followeeIsYourself);
 	}
 
@@ -75,8 +75,8 @@ export default define(meta, async (ps, user) => {
 
 	// Check not following
 	const exist = await Following.findOne({
-		followerId: follower._id,
-		followeeId: followee._id
+		followerId: follower.id,
+		followeeId: followee.id
 	});
 
 	if (exist === null) {
@@ -85,5 +85,5 @@ export default define(meta, async (ps, user) => {
 
 	await deleteFollowing(follower, followee);
 
-	return await pack(followee._id, user);
+	return await pack(followee.id, user);
 });

@@ -151,8 +151,8 @@ export default define(meta, async (ps, me) => {
 	});
 
 	const isFollowing = me == null ? false : ((await Following.findOne({
-		followerId: me._id,
-		followeeId: user._id
+		followerId: me.id,
+		followeeId: user.id
 	})) != null);
 
 	//#region Construct query
@@ -166,27 +166,27 @@ export default define(meta, async (ps, me) => {
 		}
 	}, {
 		// myself (for specified/private)
-		userId: me._id
+		userId: me.id
 	}, {
 		// to me (for specified)
-		visibleUserIds: { $in: [ me._id ] }
+		visibleUserIds: { $in: [ me.id ] }
 	}];
 
 	const query = {
 		$and: [ {} ],
 		deletedAt: null,
-		userId: user._id,
+		userId: user.id,
 		$or: visibleQuery
 	} as any;
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		sort._id = -1;
-		query._id = {
+		sort.id = -1;
+		query.id = {
 			$lt: ps.untilId
 		};
 	} else if (ps.sinceDate) {
@@ -200,7 +200,7 @@ export default define(meta, async (ps, me) => {
 			$lt: new Date(ps.untilDate)
 		};
 	} else {
-		sort._id = -1;
+		sort.id = -1;
 	}
 
 	if (!ps.includeReplies) {
@@ -210,7 +210,7 @@ export default define(meta, async (ps, me) => {
 	if (ps.includeMyRenotes === false) {
 		query.$and.push({
 			$or: [{
-				userId: { $ne: user._id }
+				userId: { $ne: user.id }
 			}, {
 				renoteId: null
 			}, {

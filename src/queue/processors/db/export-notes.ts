@@ -11,10 +11,10 @@ import dateFormat = require('dateformat');
 const logger = queueLogger.createSubLogger('export-notes');
 
 export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Exporting notes of ${job.data.user._id} ...`);
+	logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	// Create temp file
@@ -46,7 +46,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 
 	while (!ended) {
 		const notes = await Note.find({
-			userId: user._id,
+			userId: user.id,
 			...(cursor ? { _id: { $gt: cursor } } : {})
 		}, {
 			limit: 100,
@@ -61,7 +61,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 			break;
 		}
 
-		cursor = notes[notes.length - 1]._id;
+		cursor = notes[notes.length - 1].id;
 
 		for (const note of notes) {
 			const content = JSON.stringify(serialize(note));
@@ -79,7 +79,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 		}
 
 		const total = await Note.count({
-			userId: user._id,
+			userId: user.id,
 		});
 
 		job.progress(exportedNotesCount / total);
@@ -102,14 +102,14 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.json';
 	const driveFile = await addFile(user, path, fileName);
 
-	logger.succ(`Exported to: ${driveFile._id}`);
+	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();
 	done();
 }
 
 function serialize(note: INote): any {
 	return {
-		id: note._id,
+		id: note.id,
 		text: note.text,
 		createdAt: note.createdAt,
 		fileIds: note.fileIds,

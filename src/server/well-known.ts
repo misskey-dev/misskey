@@ -88,7 +88,7 @@ router.get(webFingerPath, async ctx => {
 	const self = {
 		rel: 'self',
 		type: 'application/activity+json',
-		href: `${config.url}/users/${user._id}`
+		href: `${config.url}/users/${user.id}`
 	};
 	const profilePage = {
 		rel: 'http://webfinger.net/rel/profile-page',

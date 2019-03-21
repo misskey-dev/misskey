@@ -26,7 +26,7 @@ export default define(meta, async (ps) => {
 	});
 
 	return emojis.map(e => ({
-		id: e._id,
+		id: e.id,
 		name: e.name,
 		aliases: e.aliases,
 		host: e.host,

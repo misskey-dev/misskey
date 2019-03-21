@@ -45,5 +45,5 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	await unwatch(user._id, note);
+	await unwatch(user.id, note);
 });

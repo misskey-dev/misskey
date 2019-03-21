@@ -22,10 +22,10 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	// Remove documents
 	await NoteUnread.remove({
-		userId: user._id
+		userId: user.id
 	});
 
-	User.update({ _id: user._id }, {
+	User.update({ _id: user.id }, {
 		$set: {
 			hasUnreadMentions: false,
 			hasUnreadSpecifiedNotes: false
@@ -33,8 +33,8 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// 全て既読になったイベントを発行
-	publishMainStream(user._id, 'readAllUnreadMentions');
-	publishMainStream(user._id, 'readAllUnreadSpecifiedNotes');
+	publishMainStream(user.id, 'readAllUnreadMentions');
+	publishMainStream(user.id, 'readAllUnreadSpecifiedNotes');
 
 	return;
 });

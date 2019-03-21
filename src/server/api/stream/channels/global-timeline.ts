@@ -22,7 +22,7 @@ export default class extends Channel {
 		// Subscribe events
 		this.subscriber.on('globalTimeline', this.onNote);
 
-		const mute = await Mute.find({ muterId: this.user._id });
+		const mute = await Mute.find({ muterId: this.user.id });
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 	}
 

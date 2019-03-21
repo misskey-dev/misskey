@@ -8,10 +8,10 @@ import deleteFile from '../../../services/drive/delete-file';
 const logger = queueLogger.createSubLogger('delete-drive-files');
 
 export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Deleting drive files of ${job.data.user._id} ...`);
+	logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	let deletedCount = 0;
@@ -20,7 +20,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 
 	while (!ended) {
 		const files = await DriveFile.find({
-			userId: user._id,
+			userId: user.id,
 			...(cursor ? { _id: { $gt: cursor } } : {})
 		}, {
 			limit: 100,
@@ -35,7 +35,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 			break;
 		}
 
-		cursor = files[files.length - 1]._id;
+		cursor = files[files.length - 1].id;
 
 		for (const file of files) {
 			await deleteFile(file);
@@ -43,12 +43,12 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 		}
 
 		const total = await DriveFile.count({
-			userId: user._id,
+			userId: user.id,
 		});
 
 		job.progress(deletedCount / total);
 	}
 
-	logger.succ(`All drive files (${deletedCount}) of ${user._id} has been deleted.`);
+	logger.succ(`All drive files (${deletedCount}) of ${user.id} has been deleted.`);
 	done();
 }

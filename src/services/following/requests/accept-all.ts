@@ -8,7 +8,7 @@ import accept from './accept';
  */
 export default async function(user: IUser) {
 	const requests = await FollowRequest.find({
-		followeeId: user._id
+		followeeId: user.id
 	});
 
 	for (const request of requests) {
@@ -16,7 +16,7 @@ export default async function(user: IUser) {
 		accept(user, follower);
 	}
 
-	User.update({ _id: user._id }, {
+	User.update({ _id: user.id }, {
 		$set: {
 			pendingReceivedFollowRequestsCount: 0
 		}

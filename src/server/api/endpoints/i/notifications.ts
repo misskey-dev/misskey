@@ -68,7 +68,7 @@ export default define(meta, async (ps, user) => {
 	const hideUserIds = await getHideUserIds(user);
 
 	const query = {
-		notifieeId: user._id,
+		notifieeId: user.id,
 		$and: [{
 			notifierId: {
 				$nin: hideUserIds
@@ -82,7 +82,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.following) {
 		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriendIds(user._id);
+		const followingIds = await getFriendIds(user.id);
 
 		query.$and.push({
 			notifierId: {
@@ -92,12 +92,12 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		query._id = {
+		query.id = {
 			$lt: ps.untilId
 		};
 	}
@@ -120,7 +120,7 @@ export default define(meta, async (ps, user) => {
 
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {
-		read(user._id, notifications);
+		read(user.id, notifications);
 	}
 
 	return await packMany(notifications);

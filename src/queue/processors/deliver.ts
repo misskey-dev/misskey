@@ -21,7 +21,7 @@ export default async (job: Bull.Job) => {
 
 		// Update stats
 		registerOrFetchInstanceDoc(host).then(i => {
-			Instance.update({ _id: i._id }, {
+			Instance.update({ _id: i.id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
 					latestStatus: 200,
@@ -37,7 +37,7 @@ export default async (job: Bull.Job) => {
 	} catch (res) {
 		// Update stats
 		registerOrFetchInstanceDoc(host).then(i => {
-			Instance.update({ _id: i._id }, {
+			Instance.update({ _id: i.id }, {
 				$set: {
 					latestRequestSentAt: new Date(),
 					latestStatus: res != null && res.hasOwnProperty('statusCode') ? res.statusCode : null,

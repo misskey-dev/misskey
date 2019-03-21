@@ -44,7 +44,7 @@ export default define(meta, async (ps, user) => {
 	// Fetch exist access token
 	const exist = await AccessToken.findOne({
 		appId: session.appId,
-		userId: user._id,
+		userId: user.id,
 	});
 
 	if (exist === null) {
@@ -62,16 +62,16 @@ export default define(meta, async (ps, user) => {
 		await AccessToken.insert({
 			createdAt: new Date(),
 			appId: session.appId,
-			userId: user._id,
+			userId: user.id,
 			token: accessToken,
 			hash: hash
 		});
 	}
 
 	// Update session
-	await AuthSess.update(session._id, {
+	await AuthSess.update(session.id, {
 		$set: {
-			userId: user._id
+			userId: user.id
 		}
 	});
 

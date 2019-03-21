@@ -14,8 +14,8 @@ export default async function(followee: IUser, follower: IUser) {
 	}
 
 	const request = await FollowRequest.findOne({
-		followeeId: followee._id,
-		followerId: follower._id
+		followeeId: followee.id,
+		followerId: follower.id
 	});
 
 	if (request == null) {
@@ -23,11 +23,11 @@ export default async function(followee: IUser, follower: IUser) {
 	}
 
 	await FollowRequest.remove({
-		followeeId: followee._id,
-		followerId: follower._id
+		followeeId: followee.id,
+		followerId: follower.id
 	});
 
-	await User.update({ _id: followee._id }, {
+	await User.update({ _id: followee.id }, {
 		$inc: {
 			pendingReceivedFollowRequestsCount: -1
 		}
@@ -35,5 +35,5 @@ export default async function(followee: IUser, follower: IUser) {
 
 	packUser(followee, followee, {
 		detail: true
-	}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
+	}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 }

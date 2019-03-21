@@ -51,16 +51,16 @@ export default define(meta, async (ps, user) => {
 		_id: -1
 	};
 	const query = {
-		userId: user._id,
+		userId: user.id,
 		parentId: ps.folderId
 	} as any;
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		query._id = {
+		query.id = {
 			$lt: ps.untilId
 		};
 	}

@@ -57,7 +57,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
+	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
@@ -65,7 +65,7 @@ export default define(meta, async (ps, user) => {
 	await del(file);
 
 	// Publish fileDeleted event
-	publishDriveStream(user._id, 'fileDeleted', file._id);
+	publishDriveStream(user.id, 'fileDeleted', file.id);
 
 	return;
 });

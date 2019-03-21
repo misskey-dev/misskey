@@ -93,7 +93,7 @@ class PerUserNotesChart extends Chart<PerUserNotesLog> {
 			update.diffs.normal = isAdditional ? 1 : -1;
 		}
 
-		await this.inc(update, user._id);
+		await this.inc(update, user.id);
 	}
 }
 

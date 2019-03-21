@@ -16,7 +16,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const reqs = await FollowRequest.find({
-		followeeId: user._id
+		followeeId: user.id
 	});
 
 	return await Promise.all(reqs.map(req => pack(req)));

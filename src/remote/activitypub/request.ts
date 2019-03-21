@@ -63,7 +63,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 		sign(req, {
 			authorizationHeaderName: 'Signature',
 			key: user.keypair,
-			keyId: `${config.url}/users/${user._id}/publickey`,
+			keyId: `${config.url}/users/${user.id}/publickey`,
 			headers: ['date', 'host', 'digest']
 		});
 

@@ -13,10 +13,10 @@ import { isSelfHost, toDbHost } from '../../../misc/convert-host';
 const logger = queueLogger.createSubLogger('import-following');
 
 export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Importing following of ${job.data.user._id} ...`);
+	logger.info(`Importing following of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	const file = await DriveFile.findOne({
@@ -44,7 +44,7 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 			target = await resolveUser(username, host);
 		}
 
-		logger.info(`Follow ${target._id} ...`);
+		logger.info(`Follow ${target.id} ...`);
 
 		follow(user, target);
 	}

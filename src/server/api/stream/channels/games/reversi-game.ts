@@ -42,9 +42,9 @@ export default class extends Channel {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (game.isStarted) return;
-		if (!game.user1Id.equals(this.user._id) && !game.user2Id.equals(this.user._id)) return;
-		if (game.user1Id.equals(this.user._id) && game.user1Accepted) return;
-		if (game.user2Id.equals(this.user._id) && game.user2Accepted) return;
+		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
+		if (game.user1Id.equals(this.user.id) && game.user1Accepted) return;
+		if (game.user2Id.equals(this.user.id) && game.user2Accepted) return;
 
 		await ReversiGame.update({ _id: this.gameId }, {
 			$set: {
@@ -60,9 +60,9 @@ export default class extends Channel {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (game.isStarted) return;
-		if (!game.user1Id.equals(this.user._id) && !game.user2Id.equals(this.user._id)) return;
+		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
 
-		const set = game.user1Id.equals(this.user._id) ? {
+		const set = game.user1Id.equals(this.user.id) ? {
 			form1: form
 		} : {
 				form2: form
@@ -73,7 +73,7 @@ export default class extends Channel {
 		});
 
 		publishReversiGameStream(this.gameId, 'initForm', {
-			userId: this.user._id,
+			userId: this.user.id,
 			form
 		});
 	}
@@ -83,9 +83,9 @@ export default class extends Channel {
 		const game = await ReversiGame.findOne({ _id: this.gameId });
 
 		if (game.isStarted) return;
-		if (!game.user1Id.equals(this.user._id) && !game.user2Id.equals(this.user._id)) return;
+		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
 
-		const form = game.user1Id.equals(this.user._id) ? game.form2 : game.form1;
+		const form = game.user1Id.equals(this.user.id) ? game.form2 : game.form1;
 
 		const item = form.find((i: any) => i.id == id);
 
@@ -93,7 +93,7 @@ export default class extends Channel {
 
 		item.value = value;
 
-		const set = game.user1Id.equals(this.user._id) ? {
+		const set = game.user1Id.equals(this.user.id) ? {
 			form2: form
 		} : {
 				form1: form
@@ -104,7 +104,7 @@ export default class extends Channel {
 		});
 
 		publishReversiGameStream(this.gameId, 'updateForm', {
-			userId: this.user._id,
+			userId: this.user.id,
 			id,
 			value
 		});
@@ -114,7 +114,7 @@ export default class extends Channel {
 	private async message(message: any) {
 		message.id = Math.random();
 		publishReversiGameStream(this.gameId, 'message', {
-			userId: this.user._id,
+			userId: this.user.id,
 			message
 		});
 	}
@@ -127,7 +127,7 @@ export default class extends Channel {
 
 		let bothAccepted = false;
 
-		if (game.user1Id.equals(this.user._id)) {
+		if (game.user1Id.equals(this.user.id)) {
 			await ReversiGame.update({ _id: this.gameId }, {
 				$set: {
 					user1Accepted: accept
@@ -140,7 +140,7 @@ export default class extends Channel {
 			});
 
 			if (accept && game.user2Accepted) bothAccepted = true;
-		} else if (game.user2Id.equals(this.user._id)) {
+		} else if (game.user2Id.equals(this.user.id)) {
 			await ReversiGame.update({ _id: this.gameId }, {
 				$set: {
 					user2Accepted: accept
@@ -233,7 +233,7 @@ export default class extends Channel {
 
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
-		if (!game.user1Id.equals(this.user._id) && !game.user2Id.equals(this.user._id)) return;
+		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
 
 		const o = new Reversi(game.settings.map, {
 			isLlotheo: game.settings.isLlotheo,
@@ -246,7 +246,7 @@ export default class extends Channel {
 		}
 
 		const myColor =
-			(game.user1Id.equals(this.user._id) && game.black == 1) || (game.user2Id.equals(this.user._id) && game.black == 2)
+			(game.user1Id.equals(this.user.id) && game.black == 1) || (game.user2Id.equals(this.user.id) && game.black == 2)
 				? true
 				: false;
 

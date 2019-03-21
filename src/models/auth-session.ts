@@ -33,11 +33,11 @@ export const pack = (
 		if (typeof me === 'string') {
 			me = new mongo.ObjectID(me);
 		} else {
-			me = me._id;
+			me = me.id;
 		}
 	}
 
-	delete _session._id;
+	delete _session.id;
 
 	// Populate app
 	_session.app = await packApp(_session.appId, me);

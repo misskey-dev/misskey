@@ -36,7 +36,7 @@ export default define(meta, async (ps, user) => {
 	// Create account
 	const app = await App.insert({
 		createdAt: new Date(),
-		userId: user && user._id,
+		userId: user && user.id,
 		name: ps.name,
 		description: ps.description,
 		permission: ps.permission,

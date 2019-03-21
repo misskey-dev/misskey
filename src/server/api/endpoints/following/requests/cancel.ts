@@ -58,5 +58,5 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	}
 
-	return await pack(followee._id, user);
+	return await pack(followee.id, user);
 });

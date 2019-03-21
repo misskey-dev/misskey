@@ -35,6 +35,6 @@ export default define(meta, async (ps, user, app) => {
 
 	return await pack(ap, user, {
 		detail: true,
-		includeSecret: isSecure && ap.userId.equals(user._id)
+		includeSecret: isSecure && ap.userId.equals(user.id)
 	});
 });

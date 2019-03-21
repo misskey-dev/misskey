@@ -60,18 +60,18 @@ export default async (ctx: Router.IRouterContext) => {
 		};
 
 		const query = {
-			userId: user._id,
+			userId: user.id,
 			visibility: { $in: ['public', 'home'] },
 			localOnly: { $ne: true }
 		} as any;
 
 		if (sinceId) {
-			sort._id = 1;
-			query._id = {
+			sort.id = 1;
+			query.id = {
 				$gt: transform(sinceId)
 			};
 		} else if (untilId) {
-			query._id = {
+			query.id = {
 				$lt: transform(untilId)
 			};
 		}
@@ -95,11 +95,11 @@ export default async (ctx: Router.IRouterContext) => {
 			user.notesCount, activities, partOf,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				since_id: notes[0]._id.toHexString()
+				since_id: notes[0].id.toHexString()
 			})}` : null,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				until_id: notes[notes.length - 1]._id.toHexString()
+				until_id: notes[notes.length - 1].id.toHexString()
 			})}` : null
 		);
 
@@ -125,7 +125,7 @@ export default async (ctx: Router.IRouterContext) => {
 export async function packActivity(note: INote): Promise<object> {
 	if (note.renoteId && note.text == null && note.poll == null && (note.fileIds == null || note.fileIds.length == 0)) {
 		const renote = await Note.findOne(note.renoteId);
-		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote._id}`, note);
+		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`, note);
 	}
 
 	return renderCreate(await renderNote(note, false), note);

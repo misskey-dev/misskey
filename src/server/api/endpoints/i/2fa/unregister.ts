@@ -23,7 +23,7 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			'twoFactorSecret': null,
 			'twoFactorEnabled': false

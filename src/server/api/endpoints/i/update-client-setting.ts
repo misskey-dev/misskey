@@ -23,12 +23,12 @@ export default define(meta, async (ps, user) => {
 	const x: any = {};
 	x[`clientSettings.${ps.name}`] = ps.value;
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: x
 	});
 
 	// Publish event
-	publishMainStream(user._id, 'clientSettingUpdated', {
+	publishMainStream(user.id, 'clientSettingUpdated', {
 		key: ps.name,
 		value: ps.value
 	});

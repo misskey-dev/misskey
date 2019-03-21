@@ -11,7 +11,7 @@ export default class extends Channel {
 
 	@autobind
 	public async init(params: any) {
-		const mute = this.user ? await Mute.find({ muterId: this.user._id }) : null;
+		const mute = this.user ? await Mute.find({ muterId: this.user.id }) : null;
 		const mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
 
 		const q: string[][] = params.q;

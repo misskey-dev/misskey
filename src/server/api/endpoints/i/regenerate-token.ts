@@ -28,14 +28,14 @@ export default define(meta, async (ps, user) => {
 	// Generate secret
 	const secret = generateUserToken();
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			'token': secret
 		}
 	});
 
 	// Publish event
-	publishMainStream(user._id, 'myTokenRegenerated');
+	publishMainStream(user.id, 'myTokenRegenerated');
 
 	return;
 });

@@ -36,7 +36,7 @@ export default define(meta, async (ps) => {
 	}
 
 	await Users.findOneAndUpdate({
-		_id: user._id
+		_id: user.id
 	}, {
 		$set: {
 			isVerified: true

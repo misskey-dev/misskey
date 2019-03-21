@@ -27,12 +27,12 @@ export default (
 			? (message as mongo.ObjectID[])
 			: typeof message[0] === 'string'
 				? (message as string[]).map(m => new mongo.ObjectID(m))
-				: (message as IMessage[]).map(m => m._id)
+				: (message as IMessage[]).map(m => m.id)
 		: isObjectId(message)
 			? [(message as mongo.ObjectID)]
 			: typeof message === 'string'
 				? [new mongo.ObjectID(message)]
-				: [(message as IMessage)._id];
+				: [(message as IMessage).id];
 
 	// Update documents
 	await Message.update({

@@ -32,7 +32,7 @@ export default define(meta, async (ps, user) => {
 		throw new Error('not verified');
 	}
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			'twoFactorSecret': user.twoFactorTempSecret,
 			'twoFactorEnabled': true

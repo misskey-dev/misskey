@@ -30,7 +30,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	// Get votes
 	const votes = await Vote.find({
-		userId: user._id
+		userId: user.id
 	}, {
 		fields: {
 			_id: false,
@@ -49,7 +49,7 @@ export default define(meta, async (ps, user) => {
 			$nin: nin
 		},
 		userId: {
-			$ne: user._id,
+			$ne: user.id,
 			$nin: hideUserIds
 		},
 		visibility: 'public',

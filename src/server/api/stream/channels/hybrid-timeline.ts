@@ -19,9 +19,9 @@ export default class extends Channel {
 
 		// Subscribe events
 		this.subscriber.on('hybridTimeline', this.onNewNote);
-		this.subscriber.on(`hybridTimeline:${this.user._id}`, this.onNewNote);
+		this.subscriber.on(`hybridTimeline:${this.user.id}`, this.onNewNote);
 
-		const mute = await Mute.find({ muterId: this.user._id });
+		const mute = await Mute.find({ muterId: this.user.id });
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 	}
 
@@ -50,6 +50,6 @@ export default class extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('hybridTimeline', this.onNewNote);
-		this.subscriber.off(`hybridTimeline:${this.user._id}`, this.onNewNote);
+		this.subscriber.off(`hybridTimeline:${this.user.id}`, this.onNewNote);
 	}
 }

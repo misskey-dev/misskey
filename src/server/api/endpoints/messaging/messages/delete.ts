@@ -49,17 +49,17 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const message = await Message.findOne({
 		_id: ps.messageId,
-		userId: user._id
+		userId: user.id
 	});
 
 	if (message === null) {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	await Message.remove({ _id: message._id });
+	await Message.remove({ _id: message.id });
 
-	publishMessagingStream(message.userId, message.recipientId, 'deleted', message._id);
-	publishMessagingStream(message.recipientId, message.userId, 'deleted', message._id);
+	publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
+	publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
 
 	return;
 });

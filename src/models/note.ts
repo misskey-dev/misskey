@@ -237,7 +237,7 @@ export const pack = async (
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
-				: (me as IUser)._id
+				: (me as IUser).id
 		: null;
 
 	let _note: any;
@@ -255,7 +255,7 @@ export const pack = async (
 		_note = deepcopy(note);
 	}
 
-	const id = _note._id;
+	const id = _note.id;
 
 	// Some counts
 	_note.renoteCount = _note.renoteCount || 0;
@@ -285,8 +285,8 @@ export const pack = async (
 	}
 
 	// Rename _id to id
-	_note.id = _note._id;
-	delete _note._id;
+	_note.id = _note.id;
+	delete _note.id;
 
 	delete _note.prev;
 	delete _note.next;

@@ -98,7 +98,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
+	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 

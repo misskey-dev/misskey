@@ -51,7 +51,7 @@ export default define(meta, async (ps, user) => {
 	const folder = await DriveFolder
 		.findOne({
 			_id: ps.folderId,
-			userId: user._id
+			userId: user.id
 		});
 
 	if (folder === null) {
@@ -59,18 +59,18 @@ export default define(meta, async (ps, user) => {
 	}
 
 	const [childFoldersCount, childFilesCount] = await Promise.all([
-		DriveFolder.count({ parentId: folder._id }),
-		DriveFile.count({ 'metadata.folderId': folder._id })
+		DriveFolder.count({ parentId: folder.id }),
+		DriveFile.count({ 'metadata.folderId': folder.id })
 	]);
 
 	if (childFoldersCount !== 0 || childFilesCount !== 0) {
 		throw new ApiError(meta.errors.hasChildFilesOrFolders);
 	}
 
-	await DriveFolder.remove({ _id: folder._id });
+	await DriveFolder.remove({ _id: folder.id });
 
 	// Publish folderCreated event
-	publishDriveStream(user._id, 'folderDeleted', folder._id);
+	publishDriveStream(user.id, 'folderDeleted', folder.id);
 
 	return;
 });

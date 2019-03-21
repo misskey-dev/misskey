@@ -5,8 +5,8 @@ import { INote } from '../../../models/note';
 export default async function renderQuestion(user: ILocalUser, note: INote) {
 	const question = {
 		type: 'Question',
-		id: `${config.url}/questions/${note._id}`,
-		actor: `${config.url}/users/${user._id}`,
+		id: `${config.url}/questions/${note.id}`,
+		actor: `${config.url}/users/${user.id}`,
 		content:  note.text || '',
 		[note.poll.multiple ? 'anyOf' : 'oneOf']: note.poll.choices.map(c => ({
 			name: c.text,

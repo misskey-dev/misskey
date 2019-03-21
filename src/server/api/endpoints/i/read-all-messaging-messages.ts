@@ -22,7 +22,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	// Update documents
 	await Message.update({
-		recipientId: user._id,
+		recipientId: user.id,
 		isRead: false
 	}, {
 		$set: {
@@ -32,13 +32,13 @@ export default define(meta, async (ps, user) => {
 		multi: true
 	});
 
-	User.update({ _id: user._id }, {
+	User.update({ _id: user.id }, {
 		$set: {
 			hasUnreadMessagingMessage: false
 		}
 	});
 
-	publishMainStream(user._id, 'readAllMessagingMessages');
+	publishMainStream(user.id, 'readAllMessagingMessages');
 
 	return;
 });

@@ -58,7 +58,7 @@ export default define(meta, async (ps, user) => {
 	if (file.length > 30000) throw new ApiError(meta.errors.tooBigFile);
 	if (file.length === 0) throw new ApiError(meta.errors.emptyFile);
 
-	createImportUserListsJob(user, file._id);
+	createImportUserListsJob(user, file.id);
 
 	return;
 });

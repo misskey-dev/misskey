@@ -56,25 +56,25 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyEnded);
 	}
 
-	if (!game.user1Id.equals(user._id) && !game.user2Id.equals(user._id)) {
+	if (!game.user1Id.equals(user.id) && !game.user2Id.equals(user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	const winnerId = game.user1Id.equals(user._id) ? game.user2Id : game.user1Id;
+	const winnerId = game.user1Id.equals(user.id) ? game.user2Id : game.user1Id;
 
 	await ReversiGame.update({
-		_id: game._id
+		_id: game.id
 	}, {
 		$set: {
-			surrendered: user._id,
+			surrendered: user.id,
 			isEnded: true,
 			winnerId: winnerId
 		}
 	});
 
-	publishReversiGameStream(game._id, 'ended', {
+	publishReversiGameStream(game.id, 'ended', {
 		winnerId: winnerId,
-		game: await pack(game._id, user)
+		game: await pack(game.id, user)
 	});
 
 	return;

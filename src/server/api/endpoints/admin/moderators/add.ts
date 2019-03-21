@@ -36,7 +36,7 @@ export default define(meta, async (ps) => {
 	}
 
 	await User.update({
-		_id: user._id
+		_id: user.id
 	}, {
 		$set: {
 			isModerator: true

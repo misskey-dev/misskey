@@ -41,8 +41,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_blocking.id = _blocking._id;
-	delete _blocking._id;
+	_blocking.id = _blocking.id;
+	delete _blocking.id;
 
 	// Populate blockee
 	_blocking.blockee = await packUser(_blocking.blockeeId, me, {

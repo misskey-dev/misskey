@@ -14,10 +14,10 @@ import { isSelfHost, toDbHost } from '../../../misc/convert-host';
 const logger = queueLogger.createSubLogger('import-user-lists');
 
 export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Importing user lists of ${job.data.user._id} ...`);
+	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	const file = await DriveFile.findOne({
@@ -33,14 +33,14 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 		const { username, host } = parseAcct(line.split(',')[1].trim());
 
 		let list = await UserList.findOne({
-			userId: user._id,
+			userId: user.id,
 			title: listName
 		});
 
 		if (list == null) {
 			list = await UserList.insert({
 				createdAt: new Date(),
-				userId: user._id,
+				userId: user.id,
 				title: listName,
 				userIds: []
 			});
@@ -55,7 +55,7 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 		});
 
 		if (host == null && target == null) continue;
-		if (list.userIds.some(id => id.equals(target._id))) continue;
+		if (list.userIds.some(id => id.equals(target.id))) continue;
 
 		if (target == null) {
 			target = await resolveUser(username, host);

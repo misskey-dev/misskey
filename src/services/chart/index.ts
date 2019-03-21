@@ -207,7 +207,7 @@ export default abstract class Chart<T extends Obj> {
 
 			// ログ更新
 			this.collection.update({
-				_id: log._id
+				_id: log.id
 			}, query);
 		};
 

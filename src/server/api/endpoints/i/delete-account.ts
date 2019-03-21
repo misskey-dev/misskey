@@ -26,7 +26,7 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	await User.update({ _id: user._id }, {
+	await User.update({ _id: user.id }, {
 		$set: {
 			isDeleted: true,
 			name: null,
@@ -43,8 +43,8 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	Message.remove({ userId: user._id });
-	Signin.remove({ userId: user._id });
+	Message.remove({ userId: user.id });
+	Signin.remove({ userId: user.id });
 	createDeleteNotesJob(user);
 	createDeleteDriveFilesJob(user);
 

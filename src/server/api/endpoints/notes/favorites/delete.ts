@@ -54,8 +54,8 @@ export default define(meta, async (ps, user) => {
 
 	// if already favorited
 	const exist = await Favorite.findOne({
-		noteId: note._id,
-		userId: user._id
+		noteId: note.id,
+		userId: user.id
 	});
 
 	if (exist === null) {
@@ -64,7 +64,7 @@ export default define(meta, async (ps, user) => {
 
 	// Delete favorite
 	await Favorite.remove({
-		_id: exist._id
+		_id: exist.id
 	});
 
 	return;

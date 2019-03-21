@@ -53,7 +53,7 @@ export default define(meta, async (ps, user) => {
 	const muter = user;
 
 	// Check if the mutee is yourself
-	if (user._id.equals(ps.userId)) {
+	if (user.id.equals(ps.userId)) {
 		throw new ApiError(meta.errors.muteeIsYourself);
 	}
 
@@ -65,8 +65,8 @@ export default define(meta, async (ps, user) => {
 
 	// Check not muting
 	const exist = await Mute.findOne({
-		muterId: muter._id,
-		muteeId: mutee._id
+		muterId: muter.id,
+		muteeId: mutee.id
 	});
 
 	if (exist === null) {
@@ -75,7 +75,7 @@ export default define(meta, async (ps, user) => {
 
 	// Delete mute
 	await Mute.remove({
-		_id: exist._id
+		_id: exist.id
 	});
 
 	return;

@@ -120,7 +120,7 @@ export default define(meta, async (ps, user) => {
 	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
-		getFriends(user._id, true, false),
+		getFriends(user.id, true, false),
 
 		// 隠すユーザーを取得
 		getHideUserIds(user)
@@ -145,10 +145,10 @@ export default define(meta, async (ps, user) => {
 			}
 		}, { // または
 			// リプライだが返信先が自分(フォロワー)の投稿
-			'_reply.userId': user._id
+			'_reply.userId': user.id
 		}, { // または
 			// 自分(フォロワー)が送信したリプライ
-			userId: user._id
+			userId: user.id
 		}]*/
 	}));
 
@@ -158,10 +158,10 @@ export default define(meta, async (ps, user) => {
 		visibility: { $in: ['public', 'home', 'followers'] }
 	}, {
 		// myself (for specified/private)
-		userId: user._id
+		userId: user.id
 	}, {
 		// to me (for specified)
-		visibleUserIds: { $in: [ user._id ] }
+		visibleUserIds: { $in: [ user.id ] }
 	}];
 
 	const query = {
@@ -207,7 +207,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.includeMyRenotes === false) {
 		query.$and.push({
 			$or: [{
-				userId: { $ne: user._id }
+				userId: { $ne: user.id }
 			}, {
 				renoteId: null
 			}, {
@@ -223,7 +223,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.includeRenotedMyNotes === false) {
 		query.$and.push({
 			$or: [{
-				'_renote.userId': { $ne: user._id }
+				'_renote.userId': { $ne: user.id }
 			}, {
 				renoteId: null
 			}, {
@@ -259,16 +259,16 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		query._id = {
+		query.id = {
 			$lt: ps.untilId
 		};
 	} else if (ps.sinceDate) {
-		sort._id = 1;
+		sort.id = 1;
 		query.createdAt = {
 			$gt: new Date(ps.sinceDate)
 		};

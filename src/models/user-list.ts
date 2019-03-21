@@ -31,8 +31,8 @@ export const pack = (
 	if (!_userList) throw `invalid userList arg ${userList}`;
 
 	// Rename _id to id
-	_userList.id = _userList._id;
-	delete _userList._id;
+	_userList.id = _userList.id;
+	delete _userList.id;
 
 	resolve(_userList);
 });

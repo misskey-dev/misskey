@@ -33,7 +33,7 @@ export default define(meta, async (ps, user) => {
 	// Calculate drive usage
 	const usage = await DriveFile.aggregate([{
 		$match: {
-			'metadata.userId': user._id,
+			'metadata.userId': user.id,
 			'metadata.deletedAt': { $exists: false }
 		}
 	}, {

@@ -26,7 +26,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
-	const relations = await Promise.all(ids.map(id => getRelation(me._id, id)));
+	const relations = await Promise.all(ids.map(id => getRelation(me.id, id)));
 
 	return Array.isArray(ps.userId) ? relations : relations[0];
 });

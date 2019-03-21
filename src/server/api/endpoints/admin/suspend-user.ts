@@ -46,7 +46,7 @@ export default define(meta, async (ps) => {
 	}
 
 	await Users.findOneAndUpdate({
-		_id: user._id
+		_id: user.id
 	}, {
 		$set: {
 			isSuspended: true
@@ -60,7 +60,7 @@ export default define(meta, async (ps) => {
 
 async function unFollowAll(follower: IUser) {
 	const followings = await Following.find({
-		followerId: follower._id
+		followerId: follower.id
 	});
 
 	for (const following of followings) {

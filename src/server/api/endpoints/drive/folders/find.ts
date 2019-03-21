@@ -37,7 +37,7 @@ export default define(meta, async (ps, user) => {
 	const folders = await DriveFolder
 		.find({
 			name: ps.name,
-			userId: user._id,
+			userId: user.id,
 			parentId: ps.parentId
 		});
 

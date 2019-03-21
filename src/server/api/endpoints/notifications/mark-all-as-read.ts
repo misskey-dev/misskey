@@ -19,7 +19,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	// Update documents
 	await Notification.update({
-		notifieeId: user._id,
+		notifieeId: user.id,
 		isRead: false
 	}, {
 		$set: {
@@ -30,12 +30,12 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Update flag
-	User.update({ _id: user._id }, {
+	User.update({ _id: user.id }, {
 		$set: {
 			hasUnreadNotification: false
 		}
 	});
 
 	// 全ての通知を読みましたよというイベントを発行
-	publishMainStream(user._id, 'readAllNotifications');
+	publishMainStream(user.id, 'readAllNotifications');
 });

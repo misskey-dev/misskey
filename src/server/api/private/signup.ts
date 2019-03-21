@@ -51,7 +51,7 @@ export default async (ctx: Koa.BaseContext) => {
 		}
 
 		RegistrationTicket.remove({
-			_id: ticket._id
+			_id: ticket.id
 		});
 	}
 

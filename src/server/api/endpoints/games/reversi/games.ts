@@ -33,9 +33,9 @@ export default define(meta, async (ps, user) => {
 	const q: any = ps.my ? {
 		isStarted: true,
 		$or: [{
-			user1Id: user._id
+			user1Id: user.id
 		}, {
-			user2Id: user._id
+			user2Id: user.id
 		}]
 	} : {
 		isStarted: true
@@ -46,12 +46,12 @@ export default define(meta, async (ps, user) => {
 	};
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		q._id = {
+		sort.id = 1;
+		q.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		q._id = {
+		q.id = {
 			$lt: ps.untilId
 		};
 	}

@@ -27,7 +27,7 @@ export default define(meta, async (ps) => {
 	}
 
 	await AbuseUserReport.remove({
-		_id: report._id
+		_id: report.id
 	});
 
 	return;

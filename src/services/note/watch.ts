@@ -8,7 +8,7 @@ export default async (me: mongodb.ObjectID, note: object) => {
 
 	// if watching now
 	const exist = await Watching.findOne({
-		noteId: (note as any)._id,
+		noteId: (note as any).id,
 		userId: me
 	});
 
@@ -18,7 +18,7 @@ export default async (me: mongodb.ObjectID, note: object) => {
 
 	await Watching.insert({
 		createdAt: new Date(),
-		noteId: (note as any)._id,
+		noteId: (note as any).id,
 		userId: me
 	});
 };

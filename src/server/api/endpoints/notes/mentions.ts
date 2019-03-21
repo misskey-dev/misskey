@@ -53,16 +53,16 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// フォローを取得
-	const followings = await getFriends(user._id);
+	const followings = await getFriends(user.id);
 
 	const visibleQuery = [{
 		visibility: { $in: [ 'public', 'home' ] }
 	}, {
 		// myself (for followers/specified/private)
-		userId: user._id
+		userId: user.id
 	}, {
 		// to me (for specified)
-		visibleUserIds: { $in: [ user._id ] }
+		visibleUserIds: { $in: [ user.id ] }
 	}, {
 		visibility: 'followers',
 		$or: [{
@@ -70,10 +70,10 @@ export default define(meta, async (ps, user) => {
 			userId: { $in: followings.map(f => f.id) },
 		}, {
 			// 自分の投稿へのリプライ
-			'_reply.userId': user._id,
+			'_reply.userId': user.id,
 		}, {
 			// 自分へのメンションが含まれている
-			mentions: { $in: [ user._id ] }
+			mentions: { $in: [ user.id ] }
 		}]
 	}];
 
@@ -85,9 +85,9 @@ export default define(meta, async (ps, user) => {
 		}],
 
 		$or: [{
-			mentions: user._id
+			mentions: user.id
 		}, {
-			visibleUserIds: user._id
+			visibleUserIds: user.id
 		}]
 	} as any;
 
@@ -117,7 +117,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.following) {
-		const followingIds = await getFriendIds(user._id);
+		const followingIds = await getFriendIds(user.id);
 
 		query.userId = {
 			$in: followingIds
@@ -125,12 +125,12 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		query._id = {
+		query.id = {
 			$lt: ps.untilId
 		};
 	}
@@ -141,7 +141,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	for (const note of mentions) {
-		read(user._id, note._id);
+		read(user.id, note.id);
 	}
 
 	return await packMany(mentions, user);

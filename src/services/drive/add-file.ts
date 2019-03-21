@@ -124,21 +124,21 @@ async function save(path: string, name: string, type: string, hash: string, size
 
 		const originalFile = await storeOriginal(originalDst, name, path, type, metadata);
 
-		logger.info(`original stored to ${originalFile._id}`);
+		logger.info(`original stored to ${originalFile.id}`);
 		// #endregion store original
 
 		// #region store webpublic
 		if (alts.webpublic) {
 			const webDst = await getDriveFileWebpublicBucket();
-			const webFile = await storeAlts(webDst, name, alts.webpublic.data, alts.webpublic.type, originalFile._id);
-			logger.info(`web stored ${webFile._id}`);
+			const webFile = await storeAlts(webDst, name, alts.webpublic.data, alts.webpublic.type, originalFile.id);
+			logger.info(`web stored ${webFile.id}`);
 		}
 		// #endregion store webpublic
 
 		if (alts.thumbnail) {
 			const thumDst = await getDriveFileThumbnailBucket();
-			const thumFile = await storeAlts(thumDst, name, alts.thumbnail.data, alts.thumbnail.type, originalFile._id);
-			logger.info(`web stored ${thumFile._id}`);
+			const thumFile = await storeAlts(thumDst, name, alts.thumbnail.data, alts.thumbnail.type, originalFile.id);
+			logger.info(`web stored ${thumFile.id}`);
 		}
 
 		return originalFile;
@@ -249,7 +249,7 @@ async function deleteOldFile(user: IRemoteUser) {
 		_id: {
 			$nin: [user.avatarId, user.bannerId]
 		},
-		'metadata.userId': user._id
+		'metadata.userId': user.id
 	}, {
 		sort: {
 			_id: 1
@@ -323,12 +323,12 @@ export default async function(
 		// Check if there is a file with the same hash
 		const much = await DriveFile.findOne({
 			md5: hash,
-			'metadata.userId': user._id,
+			'metadata.userId': user.id,
 			'metadata.deletedAt': { $exists: false }
 		});
 
 		if (much) {
-			logger.info(`file with same hash is found: ${much._id}`);
+			logger.info(`file with same hash is found: ${much.id}`);
 			return much;
 		}
 	}
@@ -338,7 +338,7 @@ export default async function(
 		const usage = await DriveFile
 			.aggregate([{
 				$match: {
-					'metadata.userId': user._id,
+					'metadata.userId': user.id,
 					'metadata.deletedAt': { $exists: false }
 				}
 			}, {
@@ -382,7 +382,7 @@ export default async function(
 
 		const driveFolder = await DriveFolder.findOne({
 			_id: folderId,
-			userId: user._id
+			userId: user.id
 		});
 
 		if (driveFolder == null) throw 'folder-not-found';
@@ -437,11 +437,11 @@ export default async function(
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
 	const metadata = {
-		userId: user._id,
+		userId: user.id,
 		_user: {
 			host: user.host
 		},
-		folderId: folder !== null ? folder._id : null,
+		folderId: folder !== null ? folder.id : null,
 		comment: comment,
 		properties: properties,
 		withoutChunks: isLink,
@@ -483,7 +483,7 @@ export default async function(
 
 				driveFile = await DriveFile.findOne({
 					'metadata.uri': metadata.uri,
-					'metadata.userId': user._id
+					'metadata.userId': user.id
 				});
 			} else {
 				logger.error(e);
@@ -494,12 +494,12 @@ export default async function(
 		driveFile = await (save(path, detectedName, mime, hash, size, metadata));
 	}
 
-	logger.succ(`drive file has been created ${driveFile._id}`);
+	logger.succ(`drive file has been created ${driveFile.id}`);
 
 	pack(driveFile).then(packedFile => {
 		// Publish driveFileCreated event
-		publishMainStream(user._id, 'driveFileCreated', packedFile);
-		publishDriveStream(user._id, 'fileCreated', packedFile);
+		publishMainStream(user.id, 'driveFileCreated', packedFile);
+		publishDriveStream(user.id, 'fileCreated', packedFile);
 	});
 
 	// 統計を更新

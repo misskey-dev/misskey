@@ -15,8 +15,8 @@ const logger = new Logger('following/delete');
 
 export default async function(follower: IUser, followee: IUser, silent = false) {
 	const following = await Following.findOne({
-		followerId: follower._id,
-		followeeId: followee._id
+		followerId: follower.id,
+		followeeId: followee.id
 	});
 
 	if (following == null) {
@@ -25,11 +25,11 @@ export default async function(follower: IUser, followee: IUser, silent = false) 
 	}
 
 	Following.remove({
-		_id: following._id
+		_id: following.id
 	});
 
 	//#region Decrement following count
-	User.update({ _id: follower._id }, {
+	User.update({ _id: follower.id }, {
 		$inc: {
 			followingCount: -1
 		}
@@ -37,7 +37,7 @@ export default async function(follower: IUser, followee: IUser, silent = false) 
 	//#endregion
 
 	//#region Decrement followers count
-	User.update({ _id: followee._id }, {
+	User.update({ _id: followee.id }, {
 		$inc: {
 			followersCount: -1
 		}
@@ -47,7 +47,7 @@ export default async function(follower: IUser, followee: IUser, silent = false) 
 	//#region Update instance stats
 	if (isRemoteUser(follower) && isLocalUser(followee)) {
 		registerOrFetchInstanceDoc(follower.host).then(i => {
-			Instance.update({ _id: i._id }, {
+			Instance.update({ _id: i.id }, {
 				$inc: {
 					followingCount: -1
 				}
@@ -57,7 +57,7 @@ export default async function(follower: IUser, followee: IUser, silent = false) 
 		});
 	} else if (isLocalUser(follower) && isRemoteUser(followee)) {
 		registerOrFetchInstanceDoc(followee.host).then(i => {
-			Instance.update({ _id: i._id }, {
+			Instance.update({ _id: i.id }, {
 				$inc: {
 					followersCount: -1
 				}
@@ -74,7 +74,7 @@ export default async function(follower: IUser, followee: IUser, silent = false) 
 	if (!silent && isLocalUser(follower)) {
 		packUser(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
+		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {

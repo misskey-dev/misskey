@@ -56,7 +56,7 @@ export default define(meta, async (ps, user) => {
 		parent = await DriveFolder
 			.findOne({
 				_id: ps.parentId,
-				userId: user._id
+				userId: user.id
 			});
 
 		if (parent === null) {
@@ -68,14 +68,14 @@ export default define(meta, async (ps, user) => {
 	const folder = await DriveFolder.insert({
 		createdAt: new Date(),
 		name: ps.name,
-		parentId: parent !== null ? parent._id : null,
-		userId: user._id
+		parentId: parent !== null ? parent.id : null,
+		userId: user.id
 	});
 
 	const folderObj = await pack(folder);
 
 	// Publish folderCreated event
-	publishDriveStream(user._id, 'folderCreated', folderObj);
+	publishDriveStream(user.id, 'folderCreated', folderObj);
 
 	return folderObj;
 });

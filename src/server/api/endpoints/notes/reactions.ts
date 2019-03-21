@@ -69,7 +69,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	const query = {
-		noteId: note._id
+		noteId: note.id
 	} as any;
 
 	const sort = {
@@ -77,12 +77,12 @@ export default define(meta, async (ps, user) => {
 	};
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		query._id = {
+		query.id = {
 			$lt: ps.untilId
 		};
 	}

@@ -31,7 +31,7 @@ export default define(meta, async (ps, user) => {
 		if (widget) {
 				widget.data = ps.data;
 
-			await User.update(user._id, {
+			await User.update(user.id, {
 				$set: {
 					'clientSettings.home': desktopHome
 				}
@@ -47,7 +47,7 @@ export default define(meta, async (ps, user) => {
 		if (widget) {
 				widget.data = ps.data;
 
-			await User.update(user._id, {
+			await User.update(user.id, {
 				$set: {
 					'clientSettings.mobileHome': mobileHome
 				}
@@ -67,7 +67,7 @@ export default define(meta, async (ps, user) => {
 		if (widget) {
 				widget.data = ps.data;
 
-			await User.update(user._id, {
+			await User.update(user.id, {
 				$set: {
 					'clientSettings.deck': deck
 				}
@@ -77,7 +77,7 @@ export default define(meta, async (ps, user) => {
 	//#endregion
 
 	if (widget) {
-		publishMainStream(user._id, 'widgetUpdated', {
+		publishMainStream(user.id, 'widgetUpdated', {
 			id: ps.id, data: ps.data
 		});
 

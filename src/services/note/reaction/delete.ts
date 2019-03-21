@@ -11,8 +11,8 @@ import { IdentifiableError } from '../../../misc/identifiable-error';
 export default async (user: IUser, note: INote) => {
 	// if already unreacted
 	const exist = await NoteReaction.findOne({
-		noteId: note._id,
-		userId: user._id,
+		noteId: note.id,
+		userId: user.id,
 		deletedAt: { $exists: false }
 	});
 
@@ -22,20 +22,20 @@ export default async (user: IUser, note: INote) => {
 
 	// Delete reaction
 	await NoteReaction.remove({
-		_id: exist._id
+		_id: exist.id
 	});
 
 	const dec: any = {};
 	dec[`reactionCounts.${exist.reaction}`] = -1;
 
 	// Decrement reactions count
-	Note.update({ _id: note._id }, {
+	Note.update({ _id: note.id }, {
 		$inc: dec
 	});
 
-	publishNoteStream(note._id, 'unreacted', {
+	publishNoteStream(note.id, 'unreacted', {
 		reaction: exist.reaction,
-		userId: user._id
+		userId: user.id
 	});
 
 	//#region 配信

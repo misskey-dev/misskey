@@ -51,7 +51,7 @@ router.get('/disconnect/discord', async ctx => {
 	ctx.body = `Discordの連携を解除しました :v:`;
 
 	// Publish i updated event
-	publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+	publishMainStream(user.id, 'meUpdated', await pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -296,7 +296,7 @@ router.get('/dc/cb', async ctx => {
 		ctx.body = `Discord: @${username}#${discriminator} を、Misskey: @${user.username} に接続しました！`;
 
 		// Publish i updated event
-		publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+		publishMainStream(user.id, 'meUpdated', await pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

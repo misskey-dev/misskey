@@ -50,7 +50,7 @@ router.get('/disconnect/twitter', async ctx => {
 	ctx.body = `Twitterの連携を解除しました :v:`;
 
 	// Publish i updated event
-	publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+	publishMainStream(user.id, 'meUpdated', await pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -178,7 +178,7 @@ router.get('/tw/cb', async ctx => {
 		ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
 
 		// Publish i updated event
-		publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+		publishMainStream(user.id, 'meUpdated', await pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

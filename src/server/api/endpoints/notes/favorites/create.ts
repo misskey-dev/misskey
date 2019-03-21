@@ -54,8 +54,8 @@ export default define(meta, async (ps, user) => {
 
 	// if already favorited
 	const exist = await Favorite.findOne({
-		noteId: note._id,
-		userId: user._id
+		noteId: note.id,
+		userId: user.id
 	});
 
 	if (exist !== null) {
@@ -65,8 +65,8 @@ export default define(meta, async (ps, user) => {
 	// Create favorite
 	await Favorite.insert({
 		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id
+		noteId: note.id,
+		userId: user.id
 	});
 
 	return;

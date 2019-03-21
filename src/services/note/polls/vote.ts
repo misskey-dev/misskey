@@ -11,8 +11,8 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 
 	// if already voted
 	const exist = await Vote.find({
-		noteId: note._id,
-		userId: user._id
+		noteId: note.id,
+		userId: user.id
 	});
 
 	if (note.poll.multiple) {
@@ -25,8 +25,8 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 	// Create vote
 	await Vote.insert({
 		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id,
+		noteId: note.id,
+		userId: user.id,
 		choice: choice
 	});
 
@@ -36,26 +36,26 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == choice)}.votes`] = 1;
 
 	// Increment votes count
-	await Note.update({ _id: note._id }, {
+	await Note.update({ _id: note.id }, {
 		$inc: inc
 	});
 
-	publishNoteStream(note._id, 'pollVoted', {
+	publishNoteStream(note.id, 'pollVoted', {
 		choice: choice,
-		userId: user._id.toHexString()
+		userId: user.id.toHexString()
 	});
 
 	// Notify
-	notify(note.userId, user._id, 'poll_vote', {
-		noteId: note._id,
+	notify(note.userId, user.id, 'poll_vote', {
+		noteId: note.id,
 		choice: choice
 	});
 
 	// Fetch watchers
 	Watching
 		.find({
-			noteId: note._id,
-			userId: { $ne: user._id },
+			noteId: note.id,
+			userId: { $ne: user.id },
 			// 削除されたドキュメントは除く
 			deletedAt: { $exists: false }
 		}, {
@@ -65,8 +65,8 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 		})
 		.then(watchers => {
 			for (const watcher of watchers) {
-				notify(watcher.userId, user._id, 'poll_vote', {
-					noteId: note._id,
+				notify(watcher.userId, user.id, 'poll_vote', {
+					noteId: note.id,
 					choice: choice
 				});
 			}
@@ -74,6 +74,6 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 
 	// ローカルユーザーが投票した場合この投稿をWatchする
 	if (isLocalUser(user) && user.settings.autoWatch !== false) {
-		watch(user._id, note);
+		watch(user.id, note);
 	}
 });

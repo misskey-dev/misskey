@@ -52,8 +52,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_message.id = _message._id;
-	delete _message._id;
+	_message.id = _message.id;
+	delete _message.id;
 
 	// Populate user
 	_message.user = await packUser(_message.userId, me);

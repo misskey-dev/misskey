@@ -14,9 +14,9 @@ export default class extends Channel {
 	@autobind
 	public async init(params: any) {
 		// Subscribe events
-		this.subscriber.on(`homeTimeline:${this.user._id}`, this.onNote);
+		this.subscriber.on(`homeTimeline:${this.user.id}`, this.onNote);
 
-		const mute = await Mute.find({ muterId: this.user._id });
+		const mute = await Mute.find({ muterId: this.user.id });
 		this.mutedUserIds = mute.map(m => m.muteeId.toString());
 	}
 
@@ -44,6 +44,6 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off(`homeTimeline:${this.user._id}`, this.onNote);
+		this.subscriber.off(`homeTimeline:${this.user.id}`, this.onNote);
 	}
 }

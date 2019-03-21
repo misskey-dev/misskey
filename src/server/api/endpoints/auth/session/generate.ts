@@ -60,7 +60,7 @@ export default define(meta, async (ps) => {
 	// Create session token document
 	const doc = await AuthSess.insert({
 		createdAt: new Date(),
-		appId: app._id,
+		appId: app.id,
 		token: token
 	});
 

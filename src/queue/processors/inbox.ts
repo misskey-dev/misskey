@@ -116,7 +116,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	// Update stats
 	registerOrFetchInstanceDoc(user.host).then(i => {
-		Instance.update({ _id: i._id }, {
+		Instance.update({ _id: i.id }, {
 			$set: {
 				latestRequestReceivedAt: new Date(),
 				lastCommunicatedAt: new Date(),

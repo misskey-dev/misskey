@@ -152,10 +152,10 @@ class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 
 		this.inc({
 			[isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
-		}, follower._id);
+		}, follower.id);
 		this.inc({
 			[isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
-		}, followee._id);
+		}, followee.id);
 	}
 }
 

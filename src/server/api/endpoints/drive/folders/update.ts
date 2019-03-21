@@ -73,7 +73,7 @@ export default define(meta, async (ps, user) => {
 	const folder = await DriveFolder
 		.findOne({
 			_id: ps.folderId,
-			userId: user._id
+			userId: user.id
 		});
 
 	if (folder === null) {
@@ -90,7 +90,7 @@ export default define(meta, async (ps, user) => {
 			const parent = await DriveFolder
 				.findOne({
 					_id: ps.parentId,
-					userId: user._id
+					userId: user.id
 				});
 
 			if (parent === null) {
@@ -107,7 +107,7 @@ export default define(meta, async (ps, user) => {
 					parentId: true
 				});
 
-				if (folder2._id.equals(folder._id)) {
+				if (folder2.id.equals(folder.id)) {
 					return true;
 				} else if (folder2.parentId) {
 					return await checkCircle(folder2.parentId);
@@ -122,12 +122,12 @@ export default define(meta, async (ps, user) => {
 				}
 			}
 
-			folder.parentId = parent._id;
+			folder.parentId = parent.id;
 		}
 	}
 
 	// Update
-	DriveFolder.update(folder._id, {
+	DriveFolder.update(folder.id, {
 		$set: {
 			name: folder.name,
 			parentId: folder.parentId
@@ -137,7 +137,7 @@ export default define(meta, async (ps, user) => {
 	const folderObj = await pack(folder);
 
 	// Publish folderUpdated event
-	publishDriveStream(user._id, 'folderUpdated', folderObj);
+	publishDriveStream(user.id, 'folderUpdated', folderObj);
 
 	return folderObj;
 });

@@ -17,45 +17,45 @@ export async function updateHashtag(user: IUser, tag: string, isUserAttached = f
 		if (isUserAttached) {
 			if (inc) {
 				// 自分が初めてこのタグを使ったなら
-				if (!index.attachedUserIds.some(id => id.equals(user._id))) {
-					$push.attachedUserIds = user._id;
+				if (!index.attachedUserIds.some(id => id.equals(user.id))) {
+					$push.attachedUserIds = user.id;
 					$inc.attachedUsersCount = 1;
 				}
 				// 自分が(ローカル内で)初めてこのタグを使ったなら
-				if (isLocalUser(user) && !index.attachedLocalUserIds.some(id => id.equals(user._id))) {
-					$push.attachedLocalUserIds = user._id;
+				if (isLocalUser(user) && !index.attachedLocalUserIds.some(id => id.equals(user.id))) {
+					$push.attachedLocalUserIds = user.id;
 					$inc.attachedLocalUsersCount = 1;
 				}
 				// 自分が(リモートで)初めてこのタグを使ったなら
-				if (isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id.equals(user._id))) {
-					$push.attachedRemoteUserIds = user._id;
+				if (isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id.equals(user.id))) {
+					$push.attachedRemoteUserIds = user.id;
 					$inc.attachedRemoteUsersCount = 1;
 				}
 			} else {
-				$pull.attachedUserIds = user._id;
+				$pull.attachedUserIds = user.id;
 				$inc.attachedUsersCount = -1;
 				if (isLocalUser(user)) {
-					$pull.attachedLocalUserIds = user._id;
+					$pull.attachedLocalUserIds = user.id;
 					$inc.attachedLocalUsersCount = -1;
 				} else {
-					$pull.attachedRemoteUserIds = user._id;
+					$pull.attachedRemoteUserIds = user.id;
 					$inc.attachedRemoteUsersCount = -1;
 				}
 			}
 		} else {
 			// 自分が初めてこのタグを使ったなら
-			if (!index.mentionedUserIds.some(id => id.equals(user._id))) {
-				$push.mentionedUserIds = user._id;
+			if (!index.mentionedUserIds.some(id => id.equals(user.id))) {
+				$push.mentionedUserIds = user.id;
 				$inc.mentionedUsersCount = 1;
 			}
 			// 自分が(ローカル内で)初めてこのタグを使ったなら
-			if (isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id.equals(user._id))) {
-				$push.mentionedLocalUserIds = user._id;
+			if (isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id.equals(user.id))) {
+				$push.mentionedLocalUserIds = user.id;
 				$inc.mentionedLocalUsersCount = 1;
 			}
 			// 自分が(リモートで)初めてこのタグを使ったなら
-			if (isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id.equals(user._id))) {
-				$push.mentionedRemoteUserIds = user._id;
+			if (isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id.equals(user.id))) {
+				$push.mentionedRemoteUserIds = user.id;
 				$inc.mentionedRemoteUsersCount = 1;
 			}
 		}
@@ -75,21 +75,21 @@ export async function updateHashtag(user: IUser, tag: string, isUserAttached = f
 				mentionedLocalUsersCount: 0,
 				mentionedRemoteUserIds: [],
 				mentionedRemoteUsersCount: 0,
-				attachedUserIds: [user._id],
+				attachedUserIds: [user.id],
 				attachedUsersCount: 1,
-				attachedLocalUserIds: isLocalUser(user) ? [user._id] : [],
+				attachedLocalUserIds: isLocalUser(user) ? [user.id] : [],
 				attachedLocalUsersCount: isLocalUser(user) ? 1 : 0,
-				attachedRemoteUserIds: isRemoteUser(user) ? [user._id] : [],
+				attachedRemoteUserIds: isRemoteUser(user) ? [user.id] : [],
 				attachedRemoteUsersCount: isRemoteUser(user) ? 1 : 0,
 			});
 		} else {
 			Hashtag.insert({
 				tag,
-				mentionedUserIds: [user._id],
+				mentionedUserIds: [user.id],
 				mentionedUsersCount: 1,
-				mentionedLocalUserIds: isLocalUser(user) ? [user._id] : [],
+				mentionedLocalUserIds: isLocalUser(user) ? [user.id] : [],
 				mentionedLocalUsersCount: isLocalUser(user) ? 1 : 0,
-				mentionedRemoteUserIds: isRemoteUser(user) ? [user._id] : [],
+				mentionedRemoteUserIds: isRemoteUser(user) ? [user.id] : [],
 				mentionedRemoteUsersCount: isRemoteUser(user) ? 1 : 0,
 				attachedUserIds: [],
 				attachedUsersCount: 0,

@@ -48,18 +48,18 @@ export default define(meta, async (ps, user) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
-		userId: user._id
+		userId: user.id
 	});
 
 	if (userList == null) {
 		throw new ApiError(meta.errors.noSuchList);
 	}
 
-	await UserList.update({ _id: userList._id }, {
+	await UserList.update({ _id: userList.id }, {
 		$set: {
 			title: ps.title
 		}
 	});
 
-	return await pack(userList._id);
+	return await pack(userList.id);
 });

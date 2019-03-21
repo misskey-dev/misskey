@@ -41,8 +41,8 @@ export const pack = (
 	}
 
 	// Rename _id to id
-	_mute.id = _mute._id;
-	delete _mute._id;
+	_mute.id = _mute.id;
+	delete _mute.id;
 
 	// Populate mutee
 	_mute.mutee = await packUser(_mute.muteeId, me, {

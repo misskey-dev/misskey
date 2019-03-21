@@ -30,7 +30,7 @@ export default define(meta, async (ps, user) => {
 	const files = await DriveFile
 		.find({
 			filename: ps.name,
-			'metadata.userId': user._id,
+			'metadata.userId': user.id,
 			'metadata.folderId': ps.folderId
 		});
 

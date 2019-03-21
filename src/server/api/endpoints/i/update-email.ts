@@ -39,7 +39,7 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			email: ps.email,
 			emailVerified: false,
@@ -47,18 +47,18 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	const iObj = await pack(user._id, user, {
+	const iObj = await pack(user.id, user, {
 		detail: true,
 		includeSecrets: true
 	});
 
 	// Publish meUpdated event
-	publishMainStream(user._id, 'meUpdated', iObj);
+	publishMainStream(user.id, 'meUpdated', iObj);
 
 	if (ps.email != null) {
 		const code = rndstr('a-z0-9', 16);
 
-		await User.update(user._id, {
+		await User.update(user.id, {
 			$set: {
 				emailVerifyCode: code
 			}

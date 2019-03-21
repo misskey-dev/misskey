@@ -13,11 +13,11 @@ const logger = new Logger('pollsUpdate');
 
 export async function triggerUpdate(note: INote) {
 	if (!note.updatedAt || Date.now() - new Date(note.updatedAt).getTime() > ms('1min')) {
-		logger.info(`Updating ${note._id}`);
+		logger.info(`Updating ${note.id}`);
 
 		try {
 			const updated = await updateQuestion(note.uri);
-			logger.info(`Updated ${note._id} ${updated ? 'changed' : 'nochange'}`);
+			logger.info(`Updated ${note.id} ${updated ? 'changed' : 'nochange'}`);
 		} catch (e) {
 			logger.error(e);
 		}
@@ -34,7 +34,7 @@ export async function deliverQuestionUpdate(noteId: mongo.ObjectID) {
 	});
 
 	const followers = await Following.find({
-		followeeId: user._id
+		followeeId: user.id
 	});
 
 	const queue: string[] = [];

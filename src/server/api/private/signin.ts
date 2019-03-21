@@ -79,12 +79,12 @@ export default async (ctx: Koa.BaseContext) => {
 	// Append signin history
 	const record = await Signin.insert({
 		createdAt: new Date(),
-		userId: user._id,
+		userId: user.id,
 		ip: ctx.ip,
 		headers: ctx.headers,
 		success: same
 	});
 
 	// Publish signin event
-	publishMainStream(user._id, 'signin', await pack(record));
+	publishMainStream(user.id, 'signin', await pack(record));
 };

@@ -11,12 +11,12 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
 		Blocking.findOne({
-			blockerId: follower._id,
-			blockeeId: followee._id,
+			blockerId: follower.id,
+			blockeeId: followee.id,
 		}),
 		Blocking.findOne({
-			blockerId: followee._id,
-			blockeeId: follower._id,
+			blockerId: followee.id,
+			blockeeId: follower.id,
 		})
 	]);
 
@@ -25,8 +25,8 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 
 	await FollowRequest.insert({
 		createdAt: new Date(),
-		followerId: follower._id,
-		followeeId: followee._id,
+		followerId: follower.id,
+		followeeId: followee.id,
 		requestId,
 
 		// 非正規化
@@ -42,7 +42,7 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 		}
 	});
 
-	await User.update({ _id: followee._id }, {
+	await User.update({ _id: followee.id }, {
 		$inc: {
 			pendingReceivedFollowRequestsCount: 1
 		}
@@ -50,14 +50,14 @@ export default async function(follower: IUser, followee: IUser, requestId?: stri
 
 	// Publish receiveRequest event
 	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => publishMainStream(followee._id, 'receiveFollowRequest', packed));
+		packUser(follower, followee).then(packed => publishMainStream(followee.id, 'receiveFollowRequest', packed));
 
 		packUser(followee, followee, {
 			detail: true
-		}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
+		}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 
 		// 通知を作成
-		notify(followee._id, follower._id, 'receiveFollowRequest');
+		notify(followee.id, follower.id, 'receiveFollowRequest');
 	}
 
 	if (isLocalUser(follower) && isRemoteUser(followee)) {

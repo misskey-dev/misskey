@@ -159,7 +159,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 				await vote(actor, reply, index);
 
 				// リモートフォロワーにUpdate配信
-				deliverQuestionUpdate(reply._id);
+				deliverQuestionUpdate(reply.id);
 			}
 			return null;
 		};

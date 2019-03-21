@@ -34,7 +34,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 					if (dive) {
 						inReplyTo = await renderNote(inReplyToNote, false);
 					} else {
-						inReplyTo = `${config.url}/notes/${inReplyToNote._id}`;
+						inReplyTo = `${config.url}/notes/${inReplyToNote.id}`;
 					}
 				}
 			}
@@ -51,7 +51,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		});
 
 		if (renote) {
-			quote = renote.uri ? renote.uri : `${config.url}/notes/${renote._id}`;
+			quote = renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`;
 		}
 	}
 
@@ -59,7 +59,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 		_id: note.userId
 	});
 
-	const attributedTo = `${config.url}/users/${user._id}`;
+	const attributedTo = `${config.url}/users/${user.id}`;
 
 	const mentions = note.mentionedRemoteUsers && note.mentionedRemoteUsers.length > 0
 		? note.mentionedRemoteUsers.map(x => x.uri)
@@ -97,11 +97,11 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	let question: string;
 	if (note.poll != null) {
 		if (text == null) text = '';
-		const url = `${config.url}/notes/${note._id}`;
+		const url = `${config.url}/notes/${note.id}`;
 		// TODO: i18n
 		text += `\n[リモートで結果を表示](${url})`;
 
-		question = `${config.url}/questions/${note._id}`;
+		question = `${config.url}/questions/${note.id}`;
 	}
 
 	let apText = text;
@@ -159,7 +159,7 @@ export default async function renderNote(note: INote, dive = true): Promise<any>
 	} : {};
 
 	return {
-		id: `${config.url}/notes/${note._id}`,
+		id: `${config.url}/notes/${note.id}`,
 		type: 'Note',
 		attributedTo,
 		summary,

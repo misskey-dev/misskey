@@ -8,10 +8,10 @@ import User from '../../../models/user';
 const logger = queueLogger.createSubLogger('delete-notes');
 
 export async function deleteNotes(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Deleting notes of ${job.data.user._id} ...`);
+	logger.info(`Deleting notes of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	let deletedCount = 0;
@@ -20,7 +20,7 @@ export async function deleteNotes(job: Bull.Job, done: any): Promise<void> {
 
 	while (!ended) {
 		const notes = await Note.find({
-			userId: user._id,
+			userId: user.id,
 			...(cursor ? { _id: { $gt: cursor } } : {})
 		}, {
 			limit: 100,
@@ -35,7 +35,7 @@ export async function deleteNotes(job: Bull.Job, done: any): Promise<void> {
 			break;
 		}
 
-		cursor = notes[notes.length - 1]._id;
+		cursor = notes[notes.length - 1].id;
 
 		for (const note of notes) {
 			await deleteNote(user, note, true);
@@ -43,12 +43,12 @@ export async function deleteNotes(job: Bull.Job, done: any): Promise<void> {
 		}
 
 		const total = await Note.count({
-			userId: user._id,
+			userId: user.id,
 		});
 
 		job.progress(deletedCount / total);
 	}
 
-	logger.succ(`All notes (${deletedCount}) of ${user._id} has been deleted.`);
+	logger.succ(`All notes (${deletedCount}) of ${user.id} has been deleted.`);
 	done();
 }

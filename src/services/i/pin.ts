@@ -17,7 +17,7 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 	// Fetch pinee
 	const note = await Note.findOne({
 		_id: noteId,
-		userId: user._id
+		userId: user.id
 	});
 
 	if (note === null) {
@@ -38,13 +38,13 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 		throw new IdentifiableError('15a018eb-58e5-4da1-93be-330fcc5e4e1a', 'You can not pin notes any more.');
 	}
 
-	if (pinnedNoteIds.some(id => id.equals(note._id))) {
+	if (pinnedNoteIds.some(id => id.equals(note.id))) {
 		throw new IdentifiableError('23f0cf4e-59a3-4276-a91d-61a5891c1514', 'That note has already been pinned.');
 	}
 
-	pinnedNoteIds.unshift(note._id);
+	pinnedNoteIds.unshift(note.id);
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			pinnedNoteIds: pinnedNoteIds
 		}
@@ -52,7 +52,7 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
 
 	// Deliver to remote followers
 	if (isLocalUser(user)) {
-		deliverPinnedChange(user._id, note._id, true);
+		deliverPinnedChange(user.id, note.id, true);
 	}
 }
 
@@ -65,16 +65,16 @@ export async function removePinned(user: IUser, noteId: mongo.ObjectID) {
 	// Fetch unpinee
 	const note = await Note.findOne({
 		_id: noteId,
-		userId: user._id
+		userId: user.id
 	});
 
 	if (note === null) {
 		throw new IdentifiableError('b302d4cf-c050-400a-bbb3-be208681f40c', 'No such note.');
 	}
 
-	const pinnedNoteIds = (user.pinnedNoteIds || []).filter(id => !id.equals(note._id));
+	const pinnedNoteIds = (user.pinnedNoteIds || []).filter(id => !id.equals(note.id));
 
-	await User.update(user._id, {
+	await User.update(user.id, {
 		$set: {
 			pinnedNoteIds: pinnedNoteIds
 		}
@@ -82,7 +82,7 @@ export async function removePinned(user: IUser, noteId: mongo.ObjectID) {
 
 	// Deliver to remote followers
 	if (isLocalUser(user)) {
-		deliverPinnedChange(user._id, noteId, false);
+		deliverPinnedChange(user.id, noteId, false);
 	}
 }
 
@@ -97,7 +97,7 @@ export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.
 
 	if (queue.length < 1) return;
 
-	const target = `${config.url}/users/${user._id}/collections/featured`;
+	const target = `${config.url}/users/${user.id}/collections/featured`;
 
 	const item = `${config.url}/notes/${noteId}`;
 	const content = renderActivity(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
@@ -112,7 +112,7 @@ export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.
  */
 async function CreateRemoteInboxes(user: ILocalUser): Promise<string[]> {
 	const followers = await Following.find({
-		followeeId: user._id
+		followeeId: user.id
 	});
 
 	const queue: string[] = [];

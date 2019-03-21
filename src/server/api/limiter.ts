@@ -38,7 +38,7 @@ export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) =>
 	// Short-term limit
 	function min() {
 		const minIntervalLimiter = new Limiter({
-			id: `${user._id}:${key}:min`,
+			id: `${user.id}:${key}:min`,
 			duration: limitation.minInterval,
 			max: 1,
 			db: limiterDB
@@ -66,7 +66,7 @@ export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) =>
 	// Long term limit
 	function max() {
 		const limiter = new Limiter({
-			id: `${user._id}:${key}`,
+			id: `${user.id}:${key}`,
 			duration: limitation.duration,
 			max: limitation.max,
 			db: limiterDB

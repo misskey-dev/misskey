@@ -75,11 +75,11 @@ export default define(meta, async (ps, user) => {
 
 	const query = {
 		$or: [{
-			userId: user._id,
-			recipientId: recipient._id
+			userId: user.id,
+			recipientId: recipient.id
 		}, {
-			userId: recipient._id,
-			recipientId: user._id
+			userId: recipient.id,
+			recipientId: user.id
 		}]
 	} as any;
 
@@ -88,12 +88,12 @@ export default define(meta, async (ps, user) => {
 	};
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
+		sort.id = 1;
+		query.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		query._id = {
+		query.id = {
 			$lt: ps.untilId
 		};
 	}
@@ -106,7 +106,7 @@ export default define(meta, async (ps, user) => {
 
 	// Mark all as read
 	if (ps.markAsRead) {
-		read(user._id, recipient._id, messages);
+		read(user.id, recipient.id, messages);
 	}
 
 	return await Promise.all(messages.map(message => pack(message, user, {

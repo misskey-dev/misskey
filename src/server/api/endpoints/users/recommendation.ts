@@ -70,7 +70,7 @@ export default define(meta, async (ps, me) => {
 		return users;
 	} else {
 		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriendIds(me._id);
+		const followingIds = await getFriendIds(me.id);
 
 		// 隠すユーザーを取得
 		const hideUserIds = await getHideUserIds(me);

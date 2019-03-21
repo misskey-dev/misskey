@@ -43,7 +43,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
 		// URLを更新する
 		if (file.metadata.url !== image.url) {
-			file = await DriveFile.findOneAndUpdate({ _id: file._id }, {
+			file = await DriveFile.findOneAndUpdate({ _id: file.id }, {
 				$set: {
 					'metadata.url': image.url,
 					'metadata.uri': image.url

@@ -34,7 +34,7 @@ export default async (
 
 	try {
 		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
-		logger.succ(`Got: ${driveFile._id}`);
+		logger.succ(`Got: ${driveFile.id}`);
 	} catch (e) {
 		error = e;
 		logger.error(`Failed to create drive file: ${e}`, {

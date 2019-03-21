@@ -94,8 +94,8 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 	}
 
 	// Rename _id to id
-	_notification.id = _notification._id;
-	delete _notification._id;
+	_notification.id = _notification.id;
+	delete _notification.id;
 
 	// Rename notifierId to userId
 	_notification.userId = _notification.notifierId;

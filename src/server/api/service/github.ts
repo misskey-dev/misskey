@@ -51,7 +51,7 @@ router.get('/disconnect/github', async ctx => {
 	ctx.body = `GitHubの連携を解除しました :v:`;
 
 	// Publish i updated event
-	publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+	publishMainStream(user.id, 'meUpdated', await pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -264,7 +264,7 @@ router.get('/gh/cb', async ctx => {
 		ctx.body = `GitHub: @${login} を、Misskey: @${user.username} に接続しました！`;
 
 		// Publish i updated event
-		publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+		publishMainStream(user.id, 'meUpdated', await pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

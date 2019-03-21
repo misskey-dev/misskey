@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 	const blocker = user;
 
 	// 自分自身
-	if (user._id.equals(ps.userId)) {
+	if (user.id.equals(ps.userId)) {
 		throw new ApiError(meta.errors.blockeeIsYourself);
 	}
 
@@ -75,8 +75,8 @@ export default define(meta, async (ps, user) => {
 
 	// Check if already blocking
 	const exist = await Blocking.findOne({
-		blockerId: blocker._id,
-		blockeeId: blockee._id
+		blockerId: blocker.id,
+		blockeeId: blockee.id
 	});
 
 	if (exist !== null) {
@@ -86,7 +86,7 @@ export default define(meta, async (ps, user) => {
 	// Create blocking
 	await create(blocker, blockee);
 
-	return await pack(blockee._id, user, {
+	return await pack(blockee.id, user, {
 		detail: true
 	});
 });

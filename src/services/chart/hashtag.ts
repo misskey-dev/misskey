@@ -48,7 +48,7 @@ class HashtagChart extends Chart<HashtagLog> {
 
 		await this.incIfUnique({
 			[isLocalUser(user) ? 'local' : 'remote']: update
-		}, 'users', user._id.toHexString(), hashtag);
+		}, 'users', user.id.toHexString(), hashtag);
 	}
 }
 

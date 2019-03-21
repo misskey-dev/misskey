@@ -65,7 +65,7 @@ export default async function(ctx: Koa.BaseContext) {
 			ctx.set('Content-Type', 'image/jpeg');
 			ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.filename, { suffix: '-thumb', extname: '.jpeg' })}"`));
 			const bucket = await getDriveFileThumbnailBucket();
-			ctx.body = bucket.openDownloadStream(thumb._id);
+			ctx.body = bucket.openDownloadStream(thumb.id);
 		} else {
 			if (file.contentType.startsWith('image/')) {
 				ctx.set('Content-Disposition', contentDisposition('inline', `${file.filename}"`));
@@ -85,7 +85,7 @@ export default async function(ctx: Koa.BaseContext) {
 			ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.filename, { suffix: '-web' })}"`));
 
 			const bucket = await getDriveFileWebpublicBucket();
-			ctx.body = bucket.openDownloadStream(web._id);
+			ctx.body = bucket.openDownloadStream(web.id);
 		} else {
 			ctx.set('Content-Disposition', contentDisposition('inline', `${file.filename}"`));
 			await sendRaw();

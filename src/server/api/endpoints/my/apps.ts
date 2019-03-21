@@ -27,7 +27,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const query = {
-		userId: user._id
+		userId: user.id
 	};
 
 	const apps = await App

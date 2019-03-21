@@ -31,13 +31,13 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const [favorite, watching] = await Promise.all([
 		Favorite.count({
-			userId: user._id,
+			userId: user.id,
 			noteId: ps.noteId
 		}, {
 			limit: 1
 		}),
 		NoteWatching.count({
-			userId: user._id,
+			userId: user.id,
 			noteId: ps.noteId
 		}, {
 			limit: 1

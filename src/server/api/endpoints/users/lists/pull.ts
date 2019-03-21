@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 	// Fetch the list
 	const userList = await UserList.findOne({
 		_id: ps.listId,
-		userId: me._id,
+		userId: me.id,
 	});
 
 	if (userList == null) {
@@ -68,11 +68,11 @@ export default define(meta, async (ps, me) => {
 	});
 
 	// Pull the user
-	await UserList.update({ _id: userList._id }, {
+	await UserList.update({ _id: userList.id }, {
 		$pull: {
-			userIds: user._id
+			userIds: user.id
 		}
 	});
 
-	publishUserListStream(userList._id, 'userRemoved', await packUser(user));
+	publishUserListStream(userList.id, 'userRemoved', await packUser(user));
 });

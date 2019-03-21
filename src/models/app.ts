@@ -102,13 +102,13 @@ export const pack = (
 		if (typeof me === 'string') {
 			me = new mongo.ObjectID(me);
 		} else {
-			me = me._id;
+			me = me.id;
 		}
 	}
 
 	// Rename _id to id
-	_app.id = _app._id;
-	delete _app._id;
+	_app.id = _app.id;
+	delete _app.id;
 
 	// Visible by only owner
 	if (!opts.includeSecret) {

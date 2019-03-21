@@ -41,27 +41,27 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Myself
-	if (ps.userId.equals(user._id)) {
+	if (ps.userId.equals(user.id)) {
 		throw new ApiError(meta.errors.isYourself);
 	}
 
 	// Find session
 	const exist = await Matching.findOne({
 		parentId: ps.userId,
-		childId: user._id
+		childId: user.id
 	});
 
 	if (exist) {
 		// Destroy session
 		Matching.remove({
-			_id: exist._id
+			_id: exist.id
 		});
 
 		// Create game
 		const game = await ReversiGame.insert({
 			createdAt: new Date(),
 			user1Id: exist.parentId,
-			user2Id: user._id,
+			user2Id: user.id,
 			user1Accepted: false,
 			user2Accepted: false,
 			isStarted: false,
@@ -77,11 +77,11 @@ export default define(meta, async (ps, user) => {
 		publishReversiStream(exist.parentId, 'matched', await packGame(game, exist.parentId));
 
 		const other = await Matching.count({
-			childId: user._id
+			childId: user.id
 		});
 
 		if (other == 0) {
-			publishMainStream(user._id, 'reversiNoInvites');
+			publishMainStream(user.id, 'reversiNoInvites');
 		}
 
 		return await packGame(game, user);
@@ -94,19 +94,19 @@ export default define(meta, async (ps, user) => {
 
 		// 以前のセッションはすべて削除しておく
 		await Matching.remove({
-			parentId: user._id
+			parentId: user.id
 		});
 
 		// セッションを作成
 		const matching = await Matching.insert({
 			createdAt: new Date(),
-			parentId: user._id,
-			childId: child._id
+			parentId: user.id,
+			childId: child.id
 		});
 
 		const packed = await packMatching(matching, child);
-		publishReversiStream(child._id, 'invited', packed);
-		publishMainStream(child._id, 'reversiInvited', packed);
+		publishReversiStream(child.id, 'invited', packed);
+		publishMainStream(child.id, 'reversiInvited', packed);
 
 		return;
 	}

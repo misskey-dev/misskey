@@ -42,7 +42,7 @@ export default define(meta, async (ps) => {
 
 	const type = await detectUrlMine(ps.url);
 
-	await Emoji.update({ _id: emoji._id }, {
+	await Emoji.update({ _id: emoji.id }, {
 		$set: {
 			updatedAt: new Date(),
 			name: ps.name,

@@ -12,10 +12,10 @@ import { getFullApAccount } from '../../../misc/convert-host';
 const logger = queueLogger.createSubLogger('export-following');
 
 export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Exporting following of ${job.data.user._id} ...`);
+	logger.info(`Exporting following of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+		_id: new mongo.ObjectID(job.data.user.id.toString())
 	});
 
 	// Create temp file
@@ -36,7 +36,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 
 	while (!ended) {
 		const followings = await Following.find({
-			followerId: user._id,
+			followerId: user.id,
 			...(cursor ? { _id: { $gt: cursor } } : {})
 		}, {
 			limit: 100,
@@ -51,7 +51,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 			break;
 		}
 
-		cursor = followings[followings.length - 1]._id;
+		cursor = followings[followings.length - 1].id;
 
 		for (const following of followings) {
 			const u = await Users.findOne({ _id: following.followeeId }, { fields: { username: true, host: true } });
@@ -70,7 +70,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 		}
 
 		const total = await Following.count({
-			followerId: user._id,
+			followerId: user.id,
 		});
 
 		job.progress(exportedCount / total);
@@ -82,7 +82,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	const fileName = 'following-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
 	const driveFile = await addFile(user, path, fileName);
 
-	logger.succ(`Exported to: ${driveFile._id}`);
+	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();
 	done();
 }

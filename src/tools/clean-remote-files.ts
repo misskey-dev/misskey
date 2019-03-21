@@ -22,9 +22,9 @@ DriveFile.find({
 });
 
 async function job(file: IDriveFile): Promise<any> {
-	file = await DriveFile.findOne({ _id: file._id });
+	file = await DriveFile.findOne({ _id: file.id });
 
 	await del(file, true);
 
-	console.log('done', file._id);
+	console.log('done', file.id);
 }

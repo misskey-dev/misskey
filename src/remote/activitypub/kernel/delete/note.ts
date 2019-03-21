@@ -14,7 +14,7 @@ export default async function(actor: IRemoteUser, uri: string): Promise<void> {
 		throw new Error('note not found');
 	}
 
-	if (!note.userId.equals(actor._id)) {
+	if (!note.userId.equals(actor.id)) {
 		throw new Error('投稿を削除しようとしているユーザーは投稿の作成者ではありません');
 	}
 

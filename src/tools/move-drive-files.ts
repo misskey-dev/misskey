@@ -27,7 +27,7 @@ DriveFile.find({
 });
 
 async function job(file: IDriveFile): Promise<any> {
-	file = await DriveFile.findOne({ _id: file._id });
+	file = await DriveFile.findOne({ _id: file.id });
 
 	const minio = new Minio.Client(config.drive.config);
 
@@ -41,14 +41,14 @@ async function job(file: IDriveFile): Promise<any> {
 		|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
 
 	const bucket = await getDriveFileBucket();
-	const readable = bucket.openDownloadStream(file._id);
+	const readable = bucket.openDownloadStream(file.id);
 
 	await minio.putObject(config.drive.bucket, key, readable, file.length, {
 		'Content-Type': file.contentType,
 		'Cache-Control': 'max-age=31536000, immutable'
 	});
 
-	await DriveFile.findOneAndUpdate({ _id: file._id }, {
+	await DriveFile.findOneAndUpdate({ _id: file.id }, {
 		$set: {
 			'metadata.withoutChunks': true,
 			'metadata.storage': 'minio',
@@ -62,22 +62,22 @@ async function job(file: IDriveFile): Promise<any> {
 
 	// チャンクをすべて削除
 	await DriveFileChunk.remove({
-		files_id: file._id
+		files_id: file.id
 	});
 
 	//#region サムネイルもあれば削除
 	const thumbnail = await DriveFileThumbnail.findOne({
-		'metadata.originalId': file._id
+		'metadata.originalId': file.id
 	});
 
 	if (thumbnail) {
 		await DriveFileThumbnailChunk.remove({
-			files_id: thumbnail._id
+			files_id: thumbnail.id
 		});
 
-		await DriveFileThumbnail.remove({ _id: thumbnail._id });
+		await DriveFileThumbnail.remove({ _id: thumbnail.id });
 	}
 	//#endregion
 
-	console.log('done', file._id);
+	console.log('done', file.id);
 }

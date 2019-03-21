@@ -6,13 +6,13 @@ import renderFollow from '../../remote/activitypub/renderer/follow';
 import { publishUserListStream } from '../stream';
 
 export async function pushUserToUserList(target: IUser, list: IUserList) {
-	await UserList.update({ _id: list._id }, {
+	await UserList.update({ _id: list.id }, {
 		$push: {
-			userIds: target._id
+			userIds: target.id
 		}
 	});
 
-	publishUserListStream(list._id, 'userAdded', await packUser(target));
+	publishUserListStream(list.id, 'userAdded', await packUser(target));
 
 	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 	if (isRemoteUser(target)) {

@@ -26,7 +26,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	// if already subscribed
 	const exist = await Subscription.findOne({
-		userId: user._id,
+		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,
 		publickey: ps.publickey,
@@ -43,7 +43,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await Subscription.insert({
-		userId: user._id,
+		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,
 		publickey: ps.publickey

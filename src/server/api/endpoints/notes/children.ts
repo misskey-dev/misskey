@@ -53,7 +53,7 @@ export default define(meta, async (ps, user) => {
 	const [followings, hideUserIds] = await Promise.all([
 		// フォローを取得
 		// Fetch following
-		user ? getFriends(user._id) : [],
+		user ? getFriends(user.id) : [],
 
 		// 隠すユーザーを取得
 		getHideUserIds(user)
@@ -65,10 +65,10 @@ export default define(meta, async (ps, user) => {
 		visibility: { $in: [ 'public', 'home' ] }
 	}, {
 		// myself (for followers/specified/private)
-		userId: user._id
+		userId: user.id
 	}, {
 		// to me (for specified)
-		visibleUserIds: { $in: [ user._id ] }
+		visibleUserIds: { $in: [ user.id ] }
 	}, {
 		visibility: 'followers',
 		$or: [{
@@ -76,10 +76,10 @@ export default define(meta, async (ps, user) => {
 			userId: { $in: followings.map(f => f.id) },
 		}, {
 			// 自分の投稿へのリプライ
-			'_reply.userId': user._id,
+			'_reply.userId': user.id,
 		}, {
 			// 自分へのメンションが含まれている
-			mentions: { $in: [ user._id ] }
+			mentions: { $in: [ user.id ] }
 		}]
 	}];
 
@@ -113,12 +113,12 @@ export default define(meta, async (ps, user) => {
 	};
 
 	if (ps.sinceId) {
-		sort._id = 1;
-		q._id = {
+		sort.id = 1;
+		q.id = {
 			$gt: ps.sinceId
 		};
 	} else if (ps.untilId) {
-		q._id = {
+		q.id = {
 			$lt: ps.untilId
 		};
 	}

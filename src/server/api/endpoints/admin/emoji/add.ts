@@ -42,6 +42,6 @@ export default define(meta, async (ps) => {
 	});
 
 	return {
-		id: emoji._id
+		id: emoji.id
 	};
 });

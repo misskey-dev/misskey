@@ -9,8 +9,8 @@ import { publishMainStream } from '../../stream';
 export default async function(followee: IUser, follower: IUser) {
 	if (isRemoteUser(follower)) {
 		const request = await FollowRequest.findOne({
-			followeeId: followee._id,
-			followerId: follower._id
+			followeeId: followee.id,
+			followerId: follower.id
 		});
 
 		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
@@ -18,11 +18,11 @@ export default async function(followee: IUser, follower: IUser) {
 	}
 
 	await FollowRequest.remove({
-		followeeId: followee._id,
-		followerId: follower._id
+		followeeId: followee.id,
+		followerId: follower.id
 	});
 
-	User.update({ _id: followee._id }, {
+	User.update({ _id: followee.id }, {
 		$inc: {
 			pendingReceivedFollowRequestsCount: -1
 		}
@@ -30,5 +30,5 @@ export default async function(followee: IUser, follower: IUser) {
 
 	packUser(followee, follower, {
 		detail: true
-	}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
+	}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
 }

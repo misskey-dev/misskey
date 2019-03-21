@@ -3,7 +3,7 @@ import { ILocalUser } from '../../../models/user';
 
 export default (user: ILocalUser, target: any, object: any) => ({
 	type: 'Remove',
-	actor: `${config.url}/users/${user._id}`,
+	actor: `${config.url}/users/${user.id}`,
 	target,
 	object
 });

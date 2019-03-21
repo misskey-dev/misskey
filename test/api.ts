@@ -799,15 +799,15 @@ describe('API', () => {
 		it('ドライブ情報を取得できる', async(async () => {
 			const bob = await signup({ username: 'bob' });
 			await uploadFile({
-				userId: me._id,
+				userId: me.id,
 				datasize: 256
 			});
 			await uploadFile({
-				userId: me._id,
+				userId: me.id,
 				datasize: 512
 			});
 			await uploadFile({
-				userId: me._id,
+				userId: me.id,
 				datasize: 1024
 			});
 			const res = await request('/drive', {}, me);
