@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import { packMany as packNoteMany } from './note';
@@ -12,42 +12,24 @@ import fetchMeta from '../misc/fetch-meta';
 import Emoji from './emoji';
 import { dbLogger } from '../db/logger';
 
-@Table({
-	indexes: [{
-		unique: true,
-		fields: ['token']
-	}, {
-		unique: true,
-		fields: ['uri']
-	}, {
-		unique: true,
-		fields: ['usernameLower', 'host']
-	}, {
-		fields: ['createdAt']
-	}, {
-		fields: ['updatedAt']
-	}, {
-		fields: ['usernameLower']
-	}, {
-		fields: ['host']
-	}]
-})
-
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
 export class User {
+	@PrimaryColumn()
 	@Column({
-		type: 'char', length: 24, unique: true, primary: true,
+		type: 'char', length: 24,
 		comment: 'The ID of the User.'
 	})
 	public id: string;
 
+	@Index()
 	@Column({
 		type: 'date',
 		comment: 'The created date of the User.'
 	})
 	public createdAt: Date;
 
+	@Index()
 	@Column({
 		type: 'date', nullable: true,
 		comment: 'The updated date of the User.'
@@ -60,6 +42,7 @@ export class User {
 	})
 	public username: string;
 
+	@Index()
 	@Column({
 		type: 'varchar', length: 128,
 		comment: 'The username (lowercased) of the User.'
@@ -180,11 +163,19 @@ export class User {
 	})
 	public isModerator: boolean;
 
+	@Index()
 	@Column({
 		type: 'varchar', length: 128, nullable: true,
 		comment: 'The host of the User. It will be null if the origin of the user is local.'
 	})
 	public host: string | null;
+
+	@Index()
+	@Column({
+		type: 'varchar', length: 256, nullable: true,
+		comment: 'The URI of the User. It will be null if the origin of the user is local.'
+	})
+	public uri: string | null;
 
 	@Column({
 		type: 'varchar', length: 128, nullable: true,
@@ -192,8 +183,9 @@ export class User {
 	})
 	public password: string | null;
 
+	@Index({ unique: true })
 	@Column({
-		type: 'varchar', length: 32, nullable: true,
+		type: 'varchar', length: 32, nullable: true, unique: true,
 		comment: 'The native access token of the User. It will be null if the origin of the user is local.'
 	})
 	public token: string | null;
