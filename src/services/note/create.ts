@@ -29,6 +29,7 @@ import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings 
 import { DriveFile } from '../../models/drive-file';
 import { App } from '../../models/app';
 import { In, Not } from 'typeorm';
+import { packNote } from '../../misc/pack';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -234,9 +235,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 	}
 
-	// Increment notes count
-	incNotesCount(user);
-
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
 
@@ -264,7 +262,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// Pack the note
-	const noteObj = await pack(note);
+	const noteObj = await packNote(note);
 
 	if (isFirstNote) {
 		noteObj.isFirstNote = true;
@@ -369,7 +367,7 @@ async function publish(user: User, note: Note, noteObj: any, reply: Note, renote
 		}
 
 		if (['followers', 'specified'].includes(note.visibility)) {
-			const detailPackedNote = await pack(note, user, {
+			const detailPackedNote = await packNote(note, user, {
 				detail: true
 			});
 			// Publish event to myself's stream
@@ -542,7 +540,7 @@ async function publishToUserLists(note: Note, noteObj: any) {
 }
 
 async function publishToFollowers(note: Note, user: User, noteActivity: any) {
-	const detailPackedNote = await pack(note, null, {
+	const detailPackedNote = await packNote(note, null, {
 		detail: true,
 		skipHide: true
 	});
@@ -605,7 +603,7 @@ function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalU
 
 async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: NotificationManager) {
 	for (const u of mentionedUsers.filter(u => isLocalUser(u))) {
-		const detailPackedNote = await pack(note, u, {
+		const detailPackedNote = await packNote(note, u, {
 			detail: true
 		});
 
