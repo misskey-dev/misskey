@@ -25,6 +25,7 @@ import { UserList } from '../models/user-list';
 import { UserListJoining } from '../models/user-list-joining';
 import { Hashtag } from '../models/hashtag';
 import { NoteFavorite } from '../models/note-favorite';
+import { FollowRequest } from '../models/follow-request';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -73,6 +74,7 @@ export function initPostgre() {
 			UserList,
 			UserListJoining,
 			Following,
+			FollowRequest,
 			Muting,
 			Blocking,
 			Note,

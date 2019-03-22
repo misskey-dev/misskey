@@ -9,7 +9,6 @@ export class NoteFavorite {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@Index()
 	@Column('date', {
 		comment: 'The created date of the NoteFavorite.'
 	})
@@ -27,7 +26,6 @@ export class NoteFavorite {
 	@JoinColumn()
 	public user: User | null;
 
-	@Index()
 	@Column('integer')
 	public noteId: Note['id'];
 

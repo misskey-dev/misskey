@@ -1,31 +1,51 @@
 import * as deepcopy from 'deepcopy';
-import { pack as packUser } from './user';
 
-const FollowRequest = db.get<IFollowRequest>('followRequests');
-FollowRequest.createIndex('followerId');
-FollowRequest.createIndex('followeeId');
-FollowRequest.createIndex(['followerId', 'followeeId'], { unique: true });
-export default FollowRequest;
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 
-export type IFollowRequest = {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	followeeId: mongo.ObjectID;
-	followerId: mongo.ObjectID;
-	requestId?: string;	// id of Follow Activity
+@Entity()
+@Index(['followerId', 'followeeId'], { unique: true })
+export class FollowRequest {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-	// 非正規化
-	_followee: {
-		host: string;
-		inbox?: string;
-		sharedInbox?: string;
-	},
-	_follower: {
-		host: string;
-		inbox?: string;
-		sharedInbox?: string;
-	}
-};
+	@Column('date', {
+		comment: 'The created date of the FollowRequest.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The followee user ID.'
+	})
+	public followeeId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public followee: User | null;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The follower user ID.'
+	})
+	public followerId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public follower: User | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: 'id of Follow Activity.'
+	})
+	public requestId: string | null;
+}
 
 /**
  * Pack a request for API response

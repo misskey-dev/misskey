@@ -18,7 +18,7 @@ export class Following {
 		length: 24,
 		comment: 'The followee user ID.'
 	})
-	public followeeId: string;
+	public followeeId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
@@ -31,7 +31,7 @@ export class Following {
 		length: 24,
 		comment: 'The follower user ID.'
 	})
-	public followerId: string;
+	public followerId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

@@ -20,6 +20,7 @@ import { UserListJoining } from './user-list-joining';
 import { Hashtag } from './hashtag';
 import { NoteUnread } from './note-unread';
 import { NoteFavorite } from './note-favorite';
+import { FollowRequest } from './follow-request';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
@@ -32,6 +33,7 @@ export const Users = getRepository(User);
 export const UserLists = getRepository(UserList);
 export const UserListJoinings = getRepository(UserListJoining);
 export const Followings = getRepository(Following);
+export const FollowRequests = getRepository(FollowRequest);
 export const Instances = getRepository(Instance);
 export const Emojis = getRepository(Emoji);
 export const DriveFiles = getRepository(DriveFile);
