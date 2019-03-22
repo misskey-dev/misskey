@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
-import Favorite from '../../../../models/favorite';
+import Favorite from '../../../../models/note-favorite';
 import NoteWatching from '../../../../models/note-watching';
 
 export const meta = {

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
-import Favorite from '../../../../../models/favorite';
+import Favorite from '../../../../../models/note-favorite';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';

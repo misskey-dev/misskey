@@ -15,7 +15,7 @@ import DriveFile from '../../models/drive-file';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import instanceChart from '../chart/charts/instance';
-import Favorite from '../../models/favorite';
+import Favorite from '../../models/note-favorite';
 
 /**
  * 投稿を削除します。

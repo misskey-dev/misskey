@@ -19,9 +19,11 @@ import { UserList } from './user-list';
 import { UserListJoining } from './user-list-joining';
 import { Hashtag } from './hashtag';
 import { NoteUnread } from './note-unread';
+import { NoteFavorite } from './note-favorite';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
+export const NoteFavorites = getRepository(NoteFavorite);
 export const NoteWatchings = getRepository(NoteWatching);
 export const NoteReactions = getRepository(NoteReaction);
 export const NoteUnreads = getRepository(NoteUnread);

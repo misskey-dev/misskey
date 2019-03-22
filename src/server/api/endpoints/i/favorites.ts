@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
-import Favorite, { packMany } from '../../../../models/favorite';
+import Favorite, { packMany } from '../../../../models/note-favorite';
 import define from '../../define';
 
 export const meta = {

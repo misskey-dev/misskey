@@ -24,6 +24,7 @@ import { Blocking } from '../models/blocking';
 import { UserList } from '../models/user-list';
 import { UserListJoining } from '../models/user-list-joining';
 import { Hashtag } from '../models/hashtag';
+import { NoteFavorite } from '../models/note-favorite';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -75,6 +76,8 @@ export function initPostgre() {
 			Muting,
 			Blocking,
 			Note,
+			NoteFavorite,
+			NoteReaction,
 			NoteWatching,
 			NoteUnread,
 			Log,
@@ -82,7 +85,6 @@ export function initPostgre() {
 			DriveFolder,
 			AccessToken,
 			PollVote,
-			NoteReaction,
 			Notification,
 			Emoji,
 			Hashtag,
