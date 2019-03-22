@@ -80,7 +80,7 @@ export default async (user: IUser, note: INote, reaction: string) => {
 		});
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
-	if (isLocalUser(user) && user.settings.autoWatch !== false) {
+	if (isLocalUser(user) && user.autoWatch !== false) {
 		watch(user.id, note);
 	}
 

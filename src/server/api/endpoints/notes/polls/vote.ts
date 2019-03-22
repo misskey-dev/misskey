@@ -160,7 +160,7 @@ export default define(meta, async (ps, user) => {
 		});
 
 	// この投稿をWatchする
-	if (user.settings.autoWatch !== false) {
+	if (user.autoWatch !== false) {
 		watch(user.id, note);
 	}
 

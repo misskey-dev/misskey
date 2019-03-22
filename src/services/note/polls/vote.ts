@@ -73,7 +73,7 @@ export default (user: IUser, note: INote, choice: number) => new Promise(async (
 		});
 
 	// ローカルユーザーが投票した場合この投稿をWatchする
-	if (isLocalUser(user) && user.settings.autoWatch !== false) {
+	if (isLocalUser(user) && user.autoWatch !== false) {
 		watch(user.id, note);
 	}
 });

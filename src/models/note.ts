@@ -129,9 +129,11 @@ export class Note {
 		default: 0
 	})
 	public score: number;
-/*
-	@BelongsToMany(() => DriveFile, () => NoteDriveFileAttaching)
-	public files: DriveFile[];*/
+
+	@Column('simple-array', {
+		default: []
+	})
+	public fileIds: number[];
 }
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {

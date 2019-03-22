@@ -23,9 +23,9 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
-import { User } from '../../models/user';
+import { User, isRemoteUser, isLocalUser } from '../../models/user';
 import { Note } from '../../models/note';
-import { Mutings } from '../../models';
+import { Mutings, Users } from '../../models';
 import { DriveFile } from '../../models/drive-file';
 import { App } from '../../models/app';
 
@@ -172,22 +172,21 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
 	}
 
-	// MongoDBのインデックス対象は128文字以上にできない
 	tags = tags.filter(tag => tag.length <= 100);
 
-	if (data.reply && !user.id.equals(data.reply.userId) && !mentionedUsers.some(u => u.id.equals(data.reply.userId))) {
-		mentionedUsers.push(await Users.findOne({ _id: data.reply.userId }));
+	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply.userId)) {
+		mentionedUsers.push(await Users.findOne(data.reply.userId));
 	}
 
 	if (data.visibility == 'specified') {
 		for (const u of data.visibleUsers) {
-			if (!mentionedUsers.some(x => x.id.equals(u.id))) {
+			if (!mentionedUsers.some(x => x.id === u.id)) {
 				mentionedUsers.push(u);
 			}
 		}
 
 		for (const u of mentionedUsers) {
-			if (!data.visibleUsers.some(x => x.id.equals(u.id))) {
+			if (!data.visibleUsers.some(x => x.id === u.id)) {
 				data.visibleUsers.push(u);
 			}
 		}
@@ -291,7 +290,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
 
 		// この投稿をWatchする
-		if (isLocalUser(user) && user.settings.autoWatch !== false) {
+		if (isLocalUser(user) && user.autoWatch !== false) {
 			watch(user.id, data.reply);
 		}
 
@@ -315,7 +314,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
 
 		// この投稿をWatchする
-		if (isLocalUser(user) && user.settings.autoWatch !== false) {
+		if (isLocalUser(user) && user.autoWatch !== false) {
 			watch(user.id, data.renote);
 		}
 
