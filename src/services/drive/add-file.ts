@@ -56,10 +56,10 @@ async function save(path: string, name: string, type: string, hash: string, size
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
-		let webpublicKey = null as string;
-		let webpublicUrl = null as string;
-		let thumbnailKey = null as string;
-		let thumbnailUrl = null as string;
+		let webpublicKey: string = null;
+		let webpublicUrl: string = null;
+		let thumbnailKey: string = null;
+		let thumbnailUrl: string = null;
 		//#endregion
 
 		//#region Uploads
@@ -87,29 +87,18 @@ async function save(path: string, name: string, type: string, hash: string, size
 		await Promise.all(uploads);
 		//#endregion
 
-		//#region DB
-		Object.assign(metadata, {
-			withoutChunks: true,
-			storage: 'minio',
-			storageProps: {
-				key,
-				webpublicKey,
-				thumbnailKey,
-			},
-			url,
-			webpublicUrl,
-			thumbnailUrl,
-		} as IMetadata);
-
-		const file = await DriveFile.insert({
-			length: size,
-			uploadDate: new Date(),
-			md5: hash,
-			filename: name,
-			metadata: metadata,
-			contentType: type
-		});
-		//#endregion
+		const _file = new DriveFile();
+		_file.url = url;
+		_file.thumbnailUrl = thumbnailUrl;
+		_file.webpublicUrl = webpublicUrl;
+		_file.storage.accessKey = key;
+		_file.storage.thumbnailAccessKey = thumbnailKey;
+		_file.storage.webpublicAccessKey = webpublicKey;
+		_file.name = name;
+		_file.contentType = type;
+		_file.md5 = hash;
+		_file.size = size;
+		const file = await DriveFiles.save(_file);
 
 		return file;
 	} else { // use internal storage
@@ -139,6 +128,10 @@ async function save(path: string, name: string, type: string, hash: string, size
 		_file.storage.accessKey = accessKey;
 		_file.storage.thumbnailAccessKey = thumbnailAccessKey;
 		_file.storage.webpublicAccessKey = webpublicAccessKey;
+		_file.name = name;
+		_file.contentType = type;
+		_file.md5 = hash;
+		_file.size = size;
 		const file = await DriveFiles.save(_file);
 
 		logger.info(`original stored to ${file.id}`);
