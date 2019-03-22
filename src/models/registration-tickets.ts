@@ -1,9 +1,16 @@
-const RegistrationTicket = db.get<IRegistrationTicket>('registrationTickets');
-RegistrationTicket.createIndex('code', { unique: true });
-export default RegistrationTicket;
+import { PrimaryGeneratedColumn, Entity, Index, Column } from 'typeorm';
 
-export interface IRegistrationTicket {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	code: string;
+@Entity()
+export class RegistrationTicket {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Column('date')
+	public createdAt: Date;
+
+	@Index({ unique: true })
+	@Column('varchar', {
+		length: 64,
+	})
+	public code: string;
 }

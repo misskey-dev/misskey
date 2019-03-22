@@ -1,18 +1,46 @@
-import * as deepcopy from 'deepcopy';
-import { pack as packUser } from './user';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 
-const AbuseUserReport = db.get<IAbuseUserReport>('abuseUserReports');
-AbuseUserReport.createIndex('userId');
-AbuseUserReport.createIndex('reporterId');
-AbuseUserReport.createIndex(['userId', 'reporterId'], { unique: true });
-export default AbuseUserReport;
+@Entity()
+@Index(['userId', 'reporterId'], { unique: true })
+export class AbuseUserReport {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface IAbuseUserReport {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	userId: mongo.ObjectID;
-	reporterId: mongo.ObjectID;
-	comment: string;
+	@Index()
+	@Column('date', {
+		comment: 'The created date of the AbuseUserReport.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+	})
+	public userId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+	})
+	public reporterId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public reporter: User | null;
+
+	@Column('varchar', {
+		length: 512,
+	})
+	public comment: string;
 }
 
 export const packMany = (

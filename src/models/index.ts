@@ -21,6 +21,9 @@ import { Hashtag } from './hashtag';
 import { NoteUnread } from './note-unread';
 import { NoteFavorite } from './note-favorite';
 import { FollowRequest } from './follow-request';
+import { AbuseUserReport } from './abuse-user-report';
+import { RegistrationTicket } from './registration-tickets';
+import { AuthSession } from './auth-session';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
@@ -44,3 +47,6 @@ export const Mutings = getRepository(Muting);
 export const Blockings = getRepository(Blocking);
 export const SwSubscriptions = getRepository(SwSubscription);
 export const Hashtags = getRepository(Hashtag);
+export const AbuseUserReports = getRepository(AbuseUserReport);
+export const RegistrationTickets = getRepository(RegistrationTicket);
+export const AuthSessions = getRepository(AuthSession);

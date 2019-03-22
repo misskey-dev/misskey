@@ -26,6 +26,9 @@ import { UserListJoining } from '../models/user-list-joining';
 import { Hashtag } from '../models/hashtag';
 import { NoteFavorite } from '../models/note-favorite';
 import { FollowRequest } from '../models/follow-request';
+import { AbuseUserReport } from '../models/abuse-user-report';
+import { RegistrationTicket } from '../models/registration-tickets';
+import { AuthSession } from '../models/auth-session';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -70,6 +73,7 @@ export function initPostgre() {
 			Meta,
 			Instance,
 			App,
+			AuthSession,
 			User,
 			UserList,
 			UserListJoining,
@@ -91,6 +95,8 @@ export function initPostgre() {
 			Emoji,
 			Hashtag,
 			SwSubscription,
+			AbuseUserReport,
+			RegistrationTicket,
 			...charts
 		]
 	});

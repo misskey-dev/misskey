@@ -68,7 +68,8 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 256,
-		nullable: true
+		nullable: true,
+		default: '/assets/ai.png'
 	})
 	public mascotImageUrl: string | null;
 
@@ -80,7 +81,8 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 256,
-		nullable: true
+		nullable: true,
+		default: 'https://ai.misskey.xyz/aiart/yubitun.png'
 	})
 	public errorImageUrl: string | null;
 

@@ -1,15 +1,42 @@
-import * as deepcopy from 'deepcopy';
-import { pack as packApp } from './app';
+import { Entity, PrimaryGeneratedColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './user';
+import { App } from './app';
 
-const AuthSession = db.get<IAuthSession>('authSessions');
-export default AuthSession;
+@Entity()
+export class AuthSession {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface IAuthSession {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	appId: mongo.ObjectID;
-	userId: mongo.ObjectID;
-	token: string;
+	@Column('date', {
+		comment: 'The created date of the AuthSession.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 128
+	})
+	public token: string;
+
+	@Column('varchar', {
+		length: 24,
+	})
+	public userId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Column('integer')
+	public appId: string;
+
+	@ManyToOne(type => App, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public app: App | null;
 }
 
 /**
