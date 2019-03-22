@@ -200,16 +200,12 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 }
 
 async function deleteOldFile(user: IRemoteUser) {
-	const oldFile = await DriveFile.findOne({
-		id: {
-			$nin: [user.avatarId, user.bannerId]
-		},
-		'metadata.userId': user.id
-	}, {
-		sort: {
-			id: 1
-		}
-	});
+	const oldFile = await DriveFiles.createQueryBuilder()
+		.select('file')
+		.where('file.id IN (:...ids)', { ids: [user.avatarId, user.bannerId] })
+		.andWhere('file.userId = :userId', { userId: user.id })
+		.orderBy('id', 'DESC')
+		.getOne();
 
 	if (oldFile) {
 		delFile(oldFile, true);
@@ -236,7 +232,7 @@ export default async function(
 	path: string,
 	name: string = null,
 	comment: string = null,
-	folderId: mongodb.ObjectID = null,
+	folderId: any = null,
 	force: boolean = false,
 	isLink: boolean = false,
 	url: string = null,

@@ -6,7 +6,7 @@ import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
 import User from '../../../models/user';
 import dateFormat = require('dateformat');
-import Mute from '../../../models/mute';
+import Mute from '../../../models/muting';
 import { getFullApAccount } from '../../../misc/convert-host';
 
 const logger = queueLogger.createSubLogger('export-mute');

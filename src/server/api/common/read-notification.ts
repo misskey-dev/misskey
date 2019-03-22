@@ -1,6 +1,6 @@
 import { default as Notification, INotification } from '../../../models/notification';
 import { publishMainStream } from '../../../services/stream';
-import Mute from '../../../models/mute';
+import Mute from '../../../models/muting';
 import User from '../../../models/user';
 
 /**

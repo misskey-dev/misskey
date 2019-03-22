@@ -11,6 +11,7 @@ import { NoteReaction } from './note-reaction';
 import { PollVote } from './poll-vote';
 import { Notification } from './notification';
 import { Meta } from './meta';
+import { Muting } from './muting';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
@@ -24,3 +25,4 @@ export const DriveFiles = getRepository(DriveFile);
 export const DriveFolders = getRepository(DriveFolder);
 export const Notifications = getRepository(Notification);
 export const Metas = getRepository(Meta);
+export const Mutings = getRepository(Muting);

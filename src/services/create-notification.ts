@@ -1,25 +1,22 @@
-import Notification from '../models/notification';
-import Mute from '../models/mute';
 import { pack } from '../models/notification';
 import { publishMainStream } from './stream';
-import User from '../models/user';
 import pushSw from './push-notification';
 
 export default (
-	notifiee: mongo.ObjectID,
-	notifier: mongo.ObjectID,
+	notifieeId: any,
+	notifierId: any,
 	type: string,
 	content?: any
 ) => new Promise<any>(async (resolve, reject) => {
-	if (notifiee.equals(notifier)) {
+	if (notifieeId.equals(notifierId)) {
 		return resolve();
 	}
 
 	// Create notification
 	const notification = await Notification.insert(Object.assign({
 		createdAt: new Date(),
-		notifieeId: notifiee,
-		notifierId: notifier,
+		notifieeId: notifieeId,
+		notifierId: notifierId,
 		type: type,
 		isRead: false
 	}, content));
@@ -29,10 +26,10 @@ export default (
 	const packed = await pack(notification);
 
 	// Publish notification event
-	publishMainStream(notifiee, 'notification', packed);
+	publishMainStream(notifieeId, 'notification', packed);
 
 	// Update flag
-	User.update({ _id: notifiee }, {
+	User.update({ _id: notifieeId }, {
 		$set: {
 			hasUnreadNotification: true
 		}
@@ -44,18 +41,18 @@ export default (
 		if (!fresh.isRead) {
 			//#region ただしミュートしているユーザーからの通知なら無視
 			const mute = await Mute.find({
-				muterId: notifiee,
+				muterId: notifieeId,
 				deletedAt: { $exists: false }
 			});
 			const mutedUserIds = mute.map(m => m.muteeId.toString());
-			if (mutedUserIds.indexOf(notifier.toString()) != -1) {
+			if (mutedUserIds.indexOf(notifierId.toString()) != -1) {
 				return;
 			}
 			//#endregion
 
-			publishMainStream(notifiee, 'unreadNotification', packed);
+			publishMainStream(notifieeId, 'unreadNotification', packed);
 
-			pushSw(notifiee, 'notification', packed);
+			pushSw(notifieeId, 'notification', packed);
 		}
 	}, 2000);
 });

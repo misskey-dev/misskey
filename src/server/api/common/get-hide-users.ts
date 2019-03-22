@@ -1,4 +1,4 @@
-import Mute from '../../../models/mute';
+import Mute from '../../../models/muting';
 import User, { IUser } from '../../../models/user';
 import { unique } from '../../../prelude/array';
 

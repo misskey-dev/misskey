@@ -1,17 +1,45 @@
 import * as deepcopy from 'deepcopy';
 import { pack as packUser, IUser } from './user';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 
-const Mute = db.get<IMute>('mute');
-Mute.createIndex('muterId');
-Mute.createIndex('muteeId');
-Mute.createIndex(['muterId', 'muteeId'], { unique: true });
-export default Mute;
+@Entity()
+@Index(['muterId', 'muteeId'], { unique: true })
+export class Muting {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface IMute {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	muterId: mongo.ObjectID;
-	muteeId: mongo.ObjectID;
+	@Index()
+	@Column('date', {
+		comment: 'The created date of the Muting.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The mutee user ID.'
+	})
+	public muteeId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public mutee: User | null;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The muter user ID.'
+	})
+	public muterId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public muter: User | null;
 }
 
 export const packMany = (

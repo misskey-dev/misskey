@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import Mute from '../../../../models/mute';
+import Mute from '../../../../models/muting';
 import Message, { pack, IMessagingMessage } from '../../../../models/messaging-message';
 import define from '../../define';
 

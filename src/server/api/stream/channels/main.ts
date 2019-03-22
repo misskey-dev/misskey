@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Mute from '../../../../models/mute';
+import Mute from '../../../../models/muting';
 import Channel from '../channel';
 
 export default class extends Channel {

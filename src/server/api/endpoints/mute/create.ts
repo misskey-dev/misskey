@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
-import Mute from '../../../../models/mute';
+import Mute from '../../../../models/muting';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';

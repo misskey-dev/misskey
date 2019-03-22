@@ -16,6 +16,7 @@ import { Notification } from '../models/notification';
 import { Meta } from '../models/meta';
 import { Following } from '../models/following';
 import { Instance } from '../models/instance';
+import { Muting } from '../models/muting';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -62,6 +63,7 @@ export function initPostgre() {
 			App,
 			User,
 			Following,
+			Muting,
 			Note,
 			Log,
 			DriveFile,

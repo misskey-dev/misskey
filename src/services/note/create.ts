@@ -12,7 +12,7 @@ import DriveFile, { IDriveFile } from '../../models/drive-file';
 import notify from '../../services/create-notification';
 import NoteWatching from '../../models/note-watching';
 import watch from './watch';
-import Mute from '../../models/mute';
+import Mute from '../../models/muting';
 import { parse } from '../../mfm/parse';
 import { IApp } from '../../models/app';
 import UserList from '../../models/user-list';

@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Mute from '../../../../models/mute';
+import Mute from '../../../../models/muting';
 import { pack } from '../../../../models/note';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
