@@ -12,6 +12,7 @@ import { NoteReaction } from '../models/note-reaction';
 import { Emoji } from '../models/emoji';
 import { Note } from '../models/note';
 import { entities as charts } from '../services/chart/entities';
+import { Notification } from '../models/notification';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -62,6 +63,7 @@ export function initPostgre() {
 			AccessToken,
 			PollVote,
 			NoteReaction,
+			Notification,
 			Emoji,
 			...charts
 		]

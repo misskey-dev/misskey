@@ -1,10 +1,13 @@
 import * as deepcopy from 'deepcopy';
 import { pack as packUser, User } from './user';
 import { pack as packNote } from './note';
-import { Entity, Index, JoinColumn, ManyToOne, Column } from 'typeorm';
+import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Notification {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
 	@Index()
 	@Column({
 		type: 'date',

@@ -9,6 +9,7 @@ import { Emoji } from './emoji';
 import { App } from './app';
 import { NoteReaction } from './note-reaction';
 import { PollVote } from './poll-vote';
+import { Notification } from './notification';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
@@ -20,3 +21,4 @@ export const Instances = getRepository(Instance);
 export const Emojis = getRepository(Emoji);
 export const DriveFiles = getRepository(DriveFile);
 export const DriveFolders = getRepository(DriveFolder);
+export const Notifications = getRepository(Notification);
