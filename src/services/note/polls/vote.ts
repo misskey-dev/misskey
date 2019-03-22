@@ -46,7 +46,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 	});
 
 	// Notify
-	notify(note.userId, user.id, 'poll_vote', {
+	notify(note.userId, user.id, 'pollVote', {
 		noteId: note.id,
 		choice: choice
 	});
@@ -65,7 +65,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 		})
 		.then(watchers => {
 			for (const watcher of watchers) {
-				notify(watcher.userId, user.id, 'poll_vote', {
+				notify(watcher.userId, user.id, 'pollVote', {
 					noteId: note.id,
 					choice: choice
 				});

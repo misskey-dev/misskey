@@ -131,7 +131,7 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 		case 'renote':
 		case 'quote':
 		case 'reaction':
-		case 'poll_vote':
+		case 'pollVote':
 			// Populate note
 			_notification.note = await packNote(_notification.noteId, me);
 			break;

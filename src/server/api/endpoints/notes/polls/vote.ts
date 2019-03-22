@@ -133,7 +133,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Notify
-	notify(note.userId, user.id, 'poll_vote', {
+	notify(note.userId, user.id, 'pollVote', {
 		noteId: note.id,
 		choice: ps.choice
 	});
@@ -152,7 +152,7 @@ export default define(meta, async (ps, user) => {
 		})
 		.then(watchers => {
 			for (const watcher of watchers) {
-				notify(watcher.userId, user.id, 'poll_vote', {
+				notify(watcher.userId, user.id, 'pollVote', {
 					noteId: note.id,
 					choice: ps.choice
 				});

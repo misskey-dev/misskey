@@ -2,8 +2,9 @@ import rap from '@prezzemolo/rap';
 import config from '../config';
 import { User } from '../models/user';
 import { Note } from '../models/note';
-import { Users, Notes, Followings } from '../models';
+import { Users, Notes, Followings, PollVotes, NoteReactions } from '../models';
 import { Repository } from 'typeorm';
+import { nyaize } from './nyaize';
 
 async function cloneOrFetch<T extends { id: any }>(repo: Repository<T>, x: T['id'] | T): Promise<T> {
 	if (typeof x === 'object') {
@@ -316,11 +317,10 @@ export const packNote = async (
 					poll.multiple = false;
 				}
 
-				const vote = await PollVote
-					.findOne({
-						userId: meId,
-						noteId: id
-					});
+				const vote = await PollVotes.findOne({
+					userId: meId,
+					noteId: id
+				});
 
 				if (vote) {
 					const myChoice = (poll.choices as IChoice[])
@@ -336,11 +336,9 @@ export const packNote = async (
 		if (meId) {
 			// Fetch my reaction
 			_note.myReaction = (async () => {
-				const reaction = await NoteReaction
-					.findOne({
+				const reaction = await NoteReactions.findOne({
 						userId: meId,
 						noteId: id,
-						deletedAt: { $exists: false }
 					});
 
 				if (reaction) {
@@ -360,14 +358,7 @@ export const packNote = async (
 	}
 
 	if (_note.user.isCat && _note.text) {
-		_note.text = (_note.text
-			// ja-JP
-			.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ')
-			// ko-KR
-			.replace(/[나-낳]/g, (match: string) => String.fromCharCode(
-				match.codePointAt(0)  + '냐'.charCodeAt(0) - '나'.charCodeAt(0)
-			))
-		);
+		_note.text = nyaize(_note.text);
 	}
 
 	if (!opts.skipHide) {
