@@ -30,6 +30,13 @@ export class DriveFile {
 
 	@Index()
 	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: 'The host of owner. It will be null if the user in local.'
+	})
+	public userHost: string | null;
+
+	@Index()
+	@Column('varchar', {
 		length: 32,
 		comment: 'The MD5 hash of the DriveFile.'
 	})
@@ -97,6 +104,11 @@ export class DriveFile {
 		comment: 'The URI of the DriveFile. it will be null when the DriveFile is local.'
 	})
 	public uri: string | null;
+
+	@Column('varchar', {
+		length: 512,
+	})
+	public src: string | null;
 
 	@Index()
 	@Column('integer', {

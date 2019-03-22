@@ -20,8 +20,9 @@ import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
-import { DriveFiles } from '../../models';
+import { DriveFiles, DriveFolders } from '../../models';
 import { InternalStorage } from './internal-storage';
+import { clacDriveUsageOf } from './calc-usage';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -32,11 +33,10 @@ const logger = driveLogger.createSubLogger('register', 'yellow');
  * @param type Content-Type for original
  * @param hash Hash for original
  * @param size Size for original
- * @param metadata
  */
-async function save(path: string, name: string, type: string, hash: string, size: number, metadata: IMetadata): Promise<DriveFile> {
+async function save(file: DriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<DriveFile> {
 	// thunbnail, webpublic を必要なら生成
-	const alts = await generateAlts(path, type, !metadata.uri);
+	const alts = await generateAlts(path, type, !file.uri);
 
 	if (config.drive && config.drive.storage == 'minio') {
 		//#region ObjectStorage params
@@ -87,20 +87,18 @@ async function save(path: string, name: string, type: string, hash: string, size
 		await Promise.all(uploads);
 		//#endregion
 
-		const _file = new DriveFile();
-		_file.url = url;
-		_file.thumbnailUrl = thumbnailUrl;
-		_file.webpublicUrl = webpublicUrl;
-		_file.storage.accessKey = key;
-		_file.storage.thumbnailAccessKey = thumbnailKey;
-		_file.storage.webpublicAccessKey = webpublicKey;
-		_file.name = name;
-		_file.contentType = type;
-		_file.md5 = hash;
-		_file.size = size;
-		const file = await DriveFiles.save(_file);
+		file.url = url;
+		file.thumbnailUrl = thumbnailUrl;
+		file.webpublicUrl = webpublicUrl;
+		file.storage.accessKey = key;
+		file.storage.thumbnailAccessKey = thumbnailKey;
+		file.storage.webpublicAccessKey = webpublicKey;
+		file.name = name;
+		file.contentType = type;
+		file.md5 = hash;
+		file.size = size;
 
-		return file;
+		return await DriveFiles.save(file);
 	} else { // use internal storage
 		const accessKey = uuid.v4();
 		const thumbnailAccessKey = uuid.v4();
@@ -121,22 +119,18 @@ async function save(path: string, name: string, type: string, hash: string, size
 			logger.info(`web stored: ${webpublicAccessKey}`);
 		}
 
-		const _file = new DriveFile();
-		_file.url = url;
-		_file.thumbnailUrl = thumbnailUrl;
-		_file.webpublicUrl = webpublicUrl;
-		_file.storage.accessKey = accessKey;
-		_file.storage.thumbnailAccessKey = thumbnailAccessKey;
-		_file.storage.webpublicAccessKey = webpublicAccessKey;
-		_file.name = name;
-		_file.contentType = type;
-		_file.md5 = hash;
-		_file.size = size;
-		const file = await DriveFiles.save(_file);
+		file.url = url;
+		file.thumbnailUrl = thumbnailUrl;
+		file.webpublicUrl = webpublicUrl;
+		file.storage.accessKey = accessKey;
+		file.storage.thumbnailAccessKey = thumbnailAccessKey;
+		file.storage.webpublicAccessKey = webpublicAccessKey;
+		file.name = name;
+		file.contentType = type;
+		file.md5 = hash;
+		file.size = size;
 
-		logger.info(`original stored to ${file.id}`);
-
-		return file;
+		return await DriveFiles.save(file);
 	}
 }
 
@@ -248,7 +242,7 @@ export default async function(
 	url: string = null,
 	uri: string = null,
 	sensitive: boolean = null
-): Promise<IDriveFile> {
+): Promise<DriveFile> {
 	// Calc md5 hash
 	const calcHash = new Promise<string>((res, rej) => {
 		const readable = fs.createReadStream(path);
@@ -282,10 +276,9 @@ export default async function(
 
 	if (!force) {
 		// Check if there is a file with the same hash
-		const much = await DriveFile.findOne({
+		const much = await DriveFiles.findOne({
 			md5: hash,
-			'metadata.userId': user.id,
-			'metadata.deletedAt': { $exists: false }
+			userId: user.id,
 		});
 
 		if (much) {
@@ -296,28 +289,7 @@ export default async function(
 
 	//#region Check drive usage
 	if (!isLink) {
-		const usage = await DriveFile
-			.aggregate([{
-				$match: {
-					'metadata.userId': user.id,
-					'metadata.deletedAt': { $exists: false }
-				}
-			}, {
-				$project: {
-					length: true
-				}
-			}, {
-				$group: {
-					id: null,
-					usage: { $sum: '$length' }
-				}
-			}])
-			.then((aggregates: any[]) => {
-				if (aggregates.length > 0) {
-					return aggregates[0].usage;
-				}
-				return 0;
-			});
+		const usage = await clacDriveUsageOf(user);
 
 		logger.debug(`drive usage is ${usage}`);
 
@@ -341,7 +313,7 @@ export default async function(
 			return null;
 		}
 
-		const driveFolder = await DriveFolder.findOne({
+		const driveFolder = await DriveFolders.findOne({
 			id: folderId,
 			userId: user.id
 		});
@@ -397,54 +369,46 @@ export default async function(
 
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
-	const metadata = {
-		userId: user.id,
-		_user: {
-			host: user.host
-		},
-		folderId: folder !== null ? folder.id : null,
-		comment: comment,
-		properties: properties,
-		withoutChunks: isLink,
-		isRemote: isLink,
-		isSensitive: isLocalUser(user) && user.settings.alwaysMarkNsfw ? true :
-			(sensitive !== null && sensitive !== undefined)
-				? sensitive
-				: false
-	} as IMetadata;
+	let file = new DriveFile();
+	file.userId = user.id;
+	file.userHost = user.host;
+	file.folderId = folder !== null ? folder.id : null;
+	file.comment = comment;
+	file.properties = properties;
+	file.isRemote = isLink;
+	file.isSensitive = isLocalUser(user) && user.alwaysMarkNsfw ? true :
+		(sensitive !== null && sensitive !== undefined)
+			? sensitive
+			: false;
 
 	if (url !== null) {
-		metadata.src = url;
+		file.src = url;
 
 		if (isLink) {
-			metadata.url = url;
+			file.url = url;
 		}
 	}
 
 	if (uri !== null) {
-		metadata.uri = uri;
+		file.uri = uri;
 	}
-
-	let driveFile: IDriveFile;
 
 	if (isLink) {
 		try {
-			driveFile = await DriveFile.insert({
-				length: 0,
-				uploadDate: new Date(),
-				md5: hash,
-				filename: detectedName,
-				metadata: metadata,
-				contentType: mime
-			});
+			file.size = 0;
+			file.md5 = hash;
+			file.name = detectedName;
+			file.contentType = mime;
+
+			file = await DriveFiles.save(file);
 		} catch (e) {
 			// duplicate key error (when already registered)
 			if (e.code === 11000) {
-				logger.info(`already registered ${metadata.uri}`);
+				logger.info(`already registered ${file.uri}`);
 
-				driveFile = await DriveFile.findOne({
-					'metadata.uri': metadata.uri,
-					'metadata.userId': user.id
+				file = await DriveFiles.findOne({
+					uri: file.uri,
+					userId: user.id
 				});
 			} else {
 				logger.error(e);
@@ -452,29 +416,29 @@ export default async function(
 			}
 		}
 	} else {
-		driveFile = await (save(path, detectedName, mime, hash, size, metadata));
+		file = await (save(file, path, detectedName, mime, hash, size));
 	}
 
-	logger.succ(`drive file has been created ${driveFile.id}`);
+	logger.succ(`drive file has been created ${file.id}`);
 
-	pack(driveFile).then(packedFile => {
+	pack(file).then(packedFile => {
 		// Publish driveFileCreated event
 		publishMainStream(user.id, 'driveFileCreated', packedFile);
 		publishDriveStream(user.id, 'fileCreated', packedFile);
 	});
 
 	// 統計を更新
-	driveChart.update(driveFile, true);
-	perUserDriveChart.update(driveFile, true);
-	if (isRemoteUser(driveFile.metadata._user)) {
-		instanceChart.updateDrive(driveFile, true);
-		Instance.update({ host: driveFile.metadata._user.host }, {
+	driveChart.update(file, true);
+	perUserDriveChart.update(file, true);
+	if (isRemoteUser(file.metadata._user)) {
+		instanceChart.updateDrive(file, true);
+		Instance.update({ host: file.metadata._user.host }, {
 			$inc: {
-				driveUsage: driveFile.length,
+				driveUsage: file.length,
 				driveFiles: 1
 			}
 		});
 	}
 
-	return driveFile;
+	return file;
 }
