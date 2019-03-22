@@ -22,6 +22,7 @@ import { Blocking } from '../models/blocking';
 import { NoteWatching } from '../models/note-watching';
 import { UserList } from '../models/user-list';
 import { UserListJoining } from '../models/user-list-joining';
+import { Hashtag } from '../models/hashtag';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -82,6 +83,7 @@ export function initPostgre() {
 			NoteReaction,
 			Notification,
 			Emoji,
+			Hashtag,
 			SwSubscription,
 			...charts
 		]

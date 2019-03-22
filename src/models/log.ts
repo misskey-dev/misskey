@@ -12,9 +12,7 @@ export class Log {
 	public createdAt: Date;
 
 	@Index()
-	@Column('simple-array', {
-
-	})
+	@Column('simple-array')
 	public domain: string[];
 
 	@Index()

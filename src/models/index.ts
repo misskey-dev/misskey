@@ -17,6 +17,7 @@ import { Blocking } from './blocking';
 import { NoteWatching } from './note-watching';
 import { UserList } from './user-list';
 import { UserListJoining } from './user-list-joining';
+import { Hashtag } from './hashtag';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
@@ -36,3 +37,4 @@ export const Metas = getRepository(Meta);
 export const Mutings = getRepository(Muting);
 export const Blockings = getRepository(Blocking);
 export const SwSubscriptions = getRepository(SwSubscription);
+export const Hashtags = getRepository(Hashtag);

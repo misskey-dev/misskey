@@ -19,7 +19,7 @@ export class App {
 		length: 24, nullable: true,
 		comment: 'The owner ID.'
 	})
-	public userId: string | null;
+	public userId: User['id'] | null;
 
 	@ManyToOne(type => User, {
 		onDelete: 'SET NULL'

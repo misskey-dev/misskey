@@ -17,7 +17,7 @@ export class UserListJoining {
 		length: 24,
 		comment: 'The user ID.'
 	})
-	public userId: string;
+	public userId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

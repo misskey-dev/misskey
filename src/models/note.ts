@@ -1,15 +1,5 @@
-import * as deepcopy from 'deepcopy';
-import rap from '@prezzemolo/rap';
-import { length } from 'stringz';
-import { User, pack as packUser, User } from './user';
-import { pack as packApp } from './app';
-import PollVote from './poll-vote';
-import NoteReaction from './note-reaction';
-import { packMany as packFileMany, IDriveFile } from './drive-file';
-import Following from './following';
-import Emoji from './emoji';
-import { unique, concat } from '../prelude/array';
 import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, Column } from 'typeorm';
+import { User } from './user';
 
 @Entity()
 export class Note {
@@ -18,7 +8,6 @@ export class Note {
 
 	@Index()
 	@Column('date', {
-
 		comment: 'The created date of the Note.'
 	})
 	public createdAt: Date;
@@ -35,7 +24,7 @@ export class Note {
 		nullable: true,
 		comment: 'The ID of reply target.'
 	})
-	public replyId: number | null;
+	public replyId: Note['id'] | null;
 
 	@OneToOne(type => Note, {
 		onDelete: 'CASCADE'
@@ -48,7 +37,7 @@ export class Note {
 		nullable: true,
 		comment: 'The ID of renote target.'
 	})
-	public renoteId: number | null;
+	public renoteId: Note['id'] | null;
 
 	@OneToOne(type => Note, {
 		onDelete: 'CASCADE'
@@ -76,7 +65,7 @@ export class Note {
 		length: 24,
 		comment: 'The ID of author.'
 	})
-	public userId: string;
+	public userId: User['id'];
 
 	@OneToOne(type => User, {
 		onDelete: 'CASCADE'

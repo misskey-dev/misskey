@@ -20,7 +20,7 @@ export class NoteReaction {
 	@Column('varchar', {
 		length: 24,
 	})
-	public userId: string;
+	public userId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

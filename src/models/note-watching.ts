@@ -19,7 +19,7 @@ export class NoteWatching {
 		length: 24,
 		comment: 'The watcher ID.'
 	})
-	public userId: string;
+	public userId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
