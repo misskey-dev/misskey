@@ -64,11 +64,32 @@ export class DriveFile {
 	})
 	public properties: Record<string, any>;
 
+	@Column('boolean')
+	public storedInternal: boolean;
+
 	@Column('jsonb', {
 		default: {},
 		comment: 'The storage information of the DriveFile.'
 	})
 	public storage: Record<string, any>;
+
+	@Column('varchar', {
+		length: 512,
+		comment: 'The URL of the DriveFile.'
+	})
+	public url: string;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The URL of the thumbnail of the DriveFile.'
+	})
+	public thumbnailUrl: string | null;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The URL of the webpublic of the DriveFile.'
+	})
+	public webpublicUrl: string | null;
 
 	@Index()
 	@Column('varchar', {
