@@ -17,6 +17,9 @@ import { Meta } from '../models/meta';
 import { Following } from '../models/following';
 import { Instance } from '../models/instance';
 import { Muting } from '../models/muting';
+import { SwSubscription } from '../models/sw-subscription';
+import { Blocking } from '../models/blocking';
+import { NoteWatching } from '../models/note-watching';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -64,7 +67,9 @@ export function initPostgre() {
 			User,
 			Following,
 			Muting,
+			Blocking,
 			Note,
+			NoteWatching,
 			Log,
 			DriveFile,
 			DriveFolder,
@@ -73,6 +78,7 @@ export function initPostgre() {
 			NoteReaction,
 			Notification,
 			Emoji,
+			SwSubscription,
 			...charts
 		]
 	});

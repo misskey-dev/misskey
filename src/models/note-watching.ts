@@ -1,12 +1,41 @@
-const NoteWatching = db.get<INoteWatching>('noteWatching');
-NoteWatching.createIndex('userId');
-NoteWatching.createIndex('noteId');
-NoteWatching.createIndex(['userId', 'noteId'], { unique: true });
-export default NoteWatching;
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
+import { Note } from './note';
 
-export interface INoteWatching {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	userId: mongo.ObjectID;
-	noteId: mongo.ObjectID;
+@Entity()
+@Index(['userId', 'noteId'], { unique: true })
+export class NoteWatching {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@Index()
+	@Column('date', {
+		comment: 'The created date of the NoteWatching.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The watcher ID.'
+	})
+	public userId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column('integer', {
+		comment: 'The target Note ID.'
+	})
+	public noteId: number;
+
+	@ManyToOne(type => Note, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public note: Note | null;
 }

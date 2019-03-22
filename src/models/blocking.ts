@@ -1,18 +1,46 @@
 import * as deepcopy from 'deepcopy';
 import { pack as packUser, IUser } from './user';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 
-const Blocking = db.get<IBlocking>('blocking');
-Blocking.createIndex('blockerId');
-Blocking.createIndex('blockeeId');
-Blocking.createIndex(['blockerId', 'blockeeId'], { unique: true });
-export default Blocking;
+@Entity()
+@Index(['blockerId', 'blockeeId'], { unique: true })
+export class Blocking {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export type IBlocking = {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	blockeeId: mongo.ObjectID;
-	blockerId: mongo.ObjectID;
-};
+	@Index()
+	@Column('date', {
+		comment: 'The created date of the Blocking.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The blockee user ID.'
+	})
+	public blockeeId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public blockee: User | null;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The blocker user ID.'
+	})
+	public blockerId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public blocker: User | null;
+}
 
 export const packMany = (
 	blockings: (string | mongo.ObjectID | IBlocking)[],
