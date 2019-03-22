@@ -11,7 +11,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 	logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id.toString())
+		id: new mongo.ObjectID(job.data.user.id)
 	});
 
 	let deletedCount = 0;

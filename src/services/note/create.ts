@@ -1,23 +1,14 @@
 import es from '../../db/elasticsearch';
-import Note, { pack, INote, IChoice } from '../../models/note';
-import User, { isLocalUser, IUser, isRemoteUser, IRemoteUser, ILocalUser } from '../../models/user';
 import { publishMainStream, publishHomeTimelineStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream, publishHashtagStream } from '../stream';
-import Following from '../../models/following';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import DriveFile, { IDriveFile } from '../../models/drive-file';
 import notify from '../../services/create-notification';
-import NoteWatching from '../../models/note-watching';
 import watch from './watch';
-import Mute from '../../models/muting';
 import { parse } from '../../mfm/parse';
-import { IApp } from '../../models/app';
-import UserList from '../../models/user-list';
 import resolveUser from '../../remote/resolve-user';
-import Meta from '../../models/meta';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
 import isQuote from '../../misc/is-quote';
@@ -26,26 +17,29 @@ import perUserNotesChart from '../chart/charts/per-user-notes';
 import activeUsersChart from '../chart/charts/active-users';
 import instanceChart from '../chart/charts/instance';
 import * as deepcopy from 'deepcopy';
-
 import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import Instance from '../../models/instance';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
+import { User } from '../../models/user';
+import { Note } from '../../models/note';
+import { Mutings } from '../../models';
+import { DriveFile } from '../../models/drive-file';
+import { App } from '../../models/app';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
 class NotificationManager {
-	private notifier: IUser;
-	private note: INote;
+	private notifier: User;
+	private note: Note;
 	private queue: {
 		target: ILocalUser['_id'];
 		reason: NotificationType;
 	}[];
 
-	constructor(notifier: IUser, note: INote) {
+	constructor(notifier: User, note: Note) {
 		this.notifier = notifier;
 		this.note = note;
 		this.queue = [];
@@ -53,7 +47,7 @@ class NotificationManager {
 
 	public push(notifiee: ILocalUser['_id'], reason: NotificationType) {
 		// 自分自身へは通知しない
-		if (this.notifier.id.equals(notifiee)) return;
+		if (this.notifier.id === notifiee) return;
 
 		const exist = this.queue.find(x => x.target.equals(notifiee));
 
@@ -73,14 +67,14 @@ class NotificationManager {
 	public async deliver() {
 		for (const x of this.queue) {
 			// ミュート情報を取得
-			const mentioneeMutes = await Mute.find({
+			const mentioneeMutes = await Mutings.find({
 				muterId: x.target
 			});
 
-			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId.toString());
+			const mentioneesMutedUserIds = mentioneeMutes.map(m => m.muteeId);
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
-			if (!mentioneesMutedUserIds.includes(this.notifier.id.toString())) {
+			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
 				notify(x.target, this.notifier.id, x.reason, {
 					noteId: this.note.id
 				});
@@ -93,25 +87,25 @@ type Option = {
 	createdAt?: Date;
 	name?: string;
 	text?: string;
-	reply?: INote;
-	renote?: INote;
-	files?: IDriveFile[];
+	reply?: Note;
+	renote?: Note;
+	files?: DriveFile[];
 	geo?: any;
 	poll?: any;
 	viaMobile?: boolean;
 	localOnly?: boolean;
 	cw?: string;
 	visibility?: string;
-	visibleUsers?: IUser[];
-	apMentions?: IUser[];
+	visibleUsers?: User[];
+	apMentions?: User[];
 	apHashtags?: string[];
 	apEmojis?: string[];
 	questionUri?: string;
 	uri?: string;
-	app?: IApp;
+	app?: App;
 };
 
-export default async (user: IUser, data: Option, silent = false) => new Promise<INote>(async (res, rej) => {
+export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
 	const isFirstNote = user.notesCount === 0;
 
 	if (data.createdAt == null) data.createdAt = new Date();
@@ -126,16 +120,6 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 
 	if (data.visibleUsers) {
 		data.visibleUsers = erase(null, data.visibleUsers);
-	}
-
-	// リプライ対象が削除された投稿だったらreject
-	if (data.reply && data.reply.deletedAt != null) {
-		return rej('Reply target has been deleted');
-	}
-
-	// Renote対象が削除された投稿だったらreject
-	if (data.renote && data.renote.deletedAt != null) {
-		return rej('Renote target has been deleted');
 	}
 
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
@@ -508,7 +492,7 @@ function index(note: INote) {
 	es.index({
 		index: 'misskey',
 		type: 'note',
-		id: note.id.toString(),
+		id: note.id,
 		body: {
 			text: note.text
 		}

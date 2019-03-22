@@ -556,7 +556,7 @@ describe('API', () => {
 			expect(res.body.createdNote).have.property('text').eql(post.text);
 
 			const noteDoc = await db.get('notes').findOne({ _id: res.body.createdNote.id });
-			expect(noteDoc.mentions.map((id: any) => id.toString())).eql([bob.id.toString()]);
+			expect(noteDoc.mentions.map((id: any) => id.toString())).eql([bob.id]);
 		}));
 	});
 

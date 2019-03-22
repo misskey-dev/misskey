@@ -144,7 +144,7 @@ export default define(meta, async (ps, user) => {
 				deletedAt: { $exists: false }
 			});
 			const mutedUserIds = mute.map(m => m.muteeId.toString());
-			if (mutedUserIds.indexOf(user.id.toString()) != -1) {
+			if (mutedUserIds.indexOf(user.id) != -1) {
 				return;
 			}
 			//#endregion

@@ -15,7 +15,7 @@ export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting mute of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id.toString())
+		id: new mongo.ObjectID(job.data.user.id)
 	});
 
 	// Create temp file
