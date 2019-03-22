@@ -25,9 +25,10 @@ import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { User, isRemoteUser, isLocalUser } from '../../models/user';
 import { Note } from '../../models/note';
-import { Mutings, Users } from '../../models';
+import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings } from '../../models';
 import { DriveFile } from '../../models/drive-file';
 import { App } from '../../models/app';
+import { In } from 'typeorm';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -319,7 +320,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 
 		// Publish event
-		if (!user.id.equals(data.renote.userId) && isLocalUser(data.renote._user)) {
+		if ((user.id !== data.renote.userId) && isLocalUser(data.renote._user)) {
 			publishMainStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
@@ -336,7 +337,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	index(note);
 });
 
-async function renderNoteOrRenoteActivity(data: Option, note: INote) {
+async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 	if (data.localOnly) return null;
 
 	const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length == 0)
@@ -346,7 +347,7 @@ async function renderNoteOrRenoteActivity(data: Option, note: INote) {
 	return renderActivity(content);
 }
 
-function incRenoteCount(renote: INote) {
+function incRenoteCount(renote: Note) {
 	Note.update({ _id: renote.id }, {
 		$inc: {
 			renoteCount: 1,
@@ -355,7 +356,7 @@ function incRenoteCount(renote: INote) {
 	});
 }
 
-async function publish(user: IUser, note: INote, noteObj: any, reply: INote, renote: INote, visibleUsers: IUser[], noteActivity: any) {
+async function publish(user: User, note: Note, noteObj: any, reply: Note, renote: Note, visibleUsers: User[], noteActivity: any) {
 	if (isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && isRemoteUser(reply._user)) {
@@ -377,7 +378,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 			if (note.visibility == 'specified') {
 				for (const u of visibleUsers) {
-					if (!u.id.equals(user.id)) {
+					if (u.id !== user.id) {
 						publishHomeTimelineStream(u.id, detailPackedNote);
 						publishHybridTimelineStream(u.id, detailPackedNote);
 					}
@@ -415,7 +416,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 	publishToUserLists(note, noteObj);
 }
 
-async function insertNote(user: IUser, data: Option, tags: string[], emojis: string[], mentionedUsers: IUser[]) {
+async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
 	const insert: any = {
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file.id) : [],
@@ -513,24 +514,23 @@ async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: Notific
 	}
 }
 
-async function notifyToWatchersOfReplyee(reply: INote, user: IUser, nm: NotificationManager) {
-	const watchers = await NoteWatching.find({
+async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: NotificationManager) {
+	const watchers = await NoteWatchings.find({
 		noteId: reply.id,
-		userId: { $ne: user.id }
-	}, {
-			fields: {
-				userId: true
-			}
-		});
+	});
 
-	for (const watcher of watchers) {
+	for (const watcher of watchers.filter(w => w.userId !== user.id)) {
 		nm.push(watcher.userId, 'reply');
 	}
 }
 
-async function publishToUserLists(note: INote, noteObj: any) {
-	const lists = await UserList.find({
-		userIds: note.userId
+async function publishToUserLists(note: Note, noteObj: any) {
+	const joinings = await UserListJoinings.find({
+		userId: note.userId
+	});
+
+	const lists = await UserLists.find({
+		id: In(joinings.map(j => j.userListId))
 	});
 
 	for (const list of lists) {

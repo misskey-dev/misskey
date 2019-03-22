@@ -166,6 +166,12 @@ export class User {
 	})
 	public host: string | null;
 
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: 'The inbox of the User. It will be null if the origin of the user is local.'
+	})
+	public inbox: string | null;
+
 	@Index()
 	@Column('varchar', {
 		length: 256, nullable: true,

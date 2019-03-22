@@ -84,6 +84,9 @@ export class Note {
 	@JoinColumn()
 	public user: User | null;
 
+	@Column('jsonb')
+	public _user: any;
+
 	@Column('boolean', {
 		default: false
 	})
