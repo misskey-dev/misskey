@@ -9,8 +9,7 @@ export class Instance {
 	 * このインスタンスを捕捉した日時
 	 */
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The caught date of the Instance.'
 	})
 	public caughtAt: Date;
@@ -19,8 +18,8 @@ export class Instance {
 	 * ホスト
 	 */
 	@Index({ unique: true })
-	@Column({
-		type: 'varchar', length: 128,
+	@Column('varchar', {
+		length: 128,
 		comment: 'The host of the Instance.'
 	})
 	public host: string;
@@ -28,8 +27,8 @@ export class Instance {
 	/**
 	 * インスタンスのシステム (MastodonとかMisskeyとかPleromaとか)
 	 */
-	@Column({
-		type: 'varchar', length: 64, nullable: true,
+	@Column('varchar', {
+		length: 64, nullable: true,
 		comment: 'The system of the Instance.'
 	})
 	public system: string | null;
@@ -37,8 +36,7 @@ export class Instance {
 	/**
 	 * インスタンスのユーザー数
 	 */
-	@Column({
-		type: 'integer',
+	@Column('integer', {
 		comment: 'The count of the users of the Instance.'
 	})
 	public usersCount: number;
@@ -46,8 +44,7 @@ export class Instance {
 	/**
 	 * インスタンスの投稿数
 	 */
-	@Column({
-		type: 'integer',
+	@Column('integer', {
 		comment: 'The count of the notes of the Instance.'
 	})
 	public notesCount: number;
@@ -55,80 +52,70 @@ export class Instance {
 	/**
 	 * このインスタンスのユーザーからフォローされている、自インスタンスのユーザーの数
 	 */
-	@Column({
-		type: 'integer',
-	})
+	@Column('integer')
 	public followingCount: number;
 
 	/**
 	 * このインスタンスのユーザーをフォローしている、自インスタンスのユーザーの数
 	 */
-	@Column({
-		type: 'integer',
-	})
+	@Column('integer')
 	public followersCount: number;
 
 	/**
 	 * ドライブ使用量
 	 */
-	@Column({
-		type: 'integer',
-	})
+	@Column('integer')
 	public driveUsage: number;
 
 	/**
 	 * ドライブのファイル数
 	 */
-	@Column({
-		type: 'integer',
-	})
+	@Column('integer')
 	public driveFiles: number;
 
 	/**
 	 * 直近のリクエスト送信日時
 	 */
-	@Column({
-		type: 'date', nullable: true,
+	@Column('date', {
+		nullable: true,
 	})
 	public latestRequestSentAt: Date | null;
 
 	/**
 	 * 直近のリクエスト送信時のHTTPステータスコード
 	 */
-	@Column({
-		type: 'integer', nullable: true,
+	@Column('integer', {
+		nullable: true,
 	})
 	public latestStatus: number | null;
 
 	/**
 	 * 直近のリクエスト受信日時
 	 */
-	@Column({
-		type: 'date', nullable: true,
+	@Column('date', {
+		nullable: true,
 	})
 	public latestRequestReceivedAt: Date | null;
 
 	/**
 	 * このインスタンスと最後にやり取りした日時
 	 */
-	@Column({
-		type: 'date',
-	})
+	@Column('date')
 	public lastCommunicatedAt: Date;
 
 	/**
 	 * このインスタンスと不通かどうか
 	 */
-	@Column({
-		type: 'boolean', default: false
+	@Column('boolean', {
+		default: false
 	})
 	public isNotResponding: boolean;
 
 	/**
 	 * このインスタンスが閉鎖済みとしてマークされているか
 	 */
-	@Column({
-		type: 'boolean', default: false
+	@Column('boolean', {
+		default: false
 	})
 	public isMarkedAsClosed: boolean;
 }

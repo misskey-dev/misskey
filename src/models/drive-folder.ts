@@ -8,15 +8,14 @@ export class DriveFolder {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the DriveFolder.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24, nullable: true,
+	@Column('varchar', {
+		length: 24, nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: string | null;
@@ -28,8 +27,8 @@ export class DriveFolder {
 	public user: User | null;
 
 	@Index()
-	@Column({
-		type: 'integer', nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFolder is located in root.'
 	})
 	public parentId: number | null;

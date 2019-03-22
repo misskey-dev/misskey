@@ -9,8 +9,8 @@ export class Notification {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
+
 		comment: 'The created date of the Notification.'
 	})
 	public createdAt: Date;
@@ -19,8 +19,8 @@ export class Notification {
 	 * 通知の受信者
 	 */
 	@Index()
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 		comment: 'The ID of recipient user of the Notification.'
 	})
 	public notifieeId: string;
@@ -34,8 +34,8 @@ export class Notification {
 	/**
 	 * 通知の送信者(initiator)
 	 */
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 		comment: 'The ID of sender user of the Notification.'
 	})
 	public notifierId: string;
@@ -56,8 +56,8 @@ export class Notification {
 	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
 	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
 	 */
-	@Column({
-		type: 'varchar', length: 32,
+	@Column('varchar', {
+		length: 32,
 		comment: 'The type of the Notification.'
 	})
 	public type: string;
@@ -65,8 +65,8 @@ export class Notification {
 	/**
 	 * 通知が読まれたかどうか
 	 */
-	@Column({
-		type: 'boolean', default: false,
+	@Column('boolean', {
+		default: false,
 		comment: 'Whether the Notification is read.'
 	})
 	public isRead: boolean;
@@ -75,8 +75,8 @@ export class Notification {
 	 * 通知の追加データ
 	 * 通知の種類ごとに異なり、例えばリアクションの通知ならリアクションの種類が入るなど
 	 */
-	@Column({
-		type: 'jsonb', default: {},
+	@Column('jsonb', {
+		default: {},
 		comment: 'The additional information of the Notification.'
 	})
 	public data: Record<string, any>;

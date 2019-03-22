@@ -7,26 +7,25 @@ export class AccessToken {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the AccessToken.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 128
+	@Column('varchar', {
+		length: 128
 	})
 	public token: string;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 128
+	@Column('varchar', {
+		length: 128
 	})
 	public hash: string;
 
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 	})
 	public userId: string;
 
@@ -36,9 +35,7 @@ export class AccessToken {
 	@JoinColumn()
 	public user: User | null;
 
-	@Column({
-		type: 'integer',
-	})
+	@Column('integer')
 	public appId: string;
 
 	@ManyToOne(type => App, {

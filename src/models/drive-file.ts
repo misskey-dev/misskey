@@ -10,15 +10,14 @@ export class DriveFile {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the DriveFile.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24, nullable: true,
+	@Column('varchar', {
+		length: 24, nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: string | null;
@@ -30,58 +29,57 @@ export class DriveFile {
 	public user: User | null;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 32,
+	@Column('varchar', {
+		length: 32,
 		comment: 'The MD5 hash of the DriveFile.'
 	})
 	public md5: string;
 
-	@Column({
-		type: 'varchar', length: 256,
+	@Column('varchar', {
+		length: 256,
 		comment: 'The file name of the DriveFile.'
 	})
 	public name: string;
 
-	@Column({
-		type: 'varchar', length: 128,
+	@Column('varchar', {
+		length: 128,
 		comment: 'The contentType (MIME) of the DriveFile.'
 	})
 	public contentType: string;
 
-	@Column({
-		type: 'integer',
+	@Column('integer', {
 		comment: 'The file size (bytes) of the DriveFile.'
 	})
 	public size: number;
 
-	@Column({
-		type: 'varchar', length: 512, nullable: true,
+	@Column('varchar', {
+		length: 512, nullable: true,
 		comment: 'The comment of the DriveFile.'
 	})
 	public comment: string | null;
 
-	@Column({
-		type: 'jsonb', default: {},
+	@Column('jsonb', {
+		default: {},
 		comment: 'The any properties of the DriveFile. For example, it includes image width/height.'
 	})
 	public properties: Record<string, any>;
 
-	@Column({
-		type: 'jsonb', default: {},
+	@Column('jsonb', {
+		default: {},
 		comment: 'The storage information of the DriveFile.'
 	})
 	public storage: Record<string, any>;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 512, nullable: true,
+	@Column('varchar', {
+		length: 512, nullable: true,
 		comment: 'The URI of the DriveFile. it will be null when the DriveFile is local.'
 	})
 	public uri: string | null;
 
 	@Index()
-	@Column({
-		type: 'integer', nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFile is located in root.'
 	})
 	public folderId: number | null;
@@ -92,8 +90,8 @@ export class DriveFile {
 	@JoinColumn()
 	public folder: DriveFolder | null;
 
-	@Column({
-		type: 'boolean', default: false,
+	@Column('boolean', {
+		default: false,
 		comment: 'Whether the DriveFile is NSFW.'
 	})
 	public isSensitive: boolean;
@@ -101,8 +99,8 @@ export class DriveFile {
 	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か
 	 */
-	@Column({
-		type: 'boolean', default: false,
+	@Column('boolean', {
+		default: false,
 		comment: 'Whether the DriveFile is direct link to remote server.'
 	})
 	public isRemote: boolean;

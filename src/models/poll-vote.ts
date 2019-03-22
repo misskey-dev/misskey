@@ -9,15 +9,14 @@ export class PollVote {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the PollVote.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 	})
 	public userId: string;
 
@@ -28,9 +27,7 @@ export class PollVote {
 	public user: User | null;
 
 	@Index()
-	@Column({
-		type: 'integer'
-	})
+	@Column('integer')
 	public noteId: number;
 
 	@ManyToOne(type => User, {
@@ -39,8 +36,6 @@ export class PollVote {
 	@JoinColumn()
 	public note: Note | null;
 
-	@Column({
-		type: 'integer'
-	})
+	@Column('integer')
 	public choice: number;
 }

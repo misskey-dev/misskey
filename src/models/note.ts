@@ -17,22 +17,22 @@ export class Note {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
+
 		comment: 'The created date of the Note.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'date', nullable: true,
+	@Column('date', {
+		nullable: true,
 		comment: 'The updated date of the Note.'
 	})
 	public updatedAt: Date | null;
 
 	@Index()
-	@Column({
-		type: 'integer', nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The ID of reply target.'
 	})
 	public replyId: number | null;
@@ -44,8 +44,8 @@ export class Note {
 	public reply: Note | null;
 
 	@Index()
-	@Column({
-		type: 'integer', nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The ID of renote target.'
 	})
 	public renoteId: number | null;
@@ -61,19 +61,19 @@ export class Note {
 	})
 	public text: string | null;
 
-	@Column({
-		type: 'varchar', length: 256, nullable: true
+	@Column('varchar', {
+		length: 256, nullable: true
 	})
 	public name: string | null;
 
-	@Column({
-		type: 'varchar', length: 512, nullable: true
+	@Column('varchar', {
+		length: 512, nullable: true
 	})
 	public cw: string | null;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 		comment: 'The ID of author.'
 	})
 	public userId: string;
@@ -84,28 +84,28 @@ export class Note {
 	@JoinColumn()
 	public user: User | null;
 
-	@Column({
-		type: 'boolean', default: false
+	@Column('boolean', {
+		default: false
 	})
 	public viaMobile: boolean;
 
-	@Column({
-		type: 'boolean', default: false
+	@Column('boolean', {
+		default: false
 	})
 	public localOnly: boolean;
 
-	@Column({
-		type: 'integer', default: 0
+	@Column('integer', {
+		default: 0
 	})
 	public renoteCount: number;
 
-	@Column({
-		type: 'integer', default: 0
+	@Column('integer', {
+		default: 0
 	})
 	public repliesCount: number;
 
-	@Column({
-		type: 'jsonb', default: {}
+	@Column('jsonb', {
+		default: {}
 	})
 	public reactionCounts: Record<string, number>;
 
@@ -115,18 +115,18 @@ export class Note {
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
 	 */
-	@Column({ type: 'enum', enum: ['public', 'home', 'followers', 'specified'] })
+	@Column('enum', { enum: ['public', 'home', 'followers', 'specified'] })
 	public visibility: 'public' | 'home' | 'followers' | 'specified';
 
 	@Index({ unique: true })
-	@Column({
-		type: 'varchar', length: 256, nullable: true,
+	@Column('varchar', {
+		length: 256, nullable: true,
 		comment: 'The URI of a note. it will be null when the note is local.'
 	})
 	public uri: string | null;
 
-	@Column({
-		type: 'integer', default: 0
+	@Column('integer', {
+		default: 0
 	})
 	public score: number;
 /*

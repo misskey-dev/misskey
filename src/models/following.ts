@@ -8,15 +8,14 @@ export class Following {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the Following.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 		comment: 'The followee user ID.'
 	})
 	public followeeId: string;
@@ -28,8 +27,8 @@ export class Following {
 	public followee: User | null;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 		comment: 'The follower user ID.'
 	})
 	public followerId: string;

@@ -11,15 +11,14 @@ export class NoteReaction {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the NoteReaction.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24,
+	@Column('varchar', {
+		length: 24,
 	})
 	public userId: string;
 
@@ -30,9 +29,7 @@ export class NoteReaction {
 	public user: User | null;
 
 	@Index()
-	@Column({
-		type: 'integer'
-	})
+	@Column('integer')
 	public noteId: number;
 
 	@ManyToOne(type => User, {
@@ -41,8 +38,8 @@ export class NoteReaction {
 	@JoinColumn()
 	public note: Note | null;
 
-	@Column({
-		type: 'varchar', length: 32
+	@Column('varchar', {
+		length: 32
 	})
 	public reaction: string;
 }

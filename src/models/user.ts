@@ -2,83 +2,81 @@ import { Entity, PrimaryGeneratedColumn, Column, Index, OneToOne, JoinColumn, Pr
 import rap from '@prezzemolo/rap';
 import { packMany as packNoteMany } from './note';
 import config from '../config';
-import Emoji from './emoji';
 import { DriveFile } from './drive-file';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
 export class User {
-	@PrimaryColumn({
-		type: 'char', length: 24,
+	@PrimaryColumn('char', {
+		length: 24,
 		comment: 'The ID of the User.'
 	})
 	public id: string;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the User.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'date', nullable: true,
+	@Column('date', {
+		nullable: true,
 		comment: 'The updated date of the User.'
 	})
 	public updatedAt: Date | null;
 
-	@Column({
-		type: 'varchar', length: 128,
+	@Column('varchar', {
+		length: 128,
 		comment: 'The username of the User.'
 	})
 	public username: string;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 128,
+	@Column('varchar', {
+		length: 128,
 		comment: 'The username (lowercased) of the User.'
 	})
 	public usernameLower: string;
 
-	@Column({
-		type: 'varchar', length: 128, nullable: true,
+	@Column('varchar', {
+		length: 128, nullable: true,
 		comment: 'The name of the User.'
 	})
 	public name: string | null;
 
-	@Column({
-		type: 'varchar', length: 128, nullable: true,
+	@Column('varchar', {
+		length: 128, nullable: true,
 		comment: 'The location of the User.'
 	})
 	public location: string | null;
 
-	@Column({
-		type: 'char', length: 10, nullable: true,
+	@Column('char', {
+		length: 10, nullable: true,
 		comment: 'The birthday (YYYY-MM-DD) of the User.'
 	})
 	public birthday: string | null;
 
-	@Column({
-		type: 'integer', default: 0,
+	@Column('integer', {
+		default: 0,
 		comment: 'The count of followers.'
 	})
 	public followersCount: number;
 
-	@Column({
-		type: 'integer', default: 0,
+	@Column('integer', {
+		default: 0,
 		comment: 'The count of following.'
 	})
 	public followingCount: number;
 
-	@Column({
-		type: 'integer', default: 0,
+	@Column('integer', {
+		default: 0,
 		comment: 'The count of notes.'
 	})
 	public notesCount: number;
 
-	@Column({
-		type: 'integer', nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The ID of avatar DriveFile.'
 	})
 	public avatarId: number | null;
@@ -89,8 +87,8 @@ export class User {
 	@JoinColumn()
 	public avatar: DriveFile | null;
 
-	@Column({
-		type: 'integer', nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The ID of banner DriveFile.'
 	})
 	public bannerId: number | null;
@@ -101,112 +99,112 @@ export class User {
 	@JoinColumn()
 	public banner: DriveFile | null;
 
-	@Column({
-		type: 'varchar', length: 1024, nullable: true,
+	@Column('varchar', {
+		length: 1024, nullable: true,
 		comment: 'The description (bio) of the User.'
 	})
 	public description: string | null;
 
-	@Column({
-		type: 'varchar', length: 128, nullable: true,
+	@Column('varchar', {
+		length: 128, nullable: true,
 		comment: 'The email address of the User.'
 	})
 	public email: string | null;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 		comment: 'Whether the User is suspended.'
 	})
 	public isSuspended: boolean;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 		comment: 'Whether the User is silenced.'
 	})
 	public isSilenced: boolean;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 		comment: 'Whether the User is locked.'
 	})
 	public isLocked: boolean;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 		comment: 'Whether the User is a bot.'
 	})
 	public isBot: boolean;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 		comment: 'Whether the User is a cat.'
 	})
 	public isCat: boolean;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 		comment: 'Whether the User is the admin.'
 	})
 	public isAdmin: boolean;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 		comment: 'Whether the User is a moderator.'
 	})
 	public isModerator: boolean;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 128, nullable: true,
+	@Column('varchar', {
+		length: 128, nullable: true,
 		comment: 'The host of the User. It will be null if the origin of the user is local.'
 	})
 	public host: string | null;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 256, nullable: true,
+	@Column('varchar', {
+		length: 256, nullable: true,
 		comment: 'The URI of the User. It will be null if the origin of the user is local.'
 	})
 	public uri: string | null;
 
-	@Column({
-		type: 'varchar', length: 128, nullable: true,
+	@Column('varchar', {
+		length: 128, nullable: true,
 		comment: 'The password hash of the User. It will be null if the origin of the user is local.'
 	})
 	public password: string | null;
 
 	@Index({ unique: true })
-	@Column({
-		type: 'varchar', length: 32, nullable: true, unique: true,
+	@Column('varchar', {
+		length: 32, nullable: true, unique: true,
 		comment: 'The native access token of the User. It will be null if the origin of the user is local.'
 	})
 	public token: string | null;
 
-	@Column({
-		type: 'varchar', length: 256, nullable: true,
+	@Column('varchar', {
+		length: 256, nullable: true,
 		comment: 'The keypair of the User. It will be null if the origin of the user is local.'
 	})
 	public keypair: string | null;
 
-	@Column({
-		type: 'jsonb', nullable: false, default: {},
+	@Column('jsonb', {
+		nullable: false, default: {},
 		comment: 'The client-specific data of the User.'
 	})
 	public clientData: Record<string, any>;
 
-	@Column({
-		type: 'jsonb', nullable: false, default: {},
+	@Column('jsonb', {
+		nullable: false, default: {},
 		comment: 'The external service links of the User.'
 	})
 	public services: Record<string, any>;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 	})
 	public autoWatch: boolean;
 
-	@Column({
-		type: 'boolean', nullable: false, default: false,
+	@Column('boolean', {
+		nullable: false, default: false,
 	})
 	public autoAcceptFollowed: boolean;
 }

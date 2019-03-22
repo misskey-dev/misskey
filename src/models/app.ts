@@ -9,15 +9,14 @@ export class App {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the App.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 24, nullable: true,
+	@Column('varchar', {
+		length: 24, nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: string | null;
@@ -29,32 +28,31 @@ export class App {
 	public user: User | null;
 
 	@Index()
-	@Column({
-		type: 'varchar', length: 64,
+	@Column('varchar', {
+		length: 64,
 		comment: 'The secret key of the App.'
 	})
 	public secret: string;
 
-	@Column({
-		type: 'varchar', length: 128,
+	@Column('varchar', {
+		length: 128,
 		comment: 'The name of the App.'
 	})
 	public name: string;
 
-	@Column({
-		type: 'varchar', length: 512,
+	@Column('varchar', {
+		length: 512,
 		comment: 'The description of the App.'
 	})
 	public description: string;
 
-	@Column({
-		type: 'simple-array',
+	@Column('simple-array', {
 		comment: 'The permission of the App.'
 	})
 	public permission: string[];
 
-	@Column({
-		type: 'varchar', length: 256, nullable: true,
+	@Column('varchar', {
+		length: 256, nullable: true,
 		comment: 'The callbackUrl of the App.'
 	})
 	public callbackUrl: string | null;

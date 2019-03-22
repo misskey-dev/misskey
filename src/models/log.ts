@@ -6,42 +6,40 @@ export class Log {
 	public id: number;
 
 	@Index()
-	@Column({
-		type: 'date',
+	@Column('date', {
 		comment: 'The created date of the Log.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column({
-		type: 'simple-array',
+	@Column('simple-array', {
+
 	})
 	public domain: string[];
 
 	@Index()
-	@Column({
-		type: 'enum',
+	@Column('enum', {
 		enum: ['error', 'warning', 'info', 'success', 'debug']
 	})
 	public level: string;
 
-	@Column({
-		type: 'varchar', length: 8
+	@Column('varchar', {
+		length: 8
 	})
 	public worker: string;
 
-	@Column({
-		type: 'varchar', length: 128
+	@Column('varchar', {
+		length: 128
 	})
 	public machine: string;
 
-	@Column({
-		type: 'varchar', length: 1024
+	@Column('varchar', {
+		length: 1024
 	})
 	public message: string;
 
-	@Column({
-		type: 'jsonb', default: {}
+	@Column('jsonb', {
+		default: {}
 	})
 	public data: Record<string, any>;
 }
