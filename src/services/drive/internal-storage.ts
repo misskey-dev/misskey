@@ -1,10 +1,17 @@
 import * as fs from 'fs';
-import { DriveFile } from '../../models/drive-file';
 
-const store = `${__dirname}/../../../../files`;
+export class InternalStorage {
+	private static readonly path = `${__dirname}/../../../../files`;
 
-export function del(file: DriveFile) {
-	fs.unlink(`${store}/${file.id}`, () => {});
-	fs.unlink(`${store}/${file.id}-thumbnail`, () => {});
-	fs.unlink(`${store}/${file.id}-webpublic`, () => {});
+	public static saveFromPath(key: string, srcPath: string) {
+		fs.copyFile(srcPath, `${InternalStorage.path}/${key}`, () => {});
+	}
+
+	public static saveFromBuffer(key: string, data: Buffer) {
+		fs.writeFile(`${InternalStorage.path}/${key}`, data, () => {});
+	}
+
+	public static del(key: string) {
+		fs.unlink(`${InternalStorage.path}/${key}`, () => {});
+	}
 }
