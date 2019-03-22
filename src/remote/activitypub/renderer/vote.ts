@@ -1,9 +1,9 @@
 import config from '../../../config';
-import { INote } from '../../../models/note';
+import { Note } from '../../../models/note';
 import { IRemoteUser, ILocalUser } from '../../../models/user';
 import { IPollVote } from '../../../models/poll-vote';
 
-export default async function renderVote(user: ILocalUser, vote: IPollVote, pollNote: INote, pollOwner: IRemoteUser): Promise<any> {
+export default async function renderVote(user: ILocalUser, vote: IPollVote, pollNote: Note, pollOwner: IRemoteUser): Promise<any> {
 	return {
 		id: `${config.url}/users/${user.id}#votes/${vote.id}/activity`,
 		actor: `${config.url}/users/${user.id}`,

@@ -2,12 +2,12 @@ import * as promiseLimit from 'promise-limit';
 
 import config from '../../../config';
 import Resolver from '../resolver';
-import Note, { INote } from '../../../models/note';
+import Note, { Note } from '../../../models/note';
 import post from '../../../services/note/create';
-import { INote as INoteActivityStreamsObject, IObject } from '../type';
+import { Note as NoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
-import { IRemoteUser, IUser } from '../../../models/user';
+import { IRemoteUser, User } from '../../../models/user';
 import { fromHtml } from '../../../mfm/fromHtml';
 import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag, extractHashtags } from './tag';
@@ -28,7 +28,7 @@ const logger = apLogger;
  *
  * Misskeyに対象のNoteが登録されていればそれを返します。
  */
-export async function fetchNote(value: string | IObject, resolver?: Resolver): Promise<INote> {
+export async function fetchNote(value: string | IObject, resolver?: Resolver): Promise<Note> {
 	const uri = typeof value == 'string' ? value : value.id;
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
@@ -51,7 +51,7 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 /**
  * Noteを作成します。
  */
-export async function createNote(value: any, resolver?: Resolver, silent = false): Promise<INote> {
+export async function createNote(value: any, resolver?: Resolver, silent = false): Promise<Note> {
 	if (resolver == null) resolver = new Resolver();
 
 	const object: any = await resolver.resolve(value);
@@ -67,7 +67,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		return null;
 	}
 
-	const note: INoteActivityStreamsObject = object;
+	const note: NoteActivityStreamsObject = object;
 
 	logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
@@ -86,7 +86,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	note.cc = note.cc == null ? [] : typeof note.cc == 'string' ? [note.cc] : note.cc;
 
 	let visibility = 'public';
-	let visibleUsers: IUser[] = [];
+	let visibleUsers: User[] = [];
 	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
 		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';
@@ -117,7 +117,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		: [];
 
 	// リプライ
-	const reply: INote = note.inReplyTo
+	const reply: Note = note.inReplyTo
 		? await resolveNote(note.inReplyTo, resolver).catch(e => {
 			// 4xxの場合はリプライしてないことにする
 			if (e.statusCode >= 400 && e.statusCode < 500) {
@@ -130,7 +130,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		: null;
 
 	// 引用
-	let quote: INote;
+	let quote: Note;
 
 	if (note._misskey_quote && typeof note._misskey_quote == 'string') {
 		quote = await resolveNote(note._misskey_quote).catch(e => {
@@ -221,7 +221,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
  * Misskeyに対象のNoteが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<INote> {
+export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note> {
 	const uri = typeof value == 'string' ? value : value.id;
 
 	// ブロックしてたら中断
@@ -297,7 +297,7 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 
 	const limit = promiseLimit(2);
 	const users = await Promise.all(
-		uris.map(uri => limit(() => resolvePerson(uri, null, resolver).catch(() => null)) as Promise<IUser>)
+		uris.map(uri => limit(() => resolvePerson(uri, null, resolver).catch(() => null)) as Promise<User>)
 	);
 
 	return users.filter(x => x != null);

@@ -1,5 +1,5 @@
 import * as deepcopy from 'deepcopy';
-import { IUser, pack as packUser } from '../../user';
+import { User, pack as packUser } from '../../user';
 
 const Matching = db.get<IMatching>('reversiMatchings');
 export default Matching;
@@ -16,7 +16,7 @@ export interface IMatching {
  */
 export const pack = (
 	matching: any,
-	me?: string | mongo.ObjectID | IUser
+	me?: string | mongo.ObjectID | User
 ) => new Promise<any>(async (resolve, reject) => {
 
 	// Me
@@ -25,7 +25,7 @@ export const pack = (
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
-				: (me as IUser).id
+				: (me as User).id
 		: null;
 
 	const _matching = deepcopy(matching);

@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import Note, { INote } from '../../../models/note';
-import { IUser } from '../../../models/user';
+import Note, { Note } from '../../../models/note';
+import { User } from '../../../models/user';
 import { SchemaType } from '../../../misc/schema';
 
 export const perUserNotesLogSchema = {
@@ -72,7 +72,7 @@ class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	}
 
 	@autobind
-	public async update(user: IUser, note: INote, isAdditional: boolean) {
+	public async update(user: User, note: Note, isAdditional: boolean) {
 		const update: Obj = {
 			diffs: {}
 		};

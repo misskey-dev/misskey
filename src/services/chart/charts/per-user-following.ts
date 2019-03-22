@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
 import Following from '../../../models/following';
-import { IUser, isLocalUser } from '../../../models/user';
+import { User, isLocalUser } from '../../../models/user';
 import { SchemaType } from '../../../misc/schema';
 
 export const logSchema = {
@@ -139,7 +139,7 @@ class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
-	public async update(follower: IUser, followee: IUser, isFollow: boolean) {
+	public async update(follower: User, followee: User, isFollow: boolean) {
 		const update: Obj = {};
 
 		update.total = isFollow ? 1 : -1;

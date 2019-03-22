@@ -3,7 +3,7 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
-import Note, { INote } from '../../../models/note';
+import Note, { Note } from '../../../models/note';
 import addFile from '../../../services/drive/add-file';
 import User from '../../../models/user';
 import dateFormat = require('dateformat');
@@ -107,7 +107,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	done();
 }
 
-function serialize(note: INote): any {
+function serialize(note: Note): any {
 	return {
 		id: note.id,
 		text: note.text,

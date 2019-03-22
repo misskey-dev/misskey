@@ -1,4 +1,4 @@
-import { IUser, isRemoteUser, ILocalUser, pack as packUser } from '../../../models/user';
+import { User, isRemoteUser, ILocalUser, pack as packUser } from '../../../models/user';
 import FollowRequest from '../../../models/follow-request';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
@@ -7,7 +7,7 @@ import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
 import { insertFollowingDoc } from '../create';
 
-export default async function(followee: IUser, follower: IUser) {
+export default async function(followee: User, follower: User) {
 	const request = await FollowRequest.findOne({
 		followeeId: followee.id,
 		followerId: follower.id

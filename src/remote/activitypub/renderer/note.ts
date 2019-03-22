@@ -4,18 +4,18 @@ import renderMention from './mention';
 import renderEmoji from './emoji';
 import config from '../../../config';
 import DriveFile, { IDriveFile } from '../../../models/drive-file';
-import Note, { INote } from '../../../models/note';
+import Note, { Note } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 import Emoji, { IEmoji } from '../../../models/emoji';
 
-export default async function renderNote(note: INote, dive = true): Promise<any> {
+export default async function renderNote(note: Note, dive = true): Promise<any> {
 	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
 		? DriveFile.find({ _id: { $in: note.fileIds } })
 		: Promise.resolve([]);
 
 	let inReplyTo;
-	let inReplyToNote: INote;
+	let inReplyToNote: Note;
 
 	if (note.replyId) {
 		inReplyToNote = await Note.findOne({

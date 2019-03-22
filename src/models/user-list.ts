@@ -33,7 +33,7 @@ export class UserList {
 }
 
 export const pack = (
-	userList: string | mongo.ObjectID | IUserList
+	userList: string | mongo.ObjectID | UserList
 ) => new Promise<any>(async (resolve, reject) => {
 	let _userList: any;
 

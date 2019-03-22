@@ -1,7 +1,7 @@
 import * as deepcopy from 'deepcopy';
 import rap from '@prezzemolo/rap';
 import { length } from 'stringz';
-import { IUser, pack as packUser, User } from './user';
+import { User, pack as packUser, User } from './user';
 import { pack as packApp } from './app';
 import PollVote from './poll-vote';
 import NoteReaction from './note-reaction';
@@ -137,6 +137,11 @@ export class Note {
 		default: []
 	})
 	public fileIds: number[];
+
+	@Column('simple-array', {
+		default: []
+	})
+	public visibleUserIds: string[];
 }
 
 export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
@@ -205,8 +210,8 @@ export const hideNote = async (packedNote: any, meId: mongo.ObjectID) => {
 };
 
 export const packMany = (
-	notes: (string | mongo.ObjectID | INote)[],
-	me?: string | mongo.ObjectID | IUser,
+	notes: (string | mongo.ObjectID | Note)[],
+	me?: string | mongo.ObjectID | User,
 	options?: {
 		detail?: boolean;
 		skipHide?: boolean;
@@ -224,8 +229,8 @@ export const packMany = (
  * @return response
  */
 export const pack = async (
-	note: string | mongo.ObjectID | INote,
-	me?: string | mongo.ObjectID | IUser,
+	note: Note['id'] | Note,
+	me?: User['id'] | User,
 	options?: {
 		detail?: boolean;
 		skipHide?: boolean;
@@ -236,14 +241,7 @@ export const pack = async (
 		skipHide: false
 	}, options);
 
-	// Me
-	const meId: mongo.ObjectID = me
-		? isObjectId(me)
-			? me as mongo.ObjectID
-			: typeof me === 'string'
-				? new mongo.ObjectID(me)
-				: (me as IUser).id
-		: null;
+	const meId = typeof me === 'string' ? me : me.id;
 
 	let _note: any;
 

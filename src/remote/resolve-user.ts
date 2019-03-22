@@ -1,5 +1,5 @@
 import { toUnicode, toASCII } from 'punycode';
-import User, { IUser, IRemoteUser } from '../models/user';
+import User, { User, IRemoteUser } from '../models/user';
 import webFinger from './webfinger';
 import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';
@@ -9,7 +9,7 @@ import chalk from 'chalk';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export default async (username: string, _host: string, option?: any, resync?: boolean): Promise<IUser> => {
+export default async (username: string, _host: string, option?: any, resync?: boolean): Promise<User> => {
 	const usernameLower = username.toLowerCase();
 
 	if (_host == null) {

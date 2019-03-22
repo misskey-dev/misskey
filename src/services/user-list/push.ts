@@ -1,11 +1,11 @@
-import { pack as packUser, IUser, isRemoteUser, fetchProxyAccount } from '../../models/user';
-import UserList, { IUserList } from '../../models/user-list';
+import { pack as packUser, User, isRemoteUser, fetchProxyAccount } from '../../models/user';
+import UserList, { UserList } from '../../models/user-list';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import { publishUserListStream } from '../stream';
 
-export async function pushUserToUserList(target: IUser, list: IUserList) {
+export async function pushUserToUserList(target: User, list: UserList) {
 	await UserList.update({ _id: list.id }, {
 		$push: {
 			userIds: target.id

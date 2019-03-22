@@ -1,10 +1,10 @@
-const NoteUnread = db.get<INoteUnread>('noteUnreads');
+const NoteUnread = db.get<NoteUnread>('noteUnreads');
 NoteUnread.createIndex('userId');
 NoteUnread.createIndex('noteId');
 NoteUnread.createIndex(['userId', 'noteId'], { unique: true });
 export default NoteUnread;
 
-export interface INoteUnread {
+export interface NoteUnread {
 	id: mongo.ObjectID;
 	noteId: mongo.ObjectID;
 	userId: mongo.ObjectID;

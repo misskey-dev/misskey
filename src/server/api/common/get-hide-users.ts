@@ -1,8 +1,8 @@
 import Mute from '../../../models/muting';
-import User, { IUser } from '../../../models/user';
+import User, { User } from '../../../models/user';
 import { unique } from '../../../prelude/array';
 
-export async function getHideUserIds(me: IUser) {
+export async function getHideUserIds(me: User) {
 	return await getHideUserIdsById(me ? me.id : null);
 }
 

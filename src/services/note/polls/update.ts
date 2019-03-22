@@ -1,4 +1,4 @@
-import Note, { INote } from '../../../models/note';
+import Note, { Note } from '../../../models/note';
 import { updateQuestion } from '../../../remote/activitypub/models/question';
 import ms = require('ms');
 import Logger from '../../logger';
@@ -11,7 +11,7 @@ import renderNote from '../../../remote/activitypub/renderer/note';
 
 const logger = new Logger('pollsUpdate');
 
-export async function triggerUpdate(note: INote) {
+export async function triggerUpdate(note: Note) {
 	if (!note.updatedAt || Date.now() - new Date(note.updatedAt).getTime() > ms('1min')) {
 		logger.info(`Updating ${note.id}`);
 

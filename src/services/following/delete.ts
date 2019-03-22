@@ -1,4 +1,4 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/user';
 import Following from '../../models/following';
 import { publishMainStream } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
@@ -13,7 +13,7 @@ import instanceChart from '../chart/charts/instance';
 
 const logger = new Logger('following/delete');
 
-export default async function(follower: IUser, followee: IUser, silent = false) {
+export default async function(follower: User, followee: User, silent = false) {
 	const following = await Following.findOne({
 		followerId: follower.id,
 		followeeId: followee.id

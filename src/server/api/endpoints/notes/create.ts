@@ -2,8 +2,8 @@ import $ from 'cafy';
 import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
 import { length } from 'stringz';
-import Note, { INote, isValidCw, pack } from '../../../../models/note';
-import User, { IUser } from '../../../../models/user';
+import Note, { Note, isValidCw, pack } from '../../../../models/note';
+import User, { User } from '../../../../models/user';
 import DriveFile, { IDriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
@@ -227,7 +227,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user, app) => {
-	let visibleUsers: IUser[] = [];
+	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => Users.findOne({
 			id: id
@@ -247,7 +247,7 @@ export default define(meta, async (ps, user, app) => {
 		files = files.filter(file => file != null);
 	}
 
-	let renote: INote = null;
+	let renote: Note = null;
 	if (ps.renoteId != null) {
 		// Fetch renote to note
 		renote = await Note.findOne({
@@ -261,7 +261,7 @@ export default define(meta, async (ps, user, app) => {
 		}
 	}
 
-	let reply: INote = null;
+	let reply: Note = null;
 	if (ps.replyId != null) {
 		// Fetch reply
 		reply = await Note.findOne({

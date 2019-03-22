@@ -1,10 +1,10 @@
 import { Feed } from 'feed';
 import config from '../../config';
 import Note from '../../models/note';
-import { IUser } from '../../models/user';
+import { User } from '../../models/user';
 import { getOriginalUrl } from '../../misc/get-drive-file-url';
 
-export default async function(user: IUser) {
+export default async function(user: User) {
 	const author: Author = {
 		link: `${config.url}/@${user.username}`,
 		name: user.name || user.username

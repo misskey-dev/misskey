@@ -1,5 +1,5 @@
-import Note, { INote } from '../../models/note';
-import { IUser, isLocalUser, isRemoteUser } from '../../models/user';
+import Note, { Note } from '../../models/note';
+import { User, isLocalUser, isRemoteUser } from '../../models/user';
 import { publishNoteStream } from '../stream';
 import renderDelete from '../../remote/activitypub/renderer/delete';
 import { renderActivity } from '../../remote/activitypub/renderer';
@@ -22,7 +22,7 @@ import Favorite from '../../models/favorite';
  * @param user 投稿者
  * @param note 投稿
  */
-export default async function(user: IUser, note: INote, quiet = false) {
+export default async function(user: User, note: Note, quiet = false) {
 	const deletedAt = new Date();
 
 	await Note.update({

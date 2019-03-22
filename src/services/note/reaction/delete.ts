@@ -1,5 +1,5 @@
-import { IUser, isLocalUser, isRemoteUser } from '../../../models/user';
-import Note, { INote } from '../../../models/note';
+import { User, isLocalUser, isRemoteUser } from '../../../models/user';
+import Note, { Note } from '../../../models/note';
 import NoteReaction from '../../../models/note-reaction';
 import { publishNoteStream } from '../../stream';
 import renderLike from '../../../remote/activitypub/renderer/like';
@@ -8,7 +8,7 @@ import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 
-export default async (user: IUser, note: INote) => {
+export default async (user: User, note: Note) => {
 	// if already unreacted
 	const exist = await NoteReaction.findOne({
 		noteId: note.id,

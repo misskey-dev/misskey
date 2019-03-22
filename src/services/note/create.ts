@@ -23,12 +23,12 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
-import { User, isRemoteUser, isLocalUser } from '../../models/user';
+import { User, isRemoteUser, isLocalUser, IRemoteUser, ILocalUser } from '../../models/user';
 import { Note } from '../../models/note';
-import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings } from '../../models';
+import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings } from '../../models';
 import { DriveFile } from '../../models/drive-file';
 import { App } from '../../models/app';
-import { In } from 'typeorm';
+import { In, Not } from 'typeorm';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -36,7 +36,7 @@ class NotificationManager {
 	private notifier: User;
 	private note: Note;
 	private queue: {
-		target: ILocalUser['_id'];
+		target: ILocalUser['id'];
 		reason: NotificationType;
 	}[];
 
@@ -46,11 +46,11 @@ class NotificationManager {
 		this.queue = [];
 	}
 
-	public push(notifiee: ILocalUser['_id'], reason: NotificationType) {
+	public push(notifiee: ILocalUser['id'], reason: NotificationType) {
 		// 自分自身へは通知しない
 		if (this.notifier.id === notifiee) return;
 
-		const exist = this.queue.find(x => x.target.equals(notifiee));
+		const exist = this.queue.find(x => x.target === notifiee);
 
 		if (exist) {
 			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
@@ -486,28 +486,24 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	}
 }
 
-function index(note: INote) {
+function index(note: Note) {
 	if (note.text == null || config.elasticsearch == null) return;
 
 	es.index({
 		index: 'misskey',
 		type: 'note',
-		id: note.id,
+		id: note.id.toString(),
 		body: {
 			text: note.text
 		}
 	});
 }
 
-async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: NotificationManager, type: NotificationType) {
-	const watchers = await NoteWatching.find({
+async function notifyToWatchersOfRenotee(renote: Note, user: User, nm: NotificationManager, type: NotificationType) {
+	const watchers = await NoteWatchings.find({
 		noteId: renote.id,
-		userId: { $ne: user.id }
-	}, {
-			fields: {
-				userId: true
-			}
-		});
+		userId: Not(user.id)
+	});
 
 	for (const watcher of watchers) {
 		nm.push(watcher.userId, type);
@@ -517,9 +513,10 @@ async function notifyToWatchersOfRenotee(renote: INote, user: IUser, nm: Notific
 async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: NotificationManager) {
 	const watchers = await NoteWatchings.find({
 		noteId: reply.id,
+		userId: Not(user.id)
 	});
 
-	for (const watcher of watchers.filter(w => w.userId !== user.id)) {
+	for (const watcher of watchers) {
 		nm.push(watcher.userId, 'reply');
 	}
 }
@@ -535,7 +532,7 @@ async function publishToUserLists(note: Note, noteObj: any) {
 
 	for (const list of lists) {
 		if (note.visibility == 'specified') {
-			if (note.visibleUserIds.some(id => id.equals(list.userId))) {
+			if (note.visibleUserIds.some(id => id === list.userId)) {
 				publishUserListStream(list.id, 'note', noteObj);
 			}
 		} else {
@@ -544,13 +541,13 @@ async function publishToUserLists(note: Note, noteObj: any) {
 	}
 }
 
-async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
+async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 	const detailPackedNote = await pack(note, null, {
 		detail: true,
 		skipHide: true
 	});
 
-	const followers = await Following.find({
+	const followers = await Followings.find({
 		followeeId: note.userId
 	});
 
@@ -600,13 +597,13 @@ async function publishToFollowers(note: INote, user: IUser, noteActivity: any) {
 	}, 10 * 1000);
 }
 
-function deliverNoteToMentionedRemoteUsers(mentionedUsers: IUser[], user: ILocalUser, noteActivity: any) {
+function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: any) {
 	for (const u of mentionedUsers.filter(u => isRemoteUser(u))) {
 		deliver(user, noteActivity, (u as IRemoteUser).inbox);
 	}
 }
 
-async function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: NotificationManager) {
+async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: NotificationManager) {
 	for (const u of mentionedUsers.filter(u => isLocalUser(u))) {
 		const detailPackedNote = await pack(note, u, {
 			detail: true
@@ -619,7 +616,7 @@ async function createMentionedEvents(mentionedUsers: IUser[], note: INote, nm: N
 	}
 }
 
-function saveQuote(renote: INote, note: INote) {
+function saveQuote(renote: Note, note: Note) {
 	Note.update({ _id: renote.id }, {
 		$push: {
 			_quoteIds: note.id
@@ -627,7 +624,7 @@ function saveQuote(renote: INote, note: INote) {
 	});
 }
 
-function saveReply(reply: INote, note: INote) {
+function saveReply(reply: Note, note: Note) {
 	Note.update({ _id: reply.id }, {
 		$inc: {
 			repliesCount: 1
@@ -635,7 +632,7 @@ function saveReply(reply: INote, note: INote) {
 	});
 }
 
-function incNotesCountOfUser(user: IUser) {
+function incNotesCountOfUser(user: User) {
 	User.update({ _id: user.id }, {
 		$set: {
 			updatedAt: new Date()
@@ -646,24 +643,7 @@ function incNotesCountOfUser(user: IUser) {
 	});
 }
 
-function incNotesCount(user: IUser) {
-	if (isLocalUser(user)) {
-		Meta.update({}, {
-			$inc: {
-				'stats.notesCount': 1,
-				'stats.originalNotesCount': 1
-			}
-		}, { upsert: true });
-	} else {
-		Meta.update({}, {
-			$inc: {
-				'stats.notesCount': 1
-			}
-		}, { upsert: true });
-	}
-}
-
-async function extractMentionedUsers(user: IUser, tokens: ReturnType<typeof parse>): Promise<IUser[]> {
+async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse>): Promise<User[]> {
 	if (tokens == null) return [];
 
 	const mentions = extractMentions(tokens);

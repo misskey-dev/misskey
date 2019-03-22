@@ -4,7 +4,7 @@ import * as httpSignature from 'http-signature';
 
 import { renderActivity } from '../remote/activitypub/renderer';
 import Note from '../models/note';
-import User, { isLocalUser, ILocalUser, IUser } from '../models/user';
+import User, { isLocalUser, ILocalUser, User } from '../models/user';
 import Emoji from '../models/emoji';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
@@ -190,7 +190,7 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
-async function userInfo(ctx: Router.IRouterContext, user: IUser) {
+async function userInfo(ctx: Router.IRouterContext, user: User) {
 	if (user === null) {
 		ctx.status = 404;
 		return;

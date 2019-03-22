@@ -1,4 +1,4 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../../models/user';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../../models/user';
 import { publishMainStream } from '../../stream';
 import notify from '../../../services/create-notification';
 import { renderActivity } from '../../../remote/activitypub/renderer';
@@ -7,7 +7,7 @@ import { deliver } from '../../../queue';
 import FollowRequest from '../../../models/follow-request';
 import Blocking from '../../../models/blocking';
 
-export default async function(follower: IUser, followee: IUser, requestId?: string) {
+export default async function(follower: User, followee: User, requestId?: string) {
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
 		Blocking.findOne({

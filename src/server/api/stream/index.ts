@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
 
-import User, { IUser } from '../../../models/user';
+import User, { User } from '../../../models/user';
 import readNotification from '../common/read-notification';
 import call from '../call';
 import { IApp } from '../../../models/app';
@@ -15,7 +15,7 @@ import { EventEmitter } from 'events';
  * Main stream connection
  */
 export default class Connection {
-	public user?: IUser;
+	public user?: User;
 	public app: IApp;
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
@@ -26,7 +26,7 @@ export default class Connection {
 	constructor(
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
-		user: IUser,
+		user: User,
 		app: IApp
 	) {
 		this.wsConnection = wsConnection;

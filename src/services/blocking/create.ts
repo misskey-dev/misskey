@@ -1,4 +1,4 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/user';
 import Following from '../../models/following';
 import FollowRequest from '../../models/follow-request';
 import { publishMainStream } from '../stream';
@@ -11,7 +11,7 @@ import renderReject from '../../remote/activitypub/renderer/reject';
 import perUserFollowingChart from '../chart/charts/per-user-following';
 import Blocking from '../../models/blocking';
 
-export default async function(blocker: IUser, blockee: IUser) {
+export default async function(blocker: User, blockee: User) {
 
 	await Promise.all([
 		cancelRequest(blocker, blockee),
@@ -32,7 +32,7 @@ export default async function(blocker: IUser, blockee: IUser) {
 	}
 }
 
-async function cancelRequest(follower: IUser, followee: IUser) {
+async function cancelRequest(follower: User, followee: User) {
 	const request = await FollowRequest.findOne({
 		followeeId: followee.id,
 		followerId: follower.id
@@ -78,7 +78,7 @@ async function cancelRequest(follower: IUser, followee: IUser) {
 	}
 }
 
-async function unFollow(follower: IUser, followee: IUser) {
+async function unFollow(follower: User, followee: User) {
 	const following = await Following.findOne({
 		followerId: follower.id,
 		followeeId: followee.id

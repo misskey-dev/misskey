@@ -1,4 +1,4 @@
-import User, { IUser } from '../../../models/user';
+import User, { User } from '../../../models/user';
 import FollowRequest from '../../../models/follow-request';
 import accept from './accept';
 
@@ -6,7 +6,7 @@ import accept from './accept';
  * 指定したユーザー宛てのフォローリクエストをすべて承認
  * @param user ユーザー
  */
-export default async function(user: IUser) {
+export default async function(user: User) {
 	const requests = await FollowRequest.find({
 		followeeId: user.id
 	});

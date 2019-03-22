@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import { IUser, isLocalUser } from '../../../models/user';
+import { User, isLocalUser } from '../../../models/user';
 
 /**
  * アクティブユーザーに関するチャート
@@ -34,7 +34,7 @@ class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
-	public async update(user: IUser) {
+	public async update(user: User) {
 		const update: Obj = {
 			count: 1
 		};

@@ -1,10 +1,10 @@
 import NoteUnread from '../../models/note-unread';
-import User, { IUser } from '../../models/user';
-import { INote } from '../../models/note';
+import User, { User } from '../../models/user';
+import { Note } from '../../models/note';
 import Mute from '../../models/muting';
 import { publishMainStream } from '../stream';
 
-export default async function(user: IUser, note: INote, isSpecified = false) {
+export default async function(user: User, note: Note, isSpecified = false) {
 	//#region ミュートしているなら無視
 	const mute = await Mute.find({
 		muterId: user.id

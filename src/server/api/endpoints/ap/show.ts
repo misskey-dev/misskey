@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import define from '../../define';
 import config from '../../../../config';
-import User, { pack as packUser, IUser } from '../../../../models/user';
+import User, { pack as packUser, User } from '../../../../models/user';
 import { createPerson } from '../../../../remote/activitypub/models/person';
-import Note, { pack as packNote, INote } from '../../../../models/note';
+import Note, { pack as packNote, Note } from '../../../../models/note';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
@@ -113,7 +113,7 @@ async function fetchAny(uri: string) {
 	return null;
 }
 
-async function mergePack(user: IUser, note: INote) {
+async function mergePack(user: User, note: Note) {
 	if (user !== null) {
 		return {
 			type: 'User',

@@ -1,5 +1,5 @@
 import * as deepcopy from 'deepcopy';
-import { pack as packUser, IUser } from './user';
+import { pack as packUser, User } from './user';
 import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 
@@ -44,7 +44,7 @@ export class Muting {
 
 export const packMany = (
 	mutes: (string | mongo.ObjectID | IMute)[],
-	me?: string | mongo.ObjectID | IUser
+	me?: string | mongo.ObjectID | User
 ) => {
 	return Promise.all(mutes.map(x => pack(x, me)));
 };

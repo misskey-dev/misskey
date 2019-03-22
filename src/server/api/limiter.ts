@@ -2,12 +2,12 @@ import * as Limiter from 'ratelimiter';
 import limiterDB from '../../db/redis';
 import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
-import { IUser } from '../../models/user';
+import { User } from '../../models/user';
 import Logger from '../../services/logger';
 
 const logger = new Logger('limiter');
 
-export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) => {
+export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => {
 	// Redisがインストールされてない場合は常に許可
 	if (limiterDB == null) {
 		ok();

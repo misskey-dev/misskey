@@ -1,8 +1,8 @@
 import config from '../../../config';
 import { ILocalUser } from '../../../models/user';
-import { INote } from '../../../models/note';
+import { Note } from '../../../models/note';
 
-export default async function renderQuestion(user: ILocalUser, note: INote) {
+export default async function renderQuestion(user: ILocalUser, note: Note) {
 	const question = {
 		type: 'Question',
 		id: `${config.url}/questions/${note.id}`,

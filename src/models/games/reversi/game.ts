@@ -1,5 +1,5 @@
 import * as deepcopy from 'deepcopy';
-import { IUser, pack as packUser } from '../../user';
+import { User, pack as packUser } from '../../user';
 
 const ReversiGame = db.get<IReversiGame>('reversiGames');
 export default ReversiGame;
@@ -48,7 +48,7 @@ export interface IReversiGame {
  */
 export const pack = (
 	game: any,
-	me?: string | mongo.ObjectID | IUser,
+	me?: string | mongo.ObjectID | User,
 	options?: {
 		detail?: boolean
 	}
@@ -78,7 +78,7 @@ export const pack = (
 			? me as mongo.ObjectID
 			: typeof me === 'string'
 				? new mongo.ObjectID(me)
-				: (me as IUser).id
+				: (me as User).id
 		: null;
 
 	// Rename _id to id

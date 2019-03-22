@@ -2,7 +2,7 @@ import * as promiseLimit from 'promise-limit';
 import { toUnicode } from 'punycode';
 
 import config from '../../../config';
-import User, { validateUsername, isValidName, IUser, IRemoteUser, isRemoteUser } from '../../../models/user';
+import User, { validateUsername, isValidName, User, IRemoteUser, isRemoteUser } from '../../../models/user';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
@@ -21,7 +21,7 @@ import { ITag, extractHashtags } from './tag';
 import Following from '../../../models/following';
 import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
-import { INote } from '../../../models/note';
+import { Note } from '../../../models/note';
 import { updateHashtag } from '../../../services/update-hashtag';
 const logger = apLogger;
 
@@ -83,7 +83,7 @@ function validatePerson(x: any, uri: string) {
  *
  * Misskeyに対象のPersonが登録されていればそれを返します。
  */
-export async function fetchPerson(uri: string, resolver?: Resolver): Promise<IUser> {
+export async function fetchPerson(uri: string, resolver?: Resolver): Promise<User> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
@@ -106,7 +106,7 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<IUs
 /**
  * Personを作成します。
  */
-export async function createPerson(uri: string, resolver?: Resolver): Promise<IUser> {
+export async function createPerson(uri: string, resolver?: Resolver): Promise<User> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	if (resolver == null) resolver = new Resolver();
@@ -418,7 +418,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
  * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolvePerson(uri: string, verifier?: string, resolver?: Resolver): Promise<IUser> {
+export async function resolvePerson(uri: string, verifier?: string, resolver?: Resolver): Promise<User> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -514,7 +514,7 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 	const featuredNotes = await Promise.all(items
 		.filter(item => item.type === 'Note')
 		.slice(0, 5)
-		.map(item => limit(() => resolveNote(item, resolver)) as Promise<INote>));
+		.map(item => limit(() => resolveNote(item, resolver)) as Promise<Note>));
 
 	await User.update({ _id: user.id }, {
 		$set: {

@@ -146,7 +146,7 @@ export function createExportUserListsJob(user: ILocalUser) {
 	});
 }
 
-export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['_id']) {
+export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['id']) {
 	return dbQueue.add('importFollowing', {
 		user: user,
 		fileId: fileId
@@ -156,7 +156,7 @@ export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['_
 	});
 }
 
-export function createImportUserListsJob(user: ILocalUser, fileId: IDriveFile['_id']) {
+export function createImportUserListsJob(user: ILocalUser, fileId: IDriveFile['id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,
 		fileId: fileId

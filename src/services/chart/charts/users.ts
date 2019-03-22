@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import User, { IUser, isLocalUser } from '../../../models/user';
+import User, { User, isLocalUser } from '../../../models/user';
 import { SchemaType } from '../../../misc/schema';
 
 const logSchema = {
@@ -75,7 +75,7 @@ class UsersChart extends Chart<UsersLog> {
 	}
 
 	@autobind
-	public async update(user: IUser, isAdditional: boolean) {
+	public async update(user: User, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.total = isAdditional ? 1 : -1;

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User, { IUser } from '../../../../models/user';
+import User, { User } from '../../../../models/user';
 import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
 
@@ -58,7 +58,7 @@ export default define(meta, async (ps) => {
 	return;
 });
 
-async function unFollowAll(follower: IUser) {
+async function unFollowAll(follower: User) {
 	const followings = await Following.find({
 		followerId: follower.id
 	});

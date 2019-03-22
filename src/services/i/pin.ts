@@ -1,5 +1,5 @@
 import config from '../../config';
-import User, { isLocalUser, isRemoteUser, ILocalUser, IUser } from '../../models/user';
+import User, { isLocalUser, isRemoteUser, ILocalUser, User } from '../../models/user';
 import Note, { packMany } from '../../models/note';
 import Following from '../../models/following';
 import renderAdd from '../../remote/activitypub/renderer/add';
@@ -13,7 +13,7 @@ import { IdentifiableError } from '../../misc/identifiable-error';
  * @param user
  * @param noteId
  */
-export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
+export async function addPinned(user: User, noteId: mongo.ObjectID) {
 	// Fetch pinee
 	const note = await Note.findOne({
 		id: noteId,
@@ -61,7 +61,7 @@ export async function addPinned(user: IUser, noteId: mongo.ObjectID) {
  * @param user
  * @param noteId
  */
-export async function removePinned(user: IUser, noteId: mongo.ObjectID) {
+export async function removePinned(user: User, noteId: mongo.ObjectID) {
 	// Fetch unpinee
 	const note = await Note.findOne({
 		id: noteId,

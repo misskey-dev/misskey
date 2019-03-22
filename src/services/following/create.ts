@@ -1,4 +1,4 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../models/user';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/user';
 import Following from '../../models/following';
 import Blocking from '../../models/blocking';
 import { publishMainStream } from '../stream';
@@ -19,7 +19,7 @@ import { IdentifiableError } from '../../misc/identifiable-error';
 
 const logger = new Logger('following/create');
 
-export async function insertFollowingDoc(followee: IUser, follower: IUser) {
+export async function insertFollowingDoc(followee: User, follower: User) {
 	let alreadyFollowed = false;
 
 	await Following.insert({
@@ -118,7 +118,7 @@ export async function insertFollowingDoc(followee: IUser, follower: IUser) {
 	}
 }
 
-export default async function(follower: IUser, followee: IUser, requestId?: string) {
+export default async function(follower: User, followee: User, requestId?: string) {
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
 		Blocking.findOne({

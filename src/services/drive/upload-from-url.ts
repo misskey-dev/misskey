@@ -2,7 +2,7 @@ import * as URL from 'url';
 
 import { IDriveFile, validateFileName } from '../../models/drive-file';
 import create from './add-file';
-import { IUser } from '../../models/user';
+import { User } from '../../models/user';
 import { driveLogger } from './logger';
 import { createTemp } from '../../misc/create-temp';
 import { downloadUrl } from '../../misc/donwload-url';
@@ -11,7 +11,7 @@ const logger = driveLogger.createSubLogger('downloader');
 
 export default async (
 	url: string,
-	user: IUser,
+	user: User,
 	folderId: mongodb.ObjectID = null,
 	uri: string = null,
 	sensitive = false,

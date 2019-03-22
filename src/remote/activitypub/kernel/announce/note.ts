@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
-import { IRemoteUser, IUser } from '../../../../models/user';
-import { IAnnounce, INote } from '../../type';
+import { IRemoteUser, User } from '../../../../models/user';
+import { IAnnounce, Note } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
 import { apLogger } from '../../logger';
@@ -13,7 +13,7 @@ const logger = apLogger;
 /**
  * アナウンスアクティビティを捌きます
  */
-export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, note: INote): Promise<void> {
+export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, note: Note): Promise<void> {
 	const uri = activity.id || activity;
 
 	// アナウンサーが凍結されていたらスキップ
@@ -55,7 +55,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	//#region Visibility
 	const visibility = getVisibility(activity.to, activity.cc, actor);
 
-	let visibleUsers: IUser[] = [];
+	let visibleUsers: User[] = [];
 	if (visibility == 'specified') {
 		visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
 	}

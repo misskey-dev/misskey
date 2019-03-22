@@ -1,4 +1,4 @@
-import { isLocalUser, isRemoteUser, IUser } from '../../models/user';
+import { isLocalUser, isRemoteUser, User } from '../../models/user';
 import Blocking from '../../models/blocking';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderBlock from '../../remote/activitypub/renderer/block';
@@ -8,7 +8,7 @@ import Logger from '../logger';
 
 const logger = new Logger('blocking/delete');
 
-export default async function(blocker: IUser, blockee: IUser) {
+export default async function(blocker: User, blockee: User) {
 	const blocking = await Blocking.findOne({
 		blockerId: blocker.id,
 		blockeeId: blockee.id

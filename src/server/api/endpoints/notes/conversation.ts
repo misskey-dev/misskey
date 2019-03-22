@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../misc/cafy-id';
-import Note, { packMany, INote } from '../../../../models/note';
+import Note, { packMany, Note } from '../../../../models/note';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';
@@ -58,7 +58,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	const conversation: INote[] = [];
+	const conversation: Note[] = [];
 	let i = 0;
 
 	async function get(id: any) {

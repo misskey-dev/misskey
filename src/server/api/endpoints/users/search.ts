@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import * as escapeRegexp from 'escape-regexp';
-import User, { pack, validateUsername, IUser } from '../../../../models/user';
+import User, { pack, validateUsername, User } from '../../../../models/user';
 import define from '../../define';
 
 export const meta = {
@@ -64,7 +64,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
 
-	let users: IUser[] = [];
+	let users: User[] = [];
 
 	if (isUsername) {
 		users = await User

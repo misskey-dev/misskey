@@ -8,7 +8,7 @@ import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-c
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import { setResponseType } from '../activitypub';
 
-import Note, { INote } from '../../models/note';
+import Note, { Note } from '../../models/note';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
@@ -122,7 +122,7 @@ export default async (ctx: Router.IRouterContext) => {
  * Pack Create<Note> or Announce Activity
  * @param note Note
  */
-export async function packActivity(note: INote): Promise<object> {
+export async function packActivity(note: Note): Promise<object> {
 	if (note.renoteId && note.text == null && note.poll == null && (note.fileIds == null || note.fileIds.length == 0)) {
 		const renote = await Note.findOne(note.renoteId);
 		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`, note);

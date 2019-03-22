@@ -1,12 +1,12 @@
 import Vote from '../../../models/poll-vote';
-import Note, { INote } from '../../../models/note';
+import Note, { Note } from '../../../models/note';
 import Watching from '../../../models/note-watching';
 import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
 import notify from '../../../services/create-notification';
-import { isLocalUser, IUser } from '../../../models/user';
+import { isLocalUser, User } from '../../../models/user';
 
-export default (user: IUser, note: INote, choice: number) => new Promise(async (res, rej) => {
+export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
 	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
 
 	// if already voted

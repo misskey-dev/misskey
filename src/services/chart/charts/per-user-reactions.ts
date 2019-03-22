@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart from '../core';
-import { IUser, isLocalUser } from '../../../models/user';
-import { INote } from '../../../models/note';
+import { User, isLocalUser } from '../../../models/user';
+import { Note } from '../../../models/note';
 
 /**
  * ユーザーごとのリアクションに関するチャート
@@ -35,7 +35,7 @@ class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
 	}
 
 	@autobind
-	public async update(user: IUser, note: INote) {
+	public async update(user: User, note: Note) {
 		this.inc({
 			[isLocalUser(user) ? 'local' : 'remote']: { count: 1 }
 		}, note.userId);

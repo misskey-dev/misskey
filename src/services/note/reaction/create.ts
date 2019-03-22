@@ -1,5 +1,5 @@
-import { IUser, isLocalUser, isRemoteUser } from '../../../models/user';
-import Note, { INote } from '../../../models/note';
+import { User, isLocalUser, isRemoteUser } from '../../../models/user';
+import Note, { Note } from '../../../models/note';
 import NoteReaction from '../../../models/note-reaction';
 import { publishNoteStream } from '../../stream';
 import notify from '../../create-notification';
@@ -13,7 +13,7 @@ import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
 import fetchMeta from '../../../misc/fetch-meta';
 
-export default async (user: IUser, note: INote, reaction: string) => {
+export default async (user: User, note: Note, reaction: string) => {
 	// Myself
 	if (note.userId.equals(user.id)) {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');

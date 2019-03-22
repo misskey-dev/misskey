@@ -1,7 +1,7 @@
 import config from '../../../config';
-import { INote } from '../../../models/note';
+import { Note } from '../../../models/note';
 
-export default (object: any, note: INote) => {
+export default (object: any, note: Note) => {
 	const activity = {
 		id: `${config.url}/notes/${note.id}/activity`,
 		actor: `${config.url}/users/${note.userId}`,

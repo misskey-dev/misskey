@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import limiter from './limiter';
-import { IUser } from '../../models/user';
+import { User } from '../../models/user';
 import { IApp } from '../../models/app';
 import endpoints from './endpoints';
 import { ApiError } from './error';
@@ -12,7 +12,7 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e'
 };
 
-export default async (endpoint: string, user: IUser, app: IApp, data: any, file?: any) => {
+export default async (endpoint: string, user: User, app: IApp, data: any, file?: any) => {
 	const isSecure = user != null && app == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);

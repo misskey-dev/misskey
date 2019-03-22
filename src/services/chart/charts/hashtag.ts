@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import { IUser, isLocalUser } from '../../../models/user';
+import { User, isLocalUser } from '../../../models/user';
 
 /**
  * ハッシュタグに関するチャート
@@ -34,7 +34,7 @@ class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	public async update(hashtag: string, user: IUser) {
+	public async update(hashtag: string, user: User) {
 		const update: Obj = {
 			count: 1
 		};

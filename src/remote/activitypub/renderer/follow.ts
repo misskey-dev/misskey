@@ -1,7 +1,7 @@
 import config from '../../../config';
-import { IUser, isLocalUser } from '../../../models/user';
+import { User, isLocalUser } from '../../../models/user';
 
-export default (follower: IUser, followee: IUser, requestId?: string) => {
+export default (follower: User, followee: User, requestId?: string) => {
 	const follow = {
 		type: 'Follow',
 		actor: isLocalUser(follower) ? `${config.url}/users/${follower.id}` : follower.uri,
