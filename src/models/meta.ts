@@ -36,37 +36,90 @@ export class Meta {
 	})
 	public announcements: Record<string, any>[];
 
+	@Column('boolean', {
+		default: false,
+	})
+	public disableRegistration: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public disableLocalTimeline: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public disableGlobalTimeline: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableEmojiReaction: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public useStarForReactionFallback: boolean;
+
+	@Column('simple-array', {
+		default: [],
+	})
+	public hiddenTags: string[];
+
+	@Column('varchar', {
+		length: 256,
+		nullable: true
+	})
+	public mascotImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 256,
+		nullable: true
+	})
+	public bannerUrl: string | null;
+
+	@Column('varchar', {
+		length: 256,
+		nullable: true
+	})
+	public errorImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 256,
+		nullable: true
+	})
+	public iconUrl: string | null;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public cacheRemoteFiles: boolean;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public proxyAccount: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableRecaptcha: boolean;
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true
+	})
+	public recaptchaSiteKey: string | null;
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true
+	})
+	public recaptchaSecretKey: string | null;
 }
 
 export type IMeta = {
-
-	stats?: {
-		notesCount: number;
-		originalNotesCount: number;
-		usersCount: number;
-		originalUsersCount: number;
-	};
-
-	disableRegistration?: boolean;
-	disableLocalTimeline?: boolean;
-	disableGlobalTimeline?: boolean;
-	enableEmojiReaction?: boolean;
-	useStarForReactionFallback?: boolean;
-	hidedTags?: string[];
-	mascotImageUrl?: string;
-	bannerUrl?: string;
-	errorImageUrl?: string;
-	iconUrl?: string;
-
-	cacheRemoteFiles?: boolean;
-
-	proxyAccount?: string;
-
-	enableRecaptcha?: boolean;
-	recaptchaSiteKey?: string;
-	recaptchaSecretKey?: string;
-
 	/**
 	 * Drive capacity of a local user (MB)
 	 */
