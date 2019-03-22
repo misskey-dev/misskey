@@ -13,6 +13,7 @@ import { Emoji } from '../models/emoji';
 import { Note } from '../models/note';
 import { entities as charts } from '../services/chart/entities';
 import { Notification } from '../models/notification';
+import { Meta } from '../models/meta';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -54,6 +55,7 @@ export function initPostgre() {
 		logging: !['production', 'test'].includes(process.env.NODE_ENV),
 		logger: new MyCustomLogger(),
 		entities: [
+			Meta,
 			App,
 			User,
 			Note,

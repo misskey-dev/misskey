@@ -1,4 +1,4 @@
-import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Meta {
@@ -21,7 +21,7 @@ export class Meta {
 	@Column('varchar', {
 		length: 128, nullable: true
 	})
-	public maintainer: string;
+	public maintainerName: string;
 
 	/**
 	 * メンテナの連絡先
@@ -29,7 +29,7 @@ export class Meta {
 	@Column('varchar', {
 		length: 128, nullable: true
 	})
-	public email: string;
+	public maintainerEmail: string;
 
 	@Column('jsonb', {
 		default: [],
@@ -117,51 +117,135 @@ export class Meta {
 		nullable: true
 	})
 	public recaptchaSecretKey: string | null;
+
+	@Column('integer', {
+		default: 1024,
+		comment: 'Drive capacity of a local user (MB)'
+	})
+	public localDriveCapacityMb: number;
+
+	@Column('integer', {
+		default: 32,
+		comment: 'Drive capacity of a remote user (MB)'
+	})
+	public remoteDriveCapacityMb: number;
+
+	@Column('integer', {
+		default: 500,
+		comment: 'Max allowed note text length in characters'
+	})
+	public maxNoteTextLength: number;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public summalyProxy: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableEmail: boolean;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public email: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public smtpSecure: boolean;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public smtpHost: string | null;
+
+	@Column('integer', {
+		nullable: true
+	})
+	public smtpPort: number | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public smtpUser: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public smtpPass: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableServiceWorker: boolean;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public swPublicKey: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public swPrivateKey: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableTwitterIntegration: boolean;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public twitterConsumerKey: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public twitterConsumerSecret: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableGithubIntegration: boolean;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public githubClientId: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public githubClientSecret: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableDiscordIntegration: boolean;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public discordClientId: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true
+	})
+	public discordClientSecret: string | null;
 }
-
-export type IMeta = {
-	/**
-	 * Drive capacity of a local user (MB)
-	 */
-	localDriveCapacityMb?: number;
-
-	/**
-	 * Drive capacity of a remote user (MB)
-	 */
-	remoteDriveCapacityMb?: number;
-
-	/**
-	 * Max allowed note text length in characters
-	 */
-	maxNoteTextLength?: number;
-
-	summalyProxy?: string;
-
-	enableTwitterIntegration?: boolean;
-	twitterConsumerKey?: string;
-	twitterConsumerSecret?: string;
-
-	enableGithubIntegration?: boolean;
-	githubClientId?: string;
-	githubClientSecret?: string;
-
-	enableDiscordIntegration?: boolean;
-	discordClientId?: string;
-	discordClientSecret?: string;
-
-	enableExternalUserRecommendation?: boolean;
-	externalUserRecommendationEngine?: string;
-	externalUserRecommendationTimeout?: number;
-
-	enableEmail?: boolean;
-	email?: string;
-	smtpSecure?: boolean;
-	smtpHost?: string;
-	smtpPort?: number;
-	smtpUser?: string;
-	smtpPass?: string;
-
-	enableServiceWorker?: boolean;
-	swPublicKey?: string;
-	swPrivateKey?: string;
-};
