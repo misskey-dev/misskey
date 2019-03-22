@@ -1,6 +1,7 @@
 import { pack } from '../models/notification';
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
+import { Notifications, Mutings, Users } from '../models';
 
 export default (
 	notifieeId: any,
@@ -13,13 +14,14 @@ export default (
 	}
 
 	// Create notification
-	const notification = await Notification.insert(Object.assign({
+	const notification = await Notifications.save({
 		createdAt: new Date(),
 		notifieeId: notifieeId,
 		notifierId: notifierId,
 		type: type,
-		isRead: false
-	}, content));
+		data: content,
+		isRead: false,
+	});
 
 	resolve(notification);
 
@@ -29,23 +31,20 @@ export default (
 	publishMainStream(notifieeId, 'notification', packed);
 
 	// Update flag
-	User.update({ _id: notifieeId }, {
-		$set: {
-			hasUnreadNotification: true
-		}
+	Users.update(notifieeId, {
+		hasUnreadNotification: true
 	});
 
 	// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 	setTimeout(async () => {
-		const fresh = await Notification.findOne({ _id: notification.id }, { isRead: true });
+		const fresh = await Notifications.findOne(notification.id);
 		if (!fresh.isRead) {
 			//#region ただしミュートしているユーザーからの通知なら無視
-			const mute = await Mute.find({
-				muterId: notifieeId,
-				deletedAt: { $exists: false }
+			const mutings = await Mutings.find({
+				muterId: notifieeId
 			});
-			const mutedUserIds = mute.map(m => m.muteeId.toString());
-			if (mutedUserIds.indexOf(notifierId.toString()) != -1) {
+			const mutedUserIds = mutings.map(m => m.muteeId);
+			if (mutedUserIds.includes(notifierId)) {
 				return;
 			}
 			//#endregion
