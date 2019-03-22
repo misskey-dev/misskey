@@ -265,23 +265,15 @@ export const pack = async (
 	// _note._userを消す前か、_note.userを解決した後でないとホストがわからない
 	if (_note._user) {
 		const host = _note._user.host;
-		// 互換性のため。(古いMisskeyではNoteにemojisが無い)
-		if (_note.emojis == null) {
-			_note.emojis = Emoji.find({
-				host: host
-			}, {
-				fields: { _id: false }
-			});
-		} else {
-			_note.emojis = unique(concat([_note.emojis, Object.keys(_note.reactionCounts)]));
 
-			_note.emojis = Emoji.find({
-				name: { $in: _note.emojis },
-				host: host
-			}, {
-				fields: { _id: false }
-			});
-		}
+		_note.emojis = unique(concat([_note.emojis, Object.keys(_note.reactionCounts)]));
+
+		_note.emojis = Emoji.find({
+			name: { $in: _note.emojis },
+			host: host
+		}, {
+			fields: { _id: false }
+		});
 	}
 
 	// Rename _id to id

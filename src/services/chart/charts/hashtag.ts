@@ -19,13 +19,6 @@ type HashtagLog = {
 class HashtagChart extends Chart<HashtagLog> {
 	constructor() {
 		super('hashtag', true);
-
-		// 後方互換性のため
-		db.get('chart.hashtag').findOne().then(doc => {
-			if (doc != null && doc.data.local == null) {
-				db.get('chart.hashtag').drop();
-			}
-		});
 	}
 
 	@autobind

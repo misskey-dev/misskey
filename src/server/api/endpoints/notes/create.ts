@@ -298,11 +298,6 @@ export default define(meta, async (ps, user, app) => {
 		throw new ApiError(meta.errors.contentRequired);
 	}
 
-	// 後方互換性のため
-	if (ps.visibility == 'private') {
-		ps.visibility = 'specified';
-	}
-
 	// 投稿を作成
 	const note = await create(user, {
 		createdAt: new Date(),
