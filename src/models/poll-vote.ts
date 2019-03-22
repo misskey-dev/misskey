@@ -28,7 +28,7 @@ export class PollVote {
 
 	@Index()
 	@Column('integer')
-	public noteId: number;
+	public noteId: Note['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

@@ -1,16 +1,44 @@
-const NoteUnread = db.get<NoteUnread>('noteUnreads');
-NoteUnread.createIndex('userId');
-NoteUnread.createIndex('noteId');
-NoteUnread.createIndex(['userId', 'noteId'], { unique: true });
-export default NoteUnread;
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
+import { Note } from './note';
 
-export interface NoteUnread {
-	id: mongo.ObjectID;
-	noteId: mongo.ObjectID;
-	userId: mongo.ObjectID;
-	isSpecified: boolean;
+@Entity()
+@Index(['userId', 'noteId'], { unique: true })
+export class NoteUnread {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-	_note: {
-		userId: mongo.ObjectID;
-	};
+	@Index()
+	@Column('varchar', {
+		length: 24,
+	})
+	public userId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column('integer')
+	public noteId: Note['id'];
+
+	@ManyToOne(type => Note, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public note: Note | null;
+
+	@Column('varchar', {
+		length: 24,
+		comment: '[Denormalization]'
+	})
+	public noteUserId: User['id'];
+
+	/**
+	 * ダイレクト投稿か
+	 */
+	@Column('boolean')
+	public isSpecified: boolean;
 }

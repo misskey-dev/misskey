@@ -18,11 +18,13 @@ import { NoteWatching } from './note-watching';
 import { UserList } from './user-list';
 import { UserListJoining } from './user-list-joining';
 import { Hashtag } from './hashtag';
+import { NoteUnread } from './note-unread';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
 export const NoteWatchings = getRepository(NoteWatching);
 export const NoteReactions = getRepository(NoteReaction);
+export const NoteUnreads = getRepository(NoteUnread);
 export const PollVotes = getRepository(PollVote);
 export const Users = getRepository(User);
 export const UserLists = getRepository(UserList);

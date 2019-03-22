@@ -33,7 +33,7 @@ export class Favorite extends Model<Favorite> {
 	@AllowNull(false)
 	@ForeignKey(() => Note)
 	@Column(Sequelize.INTEGER)
-	public noteId: number;
+	public noteId: Note['id'];
 
 	@BelongsTo(() => Note, {
 		foreignKey: 'noteId',

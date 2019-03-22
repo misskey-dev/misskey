@@ -1,6 +1,7 @@
 import { createConnection, Logger } from 'typeorm';
 import config from '../config';
 import { dbLogger } from './logger';
+import { entities as charts } from '../services/chart/entities';
 import { Log } from '../models/log';
 import { User } from '../models/user';
 import { DriveFile } from '../models/drive-file';
@@ -8,10 +9,11 @@ import { DriveFolder } from '../models/drive-folder';
 import { AccessToken } from '../models/access-token';
 import { App } from '../models/app';
 import { PollVote } from '../models/poll-vote';
-import { NoteReaction } from '../models/note-reaction';
-import { Emoji } from '../models/emoji';
 import { Note } from '../models/note';
-import { entities as charts } from '../services/chart/entities';
+import { NoteReaction } from '../models/note-reaction';
+import { NoteWatching } from '../models/note-watching';
+import { NoteUnread } from '../models/note-unread';
+import { Emoji } from '../models/emoji';
 import { Notification } from '../models/notification';
 import { Meta } from '../models/meta';
 import { Following } from '../models/following';
@@ -19,7 +21,6 @@ import { Instance } from '../models/instance';
 import { Muting } from '../models/muting';
 import { SwSubscription } from '../models/sw-subscription';
 import { Blocking } from '../models/blocking';
-import { NoteWatching } from '../models/note-watching';
 import { UserList } from '../models/user-list';
 import { UserListJoining } from '../models/user-list-joining';
 import { Hashtag } from '../models/hashtag';
@@ -75,6 +76,7 @@ export function initPostgre() {
 			Blocking,
 			Note,
 			NoteWatching,
+			NoteUnread,
 			Log,
 			DriveFile,
 			DriveFolder,

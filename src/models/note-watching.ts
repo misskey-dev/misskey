@@ -31,7 +31,7 @@ export class NoteWatching {
 	@Column('integer', {
 		comment: 'The target Note ID.'
 	})
-	public noteId: number;
+	public noteId: Note['id'];
 
 	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE'
