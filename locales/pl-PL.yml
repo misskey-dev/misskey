@@ -146,6 +146,7 @@ common:
     choose-wallpaper: "Wybierz tapetę"
     timeline: "Oś czasu"
     sound: "Dźwięk"
+    volume: "Głośność"
     test: "Test"
     update: "Aktualizacja Misskey"
     version: "Wersja:"
