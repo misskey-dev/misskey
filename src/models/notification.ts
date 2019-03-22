@@ -1,37 +1,47 @@
-import * as Sequelize from 'sequelize';
-import { Table, Column, Model, AllowNull, Comment, Default, ForeignKey } from 'sequelize-typescript';
 import * as deepcopy from 'deepcopy';
-import { IUser, pack as packUser } from './user';
+import { pack as packUser, User } from './user';
 import { pack as packNote } from './note';
-import { dbLogger } from '../db/logger';
+import { Entity, Index, JoinColumn, ManyToOne, Column } from 'typeorm';
 
-@Table({
-	indexes: [{
-		fields: ['notifieeId']
-	}]
-})
-export class Notification extends Model<Notification> {
-	@AllowNull(false)
-	@Column(Sequelize.DATE)
+@Entity()
+export class Notification {
+	@Index()
+	@Column({
+		type: 'date',
+		comment: 'The created date of the Notification.'
+	})
 	public createdAt: Date;
 
 	/**
 	 * 通知の受信者
 	 */
-	@Comment('The ID of recipient user of the Notification.')
-	@AllowNull(false)
-	@ForeignKey(() => User)
-	@Column(Sequelize.INTEGER)
-	public notifieeId: number;
+	@Index()
+	@Column({
+		type: 'varchar', length: 24,
+		comment: 'The ID of recipient user of the Notification.'
+	})
+	public notifieeId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public notifiee: User | null;
 
 	/**
 	 * 通知の送信者(initiator)
 	 */
-	@Comment('The ID of sender user of the Notification.')
-	@AllowNull(false)
-	@ForeignKey(() => User)
-	@Column(Sequelize.INTEGER)
-	public notifierId: number;
+	@Column({
+		type: 'varchar', length: 24,
+		comment: 'The ID of sender user of the Notification.'
+	})
+	public notifierId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public notifier: User | null;
 
 	/**
 	 * 通知の種類。
@@ -43,28 +53,29 @@ export class Notification extends Model<Notification> {
 	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
 	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
 	 */
-	@Comment('The type of the Notification.')
-	@AllowNull(false)
-	@Column(Sequelize.STRING)
+	@Column({
+		type: 'varchar', length: 32,
+		comment: 'The type of the Notification.'
+	})
 	public type: string;
 
 	/**
 	 * 通知が読まれたかどうか
 	 */
-	@Comment('Whether the Notification is read.')
-	@AllowNull(false)
-	@Default(false)
-	@Column(Sequelize.BOOLEAN)
+	@Column({
+		type: 'boolean', default: false,
+		comment: 'Whether the Notification is read.'
+	})
 	public isRead: boolean;
 
 	/**
 	 * 通知の追加データ
 	 * 通知の種類ごとに異なり、例えばリアクションの通知ならリアクションの種類が入るなど
 	 */
-	@Comment('The additional information of the Notification.')
-	@AllowNull(false)
-	@Default({})
-	@Column(Sequelize.JSONB)
+	@Column({
+		type: 'jsonb', default: {},
+		comment: 'The additional information of the Notification.'
+	})
 	public data: Record<string, any>;
 }
 
@@ -120,12 +131,6 @@ export const pack = (notification: any) => new Promise<any>(async (resolve, reje
 		case 'poll_vote':
 			// Populate note
 			_notification.note = await packNote(_notification.noteId, me);
-
-			// (データベースの不具合などで)投稿が見つからなかったら
-			if (_notification.note == null) {
-				dbLogger.warn(`[DAMAGED DB] (missing) pkg: notification -> note :: ${_notification.id} (note ${_notification.noteId})`);
-				return resolve(null);
-			}
 			break;
 		default:
 			dbLogger.error(`Unknown type: ${_notification.type}`);
