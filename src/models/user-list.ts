@@ -1,14 +1,35 @@
 import * as deepcopy from 'deepcopy';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 
-const UserList = db.get<IUserList>('userList');
-export default UserList;
+@Entity()
+export class UserList {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface IUserList {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	title: string;
-	userId: mongo.ObjectID;
-	userIds: mongo.ObjectID[];
+	@Column('date', {
+		comment: 'The created date of the UserList.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The owner ID.'
+	})
+	public userId: string;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Column('varchar', {
+		length: 128,
+		comment: 'The name of the UserList.'
+	})
+	public name: string;
 }
 
 export const pack = (

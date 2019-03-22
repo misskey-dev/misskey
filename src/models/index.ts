@@ -15,6 +15,8 @@ import { Muting } from './muting';
 import { SwSubscription } from './sw-subscription';
 import { Blocking } from './blocking';
 import { NoteWatching } from './note-watching';
+import { UserList } from './user-list';
+import { UserListJoining } from './user-list-joining';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
@@ -22,6 +24,8 @@ export const NoteWatchings = getRepository(NoteWatching);
 export const NoteReactions = getRepository(NoteReaction);
 export const PollVotes = getRepository(PollVote);
 export const Users = getRepository(User);
+export const UserLists = getRepository(UserList);
+export const UserListJoinings = getRepository(UserListJoining);
 export const Followings = getRepository(Following);
 export const Instances = getRepository(Instance);
 export const Emojis = getRepository(Emoji);

@@ -20,6 +20,8 @@ import { Muting } from '../models/muting';
 import { SwSubscription } from '../models/sw-subscription';
 import { Blocking } from '../models/blocking';
 import { NoteWatching } from '../models/note-watching';
+import { UserList } from '../models/user-list';
+import { UserListJoining } from '../models/user-list-joining';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -65,6 +67,8 @@ export function initPostgre() {
 			Instance,
 			App,
 			User,
+			UserList,
+			UserListJoining,
 			Following,
 			Muting,
 			Blocking,
