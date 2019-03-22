@@ -1,8 +1,5 @@
 import * as Minio from 'minio';
 import config from '../../config';
-import driveChart from '../chart/charts/drive';
-import perUserDriveChart from '../chart/charts/per-user-drive';
-import instanceChart from '../chart/charts/instance';
 import { isRemoteUser } from '../../models/user';
 import { DriveFile } from '../../models/drive-file';
 import { del } from './internal-storage';

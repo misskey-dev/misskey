@@ -14,6 +14,8 @@ import { Note } from '../models/note';
 import { entities as charts } from '../services/chart/entities';
 import { Notification } from '../models/notification';
 import { Meta } from '../models/meta';
+import { Following } from '../models/following';
+import { Instance } from '../models/instance';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -56,8 +58,10 @@ export function initPostgre() {
 		logger: new MyCustomLogger(),
 		entities: [
 			Meta,
+			Instance,
 			App,
 			User,
+			Following,
 			Note,
 			Log,
 			DriveFile,

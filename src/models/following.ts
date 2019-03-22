@@ -2,7 +2,7 @@ import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } 
 import { User } from './user';
 
 @Entity()
-@Index(['usernameLower', 'host'], { unique: true })
+@Index(['followerId', 'followeeId'], { unique: true })
 export class Following {
 	@PrimaryGeneratedColumn()
 	public id: number;
