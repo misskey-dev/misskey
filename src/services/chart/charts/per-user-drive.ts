@@ -115,7 +115,7 @@ class PerUserDriveChart extends Chart<PerUserDriveLog> {
 			update.decSize = file.length;
 		}
 
-		await this.inc(update, file.metadata.userId);
+		await this.inc(update, file.userId);
 	}
 }
 

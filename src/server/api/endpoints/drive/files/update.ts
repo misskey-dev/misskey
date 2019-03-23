@@ -86,7 +86,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user.id)) {
+	if (!user.isAdmin && !user.isModerator && !file.userId.equals(user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 

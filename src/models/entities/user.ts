@@ -225,35 +225,3 @@ export interface ILocalUser extends User {
 export interface IRemoteUser extends User {
 	host: string;
 }
-
-export const isLocalUser = (user: any): user is ILocalUser =>
-	user.host === null;
-
-export const isRemoteUser = (user: any): user is IRemoteUser =>
-	!isLocalUser(user);
-
-//#region Validators
-export function validateUsername(username: string, remote = false): boolean {
-	return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
-}
-
-export function validatePassword(password: string): boolean {
-	return typeof password == 'string' && password != '';
-}
-
-export function isValidName(name?: string): boolean {
-	return name === null || (typeof name == 'string' && name.length < 50 && name.trim() != '');
-}
-
-export function isValidDescription(description: string): boolean {
-	return typeof description == 'string' && description.length < 500 && description.trim() != '';
-}
-
-export function isValidLocation(location: string): boolean {
-	return typeof location == 'string' && location.length < 50 && location.trim() != '';
-}
-
-export function isValidBirthday(birthday: string): boolean {
-	return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
-}
-//#endregion

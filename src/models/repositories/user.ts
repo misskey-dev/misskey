@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { User } from '../entities/user';
+import { User, ILocalUser, IRemoteUser } from '../entities/user';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -132,4 +132,38 @@ export class UserRepository extends Repository<User> {
 
 		return _user;
 	}
+
+	public isLocalUser(user: any): user is ILocalUser {
+		return user.host === null;
+	}
+
+	public isRemoteUser(user: any): user is IRemoteUser {
+		return !this.isLocalUser(user);
+	}
+
+	//#region Validators
+	public validateUsername(username: string, remote = false): boolean {
+		return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
+	}
+
+	public validatePassword(password: string): boolean {
+		return typeof password == 'string' && password != '';
+	}
+
+	public isValidName(name?: string): boolean {
+		return name === null || (typeof name == 'string' && name.length < 50 && name.trim() != '');
+	}
+
+	public isValidDescription(description: string): boolean {
+		return typeof description == 'string' && description.length < 500 && description.trim() != '';
+	}
+
+	public isValidLocation(location: string): boolean {
+		return typeof location == 'string' && location.length < 50 && location.trim() != '';
+	}
+
+	public isValidBirthday(birthday: string): boolean {
+		return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
+	}
+	//#endregion
 }
