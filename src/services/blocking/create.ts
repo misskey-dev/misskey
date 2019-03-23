@@ -1,6 +1,6 @@
 import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/entities/user';
 import Following from '../../models/entities/following';
-import FollowRequest from '../../models/follow-request';
+import FollowRequest from '../../models/entities/follow-request';
 import { publishMainStream } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';

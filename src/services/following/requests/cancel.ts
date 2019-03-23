@@ -1,5 +1,5 @@
 import User, { User, isRemoteUser, ILocalUser, pack as packUser } from '../../../models/entities/user';
-import FollowRequest from '../../../models/follow-request';
+import FollowRequest from '../../../models/entities/follow-request';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderUndo from '../../../remote/activitypub/renderer/undo';

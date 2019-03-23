@@ -1,4 +1,4 @@
-import FollowRequest, { pack } from '../../../../../models/follow-request';
+import FollowRequest, { pack } from '../../../../../models/entities/follow-request';
 import define from '../../../define';
 
 export const meta = {

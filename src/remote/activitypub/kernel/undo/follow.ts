@@ -3,7 +3,7 @@ import config from '../../../../config';
 import unfollow from '../../../../services/following/delete';
 import cancelRequest from '../../../../services/following/requests/cancel';
 import { IFollow } from '../../type';
-import FollowRequest from '../../../../models/follow-request';
+import FollowRequest from '../../../../models/entities/follow-request';
 import Following from '../../../../models/entities/following';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {

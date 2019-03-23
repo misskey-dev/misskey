@@ -14,7 +14,7 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Instance from '../../models/entities/instance';
 import instanceChart from '../chart/charts/instance';
 import Logger from '../logger';
-import FollowRequest from '../../models/follow-request';
+import FollowRequest from '../../models/entities/follow-request';
 import { IdentifiableError } from '../../misc/identifiable-error';
 
 const logger = new Logger('following/create');

@@ -32,7 +32,7 @@ export class NoteUnread {
 
 	@Column('varchar', {
 		length: 24,
-		comment: '[Denormalization]'
+		comment: '[Denormalized]'
 	})
 	public noteUserId: User['id'];
 

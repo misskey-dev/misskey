@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import User from '../../../../../models/entities/user';
+import { Users } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -26,21 +26,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await Users.findOne({
-		id: ps.userId
-	});
+	const user = await Users.findOne(ps.userId);
 
 	if (user == null) {
 		throw new Error('user not found');
 	}
 
-	await User.update({
-		id: user.id
-	}, {
-		$set: {
-			isModerator: false
-		}
+	await Users.update(user.id, {
+		isModerator: false
 	});
-
-	return;
 });
