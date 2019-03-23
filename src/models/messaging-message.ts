@@ -1,21 +1,62 @@
-import * as deepcopy from 'deepcopy';
-import { pack as packUser } from './user';
-import { pack as packFile } from './drive-file';
-import { length } from 'stringz';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
+import { DriveFile } from './drive-file';
 
-const MessagingMessage = db.get<IMessagingMessage>('messagingMessages');
-MessagingMessage.createIndex('userId');
-MessagingMessage.createIndex('recipientId');
-export default MessagingMessage;
+@Entity()
+export class MessagingMessage {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface IMessagingMessage {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	text: string;
-	userId: mongo.ObjectID;
-	recipientId: mongo.ObjectID;
-	isRead: boolean;
-	fileId: mongo.ObjectID;
+	@Index()
+	@Column('date', {
+		comment: 'The created date of the MessagingMessage.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The sender user ID.'
+	})
+	public userId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+		comment: 'The recipient user ID.'
+	})
+	public recipientId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public recipient: User | null;
+
+	@Column('varchar', {
+		length: 4096, nullable: true
+	})
+	public text: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isRead: boolean;
+
+	@Column('integer')
+	public fileId: DriveFile['id'];
+
+	@ManyToOne(type => DriveFile, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public file: DriveFile | null;
 }
 
 export function isValidText(text: string): boolean {

@@ -1,5 +1,5 @@
 import * as promiseLimit from 'promise-limit';
-import DriveFile, { IDriveFile } from '../models/drive-file';
+import DriveFile, { DriveFile } from '../models/drive-file';
 import del from '../services/drive/delete-file';
 
 const limit = promiseLimit(16);
@@ -21,7 +21,7 @@ DriveFile.find({
 	console.log('ALL DONE');
 });
 
-async function job(file: IDriveFile): Promise<any> {
+async function job(file: DriveFile): Promise<any> {
 	file = await DriveFile.findOne({ _id: file.id });
 
 	await del(file, true);

@@ -1,7 +1,7 @@
-import { IDriveFile } from '../models/drive-file';
+import { DriveFile } from '../models/drive-file';
 import config from '../config';
 
-export default function(file: IDriveFile, thumbnail = false): string {
+export default function(file: DriveFile, thumbnail = false): string {
 	if (file == null) return null;
 
 	const isImage = file.contentType && file.contentType.startsWith('image/');
@@ -21,7 +21,7 @@ export default function(file: IDriveFile, thumbnail = false): string {
 	}
 }
 
-export function getOriginalUrl(file: IDriveFile) {
+export function getOriginalUrl(file: DriveFile) {
 	if (file.metadata && file.metadata.url) {
 		return file.metadata.url;
 	}

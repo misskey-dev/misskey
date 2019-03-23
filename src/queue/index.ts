@@ -9,7 +9,7 @@ import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
 import processDb from './processors/db';
 import { queueLogger } from './logger';
-import { IDriveFile } from '../models/drive-file';
+import { DriveFile } from '../models/drive-file';
 
 function initializeQueue(name: string) {
 	return new Queue(name, config.redis != null ? {
@@ -83,15 +83,6 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 	});
 }
 
-export function createDeleteNotesJob(user: ILocalUser) {
-	return dbQueue.add('deleteNotes', {
-		user: user
-	}, {
-		removeOnComplete: true,
-		removeOnFail: true
-	});
-}
-
 export function createDeleteDriveFilesJob(user: ILocalUser) {
 	return dbQueue.add('deleteDriveFiles', {
 		user: user
@@ -146,7 +137,7 @@ export function createExportUserListsJob(user: ILocalUser) {
 	});
 }
 
-export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['id']) {
+export function createImportFollowingJob(user: ILocalUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importFollowing', {
 		user: user,
 		fileId: fileId
@@ -156,7 +147,7 @@ export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['i
 	});
 }
 
-export function createImportUserListsJob(user: ILocalUser, fileId: IDriveFile['id']) {
+export function createImportUserListsJob(user: ILocalUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,
 		fileId: fileId

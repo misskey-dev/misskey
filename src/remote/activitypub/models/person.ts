@@ -6,7 +6,7 @@ import User, { validateUsername, isValidName, User, IRemoteUser, isRemoteUser } 
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
-import { IDriveFile } from '../../../models/drive-file';
+import { DriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import { fromHtml } from '../../../mfm/fromHtml';
 import usersChart from '../../../services/chart/charts/users';
@@ -215,7 +215,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	for (const tag of (user.tags || []).filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
 
 	//#region アイコンとヘッダー画像をフェッチ
-	const [avatar, banner] = (await Promise.all<IDriveFile>([
+	const [avatar, banner] = (await Promise.all<DriveFile>([
 		person.icon,
 		person.image
 	].map(img =>
@@ -330,7 +330,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	]);
 
 	// アイコンとヘッダー画像をフェッチ
-	const [avatar, banner] = (await Promise.all<IDriveFile>([
+	const [avatar, banner] = (await Promise.all<DriveFile>([
 		person.icon,
 		person.image
 	].map(img =>

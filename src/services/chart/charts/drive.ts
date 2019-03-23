@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import DriveFile, { IDriveFile } from '../../../models/drive-file';
+import DriveFile, { DriveFile } from '../../../models/drive-file';
 import { isLocalUser } from '../../../models/user';
 import { SchemaType } from '../../../misc/schema';
 
@@ -128,7 +128,7 @@ class DriveChart extends Chart<DriveLog> {
 	}
 
 	@autobind
-	public async update(file: IDriveFile, isAdditional: boolean) {
+	public async update(file: DriveFile, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.totalCount = isAdditional ? 1 : -1;

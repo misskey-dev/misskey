@@ -1,15 +1,38 @@
-import * as deepcopy from 'deepcopy';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 
-const Signin = db.get<ISignin>('signin');
-export default Signin;
+@Entity()
+export class Signin {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface ISignin {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	userId: mongo.ObjectID;
-	ip: string;
-	headers: any;
-	success: boolean;
+	@Column('date', {
+		comment: 'The created date of the Signin.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+	})
+	public userId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Column('varchar', {
+		length: 128,
+	})
+	public ip: string;
+
+	@Column('jsonb')
+	public headers: Record<string, any>;
+
+	@Column('boolean')
+	public success: boolean;
 }
 
 /**

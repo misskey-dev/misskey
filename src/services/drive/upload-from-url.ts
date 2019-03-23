@@ -1,6 +1,6 @@
 import * as URL from 'url';
 
-import { IDriveFile, validateFileName } from '../../models/drive-file';
+import { DriveFile, validateFileName } from '../../models/drive-file';
 import create from './add-file';
 import { User } from '../../models/user';
 import { driveLogger } from './logger';
@@ -17,7 +17,7 @@ export default async (
 	sensitive = false,
 	force = false,
 	link = false
-): Promise<IDriveFile> => {
+): Promise<DriveFile> => {
 	let name = URL.parse(url).pathname.split('/').pop();
 	if (!validateFileName(name)) {
 		name = null;
@@ -29,7 +29,7 @@ export default async (
 	// write content at URL to temp file
 	await downloadUrl(url, path);
 
-	let driveFile: IDriveFile;
+	let driveFile: DriveFile;
 	let error;
 
 	try {

@@ -1,14 +1,40 @@
-import * as deepcopy from 'deepcopy';
-import { User, pack as packUser } from '../../user';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from '../../user';
 
-const Matching = db.get<IMatching>('reversiMatchings');
-export default Matching;
+@Entity()
+export class ReversiMatching {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface IMatching {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	parentId: mongo.ObjectID;
-	childId: mongo.ObjectID;
+	@Index()
+	@Column('date', {
+		comment: 'The created date of the ReversiMatching.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+	})
+	public parentId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public parent: User | null;
+
+	@Index()
+	@Column('varchar', {
+		length: 24,
+	})
+	public childId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public child: User | null;
 }
 
 /**

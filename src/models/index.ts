@@ -24,6 +24,10 @@ import { FollowRequest } from './follow-request';
 import { AbuseUserReport } from './abuse-user-report';
 import { RegistrationTicket } from './registration-tickets';
 import { AuthSession } from './auth-session';
+import { ReversiGame } from './games/reversi/game';
+import { ReversiMatching } from './games/reversi/matching';
+import { MessagingMessage } from './messaging-message';
+import { Signin } from './signin';
 
 export const Apps = getRepository(App);
 export const Notes = getRepository(Note);
@@ -50,3 +54,7 @@ export const Hashtags = getRepository(Hashtag);
 export const AbuseUserReports = getRepository(AbuseUserReport);
 export const RegistrationTickets = getRepository(RegistrationTicket);
 export const AuthSessions = getRepository(AuthSession);
+export const Signins = getRepository(Signin);
+export const MessagingMessages = getRepository(MessagingMessage);
+export const ReversiGames = getRepository(ReversiGame);
+export const ReversiMatchings = getRepository(ReversiMatching);

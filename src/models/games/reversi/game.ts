@@ -1,46 +1,132 @@
 import * as deepcopy from 'deepcopy';
 import { User, pack as packUser } from '../../user';
+import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 
-const ReversiGame = db.get<IReversiGame>('reversiGames');
-export default ReversiGame;
+@Entity()
+export class ReversiGame {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
-export interface IReversiGame {
-	id: mongo.ObjectID;
-	createdAt: Date;
-	startedAt: Date;
-	user1Id: mongo.ObjectID;
-	user2Id: mongo.ObjectID;
-	user1Accepted: boolean;
-	user2Accepted: boolean;
+	@Index()
+	@Column('date', {
+		comment: 'The created date of the ReversiGame.'
+	})
+	public createdAt: Date;
+
+	@Column('date', {
+		comment: 'The started date of the ReversiGame.'
+	})
+	public startedAt: Date;
+
+	@Column('varchar', {
+		length: 24,
+	})
+	public user1Id: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user1: User | null;
+
+	@Column('varchar', {
+		length: 24,
+	})
+	public user2Id: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user2: User | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public user1Accepted: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public user2Accepted: boolean;
 
 	/**
 	 * どちらのプレイヤーが先行(黒)か
 	 * 1 ... user1
 	 * 2 ... user2
 	 */
-	black: number;
+	@Column('integer')
+	public black: number;
 
-	isStarted: boolean;
-	isEnded: boolean;
-	winnerId: mongo.ObjectID;
-	surrendered: mongo.ObjectID;
-	logs: {
+	@Column('boolean', {
+		default: false,
+	})
+	public isStarted: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isEnded: boolean;
+
+	@Column('varchar', {
+		length: 24, nullable: true,
+	})
+	public winnerId: User['id'] | null;
+
+	@Column('varchar', {
+		length: 24, nullable: true,
+	})
+	public surrendered: User['id'] | null;
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public logs: {
 		at: Date;
 		color: boolean;
 		pos: number;
 	}[];
-	settings: {
-		map: string[];
-		bw: string | number;
-		isLlotheo: boolean;
-		canPutEverywhere: boolean;
-		loopedBoard: boolean;
-	};
-	form1: any;
-	form2: any;
 
-	// ログのposを文字列としてすべて連結したもののCRC32値
-	crc32: string;
+	@Column('simple-array')
+	public map: string[];
+
+	@Column('varchar', {
+		length: 32
+	})
+	public bw: string;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isLlotheo: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public canPutEverywhere: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public loopedBoard: boolean;
+
+	@Column('jsonb', {
+		default: {},
+	})
+	public form1: any;
+
+	@Column('jsonb', {
+		default: {},
+	})
+	public form2: any;
+
+	/**
+	 * ログのposを文字列としてすべて連結したもののCRC32値
+	 */
+	@Column('varchar', {
+		length: 32
+	})
+	public crc32: string;
 }
 
 /**
@@ -88,11 +174,6 @@ export const pack = (
 	if (opts.detail === false) {
 		delete _game.logs;
 		delete _game.settings.map;
-	} else {
-		// 互換性のため
-		if (_game.settings.map.hasOwnProperty('size')) {
-			_game.settings.map = _game.settings.map.data.match(new RegExp(`.{1,${_game.settings.map.size}}`, 'g'));
-		}
 	}
 
 	// Populate user

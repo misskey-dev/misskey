@@ -29,6 +29,10 @@ import { FollowRequest } from '../models/follow-request';
 import { AbuseUserReport } from '../models/abuse-user-report';
 import { RegistrationTicket } from '../models/registration-tickets';
 import { AuthSession } from '../models/auth-session';
+import { ReversiGame } from '../models/games/reversi/game';
+import { ReversiMatching } from '../models/games/reversi/matching';
+import { MessagingMessage } from '../models/messaging-message';
+import { Signin } from '../models/signin';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -97,6 +101,10 @@ export function initPostgre() {
 			SwSubscription,
 			AbuseUserReport,
 			RegistrationTicket,
+			MessagingMessage,
+			Signin,
+			ReversiGame,
+			ReversiMatching,
 			...charts
 		]
 	});

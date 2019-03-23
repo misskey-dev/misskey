@@ -3,7 +3,7 @@ import Chart, { Obj } from '../core';
 import User from '../../../models/user';
 import Note from '../../../models/note';
 import Following from '../../../models/following';
-import DriveFile, { IDriveFile } from '../../../models/drive-file';
+import DriveFile, { DriveFile } from '../../../models/drive-file';
 
 /**
  * インスタンスごとのチャート
@@ -280,7 +280,7 @@ class InstanceChart extends Chart<InstanceLog> {
 	}
 
 	@autobind
-	public async updateDrive(file: IDriveFile, isAdditional: boolean) {
+	public async updateDrive(file: DriveFile, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.totalFiles = isAdditional ? 1 : -1;

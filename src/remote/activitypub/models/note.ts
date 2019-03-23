@@ -16,7 +16,7 @@ import { unique, concat, difference } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
 import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
-import { IDriveFile } from '../../../models/drive-file';
+import { DriveFile } from '../../../models/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import Instance from '../../../models/instance';
 import { extractDbHost } from '../../../misc/convert-host';
@@ -112,7 +112,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
 	const files = note.attachment
 		.map(attach => attach.sensitive = note.sensitive)
-		? (await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<IDriveFile>)))
+		? (await Promise.all(note.attachment.map(x => limit(() => resolveImage(actor, x)) as Promise<DriveFile>)))
 			.filter(image => image != null)
 		: [];
 

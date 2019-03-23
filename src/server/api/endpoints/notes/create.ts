@@ -4,7 +4,7 @@ import * as ms from 'ms';
 import { length } from 'stringz';
 import Note, { Note, isValidCw, pack } from '../../../../models/note';
 import User, { User } from '../../../../models/user';
-import DriveFile, { IDriveFile } from '../../../../models/drive-file';
+import DriveFile, { DriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
@@ -234,7 +234,7 @@ export default define(meta, async (ps, user, app) => {
 		})));
 	}
 
-	let files: IDriveFile[] = [];
+	let files: DriveFile[] = [];
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
 		files = await Promise.all(fileIds.map(fileId => {

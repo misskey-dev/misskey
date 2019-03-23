@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform } from '../../../../../misc/cafy-id';
-import DriveFile, { pack, IDriveFile } from '../../../../../models/drive-file';
+import DriveFile, { pack, DriveFile } from '../../../../../models/drive-file';
 import define from '../../../define';
 import config from '../../../../../config';
 import { ApiError } from '../../../error';
@@ -64,7 +64,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	let file: IDriveFile;
+	let file: DriveFile;
 
 	if (ps.fileId) {
 		file = await DriveFile.findOne({

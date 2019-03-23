@@ -3,14 +3,14 @@ import renderHashtag from './hashtag';
 import renderMention from './mention';
 import renderEmoji from './emoji';
 import config from '../../../config';
-import DriveFile, { IDriveFile } from '../../../models/drive-file';
+import DriveFile, { DriveFile } from '../../../models/drive-file';
 import Note, { Note } from '../../../models/note';
 import User from '../../../models/user';
 import toHtml from '../misc/get-note-html';
 import Emoji, { IEmoji } from '../../../models/emoji';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
-	const promisedFiles: Promise<IDriveFile[]> = note.fileIds
+	const promisedFiles: Promise<DriveFile[]> = note.fileIds
 		? DriveFile.find({ _id: { $in: note.fileIds } })
 		: Promise.resolve([]);
 

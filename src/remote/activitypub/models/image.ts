@@ -1,6 +1,6 @@
 import uploadFromUrl from '../../../services/drive/upload-from-url';
 import { IRemoteUser } from '../../../models/user';
-import DriveFile, { IDriveFile } from '../../../models/drive-file';
+import DriveFile, { DriveFile } from '../../../models/drive-file';
 import Resolver from '../resolver';
 import fetchMeta from '../../../misc/fetch-meta';
 import { apLogger } from '../logger';
@@ -10,7 +10,7 @@ const logger = apLogger;
 /**
  * Imageを作成します。
  */
-export async function createImage(actor: IRemoteUser, value: any): Promise<IDriveFile> {
+export async function createImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
 		return null;
@@ -63,7 +63,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
  * Misskeyに対象のImageが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolveImage(actor: IRemoteUser, value: any): Promise<IDriveFile> {
+export async function resolveImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
 	// TODO
 
 	// リモートサーバーからフェッチしてきて登録
