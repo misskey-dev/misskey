@@ -12,15 +12,12 @@ import * as views from 'koa-views';
 
 import docs from './docs';
 import packFeed from './feed';
-import User from '../../models/user';
-import parseAcct f../../models/entities/usercct/parse';
-import config from '../../config';
-import Note, { pack as packNote } from '../../models/note';
-import getNoteSummary from '../../misc/g../../models/entities/note
 import fetchMeta from '../../misc/fetch-meta';
 import Emoji from '../../models/entities/emoji';
 import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
+import config from '../../config';
+import { Users, Notes } from '../../models';
 
 const client = `${__dirname}/../../client/`;
 
@@ -170,15 +167,8 @@ router.get('/@:user', async (ctx, next) => {
 });
 
 router.get('/users/:user', async ctx => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
-
 	const user = await Users.findOne({
-		id: userId,
+		id: ctx.params.user,
 		host: null
 	});
 
@@ -192,26 +182,24 @@ router.get('/users/:user', async ctx => {
 
 // Note
 router.get('/notes/:note', async ctx => {
-	if (ObjectID.isValid(ctx.params.note)) {
-		const note = await Note.findOne({ _id: ctx.params.note });
+	const note = await Notes.findOne(ctx.params.note);
 
-		if (note) {
-			const _note = await packNote(note);
-			const meta = await fetchMeta();
-			await ctx.render('note', {
-				note: _note,
-				summary: getNoteSummary(_note),
-				instanceName: meta.name
-			});
+	if (note) {
+		const _note = await Notes.pack(note);
+		const meta = await fetchMeta();
+		await ctx.render('note', {
+			note: _note,
+			summary: getNoteSummary(_note),
+			instanceName: meta.name
+		});
 
-			if (['public', 'home'].includes(note.visibility)) {
-				ctx.set('Cache-Control', 'public, max-age=180');
-			} else {
-				ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-			}
-
-			return;
+		if (['public', 'home'].includes(note.visibility)) {
+			ctx.set('Cache-Control', 'public, max-age=180');
+		} else {
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		}
+
+		return;
 	}
 
 	ctx.status = 404;

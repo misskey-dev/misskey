@@ -1,6 +1,3 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/entities/user';
-import Following from '../../models/entities/following';
-import Blocking from '../../models/entities/blocking';
 import { publishMainStream } from '../stream';
 import notify from '../../services/create-notification';
 import { renderActivity } from '../../remote/activitypub/renderer';
@@ -11,35 +8,31 @@ import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 import perUserFollowingChart from '../chart/charts/per-user-following';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import Instance from '../../models/entities/instance';
 import instanceChart from '../chart/charts/instance';
 import Logger from '../logger';
-import FollowRequest from '../../models/entities/follow-request';
 import { IdentifiableError } from '../../misc/identifiable-error';
+import { User } from '../../models/entities/user';
+import { Followings, Users, FollowRequests } from '../../models';
 
 const logger = new Logger('following/create');
 
 export async function insertFollowingDoc(followee: User, follower: User) {
 	let alreadyFollowed = false;
 
-	await Following.insert({
+	await Followings.insert({
 		createdAt: new Date(),
 		followerId: follower.id,
 		followeeId: followee.id,
 
 		// 非正規化
-		_follower: {
-			host: follower.host,
-			inbox: isRemoteUser(follower) ? follower.inbox : undefined,
-			sharedInbox: isRemoteUser(follower) ? follower.sharedInbox : undefined
-		},
-		_followee: {
-			host: followee.host,
-			inbox: isRemoteUser(followee) ? followee.inbox : undefined,
-			sharedInbox: isRemoteUser(followee) ? followee.sharedInbox : undefined
-		}
+		followerHost: follower.host,
+		followerInbox: Users.isRemoteUser(follower) ? follower.inbox : undefined,
+		followerSharedInbox: Users.isRemoteUser(follower) ? follower.sharedInbox : undefined,
+		followeeHost: followee.host,
+		followeeInbox: Users.isRemoteUser(followee) ? followee.inbox : undefined,
+		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined
 	}).catch(e => {
-		if (e.code === 11000 && isRemoteUser(follower) && isLocalUser(followee)) {
+		if (e.code === 11000 && Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 			logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
 			alreadyFollowed = true;
 		} else {
@@ -47,7 +40,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 		}
 	});
 
-	const removed = await FollowRequest.remove({
+	const removed = await FollowRequests.delete({
 		followeeId: followee.id,
 		followerId: follower.id
 	});

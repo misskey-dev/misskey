@@ -28,7 +28,6 @@ export const meta = {
 
 		userIds: {
 			validator: $.optional.arr($.type(StringID)).unique(),
-			transform: transformMany,
 			desc: {
 				'ja-JP': 'ユーザーID (配列)'
 			}

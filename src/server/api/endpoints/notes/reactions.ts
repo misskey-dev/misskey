@@ -35,11 +35,13 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),,
+			validator: $.optional.type(NumericalID),
+		},
 
 		untilId: {
 			validator: $.optional.type(NumericalID),
-		},,
+		},
+	},
 
 	res: {
 		type: 'array',

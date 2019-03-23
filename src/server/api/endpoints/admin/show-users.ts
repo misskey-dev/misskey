@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import User, { pack } from '../../../../models/entities/user';
 import define from '../../define';
 import { fallback } from '../../../../prelude/symbol';
+import { Users } from '../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -94,12 +94,11 @@ export default define(meta, async (ps, me) => {
 		{}
 	);
 
-	const users = await User
-		.find(q, {
-			take: ps.limit,
-			sort: sort[ps.sort] || sort[fallback],
-			skip: ps.offset
-		});
+	const users = await Users.find(q, {
+		take: ps.limit,
+		sort: sort[ps.sort] || sort[fallback],
+		skip: ps.offset
+	});
 
 	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
 });

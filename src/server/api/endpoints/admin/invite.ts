@@ -1,6 +1,6 @@
 import rndstr from 'rndstr';
-import RegistrationTicket from '../../../../models/entities/registration-tickets';
 import define from '../../define';
+import { RegistrationTickets } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -18,7 +18,7 @@ export const meta = {
 export default define(meta, async (ps) => {
 	const code = rndstr({ length: 5, chars: '0-9' });
 
-	await RegistrationTicket.insert({
+	await RegistrationTickets.insert({
 		createdAt: new Date(),
 		code: code
 	});

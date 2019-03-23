@@ -1,11 +1,9 @@
 import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as rename from 'rename';
-import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
-import DriveFileThumbnail, { getDriveFileThumbn../../models/entities/drive-file/models/drive-file-thumbnail';
-import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
 import { serverLogger } from '..';
 import { contentDisposition } from '../../misc/content-disposition';
+import { DriveFiles } from '../../models';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
@@ -15,26 +13,14 @@ const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): voi
 };
 
 export default async function(ctx: Koa.BaseContext) {
-	// Validate id
-	if (!mongodb.ObjectID.isValid(ctx.params.id)) {
-		ctx.throw(400, 'incorrect id');
-		return;
-	}
-
-	const fileId = new mongodb.ObjectID(ctx.params.id);
+	const fileId = ctx.params.id;
 
 	// Fetch drive file
-	const file = await DriveFile.findOne({ _id: fileId });
+	const file = await DriveFiles.findOne(fileId);
 
 	if (file == null) {
 		ctx.status = 404;
 		await send(ctx as any, '/dummy.png', { root: assets });
-		return;
-	}
-
-	if (file.metadata.deletedAt) {
-		ctx.status = 410;
-		await send(ctx as any, '/tombstone.png', { root: assets });
 		return;
 	}
 

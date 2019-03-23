@@ -30,7 +30,6 @@ export const meta = {
 		folderId: {
 			validator: $.optional.nullable.type(NumericalID),
 			default: null as any,
-			transform: transform
 		},
 
 		isSensitive: {

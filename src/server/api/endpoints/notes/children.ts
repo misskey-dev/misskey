@@ -34,7 +34,8 @@ export const meta = {
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),,
+			validator: $.optional.type(NumericalID),
+		},
 	},
 
 	res: {

@@ -10,7 +10,6 @@ export const meta = {
 	params: {
 		appId: {
 			validator: $.type(StringID),
-			transform: transform
 		},
 	},
 

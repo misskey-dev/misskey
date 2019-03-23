@@ -26,9 +26,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await Users.findOne({
-		id: ps.userId
-	});
+	const user = await Users.findOne(ps.userId);
 
 	if (user == null) {
 		throw new Error('user not found');

@@ -40,13 +40,15 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),,
+			validator: $.optional.type(NumericalID),
+			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
 			}
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),,
+			validator: $.optional.type(NumericalID),
+			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
 			}
 		},

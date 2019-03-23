@@ -28,6 +28,7 @@ import { UserRepository } from './repositories/user';
 import { NoteRepository } from './repositories/note';
 import { DriveFileRepository } from './repositories/drive-file';
 import { DriveFolderRepository } from './repositories/drive-folder';
+import { Log } from './entities/log';
 
 export const Apps = getRepository(App);
 export const Notes = getCustomRepository(NoteRepository);
@@ -58,3 +59,4 @@ export const Signins = getRepository(Signin);
 export const MessagingMessages = getRepository(MessagingMessage);
 export const ReversiGames = getRepository(ReversiGame);
 export const ReversiMatchings = getRepository(ReversiMatching);
+export const Logs = getRepository(Log);

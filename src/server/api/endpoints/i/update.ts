@@ -70,13 +70,15 @@ export const meta = {
 		},
 
 		bannerId: {
-			validator: $.optional.nullable.type(NumericalID),,
+			validator: $.optional.nullable.type(NumericalID),
+			desc: {
 				'ja-JP': 'バナーに設定する画像のドライブファイルID'
 			}
 		},
 
 		wallpaperId: {
-			validator: $.optional.nullable.type(NumericalID),,
+			validator: $.optional.nullable.type(NumericalID),
+			desc: {
 				'ja-JP': '壁紙に設定する画像のドライブファイルID'
 			}
 		},

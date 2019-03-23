@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/entities/user';
+import { Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -25,9 +25,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const user = await Users.findOne({
-		id: ps.userId
-	});
+	const user = await Users.findOne(ps.userId);
 
 	if (user == null) {
 		throw new Error('user not found');
