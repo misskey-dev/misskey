@@ -24,6 +24,11 @@ export class Emoji {
 	public host: string | null;
 
 	@Column('varchar', {
+		length: 256,
+	})
+	public url: string;
+
+	@Column('varchar', {
 		length: 256, nullable: true
 	})
 	public uri: string | null;

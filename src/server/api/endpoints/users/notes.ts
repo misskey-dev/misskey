@@ -243,7 +243,7 @@ export default define(meta, async (ps, me) => {
 	//#endregion
 
 	const notes = await Note.find(query, {
-		limit: ps.limit,
+		take: ps.limit,
 		sort: sort
 	});
 

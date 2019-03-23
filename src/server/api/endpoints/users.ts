@@ -106,7 +106,7 @@ export default define(meta, async (ps, me) => {
 			],
 			...(hideUserIds && hideUserIds.length > 0 ? { _id: { $nin: hideUserIds } } : {})
 		}, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort[ps.sort] || sort[fallback],
 			skip: ps.offset
 		});

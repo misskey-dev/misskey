@@ -42,7 +42,7 @@ export default async function(file: DriveFile, isExpired = false) {
 	perUserDriveChart.update(file, false);
 	if (isRemoteUser(file.metadata._user)) {
 		instanceChart.updateDrive(file, false);
-		Instance.update({ host: file.metadata._user.host }, {
+		Instance.update({ host: file.userHost }, {
 			$inc: {
 				driveUsage: -file.length,
 				driveFiles: -1

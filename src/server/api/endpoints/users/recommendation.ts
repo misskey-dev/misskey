@@ -85,7 +85,7 @@ export default define(meta, async (ps, me) => {
 			},
 			host: null
 		}, {
-			limit: ps.limit,
+			take: ps.limit,
 			skip: ps.offset,
 			sort: {
 				followersCount: -1

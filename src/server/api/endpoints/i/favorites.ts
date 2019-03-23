@@ -53,7 +53,7 @@ export default define(meta, async (ps, user) => {
 	// Get favorites
 	const favorites = await Favorite
 		.find(query, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort
 		});
 

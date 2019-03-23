@@ -111,7 +111,7 @@ export default define(meta, async (ps, me) => {
 	// Get followers
 	const following = await Following
 		.find(query, {
-			limit: ps.limit + 1,
+			take: ps.limit + 1,
 			sort: { _id: -1 }
 		});
 

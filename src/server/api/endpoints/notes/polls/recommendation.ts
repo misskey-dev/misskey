@@ -65,7 +65,7 @@ export default define(meta, async (ps, user) => {
 			}
 		}],
 	}, {
-		limit: ps.limit,
+		take: ps.limit,
 		skip: ps.offset,
 		sort: {
 			id: -1

@@ -80,7 +80,7 @@ class DriveChart extends Chart<DriveLog> {
 		const calcSize = (local: boolean) => DriveFile
 			.aggregate([{
 				$match: {
-					'metadata._user.host': local ? null : { $ne: null },
+					'userHost': local ? null : { $ne: null },
 					'metadata.deletedAt': { $exists: false }
 				}
 			}, {
@@ -96,8 +96,8 @@ class DriveChart extends Chart<DriveLog> {
 			.then(res => res.length > 0 ? res[0].usage : 0);
 
 		const [localCount, remoteCount, localSize, remoteSize] = init ? await Promise.all([
-			DriveFile.count({ 'metadata._user.host': null }),
-			DriveFile.count({ 'metadata._user.host': { $ne: null } }),
+			DriveFile.count({ 'userHost': null }),
+			DriveFile.count({ 'userHost': { $ne: null } }),
 			calcSize(true),
 			calcSize(false)
 		]) : [

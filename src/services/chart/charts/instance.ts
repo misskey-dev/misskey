@@ -137,7 +137,7 @@ class InstanceChart extends Chart<InstanceLog> {
 		const calcUsage = () => DriveFile
 			.aggregate([{
 				$match: {
-					'metadata._user.host': group,
+					'userHost': group,
 					'metadata.deletedAt': { $exists: false }
 				}
 			}, {
@@ -164,7 +164,7 @@ class InstanceChart extends Chart<InstanceLog> {
 			User.count({ host: group }),
 			Following.count({ '_follower.host': group }),
 			Following.count({ '_followee.host': group }),
-			DriveFile.count({ 'metadata._user.host': group }),
+			DriveFile.count({ 'userHost': group }),
 			calcUsage(),
 		]) : [
 			latest ? latest.notes.total : 0,
@@ -295,7 +295,7 @@ class InstanceChart extends Chart<InstanceLog> {
 
 		await this.inc({
 			drive: update
-		}, file.metadata._user.host);
+		}, file.userHost);
 	}
 }
 

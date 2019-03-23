@@ -60,7 +60,7 @@ export default define(meta, async (ps, me) => {
 
 	const mutes = await Mute
 		.find(query, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort
 		});
 

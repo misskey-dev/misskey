@@ -64,7 +64,7 @@ export default define(meta, async (ps, user) => {
 
 	const files = await DriveFile
 		.find(query, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort
 		});
 

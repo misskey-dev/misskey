@@ -76,7 +76,7 @@ export default define(meta, async (ps, me) => {
 	if (ps.attachedToRemoteUserOnly) q.attachedRemoteUsersCount = { $ne: 0 };
 	const tags = await Hashtag
 		.find(q, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort[ps.sort],
 			fields: {
 				tag: true,

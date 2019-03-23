@@ -59,7 +59,7 @@ export default define(meta, async (ps) => {
 
 	const logs = await Log
 		.find(query, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort
 		});
 

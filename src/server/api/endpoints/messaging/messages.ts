@@ -95,7 +95,7 @@ export default define(meta, async (ps, user) => {
 
 	const messages = await Message
 		.find(query, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort
 		});
 

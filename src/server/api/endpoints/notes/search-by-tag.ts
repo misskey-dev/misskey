@@ -330,7 +330,7 @@ export default define(meta, async (ps, me) => {
 		sort: {
 			id: -1
 		},
-		limit: ps.limit,
+		take: ps.limit,
 		skip: ps.offset
 	});
 

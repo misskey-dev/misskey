@@ -119,7 +119,7 @@ export default define(meta, async (ps, me) => {
 
 	const instances = await Instance
 		.find(q, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort,
 			skip: ps.offset
 		});

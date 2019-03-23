@@ -73,7 +73,7 @@ export default define(meta, async (ps, me) => {
 				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
 				isSuspended: { $ne: true }
 			}, {
-				limit: ps.limit,
+				take: ps.limit,
 				skip: ps.offset
 			});
 
@@ -84,7 +84,7 @@ export default define(meta, async (ps, me) => {
 					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
 					isSuspended: { $ne: true }
 				}, {
-					limit: ps.limit - users.length
+					take: ps.limit - users.length
 				});
 
 			users = users.concat(otherUsers);

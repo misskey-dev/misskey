@@ -96,7 +96,7 @@ export default define(meta, async (ps, me) => {
 
 	const users = await User
 		.find(q, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort[ps.sort] || sort[fallback],
 			skip: ps.offset
 		});

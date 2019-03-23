@@ -122,7 +122,7 @@ export default define(meta, async (ps) => {
 	//}
 
 	const notes = await Note.find(query, {
-		limit: ps.limit,
+		take: ps.limit,
 		sort: sort
 	});
 

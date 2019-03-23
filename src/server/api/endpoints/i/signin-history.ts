@@ -45,7 +45,7 @@ export default define(meta, async (ps, user) => {
 
 	const history = await Signin
 		.find(query, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort
 		});
 

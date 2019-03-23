@@ -53,7 +53,7 @@ export default define(meta, async (ps) => {
 			sort: {
 				count: -1
 			},
-			limit: ps.limit,
+			take: ps.limit,
 			skip: ps.offset
 		});
 

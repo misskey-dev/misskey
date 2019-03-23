@@ -5,7 +5,7 @@ import del from '../services/drive/delete-file';
 const limit = promiseLimit(16);
 
 DriveFile.find({
-	'metadata._user.host': {
+	'userHost': {
 		$ne: null
 	},
 	'metadata.deletedAt': { $exists: false }

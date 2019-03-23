@@ -46,7 +46,7 @@ export default define(meta, async (ps, user) => {
 		'_user.host': null,
 		...(hideUserIds && hideUserIds.length > 0 ? { userId: { $nin: hideUserIds } } : {})
 	}, {
-		limit: ps.limit,
+		take: ps.limit,
 		sort: {
 			score: -1
 		},

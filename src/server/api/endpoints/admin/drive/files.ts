@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import File, { packMany } from '../../../../../models/drive-file';
 import define from '../../../define';
 import { fallback } from '../../../../../prelude/symbol';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -49,19 +49,17 @@ const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 };
 
 export default define(meta, async (ps, me) => {
-	const q = {
-		'metadata.deletedAt': { $exists: false },
-	} as any;
+	const q = {} as any;
 
-	if (ps.origin == 'local') q['metadata._user.host'] = null;
-	if (ps.origin == 'remote') q['metadata._user.host'] = { $ne: null };
+	if (ps.origin == 'local') q['userHost'] = null;
+	if (ps.origin == 'remote') q['userHost'] = { $ne: null };
 
-	const files = await File
-		.find(q, {
-			limit: ps.limit,
-			sort: sort[ps.sort] || sort[fallback],
-			skip: ps.offset
-		});
+	const files = await DriveFiles.find({
+		where: q,
+		take: ps.limit,
+		order: sort[ps.sort] || sort[fallback],
+		skip: ps.offset
+	});
 
 	return await packMany(files, { detail: true, withUser: true, self: true });
 });

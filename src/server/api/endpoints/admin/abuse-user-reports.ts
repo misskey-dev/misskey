@@ -43,7 +43,7 @@ export default define(meta, async (ps) => {
 
 	const reports = await Report
 		.find(query, {
-			limit: ps.limit,
+			take: ps.limit,
 			sort: sort
 		});
 
