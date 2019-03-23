@@ -45,6 +45,44 @@ export class FollowRequest {
 		comment: 'id of Follow Activity.'
 	})
 	public requestId: string | null;
+
+	//#region Denormalized fields
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public followerHost: string | null;
+
+	@Column('varchar', {
+		length: 256, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public followerInbox: string | null;
+
+	@Column('varchar', {
+		length: 256, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public followerSharedInbox: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public followeeHost: string | null;
+
+	@Column('varchar', {
+		length: 256, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public followeeInbox: string | null;
+
+	@Column('varchar', {
+		length: 256, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public followeeSharedInbox: string | null;
+	//#endregion
 }
 
 /**
