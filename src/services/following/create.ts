@@ -12,7 +12,7 @@ import instanceChart from '../chart/charts/instance';
 import Logger from '../logger';
 import { IdentifiableError } from '../../misc/identifiable-error';
 import { User } from '../../models/entities/user';
-import { Followings, Users, FollowRequests } from '../../models';
+import { Followings, Users, FollowRequests, Blockings } from '../../models';
 
 const logger = new Logger('following/create');
 
@@ -70,7 +70,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	//#endregion
 
 	//#region Update instance stats
-	if (isRemoteUser(follower) && isLocalUser(followee)) {
+	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 		registerOrFetchInstanceDoc(follower.host).then(i => {
 			Instance.update({ _id: i.id }, {
 				$inc: {
@@ -80,7 +80,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 			instanceChart.updateFollowing(i.host, true);
 		});
-	} else if (isLocalUser(follower) && isRemoteUser(followee)) {
+	} else if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		registerOrFetchInstanceDoc(followee.host).then(i => {
 			Instance.update({ _id: i.id }, {
 				$inc: {
@@ -96,15 +96,15 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	perUserFollowingChart.update(follower, followee, true);
 
 	// Publish follow event
-	if (isLocalUser(follower)) {
-		packUser(followee, follower, {
+	if (Users.isLocalUser(follower)) {
+		Users.pack(followee, follower, {
 			detail: true
 		}).then(packed => publishMainStream(follower.id, 'follow', packed));
 	}
 
 	// Publish followed event
-	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
+	if (Users.isLocalUser(followee)) {
+		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
 
 		// 通知を作成
 		notify(followee.id, follower.id, 'follow');
@@ -114,26 +114,24 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 export default async function(follower: User, followee: User, requestId?: string) {
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
-		Blocking.findOne({
+		Blockings.findOne({
 			blockerId: follower.id,
 			blockeeId: followee.id,
 		}),
-		Blocking.findOne({
+		Blockings.findOne({
 			blockerId: followee.id,
 			blockeeId: follower.id,
 		})
 	]);
 
-	if (isRemoteUser(follower) && isLocalUser(followee) && blocked) {
+	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee) && blocked) {
 		// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
 		const content = renderActivity(renderReject(renderFollow(follower, followee, requestId), followee));
 		deliver(followee , content, follower.inbox);
 		return;
-	} else if (isRemoteUser(follower) && isLocalUser(followee) && blocking) {
+	} else if (Users.isRemoteUser(follower) && Users.isLocalUser(followee) && blocking) {
 		// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
-		await Blocking.remove({
-			id: blocking.id
-		});
+		await Blockings.delete(blocking.id);
 	} else {
 		// それ以外は単純に例外
 		if (blocking != null) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
@@ -144,11 +142,11 @@ export default async function(follower: User, followee: User, requestId?: string
 	// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
 	// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
 	// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
-	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (isLocalUser(follower) && isRemoteUser(followee))) {
+	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (Users.isLocalUser(follower) && Users.isRemoteUser(followee))) {
 		let autoAccept = false;
 
 		// 鍵アカウントであっても、既にフォローされていた場合はスルー
-		const following = await Following.findOne({
+		const following = await Followings.findOne({
 			followerId: follower.id,
 			followeeId: followee.id,
 		});
@@ -157,8 +155,8 @@ export default async function(follower: User, followee: User, requestId?: string
 		}
 
 		// フォローしているユーザーは自動承認オプション
-		if (!autoAccept && (isLocalUser(followee) && followee.autoAcceptFollowed)) {
-			const followed = await Following.findOne({
+		if (!autoAccept && (Users.isLocalUser(followee) && followee.autoAcceptFollowed)) {
+			const followed = await Followings.findOne({
 				followerId: followee.id,
 				followeeId: follower.id
 			});
@@ -174,7 +172,7 @@ export default async function(follower: User, followee: User, requestId?: string
 
 	await insertFollowingDoc(followee, follower);
 
-	if (isRemoteUser(follower) && isLocalUser(followee)) {
+	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 		const content = renderActivity(renderAccept(renderFollow(follower, followee, requestId), followee));
 		deliver(followee, content, follower.inbox);
 	}

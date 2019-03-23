@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { StringID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/entities/user';
+import { Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -26,7 +26,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await Users.findOne(ps.userId);
+	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {
 		throw new Error('user not found');
@@ -36,13 +36,7 @@ export default define(meta, async (ps) => {
 		throw new Error('cannot silence admin');
 	}
 
-	await Users.findOneAndUpdate({
-		id: user.id
-	}, {
-		$set: {
-			isSilenced: true
-		}
+	await Users.update(user.id, {
+		isSilenced: true
 	});
-
-	return;
 });

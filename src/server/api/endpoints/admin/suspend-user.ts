@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { StringID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User, { User } from '../../../../models/entities/user';
-import Following from '../../../../models/entities/following';
 import deleteFollowing from '../../../../services/following/delete';
+import { Users, Followings } from '../../../../models';
+import { User } from '../../../../models/entities/user';
 
 export const meta = {
 	desc: {
@@ -28,7 +28,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await Users.findOne(ps.userId);
+	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {
 		throw new Error('user not found');
@@ -42,21 +42,15 @@ export default define(meta, async (ps) => {
 		throw new Error('cannot suspend moderator');
 	}
 
-	await Users.findOneAndUpdate({
-		id: user.id
-	}, {
-		$set: {
-			isSuspended: true
-		}
+	await Users.update(user.id, {
+		isSuspended: true
 	});
 
 	unFollowAll(user);
-
-	return;
 });
 
 async function unFollowAll(follower: User) {
-	const followings = await Following.find({
+	const followings = await Followings.find({
 		followerId: follower.id
 	});
 
