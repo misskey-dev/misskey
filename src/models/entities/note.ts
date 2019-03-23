@@ -1,5 +1,6 @@
 import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, Column } from 'typeorm';
 import { User } from './user';
+import { App } from './app';
 
 @Entity()
 export class Note {
@@ -59,6 +60,15 @@ export class Note {
 		length: 512, nullable: true
 	})
 	public cw: string | null;
+
+	@Column('integer')
+	public appId: App['id'];
+
+	@OneToOne(type => App, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public app: App | null;
 
 	@Index()
 	@Column('varchar', {
@@ -131,4 +141,9 @@ export class Note {
 		default: []
 	})
 	public visibleUserIds: string[];
+
+	@Column('simple-array', {
+		default: []
+	})
+	public emojis: string[];
 }

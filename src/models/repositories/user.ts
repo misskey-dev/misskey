@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis } from '..';
+import { Emojis, Notes } from '..';
+import rap from '@prezzemolo/rap';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -60,7 +61,7 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail && _user.pinnedNoteIds.length > 0 ? {
-				pinnedNotes: packNoteMany(_user.pinnedNoteIds, meId, {
+				pinnedNotes: Notes.packMany(_user.pinnedNoteIds, meId, {
 					detail: true
 				}),
 			} : {}),
