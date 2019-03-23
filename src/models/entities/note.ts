@@ -146,4 +146,21 @@ export class Note {
 		default: []
 	})
 	public emojis: string[];
+
+	@Column('jsonb', {
+		default: {}, nullable: true
+	})
+	public poll: IPoll | null;
 }
+
+export type IPoll = {
+	choices: IChoice[];
+	multiple?: boolean;
+	expiresAt?: Date;
+};
+
+export type IChoice = {
+	id: number;
+	text: string;
+	votes: number;
+};

@@ -3,7 +3,7 @@ import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
-import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions } from '..';
+import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings } from '..';
 import rap from '@prezzemolo/rap';
 
 @EntityRepository(Note)
@@ -109,14 +109,14 @@ export class NoteRepository extends Repository<Note> {
 		const _note = await this.cloneOrFetch(note);
 		const host = _note._user.host;
 
-		async function populatePoll(poll) {
+		async function populatePoll(poll: NonNullable<Note['poll']>) {
 			if (poll.multiple) {
 				const votes = await PollVotes.find({
 					userId: meId,
 					noteId: _note.id
 				});
 
-				const myChoices = (poll.choices as IChoice[]).filter(x => votes.some(y => x.id == y.choice));
+				const myChoices = poll.choices.filter(x => votes.some(y => x.id == y.choice));
 				for (const myChoice of myChoices) {
 					(myChoice as any).isVoted = true;
 				}
@@ -132,7 +132,7 @@ export class NoteRepository extends Repository<Note> {
 			});
 
 			if (vote) {
-				const myChoice = (poll.choices as IChoice[])
+				const myChoice = poll.choices
 					.filter(x => x.id == vote.choice)[0] as any;
 
 				myChoice.isVoted = true;
@@ -183,7 +183,7 @@ export class NoteRepository extends Repository<Note> {
 					detail: false
 				}) : null,
 
-				poll: populatePoll(_note.poll),
+				poll: _note.poll ? populatePoll(_note.poll) : null,
 
 				...(meId ? {
 					myReaction: populateMyReaction()
