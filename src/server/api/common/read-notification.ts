@@ -1,7 +1,7 @@
-import { default as Notification, INotification } from '../../../models/notification';
+import { default as Notification, INotification } from '../../../models/entities/notification';
 import { publishMainStream } from '../../../services/stream';
-import Mute from '../../../models/muting';
-import User from '../../../models/user';
+import Mute from '../../../models/entities/muting';
+import User from '../../../models/entities/user';
 
 /**
  * Mark notifications as read

@@ -1,7 +1,7 @@
 import * as ms from 'ms';
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import { validateFileName, pack } from '../../../../../models/drive-file';
+import { validateFileName, pack } from '../../../../../models/entities/drive-file';
 import create from '../../../../../services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';

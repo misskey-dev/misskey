@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
+import User, { pack } from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import * as nodemailer from 'nodemailer';

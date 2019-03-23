@@ -1,4 +1,4 @@
-import { Meta } from '../models/meta';
+import { Meta } from '../models/entities/meta';
 import { Metas } from '../models';
 
 export default async function(): Promise<Meta> {

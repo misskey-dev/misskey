@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../../models/drive-file';
+import { pack } from '../../../../../models/entities/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 import define from '../../../define';
 

@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import Favorite from '../../../../models/note-favorite';
-import NoteWatching from '../../../../models/note-watching';
+import Favorite from '../../../../models/entities/note-favorite';
+import NoteWatching from '../../../../models/entities/note-watching';
 
 export const meta = {
 	stability: 'stable',

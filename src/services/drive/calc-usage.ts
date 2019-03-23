@@ -1,5 +1,5 @@
 import { DriveFiles } from '../../models';
-import { User } from '../../models/user';
+import { User } from '../../models/entities/user';
 
 export async function clacDriveUsageOf(user: User): Promise<number> {
 	const [sum] = await DriveFiles

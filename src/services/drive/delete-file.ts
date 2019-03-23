@@ -1,7 +1,7 @@
 import * as Minio from 'minio';
 import config from '../../config';
-import { isRemoteUser } from '../../models/user';
-import { DriveFile } from '../../models/drive-file';
+import { isRemoteUser } from '../../models/entities/user';
+import { DriveFile } from '../../models/entities/drive-file';
 import { del } from './internal-storage';
 import { DriveFiles } from '../../models';
 

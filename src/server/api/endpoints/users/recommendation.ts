@@ -1,6 +1,6 @@
 import * as ms from 'ms';
 import $ from 'cafy';
-import User, { pack, ILocalUser } from '../../../../models/user';
+import User, { pack, ILocalUser } from '../../../../models/entities/user';
 import { getFriendIds } from '../../common/get-friends';
 import * as request from 'request-promise-native';
 import config from '../../../../config';

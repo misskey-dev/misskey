@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Signin, { pack } from '../../../../models/signin';
+import Signin, { pack } from '../../../../models/entities/signin';
 import define from '../../define';
 
 export const meta = {

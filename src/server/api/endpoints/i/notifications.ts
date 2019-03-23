@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Notification from '../../../../models/notification';
-import { packMany } from '../../../../models/notification';
+import Notification from '../../../../models/entities/notification';
+import { packMany } from '../../../../models/entities/notification';
 import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 import define from '../../define';

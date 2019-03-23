@@ -2,7 +2,7 @@ import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as rename from 'rename';
 import DriveFile, { getDriveFileBucket } from '../../models/drive-file';
-import DriveFileThumbnail, { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
+import DriveFileThumbnail, { getDriveFileThumbn../../models/entities/drive-file/models/drive-file-thumbnail';
 import DriveFileWebpublic, { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
 import { serverLogger } from '..';
 import { contentDisposition } from '../../misc/content-disposition';

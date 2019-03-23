@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../models/user';
-import Following from '../../../../models/following';
+import { pack } from '../../../../models/entities/user';
+import Following from '../../../../models/entities/following';
 import create from '../../../../services/following/create';
 import define from '../../define';
 import { ApiError } from '../../error';

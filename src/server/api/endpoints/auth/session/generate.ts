@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import $ from 'cafy';
-import App from '../../../../../models/app';
+import App from '../../../../../models/entities/app';
 import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
 import define from '../../../define';

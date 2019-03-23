@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
+import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
-import DriveFile from '../../../../models/drive-file';
+import DriveFile from '../../../../models/entities/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';

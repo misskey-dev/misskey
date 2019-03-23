@@ -1,4 +1,4 @@
-import Following from '../../../models/following';
+import Following from '../../../models/entities/following';
 
 export const getFriendIds = async (me: mongodb.ObjectID, includeMe = true) => {
 	// Fetch relation to other users who the I follows

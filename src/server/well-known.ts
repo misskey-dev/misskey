@@ -2,7 +2,7 @@ import * as Router from 'koa-router';
 
 import config from '../config';
 import parseAcct from '../misc/acct/parse';
-import User from '../models/user';
+import User from '../models/entities/user';
 import Acct from '../misc/acct/type';
 import { links } from './nodeinfo';
 import { escapeAttribute, escapeValue } from '../prelude/xml';

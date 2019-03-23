@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
-import Mute from '../../../../models/muting';
-import { pack } from '../../../../models/note';
+import Mute from '../../../../models/entities/muting';
+import { pack } from '../../../../models/entities/note';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 import fetchMeta from '../../../../misc/fetch-meta';

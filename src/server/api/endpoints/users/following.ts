@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import User from '../../../../models/user';
-import Following from '../../../../models/following';
-import { pack } from '../../../../models/user';
+import User from '../../../../models/entities/user';
+import Following from '../../../../models/entities/following';
+import { pack } from '../../../../models/entities/user';
 import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
 import { ApiError } from '../../error';

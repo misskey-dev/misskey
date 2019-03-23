@@ -1,5 +1,5 @@
-import { pack as packUser, User, isRemoteUser, fetchProxyAccount } from '../../models/user';
-import UserList, { UserList } from '../../models/user-list';
+import { pack as packUser, User, isRemoteUser, fetchProxyAccount } from '../../models/entities/user';
+import UserList, { UserList } from '../../models/entities/user-list';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import renderFollow from '../../remote/activitypub/renderer/follow';

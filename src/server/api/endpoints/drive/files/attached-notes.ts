@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import DriveFile from '../../../../../models/drive-file';
+import DriveFile from '../../../../../models/entities/drive-file';
 import define from '../../../define';
-import { packMany } from '../../../../../models/note';
+import { packMany } from '../../../../../models/entities/note';
 import { ApiError } from '../../../error';
 
 export const meta = {

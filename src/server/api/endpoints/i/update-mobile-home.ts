@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import User from '../../../../models/user';
+import User from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 

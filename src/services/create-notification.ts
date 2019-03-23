@@ -1,4 +1,4 @@
-import { pack } from '../models/notification';
+import { pack } from '../models/entities/notification';
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
 import { Notifications, Mutings, Users } from '../models';

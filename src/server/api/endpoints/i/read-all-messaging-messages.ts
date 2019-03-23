@@ -1,6 +1,6 @@
-import User from '../../../../models/user';
+import User from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
-import Message from '../../../../models/messaging-message';
+import Message from '../../../../models/entities/messaging-message';
 import define from '../../define';
 
 export const meta = {

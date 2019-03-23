@@ -23,11 +23,11 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
-import { User, isRemoteUser, isLocalUser, IRemoteUser, ILocalUser } from '../../models/user';
-import { Note } from '../../models/note';
+import { User, isRemoteUser, isLocalUser, IRemoteUser, ILocalUser } from '../../models/entities/user';
+import { Note } from '../../models/entities/note';
 import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings } from '../../models';
-import { DriveFile } from '../../models/drive-file';
-import { App } from '../../models/app';
+import { DriveFile } from '../../models/entities/drive-file';
+import { App } from '../../models/entities/app';
 import { In, Not } from 'typeorm';
 import { packNote } from '../../misc/pack';
 

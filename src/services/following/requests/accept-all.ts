@@ -1,4 +1,4 @@
-import User, { User } from '../../../models/user';
+import User, { User } from '../../../models/entities/user';
 import FollowRequest from '../../../models/follow-request';
 import accept from './accept';
 

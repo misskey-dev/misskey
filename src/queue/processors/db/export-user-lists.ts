@@ -4,9 +4,9 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
-import User from '../../../models/user';
+import User from '../../../models/entities/user';
 import dateFormat = require('dateformat');
-import UserList from '../../../models/user-list';
+import UserList from '../../../models/entities/user-list';
 import { getFullApAccount } from '../../../misc/convert-host';
 
 const logger = queueLogger.createSubLogger('export-user-lists');

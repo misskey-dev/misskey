@@ -1,5 +1,5 @@
-import Mute from '../../../models/muting';
-import User, { User } from '../../../models/user';
+import Mute from '../../../models/entities/muting';
+import User, { User } from '../../../models/entities/user';
 import { unique } from '../../../prelude/array';
 
 export async function getHideUserIds(me: User) {

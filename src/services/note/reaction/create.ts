@@ -1,9 +1,9 @@
-import { User, isLocalUser, isRemoteUser } from '../../../models/user';
-import Note, { Note } from '../../../models/note';
-import NoteReaction from '../../../models/note-reaction';
+import { User, isLocalUser, isRemoteUser } from '../../../models/entities/user';
+import Note, { Note } from '../../../models/entities/note';
+import NoteReaction from '../../../models/entities/note-reaction';
 import { publishNoteStream } from '../../stream';
 import notify from '../../create-notification';
-import NoteWatching from '../../../models/note-watching';
+import NoteWatching from '../../../models/entities/note-watching';
 import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';

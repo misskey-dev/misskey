@@ -1,9 +1,9 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import User from '../../../models/user';
-import UserList from '../../../models/user-list';
-import DriveFile from '../../../models/drive-file';
+import User from '../../../models/entities/user';
+import UserList from '../../../models/entities/user-list';
+import DriveFile from '../../../models/entities/drive-file';
 import { getOriginalUrl } from '../../../misc/get-drive-file-url';
 import parseAcct from '../../../misc/acct/parse';
 import resolveUser from '../../../remote/resolve-user';

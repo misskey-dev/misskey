@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import DriveFile, { pack } from '../../../../../models/drive-file';
+import DriveFile, { pack } from '../../../../../models/entities/drive-file';
 import define from '../../../define';
 
 export const meta = {

@@ -7,8 +7,8 @@
 // node built/tools/show-signin-history username all
 //  with full request headers
 
-import User from '../models/user';
-import Signin from '../models/signin';
+import User from '../models/entities/user';
+import Signin from '../models/entities/signin';
 
 async function main(username: string, headers: string[]) {
 	const user = await Users.findOne({

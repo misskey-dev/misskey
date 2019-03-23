@@ -1,21 +1,21 @@
-import Note, { Note } from '../../models/note';
-import { User, isLocalUser, isRemoteUser } from '../../models/user';
+import Note, { Note } from '../../models/entities/note';
+import { User, isLocalUser, isRemoteUser } from '../../models/entities/user';
 import { publishNoteStream } from '../stream';
 import renderDelete from '../../remote/activitypub/renderer/delete';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
-import Following from '../../models/following';
+import Following from '../../models/entities/following';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
 import notesChart from '../chart/charts/notes';
 import perUserNotesChart from '../chart/charts/per-user-notes';
 import config from '../../config';
-import NoteUnread from '../../models/note-unread';
+import NoteUnread from '../../models/entities/note-unread';
 import read from './read';
-import DriveFile from '../../models/drive-file';
+import DriveFile from '../../models/entities/drive-file';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import Instance from '../../models/instance';
+import Instance from '../../models/entities/instance';
 import instanceChart from '../chart/charts/instance';
-import Favorite from '../../models/note-favorite';
+import Favorite from '../../models/entities/note-favorite';
 
 /**
  * 投稿を削除します。

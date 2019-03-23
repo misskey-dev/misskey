@@ -1,4 +1,4 @@
-import { Note } from '../../../models/note';
+import { Note } from '../../../models/entities/note';
 import { toHtml } from '../../../mfm/toHtml';
 import { parse } from '../../../mfm/parse';
 

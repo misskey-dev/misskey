@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import Note, { Note } from '../../../models/note';
-import { isLocalUser } from '../../../models/user';
+import Note, { Note } from '../../../models/entities/note';
+import { isLocalUser } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
 
 const logSchema = {

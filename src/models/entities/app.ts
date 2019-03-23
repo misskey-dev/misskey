@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index, JoinColumn, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
-import config from '../config';
+import config from '../../config';
 import { User } from './user';
 
 @Entity()

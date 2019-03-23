@@ -1,5 +1,5 @@
 import * as promiseLimit from 'promise-limit';
-import DriveFile, { DriveFile } from '../models/drive-file';
+import DriveFile, { DriveFile } from '../models/entities/drive-file';
 import del from '../services/drive/delete-file';
 
 const limit = promiseLimit(16);

@@ -1,6 +1,6 @@
-import App, { IApp } from '../../models/app';
-import { default as User, User } from '../../models/user';
-import AccessToken from '../../models/access-token';
+import App, { IApp } from '../../models/entities/app';
+import { default as User, User } from '../../models/entities/user';
+import AccessToken from '../../models/entities/access-token';
 import isNativeToken from './common/is-native-token';
 
 export default async (token: string): Promise<[User, IApp]> => {

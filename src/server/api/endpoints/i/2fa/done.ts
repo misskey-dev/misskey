@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
-import User from '../../../../../models/user';
+import User from '../../../../../models/entities/user';
 import define from '../../../define';
 
 export const meta = {

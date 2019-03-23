@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import User from '../../../models/user';
-import Note from '../../../models/note';
-import Following from '../../../models/following';
-import DriveFile, { DriveFile } from '../../../models/drive-file';
+import User from '../../../models/entities/user';
+import Note from '../../../models/entities/note';
+import Following from '../../../models/entities/following';
+import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
 
 /**
  * インスタンスごとのチャート

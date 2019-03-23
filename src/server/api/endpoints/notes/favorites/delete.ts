@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import Favorite from '../../../../../models/note-favorite';
+import Favorite from '../../../../../models/entities/note-favorite';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';

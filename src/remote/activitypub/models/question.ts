@@ -1,5 +1,5 @@
 import config from '../../../config';
-import Note, { IChoice, IPoll } from '../../../models/note';
+import Note, { IChoice, IPoll } from '../../../models/entities/note';
 import Resolver from '../resolver';
 import { IQuestion } from '../type';
 import { apLogger } from '../logger';

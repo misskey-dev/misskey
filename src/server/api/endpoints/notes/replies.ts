@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Note, { packMany } from '../../../../models/note';
+import Note, { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import { getFriends } from '../../common/get-friends';
 import { getHideUserIds } from '../../common/get-hide-users';

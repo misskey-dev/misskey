@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import DriveFile, { pack } from '../../../../../models/drive-file';
+import DriveFile, { pack } from '../../../../../models/entities/drive-file';
 import define from '../../../define';
 
 export const meta = {

@@ -2,13 +2,13 @@ import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../misc/cafy-id';
-import User from '../../models/user';
+import User from '../../models/entities/user';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import { setResponseType } from '../activitypub';
 
-import Note, { Note } from '../../models/note';
+import Note, { Note } from '../../models/entities/note';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';

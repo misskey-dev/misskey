@@ -1,4 +1,4 @@
-import Watching from '../../models/note-watching';
+import Watching from '../../models/entities/note-watching';
 
 export default async (me: mongodb.ObjectID, note: object) => {
 	// 自分の投稿はwatchできない

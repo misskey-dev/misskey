@@ -1,4 +1,4 @@
-import DriveFile from '../../../models/drive-file';
+import DriveFile from '../../../models/entities/drive-file';
 import define from '../define';
 import fetchMeta from '../../../misc/fetch-meta';
 

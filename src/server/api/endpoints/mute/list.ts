@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Mute, { packMany } from '../../../../models/muting';
+import Mute, { packMany } from '../../../../models/entities/muting';
 import define from '../../define';
 
 export const meta = {

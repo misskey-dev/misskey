@@ -1,5 +1,5 @@
-import Note from '../../../models/note';
-import User, { isRemoteUser, isLocalUser } from '../../../models/user';
+import Note from '../../../models/entities/note';
+import User, { isRemoteUser, isLocalUser } from '../../../models/entities/user';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 
 /**

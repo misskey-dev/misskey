@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../models/user';
-import Blocking from '../../../../models/blocking';
+import { pack } from '../../../../models/entities/user';
+import Blocking from '../../../../models/entities/blocking';
 import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
 import { ApiError } from '../../error';

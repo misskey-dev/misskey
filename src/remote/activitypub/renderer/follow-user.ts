@@ -1,5 +1,5 @@
 import config from '../../../config';
-import User, { isLocalUser } from '../../../models/user';
+import User, { isLocalUser } from '../../../models/entities/user';
 
 /**
  * Convert (local|remote)(Follower|Followee)ID to URL

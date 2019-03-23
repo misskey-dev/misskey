@@ -1,6 +1,6 @@
-import { User, isLocalUser, isRemoteUser } from '../../../models/user';
-import Note, { Note } from '../../../models/note';
-import NoteReaction from '../../../models/note-reaction';
+import { User, isLocalUser, isRemoteUser } from '../../../models/entities/user';
+import Note, { Note } from '../../../models/entities/note';
+import NoteReaction from '../../../models/entities/note-reaction';
 import { publishNoteStream } from '../../stream';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import renderUndo from '../../../remote/activitypub/renderer/undo';

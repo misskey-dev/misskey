@@ -1,6 +1,6 @@
 import { publishMainStream } from '../stream';
-import User from '../../models/user';
-import NoteUnread from '../../models/note-unread';
+import User from '../../models/entities/user';
+import NoteUnread from '../../models/entities/note-unread';
 
 /**
  * Mark a note as read

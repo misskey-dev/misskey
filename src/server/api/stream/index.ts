@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
 
-import User, { User } from '../../../models/user';
+import User, { User } from '../../../models/entities/user';
 import readNotification from '../common/read-notification';
 import call from '../call';
-import { IApp } from '../../../models/app';
+import { IApp } from '../../../models/entities/app';
 import readNote from '../../../services/note/read';
 
 import Channel from './channel';

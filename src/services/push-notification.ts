@@ -1,9 +1,9 @@
 import * as push from 'web-push';
 import config from '../config';
-import fetchMeta from '../misc/fetch-meta';
+import fetchMeta from '../../models/entities/sw-subscription
 import { Meta } from '../models/meta';
 import { SwSubscriptions } from '../models';
-
+../models/entities/meta
 let meta: Meta = null;
 
 setInterval(() => {

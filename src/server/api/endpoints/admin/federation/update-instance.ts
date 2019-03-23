@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import Instance from '../../../../../models/instance';
+import Instance from '../../../../../models/entities/instance';
 
 export const meta = {
 	tags: ['admin'],

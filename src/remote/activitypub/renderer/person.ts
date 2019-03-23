@@ -1,10 +1,10 @@
 import renderImage from './image';
 import renderKey from './key';
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
+import { ILocalUser } from '../../../models/entities/user';
 import { toHtml } from '../../../mfm/toHtml';
 import { parse } from '../../../mfm/parse';
-import DriveFile from '../../../models/drive-file';
+import DriveFile from '../../../models/entities/drive-file';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import DriveFile, { pack, DriveFile } from '../../../../../models/drive-file';
+import DriveFile, { pack, DriveFile } from '../../../../../models/entities/drive-file';
 import define from '../../../define';
 import config from '../../../../../config';
 import { ApiError } from '../../../error';

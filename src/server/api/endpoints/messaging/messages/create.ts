@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/messaging-message';
-import { isValidText } from '../../../../../models/messaging-message';
-import User from '../../../../../models/user';
-import Mute from '../../../../../models/muting';
-import DriveFile from '../../../../../models/drive-file';
-import { pack } from '../../../../../models/messaging-message';
+import Message from '../../../../../models/entities/messaging-message';
+import { isValidText } from '../../../../../models/entities/messaging-message';
+import User from '../../../../../models/entities/user';
+import Mute from '../../../../../models/entities/muting';
+import DriveFile from '../../../../../models/entities/drive-file';
+import { pack } from '../../../../../models/entities/messaging-message';
 import { publishMainStream } from '../../../../../services/stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../services/stream';
 import pushSw from '../../../../../services/push-notification';

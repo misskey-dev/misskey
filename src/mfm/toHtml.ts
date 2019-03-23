@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom';
 import config from '../config';
-import { Note } from '../models/note';
+import { Note } from '../models/entities/note';
 import { intersperse } from '../prelude/array';
 import { MfmForest, MfmTree } from './prelude';
 

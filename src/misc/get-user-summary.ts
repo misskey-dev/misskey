@@ -1,4 +1,4 @@
-import { User, isLocalUser } from '../models/user';
+import { User, isLocalUser } from '../models/entities/user';
 import getAcct from './acct/render';
 import getUserName from './get-user-name';
 

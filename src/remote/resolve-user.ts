@@ -1,5 +1,5 @@
 import { toUnicode, toASCII } from 'punycode';
-import User, { User, IRemoteUser } from '../models/user';
+import User, { User, IRemoteUser } from '../models/entities/user';
 import webFinger from './webfinger';
 import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';

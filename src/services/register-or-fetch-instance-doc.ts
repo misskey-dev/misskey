@@ -1,4 +1,4 @@
-import Instance, { IInstance } from '../models/instance';
+import Instance, { IInstance } from '../models/entities/instance';
 import federationChart from './chart/charts/federation';
 
 export async function registerOrFetchInstanceDoc(host: string): Promise<IInstance> {

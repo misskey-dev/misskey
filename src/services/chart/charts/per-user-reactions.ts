@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart from '../core';
-import { User, isLocalUser } from '../../../models/user';
-import { Note } from '../../../models/note';
+import { User, isLocalUser } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
 
 /**
  * ユーザーごとのリアクションに関するチャート

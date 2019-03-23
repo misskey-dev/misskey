@@ -2,14 +2,14 @@ import * as Queue from 'bull';
 import * as httpSignature from 'http-signature';
 
 import config from '../config';
-import { ILocalUser } from '../models/user';
+import { ILocalUser } from '../models/entities/user';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
 import processDb from './processors/db';
 import { queueLogger } from './logger';
-import { DriveFile } from '../models/drive-file';
+import { DriveFile } from '../models/entities/drive-file';
 
 function initializeQueue(name: string) {
 	return new Queue(name, config.redis != null ? {

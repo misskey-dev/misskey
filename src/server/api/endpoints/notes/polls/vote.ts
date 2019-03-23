@@ -1,13 +1,13 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import Vote from '../../../../../models/poll-vote';
-import Note from '../../../../../models/note';
-import Watching from '../../../../../models/note-watching';
+import Vote from '../../../../../models/entities/poll-vote';
+import Note from '../../../../../models/entities/note';
+import Watching from '../../../../../models/entities/note-watching';
 import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../services/stream';
 import notify from '../../../../../services/create-notification';
 import define from '../../../define';
-import User, { IRemoteUser } from '../../../../../models/user';
+import User, { IRemoteUser } from '../../../../../models/entities/user';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
 import { deliver } from '../../../../../queue';

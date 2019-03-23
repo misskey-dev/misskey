@@ -1,4 +1,4 @@
-import User, { IRemoteUser } from '../../../../models/user';
+import User, { IRemoteUser } from '../../../../models/entities/user';
 import config from '../../../../config';
 import reject from '../../../../services/following/requests/reject';
 import { IFollow } from '../../type';

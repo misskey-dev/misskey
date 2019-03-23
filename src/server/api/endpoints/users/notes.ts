@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Note, { packMany } from '../../../../models/note';
+import Note, { packMany } from '../../../../models/entities/note';
 import define from '../../define';
-import Following from '../../../../models/following';
+import Following from '../../../../models/entities/following';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 

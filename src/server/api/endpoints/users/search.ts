@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import * as escapeRegexp from 'escape-regexp';
-import User, { pack, validateUsername, User } from '../../../../models/user';
+import User, { pack, validateUsername, User } from '../../../../models/entities/user';
 import define from '../../define';
 
 export const meta = {

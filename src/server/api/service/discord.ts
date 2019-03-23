@@ -2,7 +2,7 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as request from 'request';
 import { OAuth2 } from 'oauth';
-import User, { pack, ILocalUser } from '../../../models/user';
+import User, { pack, ILocalUser } from '../../../models/entities/user';
 import config from '../../../config';
 import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';

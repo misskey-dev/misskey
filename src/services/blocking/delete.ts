@@ -1,5 +1,5 @@
-import { isLocalUser, isRemoteUser, User } from '../../models/user';
-import Blocking from '../../models/blocking';
+import { isLocalUser, isRemoteUser, User } from '../../models/entities/user';
+import Blocking from '../../models/entities/blocking';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderBlock from '../../remote/activitypub/renderer/block';
 import renderUndo from '../../remote/activitypub/renderer/undo';

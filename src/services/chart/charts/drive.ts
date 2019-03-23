@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import DriveFile, { DriveFile } from '../../../models/drive-file';
-import { isLocalUser } from '../../../models/user';
+import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
+import { isLocalUser } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
 
 const logSchema = {

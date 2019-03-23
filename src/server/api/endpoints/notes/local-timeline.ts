@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Note from '../../../../models/note';
-import { packMany } from '../../../../models/note';
+import Note from '../../../../models/entities/note';
+import { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../services/chart/charts/active-users';

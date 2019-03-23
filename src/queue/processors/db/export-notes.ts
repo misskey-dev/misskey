@@ -3,9 +3,9 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
-import Note, { Note } from '../../../models/note';
+import Note, { Note } from '../../../models/entities/note';
 import addFile from '../../../services/drive/add-file';
-import User from '../../../models/user';
+import User from '../../../models/entities/user';
 import dateFormat = require('dateformat');
 
 const logger = queueLogger.createSubLogger('export-notes');

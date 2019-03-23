@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import UserList from '../../../../../models/user-list';
-import { pack as packUser } from '../../../../../models/user';
+import UserList from '../../../../../models/entities/user-list';
+import { pack as packUser } from '../../../../../models/entities/user';
 import { publishUserListStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';

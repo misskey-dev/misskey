@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import App from '../../../../../models/app';
+import App from '../../../../../models/entities/app';
 import AuthSess from '../../../../../models/auth-session';
-import AccessToken from '../../../../../models/access-token';
-import { pack } from '../../../../../models/user';
+import AccessToken from '../../../../../models/entities/access-token';
+import { pack } from '../../../../../models/entities/user';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 

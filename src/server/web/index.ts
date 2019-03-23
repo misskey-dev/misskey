@@ -13,10 +13,10 @@ import * as views from 'koa-views';
 import docs from './docs';
 import packFeed from './feed';
 import User from '../../models/user';
-import parseAcct from '../../misc/acct/parse';
+import parseAcct f../../models/entities/usercct/parse';
 import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
-import getNoteSummary from '../../misc/get-note-summary';
+import getNoteSummary from '../../misc/g../../models/entities/note
 import fetchMeta from '../../misc/fetch-meta';
 import Emoji from '../../models/emoji';
 import * as pkg from '../../../package.json';

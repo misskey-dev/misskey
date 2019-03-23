@@ -1,7 +1,7 @@
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
 import parseAcct from '../../misc/acct/parse';
-import User, { IRemoteUser } from '../../models/user';
+import User, { IRemoteUser } from '../../models/entities/user';
 import perform from '../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
@@ -9,7 +9,7 @@ import { URL } from 'url';
 import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import Instance from '../../models/instance';
+import Instance from '../../models/entities/instance';
 import instanceChart from '../../services/chart/charts/instance';
 
 const logger = new Logger('inbox');

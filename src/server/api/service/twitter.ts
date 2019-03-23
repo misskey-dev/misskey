@@ -3,7 +3,7 @@ import * as Router from 'koa-router';
 import * as uuid from 'uuid';
 import autwh from 'autwh';
 import redis from '../../../db/redis';
-import User, { pack, ILocalUser } from '../../../models/user';
+import User, { pack, ILocalUser } from '../../../models/entities/user';
 import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';

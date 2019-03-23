@@ -1,5 +1,5 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/user';
-import Following from '../../models/following';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/entities/user';
+import Following from '../../models/entities/following';
 import FollowRequest from '../../models/follow-request';
 import { publishMainStream } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
@@ -9,7 +9,7 @@ import renderBlock from '../../remote/activitypub/renderer/block';
 import { deliver } from '../../queue';
 import renderReject from '../../remote/activitypub/renderer/reject';
 import perUserFollowingChart from '../chart/charts/per-user-following';
-import Blocking from '../../models/blocking';
+import Blocking from '../../models/entities/blocking';
 
 export default async function(blocker: User, blockee: User) {
 

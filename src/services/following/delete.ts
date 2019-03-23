@@ -1,5 +1,5 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/user';
-import Following from '../../models/following';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/entities/user';
+import Following from '../../models/entities/following';
 import { publishMainStream } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
@@ -8,7 +8,7 @@ import { deliver } from '../../queue';
 import perUserFollowingChart from '../chart/charts/per-user-following';
 import Logger from '../logger';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import Instance from '../../models/instance';
+import Instance from '../../models/entities/instance';
 import instanceChart from '../chart/charts/instance';
 
 const logger = new Logger('following/delete');

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
-import Following from '../../../../../models/following';
-import User from '../../../../../models/user';
+import Following from '../../../../../models/entities/following';
+import User from '../../../../../models/entities/user';
 import deleteFollowing from '../../../../../services/following/delete';
 
 export const meta = {

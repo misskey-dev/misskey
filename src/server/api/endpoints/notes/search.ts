@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import Note from '../../../../models/note';
-import { packMany } from '../../../../models/note';
+import Note from '../../../../models/entities/note';
+import { packMany } from '../../../../models/entities/note';
 import es from '../../../../db/elasticsearch';
 import define from '../../define';
 import { ApiError } from '../../error';

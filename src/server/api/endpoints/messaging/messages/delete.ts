@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/messaging-message';
+import Message from '../../../../../models/entities/messaging-message';
 import define from '../../../define';
 import { publishMessagingStream } from '../../../../../services/stream';
 import * as ms from 'ms';

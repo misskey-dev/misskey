@@ -2,12 +2,12 @@ import * as promiseLimit from 'promise-limit';
 
 import config from '../../../config';
 import Resolver from '../resolver';
-import Note, { Note } from '../../../models/note';
+import Note, { Note } from '../../../models/entities/note';
 import post from '../../../services/note/create';
 import { Note as NoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
-import { IRemoteUser, User } from '../../../models/user';
+import { IRemoteUser, User } from '../../../models/entities/user';
 import { fromHtml } from '../../../mfm/fromHtml';
 import Emoji, { IEmoji } from '../../../models/emoji';
 import { ITag, extractHashtags } from './tag';
@@ -16,9 +16,9 @@ import { unique, concat, difference } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
 import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
-import { DriveFile } from '../../../models/drive-file';
+import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
-import Instance from '../../../models/instance';
+import Instance from '../../../models/entities/instance';
 import { extractDbHost } from '../../../misc/convert-host';
 
 const logger = apLogger;

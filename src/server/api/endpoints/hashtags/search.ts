@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import Hashtag from '../../../../models/hashtag';
+import Hashtag from '../../../../models/entities/hashtag';
 import define from '../../define';
 import * as escapeRegexp from 'escape-regexp';
 

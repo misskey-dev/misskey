@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import Log from '../../../../models/log';
+import Log from '../../../../models/entities/log';
 
 export const meta = {
 	tags: ['admin'],

@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import Mute from '../../../../models/muting';
-import Message, { pack, IMessagingMessage } from '../../../../models/messaging-message';
+import Mute from '../../../../models/entities/muting';
+import Message, { pack, IMessagingMessage } from '../../../../models/entities/messaging-message';
 import define from '../../define';
 
 export const meta = {

@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import DriveFile, { DriveFile } from '../../../models/drive-file';
+import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
 import { SchemaType } from '../../../misc/schema';
 
 export const perUserDriveLogSchema = {

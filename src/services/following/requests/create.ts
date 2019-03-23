@@ -1,11 +1,11 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../../models/user';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../../models/entities/user';
 import { publishMainStream } from '../../stream';
 import notify from '../../../services/create-notification';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../queue';
 import FollowRequest from '../../../models/follow-request';
-import Blocking from '../../../models/blocking';
+import Blocking from '../../../models/entities/blocking';
 
 export default async function(follower: User, followee: User, requestId?: string) {
 	// check blocking

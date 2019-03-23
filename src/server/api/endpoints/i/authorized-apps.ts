@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import AccessToken from '../../../../models/access-token';
-import { pack } from '../../../../models/app';
+import AccessToken from '../../../../models/entities/access-token';
+import { pack } from '../../../../models/entities/app';
 import define from '../../define';
 
 export const meta = {

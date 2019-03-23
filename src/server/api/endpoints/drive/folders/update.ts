@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
+import DriveFolder, { isValidFolderName, pack } from '../../../../../models/entities/drive-folder';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';

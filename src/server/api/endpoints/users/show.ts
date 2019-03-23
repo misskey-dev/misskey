@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform, transformMany } from '../../../../misc/cafy-id';
-import User, { pack, isRemoteUser } from '../../../../models/user';
+import User, { pack, isRemoteUser } from '../../../../models/entities/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';

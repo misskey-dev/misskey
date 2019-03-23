@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import Subscription from '../../../../models/sw-subscription';
+import Subscription from '../../../../models/entities/sw-subscription';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 

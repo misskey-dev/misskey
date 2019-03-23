@@ -7,10 +7,10 @@ import * as promiseAny from 'promise-any';
 import { toUnicode } from 'punycode';
 
 import config from '../../config';
-import { ILocalUser } from '../../models/user';
+import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import Instance from '../../models/instance';
+import Instance from '../../models/entities/instance';
 
 export const logger = apLogger.createSubLogger('deliver');
 

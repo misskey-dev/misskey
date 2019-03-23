@@ -1,10 +1,10 @@
-import Vote from '../../../models/poll-vote';
-import Note, { Note } from '../../../models/note';
-import Watching from '../../../models/note-watching';
+import Vote from '../../../models/entities/poll-vote';
+import Note, { Note } from '../../../models/entities/note';
+import Watching from '../../../models/entities/note-watching';
 import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
 import notify from '../../../services/create-notification';
-import { isLocalUser, User } from '../../../models/user';
+import { isLocalUser, User } from '../../../models/entities/user';
 
 export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
 	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');

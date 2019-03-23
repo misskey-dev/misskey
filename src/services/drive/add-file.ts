@@ -6,9 +6,9 @@ import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
 
-import { pack, DriveFile } from '../../models/drive-file';
+import { pack, DriveFile } from '../../models/entities/drive-file';
 import { publishMainStream, publishDriveStream } from '../stream';
-import { isLocalUser, User, IRemoteUser, isRemoteUser } from '../../models/user';
+import { isLocalUser, User, IRemoteUser, isRemoteUser } from '../../models/entities/user';
 import delFile from './delete-file';
 import config from '../../config';
 import driveChart from '../chart/charts/drive';

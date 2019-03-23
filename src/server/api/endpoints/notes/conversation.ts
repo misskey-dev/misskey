@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Note, { packMany, Note } from '../../../../models/note';
+import Note, { packMany, Note } from '../../../../models/entities/note';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';

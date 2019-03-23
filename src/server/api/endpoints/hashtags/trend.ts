@@ -1,4 +1,4 @@
-import Note from '../../../../models/note';
+import Note from '../../../../models/entities/note';
 import { erase } from '../../../../prelude/array';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';

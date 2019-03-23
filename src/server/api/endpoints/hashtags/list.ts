@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import Hashtag from '../../../../models/hashtag';
+import Hashtag from '../../../../models/entities/hashtag';
 
 export const meta = {
 	tags: ['hashtags'],

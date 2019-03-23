@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import Vote from '../../../../../models/poll-vote';
-import Note, { pack } from '../../../../../models/note';
+import Vote from '../../../../../models/entities/poll-vote';
+import Note, { pack } from '../../../../../models/entities/note';
 import define from '../../../define';
 import { getHideUserIds } from '../../../common/get-hide-users';
 

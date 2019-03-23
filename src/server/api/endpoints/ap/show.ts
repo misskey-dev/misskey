@@ -1,13 +1,13 @@
 import $ from 'cafy';
 import define from '../../define';
 import config from '../../../../config';
-import User, { pack as packUser, User } from '../../../../models/user';
+import User, { pack as packUser, User } from '../../../../models/entities/user';
 import { createPerson } from '../../../../remote/activitypub/models/person';
-import Note, { pack as packNote, Note } from '../../../../models/note';
+import Note, { pack as packNote, Note } from '../../../../models/entities/note';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
-import Instance from '../../../../models/instance';
+import Instance from '../../../../models/entities/instance';
 import { extractDbHost } from '../../../../misc/convert-host';
 
 export const meta = {

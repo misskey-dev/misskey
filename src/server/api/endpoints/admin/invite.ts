@@ -1,5 +1,5 @@
 import rndstr from 'rndstr';
-import RegistrationTicket from '../../../../models/registration-tickets';
+import RegistrationTicket from '../../../../models/entities/registration-tickets';
 import define from '../../define';
 
 export const meta = {

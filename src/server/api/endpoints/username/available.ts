@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import User from '../../../../models/user';
-import { validateUsername } from '../../../../models/user';
+import User from '../../../../models/entities/user';
+import { validateUsername } from '../../../../models/entities/user';
 import define from '../../define';
 
 export const meta = {

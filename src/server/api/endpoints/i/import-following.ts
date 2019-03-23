@@ -3,7 +3,7 @@ import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { createImportFollowingJob } from '../../../../queue';
 import ms = require('ms');
-import DriveFile from '../../../../models/drive-file';
+import DriveFile from '../../../../models/entities/drive-file';
 import { ApiError } from '../../error';
 
 export const meta = {

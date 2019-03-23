@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import DriveFolder from '../../../../../models/drive-folder';
-import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
+import DriveFolder from '../../../../../models/entities/drive-folder';
+import DriveFile, { validateFileName, pack } from '../../../../../models/entities/drive-file';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
-import Note from '../../../../../models/note';
+import Note from '../../../../../models/entities/note';
 import { ApiError } from '../../../error';
 
 export const meta = {

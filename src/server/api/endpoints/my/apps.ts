@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import App, { pack } from '../../../../models/app';
+import App, { pack } from '../../../../models/entities/app';
 import define from '../../define';
 
 export const meta = {

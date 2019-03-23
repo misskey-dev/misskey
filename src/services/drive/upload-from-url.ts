@@ -1,8 +1,8 @@
 import * as URL from 'url';
 
-import { DriveFile, validateFileName } from '../../models/drive-file';
+import { DriveFile, validateFileName } from '../../models/entities/drive-file';
 import create from './add-file';
-import { User } from '../../models/user';
+import { User } from '../../models/entities/user';
 import { driveLogger } from './logger';
 import { createTemp } from '../../misc/create-temp';
 import { downloadUrl } from '../../misc/donwload-url';

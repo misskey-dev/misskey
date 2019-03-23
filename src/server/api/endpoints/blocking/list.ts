@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Blocking, { packMany } from '../../../../models/blocking';
+import Blocking, { packMany } from '../../../../models/entities/blocking';
 import define from '../../define';
 
 export const meta = {

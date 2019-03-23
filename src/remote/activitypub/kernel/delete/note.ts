@@ -1,5 +1,5 @@
-import Note from '../../../../models/note';
-import { IRemoteUser } from '../../../../models/user';
+import Note from '../../../../models/entities/note';
+import { IRemoteUser } from '../../../../models/entities/user';
 import deleteNode from '../../../../services/note/delete';
 import { apLogger } from '../../logger';
 

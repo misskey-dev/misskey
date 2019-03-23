@@ -2,7 +2,7 @@ import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } 
 import * as deepcopy from 'deepcopy';
 import { pack as packFolder, DriveFolder } from './drive-folder';
 import { pack as packUser, User } from './user';
-import getDriveFileUrl, { getOriginalUrl } from '../misc/get-drive-file-url';
+import getDriveFileUrl, { getOriginalUrl } from '../../misc/get-drive-file-url';
 
 @Entity()
 export class DriveFile {

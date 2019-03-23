@@ -1,5 +1,5 @@
-import { User, isLocalUser, isRemoteUser } from '../models/user';
-import Hashtag from '../models/hashtag';
+import { User, isLocalUser, isRemoteUser } from '../models/entities/user';
+import Hashtag from '../models/entities/hashtag';
 import hashtagChart from './chart/charts/hashtag';
 
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {

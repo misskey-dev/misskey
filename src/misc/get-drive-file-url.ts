@@ -1,4 +1,4 @@
-import { DriveFile } from '../models/drive-file';
+import { DriveFile } from '../models/entities/drive-file';
 import config from '../config';
 
 export default function(file: DriveFile, thumbnail = false): string {

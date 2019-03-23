@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Mute from '../../../../models/muting';
+import Mute from '../../../../models/entities/muting';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';

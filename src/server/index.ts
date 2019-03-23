@@ -22,7 +22,7 @@ import config from '../config';
 import networkChart from '../services/chart/charts/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
-import User from '../models/user';
+import User from '../models/entities/user';
 import Logger from '../services/logger';
 import { program } from '../argv';
 

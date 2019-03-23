@@ -1,6 +1,6 @@
-import User from '../../../../models/user';
+import User from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
-import NoteUnread from '../../../../models/note-unread';
+import NoteUnread from '../../../../models/entities/note-unread';
 import define from '../../define';
 
 export const meta = {

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/user';
+import User from '../../../../models/entities/user';
 import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
 

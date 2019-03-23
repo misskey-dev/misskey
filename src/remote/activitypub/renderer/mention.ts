@@ -1,4 +1,4 @@
-import { User, isRemoteUser } from '../../../models/user';
+import { User, isRemoteUser } from '../../../models/entities/user';
 import config from '../../../config';
 
 export default (mention: User) => ({

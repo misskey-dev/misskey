@@ -3,8 +3,8 @@ import * as json from 'koa-json-body';
 import * as httpSignature from 'http-signature';
 
 import { renderActivity } from '../remote/activitypub/renderer';
-import Note from '../models/note';
-import User, { isLocalUser, ILocalUser, User } from '../models/user';
+import Note from '../models/entities/note';
+import User, { isLocalUser, ILocalUser, User } from '../models/entities/user';
 import Emoji from '../models/emoji';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';

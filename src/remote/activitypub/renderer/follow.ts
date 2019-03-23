@@ -1,5 +1,5 @@
 import config from '../../../config';
-import { User, isLocalUser } from '../../../models/user';
+import { User, isLocalUser } from '../../../models/entities/user';
 
 export default (follower: User, followee: User, requestId?: string) => {
 	const follow = {

@@ -1,6 +1,6 @@
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
-import { Note } from '../../../models/note';
+import { ILocalUser } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
 
 export default async function renderQuestion(user: ILocalUser, note: Note) {
 	const question = {

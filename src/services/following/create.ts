@@ -1,6 +1,6 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/user';
-import Following from '../../models/following';
-import Blocking from '../../models/blocking';
+import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/entities/user';
+import Following from '../../models/entities/following';
+import Blocking from '../../models/entities/blocking';
 import { publishMainStream } from '../stream';
 import notify from '../../services/create-notification';
 import { renderActivity } from '../../remote/activitypub/renderer';
@@ -11,7 +11,7 @@ import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 import perUserFollowingChart from '../chart/charts/per-user-following';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import Instance from '../../models/instance';
+import Instance from '../../models/entities/instance';
 import instanceChart from '../chart/charts/instance';
 import Logger from '../logger';
 import FollowRequest from '../../models/follow-request';

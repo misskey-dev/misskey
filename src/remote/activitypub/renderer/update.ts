@@ -1,5 +1,5 @@
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
+import { ILocalUser } from '../../../models/entities/user';
 
 export default (object: any, user: ILocalUser) => {
 	const activity = {

@@ -15,7 +15,7 @@ import signin from './private/signin';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
-import Instance from '../../models/instance';
+import Instance from '../../models/entities/instance';
 import { toASCII } from 'punycode';
 
 // Init app

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
-import { getRelation } from '../../../../models/user';
+import { getRelation } from '../../../../models/entities/user';
 import define from '../../define';
 
 export const meta = {

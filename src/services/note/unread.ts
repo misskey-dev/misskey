@@ -1,7 +1,7 @@
-import NoteUnread from '../../models/note-unread';
-import User, { User } from '../../models/user';
-import { Note } from '../../models/note';
-import Mute from '../../models/muting';
+import NoteUnread from '../../models/entities/note-unread';
+import User, { User } from '../../models/entities/user';
+import { Note } from '../../models/entities/note';
+import Mute from '../../models/entities/muting';
 import { publishMainStream } from '../stream';
 
 export default async function(user: User, note: Note, isSpecified = false) {

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import User, { pack } from '../../../models/user';
+import User, { pack } from '../../../models/entities/user';
 import define from '../define';
 import { fallback } from '../../../prelude/symbol';
 import { getHideUserIds } from '../common/get-hide-users';

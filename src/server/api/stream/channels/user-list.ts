@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
-import { pack } from '../../../../models/note';
+import { pack } from '../../../../models/entities/note';
 
 export default class extends Channel {
 	public readonly chName = 'userList';

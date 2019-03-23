@@ -1,6 +1,6 @@
 import uploadFromUrl from '../../../services/drive/upload-from-url';
-import { IRemoteUser } from '../../../models/user';
-import DriveFile, { DriveFile } from '../../../models/drive-file';
+import { IRemoteUser } from '../../../models/entities/user';
+import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
 import Resolver from '../resolver';
 import fetchMeta from '../../../misc/fetch-meta';
 import { apLogger } from '../logger';

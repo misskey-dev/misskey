@@ -2,7 +2,7 @@ import * as Limiter from 'ratelimiter';
 import limiterDB from '../../db/redis';
 import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
-import { User } from '../../models/user';
+import { User } from '../../models/entities/user';
 import Logger from '../../services/logger';
 
 const logger = new Logger('limiter');

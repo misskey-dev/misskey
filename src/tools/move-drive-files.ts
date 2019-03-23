@@ -1,7 +1,7 @@
 import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as promiseLimit from 'promise-limit';
-import DriveFile, { DriveFileChunk, getDriveFileBucket, DriveFile } from '../models/drive-file';
+import DriveFile, { DriveFileChunk, getDriveFileBucket, DriveFile } from '../models/entities/drive-file';
 import DriveFileThumbnail, { DriveFileThumbnailChunk } from '../models/drive-file-thumbnail';
 import config from '../config';
 

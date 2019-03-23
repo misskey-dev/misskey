@@ -1,8 +1,8 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import User from '../../../models/user';
-import DriveFile from '../../../models/drive-file';
+import User from '../../../models/entities/user';
+import DriveFile from '../../../models/entities/drive-file';
 import deleteFile from '../../../services/drive/delete-file';
 
 const logger = queueLogger.createSubLogger('delete-drive-files');

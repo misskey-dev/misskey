@@ -6,10 +6,10 @@ import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import { User } from '../../../../models/user';
+import { User } from '../../../../models/entities/user';
 import { Users, DriveFiles, Notes } from '../../../../models';
-import { DriveFile } from '../../../../models/drive-file';
-import { Note } from '../../../../models/note';
+import { DriveFile } from '../../../../models/entities/drive-file';
+import { Note } from '../../../../models/entities/note';
 
 let maxNoteTextLength = 1000;
 

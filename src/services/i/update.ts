@@ -1,6 +1,6 @@
 import User, { isLocalUser, isRemoteUser } from '../../models/user';
-import Following from '../../models/following';
-import renderPerson from '../../remote/activitypub/renderer/person';
+import Following from '../../models/following';../../models/entities/user
+import renderPerson fro../../models/entities/followingtypub/renderer/person';
 import renderUpdate from '../../remote/activitypub/renderer/update';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';

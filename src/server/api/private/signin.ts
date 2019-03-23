@@ -1,8 +1,8 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import User, { ILocalUser } from '../../../models/user';
-import Signin, { pack } from '../../../models/signin';
+import User, { ILocalUser } from '../../../models/entities/user';
+import Signin, { pack } from '../../../models/entities/signin';
 import { publishMainStream } from '../../../services/stream';
 import signin from '../common/signin';
 import config from '../../../config';

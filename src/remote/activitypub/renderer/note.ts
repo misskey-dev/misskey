@@ -3,9 +3,9 @@ import renderHashtag from './hashtag';
 import renderMention from './mention';
 import renderEmoji from './emoji';
 import config from '../../../config';
-import DriveFile, { DriveFile } from '../../../models/drive-file';
-import Note, { Note } from '../../../models/note';
-import User from '../../../models/user';
+import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
+import Note, { Note } from '../../../models/entities/note';
+import User from '../../../models/entities/user';
 import toHtml from '../misc/get-note-html';
 import Emoji, { IEmoji } from '../../../models/emoji';
 

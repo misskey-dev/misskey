@@ -2,7 +2,7 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import User from '../../../../../models/user';
+import User from '../../../../../models/entities/user';
 import config from '../../../../../config';
 import define from '../../../define';
 

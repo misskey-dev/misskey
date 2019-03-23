@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import deleteNote from '../../../../services/note/delete';
-import User from '../../../../models/user';
+import User from '../../../../models/entities/user';
 import define from '../../define';
 import * as ms from 'ms';
 import { getNote } from '../../common/getters';

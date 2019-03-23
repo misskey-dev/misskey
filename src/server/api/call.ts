@@ -1,7 +1,7 @@
 import { performance } from 'perf_hooks';
 import limiter from './limiter';
-import { User } from '../../models/user';
-import { IApp } from '../../models/app';
+import { User } from '../../models/entities/user';
+import { IApp } from '../../models/entities/app';
 import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';

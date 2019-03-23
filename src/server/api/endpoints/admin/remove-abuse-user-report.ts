@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import AbuseUserReport from '../../../../models/abuse-user-report';
+import AbuseUserReport from '../../../../models/entities/abuse-user-report';
 
 export const meta = {
 	tags: ['admin'],

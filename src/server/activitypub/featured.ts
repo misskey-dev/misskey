@@ -1,10 +1,10 @@
 import * as Router from 'koa-router';
 import config from '../../config';
-import User from '../../models/user';
+import User from '../../models/entities/user';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import { setResponseType } from '../activitypub';
-import Note from '../../models/note';
+import Note from '../../models/entities/note';
 import renderNote from '../../remote/activitypub/renderer/note';
 
 export default async (ctx: Router.IRouterContext) => {

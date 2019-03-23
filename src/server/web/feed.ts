@@ -1,7 +1,7 @@
 import { Feed } from 'feed';
 import config from '../../config';
-import Note from '../../models/note';
-import { User } from '../../models/user';
+import Note from '../../models/entities/note';
+import { User } from '../../models/entities/user';
 import { getOriginalUrl } from '../../misc/get-drive-file-url';
 
 export default async function(user: User) {

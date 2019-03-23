@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User, { User } from '../../../../models/user';
-import Following from '../../../../models/following';
+import User, { User } from '../../../../models/entities/user';
+import Following from '../../../../models/entities/following';
 import deleteFollowing from '../../../../services/following/delete';
 
 export const meta = {

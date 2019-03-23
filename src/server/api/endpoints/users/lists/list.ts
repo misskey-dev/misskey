@@ -1,4 +1,4 @@
-import UserList, { pack } from '../../../../../models/user-list';
+import UserList, { pack } from '../../../../../models/entities/user-list';
 import define from '../../../define';
 
 export const meta = {

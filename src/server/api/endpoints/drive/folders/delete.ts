@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import DriveFolder from '../../../../../models/drive-folder';
+import DriveFolder from '../../../../../models/entities/drive-folder';
 import define from '../../../define';
 import { publishDriveStream } from '../../../../../services/stream';
-import DriveFile from '../../../../../models/drive-file';
+import DriveFile from '../../../../../models/entities/drive-file';
 import { ApiError } from '../../../error';
 
 export const meta = {

@@ -1,5 +1,5 @@
 import fetchMeta from './fetch-meta';
-import { Users } from '../models/user';
+import { Users } from '../models/entities/user';
 
 export async function fetchProxyAccount(): Promise<ILocalUser> {
 	const meta = await fetchMeta();

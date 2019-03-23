@@ -1,7 +1,7 @@
 import config from '../../config';
-import User, { isLocalUser, isRemoteUser, ILocalUser, User } from '../../models/user';
-import Note, { packMany } from '../../models/note';
-import Following from '../../models/following';
+import User, { isLocalUser, isRemoteUser, ILocalUser, User } from '../../models/entities/user';
+import Note, { packMany } from '../../models/entities/note';
+import Following from '../../models/entities/following';
 import renderAdd from '../../remote/activitypub/renderer/add';
 import renderRemove from '../../remote/activitypub/renderer/remove';
 import { renderActivity } from '../../remote/activitypub/renderer';

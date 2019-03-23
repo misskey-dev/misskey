@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import NoteReaction, { pack } from '../../../../models/note-reaction';
+import NoteReaction, { pack } from '../../../../models/entities/note-reaction';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';

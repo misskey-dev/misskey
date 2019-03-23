@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import deleteNote from './note';
-import Note from '../../../../models/note';
-import { IRemoteUser } from '../../../../models/user';
+import Note from '../../../../models/entities/note';
+import { IRemoteUser } from '../../../../models/entities/user';
 import { IDelete } from '../../type';
 import { apLogger } from '../../logger';
 

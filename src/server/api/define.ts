@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import { ILocalUser } from '../../models/user';
-import { IApp } from '../../models/app';
+import { ILocalUser } from '../../models/entities/user';
+import { IApp } from '../../models/entities/app';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
 

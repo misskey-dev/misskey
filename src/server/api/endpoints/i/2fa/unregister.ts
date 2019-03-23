@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User from '../../../../../models/user';
+import User from '../../../../../models/entities/user';
 import define from '../../../define';
 
 export const meta = {

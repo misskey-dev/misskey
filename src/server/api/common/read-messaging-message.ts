@@ -1,9 +1,9 @@
-import Message from '../../../models/messaging-message';
-import { IMessagingMessage as IMessage } from '../../../models/messaging-message';
+import Message from '../../../models/entities/messaging-message';
+import { IMessagingMessage as IMessage } from '../../../models/entities/messaging-message';
 import { publishMainStream } from '../../../services/stream';
 import { publishMessagingStream } from '../../../services/stream';
 import { publishMessagingIndexStream } from '../../../services/stream';
-import User from '../../../models/user';
+import User from '../../../models/entities/user';
 
 /**
  * Mark messages as read

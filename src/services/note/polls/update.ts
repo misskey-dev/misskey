@@ -1,9 +1,9 @@
-import Note, { Note } from '../../../models/note';
+import Note, { Note } from '../../../models/entities/note';
 import { updateQuestion } from '../../../remote/activitypub/models/question';
 import ms = require('ms');
 import Logger from '../../logger';
-import User, { isLocalUser, isRemoteUser } from '../../../models/user';
-import Following from '../../../models/following';
+import User, { isLocalUser, isRemoteUser } from '../../../models/entities/user';
+import Following from '../../../models/entities/following';
 import renderUpdate from '../../../remote/activitypub/renderer/update';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
