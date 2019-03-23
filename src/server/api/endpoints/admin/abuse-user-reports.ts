@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Report, { packMany } from '../../../../models/entities/abuse-user-report';
 import define from '../../define';
+import { MoreThan, LessThan } from 'typeorm';
+import { AbuseUserReports } from '../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -32,20 +33,16 @@ export default define(meta, async (ps) => {
 	const query = {} as any;
 	if (ps.sinceId) {
 		sort.id = 1;
-		query.id = {
-			$gt: ps.sinceId
-		};
+		query.id = MoreThan(ps.sinceId);
 	} else if (ps.untilId) {
-		query.id = {
-			$lt: ps.untilId
-		};
+		query.id = LessThan(ps.untilId);
 	}
 
-	const reports = await Report
-		.find(query, {
-			take: ps.limit,
-			sort: sort
-		});
+	const reports = await AbuseUserReports.find({
+		where: query,
+		take: ps.limit,
+		order: sort
+	});
 
 	return await packMany(reports);
 });

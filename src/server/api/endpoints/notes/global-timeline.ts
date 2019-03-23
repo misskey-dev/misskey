@@ -115,13 +115,9 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.sinceId) {
 		sort.id = 1;
-		query.id = {
-			$gt: ps.sinceId
-		};
+		query.id = MoreThan(ps.sinceId);
 	} else if (ps.untilId) {
-		query.id = {
-			$lt: ps.untilId
-		};
+		query.id = LessThan(ps.untilId);
 	} else if (ps.sinceDate) {
 		sort.id = 1;
 		query.createdAt = {
