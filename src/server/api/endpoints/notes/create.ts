@@ -1,14 +1,15 @@
 import $ from 'cafy';
-import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
 import { length } from 'stringz';
-import Note, { Note, isValidCw, pack } from '../../../../models/note';
-import User, { User } from '../../../../models/user';
-import DriveFile, { DriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { User } from '../../../../models/user';
+import { Users, DriveFiles, Notes } from '../../../../models';
+import { DriveFile } from '../../../../models/drive-file';
+import { Note } from '../../../../models/note';
 
 let maxNoteTextLength = 1000;
 
@@ -46,8 +47,7 @@ export const meta = {
 		},
 
 		visibleUserIds: {
-			validator: $.optional.arr($.type(ID)).unique().min(0),
-			transform: transformMany,
+			validator: $.optional.arr($.type(StringID)).unique().min(0),
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
 			}
@@ -128,16 +128,14 @@ export const meta = {
 		},
 
 		fileIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
-			transform: transformMany,
+			validator: $.optional.arr($.type(NumericalID)).unique().range(1, 4),
 			desc: {
 				'ja-JP': '添付するファイル'
 			}
 		},
 
 		mediaIds: {
-			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
-			transform: transformMany,
+			validator: $.optional.arr($.type(NumericalID)).unique().range(1, 4),
 			deprecated: true,
 			desc: {
 				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
@@ -145,16 +143,14 @@ export const meta = {
 		},
 
 		replyId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 			desc: {
 				'ja-JP': '返信対象'
 			}
 		},
 
 		renoteId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 			desc: {
 				'ja-JP': 'Renote対象'
 			}
@@ -229,18 +225,16 @@ export const meta = {
 export default define(meta, async (ps, user, app) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
-		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => Users.findOne({
-			id: id
-		})));
+		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id)));
 	}
 
 	let files: DriveFile[] = [];
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
 		files = await Promise.all(fileIds.map(fileId => {
-			return DriveFile.findOne({
+			return DriveFiles.findOne({
 				id: fileId,
-				'metadata.userId': user.id
+				userId: user.id
 			});
 		}));
 
@@ -250,9 +244,7 @@ export default define(meta, async (ps, user, app) => {
 	let renote: Note = null;
 	if (ps.renoteId != null) {
 		// Fetch renote to note
-		renote = await Note.findOne({
-			id: ps.renoteId
-		});
+		renote = await Notes.findOne(ps.renoteId);
 
 		if (renote == null) {
 			throw new ApiError(meta.errors.noSuchRenoteTarget);
@@ -264,9 +256,7 @@ export default define(meta, async (ps, user, app) => {
 	let reply: Note = null;
 	if (ps.replyId != null) {
 		// Fetch reply
-		reply = await Note.findOne({
-			id: ps.replyId
-		});
+		reply = await Notes.findOne(ps.replyId);
 
 		if (reply === null) {
 			throw new ApiError(meta.errors.noSuchReplyTarget);

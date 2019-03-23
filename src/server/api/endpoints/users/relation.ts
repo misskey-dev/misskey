@@ -14,7 +14,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
+			validator: $.either($.type(StringID), $.arr($.type(StringID)).unique()),
 			transform: (v: any): ObjectId | ObjectId[] => Array.isArray(v) ? v.map(x => transform(x)) : transform(v),
 			desc: {
 				'ja-JP': 'ユーザーID (配列でも可)'

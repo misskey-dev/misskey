@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
 import Reversi from '../../../../../../games/reversi/core';
 import define from '../../../../define';
@@ -10,8 +10,7 @@ export const meta = {
 
 	params: {
 		gameId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 		},
 	},
 

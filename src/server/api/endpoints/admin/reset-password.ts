@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import User from '../../../../models/user';
 import * as bcrypt from 'bcryptjs';
@@ -17,8 +17,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID which you want to suspend'

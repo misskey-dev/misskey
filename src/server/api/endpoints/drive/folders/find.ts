@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../../models/drive-folder';
 import define from '../../../define';
 
@@ -16,8 +16,7 @@ export const meta = {
 		},
 
 		parentId: {
-			validator: $.optional.nullable.type(ID),
-			transform: transform,
+			validator: $.optional.nullable.type(NumericalID),
 			default: null as any,
 			desc: {
 				'ja-JP': 'フォルダID'

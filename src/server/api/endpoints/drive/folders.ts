@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import DriveFolder, { pack } from '../../../../models/drive-folder';
 import define from '../../define';
 
@@ -22,19 +22,16 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		},
 
 		untilId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		},
 
 		folderId: {
-			validator: $.optional.nullable.type(ID),
+			validator: $.optional.nullable.type(NumericalID),
 			default: null as any,
-			transform: transform,
 		}
 	},
 

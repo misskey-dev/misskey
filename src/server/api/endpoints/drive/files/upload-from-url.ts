@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import * as ms from 'ms';
 import { pack } from '../../../../../models/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
@@ -28,7 +28,7 @@ export const meta = {
 		},
 
 		folderId: {
-			validator: $.optional.nullable.type(ID),
+			validator: $.optional.nullable.type(NumericalID),
 			default: null as any,
 			transform: transform
 		},

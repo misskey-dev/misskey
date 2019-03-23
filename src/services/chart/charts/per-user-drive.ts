@@ -68,7 +68,7 @@ class PerUserDriveChart extends Chart<PerUserDriveLog> {
 		const calcSize = () => DriveFile
 			.aggregate([{
 				$match: {
-					'metadata.userId': group,
+					userId: group,
 					'metadata.deletedAt': { $exists: false }
 				}
 			}, {
@@ -84,7 +84,7 @@ class PerUserDriveChart extends Chart<PerUserDriveLog> {
 			.then(res => res.length > 0 ? res[0].usage : 0);
 
 		const [count, size] = init ? await Promise.all([
-			DriveFile.count({ 'metadata.userId': group }),
+			DriveFile.count({ userId: group }),
 			calcSize()
 		]) : [
 			latest ? latest.totalCount : 0,

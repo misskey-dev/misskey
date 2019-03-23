@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
 import { getFriends } from '../../common/get-friends';
@@ -17,8 +17,7 @@ export const meta = {
 
 	params: {
 		noteId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'

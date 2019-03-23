@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/user';
 import { publishMainStream } from '../../../../services/stream';
 import DriveFile from '../../../../models/drive-file';
@@ -63,25 +63,20 @@ export const meta = {
 		},
 
 		avatarId: {
-			validator: $.optional.nullable.type(ID),
-			transform: transform,
+			validator: $.optional.nullable.type(NumericalID),
 			desc: {
 				'ja-JP': 'アイコンに設定する画像のドライブファイルID'
 			}
 		},
 
 		bannerId: {
-			validator: $.optional.nullable.type(ID),
-			transform: transform,
-			desc: {
+			validator: $.optional.nullable.type(NumericalID),,
 				'ja-JP': 'バナーに設定する画像のドライブファイルID'
 			}
 		},
 
 		wallpaperId: {
-			validator: $.optional.nullable.type(ID),
-			transform: transform,
-			desc: {
+			validator: $.optional.nullable.type(NumericalID),,
 				'ja-JP': '壁紙に設定する画像のドライブファイルID'
 			}
 		},

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { createImportFollowingJob } from '../../../../queue';
 import ms = require('ms');
@@ -16,8 +16,7 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 		}
 	},
 

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import read from '../../../common/read-messaging-message';
 import define from '../../../define';
@@ -19,8 +19,7 @@ export const meta = {
 
 	params: {
 		messageId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '既読にするメッセージのID',
 				'en-US': 'The ID of a message that you want to mark as read'

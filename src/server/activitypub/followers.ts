@@ -1,7 +1,7 @@
 import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';
-import ID, { transform } from '../../misc/cafy-id';
+import { StringID, NumericalID } from '../../misc/cafy-id';
 import User from '../../models/user';
 import Following from '../../models/following';
 import * as url from '../../prelude/url';
@@ -20,7 +20,7 @@ export default async (ctx: Router.IRouterContext) => {
 	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'cursor' parameter
-	const [cursor, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);
+	const [cursor, cursorErr] = $.optional.type(NumericalID).get(ctx.request.query.cursor);
 
 	// Get 'page' parameter
 	const pageErr = !$.optional.str.or(['true', 'false']).ok(ctx.request.query.page);

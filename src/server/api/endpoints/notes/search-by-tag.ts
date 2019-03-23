@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
@@ -79,8 +79,7 @@ export const meta = {
 		},
 
 		untilId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
 			}

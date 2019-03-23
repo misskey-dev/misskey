@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import rejectFollowRequest from '../../../../../services/following/requests/reject';
 import define from '../../../define';
 import { ApiError } from '../../../error';
@@ -19,8 +19,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'

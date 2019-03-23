@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
@@ -30,8 +30,7 @@ export const meta = {
 		},
 
 		parentId: {
-			validator: $.optional.nullable.type(ID),
-			transform: transform,
+			validator: $.optional.nullable.type(NumericalID),
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'

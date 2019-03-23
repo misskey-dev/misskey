@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import Note from '../../../../models/note';
 import { getFriendIds, getFriends } from '../../common/get-friends';
 import { packMany } from '../../../../models/note';
@@ -29,14 +29,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		},
 
 		untilId: {
-			validator: $.optional.type(ID),
-			transform: transform,
-		},
+			validator: $.optional.type(NumericalID),,
 
 		visibility: {
 			validator: $.optional.str,

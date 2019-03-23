@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import User from '../../../../models/user';
 import Following from '../../../../models/following';
 import { pack } from '../../../../models/user';
@@ -19,8 +19,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -41,9 +40,8 @@ export const meta = {
 		},
 
 		cursor: {
-			validator: $.optional.type(ID),
+			validator: $.optional.type(NumericalID),
 			default: null as any,
-			transform: transform,
 		},
 
 		iknow: {

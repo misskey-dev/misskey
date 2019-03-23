@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import DriveFolder from '../../../../../models/drive-folder';
 import DriveFile, { validateFileName, pack } from '../../../../../models/drive-file';
 import { publishDriveStream } from '../../../../../services/stream';
@@ -21,16 +21,14 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象のファイルID'
 			}
 		},
 
 		folderId: {
-			validator: $.optional.nullable.type(ID),
-			transform: transform,
+			validator: $.optional.nullable.type(NumericalID),
 			default: undefined as any,
 			desc: {
 				'ja-JP': 'フォルダID'

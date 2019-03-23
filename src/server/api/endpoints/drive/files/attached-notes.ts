@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/drive-file';
 import define from '../../../define';
 import { packMany } from '../../../../../models/note';
@@ -21,9 +21,7 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(ID),
-			transform: transform,
-			desc: {
+			validator: $.type(StringID),
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'
 			}
@@ -51,7 +49,7 @@ export default define(meta, async (ps, user) => {
 	const file = await DriveFile
 		.findOne({
 			id: ps.fileId,
-			'metadata.userId': user.id,
+			userId: user.id,
 			'metadata.deletedAt': { $exists: false }
 		});
 

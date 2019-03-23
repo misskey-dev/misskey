@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import App, { pack } from '../../../../models/app';
 import define from '../../define';
 import { ApiError } from '../../error';
@@ -9,7 +9,7 @@ export const meta = {
 
 	params: {
 		appId: {
-			validator: $.type(ID),
+			validator: $.type(StringID),
 			transform: transform
 		},
 	},

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import define from '../../../define';
 import { publishMessagingStream } from '../../../../../services/stream';
@@ -28,8 +28,7 @@ export const meta = {
 
 	params: {
 		messageId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象のメッセージのID',
 				'en-US': 'Target message ID.'

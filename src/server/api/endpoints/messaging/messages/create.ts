@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/messaging-message';
 import { isValidText } from '../../../../../models/messaging-message';
 import User from '../../../../../models/user';
@@ -27,8 +27,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -40,8 +39,7 @@ export const meta = {
 		},
 
 		fileId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		}
 	},
 
@@ -92,7 +90,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.fileId != null) {
 		file = await DriveFile.findOne({
 			id: ps.fileId,
-			'metadata.userId': user.id
+			userId: user.id
 		});
 
 		if (file === null) {

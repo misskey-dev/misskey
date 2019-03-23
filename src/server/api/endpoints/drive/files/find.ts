@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import DriveFile, { pack } from '../../../../../models/drive-file';
 import define from '../../../define';
 
@@ -16,8 +16,7 @@ export const meta = {
 		},
 
 		folderId: {
-			validator: $.optional.nullable.type(ID),
-			transform: transform,
+			validator: $.optional.nullable.type(NumericalID),
 			default: null as any,
 			desc: {
 				'ja-JP': 'フォルダID'
@@ -30,7 +29,7 @@ export default define(meta, async (ps, user) => {
 	const files = await DriveFile
 		.find({
 			filename: ps.name,
-			'metadata.userId': user.id,
+			userId: user.id,
 			'metadata.folderId': ps.folderId
 		});
 

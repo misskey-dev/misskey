@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import perUserReactionsChart from '../../../../../services/chart/charts/per-user-reactions';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 
 export const meta = {
 	stability: 'stable',
@@ -29,8 +29,7 @@ export const meta = {
 		},
 
 		userId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'

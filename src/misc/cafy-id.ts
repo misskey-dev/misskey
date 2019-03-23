@@ -1,36 +1,13 @@
 import { Context } from 'cafy';
 
-export const isAnId = (x: any) => mongo.ObjectID.isValid(x);
-export const isNotAnId = (x: any) => !isAnId(x);
-export const transform = (x: string | mongo.ObjectID): mongo.ObjectID => {
-	if (x === undefined) return undefined;
-	if (x === null) return null;
-
-	if (isAnId(x) && !isObjectId(x)) {
-		return new mongo.ObjectID(x);
-	} else {
-		return x as mongo.ObjectID;
-	}
-};
-export const transformMany = (xs: (string | mongo.ObjectID)[]): mongo.ObjectID[] => {
-	if (xs == null) return null;
-
-	return xs.map(x => transform(x));
-};
-
-export type ObjectId = mongo.ObjectID;
-
-/**
- * ID
- */
-export default class ID<Maybe = string> extends Context<string | Maybe> {
-	public readonly name = 'ID';
+export class StringID<Maybe = string> extends Context<string | Maybe> {
+	public readonly name = 'StringID';
 
 	constructor(optional = false, nullable = false) {
 		super(optional, nullable);
 
 		this.push((v: any) => {
-			if (!isObjectId(v) && isNotAnId(v)) {
+			if (typeof v !== 'string') {
 				return new Error('must-be-an-id');
 			}
 			return true;
@@ -41,15 +18,46 @@ export default class ID<Maybe = string> extends Context<string | Maybe> {
 		return super.getType('String');
 	}
 
-	public makeOptional(): ID<undefined> {
-		return new ID(true, false);
+	public makeOptional(): StringID<undefined> {
+		return new StringID(true, false);
 	}
 
-	public makeNullable(): ID<null> {
-		return new ID(false, true);
+	public makeNullable(): StringID<null> {
+		return new StringID(false, true);
 	}
 
-	public makeOptionalNullable(): ID<undefined | null> {
-		return new ID(true, true);
+	public makeOptionalNullable(): StringID<undefined | null> {
+		return new StringID(true, true);
+	}
+}
+
+export class NumericalID<Maybe = number> extends Context<number | Maybe> {
+	public readonly name = 'NumericalID';
+
+	constructor(optional = false, nullable = false) {
+		super(optional, nullable);
+
+		this.push((v: any) => {
+			if (typeof v !== 'number') {
+				return new Error('must-be-an-id');
+			}
+			return true;
+		});
+	}
+
+	public getType() {
+		return super.getType('String');
+	}
+
+	public makeOptional(): NumericalID<undefined> {
+		return new NumericalID(true, false);
+	}
+
+	public makeNullable(): NumericalID<null> {
+		return new NumericalID(false, true);
+	}
+
+	public makeOptionalNullable(): NumericalID<undefined | null> {
+		return new NumericalID(true, true);
 	}
 }

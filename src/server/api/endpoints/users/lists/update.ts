@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import UserList, { pack } from '../../../../../models/user-list';
 import define from '../../../define';
 import { ApiError } from '../../../error';
@@ -18,8 +18,7 @@ export const meta = {
 
 	params: {
 		listId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象となるユーザーリストのID',
 				'en-US': 'ID of target user list'

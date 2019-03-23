@@ -16,7 +16,7 @@ export const meta = {
 
 	params: {
 		id: {
-			validator: $.type(ID)
+			validator: $.type(StringID)
 		},
 
 		name: {

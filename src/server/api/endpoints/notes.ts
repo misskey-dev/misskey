@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../misc/cafy-id';
 import Note, { packMany } from '../../../models/note';
 import define from '../define';
 
@@ -60,13 +60,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		},
 
 		untilId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		},
 	},
 

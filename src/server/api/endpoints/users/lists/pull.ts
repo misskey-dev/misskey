@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/user-list';
 import { pack as packUser } from '../../../../../models/user';
 import { publishUserListStream } from '../../../../../services/stream';
@@ -21,14 +21,11 @@ export const meta = {
 
 	params: {
 		listId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 		},
 
 		userId: {
-			validator: $.type(ID),
-			transform: transform,
-			desc: {
+			validator: $.type(StringID),,
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}

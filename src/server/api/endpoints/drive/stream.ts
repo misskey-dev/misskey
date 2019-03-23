@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import DriveFile, { packMany } from '../../../../models/drive-file';
 import define from '../../define';
 
@@ -17,13 +17,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		},
 
 		untilId: {
-			validator: $.optional.type(ID),
-			transform: transform,
+			validator: $.optional.type(NumericalID),
 		},
 
 		type: {
@@ -45,7 +43,7 @@ export default define(meta, async (ps, user) => {
 	};
 
 	const query = {
-		'metadata.userId': user.id,
+		userId: user.id,
 		'metadata.deletedAt': { $exists: false }
 	} as any;
 

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/note';
 import define from '../../define';
 import Following from '../../../../models/following';
@@ -15,8 +15,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(ID),
-			transform: transform,
+			validator: $.type(StringID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -41,17 +40,13 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(ID),
-			transform: transform,
-			desc: {
+			validator: $.optional.type(NumericalID),,
 				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
 			}
 		},
 
 		untilId: {
-			validator: $.optional.type(ID),
-			transform: transform,
-			desc: {
+			validator: $.optional.type(NumericalID),,
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
 			}
 		},
