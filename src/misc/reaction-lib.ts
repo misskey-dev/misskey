@@ -1,4 +1,4 @@
-import Emoji from '../models/emoji';
+import Emoji from '../models/entities/emoji';
 import { emojiRegex } from './emoji-regex';
 import fetchMeta from './fetch-meta';
 

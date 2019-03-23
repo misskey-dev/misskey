@@ -1,4 +1,4 @@
-import Emoji from '../models/emoji';
+import Emoji from '../models/entities/emoji';
 
 async function main(name: string, url: string, alias?: string): Promise<any> {
 	const aliases = alias != null ? [ alias ] : [];

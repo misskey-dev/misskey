@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
-import Emoji from '../../../models/emoji';
+import Emoji from '../../../models/entities/emoji';
 import define from '../define';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';

@@ -61,5 +61,5 @@ export default define(meta, async (ps, me) => {
 		skip: ps.offset
 	});
 
-	return await packMany(files, { detail: true, withUser: true, self: true });
+	return await DriveFiles.packMany(files, { detail: true, withUser: true, self: true });
 });

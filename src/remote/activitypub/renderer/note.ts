@@ -7,7 +7,7 @@ import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
 import Note, { Note } from '../../../models/entities/note';
 import User from '../../../models/entities/user';
 import toHtml from '../misc/get-note-html';
-import Emoji, { IEmoji } from '../../../models/emoji';
+import Emoji, { IEmoji } from '../../../models/entities/emoji';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
 	const promisedFiles: Promise<DriveFile[]> = note.fileIds

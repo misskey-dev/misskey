@@ -18,7 +18,7 @@ import config from '../../config';
 import Note, { pack as packNote } from '../../models/note';
 import getNoteSummary from '../../misc/g../../models/entities/note
 import fetchMeta from '../../misc/fetch-meta';
-import Emoji from '../../models/emoji';
+import Emoji from '../../models/entities/emoji';
 import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 

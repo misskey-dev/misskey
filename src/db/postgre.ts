@@ -13,7 +13,6 @@ import { Note } from '../models/entities/note';
 import { NoteReaction } from '../models/entities/note-reaction';
 import { NoteWatching } from '../models/entities/note-watching';
 import { NoteUnread } from '../models/entities/note-unread';
-import { Emoji } from '../models/emoji';
 import { Notification } from '../models/entities/notification';
 import { Meta } from '../models/entities/meta';
 import { Following } from '../models/entities/following';
@@ -25,14 +24,15 @@ import { UserList } from '../models/entities/user-list';
 import { UserListJoining } from '../models/entities/user-list-joining';
 import { Hashtag } from '../models/entities/hashtag';
 import { NoteFavorite } from '../models/entities/note-favorite';
-import { FollowRequest } from '../models/follow-request';
 import { AbuseUserReport } from '../models/entities/abuse-user-report';
 import { RegistrationTicket } from '../models/entities/registration-tickets';
-import { AuthSession } from '../models/auth-session';
-import { ReversiGame } from '../models/games/reversi/game';
-import { ReversiMatching } from '../models/games/reversi/matching';
 import { MessagingMessage } from '../models/entities/messaging-message';
 import { Signin } from '../models/entities/signin';
+import { AuthSession } from '../models/entities/auth-session';
+import { FollowRequest } from '../models/entities/follow-request';
+import { Emoji } from '../models/entities/emoji';
+import { ReversiGame } from '../models/entities/games/reversi/game';
+import { ReversiMatching } from '../models/entities/games/reversi/matching';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 

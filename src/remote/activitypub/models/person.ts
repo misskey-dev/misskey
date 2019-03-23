@@ -16,7 +16,7 @@ import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import Instance from '../../../models/entities/instance';
 import getDriveFileUrl from '../../../misc/get-drive-file-url';
-import { IEmoji } from '../../../models/emoji';
+import { IEmoji } from '../../../models/entities/emoji';
 import { ITag, extractHashtags } from './tag';
 import Following from '../../../models/entities/following';
 import { IIdentifier } from './identifier';

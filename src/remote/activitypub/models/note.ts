@@ -9,7 +9,7 @@ import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, User } from '../../../models/entities/user';
 import { fromHtml } from '../../../mfm/fromHtml';
-import Emoji, { IEmoji } from '../../../models/emoji';
+import Emoji, { IEmoji } from '../../../models/entities/emoji';
 import { ITag, extractHashtags } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';

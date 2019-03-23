@@ -1,4 +1,4 @@
-import { IEmoji } from '../../../models/emoji';
+import { IEmoji } from '../../../models/entities/emoji';
 import config from '../../../config';
 
 export default (emoji: IEmoji) => ({

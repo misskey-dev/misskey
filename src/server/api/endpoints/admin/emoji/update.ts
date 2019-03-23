@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import Emoji from '../../../../../models/emoji';
+import Emoji from '../../../../../models/entities/emoji';
 import define from '../../../define';
 import ID from '../../../../../misc/cafy-id';
 import { detectUrlMine } from '../../../../../misc/detect-url-mine';

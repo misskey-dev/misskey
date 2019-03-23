@@ -5,7 +5,7 @@ import * as httpSignature from 'http-signature';
 import { renderActivity } from '../remote/activitypub/renderer';
 import Note from '../models/entities/note';
 import User, { isLocalUser, ILocalUser, User } from '../models/entities/user';
-import Emoji from '../models/emoji';
+import Emoji from '../models/entities/emoji';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';

@@ -3,8 +3,8 @@ import * as os from 'os';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
 import { program } from '../argv';
-import { Log } fr../models/entities/log/log';
 import { getRepository } from 'typeorm';
+import { Log } from '../models/entities/log';
 
 type Domain = {
 	name: string;
