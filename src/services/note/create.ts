@@ -23,13 +23,12 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
-import { User, isRemoteUser, isLocalUser, IRemoteUser, ILocalUser } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings } from '../../models';
+import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings, Notes } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { In, Not } from 'typeorm';
-import { packNote } from '../../misc/pack';
+import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -93,7 +92,7 @@ type Option = {
 	renote?: Note;
 	files?: DriveFile[];
 	geo?: any;
-	poll?: any;
+	poll?: Note['poll'];
 	viaMobile?: boolean;
 	localOnly?: boolean;
 	cw?: string;
@@ -162,7 +161,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const tokens = data.text ? parse(data.text) : [];
 		const cwTokens = data.cw ? parse(data.cw) : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat((data.poll.choices as IChoice[]).map(choice => parse(choice.text)))
+			? concat(data.poll.choices.map(choice => parse(choice.text)))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
@@ -206,10 +205,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	notesChart.update(note, true);
 	perUserNotesChart.update(user, note, true);
 	// ローカルユーザーのチャートはタイムライン取得時に更新しているのでリモートユーザーの場合だけでよい
-	if (isRemoteUser(user)) activeUsersChart.update(user);
+	if (Users.isRemoteUser(user)) activeUsersChart.update(user);
 
 	// Register host
-	if (isRemoteUser(user)) {
+	if (Users.isRemoteUser(user)) {
 		registerOrFetchInstanceDoc(user.host).then(i => {
 			Instance.update({ _id: i.id }, {
 				$inc: {
@@ -262,7 +261,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// Pack the note
-	const noteObj = await packNote(note);
+	const noteObj = await Notes.pack(note);
 
 	if (isFirstNote) {
 		noteObj.isFirstNote = true;
@@ -279,7 +278,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	const noteActivity = await renderNoteOrRenoteActivity(data, note);
 
-	if (isLocalUser(user)) {
+	if (Users.isLocalUser(user)) {
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
@@ -289,12 +288,12 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
 
 		// この投稿をWatchする
-		if (isLocalUser(user) && user.autoWatch !== false) {
+		if (Users.isLocalUser(user) && user.autoWatch !== false) {
 			watch(user.id, data.reply);
 		}
 
 		// 通知
-		if (isLocalUser(data.reply._user)) {
+		if (Users.isLocalUser(data.reply._user)) {
 			nm.push(data.reply.userId, 'reply');
 			publishMainStream(data.reply.userId, 'reply', noteObj);
 		}
@@ -305,7 +304,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const type = data.text ? 'quote' : 'renote';
 
 		// Notify
-		if (isLocalUser(data.renote._user)) {
+		if (Users.isLocalUser(data.renote._user)) {
 			nm.push(data.renote.userId, type);
 		}
 
@@ -313,12 +312,12 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
 
 		// この投稿をWatchする
-		if (isLocalUser(user) && user.autoWatch !== false) {
+		if (Users.isLocalUser(user) && user.autoWatch !== false) {
 			watch(user.id, data.renote);
 		}
 
 		// Publish event
-		if ((user.id !== data.renote.userId) && isLocalUser(data.renote._user)) {
+		if ((user.id !== data.renote.userId) && Users.isLocalUser(data.renote._user)) {
 			publishMainStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
@@ -355,19 +354,19 @@ function incRenoteCount(renote: Note) {
 }
 
 async function publish(user: User, note: Note, noteObj: any, reply: Note, renote: Note, visibleUsers: User[], noteActivity: any) {
-	if (isLocalUser(user)) {
+	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
-		if (reply && isRemoteUser(reply._user)) {
+		if (reply && Users.isRemoteUser(reply._user)) {
 			deliver(user, noteActivity, reply._user.inbox);
 		}
 
 		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
-		if (renote && isRemoteUser(renote._user)) {
+		if (renote && Users.isRemoteUser(renote._user)) {
 			deliver(user, noteActivity, renote._user.inbox);
 		}
 
 		if (['followers', 'specified'].includes(note.visibility)) {
-			const detailPackedNote = await packNote(note, user, {
+			const detailPackedNote = await Notes.pack(note, user, {
 				detail: true
 			});
 			// Publish event to myself's stream
@@ -454,7 +453,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		} : null,
 		_user: {
 			host: user.host,
-			inbox: isRemoteUser(user) ? user.inbox : undefined
+			inbox: Users.isRemoteUser(user) ? user.inbox : undefined
 		},
 		_files: data.files ? data.files : []
 	};
@@ -464,7 +463,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
 		insert.mentions = mentionedUsers.map(u => u.id);
-		insert.mentionedRemoteUsers = mentionedUsers.filter(u => isRemoteUser(u)).map(u => ({
+		insert.mentionedRemoteUsers = mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => ({
 			uri: (u as IRemoteUser).uri,
 			username: u.username,
 			host: u.host
@@ -473,7 +472,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 	// 投稿を作成
 	try {
-		return await Note.insert(insert);
+		return await Notes.save(insert);
 	} catch (e) {
 		// duplicate key error
 		if (e.code === 11000) {
@@ -540,7 +539,7 @@ async function publishToUserLists(note: Note, noteObj: any) {
 }
 
 async function publishToFollowers(note: Note, user: User, noteActivity: any) {
-	const detailPackedNote = await packNote(note, null, {
+	const detailPackedNote = await Notes.pack(note, null, {
 		detail: true,
 		skipHide: true
 	});
@@ -554,7 +553,7 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 	for (const following of followers) {
 		const follower = following._follower;
 
-		if (isLocalUser(follower)) {
+		if (Users.isLocalUser(follower)) {
 			// この投稿が返信ならスキップ
 			if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId))
 				continue;
@@ -562,12 +561,12 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 			// Publish event to followers stream
 			publishHomeTimelineStream(following.followerId, detailPackedNote);
 
-			if (isRemoteUser(user) || note.visibility != 'public') {
+			if (Users.isRemoteUser(user) || note.visibility != 'public') {
 				publishHybridTimelineStream(following.followerId, detailPackedNote);
 			}
 		} else {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
-			if (isLocalUser(user)) {
+			if (Users.isLocalUser(user)) {
 				const inbox = follower.sharedInbox || follower.inbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
@@ -596,14 +595,14 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 }
 
 function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: any) {
-	for (const u of mentionedUsers.filter(u => isRemoteUser(u))) {
+	for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
 		deliver(user, noteActivity, (u as IRemoteUser).inbox);
 	}
 }
 
 async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: NotificationManager) {
-	for (const u of mentionedUsers.filter(u => isLocalUser(u))) {
-		const detailPackedNote = await packNote(note, u, {
+	for (const u of mentionedUsers.filter(u => Users.isLocalUser(u))) {
+		const detailPackedNote = await Notes.pack(note, u, {
 			detail: true
 		});
 
