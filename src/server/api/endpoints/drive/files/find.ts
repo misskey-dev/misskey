@@ -30,7 +30,7 @@ export default define(meta, async (ps, user) => {
 		.find({
 			filename: ps.name,
 			userId: user.id,
-			'metadata.folderId': ps.folderId
+			'folderId': ps.folderId
 		});
 
 	return await Promise.all(files.map(file => pack(file, { self: true })));

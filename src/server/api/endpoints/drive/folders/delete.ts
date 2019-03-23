@@ -59,7 +59,7 @@ export default define(meta, async (ps, user) => {
 
 	const [childFoldersCount, childFilesCount] = await Promise.all([
 		DriveFolder.count({ parentId: folder.id }),
-		DriveFile.count({ 'metadata.folderId': folder.id })
+		DriveFile.count({ 'folderId': folder.id })
 	]);
 
 	if (childFoldersCount !== 0 || childFilesCount !== 0) {

@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { DriveFile } from '../entities/drive-file';
-import { Users } from '..';
+import { Users, DriveFolders } from '..';
+import rap from '@prezzemolo/rap';
 
 @EntityRepository(DriveFile)
 export class DriveFileRepository extends Repository<DriveFile> {
@@ -48,11 +49,11 @@ export class DriveFileRepository extends Repository<DriveFile> {
 
 		const _file = await this.cloneOrFetch(file);
 
-		return {
-			folder: opts.detail && _file.folderId ? await packFolder(_file.folderId, {
+		return await rap({
+			folder: opts.detail && _file.folderId ? DriveFolders.pack(_file.folderId, {
 				detail: true
 			}) : null,
-			user: opts.withUser ? await Users.pack(_file.userId) : null
-		};
+			user: opts.withUser ? Users.pack(_file.userId) : null
+		});
 	}
 }

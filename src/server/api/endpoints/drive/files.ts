@@ -54,7 +54,7 @@ export default define(meta, async (ps, user) => {
 
 	const query = {
 		userId: user.id,
-		'metadata.folderId': ps.folderId,
+		'folderId': ps.folderId,
 		'metadata.deletedAt': { $exists: false }
 	} as any;
 

@@ -1,7 +1,5 @@
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Instance } from './entities/instance';
-import { DriveFile } from './entities/drive-file';
-import { DriveFolder } from './entities/drive-folder';
 import { Following } from './entities/following';
 import { Emoji } from './entities/emoji';
 import { App } from './entities/app';
@@ -28,6 +26,8 @@ import { MessagingMessage } from './entities/messaging-message';
 import { Signin } from './entities/signin';
 import { UserRepository } from './repositories/user';
 import { NoteRepository } from './repositories/note';
+import { DriveFileRepository } from './repositories/drive-file';
+import { DriveFolderRepository } from './repositories/drive-folder';
 
 export const Apps = getRepository(App);
 export const Notes = getCustomRepository(NoteRepository);
@@ -43,8 +43,8 @@ export const Followings = getRepository(Following);
 export const FollowRequests = getRepository(FollowRequest);
 export const Instances = getRepository(Instance);
 export const Emojis = getRepository(Emoji);
-export const DriveFiles = getRepository(DriveFile);
-export const DriveFolders = getRepository(DriveFolder);
+export const DriveFiles = getCustomRepository(DriveFileRepository);
+export const DriveFolders = getRepository(DriveFolderRepository);
 export const Notifications = getRepository(Notification);
 export const Metas = getRepository(Meta);
 export const Mutings = getRepository(Muting);

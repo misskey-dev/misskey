@@ -96,7 +96,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.folderId !== undefined) {
 		if (ps.folderId === null) {
-			file.metadata.folderId = null;
+			file.folderId = null;
 		} else {
 			// Fetch folder
 			const folder = await DriveFolder
@@ -109,14 +109,14 @@ export default define(meta, async (ps, user) => {
 				throw new ApiError(meta.errors.noSuchFolder);
 			}
 
-			file.metadata.folderId = folder.id;
+			file.folderId = folder.id;
 		}
 	}
 
 	await DriveFile.update(file.id, {
 		$set: {
 			filename: file.filename,
-			'metadata.folderId': file.metadata.folderId,
+			'folderId': file.folderId,
 			'metadata.isSensitive': file.metadata.isSensitive
 		}
 	});
