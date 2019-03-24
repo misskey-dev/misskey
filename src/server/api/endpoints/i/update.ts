@@ -1,18 +1,16 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import User, { isValidName, isValidDescription, isValidLocation, isValidBirthday, pack } from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
-import DriveFile from '../../../../models/entities/drive-file';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
-import getDriveFileUrl from '../../../../misc/get-drive-file-url';
 import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
 import extractHashtags from '../../../../misc/extract-hashtags';
 import * as langmap from 'langmap';
 import { updateHashtag } from '../../../../services/update-hashtag';
 import { ApiError } from '../../error';
+import { Users, DriveFiles } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -28,14 +26,14 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.optional.nullable.str.pipe(isValidName),
+			validator: $.optional.nullable.str.pipe(Users.isValidName),
 			desc: {
 				'ja-JP': '名前(ハンドルネームやニックネーム)'
 			}
 		},
 
 		description: {
-			validator: $.optional.nullable.str.pipe(isValidDescription),
+			validator: $.optional.nullable.str.pipe(Users.isValidDescription),
 			desc: {
 				'ja-JP': 'アカウントの説明や自己紹介'
 			}
@@ -49,14 +47,14 @@ export const meta = {
 		},
 
 		location: {
-			validator: $.optional.nullable.str.pipe(isValidLocation),
+			validator: $.optional.nullable.str.pipe(Users.isValidLocation),
 			desc: {
 				'ja-JP': '住んでいる地域、所在'
 			}
 		},
 
 		birthday: {
-			validator: $.optional.nullable.str.pipe(isValidBirthday),
+			validator: $.optional.nullable.str.pipe(Users.isValidBirthday),
 			desc: {
 				'ja-JP': '誕生日 (YYYY-MM-DD形式)'
 			}
@@ -73,13 +71,6 @@ export const meta = {
 			validator: $.optional.nullable.type(ID),
 			desc: {
 				'ja-JP': 'バナーに設定する画像のドライブファイルID'
-			}
-		},
-
-		wallpaperId: {
-			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': '壁紙に設定する画像のドライブファイルID'
 			}
 		},
 
@@ -172,7 +163,6 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.birthday !== undefined) updates['profile.birthday'] = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
-	if (ps.wallpaperId !== undefined) updates.wallpaperId = ps.wallpaperId;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
@@ -182,63 +172,28 @@ export default define(meta, async (ps, user, app) => {
 	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
-		const avatar = await DriveFile.findOne({
-			id: ps.avatarId
-		});
+		const avatar = await DriveFiles.findOne(ps.avatarId);
 
-		if (avatar == null) throw new ApiError(meta.errors.noSuchAvatar);
+		if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 		if (!avatar.contentType.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
 
-		if (avatar.metadata.deletedAt) {
-			updates.avatarUrl = null;
-		} else {
-			updates.avatarUrl = getDriveFileUrl(avatar, true);
+		updates.avatarUrl = avatar.thumbnailUrl;
 
-			if (avatar.metadata.properties.avgColor) {
-				updates.avatarColor = avatar.metadata.properties.avgColor;
-			}
+		if (avatar.properties.avgColor) {
+			updates.avatarColor = avatar.properties.avgColor;
 		}
 	}
 
 	if (ps.bannerId) {
-		const banner = await DriveFile.findOne({
-			id: ps.bannerId
-		});
+		const banner = await DriveFiles.findOne(ps.bannerId);
 
-		if (banner == null) throw new ApiError(meta.errors.noSuchBanner);
+		if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 		if (!banner.contentType.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
 
-		if (banner.metadata.deletedAt) {
-			updates.bannerUrl = null;
-		} else {
-			updates.bannerUrl = getDriveFileUrl(banner, false);
+		updates.bannerUrl = banner.webpublicUrl;
 
-			if (banner.metadata.properties.avgColor) {
-				updates.bannerColor = banner.metadata.properties.avgColor;
-			}
-		}
-	}
-
-	if (ps.wallpaperId !== undefined) {
-		if (ps.wallpaperId === null) {
-			updates.wallpaperUrl = null;
-			updates.wallpaperColor = null;
-		} else {
-			const wallpaper = await DriveFile.findOne({
-				id: ps.wallpaperId
-			});
-
-			if (wallpaper == null) throw new Error('wallpaper not found');
-
-			if (wallpaper.metadata.deletedAt) {
-				updates.wallpaperUrl = null;
-			} else {
-				updates.wallpaperUrl = getDriveFileUrl(wallpaper);
-
-				if (wallpaper.metadata.properties.avgColor) {
-					updates.wallpaperColor = wallpaper.metadata.properties.avgColor;
-				}
-			}
+		if (banner.properties.avgColor) {
+			updates.bannerColor = banner.properties.avgColor;
 		}
 	}
 
@@ -267,11 +222,9 @@ export default define(meta, async (ps, user, app) => {
 	}
 	//#endregion
 
-	await User.update(user.id, {
-		$set: updates
-	});
+	await Users.update(user.id, updates);
 
-	const iObj = await pack(user.id, user, {
+	const iObj = await Users.pack(user.id, user, {
 		detail: true,
 		includeSecrets: isSecure
 	});

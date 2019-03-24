@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import Favorite from '../../../../../models/entities/note-favorite';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
+import { NoteFavorites } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -52,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// if already favorited
-	const exist = await Favorite.findOne({
+	const exist = await NoteFavorites.findOne({
 		noteId: note.id,
 		userId: user.id
 	});
@@ -62,11 +62,9 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create favorite
-	await Favorite.insert({
+	await NoteFavorites.save({
 		createdAt: new Date(),
 		noteId: note.id,
 		userId: user.id
 	});
-
-	return;
 });

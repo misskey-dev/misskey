@@ -34,7 +34,7 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = new mongo.ObjectID(uri.split('/').pop());
-		return await Note.findOne({ _id: id });
+		return await Note.findOne(id);
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す

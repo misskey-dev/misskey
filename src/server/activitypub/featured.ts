@@ -28,7 +28,7 @@ export default async (ctx: Router.IRouterContext) => {
 
 	const pinnedNoteIds = user.pinnedNoteIds || [];
 
-	const pinnedNotes = await Promise.all(pinnedNoteIds.filter(ObjectID.isValid).map(id => Note.findOne({ _id: id })));
+	const pinnedNotes = await Promise.all(pinnedNoteIds.filter(ObjectID.isValid).map(id => Note.findOne(id)));
 
 	const renderedNotes = await Promise.all(pinnedNotes.map(note => renderNote(note)));
 

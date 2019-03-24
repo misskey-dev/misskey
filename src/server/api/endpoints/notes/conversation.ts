@@ -1,9 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note, { packMany, Note } from '../../../../models/entities/note';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';
+import { Note } from '../../../../models/entities/note';
+import { Notes } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -62,7 +63,7 @@ export default define(meta, async (ps, user) => {
 
 	async function get(id: any) {
 		i++;
-		const p = await Note.findOne({ _id: id });
+		const p = await Notes.findOne(id);
 
 		if (i > ps.offset) {
 			conversation.push(p);
@@ -81,5 +82,5 @@ export default define(meta, async (ps, user) => {
 		await get(note.replyId);
 	}
 
-	return await packMany(conversation, user);
+	return await Notes.packMany(conversation, user);
 });

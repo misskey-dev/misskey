@@ -89,7 +89,7 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<Use
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = new mongo.ObjectID(uri.split('/').pop());
-		return await Users.findOne({ _id: id });
+		return await Users.findOne(id);
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -228,8 +228,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const bannerId = banner ? banner.id : null;
 	const avatarUrl = getDriveFileUrl(avatar, true);
 	const bannerUrl = getDriveFileUrl(banner, false);
-	const avatarColor = avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
-	const bannerColor = banner && avatar.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
+	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
+	const bannerColor = banner && avatar.properties.avgColor ? banner.properties.avgColor : null;
 
 	await User.update(user.id, {
 		$set: {
@@ -380,13 +380,13 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	if (avatar) {
 		updates.avatarId = avatar.id;
 		updates.avatarUrl = getDriveFileUrl(avatar, true);
-		updates.avatarColor = avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
+		updates.avatarColor = avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	}
 
 	if (banner) {
 		updates.bannerId = banner.id;
 		updates.bannerUrl = getDriveFileUrl(banner, true);
-		updates.bannerColor = banner.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
+		updates.bannerColor = banner.properties.avgColor ? banner.properties.avgColor : null;
 	}
 
 	// Update user
