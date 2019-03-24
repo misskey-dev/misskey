@@ -131,7 +131,7 @@ export default define(meta, async (ps, user) => {
 
 	const mentions = await Note.find(query, {
 		take: ps.limit,
-		sort: sort
+		order: sort
 	});
 
 	for (const note of mentions) {

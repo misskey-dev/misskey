@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import Meta from '../../../../models/entities/meta';
 import define from '../../define';
+import { Metas } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -430,11 +430,11 @@ export default define(meta, async (ps) => {
 	}
 
 	if (ps.maintainerName !== undefined) {
-		set['maintainer.name'] = ps.maintainerName;
+		set.maintainerName = ps.maintainerName;
 	}
 
 	if (ps.maintainerEmail !== undefined) {
-		set['maintainer.email'] = ps.maintainerEmail;
+		set.maintainerEmail = ps.maintainerEmail;
 	}
 
 	if (ps.langs !== undefined) {
@@ -537,9 +537,11 @@ export default define(meta, async (ps) => {
 		set.swPrivateKey = ps.swPrivateKey;
 	}
 
-	await Meta.update({}, {
-		$set: set
-	}, { upsert: true });
+	const meta = await Metas.findOne();
 
-	return;
+	if (meta) {
+		await Metas.update(meta.id, set);
+	} else {
+		await Metas.save(set);
+	}
 });

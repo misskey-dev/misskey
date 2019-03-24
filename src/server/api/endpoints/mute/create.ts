@@ -52,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	const muter = user;
 
 	// 自分自身
-	if (user.id.equals(ps.userId)) {
+	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.muteeIsYourself);
 	}
 

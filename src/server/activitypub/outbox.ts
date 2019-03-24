@@ -80,7 +80,7 @@ export default async (ctx: Router.IRouterContext) => {
 		const notes = await Note
 			.find(query, {
 				limit: limit,
-				sort: sort
+				order: sort
 			});
 
 		if (sinceId) notes.reverse();

@@ -72,7 +72,7 @@ export default define(meta, async (ps, user) => {
 	const files = await DriveFile
 		.find(query, {
 			take: ps.limit,
-			sort: sort
+			order: sort
 		});
 
 	return await packMany(files, { detail: false, self: true });

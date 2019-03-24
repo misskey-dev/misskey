@@ -57,7 +57,7 @@ export default define(meta, async (ps, me) => {
 	const mutes = await Mute
 		.find(query, {
 			take: ps.limit,
-			sort: sort
+			order: sort
 		});
 
 	return await packMany(mutes, me);

@@ -92,7 +92,7 @@ export default define(meta, async (ps, user) => {
 	const messages = await Message
 		.find(query, {
 			take: ps.limit,
-			sort: sort
+			order: sort
 		});
 
 	// Mark all as read

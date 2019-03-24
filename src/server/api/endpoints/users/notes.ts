@@ -242,7 +242,7 @@ export default define(meta, async (ps, me) => {
 
 	const notes = await Note.find(query, {
 		take: ps.limit,
-		sort: sort
+		order: sort
 	});
 
 	return await packMany(notes, me);

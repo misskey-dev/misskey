@@ -1,14 +1,14 @@
 import $ from 'cafy';
 import define from '../../define';
 import config from '../../../../config';
-import User, { pack as packUser, User } from '../../../../models/entities/user';
 import { createPerson } from '../../../../remote/activitypub/models/person';
-import Note, { pack as packNote, Note } from '../../../../models/entities/note';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
-import Instance from '../../../../models/entities/instance';
 import { extractDbHost } from '../../../../misc/convert-host';
+import { Users, Notes } from '../../../../models';
+import { Note } from '../../../../models/entities/note';
+import { User } from '../../../../models/entities/user';
 
 export const meta = {
 	tags: ['federation'],
@@ -52,14 +52,29 @@ export default define(meta, async (ps) => {
 async function fetchAny(uri: string) {
 	// URIがこのサーバーを指しているなら、ローカルユーザーIDとしてDBからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		const id = new mongo.ObjectID(uri.split('/').pop());
-		const [user, note] = await Promise.all([
-			Users.findOne({ _id: id }),
-			Note.findOne({ _id: id })
-		]);
+		const parts = uri.split('/');
+		const id = parts.pop();
+		const type = parts.pop();
 
-		const packed = await mergePack(user, note);
-		if (packed !== null) return packed;
+		if (type === 'notes') {
+			const note = await Notes.findOne(id);
+
+			if (note) {
+				return {
+					type: 'Note',
+					object: await Notes.pack(note, null, { detail: true })
+				};
+			}
+		} else if (type === 'users') {
+			const user = await Users.findOne(id);
+
+			if (user) {
+				return {
+					type: 'User',
+					object: await Users.pack(user, null, { detail: true })
+				};
+			}
+		}
 	}
 
 	// ブロックしてたら中断
@@ -70,7 +85,7 @@ async function fetchAny(uri: string) {
 	{
 		const [user, note] = await Promise.all([
 			Users.findOne({ uri: uri }),
-			Note.findOne({ uri: uri })
+			Notes.findOne({ uri: uri })
 		]);
 
 		const packed = await mergePack(user, note);
@@ -86,7 +101,7 @@ async function fetchAny(uri: string) {
 	if (uri !== object.id) {
 		const [user, note] = await Promise.all([
 			Users.findOne({ uri: object.id }),
-			Note.findOne({ uri: object.id })
+			Notes.findOne({ uri: object.id })
 		]);
 
 		const packed = await mergePack(user, note);
@@ -98,7 +113,7 @@ async function fetchAny(uri: string) {
 		const user = await createPerson(object.id);
 		return {
 			type: 'User',
-			object: await packUser(user, null, { detail: true })
+			object: await Users.pack(user, null, { detail: true })
 		};
 	}
 
@@ -106,7 +121,7 @@ async function fetchAny(uri: string) {
 		const note = await createNote(object.id);
 		return {
 			type: 'Note',
-			object: await packNote(note, null, { detail: true })
+			object: await Notes.pack(note, null, { detail: true })
 		};
 	}
 
@@ -117,14 +132,14 @@ async function mergePack(user: User, note: Note) {
 	if (user !== null) {
 		return {
 			type: 'User',
-			object: await packUser(user, null, { detail: true })
+			object: await Users.pack(user, null, { detail: true })
 		};
 	}
 
 	if (note !== null) {
 		return {
 			type: 'Note',
-			object: await packNote(note, null, { detail: true })
+			object: await Notes.pack(note, null, { detail: true })
 		};
 	}
 

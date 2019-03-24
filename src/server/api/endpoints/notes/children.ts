@@ -122,7 +122,7 @@ export default define(meta, async (ps, user) => {
 
 	const notes = await Note.find(q, {
 		take: ps.limit,
-		sort: sort
+		order: sort
 	});
 
 	return await packMany(notes, user);

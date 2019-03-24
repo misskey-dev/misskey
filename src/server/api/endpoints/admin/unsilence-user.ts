@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/entities/user';
+import { Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -32,13 +32,7 @@ export default define(meta, async (ps) => {
 		throw new Error('user not found');
 	}
 
-	await Users.findOneAndUpdate({
-		id: user.id
-	}, {
-		$set: {
-			isSilenced: false
-		}
+	await Users.update(user.id, {
+		isSilenced: false
 	});
-
-	return;
 });

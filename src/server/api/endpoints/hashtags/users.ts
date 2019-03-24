@@ -85,7 +85,7 @@ export default define(meta, async (ps, me) => {
 	const users = await User
 		.find(q, {
 			take: ps.limit,
-			sort: sort[ps.sort],
+			order: sort[ps.sort],
 		});
 
 	return await Promise.all(users.map(user => pack(user, me, { detail: true })));

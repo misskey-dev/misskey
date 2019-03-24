@@ -60,7 +60,7 @@ export default define(meta, async (ps) => {
 	const logs = await Log
 		.find(query, {
 			take: ps.limit,
-			sort: sort
+			order: sort
 		});
 
 	return logs;

@@ -27,11 +27,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	await updatePersonById(ps.userId);
-	return;
-});
-
-async function updatePersonById(userId: mongo.ObjectID) {
-	const user = await getRemoteUser(userId);
+	const user = await getRemoteUser(ps.userId);
 	await updatePerson(user.uri);
-}
+});

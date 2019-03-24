@@ -77,7 +77,7 @@ export default define(meta, async (ps, user) => {
 
 	const renotes = await Note.find(query, {
 		take: ps.limit,
-		sort: sort
+		order: sort
 	});
 
 	return await packMany(renotes, user);

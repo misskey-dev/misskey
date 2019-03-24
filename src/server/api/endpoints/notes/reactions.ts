@@ -83,7 +83,7 @@ export default define(meta, async (ps, user) => {
 	const reactions = await NoteReaction.find(query, {
 		take: ps.limit,
 		skip: ps.offset,
-		sort: sort
+		order: sort
 	});
 
 	return await Promise.all(reactions.map(reaction => pack(reaction, user)));

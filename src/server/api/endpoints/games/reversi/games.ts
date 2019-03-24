@@ -56,7 +56,7 @@ export default define(meta, async (ps, user) => {
 
 	// Fetch games
 	const games = await ReversiGame.find(q, {
-		sort: sort,
+		order: sort,
 		take: ps.limit
 	});
 

@@ -109,7 +109,7 @@ export default define(meta, async (ps, user) => {
 	const notifications = await Notification
 		.find(query, {
 			take: ps.limit,
-			sort: sort
+			order: sort
 		});
 
 	// Mark all as read

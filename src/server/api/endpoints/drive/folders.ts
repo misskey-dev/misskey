@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 	const folders = await DriveFolder
 		.find(query, {
 			take: ps.limit,
-			sort: sort
+			order: sort
 		});
 
 	return await Promise.all(folders.map(folder => pack(folder)));

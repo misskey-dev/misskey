@@ -62,7 +62,7 @@ export default define(meta, async (ps, user) => {
 	const follower = user;
 
 	// Check if the followee is yourself
-	if (user.id.equals(ps.userId)) {
+	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.followeeIsYourself);
 	}
 

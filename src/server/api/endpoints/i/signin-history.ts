@@ -43,7 +43,7 @@ export default define(meta, async (ps, user) => {
 	const history = await Signin
 		.find(query, {
 			take: ps.limit,
-			sort: sort
+			order: sort
 		});
 
 	return await Promise.all(history.map(record => pack(record)));

@@ -1,12 +1,11 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../models/entities/user';
-import Blocking from '../../../../models/entities/blocking';
 import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Blockings } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -62,7 +61,7 @@ export default define(meta, async (ps, user) => {
 	const blocker = user;
 
 	// Check if the blockee is yourself
-	if (user.id.equals(ps.userId)) {
+	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.blockeeIsYourself);
 	}
 
@@ -73,7 +72,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check not blocking
-	const exist = await Blocking.findOne({
+	const exist = await Blockings.findOne({
 		blockerId: blocker.id,
 		blockeeId: blockee.id
 	});
@@ -85,7 +84,7 @@ export default define(meta, async (ps, user) => {
 	// Delete blocking
 	await deleteBlocking(blocker, blockee);
 
-	return await pack(blockee.id, user, {
+	return await Blockings.pack(blockee.id, user, {
 		detail: true
 	});
 });

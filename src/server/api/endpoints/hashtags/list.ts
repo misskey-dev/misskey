@@ -77,7 +77,7 @@ export default define(meta, async (ps, me) => {
 	const tags = await Hashtag
 		.find(q, {
 			take: ps.limit,
-			sort: sort[ps.sort],
+			order: sort[ps.sort],
 			fields: {
 				tag: true,
 				mentionedUsersCount: true,

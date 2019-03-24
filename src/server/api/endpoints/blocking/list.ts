@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import { StringID, NumericalID } from '../../../../misc/cafy-id';
-import Blocking, { packMany } from '../../../../models/entities/blocking';
 import define from '../../define';
+import { MoreThan, LessThan } from 'typeorm';
+import { Blockings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -54,11 +55,11 @@ export default define(meta, async (ps, me) => {
 		query.id = LessThan(ps.untilId);
 	}
 
-	const blockings = await Blocking
-		.find(query, {
-			take: ps.limit,
-			sort: sort
-		});
+	const blockings = await Blockings.find({
+		where: query,
+		take: ps.limit,
+		order: sort
+	});
 
-	return await packMany(blockings, me);
+	return await Blockings.packMany(blockings, me);
 });
