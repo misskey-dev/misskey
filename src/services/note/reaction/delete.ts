@@ -1,19 +1,18 @@
-import { User, isLocalUser, isRemoteUser } from '../../../models/entities/user';
-import Note, { Note } from '../../../models/entities/note';
-import NoteReaction from '../../../models/entities/note-reaction';
 import { publishNoteStream } from '../../stream';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
 import { IdentifiableError } from '../../../misc/identifiable-error';
+import { User } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
+import { NoteReactions, Users } from '../../../models';
 
 export default async (user: User, note: Note) => {
 	// if already unreacted
-	const exist = await NoteReaction.findOne({
+	const exist = await NoteReactions.findOne({
 		noteId: note.id,
 		userId: user.id,
-		deletedAt: { $exists: false }
 	});
 
 	if (exist === null) {
@@ -21,9 +20,7 @@ export default async (user: User, note: Note) => {
 	}
 
 	// Delete reaction
-	await NoteReaction.remove({
-		id: exist.id
-	});
+	await NoteReactions.delete(exist.id);
 
 	const dec: any = {};
 	dec[`reactionCounts.${exist.reaction}`] = -1;
@@ -40,11 +37,9 @@ export default async (user: User, note: Note) => {
 
 	//#region 配信
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
-	if (isLocalUser(user) && isRemoteUser(note._user)) {
+	if (Users.isLocalUser(user) && Users.isRemoteUser(note._user)) {
 		const content = renderActivity(renderUndo(renderLike(user, note, exist.reaction), user));
 		deliver(user, content, note._user.inbox);
 	}
 	//#endregion
-
-	return;
 };
