@@ -2,26 +2,19 @@ import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';
 import { ID } from '../../misc/cafy-id';
-import User from '../../models/entities/user';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import { setResponseType } from '../activitypub';
-
-import Note, { Note } from '../../models/entities/note';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
 import * as url from '../../prelude/url';
+import { Users } from '../../models';
 
 export default async (ctx: Router.IRouterContext) => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
+	const userId = parseInt(ctx.params.user, 10);
 
 	// Get 'sinceId' parameter
 	const [sinceId, sinceIdErr] = $.optional.type(ID).get(ctx.request.query.since_id);
