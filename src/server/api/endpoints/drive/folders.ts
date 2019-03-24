@@ -1,7 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import DriveFolder, { pack } from '../../../../models/entities/drive-folder';
 import define from '../../define';
+import { MoreThan, LessThan, FindConditions } from 'typeorm';
+import { DriveFolders } from '../../../../models';
+import { DriveFolder } from '../../../../models/entities/drive-folder';
 
 export const meta = {
 	desc: {
@@ -50,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	const query = {
 		userId: user.id,
 		parentId: ps.folderId
-	} as any;
+	} as FindConditions<DriveFolder>;
 	if (ps.sinceId) {
 		sort.id = 1;
 		query.id = MoreThan(ps.sinceId);
@@ -58,11 +60,11 @@ export default define(meta, async (ps, user) => {
 		query.id = LessThan(ps.untilId);
 	}
 
-	const folders = await DriveFolder
-		.find(query, {
-			take: ps.limit,
-			order: sort
-		});
+	const folders = await DriveFolders.find({
+		where: query,
+		take: ps.limit,
+		order: sort
+	});
 
-	return await Promise.all(folders.map(folder => pack(folder)));
+	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
 });

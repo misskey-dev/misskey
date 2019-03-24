@@ -1,6 +1,6 @@
 import { Context } from 'cafy';
 
-export class ID<Maybe = number> extends Context<number | Maybe> {
+export class ID<Maybe = string> extends Context<number | (Maybe extends {} ? number : Maybe)> {
 	public readonly name = 'ID';
 
 	constructor(optional = false, nullable = false) {

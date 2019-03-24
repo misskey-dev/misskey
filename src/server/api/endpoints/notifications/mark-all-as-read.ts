@@ -29,13 +29,6 @@ export default define(meta, async (ps, user) => {
 		multi: true
 	});
 
-	// Update flag
-	User.update(user.id, {
-		$set: {
-			hasUnreadNotification: false
-		}
-	});
-
 	// 全ての通知を読みましたよというイベントを発行
 	publishMainStream(user.id, 'readAllNotifications');
 });

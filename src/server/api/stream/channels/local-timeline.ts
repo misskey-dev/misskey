@@ -1,9 +1,8 @@
 import autobind from 'autobind-decorator';
-import Mute from '../../../../models/entities/muting';
-import { pack } from '../../../../models/entities/note';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { Mutings, Notes } from '../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'localTimeline';
@@ -22,7 +21,7 @@ export default class extends Channel {
 		// Subscribe events
 		this.subscriber.on('localTimeline', this.onNote);
 
-		const mute = this.user ? await Mute.find({ muterId: this.user.id }) : null;
+		const mute = this.user ? await Mutings.find({ muterId: this.user.id }) : null;
 		this.mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
 	}
 
@@ -30,13 +29,13 @@ export default class extends Channel {
 	private async onNote(note: any) {
 		// リプライなら再pack
 		if (note.replyId != null) {
-			note.reply = await pack(note.replyId, this.user, {
+			note.reply = await Notes.pack(note.replyId, this.user, {
 				detail: true
 			});
 		}
 		// Renoteなら再pack
 		if (note.renoteId != null) {
-			note.renote = await pack(note.renoteId, this.user, {
+			note.renote = await Notes.pack(note.renoteId, this.user, {
 				detail: true
 			});
 		}

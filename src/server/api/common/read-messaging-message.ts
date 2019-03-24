@@ -62,13 +62,6 @@ export default (
 			});
 
 	if (count == 0) {
-		// Update flag
-		User.update({ _id: userId }, {
-			$set: {
-				hasUnreadMessagingMessage: false
-			}
-		});
-
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllMessagingMessages');
 	}

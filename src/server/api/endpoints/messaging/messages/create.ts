@@ -124,13 +124,6 @@ export default define(meta, async (ps, user) => {
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
 	publishMainStream(message.recipientId, 'messagingMessage', messageObj);
 
-	// Update flag
-	User.update({ _id: recipient.id }, {
-		$set: {
-			hasUnreadMessagingMessage: true
-		}
-	});
-
 	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
 		const freshMessage = await Message.findOne({ _id: message.id }, { isRead: true });

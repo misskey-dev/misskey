@@ -119,12 +119,6 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the User has unread notification.'
-	})
-	public hasUnreadNotification: boolean;
-
-	@Column('boolean', {
-		default: false,
 		comment: 'Whether the User is suspended.'
 	})
 	public isSuspended: boolean;

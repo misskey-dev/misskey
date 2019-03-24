@@ -13,10 +13,12 @@ const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): voi
 };
 
 export default async function(ctx: Koa.BaseContext) {
-	const fileId = parseInt(ctx.params.id, 10);
+	const key = ctx.params.key;
 
 	// Fetch drive file
-	const file = await DriveFiles.findOne(fileId);
+	const file = await DriveFiles.findOne({
+
+	});
 
 	if (file == null) {
 		ctx.status = 404;
@@ -24,7 +26,7 @@ export default async function(ctx: Koa.BaseContext) {
 		return;
 	}
 
-	if (file.metadata.withoutChunks) {
+	if (!file.storedInternal) {
 		ctx.status = 204;
 		return;
 	}

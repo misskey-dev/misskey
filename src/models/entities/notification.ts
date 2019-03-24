@@ -1,7 +1,6 @@
 import * as deepcopy from 'deepcopy';
-import { pack as packUser, User } from './user';
-import { pack as packNote } from './note';
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user';
 
 @Entity()
 export class Notification {
@@ -10,7 +9,6 @@ export class Notification {
 
 	@Index()
 	@Column('date', {
-
 		comment: 'The created date of the Notification.'
 	})
 	public createdAt: Date;
@@ -22,7 +20,7 @@ export class Notification {
 	@Column('integer', {
 		comment: 'The ID of recipient user of the Notification.'
 	})
-	public notifieeId: string;
+	public notifieeId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
@@ -36,7 +34,7 @@ export class Notification {
 	@Column('integer', {
 		comment: 'The ID of sender user of the Notification.'
 	})
-	public notifierId: string;
+	public notifierId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

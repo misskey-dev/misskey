@@ -2,13 +2,13 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as request from 'request';
 import { OAuth2 } from 'oauth';
-import User, { pack, ILocalUser } from '../../../models/entities/user';
 import config from '../../../config';
 import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
+import { Users } from '../../../models';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -39,13 +39,11 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOneAndUpdate({
+	const user = await Users.update({
 		host: null,
-		'token': userToken
+		token: userToken
 	}, {
-		$set: {
-			'discord': null
-		}
+		discord: null
 	});
 
 	ctx.body = `Discordの連携を解除しました :v:`;

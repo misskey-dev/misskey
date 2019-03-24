@@ -27,9 +27,5 @@ export default define(meta, async (ps, user) => {
 		isRead: true
 	});
 
-	Users.update(user.id, {
-		hasUnreadMessagingMessage: false
-	});
-
 	publishMainStream(user.id, 'readAllMessagingMessages');
 });

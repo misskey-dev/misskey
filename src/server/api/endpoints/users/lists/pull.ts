@@ -1,11 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import UserList from '../../../../../models/entities/user-list';
-import { pack as packUser } from '../../../../../models/entities/user';
 import { publishUserListStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
+import { UserLists, UserListJoinings, Users } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -25,7 +24,8 @@ export const meta = {
 		},
 
 		userId: {
-			validator: $.type(ID),,
+			validator: $.type(ID),
+			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}
@@ -49,7 +49,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	// Fetch the list
-	const userList = await UserList.findOne({
+	const userList = await UserLists.findOne({
 		id: ps.listId,
 		userId: me.id,
 	});
@@ -65,11 +65,7 @@ export default define(meta, async (ps, me) => {
 	});
 
 	// Pull the user
-	await UserList.update({ _id: userList.id }, {
-		$pull: {
-			userIds: user.id
-		}
-	});
+	await UserListJoinings.delete({ userId: user.id });
 
-	publishUserListStream(userList.id, 'userRemoved', await packUser(user));
+	publishUserListStream(userList.id, 'userRemoved', await Users.pack(user));
 });
