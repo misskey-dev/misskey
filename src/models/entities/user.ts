@@ -236,26 +236,6 @@ export class User {
 		default: false,
 	})
 	public autoAcceptFollowed: boolean;
-
-	@Column('integer', {
-		default: 0,
-	})
-	public pendingReceivedFollowRequestsCount: number;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public hasUnreadMentions: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public hasUnreadSpecifiedNotes: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public hasUnreadMessagingMessage: boolean;
 }
 
 export interface ILocalUser extends User {

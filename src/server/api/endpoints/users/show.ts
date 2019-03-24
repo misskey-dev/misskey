@@ -1,10 +1,11 @@
 import $ from 'cafy';
-import ID, { transform, transformMany } from '../../../../misc/cafy-id';
-import User, { pack, isRemoteUser } from '../../../../models/entities/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
 import { ApiError } from '../../error';
+import { ID } from '../../../../misc/cafy-id';
+import { Users } from '../../../../models';
+import { In } from 'typeorm';
 
 const cursorOption = { fields: { data: false } };
 
@@ -67,12 +68,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.userIds) {
 		const users = await Users.find({
-			id: {
-				$in: ps.userIds
-			}
+			id: In(ps.userIds)
 		});
 
-		return await Promise.all(users.map(u => pack(u, me, {
+		return await Promise.all(users.map(u => Users.pack(u, me, {
 			detail: true
 		})));
 	} else {
@@ -95,13 +94,13 @@ export default define(meta, async (ps, me) => {
 		}
 
 		// ユーザー情報更新
-		if (isRemoteUser(user)) {
+		if (Users.isRemoteUser(user)) {
 			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 				resolveRemoteUser(ps.username, ps.host, { }, true);
 			}
 		}
 
-		return await pack(user, me, {
+		return await Users.pack(user, me, {
 			detail: true
 		});
 	}

@@ -22,8 +22,6 @@ export default async function(followee: User, follower: User) {
 		followerId: follower.id
 	});
 
-	Users.decrement({ id: followee.id }, 'pendingReceivedFollowRequestsCount', 1);
-
 	Users.pack(followee, follower, {
 		detail: true
 	}).then(packed => publishMainStream(follower.id, 'unfollow', packed));

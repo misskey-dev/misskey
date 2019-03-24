@@ -37,12 +37,6 @@ export default async function(follower: User, followee: User, requestId?: string
 		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined
 	});
 
-	await User.update({ _id: followee.id }, {
-		$inc: {
-			pendingReceivedFollowRequestsCount: 1
-		}
-	});
-
 	// Publish receiveRequest event
 	if (Users.isLocalUser(followee)) {
 		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'receiveFollowRequest', packed));

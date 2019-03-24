@@ -1,11 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import User from '../../../../models/entities/user';
-import Following from '../../../../models/entities/following';
-import { pack } from '../../../../models/entities/user';
 import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { Users, Followings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -77,11 +75,9 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const q: any = ps.userId != null
-		? { _id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: ps.host };
-
-	const user = await Users.findOne(q);
+	const user = await Users.findOne(ps.userId != null
+		? { id: ps.userId }
+		: { usernameLower: ps.username.toLowerCase(), host: ps.host });
 
 	if (user === null) {
 		throw new ApiError(meta.errors.noSuchUser);
@@ -109,11 +105,11 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Get followers
-	const following = await Following
-		.find(query, {
-			take: ps.limit + 1,
-			sort: { _id: -1 }
-		});
+	const following = await Followings.find({
+		where: query,
+		take: ps.limit + 1,
+		order: { id: -1 }
+	});
 
 	// 「次のページ」があるかどうか
 	const inStock = following.length === ps.limit + 1;
@@ -121,7 +117,7 @@ export default define(meta, async (ps, me) => {
 		following.pop();
 	}
 
-	const users = await Promise.all(following.map(f => pack(f.followerId, me, { detail: true })));
+	const users = await Promise.all(following.map(f => Users.pack(f.followerId, me, { detail: true })));
 
 	return {
 		users: users,

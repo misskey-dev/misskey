@@ -44,12 +44,6 @@ async function cancelRequest(follower: User, followee: User) {
 		followerId: follower.id
 	});
 
-	await User.update({ _id: followee.id }, {
-		$inc: {
-			pendingReceivedFollowRequestsCount: -1
-		}
-	});
-
 	if (Users.isLocalUser(followee)) {
 		Users.pack(followee, followee, {
 			detail: true
@@ -88,19 +82,11 @@ async function unFollow(follower: User, followee: User) {
 	Followings.delete(following.id);
 
 	//#region Decrement following count
-	User.update({ _id: follower.id }, {
-		$inc: {
-			followingCount: -1
-		}
-	});
+	Users.decrement({ id: follower.id }, 'followingCount', 1);
 	//#endregion
 
 	//#region Decrement followers count
-	User.update({ _id: followee.id }, {
-		$inc: {
-			followersCount: -1
-		}
-	});
+	Users.decrement({ id: followee.id }, 'followersCount', 1);
 	//#endregion
 
 	perUserFollowingChart.update(follower, followee, false);

@@ -1,22 +1,21 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-
-import User, { User } from '../../../models/entities/user';
 import readNotification from '../common/read-notification';
 import call from '../call';
-import { IApp } from '../../../models/entities/app';
 import readNote from '../../../services/note/read';
-
 import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
+import { User } from '../../../models/entities/user';
+import { App } from '../../../models/entities/app';
+import { Users } from '../../../models';
 
 /**
  * Main stream connection
  */
 export default class Connection {
 	public user?: User;
-	public app: IApp;
+	public app: App;
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
@@ -27,7 +26,7 @@ export default class Connection {
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
 		user: User,
-		app: IApp
+		app: App
 	) {
 		this.wsConnection = wsConnection;
 		this.user = user;
@@ -64,7 +63,7 @@ export default class Connection {
 	@autobind
 	private async onApiRequest(payload: any) {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
-		const user = this.user ? await Users.findOne({ _id: this.user.id }) : null;
+		const user = this.user ? await Users.findOne(this.user.id) : null;
 
 		const endpoint = payload.endpoint || payload.ep; // alias
 

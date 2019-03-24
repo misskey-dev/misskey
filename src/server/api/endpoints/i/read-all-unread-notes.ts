@@ -1,6 +1,6 @@
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
-import { NoteUnreads, Users } from '../../../../models';
+import { NoteUnreads } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -22,11 +22,6 @@ export default define(meta, async (ps, user) => {
 	// Remove documents
 	await NoteUnreads.delete({
 		userId: user.id
-	});
-
-	Users.update(user.id, {
-		hasUnreadMentions: false,
-		hasUnreadSpecifiedNotes: false
 	});
 
 	// 全て既読になったイベントを発行

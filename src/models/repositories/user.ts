@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests } from '..';
 import rap from '@prezzemolo/rap';
 
 @EntityRepository(User)
@@ -56,8 +56,14 @@ export class UserRepository extends Repository<User> {
 			}),
 
 			...(opts.includeHasUnreadNotes ? {
-				hasUnreadSpecifiedNotes: _user.hasUnreadSpecifiedNotes,
-				hasUnreadMentions: _user.hasUnreadMentions,
+				hasUnreadSpecifiedNotes: NoteUnreads.count({
+					where: { userId: _user.id, isSpecified: true },
+					take: 1
+				}).then(count => count > 0),
+				hasUnreadMentions: NoteUnreads.count({
+					where: { userId: _user.id },
+					take: 1
+				}).then(count => count > 0),
 			} : {}),
 
 			...(opts.detail && _user.pinnedNoteIds.length > 0 ? {
@@ -71,6 +77,9 @@ export class UserRepository extends Repository<User> {
 				bannerId: _user.bannerId,
 				hasUnreadMessagingMessage: _user.hasUnreadMessagingMessage,
 				hasUnreadNotification: _user.hasUnreadNotification,
+				pendingReceivedFollowRequestsCount: FollowRequests.count({
+					followeeId: _user.id
+				}),
 			} : {}),
 
 			...(relation ? {

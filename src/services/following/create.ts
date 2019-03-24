@@ -12,7 +12,7 @@ import instanceChart from '../chart/charts/instance';
 import Logger from '../logger';
 import { IdentifiableError } from '../../misc/identifiable-error';
 import { User } from '../../models/entities/user';
-import { Followings, Users, FollowRequests, Blockings } from '../../models';
+import { Followings, Users, FollowRequests, Blockings, Instances } from '../../models';
 
 const logger = new Logger('following/create');
 
@@ -40,54 +40,27 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 		}
 	});
 
-	const removed = await FollowRequests.delete({
+	await FollowRequests.delete({
 		followeeId: followee.id,
 		followerId: follower.id
 	});
 
-	if (removed.deletedCount === 1) {
-		await User.update({ _id: followee.id }, {
-			$inc: {
-				pendingReceivedFollowRequestsCount: -1
-			}
-		});
-	}
-
 	if (alreadyFollowed) return;
 
 	//#region Increment counts
-	User.update({ _id: follower.id }, {
-		$inc: {
-			followingCount: 1
-		}
-	});
-
-	User.update({ _id: followee.id }, {
-		$inc: {
-			followersCount: 1
-		}
-	});
+	Users.increment({ id: follower.id }, 'followingCount', 1);
+	Users.increment({ id: followee.id }, 'followersCount', 1);
 	//#endregion
 
 	//#region Update instance stats
 	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 		registerOrFetchInstanceDoc(follower.host).then(i => {
-			Instance.update({ _id: i.id }, {
-				$inc: {
-					followingCount: 1
-				}
-			});
-
+			Instances.increment({ id: i.id }, 'followingCount', 1);
 			instanceChart.updateFollowing(i.host, true);
 		});
 	} else if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		registerOrFetchInstanceDoc(followee.host).then(i => {
-			Instance.update({ _id: i.id }, {
-				$inc: {
-					followersCount: 1
-				}
-			});
-
+			Instances.increment({ id: i.id }, 'followersCount', 1);
 			instanceChart.updateFollowers(i.host, true);
 		});
 	}

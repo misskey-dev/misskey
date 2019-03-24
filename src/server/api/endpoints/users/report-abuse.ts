@@ -1,11 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/entities/user';
-import AbuseUserReport from '../../../../models/entities/abuse-user-report';
 import { publishAdminStream } from '../../../../services/stream';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { AbuseUserReports, Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -69,7 +68,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.cannotReportAdmin);
 	}
 
-	const report = await AbuseUserReport.insert({
+	const report = await AbuseUserReports.save({
 		createdAt: new Date(),
 		userId: user.id,
 		reporterId: me.id,
@@ -79,7 +78,7 @@ export default define(meta, async (ps, me) => {
 	// Publish event to moderators
 	setTimeout(async () => {
 		const moderators = await Users.find({
-			$or: [{
+			where: [{
 				isAdmin: true
 			}, {
 				isModerator: true

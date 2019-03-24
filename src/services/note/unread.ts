@@ -1,7 +1,7 @@
 import { Note } from '../../models/entities/note';
 import { publishMainStream } from '../stream';
 import { User } from '../../models/entities/user';
-import { Mutings, NoteUnreads, Users } from '../../models';
+import { Mutings, NoteUnreads } from '../../models';
 
 export default async function(user: User, note: Note, isSpecified = false) {
 	//#region ミュートしているなら無視
@@ -23,13 +23,6 @@ export default async function(user: User, note: Note, isSpecified = false) {
 	setTimeout(async () => {
 		const exist = await NoteUnreads.findOne(unread.id);
 		if (exist == null) return;
-
-		Users.update(user.id, isSpecified ? {
-			hasUnreadSpecifiedNotes: true,
-			hasUnreadMentions: true
-		} : {
-			hasUnreadMentions: true
-		});
 
 		publishMainStream(user.id, 'unreadMention', note.id);
 
