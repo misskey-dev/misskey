@@ -30,7 +30,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Update flag
-	User.update({ _id: user.id }, {
+	User.update(user.id, {
 		$set: {
 			hasUnreadNotification: false
 		}

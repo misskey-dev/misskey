@@ -231,7 +231,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const avatarColor = avatar && avatar.metadata.properties.avgColor ? avatar.metadata.properties.avgColor : null;
 	const bannerColor = banner && avatar.metadata.properties.avgColor ? banner.metadata.properties.avgColor : null;
 
-	await User.update({ _id: user.id }, {
+	await User.update(user.id, {
 		$set: {
 			avatarId,
 			bannerId,
@@ -258,7 +258,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	await User.update({ _id: user.id }, {
+	await User.update(user.id, {
 		$set: {
 			emojis: emojiNames
 		}
@@ -516,7 +516,7 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver)) as Promise<Note>));
 
-	await User.update({ _id: user.id }, {
+	await User.update(user.id, {
 		$set: {
 			pinnedNoteIds: featuredNotes.filter(note => note != null).map(note => note.id)
 		}

@@ -1,7 +1,6 @@
-import User from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
-import NoteUnread from '../../../../models/entities/note-unread';
 import define from '../../define';
+import { NoteUnreads, Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -21,20 +20,16 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Remove documents
-	await NoteUnread.remove({
+	await NoteUnreads.delete({
 		userId: user.id
 	});
 
-	User.update({ _id: user.id }, {
-		$set: {
-			hasUnreadMentions: false,
-			hasUnreadSpecifiedNotes: false
-		}
+	Users.update(user.id, {
+		hasUnreadMentions: false,
+		hasUnreadSpecifiedNotes: false
 	});
 
 	// 全て既読になったイベントを発行
 	publishMainStream(user.id, 'readAllUnreadMentions');
 	publishMainStream(user.id, 'readAllUnreadSpecifiedNotes');
-
-	return;
 });

@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Signin, { pack } from '../../../../models/entities/signin';
 import define from '../../define';
+import { MoreThan, LessThan } from 'typeorm';
+import { Signins } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -40,11 +41,11 @@ export default define(meta, async (ps, user) => {
 		query.id = LessThan(ps.untilId);
 	}
 
-	const history = await Signin
-		.find(query, {
-			take: ps.limit,
-			order: sort
-		});
+	const history = await Signins.find({
+		where: query,
+		take: ps.limit,
+		order: sort
+	});
 
-	return await Promise.all(history.map(record => pack(record)));
+	return await Promise.all(history.map(record => Signins.pack(record)));
 });

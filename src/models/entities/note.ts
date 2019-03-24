@@ -139,7 +139,7 @@ export class Note {
 	@Column('simple-array', {
 		default: []
 	})
-	public visibleUserIds: string[];
+	public visibleUserIds: User['id'][];
 
 	@Column('simple-array', {
 		default: []

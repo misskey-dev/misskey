@@ -107,53 +107,68 @@ export class User {
 	})
 	public email: string | null;
 
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public twoFactorTempSecret: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public twoFactorSecret: string | null;
+
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User has unread notification.'
 	})
 	public hasUnreadNotification: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User is suspended.'
 	})
 	public isSuspended: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User is silenced.'
 	})
 	public isSilenced: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User is locked.'
 	})
 	public isLocked: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User is a bot.'
 	})
 	public isBot: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User is a cat.'
 	})
 	public isCat: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User is the admin.'
 	})
 	public isAdmin: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 		comment: 'Whether the User is a moderator.'
 	})
 	public isModerator: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public twoFactorEnabled: boolean;
 
 	@Index()
 	@Column('varchar', {
@@ -201,26 +216,46 @@ export class User {
 	public keypair: string | null;
 
 	@Column('jsonb', {
-		nullable: false, default: {},
+		default: {},
 		comment: 'The client-specific data of the User.'
 	})
 	public clientData: Record<string, any>;
 
 	@Column('jsonb', {
-		nullable: false, default: {},
+		default: {},
 		comment: 'The external service links of the User.'
 	})
 	public services: Record<string, any>;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 	})
 	public autoWatch: boolean;
 
 	@Column('boolean', {
-		nullable: false, default: false,
+		default: false,
 	})
 	public autoAcceptFollowed: boolean;
+
+	@Column('integer', {
+		default: 0,
+	})
+	public pendingReceivedFollowRequestsCount: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public hasUnreadMentions: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public hasUnreadSpecifiedNotes: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public hasUnreadMessagingMessage: boolean;
 }
 
 export interface ILocalUser extends User {

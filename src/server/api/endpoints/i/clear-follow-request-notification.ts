@@ -1,5 +1,5 @@
-import User from '../../../../models/entities/user';
 import define from '../../define';
+import { Users } from '../../../../models';
 
 export const meta = {
 	tags: ['account', 'following'],
@@ -13,11 +13,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	await User.update({ _id: user.id }, {
-		$set: {
-			pendingReceivedFollowRequestsCount: 0
-		}
+	await Users.update(user.id, {
+		pendingReceivedFollowRequestsCount: 0
 	});
-
-	return;
 });

@@ -1,7 +1,6 @@
-import User from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
-import Message from '../../../../models/entities/messaging-message';
 import define from '../../define';
+import { MessagingMessages, Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -21,24 +20,16 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Update documents
-	await Message.update({
+	await MessagingMessages.update({
 		recipientId: user.id,
 		isRead: false
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
+		isRead: true
 	});
 
-	User.update({ _id: user.id }, {
-		$set: {
-			hasUnreadMessagingMessage: false
-		}
+	Users.update(user.id, {
+		hasUnreadMessagingMessage: false
 	});
 
 	publishMainStream(user.id, 'readAllMessagingMessages');
-
-	return;
 });

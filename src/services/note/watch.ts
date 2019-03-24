@@ -1,22 +1,14 @@
-import Watching from '../../models/entities/note-watching';
+import { User } from '../../models/entities/user';
+import { Note } from '../../models/entities/note';
+import { NoteWatchings } from '../../models';
 
-export default async (me: mongodb.ObjectID, note: object) => {
+export default async (me: User['id'], note: Note) => {
 	// 自分の投稿はwatchできない
-	if (me.equals((note as any).userId)) {
+	if (me === note.userId) {
 		return;
 	}
 
-	// if watching now
-	const exist = await Watching.findOne({
-		noteId: (note as any).id,
-		userId: me
-	});
-
-	if (exist !== null) {
-		return;
-	}
-
-	await Watching.insert({
+	await NoteWatchings.save({
 		createdAt: new Date(),
 		noteId: (note as any).id,
 		userId: me

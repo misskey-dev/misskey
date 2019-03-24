@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import { pack } from '../../../../models/entities/user';
 import { removePinned } from '../../../../services/i/pin';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { Users } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -43,7 +43,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	return await pack(user, user, {
+	return await Users.pack(user, user, {
 		detail: true
 	});
 });

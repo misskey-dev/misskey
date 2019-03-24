@@ -16,7 +16,7 @@ export default async function(user: User) {
 		accept(user, follower);
 	}
 
-	User.update({ _id: user.id }, {
+	User.update(user.id, {
 		$set: {
 			pendingReceivedFollowRequestsCount: 0
 		}

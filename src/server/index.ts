@@ -79,7 +79,7 @@ router.get('/verify-email/:code', async ctx => {
 		ctx.body = 'Verify succeeded!';
 		ctx.status = 200;
 
-		User.update({ _id: user.id }, {
+		User.update(user.id, {
 			$set: {
 				emailVerified: true,
 				emailVerifyCode: null

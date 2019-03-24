@@ -1,41 +1,34 @@
-import NoteUnread from '../../models/entities/note-unread';
-import User, { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
-import Mute from '../../models/entities/muting';
 import { publishMainStream } from '../stream';
+import { User } from '../../models/entities/user';
+import { Mutings, NoteUnreads, Users } from '../../models';
 
 export default async function(user: User, note: Note, isSpecified = false) {
 	//#region ミュートしているなら無視
-	const mute = await Mute.find({
+	const mute = await Mutings.find({
 		muterId: user.id
 	});
 	const mutedUserIds = mute.map(m => m.muteeId.toString());
 	if (mutedUserIds.includes(note.userId.toString())) return;
 	//#endregion
 
-	const unread = await NoteUnread.insert({
+	const unread = await NoteUnreads.save({
 		noteId: note.id,
 		userId: user.id,
 		isSpecified,
-		_note: {
-			userId: note.userId
-		}
+		noteUserId: note.userId
 	});
 
 	// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 	setTimeout(async () => {
-		const exist = await NoteUnread.findOne({ _id: unread.id });
+		const exist = await NoteUnreads.findOne(unread.id);
 		if (exist == null) return;
 
-		User.update({
-			id: user.id
-		}, {
-			$set: isSpecified ? {
-				hasUnreadSpecifiedNotes: true,
-				hasUnreadMentions: true
-			} : {
-				hasUnreadMentions: true
-			}
+		Users.update(user.id, isSpecified ? {
+			hasUnreadSpecifiedNotes: true,
+			hasUnreadMentions: true
+		} : {
+			hasUnreadMentions: true
 		});
 
 		publishMainStream(user.id, 'unreadMention', note.id);

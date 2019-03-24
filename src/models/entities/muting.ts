@@ -18,7 +18,7 @@ export class Muting {
 	@Column('integer', {
 		comment: 'The mutee user ID.'
 	})
-	public muteeId: string;
+	public muteeId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
@@ -30,7 +30,7 @@ export class Muting {
 	@Column('integer', {
 		comment: 'The muter user ID.'
 	})
-	public muterId: string;
+	public muterId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

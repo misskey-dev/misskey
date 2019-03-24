@@ -11,7 +11,6 @@ import { parse } from '../../mfm/parse';
 import resolveUser from '../../remote/resolve-user';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
-import isQuote from '../../misc/is-quote';
 import notesChart from '../chart/charts/notes';
 import perUserNotesChart from '../chart/charts/per-user-notes';
 import activeUsersChart from '../chart/charts/active-users';
@@ -24,7 +23,7 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings, Notes } from '../../models';
+import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings, Notes, Instances } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { In, Not } from 'typeorm';
@@ -210,12 +209,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	// Register host
 	if (Users.isRemoteUser(user)) {
 		registerOrFetchInstanceDoc(user.host).then(i => {
-			Instance.update({ _id: i.id }, {
-				$inc: {
-					notesCount: 1
-				}
-			});
-
+			Instances.increment({ id: i.id }, 'notesCount', 1);
 			instanceChart.updateNote(i.host, true);
 		});
 	}
@@ -254,10 +248,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	if (data.renote) {
 		incRenoteCount(data.renote);
-	}
-
-	if (isQuote(note)) {
-		saveQuote(data.renote, note);
 	}
 
 	// Pack the note
@@ -345,12 +335,8 @@ async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 }
 
 function incRenoteCount(renote: Note) {
-	Note.update({ _id: renote.id }, {
-		$inc: {
-			renoteCount: 1,
-			score: 1
-		}
-	});
+	Notes.increment({ id: renote.id }, 'renoteCount', 1);
+	Notes.increment({ id: renote.id }, 'score', 1);
 }
 
 async function publish(user: User, note: Note, noteObj: any, reply: Note, renote: Note, visibleUsers: User[], noteActivity: any) {
@@ -406,7 +392,7 @@ async function publish(user: User, note: Note, noteObj: any, reply: Note, renote
 
 	if (['public', 'home', 'followers'].includes(note.visibility)) {
 		// フォロワーに配信
-		publishToFollowers(note, user, noteActivity);
+		publishToFollowers(note, user, noteActivity, reply);
 	}
 
 	// リストに配信
@@ -538,7 +524,7 @@ async function publishToUserLists(note: Note, noteObj: any) {
 	}
 }
 
-async function publishToFollowers(note: Note, user: User, noteActivity: any) {
+async function publishToFollowers(note: Note, user: User, noteActivity: any, reply: Note) {
 	const detailPackedNote = await Notes.pack(note, null, {
 		detail: true,
 		skipHide: true
@@ -559,7 +545,7 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 
 		if (Users.isLocalUser(follower)) {
 			// この投稿が返信ならスキップ
-			if (note.replyId && !note._reply.userId.equals(following.followerId) && !note._reply.userId.equals(note.userId))
+			if (note.replyId && (reply.userId !== following.followerId) && (reply.userId !== note.userId))
 				continue;
 
 			// Publish event to followers stream
@@ -617,30 +603,14 @@ async function createMentionedEvents(mentionedUsers: User[], note: Note, nm: Not
 	}
 }
 
-function saveQuote(renote: Note, note: Note) {
-	Note.update({ _id: renote.id }, {
-		$push: {
-			_quoteIds: note.id
-		}
-	});
-}
-
 function saveReply(reply: Note, note: Note) {
-	Note.update({ _id: reply.id }, {
-		$inc: {
-			repliesCount: 1
-		}
-	});
+	Notes.increment({ id: reply.id }, 'repliesCount', 1);
 }
 
 function incNotesCountOfUser(user: User) {
-	User.update({ _id: user.id }, {
-		$set: {
-			updatedAt: new Date()
-		},
-		$inc: {
-			notesCount: 1
-		}
+	Users.increment({ id: user.id }, 'notesCount', 1);
+	Users.update({ id: user.id }, {
+		updatedAt: new Date()
 	});
 }
 

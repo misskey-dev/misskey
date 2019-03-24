@@ -1,16 +1,15 @@
-import Vote from '../../../models/entities/poll-vote';
-import Note, { Note } from '../../../models/entities/note';
-import Watching from '../../../models/entities/note-watching';
 import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
 import notify from '../../../services/create-notification';
-import { isLocalUser, User } from '../../../models/entities/user';
+import { User } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
+import { PollVotes } from '../../../models';
 
 export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
 	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
 
 	// if already voted
-	const exist = await Vote.find({
+	const exist = await PollVotes.find({
 		noteId: note.id,
 		userId: user.id
 	});
@@ -23,7 +22,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 	}
 
 	// Create vote
-	await Vote.insert({
+	await PollVotes.save({
 		createdAt: new Date(),
 		noteId: note.id,
 		userId: user.id,
@@ -42,7 +41,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 
 	publishNoteStream(note.id, 'pollVoted', {
 		choice: choice,
-		userId: user.id.toHexString()
+		userId: user.id
 	});
 
 	// Notify
@@ -56,8 +55,6 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 		.find({
 			noteId: note.id,
 			userId: { $ne: user.id },
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
 		}, {
 			fields: {
 				userId: true
