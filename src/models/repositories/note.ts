@@ -19,11 +19,6 @@ export class NoteRepository extends Repository<Note> {
 	private async hideNote(packedNote: any, meId: User['id']) {
 		let hide = false;
 
-		// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示(後方互換性のため)
-		if (packedNote.visibility == 'private' && (meId == null || (meId !== packedNote.userId))) {
-			hide = true;
-		}
-
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (packedNote.visibility == 'specified') {
 			if (meId == null) {
