@@ -5,6 +5,12 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.98.1
+----------
+* ドライブのファイルのサムネイルが表示されない問題を修正
+* APでカスタム絵文字を送る時に常にimage/pngで送っている問題を修正
+* いくらいじってもページリロードするとmisskeyのテーマがdark(future)になっちゃう問題を修正
+
 10.98.0
 ----------
 * ドライブのファイルダウンロード時に元のファイル名を尊重するように
