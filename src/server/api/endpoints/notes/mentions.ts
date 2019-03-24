@@ -1,11 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note from '../../../../models/entities/note';
-import { getFriendIds, getFriends } from '../../common/get-friends';
-import { packMany } from '../../../../models/entities/note';
+import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
 import read from '../../../../services/note/read';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { Notes } from '../../../../models';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -50,60 +51,20 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// フォローを取得
-	const followings = await getFriends(user.id);
-
-	const visibleQuery = [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}, {
-		// myself (for followers/specified/private)
-		userId: user.id
-	}, {
-		// to me (for specified)
-		visibleUserIds: { $in: [ user.id ] }
-	}, {
-		visibility: 'followers',
-		$or: [{
-			// フォロワーの投稿
-			userId: { $in: followings.map(f => f.id) },
-		}, {
-			// 自分の投稿へのリプライ
-			'_reply.userId': user.id,
-		}, {
-			// 自分へのメンションが含まれている
-			mentions: { $in: [ user.id ] }
-		}]
-	}];
-
-	const query = {
-		$and: [{
-			deletedAt: null,
-		}, {
-			$or: visibleQuery,
-		}],
-
-		$or: [{
-			mentions: user.id
-		}, {
-			visibleUserIds: user.id
-		}]
-	} as any;
+	const query = Notes.createQueryBuilder('note')
+		.where(generateVisibilityQuery(user))
+		.andWhere(new Brackets(qb => { qb
+			.where('note.mentions ANY(:userId)', { userId: user.id })
+			.orWhere('note.visibleUserIds ANY(:userId)', { userId: user.id })
+		}));
 
 	// 隠すユーザーを取得
 	const hideUserIds = await getHideUserIds(user);
 
 	if (hideUserIds && hideUserIds.length > 0) {
-		query.userId = {
-			$nin: hideUserIds
-		};
-
-		query['_reply.userId'] = {
-			$nin: hideUserIds
-		};
-
-		query['_renote.userId'] = {
-			$nin: hideUserIds
-		};
+		query.andWhere('note.userId NOT IN (:...hideUserIds)', { hideUserIds: hideUserIds });
+		query.andWhere('note.replyUserId NOT IN (:...hideUserIds)', { hideUserIds: hideUserIds });
+		query.andWhere('note.renoteUserId NOT IN (:...hideUserIds)', { hideUserIds: hideUserIds });
 	}
 
 	const sort = {
@@ -111,25 +72,23 @@ export default define(meta, async (ps, user) => {
 	};
 
 	if (ps.visibility) {
-		query.visibility = ps.visibility;
+		query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
 	}
 
 	if (ps.following) {
 		const followingIds = await getFriendIds(user.id);
-
-		query.userId = {
-			$in: followingIds
-		};
+		query.andWhere('note.userId IN (:...followings)', { followings: followingIds });
 	}
 
 	if (ps.sinceId) {
 		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
+		query.andWhere('note.id > :id', { id: ps.sinceId });
 	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
+		query.andWhere('note.id < :id', { id: ps.untilId });
 	}
 
-	const mentions = await Note.find(query, {
+	const mentions = await Notes.find({
+		where: query,
 		take: ps.limit,
 		order: sort
 	});
@@ -138,5 +97,5 @@ export default define(meta, async (ps, user) => {
 		read(user.id, note.id);
 	}
 
-	return await packMany(mentions, user);
+	return await Notes.packMany(mentions, user);
 });

@@ -3,8 +3,8 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { createImportUserListsJob } from '../../../../queue';
 import ms = require('ms');
-import DriveFile from '../../../../models/entities/drive-file';
 import { ApiError } from '../../error';
+import { DriveFiles } from '../../../../models';
 
 export const meta = {
 	secure: true,
@@ -48,9 +48,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const file = await DriveFile.findOne({
-		id: ps.fileId
-	});
+	const file = await DriveFiles.findOne(ps.fileId as any);
 
 	if (file == null) throw new ApiError(meta.errors.noSuchFile);
 	//if (!file.contentType.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);

@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFile from '../../../../../models/entities/drive-file';
 import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -46,17 +46,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			id: ps.fileId
-		});
+	const file = await DriveFiles.findOne(ps.fileId as any);
 
 	if (file === null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.userId.equals(user.id)) {
+	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
@@ -65,6 +61,4 @@ export default define(meta, async (ps, user) => {
 
 	// Publish fileDeleted event
 	publishDriveStream(user.id, 'fileDeleted', file.id);
-
-	return;
 });
