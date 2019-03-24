@@ -1,11 +1,9 @@
 import rndstr from 'rndstr';
 import * as crypto from 'crypto';
 import $ from 'cafy';
-import App from '../../../../models/entities/app';
-import AuthSess from '../../../../models/auth-session';
-import AccessToken from '../../../../models/entities/access-token';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { AuthSessions, AccessTokens, Apps } from '../../../../models';
 
 export const meta = {
 	tags: ['auth'],
@@ -31,7 +29,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch token
-	const session = await AuthSess
+	const session = await AuthSessions
 		.findOne({ token: ps.token });
 
 	if (session === null) {
@@ -42,16 +40,14 @@ export default define(meta, async (ps, user) => {
 	const accessToken = rndstr('a-zA-Z0-9', 32);
 
 	// Fetch exist access token
-	const exist = await AccessToken.findOne({
+	const exist = await AccessTokens.findOne({
 		appId: session.appId,
 		userId: user.id,
 	});
 
 	if (exist === null) {
 		// Lookup app
-		const app = await App.findOne({
-			id: session.appId
-		});
+		const app = await Apps.findOne(session.appId);
 
 		// Generate Hash
 		const sha256 = crypto.createHash('sha256');
@@ -59,7 +55,7 @@ export default define(meta, async (ps, user) => {
 		const hash = sha256.digest('hex');
 
 		// Insert access token doc
-		await AccessToken.insert({
+		await AccessTokens.save({
 			createdAt: new Date(),
 			appId: session.appId,
 			userId: user.id,
@@ -69,10 +65,8 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Update session
-	await AuthSess.update(session.id, {
-		$set: {
-			userId: user.id
-		}
+	await AuthSessions.update(session.id, {
+		userId: user.id
 	});
 
 	return;

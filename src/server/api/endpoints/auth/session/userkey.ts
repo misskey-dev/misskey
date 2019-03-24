@@ -1,10 +1,7 @@
 import $ from 'cafy';
-import App from '../../../../../models/entities/app';
-import AuthSess from '../../../../../models/auth-session';
-import AccessToken from '../../../../../models/entities/access-token';
-import { pack } from '../../../../../models/entities/user';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { Apps, AuthSessions, AccessTokens, Users } from '../../../../../models';
 
 export const meta = {
 	tags: ['auth'],
@@ -67,7 +64,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	// Lookup app
-	const app = await App.findOne({
+	const app = await Apps.findOne({
 		secret: ps.appSecret
 	});
 
@@ -76,11 +73,10 @@ export default define(meta, async (ps) => {
 	}
 
 	// Fetch token
-	const session = await AuthSess
-		.findOne({
-			token: ps.token,
-			appId: app.id
-		});
+	const session = await AuthSessions.findOne({
+		token: ps.token,
+		appId: app.id
+	});
 
 	if (session === null) {
 		throw new ApiError(meta.errors.noSuchSession);
@@ -91,25 +87,17 @@ export default define(meta, async (ps) => {
 	}
 
 	// Lookup access token
-	const accessToken = await AccessToken.findOne({
+	const accessToken = await AccessTokens.findOne({
 		appId: app.id,
 		userId: session.userId
 	});
 
 	// Delete session
-
-	/* https://github.com/Automattic/monk/issues/178
-	AuthSess.deleteOne({
-		id: session.id
-	});
-	*/
-	AuthSess.remove({
-		id: session.id
-	});
+	AuthSessions.delete(session.id);
 
 	return {
 		accessToken: accessToken.token,
-		user: await pack(session.userId, null, {
+		user: await Users.pack(session.userId, null, {
 			detail: true
 		})
 	};

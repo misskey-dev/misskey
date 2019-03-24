@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import AuthSess, { pack } from '../../../../../models/auth-session';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { AuthSessions } from '../../../../../models';
 
 export const meta = {
 	tags: ['auth'],
@@ -29,7 +29,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Lookup session
-	const session = await AuthSess.findOne({
+	const session = await AuthSessions.findOne({
 		token: ps.token
 	});
 
@@ -37,5 +37,5 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchSession);
 	}
 
-	return await pack(session, user);
+	return await AuthSessions.pack(session, user);
 });

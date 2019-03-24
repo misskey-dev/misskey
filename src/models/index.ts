@@ -29,6 +29,7 @@ import { NoteRepository } from './repositories/note';
 import { DriveFileRepository } from './repositories/drive-file';
 import { DriveFolderRepository } from './repositories/drive-folder';
 import { Log } from './entities/log';
+import { AccessToken } from './entities/access-token';
 
 export const Apps = getRepository(App);
 export const Notes = getCustomRepository(NoteRepository);
@@ -55,6 +56,7 @@ export const Hashtags = getRepository(Hashtag);
 export const AbuseUserReports = getRepository(AbuseUserReport);
 export const RegistrationTickets = getRepository(RegistrationTicket);
 export const AuthSessions = getRepository(AuthSession);
+export const AccessTokens = getRepository(AccessToken);
 export const Signins = getRepository(Signin);
 export const MessagingMessages = getRepository(MessagingMessage);
 export const ReversiGames = getRepository(ReversiGame);

@@ -1,10 +1,9 @@
 import * as uuid from 'uuid';
 import $ from 'cafy';
-import App from '../../../../../models/entities/app';
-import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { Apps, AuthSessions } from '../../../../../models';
 
 export const meta = {
 	tags: ['auth'],
@@ -46,7 +45,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	// Lookup app
-	const app = await App.findOne({
+	const app = await Apps.findOne({
 		secret: ps.appSecret
 	});
 
@@ -58,7 +57,7 @@ export default define(meta, async (ps) => {
 	const token = uuid.v4();
 
 	// Create session token document
-	const doc = await AuthSess.insert({
+	const doc = await AuthSessions.save({
 		createdAt: new Date(),
 		appId: app.id,
 		token: token
