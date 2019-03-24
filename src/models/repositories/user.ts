@@ -23,7 +23,7 @@ export class UserRepository extends Repository<User> {
 			includeSecrets?: boolean,
 			includeHasUnreadNotes?: boolean
 		}
-	) {
+	): Promise<Record<string, any>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false
@@ -42,7 +42,7 @@ export class UserRepository extends Repository<User> {
 			'isVerified'
 		]);
 
-		const meId = typeof me === 'string' ? me : me.id;
+		const meId = typeof me === 'number' ? me : me.id;
 
 		const relation = meId && (meId !== _user.id) && opts.detail ? await getRelation(meId, _user.id) : null;
 

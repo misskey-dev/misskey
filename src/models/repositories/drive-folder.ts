@@ -25,7 +25,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 		options?: {
 			detail: boolean
 		}
-	) {
+	): Promise<Record<string, any>> {
 		const opts = Object.assign({
 			detail: false
 		}, options);

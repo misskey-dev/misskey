@@ -16,7 +16,7 @@ export class NoteRepository extends Repository<Note> {
 		}
 	}
 
-	private async hideNote(packedNote: any, meId: string) {
+	private async hideNote(packedNote: any, meId: User['id']) {
 		let hide = false;
 
 		// visibility が private かつ投稿者のIDが自分のIDではなかったら非表示(後方互換性のため)
@@ -99,13 +99,13 @@ export class NoteRepository extends Repository<Note> {
 			detail?: boolean;
 			skipHide?: boolean;
 		}
-	) {
+	): Promise<Record<string, any>> {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false
 		}, options);
 
-		const meId = typeof me === 'string' ? me : me.id;
+		const meId = typeof me === 'number' ? me : me.id;
 		const _note = await this.cloneOrFetch(note);
 		const host = _note._user.host;
 

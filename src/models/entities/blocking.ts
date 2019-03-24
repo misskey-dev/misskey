@@ -18,7 +18,7 @@ export class Blocking {
 	@Column('integer', {
 		comment: 'The blockee user ID.'
 	})
-	public blockeeId: string;
+	public blockeeId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
@@ -30,7 +30,7 @@ export class Blocking {
 	@Column('integer', {
 		comment: 'The blocker user ID.'
 	})
-	public blockerId: number;
+	public blockerId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

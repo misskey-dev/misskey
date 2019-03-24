@@ -1,6 +1,3 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, User } from '../../models/entities/user';
-import Following from '../../models/entities/following';
-import FollowRequest from '../../models/entities/follow-request';
 import { publishMainStream } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
@@ -9,10 +6,10 @@ import renderBlock from '../../remote/activitypub/renderer/block';
 import { deliver } from '../../queue';
 import renderReject from '../../remote/activitypub/renderer/reject';
 import perUserFollowingChart from '../chart/charts/per-user-following';
-import Blocking from '../../models/entities/blocking';
+import { User } from '../../models/entities/user';
+import { Blockings, Users, FollowRequests, Followings } from '../../models';
 
 export default async function(blocker: User, blockee: User) {
-
 	await Promise.all([
 		cancelRequest(blocker, blockee),
 		cancelRequest(blockee, blocker),
@@ -20,20 +17,20 @@ export default async function(blocker: User, blockee: User) {
 		unFollow(blockee, blocker)
 	]);
 
-	await Blocking.insert({
+	await Blockings.save({
 		createdAt: new Date(),
 		blockerId: blocker.id,
 		blockeeId: blockee.id,
 	});
 
-	if (isLocalUser(blocker) && isRemoteUser(blockee)) {
+	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee)) {
 		const content = renderActivity(renderBlock(blocker, blockee));
 		deliver(blocker, content, blockee.inbox);
 	}
 }
 
 async function cancelRequest(follower: User, followee: User) {
-	const request = await FollowRequest.findOne({
+	const request = await FollowRequests.findOne({
 		followeeId: followee.id,
 		followerId: follower.id
 	});
@@ -42,7 +39,7 @@ async function cancelRequest(follower: User, followee: User) {
 		return;
 	}
 
-	await FollowRequest.remove({
+	await FollowRequests.delete({
 		followeeId: followee.id,
 		followerId: follower.id
 	});
@@ -53,33 +50,33 @@ async function cancelRequest(follower: User, followee: User) {
 		}
 	});
 
-	if (isLocalUser(followee)) {
-		packUser(followee, followee, {
+	if (Users.isLocalUser(followee)) {
+		Users.pack(followee, followee, {
 			detail: true
 		}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 	}
 
-	if (isLocalUser(follower)) {
-		packUser(followee, follower, {
+	if (Users.isLocalUser(follower)) {
+		Users.pack(followee, follower, {
 			detail: true
 		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
 	}
 
 	// リモートにフォローリクエストをしていたらUndoFollow送信
-	if (isLocalUser(follower) && isRemoteUser(followee)) {
+	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
 	}
 
 	// リモートからフォローリクエストを受けていたらReject送信
-	if (isRemoteUser(follower) && isLocalUser(followee)) {
+	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId), followee));
 		deliver(followee, content, follower.inbox);
 	}
 }
 
 async function unFollow(follower: User, followee: User) {
-	const following = await Following.findOne({
+	const following = await Followings.findOne({
 		followerId: follower.id,
 		followeeId: followee.id
 	});
@@ -88,9 +85,7 @@ async function unFollow(follower: User, followee: User) {
 		return;
 	}
 
-	Following.remove({
-		id: following.id
-	});
+	Followings.delete(following.id);
 
 	//#region Decrement following count
 	User.update({ _id: follower.id }, {
@@ -111,14 +106,14 @@ async function unFollow(follower: User, followee: User) {
 	perUserFollowingChart.update(follower, followee, false);
 
 	// Publish unfollow event
-	if (isLocalUser(follower)) {
-		packUser(followee, follower, {
+	if (Users.isLocalUser(follower)) {
+		Users.pack(followee, follower, {
 			detail: true
 		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
 	}
 
 	// リモートにフォローをしていたらUndoFollow送信
-	if (isLocalUser(follower) && isRemoteUser(followee)) {
+	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 		deliver(follower, content, followee.inbox);
 	}
