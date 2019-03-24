@@ -2,22 +2,18 @@ import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';
 import { ID } from '../../misc/cafy-id';
-import User from '../../models/entities/user';
-import Following from '../../models/entities/following';
 import * as url from '../../prelude/url';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
 import { setResponseType } from '../activitypub';
+import { Users, Followings } from '../../models';
+import { LessThan, FindConditions } from 'typeorm';
+import { Following } from '../../models/entities/following';
 
 export default async (ctx: Router.IRouterContext) => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
+	const userId = parseInt(ctx.params.user, 10);
 
 	// Get 'cursor' parameter
 	const [cursor, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);
@@ -49,21 +45,19 @@ export default async (ctx: Router.IRouterContext) => {
 	if (page) {
 		const query = {
 			followerId: user.id
-		} as any;
+		} as FindConditions<Following>;
 
 		// カーソルが指定されている場合
 		if (cursor) {
-			query.id = {
-				$lt: transform(cursor)
-			};
+			query.id = LessThan(cursor);
 		}
 
 		// Get followings
-		const followings = await Following
-			.find(query, {
-				limit: limit + 1,
-				sort: { _id: -1 }
-			});
+		const followings = await Followings.find({
+			where: query,
+			take: limit + 1,
+			order: { id: -1 }
+		});
 
 		// 「次のページ」があるかどうか
 		const inStock = followings.length === limit + 1;
@@ -79,7 +73,7 @@ export default async (ctx: Router.IRouterContext) => {
 			null,
 			inStock ? `${partOf}?${url.query({
 				page: 'true',
-				cursor: followings[followings.length - 1].id.toHexString()
+				cursor: followings[followings.length - 1].id
 			})}` : null
 		);
 

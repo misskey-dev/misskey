@@ -3,9 +3,6 @@ import * as json from 'koa-json-body';
 import * as httpSignature from 'http-signature';
 
 import { renderActivity } from '../remote/activitypub/renderer';
-import Note from '../models/entities/note';
-import User, { isLocalUser, ILocalUser, User } from '../models/entities/user';
-import Emoji from '../models/entities/emoji';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
 import renderPerson from '../remote/activitypub/renderer/person';
@@ -17,6 +14,8 @@ import Featured from './activitypub/featured';
 import renderQuestion from '../remote/activitypub/renderer/question';
 import { inbox as processInbox } from '../queue';
 import { isSelfHost } from '../misc/convert-host';
+import { Notes, Users, Emojis } from '../models';
+import { ILocalUser, User } from '../models/entities/user';
 
 // Init router
 const router = new Router();
@@ -63,13 +62,8 @@ router.post('/users/:user/inbox', json(), inbox);
 router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
-	if (!ObjectID.isValid(ctx.params.note)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const note = await Note.findOne({
-		id: new ObjectID(ctx.params.note),
+	const note = await Notes.findOne({
+		id: parseInt(ctx.params.note, 10),
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
 	});
@@ -96,13 +90,8 @@ router.get('/notes/:note', async (ctx, next) => {
 
 // note activity
 router.get('/notes/:note/activity', async ctx => {
-	if (!ObjectID.isValid(ctx.params.note)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const note = await Note.findOne({
-		id: new ObjectID(ctx.params.note),
+	const note = await Notes.findOne({
+		id: parseInt(ctx.params.note, 10),
 		'_user.host': null,
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true }
@@ -120,13 +109,8 @@ router.get('/notes/:note/activity', async ctx => {
 
 // question
 router.get('/questions/:question', async (ctx, next) => {
-	if (!ObjectID.isValid(ctx.params.question)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const poll = await Note.findOne({
-		id: new ObjectID(ctx.params.question),
+	const poll = await Notes.findOne({
+		id: parseInt(ctx.params.question, 10),
 		'_user.host': null,
 		visibility: { $in: ['public', 'home'] },
 		localOnly: { $ne: true },
@@ -141,9 +125,7 @@ router.get('/questions/:question', async (ctx, next) => {
 		return;
 	}
 
-	const user = await Users.findOne({
-			id: poll.userId
-	});
+	const user = await Users.findOne(poll.userId);
 
 	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, poll));
 	setResponseType(ctx);
@@ -163,12 +145,7 @@ router.get('/users/:user/collections/featured', Featured);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
+	const userId = parseInt(ctx.params.user, 10);
 
 	const user = await Users.findOne({
 		id: userId,
@@ -180,7 +157,7 @@ router.get('/users/:user/publickey', async ctx => {
 		return;
 	}
 
-	if (isLocalUser(user)) {
+	if (Users.isLocalUser(user)) {
 		ctx.body = renderActivity(renderKey(user));
 		ctx.set('Cache-Control', 'public, max-age=180');
 		setResponseType(ctx);
@@ -204,12 +181,7 @@ async function userInfo(ctx: Router.IRouterContext, user: User) {
 router.get('/users/:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
+	const userId = parseInt(ctx.params.user, 10);
 
 	const user = await Users.findOne({
 		id: userId,
@@ -233,7 +205,7 @@ router.get('/@:user', async (ctx, next) => {
 
 // emoji
 router.get('/emojis/:emoji', async ctx => {
-	const emoji = await Emoji.findOne({
+	const emoji = await Emojis.findOne({
 		host: null,
 		name: ctx.params.emoji
 	});

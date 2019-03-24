@@ -1,19 +1,13 @@
 import * as Router from 'koa-router';
 import config from '../../config';
-import User from '../../models/entities/user';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import { setResponseType } from '../activitypub';
-import Note from '../../models/entities/note';
 import renderNote from '../../remote/activitypub/renderer/note';
+import { Users, Notes } from '../../models';
 
 export default async (ctx: Router.IRouterContext) => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
+	const userId = parseInt(ctx.params.user, 10);
 
 	// Verify user
 	const user = await Users.findOne({
@@ -28,7 +22,7 @@ export default async (ctx: Router.IRouterContext) => {
 
 	const pinnedNoteIds = user.pinnedNoteIds || [];
 
-	const pinnedNotes = await Promise.all(pinnedNoteIds.filter(ObjectID.isValid).map(id => Note.findOne(id)));
+	const pinnedNotes = await Promise.all(pinnedNoteIds.map(id => Notes.findOne(id)));
 
 	const renderedNotes = await Promise.all(pinnedNotes.map(note => renderNote(note)));
 

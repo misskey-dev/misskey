@@ -31,7 +31,7 @@ export async function addPinned(user: User, noteId: mongo.ObjectID) {
 	// 存在していなかったらピン留め投稿から外す
 	const pinnedNotes = await packMany(pinnedNoteIds, null, { detail: true });
 
-	pinnedNoteIds = pinnedNoteIds.filter(id => pinnedNotes.some(n => n.id === id.toHexString()));
+	pinnedNoteIds = pinnedNoteIds.filter(id => pinnedNotes.some(n => n.id === id));
 	//#endregion
 
 	if (pinnedNoteIds.length >= 5) {

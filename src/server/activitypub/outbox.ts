@@ -95,11 +95,11 @@ export default async (ctx: Router.IRouterContext) => {
 			user.notesCount, activities, partOf,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				since_id: notes[0].id.toHexString()
+				since_id: notes[0].id
 			})}` : null,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				until_id: notes[notes.length - 1].id.toHexString()
+				until_id: notes[notes.length - 1].id
 			})}` : null
 		);
 

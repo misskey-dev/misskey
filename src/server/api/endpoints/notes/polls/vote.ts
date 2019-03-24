@@ -128,7 +128,7 @@ export default define(meta, async (ps, user) => {
 
 	publishNoteStream(note.id, 'pollVoted', {
 		choice: ps.choice,
-		userId: user.id.toHexString()
+		userId: user.id
 	});
 
 	// Notify

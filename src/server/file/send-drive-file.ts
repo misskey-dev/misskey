@@ -13,7 +13,7 @@ const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): voi
 };
 
 export default async function(ctx: Koa.BaseContext) {
-	const fileId = ctx.params.id;
+	const fileId = parseInt(ctx.params.id, 10);
 
 	// Fetch drive file
 	const file = await DriveFiles.findOne(fileId);

@@ -69,7 +69,7 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	if (userList.userIds.map(id => id.toHexString()).includes(user.id.toHexString())) {
+	if (userList.userIds.map(id => id).includes(user.id)) {
 		throw new ApiError(meta.errors.alreadyAdded);
 	}
 

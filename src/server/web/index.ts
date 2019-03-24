@@ -182,7 +182,7 @@ router.get('/users/:user', async ctx => {
 
 // Note
 router.get('/notes/:note', async ctx => {
-	const note = await Notes.findOne(ctx.params.note);
+	const note = await Notes.findOne(parseInt(ctx.params.note, 10));
 
 	if (note) {
 		const _note = await Notes.pack(note);
