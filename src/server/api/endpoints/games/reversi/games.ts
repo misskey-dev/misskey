@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import define from '../../../define';
 
@@ -13,11 +13,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		my: {

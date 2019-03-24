@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import User from '../../../../models/entities/user';
 import Following from '../../../../models/entities/following';
 import { pack } from '../../../../models/entities/user';
@@ -19,7 +19,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -40,7 +40,7 @@ export const meta = {
 		},
 
 		cursor: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 			default: null as any,
 		},
 

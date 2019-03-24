@@ -14,8 +14,7 @@ export class MessagingMessage {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The sender user ID.'
 	})
 	public userId: User['id'];
@@ -27,8 +26,7 @@ export class MessagingMessage {
 	public user: User | null;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The recipient user ID.'
 	})
 	public recipientId: User['id'];

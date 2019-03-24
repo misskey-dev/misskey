@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import Signin, { pack } from '../../../../models/entities/signin';
 import define from '../../define';
 
@@ -15,11 +15,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		}
 	}
 };

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import Message from '../../../../models/entities/messaging-message';
 import { pack } from '../../../../models/entities/messaging-message';
 import read from '../../common/read-messaging-message';
@@ -21,7 +21,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}
@@ -33,11 +33,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),,
+			validator: $.optional.type(ID),,
 
 		markAsRead: {
 			validator: $.optional.bool,

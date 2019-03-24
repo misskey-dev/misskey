@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../../misc/cafy-id';
+import { ID } from '../../../../../../misc/cafy-id';
 import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../../../services/stream';
 import define from '../../../../define';
@@ -16,7 +16,7 @@ export const meta = {
 
 	params: {
 		gameId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '投了したい対局'
 			}

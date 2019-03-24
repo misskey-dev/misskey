@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import { getFriends } from '../../common/get-friends';
@@ -17,7 +17,7 @@ export const meta = {
 
 	params: {
 		noteId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'
@@ -30,11 +30,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 	},
 

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
 import ReversiGame, { pack as packGame } from '../../../../../models/games/reversi/game';
 import { publishMainStream, publishReversiStream } from '../../../../../services/stream';
@@ -15,7 +15,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import UserList from '../../../../../models/entities/user-list';
 import define from '../../../define';
 import { ApiError } from '../../../error';
@@ -20,11 +20,11 @@ export const meta = {
 
 	params: {
 		listId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 		},
 
 		userId: {
-			validator: $.type(StringID),,
+			validator: $.type(ID),,
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}

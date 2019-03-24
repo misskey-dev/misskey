@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import NoteReaction, { pack } from '../../../../models/entities/note-reaction';
 import define from '../../define';
 import { getNote } from '../../common/getters';
@@ -17,7 +17,7 @@ export const meta = {
 
 	params: {
 		noteId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'The ID of the target note'
@@ -35,11 +35,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 	},
 

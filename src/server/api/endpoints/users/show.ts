@@ -19,7 +19,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -27,7 +27,7 @@ export const meta = {
 		},
 
 		userIds: {
-			validator: $.optional.arr($.type(StringID)).unique(),
+			validator: $.optional.arr($.type(ID)).unique(),
 			desc: {
 				'ja-JP': 'ユーザーID (配列)'
 			}

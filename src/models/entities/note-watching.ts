@@ -15,8 +15,7 @@ export class NoteWatching {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The watcher ID.'
 	})
 	public userId: User['id'];

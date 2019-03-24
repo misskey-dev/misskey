@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/entities/drive-file';
 import define from '../../../define';
 import { packMany } from '../../../../../models/entities/note';
@@ -21,7 +21,7 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'
 			}

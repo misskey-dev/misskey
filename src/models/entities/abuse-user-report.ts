@@ -14,9 +14,7 @@ export class AbuseUserReport {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
-	})
+	@Column('integer')
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
@@ -26,9 +24,7 @@ export class AbuseUserReport {
 	public user: User | null;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
-	})
+	@Column('integer')
 	public reporterId: User['id'];
 
 	@ManyToOne(type => User, {

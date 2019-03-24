@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import * as ms from 'ms';
 import deleteReaction from '../../../../../services/note/reaction/delete';
@@ -26,7 +26,7 @@ export const meta = {
 
 	params: {
 		noteId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'

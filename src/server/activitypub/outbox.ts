@@ -1,7 +1,7 @@
 import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../misc/cafy-id';
+import { ID } from '../../misc/cafy-id';
 import User from '../../models/entities/user';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
@@ -24,10 +24,10 @@ export default async (ctx: Router.IRouterContext) => {
 	const userId = new ObjectID(ctx.params.user);
 
 	// Get 'sinceId' parameter
-	const [sinceId, sinceIdErr] = $.optional.type(NumericalID).get(ctx.request.query.since_id);
+	const [sinceId, sinceIdErr] = $.optional.type(ID).get(ctx.request.query.since_id);
 
 	// Get 'untilId' parameter
-	const [untilId, untilIdErr] = $.optional.type(NumericalID).get(ctx.request.query.until_id);
+	const [untilId, untilIdErr] = $.optional.type(ID).get(ctx.request.query.until_id);
 
 	// Get 'page' parameter
 	const pageErr = !$.optional.str.or(['true', 'false']).ok(ctx.request.query.page);

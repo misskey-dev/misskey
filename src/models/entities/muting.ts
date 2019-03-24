@@ -1,5 +1,4 @@
 import * as deepcopy from 'deepcopy';
-import { pack as packUser, User } from './user';
 import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 
@@ -16,8 +15,7 @@ export class Muting {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The mutee user ID.'
 	})
 	public muteeId: string;
@@ -29,8 +27,7 @@ export class Muting {
 	public mutee: User | null;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The muter user ID.'
 	})
 	public muterId: string;

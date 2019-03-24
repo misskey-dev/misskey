@@ -71,8 +71,7 @@ export class Note {
 	public app: App | null;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The ID of author.'
 	})
 	public userId: User['id'];

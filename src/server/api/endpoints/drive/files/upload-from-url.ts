@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../../models/entities/drive-file';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 import define from '../../../define';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -28,7 +28,7 @@ export const meta = {
 		},
 
 		folderId: {
-			validator: $.optional.nullable.type(NumericalID),
+			validator: $.optional.nullable.type(ID),
 			default: null as any,
 		},
 
@@ -52,5 +52,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	return await pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force), { self: true });
+	return await DriveFiles.pack(await uploadFromUrl(ps.url, user, ps.folderId, null, ps.isSensitive, ps.force), { self: true });
 });

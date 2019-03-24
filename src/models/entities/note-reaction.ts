@@ -1,6 +1,5 @@
 import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
-import { pack as packUser } from './user';
 import { User } from './user';
 import { Note } from './note';
 
@@ -17,9 +16,7 @@ export class NoteReaction {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
-	})
+	@Column('integer')
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {

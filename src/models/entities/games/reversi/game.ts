@@ -18,8 +18,7 @@ export class ReversiGame {
 	})
 	public startedAt: Date;
 
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 	})
 	public user1Id: User['id'];
 
@@ -29,8 +28,7 @@ export class ReversiGame {
 	@JoinColumn()
 	public user1: User | null;
 
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 	})
 	public user2Id: User['id'];
 
@@ -68,13 +66,11 @@ export class ReversiGame {
 	})
 	public isEnded: boolean;
 
-	@Column('varchar', {
-		length: 24, nullable: true,
+	@Column('integer', { nullable: true,
 	})
 	public winnerId: User['id'] | null;
 
-	@Column('varchar', {
-		length: 24, nullable: true,
+	@Column('integer', { nullable: true,
 	})
 	public surrendered: User['id'] | null;
 

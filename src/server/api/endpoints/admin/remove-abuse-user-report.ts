@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { AbuseUserReports } from '../../../../models';
 
@@ -11,7 +11,7 @@ export const meta = {
 
 	params: {
 		reportId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 		},
 	}
 };

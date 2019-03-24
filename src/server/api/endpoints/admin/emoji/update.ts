@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { detectUrlMine } from '../../../../../misc/detect-url-mine';
-import { StringID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import { Emojis } from '../../../../../models';
 
 export const meta = {
@@ -16,7 +16,7 @@ export const meta = {
 
 	params: {
 		id: {
-			validator: $.type(StringID)
+			validator: $.type(ID)
 		},
 
 		name: {

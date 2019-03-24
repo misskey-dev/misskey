@@ -13,8 +13,7 @@ export class UserList {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The owner ID.'
 	})
 	public userId: User['id'];

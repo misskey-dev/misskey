@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import Note from '../../../../models/entities/note';
 import { packMany } from '../../../../models/entities/note';
 import define from '../../define';
@@ -52,11 +52,11 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		},
 
 		sinceDate: {
@@ -141,7 +141,7 @@ export default define(meta, async (ps, user) => {
 		};
 
 		if (ps.excludeNsfw) {
-			query['_files.metadata.isSensitive'] = {
+			query['_files.isSensitive'] = {
 				$ne: true
 			};
 		}

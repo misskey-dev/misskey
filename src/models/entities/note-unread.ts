@@ -9,9 +9,7 @@ export class NoteUnread {
 	public id: number;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
-	})
+	@Column('integer')
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
@@ -30,8 +28,7 @@ export class NoteUnread {
 	@JoinColumn()
 	public note: Note | null;
 
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: '[Denormalized]'
 	})
 	public noteUserId: User['id'];

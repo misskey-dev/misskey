@@ -1,4 +1,3 @@
-import * as deepcopy from 'deepcopy';
 import { JoinColumn, ManyToOne, Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
 import { User } from './user';
 
@@ -20,8 +19,8 @@ export class DriveFolder {
 	public name: string;
 
 	@Index()
-	@Column('varchar', {
-		length: 24, nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: User['id'] | null;

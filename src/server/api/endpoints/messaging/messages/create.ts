@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import Message from '../../../../../models/entities/messaging-message';
 import { isValidText } from '../../../../../models/entities/messaging-message';
 import User from '../../../../../models/entities/user';
@@ -27,7 +27,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -39,7 +39,7 @@ export const meta = {
 		},
 
 		fileId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 		}
 	},
 

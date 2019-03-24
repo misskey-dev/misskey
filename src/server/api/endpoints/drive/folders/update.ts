@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import DriveFolder, { isValidFolderName, pack } from '../../../../../models/entities/drive-folder';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
@@ -21,7 +21,7 @@ export const meta = {
 
 	params: {
 		folderId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のフォルダID',
 				'en-US': 'Target folder ID'
@@ -37,7 +37,7 @@ export const meta = {
 		},
 
 		parentId: {
-			validator: $.optional.nullable.type(NumericalID),
+			validator: $.optional.nullable.type(ID),
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'

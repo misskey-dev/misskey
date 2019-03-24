@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import deleteFollowing from '../../../../services/following/delete';
 import { Users, Followings } from '../../../../models';
@@ -18,7 +18,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID which you want to suspend'

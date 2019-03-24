@@ -1,5 +1,4 @@
 import * as deepcopy from 'deepcopy';
-import { pack as packUser, User } from './user';
 import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 
@@ -16,8 +15,7 @@ export class Blocking {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The blockee user ID.'
 	})
 	public blockeeId: string;
@@ -29,11 +27,10 @@ export class Blocking {
 	public blockee: User | null;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The blocker user ID.'
 	})
-	public blockerId: string;
+	public blockerId: number;
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'

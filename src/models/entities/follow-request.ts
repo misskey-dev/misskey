@@ -15,8 +15,7 @@ export class FollowRequest {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The followee user ID.'
 	})
 	public followeeId: User['id'];
@@ -28,8 +27,7 @@ export class FollowRequest {
 	public followee: User | null;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The follower user ID.'
 	})
 	public followerId: User['id'];

@@ -1,11 +1,9 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
-import DriveFolder from '../../../../../models/entities/drive-folder';
-import DriveFile, { validateFileName, pack } from '../../../../../models/entities/drive-file';
+import { ID } from '../../../../../misc/cafy-id';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
-import Note from '../../../../../models/entities/note';
 import { ApiError } from '../../../error';
+import { DriveFiles, DriveFolders } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -21,14 +19,14 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のファイルID'
 			}
 		},
 
 		folderId: {
-			validator: $.optional.nullable.type(NumericalID),
+			validator: $.optional.nullable.type(ID),
 			default: undefined as any,
 			desc: {
 				'ja-JP': 'フォルダID'
@@ -36,7 +34,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.optional.str.pipe(validateFileName),
+			validator: $.optional.str.pipe(DriveFiles.validateFileName),
 			default: undefined as any,
 			desc: {
 				'ja-JP': 'ファイル名',
@@ -76,11 +74,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			id: ps.fileId
-		});
+	const file = await DriveFiles.findOne(ps.fileId);
 
 	if (file === null) {
 		throw new ApiError(meta.errors.noSuchFile);
@@ -92,18 +86,16 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.name) file.filename = ps.name;
 
-	if (ps.isSensitive !== undefined) file.metadata.isSensitive = ps.isSensitive;
+	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
 
 	if (ps.folderId !== undefined) {
 		if (ps.folderId === null) {
 			file.folderId = null;
 		} else {
-			// Fetch folder
-			const folder = await DriveFolder
-				.findOne({
-					id: ps.folderId,
-					userId: user.id
-				});
+			const folder = await DriveFolders.findOne({
+				id: ps.folderId,
+				userId: user.id
+			});
 
 			if (folder === null) {
 				throw new ApiError(meta.errors.noSuchFolder);
@@ -113,12 +105,10 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	await DriveFile.update(file.id, {
-		$set: {
-			filename: file.filename,
-			'folderId': file.folderId,
-			'metadata.isSensitive': file.metadata.isSensitive
-		}
+	await DriveFiles.update(file.id, {
+		name: file.filename,
+		folderId: file.folderId,
+		isSensitive: file.isSensitive
 	});
 
 	// ドライブのファイルが非正規化されているドキュメントも更新
@@ -135,7 +125,7 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	const fileObj = await pack(file, { self: true });
+	const fileObj = await DriveFiles.pack(file, { self: true });
 
 	// Publish fileUpdated event
 	publishDriveStream(user.id, 'fileUpdated', fileObj);

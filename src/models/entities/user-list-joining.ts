@@ -13,8 +13,7 @@ export class UserListJoining {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The user ID.'
 	})
 	public userId: User['id'];

@@ -19,8 +19,7 @@ export class Notification {
 	 * 通知の受信者
 	 */
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The ID of recipient user of the Notification.'
 	})
 	public notifieeId: string;
@@ -34,8 +33,7 @@ export class Notification {
 	/**
 	 * 通知の送信者(initiator)
 	 */
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 		comment: 'The ID of sender user of the Notification.'
 	})
 	public notifierId: string;

@@ -12,9 +12,7 @@ export class Signin {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
-	})
+	@Column('integer')
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {

@@ -18,8 +18,7 @@ export class AuthSession {
 	})
 	public token: string;
 
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 	})
 	public userId: User['id'];
 

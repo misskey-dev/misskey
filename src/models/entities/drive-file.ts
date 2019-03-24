@@ -14,8 +14,7 @@ export class DriveFile {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24, nullable: true,
+	@Column('integer', { nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: User['id'] | null;

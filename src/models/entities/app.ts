@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import config from '../../config';
 import { User } from './user';
@@ -15,16 +15,16 @@ export class App {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24, nullable: true,
+	@Column('integer', {
+		nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: User['id'] | null;
 
 	@ManyToOne(type => User, {
-		onDelete: 'SET NULL'
+		onDelete: 'SET NULL',
+		nullable: true,
 	})
-	@JoinColumn()
 	public user: User | null;
 
 	@Index()

@@ -5,7 +5,7 @@ import create from '../../../../services/note/create';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import { User } from '../../../../models/entities/user';
 import { Users, DriveFiles, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
@@ -47,7 +47,7 @@ export const meta = {
 		},
 
 		visibleUserIds: {
-			validator: $.optional.arr($.type(StringID)).unique().min(0),
+			validator: $.optional.arr($.type(ID)).unique().min(0),
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
 			}
@@ -128,14 +128,14 @@ export const meta = {
 		},
 
 		fileIds: {
-			validator: $.optional.arr($.type(NumericalID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			desc: {
 				'ja-JP': '添付するファイル'
 			}
 		},
 
 		mediaIds: {
-			validator: $.optional.arr($.type(NumericalID)).unique().range(1, 4),
+			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			deprecated: true,
 			desc: {
 				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
@@ -143,14 +143,14 @@ export const meta = {
 		},
 
 		replyId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 			desc: {
 				'ja-JP': '返信対象'
 			}
 		},
 
 		renoteId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 			desc: {
 				'ja-JP': 'Renote対象'
 			}

@@ -13,8 +13,7 @@ export class ReversiMatching {
 	public createdAt: Date;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 	})
 	public parentId: User['id'];
 
@@ -25,8 +24,7 @@ export class ReversiMatching {
 	public parent: User | null;
 
 	@Index()
-	@Column('varchar', {
-		length: 24,
+	@Column('integer', {
 	})
 	public childId: User['id'];
 

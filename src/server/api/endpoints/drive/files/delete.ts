@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import DriveFile from '../../../../../models/entities/drive-file';
 import del from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../services/stream';
@@ -22,7 +22,7 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'

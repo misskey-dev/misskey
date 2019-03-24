@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { StringID, NumericalID } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import Note, { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import Following from '../../../../models/entities/following';
@@ -15,7 +15,7 @@ export const meta = {
 
 	params: {
 		userId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -40,14 +40,14 @@ export const meta = {
 		},
 
 		sinceId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
 			}
 		},
 
 		untilId: {
-			validator: $.optional.type(NumericalID),
+			validator: $.optional.type(ID),
 			desc: {
 				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
 			}
@@ -233,7 +233,7 @@ export default define(meta, async (ps, me) => {
 		};
 
 		if (ps.excludeNsfw) {
-			query['_files.metadata.isSensitive'] = {
+			query['_files.isSensitive'] = {
 				$ne: true
 			};
 		}

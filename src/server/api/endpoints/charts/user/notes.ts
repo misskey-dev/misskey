@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import perUserNotesChart, { perUserNotesLogSchema } from '../../../../../services/chart/charts/per-user-notes';
-import { StringID, NumericalID } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import { convertLog } from '../../../../../services/chart/core';
 
 export const meta = {
@@ -30,7 +30,7 @@ export const meta = {
 		},
 
 		userId: {
-			validator: $.type(StringID),
+			validator: $.type(ID),
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
