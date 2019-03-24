@@ -551,7 +551,11 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 	const queue: string[] = [];
 
 	for (const following of followers) {
-		const follower = following._follower;
+		const follower = {
+			host: following.followerHost,
+			inbox: following.followerInbox,
+			sharedInbox: following.followerSharedInbox,
+		};
 
 		if (Users.isLocalUser(follower)) {
 			// この投稿が返信ならスキップ
