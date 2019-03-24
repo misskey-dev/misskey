@@ -1,9 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import NoteReaction, { pack } from '../../../../models/entities/note-reaction';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { MoreThan, LessThan } from 'typeorm';
+import { NoteReactions } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -80,7 +81,8 @@ export default define(meta, async (ps, user) => {
 		query.id = LessThan(ps.untilId);
 	}
 
-	const reactions = await NoteReaction.find(query, {
+	const reactions = await NoteReactions.find({
+		where: query,
 		take: ps.limit,
 		skip: ps.offset,
 		order: sort

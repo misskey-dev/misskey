@@ -1,19 +1,19 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import Vote from '../../../../../models/entities/poll-vote';
-import Note from '../../../../../models/entities/note';
-import Watching from '../../../../../models/entities/note-watching';
 import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../services/stream';
 import notify from '../../../../../services/create-notification';
 import define from '../../../define';
-import User, { IRemoteUser } from '../../../../../models/entities/user';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
 import { deliver } from '../../../../../queue';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
 import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
+import { PollVotes, NoteWatchings, Users } from '../../../../../models';
+import { Note } from '../../../../../models/entities/note';
+import { Not } from 'typeorm';
+import { IRemoteUser } from '../../../../../models/entities/user';
 
 export const meta = {
 	desc: {
@@ -78,7 +78,7 @@ export default define(meta, async (ps, user) => {
 	const createdAt = new Date();
 
 	// Get votee
-	const note = await getNote(ps.noteId).catch(e => {
+	const note = await getNote(ps.noteId as Note['id']).catch(e => {
 		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
 		throw e;
 	});
@@ -96,7 +96,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// if already voted
-	const exist = await Vote.find({
+	const exist = await PollVotes.find({
 		noteId: note.id,
 		userId: user.id
 	});
@@ -111,7 +111,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create vote
-	const vote = await Vote.insert({
+	const vote = await PollVotes.save({
 		createdAt,
 		noteId: note.id,
 		userId: user.id,
@@ -138,25 +138,17 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Fetch watchers
-	Watching
-		.find({
-			noteId: note.id,
-			userId: { $ne: user.id },
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
-		}, {
-			fields: {
-				userId: true
-			}
-		})
-		.then(watchers => {
-			for (const watcher of watchers) {
-				notify(watcher.userId, user.id, 'pollVote', {
-					noteId: note.id,
-					choice: ps.choice
-				});
-			}
-		});
+	NoteWatchings.find({
+		noteId: note.id,
+		userId: Not(user.id),
+	}).then(watchers => {
+		for (const watcher of watchers) {
+			notify(watcher.userId, user.id, 'pollVote', {
+				noteId: note.id,
+				choice: ps.choice
+			});
+		}
+	});
 
 	// この投稿をWatchする
 	if (user.autoWatch !== false) {
@@ -165,15 +157,11 @@ export default define(meta, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note._user.host != null) {
-		const pollOwner: IRemoteUser = await Users.findOne({
-			id: note.userId
-		});
+		const pollOwner: IRemoteUser = await Users.findOne(note.userId);
 
 		deliver(user, renderActivity(await renderVote(user, vote, note, pollOwner)), pollOwner.inbox);
 	}
 
 	// リモートフォロワーにUpdate配信
 	deliverQuestionUpdate(note.id);
-
-	return;
 });

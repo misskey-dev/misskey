@@ -7,6 +7,7 @@ import { getHideUserIds } from '../../common/get-hide-users';
 import { Notes } from '../../../../models';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { Brackets } from 'typeorm';
+import { generateMuteQuery } from '../../common/generate-mute-query';
 
 export const meta = {
 	desc: {
@@ -55,17 +56,10 @@ export default define(meta, async (ps, user) => {
 		.where(generateVisibilityQuery(user))
 		.andWhere(new Brackets(qb => { qb
 			.where('note.mentions ANY(:userId)', { userId: user.id })
-			.orWhere('note.visibleUserIds ANY(:userId)', { userId: user.id })
+			.orWhere('note.visibleUserIds ANY(:userId)', { userId: user.id });
 		}));
 
-	// 隠すユーザーを取得
-	const hideUserIds = await getHideUserIds(user);
-
-	if (hideUserIds && hideUserIds.length > 0) {
-		query.andWhere('note.userId NOT IN (:...hideUserIds)', { hideUserIds: hideUserIds });
-		query.andWhere('note.replyUserId NOT IN (:...hideUserIds)', { hideUserIds: hideUserIds });
-		query.andWhere('note.renoteUserId NOT IN (:...hideUserIds)', { hideUserIds: hideUserIds });
-	}
+	query.andWhere(generateMuteQuery(user));
 
 	const sort = {
 		id: -1
