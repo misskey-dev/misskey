@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFile, { pack, DriveFile } from '../../../../../models/entities/drive-file';
 import define from '../../../define';
-import config from '../../../../../config';
 import { ApiError } from '../../../error';
+import { DriveFile } from '../../../../../models/entities/drive-file';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -66,38 +66,22 @@ export default define(meta, async (ps, user) => {
 	let file: DriveFile;
 
 	if (ps.fileId) {
-		file = await DriveFile.findOne({
-			id: ps.fileId,
-			'metadata.deletedAt': { $exists: false }
-		});
+		file = await DriveFiles.findOne(ps.fileId);
 	} else if (ps.url) {
-		const isInternalStorageUrl = ps.url.startsWith(config.driveUrl);
-		if (isInternalStorageUrl) {
-			// Extract file ID from url
-			// e.g.
-			// http://misskey.local/files/foo?original=bar --> foo
-			const fileId = new mongo.ObjectID(ps.url.replace(config.driveUrl, '').replace(/\?(.*)$/, '').replace(/\//g, ''));
-			file = await DriveFile.findOne({
-				id: fileId,
-				'metadata.deletedAt': { $exists: false }
-			});
-		} else {
-			file = await DriveFile.findOne({
-				$or: [{
-					'metadata.url': ps.url
-				}, {
-					'metadata.webpublicUrl': ps.url
-				}, {
-					'metadata.thumbnailUrl': ps.url
-				}],
-				'metadata.deletedAt': { $exists: false }
-			});
-		}
+		file = await DriveFiles.findOne({
+			where: [{
+				url: ps.url
+			}, {
+				webpublicUrl: ps.url
+			}, {
+				thumbnailUrl: ps.url
+			}],
+		});
 	} else {
 		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.userId.equals(user.id)) {
+	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
@@ -105,7 +89,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	return await pack(file, {
+	return await DriveFiles.pack(file, {
 		detail: true,
 		self: true
 	});
