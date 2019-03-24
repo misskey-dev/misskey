@@ -1,15 +1,12 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import User from '../../../models/entities/user';
-import UserList from '../../../models/entities/user-list';
-import DriveFile from '../../../models/entities/drive-file';
-import { getOriginalUrl } from '../../../misc/get-drive-file-url';
 import parseAcct from '../../../misc/acct/parse';
 import resolveUser from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '../../../misc/download-text-file';
 import { isSelfHost, toDbHost } from '../../../misc/convert-host';
+import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
@@ -17,31 +14,29 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id)
+		id: job.data.user.id
 	});
 
-	const file = await DriveFile.findOne({
-		id: new mongo.ObjectID(job.data.fileId.toString())
+	const file = await DriveFiles.findOne({
+		id: job.data.fileId
 	});
 
-	const url = getOriginalUrl(file);
-
-	const csv = await downloadTextFile(url);
+	const csv = await downloadTextFile(file.url);
 
 	for (const line of csv.trim().split('\n')) {
 		const listName = line.split(',')[0].trim();
 		const { username, host } = parseAcct(line.split(',')[1].trim());
 
-		let list = await UserList.findOne({
+		let list = await UserLists.findOne({
 			userId: user.id,
-			title: listName
+			name: listName
 		});
 
 		if (list == null) {
-			list = await UserList.insert({
+			list = await UserLists.save({
 				createdAt: new Date(),
 				userId: user.id,
-				title: listName,
+				name: listName,
 				userIds: []
 			});
 		}
@@ -55,7 +50,8 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 		});
 
 		if (host == null && target == null) continue;
-		if (list.userIds.some(id => id.equals(target.id))) continue;
+
+		if (await UserListJoinings.findOne({ userListId: list.id, userId: target.id }) != null) continue;
 
 		if (target == null) {
 			target = await resolveUser(username, host);

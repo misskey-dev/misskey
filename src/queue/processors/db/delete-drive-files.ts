@@ -1,9 +1,9 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import User from '../../../models/entities/user';
-import DriveFile from '../../../models/entities/drive-file';
 import deleteFile from '../../../services/drive/delete-file';
+import { Users, DriveFiles } from '../../../models';
+import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('delete-drive-files');
 
@@ -11,7 +11,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 	logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id)
+		id: job.data.user.id
 	});
 
 	let deletedCount = 0;
@@ -19,12 +19,13 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 	let cursor: any = null;
 
 	while (!ended) {
-		const files = await DriveFile.find({
-			userId: user.id,
-			...(cursor ? { _id: { $gt: cursor } } : {})
-		}, {
-			limit: 100,
-			sort: {
+		const files = await DriveFiles.find({
+			where: {
+				userId: user.id,
+				...(cursor ? { id: MoreThan(cursor) } : {})
+			},
+			take: 100,
+			order: {
 				id: 1
 			}
 		});
@@ -42,7 +43,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 			deletedCount++;
 		}
 
-		const total = await DriveFile.count({
+		const total = await DriveFiles.count({
 			userId: user.id,
 		});
 

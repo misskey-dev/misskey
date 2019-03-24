@@ -3,10 +3,11 @@ import * as tmp from 'tmp';
 import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
-import Note, { Note } from '../../../models/entities/note';
 import addFile from '../../../services/drive/add-file';
-import User from '../../../models/entities/user';
 import dateFormat = require('dateformat');
+import { Users, Notes } from '../../../models';
+import { MoreThan } from 'typeorm';
+import { Note } from '../../../models/entities/note';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
@@ -14,7 +15,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id)
+		id: job.data.user.id
 	});
 
 	// Create temp file
@@ -45,12 +46,13 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	let cursor: any = null;
 
 	while (!ended) {
-		const notes = await Note.find({
-			userId: user.id,
-			...(cursor ? { _id: { $gt: cursor } } : {})
-		}, {
-			limit: 100,
-			sort: {
+		const notes = await Notes.find({
+			where: {
+				userId: user.id,
+				...(cursor ? { id: MoreThan(cursor) } : {})
+			},
+			take: 100,
+			order: {
 				id: 1
 			}
 		});
@@ -78,7 +80,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 			exportedNotesCount++;
 		}
 
-		const total = await Note.count({
+		const total = await Notes.count({
 			userId: user.id,
 		});
 

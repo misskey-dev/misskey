@@ -4,10 +4,10 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
-import User from '../../../models/entities/user';
 import dateFormat = require('dateformat');
-import UserList from '../../../models/entities/user-list';
 import { getFullApAccount } from '../../../misc/convert-host';
+import { Users, UserLists, UserListJoinings } from '../../../models';
+import { In } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 
@@ -15,10 +15,10 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id)
+		id: job.data.user.id
 	});
 
-	const lists = await UserList.find({
+	const lists = await UserLists.find({
 		userId: user.id
 	});
 
@@ -35,18 +35,14 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	for (const list of lists) {
+		const joinings = await UserListJoinings.find({ userListId: list.id });
 		const users = await Users.find({
-			id: { $in: list.userIds }
-		}, {
-			fields: {
-				username: true,
-				host: true
-			}
+			id: In(joinings.map(j => j.userId))
 		});
 
 		for (const u of users) {
 			const acct = getFullApAccount(u.username, u.host);
-			const content = `${list.title},${acct}`;
+			const content = `${list.name},${acct}`;
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
 					if (err) {

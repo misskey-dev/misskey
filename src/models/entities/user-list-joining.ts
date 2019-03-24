@@ -28,7 +28,7 @@ export class UserListJoining {
 	@Column('integer', {
 		comment: 'The list ID.'
 	})
-	public userListId: number;
+	public userListId: UserList['id'];
 
 	@ManyToOne(type => UserList, {
 		onDelete: 'CASCADE'

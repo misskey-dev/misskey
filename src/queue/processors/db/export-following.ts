@@ -4,10 +4,10 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
-import User from '../../../models/entities/user';
 import dateFormat = require('dateformat');
-import Following from '../../../models/entities/following';
 import { getFullApAccount } from '../../../misc/convert-host';
+import { Users, Followings } from '../../../models';
+import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-following');
 
@@ -15,7 +15,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting following of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id)
+		id: job.data.user.id
 	});
 
 	// Create temp file
@@ -35,12 +35,13 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	let cursor: any = null;
 
 	while (!ended) {
-		const followings = await Following.find({
-			followerId: user.id,
-			...(cursor ? { _id: { $gt: cursor } } : {})
-		}, {
-			limit: 100,
-			sort: {
+		const followings = await Followings.find({
+			where: {
+				followerId: user.id,
+				...(cursor ? { id: MoreThan(cursor) } : {})
+			},
+			take: 100,
+			order: {
 				id: 1
 			}
 		});
@@ -54,7 +55,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 		cursor = followings[followings.length - 1].id;
 
 		for (const following of followings) {
-			const u = await Users.findOne({ _id: following.followeeId }, { fields: { username: true, host: true } });
+			const u = await Users.findOne({ id: following.followeeId });
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
@@ -69,7 +70,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 			exportedCount++;
 		}
 
-		const total = await Following.count({
+		const total = await Followings.count({
 			followerId: user.id,
 		});
 

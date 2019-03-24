@@ -4,10 +4,10 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
-import User from '../../../models/entities/user';
 import dateFormat = require('dateformat');
-import Blocking from '../../../models/entities/blocking';
 import { getFullApAccount } from '../../../misc/convert-host';
+import { Users, Blockings } from '../../../models';
+import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-blocking');
 
@@ -15,7 +15,7 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne({
-		id: new mongo.ObjectID(job.data.user.id)
+		id: job.data.user.id
 	});
 
 	// Create temp file
@@ -35,12 +35,13 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 	let cursor: any = null;
 
 	while (!ended) {
-		const blockings = await Blocking.find({
-			blockerId: user.id,
-			...(cursor ? { _id: { $gt: cursor } } : {})
-		}, {
-			limit: 100,
-			sort: {
+		const blockings = await Blockings.find({
+			where: {
+				blockerId: user.id,
+				...(cursor ? { id: MoreThan(cursor) } : {})
+			},
+			take: 100,
+			order: {
 				id: 1
 			}
 		});
@@ -54,7 +55,7 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 		cursor = blockings[blockings.length - 1].id;
 
 		for (const block of blockings) {
-			const u = await Users.findOne({ _id: block.blockeeId }, { fields: { username: true, host: true } });
+			const u = await Users.findOne({ id: block.blockeeId });
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
@@ -69,7 +70,7 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 			exportedCount++;
 		}
 
-		const total = await Blocking.count({
+		const total = await Blockings.count({
 			blockerId: user.id,
 		});
 
