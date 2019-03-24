@@ -150,6 +150,7 @@ common:
     test: "Test"
     update: "Aktualizacja Misskey"
     version: "Wersja:"
+    do-update: "Sprawdź dostępność nowych aktualizacji"
     navbar-position-left: "Z lewej"
   search: "Szukaj"
   delete: "Usuń"
