@@ -7,8 +7,6 @@ import { ID } from '../../../../misc/cafy-id';
 import { Users } from '../../../../models';
 import { In } from 'typeorm';
 
-const cursorOption = { fields: { data: false } };
-
 export const meta = {
 	desc: {
 		'ja-JP': '指定したユーザーの情報を取得します。'
@@ -77,7 +75,7 @@ export default define(meta, async (ps, me) => {
 	} else {
 		// Lookup user
 		if (typeof ps.host === 'string') {
-			user = await resolveRemoteUser(ps.username, ps.host, cursorOption).catch(e => {
+			user = await resolveRemoteUser(ps.username, ps.host).catch(e => {
 				apiLogger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.failedToResolveRemoteUser);
 			});
@@ -86,7 +84,7 @@ export default define(meta, async (ps, me) => {
 				? { _id: ps.userId }
 				: { usernameLower: ps.username.toLowerCase(), host: null };
 
-			user = await Users.findOne(q, cursorOption);
+			user = await Users.findOne(q);
 		}
 
 		if (user === null) {

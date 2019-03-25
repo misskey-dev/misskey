@@ -1,7 +1,6 @@
 import $ from 'cafy';
-import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
-import { getRelation } from '../../../../models/entities/user';
 import define from '../../define';
+import { ID } from '../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
@@ -15,7 +14,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
-			transform: (v: any): ObjectId | ObjectId[] => Array.isArray(v) ? v.map(x => transform(x)) : transform(v),
 			desc: {
 				'ja-JP': 'ユーザーID (配列でも可)'
 			}

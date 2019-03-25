@@ -20,6 +20,11 @@ export class User {
 	})
 	public updatedAt: Date | null;
 
+	@Column('date', {
+		nullable: true
+	})
+	public lastFetchedAt: Date | null;
+
 	@Column('varchar', {
 		length: 128,
 		comment: 'The username of the User.'

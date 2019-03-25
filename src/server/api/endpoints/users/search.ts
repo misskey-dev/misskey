@@ -1,7 +1,9 @@
 import $ from 'cafy';
 import * as escapeRegexp from 'escape-regexp';
-import User, { pack, validateUsername, User } from '../../../../models/entities/user';
 import define from '../../define';
+import { Users } from '../../../../models';
+import { User } from '../../../../models/entities/user';
+import { Not } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -62,34 +64,36 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
+	const isUsername = Users.validateUsername(ps.query.replace('@', ''), !ps.localOnly);
 
 	let users: User[] = [];
 
 	if (isUsername) {
-		users = await User
-			.find({
+		users = await Users.find({
+			where: {
 				host: null,
+				// v11 TODO
 				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-				isSuspended: { $ne: true }
-			}, {
-				take: ps.limit,
-				skip: ps.offset
-			});
+				isSuspended: false
+			},
+			take: ps.limit,
+			skip: ps.offset
+		});
 
 		if (users.length < ps.limit && !ps.localOnly) {
-			const otherUsers = await User
-				.find({
-					host: { $ne: null },
+			const otherUsers = await Users.find({
+				where: {
+					host: Not(null),
+					// v11 TODO
 					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-					isSuspended: { $ne: true }
-				}, {
-					take: ps.limit - users.length
-				});
+					isSuspended: false
+				},
+				take: ps.limit - users.length
+			});
 
 			users = users.concat(otherUsers);
 		}
 	}
 
-	return await Promise.all(users.map(user => pack(user, me, { detail: ps.detail })));
+	return await Promise.all(users.map(user => Users.pack(user, me, { detail: ps.detail })));
 });

@@ -83,7 +83,7 @@ export default define(meta, async (ps) => {
 	const query = {
 		deletedAt: null,
 		visibility: 'public',
-		localOnly: { $ne: true },
+		localOnly: false,
 	} as any;
 	if (ps.sinceId) {
 		sort.id = 1;
