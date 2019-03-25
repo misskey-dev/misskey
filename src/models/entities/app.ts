@@ -46,7 +46,8 @@ export class App {
 	})
 	public description: string;
 
-	@Column('simple-array', {
+	@Column('varchar', {
+		length: 64, array: true,
 		comment: 'The permission of the App.'
 	})
 	public permission: string[];

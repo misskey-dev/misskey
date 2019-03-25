@@ -83,7 +83,9 @@ export class ReversiGame {
 		pos: number;
 	}[];
 
-	@Column('simple-array')
+	@Column('varchar', {
+		array: true, length: 64,
+	})
 	public map: string[];
 
 	@Column('varchar', {

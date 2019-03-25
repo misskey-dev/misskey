@@ -12,7 +12,8 @@ export class Hashtag {
 	})
 	public tag: string;
 
-	@Column('simple-array', {
+	@Column('integer', {
+		array: true,
 		default: []
 	})
 	public mentionedUserIds: User['id'][];
@@ -23,7 +24,8 @@ export class Hashtag {
 	})
 	public mentionedUsersCount: number;
 
-	@Column('simple-array', {
+	@Column('integer', {
+		array: true,
 		default: []
 	})
 	public mentionedLocalUserIds: User['id'][];
@@ -34,7 +36,8 @@ export class Hashtag {
 	})
 	public mentionedLocalUsersCount: number;
 
-	@Column('simple-array', {
+	@Column('integer', {
+		array: true,
 		default: []
 	})
 	public mentionedRemoteUserIds: User['id'][];
@@ -45,7 +48,8 @@ export class Hashtag {
 	})
 	public mentionedRemoteUsersCount: number;
 
-	@Column('simple-array', {
+	@Column('integer', {
+		array: true,
 		default: []
 	})
 	public attachedUserIds: User['id'][];
@@ -56,7 +60,8 @@ export class Hashtag {
 	})
 	public attachedUsersCount: number;
 
-	@Column('simple-array', {
+	@Column('integer', {
+		array: true,
 		default: []
 	})
 	public attachedLocalUserIds: User['id'][];
@@ -67,7 +72,8 @@ export class Hashtag {
 	})
 	public attachedLocalUsersCount: number;
 
-	@Column('simple-array', {
+	@Column('integer', {
+		array: true,
 		default: []
 	})
 	public attachedRemoteUserIds: User['id'][];

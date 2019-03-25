@@ -61,8 +61,8 @@ export class Meta {
 	})
 	public useStarForReactionFallback: boolean;
 
-	@Column('simple-array', {
-		default: [],
+	@Column('varchar', {
+		length: 256, array: true, default: [],
 	})
 	public hiddenTags: string[];
 

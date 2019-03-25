@@ -1,6 +1,7 @@
 import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, Column } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
+import { DriveFile } from './drive-file';
 
 @Entity()
 export class Note {
@@ -131,18 +132,18 @@ export class Note {
 	})
 	public score: number;
 
-	@Column('simple-array', {
-		default: []
+	@Column('integer', {
+		array: true, default: []
 	})
-	public fileIds: number[];
+	public fileIds: DriveFile['id'][];
 
-	@Column('simple-array', {
-		default: []
+	@Column('integer', {
+		array: true, default: []
 	})
 	public visibleUserIds: User['id'][];
 
-	@Column('simple-array', {
-		default: []
+	@Column('varchar', {
+		length: 128, array: true, default: []
 	})
 	public emojis: string[];
 

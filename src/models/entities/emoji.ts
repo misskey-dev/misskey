@@ -38,7 +38,8 @@ export class Emoji {
 	})
 	public type: string | null;
 
-	@Column('simple-array', {
+	@Column('varchar', {
+		array: true, length: 128,
 		default: []
 	})
 	public aliases: string[];
