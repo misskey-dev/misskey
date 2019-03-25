@@ -1,9 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFile from '../../../../../models/entities/drive-file';
 import define from '../../../define';
-import { packMany } from '../../../../../models/entities/note';
 import { ApiError } from '../../../error';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -22,6 +21,7 @@ export const meta = {
 	params: {
 		fileId: {
 			validator: $.type(ID),
+			desc: {
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'
 			}
@@ -46,18 +46,17 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			id: ps.fileId,
-			userId: user.id,
-			'metadata.deletedAt': { $exists: false }
-		});
+	const file = await DriveFiles.findOne({
+		id: ps.fileId,
+		userId: user.id,
+	});
 
 	if (file === null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
+	/* v11 TODO
 	return await packMany(file.metadata.attachedNoteIds || [], user, {
 		detail: true
-	});
+	});*/
 });

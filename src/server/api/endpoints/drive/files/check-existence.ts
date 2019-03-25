@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import DriveFile, { pack } from '../../../../../models/entities/drive-file';
 import define from '../../../define';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -29,11 +29,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const file = await DriveFile.findOne({
+	const file = await DriveFiles.findOne({
 		md5: ps.md5,
 		userId: user.id,
-		'metadata.deletedAt': { $exists: false }
 	});
 
-	return { file: file ? await pack(file, { self: true }) : null };
+	return {
+		file: file ? await DriveFiles.pack(file, { self: true }) : null
+	};
 });

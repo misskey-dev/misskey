@@ -80,11 +80,11 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.userId.equals(user.id)) {
+	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	if (ps.name) file.filename = ps.name;
+	if (ps.name) file.name = ps.name;
 
 	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
 
@@ -106,11 +106,12 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await DriveFiles.update(file.id, {
-		name: file.filename,
+		name: file.name,
 		folderId: file.folderId,
 		isSensitive: file.isSensitive
 	});
 
+	// v11 TODO
 	// ドライブのファイルが非正規化されているドキュメントも更新
 	Note.find({
 		'_files.id': file.id

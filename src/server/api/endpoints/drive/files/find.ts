@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFile, { pack } from '../../../../../models/entities/drive-file';
 import define from '../../../define';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -26,12 +26,11 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const files = await DriveFile
-		.find({
-			filename: ps.name,
-			userId: user.id,
-			'folderId': ps.folderId
-		});
+	const files = await DriveFiles.find({
+		name: ps.name,
+		userId: user.id,
+		folderId: ps.folderId
+	});
 
-	return await Promise.all(files.map(file => pack(file, { self: true })));
+	return await Promise.all(files.map(file => DriveFiles.pack(file, { self: true })));
 });
