@@ -1,3 +1,4 @@
+import { ulid } from 'ulid';
 import { Meta } from '../models/entities/meta';
 import { Metas } from '../models';
 
@@ -6,6 +7,8 @@ export default async function(): Promise<Meta> {
 	if (meta) {
 		return meta;
 	} else {
-		return Metas.save({});
+		return Metas.save({
+			id: ulid()
+		});
 	}
 }
