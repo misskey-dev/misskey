@@ -8,6 +8,10 @@ import rap from '@prezzemolo/rap';
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
+	public validateCw(x: string) {
+		return x.trim().length <= 100;
+	}
+
 	private async cloneOrFetch(x: Note['id'] | Note): Promise<Note> {
 		if (typeof x === 'object') {
 			return JSON.parse(JSON.stringify(x));

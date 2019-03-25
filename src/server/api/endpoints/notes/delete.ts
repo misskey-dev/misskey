@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import deleteNote from '../../../../services/note/delete';
-import User from '../../../../models/entities/user';
 import define from '../../define';
 import * as ms from 'ms';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { Users } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -58,9 +58,10 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	if (!user.isAdmin && !user.isModerator && !note.userId.equals(user.id)) {
+	if (!user.isAdmin && !user.isModerator && (note.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	await deleteNote(await Users.findOne({ _id: note.userId }), note);
+	// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
+	await deleteNote(await Users.findOne(note.userId), note);
 });

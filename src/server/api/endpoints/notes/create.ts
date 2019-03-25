@@ -64,7 +64,7 @@ export const meta = {
 		},
 
 		cw: {
-			validator: $.optional.nullable.str.pipe(isValidCw),
+			validator: $.optional.nullable.str.pipe(Notes.validateCw),
 			desc: {
 				'ja-JP': 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
 			}
@@ -313,6 +313,6 @@ export default define(meta, async (ps, user, app) => {
 	});
 
 	return {
-		createdNote: await pack(note, user)
+		createdNote: await Notes.pack(note, user)
 	};
 });

@@ -31,17 +31,6 @@ export default async function(user: User, note: Note, quiet = false) {
 		Notes.decrement({ id: note.renoteId }, 'score', 1);
 	}
 
-	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティからこの投稿を削除
-	if (note.fileIds) {
-		for (const fileId of note.fileIds) {
-			DriveFile.update({ _id: fileId }, {
-				$pull: {
-					'metadata.attachedNoteIds': note.id
-				}
-			});
-		}
-	}
-
 	if (!quiet) {
 		publishNoteStream(note.id, 'deleted', {
 			deletedAt: deletedAt
