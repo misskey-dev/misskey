@@ -40,7 +40,6 @@ export class Emoji {
 
 	@Column('varchar', {
 		array: true, length: 128,
-		default: []
 	})
 	public aliases: string[];
 }

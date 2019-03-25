@@ -133,17 +133,17 @@ export class Note {
 	public score: number;
 
 	@Column('integer', {
-		array: true, default: []
+		array: true,
 	})
 	public fileIds: DriveFile['id'][];
 
 	@Column('integer', {
-		array: true, default: []
+		array: true,
 	})
 	public visibleUserIds: User['id'][];
 
 	@Column('varchar', {
-		length: 128, array: true, default: []
+		length: 128, array: true,
 	})
 	public emojis: string[];
 
