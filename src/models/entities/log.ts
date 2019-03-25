@@ -13,7 +13,7 @@ export class Log {
 
 	@Index()
 	@Column('varchar', {
-		length: 64, array: true
+		length: 64, array: true, default: '{}'
 	})
 	public domain: string[];
 

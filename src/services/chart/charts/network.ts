@@ -1,40 +1,47 @@
 import autobind from 'autobind-decorator';
-import Chart, { Partial } from '../core';
+import Chart, { Partial, Log } from '../core';
+import { Column, Entity } from 'typeorm';
 
 /**
  * ネットワークに関するチャート
  */
-type NetworkLog = {
+@Entity()
+class NetworkLog extends Log {
 	/**
 	 * 受信したリクエスト数
 	 */
-	incomingRequests: number;
+	@Column()
+	public incomingRequests: number;
 
 	/**
 	 * 送信したリクエスト数
 	 */
-	outgoingRequests: number;
+	@Column()
+	public outgoingRequests: number;
 
 	/**
 	 * 応答時間の合計
 	 * TIP: (totalTime / incomingRequests) でひとつのリクエストに平均でどれくらいの時間がかかったか知れる
 	 */
-	totalTime: number;
+	@Column()
+	public totalTime: number;
 
 	/**
 	 * 合計受信データ量
 	 */
-	incomingBytes: number;
+	@Column()
+	public incomingBytes: number;
 
 	/**
 	 * 合計送信データ量
 	 */
-	outgoingBytes: number;
-};
+	@Column()
+	public outgoingBytes: number;
+}
 
 class NetworkChart extends Chart<NetworkLog> {
 	constructor() {
-		super('network');
+		super('network', NetworkLog);
 	}
 
 	@autobind

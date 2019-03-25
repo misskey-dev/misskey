@@ -3,6 +3,7 @@ import Chart, { Obj } from '../core';
 import Note, { Note } from '../../../models/entities/note';
 import { isLocalUser } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
+import { EntitySchema } from 'typeorm';
 
 const logSchema = {
 	total: {
@@ -57,9 +58,9 @@ export const notesLogSchema = {
 
 type NotesLog = SchemaType<typeof notesLogSchema>;
 
-class NotesChart extends Chart<NotesLog> {
+export class NotesChart extends Chart<NotesLog> {
 	constructor() {
-		super('notes');
+		super('notes', notesLogSchema);
 	}
 
 	@autobind

@@ -5,6 +5,7 @@ import * as dateformat from 'dateformat';
 import { program } from '../argv';
 import { getRepository } from 'typeorm';
 import { Log } from '../models/entities/log';
+import { genId } from '../misc/gen-id';
 
 type Domain = {
 	name: string;
@@ -67,15 +68,16 @@ export default class Logger {
 
 		if (store) {
 			const Logs = getRepository(Log);
-			const logRecord = new Log();
-			logRecord.createdAt = new Date();
-			logRecord.machine = os.hostname();
-			logRecord.worker = worker.toString();
-			logRecord.domain = [this.domain].concat(subDomains).map(d => d.name);
-			logRecord.level = level;
-			logRecord.message = message;
-			logRecord.data = data;
-			Logs.save(logRecord);
+			Logs.insert({
+				id: genId(),
+				createdAt: new Date(),
+				machine: os.hostname(),
+				worker: worker.toString(),
+				domain: [this.domain].concat(subDomains).map(d => d.name),
+				level: level,
+				message: message,
+				data: data,
+			} as Log);
 		}
 	}
 

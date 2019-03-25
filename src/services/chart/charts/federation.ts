@@ -1,32 +1,39 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
 import Instance from '../../../models/entities/instance';
+import { SchemaType } from '../../../misc/schema';
 
 /**
  * フェデレーションに関するチャート
  */
-type FederationLog = {
-	instance: {
-		/**
-		 * インスタンス数の合計
-		 */
-		total: number;
-
-		/**
-		 * 増加インスタンス数
-		 */
-		inc: number;
-
-		/**
-		 * 減少インスタンス数
-		 */
-		dec: number;
-	};
+export const federationLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		instance: {
+			type: 'object' as 'object',
+			properties: {
+				total: {
+					type: 'number' as 'number',
+					description: 'インスタンス数の合計'
+				},
+				inc: {
+					type: 'number' as 'number',
+					description: '増加インスタンス数'
+				},
+				dec: {
+					type: 'number' as 'number',
+					description: '減少インスタンス数'
+				},
+			}
+		}
+	}
 };
+
+type FederationLog = SchemaType<typeof federationLogSchema>;
 
 export class FederationChart extends Chart<FederationLog> {
 	constructor() {
-		super('federation');
+		super('federation', federationLogSchema);
 	}
 
 	@autobind

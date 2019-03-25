@@ -7,7 +7,7 @@ import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
-import { EntitySchema, getRepository, Repository, getConnection } from 'typeorm';
+import { EntitySchema, getRepository, Repository, LessThan, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 const logger = new Logger('chart');
 
@@ -25,72 +25,81 @@ type ArrayValue<T> = {
 
 type Span = 'day' | 'hour';
 
-type Log<T extends Obj> = {
-	id: number;
+export abstract class Log {
+	@PrimaryGeneratedColumn()
+	public id: number;
 
 	/**
 	 * 集計のグループ
 	 */
-	group?: any;
+	@Column('varchar', {
+		length: 128, nullable: true
+	})
+	public group: string | null;
 
 	/**
 	 * 集計日時
 	 */
-	date: Date;
+	@Column('date')
+	public date: Date;
 
 	/**
 	 * 集計期間
 	 */
-	span: Span;
-
-	/**
-	 * データ
-	 */
-	data: T;
-
-	/**
-	 * ユニークインクリメント用
-	 */
-	unique?: Obj;
-};
+	@Column('enum', { enum: ['day', 'hour'] })
+	public span: Span;
+}
 
 /**
  * 様々なチャートの管理を司るクラス
  */
-export default abstract class Chart<T extends Obj> {
-	public entity: EntitySchema;
-	protected repository: Repository<Log<T>>;
-	protected abstract async getTemplate(init: boolean, latest?: T, group?: any): Promise<T>;
+export default abstract class Chart<T extends Record<string, number>> {
+	public entity: any;
+	protected repository: Repository<Log>;
+	protected abstract async getTemplate(init: boolean, latest?: T, group?: string): Promise<T>;
 	private name: string;
 
-	constructor(name: string, grouped = false) {
+	constructor(name: string, schema: Record<string, any>, grouped = false) {
 		this.name = name;
+		const columns = {} as any;
+		const flatColumns = (x: Obj, path?: string) => {
+			for (const [k, v] of Object.entries(x)) {
+				const p = path ? `${path}_${k}` : k;
+				if (v.type === 'object') {
+					flatColumns(v.properties, p);
+				} else {
+					columns[p] = {
+						type: 'integer',
+					};
+				}
+			}
+		};
+		flatColumns(schema.properties);
 		this.entity = new EntitySchema({
-			name: `chart__${name}`,
+			name: `_chart_${name}`,
 			columns: {
 				id: {
 					type: 'integer',
 					primary: true,
 					generated: true
 				},
-				group: {
-					type: 'jsonb',
-					nullable: true
-				},
 				date: {
 					type: 'date',
+				},
+				group: {
+					type: 'varchar',
+					length: 128,
+					nullable: true
 				},
 				span: {
 					type: 'enum',
 					enum: ['hour', 'day']
 				},
-				data: {
-					type: 'jsonb',
-				},
 				unique: {
 					type: 'jsonb',
 					nullable: true
 				},
+				...columns
 			},
 		});
 
@@ -104,26 +113,18 @@ export default abstract class Chart<T extends Obj> {
 
 	@autobind
 	public init() {
-		this.repository = getRepository<Log<T>>(this.entity as any);
+		this.repository = getRepository<Log>(this.entity);
 		return this;
 	}
 
 	@autobind
-	private convertQuery(x: Obj, path: string): Obj {
-		const query: Obj = {};
+	private convertQuery(x: Record<string, number>) {
+		const query: Record<string, Function> = {};
 
-		const dive = (x: Obj, path: string) => {
-			for (const [k, v] of Object.entries(x)) {
-				const p = path ? `${path}.${k}` : k;
-				if (typeof v === 'number') {
-					query[p] = v;
-				} else {
-					dive(v, p);
-				}
-			}
-		};
-
-		dive(x, path);
+		for (const [k, v] of Object.entries(x)) {
+			if (v > 0) query[k] = () => `'${k}' + ${v}`;
+			if (v < 0) query[k] = () => `'${k}' - ${v}`;
+		}
 
 		return query;
 	}
@@ -141,7 +142,7 @@ export default abstract class Chart<T extends Obj> {
 	}
 
 	@autobind
-	private getLatestLog(span: Span, group?: any): Promise<Log<T>> {
+	private getLatestLog(span: Span, group?: string): Promise<Log> {
 		return this.repository.findOne({
 			group: group,
 			span: span
@@ -153,7 +154,7 @@ export default abstract class Chart<T extends Obj> {
 	}
 
 	@autobind
-	private async getCurrentLog(span: Span, group?: any): Promise<Log<T>> {
+	private async getCurrentLog(span: Span, group?: string): Promise<Log> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const current =
@@ -173,7 +174,7 @@ export default abstract class Chart<T extends Obj> {
 			return currentLog;
 		}
 
-		let log: Log<T>;
+		let log: Log;
 		let data: T;
 
 		// 集計期間が変わってから、初めてのチャート更新なら
@@ -204,7 +205,7 @@ export default abstract class Chart<T extends Obj> {
 				group: group,
 				span: span,
 				date: current.toDate(),
-				data: data
+				data: data as any
 			});
 		} catch (e) {
 			// 11000 is duplicate key error
@@ -222,8 +223,23 @@ export default abstract class Chart<T extends Obj> {
 	}
 
 	@autobind
-	protected commit(query: Obj, group?: any, uniqueKey?: string, uniqueValue?: string): void {
-		const update = (log: Log<T>) => {
+	protected commit(query: Record<string, Function>, group?: string, uniqueKey?: string, uniqueValue?: string): void {
+		/*
+			To increment json value in PostgreSQL:
+
+			UPDATE table_name
+			SET json_prop = jsonb_set(json_prop, '{x,y,z}', (COALESCE(json_prop->>'x,y,z', '0')::integer + 1)::text::jsonb)
+			WHERE ...;
+
+			will be
+			{ x: { y: { z: 1 } } }
+
+			SEE: https://stackoverflow.com/questions/25957937/how-to-increment-value-in-postgres-update-statement-on-json-key
+		*/
+
+		const sql = `jsonb_set(json_prop, '{x,y,z}', (COALESCE(json_prop->>'x,y,z', '0')::integer + 1)::text::jsonb)`;
+
+		const update = (log: Log) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
 				uniqueKey &&
@@ -240,9 +256,11 @@ export default abstract class Chart<T extends Obj> {
 			}
 
 			// ログ更新
-			this.repository.update({
-				id: log.id
-			}, query);
+			this.repository.createQueryBuilder()
+				.update()
+				.set(query)
+				.where('id = :id', { id: log.id })
+				.execute();
 		};
 
 		this.getCurrentLog('day', group).then(log => update(log));
@@ -250,21 +268,17 @@ export default abstract class Chart<T extends Obj> {
 	}
 
 	@autobind
-	protected inc(inc: Partial<T>, group?: any): void {
-		this.commit({
-			$inc: this.convertQuery(inc, 'data')
-		}, group);
+	protected inc(inc: Partial<T>, group?: string): void {
+		this.commit(this.convertQuery(inc as any), group);
 	}
 
 	@autobind
-	protected incIfUnique(inc: Partial<T>, key: string, value: string, group?: any): void {
-		this.commit({
-			$inc: this.convertQuery(inc, 'data')
-		}, group, key, value);
+	protected incIfUnique(inc: Partial<T>, key: string, value: string, group?: string): void {
+		this.commit(this.convertQuery(inc as any), group, key, value);
 	}
 
 	@autobind
-	public async getChart(span: Span, range: number, group?: any): Promise<ArrayValue<T>> {
+	public async getChart(span: Span, range: number, group?: string): Promise<ArrayValue<T>> {
 		const promisedChart: Promise<T>[] = [];
 
 		const [y, m, d, h] = this.getCurrentDate();
@@ -314,9 +328,7 @@ export default abstract class Chart<T extends Obj> {
 			const outdatedLog = await this.repository.findOne({
 				group: group,
 				span: span,
-				date: {
-					$lt: gt.toDate()
-				}
+				date: LessThan(gt.toDate())
 			}, {
 				order: {
 					date: -1
