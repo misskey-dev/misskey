@@ -8,7 +8,8 @@ export default async function(): Promise<Meta> {
 		return meta;
 	} else {
 		return Metas.save({
-			id: ulid()
-		});
+			id: ulid().toLowerCase(),
+			hiddenTags: []
+		} as Meta);
 	}
 }
