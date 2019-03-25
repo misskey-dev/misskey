@@ -5,6 +5,10 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.98.2
+----------
+* 他のインスタンスから添付画像が見れない問題を修正
+
 10.98.1
 ----------
 * ドライブのファイルのサムネイルが表示されない問題を修正
