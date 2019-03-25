@@ -137,6 +137,11 @@ export class Note {
 	})
 	public fileIds: DriveFile['id'][];
 
+	@Column('varchar', {
+		length: 256, array: true,
+	})
+	public attachedFileTypes: string[];
+
 	@Column('integer', {
 		array: true,
 	})

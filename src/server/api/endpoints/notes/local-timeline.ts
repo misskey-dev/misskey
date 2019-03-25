@@ -7,6 +7,8 @@ import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../services/chart/charts/active-users';
 import { getHideUserIds } from '../../common/get-hide-users';
 import { ApiError } from '../../error';
+import { Notes } from '../../../../models';
+import { generateMuteQuery } from '../../common/generate-mute-query';
 
 export const meta = {
 	desc: {
@@ -92,55 +94,29 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	// 隠すユーザーを取得
-	const hideUserIds = await getHideUserIds(user);
-
 	//#region Construct query
 	const sort = {
 		id: -1
 	};
 
-	const query = {
-		deletedAt: null,
+	const query = Notes.createQueryBuilder('note')
+		.where('visibility = \'public\'')
+		.andWhere('userHost = NULL');
 
-		// public only
-		visibility: 'public',
-
-		// リプライでない
-		//replyId: null,
-
-		// local
-		'_user.host': null
-	} as any;
-
-	if (hideUserIds && hideUserIds.length > 0) {
-		query.userId = {
-			$nin: hideUserIds
-		};
-
-		query['_reply.userId'] = {
-			$nin: hideUserIds
-		};
-
-		query['_renote.userId'] = {
-			$nin: hideUserIds
-		};
-	}
+	if (user) query.andWhere(generateMuteQuery(user));
 
 	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
 
 	if (withFiles) {
-		query.fileIds = { $exists: true, $ne: [] };
+		query.andWhere('note.fileIds != []');
 	}
 
 	if (ps.fileType) {
-		query.fileIds = { $exists: true, $ne: [] };
-
-		query['_files.contentType'] = {
-			$in: ps.fileType
-		};
+		query.andWhere('note.fileIds != []');
+		query.andWhere('note.attachedFileTypes ANY(:type)', { type: ps.fileType });
 
 		if (ps.excludeNsfw) {
+			// v11 TODO
 			query['_files.isSensitive'] = {
 				$ne: true
 			};
@@ -149,18 +125,14 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.sinceId) {
 		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
+		query.andWhere('note.id > :sinceId', { sinceId: ps.sinceId });
 	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
+		query.andWhere('note.id < :untilId', { untilId: ps.untilId });
 	} else if (ps.sinceDate) {
 		sort.id = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
+		query.andWhere('note.createdAt > :sinceDate', { sinceDate: new Date(ps.sinceDate) });
 	} else if (ps.untilDate) {
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
+		query.andWhere('note.createdAt < :untilDate', { untilDate: new Date(ps.untilDate) });
 	}
 	//#endregion
 

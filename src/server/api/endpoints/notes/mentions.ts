@@ -55,8 +55,8 @@ export default define(meta, async (ps, user) => {
 	const query = Notes.createQueryBuilder('note')
 		.where(generateVisibilityQuery(user))
 		.andWhere(new Brackets(qb => { qb
-			.where('note.mentions ANY(:userId)', { userId: user.id })
-			.orWhere('note.visibleUserIds ANY(:userId)', { userId: user.id });
+			.where('note.mentions ANY(:userId1)', { userId1: user.id })
+			.orWhere('note.visibleUserIds ANY(:userId2)', { userId2: user.id });
 		}));
 
 	query.andWhere(generateMuteQuery(user));

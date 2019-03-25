@@ -111,21 +111,6 @@ export default define(meta, async (ps, user) => {
 		isSensitive: file.isSensitive
 	});
 
-	// v11 TODO
-	// ドライブのファイルが非正規化されているドキュメントも更新
-	Note.find({
-		'_files.id': file.id
-	}).then(notes => {
-		for (const note of notes) {
-			note._files[note._files.findIndex(f => f.id.equals(file.id))] = file;
-			Note.update({ _id: note.id }, {
-				$set: {
-					_files: note._files
-				}
-			});
-		}
-	});
-
 	const fileObj = await DriveFiles.pack(file, { self: true });
 
 	// Publish fileUpdated event

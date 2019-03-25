@@ -5,7 +5,7 @@ import { Brackets } from 'typeorm';
 export function generateMuteQuery(me: User) {
 	const mutingQuery = Mutings.createQueryBuilder('muting')
 		.select('muting.muteeId')
-		.where('muting.muterId = :userId', { userId: me.id });
+		.where('muting.muterId = :muterId', { muterId: me.id });
 
 	return new Brackets(qb => { qb
 		.where(`note.userId NOT IN (${ mutingQuery.getQuery() })`)

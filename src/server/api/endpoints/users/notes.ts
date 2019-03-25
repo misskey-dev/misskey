@@ -233,6 +233,7 @@ export default define(meta, async (ps, me) => {
 		};
 
 		if (ps.excludeNsfw) {
+			// v11 TODO
 			query['_files.isSensitive'] = {
 				$ne: true
 			};
