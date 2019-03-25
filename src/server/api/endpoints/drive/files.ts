@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { MoreThan, LessThan } from 'typeorm';
 import { DriveFiles } from '../../../../models';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
 export const meta = {
 	desc: {
@@ -49,32 +50,16 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const sort = {
-		id: -1
-	};
-
-	const query = {
-		userId: user.id,
-		folderId: ps.folderId,
-	} as any;
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
+	const query = generatePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId)
+		.andWhere('userId = :userId', { userId: user.id })
+		.andWhere('folderId = :folderId', { folderId: ps.folderId });
 
 	if (ps.type) {
 		// v11 TODO
 		query.contentType = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
 	}
 
-	const files = await DriveFiles.find({
-		where: query,
-		take: ps.limit,
-		order: sort
-	});
+	const files = await query.getMany();
 
 	return await DriveFiles.packMany(files, { detail: false, self: true });
 });
