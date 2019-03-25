@@ -3,7 +3,7 @@ import Emoji from '../models/entities/emoji';
 async function main(name: string, url: string, alias?: string): Promise<any> {
 	const aliases = alias != null ? [ alias ] : [];
 
-	await Emoji.insert({
+	await Emoji.save({
 		host: null,
 		name,
 		url,

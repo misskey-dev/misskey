@@ -73,7 +73,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create mute
-	await Mute.insert({
+	await Mute.save({
 		createdAt: new Date(),
 		muterId: muter.id,
 		muteeId: mutee.id,

@@ -1,13 +1,13 @@
 import * as deepcopy from 'deepcopy';
-import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { Note } from './note';
 import { User } from './user';
 
 @Entity()
 @Index(['userId', 'noteId'], { unique: true })
 export class NoteFavorite {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Column('date', {
 		comment: 'The created date of the NoteFavorite.'

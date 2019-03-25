@@ -7,7 +7,7 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import { Users, Notes, UserNotePinings } from '../../models';
 
 export default async (ctx: Router.IRouterContext) => {
-	const userId = parseInt(ctx.params.user, 10);
+	const userId = ctx.params.user;
 
 	// Verify user
 	const user = await Users.findOne({

@@ -17,7 +17,7 @@ import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateHashtag } from '../../../services/update-hashtag';
-import { Users, UserNotePinings } from '../../../models';
+import { Users, UserNotePinings, Instances, DriveFiles, Followings } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
 import { UserNotePining } from '../../../models/entities/user-note-pinings';
@@ -189,12 +189,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	// Register host
 	registerOrFetchInstanceDoc(host).then(i => {
-		Instance.update({ _id: i.id }, {
-			$inc: {
-				usersCount: 1
-			}
-		});
-
+		Instances.increment({ id: i.id }, 'usersCount', 1);
 		instanceChart.newUser(i.host);
 	});
 
@@ -216,8 +211,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const avatarId = avatar ? avatar.id : null;
 	const bannerId = banner ? banner.id : null;
-	const avatarUrl = getDriveFileUrl(avatar, true);
-	const bannerUrl = getDriveFileUrl(banner, false);
+	const avatarUrl = DriveFiles.getPublicUrl(avatar);
+	const bannerUrl = DriveFiles.getPublicUrl(banner);
 	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	const bannerColor = banner && avatar.properties.avgColor ? banner.properties.avgColor : null;
 
@@ -365,34 +360,28 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	if (avatar) {
 		updates.avatarId = avatar.id;
-		updates.avatarUrl = getDriveFileUrl(avatar, true);
+		updates.avatarUrl = DriveFiles.getPublicUrl(avatar);
 		updates.avatarColor = avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	}
 
 	if (banner) {
 		updates.bannerId = banner.id;
-		updates.bannerUrl = getDriveFileUrl(banner, true);
+		updates.bannerUrl = DriveFiles.getPublicUrl(banner);
 		updates.bannerColor = banner.properties.avgColor ? banner.properties.avgColor : null;
 	}
 
 	// Update user
-	await User.update({ _id: exist.id }, {
-		$set: updates
-	});
+	await Users.update(exist.id, updates);
 
 	// ハッシュタグ更新
 	for (const tag of tags) updateHashtag(exist, tag, true, true);
 	for (const tag of (exist.tags || []).filter(x => !tags.includes(x))) updateHashtag(exist, tag, true, false);
 
 	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
-	await Following.update({
+	await Followings.update({
 		followerId: exist.id
 	}, {
-		$set: {
-			'_follower.sharedInbox': person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined)
-		}
-	}, {
-		multi: true
+		followerSharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined)
 	});
 
 	await updateFeatured(exist.id).catch(err => logger.error(err));

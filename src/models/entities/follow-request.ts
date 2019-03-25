@@ -1,13 +1,13 @@
 import * as deepcopy from 'deepcopy';
 
-import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 
 @Entity()
 @Index(['followerId', 'followeeId'], { unique: true })
 export class FollowRequest {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Column('date', {
 		comment: 'The created date of the FollowRequest.'

@@ -1,11 +1,11 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import User, { ILocalUser } from '../../../models/entities/user';
-import Signin, { pack } from '../../../models/entities/signin';
 import { publishMainStream } from '../../../services/stream';
 import signin from '../common/signin';
 import config from '../../../config';
+import { Users, Signins } from '../../../models';
+import { ILocalUser } from '../../../models/entities/user';
 
 export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
@@ -35,12 +35,7 @@ export default async (ctx: Koa.BaseContext) => {
 	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
 		host: null
-	}, {
-			fields: {
-				data: false,
-				profile: false
-			}
-		}) as ILocalUser;
+	}) as ILocalUser;
 
 	if (user === null) {
 		ctx.throw(404, {
@@ -77,7 +72,7 @@ export default async (ctx: Koa.BaseContext) => {
 	}
 
 	// Append signin history
-	const record = await Signin.insert({
+	const record = await Signins.save({
 		createdAt: new Date(),
 		userId: user.id,
 		ip: ctx.ip,
@@ -86,5 +81,5 @@ export default async (ctx: Koa.BaseContext) => {
 	});
 
 	// Publish signin event
-	publishMainStream(user.id, 'signin', await pack(record));
+	publishMainStream(user.id, 'signin', await Signins.pack(record));
 };

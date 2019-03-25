@@ -400,7 +400,7 @@ async function publish(user: User, note: Note, noteObj: any, reply: Note, renote
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
-	const insert: any = {
+	const insert: Note = {
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file.id) : [],
 		replyId: data.reply ? data.reply.id : null,

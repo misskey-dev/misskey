@@ -22,7 +22,7 @@ export default async function(follower: User, followee: User, requestId?: string
 	if (blocking != null) throw new Error('blocking');
 	if (blocked != null) throw new Error('blocked');
 
-	await FollowRequests.insert({
+	await FollowRequests.save({
 		createdAt: new Date(),
 		followerId: follower.id,
 		followeeId: followee.id,

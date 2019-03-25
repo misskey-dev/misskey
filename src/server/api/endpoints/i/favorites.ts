@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Favorite, { packMany } from '../../../../models/entities/note-favorite';
 import define from '../../define';
+import { MoreThan, LessThan } from 'typeorm';
+import { NoteFavorites } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -48,11 +49,11 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Get favorites
-	const favorites = await Favorite
-		.find(query, {
-			take: ps.limit,
-			order: sort
-		});
+	const favorites = await NoteFavorites.find({
+		where: query,
+		take: ps.limit,
+		order: sort
+	});
 
-	return await packMany(favorites, user);
+	return await NoteFavorites.packMany(favorites, user);
 });

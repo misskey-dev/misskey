@@ -1,11 +1,11 @@
 import * as deepcopy from 'deepcopy';
-import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
 import { User } from './user';
 
 @Entity()
 export class Notification {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {

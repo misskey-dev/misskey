@@ -1,11 +1,11 @@
-import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 
 @Entity()
 @Index(['userId', 'reporterId'], { unique: true })
 export class AbuseUserReport {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {

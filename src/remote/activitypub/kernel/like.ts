@@ -9,7 +9,7 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 	// Transform:
 	// https://misskey.ex/notes/xxxx to
 	// xxxx
-	const noteId = new mongo.ObjectID(id.split('/').pop());
+	const noteId = id.split('/').pop();
 
 	const note = await Note.findOne({ _id: noteId });
 	if (note === null) {

@@ -42,7 +42,7 @@ export default define(meta, async (ps, user) => {
 		};
 	}
 
-	await Subscription.insert({
+	await Subscription.save({
 		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,

@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Meta {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Column('varchar', {
 		length: 128, nullable: true

@@ -16,6 +16,7 @@ import { inbox as processInbox } from '../queue';
 import { isSelfHost } from '../misc/convert-host';
 import { Notes, Users, Emojis } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
+import { In, Not } from 'typeorm';
 
 // Init router
 const router = new Router();
@@ -63,9 +64,9 @@ router.get('/notes/:note', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
 	const note = await Notes.findOne({
-		id: parseInt(ctx.params.note, 10),
-		visibility: { $in: ['public', 'home'] },
-		localOnly: { $ne: true }
+		id: ctx.params.note,
+		visibility: In(['public', 'home']),
+		localOnly: false
 	});
 
 	if (note === null) {
@@ -91,10 +92,10 @@ router.get('/notes/:note', async (ctx, next) => {
 // note activity
 router.get('/notes/:note/activity', async ctx => {
 	const note = await Notes.findOne({
-		id: parseInt(ctx.params.note, 10),
-		'_user.host': null,
-		visibility: { $in: ['public', 'home'] },
-		localOnly: { $ne: true }
+		id: ctx.params.note,
+		userHost: null,
+		visibility: In(['public', 'home']),
+		localOnly: false
 	});
 
 	if (note === null) {
@@ -110,14 +111,11 @@ router.get('/notes/:note/activity', async ctx => {
 // question
 router.get('/questions/:question', async (ctx, next) => {
 	const poll = await Notes.findOne({
-		id: parseInt(ctx.params.question, 10),
-		'_user.host': null,
-		visibility: { $in: ['public', 'home'] },
-		localOnly: { $ne: true },
-		poll: {
-			$exists: true,
-			$ne: null
-		},
+		id: ctx.params.question,
+		userHost: null,
+		visibility: In(['public', 'home']),
+		localOnly: false,
+		poll: Not(null),
 	});
 
 	if (poll === null) {
@@ -145,7 +143,7 @@ router.get('/users/:user/collections/featured', Featured);
 
 // publickey
 router.get('/users/:user/publickey', async ctx => {
-	const userId = parseInt(ctx.params.user, 10);
+	const userId = ctx.params.user;
 
 	const user = await Users.findOne({
 		id: userId,
@@ -181,7 +179,7 @@ async function userInfo(ctx: Router.IRouterContext, user: User) {
 router.get('/users/:user', async (ctx, next) => {
 	if (!isActivityPubReq(ctx)) return await next();
 
-	const userId = parseInt(ctx.params.user, 10);
+	const userId = ctx.params.user;
 
 	const user = await Users.findOne({
 		id: userId,

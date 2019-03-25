@@ -1,12 +1,12 @@
-import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { Note } from './note';
 
 @Entity()
 @Index(['userId', 'noteId', 'choice'], { unique: true })
 export class PollVote {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {

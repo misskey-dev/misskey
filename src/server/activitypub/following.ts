@@ -13,7 +13,7 @@ import { LessThan, FindConditions } from 'typeorm';
 import { Following } from '../../models/entities/following';
 
 export default async (ctx: Router.IRouterContext) => {
-	const userId = parseInt(ctx.params.user, 10);
+	const userId = ctx.params.user;
 
 	// Get 'cursor' parameter
 	const [cursor, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);

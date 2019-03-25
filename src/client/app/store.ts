@@ -120,7 +120,7 @@ export default (os: MiOS) => new Vuex.Store({
 	actions: {
 		login(ctx, i) {
 			ctx.commit('updateI', i);
-			ctx.dispatch('settings/merge', i.clientSettings);
+			ctx.dispatch('settings/merge', i.clientData);
 		},
 
 		logout(ctx) {
@@ -134,8 +134,8 @@ export default (os: MiOS) => new Vuex.Store({
 				ctx.commit('updateIKeyValue', { key, value });
 			}
 
-			if (me.clientSettings) {
-				ctx.dispatch('settings/merge', me.clientSettings);
+			if (me.clientData) {
+				ctx.dispatch('settings/merge', me.clientData);
 			}
 		},
 	},

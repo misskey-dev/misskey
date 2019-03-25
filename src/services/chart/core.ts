@@ -200,7 +200,7 @@ export default abstract class Chart<T extends Obj> {
 
 		try {
 			// 新規ログ挿入
-			log = await this.repository.insert({
+			log = await this.repository.save({
 				group: group,
 				span: span,
 				date: current.toDate(),

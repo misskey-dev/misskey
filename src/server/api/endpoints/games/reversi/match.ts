@@ -57,7 +57,7 @@ export default define(meta, async (ps, user) => {
 		});
 
 		// Create game
-		const game = await ReversiGame.insert({
+		const game = await ReversiGame.save({
 			createdAt: new Date(),
 			user1Id: exist.parentId,
 			user2Id: user.id,
@@ -97,7 +97,7 @@ export default define(meta, async (ps, user) => {
 		});
 
 		// セッションを作成
-		const matching = await Matching.insert({
+		const matching = await Matching.save({
 			createdAt: new Date(),
 			parentId: user.id,
 			childId: child.id

@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import DriveFile, { packMany } from '../../../../models/entities/drive-file';
 import define from '../../define';
+import { MoreThan, LessThan } from 'typeorm';
+import { DriveFiles } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -54,8 +55,7 @@ export default define(meta, async (ps, user) => {
 
 	const query = {
 		userId: user.id,
-		'folderId': ps.folderId,
-		'metadata.deletedAt': { $exists: false }
+		folderId: ps.folderId,
 	} as any;
 
 	if (ps.sinceId) {
@@ -66,14 +66,15 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.type) {
+		// v11 TODO
 		query.contentType = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
 	}
 
-	const files = await DriveFile
-		.find(query, {
-			take: ps.limit,
-			order: sort
-		});
+	const files = await DriveFiles.find({
+		where: query,
+		take: ps.limit,
+		order: sort
+	});
 
-	return await packMany(files, { detail: false, self: true });
+	return await DriveFiles.packMany(files, { detail: false, self: true });
 });

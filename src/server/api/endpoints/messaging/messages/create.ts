@@ -103,7 +103,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.contentRequired);
 	}
 
-	const message = await Message.insert({
+	const message = await Message.save({
 		createdAt: new Date(),
 		fileId: file ? file.id : undefined,
 		recipientId: recipient.id,

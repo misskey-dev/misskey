@@ -18,7 +18,7 @@ export const meta = {
 export default define(meta, async (ps) => {
 	const code = rndstr({ length: 5, chars: '0-9' });
 
-	await RegistrationTickets.insert({
+	await RegistrationTickets.save({
 		createdAt: new Date(),
 		code: code
 	});

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users, DriveFolders, DriveFiles } from '..';
+import { DriveFolders, DriveFiles } from '..';
 import rap from '@prezzemolo/rap';
 import { DriveFolder } from '../entities/drive-folder';
 

@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 
 @Entity()
 export class Log {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {

@@ -1,11 +1,11 @@
 import * as deepcopy from 'deepcopy';
 import { User, pack as packUser } from '../../user';
-import { PrimaryGeneratedColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity()
 export class ReversiGame {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {

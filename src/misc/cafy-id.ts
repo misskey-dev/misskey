@@ -1,13 +1,13 @@
 import { Context } from 'cafy';
 
-export class ID<Maybe = string> extends Context<number | (Maybe extends {} ? number : Maybe)> {
+export class ID<Maybe = string> extends Context<string | (Maybe extends {} ? string : Maybe)> {
 	public readonly name = 'ID';
 
 	constructor(optional = false, nullable = false) {
 		super(optional, nullable);
 
 		this.push((v: any) => {
-			if (typeof v !== 'number') {
+			if (typeof v !== 'string') {
 				return new Error('must-be-an-id');
 			}
 			return true;
@@ -15,7 +15,7 @@ export class ID<Maybe = string> extends Context<number | (Maybe extends {} ? num
 	}
 
 	public getType() {
-		return super.getType('Number');
+		return super.getType('String');
 	}
 
 	public makeOptional(): ID<undefined> {

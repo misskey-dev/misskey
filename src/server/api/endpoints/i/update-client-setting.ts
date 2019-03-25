@@ -21,7 +21,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const x: any = {};
-	x[`clientSettings.${ps.name}`] = ps.value;
+	x[`clientData.${ps.name}`] = ps.value;
 
 	await User.update(user.id, {
 		$set: x

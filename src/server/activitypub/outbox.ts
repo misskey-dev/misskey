@@ -14,7 +14,7 @@ import * as url from '../../prelude/url';
 import { Users } from '../../models';
 
 export default async (ctx: Router.IRouterContext) => {
-	const userId = parseInt(ctx.params.user, 10);
+	const userId = ctx.params.user;
 
 	// Get 'sinceId' parameter
 	const [sinceId, sinceIdErr] = $.optional.type(ID).get(ctx.request.query.since_id);

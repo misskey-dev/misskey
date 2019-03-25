@@ -1,12 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToOne } from 'typeorm';
+import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import config from '../../config';
 import { User } from './user';
 
 @Entity()
 export class App {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {

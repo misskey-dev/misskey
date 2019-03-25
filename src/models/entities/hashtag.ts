@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { User } from './user';
 
 @Entity()
 export class Hashtag {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index({ unique: true })
 	@Column('varchar', {

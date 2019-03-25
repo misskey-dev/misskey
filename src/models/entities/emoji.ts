@@ -1,10 +1,10 @@
-import { PrimaryGeneratedColumn, Entity, Index, Column } from 'typeorm';
+import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 
 @Entity()
 @Index(['name', 'host'], { unique: true })
 export class Emoji {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Column('date', {
 		nullable: true

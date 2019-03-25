@@ -1,11 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Index, Column, ManyToOne, JoinColumn, RelationId } from 'typeorm';
+import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn, RelationId } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
 
 @Entity()
 export class AccessToken {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Column('date', {
 		comment: 'The created date of the AccessToken.'

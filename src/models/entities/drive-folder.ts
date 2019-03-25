@@ -1,10 +1,10 @@
-import { JoinColumn, ManyToOne, Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
+import { JoinColumn, ManyToOne, Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { User } from './user';
 
 @Entity()
 export class DriveFolder {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {
@@ -36,7 +36,7 @@ export class DriveFolder {
 		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFolder is located in root.'
 	})
-	public parentId: number | null;
+	public parentId: DriveFolder['id'] | null;
 
 	@ManyToOne(type => DriveFolder, {
 		onDelete: 'SET NULL'

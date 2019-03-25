@@ -1,10 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFolder from '../../../../../models/entities/drive-folder';
 import define from '../../../define';
 import { publishDriveStream } from '../../../../../services/stream';
-import DriveFile from '../../../../../models/entities/drive-file';
 import { ApiError } from '../../../error';
+import { DriveFolders, DriveFiles } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -47,29 +46,26 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Get folder
-	const folder = await DriveFolder
-		.findOne({
-			id: ps.folderId,
-			userId: user.id
-		});
+	const folder = await DriveFolders.findOne({
+		id: ps.folderId,
+		userId: user.id
+	});
 
 	if (folder === null) {
 		throw new ApiError(meta.errors.noSuchFolder);
 	}
 
 	const [childFoldersCount, childFilesCount] = await Promise.all([
-		DriveFolder.count({ parentId: folder.id }),
-		DriveFile.count({ 'folderId': folder.id })
+		DriveFolders.count({ parentId: folder.id }),
+		DriveFiles.count({ folderId: folder.id })
 	]);
 
 	if (childFoldersCount !== 0 || childFilesCount !== 0) {
 		throw new ApiError(meta.errors.hasChildFilesOrFolders);
 	}
 
-	await DriveFolder.remove({ _id: folder.id });
+	await DriveFolders.delete(folder.id);
 
 	// Publish folderCreated event
 	publishDriveStream(user.id, 'folderDeleted', folder.id);
-
-	return;
 });

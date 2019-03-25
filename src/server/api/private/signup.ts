@@ -10,6 +10,7 @@ import usersChart from '../../../services/chart/charts/users';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
 import rndstr from 'rndstr';
+import { Users } from '../../../models';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -76,8 +77,8 @@ export default async (ctx: Koa.BaseContext) => {
 	// Generate secret
 	const secret = generateUserToken();
 
-	const account = new User({
-		id: rndstr('a-z0-9', 24),
+	const account = Users.save({
+		id: rndstr('a-z0-9', 24), // v11 TODO
 		createdAt: new Date(),
 		username: username,
 		usernameLower: username.toLowerCase(),
@@ -88,7 +89,6 @@ export default async (ctx: Koa.BaseContext) => {
 		autoAcceptFollowed: true,
 		autoWatch: false
 	});
-	account.save();
 
 	//#region Increment users count
 	Meta.update({}, {

@@ -1,9 +1,10 @@
 import uploadFromUrl from '../../../services/drive/upload-from-url';
 import { IRemoteUser } from '../../../models/entities/user';
-import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
 import Resolver from '../resolver';
 import fetchMeta from '../../../misc/fetch-meta';
 import { apLogger } from '../logger';
+import { DriveFile } from '../../../models/entities/drive-file';
+import { DriveFiles } from '../../../models';
 
 const logger = apLogger;
 
@@ -39,18 +40,16 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 		throw e;
 	}
 
-	if (file.metadata.isRemote) {
+	if (file.isRemote) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
 		// URLを更新する
-		if (file.metadata.url !== image.url) {
-			file = await DriveFile.findOneAndUpdate({ _id: file.id }, {
-				$set: {
-					'metadata.url': image.url,
-					'metadata.uri': image.url
-				}
-			}, {
-				returnNewDocument: true
+		if (file.url !== image.url) {
+			await DriveFiles.update({ id: file.id }, {
+				url: image.url,
+				uri: image.url
 			});
+
+			file = DriveFiles.findOne(file.id);
 		}
 	}
 

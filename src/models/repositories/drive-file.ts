@@ -23,6 +23,10 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		);
 	}
 
+	public getPublicUrl(file: DriveFile): string {
+		return file.webpublicUrl || file.thumbnailUrl || file.url;
+	}
+
 	public packMany(
 		files: any[],
 		options?: {

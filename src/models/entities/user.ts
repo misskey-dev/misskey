@@ -1,13 +1,11 @@
-import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { DriveFile } from './drive-file';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
 export class User {
-	@PrimaryGeneratedColumn({
-		comment: 'The ID of the User.'
-	})
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {

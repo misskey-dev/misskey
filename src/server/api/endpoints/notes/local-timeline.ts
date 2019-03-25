@@ -5,7 +5,6 @@ import { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import activeUsersChart from '../../../../services/chart/charts/active-users';
-import { getHideUserIds } from '../../common/get-hide-users';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';

@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Index, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 
 @Entity()
 export class Instance {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	/**
 	 * このインスタンスを捕捉した日時

@@ -11,7 +11,7 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	}
 
 	const follower = await Users.findOne({
-		id: new mongo.ObjectID(id.split('/').pop())
+		id: id.split('/').pop()
 	});
 
 	if (follower === null) {

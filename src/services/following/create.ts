@@ -19,7 +19,7 @@ const logger = new Logger('following/create');
 export async function insertFollowingDoc(followee: User, follower: User) {
 	let alreadyFollowed = false;
 
-	await Followings.insert({
+	await Followings.save({
 		createdAt: new Date(),
 		followerId: follower.id,
 		followeeId: followee.id,

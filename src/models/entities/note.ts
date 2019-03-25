@@ -1,12 +1,12 @@
-import { PrimaryGeneratedColumn, Entity, Index, OneToOne, JoinColumn, Column } from 'typeorm';
+import { Entity, Index, OneToOne, JoinColumn, Column, PrimaryColumn } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
 import { DriveFile } from './drive-file';
 
 @Entity()
 export class Note {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Index()
 	@Column('date', {
@@ -83,9 +83,6 @@ export class Note {
 	@JoinColumn()
 	public user: User | null;
 
-	@Column('jsonb')
-	public _user: any;
-
 	@Column('boolean', {
 		default: false
 	})
@@ -156,6 +153,14 @@ export class Note {
 		default: {}, nullable: true
 	})
 	public poll: IPoll | null;
+
+	//#region Denormalized fields
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public userHost: string | null;
+	//#endregion
 }
 
 export type IPoll = {

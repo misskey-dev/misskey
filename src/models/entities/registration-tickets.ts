@@ -1,9 +1,9 @@
-import { PrimaryGeneratedColumn, Entity, Index, Column } from 'typeorm';
+import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 
 @Entity()
 export class RegistrationTicket {
-	@PrimaryGeneratedColumn()
-	public id: number;
+	@PrimaryColumn('char', { length: 26 })
+	public id: string;
 
 	@Column('date')
 	public createdAt: Date;

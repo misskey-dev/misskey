@@ -2,14 +2,11 @@ import * as promiseLimit from 'promise-limit';
 
 import config from '../../../config';
 import Resolver from '../resolver';
-import Note, { Note } from '../../../models/entities/note';
 import post from '../../../services/note/create';
-import { Note as NoteActivityStreamsObject, IObject } from '../type';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser, User } from '../../../models/entities/user';
 import { fromHtml } from '../../../mfm/fromHtml';
-import Emoji, { IEmoji } from '../../../models/entities/emoji';
 import { ITag, extractHashtags } from './tag';
 import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
@@ -18,8 +15,11 @@ import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
-import Instance from '../../../models/entities/instance';
 import { extractDbHost } from '../../../misc/convert-host';
+import { Notes, Instances } from '../../../models';
+import { Note } from '../../../models/entities/note';
+import { IObject } from '../type';
+import { Emoji } from '../../../models/entities/emoji';
 
 const logger = apLogger;
 
@@ -33,12 +33,12 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		const id = new mongo.ObjectID(uri.split('/').pop());
-		return await Note.findOne(id);
+		const id = uri.split('/').pop();
+		return await Notes.findOne(id);
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await Note.findOne({ uri });
+	const exist = await Notes.findOne({ uri });
 
 	if (exist) {
 		return exist;
@@ -180,7 +180,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
 		logger.info(`extractEmojis: ${e}`);
-		return [] as IEmoji[];
+		return [] as Emoji[];
 	});
 
 	const apEmojis = emojis.map(emoji => emoji.name);
@@ -226,7 +226,7 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instance.findOne({ host: extractDbHost(uri) });
+	const instance = await Instances.findOne({ host: extractDbHost(uri) });
 	if (instance && instance.isBlocked) throw { statusCode: 451 };
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -279,7 +279,7 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 
 			logger.info(`register emoji host=${host}, name=${name}`);
 
-			return await Emoji.insert({
+			return await Emoji.save({
 				host,
 				name,
 				uri: tag.id,

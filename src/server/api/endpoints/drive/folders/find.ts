@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFolder, { pack } from '../../../../../models/entities/drive-folder';
 import define from '../../../define';
+import { DriveFolders } from '../../../../../models';
 
 export const meta = {
 	tags: ['drive'],
@@ -33,12 +33,11 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const folders = await DriveFolder
-		.find({
-			name: ps.name,
-			userId: user.id,
-			parentId: ps.parentId
-		});
+	const folders = await DriveFolders.find({
+		name: ps.name,
+		userId: user.id,
+		parentId: ps.parentId
+	});
 
-	return await Promise.all(folders.map(folder => pack(folder)));
+	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
 });

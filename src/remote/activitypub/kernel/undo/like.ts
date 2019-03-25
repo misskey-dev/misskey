@@ -9,7 +9,7 @@ import deleteReaction from '../../../../services/note/reaction/delete';
 export default async (actor: IRemoteUser, activity: ILike): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
 
-	const noteId = new mongo.ObjectID(id.split('/').pop());
+	const noteId = id.split('/').pop();
 
 	const note = await Note.findOne({ _id: noteId });
 	if (note === null) {

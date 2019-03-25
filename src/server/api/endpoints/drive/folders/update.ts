@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFolder, { isValidFolderName, pack } from '../../../../../models/entities/drive-folder';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { DriveFolders } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -29,7 +29,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.optional.str.pipe(isValidFolderName),
+			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
 			desc: {
 				'ja-JP': 'フォルダ名',
 				'en-US': 'Folder name'
@@ -68,11 +68,10 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch folder
-	const folder = await DriveFolder
-		.findOne({
-			id: ps.folderId,
-			userId: user.id
-		});
+	const folder = await DriveFolders.findOne({
+		id: ps.folderId,
+		userId: user.id
+	});
 
 	if (folder === null) {
 		throw new ApiError(meta.errors.noSuchFolder);
@@ -85,11 +84,10 @@ export default define(meta, async (ps, user) => {
 			folder.parentId = null;
 		} else {
 			// Get parent folder
-			const parent = await DriveFolder
-				.findOne({
-					id: ps.parentId,
-					userId: user.id
-				});
+			const parent = await DriveFolders.findOne({
+				id: ps.parentId,
+				userId: user.id
+			});
 
 			if (parent === null) {
 				throw new ApiError(meta.errors.noSuchParentFolder);
@@ -98,14 +96,11 @@ export default define(meta, async (ps, user) => {
 			// Check if the circular reference will occur
 			async function checkCircle(folderId: any): Promise<boolean> {
 				// Fetch folder
-				const folder2 = await DriveFolder.findOne({
+				const folder2 = await DriveFolders.findOne({
 					id: folderId
-				}, {
-					id: true,
-					parentId: true
 				});
 
-				if (folder2.id.equals(folder.id)) {
+				if (folder2.id === folder.id) {
 					return true;
 				} else if (folder2.parentId) {
 					return await checkCircle(folder2.parentId);
@@ -125,14 +120,12 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Update
-	DriveFolder.update(folder.id, {
-		$set: {
-			name: folder.name,
-			parentId: folder.parentId
-		}
+	DriveFolders.update(folder.id, {
+		name: folder.name,
+		parentId: folder.parentId
 	});
 
-	const folderObj = await pack(folder);
+	const folderObj = await DriveFolders.pack(folder);
 
 	// Publish folderUpdated event
 	publishDriveStream(user.id, 'folderUpdated', folderObj);

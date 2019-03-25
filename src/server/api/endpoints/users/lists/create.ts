@@ -22,7 +22,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const userList = await UserList.insert({
+	const userList = await UserList.save({
 		createdAt: new Date(),
 		userId: user.id,
 		title: ps.title,

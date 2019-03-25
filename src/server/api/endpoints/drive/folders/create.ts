@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import DriveFolder, { isValidFolderName, pack } from '../../../../../models/entities/drive-folder';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { DriveFolders } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -21,7 +21,7 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.optional.str.pipe(isValidFolderName),
+			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
 			default: 'Untitled',
 			desc: {
 				'ja-JP': 'フォルダ名',
@@ -52,11 +52,10 @@ export default define(meta, async (ps, user) => {
 	let parent = null;
 	if (ps.parentId) {
 		// Fetch parent folder
-		parent = await DriveFolder
-			.findOne({
-				id: ps.parentId,
-				userId: user.id
-			});
+		parent = await DriveFolders.findOne({
+			id: ps.parentId,
+			userId: user.id
+		});
 
 		if (parent === null) {
 			throw new ApiError(meta.errors.noSuchFolder);
@@ -64,14 +63,14 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create folder
-	const folder = await DriveFolder.insert({
+	const folder = await DriveFolders.save({
 		createdAt: new Date(),
 		name: ps.name,
 		parentId: parent !== null ? parent.id : null,
 		userId: user.id
 	});
 
-	const folderObj = await pack(folder);
+	const folderObj = await DriveFolders.pack(folder);
 
 	// Publish folderCreated event
 	publishDriveStream(user.id, 'folderCreated', folderObj);

@@ -100,9 +100,9 @@ export class NoteRepository extends Repository<Note> {
 			skipHide: false
 		}, options);
 
-		const meId = typeof me === 'number' ? me : me.id;
+		const meId = typeof me === 'string' ? me : me.id;
 		const _note = await this.cloneOrFetch(note);
-		const host = _note._user.host;
+		const host = _note.userHost;
 
 		async function populatePoll(poll: NonNullable<Note['poll']>) {
 			if (poll.multiple) {
