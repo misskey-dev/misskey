@@ -1,6 +1,6 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings } from '..';
 import rap from '@prezzemolo/rap';
 
 @EntityRepository(User)
@@ -49,10 +49,11 @@ export class UserRepository extends Repository<User> {
 		return await rap({
 			// カスタム絵文字添付
 			emojis: Emojis.find({
-				name: { $in: _user.emojis },
-				host: _user.host
-			}, {
-				fields: { _id: false }
+				where: {
+					name: In(_user.emojis),
+					host: _user.host
+				},
+				select: ['name', 'host', 'url', 'aliases']
 			}),
 
 			...(opts.includeHasUnreadNotes ? {
@@ -66,10 +67,11 @@ export class UserRepository extends Repository<User> {
 				}).then(count => count > 0),
 			} : {}),
 
-			...(opts.detail && _user.pinnedNoteIds.length > 0 ? {
-				pinnedNotes: Notes.packMany(_user.pinnedNoteIds, meId, {
-					detail: true
-				}),
+			...(opts.detail ? {
+				pinnedNotes: UserNotePinings.find({ userId: _user.id }).then(pins =>
+					Notes.packMany(pins.map(pin => pin.id), meId, {
+						detail: true
+					})),
 			} : {}),
 
 			...(opts.detail && meId === _user.id ? {

@@ -30,6 +30,7 @@ import { DriveFileRepository } from './repositories/drive-file';
 import { DriveFolderRepository } from './repositories/drive-folder';
 import { Log } from './entities/log';
 import { AccessToken } from './entities/access-token';
+import { UserNotePining } from './entities/user-note-pinings';
 
 export const Apps = getRepository(App);
 export const Notes = getCustomRepository(NoteRepository);
@@ -41,6 +42,7 @@ export const PollVotes = getRepository(PollVote);
 export const Users = getCustomRepository(UserRepository);
 export const UserLists = getRepository(UserList);
 export const UserListJoinings = getRepository(UserListJoining);
+export const UserNotePinings = getRepository(UserNotePining);
 export const Followings = getRepository(Following);
 export const FollowRequests = getRepository(FollowRequest);
 export const Instances = getRepository(Instance);

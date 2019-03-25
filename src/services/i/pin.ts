@@ -1,21 +1,22 @@
 import config from '../../config';
-import User, { isLocalUser, isRemoteUser, ILocalUser, User } from '../../models/entities/user';
-import Note, { packMany } from '../../models/entities/note';
-import Following from '../../models/entities/following';
 import renderAdd from '../../remote/activitypub/renderer/add';
 import renderRemove from '../../remote/activitypub/renderer/remove';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import { IdentifiableError } from '../../misc/identifiable-error';
+import { User, ILocalUser } from '../../models/entities/user';
+import { Note } from '../../models/entities/note';
+import { Notes, UserNotePinings, Users, Followings } from '../../models';
+import { UserNotePining } from '../../models/entities/user-note-pinings';
 
 /**
  * 指定した投稿をピン留めします
  * @param user
  * @param noteId
  */
-export async function addPinned(user: User, noteId: mongo.ObjectID) {
+export async function addPinned(user: User, noteId: Note['id']) {
 	// Fetch pinee
-	const note = await Note.findOne({
+	const note = await Notes.findOne({
 		id: noteId,
 		userId: user.id
 	});
@@ -24,34 +25,24 @@ export async function addPinned(user: User, noteId: mongo.ObjectID) {
 		throw new IdentifiableError('70c4e51f-5bea-449c-a030-53bee3cce202', 'No such note.');
 	}
 
-	let pinnedNoteIds = user.pinnedNoteIds || [];
+	const pinings = await UserNotePinings.find({ userId: user.id });
 
-	//#region 現在ピン留め投稿している投稿が実際にデータベースに存在しているのかチェック
-	// データベースの欠損などで存在していない(または破損している)場合があるので。
-	// 存在していなかったらピン留め投稿から外す
-	const pinnedNotes = await packMany(pinnedNoteIds, null, { detail: true });
-
-	pinnedNoteIds = pinnedNoteIds.filter(id => pinnedNotes.some(n => n.id === id));
-	//#endregion
-
-	if (pinnedNoteIds.length >= 5) {
+	if (pinings.length >= 5) {
 		throw new IdentifiableError('15a018eb-58e5-4da1-93be-330fcc5e4e1a', 'You can not pin notes any more.');
 	}
 
-	if (pinnedNoteIds.some(id => id.equals(note.id))) {
+	if (pinings.some(pining => pining.noteId === note.id)) {
 		throw new IdentifiableError('23f0cf4e-59a3-4276-a91d-61a5891c1514', 'That note has already been pinned.');
 	}
 
-	pinnedNoteIds.unshift(note.id);
-
-	await User.update(user.id, {
-		$set: {
-			pinnedNoteIds: pinnedNoteIds
-		}
-	});
+	await UserNotePinings.save({
+		createdAt: new Date(),
+		userId: user.id,
+		noteId: note.id
+	} as UserNotePining);
 
 	// Deliver to remote followers
-	if (isLocalUser(user)) {
+	if (Users.isLocalUser(user)) {
 		deliverPinnedChange(user.id, note.id, true);
 	}
 }
@@ -61,9 +52,9 @@ export async function addPinned(user: User, noteId: mongo.ObjectID) {
  * @param user
  * @param noteId
  */
-export async function removePinned(user: User, noteId: mongo.ObjectID) {
+export async function removePinned(user: User, noteId: Note['id']) {
 	// Fetch unpinee
-	const note = await Note.findOne({
+	const note = await Notes.findOne({
 		id: noteId,
 		userId: user.id
 	});
@@ -72,26 +63,23 @@ export async function removePinned(user: User, noteId: mongo.ObjectID) {
 		throw new IdentifiableError('b302d4cf-c050-400a-bbb3-be208681f40c', 'No such note.');
 	}
 
-	const pinnedNoteIds = (user.pinnedNoteIds || []).filter(id => !id.equals(note.id));
-
-	await User.update(user.id, {
-		$set: {
-			pinnedNoteIds: pinnedNoteIds
-		}
+	UserNotePinings.delete({
+		userId: user.id,
+		noteId: note.id
 	});
 
 	// Deliver to remote followers
-	if (isLocalUser(user)) {
+	if (Users.isLocalUser(user)) {
 		deliverPinnedChange(user.id, noteId, false);
 	}
 }
 
-export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.ObjectID, isAddition: boolean) {
+export async function deliverPinnedChange(userId: User['id'], noteId: Note['id'], isAddition: boolean) {
 	const user = await Users.findOne({
 		id: userId
 	});
 
-	if (!isLocalUser(user)) return;
+	if (!Users.isLocalUser(user)) return;
 
 	const queue = await CreateRemoteInboxes(user);
 
@@ -111,16 +99,20 @@ export async function deliverPinnedChange(userId: mongo.ObjectID, noteId: mongo.
  * @param user ローカルユーザー
  */
 async function CreateRemoteInboxes(user: ILocalUser): Promise<string[]> {
-	const followers = await Following.find({
+	const followers = await Followings.find({
 		followeeId: user.id
 	});
 
 	const queue: string[] = [];
 
 	for (const following of followers) {
-		const follower = following._follower;
+		const follower = {
+			host: following.followerHost,
+			inbox: following.followerInbox,
+			sharedInbox: following.followerSharedInbox,
+		};
 
-		if (isRemoteUser(follower)) {
+		if (Users.isRemoteUser(follower)) {
 			const inbox = follower.sharedInbox || follower.inbox;
 			if (!queue.includes(inbox)) queue.push(inbox);
 		}

@@ -2,27 +2,25 @@ import * as promiseLimit from 'promise-limit';
 import { toUnicode } from 'punycode';
 
 import config from '../../../config';
-import User, { validateUsername, isValidName, User, IRemoteUser, isRemoteUser } from '../../../models/entities/user';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
 import { DriveFile } from '../../../models/entities/drive-file';
-import Meta from '../../../models/entities/meta';
 import { fromHtml } from '../../../mfm/fromHtml';
 import usersChart from '../../../services/chart/charts/users';
 import instanceChart from '../../../services/chart/charts/instance';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
-import Instance from '../../../models/entities/instance';
-import getDriveFileUrl from '../../../misc/get-drive-file-url';
-import { IEmoji } from '../../../models/entities/emoji';
 import { ITag, extractHashtags } from './tag';
-import Following from '../../../models/entities/following';
 import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateHashtag } from '../../../services/update-hashtag';
+import { Users, UserNotePinings } from '../../../models';
+import { User, IRemoteUser } from '../../../models/entities/user';
+import { Emoji } from '../../../models/entities/emoji';
+import { UserNotePining } from '../../../models/entities/user-note-pinings';
 const logger = apLogger;
 
 /**
@@ -49,11 +47,11 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: inbox is not a string');
 	}
 
-	if (!validateUsername(x.preferredUsername, true)) {
+	if (!Users.validateUsername(x.preferredUsername, true)) {
 		return new Error('invalid person: invalid username');
 	}
 
-	if (!isValidName(x.name == '' ? null : x.name)) {
+	if (!Users.isValidName(x.name == '' ? null : x.name)) {
 		return new Error('invalid person: invalid name');
 	}
 
@@ -88,7 +86,7 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<Use
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		const id = new mongo.ObjectID(uri.split('/').pop());
+		const id = uri.split('/').pop();
 		return await Users.findOne(id);
 	}
 
@@ -149,7 +147,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	// Create user
 	let user: IRemoteUser;
 	try {
-		user = await User.insert({
+		user = await Users.save({
 			avatarId: null,
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
@@ -200,15 +198,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		instanceChart.newUser(i.host);
 	});
 
-	//#region Increment users count
-	Meta.update({}, {
-		$inc: {
-			'stats.usersCount': 1
-		}
-	}, { upsert: true });
-
 	usersChart.update(user, true);
-	//#endregion
 
 	// ハッシュタグ更新
 	for (const tag of tags) updateHashtag(user, tag, true, true);
@@ -231,15 +221,13 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	const bannerColor = banner && avatar.properties.avgColor ? banner.properties.avgColor : null;
 
-	await User.update(user.id, {
-		$set: {
-			avatarId,
-			bannerId,
-			avatarUrl,
-			bannerUrl,
-			avatarColor,
-			bannerColor
-		}
+	await Users.update(user.id, {
+		avatarId,
+		bannerId,
+		avatarUrl,
+		bannerUrl,
+		avatarColor,
+		bannerColor
 	});
 
 	user.avatarId = avatarId;
@@ -253,15 +241,13 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	//#region カスタム絵文字取得
 	const emojis = await extractEmojis(person.tag, host).catch(e => {
 		logger.info(`extractEmojis: ${e}`);
-		return [] as IEmoji[];
+		return [] as Emoji[];
 	});
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	await User.update(user.id, {
-		$set: {
-			emojis: emojiNames
-		}
+	await Users.update(user.id, {
+		emojis: emojiNames
 	});
 	//#endregion
 
@@ -342,7 +328,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	// カスタム絵文字取得
 	const emojis = await extractEmojis(person.tag, exist.host).catch(e => {
 		logger.info(`extractEmojis: ${e}`);
-		return [] as IEmoji[];
+		return [] as Emoji[];
 	});
 
 	const emojiNames = emojis.map(emoji => emoji.name);
@@ -491,9 +477,9 @@ export function analyzeAttachments(attachments: ITag[]) {
 	return { fields, services };
 }
 
-export async function updateFeatured(userId: mongo.ObjectID) {
-	const user = await Users.findOne({ _id: userId });
-	if (!isRemoteUser(user)) return;
+export async function updateFeatured(userId: User['id']) {
+	const user = await Users.findOne(userId);
+	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 
 	logger.info(`Updating the featured: ${user.uri}`);
@@ -516,9 +502,11 @@ export async function updateFeatured(userId: mongo.ObjectID) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver)) as Promise<Note>));
 
-	await User.update(user.id, {
-		$set: {
-			pinnedNoteIds: featuredNotes.filter(note => note != null).map(note => note.id)
-		}
-	});
+	for (const note of featuredNotes.filter(note => note != null)) {
+		UserNotePinings.save({
+			createdAt: new Date(),
+			userId: user.id,
+			noteId: note.id
+		} as UserNotePining);
+	}
 }

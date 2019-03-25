@@ -4,7 +4,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import { setResponseType } from '../activitypub';
 import renderNote from '../../remote/activitypub/renderer/note';
-import { Users, Notes } from '../../models';
+import { Users, Notes, UserNotePinings } from '../../models';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = parseInt(ctx.params.user, 10);
@@ -20,9 +20,9 @@ export default async (ctx: Router.IRouterContext) => {
 		return;
 	}
 
-	const pinnedNoteIds = user.pinnedNoteIds || [];
+	const pinings = await UserNotePinings.find({ userId: user.id });
 
-	const pinnedNotes = await Promise.all(pinnedNoteIds.map(id => Notes.findOne(id)));
+	const pinnedNotes = await Promise.all(pinings.map(pining => Notes.findOne(pining.noteId)));
 
 	const renderedNotes = await Promise.all(pinnedNotes.map(note => renderNote(note)));
 

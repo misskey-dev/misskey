@@ -183,6 +183,12 @@ export class User {
 	})
 	public sharedInbox: string | null;
 
+	@Column('varchar', {
+		length: 256, nullable: true,
+		comment: 'The featured of the User. It will be null if the origin of the user is local.'
+	})
+	public featured: string | null;
+
 	@Index()
 	@Column('varchar', {
 		length: 256, nullable: true,
