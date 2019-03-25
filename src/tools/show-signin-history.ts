@@ -1,3 +1,5 @@
+import { Users, Signins } from '../models';
+
 // node built/tools/show-signin-history username
 //  => {Success} {Date} {IPAddrsss}
 
@@ -7,9 +9,6 @@
 // node built/tools/show-signin-history username all
 //  with full request headers
 
-import User from '../models/entities/user';
-import Signin from '../models/entities/signin';
-
 async function main(username: string, headers: string[]) {
 	const user = await Users.findOne({
 		host: null,
@@ -18,7 +17,7 @@ async function main(username: string, headers: string[]) {
 
 	if (user === null) throw 'User not found';
 
-	const history = await Signin.find({
+	const history = await Signins.find({
 		userId: user.id
 	});
 

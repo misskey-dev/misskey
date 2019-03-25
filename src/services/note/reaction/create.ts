@@ -53,7 +53,7 @@ export default async (user: User, note: Note, reaction: string) => {
 	});
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成
-	if (Users.isLocalUser(note._user)) {
+	if (note.userHost === null) {
 		notify(note.userId, user.id, 'reaction', {
 			noteId: note.id,
 			reaction: reaction
@@ -80,9 +80,9 @@ export default async (user: User, note: Note, reaction: string) => {
 
 	//#region 配信
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
-	if (Users.isLocalUser(user) && Users.isRemoteUser(note._user)) {
+	if (Users.isLocalUser(user) && note.userHost !== null) {
 		const content = renderActivity(renderLike(user, note, reaction));
-		deliver(user, content, note._user.inbox);
+		deliver(user, content, note.userInbox);
 	}
 	//#endregion
 };

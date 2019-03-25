@@ -1,4 +1,3 @@
-import Matching from '../../../../../../models/games/reversi/matching';
 import define from '../../../../define';
 
 export const meta = {
@@ -11,6 +10,4 @@ export default define(meta, async (ps, user) => {
 	await Matching.remove({
 		parentId: user.id
 	});
-
-	return;
 });

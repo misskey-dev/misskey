@@ -1,6 +1,5 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import define from '../../../define';
 
 export const meta = {

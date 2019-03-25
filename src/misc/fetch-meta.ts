@@ -1,6 +1,6 @@
-import { ulid } from 'ulid';
 import { Meta } from '../models/entities/meta';
 import { Metas } from '../models';
+import { genId } from './gen-id';
 
 export default async function(): Promise<Meta> {
 	const meta = await Metas.findOne();
@@ -8,7 +8,7 @@ export default async function(): Promise<Meta> {
 		return meta;
 	} else {
 		return Metas.save({
-			id: ulid().toLowerCase(),
+			id: genId(),
 			hiddenTags: []
 		} as Meta);
 	}

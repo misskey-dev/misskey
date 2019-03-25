@@ -18,8 +18,7 @@ export class ReversiGame {
 	})
 	public startedAt: Date;
 
-	@Column('integer', {
-	})
+	@Column('char', { length: 26 })
 	public user1Id: User['id'];
 
 	@ManyToOne(type => User, {
@@ -28,8 +27,7 @@ export class ReversiGame {
 	@JoinColumn()
 	public user1: User | null;
 
-	@Column('integer', {
-	})
+	@Column('char', { length: 26 })
 	public user2Id: User['id'];
 
 	@ManyToOne(type => User, {
@@ -66,11 +64,13 @@ export class ReversiGame {
 	})
 	public isEnded: boolean;
 
-	@Column('integer', { nullable: true,
+	@Column('char', {
+		length: 26, nullable: true
 	})
 	public winnerId: User['id'] | null;
 
-	@Column('integer', { nullable: true,
+	@Column('char', {
+		length: 26, nullable: true
 	})
 	public surrendered: User['id'] | null;
 

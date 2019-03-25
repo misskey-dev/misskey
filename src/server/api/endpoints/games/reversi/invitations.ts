@@ -1,4 +1,3 @@
-import Matching, { pack as packMatching } from '../../../../../models/games/reversi/matching';
 import define from '../../../define';
 
 export const meta = {

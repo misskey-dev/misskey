@@ -1,6 +1,5 @@
 import $ from 'cafy';
 import { ID } from '../../../../../../misc/cafy-id';
-import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
 import Reversi from '../../../../../../games/reversi/core';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';

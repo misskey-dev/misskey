@@ -160,6 +160,12 @@ export class Note {
 		comment: '[Denormalized]'
 	})
 	public userHost: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public userInbox: string | null;
 	//#endregion
 }
 
