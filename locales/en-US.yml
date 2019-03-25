@@ -224,7 +224,7 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "Confirm"
-  cancel: "Exit"
+  cancel: "Cancel"
   update-available-title: "Update available"
   update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
