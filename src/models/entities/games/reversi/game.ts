@@ -1,6 +1,6 @@
 import * as deepcopy from 'deepcopy';
-import { User, pack as packUser } from '../../user';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from '../../user';
 
 @Entity()
 export class ReversiGame {

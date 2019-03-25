@@ -1,21 +1,22 @@
 import autobind from 'autobind-decorator';
 import * as CRC32 from 'crc-32';
-import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
 import { publishReversiGameStream } from '../../../../../services/stream';
 import Reversi from '../../../../../games/reversi/core';
 import * as maps from '../../../../../games/reversi/maps';
 import Channel from '../../channel';
+import { ReversiGame } from '../../../../../models/entities/games/reversi/game';
+import { ReversiGames } from '../../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'gamesReversiGame';
 	public static shouldShare = false;
 	public static requireCredential = false;
 
-	private gameId: mongo.ObjectID;
+	private gameId: ReversiGame['id'];
 
 	@autobind
 	public async init(params: any) {
-		this.gameId = new mongo.ObjectID(params.gameId as string);
+		this.gameId = params.gameId;
 
 		// Subscribe game stream
 		this.subscriber.on(`reversiGameStream:${this.gameId}`, data => {
@@ -39,38 +40,32 @@ export default class extends Channel {
 
 	@autobind
 	private async updateSettings(settings: any) {
-		const game = await ReversiGame.findOne({ _id: this.gameId });
+		const game = await ReversiGames.findOne(this.gameId);
 
 		if (game.isStarted) return;
-		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
-		if (game.user1Id.equals(this.user.id) && game.user1Accepted) return;
-		if (game.user2Id.equals(this.user.id) && game.user2Accepted) return;
+		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
+		if ((game.user1Id === this.user.id) && game.user1Accepted) return;
+		if ((game.user2Id === this.user.id) && game.user2Accepted) return;
 
-		await ReversiGame.update({ _id: this.gameId }, {
-			$set: {
-				settings
-			}
-		});
+		await ReversiGames.update({ id: this.gameId }, settings);
 
 		publishReversiGameStream(this.gameId, 'updateSettings', settings);
 	}
 
 	@autobind
 	private async initForm(form: any) {
-		const game = await ReversiGame.findOne({ _id: this.gameId });
+		const game = await ReversiGames.findOne(this.gameId);
 
 		if (game.isStarted) return;
-		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
+		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
 
-		const set = game.user1Id.equals(this.user.id) ? {
+		const set = game.user1Id === this.user.id ? {
 			form1: form
 		} : {
-				form2: form
-			};
+			form2: form
+		};
 
-		await ReversiGame.update({ _id: this.gameId }, {
-			$set: set
-		});
+		await ReversiGames.update({ id: this.gameId }, set);
 
 		publishReversiGameStream(this.gameId, 'initForm', {
 			userId: this.user.id,
@@ -80,12 +75,12 @@ export default class extends Channel {
 
 	@autobind
 	private async updateForm(id: string, value: any) {
-		const game = await ReversiGame.findOne({ _id: this.gameId });
+		const game = await ReversiGames.findOne({ id: this.gameId });
 
 		if (game.isStarted) return;
-		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
+		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
 
-		const form = game.user1Id.equals(this.user.id) ? game.form2 : game.form1;
+		const form = game.user1Id === this.user.id ? game.form2 : game.form1;
 
 		const item = form.find((i: any) => i.id == id);
 
@@ -93,15 +88,13 @@ export default class extends Channel {
 
 		item.value = value;
 
-		const set = game.user1Id.equals(this.user.id) ? {
+		const set = game.user1Id === this.user.id ? {
 			form2: form
 		} : {
 				form1: form
 			};
 
-		await ReversiGame.update({ _id: this.gameId }, {
-			$set: set
-		});
+		await ReversiGames.update({ id: this.gameId }, set);
 
 		publishReversiGameStream(this.gameId, 'updateForm', {
 			userId: this.user.id,
@@ -121,17 +114,15 @@ export default class extends Channel {
 
 	@autobind
 	private async accept(accept: boolean) {
-		const game = await ReversiGame.findOne({ _id: this.gameId });
+		const game = await ReversiGames.findOne(this.gameId);
 
 		if (game.isStarted) return;
 
 		let bothAccepted = false;
 
-		if (game.user1Id.equals(this.user.id)) {
-			await ReversiGame.update({ _id: this.gameId }, {
-				$set: {
-					user1Accepted: accept
-				}
+		if (game.user1Id === this.user.id) {
+			await ReversiGames.update({ id: this.gameId }, {
+				user1Accepted: accept
 			});
 
 			publishReversiGameStream(this.gameId, 'changeAccepts', {
@@ -140,11 +131,9 @@ export default class extends Channel {
 			});
 
 			if (accept && game.user2Accepted) bothAccepted = true;
-		} else if (game.user2Id.equals(this.user.id)) {
-			await ReversiGame.update({ _id: this.gameId }, {
-				$set: {
-					user2Accepted: accept
-				}
+		} else if (game.user2Id === this.user.id) {
+			await ReversiGames.update({ id: this.gameId }, {
+				user2Accepted: accept
 			});
 
 			publishReversiGameStream(this.gameId, 'changeAccepts', {
@@ -160,15 +149,15 @@ export default class extends Channel {
 		if (bothAccepted) {
 			// 3秒後、まだacceptされていたらゲーム開始
 			setTimeout(async () => {
-				const freshGame = await ReversiGame.findOne({ _id: this.gameId });
+				const freshGame = await ReversiGames.findOne(this.gameId);
 				if (freshGame == null || freshGame.isStarted || freshGame.isEnded) return;
 				if (!freshGame.user1Accepted || !freshGame.user2Accepted) return;
 
 				let bw: number;
-				if (freshGame.settings.bw == 'random') {
+				if (freshGame.bw == 'random') {
 					bw = Math.random() > 0.5 ? 1 : 2;
 				} else {
-					bw = freshGame.settings.bw as number;
+					bw = parseInt(freshGame.bw, 10);
 				}
 
 				function getRandomMap() {
@@ -177,22 +166,20 @@ export default class extends Channel {
 					return Object.values(maps)[rnd].data;
 				}
 
-				const map = freshGame.settings.map != null ? freshGame.settings.map : getRandomMap();
+				const map = freshGame.map != null ? freshGame.map : getRandomMap();
 
-				await ReversiGame.update({ _id: this.gameId }, {
-					$set: {
-						startedAt: new Date(),
-						isStarted: true,
-						black: bw,
-						'settings.map': map
-					}
+				await ReversiGames.update({ id: this.gameId }, {
+					startedAt: new Date(),
+					isStarted: true,
+					black: bw,
+					map: map
 				});
 
 				//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
 				const o = new Reversi(map, {
-					isLlotheo: freshGame.settings.isLlotheo,
-					canPutEverywhere: freshGame.settings.canPutEverywhere,
-					loopedBoard: freshGame.settings.loopedBoard
+					isLlotheo: freshGame.isLlotheo,
+					canPutEverywhere: freshGame.canPutEverywhere,
+					loopedBoard: freshGame.loopedBoard
 				});
 
 				if (o.isEnded) {
@@ -205,23 +192,22 @@ export default class extends Channel {
 						winner = null;
 					}
 
-					await ReversiGame.update({
+					await ReversiGames.update({
 						id: this.gameId
 					}, {
-							$set: {
-								isEnded: true,
-								winnerId: winner
-							}
-						});
+						isEnded: true,
+						winnerId: winner
+					});
 
 					publishReversiGameStream(this.gameId, 'ended', {
 						winnerId: winner,
-						game: await pack(this.gameId, this.user)
+						game: await ReversiGames.pack(this.gameId, this.user)
 					});
 				}
 				//#endregion
 
-				publishReversiGameStream(this.gameId, 'started', await pack(this.gameId, this.user));
+				publishReversiGameStream(this.gameId, 'started',
+					await ReversiGames.pack(this.gameId, this.user));
 			}, 3000);
 		}
 	}
@@ -229,16 +215,16 @@ export default class extends Channel {
 	// 石を打つ
 	@autobind
 	private async set(pos: number) {
-		const game = await ReversiGame.findOne({ _id: this.gameId });
+		const game = await ReversiGames.findOne(this.gameId);
 
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
-		if (!game.user1Id.equals(this.user.id) && !game.user2Id.equals(this.user.id)) return;
+		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
 
-		const o = new Reversi(game.settings.map, {
-			isLlotheo: game.settings.isLlotheo,
-			canPutEverywhere: game.settings.canPutEverywhere,
-			loopedBoard: game.settings.loopedBoard
+		const o = new Reversi(game.map, {
+			isLlotheo: game.isLlotheo,
+			canPutEverywhere: game.canPutEverywhere,
+			loopedBoard: game.loopedBoard
 		});
 
 		for (const log of game.logs) {
@@ -246,7 +232,7 @@ export default class extends Channel {
 		}
 
 		const myColor =
-			(game.user1Id.equals(this.user.id) && game.black == 1) || (game.user2Id.equals(this.user.id) && game.black == 2)
+			((game.user1Id === this.user.id) && game.black == 1) || ((game.user2Id === this.user.id) && game.black == 2)
 				? true
 				: false;
 
@@ -270,20 +256,18 @@ export default class extends Channel {
 			pos
 		};
 
-		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString());
+		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString()).toString();
 
-		await ReversiGame.update({
+		await ReversiGames.update({
 			id: this.gameId
 		}, {
-				$set: {
-					crc32,
-					isEnded: o.isEnded,
-					winnerId: winner
-				},
-				$push: {
-					logs: log
-				}
-			});
+			crc32,
+			isEnded: o.isEnded,
+			winnerId: winner,
+			$push: {
+				logs: log
+			}
+		});
 
 		publishReversiGameStream(this.gameId, 'set', Object.assign(log, {
 			next: o.turn
@@ -292,14 +276,14 @@ export default class extends Channel {
 		if (o.isEnded) {
 			publishReversiGameStream(this.gameId, 'ended', {
 				winnerId: winner,
-				game: await pack(this.gameId, this.user)
+				game: await ReversiGames.pack(this.gameId, this.user)
 			});
 		}
 	}
 
 	@autobind
 	private async check(crc32: string) {
-		const game = await ReversiGame.findOne({ _id: this.gameId });
+		const game = await ReversiGames.findOne(this.gameId);
 
 		if (!game.isStarted) return;
 
@@ -307,7 +291,7 @@ export default class extends Channel {
 		if (game.crc32 == null) return;
 
 		if (crc32 !== game.crc32) {
-			this.send('rescue', await pack(game, this.user));
+			this.send('rescue', await ReversiGames.pack(game, this.user));
 		}
 	}
 }

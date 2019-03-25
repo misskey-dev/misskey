@@ -1,8 +1,7 @@
 import { Feed } from 'feed';
 import config from '../../config';
-import Note from '../../models/entities/note';
 import { User } from '../../models/entities/user';
-import { getOriginalUrl } from '../../misc/get-drive-file-url';
+import { Notes, DriveFiles } from '../../models';
 
 export default async function(user: User) {
 	const author: Author = {
@@ -10,7 +9,7 @@ export default async function(user: User) {
 		name: user.name || user.username
 	};
 
-	const notes = await Note.find({
+	const notes = await Notes.find({
 		userId: user.id,
 		renoteId: null,
 		$or: [
@@ -46,7 +45,7 @@ export default async function(user: User) {
 			date: note.createdAt,
 			description: note.cw,
 			content: note.text,
-			image: file && getOriginalUrl(file)
+			image: file ? DriveFiles.getPublicUrl(file) : null
 		});
 	}
 

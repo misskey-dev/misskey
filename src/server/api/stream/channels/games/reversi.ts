@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import Matching, { pack } from '../../../../../models/games/reversi/matching';
 import { publishMainStream } from '../../../../../services/stream';
 import Channel from '../../channel';
+import { ReversiMatchings } from '../../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'gamesReversi';
@@ -21,12 +21,12 @@ export default class extends Channel {
 		switch (type) {
 			case 'ping':
 				if (body.id == null) return;
-				const matching = await Matching.findOne({
+				const matching = await ReversiMatchings.findOne({
 					parentId: this.user.id,
-					childId: new mongo.ObjectID(body.id)
+					childId: body.id
 				});
 				if (matching == null) return;
-				publishMainStream(matching.childId, 'reversiInvited', await pack(matching, matching.childId));
+				publishMainStream(matching.childId, 'reversiInvited', await ReversiMatchings.pack(matching, matching.childId));
 				break;
 		}
 	}
