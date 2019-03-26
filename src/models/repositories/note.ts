@@ -171,7 +171,7 @@ export class NoteRepository extends Repository<Note> {
 			id: _note.id,
 			createdAt: _note.createdAt,
 			app: _note.appId ? Apps.pack(_note.appId) : null,
-			user: Users.pack(_note.userId, meId),
+			user: Users.pack(_note.user || _note.userId, meId),
 			text: text,
 			reactions: _note.reactions,
 			emojis: reactionEmojis.length > 0 ? Emojis.find({

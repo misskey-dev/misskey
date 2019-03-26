@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
-import Mute from '../../../../models/entities/muting';
 import Channel from '../channel';
+import { Mutings } from '../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'main';
@@ -9,7 +9,7 @@ export default class extends Channel {
 
 	@autobind
 	public async init(params: any) {
-		const mute = await Mute.find({ muterId: this.user.id });
+		const mute = await Mutings.find({ muterId: this.user.id });
 		const mutedUserIds = mute.map(m => m.muteeId.toString());
 
 		// Subscribe main stream channel

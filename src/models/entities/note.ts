@@ -151,24 +151,33 @@ export class Note {
 	})
 	public attachedFileTypes: string[];
 
+	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}'
 	})
 	public visibleUserIds: User['id'][];
 
+	@Index()
+	@Column({
+		...id(),
+		array: true, default: '{}'
+	})
+	public mentions: User['id'][];
+
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})
 	public emojis: string[];
 
+	@Index()
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})
 	public tags: string[];
 
 	@Column('jsonb', {
-		nullable: true, default: {}
+		nullable: true
 	})
 	public poll: IPoll | null;
 
@@ -178,6 +187,7 @@ export class Note {
 	public geo: any | null;
 
 	//#region Denormalized fields
+	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
 		comment: '[Denormalized]'

@@ -3,29 +3,26 @@ import renderHashtag from './hashtag';
 import renderMention from './mention';
 import renderEmoji from './emoji';
 import config from '../../../config';
-import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
-import Note, { Note } from '../../../models/entities/note';
-import User from '../../../models/entities/user';
 import toHtml from '../misc/get-note-html';
-import Emoji, { IEmoji } from '../../../models/entities/emoji';
+import { Note } from '../../../models/entities/note';
+import { DriveFile } from '../../../models/entities/drive-file';
+import { DriveFiles, Notes, Users, Emojis } from '../../../models';
+import { In } from 'typeorm';
+import { Emoji } from '../../../models/entities/emoji';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
-	const promisedFiles: Promise<DriveFile[]> = note.fileIds
-		? DriveFile.find({ _id: { $in: note.fileIds } })
+	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 1
+		? DriveFiles.find({ id: In(note.fileIds) })
 		: Promise.resolve([]);
 
 	let inReplyTo;
 	let inReplyToNote: Note;
 
 	if (note.replyId) {
-		inReplyToNote = await Note.findOne({
-			id: note.replyId,
-		});
+		inReplyToNote = await Notes.findOne(note.replyId);
 
 		if (inReplyToNote !== null) {
-			const inReplyToUser = await Users.findOne({
-				id: inReplyToNote.userId,
-			});
+			const inReplyToUser = await Users.findOne(inReplyToNote.userId);
 
 			if (inReplyToUser !== null) {
 				if (inReplyToNote.uri) {
@@ -46,9 +43,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 	let quote;
 
 	if (note.renoteId) {
-		const renote = await Note.findOne({
-			id: note.renoteId,
-		});
+		const renote = await Notes.findOne(note.renoteId);
 
 		if (renote) {
 			quote = renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`;
@@ -81,10 +76,8 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		to = mentions;
 	}
 
-	const mentionedUsers = note.mentions ? await Users.find({
-		id: {
-			$in: note.mentions
-		}
+	const mentionedUsers = note.mentions.length > 0 ? await Users.find({
+		id: In(note.mentions)
 	}) : [];
 
 	const hashtagTags = (note.tags || []).map(tag => renderHashtag(tag));
@@ -178,11 +171,11 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 	};
 }
 
-export async function getEmojis(names: string[]): Promise<IEmoji[]> {
-	if (names == null || names.length < 1) return [];
+export async function getEmojis(names: string[]): Promise<Emoji[]> {
+	if (names == null || names.length === 0) return [];
 
 	const emojis = await Promise.all(
-		names.map(name => Emoji.findOne({
+		names.map(name => Emojis.findOne({
 			name,
 			host: null
 		}))

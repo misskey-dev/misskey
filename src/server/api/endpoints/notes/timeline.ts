@@ -101,10 +101,12 @@ export default define(meta, async (ps, user) => {
 		.where('following.followerId = :followerId', { followerId: user.id });
 
 	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		//.andWhere(generateVisibilityQuery(user))
 		//.andWhere(generateMuteQuery(user))
 		.andWhere(`(note.userId IN (${ followingQuery.getQuery() }) OR note.userId = :meId)`, { meId: user.id })
+		.leftJoinAndSelect('note.user', 'user')
 		.setParameters(followingQuery.getParameters());
+
+	generateVisibilityQuery(query, user);
 
 	/* v11 TODO
 	// MongoDBではトップレベルで否定ができないため、De Morganの法則を利用してクエリします。

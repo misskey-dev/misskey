@@ -52,13 +52,13 @@ export class UserRepository extends Repository<User> {
 			username: _user.username,
 
 			// カスタム絵文字添付
-			emojis: Emojis.find({
+			emojis: _user.emojis.length > 0 ? Emojis.find({
 				where: {
-					...(_user.emojis.length > 0 ? { name: In(_user.emojis) } : {}),
+					name: In(_user.emojis),
 					host: _user.host
 				},
 				select: ['name', 'host', 'url', 'aliases']
-			}),
+			}) : [],
 
 			...(opts.includeHasUnreadNotes ? {
 				hasUnreadSpecifiedNotes: NoteUnreads.count({
