@@ -1567,7 +1567,6 @@ mobile/views/components/drive.vue:
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
   folder-name-cannot-empty: "フォルダ名を空白にすることはできません。"
-  cannot-same-folder: "同じフォルダーは指定できません。"
 
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
