@@ -106,9 +106,6 @@ export default Vue.extend({
 			this.folder = null;
 		},
 		openContextMenu() {
-			if (this.folder) {
-				items = items.concat()
-			}
 			this.$root.new(XMenu, {
 				items: [{
 					type: 'item',
