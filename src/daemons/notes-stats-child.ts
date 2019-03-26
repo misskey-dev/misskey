@@ -1,10 +1,10 @@
 import { MoreThanOrEqual, getRepository } from 'typeorm';
 import { Note } from '../models/entities/note';
-import { initPostgre } from '../db/postgre';
+import { initMainPostgre } from '../db/entities';
 
 const interval = 5000;
 
-initPostgre().then(() => {
+initMainPostgre().then(() => {
 	const Notes = getRepository(Note);
 
 	async function tick() {
