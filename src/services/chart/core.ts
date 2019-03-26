@@ -94,11 +94,11 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private static convertObjectToFlattenColumns(x: Record<string, any>) {
-		const columns = {} as any;
+		const columns = {} as Record<string, number>;
 		const flatten = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
 				const p = path ? `${path}${this.columnDot}${k}` : k;
-				if (v.type === 'object') {
+				if (typeof v === 'object') {
 					flatten(v, p);
 				} else {
 					columns[this.columnPrefix + p] = v;
@@ -252,7 +252,6 @@ export default abstract class Chart<T extends Record<string, any>> {
 				group: group,
 				span: span,
 				date: Chart.momentToTimestamp(current),
-				data: data as any,
 				...Chart.convertObjectToFlattenColumns(data)
 			});
 		} catch (e) {

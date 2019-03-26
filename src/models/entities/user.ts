@@ -213,10 +213,9 @@ export class User {
 	public token: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
-		comment: 'The keypair of the User. It will be null if the origin of the user is local.'
+		length: 2048,
 	})
-	public keypair: string | null;
+	public keypair: string;
 
 	@Column('jsonb', {
 		default: {},

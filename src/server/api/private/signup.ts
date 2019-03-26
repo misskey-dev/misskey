@@ -3,11 +3,11 @@ import * as bcrypt from 'bcryptjs';
 import { generate as generateKeypair } from '../../../crypto_key';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
-import usersChart from '../../../services/chart/charts/users';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
 import { Users, RegistrationTickets } from '../../../models';
 import { genId } from '../../../misc/gen-id';
+import { usersChart } from '../../../services/chart';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -72,7 +72,7 @@ export default async (ctx: Koa.BaseContext) => {
 	// Generate secret
 	const secret = generateUserToken();
 
-	const account = Users.save({
+	const account = await Users.save({
 		id: genId(),
 		createdAt: new Date(),
 		username: username,
