@@ -226,7 +226,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.dispatch('settings/addHomeWidget', {
+			this.$store.commit('settings/addHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				place: 'left',
@@ -240,9 +240,6 @@ export default Vue.extend({
 			this.$store.commit('settings/setHome', left.concat(right));
 			for (const w of left) w.place = 'left';
 			for (const w of right) w.place = 'right';
-			this.$root.api('i/update_home', {
-				home: this.home
-			});
 		},
 
 		done() {
