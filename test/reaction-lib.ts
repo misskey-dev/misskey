@@ -8,7 +8,6 @@
  * > mocha test/reaction-lib.ts --require ts-node/register -g 'test name'
  */
 
-/*
 import * as assert from 'assert';
 
 import { toDbReaction } from '../src/misc/reaction-lib';
@@ -90,4 +89,3 @@ describe('toDbReaction', async () => {
 		assert.strictEqual(await toDbReaction('unknown'), 'like');
 	});
 });
-*/
