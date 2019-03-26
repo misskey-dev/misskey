@@ -106,6 +106,7 @@
 		"chai": "4.2.0",
 		"chai-http": "4.2.1",
 		"chalk": "2.4.2",
+		"cli-highlight": "2.1.0",
 		"commander": "2.19.0",
 		"content-disposition": "0.5.3",
 		"crc-32": "1.2.0",
