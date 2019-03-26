@@ -169,6 +169,7 @@ export class NoteRepository extends Repository<Note> {
 
 		const packed = await rap({
 			id: _note.id,
+			createdAt: _note.createdAt,
 			app: _note.appId ? Apps.pack(_note.appId) : null,
 			user: Users.pack(_note.userId, meId),
 			text: text,
