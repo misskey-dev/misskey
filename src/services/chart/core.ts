@@ -2,6 +2,12 @@
  * チャートエンジン
  */
 
+// TODO: FIXME
+// ログの初期挿入時に getTemplate と インクリメントコミットが行われるので
+// 実際の数よりも 1 多いログが生成される
+// 例えばインスタンスを作成して初めてのアカウントを作成したとき、
+// 総ユーザー数が 2 になる
+
 import * as moment from 'moment';
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
