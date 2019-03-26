@@ -132,7 +132,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		this.name = name;
 
 		this.entity = new EntitySchema({
-			name: `_chart_${name}`,
+			name: `__chart__${name}`,
 			columns: {
 				id: {
 					type: 'integer',
