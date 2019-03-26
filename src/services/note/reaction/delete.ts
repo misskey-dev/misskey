@@ -23,7 +23,7 @@ export default async (user: User, note: Note) => {
 	await NoteReactions.delete(exist.id);
 
 	const dec: any = {};
-	dec[`reactionCounts.${exist.reaction}`] = -1;
+	dec[`reactions.${exist.reaction}`] = -1;
 
 	// Decrement reactions count
 	Note.update({ _id: note.id }, {

@@ -165,7 +165,7 @@ export class NoteRepository extends Repository<Note> {
 		}
 		*/
 
-		const reactionEmojis = unique(concat([_note.emojis, Object.keys(_note.reactionCounts)]));
+		const reactionEmojis = unique(concat([_note.emojis, Object.keys(_note.reactions)]));
 
 		const packed = await rap({
 			id: _note.id,
@@ -173,6 +173,7 @@ export class NoteRepository extends Repository<Note> {
 			app: _note.appId ? Apps.pack(_note.appId) : null,
 			user: Users.pack(_note.userId, meId),
 			text: text,
+			reactions: _note.reactions,
 			emojis: reactionEmojis.length > 0 ? Emojis.find({
 				name: In(reactionEmojis),
 				host: host

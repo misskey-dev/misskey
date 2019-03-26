@@ -113,7 +113,7 @@ export class Note {
 	@Column('jsonb', {
 		default: {}
 	})
-	public reactionCounts: Record<string, number>;
+	public reactions: Record<string, number>;
 
 	/**
 	 * public ... 公開

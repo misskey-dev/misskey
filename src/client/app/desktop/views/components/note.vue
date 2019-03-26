@@ -54,11 +54,11 @@
 				</button>
 				<button v-if="!isMyNote && appearNote.myReaction == null" class="reactionButton button" @click="react()" ref="reactButton" :title="$t('add-reaction')">
 					<fa icon="plus"/>
-					<p class="count" v-if="Object.values(appearNote.reactionCounts).some(x => x)">{{ Object.values(appearNote.reactionCounts).reduce((a, c) => a + c, 0) }}</p>
+					<p class="count" v-if="Object.values(appearNote.reactions).some(x => x)">{{ Object.values(appearNote.reactions).reduce((a, c) => a + c, 0) }}</p>
 				</button>
 				<button v-if="!isMyNote && appearNote.myReaction != null" class="reactionButton reacted button" @click="undoReact(appearNote)" ref="reactButton" :title="$t('undo-reaction')">
 					<fa icon="minus"/>
-					<p class="count" v-if="Object.values(appearNote.reactionCounts).some(x => x)">{{ Object.values(appearNote.reactionCounts).reduce((a, c) => a + c, 0) }}</p>
+					<p class="count" v-if="Object.values(appearNote.reactions).some(x => x)">{{ Object.values(appearNote.reactions).reduce((a, c) => a + c, 0) }}</p>
 				</button>
 				<button @click="menu()" ref="menuButton" class="button">
 					<fa icon="ellipsis-h"/>

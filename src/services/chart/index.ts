@@ -6,6 +6,7 @@ import ActiveUsersChart from './charts/active-users';
 import InstanceChart from './charts/instance';
 import PerUserNotesChart from './charts/per-user-notes';
 import DriveChart from './charts/drive';
+import PerUserReactionsChart from './charts/per-user-reactions';
 
 export const federationChart = new FederationChart().init();
 export const notesChart = new NotesChart().init();
@@ -15,3 +16,4 @@ export const activeUsersChart = new ActiveUsersChart().init();
 export const instanceChart = new InstanceChart().init();
 export const perUserNotesChart = new PerUserNotesChart().init();
 export const driveChart = new DriveChart().init();
+export const perUserReactionsChart = new PerUserReactionsChart().init();

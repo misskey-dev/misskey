@@ -4,14 +4,14 @@ import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
-import perUserReactionsChart from '../../chart/charts/per-user-reactions';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
 import fetchMeta from '../../../misc/fetch-meta';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, NoteWatchings } from '../../../models';
+import { NoteReactions, Users, NoteWatchings, Notes } from '../../../models';
 import { Not } from 'typeorm';
+import { perUserReactionsChart } from '../../chart';
 
 export default async (user: User, note: Note, reaction: string) => {
 	// Myself
@@ -38,12 +38,14 @@ export default async (user: User, note: Note, reaction: string) => {
 	});
 
 	// Increment reactions count
-	await Note.update({ _id: note.id }, {
-		$inc: {
-			[`reactionCounts.${reaction}`]: 1,
-			score: 1
-		}
-	});
+	const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
+	await Notes.createQueryBuilder().update()
+		.set({
+			reactions: () => sql,
+		})
+		.where('id = :id', { id: note.id })
+		.execute();
+	// v11 inc score
 
 	perUserReactionsChart.update(user, note);
 
