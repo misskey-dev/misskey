@@ -33,22 +33,3 @@ export class Signin {
 	@Column('boolean')
 	public success: boolean;
 }
-
-/**
- * Pack a signin record for API response
- *
- * @param {any} record
- * @return {Promise<any>}
- */
-export const pack = (
-	record: any
-) => new Promise<any>(async (resolve, reject) => {
-
-	const _record = deepcopy(record);
-
-	// Rename _id to id
-	_record.id = _record.id;
-	delete _record.id;
-
-	resolve(_record);
-});
