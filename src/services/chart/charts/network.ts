@@ -1,47 +1,41 @@
 import autobind from 'autobind-decorator';
-import Chart, { Partial, Log } from '../core';
-import { Column, Entity } from 'typeorm';
+import Chart, { Partial } from '../core';
+import { SchemaType } from '../../../misc/schema';
 
 /**
  * ネットワークに関するチャート
  */
-@Entity()
-class NetworkLog extends Log {
-	/**
-	 * 受信したリクエスト数
-	 */
-	@Column()
-	public incomingRequests: number;
+export const networkLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		incomingRequests: {
+			type: 'number' as 'number',
+			description: '受信したリクエスト数'
+		},
+		outgoingRequests: {
+			type: 'number' as 'number',
+			description: '送信したリクエスト数'
+		},
+		totalTime: {
+			type: 'number' as 'number',
+			description: '応答時間の合計' // TIP: (totalTime / incomingRequests) でひとつのリクエストに平均でどれくらいの時間がかかったか知れる
+		},
+		incomingBytes: {
+			type: 'number' as 'number',
+			description: '合計受信データ量'
+		},
+		outgoingBytes: {
+			type: 'number' as 'number',
+			description: '合計送信データ量'
+		},
+	}
+};
 
-	/**
-	 * 送信したリクエスト数
-	 */
-	@Column()
-	public outgoingRequests: number;
-
-	/**
-	 * 応答時間の合計
-	 * TIP: (totalTime / incomingRequests) でひとつのリクエストに平均でどれくらいの時間がかかったか知れる
-	 */
-	@Column()
-	public totalTime: number;
-
-	/**
-	 * 合計受信データ量
-	 */
-	@Column()
-	public incomingBytes: number;
-
-	/**
-	 * 合計送信データ量
-	 */
-	@Column()
-	public outgoingBytes: number;
-}
+type NetworkLog = SchemaType<typeof networkLogSchema>;
 
 class NetworkChart extends Chart<NetworkLog> {
 	constructor() {
-		super('network', NetworkLog);
+		super('network', networkLogSchema);
 	}
 
 	@autobind
