@@ -7,7 +7,7 @@ import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
-import { EntitySchema, getRepository, Repository, LessThan, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
 
 const logger = new Logger('chart');
 
@@ -25,33 +25,29 @@ type ArrayValue<T> = {
 
 type Span = 'day' | 'hour';
 
-export abstract class Log {
-	@PrimaryGeneratedColumn()
-	public id: number;
+type Log = {
+	id: number;
 
 	/**
 	 * 集計のグループ
 	 */
-	@Column('varchar', {
-		length: 128, nullable: true
-	})
-	public group: string | null;
+	group: string | null;
 
 	/**
 	 * 集計日時
 	 */
-	@Column('date')
-	public date: Date;
+	date: Date;
 
 	/**
 	 * 集計期間
 	 */
-	@Column('enum', { enum: ['day', 'hour'] })
-	public span: Span;
+	span: Span;
 
-	@Column('jsonb', { default: {} })
-	public unique: Record<string, any>;
-}
+	/**
+	 * ユニークインクリメント用
+	 */
+	unique?: Record<string, any>;
+};
 
 /**
  * 様々なチャートの管理を司るクラス
@@ -120,11 +116,16 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const columns = Chart.convertObjectToFlattenColumns(x);
 
 		for (const [k, v] of Object.entries(columns)) {
-			if (v > 0) query[k] = () => `'${k}' + ${v}`;
-			if (v < 0) query[k] = () => `'${k}' - ${v}`;
+			if (v > 0) query[k] = () => `"${k}" + ${v}`;
+			if (v < 0) query[k] = () => `"${k}" - ${v}`;
 		}
 
 		return query;
+	}
+
+	@autobind
+	private static momentToTimestamp(x: moment.Moment): string {
+		return `${x.year()}/${x.month() + 1}/${x.date()} ${x.hour()}:${x.minute()}:${x.second()}`;
 	}
 
 	constructor(name: string, schema: Schema, grouped = false) {
@@ -139,7 +140,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 					generated: true
 				},
 				date: {
-					type: 'date',
+					type: 'timestamp without time zone',
 				},
 				group: {
 					type: 'varchar',
@@ -168,7 +169,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	public init() {
-		this.repository = getRepository<Log>(this.entity);
+		this.repository = getRepository<Log>(this.entity, 'charts');
 		return this;
 	}
 
@@ -209,7 +210,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const currentLog = await this.repository.findOne({
 			group: group,
 			span: span,
-			date: current.toDate()
+			date: Chart.momentToTimestamp(current)
 		});
 
 		// ログがあればそれを返して終了
@@ -250,7 +251,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			log = await this.repository.save({
 				group: group,
 				span: span,
-				date: current.toDate(),
+				date: Chart.momentToTimestamp(current),
 				data: data as any,
 				...Chart.convertObjectToFlattenColumns(data)
 			});
@@ -325,9 +326,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			where: {
 				group: group,
 				span: span,
-				date: {
-					$gte: gt.toDate()
-				}
+				date: MoreThanOrEqual(gt.toDate())
 			},
 			order: {
 				date: -1

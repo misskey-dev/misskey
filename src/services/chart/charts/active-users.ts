@@ -1,24 +1,41 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import { User, isLocalUser } from '../../../models/entities/user';
+import { User } from '../../../models/entities/user';
+import { SchemaType } from '../../../misc/schema';
+import { Users } from '../../../models';
 
 /**
  * アクティブユーザーに関するチャート
  */
-type ActiveUsersLog = {
-	local: {
-		/**
-		 * アクティブユーザー数
-		 */
-		count: number;
-	};
-
-	remote: ActiveUsersLog['local'];
+export const logSchema = {
+	/**
+	 * アクティブユーザー数
+	 */
+	count: {
+		type: 'number',
+		description: 'アクティブユーザー数',
+	},
 };
 
-class ActiveUsersChart extends Chart<ActiveUsersLog> {
+export const activeUsersLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		local: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+		remote: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+	}
+};
+
+type ActiveUsersLog = SchemaType<typeof activeUsersLogSchema>;
+
+export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	constructor() {
-		super('activeUsers');
+		super('activeUsers', activeUsersLogSchema);
 	}
 
 	@autobind
@@ -40,9 +57,7 @@ class ActiveUsersChart extends Chart<ActiveUsersLog> {
 		};
 
 		await this.incIfUnique({
-			[isLocalUser(user) ? 'local' : 'remote']: update
+			[Users.isLocalUser(user) ? 'local' : 'remote']: update
 		}, 'users', user.id);
 	}
 }
-
-export default new ActiveUsersChart();

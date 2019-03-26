@@ -1,24 +1,41 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import { User, isLocalUser } from '../../../models/entities/user';
+import { User } from '../../../models/entities/user';
+import { SchemaType } from '../../../misc/schema';
+import { Users } from '../../../models';
 
 /**
  * ハッシュタグに関するチャート
  */
-type HashtagLog = {
-	local: {
-		/**
-		 * 投稿された数
-		 */
-		count: number;
-	};
-
-	remote: HashtagLog['local'];
+export const logSchema = {
+	/**
+	 * 投稿された数
+	 */
+	count: {
+		type: 'number',
+		description: '投稿された数',
+	},
 };
 
-class HashtagChart extends Chart<HashtagLog> {
+export const hashtagLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		local: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+		remote: {
+			type: 'object' as 'object',
+			properties: logSchema
+		},
+	}
+};
+
+type HashtagLog = SchemaType<typeof hashtagLogSchema>;
+
+export default class HashtagChart extends Chart<HashtagLog> {
 	constructor() {
-		super('hashtag', true);
+		super('hashtag', hashtagLogSchema, true);
 	}
 
 	@autobind
@@ -40,9 +57,7 @@ class HashtagChart extends Chart<HashtagLog> {
 		};
 
 		await this.incIfUnique({
-			[isLocalUser(user) ? 'local' : 'remote']: update
+			[Users.isLocalUser(user) ? 'local' : 'remote']: update
 		}, 'users', user.id, hashtag);
 	}
 }
-
-export default new HashtagChart();

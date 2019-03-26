@@ -1,7 +1,9 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import User, { User, isLocalUser } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
+import { Users } from '../../../models';
+import { Not } from 'typeorm';
+import { User } from '../../../models/entities/user';
 
 const logSchema = {
 	/**
@@ -45,16 +47,16 @@ export const usersLogSchema = {
 
 type UsersLog = SchemaType<typeof usersLogSchema>;
 
-class UsersChart extends Chart<UsersLog> {
+export default class UsersChart extends Chart<UsersLog> {
 	constructor() {
-		super('users');
+		super('users', usersLogSchema);
 	}
 
 	@autobind
 	protected async getTemplate(init: boolean, latest?: UsersLog): Promise<UsersLog> {
 		const [localCount, remoteCount] = init ? await Promise.all([
-			User.count({ host: null }),
-			User.count({ host: { $ne: null } })
+			Users.count({ host: null }),
+			Users.count({ host: Not(null) })
 		]) : [
 			latest ? latest.local.total : 0,
 			latest ? latest.remote.total : 0
@@ -86,9 +88,7 @@ class UsersChart extends Chart<UsersLog> {
 		}
 
 		await this.inc({
-			[isLocalUser(user) ? 'local' : 'remote']: update
+			[Users.isLocalUser(user) ? 'local' : 'remote']: update
 		});
 	}
 }
-
-export default new UsersChart();

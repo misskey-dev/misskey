@@ -129,13 +129,13 @@ export const instanceLogSchema = {
 
 type InstanceLog = SchemaType<typeof instanceLogSchema>;
 
-class InstanceChart extends Chart<InstanceLog> {
+export default class InstanceChart extends Chart<InstanceLog> {
 	constructor() {
 		super('instance', instanceLogSchema);
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: InstanceLog, group?: any): Promise<InstanceLog> {
+	protected async getTemplate(init: boolean, latest?: InstanceLog, group?: string): Promise<InstanceLog> {
 		const [
 			notesCount,
 			usersCount,
@@ -282,5 +282,3 @@ class InstanceChart extends Chart<InstanceLog> {
 		}, file.userHost);
 	}
 }
-
-export default new InstanceChart();

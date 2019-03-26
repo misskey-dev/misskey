@@ -1,8 +1,9 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import Note, { Note } from '../../../models/entities/note';
 import { User } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
+import { Notes } from '../../../models';
+import { Note } from '../../../models/entities/note';
 
 export const perUserNotesLogSchema = {
 	type: 'object' as 'object',
@@ -46,15 +47,15 @@ export const perUserNotesLogSchema = {
 
 type PerUserNotesLog = SchemaType<typeof perUserNotesLogSchema>;
 
-class PerUserNotesChart extends Chart<PerUserNotesLog> {
+export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	constructor() {
-		super('perUserNotes', true);
+		super('perUserNotes', perUserNotesLogSchema, true);
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserNotesLog, group?: any): Promise<PerUserNotesLog> {
+	protected async getTemplate(init: boolean, latest?: PerUserNotesLog, group?: string): Promise<PerUserNotesLog> {
 		const [count] = init ? await Promise.all([
-			Note.count({ userId: group, deletedAt: null }),
+			Notes.count({ userId: group }),
 		]) : [
 			latest ? latest.total : 0
 		];
@@ -96,5 +97,3 @@ class PerUserNotesChart extends Chart<PerUserNotesLog> {
 		await this.inc(update, user.id);
 	}
 }
-
-export default new PerUserNotesChart();

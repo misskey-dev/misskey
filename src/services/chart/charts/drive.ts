@@ -71,7 +71,7 @@ export const driveLogSchema = {
 
 type DriveLog = SchemaType<typeof driveLogSchema>;
 
-class DriveChart extends Chart<DriveLog> {
+export default class DriveChart extends Chart<DriveLog> {
 	constructor() {
 		super('drive', driveLogSchema);
 	}
@@ -129,5 +129,3 @@ class DriveChart extends Chart<DriveLog> {
 		});
 	}
 }
-
-export default new DriveChart();

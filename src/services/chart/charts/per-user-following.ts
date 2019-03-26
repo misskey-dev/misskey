@@ -1,8 +1,9 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import Following from '../../../models/entities/following';
-import { User, isLocalUser } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
+import { Followings, Users } from '../../../models';
+import { Not } from 'typeorm';
+import { User } from '../../../models/entities/user';
 
 export const logSchema = {
 	/**
@@ -86,23 +87,23 @@ export const perUserFollowingLogSchema = {
 
 type PerUserFollowingLog = SchemaType<typeof perUserFollowingLogSchema>;
 
-class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
+export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	constructor() {
-		super('perUserFollowing', true);
+		super('perUserFollowing', perUserFollowingLogSchema, true);
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserFollowingLog, group?: any): Promise<PerUserFollowingLog> {
+	protected async getTemplate(init: boolean, latest?: PerUserFollowingLog, group?: string): Promise<PerUserFollowingLog> {
 		const [
 			localFollowingsCount,
 			localFollowersCount,
 			remoteFollowingsCount,
 			remoteFollowersCount
 		] = init ? await Promise.all([
-			Following.count({ followerId: group, '_followee.host': null }),
-			Following.count({ followeeId: group, '_follower.host': null }),
-			Following.count({ followerId: group, '_followee.host': { $ne: null } }),
-			Following.count({ followeeId: group, '_follower.host': { $ne: null } })
+			Followings.count({ followerId: group, followeeHost: null }),
+			Followings.count({ followeeId: group, followerHost: null }),
+			Followings.count({ followerId: group, followeeHost: Not(null) }),
+			Followings.count({ followeeId: group, followerHost: Not(null) })
 		]) : [
 			latest ? latest.local.followings.total : 0,
 			latest ? latest.local.followers.total : 0,
@@ -151,12 +152,10 @@ class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 		}
 
 		this.inc({
-			[isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
+			[Users.isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
 		}, follower.id);
 		this.inc({
-			[isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
+			[Users.isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
 		}, followee.id);
 	}
 }
-
-export default new PerUserFollowingChart();

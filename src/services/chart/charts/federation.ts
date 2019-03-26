@@ -31,7 +31,7 @@ export const federationLogSchema = {
 
 type FederationLog = SchemaType<typeof federationLogSchema>;
 
-export class FederationChart extends Chart<FederationLog> {
+export default class FederationChart extends Chart<FederationLog> {
 	constructor() {
 		super('federation', federationLogSchema);
 	}
@@ -69,5 +69,3 @@ export class FederationChart extends Chart<FederationLog> {
 		});
 	}
 }
-
-export default new FederationChart();

@@ -33,7 +33,7 @@ export const networkLogSchema = {
 
 type NetworkLog = SchemaType<typeof networkLogSchema>;
 
-class NetworkChart extends Chart<NetworkLog> {
+export default class NetworkChart extends Chart<NetworkLog> {
 	constructor() {
 		super('network', networkLogSchema);
 	}
@@ -61,5 +61,3 @@ class NetworkChart extends Chart<NetworkLog> {
 		await this.inc(inc);
 	}
 }
-
-export default new NetworkChart();

@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import Note, { Note } from '../../../models/entities/note';
-import { isLocalUser } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
-import { EntitySchema } from 'typeorm';
+import { Notes } from '../../../models';
+import { Not } from 'typeorm';
+import { Note } from '../../../models/entities/note';
 
 const logSchema = {
 	total: {
@@ -58,7 +58,7 @@ export const notesLogSchema = {
 
 type NotesLog = SchemaType<typeof notesLogSchema>;
 
-export class NotesChart extends Chart<NotesLog> {
+export default class NotesChart extends Chart<NotesLog> {
 	constructor() {
 		super('notes', notesLogSchema);
 	}
@@ -66,8 +66,8 @@ export class NotesChart extends Chart<NotesLog> {
 	@autobind
 	protected async getTemplate(init: boolean, latest?: NotesLog): Promise<NotesLog> {
 		const [localCount, remoteCount] = init ? await Promise.all([
-			Note.count({ '_user.host': null }),
-			Note.count({ '_user.host': { $ne: null } })
+			Notes.count({ userHost: null }),
+			Notes.count({ userHost: Not(null) })
 		]) : [
 			latest ? latest.local.total : 0,
 			latest ? latest.remote.total : 0
@@ -120,9 +120,7 @@ export class NotesChart extends Chart<NotesLog> {
 		}
 
 		await this.inc({
-			[isLocalUser(note._user) ? 'local' : 'remote']: update
+			[note.userHost === null ? 'local' : 'remote']: update
 		});
 	}
 }
-
-export default new NotesChart();

@@ -1,7 +1,6 @@
-import { FederationChart } from './charts/federation';
-import { NotesChart } from './charts/notes';
-
-export const entities = [
-	new FederationChart().entity,
-	new NotesChart().entity
-];
+export const entities = Object.values(require('require-all')({
+	dirname: __dirname + '/charts',
+	resolve: (x: any) => {
+		return new x.default().entity;
+	}
+}));

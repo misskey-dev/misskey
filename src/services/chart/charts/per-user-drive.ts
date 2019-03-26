@@ -1,7 +1,8 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
 import { SchemaType } from '../../../misc/schema';
+import { DriveFiles } from '../../../models';
+import { DriveFile } from '../../../models/entities/drive-file';
 
 export const perUserDriveLogSchema = {
 	type: 'object' as 'object',
@@ -58,34 +59,16 @@ export const perUserDriveLogSchema = {
 
 type PerUserDriveLog = SchemaType<typeof perUserDriveLogSchema>;
 
-class PerUserDriveChart extends Chart<PerUserDriveLog> {
+export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
 	constructor() {
 		super('perUserDrive', perUserDriveLogSchema, true);
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserDriveLog, group?: any): Promise<PerUserDriveLog> {
-		const calcSize = () => DriveFile
-			.aggregate([{
-				$match: {
-					userId: group,
-					'metadata.deletedAt': { $exists: false }
-				}
-			}, {
-				$project: {
-					length: true
-				}
-			}, {
-				$group: {
-					id: null,
-					usage: { $sum: '$length' }
-				}
-			}])
-			.then(res => res.length > 0 ? res[0].usage : 0);
-
+	protected async getTemplate(init: boolean, latest?: PerUserDriveLog, group?: string): Promise<PerUserDriveLog> {
 		const [count, size] = init ? await Promise.all([
-			DriveFile.count({ userId: group }),
-			calcSize()
+			DriveFiles.count({ userId: group }),
+			DriveFiles.clacDriveUsageOf(group)
 		]) : [
 			latest ? latest.totalCount : 0,
 			latest ? latest.totalSize : 0
@@ -106,17 +89,15 @@ class PerUserDriveChart extends Chart<PerUserDriveLog> {
 		const update: Obj = {};
 
 		update.totalCount = isAdditional ? 1 : -1;
-		update.totalSize = isAdditional ? file.length : -file.length;
+		update.totalSize = isAdditional ? file.size : -file.size;
 		if (isAdditional) {
 			update.incCount = 1;
-			update.incSize = file.length;
+			update.incSize = file.size;
 		} else {
 			update.decCount = 1;
-			update.decSize = file.length;
+			update.decSize = file.size;
 		}
 
 		await this.inc(update, file.userId);
 	}
 }
-
-export default new PerUserDriveChart();

@@ -28,10 +28,12 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return file.webpublicUrl || file.thumbnailUrl || file.url;
 	}
 
-	public async clacDriveUsageOf(user: User): Promise<number> {
+	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
+		const id = typeof user === 'object' ? user.id : user;
+
 		const [sum] = await this
 			.createQueryBuilder('file')
-			.where('file.userId = :id', { id: user.id })
+			.where('file.userId = :id', { id: id })
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
