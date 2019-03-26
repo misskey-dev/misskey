@@ -23,12 +23,6 @@ export default Vue.extend({
 			repositoryUrl: 'https://github.com/syuilo/misskey',
 			feedbackUrl: 'https://github.com/syuilo/misskey/issues/new'
 		}
-	},
-	created() {
-		this.$root.getMeta().then(meta => {
-			if (meta.maintainer.repository_url) this.repositoryUrl = meta.maintainer.repository_url;
-			if (meta.maintainer.feedback_url) this.feedbackUrl = meta.maintainer.feedback_url;
-		});
 	}
 });
 </script>

@@ -15,12 +15,6 @@ export default Vue.extend({
 		return {
 			repositoryUrl: 'https://github.com/syuilo/misskey'
 		};
-	},
-	created() {
-		this.$root.getMeta().then(meta => {
-			if (meta.maintainer)
-				this.repositoryUrl = meta.maintainer.repository_url;
-		});
 	}
 });
 </script>
