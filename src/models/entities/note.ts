@@ -1,10 +1,14 @@
-import { Entity, Index, OneToOne, JoinColumn, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class Note {
 	@PrimaryColumn(id())
 	public id: string;
@@ -30,7 +34,7 @@ export class Note {
 	})
 	public replyId: Note['id'] | null;
 
-	@OneToOne(type => Note, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
@@ -44,7 +48,7 @@ export class Note {
 	})
 	public renoteId: Note['id'] | null;
 
-	@OneToOne(type => Note, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
@@ -71,7 +75,7 @@ export class Note {
 	})
 	public appId: App['id'] | null;
 
-	@OneToOne(type => App, {
+	@ManyToOne(type => App, {
 		onDelete: 'SET NULL'
 	})
 	@JoinColumn()
@@ -84,7 +88,7 @@ export class Note {
 	})
 	public userId: User['id'];
 
-	@OneToOne(type => User, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
