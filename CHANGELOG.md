@@ -5,6 +5,12 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.98.3
+----------
+* リアクションのカスタム絵文字の情報がNoteに添付されない問題を修正
+* フォルダーの移動をするとき親フォルダーに自分自身を指定できてしまう問題を修正
+* デザインの調整
+
 10.98.2
 ----------
 * 他のインスタンスから添付画像が見れない問題を修正
