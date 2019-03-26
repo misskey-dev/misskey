@@ -1,6 +1,6 @@
 import { MoreThanOrEqual, getRepository } from 'typeorm';
 import { Note } from '../models/entities/note';
-import { initMainPostgre } from '../db/entities';
+import { initMainPostgre } from '../db/pg-connections/main';
 
 const interval = 5000;
 
