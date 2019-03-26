@@ -36,7 +36,7 @@ type Log = {
 	/**
 	 * 集計日時
 	 */
-	date: Date;
+	date: number;
 
 	/**
 	 * 集計期間
@@ -124,8 +124,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static momentToTimestamp(x: moment.Moment): string {
-		return `${x.year()}/${x.month() + 1}/${x.date()} ${x.hour()}:${x.minute()}:${x.second()}`;
+	private static momentToTimestamp(x: moment.Moment): Log['date'] {
+		return x.unix();
 	}
 
 	constructor(name: string, schema: Schema, grouped = false) {
@@ -140,7 +140,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 					generated: true
 				},
 				date: {
-					type: 'timestamp without time zone',
+					type: 'integer',
 				},
 				group: {
 					type: 'varchar',
@@ -208,9 +208,9 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 		// 現在(今日または今のHour)のログ
 		const currentLog = await this.repository.findOne({
-			group: group,
 			span: span,
-			date: Chart.momentToTimestamp(current)
+			date: Chart.momentToTimestamp(current),
+			...(group ? { group: group } : {})
 		});
 
 		// ログがあればそれを返して終了
@@ -326,7 +326,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			where: {
 				group: group,
 				span: span,
-				date: MoreThanOrEqual(gt.toDate())
+				date: MoreThanOrEqual(Chart.momentToTimestamp(gt))
 			},
 			order: {
 				date: -1
@@ -359,7 +359,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			const outdatedLog = await this.repository.findOne({
 				group: group,
 				span: span,
-				date: LessThan(gt.toDate())
+				date: LessThan(Chart.momentToTimestamp(gt))
 			}, {
 				order: {
 					date: -1
