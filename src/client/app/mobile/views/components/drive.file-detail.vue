@@ -153,7 +153,7 @@ export default Vue.extend({
 			max-height 300px
 			margin 0 auto
 			box-shadow 1px 1px 4px rgba(#000, 0.2)
-			overflow: hidden
+			overflow hidden
 			color var(--driveFileIcon)
 
 		> footer
