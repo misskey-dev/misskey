@@ -55,6 +55,10 @@ type Log = {
 	unique?: Record<string, any>;
 };
 
+const camelToSnake = (str: string) => {
+	return str.replace(/([A-Z])/g, s => '_' + s.charAt(0).toLowerCase());
+};
+
 /**
  * 様々なチャートの管理を司るクラス
  */
@@ -89,10 +93,9 @@ export default abstract class Chart<T extends Record<string, any>> {
 	@autobind
 	private static convertFlattenColumnsToObject(x: Record<string, number>) {
 		const obj = {} as any;
-		for (let k of Object.keys(x).filter(k => k.startsWith(Chart.columnPrefix))) {
+		for (const k of Object.keys(x).filter(k => k.startsWith(Chart.columnPrefix))) {
 			// now k is ___x_y_z
-			k = k.substr(Chart.columnPrefix.length);
-			const path = k.split(Chart.columnDot).join('.');
+			const path = k.substr(Chart.columnPrefix.length).split(Chart.columnDot).join('.');
 			nestedProperty.set(obj, path, x[k]);
 		}
 		return obj;
@@ -138,7 +141,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		this.name = name;
 
 		this.entity = new EntitySchema({
-			name: `__chart__${name}`,
+			name: `__chart__${camelToSnake(name)}`,
 			columns: {
 				id: {
 					type: 'integer',
