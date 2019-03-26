@@ -1141,6 +1141,20 @@ describe('API', () => {
 			expect(res).have.status(400);
 		}));
 
+		it('フォルダが循環するような構造にできない(自身)', async(async () => {
+			const arisugawa = await signup({ username: 'arisugawa' });
+			const folderA = (await request('/drive/folders/create', {
+				name: 'test'
+			}, arisugawa)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folderA.id,
+				parentId: folderA.id
+			}, arisugawa);
+
+			expect(res).have.status(400);
+		}));
+
 		it('存在しない親フォルダを設定できない', async(async () => {
 			const alice = await signup({ username: 'alice' });
 			const folder = (await request('/drive/folders/create', {
