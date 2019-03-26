@@ -101,9 +101,10 @@ export default define(meta, async (ps, user) => {
 		.where('following.followerId = :followerId', { followerId: user.id });
 
 	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(generateVisibilityQuery(user))
-		.andWhere(generateMuteQuery(user))
-		.andWhere(`note.userId IN (${ followingQuery.getQuery() })`);
+		//.andWhere(generateVisibilityQuery(user))
+		//.andWhere(generateMuteQuery(user))
+		.andWhere(`(note.userId IN (${ followingQuery.getQuery() }) OR note.userId = :meId)`, { meId: user.id })
+		.setParameters(followingQuery.getParameters());
 
 	/* v11 TODO
 	// MongoDBではトップレベルで否定ができないため、De Morganの法則を利用してクエリします。
@@ -163,10 +164,7 @@ export default define(meta, async (ps, user) => {
 	}
 	//#endregion
 
-	const timeline = await Notes.find({
-		where: query,
-		take: ps.limit,
-	});
+	const timeline = await query.take(ps.limit).getMany();
 
 	activeUsersChart.update(user);
 
