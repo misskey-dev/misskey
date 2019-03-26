@@ -106,7 +106,11 @@ export default Vue.extend({
 			this.folder = null;
 		},
 		openContextMenu() {
-			let items = [{
+			if (this.folder) {
+				items = items.concat()
+			}
+			this.$root.new(XMenu, {
+				items: [{
 					type: 'item',
 					text: this.$t('contextmenu.upload'),
 					icon: 'upload',
@@ -121,9 +125,7 @@ export default Vue.extend({
 					text: this.$t('contextmenu.create-folder'),
 					icon: ['far', 'folder'],
 					action: this.$refs.browser.createFolder
-				}] as any
-			if (this.folder) {
-				items = items.concat([{
+				}, ...(this.folder ? [{
 					type: 'item',
 					text: this.$t('contextmenu.rename-folder'),
 					icon: 'i-cursor',
@@ -138,10 +140,7 @@ export default Vue.extend({
 					text: this.$t('contextmenu.delete-folder'),
 					icon: faTrashAlt,
 					action: this.$refs.browser.deleteFolder
-				}])
-			}
-			this.$root.new(XMenu, {
-				items,
+				}] : [])],
 				source: this.$refs.contextSource,
 			});
 		}
