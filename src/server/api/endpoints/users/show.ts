@@ -87,7 +87,7 @@ export default define(meta, async (ps, me) => {
 			user = await Users.findOne(q);
 		}
 
-		if (user === null) {
+		if (user == null) {
 			throw new ApiError(meta.errors.noSuchUser);
 		}
 

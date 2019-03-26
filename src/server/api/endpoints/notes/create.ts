@@ -258,7 +258,7 @@ export default define(meta, async (ps, user, app) => {
 		// Fetch reply
 		reply = await Notes.findOne(ps.replyId);
 
-		if (reply === null) {
+		if (reply == null) {
 			throw new ApiError(meta.errors.noSuchReplyTarget);
 		}
 

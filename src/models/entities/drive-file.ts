@@ -112,7 +112,7 @@ export class DriveFile {
 		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFile is located in root.'
 	})
-	public folderId: number | null;
+	public folderId: DriveFolder['id'] | null;
 
 	@ManyToOne(type => DriveFolder, {
 		onDelete: 'SET NULL'

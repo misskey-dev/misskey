@@ -77,7 +77,7 @@ export default define(meta, async (ps, user) => {
 		blockeeId: blockee.id
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		throw new ApiError(meta.errors.notBlocking);
 	}
 

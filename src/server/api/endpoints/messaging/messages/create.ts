@@ -93,7 +93,7 @@ export default define(meta, async (ps, user) => {
 			userId: user.id
 		});
 
-		if (file === null) {
+		if (file == null) {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
 	}

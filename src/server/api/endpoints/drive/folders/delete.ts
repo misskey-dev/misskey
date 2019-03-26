@@ -51,7 +51,7 @@ export default define(meta, async (ps, user) => {
 		userId: user.id
 	});
 
-	if (folder === null) {
+	if (folder == null) {
 		throw new ApiError(meta.errors.noSuchFolder);
 	}
 

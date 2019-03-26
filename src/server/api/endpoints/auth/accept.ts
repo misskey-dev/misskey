@@ -32,7 +32,7 @@ export default define(meta, async (ps, user) => {
 	const session = await AuthSessions
 		.findOne({ token: ps.token });
 
-	if (session === null) {
+	if (session == null) {
 		throw new ApiError(meta.errors.noSuchSession);
 	}
 
@@ -45,7 +45,7 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		// Lookup app
 		const app = await Apps.findOne(session.appId);
 

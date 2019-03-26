@@ -78,7 +78,7 @@ export default define(meta, async (ps, user) => {
 		followeeId: followee.id
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		throw new ApiError(meta.errors.notFollowing);
 	}
 

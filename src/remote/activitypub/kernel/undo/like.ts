@@ -12,7 +12,7 @@ export default async (actor: IRemoteUser, activity: ILike): Promise<void> => {
 	const noteId = id.split('/').pop();
 
 	const note = await Note.findOne({ _id: noteId });
-	if (note === null) {
+	if (note == null) {
 		throw 'note not found';
 	}
 

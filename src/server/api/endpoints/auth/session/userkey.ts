@@ -78,7 +78,7 @@ export default define(meta, async (ps) => {
 		appId: app.id
 	});
 
-	if (session === null) {
+	if (session == null) {
 		throw new ApiError(meta.errors.noSuchSession);
 	}
 

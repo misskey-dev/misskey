@@ -76,7 +76,7 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const file = await DriveFiles.findOne(ps.fileId);
 
-	if (file === null) {
+	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
@@ -97,7 +97,7 @@ export default define(meta, async (ps, user) => {
 				userId: user.id
 			});
 
-			if (folder === null) {
+			if (folder == null) {
 				throw new ApiError(meta.errors.noSuchFolder);
 			}
 

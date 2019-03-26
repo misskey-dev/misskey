@@ -21,7 +21,7 @@ export async function addPinned(user: User, noteId: Note['id']) {
 		userId: user.id
 	});
 
-	if (note === null) {
+	if (note == null) {
 		throw new IdentifiableError('70c4e51f-5bea-449c-a030-53bee3cce202', 'No such note.');
 	}
 
@@ -59,7 +59,7 @@ export async function removePinned(user: User, noteId: Note['id']) {
 		userId: user.id
 	});
 
-	if (note === null) {
+	if (note == null) {
 		throw new IdentifiableError('b302d4cf-c050-400a-bbb3-be208681f40c', 'No such note.');
 	}
 

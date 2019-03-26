@@ -85,7 +85,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	if (file === null) {
+	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 

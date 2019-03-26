@@ -92,11 +92,11 @@ export default async (job: Bull.Job): Promise<void> => {
 	}
 
 	// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
-	if (user === null) {
+	if (user == null) {
 		user = await resolvePerson(activity.actor) as IRemoteUser;
 	}
 
-	if (user === null) {
+	if (user == null) {
 		throw new Error('failed to resolve user');
 	}
 

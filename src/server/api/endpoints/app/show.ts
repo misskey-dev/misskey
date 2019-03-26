@@ -28,7 +28,7 @@ export default define(meta, async (ps, user, app) => {
 	// Lookup app
 	const ap = await Apps.findOne(ps.appId);
 
-	if (ap === null) {
+	if (ap == null) {
 		throw new ApiError(meta.errors.noSuchApp);
 	}
 

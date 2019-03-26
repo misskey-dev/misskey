@@ -6,6 +6,7 @@ import User from '../models/entities/user';
 import Acct from '../misc/acct/type';
 import { links } from './nodeinfo';
 import { escapeAttribute, escapeValue } from '../prelude/xml';
+import { Users } from '../models';
 
 // Init router
 const router = new Router();
@@ -79,7 +80,7 @@ router.get(webFingerPath, async ctx => {
 
 	const user = await Users.findOne(query);
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}

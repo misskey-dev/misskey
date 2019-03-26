@@ -69,7 +69,7 @@ router.get('/notes/:note', async (ctx, next) => {
 		localOnly: false
 	});
 
-	if (note === null) {
+	if (note == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -98,7 +98,7 @@ router.get('/notes/:note/activity', async ctx => {
 		localOnly: false
 	});
 
-	if (note === null) {
+	if (note == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -118,7 +118,7 @@ router.get('/questions/:question', async (ctx, next) => {
 		poll: Not(null),
 	});
 
-	if (poll === null) {
+	if (poll == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -150,7 +150,7 @@ router.get('/users/:user/publickey', async ctx => {
 		host: null
 	});
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -166,7 +166,7 @@ router.get('/users/:user/publickey', async ctx => {
 
 // user
 async function userInfo(ctx: Router.IRouterContext, user: User) {
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -208,7 +208,7 @@ router.get('/emojis/:emoji', async ctx => {
 		name: ctx.params.emoji
 	});
 
-	if (emoji === null) {
+	if (emoji == null) {
 		ctx.status = 404;
 		return;
 	}

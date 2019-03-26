@@ -15,7 +15,7 @@ export default async (ctx: Router.IRouterContext) => {
 		host: null
 	});
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}

@@ -9,7 +9,7 @@ import { Notes, Users } from '../../../models';
 export async function getNote(noteId: Note['id']) {
 	const note = await Notes.findOne(noteId);
 
-	if (note === null) {
+	if (note == null) {
 		throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
 	}
 
@@ -22,7 +22,7 @@ export async function getNote(noteId: Note['id']) {
 export async function getUser(userId: User['id']) {
 	const user = await Users.findOne(userId);
 
-	if (user === null) {
+	if (user == null) {
 		throw new IdentifiableError('15348ddd-432d-49c2-8a5a-8069753becff', 'No such user.');
 	}
 

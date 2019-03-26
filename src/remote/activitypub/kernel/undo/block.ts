@@ -21,7 +21,7 @@ export default async (actor: IRemoteUser, activity: IBlock): Promise<void> => {
 		id: id.split('/').pop()
 	});
 
-	if (blockee === null) {
+	if (blockee == null) {
 		throw new Error('blockee not found');
 	}
 

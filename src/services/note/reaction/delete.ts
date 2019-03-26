@@ -15,7 +15,7 @@ export default async (user: User, note: Note) => {
 		userId: user.id,
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		throw new IdentifiableError('60527ec9-b4cb-4a88-a6bd-32d3ad26817d', 'not reacted');
 	}
 

@@ -172,7 +172,7 @@ router.get('/users/:user', async ctx => {
 		host: null
 	});
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}

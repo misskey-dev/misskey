@@ -51,7 +51,7 @@ export default define(meta, async (ps, user) => {
 		userId: user.id
 	});
 
-	if (message === null) {
+	if (message == null) {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 

@@ -37,7 +37,7 @@ export default async (ctx: Koa.BaseContext) => {
 		host: null
 	}) as ILocalUser;
 
-	if (user === null) {
+	if (user == null) {
 		ctx.throw(404, {
 			error: 'user not found'
 		});

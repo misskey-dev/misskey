@@ -79,7 +79,7 @@ export default define(meta, async (ps, me) => {
 		? { id: ps.userId }
 		: { usernameLower: ps.username.toLowerCase(), host: ps.host });
 
-	if (user === null) {
+	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 

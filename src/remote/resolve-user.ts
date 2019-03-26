@@ -32,7 +32,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 
 	const acctLower = `${usernameLower}@${hostAscii}`;
 
-	if (user === null) {
+	if (user == null) {
 		const self = await resolveSelf(acctLower);
 
 		logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);

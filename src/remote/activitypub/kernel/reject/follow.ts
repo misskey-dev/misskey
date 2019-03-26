@@ -14,7 +14,7 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		id: id.split('/').pop()
 	});
 
-	if (follower === null) {
+	if (follower == null) {
 		throw new Error('follower not found');
 	}
 
