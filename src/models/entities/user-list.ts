@@ -1,19 +1,21 @@
 import * as deepcopy from 'deepcopy';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class UserList {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the UserList.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The owner ID.'
 	})
 	public userId: User['id'];

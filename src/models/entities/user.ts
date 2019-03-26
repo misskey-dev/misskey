@@ -1,26 +1,27 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { DriveFile } from './drive-file';
+import { id } from '../id';
 
 @Entity()
 @Index(['usernameLower', 'host'], { unique: true })
 export class User {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the User.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		nullable: true,
 		comment: 'The updated date of the User.'
 	})
 	public updatedAt: Date | null;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		nullable: true
 	})
 	public lastFetchedAt: Date | null;
@@ -74,7 +75,8 @@ export class User {
 	})
 	public notesCount: number;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The ID of avatar DriveFile.'
 	})
@@ -86,7 +88,8 @@ export class User {
 	@JoinColumn()
 	public avatar: DriveFile | null;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The ID of banner DriveFile.'
 	})
@@ -166,6 +169,11 @@ export class User {
 		default: false,
 	})
 	public twoFactorEnabled: boolean;
+
+	@Column('varchar', {
+		length: 128, array: true, default: '{}'
+	})
+	public emojis: string[];
 
 	@Index()
 	@Column('varchar', {

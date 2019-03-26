@@ -1,13 +1,14 @@
 import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
+import { id } from '../id';
 
 @Entity()
 export class AuthSession {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the AuthSession.'
 	})
 	public createdAt: Date;
@@ -18,8 +19,7 @@ export class AuthSession {
 	})
 	public token: string;
 
-	@Column('integer', {
-	})
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
@@ -28,8 +28,8 @@ export class AuthSession {
 	@JoinColumn()
 	public user: User | null;
 
-	@Column('integer')
-	public appId: string;
+	@Column(id())
+	public appId: App['id'];
 
 	@ManyToOne(type => App, {
 		onDelete: 'CASCADE'

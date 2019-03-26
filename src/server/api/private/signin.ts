@@ -6,6 +6,7 @@ import signin from '../common/signin';
 import config from '../../../config';
 import { Users, Signins } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { genId } from '../../../misc/gen-id';
 
 export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
@@ -73,6 +74,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 	// Append signin history
 	const record = await Signins.save({
+		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		ip: ctx.ip,

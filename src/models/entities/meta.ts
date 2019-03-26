@@ -1,8 +1,9 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { id } from '../id';
 
 @Entity()
 export class Meta {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Column('varchar', {

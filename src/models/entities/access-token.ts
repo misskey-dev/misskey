@@ -1,13 +1,14 @@
 import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn, RelationId } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
+import { id } from '../id';
 
 @Entity()
 export class AccessToken {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the AccessToken.'
 	})
 	public createdAt: Date;
@@ -33,8 +34,8 @@ export class AccessToken {
 	@JoinColumn()
 	public user: User | null;
 
-	@Column('integer')
-	public appId: string;
+	@Column(id())
+	public appId: App['id'];
 
 	@ManyToOne(type => App, {
 		onDelete: 'CASCADE'

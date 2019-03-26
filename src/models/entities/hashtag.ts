@@ -1,9 +1,10 @@
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class Hashtag {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index({ unique: true })
@@ -12,7 +13,8 @@ export class Hashtag {
 	})
 	public tag: string;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public mentionedUserIds: User['id'][];
@@ -23,7 +25,8 @@ export class Hashtag {
 	})
 	public mentionedUsersCount: number;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public mentionedLocalUserIds: User['id'][];
@@ -34,7 +37,8 @@ export class Hashtag {
 	})
 	public mentionedLocalUsersCount: number;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public mentionedRemoteUserIds: User['id'][];
@@ -45,7 +49,8 @@ export class Hashtag {
 	})
 	public mentionedRemoteUsersCount: number;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public attachedUserIds: User['id'][];
@@ -56,7 +61,8 @@ export class Hashtag {
 	})
 	public attachedUsersCount: number;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public attachedLocalUserIds: User['id'][];
@@ -67,7 +73,8 @@ export class Hashtag {
 	})
 	public attachedLocalUsersCount: number;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public attachedRemoteUserIds: User['id'][];

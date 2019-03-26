@@ -1,20 +1,23 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { DriveFolder } from './drive-folder';
+import { id } from '../id';
 
 @Entity()
 export class DriveFile {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the DriveFile.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', { nullable: true,
+	@Column({
+		...id(),
+		nullable: true,
 		comment: 'The owner ID.'
 	})
 	public userId: User['id'] | null;
@@ -108,7 +111,8 @@ export class DriveFile {
 	public src: string | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFile is located in root.'
 	})

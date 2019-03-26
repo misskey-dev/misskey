@@ -2,27 +2,29 @@ import { Entity, Index, OneToOne, JoinColumn, Column, PrimaryColumn } from 'type
 import { User } from './user';
 import { App } from './app';
 import { DriveFile } from './drive-file';
+import { id } from '../id';
 
 @Entity()
 export class Note {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the Note.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		nullable: true,
 		comment: 'The updated date of the Note.'
 	})
 	public updatedAt: Date | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The ID of reply target.'
 	})
@@ -35,7 +37,8 @@ export class Note {
 	public reply: Note | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The ID of renote target.'
 	})
@@ -62,8 +65,11 @@ export class Note {
 	})
 	public cw: string | null;
 
-	@Column('integer')
-	public appId: App['id'];
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public appId: App['id'] | null;
 
 	@OneToOne(type => App, {
 		onDelete: 'SET NULL'
@@ -72,7 +78,8 @@ export class Note {
 	public app: App | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The ID of author.'
 	})
 	public userId: User['id'];
@@ -129,7 +136,8 @@ export class Note {
 	})
 	public score: number;
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public fileIds: DriveFile['id'][];
@@ -139,7 +147,8 @@ export class Note {
 	})
 	public attachedFileTypes: string[];
 
-	@Column('integer', {
+	@Column({
+		...id(),
 		array: true,
 	})
 	public visibleUserIds: User['id'][];

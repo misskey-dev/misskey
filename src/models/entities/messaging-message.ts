@@ -1,20 +1,22 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { DriveFile } from './drive-file';
+import { id } from '../id';
 
 @Entity()
 export class MessagingMessage {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the MessagingMessage.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The sender user ID.'
 	})
 	public userId: User['id'];
@@ -26,7 +28,8 @@ export class MessagingMessage {
 	public user: User | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The recipient user ID.'
 	})
 	public recipientId: User['id'];
@@ -47,7 +50,7 @@ export class MessagingMessage {
 	})
 	public isRead: boolean;
 
-	@Column('integer')
+	@Column(id())
 	public fileId: DriveFile['id'];
 
 	@ManyToOne(type => DriveFile, {

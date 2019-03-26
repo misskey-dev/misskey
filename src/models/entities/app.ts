@@ -2,20 +2,22 @@ import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
 import * as deepcopy from 'deepcopy';
 import config from '../../config';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class App {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the App.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The owner ID.'
 	})

@@ -1,24 +1,25 @@
 import * as deepcopy from 'deepcopy';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from '../../user';
+import { id } from '../../../id';
 
 @Entity()
 export class ReversiGame {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the ReversiGame.'
 	})
 	public createdAt: Date;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The started date of the ReversiGame.'
 	})
 	public startedAt: Date;
 
-	@Column('char', { length: 26 })
+	@Column(id())
 	public user1Id: User['id'];
 
 	@ManyToOne(type => User, {
@@ -27,7 +28,7 @@ export class ReversiGame {
 	@JoinColumn()
 	public user1: User | null;
 
-	@Column('char', { length: 26 })
+	@Column(id())
 	public user2Id: User['id'];
 
 	@ManyToOne(type => User, {

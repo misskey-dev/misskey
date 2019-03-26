@@ -1,11 +1,12 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
+import { id } from '../id';
 
 @Entity()
 export class RegistrationTicket {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date')
+	@Column('timestamp with time zone')
 	public createdAt: Date;
 
 	@Index({ unique: true })

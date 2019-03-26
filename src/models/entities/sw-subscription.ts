@@ -1,16 +1,17 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class SwSubscription {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date')
+	@Column('timestamp with time zone')
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {

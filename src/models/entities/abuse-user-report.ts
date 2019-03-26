@@ -1,20 +1,21 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 @Index(['userId', 'reporterId'], { unique: true })
 export class AbuseUserReport {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the AbuseUserReport.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
@@ -24,7 +25,7 @@ export class AbuseUserReport {
 	public user: User | null;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public reporterId: User['id'];
 
 	@ManyToOne(type => User, {

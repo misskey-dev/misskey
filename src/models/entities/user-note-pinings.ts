@@ -1,20 +1,21 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { Note } from './note';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 @Index(['userId', 'noteId'], { unique: true })
 export class UserNotePining {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the UserNotePinings.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
@@ -23,7 +24,7 @@ export class UserNotePining {
 	@JoinColumn()
 	public user: User | null;
 
-	@Column('integer')
+	@Column(id())
 	public noteId: Note['id'];
 
 	@ManyToOne(type => User, {

@@ -1,12 +1,13 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
+import { id } from '../id';
 
 @Entity()
 @Index(['name', 'host'], { unique: true })
 export class Emoji {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		nullable: true
 	})
 	public updatedAt: Date | null;

@@ -1,21 +1,23 @@
 import * as deepcopy from 'deepcopy';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 @Index(['muterId', 'muteeId'], { unique: true })
 export class Muting {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the Muting.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The mutee user ID.'
 	})
 	public muteeId: User['id'];
@@ -27,7 +29,8 @@ export class Muting {
 	public mutee: User | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The muter user ID.'
 	})
 	public muterId: User['id'];

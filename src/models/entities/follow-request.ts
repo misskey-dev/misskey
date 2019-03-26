@@ -2,20 +2,22 @@ import * as deepcopy from 'deepcopy';
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 @Index(['followerId', 'followeeId'], { unique: true })
 export class FollowRequest {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the FollowRequest.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The followee user ID.'
 	})
 	public followeeId: User['id'];
@@ -27,7 +29,8 @@ export class FollowRequest {
 	public followee: User | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The follower user ID.'
 	})
 	public followerId: User['id'];

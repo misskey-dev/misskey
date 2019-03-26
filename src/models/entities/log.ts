@@ -1,12 +1,13 @@
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
+import { id } from '../id';
 
 @Entity()
 export class Log {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the Log.'
 	})
 	public createdAt: Date;

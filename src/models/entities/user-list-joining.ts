@@ -1,19 +1,21 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { UserList } from './user-list';
+import { id } from '../id';
 
 @Entity()
 export class UserListJoining {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the UserListJoining.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The user ID.'
 	})
 	public userId: User['id'];
@@ -25,7 +27,8 @@ export class UserListJoining {
 	public user: User | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The list ID.'
 	})
 	public userListId: UserList['id'];

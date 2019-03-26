@@ -1,21 +1,22 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { Note } from './note';
+import { id } from '../id';
 
 @Entity()
 @Index(['userId', 'noteId', 'choice'], { unique: true })
 export class PollVote {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the PollVote.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
@@ -25,7 +26,7 @@ export class PollVote {
 	public user: User | null;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public noteId: Note['id'];
 
 	@ManyToOne(type => User, {

@@ -2,21 +2,22 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import * as deepcopy from 'deepcopy';
 import { User } from './user';
 import { Note } from './note';
+import { id } from '../id';
 
 @Entity()
 @Index(['userId', 'noteId'], { unique: true })
 export class NoteReaction {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the NoteReaction.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
@@ -26,7 +27,7 @@ export class NoteReaction {
 	public user: User | null;
 
 	@Index()
-	@Column('integer')
+	@Column(id())
 	public noteId: Note['id'];
 
 	@ManyToOne(type => User, {

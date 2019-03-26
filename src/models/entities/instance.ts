@@ -1,15 +1,16 @@
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
+import { id } from '../id';
 
 @Entity()
 export class Instance {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	/**
 	 * このインスタンスを捕捉した日時
 	 */
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The caught date of the Instance.'
 	})
 	public caughtAt: Date;
@@ -76,7 +77,7 @@ export class Instance {
 	/**
 	 * 直近のリクエスト送信日時
 	 */
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public latestRequestSentAt: Date | null;
@@ -92,7 +93,7 @@ export class Instance {
 	/**
 	 * 直近のリクエスト受信日時
 	 */
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		nullable: true,
 	})
 	public latestRequestReceivedAt: Date | null;
@@ -100,7 +101,7 @@ export class Instance {
 	/**
 	 * このインスタンスと最後にやり取りした日時
 	 */
-	@Column('date')
+	@Column('timestamp with time zone')
 	public lastCommunicatedAt: Date;
 
 	/**

@@ -1,14 +1,15 @@
 import * as deepcopy from 'deepcopy';
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class Notification {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the Notification.'
 	})
 	public createdAt: Date;
@@ -17,7 +18,8 @@ export class Notification {
 	 * 通知の受信者
 	 */
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The ID of recipient user of the Notification.'
 	})
 	public notifieeId: User['id'];
@@ -31,7 +33,8 @@ export class Notification {
 	/**
 	 * 通知の送信者(initiator)
 	 */
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The ID of sender user of the Notification.'
 	})
 	public notifierId: User['id'];

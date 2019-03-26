@@ -50,7 +50,7 @@ export class UserRepository extends Repository<User> {
 			// カスタム絵文字添付
 			emojis: Emojis.find({
 				where: {
-					name: In(_user.emojis),
+					...(_user.emojis.length > 0 ? { name: In(_user.emojis) } : {}),
 					host: _user.host
 				},
 				select: ['name', 'host', 'url', 'aliases']

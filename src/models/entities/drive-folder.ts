@@ -1,13 +1,14 @@
 import { JoinColumn, ManyToOne, Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class DriveFolder {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the DriveFolder.'
 	})
 	public createdAt: Date;
@@ -19,7 +20,8 @@ export class DriveFolder {
 	public name: string;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The owner ID.'
 	})
@@ -32,7 +34,8 @@ export class DriveFolder {
 	public user: User | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFolder is located in root.'
 	})

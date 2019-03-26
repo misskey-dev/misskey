@@ -1,21 +1,23 @@
 import * as deepcopy from 'deepcopy';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 @Index(['blockerId', 'blockeeId'], { unique: true })
 export class Blocking {
-	@PrimaryColumn('char', { length: 26 })
+	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
-	@Column('date', {
+	@Column('timestamp with time zone', {
 		comment: 'The created date of the Blocking.'
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The blockee user ID.'
 	})
 	public blockeeId: User['id'];
@@ -27,7 +29,8 @@ export class Blocking {
 	public blockee: User | null;
 
 	@Index()
-	@Column('integer', {
+	@Column({
+		...id(),
 		comment: 'The blocker user ID.'
 	})
 	public blockerId: User['id'];
