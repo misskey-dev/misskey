@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { DriveFile } from '../entities/drive-file';
 import { Users, DriveFolders } from '..';
 import rap from '@prezzemolo/rap';
+import { User } from '../entities/user';
 
 @EntityRepository(DriveFile)
 export class DriveFileRepository extends Repository<DriveFile> {
@@ -25,6 +26,26 @@ export class DriveFileRepository extends Repository<DriveFile> {
 
 	public getPublicUrl(file: DriveFile): string {
 		return file.webpublicUrl || file.thumbnailUrl || file.url;
+	}
+
+	public async clacDriveUsageOf(user: User): Promise<number> {
+		const [sum] = await this
+			.createQueryBuilder('file')
+			.where('file.userId = :id', { id: user.id })
+			.select('SUM(file.size)', 'sum')
+			.getRawOne();
+
+		return sum;
+	}
+
+	public async clacDriveUsageOfHost(host: string): Promise<number> {
+		const [sum] = await this
+			.createQueryBuilder('file')
+			.where('file.userHost = :host', { host: host })
+			.select('SUM(file.size)', 'sum')
+			.getRawOne();
+
+		return sum;
 	}
 
 	public packMany(

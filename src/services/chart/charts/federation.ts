@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import Instance from '../../../models/entities/instance';
 import { SchemaType } from '../../../misc/schema';
+import { Instances } from '../../../models';
 
 /**
  * フェデレーションに関するチャート
@@ -39,7 +39,7 @@ export class FederationChart extends Chart<FederationLog> {
 	@autobind
 	protected async getTemplate(init: boolean, latest?: FederationLog): Promise<FederationLog> {
 		const [total] = init ? await Promise.all([
-			Instance.count({})
+			Instances.count({})
 		]) : [
 			latest ? latest.instance.total : 0
 		];

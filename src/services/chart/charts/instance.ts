@@ -1,156 +1,142 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import User from '../../../models/entities/user';
-import Note from '../../../models/entities/note';
-import Following from '../../../models/entities/following';
-import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
+import { SchemaType } from '../../../misc/schema';
+import { DriveFiles, Followings, Users, Notes } from '../../../models';
+import { DriveFile } from '../../../models/entities/drive-file';
 
 /**
  * インスタンスごとのチャート
  */
-type InstanceLog = {
-	requests: {
-		/**
-		 * 失敗したリクエスト数
-		 */
-		failed: number;
-
-		/**
-		 * 成功したリクエスト数
-		 */
-		succeeded: number;
-
-		/**
-		 * 受信したリクエスト数
-		 */
-		received: number;
-	};
-
-	notes: {
-		/**
-		 * 集計期間時点での、全投稿数
-		 */
-		total: number;
-
-		/**
-		 * 増加した投稿数
-		 */
-		inc: number;
-
-		/**
-		 * 減少した投稿数
-		 */
-		dec: number;
-	};
-
-	users: {
-		/**
-		 * 集計期間時点での、全ユーザー数
-		 */
-		total: number;
-
-		/**
-		 * 増加したユーザー数
-		 */
-		inc: number;
-
-		/**
-		 * 減少したユーザー数
-		 */
-		dec: number;
-	};
-
-	following: {
-		/**
-		 * 集計期間時点での、全フォロー数
-		 */
-		total: number;
-
-		/**
-		 * 増加したフォロー数
-		 */
-		inc: number;
-
-		/**
-		 * 減少したフォロー数
-		 */
-		dec: number;
-	};
-
-	followers: {
-		/**
-		 * 集計期間時点での、全フォロワー数
-		 */
-		total: number;
-
-		/**
-		 * 増加したフォロワー数
-		 */
-		inc: number;
-
-		/**
-		 * 減少したフォロワー数
-		 */
-		dec: number;
-	};
-
-	drive: {
-		/**
-		 * 集計期間時点での、全ドライブファイル数
-		 */
-		totalFiles: number;
-
-		/**
-		 * 集計期間時点での、全ドライブファイルの合計サイズ
-		 */
-		totalUsage: number;
-
-		/**
-		 * 増加したドライブファイル数
-		 */
-		incFiles: number;
-
-		/**
-		 * 増加したドライブ使用量
-		 */
-		incUsage: number;
-
-		/**
-		 * 減少したドライブファイル数
-		 */
-		decFiles: number;
-
-		/**
-		 * 減少したドライブ使用量
-		 */
-		decUsage: number;
-	};
+export const instanceLogSchema = {
+	type: 'object' as 'object',
+	properties: {
+		requests: {
+			type: 'object' as 'object',
+			properties: {
+				failed: {
+					type: 'number' as 'number',
+					description: '失敗したリクエスト数'
+				},
+				succeeded: {
+					type: 'number' as 'number',
+					description: '成功したリクエスト数'
+				},
+				received: {
+					type: 'number' as 'number',
+					description: '受信したリクエスト数'
+				},
+			}
+		},
+		notes: {
+			type: 'object' as 'object',
+			properties: {
+				total: {
+					type: 'number' as 'number',
+					description: '集計期間時点での、全投稿数'
+				},
+				inc: {
+					type: 'number' as 'number',
+					description: '増加した投稿数'
+				},
+				dec: {
+					type: 'number' as 'number',
+					description: '減少した投稿数'
+				},
+			}
+		},
+		users: {
+			type: 'object' as 'object',
+			properties: {
+				total: {
+					type: 'number' as 'number',
+					description: '集計期間時点での、全ユーザー数'
+				},
+				inc: {
+					type: 'number' as 'number',
+					description: '増加したユーザー数'
+				},
+				dec: {
+					type: 'number' as 'number',
+					description: '減少したユーザー数'
+				},
+			}
+		},
+		following: {
+			type: 'object' as 'object',
+			properties: {
+				total: {
+					type: 'number' as 'number',
+					description: '集計期間時点での、全フォロー数'
+				},
+				inc: {
+					type: 'number' as 'number',
+					description: '増加したフォロー数'
+				},
+				dec: {
+					type: 'number' as 'number',
+					description: '減少したフォロー数'
+				},
+			}
+		},
+		followers: {
+			type: 'object' as 'object',
+			properties: {
+				total: {
+					type: 'number' as 'number',
+					description: '集計期間時点での、全フォロワー数'
+				},
+				inc: {
+					type: 'number' as 'number',
+					description: '増加したフォロワー数'
+				},
+				dec: {
+					type: 'number' as 'number',
+					description: '減少したフォロワー数'
+				},
+			}
+		},
+		drive: {
+			type: 'object' as 'object',
+			properties: {
+				totalFiles: {
+					type: 'number' as 'number',
+					description: '集計期間時点での、全ドライブファイル数'
+				},
+				totalUsage: {
+					type: 'number' as 'number',
+					description: '集計期間時点での、全ドライブファイルの合計サイズ'
+				},
+				incFiles: {
+					type: 'number' as 'number',
+					description: '増加したドライブファイル数'
+				},
+				incUsage: {
+					type: 'number' as 'number',
+					description: '増加したドライブ使用量'
+				},
+				decFiles: {
+					type: 'number' as 'number',
+					description: '減少したドライブファイル数'
+				},
+				decUsage: {
+					type: 'number' as 'number',
+					description: '減少したドライブ使用量'
+				},
+			}
+		},
+	}
 };
+
+type InstanceLog = SchemaType<typeof instanceLogSchema>;
 
 class InstanceChart extends Chart<InstanceLog> {
 	constructor() {
-		super('instance', true);
+		super('instance', instanceLogSchema);
 	}
 
 	@autobind
 	protected async getTemplate(init: boolean, latest?: InstanceLog, group?: any): Promise<InstanceLog> {
-		const calcUsage = () => DriveFile
-			.aggregate([{
-				$match: {
-					'userHost': group,
-					'metadata.deletedAt': { $exists: false }
-				}
-			}, {
-				$project: {
-					length: true
-				}
-			}, {
-				$group: {
-					id: null,
-					usage: { $sum: '$length' }
-				}
-			}])
-			.then(res => res.length > 0 ? res[0].usage : 0);
+		const calcUsage = DriveFiles.clacDriveUsageOfHost(group);
 
 		const [
 			notesCount,
@@ -160,12 +146,12 @@ class InstanceChart extends Chart<InstanceLog> {
 			driveFiles,
 			driveUsage,
 		] = init ? await Promise.all([
-			Note.count({ '_user.host': group }),
-			User.count({ host: group }),
-			Following.count({ '_follower.host': group }),
-			Following.count({ '_followee.host': group }),
-			DriveFile.count({ 'userHost': group }),
-			calcUsage(),
+			Notes.count({ userHost: group }),
+			Users.count({ host: group }),
+			Followings.count({ followerHost: group }),
+			Followings.count({ followeeHost: group }),
+			DriveFiles.count({ userHost: group }),
+			calcUsage,
 		]) : [
 			latest ? latest.notes.total : 0,
 			latest ? latest.users.total : 0,
@@ -284,13 +270,13 @@ class InstanceChart extends Chart<InstanceLog> {
 		const update: Obj = {};
 
 		update.totalFiles = isAdditional ? 1 : -1;
-		update.totalUsage = isAdditional ? file.length : -file.length;
+		update.totalUsage = isAdditional ? file.size : -file.size;
 		if (isAdditional) {
 			update.incFiles = 1;
-			update.incUsage = file.length;
+			update.incUsage = file.size;
 		} else {
 			update.decFiles = 1;
-			update.decUsage = file.length;
+			update.decUsage = file.size;
 		}
 
 		await this.inc({

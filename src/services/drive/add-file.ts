@@ -22,7 +22,6 @@ import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
 import { DriveFiles, DriveFolders } from '../../models';
 import { InternalStorage } from './internal-storage';
-import { clacDriveUsageOf } from './calc-usage';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -285,7 +284,7 @@ export default async function(
 
 	//#region Check drive usage
 	if (!isLink) {
-		const usage = await clacDriveUsageOf(user);
+		const usage = await DriveFiles.clacDriveUsageOf(user);
 
 		logger.debug(`drive usage is ${usage}`);
 

@@ -60,7 +60,7 @@ type PerUserDriveLog = SchemaType<typeof perUserDriveLogSchema>;
 
 class PerUserDriveChart extends Chart<PerUserDriveLog> {
 	constructor() {
-		super('perUserDrive', true);
+		super('perUserDrive', perUserDriveLogSchema, true);
 	}
 
 	@autobind

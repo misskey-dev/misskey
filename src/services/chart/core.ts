@@ -48,33 +48,88 @@ export abstract class Log {
 	 */
 	@Column('enum', { enum: ['day', 'hour'] })
 	public span: Span;
+
+	@Column('jsonb', { default: {} })
+	public unique: Record<string, any>;
 }
 
 /**
  * 様々なチャートの管理を司るクラス
  */
-export default abstract class Chart<T extends Record<string, number>> {
+export default abstract class Chart<T extends Record<string, any>> {
 	public entity: any;
 	protected repository: Repository<Log>;
 	protected abstract async getTemplate(init: boolean, latest?: T, group?: string): Promise<T>;
 	private name: string;
 
-	constructor(name: string, schema: Record<string, any>, grouped = false) {
-		this.name = name;
+	private static readonly columnPrefix = '___';
+	private static readonly columnDot = '_';
+
+	@autobind
+	private static convertSchemaToFlatColumnDefinitions(schema: Schema) {
 		const columns = {} as any;
 		const flatColumns = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
-				const p = path ? `${path}_${k}` : k;
+				const p = path ? `${path}${this.columnDot}${k}` : k;
 				if (v.type === 'object') {
 					flatColumns(v.properties, p);
 				} else {
-					columns[p] = {
+					columns[this.columnPrefix + p] = {
 						type: 'integer',
 					};
 				}
 			}
 		};
 		flatColumns(schema.properties);
+		return columns;
+	}
+
+	@autobind
+	private static convertFlattenColumnsToObject(x: Record<string, number>) {
+		const obj = {} as any;
+		for (let k of Object.keys(x).filter(k => k.startsWith(Chart.columnPrefix))) {
+			// now k is ___x_y_z
+			k = k.substr(Chart.columnPrefix.length);
+			const path = k.split(Chart.columnDot).join('.');
+			nestedProperty.set(obj, path, x[k]);
+		}
+		return obj;
+	}
+
+	@autobind
+	private static convertObjectToFlattenColumns(x: Record<string, any>) {
+		const columns = {} as any;
+		const flatten = (x: Obj, path?: string) => {
+			for (const [k, v] of Object.entries(x)) {
+				const p = path ? `${path}${this.columnDot}${k}` : k;
+				if (v.type === 'object') {
+					flatten(v, p);
+				} else {
+					columns[this.columnPrefix + p] = v;
+				}
+			}
+		};
+		flatten(x);
+		return columns;
+	}
+
+	@autobind
+	private static convertQuery(x: Record<string, any>) {
+		const query: Record<string, Function> = {};
+
+		const columns = Chart.convertObjectToFlattenColumns(x);
+
+		for (const [k, v] of Object.entries(columns)) {
+			if (v > 0) query[k] = () => `'${k}' + ${v}`;
+			if (v < 0) query[k] = () => `'${k}' - ${v}`;
+		}
+
+		return query;
+	}
+
+	constructor(name: string, schema: Schema, grouped = false) {
+		this.name = name;
+
 		this.entity = new EntitySchema({
 			name: `_chart_${name}`,
 			columns: {
@@ -99,7 +154,7 @@ export default abstract class Chart<T extends Record<string, number>> {
 					type: 'jsonb',
 					nullable: true
 				},
-				...columns
+				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
 		});
 
@@ -115,18 +170,6 @@ export default abstract class Chart<T extends Record<string, number>> {
 	public init() {
 		this.repository = getRepository<Log>(this.entity);
 		return this;
-	}
-
-	@autobind
-	private convertQuery(x: Record<string, number>) {
-		const query: Record<string, Function> = {};
-
-		for (const [k, v] of Object.entries(x)) {
-			if (v > 0) query[k] = () => `'${k}' + ${v}`;
-			if (v < 0) query[k] = () => `'${k}' - ${v}`;
-		}
-
-		return query;
 	}
 
 	@autobind
@@ -186,8 +229,11 @@ export default abstract class Chart<T extends Record<string, number>> {
 		const latest = await this.getLatestLog(span, group);
 
 		if (latest != null) {
+			const obj = Chart.convertFlattenColumnsToObject(
+				latest as Record<string, any>);
+
 			// 空ログデータを作成
-			data = await this.getTemplate(false, latest.data);
+			data = await this.getTemplate(false, obj);
 		} else {
 			// ログが存在しなかったら
 			// (Misskeyインスタンスを建てて初めてのチャート更新時など
@@ -205,7 +251,8 @@ export default abstract class Chart<T extends Record<string, number>> {
 				group: group,
 				span: span,
 				date: current.toDate(),
-				data: data as any
+				data: data as any,
+				...Chart.convertObjectToFlattenColumns(data)
 			});
 		} catch (e) {
 			// 11000 is duplicate key error
@@ -224,21 +271,6 @@ export default abstract class Chart<T extends Record<string, number>> {
 
 	@autobind
 	protected commit(query: Record<string, Function>, group?: string, uniqueKey?: string, uniqueValue?: string): void {
-		/*
-			To increment json value in PostgreSQL:
-
-			UPDATE table_name
-			SET json_prop = jsonb_set(json_prop, '{x,y,z}', (COALESCE(json_prop->>'x,y,z', '0')::integer + 1)::text::jsonb)
-			WHERE ...;
-
-			will be
-			{ x: { y: { z: 1 } } }
-
-			SEE: https://stackoverflow.com/questions/25957937/how-to-increment-value-in-postgres-update-statement-on-json-key
-		*/
-
-		const sql = `jsonb_set(json_prop, '{x,y,z}', (COALESCE(json_prop->>'x,y,z', '0')::integer + 1)::text::jsonb)`;
-
 		const update = (log: Log) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
@@ -250,9 +282,9 @@ export default abstract class Chart<T extends Record<string, number>> {
 
 			// ユニークインクリメントの指定のキーに値を追加
 			if (uniqueKey) {
-				query['$push'] = {
-					[`unique.${uniqueKey}`]: uniqueValue
-				};
+				// SEE https://stackoverflow.com/questions/42233542/appending-pushing-and-removing-from-a-json-array-in-postgresql-9-5
+				const sql = `jsonb_set(json_prop, array['${uniqueKey}'], (jsondata->'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
+				query['unique'] = () => sql;
 			}
 
 			// ログ更新
@@ -269,12 +301,12 @@ export default abstract class Chart<T extends Record<string, number>> {
 
 	@autobind
 	protected inc(inc: Partial<T>, group?: string): void {
-		this.commit(this.convertQuery(inc as any), group);
+		this.commit(Chart.convertQuery(inc as any), group);
 	}
 
 	@autobind
 	protected incIfUnique(inc: Partial<T>, key: string, value: string, group?: string): void {
-		this.commit(this.convertQuery(inc as any), group, key, value);
+		this.commit(Chart.convertQuery(inc as any), group, key, value);
 	}
 
 	@autobind
@@ -349,13 +381,14 @@ export default abstract class Chart<T extends Record<string, number>> {
 				null;
 
 			const log = logs.find(l => utc(l.date).isSame(current));
+			const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
 
 			if (log) {
-				promisedChart.unshift(Promise.resolve(log.data));
+				promisedChart.unshift(Promise.resolve(data));
 			} else {
 				// 隙間埋め
 				const latest = logs.find(l => utc(l.date).isBefore(current));
-				promisedChart.unshift(this.getTemplate(false, latest ? latest.data : null));
+				promisedChart.unshift(this.getTemplate(false, latest ? data : null));
 			}
 		}
 
