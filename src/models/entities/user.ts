@@ -123,6 +123,26 @@ export class User {
 	})
 	public twoFactorSecret: string | null;
 
+	@Column('varchar', {
+		length: 256, nullable: true,
+	})
+	public avatarUrl: string | null;
+
+	@Column('varchar', {
+		length: 256, nullable: true,
+	})
+	public bannerUrl: string | null;
+
+	@Column('varchar', {
+		length: 32, nullable: true,
+	})
+	public avatarColor: string | null;
+
+	@Column('varchar', {
+		length: 32, nullable: true,
+	})
+	public bannerColor: string | null;
+
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the User is suspended.'
@@ -164,6 +184,11 @@ export class User {
 		comment: 'Whether the User is a moderator.'
 	})
 	public isModerator: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isVerified: boolean;
 
 	@Column('boolean', {
 		default: false,

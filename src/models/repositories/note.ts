@@ -104,7 +104,7 @@ export class NoteRepository extends Repository<Note> {
 			skipHide: false
 		}, options);
 
-		const meId = typeof me === 'string' ? me : me.id;
+		const meId = me ? typeof me === 'string' ? me : me.id : null;
 		const _note = await this.cloneOrFetch(note);
 		const host = _note.userHost;
 
@@ -159,18 +159,23 @@ export class NoteRepository extends Repository<Note> {
 			text = `【${_note.name}】\n${_note.text}`;
 		}
 
+		/* v11 TODO
 		if (_note.user.isCat && _note.text) {
 			text = nyaize(_note.text);
 		}
+		*/
+
+		const reactionEmojis = unique(concat([_note.emojis, Object.keys(_note.reactionCounts)]));
 
 		const packed = await rap({
+			id: _note.id,
 			app: _note.appId ? Apps.pack(_note.appId) : null,
 			user: Users.pack(_note.userId, meId),
 			text: text,
-			emojis: Emojis.find({
-				name: In(unique(concat([_note.emojis, Object.keys(_note.reactionCounts)]))),
+			emojis: reactionEmojis.length > 0 ? Emojis.find({
+				name: In(reactionEmojis),
 				host: host
-			}),
+			}) : [],
 			files: DriveFiles.packMany(_note.fileIds),
 
 			...(opts.detail ? {

@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note from '../../../../models/entities/note';
-import { getFriends } from '../../common/get-friends';
-import { packMany } from '../../../../models/entities/note';
 import define from '../../define';
-import activeUsersChart from '../../../../services/chart/charts/active-users';
-import { getHideUserIds } from '../../common/get-hide-users';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { Notes, Followings } from '../../../../models';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { generateMuteQuery } from '../../common/generate-mute-query';
+import { activeUsersChart } from '../../../../services/chart';
 
 export const meta = {
 	desc: {
@@ -84,14 +84,6 @@ export const meta = {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
 		},
-
-		mediaOnly: {
-			validator: $.optional.bool,
-			deprecated: true,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
 	},
 
 	res: {
@@ -103,78 +95,17 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const [followings, hideUserIds] = await Promise.all([
-		// フォローを取得
-		// Fetch following
-		getFriends(user.id),
-
-		// 隠すユーザーを取得
-		getHideUserIds(user)
-	]);
-
 	//#region Construct query
-	const sort = {
-		id: -1
-	};
+	const followingQuery = Followings.createQueryBuilder('following')
+		.select('following.followeeId')
+		.where('following.followerId = :followerId', { followerId: user.id });
 
-	const followQuery = followings.map(f => ({
-		userId: f.id,
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere(generateVisibilityQuery(user))
+		.andWhere(generateMuteQuery(user))
+		.andWhere(`note.userId IN (${ followingQuery.getQuery() })`);
 
-		/*// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
-		$or: [{
-			// リプライでない
-			replyId: null
-		}, { // または
-			// リプライだが返信先が投稿者自身の投稿
-			$expr: {
-				$eq: ['$_reply.userId', '$userId']
-			}
-		}, { // または
-			// リプライだが返信先が自分(フォロワー)の投稿
-			'_reply.userId': user.id
-		}, { // または
-			// 自分(フォロワー)が送信したリプライ
-			userId: user.id
-		}]*/
-	}));
-
-	const visibleQuery = user == null ? [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}] : [{
-		visibility: { $in: [ 'public', 'home', 'followers' ] }
-	}, {
-		// myself (for specified/private)
-		userId: user.id
-	}, {
-		// to me (for specified)
-		visibleUserIds: { $in: [ user.id ] }
-	}];
-
-	const query = {
-		$and: [{
-			deletedAt: null,
-
-			$and: [{
-				// フォローしている人の投稿
-				$or: followQuery
-			}, {
-				// visible for me
-				$or: visibleQuery
-			}],
-
-			// mute
-			userId: {
-				$nin: hideUserIds
-			},
-			'_reply.userId': {
-				$nin: hideUserIds
-			},
-			'_renote.userId': {
-				$nin: hideUserIds
-			},
-		}]
-	} as any;
-
+	/* v11 TODO
 	// MongoDBではトップレベルで否定ができないため、De Morganの法則を利用してクエリします。
 	// つまり、「『自分の投稿かつRenote』ではない」を「『自分の投稿ではない』または『Renoteではない』」と表現します。
 	// for details: https://en.wikipedia.org/wiki/De_Morgan%27s_laws
@@ -225,39 +156,19 @@ export default define(meta, async (ps, user) => {
 				poll: { $ne: null }
 			}]
 		});
-	}
+	}*/
 
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.$and.push({
-			fileIds: { $exists: true, $ne: [] }
-		});
-	}
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	} else if (ps.sinceDate) {
-		sort.id = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
+	if (ps.withFiles) {
+		query.andWhere('note.fileIds != \'{}\'');
 	}
 	//#endregion
 
-	const timeline = await Note.find(query, {
+	const timeline = await Notes.find({
+		where: query,
 		take: ps.limit,
-		order: sort
 	});
 
 	activeUsersChart.update(user);
 
-	return await packMany(timeline, user);
+	return await Notes.packMany(timeline, user);
 });

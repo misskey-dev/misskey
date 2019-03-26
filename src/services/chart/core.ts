@@ -289,7 +289,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			// ユニークインクリメントの指定のキーに値を追加
 			if (uniqueKey) {
 				// SEE https://stackoverflow.com/questions/42233542/appending-pushing-and-removing-from-a-json-array-in-postgresql-9-5
-				const sql = `jsonb_set(json_prop, array['${uniqueKey}'], (jsondata->'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
+				const sql = `jsonb_set("unique", array['${uniqueKey}'], ("unique"->'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
 				query['unique'] = () => sql;
 			}
 

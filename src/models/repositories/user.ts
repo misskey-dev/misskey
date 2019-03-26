@@ -42,11 +42,15 @@ export class UserRepository extends Repository<User> {
 			'isVerified'
 		]);
 
-		const meId = typeof me === 'string' ? me : me.id;
+		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== _user.id) && opts.detail ? await getRelation(meId, _user.id) : null;
 
 		return await rap({
+			id: _user.id,
+			name: _user.name,
+			username: _user.username,
+
 			// カスタム絵文字添付
 			emojis: Emojis.find({
 				where: {

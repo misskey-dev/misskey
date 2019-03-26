@@ -138,30 +138,40 @@ export class Note {
 
 	@Column({
 		...id(),
-		array: true,
+		array: true, default: '{}'
 	})
 	public fileIds: DriveFile['id'][];
 
 	@Column('varchar', {
-		length: 256, array: true,
+		length: 256, array: true, default: '{}'
 	})
 	public attachedFileTypes: string[];
 
 	@Column({
 		...id(),
-		array: true,
+		array: true, default: '{}'
 	})
 	public visibleUserIds: User['id'][];
 
 	@Column('varchar', {
-		length: 128, array: true,
+		length: 128, array: true, default: '{}'
 	})
 	public emojis: string[];
 
+	@Column('varchar', {
+		length: 128, array: true, default: '{}'
+	})
+	public tags: string[];
+
 	@Column('jsonb', {
-		default: {}, nullable: true
+		nullable: true, default: {}
 	})
 	public poll: IPoll | null;
+
+	@Column('jsonb', {
+		nullable: true, default: {}
+	})
+	public geo: any | null;
 
 	//#region Denormalized fields
 	@Column('varchar', {
@@ -175,6 +185,32 @@ export class Note {
 		comment: '[Denormalized]'
 	})
 	public userInbox: string | null;
+
+	@Column({
+		...id(),
+		nullable: true,
+		comment: '[Denormalized]'
+	})
+	public replyUserId: User['id'] | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public replyUserHost: string | null;
+
+	@Column({
+		...id(),
+		nullable: true,
+		comment: '[Denormalized]'
+	})
+	public renoteUserId: User['id'] | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public renoteUserHost: string | null;
 	//#endregion
 }
 

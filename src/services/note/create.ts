@@ -11,10 +11,6 @@ import { parse } from '../../mfm/parse';
 import resolveUser from '../../remote/resolve-user';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
-import notesChart from '../chart/charts/notes';
-import perUserNotesChart from '../chart/charts/per-user-notes';
-import activeUsersChart from '../chart/charts/active-users';
-import instanceChart from '../chart/charts/instance';
 import * as deepcopy from 'deepcopy';
 import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
@@ -28,6 +24,8 @@ import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
+import { genId } from '../../misc/gen-id';
+import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -272,7 +270,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 
 		// 通知
-		if (Users.isLocalUser(data.reply._user)) {
+		if (data.reply.userHost === null) {
 			nm.push(data.reply.userId, 'reply');
 			publishMainStream(data.reply.userId, 'reply', noteObj);
 		}
@@ -283,7 +281,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const type = data.text ? 'quote' : 'renote';
 
 		// Notify
-		if (Users.isLocalUser(data.renote._user)) {
+		if (data.renote.userHost === null) {
 			nm.push(data.renote.userId, type);
 		}
 
@@ -296,7 +294,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 
 		// Publish event
-		if ((user.id !== data.renote.userId) && Users.isLocalUser(data.renote._user)) {
+		if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
 			publishMainStream(data.renote.userId, 'renote', noteObj);
 		}
 	}
@@ -331,13 +329,13 @@ function incRenoteCount(renote: Note) {
 async function publish(user: User, note: Note, noteObj: any, reply: Note, renote: Note, visibleUsers: User[], noteActivity: any) {
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
-		if (reply && Users.isRemoteUser(reply._user)) {
-			deliver(user, noteActivity, reply._user.inbox);
+		if (reply && reply.userHost !== null) {
+			deliver(user, noteActivity, reply.userInbox);
 		}
 
 		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
-		if (renote && Users.isRemoteUser(renote._user)) {
-			deliver(user, noteActivity, renote._user.inbox);
+		if (renote && renote.userHost !== null) {
+			deliver(user, noteActivity, renote.userInbox);
 		}
 
 		if (['followers', 'specified'].includes(note.visibility)) {
@@ -390,6 +388,7 @@ async function publish(user: User, note: Note, noteObj: any, reply: Note, renote
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
 	const insert: Note = {
+		id: genId(),
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file.id) : [],
 		replyId: data.reply ? data.reply.id : null,
@@ -398,39 +397,29 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		text: data.text,
 		poll: data.poll,
 		cw: data.cw == null ? null : data.cw,
-		tags,
-		tagsLower: tags.map(tag => tag.toLowerCase()),
+		tags: tags.map(tag => tag.toLowerCase()),
 		emojis,
 		userId: user.id,
 		viaMobile: data.viaMobile,
 		localOnly: data.localOnly,
 		geo: data.geo || null,
 		appId: data.app ? data.app.id : null,
-		visibility: data.visibility,
+		visibility: data.visibility as any,
 		visibleUserIds: data.visibility == 'specified'
 			? data.visibleUsers
 				? data.visibleUsers.map(u => u.id)
 				: []
 			: [],
 
+		attachedFileTypes: data.files ? data.files.map(file => file.contentType) : [],
+
 		// 以下非正規化データ
-		_reply: data.reply ? {
-			userId: data.reply.userId,
-			user: {
-				host: data.reply._user.host
-			}
-		} : null,
-		_renote: data.renote ? {
-			userId: data.renote.userId,
-			user: {
-				host: data.renote._user.host
-			}
-		} : null,
-		_user: {
-			host: user.host,
-			inbox: Users.isRemoteUser(user) ? user.inbox : undefined
-		},
-		_files: data.files ? data.files : []
+		replyUserId: data.reply ? data.reply.userId : null,
+		replyUserHost: data.reply ? data.reply.userHost : null,
+		renoteUserId: data.renote ? data.renote.userId : null,
+		renoteUserHost: data.renote ? data.renote.userHost : null,
+		userHost: user.host,
+		userInbox: user.inbox,
 	};
 
 	if (data.uri != null) insert.uri = data.uri;
@@ -453,6 +442,8 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		if (e.code === 11000) {
 			return null;
 		}
+
+		console.error(e);
 
 		throw 'something happened';
 	}
