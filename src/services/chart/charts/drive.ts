@@ -1,8 +1,9 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj } from '../core';
-import DriveFile, { DriveFile } from '../../../models/entities/drive-file';
-import { isLocalUser } from '../../../models/entities/user';
 import { SchemaType } from '../../../misc/schema';
+import { DriveFiles } from '../../../models';
+import { Not } from 'typeorm';
+import { DriveFile } from '../../../models/entities/drive-file';
 
 const logSchema = {
 	/**
@@ -72,34 +73,16 @@ type DriveLog = SchemaType<typeof driveLogSchema>;
 
 class DriveChart extends Chart<DriveLog> {
 	constructor() {
-		super('drive');
+		super('drive', driveLogSchema);
 	}
 
 	@autobind
 	protected async getTemplate(init: boolean, latest?: DriveLog): Promise<DriveLog> {
-		const calcSize = (local: boolean) => DriveFile
-			.aggregate([{
-				$match: {
-					'userHost': local ? null : { $ne: null },
-					'metadata.deletedAt': { $exists: false }
-				}
-			}, {
-				$project: {
-					length: true
-				}
-			}, {
-				$group: {
-					id: null,
-					usage: { $sum: '$length' }
-				}
-			}])
-			.then(res => res.length > 0 ? res[0].usage : 0);
-
 		const [localCount, remoteCount, localSize, remoteSize] = init ? await Promise.all([
-			DriveFile.count({ 'userHost': null }),
-			DriveFile.count({ 'userHost': { $ne: null } }),
-			calcSize(true),
-			calcSize(false)
+			DriveFiles.count({ userHost: null }),
+			DriveFiles.count({ userHost: Not(null) }),
+			DriveFiles.clacDriveUsageOfLocal(),
+			DriveFiles.clacDriveUsageOfRemote()
 		]) : [
 			latest ? latest.local.totalCount : 0,
 			latest ? latest.remote.totalCount : 0,
@@ -132,17 +115,17 @@ class DriveChart extends Chart<DriveLog> {
 		const update: Obj = {};
 
 		update.totalCount = isAdditional ? 1 : -1;
-		update.totalSize = isAdditional ? file.length : -file.length;
+		update.totalSize = isAdditional ? file.size : -file.size;
 		if (isAdditional) {
 			update.incCount = 1;
-			update.incSize = file.length;
+			update.incSize = file.size;
 		} else {
 			update.decCount = 1;
-			update.decSize = file.length;
+			update.decSize = file.size;
 		}
 
 		await this.inc({
-			[isLocalUser(file.metadata._user) ? 'local' : 'remote']: update
+			[file.userHost === null ? 'local' : 'remote']: update
 		});
 	}
 }

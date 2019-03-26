@@ -136,8 +136,6 @@ class InstanceChart extends Chart<InstanceLog> {
 
 	@autobind
 	protected async getTemplate(init: boolean, latest?: InstanceLog, group?: any): Promise<InstanceLog> {
-		const calcUsage = DriveFiles.clacDriveUsageOfHost(group);
-
 		const [
 			notesCount,
 			usersCount,
@@ -151,7 +149,7 @@ class InstanceChart extends Chart<InstanceLog> {
 			Followings.count({ followerHost: group }),
 			Followings.count({ followeeHost: group }),
 			DriveFiles.count({ userHost: group }),
-			calcUsage,
+			DriveFiles.clacDriveUsageOfHost(group),
 		]) : [
 			latest ? latest.notes.total : 0,
 			latest ? latest.users.total : 0,

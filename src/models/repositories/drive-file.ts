@@ -48,6 +48,26 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return sum;
 	}
 
+	public async clacDriveUsageOfLocal(): Promise<number> {
+		const [sum] = await this
+			.createQueryBuilder('file')
+			.where('file.userHost IS NULL')
+			.select('SUM(file.size)', 'sum')
+			.getRawOne();
+
+		return sum;
+	}
+
+	public async clacDriveUsageOfRemote(): Promise<number> {
+		const [sum] = await this
+			.createQueryBuilder('file')
+			.where('file.userHost IS NOT NULL')
+			.select('SUM(file.size)', 'sum')
+			.getRawOne();
+
+		return sum;
+	}
+
 	public packMany(
 		files: any[],
 		options?: {

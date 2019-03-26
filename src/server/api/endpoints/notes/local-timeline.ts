@@ -100,7 +100,7 @@ export default define(meta, async (ps, user) => {
 
 	const query = Notes.createQueryBuilder('note')
 		.where('visibility = \'public\'')
-		.andWhere('userHost = NULL');
+		.andWhere('userHost IS NULL');
 
 	if (user) query.andWhere(generateMuteQuery(user));
 
