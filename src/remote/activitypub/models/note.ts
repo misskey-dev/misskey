@@ -18,7 +18,7 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost } from '../../../misc/convert-host';
 import { Notes, Instances, Emojis } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject } from '../type';
+import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 
 const logger = apLogger;
@@ -67,7 +67,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		return null;
 	}
 
-	const note: NoteActivityStreamsObject = object;
+	const note: INote = object;
 
 	logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 

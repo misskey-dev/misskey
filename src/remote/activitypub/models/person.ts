@@ -281,10 +281,8 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	//#endregion
 
 	// 繋がらないインスタンスに何回も試行するのを防ぐ, 後続の同様処理の連続試行を防ぐ ため 試行前にも更新する
-	await User.update({ _id: exist.id }, {
-		$set: {
-			lastFetchedAt: new Date(),
-		},
+	await Users.update(exist.id, {
+		lastFetchedAt: new Date(),
 	});
 
 	if (resolver == null) resolver = new Resolver();

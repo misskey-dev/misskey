@@ -42,7 +42,7 @@ export interface IOrderedCollection extends IObject {
 	orderedItems: IObject | string | IObject[] | string[];
 }
 
-export interface Note extends IObject {
+export interface INote extends IObject {
 	type: 'Note' | 'Question';
 	_misskey_content: string;
 	_misskey_quote: string;
