@@ -19,7 +19,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 		if (exist.some(x => x.choice === choice)) {
 			return rej('already voted');
 		}
-	} else if (exist.length) {
+	} else if (exist.length !== 0) {
 		return rej('already voted');
 	}
 

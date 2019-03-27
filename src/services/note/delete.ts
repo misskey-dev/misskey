@@ -3,15 +3,13 @@ import renderDelete from '../../remote/activitypub/renderer/delete';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import notesChart from '../chart/charts/notes';
-import perUserNotesChart from '../chart/charts/per-user-notes';
 import config from '../../config';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import instanceChart from '../chart/charts/instance';
 import { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
 import { Notes, Users, Followings, Instances } from '../../models';
 import { Not } from 'typeorm';
+import { notesChart, perUserNotesChart, instanceChart } from '../chart';
 
 /**
  * 投稿を削除します。
@@ -57,7 +55,7 @@ export default async function(user: User, note: Note, quiet = false) {
 
 		if (Users.isRemoteUser(user)) {
 			registerOrFetchInstanceDoc(user.host).then(i => {
-				Instances.decrement(i.id, 'notesCount', 1);
+				Instances.decrement({ id: i.id }, 'notesCount', 1);
 				instanceChart.updateNote(i.host, false);
 			});
 		}
