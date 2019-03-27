@@ -101,7 +101,7 @@ export default define(meta, async (ps, user) => {
 		.where('following.followerId = :followerId', { followerId: user.id });
 
 	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`(note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId)`, { meId: user.id })
+		.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id })
 		.leftJoinAndSelect('note.user', 'user')
 		.setParameters(followingQuery.getParameters());
 
