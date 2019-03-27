@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import { pack } from '../../../../models/entities/note';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { Notes } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -46,7 +46,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	return await pack(note, user, {
+	return await Notes.pack(note, user, {
 		detail: true
 	});
 });
