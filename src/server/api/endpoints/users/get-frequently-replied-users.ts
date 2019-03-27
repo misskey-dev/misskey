@@ -1,12 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note from '../../../../models/entities/note';
-import { pack } from '../../../../models/entities/user';
 import define from '../../define';
 import { maximum } from '../../../../prelude/array';
 import { getHideUserIds } from '../../common/get-hide-users';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Not, In } from 'typeorm';
+import { Notes, Users } from '../../../../models';
 
 export const meta = {
 	tags: ['users'],
@@ -52,21 +52,16 @@ export default define(meta, async (ps, me) => {
 	});
 
 	// Fetch recent notes
-	const recentNotes = await Note.find({
-		userId: user.id,
-		replyId: {
-			$exists: true,
-			$ne: null
-		}
-	}, {
-		sort: {
+	const recentNotes = await Notes.find({
+		where: {
+			userId: user.id,
+			replyId: Not(null)
+		},
+		order: {
 			id: -1
 		},
-		limit: 1000,
-		fields: {
-			id: false,
-			replyId: true
-		}
+		take: 1000,
+		select: ['replyId']
 	});
 
 	// 投稿が少なかったら中断
@@ -77,18 +72,12 @@ export default define(meta, async (ps, me) => {
 	const hideUserIds = await getHideUserIds(me);
 	hideUserIds.push(user.id);
 
-	const replyTargetNotes = await Note.find({
-		id: {
-			$in: recentNotes.map(p => p.replyId)
+	const replyTargetNotes = await Notes.find({
+		where: {
+			id: In(recentNotes.map(p => p.replyId)),
+			userId: Not(In(hideUserIds))
 		},
-		userId: {
-			$nin: hideUserIds
-		}
-	}, {
-		fields: {
-			id: false,
-			userId: true
-		}
+		select: ['userId']
 	});
 
 	const repliedUsers: any = {};
@@ -113,7 +102,7 @@ export default define(meta, async (ps, me) => {
 
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
-		user: await pack(user, me, { detail: true }),
+		user: await Users.pack(user, me, { detail: true }),
 		weight: repliedUsers[user] / peak
 	})));
 
