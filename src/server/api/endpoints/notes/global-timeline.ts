@@ -1,11 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note from '../../../../models/entities/note';
-import { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
-import { getHideUserIds } from '../../common/get-hide-users';
 import { ApiError } from '../../error';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { Notes } from '../../../../models';
+import { generateMuteQuery } from '../../common/generate-mute-query';
+import { activeUsersChart } from '../../../../services/chart';
 
 export const meta = {
 	desc: {
@@ -61,6 +62,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	// TODO どっかにキャッシュ
 	const m = await fetchMeta();
 	if (m.disableGlobalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {
@@ -68,64 +70,24 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	// 隠すユーザーを取得
-	const hideUserIds = await getHideUserIds(user);
-
 	//#region Construct query
-	const sort = {
-		id: -1
-	};
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere('note.visibility = \'public\'')
+		.andWhere('note.replyId IS NULL')
+		.leftJoinAndSelect('note.user', 'user');
 
-	const query = {
-		deletedAt: null,
+	if (user) generateMuteQuery(query, user);
 
-		// public only
-		visibility: 'public',
-
-		replyId: null
-	} as any;
-
-	if (hideUserIds && hideUserIds.length > 0) {
-		query.userId = {
-			$nin: hideUserIds
-		};
-
-		query['_reply.userId'] = {
-			$nin: hideUserIds
-		};
-
-		query['_renote.userId'] = {
-			$nin: hideUserIds
-		};
-	}
-
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.fileIds = { $exists: true, $ne: [] };
-	}
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	} else if (ps.sinceDate) {
-		sort.id = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
+	if (ps.withFiles) {
+		query.andWhere('note.fileIds != \'{}\'');
 	}
 	//#endregion
 
-	const timeline = await Note.find(query, {
-		take: ps.limit,
-		order: sort
-	});
+	const timeline = await query.take(ps.limit).getMany();
 
-	return await packMany(timeline, user);
+	if (user) {
+		activeUsersChart.update(user);
+	}
+
+	return await Notes.packMany(timeline, user);
 });
