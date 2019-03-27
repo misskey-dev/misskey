@@ -75,3 +75,20 @@ src ... Source code
 test ... Test code
 
 ```
+
+## Notes
+### `null` in SQL
+SQLを発行する際、パラメータが`null`になる可能性のある場合はSQL文を出し分けなければならない
+例えば
+``` ts
+query.where('file.folderId = :folderId', { folderId: ps.folderId });
+```
+という処理で、`ps.folderId`が`null`だと結果的に`file.folderId = null`のようなクエリが発行されてしまい、これは正しいSQLではないので期待した結果が得られない
+だから次のようにする必要がある
+``` ts
+if (ps.folderId) {
+	query.where('file.folderId = :folderId', { folderId: ps.folderId });
+} else {
+	query.where('file.folderId IS NULL');
+}
+```
