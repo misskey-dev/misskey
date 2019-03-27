@@ -55,11 +55,12 @@ export default Vue.extend({
 		},
 		icon(): any {
 			return {
-				backgroundColor: this.lightmode
+				backgroundColor: this.user.avatarColor ? this.lightmode
 					? this.user.avatarColor
 					: this.user.avatarColor.startsWith('rgb(')
 						? this.user.avatarColor
-						: null,
+						: null
+					: null,
 				backgroundImage: this.lightmode ? null : `url(${this.url})`,
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};

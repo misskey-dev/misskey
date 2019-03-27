@@ -2,11 +2,11 @@ import * as Router from 'koa-router';
 
 import config from '../config';
 import parseAcct from '../misc/acct/parse';
-import User from '../models/entities/user';
 import Acct from '../misc/acct/type';
 import { links } from './nodeinfo';
 import { escapeAttribute, escapeValue } from '../prelude/xml';
 import { Users } from '../models';
+import { User } from '../models/entities/user';
 
 // Init router
 const router = new Router();
@@ -47,18 +47,18 @@ router.get('/.well-known/nodeinfo', async ctx => {
 });
 
 router.get(webFingerPath, async ctx => {
+	const fromId = (id: User['id']): Record<string, any> => ({
+		id,
+		host: null
+	});
+
 	const generateQuery = (resource: string) =>
 		resource.startsWith(`${config.url.toLowerCase()}/users/`) ?
-			fromId(new mongo.ObjectID(resource.split('/').pop())) :
+			fromId(resource.split('/').pop()) :
 			fromAcct(parseAcct(
 				resource.startsWith(`${config.url.toLowerCase()}/@`) ? resource.split('/').pop() :
 				resource.startsWith('acct:') ? resource.slice('acct:'.length) :
 				resource));
-
-	const fromId = (_id: mongo.ObjectID): Record<string, any> => ({
-			_id,
-			host: null
-		});
 
 	const fromAcct = (acct: Acct): Record<string, any> | number =>
 		!acct.host || acct.host === config.host.toLowerCase() ? {

@@ -1,4 +1,3 @@
-import * as deepcopy from 'deepcopy';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
@@ -32,29 +31,3 @@ export class UserList {
 	})
 	public name: string;
 }
-
-export const pack = (
-	userList: string | mongo.ObjectID | UserList
-) => new Promise<any>(async (resolve, reject) => {
-	let _userList: any;
-
-	if (isObjectId(userList)) {
-		_userList = await UserList.findOne({
-			id: userList
-		});
-	} else if (typeof userList === 'string') {
-		_userList = await UserList.findOne({
-			id: new mongo.ObjectID(userList)
-		});
-	} else {
-		_userList = deepcopy(userList);
-	}
-
-	if (!_userList) throw `invalid userList arg ${userList}`;
-
-	// Rename _id to id
-	_userList.id = _userList.id;
-	delete _userList.id;
-
-	resolve(_userList);
-});

@@ -1,7 +1,9 @@
 import redis from '../db/redis';
 import Xev from 'xev';
-
-type ID = string | mongo.ObjectID;
+import { User } from '../models/entities/user';
+import { Note } from '../models/entities/note';
+import { UserList } from '../models/entities/user-list';
+import { ReversiGame } from '../models/entities/games/reversi/game';
 
 class Publisher {
 	private ev: Xev;
@@ -28,42 +30,42 @@ class Publisher {
 		}
 	}
 
-	public publishMainStream = (userId: ID, type: string, value?: any): void => {
+	public publishMainStream = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishDriveStream = (userId: ID, type: string, value?: any): void => {
+	public publishDriveStream = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishNoteStream = (noteId: ID, type: string, value: any): void => {
+	public publishNoteStream = (noteId: Note['id'], type: string, value: any): void => {
 		this.publish(`noteStream:${noteId}`, type, {
 			id: noteId,
 			body: value
 		});
 	}
 
-	public publishUserListStream = (listId: ID, type: string, value?: any): void => {
+	public publishUserListStream = (listId: UserList['id'], type: string, value?: any): void => {
 		this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishMessagingStream = (userId: ID, otherpartyId: ID, type: string, value?: any): void => {
+	public publishMessagingStream = (userId: User['id'], otherpartyId: User['id'], type: string, value?: any): void => {
 		this.publish(`messagingStream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishMessagingIndexStream = (userId: ID, type: string, value?: any): void => {
+	public publishMessagingIndexStream = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishReversiStream = (userId: ID, type: string, value?: any): void => {
+	public publishReversiStream = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishReversiGameStream = (gameId: ID, type: string, value?: any): void => {
+	public publishReversiGameStream = (gameId: ReversiGame['id'], type: string, value?: any): void => {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishHomeTimelineStream = (userId: ID, note: any): void => {
+	public publishHomeTimelineStream = (userId: User['id'], note: any): void => {
 		this.publish(`homeTimeline:${userId}`, null, note);
 	}
 
@@ -71,7 +73,7 @@ class Publisher {
 		this.publish('localTimeline', null, note);
 	}
 
-	public publishHybridTimelineStream = async (userId: ID, note: any): Promise<void> => {
+	public publishHybridTimelineStream = async (userId: User['id'], note: any): Promise<void> => {
 		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
 	}
 
@@ -87,7 +89,7 @@ class Publisher {
 		this.publish('apLog', null, log);
 	}
 
-	public publishAdminStream = (userId: ID, type: string, value?: any): void => {
+	public publishAdminStream = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }

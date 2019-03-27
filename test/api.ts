@@ -153,8 +153,8 @@ describe('API', () => {
 			expect(res.body).be.a('object');
 			expect(res.body).have.property('name').eql(myName);
 			expect(res.body).have.nested.property('profile').a('object');
-			expect(res.body).have.nested.property('profile.location').eql(myLocation);
-			expect(res.body).have.nested.property('profile.birthday').eql(myBirthday);
+			expect(res.body).have.nested.property('location').eql(myLocation);
+			expect(res.body).have.nested.property('birthday').eql(myBirthday);
 		}));
 
 		it('名前を空白にできない', async(async () => {
@@ -178,7 +178,7 @@ describe('API', () => {
 			expect(res).have.status(200);
 			expect(res.body).be.a('object');
 			expect(res.body).have.nested.property('profile').a('object');
-			expect(res.body).have.nested.property('profile.birthday').eql(null);
+			expect(res.body).have.nested.property('birthday').eql(null);
 		}));
 
 		it('不正な誕生日の形式で怒られる', async(async () => {

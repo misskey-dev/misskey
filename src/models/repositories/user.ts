@@ -81,6 +81,7 @@ export class UserRepository extends Repository<User> {
 			...(opts.detail && meId === _user.id ? {
 				avatarId: _user.avatarId,
 				bannerId: _user.bannerId,
+				alwaysMarkNsfw: _user.alwaysMarkNsfw,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: _user.id,
@@ -112,11 +113,11 @@ export class UserRepository extends Repository<User> {
 		});
 	}
 
-	public isLocalUser(user: any): user is ILocalUser {
+	public isLocalUser(user: User): user is ILocalUser {
 		return user.host === null;
 	}
 
-	public isRemoteUser(user: any): user is IRemoteUser {
+	public isRemoteUser(user: User): user is IRemoteUser {
 		return !this.isLocalUser(user);
 	}
 

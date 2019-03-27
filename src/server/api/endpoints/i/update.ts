@@ -159,8 +159,8 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) updates.description = ps.description;
 	if (ps.lang !== undefined) updates.lang = ps.lang;
-	if (ps.location !== undefined) updates['profile.location'] = ps.location;
-	if (ps.birthday !== undefined) updates['profile.birthday'] = ps.birthday;
+	if (ps.location !== undefined) updates.location = ps.location;
+	if (ps.birthday !== undefined) updates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
@@ -168,8 +168,8 @@ export default define(meta, async (ps, user, app) => {
 	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
 	if (typeof ps.autoAcceptFollowed == 'boolean') updates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch == 'boolean') updates['settings.autoWatch'] = ps.autoWatch;
-	if (typeof ps.alwaysMarkNsfw == 'boolean') updates['settings.alwaysMarkNsfw'] = ps.alwaysMarkNsfw;
+	if (typeof ps.autoWatch == 'boolean') updates.autoWatch = ps.autoWatch;
+	if (typeof ps.alwaysMarkNsfw == 'boolean') updates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);

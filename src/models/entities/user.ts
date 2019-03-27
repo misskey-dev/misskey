@@ -271,6 +271,11 @@ export class User {
 		default: false,
 	})
 	public autoAcceptFollowed: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public alwaysMarkNsfw: boolean;
 }
 
 export interface ILocalUser extends User {
