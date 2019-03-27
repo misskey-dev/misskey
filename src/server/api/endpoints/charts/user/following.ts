@@ -1,8 +1,9 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserFollowingChart, { perUserFollowingLogSchema } from '../../../../../services/chart/charts/per-user-following';
 import { ID } from '../../../../../misc/cafy-id';
 import { convertLog } from '../../../../../services/chart/core';
+import { perUserFollowingLogSchema } from '../../../../../services/chart/charts/per-user-following';
+import { perUserFollowingChart } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -42,5 +43,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return  await perUserFollowingChart.getChart(ps.span as any, ps.limit, ps.userId);
+	return await perUserFollowingChart.getChart(ps.span as any, ps.limit, ps.userId);
 });

@@ -1,7 +1,9 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserReactionsChart from '../../../../../services/chart/charts/per-user-reactions';
 import { ID } from '../../../../../misc/cafy-id';
+import { convertLog } from '../../../../../services/chart/core';
+import { perUserReactionsLogSchema } from '../../../../../services/chart/charts/per-user-reactions';
+import { perUserReactionsChart } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -37,12 +39,7 @@ export const meta = {
 		}
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(perUserReactionsLogSchema),
 };
 
 export default define(meta, async (ps) => {

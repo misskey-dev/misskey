@@ -1,8 +1,9 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserNotesChart, { perUserNotesLogSchema } from '../../../../../services/chart/charts/per-user-notes';
 import { ID } from '../../../../../misc/cafy-id';
 import { convertLog } from '../../../../../services/chart/core';
+import { perUserNotesLogSchema } from '../../../../../services/chart/charts/per-user-notes';
+import { perUserNotesChart } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',

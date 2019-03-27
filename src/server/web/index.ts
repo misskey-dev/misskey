@@ -13,11 +13,11 @@ import * as views from 'koa-views';
 import docs from './docs';
 import packFeed from './feed';
 import fetchMeta from '../../misc/fetch-meta';
-import Emoji from '../../models/entities/emoji';
 import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
-import { Users, Notes } from '../../models';
+import { Users, Notes, Emojis } from '../../models';
+import parseAcct from '../../misc/acct/parse';
 
 const client = `${__dirname}/../../client/`;
 
@@ -208,10 +208,8 @@ router.get('/notes/:note', async ctx => {
 
 router.get('/info', async ctx => {
 	const meta = await fetchMeta();
-	const emojis = await Emoji.find({ host: null }, {
-		fields: {
-			id: false
-		}
+	const emojis = await Emojis.find({
+		where: { host: null }
 	});
 	await ctx.render('info', {
 		version: pkg.version,

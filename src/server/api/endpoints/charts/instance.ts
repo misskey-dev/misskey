@@ -1,6 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
-import instanceChart from '../../../../services/chart/charts/instance';
+import { convertLog } from '../../../../services/chart/core';
+import { instanceLogSchema } from '../../../../services/chart/charts/instance';
+import { instanceChart } from '../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -36,12 +38,7 @@ export const meta = {
 		}
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(instanceLogSchema),
 };
 
 export default define(meta, async (ps) => {
