@@ -1,10 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note, { packMany } from '../../../../models/entities/note';
 import define from '../../define';
-import Following from '../../../../models/entities/following';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { Notes } from '../../../../models';
+import { generateMuteQuery } from '../../common/generate-mute-query';
 
 export const meta = {
 	desc: {
@@ -138,59 +140,35 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	const isFollowing = me == null ? false : ((await Following.findOne({
-		followerId: me.id,
-		followeeId: user.id
-	})) != null);
-
 	//#region Construct query
-	const sort = { } as any;
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere('note.userId = :userId', { userId: user.id })
+		.leftJoinAndSelect('note.user', 'user');
 
-	const visibleQuery = me == null ? [{
-		visibility: { $in: ['public', 'home'] }
-	}] : [{
-		visibility: {
-			$in: isFollowing ? ['public', 'home', 'followers'] : ['public', 'home']
+	if (me) generateVisibilityQuery(query, me);
+	if (me) generateMuteQuery(query, me);
+
+	if (ps.withFiles) {
+		query.andWhere('note.fileIds != \'{}\'');
+	}
+
+	if (ps.fileType) {
+		query.andWhere('note.fileIds != \'{}\'');
+		query.andWhere('note.attachedFileTypes ANY(:type)', { type: ps.fileType });
+
+		if (ps.excludeNsfw) {
+			// v11 TODO
+			query['_files.isSensitive'] = {
+				$ne: true
+			};
 		}
-	}, {
-		// myself (for specified/private)
-		userId: me.id
-	}, {
-		// to me (for specified)
-		visibleUserIds: { $in: [ me.id ] }
-	}];
-
-	const query = {
-		$and: [ {} ],
-		deletedAt: null,
-		userId: user.id,
-		$or: visibleQuery
-	} as any;
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		sort.id = -1;
-		query.id = LessThan(ps.untilId);
-	} else if (ps.sinceDate) {
-		sort.createdAt = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		sort.createdAt = -1;
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
-	} else {
-		sort.id = -1;
 	}
 
 	if (!ps.includeReplies) {
-		query.replyId = null;
+		query.andWhere('note.replyId IS NULL');
 	}
 
+	/* TODO
 	if (ps.includeMyRenotes === false) {
 		query.$and.push({
 			$or: [{
@@ -206,36 +184,11 @@ export default define(meta, async (ps, me) => {
 			}]
 		});
 	}
+	*/
 
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.fileIds = {
-			$exists: true,
-			$ne: []
-		};
-	}
-
-	if (ps.fileType) {
-		query.fileIds = { $exists: true, $ne: [] };
-
-		query['_files.type'] = {
-			$in: ps.fileType
-		};
-
-		if (ps.excludeNsfw) {
-			// v11 TODO
-			query['_files.isSensitive'] = {
-				$ne: true
-			};
-		}
-	}
 	//#endregion
 
-	const notes = await Note.find(query, {
-		take: ps.limit,
-		order: sort
-	});
+	const timeline = await query.take(ps.limit).getMany();
 
-	return await packMany(notes, me);
+	return await Notes.packMany(timeline, user);
 });

@@ -1,7 +1,6 @@
-import Notification from '../../../../models/entities/notification';
 import { publishMainStream } from '../../../../services/stream';
-import User from '../../../../models/entities/user';
 import define from '../../define';
+import { Notifications } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -18,15 +17,11 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Update documents
-	await Notification.update({
+	await Notifications.update({
 		notifieeId: user.id,
-		isRead: false
+		isRead: false,
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
+		isRead: true
 	});
 
 	// 全ての通知を読みましたよというイベントを発行
