@@ -489,6 +489,8 @@ async function publishToUserLists(note: Note, noteObj: any) {
 		userId: note.userId
 	});
 
+	if (joinings.length === 0) return;
+
 	const lists = await UserLists.find({
 		id: In(joinings.map(j => j.userListId))
 	});

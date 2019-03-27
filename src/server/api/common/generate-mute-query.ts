@@ -1,15 +1,16 @@
 import { User } from '../../../models/entities/user';
 import { Mutings } from '../../../models';
-import { Brackets } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm';
 
-export function generateMuteQuery(me: User) {
+export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User) {
 	const mutingQuery = Mutings.createQueryBuilder('muting')
 		.select('muting.muteeId')
 		.where('muting.muterId = :muterId', { muterId: me.id });
 
-	return new Brackets(qb => { qb
-		.where(`note.userId NOT IN (${ mutingQuery.getQuery() })`)
-		.orWhere(`note.replyUserId NOT IN (${ mutingQuery.getQuery() })`)
-		.orWhere(`note.renoteUserId NOT IN (${ mutingQuery.getQuery() })`);
-	});
+	q
+		.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`)
+		.andWhere(`note.replyUserId NOT IN (${ mutingQuery.getQuery() })`)
+		.andWhere(`note.renoteUserId NOT IN (${ mutingQuery.getQuery() })`);
+
+	q.setParameters(mutingQuery.getParameters());
 }

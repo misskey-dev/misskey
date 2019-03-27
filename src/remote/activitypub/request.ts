@@ -10,7 +10,7 @@ import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import Instance from '../../models/entities/instance';
+import { Instances } from '../../models';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -23,7 +23,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instance.findOne({ host: toUnicode(host) });
+	const instance = await Instances.findOne({ host: toUnicode(host) });
 	if (instance && instance.isBlocked) return;
 
 	const data = JSON.stringify(object);
