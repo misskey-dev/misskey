@@ -2,6 +2,7 @@ import { Feed } from 'feed';
 import config from '../../config';
 import { User } from '../../models/entities/user';
 import { Notes, DriveFiles } from '../../models';
+import { In } from 'typeorm';
 
 export default async function(user: User) {
 	const author: Author = {
@@ -10,15 +11,13 @@ export default async function(user: User) {
 	};
 
 	const notes = await Notes.find({
-		userId: user.id,
-		renoteId: null,
-		$or: [
-			{ visibility: 'public' },
-			{ visibility: 'home' }
-		]
-	}, {
-		sort: { createdAt: -1 },
-		limit: 20
+		where: {
+			userId: user.id,
+			renoteId: null,
+			visibility: In(['public', 'home'])
+		},
+		order: { createdAt: -1 },
+		take: 20
 	});
 
 	const feed = new Feed({
@@ -37,7 +36,7 @@ export default async function(user: User) {
 	} as FeedOptions);
 
 	for (const note of notes) {
-		const file = note._files && note._files.find(file => file.contentType.startsWith('image/'));
+		const file = note._files && note._files.find(file => file.type.startsWith('image/'));
 
 		feed.addItem({
 			title: `New note by ${author.name}`,

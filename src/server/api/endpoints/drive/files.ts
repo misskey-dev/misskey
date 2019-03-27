@@ -56,7 +56,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.type) {
 		// v11 TODO
-		query.contentType = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
+		query.type = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
 	}
 
 	const files = await query.getMany();

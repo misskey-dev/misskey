@@ -73,7 +73,9 @@ router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
 router.get('/verify-email/:code', async ctx => {
-	const user = await Users.findOne({ emailVerifyCode: ctx.params.code });
+	const user = await Users.findOne({
+		emailVerifyCode: ctx.params.code
+	});
 
 	if (user != null) {
 		ctx.body = 'Verify succeeded!';

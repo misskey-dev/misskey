@@ -5,9 +5,9 @@ import renderUndo from '../../remote/activitypub/renderer/undo';
 import renderBlock from '../../remote/activitypub/renderer/block';
 import { deliver } from '../../queue';
 import renderReject from '../../remote/activitypub/renderer/reject';
-import perUserFollowingChart from '../chart/charts/per-user-following';
 import { User } from '../../models/entities/user';
 import { Blockings, Users, FollowRequests, Followings } from '../../models';
+import { perUserFollowingChart } from '../chart';
 
 export default async function(blocker: User, blockee: User) {
 	await Promise.all([

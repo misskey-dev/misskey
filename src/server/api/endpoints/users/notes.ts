@@ -219,7 +219,7 @@ export default define(meta, async (ps, me) => {
 	if (ps.fileType) {
 		query.fileIds = { $exists: true, $ne: [] };
 
-		query['_files.contentType'] = {
+		query['_files.type'] = {
 			$in: ps.fileType
 		};
 

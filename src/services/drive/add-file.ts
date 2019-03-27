@@ -91,7 +91,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.thumbnailAccessKey = thumbnailKey;
 		file.webpublicAccessKey = webpublicKey;
 		file.name = name;
-		file.contentType = type;
+		file.type = type;
 		file.md5 = hash;
 		file.size = size;
 
@@ -123,7 +123,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.thumbnailAccessKey = thumbnailAccessKey;
 		file.webpublicAccessKey = webpublicAccessKey;
 		file.name = name;
-		file.contentType = type;
+		file.type = type;
 		file.md5 = hash;
 		file.size = size;
 
@@ -391,7 +391,7 @@ export default async function(
 			file.size = 0;
 			file.md5 = hash;
 			file.name = detectedName;
-			file.contentType = mime;
+			file.type = mime;
 
 			file = await DriveFiles.save(file);
 		} catch (e) {

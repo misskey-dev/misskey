@@ -3,6 +3,6 @@ import { DriveFiles } from '../../../models';
 
 export default (file: DriveFile) => ({
 	type: 'Document',
-	mediaType: file.contentType,
+	mediaType: file.type,
 	url: DriveFiles.getPublicUrl(file)
 });

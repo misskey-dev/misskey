@@ -10,7 +10,7 @@ import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
 import { DriveFiles } from '../../../models';
 
-export default async (user: ILocalUser) => {
+export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
 
 	const [avatar, banner] = await Promise.all([
@@ -97,4 +97,4 @@ export default async (user: ILocalUser) => {
 		isCat: user.isCat,
 		attachment: attachment.length ? attachment : undefined
 	};
-};
+}

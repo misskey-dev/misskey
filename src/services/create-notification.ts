@@ -1,7 +1,7 @@
 import { pack } from '../models/entities/notification';
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
-import { Notifications, Mutings, Users } from '../models';
+import { Notifications, Mutings } from '../models';
 
 export default (
 	notifieeId: any,

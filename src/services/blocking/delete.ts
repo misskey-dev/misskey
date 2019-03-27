@@ -1,15 +1,15 @@
-import { isLocalUser, isRemoteUser, User } from '../../models/entities/user';
-import Blocking from '../../models/entities/blocking';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderBlock from '../../remote/activitypub/renderer/block';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { deliver } from '../../queue';
 import Logger from '../logger';
+import { User } from '../../models/entities/user';
+import { Blockings, Users } from '../../models';
 
 const logger = new Logger('blocking/delete');
 
 export default async function(blocker: User, blockee: User) {
-	const blocking = await Blocking.findOne({
+	const blocking = await Blockings.findOne({
 		blockerId: blocker.id,
 		blockeeId: blockee.id
 	});
@@ -19,12 +19,10 @@ export default async function(blocker: User, blockee: User) {
 		return;
 	}
 
-	Blocking.remove({
-		id: blocking.id
-	});
+	Blockings.delete(blocking.id);
 
 	// deliver if remote bloking
-	if (isLocalUser(blocker) && isRemoteUser(blockee)) {
+	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee)) {
 		const content = renderActivity(renderUndo(renderBlock(blocker, blockee), blocker));
 		deliver(blocker, content, blockee.inbox);
 	}

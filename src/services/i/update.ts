@@ -3,6 +3,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import { Followings, Users } from '../../models';
 import { User } from '../../models/entities/user';
+import { renderPerson } from '../../remote/activitypub/renderer/person';
 
 export async function publishToFollowers(userId: User['id']) {
 	const user = await Users.findOne({
@@ -18,10 +19,8 @@ export async function publishToFollowers(userId: User['id']) {
 	// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
 	if (Users.isLocalUser(user)) {
 		for (const following of followers) {
-			const follower = following._follower;
-
-			if (Users.isRemoteUser(follower)) {
-				const inbox = follower.sharedInbox || follower.inbox;
+			if (following.followerHost !== null) {
+				const inbox = following.followerSharedInbox || following.followerInbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
 		}

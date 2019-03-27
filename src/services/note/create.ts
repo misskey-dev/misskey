@@ -411,7 +411,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 				: []
 			: [],
 
-		attachedFileTypes: data.files ? data.files.map(file => file.contentType) : [],
+		attachedFileTypes: data.files ? data.files.map(file => file.type) : [],
 
 		// 以下非正規化データ
 		replyUserId: data.reply ? data.reply.userId : null,
@@ -525,7 +525,7 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any, rep
 			sharedInbox: following.followerSharedInbox,
 		};
 
-		if (Users.isLocalUser(follower)) {
+		if (follower.host === null) {
 			// この投稿が返信ならスキップ
 			if (note.replyId && (reply.userId !== following.followerId) && (reply.userId !== note.userId))
 				continue;

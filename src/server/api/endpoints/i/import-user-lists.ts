@@ -51,7 +51,7 @@ export default define(meta, async (ps, user) => {
 	const file = await DriveFiles.findOne(ps.fileId);
 
 	if (file == null) throw new ApiError(meta.errors.noSuchFile);
-	//if (!file.contentType.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
+	//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
 	if (file.length > 30000) throw new ApiError(meta.errors.tooBigFile);
 	if (file.length === 0) throw new ApiError(meta.errors.emptyFile);
 

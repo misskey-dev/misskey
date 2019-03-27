@@ -165,6 +165,15 @@ export class Note {
 	})
 	public mentions: User['id'][];
 
+	@Column('jsonb', {
+		array: true, default: '{}'
+	})
+	public mentionedRemoteUsers: {
+		uri: string;
+		username: string;
+		host: string;
+	}[];
+
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})

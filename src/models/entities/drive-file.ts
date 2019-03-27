@@ -50,9 +50,9 @@ export class DriveFile {
 
 	@Column('varchar', {
 		length: 128,
-		comment: 'The contentType (MIME) of the DriveFile.'
+		comment: 'The content type (MIME) of the DriveFile.'
 	})
-	public contentType: string;
+	public type: string;
 
 	@Column('integer', {
 		comment: 'The file size (bytes) of the DriveFile.'

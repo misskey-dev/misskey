@@ -175,7 +175,7 @@ export default define(meta, async (ps, user, app) => {
 		const avatar = await DriveFiles.findOne(ps.avatarId);
 
 		if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
-		if (!avatar.contentType.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
+		if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
 
 		updates.avatarUrl = avatar.thumbnailUrl;
 
@@ -188,7 +188,7 @@ export default define(meta, async (ps, user, app) => {
 		const banner = await DriveFiles.findOne(ps.bannerId);
 
 		if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
-		if (!banner.contentType.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
+		if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
 
 		updates.bannerUrl = banner.webpublicUrl;
 
