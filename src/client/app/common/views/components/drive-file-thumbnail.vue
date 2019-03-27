@@ -4,6 +4,7 @@
 		:src="file.url"
 		:alt="file.name"
 		:title="file.name"
+		 @load="onThumbnailLoaded"
 		v-if="detail && is === 'image'"/>
 	<video
 		:src="file.url"
@@ -180,5 +181,7 @@ export default Vue.extend({
 		> *:not(.icon)
 			max-height 300px
 			max-width 100%
+			height 100%
+			object-fit contain
 
 </style>
