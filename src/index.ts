@@ -203,7 +203,7 @@ async function init(): Promise<Config> {
 	let config;
 
 	try {
-		config = loadConfig();
+		config = loadConfig(logger.createSubLogger('config'));
 	} catch (exception) {
 		if (typeof exception === 'string') {
 			configLogger.error(exception);

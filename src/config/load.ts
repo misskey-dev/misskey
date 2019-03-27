@@ -7,6 +7,7 @@ import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
 import * as pkg from '../../package.json';
+import Logger from '../services/logger';
 
 /**
  * Path of configuration directory
@@ -20,10 +21,20 @@ const path = process.env.NODE_ENV == 'test'
 	? `${dir}/test.yml`
 	: `${dir}/default.yml`;
 
-export default function load() {
+export default function load(logger?: Logger) {
 	const config = yaml.safeLoad(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const mixin = {} as Mixin;
+
+	if (!config.db) {
+		if (logger)
+			logger.warn('`config.mongodb` is deprecated. Use `config.db` instead of this property.');
+
+		mixin.db = {
+			type: 'mongodb',
+			...config.mongodb
+		};
+	}
 
 	const url = validateUrl(config.url);
 

@@ -8,9 +8,11 @@ const requiredMongoDBVersion = [3, 6];
 export function checkMongoDB(config: Config, logger: Logger) {
 	return new Promise((res, rej) => {
 		const mongoDBLogger = logger.createSubLogger('db');
-		const u = config.mongodb.user ? encodeURIComponent(config.mongodb.user) : null;
-		const p = config.mongodb.pass ? encodeURIComponent(config.mongodb.pass) : null;
-		const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`;
+		if (config.db.type !== 'mongodb')
+			rej(`DB type '${config.db.type}' is not supported in this version.`);
+		const u = config.db.user ? encodeURIComponent(config.db.user) : null;
+		const p = config.db.pass ? encodeURIComponent(config.db.pass) : null;
+		const uri = `mongodb://${u && p ? `${u}:****@` : ''}${config.db.host}:${config.db.port}/${config.db.db}`;
 		mongoDBLogger.info(`Connecting to ${uri} ...`);
 
 		nativeDbConn().then(db => {
