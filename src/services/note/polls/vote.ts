@@ -3,7 +3,8 @@ import { publishNoteStream } from '../../stream';
 import notify from '../../../services/create-notification';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { PollVotes } from '../../../models';
+import { PollVotes, Users, Notes, NoteWatchings } from '../../../models';
+import { Not } from 'typeorm';
 
 export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
 	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
@@ -15,8 +16,9 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 	});
 
 	if (note.poll.multiple) {
-		if (exist.some(x => x.choice === choice))
+		if (exist.some(x => x.choice === choice)) {
 			return rej('already voted');
+		}
 	} else if (exist.length) {
 		return rej('already voted');
 	}
@@ -31,13 +33,17 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 
 	res();
 
-	const inc: any = {};
-	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == choice)}.votes`] = 1;
+	const index = note.poll.choices.findIndex(c => c.id == choice);
+	const sql = `jsonb_set(poll, '{choices,${index},votes}', (COALESCE(poll->choices->${index}->>'votes','0')::int + 1)::text::jsonb)`;
 
 	// Increment votes count
-	await Note.update({ _id: note.id }, {
-		$inc: inc
-	});
+	await Notes.createQueryBuilder('note')
+		.update()
+		.where('id = :id', { id: note.id })
+		.set({
+			poll: () => sql
+		})
+		.execute();
 
 	publishNoteStream(note.id, 'pollVoted', {
 		choice: choice,
@@ -51,26 +57,21 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 	});
 
 	// Fetch watchers
-	Watching
-		.find({
-			noteId: note.id,
-			userId: { $ne: user.id },
-		}, {
-			fields: {
-				userId: true
-			}
-		})
-		.then(watchers => {
-			for (const watcher of watchers) {
-				notify(watcher.userId, user.id, 'pollVote', {
-					noteId: note.id,
-					choice: choice
-				});
-			}
-		});
+	NoteWatchings.find({
+		noteId: note.id,
+		userId: Not(user.id),
+	})
+	.then(watchers => {
+		for (const watcher of watchers) {
+			notify(watcher.userId, user.id, 'pollVote', {
+				noteId: note.id,
+				choice: choice
+			});
+		}
+	});
 
 	// ローカルユーザーが投票した場合この投稿をWatchする
-	if (isLocalUser(user) && user.autoWatch !== false) {
+	if (Users.isLocalUser(user) && user.autoWatch) {
 		watch(user.id, note);
 	}
 });
