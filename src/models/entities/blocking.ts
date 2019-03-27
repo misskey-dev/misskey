@@ -1,4 +1,3 @@
-import * as deepcopy from 'deepcopy';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
@@ -41,41 +40,3 @@ export class Blocking {
 	@JoinColumn()
 	public blocker: User | null;
 }
-
-export const packMany = (
-	blockings: (string | mongo.ObjectID | IBlocking)[],
-	me?: string | mongo.ObjectID | User
-) => {
-	return Promise.all(blockings.map(x => pack(x, me)));
-};
-
-export const pack = (
-	blocking: any,
-	me?: any
-) => new Promise<any>(async (resolve, reject) => {
-	let _blocking: any;
-
-	// Populate the blocking if 'blocking' is ID
-	if (isObjectId(blocking)) {
-		_blocking = await Blocking.findOne({
-			id: blocking
-		});
-	} else if (typeof blocking === 'string') {
-		_blocking = await Blocking.findOne({
-			id: new mongo.ObjectID(blocking)
-		});
-	} else {
-		_blocking = deepcopy(blocking);
-	}
-
-	// Rename _id to id
-	_blocking.id = _blocking.id;
-	delete _blocking.id;
-
-	// Populate blockee
-	_blocking.blockee = await packUser(_blocking.blockeeId, me, {
-		detail: true
-	});
-
-	resolve(_blocking);
-});

@@ -1,5 +1,3 @@
-import * as deepcopy from 'deepcopy';
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
@@ -85,38 +83,3 @@ export class FollowRequest {
 	public followeeSharedInbox: string | null;
 	//#endregion
 }
-
-/**
- * Pack a request for API response
- */
-export const pack = (
-	request: any,
-	me?: any
-) => new Promise<any>(async (resolve, reject) => {
-	let _request: any;
-
-	// Populate the request if 'request' is ID
-	if (isObjectId(request)) {
-		_request = await FollowRequest.findOne({
-			id: request
-		});
-	} else if (typeof request === 'string') {
-		_request = await FollowRequest.findOne({
-			id: new mongo.ObjectID(request)
-		});
-	} else {
-		_request = deepcopy(request);
-	}
-
-	// Rename _id to id
-	_request.id = _request.id;
-	delete _request.id;
-
-	// Populate follower
-	_request.follower = await packUser(_request.followerId, me);
-
-	// Populate followee
-	_request.followee = await packUser(_request.followeeId, me);
-
-	resolve(_request);
-});
