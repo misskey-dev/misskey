@@ -800,15 +800,15 @@ describe('API', () => {
 			const bob = await signup({ username: 'bob' });
 			await uploadFile({
 				userId: me.id,
-				datasize: 256
+				size: 256
 			});
 			await uploadFile({
 				userId: me.id,
-				datasize: 512
+				size: 512
 			});
 			await uploadFile({
 				userId: me.id,
-				datasize: 1024
+				size: 1024
 			});
 			const res = await request('/drive', {}, me);
 			expect(res).have.status(200);

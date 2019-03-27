@@ -5,14 +5,6 @@ import { Blocking } from '../entities/blocking';
 
 @EntityRepository(Blocking)
 export class BlockingRepository extends Repository<Blocking> {
-	private async cloneOrFetch(x: Blocking['id'] | Blocking): Promise<Blocking> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	public packMany(
 		blockings: any[],
 		me: any
@@ -21,10 +13,10 @@ export class BlockingRepository extends Repository<Blocking> {
 	}
 
 	public async pack(
-		blocking: any,
+		blocking: Blocking['id'] | Blocking,
 		me?: any
 	) {
-		const _blocking = await this.cloneOrFetch(blocking);
+		const _blocking = typeof blocking === 'object' ? blocking : await this.findOne(blocking);
 
 		return await rap({
 			id: _blocking.id,

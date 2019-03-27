@@ -5,14 +5,6 @@ import { DriveFolder } from '../entities/drive-folder';
 
 @EntityRepository(DriveFolder)
 export class DriveFolderRepository extends Repository<DriveFolder> {
-	private async cloneOrFetch(x: DriveFolder['id'] | DriveFolder): Promise<DriveFolder> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	public validateFolderName(name: string): boolean {
 		return (
 			(name.trim().length > 0) &&
@@ -21,7 +13,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 	}
 
 	public async pack(
-		folder: any,
+		folder: DriveFolder['id'] | DriveFolder,
 		options?: {
 			detail: boolean
 		}
@@ -30,7 +22,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 			detail: false
 		}, options);
 
-		const _folder = await this.cloneOrFetch(folder);
+		const _folder = typeof folder === 'object' ? folder : await this.findOne(folder);
 
 		return await rap({
 			name: _folder.name,

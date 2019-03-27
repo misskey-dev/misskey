@@ -12,14 +12,6 @@ export class NoteRepository extends Repository<Note> {
 		return x.trim().length <= 100;
 	}
 
-	private async cloneOrFetch(x: Note['id'] | Note): Promise<Note> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	private async hideNote(packedNote: any, meId: User['id']) {
 		let hide = false;
 
@@ -105,7 +97,7 @@ export class NoteRepository extends Repository<Note> {
 		}, options);
 
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
-		const _note = await this.cloneOrFetch(note);
+		const _note = typeof note === 'object' ? note : await this.findOne(note);
 		const host = _note.userHost;
 
 		async function populatePoll(poll: NonNullable<Note['poll']>) {

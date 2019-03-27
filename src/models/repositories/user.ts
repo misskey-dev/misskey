@@ -5,16 +5,6 @@ import rap from '@prezzemolo/rap';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-	private async cloneOrFetch(x: User['id'] | User, fields: (keyof User)[]): Promise<User> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x, {
-				select: fields
-			});
-		}
-	}
-
 	public async pack(
 		user: User['id'] | User,
 		me?: User['id'] | User,
@@ -29,20 +19,7 @@ export class UserRepository extends Repository<User> {
 			includeSecrets: false
 		}, options);
 
-		const _user = await this.cloneOrFetch(user, opts.detail ? [] : [
-			'id',
-			'name',
-			'username',
-			'host',
-			'avatarColor',
-			'avatarUrl',
-			'emojis',
-			'isCat',
-			'isBot',
-			'isAdmin',
-			'isVerified'
-		]);
-
+		const _user = typeof user === 'object' ? user : await this.findOne(user);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== _user.id) && opts.detail ? await getRelation(meId, _user.id) : null;

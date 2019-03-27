@@ -4,20 +4,12 @@ import { Users, DriveFiles } from '..';
 
 @EntityRepository(MessagingMessage)
 export class MessagingMessageRepository extends Repository<MessagingMessage> {
-	private async cloneOrFetch(x: MessagingMessage['id'] | MessagingMessage): Promise<MessagingMessage> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	public isValidText(text: string): boolean {
 		return text.trim().length <= 1000 && text.trim() != '';
 	}
 
 	public async pack(
-		message: any,
+		message: MessagingMessage['id'] | MessagingMessage,
 		me?: any,
 		options?: {
 			populateRecipient: boolean
@@ -27,7 +19,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			populateRecipient: true
 		};
 
-		const _message = await this.cloneOrFetch(message);
+		const _message = typeof message === 'object' ? message : await this.findOne(message);
 
 		return {
 			id: _message.id,

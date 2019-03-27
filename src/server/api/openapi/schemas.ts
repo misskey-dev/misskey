@@ -258,7 +258,7 @@ export const schemas = {
 				description: 'The MD5 hash of this Drive file.',
 				example: '15eca7fba0480996e2245f5185bf39f2'
 			},
-			datasize: {
+			size: {
 				type: 'number',
 				description: 'The size of this Drive file. (bytes)',
 				example: 51469
@@ -275,7 +275,7 @@ export const schemas = {
 				description: 'Whether this Drive file is sensitive.',
 			},
 		},
-		required: ['id', 'createdAt', 'name', 'type', 'datasize', 'md5']
+		required: ['id', 'createdAt', 'name', 'type', 'size', 'md5']
 	},
 
 	DriveFolder: {

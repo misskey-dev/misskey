@@ -4,19 +4,11 @@ import { Users } from '..';
 
 @EntityRepository(NoteReaction)
 export class NoteReactionRepository extends Repository<NoteReaction> {
-	private async cloneOrFetch(x: NoteReaction['id'] | NoteReaction): Promise<NoteReaction> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	public async pack(
-		reaction: any,
+		reaction: NoteReaction['id'] | NoteReaction,
 		me?: any
 	) {
-		const _reaction = await this.cloneOrFetch(reaction);
+		const _reaction = typeof reaction === 'object' ? reaction : await this.findOne(reaction);
 
 		return {
 			id: _reaction.id,

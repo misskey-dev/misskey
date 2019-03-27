@@ -6,14 +6,6 @@ import { User } from '../entities/user';
 
 @EntityRepository(DriveFile)
 export class DriveFileRepository extends Repository<DriveFile> {
-	private async cloneOrFetch(x: DriveFile['id'] | DriveFile): Promise<DriveFile> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	public validateFileName(name: string): boolean {
 		return (
 			(name.trim().length > 0) &&
@@ -82,7 +74,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	}
 
 	public async pack(
-		file: any,
+		file: DriveFile['id'] | DriveFile,
 		options?: {
 			detail?: boolean,
 			self?: boolean,
@@ -94,9 +86,16 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			self: false
 		}, options);
 
-		const _file = await this.cloneOrFetch(file);
+		const _file = typeof file === 'object' ? file : await this.findOne(file);
 
 		return await rap({
+			id: _file.id,
+			createdAt: _file.createdAt,
+			name: _file.name,
+			type: _file.type,
+			md5: _file.md5,
+			size: _file.size,
+			isSensitive: _file.isSensitive,
 			folder: opts.detail && _file.folderId ? DriveFolders.pack(_file.folderId, {
 				detail: true
 			}) : null,

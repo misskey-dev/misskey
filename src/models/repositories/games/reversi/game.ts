@@ -1,19 +1,11 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users, DriveFiles } from '../../..';
+import { Users } from '../../..';
 import { ReversiGame } from '../../../entities/games/reversi/game';
 
 @EntityRepository(ReversiGame)
 export class ReversiGameRepository extends Repository<ReversiGame> {
-	private async cloneOrFetch(x: ReversiGame['id'] | ReversiGame): Promise<ReversiGame> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	public async pack(
-		game: any,
+		game: ReversiGame['id'] | ReversiGame,
 		me?: any,
 		options?: {
 			detail?: boolean
@@ -23,8 +15,7 @@ export class ReversiGameRepository extends Repository<ReversiGame> {
 			detail: true
 		}, options);
 
-		const _game = await this.cloneOrFetch(game);
-
+		const _game = typeof game === 'object' ? game : await this.findOne(game);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		return {

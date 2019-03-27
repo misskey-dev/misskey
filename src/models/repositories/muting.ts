@@ -5,14 +5,6 @@ import { Muting } from '../entities/muting';
 
 @EntityRepository(Muting)
 export class MutingRepository extends Repository<Muting> {
-	private async cloneOrFetch(x: Muting['id'] | Muting): Promise<Muting> {
-		if (typeof x === 'object') {
-			return JSON.parse(JSON.stringify(x));
-		} else {
-			return await this.findOne(x);
-		}
-	}
-
 	public packMany(
 		mutings: any[],
 		me: any
@@ -21,10 +13,10 @@ export class MutingRepository extends Repository<Muting> {
 	}
 
 	public async pack(
-		muting: any,
+		muting: Muting['id'] | Muting,
 		me?: any
 	) {
-		const _muting = await this.cloneOrFetch(muting);
+		const _muting = typeof muting === 'object' ? muting : await this.findOne(muting);
 
 		return await rap({
 			id: _muting.id,
