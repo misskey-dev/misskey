@@ -1,6 +1,6 @@
-import hashtagChart from './chart/charts/hashtag';
 import { User } from '../models/entities/user';
 import { Hashtags, Users } from '../models';
+import { hashtagChart } from './chart';
 
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();

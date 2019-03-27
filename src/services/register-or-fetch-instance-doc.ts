@@ -1,6 +1,7 @@
-import federationChart from './chart/charts/federation';
 import { Instance } from '../models/entities/instance';
 import { Instances } from '../models';
+import { federationChart } from './chart';
+import { genId } from '../misc/gen-id';
 
 export async function registerOrFetchInstanceDoc(host: string): Promise<Instance> {
 	if (host == null) return null;
@@ -9,6 +10,7 @@ export async function registerOrFetchInstanceDoc(host: string): Promise<Instance
 
 	if (index == null) {
 		const i = await Instances.save({
+			id: genId(),
 			host,
 			caughtAt: new Date(),
 			system: null // TODO

@@ -7,6 +7,7 @@ import InstanceChart from './charts/instance';
 import PerUserNotesChart from './charts/per-user-notes';
 import DriveChart from './charts/drive';
 import PerUserReactionsChart from './charts/per-user-reactions';
+import HashtagChart from './charts/hashtag';
 
 export const federationChart = new FederationChart().init();
 export const notesChart = new NotesChart().init();
@@ -17,3 +18,4 @@ export const instanceChart = new InstanceChart().init();
 export const perUserNotesChart = new PerUserNotesChart().init();
 export const driveChart = new DriveChart().init();
 export const perUserReactionsChart = new PerUserReactionsChart().init();
+export const hashtagChart = new HashtagChart().init();

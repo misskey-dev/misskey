@@ -6,7 +6,7 @@ import { deliver } from '../../../queue';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users } from '../../../models';
+import { NoteReactions, Users, Notes } from '../../../models';
 
 export default async (user: User, note: Note) => {
 	// if already unreacted
@@ -22,13 +22,15 @@ export default async (user: User, note: Note) => {
 	// Delete reaction
 	await NoteReactions.delete(exist.id);
 
-	const dec: any = {};
-	dec[`reactions.${exist.reaction}`] = -1;
-
 	// Decrement reactions count
-	Note.update({ _id: note.id }, {
-		$inc: dec
-	});
+	const sql = `jsonb_set("reactions", '{${exist.reaction}}', (COALESCE("reactions"->>'${exist.reaction}', '0')::int - 1)::text::jsonb)`;
+	await Notes.createQueryBuilder().update()
+		.set({
+			reactions: () => sql,
+		})
+		.where('id = :id', { id: note.id })
+		.execute();
+	// v11 dec score
 
 	publishNoteStream(note.id, 'unreacted', {
 		reaction: exist.reaction,
@@ -37,7 +39,7 @@ export default async (user: User, note: Note) => {
 
 	//#region 配信
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
-	if (Users.isLocalUser(user) && Users.isRemoteUser(note._user)) {
+	if (Users.isLocalUser(user) && (note.userHost !== null)) {
 		const content = renderActivity(renderUndo(renderLike(user, note, exist.reaction), user));
 		deliver(user, content, note.userInbox);
 	}
