@@ -3,7 +3,6 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
-import { MoreThan, LessThan } from 'typeorm';
 import { NoteReactions } from '../../../../models';
 
 export const meta = {
@@ -68,25 +67,16 @@ export default define(meta, async (ps, user) => {
 
 	const query = {
 		noteId: note.id
-	} as any;
-
-	const sort = {
-		id: -1
 	};
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
 
 	const reactions = await NoteReactions.find({
 		where: query,
 		take: ps.limit,
 		skip: ps.offset,
-		order: sort
+		order: {
+			id: -1
+		}
 	});
 
-	return await Promise.all(reactions.map(reaction => pack(reaction, user)));
+	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
 });
