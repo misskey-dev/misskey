@@ -9,7 +9,7 @@ import chalk from 'chalk';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export default async (username: string, _host: string, option?: any, resync?: boolean): Promise<IUser> => {
+export default async (username: string, _host: string, option?: any, resync = false): Promise<IUser> => {
 	const usernameLower = username.toLowerCase();
 
 	if (_host == null) {
