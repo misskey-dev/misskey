@@ -8,7 +8,8 @@ import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
-import { Users } from '../../../models';
+import { Users, UserServiceLinkings } from '../../../models';
+import { ILocalUser } from '../../../models/entities/user';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -39,9 +40,13 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await Users.update({
+	const user = await Users.findOne({
 		host: null,
 		token: userToken
+	});
+
+	await UserServiceLinkings.update({
+		userId: user.id
 	}, {
 		discord: null
 	});
@@ -49,7 +54,7 @@ router.get('/disconnect/discord', async ctx => {
 	ctx.body = `Discordの連携を解除しました :v:`;
 
 	// Publish i updated event
-	publishMainStream(user.id, 'meUpdated', await pack(user, user, {
+	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -191,32 +196,31 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		let user = await Users.findOne({
-			host: null,
-			'discord.id': id
-		}) as ILocalUser;
+		const link = await UserServiceLinkings.createQueryBuilder()
+			.where('discord @> :discord', {
+				discord: {
+					id: id,
+				},
+			})
+			.andWhere('userHost IS NULL')
+			.getOne();
 
-		if (!user) {
+		if (link == null) {
 			ctx.throw(404, `@${username}#${discriminator}と連携しているMisskeyアカウントはありませんでした...`);
 			return;
 		}
 
-		user = await Users.findOneAndUpdate({
-			host: null,
-			'discord.id': id
-		}, {
-			$set: {
-				discord: {
-					accessToken,
-					refreshToken,
-					expiresDate,
-					username,
-					discriminator
-				}
+		await UserServiceLinkings.update(link.id, {
+			discord: {
+				accessToken,
+				refreshToken,
+				expiresDate,
+				username,
+				discriminator
 			}
-		}) as ILocalUser;
+		});
 
-		signin(ctx, user, true);
+		signin(ctx, await Users.findOne(link.userId) as ILocalUser, true);
 	} else {
 		const code = ctx.query.code;
 
@@ -275,26 +279,26 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const user = await Users.findOneAndUpdate({
+		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		}, {
-			$set: {
-				discord: {
-					accessToken,
-					refreshToken,
-					expiresDate,
-					id,
-					username,
-					discriminator
-				}
+		});
+
+		await UserServiceLinkings.update({ userId: user.id }, {
+			discord: {
+				accessToken,
+				refreshToken,
+				expiresDate,
+				id,
+				username,
+				discriminator
 			}
 		});
 
 		ctx.body = `Discord: @${username}#${discriminator} を、Misskey: @${user.username} に接続しました！`;
 
 		// Publish i updated event
-		publishMainStream(user.id, 'meUpdated', await pack(user, user, {
+		publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

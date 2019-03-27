@@ -16,7 +16,7 @@ import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost } from '../../../misc/convert-host';
-import { Notes, Instances } from '../../../models';
+import { Notes, Instances, Emojis } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
@@ -254,7 +254,7 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 		eomjiTags.map(async tag => {
 			const name = tag.name.replace(/^:/, '').replace(/:$/, '');
 
-			const exists = await Emoji.findOne({
+			const exists = await Emojis.findOne({
 				host,
 				name
 			});
@@ -262,31 +262,36 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 			if (exists) {
 				if ((tag.updated != null && exists.updatedAt == null)
 					|| (tag.id != null && exists.uri == null)
-					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)) {
-						return await Emoji.findOneAndUpdate({
-							host,
-							name,
-						}, {
-							$set: {
-								uri: tag.id,
-								url: tag.icon.url,
-								updatedAt: new Date(tag.updated),
-							}
-						});
+					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
+				) {
+					await Emojis.update({
+						host,
+						name,
+					}, {
+						uri: tag.id,
+						url: tag.icon.url,
+						updatedAt: new Date(tag.updated),
+					});
+
+					return await Emojis.findOne({
+						host,
+						name
+					});
 				}
+
 				return exists;
 			}
 
 			logger.info(`register emoji host=${host}, name=${name}`);
 
-			return await Emoji.save({
+			return await Emojis.save({
 				host,
 				name,
 				uri: tag.id,
 				url: tag.icon.url,
 				updatedAt: tag.updated ? new Date(tag.updated) : undefined,
 				aliases: []
-			});
+			} as Emoji);
 		})
 	);
 }

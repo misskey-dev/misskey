@@ -3,11 +3,12 @@ import * as Router from 'koa-router';
 import * as uuid from 'uuid';
 import autwh from 'autwh';
 import redis from '../../../db/redis';
-import User, { pack, ILocalUser } from '../../../models/entities/user';
 import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
+import { Users, UserServiceLinkings } from '../../../models';
+import { ILocalUser } from '../../../models/entities/user';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -38,19 +39,21 @@ router.get('/disconnect/twitter', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOneAndUpdate({
+	const user = await Users.findOne({
 		host: null,
-		'token': userToken
+		token: userToken
+	});
+
+	await UserServiceLinkings.update({
+		userId: user.id
 	}, {
-		$set: {
-			'twitter': null
-		}
+		twitter: null
 	});
 
 	ctx.body = `Twitterの連携を解除しました :v:`;
 
 	// Publish i updated event
-	publishMainStream(user.id, 'meUpdated', await pack(user, user, {
+	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -132,17 +135,21 @@ router.get('/tw/cb', async ctx => {
 
 		const result = await twAuth.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
-		const user = await Users.findOne({
-			host: null,
-			'twitter.userId': result.userId
-		}) as ILocalUser;
+		const link = await UserServiceLinkings.createQueryBuilder()
+			.where('twitter @> :twitter', {
+				twitter: {
+					userId: result.userId,
+				},
+			})
+			.andWhere('userHost IS NULL')
+			.getOne();
 
-		if (user == null) {
+		if (link == null) {
 			ctx.throw(404, `@${result.screenName}と連携しているMisskeyアカウントはありませんでした...`);
 			return;
 		}
 
-		signin(ctx, user, true);
+		signin(ctx, await Users.findOne(link.userId) as ILocalUser, true);
 	} else {
 		const verifier = ctx.query.oauth_verifier;
 
@@ -161,24 +168,24 @@ router.get('/tw/cb', async ctx => {
 
 		const result = await twAuth.done(JSON.parse(twCtx), verifier);
 
-		const user = await Users.findOneAndUpdate({
+		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		}, {
-			$set: {
-				twitter: {
-					accessToken: result.accessToken,
-					accessTokenSecret: result.accessTokenSecret,
-					userId: result.userId,
-					screenName: result.screenName
-				}
+		});
+
+		await UserServiceLinkings.update({ userId: user.id }, {
+			twitter: {
+				accessToken: result.accessToken,
+				accessTokenSecret: result.accessTokenSecret,
+				userId: result.userId,
+				screenName: result.screenName
 			}
 		});
 
 		ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;
 
 		// Publish i updated event
-		publishMainStream(user.id, 'meUpdated', await pack(user, user, {
+		publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

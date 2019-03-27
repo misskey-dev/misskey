@@ -31,6 +31,7 @@ import { FollowRequestRepository } from './repositories/follow-request';
 import { MutingRepository } from './repositories/muting';
 import { BlockingRepository } from './repositories/blocking';
 import { NoteReactionRepository } from './repositories/note-reaction';
+import { UserServiceLinking } from './entities/user-service-linking';
 
 export const Apps = getRepository(App);
 export const Notes = getCustomRepository(NoteRepository);
@@ -43,6 +44,7 @@ export const Users = getCustomRepository(UserRepository);
 export const UserLists = getCustomRepository(UserListRepository);
 export const UserListJoinings = getRepository(UserListJoining);
 export const UserNotePinings = getRepository(UserNotePining);
+export const UserServiceLinkings = getRepository(UserServiceLinking);
 export const Followings = getRepository(Following);
 export const FollowRequests = getCustomRepository(FollowRequestRepository);
 export const Instances = getRepository(Instance);

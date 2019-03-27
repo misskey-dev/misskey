@@ -80,7 +80,7 @@ export class User {
 		nullable: true,
 		comment: 'The ID of avatar DriveFile.'
 	})
-	public avatarId: number | null;
+	public avatarId: DriveFile['id'] | null;
 
 	@OneToOne(type => DriveFile, {
 		onDelete: 'SET NULL'
@@ -93,7 +93,7 @@ export class User {
 		nullable: true,
 		comment: 'The ID of banner DriveFile.'
 	})
-	public bannerId: number | null;
+	public bannerId: DriveFile['id'] | null;
 
 	@OneToOne(type => DriveFile, {
 		onDelete: 'SET NULL'
@@ -261,12 +261,6 @@ export class User {
 		comment: 'The client-specific data of the User.'
 	})
 	public clientData: Record<string, any>;
-
-	@Column('jsonb', {
-		default: {},
-		comment: 'The external service links of the User.'
-	})
-	public services: Record<string, any>;
 
 	@Column('boolean', {
 		default: false,

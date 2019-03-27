@@ -5,9 +5,11 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
-import { Users, RegistrationTickets } from '../../../models';
+import { Users, RegistrationTickets, UserServiceLinkings } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
+import { UserServiceLinking } from '../../../models/entities/user-service-linking';
+import { User } from '../../../models/entities/user';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -83,7 +85,12 @@ export default async (ctx: Koa.BaseContext) => {
 		isAdmin: config.autoAdmin && usersCount === 0,
 		autoAcceptFollowed: true,
 		autoWatch: false
-	});
+	} as User);
+
+	await UserServiceLinkings.save({
+		id: genId(),
+		userId: account.id
+	} as UserServiceLinking);
 
 	usersChart.update(account, true);
 

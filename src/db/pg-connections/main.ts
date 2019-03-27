@@ -34,6 +34,7 @@ import { createPostgreConnection } from '../postgre';
 import { dbLogger } from '../logger';
 import { Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
+import { UserServiceLinking } from '../../models/entities/user-service-linking';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -80,6 +81,7 @@ export function initMainPostgre() {
 		UserList,
 		UserListJoining,
 		UserNotePining,
+		UserServiceLinking,
 		Following,
 		FollowRequest,
 		Muting,

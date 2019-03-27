@@ -7,8 +7,6 @@ import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { fromHtml } from '../../../mfm/fromHtml';
-import usersChart from '../../../services/chart/charts/users';
-import instanceChart from '../../../services/chart/charts/instance';
 import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
@@ -17,10 +15,13 @@ import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateHashtag } from '../../../services/update-hashtag';
-import { Users, UserNotePinings, Instances, DriveFiles, Followings } from '../../../models';
+import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserServiceLinkings } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
 import { UserNotePining } from '../../../models/entities/user-note-pinings';
+import { genId } from '../../../misc/gen-id';
+import { UserServiceLinking } from '../../../models/entities/user-service-linking';
+import { instanceChart, usersChart } from '../../../services/chart';
 const logger = apLogger;
 
 /**
@@ -186,6 +187,11 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		logger.error(e);
 		throw e;
 	}
+
+	await UserServiceLinkings.save({
+		id: genId(),
+		userId: user.id
+	} as UserServiceLinking);
 
 	// Register host
 	registerOrFetchInstanceDoc(host).then(i => {
