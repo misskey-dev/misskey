@@ -16,8 +16,12 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		);
 	}
 
-	public getPublicUrl(file: DriveFile): string {
-		return file.webpublicUrl || file.thumbnailUrl || file.url;
+	public getPublicUrl(file: DriveFile, thumbnail = false): string {
+		if (thumbnail) {
+			return file.thumbnailUrl || file.webpublicUrl || file.url;
+		} else {
+			return file.webpublicUrl || file.thumbnailUrl || file.url;
+		}
 	}
 
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
@@ -96,6 +100,9 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			md5: _file.md5,
 			size: _file.size,
 			isSensitive: _file.isSensitive,
+			properties: _file.properties,
+			url: opts.self ? _file.url : this.getPublicUrl(_file, false),
+			thumbnailUrl: this.getPublicUrl(_file, true),
 			folder: opts.detail && _file.folderId ? DriveFolders.pack(_file.folderId, {
 				detail: true
 			}) : null,

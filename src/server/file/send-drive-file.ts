@@ -18,9 +18,9 @@ export default async function(ctx: Koa.BaseContext) {
 
 	// Fetch drive file
 	const file = await DriveFiles.createQueryBuilder('file')
-		.where('accessKey = :accessKey', { accessKey: key })
-		.orWhere('thumbnailAccessKey = :thumbnailAccessKey', { thumbnailAccessKey: key })
-		.orWhere('webpublicAccessKey = :webpublicAccessKey', { webpublicAccessKey: key })
+		.where('file.accessKey = :accessKey', { accessKey: key })
+		.orWhere('file.thumbnailAccessKey = :thumbnailAccessKey', { thumbnailAccessKey: key })
+		.orWhere('file.webpublicAccessKey = :webpublicAccessKey', { webpublicAccessKey: key })
 		.getOne();
 
 	if (file == null) {
