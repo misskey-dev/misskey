@@ -1,19 +1,19 @@
-export interface Maybe<T> {
-	isJust(): this is Just<T>;
+export interface IMaybe<T> {
+	isJust(): this is IJust<T>;
 }
 
-export type Just<T> = Maybe<T> & {
-	get(): T
-};
+export interface IJust<T> extends IMaybe<T> {
+	get(): T;
+}
 
-export function just<T>(value: T): Just<T> {
+export function just<T>(value: T): IJust<T> {
 	return {
 		isJust: () => true,
 		get: () => value
 	};
 }
 
-export function nothing<T>(): Maybe<T> {
+export function nothing<T>(): IMaybe<T> {
 	return {
 		isJust: () => false,
 	};
