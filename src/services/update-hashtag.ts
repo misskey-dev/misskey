@@ -1,6 +1,7 @@
 import { User } from '../models/entities/user';
 import { Hashtags, Users } from '../models';
 import { hashtagChart } from './chart';
+import { genId } from '../misc/gen-id';
 
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();
@@ -68,6 +69,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 	} else {
 		if (isUserAttached) {
 			Hashtags.save({
+				id: genId(),
 				tag,
 				mentionedUserIds: [],
 				mentionedUsersCount: 0,
@@ -84,6 +86,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 			});
 		} else {
 			Hashtags.save({
+				id: genId(),
 				tag,
 				mentionedUserIds: [user.id],
 				mentionedUsersCount: 1,

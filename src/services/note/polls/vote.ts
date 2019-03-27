@@ -5,6 +5,7 @@ import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { PollVotes, Users, Notes, NoteWatchings } from '../../../models';
 import { Not } from 'typeorm';
+import { genId } from '../../../misc/gen-id';
 
 export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
 	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
@@ -25,6 +26,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 
 	// Create vote
 	await PollVotes.save({
+		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,
 		userId: user.id,

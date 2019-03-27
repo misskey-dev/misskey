@@ -4,6 +4,7 @@ import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFolders } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	stability: 'stable',
@@ -64,6 +65,7 @@ export default define(meta, async (ps, user) => {
 
 	// Create folder
 	const folder = await DriveFolders.save({
+		id: genId(),
 		createdAt: new Date(),
 		name: ps.name,
 		parentId: parent !== null ? parent.id : null,

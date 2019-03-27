@@ -55,7 +55,7 @@ export default define(meta, async (ps, user) => {
 		.where('following.followerId = :followerId', { followerId: user.id });
 
 	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`((note.mentions ANY(:meId)) OR (note.visibleUserIds ANY(:meId)))`, { meId: user.id })
+		.andWhere(`((:meId = ANY(note.mentions)) OR (:meId = ANY(note.visibleUserIds)))`, { meId: user.id })
 		.leftJoinAndSelect('note.user', 'user');
 
 	generateVisibilityQuery(query, user);

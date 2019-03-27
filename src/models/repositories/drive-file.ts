@@ -31,43 +31,43 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
-		const [sum] = await this
+		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userId = :id', { id: id })
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return sum;
+		return parseInt(sum, 10) || 0;
 	}
 
 	public async clacDriveUsageOfHost(host: string): Promise<number> {
-		const [sum] = await this
+		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost = :host', { host: host })
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return sum;
+		return parseInt(sum, 10) || 0;
 	}
 
 	public async clacDriveUsageOfLocal(): Promise<number> {
-		const [sum] = await this
+		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NULL')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return sum;
+		return parseInt(sum, 10) || 0;
 	}
 
 	public async clacDriveUsageOfRemote(): Promise<number> {
-		const [sum] = await this
+		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NOT NULL')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 
-		return sum;
+		return parseInt(sum, 10) || 0;
 	}
 
 	public packMany(

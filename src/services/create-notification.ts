@@ -2,6 +2,7 @@ import { pack } from '../models/entities/notification';
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
 import { Notifications, Mutings } from '../models';
+import { genId } from '../misc/gen-id';
 
 export default (
 	notifieeId: any,
@@ -15,6 +16,7 @@ export default (
 
 	// Create notification
 	const notification = await Notifications.save({
+		id: genId(),
 		createdAt: new Date(),
 		notifieeId: notifieeId,
 		notifierId: notifierId,

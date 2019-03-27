@@ -12,6 +12,7 @@ import { IdentifiableError } from '../../misc/identifiable-error';
 import { User } from '../../models/entities/user';
 import { Followings, Users, FollowRequests, Blockings, Instances } from '../../models';
 import { instanceChart, perUserFollowingChart } from '../chart';
+import { genId } from '../../misc/gen-id';
 
 const logger = new Logger('following/create');
 
@@ -19,6 +20,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	let alreadyFollowed = false;
 
 	await Followings.save({
+		id: genId(),
 		createdAt: new Date(),
 		followerId: follower.id,
 		followeeId: followee.id,

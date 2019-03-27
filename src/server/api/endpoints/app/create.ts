@@ -2,6 +2,7 @@ import rndstr from 'rndstr';
 import $ from 'cafy';
 import define from '../../define';
 import { Apps } from '../../../../models';
+import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	tags: ['app'],
@@ -35,6 +36,7 @@ export default define(meta, async (ps, user) => {
 
 	// Create account
 	const app = await Apps.save({
+		id: genId(),
 		createdAt: new Date(),
 		userId: user && user.id,
 		name: ps.name,

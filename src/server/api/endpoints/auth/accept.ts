@@ -4,6 +4,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { AuthSessions, AccessTokens, Apps } from '../../../../models';
+import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	tags: ['auth'],
@@ -56,6 +57,7 @@ export default define(meta, async (ps, user) => {
 
 		// Insert access token doc
 		await AccessTokens.save({
+			id: genId(),
 			createdAt: new Date(),
 			appId: session.appId,
 			userId: user.id,

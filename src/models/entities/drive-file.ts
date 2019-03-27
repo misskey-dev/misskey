@@ -118,7 +118,7 @@ export class DriveFile {
 	public uri: string | null;
 
 	@Column('varchar', {
-		length: 512,
+		length: 512, nullable: true,
 	})
 	public src: string | null;
 

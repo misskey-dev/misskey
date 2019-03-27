@@ -4,6 +4,7 @@ import Mute from '../../../../models/entities/muting';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -74,10 +75,9 @@ export default define(meta, async (ps, user) => {
 
 	// Create mute
 	await Mute.save({
+		id: genId(),
 		createdAt: new Date(),
 		muterId: muter.id,
 		muteeId: mutee.id,
 	});
-
-	return;
 });

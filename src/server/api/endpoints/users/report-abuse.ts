@@ -5,6 +5,7 @@ import { publishAdminStream } from '../../../../services/stream';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { AbuseUserReports, Users } from '../../../../models';
+import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -60,7 +61,7 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	if (user.id.equals(me.id)) {
+	if (user.id === me.id) {
 		throw new ApiError(meta.errors.cannotReportYourself);
 	}
 
@@ -69,6 +70,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	const report = await AbuseUserReports.save({
+		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		reporterId: me.id,

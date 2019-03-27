@@ -19,3 +19,4 @@ api-docs.json
 *.code-workspace
 yarn.lock
 .DS_Store
+/files

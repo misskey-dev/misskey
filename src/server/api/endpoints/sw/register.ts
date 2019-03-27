@@ -2,6 +2,7 @@ import $ from 'cafy';
 import Subscription from '../../../../models/entities/sw-subscription';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	tags: ['account'],
@@ -43,6 +44,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await Subscription.save({
+		id: genId(),
 		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,

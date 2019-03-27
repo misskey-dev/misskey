@@ -8,6 +8,7 @@ import { User, ILocalUser } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
 import { Notes, UserNotePinings, Users, Followings } from '../../models';
 import { UserNotePining } from '../../models/entities/user-note-pinings';
+import { genId } from '../../misc/gen-id';
 
 /**
  * 指定した投稿をピン留めします
@@ -36,6 +37,7 @@ export async function addPinned(user: User, noteId: Note['id']) {
 	}
 
 	await UserNotePinings.save({
+		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		noteId: note.id

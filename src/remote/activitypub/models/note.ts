@@ -285,6 +285,7 @@ export async function extractEmojis(tags: ITag[], host_: string) {
 			logger.info(`register emoji host=${host}, name=${name}`);
 
 			return await Emojis.save({
+				id: genId(),
 				host,
 				name,
 				uri: tag.id,

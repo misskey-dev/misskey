@@ -4,6 +4,7 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
 import { NoteFavorites } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	stability: 'stable',
@@ -63,6 +64,7 @@ export default define(meta, async (ps, user) => {
 
 	// Create favorite
 	await NoteFavorites.save({
+		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,
 		userId: user.id

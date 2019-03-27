@@ -12,6 +12,7 @@ import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, NoteWatchings, Notes } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
+import { genId } from '../../../misc/gen-id';
 
 export default async (user: User, note: Note, reaction: string) => {
 	// Myself
@@ -24,6 +25,7 @@ export default async (user: User, note: Note, reaction: string) => {
 
 	// Create reaction
 	await NoteReactions.save({
+		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,
 		userId: user.id,

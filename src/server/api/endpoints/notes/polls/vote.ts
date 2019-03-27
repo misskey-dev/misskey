@@ -14,6 +14,7 @@ import { PollVotes, NoteWatchings, Users } from '../../../../../models';
 import { Note } from '../../../../../models/entities/note';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -112,6 +113,7 @@ export default define(meta, async (ps, user) => {
 
 	// Create vote
 	const vote = await PollVotes.save({
+		id: genId(),
 		createdAt,
 		noteId: note.id,
 		userId: user.id,

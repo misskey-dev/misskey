@@ -20,6 +20,7 @@ import { InternalStorage } from './internal-storage';
 import { DriveFile } from '../../models/entities/drive-file';
 import { IRemoteUser, User } from '../../models/entities/user';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
+import { genId } from '../../misc/gen-id';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -116,6 +117,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			logger.info(`web stored: ${webpublicAccessKey}`);
 		}
 
+		file.storedInternal = true;
 		file.url = url;
 		file.thumbnailUrl = thumbnailUrl;
 		file.webpublicUrl = webpublicUrl;
@@ -284,10 +286,10 @@ export default async function(
 	if (!isLink) {
 		const usage = await DriveFiles.clacDriveUsageOf(user);
 
-		logger.debug(`drive usage is ${usage}`);
-
 		const instance = await fetchMeta();
 		const driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+
+		logger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
 		// If usage limit exceeded
 		if (usage + size > driveCapacity) {
@@ -363,6 +365,8 @@ export default async function(
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
 	let file = new DriveFile();
+	file.id = genId();
+	file.createdAt = new Date();
 	file.userId = user.id;
 	file.userHost = user.host;
 	file.folderId = folder !== null ? folder.id : null;

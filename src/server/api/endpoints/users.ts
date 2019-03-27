@@ -1,10 +1,8 @@
 import $ from 'cafy';
-import User, { pack } from '../../../models/entities/user';
 import define from '../define';
 import { fallback } from '../../../prelude/symbol';
 import { getHideUserIds } from '../common/get-hide-users';
-
-const nonnull = { $ne: null as any };
+import { Not } from 'typeorm';
 
 export const meta = {
 	tags: ['users'],
@@ -64,15 +62,10 @@ export const meta = {
 };
 
 const state: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-	'admin': { isAdmin: true },
-	'moderator': { isModerator: true },
-	'adminOrModerator': {
-		$or: [
-			{ isAdmin: true },
-			{ isModerator: true }
-		]
-	},
-	'verified': { isVerified: true },
+	'admin': 'isAdmin = TRUE',
+	'moderator': 'isModerator = TRUE',
+	'adminOrModerator': 'isAdmin = TRUE OR isModerator = TRUE',
+	'verified': 'isVerified = TRUE',
 	'alive': {
 		updatedAt: { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }
 	},
@@ -81,7 +74,7 @@ const state: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 
 const origin: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 	'local': { host: null },
-	'remote': { host: nonnull },
+	'remote': { host: Not(null) },
 	[fallback]: {}
 };
 

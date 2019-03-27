@@ -149,6 +149,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	let user: IRemoteUser;
 	try {
 		user = await Users.save({
+			id: genId(),
 			avatarId: null,
 			bannerId: null,
 			createdAt: Date.parse(person.published) || null,
@@ -497,6 +498,7 @@ export async function updateFeatured(userId: User['id']) {
 
 	for (const note of featuredNotes.filter(note => note != null)) {
 		UserNotePinings.save({
+			id: genId(),
 			createdAt: new Date(),
 			userId: user.id,
 			noteId: note.id

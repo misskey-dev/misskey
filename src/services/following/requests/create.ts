@@ -5,6 +5,7 @@ import renderFollow from '../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../queue';
 import { User } from '../../../models/entities/user';
 import { Blockings, FollowRequests, Users } from '../../../models';
+import { genId } from '../../../misc/gen-id';
 
 export default async function(follower: User, followee: User, requestId?: string) {
 	// check blocking
@@ -23,6 +24,7 @@ export default async function(follower: User, followee: User, requestId?: string
 	if (blocked != null) throw new Error('blocked');
 
 	await FollowRequests.save({
+		id: genId(),
 		createdAt: new Date(),
 		followerId: follower.id,
 		followeeId: followee.id,

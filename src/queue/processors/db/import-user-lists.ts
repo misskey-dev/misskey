@@ -7,6 +7,7 @@ import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '../../../misc/download-text-file';
 import { isSelfHost, toDbHost } from '../../../misc/convert-host';
 import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
+import { genId } from '../../../misc/gen-id';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
@@ -34,6 +35,7 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 
 		if (list == null) {
 			list = await UserLists.save({
+				id: genId(),
 				createdAt: new Date(),
 				userId: user.id,
 				name: listName,

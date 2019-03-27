@@ -183,11 +183,7 @@ export default Vue.extend({
 			//#endregion
 
 			if (this.$store.state.settings.home == null) {
-				this.$root.api('i/update_home', {
-					home: _defaultDesktopHomeWidgets
-				}).then(() => {
-					this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
-				});
+				this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
 			}
 		}
 	},

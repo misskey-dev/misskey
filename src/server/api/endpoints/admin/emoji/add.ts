@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../../define';
 import { detectUrlMine } from '../../../../../misc/detect-url-mine';
 import { Emojis } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -33,6 +34,7 @@ export default define(meta, async (ps) => {
 	const type = await detectUrlMine(ps.url);
 
 	const emoji = await Emojis.save({
+		id: genId(),
 		updatedAt: new Date(),
 		name: ps.name,
 		host: null,

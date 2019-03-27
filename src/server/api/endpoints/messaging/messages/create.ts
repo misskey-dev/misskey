@@ -8,6 +8,7 @@ import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 import { MessagingMessages, DriveFiles, Mutings } from '../../../../../models';
 import { MessagingMessage } from '../../../../../models/entities/messaging-message';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -100,6 +101,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	const message = await MessagingMessages.save({
+		id: genId(),
 		createdAt: new Date(),
 		fileId: file ? file.id : undefined,
 		recipientId: recipient.id,
