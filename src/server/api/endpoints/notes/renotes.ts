@@ -1,9 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note, { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { Notes } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -60,25 +63,14 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	const sort = {
-		id: -1
-	};
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere(`note.renoteId = :renoteId`, { renoteId: note.id })
+		.leftJoinAndSelect('note.user', 'user');
 
-	const query = {
-		renoteId: note.id
-	} as any;
+	if (user) generateVisibilityQuery(query, user);
+	if (user) generateMuteQuery(query, user);
 
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
+	const renotes = await query.take(ps.limit).getMany();
 
-	const renotes = await Note.find(query, {
-		take: ps.limit,
-		order: sort
-	});
-
-	return await packMany(renotes, user);
+	return await Notes.packMany(renotes, user);
 });

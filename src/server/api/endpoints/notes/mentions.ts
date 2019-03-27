@@ -1,13 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
 import read from '../../../../services/note/read';
-import { getHideUserIds } from '../../common/get-hide-users';
-import { Notes } from '../../../../models';
+import { Notes, Followings } from '../../../../models';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { Brackets } from 'typeorm';
 import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
 export const meta = {
 	desc: {
@@ -52,40 +50,27 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const query = Notes.createQueryBuilder('note')
-		.where(generateVisibilityQuery(user))
-		.andWhere(new Brackets(qb => { qb
-			.where('note.mentions ANY(:userId1)', { userId1: user.id })
-			.orWhere('note.visibleUserIds ANY(:userId2)', { userId2: user.id });
-		}));
+	const followingQuery = Followings.createQueryBuilder('following')
+		.select('following.followeeId')
+		.where('following.followerId = :followerId', { followerId: user.id });
 
-	query.andWhere(generateMuteQuery(user));
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere(`((note.mentions ANY(:meId)) OR (note.visibleUserIds ANY(:meId)))`, { meId: user.id })
+		.leftJoinAndSelect('note.user', 'user');
 
-	const sort = {
-		id: -1
-	};
+	generateVisibilityQuery(query, user);
+	generateMuteQuery(query, user);
 
 	if (ps.visibility) {
 		query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
 	}
 
 	if (ps.following) {
-		const followingIds = await getFriendIds(user.id);
-		query.andWhere('note.userId IN (:...followings)', { followings: followingIds });
+		query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id });
+		query.setParameters(followingQuery.getParameters());
 	}
 
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.andWhere('note.id > :id', { id: ps.sinceId });
-	} else if (ps.untilId) {
-		query.andWhere('note.id < :id', { id: ps.untilId });
-	}
-
-	const mentions = await Notes.find({
-		where: query,
-		take: ps.limit,
-		order: sort
-	});
+	const mentions = await query.take(ps.limit).getMany();
 
 	for (const note of mentions) {
 		read(user.id, note.id);
