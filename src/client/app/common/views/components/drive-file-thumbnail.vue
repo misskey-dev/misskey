@@ -4,7 +4,7 @@
 		:src="file.url"
 		:alt="file.name"
 		:title="file.name"
-		 @load="onThumbnailLoaded"
+		@load="onThumbnailLoaded"
 		v-if="detail && is === 'image'"/>
 	<video
 		:src="file.url"
