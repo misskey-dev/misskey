@@ -1,17 +1,13 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/entities/messaging-message';
-import { isValidText } from '../../../../../models/entities/messaging-message';
-import User from '../../../../../models/entities/user';
-import Mute from '../../../../../models/entities/muting';
-import DriveFile from '../../../../../models/entities/drive-file';
-import { pack } from '../../../../../models/entities/messaging-message';
 import { publishMainStream } from '../../../../../services/stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../services/stream';
 import pushSw from '../../../../../services/push-notification';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
+import { MessagingMessages, DriveFiles, Mutings } from '../../../../../models';
+import { MessagingMessage } from '../../../../../models/entities/messaging-message';
 
 export const meta = {
 	desc: {
@@ -35,7 +31,7 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.optional.str.pipe(isValidText)
+			validator: $.optional.str.pipe(MessagingMessages.isValidText)
 		},
 
 		fileId: {
@@ -76,7 +72,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Myself
-	if (ps.userId.equals(user.id)) {
+	if (ps.userId === user.id) {
 		throw new ApiError(meta.errors.recipientIsYourself);
 	}
 
@@ -88,7 +84,7 @@ export default define(meta, async (ps, user) => {
 
 	let file = null;
 	if (ps.fileId != null) {
-		file = await DriveFile.findOne({
+		file = await DriveFiles.findOne({
 			id: ps.fileId,
 			userId: user.id
 		});
@@ -103,16 +99,16 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.contentRequired);
 	}
 
-	const message = await Message.save({
+	const message = await MessagingMessages.save({
 		createdAt: new Date(),
 		fileId: file ? file.id : undefined,
 		recipientId: recipient.id,
 		text: ps.text ? ps.text.trim() : undefined,
 		userId: user.id,
 		isRead: false
-	});
+	} as MessagingMessage);
 
-	const messageObj = await pack(message);
+	const messageObj = await MessagingMessages.pack(message);
 
 	// 自分のストリーム
 	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
@@ -126,13 +122,12 @@ export default define(meta, async (ps, user) => {
 
 	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
-		const freshMessage = await Message.findOne({ _id: message.id }, { isRead: true });
+		const freshMessage = await MessagingMessages.findOne({ id: message.id });
 		if (freshMessage == null) return; // メッセージが削除されている場合もある
 		if (!freshMessage.isRead) {
 			//#region ただしミュートされているなら発行しない
-			const mute = await Mute.find({
+			const mute = await Mutings.find({
 				muterId: recipient.id,
-				deletedAt: { $exists: false }
 			});
 			const mutedUserIds = mute.map(m => m.muteeId.toString());
 			if (mutedUserIds.indexOf(user.id) != -1) {
