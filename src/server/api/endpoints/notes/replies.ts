@@ -1,9 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note, { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import { getFriends } from '../../common/get-friends';
 import { getHideUserIds } from '../../common/get-hide-users';
+import { Notes } from '../../../../models';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { generateMuteQuery } from '../../common/generate-mute-query';
 
 export const meta = {
 	desc: {
@@ -24,14 +27,23 @@ export const meta = {
 			}
 		},
 
+		sinceId: {
+			validator: $.optional.type(ID),
+			desc: {
+				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
+			}
+		},
+
+		untilId: {
+			validator: $.optional.type(ID),
+			desc: {
+				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
+			}
+		},
+
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0
 		},
 	},
 
@@ -44,54 +56,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const [followings, hideUserIds] = await Promise.all([
-		// フォローを取得
-		// Fetch following
-		user ? getFriends(user.id) : [],
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere('note.replyId = :replyId', { replyId: ps.noteId })
+		.leftJoinAndSelect('note.user', 'user');
 
-		// 隠すユーザーを取得
-		getHideUserIds(user)
-	]);
+	if (user) generateVisibilityQuery(query, user);
+	if (user) generateMuteQuery(query, user);
 
-	const visibleQuery = user == null ? [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}] : [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}, {
-		// myself (for followers/specified/private)
-		userId: user.id
-	}, {
-		// to me (for specified)
-		visibleUserIds: { $in: [ user.id ] }
-	}, {
-		visibility: 'followers',
-		$or: [{
-			// フォロワーの投稿
-			userId: { $in: followings.map(f => f.id) },
-		}, {
-			// 自分の投稿へのリプライ
-			'_reply.userId': user.id,
-		}, {
-			// 自分へのメンションが含まれている
-			mentions: { $in: [ user.id ] }
-		}]
-	}];
+	const timeline = await query.take(ps.limit).getMany();
 
-	const q = {
-		replyId: ps.noteId,
-		$or: visibleQuery
-	} as any;
-
-	if (hideUserIds && hideUserIds.length > 0) {
-		q['userId'] = {
-			$nin: hideUserIds
-		};
-	}
-
-	const notes = await Note.find(q, {
-		take: ps.limit,
-		skip: ps.offset
-	});
-
-	return await packMany(notes, user);
+	return await Notes.packMany(timeline, user);
 });
