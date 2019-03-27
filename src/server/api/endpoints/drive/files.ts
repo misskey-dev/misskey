@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { MoreThan, LessThan } from 'typeorm';
 import { DriveFiles } from '../../../../models';
 import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
@@ -51,8 +50,13 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const query = generatePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId)
-		.andWhere('userId = :userId', { userId: user.id })
-		.andWhere('folderId = :folderId', { folderId: ps.folderId });
+		.andWhere('file.userId = :userId', { userId: user.id });
+
+	if (ps.folderId) {
+		query.andWhere('file.folderId = :folderId', { folderId: ps.folderId });
+	} else {
+		query.andWhere('file.folderId IS NULL');
+	}
 
 	if (ps.type) {
 		// v11 TODO
