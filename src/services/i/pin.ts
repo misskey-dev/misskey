@@ -112,7 +112,7 @@ async function CreateRemoteInboxes(user: ILocalUser): Promise<string[]> {
 			sharedInbox: following.followerSharedInbox,
 		};
 
-		if (Users.isRemoteUser(follower)) {
+		if (follower.host !== null) {
 			const inbox = follower.sharedInbox || follower.inbox;
 			if (!queue.includes(inbox)) queue.push(inbox);
 		}

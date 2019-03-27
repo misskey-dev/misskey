@@ -74,12 +74,6 @@ export class DriveFile {
 	@Column('boolean')
 	public storedInternal: boolean;
 
-	@Column('jsonb', {
-		default: {},
-		comment: 'The storage information of the DriveFile.'
-	})
-	public storage: Record<string, any>;
-
 	@Column('varchar', {
 		length: 512,
 		comment: 'The URL of the DriveFile.'
@@ -97,6 +91,24 @@ export class DriveFile {
 		comment: 'The URL of the webpublic of the DriveFile.'
 	})
 	public webpublicUrl: string | null;
+
+	@Index({ unique: true })
+	@Column('varchar', {
+		length: 256,
+	})
+	public accessKey: string;
+
+	@Index({ unique: true })
+	@Column('varchar', {
+		length: 256, nullable: true,
+	})
+	public thumbnailAccessKey: string | null;
+
+	@Index({ unique: true })
+	@Column('varchar', {
+		length: 256, nullable: true,
+	})
+	public webpublicAccessKey: string | null;
 
 	@Index()
 	@Column('varchar', {

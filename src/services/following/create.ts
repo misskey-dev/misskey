@@ -6,13 +6,12 @@ import renderAccept from '../../remote/activitypub/renderer/accept';
 import renderReject from '../../remote/activitypub/renderer/reject';
 import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
-import perUserFollowingChart from '../chart/charts/per-user-following';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import instanceChart from '../chart/charts/instance';
 import Logger from '../logger';
 import { IdentifiableError } from '../../misc/identifiable-error';
 import { User } from '../../models/entities/user';
 import { Followings, Users, FollowRequests, Blockings, Instances } from '../../models';
+import { instanceChart, perUserFollowingChart } from '../chart';
 
 const logger = new Logger('following/create');
 

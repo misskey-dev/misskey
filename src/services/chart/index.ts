@@ -8,6 +8,8 @@ import PerUserNotesChart from './charts/per-user-notes';
 import DriveChart from './charts/drive';
 import PerUserReactionsChart from './charts/per-user-reactions';
 import HashtagChart from './charts/hashtag';
+import PerUserFollowingChart from './charts/per-user-following';
+import PerUserDriveChart from './charts/per-user-drive';
 
 export const federationChart = new FederationChart().init();
 export const notesChart = new NotesChart().init();
@@ -19,3 +21,5 @@ export const perUserNotesChart = new PerUserNotesChart().init();
 export const driveChart = new DriveChart().init();
 export const perUserReactionsChart = new PerUserReactionsChart().init();
 export const hashtagChart = new HashtagChart().init();
+export const perUserFollowingChart = new PerUserFollowingChart().init();
+export const perUserDriveChart = new PerUserDriveChart().init();

@@ -1,32 +1,37 @@
 import * as Minio from 'minio';
 import config from '../../config';
-import { isRemoteUser } from '../../models/entities/user';
 import { DriveFile } from '../../models/entities/drive-file';
-import { del } from './internal-storage';
-import { DriveFiles } from '../../models';
+import { InternalStorage } from './internal-storage';
+import { DriveFiles, Instances } from '../../models';
+import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 
 export default async function(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
-		del(file);
+		InternalStorage.del(file.accessKey);
+
+		if (file.thumbnailUrl) {
+			InternalStorage.del(file.thumbnailAccessKey);
+		}
+
+		if (file.webpublicUrl) {
+			InternalStorage.del(file.webpublicAccessKey);
+		}
 	} else {
 		const minio = new Minio.Client(config.drive.config);
 
-		const obj = file.storage.key;
-		await minio.removeObject(config.drive.bucket, obj);
+		await minio.removeObject(config.drive.bucket, file.accessKey);
 
-		if (file.storage.thumbnailUrl) {
-			const thumbnailObj = file.storage.thumbnailKey;
-			await minio.removeObject(config.drive.bucket, thumbnailObj);
+		if (file.thumbnailUrl) {
+			await minio.removeObject(config.drive.bucket, file.thumbnailAccessKey);
 		}
 
-		if (file.storage.webpublicUrl) {
-			const webpublicObj = file.storage.webpublicKey;
-			await minio.removeObject(config.drive.bucket, webpublicObj);
+		if (file.webpublicUrl) {
+			await minio.removeObject(config.drive.bucket, file.webpublicAccessKey);
 		}
 	}
 
 	// リモートファイル期限切れ削除後は直リンクにする
-	if (isExpired && file._user && file._user.host != null) {
+	if (isExpired && file.userHost !== null) {
 		DriveFiles.update(file.id, {
 			isRemote: true,
 			url: file.uri,
@@ -40,13 +45,9 @@ export default async function(file: DriveFile, isExpired = false) {
 	// 統計を更新
 	driveChart.update(file, false);
 	perUserDriveChart.update(file, false);
-	if (isRemoteUser(file.metadata._user)) {
+	if (file.userHost !== null) {
 		instanceChart.updateDrive(file, false);
-		Instance.update({ host: file.userHost }, {
-			$inc: {
-				driveUsage: -file.length,
-				driveFiles: -1
-			}
-		});
+		Instances.decrement({ host: file.userHost }, 'driveUsage', file.size);
+		Instances.decrement({ host: file.userHost }, 'driveFiles', 1);
 	}
 }

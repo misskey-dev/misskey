@@ -6,22 +6,20 @@ import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
 
-import { pack, DriveFile } from '../../models/entities/drive-file';
 import { publishMainStream, publishDriveStream } from '../stream';
-import { isLocalUser, User, IRemoteUser, isRemoteUser } from '../../models/entities/user';
 import delFile from './delete-file';
 import config from '../../config';
-import driveChart from '../chart/charts/drive';
-import perUserDriveChart from '../chart/charts/per-user-drive';
-import instanceChart from '../chart/charts/instance';
 import fetchMeta from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
-import { DriveFiles, DriveFolders } from '../../models';
+import { DriveFiles, DriveFolders, Users, Instances } from '../../models';
 import { InternalStorage } from './internal-storage';
+import { DriveFile } from '../../models/entities/drive-file';
+import { IRemoteUser, User } from '../../models/entities/user';
+import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -89,9 +87,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.url = url;
 		file.thumbnailUrl = thumbnailUrl;
 		file.webpublicUrl = webpublicUrl;
-		file.storage.accessKey = key;
-		file.storage.thumbnailAccessKey = thumbnailKey;
-		file.storage.webpublicAccessKey = webpublicKey;
+		file.accessKey = key;
+		file.thumbnailAccessKey = thumbnailKey;
+		file.webpublicAccessKey = webpublicKey;
 		file.name = name;
 		file.contentType = type;
 		file.md5 = hash;
@@ -121,9 +119,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.url = url;
 		file.thumbnailUrl = thumbnailUrl;
 		file.webpublicUrl = webpublicUrl;
-		file.storage.accessKey = accessKey;
-		file.storage.thumbnailAccessKey = thumbnailAccessKey;
-		file.storage.webpublicAccessKey = webpublicAccessKey;
+		file.accessKey = accessKey;
+		file.thumbnailAccessKey = thumbnailAccessKey;
+		file.webpublicAccessKey = webpublicAccessKey;
 		file.name = name;
 		file.contentType = type;
 		file.md5 = hash;
@@ -289,11 +287,11 @@ export default async function(
 		logger.debug(`drive usage is ${usage}`);
 
 		const instance = await fetchMeta();
-		const driveCapacity = 1024 * 1024 * (isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+		const driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
 
 		// If usage limit exceeded
 		if (usage + size > driveCapacity) {
-			if (isLocalUser(user)) {
+			if (Users.isLocalUser(user)) {
 				throw 'no-free-space';
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
@@ -371,7 +369,7 @@ export default async function(
 	file.comment = comment;
 	file.properties = properties;
 	file.isRemote = isLink;
-	file.isSensitive = isLocalUser(user) && user.alwaysMarkNsfw ? true :
+	file.isSensitive = Users.isLocalUser(user) && user.alwaysMarkNsfw ? true :
 		(sensitive !== null && sensitive !== undefined)
 			? sensitive
 			: false;
@@ -416,7 +414,7 @@ export default async function(
 
 	logger.succ(`drive file has been created ${file.id}`);
 
-	pack(file).then(packedFile => {
+	DriveFiles.pack(file).then(packedFile => {
 		// Publish driveFileCreated event
 		publishMainStream(user.id, 'driveFileCreated', packedFile);
 		publishDriveStream(user.id, 'fileCreated', packedFile);
@@ -425,14 +423,10 @@ export default async function(
 	// 統計を更新
 	driveChart.update(file, true);
 	perUserDriveChart.update(file, true);
-	if (isRemoteUser(file.metadata._user)) {
+	if (file.userHost !== null) {
 		instanceChart.updateDrive(file, true);
-		Instance.update({ host: file.userHost }, {
-			$inc: {
-				driveUsage: file.length,
-				driveFiles: 1
-			}
-		});
+		Instances.increment({ host: file.userHost }, 'driveUsage', file.size);
+		Instances.increment({ host: file.userHost }, 'driveFiles', 1);
 	}
 
 	return file;
