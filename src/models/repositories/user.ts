@@ -30,6 +30,7 @@ export class UserRepository extends Repository<User> {
 		}, options);
 
 		const _user = await this.cloneOrFetch(user, opts.detail ? [] : [
+			'id',
 			'name',
 			'username',
 			'host',
@@ -82,6 +83,7 @@ export class UserRepository extends Repository<User> {
 				avatarId: _user.avatarId,
 				bannerId: _user.bannerId,
 				alwaysMarkNsfw: _user.alwaysMarkNsfw,
+				carefulBot: _user.carefulBot,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: _user.id,

@@ -107,6 +107,12 @@ export class User {
 	})
 	public description: string | null;
 
+	@Index()
+	@Column('varchar', {
+		length: 128, array: true, default: '{}'
+	})
+	public tags: string[];
+
 	@Column('varchar', {
 		length: 128, nullable: true,
 		comment: 'The email address of the User.'
@@ -276,6 +282,11 @@ export class User {
 		default: false,
 	})
 	public alwaysMarkNsfw: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public carefulBot: boolean;
 }
 
 export interface ILocalUser extends User {
