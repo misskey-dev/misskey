@@ -154,17 +154,18 @@ export default Vue.extend({
 		right 4%
 		bottom 4%
 
+	> *
+		margin auto
+
 	&:not(.detail)
 		> img
 			height 100%
 			width 100%
-			margin auto
 			object-fit cover
 
 		> .icon
 			height 65%
 			width 65%
-			margin auto
 
 		> video,
 		> audio
@@ -178,6 +179,6 @@ export default Vue.extend({
 
 		> *:not(.icon)
 			max-height 300px
-			object-fit contain
+			max-width 100%
 
 </style>
