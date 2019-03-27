@@ -1,13 +1,13 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Note from '../../../../models/entities/note';
-import { packMany } from '../../../../models/entities/note';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
-import activeUsersChart from '../../../../services/chart/charts/active-users';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { activeUsersChart } from '../../../../services/chart';
 
 export const meta = {
 	desc: {
@@ -78,6 +78,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	// TODO どっかにキャッシュ
 	const m = await fetchMeta();
 	if (m.disableLocalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {
@@ -86,24 +87,19 @@ export default define(meta, async (ps, user) => {
 	}
 
 	//#region Construct query
-	const sort = {
-		id: -1
-	};
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
+		.leftJoinAndSelect('note.user', 'user');
 
-	const query = Notes.createQueryBuilder('note')
-		.where('visibility = \'public\'')
-		.andWhere('userHost IS NULL');
+	if (user) generateVisibilityQuery(query, user);
+	if (user) generateMuteQuery(query, user);
 
-	if (user) query.andWhere(generateMuteQuery(user));
-
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.andWhere('note.fileIds != []');
+	if (ps.withFiles) {
+		query.andWhere('note.fileIds != \'{}\'');
 	}
 
 	if (ps.fileType) {
-		query.andWhere('note.fileIds != []');
+		query.andWhere('note.fileIds != \'{}\'');
 		query.andWhere('note.attachedFileTypes ANY(:type)', { type: ps.fileType });
 
 		if (ps.excludeNsfw) {
@@ -113,28 +109,13 @@ export default define(meta, async (ps, user) => {
 			};
 		}
 	}
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.andWhere('note.id > :sinceId', { sinceId: ps.sinceId });
-	} else if (ps.untilId) {
-		query.andWhere('note.id < :untilId', { untilId: ps.untilId });
-	} else if (ps.sinceDate) {
-		sort.id = 1;
-		query.andWhere('note.createdAt > :sinceDate', { sinceDate: new Date(ps.sinceDate) });
-	} else if (ps.untilDate) {
-		query.andWhere('note.createdAt < :untilDate', { untilDate: new Date(ps.untilDate) });
-	}
 	//#endregion
 
-	const timeline = await Note.find(query, {
-		take: ps.limit,
-		order: sort
-	});
+	const timeline = await query.take(ps.limit).getMany();
 
 	if (user) {
 		activeUsersChart.update(user);
 	}
 
-	return await packMany(timeline, user);
+	return await Notes.packMany(timeline, user);
 });

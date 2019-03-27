@@ -171,6 +171,7 @@ export class NoteRepository extends Repository<Note> {
 			id: _note.id,
 			createdAt: _note.createdAt,
 			app: _note.appId ? Apps.pack(_note.appId) : null,
+			userId: _note.userId,
 			user: Users.pack(_note.user || _note.userId, meId),
 			text: text,
 			reactions: _note.reactions,
@@ -179,6 +180,8 @@ export class NoteRepository extends Repository<Note> {
 				host: host
 			}) : [],
 			files: DriveFiles.packMany(_note.fileIds),
+			replyId: _note.replyId,
+			renoteId: _note.renoteId,
 
 			...(opts.detail ? {
 				reply: _note.replyId ? this.pack(_note.replyId, meId, {
