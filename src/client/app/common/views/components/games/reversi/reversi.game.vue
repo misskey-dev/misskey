@@ -24,11 +24,11 @@
 
 	<div class="board">
 		<div class="labels-x" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
-			<span v-for="i in game.settings.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
+			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 		<div class="flex">
 			<div class="labels-y" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
-				<div v-for="i in game.settings.map.length">{{ i }}</div>
+				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 			<div class="cells" :style="cellsStyle">
 				<div v-for="(stone, i) in o.board"
@@ -46,11 +46,11 @@
 				</div>
 			</div>
 			<div class="labels-y" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
-				<div v-for="i in game.settings.map.length">{{ i }}</div>
+				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 		</div>
 		<div class="labels-x" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
-			<span v-for="i in game.settings.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
+			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>
 
@@ -160,8 +160,8 @@ export default Vue.extend({
 
 		cellsStyle(): any {
 			return {
-				'grid-template-rows': `repeat(${this.game.settings.map.length}, 1fr)`,
-				'grid-template-columns': `repeat(${this.game.settings.map[0].length}, 1fr)`
+				'grid-template-rows': `repeat(${this.game.map.length}, 1fr)`,
+				'grid-template-columns': `repeat(${this.game.map[0].length}, 1fr)`
 			};
 		}
 	},
@@ -169,7 +169,7 @@ export default Vue.extend({
 	watch: {
 		logPos(v) {
 			if (!this.game.isEnded) return;
-			this.o = new Reversi(this.game.settings.map, {
+			this.o = new Reversi(this.game.map, {
 				isLlotheo: this.game.settings.isLlotheo,
 				canPutEverywhere: this.game.settings.canPutEverywhere,
 				loopedBoard: this.game.settings.loopedBoard
@@ -184,7 +184,7 @@ export default Vue.extend({
 	created() {
 		this.game = this.initGame;
 
-		this.o = new Reversi(this.game.settings.map, {
+		this.o = new Reversi(this.game.map, {
 			isLlotheo: this.game.settings.isLlotheo,
 			canPutEverywhere: this.game.settings.canPutEverywhere,
 			loopedBoard: this.game.settings.loopedBoard
@@ -286,7 +286,7 @@ export default Vue.extend({
 		onRescue(game) {
 			this.game = game;
 
-			this.o = new Reversi(this.game.settings.map, {
+			this.o = new Reversi(this.game.map, {
 				isLlotheo: this.game.settings.isLlotheo,
 				canPutEverywhere: this.game.settings.canPutEverywhere,
 				loopedBoard: this.game.settings.loopedBoard

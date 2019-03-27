@@ -17,9 +17,9 @@
 			</header>
 
 			<div>
-				<div class="random" v-if="game.settings.map == null"><fa icon="dice"/></div>
-				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.settings.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.settings.map[0].length }, 1fr)` }">
-					<div v-for="(x, i) in game.settings.map.join('')"
+				<div class="random" v-if="game.map == null"><fa icon="dice"/></div>
+				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
+					<div v-for="(x, i) in game.map.join('')"
 							:data-none="x == ' '"
 							@click="onPixelClick(i, x)">
 						<fa v-if="x == 'b'" :icon="fasCircle"/>
@@ -197,10 +197,10 @@ export default Vue.extend({
 
 		onUpdateSettings(settings) {
 			this.game.settings = settings;
-			if (this.game.settings.map == null) {
+			if (this.game.map == null) {
 				this.mapName = null;
 			} else {
-				const found = Object.values(maps).find(x => x.data.join('') == this.game.settings.map.join(''));
+				const found = Object.values(maps).find(x => x.data.join('') == this.game.map.join(''));
 				this.mapName = found ? found.name : '-Custom-';
 			}
 		},
@@ -224,25 +224,25 @@ export default Vue.extend({
 
 		onMapChange() {
 			if (this.mapName == null) {
-				this.game.settings.map = null;
+				this.game.map = null;
 			} else {
-				this.game.settings.map = Object.values(maps).find(x => x.name == this.mapName).data;
+				this.game.map = Object.values(maps).find(x => x.name == this.mapName).data;
 			}
 			this.$forceUpdate();
 			this.updateSettings();
 		},
 
 		onPixelClick(pos, pixel) {
-			const x = pos % this.game.settings.map[0].length;
-			const y = Math.floor(pos / this.game.settings.map[0].length);
+			const x = pos % this.game.map[0].length;
+			const y = Math.floor(pos / this.game.map[0].length);
 			const newPixel =
 				pixel == ' ' ? '-' :
 				pixel == '-' ? 'b' :
 				pixel == 'b' ? 'w' :
 				' ';
-			const line = this.game.settings.map[y].split('');
+			const line = this.game.map[y].split('');
 			line[x] = newPixel;
-			this.$set(this.game.settings.map, y, line.join(''));
+			this.$set(this.game.map, y, line.join(''));
 			this.$forceUpdate();
 			this.updateSettings();
 		}

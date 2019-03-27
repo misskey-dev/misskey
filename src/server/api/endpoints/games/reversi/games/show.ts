@@ -29,7 +29,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchGame);
 	}
 
-	const o = new Reversi(game.settings.map, {
+	const o = new Reversi(game.map, {
 		isLlotheo: game.settings.isLlotheo,
 		canPutEverywhere: game.settings.canPutEverywhere,
 		loopedBoard: game.settings.loopedBoard
