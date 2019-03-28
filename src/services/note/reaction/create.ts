@@ -13,6 +13,7 @@ import { NoteReactions, Users, NoteWatchings, Notes } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
+import { NoteReaction } from '../../../models/entities/note-reaction';
 
 export default async (user: User, note: Note, reaction: string) => {
 	// Myself
@@ -30,7 +31,7 @@ export default async (user: User, note: Note, reaction: string) => {
 		noteId: note.id,
 		userId: user.id,
 		reaction
-	}).catch(e => {
+	} as NoteReaction).catch(e => {
 		// duplicate key error
 		if (e.code === 11000) {
 			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298', 'already reacted');
