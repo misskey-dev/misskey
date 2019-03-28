@@ -14,3 +14,14 @@ export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User) {
 
 	q.setParameters(mutingQuery.getParameters());
 }
+
+export function generateMuteQueryForUsers(q: SelectQueryBuilder<any>, me: User) {
+	const mutingQuery = Mutings.createQueryBuilder('muting')
+		.select('muting.muteeId')
+		.where('muting.muterId = :muterId', { muterId: me.id });
+
+	q
+		.andWhere(`user.id NOT IN (${ mutingQuery.getQuery() })`);
+
+	q.setParameters(mutingQuery.getParameters());
+}

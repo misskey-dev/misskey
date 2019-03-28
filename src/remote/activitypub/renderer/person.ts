@@ -8,14 +8,15 @@ import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
-import { DriveFiles } from '../../../models';
+import { DriveFiles, UserServiceLinkings } from '../../../models';
 
 export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
 
-	const [avatar, banner] = await Promise.all([
+	const [avatar, banner, links] = await Promise.all([
 		DriveFiles.findOne(user.avatarId),
-		DriveFiles.findOne(user.bannerId)
+		DriveFiles.findOne(user.bannerId),
+		UserServiceLinkings.findOne({ userId: user.id })
 	]);
 
 	const attachment: {
@@ -26,41 +27,41 @@ export async function renderPerson(user: ILocalUser) {
 		identifier?: IIdentifier
 	}[] = [];
 
-	if (user.services.twitter) {
+	if (links.twitter) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${user.services.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.services.twitter.screenName}</span></a>`,
+			value: `<a href="https://twitter.com/intent/user?user_id=${links.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${links.twitter.screenName}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:twitter',
-				value: `${user.services.twitter.userId}@${user.services.twitter.screenName}`
+				value: `${links.twitter.userId}@${links.twitter.screenName}`
 			}
 		});
 	}
 
-	if (user.services.github) {
+	if (links.github) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${user.services.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.services.github.login}</span></a>`,
+			value: `<a href="https://github.com/${links.github.login}" rel="me nofollow noopener" target="_blank"><span>@${links.github.login}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:github',
-				value: `${user.services.github.id}@${user.services.github.login}`
+				value: `${links.github.id}@${links.github.login}`
 			}
 		});
 	}
 
-	if (user.services.discord) {
+	if (links.discord) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${user.services.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.services.discord.username}#${user.services.discord.discriminator}</span></a>`,
+			value: `<a href="https://discordapp.com/users/${links.discord.id}" rel="me nofollow noopener" target="_blank"><span>${links.discord.username}#${links.discord.discriminator}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:discord',
-				value: `${user.services.discord.id}@${user.services.discord.username}#${user.services.discord.discriminator}`
+				value: `${links.discord.id}@${links.discord.username}#${links.discord.discriminator}`
 			}
 		});
 	}
