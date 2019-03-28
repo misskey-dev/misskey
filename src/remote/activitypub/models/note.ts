@@ -20,6 +20,7 @@ import { Notes, Instances, Emojis } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
+import { genId } from '../../../misc/gen-id';
 
 const logger = apLogger;
 

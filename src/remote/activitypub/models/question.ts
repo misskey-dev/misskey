@@ -1,8 +1,9 @@
 import config from '../../../config';
-import Note, { IChoice, IPoll } from '../../../models/entities/note';
 import Resolver from '../resolver';
 import { IQuestion } from '../type';
 import { apLogger } from '../logger';
+import { IPoll, IChoice } from '../../../models/entities/note';
+import { Notes } from '../../../models';
 
 export async function extractPollFromQuestion(source: string | IQuestion): Promise<IPoll> {
 	const question = typeof source === 'string' ? await new Resolver().resolve(source) as IQuestion : source;
@@ -39,7 +40,7 @@ export async function updateQuestion(value: any) {
 	if (uri.startsWith(config.url + '/')) throw 'uri points local';
 
 	//#region このサーバーに既に登録されているか
-	const note = await Note.findOne({ uri });
+	const note = await Notes.findOne({ uri });
 
 	if (note == null) throw 'Question is not registed';
 	//#endregion
@@ -66,13 +67,9 @@ export async function updateQuestion(value: any) {
 		}
 	}
 
-	await Note.update({
-		id: note.id
-	}, {
-		$set: {
-			'poll.choices': dbChoices,
-			updatedAt: new Date(),
-		}
+	await Notes.update(note.id, {
+		'poll.choices': dbChoices,
+		updatedAt: new Date(),
 	});
 
 	return changed;
