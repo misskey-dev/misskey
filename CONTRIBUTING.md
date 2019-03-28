@@ -92,3 +92,19 @@ if (ps.folderId) {
 	query.where('file.folderId IS NULL');
 }
 ```
+
+### `[]` in SQL
+SQLを発行する際、`IN`のパラメータが`[]`(空の配列)になる可能性のある場合はSQL文を出し分けなければならない
+例えば
+``` ts
+const users = await Users.find({
+	id: In(userIds)
+});
+```
+という処理で、`userIds`が`[]`だと結果的に`user.id IN ()`のようなクエリが発行されてしまい、これは正しいSQLではないので期待した結果が得られない
+だから次のようにする必要がある
+``` ts
+const users = userIds.length > 0 ? await Users.find({
+	id: In(userIds)
+}) : [];
+```

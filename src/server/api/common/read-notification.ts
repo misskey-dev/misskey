@@ -7,10 +7,10 @@ import { In, Not } from 'typeorm';
 /**
  * Mark notifications as read
  */
-export default (
+export default async (
 	userId: User['id'],
 	notificationIds: Notification['id'][]
-) => new Promise<any>(async (resolve, reject) => {
+) => {
 	const mute = await Mutings.find({
 		muterId: userId
 	});
@@ -35,4 +35,4 @@ export default (
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllNotifications');
 	}
-});
+};

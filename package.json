@@ -221,7 +221,7 @@
 		"ts-node": "8.0.3",
 		"tslint": "5.13.1",
 		"tslint-sonarts": "1.9.0",
-		"typeorm": "0.2.15",
+		"typeorm": "0.2.16-rc.1",
 		"typescript": "3.3.3333",
 		"typescript-eslint-parser": "22.0.0",
 		"uglify-es": "3.3.9",
