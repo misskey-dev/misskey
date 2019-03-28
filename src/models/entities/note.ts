@@ -165,14 +165,10 @@ export class Note {
 	})
 	public mentions: User['id'][];
 
-	@Column('jsonb', {
-		array: true, default: '{}'
+	@Column('text', {
+		default: '[]'
 	})
-	public mentionedRemoteUsers: {
-		uri: string;
-		username: string;
-		host: string;
-	}[];
+	public mentionedRemoteUsers: string;
 
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
@@ -248,3 +244,9 @@ export type IChoice = {
 	text: string;
 	votes: number;
 };
+
+export type IMentionedRemoteUsers = {
+	uri: string;
+	username: string;
+	host: string;
+}[];

@@ -4,7 +4,7 @@ import renderMention from './mention';
 import renderEmoji from './emoji';
 import config from '../../../config';
 import toHtml from '../misc/get-note-html';
-import { Note } from '../../../models/entities/note';
+import { Note, IMentionedRemoteUsers } from '../../../models/entities/note';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { DriveFiles, Notes, Users, Emojis } from '../../../models';
 import { In } from 'typeorm';
@@ -56,9 +56,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 
 	const attributedTo = `${config.url}/users/${user.id}`;
 
-	const mentions = note.mentionedRemoteUsers && note.mentionedRemoteUsers.length > 0
-		? note.mentionedRemoteUsers.map(x => x.uri)
-		: [];
+	const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
 
 	let to: string[] = [];
 	let cc: string[] = [];

@@ -427,11 +427,11 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
 		insert.mentions = mentionedUsers.map(u => u.id);
-		insert.mentionedRemoteUsers = mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => ({
+		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => ({
 			uri: (u as IRemoteUser).uri,
 			username: u.username,
 			host: u.host
-		}));
+		})));
 	}
 
 	// 投稿を作成
