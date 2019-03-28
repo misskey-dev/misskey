@@ -1,12 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../models/entities/user';
-import Following from '../../../../models/entities/following';
 import deleteFollowing from '../../../../services/following/delete';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Followings, Users } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -73,7 +72,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check not following
-	const exist = await Following.findOne({
+	const exist = await Followings.findOne({
 		followerId: follower.id,
 		followeeId: followee.id
 	});
@@ -84,5 +83,5 @@ export default define(meta, async (ps, user) => {
 
 	await deleteFollowing(follower, followee);
 
-	return await pack(followee.id, user);
+	return await Users.pack(followee.id, user);
 });

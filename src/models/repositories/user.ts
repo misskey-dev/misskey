@@ -1,10 +1,54 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings } from '..';
 import rap from '@prezzemolo/rap';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+	public async getRelation(me: User['id'], target: User['id']) {
+		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
+			Followings.findOne({
+				followerId: me,
+				followeeId: target
+			}),
+			Followings.findOne({
+				followerId: target,
+				followeeId: me
+			}),
+			FollowRequests.findOne({
+				followerId: me,
+				followeeId: target
+			}),
+			FollowRequests.findOne({
+				followerId: target,
+				followeeId: me
+			}),
+			Blockings.findOne({
+				blockerId: me,
+				blockeeId: target
+			}),
+			Blockings.findOne({
+				blockerId: target,
+				blockeeId: me
+			}),
+			Mutings.findOne({
+				muterId: me,
+				muteeId: target
+			})
+		]);
+
+		return {
+			id: target,
+			isFollowing: following1 != null,
+			hasPendingFollowRequestFromYou: followReq1 != null,
+			hasPendingFollowRequestToYou: followReq2 != null,
+			isFollowed: following2 != null,
+			isBlocking: toBlocking != null,
+			isBlocked: fromBlocked != null,
+			isMuted: mute != null
+		};
+	}
+
 	public async pack(
 		user: User['id'] | User,
 		me?: User['id'] | User,
@@ -22,7 +66,7 @@ export class UserRepository extends Repository<User> {
 		const _user = typeof user === 'object' ? user : await this.findOne(user);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
-		const relation = meId && (meId !== _user.id) && opts.detail ? await getRelation(meId, _user.id) : null;
+		const relation = meId && (meId !== _user.id) && opts.detail ? await this.getRelation(meId, _user.id) : null;
 
 		return await rap({
 			id: _user.id,

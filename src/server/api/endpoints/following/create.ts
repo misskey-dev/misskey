@@ -1,12 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../models/entities/user';
-import Following from '../../../../models/entities/following';
 import create from '../../../../services/following/create';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Followings, Users } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -85,12 +84,12 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check if already following
-	const exist = await Following.findOne({
+	const exist = await Followings.findOne({
 		followerId: follower.id,
 		followeeId: followee.id
 	});
 
-	if (exist !== null) {
+	if (exist != null) {
 		throw new ApiError(meta.errors.alreadyFollowing);
 	}
 
@@ -102,5 +101,5 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	}
 
-	return await pack(followee.id, user);
+	return await Users.pack(followee.id, user);
 });

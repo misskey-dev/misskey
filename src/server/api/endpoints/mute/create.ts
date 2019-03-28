@@ -69,7 +69,7 @@ export default define(meta, async (ps, user) => {
 		muteeId: mutee.id
 	});
 
-	if (exist !== null) {
+	if (exist != null) {
 		throw new ApiError(meta.errors.alreadyMuting);
 	}
 

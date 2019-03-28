@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { ID } from '../../../../misc/cafy-id';
+import { Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -24,7 +25,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
-	const relations = await Promise.all(ids.map(id => getRelation(me.id, id)));
+	const relations = await Promise.all(ids.map(id => Users.getRelation(me.id, id)));
 
 	return Array.isArray(ps.userId) ? relations : relations[0];
 });

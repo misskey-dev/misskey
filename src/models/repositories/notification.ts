@@ -18,6 +18,8 @@ export class NotificationRepository extends Repository<Notification> {
 
 		return await rap({
 			id: _notification.id,
+			createdAt: _notification.createdAt,
+			type: _notification.type,
 		});
 	}
 }
