@@ -3,7 +3,11 @@ import { User } from './user';
 import { Note } from './note';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 @Index(['userId', 'noteId', 'choice'], { unique: true })
 export class PollVote {
 	@PrimaryColumn(id())

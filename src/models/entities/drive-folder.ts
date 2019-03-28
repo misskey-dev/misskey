@@ -2,7 +2,11 @@ import { JoinColumn, ManyToOne, Entity, PrimaryColumn, Index, Column } from 'typ
 import { User } from './user';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class DriveFolder {
 	@PrimaryColumn(id())
 	public id: string;

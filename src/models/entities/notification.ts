@@ -2,7 +2,11 @@ import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typ
 import { User } from './user';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class Notification {
 	@PrimaryColumn(id())
 	public id: string;

@@ -1,7 +1,11 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 @Index(['name', 'host'], { unique: true })
 export class Emoji {
 	@PrimaryColumn(id())

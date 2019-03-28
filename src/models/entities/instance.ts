@@ -1,7 +1,11 @@
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class Instance {
 	@PrimaryColumn(id())
 	public id: string;

@@ -1,9 +1,12 @@
-import * as deepcopy from 'deepcopy';
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from '../../user';
 import { id } from '../../../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class ReversiGame {
 	@PrimaryColumn(id())
 	public id: string;

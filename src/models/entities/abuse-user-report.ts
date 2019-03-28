@@ -2,7 +2,11 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { User } from './user';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 @Index(['userId', 'reporterId'], { unique: true })
 export class AbuseUserReport {
 	@PrimaryColumn(id())

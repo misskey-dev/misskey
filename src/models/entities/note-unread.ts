@@ -3,7 +3,11 @@ import { User } from './user';
 import { Note } from './note';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 @Index(['userId', 'noteId'], { unique: true })
 export class NoteUnread {
 	@PrimaryColumn(id())

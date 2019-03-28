@@ -4,7 +4,11 @@ import config from '../../config';
 import { User } from './user';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class App {
 	@PrimaryColumn(id())
 	public id: string;

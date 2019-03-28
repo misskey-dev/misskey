@@ -3,7 +3,11 @@ import { User } from './user';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class MessagingMessage {
 	@PrimaryColumn(id())
 	public id: string;

@@ -3,7 +3,11 @@ import { User } from './user';
 import { UserList } from './user-list';
 import { id } from '../id';
 
-@Entity()
+@Entity({
+	orderBy: {
+		id: 'DESC'
+	}
+})
 export class UserListJoining {
 	@PrimaryColumn(id())
 	public id: string;
