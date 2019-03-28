@@ -27,11 +27,11 @@ export default async (
 	// Calc count of my unread notifications
 	const count = await Notifications.count({
 		notifieeId: userId,
-		notifierId: Not(In(mutedUserIds)),
+		...(mutedUserIds.length > 0 ? { notifierId: Not(In(mutedUserIds)) } : {}),
 		isRead: false
 	});
 
-	if (count == 0) {
+	if (count === 0) {
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllNotifications');
 	}
