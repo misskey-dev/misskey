@@ -1,11 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Notification from '../../../../models/entities/notification';
-import { packMany } from '../../../../models/entities/notification';
-import { getFriendIds } from '../../common/get-friends';
 import read from '../../common/read-notification';
 import define from '../../define';
-import { getHideUserIds } from '../../common/get-hide-users';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { Notifications, Followings, Mutings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -63,59 +61,38 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const hideUserIds = await getHideUserIds(user);
+	const followingQuery = Followings.createQueryBuilder('following')
+		.select('following.followeeId')
+		.where('following.followerId = :followerId', { followerId: user.id });
 
-	const query = {
-		notifieeId: user.id,
-		$and: [{
-			notifierId: {
-				$nin: hideUserIds
-			}
-		}]
-	} as any;
+	const mutingQuery = Mutings.createQueryBuilder('muting')
+		.select('muting.muteeId')
+		.where('muting.muterId = :muterId', { muterId: user.id });
 
-	const sort = {
-		id: -1
-	};
+	const query = generatePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
+		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
+		.leftJoinAndSelect('notification.notifier', 'notifier');
+
+	query.andWhere(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`);
+	query.setParameters(mutingQuery.getParameters());
 
 	if (ps.following) {
-		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriendIds(user.id);
-
-		query.$and.push({
-			notifierId: {
-				$in: followingIds
-			}
-		});
-	}
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
+		query.andWhere(`((notification.notifierId IN (${ followingQuery.getQuery() })) OR (notification.notifierId = :meId))`, { meId: user.id });
+		query.setParameters(followingQuery.getParameters());
 	}
 
 	if (ps.includeTypes.length > 0) {
-		query.type = {
-			$in: ps.includeTypes
-		};
+		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
 	} else if (ps.excludeTypes.length > 0) {
-		query.type = {
-			$nin: ps.excludeTypes
-		};
+		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
 	}
 
-	const notifications = await Notification
-		.find(query, {
-			take: ps.limit,
-			order: sort
-		});
+	const notifications = await query.take(ps.limit).getMany();
 
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {
-		read(user.id, notifications);
+		read(user.id, notifications.map(x => x.id));
 	}
 
-	return await packMany(notifications);
+	return await Notifications.packMany(notifications);
 });

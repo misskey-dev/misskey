@@ -10,7 +10,7 @@ export function createPostgreConnection(entities: any[], name: string, logger: L
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
-		synchronize: true,
+		synchronize: false,
 		logging: !['production', 'test'].includes(process.env.NODE_ENV),
 		logger: logger,
 		entities: entities

@@ -28,6 +28,11 @@ export class UserRepository extends Repository<User> {
 			id: _user.id,
 			name: _user.name,
 			username: _user.username,
+			host: _user.host,
+			avatarUrl: _user.avatarUrl,
+			bannerUrl: _user.bannerUrl,
+			avatarColor: _user.avatarColor,
+			bannerColor: _user.bannerColor,
 
 			// カスタム絵文字添付
 			emojis: _user.emojis.length > 0 ? Emojis.find({

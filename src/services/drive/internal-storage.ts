@@ -16,7 +16,6 @@ export class InternalStorage {
 	}
 
 	public static saveFromBuffer(key: string, data: Buffer) {
-		console.log(InternalStorage.path);
 		fs.mkdirSync(InternalStorage.path, { recursive: true });
 		fs.writeFileSync(`${InternalStorage.path}/${key}`, data);
 		return `${config.url}/files/${key}`;

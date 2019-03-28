@@ -1,4 +1,3 @@
-import * as deepcopy from 'deepcopy';
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
@@ -80,64 +79,3 @@ export class Notification {
 	})
 	public data: Record<string, any>;
 }
-
-export const packMany = (
-	notifications: any[]
-) => {
-	return Promise.all(notifications.map(n => pack(n)));
-};
-
-/**
- * Pack a notification for API response
- */
-export const pack = (notification: any) => new Promise<any>(async (resolve, reject) => {
-	let _notification: any;
-
-	// Populate the notification if 'notification' is ID
-	if (isObjectId(notification)) {
-		_notification = await Notification.findOne({
-			id: notification
-		});
-	} else if (typeof notification === 'string') {
-		_notification = await Notification.findOne({
-			id: new mongo.ObjectID(notification)
-		});
-	} else {
-		_notification = deepcopy(notification);
-	}
-
-	// Rename _id to id
-	_notification.id = _notification.id;
-	delete _notification.id;
-
-	// Rename notifierId to userId
-	_notification.userId = _notification.notifierId;
-	delete _notification.notifierId;
-
-	const me = _notification.notifieeId;
-	delete _notification.notifieeId;
-
-	// Populate notifier
-	_notification.user = await packUser(_notification.userId, me);
-
-	switch (_notification.type) {
-		case 'follow':
-		case 'receiveFollowRequest':
-			// nope
-			break;
-		case 'mention':
-		case 'reply':
-		case 'renote':
-		case 'quote':
-		case 'reaction':
-		case 'pollVote':
-			// Populate note
-			_notification.note = await packNote(_notification.noteId, me);
-			break;
-		default:
-			dbLogger.error(`Unknown type: ${_notification.type}`);
-			break;
-	}
-
-	resolve(_notification);
-});
