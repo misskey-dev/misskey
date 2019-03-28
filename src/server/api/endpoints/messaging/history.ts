@@ -39,7 +39,7 @@ export default define(meta, async (ps, user) => {
 	const history: IMessagingMessage[] = [];
 
 	for (let i = 0; i < ps.limit; i++) {
-		const found = history.map(m => m.userId.equals(user.id) ? m.recipientId : m.userId);
+		const found = history.map(m => (m.userId === user.id) ? m.recipientId : m.userId);
 
 		const message = await Message.findOne({
 			$or: [{

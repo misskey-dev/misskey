@@ -6,6 +6,9 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 import { genId } from '../../../../../misc/gen-id';
+import { ReversiMatchings, ReversiGames } from '../../../../../models';
+import { ReversiGame } from '../../../../../models/entities/games/reversi/game';
+import { ReversiMatching } from '../../../../../models/entities/games/reversi/matching';
 
 export const meta = {
 	tags: ['games'],
@@ -39,24 +42,22 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Myself
-	if (ps.userId.equals(user.id)) {
+	if (ps.userId === user.id) {
 		throw new ApiError(meta.errors.isYourself);
 	}
 
 	// Find session
-	const exist = await Matching.findOne({
+	const exist = await ReversiMatchings.findOne({
 		parentId: ps.userId,
 		childId: user.id
 	});
 
 	if (exist) {
 		// Destroy session
-		Matching.remove({
-			id: exist.id
-		});
+		ReversiMatchings.delete(exist.id);
 
 		// Create game
-		const game = await ReversiGame.save({
+		const game = await ReversiGames.save({
 			id: genId(),
 			createdAt: new Date(),
 			user1Id: exist.parentId,
@@ -66,16 +67,14 @@ export default define(meta, async (ps, user) => {
 			isStarted: false,
 			isEnded: false,
 			logs: [],
-			settings: {
-				map: eighteight.data,
-				bw: 'random',
-				isLlotheo: false
-			}
-		});
+			map: eighteight.data,
+			bw: 'random',
+			isLlotheo: false
+		} as ReversiGame);
 
-		publishReversiStream(exist.parentId, 'matched', await packGame(game, exist.parentId));
+		publishReversiStream(exist.parentId, 'matched', await ReversiGames.pack(game, exist.parentId));
 
-		const other = await Matching.count({
+		const other = await ReversiMatchings.count({
 			childId: user.id
 		});
 
@@ -83,7 +82,7 @@ export default define(meta, async (ps, user) => {
 			publishMainStream(user.id, 'reversiNoInvites');
 		}
 
-		return await packGame(game, user);
+		return await ReversiGames.pack(game, user);
 	} else {
 		// Fetch child
 		const child = await getUser(ps.userId).catch(e => {
@@ -92,22 +91,20 @@ export default define(meta, async (ps, user) => {
 		});
 
 		// 以前のセッションはすべて削除しておく
-		await Matching.remove({
+		await ReversiMatchings.delete({
 			parentId: user.id
 		});
 
 		// セッションを作成
-		const matching = await Matching.save({
+		const matching = await ReversiMatchings.save({
 			id: genId(),
 			createdAt: new Date(),
 			parentId: user.id,
 			childId: child.id
-		});
+		} as ReversiMatching);
 
-		const packed = await packMatching(matching, child);
+		const packed = await ReversiMatchings.pack(matching, child);
 		publishReversiStream(child.id, 'invited', packed);
 		publishMainStream(child.id, 'reversiInvited', packed);
-
-		return;
 	}
 });

@@ -3,6 +3,7 @@ import { ID } from '../../../../../../misc/cafy-id';
 import { publishReversiGameStream } from '../../../../../../services/stream';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
+import { ReversiGames } from '../../../../../../models';
 
 export const meta = {
 	tags: ['games'],
@@ -44,7 +45,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const game = await ReversiGame.findOne({ _id: ps.gameId });
+	const game = await ReversiGames.findOne(ps.gameId);
 
 	if (game == null) {
 		throw new ApiError(meta.errors.noSuchGame);
@@ -54,26 +55,20 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyEnded);
 	}
 
-	if (!game.user1Id.equals(user.id) && !game.user2Id.equals(user.id)) {
+	if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	const winnerId = game.user1Id.equals(user.id) ? game.user2Id : game.user1Id;
+	const winnerId = game.user1Id === user.id ? game.user2Id : game.user1Id;
 
-	await ReversiGame.update({
-		id: game.id
-	}, {
-		$set: {
-			surrendered: user.id,
-			isEnded: true,
-			winnerId: winnerId
-		}
+	await ReversiGames.update(game.id, {
+		surrendered: user.id,
+		isEnded: true,
+		winnerId: winnerId
 	});
 
 	publishReversiGameStream(game.id, 'ended', {
 		winnerId: winnerId,
-		game: await pack(game.id, user)
+		game: await ReversiGames.pack(game.id, user)
 	});
-
-	return;
 });

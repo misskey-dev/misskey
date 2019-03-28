@@ -612,7 +612,7 @@ async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse
 
 	// Drop duplicate users
 	mentionedUsers = mentionedUsers.filter((u, i, self) =>
-		i === self.findIndex(u2 => u.id.equals(u2.id))
+		i === self.findIndex(u2 => u.id === u2.id)
 	);
 
 	return mentionedUsers;

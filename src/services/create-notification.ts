@@ -1,16 +1,16 @@
-import { pack } from '../models/entities/notification';
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
 import { Notifications, Mutings } from '../models';
 import { genId } from '../misc/gen-id';
+import { User } from '../models/entities/user';
 
 export default (
-	notifieeId: any,
-	notifierId: any,
+	notifieeId: User['id'],
+	notifierId: User['id'],
 	type: string,
 	content?: any
 ) => new Promise<any>(async (resolve, reject) => {
-	if (notifieeId.equals(notifierId)) {
+	if (notifieeId === notifierId) {
 		return resolve();
 	}
 
@@ -23,11 +23,11 @@ export default (
 		type: type,
 		data: content,
 		isRead: false,
-	});
+	} as Notification);
 
 	resolve(notification);
 
-	const packed = await pack(notification);
+	const packed = await Notifications.pack(notification);
 
 	// Publish notification event
 	publishMainStream(notifieeId, 'notification', packed);
