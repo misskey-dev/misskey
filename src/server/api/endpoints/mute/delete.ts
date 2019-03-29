@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Mute from '../../../../models/entities/muting';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Mutings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check not muting
-	const exist = await Mute.findOne({
+	const exist = await Mutings.findOne({
 		muterId: muter.id,
 		muteeId: mutee.id
 	});
@@ -73,9 +73,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Delete mute
-	await Mute.remove({
+	await Mutings.delete({
 		id: exist.id
 	});
-
-	return;
 });

@@ -318,6 +318,40 @@ export const schemas = {
 		required: ['id', 'createdAt', 'name']
 	},
 
+	Following: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'id',
+				description: 'The unique identifier for this following.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			},
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the following was created.'
+			},
+			followeeId: {
+				type: 'string',
+				format: 'id',
+			},
+			followee: {
+				$ref: '#/components/schemas/User',
+				description: 'The followee.'
+			},
+			followerId: {
+				type: 'string',
+				format: 'id',
+			},
+			follower: {
+				$ref: '#/components/schemas/User',
+				description: 'The follower.'
+			},
+		},
+		required: ['id', 'createdAt', 'followeeId', 'followerId']
+	},
+
 	Muting: {
 		type: 'object',
 		properties: {

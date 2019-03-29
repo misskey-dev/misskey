@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Users, Followings } from '../../../../models';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
 export const meta = {
 	desc: {
@@ -32,37 +32,25 @@ export const meta = {
 			validator: $.optional.nullable.str
 		},
 
+		sinceId: {
+			validator: $.optional.type(ID),
+		},
+
+		untilId: {
+			validator: $.optional.type(ID),
+		},
+
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
-
-		cursor: {
-			validator: $.optional.type(ID),
-			default: null as any,
-		},
-
-		iknow: {
-			validator: $.optional.bool,
-			default: false,
-		}
 	},
 
 	res: {
-		type: 'object',
-		properties: {
-			users: {
-				type: 'array',
-				items: {
-					type: 'User',
-				}
-			},
-			next: {
-				type: 'string',
-				format: 'id',
-				nullable: true
-			}
-		}
+		type: 'array',
+		items: {
+			type: 'Following',
+		},
 	},
 
 	errors: {
@@ -83,44 +71,12 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	const query = {
-		followerId: user.id
-	} as any;
+	const query = generatePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+		.andWhere(`following.followerId = :userId`, { userId: user.id });
 
-	// ログインしていてかつ iknow フラグがあるとき
-	if (me && ps.iknow) {
-		// Get my friends
-		const myFriends = await getFriendIds(me.id);
+	const followings = await query
+		.take(ps.limit)
+		.getMany();
 
-		query.followeeId = {
-			$in: myFriends
-		};
-	}
-
-	// カーソルが指定されている場合
-	if (ps.cursor) {
-		query.id = {
-			$lt: ps.cursor
-		};
-	}
-
-	// Get followers
-	const following = await Followings.find({
-		where: query,
-		take: ps.limit + 1,
-		sort: { id: -1 }
-	});
-
-	// 「次のページ」があるかどうか
-	const inStock = following.length === ps.limit + 1;
-	if (inStock) {
-		following.pop();
-	}
-
-	const users = await Promise.all(following.map(f => Users.pack(f.followeeId, me, { detail: true })));
-
-	return {
-		users: users,
-		next: inStock ? following[following.length - 1].id : null,
-	};
+	return await Followings.packMany(followings, me, { populateFollowee: true });
 });

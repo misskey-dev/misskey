@@ -1,6 +1,5 @@
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Instance } from './entities/instance';
-import { Following } from './entities/following';
 import { Emoji } from './entities/emoji';
 import { Poll } from './entities/poll';
 import { PollVote } from './entities/poll-vote';
@@ -35,6 +34,7 @@ import { ReversiMatchingRepository } from './repositories/games/reversi/matching
 import { UserPublickey } from './entities/user-publickey';
 import { UserKeypair } from './entities/user-keypair';
 import { AppRepository } from './repositories/app';
+import { FollowingRepository } from './repositories/following';
 
 export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
@@ -51,7 +51,7 @@ export const UserLists = getCustomRepository(UserListRepository);
 export const UserListJoinings = getRepository(UserListJoining);
 export const UserNotePinings = getRepository(UserNotePining);
 export const UserServiceLinkings = getRepository(UserServiceLinking);
-export const Followings = getRepository(Following);
+export const Followings = getCustomRepository(FollowingRepository);
 export const FollowRequests = getCustomRepository(FollowRequestRepository);
 export const Instances = getRepository(Instance);
 export const Emojis = getRepository(Emoji);

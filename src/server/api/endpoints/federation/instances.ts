@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import Instance from '../../../../models/entities/instance';
+import { Instances } from '../../../../models';
 
 export const meta = {
 	tags: ['federation'],
@@ -117,7 +117,7 @@ export default define(meta, async (ps, me) => {
 	if (typeof ps.notResponding === 'boolean') q.isNotResponding = ps.notResponding;
 	if (typeof ps.markedAsClosed === 'boolean') q.isMarkedAsClosed = ps.markedAsClosed;
 
-	const instances = await Instance
+	const instances = await Instances
 		.find(q, {
 			take: ps.limit,
 			order: sort,

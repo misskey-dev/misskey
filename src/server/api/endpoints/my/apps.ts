@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import App, { pack } from '../../../../models/entities/app';
 import define from '../../define';
+import { Apps } from '../../../../models';
 
 export const meta = {
 	tags: ['account', 'app'],
@@ -30,16 +30,13 @@ export default define(meta, async (ps, user) => {
 		userId: user.id
 	};
 
-	const apps = await App
-		.find(query, {
-			take: ps.limit,
-			skip: ps.offset,
-			sort: {
-				id: -1
-			}
-		});
+	const apps = await Apps.find({
+		where: query,
+		take: ps.limit,
+		skip: ps.offset,
+	});
 
-	return await Promise.all(apps.map(app => pack(app, user, {
+	return await Promise.all(apps.map(app => Apps.pack(app, user, {
 		detail: true
 	})));
 });
