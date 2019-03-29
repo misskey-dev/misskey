@@ -1,6 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
+import { ReversiGames } from '../../../../../models';
+import { generatePaginationQuery } from '../../../common/generate-pagination-query';
 
 export const meta = {
 	tags: ['games'],
@@ -27,39 +29,17 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const q: any = ps.my ? {
-		isStarted: true,
-		$or: [{
-			user1Id: user.id
-		}, {
-			user2Id: user.id
-		}]
-	} : {
-		isStarted: true
-	};
+	const query = generatePaginationQuery(ReversiGames.createQueryBuilder('game'), ps.sinceId, ps.untilId)
+		.andWhere('game.isStarted = TRUE');
 
-	const sort = {
-		id: -1
-	};
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		q.id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		q.id = {
-			$lt: ps.untilId
-		};
+	if (ps.my) {
+		query.andWhere('game.user1Id = :userId OR game.user2Id = :userId', { userId: user.id });
 	}
 
 	// Fetch games
-	const games = await ReversiGame.find(q, {
-		order: sort,
-		take: ps.limit
-	});
+	const games = await query.take(ps.limit).getMany();
 
-	return await Promise.all(games.map((g) => pack(g, user, {
+	return await Promise.all(games.map((g) => ReversiGames.pack(g, user, {
 		detail: false
 	})));
 });

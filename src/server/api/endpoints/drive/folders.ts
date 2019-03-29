@@ -1,9 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { MoreThan, LessThan, FindConditions } from 'typeorm';
 import { DriveFolders } from '../../../../models';
-import { DriveFolder } from '../../../../models/entities/drive-folder';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
 export const meta = {
 	desc: {
@@ -46,25 +45,16 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const sort = {
-		id: -1
-	};
-	const query = {
-		userId: user.id,
-		parentId: ps.folderId
-	} as FindConditions<DriveFolder>;
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
+	const query = generatePaginationQuery(DriveFolders.createQueryBuilder('folder'), ps.sinceId, ps.untilId)
+		.andWhere('folder.userId = :userId', { userId: user.id });
+
+	if (ps.folderId) {
+		query.andWhere('folder.parentId = :parentId', { parentId: ps.folderId });
+	} else {
+		query.andWhere('folder.parentId IS NULL');
 	}
 
-	const folders = await DriveFolders.find({
-		where: query,
-		take: ps.limit,
-		order: sort
-	});
+	const folders = await query.take(ps.limit).getMany();
 
 	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
 });

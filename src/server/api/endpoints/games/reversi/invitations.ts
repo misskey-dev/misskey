@@ -1,4 +1,5 @@
 import define from '../../../define';
+import { ReversiMatchings } from '../../../../../models';
 
 export const meta = {
 	tags: ['games'],
@@ -8,13 +9,9 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Find session
-	const invitations = await Matching.find({
+	const invitations = await ReversiMatchings.find({
 		childId: user.id
-	}, {
-		sort: {
-			id: -1
-		}
 	});
 
-	return await Promise.all(invitations.map((i) => packMatching(i, user)));
+	return await Promise.all(invitations.map((i) => ReversiMatchings.pack(i, user)));
 });
