@@ -127,7 +127,7 @@ export default prop => ({
 				case 'pollVoted': {
 					if (body.userId == this.$store.state.i.id) return;
 					const choice = body.choice;
-					this.$_ns_target.poll.choices.find(c => c.id === choice).votes++;
+					this.$_ns_target.poll.choices[choice].votes++;
 					break;
 				}
 

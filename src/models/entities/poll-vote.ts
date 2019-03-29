@@ -33,7 +33,7 @@ export class PollVote {
 	@Column(id())
 	public noteId: Note['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()

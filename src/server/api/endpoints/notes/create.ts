@@ -269,12 +269,6 @@ export default define(meta, async (ps, user, app) => {
 	}
 
 	if (ps.poll) {
-		(ps.poll as any).choices = (ps.poll as any).choices.map((choice: string, i: number) => ({
-			id: i, // IDを付与
-			text: choice.trim(),
-			votes: 0
-		}));
-
 		if (typeof ps.poll.expiresAt === 'number') {
 			if (ps.poll.expiresAt < Date.now())
 				throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
@@ -296,7 +290,7 @@ export default define(meta, async (ps, user, app) => {
 			choices: ps.poll.choices,
 			multiple: ps.poll.multiple || false,
 			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null
-		} : undefined,
+		} : null,
 		text: ps.text,
 		reply,
 		renote,
@@ -306,9 +300,9 @@ export default define(meta, async (ps, user, app) => {
 		localOnly: ps.localOnly,
 		visibility: ps.visibility,
 		visibleUsers,
-		apMentions: ps.noExtractMentions ? [] : undefined,
-		apHashtags: ps.noExtractHashtags ? [] : undefined,
-		apEmojis: ps.noExtractEmojis ? [] : undefined,
+		apMentions: ps.noExtractMentions ? [] : null,
+		apHashtags: ps.noExtractHashtags ? [] : null,
+		apEmojis: ps.noExtractEmojis ? [] : null,
 		geo: ps.geo
 	});
 

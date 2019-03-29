@@ -10,7 +10,7 @@ import { deliver } from '../../../../../queue';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
 import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
-import { PollVotes, NoteWatchings, Users } from '../../../../../models';
+import { PollVotes, NoteWatchings, Users, Polls } from '../../../../../models';
 import { Note } from '../../../../../models/entities/note';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
@@ -84,15 +84,17 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	if (note.poll == null) {
+	if (!note.hasPoll) {
 		throw new ApiError(meta.errors.noPoll);
 	}
 
-	if (note.poll.expiresAt && note.poll.expiresAt < createdAt) {
+	const poll = await Polls.findOne({ noteId: note.id });
+
+	if (poll.expiresAt && poll.expiresAt < createdAt) {
 		throw new ApiError(meta.errors.alreadyExpired);
 	}
 
-	if (!note.poll.choices.some(x => x.id == ps.choice)) {
+	if (poll.choices[ps.choice] == null) {
 		throw new ApiError(meta.errors.invalidChoice);
 	}
 
@@ -103,7 +105,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	if (exist.length) {
-		if (note.poll.multiple) {
+		if (poll.multiple) {
 			if (exist.some(x => x.choice == ps.choice))
 				throw new ApiError(meta.errors.alreadyVoted);
 		} else {
@@ -120,13 +122,16 @@ export default define(meta, async (ps, user) => {
 		choice: ps.choice
 	});
 
-	const inc: any = {};
-	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == ps.choice)}.votes`] = 1;
+	const sql = () => `votes[${ps.choice}] + 1`;
 
 	// Increment votes count
-	await Note.update({ _id: note.id }, {
-		$inc: inc
-	});
+	await Polls.createQueryBuilder('poll')
+		.update()
+		.where('poll = :id', { id: poll.id })
+		.set({
+			votes: sql as any
+		})
+		.execute();
 
 	publishNoteStream(note.id, 'pollVoted', {
 		choice: ps.choice,
@@ -158,10 +163,10 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// リモート投票の場合リプライ送信
-	if (note._user.host != null) {
+	if (note.userHost != null) {
 		const pollOwner: IRemoteUser = await Users.findOne(note.userId);
 
-		deliver(user, renderActivity(await renderVote(user, vote, note, pollOwner)), pollOwner.inbox);
+		deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
 	}
 
 	// リモートフォロワーにUpdate配信
