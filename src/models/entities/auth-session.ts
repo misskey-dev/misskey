@@ -41,36 +41,3 @@ export class AuthSession {
 	@JoinColumn()
 	public app: App | null;
 }
-
-/**
- * Pack an auth session for API response
- *
- * @param {any} session
- * @param {any} me?
- * @return {Promise<any>}
- */
-export const pack = (
-	session: any,
-	me?: any
-) => new Promise<any>(async (resolve, reject) => {
-	let _session: any;
-
-	// TODO: Populate session if it ID
-	_session = deepcopy(session);
-
-	// Me
-	if (me && !isObjectId(me)) {
-		if (typeof me === 'string') {
-			me = new mongo.ObjectID(me);
-		} else {
-			me = me.id;
-		}
-	}
-
-	delete _session.id;
-
-	// Populate app
-	_session.app = await packApp(_session.appId, me);
-
-	resolve(_session);
-});
