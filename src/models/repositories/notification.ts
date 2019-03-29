@@ -12,18 +12,18 @@ export class NotificationRepository extends Repository<Notification> {
 	}
 
 	public async pack(
-		notification: Notification['id'] | Notification,
+		src: Notification['id'] | Notification,
 	) {
-		const _notification = typeof notification === 'object' ? notification : await this.findOne(notification);
+		const notification = typeof src === 'object' ? src : await this.findOne(src);
 
 		return await rap({
-			id: _notification.id,
-			createdAt: _notification.createdAt,
-			type: _notification.type,
-			user: Users.pack(_notification.notifier || _notification.notifierId),
-			...(_notification.type === 'reaction' ? {
-				note: Notes.pack(_notification.note || _notification.noteId),
-				reaction: _notification.reaction
+			id: notification.id,
+			createdAt: notification.createdAt,
+			type: notification.type,
+			user: Users.pack(notification.notifier || notification.notifierId),
+			...(notification.type === 'reaction' ? {
+				note: Notes.pack(notification.note || notification.noteId),
+				reaction: notification.reaction
 			} : {})
 		});
 	}

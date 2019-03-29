@@ -50,7 +50,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async pack(
-		user: User['id'] | User,
+		src: User['id'] | User,
 		me?: User['id'] | User,
 		options?: {
 			detail?: boolean,
@@ -63,69 +63,69 @@ export class UserRepository extends Repository<User> {
 			includeSecrets: false
 		}, options);
 
-		const _user = typeof user === 'object' ? user : await this.findOne(user);
+		const user = typeof src === 'object' ? src : await this.findOne(src);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
-		const relation = meId && (meId !== _user.id) && opts.detail ? await this.getRelation(meId, _user.id) : null;
+		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
 
 		return await rap({
-			id: _user.id,
-			name: _user.name,
-			username: _user.username,
-			host: _user.host,
-			avatarUrl: _user.avatarUrl,
-			bannerUrl: _user.bannerUrl,
-			avatarColor: _user.avatarColor,
-			bannerColor: _user.bannerColor,
+			id: user.id,
+			name: user.name,
+			username: user.username,
+			host: user.host,
+			avatarUrl: user.avatarUrl,
+			bannerUrl: user.bannerUrl,
+			avatarColor: user.avatarColor,
+			bannerColor: user.bannerColor,
 
 			// カスタム絵文字添付
-			emojis: _user.emojis.length > 0 ? Emojis.find({
+			emojis: user.emojis.length > 0 ? Emojis.find({
 				where: {
-					name: In(_user.emojis),
-					host: _user.host
+					name: In(user.emojis),
+					host: user.host
 				},
 				select: ['name', 'host', 'url', 'aliases']
 			}) : [],
 
 			...(opts.includeHasUnreadNotes ? {
 				hasUnreadSpecifiedNotes: NoteUnreads.count({
-					where: { userId: _user.id, isSpecified: true },
+					where: { userId: user.id, isSpecified: true },
 					take: 1
 				}).then(count => count > 0),
 				hasUnreadMentions: NoteUnreads.count({
-					where: { userId: _user.id },
+					where: { userId: user.id },
 					take: 1
 				}).then(count => count > 0),
 			} : {}),
 
 			...(opts.detail ? {
-				pinnedNotes: UserNotePinings.find({ userId: _user.id }).then(pins =>
+				pinnedNotes: UserNotePinings.find({ userId: user.id }).then(pins =>
 					Notes.packMany(pins.map(pin => pin.id), meId, {
 						detail: true
 					})),
 			} : {}),
 
-			...(opts.detail && meId === _user.id ? {
-				avatarId: _user.avatarId,
-				bannerId: _user.bannerId,
-				alwaysMarkNsfw: _user.alwaysMarkNsfw,
-				carefulBot: _user.carefulBot,
+			...(opts.detail && meId === user.id ? {
+				avatarId: user.avatarId,
+				bannerId: user.bannerId,
+				alwaysMarkNsfw: user.alwaysMarkNsfw,
+				carefulBot: user.carefulBot,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
-						recipientId: _user.id,
+						recipientId: user.id,
 						isRead: false
 					},
 					take: 1
 				}).then(count => count > 0),
 				hasUnreadNotification: Notifications.count({
 					where: {
-						userId: _user.id,
+						userId: user.id,
 						isRead: false
 					},
 					take: 1
 				}).then(count => count > 0),
 				pendingReceivedFollowRequestsCount: FollowRequests.count({
-					followeeId: _user.id
+					followeeId: user.id
 				}),
 			} : {}),
 

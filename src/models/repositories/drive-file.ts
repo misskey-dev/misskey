@@ -78,7 +78,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	}
 
 	public async pack(
-		file: DriveFile['id'] | DriveFile,
+		src: DriveFile['id'] | DriveFile,
 		options?: {
 			detail?: boolean,
 			self?: boolean,
@@ -90,23 +90,23 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			self: false
 		}, options);
 
-		const _file = typeof file === 'object' ? file : await this.findOne(file);
+		const file = typeof src === 'object' ? src : await this.findOne(src);
 
 		return await rap({
-			id: _file.id,
-			createdAt: _file.createdAt,
-			name: _file.name,
-			type: _file.type,
-			md5: _file.md5,
-			size: _file.size,
-			isSensitive: _file.isSensitive,
-			properties: _file.properties,
-			url: opts.self ? _file.url : this.getPublicUrl(_file, false),
-			thumbnailUrl: this.getPublicUrl(_file, true),
-			folder: opts.detail && _file.folderId ? DriveFolders.pack(_file.folderId, {
+			id: file.id,
+			createdAt: file.createdAt,
+			name: file.name,
+			type: file.type,
+			md5: file.md5,
+			size: file.size,
+			isSensitive: file.isSensitive,
+			properties: file.properties,
+			url: opts.self ? file.url : this.getPublicUrl(file, false),
+			thumbnailUrl: this.getPublicUrl(file, true),
+			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
 				detail: true
 			}) : null,
-			user: opts.withUser ? Users.pack(_file.userId) : null
+			user: opts.withUser ? Users.pack(file.userId) : null
 		});
 	}
 }

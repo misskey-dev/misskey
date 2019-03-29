@@ -6,17 +6,17 @@ import { Users } from '../../..';
 @EntityRepository(ReversiMatching)
 export class ReversiMatchingRepository extends Repository<ReversiMatching> {
 	public async pack(
-		matching: ReversiMatching['id'] | ReversiMatching,
+		src: ReversiMatching['id'] | ReversiMatching,
 		me: any
 	) {
-		const _matching = typeof matching === 'object' ? matching : await this.findOne(matching);
+		const matching = typeof src === 'object' ? src : await this.findOne(src);
 
 		return await rap({
-			id: _matching.id,
-			parent: Users.pack(_matching.parentId, me, {
+			id: matching.id,
+			parent: Users.pack(matching.parentId, me, {
 				detail: true
 			}),
-			child: Users.pack(_matching.childId, me, {
+			child: Users.pack(matching.childId, me, {
 				detail: true
 			})
 		});

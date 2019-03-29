@@ -4,13 +4,13 @@ import { UserList } from '../entities/user-list';
 @EntityRepository(UserList)
 export class UserListRepository extends Repository<UserList> {
 	public async pack(
-		userList: any,
+		src: any,
 	) {
-		const _userList = typeof userList === 'object' ? userList : await this.findOne(userList);
+		const userList = typeof src === 'object' ? src : await this.findOne(src);
 
 		return {
-			id: _userList.id,
-			name: _userList.name
+			id: userList.id,
+			name: userList.name
 		};
 	}
 }

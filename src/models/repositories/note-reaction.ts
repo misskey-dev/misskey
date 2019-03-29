@@ -5,14 +5,14 @@ import { Users } from '..';
 @EntityRepository(NoteReaction)
 export class NoteReactionRepository extends Repository<NoteReaction> {
 	public async pack(
-		reaction: NoteReaction['id'] | NoteReaction,
+		src: NoteReaction['id'] | NoteReaction,
 		me?: any
 	) {
-		const _reaction = typeof reaction === 'object' ? reaction : await this.findOne(reaction);
+		const reaction = typeof src === 'object' ? src : await this.findOne(src);
 
 		return {
-			id: _reaction.id,
-			user: await Users.pack(_reaction.userId, me),
+			id: reaction.id,
+			user: await Users.pack(reaction.userId, me),
 		};
 	}
 }

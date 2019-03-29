@@ -13,14 +13,14 @@ export class BlockingRepository extends Repository<Blocking> {
 	}
 
 	public async pack(
-		blocking: Blocking['id'] | Blocking,
+		src: Blocking['id'] | Blocking,
 		me?: any
 	) {
-		const _blocking = typeof blocking === 'object' ? blocking : await this.findOne(blocking);
+		const blocking = typeof src === 'object' ? src : await this.findOne(src);
 
 		return await rap({
-			id: _blocking.id,
-			blockee: Users.pack(_blocking.blockeeId, me, {
+			id: blocking.id,
+			blockee: Users.pack(blocking.blockeeId, me, {
 				detail: true
 			})
 		});

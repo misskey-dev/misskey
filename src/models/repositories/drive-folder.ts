@@ -13,7 +13,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 	}
 
 	public async pack(
-		folder: DriveFolder['id'] | DriveFolder,
+		src: DriveFolder['id'] | DriveFolder,
 		options?: {
 			detail: boolean
 		}
@@ -22,21 +22,21 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 			detail: false
 		}, options);
 
-		const _folder = typeof folder === 'object' ? folder : await this.findOne(folder);
+		const folder = typeof src === 'object' ? src : await this.findOne(src);
 
 		return await rap({
-			name: _folder.name,
+			name: folder.name,
 
 			...(opts.detail ? {
 				foldersCount: DriveFolders.count({
-					parentId: _folder.id
+					parentId: folder.id
 				}),
 				filesCount: DriveFiles.count({
-					folderId: _folder.id
+					folderId: folder.id
 				}),
 
-				...(_folder.parentId ? {
-					parent: this.pack(_folder.parentId, {
+				...(folder.parentId ? {
+					parent: this.pack(folder.parentId, {
 						detail: true
 					})
 				} : {})

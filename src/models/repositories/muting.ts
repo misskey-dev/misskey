@@ -13,14 +13,14 @@ export class MutingRepository extends Repository<Muting> {
 	}
 
 	public async pack(
-		muting: Muting['id'] | Muting,
+		src: Muting['id'] | Muting,
 		me?: any
 	) {
-		const _muting = typeof muting === 'object' ? muting : await this.findOne(muting);
+		const muting = typeof src === 'object' ? src : await this.findOne(src);
 
 		return await rap({
-			id: _muting.id,
-			mutee: Users.pack(_muting.muteeId, me, {
+			id: muting.id,
+			mutee: Users.pack(muting.muteeId, me, {
 				detail: true
 			})
 		});

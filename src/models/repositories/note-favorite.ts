@@ -12,14 +12,14 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 	}
 
 	public async pack(
-		favorite: NoteFavorite['id'] | NoteFavorite,
+		src: NoteFavorite['id'] | NoteFavorite,
 		me?: any
 	) {
-		const _favorite = typeof favorite === 'object' ? favorite : await this.findOne(favorite);
+		const favorite = typeof src === 'object' ? src : await this.findOne(src);
 
 		return {
-			id: _favorite.id,
-			note: await Notes.pack(_favorite.note || _favorite.noteId, me),
+			id: favorite.id,
+			note: await Notes.pack(favorite.note || favorite.noteId, me),
 		};
 	}
 }

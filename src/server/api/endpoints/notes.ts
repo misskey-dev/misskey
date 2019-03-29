@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../misc/cafy-id';
-import Note, { packMany } from '../../../models/entities/note';
 import define from '../define';
+import { generatePaginationQuery } from '../common/generate-pagination-query';
+import { Notes } from '../../../models';
 
 export const meta = {
 	desc: {
@@ -39,14 +40,6 @@ export const meta = {
 			}
 		},
 
-		media: {
-			validator: $.optional.bool,
-			deprecated: true,
-			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
-
 		poll: {
 			validator: $.optional.bool,
 			desc: {
@@ -77,39 +70,29 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const sort = {
-		id: -1
-	};
-	const query = {
-		deletedAt: null,
-		visibility: 'public',
-		localOnly: false,
-	} as any;
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere(`note.visibility = 'public'`)
+		.andWhere(`note.localOnly = FALSE`)
+		.leftJoinAndSelect('note.user', 'user');
 
 	if (ps.local) {
-		query['_user.host'] = null;
+		query.andWhere('note.userHost IS NULL');
 	}
 
 	if (ps.reply != undefined) {
-		query.replyId = ps.reply ? { $exists: true, $ne: null } : null;
+		query.andWhere(ps.reply ? 'note.replyId IS NOT NULL' : 'note.replyId IS NULL');
 	}
 
 	if (ps.renote != undefined) {
-		query.renoteId = ps.renote ? { $exists: true, $ne: null } : null;
+		query.andWhere(ps.renote ? 'note.renoteId IS NOT NULL' : 'note.renoteId IS NULL');
 	}
 
-	const withFiles = ps.withFiles != undefined ? ps.withFiles : ps.media;
-
-	if (withFiles) query.fileIds = { $exists: true, $ne: null };
+	if (ps.withFiles != undefined) {
+		query.andWhere(ps.withFiles ? `note.fileIds != '{}'` : `note.fileIds = '{}'`);
+	}
 
 	if (ps.poll != undefined) {
-		query.poll = ps.poll ? { $exists: true, $ne: null } : null;
+		query.andWhere(ps.poll ? 'note.hasPoll = TRUE' : 'note.hasPoll = FALSE');
 	}
 
 	// TODO
@@ -117,10 +100,7 @@ export default define(meta, async (ps) => {
 	//	query.isBot = bot;
 	//}
 
-	const notes = await Note.find(query, {
-		take: ps.limit,
-		order: sort
-	});
+	const notes = await query.take(ps.limit).getMany();
 
-	return await packMany(notes);
+	return await Notes.packMany(notes);
 });
