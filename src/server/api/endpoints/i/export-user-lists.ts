@@ -13,6 +13,4 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	createExportUserListsJob(user);
-
-	return;
 });

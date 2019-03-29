@@ -1,5 +1,4 @@
 import $ from 'cafy';
-import User, { pack } from '../../../../models/entities/user';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import * as nodemailer from 'nodemailer';
@@ -9,6 +8,7 @@ import config from '../../../../config';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import { apiLogger } from '../../logger';
+import { Users } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -39,15 +39,13 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	await User.update(user.id, {
-		$set: {
-			email: ps.email,
-			emailVerified: false,
-			emailVerifyCode: null
-		}
+	await Users.update(user.id, {
+		email: ps.email,
+		emailVerified: false,
+		emailVerifyCode: null
 	});
 
-	const iObj = await pack(user.id, user, {
+	const iObj = await Users.pack(user.id, user, {
 		detail: true,
 		includeSecrets: true
 	});
@@ -58,10 +56,8 @@ export default define(meta, async (ps, user) => {
 	if (ps.email != null) {
 		const code = rndstr('a-z0-9', 16);
 
-		await User.update(user.id, {
-			$set: {
-				emailVerifyCode: code
-			}
+		await Users.update(user.id, {
+			emailVerifyCode: code
 		});
 
 		const meta = await fetchMeta();

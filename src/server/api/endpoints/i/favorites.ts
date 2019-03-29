@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { MoreThan, LessThan } from 'typeorm';
 import { NoteFavorites } from '../../../../models';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
 export const meta = {
 	desc: {
@@ -33,27 +33,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const query = {
-		userId: user.id
-	} as any;
+	const query = generatePaginationQuery(NoteFavorites.createQueryBuilder('favorite'), ps.sinceId, ps.untilId)
+		.andWhere(`favorite.userId = :meId`, { meId: user.id })
+		.leftJoinAndSelect('favorite.note', 'note');
 
-	const sort = {
-		id: -1
-	};
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
-
-	// Get favorites
-	const favorites = await NoteFavorites.find({
-		where: query,
-		take: ps.limit,
-		order: sort
-	});
+	const favorites = await query
+		.take(ps.limit)
+		.getMany();
 
 	return await NoteFavorites.packMany(favorites, user);
 });

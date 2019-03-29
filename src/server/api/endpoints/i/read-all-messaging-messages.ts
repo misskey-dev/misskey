@@ -1,6 +1,6 @@
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
-import { MessagingMessages, Users } from '../../../../models';
+import { MessagingMessages } from '../../../../models';
 
 export const meta = {
 	desc: {

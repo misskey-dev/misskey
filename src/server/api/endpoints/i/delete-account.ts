@@ -24,6 +24,4 @@ export default define(meta, async (ps, user) => {
 	}
 
 	await Users.delete(user.id);
-
-	return;
 });
