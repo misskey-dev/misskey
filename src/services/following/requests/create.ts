@@ -1,11 +1,11 @@
 import { publishMainStream } from '../../stream';
-import notify from '../../../services/create-notification';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../queue';
 import { User } from '../../../models/entities/user';
 import { Blockings, FollowRequests, Users } from '../../../models';
 import { genId } from '../../../misc/gen-id';
+import { createNotification } from '../../create-notification';
 
 export default async function(follower: User, followee: User, requestId?: string) {
 	// check blocking
@@ -48,7 +48,7 @@ export default async function(follower: User, followee: User, requestId?: string
 		}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 
 		// 通知を作成
-		notify(followee.id, follower.id, 'receiveFollowRequest');
+		createNotification(followee.id, follower.id, 'receiveFollowRequest');
 	}
 
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {

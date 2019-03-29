@@ -3,29 +3,38 @@ import pushSw from './push-notification';
 import { Notifications, Mutings } from '../models';
 import { genId } from '../misc/gen-id';
 import { User } from '../models/entities/user';
+import { Note } from '../models/entities/note';
+import { Notification } from '../models/entities/notification';
 
-export default (
+export async function createNotification(
 	notifieeId: User['id'],
 	notifierId: User['id'],
 	type: string,
-	content?: any
-) => new Promise<any>(async (resolve, reject) => {
+	content?: {
+		noteId?: Note['id'];
+		reaction?: string;
+	}
+) {
 	if (notifieeId === notifierId) {
-		return resolve();
+		return null;
 	}
 
-	// Create notification
-	const notification = await Notifications.save({
+	const data = {
 		id: genId(),
 		createdAt: new Date(),
 		notifieeId: notifieeId,
 		notifierId: notifierId,
 		type: type,
-		data: content,
 		isRead: false,
-	} as Notification);
+	} as Partial<Notification>;
 
-	resolve(notification);
+	if (content) {
+		if (content.noteId) data.noteId = content.noteId;
+		if (content.reaction) data.reaction = content.reaction;
+	}
+
+	// Create notification
+	const notification = await Notifications.save(data);
 
 	const packed = await Notifications.pack(notification);
 
@@ -51,4 +60,6 @@ export default (
 			pushSw(notifieeId, 'notification', packed);
 		}
 	}, 2000);
-});
+
+	return notification;
+}

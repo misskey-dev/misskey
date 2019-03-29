@@ -1,6 +1,7 @@
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
+import { Note } from './note';
 
 @Entity({
 	orderBy: {
@@ -73,13 +74,20 @@ export class Notification {
 	})
 	public isRead: boolean;
 
-	/**
-	 * 通知の追加データ
-	 * 通知の種類ごとに異なり、例えばリアクションの通知ならリアクションの種類が入るなど
-	 */
-	@Column('jsonb', {
-		default: {},
-		comment: 'The additional information of the Notification.'
+	@Column({
+		...id(),
+		nullable: true
 	})
-	public data: Record<string, any>;
+	public noteId: Note['id'] | null;
+
+	@ManyToOne(type => Note, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public note: Note | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true
+	})
+	public reaction: string;
 }

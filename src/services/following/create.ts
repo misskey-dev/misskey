@@ -1,5 +1,4 @@
 import { publishMainStream } from '../stream';
-import notify from '../../services/create-notification';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
@@ -13,6 +12,7 @@ import { User } from '../../models/entities/user';
 import { Followings, Users, FollowRequests, Blockings, Instances } from '../../models';
 import { instanceChart, perUserFollowingChart } from '../chart';
 import { genId } from '../../misc/gen-id';
+import { createNotification } from '../create-notification';
 
 const logger = new Logger('following/create');
 
@@ -81,7 +81,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
 
 		// 通知を作成
-		notify(followee.id, follower.id, 'follow');
+		createNotification(followee.id, follower.id, 'follow');
 	}
 }
 

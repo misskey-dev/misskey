@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users } from '..';
+import { Users, Notes } from '..';
 import rap from '@prezzemolo/rap';
 import { Notification } from '../entities/notification';
 
@@ -20,6 +20,11 @@ export class NotificationRepository extends Repository<Notification> {
 			id: _notification.id,
 			createdAt: _notification.createdAt,
 			type: _notification.type,
+			user: Users.pack(_notification.notifier || _notification.notifierId),
+			...(_notification.type === 'reaction' ? {
+				note: Notes.pack(_notification.note || _notification.noteId),
+				reaction: _notification.reaction
+			} : {})
 		});
 	}
 }

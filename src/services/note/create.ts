@@ -5,7 +5,6 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import notify from '../../services/create-notification';
 import watch from './watch';
 import { parse } from '../../mfm/parse';
 import resolveUser from '../../remote/resolve-user';
@@ -27,6 +26,7 @@ import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
 import { Poll, IPoll } from '../../models/entities/poll';
+import { createNotification } from '../create-notification';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -74,7 +74,7 @@ class NotificationManager {
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
 			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
-				notify(x.target, this.notifier.id, x.reason, {
+				createNotification(x.target, this.notifier.id, x.reason, {
 					noteId: this.note.id
 				});
 			}

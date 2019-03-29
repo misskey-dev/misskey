@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../services/stream';
-import notify from '../../../../../services/create-notification';
+import { createNotification } from '../../../../../services/create-notification';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
@@ -11,7 +11,6 @@ import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
 import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
 import { PollVotes, NoteWatchings, Users, Polls } from '../../../../../models';
-import { Note } from '../../../../../models/entities/note';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
 import { genId } from '../../../../../misc/gen-id';
@@ -132,7 +131,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Notify
-	notify(note.userId, user.id, 'pollVote', {
+	createNotification(note.userId, user.id, 'pollVote', {
 		noteId: note.id,
 		choice: ps.choice
 	});
@@ -143,7 +142,7 @@ export default define(meta, async (ps, user) => {
 		userId: Not(user.id),
 	}).then(watchers => {
 		for (const watcher of watchers) {
-			notify(watcher.userId, user.id, 'pollVote', {
+			createNotification(watcher.userId, user.id, 'pollVote', {
 				noteId: note.id,
 				choice: ps.choice
 			});

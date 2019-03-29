@@ -1,5 +1,4 @@
 import { publishNoteStream } from '../../stream';
-import notify from '../../create-notification';
 import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
 import { deliver } from '../../../queue';
@@ -14,6 +13,7 @@ import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
 import { NoteReaction } from '../../../models/entities/note-reaction';
+import { createNotification } from '../../create-notification';
 
 export default async (user: User, note: Note, reaction: string) => {
 	// Myself
@@ -59,7 +59,7 @@ export default async (user: User, note: Note, reaction: string) => {
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成
 	if (note.userHost === null) {
-		notify(note.userId, user.id, 'reaction', {
+		createNotification(note.userId, user.id, 'reaction', {
 			noteId: note.id,
 			reaction: reaction
 		});
@@ -71,7 +71,7 @@ export default async (user: User, note: Note, reaction: string) => {
 		userId: Not(user.id)
 	}).then(watchers => {
 		for (const watcher of watchers) {
-			notify(watcher.userId, user.id, 'reaction', {
+			createNotification(watcher.userId, user.id, 'reaction', {
 				noteId: note.id,
 				reaction: reaction
 			});
