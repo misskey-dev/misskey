@@ -35,6 +35,7 @@ import { dbLogger } from '../logger';
 import { Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { UserServiceLinking } from '../../models/entities/user-service-linking';
+import { Poll } from '../../models/entities/poll';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -94,6 +95,7 @@ export function initMainPostgre() {
 		Log,
 		DriveFile,
 		DriveFolder,
+		Poll,
 		PollVote,
 		Notification,
 		Emoji,

@@ -3,7 +3,7 @@ import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
-import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings } from '..';
+import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import rap from '@prezzemolo/rap';
 
 @EntityRepository(Note)
@@ -100,36 +100,40 @@ export class NoteRepository extends Repository<Note> {
 		const _note = typeof note === 'object' ? note : await this.findOne(note);
 		const host = _note.userHost;
 
-		async function populatePoll(poll: NonNullable<Note['poll']>) {
+		async function populatePoll() {
+			const poll = await Polls.findOne({ noteId: _note.id });
+			const choices = poll.choices.map(c => ({
+				text: c,
+				votes: poll.votes[poll.choices.indexOf(c)],
+				isVoted: false
+			}));
+
 			if (poll.multiple) {
 				const votes = await PollVotes.find({
 					userId: meId,
 					noteId: _note.id
 				});
 
-				const myChoices = poll.choices.filter(x => votes.some(y => x.id == y.choice));
+				const myChoices = votes.map(v => v.choice);
 				for (const myChoice of myChoices) {
-					(myChoice as any).isVoted = true;
+					choices[myChoice].isVoted = true;
 				}
-
-				return poll;
 			} else {
-				poll.multiple = false;
+				const vote = await PollVotes.findOne({
+					userId: meId,
+					noteId: _note.id
+				});
+
+				if (vote) {
+					choices[vote.choice].isVoted = true;
+				}
 			}
 
-			const vote = await PollVotes.findOne({
-				userId: meId,
-				noteId: _note.id
-			});
-
-			if (vote) {
-				const myChoice = poll.choices
-					.filter(x => x.id == vote.choice)[0] as any;
-
-				myChoice.isVoted = true;
-			}
-
-			return poll;
+			return {
+				multiple: poll.multiple,
+				expiresAt: poll.expiresAt,
+				choices
+			};
 		}
 
 		async function populateMyReaction() {
@@ -184,7 +188,7 @@ export class NoteRepository extends Repository<Note> {
 					detail: false
 				}) : null,
 
-				poll: _note.poll ? populatePoll(_note.poll) : null,
+				poll: _note.hasPoll ? populatePoll() : null,
 
 				...(meId ? {
 					myReaction: populateMyReaction()
