@@ -3,12 +3,15 @@ import { publishNoteStream } from '../../stream';
 import notify from '../../../services/create-notification';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { PollVotes, Users, Notes, NoteWatchings } from '../../../models';
+import { PollVotes, Users, NoteWatchings, Polls } from '../../../models';
 import { Not } from 'typeorm';
 import { genId } from '../../../misc/gen-id';
 
 export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
-	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
+	const poll = await Polls.findOne({ noteId: note.id });
+
+	// Check whether is valid choice
+	if (poll.choices[choice] == null) return rej('invalid choice param');
 
 	// if already voted
 	const exist = await PollVotes.find({
@@ -16,7 +19,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 		userId: user.id
 	});
 
-	if (note.poll.multiple) {
+	if (poll.multiple) {
 		if (exist.some(x => x.choice === choice)) {
 			return rej('already voted');
 		}
@@ -35,15 +38,14 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 
 	res();
 
-	const index = note.poll.choices.findIndex(c => c.id == choice);
-	const sql = `jsonb_set(poll, '{choices,${index},votes}', (COALESCE(poll->choices->${index}->>'votes','0')::int + 1)::text::jsonb)`;
+	const sql = () => `votes[${choice}] + 1`;
 
 	// Increment votes count
-	await Notes.createQueryBuilder('note')
+	await Polls.createQueryBuilder('poll')
 		.update()
-		.where('id = :id', { id: note.id })
+		.where('poll = :id', { id: poll.id })
 		.set({
-			poll: () => sql
+			votes: sql as any
 		})
 		.execute();
 

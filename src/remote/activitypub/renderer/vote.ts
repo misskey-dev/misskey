@@ -1,9 +1,10 @@
 import config from '../../../config';
 import { Note } from '../../../models/entities/note';
 import { IRemoteUser, ILocalUser } from '../../../models/entities/user';
-import { IPollVote } from '../../../models/entities/poll-vote';
+import { PollVote } from '../../../models/entities/poll-vote';
+import { Poll } from '../../../models/entities/poll';
 
-export default async function renderVote(user: ILocalUser, vote: IPollVote, pollNote: Note, pollOwner: IRemoteUser): Promise<any> {
+export default async function renderVote(user: ILocalUser, vote: PollVote, note: Note, poll: Poll, pollOwner: IRemoteUser): Promise<any> {
 	return {
 		id: `${config.url}/users/${user.id}#votes/${vote.id}/activity`,
 		actor: `${config.url}/users/${user.id}`,
@@ -15,8 +16,8 @@ export default async function renderVote(user: ILocalUser, vote: IPollVote, poll
 			type: 'Note',
 			attributedTo: `${config.url}/users/${user.id}`,
 			to: [pollOwner.uri],
-			inReplyTo: pollNote.uri,
-			name: pollNote.poll.choices.find(x => x.id === vote.choice).text
+			inReplyTo: note.uri,
+			name: poll.choices[vote.choice]
 		}
 	};
 }

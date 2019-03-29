@@ -19,13 +19,14 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings, Notes, Instances } from '../../models';
+import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings, Notes, Instances, Polls } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
+import { Poll, IPoll } from '../../models/entities/poll';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -89,7 +90,7 @@ type Option = {
 	renote?: Note;
 	files?: DriveFile[];
 	geo?: any;
-	poll?: Note['poll'];
+	poll?: IPoll;
 	viaMobile?: boolean;
 	localOnly?: boolean;
 	cw?: string;
@@ -158,7 +159,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const tokens = data.text ? parse(data.text) : [];
 		const cwTokens = data.cw ? parse(data.cw) : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat(data.poll.choices.map(choice => parse(choice.text)))
+			? concat(data.poll.choices.map(choice => parse(choice)))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
@@ -395,7 +396,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		renoteId: data.renote ? data.renote.id : null,
 		name: data.name,
 		text: data.text,
-		poll: data.poll,
+		hasPoll: data.poll != null,
 		cw: data.cw == null ? null : data.cw,
 		tags: tags.map(tag => tag.toLowerCase()),
 		emojis,
@@ -436,7 +437,21 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 	// 投稿を作成
 	try {
-		return await Notes.save(insert);
+		const note = await Notes.save(insert);
+
+		if (note.hasPoll) {
+			await Polls.save({
+				id: genId(),
+				noteId: note.id,
+				choices: data.poll.choices,
+				expiresAt: data.poll.expiresAt,
+				multiple: data.poll.multiple,
+				votes: new Array(data.poll.choices.length).fill(0),
+				userHost: user.host
+			} as Poll);
+		}
+
+		return note;
 	} catch (e) {
 		// duplicate key error
 		if (e.code === 11000) {

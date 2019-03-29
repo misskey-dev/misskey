@@ -181,10 +181,10 @@ export class Note {
 	})
 	public tags: string[];
 
-	@Column('jsonb', {
-		nullable: true
+	@Column('boolean', {
+		default: false
 	})
-	public poll: IPoll | null;
+	public hasPoll: boolean;
 
 	@Column('jsonb', {
 		nullable: true, default: {}
@@ -232,18 +232,6 @@ export class Note {
 	public renoteUserHost: string | null;
 	//#endregion
 }
-
-export type IPoll = {
-	choices: IChoice[];
-	multiple?: boolean;
-	expiresAt?: Date;
-};
-
-export type IChoice = {
-	id: number;
-	text: string;
-	votes: number;
-};
 
 export type IMentionedRemoteUsers = {
 	uri: string;
