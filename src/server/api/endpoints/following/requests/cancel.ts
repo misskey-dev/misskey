@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
-import { pack } from '../../../../../models/entities/user';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
+import { Users } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -21,6 +21,7 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
+			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
 			}
@@ -56,5 +57,5 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	}
 
-	return await pack(followee.id, user);
+	return await Users.pack(followee.id, user);
 });
