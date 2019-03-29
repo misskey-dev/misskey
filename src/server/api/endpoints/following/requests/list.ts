@@ -1,5 +1,5 @@
-import FollowRequest, { pack } from '../../../../../models/entities/follow-request';
 import define from '../../../define';
+import { FollowRequests } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -15,9 +15,9 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const reqs = await FollowRequest.find({
+	const reqs = await FollowRequests.find({
 		followeeId: user.id
 	});
 
-	return await Promise.all(reqs.map(req => pack(req)));
+	return await Promise.all(reqs.map(req => FollowRequests.pack(req)));
 });
