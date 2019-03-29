@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 		query.type = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
 	}
 
-	const files = await query.getMany();
+	const files = await query.take(ps.limit).getMany();
 
 	return await DriveFiles.packMany(files, { detail: false, self: true });
 });
