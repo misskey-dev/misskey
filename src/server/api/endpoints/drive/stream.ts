@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { MoreThan, LessThan } from 'typeorm';
 import { DriveFiles } from '../../../../models';
 import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
@@ -44,8 +43,11 @@ export default define(meta, async (ps, user) => {
 		.andWhere('file.userId = :userId', { userId: user.id });
 
 	if (ps.type) {
-		// v11 TODO
-		query.type = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
+		if (ps.type.endsWith('/*')) {
+			query.andWhere('file.type like :type', { type: ps.type.replace('/*', '/') + '%' });
+		} else {
+			query.andWhere('file.type = :type', { type: ps.type });
+		}
 	}
 
 	const files = await query.take(ps.limit).getMany();
