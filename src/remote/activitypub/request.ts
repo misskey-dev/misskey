@@ -11,6 +11,7 @@ import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 import { Instances, UserKeypairs } from '../../models';
+import fetchMeta from '../../misc/fetch-meta';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -23,8 +24,8 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instances.findOne({ host: toUnicode(host) });
-	if (instance && instance.isBlocked) return;
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(toUnicode(host))) return;
 
 	const data = JSON.stringify(object);
 

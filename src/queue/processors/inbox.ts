@@ -13,6 +13,7 @@ import { Instances, Users, UserPublickeys } from '../../models';
 import { Not } from 'typeorm';
 import { instanceChart } from '../../services/chart';
 import { UserPublickey } from '../../models/entities/user-publickey';
+import fetchMeta from '../../misc/fetch-meta';
 
 const logger = new Logger('inbox');
 
@@ -49,8 +50,8 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		// ブロックしてたら中断
 		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const instance = await Instances.findOne({ host: host.toLowerCase() });
-		if (instance && instance.isBlocked) {
+		const meta = await fetchMeta();
+		if (meta.blockedHosts.includes(host.toLowerCase())) {
 			logger.info(`Blocked request: ${host}`);
 			return;
 		}
@@ -72,9 +73,9 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		// ブロックしてたら中断
 		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const instance = await Instances.findOne({ host: host.toLowerCase() });
-		if (instance && instance.isBlocked) {
-			logger.warn(`Blocked request: ${host}`);
+		const meta = await fetchMeta();
+		if (meta.blockedHosts.includes(host.toLowerCase())) {
+			logger.info(`Blocked request: ${host}`);
 			return;
 		}
 

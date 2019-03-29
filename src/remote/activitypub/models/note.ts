@@ -21,6 +21,7 @@ import { Note } from '../../../models/entities/note';
 import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
+import fetchMeta from '../../../misc/fetch-meta';
 
 const logger = apLogger;
 
@@ -228,8 +229,8 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instances.findOne({ host: extractDbHost(uri) });
-	if (instance && instance.isBlocked) throw { statusCode: 451 };
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(extractDbHost(uri))) throw { statusCode: 451 };
 
 	//#region このサーバーに既に登録されていたらそれを返す
 	const exist = await fetchNote(uri);

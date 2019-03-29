@@ -72,6 +72,11 @@ export class Meta {
 	public hiddenTags: string[];
 
 	@Column('varchar', {
+		length: 256, array: true, default: '{}'
+	})
+	public blockedHosts: string[];
+
+	@Column('varchar', {
 		length: 256,
 		nullable: true,
 		default: '/assets/ai.png'

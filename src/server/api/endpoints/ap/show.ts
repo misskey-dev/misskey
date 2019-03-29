@@ -9,6 +9,7 @@ import { extractDbHost } from '../../../../misc/convert-host';
 import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
 	tags: ['federation'],
@@ -78,8 +79,8 @@ async function fetchAny(uri: string) {
 	}
 
 	// ブロックしてたら中断
-	const instance = await Instance.findOne({ host: extractDbHost(uri) });
-	if (instance && instance.isBlocked) return null;
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(extractDbHost(uri))) return null;
 
 	// URI(AP Object id)としてDB検索
 	{
