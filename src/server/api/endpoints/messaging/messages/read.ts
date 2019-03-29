@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/entities/messaging-message';
 import read from '../../../common/read-messaging-message';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { MessagingMessages } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -37,7 +37,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const message = await Message.findOne({
+	const message = await MessagingMessages.findOne({
 		id: ps.messageId,
 		recipientId: user.id
 	});
@@ -46,7 +46,5 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	read(user.id, message.userId, message);
-
-	return;
+	read(user.id, message.userId, [message.id]);
 });

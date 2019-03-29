@@ -9,9 +9,10 @@ import { URL } from 'url';
 import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import { Instances, Users } from '../../models';
+import { Instances, Users, UserPublickeys } from '../../models';
 import { Not } from 'typeorm';
 import { instanceChart } from '../../services/chart';
+import { UserPublickey } from '../../models/entities/user-publickey';
 
 const logger = new Logger('inbox');
 
@@ -29,6 +30,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	const keyIdLower = signature.keyId.toLowerCase();
 	let user: IRemoteUser;
+	let key: UserPublickey;
 
 	if (keyIdLower.startsWith('acct:')) {
 		const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
@@ -54,6 +56,10 @@ export default async (job: Bull.Job): Promise<void> => {
 		}
 
 		user = await Users.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
+
+		key = await UserPublickeys.findOne({
+			userId: user.id
+		});
 	} else {
 		// アクティビティ内のホストの検証
 		const host = toUnicode(new URL(signature.keyId).hostname.toLowerCase());
@@ -72,10 +78,11 @@ export default async (job: Bull.Job): Promise<void> => {
 			return;
 		}
 
-		user = await Users.findOne({
-			host: Not(null),
-			'publicKey.id': signature.keyId
-		}) as IRemoteUser;
+		key = await UserPublickeys.findOne({
+			keyId: signature.keyId
+		});
+
+		user = await Users.findOne(key.userId) as IRemoteUser;
 	}
 
 	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
@@ -83,7 +90,7 @@ export default async (job: Bull.Job): Promise<void> => {
 		if (activity.object && activity.object.type === 'Person') {
 			if (user == null) {
 				logger.warn('Update activity received, but user not registed.');
-			} else if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
+			} else if (!httpSignature.verifySignature(signature, key.keyPem)) {
 				logger.warn('Update activity received, but signature verification failed.');
 			} else {
 				updatePerson(activity.actor, null, activity.object);
@@ -101,7 +108,7 @@ export default async (job: Bull.Job): Promise<void> => {
 		throw new Error('failed to resolve user');
 	}
 
-	if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
+	if (!httpSignature.verifySignature(signature, key.keyPem)) {
 		logger.error('signature verification failed');
 		return;
 	}

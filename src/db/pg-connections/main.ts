@@ -36,6 +36,8 @@ import { Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { UserServiceLinking } from '../../models/entities/user-service-linking';
 import { Poll } from '../../models/entities/poll';
+import { UserKeypair } from '../../models/entities/user-keypair';
+import { UserPublickey } from '../../models/entities/user-publickey';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -79,6 +81,8 @@ export function initMainPostgre() {
 		AuthSession,
 		AccessToken,
 		User,
+		UserKeypair,
+		UserPublickey,
 		UserList,
 		UserListJoining,
 		UserNotePining,

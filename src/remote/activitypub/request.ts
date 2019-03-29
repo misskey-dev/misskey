@@ -10,7 +10,7 @@ import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import { Instances } from '../../models';
+import { Instances, UserKeypairs } from '../../models';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -34,6 +34,10 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	const addr = await resolveAddr(hostname);
 	if (!addr) return;
+
+	const keypair = await UserKeypairs.findOne({
+		userId: user.id
+	});
 
 	const _ = new Promise((resolve, reject) => {
 		const req = request({
@@ -62,7 +66,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 		sign(req, {
 			authorizationHeaderName: 'Signature',
-			key: user.keypair,
+			key: keypair.keyPem,
 			keyId: `${config.url}/users/${user.id}/publickey`,
 			headers: ['date', 'host', 'digest']
 		});

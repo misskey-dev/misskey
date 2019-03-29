@@ -8,7 +8,7 @@ import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
-import { DriveFiles, UserServiceLinkings } from '../../../models';
+import { DriveFiles, UserServiceLinkings, UserKeypairs } from '../../../models';
 
 export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
@@ -76,6 +76,10 @@ export async function renderPerson(user: ILocalUser) {
 		...hashtagTags,
 	];
 
+	const keypair = await UserKeypairs.findOne({
+		userId: user.id
+	});
+
 	return {
 		type: user.isBot ? 'Service' : 'Person',
 		id,
@@ -94,7 +98,7 @@ export async function renderPerson(user: ILocalUser) {
 		image: user.bannerId && renderImage(banner),
 		tag,
 		manuallyApprovesFollowers: user.isLocked,
-		publicKey: renderKey(user),
+		publicKey: renderKey(user, keypair),
 		isCat: user.isCat,
 		attachment: attachment.length ? attachment : undefined
 	};

@@ -33,6 +33,8 @@ import { UserServiceLinking } from './entities/user-service-linking';
 import { NotificationRepository } from './repositories/notification';
 import { NoteFavoriteRepository } from './repositories/note-favorite';
 import { ReversiMatchingRepository } from './repositories/games/reversi/matching';
+import { UserPublickey } from './entities/user-publickey';
+import { UserKeypair } from './entities/user-keypair';
 
 export const Apps = getRepository(App);
 export const Notes = getCustomRepository(NoteRepository);
@@ -43,6 +45,8 @@ export const NoteUnreads = getRepository(NoteUnread);
 export const Polls = getRepository(Poll);
 export const PollVotes = getRepository(PollVote);
 export const Users = getCustomRepository(UserRepository);
+export const UserKeypairs = getRepository(UserKeypair);
+export const UserPublickeys = getRepository(UserPublickey);
 export const UserLists = getCustomRepository(UserListRepository);
 export const UserListJoinings = getRepository(UserListJoining);
 export const UserNotePinings = getRepository(UserNotePining);

@@ -15,13 +15,14 @@ import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateHashtag } from '../../../services/update-hashtag';
-import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserServiceLinkings } from '../../../models';
+import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserServiceLinkings, UserPublickeys } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
 import { UserNotePining } from '../../../models/entities/user-note-pinings';
 import { genId } from '../../../misc/gen-id';
 import { UserServiceLinking } from '../../../models/entities/user-service-linking';
 import { instanceChart, usersChart } from '../../../services/chart';
+import { UserPublickey } from '../../../models/entities/user-publickey';
 const logger = apLogger;
 
 /**
@@ -163,10 +164,6 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			username: person.preferredUsername,
 			usernameLower: person.preferredUsername.toLowerCase(),
 			host,
-			publicKey: {
-				id: person.publicKey.id,
-				publicKeyPem: person.publicKey.publicKeyPem
-			},
 			inbox: person.inbox,
 			sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 			featured: person.featured,
@@ -179,6 +176,13 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			isBot,
 			isCat: (person as any).isCat === true
 		}) as IRemoteUser;
+
+		await UserPublickeys.save({
+			id: genId(),
+			userId: user.id,
+			keyId: person.publicKey.id,
+			keyPem: person.publicKey.publicKeyPem
+		} as UserPublickey);
 	} catch (e) {
 		// duplicate key error
 		if (e.code === 11000) {
@@ -351,17 +355,12 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		url: person.url,
 		endpoints: person.endpoints,
 		fields,
-		...services,
 		tags,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
 		createdAt: Date.parse(person.published) || null,
-		publicKey: {
-			id: person.publicKey.id,
-			publicKeyPem: person.publicKey.publicKeyPem
-		},
-	} as any;
+	} as Partial<User>;
 
 	if (avatar) {
 		updates.avatarId = avatar.id;
@@ -377,6 +376,11 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	// Update user
 	await Users.update(exist.id, updates);
+
+	await UserPublickeys.update({ userId: exist.id }, {
+		keyId: person.publicKey.id,
+		keyPem: person.publicKey.publicKeyPem
+	});
 
 	// ハッシュタグ更新
 	for (const tag of tags) updateHashtag(exist, tag, true, true);

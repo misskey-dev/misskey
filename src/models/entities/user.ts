@@ -255,11 +255,6 @@ export class User {
 	})
 	public token: string | null;
 
-	@Column('varchar', {
-		length: 2048,
-	})
-	public keypair: string;
-
 	@Column('jsonb', {
 		default: {},
 		comment: 'The client-specific data of the User.'

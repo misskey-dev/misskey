@@ -5,7 +5,7 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
-import { Users, RegistrationTickets, UserServiceLinkings } from '../../../models';
+import { Users, RegistrationTickets, UserServiceLinkings, UserKeypairs } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
 import { UserServiceLinking } from '../../../models/entities/user-service-linking';
@@ -79,13 +79,18 @@ export default async (ctx: Koa.BaseContext) => {
 		createdAt: new Date(),
 		username: username,
 		usernameLower: username.toLowerCase(),
-		keypair: generateKeypair(),
 		token: secret,
 		password: hash,
 		isAdmin: config.autoAdmin && usersCount === 0,
 		autoAcceptFollowed: true,
 		autoWatch: false
 	} as User);
+
+	await UserKeypairs.save({
+		id: genId(),
+		keyPem: generateKeypair(),
+		userId: account.id
+	});
 
 	await UserServiceLinkings.save({
 		id: genId(),
