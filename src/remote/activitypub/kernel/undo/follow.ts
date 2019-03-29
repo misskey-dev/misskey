@@ -1,10 +1,9 @@
-import User, { IRemoteUser } from '../../../../models/entities/user';
 import config from '../../../../config';
 import unfollow from '../../../../services/following/delete';
 import cancelRequest from '../../../../services/following/requests/cancel';
 import { IFollow } from '../../type';
-import FollowRequest from '../../../../models/entities/follow-request';
-import Following from '../../../../models/entities/following';
+import { IRemoteUser } from '../../../../models/entities/user';
+import { Users, FollowRequests, Followings } from '../../../../models';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
@@ -13,9 +12,7 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		return null;
 	}
 
-	const followee = await Users.findOne({
-		id: id.split('/').pop()
-	});
+	const followee = await Users.findOne(id.split('/').pop());
 
 	if (followee == null) {
 		throw new Error('followee not found');
@@ -25,12 +22,12 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		throw new Error('フォロー解除しようとしているユーザーはローカルユーザーではありません');
 	}
 
-	const req = await FollowRequest.findOne({
+	const req = await FollowRequests.findOne({
 		followerId: actor.id,
 		followeeId: followee.id
 	});
 
-	const following = await Following.findOne({
+	const following = await Followings.findOne({
 		followerId: actor.id,
 		followeeId: followee.id
 	});

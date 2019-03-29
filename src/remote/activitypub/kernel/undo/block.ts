@@ -1,8 +1,9 @@
-import User, { IRemoteUser } from '../../../../models/entities/user';
 import config from '../../../../config';
 import { IBlock } from '../../type';
 import unblock from '../../../../services/blocking/delete';
 import { apLogger } from '../../logger';
+import { IRemoteUser } from '../../../../models/entities/user';
+import { Users } from '../../../../models';
 
 const logger = apLogger;
 
@@ -17,9 +18,7 @@ export default async (actor: IRemoteUser, activity: IBlock): Promise<void> => {
 		return null;
 	}
 
-	const blockee = await Users.findOne({
-		id: id.split('/').pop()
-	});
+	const blockee = await Users.findOne(id.split('/').pop());
 
 	if (blockee == null) {
 		throw new Error('blockee not found');

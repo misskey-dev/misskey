@@ -6,9 +6,10 @@ import config from '../../../config';
 import toHtml from '../misc/get-note-html';
 import { Note, IMentionedRemoteUsers } from '../../../models/entities/note';
 import { DriveFile } from '../../../models/entities/drive-file';
-import { DriveFiles, Notes, Users, Emojis } from '../../../models';
+import { DriveFiles, Notes, Users, Emojis, Polls } from '../../../models';
 import { In } from 'typeorm';
 import { Emoji } from '../../../models/entities/emoji';
+import { Poll } from '../../../models/entities/poll';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
 	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 1
@@ -84,9 +85,14 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 	const files = await promisedFiles;
 
 	let text = note.text;
+	let poll: Poll;
+
+	if (note.hasPoll) {
+		poll = await Polls.findOne({ noteId: note.id });
+	}
 
 	let question: string;
-	if (note.poll != null) {
+	if (poll) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note.id}`;
 		// TODO: i18n
@@ -99,8 +105,8 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 	if (apText == null) apText = '';
 
 	// Provides choices as text for AP
-	if (note.poll != null) {
-		const cs = note.poll.choices.map(c => `${c.id}: ${c.text}`);
+	if (poll) {
+		const cs = poll.choices.map((c, i) => `${i}: ${c}`);
 		apText += '\n----------------------------------------\n';
 		apText += cs.join('\n');
 		apText += '\n----------------------------------------\n';
@@ -126,25 +132,19 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		...apemojis,
 	];
 
-	const {
-		choices = [],
-		expiresAt = null,
-		multiple = false
-	} = note.poll || {};
-
-	const asPoll = note.poll ? {
+	const asPoll = poll ? {
 		type: 'Question',
 		content: toHtml(Object.assign({}, note, {
 			text: text
 		})),
 		_misskey_fallback_content: content,
-		[expiresAt && expiresAt < new Date() ? 'closed' : 'endTime']: expiresAt,
-		[multiple ? 'anyOf' : 'oneOf']: choices.map(({ text, votes }) => ({
+		[poll.expiresAt && poll.expiresAt < new Date() ? 'closed' : 'endTime']: poll.expiresAt,
+		[poll.multiple ? 'anyOf' : 'oneOf']: poll.choices.map((text, i) => ({
 			type: 'Note',
 			name: text,
 			replies: {
 				type: 'Collection',
-				totalItems: votes
+				totalItems: poll.votes[i]
 			}
 		}))
 	} : {};

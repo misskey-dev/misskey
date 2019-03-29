@@ -16,7 +16,7 @@ import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost } from '../../../misc/convert-host';
-import { Notes, Instances, Emojis } from '../../../models';
+import { Notes, Instances, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
@@ -151,9 +151,10 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const text = note._misskey_content || fromHtml(note.content);
 
 	// vote
-	if (reply && reply.poll) {
+	if (reply && reply.hasPoll) {
+		const poll = await Polls.findOne({ noteId: reply.id });
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
-			if (reply.poll.expiresAt && Date.now() > new Date(reply.poll.expiresAt).getTime()) {
+			if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
 				logger.warn(`vote to expired poll from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
 			} else if (index >= 0) {
 				logger.info(`vote from AP: actor=${actor.username}@${actor.host}, note=${note.id}, choice=${name}`);
@@ -166,7 +167,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		};
 
 		if (note.name) {
-			return await tryCreateVote(note.name, reply.poll.choices.findIndex(x => x.text === note.name));
+			return await tryCreateVote(note.name, poll.choices.findIndex(x => x === note.name));
 		}
 
 		// 後方互換性のため
