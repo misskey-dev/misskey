@@ -1,11 +1,11 @@
 import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
-import notify from '../../../services/create-notification';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { PollVotes, Users, NoteWatchings, Polls } from '../../../models';
 import { Not } from 'typeorm';
 import { genId } from '../../../misc/gen-id';
+import { createNotification } from '../../create-notification';
 
 export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
 	const poll = await Polls.findOne({ noteId: note.id });
@@ -48,7 +48,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 	});
 
 	// Notify
-	notify(note.userId, user.id, 'pollVote', {
+	createNotification(note.userId, user.id, 'pollVote', {
 		noteId: note.id,
 		choice: choice
 	});
@@ -60,7 +60,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 	})
 	.then(watchers => {
 		for (const watcher of watchers) {
-			notify(watcher.userId, user.id, 'pollVote', {
+			createNotification(watcher.userId, user.id, 'pollVote', {
 				noteId: note.id,
 				choice: choice
 			});

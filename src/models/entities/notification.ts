@@ -90,4 +90,9 @@ export class Notification {
 		length: 128, nullable: true
 	})
 	public reaction: string;
+
+	@Column('integer', {
+		nullable: true
+	})
+	public choice: number;
 }

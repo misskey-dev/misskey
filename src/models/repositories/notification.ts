@@ -24,6 +24,10 @@ export class NotificationRepository extends Repository<Notification> {
 			...(notification.type === 'reaction' ? {
 				note: Notes.pack(notification.note || notification.noteId),
 				reaction: notification.reaction
+			} : {}),
+			...(notification.type === 'pollVote' ? {
+				note: Notes.pack(notification.note || notification.noteId),
+				choice: notification.choice
 			} : {})
 		});
 	}

@@ -13,6 +13,7 @@ export async function createNotification(
 	content?: {
 		noteId?: Note['id'];
 		reaction?: string;
+		choice?: number;
 	}
 ) {
 	if (notifieeId === notifierId) {
@@ -31,6 +32,7 @@ export async function createNotification(
 	if (content) {
 		if (content.noteId) data.noteId = content.noteId;
 		if (content.reaction) data.reaction = content.reaction;
+		if (content.choice) data.choice = content.choice;
 	}
 
 	// Create notification
