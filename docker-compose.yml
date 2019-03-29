@@ -5,7 +5,7 @@ services:
     build: .
     restart: always
     links:
-      - mongo
+      - db
 #      - redis
 #      - es
     ports:
@@ -19,21 +19,18 @@ services:
 #    image: redis:4.0-alpine
 #    networks:
 #      - internal_network
-### Uncomment to enable Redis persistance
-##    volumes:
-##      - ./redis:/data
+#    volumes:
+#      - ./redis:/data
 
-  mongo:
+  db:
     restart: always
-    image: mongo:4.1
+    image: postgres:11.2-alpine
     networks:
       - internal_network
-    environment:
-      MONGO_INITDB_DATABASE: "misskey"
+    env_file:
+      - .config/docker.env
     volumes:
-      - ./.config/mongo_initdb.js:/docker-entrypoint-initdb.d/mongo_initdb.js:ro
-### Uncomment to enable MongoDB persistance
-#      - ./mongo:/data
+      - ./db:/var/lib/postgresql/data
 
 #  es:
 #    restart: always
@@ -42,9 +39,8 @@ services:
 #      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 #    networks:
 #      - internal_network
-#### Uncomment to enable ES persistence
-##    volumes:
-##      - ./elasticsearch:/usr/share/elasticsearch/data
+#    volumes:
+#      - ./elasticsearch:/usr/share/elasticsearch/data
 
 networks:
   internal_network:
