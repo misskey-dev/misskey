@@ -28,7 +28,7 @@ export default Vue.extend({
 	data() {
 		return {
 			connection: null,
-			makePromise: cursor => this.$root.api('notes/search_by_tag', {
+			makePromise: cursor => this.$root.api('notes/search-by-tag', {
 				limit: fetchLimit + 1,
 				untilId: cursor ? cursor : undefined,
 				withFiles: this.mediaOnly,

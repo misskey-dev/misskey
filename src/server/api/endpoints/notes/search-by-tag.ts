@@ -1,8 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
-import { getHideUserIds } from '../../common/get-hide-users';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { Notes } from '../../../../models';
+import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -24,16 +27,6 @@ export const meta = {
 			desc: {
 				'ja-JP': 'クエリ'
 			}
-		},
-
-		following: {
-			validator: $.optional.nullable.bool,
-			default: null as any
-		},
-
-		mute: {
-			validator: $.optional.str,
-			default: 'mute_all'
 		},
 
 		reply: {
@@ -59,15 +52,6 @@ export const meta = {
 			}
 		},
 
-		media: {
-			validator: $.optional.nullable.bool,
-			default: null as any,
-			deprecated: true,
-			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
-
 		poll: {
 			validator: $.optional.nullable.bool,
 			default: null as any,
@@ -76,24 +60,18 @@ export const meta = {
 			}
 		},
 
+		sinceId: {
+			validator: $.optional.type(ID),
+			desc: {
+				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
+			}
+		},
+
 		untilId: {
 			validator: $.optional.type(ID),
 			desc: {
 				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
 			}
-		},
-
-		sinceDate: {
-			validator: $.optional.num,
-		},
-
-		untilDate: {
-			validator: $.optional.num,
-		},
-
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0
 		},
 
 		limit: {
@@ -111,226 +89,58 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const visibleQuery = me == null ? [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}] : [{
-		visibility: { $in: [ 'public', 'home' ] }
-	}, {
-		// myself (for specified/private)
-		userId: me.id
-	}, {
-		// to me (for specified)
-		visibleUserIds: { $in: [ me.id ] }
-	}];
+	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.leftJoinAndSelect('note.user', 'user');
 
-	const q: any = {
-		$and: [ps.tag ? {
-			tagsLower: ps.tag.toLowerCase()
-		} : {
-			$or: ps.query.map(tags => ({
-				$and: tags.map(t => ({
-					tagsLower: t.toLowerCase()
-				}))
-			}))
-		}],
-		deletedAt: { $exists: false },
-		$or: visibleQuery
-	};
+	if (me) generateVisibilityQuery(query, me);
+	if (me) generateMuteQuery(query, me);
 
-	const push = (x: any) => q.$and.push(x);
-
-	if (ps.following != null && me != null) {
-		const ids = await getFriendIds(me.id, false);
-		push({
-			userId: ps.following ? {
-				$in: ids
-			} : {
-				$nin: ids.concat(me.id)
+	if (ps.tag) {
+		query.andWhere(':tag = ANY(note.tags)', { tag: ps.tag });
+	} else {
+		let i = 0;
+		query.andWhere(new Brackets(qb => {
+			for (const tags of ps.query) {
+				qb.orWhere(new Brackets(qb => {
+					for (const tag of tags) {
+						qb.andWhere(`:tag${i} = ANY(note.tags)`, { [`tag${i}`]: tag });
+						i++;
+					}
+				}));
 			}
-		});
-	}
-
-	if (me != null) {
-		const hideUserIds = await getHideUserIds(me);
-
-		switch (ps.mute) {
-			case 'mute_all':
-				push({
-					userId: {
-						$nin: hideUserIds
-					},
-					'_reply.userId': {
-						$nin: hideUserIds
-					},
-					'_renote.userId': {
-						$nin: hideUserIds
-					}
-				});
-				break;
-			case 'mute_related':
-				push({
-					'_reply.userId': {
-						$nin: hideUserIds
-					},
-					'_renote.userId': {
-						$nin: hideUserIds
-					}
-				});
-				break;
-			case 'mute_direct':
-				push({
-					userId: {
-						$nin: hideUserIds
-					}
-				});
-				break;
-			case 'direct_only':
-				push({
-					userId: {
-						$in: hideUserIds
-					}
-				});
-				break;
-			case 'related_only':
-				push({
-					$or: [{
-						'_reply.userId': {
-							$in: hideUserIds
-						}
-					}, {
-						'_renote.userId': {
-							$in: hideUserIds
-						}
-					}]
-				});
-				break;
-			case 'all_only':
-				push({
-					$or: [{
-						userId: {
-							$in: hideUserIds
-						}
-					}, {
-						'_reply.userId': {
-							$in: hideUserIds
-						}
-					}, {
-						'_renote.userId': {
-							$in: hideUserIds
-						}
-					}]
-				});
-				break;
-		}
+		}));
 	}
 
 	if (ps.reply != null) {
 		if (ps.reply) {
-			push({
-				replyId: {
-					$exists: true,
-					$ne: null
-				}
-			});
+			query.andWhere('note.replyId IS NOT NULL');
 		} else {
-			push({
-				$or: [{
-					replyId: {
-						$exists: false
-					}
-				}, {
-					replyId: null
-				}]
-			});
+			query.andWhere('note.replyId IS NULL');
 		}
 	}
 
 	if (ps.renote != null) {
 		if (ps.renote) {
-			push({
-				renoteId: {
-					$exists: true,
-					$ne: null
-				}
-			});
+			query.andWhere('note.renoteId IS NOT NULL');
 		} else {
-			push({
-				$or: [{
-					renoteId: {
-						$exists: false
-					}
-				}, {
-					renoteId: null
-				}]
-			});
+			query.andWhere('note.renoteId IS NULL');
 		}
 	}
 
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.media;
-
-	if (withFiles) {
-		push({
-			fileIds: { $exists: true, $ne: [] }
-		});
+	if (ps.withFiles) {
+		query.andWhere('note.fileIds != \'{}\'');
 	}
 
 	if (ps.poll != null) {
 		if (ps.poll) {
-			push({
-				poll: {
-					$exists: true,
-					$ne: null
-				}
-			});
+			query.andWhere('note.hasPoll = TRUE');
 		} else {
-			push({
-				$or: [{
-					poll: {
-						$exists: false
-					}
-				}, {
-					poll: null
-				}]
-			});
+			query.andWhere('note.hasPoll = FALSE');
 		}
 	}
 
-	if (ps.untilId) {
-		push({
-			id: {
-				$lt: ps.untilId
-			}
-		});
-	}
-
-	if (ps.sinceDate) {
-		push({
-			createdAt: {
-				$gt: new Date(ps.sinceDate)
-			}
-		});
-	}
-
-	if (ps.untilDate) {
-		push({
-			createdAt: {
-				$lt: new Date(ps.untilDate)
-			}
-		});
-	}
-
-	if (q.$and.length == 0) {
-		delete q.$and;
-	}
-
 	// Search notes
-	const notes = await Note.find(q, {
-		sort: {
-			id: -1
-		},
-		take: ps.limit,
-		skip: ps.offset
-	});
+	const notes = await query.take(ps.limit).getMany();
 
-	return await packMany(notes, me);
+	return await Notes.packMany(notes, me);
 });
