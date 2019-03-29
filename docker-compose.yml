@@ -19,9 +19,8 @@ services:
 #    image: redis:4.0-alpine
 #    networks:
 #      - internal_network
-### Uncomment to enable Redis persistance
-##    volumes:
-##      - ./redis:/data
+#    volumes:
+#      - ./redis:/data
 
   db:
     restart: always
@@ -40,9 +39,8 @@ services:
 #      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 #    networks:
 #      - internal_network
-#### Uncomment to enable ES persistence
-##    volumes:
-##      - ./elasticsearch:/usr/share/elasticsearch/data
+#    volumes:
+#      - ./elasticsearch:/usr/share/elasticsearch/data
 
 networks:
   internal_network:
