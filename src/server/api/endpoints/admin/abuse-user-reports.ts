@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { MoreThan, LessThan } from 'typeorm';
 import { AbuseUserReports } from '../../../../models';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
 export const meta = {
 	tags: ['admin'],
@@ -27,22 +27,9 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const sort = {
-		id: -1
-	};
-	const query = {} as any;
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
+	const query = generatePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-	const reports = await AbuseUserReports.find({
-		where: query,
-		take: ps.limit,
-		order: sort
-	});
+	const reports = await query.take(ps.limit).getMany();
 
-	return await packMany(reports);
+	return await AbuseUserReports.packMany(reports);
 });

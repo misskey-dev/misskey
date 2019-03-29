@@ -1,7 +1,6 @@
 import $ from 'cafy';
-import { pack } from '../../../../models/entities/app';
 import define from '../../define';
-import { AccessTokens } from '../../../../models';
+import { AccessTokens, Apps } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -39,7 +38,7 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	return await Promise.all(tokens.map(token => pack(token.appId, user, {
+	return await Promise.all(tokens.map(token => Apps.pack(token.appId, user, {
 		detail: true
 	})));
 });

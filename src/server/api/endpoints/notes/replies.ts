@@ -1,8 +1,6 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { getFriends } from '../../common/get-friends';
-import { getHideUserIds } from '../../common/get-hide-users';
 import { Notes } from '../../../../models';
 import { generatePaginationQuery } from '../../common/generate-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';

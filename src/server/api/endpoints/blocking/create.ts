@@ -84,7 +84,5 @@ export default define(meta, async (ps, user) => {
 	// Create blocking
 	await create(blocker, blockee);
 
-	return await Blockings.pack(blockee.id, user, {
-		detail: true
-	});
+	return await Blockings.pack(blockee.id, user);
 });

@@ -14,9 +14,9 @@ import Featured from './activitypub/featured';
 import renderQuestion from '../remote/activitypub/renderer/question';
 import { inbox as processInbox } from '../queue';
 import { isSelfHost } from '../misc/convert-host';
-import { Notes, Users, Emojis, UserKeypairs } from '../models';
+import { Notes, Users, Emojis, UserKeypairs, Polls } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
-import { In, Not } from 'typeorm';
+import { In } from 'typeorm';
 
 // Init router
 const router = new Router();
@@ -124,8 +124,9 @@ router.get('/questions/:question', async (ctx, next) => {
 	}
 
 	const user = await Users.findOne(pollNote.userId);
+	const poll = await Polls.findOne({ noteId: pollNote.id });
 
-	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, pollNote));
+	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, pollNote, poll));
 	setResponseType(ctx);
 });
 

@@ -106,5 +106,7 @@ export default define(meta, async (ps, user) => {
 		const packed = await ReversiMatchings.pack(matching, child);
 		publishReversiStream(child.id, 'invited', packed);
 		publishMainStream(child.id, 'reversiInvited', packed);
+
+		return null;
 	}
 });

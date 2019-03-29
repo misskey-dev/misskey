@@ -1,15 +1,16 @@
 import { toUnicode, toASCII } from 'punycode';
-import User, { User, IRemoteUser } from '../models/entities/user';
 import webFinger from './webfinger';
 import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';
 import { URL } from 'url';
 import { remoteLogger } from './logger';
 import chalk from 'chalk';
+import { User, IRemoteUser } from '../models/entities/user';
+import { Users } from '../models';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export default async (username: string, _host: string, option?: any, resync?: boolean): Promise<User> => {
+export default async (username: string, _host: string, option?: any, resync = false): Promise<User> => {
 	const usernameLower = username.toLowerCase();
 
 	if (_host == null) {
@@ -54,13 +55,11 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 				throw new Error(`Invalied uri`);
 			}
 
-			await User.update({
+			await Users.update({
 				usernameLower,
 				host: host
 			}, {
-				$set: {
-					uri: self.href
-				}
+				uri: self.href
 			});
 		} else {
 			logger.info(`uri is fine: ${acctLower}`);

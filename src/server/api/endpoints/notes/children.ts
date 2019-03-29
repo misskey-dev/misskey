@@ -63,8 +63,8 @@ export default define(meta, async (ps, user) => {
 		}))
 		.leftJoinAndSelect('note.user', 'user');
 
-	generateVisibilityQuery(query, user);
-	generateMuteQuery(query, user);
+	if (user) generateVisibilityQuery(query, user);
+	if (user) generateMuteQuery(query, user);
 
 	const notes = await query.take(ps.limit).getMany();
 

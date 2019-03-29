@@ -1,10 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Mute from '../../../../models/entities/muting';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { genId } from '../../../../misc/gen-id';
+import { Mutings } from '../../../../models';
+import { Muting } from '../../../../models/entities/muting';
 
 export const meta = {
 	desc: {
@@ -64,7 +65,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check if already muting
-	const exist = await Mute.findOne({
+	const exist = await Mutings.findOne({
 		muterId: muter.id,
 		muteeId: mutee.id
 	});
@@ -74,10 +75,10 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create mute
-	await Mute.save({
+	await Mutings.save({
 		id: genId(),
 		createdAt: new Date(),
 		muterId: muter.id,
 		muteeId: mutee.id,
-	});
+	} as Muting);
 });
