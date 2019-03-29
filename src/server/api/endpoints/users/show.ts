@@ -81,7 +81,7 @@ export default define(meta, async (ps, me) => {
 			});
 		} else {
 			const q: any = ps.userId != null
-				? { _id: ps.userId }
+				? { id: ps.userId }
 				: { usernameLower: ps.username.toLowerCase(), host: null };
 
 			user = await Users.findOne(q);
