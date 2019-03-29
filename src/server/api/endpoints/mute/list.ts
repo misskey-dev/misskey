@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import Mute, { packMany } from '../../../../models/entities/muting';
 import define from '../../define';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { Mutings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -39,26 +40,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = {
-		muterId: me.id
-	} as any;
+	const query = generatePaginationQuery(Mutings.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
+		.andWhere(`muting.muterId = :meId`, { meId: me.id });
 
-	const sort = {
-		id: -1
-	};
+	const mutings = await query
+		.take(ps.limit)
+		.getMany();
 
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
-
-	const mutes = await Mute
-		.find(query, {
-			take: ps.limit,
-			order: sort
-		});
-
-	return await packMany(mutes, me);
+	return await Mutings.packMany(mutings, me);
 });

@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { MoreThan, LessThan } from 'typeorm';
 import { Blockings } from '../../../../models';
+import { generatePaginationQuery } from '../../common/generate-pagination-query';
 
 export const meta = {
 	desc: {
@@ -40,26 +40,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = {
-		blockerId: me.id
-	} as any;
+	const query = generatePaginationQuery(Blockings.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
+		.andWhere(`blocking.blockerId = :meId`, { meId: me.id });
 
-	const sort = {
-		id: -1
-	};
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
-
-	const blockings = await Blockings.find({
-		where: query,
-		take: ps.limit,
-		order: sort
-	});
+	const blockings = await query
+		.take(ps.limit)
+		.getMany();
 
 	return await Blockings.packMany(blockings, me);
 });
