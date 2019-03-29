@@ -5,7 +5,7 @@ import * as httpSignature from 'http-signature';
 import { renderActivity } from '../remote/activitypub/renderer';
 import renderNote from '../remote/activitypub/renderer/note';
 import renderKey from '../remote/activitypub/renderer/key';
-import renderPerson from '../remote/activitypub/renderer/person';
+import { renderPerson } from '../remote/activitypub/renderer/person';
 import renderEmoji from '../remote/activitypub/renderer/emoji';
 import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
@@ -14,7 +14,7 @@ import Featured from './activitypub/featured';
 import renderQuestion from '../remote/activitypub/renderer/question';
 import { inbox as processInbox } from '../queue';
 import { isSelfHost } from '../misc/convert-host';
-import { Notes, Users, Emojis } from '../models';
+import { Notes, Users, Emojis, UserKeypairs } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In, Not } from 'typeorm';
 
@@ -75,8 +75,8 @@ router.get('/notes/:note', async (ctx, next) => {
 	}
 
 	// リモートだったらリダイレクト
-	if (note._user.host != null) {
-		if (note.uri == null || isSelfHost(note._user.host)) {
+	if (note.userHost != null) {
+		if (note.uri == null || isSelfHost(note.userHost)) {
 			ctx.status = 500;
 			return;
 		}
@@ -110,22 +110,22 @@ router.get('/notes/:note/activity', async ctx => {
 
 // question
 router.get('/questions/:question', async (ctx, next) => {
-	const poll = await Notes.findOne({
+	const pollNote = await Notes.findOne({
 		id: ctx.params.question,
 		userHost: null,
 		visibility: In(['public', 'home']),
 		localOnly: false,
-		poll: Not(null),
+		hasPoll: true
 	});
 
-	if (poll == null) {
+	if (pollNote == null) {
 		ctx.status = 404;
 		return;
 	}
 
-	const user = await Users.findOne(poll.userId);
+	const user = await Users.findOne(pollNote.userId);
 
-	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, poll));
+	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, pollNote));
 	setResponseType(ctx);
 });
 
@@ -155,8 +155,12 @@ router.get('/users/:user/publickey', async ctx => {
 		return;
 	}
 
+	const keypair = await UserKeypairs.findOne({
+		userId: user.id
+	});
+
 	if (Users.isLocalUser(user)) {
-		ctx.body = renderActivity(renderKey(user));
+		ctx.body = renderActivity(renderKey(user, keypair));
 		ctx.set('Cache-Control', 'public, max-age=180');
 		setResponseType(ctx);
 	} else {
