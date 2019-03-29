@@ -1,7 +1,7 @@
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
 import parseAcct from '../../misc/acct/parse';
-import User, { IRemoteUser } from '../../models/entities/user';
+import { IRemoteUser } from '../../models/entities/user';
 import perform from '../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
@@ -9,8 +9,9 @@ import { URL } from 'url';
 import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import Instance from '../../models/entities/instance';
-import instanceChart from '../../services/chart/charts/instance';
+import { Instances, Users } from '../../models';
+import { Not } from 'typeorm';
+import { instanceChart } from '../../services/chart';
 
 const logger = new Logger('inbox');
 
@@ -46,7 +47,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		// ブロックしてたら中断
 		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		const instance = await Instances.findOne({ host: host.toLowerCase() });
 		if (instance && instance.isBlocked) {
 			logger.info(`Blocked request: ${host}`);
 			return;
@@ -65,14 +66,14 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		// ブロックしてたら中断
 		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const instance = await Instance.findOne({ host: host.toLowerCase() });
+		const instance = await Instances.findOne({ host: host.toLowerCase() });
 		if (instance && instance.isBlocked) {
 			logger.warn(`Blocked request: ${host}`);
 			return;
 		}
 
 		user = await Users.findOne({
-			host: { $ne: null },
+			host: Not(null),
 			'publicKey.id': signature.keyId
 		}) as IRemoteUser;
 	}
@@ -116,12 +117,10 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	// Update stats
 	registerOrFetchInstanceDoc(user.host).then(i => {
-		Instance.update({ _id: i.id }, {
-			$set: {
-				latestRequestReceivedAt: new Date(),
-				lastCommunicatedAt: new Date(),
-				isNotResponding: false
-			}
+		Instances.update(i.id, {
+			latestRequestReceivedAt: new Date(),
+			lastCommunicatedAt: new Date(),
+			isNotResponding: false
 		});
 
 		instanceChart.requestReceived(i.host);

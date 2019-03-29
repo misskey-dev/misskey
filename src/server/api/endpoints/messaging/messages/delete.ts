@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/entities/messaging-message';
 import define from '../../../define';
 import { publishMessagingStream } from '../../../../../services/stream';
 import * as ms from 'ms';
 import { ApiError } from '../../../error';
+import { MessagingMessages } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -46,7 +46,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const message = await Message.findOne({
+	const message = await MessagingMessages.findOne({
 		id: ps.messageId,
 		userId: user.id
 	});
@@ -55,10 +55,8 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	await Message.remove({ _id: message.id });
+	await MessagingMessages.delete(message.id);
 
 	publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
 	publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
-
-	return;
 });

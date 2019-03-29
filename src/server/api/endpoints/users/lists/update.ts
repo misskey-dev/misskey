@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import UserList, { pack } from '../../../../../models/entities/user-list';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { UserLists } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -25,7 +25,7 @@ export const meta = {
 			}
 		},
 
-		title: {
+		name: {
 			validator: $.str.range(1, 100),
 			desc: {
 				'ja-JP': 'このユーザーリストの名前',
@@ -45,7 +45,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch the list
-	const userList = await UserList.findOne({
+	const userList = await UserLists.findOne({
 		id: ps.listId,
 		userId: user.id
 	});
@@ -54,11 +54,9 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchList);
 	}
 
-	await UserList.update({ _id: userList.id }, {
-		$set: {
-			title: ps.title
-		}
+	await UserLists.update(userList.id, {
+		name: ps.name
 	});
 
-	return await pack(userList.id);
+	return await UserLists.pack(userList.id);
 });
