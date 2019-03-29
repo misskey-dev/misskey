@@ -2,7 +2,6 @@ import { getRepository, getCustomRepository } from 'typeorm';
 import { Instance } from './entities/instance';
 import { Following } from './entities/following';
 import { Emoji } from './entities/emoji';
-import { App } from './entities/app';
 import { Poll } from './entities/poll';
 import { PollVote } from './entities/poll-vote';
 import { Meta } from './entities/meta';
@@ -35,8 +34,9 @@ import { NoteFavoriteRepository } from './repositories/note-favorite';
 import { ReversiMatchingRepository } from './repositories/games/reversi/matching';
 import { UserPublickey } from './entities/user-publickey';
 import { UserKeypair } from './entities/user-keypair';
+import { AppRepository } from './repositories/app';
 
-export const Apps = getRepository(App);
+export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
 export const NoteFavorites = getCustomRepository(NoteFavoriteRepository);
 export const NoteWatchings = getRepository(NoteWatching);

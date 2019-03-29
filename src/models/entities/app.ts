@@ -1,6 +1,4 @@
 import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
-import * as deepcopy from 'deepcopy';
-import config from '../../config';
 import { User } from './user';
 import { id } from '../id';
 
@@ -64,77 +62,3 @@ export class App {
 	})
 	public callbackUrl: string | null;
 }
-
-/**
- * Pack an app for API response
- */
-export const pack = (
-	app: any,
-	me?: any,
-	options?: {
-		detail?: boolean,
-		includeSecret?: boolean,
-		includeProfileImageIds?: boolean
-	}
-) => new Promise<any>(async (resolve, reject) => {
-	const opts = Object.assign({
-		detail: false,
-		includeSecret: false,
-		includeProfileImageIds: false
-	}, options);
-
-	let _app: any;
-
-	const fields = opts.detail ? {} : {
-		name: true
-	};
-
-	// Populate the app if 'app' is ID
-	if (isObjectId(app)) {
-		_app = await App.findOne({
-			id: app
-		});
-	} else if (typeof app === 'string') {
-		_app = await App.findOne({
-			id: new mongo.ObjectID(app)
-		}, { fields });
-	} else {
-		_app = deepcopy(app);
-	}
-
-	// Me
-	if (me && !isObjectId(me)) {
-		if (typeof me === 'string') {
-			me = new mongo.ObjectID(me);
-		} else {
-			me = me.id;
-		}
-	}
-
-	// Rename _id to id
-	_app.id = _app.id;
-	delete _app.id;
-
-	// Visible by only owner
-	if (!opts.includeSecret) {
-		delete _app.secret;
-	}
-
-	_app.iconUrl = _app.icon != null
-		? `${config.driveUrl}/${_app.icon}`
-		: `${config.driveUrl}/app-default.jpg`;
-
-	if (me) {
-		// 既に連携しているか
-		const exist = await AccessToken.count({
-			appId: _app.id,
-			userId: me,
-		}, {
-				limit: 1
-			});
-
-		_app.isAuthorized = exist === 1;
-	}
-
-	resolve(_app);
-});
