@@ -55,7 +55,7 @@ export const meta = {
 			}
 		},
 
-		hidedTags: {
+		hiddenTags: {
 			validator: $.optional.nullable.arr($.str),
 			desc: {
 				'ja-JP': '統計などで無視するハッシュタグ'
@@ -373,8 +373,8 @@ export default define(meta, async (ps) => {
 		set.useStarForReactionFallback = ps.useStarForReactionFallback;
 	}
 
-	if (Array.isArray(ps.hidedTags)) {
-		set.hidedTags = ps.hidedTags;
+	if (Array.isArray(ps.hiddenTags)) {
+		set.hiddenTags = ps.hiddenTags;
 	}
 
 	if (ps.mascotImageUrl !== undefined) {

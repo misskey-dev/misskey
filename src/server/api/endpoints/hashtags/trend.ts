@@ -23,7 +23,7 @@ export const meta = {
 
 export default define(meta, async () => {
 	const instance = await fetchMeta();
-	const hidedTags = instance.hidedTags.map(t => t.toLowerCase());
+	const hiddenTags = instance.hiddenTags.map(t => t.toLowerCase());
 
 	//#region 1. 直近Aの内に投稿されたハッシュタグ(とユーザーのペア)を集計
 	const data = await Note.aggregate([{
@@ -60,7 +60,7 @@ export default define(meta, async () => {
 	}[] = [];
 
 	// カウント
-	for (const x of data.map(x => x.id).filter(x => !hidedTags.includes(x.tag))) {
+	for (const x of data.map(x => x.id).filter(x => !hiddenTags.includes(x.tag))) {
 		const i = tags.findIndex(tag => tag.name == x.tag);
 		if (i != -1) {
 			tags[i].count++;

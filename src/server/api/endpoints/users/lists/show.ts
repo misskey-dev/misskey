@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import UserList, { pack } from '../../../../../models/entities/user-list';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { UserLists } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -37,7 +37,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	// Fetch the list
-	const userList = await UserList.findOne({
+	const userList = await UserLists.findOne({
 		id: ps.listId,
 		userId: me.id,
 	});
@@ -46,5 +46,5 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchList);
 	}
 
-	return await pack(userList);
+	return await UserLists.pack(userList);
 });
