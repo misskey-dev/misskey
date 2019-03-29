@@ -122,16 +122,9 @@ export default define(meta, async (ps, user) => {
 		choice: ps.choice
 	});
 
-	const sql = () => `votes[${ps.choice}] + 1`;
-
 	// Increment votes count
-	await Polls.createQueryBuilder('poll')
-		.update()
-		.where('poll = :id', { id: poll.id })
-		.set({
-			votes: sql as any
-		})
-		.execute();
+	const index = ps.choice + 1; // In SQL, array index is 1 based
+	await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE id = '${poll.id}'`);
 
 	publishNoteStream(note.id, 'pollVoted', {
 		choice: ps.choice,
