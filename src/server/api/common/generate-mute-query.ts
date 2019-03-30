@@ -7,6 +7,9 @@ export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User) {
 		.select('muting.muteeId')
 		.where('muting.muterId = :muterId', { muterId: me.id });
 
+	// 投稿の作者をミュートしていない かつ
+	// 投稿の返信先の作者をミュートしていない かつ
+	// 投稿の引用元の作者をミュートしていない
 	q
 		.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`)
 		.andWhere(new Brackets(qb => { qb
