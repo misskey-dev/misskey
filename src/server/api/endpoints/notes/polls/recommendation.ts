@@ -60,6 +60,8 @@ export default define(meta, async (ps, user) => {
 
 	const polls = await query.take(ps.limit).skip(ps.offset).getMany();
 
+	if (polls.length === 0) return [];
+
 	const notes = await Notes.find({
 		id: In(polls.map(poll => poll.noteId))
 	});
