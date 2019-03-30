@@ -2,11 +2,7 @@ import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'type
 import { DriveFile } from './drive-file';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 @Index(['usernameLower', 'host'], { unique: true })
 export class User {
 	@PrimaryColumn(id())

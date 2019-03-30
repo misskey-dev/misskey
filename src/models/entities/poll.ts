@@ -2,11 +2,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'type
 import { id } from '../id';
 import { Note } from './note';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class Poll {
 	@PrimaryColumn(id())
 	public id: string;

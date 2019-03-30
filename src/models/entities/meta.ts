@@ -1,11 +1,7 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class Meta {
 	@PrimaryColumn(id())
 	public id: string;

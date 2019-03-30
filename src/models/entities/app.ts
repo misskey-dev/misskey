@@ -2,11 +2,7 @@ import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class App {
 	@PrimaryColumn(id())
 	public id: string;

@@ -2,11 +2,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { User } from './user';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 @Index(['muterId', 'muteeId'], { unique: true })
 export class Muting {
 	@PrimaryColumn(id())

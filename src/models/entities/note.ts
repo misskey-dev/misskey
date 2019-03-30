@@ -4,11 +4,7 @@ import { App } from './app';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class Note {
 	@PrimaryColumn(id())
 	public id: string;

@@ -2,11 +2,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'type
 import { User } from './user';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class UserServiceLinking {
 	@PrimaryColumn(id())
 	public id: string;

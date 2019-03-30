@@ -3,11 +3,7 @@ import { Note } from './note';
 import { User } from './user';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 @Index(['userId', 'noteId'], { unique: true })
 export class UserNotePining {
 	@PrimaryColumn(id())

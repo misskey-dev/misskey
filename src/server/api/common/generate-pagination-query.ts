@@ -7,6 +7,8 @@ export function generatePaginationQuery<T>(q: SelectQueryBuilder<T>, sinceId: st
 	} else if (untilId) {
 		q.where(`${q.alias}.id < :untilId`, { untilId: untilId });
 		q.orderBy(`${q.alias}.id`, 'DESC');
+	} else {
+		q.orderBy(`${q.alias}.id`, 'DESC');
 	}
 	return q;
 }

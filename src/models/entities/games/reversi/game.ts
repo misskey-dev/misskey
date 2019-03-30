@@ -2,11 +2,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { User } from '../../user';
 import { id } from '../../../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class ReversiGame {
 	@PrimaryColumn(id())
 	public id: string;

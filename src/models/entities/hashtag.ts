@@ -2,11 +2,7 @@ import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class Hashtag {
 	@PrimaryColumn(id())
 	public id: string;

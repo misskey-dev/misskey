@@ -3,11 +3,7 @@ import { User } from './user';
 import { id } from '../id';
 import { Note } from './note';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class Notification {
 	@PrimaryColumn(id())
 	public id: string;

@@ -3,11 +3,7 @@ import { User } from './user';
 import { App } from './app';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class AuthSession {
 	@PrimaryColumn(id())
 	public id: string;

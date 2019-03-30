@@ -3,11 +3,7 @@ import { User } from './user';
 import { DriveFolder } from './drive-folder';
 import { id } from '../id';
 
-@Entity({
-	orderBy: {
-		id: 'DESC'
-	}
-})
+@Entity()
 export class DriveFile {
 	@PrimaryColumn(id())
 	public id: string;
