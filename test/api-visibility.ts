@@ -7,9 +7,9 @@
  * To specify test:
  * > mocha test/api-visibility.ts --require ts-node/register -g 'test name'
  */
-import * as http from 'http';
 import * as assert from 'chai';
-import { async, _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
+import { async, signup, request, post } from './utils';
+//const misskey = require('../built').default;
 
 const expect = assert.expect;
 
@@ -23,23 +23,18 @@ process.env.NODE_ENV = 'test';
 process.on('unhandledRejection', console.dir);
 //#endregion
 
-const app = require('../built/server/api').default;
-const db = require('../built/db/mongodb').default;
-
-const server = http.createServer(app.callback());
-
-//#region Utilities
-const request = _request(server);
-const signup = _signup(request);
-const post = _post(request);
-//#endregion
-
 describe('API visibility', () => {
 	// Reset database each test
-	before(resetDb(db));
+	before(done => {
+		done();
+		/*misskey().then(() => {
+			done();
+		});*/
+		//await resetDb(db);
+	});
 
 	after(() => {
-		server.close();
+		//server.close();
 	});
 
 	describe('Note visibility', async () => {
@@ -61,8 +56,6 @@ describe('API visibility', () => {
 		let fol: any;
 		/** specified-post */
 		let spe: any;
-		/** private-post */
-		let pri: any;
 
 		/** public-reply to target's post */
 		let pubR: any;
@@ -72,8 +65,6 @@ describe('API visibility', () => {
 		let folR: any;
 		/** specified-reply to target's post */
 		let speR: any;
-		/** private-reply to target's post */
-		let priR: any;
 
 		/** public-mention to target */
 		let pubM: any;
@@ -83,8 +74,6 @@ describe('API visibility', () => {
 		let folM: any;
 		/** specified-mention to target */
 		let speM: any;
-		/** private-mention to target */
-		let priM: any;
 
 		/** reply target post */
 		let tgt: any;
@@ -112,7 +101,6 @@ describe('API visibility', () => {
 			home = await post(alice, { text: 'x', visibility: 'home' });
 			fol  = await post(alice, { text: 'x', visibility: 'followers' });
 			spe  = await post(alice, { text: 'x', visibility: 'specified', visibleUserIds: [target.id] });
-			pri  = await post(alice, { text: 'x', visibility: 'private' });
 
 			// replies
 			tgt = await post(target, { text: 'y', visibility: 'public' });
@@ -120,14 +108,12 @@ describe('API visibility', () => {
 			homeR = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'home' });
 			folR  = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'followers' });
 			speR  = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'specified' });
-			priR  = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'private' });
 
 			// mentions
 			pubM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'public' });
 			homeM = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'home' });
 			folM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'followers' });
 			speM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'specified' });
-			priM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'private' });
 			//#endregion
 		});
 
@@ -218,27 +204,6 @@ describe('API visibility', () => {
 
 		it('[show] specified-postを未認証が見れない', async(async () => {
 			const res = await show(spe.id, null);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		// private
-		it('[show] private-postを自分が見れる', async(async () => {
-			const res = await show(pri.id, alice);
-			expect(res.body).have.property('text').eql('x');
-		}));
-
-		it('[show] private-postをフォロワーが見れない', async(async () => {
-			const res = await show(pri.id, follower);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		it('[show] private-postを非フォロワーが見れない', async(async () => {
-			const res = await show(pri.id, other);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		it('[show] private-postを未認証が見れない', async(async () => {
-			const res = await show(pri.id, null);
 			expect(res.body).have.property('isHidden').eql(true);
 		}));
 		//#endregion
@@ -352,27 +317,6 @@ describe('API visibility', () => {
 			const res = await show(speR.id, null);
 			expect(res.body).have.property('isHidden').eql(true);
 		}));
-
-		// private
-		it('[show] private-replyを自分が見れる', async(async () => {
-			const res = await show(priR.id, alice);
-			expect(res.body).have.property('text').eql('x');
-		}));
-
-		it('[show] private-replyをフォロワーが見れない', async(async () => {
-			const res = await show(priR.id, follower);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		it('[show] private-replyを非フォロワーが見れない', async(async () => {
-			const res = await show(priR.id, other);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		it('[show] private-replyを未認証が見れない', async(async () => {
-			const res = await show(priR.id, null);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
 		//#endregion
 
 		//#region show mention
@@ -482,27 +426,6 @@ describe('API visibility', () => {
 
 		it('[show] specified-mentionを未認証が見れない', async(async () => {
 			const res = await show(speM.id, null);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		// private
-		it('[show] private-mentionを自分が見れる', async(async () => {
-			const res = await show(priM.id, alice);
-			expect(res.body).have.property('text').eql('@target x');
-		}));
-
-		it('[show] private-mentionをフォロワーが見れない', async(async () => {
-			const res = await show(priM.id, follower);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		it('[show] private-mentionを非フォロワーが見れない', async(async () => {
-			const res = await show(priM.id, other);
-			expect(res.body).have.property('isHidden').eql(true);
-		}));
-
-		it('[show] private-mentionを未認証が見れない', async(async () => {
-			const res = await show(priM.id, null);
 			expect(res.body).have.property('isHidden').eql(true);
 		}));
 		//#endregion

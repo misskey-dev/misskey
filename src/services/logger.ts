@@ -35,7 +35,6 @@ export default class Logger {
 
 	private log(level: Level, message: string, data: Record<string, any>, important = false, subDomains: Domain[] = [], store = true): void {
 		if (program.quiet) return;
-		if (process.env.NODE_ENV === 'test') return;
 		if (!this.store) store = false;
 
 		if (this.parentLogger) {

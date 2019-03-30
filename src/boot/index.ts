@@ -17,11 +17,11 @@ const ev = new Xev();
 /**
  * Init process
  */
-function main() {
+export default async function() {
 	process.title = `Misskey (${cluster.isMaster ? 'master' : 'worker'})`;
 
 	if (cluster.isMaster || program.disableClustering) {
-		masterMain();
+		await masterMain();
 
 		if (cluster.isMaster) {
 			ev.mount();
@@ -29,7 +29,7 @@ function main() {
 	}
 
 	if (cluster.isWorker || program.disableClustering) {
-		workerMain();
+		await workerMain();
 	}
 }
 
@@ -69,5 +69,3 @@ process.on('exit', code => {
 });
 
 //#endregion
-
-main();

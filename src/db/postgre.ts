@@ -1,7 +1,11 @@
-import { createConnection, Logger } from 'typeorm';
+import { createConnection, Logger, getConnection } from 'typeorm';
 import config from '../config';
 
 export function createPostgreConnection(entities: any[], name: string, logger: Logger) {
+	try {
+		return getConnection(name);
+	} catch (e) {}
+
 	return createConnection({
 		name,
 		type: 'postgres',

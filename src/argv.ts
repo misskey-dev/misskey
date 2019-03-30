@@ -15,5 +15,6 @@ program
 	.parse(process.argv);
 
 if (process.env.MK_ONLY_QUEUE) program.onlyQueue = true;
+if (process.env.NODE_ENV === 'test') program.disableClustering = true;
 
 export { program };
