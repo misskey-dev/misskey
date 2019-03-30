@@ -30,7 +30,7 @@ export default define(meta, async (ps, user) => {
 	const query = Polls.createQueryBuilder('poll')
 		.where('poll.userHost IS NULL')
 		.andWhere(`poll.userId != :meId`, { meId: user.id })
-		.andWhere(`poll.visibility = 'public'`)
+		.andWhere(`poll.noteVisibility = 'public'`)
 		.andWhere(new Brackets(qb => { qb
 			.where('poll.expiresAt IS NULL')
 			.orWhere('poll.expiresAt > :now', { now: new Date() });

@@ -37,6 +37,12 @@ export class Poll {
 	public votes: number[];
 
 	//#region Denormalized fields
+	@Column('enum', {
+		enum: ['public', 'home', 'followers', 'specified'],
+		comment: '[Denormalized]'
+	})
+	public noteVisibility: 'public' | 'home' | 'followers' | 'specified';
+
 	@Index()
 	@Column({
 		...id(),

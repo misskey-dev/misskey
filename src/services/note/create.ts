@@ -447,6 +447,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 				expiresAt: data.poll.expiresAt,
 				multiple: data.poll.multiple,
 				votes: new Array(data.poll.choices.length).fill(0),
+				noteVisibility: note.visibility,
 				userId: user.id,
 				userHost: user.host
 			} as Poll);
