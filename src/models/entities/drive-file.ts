@@ -48,6 +48,7 @@ export class DriveFile {
 	})
 	public name: string;
 
+	@Index()
 	@Column('varchar', {
 		length: 128,
 		comment: 'The content type (MIME) of the DriveFile.'
