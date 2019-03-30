@@ -90,9 +90,8 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import MkUserListsWindow from './user-lists-window.vue';
-import MkUserListWindow from './user-list-window.vue';
 import MkFollowRequestsWindow from './received-follow-requests-window.vue';
-import MkSettingsWindow from './settings-window.vue';
+// import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 import { faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
@@ -143,12 +142,7 @@ export default Vue.extend({
 		},
 		list() {
 			this.close();
-			const w = this.$root.new(MkUserListsWindow);
-			w.$once('choosen', list => {
-				this.$root.new(MkUserListWindow, {
-					list
-				});
-			});
+			this.$root.new(MkUserListsWindow);
 		},
 		followRequests() {
 			this.close();
