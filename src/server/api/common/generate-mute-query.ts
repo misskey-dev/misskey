@@ -1,6 +1,6 @@
 import { User } from '../../../models/entities/user';
 import { Mutings } from '../../../models';
-import { SelectQueryBuilder } from 'typeorm';
+import { SelectQueryBuilder, Brackets } from 'typeorm';
 
 export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User) {
 	const mutingQuery = Mutings.createQueryBuilder('muting')
@@ -9,8 +9,14 @@ export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User) {
 
 	q
 		.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`)
-		.andWhere(`note.replyUserId NOT IN (${ mutingQuery.getQuery() })`)
-		.andWhere(`note.renoteUserId NOT IN (${ mutingQuery.getQuery() })`);
+		.andWhere(new Brackets(qb => { qb
+			.where(`note.replyUserId IS NULL`)
+			.orWhere(`note.replyUserId NOT IN (${ mutingQuery.getQuery() })`);
+		}))
+		.andWhere(new Brackets(qb => { qb
+			.where(`note.renoteUserId IS NULL`)
+			.orWhere(`note.renoteUserId NOT IN (${ mutingQuery.getQuery() })`);
+		}));
 
 	q.setParameters(mutingQuery.getParameters());
 }

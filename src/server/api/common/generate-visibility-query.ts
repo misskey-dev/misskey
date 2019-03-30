@@ -4,7 +4,10 @@ import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: User) {
 	if (me == null) {
-		q.andWhere('note.visibility = \'public\' OR note.visibility = \'home\'');
+		q.andWhere(new Brackets(qb => { qb
+			.where(`note.visibility = 'public'`)
+			.orWhere(`note.visibility = 'home'`);
+		}));
 	} else {
 		const followingQuery = Followings.createQueryBuilder('following')
 			.select('following.followeeId')
@@ -12,7 +15,10 @@ export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: User) {
 
 		q.andWhere(new Brackets(qb => { qb
 			// 公開投稿である
-			.where('note.visibility = \'public\' OR note.visibility = \'home\'')
+			.where(new Brackets(qb => { qb
+				.where(`note.visibility = 'public'`)
+				.orWhere(`note.visibility = 'home'`);
+			}))
 			// または 自分自身
 			.orWhere('note.userId = :userId1', { userId1: me.id })
 			// または 自分宛て

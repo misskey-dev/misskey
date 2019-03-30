@@ -77,6 +77,7 @@ export class UserRepository extends Repository<User> {
 			bannerUrl: user.bannerUrl,
 			avatarColor: user.avatarColor,
 			bannerColor: user.bannerColor,
+			isAdmin: user.isAdmin,
 
 			// カスタム絵文字添付
 			emojis: user.emojis.length > 0 ? Emojis.find({
