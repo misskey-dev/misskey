@@ -9,7 +9,7 @@
  */
 import * as assert from 'assert';
 import { async, signup, request, post } from './utils';
-//const misskey = require('../built').default;
+const misskey = require('../built').default;
 
 //#region process
 Error.stackTraceLimit = Infinity;
@@ -24,10 +24,9 @@ process.on('unhandledRejection', console.dir);
 describe('API visibility', () => {
 	// Reset database each test
 	before(done => {
-		done();
-		/*misskey().then(() => {
+		misskey().then(() => {
 			done();
-		});*/
+		});
 		//await resetDb(db);
 	});
 

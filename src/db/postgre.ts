@@ -15,7 +15,7 @@ export function createPostgreConnection(entities: any[], name: string, logger: L
 		password: config.db.pass,
 		database: config.db.db,
 		synchronize: true,
-		dropSchema: process.env.NODE_ENV === 'test',
+		//dropSchema: process.env.NODE_ENV === 'test',
 		logging: !['production', 'test'].includes(process.env.NODE_ENV),
 		logger: logger,
 		entities: entities
