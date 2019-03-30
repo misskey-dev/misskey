@@ -158,7 +158,7 @@ router.get('/@:user', async (ctx, next) => {
 		const meta = await fetchMeta();
 		await ctx.render('user', {
 			user,
-			instanceName: meta.name
+			instanceName: meta.name || 'Misskey'
 		});
 		ctx.set('Cache-Control', 'public, max-age=180');
 	} else {
@@ -191,7 +191,7 @@ router.get('/notes/:note', async ctx => {
 		await ctx.render('note', {
 			note: _note,
 			summary: getNoteSummary(_note),
-			instanceName: meta.name
+			instanceName: meta.name || 'Misskey'
 		});
 
 		if (['public', 'home'].includes(note.visibility)) {
@@ -237,7 +237,7 @@ router.get('*', async ctx => {
 	const meta = await fetchMeta();
 	await ctx.render('base', {
 		img: meta.bannerUrl,
-		title: meta.name,
+		title: meta.name || 'Misskey',
 		desc: meta.description,
 		icon: meta.iconUrl
 	});

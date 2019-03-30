@@ -14,7 +14,7 @@
 			<div class="main block">
 				<div>
 					<h1 v-if="name != null">{{ name }}</h1>
-					<h1 v-else><img svg-inline src="../../../../assets/title.svg" :alt="name"></h1>
+					<h1 v-else><img svg-inline src="../../../../assets/title.svg" alt="Misskey"></h1>
 
 					<div class="info">
 						<span><b>{{ host }}</b> - <span v-html="$t('powered-by-misskey')"></span></span>
@@ -162,7 +162,7 @@ export default Vue.extend({
 			banner: null,
 			copyright,
 			host: toUnicode(host),
-			name: 'Misskey',
+			name: null,
 			description: '',
 			announcements: [],
 			photos: []

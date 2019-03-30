@@ -3,7 +3,7 @@
 	<ui-container :show-header="false" v-if="meta && stats">
 		<div class="kpdsmpnk" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 			<div>
-				<router-link to="/explore" class="title">{{ $t('explore', { host: meta.name }) }}</router-link>
+				<router-link to="/explore" class="title">{{ $t('explore', { host: meta.name || 'Misskey' }) }}</router-link>
 				<span>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</span>
 			</div>
 		</div>

@@ -80,7 +80,7 @@ export default define(meta, async (ps, user) => {
 		transporter.sendMail({
 			from: meta.email,
 			to: ps.email,
-			subject: meta.name,
+			subject: meta.name || 'Misskey',
 			text: `To verify email, please click this link: ${link}`
 		}, (error, info) => {
 			if (error) {
