@@ -2,7 +2,6 @@ import $ from 'cafy';
 import define from '../../../define';
 import { ID } from '../../../../../misc/cafy-id';
 import { convertLog } from '../../../../../services/chart/core';
-import { perUserDriveLogSchema } from '../../../../../services/chart/charts/per-user-drive';
 import { perUserDriveChart } from '../../../../../services/chart';
 
 export const meta = {
@@ -39,7 +38,7 @@ export const meta = {
 		}
 	},
 
-	res: convertLog(perUserDriveLogSchema),
+	res: convertLog(perUserDriveChart.schema),
 };
 
 export default define(meta, async (ps) => {

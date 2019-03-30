@@ -1,6 +1,8 @@
+import Chart from './core';
+
 export const entities = Object.values(require('require-all')({
-	dirname: __dirname + '/charts',
+	dirname: __dirname + '/charts/schemas',
 	resolve: (x: any) => {
-		return new x.default().entity;
+		return Chart.schemaToEntity(x.name, x.schema);
 	}
 }));

@@ -1,12 +1,11 @@
 import * as cluster from 'cluster';
-import { initMainPostgre } from '../db/pg-connections/main';
+import { initDb } from '../db/postgre';
 
 /**
  * Init worker process
  */
 export async function workerMain() {
-	await initMainPostgre();
-	await require('../db/pg-connections/charts').initChartPostgre();
+	await initDb();
 
 	// start server
 	await require('../server').default();

@@ -1,95 +1,16 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../core';
-import { SchemaType } from '../../../misc/schema';
-import { Followings, Users } from '../../../models';
+import Chart, { Obj } from '../../core';
+import { SchemaType } from '../../../../misc/schema';
+import { Followings, Users } from '../../../../models';
 import { Not } from 'typeorm';
-import { User } from '../../../models/entities/user';
+import { User } from '../../../../models/entities/user';
+import { name, schema } from '../schemas/per-user-following';
 
-export const logSchema = {
-	/**
-	 * フォローしている
-	 */
-	followings: {
-		type: 'object' as 'object',
-		properties: {
-			/**
-			 * フォローしている合計
-			 */
-			total: {
-				type: 'number',
-				description: 'フォローしている合計',
-			},
-
-			/**
-			 * フォローした数
-			 */
-			inc: {
-				type: 'number',
-				description: 'フォローした数',
-			},
-
-			/**
-			 * フォロー解除した数
-			 */
-			dec: {
-				type: 'number',
-				description: 'フォロー解除した数',
-			},
-		}
-	},
-
-	/**
-	 * フォローされている
-	 */
-	followers: {
-		type: 'object' as 'object',
-		properties: {
-			/**
-			 * フォローされている合計
-			 */
-			total: {
-				type: 'number',
-				description: 'フォローされている合計',
-			},
-
-			/**
-			 * フォローされた数
-			 */
-			inc: {
-				type: 'number',
-				description: 'フォローされた数',
-			},
-
-			/**
-			 * フォロー解除された数
-			 */
-			dec: {
-				type: 'number',
-				description: 'フォロー解除された数',
-			},
-		}
-	},
-};
-
-export const perUserFollowingLogSchema = {
-	type: 'object' as 'object',
-	properties: {
-		local: {
-			type: 'object' as 'object',
-			properties: logSchema
-		},
-		remote: {
-			type: 'object' as 'object',
-			properties: logSchema
-		},
-	}
-};
-
-type PerUserFollowingLog = SchemaType<typeof perUserFollowingLogSchema>;
+type PerUserFollowingLog = SchemaType<typeof schema>;
 
 export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	constructor() {
-		super('perUserFollowing', perUserFollowingLogSchema, true);
+		super(name, schema, true);
 	}
 
 	@autobind

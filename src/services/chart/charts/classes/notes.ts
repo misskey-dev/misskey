@@ -1,66 +1,16 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../core';
-import { SchemaType } from '../../../misc/schema';
-import { Notes } from '../../../models';
+import Chart, { Obj } from '../../core';
+import { SchemaType } from '../../../../misc/schema';
+import { Notes } from '../../../../models';
 import { Not } from 'typeorm';
-import { Note } from '../../../models/entities/note';
+import { Note } from '../../../../models/entities/note';
+import { name, schema } from '../schemas/notes';
 
-const logSchema = {
-	total: {
-		type: 'number' as 'number',
-		description: '集計期間時点での、全投稿数'
-	},
-
-	inc: {
-		type: 'number' as 'number',
-		description: '増加した投稿数'
-	},
-
-	dec: {
-		type: 'number' as 'number',
-		description: '減少した投稿数'
-	},
-
-	diffs: {
-		type: 'object' as 'object',
-		properties: {
-			normal: {
-				type: 'number' as 'number',
-				description: '通常の投稿数の差分'
-			},
-
-			reply: {
-				type: 'number' as 'number',
-				description: 'リプライの投稿数の差分'
-			},
-
-			renote: {
-				type: 'number' as 'number',
-				description: 'Renoteの投稿数の差分'
-			},
-		}
-	},
-};
-
-export const notesLogSchema = {
-	type: 'object' as 'object',
-	properties: {
-		local: {
-			type: 'object' as 'object',
-			properties: logSchema
-		},
-		remote: {
-			type: 'object' as 'object',
-			properties: logSchema
-		},
-	}
-};
-
-type NotesLog = SchemaType<typeof notesLogSchema>;
+type NotesLog = SchemaType<typeof schema>;
 
 export default class NotesChart extends Chart<NotesLog> {
 	constructor() {
-		super('notes', notesLogSchema);
+		super(name, schema);
 	}
 
 	@autobind

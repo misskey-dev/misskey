@@ -11,7 +11,7 @@ import { lessThan } from '../prelude/array';
 import * as pkg from '../../package.json';
 import { program } from '../argv';
 import { showMachineInfo } from '../misc/show-machine-info';
-import { initMainPostgre } from '../db/pg-connections/main';
+import { initDb } from '../db/postgre';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -146,8 +146,7 @@ async function init(): Promise<Config> {
 	// Try to connect to DB
 	try {
 		bootLogger.info('Connecting database...');
-		await initMainPostgre();
-		await require('../db/pg-connections/charts').initChartPostgre();
+		await initDb();
 	} catch (e) {
 		bootLogger.error('Cannot connect to database', null, true);
 		bootLogger.error(e);

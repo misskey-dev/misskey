@@ -63,7 +63,7 @@ const camelToSnake = (str: string) => {
  * 様々なチャートの管理を司るクラス
  */
 export default abstract class Chart<T extends Record<string, any>> {
-	public entity: any;
+	public schema: Schema;
 	protected repository: Repository<Log>;
 	protected abstract async getTemplate(init: boolean, latest?: T, group?: string): Promise<T>;
 	private name: string;
@@ -137,10 +137,9 @@ export default abstract class Chart<T extends Record<string, any>> {
 		return x.unix();
 	}
 
-	constructor(name: string, schema: Schema, grouped = false) {
-		this.name = name;
-
-		this.entity = new EntitySchema({
+	@autobind
+	public static schemaToEntity(name: string, schema: Schema): EntitySchema {
+		return new EntitySchema({
 			name: `__chart__${camelToSnake(name)}`,
 			columns: {
 				id: {
@@ -167,19 +166,21 @@ export default abstract class Chart<T extends Record<string, any>> {
 				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
 		});
+	}
+
+	constructor(name: string, schema: Schema, grouped = false) {
+		this.name = name;
+		this.schema = schema;
+		const entity = Chart.schemaToEntity(name, schema);
 
 		const keys = ['span', 'date'];
 		if (grouped) keys.push('group');
 
-		this.entity.options.uniques = [{
+		entity.options.uniques = [{
 			columns: keys
 		}];
-	}
 
-	@autobind
-	public init() {
-		this.repository = getRepository<Log>(this.entity, 'charts');
-		return this;
+		this.repository = getRepository<Log>(entity);
 	}
 
 	@autobind

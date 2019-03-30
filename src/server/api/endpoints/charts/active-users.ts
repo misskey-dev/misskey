@@ -1,6 +1,5 @@
 import $ from 'cafy';
 import define from '../../define';
-import { activeUsersLogSchema } from '../../../../services/chart/charts/active-users';
 import { convertLog } from '../../../../services/chart/core';
 import { activeUsersChart } from '../../../../services/chart';
 
@@ -30,7 +29,7 @@ export const meta = {
 		},
 	},
 
-	res: convertLog(activeUsersLogSchema),
+	res: convertLog(activeUsersChart.schema),
 };
 
 export default define(meta, async (ps) => {
