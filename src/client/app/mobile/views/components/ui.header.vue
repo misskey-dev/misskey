@@ -81,7 +81,7 @@ export default Vue.extend({
 			text-align center
 			width 70%
 			max-width 560px
-			margin 6px auto 0 auto
+			margin 6px auto 0
 			padding 6px
 			font-size 1em
 			font-weight 400
