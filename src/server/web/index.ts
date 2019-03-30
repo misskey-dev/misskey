@@ -222,7 +222,9 @@ router.get('/info', async ctx => {
 			cores: os.cpus().length
 		},
 		emojis: emojis,
-		meta: meta
+		meta: meta,
+		originalUsersCount: await Users.count({ host: null }),
+		originalNotesCount: await Notes.count({ userHost: null })
 	});
 });
 
