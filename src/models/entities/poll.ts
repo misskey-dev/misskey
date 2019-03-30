@@ -1,6 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id';
 import { Note } from './note';
+import { User } from './user';
 
 @Entity()
 export class Poll {
@@ -36,6 +37,13 @@ export class Poll {
 	public votes: number[];
 
 	//#region Denormalized fields
+	@Index()
+	@Column({
+		...id(),
+		comment: '[Denormalized]'
+	})
+	public userId: User['id'];
+
 	@Index()
 	@Column('varchar', {
 		length: 128, nullable: true,
