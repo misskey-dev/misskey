@@ -13,7 +13,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		info: {
 			version: 'v1',
 			title: 'Misskey API',
-			description: '**Misskey is a decentralized microblogging platform.**\n\n' + description,
+			description,
 			'x-logo': { url: '/assets/api-doc.png' }
 		},
 
@@ -80,6 +80,8 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		};
 	}
 
+	const kinds = {} as { [x: string]: string[] };
+
 	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
 		const porops = {} as any;
 		const errors = {} as any;
@@ -110,7 +112,13 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 
 		let desc = (endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.') + '\n\n';
 		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;
-		if (endpoint.meta.kind) desc += ` / **Permission**: *${endpoint.meta.kind}*`;
+		if (endpoint.meta.kind) {
+			const kind = endpoint.meta.kind;
+			desc += ` / **Permission**: *${kind}*`;
+
+			if (kind in kinds) kinds[kind].push(endpoint.name);
+			else kinds[kind] = [endpoint.name];
+		}
 
 		const info = {
 			operationId: endpoint.name,
@@ -230,6 +238,13 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			post: info
 		};
 	}
+
+	spec.info.description += `## Permissions\n|Permisson (kind)|Endpoints|\n|:--|:--|\n${
+		Object.entries(kinds)
+			.sort((a, b) => a[0] > b[0] ? 1 : -1)
+			.map(e => `|${e[0]}|${e[1].map(f => `[${f}](#operation/${f})`).join(', ')}|`)
+			.join('\n')
+		}\n`;
 
 	return spec;
 }

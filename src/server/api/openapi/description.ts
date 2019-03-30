@@ -1,6 +1,7 @@
 import config from '../../../config';
 
-export const description = `
+export const description = `**Misskey is a decentralized microblogging platform.**
+
 ## Usage
 **APIはすべてPOSTでリクエスト/レスポンスともにJSON形式です。**
 一部のAPIはリクエストに認証情報(APIキー)が必要です。リクエストの際に\`i\`というパラメータでAPIキーを添付してください。
