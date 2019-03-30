@@ -1,8 +1,9 @@
 // Misskey ID
-// 長さ8の[2000年1月1日からの経過ミリ秒をbase36でエンコードしたもの] + 長さ2の[ランダムな文字列]
+// 長さ8の[2000年1月1日からの経過ミリ秒をbase36でエンコードしたもの] + 長さ4の[ランダムな文字列]
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyz';
 const TIME2000 = 946684800000;
+const RAND_LENGTH = 4;
 
 function getTime(time: number) {
 	time = time - TIME2000;
@@ -25,7 +26,7 @@ function getTime(time: number) {
 function getRandom() {
 	let str = '';
 
-	for (let i = 0; i < 2; i++) {
+	for (let i = 0; i < RAND_LENGTH; i++) {
 		str += CHARS[Math.floor(Math.random() * CHARS.length)];
 	}
 
