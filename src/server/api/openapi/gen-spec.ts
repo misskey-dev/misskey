@@ -3,7 +3,7 @@ import { Context } from 'cafy';
 import config from '../../../config';
 import { errors as basicErrors } from './errors';
 import { schemas } from './schemas';
-import { description } from './description';
+import { getDescription } from './description';
 import { convertOpenApiSchema } from '../../../misc/schema';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
@@ -13,7 +13,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		info: {
 			version: 'v1',
 			title: 'Misskey API',
-			description,
+			description: getDescription(lang),
 			'x-logo': { url: '/assets/api-doc.png' }
 		},
 
@@ -80,8 +80,6 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		};
 	}
 
-	const kinds = {} as { [x: string]: string[] };
-
 	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
 		const porops = {} as any;
 		const errors = {} as any;
@@ -115,9 +113,6 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		if (endpoint.meta.kind) {
 			const kind = endpoint.meta.kind;
 			desc += ` / **Permission**: *${kind}*`;
-
-			if (kind in kinds) kinds[kind].push(endpoint.name);
-			else kinds[kind] = [endpoint.name];
 		}
 
 		const info = {
@@ -238,13 +233,6 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			post: info
 		};
 	}
-
-	spec.info.description += `## Permissions\n|Permisson (kind)|Endpoints|\n|:--|:--|\n${
-		Object.entries(kinds)
-			.sort((a, b) => a[0] > b[0] ? 1 : -1)
-			.map(e => `|${e[0]}|${e[1].map(f => `[${f}](#operation/${f})`).join(', ')}|`)
-			.join('\n')
-		}\n`;
 
 	return spec;
 }

@@ -115,3 +115,8 @@ export function cumulativeSum(xs: number[]): number[] {
 	for (let i = 1; i < ys.length; i++) ys[i] += ys[i - 1];
 	return ys;
 }
+
+// Object.fromEntries()
+export function fromEntries(xs: [string, any][]): { [x: string]: any; } {
+	return xs.reduce((obj, [k, v]) => Object.assign(obj, { [k]: v }), {} as { [x: string]: any; });
+}
