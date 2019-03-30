@@ -12,18 +12,22 @@ export const async = (fn: Function) => (done: Function) => {
 	});
 };
 
-export const request = async (endpoint: string, params: any, me?: any): Promise<{ body: any }> => {
+export const request = async (endpoint: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
 	const auth = me ? {
 		i: me.token
 	} : {};
 
-	const body = await fetch('http://localhost:80/api' + endpoint, {
+	const res = await fetch('http://localhost:80/api' + endpoint, {
 		method: 'POST',
 		body: JSON.stringify(Object.assign(auth, params))
-	})
-	.then((res: any) => res.json());
+	});
 
-	return { body };
+	const status = res.status;
+	const body = await res.json();
+
+	return {
+		body, status
+	};
 };
 
 export const signup = async (params?: any): Promise<any> => {

@@ -183,6 +183,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 				mentionedUsers.push(u);
 			}
 		}
+
+		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply.userId)) {
+			data.visibleUsers.push(await Users.findOne(data.reply.userId));
+		}
 	}
 
 	const note = await insertNote(user, data, tags, emojis, mentionedUsers);
