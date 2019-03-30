@@ -29,7 +29,6 @@ process.on('unhandledRejection', console.dir);
 describe('API visibility', () => {
 	let p: childProcess.ChildProcess;
 
-	// Reset database each test
 	before(done => {
 		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
 			stdio: ['inherit', 'inherit', 'ipc'],
