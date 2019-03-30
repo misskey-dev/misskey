@@ -50,8 +50,11 @@ export class MessagingMessage {
 	})
 	public isRead: boolean;
 
-	@Column(id())
-	public fileId: DriveFile['id'];
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public fileId: DriveFile['id'] | null;
 
 	@ManyToOne(type => DriveFile, {
 		onDelete: 'CASCADE'

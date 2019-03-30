@@ -25,9 +25,13 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			id: message.id,
 			createdAt: message.createdAt,
 			text: message.text,
+			userId: message.userId,
 			user: await Users.pack(message.user || message.userId, me),
+			recipientId: message.recipientId,
 			recipient: opts.populateRecipient ? await Users.pack(message.recipient || message.recipientId, me) : null,
+			fileId: message.fileId,
 			file: message.fileId ? await DriveFiles.pack(message.fileId) : null,
+			isRead: message.isRead
 		};
 	}
 }

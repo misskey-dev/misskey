@@ -1,9 +1,7 @@
 import $ from 'cafy';
-import * as escapeRegexp from 'escape-regexp';
 import define from '../../define';
 import { Users } from '../../../../models';
 import { User } from '../../../../models/entities/user';
-import { Not } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -69,27 +67,21 @@ export default define(meta, async (ps, me) => {
 	let users: User[] = [];
 
 	if (isUsername) {
-		users = await Users.find({
-			where: {
-				host: null,
-				// v11 TODO
-				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-				isSuspended: false
-			},
-			take: ps.limit,
-			skip: ps.offset
-		});
+		users = await Users.createQueryBuilder('user')
+			.where('user.host IS NULL')
+			.where('user.isSuspended = FALSE')
+			.where('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+			.take(ps.limit)
+			.skip(ps.offset)
+			.getMany();
 
 		if (users.length < ps.limit && !ps.localOnly) {
-			const otherUsers = await Users.find({
-				where: {
-					host: Not(null),
-					// v11 TODO
-					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-					isSuspended: false
-				},
-				take: ps.limit - users.length
-			});
+			const otherUsers = await Users.createQueryBuilder('user')
+				.where('user.host IS NOT NULL')
+				.where('user.isSuspended = FALSE')
+				.where('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+				.take(ps.limit - users.length)
+				.getMany();
 
 			users = users.concat(otherUsers);
 		}

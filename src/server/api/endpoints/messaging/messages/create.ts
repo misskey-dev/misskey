@@ -103,9 +103,9 @@ export default define(meta, async (ps, user) => {
 	const message = await MessagingMessages.save({
 		id: genId(),
 		createdAt: new Date(),
-		fileId: file ? file.id : undefined,
+		fileId: file ? file.id : null,
 		recipientId: recipient.id,
-		text: ps.text ? ps.text.trim() : undefined,
+		text: ps.text ? ps.text.trim() : null,
 		userId: user.id,
 		isRead: false
 	} as MessagingMessage);

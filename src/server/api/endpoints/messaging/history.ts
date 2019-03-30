@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { MessagingMessage } from '../../../../models/entities/messaging-message';
 import { MessagingMessages, Mutings } from '../../../../models';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -40,12 +41,24 @@ export default define(meta, async (ps, user) => {
 	for (let i = 0; i < ps.limit; i++) {
 		const found = history.map(m => (m.userId === user.id) ? m.recipientId : m.userId);
 
-		const message = await MessagingMessages.createQueryBuilder('message')
-			.where(`message.userId = :userId OR message.recipientId = :userId`, { userId: user.id })
-			.andWhere(`message.userId NOT IN (:...found) AND message.recipientId NOT IN (:...found)`, { found: found })
-			.andWhere(`message.userId NOT IN (:...mute) AND message.recipientId NOT IN (:...mute)`, { mute: mute.map(m => m.muteeId) })
-			.orderBy('createdAt', 'DESC')
-			.getOne();
+		const query = MessagingMessages.createQueryBuilder('message')
+			.where(new Brackets(qb => { qb
+				.where(`message.userId = :userId`, { userId: user.id })
+				.orWhere(`message.recipientId = :userId`, { userId: user.id });
+			}))
+			.orderBy('message.createdAt', 'DESC');
+
+		if (found.length > 0) {
+			query.andWhere(`message.userId NOT IN (:...found)`, { found: found });
+			query.andWhere(`message.recipientId NOT IN (:...found)`, { found: found });
+		}
+
+		if (mute.length > 0) {
+			query.andWhere(`message.userId NOT IN (:...mute)`, { mute: mute.map(m => m.muteeId) });
+			query.andWhere(`message.recipientId NOT IN (:...mute)`, { mute: mute.map(m => m.muteeId) });
+		}
+
+		const message = await query.getOne();
 
 		if (message) {
 			history.push(message);
