@@ -18,6 +18,7 @@ import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
 import { Users, Notes, Emojis } from '../../models';
 import parseAcct from '../../misc/acct/parse';
+import getNoteSummary from '../../misc/get-note-summary';
 
 const client = `${__dirname}/../../client/`;
 
