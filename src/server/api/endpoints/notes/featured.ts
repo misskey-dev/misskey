@@ -1,8 +1,7 @@
 import $ from 'cafy';
-import Note from '../../../../models/entities/note';
-import { packMany } from '../../../../models/entities/note';
 import define from '../../define';
-import { getHideUserIds } from '../../common/get-hide-users';
+import { generateMuteQuery } from '../../common/generate-mute-query';
+import { Notes } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -35,25 +34,14 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
-	const hideUserIds = await getHideUserIds(user);
+	const query = Notes.createQueryBuilder('note')
+		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
+		.andWhere(`note.visibility = 'public'`)
+		.leftJoinAndSelect('note.user', 'user');
 
-	const notes = await Note.find({
-		createdAt: {
-			$gt: new Date(Date.now() - day)
-		},
-		deletedAt: null,
-		visibility: 'public',
-		'_user.host': null,
-		...(hideUserIds && hideUserIds.length > 0 ? { userId: { $nin: hideUserIds } } : {})
-	}, {
-		take: ps.limit,
-		sort: {
-			score: -1
-		},
-		hint: {
-			score: -1
-		}
-	});
+	if (user) generateMuteQuery(query, user);
 
-	return await packMany(notes, user);
+	const notes = await query.orderBy('score', 'DESC').take(ps.limit).getMany();
+
+	return await Notes.packMany(notes, user);
 });

@@ -10,7 +10,7 @@ import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import { Instances, UserKeypairs } from '../../models';
+import { UserKeypairs } from '../../models';
 import fetchMeta from '../../misc/fetch-meta';
 
 export const logger = apLogger.createSubLogger('deliver');

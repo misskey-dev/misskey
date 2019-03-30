@@ -109,6 +109,7 @@ export class UserRepository extends Repository<User> {
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
+				autoWatch: user.autoWatch,
 				alwaysMarkNsfw: user.alwaysMarkNsfw,
 				carefulBot: user.carefulBot,
 				hasUnreadMessagingMessage: MessagingMessages.count({
