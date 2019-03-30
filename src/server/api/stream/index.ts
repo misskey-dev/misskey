@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import readNotification from '../common/read-notification';
+import { readNotification } from '../common/read-notification';
 import call from '../call';
 import readNote from '../../../services/note/read';
 import Channel from './channel';
@@ -78,7 +78,7 @@ export default class Connection {
 	@autobind
 	private onReadNotification(payload: any) {
 		if (!payload.id) return;
-		readNotification(this.user.id, payload.id);
+		readNotification(this.user.id, [payload.id]);
 	}
 
 	/**

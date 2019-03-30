@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import read from '../../common/read-notification';
+import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { generatePaginationQuery } from '../../common/generate-pagination-query';
 import { Notifications, Followings, Mutings } from '../../../../models';
@@ -91,7 +91,7 @@ export default define(meta, async (ps, user) => {
 
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {
-		read(user.id, notifications.map(x => x.id));
+		readNotification(user.id, notifications.map(x => x.id));
 	}
 
 	return await Notifications.packMany(notifications);
