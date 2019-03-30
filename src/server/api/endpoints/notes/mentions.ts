@@ -6,6 +6,7 @@ import { Notes, Followings } from '../../../../models';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -55,7 +56,10 @@ export default define(meta, async (ps, user) => {
 		.where('following.followerId = :followerId', { followerId: user.id });
 
 	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`((:meId = ANY(note.mentions)) OR (:meId = ANY(note.visibleUserIds)))`, { meId: user.id })
+		.andWhere(new Brackets(qb => { qb
+			.where(`:meId = ANY(note.mentions)`, { meId: user.id })
+			.orWhere(`:meId = ANY(note.visibleUserIds)`, { meId: user.id });
+		}))
 		.leftJoinAndSelect('note.user', 'user');
 
 	generateVisibilityQuery(query, user);
