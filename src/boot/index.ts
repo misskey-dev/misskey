@@ -31,6 +31,8 @@ export default async function() {
 	if (cluster.isWorker || program.disableClustering) {
 		await workerMain();
 	}
+
+	process.send('ok');
 }
 
 //#region Events

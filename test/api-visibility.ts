@@ -14,7 +14,7 @@
 
 import * as assert from 'assert';
 import { async, signup, request, post } from './utils';
-const misskey = require('../built').default;
+import * as childProcess from 'child_process';
 
 //#region process
 Error.stackTraceLimit = Infinity;
@@ -27,16 +27,21 @@ process.on('unhandledRejection', console.dir);
 //#endregion
 
 describe('API visibility', () => {
+	let p: childProcess.ChildProcess;
+
 	// Reset database each test
 	before(done => {
-		misskey().then(() => {
-			done();
+		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
+			stdio: ['inherit', 'inherit', 'ipc'],
+			env: { NODE_ENV: 'test' }
 		});
-		//await resetDb(db);
+		p.on('message', message => {
+			if (message === 'ok') done();
+		});
 	});
 
 	after(() => {
-		//server.close();
+		p.kill();
 	});
 
 	describe('Note visibility', async () => {
