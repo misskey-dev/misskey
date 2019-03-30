@@ -378,9 +378,9 @@ describe('API visibility', () => {
 			expect(res.body).have.property('text').eql('@target x');
 		}));
 
-		it('[show] followers-mentionを非フォロワーでもメンションされていれば見れる', async(async () => {
+		it('[show] followers-mentionを非フォロワーがメンションされていても見れない', async(async () => {
 			const res = await show(folM.id, target);
-			expect(res.body).have.property('text').eql('@target x');
+			expect(res.body).have.property('isHidden').eql(true);
 		}));
 
 		it('[show] followers-mentionをフォロワーが見れる', async(async () => {
@@ -409,9 +409,9 @@ describe('API visibility', () => {
 			expect(res.body).have.property('text').eql('@target x');
 		}));
 
-		it('[show] specified-mentionをされた人が指定されてなくても見れる', async(async () => {
+		it('[show] specified-mentionをされた人が指定されてなかったら見れない', async(async () => {
 			const res = await show(speM.id, target);
-			expect(res.body).have.property('text').eql('@target x');
+			expect(res.body).have.property('isHidden').eql(true);
 		}));
 
 		it('[show] specified-mentionをフォロワーが見れない', async(async () => {
