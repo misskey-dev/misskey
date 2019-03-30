@@ -84,10 +84,8 @@ export default define(meta, async (ps, me) => {
 	const emojis = await Emojis.find({ host: null });
 
 	const response: any = {
-		maintainer: {
-			name: instance.maintainerName,
-			email: instance.maintainerEmail
-		},
+		maintainerName: instance.maintainerName,
+		maintainerEmail: instance.maintainerEmail,
 
 		version: pkg.version,
 

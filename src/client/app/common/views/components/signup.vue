@@ -4,7 +4,7 @@
 		<ui-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required styl="fill">
 			<span>{{ $t('invitation-code') }}</span>
 			<template #prefix><fa icon="id-card-alt"/></template>
-			<template #desc v-html="this.$t('invitation-info').replace('{}', 'mailto:' + meta.maintainer.email)"></template>
+			<template #desc v-html="this.$t('invitation-info').replace('{}', 'mailto:' + meta.maintainerEmail)"></template>
 		</ui-input>
 		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername" styl="fill">
 			<span>{{ $t('username') }}</span>
