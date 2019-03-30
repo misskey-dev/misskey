@@ -95,7 +95,7 @@ export default Vue.extend({
 			&:hover,
 			&:active
 				background var(--primaryDarken10) !important
-				transition background 0s ease
+				transition none
 
 	> .warn
 		display block
