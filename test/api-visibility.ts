@@ -6,7 +6,12 @@
  *
  * To specify test:
  * > mocha test/api-visibility.ts --require ts-node/register -g 'test name'
+ *
+ * If the tests not start, try set following enviroment variables:
+ * TS_NODE_FILES=true and TS_NODE_TRANSPILE_ONLY=true
+ * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
+
 import * as assert from 'assert';
 import { async, signup, request, post } from './utils';
 const misskey = require('../built').default;
