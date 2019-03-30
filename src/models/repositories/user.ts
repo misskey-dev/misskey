@@ -100,6 +100,9 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail ? {
+				followersCount: user.followersCount,
+				followingCount: user.followingCount,
+				notesCount: user.notesCount,
 				pinnedNotes: UserNotePinings.find({ userId: user.id }).then(pins =>
 					Notes.packMany(pins.map(pin => pin.id), meId, {
 						detail: true
