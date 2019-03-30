@@ -250,6 +250,7 @@ common:
   view-on-remote: "正確な情報を見る"
   renoted-by: "{user}がRenote"
   no-notes: "投稿がありません"
+  to-new-note: "最新の投稿へ"
   turn-on-darkmode: "闇に飲まれる"
   turn-off-darkmode: "光あれ"
 

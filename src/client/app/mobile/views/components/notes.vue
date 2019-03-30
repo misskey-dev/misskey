@@ -34,6 +34,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import shouldMuteNote from '../../../common/scripts/should-mute-note';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 
 const displayLimit = 30;
 
@@ -72,7 +73,18 @@ export default Vue.extend({
 	watch: {
 		queue(x) {
 			if (x.length > 0) {
-				this.$store.commit('indicate', true);
+				const self = this
+				this.$store.commit('indicate', {
+					text: this.$t('@.to-new-note'),
+					icon: faArrowUp,
+					onClick: () => {
+						self.releaseQueue();
+						window.scroll({
+							top: 0,
+							behavior: "smooth"
+						})
+					}
+				});
 			} else {
 				this.$store.commit('indicate', false);
 			}

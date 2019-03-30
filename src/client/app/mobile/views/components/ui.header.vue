@@ -12,7 +12,13 @@
 			<slot name="func"></slot>
 		</div>
 	</div>
-	<div class="indicator" v-show="$store.state.indicate"></div>
+	<div class="indicator" v-if="indicate">
+		<div class="indicator-bar"></div>
+		<button class="indicator-message" @click="indicate.onClick" v-if="typeof indicate === 'object'">
+			<fa :icon="indicate.icon" v-if="indicate.icon"></fa>
+			{{ indicate.text }}
+		</button>
+	</div>
 </div>
 </template>
 
@@ -31,9 +37,15 @@ export default Vue.extend({
 		};
 	},
 
+	computed: {
+		indicate() {
+			return this.$store.state.indicate;
+		}
+	},
+
 	mounted() {
 		this.$store.commit('setUiHeaderHeight', 48);
-	},
+	}
 });
 </script>
 
@@ -55,8 +67,35 @@ export default Vue.extend({
 		user-select none
 
 	> .indicator
-		height 3px
-		background var(--primary)
+		display flex
+		flex-direction column
+
+		> .indicator-bar
+			height 3px
+			background var(--primary)
+
+		> .indicator-message
+			display block
+			color var(--primaryForeground)
+			background var(--primary)
+			text-align center
+			width 70%
+			max-width 560px
+			margin 6px auto 0 auto
+			padding 6px
+			font-size 1em
+			font-weight 400
+			text-decoration none
+			outline none
+			border none
+			transition background .1s ease
+			cursor pointer
+			border-radius 9999px
+
+			&:hover,
+			&:active
+				background var(--primaryDarken10) !important
+				transition background 0s ease
 
 	> .warn
 		display block
