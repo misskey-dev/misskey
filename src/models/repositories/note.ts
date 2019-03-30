@@ -61,6 +61,7 @@ export class NoteRepository extends Repository<Note> {
 		}
 
 		if (hide) {
+			packedNote.visibleUserIds = null;
 			packedNote.fileIds = [];
 			packedNote.files = [];
 			packedNote.text = null;
@@ -171,6 +172,7 @@ export class NoteRepository extends Repository<Note> {
 			user: Users.pack(note.user || note.userId, meId),
 			text: text,
 			visibility: note.visibility,
+			visibleUserIds: note.visibleUserIds,
 			viaMobile: note.viaMobile,
 			reactions: note.reactions,
 			emojis: reactionEmojis.length > 0 ? Emojis.find({
