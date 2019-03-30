@@ -2,7 +2,6 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { maximum } from '../../../../prelude/array';
-import { getHideUserIds } from '../../common/get-hide-users';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { Not, In } from 'typeorm';
@@ -69,13 +68,10 @@ export default define(meta, async (ps, me) => {
 		return [];
 	}
 
-	const hideUserIds = await getHideUserIds(me);
-	hideUserIds.push(user.id);
-
+	// TODO ミュートを考慮
 	const replyTargetNotes = await Notes.find({
 		where: {
 			id: In(recentNotes.map(p => p.replyId)),
-			userId: Not(In(hideUserIds))
 		},
 		select: ['userId']
 	});

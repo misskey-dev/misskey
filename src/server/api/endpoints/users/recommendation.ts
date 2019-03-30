@@ -1,10 +1,8 @@
 import * as ms from 'ms';
 import $ from 'cafy';
-import { getFriendIds } from '../../common/get-friends';
 import define from '../../define';
-import { getHideUserIds } from '../../common/get-hide-users';
-import { Users } from '../../../../models';
-import { In, Not, MoreThanOrEqual } from 'typeorm';
+import { Users, Followings } from '../../../../models';
+import { generateMuteQueryForUsers } from '../../common/generate-mute-query';
 
 export const meta = {
 	desc: {
@@ -38,25 +36,24 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	// ID list of the user itself and other users who the user follows
-	const followingIds = await getFriendIds(me.id);
+	const query = Users.createQueryBuilder('user')
+		.where('user.isLocked = FALSE')
+		.where('user.host IS NULL')
+		.where('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
+		.orderBy('followersCount', 'DESC');
 
-	// 隠すユーザーを取得
-	const hideUserIds = await getHideUserIds(me);
+	generateMuteQueryForUsers(query, me);
 
-	const users = await Users.find({
-		where: {
-			id: Not(In(followingIds.concat(hideUserIds))),
-			isLocked: false,
-			updatedAt: MoreThanOrEqual(new Date(Date.now() - ms('7days'))),
-			host: null
-		},
-		take: ps.limit,
-		skip: ps.offset,
-		order: {
-			followersCount: -1
-		}
-	});
+	const followingQuery = Followings.createQueryBuilder('following')
+		.select('following.followeeId')
+		.where('following.followerId = :followerId', { followerId: me.id });
+
+	query
+		.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`);
+
+	query.setParameters(followingQuery.getParameters());
+
+	const users = await query.take(ps.limit).skip(ps.offset).getMany();
 
 	return await Promise.all(users.map(user => Users.pack(user, me, { detail: true })));
 });
