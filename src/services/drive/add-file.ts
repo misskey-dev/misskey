@@ -203,7 +203,7 @@ async function deleteOldFile(user: IRemoteUser) {
 		.select('file')
 		.where('file.id IN (:...ids)', { ids: [user.avatarId, user.bannerId] })
 		.andWhere('file.userId = :userId', { userId: user.id })
-		.orderBy('id', 'DESC')
+		.orderBy('file.id', 'DESC')
 		.getOne();
 
 	if (oldFile) {

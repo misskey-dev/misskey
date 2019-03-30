@@ -388,14 +388,15 @@ export default abstract class Chart<T extends Record<string, any>> {
 				null;
 
 			const log = logs.find(l => utc(l.date).isSame(current));
-			const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
 
 			if (log) {
+				const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
 				promisedChart.unshift(Promise.resolve(data));
 			} else {
 				// 隙間埋め
 				const latest = logs.find(l => utc(l.date).isBefore(current));
-				promisedChart.unshift(this.getTemplate(false, latest ? data : null));
+				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
+				promisedChart.unshift(this.getTemplate(false, data));
 			}
 		}
 
