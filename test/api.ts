@@ -13,6 +13,8 @@ import * as fs from 'fs';
 import * as assert from 'chai';
 import { async, _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
 
+import { kinds } from '../src/server/api/kinds';
+
 const expect = assert.expect;
 
 //#region process
@@ -1324,5 +1326,13 @@ describe('API', () => {
 			expect(res.body).length(1);
 			expect(res.body[0].id).equals(alicePost.id);
 		}));
+	});
+
+	describe('kinds', () => {
+		it('登録されていないパーミッションを利用しているAPIがない', () => {
+			const res = kinds();
+
+			expect(res).be.a('object');
+		});
 	});
 });

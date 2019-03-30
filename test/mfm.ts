@@ -1137,7 +1137,7 @@ describe('MFM', () => {
 			it('exlude emotes', () => {
 				const tokens = parse('*.*');
 				assert.deepStrictEqual(tokens, [
-					text("*.*"),
+					text('*.*'),
 				]);
 			});
 
