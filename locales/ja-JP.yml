@@ -305,7 +305,7 @@ common:
     favorites-read: "お気に入りを見る"
     following-read: "フォローの情報を見る"
     following-write: "フォロー・フォロー解除する"
-    messaging-read: "トークを操作する"
+    messaging-read: "トークを見る"
     messaging-write: "トークを操作する"
     note-write: "投稿を作成・削除する"
     notification-write: "通知を操作する"
