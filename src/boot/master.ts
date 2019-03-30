@@ -75,9 +75,11 @@ export async function masterMain() {
 		await spawnWorkers(config.clusterLimit);
 	}
 
-	require('../daemons/server-stats').default();
-	require('../daemons/notes-stats').default();
-	require('../daemons/queue-stats').default();
+	if (!program.noDaemons) {
+		require('../daemons/server-stats').default();
+		require('../daemons/notes-stats').default();
+		require('../daemons/queue-stats').default();
+	}
 
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
 }
