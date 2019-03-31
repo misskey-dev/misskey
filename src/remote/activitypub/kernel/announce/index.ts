@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/entities/user';
 import announceNote from './note';
-import { IAnnounce, Note } from '../../type';
+import { IAnnounce, INote } from '../../type';
 import { apLogger } from '../../logger';
 
 const logger = apLogger;
@@ -26,7 +26,7 @@ export default async (actor: IRemoteUser, activity: IAnnounce): Promise<void> =>
 	case 'Note':
 	case 'Question':
 	case 'Article':
-		announceNote(resolver, actor, activity, object as Note);
+		announceNote(resolver, actor, activity, object as INote);
 		break;
 
 	default:

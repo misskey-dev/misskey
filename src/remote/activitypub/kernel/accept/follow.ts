@@ -1,7 +1,8 @@
-import User, { IRemoteUser } from '../../../../models/entities/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import config from '../../../../config';
 import accept from '../../../../services/following/requests/accept';
 import { IFollow } from '../../type';
+import { Users } from '../../../../models';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const id = typeof activity.actor == 'string' ? activity.actor : activity.actor.id;

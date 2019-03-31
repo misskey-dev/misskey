@@ -10,7 +10,6 @@ import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
 import { Instances, Users, UserPublickeys } from '../../models';
-import { Not } from 'typeorm';
 import { instanceChart } from '../../services/chart';
 import { UserPublickey } from '../../models/entities/user-publickey';
 import fetchMeta from '../../misc/fetch-meta';

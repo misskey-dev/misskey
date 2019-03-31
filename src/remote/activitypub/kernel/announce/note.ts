@@ -1,12 +1,11 @@
 import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
 import { IRemoteUser, User } from '../../../../models/entities/user';
-import { IAnnounce, Note } from '../../type';
+import { IAnnounce, INote } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
 import { apLogger } from '../../logger';
 import { extractDbHost } from '../../../../misc/convert-host';
-import Instance from '../../../../models/entities/instance';
 import fetchMeta from '../../../../misc/fetch-meta';
 
 const logger = apLogger;
@@ -14,7 +13,7 @@ const logger = apLogger;
 /**
  * アナウンスアクティビティを捌きます
  */
-export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, note: Note): Promise<void> {
+export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, note: INote): Promise<void> {
 	const uri = activity.id || activity;
 
 	// アナウンサーが凍結されていたらスキップ

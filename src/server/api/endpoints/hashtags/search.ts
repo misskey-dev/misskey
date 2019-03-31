@@ -46,11 +46,11 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const hashtags = await Hashtags.createQueryBuilder('tag')
-		.where('tag.tag like :q', { q: ps.query.toLowerCase() + '%' })
+		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
 		.orderBy('tag.count', 'DESC')
 		.take(ps.limit)
 		.skip(ps.offset)
 		.getMany();
 
-	return hashtags.map(tag => tag.tag);
+	return hashtags.map(tag => tag.name);
 });

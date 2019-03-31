@@ -6,7 +6,7 @@ import { genId } from '../misc/gen-id';
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();
 
-	const index = await Hashtags.findOne({ tag });
+	const index = await Hashtags.findOne({ name: tag });
 
 	if (index == null && !inc) return;
 
@@ -65,7 +65,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 		if (Object.keys($push).length > 0) q.$push = $push;
 		if (Object.keys($pull).length > 0) q.$pull = $pull;
 		if (Object.keys($inc).length > 0) q.$inc = $inc;
-		if (Object.keys(q).length > 0) Hashtags.update({ tag }, q);
+		if (Object.keys(q).length > 0) Hashtags.update({ name: tag }, q);
 	} else {
 		if (isUserAttached) {
 			Hashtags.save({

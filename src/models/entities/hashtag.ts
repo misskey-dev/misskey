@@ -11,7 +11,7 @@ export class Hashtag {
 	@Column('varchar', {
 		length: 128
 	})
-	public tag: string;
+	public name: string;
 
 	@Column({
 		...id(),
