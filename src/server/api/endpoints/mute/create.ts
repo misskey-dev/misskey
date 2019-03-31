@@ -4,7 +4,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { genId } from '../../../../misc/gen-id';
-import { Mutings } from '../../../../models';
+import { Mutings, NoteWatchings } from '../../../../models';
 import { Muting } from '../../../../models/entities/muting';
 
 export const meta = {
@@ -81,4 +81,9 @@ export default define(meta, async (ps, user) => {
 		muterId: muter.id,
 		muteeId: mutee.id,
 	} as Muting);
+
+	NoteWatchings.delete({
+		userId: muter.id,
+		noteUserId: mutee.id
+	});
 });

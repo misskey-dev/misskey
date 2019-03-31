@@ -5,7 +5,7 @@ import create from '../../../../services/blocking/create';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { Blockings } from '../../../../models';
+import { Blockings, NoteWatchings } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -83,6 +83,11 @@ export default define(meta, async (ps, user) => {
 
 	// Create blocking
 	await create(blocker, blockee);
+
+	NoteWatchings.delete({
+		userId: blocker.id,
+		noteUserId: blockee.id
+	});
 
 	return await Blockings.pack(blockee.id, user);
 });

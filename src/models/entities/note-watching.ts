@@ -40,4 +40,13 @@ export class NoteWatching {
 	})
 	@JoinColumn()
 	public note: Note | null;
+
+	//#region Denormalized fields
+	@Index()
+	@Column({
+		...id(),
+		comment: '[Denormalized]'
+	})
+	public noteUserId: Note['userId'];
+	//#endregion
 }
