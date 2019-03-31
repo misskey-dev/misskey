@@ -5,9 +5,10 @@ import * as fs from 'fs';
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
 import dateFormat = require('dateformat');
-import { Users, Notes } from '../../../models';
+import { Users, Notes, Polls } from '../../../models';
 import { MoreThan } from 'typeorm';
 import { Note } from '../../../models/entities/note';
+import { Poll } from '../../../models/entities/poll';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
@@ -66,7 +67,11 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 		cursor = notes[notes.length - 1].id;
 
 		for (const note of notes) {
-			const content = JSON.stringify(serialize(note));
+			let poll: Poll;
+			if (note.hasPoll) {
+				poll = await Polls.findOne({ noteId: note.id });
+			}
+			const content = JSON.stringify(serialize(note, poll));
 			await new Promise((res, rej) => {
 				stream.write(exportedNotesCount === 0 ? content : ',\n' + content, err => {
 					if (err) {
@@ -109,7 +114,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	done();
 }
 
-function serialize(note: Note): any {
+function serialize(note: Note, poll: Poll): any {
 	return {
 		id: note.id,
 		text: note.text,
@@ -117,7 +122,7 @@ function serialize(note: Note): any {
 		fileIds: note.fileIds,
 		replyId: note.replyId,
 		renoteId: note.renoteId,
-		poll: note.poll,
+		poll: poll,
 		cw: note.cw,
 		viaMobile: note.viaMobile,
 		visibility: note.visibility,

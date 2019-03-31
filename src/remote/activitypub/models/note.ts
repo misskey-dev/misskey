@@ -16,7 +16,7 @@ import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost } from '../../../misc/convert-host';
-import { Notes, Instances, Emojis, Polls } from '../../../models';
+import { Notes, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
