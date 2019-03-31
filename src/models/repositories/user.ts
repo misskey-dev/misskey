@@ -112,6 +112,9 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail ? {
+				description: user.description,
+				location: user.location,
+				birthday: user.birthday,
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,
