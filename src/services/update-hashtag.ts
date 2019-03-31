@@ -11,61 +11,58 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 	if (index == null && !inc) return;
 
 	if (index != null) {
-		const $push = {} as any;
-		const $pull = {} as any;
-		const $inc = {} as any;
+		const q = Hashtags.createQueryBuilder('tag').update()
+			.where('tag.name = :name', { name: tag });
+
+		const set = {} as any;
 
 		if (isUserAttached) {
 			if (inc) {
 				// 自分が初めてこのタグを使ったなら
 				if (!index.attachedUserIds.some(id => id === user.id)) {
-					$push.attachedUserIds = user.id;
-					$inc.attachedUsersCount = 1;
+					set.attachedUserIds = () => `array_append(tag.attachedUserIds, '${user.id}')`;
+					set.attachedUsersCount = () => `tag.attachedUsersCount + 1`;
 				}
 				// 自分が(ローカル内で)初めてこのタグを使ったなら
 				if (Users.isLocalUser(user) && !index.attachedLocalUserIds.some(id => id === user.id)) {
-					$push.attachedLocalUserIds = user.id;
-					$inc.attachedLocalUsersCount = 1;
+					set.attachedLocalUserIds = () => `array_append(tag.attachedLocalUserIds, '${user.id}')`;
+					set.attachedLocalUsersCount = () => `tag.attachedLocalUsersCount + 1`;
 				}
 				// 自分が(リモートで)初めてこのタグを使ったなら
 				if (Users.isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id === user.id)) {
-					$push.attachedRemoteUserIds = user.id;
-					$inc.attachedRemoteUsersCount = 1;
+					set.attachedRemoteUserIds = () => `array_append(tag.attachedRemoteUserIds, '${user.id}')`;
+					set.attachedRemoteUsersCount = () => `tag.attachedRemoteUsersCount + 1`;
 				}
 			} else {
-				$pull.attachedUserIds = user.id;
-				$inc.attachedUsersCount = -1;
+				set.attachedUserIds = () => `array_remove(tag.attachedUserIds, '${user.id}')`;
+				set.attachedUsersCount = () => `tag.attachedUsersCount - 1`;
 				if (Users.isLocalUser(user)) {
-					$pull.attachedLocalUserIds = user.id;
-					$inc.attachedLocalUsersCount = -1;
+					set.attachedLocalUserIds = () => `array_remove(tag.attachedLocalUserIds, '${user.id}')`;
+					set.attachedLocalUsersCount = () => `tag.attachedLocalUsersCount - 1`;
 				} else {
-					$pull.attachedRemoteUserIds = user.id;
-					$inc.attachedRemoteUsersCount = -1;
+					set.attachedRemoteUserIds = () => `array_remove(tag.attachedRemoteUserIds, '${user.id}')`;
+					set.attachedRemoteUsersCount = () => `tag.attachedRemoteUsersCount - 1`;
 				}
 			}
 		} else {
 			// 自分が初めてこのタグを使ったなら
 			if (!index.mentionedUserIds.some(id => id === user.id)) {
-				$push.mentionedUserIds = user.id;
-				$inc.mentionedUsersCount = 1;
+				set.mentionedUserIds = () => `array_append(tag.mentionedUserIds, '${user.id}')`;
+				set.mentionedUsersCount = () => `tag.mentionedUsersCount + 1`;
 			}
 			// 自分が(ローカル内で)初めてこのタグを使ったなら
 			if (Users.isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id === user.id)) {
-				$push.mentionedLocalUserIds = user.id;
-				$inc.mentionedLocalUsersCount = 1;
+				set.mentionedLocalUserIds = () => `array_append(tag.mentionedLocalUserIds, '${user.id}')`;
+				set.mentionedLocalUsersCount = () => `tag.mentionedLocalUsersCount + 1`;
 			}
 			// 自分が(リモートで)初めてこのタグを使ったなら
 			if (Users.isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id === user.id)) {
-				$push.mentionedRemoteUserIds = user.id;
-				$inc.mentionedRemoteUsersCount = 1;
+				set.mentionedRemoteUserIds = () => `array_append(tag.mentionedRemoteUserIds, '${user.id}')`;
+				set.mentionedRemoteUsersCount = () => `tag.mentionedRemoteUsersCount + 1`;
 			}
 		}
 
-		const q = {} as any;
-		if (Object.keys($push).length > 0) q.$push = $push;
-		if (Object.keys($pull).length > 0) q.$pull = $pull;
-		if (Object.keys($inc).length > 0) q.$inc = $inc;
-		if (Object.keys(q).length > 0) Hashtags.update({ name: tag }, q);
+		q.execute();
 	} else {
 		if (isUserAttached) {
 			Hashtags.save({
