@@ -3,6 +3,7 @@ import * as http from 'http';
 import * as assert from 'chai';
 import { Connection } from 'typeorm';
 const fetch = require('node-fetch');
+const FormData = require('form-data');
 
 export const async = (fn: Function) => (done: Function) => {
 	fn().then(() => {
@@ -58,14 +59,21 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 	}, user);
 };
 
-export const uploadFile = (server: http.Server) => async (user: any): Promise<any> => {
-	const res = await assert.request(server)
-		.post('/drive/files/create')
-		.field('i', user.token)
-		.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
-
-	return res.body;
-};
+export const uploadFile = (user: any, path?: string): Promise<any> => new Promise((ok, rej) => {
+	const form = new FormData();
+	form.append('i', user.token);
+	if (path) {
+		form.append('file', fs.createReadStream(path));
+	} else {
+		form.append('file', fs.createReadStream(__dirname + '/resources/Lenna.png'));
+	}
+	form.submit('http://localhost:80/api/drive/files/create', (err, res) => {
+		ok({
+			status: res.statusCode,
+			body: res.body
+		});
+	});
+});
 
 export const resetDb = (connection: Connection) => () => new Promise(res => {
 	// APIがなにかレスポンスを返した後に、後処理を行う場合があり、

@@ -13,8 +13,8 @@
  */
 
 import * as assert from 'assert';
-import { async, signup, request, post } from './utils';
 import * as childProcess from 'child_process';
+import { async, signup, request, post } from './utils';
 
 //#region process
 Error.stackTraceLimit = Infinity;
