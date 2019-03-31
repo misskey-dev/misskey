@@ -11,7 +11,9 @@ import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
 import * as url from '../../prelude/url';
-import { Users } from '../../models';
+import { Users, Notes } from '../../models';
+import { makePaginationQuery } from '../api/common/make-pagination-query';
+import { Brackets } from 'typeorm';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = ctx.params.user;
@@ -47,34 +49,15 @@ export default async (ctx: Router.IRouterContext) => {
 	const partOf = `${config.url}/users/${userId}/outbox`;
 
 	if (page) {
-		//#region Construct query
-		const sort = {
-			id: -1
-		};
+		const query = makePaginationQuery(Notes.createQueryBuilder('note'), sinceId, untilId)
+			.andWhere('note.userId = :userId', { userId: user.id })
+			.andWhere(new Brackets(qb => { qb
+				.where(`note.visibility = 'public'`)
+				.orWhere(`note.visibility = 'home'`);
+			}))
+			.andWhere('note.localOnly = FALSE');
 
-		const query = {
-			userId: user.id,
-			visibility: { $in: ['public', 'home'] },
-			localOnly: false
-		} as any;
-
-		if (sinceId) {
-			sort.id = 1;
-			query.id = {
-				$gt: transform(sinceId)
-			};
-		} else if (untilId) {
-			query.id = {
-				$lt: transform(untilId)
-			};
-		}
-		//#endregion
-
-		const notes = await Note
-			.find(query, {
-				limit: limit,
-				order: sort
-			});
+		const notes = await query.take(limit).getMany();
 
 		if (sinceId) notes.reverse();
 
