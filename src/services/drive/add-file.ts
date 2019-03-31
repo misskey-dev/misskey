@@ -95,6 +95,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		file.type = type;
 		file.md5 = hash;
 		file.size = size;
+		file.storedInternal = false;
 
 		return await DriveFiles.save(file);
 	} else { // use internal storage
