@@ -49,6 +49,18 @@ export class UserRepository extends Repository<User> {
 		};
 	}
 
+	public packMany(
+		users: (User['id'] | User)[],
+		me?: User['id'] | User,
+		options?: {
+			detail?: boolean,
+			includeSecrets?: boolean,
+			includeHasUnreadNotes?: boolean
+		}
+	) {
+		return Promise.all(users.map(u => this.pack(u, me, options)));
+	}
+
 	public async pack(
 		src: User['id'] | User,
 		me?: User['id'] | User,

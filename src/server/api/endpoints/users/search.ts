@@ -87,5 +87,5 @@ export default define(meta, async (ps, me) => {
 		}
 	}
 
-	return await Promise.all(users.map(user => Users.pack(user, me, { detail: ps.detail })));
+	return await Users.packMany(users, me, { detail: ps.detail });
 });

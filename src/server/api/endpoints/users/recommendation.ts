@@ -55,5 +55,5 @@ export default define(meta, async (ps, me) => {
 
 	const users = await query.take(ps.limit).skip(ps.offset).getMany();
 
-	return await Promise.all(users.map(user => Users.pack(user, me, { detail: true })));
+	return await Users.packMany(users, me, { detail: true });
 });
