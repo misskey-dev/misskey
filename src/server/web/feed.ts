@@ -36,7 +36,10 @@ export default async function(user: User) {
 	} as FeedOptions);
 
 	for (const note of notes) {
-		const file = note._files && note._files.find(file => file.type.startsWith('image/'));
+		const files = note.fileIds.length > 0 ? await DriveFiles.find({
+			id: In(note.fileIds)
+		}) : [];
+		const file = files.find(file => file.type.startsWith('image/'));
 
 		feed.addItem({
 			title: `New note by ${author.name}`,
