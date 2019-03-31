@@ -122,6 +122,16 @@ export class User {
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})
+	public emailVerifyCode: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public emailVerified: boolean;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
 	public twoFactorTempSecret: string | null;
 
 	@Column('varchar', {

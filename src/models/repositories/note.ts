@@ -156,12 +156,6 @@ export class NoteRepository extends Repository<Note> {
 			text = `【${note.name}】\n${note.text}`;
 		}
 
-		/* v11 TODO
-		if (note.user.isCat && note.text) {
-			text = nyaize(note.text);
-		}
-		*/
-
 		const reactionEmojis = unique(concat([note.emojis, Object.keys(note.reactions)]));
 
 		const packed = await rap({
@@ -201,6 +195,10 @@ export class NoteRepository extends Repository<Note> {
 				} : {})
 			} : {})
 		});
+
+		if (packed.user.isCat && packed.text) {
+			packed.text = nyaize(packed.text);
+		}
 
 		if (!opts.skipHide) {
 			await this.hideNote(packed, meId);
