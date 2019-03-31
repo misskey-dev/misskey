@@ -17,6 +17,8 @@ import { createNotification } from '../create-notification';
 const logger = new Logger('following/create');
 
 export async function insertFollowingDoc(followee: User, follower: User) {
+	if (follower.id === followee.id) return;
+
 	let alreadyFollowed = false;
 
 	await Followings.save({

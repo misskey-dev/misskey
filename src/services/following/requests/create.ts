@@ -8,6 +8,8 @@ import { genId } from '../../../misc/gen-id';
 import { createNotification } from '../../create-notification';
 
 export default async function(follower: User, followee: User, requestId?: string) {
+	if (follower.id === followee.id) return;
+
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
 		Blockings.findOne({
