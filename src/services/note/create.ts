@@ -10,7 +10,6 @@ import { parse } from '../../mfm/parse';
 import resolveUser from '../../remote/resolve-user';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
-import * as deepcopy from 'deepcopy';
 import { erase, concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
@@ -563,22 +562,6 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any, rep
 	for (const inbox of queue) {
 		deliver(user as any, noteActivity, inbox);
 	}
-
-	// 後方互換製のため、Questionは時間差でNoteでも送る
-	// Questionに対応してないインスタンスは、2つめのNoteだけを採用する
-	// Questionに対応しているインスタンスは、同IDで採番されている2つめのNoteを無視する
-	setTimeout(() => {
-		if (noteActivity.object.type === 'Question') {
-			const asNote = deepcopy(noteActivity);
-
-			asNote.object.type = 'Note';
-			asNote.object.content = asNote.object._misskey_fallback_content;
-
-			for (const inbox of queue) {
-				deliver(user as any, asNote, inbox);
-			}
-		}
-	}, 10 * 1000);
 }
 
 function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: any) {
