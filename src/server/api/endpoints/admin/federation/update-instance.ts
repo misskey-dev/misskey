@@ -13,10 +13,6 @@ export const meta = {
 			validator: $.str
 		},
 
-		isBlocked: {
-			validator: $.bool
-		},
-
 		isClosed: {
 			validator: $.bool
 		},
@@ -30,12 +26,7 @@ export default define(meta, async (ps, me) => {
 		throw new Error('instance not found');
 	}
 
-	Instance.update({ host: ps.host }, {
-		$set: {
-			isBlocked: ps.isBlocked,
-			isMarkedAsClosed: ps.isClosed
-		}
+	Instances.update({ host: ps.host }, {
+		isMarkedAsClosed: ps.isClosed
 	});
-
-	return;
 });
