@@ -23,7 +23,7 @@ Please install and setup these softwares:
 
 #### Dependencies :package:
 * **[Node.js](https://nodejs.org/en/)** >= 10.0.0
-* **[MongoDB](https://www.mongodb.com/)** >= 3.6
+* **[PostgreSQL](https://www.postgresql.org/)** >= 10
 
 ##### Optional
 * [Redis](https://redis.io/)
@@ -31,13 +31,9 @@ Please install and setup these softwares:
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Setup MongoDB
+*3.* Setup PostgreSQL
 ----------------------------------------------------------------
-As root:
-1. `mongo` Go to the mongo shell
-2. `use misskey` Use the misskey database
-3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Create the misskey user.
-4. `exit` You're done!
+:)
 
 *4.* Install Misskey
 ----------------------------------------------------------------

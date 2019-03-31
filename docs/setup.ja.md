@@ -23,7 +23,7 @@ adduser --disabled-password --disabled-login misskey
 
 #### 依存関係 :package:
 * **[Node.js](https://nodejs.org/en/)** (10.0.0以上)
-* **[MongoDB](https://www.mongodb.com/)** (3.6以上)
+* **[PostgreSQL](https://www.postgresql.org/)** (10以上)
 
 ##### オプション
 * [Redis](https://redis.io/)
@@ -38,13 +38,9 @@ adduser --disabled-password --disabled-login misskey
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* MongoDBの設定
+*3.* PostgreSQLの設定
 ----------------------------------------------------------------
-ルートで:
-1. `mongo` mongoシェルを起動
-2. `use misskey` misskeyデータベースを使用
-3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` misskeyユーザーを作成
-4. `exit` mongoシェルを終了
+:)
 
 *4.* Misskeyのインストール
 ----------------------------------------------------------------
