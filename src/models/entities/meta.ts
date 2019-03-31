@@ -63,6 +63,11 @@ export class Meta {
 	public useStarForReactionFallback: boolean;
 
 	@Column('varchar', {
+		length: 64, array: true, default: '{}'
+	})
+	public langs: string[];
+
+	@Column('varchar', {
 		length: 256, array: true, default: '{}'
 	})
 	public hiddenTags: string[];

@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import User, { pack } from '../../../../models/entities/user';
 import define from '../../define';
+import { Users } from '../../../../models';
 
 export const meta = {
 	requireCredential: false,
@@ -54,39 +54,30 @@ export const meta = {
 	},
 };
 
-const sort: any = {
-	'+follower': { followersCount: -1 },
-	'-follower': { followersCount: 1 },
-	'+createdAt': { createdAt: -1 },
-	'-createdAt': { createdAt: 1 },
-	'+updatedAt': { updatedAt: -1 },
-	'-updatedAt': { updatedAt: 1 },
-};
-
 export default define(meta, async (ps, me) => {
-	const q = {
-		tags: ps.tag,
-		$and: []
-	} as any;
+	const query = Users.createQueryBuilder('user')
+		.where(':tag = ANY(user.tags)', { tag: ps.tag });
 
-	// state
-	q.$and.push(
-		ps.state == 'alive' ? { updatedAt: { $gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 5)) } } :
-		{}
-	);
+	if (ps.state === 'alive') {
+		query.andWhere('user.updatedAt > :date', { date: new Date(Date.now() - (1000 * 60 * 60 * 24 * 5)) });
+	}
 
-	// origin
-	q.$and.push(
-		ps.origin == 'local' ? { host: null } :
-		ps.origin == 'remote' ? { host: { $ne: null } } :
-		{}
-	);
+	if (ps.origin === 'local') {
+		query.andWhere('user.host IS NULL');
+	} else if (ps.origin === 'remote') {
+		query.andWhere('user.host IS NOT NULL');
+	}
 
-	const users = await User
-		.find(q, {
-			take: ps.limit,
-			order: sort[ps.sort],
-		});
+	switch (ps.sort) {
+		case '+follower': query.orderBy('followersCount', 'DESC'); break;
+		case '-follower': query.orderBy('followersCount', 'ASC'); break;
+		case '+createdAt': query.orderBy('createdAt', 'DESC'); break;
+		case '-createdAt': query.orderBy('createdAt', 'ASC'); break;
+		case '+updatedAt': query.orderBy('updatedAt', 'DESC'); break;
+		case '-updatedAt': query.orderBy('updatedAt', 'ASC'); break;
+	}
 
-	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
+	const users = await query.take(ps.limit).getMany();
+
+	return await Promise.all(users.map(user => Users.pack(user, me, { detail: true })));
 });
