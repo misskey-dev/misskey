@@ -48,7 +48,13 @@ router.get('/disconnect/discord', async ctx => {
 	await UserServiceLinkings.update({
 		userId: user.id
 	}, {
-		discord: null
+		discord: false,
+		discordAccessToken: null,
+		discordRefreshToken: null,
+		discordExpiresDate: null,
+		discordId: null,
+		discordUsername: null,
+		discordDiscriminator: null,
 	});
 
 	ctx.body = `Discordの連携を解除しました :v:`;
@@ -211,13 +217,12 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		await UserServiceLinkings.update(link.id, {
-			discord: {
-				accessToken,
-				refreshToken,
-				expiresDate,
-				username,
-				discriminator
-			}
+			discord: true,
+			discordAccessToken: accessToken,
+			discordRefreshToken: refreshToken,
+			discordExpiresDate: expiresDate,
+			discordUsername: username,
+			discordDiscriminator: discriminator
 		});
 
 		signin(ctx, await Users.findOne(link.userId) as ILocalUser, true);
@@ -285,14 +290,13 @@ router.get('/dc/cb', async ctx => {
 		});
 
 		await UserServiceLinkings.update({ userId: user.id }, {
-			discord: {
-				accessToken,
-				refreshToken,
-				expiresDate,
-				id,
-				username,
-				discriminator
-			}
+			discord: true,
+			discordAccessToken: accessToken,
+			discordRefreshToken: refreshToken,
+			discordExpiresDate: expiresDate,
+			discordId: id,
+			discordUsername: username,
+			discordDiscriminator: discriminator
 		});
 
 		ctx.body = `Discord: @${username}#${discriminator} を、Misskey: @${user.username} に接続しました！`;

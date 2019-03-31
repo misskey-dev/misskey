@@ -17,20 +17,85 @@ export class UserServiceLinking {
 	@JoinColumn()
 	public user: User | null;
 
-	@Column('jsonb', {
-		nullable: true, default: null,
+	@Column('boolean', {
+		default: false,
 	})
-	public twitter: Record<string, any> | null;
+	public twitter: boolean;
 
-	@Column('jsonb', {
-		nullable: true, default: null,
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
 	})
-	public github: Record<string, any> | null;
+	public twitterAccessToken: string | null;
 
-	@Column('jsonb', {
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public twitterAccessTokenSecret: string | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public twitterUserId: string | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public twitterScreenName: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public github: boolean;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public githubAccessToken: string | null;
+
+	@Column('integer', {
 		nullable: true, default: null,
 	})
-	public discord: Record<string, any> | null;
+	public githubId: number | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public githubLogin: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public discord: boolean;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public discordAccessToken: string | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public discordRefreshToken: string | null;
+
+	@Column('integer', {
+		nullable: true, default: null,
+	})
+	public discordExpiresDate: number | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public discordId: string | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public discordUsername: string | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public discordDiscriminator: string | null;
 
 	//#region Denormalized fields
 	@Index()

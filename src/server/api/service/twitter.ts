@@ -47,7 +47,11 @@ router.get('/disconnect/twitter', async ctx => {
 	await UserServiceLinkings.update({
 		userId: user.id
 	}, {
-		twitter: null
+		twitter: false,
+		twitterAccessToken: null,
+		twitterAccessTokenSecret: null,
+		twitterUserId: null,
+		twitterScreenName: null,
 	});
 
 	ctx.body = `Twitterの連携を解除しました :v:`;
@@ -174,12 +178,11 @@ router.get('/tw/cb', async ctx => {
 		});
 
 		await UserServiceLinkings.update({ userId: user.id }, {
-			twitter: {
-				accessToken: result.accessToken,
-				accessTokenSecret: result.accessTokenSecret,
-				userId: result.userId,
-				screenName: result.screenName
-			}
+			twitter: true,
+			twitterAccessToken: result.accessToken,
+			twitterAccessTokenSecret: result.accessTokenSecret,
+			twitterUserId: result.userId,
+			twitterScreenName: result.screenName,
 		});
 
 		ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;

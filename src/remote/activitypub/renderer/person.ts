@@ -31,11 +31,11 @@ export async function renderPerson(user: ILocalUser) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${links.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${links.twitter.screenName}</span></a>`,
+			value: `<a href="https://twitter.com/intent/user?user_id=${links.twitterUserId}" rel="me nofollow noopener" target="_blank"><span>@${links.twitterScreenName}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:twitter',
-				value: `${links.twitter.userId}@${links.twitter.screenName}`
+				value: `${links.twitterUserId}@${links.twitterScreenName}`
 			}
 		});
 	}
@@ -44,11 +44,11 @@ export async function renderPerson(user: ILocalUser) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${links.github.login}" rel="me nofollow noopener" target="_blank"><span>@${links.github.login}</span></a>`,
+			value: `<a href="https://github.com/${links.githubLogin}" rel="me nofollow noopener" target="_blank"><span>@${links.githubLogin}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:github',
-				value: `${links.github.id}@${links.github.login}`
+				value: `${links.githubId}@${links.githubLogin}`
 			}
 		});
 	}
@@ -57,11 +57,11 @@ export async function renderPerson(user: ILocalUser) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${links.discord.id}" rel="me nofollow noopener" target="_blank"><span>${links.discord.username}#${links.discord.discriminator}</span></a>`,
+			value: `<a href="https://discordapp.com/users/${links.discordId}" rel="me nofollow noopener" target="_blank"><span>${links.discordUsername}#${links.discordDiscriminator}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:discord',
-				value: `${links.discord.id}@${links.discord.username}#${links.discord.discriminator}`
+				value: `${links.discordId}@${links.discordUsername}#${links.discordDiscriminator}`
 			}
 		});
 	}

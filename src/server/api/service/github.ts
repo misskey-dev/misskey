@@ -48,7 +48,10 @@ router.get('/disconnect/github', async ctx => {
 	await UserServiceLinkings.update({
 		userId: user.id
 	}, {
-		github: null
+		github: false,
+		githubAccessToken: null,
+		githubId: null,
+		githubLogin: null,
 	});
 
 	ctx.body = `GitHubの連携を解除しました :v:`;
@@ -261,11 +264,10 @@ router.get('/gh/cb', async ctx => {
 		});
 
 		await UserServiceLinkings.update({ userId: user.id }, {
-			github: {
-				accessToken,
-				id,
-				login
-			}
+			github: true,
+			githubAccessToken: accessToken,
+			githubId: id,
+			githubLogin: login,
 		});
 
 		ctx.body = `GitHub: @${login} を、Misskey: @${user.username} に接続しました！`;
