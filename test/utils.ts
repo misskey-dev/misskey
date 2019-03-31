@@ -24,7 +24,7 @@ export const request = async (endpoint: string, params: any, me?: any): Promise<
 	});
 
 	const status = res.status;
-	const body = await res.json();
+	const body = await res.json().catch(() => null);
 
 	return {
 		body, status
