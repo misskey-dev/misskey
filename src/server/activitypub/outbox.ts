@@ -14,6 +14,7 @@ import * as url from '../../prelude/url';
 import { Users, Notes } from '../../models';
 import { makePaginationQuery } from '../api/common/make-pagination-query';
 import { Brackets } from 'typeorm';
+import { Note } from '../../models/entities/note';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = ctx.params.user;
@@ -99,8 +100,8 @@ export default async (ctx: Router.IRouterContext) => {
  * @param note Note
  */
 export async function packActivity(note: Note): Promise<object> {
-	if (note.renoteId && note.text == null && note.poll == null && (note.fileIds == null || note.fileIds.length == 0)) {
-		const renote = await Note.findOne(note.renoteId);
+	if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
+		const renote = await Notes.findOne(note.renoteId);
 		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`, note);
 	}
 
