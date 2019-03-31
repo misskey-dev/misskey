@@ -25,7 +25,10 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 		const folder = typeof src === 'object' ? src : await this.findOne(src);
 
 		return await rap({
+			id: folder.id,
+			createdAt: folder.createdAt,
 			name: folder.name,
+			parentId: folder.parentId,
 
 			...(opts.detail ? {
 				foldersCount: DriveFolders.count({
