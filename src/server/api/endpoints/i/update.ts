@@ -198,28 +198,26 @@ export default define(meta, async (ps, user, app) => {
 	}
 
 	//#region emojis/tags
-	if (updates.name != null || updates.description != null) {
-		let emojis = [] as string[];
-		let tags = [] as string[];
+	let emojis = [] as string[];
+	let tags = [] as string[];
 
-		if (updates.name != null) {
-			const tokens = parsePlain(updates.name);
-			emojis = emojis.concat(extractEmojis(tokens));
-		}
-
-		if (updates.description != null) {
-			const tokens = parse(updates.description);
-			emojis = emojis.concat(extractEmojis(tokens));
-			tags = extractHashtags(tokens).map(tag => tag.toLowerCase());
-		}
-
-		updates.emojis = emojis;
-		updates.tags = tags;
-
-		// ハッシュタグ更新
-		for (const tag of tags) updateHashtag(user, tag, true, true);
-		for (const tag of user.tags.filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
+	if (updates.name != null) {
+		const tokens = parsePlain(updates.name);
+		emojis = emojis.concat(extractEmojis(tokens));
 	}
+
+	if (updates.description != null) {
+		const tokens = parse(updates.description);
+		emojis = emojis.concat(extractEmojis(tokens));
+		tags = extractHashtags(tokens).map(tag => tag.toLowerCase());
+	}
+
+	updates.emojis = emojis;
+	updates.tags = tags;
+
+	// ハッシュタグ更新
+	for (const tag of tags) updateHashtag(user, tag, true, true);
+	for (const tag of user.tags.filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
 	//#endregion
 
 	await Users.update(user.id, updates);
