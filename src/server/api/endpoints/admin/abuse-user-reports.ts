@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { AbuseUserReports } from '../../../../models';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	tags: ['admin'],
@@ -27,7 +27,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const query = generatePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
+	const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
 	const reports = await query.take(ps.limit).getMany();
 

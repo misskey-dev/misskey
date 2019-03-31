@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Mutings } from '../../../../models';
 
 export const meta = {
@@ -40,7 +40,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = generatePaginationQuery(Mutings.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Mutings.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
 		.andWhere(`muting.muterId = :meId`, { meId: me.id });
 
 	const mutings = await query

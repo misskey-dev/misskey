@@ -5,7 +5,7 @@ import fetchMeta from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { activeUsersChart } from '../../../../services/chart';
 
@@ -87,7 +87,8 @@ export default define(meta, async (ps, user) => {
 	}
 
 	//#region Construct query
-	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
 		.leftJoinAndSelect('note.user', 'user');
 

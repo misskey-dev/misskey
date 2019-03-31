@@ -3,7 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { activeUsersChart } from '../../../../services/chart';
@@ -71,7 +71,8 @@ export default define(meta, async (ps, user) => {
 	}
 
 	//#region Construct query
-	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.visibility = \'public\'')
 		.andWhere('note.replyId IS NULL')
 		.leftJoinAndSelect('note.user', 'user');

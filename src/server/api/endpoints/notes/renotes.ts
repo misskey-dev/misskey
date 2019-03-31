@@ -5,7 +5,7 @@ import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
 
 export const meta = {
@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.renoteId = :renoteId`, { renoteId: note.id })
 		.leftJoinAndSelect('note.user', 'user');
 

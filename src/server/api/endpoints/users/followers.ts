@@ -3,7 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Users, Followings } from '../../../../models';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	desc: {
@@ -71,7 +71,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	const query = generatePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
 		.andWhere(`following.followeeId = :userId`, { userId: user.id });
 
 	const followings = await query

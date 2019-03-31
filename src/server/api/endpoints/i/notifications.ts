@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import { readNotification } from '../../common/read-notification';
 import define from '../../define';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notifications, Followings, Mutings } from '../../../../models';
 
 export const meta = {
@@ -69,7 +69,7 @@ export default define(meta, async (ps, user) => {
 		.select('muting.muteeId')
 		.where('muting.muterId = :muterId', { muterId: user.id });
 
-	const query = generatePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
 		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
 		.leftJoinAndSelect('notification.notifier', 'notifier');
 

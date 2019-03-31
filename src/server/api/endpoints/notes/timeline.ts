@@ -1,11 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes, Followings } from '../../../../models';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { activeUsersChart } from '../../../../services/chart';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -100,8 +101,12 @@ export default define(meta, async (ps, user) => {
 		.select('following.followeeId')
 		.where('following.followerId = :followerId', { followerId: user.id });
 
-	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id })
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+		.andWhere(new Brackets(qb => { qb
+			.where(`note.userId IN (${ followingQuery.getQuery() })`)
+			.orWhere('note.userId = :meId', { meId: user.id });
+		}))
 		.leftJoinAndSelect('note.user', 'user')
 		.setParameters(followingQuery.getParameters());
 

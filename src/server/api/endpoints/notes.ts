@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../misc/cafy-id';
 import define from '../define';
-import { generatePaginationQuery } from '../common/generate-pagination-query';
+import { makePaginationQuery } from '../common/make-pagination-query';
 import { Notes } from '../../../models';
 
 export const meta = {
@@ -70,7 +70,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.visibility = 'public'`)
 		.andWhere(`note.localOnly = FALSE`)
 		.leftJoinAndSelect('note.user', 'user');

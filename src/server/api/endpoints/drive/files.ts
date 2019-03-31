@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { DriveFiles } from '../../../../models';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	desc: {
@@ -49,7 +49,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const query = generatePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId)
 		.andWhere('file.userId = :userId', { userId: user.id });
 
 	if (ps.folderId) {

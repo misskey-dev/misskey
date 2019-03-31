@@ -3,7 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Followings, Notes } from '../../../../models';
 import { Brackets } from 'typeorm';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
@@ -114,7 +114,8 @@ export default define(meta, async (ps, user) => {
 		.select('following.followeeId')
 		.where('following.followerId = :followerId', { followerId: user.id });
 
-	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
+			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere(new Brackets(qb => {
 			qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id })
 				.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');

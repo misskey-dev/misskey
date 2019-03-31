@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { Blockings } from '../../../../models';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	desc: {
@@ -40,7 +40,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = generatePaginationQuery(Blockings.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Blockings.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
 		.andWhere(`blocking.blockerId = :meId`, { meId: me.id });
 
 	const blockings = await query

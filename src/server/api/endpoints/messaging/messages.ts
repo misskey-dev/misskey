@@ -5,7 +5,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { MessagingMessages } from '../../../../models';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	desc: {
@@ -70,7 +70,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	const query = generatePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
 		.andWhere(`(message.userId = :meId AND message.recipientId = :recipientId) OR (message.userId = :recipientId AND message.recipientId = :meId)`, { meId: user.id, recipientId: recipient.id });
 
 	const messages = await query.getMany();

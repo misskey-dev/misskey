@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { generatePaginationQuery } from '../../common/generate-pagination-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
@@ -89,7 +89,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = generatePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.leftJoinAndSelect('note.user', 'user');
 
 	if (me) generateVisibilityQuery(query, me);
