@@ -58,8 +58,10 @@ export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where(':tag = ANY(user.tags)', { tag: ps.tag });
 
+	const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
+
 	if (ps.state === 'alive') {
-		query.andWhere('user.updatedAt > :date', { date: new Date(Date.now() - (1000 * 60 * 60 * 24 * 5)) });
+		query.andWhere('user.updatedAt > :date', { date: recent });
 	}
 
 	if (ps.origin === 'local') {
