@@ -157,8 +157,8 @@ export class NoteRepository extends Repository<Note> {
 		}
 
 		/* v11 TODO
-		if (_note.user.isCat && _note.text) {
-			text = nyaize(_note.text);
+		if (note.user.isCat && note.text) {
+			text = nyaize(note.text);
 		}
 		*/
 
@@ -171,6 +171,7 @@ export class NoteRepository extends Repository<Note> {
 			userId: note.userId,
 			user: Users.pack(note.user || note.userId, meId),
 			text: text,
+			cw: note.cw,
 			visibility: note.visibility,
 			visibleUserIds: note.visibleUserIds,
 			viaMobile: note.viaMobile,
