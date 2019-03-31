@@ -2,6 +2,7 @@ import { User } from '../models/entities/user';
 import { Hashtags, Users } from '../models';
 import { hashtagChart } from './chart';
 import { genId } from '../misc/gen-id';
+import { Hashtag } from '../models/entities/hashtag';
 
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();
@@ -67,7 +68,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 		if (isUserAttached) {
 			Hashtags.save({
 				id: genId(),
-				tag,
+				name: tag,
 				mentionedUserIds: [],
 				mentionedUsersCount: 0,
 				mentionedLocalUserIds: [],
@@ -80,11 +81,11 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 				attachedLocalUsersCount: Users.isLocalUser(user) ? 1 : 0,
 				attachedRemoteUserIds: Users.isRemoteUser(user) ? [user.id] : [],
 				attachedRemoteUsersCount: Users.isRemoteUser(user) ? 1 : 0,
-			});
+			} as Hashtag);
 		} else {
 			Hashtags.save({
 				id: genId(),
-				tag,
+				name: tag,
 				mentionedUserIds: [user.id],
 				mentionedUsersCount: 1,
 				mentionedLocalUserIds: Users.isLocalUser(user) ? [user.id] : [],
@@ -97,7 +98,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 				attachedLocalUsersCount: 0,
 				attachedRemoteUserIds: [],
 				attachedRemoteUsersCount: 0,
-			});
+			} as Hashtag);
 		}
 	}
 
