@@ -218,7 +218,7 @@ export default define(meta, async (ps, user, app) => {
 
 		// ハッシュタグ更新
 		for (const tag of tags) updateHashtag(user, tag, true, true);
-		for (const tag of (user.tags || []).filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
+		for (const tag of user.tags.filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
 	}
 	//#endregion
 
