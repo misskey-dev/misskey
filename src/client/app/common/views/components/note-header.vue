@@ -10,6 +10,7 @@
 	<span class="username"><mk-acct :user="note.user"/></span>
 	<span class="is-verified" v-if="note.user.isVerified" :title="$t('@.verified-user')"><fa icon="star"/></span>
 	<div class="info">
+		<span class="app" v-if="note.app && !mini && $store.state.settings.showVia">via <b>{{ note.app.name }}</b></span>
 		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>
 		<router-link class="created-at" :to="note | notePage">
 			<mk-time :time="note.createdAt"/>
@@ -107,6 +108,11 @@ export default Vue.extend({
 
 		> .mobile
 			margin-right 8px
+
+		> .app
+			margin-right 8px
+			padding-right 8px
+			border-right solid 1px var(--faceDivider)
 
 		> .visibility
 			margin-left 8px
