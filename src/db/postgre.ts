@@ -75,9 +75,10 @@ class MyCustomLogger implements Logger {
 	}
 }
 
-export function initDb() {
+export function initDb(justBorrow = false) {
 	try {
-		return getConnection();
+		const conn = getConnection();
+		return Promise.resolve(conn);
 	} catch (e) {}
 
 	return createConnection({
@@ -87,8 +88,8 @@ export function initDb() {
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
-		synchronize: true,
-		dropSchema: process.env.NODE_ENV === 'test',
+		synchronize: !justBorrow,
+		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
 		logging: !['production', 'test'].includes(process.env.NODE_ENV),
 		logger: new MyCustomLogger(),
 		entities: [
@@ -128,7 +129,7 @@ export function initDb() {
 			Signin,
 			ReversiGame,
 			ReversiMatching,
-			...charts
+			...charts as any
 		]
 	});
 }

@@ -14,9 +14,8 @@
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import * as fs from 'fs';
 import { async, signup, request, post, react, uploadFile } from './utils';
-import { Note } from '../src/models/entities/note';
+import { Note } from '../built/models/entities/note';
 const initDb = require('../built/db/postgre.js').initDb;
 
 //#region process
@@ -40,7 +39,7 @@ describe('API', () => {
 		});
 		p.on('message', message => {
 			if (message === 'ok') {
-				initDb().then(connection => {
+				initDb(true).then(connection => {
 					Notes = connection.getRepository(Note);
 					done();
 				});
@@ -48,7 +47,7 @@ describe('API', () => {
 		});
 	});
 
-	after(() => {
+	afterEach(() => {
 		p.kill();
 	});
 
