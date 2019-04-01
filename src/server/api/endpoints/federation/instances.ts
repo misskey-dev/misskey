@@ -61,8 +61,6 @@ export default define(meta, async (ps, me) => {
 		default: query.orderBy('id', 'DESC'); break;
 	}
 
-	const q = {} as any;
-
 	if (typeof ps.blocked === 'boolean') {
 		const meta = await fetchMeta();
 		if (ps.blocked) {
