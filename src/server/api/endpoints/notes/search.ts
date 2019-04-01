@@ -73,7 +73,7 @@ export default define(meta, async (ps, me) => {
 		return [];
 	}
 
-	const hits = response.hits.hits.map(hit => hit.id);
+	const hits = response.hits.hits.map((hit: any) => hit.id);
 
 	if (hits.length === 0) return [];
 
