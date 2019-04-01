@@ -13,6 +13,7 @@ import { Followings, Users, FollowRequests, Blockings, Instances } from '../../m
 import { instanceChart, perUserFollowingChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 import { createNotification } from '../create-notification';
+import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
 const logger = new Logger('following/create');
 
@@ -35,7 +36,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 		followeeInbox: Users.isRemoteUser(followee) ? followee.inbox : undefined,
 		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined
 	}).catch(e => {
-		if (e.code === 11000 && Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
+		if (isDuplicateKeyValueError(e) && Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 			logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
 			alreadyFollowed = true;
 		} else {

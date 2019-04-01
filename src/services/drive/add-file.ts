@@ -21,6 +21,7 @@ import { DriveFile } from '../../models/entities/drive-file';
 import { IRemoteUser, User } from '../../models/entities/user';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { genId } from '../../misc/gen-id';
+import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -402,7 +403,7 @@ export default async function(
 			file = await DriveFiles.save(file);
 		} catch (e) {
 			// duplicate key error (when already registered)
-			if (e.code === 11000) {
+			if (isDuplicateKeyValueError(e)) {
 				logger.info(`already registered ${file.uri}`);
 
 				file = await DriveFiles.findOne({

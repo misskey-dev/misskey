@@ -14,6 +14,7 @@ import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
+import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
 const logger = new Logger('chart');
 
@@ -265,10 +266,10 @@ export default abstract class Chart<T extends Record<string, any>> {
 				...Chart.convertObjectToFlattenColumns(data)
 			});
 		} catch (e) {
-			// 11000 is duplicate key error
+			// duplicate key error
 			// 並列動作している他のチャートエンジンプロセスと処理が重なる場合がある
 			// その場合は再度最も新しいログを持ってくる
-			if (e.code === 11000) {
+			if (isDuplicateKeyValueError(e)) {
 				log = await this.getLatestLog(span, group);
 			} else {
 				logger.error(e);

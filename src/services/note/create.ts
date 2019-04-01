@@ -26,6 +26,7 @@ import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
 import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
+import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -453,7 +454,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		return note;
 	} catch (e) {
 		// duplicate key error
-		if (e.code === 11000) {
+		if (isDuplicateKeyValueError(e)) {
 			return null;
 		}
 

@@ -14,6 +14,7 @@ import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
 import { NoteReaction } from '../../../models/entities/note-reaction';
 import { createNotification } from '../../create-notification';
+import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
 
 export default async (user: User, note: Note, reaction: string) => {
 	// Myself
@@ -33,7 +34,7 @@ export default async (user: User, note: Note, reaction: string) => {
 		reaction
 	} as NoteReaction).catch(e => {
 		// duplicate key error
-		if (e.code === 11000) {
+		if (isDuplicateKeyValueError(e)) {
 			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298', 'already reacted');
 		}
 

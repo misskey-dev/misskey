@@ -23,6 +23,7 @@ import { genId } from '../../../misc/gen-id';
 import { UserServiceLinking } from '../../../models/entities/user-service-linking';
 import { instanceChart, usersChart } from '../../../services/chart';
 import { UserPublickey } from '../../../models/entities/user-publickey';
+import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
 const logger = apLogger;
 
 /**
@@ -190,7 +191,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		} as UserServiceLinking);
 	} catch (e) {
 		// duplicate key error
-		if (e.code === 11000) {
+		if (isDuplicateKeyValueError(e)) {
 			throw new Error('already registered');
 		}
 
