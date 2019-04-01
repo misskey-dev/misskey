@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Instances } from '../../../../models';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
 	tags: ['federation'],
@@ -37,92 +38,57 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	let sort;
+	const query = Instances.createQueryBuilder('instance');
 
-	if (ps.sort) {
-		if (ps.sort == '+notes') {
-			sort = {
-				notesCount: -1
-			};
-		} else if (ps.sort == '-notes') {
-			sort = {
-				notesCount: 1
-			};
-		} else if (ps.sort == '+users') {
-			sort = {
-				usersCount: -1
-			};
-		} else if (ps.sort == '-users') {
-			sort = {
-				usersCount: 1
-			};
-		} else if (ps.sort == '+following') {
-			sort = {
-				followingCount: -1
-			};
-		} else if (ps.sort == '-following') {
-			sort = {
-				followingCount: 1
-			};
-		} else if (ps.sort == '+followers') {
-			sort = {
-				followersCount: -1
-			};
-		} else if (ps.sort == '-followers') {
-			sort = {
-				followersCount: 1
-			};
-		} else if (ps.sort == '+caughtAt') {
-			sort = {
-				caughtAt: -1
-			};
-		} else if (ps.sort == '-caughtAt') {
-			sort = {
-				caughtAt: 1
-			};
-		} else if (ps.sort == '+lastCommunicatedAt') {
-			sort = {
-				lastCommunicatedAt: -1
-			};
-		} else if (ps.sort == '-lastCommunicatedAt') {
-			sort = {
-				lastCommunicatedAt: 1
-			};
-		} else if (ps.sort == '+driveUsage') {
-			sort = {
-				driveUsage: -1
-			};
-		} else if (ps.sort == '-driveUsage') {
-			sort = {
-				driveUsage: 1
-			};
-		} else if (ps.sort == '+driveFiles') {
-			sort = {
-				driveFiles: -1
-			};
-		} else if (ps.sort == '-driveFiles') {
-			sort = {
-				driveFiles: 1
-			};
-		}
-	} else {
-		sort = {
-			id: -1
-		};
+	switch (ps.sort) {
+		case '+notes': query.orderBy('notesCount', 'DESC'); break;
+		case '-notes': query.orderBy('notesCount', 'ASC'); break;
+		case '+usersCount': query.orderBy('usersCount', 'DESC'); break;
+		case '-usersCount': query.orderBy('usersCount', 'ASC'); break;
+		case '+followingCount': query.orderBy('followingCount', 'DESC'); break;
+		case '-followingCount': query.orderBy('followingCount', 'ASC'); break;
+		case '+followersCount': query.orderBy('followersCount', 'DESC'); break;
+		case '-followersCount': query.orderBy('followersCount', 'ASC'); break;
+		case '+caughtAt': query.orderBy('caughtAt', 'DESC'); break;
+		case '-caughtAt': query.orderBy('caughtAt', 'ASC'); break;
+		case '+lastCommunicatedAt': query.orderBy('lastCommunicatedAt', 'DESC'); break;
+		case '-lastCommunicatedAt': query.orderBy('lastCommunicatedAt', 'ASC'); break;
+		case '+driveUsage': query.orderBy('driveUsage', 'DESC'); break;
+		case '-driveUsage': query.orderBy('driveUsage', 'ASC'); break;
+		case '+driveFiles': query.orderBy('driveFiles', 'DESC'); break;
+		case '-driveFiles': query.orderBy('driveFiles', 'ASC'); break;
+
+		default: query.orderBy('id', 'DESC'); break;
 	}
 
 	const q = {} as any;
 
-	if (typeof ps.blocked === 'boolean') q.isBlocked = ps.blocked;
-	if (typeof ps.notResponding === 'boolean') q.isNotResponding = ps.notResponding;
-	if (typeof ps.markedAsClosed === 'boolean') q.isMarkedAsClosed = ps.markedAsClosed;
+	if (typeof ps.blocked === 'boolean') {
+		const meta = await fetchMeta();
+		if (ps.blocked) {
+			query.andWhere('instance.host IN (:...blocks)', { blocks: meta.blockedHosts });
+		} else {
+			query.andWhere('instance.host NOT IN (:...blocks)', { blocks: meta.blockedHosts });
+		}
+	}
 
-	const instances = await Instances
-		.find(q, {
-			take: ps.limit,
-			order: sort,
-			skip: ps.offset
-		});
+	if (typeof ps.notResponding === 'boolean') {
+		if (ps.notResponding) {
+			query.andWhere('instance.isNotResponding = TRUE');
+		} else {
+			query.andWhere('instance.isNotResponding = FALSE');
+		}
+	}
+
+	if (typeof ps.markedAsClosed === 'boolean') {
+		if (ps.markedAsClosed) {
+			query.andWhere('instance.isMarkedAsClosed = TRUE');
+		} else {
+			query.andWhere('instance.isMarkedAsClosed = FALSE');
+		}
+	}
+
+	const instances = await query.take(ps.limit).skip(ps.offset).getMany();
 
 	return instances;
 });
