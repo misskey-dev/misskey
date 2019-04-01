@@ -386,7 +386,7 @@ async function publish(user: User, note: Note, noteObj: any, reply: Note, renote
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
-	const insert: Note = {
+	const insert: Partial<Note> = {
 		id: genId(data.createdAt),
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file.id) : [],
