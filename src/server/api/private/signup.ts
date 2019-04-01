@@ -74,6 +74,11 @@ export default async (ctx: Koa.BaseContext) => {
 	// Generate secret
 	const secret = generateUserToken();
 
+	if (await Users.findOne({ usernameLower: username.toLowerCase(), host: null })) {
+		ctx.status = 400;
+		return;
+	}
+
 	const account = await Users.save({
 		id: genId(),
 		createdAt: new Date(),
