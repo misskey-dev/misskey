@@ -30,11 +30,11 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 		// 非正規化
 		followerHost: follower.host,
-		followerInbox: Users.isRemoteUser(follower) ? follower.inbox : undefined,
-		followerSharedInbox: Users.isRemoteUser(follower) ? follower.sharedInbox : undefined,
+		followerInbox: Users.isRemoteUser(follower) ? follower.inbox : null,
+		followerSharedInbox: Users.isRemoteUser(follower) ? follower.sharedInbox : null,
 		followeeHost: followee.host,
-		followeeInbox: Users.isRemoteUser(followee) ? followee.inbox : undefined,
-		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined
+		followeeInbox: Users.isRemoteUser(followee) ? followee.inbox : null,
+		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : null
 	}).catch(e => {
 		if (isDuplicateKeyValueError(e) && Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 			logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
