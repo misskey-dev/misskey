@@ -258,15 +258,15 @@ export default class extends Channel {
 
 		const crc32 = CRC32.str(game.logs.map(x => x.pos.toString()).join('') + pos.toString()).toString();
 
+		game.logs.push(log);
+
 		await ReversiGames.update({
 			id: this.gameId
 		}, {
 			crc32,
 			isEnded: o.isEnded,
 			winnerId: winner,
-			$push: {
-				logs: log
-			}
+			logs: game.logs
 		});
 
 		publishReversiGameStream(this.gameId, 'set', Object.assign(log, {
