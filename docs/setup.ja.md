@@ -22,7 +22,7 @@ adduser --disabled-password --disabled-login misskey
 これらのソフトウェアをインストール・設定してください:
 
 #### 依存関係 :package:
-* **[Node.js](https://nodejs.org/en/)** (10.0.0以上)
+* **[Node.js](https://nodejs.org/en/)** (11.7.0以上)
 * **[PostgreSQL](https://www.postgresql.org/)** (10以上)
 
 ##### オプション
@@ -48,7 +48,7 @@ adduser --disabled-password --disabled-login misskey
 2. `git clone -b master git://github.com/syuilo/misskey.git` masterブランチからMisskeyレポジトリをクローン
 3. `cd misskey` misskeyディレクトリに移動
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
-5. `npm install` Misskeyの依存パッケージをインストール
+5. `yarn install` Misskeyの依存パッケージをインストール
 
 *5.* 設定ファイルを作成する
 ----------------------------------------------------------------
@@ -60,22 +60,16 @@ adduser --disabled-password --disabled-login misskey
 
 次のコマンドでMisskeyをビルドしてください:
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 Debianをお使いであれば、`build-essential`パッケージをインストールする必要があります。
-
-何らかのモジュールでエラーが発生する場合はnode-gypを使ってください:
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
 
 *7.* 以上です！
 ----------------------------------------------------------------
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
 
 ### 通常起動
-`NODE_ENV=production npm start`するだけです。GLHF!
+`NODE_ENV=production yarn start`するだけです。GLHF!
 
 ### systemdを用いた起動
 1. systemdサービスのファイルを作成: `/etc/systemd/system/misskey.service`
@@ -110,11 +104,11 @@ CentOSで1024以下のポートを使用してMisskeyを使用する場合は`Ex
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git fetch`
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
-3. `npm install`
-4. `NODE_ENV=production npm run build`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
 5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
 
-なにか問題が発生した場合は、`npm run clean`または`npm run cleanall`すると直る場合があります。
+なにか問題が発生した場合は、`yarn clean`または`yarn cleanall`すると直る場合があります。
 
 ----------------------------------------------------------------
 

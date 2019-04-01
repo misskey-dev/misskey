@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
-import { generate as generateKeypair } from '../../../crypto_key';
+import { generateKeyPair } from 'crypto';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import fetchMeta from '../../../misc/fetch-meta';
@@ -88,7 +88,19 @@ export default async (ctx: Koa.BaseContext) => {
 
 	await UserKeypairs.save({
 		id: genId(),
-		keyPem: generateKeypair(),
+		keyPem: await new Promise<string>((s, j) => generateKeyPair('rsa', {
+			modulusLength: 4096,
+			publicKeyEncoding: {
+				type: 'pkcs1',
+				format: 'pem'
+			},
+			privateKeyEncoding: {
+				type: 'pkcs1',
+				format: 'pem',
+				cipher: undefined,
+				passphrase: undefined
+			}
+		}, (e, _, x) => e ? j(e) : s(x))),
 		userId: account.id
 	});
 

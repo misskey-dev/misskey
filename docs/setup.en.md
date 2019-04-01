@@ -22,7 +22,7 @@ adduser --disabled-password --disabled-login misskey
 Please install and setup these softwares:
 
 #### Dependencies :package:
-* **[Node.js](https://nodejs.org/en/)** >= 10.0.0
+* **[Node.js](https://nodejs.org/en/)** >= 11.7.0
 * **[PostgreSQL](https://www.postgresql.org/)** >= 10
 
 ##### Optional
@@ -41,7 +41,7 @@ Please install and setup these softwares:
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clone the misskey repo from master branch.
 3. `cd misskey` Navigate to misskey directory
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
-5. `npm install` Install misskey dependencies.
+5. `yarn install` Install misskey dependencies.
 
 *5.* Configure Misskey
 ----------------------------------------------------------------
@@ -53,23 +53,16 @@ Please install and setup these softwares:
 
 Build misskey with the following:
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 If you're on Debian, you will need to install the `build-essential`, `python` package.
-
-If you're still encountering errors about some modules, use node-gyp:
-
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
 
 *7.* That is it.
 ----------------------------------------------------------------
 Well done! Now, you have an environment that run to Misskey.
 
 ### Launch normally
-Just `NODE_ENV=production npm start`. GLHF!
+Just `NODE_ENV=production yarn start`. GLHF!
 
 ### Launch with systemd
 
@@ -104,8 +97,8 @@ You can check if the service is running with `systemctl status misskey`.
 ### How to update your Misskey server to the latest version
 1. `git fetch`
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
-3. `npm install`
-4. `NODE_ENV=production npm run build`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
 5. Check [ChangeLog](../CHANGELOG.md) for migration information
 6. Restart your Misskey process to apply changes
 7. Enjoy

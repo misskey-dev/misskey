@@ -22,7 +22,7 @@ adduser --disabled-password --disabled-login misskey
 Installez les paquets suivants :
 
 #### Dépendences :package:
-* **[Node.js](https://nodejs.org/en/)** >= 10.0.0
+* **[Node.js](https://nodejs.org/en/)** >= 11.7.0
 * **[PostgreSQL](https://www.postgresql.org/)** >= 10
 
 ##### Optionnels
@@ -41,7 +41,7 @@ Installez les paquets suivants :
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clonez la branche master du dépôt misskey.
 3. `cd misskey` Accédez au dossier misskey.
 4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
-5. `npm install` Installez les dépendances de misskey.
+5. `yarn install` Installez les dépendances de misskey.
 
 *5.* Création du fichier de configuration
 ----------------------------------------------------------------
@@ -53,23 +53,16 @@ Installez les paquets suivants :
 
 Construisez Misskey comme ceci :
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential` et `python`.
-
-Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
-
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
 
 *7.* C'est tout.
 ----------------------------------------------------------------
 Excellent ! Maintenant, vous avez un environnement prêt pour lancer Misskey
 
 ### Lancement conventionnel
-Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-vous bien !
+Lancez tout simplement `NODE_ENV=production yarn start`. Bonne chance et amusez-vous bien !
 
 ### Démarrage avec systemd
 
@@ -104,8 +97,8 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 ### Méthode de mise à jour vers la plus récente version de Misskey
 1. `git fetch`
 2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
-3. `npm install`
-4. `NODE_ENV=production npm run build`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
 5. Consultez [ChangeLog](../CHANGELOG.md) pour les information de migration.
 
 ----------------------------------------------------------------

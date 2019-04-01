@@ -13,8 +13,6 @@
 # /docs/docker.*.md                             @khws4v1
 /locales/                                       @syuilo
 /src/                                           @syuilo @AyaMorisawa @mei23 @acid-chicken
-# /src/crypto_key.cc                            @akihikodaki
-# /src/crypto_key.d.ts                          @akihikodaki
 /.dockerignore                                  @syuilo # @khws4v1
 /.editorconfig                                  @syuilo @AyaMorisawa
 /.eslintrc                                      @syuilo
@@ -28,7 +26,6 @@
 /Dockerfile                                     @syuilo @AyaMorisawa @acid-chicken # @khws4v1
 /LICENSE                                        @syuilo
 /README.md                                      @syuilo @AyaMorisawa @acid-chicken # @nikhiljha
-# /binding.gyp                                  @akihikodaki
 /crowdin.yml                                    @syuilo
 # /docker-compose.yml                           @khws4v1
 /gulpfile.ts                                    @syuilo @AyaMorisawa

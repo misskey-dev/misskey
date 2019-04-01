@@ -17,6 +17,5 @@ api-docs.json
 *.log
 /redis
 *.code-workspace
-yarn.lock
 .DS_Store
 /files
