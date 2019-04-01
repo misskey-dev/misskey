@@ -183,6 +183,11 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			keyId: person.publicKey.id,
 			keyPem: person.publicKey.publicKeyPem
 		} as UserPublickey);
+
+		await UserServiceLinkings.save({
+			id: genId(),
+			userId: user.id,
+		} as UserServiceLinking);
 	} catch (e) {
 		// duplicate key error
 		if (e.code === 11000) {
@@ -359,7 +364,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
-		createdAt: Date.parse(person.published) || null,
+		createdAt: new Date(Date.parse(person.published)) || null,
 	} as Partial<User>;
 
 	if (avatar) {
@@ -380,6 +385,16 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	await UserPublickeys.update({ userId: exist.id }, {
 		keyId: person.publicKey.id,
 		keyPem: person.publicKey.publicKeyPem
+	});
+
+	await UserServiceLinkings.update({ userId: exist.id }, {
+		twitterUserId: services.twitter.userId,
+		twitterScreenName: services.twitter.screenName,
+		githubId: services.github.id,
+		githubLogin: services.github.login,
+		discordId: services.discord.id,
+		discordUsername: services.discord.username,
+		discordDiscriminator: services.discord.discriminator,
 	});
 
 	// ハッシュタグ更新

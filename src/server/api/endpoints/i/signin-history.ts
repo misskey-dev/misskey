@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { MoreThan, LessThan } from 'typeorm';
 import { Signins } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	requireCredential: true,
@@ -26,26 +26,10 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const query = {
-		userId: user.id
-	} as any;
+	const query = makePaginationQuery(Signins.createQueryBuilder('signin'), ps.sinceId, ps.untilId)
+		.andWhere(`signin.userId = :meId`, { meId: user.id });
 
-	const sort = {
-		id: -1
-	};
-
-	if (ps.sinceId) {
-		sort.id = 1;
-		query.id = MoreThan(ps.sinceId);
-	} else if (ps.untilId) {
-		query.id = LessThan(ps.untilId);
-	}
-
-	const history = await Signins.find({
-		where: query,
-		take: ps.limit,
-		order: sort
-	});
+	const history = await query.take(ps.limit).getMany();
 
 	return await Promise.all(history.map(record => Signins.pack(record)));
 });
