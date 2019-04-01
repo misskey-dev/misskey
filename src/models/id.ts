@@ -1,4 +1,4 @@
 export const id = () => ({
 	type: 'char' as 'char',
-	length: 12
+	length: 11
 });
