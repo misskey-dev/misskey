@@ -12,7 +12,9 @@ import { fetchProxyAccount } from '../../misc/fetch-proxy-account';
 export async function pushUserToUserList(target: User, list: UserList) {
 	await UserListJoinings.save({
 		id: genId(),
-		userId: target.id
+		createdAt: new Date(),
+		userId: target.id,
+		userListId: list.id
 	} as UserListJoining);
 
 	publishUserListStream(list.id, 'userAdded', await Users.pack(target));
