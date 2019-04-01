@@ -549,7 +549,7 @@ describe('API', () => {
 			assert.strictEqual(res.body.createdNote.text, post.text);
 
 			const noteDoc = await Notes.findOne(res.body.createdNote.id);
-			assert.strictEqual(noteDoc.mentions, [bob.id]);
+			assert.deepStrictEqual(noteDoc.mentions, [bob.id]);
 		}));
 	});
 
