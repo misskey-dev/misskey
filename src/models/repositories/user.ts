@@ -79,6 +79,7 @@ export class UserRepository extends Repository<User> {
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
+		const pins = opts.detail ? await UserNotePinings.find({ userId: user.id }) : [];
 
 		return await rap({
 			id: user.id,
@@ -118,10 +119,10 @@ export class UserRepository extends Repository<User> {
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,
-				pinnedNotes: UserNotePinings.find({ userId: user.id }).then(pins =>
-					Notes.packMany(pins.map(pin => pin.id), meId, {
-						detail: true
-					})),
+				pinnedNoteIds: pins.map(pin => pin.noteId),
+				pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
+					detail: true
+				}),
 			} : {}),
 
 			...(opts.detail && meId === user.id ? {

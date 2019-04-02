@@ -65,7 +65,6 @@ export default Vue.extend({
 				text: this.$t('watch'),
 				action: () => this.toggleWatch(true)
 			} : undefined,
-			// v11 TODO
 			this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
 				icon: 'thumbtack',
 				text: this.$t('unpin'),
