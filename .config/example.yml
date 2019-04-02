@@ -1,11 +1,15 @@
-# - Misskey configuration -
+# ┌───────────────────────────────────────────────────────────┐
+#─┤ Misskey configuration                                     ├─
+# └───────────────────────────────────────────────────────────┘
 
-#---[ URL ]----------------------------------------------------#
+#   ┌─────┐
+#───┘ URL └─────────────────────────────────────────────────────
 
 # Final accessible URL seen by a user.
 url: https://example.tld/
 
-#---[ Port and TLS settings ]----------------------------------#
+#   ┌───────────────────────┐
+#───┘ Port and TLS settings └───────────────────────────────────
 
 #
 # Misskey supports two deployment options for public.
@@ -44,8 +48,8 @@ url: https://example.tld/
 #  key: /etc/letsencrypt/live/example.tld/privkey.pem
 #  cert: /etc/letsencrypt/live/example.tld/fullchain.pem
 
-
-#---[ PostgreSQL configuration ]-------------------------------#
+#   ┌──────────────────────────┐
+#───┘ PostgreSQL configuration └────────────────────────────────
 
 db:
   host: localhost
@@ -58,24 +62,24 @@ db:
   user: example-misskey-user
   pass: example-misskey-pass
 
-
-#---[ Redis configuration ]------------------------------------#
+#   ┌─────────────────────┐
+#───┘ Redis configuration └─────────────────────────────────────
 
 #redis:
 #  host: localhost
 #  port: 6379
 #  pass: example-pass
 
-
-#---[ Elasticsearch configuration ]----------------------------#
+#   ┌─────────────────────────────┐
+#───┘ Elasticsearch configuration └─────────────────────────────
 
 #elasticsearch:
 #  host: localhost
 #  port: 9200
 #  pass: null
 
-
-#---[ File storage (Drive) configuration ]---------------------#
+#   ┌────────────────────────────────────┐
+#───┘ File storage (Drive) configuration └──────────────────────
 
 drive:
   storage: 'fs'
@@ -115,8 +119,8 @@ drive:
   #   accessKey: XXX
   #   secretKey: YYY
 
-
-#---[ ID generation ]------------------------------------------#
+#   ┌───────────────┐
+#───┘ ID generation └───────────────────────────────────────────
 
 # You can select the ID generation method.
 # You don't usually need to change this setting, but you can
@@ -146,7 +150,8 @@ drive:
 
 id: 'aid2'
 
-#---[ Other configuration ]------------------------------------#
+#   ┌─────────────────────┐
+#───┘ Other configuration └─────────────────────────────────────
 
 # If enabled:
 #  The first account created is automatically marked as Admin.
