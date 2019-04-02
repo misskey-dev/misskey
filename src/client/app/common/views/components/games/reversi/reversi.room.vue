@@ -35,9 +35,9 @@
 			</header>
 
 			<div>
-				<form-radio v-model="game.settings.bw" value="random" @change="updateSettings">{{ $t('random') }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="1" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user1"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
-				<form-radio v-model="game.settings.bw" :value="2" @change="updateSettings">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user2"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.bw" value="random" @change="updateSettings('bw')">{{ $t('random') }}</form-radio>
+				<form-radio v-model="game.bw" :value="1" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user1"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
+				<form-radio v-model="game.bw" :value="2" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user2"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
 			</div>
 		</div>
 
@@ -47,9 +47,9 @@
 			</header>
 
 			<div>
-				<ui-switch v-model="game.settings.isLlotheo" @change="updateSettings">{{ $t('is-llotheo') }}</ui-switch>
-				<ui-switch v-model="game.settings.loopedBoard" @change="updateSettings">{{ $t('looped-map') }}</ui-switch>
-				<ui-switch v-model="game.settings.canPutEverywhere" @change="updateSettings">{{ $t('can-put-everywhere') }}</ui-switch>
+				<ui-switch v-model="game.isLlotheo" @change="updateSettings('isLlotheo')">{{ $t('is-llotheo') }}</ui-switch>
+				<ui-switch v-model="game.loopedBoard" @change="updateSettings('loopedBoard')">{{ $t('looped-map') }}</ui-switch>
+				<ui-switch v-model="game.canPutEverywhere" @change="updateSettings('canPutEverywhere')">{{ $t('can-put-everywhere') }}</ui-switch>
 			</div>
 		</div>
 
@@ -159,8 +159,8 @@ export default Vue.extend({
 		this.connection.on('initForm', this.onInitForm);
 		this.connection.on('message', this.onMessage);
 
-		if (this.game.user1Id != this.$store.state.i.id && this.game.settings.form1) this.form = this.game.settings.form1;
-		if (this.game.user2Id != this.$store.state.i.id && this.game.settings.form2) this.form = this.game.settings.form2;
+		if (this.game.user1Id != this.$store.state.i.id && this.game.form1) this.form = this.game.form1;
+		if (this.game.user2Id != this.$store.state.i.id && this.game.form2) this.form = this.game.form2;
 	},
 
 	beforeDestroy() {
@@ -189,14 +189,15 @@ export default Vue.extend({
 			this.$forceUpdate();
 		},
 
-		updateSettings() {
+		updateSettings(key: string) {
 			this.connection.send('updateSettings', {
-				settings: this.game.settings
+				key: key,
+				value: this.game[key]
 			});
 		},
 
-		onUpdateSettings(settings) {
-			this.game.settings = settings;
+		onUpdateSettings({ key, value }) {
+			this.game[key] = value;
 			if (this.game.map == null) {
 				this.mapName = null;
 			} else {
@@ -244,7 +245,7 @@ export default Vue.extend({
 			line[x] = newPixel;
 			this.$set(this.game.map, y, line.join(''));
 			this.$forceUpdate();
-			this.updateSettings();
+			this.updateSettings('map');
 		}
 	}
 });

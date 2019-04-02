@@ -14,9 +14,10 @@ export class ReversiGame {
 	public createdAt: Date;
 
 	@Column('timestamp with time zone', {
+		nullable: true,
 		comment: 'The started date of the ReversiGame.'
 	})
-	public startedAt: Date;
+	public startedAt: Date | null;
 
 	@Column(id())
 	public user1Id: User['id'];
@@ -51,8 +52,10 @@ export class ReversiGame {
 	 * 1 ... user1
 	 * 2 ... user2
 	 */
-	@Column('integer')
-	public black: number;
+	@Column('integer', {
+		nullable: true,
+	})
+	public black: number | null;
 
 	@Column('boolean', {
 		default: false,
@@ -122,7 +125,7 @@ export class ReversiGame {
 	 * ログのposを文字列としてすべて連結したもののCRC32値
 	 */
 	@Column('varchar', {
-		length: 32
+		length: 32, nullable: true
 	})
-	public crc32: string;
+	public crc32: string | null;
 }

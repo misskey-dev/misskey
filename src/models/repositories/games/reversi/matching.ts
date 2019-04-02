@@ -13,9 +13,12 @@ export class ReversiMatchingRepository extends Repository<ReversiMatching> {
 
 		return await rap({
 			id: matching.id,
+			createdAt: matching.createdAt,
+			parentId: matching.parentId,
 			parent: Users.pack(matching.parentId, me, {
 				detail: true
 			}),
+			childId: matching.childId,
 			child: Users.pack(matching.childId, me, {
 				detail: true
 			})

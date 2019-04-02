@@ -71,9 +71,9 @@
 	</div>
 
 	<div class="info">
-		<p v-if="game.settings.isLlotheo">{{ $t('is-llotheo') }}</p>
-		<p v-if="game.settings.loopedBoard">{{ $t('looped-map') }}</p>
-		<p v-if="game.settings.canPutEverywhere">{{ $t('can-put-everywhere') }}</p>
+		<p v-if="game.isLlotheo">{{ $t('is-llotheo') }}</p>
+		<p v-if="game.loopedBoard">{{ $t('looped-map') }}</p>
+		<p v-if="game.canPutEverywhere">{{ $t('can-put-everywhere') }}</p>
 	</div>
 </div>
 </template>
@@ -170,9 +170,9 @@ export default Vue.extend({
 		logPos(v) {
 			if (!this.game.isEnded) return;
 			this.o = new Reversi(this.game.map, {
-				isLlotheo: this.game.settings.isLlotheo,
-				canPutEverywhere: this.game.settings.canPutEverywhere,
-				loopedBoard: this.game.settings.loopedBoard
+				isLlotheo: this.game.isLlotheo,
+				canPutEverywhere: this.game.canPutEverywhere,
+				loopedBoard: this.game.loopedBoard
 			});
 			for (const log of this.logs.slice(0, v)) {
 				this.o.put(log.color, log.pos);
@@ -185,9 +185,9 @@ export default Vue.extend({
 		this.game = this.initGame;
 
 		this.o = new Reversi(this.game.map, {
-			isLlotheo: this.game.settings.isLlotheo,
-			canPutEverywhere: this.game.settings.canPutEverywhere,
-			loopedBoard: this.game.settings.loopedBoard
+			isLlotheo: this.game.isLlotheo,
+			canPutEverywhere: this.game.canPutEverywhere,
+			loopedBoard: this.game.loopedBoard
 		});
 
 		for (const log of this.game.logs) {
@@ -287,9 +287,9 @@ export default Vue.extend({
 			this.game = game;
 
 			this.o = new Reversi(this.game.map, {
-				isLlotheo: this.game.settings.isLlotheo,
-				canPutEverywhere: this.game.settings.canPutEverywhere,
-				loopedBoard: this.game.settings.loopedBoard
+				isLlotheo: this.game.isLlotheo,
+				canPutEverywhere: this.game.canPutEverywhere,
+				loopedBoard: this.game.loopedBoard
 			});
 
 			for (const log of this.game.logs) {

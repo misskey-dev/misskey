@@ -29,7 +29,7 @@ export default class extends Channel {
 		switch (type) {
 			case 'accept': this.accept(true); break;
 			case 'cancelAccept': this.accept(false); break;
-			case 'updateSettings': this.updateSettings(body.settings); break;
+			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'initForm': this.initForm(body); break;
 			case 'updateForm': this.updateForm(body.id, body.value); break;
 			case 'message': this.message(body); break;
@@ -39,7 +39,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async updateSettings(settings: any) {
+	private async updateSettings(key: string, value: any) {
 		const game = await ReversiGames.findOne(this.gameId);
 
 		if (game.isStarted) return;
@@ -47,9 +47,14 @@ export default class extends Channel {
 		if ((game.user1Id === this.user.id) && game.user1Accepted) return;
 		if ((game.user2Id === this.user.id) && game.user2Accepted) return;
 
-		await ReversiGames.update({ id: this.gameId }, settings);
+		await ReversiGames.update({ id: this.gameId }, {
+			[key]: value
+		});
 
-		publishReversiGameStream(this.gameId, 'updateSettings', settings);
+		publishReversiGameStream(this.gameId, 'updateSettings', {
+			key: key,
+			value: value
+		});
 	}
 
 	@autobind
