@@ -122,6 +122,7 @@ drive:
 # You don't usually need to change this setting, but you can
 # change it according to your preferences.
 
+# Available methods:
 # aid1 ... Use AID for ID generation (with random 1 char)
 # aid2 ... Use AID for ID generation (with random 2 chars)
 # aid3 ... Use AID for ID generation (with random 3 chars)
@@ -137,8 +138,6 @@ drive:
 # advantages such as shortening of the URL.
 
 # ULID: Universally Unique Lexicographically Sortable Identifier.
-# It is similar to UUID, but can be sorted lexicographically.
-# Also, date information is embedded.
 # for more details: https://github.com/ulid/spec
 # * Normally, AID should be sufficient.
 
