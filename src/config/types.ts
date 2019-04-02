@@ -42,6 +42,8 @@ export type Source = {
 	accesslog?: string;
 
 	clusterLimit?: number;
+
+	id: string;
 };
 
 /**

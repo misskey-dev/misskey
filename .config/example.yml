@@ -1,8 +1,12 @@
+# - Misskey configuration -
+
+#---[ URL ]----------------------------------------------------#
+
 # Final accessible URL seen by a user.
 url: https://example.tld/
 
+#---[ Port and TLS settings ]----------------------------------#
 
-### Port and TLS settings ######################################
 #
 # Misskey supports two deployment options for public.
 #
@@ -30,21 +34,18 @@ url: https://example.tld/
 #   You need to set Certificate in 'https' section.
 
 # To use option 1, uncomment below line.
-# port: 3000    # A port that your Misskey server should listen.
+#port: 3000    # A port that your Misskey server should listen.
 
 # To use option 2, uncomment below lines.
-# port: 443
-#
-# https:
-#   # path for certification
-#   key: /etc/letsencrypt/live/example.tld/privkey.pem
-#   cert: /etc/letsencrypt/live/example.tld/fullchain.pem
+#port: 443
 
-################################################################
+#https:
+#  # path for certification
+#  key: /etc/letsencrypt/live/example.tld/privkey.pem
+#  cert: /etc/letsencrypt/live/example.tld/fullchain.pem
 
 
-################################################################
-#[ PostgreSQL configuration ]###################################
+#---[ PostgreSQL configuration ]-------------------------------#
 
 db:
   host: localhost
@@ -58,8 +59,7 @@ db:
   pass: example-misskey-pass
 
 
-################################################################
-#[ Redis configuration ]########################################
+#---[ Redis configuration ]------------------------------------#
 
 #redis:
 #  host: localhost
@@ -67,8 +67,7 @@ db:
 #  pass: example-pass
 
 
-################################################################
-#[ Elasticsearch configuration ]################################
+#---[ Elasticsearch configuration ]----------------------------#
 
 #elasticsearch:
 #  host: localhost
@@ -76,11 +75,10 @@ db:
 #  pass: null
 
 
-################################################################
-#[ File storage (Drive) configuration ]#########################
+#---[ File storage (Drive) configuration ]---------------------#
 
 drive:
-  storage: 'db'
+  storage: 'fs'
 
   # OR
 
@@ -118,8 +116,38 @@ drive:
   #   secretKey: YYY
 
 
-################################################################
-#[ Other configuration ]########################################
+#---[ ID generation ]------------------------------------------#
+
+# You can select the ID generation method.
+# You don't usually need to change this setting, but you can
+# change it according to your preferences.
+
+# aid1 ... Use AID for ID generation (with random 1 char)
+# aid2 ... Use AID for ID generation (with random 2 chars)
+# aid3 ... Use AID for ID generation (with random 3 chars)
+# aid4 ... Use AID for ID generation (with random 4 chars)
+# ulid ... Use ulid for ID generation
+# objectid ... This is left for backward compatibility.
+
+# AID(n) is the original ID generation method.
+# The trailing n represents the number of random characters that
+# will be suffixed.
+# The larger n is the safer. If n is small, the possibility of
+# collision at the same time increases, but there are also
+# advantages such as shortening of the URL.
+
+# ULID: Universally Unique Lexicographically Sortable Identifier.
+# It is similar to UUID, but can be sorted lexicographically.
+# Also, date information is embedded.
+# for more details: https://github.com/ulid/spec
+# * Normally, AID should be sufficient.
+
+# ObjectID is the method used in previous versions of Misskey.
+# * Choose this if you are migrating from a previous Misskey.
+
+id: 'aid2'
+
+#---[ Other configuration ]------------------------------------#
 
 # If enabled:
 #  The first account created is automatically marked as Admin.

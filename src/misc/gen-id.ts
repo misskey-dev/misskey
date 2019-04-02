@@ -1,39 +1,19 @@
-// Misskey ID
-// 長さ8の[2000年1月1日からの経過ミリ秒をbase36でエンコードしたもの] + 長さ3の[ランダムな文字列]
+import { ulid } from 'ulid';
+import { genAid } from './aid';
+import config from '../config';
 
-const CHARS = '0123456789abcdefghijklmnopqrstuvwxyz';
-const TIME2000 = 946684800000;
-const RAND_LENGTH = 3;
-
-function getTime(time: number) {
-	time = time - TIME2000;
-	if (time < 0) time = 0;
-	if (time === 0) {
-		return CHARS[0];
-	}
-
-	const n = CHARS.length;
-	let s = '';
-
-	while (time > 0) {
-		s = CHARS[time % n] + s;
-		time = Math.floor(time / n);
-	}
-
-	return s;
-}
-
-function getRandom() {
-	let str = '';
-
-	for (let i = 0; i < RAND_LENGTH; i++) {
-		str += CHARS[Math.floor(Math.random() * CHARS.length)];
-	}
-
-	return str;
-}
+const metohd = config.id.toLowerCase();
 
 export function genId(date?: Date): string {
-	if (date && (date > new Date())) date = new Date();
-	return getTime(date ? date.getTime() : Date.now()).padStart(8, CHARS[0]) + getRandom();
+	if (!date || (date > new Date())) date = new Date();
+
+	switch (metohd) {
+		case 'aid1': return genAid(date, 1);
+		case 'aid2': return genAid(date, 2);
+		case 'aid3': return genAid(date, 3);
+		case 'aid4': return genAid(date, 4);
+		case 'ulid': return ulid(date.getTime());
+		case 'objectid': return ''; // TODO
+		default: throw 'unknown id generation method';
+	}
 }
