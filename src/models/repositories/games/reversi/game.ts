@@ -35,6 +35,8 @@ export class ReversiGameRepository extends Repository<ReversiGame> {
 			winnerId: game.winnerId,
 			winner: game.winnerId ? await Users.pack(game.winnerId, meId) : null,
 			surrendered: game.surrendered,
+			black: game.black,
+			bw: game.bw,
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,

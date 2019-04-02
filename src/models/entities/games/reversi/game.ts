@@ -112,14 +112,14 @@ export class ReversiGame {
 	public loopedBoard: boolean;
 
 	@Column('jsonb', {
-		default: {},
+		nullable: true, default: null,
 	})
-	public form1: any;
+	public form1: any | null;
 
 	@Column('jsonb', {
-		default: {},
+		nullable: true, default: null,
 	})
-	public form2: any;
+	public form2: any | null;
 
 	/**
 	 * ログのposを文字列としてすべて連結したもののCRC32値

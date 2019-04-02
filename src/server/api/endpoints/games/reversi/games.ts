@@ -3,6 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ReversiGames } from '../../../../../models';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['games'],
@@ -33,7 +34,10 @@ export default define(meta, async (ps, user) => {
 		.andWhere('game.isStarted = TRUE');
 
 	if (ps.my) {
-		query.andWhere('game.user1Id = :userId OR game.user2Id = :userId', { userId: user.id });
+		query.andWhere(new Brackets(qb => { qb
+			.where('game.user1Id = :userId', { userId: user.id })
+			.orWhere('game.user2Id = :userId', { userId: user.id });
+		}));
 	}
 
 	// Fetch games
