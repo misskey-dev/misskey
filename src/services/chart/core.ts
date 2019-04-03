@@ -331,8 +331,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	protected incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string = null): void {
-		this.commit(Chart.convertQuery(inc as any), group, key, value);
+	protected async incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string = null): Promise<void> {
+		await this.commit(Chart.convertQuery(inc as any), group, key, value);
 	}
 
 	@autobind

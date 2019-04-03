@@ -20,6 +20,7 @@ const config = require('../built/config').default;
 const Chart = require('../built/services/chart/core').default;
 const _TestChart = require('../built/services/chart/charts/schemas/test');
 const _TestGroupedChart = require('../built/services/chart/charts/schemas/test-grouped');
+const _TestUniqueChart = require('../built/services/chart/charts/schemas/test-unique');
 
 //#region process
 Error.stackTraceLimit = Infinity;
@@ -48,7 +49,8 @@ function initDb() {
 		dropSchema: true,
 		entities: [
 			Chart.schemaToEntity(_TestChart.name, _TestChart.schema),
-			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema)
+			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema),
+			Chart.schemaToEntity(_TestUniqueChart.name, _TestUniqueChart.schema)
 		]
 	});
 }
@@ -56,6 +58,7 @@ function initDb() {
 describe('Chart', () => {
 	let testChart: any;
 	let testGroupedChart: any;
+	let testUniqueChart: any;
 	let connection: any;
 	let clock: lolex.InstalledClock<lolex.Clock>;
 
@@ -72,6 +75,9 @@ describe('Chart', () => {
 
 		const TestGroupedChart = require('../built/services/chart/charts/classes/test-grouped').default;
 		testGroupedChart = new TestGroupedChart();
+
+		const TestUniqueChart = require('../built/services/chart/charts/classes/test-unique').default;
+		testUniqueChart = new TestUniqueChart();
 
 		clock = lolex.install({
 			now: new Date('2000-01-01 00:00:00')
@@ -247,6 +253,25 @@ describe('Chart', () => {
 					inc: [0, 0, 0],
 					total: [0, 0, 0]
 				},
+			});
+		}));
+	});
+
+	describe('Unique increment', () => {
+		it('Can updates', async(async () => {
+			await testUniqueChart.uniqueIncrement('alice');
+			await testUniqueChart.uniqueIncrement('alice');
+			await testUniqueChart.uniqueIncrement('bob');
+
+			const chartHours = await testUniqueChart.getChart('hour', 3);
+			const chartDays = await testUniqueChart.getChart('day', 3);
+
+			assert.deepStrictEqual(chartHours, {
+				foo: [2, 0, 0],
+			});
+
+			assert.deepStrictEqual(chartDays, {
+				foo: [2, 0, 0],
 			});
 		}));
 	});
