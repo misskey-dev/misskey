@@ -31,17 +31,12 @@ export default class TestChart extends Chart<TestLog> {
 	}
 
 	@autobind
-	public async update(isAdditional: boolean) {
+	public async increment() {
 		const update: Obj = {};
 
-		update.total = isAdditional ? 1 : -1;
-		if (isAdditional) {
-			update.inc = 1;
-			this.total++;
-		} else {
-			update.dec = 1;
-			this.total--;
-		}
+		update.total = 1;
+		update.inc = 1;
+		this.total++;
 
 		await this.inc({
 			foo: update

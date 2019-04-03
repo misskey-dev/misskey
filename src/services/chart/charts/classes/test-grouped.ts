@@ -31,19 +31,14 @@ export default class TestGroupedChart extends Chart<TestGroupedLog> {
 	}
 
 	@autobind
-	public async update(isAdditional: boolean, group: string) {
+	public async increment(group: string) {
 		if (this.total[group] == null) this.total[group] = 0;
 
 		const update: Obj = {};
 
-		update.total = isAdditional ? 1 : -1;
-		if (isAdditional) {
-			update.inc = 1;
-			this.total[group]++;
-		} else {
-			update.dec = 1;
-			this.total[group]--;
-		}
+		update.total = 1;
+		update.inc = 1;
+		this.total[group]++;
 
 		await this.inc({
 			foo: update

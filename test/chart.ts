@@ -86,7 +86,7 @@ describe('Chart', () => {
 	});
 
 	it('Can updates', async(async () => {
-		await testChart.update(true);
+		await testChart.increment();
 
 		const chartHours = await testChart.getChart('hour', 3);
 		const chartDays = await testChart.getChart('day', 3);
@@ -130,9 +130,9 @@ describe('Chart', () => {
 	}));
 
 	it('Can updates at multiple times at same time', async(async () => {
-		await testChart.update(true);
-		await testChart.update(true);
-		await testChart.update(true);
+		await testChart.increment();
+		await testChart.increment();
+		await testChart.increment();
 
 		const chartHours = await testChart.getChart('hour', 3);
 		const chartDays = await testChart.getChart('day', 3);
@@ -155,11 +155,11 @@ describe('Chart', () => {
 	}));
 
 	it('Can updates at different times', async(async () => {
-		await testChart.update(true);
+		await testChart.increment();
 
 		clock.tick('01:00:00');
 
-		await testChart.update(true);
+		await testChart.increment();
 
 		const chartHours = await testChart.getChart('hour', 3);
 		const chartDays = await testChart.getChart('day', 3);
@@ -182,11 +182,11 @@ describe('Chart', () => {
 	}));
 
 	it('Can padding', async(async () => {
-		await testChart.update(true);
+		await testChart.increment();
 
 		clock.tick('02:00:00');
 
-		await testChart.update(true);
+		await testChart.increment();
 
 		const chartHours = await testChart.getChart('hour', 3);
 		const chartDays = await testChart.getChart('day', 3);
@@ -210,7 +210,7 @@ describe('Chart', () => {
 
 	describe('Grouped', () => {
 		it('Can updates', async(async () => {
-			await testGroupedChart.update(true, 'alice');
+			await testGroupedChart.increment('alice');
 
 			const aliceChartHours = await testGroupedChart.getChart('hour', 3, 'alice');
 			const aliceChartDays = await testGroupedChart.getChart('day', 3, 'alice');
