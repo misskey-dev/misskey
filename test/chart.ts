@@ -19,6 +19,7 @@ import { getConnection, createConnection } from 'typeorm';
 const config = require('../built/config').default;
 const Chart = require('../built/services/chart/core').default;
 const _TestChart = require('../built/services/chart/charts/schemas/test');
+const _TestGroupedChart = require('../built/services/chart/charts/schemas/test-grouped');
 
 //#region process
 Error.stackTraceLimit = Infinity;
@@ -46,13 +47,15 @@ function initDb() {
 		synchronize: true,
 		dropSchema: true,
 		entities: [
-			Chart.schemaToEntity(_TestChart.name, _TestChart.schema)
+			Chart.schemaToEntity(_TestChart.name, _TestChart.schema),
+			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema)
 		]
 	});
 }
 
 describe('Chart', () => {
 	let testChart: any;
+	let testGroupedChart: any;
 	let connection: any;
 	let clock: lolex.InstalledClock<lolex.Clock>;
 
@@ -66,6 +69,9 @@ describe('Chart', () => {
 	beforeEach(done => {
 		const TestChart = require('../built/services/chart/charts/classes/test').default;
 		testChart = new TestChart();
+
+		const TestGroupedChart = require('../built/services/chart/charts/classes/test-grouped').default;
+		testGroupedChart = new TestGroupedChart();
 
 		clock = lolex.install({
 			now: new Date('2000-01-01 00:00:00')
@@ -201,4 +207,47 @@ describe('Chart', () => {
 			},
 		});
 	}));
+
+	describe('Grouped', () => {
+		it('Can updates', async(async () => {
+			await testGroupedChart.update(true, 'alice');
+
+			const aliceChartHours = await testGroupedChart.getChart('hour', 3, 'alice');
+			const aliceChartDays = await testGroupedChart.getChart('day', 3, 'alice');
+			const bobChartHours = await testGroupedChart.getChart('hour', 3, 'bob');
+			const bobChartDays = await testGroupedChart.getChart('day', 3, 'bob');
+
+			assert.deepStrictEqual(aliceChartHours, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [1, 0, 0],
+					total: [1, 0, 0]
+				},
+			});
+
+			assert.deepStrictEqual(aliceChartDays, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [1, 0, 0],
+					total: [1, 0, 0]
+				},
+			});
+
+			assert.deepStrictEqual(bobChartHours, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [0, 0, 0],
+					total: [0, 0, 0]
+				},
+			});
+
+			assert.deepStrictEqual(bobChartDays, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [0, 0, 0],
+					total: [0, 0, 0]
+				},
+			});
+		}));
+	});
 });
