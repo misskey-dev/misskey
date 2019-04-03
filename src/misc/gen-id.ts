@@ -1,5 +1,6 @@
 import { ulid } from 'ulid';
 import { genAid } from './aid';
+import { genAidc } from './aidc';
 import { genObjectId } from './object-id';
 import config from '../config';
 
@@ -9,6 +10,7 @@ export function genId(date?: Date): string {
 	if (!date || (date > new Date())) date = new Date();
 
 	switch (metohd) {
+		case 'aidc': return genAidc(date);
 		case 'aid1': return genAid(date, 1);
 		case 'aid2': return genAid(date, 2);
 		case 'aid3': return genAid(date, 3);
