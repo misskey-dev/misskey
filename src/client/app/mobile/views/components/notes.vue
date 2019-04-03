@@ -168,7 +168,6 @@ export default Vue.extend({
 				this.prepend(n, true);
 			}
 			this.queue = [];
-			this.cursor = this.notes[this.notes.length - 1].id
 		},
 
 		onScroll() {
