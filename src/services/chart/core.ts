@@ -299,16 +299,19 @@ export default abstract class Chart<T extends Record<string, any>> {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
 				uniqueKey &&
-				log.unique &&
 				log.unique[uniqueKey] &&
 				log.unique[uniqueKey].includes(uniqueValue)
 			) return;
 
 			// ユニークインクリメントの指定のキーに値を追加
 			if (uniqueKey) {
-				// SEE https://stackoverflow.com/questions/42233542/appending-pushing-and-removing-from-a-json-array-in-postgresql-9-5
-				const sql = `jsonb_set("unique", array['${uniqueKey}'], ("unique"->'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
-				query['unique'] = () => sql;
+				if (log.unique[uniqueKey]) {
+					const sql = `jsonb_set("unique", '{${uniqueKey}}', ("unique"->>'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
+					query['unique'] = () => sql;
+				} else {
+					const sql = `jsonb_set("unique", '{${uniqueKey}}', '["${uniqueValue}"]')`;
+					query['unique'] = () => sql;
+				}
 			}
 
 			// ログ更新
