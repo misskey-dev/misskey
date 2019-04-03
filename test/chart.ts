@@ -15,7 +15,10 @@
 import * as assert from 'assert';
 import * as lolex from 'lolex';
 import { async } from './utils';
-const initDb = require('../built/db/postgre.js').initDb;
+import { getConnection, createConnection } from 'typeorm';
+const config = require('../built/config').default;
+const Chart = require('../built/services/chart/core').default;
+const _TestChart = require('../built/services/chart/charts/schemas/test');
 
 //#region process
 Error.stackTraceLimit = Infinity;
@@ -26,6 +29,27 @@ process.env.NODE_ENV = 'test';
 // Display detail of unhandled promise rejection
 process.on('unhandledRejection', console.dir);
 //#endregion
+
+function initDb() {
+	try {
+		const conn = getConnection();
+		return Promise.resolve(conn);
+	} catch (e) {}
+
+	return createConnection({
+		type: 'postgres',
+		host: config.db.host,
+		port: config.db.port,
+		username: config.db.user,
+		password: config.db.pass,
+		database: config.db.db,
+		synchronize: true,
+		dropSchema: true,
+		entities: [
+			Chart.schemaToEntity(_TestChart.name, _TestChart.schema)
+		]
+	});
+}
 
 describe('Chart', () => {
 	let testChart: any;

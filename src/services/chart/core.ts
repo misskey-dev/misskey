@@ -16,7 +16,7 @@ import { Schema } from '../../misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
-const logger = new Logger('chart');
+const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
 const utc = moment.utc;
 
