@@ -7,19 +7,8 @@ const TIME2000 = 946684800000;
 function getTime(time: number) {
 	time = time - TIME2000;
 	if (time < 0) time = 0;
-	if (time === 0) {
-		return CHARS[0];
-	}
 
-	const n = CHARS.length;
-	let s = '';
-
-	while (time > 0) {
-		s = CHARS[time % n] + s;
-		time = Math.floor(time / n);
-	}
-
-	return s;
+	return time.toString(36);
 }
 
 function getRandom(length: number) {
