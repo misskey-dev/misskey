@@ -13,15 +13,8 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: ActiveUsersLog): ActiveUsersLog {
-		return {
-			local: {
-				count: 0
-			},
-			remote: {
-				count: 0
-			}
-		};
+	protected genNewLog(latest: ActiveUsersLog): DeepPartial<ActiveUsersLog> {
+		return {};
 	}
 
 	@autobind

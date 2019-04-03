@@ -11,14 +11,8 @@ export default class NetworkChart extends Chart<NetworkLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: NetworkLog): NetworkLog {
-		return {
-			incomingRequests: 0,
-			outgoingRequests: 0,
-			totalTime: 0,
-			incomingBytes: 0,
-			outgoingBytes: 0
-		};
+	protected genNewLog(latest: NetworkLog): DeepPartial<NetworkLog> {
+		return {};
 	}
 
 	@autobind

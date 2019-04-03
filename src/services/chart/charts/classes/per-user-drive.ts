@@ -13,14 +13,10 @@ export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: PerUserDriveLog): PerUserDriveLog {
+	protected genNewLog(latest: PerUserDriveLog): DeepPartial<PerUserDriveLog> {
 		return {
-			totalCount: latest ? latest.totalCount : 0,
-			totalSize: latest ? latest.totalSize : 0,
-			incCount: 0,
-			incSize: 0,
-			decCount: 0,
-			decSize: 0
+			totalCount: latest.totalCount,
+			totalSize: latest.totalSize,
 		};
 	}
 

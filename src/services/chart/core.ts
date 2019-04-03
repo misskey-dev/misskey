@@ -64,7 +64,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	private name: string;
 	public schema: Schema;
 	protected repository: Repository<Log>;
-	protected abstract genNewLog(latest?: T): T;
+	protected abstract genNewLog(latest: T): DeepPartial<T>;
 	protected abstract async fetchActual(group?: string): Promise<DeepPartial<T>>;
 
 	@autobind
@@ -180,6 +180,25 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
+	private getNewLog(latest?: T): T {
+		const log = latest ? this.genNewLog(latest) : {};
+		const flatColumns = (x: Obj, path?: string) => {
+			for (const [k, v] of Object.entries(x)) {
+				const p = path ? `${path}.${k}` : k;
+				if (v.type === 'object') {
+					flatColumns(v.properties, p);
+				} else {
+					if (nestedProperty.get(log, p) == null) {
+						nestedProperty.set(log, p, 0);
+					}
+				}
+			}
+		};
+		flatColumns(this.schema.properties);
+		return log as T;
+	}
+
+	@autobind
 	private getCurrentDate(): [number, number, number, number] {
 		const now = moment().utc();
 
@@ -240,13 +259,13 @@ export default abstract class Chart<T extends Record<string, any>> {
 				latest as Record<string, any>);
 
 			// 空ログデータを作成
-			data = await this.genNewLog(obj);
+			data = await this.getNewLog(obj);
 		} else {
 			// ログが存在しなかったら
 			// (Misskeyインスタンスを建てて初めてのチャート更新時)
 
 			// 初期ログデータを作成
-			data = await this.genNewLog(null);
+			data = await this.getNewLog(null);
 
 			logger.info(`${this.name}: Initial commit created`);
 		}
@@ -391,7 +410,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				// 隙間埋め
 				const latest = logs.find(l => utc(l.date * 1000).isBefore(current));
 				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
-				chart.unshift(this.genNewLog(data));
+				chart.unshift(this.getNewLog(data));
 			}
 		}
 

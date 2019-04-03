@@ -13,40 +13,23 @@ export default class InstanceChart extends Chart<InstanceLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: InstanceLog): InstanceLog {
+	protected genNewLog(latest: InstanceLog): DeepPartial<InstanceLog> {
 		return {
-			requests: {
-				failed: 0,
-				succeeded: 0,
-				received: 0
-			},
 			notes: {
-				total: latest ? latest.notes.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.notes.total,
 			},
 			users: {
-				total: latest ? latest.users.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.users.total,
 			},
 			following: {
-				total: latest ? latest.following.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.following.total,
 			},
 			followers: {
-				total: latest ? latest.followers.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.followers.total,
 			},
 			drive: {
-				totalFiles: latest ? latest.drive.totalFiles : 0,
-				totalUsage: latest ? latest.drive.totalUsage : 0,
-				incFiles: 0,
-				incUsage: 0,
-				decFiles: 0,
-				decUsage: 0
+				totalFiles: latest.drive.totalFiles,
+				totalUsage: latest.drive.totalUsage,
 			}
 		};
 	}

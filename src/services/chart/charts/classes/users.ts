@@ -14,17 +14,13 @@ export default class UsersChart extends Chart<UsersLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: UsersLog): UsersLog {
+	protected genNewLog(latest: UsersLog): DeepPartial<UsersLog> {
 		return {
 			local: {
-				total: latest ? latest.local.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.local.total,
 			},
 			remote: {
-				total: latest ? latest.remote.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.remote.total,
 			}
 		};
 	}

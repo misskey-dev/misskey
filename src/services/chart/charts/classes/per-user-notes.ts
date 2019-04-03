@@ -14,16 +14,9 @@ export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: PerUserNotesLog): PerUserNotesLog {
+	protected genNewLog(latest: PerUserNotesLog): DeepPartial<PerUserNotesLog> {
 		return {
-			total: latest ? latest.total : 0,
-			inc: 0,
-			dec: 0,
-			diffs: {
-				normal: 0,
-				reply: 0,
-				renote: 0
-			}
+			total: latest.total,
 		};
 	}
 

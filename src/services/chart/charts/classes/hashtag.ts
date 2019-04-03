@@ -13,15 +13,8 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: HashtagLog): HashtagLog {
-		return {
-			local: {
-				count: 0
-			},
-			remote: {
-				count: 0
-			}
-		};
+	protected genNewLog(latest: HashtagLog): DeepPartial<HashtagLog> {
+		return {};
 	}
 
 	@autobind

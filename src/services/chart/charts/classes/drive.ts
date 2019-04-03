@@ -14,23 +14,15 @@ export default class DriveChart extends Chart<DriveLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: DriveLog): DriveLog {
+	protected genNewLog(latest: DriveLog): DeepPartial<DriveLog> {
 		return {
 			local: {
-				totalCount: latest ? latest.local.totalCount : 0,
-				totalSize: latest ? latest.local.totalSize : 0,
-				incCount: 0,
-				incSize: 0,
-				decCount: 0,
-				decSize: 0
+				totalCount: latest.local.totalCount,
+				totalSize: latest.local.totalSize,
 			},
 			remote: {
-				totalCount: latest ? latest.remote.totalCount : 0,
-				totalSize: latest ? latest.remote.totalSize : 0,
-				incCount: 0,
-				incSize: 0,
-				decCount: 0,
-				decSize: 0
+				totalCount: latest.remote.totalCount,
+				totalSize: latest.remote.totalSize,
 			}
 		};
 	}

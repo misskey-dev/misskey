@@ -13,12 +13,10 @@ export default class TestChart extends Chart<TestLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: TestLog): TestLog {
+	protected genNewLog(latest: TestLog): DeepPartial<TestLog> {
 		return {
 			foo: {
-				total: latest ? latest.foo.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.foo.total,
 			},
 		};
 	}

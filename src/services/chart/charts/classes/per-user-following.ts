@@ -14,30 +14,22 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: PerUserFollowingLog): PerUserFollowingLog {
+	protected genNewLog(latest: PerUserFollowingLog): DeepPartial<PerUserFollowingLog> {
 		return {
 			local: {
 				followings: {
-					total: latest ? latest.local.followings.total : 0,
-					inc: 0,
-					dec: 0
+					total: latest.local.followings.total,
 				},
 				followers: {
-					total: latest ? latest.local.followers.total : 0,
-					inc: 0,
-					dec: 0
+					total: latest.local.followers.total,
 				}
 			},
 			remote: {
 				followings: {
-					total: latest ? latest.remote.followings.total : 0,
-					inc: 0,
-					dec: 0
+					total: latest.remote.followings.total,
 				},
 				followers: {
-					total: latest ? latest.remote.followers.total : 0,
-					inc: 0,
-					dec: 0
+					total: latest.remote.followers.total,
 				}
 			}
 		};

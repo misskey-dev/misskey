@@ -12,12 +12,10 @@ export default class FederationChart extends Chart<FederationLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: FederationLog): FederationLog {
+	protected genNewLog(latest: FederationLog): DeepPartial<FederationLog> {
 		return {
 			instance: {
-				total: latest ? latest.instance.total : 0,
-				inc: 0,
-				dec: 0
+				total: latest.instance.total,
 			}
 		};
 	}

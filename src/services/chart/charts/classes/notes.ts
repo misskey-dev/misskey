@@ -14,27 +14,13 @@ export default class NotesChart extends Chart<NotesLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest?: NotesLog): NotesLog {
+	protected genNewLog(latest: NotesLog): DeepPartial<NotesLog> {
 		return {
 			local: {
-				total: latest ? latest.local.total : 0,
-				inc: 0,
-				dec: 0,
-				diffs: {
-					normal: 0,
-					reply: 0,
-					renote: 0
-				}
+				total: latest.local.total,
 			},
 			remote: {
-				total: latest ? latest.remote.total : 0,
-				inc: 0,
-				dec: 0,
-				diffs: {
-					normal: 0,
-					reply: 0,
-					renote: 0
-				}
+				total: latest.remote.total,
 			}
 		};
 	}
