@@ -157,7 +157,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				},
 				unique: {
 					type: 'jsonb',
-					nullable: true
+					default: {}
 				},
 				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
