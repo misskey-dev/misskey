@@ -2,12 +2,6 @@
  * チャートエンジン
  */
 
-// TODO: FIXME
-// ログの初期挿入時に getTemplate と インクリメントコミットが行われるので
-// 実際の数よりも 1 多いログが生成される
-// 例えばインスタンスを作成して初めてのアカウントを作成したとき、
-// 総ユーザー数が 2 になる
-
 import * as moment from 'moment';
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
@@ -22,8 +16,8 @@ const utc = moment.utc;
 
 export type Obj = { [key: string]: any };
 
-export type Partial<T> = {
-	[P in keyof T]?: Partial<T[P]>;
+export type DeepPartial<T> = {
+	[P in keyof T]?: DeepPartial<T[P]>;
 };
 
 type ArrayValue<T> = {
@@ -64,13 +58,14 @@ const camelToSnake = (str: string) => {
  * 様々なチャートの管理を司るクラス
  */
 export default abstract class Chart<T extends Record<string, any>> {
-	public schema: Schema;
-	protected repository: Repository<Log>;
-	protected abstract async getTemplate(init: boolean, latest?: T, group?: string): Promise<T>;
-	private name: string;
-
 	private static readonly columnPrefix = '___';
 	private static readonly columnDot = '_';
+
+	private name: string;
+	public schema: Schema;
+	protected repository: Repository<Log>;
+	protected abstract genNewLog(latest?: T): T;
+	protected abstract async fetchActual(group?: string): Promise<DeepPartial<T>>;
 
 	@autobind
 	private static convertSchemaToFlatColumnDefinitions(schema: Schema) {
@@ -197,7 +192,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private getLatestLog(span: Span, group?: string): Promise<Log> {
+	private getLatestLog(span: Span, group: string = null): Promise<Log> {
 		return this.repository.findOne({
 			group: group,
 			span: span
@@ -209,7 +204,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private async getCurrentLog(span: Span, group?: string): Promise<Log> {
+	private async getCurrentLog(span: Span, group: string = null): Promise<Log> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const current =
@@ -245,14 +240,13 @@ export default abstract class Chart<T extends Record<string, any>> {
 				latest as Record<string, any>);
 
 			// 空ログデータを作成
-			data = await this.getTemplate(false, obj);
+			data = await this.genNewLog(obj);
 		} else {
 			// ログが存在しなかったら
-			// (Misskeyインスタンスを建てて初めてのチャート更新時など
-			// または何らかの理由でチャートコレクションを抹消した場合)
+			// (Misskeyインスタンスを建てて初めてのチャート更新時)
 
 			// 初期ログデータを作成
-			data = await this.getTemplate(true, null, group);
+			data = await this.genNewLog(null);
 
 			logger.info(`${this.name}: Initial commit created`);
 		}
@@ -281,7 +275,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	protected commit(query: Record<string, Function>, group?: string, uniqueKey?: string, uniqueValue?: string): Promise<any> {
+	protected commit(query: Record<string, Function>, group: string = null, uniqueKey?: string, uniqueValue?: string): Promise<any> {
 		const update = async (log: Log) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
@@ -313,19 +307,17 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	protected async inc(inc: Partial<T>, group?: string): Promise<void> {
+	protected async inc(inc: DeepPartial<T>, group: string = null): Promise<void> {
 		await this.commit(Chart.convertQuery(inc as any), group);
 	}
 
 	@autobind
-	protected incIfUnique(inc: Partial<T>, key: string, value: string, group?: string): void {
+	protected incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string = null): void {
 		this.commit(Chart.convertQuery(inc as any), group, key, value);
 	}
 
 	@autobind
 	public async getChart(span: Span, range: number, group: string = null): Promise<ArrayValue<T>> {
-		const promisedChart: Promise<T>[] = [];
-
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const gt =
@@ -381,6 +373,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 			}
 		}
 
+		const chart: T[] = [];
+
 		// 整形
 		for (let i = (range - 1); i >= 0; i--) {
 			const current =
@@ -392,16 +386,14 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 			if (log) {
 				const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
-				promisedChart.unshift(Promise.resolve(data));
+				chart.unshift(data);
 			} else {
 				// 隙間埋め
 				const latest = logs.find(l => utc(l.date * 1000).isBefore(current));
 				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
-				promisedChart.unshift(this.getTemplate(false, data));
+				chart.unshift(this.genNewLog(data));
 			}
 		}
-
-		const chart = await Promise.all(promisedChart);
 
 		const res: ArrayValue<T> = {} as any;
 

@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Followings, Users } from '../../../../models';
 import { Not } from 'typeorm';
@@ -14,47 +14,64 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserFollowingLog, group?: string): Promise<PerUserFollowingLog> {
-		const [
-			localFollowingsCount,
-			localFollowersCount,
-			remoteFollowingsCount,
-			remoteFollowersCount
-		] = init ? await Promise.all([
-			Followings.count({ followerId: group, followeeHost: null }),
-			Followings.count({ followeeId: group, followerHost: null }),
-			Followings.count({ followerId: group, followeeHost: Not(null) }),
-			Followings.count({ followeeId: group, followerHost: Not(null) })
-		]) : [
-			latest ? latest.local.followings.total : 0,
-			latest ? latest.local.followers.total : 0,
-			latest ? latest.remote.followings.total : 0,
-			latest ? latest.remote.followers.total : 0
-		];
-
+	protected genNewLog(latest?: PerUserFollowingLog): PerUserFollowingLog {
 		return {
 			local: {
 				followings: {
-					total: localFollowingsCount,
+					total: latest ? latest.local.followings.total : 0,
 					inc: 0,
 					dec: 0
 				},
 				followers: {
-					total: localFollowersCount,
+					total: latest ? latest.local.followers.total : 0,
 					inc: 0,
 					dec: 0
 				}
 			},
 			remote: {
 				followings: {
-					total: remoteFollowingsCount,
+					total: latest ? latest.remote.followings.total : 0,
 					inc: 0,
 					dec: 0
 				},
 				followers: {
-					total: remoteFollowersCount,
+					total: latest ? latest.remote.followers.total : 0,
 					inc: 0,
 					dec: 0
+				}
+			}
+		};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<PerUserFollowingLog>> {
+		const [
+			localFollowingsCount,
+			localFollowersCount,
+			remoteFollowingsCount,
+			remoteFollowersCount
+		] = await Promise.all([
+			Followings.count({ followerId: group, followeeHost: null }),
+			Followings.count({ followeeId: group, followerHost: null }),
+			Followings.count({ followerId: group, followeeHost: Not(null) }),
+			Followings.count({ followeeId: group, followerHost: Not(null) })
+		]);
+
+		return {
+			local: {
+				followings: {
+					total: localFollowingsCount,
+				},
+				followers: {
+					total: localFollowersCount,
+				}
+			},
+			remote: {
+				followings: {
+					total: remoteFollowingsCount,
+				},
+				followers: {
+					total: remoteFollowersCount,
 				}
 			}
 		};

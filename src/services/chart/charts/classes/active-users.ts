@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { User } from '../../../../models/entities/user';
 import { SchemaType } from '../../../../misc/schema';
 import { Users } from '../../../../models';
@@ -13,7 +13,7 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: ActiveUsersLog): Promise<ActiveUsersLog> {
+	protected genNewLog(latest?: ActiveUsersLog): ActiveUsersLog {
 		return {
 			local: {
 				count: 0
@@ -22,6 +22,11 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 				count: 0
 			}
 		};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<ActiveUsersLog>> {
+		return {};
 	}
 
 	@autobind

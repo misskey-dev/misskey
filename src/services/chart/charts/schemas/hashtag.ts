@@ -3,7 +3,7 @@ export const logSchema = {
 	 * 投稿された数
 	 */
 	count: {
-		type: 'number',
+		type: 'number' as 'number',
 		description: '投稿された数',
 	},
 };

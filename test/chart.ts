@@ -67,19 +67,16 @@ describe('Chart', () => {
 		const TestChart = require('../built/services/chart/charts/classes/test').default;
 		testChart = new TestChart();
 
-		connection.synchronize().then(() => {
-			clock = lolex.install({
-				now: new Date('2000-01-01 00:00:00')
-			});
-			done();
+		clock = lolex.install({
+			now: new Date('2000-01-01 00:00:00')
 		});
+
+		connection.synchronize().then(done);
 	});
 
 	afterEach(done => {
-		connection.dropDatabase().then(() => {
-			clock.uninstall();
-			done();
-		});
+		clock.uninstall();
+		connection.dropDatabase().then(done);
 	});
 
 	it('Can updates', async(async () => {
@@ -155,7 +152,6 @@ describe('Chart', () => {
 		await testChart.update(true);
 
 		clock.tick('01:00:00');
-		testChart.total = 1;
 
 		await testChart.update(true);
 
@@ -183,7 +179,6 @@ describe('Chart', () => {
 		await testChart.update(true);
 
 		clock.tick('02:00:00');
-		testChart.total = 1;
 
 		await testChart.update(true);
 

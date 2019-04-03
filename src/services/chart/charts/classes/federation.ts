@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Instances } from '../../../../models';
 import { name, schema } from '../schemas/federation';
@@ -12,18 +12,25 @@ export default class FederationChart extends Chart<FederationLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: FederationLog): Promise<FederationLog> {
-		const [total] = init ? await Promise.all([
+	protected genNewLog(latest?: FederationLog): FederationLog {
+		return {
+			instance: {
+				total: latest ? latest.instance.total : 0,
+				inc: 0,
+				dec: 0
+			}
+		};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<FederationLog>> {
+		const [total] = await Promise.all([
 			Instances.count({})
-		]) : [
-			latest ? latest.instance.total : 0
-		];
+		]);
 
 		return {
 			instance: {
 				total: total,
-				inc: 0,
-				dec: 0
 			}
 		};
 	}

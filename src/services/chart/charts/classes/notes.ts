@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Notes } from '../../../../models';
 import { Not } from 'typeorm';
@@ -14,18 +14,10 @@ export default class NotesChart extends Chart<NotesLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: NotesLog): Promise<NotesLog> {
-		const [localCount, remoteCount] = init ? await Promise.all([
-			Notes.count({ userHost: null }),
-			Notes.count({ userHost: Not(null) })
-		]) : [
-			latest ? latest.local.total : 0,
-			latest ? latest.remote.total : 0
-		];
-
+	protected genNewLog(latest?: NotesLog): NotesLog {
 		return {
 			local: {
-				total: localCount,
+				total: latest ? latest.local.total : 0,
 				inc: 0,
 				dec: 0,
 				diffs: {
@@ -35,7 +27,7 @@ export default class NotesChart extends Chart<NotesLog> {
 				}
 			},
 			remote: {
-				total: remoteCount,
+				total: latest ? latest.remote.total : 0,
 				inc: 0,
 				dec: 0,
 				diffs: {
@@ -43,6 +35,23 @@ export default class NotesChart extends Chart<NotesLog> {
 					reply: 0,
 					renote: 0
 				}
+			}
+		};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<NotesLog>> {
+		const [localCount, remoteCount] = await Promise.all([
+			Notes.count({ userHost: null }),
+			Notes.count({ userHost: Not(null) })
+		]);
+
+		return {
+			local: {
+				total: localCount,
+			},
+			remote: {
+				total: remoteCount,
 			}
 		};
 	}

@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { DriveFiles } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
@@ -13,22 +13,27 @@ export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserDriveLog, group?: string): Promise<PerUserDriveLog> {
-		const [count, size] = init ? await Promise.all([
-			DriveFiles.count({ userId: group }),
-			DriveFiles.clacDriveUsageOf(group)
-		]) : [
-			latest ? latest.totalCount : 0,
-			latest ? latest.totalSize : 0
-		];
-
+	protected genNewLog(latest?: PerUserDriveLog): PerUserDriveLog {
 		return {
-			totalCount: count,
-			totalSize: size,
+			totalCount: latest ? latest.totalCount : 0,
+			totalSize: latest ? latest.totalSize : 0,
 			incCount: 0,
 			incSize: 0,
 			decCount: 0,
 			decSize: 0
+		};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<PerUserDriveLog>> {
+		const [count, size] = await Promise.all([
+			DriveFiles.count({ userId: group }),
+			DriveFiles.clacDriveUsageOf(group)
+		]);
+
+		return {
+			totalCount: count,
+			totalSize: size,
 		};
 	}
 

@@ -1,30 +1,33 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { name, schema } from '../schemas/test';
 
 type TestLog = SchemaType<typeof schema>;
 
 export default class TestChart extends Chart<TestLog> {
-	public total: number = 0;
+	private total = 0;
 
 	constructor() {
 		super(name, schema);
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: TestLog): Promise<TestLog> {
-		const [localCount] = init ? await Promise.all([
-			Promise.resolve(this.total)
-		]) : [
-			latest ? latest.foo.total : 0,
-		];
-
+	protected genNewLog(latest?: TestLog): TestLog {
 		return {
 			foo: {
-				total: localCount,
+				total: latest ? latest.foo.total : 0,
 				inc: 0,
 				dec: 0
+			},
+		};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<TestLog>> {
+		return {
+			foo: {
+				total: this.total,
 			},
 		};
 	}
@@ -36,8 +39,10 @@ export default class TestChart extends Chart<TestLog> {
 		update.total = isAdditional ? 1 : -1;
 		if (isAdditional) {
 			update.inc = 1;
+			this.total++;
 		} else {
 			update.dec = 1;
+			this.total--;
 		}
 
 		await this.inc({
