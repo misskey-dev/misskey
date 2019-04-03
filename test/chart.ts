@@ -61,9 +61,18 @@ describe('Chart', () => {
 	it('Can updates', async(async () => {
 		await testChart.update(true);
 
-		const chart = await testChart.getChart('hour', 3);
+		const chartHours = await testChart.getChart('hour', 3);
+		const chartDays = await testChart.getChart('day', 3);
 
-		assert.deepStrictEqual(chart, {
+		assert.deepStrictEqual(chartHours, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [1, 0, 0],
+				total: [1, 0, 0]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 0],
@@ -73,9 +82,18 @@ describe('Chart', () => {
 	}));
 
 	it('Empty chart', async(async () => {
-		const chart = await testChart.getChart('hour', 3);
+		const chartHours = await testChart.getChart('hour', 3);
+		const chartDays = await testChart.getChart('day', 3);
 
-		assert.deepStrictEqual(chart, {
+		assert.deepStrictEqual(chartHours, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [0, 0, 0],
+				total: [0, 0, 0]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [0, 0, 0],
@@ -89,9 +107,18 @@ describe('Chart', () => {
 		await testChart.update(true);
 		await testChart.update(true);
 
-		const chart = await testChart.getChart('hour', 3);
+		const chartHours = await testChart.getChart('hour', 3);
+		const chartDays = await testChart.getChart('day', 3);
 
-		assert.deepStrictEqual(chart, {
+		assert.deepStrictEqual(chartHours, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [3, 0, 0],
+				total: [3, 0, 0]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [3, 0, 0],
@@ -108,13 +135,22 @@ describe('Chart', () => {
 
 		await testChart.update(true);
 
-		const chart = await testChart.getChart('hour', 3);
+		const chartHours = await testChart.getChart('hour', 3);
+		const chartDays = await testChart.getChart('day', 3);
 
-		assert.deepStrictEqual(chart, {
+		assert.deepStrictEqual(chartHours, {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 1, 0],
 				total: [2, 1, 0]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [2, 0, 0],
+				total: [2, 0, 0]
 			},
 		});
 	}));
@@ -127,13 +163,22 @@ describe('Chart', () => {
 
 		await testChart.update(true);
 
-		const chart = await testChart.getChart('hour', 3);
+		const chartHours = await testChart.getChart('hour', 3);
+		const chartDays = await testChart.getChart('day', 3);
 
-		assert.deepStrictEqual(chart, {
+		assert.deepStrictEqual(chartHours, {
 			foo: {
 				dec: [0, 0, 0],
 				inc: [1, 0, 1],
 				total: [2, 1, 1]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [2, 0, 0],
+				total: [2, 0, 0]
 			},
 		});
 	}));
