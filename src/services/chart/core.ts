@@ -41,7 +41,7 @@ type Log = {
 	group: string | null;
 
 	/**
-	 * 集計日時
+	 * 集計日時のUnixタイムスタンプ(秒)
 	 */
 	date: number;
 
@@ -281,8 +281,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	protected commit(query: Record<string, Function>, group?: string, uniqueKey?: string, uniqueValue?: string): void {
-		const update = (log: Log) => {
+	protected commit(query: Record<string, Function>, group?: string, uniqueKey?: string, uniqueValue?: string): Promise<any> {
+		const update = async (log: Log) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
 				uniqueKey &&
@@ -299,20 +299,22 @@ export default abstract class Chart<T extends Record<string, any>> {
 			}
 
 			// ログ更新
-			this.repository.createQueryBuilder()
+			await this.repository.createQueryBuilder()
 				.update()
 				.set(query)
 				.where('id = :id', { id: log.id })
 				.execute();
 		};
 
-		this.getCurrentLog('day', group).then(log => update(log));
-		this.getCurrentLog('hour', group).then(log => update(log));
+		return Promise.all([
+			this.getCurrentLog('day', group).then(log => update(log)),
+			this.getCurrentLog('hour', group).then(log => update(log)),
+		]);
 	}
 
 	@autobind
-	protected inc(inc: Partial<T>, group?: string): void {
-		this.commit(Chart.convertQuery(inc as any), group);
+	protected async inc(inc: Partial<T>, group?: string): Promise<void> {
+		await this.commit(Chart.convertQuery(inc as any), group);
 	}
 
 	@autobind
@@ -321,7 +323,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public async getChart(span: Span, range: number, group?: string): Promise<ArrayValue<T>> {
+	public async getChart(span: Span, range: number, group: string = null): Promise<ArrayValue<T>> {
 		const promisedChart: Promise<T>[] = [];
 
 		const [y, m, d, h] = this.getCurrentDate();
@@ -341,11 +343,10 @@ export default abstract class Chart<T extends Record<string, any>> {
 			order: {
 				date: -1
 			},
-			select: ['id']
 		});
 
 		// 要求された範囲にログがひとつもなかったら
-		if (logs.length == 0) {
+		if (logs.length === 0) {
 			// もっとも新しいログを持ってくる
 			// (すくなくともひとつログが無いと隙間埋めできないため)
 			const recentLog = await this.repository.findOne({
@@ -355,7 +356,6 @@ export default abstract class Chart<T extends Record<string, any>> {
 				order: {
 					date: -1
 				},
-				select: ['id']
 			});
 
 			if (recentLog) {
@@ -363,7 +363,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			}
 
 		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
-		} else if (!utc(logs[logs.length - 1].date).isSame(gt)) {
+		} else if (!utc(logs[logs.length - 1].date * 1000).isSame(gt)) {
 			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
 			// (隙間埋めできないため)
 			const outdatedLog = await this.repository.findOne({
@@ -374,7 +374,6 @@ export default abstract class Chart<T extends Record<string, any>> {
 				order: {
 					date: -1
 				},
-				select: ['id']
 			});
 
 			if (outdatedLog) {
@@ -389,14 +388,14 @@ export default abstract class Chart<T extends Record<string, any>> {
 				span == 'hour' ? utc([y, m, d, h]).subtract(i, 'hours') :
 				null;
 
-			const log = logs.find(l => utc(l.date).isSame(current));
+			const log = logs.find(l => utc(l.date * 1000).isSame(current));
 
 			if (log) {
 				const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
 				promisedChart.unshift(Promise.resolve(data));
 			} else {
 				// 隙間埋め
-				const latest = logs.find(l => utc(l.date).isBefore(current));
+				const latest = logs.find(l => utc(l.date * 1000).isBefore(current));
 				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
 				promisedChart.unshift(this.getTemplate(false, data));
 			}
