@@ -108,3 +108,7 @@ const users = userIds.length > 0 ? await Users.find({
 	id: In(userIds)
 }) : [];
 ```
+
+### `undefined`にご用心
+MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合**`undefined`**が返ってくるので注意
+MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
