@@ -12,6 +12,8 @@
  * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
 
+process.env.NODE_ENV = 'test';
+
 import * as assert from 'assert';
 import * as lolex from 'lolex';
 import { async } from './utils';
@@ -21,16 +23,6 @@ const Chart = require('../built/services/chart/core').default;
 const _TestChart = require('../built/services/chart/charts/schemas/test');
 const _TestGroupedChart = require('../built/services/chart/charts/schemas/test-grouped');
 const _TestUniqueChart = require('../built/services/chart/charts/schemas/test-unique');
-
-//#region process
-Error.stackTraceLimit = Infinity;
-
-// During the test the env variable is set to test
-process.env.NODE_ENV = 'test';
-
-// Display detail of unhandled promise rejection
-process.on('unhandledRejection', console.dir);
-//#endregion
 
 function initDb() {
 	try {

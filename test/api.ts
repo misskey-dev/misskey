@@ -12,21 +12,13 @@
  * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
 
+process.env.NODE_ENV = 'test';
+
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, react, uploadFile } from './utils';
 import { Note } from '../built/models/entities/note';
 const initDb = require('../built/db/postgre.js').initDb;
-
-//#region process
-Error.stackTraceLimit = Infinity;
-
-// During the test the env variable is set to test
-process.env.NODE_ENV = 'test';
-
-// Display detail of unhandled promise rejection
-process.on('unhandledRejection', console.dir);
-//#endregion
 
 describe('API', () => {
 	let p: childProcess.ChildProcess;
