@@ -21,6 +21,9 @@ export class NotificationRepository extends Repository<Notification> {
 			createdAt: notification.createdAt,
 			type: notification.type,
 			user: Users.pack(notification.notifier || notification.notifierId),
+			...(notification.type === 'mention' ? {
+				note: Notes.pack(notification.note || notification.noteId),
+			} : {}),
 			...(notification.type === 'reply' ? {
 				note: Notes.pack(notification.note || notification.noteId),
 			} : {}),
