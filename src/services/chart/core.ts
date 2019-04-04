@@ -1,5 +1,7 @@
 /**
  * チャートエンジン
+ *
+ * Tests located in test/chart
  */
 
 import * as moment from 'moment';

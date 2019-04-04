@@ -214,6 +214,59 @@ describe('Chart', () => {
 		});
 	}));
 
+	// 要求された範囲にログがひとつもない場合でもパディングできる
+	it('Can padding from past range', async(async () => {
+		await testChart.increment();
+
+		clock.tick('05:00:00');
+
+		const chartHours = await testChart.getChart('hour', 3);
+		const chartDays = await testChart.getChart('day', 3);
+
+		assert.deepStrictEqual(chartHours, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [0, 0, 0],
+				total: [1, 1, 1]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [1, 0, 0],
+				total: [1, 0, 0]
+			},
+		});
+	}));
+
+	// 要求された範囲の最も古い箇所に位置するログが存在しない場合でもパディングできる
+	// Issue #3190
+	it('Can padding from past range 2', async(async () => {
+		await testChart.increment();
+		clock.tick('05:00:00');
+		await testChart.increment();
+
+		const chartHours = await testChart.getChart('hour', 3);
+		const chartDays = await testChart.getChart('day', 3);
+
+		assert.deepStrictEqual(chartHours, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [1, 0, 0],
+				total: [2, 1, 1]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [2, 0, 0],
+				total: [2, 0, 0]
+			},
+		});
+	}));
+
 	describe('Grouped', () => {
 		it('Can updates', async(async () => {
 			await testGroupedChart.increment('alice');
