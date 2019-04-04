@@ -51,8 +51,7 @@ export async function createNotification(
 			const mutings = await Mutings.find({
 				muterId: notifieeId
 			});
-			const mutedUserIds = mutings.map(m => m.muteeId);
-			if (mutedUserIds.includes(notifierId)) {
+			if (mutings.map(m => m.muteeId).includes(notifierId)) {
 				return;
 			}
 			//#endregion
