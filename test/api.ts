@@ -17,12 +17,9 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, react, uploadFile } from './utils';
-import { Note } from '../built/models/entities/note';
-const initDb = require('../built/db/postgre.js').initDb;
 
 describe('API', () => {
 	let p: childProcess.ChildProcess;
-	let Notes: any;
 
 	beforeEach(done => {
 		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
@@ -31,10 +28,7 @@ describe('API', () => {
 		});
 		p.on('message', message => {
 			if (message === 'ok') {
-				initDb(true).then(connection => {
-					Notes = connection.getRepository(Note);
-					done();
-				});
+				done();
 			}
 		});
 	});
