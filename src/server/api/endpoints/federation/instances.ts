@@ -41,24 +41,24 @@ export default define(meta, async (ps, me) => {
 	const query = Instances.createQueryBuilder('instance');
 
 	switch (ps.sort) {
-		case '+notes': query.orderBy('notesCount', 'DESC'); break;
-		case '-notes': query.orderBy('notesCount', 'ASC'); break;
-		case '+usersCount': query.orderBy('usersCount', 'DESC'); break;
-		case '-usersCount': query.orderBy('usersCount', 'ASC'); break;
-		case '+followingCount': query.orderBy('followingCount', 'DESC'); break;
-		case '-followingCount': query.orderBy('followingCount', 'ASC'); break;
-		case '+followersCount': query.orderBy('followersCount', 'DESC'); break;
-		case '-followersCount': query.orderBy('followersCount', 'ASC'); break;
-		case '+caughtAt': query.orderBy('caughtAt', 'DESC'); break;
-		case '-caughtAt': query.orderBy('caughtAt', 'ASC'); break;
-		case '+lastCommunicatedAt': query.orderBy('lastCommunicatedAt', 'DESC'); break;
-		case '-lastCommunicatedAt': query.orderBy('lastCommunicatedAt', 'ASC'); break;
-		case '+driveUsage': query.orderBy('driveUsage', 'DESC'); break;
-		case '-driveUsage': query.orderBy('driveUsage', 'ASC'); break;
-		case '+driveFiles': query.orderBy('driveFiles', 'DESC'); break;
-		case '-driveFiles': query.orderBy('driveFiles', 'ASC'); break;
+		case '+notes': query.orderBy('instance.notesCount', 'DESC'); break;
+		case '-notes': query.orderBy('instance.notesCount', 'ASC'); break;
+		case '+usersCount': query.orderBy('instance.usersCount', 'DESC'); break;
+		case '-usersCount': query.orderBy('instance.usersCount', 'ASC'); break;
+		case '+followingCount': query.orderBy('instance.followingCount', 'DESC'); break;
+		case '-followingCount': query.orderBy('instance.followingCount', 'ASC'); break;
+		case '+followersCount': query.orderBy('instance.followersCount', 'DESC'); break;
+		case '-followersCount': query.orderBy('instance.followersCount', 'ASC'); break;
+		case '+caughtAt': query.orderBy('instance.caughtAt', 'DESC'); break;
+		case '-caughtAt': query.orderBy('instance.caughtAt', 'ASC'); break;
+		case '+lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'DESC'); break;
+		case '-lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'ASC'); break;
+		case '+driveUsage': query.orderBy('instance.driveUsage', 'DESC'); break;
+		case '-driveUsage': query.orderBy('instance.driveUsage', 'ASC'); break;
+		case '+driveFiles': query.orderBy('instance.driveFiles', 'DESC'); break;
+		case '-driveFiles': query.orderBy('instance.driveFiles', 'ASC'); break;
 
-		default: query.orderBy('id', 'DESC'); break;
+		default: query.orderBy('instance.id', 'DESC'); break;
 	}
 
 	if (typeof ps.blocked === 'boolean') {

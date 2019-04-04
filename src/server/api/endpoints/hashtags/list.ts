@@ -62,28 +62,28 @@ export default define(meta, async (ps, me) => {
 	if (ps.attachedToRemoteUserOnly) query.andWhere('tags.attachedRemoteUsersCount != 0');
 
 	switch (ps.sort) {
-		case '+mentionedUsers': query.orderBy('mentionedUsersCount', 'DESC'); break;
-		case '-mentionedUsers': query.orderBy('mentionedUsersCount', 'ASC'); break;
-		case '+mentionedLocalUsers': query.orderBy('mentionedLocalUsersCount', 'DESC'); break;
-		case '-mentionedLocalUsers': query.orderBy('mentionedLocalUsersCount', 'ASC'); break;
-		case '+mentionedRemoteUsers': query.orderBy('mentionedRemoteUsersCount', 'DESC'); break;
-		case '-mentionedRemoteUsers': query.orderBy('mentionedRemoteUsersCount', 'ASC'); break;
-		case '+attachedUsers': query.orderBy('attachedUsersCount', 'DESC'); break;
-		case '-attachedUsers': query.orderBy('attachedUsersCount', 'ASC'); break;
-		case '+attachedLocalUsers': query.orderBy('attachedLocalUsersCount', 'DESC'); break;
-		case '-attachedLocalUsers': query.orderBy('attachedLocalUsersCount', 'ASC'); break;
-		case '+attachedRemoteUsers': query.orderBy('attachedRemoteUsersCount', 'DESC'); break;
-		case '-attachedRemoteUsers': query.orderBy('attachedRemoteUsersCount', 'ASC'); break;
+		case '+mentionedUsers': query.orderBy('tags.mentionedUsersCount', 'DESC'); break;
+		case '-mentionedUsers': query.orderBy('tags.mentionedUsersCount', 'ASC'); break;
+		case '+mentionedLocalUsers': query.orderBy('tags.mentionedLocalUsersCount', 'DESC'); break;
+		case '-mentionedLocalUsers': query.orderBy('tags.mentionedLocalUsersCount', 'ASC'); break;
+		case '+mentionedRemoteUsers': query.orderBy('tags.mentionedRemoteUsersCount', 'DESC'); break;
+		case '-mentionedRemoteUsers': query.orderBy('tags.mentionedRemoteUsersCount', 'ASC'); break;
+		case '+attachedUsers': query.orderBy('tags.attachedUsersCount', 'DESC'); break;
+		case '-attachedUsers': query.orderBy('tags.attachedUsersCount', 'ASC'); break;
+		case '+attachedLocalUsers': query.orderBy('tags.attachedLocalUsersCount', 'DESC'); break;
+		case '-attachedLocalUsers': query.orderBy('tags.attachedLocalUsersCount', 'ASC'); break;
+		case '+attachedRemoteUsers': query.orderBy('tags.attachedRemoteUsersCount', 'DESC'); break;
+		case '-attachedRemoteUsers': query.orderBy('tags.attachedRemoteUsersCount', 'ASC'); break;
 	}
 
 	query.select([
-		'name',
-		'mentionedUsersCount',
-		'mentionedLocalUsersCount',
-		'mentionedRemoteUsersCount',
-		'attachedUsersCount',
-		'attachedLocalUsersCount',
-		'attachedRemoteUsersCount',
+		'tags.name',
+		'tags.mentionedUsersCount',
+		'tags.mentionedLocalUsersCount',
+		'tags.mentionedRemoteUsersCount',
+		'tags.attachedUsersCount',
+		'tags.attachedLocalUsersCount',
+		'tags.attachedRemoteUsersCount',
 	]);
 
 	const tags = await query.take(ps.limit).getMany();
