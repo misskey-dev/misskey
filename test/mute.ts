@@ -74,7 +74,6 @@ describe('Mute', () => {
 		const res = await request('/i', {}, alice);
 
 		assert.strictEqual(res.status, 200);
-		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.hasUnreadMentions, false);
 	}));
 
