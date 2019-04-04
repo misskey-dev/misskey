@@ -53,6 +53,18 @@ describe('Mute', () => {
 		assert.strictEqual(res.status, 204);
 	}));
 
+	it('「自分宛ての投稿」にミュートしているユーザーの投稿が含まれない', async(async () => {
+		const bobNote = await post(bob, { text: '@alice hi' });
+		const carolNote = await post(carol, { text: '@alice hi' });
+
+		const res = await request('/notes/mentions', {}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+	}));
+
 	describe('Timeline', () => {
 		it('タイムラインにミュートしているユーザーの投稿が含まれない', async(async () => {
 			const aliceNote = await post(alice);
