@@ -601,13 +601,9 @@ async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse
 	const mentions = extractMentions(tokens);
 
 	let mentionedUsers =
-		erase(null, await Promise.all(mentions.map(async m => {
-			try {
-				return await resolveUser(m.username, m.host ? m.host : user.host);
-			} catch (e) {
-				return null;
-			}
-		})));
+		erase(null, await Promise.all(mentions.map(m =>
+			resolveUser(m.username, m.host || user.host).catch(() => null)
+		)));
 
 	// Drop duplicate users
 	mentionedUsers = mentionedUsers.filter((u, i, self) =>
