@@ -1,6 +1,4 @@
 import * as fs from 'fs';
-import * as http from 'http';
-import * as assert from 'chai';
 import { Connection } from 'typeorm';
 const fetch = require('node-fetch');
 const FormData = require('form-data');
