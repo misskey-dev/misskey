@@ -77,6 +77,27 @@ test ... Test code
 ```
 
 ## Notes
+### placeholder
+SQLをクエリビルダで組み立てる際、使用するプレースホルダは重複してはならない
+例えば
+``` ts
+query.andWhere(new Brackets(qb => {
+	for (const type of ps.fileType) {
+		qb.orWhere(`:type = ANY(note.attachedFileTypes)`, { type: type });
+	}
+}));
+```
+と書くと、ループ中で`type`というプレースホルダが複数回使われてしまいおかしくなる
+だから次のようにする必要がある
+```ts
+query.andWhere(new Brackets(qb => {
+	for (const type of ps.fileType) {
+		const i = ps.fileType.indexOf(type);
+		qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+	}
+}));
+```
+
 ### `null` in SQL
 SQLを発行する際、パラメータが`null`になる可能性のある場合はSQL文を出し分けなければならない
 例えば
@@ -110,5 +131,5 @@ const users = userIds.length > 0 ? await Users.find({
 ```
 
 ### `undefined`にご用心
-MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合**`undefined`**が返ってくるので注意
+MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合 **`undefined`** が返ってくるので注意。
 MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください

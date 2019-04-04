@@ -7,6 +7,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -154,13 +155,18 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.fileType) {
 		query.andWhere('note.fileIds != \'{}\'');
-		query.andWhere('note.attachedFileTypes ANY(:type)', { type: ps.fileType });
+		query.andWhere(new Brackets(qb => {
+			for (const type of ps.fileType) {
+				const i = ps.fileType.indexOf(type);
+				qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+			}
+		}));
 
 		if (ps.excludeNsfw) {
 			// v11 TODO
-			query['_files.isSensitive'] = {
+			/*query['_files.isSensitive'] = {
 				$ne: true
-			};
+			};*/
 		}
 	}
 
