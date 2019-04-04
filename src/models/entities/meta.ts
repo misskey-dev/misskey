@@ -9,12 +9,12 @@ export class Meta {
 	@Column('varchar', {
 		length: 128, nullable: true
 	})
-	public name: string;
+	public name: string | null;
 
 	@Column('varchar', {
 		length: 1024, nullable: true
 	})
-	public description: string;
+	public description: string | null;
 
 	/**
 	 * メンテナの名前
@@ -22,7 +22,7 @@ export class Meta {
 	@Column('varchar', {
 		length: 128, nullable: true
 	})
-	public maintainerName: string;
+	public maintainerName: string | null;
 
 	/**
 	 * メンテナの連絡先
@@ -30,7 +30,7 @@ export class Meta {
 	@Column('varchar', {
 		length: 128, nullable: true
 	})
-	public maintainerEmail: string;
+	public maintainerEmail: string | null;
 
 	@Column('jsonb', {
 		default: [],
