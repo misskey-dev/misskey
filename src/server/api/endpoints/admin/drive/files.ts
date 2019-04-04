@@ -41,11 +41,11 @@ export const meta = {
 };
 
 const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-	'+createdAt': { uploadDate: -1 },
-	'-createdAt': { uploadDate: 1 },
-	'+size': { length: -1 },
-	'-size': { length: 1 },
-	[fallback]: { _id: -1 }
+	'+createdAt': { createdAt: -1 },
+	'-createdAt': { createdAt: 1 },
+	'+size': { size: -1 },
+	'-size': { size: 1 },
+	[fallback]: { id: -1 }
 };
 
 export default define(meta, async (ps, me) => {
