@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Metas } from '../../../../models';
+import { Meta } from '../../../../models/entities/meta';
 
 export const meta = {
 	desc: {
@@ -326,7 +327,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const set = {} as any;
+	const set = {} as Partial<Meta>;
 
 	if (ps.announcements) {
 		set.announcements = ps.announcements;
