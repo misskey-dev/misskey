@@ -65,6 +65,19 @@ describe('Mute', () => {
 		assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
 	}));
 
+	it('ミュートしているユーザーからメンションされても、hasUnreadMentions が true にならない', async(async () => {
+		// 状態リセット
+		await request('/i/read-all-unread-notes', {}, alice);
+
+		await post(carol, { text: '@alice hi' });
+
+		const res = await request('/i', {}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.hasUnreadMentions, false);
+	}));
+
 	describe('Timeline', () => {
 		it('タイムラインにミュートしているユーザーの投稿が含まれない', async(async () => {
 			const aliceNote = await post(alice);
