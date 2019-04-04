@@ -92,7 +92,6 @@ export function connectStream(user: any, channel: string, listener: any): Promis
 
 		ws.on('open', () => {
 			ws.on('message', data => {
-				console.log(data);
 				const msg = JSON.parse(data.toString());
 				if (msg.type == 'channel' && msg.body.id == 'a') {
 					listener(msg.body);
