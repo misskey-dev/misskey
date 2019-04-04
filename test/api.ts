@@ -535,6 +535,19 @@ describe('API', () => {
 			assert.strictEqual(res.status, 400);
 		}));
 
+		it('存在しないユーザーにメンションできる', async(async () => {
+			const alice = await signup({ username: 'alice' });
+			const post = {
+				text: '@bob yo'
+			};
+
+			const res = await request('/notes/create', post, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.createdNote.text, post.text);
+		}));
+
 		it('同じユーザーに複数メンションしても内部的にまとめられる', async(async () => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
