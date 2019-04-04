@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as WebSocket from 'ws';
 import { Connection } from 'typeorm';
 const fetch = require('node-fetch');
 const FormData = require('form-data');
@@ -84,3 +85,30 @@ export const resetDb = (connection: Connection) => () => new Promise(res => {
 		res();
 	}, 500);
 });
+
+export function connectStream(user: any, channel: string, listener: any): Promise<WebSocket> {
+	return new Promise((res, rej) => {
+		const ws = new WebSocket(`ws://localhost/streaming?i=${user.token}`);
+
+		ws.on('open', () => {
+			ws.on('message', data => {
+				console.log(data);
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					listener(msg.body);
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					res(ws);
+				}
+			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: channel,
+					id: 'a',
+					pong: true
+				}
+			}));
+		});
+	});
+}

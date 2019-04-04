@@ -16,7 +16,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, react } from './utils';
+import { async, signup, request, post, react, connectStream } from './utils';
 
 describe('Mute', () => {
 	let p: childProcess.ChildProcess;
@@ -33,6 +33,7 @@ describe('Mute', () => {
 		});
 		p.on('message', async message => {
 			if (message === 'ok') {
+				(p.channel as any).onread = () => {};
 				alice = await signup({ username: 'alice' });
 				bob = await signup({ username: 'bob' });
 				carol = await signup({ username: 'carol' });
@@ -75,6 +76,49 @@ describe('Mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.hasUnreadMentions, false);
+	}));
+
+	it('ミュートしているユーザーからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise(async done => {
+		// 状態リセット
+		await request('/i/read-all-unread-notes', {}, alice);
+
+		let fired = false;
+
+		const ws = await connectStream(alice, 'main', ({ type }) => {
+			if (type == 'unreadMention') {
+				fired = true;
+			}
+		});
+
+		post(carol, { text: '@alice hi' });
+
+		setTimeout(() => {
+			assert.strictEqual(fired, false);
+			ws.close();
+			done();
+		}, 5000);
+	}));
+
+	it('ミュートしているユーザーからメンションされても、ストリームに unreadNotification イベントが流れてこない', () => new Promise(async done => {
+		// 状態リセット
+		await request('/i/read-all-unread-notes', {}, alice);
+		await request('/notifications/mark-all-as-read', {}, alice);
+
+		let fired = false;
+
+		const ws = await connectStream(alice, 'main', ({ type }) => {
+			if (type == 'unreadNotification') {
+				fired = true;
+			}
+		});
+
+		post(carol, { text: '@alice hi' });
+
+		setTimeout(() => {
+			assert.strictEqual(fired, false);
+			ws.close();
+			done();
+		}, 5000);
 	}));
 
 	describe('Timeline', () => {
