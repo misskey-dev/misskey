@@ -154,7 +154,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			id: genId(),
 			avatarId: null,
 			bannerId: null,
-			createdAt: Date.parse(person.published) || null,
+			createdAt: Date.parse(person.published) || new Date(),
 			lastFetchedAt: new Date(),
 			description: fromHtml(person.summary),
 			followersCount,
@@ -176,7 +176,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			tags,
 			isBot,
 			isCat: (person as any).isCat === true
-		}) as IRemoteUser;
+		} as Partial<User>) as IRemoteUser;
 
 		await UserPublickeys.save({
 			id: genId(),
