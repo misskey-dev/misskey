@@ -54,6 +54,9 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 				throw `cannot resolve user: @${username}@${host}`;
 			}
 
+			// skip myself
+			if (target._id.equals(job.data.user._id)) continue;
+
 			logger.info(`Follow[${linenum}] ${target._id} ...`);
 
 			follow(user, target);

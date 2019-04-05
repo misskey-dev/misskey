@@ -7,7 +7,7 @@ import { length } from 'stringz';
 import { IUser, pack as packUser } from './user';
 import { pack as packApp } from './app';
 import PollVote from './poll-vote';
-import Reaction from './note-reaction';
+import NoteReaction from './note-reaction';
 import { packMany as packFileMany, IDriveFile } from './drive-file';
 import Following from './following';
 import Emoji from './emoji';
@@ -259,7 +259,7 @@ export const pack = async (
 				fields: { _id: false }
 			});
 		} else {
-			_note.emojis = unique(concat([_note.emojis, Object.keys(_note.reactionCounts)]));
+			_note.emojis = unique(concat([_note.emojis, Object.keys(_note.reactionCounts).map(x => x.replace(/:/g, ''))]));
 
 			_note.emojis = Emoji.find({
 				name: { $in: _note.emojis },
@@ -357,7 +357,7 @@ export const pack = async (
 		if (meId) {
 			// Fetch my reaction
 			_note.myReaction = (async () => {
-				const reaction = await Reaction
+				const reaction = await NoteReaction
 					.findOne({
 						userId: meId,
 						noteId: id,

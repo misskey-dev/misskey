@@ -36,7 +36,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import anime from 'animejs';
-import i18n from '../../../i18n';
 import {
 	faFile,
 	faFileAlt,
@@ -104,7 +103,11 @@ export default Vue.extend({
 			return 'unknown';
 		},
 		isThumbnailAvailable(): boolean {
-			return this.file.thumbnailUrl.endsWith('?thumbnail') ? (this.is === 'image' || this.is === 'video') : true;
+			return this.file.thumbnailUrl
+				? this.file.thumbnailUrl.endsWith('?thumbnail')
+					? (this.is === 'image' || this.is === 'video')
+					: true
+				: false;
 		},
 		background(): string {
 			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3

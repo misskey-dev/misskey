@@ -245,6 +245,7 @@ export default Vue.extend({
 		federationInstancesChart(total: boolean): any {
 			return {
 				series: [{
+					name: 'Instances',
 					data: this.format(total
 						? this.stats.federation.instance.total
 						: sum(this.stats.federation.instance.inc, negate(this.stats.federation.instance.dec))

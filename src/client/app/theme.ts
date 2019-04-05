@@ -42,41 +42,41 @@ export const builtinThemes = [
 	tweetDeckTheme,
 ];
 
-export function applyTheme(themes: Theme, persisted = true) {
-	document.documentElement.classList.add('changing-themes');
+export function applyTheme(theme: Theme, persisted = true) {
+	document.documentElement.classList.add('changing-theme');
 
 	setTimeout(() => {
-		document.documentElement.classList.remove('changing-themes');
+		document.documentElement.classList.remove('changing-theme');
 	}, 1000);
 
 	// Deep copy
-	const _themes = JSON.parse(JSON.stringify(themes));
+	const _theme = JSON.parse(JSON.stringify(theme));
 
-	if (_themes.base) {
-		const base = [lightTheme, darkTheme].find(x => x.id == _themes.base);
-		_themes.vars = Object.assign({}, base.vars, _themes.vars);
-		_themes.props = Object.assign({}, base.props, _themes.props);
+	if (_theme.base) {
+		const base = [lightTheme, darkTheme].find(x => x.id == _theme.base);
+		_theme.vars = Object.assign({}, base.vars, _theme.vars);
+		_theme.props = Object.assign({}, base.props, _theme.props);
 	}
 
-	const props = compile(_themes);
+	const props = compile(_theme);
 
 	for (const [k, v] of Object.entries(props)) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}
 
 	if (persisted) {
-		localStorage.setItem('themes', JSON.stringify(props));
+		localStorage.setItem('theme', JSON.stringify(props));
 	}
 }
 
-function compile(themes: Theme): { [key: string]: string } {
+function compile(theme: Theme): { [key: string]: string } {
 	function getColor(code: string): tinycolor.Instance {
 		// ref
 		if (code[0] == '@') {
-			return getColor(themes.props[code.substr(1)]);
+			return getColor(theme.props[code.substr(1)]);
 		}
 		if (code[0] == '$') {
-			return getColor(themes.vars[code.substr(1)]);
+			return getColor(theme.vars[code.substr(1)]);
 		}
 
 		// func
@@ -98,7 +98,7 @@ function compile(themes: Theme): { [key: string]: string } {
 
 	const props = {};
 
-	for (const [k, v] of Object.entries(themes.props)) {
+	for (const [k, v] of Object.entries(theme.props)) {
 		props[k] = genValue(getColor(v));
 	}
 

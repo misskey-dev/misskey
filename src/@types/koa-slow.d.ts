@@ -8,7 +8,7 @@ declare module 'koa-slow' {
 
 	function slow(options?: ISlowOptions): Middleware;
 
-	namespace slow { } // Hack
+	namespace slow {} // Hack
 
 	export = slow;
 }

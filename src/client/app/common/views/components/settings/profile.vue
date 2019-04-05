@@ -305,11 +305,16 @@ export default Vue.extend({
 					this.exportTarget == 'user-lists' ? 'i/import-user-lists' :
 					null, {
 						fileId: file.id
+				}).then(() => {
+					this.$root.dialog({
+						type: 'info',
+						text: this.$t('import-requested')
 					});
-
-				this.$root.dialog({
-					type: 'info',
-					text: this.$t('import-requested')
+				}).catch((e: any) => {
+					this.$root.dialog({
+						type: 'error',
+						text: e.message
+					});
 				});
 			});
 		},
