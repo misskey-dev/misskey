@@ -1,7 +1,7 @@
 <template>
 <div class="pyvicwrksnfyhpfgkjwqknuururpaztw">
 	<div class="preview">
-		<x-file-thumbnail class="preview" :file="file" fit="cover" :detail="true"/>
+		<x-file-thumbnail class="preview" :file="file" :detail="true"/>
 		<template v-if="kind != 'image'"><fa icon="file"/></template>
 		<footer v-if="kind == 'image' && file.properties && file.properties.width && file.properties.height">
 			<span class="size">
@@ -149,8 +149,8 @@ export default Vue.extend({
 		background var(--bg)
 
 		> .preview
+			width fit-content
 			max-width 100%
-			max-height 300px
 			margin 0 auto
 			box-shadow 1px 1px 4px rgba(#000, 0.2)
 			overflow hidden
