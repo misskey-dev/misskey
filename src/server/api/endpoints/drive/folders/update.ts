@@ -80,7 +80,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.name) folder.name = ps.name;
 
 	if (ps.parentId !== undefined) {
-		if (ps.parentId.equals(folder._id)) {
+		if (ps.parentId === folder.id) {
 			throw new ApiError(meta.errors.recursiveNesting);
 		} else if (ps.parentId === null) {
 			folder.parentId = null;
