@@ -67,13 +67,15 @@ export class ReversiGame {
 	})
 	public isEnded: boolean;
 
-	@Column('char', {
-		length: 26, nullable: true
+	@Column({
+		...id(),
+		nullable: true
 	})
 	public winnerId: User['id'] | null;
 
-	@Column('char', {
-		length: 26, nullable: true
+	@Column({
+		...id(),
+		nullable: true
 	})
 	public surrendered: User['id'] | null;
 
