@@ -29,6 +29,8 @@ export default function load() {
 
 	config.url = normalizeUrl(config.url);
 
+	config.port = config.port || parseInt(process.env.PORT, 10);
+
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');

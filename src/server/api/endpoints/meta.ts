@@ -126,6 +126,8 @@ export default define(meta, async (ps, me) => {
 		enableTwitterIntegration: instance.enableTwitterIntegration,
 		enableGithubIntegration: instance.enableGithubIntegration,
 		enableDiscordIntegration: instance.enableDiscordIntegration,
+
+		enableServiceWorker: instance.enableServiceWorker,
 	};
 
 	if (ps.detail) {
