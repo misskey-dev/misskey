@@ -82,12 +82,6 @@ export default Vue.extend({
 				noteId: this.note.id,
 				choice: id
 			}).then(() => {
-				for (const c of this.poll.choices) {
-					if (c.id == id) {
-						c.votes++;
-						Vue.set(c, 'isVoted', true);
-					}
-				}
 				if (!this.showResult) this.showResult = !this.poll.multiple;
 			});
 		}

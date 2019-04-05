@@ -125,9 +125,11 @@ export default prop => ({
 				}
 
 				case 'pollVoted': {
-					if (body.userId == this.$store.state.i.id) return;
 					const choice = body.choice;
 					this.$_ns_target.poll.choices[choice].votes++;
+					if (body.userId == this.$store.state.i.id) {
+						Vue.set(this.$_ns_target.poll.choices[choice], 'isVoted', true);
+					}
 					break;
 				}
 
