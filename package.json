@@ -2,7 +2,7 @@
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
 	"version": "11.0.0",
-	"codename": "nighthike",
+	"codename": "daybreak",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/syuilo/misskey.git"
