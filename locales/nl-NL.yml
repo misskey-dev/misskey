@@ -307,10 +307,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Annuleren"
   ok: "Oké"
-desktop/views/components/messaging-room-window.vue:
-  title: "Berichten:"
-desktop/views/components/messaging-window.vue:
-  title: "Gesprekken"
 desktop/views/components/note-detail.vue:
   private: "(dit bericht is privé)"
   location: "Locatie"
@@ -394,7 +390,6 @@ desktop/views/components/timeline.vue:
   home: "Startpagina"
   local: "Lokaal"
   global: "Algemeen"
-  messages: "Gesprekken"
   list: "Lijsten"
 desktop/views/components/ui.header.account.vue:
   profile: "Je profiel"
@@ -497,8 +492,6 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Berichten"
   with-replies: "Berichten en antwoorden"
   with-media: "Media"
-desktop/views/widgets/messaging.vue:
-  title: "Gesprekken"
 desktop/views/widgets/notifications.vue:
   title: "Meldingen"
 desktop/views/widgets/polls.vue:
@@ -571,7 +564,6 @@ mobile/views/pages/home.vue:
   home: "Startpagina"
   local: "Lokaal"
   global: "Algemeen"
-  messages: "Gesprekken"
 mobile/views/pages/widgets.vue:
   add-widget: "Toevoegen"
 mobile/views/pages/widgets/activity.vue:
