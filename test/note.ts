@@ -34,6 +34,7 @@ describe('Note', () => {
 		});
 		p.on('message', message => {
 			if (message === 'ok') {
+				(p.channel as any).onread = () => {};
 				initDb(true).then(async connection => {
 					Notes = connection.getRepository(Note);
 					alice = await signup({ username: 'alice' });
@@ -69,7 +70,7 @@ describe('Note', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-		assert.strictEqual(res.body.createdNote.fileIds, [file.id]);
+		assert.deepStrictEqual(res.body.createdNote.fileIds, [file.id]);
 	}));
 
 	it('他人のファイルは無視', async(async () => {
@@ -82,7 +83,7 @@ describe('Note', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-		assert.strictEqual(res.body.createdNote.fileIds, []);
+		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
 	}));
 
 	it('存在しないファイルは無視', async(async () => {
@@ -93,7 +94,7 @@ describe('Note', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-		assert.strictEqual(res.body.createdNote.fileIds, []);
+		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
 	}));
 
 	it('不正なファイルIDで怒られる', async(async () => {

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as WebSocket from 'ws';
 import { Connection } from 'typeorm';
 const fetch = require('node-fetch');
-const FormData = require('form-data');
+import * as req from 'request';
 
 export const async = (fn: Function) => (done: Function) => {
 	fn().then(() => {
@@ -59,18 +59,15 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 };
 
 export const uploadFile = (user: any, path?: string): Promise<any> => new Promise((ok, rej) => {
-	const form = new FormData();
-	form.append('i', user.token);
-	if (path) {
-		form.append('file', fs.createReadStream(path));
-	} else {
-		form.append('file', fs.createReadStream(__dirname + '/resources/Lenna.png'));
-	}
-	form.submit('http://localhost:80/api/drive/files/create', (err, res) => {
-		ok({
-			status: res.statusCode,
-			body: res.body
-		});
+	req.post({
+		url: 'http://localhost:80/api/drive/files/create',
+		formData: {
+			i: user.token,
+			file: fs.createReadStream(path || __dirname + '/resources/Lenna.png')
+		},
+		json: true
+	}, (err, httpResponse, body) => {
+		ok(body);
 	});
 });
 
