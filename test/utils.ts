@@ -74,18 +74,6 @@ export const uploadFile = (user: any, path?: string): Promise<any> => new Promis
 	});
 });
 
-export const resetDb = (connection: Connection) => () => new Promise(res => {
-	// APIがなにかレスポンスを返した後に、後処理を行う場合があり、
-	// レスポンスを受け取ってすぐデータベースをリセットすると
-	// その後処理と競合し(テスト自体は合格するものの)エラーがコンソールに出力され
-	// 見た目的に気持ち悪くなるので、後処理が終るのを待つために500msくらい待ってから
-	// データベースをリセットするようにする
-	setTimeout(async () => {
-		await connection.dropDatabase();
-		res();
-	}, 500);
-});
-
 export function connectStream(user: any, channel: string, listener: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
 		const ws = new WebSocket(`ws://localhost/streaming?i=${user.token}`);
