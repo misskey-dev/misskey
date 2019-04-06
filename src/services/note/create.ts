@@ -1,5 +1,5 @@
 import es from '../../db/elasticsearch';
-import { publishMainStream, publishHomeTimelineStream, publishLocalTimelineStream, publishHybridTimelineStream, publishGlobalTimelineStream, publishUserListStream, publishHashtagStream } from '../stream';
+import { publishMainStream, publishNotesStream } from '../stream';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
@@ -17,10 +17,10 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, UserLists, UserListJoinings, Followings, Notes, Instances, Polls } from '../../models';
+import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, Polls } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
-import { In, Not } from 'typeorm';
+import { Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
@@ -243,9 +243,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		noteObj.isFirstNote = true;
 	}
 
-	if (tags.length > 0) {
-		publishHashtagStream(noteObj);
-	}
+	publishNotesStream(noteObj);
 
 	const nm = new NotificationManager(user, note);
 	const nmRelatedPromises = [];
@@ -299,7 +297,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	if (!silent) {
-		publish(user, note, noteObj, data.reply, data.renote, data.visibleUsers, noteActivity);
+		publish(user, note, data.reply, data.renote, noteActivity);
 	}
 
 	Promise.all(nmRelatedPromises).then(() => {
@@ -325,7 +323,7 @@ function incRenoteCount(renote: Note) {
 	Notes.increment({ id: renote.id }, 'score', 1);
 }
 
-async function publish(user: User, note: Note, noteObj: any, reply: Note, renote: Note, visibleUsers: User[], noteActivity: any) {
+async function publish(user: User, note: Note, reply: Note, renote: Note, noteActivity: any) {
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && reply.userHost !== null) {
@@ -336,53 +334,12 @@ async function publish(user: User, note: Note, noteObj: any, reply: Note, renote
 		if (renote && renote.userHost !== null) {
 			deliver(user, noteActivity, renote.userInbox);
 		}
-
-		if (['followers', 'specified'].includes(note.visibility)) {
-			const detailPackedNote = await Notes.pack(note, user, {
-				detail: true
-			});
-			// Publish event to myself's stream
-			publishHomeTimelineStream(note.userId, detailPackedNote);
-			publishHybridTimelineStream(note.userId, detailPackedNote);
-
-			if (note.visibility == 'specified') {
-				for (const u of visibleUsers) {
-					if (u.id !== user.id) {
-						publishHomeTimelineStream(u.id, detailPackedNote);
-						publishHybridTimelineStream(u.id, detailPackedNote);
-					}
-				}
-			}
-		} else {
-			// Publish event to myself's stream
-			publishHomeTimelineStream(note.userId, noteObj);
-
-			// Publish note to local and hybrid timeline stream
-			if (note.visibility != 'home') {
-				publishLocalTimelineStream(noteObj);
-			}
-
-			if (note.visibility == 'public') {
-				publishHybridTimelineStream(null, noteObj);
-			} else {
-				// Publish event to myself's stream
-				publishHybridTimelineStream(note.userId, noteObj);
-			}
-		}
-	}
-
-	// Publish note to global timeline stream
-	if (note.visibility == 'public' && note.replyId == null) {
-		publishGlobalTimelineStream(noteObj);
 	}
 
 	if (['public', 'home', 'followers'].includes(note.visibility)) {
 		// フォロワーに配信
 		publishToFollowers(note, user, noteActivity, reply);
 	}
-
-	// リストに配信
-	publishToUserLists(note, noteObj);
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
@@ -499,34 +456,7 @@ async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: Notificati
 	}
 }
 
-async function publishToUserLists(note: Note, noteObj: any) {
-	const joinings = await UserListJoinings.find({
-		userId: note.userId
-	});
-
-	if (joinings.length === 0) return;
-
-	const lists = await UserLists.find({
-		id: In(joinings.map(j => j.userListId))
-	});
-
-	for (const list of lists) {
-		if (note.visibility == 'specified') {
-			if (note.visibleUserIds.some(id => id === list.userId)) {
-				publishUserListStream(list.id, 'note', noteObj);
-			}
-		} else {
-			publishUserListStream(list.id, 'note', noteObj);
-		}
-	}
-}
-
 async function publishToFollowers(note: Note, user: User, noteActivity: any, reply: Note) {
-	const detailPackedNote = await Notes.pack(note, null, {
-		detail: true,
-		skipHide: true
-	});
-
 	const followers = await Followings.find({
 		followeeId: note.userId
 	});
@@ -534,27 +464,10 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any, rep
 	const queue: string[] = [];
 
 	for (const following of followers) {
-		const follower = {
-			host: following.followerHost,
-			inbox: following.followerInbox,
-			sharedInbox: following.followerSharedInbox,
-		};
-
-		if (follower.host === null) {
-			// この投稿が返信ならスキップ
-			if (note.replyId && (reply.userId !== following.followerId) && (reply.userId !== note.userId))
-				continue;
-
-			// Publish event to followers stream
-			publishHomeTimelineStream(following.followerId, detailPackedNote);
-
-			if (Users.isRemoteUser(user) || note.visibility != 'public') {
-				publishHybridTimelineStream(following.followerId, detailPackedNote);
-			}
-		} else {
+		if (following.followerHost !== null) {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 			if (Users.isLocalUser(user)) {
-				const inbox = follower.sharedInbox || follower.inbox;
+				const inbox = following.followerSharedInbox || following.followerInbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
 		}

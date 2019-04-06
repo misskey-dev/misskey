@@ -2,14 +2,12 @@ import autobind from 'autobind-decorator';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 import fetchMeta from '../../../../misc/fetch-meta';
-import { Mutings, Notes } from '../../../../models';
+import { Notes } from '../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = true;
 	public static requireCredential = false;
-
-	private mutedUserIds: string[] = [];
 
 	@autobind
 	public async init(params: any) {
@@ -19,14 +17,13 @@ export default class extends Channel {
 		}
 
 		// Subscribe events
-		this.subscriber.on('localTimeline', this.onNote);
-
-		const mute = this.user ? await Mutings.find({ muterId: this.user.id }) : null;
-		this.mutedUserIds = mute ? mute.map(m => m.muteeId.toString()) : [];
+		this.subscriber.on('notesStream', this.onNote);
 	}
 
 	@autobind
 	private async onNote(note: any) {
+		if (note.user.host !== null) return;
+
 		// リプライなら再pack
 		if (note.replyId != null) {
 			note.reply = await Notes.pack(note.replyId, this.user, {
@@ -41,7 +38,7 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (shouldMuteThisNote(note, this.mutedUserIds)) return;
+		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
 	}
@@ -49,6 +46,6 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off('localTimeline', this.onNote);
+		this.subscriber.off('notesStream', this.onNote);
 	}
 }

@@ -1,26 +1,24 @@
 import autobind from 'autobind-decorator';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
-import { Notes, Mutings } from '../../../../models';
+import { Notes } from '../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'homeTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
 
-	private mutedUserIds: string[] = [];
-
 	@autobind
 	public async init(params: any) {
 		// Subscribe events
-		this.subscriber.on(`homeTimeline:${this.user.id}`, this.onNote);
-
-		const mute = await Mutings.find({ muterId: this.user.id });
-		this.mutedUserIds = mute.map(m => m.muteeId.toString());
+		this.subscriber.on('notesStream', this.onNote);
 	}
 
 	@autobind
 	private async onNote(note: any) {
+		// その投稿のユーザーをフォローしていなかったら弾く
+		if (this.user.id !== note.userId && !this.following.includes(note.userId)) return;
+
 		// リプライなら再pack
 		if (note.replyId != null) {
 			note.reply = await Notes.pack(note.replyId, this.user, {
@@ -35,7 +33,7 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (shouldMuteThisNote(note, this.mutedUserIds)) return;
+		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
 	}
@@ -43,6 +41,6 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off(`homeTimeline:${this.user.id}`, this.onNote);
+		this.subscriber.off('notesStream', this.onNote);
 	}
 }

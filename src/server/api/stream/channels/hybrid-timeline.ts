@@ -2,14 +2,12 @@ import autobind from 'autobind-decorator';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 import fetchMeta from '../../../../misc/fetch-meta';
-import { Mutings, Notes } from '../../../../models';
+import { Notes } from '../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
-
-	private mutedUserIds: string[] = [];
 
 	@autobind
 	public async init(params: any) {
@@ -17,15 +15,18 @@ export default class extends Channel {
 		if (meta.disableLocalTimeline && !this.user.isAdmin && !this.user.isModerator) return;
 
 		// Subscribe events
-		this.subscriber.on('hybridTimeline', this.onNewNote);
-		this.subscriber.on(`hybridTimeline:${this.user.id}`, this.onNewNote);
-
-		const mute = await Mutings.find({ muterId: this.user.id });
-		this.mutedUserIds = mute.map(m => m.muteeId.toString());
+		this.subscriber.on('notesStream', this.onNewNote);
 	}
 
 	@autobind
 	private async onNewNote(note: any) {
+		// 自分自身の投稿 または その投稿のユーザーをフォローしている または ローカルの投稿 の場合だけ
+		if (!(
+			this.user.id === note.userId ||
+			this.following.includes(note.userId) ||
+			note.user.host === null
+		)) return;
+
 		// リプライなら再pack
 		if (note.replyId != null) {
 			note.reply = await Notes.pack(note.replyId, this.user, {
@@ -40,7 +41,7 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (shouldMuteThisNote(note, this.mutedUserIds)) return;
+		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
 	}
@@ -48,7 +49,6 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off('hybridTimeline', this.onNewNote);
-		this.subscriber.off(`hybridTimeline:${this.user.id}`, this.onNewNote);
+		this.subscriber.off('notesStream', this.onNewNote);
 	}
 }

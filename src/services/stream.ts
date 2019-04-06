@@ -65,24 +65,8 @@ class Publisher {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishHomeTimelineStream = (userId: User['id'], note: any): void => {
-		this.publish(`homeTimeline:${userId}`, null, note);
-	}
-
-	public publishLocalTimelineStream = async (note: any): Promise<void> => {
-		this.publish('localTimeline', null, note);
-	}
-
-	public publishHybridTimelineStream = async (userId: User['id'], note: any): Promise<void> => {
-		this.publish(userId ? `hybridTimeline:${userId}` : 'hybridTimeline', null, note);
-	}
-
-	public publishGlobalTimelineStream = (note: any): void => {
-		this.publish('globalTimeline', null, note);
-	}
-
-	public publishHashtagStream = (note: any): void => {
-		this.publish('hashtag', null, note);
+	public publishNotesStream = (note: any): void => {
+		this.publish('notesStream', null, note);
 	}
 
 	public publishApLogStream = (log: any): void => {
@@ -101,15 +85,11 @@ export default publisher;
 export const publishMainStream = publisher.publishMainStream;
 export const publishDriveStream = publisher.publishDriveStream;
 export const publishNoteStream = publisher.publishNoteStream;
+export const publishNotesStream = publisher.publishNotesStream;
 export const publishUserListStream = publisher.publishUserListStream;
 export const publishMessagingStream = publisher.publishMessagingStream;
 export const publishMessagingIndexStream = publisher.publishMessagingIndexStream;
 export const publishReversiStream = publisher.publishReversiStream;
 export const publishReversiGameStream = publisher.publishReversiGameStream;
-export const publishHomeTimelineStream = publisher.publishHomeTimelineStream;
-export const publishLocalTimelineStream = publisher.publishLocalTimelineStream;
-export const publishHybridTimelineStream = publisher.publishHybridTimelineStream;
-export const publishGlobalTimelineStream = publisher.publishGlobalTimelineStream;
-export const publishHashtagStream = publisher.publishHashtagStream;
 export const publishApLogStream = publisher.publishApLogStream;
 export const publishAdminStream = publisher.publishAdminStream;
