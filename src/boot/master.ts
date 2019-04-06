@@ -85,7 +85,7 @@ export async function masterMain() {
 }
 
 const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseInt(x, 10));
-const requiredNodejsVersion = [10, 0, 0];
+const requiredNodejsVersion = [11, 7, 0];
 const satisfyNodejsVersion = !lessThan(runningNodejsVersion, requiredNodejsVersion);
 
 function isWellKnownPort(port: number): boolean {
