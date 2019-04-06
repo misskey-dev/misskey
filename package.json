@@ -11,6 +11,7 @@
 	"private": true,
 	"scripts": {
 		"start": "node ./index.js",
+		"init": "node ./built/init.js",
 		"debug": "DEBUG=misskey:* node ./index.js",
 		"build": "webpack && gulp build",
 		"webpack": "webpack",

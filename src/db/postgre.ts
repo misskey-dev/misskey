@@ -75,9 +75,9 @@ class MyCustomLogger implements Logger {
 	}
 }
 
-const enableLogging = !['production', 'test'].includes(process.env.NODE_ENV);
+export function initDb(justBorrow = false, sync = false, log = false) {
+	const enableLogging = log || !['production', 'test'].includes(process.env.NODE_ENV);
 
-export function initDb(justBorrow = false) {
 	try {
 		const conn = getConnection();
 		return Promise.resolve(conn);
@@ -90,7 +90,7 @@ export function initDb(justBorrow = false) {
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
-		synchronize: !justBorrow,
+		synchronize: sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
 		logging: enableLogging,
 		logger: enableLogging ? new MyCustomLogger() : null,
