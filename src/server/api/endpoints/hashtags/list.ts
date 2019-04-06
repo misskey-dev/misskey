@@ -57,33 +57,33 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const query = Hashtags.createQueryBuilder('tag');
 
-	if (ps.attachedToUserOnly) query.andWhere('tags.attachedUsersCount != 0');
-	if (ps.attachedToLocalUserOnly) query.andWhere('tags.attachedLocalUsersCount != 0');
-	if (ps.attachedToRemoteUserOnly) query.andWhere('tags.attachedRemoteUsersCount != 0');
+	if (ps.attachedToUserOnly) query.andWhere('tag.attachedUsersCount != 0');
+	if (ps.attachedToLocalUserOnly) query.andWhere('tag.attachedLocalUsersCount != 0');
+	if (ps.attachedToRemoteUserOnly) query.andWhere('tag.attachedRemoteUsersCount != 0');
 
 	switch (ps.sort) {
-		case '+mentionedUsers': query.orderBy('tags.mentionedUsersCount', 'DESC'); break;
-		case '-mentionedUsers': query.orderBy('tags.mentionedUsersCount', 'ASC'); break;
-		case '+mentionedLocalUsers': query.orderBy('tags.mentionedLocalUsersCount', 'DESC'); break;
-		case '-mentionedLocalUsers': query.orderBy('tags.mentionedLocalUsersCount', 'ASC'); break;
-		case '+mentionedRemoteUsers': query.orderBy('tags.mentionedRemoteUsersCount', 'DESC'); break;
-		case '-mentionedRemoteUsers': query.orderBy('tags.mentionedRemoteUsersCount', 'ASC'); break;
-		case '+attachedUsers': query.orderBy('tags.attachedUsersCount', 'DESC'); break;
-		case '-attachedUsers': query.orderBy('tags.attachedUsersCount', 'ASC'); break;
-		case '+attachedLocalUsers': query.orderBy('tags.attachedLocalUsersCount', 'DESC'); break;
-		case '-attachedLocalUsers': query.orderBy('tags.attachedLocalUsersCount', 'ASC'); break;
-		case '+attachedRemoteUsers': query.orderBy('tags.attachedRemoteUsersCount', 'DESC'); break;
-		case '-attachedRemoteUsers': query.orderBy('tags.attachedRemoteUsersCount', 'ASC'); break;
+		case '+mentionedUsers': query.orderBy('tag.mentionedUsersCount', 'DESC'); break;
+		case '-mentionedUsers': query.orderBy('tag.mentionedUsersCount', 'ASC'); break;
+		case '+mentionedLocalUsers': query.orderBy('tag.mentionedLocalUsersCount', 'DESC'); break;
+		case '-mentionedLocalUsers': query.orderBy('tag.mentionedLocalUsersCount', 'ASC'); break;
+		case '+mentionedRemoteUsers': query.orderBy('tag.mentionedRemoteUsersCount', 'DESC'); break;
+		case '-mentionedRemoteUsers': query.orderBy('tag.mentionedRemoteUsersCount', 'ASC'); break;
+		case '+attachedUsers': query.orderBy('tag.attachedUsersCount', 'DESC'); break;
+		case '-attachedUsers': query.orderBy('tag.attachedUsersCount', 'ASC'); break;
+		case '+attachedLocalUsers': query.orderBy('tag.attachedLocalUsersCount', 'DESC'); break;
+		case '-attachedLocalUsers': query.orderBy('tag.attachedLocalUsersCount', 'ASC'); break;
+		case '+attachedRemoteUsers': query.orderBy('tag.attachedRemoteUsersCount', 'DESC'); break;
+		case '-attachedRemoteUsers': query.orderBy('tag.attachedRemoteUsersCount', 'ASC'); break;
 	}
 
 	query.select([
-		'tags.name',
-		'tags.mentionedUsersCount',
-		'tags.mentionedLocalUsersCount',
-		'tags.mentionedRemoteUsersCount',
-		'tags.attachedUsersCount',
-		'tags.attachedLocalUsersCount',
-		'tags.attachedRemoteUsersCount',
+		'tag.name',
+		'tag.mentionedUsersCount',
+		'tag.mentionedLocalUsersCount',
+		'tag.mentionedRemoteUsersCount',
+		'tag.attachedUsersCount',
+		'tag.attachedLocalUsersCount',
+		'tag.attachedRemoteUsersCount',
 	]);
 
 	const tags = await query.take(ps.limit).getMany();
