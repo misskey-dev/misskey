@@ -23,8 +23,7 @@ RUN apk add --no-cache \
     zlib-dev
 RUN npm i -g yarn
 
-COPY binding.gyp package.json ./
-COPY src/crypto_key.cc ./src/
+COPY package.json ./
 RUN yarn install
 COPY . ./
 RUN yarn build
