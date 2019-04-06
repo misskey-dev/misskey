@@ -47,6 +47,8 @@ export default class extends Channel {
 		if ((game.user1Id === this.user.id) && game.user1Accepted) return;
 		if ((game.user2Id === this.user.id) && game.user2Accepted) return;
 
+		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard'].includes(key)) return;
+
 		await ReversiGames.update({ id: this.gameId }, {
 			[key]: value
 		});
