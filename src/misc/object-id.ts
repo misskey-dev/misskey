@@ -8,15 +8,7 @@ function getTime(time: number) {
 
 	time = Math.floor(time / 1000);
 
-	const n = CHARS.length;
-	let s = '';
-
-	while (time > 0) {
-		s = CHARS[time % n] + s;
-		time = Math.floor(time / n);
-	}
-
-	return s;
+	return time.toString(16);
 }
 
 function getRandom() {

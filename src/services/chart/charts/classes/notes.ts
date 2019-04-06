@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Notes } from '../../../../models';
 import { Not } from 'typeorm';
@@ -14,35 +14,30 @@ export default class NotesChart extends Chart<NotesLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: NotesLog): Promise<NotesLog> {
-		const [localCount, remoteCount] = init ? await Promise.all([
+	protected genNewLog(latest: NotesLog): DeepPartial<NotesLog> {
+		return {
+			local: {
+				total: latest.local.total,
+			},
+			remote: {
+				total: latest.remote.total,
+			}
+		};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<NotesLog>> {
+		const [localCount, remoteCount] = await Promise.all([
 			Notes.count({ userHost: null }),
 			Notes.count({ userHost: Not(null) })
-		]) : [
-			latest ? latest.local.total : 0,
-			latest ? latest.remote.total : 0
-		];
+		]);
 
 		return {
 			local: {
 				total: localCount,
-				inc: 0,
-				dec: 0,
-				diffs: {
-					normal: 0,
-					reply: 0,
-					renote: 0
-				}
 			},
 			remote: {
 				total: remoteCount,
-				inc: 0,
-				dec: 0,
-				diffs: {
-					normal: 0,
-					reply: 0,
-					renote: 0
-				}
 			}
 		};
 	}

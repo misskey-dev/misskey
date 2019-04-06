@@ -70,11 +70,7 @@ router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
 });
 
 // Manifest
-router.get('/manifest.json', async ctx => {
-	await send(ctx as any, '/assets/manifest.json', {
-		root: client
-	});
-});
+router.get('/manifest.json', require('./manifest'));
 
 router.get('/robots.txt', async ctx => {
 	await send(ctx as any, '/assets/robots.txt', {

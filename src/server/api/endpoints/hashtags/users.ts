@@ -71,12 +71,12 @@ export default define(meta, async (ps, me) => {
 	}
 
 	switch (ps.sort) {
-		case '+follower': query.orderBy('followersCount', 'DESC'); break;
-		case '-follower': query.orderBy('followersCount', 'ASC'); break;
-		case '+createdAt': query.orderBy('createdAt', 'DESC'); break;
-		case '-createdAt': query.orderBy('createdAt', 'ASC'); break;
-		case '+updatedAt': query.orderBy('updatedAt', 'DESC'); break;
-		case '-updatedAt': query.orderBy('updatedAt', 'ASC'); break;
+		case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
+		case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
+		case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
+		case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
+		case '+updatedAt': query.orderBy('user.updatedAt', 'DESC'); break;
+		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
 	}
 
 	const users = await query.take(ps.limit).getMany();

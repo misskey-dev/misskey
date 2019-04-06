@@ -131,7 +131,7 @@ common:
     other: "Ostatní"
     appearance: "Vzhled"
     behavior: "Chování"
-    fetch-on-scroll: "Nekonečné rolování"
+    fetch-on-scroll: "Nekonečné načítaní posuvem"
     fetch-on-scroll-desc: "Pokud budete rolovat dolů po stránce, automaticky bude načten další obsah."
     note-visibility: "Viditelnost příspěvku"
     default-note-visibility: "Výchozí viditelnost příspěvku"
@@ -436,17 +436,23 @@ common/views/components/user-menu.vue:
   push-to-list: "Přidat do seznamu"
   select-list: "Vyberte seznam"
   report-abuse-reported: "Problém byl nahlášen administrátorovi. Děkujeme za Vaší kooperaci."
+  silence: "Ztlumit"
+  suspend: "Zmrazit"
 common/views/components/poll.vue:
   vote-count: "{} hlasů"
   vote: "Hlasovat"
   show-result: "Podívat se na výsledky"
   voted: "Už jste hlasovaly"
+  closed: "Ukončeno"
   remaining-days: "zbývá {d} dnů, {h} hodin"
   remaining-hours: "zbývá {h} hodin, a {m} minut"
   remaining-minutes: "zbývá {m} minut, a {s} sekund"
   remaining-seconds: "zbývá {s} sekund"
 common/views/components/poll-editor.vue:
   no-only-one-choice: "Musíte vybrat alespoň dvě možnosti"
+  destroy: "Zahodit dotazník"
+  infinite: "Nekonečne"
+  at: "Výběr data a času"
   day: "Ne"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Emoji"
@@ -603,6 +609,8 @@ common/views/widgets/memo.vue:
   save: "Uložit"
 common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
+common/views/pages/not-found.vue:
+  page-not-found: "Stránka nenalezena"
 desktop:
   banner: "Baner"
   avatar-crop-title: "Vyberte část, která se zobrazí jako avatar"
@@ -687,10 +695,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Zrušit"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Zprávy:"
-desktop/views/components/messaging-window.vue:
-  title: "Zprávy"
 desktop/views/components/note-detail.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
@@ -796,7 +800,6 @@ desktop/views/components/timeline.vue:
   local: "Lokální"
   global: "Globální"
   mentions: "Zmínění"
-  messages: "Zprávy"
   list: "Seznamy"
   hashtag: "Hashtag"
   add-list: "Přidat do seznamu"
@@ -1057,8 +1060,6 @@ desktop/views/pages/user/user.header.vue:
   posts: "Poznámky"
   month: "Po"
   day: "Ne"
-desktop/views/widgets/messaging.vue:
-  title: "Zprávy"
 desktop/views/widgets/notifications.vue:
   title: "Oznámení"
 desktop/views/widgets/polls.vue:
@@ -1139,7 +1140,6 @@ mobile/views/pages/home.vue:
   local: "Lokální"
   global: "Globální"
   mentions: "Zmínění"
-  messages: "Zprávy"
 mobile/views/pages/tag.vue:
   no-posts-found: "Nebyly nalezeny žádné příspěvky s \"{q}\"."
 mobile/views/pages/widgets.vue:

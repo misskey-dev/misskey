@@ -12,6 +12,7 @@
  * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
 
+/*
 import * as assert from 'assert';
 
 import { toDbReaction } from '../src/misc/reaction-lib';
@@ -93,3 +94,4 @@ describe('toDbReaction', async () => {
 		assert.strictEqual(await toDbReaction('unknown'), 'like');
 	});
 });
+*/

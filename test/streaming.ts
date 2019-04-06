@@ -12,20 +12,12 @@
  * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
 
+process.env.NODE_ENV = 'test';
+
 import * as http from 'http';
 import * as WebSocket from 'ws';
 import * as assert from 'assert';
 import { _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
-
-//#region process
-Error.stackTraceLimit = Infinity;
-
-// During the test the env variable is set to test
-process.env.NODE_ENV = 'test';
-
-// Display detail of unhandled promise rejection
-process.on('unhandledRejection', console.dir);
-//#endregion
 
 const app = require('../built/server/api').default;
 const server = require('../built/server').startServer();

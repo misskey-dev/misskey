@@ -9,8 +9,7 @@ export default async function(user: User, note: Note, isSpecified = false) {
 	const mute = await Mutings.find({
 		muterId: user.id
 	});
-	const mutedUserIds = mute.map(m => m.muteeId.toString());
-	if (mutedUserIds.includes(note.userId.toString())) return;
+	if (mute.map(m => m.muteeId).includes(note.userId)) return;
 	//#endregion
 
 	const unread = await NoteUnreads.save({

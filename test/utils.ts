@@ -1,9 +1,8 @@
 import * as fs from 'fs';
-import * as http from 'http';
-import * as assert from 'chai';
+import * as WebSocket from 'ws';
 import { Connection } from 'typeorm';
 const fetch = require('node-fetch');
-const FormData = require('form-data');
+import * as req from 'request';
 
 export const async = (fn: Function) => (done: Function) => {
 	fn().then(() => {
@@ -60,29 +59,40 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 };
 
 export const uploadFile = (user: any, path?: string): Promise<any> => new Promise((ok, rej) => {
-	const form = new FormData();
-	form.append('i', user.token);
-	if (path) {
-		form.append('file', fs.createReadStream(path));
-	} else {
-		form.append('file', fs.createReadStream(__dirname + '/resources/Lenna.png'));
-	}
-	form.submit('http://localhost:80/api/drive/files/create', (err, res) => {
-		ok({
-			status: res.statusCode,
-			body: res.body
-		});
+	req.post({
+		url: 'http://localhost:80/api/drive/files/create',
+		formData: {
+			i: user.token,
+			file: fs.createReadStream(path || __dirname + '/resources/Lenna.png')
+		},
+		json: true
+	}, (err, httpResponse, body) => {
+		ok(body);
 	});
 });
 
-export const resetDb = (connection: Connection) => () => new Promise(res => {
-	// APIがなにかレスポンスを返した後に、後処理を行う場合があり、
-	// レスポンスを受け取ってすぐデータベースをリセットすると
-	// その後処理と競合し(テスト自体は合格するものの)エラーがコンソールに出力され
-	// 見た目的に気持ち悪くなるので、後処理が終るのを待つために500msくらい待ってから
-	// データベースをリセットするようにする
-	setTimeout(async () => {
-		await connection.dropDatabase();
-		res();
-	}, 500);
-});
+export function connectStream(user: any, channel: string, listener: any): Promise<WebSocket> {
+	return new Promise((res, rej) => {
+		const ws = new WebSocket(`ws://localhost/streaming?i=${user.token}`);
+
+		ws.on('open', () => {
+			ws.on('message', data => {
+				const msg = JSON.parse(data.toString());
+				if (msg.type == 'channel' && msg.body.id == 'a') {
+					listener(msg.body);
+				} else if (msg.type == 'connected' && msg.body.id == 'a') {
+					res(ws);
+				}
+			});
+
+			ws.send(JSON.stringify({
+				type: 'connect',
+				body: {
+					channel: channel,
+					id: 'a',
+					pong: true
+				}
+			}));
+		});
+	});
+}

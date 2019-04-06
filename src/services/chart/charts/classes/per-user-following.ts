@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Followings, Users } from '../../../../models';
 import { Not } from 'typeorm';
@@ -14,47 +14,56 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserFollowingLog, group?: string): Promise<PerUserFollowingLog> {
+	protected genNewLog(latest: PerUserFollowingLog): DeepPartial<PerUserFollowingLog> {
+		return {
+			local: {
+				followings: {
+					total: latest.local.followings.total,
+				},
+				followers: {
+					total: latest.local.followers.total,
+				}
+			},
+			remote: {
+				followings: {
+					total: latest.remote.followings.total,
+				},
+				followers: {
+					total: latest.remote.followers.total,
+				}
+			}
+		};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<PerUserFollowingLog>> {
 		const [
 			localFollowingsCount,
 			localFollowersCount,
 			remoteFollowingsCount,
 			remoteFollowersCount
-		] = init ? await Promise.all([
+		] = await Promise.all([
 			Followings.count({ followerId: group, followeeHost: null }),
 			Followings.count({ followeeId: group, followerHost: null }),
 			Followings.count({ followerId: group, followeeHost: Not(null) }),
 			Followings.count({ followeeId: group, followerHost: Not(null) })
-		]) : [
-			latest ? latest.local.followings.total : 0,
-			latest ? latest.local.followers.total : 0,
-			latest ? latest.remote.followings.total : 0,
-			latest ? latest.remote.followers.total : 0
-		];
+		]);
 
 		return {
 			local: {
 				followings: {
 					total: localFollowingsCount,
-					inc: 0,
-					dec: 0
 				},
 				followers: {
 					total: localFollowersCount,
-					inc: 0,
-					dec: 0
 				}
 			},
 			remote: {
 				followings: {
 					total: remoteFollowingsCount,
-					inc: 0,
-					dec: 0
 				},
 				followers: {
 					total: remoteFollowersCount,
-					inc: 0,
-					dec: 0
 				}
 			}
 		};

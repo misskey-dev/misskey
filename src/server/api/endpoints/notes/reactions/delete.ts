@@ -16,7 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'reaction-write',
+	kind: 'write:reactions',
 
 	limit: {
 		duration: ms('1hour'),

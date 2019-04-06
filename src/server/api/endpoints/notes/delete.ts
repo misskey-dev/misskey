@@ -19,7 +19,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'note-write',
+	kind: 'write:notes',
 
 	limit: {
 		duration: ms('1hour'),

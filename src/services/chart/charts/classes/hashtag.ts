@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { User } from '../../../../models/entities/user';
 import { SchemaType } from '../../../../misc/schema';
 import { Users } from '../../../../models';
@@ -13,15 +13,13 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: HashtagLog): Promise<HashtagLog> {
-		return {
-			local: {
-				count: 0
-			},
-			remote: {
-				count: 0
-			}
-		};
+	protected genNewLog(latest: HashtagLog): DeepPartial<HashtagLog> {
+		return {};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<HashtagLog>> {
+		return {};
 	}
 
 	@autobind

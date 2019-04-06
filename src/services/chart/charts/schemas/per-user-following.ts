@@ -9,7 +9,7 @@ export const logSchema = {
 			 * フォローしている合計
 			 */
 			total: {
-				type: 'number',
+				type: 'number' as 'number',
 				description: 'フォローしている合計',
 			},
 
@@ -17,7 +17,7 @@ export const logSchema = {
 			 * フォローした数
 			 */
 			inc: {
-				type: 'number',
+				type: 'number' as 'number',
 				description: 'フォローした数',
 			},
 
@@ -25,7 +25,7 @@ export const logSchema = {
 			 * フォロー解除した数
 			 */
 			dec: {
-				type: 'number',
+				type: 'number' as 'number',
 				description: 'フォロー解除した数',
 			},
 		}
@@ -41,7 +41,7 @@ export const logSchema = {
 			 * フォローされている合計
 			 */
 			total: {
-				type: 'number',
+				type: 'number' as 'number',
 				description: 'フォローされている合計',
 			},
 
@@ -49,7 +49,7 @@ export const logSchema = {
 			 * フォローされた数
 			 */
 			inc: {
-				type: 'number',
+				type: 'number' as 'number',
 				description: 'フォローされた数',
 			},
 
@@ -57,7 +57,7 @@ export const logSchema = {
 			 * フォロー解除された数
 			 */
 			dec: {
-				type: 'number',
+				type: 'number' as 'number',
 				description: 'フォロー解除された数',
 			},
 		}

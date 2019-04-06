@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { DriveFiles, Followings, Users, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
@@ -13,7 +13,29 @@ export default class InstanceChart extends Chart<InstanceLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: InstanceLog, group?: string): Promise<InstanceLog> {
+	protected genNewLog(latest: InstanceLog): DeepPartial<InstanceLog> {
+		return {
+			notes: {
+				total: latest.notes.total,
+			},
+			users: {
+				total: latest.users.total,
+			},
+			following: {
+				total: latest.following.total,
+			},
+			followers: {
+				total: latest.followers.total,
+			},
+			drive: {
+				totalFiles: latest.drive.totalFiles,
+				totalUsage: latest.drive.totalUsage,
+			}
+		};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<InstanceLog>> {
 		const [
 			notesCount,
 			usersCount,
@@ -21,55 +43,31 @@ export default class InstanceChart extends Chart<InstanceLog> {
 			followersCount,
 			driveFiles,
 			driveUsage,
-		] = init ? await Promise.all([
+		] = await Promise.all([
 			Notes.count({ userHost: group }),
 			Users.count({ host: group }),
 			Followings.count({ followerHost: group }),
 			Followings.count({ followeeHost: group }),
 			DriveFiles.count({ userHost: group }),
 			DriveFiles.clacDriveUsageOfHost(group),
-		]) : [
-			latest ? latest.notes.total : 0,
-			latest ? latest.users.total : 0,
-			latest ? latest.following.total : 0,
-			latest ? latest.followers.total : 0,
-			latest ? latest.drive.totalFiles : 0,
-			latest ? latest.drive.totalUsage : 0,
-		];
+		]);
 
 		return {
-			requests: {
-				failed: 0,
-				succeeded: 0,
-				received: 0
-			},
 			notes: {
 				total: notesCount,
-				inc: 0,
-				dec: 0
 			},
 			users: {
 				total: usersCount,
-				inc: 0,
-				dec: 0
 			},
 			following: {
 				total: followingCount,
-				inc: 0,
-				dec: 0
 			},
 			followers: {
 				total: followersCount,
-				inc: 0,
-				dec: 0
 			},
 			drive: {
 				totalFiles: driveFiles,
 				totalUsage: driveUsage,
-				incFiles: 0,
-				incUsage: 0,
-				decFiles: 0,
-				decUsage: 0
 			}
 		};
 	}

@@ -64,7 +64,13 @@ If you're still encountering errors about some modules, use node-gyp:
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
 
-*7.* That is it.
+*7.* Init DB
+----------------------------------------------------------------
+``` shell
+npm run init
+```
+
+*8.* That is it.
 ----------------------------------------------------------------
 Well done! Now, you have an environment that run to Misskey.
 

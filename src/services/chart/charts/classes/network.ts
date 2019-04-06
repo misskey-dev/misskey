@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Partial } from '../../core';
+import Chart, { DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { name, schema } from '../schemas/network';
 
@@ -11,19 +11,18 @@ export default class NetworkChart extends Chart<NetworkLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: NetworkLog): Promise<NetworkLog> {
-		return {
-			incomingRequests: 0,
-			outgoingRequests: 0,
-			totalTime: 0,
-			incomingBytes: 0,
-			outgoingBytes: 0
-		};
+	protected genNewLog(latest: NetworkLog): DeepPartial<NetworkLog> {
+		return {};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<NetworkLog>> {
+		return {};
 	}
 
 	@autobind
 	public async update(incomingRequests: number, time: number, incomingBytes: number, outgoingBytes: number) {
-		const inc: Partial<NetworkLog> = {
+		const inc: DeepPartial<NetworkLog> = {
 			incomingRequests: incomingRequests,
 			totalTime: time,
 			incomingBytes: incomingBytes,

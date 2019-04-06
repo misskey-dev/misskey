@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart from '../../core';
+import Chart, { DeepPartial } from '../../core';
 import { User } from '../../../../models/entities/user';
 import { Note } from '../../../../models/entities/note';
 import { SchemaType } from '../../../../misc/schema';
@@ -14,15 +14,13 @@ export default class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserReactionsLog, group?: string): Promise<PerUserReactionsLog> {
-		return {
-			local: {
-				count: 0
-			},
-			remote: {
-				count: 0
-			}
-		};
+	protected genNewLog(latest: PerUserReactionsLog): DeepPartial<PerUserReactionsLog> {
+		return {};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<PerUserReactionsLog>> {
+		return {};
 	}
 
 	@autobind

@@ -24,7 +24,7 @@ export const meta = {
 
 	requireFile: true,
 
-	kind: 'drive-write',
+	kind: 'write:drive',
 
 	params: {
 		folderId: {

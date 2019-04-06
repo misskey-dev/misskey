@@ -23,26 +23,41 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 
 	const csv = await downloadTextFile(file.url);
 
+	let linenum = 0;
+
 	for (const line of csv.trim().split('\n')) {
-		const { username, host } = parseAcct(line.trim());
+		linenum++;
 
-		let target = isSelfHost(host) ? await Users.findOne({
-			host: null,
-			usernameLower: username.toLowerCase()
-		}) : await Users.findOne({
-			host: toDbHost(host),
-			usernameLower: username.toLowerCase()
-		});
+		try {
+			const { username, host } = parseAcct(line.trim());
 
-		if (host == null && target == null) continue;
+			let target = isSelfHost(host) ? await Users.findOne({
+				host: null,
+				usernameLower: username.toLowerCase()
+			}) : await Users.findOne({
+				host: toDbHost(host),
+				usernameLower: username.toLowerCase()
+			});
 
-		if (target == null) {
-			target = await resolveUser(username, host);
+			if (host == null && target == null) continue;
+
+			if (target == null) {
+				target = await resolveUser(username, host);
+			}
+
+			if (target == null) {
+				throw `cannot resolve user: @${username}@${host}`;
+			}
+
+			// skip myself
+			if (target.id === job.data.user.id) continue;
+
+			logger.info(`Follow[${linenum}] ${target.id} ...`);
+
+			follow(user, target);
+		} catch (e) {
+			logger.warn(`Error in line:${linenum} ${e}`);
 		}
-
-		logger.info(`Follow ${target.id} ...`);
-
-		follow(user, target);
 	}
 
 	logger.succ('Imported');

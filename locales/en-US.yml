@@ -224,7 +224,7 @@ common:
   delete: "Delete"
   loading: "Loading"
   ok: "Confirm"
-  cancel: "Exit"
+  cancel: "Cancel"
   update-available-title: "Update available"
   update-available: "A new version of Misskey is now available({newer}, the current version is {current}). Reload the page to apply updates."
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
@@ -483,8 +483,8 @@ common/views/components/user-menu.vue:
   report-abuse: "Report abuse"
   report-abuse-detail: "What kind of nuisance did you encounter?"
   report-abuse-reported: "The issue has been reported to the administrator. Your cooperation is much appreciated."
-  silence: "Mute"
-  unsilence: "Unmute"
+  silence: "Silence"
+  unsilence: "Unsilence"
   suspend: "Suspend"
   unsuspend: "Unsuspend"
 common/views/components/poll.vue:
@@ -839,10 +839,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Cancel"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Messages:"
-desktop/views/components/messaging-window.vue:
-  title: "Messaging"
 desktop/views/components/note-detail.vue:
   private: "Post is private"
   deleted: "Post has been removed"
@@ -992,7 +988,7 @@ desktop/views/components/timeline.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "Messages"
+  messages: "Direct posts"
   list: "Lists"
   hashtag: "Hashtag"
   add-tag-timeline: "Add hashtag cloud"
@@ -1114,6 +1110,7 @@ admin/views/instance.vue:
   disable-global-timeline: "Disable global timeline"
   disabling-timelines-info: "Even if you disable these timelines, the administrator as well as moderators can use them continually."
   enable-emoji-reaction: "Enable pictograms for reactions"
+  use-star-for-reaction-fallback: "Use the star as fallback for unknown reaction"
   invite: "Invite"
   save: "Save"
   saved: "Saved"
@@ -1202,8 +1199,8 @@ admin/views/users.vue:
   unsuspend: "Unsuspend"
   unsuspend-confirm: "Are you sure you want to unsuspend this account?"
   unsuspended: "The user has successfully unsuspended."
-  make-silence: "Mute"
-  unmake-silence: "Unmute"
+  make-silence: "Silence"
+  unmake-silence: "Unsilence"
   verify: "Verify account"
   verify-confirm: "Do you want this to be a verified account?"
   verified: "The account is now being verified"
@@ -1388,8 +1385,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Posts and replies"
   with-media: "Media"
   my-posts: "My posts"
-desktop/views/widgets/messaging.vue:
-  title: "Messaging"
 desktop/views/widgets/notifications.vue:
   title: "Notifications"
 desktop/views/widgets/polls.vue:
@@ -1511,7 +1506,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "Messages"
+  messages: "Direct posts"
 mobile/views/pages/tag.vue:
   no-posts-found: "No posts contains \"{q}\" found."
 mobile/views/pages/widgets.vue:

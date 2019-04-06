@@ -12,25 +12,14 @@
  * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
 
+process.env.NODE_ENV = 'test';
+
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, react, uploadFile } from './utils';
-import { Note } from '../built/models/entities/note';
-const initDb = require('../built/db/postgre.js').initDb;
-
-//#region process
-Error.stackTraceLimit = Infinity;
-
-// During the test the env variable is set to test
-process.env.NODE_ENV = 'test';
-
-// Display detail of unhandled promise rejection
-process.on('unhandledRejection', console.dir);
-//#endregion
 
 describe('API', () => {
 	let p: childProcess.ChildProcess;
-	let Notes: any;
 
 	beforeEach(done => {
 		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
@@ -39,10 +28,7 @@ describe('API', () => {
 		});
 		p.on('message', message => {
 			if (message === 'ok') {
-				initDb(true).then(connection => {
-					Notes = connection.getRepository(Note);
-					done();
-				});
+				done();
 			}
 		});
 	});
@@ -218,338 +204,6 @@ describe('API', () => {
 				userId: 'kyoppie'
 			});
 			assert.strictEqual(res.status, 400);
-		}));
-	});
-
-	describe('notes/create', () => {
-		it('投稿できる', async(async () => {
-			const me = await signup();
-			const post = {
-				text: 'test'
-			};
-
-			const res = await request('/notes/create', post, me);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.text, post.text);
-		}));
-
-		it('ファイルを添付できる', async(async () => {
-			const me = await signup();
-			const file = await uploadFile(me);
-
-			const res = await request('/notes/create', {
-				fileIds: [file.id]
-			}, me);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.fileIds, [file.id]);
-		}));
-
-		it('他人のファイルは無視', async(async () => {
-			const me = await signup({ username: 'alice' });
-			const bob = await signup({ username: 'bob' });
-			const file = await uploadFile(bob);
-
-			const res = await request('/notes/create', {
-				text: 'test',
-				fileIds: [file.id]
-			}, me);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.fileIds, []);
-		}));
-
-		it('存在しないファイルは無視', async(async () => {
-			const me = await signup();
-
-			const res = await request('/notes/create', {
-				text: 'test',
-				fileIds: ['000000000000000000000000']
-			}, me);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.fileIds, []);
-		}));
-
-		it('不正なファイルIDで怒られる', async(async () => {
-			const me = await signup();
-			const res = await request('/notes/create', {
-				fileIds: ['kyoppie']
-			}, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('返信できる', async(async () => {
-			const bob = await signup({ username: 'bob' });
-			const bobPost = await post(bob, {
-				text: 'foo'
-			});
-
-			const alice = await signup({ username: 'alice' });
-			const alicePost = {
-				text: 'bar',
-				replyId: bobPost.id
-			};
-
-			const res = await request('/notes/create', alicePost, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.text, alicePost.text);
-			assert.strictEqual(res.body.createdNote.replyId, alicePost.replyId);
-			assert.strictEqual(res.body.createdNote.reply.text, bobPost.text);
-		}));
-
-		it('renoteできる', async(async () => {
-			const bob = await signup({ username: 'bob' });
-			const bobPost = await post(bob, {
-				text: 'test'
-			});
-
-			const alice = await signup({ username: 'alice' });
-			const alicePost = {
-				renoteId: bobPost.id
-			};
-
-			const res = await request('/notes/create', alicePost, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.renoteId, alicePost.renoteId);
-			assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
-		}));
-
-		it('引用renoteできる', async(async () => {
-			const bob = await signup({ username: 'bob' });
-			const bobPost = await post(bob, {
-				text: 'test'
-			});
-
-			const alice = await signup({ username: 'alice' });
-			const alicePost = {
-				text: 'test',
-				renoteId: bobPost.id
-			};
-
-			const res = await request('/notes/create', alicePost, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.text, alicePost.text);
-			assert.strictEqual(res.body.createdNote.renoteId, alicePost.renoteId);
-			assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
-		}));
-
-		it('文字数ぎりぎりで怒られない', async(async () => {
-			const me = await signup();
-			const post = {
-				text: '!'.repeat(1000)
-			};
-			const res = await request('/notes/create', post, me);
-			assert.strictEqual(res.status, 200);
-		}));
-
-		it('文字数オーバーで怒られる', async(async () => {
-			const me = await signup();
-			const post = {
-				text: '!'.repeat(1001)
-			};
-			const res = await request('/notes/create', post, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('存在しないリプライ先で怒られる', async(async () => {
-			const me = await signup();
-			const post = {
-				text: 'test',
-				replyId: '000000000000000000000000'
-			};
-			const res = await request('/notes/create', post, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('存在しないrenote対象で怒られる', async(async () => {
-			const me = await signup();
-			const post = {
-				renoteId: '000000000000000000000000'
-			};
-			const res = await request('/notes/create', post, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('不正なリプライ先IDで怒られる', async(async () => {
-			const me = await signup();
-			const post = {
-				text: 'test',
-				replyId: 'foo'
-			};
-			const res = await request('/notes/create', post, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('不正なrenote対象IDで怒られる', async(async () => {
-			const me = await signup();
-			const post = {
-				renoteId: 'foo'
-			};
-			const res = await request('/notes/create', post, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('投票を添付できる', async(async () => {
-			const me = await signup();
-
-			const res = await request('/notes/create', {
-				text: 'test',
-				poll: {
-					choices: ['foo', 'bar']
-				}
-			}, me);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.poll != null, true);
-		}));
-
-		it('投票の選択肢が無くて怒られる', async(async () => {
-			const me = await signup();
-			const res = await request('/notes/create', {
-				poll: {}
-			}, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('投票の選択肢が無くて怒られる (空の配列)', async(async () => {
-			const me = await signup();
-			const res = await request('/notes/create', {
-				poll: {
-					choices: []
-				}
-			}, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('投票の選択肢が1つで怒られる', async(async () => {
-			const me = await signup();
-			const res = await request('/notes/create', {
-				poll: {
-					choices: ['Strawberry Pasta']
-				}
-			}, me);
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('投票できる', async(async () => {
-			const me = await signup();
-
-			const { body } = await request('/notes/create', {
-				text: 'test',
-				poll: {
-					choices: ['sakura', 'izumi', 'ako']
-				}
-			}, me);
-
-			const res = await request('/notes/polls/vote', {
-				noteId: body.createdNote.id,
-				choice: 1
-			}, me);
-
-			assert.strictEqual(res.status, 204);
-		}));
-
-		it('複数投票できない', async(async () => {
-			const me = await signup();
-
-			const { body } = await request('/notes/create', {
-				text: 'test',
-				poll: {
-					choices: ['sakura', 'izumi', 'ako']
-				}
-			}, me);
-
-			await request('/notes/polls/vote', {
-				noteId: body.createdNote.id,
-				choice: 0
-			}, me);
-
-			const res = await request('/notes/polls/vote', {
-				noteId: body.createdNote.id,
-				choice: 2
-			}, me);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('許可されている場合は複数投票できる', async(async () => {
-			const me = await signup();
-
-			const { body } = await request('/notes/create', {
-				text: 'test',
-				poll: {
-					choices: ['sakura', 'izumi', 'ako'],
-					multiple: true
-				}
-			}, me);
-
-			await request('/notes/polls/vote', {
-				noteId: body.createdNote.id,
-				choice: 0
-			}, me);
-
-			await request('/notes/polls/vote', {
-				noteId: body.createdNote.id,
-				choice: 1
-			}, me);
-
-			const res = await request('/notes/polls/vote', {
-				noteId: body.createdNote.id,
-				choice: 2
-			}, me);
-
-			assert.strictEqual(res.status, 204);
-		}));
-
-		it('締め切られている場合は投票できない', async(async () => {
-			const me = await signup();
-
-			const { body } = await request('/notes/create', {
-				text: 'test',
-				poll: {
-					choices: ['sakura', 'izumi', 'ako'],
-					expiredAfter: 1
-				}
-			}, me);
-
-			await new Promise(x => setTimeout(x, 2));
-
-			const res = await request('/notes/polls/vote', {
-				noteId: body.createdNote.id,
-				choice: 1
-			}, me);
-
-			assert.strictEqual(res.status, 400);
-		}));
-
-		it('同じユーザーに複数メンションしても内部的にまとめられる', async(async () => {
-			const alice = await signup({ username: 'alice' });
-			const bob = await signup({ username: 'bob' });
-			const post = {
-				text: '@bob @bob @bob yo'
-			};
-
-			const res = await request('/notes/create', post, alice);
-
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.createdNote.text, post.text);
-
-			const noteDoc = await Notes.findOne(res.body.createdNote.id);
-			assert.deepStrictEqual(noteDoc.mentions, [bob.id]);
 		}));
 	});
 
@@ -1126,6 +780,20 @@ describe('API', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
+		}));
+
+		it('フォルダが循環するような構造にできない(自身)', async(async () => {
+			const arisugawa = await signup({ username: 'arisugawa' });
+			const folderA = (await request('/drive/folders/create', {
+				name: 'test'
+			}, arisugawa)).body;
+
+			const res = await request('/drive/folders/update', {
+				folderId: folderA.id,
+				parentId: folderA.id
+			}, arisugawa);
+
+			expect(res).have.status(400);
 		}));
 
 		it('存在しない親フォルダを設定できない', async(async () => {

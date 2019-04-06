@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj } from '../../core';
+import Chart, { Obj, DeepPartial } from '../../core';
 import { User } from '../../../../models/entities/user';
 import { SchemaType } from '../../../../misc/schema';
 import { Notes } from '../../../../models';
@@ -14,22 +14,20 @@ export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	}
 
 	@autobind
-	protected async getTemplate(init: boolean, latest?: PerUserNotesLog, group?: string): Promise<PerUserNotesLog> {
-		const [count] = init ? await Promise.all([
+	protected genNewLog(latest: PerUserNotesLog): DeepPartial<PerUserNotesLog> {
+		return {
+			total: latest.total,
+		};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<PerUserNotesLog>> {
+		const [count] = await Promise.all([
 			Notes.count({ userId: group }),
-		]) : [
-			latest ? latest.total : 0
-		];
+		]);
 
 		return {
 			total: count,
-			inc: 0,
-			dec: 0,
-			diffs: {
-				normal: 0,
-				reply: 0,
-				renote: 0
-			}
 		};
 	}
 

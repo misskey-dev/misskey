@@ -11,7 +11,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-read'
+	kind: 'read:following'
 };
 
 export default define(meta, async (ps, user) => {

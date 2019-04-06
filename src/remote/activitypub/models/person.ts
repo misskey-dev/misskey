@@ -124,21 +124,6 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	logger.info(`Creating the Person: ${person.id}`);
 
-	const [followersCount = 0, followingCount = 0, notesCount = 0] = await Promise.all([
-		resolver.resolve(person.followers).then(
-			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
-			() => undefined
-		),
-		resolver.resolve(person.following).then(
-			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
-			() => undefined
-		),
-		resolver.resolve(person.outbox).then(
-			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
-			() => undefined
-		)
-	]);
-
 	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
 
 	const { fields, services } = analyzeAttachments(person.attachment);
@@ -154,12 +139,9 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			id: genId(),
 			avatarId: null,
 			bannerId: null,
-			createdAt: Date.parse(person.published) || null,
+			createdAt: Date.parse(person.published) || new Date(),
 			lastFetchedAt: new Date(),
 			description: fromHtml(person.summary),
-			followersCount,
-			followingCount,
-			notesCount,
 			name: person.name,
 			isLocked: person.manuallyApprovesFollowers,
 			username: person.preferredUsername,
@@ -176,7 +158,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			tags,
 			isBot,
 			isCat: (person as any).isCat === true
-		}) as IRemoteUser;
+		} as Partial<User>) as IRemoteUser;
 
 		await UserPublickeys.save({
 			id: genId(),
@@ -310,21 +292,6 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 
 	logger.info(`Updating the Person: ${person.id}`);
 
-	const [followersCount = 0, followingCount = 0, notesCount = 0] = await Promise.all([
-		resolver.resolve(person.followers).then(
-			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
-			() => undefined
-		),
-		resolver.resolve(person.following).then(
-			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
-			() => undefined
-		),
-		resolver.resolve(person.outbox).then(
-			resolved => isCollectionOrOrderedCollection(resolved) ? resolved.totalItems : undefined,
-			() => undefined
-		)
-	]);
-
 	// アイコンとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<DriveFile>([
 		person.icon,
@@ -354,9 +321,6 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		featured: person.featured,
 		emojis: emojiNames,
 		description: fromHtml(person.summary),
-		followersCount,
-		followingCount,
-		notesCount,
 		name: person.name,
 		url: person.url,
 		endpoints: person.endpoints,

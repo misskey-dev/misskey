@@ -7,7 +7,7 @@ common:
   about: "Misskey를 찾아주셔서 감사합니다. Misskey는 지구에서 태어난 <b>분산 마이크로 블로그 SNS </b> 입니다. Fediverse(다양한 SNS로 구성되는 우주)에 존재하는 다른 SNS와 상호 연결되어 있습니다. 잠시 도시의 번잡함에서 벗어나 새로운 인터넷에 다이브 해 보지 않겠습니까."
   intro:
     title: "Misskey란?"
-    about: "Misskey는 오픈소스 <b>분산형 마이크로블로그 SNS</b>입니다. 다양하고 폭넓게 커스터마이징할 수 있는 UI, 글에 대한 반응, 파일을 관리할 수 있는 드라이브 등의 선진적인 기능을 갖추고 있습니다. 더하여 Fediverse라고 부르는 네트워크에 연결할 수 있어 다른 SNS와도 주고받을 수 있습니다. 예를 들자면, 당신이 무언가를 게시하면, 해당 게시물은 Misskey 뿐만 아니라 다른 SNS에도 전해집니다. 살짝 어떤 행성에서 다른 행성으로 전파를 발신하고 있는 모습을 상상해주세요."
+    about: "Misskey는 오픈소스 <b>분산형 마이크로블로그 SNS</b>입니다. 다양하고 폭넓게 커스터마이징할 수 있는 UI, 글에 대한 리액션, 파일을 관리할 수 있는 드라이브 등의 선진적인 기능을 갖추고 있습니다. 더하여 Fediverse라고 부르는 네트워크에 연결할 수 있어 다른 SNS와도 주고받을 수 있습니다. 예를 들자면, 당신이 무언가를 게시하면, 해당 게시물은 Misskey 뿐만 아니라 다른 SNS에도 전해집니다. 살짝 어떤 행성에서 다른 행성으로 전파를 발신하고 있는 모습을 상상해주세요."
     features: "특징"
     rich-contents: "글"
     rich-contents-desc: "자신의 생각, 화제의 사건, 모두와 공유하고 싶은 것을 올려주세요. 필요한 경우 다양한 스타일을 사용하여 글을 장식하거나 마음에 드는 이미지, 영상 등의 파일이나 투표를 올리는 것도 가능합니다."
@@ -520,7 +520,7 @@ common/views/components/poll-editor.vue:
   hour: "시간"
   day: "일"
 common/views/components/reaction-picker.vue:
-  choose-reaction: "반응 선택"
+  choose-reaction: "리액션 선택"
 common/views/components/emoji-picker.vue:
   custom-emoji: "커스텀 이모지"
   people: "사람들"
@@ -839,10 +839,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "취소"
   ok: "확인"
-desktop/views/components/messaging-room-window.vue:
-  title: "메시지:"
-desktop/views/components/messaging-window.vue:
-  title: "메시지"
 desktop/views/components/note-detail.vue:
   private: "이 글은 비공개입니다"
   deleted: "이 글은 삭제되었습니다"
@@ -992,7 +988,7 @@ desktop/views/components/timeline.vue:
   hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
-  messages: "메시지"
+  messages: "다이렉트 게시글"
   list: "리스트"
   hashtag: "해시태그"
   add-tag-timeline: "해시태그 추가"
@@ -1113,6 +1109,8 @@ admin/views/instance.vue:
   disable-local-timeline: "로컬 타임라인 비활성화"
   disable-global-timeline: "글로벌 타임라인 비활성화"
   disabling-timelines-info: "이 타임라인들을 비활성화해도 관리자 및 모더레이터는 계속 사용할 수 있습니다."
+  enable-emoji-reaction: "리액션에 이모지를 사용할 수 있게 함"
+  use-star-for-reaction-fallback: "알 수 없는 리액션을 star로 대체하여 사용"
   invite: "초대"
   save: "저장"
   saved: "저장하였습니다"
@@ -1387,8 +1385,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "글과 답글"
   with-media: "미디어"
   my-posts: "내 글"
-desktop/views/widgets/messaging.vue:
-  title: "메시지"
 desktop/views/widgets/notifications.vue:
   title: "알림"
 desktop/views/widgets/polls.vue:
@@ -1510,7 +1506,7 @@ mobile/views/pages/home.vue:
   hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
-  messages: "메시지"
+  messages: "다이렉트 게시글"
 mobile/views/pages/tag.vue:
   no-posts-found: "해시태그 \"{q}\"가 붙은 글을 찾을 수 없습니다."
 mobile/views/pages/widgets.vue:

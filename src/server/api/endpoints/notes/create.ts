@@ -35,7 +35,7 @@ export const meta = {
 		max: 300
 	},
 
-	kind: 'note-write',
+	kind: 'write:notes',
 
 	params: {
 		visibility: {

@@ -12,7 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'notification-write'
+	kind: 'write:notifications'
 };
 
 export default define(meta, async (ps, user) => {

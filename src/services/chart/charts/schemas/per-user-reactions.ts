@@ -3,7 +3,7 @@ export const logSchema = {
 	 * フォローしている合計
 	 */
 	count: {
-		type: 'number',
+		type: 'number' as 'number',
 		description: 'リアクションされた数',
 	},
 };
