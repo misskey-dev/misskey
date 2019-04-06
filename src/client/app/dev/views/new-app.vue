@@ -20,6 +20,7 @@
 						<b-form-checkbox value="write:notes">{{ $t('write:notes') }}</b-form-checkbox>
 						<b-form-checkbox value="read:reactions">{{ $t('read:reactions') }}</b-form-checkbox>
 						<b-form-checkbox value="write:reactions">{{ $t('write:reactions') }}</b-form-checkbox>
+						<b-form-checkbox value="read:following">{{ $t('read:following') }}</b-form-checkbox>
 						<b-form-checkbox value="write:following">{{ $t('write:following') }}</b-form-checkbox>
 						<b-form-checkbox value="read:mutes">{{ $t('read:mutes') }}</b-form-checkbox>
 						<b-form-checkbox value="write:mutes">{{ $t('write:mutes') }}</b-form-checkbox>
