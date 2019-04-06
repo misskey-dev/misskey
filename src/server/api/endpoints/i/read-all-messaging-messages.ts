@@ -12,7 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 	}

@@ -8,7 +8,7 @@ export const meta = {
 
 	tags: ['drive'],
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		name: {

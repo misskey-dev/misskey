@@ -12,7 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		md5: {

@@ -10,7 +10,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-read',
+	kind: 'read:account',
 
 	res: {
 		type: 'array',

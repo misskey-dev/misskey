@@ -18,7 +18,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-write',
+	kind: 'write:drive',
 
 	params: {
 		name: {
