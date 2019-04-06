@@ -40,19 +40,18 @@ describe('Streaming', () => {
 	it('mention event', () => new Promise(async done => {
 		const alice = await signup({ username: 'alice' });
 		const bob = await signup({ username: 'bob' });
-		const aliceNote = {
-			text: 'foo @bob bar'
-		};
 
 		const ws = await connectStream(bob, 'main', ({ type, body }) => {
 			if (type == 'mention') {
-				assert.deepStrictEqual(body.text, aliceNote.text);
+				assert.deepStrictEqual(body.userId, alice.id);
 				ws.close();
 				done();
 			}
 		});
 
-		request('/notes/create', aliceNote, alice);
+		post(alice, {
+			text: 'foo @bob bar'
+		});
 	}));
 
 	it('renote event', () => new Promise(async done => {
@@ -70,12 +69,12 @@ describe('Streaming', () => {
 			}
 		});
 
-		request('/notes/create', {
+		post(alice, {
 			renoteId: bobNote.id
-		}, alice);
+		});
 	}));
 
-	describe('HomeTimeline', () => {
+	describe('Home Timeline', () => {
 		it('自分の投稿が流れる', () => new Promise(async done => {
 			const post = {
 				text: 'foo'
@@ -123,6 +122,64 @@ describe('Streaming', () => {
 			let fired = false;
 
 			const ws = await connectStream(alice, 'homeTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+	});
+
+	describe('Local Timeline', () => {
+		it('自分の投稿が流れる', () => new Promise(async done => {
+			const me = await signup();
+
+			const ws = await connectStream(me, 'localTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, me.userId);
+					ws.close();
+					done();
+				}
+			});
+
+			post(me, {
+				text: 'foo'
+			});
+		}));
+
+		it('フォローしていないローカルユーザーの投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.userId);
+					ws.close();
+					done();
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+		}));
+
+		it('リモートユーザーの投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob', host: 'example.com' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					fired = true;
 				}
