@@ -23,6 +23,7 @@ common:
   enter-password: "Wprowadź Hasło"
   2fa: "Uwierzytelnienie dwuetapowe"
   customize-home: "Dostosuj stronę główną"
+  featured-notes: "Wyróżnienia"
   dark-mode: "Tryb ciemny"
   signin: "Zaloguj się"
   signup: "Rejestracja"
