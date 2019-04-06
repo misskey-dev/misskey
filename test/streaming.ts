@@ -37,24 +37,6 @@ describe('Streaming', () => {
 		p.kill();
 	});
 
-	it('投稿がタイムラインに流れる', () => new Promise(async done => {
-		const post = {
-			text: 'foo'
-		};
-
-		const me = await signup();
-
-		const ws = await connectStream(me, 'homeTimeline', ({ type, body }) => {
-			if (type == 'note') {
-				assert.deepStrictEqual(body.text, post.text);
-				ws.close();
-				done();
-			}
-		});
-
-		request('/notes/create', post, me);
-	}));
-
 	it('mention event', () => new Promise(async done => {
 		const alice = await signup({ username: 'alice' });
 		const bob = await signup({ username: 'bob' });
@@ -92,4 +74,69 @@ describe('Streaming', () => {
 			renoteId: bobNote.id
 		}, alice);
 	}));
+
+	describe('HomeTimeline', () => {
+		it('自分の投稿が流れる', () => new Promise(async done => {
+			const post = {
+				text: 'foo'
+			};
+
+			const me = await signup();
+
+			const ws = await connectStream(me, 'homeTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.text, post.text);
+					ws.close();
+					done();
+				}
+			});
+
+			request('/notes/create', post, me);
+		}));
+
+		it('フォローしているユーザーの投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'homeTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					ws.close();
+					done();
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+		}));
+
+		it('フォローしていないユーザーの投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'homeTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+	});
 });
