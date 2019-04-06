@@ -22,7 +22,7 @@ export const request = async (endpoint: string, params: any, me?: any): Promise<
 	});
 
 	const status = res.status;
-	const body = await res.json().catch(console.error);
+	const body = res.status !== 204 ? await res.json().catch(console.error) : null;
 
 	return {
 		body, status
@@ -70,7 +70,7 @@ export const uploadFile = (user: any, path?: string): Promise<any> => new Promis
 	});
 });
 
-export function connectStream(user: any, channel: string, listener: any): Promise<WebSocket> {
+export function connectStream(user: any, channel: string, listener: any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
 		const ws = new WebSocket(`ws://localhost/streaming?i=${user.token}`);
 
@@ -89,7 +89,8 @@ export function connectStream(user: any, channel: string, listener: any): Promis
 				body: {
 					channel: channel,
 					id: 'a',
-					pong: true
+					pong: true,
+					params: params
 				}
 			}));
 		});

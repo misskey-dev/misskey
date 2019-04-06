@@ -196,4 +196,66 @@ describe('Streaming', () => {
 			}, 5000);
 		}));
 	});
+
+	describe('UserList Timeline', () => {
+		it('リストに入れているユーザーの投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// リスト作成
+			const list = await request('/users/lists/create', {
+				title: 'my list'
+			}, alice).then(x => x.body);
+
+			// Alice が Bob をリスイン
+			await request('/users/lists/push', {
+				listId: list.id,
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'userList', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					ws.close();
+					done();
+				}
+			}, {
+				listId: list.id
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+		}));
+
+		it('リストに入れていないユーザーの投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// リスト作成
+			const list = await request('/users/lists/create', {
+				title: 'my list'
+			}, alice).then(x => x.body);
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'userList', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			}, {
+				listId: list.id
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+	});
 });
