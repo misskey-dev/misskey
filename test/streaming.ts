@@ -14,29 +14,27 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as http from 'http';
-import * as WebSocket from 'ws';
 import * as assert from 'assert';
-import { _signup, _request, _uploadFile, _post, _react, resetDb } from './utils';
-
-const app = require('../built/server/api').default;
-const server = require('../built/server').startServer();
-const db = require('../built/db/mongodb').default;
-
-const apiServer = http.createServer(app.callback());
-
-//#region Utilities
-const request = _request(apiServer);
-const signup = _signup(request);
-const post = _post(request);
-//#endregion
+import * as childProcess from 'child_process';
+import { connectStream, signup, request, post } from './utils';
 
 describe('Streaming', () => {
-	// Reset database each test
-	beforeEach(resetDb(db));
+	let p: childProcess.ChildProcess;
 
-	after(() => {
-		server.close();
+	beforeEach(done => {
+		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
+			stdio: ['inherit', 'inherit', 'ipc'],
+			env: { NODE_ENV: 'test' }
+		});
+		p.on('message', message => {
+			if (message === 'ok') {
+				done();
+			}
+		});
+	});
+
+	afterEach(() => {
+		p.kill();
 	});
 
 	it('投稿がタイムラインに流れる', () => new Promise(async done => {
@@ -45,31 +43,16 @@ describe('Streaming', () => {
 		};
 
 		const me = await signup();
-		const ws = new WebSocket(`ws://localhost/streaming?i=${me.token}`);
 
-		ws.on('open', () => {
-			ws.on('message', data => {
-				const msg = JSON.parse(data.toString());
-				if (msg.type == 'channel' && msg.body.id == 'a') {
-					if (msg.body.type == 'note') {
-						assert.deepStrictEqual(msg.body.body.text, post.text);
-						ws.close();
-						done();
-					}
-				} else if (msg.type == 'connected' && msg.body.id == 'a') {
-					request('/notes/create', post, me);
-				}
-			});
-
-			ws.send(JSON.stringify({
-				type: 'connect',
-				body: {
-					channel: 'homeTimeline',
-					id: 'a',
-					pong: true
-				}
-			}));
+		const ws = await connectStream(me, 'homeTimeline', ({ type, body }) => {
+			if (type == 'note') {
+				assert.deepStrictEqual(body.text, post.text);
+				ws.close();
+				done();
+			}
 		});
+
+		request('/notes/create', post, me);
 	}));
 
 	it('mention event', () => new Promise(async done => {
@@ -79,31 +62,15 @@ describe('Streaming', () => {
 			text: 'foo @bob bar'
 		};
 
-		const ws = new WebSocket(`ws://localhost/streaming?i=${bob.token}`);
-
-		ws.on('open', () => {
-			ws.on('message', data => {
-				const msg = JSON.parse(data.toString());
-				if (msg.type == 'channel' && msg.body.id == 'a') {
-					if (msg.body.type == 'mention') {
-						assert.deepStrictEqual(msg.body.body.text, aliceNote.text);
-						ws.close();
-						done();
-					}
-				} else if (msg.type == 'connected' && msg.body.id == 'a') {
-					request('/notes/create', aliceNote, alice);
-				}
-			});
-
-			ws.send(JSON.stringify({
-				type: 'connect',
-				body: {
-					channel: 'main',
-					id: 'a',
-					pong: true
-				}
-			}));
+		const ws = await connectStream(bob, 'main', ({ type, body }) => {
+			if (type == 'mention') {
+				assert.deepStrictEqual(body.text, aliceNote.text);
+				ws.close();
+				done();
+			}
 		});
+
+		request('/notes/create', aliceNote, alice);
 	}));
 
 	it('renote event', () => new Promise(async done => {
@@ -113,32 +80,16 @@ describe('Streaming', () => {
 			text: 'foo'
 		});
 
-		const ws = new WebSocket(`ws://localhost/streaming?i=${bob.token}`);
-
-		ws.on('open', () => {
-			ws.on('message', data => {
-				const msg = JSON.parse(data.toString());
-				if (msg.type == 'channel' && msg.body.id == 'a') {
-					if (msg.body.type == 'renote') {
-						assert.deepStrictEqual(msg.body.body.renoteId, bobNote.id);
-						ws.close();
-						done();
-					}
-				} else if (msg.type == 'connected' && msg.body.id == 'a') {
-					request('/notes/create', {
-						renoteId: bobNote.id
-					}, alice);
-				}
-			});
-
-			ws.send(JSON.stringify({
-				type: 'connect',
-				body: {
-					channel: 'main',
-					id: 'a',
-					pong: true
-				}
-			}));
+		const ws = await connectStream(bob, 'main', ({ type, body }) => {
+			if (type == 'renote') {
+				assert.deepStrictEqual(body.renoteId, bobNote.id);
+				ws.close();
+				done();
+			}
 		});
+
+		request('/notes/create', {
+			renoteId: bobNote.id
+		}, alice);
 	}));
 });

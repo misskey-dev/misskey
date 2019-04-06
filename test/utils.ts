@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as WebSocket from 'ws';
-import { Connection } from 'typeorm';
 const fetch = require('node-fetch');
 import * as req from 'request';
 
@@ -23,7 +22,7 @@ export const request = async (endpoint: string, params: any, me?: any): Promise<
 	});
 
 	const status = res.status;
-	const body = await res.json().catch(() => null);
+	const body = await res.json().catch(console.error);
 
 	return {
 		body, status
