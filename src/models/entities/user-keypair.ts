@@ -18,7 +18,7 @@ export class UserKeypair {
 	public user: User | null;
 
 	@Column('varchar', {
-		length: 2048,
+		length: 4096,
 	})
 	public keyPem: string;
 }
