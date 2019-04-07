@@ -17,9 +17,12 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { connectStream, signup, request, post } from './utils';
+import { Following } from '../built/models/entities/following';
+const initDb = require('../built/db/postgre.js').initDb;
 
 describe('Streaming', () => {
 	let p: childProcess.ChildProcess;
+	let Followings: any;
 
 	beforeEach(done => {
 		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
@@ -29,7 +32,10 @@ describe('Streaming', () => {
 		p.on('message', message => {
 			if (message === 'ok') {
 				(p.channel as any).onread = () => {};
-				done();
+				initDb(true).then(async connection => {
+					Followings = connection.getRepository(Following);
+					done();
+				});
 			}
 		});
 	});
@@ -37,6 +43,21 @@ describe('Streaming', () => {
 	afterEach(() => {
 		p.kill();
 	});
+
+	const follow = async (follower, followee) => {
+		await Followings.save({
+			id: 'a',
+			createdAt: new Date(),
+			followerId: follower.id,
+			followeeId: followee.id,
+			followerHost: follower.host,
+			followerInbox: null,
+			followerSharedInbox: null,
+			followeeHost: followee.host,
+			followeeInbox: null,
+			followeeSharedInbox: null
+		});
+	};
 
 	it('mention event', () => new Promise(async done => {
 		const alice = await signup({ username: 'alice' });
@@ -265,9 +286,7 @@ describe('Streaming', () => {
 			const bob = await signup({ username: 'bob', host: 'example.com' });
 
 			// Alice が Bob をフォロー
-			await request('/following/create', {
-				userId: bob.id
-			}, alice);
+			await follow(alice, bob);
 
 			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
 				if (type == 'note') {
