@@ -883,8 +883,6 @@ admin/views/instance.vue:
   save: "Zapisz"
   saved: "Zapisano"
   user-recommendation-config: "Polecani użytkownicy"
-  external-user-recommendation-engine: "Silnik"
-  external-user-recommendation-engine-desc: "Np: https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
   email: "Adres e-mail"
 admin/views/charts.vue:
   notes: "Wpisy"
