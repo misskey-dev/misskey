@@ -130,14 +130,14 @@ async function fetchAny(uri: string) {
 }
 
 async function mergePack(user: User, note: Note) {
-	if (user !== null) {
+	if (user != null) {
 		return {
 			type: 'User',
 			object: await Users.pack(user, null, { detail: true })
 		};
 	}
 
-	if (note !== null) {
+	if (note != null) {
 		return {
 			type: 'Note',
 			object: await Notes.pack(note, null, { detail: true })
