@@ -768,7 +768,6 @@ admin/views/instance.vue:
   recaptcha-secret-key: "clave secreta reCAPTCHA"
   invite: "Invitar"
   save: "Guardar"
-  external-user-recommendation-timeout: "Tiempo de espera"
   email: "Correo electrónico"
   smtp-host: "Host SMTP"
   smtp-port: "Puerto SMTP"
