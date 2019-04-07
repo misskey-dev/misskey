@@ -1,5 +1,5 @@
 import { Object } from '../type';
-import { IRemoteUser } from '../../../models/user';
+import { IRemoteUser } from '../../../models/entities/user';
 import create from './create';
 import performDeleteActivity from './delete';
 import performUpdateActivity from './update';

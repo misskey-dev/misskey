@@ -221,7 +221,7 @@ export const schemas = {
 			},
 			type: {
 				type: 'string',
-				enum: ['follow', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote'],
+				enum: ['follow', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote'],
 				description: 'The type of the notification.'
 			},
 		},
@@ -258,7 +258,7 @@ export const schemas = {
 				description: 'The MD5 hash of this Drive file.',
 				example: '15eca7fba0480996e2245f5185bf39f2'
 			},
-			datasize: {
+			size: {
 				type: 'number',
 				description: 'The size of this Drive file. (bytes)',
 				example: 51469
@@ -275,7 +275,7 @@ export const schemas = {
 				description: 'Whether this Drive file is sensitive.',
 			},
 		},
-		required: ['id', 'createdAt', 'name', 'type', 'datasize', 'md5']
+		required: ['id', 'createdAt', 'name', 'type', 'size', 'md5']
 	},
 
 	DriveFolder: {
@@ -316,6 +316,40 @@ export const schemas = {
 			},
 		},
 		required: ['id', 'createdAt', 'name']
+	},
+
+	Following: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'id',
+				description: 'The unique identifier for this following.',
+				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			},
+			createdAt: {
+				type: 'string',
+				format: 'date-time',
+				description: 'The date that the following was created.'
+			},
+			followeeId: {
+				type: 'string',
+				format: 'id',
+			},
+			followee: {
+				$ref: '#/components/schemas/User',
+				description: 'The followee.'
+			},
+			followerId: {
+				type: 'string',
+				format: 'id',
+			},
+			follower: {
+				$ref: '#/components/schemas/User',
+				description: 'The follower.'
+			},
+		},
+		required: ['id', 'createdAt', 'followeeId', 'followerId']
 	},
 
 	Muting: {

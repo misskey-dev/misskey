@@ -7,10 +7,11 @@ import * as promiseAny from 'promise-any';
 import { toUnicode } from 'punycode';
 
 import config from '../../config';
-import { ILocalUser } from '../../models/user';
+import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import Instance from '../../models/instance';
+import { UserKeypairs } from '../../models';
+import fetchMeta from '../../misc/fetch-meta';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -23,8 +24,8 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instance.findOne({ host: toUnicode(host) });
-	if (instance && instance.isBlocked) return;
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(toUnicode(host))) return;
 
 	const data = JSON.stringify(object);
 
@@ -34,6 +35,10 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	const addr = await resolveAddr(hostname);
 	if (!addr) return;
+
+	const keypair = await UserKeypairs.findOne({
+		userId: user.id
+	});
 
 	const _ = new Promise((resolve, reject) => {
 		const req = request({
@@ -62,8 +67,8 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 		sign(req, {
 			authorizationHeaderName: 'Signature',
-			key: user.keypair,
-			keyId: `${config.url}/users/${user._id}/publickey`,
+			key: keypair.keyPem,
+			keyId: `${config.url}/users/${user.id}/publickey`,
 			headers: ['date', 'host', 'digest']
 		});
 

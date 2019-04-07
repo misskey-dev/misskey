@@ -1,20 +1,21 @@
 import { toUnicode, toASCII } from 'punycode';
-import User, { IUser, IRemoteUser } from '../models/user';
 import webFinger from './webfinger';
 import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';
 import { URL } from 'url';
 import { remoteLogger } from './logger';
 import chalk from 'chalk';
+import { User, IRemoteUser } from '../models/entities/user';
+import { Users } from '../models';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export default async (username: string, _host: string, option?: any, resync?: boolean): Promise<IUser> => {
+export default async (username: string, _host: string, option?: any, resync = false): Promise<User> => {
 	const usernameLower = username.toLowerCase();
 
 	if (_host == null) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await User.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null });
 	}
 
 	const configHostAscii = toASCII(config.host).toLowerCase();
@@ -25,14 +26,14 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 
 	if (configHost == host) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await User.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null });
 	}
 
-	const user = await User.findOne({ usernameLower, host }, option);
+	const user = await Users.findOne({ usernameLower, host }, option);
 
 	const acctLower = `${usernameLower}@${hostAscii}`;
 
-	if (user === null) {
+	if (user == null) {
 		const self = await resolveSelf(acctLower);
 
 		logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
@@ -54,13 +55,11 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 				throw new Error(`Invalied uri`);
 			}
 
-			await User.update({
+			await Users.update({
 				usernameLower,
 				host: host
 			}, {
-				$set: {
-					uri: self.href
-				}
+				uri: self.href
 			});
 		} else {
 			logger.info(`uri is fine: ${acctLower}`);
@@ -69,7 +68,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 		await updatePerson(self.href);
 
 		logger.info(`return resynced remote user: ${acctLower}`);
-		return await User.findOne({ uri: self.href });
+		return await Users.findOne({ uri: self.href });
 	}
 
 	logger.info(`return existing remote user: ${acctLower}`);

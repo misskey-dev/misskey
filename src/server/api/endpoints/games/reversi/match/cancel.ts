@@ -1,5 +1,5 @@
-import Matching from '../../../../../../models/games/reversi/matching';
 import define from '../../../../define';
+import { ReversiMatchings } from '../../../../../../models';
 
 export const meta = {
 	tags: ['games'],
@@ -8,9 +8,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	await Matching.remove({
-		parentId: user._id
+	await ReversiMatchings.delete({
+		parentId: user.id
 	});
-
-	return;
 });

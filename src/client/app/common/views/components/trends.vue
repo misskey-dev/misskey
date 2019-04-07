@@ -4,9 +4,9 @@
 	<p class="empty" v-else-if="stats.length == 0"><fa icon="exclamation-circle"/>{{ $t('empty') }}</p>
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<transition-group v-else tag="div" name="chart">
-		<div v-for="stat in stats" :key="stat.tag">
+		<div v-for="stat in stats" :key="stat.name">
 			<div class="tag">
-				<router-link :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+				<router-link :to="`/tags/${ encodeURIComponent(stat.name) }`" :title="stat.name">#{{ stat.name }}</router-link>
 				<p>{{ $t('count').replace('{}', stat.usersCount) }}</p>
 			</div>
 			<x-chart class="chart" :src="stat.chart"/>

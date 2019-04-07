@@ -1,5 +1,4 @@
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import * as nodemailer from 'nodemailer';
@@ -9,6 +8,7 @@ import config from '../../../../config';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import { apiLogger } from '../../logger';
+import { Users } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -39,29 +39,25 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	await User.update(user._id, {
-		$set: {
-			email: ps.email,
-			emailVerified: false,
-			emailVerifyCode: null
-		}
+	await Users.update(user.id, {
+		email: ps.email,
+		emailVerified: false,
+		emailVerifyCode: null
 	});
 
-	const iObj = await pack(user._id, user, {
+	const iObj = await Users.pack(user.id, user, {
 		detail: true,
 		includeSecrets: true
 	});
 
 	// Publish meUpdated event
-	publishMainStream(user._id, 'meUpdated', iObj);
+	publishMainStream(user.id, 'meUpdated', iObj);
 
 	if (ps.email != null) {
 		const code = rndstr('a-z0-9', 16);
 
-		await User.update(user._id, {
-			$set: {
-				emailVerifyCode: code
-			}
+		await Users.update(user.id, {
+			emailVerifyCode: code
 		});
 
 		const meta = await fetchMeta();
@@ -84,7 +80,7 @@ export default define(meta, async (ps, user) => {
 		transporter.sendMail({
 			from: meta.email,
 			to: ps.email,
-			subject: meta.name,
+			subject: meta.name || 'Misskey',
 			text: `To verify email, please click this link: ${link}`
 		}, (error, info) => {
 			if (error) {

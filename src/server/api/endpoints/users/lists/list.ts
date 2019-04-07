@@ -1,5 +1,5 @@
-import UserList, { pack } from '../../../../../models/user-list';
 import define from '../../../define';
+import { UserLists } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -10,7 +10,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-read',
+	kind: 'read:account',
 
 	res: {
 		type: 'array',
@@ -21,9 +21,9 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const userLists = await UserList.find({
-		userId: me._id,
+	const userLists = await UserLists.find({
+		userId: me.id,
 	});
 
-	return await Promise.all(userLists.map(x => pack(x)));
+	return await Promise.all(userLists.map(x => UserLists.pack(x)));
 });

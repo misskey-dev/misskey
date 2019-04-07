@@ -13,11 +13,39 @@ Dockerを使ったMisskey構築方法
 2. `cd misskey` misskeyディレクトリに移動
 3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 
-*2.* 設定ファイルを作成する
+*2.* 設定ファイルの作成と編集
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする
-2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` `.config/mongo_initdb_example.js`をコピーし名前を`mongo_initdb.js`にする
-3. `default.yml`と`mongo_initdb.js`を編集する
+
+下記コマンドで設定ファイルを作成してください。
+
+```bash
+cd .config
+cp example.yml default.yml
+cp docker_example.env docker.env
+```
+
+### `default.yml`の編集
+
+非Docker環境と同じ様に編集してください。  
+ただし、Postgresql、RedisとElasticsearchのホストは`localhost`ではなく、`docker-compose.yml`で設定されたサービス名になっています。  
+標準設定では次の通りです。
+
+| サービス       | ホスト名 |
+|---------------|---------|
+| Postgresql    |`db`     |
+| Redis         |`redis`  |
+| Elasticsearch |`es`     |
+
+### `docker.env`の編集
+
+このファイルはPostgresqlの設定を記述します。  
+最低限記述する必要がある設定は次の通りです。
+
+| 設定                 | 内容         |
+|---------------------|--------------|
+| `POSTGRES_PASSWORD` | パスワード    |
+| `POSTGRES_USER`     | ユーザー名    |
+| `POSTGRES_DB`       | データベース名 |
 
 *3.* Dockerの設定
 ----------------------------------------------------------------

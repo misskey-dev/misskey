@@ -1,4 +1,4 @@
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import { IAdd } from '../../type';
 import { resolveNote } from '../../models/note';
 import { addPinned } from '../../../../services/i/pin';
@@ -14,7 +14,7 @@ export default async (actor: IRemoteUser, activity: IAdd): Promise<void> => {
 
 	if (activity.target === actor.featured) {
 		const note = await resolveNote(activity.object);
-		await addPinned(actor, note._id);
+		await addPinned(actor, note.id);
 		return;
 	}
 

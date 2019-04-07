@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
-import Emoji from '../../../models/emoji';
 import define from '../define';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';
+import { Emojis } from '../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -81,14 +81,11 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const instance = await fetchMeta();
 
-	const emojis = await Emoji.find({ host: null }, {
-		fields: {
-			_id: false
-		}
-	});
+	const emojis = await Emojis.find({ host: null });
 
 	const response: any = {
-		maintainer: instance.maintainer,
+		maintainerName: instance.maintainerName,
+		maintainerEmail: instance.maintainerEmail,
 
 		version: pkg.version,
 
@@ -145,17 +142,12 @@ export default define(meta, async (ps, me) => {
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
 			serviceWorker: instance.enableServiceWorker,
-			userRecommendation: {
-				external: instance.enableExternalUserRecommendation,
-				engine: instance.externalUserRecommendationEngine,
-				timeout: instance.externalUserRecommendationTimeout
-			}
 		};
 	}
 
 	if (me && (me.isAdmin || me.isModerator)) {
 		response.useStarForReactionFallback = instance.useStarForReactionFallback;
-		response.hidedTags = instance.hidedTags;
+		response.hiddenTags = instance.hiddenTags;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;
 		response.twitterConsumerKey = instance.twitterConsumerKey;
@@ -164,9 +156,6 @@ export default define(meta, async (ps, me) => {
 		response.githubClientSecret = instance.githubClientSecret;
 		response.discordClientId = instance.discordClientId;
 		response.discordClientSecret = instance.discordClientSecret;
-		response.enableExternalUserRecommendation = instance.enableExternalUserRecommendation;
-		response.externalUserRecommendationEngine = instance.externalUserRecommendationEngine;
-		response.externalUserRecommendationTimeout = instance.externalUserRecommendationTimeout;
 		response.summalyProxy = instance.summalyProxy;
 		response.email = instance.email;
 		response.smtpSecure = instance.smtpSecure;

@@ -1,25 +1,23 @@
 import { Feed } from 'feed';
 import config from '../../config';
-import Note from '../../models/note';
-import { IUser } from '../../models/user';
-import { getOriginalUrl } from '../../misc/get-drive-file-url';
+import { User } from '../../models/entities/user';
+import { Notes, DriveFiles } from '../../models';
+import { In } from 'typeorm';
 
-export default async function(user: IUser) {
+export default async function(user: User) {
 	const author: Author = {
 		link: `${config.url}/@${user.username}`,
 		name: user.name || user.username
 	};
 
-	const notes = await Note.find({
-		userId: user._id,
-		renoteId: null,
-		$or: [
-			{ visibility: 'public' },
-			{ visibility: 'home' }
-		]
-	}, {
-		sort: { createdAt: -1 },
-		limit: 20
+	const notes = await Notes.find({
+		where: {
+			userId: user.id,
+			renoteId: null,
+			visibility: In(['public', 'home'])
+		},
+		order: { createdAt: -1 },
+		take: 20
 	});
 
 	const feed = new Feed({
@@ -38,15 +36,18 @@ export default async function(user: IUser) {
 	} as FeedOptions);
 
 	for (const note of notes) {
-		const file = note._files && note._files.find(file => file.contentType.startsWith('image/'));
+		const files = note.fileIds.length > 0 ? await DriveFiles.find({
+			id: In(note.fileIds)
+		}) : [];
+		const file = files.find(file => file.type.startsWith('image/'));
 
 		feed.addItem({
 			title: `New note by ${author.name}`,
-			link: `${config.url}/notes/${note._id}`,
+			link: `${config.url}/notes/${note.id}`,
 			date: note.createdAt,
 			description: note.cw,
 			content: note.text,
-			image: file && getOriginalUrl(file)
+			image: file ? DriveFiles.getPublicUrl(file) : null
 		});
 	}
 

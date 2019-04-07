@@ -15,9 +15,37 @@ This guide describes how to install and setup Misskey with Docker.
 
 *2.* Configure Misskey
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
-2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` Copy the `.config/mongo_initdb_example.js` and rename it to `mongo_initdb.js`.
-3. Edit `default.yml` and `mongo_initdb.js`.
+
+Create configuration files with following:
+
+```bash
+cd .config
+cp example.yml default.yml
+cp docker_example.env docker.env
+```
+
+### `default.yml`
+
+Edit this file the same as non-Docker environment.  
+However hostname of Postgresql, Redis and Elasticsearch are not `localhost`, they are set in `docker-compose.yml`.  
+The following is default hostname:
+
+| Service       | Hostname |
+|---------------|----------|
+| Postgresql    | `db`     |
+| Redis         | `redis`  |
+| Elasticsearch | `es`     |
+
+### `docker.env`
+
+Configure Postgresql in this file.  
+The minimum required settings are:
+
+| name                | Description   |
+|---------------------|---------------|
+| `POSTGRES_PASSWORD` | Password      |
+| `POSTGRES_USER`     | Username      |
+| `POSTGRES_DB`       | Database name |
 
 *3.* Configure Docker
 ----------------------------------------------------------------

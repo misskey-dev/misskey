@@ -1,10 +1,9 @@
 import $ from 'cafy';
-import * as mongo from 'mongodb';
-import Note from '../../../../models/note';
-import { packMany } from '../../../../models/note';
 import es from '../../../../db/elasticsearch';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { Notes } from '../../../../models';
+import { In } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -74,18 +73,19 @@ export default define(meta, async (ps, me) => {
 		return [];
 	}
 
-	const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
+	const hits = response.hits.hits.map((hit: any) => hit.id);
+
+	if (hits.length === 0) return [];
 
 	// Fetch found notes
-	const notes = await Note.find({
-		_id: {
-			$in: hits
-		}
-	}, {
-		sort: {
-			_id: -1
+	const notes = await Notes.find({
+		where: {
+			id: In(hits)
+		},
+		order: {
+			id: -1
 		}
 	});
 
-	return await packMany(notes, me);
+	return await Notes.packMany(notes, me);
 });

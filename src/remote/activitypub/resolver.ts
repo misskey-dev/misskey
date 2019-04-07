@@ -64,7 +64,7 @@ export default class Resolver {
 			json: true
 		});
 
-		if (object === null || (
+		if (object == null || (
 			Array.isArray(object['@context']) ?
 				!object['@context'].includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'

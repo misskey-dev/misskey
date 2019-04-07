@@ -1,14 +1,15 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
-import { generate as generateKeypair } from '../../../crypto_key';
-import User, { IUser, validateUsername, validatePassword, pack } from '../../../models/user';
+import { generateKeyPair } from 'crypto';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
-import Meta from '../../../models/meta';
-import RegistrationTicket from '../../../models/registration-tickets';
-import usersChart from '../../../services/chart/users';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
+import { Users, RegistrationTickets, UserServiceLinkings, UserKeypairs } from '../../../models';
+import { genId } from '../../../misc/gen-id';
+import { usersChart } from '../../../services/chart';
+import { UserServiceLinking } from '../../../models/entities/user-service-linking';
+import { User } from '../../../models/entities/user';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -32,6 +33,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 	const username = body['username'];
 	const password = body['password'];
+	const host = process.env.NODE_ENV === 'test' ? (body['host'] || null) : null;
 	const invitationCode = body['invitationCode'];
 
 	if (instance && instance.disableRegistration) {
@@ -40,7 +42,7 @@ export default async (ctx: Koa.BaseContext) => {
 			return;
 		}
 
-		const ticket = await RegistrationTicket.findOne({
+		const ticket = await RegistrationTickets.findOne({
 			code: invitationCode
 		});
 
@@ -49,39 +51,22 @@ export default async (ctx: Koa.BaseContext) => {
 			return;
 		}
 
-		RegistrationTicket.remove({
-			_id: ticket._id
-		});
+		RegistrationTickets.delete(ticket.id);
 	}
 
 	// Validate username
-	if (!validateUsername(username)) {
+	if (!Users.validateUsername(username)) {
 		ctx.status = 400;
 		return;
 	}
 
 	// Validate password
-	if (!validatePassword(password)) {
+	if (!Users.validatePassword(password)) {
 		ctx.status = 400;
 		return;
 	}
 
-	const usersCount = await User.count({});
-
-	// Fetch exist user that same username
-	const usernameExist = await User
-		.count({
-			usernameLower: username.toLowerCase(),
-			host: null
-		}, {
-			limit: 1
-		});
-
-	// Check username already used
-	if (usernameExist !== 0) {
-		ctx.status = 400;
-		return;
-	}
+	const usersCount = await Users.count({});
 
 	// Generate hash of password
 	const salt = await bcrypt.genSalt(8);
@@ -90,46 +75,50 @@ export default async (ctx: Koa.BaseContext) => {
 	// Generate secret
 	const secret = generateUserToken();
 
-	// Create account
-	const account: IUser = await User.insert({
-		avatarId: null,
-		bannerId: null,
+	if (await Users.findOne({ usernameLower: username.toLowerCase(), host: null })) {
+		ctx.status = 400;
+		return;
+	}
+
+	const account = await Users.save({
+		id: genId(),
 		createdAt: new Date(),
-		description: null,
-		followersCount: 0,
-		followingCount: 0,
-		name: null,
-		notesCount: 0,
 		username: username,
 		usernameLower: username.toLowerCase(),
-		host: null,
-		keypair: generateKeypair(),
+		host: host,
 		token: secret,
 		password: hash,
 		isAdmin: config.autoAdmin && usersCount === 0,
 		autoAcceptFollowed: true,
-		profile: {
-			bio: null,
-			birthday: null,
-			location: null
-		},
-		settings: {
-			autoWatch: false
-		}
+		autoWatch: false
+	} as User);
+
+	await UserKeypairs.save({
+		id: genId(),
+		keyPem: await new Promise<string>((s, j) => generateKeyPair('rsa', {
+			modulusLength: 4096,
+			publicKeyEncoding: {
+				type: 'pkcs1',
+				format: 'pem'
+			},
+			privateKeyEncoding: {
+				type: 'pkcs1',
+				format: 'pem',
+				cipher: undefined,
+				passphrase: undefined
+			}
+		}, (e, _, x) => e ? j(e) : s(x))),
+		userId: account.id
 	});
 
-	//#region Increment users count
-	Meta.update({}, {
-		$inc: {
-			'stats.usersCount': 1,
-			'stats.originalUsersCount': 1
-		}
-	}, { upsert: true });
-	//#endregion
+	await UserServiceLinkings.save({
+		id: genId(),
+		userId: account.id
+	} as UserServiceLinking);
 
 	usersChart.update(account, true);
 
-	const res = await pack(account, account, {
+	const res = await Users.pack(account, account, {
 		detail: true,
 		includeSecrets: true
 	});

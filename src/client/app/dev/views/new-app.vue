@@ -15,15 +15,21 @@
 				<b-form-group :description="$t('description')">
 					<b-alert show variant="warning"><fa icon="exclamation-triangle"/> {{ $t('authority-warning') }}</b-alert>
 					<b-form-checkbox-group v-model="permission" stacked>
-						<b-form-checkbox value="account-read">{{ $t('account-read') }}</b-form-checkbox>
-						<b-form-checkbox value="account-write">{{ $t('account-write') }}</b-form-checkbox>
-						<b-form-checkbox value="note-write">{{ $t('note-write') }}</b-form-checkbox>
-						<b-form-checkbox value="reaction-write">{{ $t('reaction-write') }}</b-form-checkbox>
-						<b-form-checkbox value="following-write">{{ $t('following-write') }}</b-form-checkbox>
-						<b-form-checkbox value="drive-read">{{ $t('drive-read') }}</b-form-checkbox>
-						<b-form-checkbox value="drive-write">{{ $t('drive-write') }}</b-form-checkbox>
-						<b-form-checkbox value="notification-read">{{ $t('notification-read') }}</b-form-checkbox>
-						<b-form-checkbox value="notification-write">{{ $t('notification-write') }}</b-form-checkbox>
+						<b-form-checkbox value="read:account">{{ $t('read:account') }}</b-form-checkbox>
+						<b-form-checkbox value="write:account">{{ $t('write:account') }}</b-form-checkbox>
+						<b-form-checkbox value="write:notes">{{ $t('write:notes') }}</b-form-checkbox>
+						<b-form-checkbox value="read:reactions">{{ $t('read:reactions') }}</b-form-checkbox>
+						<b-form-checkbox value="write:reactions">{{ $t('write:reactions') }}</b-form-checkbox>
+						<b-form-checkbox value="read:following">{{ $t('read:following') }}</b-form-checkbox>
+						<b-form-checkbox value="write:following">{{ $t('write:following') }}</b-form-checkbox>
+						<b-form-checkbox value="read:mutes">{{ $t('read:mutes') }}</b-form-checkbox>
+						<b-form-checkbox value="write:mutes">{{ $t('write:mutes') }}</b-form-checkbox>
+						<b-form-checkbox value="read:blocks">{{ $t('read:blocks') }}</b-form-checkbox>
+						<b-form-checkbox value="write:blocks">{{ $t('write:blocks') }}</b-form-checkbox>
+						<b-form-checkbox value="read:drive">{{ $t('read:drive') }}</b-form-checkbox>
+						<b-form-checkbox value="write:drive">{{ $t('write:drive') }}</b-form-checkbox>
+						<b-form-checkbox value="read:notifications">{{ $t('read:notifications') }}</b-form-checkbox>
+						<b-form-checkbox value="write:notifications">{{ $t('write:notifications') }}</b-form-checkbox>
 					</b-form-checkbox-group>
 				</b-form-group>
 			</b-card>

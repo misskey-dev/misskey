@@ -1,26 +1,26 @@
 import * as URL from 'url';
-
-import { IDriveFile, validateFileName } from '../../models/drive-file';
 import create from './add-file';
-import { IUser } from '../../models/user';
-import * as mongodb from 'mongodb';
+import { User } from '../../models/entities/user';
 import { driveLogger } from './logger';
 import { createTemp } from '../../misc/create-temp';
 import { downloadUrl } from '../../misc/donwload-url';
+import { DriveFolder } from '../../models/entities/drive-folder';
+import { DriveFile } from '../../models/entities/drive-file';
+import { DriveFiles } from '../../models';
 
 const logger = driveLogger.createSubLogger('downloader');
 
 export default async (
 	url: string,
-	user: IUser,
-	folderId: mongodb.ObjectID = null,
+	user: User,
+	folderId: DriveFolder['id'] = null,
 	uri: string = null,
 	sensitive = false,
 	force = false,
 	link = false
-): Promise<IDriveFile> => {
+): Promise<DriveFile> => {
 	let name = URL.parse(url).pathname.split('/').pop();
-	if (!validateFileName(name)) {
+	if (!DriveFiles.validateFileName(name)) {
 		name = null;
 	}
 
@@ -30,12 +30,12 @@ export default async (
 	// write content at URL to temp file
 	await downloadUrl(url, path);
 
-	let driveFile: IDriveFile;
+	let driveFile: DriveFile;
 	let error;
 
 	try {
 		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
-		logger.succ(`Got: ${driveFile._id}`);
+		logger.succ(`Got: ${driveFile.id}`);
 	} catch (e) {
 		error = e;
 		logger.error(`Failed to create drive file: ${e}`, {

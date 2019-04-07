@@ -1,1 +1,1 @@
-require('./built');
+require('./built').default();

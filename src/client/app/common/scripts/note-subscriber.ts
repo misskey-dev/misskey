@@ -87,16 +87,16 @@ export default prop => ({
 				case 'reacted': {
 					const reaction = body.reaction;
 
-					if (this.$_ns_target.reactionCounts == null) {
-						Vue.set(this.$_ns_target, 'reactionCounts', {});
+					if (this.$_ns_target.reactions == null) {
+						Vue.set(this.$_ns_target, 'reactions', {});
 					}
 
-					if (this.$_ns_target.reactionCounts[reaction] == null) {
-						Vue.set(this.$_ns_target.reactionCounts, reaction, 0);
+					if (this.$_ns_target.reactions[reaction] == null) {
+						Vue.set(this.$_ns_target.reactions, reaction, 0);
 					}
 
 					// Increment the count
-					this.$_ns_target.reactionCounts[reaction]++;
+					this.$_ns_target.reactions[reaction]++;
 
 					if (body.userId == this.$store.state.i.id) {
 						Vue.set(this.$_ns_target, 'myReaction', reaction);
@@ -107,16 +107,16 @@ export default prop => ({
 				case 'unreacted': {
 					const reaction = body.reaction;
 
-					if (this.$_ns_target.reactionCounts == null) {
+					if (this.$_ns_target.reactions == null) {
 						return;
 					}
 
-					if (this.$_ns_target.reactionCounts[reaction] == null) {
+					if (this.$_ns_target.reactions[reaction] == null) {
 						return;
 					}
 
 					// Decrement the count
-					if (this.$_ns_target.reactionCounts[reaction] > 0) this.$_ns_target.reactionCounts[reaction]--;
+					if (this.$_ns_target.reactions[reaction] > 0) this.$_ns_target.reactions[reaction]--;
 
 					if (body.userId == this.$store.state.i.id) {
 						Vue.set(this.$_ns_target, 'myReaction', null);
@@ -125,9 +125,11 @@ export default prop => ({
 				}
 
 				case 'pollVoted': {
-					if (body.userId == this.$store.state.i.id) return;
 					const choice = body.choice;
-					this.$_ns_target.poll.choices.find(c => c.id === choice).votes++;
+					this.$_ns_target.poll.choices[choice].votes++;
+					if (body.userId == this.$store.state.i.id) {
+						Vue.set(this.$_ns_target.poll.choices[choice], 'isVoted', true);
+					}
 					break;
 				}
 
