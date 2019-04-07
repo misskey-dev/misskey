@@ -402,6 +402,41 @@ describe('Streaming', () => {
 				done();
 			}, 5000);
 		}));
+
+		// #4471
+		it('リストに入れているユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// リスト作成
+			const list = await request('/users/lists/create', {
+				title: 'my list'
+			}, alice).then(x => x.body);
+
+			// Alice が Bob をリスイン
+			await request('/users/lists/push', {
+				listId: list.id,
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'userList', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					assert.deepStrictEqual(body.text, 'foo');
+					ws.close();
+					done();
+				}
+			}, {
+				listId: list.id
+			});
+
+			// Bob が Alice 宛てのダイレクト投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'specified',
+				visibleUserIds: [alice.id]
+			});
+		}));
 	});
 
 	describe('Hashtag Timeline', () => {
