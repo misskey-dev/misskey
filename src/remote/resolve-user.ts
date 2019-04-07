@@ -10,7 +10,7 @@ import { Users } from '../models';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export default async (username: string, _host: string, option?: any, resync = false): Promise<User> => {
+export async function resolveUser(username: string, _host: string, option?: any, resync = false): Promise<User> {
 	const usernameLower = username.toLowerCase();
 
 	if (_host == null) {
@@ -73,7 +73,7 @@ export default async (username: string, _host: string, option?: any, resync = fa
 
 	logger.info(`return existing remote user: ${acctLower}`);
 	return user;
-};
+}
 
 async function resolveSelf(acctLower: string) {
 	logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);

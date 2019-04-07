@@ -7,7 +7,7 @@ import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import watch from './watch';
 import { parse } from '../../mfm/parse';
-import resolveUser from '../../remote/resolve-user';
+import { resolveUser } from '../../remote/resolve-user';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
 import { erase, concat } from '../../prelude/array';

@@ -2,7 +2,7 @@ import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
 import parseAcct from '../../../misc/acct/parse';
-import resolveUser from '../../../remote/resolve-user';
+import { resolveUser } from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '../../../misc/download-text-file';
 import { isSelfHost, toDbHost } from '../../../misc/convert-host';

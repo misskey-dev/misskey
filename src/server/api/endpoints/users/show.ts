@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import resolveRemoteUser from '../../../../remote/resolve-user';
+import { resolveUser } from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
 import { ApiError } from '../../error';
@@ -75,7 +75,7 @@ export default define(meta, async (ps, me) => {
 	} else {
 		// Lookup user
 		if (typeof ps.host === 'string') {
-			user = await resolveRemoteUser(ps.username, ps.host).catch(e => {
+			user = await resolveUser(ps.username, ps.host).catch(e => {
 				apiLogger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.failedToResolveRemoteUser);
 			});
@@ -94,7 +94,7 @@ export default define(meta, async (ps, me) => {
 		// ユーザー情報更新
 		if (Users.isRemoteUser(user)) {
 			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				resolveRemoteUser(ps.username, ps.host, { }, true);
+				resolveUser(ps.username, ps.host, { }, true);
 			}
 		}
 
