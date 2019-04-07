@@ -159,18 +159,6 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			isBot,
 			isCat: (person as any).isCat === true
 		} as Partial<User>) as IRemoteUser;
-
-		await UserPublickeys.save({
-			id: genId(),
-			userId: user.id,
-			keyId: person.publicKey.id,
-			keyPem: person.publicKey.publicKeyPem
-		} as UserPublickey);
-
-		await UserServiceLinkings.save({
-			id: genId(),
-			userId: user.id,
-		} as UserServiceLinking);
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
@@ -180,6 +168,13 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		logger.error(e);
 		throw e;
 	}
+
+	await UserPublickeys.save({
+		id: genId(),
+		userId: user.id,
+		keyId: person.publicKey.id,
+		keyPem: person.publicKey.publicKeyPem
+	} as UserPublickey);
 
 	await UserServiceLinkings.save({
 		id: genId(),
