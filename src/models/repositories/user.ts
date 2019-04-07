@@ -140,7 +140,7 @@ export class UserRepository extends Repository<User> {
 				}).then(count => count > 0),
 				hasUnreadNotification: Notifications.count({
 					where: {
-						userId: user.id,
+						notifieeId: user.id,
 						isRead: false
 					},
 					take: 1
