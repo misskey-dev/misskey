@@ -45,6 +45,10 @@ export default class extends Channel {
 			note = await Notes.pack(note.id, this.user, {
 				detail: true
 			});
+
+			if (note.isHidden) {
+				return;
+			}
 		} else {
 			// リプライなら再pack
 			if (note.replyId != null) {

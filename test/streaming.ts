@@ -437,6 +437,45 @@ describe('Streaming', () => {
 				visibleUserIds: [alice.id]
 			});
 		}));
+
+		// #4335
+		it('リストに入れているがフォローはしてないユーザーのフォロワー宛て投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// リスト作成
+			const list = await request('/users/lists/create', {
+				title: 'my list'
+			}, alice).then(x => x.body);
+
+			// Alice が Bob をリスイン
+			await request('/users/lists/push', {
+				listId: list.id,
+				userId: bob.id
+			}, alice);
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'userList', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			}, {
+				listId: list.id
+			});
+
+			// フォロワー宛て投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'followers'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
 	});
 
 	describe('Hashtag Timeline', () => {
