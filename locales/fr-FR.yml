@@ -230,7 +230,7 @@ common:
   view-on-remote: " Consulter le profil complet"
   renoted-by: "Renoté par {user}"
   no-notes: "Sans aucune note"
-  turn-on-darkmode: "Basculer vers le mode nuit"
+  turn-on-darkmode: "Mode nuit"
   turn-off-darkmode: "Mode jour"
   error:
     title: "Une erreur est survenue"
