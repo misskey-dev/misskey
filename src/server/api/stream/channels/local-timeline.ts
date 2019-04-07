@@ -23,6 +23,7 @@ export default class extends Channel {
 	@autobind
 	private async onNote(note: any) {
 		if (note.user.host !== null) return;
+		if (note.visibility === 'home') return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await Notes.pack(note.id, this.user, {
