@@ -67,7 +67,7 @@ export default define(meta, async () => {
 		.slice(0, max);
 
 	//#region 2(または3)で話題と判定されたタグそれぞれについて過去の投稿数グラフを取得する
-	const countPromises: Promise<any[]>[] = [];
+	const countPromises: Promise<number[]>[] = [];
 
 	const range = 20;
 
@@ -87,7 +87,7 @@ export default define(meta, async () => {
 
 	const countsLog = await Promise.all(countPromises);
 
-	const totalCounts: any = await Promise.all(hots.map(tag => Notes.createQueryBuilder('note')
+	const totalCounts = await Promise.all(hots.map(tag => Notes.createQueryBuilder('note')
 		.select('count(distinct note.userId)')
 		.where(':tag = ANY(note.tags)', { tag: tag })
 		.andWhere('note.createdAt > :gt', { gt: new Date(Date.now() - (interval * range)) })
@@ -98,8 +98,8 @@ export default define(meta, async () => {
 
 	const stats = hots.map((tag, i) => ({
 		tag,
-		chart: countsLog.map(counts => counts[i].length),
-		usersCount: totalCounts[i].length
+		chart: countsLog.map(counts => counts[i]),
+		usersCount: totalCounts[i]
 	}));
 
 	return stats;
