@@ -159,6 +159,32 @@ describe('Streaming', () => {
 				done();
 			}, 5000);
 		}));
+
+		it('フォローしているユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'homeTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					assert.deepStrictEqual(body.text, 'foo');
+					ws.close();
+					done();
+				}
+			});
+
+			// Bob が Alice 宛てのダイレクト投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'specified',
+				visibleUserIds: [alice.id]
+			});
+		}));
 	});
 
 	describe('Local Timeline', () => {
@@ -245,6 +271,57 @@ describe('Streaming', () => {
 				done();
 			}, 5000);
 		}));
+
+		it('フォローしているローカルユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					assert.deepStrictEqual(body.text, 'foo');
+					ws.close();
+					done();
+				}
+			});
+
+			// Bob が Alice 宛てのダイレクト投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'specified',
+				visibleUserIds: [alice.id]
+			});
+		}));
+
+		it('フォローしていないローカルユーザーのフォロワー宛て投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// フォロワー宛て投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'followers'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
 	});
 
 	describe('Social Timeline', () => {
@@ -315,6 +392,57 @@ describe('Streaming', () => {
 
 			post(bob, {
 				text: 'foo'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+
+		it('フォローしているユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					assert.deepStrictEqual(body.text, 'foo');
+					ws.close();
+					done();
+				}
+			});
+
+			// Bob が Alice 宛てのダイレクト投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'specified',
+				visibleUserIds: [alice.id]
+			});
+		}));
+
+		it('フォローしていないローカルユーザーのフォロワー宛て投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// フォロワー宛て投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'followers'
 			});
 
 			setTimeout(() => {
