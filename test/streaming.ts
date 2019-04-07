@@ -146,7 +146,7 @@ describe('Streaming', () => {
 
 			const ws = await connectStream(me, 'localTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, me.userId);
+					assert.deepStrictEqual(body.userId, me.id);
 					ws.close();
 					done();
 				}
@@ -163,7 +163,7 @@ describe('Streaming', () => {
 
 			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, bob.userId);
+					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
 					done();
 				}
@@ -232,7 +232,7 @@ describe('Streaming', () => {
 
 			const ws = await connectStream(me, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, me.userId);
+					assert.deepStrictEqual(body.userId, me.id);
 					ws.close();
 					done();
 				}
@@ -249,7 +249,7 @@ describe('Streaming', () => {
 
 			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, bob.userId);
+					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
 					done();
 				}
@@ -271,7 +271,7 @@ describe('Streaming', () => {
 
 			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, bob.userId);
+					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
 					done();
 				}
@@ -313,7 +313,7 @@ describe('Streaming', () => {
 
 			const ws = await connectStream(alice, 'globalTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, bob.userId);
+					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
 					done();
 				}
@@ -330,7 +330,7 @@ describe('Streaming', () => {
 
 			const ws = await connectStream(alice, 'globalTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, bob.userId);
+					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
 					done();
 				}
