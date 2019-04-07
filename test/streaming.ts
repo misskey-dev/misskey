@@ -195,6 +195,114 @@ describe('Streaming', () => {
 				done();
 			}, 5000);
 		}));
+
+		it('フォローしてたとしてもリモートユーザーの投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob', host: 'example.com' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+	});
+
+	describe('Social Timeline', () => {
+		it('自分の投稿が流れる', () => new Promise(async done => {
+			const me = await signup();
+
+			const ws = await connectStream(me, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, me.userId);
+					ws.close();
+					done();
+				}
+			});
+
+			post(me, {
+				text: 'foo'
+			});
+		}));
+
+		it('フォローしていないローカルユーザーの投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.userId);
+					ws.close();
+					done();
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+		}));
+
+		it('フォローしているリモートユーザーの投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob', host: 'example.com' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.userId);
+					ws.close();
+					done();
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+		}));
+
+		it('フォローしていないリモートユーザーの投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob', host: 'example.com' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 5000);
+		}));
 	});
 
 	describe('UserList Timeline', () => {
