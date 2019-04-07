@@ -1,0 +1,32 @@
+{
+  "name": "misskey",
+  "description": "A federated blogging platform",
+  "repository": "https://github.com/syuilo/misskey",
+  "logo": "https://github.com/syuilo/misskey/blob/master/assets/apple-touch-icon.png?raw=true",
+  "env": {
+    "HEROKU": {
+      "description": "Leave this as true",
+      "value": "true",
+      "required": true
+    },
+    "LOCAL_DOMAIN": {
+      "description": "The domain that your misskey instance will run on (this can be https://appname.herokuapp.com or a custom domain)",
+      "value": "https://APPNAME.herokuapp.com",
+      "required": true
+    },
+    "DISABLE_HSTS":{
+      "description": "Leave this as true",
+      "value": "true",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "addons": [
+    "heroku-postgresql",
+    "heroku-redis"
+  ]
+}
