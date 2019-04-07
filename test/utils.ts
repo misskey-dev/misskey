@@ -16,17 +16,23 @@ export const request = async (endpoint: string, params: any, me?: any): Promise<
 		i: me.token
 	} : {};
 
-	const res = await fetch('http://localhost:80/api' + endpoint, {
-		method: 'POST',
-		body: JSON.stringify(Object.assign(auth, params))
-	});
+	try {
+		const res = await fetch('http://localhost:80/api' + endpoint, {
+			method: 'POST',
+			body: JSON.stringify(Object.assign(auth, params))
+		});
 
-	const status = res.status;
-	const body = res.status !== 204 ? await res.json().catch(console.error) : null;
+		const status = res.status;
+		const body = res.status !== 204 ? await res.json().catch() : null;
 
-	return {
-		body, status
-	};
+		return {
+			body, status
+		};
+	} catch (e) {
+		return {
+			body: null, status: 500
+		};
+	}
 };
 
 export const signup = async (params?: any): Promise<any> => {
@@ -47,7 +53,7 @@ export const post = async (user: any, params?: any): Promise<any> => {
 
 	const res = await request('/notes/create', q, user);
 
-	return res.body.createdNote;
+	return res.body ? res.body.createdNote : null;
 };
 
 export const react = async (user: any, note: any, reaction: string): Promise<any> => {

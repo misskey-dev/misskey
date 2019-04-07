@@ -28,6 +28,7 @@ describe('Streaming', () => {
 		});
 		p.on('message', message => {
 			if (message === 'ok') {
+				(p.channel as any).onread = () => {};
 				done();
 			}
 		});
@@ -302,6 +303,42 @@ describe('Streaming', () => {
 				ws.close();
 				done();
 			}, 5000);
+		}));
+	});
+
+	describe('Global Timeline', () => {
+		it('フォローしていないローカルユーザーの投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			const ws = await connectStream(alice, 'globalTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.userId);
+					ws.close();
+					done();
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
+		}));
+
+		it('フォローしていないリモートユーザーの投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob', host: 'example.com' });
+
+			const ws = await connectStream(alice, 'globalTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.userId);
+					ws.close();
+					done();
+				}
+			});
+
+			post(bob, {
+				text: 'foo'
+			});
 		}));
 	});
 
