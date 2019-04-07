@@ -304,6 +304,31 @@ describe('Streaming', () => {
 			}, 3000);
 		}));
 
+		it('ホーム指定の投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// ホーム指定
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 3000);
+		}));
+
 		it('フォローしているローカルユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
