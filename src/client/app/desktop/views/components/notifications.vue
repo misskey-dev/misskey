@@ -110,7 +110,7 @@
 						</div>
 					</template>
 
-					<template v-if="notification.type == 'poll_vote'">
+					<template v-if="notification.type == 'pollVote'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
 							<p><fa icon="chart-pie"/><a :href="notification.user | userPage" v-user-preview="notification.user.id">

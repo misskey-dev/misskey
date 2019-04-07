@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import { pack } from '../../../../models/note';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { Notes } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -20,7 +20,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
@@ -47,7 +46,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	return await pack(note, user, {
+	return await Notes.pack(note, user, {
 		detail: true
 	});
 });

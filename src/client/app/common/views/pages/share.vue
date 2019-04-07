@@ -42,7 +42,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.$root.getMeta().then(meta => {
-			this.name = meta.name;
+			this.name = meta.name || 'Misskey';
 		});
 	}
 });

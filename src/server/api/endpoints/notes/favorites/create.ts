@@ -1,9 +1,10 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import Favorite from '../../../../../models/favorite';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
+import { NoteFavorites } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	stability: 'stable',
@@ -22,7 +23,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
@@ -53,21 +53,20 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// if already favorited
-	const exist = await Favorite.findOne({
-		noteId: note._id,
-		userId: user._id
+	const exist = await NoteFavorites.findOne({
+		noteId: note.id,
+		userId: user.id
 	});
 
-	if (exist !== null) {
+	if (exist != null) {
 		throw new ApiError(meta.errors.alreadyFavorited);
 	}
 
 	// Create favorite
-	await Favorite.insert({
+	await NoteFavorites.save({
+		id: genId(),
 		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id
+		noteId: note.id,
+		userId: user.id
 	});
-
-	return;
 });

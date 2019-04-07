@@ -73,7 +73,7 @@ export default Vue.extend({
 				title: t,
 				select: {
 					items: lists.map(list => ({
-						value: list.id, text: list.title
+						value: list.id, text: list.name
 					}))
 				},
 				showCancelButton: true

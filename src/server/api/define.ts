@@ -1,8 +1,8 @@
 import * as fs from 'fs';
-import { ILocalUser } from '../../models/user';
-import { IApp } from '../../models/app';
+import { ILocalUser } from '../../models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
+import { App } from '../../models/entities/app';
 
 type Params<T extends IEndpointMeta> = {
 	[P in keyof T['params']]: T['params'][P]['transform'] extends Function
@@ -12,8 +12,8 @@ type Params<T extends IEndpointMeta> = {
 
 export type Response = Record<string, any> | void;
 
-export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T>, user: ILocalUser, app: IApp, file?: any, cleanup?: Function) => Promise<Response>): (params: any, user: ILocalUser, app: IApp, file?: any) => Promise<any> {
-	return (params: any, user: ILocalUser, app: IApp, file?: any) => {
+export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T>, user: ILocalUser, app: App, file?: any, cleanup?: Function) => Promise<Response>): (params: any, user: ILocalUser, app: App, file?: any) => Promise<any> {
+	return (params: any, user: ILocalUser, app: App, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
 		}

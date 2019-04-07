@@ -19,12 +19,12 @@ import activityPub from './activitypub';
 import nodeinfo from './nodeinfo';
 import wellKnown from './well-known';
 import config from '../config';
-import networkChart from '../services/chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
-import User from '../models/user';
 import Logger from '../services/logger';
 import { program } from '../argv';
+import { Users } from '../models';
+import { networkChart } from '../services/chart';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
@@ -73,17 +73,17 @@ router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
 router.get('/verify-email/:code', async ctx => {
-	const user = await User.findOne({ emailVerifyCode: ctx.params.code });
+	const user = await Users.findOne({
+		emailVerifyCode: ctx.params.code
+	});
 
 	if (user != null) {
 		ctx.body = 'Verify succeeded!';
 		ctx.status = 200;
 
-		User.update({ _id: user._id }, {
-			$set: {
-				emailVerified: true,
-				emailVerifyCode: null
-			}
+		Users.update(user.id, {
+			emailVerified: true,
+			emailVerifyCode: null
 		});
 	} else {
 		ctx.status = 404;

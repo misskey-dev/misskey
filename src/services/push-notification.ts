@@ -1,11 +1,10 @@
 import * as push from 'web-push';
-import * as mongo from 'mongodb';
-import Subscription from '../models/sw-subscription';
 import config from '../config';
+import { SwSubscriptions } from '../models';
+import { Meta } from '../models/entities/meta';
 import fetchMeta from '../misc/fetch-meta';
-import { IMeta } from '../models/meta';
 
-let meta: IMeta = null;
+let meta: Meta = null;
 
 setInterval(() => {
 	fetchMeta().then(m => {
@@ -20,15 +19,11 @@ setInterval(() => {
 	});
 }, 3000);
 
-export default async function(userId: mongo.ObjectID | string, type: string, body?: any) {
+export default async function(userId: string, type: string, body?: any) {
 	if (!meta.enableServiceWorker) return;
 
-	if (typeof userId === 'string') {
-		userId = new mongo.ObjectID(userId);
-	}
-
 	// Fetch
-	const subscriptions = await Subscription.find({
+	const subscriptions = await SwSubscriptions.find({
 		userId: userId
 	});
 
@@ -49,7 +44,7 @@ export default async function(userId: mongo.ObjectID | string, type: string, bod
 			//swLogger.info(err.body);
 
 			if (err.statusCode == 410) {
-				Subscription.remove({
+				SwSubscriptions.delete({
 					userId: userId,
 					endpoint: subscription.endpoint,
 					auth: subscription.auth,

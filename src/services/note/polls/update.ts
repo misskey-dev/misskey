@@ -1,51 +1,48 @@
-import * as mongo from 'mongodb';
-import Note, { INote } from '../../../models/note';
 import { updateQuestion } from '../../../remote/activitypub/models/question';
 import ms = require('ms');
 import Logger from '../../logger';
-import User, { isLocalUser, isRemoteUser } from '../../../models/user';
-import Following from '../../../models/following';
 import renderUpdate from '../../../remote/activitypub/renderer/update';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
 import renderNote from '../../../remote/activitypub/renderer/note';
+import { Users, Notes, Followings } from '../../../models';
+import { Note } from '../../../models/entities/note';
 
 const logger = new Logger('pollsUpdate');
 
-export async function triggerUpdate(note: INote) {
+export async function triggerUpdate(note: Note) {
 	if (!note.updatedAt || Date.now() - new Date(note.updatedAt).getTime() > ms('1min')) {
-		logger.info(`Updating ${note._id}`);
+		logger.info(`Updating ${note.id}`);
 
 		try {
 			const updated = await updateQuestion(note.uri);
-			logger.info(`Updated ${note._id} ${updated ? 'changed' : 'nochange'}`);
+			logger.info(`Updated ${note.id} ${updated ? 'changed' : 'nochange'}`);
 		} catch (e) {
 			logger.error(e);
 		}
 	}
 }
 
-export async function deliverQuestionUpdate(noteId: mongo.ObjectID) {
-	const note = await Note.findOne({
-		_id: noteId,
-	});
+export async function deliverQuestionUpdate(noteId: Note['id']) {
+	const note = await Notes.findOne(noteId);
 
-	const user = await User.findOne({
-		_id: note.userId
-	});
+	const user = await Users.findOne(note.userId);
 
-	const followers = await Following.find({
-		followeeId: user._id
+	const followers = await Followings.find({
+		followeeId: user.id
 	});
 
 	const queue: string[] = [];
 
 	// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
-	if (isLocalUser(user)) {
+	if (Users.isLocalUser(user)) {
 		for (const following of followers) {
-			const follower = following._follower;
+			const follower = {
+				inbox: following.followerInbox,
+				sharedInbox: following.followerSharedInbox
+			};
 
-			if (isRemoteUser(follower)) {
+			if (following.followerHost !== null) {
 				const inbox = follower.sharedInbox || follower.inbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}

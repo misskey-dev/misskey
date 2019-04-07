@@ -58,7 +58,7 @@ export default Vue.extend({
 		};
 
 		if (this.src == 'tag') {
-			this.endpoint = 'notes/search_by_tag';
+			this.endpoint = 'notes/search-by-tag';
 			this.query = {
 				query: this.tagTl.query
 			};
@@ -77,9 +77,9 @@ export default Vue.extend({
 			this.endpoint = 'notes/local-timeline';
 			this.connection = this.$root.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
-		} else if (this.src == 'hybrid') {
-			this.endpoint = 'notes/hybrid-timeline';
-			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
+		} else if (this.src == 'social') {
+			this.endpoint = 'notes/social-timeline';
+			this.connection = this.$root.stream.useSharedConnection('socialTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';

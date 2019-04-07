@@ -1,8 +1,8 @@
-import { IDriveFile } from '../../../models/drive-file';
-import getDriveFileUrl from '../../../misc/get-drive-file-url';
+import { DriveFile } from '../../../models/entities/drive-file';
+import { DriveFiles } from '../../../models';
 
-export default (file: IDriveFile) => ({
+export default (file: DriveFile) => ({
 	type: 'Document',
-	mediaType: file.contentType,
-	url: getDriveFileUrl(file)
+	mediaType: file.type,
+	url: DriveFiles.getPublicUrl(file)
 });

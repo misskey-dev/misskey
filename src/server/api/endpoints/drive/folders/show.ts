@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import DriveFolder, { pack } from '../../../../../models/drive-folder';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { DriveFolders } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -16,12 +16,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		folderId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のフォルダID',
 				'en-US': 'Target folder ID'
@@ -44,17 +43,16 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Get folder
-	const folder = await DriveFolder
-		.findOne({
-			_id: ps.folderId,
-			userId: user._id
-		});
+	const folder = await DriveFolders.findOne({
+		id: ps.folderId,
+		userId: user.id
+	});
 
-	if (folder === null) {
+	if (folder == null) {
 		throw new ApiError(meta.errors.noSuchFolder);
 	}
 
-	return await pack(folder, {
+	return await DriveFolders.pack(folder, {
 		detail: true
 	});
 });

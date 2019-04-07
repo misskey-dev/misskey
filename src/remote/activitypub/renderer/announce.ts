@@ -1,7 +1,7 @@
 import config from '../../../config';
-import { INote } from '../../../models/note';
+import { Note } from '../../../models/entities/note';
 
-export default (object: any, note: INote) => {
+export default (object: any, note: Note) => {
 	const attributedTo = `${config.url}/users/${note.userId}`;
 
 	let to: string[] = [];
@@ -18,7 +18,7 @@ export default (object: any, note: INote) => {
 	}
 
 	return {
-		id: `${config.url}/notes/${note._id}/activity`,
+		id: `${config.url}/notes/${note.id}/activity`,
 		actor: `${config.url}/users/${note.userId}`,
 		type: 'Announce',
 		published: note.createdAt.toISOString(),

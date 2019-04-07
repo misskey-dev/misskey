@@ -1,10 +1,10 @@
 import { performance } from 'perf_hooks';
 import limiter from './limiter';
-import { IUser } from '../../models/user';
-import { IApp } from '../../models/app';
+import { User } from '../../models/entities/user';
 import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
+import { App } from '../../models/entities/app';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -12,7 +12,7 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e'
 };
 
-export default async (endpoint: string, user: IUser, app: IApp, data: any, file?: any) => {
+export default async (endpoint: string, user: User, app: App, data: any, file?: any) => {
 	const isSecure = user != null && app == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);

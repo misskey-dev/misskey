@@ -1,9 +1,10 @@
-import * as mongodb from 'mongodb';
-import Watching from '../../models/note-watching';
+import { User } from '../../models/entities/user';
+import { NoteWatchings } from '../../models';
+import { Note } from '../../models/entities/note';
 
-export default async (me: mongodb.ObjectID, note: object) => {
-	await Watching.remove({
-		noteId: (note as any)._id,
+export default async (me: User['id'], note: Note) => {
+	await NoteWatchings.delete({
+		noteId: note.id,
 		userId: me
 	});
 };

@@ -1,12 +1,11 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../models/user';
-import Blocking from '../../../../models/blocking';
 import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Blockings } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -25,12 +24,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-write',
+	kind: 'write:blocks',
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -63,7 +61,7 @@ export default define(meta, async (ps, user) => {
 	const blocker = user;
 
 	// Check if the blockee is yourself
-	if (user._id.equals(ps.userId)) {
+	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.blockeeIsYourself);
 	}
 
@@ -74,19 +72,17 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check not blocking
-	const exist = await Blocking.findOne({
-		blockerId: blocker._id,
-		blockeeId: blockee._id
+	const exist = await Blockings.findOne({
+		blockerId: blocker.id,
+		blockeeId: blockee.id
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		throw new ApiError(meta.errors.notBlocking);
 	}
 
 	// Delete blocking
 	await deleteBlocking(blocker, blockee);
 
-	return await pack(blockee._id, user, {
-		detail: true
-	});
+	return await Blockings.pack(blockee.id, user);
 });

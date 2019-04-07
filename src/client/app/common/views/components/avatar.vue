@@ -55,11 +55,12 @@ export default Vue.extend({
 		},
 		icon(): any {
 			return {
-				backgroundColor: this.lightmode
-					? `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`
-					: this.user.avatarColor && this.user.avatarColor.length == 3
-						? `rgb(${this.user.avatarColor.join(',')})`
-						: null,
+				backgroundColor: this.user.avatarColor ? this.lightmode
+					? this.user.avatarColor
+					: this.user.avatarColor.startsWith('rgb(')
+						? this.user.avatarColor
+						: null
+					: null,
 				backgroundImage: this.lightmode ? null : `url(${this.url})`,
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
@@ -67,7 +68,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		if (this.user.avatarColor) {
-			this.$el.style.color = `rgb(${this.user.avatarColor.slice(0, 3).join(',')})`;
+			this.$el.style.color = this.user.avatarColor;
 		}
 	},
 	methods: {

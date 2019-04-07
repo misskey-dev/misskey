@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import Instance from '../../../../../models/instance';
+import { Instances } from '../../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -13,10 +13,6 @@ export const meta = {
 			validator: $.str
 		},
 
-		isBlocked: {
-			validator: $.bool
-		},
-
 		isClosed: {
 			validator: $.bool
 		},
@@ -24,18 +20,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const instance = await Instance.findOne({ host: ps.host });
+	const instance = await Instances.findOne({ host: ps.host });
 
 	if (instance == null) {
 		throw new Error('instance not found');
 	}
 
-	Instance.update({ host: ps.host }, {
-		$set: {
-			isBlocked: ps.isBlocked,
-			isMarkedAsClosed: ps.isClosed
-		}
+	Instances.update({ host: ps.host }, {
+		isMarkedAsClosed: ps.isClosed
 	});
-
-	return;
 });

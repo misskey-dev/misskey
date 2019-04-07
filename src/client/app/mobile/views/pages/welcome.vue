@@ -3,10 +3,10 @@
 	<div class="banner" :style="{ backgroundImage: banner ? `url(${banner})` : null }"></div>
 
 	<div>
-		<img svg-inline src="../../../../assets/title.svg" :alt="name">
+		<img svg-inline src="../../../../assets/title.svg" alt="Misskey">
 		<p class="host">{{ host }}</p>
 		<div class="about">
-			<h2>{{ name }}</h2>
+			<h2>{{ name || 'Misskey' }}</h2>
 			<p v-html="description || this.$t('@.about')"></p>
 			<router-link class="signup" to="/signup">{{ $t('@.signup') }}</router-link>
 		</div>
@@ -62,7 +62,7 @@
 		</article>
 		<div class="info" v-if="meta">
 			<p>Version: <b>{{ meta.version }}</b></p>
-			<p>Maintainer: <b><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></b></p>
+			<p>Maintainer: <b><a :href="'mailto:' + meta.maintainerEmail" target="_blank">{{ meta.maintainerName }}</a></b></p>
 		</div>
 		<footer>
 			<small>{{ copyright }}</small>
@@ -87,7 +87,7 @@ export default Vue.extend({
 			stats: null,
 			banner: null,
 			host: toUnicode(host),
-			name: 'Misskey',
+			name: null,
 			description: '',
 			photos: [],
 			announcements: []
