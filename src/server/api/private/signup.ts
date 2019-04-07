@@ -10,6 +10,7 @@ import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
 import { UserServiceLinking } from '../../../models/entities/user-service-linking';
 import { User } from '../../../models/entities/user';
+import { UserKeypair } from '../../../models/entities/user-keypair';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -80,6 +81,23 @@ export default async (ctx: Koa.BaseContext) => {
 		return;
 	}
 
+	const keyPair = await new Promise<string[]>((s, j) =>
+		generateKeyPair('rsa', {
+			modulusLength: 4096,
+			publicKeyEncoding: {
+				type: 'pkcs1',
+				format: 'pem'
+			},
+			privateKeyEncoding: {
+				type: 'pkcs1',
+				format: 'pem',
+				cipher: undefined,
+				passphrase: undefined
+			}
+		}, (e, publicKey, privateKey) =>
+			e ? j(e) : s([publicKey, privateKey])
+		));
+
 	const account = await Users.save({
 		id: genId(),
 		createdAt: new Date(),
@@ -95,21 +113,10 @@ export default async (ctx: Koa.BaseContext) => {
 
 	await UserKeypairs.save({
 		id: genId(),
-		keyPem: await new Promise<string>((s, j) => generateKeyPair('rsa', {
-			modulusLength: 4096,
-			publicKeyEncoding: {
-				type: 'pkcs1',
-				format: 'pem'
-			},
-			privateKeyEncoding: {
-				type: 'pkcs1',
-				format: 'pem',
-				cipher: undefined,
-				passphrase: undefined
-			}
-		}, (e, _, x) => e ? j(e) : s(x))),
+		publicKey: keyPair[0],
+		privateKey: keyPair[1],
 		userId: account.id
-	});
+	} as UserKeypair);
 
 	await UserServiceLinkings.save({
 		id: genId(),

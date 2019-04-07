@@ -20,5 +20,10 @@ export class UserKeypair {
 	@Column('varchar', {
 		length: 4096,
 	})
-	public keyPem: string;
+	public publicKey: string;
+
+	@Column('varchar', {
+		length: 4096,
+	})
+	public privateKey: string;
 }
