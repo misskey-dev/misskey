@@ -174,6 +174,7 @@ export class NoteRepository extends Repository<Note> {
 				name: In(reactionEmojis),
 				host: host
 			}) : [],
+			tags: note.tags,
 			fileIds: note.fileIds,
 			files: DriveFiles.packMany(note.fileIds),
 			replyId: note.replyId,
