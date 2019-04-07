@@ -106,16 +106,6 @@ export default Vue.extend({
 				value: deck
 			});
 		}
-
-		// 互換性のため
-		if (this.$store.state.device.deck != null && this.$store.state.device.deck.layout == null) {
-			this.$store.commit('device/set', {
-				key: 'deck',
-				value: Object.assign({}, this.$store.state.device.deck, {
-					layout: this.$store.state.device.deck.columns.map(c => [c.id])
-				})
-			});
-		}
 	},
 
 	mounted() {
@@ -155,11 +145,11 @@ export default Vue.extend({
 					}
 				}, {
 					icon: 'share-alt',
-					text: this.$t('@deck.hybrid'),
+					text: this.$t('@deck.social'),
 					action: () => {
 						this.$store.commit('device/addDeckColumn', {
 							id: uuid(),
-							type: 'hybrid'
+							type: 'social'
 						});
 					}
 				}, {
@@ -312,7 +302,7 @@ export default Vue.extend({
 
 		isTlColumn(id) {
 			const column = this.columns.find(c => c.id === id);
-			return ['home', 'local', 'hybrid', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(column.type);
+			return ['home', 'local', 'social', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(column.type);
 		}
 	}
 });

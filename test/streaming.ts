@@ -230,7 +230,7 @@ describe('Streaming', () => {
 		it('自分の投稿が流れる', () => new Promise(async done => {
 			const me = await signup();
 
-			const ws = await connectStream(me, 'hybridTimeline', ({ type, body }) => {
+			const ws = await connectStream(me, 'socialTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, me.id);
 					ws.close();
@@ -247,7 +247,7 @@ describe('Streaming', () => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
 
-			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
@@ -269,7 +269,7 @@ describe('Streaming', () => {
 				userId: bob.id
 			}, alice);
 
-			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
@@ -288,7 +288,7 @@ describe('Streaming', () => {
 
 			let fired = false;
 
-			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					fired = true;
 				}
