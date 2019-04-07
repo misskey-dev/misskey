@@ -157,7 +157,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 
 		it('フォローしているユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
@@ -241,7 +241,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 
 		it('フォローしてたとしてもリモートユーザーの投稿は流れない', () => new Promise(async done => {
@@ -269,7 +269,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 
 		it('フォローしているローカルユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
@@ -320,7 +320,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 	});
 
@@ -398,7 +398,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 
 		it('フォローしているユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
@@ -449,7 +449,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 	});
 
@@ -547,7 +547,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 
 		// #4471
@@ -621,7 +621,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, false);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 	});
 
@@ -683,7 +683,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fooBarCount, 1);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 
 		it('指定したハッシュタグの投稿が流れる (OR)', () => new Promise(async done => {
@@ -731,7 +731,7 @@ describe('Streaming', () => {
 				assert.strictEqual(piyoCount, 0);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 
 		it('指定したハッシュタグの投稿が流れる (AND + OR)', () => new Promise(async done => {
@@ -786,7 +786,7 @@ describe('Streaming', () => {
 				assert.strictEqual(waaaCount, 0);
 				ws.close();
 				done();
-			}, 5000);
+			}, 3000);
 		}));
 	});
 });
