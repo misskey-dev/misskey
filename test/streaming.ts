@@ -185,6 +185,38 @@ describe('Streaming', () => {
 				visibleUserIds: [alice.id]
 			});
 		}));
+
+		it('フォローしているユーザーでも自分が指定されていないダイレクト投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+			const carol = await signup({ username: 'carol' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'homeTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// Bob が Carol 宛てのダイレクト投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'specified',
+				visibleUserIds: [carol.id]
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 3000);
+		}));
 	});
 
 	describe('Local Timeline', () => {
