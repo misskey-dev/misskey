@@ -27,18 +27,28 @@ export default class extends Channel {
 			note.user.host === null
 		)) return;
 
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await Notes.pack(note.replyId, this.user, {
+		if (['followers', 'specified'].includes(note.visibility)) {
+			note = await Notes.pack(note.id, this.user, {
 				detail: true
 			});
-		}
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await Notes.pack(note.renoteId, this.user, {
-				detail: true
-			});
-		}
+
+			if (note.isHidden) {
+				return;
+			}
+		} else {
+			// リプライなら再pack
+			if (note.replyId != null) {
+				note.reply = await Notes.pack(note.replyId, this.user, {
+					detail: true
+				});
+			}
+			// Renoteなら再pack
+			if (note.renoteId != null) {
+				note.renote = await Notes.pack(note.renoteId, this.user, {
+					detail: true
+				});
+			}
+	}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (shouldMuteThisNote(note, this.muting)) return;
