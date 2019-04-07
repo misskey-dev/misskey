@@ -38,6 +38,7 @@ export class Instance {
 	 * インスタンスのユーザー数
 	 */
 	@Column('integer', {
+		default: 0,
 		comment: 'The count of the users of the Instance.'
 	})
 	public usersCount: number;
@@ -46,6 +47,7 @@ export class Instance {
 	 * インスタンスの投稿数
 	 */
 	@Column('integer', {
+		default: 0,
 		comment: 'The count of the notes of the Instance.'
 	})
 	public notesCount: number;
@@ -53,25 +55,33 @@ export class Instance {
 	/**
 	 * このインスタンスのユーザーからフォローされている、自インスタンスのユーザーの数
 	 */
-	@Column('integer')
+	@Column('integer', {
+		default: 0,
+	})
 	public followingCount: number;
 
 	/**
 	 * このインスタンスのユーザーをフォローしている、自インスタンスのユーザーの数
 	 */
-	@Column('integer')
+	@Column('integer', {
+		default: 0,
+	})
 	public followersCount: number;
 
 	/**
 	 * ドライブ使用量
 	 */
-	@Column('integer')
+	@Column('integer', {
+		default: 0,
+	})
 	public driveUsage: number;
 
 	/**
 	 * ドライブのファイル数
 	 */
-	@Column('integer')
+	@Column('integer', {
+		default: 0,
+	})
 	public driveFiles: number;
 
 	/**

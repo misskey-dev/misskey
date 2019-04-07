@@ -13,6 +13,7 @@ export async function registerOrFetchInstanceDoc(host: string): Promise<Instance
 			id: genId(),
 			host,
 			caughtAt: new Date(),
+			lastCommunicatedAt: new Date(),
 			system: null // TODO
 		});
 
