@@ -15,11 +15,11 @@ export default class extends Channel {
 		if (meta.disableLocalTimeline && !this.user.isAdmin && !this.user.isModerator) return;
 
 		// Subscribe events
-		this.subscriber.on('notesStream', this.onNewNote);
+		this.subscriber.on('notesStream', this.onNote);
 	}
 
 	@autobind
-	private async onNewNote(note: any) {
+	private async onNote(note: any) {
 		// 自分自身の投稿 または その投稿のユーザーをフォローしている または ローカルの投稿 の場合だけ
 		if (!(
 			this.user.id === note.userId ||
@@ -49,6 +49,6 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off('notesStream', this.onNewNote);
+		this.subscriber.off('notesStream', this.onNote);
 	}
 }
