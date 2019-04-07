@@ -258,4 +258,169 @@ describe('Streaming', () => {
 			}, 5000);
 		}));
 	});
+
+	describe('Hashtag Timeline', () => {
+		it('指定したハッシュタグの投稿が流れる', () => new Promise(async done => {
+			const me = await signup();
+
+			const ws = await connectStream(me, 'hashtag', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.text, '#foo');
+					ws.close();
+					done();
+				}
+			}, {
+				q: [
+					['foo']
+				]
+			});
+
+			post(me, {
+				text: '#foo'
+			});
+		}));
+
+		it('指定したハッシュタグの投稿が流れる (AND)', () => new Promise(async done => {
+			const me = await signup();
+
+			let fooCount = 0;
+			let barCount = 0;
+			let fooBarCount = 0;
+
+			const ws = await connectStream(me, 'hashtag', ({ type, body }) => {
+				if (type == 'note') {
+					if (body.text === '#foo') fooCount++;
+					if (body.text === '#bar') barCount++;
+					if (body.text === '#foo #bar') fooBarCount++;
+				}
+			}, {
+				q: [
+					['foo', 'bar']
+				]
+			});
+
+			post(me, {
+				text: '#foo'
+			});
+
+			post(me, {
+				text: '#bar'
+			});
+
+			post(me, {
+				text: '#foo #bar'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fooCount, 0);
+				assert.strictEqual(barCount, 0);
+				assert.strictEqual(fooBarCount, 1);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+
+		it('指定したハッシュタグの投稿が流れる (OR)', () => new Promise(async done => {
+			const me = await signup();
+
+			let fooCount = 0;
+			let barCount = 0;
+			let fooBarCount = 0;
+			let piyoCount = 0;
+
+			const ws = await connectStream(me, 'hashtag', ({ type, body }) => {
+				if (type == 'note') {
+					if (body.text === '#foo') fooCount++;
+					if (body.text === '#bar') barCount++;
+					if (body.text === '#foo #bar') fooBarCount++;
+					if (body.text === '#piyo') piyoCount++;
+				}
+			}, {
+				q: [
+					['foo'],
+					['bar']
+				]
+			});
+
+			post(me, {
+				text: '#foo'
+			});
+
+			post(me, {
+				text: '#bar'
+			});
+
+			post(me, {
+				text: '#foo #bar'
+			});
+
+			post(me, {
+				text: '#piyo'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fooCount, 1);
+				assert.strictEqual(barCount, 1);
+				assert.strictEqual(fooBarCount, 1);
+				assert.strictEqual(piyoCount, 0);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+
+		it('指定したハッシュタグの投稿が流れる (AND + OR)', () => new Promise(async done => {
+			const me = await signup();
+
+			let fooCount = 0;
+			let barCount = 0;
+			let fooBarCount = 0;
+			let piyoCount = 0;
+			let waaaCount = 0;
+
+			const ws = await connectStream(me, 'hashtag', ({ type, body }) => {
+				if (type == 'note') {
+					if (body.text === '#foo') fooCount++;
+					if (body.text === '#bar') barCount++;
+					if (body.text === '#foo #bar') fooBarCount++;
+					if (body.text === '#piyo') piyoCount++;
+					if (body.text === '#waaa') waaaCount++;
+				}
+			}, {
+				q: [
+					['foo', 'bar'],
+					['piyo']
+				]
+			});
+
+			post(me, {
+				text: '#foo'
+			});
+
+			post(me, {
+				text: '#bar'
+			});
+
+			post(me, {
+				text: '#foo #bar'
+			});
+
+			post(me, {
+				text: '#piyo'
+			});
+
+			post(me, {
+				text: '#waaa'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fooCount, 0);
+				assert.strictEqual(barCount, 0);
+				assert.strictEqual(fooBarCount, 1);
+				assert.strictEqual(piyoCount, 1);
+				assert.strictEqual(waaaCount, 0);
+				ws.close();
+				done();
+			}, 5000);
+		}));
+	});
 });
