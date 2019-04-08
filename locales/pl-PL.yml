@@ -202,15 +202,6 @@ common:
   you: "Ty"
 auth/views/form.vue:
   permission-ask: "Ta aplikacja wymaga następujących uprawnień:"
-  account-read: "Wyświetlanie informacji o koncie:"
-  account-write: "Modyfikowanie informacji o koncie:"
-  note-write: "Publikacja."
-  like-write: "Reagowanie na wpisy."
-  following-write: "Śledzenie i cofanie śledzenia."
-  drive-read: "Odczytywanie Twojego dysku."
-  drive-write: "Wysyłanie i usuwanie plików na Twoim dysku."
-  notification-read: "Odczytywanie Twoich powiadomień."
-  notification-write: "Zarządzanie Twoimi powiadomieniami."
   cancel: "Anuluj"
   accept: "Przyznaj dostęp."
 auth/views/index.vue:
@@ -1223,11 +1214,3 @@ dev/views/apps.vue:
 dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
-  account-read: "Wyświetlanie informacji o koncie:"
-  account-write: "Modyfikowanie informacji o koncie:"
-  note-write: "Publikacja."
-  following-write: "Śledzenie i cofanie śledzenia."
-  drive-read: "Odczytywanie Twojego dysku."
-  drive-write: "Wysyłanie i usuwanie plików na Twoim dysku."
-  notification-read: "Odczytywanie Twoich powiadomień."
-  notification-write: "Zarządzanie Twoimi powiadomieniami."
