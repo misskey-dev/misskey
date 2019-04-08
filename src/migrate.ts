@@ -8,6 +8,7 @@ import { User } from './models/entities/user';
 import { getRepository } from 'typeorm';
 import generateUserToken from './server/api/common/generate-native-user-token';
 import { DriveFile } from './models/entities/drive-file';
+import { DriveFolder } from './models/entities/drive-folder';
 import { InternalStorage } from './services/drive/internal-storage';
 import { createTemp } from './misc/create-temp';
 
@@ -25,7 +26,7 @@ const nativeDbConn = async (): Promise<mongo.Db> => {
 	const db = await ((): Promise<mongo.Db> => new Promise((resolve, reject) => {
 		mongo.MongoClient.connect(uri, { useNewUrlParser: true }, (e: Error, client: any) => {
 			if (e) return reject(e);
-			resolve(client.db((config as any).mongo.db));
+			resolve(client.db((config as any).mongodb.db));
 		});
 	}))();
 
@@ -36,6 +37,7 @@ const nativeDbConn = async (): Promise<mongo.Db> => {
 
 const _User = db.get<any>('users');
 const _DriveFile = db.get<any>('driveFiles.files');
+const _DriveFolder = db.get<any>('driveFolders');
 const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
@@ -48,6 +50,83 @@ async function main() {
 	await initDb();
 	const Users = getRepository(User);
 	const DriveFiles = getRepository(DriveFile);
+	const DriveFolders = getRepository(DriveFolder);
+
+	async function migrateDriveFile(file: any) {
+		const user = await _User.findOne({
+			_id: file.metadata.userId
+		});
+		if (file.metadata.storage && file.metadata.storage.key) { // when object storage
+			await DriveFiles.save({
+				id: file._id.toHexString(),
+				userId: user._id.toHexString(),
+				userHost: user.host,
+				createdAt: file.uploadDate || new Date(),
+				md5: file.md5,
+				name: file.filename,
+				type: file.contentType,
+				properties: file.metadata.properties,
+				size: file.length,
+				url: file.metadata.url,
+				uri: file.metadata.uri,
+				accessKey: file.metadata.storage.key,
+				folderId: file.metadata.folderId,
+				storedInternal: false,
+				isRemote: false
+			});
+		} else if (!file.metadata.isRemote) {
+			const [temp, clean] = await createTemp();
+			await new Promise(async (res, rej) => {
+				const bucket = await getDriveFileBucket();
+				const readable = bucket.openDownloadStream(file._id);
+				const dest = fs.createWriteStream(temp);
+				readable.on('data', chunk => dest.write(chunk));
+				readable.on('end', () => {
+					dest.end();
+					res();
+				});
+			});
+
+			const key = uuid.v4();
+			const url = InternalStorage.saveFromPath(key, temp);
+			await DriveFiles.save({
+				id: file._id.toHexString(),
+				userId: user._id.toHexString(),
+				userHost: user.host,
+				createdAt: file.uploadDate || new Date(),
+				md5: file.md5,
+				name: file.filename,
+				type: file.contentType,
+				properties: file.metadata.properties,
+				size: file.length,
+				url: url,
+				uri: file.metadata.uri,
+				accessKey: key,
+				folderId: file.metadata.folderId,
+				storedInternal: true,
+				isRemote: false
+			});
+			clean();
+		} else {
+			await DriveFiles.save({
+				id: file._id.toHexString(),
+				userId: user._id.toHexString(),
+				userHost: user.host,
+				createdAt: file.uploadDate || new Date(),
+				md5: file.md5,
+				name: file.filename,
+				type: file.contentType,
+				properties: file.metadata.properties,
+				size: file.length,
+				url: file.metadata.url,
+				uri: file.metadata.uri,
+				accessKey: null,
+				folderId: file.metadata.folderId,
+				storedInternal: false,
+				isRemote: true
+			});
+		}
+	}
 
 	const allUsersCount = await _User.count();
 	for (let i = 0; i < allUsersCount; i++) {
@@ -82,53 +161,31 @@ async function main() {
 		console.log(`USER (${i + 1}/${allUsersCount}) ${user._id} DONE`);
 	}
 
+	const allDriveFoldersCount = await _DriveFolder.count();
+	for (let i = 0; i < allDriveFoldersCount; i++) {
+		const folder = await _DriveFolder.findOne({}, {
+			skip: i
+		});
+		await DriveFolders.save({
+			id: folder._id.toHexString(),
+			createdAt: folder.createdAt || new Date(),
+			name: folder.name,
+			parentId: folder.parentId,
+		});
+		console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} DONE`);
+	}
+
 	const allDriveFilesCount = await _DriveFile.count();
 	for (let i = 0; i < allDriveFilesCount; i++) {
 		const file = await _DriveFile.findOne({}, {
 			skip: i
 		});
-		const user = await _User.findOne({
-			_id: file.metadata.userId
-		});
-		if (file.metadata.storage && file.metadata.storage.key) { // when object storage
-			await DriveFiles.save({
-				id: file._id.toHexString(),
-				userId: user._id.toHexString(),
-				userHost: user.host,
-				createdAt: file.uploadDate || new Date(),
-				md5: file.md5,
-				name: file.filename,
-				type: file.contentType,
-				properties: file.metadata.properties,
-				size: file.length,
-				url: file.metadata.url,
-				uri: file.metadata.uri,
-				accessKey: file.metadata.storage.key
-			});
-		} else {
-			const [temp, clean] = await createTemp();
-			const bucket = await getDriveFileBucket();
-			const readable = bucket.openDownloadStream(file._id);
-			fs.writeFileSync(temp, readable);
-			const key = uuid.v4();
-			const url = InternalStorage.saveFromPath(key, temp);
-			await DriveFiles.save({
-				id: file._id.toHexString(),
-				userId: user._id.toHexString(),
-				userHost: user.host,
-				createdAt: file.uploadDate || new Date(),
-				md5: file.md5,
-				name: file.filename,
-				type: file.contentType,
-				properties: file.metadata.properties,
-				size: file.length,
-				url: url,
-				uri: file.metadata.uri,
-				accessKey: key
-			});
-			clean();
+		try {
+			await migrateDriveFile(file);
+			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} DONE`);
+		} catch (e) {
+			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} ERR`);
 		}
-		console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} DONE`);
 	}
 }
 
