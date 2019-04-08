@@ -71,8 +71,8 @@ common:
   favorites: "Favorites"
   permissions:
     'write:account': "Update your account information"
-    'read:drive': "Monitor the Drive"
-    'write:drive': "Work with the Drive operations"
+    'read:drive': "Browse the Drive"
+    'write:drive': "Work with the Drive"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
     explore: "Find users"
