@@ -69,8 +69,8 @@ export default define(meta, async (ps, me) => {
 	if (isUsername) {
 		users = await Users.createQueryBuilder('user')
 			.where('user.host IS NULL')
-			.where('user.isSuspended = FALSE')
-			.where('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+			.andWhere('user.isSuspended = FALSE')
+			.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
 			.take(ps.limit)
 			.skip(ps.offset)
 			.getMany();
@@ -78,8 +78,8 @@ export default define(meta, async (ps, me) => {
 		if (users.length < ps.limit && !ps.localOnly) {
 			const otherUsers = await Users.createQueryBuilder('user')
 				.where('user.host IS NOT NULL')
-				.where('user.isSuspended = FALSE')
-				.where('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+				.andWhere('user.isSuspended = FALSE')
+				.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
 				.take(ps.limit - users.length)
 				.getMany();
 
