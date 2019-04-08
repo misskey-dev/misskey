@@ -38,7 +38,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Generate access token
-	const accessToken = rndstr('a-zA-Z0-9', 32);
+	const accessToken = '1' + rndstr('a-zA-Z0-9', 15);
 
 	// Fetch exist access token
 	const exist = await AccessTokens.findOne({
