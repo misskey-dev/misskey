@@ -971,8 +971,6 @@ desktop/views/components/settings.tags.vue:
   query: "쿼리 (생략 가능)"
   add: "추가"
   save: "저장"
-desktop/views/components/taskmanager.vue:
-  title: "작업 관리자"
 desktop/views/components/timeline.vue:
   home: "홈"
   local: "로컬"
