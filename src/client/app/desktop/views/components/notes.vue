@@ -26,7 +26,7 @@
 	</component>
 
 	<footer v-if="more">
-		<button @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button @click="fetchMore()" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
 			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>
 		</button>
@@ -122,7 +122,7 @@ export default Vue.extend({
 			});
 		},
 
-		more() {
+		fetchMore() {
 			if (!this.more || this.moreFetching) return;
 			this.moreFetching = true;
 			this.makePromise(this.notes[this.notes.length - 1].id).then(x => {
@@ -182,7 +182,7 @@ export default Vue.extend({
 
 			if (this.$store.state.settings.fetchOnScroll !== false) {
 				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) this.more();
+				if (current > document.body.offsetHeight - 8) this.fetchMore();
 			}
 		}
 	}
