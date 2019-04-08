@@ -804,7 +804,6 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Bezpośrednie wpisy"
@@ -1111,7 +1110,6 @@ mobile/views/pages/signup.vue:
 mobile/views/pages/home.vue:
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Bezpośrednie wpisy"
@@ -1161,7 +1159,6 @@ deck:
   widgets: "Widżety"
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   hashtag: "Hashtag"
   global: "Globalne"
   mentions: "Wspomnienia"
