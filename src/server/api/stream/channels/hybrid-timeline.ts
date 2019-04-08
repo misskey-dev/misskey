@@ -5,7 +5,7 @@ import fetchMeta from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
 
 export default class extends Channel {
-	public readonly chName = 'socialTimeline';
+	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
 

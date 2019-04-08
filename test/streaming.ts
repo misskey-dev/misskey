@@ -381,11 +381,11 @@ describe('Streaming', () => {
 		}));
 	});
 
-	describe('Social Timeline', () => {
+	describe('Hybrid Timeline', () => {
 		it('自分の投稿が流れる', () => new Promise(async done => {
 			const me = await signup();
 
-			const ws = await connectStream(me, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(me, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, me.id);
 					ws.close();
@@ -402,7 +402,7 @@ describe('Streaming', () => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
@@ -422,7 +422,7 @@ describe('Streaming', () => {
 			// Alice が Bob をフォロー
 			await follow(alice, bob);
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
@@ -441,7 +441,7 @@ describe('Streaming', () => {
 
 			let fired = false;
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					fired = true;
 				}
@@ -467,7 +467,7 @@ describe('Streaming', () => {
 				userId: bob.id
 			}, alice);
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					assert.deepStrictEqual(body.text, 'foo');
@@ -490,7 +490,7 @@ describe('Streaming', () => {
 
 			let fired = false;
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					fired = true;
 				}

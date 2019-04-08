@@ -3,7 +3,7 @@
 	<template #header>
 		<fa v-if="column.type == 'home'" icon="home"/>
 		<fa v-if="column.type == 'local'" :icon="['far', 'comments']"/>
-		<fa v-if="column.type == 'social'" icon="share-alt"/>
+		<fa v-if="column.type == 'hybrid'" icon="share-alt"/>
 		<fa v-if="column.type == 'global'" icon="globe"/>
 		<fa v-if="column.type == 'list'" icon="list"/>
 		<fa v-if="column.type == 'hashtag'" icon="hashtag"/>
@@ -80,7 +80,7 @@ export default Vue.extend({
 			switch (this.column.type) {
 				case 'home': return this.$t('@deck.home');
 				case 'local': return this.$t('@deck.local');
-				case 'social': return this.$t('@deck.social');
+				case 'hybrid': return this.$t('@deck.hybrid');
 				case 'global': return this.$t('@deck.global');
 				case 'list': return this.column.list.name;
 				case 'hashtag': return this.$store.state.settings.tagTimelines.find(x => x.id == this.column.tagTlId).title;

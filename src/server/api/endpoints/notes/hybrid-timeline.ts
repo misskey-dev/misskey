@@ -95,7 +95,7 @@ export const meta = {
 
 	errors: {
 		stlDisabled: {
-			message: 'Social timeline has been disabled.',
+			message: 'Hybrid timeline has been disabled.',
 			code: 'STL_DISABLED',
 			id: '620763f4-f621-4533-ab33-0577a1a3c342'
 		},

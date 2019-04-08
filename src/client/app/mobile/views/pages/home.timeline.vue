@@ -78,9 +78,9 @@ export default Vue.extend({
 			this.endpoint = 'notes/local-timeline';
 			this.connection = this.$root.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
-		} else if (this.src == 'social') {
-			this.endpoint = 'notes/social-timeline';
-			this.connection = this.$root.stream.useSharedConnection('socialTimeline');
+		} else if (this.src == 'hybrid') {
+			this.endpoint = 'notes/hybrid-timeline';
+			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';

@@ -1,7 +1,7 @@
 import main from './main';
 import homeTimeline from './home-timeline';
 import localTimeline from './local-timeline';
-import socialTimeline from './social-timeline';
+import hybridTimeline from './hybrid-timeline';
 import globalTimeline from './global-timeline';
 import notesStats from './notes-stats';
 import serverStats from './server-stats';
@@ -20,7 +20,7 @@ export default {
 	main,
 	homeTimeline,
 	localTimeline,
-	socialTimeline,
+	hybridTimeline,
 	globalTimeline,
 	notesStats,
 	serverStats,
