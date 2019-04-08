@@ -69,6 +69,10 @@ common:
   following: "Following"
   followers: "Followers"
   favorites: "Favorites"
+  permissions:
+    'write:account': "Update your account information"
+    'read:drive': "Monitor the Drive"
+    'write:drive': "Work with the Drive operations"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
     explore: "Find users"
