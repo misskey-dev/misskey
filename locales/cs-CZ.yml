@@ -282,14 +282,6 @@ common:
 auth/views/form.vue:
   share-access: "Chcete dovolit aplikaci <i>{name}</i> přístup k vašemu účtu?"
   permission-ask: "Tato aplikace vyžaduje následující oprávnění:"
-  account-read: "Zobrazit informace účtu"
-  account-write: "Upravit informace o účtu."
-  note-write: "Odeslat."
-  like-write: "Vyjádřete se k tomuto příspěvku."
-  following-write: "Sledovat a přestat sledovat"
-  drive-read: "Přečíst váš Disk"
-  notification-read: "Sledovat oznámení."
-  notification-write: "Zpravovat notifikace."
   cancel: "Zrušit"
   accept: "Povolit přístup"
 auth/views/index.vue:
@@ -1192,11 +1184,3 @@ deck/deck.user-column.vue:
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
   app-desc: "Stručný popis nebo představení vaší aplikace."
-  account-read: "Zobrazit informace účtu"
-  account-write: "Upravit informace o účtu."
-  note-write: "Odeslat."
-  reaction-write: "Přidat nebo odebrat reakce."
-  following-write: "Sledovat a přestat sledovat"
-  drive-read: "Přečíst váš Disk"
-  notification-read: "Sledovat oznámení."
-  notification-write: "Zpravovat notifikace."
