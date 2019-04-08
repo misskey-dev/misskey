@@ -1,7 +1,7 @@
-import { IEmoji } from '../../../models/emoji';
 import config from '../../../config';
+import { Emoji } from '../../../models/entities/emoji';
 
-export default (emoji: IEmoji) => ({
+export default (emoji: Emoji) => ({
 	id: `${config.url}/emojis/${emoji.name}`,
 	type: 'Emoji',
 	name: `:${emoji.name}:`,

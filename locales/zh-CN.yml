@@ -577,7 +577,7 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-unread-notes: "将所有帖子标为已读"
   mark-as-read-all-talk-messages: "将所有对话标为已读"
   auto-watch: "自动查看帖子"
-  auto-watch-desc: "自动接收有关您做出反应或回复的帖子的通知。"
+  auto-watch-desc: "自动接收有关您做出回应或回复的帖子的通知。"
 common/views/components/integration-settings.vue:
   title: "服务合作"
   connect: "连接"
@@ -839,22 +839,18 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "取消"
   ok: "确定"
-desktop/views/components/messaging-room-window.vue:
-  title: "信息："
-desktop/views/components/messaging-window.vue:
-  title: "正在聊天"
 desktop/views/components/note-detail.vue:
   private: "私密投稿"
   deleted: "投稿已删除"
   location: "位置信息"
   renote: "转发"
-  add-reaction: "添加一个反应"
-  undo-reaction: "取消反应"
+  add-reaction: "回应"
+  undo-reaction: "取消回应"
 desktop/views/components/note.vue:
   reply: "回复"
   renote: "Renote"
-  add-reaction: "添加一个反应"
-  undo-reaction: "取消反应"
+  add-reaction: "回应"
+  undo-reaction: "取消回应"
   detail: "详细信息"
   private: "这个投稿是私密的"
   deleted: "投稿已删除"
@@ -992,7 +988,7 @@ desktop/views/components/timeline.vue:
   hybrid: "社交"
   global: "全球"
   mentions: "提到的"
-  messages: "信息"
+  messages: "直接发布"
   list: "列表"
   hashtag: "标签"
   add-tag-timeline: "添加标签"
@@ -1113,6 +1109,8 @@ admin/views/instance.vue:
   disable-local-timeline: "停用本地时间线功能"
   disable-global-timeline: "禁用全局时间线"
   disabling-timelines-info: "即使禁用时间线，管理员和版主仍然可用。"
+  enable-emoji-reaction: "在回应上使用表情符号"
+  use-star-for-reaction-fallback: "使用默认的star来表示未知的回应"
   invite: "邀请"
   save: "保存"
   saved: "保存完毕"
@@ -1387,8 +1385,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "帖子与回复"
   with-media: "媒体"
   my-posts: "我的帖子"
-desktop/views/widgets/messaging.vue:
-  title: "信息"
 desktop/views/widgets/notifications.vue:
   title: "通知"
 desktop/views/widgets/polls.vue:
@@ -1452,7 +1448,7 @@ mobile/views/components/note.vue:
   location: "位置信息"
 mobile/views/components/note-detail.vue:
   reply: "回复"
-  reaction: "反应"
+  reaction: "回应"
   private: "这个帖子是私密的"
   deleted: "帖子已删除"
   location: "位置信息"
@@ -1510,7 +1506,7 @@ mobile/views/pages/home.vue:
   hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
-  messages: "信息"
+  messages: "直接发布"
 mobile/views/pages/tag.vue:
   no-posts-found: "没有找到带有主题标签“{q}”的帖子"
 mobile/views/pages/widgets.vue:
@@ -1639,7 +1635,7 @@ dev/views/new-app.vue:
   account-read: "查看账户信息"
   account-write: "修改账户信息"
   note-write: "投稿。"
-  reaction-write: "添加或删除反应。"
+  reaction-write: "添加或删除回应。"
   following-write: "关注和不关注"
   drive-read: "查看网盘"
   drive-write: "管理网盘文件。"

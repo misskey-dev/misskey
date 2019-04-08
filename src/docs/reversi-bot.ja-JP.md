@@ -42,9 +42,9 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 ```
 pos = x + (y * mapWidth)
 ```
-`mapWidth`は、ゲーム情報の`settings.map`から、次のようにして計算できます:
+`mapWidth`は、ゲーム情報の`map`から、次のようにして計算できます:
 ```
-mapWidth = settings.map[0].length
+mapWidth = map[0].length
 ```
 
 ### Pos から X,Y座標 に変換する
@@ -54,7 +54,7 @@ y = Math.floor(pos / mapWidth)
 ```
 
 ## マップ情報
-マップ情報は、ゲーム情報の`settings.map`に入っています。
+マップ情報は、ゲーム情報の`map`に入っています。
 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。
 それをもとにマップのデザインを知る事が出来ます:
 * `(スペース)` ... マス無し

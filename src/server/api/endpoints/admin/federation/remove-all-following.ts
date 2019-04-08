@@ -1,8 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
-import Following from '../../../../../models/following';
-import User from '../../../../../models/user';
 import deleteFollowing from '../../../../../services/following/delete';
+import { Followings, Users } from '../../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -18,13 +17,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const followings = await Following.find({
-		'_follower.host': ps.host
+	const followings = await Followings.find({
+		followerHost: ps.host
 	});
 
 	const pairs = await Promise.all(followings.map(f => Promise.all([
-		User.findOne({ _id: f.followerId }),
-		User.findOne({ _id: f.followeeId })
+		Users.findOne(f.followerId),
+		Users.findOne(f.followeeId)
 	])));
 
 	for (const pair of pairs) {

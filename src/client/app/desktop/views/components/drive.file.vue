@@ -60,7 +60,7 @@ export default Vue.extend({
 			return this.browser.selectedFiles.some(f => f.id == this.file.id);
 		},
 		title(): string {
-			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.datasize)}`;
+			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.size)}`;
 		}
 	},
 	methods: {

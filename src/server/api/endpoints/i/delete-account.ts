@@ -1,10 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User from '../../../../models/user';
 import define from '../../define';
-import { createDeleteNotesJob, createDeleteDriveFilesJob } from '../../../../queue';
-import Message from '../../../../models/messaging-message';
-import Signin from '../../../../models/signin';
+import { Users } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -26,27 +23,5 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	await User.update({ _id: user._id }, {
-		$set: {
-			isDeleted: true,
-			name: null,
-			description: null,
-			pinnedNoteIds: [],
-			password: null,
-			email: null,
-			twitter: null,
-			github: null,
-			discord: null,
-			profile: {},
-			fields: [],
-			clientSettings: {},
-		}
-	});
-
-	Message.remove({ userId: user._id });
-	Signin.remove({ userId: user._id });
-	createDeleteNotesJob(user);
-	createDeleteDriveFilesJob(user);
-
-	return;
+	await Users.delete(user.id);
 });

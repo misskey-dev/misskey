@@ -1,7 +1,6 @@
-import User from '../../../../models/user';
 import { publishMainStream } from '../../../../services/stream';
-import Message from '../../../../models/messaging-message';
 import define from '../../define';
+import { MessagingMessages } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -13,7 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 	}
@@ -21,24 +20,12 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Update documents
-	await Message.update({
-		recipientId: user._id,
+	await MessagingMessages.update({
+		recipientId: user.id,
 		isRead: false
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
+		isRead: true
 	});
 
-	User.update({ _id: user._id }, {
-		$set: {
-			hasUnreadMessagingMessage: false
-		}
-	});
-
-	publishMainStream(user._id, 'readAllMessagingMessages');
-
-	return;
+	publishMainStream(user.id, 'readAllMessagingMessages');
 });

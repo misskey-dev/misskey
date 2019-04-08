@@ -1,4 +1,4 @@
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import { IUndo, IFollow, IBlock, ILike } from '../../type';
 import unfollow from './follow';
 import unblock from './block';

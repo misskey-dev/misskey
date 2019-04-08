@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../../misc/cafy-id';
-import ReversiGame, { pack } from '../../../../../../models/games/reversi/game';
+import { ID } from '../../../../../../misc/cafy-id';
 import Reversi from '../../../../../../games/reversi/core';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
+import { ReversiGames } from '../../../../../../models';
 
 export const meta = {
 	tags: ['games'],
@@ -11,7 +11,6 @@ export const meta = {
 	params: {
 		gameId: {
 			validator: $.type(ID),
-			transform: transform,
 		},
 	},
 
@@ -25,22 +24,23 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const game = await ReversiGame.findOne({ _id: ps.gameId });
+	const game = await ReversiGames.findOne(ps.gameId);
 
 	if (game == null) {
 		throw new ApiError(meta.errors.noSuchGame);
 	}
 
-	const o = new Reversi(game.settings.map, {
-		isLlotheo: game.settings.isLlotheo,
-		canPutEverywhere: game.settings.canPutEverywhere,
-		loopedBoard: game.settings.loopedBoard
+	const o = new Reversi(game.map, {
+		isLlotheo: game.isLlotheo,
+		canPutEverywhere: game.canPutEverywhere,
+		loopedBoard: game.loopedBoard
 	});
 
-	for (const log of game.logs)
+	for (const log of game.logs) {
 		o.put(log.color, log.pos);
+	}
 
-	const packed = await pack(game, user);
+	const packed = await ReversiGames.pack(game, user);
 
 	return Object.assign({
 		board: o.board,

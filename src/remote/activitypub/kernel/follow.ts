@@ -1,8 +1,8 @@
-import * as mongo from 'mongodb';
-import User, { IRemoteUser } from '../../../models/user';
+import { IRemoteUser } from '../../../models/entities/user';
 import config from '../../../config';
 import follow from '../../../services/following/create';
 import { IFollow } from '../type';
+import { Users } from '../../../models';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
@@ -11,11 +11,9 @@ export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 		return null;
 	}
 
-	const followee = await User.findOne({
-		_id: new mongo.ObjectID(id.split('/').pop())
-	});
+	const followee = await Users.findOne(id.split('/').pop());
 
-	if (followee === null) {
+	if (followee == null) {
 		throw new Error('followee not found');
 	}
 

@@ -73,6 +73,12 @@ common:
   followers: "フォロワー"
   favorites: "お気に入り"
 
+  permissions:
+    'read:account': "アカウントの情報を見る"
+    'write:account': "アカウントの情報を変更する"
+    'read:drive': "ドライブを見る"
+    'write:drive': "ドライブを操作する"
+
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
     explore: "ユーザーを探索する"
@@ -1098,7 +1104,7 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
+  social: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "ダイレクト投稿"
@@ -1245,11 +1251,6 @@ admin/views/instance.vue:
   save: "保存"
   saved: "保存しました"
   user-recommendation-config: "おすすめユーザー"
-  enable-external-user-recommendation: "外部ユーザーレコメンデーションを有効にする"
-  external-user-recommendation-engine: "エンジン"
-  external-user-recommendation-engine-desc: "例: https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
-  external-user-recommendation-timeout: "タイムアウト"
-  external-user-recommendation-timeout-desc: "ミリ秒単位 (例: 300000)"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使われます。"
   enable-email: "メール配信を有効にする"
@@ -1680,7 +1681,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
+  social: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "ダイレクト投稿"
@@ -1750,7 +1751,7 @@ deck:
   widgets: "ウィジェット"
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
+  social: "ソーシャル"
   hashtag: "ハッシュタグ"
   global: "グローバル"
   mentions: "あなた宛て"

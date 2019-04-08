@@ -1,7 +1,7 @@
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
 import parseAcct from '../../misc/acct/parse';
-import User, { IRemoteUser } from '../../models/user';
+import { IRemoteUser } from '../../models/entities/user';
 import perform from '../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
 import { toUnicode } from 'punycode';
@@ -9,8 +9,10 @@ import { URL } from 'url';
 import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import Instance from '../../models/instance';
-import instanceChart from '../../services/chart/instance';
+import { Instances, Users, UserPublickeys } from '../../models';
+import { instanceChart } from '../../services/chart';
+import { UserPublickey } from '../../models/entities/user-publickey';
+import fetchMeta from '../../misc/fetch-meta';
 
 const logger = new Logger('inbox');
 
@@ -28,6 +30,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	const keyIdLower = signature.keyId.toLowerCase();
 	let user: IRemoteUser;
+	let key: UserPublickey;
 
 	if (keyIdLower.startsWith('acct:')) {
 		const { username, host } = parseAcct(keyIdLower.slice('acct:'.length));
@@ -46,13 +49,17 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		// ブロックしてたら中断
 		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const instance = await Instance.findOne({ host: host.toLowerCase() });
-		if (instance && instance.isBlocked) {
+		const meta = await fetchMeta();
+		if (meta.blockedHosts.includes(host.toLowerCase())) {
 			logger.info(`Blocked request: ${host}`);
 			return;
 		}
 
-		user = await User.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
+		user = await Users.findOne({ usernameLower: username, host: host.toLowerCase() }) as IRemoteUser;
+
+		key = await UserPublickeys.findOne({
+			userId: user.id
+		});
 	} else {
 		// アクティビティ内のホストの検証
 		const host = toUnicode(new URL(signature.keyId).hostname.toLowerCase());
@@ -65,16 +72,17 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		// ブロックしてたら中断
 		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const instance = await Instance.findOne({ host: host.toLowerCase() });
-		if (instance && instance.isBlocked) {
-			logger.warn(`Blocked request: ${host}`);
+		const meta = await fetchMeta();
+		if (meta.blockedHosts.includes(host.toLowerCase())) {
+			logger.info(`Blocked request: ${host}`);
 			return;
 		}
 
-		user = await User.findOne({
-			host: { $ne: null },
-			'publicKey.id': signature.keyId
-		}) as IRemoteUser;
+		key = await UserPublickeys.findOne({
+			keyId: signature.keyId
+		});
+
+		user = await Users.findOne(key.userId) as IRemoteUser;
 	}
 
 	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
@@ -82,7 +90,7 @@ export default async (job: Bull.Job): Promise<void> => {
 		if (activity.object && activity.object.type === 'Person') {
 			if (user == null) {
 				logger.warn('Update activity received, but user not registed.');
-			} else if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
+			} else if (!httpSignature.verifySignature(signature, key.keyPem)) {
 				logger.warn('Update activity received, but signature verification failed.');
 			} else {
 				updatePerson(activity.actor, null, activity.object);
@@ -92,15 +100,15 @@ export default async (job: Bull.Job): Promise<void> => {
 	}
 
 	// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
-	if (user === null) {
+	if (user == null) {
 		user = await resolvePerson(activity.actor) as IRemoteUser;
 	}
 
-	if (user === null) {
+	if (user == null) {
 		throw new Error('failed to resolve user');
 	}
 
-	if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
+	if (!httpSignature.verifySignature(signature, key.keyPem)) {
 		logger.error('signature verification failed');
 		return;
 	}
@@ -116,12 +124,10 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	// Update stats
 	registerOrFetchInstanceDoc(user.host).then(i => {
-		Instance.update({ _id: i._id }, {
-			$set: {
-				latestRequestReceivedAt: new Date(),
-				lastCommunicatedAt: new Date(),
-				isNotResponding: false
-			}
+		Instances.update(i.id, {
+			latestRequestReceivedAt: new Date(),
+			lastCommunicatedAt: new Date(),
+			isNotResponding: false
 		});
 
 		instanceChart.requestReceived(i.host);

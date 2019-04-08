@@ -1,8 +1,9 @@
-import { IUser, isRemoteUser } from '../../../models/user';
 import config from '../../../config';
+import { User, ILocalUser } from '../../../models/entities/user';
+import { Users } from '../../../models';
 
-export default (mention: IUser) => ({
+export default (mention: User) => ({
 	type: 'Mention',
-	href: isRemoteUser(mention) ? mention.uri : `${config.url}/@${mention.username}`,
-	name: isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${mention.username}`,
+	href: Users.isRemoteUser(mention) ? mention.uri : `${config.url}/@${(mention as ILocalUser).username}`,
+	name: Users.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as ILocalUser).username}`,
 });

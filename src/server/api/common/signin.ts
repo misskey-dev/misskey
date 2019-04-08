@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
+import { ILocalUser } from '../../../models/entities/user';
 
 export default function(ctx: Koa.BaseContext, user: ILocalUser, redirect = false) {
 	if (redirect) {

@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import App, { pack } from '../../../../models/app';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { Apps } from '../../../../models';
 
 export const meta = {
 	tags: ['app'],
@@ -10,7 +10,6 @@ export const meta = {
 	params: {
 		appId: {
 			validator: $.type(ID),
-			transform: transform
 		},
 	},
 
@@ -27,14 +26,14 @@ export default define(meta, async (ps, user, app) => {
 	const isSecure = user != null && app == null;
 
 	// Lookup app
-	const ap = await App.findOne({ _id: ps.appId });
+	const ap = await Apps.findOne(ps.appId);
 
-	if (ap === null) {
+	if (ap == null) {
 		throw new ApiError(meta.errors.noSuchApp);
 	}
 
-	return await pack(ap, user, {
+	return await Apps.pack(ap, user, {
 		detail: true,
-		includeSecret: isSecure && ap.userId.equals(user._id)
+		includeSecret: isSecure && (ap.userId === user.id)
 	});
 });

@@ -1,7 +1,7 @@
 <template>
 <div class="cudqjmnl">
 	<ui-card>
-		<template #title><fa :icon="faList"/> {{ list.title }}</template>
+		<template #title><fa :icon="faList"/> {{ list.name }}</template>
 
 		<section>
 			<ui-button @click="rename"><fa :icon="faICursor"/> {{ $t('rename') }}</ui-button>
@@ -75,7 +75,7 @@ export default Vue.extend({
 			this.$root.dialog({
 				title: this.$t('rename'),
 				input: {
-					default: this.list.title
+					default: this.list.name
 				}
 			}).then(({ canceled, result: title }) => {
 				if (canceled) return;
@@ -89,7 +89,7 @@ export default Vue.extend({
 		del() {
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('delete-are-you-sure').replace('$1', this.list.title),
+				text: this.$t('delete-are-you-sure').replace('$1', this.list.name),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;

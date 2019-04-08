@@ -1,9 +1,9 @@
-import { INote } from '../../../models/note';
+import { Note } from '../../../models/entities/note';
 import { toHtml } from '../../../mfm/toHtml';
 import { parse } from '../../../mfm/parse';
 
-export default function(note: INote) {
-	let html = toHtml(parse(note.text), note.mentionedRemoteUsers);
+export default function(note: Note) {
+	let html = toHtml(parse(note.text), JSON.parse(note.mentionedRemoteUsers));
 	if (html == null) html = '<p>.</p>';
 
 	return html;

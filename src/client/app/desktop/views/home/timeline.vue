@@ -6,10 +6,10 @@
 			<header class="zahtxcqi">
 				<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
 				<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
-				<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
+				<span :data-active="src == 'social'" @click="src = 'social'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('social') }}</span>
 				<span :data-active="src == 'global'" @click="src = 'global'" v-if="enableGlobalTimeline"><fa icon="globe"/> {{ $t('global') }}</span>
 				<span :data-active="src == 'tag'" @click="src = 'tag'" v-if="tagTl"><fa icon="hashtag"/> {{ tagTl.title }}</span>
-				<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.title }}</span>
+				<span :data-active="src == 'list'" @click="src = 'list'" v-if="list"><fa icon="list"/> {{ list.name }}</span>
 				<div class="buttons">
 					<button :data-active="src == 'mentions'" @click="src = 'mentions'" :title="$t('mentions')"><fa icon="at"/><i class="indicator" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></button>
 					<button :data-active="src == 'messages'" @click="src = 'messages'" :title="$t('messages')"><fa :icon="['far', 'envelope']"/><i class="indicator" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></button>
@@ -78,7 +78,7 @@ export default Vue.extend({
 			) && this.src === 'global') this.src = 'local';
 			if (!(
 				this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
-			) && ['local', 'hybrid'].includes(this.src)) this.src = 'home';
+			) && ['local', 'social'].includes(this.src)) this.src = 'home';
 		});
 
 		if (this.$store.state.device.tl) {
@@ -89,7 +89,7 @@ export default Vue.extend({
 				this.tagTl = this.$store.state.device.tl.arg;
 			}
 		} else if (this.$store.state.i.followingCount == 0) {
-			this.src = 'hybrid';
+			this.src = 'social';
 		}
 	},
 
@@ -143,7 +143,7 @@ export default Vue.extend({
 
 			menu = menu.concat(lists.map(list => ({
 				icon: 'list',
-				text: list.title,
+				text: list.name,
 				action: () => {
 					this.list = list;
 					this.src = 'list';

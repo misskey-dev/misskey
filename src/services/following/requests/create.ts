@@ -1,66 +1,59 @@
-import User, { isLocalUser, isRemoteUser, pack as packUser, IUser } from '../../../models/user';
 import { publishMainStream } from '../../stream';
-import notify from '../../../services/create-notification';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import { deliver } from '../../../queue';
-import FollowRequest from '../../../models/follow-request';
-import Blocking from '../../../models/blocking';
+import { User } from '../../../models/entities/user';
+import { Blockings, FollowRequests, Users } from '../../../models';
+import { genId } from '../../../misc/gen-id';
+import { createNotification } from '../../create-notification';
 
-export default async function(follower: IUser, followee: IUser, requestId?: string) {
+export default async function(follower: User, followee: User, requestId?: string) {
+	if (follower.id === followee.id) return;
+
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
-		Blocking.findOne({
-			blockerId: follower._id,
-			blockeeId: followee._id,
+		Blockings.findOne({
+			blockerId: follower.id,
+			blockeeId: followee.id,
 		}),
-		Blocking.findOne({
-			blockerId: followee._id,
-			blockeeId: follower._id,
+		Blockings.findOne({
+			blockerId: followee.id,
+			blockeeId: follower.id,
 		})
 	]);
 
 	if (blocking != null) throw new Error('blocking');
 	if (blocked != null) throw new Error('blocked');
 
-	await FollowRequest.insert({
+	await FollowRequests.save({
+		id: genId(),
 		createdAt: new Date(),
-		followerId: follower._id,
-		followeeId: followee._id,
+		followerId: follower.id,
+		followeeId: followee.id,
 		requestId,
 
 		// 非正規化
-		_follower: {
-			host: follower.host,
-			inbox: isRemoteUser(follower) ? follower.inbox : undefined,
-			sharedInbox: isRemoteUser(follower) ? follower.sharedInbox : undefined
-		},
-		_followee: {
-			host: followee.host,
-			inbox: isRemoteUser(followee) ? followee.inbox : undefined,
-			sharedInbox: isRemoteUser(followee) ? followee.sharedInbox : undefined
-		}
-	});
-
-	await User.update({ _id: followee._id }, {
-		$inc: {
-			pendingReceivedFollowRequestsCount: 1
-		}
+		followerHost: follower.host,
+		followerInbox: Users.isRemoteUser(follower) ? follower.inbox : undefined,
+		followerSharedInbox: Users.isRemoteUser(follower) ? follower.sharedInbox : undefined,
+		followeeHost: followee.host,
+		followeeInbox: Users.isRemoteUser(followee) ? followee.inbox : undefined,
+		followeeSharedInbox: Users.isRemoteUser(followee) ? followee.sharedInbox : undefined
 	});
 
 	// Publish receiveRequest event
-	if (isLocalUser(followee)) {
-		packUser(follower, followee).then(packed => publishMainStream(followee._id, 'receiveFollowRequest', packed));
+	if (Users.isLocalUser(followee)) {
+		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'receiveFollowRequest', packed));
 
-		packUser(followee, followee, {
+		Users.pack(followee, followee, {
 			detail: true
-		}).then(packed => publishMainStream(followee._id, 'meUpdated', packed));
+		}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 
 		// 通知を作成
-		notify(followee._id, follower._id, 'receiveFollowRequest');
+		createNotification(followee.id, follower.id, 'receiveFollowRequest');
 	}
 
-	if (isLocalUser(follower) && isRemoteUser(followee)) {
+	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderFollow(follower, followee));
 		deliver(follower, content, followee.inbox);
 	}

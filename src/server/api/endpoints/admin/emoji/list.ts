@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import Emoji from '../../../../../models/emoji';
 import define from '../../../define';
+import { Emojis } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -21,12 +21,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const emojis = await Emoji.find({
+	const emojis = await Emojis.find({
 		host: ps.host
 	});
 
 	return emojis.map(e => ({
-		id: e._id,
+		id: e.id,
 		name: e.name,
 		aliases: e.aliases,
 		host: e.host,

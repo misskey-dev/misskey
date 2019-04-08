@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import watch from '../../../../../services/note/watch';
 import { getNote } from '../../../common/getters';
@@ -17,12 +17,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
@@ -45,5 +44,5 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	await watch(user._id, note);
+	await watch(user.id, note);
 });

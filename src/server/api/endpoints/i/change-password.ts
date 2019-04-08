@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User from '../../../../models/user';
 import define from '../../define';
+import { Users } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -31,11 +31,7 @@ export default define(meta, async (ps, user) => {
 	const salt = await bcrypt.genSalt(8);
 	const hash = await bcrypt.hash(ps.newPassword, salt);
 
-	await User.update(user._id, {
-		$set: {
-			'password': hash
-		}
+	await Users.update(user.id, {
+		password: hash
 	});
-
-	return;
 });

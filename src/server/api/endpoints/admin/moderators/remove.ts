@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import User from '../../../../../models/user';
+import { Users } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -17,7 +17,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID'
@@ -27,21 +26,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await User.findOne({
-		_id: ps.userId
-	});
+	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {
 		throw new Error('user not found');
 	}
 
-	await User.update({
-		_id: user._id
-	}, {
-		$set: {
-			isModerator: false
-		}
+	await Users.update(user.id, {
+		isModerator: false
 	});
-
-	return;
 });

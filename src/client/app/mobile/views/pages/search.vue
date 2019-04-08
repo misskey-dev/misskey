@@ -21,19 +21,19 @@ export default Vue.extend({
 		return {
 			makePromise: cursor => this.$root.api('notes/search', {
 				limit: limit + 1,
-				offset: cursor ? cursor : undefined,
+				untilId: cursor ? cursor : undefined,
 				query: this.q
 			}).then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
 					return {
 						notes: notes,
-						cursor: cursor ? cursor + limit : limit
+						more: true
 					};
 				} else {
 					return {
 						notes: notes,
-						cursor: null
+						more: false
 					};
 				}
 			})

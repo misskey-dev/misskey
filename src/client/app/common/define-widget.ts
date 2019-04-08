@@ -45,15 +45,9 @@ export default function <T extends object>(data: {
 			this.$watch('props', () => {
 				this.mergeProps();
 			});
-
-			this.bakeProps();
 		},
 
 		methods: {
-			bakeProps() {
-				this.bakedOldProps = JSON.stringify(this.props);
-			},
-
 			mergeProps() {
 				if (data.props) {
 					const defaultProps = data.props();
@@ -65,17 +59,10 @@ export default function <T extends object>(data: {
 			},
 
 			save() {
-				if (this.bakedOldProps == JSON.stringify(this.props)) return;
-
-				this.bakeProps();
-
 				if (this.platform == 'deck') {
 					this.$store.commit('device/updateDeckColumn', this.column);
 				} else {
-					this.$root.api('i/update_widget', {
-						id: this.id,
-						data: this.props
-					});
+					this.$store.commit('device/updateWidget', this.widget);
 				}
 			}
 		}

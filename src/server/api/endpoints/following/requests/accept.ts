@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import acceptFollowRequest from '../../../../../services/following/requests/accept';
 import define from '../../../define';
 import { ApiError } from '../../../error';
@@ -15,12 +15,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-write',
+	kind: 'write:following',
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
