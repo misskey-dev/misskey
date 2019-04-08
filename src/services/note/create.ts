@@ -207,7 +207,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	if (Users.isRemoteUser(user)) {
 		registerOrFetchInstanceDoc(user.host).then(i => {
 			Instances.increment({ id: i.id }, 'notesCount', 1);
-			instanceChart.updateNote(i.host, true);
+			instanceChart.updateNote(i.host, note, true);
 		});
 	}
 

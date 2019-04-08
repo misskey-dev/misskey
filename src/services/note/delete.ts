@@ -56,7 +56,7 @@ export default async function(user: User, note: Note, quiet = false) {
 		if (Users.isRemoteUser(user)) {
 			registerOrFetchInstanceDoc(user.host).then(i => {
 				Instances.decrement({ id: i.id }, 'notesCount', 1);
-				instanceChart.updateNote(i.host, false);
+				instanceChart.updateNote(i.host, note, false);
 			});
 		}
 	}

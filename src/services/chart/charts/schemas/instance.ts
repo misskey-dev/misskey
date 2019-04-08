@@ -21,6 +21,7 @@ export const schema = {
 				},
 			}
 		},
+
 		notes: {
 			type: 'object' as 'object',
 			properties: {
@@ -36,8 +37,29 @@ export const schema = {
 					type: 'number' as 'number',
 					description: '減少した投稿数'
 				},
+
+				diffs: {
+					type: 'object' as 'object',
+					properties: {
+						normal: {
+							type: 'number' as 'number',
+							description: '通常の投稿数の差分'
+						},
+
+						reply: {
+							type: 'number' as 'number',
+							description: 'リプライの投稿数の差分'
+						},
+
+						renote: {
+							type: 'number' as 'number',
+							description: 'Renoteの投稿数の差分'
+						},
+					}
+				},
 			}
 		},
+
 		users: {
 			type: 'object' as 'object',
 			properties: {
@@ -55,6 +77,7 @@ export const schema = {
 				},
 			}
 		},
+
 		following: {
 			type: 'object' as 'object',
 			properties: {
@@ -72,6 +95,7 @@ export const schema = {
 				},
 			}
 		},
+
 		followers: {
 			type: 'object' as 'object',
 			properties: {
@@ -89,6 +113,7 @@ export const schema = {
 				},
 			}
 		},
+
 		drive: {
 			type: 'object' as 'object',
 			properties: {

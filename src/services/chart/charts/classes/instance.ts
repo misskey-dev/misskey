@@ -4,6 +4,7 @@ import { SchemaType } from '../../../../misc/schema';
 import { DriveFiles, Followings, Users, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { name, schema } from '../schemas/instance';
+import { Note } from '../../../../models/entities/note';
 
 type InstanceLog = SchemaType<typeof schema>;
 
@@ -107,12 +108,23 @@ export default class InstanceChart extends Chart<InstanceLog> {
 	}
 
 	@autobind
-	public async updateNote(host: string, isAdditional: boolean) {
+	public async updateNote(host: string, note: Note, isAdditional: boolean) {
+		const diffs = {} as any;
+
+		if (note.replyId != null) {
+			diffs.reply = isAdditional ? 1 : -1;
+		} else if (note.renoteId != null) {
+			diffs.renote = isAdditional ? 1 : -1;
+		} else {
+			diffs.normal = isAdditional ? 1 : -1;
+		}
+
 		await this.inc({
 			notes: {
 				total: isAdditional ? 1 : -1,
 				inc: isAdditional ? 1 : 0,
 				dec: isAdditional ? 0 : 1,
+				diffs: diffs
 			}
 		}, host);
 	}
