@@ -1082,9 +1082,6 @@ desktop/views/components/settings.tags.vue:
   add: "追加"
   save: "保存"
 
-desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
-
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
