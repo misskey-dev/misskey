@@ -778,8 +778,6 @@ desktop/views/components/sub-note-content.vue:
 desktop/views/components/settings.tags.vue:
   add: "増やす"
   save: "保存"
-desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
