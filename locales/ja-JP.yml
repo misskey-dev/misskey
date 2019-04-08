@@ -73,6 +73,12 @@ common:
   followers: "フォロワー"
   favorites: "お気に入り"
 
+  permissions:
+    'read:account': "アカウントの情報を見る"
+    'write:account': "アカウントの情報を変更する"
+    'read:drive': "ドライブを見る"
+    'write:drive': "ドライブを操作する"
+
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
     explore: "ユーザーを探索する"
@@ -299,15 +305,6 @@ common:
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
-  account-read: "アカウントの情報を見る。"
-  account-write: "アカウントの情報を操作する。"
-  note-write: "投稿する。"
-  like-write: "いいねしたりいいね解除する。"
-  following-write: "フォローしたりフォロー解除する。"
-  drive-read: "ドライブを見る。"
-  drive-write: "ドライブを操作する。"
-  notification-read: "通知を見る。"
-  notification-write: "通知を操作する。"
   cancel: "キャンセル"
   accept: "アクセスを許可"
 
@@ -1818,12 +1815,3 @@ dev/views/new-app.vue:
   authority: "権限"
   authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
-  account-read: "アカウントの情報を見る。"
-  account-write: "アカウントの情報を操作する。"
-  note-write: "投稿する。"
-  reaction-write: "リアクションしたりリアクションをキャンセルする。"
-  following-write: "フォローしたりフォロー解除する。"
-  drive-read: "ドライブを見る。"
-  drive-write: "ドライブを操作する。"
-  notification-read: "通知を見る。"
-  notification-write: "通知を操作する。"

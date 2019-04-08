@@ -14,15 +14,7 @@
 			<h2>{{ $t('permission-ask') }}</h2>
 			<ul>
 				<template v-for="p in app.permission">
-					<li v-if="p == 'read:account'">{{ $t('read:account') }}</li>
-					<li v-if="p == 'write:account'">{{ $t('write:account') }}</li>
-					<li v-if="p == 'write:notes'">{{ $t('write:notes') }}</li>
-					<li v-if="p == 'like-write'">{{ $t('like-write') }}</li>
-					<li v-if="p == 'write:following'">{{ $t('write:following') }}</li>
-					<li v-if="p == 'read:drive'">{{ $t('read:drive') }}</li>
-					<li v-if="p == 'write:drive'">{{ $t('write:drive') }}</li>
-					<li v-if="p == 'read:notifications'">{{ $t('read:notifications') }}</li>
-					<li v-if="p == 'write:notifications'">{{ $t('write:notifications') }}</li>
+					<li :key="p">{{ $t(`@.permissions.${p}`) }}</li>
 				</template>
 			</ul>
 		</section>
