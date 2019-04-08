@@ -978,6 +978,7 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/timeline.vue:
   home: "Home"
   local: "Local"
+  hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
   messages: "Direct posts"
@@ -1490,6 +1491,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "Home"
   local: "Local"
+  hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
   messages: "Direct posts"
@@ -1545,6 +1547,7 @@ deck:
   widgets: "Widgets"
   home: "Home"
   local: "Local"
+  hybrid: "Social"
   hashtag: "Hashtag"
   global: "Global"
   mentions: "Mentions"
