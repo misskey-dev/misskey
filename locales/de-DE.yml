@@ -517,8 +517,6 @@ desktop/views/components/sub-note-content.vue:
 desktop/views/components/settings.tags.vue:
   add: "Hinzufügen"
   save: "Speichern"
-desktop/views/components/taskmanager.vue:
-  title: "Taskmanager"
 desktop/views/components/timeline.vue:
   home: "Home"
   local: "Lokal"
