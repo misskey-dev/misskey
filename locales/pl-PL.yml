@@ -62,6 +62,8 @@ common:
   following: "Śledzisz"
   followers: "Śledzący"
   favorites: "Moje ulubione"
+  permissions:
+    'read:drive': "Wyświetl dysk"
   empty-timeline-info:
     explore: "Poznaj"
   weekday-short:
