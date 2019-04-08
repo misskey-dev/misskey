@@ -976,7 +976,6 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "홈"
   local: "로컬"
-  hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
   messages: "다이렉트 게시글"
@@ -1489,7 +1488,6 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "홈"
   local: "로컬"
-  hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
   messages: "다이렉트 게시글"
@@ -1545,7 +1543,6 @@ deck:
   widgets: "위젯"
   home: "홈"
   local: "로컬"
-  hybrid: "소셜"
   hashtag: "해시태그"
   global: "글로벌"
   mentions: "받은 멘션"
