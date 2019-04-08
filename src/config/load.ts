@@ -21,15 +21,41 @@ const path = process.env.NODE_ENV == 'test'
 	: `${dir}/default.yml`;
 
 export default function load() {
-	const config = yaml.safeLoad(fs.readFileSync(path, 'utf-8')) as Source;
+	if (process.env.MONGODB_URI) var mongodburi = new URL(process.env.MONGODB_URI);
+	if (process.env.REDIS_URL) var redisurl = new URL(process.env.REDIS_URL);
+	const config: Source = process.env.HEROKU === 'true' ? {
+		mongodb: {
+			host: mongodburi.hostname,
+			port: parseInt(mongodburi.port),
+			db: mongodburi.pathname.slice(1),
+			user: mongodburi.username,
+			pass: mongodburi.password,
+		},	
+		redis: {
+			host: redisurl.hostname,
+			port: parseInt(redisurl.port),
+			pass: redisurl.password,
+		},
+		drive: {
+			storage: 'db',
+		}
+	} : yaml.safeLoad(fs.readFileSync(path, 'utf-8'));
 
 	const mixin = {} as Mixin;
+
+	config.url = config.url || process.env.LOCAL_DOMAIN;
 
 	const url = validateUrl(config.url);
 
 	config.url = normalizeUrl(config.url);
 
 	config.port = config.port || parseInt(process.env.PORT, 10);
+
+	config.disableHsts = config.disableHsts || process.env.DISABLE_HSTS === "true" ? true : false;
+
+	config.clusterLimit = config.clusterLimit || parseInt(process.env.CLUSTER_LIMIT);
+
+	config.autoAdmin = config.autoAdmin || process.env.AUTO_ADMIN === "true" ? true : false;
 
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;

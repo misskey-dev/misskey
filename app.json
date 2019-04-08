@@ -1,0 +1,47 @@
+{
+  "name": "misskey",
+  "description": "A federated blogging platform",
+  "repository": "https://github.com/syuilo/misskey/tree/heroku",
+  "logo": "https://github.com/syuilo/misskey/blob/master/assets/apple-touch-icon.png?raw=true",
+  "env": {
+    "HEROKU": {
+      "description": "Leave this as true",
+      "value": "true",
+      "required": true
+    },
+    "LOCAL_DOMAIN": {
+      "description": "The domain that your misskey instance will run on (this can be https://appname.herokuapp.com or a custom domain)",
+      "value": "https://APPNAME.herokuapp.com",
+      "required": true
+    },
+    "NODE_ENV": {
+      "description": "production | test",
+      "value": "production",
+      "required": true
+    },
+    "DISABLE_HSTS":{
+      "description": "Whether disable HSTS",
+      "value": "true",
+      "required": true
+    },
+    "CLUSTER_LIMIT":{
+      "description": "Clustering",
+      "value": "1",
+      "required": true
+    },
+    "AUTO_ADMIN":{
+      "description": "The first account created is automatically marked as Admin.",
+      "value": "true",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "addons": [
+    "mongolab:sandbox",
+    "heroku-redis:hobby-dev"
+  ]
+}
