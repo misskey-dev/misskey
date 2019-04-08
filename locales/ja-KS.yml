@@ -783,7 +783,6 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あんた宛て"
   messages: "ダイレクト投稿"
@@ -1160,7 +1159,6 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あんた宛て"
   messages: "ダイレクト投稿"
@@ -1215,7 +1213,6 @@ deck:
   widgets: "ウィジェット"
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
   hashtag: "ハッシュタグ"
   global: "グローバル"
   mentions: "あんた宛て"
