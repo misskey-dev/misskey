@@ -976,7 +976,6 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "首页"
   local: "本地"
-  hybrid: "社交"
   global: "全球"
   mentions: "提到的"
   messages: "直接发布"
@@ -1489,7 +1488,6 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "首页"
   local: "Local"
-  hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
   messages: "直接发布"
@@ -1545,7 +1543,6 @@ deck:
   widgets: "小部件"
   home: "首页"
   local: "Local"
-  hybrid: "Social"
   hashtag: "标签"
   global: "Global"
   mentions: "Mentions"
