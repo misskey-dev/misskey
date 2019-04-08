@@ -47,7 +47,7 @@ adduser --disabled-password --disabled-login misskey
 1. `su - misskey` misskeyユーザーを使用
 2. `git clone -b master git://github.com/syuilo/misskey.git` masterブランチからMisskeyレポジトリをクローン
 3. `cd misskey` misskeyディレクトリに移動
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+4. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 5. `npm install` Misskeyの依存パッケージをインストール
 
 *5.* 設定ファイルを作成する
@@ -115,7 +115,7 @@ CentOSで1024以下のポートを使用してMisskeyを使用する場合は`Ex
 
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git fetch`
-2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+2. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
