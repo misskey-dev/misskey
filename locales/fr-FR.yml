@@ -962,7 +962,6 @@ desktop/views/components/taskmanager.vue:
 desktop/views/components/timeline.vue:
   home: "Accueil"
   local: "Local"
-  hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
   messages: "Messages directs"
@@ -1460,7 +1459,6 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
-  hybrid: "Social"
   global: "Global"
   mentions: "Mentions"
   messages: "Messages directs"
@@ -1515,7 +1513,6 @@ deck:
   widgets: "Widgets"
   home: "Principal"
   local: "Local"
-  hybrid: "Social"
   hashtag: "Hashtags"
   global: "Global"
   mentions: "Mentions"
