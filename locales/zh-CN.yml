@@ -971,8 +971,6 @@ desktop/views/components/settings.tags.vue:
   query: "查询 (可选)"
   add: "添加"
   save: "保存"
-desktop/views/components/taskmanager.vue:
-  title: "任务管理器"
 desktop/views/components/timeline.vue:
   home: "首页"
   local: "本地"
