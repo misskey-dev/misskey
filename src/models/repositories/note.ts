@@ -188,7 +188,7 @@ export class NoteRepository extends Repository<Note> {
 				}) : null,
 
 				renote: note.renoteId ? this.pack(note.renoteId, meId, {
-					detail: false
+					detail: true
 				}) : null,
 
 				poll: note.hasPoll ? populatePoll() : null,
