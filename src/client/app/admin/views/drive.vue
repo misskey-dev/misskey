@@ -153,7 +153,7 @@ export default Vue.extend({
 
 		thumbnail(file: any): any {
 			return {
-				'background-color': file.properties.avgColor && file.properties.avgColor.length == 3 ? `rgb(${file.properties.avgColor.join(',')})` : 'transparent',
+				'background-color': file.properties.avgColor || 'transparent',
 				'background-image': `url(${file.thumbnailUrl})`
 			};
 		},

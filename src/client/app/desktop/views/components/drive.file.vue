@@ -139,10 +139,10 @@ export default Vue.extend({
 		},
 
 		onThumbnailLoaded() {
-			if (this.file.properties.avgColor && this.file.properties.avgColor.length == 3) {
+			if (this.file.properties.avgColor) {
 				anime({
 					targets: this.$refs.thumbnail,
-					backgroundColor: `rgba(${this.file.properties.avgColor.join(',')}, 0)`,
+					backgroundColor: this.file.properties.avgColor.replace('255)', '0)'),
 					duration: 100,
 					easing: 'linear'
 				});
