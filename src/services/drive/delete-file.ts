@@ -16,7 +16,7 @@ export default async function(file: DriveFile, isExpired = false) {
 		if (file.webpublicUrl) {
 			InternalStorage.del(file.webpublicAccessKey);
 		}
-	} else {
+	} else if (!file.isRemote) {
 		const minio = new Minio.Client(config.drive.config);
 
 		await minio.removeObject(config.drive.bucket, file.accessKey);
