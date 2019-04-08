@@ -157,6 +157,7 @@ export default Vue.extend({
 				// オーバーフローしたら古い投稿は捨てる
 				if (this.notes.length >= displayLimit) {
 					this.notes = this.notes.slice(0, displayLimit);
+					this.cursor = this.notes[this.notes.length - 1].id
 				}
 			} else {
 				this.queue.push(note);
@@ -165,6 +166,7 @@ export default Vue.extend({
 
 		append(note) {
 			this.notes.push(note);
+			this.cursor = this.notes[this.notes.length - 1].id
 		},
 
 		releaseQueue() {
