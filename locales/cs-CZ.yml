@@ -793,8 +793,6 @@ desktop/views/components/settings.tags.vue:
   title: "Tagy"
   add: "Přidat"
   save: "Uložit"
-desktop/views/components/taskmanager.vue:
-  title: "Správce úloh"
 desktop/views/components/timeline.vue:
   home: "Domů"
   local: "Lokální"
