@@ -4,7 +4,7 @@
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="(image, i) in images" :key="i"
 			class="img"
-			:style="`background-image: url(${thumbnail(image.media)})`"
+			:style="`background-image: url(${thumbnail(image.file)})`"
 			:href="image.note | notePage"
 		></a>
 	</div>
@@ -40,11 +40,11 @@ export default Vue.extend({
 			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
 			for (const note of notes) {
-				for (const media of note.media) {
+				for (const file of note.files) {
 					if (this.images.length < 9) {
 						this.images.push({
 							note,
-							media
+							file
 						});
 					}
 				}
