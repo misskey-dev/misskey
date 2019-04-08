@@ -799,8 +799,6 @@ desktop/views/components/settings.tags.vue:
   query: "Zapytanie (opcjonalne)"
   add: "Dodaj"
   save: "Zapisz"
-desktop/views/components/taskmanager.vue:
-  title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
   home: "Strona główna"
   local: "Lokalne"
