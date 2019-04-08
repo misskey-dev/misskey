@@ -80,7 +80,7 @@ async function main() {
 				const bucket = await getDriveFileBucket();
 				const readable = bucket.openDownloadStream(file._id);
 				const dest = fs.createWriteStream(temp);
-				readable.on('data', chunk => dest.write(chunk));
+				readable.pipe(dest);
 				readable.on('end', () => {
 					dest.end();
 					res();
