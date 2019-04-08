@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import UserList, { pack } from '../../../../../models/user-list';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { UserLists } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -14,19 +14,18 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 		listId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象となるユーザーリストのID',
 				'en-US': 'ID of target user list'
 			}
 		},
 
-		title: {
+		name: {
 			validator: $.str.range(1, 100),
 			desc: {
 				'ja-JP': 'このユーザーリストの名前',
@@ -46,20 +45,18 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch the list
-	const userList = await UserList.findOne({
-		_id: ps.listId,
-		userId: user._id
+	const userList = await UserLists.findOne({
+		id: ps.listId,
+		userId: user.id
 	});
 
 	if (userList == null) {
 		throw new ApiError(meta.errors.noSuchList);
 	}
 
-	await UserList.update({ _id: userList._id }, {
-		$set: {
-			title: ps.title
-		}
+	await UserLists.update(userList.id, {
+		name: ps.name
 	});
 
-	return await pack(userList._id);
+	return await UserLists.pack(userList.id);
 });

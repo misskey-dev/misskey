@@ -176,10 +176,22 @@ export default define({
 		post() {
 			this.posting = true;
 
+			let visibility = 'public';
+			let localOnly = false;
+
+			const m = this.$store.state.settings.defaultNoteVisibility.match(/^local-(.+)/);
+			if (m) {
+				visibility = m[1];
+				localOnly = true;
+			} else {
+				visibility = this.$store.state.settings.defaultNoteVisibility;
+			}
+
 			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
-				visibility: this.$store.state.settings.defaultNoteVisibility
+				visibility,
+				localOnly,
 			}).then(data => {
 				this.clear();
 			}).catch(err => {

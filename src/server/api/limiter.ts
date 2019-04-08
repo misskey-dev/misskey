@@ -2,12 +2,12 @@ import * as Limiter from 'ratelimiter';
 import limiterDB from '../../db/redis';
 import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
-import { IUser } from '../../models/user';
+import { User } from '../../models/entities/user';
 import Logger from '../../services/logger';
 
 const logger = new Logger('limiter');
 
-export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) => {
+export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => {
 	// Redisがインストールされてない場合は常に許可
 	if (limiterDB == null) {
 		ok();
@@ -38,7 +38,7 @@ export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) =>
 	// Short-term limit
 	function min() {
 		const minIntervalLimiter = new Limiter({
-			id: `${user._id}:${key}:min`,
+			id: `${user.id}:${key}:min`,
 			duration: limitation.minInterval,
 			max: 1,
 			db: limiterDB
@@ -66,7 +66,7 @@ export default (endpoint: IEndpoint, user: IUser) => new Promise((ok, reject) =>
 	// Long term limit
 	function max() {
 		const limiter = new Limiter({
-			id: `${user._id}:${key}`,
+			id: `${user.id}:${key}`,
 			duration: limitation.duration,
 			max: limitation.max,
 			db: limiterDB

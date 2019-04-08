@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import createReaction from '../../../../../services/note/reaction/create';
 import define from '../../../define';
 import { getNote } from '../../../common/getters';
@@ -17,12 +17,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'reaction-write',
+	kind: 'write:reactions',
 
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿'
 			}

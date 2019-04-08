@@ -21,7 +21,7 @@ export default Vue.extend({
 	i18n: i18n('desktop/views/pages/tag.vue'),
 	data() {
 		return {
-			makePromise: cursor => this.$root.api('notes/search_by_tag', {
+			makePromise: cursor => this.$root.api('notes/search-by-tag', {
 				limit: limit + 1,
 				offset: cursor ? cursor : undefined,
 				tag: this.$route.params.tag
@@ -35,7 +35,7 @@ export default Vue.extend({
 				} else {
 					return {
 						notes: notes,
-						cursor: null
+						more: false
 					};
 				}
 			})

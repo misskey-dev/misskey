@@ -278,21 +278,6 @@ export default class MiOS extends EventEmitter {
 				});
 			});
 
-			main.on('homeUpdated', x => {
-				this.store.commit('settings/setHome', x);
-			});
-
-			main.on('mobileHomeUpdated', x => {
-				this.store.commit('settings/setMobileHome', x);
-			});
-
-			main.on('widgetUpdated', x => {
-				this.store.commit('settings/updateWidget', {
-					id: x.id,
-					data: x.data
-				});
-			});
-
 			// トークンが再生成されたとき
 			// このままではMisskeyが利用できないので強制的にサインアウトさせる
 			main.on('myTokenRegenerated', () => {

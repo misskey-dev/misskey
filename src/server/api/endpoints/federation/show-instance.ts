@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import Instance from '../../../../models/instance';
+import { Instances } from '../../../../models';
 
 export const meta = {
 	tags: ['federation'],
@@ -15,7 +15,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const instance = await Instance
+	const instance = await Instances
 		.findOne({ host: ps.host });
 
 	return instance;

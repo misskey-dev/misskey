@@ -1,10 +1,10 @@
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
-import { INote } from '../../../models/note';
+import { ILocalUser } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
 
-export default (user: ILocalUser, note: INote, reaction: string) => ({
+export default (user: ILocalUser, note: Note, reaction: string) => ({
 	type: 'Like',
-	actor: `${config.url}/users/${user._id}`,
-	object: note.uri ? note.uri : `${config.url}/notes/${note._id}`,
+	actor: `${config.url}/users/${user.id}`,
+	object: note.uri ? note.uri : `${config.url}/notes/${note.id}`,
 	_misskey_reaction: reaction
 });

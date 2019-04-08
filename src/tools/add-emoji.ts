@@ -1,9 +1,11 @@
-import Emoji from '../models/emoji';
+import { Emojis } from '../models';
+import { genId } from '../misc/gen-id';
 
 async function main(name: string, url: string, alias?: string): Promise<any> {
 	const aliases = alias != null ? [ alias ] : [];
 
-	await Emoji.insert({
+	await Emojis.save({
+		id: genId(),
 		host: null,
 		name,
 		url,

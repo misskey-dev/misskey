@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
-import User from '../../../../../models/user';
 import define from '../../../define';
+import { Users } from '../../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -32,12 +32,8 @@ export default define(meta, async (ps, user) => {
 		throw new Error('not verified');
 	}
 
-	await User.update(user._id, {
-		$set: {
-			'twoFactorSecret': user.twoFactorTempSecret,
-			'twoFactorEnabled': true
-		}
+	await Users.update(user.id, {
+		twoFactorSecret: user.twoFactorTempSecret,
+		twoFactorEnabled: true
 	});
-
-	return;
 });

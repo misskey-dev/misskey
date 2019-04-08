@@ -1,12 +1,11 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
-import { pack } from '../../../../models/user';
-import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Followings, Users } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -25,12 +24,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-write',
+	kind: 'write:following',
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -63,7 +61,7 @@ export default define(meta, async (ps, user) => {
 	const follower = user;
 
 	// Check if the followee is yourself
-	if (user._id.equals(ps.userId)) {
+	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.followeeIsYourself);
 	}
 
@@ -74,16 +72,16 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check not following
-	const exist = await Following.findOne({
-		followerId: follower._id,
-		followeeId: followee._id
+	const exist = await Followings.findOne({
+		followerId: follower.id,
+		followeeId: followee.id
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		throw new ApiError(meta.errors.notFollowing);
 	}
 
 	await deleteFollowing(follower, followee);
 
-	return await pack(followee._id, user);
+	return await Users.pack(followee.id, user);
 });

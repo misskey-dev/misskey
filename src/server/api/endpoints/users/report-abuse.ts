@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/user';
-import AbuseUserReport from '../../../../models/abuse-user-report';
 import { publishAdminStream } from '../../../../services/stream';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { AbuseUserReports, Users } from '../../../../models';
+import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -19,7 +19,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -62,7 +61,7 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	if (user._id.equals(me._id)) {
+	if (user.id === me.id) {
 		throw new ApiError(meta.errors.cannotReportYourself);
 	}
 
@@ -70,17 +69,18 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.cannotReportAdmin);
 	}
 
-	const report = await AbuseUserReport.insert({
+	const report = await AbuseUserReports.save({
+		id: genId(),
 		createdAt: new Date(),
-		userId: user._id,
-		reporterId: me._id,
+		userId: user.id,
+		reporterId: me.id,
 		comment: ps.comment
 	});
 
 	// Publish event to moderators
 	setTimeout(async () => {
-		const moderators = await User.find({
-			$or: [{
+		const moderators = await Users.find({
+			where: [{
 				isAdmin: true
 			}, {
 				isModerator: true
@@ -88,8 +88,8 @@ export default define(meta, async (ps, me) => {
 		});
 
 		for (const moderator of moderators) {
-			publishAdminStream(moderator._id, 'newAbuseUserReport', {
-				id: report._id,
+			publishAdminStream(moderator.id, 'newAbuseUserReport', {
+				id: report.id,
 				userId: report.userId,
 				reporterId: report.reporterId,
 				comment: report.comment

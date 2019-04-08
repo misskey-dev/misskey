@@ -48,7 +48,7 @@
 							<div>
 								<div>
 									<span style="margin-right:16px;">{{ file.type }}</span>
-									<span>{{ file.datasize | bytes }}</span>
+									<span>{{ file.size | bytes }}</span>
 								</div>
 								<div><mk-time :time="file.createdAt" mode="detail"/></div>
 							</div>
@@ -153,7 +153,7 @@ export default Vue.extend({
 
 		thumbnail(file: any): any {
 			return {
-				'background-color': file.properties.avgColor && file.properties.avgColor.length == 3 ? `rgb(${file.properties.avgColor.join(',')})` : 'transparent',
+				'background-color': file.properties.avgColor || 'transparent',
 				'background-image': `url(${file.thumbnailUrl})`
 			};
 		},

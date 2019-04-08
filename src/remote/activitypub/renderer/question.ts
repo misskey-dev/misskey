@@ -1,19 +1,20 @@
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
-import { INote } from '../../../models/note';
+import { ILocalUser } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
+import { Poll } from '../../../models/entities/poll';
 
-export default async function renderQuestion(user: ILocalUser, note: INote) {
+export default async function renderQuestion(user: ILocalUser, note: Note, poll: Poll) {
 	const question = {
 		type: 'Question',
-		id: `${config.url}/questions/${note._id}`,
-		actor: `${config.url}/users/${user._id}`,
+		id: `${config.url}/questions/${note.id}`,
+		actor: `${config.url}/users/${user.id}`,
 		content:  note.text || '',
-		[note.poll.multiple ? 'anyOf' : 'oneOf']: note.poll.choices.map(c => ({
-			name: c.text,
-			_misskey_votes: c.votes,
+		[poll.multiple ? 'anyOf' : 'oneOf']: poll.choices.map((text, i) => ({
+			name: text,
+			_misskey_votes: poll.votes[i],
 			replies: {
 				type: 'Collection',
-				totalItems: c.votes
+				totalItems: poll.votes[i]
 			}
 		}))
 	};

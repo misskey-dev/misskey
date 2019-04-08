@@ -6,7 +6,7 @@
 		</template>
 	</sequential-entrance>
 	<div class="more" v-if="existMore">
-		<ui-button inline @click="more">{{ $t('@.load-more') }}</ui-button>
+		<ui-button inline @click="fetchMore()">{{ $t('@.load-more') }}</ui-button>
 	</div>
 </div>
 </template>
@@ -48,7 +48,7 @@ export default Vue.extend({
 				Progress.done();
 			});
 		},
-		more() {
+		fetchMore() {
 			this.moreFetching = true;
 			this.$root.api('i/favorites', {
 				limit: 11,

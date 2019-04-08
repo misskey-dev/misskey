@@ -20,7 +20,7 @@ export default function(notification: any): string {
 			return `引用されました:\n${getUserName(notification.user)}「${getNoteSummary(notification.note)}」`;
 		case 'reaction':
 			return `リアクションされました:\n${getUserName(notification.user)} <${getReactionEmoji(notification.reaction)}>「${getNoteSummary(notification.note)}」`;
-		case 'poll_vote':
+		case 'pollVote':
 			return `投票されました:\n${getUserName(notification.user)}「${getNoteSummary(notification.note)}」`;
 		default:
 			return `<不明な通知タイプ: ${notification.type}>`;

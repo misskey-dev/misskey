@@ -1,6 +1,6 @@
-import Emoji from '../models/emoji';
 import { emojiRegex } from './emoji-regex';
 import fetchMeta from './fetch-meta';
+import { Emojis } from '../models';
 
 const basic10: Record<string, string> = {
 	'👍': 'like',
@@ -49,7 +49,7 @@ export async function toDbReaction(reaction: string, enableEmoji = true): Promis
 
 	const custom = reaction.match(/^:([\w+-]+):$/);
 	if (custom) {
-		const emoji = await Emoji.findOne({
+		const emoji = await Emojis.findOne({
 			host: null,
 			name: custom[1],
 		});

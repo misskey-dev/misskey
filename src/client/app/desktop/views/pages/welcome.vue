@@ -13,8 +13,8 @@
 		<div class="body">
 			<div class="main block">
 				<div>
-					<h1 v-if="name != 'Misskey'">{{ name }}</h1>
-					<h1 v-else><img svg-inline src="../../../../assets/title.svg" :alt="name"></h1>
+					<h1 v-if="name != null">{{ name }}</h1>
+					<h1 v-else><img svg-inline src="../../../../assets/title.svg" alt="Misskey"></h1>
 
 					<div class="info">
 						<span><b>{{ host }}</b> - <span v-html="$t('powered-by-misskey')"></span></span>
@@ -87,7 +87,7 @@
 					<div>
 						<div v-if="meta" class="body">
 							<p>Version: <b>{{ meta.version }}</b></p>
-							<p>Maintainer: <b><a :href="'mailto:' + meta.maintainer.email" target="_blank">{{ meta.maintainer.name }}</a></b></p>
+							<p>Maintainer: <b><a :href="'mailto:' + meta.maintainerEmail" target="_blank">{{ meta.maintainerName }}</a></b></p>
 						</div>
 					</div>
 				</div>
@@ -162,7 +162,7 @@ export default Vue.extend({
 			banner: null,
 			copyright,
 			host: toUnicode(host),
-			name: 'Misskey',
+			name: null,
 			description: '',
 			announcements: [],
 			photos: []

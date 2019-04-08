@@ -1,21 +1,22 @@
 import renderImage from './image';
 import renderKey from './key';
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
+import { ILocalUser } from '../../../models/entities/user';
 import { toHtml } from '../../../mfm/toHtml';
 import { parse } from '../../../mfm/parse';
-import DriveFile from '../../../models/drive-file';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
+import { DriveFiles, UserServiceLinkings, UserKeypairs } from '../../../models';
 
-export default async (user: ILocalUser) => {
-	const id = `${config.url}/users/${user._id}`;
+export async function renderPerson(user: ILocalUser) {
+	const id = `${config.url}/users/${user.id}`;
 
-	const [avatar, banner] = await Promise.all([
-		DriveFile.findOne({ _id: user.avatarId }),
-		DriveFile.findOne({ _id: user.bannerId })
+	const [avatar, banner, links] = await Promise.all([
+		DriveFiles.findOne(user.avatarId),
+		DriveFiles.findOne(user.bannerId),
+		UserServiceLinkings.findOne({ userId: user.id })
 	]);
 
 	const attachment: {
@@ -26,41 +27,41 @@ export default async (user: ILocalUser) => {
 		identifier?: IIdentifier
 	}[] = [];
 
-	if (user.twitter) {
+	if (links.twitter) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`,
+			value: `<a href="https://twitter.com/intent/user?user_id=${links.twitterUserId}" rel="me nofollow noopener" target="_blank"><span>@${links.twitterScreenName}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:twitter',
-				value: `${user.twitter.userId}@${user.twitter.screenName}`
+				value: `${links.twitterUserId}@${links.twitterScreenName}`
 			}
 		});
 	}
 
-	if (user.github) {
+	if (links.github) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`,
+			value: `<a href="https://github.com/${links.githubLogin}" rel="me nofollow noopener" target="_blank"><span>@${links.githubLogin}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:github',
-				value: `${user.github.id}@${user.github.login}`
+				value: `${links.githubId}@${links.githubLogin}`
 			}
 		});
 	}
 
-	if (user.discord) {
+	if (links.discord) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`,
+			value: `<a href="https://discordapp.com/users/${links.discordId}" rel="me nofollow noopener" target="_blank"><span>${links.discordUsername}#${links.discordDiscriminator}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:discord',
-				value: `${user.discord.id}@${user.discord.username}#${user.discord.discriminator}`
+				value: `${links.discordId}@${links.discordUsername}#${links.discordDiscriminator}`
 			}
 		});
 	}
@@ -74,6 +75,10 @@ export default async (user: ILocalUser) => {
 		...apemojis,
 		...hashtagTags,
 	];
+
+	const keypair = await UserKeypairs.findOne({
+		userId: user.id
+	});
 
 	return {
 		type: user.isBot ? 'Service' : 'Person',
@@ -93,8 +98,8 @@ export default async (user: ILocalUser) => {
 		image: user.bannerId && renderImage(banner),
 		tag,
 		manuallyApprovesFollowers: user.isLocked,
-		publicKey: renderKey(user),
+		publicKey: renderKey(user, keypair),
 		isCat: user.isCat,
 		attachment: attachment.length ? attachment : undefined
 	};
-};
+}

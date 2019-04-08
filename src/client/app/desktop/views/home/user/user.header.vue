@@ -36,8 +36,8 @@
 			</dl>
 		</div>
 		<div class="info">
-			<span class="location" v-if="user.host === null && user.profile.location"><fa icon="map-marker"/> {{ user.profile.location }}</span>
-			<span class="birthday" v-if="user.host === null && user.profile.birthday"><fa icon="birthday-cake"/> {{ user.profile.birthday.replace('-', $t('year')).replace('-', $t('month')) + $t('day') }} ({{ $t('years-old', { age }) }})</span>
+			<span class="location" v-if="user.host === null && user.location"><fa icon="map-marker"/> {{ user.location }}</span>
+			<span class="birthday" v-if="user.host === null && user.birthday"><fa icon="birthday-cake"/> {{ user.birthday.replace('-', $t('year')).replace('-', $t('month')) + $t('day') }} ({{ $t('years-old', { age }) }})</span>
 		</div>
 		<div class="status">
 			<router-link :to="user | userPage()" class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</router-link>
@@ -65,13 +65,13 @@ export default Vue.extend({
 		style(): any {
 			if (this.user.bannerUrl == null) return {};
 			return {
-				backgroundColor: this.user.bannerColor && this.user.bannerColor.length == 3 ? `rgb(${ this.user.bannerColor.join(',') })` : null,
+				backgroundColor: this.user.bannerColor,
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
 		},
 
 		age(): number {
-			return age(this.user.profile.birthday);
+			return age(this.user.birthday);
 		}
 	},
 	mounted() {

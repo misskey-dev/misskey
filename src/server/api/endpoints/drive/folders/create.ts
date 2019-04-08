@@ -1,9 +1,10 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
+import { ID } from '../../../../../misc/cafy-id';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { DriveFolders } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	stability: 'stable',
@@ -17,11 +18,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-write',
+	kind: 'write:drive',
 
 	params: {
 		name: {
-			validator: $.optional.str.pipe(isValidFolderName),
+			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
 			default: 'Untitled',
 			desc: {
 				'ja-JP': 'フォルダ名',
@@ -31,7 +32,6 @@ export const meta = {
 
 		parentId: {
 			validator: $.optional.nullable.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'
@@ -53,29 +53,29 @@ export default define(meta, async (ps, user) => {
 	let parent = null;
 	if (ps.parentId) {
 		// Fetch parent folder
-		parent = await DriveFolder
-			.findOne({
-				_id: ps.parentId,
-				userId: user._id
-			});
+		parent = await DriveFolders.findOne({
+			id: ps.parentId,
+			userId: user.id
+		});
 
-		if (parent === null) {
+		if (parent == null) {
 			throw new ApiError(meta.errors.noSuchFolder);
 		}
 	}
 
 	// Create folder
-	const folder = await DriveFolder.insert({
+	const folder = await DriveFolders.save({
+		id: genId(),
 		createdAt: new Date(),
 		name: ps.name,
-		parentId: parent !== null ? parent._id : null,
-		userId: user._id
+		parentId: parent !== null ? parent.id : null,
+		userId: user.id
 	});
 
-	const folderObj = await pack(folder);
+	const folderObj = await DriveFolders.pack(folder);
 
 	// Publish folderCreated event
-	publishDriveStream(user._id, 'folderCreated', folderObj);
+	publishDriveStream(user.id, 'folderCreated', folderObj);
 
 	return folderObj;
 });

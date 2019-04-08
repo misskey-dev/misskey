@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
-import User from '../../../../models/user';
 import { publishMainStream } from '../../../../services/stream';
 import generateUserToken from '../../common/generate-native-user-token';
 import define from '../../define';
+import { Users } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -28,14 +28,10 @@ export default define(meta, async (ps, user) => {
 	// Generate secret
 	const secret = generateUserToken();
 
-	await User.update(user._id, {
-		$set: {
-			'token': secret
-		}
+	await Users.update(user.id, {
+		token: secret
 	});
 
 	// Publish event
-	publishMainStream(user._id, 'myTokenRegenerated');
-
-	return;
+	publishMainStream(user.id, 'myTokenRegenerated');
 });

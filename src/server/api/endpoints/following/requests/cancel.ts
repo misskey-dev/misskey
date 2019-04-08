@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import cancelFollowRequest from '../../../../../services/following/requests/cancel';
-import { pack } from '../../../../../models/user';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
+import { Users } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -16,12 +16,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-write',
+	kind: 'write:following',
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -58,5 +57,5 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	}
 
-	return await pack(followee._id, user);
+	return await Users.pack(followee.id, user);
 });

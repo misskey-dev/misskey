@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import * as ms from 'ms';
 import deleteReaction from '../../../../../services/note/reaction/delete';
@@ -16,7 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'reaction-write',
+	kind: 'write:reactions',
 
 	limit: {
 		duration: ms('1hour'),
@@ -27,7 +27,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'

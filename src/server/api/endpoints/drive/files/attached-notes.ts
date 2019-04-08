@@ -1,9 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import DriveFile from '../../../../../models/drive-file';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import { packMany } from '../../../../../models/note';
 import { ApiError } from '../../../error';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -17,12 +16,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		fileId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'
@@ -48,18 +46,17 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch file
-	const file = await DriveFile
-		.findOne({
-			_id: ps.fileId,
-			'metadata.userId': user._id,
-			'metadata.deletedAt': { $exists: false }
-		});
+	const file = await DriveFiles.findOne({
+		id: ps.fileId,
+		userId: user.id,
+	});
 
-	if (file === null) {
+	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
+	/* v11 TODO
 	return await packMany(file.metadata.attachedNoteIds || [], user, {
 		detail: true
-	});
+	});*/
 });
