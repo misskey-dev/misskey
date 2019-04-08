@@ -138,13 +138,6 @@ common:
 auth/views/form.vue:
   share-access: "Erlaubst Du <i>{name}</i> auf deinen Account zuzugreifen?"
   permission-ask: "Diese Applikation benötigt folgende Berechtigungen:"
-  account-read: "Accountinformationen anzeigen."
-  account-write: "Accountinformationen bearbeiten."
-  note-write: "Senden."
-  like-write: "Auf Beiträge reagieren."
-  following-write: "Folgen oder entfolgen."
-  notification-read: "Siehe deine Benachrichtigungen."
-  notification-write: "Benachrichtigungen verwalten."
   cancel: "Abbrechen"
   accept: "Zugriff erlauben."
 auth/views/index.vue:
@@ -664,10 +657,3 @@ deck:
   rename: "Umbenennen"
 deck/deck.user-column.vue:
   activity: "Aktivität"
-dev/views/new-app.vue:
-  account-read: "Accountinformationen anzeigen."
-  account-write: "Accountinformationen bearbeiten."
-  note-write: "Senden."
-  following-write: "Folgen oder entfolgen."
-  notification-read: "Siehe deine Benachrichtigungen."
-  notification-write: "Benachrichtigungen verwalten."
