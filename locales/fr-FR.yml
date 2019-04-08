@@ -957,8 +957,6 @@ desktop/views/components/settings.tags.vue:
   query: "Requête (optionnelle)"
   add: "Ajouter"
   save: "Enregistrer"
-desktop/views/components/taskmanager.vue:
-  title: "Gestionnaire de tâches"
 desktop/views/components/timeline.vue:
   home: "Accueil"
   local: "Local"
