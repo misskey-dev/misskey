@@ -25,11 +25,19 @@ export default function load() {
 
 	const mixin = {} as Mixin;
 
+	config.url = config.url || process.env.LOCAL_DOMAIN;
+
 	const url = validateUrl(config.url);
 
 	config.url = normalizeUrl(config.url);
 
 	config.port = config.port || parseInt(process.env.PORT, 10);
+
+	config.id = config.id || process.env.CONFIG_ID;
+
+	config.disableHsts = config.disableHsts || process.env.DISABLE_HSTS === "true" ? true : false;
+
+	config.clusterLimit = config.clusterLimit || parseInt(process.env.CLUSTER_LIMIT);
 
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;

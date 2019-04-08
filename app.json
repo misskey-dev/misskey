@@ -15,8 +15,23 @@
       "required": true
     },
     "DISABLE_HSTS":{
-      "description": "Leave this as true",
+      "description": "Whether disable HSTS",
       "value": "true",
+      "required": true
+    },
+    "CONFIG_ID":{
+      "description": "ObjectID is the method used in previous versions of Misskey. * Choose this if you are migrating from a previous Misskey.",
+      "value": "aid2",
+      "required": true
+    },
+    "CLUSTER_LIMIT":{
+      "description": "Clustering",
+      "value": "1",
+      "required": true
+    },
+    "DRIVE_STORAGE":{
+      "description": "File storage (Drive) configuration",
+      "value": "fs",
       "required": true
     }
   },
