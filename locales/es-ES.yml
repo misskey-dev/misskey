@@ -699,7 +699,6 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/timeline.vue:
   home: "Inicio"
   local: "Local"
-  hybrid: "Social"
   global: "Global"
   list: "Listas"
   hashtag: "Hashtags"
@@ -888,7 +887,6 @@ mobile/views/pages/user-lists.vue:
 mobile/views/pages/home.vue:
   home: "Inicio"
   local: "Local"
-  hybrid: "Social"
   global: "Global"
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
@@ -911,7 +909,6 @@ mobile/views/pages/user/home.photos.vue:
 deck:
   home: "Inicio"
   local: "Local"
-  hybrid: "Social"
   hashtag: "Etiquetas"
   global: "Global"
   notifications: "Notificaciones"
