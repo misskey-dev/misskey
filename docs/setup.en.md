@@ -40,7 +40,7 @@ Please install and setup these softwares:
 1. `su - misskey` Connect to misskey user.
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clone the misskey repo from master branch.
 3. `cd misskey` Navigate to misskey directory
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
+4. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Install misskey dependencies.
 
 *5.* Configure Misskey
@@ -109,7 +109,7 @@ You can check if the service is running with `systemctl status misskey`.
 
 ### How to update your Misskey server to the latest version
 1. `git fetch`
-2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+2. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. Check [ChangeLog](../CHANGELOG.md) for migration information

@@ -11,7 +11,7 @@ This guide describes how to install and setup Misskey with Docker.
 ----------------------------------------------------------------
 1. `git clone -b master git://github.com/syuilo/misskey.git` Clone Misskey repository's master branch.
 2. `cd misskey` Move to misskey directory.
-3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest) tag.
+3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest) tag.
 
 *2.* Configure Misskey
 ----------------------------------------------------------------
@@ -67,7 +67,7 @@ Just `docker-compose up -d`. GLHF!
 ### How to update your Misskey server to the latest version
 1. `git fetch`
 2. `git stash`
-3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
 4. `git stash pop`
 5. `docker-compose build`
 6. Check [ChangeLog](../CHANGELOG.md) for migration information
