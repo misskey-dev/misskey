@@ -11,8 +11,6 @@ If you encounter any problems with updating, please try the following:
 
 ### APIの破壊的変更
 * v10時点で deprecated だったパラメータなどを削除
-* notes/hybrid-timeline が notes/social-timeline にリネーム
-* ストリームの hybridTimeline チャンネルが socialTimeline にリネーム
 * ユーザーリストの title が name に
 
 10.99.0
