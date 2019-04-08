@@ -14,7 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'favorites-read',
+	kind: 'read:favorites',
 
 	params: {
 		limit: {

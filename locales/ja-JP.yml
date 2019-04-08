@@ -74,10 +74,26 @@ common:
   favorites: "お気に入り"
 
   permissions:
-    'read:account': "アカウントの情報を見る"
-    'write:account': "アカウントの情報を変更する"
-    'read:drive': "ドライブを見る"
-    'write:drive': "ドライブを操作する"
+    "read:account": "アカウントの情報を見る"
+    "write:account": "アカウントの情報を変更する"
+    "read:blocks": "ブロックを見る"
+    "write:blocks": "ブロックを操作する"
+    "read:drive": "ドライブを見る"
+    "write:drive": "ドライブを操作する"
+    "read:favorites": "お気に入りを見る"
+    "write:favorites": "お気に入りを操作する"
+    "read:following": "フォローの情報を見る"
+    "write:following": "フォロー・フォロー解除する"
+    "read:messaging": "トークを見る"
+    "write:messaging": "トークを操作する"
+    "read:mutes": "ミュートを見る"
+    "write:mutes": "ミュートを操作する"
+    "write:notes": "投稿を作成・削除する"
+    "read:notifications": "通知を見る"
+    "write:notifications": "通知を操作する"
+    "read:reactions": "リアクションを見る"
+    "write:reactions": "リアクションを操作する"
+    "write:votes": "投票する"
 
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
@@ -301,22 +317,6 @@ common:
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
   you: "あなた"
-
-  permissions:
-    account-read: "アカウントの情報を見る"
-    account-write: "アカウントの情報を操作する"
-    drive-read: "ドライブを見る"
-    drive-write: "ドライブを操作する"
-    favorite-write: "お気に入りを操作する"
-    favorites-read: "お気に入りを見る"
-    following-read: "フォローの情報を見る"
-    following-write: "フォロー・フォロー解除する"
-    messaging-read: "トークを見る"
-    messaging-write: "トークを操作する"
-    note-write: "投稿を作成・削除する"
-    notification-write: "通知を操作する"
-    reaction-write: "リアクションを操作する"
-    vote-write: "投票する"
 
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"

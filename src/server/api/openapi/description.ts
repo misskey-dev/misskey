@@ -3,7 +3,6 @@ import { IKindInfo, kinds } from '../kinds';
 
 export function getDescription(lang = 'ja-JP'): string {
 	const permissionTable = (Object.entries(kinds()) as [string, IKindInfo][])
-		.sort((a, b) => a[0] > b[0] ? 1 : -1)
 		.map(e => `|${e[0]}|${e[1].descs[lang]}|${e[1].endpoints.map(f => `[${f}](#operation/${f})`).join(', ')}|`)
 		.join('\n');
 

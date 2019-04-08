@@ -15,7 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-write',
+	kind: 'write:messaging',
 
 	params: {
 		messageId: {

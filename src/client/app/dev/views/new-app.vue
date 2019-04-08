@@ -16,7 +16,7 @@
 				<b-form-group :description="$t('authority-desc')">
 					<b-alert show variant="warning"><fa icon="exclamation-triangle"/> {{ $t('authority-warning') }}</b-alert>
 					<b-form-checkbox-group v-model="permission" stacked>
-						<b-form-checkbox v-for="(text, v) in permissionsList" :value="v" :key="v">{{ text }} ({{ v }})</b-form-checkbox>
+						<b-form-checkbox v-for="v in permissionsList" :value="v" :key="v">{{ $t(`@.permissions.${v}`) }} ({{ v }})</b-form-checkbox>
 					</b-form-checkbox-group>
 				</b-form-group>
 			</b-card>
@@ -30,7 +30,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
-import { locale } from '../../config';
 
 export default Vue.extend({
 	i18n: i18n('dev/views/new-app.vue'),
@@ -41,8 +40,13 @@ export default Vue.extend({
 			cb: '',
 			nidState: null,
 			permission: [],
-			permissionsList: locale.common.permissions
+			permissionsList: []
 		};
+	},
+	created() {
+		this.$root.api('permissions').then(permissions => {
+			this.permissionsList = permissions
+		});
 	},
 	methods: {
 		onSubmit() {
