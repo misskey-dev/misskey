@@ -21,19 +21,19 @@ export default Vue.extend({
 		return {
 			makePromise: cursor => this.$root.api('notes/search-by-tag', {
 				limit: limit + 1,
-				offset: cursor ? cursor : undefined,
+				untilId: cursor ? cursor : undefined,
 				tag: this.$route.params.tag
 			}).then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();
 					return {
 						notes: notes,
-						cursor: cursor ? cursor + limit : limit
+						more: true
 					};
 				} else {
 					return {
 						notes: notes,
-						cursor: null
+						more: false
 					};
 				}
 			})

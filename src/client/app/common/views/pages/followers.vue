@@ -30,7 +30,7 @@ export default Vue.extend({
 				} else {
 					return {
 						users: followings.map(following => following.follower),
-						cursor: null
+						more: false
 					};
 				}
 			}),

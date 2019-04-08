@@ -39,7 +39,7 @@ export default Vue.extend({
 				} else {
 					return {
 						notes: notes,
-						cursor: null
+						more: false
 					};
 				}
 			})

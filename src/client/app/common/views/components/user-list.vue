@@ -50,7 +50,7 @@ export default Vue.extend({
 			fetchingMoreUsers: false,
 			us: [],
 			inited: false,
-			cursor: null
+			more: false
 		};
 	},
 
