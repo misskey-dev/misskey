@@ -289,6 +289,20 @@ async function main() {
 		});
 	}
 
+	async function reMigrateUser(user: any) {
+		const u = await _User.findOne({
+			_id: new mongo.ObjectId(user.id)
+		});
+		const avatar = await DriveFiles.findOne(u.avatarId.toHexString());
+		const banner = await DriveFiles.findOne(u.bannerId.toHexString());
+		await Users.update(user.id, {
+			avatarId: avatar.id,
+			bannerId: banner.id,
+			avatarUrl: avatar.url,
+			bannerUrl: banner.url
+		});
+	}
+
 	const allUsersCount = await _User.count();
 	for (let i = 0; i < allUsersCount; i++) {
 		const user = await _User.findOne({}, {
@@ -401,6 +415,21 @@ async function main() {
 			console.log(`REACTION (${i + 1}/${allNoteReactionsCount}) ${reaction._id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`REACTION (${i + 1}/${allNoteReactionsCount}) ${reaction._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allActualUsersCount = await Users.count();
+	for (let i = 0; i < allActualUsersCount; i++) {
+		const [user] = await Users.find({
+			take: 1,
+			skip: i
+		});
+		try {
+			await reMigrateUser(user);
+			console.log(`RE:USER (${i + 1}/${allActualUsersCount}) ${user.id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`RE:USER (${i + 1}/${allActualUsersCount}) ${user.id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
