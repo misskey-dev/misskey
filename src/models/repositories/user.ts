@@ -86,6 +86,7 @@ export class UserRepository extends Repository<User> {
 			name: user.name,
 			username: user.username,
 			host: user.host,
+			uri: user.uri,
 			avatarUrl: user.avatarUrl,
 			bannerUrl: user.bannerUrl,
 			avatarColor: user.avatarColor,
