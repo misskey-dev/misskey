@@ -386,13 +386,16 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-post-form
+	display flex
+	flex-direction column
+	width 100%
+	height 100%
 	max-width 500px
-	width calc(100% - 16px)
-	margin 8px auto
+	padding 8px
+	margin 0 auto
 
 	@media (min-width 500px)
-		margin 16px auto
-		width calc(100% - 32px)
+		padding 16px
 
 		> .form
 			box-shadow 0 8px 32px rgba(#000, 0.1)
@@ -401,6 +404,9 @@ export default Vue.extend({
 		margin 32px auto
 
 	> .form
+		display flex
+		flex-direction column
+		flex-grow 1
 		background var(--face)
 		border-radius 8px
 		box-shadow 0 0 2px rgba(#000, 0.1)
@@ -443,8 +449,9 @@ export default Vue.extend({
 						opacity 0.7
 
 		> .form
-			max-width 500px
-			margin 0 auto
+			display flex
+			flex-direction column
+			flex-grow 1
 
 			> .preview
 				padding 16px
@@ -462,7 +469,9 @@ export default Vue.extend({
 
 			> input
 			> textarea
-				display block
+				display flex
+				flex-direction column
+				flex-grow 1
 				padding 12px
 				margin 0
 				width 100%

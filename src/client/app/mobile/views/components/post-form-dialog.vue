@@ -48,7 +48,7 @@ export default Vue.extend({
 			(this.$refs.bg as any).style.pointerEvents = 'auto';
 			anime({
 				targets: this.$refs.bg,
-				opacity: 1,
+				opacity: 0.8,
 				duration: 100,
 				easing: 'linear'
 			});
@@ -111,8 +111,8 @@ export default Vue.extend({
 		left 0
 		width 100%
 		height 100%
-		background rgba(#000, 0.7)
 		opacity 0
+		background var(--bg)
 		pointer-events none
 
 	> .main
