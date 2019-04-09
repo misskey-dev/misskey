@@ -201,7 +201,7 @@ async function main() {
 				url: url,
 				uri: file.metadata.uri,
 				accessKey: key,
-				folderId: file.metadata.folderId,
+				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
 				storedInternal: true,
 				isLink: false
 			});
@@ -220,7 +220,7 @@ async function main() {
 				url: file.metadata.url,
 				uri: file.metadata.uri,
 				accessKey: null,
-				folderId: file.metadata.folderId,
+				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
 				storedInternal: false,
 				isLink: true
 			});
