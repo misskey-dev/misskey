@@ -7,7 +7,6 @@ import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
 import * as pkg from '../../package.json';
-import { toPuny } from '../misc/convert-host';
 
 /**
  * Path of configuration directory
@@ -26,14 +25,14 @@ export default function load() {
 
 	const mixin = {} as Mixin;
 
-	const url = validateUrl(config.url);
+	const url = tryCreateUrl(config.url);
 
-	config.url = toPuny(normalizeUrl(config.url));
+	config.url = url.origin;
 
 	config.port = config.port || parseInt(process.env.PORT, 10);
 
-	mixin.host = toPuny(url.host);
-	mixin.hostname = toPuny(url.hostname);
+	mixin.host = url.host;
+	mixin.hostname = url.hostname;
 	mixin.scheme = url.protocol.replace(/:$/, '');
 	mixin.wsScheme = mixin.scheme.replace('http', 'ws');
 	mixin.wsUrl = `${mixin.wsScheme}://${mixin.host}`;
@@ -53,15 +52,4 @@ function tryCreateUrl(url: string) {
 	} catch (e) {
 		throw `url="${url}" is not a valid URL.`;
 	}
-}
-
-function validateUrl(url: string) {
-	const result = tryCreateUrl(url);
-	if (result.pathname.replace('/', '').length) throw `url="${url}" is not a valid URL, has a pathname.`;
-	if (!url.includes(result.host)) throw `url="${url}" is not a valid URL, has an invalid hostname.`;
-	return result;
-}
-
-function normalizeUrl(url: string) {
-	return url.endsWith('/') ? url.substr(0, url.length - 1) : url;
 }
