@@ -24,6 +24,7 @@ import { NoteReaction } from './models/entities/note-reaction';
 import { UserPublickey } from './models/entities/user-publickey';
 import { UserKeypair } from './models/entities/user-keypair';
 import { extractPublic } from './crypto_key';
+import { Emoji } from './models/entities/emoji';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -56,6 +57,7 @@ const _Following = db.get<any>('following');
 const _PollVote = db.get<any>('pollVotes');
 const _Favorite = db.get<any>('favorites');
 const _NoteReaction = db.get<any>('noteReactions');
+const _Emoji = db.get<any>('emoji');
 const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
@@ -77,6 +79,7 @@ async function main() {
 	const NoteReactions = getRepository(NoteReaction);
 	const UserPublickeys = getRepository(UserPublickey);
 	const UserKeypairs = getRepository(UserKeypair);
+	const Emojis = getRepository(Emoji);
 
 	async function migrateUser(user: any) {
 		await Users.save({
@@ -303,6 +306,18 @@ async function main() {
 		});
 	}
 
+	async function migrateEmoji(emoji: any) {
+		await NoteReactions.save({
+			id: emoji._id.toHexString(),
+			updatedAt: emoji.createdAt,
+			aliases: emoji.aliases,
+			url: emoji.url,
+			uri: emoji.uri,
+			host: emoji.host,
+			name: emoji.name
+		});
+	}
+
 	const allUsersCount = await _User.count();
 	for (let i = 0; i < allUsersCount; i++) {
 		const user = await _User.findOne({}, {
@@ -430,6 +445,20 @@ async function main() {
 			console.log(`RE:USER (${i + 1}/${allActualUsersCount}) ${user.id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`RE:USER (${i + 1}/${allActualUsersCount}) ${user.id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allEmojisCount = await _Emoji.count();
+	for (let i = 0; i < allEmojisCount; i++) {
+		const emoji = await _Emoji.findOne({}, {
+			skip: i
+		});
+		try {
+			await migrateEmoji(emoji);
+			console.log(`EMOJI (${i + 1}/${allEmojisCount}) ${emoji._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`EMOJI (${i + 1}/${allEmojisCount}) ${emoji._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
