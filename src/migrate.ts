@@ -21,6 +21,9 @@ import { Poll } from './models/entities/poll';
 import { PollVote } from './models/entities/poll-vote';
 import { NoteFavorite } from './models/entities/note-favorite';
 import { NoteReaction } from './models/entities/note-reaction';
+import { UserPublickey } from './models/entities/user-publickey';
+import { UserKeypair } from './models/entities/user-keypair';
+import { extractPublic } from './crypto_key';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -72,9 +75,11 @@ async function main() {
 	const PollVotes = getRepository(PollVote);
 	const NoteFavorites = getRepository(NoteFavorite);
 	const NoteReactions = getRepository(NoteReaction);
+	const UserPublickeys = getRepository(UserPublickey);
+	const UserKeypairs = getRepository(UserKeypair);
 
 	async function migrateUser(user: any) {
-		await Users.insert({
+		await Users.save({
 			id: user._id.toHexString(),
 			createdAt: user.createdAt || new Date(),
 			username: user.username,
@@ -99,6 +104,22 @@ async function main() {
 			sharedInbox: user.sharedInbox,
 			uri: user.uri,
 		});
+		if (user.publicKey) {
+			await UserPublickeys.save({
+				id: genId(),
+				userId: user._id.toHexString(),
+				keyId: user.publicKey.id,
+				keyPem: user.publicKey.publicKeyPem
+			});
+		}
+		if (user.keypair) {
+			await UserKeypairs.save({
+				id: genId(),
+				userId: user._id.toHexString(),
+				publicKey: extractPublic(user.keypair),
+				privateKey: user.keypair,
+			});
+		}
 	}
 
 	async function migrateFollowing(following: any) {
@@ -204,7 +225,7 @@ async function main() {
 	}
 
 	async function migrateNote(note: any) {
-		await Notes.insert({
+		await Notes.save({
 			id: note._id.toHexString(),
 			createdAt: note.createdAt || new Date(),
 			text: note.text,
