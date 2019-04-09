@@ -15,6 +15,10 @@ import { DriveFolder } from './models/entities/drive-folder';
 import { InternalStorage } from './services/drive/internal-storage';
 import { createTemp } from './misc/create-temp';
 import { Note } from './models/entities/note';
+import { Following } from './models/entities/following';
+import { genId } from './misc/gen-id';
+import { Poll } from './models/entities/poll';
+import { PollVote } from './models/entities/poll-vote';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -43,6 +47,8 @@ const _User = db.get<any>('users');
 const _DriveFile = db.get<any>('driveFiles.files');
 const _DriveFolder = db.get<any>('driveFolders');
 const _Note = db.get<any>('notes');
+const _Following = db.get<any>('following');
+const _PollVote = db.get<any>('pollVotes');
 const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
@@ -57,6 +63,63 @@ async function main() {
 	const DriveFiles = getRepository(DriveFile);
 	const DriveFolders = getRepository(DriveFolder);
 	const Notes = getRepository(Note);
+	const Followings = getRepository(Following);
+	const Polls = getRepository(Poll);
+	const PollVotes = getRepository(PollVote);
+
+	async function migrateUser(user: any) {
+		await Users.insert({
+			id: user._id.toHexString(),
+			createdAt: user.createdAt || new Date(),
+			username: user.username,
+			usernameLower: user.username.toLowerCase(),
+			host: user.host,
+			token: generateUserToken(),
+			password: user.password,
+			isAdmin: user.isAdmin,
+			autoAcceptFollowed: true,
+			autoWatch: false,
+			name: user.name,
+			location: user.profile ? user.profile.location : null,
+			birthday: user.profile ? user.profile.birthday : null,
+			followersCount: user.followersCount,
+			followingCount: user.followingCount,
+			notesCount: user.notesCount,
+			description: user.description,
+			isBot: user.isBot,
+			isCat: user.isCat,
+			isVerified: user.isVerified,
+			inbox: user.inbox,
+			sharedInbox: user.sharedInbox,
+			uri: user.uri,
+		});
+	}
+
+	async function migrateFollowing(following: any) {
+		await Followings.save({
+			id: following._id.toHexString(),
+			createdAt: following.createdAt || new Date(),
+			followerId: following.followerId.toHexString(),
+			followeeId: following.followeeId.toHexString(),
+
+			// 非正規化
+			followerHost: following._follower ? following._follower.host : null,
+			followerInbox: following._follower ? following._follower.inbox : null,
+			followerSharedInbox: following._follower ? following._follower.sharedInbox : null,
+			followeeHost: following._followee ? following._followee.host : null,
+			followeeInbox: following._followee ? following._followee.inbox : null,
+			followeeSharedInbox: following._followee ? following._followee.sharedInbo : nullx
+		});
+	}
+
+	async function migrateDriveFolder(folder: any) {
+		await DriveFolders.save({
+			id: folder._id.toHexString(),
+			createdAt: folder.createdAt || new Date(),
+			name: folder.name,
+			parentId: folder.parentId ? folder.parentId.toHexString() : null,
+		});
+	}
 
 	async function migrateDriveFile(file: any) {
 		const user = await _User.findOne({
@@ -76,7 +139,7 @@ async function main() {
 				url: file.metadata.url,
 				uri: file.metadata.uri,
 				accessKey: file.metadata.storage.key,
-				folderId: file.metadata.folderId,
+				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
 				storedInternal: false,
 				isRemote: false
 			});
@@ -151,7 +214,32 @@ async function main() {
 			renoteId: note.renoteId ? note.renoteId.toHexString() : null,
 			userHost: null,
 			fileIds: note.fileIds ? note.fileIds.map((id: any) => id.toHexString()) : [],
-			localOnly: note.localOnly || false
+			localOnly: note.localOnly || false,
+			hasPoll: note.poll != null
+		});
+
+		if (note.poll) {
+			await Polls.save({
+				id: genId(),
+				noteId: note._id.toHexString(),
+				choices: note.poll.choices.map((x: any) => x.text),
+				expiresAt: note.poll.expiresAt,
+				multiple: note.poll.multiple,
+				votes: note.poll.choices.map((x: any) => x.votes),
+				noteVisibility: note.visibility,
+				userId: note.userId.toHexString(),
+				userHost: null
+			});
+		}
+	}
+
+	async function migratePollVote(vote: any) {
+		await PollVotes.save({
+			id: vote._id.toHexString(),
+			createdAt: vote.createdAt,
+			noteId: vote.note.id.toHexString(),
+			userId: vote.user.id.toHexString(),
+			choice: vote.choice
 		});
 	}
 
@@ -160,32 +248,27 @@ async function main() {
 		const user = await _User.findOne({}, {
 			skip: i
 		});
-		await Users.insert({
-			id: user._id.toHexString(),
-			createdAt: user.createdAt || new Date(),
-			username: user.username,
-			usernameLower: user.username.toLowerCase(),
-			host: user.host,
-			token: generateUserToken(),
-			password: user.password,
-			isAdmin: user.isAdmin,
-			autoAcceptFollowed: true,
-			autoWatch: false,
-			name: user.name,
-			location: user.profile ? user.profile.location : null,
-			birthday: user.profile ? user.profile.birthday : null,
-			followersCount: user.followersCount,
-			followingCount: user.followingCount,
-			notesCount: user.notesCount,
-			description: user.description,
-			isBot: user.isBot,
-			isCat: user.isCat,
-			isVerified: user.isVerified,
-			inbox: user.inbox,
-			sharedInbox: user.sharedInbox,
-			uri: user.uri,
+		try {
+			await migrateUser(user);
+			console.log(`USER (${i + 1}/${allUsersCount}) ${user._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`USER (${i + 1}/${allUsersCount}) ${user._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allFollowingsCount = await _Following.count();
+	for (let i = 0; i < allFollowingsCount; i++) {
+		const following = await _Following.findOne({}, {
+			skip: i
 		});
-		console.log(`USER (${i + 1}/${allUsersCount}) ${user._id} ${chalk.green('DONE')}`);
+		try {
+			await migrateFollowing(following);
+			console.log(`FOLLOWING (${i + 1}/${allFollowingsCount}) ${following._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`FOLLOWING (${i + 1}/${allFollowingsCount}) ${following._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
 	}
 
 	const allDriveFoldersCount = await _DriveFolder.count();
@@ -193,13 +276,13 @@ async function main() {
 		const folder = await _DriveFolder.findOne({}, {
 			skip: i
 		});
-		await DriveFolders.save({
-			id: folder._id.toHexString(),
-			createdAt: folder.createdAt || new Date(),
-			name: folder.name,
-			parentId: folder.parentId,
-		});
-		console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.green('DONE')}`);
+		try {
+			await migrateDriveFolder(folder);
+			console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
 	}
 
 	const allDriveFilesCount = await _DriveFile.count();
@@ -230,6 +313,20 @@ async function main() {
 			console.log(`NOTE (${i + 1}/${allNotesCount}) ${note._id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`NOTE (${i + 1}/${allNotesCount}) ${note._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allPollVotesCount = await _PollVote.count();
+	for (let i = 0; i < allPollVotesCount; i++) {
+		const vote = await _PollVote.findOne({}, {
+			skip: i
+		});
+		try {
+			await migratePollVote(vote);
+			console.log(`POLLVOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`POLLVOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
