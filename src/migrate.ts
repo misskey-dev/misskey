@@ -307,7 +307,7 @@ async function main() {
 	}
 
 	async function migrateEmoji(emoji: any) {
-		await NoteReactions.save({
+		await Emojis.save({
 			id: emoji._id.toHexString(),
 			updatedAt: emoji.createdAt,
 			aliases: emoji.aliases,
