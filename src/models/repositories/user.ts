@@ -92,6 +92,8 @@ export class UserRepository extends Repository<User> {
 			avatarColor: user.avatarColor,
 			bannerColor: user.bannerColor,
 			isAdmin: user.isAdmin,
+			isBot: user.isBot,
+			isCat: user.isCat,
 
 			// カスタム絵文字添付
 			emojis: user.emojis.length > 0 ? Emojis.find({
