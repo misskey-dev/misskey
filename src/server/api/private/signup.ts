@@ -11,6 +11,7 @@ import { usersChart } from '../../../services/chart';
 import { UserServiceLinking } from '../../../models/entities/user-service-linking';
 import { User } from '../../../models/entities/user';
 import { UserKeypair } from '../../../models/entities/user-keypair';
+import { toPuny } from '../../../misc/convert-host';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -103,7 +104,7 @@ export default async (ctx: Koa.BaseContext) => {
 		createdAt: new Date(),
 		username: username,
 		usernameLower: username.toLowerCase(),
-		host: host,
+		host: toPuny(host),
 		token: secret,
 		password: hash,
 		isAdmin: config.autoAdmin && usersCount === 0,

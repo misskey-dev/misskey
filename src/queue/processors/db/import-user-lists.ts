@@ -5,7 +5,7 @@ import parseAcct from '../../../misc/acct/parse';
 import { resolveUser } from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '../../../misc/download-text-file';
-import { isSelfHost, toDbHost } from '../../../misc/convert-host';
+import { isSelfHost, toPuny } from '../../../misc/convert-host';
 import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 
@@ -47,7 +47,7 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 			host: null,
 			usernameLower: username.toLowerCase()
 		}) : await Users.findOne({
-			host: toDbHost(host),
+			host: toPuny(host),
 			usernameLower: username.toLowerCase()
 		});
 

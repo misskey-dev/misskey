@@ -25,6 +25,7 @@ import { UserPublickey } from './models/entities/user-publickey';
 import { UserKeypair } from './models/entities/user-keypair';
 import { extractPublic } from './crypto_key';
 import { Emoji } from './models/entities/emoji';
+import { toPuny } from './misc/convert-host';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -87,7 +88,7 @@ async function main() {
 			createdAt: user.createdAt || new Date(),
 			username: user.username,
 			usernameLower: user.username.toLowerCase(),
-			host: user.host,
+			host: toPuny(user.host),
 			token: generateUserToken(),
 			password: user.password,
 			isAdmin: user.isAdmin,
@@ -133,10 +134,10 @@ async function main() {
 			followeeId: following.followeeId.toHexString(),
 
 			// 非正規化
-			followerHost: following._follower ? following._follower.host : null,
+			followerHost: following._follower ? toPuny(following._follower.host) : null,
 			followerInbox: following._follower ? following._follower.inbox : null,
 			followerSharedInbox: following._follower ? following._follower.sharedInbox : null,
-			followeeHost: following._followee ? following._followee.host : null,
+			followeeHost: following._followee ? toPuny(following._followee.host) : null,
 			followeeInbox: following._followee ? following._followee.inbox : null,
 			followeeSharedInbox: following._followee ? following._followee.sharedInbo : null
 		});
@@ -159,7 +160,7 @@ async function main() {
 			await DriveFiles.save({
 				id: file._id.toHexString(),
 				userId: user._id.toHexString(),
-				userHost: user.host,
+				userHost: toPuny(user.host),
 				createdAt: file.uploadDate || new Date(),
 				md5: file.md5,
 				name: file.filename,
@@ -191,7 +192,7 @@ async function main() {
 			await DriveFiles.save({
 				id: file._id.toHexString(),
 				userId: user._id.toHexString(),
-				userHost: user.host,
+				userHost: toPuny(user.host),
 				createdAt: file.uploadDate || new Date(),
 				md5: file.md5,
 				name: file.filename,
@@ -210,7 +211,7 @@ async function main() {
 			await DriveFiles.save({
 				id: file._id.toHexString(),
 				userId: user._id.toHexString(),
-				userHost: user.host,
+				userHost: toPuny(user.host),
 				createdAt: file.uploadDate || new Date(),
 				md5: file.md5,
 				name: file.filename,
@@ -313,7 +314,7 @@ async function main() {
 			aliases: emoji.aliases,
 			url: emoji.url,
 			uri: emoji.uri,
-			host: emoji.host,
+			host: toPuny(emoji.host),
 			name: emoji.name
 		});
 	}

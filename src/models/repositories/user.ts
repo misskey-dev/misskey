@@ -166,7 +166,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public isLocalUser(user: User): user is ILocalUser {
-		return user.host === null;
+		return user.host == null;
 	}
 
 	public isRemoteUser(user: User): user is IRemoteUser {

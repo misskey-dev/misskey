@@ -24,6 +24,7 @@ import { UserServiceLinking } from '../../../models/entities/user-service-linkin
 import { instanceChart, usersChart } from '../../../services/chart';
 import { UserPublickey } from '../../../models/entities/user-publickey';
 import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
+import { toPuny } from '../../../misc/convert-host';
 const logger = apLogger;
 
 /**
@@ -124,7 +125,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	logger.info(`Creating the Person: ${person.id}`);
 
-	const host = toUnicode(new URL(object.id).hostname.toLowerCase());
+	const host = toPuny(new URL(object.id).hostname);
 
 	const { fields, services } = analyzeAttachments(person.attachment);
 
