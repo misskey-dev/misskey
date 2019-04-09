@@ -462,6 +462,8 @@ async function main() {
 			console.error(e);
 		}
 	}
+
+	console.log('DONE :)');
 }
 
 main();
