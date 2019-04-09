@@ -167,6 +167,7 @@ export class NoteRepository extends Repository<Note> {
 			text: text,
 			cw: note.cw,
 			visibility: note.visibility,
+			localOnly: note.localOnly,
 			visibleUserIds: note.visibleUserIds,
 			viaMobile: note.viaMobile,
 			renoteCount: note.renoteCount,
