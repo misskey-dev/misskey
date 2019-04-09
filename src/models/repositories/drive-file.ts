@@ -3,6 +3,7 @@ import { DriveFile } from '../entities/drive-file';
 import { Users, DriveFolders } from '..';
 import rap from '@prezzemolo/rap';
 import { User } from '../entities/user';
+import { toPuny } from '../../misc/convert-host';
 
 @EntityRepository(DriveFile)
 export class DriveFileRepository extends Repository<DriveFile> {
@@ -39,7 +40,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	public async clacDriveUsageOfHost(host: string): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
-			.where('file.userHost = :host', { host: host })
+			.where('file.userHost = :host', { host: toPuny(host) })
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
 

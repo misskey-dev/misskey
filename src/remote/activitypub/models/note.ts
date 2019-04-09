@@ -8,14 +8,13 @@ import { resolveImage } from './image';
 import { IRemoteUser, User } from '../../../models/entities/user';
 import { fromHtml } from '../../../mfm/fromHtml';
 import { ITag, extractHashtags } from './tag';
-import { toUnicode } from 'punycode';
 import { unique, concat, difference } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
 import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
-import { extractDbHost } from '../../../misc/convert-host';
+import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject, INote } from '../type';
@@ -246,8 +245,8 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	return await createNote(uri, resolver);
 }
 
-export async function extractEmojis(tags: ITag[], host_: string) {
-	const host = toUnicode(host_.toLowerCase());
+export async function extractEmojis(tags: ITag[], host: string) {
+	host = toPuny(host);
 
 	if (!tags) return [];
 

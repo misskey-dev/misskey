@@ -4,7 +4,6 @@ import { URL } from 'url';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
 import * as promiseAny from 'promise-any';
-import { toUnicode } from 'punycode';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
@@ -12,6 +11,7 @@ import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 import { UserKeypairs } from '../../models';
 import fetchMeta from '../../misc/fetch-meta';
+import { toPuny } from '../../misc/convert-host';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -25,7 +25,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 	const meta = await fetchMeta();
-	if (meta.blockedHosts.includes(toUnicode(host))) return;
+	if (meta.blockedHosts.includes(toPuny(host))) return;
 
 	const data = JSON.stringify(object);
 

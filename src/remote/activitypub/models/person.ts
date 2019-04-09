@@ -1,5 +1,4 @@
 import * as promiseLimit from 'promise-limit';
-import { toUnicode } from 'punycode';
 
 import config from '../../../config';
 import Resolver from '../resolver';
@@ -33,7 +32,7 @@ const logger = apLogger;
  * @param uri Fetch target URI
  */
 function validatePerson(x: any, uri: string) {
-	const expectHost = toUnicode(new URL(uri).hostname.toLowerCase());
+	const expectHost = toPuny(new URL(uri).hostname);
 
 	if (x == null) {
 		return new Error('invalid person: object is null');
@@ -63,7 +62,7 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: id is not a string');
 	}
 
-	const idHost = toUnicode(new URL(x.id).hostname.toLowerCase());
+	const idHost = toPuny(new URL(x.id).hostname);
 	if (idHost !== expectHost) {
 		return new Error('invalid person: id has different host');
 	}
@@ -72,7 +71,7 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: publicKey.id is not a string');
 	}
 
-	const publicKeyIdHost = toUnicode(new URL(x.publicKey.id).hostname.toLowerCase());
+	const publicKeyIdHost = toPuny(new URL(x.publicKey.id).hostname);
 	if (publicKeyIdHost !== expectHost) {
 		return new Error('invalid person: publicKey.id has different host');
 	}

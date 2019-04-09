@@ -4,6 +4,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Users, Followings } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
+import { toPuny } from '../../../../misc/convert-host';
 
 export const meta = {
 	desc: {
@@ -65,7 +66,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId != null
 		? { id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: ps.host });
+		: { usernameLower: ps.username.toLowerCase(), host: toPuny(ps.host) });
 
 	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
