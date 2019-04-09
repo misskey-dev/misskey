@@ -1,7 +1,10 @@
+process.env.NODE_ENV = 'production';
+
 import monk from 'monk';
 import * as mongo from 'mongodb';
 import * as fs from 'fs';
 import * as uuid from 'uuid';
+import chalk from 'chalk';
 import config from './config';
 import { initDb } from './db/postgre';
 import { User } from './models/entities/user';
@@ -11,6 +14,7 @@ import { DriveFile } from './models/entities/drive-file';
 import { DriveFolder } from './models/entities/drive-folder';
 import { InternalStorage } from './services/drive/internal-storage';
 import { createTemp } from './misc/create-temp';
+import { Note } from './models/entities/note';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -38,6 +42,7 @@ const nativeDbConn = async (): Promise<mongo.Db> => {
 const _User = db.get<any>('users');
 const _DriveFile = db.get<any>('driveFiles.files');
 const _DriveFolder = db.get<any>('driveFolders');
+const _Note = db.get<any>('notes');
 const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
@@ -51,6 +56,7 @@ async function main() {
 	const Users = getRepository(User);
 	const DriveFiles = getRepository(DriveFile);
 	const DriveFolders = getRepository(DriveFolder);
+	const Notes = getRepository(Note);
 
 	async function migrateDriveFile(file: any) {
 		const user = await _User.findOne({
@@ -128,12 +134,33 @@ async function main() {
 		}
 	}
 
+	async function migrateNote(note: any) {
+		await Notes.insert({
+			id: note._id.toHexString(),
+			createdAt: note.createdAt || new Date(),
+			text: note.text,
+			cw: note.cw || null,
+			tags: note.tags || [],
+			userId: note.userId.toHexString(),
+			viaMobile: note.viaMobile || false,
+			geo: note.geo,
+			appId: null,
+			visibility: note.visibility || 'public',
+			visibleUserIds: note.visibleUserIds ? note.visibleUserIds.map((id: any) => id.toHexString()) : [],
+			replyId: note.replyId ? note.replyId.toHexString() : null,
+			renoteId: note.renoteId ? note.renoteId.toHexString() : null,
+			userHost: null,
+			fileIds: note.fileIds ? note.fileIds.map((id: any) => id.toHexString()) : [],
+			localOnly: note.localOnly || false
+		});
+	}
+
 	const allUsersCount = await _User.count();
 	for (let i = 0; i < allUsersCount; i++) {
 		const user = await _User.findOne({}, {
 			skip: i
 		});
-		await Users.save({
+		await Users.insert({
 			id: user._id.toHexString(),
 			createdAt: user.createdAt || new Date(),
 			username: user.username,
@@ -158,7 +185,7 @@ async function main() {
 			sharedInbox: user.sharedInbox,
 			uri: user.uri,
 		});
-		console.log(`USER (${i + 1}/${allUsersCount}) ${user._id} DONE`);
+		console.log(`USER (${i + 1}/${allUsersCount}) ${user._id} ${chalk.green('DONE')}`);
 	}
 
 	const allDriveFoldersCount = await _DriveFolder.count();
@@ -172,7 +199,7 @@ async function main() {
 			name: folder.name,
 			parentId: folder.parentId,
 		});
-		console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} DONE`);
+		console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.green('DONE')}`);
 	}
 
 	const allDriveFilesCount = await _DriveFile.count();
@@ -182,9 +209,28 @@ async function main() {
 		});
 		try {
 			await migrateDriveFile(file);
-			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} DONE`);
+			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.green('DONE')}`);
 		} catch (e) {
-			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} ERR`);
+			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allNotesCount = await _Note.count({
+		'_user.host': null
+	});
+	for (let i = 0; i < allNotesCount; i++) {
+		const note = await _Note.findOne({
+			'_user.host': null
+		}, {
+			skip: i
+		});
+		try {
+			await migrateNote(note);
+			console.log(`NOTE (${i + 1}/${allNotesCount}) ${note._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`NOTE (${i + 1}/${allNotesCount}) ${note._id} ${chalk.red('ERR')}`);
+			console.error(e);
 		}
 	}
 }
