@@ -20,6 +20,7 @@ import { genId } from './misc/gen-id';
 import { Poll } from './models/entities/poll';
 import { PollVote } from './models/entities/poll-vote';
 import { NoteFavorite } from './models/entities/note-favorite';
+import { NoteReaction } from './models/entities/note-reaction';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -51,6 +52,7 @@ const _Note = db.get<any>('notes');
 const _Following = db.get<any>('following');
 const _PollVote = db.get<any>('pollVotes');
 const _Favorite = db.get<any>('favorites');
+const _NoteReaction = db.get<any>('noteReactions');
 const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
@@ -69,6 +71,7 @@ async function main() {
 	const Polls = getRepository(Poll);
 	const PollVotes = getRepository(PollVote);
 	const NoteFavorites = getRepository(NoteFavorite);
+	const NoteReactions = getRepository(NoteReaction);
 
 	async function migrateUser(user: any) {
 		await Users.insert({
@@ -255,6 +258,16 @@ async function main() {
 		});
 	}
 
+	async function migrateNoteReaction(reaction: any) {
+		await NoteReactions.save({
+			id: reaction._id.toHexString(),
+			createdAt: reaction.createdAt,
+			noteId: reaction.noteId.toHexString(),
+			userId: reaction.userId.toHexString(),
+			reaction: reaction.reaction
+		});
+	}
+
 	const allUsersCount = await _User.count();
 	for (let i = 0; i < allUsersCount; i++) {
 		const user = await _User.findOne({}, {
@@ -290,9 +303,9 @@ async function main() {
 		});
 		try {
 			await migrateDriveFolder(folder);
-			console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.green('DONE')}`);
+			console.log(`FOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.green('DONE')}`);
 		} catch (e) {
-			console.log(`DRIVEFOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.red('ERR')}`);
+			console.log(`FOLDER (${i + 1}/${allDriveFoldersCount}) ${folder._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
@@ -304,9 +317,9 @@ async function main() {
 		});
 		try {
 			await migrateDriveFile(file);
-			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.green('DONE')}`);
+			console.log(`FILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.green('DONE')}`);
 		} catch (e) {
-			console.log(`DRIVEFILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.red('ERR')}`);
+			console.log(`FILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
@@ -336,9 +349,9 @@ async function main() {
 		});
 		try {
 			await migratePollVote(vote);
-			console.log(`POLLVOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.green('DONE')}`);
+			console.log(`VOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.green('DONE')}`);
 		} catch (e) {
-			console.log(`POLLVOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.red('ERR')}`);
+			console.log(`VOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
@@ -353,6 +366,20 @@ async function main() {
 			console.log(`FAVORITE (${i + 1}/${allNoteFavoritesCount}) ${favorite._id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`FAVORITE (${i + 1}/${allNoteFavoritesCount}) ${favorite._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allNoteReactionsCount = await _NoteReaction.count();
+	for (let i = 0; i < allNoteReactionsCount; i++) {
+		const reaction = await _NoteReaction.findOne({}, {
+			skip: i
+		});
+		try {
+			await migrateNoteReaction(reaction);
+			console.log(`REACTION (${i + 1}/${allNoteReactionsCount}) ${reaction._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`REACTION (${i + 1}/${allNoteReactionsCount}) ${reaction._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
