@@ -375,7 +375,7 @@ export default async function(
 	file.folderId = folder !== null ? folder.id : null;
 	file.comment = comment;
 	file.properties = properties;
-	file.isRemote = isLink;
+	file.isLink = isLink;
 	file.isSensitive = Users.isLocalUser(user) && user.alwaysMarkNsfw ? true :
 		(sensitive !== null && sensitive !== undefined)
 			? sensitive

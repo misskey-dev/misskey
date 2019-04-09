@@ -16,7 +16,7 @@ export default async function(file: DriveFile, isExpired = false) {
 		if (file.webpublicUrl) {
 			InternalStorage.del(file.webpublicAccessKey);
 		}
-	} else if (!file.isRemote) {
+	} else if (!file.isLink) {
 		const minio = new Minio.Client(config.drive.config);
 
 		await minio.removeObject(config.drive.bucket, file.accessKey);
@@ -33,7 +33,7 @@ export default async function(file: DriveFile, isExpired = false) {
 	// リモートファイル期限切れ削除後は直リンクにする
 	if (isExpired && file.userHost !== null) {
 		DriveFiles.update(file.id, {
-			isRemote: true,
+			isLink: true,
 			url: file.uri,
 			thumbnailUrl: null,
 			webpublicUrl: null

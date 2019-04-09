@@ -150,5 +150,5 @@ export class DriveFile {
 		default: false,
 		comment: 'Whether the DriveFile is direct link to remote server.'
 	})
-	public isRemote: boolean;
+	public isLink: boolean;
 }

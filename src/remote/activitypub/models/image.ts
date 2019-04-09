@@ -40,7 +40,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 		throw e;
 	}
 
-	if (file.isRemote) {
+	if (file.isLink) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
 		// URLを更新する
 		if (file.url !== image.url) {
