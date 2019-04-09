@@ -69,6 +69,11 @@ common:
   following: "팔로우 중"
   followers: "팔로워"
   favorites: "즐겨찾기"
+  permissions:
+    'read:account': "계정 정보 보기"
+    'write:account': "계정 정보 변경"
+    'read:drive': "드라이브 보기"
+    'write:drive': "드라이브 수정"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
     explore: "사용자 탐색"
@@ -974,6 +979,7 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/timeline.vue:
   home: "홈"
   local: "로컬"
+  hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
   messages: "다이렉트 게시글"
@@ -1486,6 +1492,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "홈"
   local: "로컬"
+  hybrid: "소셜"
   global: "글로벌"
   mentions: "받은 멘션"
   messages: "다이렉트 게시글"
@@ -1541,6 +1548,7 @@ deck:
   widgets: "위젯"
   home: "홈"
   local: "로컬"
+  hybrid: "소셜"
   hashtag: "해시태그"
   global: "글로벌"
   mentions: "받은 멘션"
