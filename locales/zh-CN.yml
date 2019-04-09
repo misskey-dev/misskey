@@ -69,6 +69,11 @@ common:
   following: "正在关注"
   followers: "关注者"
   favorites: "最爱"
+  permissions:
+    'read:account': "查看账户信息"
+    'write:account': "更改我的帐户信息"
+    'read:drive': "查看网盘"
+    'write:drive': "管理网盘文件"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
     explore: "查找用户"
@@ -974,6 +979,7 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/timeline.vue:
   home: "首页"
   local: "本地"
+  hybrid: "社交"
   global: "全球"
   mentions: "提到的"
   messages: "直接发布"
@@ -1486,6 +1492,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "首页"
   local: "Local"
+  hybrid: "社交"
   global: "Global"
   mentions: "Mentions"
   messages: "直接发布"
@@ -1541,6 +1548,7 @@ deck:
   widgets: "小部件"
   home: "首页"
   local: "Local"
+  hybrid: "社交"
   hashtag: "标签"
   global: "Global"
   mentions: "Mentions"
