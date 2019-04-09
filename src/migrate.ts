@@ -171,9 +171,9 @@ async function main() {
 				accessKey: file.metadata.storage.key,
 				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
 				storedInternal: false,
-				isRemote: false
+				isLink: false
 			});
-		} else if (!file.metadata.isRemote) {
+		} else if (!file.metadata.isLink) {
 			const [temp, clean] = await createTemp();
 			await new Promise(async (res, rej) => {
 				const bucket = await getDriveFileBucket();
@@ -203,7 +203,7 @@ async function main() {
 				accessKey: key,
 				folderId: file.metadata.folderId,
 				storedInternal: true,
-				isRemote: false
+				isLink: false
 			});
 			clean();
 		} else {
@@ -222,7 +222,7 @@ async function main() {
 				accessKey: null,
 				folderId: file.metadata.folderId,
 				storedInternal: false,
-				isRemote: true
+				isLink: true
 			});
 		}
 	}
