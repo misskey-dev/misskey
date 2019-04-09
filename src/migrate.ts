@@ -108,7 +108,7 @@ async function main() {
 			followerSharedInbox: following._follower ? following._follower.sharedInbox : null,
 			followeeHost: following._followee ? following._followee.host : null,
 			followeeInbox: following._followee ? following._followee.inbox : null,
-			followeeSharedInbox: following._followee ? following._followee.sharedInbo : nullx
+			followeeSharedInbox: following._followee ? following._followee.sharedInbo : null
 		});
 	}
 
