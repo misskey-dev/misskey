@@ -5,6 +5,15 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.100.0
+----------
+* ユーザーリストでフォローボタンを表示するように
+* ドライブのファイルのサムネイルを修正
+* 投稿ウィジットでローカルのみの公開範囲で投稿できない問題を修正
+* TLを遡った時に抜けがある時がある問題を修正
+* ユーザータイムラインが投稿日時順ではなくなっているのを修正
+* 10.99.0 でチャートのレンダリングがおかしい問題を修正
+
 10.99.0
 ----------
 * manifest.json にインスタンス名を反映させるように
