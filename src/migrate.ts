@@ -19,6 +19,7 @@ import { Following } from './models/entities/following';
 import { genId } from './misc/gen-id';
 import { Poll } from './models/entities/poll';
 import { PollVote } from './models/entities/poll-vote';
+import { NoteFavorite } from './models/entities/note-favorite';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -49,6 +50,7 @@ const _DriveFolder = db.get<any>('driveFolders');
 const _Note = db.get<any>('notes');
 const _Following = db.get<any>('following');
 const _PollVote = db.get<any>('pollVotes');
+const _Favorite = db.get<any>('favorites');
 const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
@@ -66,6 +68,7 @@ async function main() {
 	const Followings = getRepository(Following);
 	const Polls = getRepository(Poll);
 	const PollVotes = getRepository(PollVote);
+	const NoteFavorites = getRepository(NoteFavorite);
 
 	async function migrateUser(user: any) {
 		await Users.insert({
@@ -237,9 +240,18 @@ async function main() {
 		await PollVotes.save({
 			id: vote._id.toHexString(),
 			createdAt: vote.createdAt,
-			noteId: vote.note.id.toHexString(),
-			userId: vote.user.id.toHexString(),
+			noteId: vote.noteId.toHexString(),
+			userId: vote.userId.toHexString(),
 			choice: vote.choice
+		});
+	}
+
+	async function migrateNoteFavorite(favorite: any) {
+		await NoteFavorites.save({
+			id: favorite._id.toHexString(),
+			createdAt: favorite.createdAt,
+			noteId: favorite.noteId.toHexString(),
+			userId: favorite.userId.toHexString(),
 		});
 	}
 
@@ -327,6 +339,20 @@ async function main() {
 			console.log(`POLLVOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`POLLVOTE (${i + 1}/${allPollVotesCount}) ${vote._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allNoteFavoritesCount = await _Favorite.count();
+	for (let i = 0; i < allNoteFavoritesCount; i++) {
+		const favorite = await _Favorite.findOne({}, {
+			skip: i
+		});
+		try {
+			await migrateNoteFavorite(favorite);
+			console.log(`FAVORITE (${i + 1}/${allNoteFavoritesCount}) ${favorite._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`FAVORITE (${i + 1}/${allNoteFavoritesCount}) ${favorite._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
