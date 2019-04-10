@@ -170,6 +170,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		userId: user.id,
 		description: fromHtml(person.summary),
 		fields,
+		userHost: host
 	} as Partial<UserProfile>);
 
 	await UserPublickeys.save({
