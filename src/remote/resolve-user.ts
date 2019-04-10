@@ -79,7 +79,7 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 async function resolveSelf(acctLower: string) {
 	logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 	const finger = await webFinger(acctLower).catch(e => {
-		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${e.message} (${e.status})`);
+		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${e.statusCode || e}`);
 		throw e;
 	});
 	const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
