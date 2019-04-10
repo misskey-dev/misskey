@@ -255,7 +255,6 @@ async function main() {
 
 		if (note.poll) {
 			await Polls.save({
-				id: genId(),
 				noteId: note._id.toHexString(),
 				choices: note.poll.choices.map((x: any) => x.text),
 				expiresAt: note.poll.expiresAt,
