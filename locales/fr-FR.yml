@@ -1262,6 +1262,7 @@ admin/views/federation.vue:
     lastCommunicatedAtAsc: "La date et l'heure des interactions plus anciennes"
     lastCommunicatedAtDesc: "La date et l'heure des nouvelles interactions"
     notesDesc: "Description des notes"
+    usersAsc: "Peu d'abonnés"
     followingAsc: "Les moins suivies"
     followingDesc: "Ayant le plus d'abonné·e·s"
     followersAsc: "Ayant le moins d'abonné·e·s"
