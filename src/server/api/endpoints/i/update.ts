@@ -223,8 +223,8 @@ export default define(meta, async (ps, user, app) => {
 	for (const tag of user.tags.filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
 	//#endregion
 
-	await Users.update(user.id, updates);
-	await UserProfiles.update({ userId: user.id }, profile);
+	if (Object.keys(updates).length > 0) await Users.update(user.id, updates);
+	if (Object.keys(profile).length > 0) await UserProfiles.update({ userId: user.id }, profile);
 
 	const iObj = await Users.pack(user.id, user, {
 		detail: true,
