@@ -24,6 +24,7 @@ import { UserPublickey } from '../../../models/entities/user-publickey';
 import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
 import { toPuny } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
+import { validActor } from '../../../remote/activitypub/type';
 const logger = apLogger;
 
 /**
@@ -38,7 +39,7 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: object is null');
 	}
 
-	if (x.type != 'Person' && x.type != 'Service') {
+	if (!validActor.includes(x.type)) {
 		return new Error(`invalid person: object is not a person or service '${x.type}'`);
 	}
 
