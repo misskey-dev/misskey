@@ -16,7 +16,6 @@ import { InternalStorage } from './services/drive/internal-storage';
 import { createTemp } from './misc/create-temp';
 import { Note } from './models/entities/note';
 import { Following } from './models/entities/following';
-import { genId } from './misc/gen-id';
 import { Poll } from './models/entities/poll';
 import { PollVote } from './models/entities/poll-vote';
 import { NoteFavorite } from './models/entities/note-favorite';
