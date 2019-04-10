@@ -154,6 +154,12 @@ export class UserRepository extends Repository<User> {
 				}),
 			} : {}),
 
+			...(opts.includeSecrets ? {
+				clientData: profile.clientData,
+				email: profile.email,
+				emailVerified: profile.emailVerified,
+			} : {}),
+
 			...(relation ? {
 				isFollowing: relation.isFollowing,
 				isFollowed: relation.isFollowed,
