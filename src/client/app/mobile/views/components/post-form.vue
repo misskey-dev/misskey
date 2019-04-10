@@ -395,13 +395,13 @@ export default Vue.extend({
 	margin 0 auto
 
 	@media (min-width 500px)
-		padding 16px
+		padding 16px 16px 8px
 
 		> .form
 			box-shadow 0 8px 32px rgba(#000, 0.1)
 
 	@media (min-width 600px)
-		margin 32px auto
+		padding 32px 32px 16px
 
 	> .form
 		display flex
