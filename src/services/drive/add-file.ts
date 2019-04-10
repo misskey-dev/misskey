@@ -15,7 +15,7 @@ import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
-import { DriveFiles, DriveFolders, Users, Instances } from '../../models';
+import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
 import { InternalStorage } from './internal-storage';
 import { DriveFile } from '../../models/entities/drive-file';
 import { IRemoteUser, User } from '../../models/entities/user';
@@ -365,6 +365,8 @@ export default async function(
 		propPromises = [calcWh(), calcAvg()];
 	}
 
+	const profile = await UserProfiles.findOne({ userId: user.id });
+
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
 	let file = new DriveFile();
@@ -376,7 +378,7 @@ export default async function(
 	file.comment = comment;
 	file.properties = properties;
 	file.isLink = isLink;
-	file.isSensitive = Users.isLocalUser(user) && user.alwaysMarkNsfw ? true :
+	file.isSensitive = Users.isLocalUser(user) && profile.alwaysMarkNsfw ? true :
 		(sensitive !== null && sensitive !== undefined)
 			? sensitive
 			: false;

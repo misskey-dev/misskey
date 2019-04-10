@@ -8,7 +8,7 @@ import config from '../../../../config';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import { apiLogger } from '../../logger';
-import { Users } from '../../../../models';
+import { Users, UserProfiles } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -32,14 +32,16 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	const profile = await UserProfiles.findOne({ userId: user.id });
+
 	// Compare password
-	const same = await bcrypt.compare(ps.password, user.password);
+	const same = await bcrypt.compare(ps.password, profile.password);
 
 	if (!same) {
 		throw new Error('incorrect password');
 	}
 
-	await Users.update(user.id, {
+	await UserProfiles.update({ userId: user.id }, {
 		email: ps.email,
 		emailVerified: false,
 		emailVerifyCode: null
@@ -56,7 +58,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.email != null) {
 		const code = rndstr('a-z0-9', 16);
 
-		await Users.update(user.id, {
+		await UserProfiles.update({ userId: user.id }, {
 			emailVerifyCode: code
 		});
 

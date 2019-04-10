@@ -7,7 +7,7 @@ import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
-import { Users, UserServiceLinkings } from '../../../models';
+import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 
 function getUserToken(ctx: Koa.BaseContext) {
@@ -44,7 +44,7 @@ router.get('/disconnect/twitter', async ctx => {
 		token: userToken
 	});
 
-	await UserServiceLinkings.update({
+	await UserProfiles.update({
 		userId: user.id
 	}, {
 		twitter: false,
@@ -139,7 +139,7 @@ router.get('/tw/cb', async ctx => {
 
 		const result = await twAuth.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
-		const link = await UserServiceLinkings.createQueryBuilder()
+		const link = await UserProfiles.createQueryBuilder()
 			.where('twitter @> :twitter', {
 				twitter: {
 					userId: result.userId,
@@ -177,7 +177,7 @@ router.get('/tw/cb', async ctx => {
 			token: userToken
 		});
 
-		await UserServiceLinkings.update({ userId: user.id }, {
+		await UserProfiles.update({ userId: user.id }, {
 			twitter: true,
 			twitterAccessToken: result.accessToken,
 			twitterAccessTokenSecret: result.accessTokenSecret,

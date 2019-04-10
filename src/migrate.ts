@@ -26,6 +26,7 @@ import { UserKeypair } from './models/entities/user-keypair';
 import { extractPublic } from './crypto_key';
 import { Emoji } from './models/entities/emoji';
 import { toPuny } from './misc/convert-host';
+import { UserProfile } from './models/entities/user-profile';
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
@@ -70,6 +71,7 @@ const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 async function main() {
 	await initDb();
 	const Users = getRepository(User);
+	const UserProfiles = getRepository(UserProfile);
 	const DriveFiles = getRepository(DriveFile);
 	const DriveFolders = getRepository(DriveFolder);
 	const Notes = getRepository(Note);
@@ -90,17 +92,11 @@ async function main() {
 			usernameLower: user.username.toLowerCase(),
 			host: toPuny(user.host),
 			token: generateUserToken(),
-			password: user.password,
 			isAdmin: user.isAdmin,
-			autoAcceptFollowed: true,
-			autoWatch: false,
 			name: user.name,
-			location: user.profile ? user.profile.location : null,
-			birthday: user.profile ? user.profile.birthday : null,
 			followersCount: user.followersCount,
 			followingCount: user.followingCount,
 			notesCount: user.notesCount,
-			description: user.description,
 			isBot: user.isBot,
 			isCat: user.isCat,
 			isVerified: user.isVerified,
@@ -108,9 +104,18 @@ async function main() {
 			sharedInbox: user.sharedInbox,
 			uri: user.uri,
 		});
+		await UserProfiles.save({
+			userId: user._id.toHexString(),
+			description: user.description,
+			userHost: toPuny(user.host),
+			autoAcceptFollowed: true,
+			autoWatch: false,
+			password: user.password,
+			location: user.profile ? user.profile.location : null,
+			birthday: user.profile ? user.profile.birthday : null,
+		});
 		if (user.publicKey) {
 			await UserPublickeys.save({
-				id: genId(),
 				userId: user._id.toHexString(),
 				keyId: user.publicKey.id,
 				keyPem: user.publicKey.publicKeyPem
@@ -118,7 +123,6 @@ async function main() {
 		}
 		if (user.keypair) {
 			await UserKeypairs.save({
-				id: genId(),
 				userId: user._id.toHexString(),
 				publicKey: extractPublic(user.keypair),
 				privateKey: user.keypair,

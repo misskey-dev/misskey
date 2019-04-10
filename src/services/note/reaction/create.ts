@@ -8,7 +8,7 @@ import { toDbReaction } from '../../../misc/reaction-lib';
 import fetchMeta from '../../../misc/fetch-meta';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, NoteWatchings, Notes } from '../../../models';
+import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
@@ -79,8 +79,10 @@ export default async (user: User, note: Note, reaction: string) => {
 		}
 	});
 
+	const profile = await UserProfiles.findOne({ userId: user.id });
+
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
-	if (Users.isLocalUser(user) && user.autoWatch !== false) {
+	if (Users.isLocalUser(user) && profile.autoWatch) {
 		watch(user.id, note);
 	}
 

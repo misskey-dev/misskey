@@ -4,11 +4,8 @@ import { id } from '../id';
 
 @Entity()
 export class UserKeypair {
-	@PrimaryColumn(id())
-	public id: string;
-
 	@Index({ unique: true })
-	@Column(id())
+	@PrimaryColumn(id())
 	public userId: User['id'];
 
 	@OneToOne(type => User, {

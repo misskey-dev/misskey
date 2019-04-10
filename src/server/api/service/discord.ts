@@ -8,7 +8,7 @@ import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
-import { Users, UserServiceLinkings } from '../../../models';
+import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 
 function getUserToken(ctx: Koa.BaseContext) {
@@ -45,7 +45,7 @@ router.get('/disconnect/discord', async ctx => {
 		token: userToken
 	});
 
-	await UserServiceLinkings.update({
+	await UserProfiles.update({
 		userId: user.id
 	}, {
 		discord: false,
@@ -202,7 +202,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const link = await UserServiceLinkings.createQueryBuilder()
+		const profile = await UserProfiles.createQueryBuilder()
 			.where('discord @> :discord', {
 				discord: {
 					id: id,
@@ -211,12 +211,12 @@ router.get('/dc/cb', async ctx => {
 			.andWhere('userHost IS NULL')
 			.getOne();
 
-		if (link == null) {
+		if (profile == null) {
 			ctx.throw(404, `@${username}#${discriminator}と連携しているMisskeyアカウントはありませんでした...`);
 			return;
 		}
 
-		await UserServiceLinkings.update(link.id, {
+		await UserProfiles.update({ userId: profile.userId }, {
 			discord: true,
 			discordAccessToken: accessToken,
 			discordRefreshToken: refreshToken,
@@ -225,7 +225,7 @@ router.get('/dc/cb', async ctx => {
 			discordDiscriminator: discriminator
 		});
 
-		signin(ctx, await Users.findOne(link.userId) as ILocalUser, true);
+		signin(ctx, await Users.findOne(profile.userId) as ILocalUser, true);
 	} else {
 		const code = ctx.query.code;
 
@@ -289,7 +289,7 @@ router.get('/dc/cb', async ctx => {
 			token: userToken
 		});
 
-		await UserServiceLinkings.update({ userId: user.id }, {
+		await UserProfiles.update({ userId: user.id }, {
 			discord: true,
 			discordAccessToken: accessToken,
 			discordRefreshToken: refreshToken,

@@ -23,7 +23,7 @@ import apiServer from './api';
 import { sum } from '../prelude/array';
 import Logger from '../services/logger';
 import { program } from '../argv';
-import { Users } from '../models';
+import { UserProfiles } from '../models';
 import { networkChart } from '../services/chart';
 
 export const serverLogger = new Logger('server', 'gray', false);
@@ -73,15 +73,15 @@ router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
 router.get('/verify-email/:code', async ctx => {
-	const user = await Users.findOne({
+	const profile = await UserProfiles.findOne({
 		emailVerifyCode: ctx.params.code
 	});
 
-	if (user != null) {
+	if (profile != null) {
 		ctx.body = 'Verify succeeded!';
 		ctx.status = 200;
 
-		Users.update(user.id, {
+		UserProfiles.update({ userId: profile.userId }, {
 			emailVerified: true,
 			emailVerifyCode: null
 		});

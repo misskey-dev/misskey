@@ -3,7 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
-import { Users } from '../../../../models';
+import { Users, UserProfiles } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -42,7 +42,9 @@ export default define(meta, async (ps) => {
 	// Generate hash of password
 	const hash = bcrypt.hashSync(passwd);
 
-	await Users.update(user.id, {
+	await UserProfiles.update({
+		userId: user.id
+	}, {
 		password: hash
 	});
 

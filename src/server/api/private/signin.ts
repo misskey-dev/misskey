@@ -4,7 +4,7 @@ import * as speakeasy from 'speakeasy';
 import { publishMainStream } from '../../../services/stream';
 import signin from '../common/signin';
 import config from '../../../config';
-import { Users, Signins } from '../../../models';
+import { Users, Signins, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { genId } from '../../../misc/gen-id';
 
@@ -45,13 +45,15 @@ export default async (ctx: Koa.BaseContext) => {
 		return;
 	}
 
+	const profile = await UserProfiles.findOne({ userId: user.id });
+
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = await bcrypt.compare(password, profile.password);
 
 	if (same) {
-		if (user.twoFactorEnabled) {
+		if (profile.twoFactorEnabled) {
 			const verified = (speakeasy as any).totp.verify({
-				secret: user.twoFactorSecret,
+				secret: profile.twoFactorSecret,
 				encoding: 'base32',
 				token: token
 			});

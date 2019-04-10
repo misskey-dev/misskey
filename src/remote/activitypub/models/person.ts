@@ -14,16 +14,16 @@ import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateHashtag } from '../../../services/update-hashtag';
-import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserServiceLinkings, UserPublickeys } from '../../../models';
+import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
 import { UserNotePining } from '../../../models/entities/user-note-pinings';
 import { genId } from '../../../misc/gen-id';
-import { UserServiceLinking } from '../../../models/entities/user-service-linking';
 import { instanceChart, usersChart } from '../../../services/chart';
 import { UserPublickey } from '../../../models/entities/user-publickey';
 import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
 import { toPuny } from '../../../misc/convert-host';
+import { UserProfile } from '../../../models/entities/user-profile';
 const logger = apLogger;
 
 /**
@@ -126,7 +126,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const host = toPuny(new URL(object.id).hostname);
 
-	const { fields, services } = analyzeAttachments(person.attachment);
+	const { fields } = analyzeAttachments(person.attachment);
 
 	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
 
@@ -141,7 +141,6 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			bannerId: null,
 			createdAt: Date.parse(person.published) || new Date(),
 			lastFetchedAt: new Date(),
-			description: fromHtml(person.summary),
 			name: person.name,
 			isLocked: person.manuallyApprovesFollowers,
 			username: person.preferredUsername,
@@ -153,8 +152,6 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			endpoints: person.endpoints,
 			uri: person.id,
 			url: person.url,
-			fields,
-			...services,
 			tags,
 			isBot,
 			isCat: (person as any).isCat === true
@@ -169,17 +166,17 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		throw e;
 	}
 
+	await UserProfiles.save({
+		userId: user.id,
+		description: fromHtml(person.summary),
+		fields,
+	} as Partial<UserProfile>);
+
 	await UserPublickeys.save({
-		id: genId(),
 		userId: user.id,
 		keyId: person.publicKey.id,
 		keyPem: person.publicKey.publicKeyPem
 	} as UserPublickey);
-
-	await UserServiceLinkings.save({
-		id: genId(),
-		userId: user.id
-	} as UserServiceLinking);
 
 	// Register host
 	registerOrFetchInstanceDoc(host).then(i => {
@@ -347,7 +344,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		keyPem: person.publicKey.publicKeyPem
 	});
 
-	await UserServiceLinkings.update({ userId: exist.id }, {
+	await UserProfiles.update({ userId: exist.id }, {
 		twitterUserId: services.twitter.userId,
 		twitterScreenName: services.twitter.screenName,
 		githubId: services.github.id,

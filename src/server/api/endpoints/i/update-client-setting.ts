@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
-import { Users } from '../../../../models';
+import { UserProfiles } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -20,7 +20,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	await Users.createQueryBuilder().update()
+	await UserProfiles.createQueryBuilder().update()
 		.set({
 			clientData: {
 				[ps.name]: ps.value

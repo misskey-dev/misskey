@@ -5,13 +5,13 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
-import { Users, RegistrationTickets, UserServiceLinkings, UserKeypairs } from '../../../models';
+import { Users, RegistrationTickets, UserProfiles, UserKeypairs } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
-import { UserServiceLinking } from '../../../models/entities/user-service-linking';
 import { User } from '../../../models/entities/user';
 import { UserKeypair } from '../../../models/entities/user-keypair';
 import { toPuny } from '../../../misc/convert-host';
+import { UserProfile } from '../../../models/entities/user-profile';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -106,23 +106,21 @@ export default async (ctx: Koa.BaseContext) => {
 		usernameLower: username.toLowerCase(),
 		host: toPuny(host),
 		token: secret,
-		password: hash,
 		isAdmin: config.autoAdmin && usersCount === 0,
-		autoAcceptFollowed: true,
-		autoWatch: false
 	} as User);
 
 	await UserKeypairs.save({
-		id: genId(),
 		publicKey: keyPair[0],
 		privateKey: keyPair[1],
 		userId: account.id
 	} as UserKeypair);
 
-	await UserServiceLinkings.save({
-		id: genId(),
-		userId: account.id
-	} as UserServiceLinking);
+	await UserProfiles.save({
+		userId: account.id,
+		autoAcceptFollowed: true,
+		autoWatch: false,
+		password: hash,
+	} as Partial<UserProfile>);
 
 	usersChart.update(account, true);
 

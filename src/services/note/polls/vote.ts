@@ -2,7 +2,7 @@ import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { PollVotes, Users, NoteWatchings, Polls } from '../../../models';
+import { PollVotes, Users, NoteWatchings, Polls, UserProfiles } from '../../../models';
 import { Not } from 'typeorm';
 import { genId } from '../../../misc/gen-id';
 import { createNotification } from '../../create-notification';
@@ -67,8 +67,10 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 		}
 	});
 
+	const profile = await UserProfiles.findOne({ userId: user.id });
+
 	// ローカルユーザーが投票した場合この投稿をWatchする
-	if (Users.isLocalUser(user) && user.autoWatch) {
+	if (Users.isLocalUser(user) && profile.autoWatch) {
 		watch(user.id, note);
 	}
 });

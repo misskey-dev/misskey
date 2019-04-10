@@ -1,14 +1,11 @@
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
-import { User } from './user';
+import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { id } from '../id';
+import { User } from './user';
 
 @Entity()
-export class UserServiceLinking {
-	@PrimaryColumn(id())
-	public id: string;
-
+export class UserProfile {
 	@Index({ unique: true })
-	@Column(id())
+	@PrimaryColumn(id())
 	public userId: User['id'];
 
 	@OneToOne(type => User, {
@@ -17,6 +14,96 @@ export class UserServiceLinking {
 	@JoinColumn()
 	public user: User | null;
 
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: 'The location of the User.'
+	})
+	public location: string | null;
+
+	@Column('char', {
+		length: 10, nullable: true,
+		comment: 'The birthday (YYYY-MM-DD) of the User.'
+	})
+	public birthday: string | null;
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+		comment: 'The description (bio) of the User.'
+	})
+	public description: string | null;
+
+	@Column('jsonb', {
+		default: [],
+	})
+	public fields: {
+		name: string;
+		value: string;
+	}[];
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: 'The email address of the User.'
+	})
+	public email: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public emailVerifyCode: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public emailVerified: boolean;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public twoFactorTempSecret: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public twoFactorSecret: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public twoFactorEnabled: boolean;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: 'The password hash of the User. It will be null if the origin of the user is local.'
+	})
+	public password: string | null;
+
+	@Column('jsonb', {
+		default: {},
+		comment: 'The client-specific data of the User.'
+	})
+	public clientData: Record<string, any>;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public autoWatch: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public autoAcceptFollowed: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public alwaysMarkNsfw: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public carefulBot: boolean;
+
+	//#region Linking
 	@Column('boolean', {
 		default: false,
 	})
@@ -96,6 +183,7 @@ export class UserServiceLinking {
 		length: 64, nullable: true, default: null,
 	})
 	public discordDiscriminator: string | null;
+	//#endregion
 
 	//#region Denormalized fields
 	@Index()

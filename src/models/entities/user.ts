@@ -45,18 +45,6 @@ export class User {
 	})
 	public name: string | null;
 
-	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: 'The location of the User.'
-	})
-	public location: string | null;
-
-	@Column('char', {
-		length: 10, nullable: true,
-		comment: 'The birthday (YYYY-MM-DD) of the User.'
-	})
-	public birthday: string | null;
-
 	@Column('integer', {
 		default: 0,
 		comment: 'The count of followers.'
@@ -101,43 +89,11 @@ export class User {
 	@JoinColumn()
 	public banner: DriveFile | null;
 
-	@Column('varchar', {
-		length: 1024, nullable: true,
-		comment: 'The description (bio) of the User.'
-	})
-	public description: string | null;
-
 	@Index()
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})
 	public tags: string[];
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: 'The email address of the User.'
-	})
-	public email: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public emailVerifyCode: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public emailVerified: boolean;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public twoFactorTempSecret: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public twoFactorSecret: string | null;
 
 	@Column('varchar', {
 		length: 256, nullable: true,
@@ -206,11 +162,6 @@ export class User {
 	})
 	public isVerified: boolean;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public twoFactorEnabled: boolean;
-
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})
@@ -248,44 +199,12 @@ export class User {
 	})
 	public uri: string | null;
 
-	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: 'The password hash of the User. It will be null if the origin of the user is local.'
-	})
-	public password: string | null;
-
 	@Index({ unique: true })
 	@Column('char', {
 		length: 16, nullable: true, unique: true,
 		comment: 'The native access token of the User. It will be null if the origin of the user is local.'
 	})
 	public token: string | null;
-
-	@Column('jsonb', {
-		default: {},
-		comment: 'The client-specific data of the User.'
-	})
-	public clientData: Record<string, any>;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public autoWatch: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public autoAcceptFollowed: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public alwaysMarkNsfw: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public carefulBot: boolean;
 }
 
 export interface ILocalUser extends User {

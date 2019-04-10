@@ -17,7 +17,7 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, Polls } from '../../models';
+import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, Polls, UserProfiles } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not } from 'typeorm';
@@ -256,13 +256,15 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
+	const profile = await UserProfiles.findOne({ userId: user.id });
+
 	// If has in reply to note
 	if (data.reply) {
 		// Fetch watchers
 		nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
 
 		// この投稿をWatchする
-		if (Users.isLocalUser(user) && user.autoWatch !== false) {
+		if (Users.isLocalUser(user) && profile.autoWatch) {
 			watch(user.id, data.reply);
 		}
 
@@ -286,7 +288,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
 
 		// この投稿をWatchする
-		if (Users.isLocalUser(user) && user.autoWatch !== false) {
+		if (Users.isLocalUser(user) && profile.autoWatch) {
 			watch(user.id, data.renote);
 		}
 

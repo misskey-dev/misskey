@@ -8,7 +8,7 @@ import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
-import { Users, UserServiceLinkings } from '../../../models';
+import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 
 function getUserToken(ctx: Koa.BaseContext) {
@@ -45,7 +45,7 @@ router.get('/disconnect/github', async ctx => {
 		token: userToken
 	});
 
-	await UserServiceLinkings.update({
+	await UserProfiles.update({
 		userId: user.id
 	}, {
 		github: false,
@@ -191,7 +191,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const link = await UserServiceLinkings.createQueryBuilder()
+		const link = await UserProfiles.createQueryBuilder()
 			.where('github @> :github', {
 				github: {
 					id: id,
@@ -263,7 +263,7 @@ router.get('/gh/cb', async ctx => {
 			token: userToken
 		});
 
-		await UserServiceLinkings.update({ userId: user.id }, {
+		await UserProfiles.update({ userId: user.id }, {
 			github: true,
 			githubAccessToken: accessToken,
 			githubId: id,

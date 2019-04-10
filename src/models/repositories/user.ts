@@ -1,6 +1,6 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles } from '..';
 import rap from '@prezzemolo/rap';
 
 @EntityRepository(User)
@@ -80,6 +80,7 @@ export class UserRepository extends Repository<User> {
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await UserNotePinings.find({ userId: user.id }) : [];
+		const profile = opts.detail ? await UserProfiles.findOne({ userId: user.id }) : null;
 
 		return await rap({
 			id: user.id,
@@ -116,9 +117,9 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail ? {
-				description: user.description,
-				location: user.location,
-				birthday: user.birthday,
+				description: profile.description,
+				location: profile.location,
+				birthday: profile.birthday,
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,
@@ -131,9 +132,9 @@ export class UserRepository extends Repository<User> {
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
-				autoWatch: user.autoWatch,
-				alwaysMarkNsfw: user.alwaysMarkNsfw,
-				carefulBot: user.carefulBot,
+				autoWatch: profile.autoWatch,
+				alwaysMarkNsfw: profile.alwaysMarkNsfw,
+				carefulBot: profile.carefulBot,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: user.id,
