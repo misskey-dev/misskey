@@ -205,8 +205,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const avatarId = avatar ? avatar.id : null;
 	const bannerId = banner ? banner.id : null;
-	const avatarUrl = DriveFiles.getPublicUrl(avatar);
-	const bannerUrl = DriveFiles.getPublicUrl(banner);
+	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar) : null;
+	const bannerUrl = banner ? DriveFiles.getPublicUrl(banner) : null;
 	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	const bannerColor = banner && avatar.properties.avgColor ? banner.properties.avgColor : null;
 
