@@ -67,6 +67,11 @@ common:
   following: "Suit"
   followers: "Abonné·e·s"
   favorites: "Mettre cette note en favoris"
+  permissions:
+    'read:account': "Afficher les informations du compte"
+    'write:account': "Mettre à jour les informations de votre compte"
+    'read:drive': "Parcourir le Drive"
+    'write:drive': "Écrire sur le Drive"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Les utilisateurs suivants afficheront leurs publications sur votre fil."
     explore: "Trouver des utilisateurs"
@@ -137,6 +142,7 @@ common:
     web-search-engine-desc: "Exemple : https://www.google.com/?#q={{query}}"
     keep-cw: "Maintenir l'avertissement de contenu"
     i-like-sushi: "Je préfère les sushis plutôt que le pudding"
+    show-reversi-board-labels: "Afficher les étiquettes des lignes et colonnes dans Reversi"
     use-avatar-reversi-stones: "Utiliser l’avatar comme pion dans Reversi"
     disable-animated-mfm: "Désactiver les textes animés dans les publications"
     disable-showing-animated-images: "Désactiver l'animation des images"
