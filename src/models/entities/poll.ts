@@ -6,10 +6,6 @@ import { User } from './user';
 @Entity()
 export class Poll {
 	@PrimaryColumn(id())
-	public id: string;
-
-	@Index({ unique: true })
-	@Column(id())
 	public noteId: Note['id'];
 
 	@OneToOne(type => Note, {

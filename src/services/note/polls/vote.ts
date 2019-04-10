@@ -40,7 +40,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 
 	// Increment votes count
 	const index = choice + 1; // In SQL, array index is 1 based
-	await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE id = '${poll.id}'`);
+	await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE noteId = '${poll.noteId}'`);
 
 	publishNoteStream(note.id, 'pollVoted', {
 		choice: choice,

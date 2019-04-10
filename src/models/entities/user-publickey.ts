@@ -4,7 +4,6 @@ import { id } from '../id';
 
 @Entity()
 export class UserPublickey {
-	@Index({ unique: true })
 	@PrimaryColumn(id())
 	public userId: User['id'];
 

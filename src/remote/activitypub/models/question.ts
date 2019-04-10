@@ -72,7 +72,7 @@ export async function updateQuestion(value: any) {
 		updatedAt: new Date(),
 	});
 
-	await Polls.update(poll.id, {
+	await Polls.update({ noteId: note.id }, {
 		votes: poll.votes
 	});
 

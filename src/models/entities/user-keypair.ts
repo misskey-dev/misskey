@@ -1,10 +1,9 @@
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
+import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
 
 @Entity()
 export class UserKeypair {
-	@Index({ unique: true })
 	@PrimaryColumn(id())
 	public userId: User['id'];
 

@@ -398,7 +398,6 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 		if (note.hasPoll) {
 			await Polls.save({
-				id: genId(),
 				noteId: note.id,
 				choices: data.poll.choices,
 				expiresAt: data.poll.expiresAt,

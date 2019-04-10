@@ -4,7 +4,6 @@ import { User } from './user';
 
 @Entity()
 export class UserProfile {
-	@Index({ unique: true })
 	@PrimaryColumn(id())
 	public userId: User['id'];
 
