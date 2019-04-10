@@ -70,6 +70,7 @@ common:
   followers: "Followers"
   favorites: "Favorites"
   permissions:
+    'read:account': "View account information"
     'write:account': "Update your account information"
     'read:drive': "Browse the Drive"
     'write:drive': "Work with the Drive"
