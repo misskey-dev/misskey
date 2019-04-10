@@ -26,7 +26,7 @@ export default define(meta, async (ps, user) => {
 				[ps.name]: ps.value
 			},
 		})
-		.where('id = :id', { id: user.id })
+		.where('userId = :id', { id: user.id })
 		.execute();
 
 	// Publish event
