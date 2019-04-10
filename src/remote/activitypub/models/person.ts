@@ -6,7 +6,7 @@ import config from '../../../config';
 import User, { validateUsername, isValidName, IUser, IRemoteUser, isRemoteUser } from '../../../models/user';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
+import { isCollectionOrOrderedCollection, isCollection, IPerson, validActor } from '../type';
 import { IDriveFile } from '../../../models/drive-file';
 import Meta from '../../../models/meta';
 import { fromHtml } from '../../../mfm/fromHtml';
@@ -38,7 +38,7 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: object is null');
 	}
 
-	if (x.type != 'Person' && x.type != 'Service') {
+	if (!validActor.includes(x.type)) {
 		return new Error(`invalid person: object is not a person or service '${x.type}'`);
 	}
 

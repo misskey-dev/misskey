@@ -11,6 +11,7 @@ import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
 import Instance from '../../models/instance';
 import instanceChart from '../../services/chart/instance';
+import { validActor } from '../../remote/activitypub/type';
 
 const logger = new Logger('inbox');
 
@@ -79,7 +80,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
 	if (activity.type === 'Update') {
-		if (activity.object && activity.object.type === 'Person') {
+		if (activity.object && validActor.includes(activity.object.type)) {
 			if (user == null) {
 				logger.warn('Update activity received, but user not registed.');
 			} else if (!httpSignature.verifySignature(signature, user.publicKey.publicKeyPem)) {
