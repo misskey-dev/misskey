@@ -95,6 +95,7 @@ export class UserRepository extends Repository<User> {
 			isAdmin: user.isAdmin,
 			isBot: user.isBot,
 			isCat: user.isCat,
+			isVerified: user.isVerified,
 
 			// カスタム絵文字添付
 			emojis: user.emojis.length > 0 ? Emojis.find({

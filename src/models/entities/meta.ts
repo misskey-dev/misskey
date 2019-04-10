@@ -50,6 +50,11 @@ export class Meta {
 	@Column('boolean', {
 		default: false,
 	})
+	public disableOfficialTimeline: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public disableGlobalTimeline: boolean;
 
 	@Column('boolean', {

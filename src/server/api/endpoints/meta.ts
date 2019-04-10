@@ -66,6 +66,10 @@ export const meta = {
 				type: 'boolean',
 				description: 'Whether disabled LTL and STL.',
 			},
+			disableOfficialTimeline: {
+				type: 'boolean',
+				description: 'Whether disabled OTL.',
+			},
 			disableGlobalTimeline: {
 				type: 'boolean',
 				description: 'Whether disabled GTL.',
@@ -107,6 +111,7 @@ export default define(meta, async (ps, me) => {
 		announcements: instance.announcements || [],
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
+		disableOfficialTimeline: instance.disableOfficialTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,
 		enableEmojiReaction: instance.enableEmojiReaction,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
@@ -134,6 +139,7 @@ export default define(meta, async (ps, me) => {
 		response.features = {
 			registration: !instance.disableRegistration,
 			localTimeLine: !instance.disableLocalTimeline,
+			officialTimeLine: !instance.disableOfficialTimeline,
 			globalTimeLine: !instance.disableGlobalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
 			recaptcha: instance.enableRecaptcha,

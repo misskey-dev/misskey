@@ -6,6 +6,7 @@
 				<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
 				<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
 				<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
+				<span v-if="src == 'official'"><fa icon="star"/>{{ $t('official') }}</span>
 				<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
 				<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
 				<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
@@ -33,6 +34,7 @@
 					<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
 					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
 					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
+					<span :data-active="src == 'official'" @click="src = 'official'" v-if="enableOfficialTimeline"><fa icon="star"/> {{ $t('official') }}</span>
 					<span :data-active="src == 'global'" @click="src = 'global'" v-if="enableGlobalTimeline"><fa icon="globe"/> {{ $t('global') }}</span>
 					<div class="hr"></div>
 					<span :data-active="src == 'mentions'" @click="src = 'mentions'"><fa icon="at"/> {{ $t('mentions') }}<i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></span>
@@ -51,6 +53,7 @@
 			<x-tl v-if="src == 'home'" ref="tl" key="home" src="home"/>
 			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
 			<x-tl v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
+			<x-tl v-if="src == 'official'" ref="tl" key="official" src="official"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
 			<x-tl v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
 			<x-tl v-if="src == 'messages'" ref="tl" key="messages" src="messages"/>
@@ -82,6 +85,7 @@ export default Vue.extend({
 			tagTl: null,
 			showNav: false,
 			enableLocalTimeline: false,
+			enableOfficialTimeline: false,
 			enableGlobalTimeline: false,
 		};
 	},
@@ -121,6 +125,7 @@ export default Vue.extend({
 			if (!(
 				this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
 			) && ['local', 'hybrid'].includes(this.src)) this.src = 'home';
+			this.enableOfficialTimeline = !meta.disableOfficialTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin;
 		});
 
 		if (this.$store.state.device.tl) {

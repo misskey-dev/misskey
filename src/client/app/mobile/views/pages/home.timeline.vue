@@ -82,6 +82,10 @@ export default Vue.extend({
 			this.endpoint = 'notes/hybrid-timeline';
 			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
+		} else if (this.src == 'official') {
+			this.endpoint = 'notes/official-timeline';
+			this.connection = this.$root.stream.useSharedConnection('officialTimeline');
+			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';
 			this.connection = this.$root.stream.useSharedConnection('globalTimeline');

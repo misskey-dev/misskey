@@ -35,6 +35,13 @@ export const meta = {
 			}
 		},
 
+		disableOfficialTimeline: {
+			validator: $.optional.nullable.bool,
+			desc: {
+				'ja-JP': 'オフィシャルタイムラインを無効にするか否か'
+			}
+		},
+
 		disableGlobalTimeline: {
 			validator: $.optional.nullable.bool,
 			desc: {
@@ -339,6 +346,10 @@ export default define(meta, async (ps) => {
 
 	if (typeof ps.disableLocalTimeline === 'boolean') {
 		set.disableLocalTimeline = ps.disableLocalTimeline;
+	}
+
+	if (typeof ps.disableOfficialTimeline === 'boolean') {
+		set.disableOfficialTimeline = ps.disableOfficialTimeline;
 	}
 
 	if (typeof ps.disableGlobalTimeline === 'boolean') {

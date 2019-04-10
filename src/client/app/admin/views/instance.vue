@@ -23,6 +23,7 @@
 		<section>
 			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
 			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
+			<ui-switch v-model="disableOfficialTimeline">{{ $t('disable-official-timeline') }}</ui-switch>
 			<ui-switch v-model="disableGlobalTimeline">{{ $t('disable-global-timeline') }}</ui-switch>
 			<ui-info>{{ $t('disabling-timelines-info') }}</ui-info>
 			<ui-switch v-model="enableEmojiReaction">{{ $t('enable-emoji-reaction') }}</ui-switch>
@@ -150,6 +151,7 @@ export default Vue.extend({
 			maintainerEmail: null,
 			disableRegistration: false,
 			disableLocalTimeline: false,
+			disableOfficialTimeline: false,
 			disableGlobalTimeline: false,
 			enableEmojiReaction: true,
 			useStarForReactionFallback: false,
@@ -200,6 +202,7 @@ export default Vue.extend({
 			this.maintainerEmail = meta.maintainerEmail;
 			this.disableRegistration = meta.disableRegistration;
 			this.disableLocalTimeline = meta.disableLocalTimeline;
+			this.disableOfficialTimeline = meta.disableOfficialTimeline;
 			this.disableGlobalTimeline = meta.disableGlobalTimeline;
 			this.enableEmojiReaction = meta.enableEmojiReaction;
 			this.useStarForReactionFallback = meta.useStarForReactionFallback;
@@ -260,6 +263,7 @@ export default Vue.extend({
 				maintainerEmail: this.maintainerEmail,
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
+				disableOfficialTimeline: this.disableOfficialTimeline,
 				disableGlobalTimeline: this.disableGlobalTimeline,
 				enableEmojiReaction: this.enableEmojiReaction,
 				useStarForReactionFallback: this.useStarForReactionFallback,
