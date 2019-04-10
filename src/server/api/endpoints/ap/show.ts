@@ -10,6 +10,7 @@ import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
 import Instance from '../../../../models/instance';
 import { extractDbHost } from '../../../../misc/convert-host';
+import { validActor } from '../../../../remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],
@@ -95,7 +96,7 @@ async function fetchAny(uri: string) {
 	}
 
 	// それでもみつからなければ新規であるため登録
-	if (object.type === 'Person') {
+	if (validActor.includes(object.type)) {
 		const user = await createPerson(object.id);
 		return {
 			type: 'User',

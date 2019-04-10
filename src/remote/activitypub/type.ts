@@ -65,6 +65,8 @@ interface IQuestionChoice {
 	_misskey_votes?: number;
 }
 
+export const validActor = ['Person', 'Service'];
+
 export interface IPerson extends IObject {
 	type: 'Person';
 	name: string;
