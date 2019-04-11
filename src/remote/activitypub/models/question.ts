@@ -68,10 +68,6 @@ export async function updateQuestion(value: any) {
 		}
 	}
 
-	await Notes.update(note.id, {
-		updatedAt: new Date(),
-	});
-
 	await Polls.update({ noteId: note.id }, {
 		votes: poll.votes
 	});
