@@ -171,7 +171,7 @@ async function main() {
 				md5: file.md5,
 				name: file.filename,
 				type: file.contentType,
-				properties: file.metadata.properties,
+				properties: file.metadata.properties || {},
 				size: file.length,
 				url: file.metadata.url,
 				uri: file.metadata.uri,
@@ -376,7 +376,12 @@ async function main() {
 			skip: i
 		});
 		try {
-			await migrateDriveFile(file);
+			try {
+				await migrateDriveFile(file);
+			} catch (_) {
+				file.folderId = null;
+				await migrateDriveFile(file);
+			}
 			console.log(`FILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`FILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.red('ERR')}`);
