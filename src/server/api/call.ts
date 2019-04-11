@@ -80,7 +80,11 @@ export default async (endpoint: string, user: User, app: App, data: any, file?: 
 			apiLogger.error(`Internal error occurred in ${ep.name}`, {
 				ep: ep.name,
 				ps: data,
-				e: e
+				e: {
+					message: e.message,
+					code: e.name,
+					stack: e.stack
+				}
 			});
 			throw new ApiError(null, {
 				e: {
