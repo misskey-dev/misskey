@@ -435,6 +435,7 @@ common/views/components/user-menu.vue:
   unblock: "Odblokovat"
   push-to-list: "Přidat do seznamu"
   select-list: "Vyberte seznam"
+  report-abuse: "Nahlásit spam"
   report-abuse-reported: "Problém byl nahlášen administrátorovi. Děkujeme za Vaší kooperaci."
   silence: "Ztlumit"
   suspend: "Zmrazit"
