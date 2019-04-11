@@ -162,6 +162,7 @@ async function main() {
 		const user = await _User.findOne({
 			_id: file.metadata.userId
 		});
+		if (user == null) return;
 		if (file.metadata.storage && file.metadata.storage.key) { // when object storage
 			await DriveFiles.save({
 				id: file._id.toHexString(),
@@ -386,12 +387,7 @@ async function main() {
 			skip: i
 		});
 		try {
-			try {
-				await migrateDriveFile(file);
-			} catch (_) {
-				file.folderId = null;
-				await migrateDriveFile(file);
-			}
+			await migrateDriveFile(file);
 			console.log(`FILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`FILE (${i + 1}/${allDriveFilesCount}) ${file._id} ${chalk.red('ERR')}`);
