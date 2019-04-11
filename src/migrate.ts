@@ -324,10 +324,14 @@ async function main() {
 		});
 	}
 
-	let allUsersCount = await _User.count();
+	let allUsersCount = await _User.count({
+		deletedAt: { $exists: false }
+	});
 	if (test && allUsersCount > limit) allUsersCount = limit;
 	for (let i = 0; i < allUsersCount; i++) {
-		const user = await _User.findOne({}, {
+		const user = await _User.findOne({
+			deletedAt: { $exists: false }
+		}, {
 			skip: i
 		});
 		try {
@@ -370,12 +374,14 @@ async function main() {
 	}
 
 	let allDriveFilesCount = await _DriveFile.count({
-		'metadata._user.host': null
+		'metadata._user.host': null,
+		'metadata.deletedAt': { $exists: false }
 	});
 	if (test && allDriveFilesCount > limit) allDriveFilesCount = limit;
 	for (let i = 0; i < allDriveFilesCount; i++) {
 		const file = await _DriveFile.findOne({
-			'metadata._user.host': null
+			'metadata._user.host': null,
+			'metadata.deletedAt': { $exists: false }
 		}, {
 			skip: i
 		});
@@ -394,12 +400,14 @@ async function main() {
 	}
 
 	let allNotesCount = await _Note.count({
-		'_user.host': null
+		'_user.host': null,
+		'metadata.deletedAt': { $exists: false }
 	});
 	if (test && allNotesCount > limit) allNotesCount = limit;
 	for (let i = 0; i < allNotesCount; i++) {
 		const note = await _Note.findOne({
-			'_user.host': null
+			'_user.host': null,
+			'metadata.deletedAt': { $exists: false }
 		}, {
 			skip: i
 		});
