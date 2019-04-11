@@ -90,7 +90,9 @@ export default async (user: User, note: Note, reaction: string) => {
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (Users.isLocalUser(user) && note.userHost !== null) {
 		const content = renderActivity(renderLike(user, note, reaction));
-		deliver(user, content, note.userInbox);
+		Users.findOne(note.userId).then(u => {
+			deliver(user, content, u.inbox);
+		});
 	}
 	//#endregion
 };

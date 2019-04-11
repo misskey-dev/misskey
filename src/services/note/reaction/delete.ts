@@ -41,7 +41,9 @@ export default async (user: User, note: Note) => {
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (Users.isLocalUser(user) && (note.userHost !== null)) {
 		const content = renderActivity(renderUndo(renderLike(user, note, exist.reaction), user));
-		deliver(user, content, note.userInbox);
+		Users.findOne(note.userId).then(u => {
+			deliver(user, content, u.inbox);
+		});
 	}
 	//#endregion
 };

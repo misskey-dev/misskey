@@ -329,12 +329,16 @@ async function publish(user: User, note: Note, reply: Note, renote: Note, noteAc
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && reply.userHost !== null) {
-			deliver(user, noteActivity, reply.userInbox);
+			Users.findOne(reply.userId).then(u => {
+				deliver(user, noteActivity, u.inbox);
+			});
 		}
 
 		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 		if (renote && renote.userHost !== null) {
-			deliver(user, noteActivity, renote.userInbox);
+			Users.findOne(renote.userId).then(u => {
+				deliver(user, noteActivity, u.inbox);
+			});
 		}
 	}
 
@@ -377,7 +381,6 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		renoteUserId: data.renote ? data.renote.userId : null,
 		renoteUserHost: data.renote ? data.renote.userHost : null,
 		userHost: user.host,
-		userInbox: user.inbox,
 	};
 
 	if (data.uri != null) insert.uri = data.uri;

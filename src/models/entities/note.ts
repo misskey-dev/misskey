@@ -195,12 +195,6 @@ export class Note {
 	})
 	public userHost: string | null;
 
-	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: '[Denormalized]'
-	})
-	public userInbox: string | null;
-
 	@Column({
 		...id(),
 		nullable: true,
