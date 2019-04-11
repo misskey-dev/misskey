@@ -78,27 +78,27 @@ export class Meta {
 	public blockedHosts: string[];
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true,
 		default: '/assets/ai.png'
 	})
 	public mascotImageUrl: string | null;
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true
 	})
 	public bannerUrl: string | null;
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true,
 		default: 'https://ai.misskey.xyz/aiart/yubitun.png'
 	})
 	public errorImageUrl: string | null;
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true
 	})
 	public iconUrl: string | null;
