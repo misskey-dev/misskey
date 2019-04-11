@@ -118,6 +118,8 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail ? {
+				createdAt: user.createdAt,
+				updatedAt: user.updatedAt,
 				description: profile.description,
 				location: profile.location,
 				birthday: profile.birthday,
