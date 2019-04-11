@@ -302,13 +302,13 @@ async function main() {
 		const u = await _User.findOne({
 			_id: new mongo.ObjectId(user.id)
 		});
-		const avatar = await DriveFiles.findOne(u.avatarId.toHexString());
-		const banner = await DriveFiles.findOne(u.bannerId.toHexString());
+		const avatar = u.avatarId ? await DriveFiles.findOne(u.avatarId.toHexString()) : null;
+		const banner = u.bannerId ? await DriveFiles.findOne(u.bannerId.toHexString()) : null;
 		await Users.update(user.id, {
-			avatarId: avatar.id,
-			bannerId: banner.id,
-			avatarUrl: avatar.url,
-			bannerUrl: banner.url
+			avatarId: avatar ? avatar.id : null,
+			bannerId: banner ? banner.id : null,
+			avatarUrl: avatar ? avatar.url : null,
+			bannerUrl: banner ? banner.url : null
 		});
 	}
 
@@ -369,10 +369,14 @@ async function main() {
 		}
 	}
 
-	let allDriveFilesCount = await _DriveFile.count();
+	let allDriveFilesCount = await _DriveFile.count({
+		'metadata._user.host': null
+	});
 	if (test && allDriveFilesCount > limit) allDriveFilesCount = limit;
 	for (let i = 0; i < allDriveFilesCount; i++) {
-		const file = await _DriveFile.findOne({}, {
+		const file = await _DriveFile.findOne({
+			'metadata._user.host': null
+		}, {
 			skip: i
 		});
 		try {
