@@ -35,6 +35,8 @@ const uri = `mongodb://${u && p ? `${u}:${p}@` : ''}${(config as any).mongodb.ho
 const db = monk(uri);
 let mdb: mongo.Db;
 
+const test = false;
+
 const nativeDbConn = async (): Promise<mongo.Db> => {
 	if (mdb) return mdb;
 
@@ -91,14 +93,14 @@ async function main() {
 			usernameLower: user.username.toLowerCase(),
 			host: toPuny(user.host),
 			token: generateUserToken(),
-			isAdmin: user.isAdmin,
+			isAdmin: user.isAdmin || false,
 			name: user.name,
-			followersCount: user.followersCount,
-			followingCount: user.followingCount,
-			notesCount: user.notesCount,
-			isBot: user.isBot,
-			isCat: user.isCat,
-			isVerified: user.isVerified,
+			followersCount: user.followersCount || 0,
+			followingCount: user.followingCount || 0,
+			notesCount: user.notesCount || 0,
+			isBot: user.isBot || false,
+			isCat: user.isCat || false,
+			isVerified: user.isVerified || false,
 			inbox: user.inbox,
 			sharedInbox: user.sharedInbox,
 			uri: user.uri,
@@ -321,7 +323,8 @@ async function main() {
 		});
 	}
 
-	const allUsersCount = await _User.count();
+	let allUsersCount = await _User.count();
+	if (test && allUsersCount > 1000) allUsersCount = 1000;
 	for (let i = 0; i < allUsersCount; i++) {
 		const user = await _User.findOne({}, {
 			skip: i
@@ -335,7 +338,8 @@ async function main() {
 		}
 	}
 
-	const allFollowingsCount = await _Following.count();
+	let allFollowingsCount = await _Following.count();
+	if (test && allFollowingsCount > 1000) allFollowingsCount = 1000;
 	for (let i = 0; i < allFollowingsCount; i++) {
 		const following = await _Following.findOne({}, {
 			skip: i
@@ -349,7 +353,8 @@ async function main() {
 		}
 	}
 
-	const allDriveFoldersCount = await _DriveFolder.count();
+	let allDriveFoldersCount = await _DriveFolder.count();
+	if (test && allDriveFoldersCount > 1000) allDriveFoldersCount = 1000;
 	for (let i = 0; i < allDriveFoldersCount; i++) {
 		const folder = await _DriveFolder.findOne({}, {
 			skip: i
@@ -363,7 +368,8 @@ async function main() {
 		}
 	}
 
-	const allDriveFilesCount = await _DriveFile.count();
+	let allDriveFilesCount = await _DriveFile.count();
+	if (test && allDriveFilesCount > 1000) allDriveFilesCount = 1000;
 	for (let i = 0; i < allDriveFilesCount; i++) {
 		const file = await _DriveFile.findOne({}, {
 			skip: i
@@ -377,9 +383,10 @@ async function main() {
 		}
 	}
 
-	const allNotesCount = await _Note.count({
+	let allNotesCount = await _Note.count({
 		'_user.host': null
 	});
+	if (test && allNotesCount > 1000) allNotesCount = 1000;
 	for (let i = 0; i < allNotesCount; i++) {
 		const note = await _Note.findOne({
 			'_user.host': null
@@ -395,7 +402,8 @@ async function main() {
 		}
 	}
 
-	const allPollVotesCount = await _PollVote.count();
+	let allPollVotesCount = await _PollVote.count();
+	if (test && allPollVotesCount > 1000) allPollVotesCount = 1000;
 	for (let i = 0; i < allPollVotesCount; i++) {
 		const vote = await _PollVote.findOne({}, {
 			skip: i
@@ -409,7 +417,8 @@ async function main() {
 		}
 	}
 
-	const allNoteFavoritesCount = await _Favorite.count();
+	let allNoteFavoritesCount = await _Favorite.count();
+	if (test && allNoteFavoritesCount > 1000) allNoteFavoritesCount = 1000;
 	for (let i = 0; i < allNoteFavoritesCount; i++) {
 		const favorite = await _Favorite.findOne({}, {
 			skip: i
@@ -423,7 +432,8 @@ async function main() {
 		}
 	}
 
-	const allNoteReactionsCount = await _NoteReaction.count();
+	let allNoteReactionsCount = await _NoteReaction.count();
+	if (test && allNoteReactionsCount > 1000) allNoteReactionsCount = 1000;
 	for (let i = 0; i < allNoteReactionsCount; i++) {
 		const reaction = await _NoteReaction.findOne({}, {
 			skip: i
@@ -437,7 +447,8 @@ async function main() {
 		}
 	}
 
-	const allActualUsersCount = await Users.count();
+	let allActualUsersCount = await Users.count();
+	if (test && allActualUsersCount > 1000) allActualUsersCount = 1000;
 	for (let i = 0; i < allActualUsersCount; i++) {
 		const [user] = await Users.find({
 			take: 1,
