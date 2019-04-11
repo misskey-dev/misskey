@@ -5,7 +5,7 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
-import { Users, RegistrationTickets, UserProfiles, UserKeypairs } from '../../../models';
+import { Users, RegistrationTickets } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
 import { User } from '../../../models/entities/user';
