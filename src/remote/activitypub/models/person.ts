@@ -25,6 +25,7 @@ import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-e
 import { toPuny } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
+import { getConnection } from 'typeorm';
 const logger = apLogger;
 
 /**
@@ -136,27 +137,42 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	// Create user
 	let user: IRemoteUser;
 	try {
-		user = await Users.save({
-			id: genId(),
-			avatarId: null,
-			bannerId: null,
-			createdAt: Date.parse(person.published) || new Date(),
-			lastFetchedAt: new Date(),
-			name: person.name,
-			isLocked: person.manuallyApprovesFollowers,
-			username: person.preferredUsername,
-			usernameLower: person.preferredUsername.toLowerCase(),
-			host,
-			inbox: person.inbox,
-			sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
-			featured: person.featured,
-			endpoints: person.endpoints,
-			uri: person.id,
-			url: person.url,
-			tags,
-			isBot,
-			isCat: (person as any).isCat === true
-		} as Partial<User>) as IRemoteUser;
+		// Start transaction
+		await getConnection().transaction(async transactionalEntityManager => {
+			user = await transactionalEntityManager.save(new User({
+				id: genId(),
+				avatarId: null,
+				bannerId: null,
+				createdAt: new Date(person.published) || new Date(),
+				lastFetchedAt: new Date(),
+				name: person.name,
+				isLocked: person.manuallyApprovesFollowers,
+				username: person.preferredUsername,
+				usernameLower: person.preferredUsername.toLowerCase(),
+				host,
+				inbox: person.inbox,
+				sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+				featured: person.featured,
+				uri: person.id,
+				tags,
+				isBot,
+				isCat: (person as any).isCat === true
+			})) as IRemoteUser;
+
+			await transactionalEntityManager.save(new UserProfile({
+				userId: user.id,
+				description: fromHtml(person.summary),
+				url: person.url,
+				fields,
+				userHost: host
+			}));
+
+			await transactionalEntityManager.save(new UserPublickey({
+				userId: user.id,
+				keyId: person.publicKey.id,
+				keyPem: person.publicKey.publicKeyPem
+			}));
+		});
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
@@ -166,19 +182,6 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		logger.error(e);
 		throw e;
 	}
-
-	await UserProfiles.save({
-		userId: user.id,
-		description: fromHtml(person.summary),
-		fields,
-		userHost: host
-	} as Partial<UserProfile>);
-
-	await UserPublickeys.save({
-		userId: user.id,
-		keyId: person.publicKey.id,
-		keyPem: person.publicKey.publicKeyPem
-	} as UserPublickey);
 
 	// Register host
 	registerOrFetchInstanceDoc(host).then(i => {

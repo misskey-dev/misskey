@@ -87,7 +87,6 @@ export class UserRepository extends Repository<User> {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			uri: user.uri,
 			avatarUrl: user.avatarUrl,
 			bannerUrl: user.bannerUrl,
 			avatarColor: user.avatarColor,
@@ -118,6 +117,7 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail ? {
+				url: profile.url,
 				createdAt: user.createdAt,
 				updatedAt: user.updatedAt,
 				description: profile.description,

@@ -12,6 +12,7 @@ import { User } from '../../../models/entities/user';
 import { UserKeypair } from '../../../models/entities/user-keypair';
 import { toPuny } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
+import { getConnection } from 'typeorm';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -99,28 +100,33 @@ export default async (ctx: Koa.BaseContext) => {
 			e ? j(e) : s([publicKey, privateKey])
 		));
 
-	const account = await Users.save({
-		id: genId(),
-		createdAt: new Date(),
-		username: username,
-		usernameLower: username.toLowerCase(),
-		host: toPuny(host),
-		token: secret,
-		isAdmin: config.autoAdmin && usersCount === 0,
-	} as User);
+	let account: User;
 
-	await UserKeypairs.save({
-		publicKey: keyPair[0],
-		privateKey: keyPair[1],
-		userId: account.id
-	} as UserKeypair);
+	// Start transaction
+	await getConnection().transaction(async transactionalEntityManager => {
+		account = await transactionalEntityManager.save(new User({
+			id: genId(),
+			createdAt: new Date(),
+			username: username,
+			usernameLower: username.toLowerCase(),
+			host: toPuny(host),
+			token: secret,
+			isAdmin: config.autoAdmin && usersCount === 0,
+		}));
 
-	await UserProfiles.save({
-		userId: account.id,
-		autoAcceptFollowed: true,
-		autoWatch: false,
-		password: hash,
-	} as Partial<UserProfile>);
+		await transactionalEntityManager.save(new UserKeypair({
+			publicKey: keyPair[0],
+			privateKey: keyPair[1],
+			userId: account.id
+		}));
+
+		await transactionalEntityManager.save(new UserProfile({
+			userId: account.id,
+			autoAcceptFollowed: true,
+			autoWatch: false,
+			password: hash,
+		}));
+	});
 
 	usersChart.update(account, true);
 

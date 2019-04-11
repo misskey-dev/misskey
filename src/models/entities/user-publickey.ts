@@ -23,4 +23,12 @@ export class UserPublickey {
 		length: 4096,
 	})
 	public keyPem: string;
+
+	constructor(data: Partial<UserPublickey>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
 }
