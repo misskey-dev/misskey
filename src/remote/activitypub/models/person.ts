@@ -143,7 +143,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				id: genId(),
 				avatarId: null,
 				bannerId: null,
-				createdAt: new Date(person.published) || new Date(),
+				createdAt: new Date(),
 				lastFetchedAt: new Date(),
 				name: person.name,
 				isLocked: person.manuallyApprovesFollowers,
