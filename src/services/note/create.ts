@@ -17,10 +17,10 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, Polls, UserProfiles } from '../../models';
+import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, UserProfiles } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
-import { Not } from 'typeorm';
+import { Not, getConnection } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
@@ -349,7 +349,7 @@ async function publish(user: User, note: Note, reply: Note, renote: Note, noteAc
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
-	const insert: Partial<Note> = {
+	const insert = new Note({
 		id: genId(data.createdAt),
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file.id) : [],
@@ -381,7 +381,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		renoteUserId: data.renote ? data.renote.userId : null,
 		renoteUserHost: data.renote ? data.renote.userHost : null,
 		userHost: user.host,
-	};
+	});
 
 	if (data.uri != null) insert.uri = data.uri;
 
@@ -397,19 +397,27 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 	// 投稿を作成
 	try {
-		const note = await Notes.save(insert);
+		let note: Note;
+		if (insert.hasPoll) {
+			// Start transaction
+			await getConnection().transaction(async transactionalEntityManager => {
+				note = await transactionalEntityManager.save(insert);
 
-		if (note.hasPoll) {
-			await Polls.save({
-				noteId: note.id,
-				choices: data.poll.choices,
-				expiresAt: data.poll.expiresAt,
-				multiple: data.poll.multiple,
-				votes: new Array(data.poll.choices.length).fill(0),
-				noteVisibility: note.visibility,
-				userId: user.id,
-				userHost: user.host
-			} as Poll);
+				const poll = new Poll({
+					noteId: note.id,
+					choices: data.poll.choices,
+					expiresAt: data.poll.expiresAt,
+					multiple: data.poll.multiple,
+					votes: new Array(data.poll.choices.length).fill(0),
+					noteVisibility: note.visibility,
+					userId: user.id,
+					userHost: user.host
+				});
+
+				await transactionalEntityManager.save(poll);
+			});
+		} else {
+			note = await Notes.save(insert);
 		}
 
 		return note;
