@@ -16,7 +16,8 @@ import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
 import Instance from '../../models/instance';
-import { toASCII } from 'punycode';
+import { toApHost } from '../../misc/convert-host';
+import { unique } from '../../prelude/array';
 
 // Init app
 const app = new Koa();
@@ -72,7 +73,7 @@ router.get('/v1/instance/peers', async ctx => {
 			host: 1
 		});
 
-	const punyCodes = instances.map(instance => toASCII(instance.host));
+	const punyCodes = unique(instances.map(instance => toApHost(instance.host)));
 
 	ctx.body = punyCodes;
 });
