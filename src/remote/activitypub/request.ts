@@ -4,13 +4,13 @@ import { URL } from 'url';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
 import * as promiseAny from 'promise-any';
-import { toUnicode } from 'punycode';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 import Instance from '../../models/instance';
+import { toDbHost } from '../../misc/convert-host';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -23,7 +23,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instance.findOne({ host: toUnicode(host) });
+	const instance = await Instance.findOne({ host: toDbHost(host) });
 	if (instance && instance.isBlocked) return;
 
 	const data = JSON.stringify(object);
