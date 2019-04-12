@@ -3,7 +3,7 @@ import { User } from '../../models/entities/user';
 import { App } from '../../models/entities/app';
 import { Users, AccessTokens, Apps } from '../../models';
 
-export default async (token: string): Promise<[User, App]> => {
+export default async (token: string): Promise<[User | null, App | null]> => {
 	if (token == null) {
 		return [null, null];
 	}
