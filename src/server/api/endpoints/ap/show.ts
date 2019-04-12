@@ -130,7 +130,7 @@ async function fetchAny(uri: string) {
 	return null;
 }
 
-async function mergePack(user: User, note: Note) {
+async function mergePack(user: User | null | undefined, note: Note | null | undefined) {
 	if (user != null) {
 		return {
 			type: 'User',

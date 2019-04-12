@@ -52,7 +52,7 @@ export class UserRepository extends Repository<User> {
 
 	public packMany(
 		users: (User['id'] | User)[],
-		me: User['id'] | User | null | undefined,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
@@ -64,7 +64,7 @@ export class UserRepository extends Repository<User> {
 
 	public async pack(
 		src: User['id'] | User,
-		me: User['id'] | User | null | undefined,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
