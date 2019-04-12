@@ -10,7 +10,7 @@ import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
-import { erase, concat } from '../../prelude/array';
+import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
@@ -117,10 +117,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		data.visibility = 'home';
 	}
 
-	if (data.visibleUsers) {
-		data.visibleUsers = erase(null, data.visibleUsers);
-	}
-
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
 	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
 		return rej('Renote target is not public or home');
@@ -156,10 +152,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	// Parse MFM if needed
 	if (!tags || !emojis || !mentionedUsers) {
-		const tokens = data.text ? parse(data.text) : [];
-		const cwTokens = data.cw ? parse(data.cw) : [];
+		const tokens = data.text ? parse(data.text)! : [];
+		const cwTokens = data.cw ? parse(data.cw)! : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat(data.poll.choices.map(choice => parse(choice)))
+			? concat(data.poll.choices.map(choice => parse(choice)!))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
@@ -173,19 +169,33 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	tags = tags.filter(tag => tag.length <= 100);
 
-	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply.userId)) {
-		mentionedUsers.push(await Users.findOne(data.reply.userId));
+	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
+		mentionedUsers.push(await Users.findOne(data.reply.userId).then(x => {
+			if (x == null) {
+				throw 'missing user';
+			} else {
+				return x;
+			}
+		}));
 	}
 
 	if (data.visibility == 'specified') {
+		if (data.visibleUsers == null) throw 'invalid param';
+
 		for (const u of data.visibleUsers) {
 			if (!mentionedUsers.some(x => x.id === u.id)) {
 				mentionedUsers.push(u);
 			}
 		}
 
-		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply.userId)) {
-			data.visibleUsers.push(await Users.findOne(data.reply.userId));
+		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
+			data.visibleUsers.push(await Users.findOne(data.reply.userId).then(x => {
+				if (x == null) {
+					throw 'missing user';
+				} else {
+					return x;
+				}
+			}));
 		}
 	}
 
@@ -215,6 +225,8 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	// 未読通知を作成
 	if (data.visibility == 'specified') {
+		if (data.visibleUsers == null) throw 'invalid param';
+
 		for (const u of data.visibleUsers) {
 			insertNoteUnread(u, note, true);
 		}
@@ -322,7 +334,7 @@ function incRenoteCount(renote: Note) {
 	Notes.increment({ id: renote.id }, 'score', 1);
 }
 
-async function publish(user: User, note: Note, reply: Note, renote: Note, noteActivity: any) {
+async function publish(user: User, note: Note, reply: Note | null | undefined, renote: Note | null | undefined, noteActivity: any) {
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && reply.userHost !== null) {
@@ -341,7 +353,7 @@ async function publish(user: User, note: Note, reply: Note, renote: Note, noteAc
 
 	if (['public', 'home', 'followers'].includes(note.visibility)) {
 		// フォロワーに配信
-		publishToFollowers(note, user, noteActivity, reply);
+		publishToFollowers(note, user, noteActivity);
 	}
 }
 
@@ -435,7 +447,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 function index(note: Note) {
 	if (note.text == null || config.elasticsearch == null) return;
 
-	es.index({
+	es!.index({
 		index: 'misskey',
 		type: 'note',
 		id: note.id.toString(),
@@ -467,7 +479,7 @@ async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: Notificati
 	}
 }
 
-async function publishToFollowers(note: Note, user: User, noteActivity: any, reply: Note) {
+async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 	const followers = await Followings.find({
 		followeeId: note.userId
 	});
