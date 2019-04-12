@@ -193,10 +193,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	res(note);
 
-	if (note == null) {
-		return;
-	}
-
 	// 統計を更新
 	notesChart.update(note, true);
 	perUserNotesChart.update(user, note, true);
@@ -424,7 +420,9 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
-			return null;
+			const err = new Error('Duplicated note');
+			err.name = 'duplicated';
+			throw err;
 		}
 
 		console.error(e);
