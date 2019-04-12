@@ -44,6 +44,7 @@ router.get('/disconnect/discord', async ctx => {
 		host: null,
 		token: userToken
 	});
+	if (user == null) throw 'missing user';
 
 	await UserProfiles.update({
 		userId: user.id
@@ -71,8 +72,8 @@ async function getOAuth2() {
 
 	if (meta.enableDiscordIntegration) {
 		return new OAuth2(
-			meta.discordClientId,
-			meta.discordClientSecret,
+			meta.discordClientId!,
+			meta.discordClientSecret!,
 			'https://discordapp.com/',
 			'api/oauth2/authorize',
 			'api/oauth2/token');
@@ -164,24 +165,22 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{
-					grant_type: 'authorization_code',
-					redirect_uri
-				},
-				(err, accessToken, refreshToken, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
+			oauth2.getOAuthAccessToken(code, {
+				grant_type: 'authorization_code',
+				redirect_uri
+			}, (err, accessToken, refreshToken, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
 					res({
 						accessToken,
 						refreshToken,
 						expiresDate: Date.now() + Number(result.expires_in) * 1000
 					});
-				}));
+				}
+			}));
 
 		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
 			request({
@@ -246,24 +245,22 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{
-					grant_type: 'authorization_code',
-					redirect_uri
-				},
-				(err, accessToken, refreshToken, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
-						res({
-							accessToken,
-							refreshToken,
-							expiresDate: Date.now() + Number(result.expires_in) * 1000
-						});
-				}));
+			oauth2.getOAuthAccessToken(code, {
+				grant_type: 'authorization_code',
+				redirect_uri
+			}, (err, accessToken, refreshToken, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
+					res({
+						accessToken,
+						refreshToken,
+						expiresDate: Date.now() + Number(result.expires_in) * 1000
+					});
+				}
+			}));
 
 		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
 			request({

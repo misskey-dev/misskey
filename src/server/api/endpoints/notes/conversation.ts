@@ -64,8 +64,9 @@ export default define(meta, async (ps, user) => {
 	async function get(id: any) {
 		i++;
 		const p = await Notes.findOne(id);
+		if (p == null) return;
 
-		if (i > ps.offset) {
+		if (i > ps.offset!) {
 			conversation.push(p);
 		}
 

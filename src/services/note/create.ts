@@ -253,6 +253,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	const profile = await UserProfiles.findOne({ userId: user.id });
+	if (profile == null) throw 'missing profile (database broken)';
 
 	// If has in reply to note
 	if (data.reply) {
@@ -474,7 +475,7 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any, rep
 	const queue: string[] = [];
 
 	for (const following of followers) {
-		if (following.followerHost !== null) {
+		if (Followings.isRemoteFollower(following)) {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 			if (Users.isLocalUser(user)) {
 				const inbox = following.followerSharedInbox || following.followerInbox;

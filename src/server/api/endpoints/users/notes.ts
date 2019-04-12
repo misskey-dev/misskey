@@ -153,11 +153,11 @@ export default define(meta, async (ps, me) => {
 		query.andWhere('note.fileIds != \'{}\'');
 	}
 
-	if (ps.fileType) {
+	if (ps.fileType != null) {
 		query.andWhere('note.fileIds != \'{}\'');
 		query.andWhere(new Brackets(qb => {
-			for (const type of ps.fileType) {
-				const i = ps.fileType.indexOf(type);
+			for (const type of ps.fileType!) {
+				const i = ps.fileType!.indexOf(type);
 				qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
 			}
 		}));

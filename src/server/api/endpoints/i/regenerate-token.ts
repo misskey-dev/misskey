@@ -19,9 +19,10 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const profile = await UserProfiles.findOne({ userId: user.id });
+	if (profile == null) throw 'missing profile (database broken)';
 
 	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password);
+	const same = await bcrypt.compare(ps.password, profile.password!);
 
 	if (!same) {
 		throw new Error('incorrect password');

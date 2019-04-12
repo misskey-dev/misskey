@@ -21,7 +21,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 	// Verify recaptcha
 	// ただしテスト時はこの機構は障害となるため無効にする
-	if (process.env.NODE_ENV !== 'test' && instance.enableRecaptcha) {
+	if (process.env.NODE_ENV !== 'test' && instance.enableRecaptcha && instance.recaptchaSecretKey) {
 		recaptcha.init({
 			secret_key: instance.recaptchaSecretKey
 		});
@@ -100,7 +100,7 @@ export default async (ctx: Koa.BaseContext) => {
 			e ? j(e) : s([publicKey, privateKey])
 		));
 
-	let account: User;
+	let account!: User;
 
 	// Start transaction
 	await getConnection().transaction(async transactionalEntityManager => {

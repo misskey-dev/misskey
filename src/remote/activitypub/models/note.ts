@@ -66,7 +66,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 			value: value,
 			object: object
 		});
-		return null;
+		throw 'invalid note';
 	}
 
 	const note: INote = object;
@@ -80,7 +80,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
-		return null;
+		throw 'actor has been suspended';
 	}
 
 	//#region Visibility
@@ -226,8 +226,9 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
  * Misskeyに対象のNoteが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note> {
+export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
 	const uri = typeof value == 'string' ? value : value.id;
+	if (uri == null) throw 'missing uri';
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
@@ -247,7 +248,13 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
 	return await createNote(uri, resolver).catch(e => {
 		if (e.name === 'duplicated') {
-			return fetchNote(uri);
+			return fetchNote(uri).then(note => {
+				if (note == null) {
+					throw 'something happened';
+				} else {
+					return note;
+				}
+			});
 		} else {
 			throw e;
 		}
@@ -259,10 +266,10 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 
 	if (!tags) return [];
 
-	const eomjiTags = tags.filter(tag => tag.type === 'Emoji' && tag.icon && tag.icon.url);
+	const eomjiTags = tags.filter(tag => tag.type === 'Emoji' && tag.icon && tag.icon.url && tag.name);
 
 	return await Promise.all(eomjiTags.map(async tag => {
-		const name = tag.name.replace(/^:/, '').replace(/:$/, '');
+		const name = tag.name!.replace(/^:/, '').replace(/:$/, '');
 
 		const exists = await Emojis.findOne({
 			host,
@@ -279,8 +286,8 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 					name,
 				}, {
 					uri: tag.id,
-					url: tag.icon.url,
-					updatedAt: new Date(tag.updated),
+					url: tag.icon!.url,
+					updatedAt: new Date(tag.updated!),
 				});
 
 				return await Emojis.findOne({
@@ -299,10 +306,10 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			host,
 			name,
 			uri: tag.id,
-			url: tag.icon.url,
+			url: tag.icon!.url,
 			updatedAt: tag.updated ? new Date(tag.updated) : undefined,
 			aliases: []
-		} as Emoji);
+		} as Partial<Emoji>);
 	}));
 }
 
@@ -310,10 +317,10 @@ async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: strin
 	const ignoreUris = ['https://www.w3.org/ns/activitystreams#Public', `${actor.uri}/followers`];
 	const uris = difference(unique(concat([to || [], cc || []])), ignoreUris);
 
-	const limit = promiseLimit(2);
+	const limit = promiseLimit<User | null>(2);
 	const users = await Promise.all(
-		uris.map(uri => limit(() => resolvePerson(uri, resolver).catch(() => null)) as Promise<User>)
+		uris.map(uri => limit(() => resolvePerson(uri, resolver).catch(() => null)) as Promise<User | null>)
 	);
 
-	return users.filter(x => x != null);
+	return users.filter(x => x != null) as User[];
 }

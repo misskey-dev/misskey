@@ -66,7 +66,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId != null
 		? { id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: toPuny(ps.host) });
+		: { usernameLower: ps.username!.toLowerCase(), host: toPuny(ps.host!) });
 
 	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);

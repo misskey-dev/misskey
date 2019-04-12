@@ -88,6 +88,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	const poll = await Polls.findOne({ noteId: note.id });
+	if (poll == null) throw 'missing poll (database broken)';
 
 	if (poll.expiresAt && poll.expiresAt < createdAt) {
 		throw new ApiError(meta.errors.alreadyExpired);
@@ -150,6 +151,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	const profile = await UserProfiles.findOne({ userId: user.id });
+	if (profile == null) throw 'missing profile (database broken)';
 
 	// この投稿をWatchする
 	if (profile.autoWatch !== false) {
@@ -158,7 +160,13 @@ export default define(meta, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note.userHost != null) {
-		const pollOwner: IRemoteUser = await Users.findOne(note.userId);
+		const pollOwner = await Users.findOne(note.userId).then(x => {
+			if (x == null) {
+				throw 'missing user (database broken)';
+			} else {
+				return x as IRemoteUser;
+			}
+		});
 
 		deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
 	}
