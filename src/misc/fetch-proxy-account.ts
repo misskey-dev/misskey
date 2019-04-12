@@ -5,5 +5,5 @@ import { ensure } from '../prelude/ensure';
 
 export async function fetchProxyAccount(): Promise<ILocalUser> {
 	const meta = await fetchMeta();
-	return await Users.findOne({ username: meta.proxyAccount, host: null }).then(ensure) as ILocalUser;
+	return await Users.findOne({ username: meta.proxyAccount!, host: null }).then(ensure) as ILocalUser;
 }

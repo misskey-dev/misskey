@@ -28,7 +28,7 @@ export default define(meta, async (ps) => {
 	const queue =
 		ps.domain === 'deliver' ? deliverQueue :
 		ps.domain === 'inbox' ? inboxQueue :
-		null;
+		null as never;
 
 	const jobs = await queue.getJobs([ps.state], 0, ps.limit!);
 

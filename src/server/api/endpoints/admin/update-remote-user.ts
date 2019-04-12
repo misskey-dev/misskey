@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { getRemoteUser } from '../../common/getters';
 import { updatePerson } from '../../../../remote/activitypub/models/person';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	desc: {
@@ -28,5 +29,5 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const user = await getRemoteUser(ps.userId);
-	await updatePerson(user.uri);
+	await updatePerson(user.uri!);
 });
