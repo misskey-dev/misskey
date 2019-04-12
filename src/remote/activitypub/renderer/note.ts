@@ -90,7 +90,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		poll = await Polls.findOne({ noteId: note.id });
 	}
 
-	let question: string;
+	let question: string | undefined;
 	if (poll) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note.id}`;
@@ -143,7 +143,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 			name: text,
 			replies: {
 				type: 'Collection',
-				totalItems: poll.votes[i]
+				totalItems: poll!.votes[i]
 			}
 		}))
 	} : {};
@@ -178,5 +178,5 @@ export async function getEmojis(names: string[]): Promise<Emoji[]> {
 		}))
 	);
 
-	return emojis.filter(emoji => emoji != null);
+	return emojis.filter(emoji => emoji != null) as Emoji[];
 }
