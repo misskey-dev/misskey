@@ -34,14 +34,14 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 	const docs = glob.sync(`src/docs/**/*.${lang}.md`, { cwd });
 	vars['docs'] = {};
 	for (const x of docs) {
-		const [, name] = x.match(/docs\/(.+?)\.(.+?)\.md$/);
+		const [, name] = x.match(/docs\/(.+?)\.(.+?)\.md$/)!;
 		if (vars['docs'][name] == null) {
 			vars['docs'][name] = {
 				name,
 				title: {}
 			};
 		}
-		vars['docs'][name]['title'][lang] = fs.readFileSync(cwd + x, 'utf-8').match(/^# (.+?)\r?\n/)[1];
+		vars['docs'][name]['title'][lang] = fs.readFileSync(cwd + x, 'utf-8').match(/^# (.+?)\r?\n/)![1];
 	}
 
 	vars['kebab'] = (string: string) => string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
@@ -97,7 +97,7 @@ router.get('/*/*', async ctx => {
 	await ctx.render('../../../../src/docs/article', Object.assign({
 		id: doc,
 		html: conv.makeHtml(md),
-		title: md.match(/^# (.+?)\r?\n/)[1],
+		title: md.match(/^# (.+?)\r?\n/)![1],
 		src: `https://github.com/syuilo/misskey/tree/master/src/docs/${doc}.${lang}.md`
 	}, await genVars(lang)));
 

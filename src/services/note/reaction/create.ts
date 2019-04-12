@@ -82,7 +82,7 @@ export default async (user: User, note: Note, reaction: string) => {
 	const profile = await UserProfiles.findOne({ userId: user.id });
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
-	if (Users.isLocalUser(user) && profile.autoWatch) {
+	if (Users.isLocalUser(user) && profile!.autoWatch) {
 		watch(user.id, note);
 	}
 
@@ -91,7 +91,7 @@ export default async (user: User, note: Note, reaction: string) => {
 	if (Users.isLocalUser(user) && note.userHost !== null) {
 		const content = renderActivity(renderLike(user, note, reaction));
 		Users.findOne(note.userId).then(u => {
-			deliver(user, content, u.inbox);
+			deliver(user, content, u!.inbox);
 		});
 	}
 	//#endregion

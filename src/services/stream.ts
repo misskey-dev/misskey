@@ -6,7 +6,7 @@ import { UserList } from '../models/entities/user-list';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 
 class Publisher {
-	private ev: Xev;
+	private ev: Xev | null = null;
 
 	constructor() {
 		// Redisがインストールされてないときはプロセス間通信を使う
@@ -15,7 +15,7 @@ class Publisher {
 		}
 	}
 
-	private publish = (channel: string, type: string, value?: any): void => {
+	private publish = (channel: string, type: string | null, value?: any): void => {
 		const message = type == null ? value : value == null ?
 			{ type: type, body: null } :
 			{ type: type, body: value };
@@ -23,7 +23,7 @@ class Publisher {
 		if (this.ev) {
 			this.ev.emit(channel, message);
 		} else {
-			redis.publish('misskey', JSON.stringify({
+			redis!.publish('misskey', JSON.stringify({
 				channel: channel,
 				message: message
 			}));

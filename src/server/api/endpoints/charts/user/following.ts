@@ -42,5 +42,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await perUserFollowingChart.getChart(ps.span as any, ps.limit, ps.userId);
+	return await perUserFollowingChart.getChart(ps.span as any, ps.limit!, ps.userId);
 });

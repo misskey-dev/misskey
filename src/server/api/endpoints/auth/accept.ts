@@ -5,6 +5,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { AuthSessions, AccessTokens, Apps } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	tags: ['auth'],
@@ -48,7 +49,7 @@ export default define(meta, async (ps, user) => {
 
 	if (exist == null) {
 		// Lookup app
-		const app = await Apps.findOne(session.appId);
+		const app = await Apps.findOne(session.appId).then(ensure);
 
 		// Generate Hash
 		const sha256 = crypto.createHash('sha256');

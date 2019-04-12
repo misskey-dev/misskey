@@ -74,7 +74,7 @@ export default define(meta, async (ps, me) => {
 		})));
 	} else {
 		// Lookup user
-		if (typeof ps.host === 'string') {
+		if (typeof ps.host === 'string' && typeof ps.username === 'string') {
 			user = await resolveUser(ps.username, ps.host).catch(e => {
 				apiLogger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.failedToResolveRemoteUser);
@@ -82,7 +82,7 @@ export default define(meta, async (ps, me) => {
 		} else {
 			const q: any = ps.userId != null
 				? { id: ps.userId }
-				: { usernameLower: ps.username.toLowerCase(), host: null };
+				: { usernameLower: ps.username!.toLowerCase(), host: null };
 
 			user = await Users.findOne(q);
 		}
@@ -94,7 +94,7 @@ export default define(meta, async (ps, me) => {
 		// ユーザー情報更新
 		if (Users.isRemoteUser(user)) {
 			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				resolveUser(ps.username, ps.host, { }, true);
+				resolveUser(user.username, user.host, { }, true);
 			}
 		}
 

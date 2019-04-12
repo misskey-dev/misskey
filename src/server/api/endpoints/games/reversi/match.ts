@@ -70,7 +70,7 @@ export default define(meta, async (ps, user) => {
 			map: eighteight.data,
 			bw: 'random',
 			isLlotheo: false
-		} as ReversiGame);
+		} as Partial<ReversiGame>);
 
 		publishReversiStream(exist.parentId, 'matched', await ReversiGames.pack(game, exist.parentId));
 
@@ -107,6 +107,6 @@ export default define(meta, async (ps, user) => {
 		publishReversiStream(child.id, 'invited', packed);
 		publishMainStream(child.id, 'reversiInvited', packed);
 
-		return null;
+		return;
 	}
 });

@@ -48,7 +48,7 @@ export default define(meta, async (ps) => {
 	const hashtags = await Hashtags.createQueryBuilder('tag')
 		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
 		.orderBy('tag.count', 'DESC')
-		.take(ps.limit)
+		.take(ps.limit!)
 		.skip(ps.offset)
 		.getMany();
 

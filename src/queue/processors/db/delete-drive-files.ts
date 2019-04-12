@@ -10,9 +10,11 @@ const logger = queueLogger.createSubLogger('delete-drive-files');
 export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne({
-		id: job.data.user.id
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
 	let deletedCount = 0;
 	let ended = false;

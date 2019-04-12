@@ -2,6 +2,7 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles } from '..';
 import rap from '@prezzemolo/rap';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -51,7 +52,7 @@ export class UserRepository extends Repository<User> {
 
 	public packMany(
 		users: (User['id'] | User)[],
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
@@ -63,7 +64,7 @@ export class UserRepository extends Repository<User> {
 
 	public async pack(
 		src: User['id'] | User,
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
@@ -75,12 +76,12 @@ export class UserRepository extends Repository<User> {
 			includeSecrets: false
 		}, options);
 
-		const user = typeof src === 'object' ? src : await this.findOne(src);
+		const user = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await UserNotePinings.find({ userId: user.id }) : [];
-		const profile = opts.detail ? await UserProfiles.findOne({ userId: user.id }) : null;
+		const profile = opts.detail ? await UserProfiles.findOne({ userId: user.id }).then(ensure) : null;
 
 		return await rap({
 			id: user.id,
@@ -117,12 +118,12 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail ? {
-				url: profile.url,
+				url: profile!.url,
 				createdAt: user.createdAt,
 				updatedAt: user.updatedAt,
-				description: profile.description,
-				location: profile.location,
-				birthday: profile.birthday,
+				description: profile!.description,
+				location: profile!.location,
+				birthday: profile!.birthday,
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,
@@ -135,9 +136,9 @@ export class UserRepository extends Repository<User> {
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
-				autoWatch: profile.autoWatch,
-				alwaysMarkNsfw: profile.alwaysMarkNsfw,
-				carefulBot: profile.carefulBot,
+				autoWatch: profile!.autoWatch,
+				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
+				carefulBot: profile!.carefulBot,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: user.id,
@@ -158,9 +159,9 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				clientData: profile.clientData,
-				email: profile.email,
-				emailVerified: profile.emailVerified,
+				clientData: profile!.clientData,
+				email: profile!.email,
+				emailVerified: profile!.emailVerified,
 			} : {}),
 
 			...(relation ? {

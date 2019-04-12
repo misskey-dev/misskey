@@ -54,9 +54,9 @@ router.get(webFingerPath, async ctx => {
 
 	const generateQuery = (resource: string) =>
 		resource.startsWith(`${config.url.toLowerCase()}/users/`) ?
-			fromId(resource.split('/').pop()) :
+			fromId(resource.split('/').pop()!) :
 			fromAcct(parseAcct(
-				resource.startsWith(`${config.url.toLowerCase()}/@`) ? resource.split('/').pop() :
+				resource.startsWith(`${config.url.toLowerCase()}/@`) ? resource.split('/').pop()! :
 				resource.startsWith('acct:') ? resource.slice('acct:'.length) :
 				resource));
 

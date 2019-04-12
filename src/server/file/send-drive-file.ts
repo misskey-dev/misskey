@@ -50,7 +50,7 @@ export default async function(ctx: Koa.BaseContext) {
 			ctx.set('Content-Disposition', contentDisposition('attachment', `${file.name}`));
 		}
 
-		const readable = InternalStorage.read(file.accessKey);
+		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
 		ctx.set('Content-Type', file.type);
 		ctx.body = readable;

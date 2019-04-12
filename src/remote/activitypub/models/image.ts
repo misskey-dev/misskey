@@ -5,6 +5,7 @@ import fetchMeta from '../../../misc/fetch-meta';
 import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { DriveFiles } from '../../../models';
+import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 
@@ -14,7 +15,7 @@ const logger = apLogger;
 export async function createImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
-		return null;
+		throw new Error('actor has been suspended');
 	}
 
 	const image = await new Resolver().resolve(value) as any;
@@ -28,17 +29,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 	const instance = await fetchMeta();
 	const cache = instance.cacheRemoteFiles;
 
-	let file;
-	try {
-		file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
-	} catch (e) {
-		// 4xxの場合は添付されてなかったことにする
-		if (e >= 400 && e < 500) {
-			logger.warn(`Ignored image: ${image.url} - ${e}`);
-			return null;
-		}
-		throw e;
-	}
+	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
 
 	if (file.isLink) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
@@ -49,7 +40,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 				uri: image.url
 			});
 
-			file = DriveFiles.findOne(file.id);
+			file = await DriveFiles.findOne(file.id).then(ensure);
 		}
 	}
 

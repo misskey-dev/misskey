@@ -9,7 +9,6 @@ export default async function(): Promise<Meta> {
 	} else {
 		return Metas.save({
 			id: genId(),
-			hiddenTags: []
 		} as Meta);
 	}
 }

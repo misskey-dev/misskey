@@ -102,10 +102,10 @@ export default define(meta, async (ps, user) => {
 					id: folderId
 				});
 
-				if (folder2.id === folder.id) {
+				if (folder2!.id === folder!.id) {
 					return true;
-				} else if (folder2.parentId) {
-					return await checkCircle(folder2.parentId);
+				} else if (folder2!.parentId) {
+					return await checkCircle(folder2!.parentId);
 				} else {
 					return false;
 				}

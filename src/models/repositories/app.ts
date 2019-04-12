@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { App } from '../entities/app';
 import { AccessTokens } from '..';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(App)
 export class AppRepository extends Repository<App> {
@@ -19,7 +20,7 @@ export class AppRepository extends Repository<App> {
 			includeProfileImageIds: false
 		}, options);
 
-		const app = typeof src === 'object' ? src : await this.findOne(src);
+		const app = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return {
 			id: app.id,

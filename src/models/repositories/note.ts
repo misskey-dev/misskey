@@ -5,6 +5,7 @@ import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import rap from '@prezzemolo/rap';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
@@ -12,7 +13,7 @@ export class NoteRepository extends Repository<Note> {
 		return x.trim().length <= 100;
 	}
 
-	private async hideNote(packedNote: any, meId: User['id']) {
+	private async hideNote(packedNote: any, meId: User['id'] | null) {
 		let hide = false;
 
 		// visibility が specified かつ自分が指定されていなかったら非表示
@@ -75,7 +76,7 @@ export class NoteRepository extends Repository<Note> {
 
 	public packMany(
 		notes: (Note['id'] | Note)[],
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -86,7 +87,7 @@ export class NoteRepository extends Repository<Note> {
 
 	public async pack(
 		src: Note['id'] | Note,
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -98,11 +99,11 @@ export class NoteRepository extends Repository<Note> {
 		}, options);
 
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
-		const note = typeof src === 'object' ? src : await this.findOne(src);
+		const note = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 		const host = note.userHost;
 
 		async function populatePoll() {
-			const poll = await Polls.findOne({ noteId: note.id });
+			const poll = await Polls.findOne({ noteId: note.id }).then(ensure);
 			const choices = poll.choices.map(c => ({
 				text: c,
 				votes: poll.votes[poll.choices.indexOf(c)],
@@ -111,7 +112,7 @@ export class NoteRepository extends Repository<Note> {
 
 			if (poll.multiple) {
 				const votes = await PollVotes.find({
-					userId: meId,
+					userId: meId!,
 					noteId: note.id
 				});
 
@@ -121,7 +122,7 @@ export class NoteRepository extends Repository<Note> {
 				}
 			} else {
 				const vote = await PollVotes.findOne({
-					userId: meId,
+					userId: meId!,
 					noteId: note.id
 				});
 
@@ -139,7 +140,7 @@ export class NoteRepository extends Repository<Note> {
 
 		async function populateMyReaction() {
 			const reaction = await NoteReactions.findOne({
-				userId: meId,
+				userId: meId!,
 				noteId: note.id,
 			});
 

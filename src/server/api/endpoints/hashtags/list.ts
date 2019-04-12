@@ -86,7 +86,7 @@ export default define(meta, async (ps, me) => {
 		'tag.attachedRemoteUsersCount',
 	]);
 
-	const tags = await query.take(ps.limit).getMany();
+	const tags = await query.take(ps.limit!).getMany();
 
 	return tags;
 });

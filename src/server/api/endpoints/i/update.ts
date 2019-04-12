@@ -206,13 +206,13 @@ export default define(meta, async (ps, user, app) => {
 
 	if (updates.name != null) {
 		const tokens = parsePlain(updates.name);
-		emojis = emojis.concat(extractEmojis(tokens));
+		emojis = emojis.concat(extractEmojis(tokens!));
 	}
 
 	if (profile.description != null) {
 		const tokens = parse(profile.description);
-		emojis = emojis.concat(extractEmojis(tokens));
-		tags = extractHashtags(tokens).map(tag => tag.toLowerCase());
+		emojis = emojis.concat(extractEmojis(tokens!));
+		tags = extractHashtags(tokens!).map(tag => tag.toLowerCase());
 	}
 
 	updates.emojis = emojis;

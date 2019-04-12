@@ -37,7 +37,7 @@ export type Undo = {
 	/**
 	 * ターン
 	 */
-	turn: Color;
+	turn: Color | null;
 };
 
 /**
@@ -47,12 +47,12 @@ export default class Reversi {
 	public map: MapPixel[];
 	public mapWidth: number;
 	public mapHeight: number;
-	public board: Color[];
-	public turn: Color = BLACK;
+	public board: (Color | null | undefined)[];
+	public turn: Color | null = BLACK;
 	public opts: Options;
 
 	public prevPos = -1;
-	public prevColor: Color = null;
+	public prevColor: Color | null = null;
 
 	private logs: Undo[] = [];
 
@@ -145,12 +145,12 @@ export default class Reversi {
 		// ターン計算
 		this.turn =
 			this.canPutSomewhere(!this.prevColor) ? !this.prevColor :
-			this.canPutSomewhere(this.prevColor) ? this.prevColor :
+			this.canPutSomewhere(this.prevColor!) ? this.prevColor :
 			null;
 	}
 
 	public undo() {
-		const undo = this.logs.pop();
+		const undo = this.logs.pop()!;
 		this.prevColor = undo.color;
 		this.prevPos = undo.pos;
 		this.board[undo.pos] = null;
@@ -254,10 +254,10 @@ export default class Reversi {
 	/**
 	 * ゲームの勝者 (null = 引き分け)
 	 */
-	public get winner(): Color {
+	public get winner(): Color | null {
 		return this.isEnded ?
 			this.blackCount == this.whiteCount ? null :
 			this.opts.isLlotheo === this.blackCount > this.whiteCount　? WHITE : BLACK :
-			undefined;
+			undefined as never;
 	}
 }

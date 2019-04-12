@@ -100,7 +100,7 @@ export default define(meta, async (ps) => {
 	//	query.isBot = bot;
 	//}
 
-	const notes = await query.take(ps.limit).getMany();
+	const notes = await query.take(ps.limit!).getMany();
 
 	return await Notes.packMany(notes);
 });

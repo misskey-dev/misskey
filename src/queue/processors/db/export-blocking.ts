@@ -14,9 +14,11 @@ const logger = queueLogger.createSubLogger('export-blocking');
 export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne({
-		id: job.data.user.id
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
 	// Create temp file
 	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
@@ -56,6 +58,10 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 
 		for (const block of blockings) {
 			const u = await Users.findOne({ id: block.blockeeId });
+			if (u == null) {
+				exportedCount++; continue;
+			}
+
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {

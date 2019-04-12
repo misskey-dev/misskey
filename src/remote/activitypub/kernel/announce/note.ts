@@ -53,16 +53,16 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	logger.info(`Creating the (Re)Note: ${uri}`);
 
 	//#region Visibility
-	const visibility = getVisibility(activity.to, activity.cc, actor);
+	const visibility = getVisibility(activity.to || [], activity.cc || [], actor);
 
 	let visibleUsers: User[] = [];
 	if (visibility == 'specified') {
-		visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri)));
+		visibleUsers = await Promise.all((note.to || []).map(uri => resolvePerson(uri)));
 	}
 	//#endergion
 
 	await post(actor, {
-		createdAt: new Date(activity.published),
+		createdAt: activity.published ? new Date(activity.published) : null,
 		renote,
 		visibility,
 		visibleUsers,
@@ -74,9 +74,6 @@ type visibility = 'public' | 'home' | 'followers' | 'specified';
 
 function getVisibility(to: string[], cc: string[], actor: IRemoteUser): visibility {
 	const PUBLIC = 'https://www.w3.org/ns/activitystreams#Public';
-
-	to = to || [];
-	cc = cc || [];
 
 	if (to.includes(PUBLIC)) {
 		return 'public';

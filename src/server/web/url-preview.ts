@@ -43,7 +43,7 @@ module.exports = async (ctx: Koa.BaseContext) => {
 	}
 };
 
-function wrap(url: string): string {
+function wrap(url?: string): string | null {
 	return url != null
 		? url.match(/^https?:\/\//)
 			? `${config.url}/proxy/preview.jpg?${query({

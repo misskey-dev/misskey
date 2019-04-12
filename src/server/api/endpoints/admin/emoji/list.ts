@@ -23,7 +23,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const emojis = await Emojis.find({
-		host: toPuny(ps.host)
+		host: ps.host ? toPuny(ps.host) : null
 	});
 
 	return emojis.map(e => ({

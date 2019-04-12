@@ -123,14 +123,14 @@ async function fetchAny(uri: string) {
 		const note = await createNote(object.id);
 		return {
 			type: 'Note',
-			object: await Notes.pack(note, null, { detail: true })
+			object: await Notes.pack(note!, null, { detail: true })
 		};
 	}
 
 	return null;
 }
 
-async function mergePack(user: User, note: Note) {
+async function mergePack(user: User | null | undefined, note: Note | null | undefined) {
 	if (user != null) {
 		return {
 			type: 'User',

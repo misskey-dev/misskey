@@ -32,7 +32,7 @@ export default define(meta, async (ps, user) => {
 
 	const apps = await Apps.find({
 		where: query,
-		take: ps.limit,
+		take: ps.limit!,
 		skip: ps.offset,
 	});
 

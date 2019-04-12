@@ -29,7 +29,7 @@ export default function load() {
 
 	config.url = url.origin;
 
-	config.port = config.port || parseInt(process.env.PORT, 10);
+	config.port = config.port || parseInt(process.env.PORT || '', 10);
 
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;

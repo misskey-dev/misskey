@@ -4,6 +4,7 @@ import { Users, DriveFolders } from '..';
 import rap from '@prezzemolo/rap';
 import { User } from '../entities/user';
 import { toPuny } from '../../misc/convert-host';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(DriveFile)
 export class DriveFileRepository extends Repository<DriveFile> {
@@ -91,7 +92,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			self: false
 		}, options);
 
-		const file = typeof src === 'object' ? src : await this.findOne(src);
+		const file = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return await rap({
 			id: file.id,
@@ -108,7 +109,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
 				detail: true
 			}) : null,
-			user: opts.withUser ? Users.pack(file.userId) : null
+			user: opts.withUser ? Users.pack(file.userId!) : null
 		});
 	}
 }

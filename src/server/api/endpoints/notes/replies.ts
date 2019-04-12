@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 	if (user) generateVisibilityQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
-	const timeline = await query.take(ps.limit).getMany();
+	const timeline = await query.take(ps.limit!).getMany();
 
 	return await Notes.packMany(timeline, user);
 });

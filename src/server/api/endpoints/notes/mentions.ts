@@ -74,7 +74,7 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	const mentions = await query.take(ps.limit).getMany();
+	const mentions = await query.take(ps.limit!).getMany();
 
 	for (const note of mentions) {
 		read(user.id, note.id);

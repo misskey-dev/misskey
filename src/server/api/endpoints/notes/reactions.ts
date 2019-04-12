@@ -71,7 +71,7 @@ export default define(meta, async (ps, user) => {
 
 	const reactions = await NoteReactions.find({
 		where: query,
-		take: ps.limit,
+		take: ps.limit!,
 		skip: ps.offset,
 		order: {
 			id: -1

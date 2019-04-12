@@ -10,6 +10,7 @@ import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -43,7 +44,7 @@ router.get('/disconnect/github', async ctx => {
 	const user = await Users.findOne({
 		host: null,
 		token: userToken
-	});
+	}).then(ensure);
 
 	await UserProfiles.update({
 		userId: user.id
@@ -66,7 +67,7 @@ router.get('/disconnect/github', async ctx => {
 async function getOath2() {
 	const meta = await fetchMeta();
 
-	if (meta.enableGithubIntegration) {
+	if (meta.enableGithubIntegration && meta.githubClientId && meta.githubClientSecret) {
 		return new OAuth2(
 			meta.githubClientId,
 			meta.githubClientSecret,
@@ -79,6 +80,8 @@ async function getOath2() {
 }
 
 router.get('/connect/github', async ctx => {
+	if (redis == null) return;
+
 	if (!compareOrigin(ctx)) {
 		ctx.throw(400, 'invalid origin');
 		return;
@@ -99,10 +102,12 @@ router.get('/connect/github', async ctx => {
 	redis.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/signin/github', async ctx => {
+	if (redis == null) return;
+
 	const sessid = uuid();
 
 	const params = {
@@ -124,10 +129,12 @@ router.get('/signin/github', async ctx => {
 	redis.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/gh/cb', async ctx => {
+	if (redis == null) return;
+
 	const userToken = getUserToken(ctx);
 
 	const oauth2 = await getOath2();
@@ -148,7 +155,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(sessid, async (_, state) => {
+			redis!.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -159,17 +166,17 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{ redirect_uri },
-				(err, accessToken, refresh, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
-						res({ accessToken });
-				}));
+			oauth2!.getOAuthAccessToken(code, {
+				redirect_uri
+			}, (err, accessToken, refresh, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
+					res({ accessToken });
+				}
+			}));
 
 		const { login, id } = await new Promise<any>((res, rej) =>
 			request({
@@ -215,7 +222,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(userToken, async (_, state) => {
+			redis!.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -226,7 +233,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
+			oauth2!.getOAuthAccessToken(
 				code,
 				{ redirect_uri },
 				(err, accessToken, refresh, result) => {
@@ -261,7 +268,7 @@ router.get('/gh/cb', async ctx => {
 		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		});
+		}).then(ensure);
 
 		await UserProfiles.update({ userId: user.id }, {
 			github: true,

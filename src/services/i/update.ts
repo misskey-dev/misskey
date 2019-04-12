@@ -6,9 +6,8 @@ import { User } from '../../models/entities/user';
 import { renderPerson } from '../../remote/activitypub/renderer/person';
 
 export async function publishToFollowers(userId: User['id']) {
-	const user = await Users.findOne({
-		id: userId
-	});
+	const user = await Users.findOne(userId);
+	if (user == null) throw 'user not found';
 
 	const followers = await Followings.find({
 		followeeId: user.id
@@ -19,7 +18,7 @@ export async function publishToFollowers(userId: User['id']) {
 	// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
 	if (Users.isLocalUser(user)) {
 		for (const following of followers) {
-			if (following.followerHost !== null) {
+			if (Followings.isRemoteFollower(following)) {
 				const inbox = following.followerSharedInbox || following.followerInbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
