@@ -7,11 +7,13 @@ import { Not } from 'typeorm';
 import { genId } from '../../../misc/gen-id';
 import { createNotification } from '../../create-notification';
 
-export default (user: User, note: Note, choice: number) => new Promise(async (res, rej) => {
+export default async function(user: User, note: Note, choice: number) {
 	const poll = await Polls.findOne({ noteId: note.id });
 
+	if (poll == null) throw 'poll not found';
+
 	// Check whether is valid choice
-	if (poll.choices[choice] == null) return rej('invalid choice param');
+	if (poll.choices[choice] == null) throw new Error('invalid choice param');
 
 	// if already voted
 	const exist = await PollVotes.find({
@@ -21,10 +23,10 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 
 	if (poll.multiple) {
 		if (exist.some(x => x.choice === choice)) {
-			return rej('already voted');
+			throw new Error('already voted');
 		}
 	} else if (exist.length !== 0) {
-		return rej('already voted');
+		throw new Error('already voted');
 	}
 
 	// Create vote
@@ -35,8 +37,6 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 		userId: user.id,
 		choice: choice
 	});
-
-	res();
 
 	// Increment votes count
 	const index = choice + 1; // In SQL, array index is 1 based
@@ -70,7 +70,7 @@ export default (user: User, note: Note, choice: number) => new Promise(async (re
 	const profile = await UserProfiles.findOne({ userId: user.id });
 
 	// ローカルユーザーが投票した場合この投稿をWatchする
-	if (Users.isLocalUser(user) && profile.autoWatch) {
+	if (Users.isLocalUser(user) && profile!.autoWatch) {
 		watch(user.id, note);
 	}
-});
+}

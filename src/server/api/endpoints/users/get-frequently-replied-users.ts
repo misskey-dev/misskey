@@ -94,7 +94,7 @@ export default define(meta, async (ps, me) => {
 	const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);
 
 	// Extract top replied users
-	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
+	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit!);
 
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({

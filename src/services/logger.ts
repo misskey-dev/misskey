@@ -9,14 +9,14 @@ import { genId } from '../misc/gen-id';
 
 type Domain = {
 	name: string;
-	color: string;
+	color?: string;
 };
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
 
 export default class Logger {
 	private domain: Domain;
-	private parentLogger: Logger;
+	private parentLogger: Logger | null = null;
 	private store: boolean;
 
 	constructor(domain: string, color?: string, store = true) {
@@ -33,7 +33,7 @@ export default class Logger {
 		return logger;
 	}
 
-	private log(level: Level, message: string, data: Record<string, any>, important = false, subDomains: Domain[] = [], store = true): void {
+	private log(level: Level, message: string, data?: Record<string, any>, important = false, subDomains: Domain[] = [], store = true): void {
 		if (program.quiet) return;
 		if (!this.store) store = false;
 

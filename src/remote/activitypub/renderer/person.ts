@@ -14,10 +14,12 @@ export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
 
 	const [avatar, banner, profile] = await Promise.all([
-		DriveFiles.findOne(user.avatarId),
-		DriveFiles.findOne(user.bannerId),
+		user.avatarId ? DriveFiles.findOne(user.avatarId) : Promise.resolve(undefined),
+		user.bannerId ? DriveFiles.findOne(user.bannerId) : Promise.resolve(undefined),
 		UserProfiles.findOne({ userId: user.id })
 	]);
+
+	if (profile == null) throw 'profile missing (database broken)';
 
 	const attachment: {
 		type: string,
@@ -76,9 +78,8 @@ export async function renderPerson(user: ILocalUser) {
 		...hashtagTags,
 	];
 
-	const keypair = await UserKeypairs.findOne({
-		userId: user.id
-	});
+	const keypair = await UserKeypairs.findOne(user.id);
+	if (keypair == null) throw 'missing keypair (database broken)';
 
 	return {
 		type: user.isBot ? 'Service' : 'Person',
@@ -94,8 +95,8 @@ export async function renderPerson(user: ILocalUser) {
 		preferredUsername: user.username,
 		name: user.name,
 		summary: toHtml(parse(profile.description)),
-		icon: user.avatarId && renderImage(avatar),
-		image: user.bannerId && renderImage(banner),
+		icon: avatar ? renderImage(avatar) : null,
+		image: banner ? renderImage(banner) : null,
 		tag,
 		manuallyApprovesFollowers: user.isLocked,
 		publicKey: renderKey(user, keypair),

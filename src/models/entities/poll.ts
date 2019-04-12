@@ -67,5 +67,5 @@ export type IPoll = {
 	choices: string[];
 	votes?: number[];
 	multiple: boolean;
-	expiresAt: Date;
+	expiresAt: Date | null;
 };

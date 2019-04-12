@@ -87,7 +87,7 @@ export default define(meta, async (ps, user) => {
 		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
 	}
 
-	const notifications = await query.take(ps.limit).getMany();
+	const notifications = await query.take(ps.limit!).getMany();
 
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {

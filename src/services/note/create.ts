@@ -401,10 +401,10 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 				const poll = new Poll({
 					noteId: note.id,
-					choices: data.poll.choices,
-					expiresAt: data.poll.expiresAt,
-					multiple: data.poll.multiple,
-					votes: new Array(data.poll.choices.length).fill(0),
+					choices: data.poll!.choices,
+					expiresAt: data.poll!.expiresAt,
+					multiple: data.poll!.multiple,
+					votes: new Array(data.poll!.choices.length).fill(0),
 					noteVisibility: note.visibility,
 					userId: user.id,
 					userHost: user.host
@@ -416,7 +416,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 			note = await Notes.save(insert);
 		}
 
-		return note;
+		return note!;
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {

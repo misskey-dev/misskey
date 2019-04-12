@@ -76,7 +76,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere(`following.followeeId = :userId`, { userId: user.id });
 
 	const followings = await query
-		.take(ps.limit)
+		.take(ps.limit!)
 		.getMany();
 
 	return await Followings.packMany(followings, me, { populateFollower: true });

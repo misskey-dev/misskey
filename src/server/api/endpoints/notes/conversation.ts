@@ -69,7 +69,7 @@ export default define(meta, async (ps, user) => {
 			conversation.push(p);
 		}
 
-		if (conversation.length == ps.limit) {
+		if (conversation.length == ps.limit!) {
 			return;
 		}
 

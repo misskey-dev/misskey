@@ -7,8 +7,10 @@ import { Note } from '../../../models/entities/note';
 
 export async function deliverQuestionUpdate(noteId: Note['id']) {
 	const note = await Notes.findOne(noteId);
+	if (note == null) throw 'note not found';
 
 	const user = await Users.findOne(note.userId);
+	if (user == null) throw 'note not found';
 
 	const followers = await Followings.find({
 		followeeId: user.id
@@ -19,13 +21,8 @@ export async function deliverQuestionUpdate(noteId: Note['id']) {
 	// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
 	if (Users.isLocalUser(user)) {
 		for (const following of followers) {
-			const follower = {
-				inbox: following.followerInbox,
-				sharedInbox: following.followerSharedInbox
-			};
-
-			if (following.followerHost !== null) {
-				const inbox = follower.sharedInbox || follower.inbox;
+			if (Followings.isRemoteFollower(following)) {
+				const inbox = following.followerSharedInbox || following.followerInbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
 		}

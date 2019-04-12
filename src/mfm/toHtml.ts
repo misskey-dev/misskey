@@ -4,7 +4,7 @@ import { intersperse } from '../prelude/array';
 import { MfmForest, MfmTree } from './prelude';
 import { IMentionedRemoteUsers } from '../models/entities/note';
 
-export function toHtml(tokens: MfmForest, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
+export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
 	if (tokens == null) {
 		return null;
 	}

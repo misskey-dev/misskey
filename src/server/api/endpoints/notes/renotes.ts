@@ -70,7 +70,7 @@ export default define(meta, async (ps, user) => {
 	if (user) generateVisibilityQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
-	const renotes = await query.take(ps.limit).getMany();
+	const renotes = await query.take(ps.limit!).getMany();
 
 	return await Notes.packMany(renotes, user);
 });

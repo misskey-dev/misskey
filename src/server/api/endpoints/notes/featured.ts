@@ -41,7 +41,7 @@ export default define(meta, async (ps, user) => {
 
 	if (user) generateMuteQuery(query, user);
 
-	const notes = await query.orderBy('note.score', 'DESC').take(ps.limit).getMany();
+	const notes = await query.orderBy('note.score', 'DESC').take(ps.limit!).getMany();
 
 	return await Notes.packMany(notes, user);
 });

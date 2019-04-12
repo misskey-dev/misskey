@@ -84,7 +84,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				}
 			}
 		};
-		flatColumns(schema.properties);
+		flatColumns(schema.properties!);
 		return columns;
 	}
 
@@ -182,7 +182,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private getNewLog(latest?: T): T {
+	private getNewLog(latest: T | null): T {
 		const log = latest ? this.genNewLog(latest) : {};
 		const flatColumns = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
@@ -196,7 +196,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				}
 			}
 		};
-		flatColumns(this.schema.properties);
+		flatColumns(this.schema.properties!);
 		return log as T;
 	}
 
@@ -213,7 +213,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private getLatestLog(span: Span, group: string = null): Promise<Log> {
+	private getLatestLog(span: Span, group: string | null = null): Promise<Log | null> {
 		return this.repository.findOne({
 			group: group,
 			span: span
@@ -221,17 +221,17 @@ export default abstract class Chart<T extends Record<string, any>> {
 			order: {
 				date: -1
 			}
-		});
+		}).then(x => x || null);
 	}
 
 	@autobind
-	private async getCurrentLog(span: Span, group: string = null): Promise<Log> {
+	private async getCurrentLog(span: Span, group: string | null = null): Promise<Log> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const current =
 			span == 'day' ? utc([y, m, d]) :
 			span == 'hour' ? utc([y, m, d, h]) :
-			null;
+			null as never;
 
 		// 現在(今日または今のHour)のログ
 		const currentLog = await this.repository.findOne({
@@ -285,7 +285,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			// 並列動作している他のチャートエンジンプロセスと処理が重なる場合がある
 			// その場合は再度最も新しいログを持ってくる
 			if (isDuplicateKeyValueError(e)) {
-				log = await this.getLatestLog(span, group);
+				log = await this.getLatestLog(span, group) as Log;
 			} else {
 				logger.error(e);
 				throw e;
@@ -296,17 +296,17 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	protected commit(query: Record<string, Function>, group: string = null, uniqueKey?: string, uniqueValue?: string): Promise<any> {
+	protected commit(query: Record<string, Function>, group: string | null = null, uniqueKey?: string, uniqueValue?: string): Promise<any> {
 		const update = async (log: Log) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
-				uniqueKey &&
+				uniqueKey && log.unique &&
 				log.unique[uniqueKey] &&
 				log.unique[uniqueKey].includes(uniqueValue)
 			) return;
 
 			// ユニークインクリメントの指定のキーに値を追加
-			if (uniqueKey) {
+			if (uniqueKey && log.unique) {
 				if (log.unique[uniqueKey]) {
 					const sql = `jsonb_set("unique", '{${uniqueKey}}', ("unique"->>'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
 					query['unique'] = () => sql;
@@ -331,23 +331,23 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	protected async inc(inc: DeepPartial<T>, group: string = null): Promise<void> {
+	protected async inc(inc: DeepPartial<T>, group: string | null = null): Promise<void> {
 		await this.commit(Chart.convertQuery(inc as any), group);
 	}
 
 	@autobind
-	protected async incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string = null): Promise<void> {
+	protected async incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string | null = null): Promise<void> {
 		await this.commit(Chart.convertQuery(inc as any), group, key, value);
 	}
 
 	@autobind
-	public async getChart(span: Span, range: number, group: string = null): Promise<ArrayValue<T>> {
+	public async getChart(span: Span, range: number, group: string | null = null): Promise<ArrayValue<T>> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const gt =
 			span == 'day' ? utc([y, m, d]).subtract(range, 'days') :
 			span == 'hour' ? utc([y, m, d, h]).subtract(range, 'hours') :
-			null;
+			null as never;
 
 		// ログ取得
 		let logs = await this.repository.find({
@@ -404,7 +404,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			const current =
 				span == 'day' ? utc([y, m, d]).subtract(i, 'days') :
 				span == 'hour' ? utc([y, m, d, h]).subtract(i, 'hours') :
-				null;
+				null as never;
 
 			const log = logs.find(l => utc(l.date * 1000).isSame(current));
 
@@ -452,8 +452,8 @@ export function convertLog(logSchema: Schema): Schema {
 			type: 'number'
 		};
 	} else if (v.type === 'object') {
-		for (const k of Object.keys(v.properties)) {
-			v.properties[k] = convertLog(v.properties[k]);
+		for (const k of Object.keys(v.properties!)) {
+			v.properties![k] = convertLog(v.properties![k]);
 		}
 	}
 	return v;

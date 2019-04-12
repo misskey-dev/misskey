@@ -86,13 +86,13 @@ function validatePerson(x: any, uri: string) {
  *
  * Misskeyに対象のPersonが登録されていればそれを返します。
  */
-export async function fetchPerson(uri: string, resolver?: Resolver): Promise<User> {
+export async function fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
 		const id = uri.split('/').pop();
-		return await Users.findOne(id);
+		return await Users.findOne(id).then(x => x || null);
 	}
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -161,7 +161,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 			await transactionalEntityManager.save(new UserProfile({
 				userId: user.id,
-				description: fromHtml(person.summary),
+				description: person.summary ? fromHtml(person.summary) : null,
 				url: person.url,
 				fields,
 				userHost: host
@@ -189,11 +189,11 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		instanceChart.newUser(i.host);
 	});
 
-	usersChart.update(user, true);
+	usersChart.update(user!, true);
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(user, tag, true, true);
-	for (const tag of (user.tags || []).filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
+	for (const tag of tags) updateHashtag(user!, tag, true, true);
+	for (const tag of (user!.tags || []).filter(x => !tags.includes(x))) updateHashtag(user!, tag, true, false);
 
 	//#region アイコンとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<DriveFile>([
@@ -202,7 +202,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
-			: resolveImage(user, img).catch(() => null)
+			: resolveImage(user!, img).catch(() => null)
 	)));
 
 	const avatarId = avatar ? avatar.id : null;
@@ -212,7 +212,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	const bannerColor = banner && avatar.properties.avgColor ? banner.properties.avgColor : null;
 
-	await Users.update(user.id, {
+	await Users.update(user!.id, {
 		avatarId,
 		bannerId,
 		avatarUrl,
@@ -221,12 +221,12 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 		bannerColor
 	});
 
-	user.avatarId = avatarId;
-	user.bannerId = bannerId;
-	user.avatarUrl = avatarUrl;
-	user.bannerUrl = bannerUrl;
-	user.avatarColor = avatarColor;
-	user.bannerColor = bannerColor;
+	user!.avatarId = avatarId;
+	user!.bannerId = bannerId;
+	user!.avatarUrl = avatarUrl;
+	user!.bannerUrl = bannerUrl;
+	user!.avatarColor = avatarColor;
+	user!.bannerColor = bannerColor;
 	//#endregion
 
 	//#region カスタム絵文字取得
@@ -237,14 +237,14 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	await Users.update(user.id, {
+	await Users.update(user!.id, {
 		emojis: emojiNames
 	});
 	//#endregion
 
-	await updateFeatured(user.id).catch(err => logger.error(err));
+	await updateFeatured(user!.id).catch(err => logger.error(err));
 
-	return user;
+	return user!;
 }
 
 /**
@@ -317,7 +317,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		featured: person.featured,
 		emojis: emojiNames,
-		description: fromHtml(person.summary),
+		description: person.summary ? fromHtml(person.summary) : null,
 		name: person.name,
 		url: person.url,
 		endpoints: person.endpoints,
@@ -326,7 +326,6 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
-		createdAt: new Date(Date.parse(person.published)) || null,
 	} as Partial<User>;
 
 	if (avatar) {
@@ -379,7 +378,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
  * Misskeyに対象のPersonが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolvePerson(uri: string, verifier?: string, resolver?: Resolver): Promise<User> {
+export async function resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	//#region このサーバーに既に登録されていたらそれを返す
@@ -454,6 +453,7 @@ export function analyzeAttachments(attachments: ITag[]) {
 
 export async function updateFeatured(userId: User['id']) {
 	const user = await Users.findOne(userId);
+	if (user == null) throw 'missing user';
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 

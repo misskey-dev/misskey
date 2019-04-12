@@ -77,9 +77,8 @@ export async function removePinned(user: User, noteId: Note['id']) {
 }
 
 export async function deliverPinnedChange(userId: User['id'], noteId: Note['id'], isAddition: boolean) {
-	const user = await Users.findOne({
-		id: userId
-	});
+	const user = await Users.findOne(userId);
+	if (user == null) throw 'user not found';
 
 	if (!Users.isLocalUser(user)) return;
 
@@ -108,14 +107,8 @@ async function CreateRemoteInboxes(user: ILocalUser): Promise<string[]> {
 	const queue: string[] = [];
 
 	for (const following of followers) {
-		const follower = {
-			host: following.followerHost,
-			inbox: following.followerInbox,
-			sharedInbox: following.followerSharedInbox,
-		};
-
-		if (follower.host !== null) {
-			const inbox = follower.sharedInbox || follower.inbox;
+		if (Followings.isRemoteFollower(following)) {
+			const inbox = following.followerSharedInbox || following.followerInbox;
 			if (!queue.includes(inbox)) queue.push(inbox);
 		}
 	}

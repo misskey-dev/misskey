@@ -30,7 +30,7 @@ export default define(meta, async (ps) => {
 		ps.domain === 'inbox' ? inboxQueue :
 		null;
 
-	const jobs = await queue.getJobs([ps.state], 0, ps.limit);
+	const jobs = await queue.getJobs([ps.state], 0, ps.limit!);
 
 	return jobs.map(job => ({
 		id: job.id,

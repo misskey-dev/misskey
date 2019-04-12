@@ -225,23 +225,24 @@ export const meta = {
 export default define(meta, async (ps, user, app) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
-		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id)));
+		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))
+			.filter(x => x != null) as User[];
 	}
 
 	let files: DriveFile[] = [];
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
-		files = await Promise.all(fileIds.map(fileId => {
-			return DriveFiles.findOne({
+		files = (await Promise.all(fileIds.map(fileId =>
+			DriveFiles.findOne({
 				id: fileId,
 				userId: user.id
-			});
-		}));
+			})
+		))).filter(file => file != null) as DriveFile[];
 
-		files = files.filter(file => file != null);
+		files = files;
 	}
 
-	let renote: Note = null;
+	let renote: Note | undefined;
 	if (ps.renoteId != null) {
 		// Fetch renote to note
 		renote = await Notes.findOne(ps.renoteId);
@@ -253,7 +254,7 @@ export default define(meta, async (ps, user, app) => {
 		}
 	}
 
-	let reply: Note = null;
+	let reply: Note | undefined;
 	if (ps.replyId != null) {
 		// Fetch reply
 		reply = await Notes.findOne(ps.replyId);
@@ -290,8 +291,8 @@ export default define(meta, async (ps, user, app) => {
 			choices: ps.poll.choices,
 			multiple: ps.poll.multiple || false,
 			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null
-		} : null,
-		text: ps.text,
+		} : undefined,
+		text: ps.text || undefined,
 		reply,
 		renote,
 		cw: ps.cw,
@@ -300,9 +301,9 @@ export default define(meta, async (ps, user, app) => {
 		localOnly: ps.localOnly,
 		visibility: ps.visibility,
 		visibleUsers,
-		apMentions: ps.noExtractMentions ? [] : null,
-		apHashtags: ps.noExtractHashtags ? [] : null,
-		apEmojis: ps.noExtractEmojis ? [] : null,
+		apMentions: ps.noExtractMentions ? [] : undefined,
+		apHashtags: ps.noExtractHashtags ? [] : undefined,
+		apEmojis: ps.noExtractEmojis ? [] : undefined,
 		geo: ps.geo
 	});
 

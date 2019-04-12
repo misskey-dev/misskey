@@ -14,7 +14,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => 
 		return;
 	}
 
-	const limitation = endpoint.meta.limit;
+	const limitation = endpoint.meta.limit!;
 
 	const key = limitation.hasOwnProperty('key')
 		? limitation.key
@@ -41,7 +41,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => 
 			id: `${user.id}:${key}:min`,
 			duration: limitation.minInterval,
 			max: 1,
-			db: limiterDB
+			db: limiterDB!
 		});
 
 		minIntervalLimiter.get((err, info) => {

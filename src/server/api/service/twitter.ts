@@ -176,6 +176,7 @@ router.get('/tw/cb', async ctx => {
 			host: null,
 			token: userToken
 		});
+		if (user == null) throw 'missing user';
 
 		await UserProfiles.update({ userId: user.id }, {
 			twitter: true,

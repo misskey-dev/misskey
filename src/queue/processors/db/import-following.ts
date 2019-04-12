@@ -13,9 +13,11 @@ const logger = queueLogger.createSubLogger('import-following');
 export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing following of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne({
-		id: job.data.user.id
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
 	const file = await DriveFiles.findOne({
 		id: job.data.fileId

@@ -17,15 +17,15 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		: Promise.resolve([]);
 
 	let inReplyTo;
-	let inReplyToNote: Note;
+	let inReplyToNote: Note | undefined;
 
 	if (note.replyId) {
 		inReplyToNote = await Notes.findOne(note.replyId);
 
-		if (inReplyToNote !== null) {
+		if (inReplyToNote != null) {
 			const inReplyToUser = await Users.findOne(inReplyToNote.userId);
 
-			if (inReplyToUser !== null) {
+			if (inReplyToUser != null) {
 				if (inReplyToNote.uri) {
 					inReplyTo = inReplyToNote.uri;
 				} else {
@@ -51,9 +51,8 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		}
 	}
 
-	const user = await Users.findOne({
-		id: note.userId
-	});
+	const user = await Users.findOne(note.userId);
+	if (user == null) throw 'missing user';
 
 	const attributedTo = `${config.url}/users/${user.id}`;
 
@@ -85,7 +84,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 	const files = await promisedFiles;
 
 	let text = note.text;
-	let poll: Poll;
+	let poll: Poll | undefined;
 
 	if (note.hasPoll) {
 		poll = await Polls.findOne({ noteId: note.id });

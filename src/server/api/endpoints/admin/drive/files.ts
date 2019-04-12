@@ -57,7 +57,7 @@ export default define(meta, async (ps, me) => {
 	const files = await DriveFiles.find({
 		where: q,
 		take: ps.limit,
-		order: sort[ps.sort] || sort[fallback],
+		order: sort[ps.sort!] || sort[fallback],
 		skip: ps.offset
 	});
 

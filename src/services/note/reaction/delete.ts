@@ -42,7 +42,7 @@ export default async (user: User, note: Note) => {
 	if (Users.isLocalUser(user) && (note.userHost !== null)) {
 		const content = renderActivity(renderUndo(renderLike(user, note, exist.reaction), user));
 		Users.findOne(note.userId).then(u => {
-			deliver(user, content, u.inbox);
+			deliver(user, content, u!.inbox);
 		});
 	}
 	//#endregion

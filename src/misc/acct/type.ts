@@ -1,6 +1,6 @@
 type Acct = {
 	username: string;
-	host: string;
+	host: string | null;
 };
 
 export default Acct;

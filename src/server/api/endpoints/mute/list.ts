@@ -44,7 +44,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere(`muting.muterId = :meId`, { meId: me.id });
 
 	const mutings = await query
-		.take(ps.limit)
+		.take(ps.limit!)
 		.getMany();
 
 	return await Mutings.packMany(mutings, me);

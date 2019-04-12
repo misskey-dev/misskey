@@ -19,6 +19,7 @@ export default define(meta, async (ps, user) => {
 	const token = ps.token.replace(/\s/g, '');
 
 	const profile = await UserProfiles.findOne({ userId: user.id });
+	if (profile == null) throw 'missing profile (database broken)';
 
 	if (profile.twoFactorTempSecret == null) {
 		throw new Error('二段階認証の設定が開始されていません');

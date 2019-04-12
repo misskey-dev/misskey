@@ -12,7 +12,7 @@ export default class extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 
-	private gameId: ReversiGame['id'];
+	private gameId: ReversiGame['id'] | null = null;
 
 	@autobind
 	public async init(params: any) {
@@ -40,7 +40,10 @@ export default class extends Channel {
 
 	@autobind
 	private async updateSettings(key: string, value: any) {
-		const game = await ReversiGames.findOne(this.gameId);
+		if (this.user == null) return;
+
+		const game = await ReversiGames.findOne(this.gameId!);
+		if (game == null) throw 'game not found';
 
 		if (game.isStarted) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
@@ -49,11 +52,11 @@ export default class extends Channel {
 
 		if (!['map', 'bw', 'isLlotheo', 'canPutEverywhere', 'loopedBoard'].includes(key)) return;
 
-		await ReversiGames.update({ id: this.gameId }, {
+		await ReversiGames.update(this.gameId!, {
 			[key]: value
 		});
 
-		publishReversiGameStream(this.gameId, 'updateSettings', {
+		publishReversiGameStream(this.gameId!, 'updateSettings', {
 			key: key,
 			value: value
 		});
@@ -61,7 +64,10 @@ export default class extends Channel {
 
 	@autobind
 	private async initForm(form: any) {
-		const game = await ReversiGames.findOne(this.gameId);
+		if (this.user == null) return;
+
+		const game = await ReversiGames.findOne(this.gameId!);
+		if (game == null) throw 'game not found';
 
 		if (game.isStarted) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
@@ -72,9 +78,9 @@ export default class extends Channel {
 			form2: form
 		};
 
-		await ReversiGames.update({ id: this.gameId }, set);
+		await ReversiGames.update(this.gameId!, set);
 
-		publishReversiGameStream(this.gameId, 'initForm', {
+		publishReversiGameStream(this.gameId!, 'initForm', {
 			userId: this.user.id,
 			form
 		});
@@ -82,7 +88,10 @@ export default class extends Channel {
 
 	@autobind
 	private async updateForm(id: string, value: any) {
-		const game = await ReversiGames.findOne({ id: this.gameId });
+		if (this.user == null) return;
+
+		const game = await ReversiGames.findOne(this.gameId!);
+		if (game == null) throw 'game not found';
 
 		if (game.isStarted) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
@@ -101,9 +110,9 @@ export default class extends Channel {
 				form1: form
 			};
 
-		await ReversiGames.update({ id: this.gameId }, set);
+		await ReversiGames.update(this.gameId!, set);
 
-		publishReversiGameStream(this.gameId, 'updateForm', {
+		publishReversiGameStream(this.gameId!, 'updateForm', {
 			userId: this.user.id,
 			id,
 			value
@@ -112,8 +121,10 @@ export default class extends Channel {
 
 	@autobind
 	private async message(message: any) {
+		if (this.user == null) return;
+
 		message.id = Math.random();
-		publishReversiGameStream(this.gameId, 'message', {
+		publishReversiGameStream(this.gameId!, 'message', {
 			userId: this.user.id,
 			message
 		});
@@ -121,29 +132,32 @@ export default class extends Channel {
 
 	@autobind
 	private async accept(accept: boolean) {
-		const game = await ReversiGames.findOne(this.gameId);
+		if (this.user == null) return;
+
+		const game = await ReversiGames.findOne(this.gameId!);
+		if (game == null) throw 'game not found';
 
 		if (game.isStarted) return;
 
 		let bothAccepted = false;
 
 		if (game.user1Id === this.user.id) {
-			await ReversiGames.update({ id: this.gameId }, {
+			await ReversiGames.update(this.gameId!, {
 				user1Accepted: accept
 			});
 
-			publishReversiGameStream(this.gameId, 'changeAccepts', {
+			publishReversiGameStream(this.gameId!, 'changeAccepts', {
 				user1: accept,
 				user2: game.user2Accepted
 			});
 
 			if (accept && game.user2Accepted) bothAccepted = true;
 		} else if (game.user2Id === this.user.id) {
-			await ReversiGames.update({ id: this.gameId }, {
+			await ReversiGames.update(this.gameId!, {
 				user2Accepted: accept
 			});
 
-			publishReversiGameStream(this.gameId, 'changeAccepts', {
+			publishReversiGameStream(this.gameId!, 'changeAccepts', {
 				user1: game.user1Accepted,
 				user2: accept
 			});
@@ -156,7 +170,7 @@ export default class extends Channel {
 		if (bothAccepted) {
 			// 3秒後、まだacceptされていたらゲーム開始
 			setTimeout(async () => {
-				const freshGame = await ReversiGames.findOne(this.gameId);
+				const freshGame = await ReversiGames.findOne(this.gameId!);
 				if (freshGame == null || freshGame.isStarted || freshGame.isEnded) return;
 				if (!freshGame.user1Accepted || !freshGame.user2Accepted) return;
 
@@ -175,7 +189,7 @@ export default class extends Channel {
 
 				const map = freshGame.map != null ? freshGame.map : getRandomMap();
 
-				await ReversiGames.update({ id: this.gameId }, {
+				await ReversiGames.update(this.gameId!, {
 					startedAt: new Date(),
 					isStarted: true,
 					black: bw,
@@ -199,22 +213,20 @@ export default class extends Channel {
 						winner = null;
 					}
 
-					await ReversiGames.update({
-						id: this.gameId
-					}, {
+					await ReversiGames.update(this.gameId!, {
 						isEnded: true,
 						winnerId: winner
 					});
 
-					publishReversiGameStream(this.gameId, 'ended', {
+					publishReversiGameStream(this.gameId!, 'ended', {
 						winnerId: winner,
-						game: await ReversiGames.pack(this.gameId, this.user)
+						game: await ReversiGames.pack(this.gameId!, this.user)
 					});
 				}
 				//#endregion
 
-				publishReversiGameStream(this.gameId, 'started',
-					await ReversiGames.pack(this.gameId, this.user));
+				publishReversiGameStream(this.gameId!, 'started',
+					await ReversiGames.pack(this.gameId!, this.user));
 			}, 3000);
 		}
 	}
@@ -222,7 +234,10 @@ export default class extends Channel {
 	// 石を打つ
 	@autobind
 	private async set(pos: number) {
-		const game = await ReversiGames.findOne(this.gameId);
+		if (this.user == null) return;
+
+		const game = await ReversiGames.findOne(this.gameId!);
+		if (game == null) throw 'game not found';
 
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
@@ -267,30 +282,29 @@ export default class extends Channel {
 
 		game.logs.push(log);
 
-		await ReversiGames.update({
-			id: this.gameId
-		}, {
+		await ReversiGames.update(this.gameId!, {
 			crc32,
 			isEnded: o.isEnded,
 			winnerId: winner,
 			logs: game.logs
 		});
 
-		publishReversiGameStream(this.gameId, 'set', Object.assign(log, {
+		publishReversiGameStream(this.gameId!, 'set', Object.assign(log, {
 			next: o.turn
 		}));
 
 		if (o.isEnded) {
-			publishReversiGameStream(this.gameId, 'ended', {
+			publishReversiGameStream(this.gameId!, 'ended', {
 				winnerId: winner,
-				game: await ReversiGames.pack(this.gameId, this.user)
+				game: await ReversiGames.pack(this.gameId!, this.user)
 			});
 		}
 	}
 
 	@autobind
 	private async check(crc32: string) {
-		const game = await ReversiGames.findOne(this.gameId);
+		const game = await ReversiGames.findOne(this.gameId!);
+		if (game == null) throw 'game not found';
 
 		if (!game.isStarted) return;
 

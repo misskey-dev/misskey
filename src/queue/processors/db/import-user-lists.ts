@@ -14,9 +14,11 @@ const logger = queueLogger.createSubLogger('import-user-lists');
 export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne({
-		id: job.data.user.id
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
 	const file = await DriveFiles.findOne({
 		id: job.data.fileId

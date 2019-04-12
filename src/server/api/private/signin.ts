@@ -46,9 +46,10 @@ export default async (ctx: Koa.BaseContext) => {
 	}
 
 	const profile = await UserProfiles.findOne({ userId: user.id });
+	if (profile == null) throw 'database broken';
 
 	// Compare password
-	const same = await bcrypt.compare(password, profile.password);
+	const same = await bcrypt.compare(password, profile.password!);
 
 	if (same) {
 		if (profile.twoFactorEnabled) {

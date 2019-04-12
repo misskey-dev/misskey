@@ -17,6 +17,5 @@ export function extractDbHost(uri: string) {
 }
 
 export function toPuny(host: string) {
-	if (host == null) return null;
 	return toASCII(host.toLowerCase());
 }

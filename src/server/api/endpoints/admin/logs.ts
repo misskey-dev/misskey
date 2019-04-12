@@ -65,7 +65,7 @@ export default define(meta, async (ps) => {
 		}
 	}
 
-	const logs = await query.orderBy('log.createdAt', 'DESC').take(ps.limit).getMany();
+	const logs = await query.orderBy('log.createdAt', 'DESC').take(ps.limit!).getMany();
 
 	return logs;
 });

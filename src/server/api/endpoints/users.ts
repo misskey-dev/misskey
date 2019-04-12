@@ -88,7 +88,7 @@ export default define(meta, async (ps, me) => {
 
 	if (me) generateMuteQueryForUsers(query, me);
 
-	query.take(ps.limit);
+	query.take(ps.limit!);
 	query.skip(ps.offset);
 
 	const users = await query.getMany();
