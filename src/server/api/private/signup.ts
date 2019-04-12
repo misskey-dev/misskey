@@ -96,7 +96,7 @@ export default async (ctx: Koa.BaseContext) => {
 				cipher: undefined,
 				passphrase: undefined
 			}
-		}, (e, publicKey, privateKey) =>
+		} as any, (e, publicKey, privateKey) =>
 			e ? j(e) : s([publicKey, privateKey])
 		));
 

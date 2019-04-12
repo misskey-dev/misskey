@@ -76,12 +76,12 @@ export default define(meta, async (ps, user) => {
 				user: meta.smtpUser,
 				pass: meta.smtpPass
 			} : undefined
-		});
+		} as any);
 
 		const link = `${config.url}/verify-email/${code}`;
 
 		transporter.sendMail({
-			from: meta.email,
+			from: meta.email!,
 			to: ps.email,
 			subject: meta.name || 'Misskey',
 			text: `To verify email, please click this link: ${link}`
