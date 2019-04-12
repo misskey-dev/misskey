@@ -48,9 +48,9 @@ export default async function(user: User) {
 			title: `New note by ${author.name}`,
 			link: `${config.url}/notes/${note.id}`,
 			date: note.createdAt,
-			description: note.cw,
-			content: note.text,
-			image: file ? DriveFiles.getPublicUrl(file) : null
+			description: note.cw || undefined,
+			content: note.text || undefined,
+			image: file ? DriveFiles.getPublicUrl(file) : undefined
 		});
 	}
 

@@ -28,13 +28,13 @@ export default class Connection {
 	constructor(
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
-		user: User | null,
-		app: App
+		user: User | null | undefined,
+		app: App | null | undefined
 	) {
 		this.wsConnection = wsConnection;
-		this.app = app;
 		this.subscriber = subscriber;
 		if (user) this.user = user;
+		if (app) this.app = app;
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
