@@ -26,6 +26,7 @@ import { toPuny } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
+import { ensure } from '../../../misc/ensure';
 const logger = apLogger;
 
 /**
@@ -128,7 +129,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const host = toPuny(new URL(object.id).hostname);
 
-	const { fields } = analyzeAttachments(person.attachment);
+	const { fields } = analyzeAttachments(person.attachment || []);
 
 	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
 
@@ -196,7 +197,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	for (const tag of (user!.tags || []).filter(x => !tags.includes(x))) updateHashtag(user!, tag, true, false);
 
 	//#region アイコンとヘッダー画像をフェッチ
-	const [avatar, banner] = (await Promise.all<DriveFile>([
+	const [avatar, banner] = (await Promise.all<DriveFile | null>([
 		person.icon,
 		person.image
 	].map(img =>
@@ -210,7 +211,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar) : null;
 	const bannerUrl = banner ? DriveFiles.getPublicUrl(banner) : null;
 	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
-	const bannerColor = banner && avatar.properties.avgColor ? banner.properties.avgColor : null;
+	const bannerColor = banner && banner.properties.avgColor ? banner.properties.avgColor : null;
 
 	await Users.update(user!.id, {
 		avatarId,
@@ -230,7 +231,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	//#endregion
 
 	//#region カスタム絵文字取得
-	const emojis = await extractEmojis(person.tag, host).catch(e => {
+	const emojis = await extractEmojis(person.tag || [], host).catch(e => {
 		logger.info(`extractEmojis: ${e}`);
 		return [] as Emoji[];
 	});
@@ -290,7 +291,7 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	logger.info(`Updating the Person: ${person.id}`);
 
 	// アイコンとヘッダー画像をフェッチ
-	const [avatar, banner] = (await Promise.all<DriveFile>([
+	const [avatar, banner] = (await Promise.all<DriveFile | null>([
 		person.icon,
 		person.image
 	].map(img =>
@@ -300,14 +301,14 @@ export async function updatePerson(uri: string, resolver?: Resolver, hint?: obje
 	)));
 
 	// カスタム絵文字取得
-	const emojis = await extractEmojis(person.tag, exist.host).catch(e => {
+	const emojis = await extractEmojis(person.tag || [], exist.host).catch(e => {
 		logger.info(`extractEmojis: ${e}`);
 		return [] as Emoji[];
 	});
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	const { fields, services } = analyzeAttachments(person.attachment);
+	const { fields, services } = analyzeAttachments(person.attachment || []);
 
 	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
 
@@ -438,22 +439,24 @@ export function analyzeAttachments(attachments: ITag[]) {
 	}[] = [];
 	const services: { [x: string]: any } = {};
 
-	if (Array.isArray(attachments))
-		for (const attachment of attachments.filter(isPropertyValue))
-			if (isPropertyValue(attachment.identifier))
-				addService(services, attachment.identifier);
-			else
+	if (Array.isArray(attachments)) {
+		for (const attachment of attachments.filter(isPropertyValue)) {
+			if (isPropertyValue(attachment.identifier!)) {
+				addService(services, attachment.identifier!);
+			} else {
 				fields.push({
-					name: attachment.name,
-					value: fromHtml(attachment.value)
+					name: attachment.name!,
+					value: fromHtml(attachment.value!)
 				});
+			}
+		}
+	}
 
 	return { fields, services };
 }
 
 export async function updateFeatured(userId: User['id']) {
-	const user = await Users.findOne(userId);
-	if (user == null) throw 'missing user';
+	const user = await Users.findOne(userId).then(ensure);
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 
@@ -471,18 +474,18 @@ export async function updateFeatured(userId: User['id']) {
 	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
 
 	// Resolve and regist Notes
-	const limit = promiseLimit(2);
+	const limit = promiseLimit<Note | null>(2);
 	const featuredNotes = await Promise.all(items
 		.filter(item => item.type === 'Note')
 		.slice(0, 5)
-		.map(item => limit(() => resolveNote(item, resolver)) as Promise<Note>));
+		.map(item => limit(() => resolveNote(item, resolver))));
 
 	for (const note of featuredNotes.filter(note => note != null)) {
 		UserNotePinings.save({
 			id: genId(),
 			createdAt: new Date(),
 			userId: user.id,
-			noteId: note.id
+			noteId: note!.id
 		} as UserNotePining);
 	}
 }

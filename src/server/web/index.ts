@@ -19,6 +19,7 @@ import config from '../../config';
 import { Users, Notes, Emojis, UserProfiles } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
+import { ensure } from '../../misc/ensure';
 
 const client = `${__dirname}/../../client/`;
 
@@ -149,11 +150,9 @@ router.get('/@:user', async (ctx, next) => {
 		usernameLower: username.toLowerCase(),
 		host
 	});
-	const profile = await UserProfiles.findOne({
-		userId: user.id
-	});
 
 	if (user != null) {
+		const profile = await UserProfiles.findOne(user.id).then(ensure);
 		const meta = await fetchMeta();
 		await ctx.render('user', {
 			user, profile,

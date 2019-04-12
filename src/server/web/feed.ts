@@ -3,6 +3,7 @@ import config from '../../config';
 import { User } from '../../models/entities/user';
 import { Notes, DriveFiles, UserProfiles } from '../../models';
 import { In } from 'typeorm';
+import { ensure } from '../../misc/ensure';
 
 export default async function(user: User) {
 	const author: Author = {
@@ -10,7 +11,7 @@ export default async function(user: User) {
 		name: user.name || user.username
 	};
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
 
 	const notes = await Notes.find({
 		where: {

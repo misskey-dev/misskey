@@ -39,6 +39,4 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 			undoLike(actor, object as ILike);
 			break;
 	}
-
-	return null;
 };

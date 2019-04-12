@@ -1,6 +1,7 @@
 import accept from './accept';
 import { User } from '../../../models/entities/user';
 import { FollowRequests, Users } from '../../../models';
+import { ensure } from '../../../misc/ensure';
 
 /**
  * 指定したユーザー宛てのフォローリクエストをすべて承認
@@ -12,7 +13,7 @@ export default async function(user: User) {
 	});
 
 	for (const request of requests) {
-		const follower = await Users.findOne(request.followerId);
+		const follower = await Users.findOne(request.followerId).then(ensure);
 		accept(user, follower);
 	}
 }

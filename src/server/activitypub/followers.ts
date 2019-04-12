@@ -69,18 +69,18 @@ export default async (ctx: Router.IRouterContext) => {
 				cursor
 			})}`,
 			user.followersCount, renderedFollowers, partOf,
-			null,
+			undefined,
 			inStock ? `${partOf}?${url.query({
 				page: 'true',
 				cursor: followings[followings.length - 1].id
-			})}` : null
+			})}` : undefined
 		);
 
 		ctx.body = renderActivity(rendered);
 		setResponseType(ctx);
 	} else {
 		// index page
-		const rendered = renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`, null);
+		const rendered = renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
 		ctx.body = renderActivity(rendered);
 		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		setResponseType(ctx);

@@ -8,6 +8,7 @@ import { Notes } from '../../../../models';
  */
 export default async (actor: IRemoteUser, activity: ILike): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
+	if (id == null) throw 'missing id';
 
 	const noteId = id.split('/').pop();
 

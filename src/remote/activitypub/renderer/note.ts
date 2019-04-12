@@ -10,6 +10,7 @@ import { DriveFiles, Notes, Users, Emojis, Polls } from '../../../models';
 import { In } from 'typeorm';
 import { Emoji } from '../../../models/entities/emoji';
 import { Poll } from '../../../models/entities/poll';
+import { ensure } from '../../../misc/ensure';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
 	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 0
@@ -51,8 +52,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		}
 	}
 
-	const user = await Users.findOne(note.userId);
-	if (user == null) throw 'missing user';
+	const user = await Users.findOne(note.userId).then(ensure);
 
 	const attributedTo = `${config.url}/users/${user.id}`;
 

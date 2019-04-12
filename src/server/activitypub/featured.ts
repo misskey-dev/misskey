@@ -5,6 +5,7 @@ import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-c
 import { setResponseType } from '../activitypub';
 import renderNote from '../../remote/activitypub/renderer/note';
 import { Users, Notes, UserNotePinings } from '../../models';
+import { ensure } from '../../misc/ensure';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = ctx.params.user;
@@ -22,13 +23,14 @@ export default async (ctx: Router.IRouterContext) => {
 
 	const pinings = await UserNotePinings.find({ userId: user.id });
 
-	const pinnedNotes = await Promise.all(pinings.map(pining => Notes.findOne(pining.noteId)));
+	const pinnedNotes = await Promise.all(pinings.map(pining =>
+		Notes.findOne(pining.noteId).then(ensure)));
 
 	const renderedNotes = await Promise.all(pinnedNotes.map(note => renderNote(note)));
 
 	const rendered = renderOrderedCollection(
 		`${config.url}/users/${userId}/collections/featured`,
-		renderedNotes.length, null, null, renderedNotes
+		renderedNotes.length, undefined, undefined, renderedNotes
 	);
 
 	ctx.body = renderActivity(rendered);

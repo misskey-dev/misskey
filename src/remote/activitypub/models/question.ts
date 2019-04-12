@@ -14,10 +14,10 @@ export async function extractPollFromQuestion(source: string | IQuestion): Promi
 		throw 'invalid question';
 	}
 
-	const choices = question[multiple ? 'anyOf' : 'oneOf']
-		.map((x, i) => x.name);
+	const choices = question[multiple ? 'anyOf' : 'oneOf']!
+		.map((x, i) => x.name!);
 
-	const votes = question[multiple ? 'anyOf' : 'oneOf']
+	const votes = question[multiple ? 'anyOf' : 'oneOf']!
 		.map((x, i) => x.replies && x.replies.totalItems || x._misskey_votes || 0);
 
 	return {
@@ -60,7 +60,7 @@ export async function updateQuestion(value: any) {
 
 	for (const choice of poll.choices) {
 		const oldCount = poll.votes[poll.choices.indexOf(choice)];
-		const newCount = apChoices.filter(ap => ap.name === choice)[0].replies.totalItems;
+		const newCount = apChoices!.filter(ap => ap.name === choice)[0].replies!.totalItems;
 
 		if (oldCount != newCount) {
 			changed = true;

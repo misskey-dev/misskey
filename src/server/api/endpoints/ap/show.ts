@@ -123,7 +123,7 @@ async function fetchAny(uri: string) {
 		const note = await createNote(object.id);
 		return {
 			type: 'Note',
-			object: await Notes.pack(note, null, { detail: true })
+			object: await Notes.pack(note!, null, { detail: true })
 		};
 	}
 

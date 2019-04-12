@@ -84,25 +84,25 @@ class NotificationManager {
 }
 
 type Option = {
-	createdAt?: Date;
-	name?: string;
-	text?: string;
-	reply?: Note;
-	renote?: Note;
-	files?: DriveFile[];
-	geo?: any;
-	poll?: IPoll;
-	viaMobile?: boolean;
-	localOnly?: boolean;
-	cw?: string;
+	createdAt?: Date | null;
+	name?: string | null;
+	text?: string | null;
+	reply?: Note | null;
+	renote?: Note | null;
+	files?: DriveFile[] | null;
+	geo?: any | null;
+	poll?: IPoll | null;
+	viaMobile?: boolean | null;
+	localOnly?: boolean | null;
+	cw?: string | null;
 	visibility?: string;
-	visibleUsers?: User[];
-	apMentions?: User[];
-	apHashtags?: string[];
-	apEmojis?: string[];
-	questionUri?: string;
-	uri?: string;
-	app?: App;
+	visibleUsers?: User[] | null;
+	apMentions?: User[] | null;
+	apHashtags?: string[] | null;
+	apEmojis?: string[] | null;
+	questionUri?: string | null;
+	uri?: string | null;
+	app?: App | null;
 };
 
 export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
@@ -326,14 +326,14 @@ async function publish(user: User, note: Note, reply: Note | null | undefined, r
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && reply.userHost !== null) {
-			Users.findOne(reply.userId).then(u => {
+			Users.findOne(reply.userId).then(ensure).then(u => {
 				deliver(user, noteActivity, u.inbox);
 			});
 		}
 
 		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 		if (renote && renote.userHost !== null) {
-			Users.findOne(renote.userId).then(u => {
+			Users.findOne(renote.userId).then(ensure).then(u => {
 				deliver(user, noteActivity, u.inbox);
 			});
 		}
@@ -347,8 +347,8 @@ async function publish(user: User, note: Note, reply: Note | null | undefined, r
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
 	const insert = new Note({
-		id: genId(data.createdAt),
-		createdAt: data.createdAt,
+		id: genId(data.createdAt!),
+		createdAt: data.createdAt!,
 		fileIds: data.files ? data.files.map(file => file.id) : [],
 		replyId: data.reply ? data.reply.id : null,
 		renoteId: data.renote ? data.renote.id : null,
@@ -359,8 +359,8 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		tags: tags.map(tag => tag.toLowerCase()),
 		emojis,
 		userId: user.id,
-		viaMobile: data.viaMobile,
-		localOnly: data.localOnly,
+		viaMobile: data.viaMobile!,
+		localOnly: data.localOnly!,
 		geo: data.geo || null,
 		appId: data.app ? data.app.id : null,
 		visibility: data.visibility as any,
@@ -524,11 +524,9 @@ async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse
 
 	const mentions = extractMentions(tokens);
 
-	let mentionedUsers = await Promise.all(mentions.map(m =>
+	let mentionedUsers = (await Promise.all(mentions.map(m =>
 		resolveUser(m.username, m.host || user.host).catch(() => null)
-	));
-
-	mentionedUsers = mentionedUsers.filter(x => x != null);
+	))).filter(x => x != null) as User[];
 
 	// Drop duplicate users
 	mentionedUsers = mentionedUsers.filter((u, i, self) =>

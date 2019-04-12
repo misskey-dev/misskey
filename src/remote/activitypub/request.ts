@@ -12,6 +12,7 @@ import { apLogger } from './logger';
 import { UserKeypairs } from '../../models';
 import fetchMeta from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
+import { ensure } from '../../misc/ensure';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -38,7 +39,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	const keypair = await UserKeypairs.findOne({
 		userId: user.id
-	});
+	}).then(ensure);
 
 	const _ = new Promise((resolve, reject) => {
 		const req = request({
@@ -56,7 +57,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 				'Digest': `SHA-256=${hash}`
 			}
 		}, res => {
-			if (res.statusCode >= 400) {
+			if (res.statusCode! >= 400) {
 				logger.warn(`${url} --> ${res.statusCode}`);
 				reject(res);
 			} else {
@@ -73,7 +74,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 		});
 
 		// Signature: Signature ... => Signature: ...
-		let sig = req.getHeader('Signature').toString();
+		let sig = req.getHeader('Signature')!.toString();
 		sig = sig.replace(/^Signature /, '');
 		req.setHeader('Signature', sig);
 
@@ -112,7 +113,7 @@ async function resolveAddr(domain: string) {
 
 function resolveAddrInner(domain: string, options: IRunOptions = {}): Promise<string> {
 	return new Promise((res, rej) => {
-		lookup(domain, options, (error: any, address: string | string[]) => {
+		lookup(domain, options, (error, address) => {
 			if (error) return rej(error);
 			return res(Array.isArray(address) ? address[0] : address);
 		});

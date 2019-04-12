@@ -10,6 +10,7 @@ import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../misc/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -43,8 +44,7 @@ router.get('/disconnect/discord', async ctx => {
 	const user = await Users.findOne({
 		host: null,
 		token: userToken
-	});
-	if (user == null) throw 'missing user';
+	}).then(ensure);
 
 	await UserProfiles.update({
 		userId: user.id
@@ -83,6 +83,8 @@ async function getOAuth2() {
 }
 
 router.get('/connect/discord', async ctx => {
+	if (redis == null) return;
+
 	if (!compareOrigin(ctx)) {
 		ctx.throw(400, 'invalid origin');
 		return;
@@ -104,10 +106,12 @@ router.get('/connect/discord', async ctx => {
 	redis.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/signin/discord', async ctx => {
+	if (redis == null) return;
+
 	const sessid = uuid();
 
 	const params = {
@@ -130,10 +134,12 @@ router.get('/signin/discord', async ctx => {
 	redis.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/dc/cb', async ctx => {
+	if (redis == null) return;
+
 	const userToken = getUserToken(ctx);
 
 	const oauth2 = await getOAuth2();
@@ -154,7 +160,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(sessid, async (_, state) => {
+			redis!.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -165,7 +171,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(code, {
+			oauth2!.getOAuthAccessToken(code, {
 				grant_type: 'authorization_code',
 				redirect_uri
 			}, (err, accessToken, refreshToken, result) => {
@@ -190,10 +196,11 @@ router.get('/dc/cb', async ctx => {
 					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
-				if (err)
+				if (err) {
 					rej(err);
-				else
+				} else {
 					res(JSON.parse(body));
+				}
 			}));
 
 		if (!id || !username || !discriminator) {
@@ -234,7 +241,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis.get(userToken, async (_, state) => {
+			redis!.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -245,7 +252,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(code, {
+			oauth2!.getOAuthAccessToken(code, {
 				grant_type: 'authorization_code',
 				redirect_uri
 			}, (err, accessToken, refreshToken, result) => {
@@ -270,10 +277,11 @@ router.get('/dc/cb', async ctx => {
 					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
-				if (err)
+				if (err) {
 					rej(err);
-				else
+				} else {
 					res(JSON.parse(body));
+				}
 			}));
 
 		if (!id || !username || !discriminator) {
@@ -284,7 +292,7 @@ router.get('/dc/cb', async ctx => {
 		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		});
+		}).then(ensure);
 
 		await UserProfiles.update({ userId: user.id }, {
 			discord: true,

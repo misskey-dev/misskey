@@ -9,6 +9,7 @@ import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../misc/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -42,7 +43,7 @@ router.get('/disconnect/twitter', async ctx => {
 	const user = await Users.findOne({
 		host: null,
 		token: userToken
-	});
+	}).then(ensure);
 
 	await UserProfiles.update({
 		userId: user.id
@@ -66,7 +67,7 @@ router.get('/disconnect/twitter', async ctx => {
 async function getTwAuth() {
 	const meta = await fetchMeta();
 
-	if (meta.enableTwitterIntegration) {
+	if (meta.enableTwitterIntegration && meta.twitterConsumerKey && meta.twitterConsumerSecret) {
 		return autwh({
 			consumerKey: meta.twitterConsumerKey,
 			consumerSecret: meta.twitterConsumerSecret,
@@ -78,6 +79,8 @@ async function getTwAuth() {
 }
 
 router.get('/connect/twitter', async ctx => {
+	if (redis == null) return;
+
 	if (!compareOrigin(ctx)) {
 		ctx.throw(400, 'invalid origin');
 		return;
@@ -90,14 +93,16 @@ router.get('/connect/twitter', async ctx => {
 	}
 
 	const twAuth = await getTwAuth();
-	const twCtx = await twAuth.begin();
+	const twCtx = await twAuth!.begin();
 	redis.set(userToken, JSON.stringify(twCtx));
 	ctx.redirect(twCtx.url);
 });
 
 router.get('/signin/twitter', async ctx => {
+	if (redis == null) return;
+
 	const twAuth = await getTwAuth();
-	const twCtx = await twAuth.begin();
+	const twCtx = await twAuth!.begin();
 
 	const sessid = uuid();
 
@@ -117,6 +122,8 @@ router.get('/signin/twitter', async ctx => {
 });
 
 router.get('/tw/cb', async ctx => {
+	if (redis == null) return;
+
 	const userToken = getUserToken(ctx);
 
 	const twAuth = await getTwAuth();
@@ -130,14 +137,14 @@ router.get('/tw/cb', async ctx => {
 		}
 
 		const get = new Promise<any>((res, rej) => {
-			redis.get(sessid, async (_, twCtx) => {
+			redis!.get(sessid, async (_, twCtx) => {
 				res(twCtx);
 			});
 		});
 
 		const twCtx = await get;
 
-		const result = await twAuth.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
+		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
 		const link = await UserProfiles.createQueryBuilder()
 			.where('twitter @> :twitter', {
@@ -163,20 +170,19 @@ router.get('/tw/cb', async ctx => {
 		}
 
 		const get = new Promise<any>((res, rej) => {
-			redis.get(userToken, async (_, twCtx) => {
+			redis!.get(userToken, async (_, twCtx) => {
 				res(twCtx);
 			});
 		});
 
 		const twCtx = await get;
 
-		const result = await twAuth.done(JSON.parse(twCtx), verifier);
+		const result = await twAuth!.done(JSON.parse(twCtx), verifier);
 
 		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		});
-		if (user == null) throw 'missing user';
+		}).then(ensure);
 
 		await UserProfiles.update({ userId: user.id }, {
 			twitter: true,

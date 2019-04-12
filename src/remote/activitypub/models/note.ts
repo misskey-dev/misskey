@@ -183,7 +183,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		}
 	}
 
-	const emojis = await extractEmojis(note.tag, actor.host).catch(e => {
+	const emojis = await extractEmojis(note.tag || [], actor.host).catch(e => {
 		logger.info(`extractEmojis: ${e}`);
 		return [] as Emoji[];
 	});
@@ -199,7 +199,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 
 	return await post(actor, {
-		createdAt: new Date(note.published),
+		createdAt: note.published ? new Date(note.published) : null,
 		files,
 		reply,
 		renote: quote,

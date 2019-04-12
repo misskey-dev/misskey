@@ -69,7 +69,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => 
 			id: `${user.id}:${key}`,
 			duration: limitation.duration,
 			max: limitation.max,
-			db: limiterDB
+			db: limiterDB!
 		});
 
 		limiter.get((err, info) => {

@@ -17,6 +17,7 @@ import { isSelfHost } from '../misc/convert-host';
 import { Notes, Users, Emojis, UserKeypairs, Polls } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In } from 'typeorm';
+import { ensure } from '../misc/ensure';
 
 // Init router
 const router = new Router();
@@ -123,8 +124,8 @@ router.get('/questions/:question', async (ctx, next) => {
 		return;
 	}
 
-	const user = await Users.findOne(pollNote.userId);
-	const poll = await Polls.findOne({ noteId: pollNote.id });
+	const user = await Users.findOne(pollNote.userId).then(ensure);
+	const poll = await Polls.findOne({ noteId: pollNote.id }).then(ensure);
 
 	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, pollNote, poll));
 	setResponseType(ctx);
@@ -156,9 +157,7 @@ router.get('/users/:user/publickey', async ctx => {
 		return;
 	}
 
-	const keypair = await UserKeypairs.findOne({
-		userId: user.id
-	});
+	const keypair = await UserKeypairs.findOne(user.id).then(ensure);
 
 	if (Users.isLocalUser(user)) {
 		ctx.body = renderActivity(renderKey(user, keypair));
@@ -189,7 +188,7 @@ router.get('/users/:user', async (ctx, next) => {
 	const user = await Users.findOne({
 		id: userId,
 		host: null
-	});
+	}).then(ensure);
 
 	await userInfo(ctx, user);
 });
@@ -200,7 +199,7 @@ router.get('/@:user', async (ctx, next) => {
 	const user = await Users.findOne({
 		usernameLower: ctx.params.user.toLowerCase(),
 		host: null
-	});
+	}).then(ensure);
 
 	await userInfo(ctx, user);
 });

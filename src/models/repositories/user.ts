@@ -136,9 +136,9 @@ export class UserRepository extends Repository<User> {
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
-				autoWatch: profile.autoWatch,
-				alwaysMarkNsfw: profile.alwaysMarkNsfw,
-				carefulBot: profile.carefulBot,
+				autoWatch: profile!.autoWatch,
+				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
+				carefulBot: profile!.carefulBot,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: user.id,
@@ -159,9 +159,9 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				clientData: profile.clientData,
-				email: profile.email,
-				emailVerified: profile.emailVerified,
+				clientData: profile!.clientData,
+				email: profile!.email,
+				emailVerified: profile!.emailVerified,
 			} : {}),
 
 			...(relation ? {
