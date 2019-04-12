@@ -22,6 +22,10 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 	const file = await DriveFiles.findOne({
 		id: job.data.fileId
 	});
+	if (file == null) {
+		done();
+		return;
+	}
 
 	const csv = await downloadTextFile(file.url);
 
@@ -33,11 +37,11 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 		try {
 			const { username, host } = parseAcct(line.trim());
 
-			let target = isSelfHost(host) ? await Users.findOne({
+			let target = isSelfHost(host!) ? await Users.findOne({
 				host: null,
 				usernameLower: username.toLowerCase()
 			}) : await Users.findOne({
-				host: toPuny(host),
+				host: toPuny(host!),
 				usernameLower: username.toLowerCase()
 			});
 

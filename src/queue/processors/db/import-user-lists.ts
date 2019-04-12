@@ -23,6 +23,10 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 	const file = await DriveFiles.findOne({
 		id: job.data.fileId
 	});
+	if (file == null) {
+		done();
+		return;
+	}
 
 	const csv = await downloadTextFile(file.url);
 
@@ -45,21 +49,19 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 			});
 		}
 
-		let target = isSelfHost(host) ? await Users.findOne({
+		let target = isSelfHost(host!) ? await Users.findOne({
 			host: null,
 			usernameLower: username.toLowerCase()
 		}) : await Users.findOne({
-			host: toPuny(host),
+			host: toPuny(host!),
 			usernameLower: username.toLowerCase()
 		});
-
-		if (host == null && target == null) continue;
-
-		if (await UserListJoinings.findOne({ userListId: list.id, userId: target.id }) != null) continue;
 
 		if (target == null) {
 			target = await resolveUser(username, host);
 		}
+
+		if (await UserListJoinings.findOne({ userListId: list.id, userId: target.id }) != null) continue;
 
 		pushUserToUserList(target, list);
 	}

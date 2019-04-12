@@ -21,7 +21,7 @@ import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import fetchMeta from '../../../misc/fetch-meta';
-import { ensure } from '../../../misc/ensure';
+import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 

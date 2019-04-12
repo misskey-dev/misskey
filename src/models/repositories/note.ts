@@ -5,7 +5,7 @@ import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import rap from '@prezzemolo/rap';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {

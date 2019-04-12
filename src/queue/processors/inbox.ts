@@ -14,6 +14,7 @@ import { UserPublickey } from '../../models/entities/user-publickey';
 import fetchMeta from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { validActor } from '../../remote/activitypub/type';
+import { ensure } from '../../prelude/ensure';
 
 const logger = new Logger('inbox');
 
@@ -35,7 +36,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	if (keyIdLower.startsWith('acct:')) {
 		const acct = parseAcct(keyIdLower.slice('acct:'.length));
-		const host = toPuny(acct.host);
+		const host = acct.host ? toPuny(acct.host) : null;
 		const username = toPuny(acct.username);
 
 		if (host === null) {
@@ -64,9 +65,7 @@ export default async (job: Bull.Job): Promise<void> => {
 			host: host
 		}) as IRemoteUser;
 
-		key = await UserPublickeys.findOne({
-			userId: user.id
-		});
+		key = await UserPublickeys.findOne(user.id).then(ensure);
 	} else {
 		// アクティビティ内のホストの検証
 		const host = toPuny(new URL(signature.keyId).hostname);
@@ -87,7 +86,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		key = await UserPublickeys.findOne({
 			keyId: signature.keyId
-		});
+		}).then(ensure);
 
 		user = await Users.findOne(key.userId) as IRemoteUser;
 	}

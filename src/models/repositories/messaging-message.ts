@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '../entities/messaging-message';
 import { Users, DriveFiles } from '..';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(MessagingMessage)
 export class MessagingMessageRepository extends Repository<MessagingMessage> {
@@ -19,7 +20,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			populateRecipient: true
 		};
 
-		const message = typeof src === 'object' ? src : await this.findOne(src);
+		const message = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return {
 			id: message.id,

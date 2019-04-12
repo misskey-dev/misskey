@@ -5,7 +5,7 @@ import fetchMeta from '../../../misc/fetch-meta';
 import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { DriveFiles } from '../../../models';
-import { ensure } from '../../../misc/ensure';
+import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 

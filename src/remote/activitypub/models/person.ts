@@ -26,7 +26,7 @@ import { toPuny } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
-import { ensure } from '../../../misc/ensure';
+import { ensure } from '../../../prelude/ensure';
 const logger = apLogger;
 
 /**
@@ -255,7 +255,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
  * @param resolver Resolver
  * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
  */
-export async function updatePerson(uri: string, resolver?: Resolver, hint?: object): Promise<void> {
+export async function updatePerson(uri: string, resolver?: Resolver | null, hint?: object): Promise<void> {
 	if (typeof uri !== 'string') throw 'uri is not string';
 
 	// URIがこのサーバーを指しているならスキップ

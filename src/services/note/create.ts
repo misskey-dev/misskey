@@ -27,7 +27,7 @@ import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '
 import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 

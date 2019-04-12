@@ -2,7 +2,7 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles } from '..';
 import rap from '@prezzemolo/rap';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

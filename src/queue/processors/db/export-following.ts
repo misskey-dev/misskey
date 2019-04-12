@@ -58,6 +58,10 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 
 		for (const following of followings) {
 			const u = await Users.findOne({ id: following.followeeId });
+			if (u == null) {
+				exportedCount++; continue;
+			}
+
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {

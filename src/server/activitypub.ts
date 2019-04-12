@@ -17,7 +17,7 @@ import { isSelfHost } from '../misc/convert-host';
 import { Notes, Users, Emojis, UserKeypairs, Polls } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In } from 'typeorm';
-import { ensure } from '../misc/ensure';
+import { ensure } from '../prelude/ensure';
 
 // Init router
 const router = new Router();

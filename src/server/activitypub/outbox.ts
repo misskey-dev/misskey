@@ -15,7 +15,7 @@ import { Users, Notes } from '../../models';
 import { makePaginationQuery } from '../api/common/make-pagination-query';
 import { Brackets } from 'typeorm';
 import { Note } from '../../models/entities/note';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = ctx.params.user;

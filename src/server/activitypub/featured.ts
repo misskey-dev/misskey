@@ -5,7 +5,7 @@ import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-c
 import { setResponseType } from '../activitypub';
 import renderNote from '../../remote/activitypub/renderer/note';
 import { Users, Notes, UserNotePinings } from '../../models';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = ctx.params.user;

@@ -19,7 +19,7 @@ import config from '../../config';
 import { Users, Notes, Emojis, UserProfiles } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 const client = `${__dirname}/../../client/`;
 

@@ -5,7 +5,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { AuthSessions, AccessTokens, Apps } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
-import { ensure } from '../../../../misc/ensure';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	tags: ['auth'],

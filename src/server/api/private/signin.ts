@@ -7,7 +7,7 @@ import config from '../../../config';
 import { Users, Signins, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { genId } from '../../../misc/gen-id';
-import { ensure } from '../../../misc/ensure';
+import { ensure } from '../../../prelude/ensure';
 
 export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);

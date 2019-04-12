@@ -7,7 +7,7 @@ import { instanceChart } from '../../services/chart';
 
 const logger = new Logger('deliver');
 
-let latest: string = null;
+let latest: string | null = null;
 
 export default async (job: Bull.Job) => {
 	const { host } = new URL(job.data.to);

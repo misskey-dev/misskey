@@ -58,6 +58,10 @@ export async function exportMute(job: Bull.Job, done: any): Promise<void> {
 
 		for (const mute of mutes) {
 			const u = await Users.findOne({ id: mute.muteeId });
+			if (u == null) {
+				exportedCount++; continue;
+			}
+
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {

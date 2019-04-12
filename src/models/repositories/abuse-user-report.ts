@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import rap from '@prezzemolo/rap';
 import { AbuseUserReport } from '../entities/abuse-user-report';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(AbuseUserReport)
 export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
@@ -14,7 +15,7 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 	public async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {
-		const report = typeof src === 'object' ? src : await this.findOne(src);
+		const report = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return await rap({
 			id: report.id,

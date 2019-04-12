@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as URL from 'url';
 import * as request from 'request';
 import config from '../config';
 import chalk from 'chalk';
@@ -26,7 +25,7 @@ export async function downloadUrl(url: string, path: string) {
 			rej(error);
 		});
 
-		const requestUrl = URL.parse(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
+		const requestUrl = new URL(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
 
 		const req = request({
 			url: requestUrl,

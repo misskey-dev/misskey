@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import rap from '@prezzemolo/rap';
 import { Following } from '../entities/following';
+import { ensure } from '../../prelude/ensure';
 
 type LocalFollowerFollowing = Following & {
 	followerHost: null;
@@ -64,7 +65,7 @@ export class FollowingRepository extends Repository<Following> {
 			populateFollower?: boolean;
 		}
 	) {
-		const following = typeof src === 'object' ? src : await this.findOne(src);
+		const following = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		if (opts == null) opts = {};
 

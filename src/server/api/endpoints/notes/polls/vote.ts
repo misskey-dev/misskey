@@ -14,7 +14,7 @@ import { PollVotes, NoteWatchings, Users, Polls, UserProfiles } from '../../../.
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
 import { genId } from '../../../../../misc/gen-id';
-import { ensure } from '../../../../../misc/ensure';
+import { ensure } from '../../../../../prelude/ensure';
 
 export const meta = {
 	desc: {

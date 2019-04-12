@@ -9,7 +9,7 @@ import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import { apiLogger } from '../../logger';
 import { Users, UserProfiles } from '../../../../models';
-import { ensure } from '../../../../misc/ensure';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	requireCredential: true,

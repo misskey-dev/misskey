@@ -3,7 +3,7 @@ import config from '../../config';
 import { User } from '../../models/entities/user';
 import { Notes, DriveFiles, UserProfiles } from '../../models';
 import { In } from 'typeorm';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 export default async function(user: User) {
 	const author: Author = {

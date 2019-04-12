@@ -3,7 +3,7 @@ import del from '../services/drive/delete-file';
 import { DriveFiles } from '../models';
 import { Not } from 'typeorm';
 import { DriveFile } from '../models/entities/drive-file';
-import { ensure } from '../misc/ensure';
+import { ensure } from '../prelude/ensure';
 
 const limit = promiseLimit(16);
 

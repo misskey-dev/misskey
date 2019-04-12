@@ -19,8 +19,8 @@ type MyType<T extends Schema> = {
 export type SchemaType<p extends Schema> =
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? string :
-	p['type'] extends 'array' ? MyType<p['items']>[] :
-	p['type'] extends 'object' ? ObjType<p['properties']> :
+	p['type'] extends 'array' ? MyType<NonNullable<p['items']>>[] :
+	p['type'] extends 'object' ? ObjType<NonNullable<p['properties']>> :
 	any;
 
 export function convertOpenApiSchema(schema: Schema) {

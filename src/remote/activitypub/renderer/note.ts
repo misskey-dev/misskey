@@ -10,7 +10,7 @@ import { DriveFiles, Notes, Users, Emojis, Polls } from '../../../models';
 import { In } from 'typeorm';
 import { Emoji } from '../../../models/entities/emoji';
 import { Poll } from '../../../models/entities/poll';
-import { ensure } from '../../../misc/ensure';
+import { ensure } from '../../../prelude/ensure';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
 	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 0

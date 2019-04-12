@@ -58,6 +58,10 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 
 		for (const block of blockings) {
 			const u = await Users.findOne({ id: block.blockeeId });
+			if (u == null) {
+				exportedCount++; continue;
+			}
+
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {

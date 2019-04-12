@@ -14,7 +14,7 @@ import { instanceChart, perUserFollowingChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 const logger = new Logger('following/create');
 

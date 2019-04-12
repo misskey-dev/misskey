@@ -12,7 +12,7 @@ import { apLogger } from './logger';
 import { UserKeypairs } from '../../models';
 import fetchMeta from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
-import { ensure } from '../../misc/ensure';
+import { ensure } from '../../prelude/ensure';
 
 export const logger = apLogger.createSubLogger('deliver');
 

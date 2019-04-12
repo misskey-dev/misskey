@@ -9,6 +9,7 @@ import { Users, Notes, Polls } from '../../../models';
 import { MoreThan } from 'typeorm';
 import { Note } from '../../../models/entities/note';
 import { Poll } from '../../../models/entities/poll';
+import { ensure } from '../../../prelude/ensure';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
@@ -69,9 +70,9 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 		cursor = notes[notes.length - 1].id;
 
 		for (const note of notes) {
-			let poll: Poll;
+			let poll: Poll | undefined;
 			if (note.hasPoll) {
-				poll = await Polls.findOne({ noteId: note.id });
+				poll = await Polls.findOne({ noteId: note.id }).then(ensure);
 			}
 			const content = JSON.stringify(serialize(note, poll));
 			await new Promise((res, rej) => {
@@ -116,7 +117,7 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	done();
 }
 
-function serialize(note: Note, poll: Poll): any {
+function serialize(note: Note, poll: Poll | null = null): any {
 	return {
 		id: note.id,
 		text: note.text,
