@@ -9,6 +9,7 @@ import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
 import { DriveFiles, UserProfiles, UserKeypairs } from '../../../models';
+import { ensure } from '../../../misc/ensure';
 
 export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
@@ -16,10 +17,8 @@ export async function renderPerson(user: ILocalUser) {
 	const [avatar, banner, profile] = await Promise.all([
 		user.avatarId ? DriveFiles.findOne(user.avatarId) : Promise.resolve(undefined),
 		user.bannerId ? DriveFiles.findOne(user.bannerId) : Promise.resolve(undefined),
-		UserProfiles.findOne({ userId: user.id })
+		UserProfiles.findOne({ userId: user.id }).then(ensure)
 	]);
-
-	if (profile == null) throw 'profile missing (database broken)';
 
 	const attachment: {
 		type: string,
@@ -78,8 +77,7 @@ export async function renderPerson(user: ILocalUser) {
 		...hashtagTags,
 	];
 
-	const keypair = await UserKeypairs.findOne(user.id);
-	if (keypair == null) throw 'missing keypair (database broken)';
+	const keypair = await UserKeypairs.findOne(user.id).then(ensure);
 
 	return {
 		type: user.isBot ? 'Service' : 'Person',

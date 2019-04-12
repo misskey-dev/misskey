@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { Apps, AuthSessions, AccessTokens, Users } from '../../../../../models';
+import { ensure } from '../../../../../misc/ensure';
 
 export const meta = {
 	tags: ['auth'],
@@ -90,7 +91,7 @@ export default define(meta, async (ps) => {
 	const accessToken = await AccessTokens.findOne({
 		appId: app.id,
 		userId: session.userId
-	});
+	}).then(ensure);
 
 	// Delete session
 	AuthSessions.delete(session.id);

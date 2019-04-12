@@ -27,6 +27,7 @@ import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '
 import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import { ensure } from '../../misc/ensure';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -170,13 +171,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	tags = tags.filter(tag => tag.length <= 100);
 
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
-		mentionedUsers.push(await Users.findOne(data.reply.userId).then(x => {
-			if (x == null) {
-				throw 'missing user';
-			} else {
-				return x;
-			}
-		}));
+		mentionedUsers.push(await Users.findOne(data.reply.userId).then(ensure));
 	}
 
 	if (data.visibility == 'specified') {
@@ -189,13 +184,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 
 		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-			data.visibleUsers.push(await Users.findOne(data.reply.userId).then(x => {
-				if (x == null) {
-					throw 'missing user';
-				} else {
-					return x;
-				}
-			}));
+			data.visibleUsers.push(await Users.findOne(data.reply.userId).then(ensure));
 		}
 	}
 
@@ -264,8 +253,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
-	if (profile == null) throw 'missing profile (database broken)';
+	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
 
 	// If has in reply to note
 	if (data.reply) {

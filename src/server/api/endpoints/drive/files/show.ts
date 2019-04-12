@@ -63,7 +63,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	let file: DriveFile;
+	let file: DriveFile | undefined;
 
 	if (ps.fileId) {
 		file = await DriveFiles.findOne(ps.fileId);
