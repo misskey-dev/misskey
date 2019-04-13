@@ -14,7 +14,7 @@ function getTime(time: number) {
 }
 
 function getRandom() {
-	return counter.toString(36).padStart(length, '0').substr(2);
+	return counter.toString(36).padStart(2, '0').substr(2);
 }
 
 export function genAid(date: Date): string {
