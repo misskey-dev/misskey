@@ -23,6 +23,13 @@ If you encounter any problems with updating, please try the following:
 * リバーシの対局の`settings`プロパティがなくなり、その中にあったプロパティがすべて上の階層に
   * 例えば`game.settings.map`は`game.map`になる
 
+### 既知の問題
+* アプリが作成できない
+  * 依存ライブラリの問題と思わるため、対応が難しい
+
+### Migration
+coming soon...
+
 10.100.0
 ----------
 * ユーザーリストでフォローボタンを表示するように
