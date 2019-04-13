@@ -62,7 +62,7 @@ export default define(meta, async (ps) => {
 							qb.andWhere(`log.domain[${i + 1}] != :${p}`, { [p]: subDomain });
 						} else {
 							// SQL is 1 based, so we need '+ 1'
-							qb.andWhere(`log.domain[${i + 1}] == :${p}`, { [p]: subDomain });
+							qb.andWhere(`log.domain[${i + 1}] = :${p}`, { [p]: subDomain });
 						}
 						i++;
 					}
