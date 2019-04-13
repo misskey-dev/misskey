@@ -152,13 +152,13 @@ if (user == null) {
 ```
 という処理を`ensure`を使うと
 ``` ts
-const user = await Users.findOne(userId).then(esure);
+const user = await Users.findOne(userId).then(ensure);
 // この時点で user の型は User
 ```
 という風に書けます。
 もちろん`ensure`内部でエラーを握りつぶすようなことはしておらず、万が一`undefined`だった場合はPromiseがRejectされ後続の処理は実行されません。
 ``` ts
-const user = await Users.findOne(userId).then(esure);
+const user = await Users.findOne(userId).then(ensure);
 // 万が一 Users.findOne の結果が undefined だったら、ensure でエラーが発生するので
 // この行に到達することは無い
 // なので、.then(ensure) は
