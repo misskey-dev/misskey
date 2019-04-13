@@ -143,7 +143,7 @@ MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`�
 でもいちいち複数行を費やして、発生するはずのない`undefined`をチェックするのも面倒なので、`ensure`というユーティリティ関数を用意しています。
 例えば、
 ``` ts
-const user = Users.findOne(userId);
+const user = await Users.findOne(userId);
 // この時点で user の型は User | undefined
 if (user == null) {
 	throw 'missing user';
@@ -152,7 +152,13 @@ if (user == null) {
 ```
 という処理を`ensure`を使うと
 ``` ts
-const user = Users.findOne(userId).then(esure);
+const user = await Users.findOne(userId).then(esure);
 // この時点で user の型は User
 ```
 という風に書けます。
+もちろん`ensure`内部でエラーを握りつぶすようなことはしておらず、万が一`undefined`だった場合はPromiseがRejectされ後続の処理は実行されません。
+``` ts
+const user = await Users.findOne(userId).then(esure);
+// 万が一 Users.findOne の結果が undefined だったら、ensure でエラーが発生するので
+// この行に到達することは無い
+```
