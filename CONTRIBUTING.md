@@ -130,6 +130,10 @@ const users = userIds.length > 0 ? await Users.find({
 }) : [];
 ```
 
+### 配列のインデックス in SQL
+SQLでは配列のインデックスは**1始まり**。
+`[a, b, c]`の `a`にアクセスしたいなら`[0]`ではなく`[1]`と書く
+
 ### `undefined`にご用心
 MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合 **`undefined`** が返ってくるので注意。
 MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
