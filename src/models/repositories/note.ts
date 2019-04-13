@@ -148,7 +148,7 @@ export class NoteRepository extends Repository<Note> {
 				return reaction.reaction;
 			}
 
-			return null;
+			return undefined;
 		}
 
 		let text = note.text;
