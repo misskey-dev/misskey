@@ -120,13 +120,15 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		: [];
 
 	// リプライ
-	const reply: Note | undefined | null = note.inReplyTo
-		? await resolveNote(note.inReplyTo, resolver).catch(e => {
-			// 4xxの場合はリプライしてないことにする
-			if (e.statusCode >= 400 && e.statusCode < 500) {
-				logger.warn(`Ignored inReplyTo ${note.inReplyTo} - ${e.statusCode} `);
-				return null;
+	const reply: Note | null = note.inReplyTo
+		? await resolveNote(note.inReplyTo, resolver).then(x => {
+			if (x == null) {
+				logger.warn(`Specified inReplyTo, but nout found`);
+				throw 'inReplyTo not found';
+			} else {
+				return x;
 			}
+		}).catch(e => {
 			logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${e.statusCode || e}`);
 			throw e;
 		})
