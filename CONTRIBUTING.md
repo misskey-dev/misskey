@@ -161,4 +161,9 @@ const user = await Users.findOne(userId).then(esure);
 const user = await Users.findOne(userId).then(esure);
 // 万が一 Users.findOne の結果が undefined だったら、ensure でエラーが発生するので
 // この行に到達することは無い
+// なので、.then(ensure) は
+// if (user == null) {
+//	throw 'missing user';
+// }
+// の糖衣構文のような扱いです
 ```
