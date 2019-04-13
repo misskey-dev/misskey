@@ -20,6 +20,8 @@ If you encounter any problems with updating, please try the following:
 ### APIの破壊的変更
 * v10時点で deprecated だったパラメータなどを削除
 * ユーザーリストの title が name に
+* リバーシの対局の`settings`プロパティがなくなり、その中にあったプロパティがすべて上の階層に
+  * 例えば`game.settings.map`は`game.map`になる
 
 10.100.0
 ----------
