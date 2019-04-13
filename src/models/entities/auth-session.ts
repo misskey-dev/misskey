@@ -19,11 +19,15 @@ export class AuthSession {
 	})
 	public token: string;
 
-	@Column(id())
+	@Column({
+		...id(),
+		nullable: true
+	})
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
-		onDelete: 'CASCADE'
+		onDelete: 'CASCADE',
+		nullable: true
 	})
 	@JoinColumn()
 	public user: User | null;
