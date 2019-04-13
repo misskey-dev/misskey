@@ -13,11 +13,11 @@ function getTime(time: number) {
 	return time.toString(36).padStart(8, '0');
 }
 
-function getRandom() {
+function getNoise() {
 	return counter.toString(36).padStart(2, '0').slice(-2);
 }
 
 export function genAid(date: Date): string {
 	counter++;
-	return getTime(date.getTime()) + getRandom();
+	return getTime(date.getTime()) + getNoise();
 }
