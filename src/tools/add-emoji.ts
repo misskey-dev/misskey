@@ -18,8 +18,8 @@ const args = process.argv.slice(2);
 const name = args[0];
 const url = args[1];
 
-if (!name) throw 'require name';
-if (!url) throw 'require url';
+if (!name) throw new Error('require name');
+if (!url) throw new Error('require url');
 
 main(name, url).then(() => {
 	console.log('success');

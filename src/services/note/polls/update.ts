@@ -7,10 +7,10 @@ import { Note } from '../../../models/entities/note';
 
 export async function deliverQuestionUpdate(noteId: Note['id']) {
 	const note = await Notes.findOne(noteId);
-	if (note == null) throw 'note not found';
+	if (note == null) throw new Error('note not found');
 
 	const user = await Users.findOne(note.userId);
-	if (user == null) throw 'note not found';
+	if (user == null) throw new Error('note not found');
 
 	const followers = await Followings.find({
 		followeeId: user.id

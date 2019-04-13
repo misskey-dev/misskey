@@ -10,7 +10,7 @@ import { createNotification } from '../../create-notification';
 export default async function(user: User, note: Note, choice: number) {
 	const poll = await Polls.findOne(note.id);
 
-	if (poll == null) throw 'poll not found';
+	if (poll == null) throw new Error('poll not found');
 
 	// Check whether is valid choice
 	if (poll.choices[choice] == null) throw new Error('invalid choice param');

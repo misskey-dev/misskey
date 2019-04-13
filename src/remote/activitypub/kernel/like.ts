@@ -5,7 +5,7 @@ import { Notes } from '../../../models';
 
 export default async (actor: IRemoteUser, activity: ILike) => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
-	if (id == null) throw 'missing id';
+	if (id == null) throw new Error('missing id');
 
 	// Transform:
 	// https://misskey.ex/notes/xxxx to

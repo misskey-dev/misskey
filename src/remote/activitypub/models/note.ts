@@ -32,7 +32,7 @@ const logger = apLogger;
  */
 export async function fetchNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
 	const uri = typeof value == 'string' ? value : value.id;
-	if (uri == null) throw 'missing uri';
+	if (uri == null) throw new Error('missing uri');
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
@@ -67,7 +67,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 			value: value,
 			object: object
 		});
-		throw 'invalid note';
+		throw new Error('invalid note');
 	}
 
 	const note: INote = object;
@@ -81,7 +81,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
-		throw 'actor has been suspended';
+		throw new Error('actor has been suspended');
 	}
 
 	//#region Visibility
@@ -124,7 +124,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 		? await resolveNote(note.inReplyTo, resolver).then(x => {
 			if (x == null) {
 				logger.warn(`Specified inReplyTo, but nout found`);
-				throw 'inReplyTo not found';
+				throw new Error('inReplyTo not found');
 			} else {
 				return x;
 			}
@@ -230,7 +230,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
  */
 export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
 	const uri = typeof value == 'string' ? value : value.id;
-	if (uri == null) throw 'missing uri';
+	if (uri == null) throw new Error('missing uri');
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
@@ -252,7 +252,7 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 		if (e.name === 'duplicated') {
 			return fetchNote(uri).then(note => {
 				if (note == null) {
-					throw 'something happened';
+					throw new Error('something happened');
 				} else {
 					return note;
 				}
