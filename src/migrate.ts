@@ -24,8 +24,13 @@ import { UserPublickey } from './models/entities/user-publickey';
 import { UserKeypair } from './models/entities/user-keypair';
 import { extractPublic } from './crypto_key';
 import { Emoji } from './models/entities/emoji';
-import { toPuny } from './misc/convert-host';
+import { toPuny as _toPuny } from './misc/convert-host';
 import { UserProfile } from './models/entities/user-profile';
+
+function toPuny(x: string | null): string | null {
+	if (x == null) return null;
+	return _toPuny(x);
+}
 
 const u = (config as any).mongodb.user ? encodeURIComponent((config as any).mongodb.user) : null;
 const p = (config as any).mongodb.pass ? encodeURIComponent((config as any).mongodb.pass) : null;
