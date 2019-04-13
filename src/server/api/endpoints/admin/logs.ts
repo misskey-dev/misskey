@@ -34,7 +34,7 @@ export default define(meta, async (ps) => {
 
 	if (ps.domain) {
 		const whiteDomains = ps.domain.split(' ').filter(x => !x.startsWith('-'));
-		const blackDomains = ps.domain.split(' ').filter(x => x.startsWith('-'));
+		const blackDomains = ps.domain.split(' ').filter(x => x.startsWith('-')).map(x => x.substr(1));
 
 		if (whiteDomains.length > 0) {
 			query.andWhere(new Brackets(qb => {
@@ -53,11 +53,17 @@ export default define(meta, async (ps) => {
 		if (blackDomains.length > 0) {
 			query.andWhere(new Brackets(qb => {
 				for (const blackDomain of blackDomains) {
+					const subDomains = blackDomain.split('.');
 					let i = 0;
-					for (const subDomain of blackDomain.split('.')) {
+					for (const subDomain of subDomains) {
 						const p = `blackSubDomain_${subDomain}_${i}`;
-						// SQL is 1 based, so we need '+ 1'
-						qb.andWhere(`log.domain[${i + 1}] != :${p}`, { [p]: subDomain });
+						if (i === subDomains.length - 1) {
+							// SQL is 1 based, so we need '+ 1'
+							qb.andWhere(`log.domain[${i + 1}] != :${p}`, { [p]: subDomain });
+						} else {
+							// SQL is 1 based, so we need '+ 1'
+							qb.andWhere(`log.domain[${i + 1}] == :${p}`, { [p]: subDomain });
+						}
 						i++;
 					}
 				}
