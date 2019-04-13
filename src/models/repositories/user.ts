@@ -92,10 +92,10 @@ export class UserRepository extends Repository<User> {
 			bannerUrl: user.bannerUrl,
 			avatarColor: user.avatarColor,
 			bannerColor: user.bannerColor,
-			isAdmin: user.isAdmin,
-			isBot: user.isBot,
-			isCat: user.isCat,
-			isVerified: user.isVerified,
+			isAdmin: user.isAdmin || undefined,
+			isBot: user.isBot || undefined,
+			isCat: user.isCat || undefined,
+			isVerified: user.isVerified || undefined,
 
 			// カスタム絵文字添付
 			emojis: user.emojis.length > 0 ? Emojis.find({

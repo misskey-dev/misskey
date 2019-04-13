@@ -162,15 +162,15 @@ export class NoteRepository extends Repository<Note> {
 		const packed = await rap({
 			id: note.id,
 			createdAt: note.createdAt,
-			app: note.appId ? Apps.pack(note.appId) : null,
+			app: note.appId ? Apps.pack(note.appId) : undefined,
 			userId: note.userId,
 			user: Users.pack(note.user || note.userId, meId),
 			text: text,
 			cw: note.cw,
 			visibility: note.visibility,
-			localOnly: note.localOnly,
-			visibleUserIds: note.visibleUserIds,
-			viaMobile: note.viaMobile,
+			localOnly: note.localOnly || undefined,
+			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
+			viaMobile: note.viaMobile || undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
 			reactions: note.reactions,
@@ -188,13 +188,13 @@ export class NoteRepository extends Repository<Note> {
 			...(opts.detail ? {
 				reply: note.replyId ? this.pack(note.replyId, meId, {
 					detail: false
-				}) : null,
+				}) : undefined,
 
 				renote: note.renoteId ? this.pack(note.renoteId, meId, {
 					detail: true
-				}) : null,
+				}) : undefined,
 
-				poll: note.hasPoll ? populatePoll() : null,
+				poll: note.hasPoll ? populatePoll() : undefined,
 
 				...(meId ? {
 					myReaction: populateMyReaction()
