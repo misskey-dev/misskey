@@ -6,13 +6,15 @@ function getTime(time: number) {
 		return CHARS[0];
 	}
 
-	return time.toString(16).padStart(16, CHARS[0]);
+	time += 0x800000000000;
+
+	return time.toString(16).padStart(12, CHARS[0]);
 }
 
 function getRandom() {
 	let str = '';
 
-	for (let i = 0; i < 7; i++) {
+	for (let i = 0; i < 12; i++) {
 		str += CHARS[Math.floor(Math.random() * CHARS.length)];
 	}
 
