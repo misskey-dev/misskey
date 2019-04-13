@@ -137,3 +137,22 @@ SQLでは配列のインデックスは**1始まり**。
 ### `undefined`にご用心
 MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合 **`undefined`** が返ってくるので注意。
 MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
+
+### 簡素な`undefined`チェック
+データベースからレコードを取得するときに、プログラムの流れ的に(ほぼ)絶対`undefined`にはならない場合でも、`undefined`チェックしないとTypeScriptに怒られます。
+でもいちいち複数行を費やして、発生するはずのない`undefined`をチェックするのも面倒なので、`ensure`というユーティリティ関数を用意しています。
+例えば、
+``` ts
+const user = Users.findOne(userId);
+// この時点で user の型は User | undefined
+if (user == null) {
+	throw 'missing user';
+}
+// この時点で user の型は User
+```
+という処理を`ensure`を使うと
+``` ts
+const user = Users.findOne(userId).then(esure);
+// この時点で user の型は User
+```
+という風に書けます。
