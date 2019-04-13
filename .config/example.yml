@@ -127,18 +127,10 @@ drive:
 # change it according to your preferences.
 
 # Available methods:
-# aid ... Use AID for ID generation
-# ulid ... Use ulid for ID generation
-# objectid ... This is left for backward compatibility.
-
-# AID is the original ID generation method.
-
-# ULID: Universally Unique Lexicographically Sortable Identifier.
-# for more details: https://github.com/ulid/spec
-# * Normally, AID should be sufficient.
-
-# ObjectID is the method used in previous versions of Misskey.
-# * Choose this if you are migrating from a previous Misskey.
+# aid ... Short, Millisecond accuracy
+# meid ... Similar to ObjectID, Millisecond accuracy
+# ulid ... Millisecond accuracy
+# objectid ... This is left for backward compatibility
 
 id: 'aid'
 
