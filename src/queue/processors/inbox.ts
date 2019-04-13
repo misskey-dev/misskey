@@ -12,7 +12,7 @@ import { Instances, Users, UserPublickeys } from '../../models';
 import { instanceChart } from '../../services/chart';
 import { UserPublickey } from '../../models/entities/user-publickey';
 import fetchMeta from '../../misc/fetch-meta';
-import { toPuny } from '../../misc/convert-host';
+import { toPuny, toPunyNullable } from '../../misc/convert-host';
 import { validActor } from '../../remote/activitypub/type';
 import { ensure } from '../../prelude/ensure';
 
@@ -36,7 +36,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	if (keyIdLower.startsWith('acct:')) {
 		const acct = parseAcct(keyIdLower.slice('acct:'.length));
-		const host = acct.host ? toPuny(acct.host) : null;
+		const host = toPunyNullable(acct.host);
 		const username = toPuny(acct.username);
 
 		if (host === null) {

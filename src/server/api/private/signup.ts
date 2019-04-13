@@ -10,7 +10,7 @@ import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
 import { User } from '../../../models/entities/user';
 import { UserKeypair } from '../../../models/entities/user-keypair';
-import { toPuny } from '../../../misc/convert-host';
+import { toPunyNullable } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { getConnection } from 'typeorm';
 
@@ -109,7 +109,7 @@ export default async (ctx: Koa.BaseContext) => {
 			createdAt: new Date(),
 			username: username,
 			usernameLower: username.toLowerCase(),
-			host: host ? toPuny(host) : null,
+			host: toPunyNullable(host),
 			token: secret,
 			isAdmin: config.autoAdmin && usersCount === 0,
 		}));
