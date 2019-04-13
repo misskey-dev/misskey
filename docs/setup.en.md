@@ -24,18 +24,13 @@ Please install and setup these softwares:
 #### Dependencies :package:
 * **[Node.js](https://nodejs.org/en/)** >= 11.7.0
 * **[PostgreSQL](https://www.postgresql.org/)** >= 10
+* **[Redis](https://redis.io/)**
 
 ##### Optional
-* [Redis](https://redis.io/)
-  * Redis is optional, but we strongly recommended to install it
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Setup PostgreSQL
-----------------------------------------------------------------
-:)
-
-*4.* Install Misskey
+*3.* Install Misskey
 ----------------------------------------------------------------
 1. `su - misskey` Connect to misskey user.
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clone the misskey repo from master branch.
@@ -43,12 +38,12 @@ Please install and setup these softwares:
 4. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Install misskey dependencies.
 
-*5.* Configure Misskey
+*4.* Configure Misskey
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
 2. Edit `default.yml`
 
-*6.* Build Misskey
+*5.* Build Misskey
 ----------------------------------------------------------------
 
 Build misskey with the following:
@@ -64,13 +59,13 @@ If you're still encountering errors about some modules, use node-gyp:
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
 
-*7.* Init DB
+*6.* Init DB
 ----------------------------------------------------------------
 ``` shell
 npm run init
 ```
 
-*8.* That is it.
+*7.* That is it.
 ----------------------------------------------------------------
 Well done! Now, you have an environment that run to Misskey.
 

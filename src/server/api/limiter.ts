@@ -8,12 +8,6 @@ import Logger from '../../services/logger';
 const logger = new Logger('limiter');
 
 export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => {
-	// Redisがインストールされてない場合は常に許可
-	if (limiterDB == null) {
-		ok();
-		return;
-	}
-
 	const limitation = endpoint.meta.limit!;
 
 	const key = limitation.hasOwnProperty('key')

@@ -65,10 +65,10 @@ db:
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
 
-#redis:
-#  host: localhost
-#  port: 6379
-#  pass: example-pass
+redis:
+  host: localhost
+  port: 6379
+  #pass: example-pass
 
 #   ┌─────────────────────────────┐
 #───┘ Elasticsearch configuration └─────────────────────────────

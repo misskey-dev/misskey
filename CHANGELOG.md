@@ -7,7 +7,8 @@ If you encounter any problems with updating, please try the following:
 
 11.0.0
 ----------
-* データベースがMongoDBからPostgreSQLに変更されました
+* **データベースがMongoDBからPostgreSQLに変更されました**
+* **Redisが必須に**
 * アカウントを完全に削除できるように
 * ミュート/ブロック時にそのユーザーの投稿のウォッチをすべて解除するように
 * フォロー申請数が実際より1すくなくなる問題を修正
