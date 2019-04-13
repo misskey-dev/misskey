@@ -154,7 +154,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	// vote
 	if (reply && reply.hasPoll) {
-		const poll = await Polls.findOne({ noteId: reply.id }).then(ensure);
+		const poll = await Polls.findOne(reply.id).then(ensure);
 
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
 			if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {
