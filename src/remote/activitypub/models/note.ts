@@ -152,7 +152,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content || fromHtml(note.content);
+	const text = note._misskey_content || (note.content ? fromHtml(note.content) : null);
 
 	// vote
 	if (reply && reply.hasPoll) {

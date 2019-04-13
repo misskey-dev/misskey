@@ -16,7 +16,7 @@ import { NoteReaction } from '../../../models/entities/note-reaction';
 import { createNotification } from '../../create-notification';
 import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
 
-export default async (user: User, note: Note, reaction: string) => {
+export default async (user: User, note: Note, reaction?: string) => {
 	// Myself
 	if (note.userId === user.id) {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
