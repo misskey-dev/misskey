@@ -8,7 +8,7 @@ function getTime(time: number) {
 
 	time = Math.floor(time / 1000);
 
-	return time.toString(16);
+	return time.toString(16).padStart(8, CHARS[0]);
 }
 
 function getRandom() {

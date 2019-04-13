@@ -127,19 +127,11 @@ drive:
 # change it according to your preferences.
 
 # Available methods:
-# aid1 ... Use AID for ID generation (with random 1 char)
-# aid2 ... Use AID for ID generation (with random 2 chars)
-# aid3 ... Use AID for ID generation (with random 3 chars)
-# aid4 ... Use AID for ID generation (with random 4 chars)
+# aid ... Use AID for ID generation
 # ulid ... Use ulid for ID generation
 # objectid ... This is left for backward compatibility.
 
-# AID(n) is the original ID generation method.
-# The trailing n represents the number of random characters that
-# will be suffixed.
-# The larger n is the safer. If n is small, the possibility of
-# collision at the same time increases, but there are also
-# advantages such as shortening of the URL.
+# AID is the original ID generation method.
 
 # ULID: Universally Unique Lexicographically Sortable Identifier.
 # for more details: https://github.com/ulid/spec
@@ -148,7 +140,7 @@ drive:
 # ObjectID is the method used in previous versions of Misskey.
 # * Choose this if you are migrating from a previous Misskey.
 
-id: 'aid2'
+id: 'aid'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
