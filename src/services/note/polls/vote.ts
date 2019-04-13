@@ -8,7 +8,7 @@ import { genId } from '../../../misc/gen-id';
 import { createNotification } from '../../create-notification';
 
 export default async function(user: User, note: Note, choice: number) {
-	const poll = await Polls.findOne({ noteId: note.id });
+	const poll = await Polls.findOne(note.id);
 
 	if (poll == null) throw 'poll not found';
 
