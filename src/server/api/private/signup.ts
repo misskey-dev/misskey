@@ -36,7 +36,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 	const username = body['username'];
 	const password = body['password'];
-	const host = process.env.NODE_ENV === 'test' ? (body['host'] || null) : null;
+	const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] || null) : null;
 	const invitationCode = body['invitationCode'];
 
 	if (instance && instance.disableRegistration) {
@@ -109,7 +109,7 @@ export default async (ctx: Koa.BaseContext) => {
 			createdAt: new Date(),
 			username: username,
 			usernameLower: username.toLowerCase(),
-			host: toPuny(host),
+			host: host ? toPuny(host) : null,
 			token: secret,
 			isAdmin: config.autoAdmin && usersCount === 0,
 		}));
