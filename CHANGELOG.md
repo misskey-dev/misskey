@@ -5,8 +5,8 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
-11.0.0
-----------
+11.0.0 (daybreak)
+-----------------
 * **データベースがMongoDBからPostgreSQLに変更されました**
 * **Redisが必須に**
 * アカウントを完全に削除できるように
