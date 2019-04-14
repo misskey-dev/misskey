@@ -50,7 +50,7 @@ export default async function(user: User) {
 			date: note.createdAt,
 			description: note.cw || undefined,
 			content: note.text || undefined,
-			image: file ? DriveFiles.getPublicUrl(file) : undefined
+			image: file ? DriveFiles.getPublicUrl(file) || undefined : undefined
 		});
 	}
 
