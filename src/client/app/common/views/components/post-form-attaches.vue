@@ -5,7 +5,7 @@
 			<x-file-thumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<img class="remove" @click.stop="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
 			<div class="sensitive" v-if="file.isSensitive">
-				<fa class="icon" :icon="faExclamationTriangle">
+				<fa class="icon" :icon="faExclamationTriangle"/>
 			</div>
 		</div>
 	</x-draggable>
@@ -93,7 +93,7 @@ export default Vue.extend({
 			height 64px
 			margin 4px
 			cursor move
-		
+
 			&:hover > .remove
 				display block
 
