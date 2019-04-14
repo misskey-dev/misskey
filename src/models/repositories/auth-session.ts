@@ -14,7 +14,8 @@ export class AuthSessionRepository extends Repository<AuthSession> {
 
 		return await rap({
 			id: session.id,
-			app: Apps.pack(session.appId, me)
+			app: Apps.pack(session.appId, me),
+			token: session.token
 		});
 	}
 }
