@@ -1,28 +1,24 @@
-import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';
-import ID, { transform } from '../../misc/cafy-id';
-import User from '../../models/user';
+import { ID } from '../../misc/cafy-id';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import { setResponseType } from '../activitypub';
-
-import Note, { INote } from '../../models/note';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
 import * as url from '../../prelude/url';
+import { Users, Notes } from '../../models';
+import { makePaginationQuery } from '../api/common/make-pagination-query';
+import { Brackets } from 'typeorm';
+import { Note } from '../../models/entities/note';
+import { ensure } from '../../prelude/ensure';
 
 export default async (ctx: Router.IRouterContext) => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
+	const userId = ctx.params.user;
 
 	// Get 'sinceId' parameter
 	const [sinceId, sinceIdErr] = $.optional.type(ID).get(ctx.request.query.since_id);
@@ -41,12 +37,12 @@ export default async (ctx: Router.IRouterContext) => {
 	}
 
 	// Verify user
-	const user = await User.findOne({
-		_id: userId,
+	const user = await Users.findOne({
+		id: userId,
 		host: null
 	});
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -55,34 +51,15 @@ export default async (ctx: Router.IRouterContext) => {
 	const partOf = `${config.url}/users/${userId}/outbox`;
 
 	if (page) {
-		//#region Construct query
-		const sort = {
-			_id: -1
-		};
+		const query = makePaginationQuery(Notes.createQueryBuilder('note'), sinceId, untilId)
+			.andWhere('note.userId = :userId', { userId: user.id })
+			.andWhere(new Brackets(qb => { qb
+				.where(`note.visibility = 'public'`)
+				.orWhere(`note.visibility = 'home'`);
+			}))
+			.andWhere('note.localOnly = FALSE');
 
-		const query = {
-			userId: user._id,
-			visibility: { $in: ['public', 'home'] },
-			localOnly: { $ne: true }
-		} as any;
-
-		if (sinceId) {
-			sort._id = 1;
-			query._id = {
-				$gt: transform(sinceId)
-			};
-		} else if (untilId) {
-			query._id = {
-				$lt: transform(untilId)
-			};
-		}
-		//#endregion
-
-		const notes = await Note
-			.find(query, {
-				limit: limit,
-				sort: sort
-			});
+		const notes = await query.take(limit).getMany();
 
 		if (sinceId) notes.reverse();
 
@@ -96,12 +73,12 @@ export default async (ctx: Router.IRouterContext) => {
 			user.notesCount, activities, partOf,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				since_id: notes[0]._id.toHexString()
-			})}` : null,
+				since_id: notes[0].id
+			})}` : undefined,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
-				until_id: notes[notes.length - 1]._id.toHexString()
-			})}` : null
+				until_id: notes[notes.length - 1].id
+			})}` : undefined
 		);
 
 		ctx.body = renderActivity(rendered);
@@ -123,10 +100,10 @@ export default async (ctx: Router.IRouterContext) => {
  * Pack Create<Note> or Announce Activity
  * @param note Note
  */
-export async function packActivity(note: INote): Promise<object> {
-	if (note.renoteId && note.text == null && note.poll == null && (note.fileIds == null || note.fileIds.length == 0)) {
-		const renote = await Note.findOne(note.renoteId);
-		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote._id}`, note);
+export async function packActivity(note: Note): Promise<any> {
+	if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
+		const renote = await Notes.findOne(note.renoteId).then(ensure);
+		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`, note);
 	}
 
 	return renderCreate(await renderNote(note, false), note);

@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
 import define from '../../define';
+import { Users } from '../../../../models';
 
 export const meta = {
 	requireCredential: false,
@@ -54,39 +54,32 @@ export const meta = {
 	},
 };
 
-const sort: any = {
-	'+follower': { followersCount: -1 },
-	'-follower': { followersCount: 1 },
-	'+createdAt': { createdAt: -1 },
-	'-createdAt': { createdAt: 1 },
-	'+updatedAt': { updatedAt: -1 },
-	'-updatedAt': { updatedAt: 1 },
-};
-
 export default define(meta, async (ps, me) => {
-	const q = {
-		tags: ps.tag,
-		$and: []
-	} as any;
+	const query = Users.createQueryBuilder('user')
+		.where(':tag = ANY(user.tags)', { tag: ps.tag });
 
-	// state
-	q.$and.push(
-		ps.state == 'alive' ? { updatedAt: { $gt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 5)) } } :
-		{}
-	);
+	const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
 
-	// origin
-	q.$and.push(
-		ps.origin == 'local' ? { host: null } :
-		ps.origin == 'remote' ? { host: { $ne: null } } :
-		{}
-	);
+	if (ps.state === 'alive') {
+		query.andWhere('user.updatedAt > :date', { date: recent });
+	}
 
-	const users = await User
-		.find(q, {
-			limit: ps.limit,
-			sort: sort[ps.sort],
-		});
+	if (ps.origin === 'local') {
+		query.andWhere('user.host IS NULL');
+	} else if (ps.origin === 'remote') {
+		query.andWhere('user.host IS NOT NULL');
+	}
 
-	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
+	switch (ps.sort) {
+		case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
+		case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
+		case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
+		case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
+		case '+updatedAt': query.orderBy('user.updatedAt', 'DESC'); break;
+		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
+	}
+
+	const users = await query.take(ps.limit!).getMany();
+
+	return await Users.packMany(users, me, { detail: true });
 });

@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import hashtagChart from '../../../../services/chart/hashtag';
+import { convertLog } from '../../../../services/chart/core';
+import { hashtagChart } from '../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -35,14 +36,9 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(hashtagChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return await hashtagChart.getChart(ps.span as any, ps.limit, ps.tag);
+	return await hashtagChart.getChart(ps.span as any, ps.limit!, ps.tag);
 });

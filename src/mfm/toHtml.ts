@@ -1,10 +1,10 @@
 import { JSDOM } from 'jsdom';
 import config from '../config';
-import { INote } from '../models/note';
 import { intersperse } from '../prelude/array';
 import { MfmForest, MfmTree } from './prelude';
+import { IMentionedRemoteUsers } from '../models/entities/note';
 
-export function toHtml(tokens: MfmForest, mentionedRemoteUsers: INote['mentionedRemoteUsers'] = []) {
+export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
 	if (tokens == null) {
 		return null;
 	}

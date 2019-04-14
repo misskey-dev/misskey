@@ -1,8 +1,9 @@
 import config from '../../../config';
-import Note, { IChoice, IPoll } from '../../../models/note';
 import Resolver from '../resolver';
 import { IQuestion } from '../type';
 import { apLogger } from '../logger';
+import { Notes, Polls } from '../../../models';
+import { IPoll } from '../../../models/entities/poll';
 
 export async function extractPollFromQuestion(source: string | IQuestion): Promise<IPoll> {
 	const question = typeof source === 'string' ? await new Resolver().resolve(source) as IQuestion : source;
@@ -10,18 +11,18 @@ export async function extractPollFromQuestion(source: string | IQuestion): Promi
 	const expiresAt = question.endTime ? new Date(question.endTime) : null;
 
 	if (multiple && !question.anyOf) {
-		throw 'invalid question';
+		throw new Error('invalid question');
 	}
 
-	const choices = question[multiple ? 'anyOf' : 'oneOf']
-		.map((x, i) => ({
-			id: i,
-			text: x.name,
-			votes: x.replies && x.replies.totalItems || x._misskey_votes || 0,
-		} as IChoice));
+	const choices = question[multiple ? 'anyOf' : 'oneOf']!
+		.map((x, i) => x.name!);
+
+	const votes = question[multiple ? 'anyOf' : 'oneOf']!
+		.map((x, i) => x.replies && x.replies.totalItems || x._misskey_votes || 0);
 
 	return {
 		choices,
+		votes,
 		multiple,
 		expiresAt
 	};
@@ -36,12 +37,14 @@ export async function updateQuestion(value: any) {
 	const uri = typeof value == 'string' ? value : value.id;
 
 	// URIがこのサーバーを指しているならスキップ
-	if (uri.startsWith(config.url + '/')) throw 'uri points local';
+	if (uri.startsWith(config.url + '/')) throw new Error('uri points local');
 
 	//#region このサーバーに既に登録されているか
-	const note = await Note.findOne({ uri });
+	const note = await Notes.findOne({ uri });
+	if (note == null) throw new Error('Question is not registed');
 
-	if (note == null) throw 'Question is not registed';
+	const poll = await Polls.findOne({ noteId: note.id });
+	if (poll == null) throw new Error('Question is not registed');
 	//#endregion
 
 	// resolve new Question object
@@ -49,30 +52,24 @@ export async function updateQuestion(value: any) {
 	const question = await resolver.resolve(value) as IQuestion;
 	apLogger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
 
-	if (question.type !== 'Question') throw 'object is not a Question';
+	if (question.type !== 'Question') throw new Error('object is not a Question');
 
 	const apChoices = question.oneOf || question.anyOf;
-	const dbChoices = note.poll.choices;
 
 	let changed = false;
 
-	for (const db of dbChoices) {
-		const oldCount = db.votes;
-		const newCount = apChoices.filter(ap => ap.name === db.text)[0].replies.totalItems;
+	for (const choice of poll.choices) {
+		const oldCount = poll.votes[poll.choices.indexOf(choice)];
+		const newCount = apChoices!.filter(ap => ap.name === choice)[0].replies!.totalItems;
 
 		if (oldCount != newCount) {
 			changed = true;
-			db.votes = newCount;
+			poll.votes[poll.choices.indexOf(choice)] = newCount;
 		}
 	}
 
-	await Note.update({
-		_id: note._id
-	}, {
-		$set: {
-			'poll.choices': dbChoices,
-			updatedAt: new Date(),
-		}
+	await Polls.update({ noteId: note.id }, {
+		votes: poll.votes
 	});
 
 	return changed;

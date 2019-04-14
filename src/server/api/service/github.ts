@@ -2,13 +2,15 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as request from 'request';
 import { OAuth2 } from 'oauth';
-import User, { pack, ILocalUser } from '../../../models/user';
 import config from '../../../config';
 import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
+import { Users, UserProfiles } from '../../../models';
+import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -39,19 +41,24 @@ router.get('/disconnect/github', async ctx => {
 		return;
 	}
 
-	const user = await User.findOneAndUpdate({
+	const user = await Users.findOne({
 		host: null,
-		'token': userToken
+		token: userToken
+	}).then(ensure);
+
+	await UserProfiles.update({
+		userId: user.id
 	}, {
-		$set: {
-			'github': null
-		}
+		github: false,
+		githubAccessToken: null,
+		githubId: null,
+		githubLogin: null,
 	});
 
 	ctx.body = `GitHubの連携を解除しました :v:`;
 
 	// Publish i updated event
-	publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -60,7 +67,7 @@ router.get('/disconnect/github', async ctx => {
 async function getOath2() {
 	const meta = await fetchMeta();
 
-	if (meta.enableGithubIntegration) {
+	if (meta.enableGithubIntegration && meta.githubClientId && meta.githubClientSecret) {
 		return new OAuth2(
 			meta.githubClientId,
 			meta.githubClientSecret,
@@ -93,7 +100,7 @@ router.get('/connect/github', async ctx => {
 	redis.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/signin/github', async ctx => {
@@ -118,7 +125,7 @@ router.get('/signin/github', async ctx => {
 	redis.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/gh/cb', async ctx => {
@@ -153,17 +160,17 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{ redirect_uri },
-				(err, accessToken, refresh, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
-						res({ accessToken });
-				}));
+			oauth2!.getOAuthAccessToken(code, {
+				redirect_uri
+			}, (err, accessToken, refresh, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
+					res({ accessToken });
+				}
+			}));
 
 		const { login, id } = await new Promise<any>((res, rej) =>
 			request({
@@ -185,17 +192,21 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const user = await User.findOne({
-			host: null,
-			'github.id': id
-		}) as ILocalUser;
+		const link = await UserProfiles.createQueryBuilder()
+			.where('github @> :github', {
+				github: {
+					id: id,
+				},
+			})
+			.andWhere('userHost IS NULL')
+			.getOne();
 
-		if (!user) {
+		if (link == null) {
 			ctx.throw(404, `@${login}と連携しているMisskeyアカウントはありませんでした...`);
 			return;
 		}
 
-		signin(ctx, user, true);
+		signin(ctx, await Users.findOne(link.userId) as ILocalUser, true);
 	} else {
 		const code = ctx.query.code;
 
@@ -216,7 +227,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
+			oauth2!.getOAuthAccessToken(
 				code,
 				{ redirect_uri },
 				(err, accessToken, refresh, result) => {
@@ -248,23 +259,22 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const user = await User.findOneAndUpdate({
+		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		}, {
-			$set: {
-				github: {
-					accessToken,
-					id,
-					login
-				}
-			}
+		}).then(ensure);
+
+		await UserProfiles.update({ userId: user.id }, {
+			github: true,
+			githubAccessToken: accessToken,
+			githubId: id,
+			githubLogin: login,
 		});
 
 		ctx.body = `GitHub: @${login} を、Misskey: @${user.username} に接続しました！`;
 
 		// Publish i updated event
-		publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+		publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

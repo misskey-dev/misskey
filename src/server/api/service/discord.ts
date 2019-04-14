@@ -2,13 +2,15 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as request from 'request';
 import { OAuth2 } from 'oauth';
-import User, { pack, ILocalUser } from '../../../models/user';
 import config from '../../../config';
 import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
+import { Users, UserProfiles } from '../../../models';
+import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -39,19 +41,27 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await User.findOneAndUpdate({
+	const user = await Users.findOne({
 		host: null,
-		'token': userToken
+		token: userToken
+	}).then(ensure);
+
+	await UserProfiles.update({
+		userId: user.id
 	}, {
-		$set: {
-			'discord': null
-		}
+		discord: false,
+		discordAccessToken: null,
+		discordRefreshToken: null,
+		discordExpiresDate: null,
+		discordId: null,
+		discordUsername: null,
+		discordDiscriminator: null,
 	});
 
 	ctx.body = `Discordの連携を解除しました :v:`;
 
 	// Publish i updated event
-	publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+	publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 		detail: true,
 		includeSecrets: true
 	}));
@@ -62,8 +72,8 @@ async function getOAuth2() {
 
 	if (meta.enableDiscordIntegration) {
 		return new OAuth2(
-			meta.discordClientId,
-			meta.discordClientSecret,
+			meta.discordClientId!,
+			meta.discordClientSecret!,
 			'https://discordapp.com/',
 			'api/oauth2/authorize',
 			'api/oauth2/token');
@@ -94,7 +104,7 @@ router.get('/connect/discord', async ctx => {
 	redis.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/signin/discord', async ctx => {
@@ -120,7 +130,7 @@ router.get('/signin/discord', async ctx => {
 	redis.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/dc/cb', async ctx => {
@@ -155,24 +165,22 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{
-					grant_type: 'authorization_code',
-					redirect_uri
-				},
-				(err, accessToken, refreshToken, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
+			oauth2!.getOAuthAccessToken(code, {
+				grant_type: 'authorization_code',
+				redirect_uri
+			}, (err, accessToken, refreshToken, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
 					res({
 						accessToken,
 						refreshToken,
 						expiresDate: Date.now() + Number(result.expires_in) * 1000
 					});
-				}));
+				}
+			}));
 
 		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
 			request({
@@ -182,10 +190,11 @@ router.get('/dc/cb', async ctx => {
 					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
-				if (err)
+				if (err) {
 					rej(err);
-				else
+				} else {
 					res(JSON.parse(body));
+				}
 			}));
 
 		if (!id || !username || !discriminator) {
@@ -193,32 +202,30 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		let user = await User.findOne({
-			host: null,
-			'discord.id': id
-		}) as ILocalUser;
+		const profile = await UserProfiles.createQueryBuilder()
+			.where('discord @> :discord', {
+				discord: {
+					id: id,
+				},
+			})
+			.andWhere('userHost IS NULL')
+			.getOne();
 
-		if (!user) {
+		if (profile == null) {
 			ctx.throw(404, `@${username}#${discriminator}と連携しているMisskeyアカウントはありませんでした...`);
 			return;
 		}
 
-		user = await User.findOneAndUpdate({
-			host: null,
-			'discord.id': id
-		}, {
-			$set: {
-				discord: {
-					accessToken,
-					refreshToken,
-					expiresDate,
-					username,
-					discriminator
-				}
-			}
-		}) as ILocalUser;
+		await UserProfiles.update({ userId: profile.userId }, {
+			discord: true,
+			discordAccessToken: accessToken,
+			discordRefreshToken: refreshToken,
+			discordExpiresDate: expiresDate,
+			discordUsername: username,
+			discordDiscriminator: discriminator
+		});
 
-		signin(ctx, user, true);
+		signin(ctx, await Users.findOne(profile.userId) as ILocalUser, true);
 	} else {
 		const code = ctx.query.code;
 
@@ -239,24 +246,22 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{
-					grant_type: 'authorization_code',
-					redirect_uri
-				},
-				(err, accessToken, refreshToken, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
-						res({
-							accessToken,
-							refreshToken,
-							expiresDate: Date.now() + Number(result.expires_in) * 1000
-						});
-				}));
+			oauth2!.getOAuthAccessToken(code, {
+				grant_type: 'authorization_code',
+				redirect_uri
+			}, (err, accessToken, refreshToken, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
+					res({
+						accessToken,
+						refreshToken,
+						expiresDate: Date.now() + Number(result.expires_in) * 1000
+					});
+				}
+			}));
 
 		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
 			request({
@@ -266,10 +271,11 @@ router.get('/dc/cb', async ctx => {
 					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
-				if (err)
+				if (err) {
 					rej(err);
-				else
+				} else {
 					res(JSON.parse(body));
+				}
 			}));
 
 		if (!id || !username || !discriminator) {
@@ -277,26 +283,25 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const user = await User.findOneAndUpdate({
+		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		}, {
-			$set: {
-				discord: {
-					accessToken,
-					refreshToken,
-					expiresDate,
-					id,
-					username,
-					discriminator
-				}
-			}
+		}).then(ensure);
+
+		await UserProfiles.update({ userId: user.id }, {
+			discord: true,
+			discordAccessToken: accessToken,
+			discordRefreshToken: refreshToken,
+			discordExpiresDate: expiresDate,
+			discordId: id,
+			discordUsername: username,
+			discordDiscriminator: discriminator
 		});
 
 		ctx.body = `Discord: @${username}#${discriminator} を、Misskey: @${user.username} に接続しました！`;
 
 		// Publish i updated event
-		publishMainStream(user._id, 'meUpdated', await pack(user, user, {
+		publishMainStream(user.id, 'meUpdated', await Users.pack(user, user, {
 			detail: true,
 			includeSecrets: true
 		}));

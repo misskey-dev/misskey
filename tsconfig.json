@@ -14,8 +14,10 @@
     "removeComments": false,
     "noLib": false,
     "strict": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "typeRoots": [
       "node_modules/@types",

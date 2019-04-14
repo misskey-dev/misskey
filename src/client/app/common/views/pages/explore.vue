@@ -3,7 +3,7 @@
 	<ui-container :show-header="false" v-if="meta && stats">
 		<div class="kpdsmpnk" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 			<div>
-				<router-link to="/explore" class="title">{{ $t('explore', { host: meta.name }) }}</router-link>
+				<router-link to="/explore" class="title">{{ $t('explore', { host: meta.name || 'Misskey' }) }}</router-link>
 				<span>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</span>
 			</div>
 		</div>
@@ -13,8 +13,8 @@
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
-			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
-			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
+			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.name}`" :key="'local:' + tag.name" class="local">{{ tag.name }}</router-link>
+			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.name}`" :key="'remote:' + tag.name">{{ tag.name }}</router-link>
 		</div>
 	</ui-container>
 

@@ -1,8 +1,7 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import Favorite from '../../../../models/favorite';
-import NoteWatching from '../../../../models/note-watching';
+import { NoteFavorites, NoteWatchings } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -19,7 +18,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
@@ -30,17 +28,19 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	const [favorite, watching] = await Promise.all([
-		Favorite.count({
-			userId: user._id,
+		NoteFavorites.count({
+			where: {
+			userId: user.id,
 			noteId: ps.noteId
-		}, {
-			limit: 1
+			},
+			take: 1
 		}),
-		NoteWatching.count({
-			userId: user._id,
+		NoteWatchings.count({
+			where: {
+			userId: user.id,
 			noteId: ps.noteId
-		}, {
-			limit: 1
+			},
+			take: 1
 		})
 	]);
 

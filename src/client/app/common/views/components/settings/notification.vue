@@ -2,7 +2,7 @@
 <ui-card>
 	<template #title><fa :icon="['far', 'bell']"/> {{ $t('title') }}</template>
 	<section>
-		<ui-switch v-model="$store.state.i.settings.autoWatch" @change="onChangeAutoWatch">
+		<ui-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
 			{{ $t('auto-watch') }}<template #desc>{{ $t('auto-watch-desc') }}</template>
 		</ui-switch>
 		<section>

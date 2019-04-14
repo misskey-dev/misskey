@@ -1,7 +1,6 @@
-import User from '../../../../models/user';
 import { publishMainStream } from '../../../../services/stream';
-import NoteUnread from '../../../../models/note-unread';
 import define from '../../define';
+import { NoteUnreads } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -13,7 +12,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 	}
@@ -21,20 +20,11 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Remove documents
-	await NoteUnread.remove({
-		userId: user._id
-	});
-
-	User.update({ _id: user._id }, {
-		$set: {
-			hasUnreadMentions: false,
-			hasUnreadSpecifiedNotes: false
-		}
+	await NoteUnreads.delete({
+		userId: user.id
 	});
 
 	// 全て既読になったイベントを発行
-	publishMainStream(user._id, 'readAllUnreadMentions');
-	publishMainStream(user._id, 'readAllUnreadSpecifiedNotes');
-
-	return;
+	publishMainStream(user.id, 'readAllUnreadMentions');
+	publishMainStream(user.id, 'readAllUnreadSpecifiedNotes');
 });

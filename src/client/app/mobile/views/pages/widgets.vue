@@ -119,7 +119,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.dispatch('settings/addMobileHomeWidget', {
+			this.$store.commit('settings/addMobileHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				data: {}
@@ -127,14 +127,11 @@ export default Vue.extend({
 		},
 
 		removeWidget(widget) {
-			this.$store.dispatch('settings/removeMobileHomeWidget', widget);
+			this.$store.commit('settings/removeMobileHomeWidget', widget);
 		},
 
 		saveHome() {
 			this.$store.commit('settings/setMobileHome', this.widgets);
-			this.$root.api('i/update_mobile_home', {
-				home: this.widgets
-			});
 		}
 	}
 });

@@ -1,7 +1,6 @@
 import define from '../define';
-import driveChart from '../../../services/chart/drive';
-import federationChart from '../../../services/chart/federation';
-import fetchMeta from '../../../misc/fetch-meta';
+import { Notes, Users } from '../../../models';
+import { federationChart, driveChart } from '../../../services/chart';
 
 export const meta = {
 	requireCredential: false,
@@ -43,16 +42,17 @@ export const meta = {
 };
 
 export default define(meta, async () => {
-	const instance = await fetchMeta();
+	const [notesCount, originalNotesCount, usersCount, originalUsersCount, instances, driveUsageLocal, driveUsageRemote] = await Promise.all([
+		Notes.count(),
+		Notes.count({ userHost: null }),
+		Users.count(),
+		Users.count({ host: null }),
+		federationChart.getChart('hour', 1).then(chart => chart.instance.total[0]),
+		driveChart.getChart('hour', 1).then(chart => chart.local.totalSize[0]),
+		driveChart.getChart('hour', 1).then(chart => chart.remote.totalSize[0]),
+	]);
 
-	const stats: any = instance.stats;
-
-	const driveStats = await driveChart.getChart('hour', 1);
-	stats.driveUsageLocal = driveStats.local.totalSize[0];
-	stats.driveUsageRemote = driveStats.remote.totalSize[0];
-
-	const federationStats = await federationChart.getChart('hour', 1);
-	stats.instances = federationStats.instance.total[0];
-
-	return stats;
+	return {
+		notesCount, originalNotesCount, usersCount, originalUsersCount, instances, driveUsageLocal, driveUsageRemote
+	};
 });

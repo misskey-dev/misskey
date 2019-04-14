@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Message from '../../../../models/messaging-message';
-import { pack } from '../../../../models/messaging-message';
+import { ID } from '../../../../misc/cafy-id';
 import read from '../../common/read-messaging-message';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { MessagingMessages } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	desc: {
@@ -22,7 +22,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -36,12 +35,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		markAsRead: {
@@ -73,43 +70,17 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	const query = {
-		$or: [{
-			userId: user._id,
-			recipientId: recipient._id
-		}, {
-			userId: recipient._id,
-			recipientId: user._id
-		}]
-	} as any;
+	const query = makePaginationQuery(MessagingMessages.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+		.andWhere(`(message.userId = :meId AND message.recipientId = :recipientId) OR (message.userId = :recipientId AND message.recipientId = :meId)`, { meId: user.id, recipientId: recipient.id });
 
-	const sort = {
-		_id: -1
-	};
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const messages = await Message
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const messages = await query.getMany();
 
 	// Mark all as read
 	if (ps.markAsRead) {
-		read(user._id, recipient._id, messages);
+		read(user.id, recipient.id, messages.map(x => x.id));
 	}
 
-	return await Promise.all(messages.map(message => pack(message, user, {
+	return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {
 		populateRecipient: false
 	})));
 });

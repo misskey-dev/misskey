@@ -1,34 +1,20 @@
 import * as push from 'web-push';
-import * as mongo from 'mongodb';
-import Subscription from '../models/sw-subscription';
 import config from '../config';
+import { SwSubscriptions } from '../models';
 import fetchMeta from '../misc/fetch-meta';
-import { IMeta } from '../models/meta';
 
-let meta: IMeta = null;
+export default async function(userId: string, type: string, body?: any) {
+	const meta = await fetchMeta();
 
-setInterval(() => {
-	fetchMeta().then(m => {
-		meta = m;
+	if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
 
-		if (meta.enableServiceWorker) {
-			// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
-			push.setVapidDetails(config.url,
-				meta.swPublicKey,
-				meta.swPrivateKey);
-		}
-	});
-}, 3000);
-
-export default async function(userId: mongo.ObjectID | string, type: string, body?: any) {
-	if (!meta.enableServiceWorker) return;
-
-	if (typeof userId === 'string') {
-		userId = new mongo.ObjectID(userId);
-	}
+	// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
+	push.setVapidDetails(config.url,
+		meta.swPublicKey,
+		meta.swPrivateKey);
 
 	// Fetch
-	const subscriptions = await Subscription.find({
+	const subscriptions = await SwSubscriptions.find({
 		userId: userId
 	});
 
@@ -49,7 +35,7 @@ export default async function(userId: mongo.ObjectID | string, type: string, bod
 			//swLogger.info(err.body);
 
 			if (err.statusCode == 410) {
-				Subscription.remove({
+				SwSubscriptions.delete({
 					userId: userId,
 					endpoint: subscription.endpoint,
 					auth: subscription.auth,

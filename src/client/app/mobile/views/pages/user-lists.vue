@@ -5,7 +5,7 @@
 
 	<main>
 		<ul>
-			<li v-for="list in lists" :key="list.id"><router-link :to="`/i/lists/${list.id}`">{{ list.title }}</router-link></li>
+			<li v-for="list in lists" :key="list.id"><router-link :to="`/i/lists/${list.id}`">{{ list.name }}</router-link></li>
 		</ul>
 	</main>
 </mk-ui>

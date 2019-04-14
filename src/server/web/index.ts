@@ -9,19 +9,17 @@ import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
-import { ObjectID } from 'mongodb';
 
 import docs from './docs';
 import packFeed from './feed';
-import User from '../../models/user';
-import parseAcct from '../../misc/acct/parse';
-import config from '../../config';
-import Note, { pack as packNote } from '../../models/note';
-import getNoteSummary from '../../misc/get-note-summary';
 import fetchMeta from '../../misc/fetch-meta';
-import Emoji from '../../models/emoji';
 import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
+import config from '../../config';
+import { Users, Notes, Emojis, UserProfiles } from '../../models';
+import parseAcct from '../../misc/acct/parse';
+import getNoteSummary from '../../misc/get-note-summary';
+import { ensure } from '../../prelude/ensure';
 
 const client = `${__dirname}/../../client/`;
 
@@ -73,11 +71,7 @@ router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
 });
 
 // Manifest
-router.get('/manifest.json', async ctx => {
-	await send(ctx as any, '/assets/manifest.json', {
-		root: client
-	});
-});
+router.get('/manifest.json', require('./manifest'));
 
 router.get('/robots.txt', async ctx => {
 	await send(ctx as any, '/assets/robots.txt', {
@@ -104,7 +98,7 @@ router.get('/api.json', async ctx => {
 
 const getFeed = async (acct: string) => {
 	const { username, host } = parseAcct(acct);
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
 		host
 	});
@@ -152,16 +146,17 @@ router.get('/@:user.json', async ctx => {
 // User
 router.get('/@:user', async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
 		host
 	});
 
 	if (user != null) {
+		const profile = await UserProfiles.findOne(user.id).then(ensure);
 		const meta = await fetchMeta();
 		await ctx.render('user', {
-			user,
-			instanceName: meta.name
+			user, profile,
+			instanceName: meta.name || 'Misskey'
 		});
 		ctx.set('Cache-Control', 'public, max-age=180');
 	} else {
@@ -171,19 +166,12 @@ router.get('/@:user', async (ctx, next) => {
 });
 
 router.get('/users/:user', async ctx => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
-
-	const user = await User.findOne({
-		_id: userId,
+	const user = await Users.findOne({
+		id: ctx.params.user,
 		host: null
 	});
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -193,26 +181,24 @@ router.get('/users/:user', async ctx => {
 
 // Note
 router.get('/notes/:note', async ctx => {
-	if (ObjectID.isValid(ctx.params.note)) {
-		const note = await Note.findOne({ _id: ctx.params.note });
+	const note = await Notes.findOne(ctx.params.note);
 
-		if (note) {
-			const _note = await packNote(note);
-			const meta = await fetchMeta();
-			await ctx.render('note', {
-				note: _note,
-				summary: getNoteSummary(_note),
-				instanceName: meta.name
-			});
+	if (note) {
+		const _note = await Notes.pack(note);
+		const meta = await fetchMeta();
+		await ctx.render('note', {
+			note: _note,
+			summary: getNoteSummary(_note),
+			instanceName: meta.name || 'Misskey'
+		});
 
-			if (['public', 'home'].includes(note.visibility)) {
-				ctx.set('Cache-Control', 'public, max-age=180');
-			} else {
-				ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
-			}
-
-			return;
+		if (['public', 'home'].includes(note.visibility)) {
+			ctx.set('Cache-Control', 'public, max-age=180');
+		} else {
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		}
+
+		return;
 	}
 
 	ctx.status = 404;
@@ -221,10 +207,8 @@ router.get('/notes/:note', async ctx => {
 
 router.get('/info', async ctx => {
 	const meta = await fetchMeta();
-	const emojis = await Emoji.find({ host: null }, {
-		fields: {
-			_id: false
-		}
+	const emojis = await Emojis.find({
+		where: { host: null }
 	});
 	await ctx.render('info', {
 		version: pkg.version,
@@ -236,7 +220,9 @@ router.get('/info', async ctx => {
 			cores: os.cpus().length
 		},
 		emojis: emojis,
-		meta: meta
+		meta: meta,
+		originalUsersCount: await Users.count({ host: null }),
+		originalNotesCount: await Notes.count({ userHost: null })
 	});
 });
 
@@ -251,7 +237,7 @@ router.get('*', async ctx => {
 	const meta = await fetchMeta();
 	await ctx.render('base', {
 		img: meta.bannerUrl,
-		title: meta.name,
+		title: meta.name || 'Misskey',
 		desc: meta.description,
 		icon: meta.iconUrl
 	});

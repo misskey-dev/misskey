@@ -1,19 +1,21 @@
 import uploadFromUrl from '../../../services/drive/upload-from-url';
-import { IRemoteUser } from '../../../models/user';
-import DriveFile, { IDriveFile } from '../../../models/drive-file';
+import { IRemoteUser } from '../../../models/entities/user';
 import Resolver from '../resolver';
 import fetchMeta from '../../../misc/fetch-meta';
 import { apLogger } from '../logger';
+import { DriveFile } from '../../../models/entities/drive-file';
+import { DriveFiles } from '../../../models';
+import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 
 /**
  * Imageを作成します。
  */
-export async function createImage(actor: IRemoteUser, value: any): Promise<IDriveFile> {
+export async function createImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
-		return null;
+		throw new Error('actor has been suspended');
 	}
 
 	const image = await new Resolver().resolve(value) as any;
@@ -27,30 +29,18 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
 	const instance = await fetchMeta();
 	const cache = instance.cacheRemoteFiles;
 
-	let file;
-	try {
-		file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
-	} catch (e) {
-		// 4xxの場合は添付されてなかったことにする
-		if (e >= 400 && e < 500) {
-			logger.warn(`Ignored image: ${image.url} - ${e}`);
-			return null;
-		}
-		throw e;
-	}
+	let file = await uploadFromUrl(image.url, actor, null, image.url, image.sensitive, false, !cache);
 
-	if (file.metadata.isRemote) {
+	if (file.isLink) {
 		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
 		// URLを更新する
-		if (file.metadata.url !== image.url) {
-			file = await DriveFile.findOneAndUpdate({ _id: file._id }, {
-				$set: {
-					'metadata.url': image.url,
-					'metadata.uri': image.url
-				}
-			}, {
-				returnNewDocument: true
+		if (file.url !== image.url) {
+			await DriveFiles.update({ id: file.id }, {
+				url: image.url,
+				uri: image.url
 			});
+
+			file = await DriveFiles.findOne(file.id).then(ensure);
 		}
 	}
 
@@ -63,7 +53,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<IDriv
  * Misskeyに対象のImageが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolveImage(actor: IRemoteUser, value: any): Promise<IDriveFile> {
+export async function resolveImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
 	// TODO
 
 	// リモートサーバーからフェッチしてきて登録

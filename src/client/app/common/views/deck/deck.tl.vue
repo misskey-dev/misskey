@@ -85,12 +85,12 @@ export default Vue.extend({
 				notes.pop();
 				return {
 					notes: notes,
-					cursor: notes[notes.length - 1].id
+					more: true
 				};
 			} else {
 				return {
 					notes: notes,
-					cursor: null
+					more: false
 				};
 			}
 		});

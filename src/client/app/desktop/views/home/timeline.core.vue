@@ -58,7 +58,7 @@ export default Vue.extend({
 		};
 
 		if (this.src == 'tag') {
-			this.endpoint = 'notes/search_by_tag';
+			this.endpoint = 'notes/search-by-tag';
 			this.query = {
 				query: this.tagTl.query
 			};
@@ -113,12 +113,12 @@ export default Vue.extend({
 				notes.pop();
 				return {
 					notes: notes,
-					cursor: notes[notes.length - 1].id
+					more: true
 				};
 			} else {
 				return {
 					notes: notes,
-					cursor: null
+					more: false
 				};
 			}
 		});

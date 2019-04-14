@@ -14,7 +14,7 @@ export default class extends Channel {
 		this.otherpartyId = params.otherparty as string;
 
 		// Subscribe messaging stream
-		this.subscriber.on(`messagingStream:${this.user._id}-${this.otherpartyId}`, data => {
+		this.subscriber.on(`messagingStream:${this.user!.id}-${this.otherpartyId}`, data => {
 			this.send(data);
 		});
 	}
@@ -23,7 +23,7 @@ export default class extends Channel {
 	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'read':
-				read(this.user._id, this.otherpartyId, body.id);
+				read(this.user!.id, this.otherpartyId, body.id);
 				break;
 		}
 	}

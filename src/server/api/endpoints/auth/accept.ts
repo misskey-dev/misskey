@@ -1,11 +1,11 @@
 import rndstr from 'rndstr';
 import * as crypto from 'crypto';
 import $ from 'cafy';
-import App from '../../../../models/app';
-import AuthSess from '../../../../models/auth-session';
-import AccessToken from '../../../../models/access-token';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { AuthSessions, AccessTokens, Apps } from '../../../../models';
+import { genId } from '../../../../misc/gen-id';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	tags: ['auth'],
@@ -31,27 +31,25 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch token
-	const session = await AuthSess
+	const session = await AuthSessions
 		.findOne({ token: ps.token });
 
-	if (session === null) {
+	if (session == null) {
 		throw new ApiError(meta.errors.noSuchSession);
 	}
 
 	// Generate access token
-	const accessToken = rndstr('a-zA-Z0-9', 32);
+	const accessToken = '1' + rndstr('a-zA-Z0-9', 15);
 
 	// Fetch exist access token
-	const exist = await AccessToken.findOne({
+	const exist = await AccessTokens.findOne({
 		appId: session.appId,
-		userId: user._id,
+		userId: user.id,
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		// Lookup app
-		const app = await App.findOne({
-			_id: session.appId
-		});
+		const app = await Apps.findOne(session.appId).then(ensure);
 
 		// Generate Hash
 		const sha256 = crypto.createHash('sha256');
@@ -59,21 +57,18 @@ export default define(meta, async (ps, user) => {
 		const hash = sha256.digest('hex');
 
 		// Insert access token doc
-		await AccessToken.insert({
+		await AccessTokens.save({
+			id: genId(),
 			createdAt: new Date(),
 			appId: session.appId,
-			userId: user._id,
+			userId: user.id,
 			token: accessToken,
 			hash: hash
 		});
 	}
 
 	// Update session
-	await AuthSess.update(session._id, {
-		$set: {
-			userId: user._id
-		}
+	await AuthSessions.update(session.id, {
+		userId: user.id
 	});
-
-	return;
 });

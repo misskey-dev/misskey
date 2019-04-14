@@ -1,53 +1,69 @@
 import * as Bull from 'bull';
-import * as mongo from 'mongodb';
 
 import { queueLogger } from '../../logger';
-import User from '../../../models/user';
 import follow from '../../../services/following/create';
-import DriveFile from '../../../models/drive-file';
-import { getOriginalUrl } from '../../../misc/get-drive-file-url';
 import parseAcct from '../../../misc/acct/parse';
-import resolveUser from '../../../remote/resolve-user';
+import { resolveUser } from '../../../remote/resolve-user';
 import { downloadTextFile } from '../../../misc/download-text-file';
-import { isSelfHost, toDbHost } from '../../../misc/convert-host';
+import { isSelfHost, toPuny } from '../../../misc/convert-host';
+import { Users, DriveFiles } from '../../../models';
 
 const logger = queueLogger.createSubLogger('import-following');
 
 export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Importing following of ${job.data.user._id} ...`);
+	logger.info(`Importing following of ${job.data.user.id} ...`);
 
-	const user = await User.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
+
+	const file = await DriveFiles.findOne({
+		id: job.data.fileId
 	});
+	if (file == null) {
+		done();
+		return;
+	}
 
-	const file = await DriveFile.findOne({
-		_id: new mongo.ObjectID(job.data.fileId.toString())
-	});
+	const csv = await downloadTextFile(file.url);
 
-	const url = getOriginalUrl(file);
-
-	const csv = await downloadTextFile(url);
+	let linenum = 0;
 
 	for (const line of csv.trim().split('\n')) {
-		const { username, host } = parseAcct(line.trim());
+		linenum++;
 
-		let target = isSelfHost(host) ? await User.findOne({
-			host: null,
-			usernameLower: username.toLowerCase()
-		}) : await User.findOne({
-			host: toDbHost(host),
-			usernameLower: username.toLowerCase()
-		});
+		try {
+			const { username, host } = parseAcct(line.trim());
 
-		if (host == null && target == null) continue;
+			let target = isSelfHost(host!) ? await Users.findOne({
+				host: null,
+				usernameLower: username.toLowerCase()
+			}) : await Users.findOne({
+				host: toPuny(host!),
+				usernameLower: username.toLowerCase()
+			});
 
-		if (target == null) {
-			target = await resolveUser(username, host);
+			if (host == null && target == null) continue;
+
+			if (target == null) {
+				target = await resolveUser(username, host);
+			}
+
+			if (target == null) {
+				throw `cannot resolve user: @${username}@${host}`;
+			}
+
+			// skip myself
+			if (target.id === job.data.user.id) continue;
+
+			logger.info(`Follow[${linenum}] ${target.id} ...`);
+
+			follow(user, target);
+		} catch (e) {
+			logger.warn(`Error in line:${linenum} ${e}`);
 		}
-
-		logger.info(`Follow ${target._id} ...`);
-
-		follow(user, target);
 	}
 
 	logger.succ('Imported');

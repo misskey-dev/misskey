@@ -1,4 +1,4 @@
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import { IRemove } from '../../type';
 import { resolveNote } from '../../models/note';
 import { removePinned } from '../../../../services/i/pin';
@@ -14,7 +14,8 @@ export default async (actor: IRemoteUser, activity: IRemove): Promise<void> => {
 
 	if (activity.target === actor.featured) {
 		const note = await resolveNote(activity.object);
-		await removePinned(actor, note._id);
+		if (note == null) throw new Error('note not found');
+		await removePinned(actor, note.id);
 		return;
 	}
 

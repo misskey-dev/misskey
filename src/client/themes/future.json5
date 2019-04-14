@@ -24,7 +24,7 @@
 		noteHeaderAcct: ':alpha<0.65<$c4',
 		noteHeaderInfo: ':alpha<0.5<$c4',
 		subNoteText: ':alpha<0.7<$c4',
-		renoteGradient: 'rgba(0, 0, 0, 0)',
+		renoteGradient: '$secondary',
 		renoteText: '$c2',
 		quoteBorder: '$c2',
 		mfmHashtag: '$c1',

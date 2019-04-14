@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import User from '../../../../models/user';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
+import { UserProfiles } from '../../../../models';
 
 export const meta = {
 	requireCredential: true,
@@ -10,7 +10,7 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.str
+			validator: $.str.match(/^[a-zA-Z]+$/)
 		},
 
 		value: {
@@ -20,18 +20,18 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const x: any = {};
-	x[`clientSettings.${ps.name}`] = ps.value;
-
-	await User.update(user._id, {
-		$set: x
-	});
+	await UserProfiles.createQueryBuilder().update()
+		.set({
+			clientData: {
+				[ps.name]: ps.value
+			},
+		})
+		.where('userId = :id', { id: user.id })
+		.execute();
 
 	// Publish event
-	publishMainStream(user._id, 'clientSettingUpdated', {
+	publishMainStream(user.id, 'clientSettingUpdated', {
 		key: ps.name,
 		value: ps.value
 	});
-
-	return;
 });

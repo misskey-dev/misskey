@@ -1,7 +1,8 @@
 import rndstr from 'rndstr';
 import $ from 'cafy';
-import App, { pack } from '../../../../models/app';
 import define from '../../define';
+import { Apps } from '../../../../models';
+import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	tags: ['app'],
@@ -34,9 +35,10 @@ export default define(meta, async (ps, user) => {
 	const secret = rndstr('a-zA-Z0-9', 32);
 
 	// Create account
-	const app = await App.insert({
+	const app = await Apps.save({
+		id: genId(),
 		createdAt: new Date(),
-		userId: user && user._id,
+		userId: user ? user.id : null,
 		name: ps.name,
 		description: ps.description,
 		permission: ps.permission,
@@ -44,7 +46,7 @@ export default define(meta, async (ps, user) => {
 		secret: secret
 	});
 
-	return await pack(app, null, {
+	return await Apps.pack(app, null, {
 		detail: true,
 		includeSecret: true
 	});

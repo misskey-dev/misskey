@@ -70,8 +70,8 @@ export default (opts: Opts = {}) => ({
 		},
 
 		reactionsCount(): number {
-			return this.appearNote.reactionCounts
-				? sum(Object.values(this.appearNote.reactionCounts))
+			return this.appearNote.reactions
+				? sum(Object.values(this.appearNote.reactions))
 				: 0;
 		},
 

@@ -1,14 +1,8 @@
 import * as ms from 'ms';
 import $ from 'cafy';
-import User, { pack, ILocalUser } from '../../../../models/user';
-import { getFriendIds } from '../../common/get-friends';
-import * as request from 'request-promise-native';
-import config from '../../../../config';
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
-import resolveUser from '../../../../remote/resolve-user';
-import { getHideUserIds } from '../../common/get-hide-users';
-import { apiLogger } from '../../logger';
+import { Users, Followings } from '../../../../models';
+import { generateMuteQueryForUsers } from '../../common/generate-mute-query';
 
 export const meta = {
 	desc: {
@@ -19,7 +13,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-read',
+	kind: 'read:account',
 
 	params: {
 		limit: {
@@ -42,83 +36,24 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const instance = await fetchMeta();
+	const query = Users.createQueryBuilder('user')
+		.where('user.isLocked = FALSE')
+		.where('user.host IS NULL')
+		.where('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
+		.orderBy('user.followersCount', 'DESC');
 
-	if (instance.enableExternalUserRecommendation) {
-		const userName = me.username;
-		const hostName = config.hostname;
-		const limit = ps.limit;
-		const offset = ps.offset;
-		const timeout = instance.externalUserRecommendationTimeout;
-		const engine = instance.externalUserRecommendationEngine;
-		const url = engine
-			.replace('{{host}}', hostName)
-			.replace('{{user}}', userName)
-			.replace('{{limit}}', limit.toString())
-			.replace('{{offset}}', offset.toString());
+	generateMuteQueryForUsers(query, me);
 
-		const users = await request({
-			url: url,
-			proxy: config.proxy,
-			timeout: timeout,
-			json: true,
-			followRedirect: true,
-			followAllRedirects: true
-		})
-		.then(body => convertUsers(body, me));
+	const followingQuery = Followings.createQueryBuilder('following')
+		.select('following.followeeId')
+		.where('following.followerId = :followerId', { followerId: me.id });
 
-		return users;
-	} else {
-		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriendIds(me._id);
+	query
+		.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`);
 
-		// 隠すユーザーを取得
-		const hideUserIds = await getHideUserIds(me);
+	query.setParameters(followingQuery.getParameters());
 
-		const users = await User.find({
-			_id: {
-				$nin: followingIds.concat(hideUserIds)
-			},
-			isLocked: { $ne: true },
-			updatedAt: {
-				$gte: new Date(Date.now() - ms('7days'))
-			},
-			host: null
-		}, {
-			limit: ps.limit,
-			skip: ps.offset,
-			sort: {
-				followersCount: -1
-			}
-		});
+	const users = await query.take(ps.limit!).skip(ps.offset).getMany();
 
-		return await Promise.all(users.map(user => pack(user, me, { detail: true })));
-	}
+	return await Users.packMany(users, me, { detail: true });
 });
-
-type IRecommendUser = {
-	name: string;
-	username: string;
-	host: string;
-	description: string;
-	avatarUrl: string;
-};
-
-/**
- * Resolve/Pack dummy users
- */
-async function convertUsers(src: IRecommendUser[], me: ILocalUser) {
-	const packed = await Promise.all(src.map(async x => {
-		const user = await resolveUser(x.username, x.host)
-			.catch(() => {
-				apiLogger.warn(`Can't resolve ${x.username}@${x.host}`);
-				return null;
-			});
-
-		if (user == null) return x;
-
-		return await pack(user, me, { detail: true });
-	}));
-
-	return packed;
-}

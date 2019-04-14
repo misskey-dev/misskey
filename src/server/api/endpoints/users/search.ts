@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import * as escapeRegexp from 'escape-regexp';
-import User, { pack, validateUsername, IUser } from '../../../../models/user';
 import define from '../../define';
+import { Users } from '../../../../models';
+import { User } from '../../../../models/entities/user';
 
 export const meta = {
 	desc: {
@@ -62,34 +62,30 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const isUsername = validateUsername(ps.query.replace('@', ''), !ps.localOnly);
+	const isUsername = Users.validateUsername(ps.query.replace('@', ''), !ps.localOnly);
 
-	let users: IUser[] = [];
+	let users: User[] = [];
 
 	if (isUsername) {
-		users = await User
-			.find({
-				host: null,
-				usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-				isSuspended: { $ne: true }
-			}, {
-				limit: ps.limit,
-				skip: ps.offset
-			});
+		users = await Users.createQueryBuilder('user')
+			.where('user.host IS NULL')
+			.andWhere('user.isSuspended = FALSE')
+			.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+			.take(ps.limit!)
+			.skip(ps.offset)
+			.getMany();
 
-		if (users.length < ps.limit && !ps.localOnly) {
-			const otherUsers = await User
-				.find({
-					host: { $ne: null },
-					usernameLower: new RegExp('^' + escapeRegexp(ps.query.replace('@', '').toLowerCase())),
-					isSuspended: { $ne: true }
-				}, {
-					limit: ps.limit - users.length
-				});
+		if (users.length < ps.limit! && !ps.localOnly) {
+			const otherUsers = await Users.createQueryBuilder('user')
+				.where('user.host IS NOT NULL')
+				.andWhere('user.isSuspended = FALSE')
+				.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+				.take(ps.limit! - users.length)
+				.getMany();
 
 			users = users.concat(otherUsers);
 		}
 	}
 
-	return await Promise.all(users.map(user => pack(user, me, { detail: ps.detail })));
+	return await Users.packMany(users, me, { detail: ps.detail });
 });

@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserReactionsChart from '../../../../../services/chart/per-user-reactions';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
+import { convertLog } from '../../../../../services/chart/core';
+import { perUserReactionsChart } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -30,7 +31,6 @@ export const meta = {
 
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -38,14 +38,9 @@ export const meta = {
 		}
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(perUserReactionsChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return await perUserReactionsChart.getChart(ps.span as any, ps.limit, ps.userId);
+	return await perUserReactionsChart.getChart(ps.span as any, ps.limit!, ps.userId);
 });

@@ -4,6 +4,7 @@
 		:src="file.url"
 		:alt="file.name"
 		:title="file.name"
+		@load="onThumbnailLoaded"
 		v-if="detail && is === 'image'"/>
 	<video
 		:src="file.url"
@@ -104,15 +105,11 @@ export default Vue.extend({
 		},
 		isThumbnailAvailable(): boolean {
 			return this.file.thumbnailUrl
-				? this.file.thumbnailUrl.endsWith('?thumbnail')
-					? (this.is === 'image' || this.is === 'video')
-					: true
+				? (this.is === 'image' || this.is === 'video')
 				: false;
 		},
 		background(): string {
-			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3
-				? `rgb(${this.file.properties.avgColor.join(',')})`
-				: 'transparent';
+			return this.file.properties.avgColor || 'transparent';
 		}
 	},
 	mounted() {
@@ -121,10 +118,10 @@ export default Vue.extend({
 	},
 	methods: {
 		onThumbnailLoaded() {
-			if (this.file.properties.avgColor && this.file.properties.avgColor.length == 3) {
+			if (this.file.properties.avgColor) {
 				anime({
 					targets: this.$refs.thumbnail,
-					backgroundColor: `rgba(${this.file.properties.avgColor.join(',')}, 0)`,
+					backgroundColor: this.file.properties.avgColor.replace('255)', '0)'),
 					duration: 100,
 					easing: 'linear'
 				});
@@ -146,21 +143,6 @@ export default Vue.extend({
 	> .icon
 		pointer-events none
 
-	> img
-		height 100%
-		width 100%
-		margin auto
-		object-fit cover
-
-	> .icon
-		height 65%
-		width 65%
-		margin auto
-
-	> video,
-	> audio
-		width 100%
-
 	> .icon-sub
 		position absolute
 		width 30%
@@ -169,9 +151,33 @@ export default Vue.extend({
 		right 4%
 		bottom 4%
 
+	> *
+		margin auto
+
+	&:not(.detail)
+		> img
+			height 100%
+			width 100%
+			object-fit cover
+
+		> .icon
+			height 65%
+			width 65%
+
+		> video,
+		> audio
+			width 100%
+
 	&.detail
 		> .icon
 			height 100px
-			margin 16px auto
+			width 100px
+			margin 16px
+
+		> *:not(.icon)
+			max-height 300px
+			max-width 100%
+			height 100%
+			object-fit contain
 
 </style>

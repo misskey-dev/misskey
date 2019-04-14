@@ -22,37 +22,28 @@ adduser --disabled-password --disabled-login misskey
 Please install and setup these softwares:
 
 #### Dependencies :package:
-* **[Node.js](https://nodejs.org/en/)** >= 10.0.0
-* **[MongoDB](https://www.mongodb.com/)** >= 3.6
+* **[Node.js](https://nodejs.org/en/)** >= 11.7.0
+* **[PostgreSQL](https://www.postgresql.org/)** >= 10
+* **[Redis](https://redis.io/)**
 
 ##### Optional
-* [Redis](https://redis.io/)
-  * Redis is optional, but we strongly recommended to install it
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Setup MongoDB
-----------------------------------------------------------------
-As root:
-1. `mongo` Go to the mongo shell
-2. `use misskey` Use the misskey database
-3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Create the misskey user.
-4. `exit` You're done!
-
-*4.* Install Misskey
+*3.* Install Misskey
 ----------------------------------------------------------------
 1. `su - misskey` Connect to misskey user.
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clone the misskey repo from master branch.
 3. `cd misskey` Navigate to misskey directory
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
+4. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Install misskey dependencies.
 
-*5.* Configure Misskey
+*4.* Configure Misskey
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
 2. Edit `default.yml`
 
-*6.* Build Misskey
+*5.* Build Misskey
 ----------------------------------------------------------------
 
 Build misskey with the following:
@@ -67,6 +58,12 @@ If you're still encountering errors about some modules, use node-gyp:
 2. `node-gyp configure`
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
+
+*6.* Init DB
+----------------------------------------------------------------
+``` shell
+npm run init
+```
 
 *7.* That is it.
 ----------------------------------------------------------------
@@ -107,7 +104,7 @@ You can check if the service is running with `systemctl status misskey`.
 
 ### How to update your Misskey server to the latest version
 1. `git fetch`
-2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+2. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. Check [ChangeLog](../CHANGELOG.md) for migration information

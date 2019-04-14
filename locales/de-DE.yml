@@ -445,10 +445,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Abbrechen"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Nachrichten:"
-desktop/views/components/messaging-window.vue:
-  title: "Nachrichten"
 desktop/views/components/note-detail.vue:
   private: "Dieser Post ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
@@ -534,7 +530,6 @@ desktop/views/components/timeline.vue:
   home: "Home"
   local: "Lokal"
   global: "Global"
-  messages: "Nachrichten"
   list: "Listen"
 desktop/views/components/ui.header.account.vue:
   profile: "Dein Profil"
@@ -600,8 +595,6 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "Mo"
   day: "So"
-desktop/views/widgets/messaging.vue:
-  title: "Nachrichten"
 desktop/views/widgets/notifications.vue:
   title: "Benachrichtigungen"
 desktop/views/widgets/polls.vue:
@@ -647,7 +640,6 @@ mobile/views/pages/home.vue:
   home: "Home"
   local: "Lokal"
   global: "Global"
-  messages: "Nachrichten"
 mobile/views/pages/widgets.vue:
   add-widget: "Hinzufügen"
   customization-tips: "Anpassung-Tipps"

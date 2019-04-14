@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import activeUsersChart from '../../../../services/chart/active-users';
+import { convertLog } from '../../../../services/chart/core';
+import { activeUsersChart } from '../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -28,14 +29,9 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(activeUsersChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return await activeUsersChart.getChart(ps.span as any, ps.limit);
+	return await activeUsersChart.getChart(ps.span as any, ps.limit!);
 });

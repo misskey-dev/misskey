@@ -1,7 +1,6 @@
 import $ from 'cafy';
-import User from '../../../../models/user';
-import { validateUsername } from '../../../../models/user';
 import define from '../../define';
+import { Users } from '../../../../models';
 
 export const meta = {
 	tags: ['users'],
@@ -10,18 +9,16 @@ export const meta = {
 
 	params: {
 		username: {
-			validator: $.str.pipe(validateUsername)
+			validator: $.str.pipe(Users.validateUsername)
 		}
 	}
 };
 
 export default define(meta, async (ps) => {
 	// Get exist
-	const exist = await User.count({
+	const exist = await Users.count({
 		host: null,
 		usernameLower: ps.username.toLowerCase()
-	}, {
-		limit: 1
 	});
 
 	return {

@@ -1,26 +1,27 @@
 import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
-import * as mongo from 'mongodb';
 
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
-import User from '../../../models/user';
 import dateFormat = require('dateformat');
-import UserList from '../../../models/user-list';
 import { getFullApAccount } from '../../../misc/convert-host';
+import { Users, UserLists, UserListJoinings } from '../../../models';
+import { In } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 
 export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
-	logger.info(`Exporting user lists of ${job.data.user._id} ...`);
+	logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
-	const user = await User.findOne({
-		_id: new mongo.ObjectID(job.data.user._id.toString())
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
-	const lists = await UserList.find({
-		userId: user._id
+	const lists = await UserLists.find({
+		userId: user.id
 	});
 
 	// Create temp file
@@ -36,18 +37,14 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	for (const list of lists) {
-		const users = await User.find({
-			_id: { $in: list.userIds }
-		}, {
-			fields: {
-				username: true,
-				host: true
-			}
+		const joinings = await UserListJoinings.find({ userListId: list.id });
+		const users = await Users.find({
+			id: In(joinings.map(j => j.userId))
 		});
 
 		for (const u of users) {
 			const acct = getFullApAccount(u.username, u.host);
-			const content = `${list.title},${acct}`;
+			const content = `${list.name},${acct}`;
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
 					if (err) {
@@ -67,7 +64,7 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 	const fileName = 'user-lists-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
 	const driveFile = await addFile(user, path, fileName);
 
-	logger.succ(`Exported to: ${driveFile._id}`);
+	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();
 	done();
 }

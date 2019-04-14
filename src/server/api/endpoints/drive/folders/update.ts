@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import DriveFolder, { isValidFolderName, pack } from '../../../../../models/drive-folder';
+import { ID } from '../../../../../misc/cafy-id';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { DriveFolders } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -17,12 +17,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-write',
+	kind: 'write:drive',
 
 	params: {
 		folderId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のフォルダID',
 				'en-US': 'Target folder ID'
@@ -30,7 +29,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.optional.str.pipe(isValidFolderName),
+			validator: $.optional.str.pipe(DriveFolders.validateFolderName),
 			desc: {
 				'ja-JP': 'フォルダ名',
 				'en-US': 'Folder name'
@@ -39,7 +38,6 @@ export const meta = {
 
 		parentId: {
 			validator: $.optional.nullable.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '親フォルダID',
 				'en-US': 'Parent folder ID'
@@ -70,49 +68,44 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch folder
-	const folder = await DriveFolder
-		.findOne({
-			_id: ps.folderId,
-			userId: user._id
-		});
+	const folder = await DriveFolders.findOne({
+		id: ps.folderId,
+		userId: user.id
+	});
 
-	if (folder === null) {
+	if (folder == null) {
 		throw new ApiError(meta.errors.noSuchFolder);
 	}
 
 	if (ps.name) folder.name = ps.name;
 
 	if (ps.parentId !== undefined) {
-		if (ps.parentId.equals(folder._id)) {
+		if (ps.parentId === folder.id) {
 			throw new ApiError(meta.errors.recursiveNesting);
 		} else if (ps.parentId === null) {
 			folder.parentId = null;
 		} else {
 			// Get parent folder
-			const parent = await DriveFolder
-				.findOne({
-					_id: ps.parentId,
-					userId: user._id
-				});
+			const parent = await DriveFolders.findOne({
+				id: ps.parentId,
+				userId: user.id
+			});
 
-			if (parent === null) {
+			if (parent == null) {
 				throw new ApiError(meta.errors.noSuchParentFolder);
 			}
 
 			// Check if the circular reference will occur
 			async function checkCircle(folderId: any): Promise<boolean> {
 				// Fetch folder
-				const folder2 = await DriveFolder.findOne({
-					_id: folderId
-				}, {
-					_id: true,
-					parentId: true
+				const folder2 = await DriveFolders.findOne({
+					id: folderId
 				});
 
-				if (folder2._id.equals(folder._id)) {
+				if (folder2!.id === folder!.id) {
 					return true;
-				} else if (folder2.parentId) {
-					return await checkCircle(folder2.parentId);
+				} else if (folder2!.parentId) {
+					return await checkCircle(folder2!.parentId);
 				} else {
 					return false;
 				}
@@ -124,22 +117,20 @@ export default define(meta, async (ps, user) => {
 				}
 			}
 
-			folder.parentId = parent._id;
+			folder.parentId = parent.id;
 		}
 	}
 
 	// Update
-	DriveFolder.update(folder._id, {
-		$set: {
-			name: folder.name,
-			parentId: folder.parentId
-		}
+	DriveFolders.update(folder.id, {
+		name: folder.name,
+		parentId: folder.parentId
 	});
 
-	const folderObj = await pack(folder);
+	const folderObj = await DriveFolders.pack(folder);
 
 	// Publish folderUpdated event
-	publishDriveStream(user._id, 'folderUpdated', folderObj);
+	publishDriveStream(user.id, 'folderUpdated', folderObj);
 
 	return folderObj;
 });

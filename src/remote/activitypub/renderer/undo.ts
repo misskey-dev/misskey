@@ -1,8 +1,8 @@
 import config from '../../../config';
-import { ILocalUser, IUser } from '../../../models/user';
+import { ILocalUser, User } from '../../../models/entities/user';
 
-export default (object: any, user: ILocalUser | IUser) => ({
+export default (object: any, user: ILocalUser | User) => ({
 	type: 'Undo',
-	actor: `${config.url}/users/${user._id}`,
+	actor: `${config.url}/users/${user.id}`,
 	object
 });

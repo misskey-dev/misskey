@@ -1,79 +1,76 @@
-import Vote from '../../../models/poll-vote';
-import Note, { INote } from '../../../models/note';
-import Watching from '../../../models/note-watching';
 import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
-import notify from '../../../services/create-notification';
-import { isLocalUser, IUser } from '../../../models/user';
+import { User } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
+import { PollVotes, Users, NoteWatchings, Polls, UserProfiles } from '../../../models';
+import { Not } from 'typeorm';
+import { genId } from '../../../misc/gen-id';
+import { createNotification } from '../../create-notification';
 
-export default (user: IUser, note: INote, choice: number) => new Promise(async (res, rej) => {
-	if (!note.poll.choices.some(x => x.id == choice)) return rej('invalid choice param');
+export default async function(user: User, note: Note, choice: number) {
+	const poll = await Polls.findOne(note.id);
+
+	if (poll == null) throw new Error('poll not found');
+
+	// Check whether is valid choice
+	if (poll.choices[choice] == null) throw new Error('invalid choice param');
 
 	// if already voted
-	const exist = await Vote.find({
-		noteId: note._id,
-		userId: user._id
+	const exist = await PollVotes.find({
+		noteId: note.id,
+		userId: user.id
 	});
 
-	if (note.poll.multiple) {
-		if (exist.some(x => x.choice === choice))
-			return rej('already voted');
-	} else if (exist.length) {
-		return rej('already voted');
+	if (poll.multiple) {
+		if (exist.some(x => x.choice === choice)) {
+			throw new Error('already voted');
+		}
+	} else if (exist.length !== 0) {
+		throw new Error('already voted');
 	}
 
 	// Create vote
-	await Vote.insert({
+	await PollVotes.save({
+		id: genId(),
 		createdAt: new Date(),
-		noteId: note._id,
-		userId: user._id,
+		noteId: note.id,
+		userId: user.id,
 		choice: choice
 	});
 
-	res();
-
-	const inc: any = {};
-	inc[`poll.choices.${note.poll.choices.findIndex(c => c.id == choice)}.votes`] = 1;
-
 	// Increment votes count
-	await Note.update({ _id: note._id }, {
-		$inc: inc
-	});
+	const index = choice + 1; // In SQL, array index is 1 based
+	await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
 
-	publishNoteStream(note._id, 'pollVoted', {
+	publishNoteStream(note.id, 'pollVoted', {
 		choice: choice,
-		userId: user._id.toHexString()
+		userId: user.id
 	});
 
 	// Notify
-	notify(note.userId, user._id, 'poll_vote', {
-		noteId: note._id,
+	createNotification(note.userId, user.id, 'pollVote', {
+		noteId: note.id,
 		choice: choice
 	});
 
 	// Fetch watchers
-	Watching
-		.find({
-			noteId: note._id,
-			userId: { $ne: user._id },
-			// 削除されたドキュメントは除く
-			deletedAt: { $exists: false }
-		}, {
-			fields: {
-				userId: true
-			}
-		})
-		.then(watchers => {
-			for (const watcher of watchers) {
-				notify(watcher.userId, user._id, 'poll_vote', {
-					noteId: note._id,
-					choice: choice
-				});
-			}
-		});
+	NoteWatchings.find({
+		noteId: note.id,
+		userId: Not(user.id),
+	})
+	.then(watchers => {
+		for (const watcher of watchers) {
+			createNotification(watcher.userId, user.id, 'pollVote', {
+				noteId: note.id,
+				choice: choice
+			});
+		}
+	});
+
+	const profile = await UserProfiles.findOne({ userId: user.id });
 
 	// ローカルユーザーが投票した場合この投稿をWatchする
-	if (isLocalUser(user) && user.settings.autoWatch !== false) {
-		watch(user._id, note);
+	if (Users.isLocalUser(user) && profile!.autoWatch) {
+		watch(user.id, note);
 	}
-});
+}

@@ -21,13 +21,7 @@
 			</div>
 			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="{ model: 'cw' }">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }"></textarea>
-			<div class="attaches" v-show="files.length != 0">
-				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
-					<div class="file" v-for="file in files" :key="file.id">
-						<div class="img" :style="`background-image: url(${file.thumbnailUrl})`" @click="detachMedia(file)"></div>
-					</div>
-				</x-draggable>
-			</div>
+			<x-post-form-attaches class="attaches" :files="files"/>
 			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 			<footer>
@@ -57,7 +51,6 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import * as XDraggable from 'vuedraggable';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import getFace from '../../../common/scripts/get-face';
 import { parse } from '../../../../../mfm/parse';
@@ -66,11 +59,12 @@ import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
 import extractMentions from '../../../../../misc/extract-mentions';
+import XPostFormAttaches from '../../../common/views/components/post-form-attaches.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/post-form.vue'),
 	components: {
-		XDraggable
+		XPostFormAttaches
 	},
 
 	props: {
@@ -264,8 +258,8 @@ export default Vue.extend({
 			this.$emit('change-attached-files', this.files);
 		},
 
-		detachMedia(file) {
-			this.files = this.files.filter(x => x.id != file.id);
+		detachMedia(id) {
+			this.files = this.files.filter(x => x.id != id);
 			this.$emit('change-attached-files', this.files);
 		},
 
@@ -480,32 +474,6 @@ export default Vue.extend({
 				max-width 100%
 				min-width 100%
 				min-height 80px
-
-			> .attaches
-
-				> .files
-					display block
-					margin 0
-					padding 4px
-					list-style none
-
-					&:after
-						content ""
-						display block
-						clear both
-
-					> .file
-						display block
-						float left
-						margin 0
-						padding 0
-						border solid 4px transparent
-
-						> .img
-							width 64px
-							height 64px
-							background-size cover
-							background-position center center
 
 			> .mk-uploader
 				margin 8px 0 0 0

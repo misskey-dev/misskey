@@ -1,21 +1,23 @@
 import renderImage from './image';
 import renderKey from './key';
 import config from '../../../config';
-import { ILocalUser } from '../../../models/user';
+import { ILocalUser } from '../../../models/entities/user';
 import { toHtml } from '../../../mfm/toHtml';
 import { parse } from '../../../mfm/parse';
-import DriveFile from '../../../models/drive-file';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
+import { DriveFiles, UserProfiles, UserKeypairs } from '../../../models';
+import { ensure } from '../../../prelude/ensure';
 
-export default async (user: ILocalUser) => {
-	const id = `${config.url}/users/${user._id}`;
+export async function renderPerson(user: ILocalUser) {
+	const id = `${config.url}/users/${user.id}`;
 
-	const [avatar, banner] = await Promise.all([
-		DriveFile.findOne({ _id: user.avatarId }),
-		DriveFile.findOne({ _id: user.bannerId })
+	const [avatar, banner, profile] = await Promise.all([
+		user.avatarId ? DriveFiles.findOne(user.avatarId) : Promise.resolve(undefined),
+		user.bannerId ? DriveFiles.findOne(user.bannerId) : Promise.resolve(undefined),
+		UserProfiles.findOne({ userId: user.id }).then(ensure)
 	]);
 
 	const attachment: {
@@ -26,41 +28,41 @@ export default async (user: ILocalUser) => {
 		identifier?: IIdentifier
 	}[] = [];
 
-	if (user.twitter) {
+	if (profile.twitter) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${user.twitter.userId}" rel="me nofollow noopener" target="_blank"><span>@${user.twitter.screenName}</span></a>`,
+			value: `<a href="https://twitter.com/intent/user?user_id=${profile.twitterUserId}" rel="me nofollow noopener" target="_blank"><span>@${profile.twitterScreenName}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:twitter',
-				value: `${user.twitter.userId}@${user.twitter.screenName}`
+				value: `${profile.twitterUserId}@${profile.twitterScreenName}`
 			}
 		});
 	}
 
-	if (user.github) {
+	if (profile.github) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${user.github.login}" rel="me nofollow noopener" target="_blank"><span>@${user.github.login}</span></a>`,
+			value: `<a href="https://github.com/${profile.githubLogin}" rel="me nofollow noopener" target="_blank"><span>@${profile.githubLogin}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:github',
-				value: `${user.github.id}@${user.github.login}`
+				value: `${profile.githubId}@${profile.githubLogin}`
 			}
 		});
 	}
 
-	if (user.discord) {
+	if (profile.discord) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${user.discord.id}" rel="me nofollow noopener" target="_blank"><span>${user.discord.username}#${user.discord.discriminator}</span></a>`,
+			value: `<a href="https://discordapp.com/users/${profile.discordId}" rel="me nofollow noopener" target="_blank"><span>${profile.discordUsername}#${profile.discordDiscriminator}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:discord',
-				value: `${user.discord.id}@${user.discord.username}#${user.discord.discriminator}`
+				value: `${profile.discordId}@${profile.discordUsername}#${profile.discordDiscriminator}`
 			}
 		});
 	}
@@ -75,6 +77,8 @@ export default async (user: ILocalUser) => {
 		...hashtagTags,
 	];
 
+	const keypair = await UserKeypairs.findOne(user.id).then(ensure);
+
 	return {
 		type: user.isBot ? 'Service' : 'Person',
 		id,
@@ -88,13 +92,13 @@ export default async (user: ILocalUser) => {
 		url: `${config.url}/@${user.username}`,
 		preferredUsername: user.username,
 		name: user.name,
-		summary: toHtml(parse(user.description)),
-		icon: user.avatarId && renderImage(avatar),
-		image: user.bannerId && renderImage(banner),
+		summary: toHtml(parse(profile.description)),
+		icon: avatar ? renderImage(avatar) : null,
+		image: banner ? renderImage(banner) : null,
 		tag,
 		manuallyApprovesFollowers: user.isLocked,
-		publicKey: renderKey(user),
+		publicKey: renderKey(user, keypair),
 		isCat: user.isCat,
 		attachment: attachment.length ? attachment : undefined
 	};
-};
+}

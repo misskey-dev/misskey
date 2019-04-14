@@ -1,21 +1,20 @@
-import * as mongo from 'mongodb';
-import User, { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import config from '../../../../config';
 import reject from '../../../../services/following/requests/reject';
 import { IFollow } from '../../type';
+import { Users } from '../../../../models';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const id = typeof activity.actor == 'string' ? activity.actor : activity.actor.id;
+	if (id == null) throw new Error('missing id');
 
 	if (!id.startsWith(config.url + '/')) {
-		return null;
+		return;
 	}
 
-	const follower = await User.findOne({
-		_id: new mongo.ObjectID(id.split('/').pop())
-	});
+	const follower = await Users.findOne(id.split('/').pop());
 
-	if (follower === null) {
+	if (follower == null) {
 		throw new Error('follower not found');
 	}
 

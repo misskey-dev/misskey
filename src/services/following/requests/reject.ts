@@ -1,34 +1,28 @@
-import User, { IUser, isRemoteUser, ILocalUser, pack as packUser } from '../../../models/user';
-import FollowRequest from '../../../models/follow-request';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
+import { User, ILocalUser } from '../../../models/entities/user';
+import { Users, FollowRequests } from '../../../models';
 
-export default async function(followee: IUser, follower: IUser) {
-	if (isRemoteUser(follower)) {
-		const request = await FollowRequest.findOne({
-			followeeId: followee._id,
-			followerId: follower._id
+export default async function(followee: User, follower: User) {
+	if (Users.isRemoteUser(follower)) {
+		const request = await FollowRequests.findOne({
+			followeeId: followee.id,
+			followerId: follower.id
 		});
 
-		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
+		const content = renderActivity(renderReject(renderFollow(follower, followee, request!.requestId!), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
-	await FollowRequest.remove({
-		followeeId: followee._id,
-		followerId: follower._id
+	await FollowRequests.delete({
+		followeeId: followee.id,
+		followerId: follower.id
 	});
 
-	User.update({ _id: followee._id }, {
-		$inc: {
-			pendingReceivedFollowRequestsCount: -1
-		}
-	});
-
-	packUser(followee, follower, {
+	Users.pack(followee, follower, {
 		detail: true
-	}).then(packed => publishMainStream(follower._id, 'unfollow', packed));
+	}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
 }

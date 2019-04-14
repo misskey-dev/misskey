@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import UserList, { pack } from '../../../../../models/user-list';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { UserLists } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -14,12 +14,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-read',
+	kind: 'read:account',
 
 	params: {
 		listId: {
 			validator: $.type(ID),
-			transform: transform,
 		},
 	},
 
@@ -38,14 +37,14 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	// Fetch the list
-	const userList = await UserList.findOne({
-		_id: ps.listId,
-		userId: me._id,
+	const userList = await UserLists.findOne({
+		id: ps.listId,
+		userId: me.id,
 	});
 
 	if (userList == null) {
 		throw new ApiError(meta.errors.noSuchList);
 	}
 
-	return await pack(userList);
+	return await UserLists.pack(userList);
 });

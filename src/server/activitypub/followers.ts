@@ -1,24 +1,18 @@
-import { ObjectID } from 'mongodb';
 import * as Router from 'koa-router';
 import config from '../../config';
 import $ from 'cafy';
-import ID, { transform } from '../../misc/cafy-id';
-import User from '../../models/user';
-import Following from '../../models/following';
+import { ID } from '../../misc/cafy-id';
 import * as url from '../../prelude/url';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
 import { setResponseType } from '../activitypub';
+import { Users, Followings } from '../../models';
+import { LessThan } from 'typeorm';
 
 export default async (ctx: Router.IRouterContext) => {
-	if (!ObjectID.isValid(ctx.params.user)) {
-		ctx.status = 404;
-		return;
-	}
-
-	const userId = new ObjectID(ctx.params.user);
+	const userId = ctx.params.user;
 
 	// Get 'cursor' parameter
 	const [cursor, cursorErr] = $.optional.type(ID).get(ctx.request.query.cursor);
@@ -34,12 +28,12 @@ export default async (ctx: Router.IRouterContext) => {
 	}
 
 	// Verify user
-	const user = await User.findOne({
-		_id: userId,
+	const user = await Users.findOne({
+		id: userId,
 		host: null
 	});
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -49,22 +43,20 @@ export default async (ctx: Router.IRouterContext) => {
 
 	if (page) {
 		const query = {
-			followeeId: user._id
+			followeeId: user.id
 		} as any;
 
 		// カーソルが指定されている場合
 		if (cursor) {
-			query._id = {
-				$lt: transform(cursor)
-			};
+			query.id = LessThan(cursor);
 		}
 
 		// Get followers
-		const followings = await Following
-			.find(query, {
-				limit: limit + 1,
-				sort: { _id: -1 }
-			});
+		const followings = await Followings.find({
+			where: query,
+			take: limit + 1,
+			order: { id: -1 }
+		});
 
 		// 「次のページ」があるかどうか
 		const inStock = followings.length === limit + 1;
@@ -77,18 +69,18 @@ export default async (ctx: Router.IRouterContext) => {
 				cursor
 			})}`,
 			user.followersCount, renderedFollowers, partOf,
-			null,
+			undefined,
 			inStock ? `${partOf}?${url.query({
 				page: 'true',
-				cursor: followings[followings.length - 1]._id.toHexString()
-			})}` : null
+				cursor: followings[followings.length - 1].id
+			})}` : undefined
 		);
 
 		ctx.body = renderActivity(rendered);
 		setResponseType(ctx);
 	} else {
 		// index page
-		const rendered = renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`, null);
+		const rendered = renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
 		ctx.body = renderActivity(rendered);
 		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		setResponseType(ctx);

@@ -1,9 +1,10 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Note, { packMany, INote } from '../../../../models/note';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';
+import { Note } from '../../../../models/entities/note';
+import { Notes } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -18,7 +19,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'
@@ -58,18 +58,19 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	const conversation: INote[] = [];
+	const conversation: Note[] = [];
 	let i = 0;
 
 	async function get(id: any) {
 		i++;
-		const p = await Note.findOne({ _id: id });
+		const p = await Notes.findOne(id);
+		if (p == null) return;
 
-		if (i > ps.offset) {
+		if (i > ps.offset!) {
 			conversation.push(p);
 		}
 
-		if (conversation.length == ps.limit) {
+		if (conversation.length == ps.limit!) {
 			return;
 		}
 
@@ -82,5 +83,5 @@ export default define(meta, async (ps, user) => {
 		await get(note.replyId);
 	}
 
-	return await packMany(conversation, user);
+	return await Notes.packMany(conversation, user);
 });

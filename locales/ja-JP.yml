@@ -73,6 +73,12 @@ common:
   followers: "フォロワー"
   favorites: "お気に入り"
 
+  permissions:
+    'read:account': "アカウントの情報を見る"
+    'write:account': "アカウントの情報を変更する"
+    'read:drive': "ドライブを見る"
+    'write:drive': "ドライブを操作する"
+
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
     explore: "ユーザーを探索する"
@@ -299,15 +305,6 @@ common:
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
-  account-read: "アカウントの情報を見る。"
-  account-write: "アカウントの情報を操作する。"
-  note-write: "投稿する。"
-  like-write: "いいねしたりいいね解除する。"
-  following-write: "フォローしたりフォロー解除する。"
-  drive-read: "ドライブを見る。"
-  drive-write: "ドライブを操作する。"
-  notification-read: "通知を見る。"
-  notification-write: "通知を操作する。"
   cancel: "キャンセル"
   accept: "アクセスを許可"
 
@@ -967,7 +964,6 @@ desktop/views/components/post-form.vue:
   posting: "投稿中"
   attach-media-from-local: "PCからメディアを添付"
   attach-media-from-drive: "ドライブからメディアを添付"
-  attach-cancel: "添付取り消し"
   insert-a-kao: "v('ω')v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
@@ -1073,6 +1069,11 @@ common/views/components/password-settings.vue:
   changed: "パスワードを変更しました"
   failed: "パスワード変更に失敗しました"
 
+common/views/components/post-form-attaches.vue:
+  attach-cancel: "添付取り消し"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
+
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
@@ -1084,9 +1085,6 @@ desktop/views/components/settings.tags.vue:
   query: "クエリ (省略可)"
   add: "追加"
   save: "保存"
-
-desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
 
 desktop/views/components/timeline.vue:
   home: "ホーム"
@@ -1238,11 +1236,6 @@ admin/views/instance.vue:
   save: "保存"
   saved: "保存しました"
   user-recommendation-config: "おすすめユーザー"
-  enable-external-user-recommendation: "外部ユーザーレコメンデーションを有効にする"
-  external-user-recommendation-engine: "エンジン"
-  external-user-recommendation-engine-desc: "例: https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
-  external-user-recommendation-timeout: "タイムアウト"
-  external-user-recommendation-timeout-desc: "ミリ秒単位 (例: 300000)"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使われます。"
   enable-email: "メール配信を有効にする"
@@ -1823,12 +1816,3 @@ dev/views/new-app.vue:
   authority: "権限"
   authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
-  account-read: "アカウントの情報を見る。"
-  account-write: "アカウントの情報を操作する。"
-  note-write: "投稿する。"
-  reaction-write: "リアクションしたりリアクションをキャンセルする。"
-  following-write: "フォローしたりフォロー解除する。"
-  drive-read: "ドライブを見る。"
-  drive-write: "ドライブを操作する。"
-  notification-read: "通知を見る。"
-  notification-write: "通知を操作する。"

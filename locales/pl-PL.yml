@@ -146,9 +146,11 @@ common:
     choose-wallpaper: "Wybierz tapetę"
     timeline: "Oś czasu"
     sound: "Dźwięk"
+    volume: "Głośność"
     test: "Test"
     update: "Aktualizacja Misskey"
     version: "Wersja:"
+    do-update: "Sprawdź dostępność nowych aktualizacji"
     navbar-position-left: "Z lewej"
   search: "Szukaj"
   delete: "Usuń"
@@ -677,10 +679,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Anuluj"
   ok: "OK"
-desktop/views/components/messaging-room-window.vue:
-  title: "Wiadomości:"
-desktop/views/components/messaging-window.vue:
-  title: "Wiadomości"
 desktop/views/components/note-detail.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
@@ -815,7 +813,7 @@ desktop/views/components/timeline.vue:
   hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
-  messages: "Wiadomości"
+  messages: "Bezpośrednie wpisy"
   list: "Listy"
   hashtag: "Hashtag"
   add-tag-timeline: "Dodaj hashtag"
@@ -1009,8 +1007,6 @@ desktop/views/pages/user/user.timeline.vue:
   with-replies: "Wpisy i odpowiedzi"
   with-media: "Multimedia"
   my-posts: "Moje wpisy"
-desktop/views/widgets/messaging.vue:
-  title: "Wiadomości"
 desktop/views/widgets/notifications.vue:
   title: "Powiadomienia"
 desktop/views/widgets/polls.vue:
@@ -1126,7 +1122,7 @@ mobile/views/pages/home.vue:
   hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
-  messages: "Wiadomości"
+  messages: "Bezpośrednie wpisy"
 mobile/views/pages/widgets.vue:
   dashboard: "Kokpit"
   add-widget: "Dodaj"
