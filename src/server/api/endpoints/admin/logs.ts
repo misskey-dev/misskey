@@ -57,13 +57,10 @@ export default define(meta, async (ps) => {
 					let i = 0;
 					for (const subDomain of subDomains) {
 						const p = `blackSubDomain_${subDomain}_${i}`;
-						if (i === subDomains.length - 1) {
-							// SQL is 1 based, so we need '+ 1'
-							qb.andWhere(`log.domain[${i + 1}] != :${p}`, { [p]: subDomain });
-						} else {
-							// SQL is 1 based, so we need '+ 1'
-							qb.andWhere(`log.domain[${i + 1}] = :${p}`, { [p]: subDomain });
-						}
+						// 全体で否定できないのでド・モルガンの法則で
+						// !(P && Q) を !P || !Q で表す
+						// SQL is 1 based, so we need '+ 1'
+						qb.orWhere(`log.domain[${i + 1}] != :${p}`, { [p]: subDomain });
 						i++;
 					}
 				}
