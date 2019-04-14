@@ -13,7 +13,6 @@
 		"start": "node ./index.js",
 		"init": "node ./built/init.js",
 		"migrate": "node ./built/migrate.js",
-		"debug": "DEBUG=misskey:* node ./index.js",
 		"build": "webpack && gulp build",
 		"webpack": "webpack",
 		"watch": "webpack --watch",
