@@ -860,7 +860,6 @@ desktop/views/components/post-form.vue:
   posting: "Publication …"
   attach-media-from-local: "Joindre un média depuis votre appareil"
   attach-media-from-drive: "Joindre un média depuis votre Drive"
-  attach-cancel: "Annuler le fichier attaché"
   insert-a-kao: "v('ω')v"
   create-poll: "Créer un sondage"
   text-remain: "{} caractères restants"
@@ -953,6 +952,9 @@ common/views/components/password-settings.vue:
   not-match: "Les nouveaux mots de passe ne sont pas identiques"
   changed: "Mot de passe modifié avec succès"
   failed: "Échec lors de la modification du mot de passe"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "Marquer comme sensible"
+  unmark-as-sensitive: "Ne pas marquer comme sensible"
 desktop/views/components/sub-note-content.vue:
   private: "cette publication est privée"
   deleted: "cette publication a été supprimée"
