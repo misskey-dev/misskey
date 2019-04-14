@@ -30,7 +30,8 @@ export default async (user: User, note: Note) => {
 		})
 		.where('id = :id', { id: note.id })
 		.execute();
-	// v11 dec score
+
+	Notes.decrement({ id: note.id }, 'score', 1);
 
 	publishNoteStream(note.id, 'unreacted', {
 		reaction: exist.reaction,
