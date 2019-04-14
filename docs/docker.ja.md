@@ -19,11 +19,11 @@ Dockerを使ったMisskey構築方法
 
 3. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 
-   ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-   ```
+	```bash
+	git checkout \
+	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
+	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+	```
 
 *2.* 設定ファイルの作成と編集
 ----------------------------------------------------------------
@@ -81,11 +81,11 @@ cp docker_example.env docker.env
 2. `git stash`
 3. 
 
-   ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-   ```
+	```bash
+	git checkout \
+	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
+	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+	```
 4. `git stash pop`
 5. `docker-compose build`
 6. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する

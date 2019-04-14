@@ -20,11 +20,11 @@ Ce guide explique comment installer et configurer Misskey avec Docker.
 
 3. Checkout sur le tag de la [dernière version](https://github.com/syuilo/misskey/releases/latest).
 
-   ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-   ```
+	```bash
+	git checkout \
+	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
+	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+	```
 
 *2.* Configuration de Misskey
 ----------------------------------------------------------------
@@ -54,11 +54,11 @@ Utilisez la commande `docker-compose up -d`. GLHF!
 2. `git stash`
 3. 
 
-   ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-   ```
+	```bash
+	git checkout \
+	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
+	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+	```
 4. `git stash pop`
 5. `docker-compose build`
 6. Consultez le [ChangeLog](../CHANGELOG.md) pour avoir les éventuelles informations de migration
