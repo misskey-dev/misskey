@@ -55,13 +55,13 @@ As root:
 
 4. Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
 
-   ```bash
-   git tag | grep '^10\.' | sort -V --reverse | \
-   while read tag_name; do \
-   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
-   | grep -qE '"(draft|prerelease)": true'; \
-   then git checkout $tag_name; break; fi ; done
-   ```
+	```bash
+	git tag | grep '^10\.' | sort -V --reverse | \
+	while read tag_name; do \
+	if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+	| grep -qE '"(draft|prerelease)": true'; \
+	then git checkout $tag_name; break; fi ; done
+	```
 
 5. Install misskey dependencies.
 
@@ -140,13 +140,13 @@ You can check if the service is running with `systemctl status misskey`.
 1. `git fetch`
 2. 　
 
-   ```bash
-   git tag | grep '^10\.' | sort -V --reverse | \
-   while read tag_name; do \
-   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
-   | grep -qE '"(draft|prerelease)": true'; \
-   then git checkout $tag_name; break; fi ; done
-   ```
+	```bash
+	git tag | grep '^10\.' | sort -V --reverse | \
+	while read tag_name; do \
+	if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+	| grep -qE '"(draft|prerelease)": true'; \
+	then git checkout $tag_name; break; fi ; done
+	```
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. Check [ChangeLog](../CHANGELOG.md) for migration information

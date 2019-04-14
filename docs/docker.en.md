@@ -19,13 +19,13 @@ This guide describes how to install and setup Misskey with Docker.
 
 3. Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest) tag.
 
-   ```bash
-   git tag | grep '^10\.' | sort -V --reverse | \
-   while read tag_name; do \
-   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
-   | grep -qE '"(draft|prerelease)": true'; \
-   then git checkout $tag_name; break; fi ; done
-   ```
+	```bash
+	git tag | grep '^10\.' | sort -V --reverse | \
+	while read tag_name; do \
+	if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+	| grep -qE '"(draft|prerelease)": true'; \
+	then git checkout $tag_name; break; fi ; done
+	```
 
 *2.* Configure Misskey
 ----------------------------------------------------------------
@@ -55,13 +55,13 @@ Just `docker-compose up -d`. GLHF!
 2. `git stash`
 3. 
 
-   ```bash
-   git tag | grep '^10\.' | sort -V --reverse | \
-   while read tag_name; do \
-   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
-   | grep -qE '"(draft|prerelease)": true'; \
-   then git checkout $tag_name; break; fi ; done
-   ```
+	```bash
+	git tag | grep '^10\.' | sort -V --reverse | \
+	while read tag_name; do \
+	if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+	| grep -qE '"(draft|prerelease)": true'; \
+	then git checkout $tag_name; break; fi ; done
+	```
 4. `git stash pop`
 5. `docker-compose build`
 6. Check [ChangeLog](../CHANGELOG.md) for migration information
