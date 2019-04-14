@@ -6,7 +6,7 @@ services:
     restart: always
     links:
       - db
-#      - redis
+      - redis
 #      - es
     ports:
       - "127.0.0.1:3000:3000"
@@ -14,13 +14,13 @@ services:
       - internal_network
       - external_network
 
-#  redis:
-#    restart: always
-#    image: redis:4.0-alpine
-#    networks:
-#      - internal_network
-#    volumes:
-#      - ./redis:/data
+  redis:
+    restart: always
+    image: redis:4.0-alpine
+    networks:
+      - internal_network
+    volumes:
+      - ./redis:/data
 
   db:
     restart: always
