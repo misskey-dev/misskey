@@ -7,6 +7,7 @@ common:
   about: "Danke, dass Du Misskey gefunden hast. Misskey ist eine <b>dezentralisierte Microblogging-Plattform</b>, welche auf der ganzen Welt verteilt ist. Da es innerhalb es Fediversums existiert (ein Universum, in dem verschiedene Soziale Netzwerke organisiert sind), ist es unmittelbar mit anderen sozialen Netzwerken verbunden. Warum nimmst du dir nicht einmal eine Auszeit von dem Trubel der Stadt und tauchst in das neue Internet hinein?"
   intro:
     title: "Was ist Misskey?"
+    about: "Misskey ist eine Quelloffene, <b>dezentralisierte microblogging Software</b>. Es bietet eine erweiterbare Benutzeroberfläche, verschiedenste Möglichkeiten auf Beiträge zu reagieren, kostenlosen Datenspeicher, und andere fortschrittliche Funktionen. Zusätzlich ist Misskey dazu in der Lage, sich mittels des Fediverse mit beliebig vielen anderen ActivityPub-kompatiblen Diensten zu verbinden. Wenn du zum Beispiel einen Betrag mit Misskey abschickst, wird dieser auch für Nutzer von Mastodon oder Pleroma sichtbar sein. So ähnlich wie eine Radioübertragung zwischen Planeten."
     features: "Funktionen"
     rich-contents: "Notizen"
     reaction: "Reaktionen"
