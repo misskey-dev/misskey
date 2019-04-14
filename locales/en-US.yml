@@ -966,6 +966,7 @@ common/views/components/password-settings.vue:
   changed: "Password changed"
   failed: "Failed to change password"
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "Remove Attachment"
   mark-as-sensitive: "Mark as 'sensitive'"
   unmark-as-sensitive: "Unmark as 'sensitive'"
 desktop/views/components/sub-note-content.vue:
