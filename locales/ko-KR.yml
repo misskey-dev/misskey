@@ -966,6 +966,7 @@ common/views/components/password-settings.vue:
   changed: "비밀번호를 변경하였습니다"
   failed: "비밀번호 변경을 실패하였습니다."
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "첨부 취소"
   mark-as-sensitive: "열람주의로 설정"
   unmark-as-sensitive: "열람주의 해제"
 desktop/views/components/sub-note-content.vue:
