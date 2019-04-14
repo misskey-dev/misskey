@@ -9,9 +9,21 @@ Dockerを使ったMisskey構築方法
 
 *1.* Misskeyのダウンロード
 ----------------------------------------------------------------
-1. `git clone -b master git://github.com/syuilo/misskey.git` masterブランチからMisskeyレポジトリをクローン
-2. `cd misskey` misskeyディレクトリに移動
-3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+1. masterブランチからMisskeyレポジトリをクローン
+
+	`git clone -b master git://github.com/syuilo/misskey.git`
+
+2. misskeyディレクトリに移動
+
+	`cd misskey`
+
+3. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+
+   ```bash
+   git checkout \
+   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
+   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+   ```
 
 *2.* 設定ファイルの作成と編集
 ----------------------------------------------------------------
@@ -67,7 +79,13 @@ cp docker_example.env docker.env
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git fetch`
 2. `git stash`
-3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
+3. 
+
+   ```bash
+   git checkout \
+   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
+   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+   ```
 4. `git stash pop`
 5. `docker-compose build`
 6. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
