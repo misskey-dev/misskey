@@ -622,7 +622,6 @@ desktop/views/components/post-form.vue:
   posting: "Publicando"
   attach-media-from-local: "Agregar medios de tu dispositivo"
   attach-media-from-drive: "Adjunta multimedia desde tu Disco"
-  attach-cancel: "Quitar el archivo adjunto"
   create-poll: "Crea una encuesta"
   text-remain: "quedan {} caracteres"
   recent-tags: "Reciente"
@@ -688,6 +687,9 @@ common/views/components/mute-and-block.vue:
   mute: "Silenciar"
   block: "Bloquear"
   save: "Guardar"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "Marcar como 'sensible'"
+  unmark-as-sensitive: "Desmarcar como 'sensible'"
 desktop/views/components/sub-note-content.vue:
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
