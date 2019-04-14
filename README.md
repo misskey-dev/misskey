@@ -59,7 +59,7 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 ---
 
-...and more! Experience Misskey with your own eyes at [misskey.xyz](https://misskey.xyz) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
+...and more! Experience Misskey with your own eyes at [misskey.io](https://misskey.io/) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
 
 Screen shots
 ----------------------------------------------------------------
