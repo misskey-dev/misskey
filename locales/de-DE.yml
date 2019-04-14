@@ -138,13 +138,6 @@ common:
 auth/views/form.vue:
   share-access: "Erlaubst Du <i>{name}</i> auf deinen Account zuzugreifen?"
   permission-ask: "Diese Applikation benötigt folgende Berechtigungen:"
-  account-read: "Accountinformationen anzeigen."
-  account-write: "Accountinformationen bearbeiten."
-  note-write: "Senden."
-  like-write: "Auf Beiträge reagieren."
-  following-write: "Folgen oder entfolgen."
-  notification-read: "Siehe deine Benachrichtigungen."
-  notification-write: "Benachrichtigungen verwalten."
   cancel: "Abbrechen"
   accept: "Zugriff erlauben."
 auth/views/index.vue:
@@ -478,7 +471,6 @@ desktop/views/components/post-form.vue:
   posting: "Posting"
   attach-media-from-local: "Medien von deinem PC hinzufügen"
   attach-media-from-drive: "Medien von deinem Speicher hinzufügen"
-  attach-cancel: "Hinzufügen abbrechen"
   create-poll: "Eine Abstimmung erstellen"
   text-remain: "{} Zeichen verbleibend"
   visibility: "Sichtbarkeit"
@@ -524,8 +516,6 @@ desktop/views/components/sub-note-content.vue:
 desktop/views/components/settings.tags.vue:
   add: "Hinzufügen"
   save: "Speichern"
-desktop/views/components/taskmanager.vue:
-  title: "Taskmanager"
 desktop/views/components/timeline.vue:
   home: "Home"
   local: "Lokal"
@@ -664,10 +654,3 @@ deck:
   rename: "Umbenennen"
 deck/deck.user-column.vue:
   activity: "Aktivität"
-dev/views/new-app.vue:
-  account-read: "Accountinformationen anzeigen."
-  account-write: "Accountinformationen bearbeiten."
-  note-write: "Senden."
-  following-write: "Folgen oder entfolgen."
-  notification-read: "Siehe deine Benachrichtigungen."
-  notification-write: "Benachrichtigungen verwalten."
