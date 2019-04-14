@@ -24,7 +24,7 @@
 			<div class="files" v-show="files.length != 0">
 				<x-draggable :list="files" :options="{ animation: 150 }">
 					<div v-for="file in files" :key="file.id">
-						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
+						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl || '/assets/thumbnail-not-available.png'})` }" :title="file.name"></div>
 						<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
 					</div>
 				</x-draggable>
@@ -263,17 +263,14 @@ export default define({
 				border solid 4px transparent
 				cursor move
 
-				&:hover > .remove
-					display block
-
 				> .img
 					width 64px
 					height 64px
 					background-size cover
 					background-position center center
+					background-color: rgba(128, 128, 128, 0.3)
 
 				> .remove
-					display none
 					position absolute
 					top -6px
 					right -6px
