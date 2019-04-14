@@ -201,13 +201,20 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 }
 
 async function deleteOldFile(user: IRemoteUser) {
-	const oldFile = await DriveFiles.createQueryBuilder()
-		.select('file')
-		.where('file.id != :avatarId', { avatarId: user.avatarId })
-		.andWhere('file.id != :bannerId', { bannerId: user.bannerId })
-		.andWhere('file.userId = :userId', { userId: user.id })
-		.orderBy('file.id', 'DESC')
-		.getOne();
+	const q = DriveFiles.createQueryBuilder('file')
+		.where('file.userId = :userId', { userId: user.id });
+
+	if (user.avatarId) {
+		q.andWhere('file.id != :avatarId', { avatarId: user.avatarId });
+	}
+
+	if (user.bannerId) {
+		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId })
+	}
+
+	q.orderBy('file.id', 'DESC');
+
+	const oldFile = await q.getOne();
 
 	if (oldFile) {
 		delFile(oldFile, true);
