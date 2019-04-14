@@ -52,9 +52,11 @@ Installez les paquets suivants :
 4. Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
 
    ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+   git tag | grep '^10\.' | sort -V --reverse | \
+   while read tag_name; do \
+   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+   | grep -qE '"(draft|prerelease)": true'; \
+   then git checkout $tag_name; break; fi ; done
    ```
  
 5. Installez les dépendances de misskey.
@@ -135,9 +137,11 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 2. 　
 
    ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+   git tag | grep '^10\.' | sort -V --reverse | \
+   while read tag_name; do \
+   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+   | grep -qE '"(draft|prerelease)": true'; \
+   then git checkout $tag_name; break; fi ; done
    ```
 3. `npm install`
 4. `NODE_ENV=production npm run build`

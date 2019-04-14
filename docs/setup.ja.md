@@ -59,9 +59,11 @@ adduser --disabled-password --disabled-login misskey
 4. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 
    ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+   git tag | grep '^10\.' | sort -V --reverse | \
+   while read tag_name; do \
+   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+   | grep -qE '"(draft|prerelease)": true'; \
+   then git checkout $tag_name; break; fi ; done
    ```
 5. Misskeyの依存パッケージをインストール
 
@@ -147,9 +149,11 @@ npm run init
 2. 　
 
    ```bash
-   git checkout \
-   $(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-   | sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
+   git tag | grep '^10\.' | sort -V --reverse | \
+   while read tag_name; do \
+   if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+   | grep -qE '"(draft|prerelease)": true'; \
+   then git checkout $tag_name; break; fi ; done
    ```
 
 3. `npm install`
