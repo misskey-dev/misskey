@@ -1,7 +1,7 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
 	<x-draggable class="files" :list="files" :options="{ animation: 150 }">
-		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)">
+		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
 			<x-file-thumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<img class="remove" @click.stop="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
 			<div class="sensitive" v-if="file.isSensitive">
