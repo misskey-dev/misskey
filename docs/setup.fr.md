@@ -22,8 +22,8 @@ adduser --disabled-password --disabled-login misskey
 Installez les paquets suivants :
 
 #### Dépendences :package:
-* **[Node.js](https://nodejs.org/en/)** >= 11.7.0
-* **[PostgreSQL](https://www.postgresql.org/)** >= 10
+* **[Node.js](https://nodejs.org/en/)** >= 10.0.0
+* **[MongoDB](https://www.mongodb.com/)** >= 3.6
 
 ##### Optionnels
 * [Redis](https://redis.io/)
@@ -31,9 +31,13 @@ Installez les paquets suivants :
 * [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Paramètrage de PostgreSQL
+*3.* Paramètrage de MongoDB
 ----------------------------------------------------------------
-:)
+En root :
+1. `mongo` Ouvrez le shell mongo
+2. `use misskey` Utilisez la base de données misskey
+3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
+4. `exit` Vous avez terminé !
 
 *4.* Installation de Misskey
 ----------------------------------------------------------------

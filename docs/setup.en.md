@@ -22,8 +22,8 @@ adduser --disabled-password --disabled-login misskey
 Please install and setup these softwares:
 
 #### Dependencies :package:
-* **[Node.js](https://nodejs.org/en/)** >= 11.7.0
-* **[PostgreSQL](https://www.postgresql.org/)** >= 10
+* **[Node.js](https://nodejs.org/en/)** >= 10.0.0
+* **[MongoDB](https://www.mongodb.com/)** >= 3.6
 
 ##### Optional
 * [Redis](https://redis.io/)
@@ -31,9 +31,13 @@ Please install and setup these softwares:
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Setup PostgreSQL
+*3.* Setup MongoDB
 ----------------------------------------------------------------
-:)
+As root:
+1. `mongo` Go to the mongo shell
+2. `use misskey` Use the misskey database
+3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Create the misskey user.
+4. `exit` You're done!
 
 *4.* Install Misskey
 ----------------------------------------------------------------
@@ -87,13 +91,7 @@ If you're still encountering errors about some modules, use node-gyp:
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
 
-*7.* Init DB
-----------------------------------------------------------------
-``` shell
-npm run init
-```
-
-*8.* That is it.
+*7.* That is it.
 ----------------------------------------------------------------
 Well done! Now, you have an environment that run to Misskey.
 
