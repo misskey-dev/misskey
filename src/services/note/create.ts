@@ -175,7 +175,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	if (data.visibility == 'specified') {
-		if (data.visibleUsers == null) throw 'invalid param';
+		if (data.visibleUsers == null) throw new Error('invalid param');
 
 		for (const u of data.visibleUsers) {
 			if (!mentionedUsers.some(x => x.id === u.id)) {
@@ -214,7 +214,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	// 未読通知を作成
 	if (data.visibility == 'specified') {
-		if (data.visibleUsers == null) throw 'invalid param';
+		if (data.visibleUsers == null) throw new Error('invalid param');
 
 		for (const u of data.visibleUsers) {
 			insertNoteUnread(u, note, true);
@@ -428,7 +428,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 		console.error(e);
 
-		throw 'something happened';
+		throw new Error('something happened');
 	}
 }
 

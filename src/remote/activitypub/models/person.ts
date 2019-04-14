@@ -88,7 +88,7 @@ function validatePerson(x: any, uri: string) {
  * Misskeyに対象のPersonが登録されていればそれを返します。
  */
 export async function fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
-	if (typeof uri !== 'string') throw 'uri is not string';
+	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
@@ -111,7 +111,7 @@ export async function fetchPerson(uri: string, resolver?: Resolver): Promise<Use
  * Personを作成します。
  */
 export async function createPerson(uri: string, resolver?: Resolver): Promise<User> {
-	if (typeof uri !== 'string') throw 'uri is not string';
+	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	if (resolver == null) resolver = new Resolver();
 
@@ -256,7 +256,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
  * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
  */
 export async function updatePerson(uri: string, resolver?: Resolver | null, hint?: object): Promise<void> {
-	if (typeof uri !== 'string') throw 'uri is not string';
+	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	// URIがこのサーバーを指しているならスキップ
 	if (uri.startsWith(config.url + '/')) {
@@ -380,7 +380,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
 export async function resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
-	if (typeof uri !== 'string') throw 'uri is not string';
+	if (typeof uri !== 'string') throw new Error('uri is not string');
 
 	//#region このサーバーに既に登録されていたらそれを返す
 	const exist = await fetchPerson(uri);

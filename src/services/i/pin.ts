@@ -78,7 +78,7 @@ export async function removePinned(user: User, noteId: Note['id']) {
 
 export async function deliverPinnedChange(userId: User['id'], noteId: Note['id'], isAddition: boolean) {
 	const user = await Users.findOne(userId);
-	if (user == null) throw 'user not found';
+	if (user == null) throw new Error('user not found');
 
 	if (!Users.isLocalUser(user)) return;
 

@@ -24,18 +24,13 @@ Installez les paquets suivants :
 #### Dépendences :package:
 * **[Node.js](https://nodejs.org/en/)** >= 11.7.0
 * **[PostgreSQL](https://www.postgresql.org/)** >= 10
+* **[Redis](https://redis.io/)**
 
 ##### Optionnels
-* [Redis](https://redis.io/)
-  * Redis est optionnel mais nous vous recommandons vivement de l'installer
 * [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Paramètrage de PostgreSQL
-----------------------------------------------------------------
-:)
-
-*4.* Installation de Misskey
+*3.* Installation de Misskey
 ----------------------------------------------------------------
 1. Basculez vers l'utilisateur misskey.
 
@@ -61,7 +56,7 @@ Installez les paquets suivants :
 
 	`npm install`
 
-*5.* Création du fichier de configuration
+*4.* Création du fichier de configuration
 ----------------------------------------------------------------
 1. Copiez le fichier `.config/example.yml` et renommez-le`default.yml`.
 
@@ -69,7 +64,7 @@ Installez les paquets suivants :
 
 2. Editez le fichier `default.yml`
 
-*6.* Construction de Misskey
+*5.* Construction de Misskey
 ----------------------------------------------------------------
 
 Construisez Misskey comme ceci :
@@ -85,7 +80,7 @@ Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
 
-*7.* C'est tout.
+*6.* C'est tout.
 ----------------------------------------------------------------
 Excellent ! Maintenant, vous avez un environnement prêt pour lancer Misskey
 

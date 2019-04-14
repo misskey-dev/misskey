@@ -14,7 +14,7 @@ export default async (token: string): Promise<[User | null | undefined, App | nu
 			.findOne({ token });
 
 		if (user == null) {
-			throw 'user not found';
+			throw new Error('user not found');
 		}
 
 		return [user, null];
@@ -24,7 +24,7 @@ export default async (token: string): Promise<[User | null | undefined, App | nu
 		});
 
 		if (accessToken == null) {
-			throw 'invalid signature';
+			throw new Error('invalid signature');
 		}
 
 		const app = await Apps

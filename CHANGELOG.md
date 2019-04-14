@@ -5,9 +5,10 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
-11.0.0
-----------
-* データベースがMongoDBからPostgreSQLに変更されました
+11.0.0 (daybreak)
+-----------------
+* **データベースがMongoDBからPostgreSQLに変更されました**
+* **Redisが必須に**
 * アカウントを完全に削除できるように
 * ミュート/ブロック時にそのユーザーの投稿のウォッチをすべて解除するように
 * フォロー申請数が実際より1すくなくなる問題を修正
@@ -19,6 +20,15 @@ If you encounter any problems with updating, please try the following:
 ### APIの破壊的変更
 * v10時点で deprecated だったパラメータなどを削除
 * ユーザーリストの title が name に
+* リバーシの対局の`settings`プロパティがなくなり、その中にあったプロパティがすべて上の階層に
+  * 例えば`game.settings.map`は`game.map`になる
+
+### 既知の問題
+* アプリが作成できない
+  * 依存ライブラリの問題と思わるため、対応が難しい
+
+### Migration
+coming soon...
 
 10.100.0
 ----------

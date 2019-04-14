@@ -15,7 +15,7 @@ async function main(username: string, headers?: string[]) {
 		usernameLower: username.toLowerCase(),
 	});
 
-	if (user == null) throw 'User not found';
+	if (user == null) throw new Error('User not found');
 
 	const history = await Signins.find({
 		userId: user.id

@@ -71,6 +71,4 @@ export default define(meta, async (ps, user) => {
 	await AuthSessions.update(session.id, {
 		userId: user.id
 	});
-
-	return;
 });

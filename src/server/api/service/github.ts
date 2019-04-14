@@ -80,8 +80,6 @@ async function getOath2() {
 }
 
 router.get('/connect/github', async ctx => {
-	if (redis == null) return;
-
 	if (!compareOrigin(ctx)) {
 		ctx.throw(400, 'invalid origin');
 		return;
@@ -106,8 +104,6 @@ router.get('/connect/github', async ctx => {
 });
 
 router.get('/signin/github', async ctx => {
-	if (redis == null) return;
-
 	const sessid = uuid();
 
 	const params = {
@@ -133,8 +129,6 @@ router.get('/signin/github', async ctx => {
 });
 
 router.get('/gh/cb', async ctx => {
-	if (redis == null) return;
-
 	const userToken = getUserToken(ctx);
 
 	const oauth2 = await getOath2();
@@ -155,7 +149,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis!.get(sessid, async (_, state) => {
+			redis.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -222,7 +216,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis!.get(userToken, async (_, state) => {
+			redis.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});

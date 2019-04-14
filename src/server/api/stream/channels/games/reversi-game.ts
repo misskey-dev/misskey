@@ -43,7 +43,7 @@ export default class extends Channel {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
-		if (game == null) throw 'game not found';
+		if (game == null) throw new Error('game not found');
 
 		if (game.isStarted) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
@@ -67,7 +67,7 @@ export default class extends Channel {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
-		if (game == null) throw 'game not found';
+		if (game == null) throw new Error('game not found');
 
 		if (game.isStarted) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
@@ -91,7 +91,7 @@ export default class extends Channel {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
-		if (game == null) throw 'game not found';
+		if (game == null) throw new Error('game not found');
 
 		if (game.isStarted) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
@@ -135,7 +135,7 @@ export default class extends Channel {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
-		if (game == null) throw 'game not found';
+		if (game == null) throw new Error('game not found');
 
 		if (game.isStarted) return;
 
@@ -237,7 +237,7 @@ export default class extends Channel {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
-		if (game == null) throw 'game not found';
+		if (game == null) throw new Error('game not found');
 
 		if (!game.isStarted) return;
 		if (game.isEnded) return;
@@ -304,7 +304,7 @@ export default class extends Channel {
 	@autobind
 	private async check(crc32: string) {
 		const game = await ReversiGames.findOne(this.gameId!);
-		if (game == null) throw 'game not found';
+		if (game == null) throw new Error('game not found');
 
 		if (!game.isStarted) return;
 

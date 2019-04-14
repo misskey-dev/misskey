@@ -9,7 +9,7 @@ const logger = apLogger;
 
 export default async (actor: IRemoteUser, activity: IBlock): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
-	if (id == null) throw 'missing id';
+	if (id == null) throw new Error('missing id');
 
 	const uri = activity.id || activity;
 

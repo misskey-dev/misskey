@@ -79,8 +79,6 @@ async function getTwAuth() {
 }
 
 router.get('/connect/twitter', async ctx => {
-	if (redis == null) return;
-
 	if (!compareOrigin(ctx)) {
 		ctx.throw(400, 'invalid origin');
 		return;
@@ -99,8 +97,6 @@ router.get('/connect/twitter', async ctx => {
 });
 
 router.get('/signin/twitter', async ctx => {
-	if (redis == null) return;
-
 	const twAuth = await getTwAuth();
 	const twCtx = await twAuth!.begin();
 
@@ -122,8 +118,6 @@ router.get('/signin/twitter', async ctx => {
 });
 
 router.get('/tw/cb', async ctx => {
-	if (redis == null) return;
-
 	const userToken = getUserToken(ctx);
 
 	const twAuth = await getTwAuth();
@@ -137,7 +131,7 @@ router.get('/tw/cb', async ctx => {
 		}
 
 		const get = new Promise<any>((res, rej) => {
-			redis!.get(sessid, async (_, twCtx) => {
+			redis.get(sessid, async (_, twCtx) => {
 				res(twCtx);
 			});
 		});
@@ -170,7 +164,7 @@ router.get('/tw/cb', async ctx => {
 		}
 
 		const get = new Promise<any>((res, rej) => {
-			redis!.get(userToken, async (_, twCtx) => {
+			redis.get(userToken, async (_, twCtx) => {
 				res(twCtx);
 			});
 		});

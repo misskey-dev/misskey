@@ -38,7 +38,7 @@ export default define(meta, async (ps, user) => {
 	const app = await Apps.save({
 		id: genId(),
 		createdAt: new Date(),
-		userId: user && user.id,
+		userId: user ? user.id : null,
 		name: ps.name,
 		description: ps.description,
 		permission: ps.permission,

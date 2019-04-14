@@ -24,25 +24,14 @@ adduser --disabled-password --disabled-login misskey
 #### 依存関係 :package:
 * **[Node.js](https://nodejs.org/en/)** (11.7.0以上)
 * **[PostgreSQL](https://www.postgresql.org/)** (10以上)
+* **[Redis](https://redis.io/)**
 
 ##### オプション
-* [Redis](https://redis.io/)
-	* Redisはオプションですが、インストールすることを強く推奨します。
-	* インストールしなくていいのは、あなたのインスタンスが自分専用のときだけとお考えください。
-	* 具体的には、Redisをインストールしないと、次の事が出来なくなります:
-		* Misskeyプロセスを複数起動しての負荷分散
-		* レートリミット
-		* ジョブキュー
-		* Twitter連携
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* PostgreSQLの設定
-----------------------------------------------------------------
-:)
-
-*4.* Misskeyのインストール
+*3.* Misskeyのインストール
 ----------------------------------------------------------------
 1. misskeyユーザーを使用
 
@@ -67,7 +56,7 @@ adduser --disabled-password --disabled-login misskey
 
 	`npm install`
 
-*5.* 設定ファイルを作成する
+*4.* 設定ファイルを作成する
 ----------------------------------------------------------------
 1. `.config/example.yml`をコピーし名前を`default.yml`にする。
 
@@ -75,7 +64,7 @@ adduser --disabled-password --disabled-login misskey
 
 2. `default.yml` を編集する。
 
-*6.* Misskeyのビルド
+*5.* Misskeyのビルド
 ----------------------------------------------------------------
 
 次のコマンドでMisskeyをビルドしてください:
@@ -90,13 +79,13 @@ Debianをお使いであれば、`build-essential`パッケージをインスト
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
 
-*7.* データベースを初期化
+*6.* データベースを初期化
 ----------------------------------------------------------------
 ``` shell
 npm run init
 ```
 
-*8.* 以上です！
+*7.* 以上です！
 ----------------------------------------------------------------
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
 

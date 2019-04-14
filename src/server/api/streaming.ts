@@ -1,7 +1,6 @@
 import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
-import Xev from 'xev';
 
 import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
@@ -23,28 +22,24 @@ module.exports = (server: http.Server) => {
 
 		let ev: EventEmitter;
 
-		if (config.redis) {
-			// Connect to Redis
-			const subscriber = redis.createClient(
-				config.redis.port, config.redis.host);
+		// Connect to Redis
+		const subscriber = redis.createClient(
+			config.redis.port, config.redis.host);
 
-			subscriber.subscribe('misskey');
+		subscriber.subscribe('misskey');
 
-			ev = new EventEmitter();
+		ev = new EventEmitter();
 
-			subscriber.on('message', async (_, data) => {
-				const obj = JSON.parse(data);
+		subscriber.on('message', async (_, data) => {
+			const obj = JSON.parse(data);
 
-				ev.emit(obj.channel, obj.message);
-			});
+			ev.emit(obj.channel, obj.message);
+		});
 
-			connection.once('close', () => {
-				subscriber.unsubscribe();
-				subscriber.quit();
-			});
-		} else {
-			ev = new Xev();
-		}
+		connection.once('close', () => {
+			subscriber.unsubscribe();
+			subscriber.quit();
+		});
 
 		const main = new MainStreamConnection(connection, ev, user, app);
 

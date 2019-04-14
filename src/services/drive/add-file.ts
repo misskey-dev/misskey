@@ -297,7 +297,7 @@ export default async function(
 		// If usage limit exceeded
 		if (usage + size > driveCapacity) {
 			if (Users.isLocalUser(user)) {
-				throw 'no-free-space';
+				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
 				deleteOldFile(user as IRemoteUser);
@@ -316,7 +316,7 @@ export default async function(
 			userId: user.id
 		});
 
-		if (driveFolder == null) throw 'folder-not-found';
+		if (driveFolder == null) throw new Error('folder-not-found');
 
 		return driveFolder;
 	};

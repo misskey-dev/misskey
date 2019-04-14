@@ -83,8 +83,6 @@ async function getOAuth2() {
 }
 
 router.get('/connect/discord', async ctx => {
-	if (redis == null) return;
-
 	if (!compareOrigin(ctx)) {
 		ctx.throw(400, 'invalid origin');
 		return;
@@ -110,8 +108,6 @@ router.get('/connect/discord', async ctx => {
 });
 
 router.get('/signin/discord', async ctx => {
-	if (redis == null) return;
-
 	const sessid = uuid();
 
 	const params = {
@@ -138,8 +134,6 @@ router.get('/signin/discord', async ctx => {
 });
 
 router.get('/dc/cb', async ctx => {
-	if (redis == null) return;
-
 	const userToken = getUserToken(ctx);
 
 	const oauth2 = await getOAuth2();
@@ -160,7 +154,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis!.get(sessid, async (_, state) => {
+			redis.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});
@@ -241,7 +235,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
-			redis!.get(userToken, async (_, state) => {
+			redis.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
 		});

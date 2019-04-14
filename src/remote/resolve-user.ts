@@ -17,7 +17,7 @@ export async function resolveUser(username: string, host: string | null, option?
 		logger.info(`return local user: ${usernameLower}`);
 		return await Users.findOne({ usernameLower, host: null }).then(u => {
 			if (u == null) {
-				throw 'user not found';
+				throw new Error('user not found');
 			} else {
 				return u;
 			}
@@ -30,7 +30,7 @@ export async function resolveUser(username: string, host: string | null, option?
 		logger.info(`return local user: ${usernameLower}`);
 		return await Users.findOne({ usernameLower, host: null }).then(u => {
 			if (u == null) {
-				throw 'user not found';
+				throw new Error('user not found');
 			} else {
 				return u;
 			}
@@ -78,7 +78,7 @@ export async function resolveUser(username: string, host: string | null, option?
 		logger.info(`return resynced remote user: ${acctLower}`);
 		return await Users.findOne({ uri: self.href }).then(u => {
 			if (u == null) {
-				throw 'user not found';
+				throw new Error('user not found');
 			} else {
 				return u;
 			}

@@ -36,7 +36,7 @@ export async function getRemoteUser(userId: User['id']) {
 	const user = await getUser(userId);
 
 	if (!Users.isRemoteUser(user)) {
-		throw 'user is not a remote user';
+		throw new Error('user is not a remote user');
 	}
 
 	return user;
@@ -49,7 +49,7 @@ export async function getLocalUser(userId: User['id']) {
 	const user = await getUser(userId);
 
 	if (!Users.isLocalUser(user)) {
-		throw 'user is not a local user';
+		throw new Error('user is not a local user');
 	}
 
 	return user;
