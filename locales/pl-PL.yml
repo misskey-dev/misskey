@@ -709,7 +709,6 @@ desktop/views/components/post-form.vue:
   posting: "Wysyłanie"
   attach-media-from-local: "Załącz zawartość multimedialną z komputera"
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
-  attach-cancel: "Usuń załącznik"
   insert-a-kao: "v('ω')v"
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
@@ -789,6 +788,9 @@ common/views/components/password-settings.vue:
   enter-current-password: "Wprowadź obecne hasło"
   enter-new-password: "Wprowadź nowe hasło"
   enter-new-password-again: "Wprowadź ponownie nowe hasło"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "Oznacz jako zawartość wrażliwą"
+  unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
 desktop/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
