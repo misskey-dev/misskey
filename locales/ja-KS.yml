@@ -679,7 +679,6 @@ desktop/views/components/post-form.vue:
   posting: "投稿中"
   attach-media-from-local: "PCからメディア持ってくる"
   attach-media-from-drive: "ドライブからメディア持ってくる"
-  attach-cancel: "くっつけるのやめよか"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
   recent-tags: "最近のタグ"
@@ -770,6 +769,9 @@ common/views/components/password-settings.vue:
   enter-new-password-again: "もっぺん入れてや"
   not-match: "パスワードがおうとらん"
   changed: "パスワード変えたわ"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "見たらあかん感じにしとく"
+  unmark-as-sensitive: "やっぱ見せたるわ"
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は見せられへんわ"
   deleted: "この投稿なんか無くなってもうたわ"
