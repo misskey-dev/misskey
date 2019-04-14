@@ -49,7 +49,6 @@ gulp.task('build:copy:views', () =>
 
 gulp.task('build:copy', gulp.parallel('build:copy:views', () =>
 	gulp.src([
-		'./build/Release/crypto_key.node',
 		'./src/const.json',
 		'./src/server/web/views/**/*',
 		'./src/**/assets/**/*',

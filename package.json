@@ -12,7 +12,6 @@
 	"scripts": {
 		"start": "node ./index.js",
 		"init": "node ./built/init.js",
-		"migrate": "node ./built/migrate.js",
 		"build": "webpack && gulp build",
 		"webpack": "webpack",
 		"watch": "webpack --watch",
@@ -170,7 +169,6 @@
 		"mongodb": "3.2.3",
 		"monk": "6.0.6",
 		"ms": "2.1.1",
-		"nan": "2.12.1",
 		"nested-property": "0.0.7",
 		"node-fetch": "2.3.0",
 		"nodemailer": "6.1.0",
