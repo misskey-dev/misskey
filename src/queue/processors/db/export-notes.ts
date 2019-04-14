@@ -46,10 +46,9 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 	});
 
 	let exportedNotesCount = 0;
-	let ended = false;
 	let cursor: any = null;
 
-	while (!ended) {
+	while (true) {
 		const notes = await Notes.find({
 			where: {
 				userId: user.id,
@@ -62,7 +61,6 @@ export async function exportNotes(job: Bull.Job, done: any): Promise<void> {
 		});
 
 		if (notes.length === 0) {
-			ended = true;
 			job.progress(100);
 			break;
 		}

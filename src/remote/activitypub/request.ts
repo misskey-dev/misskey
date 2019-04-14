@@ -41,7 +41,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 		userId: user.id
 	}).then(ensure);
 
-	const _ = new Promise((resolve, reject) => {
+	await new Promise((resolve, reject) => {
 		const req = request({
 			protocol,
 			hostname: addr,
@@ -87,8 +87,6 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 		req.end(data);
 	});
-
-	await _;
 
 	//#region Log
 	publishApLogStream({

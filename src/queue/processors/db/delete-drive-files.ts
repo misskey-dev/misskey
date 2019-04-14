@@ -17,10 +17,9 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 	}
 
 	let deletedCount = 0;
-	let ended = false;
 	let cursor: any = null;
 
-	while (!ended) {
+	while (true) {
 		const files = await DriveFiles.find({
 			where: {
 				userId: user.id,
@@ -33,7 +32,6 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 		});
 
 		if (files.length === 0) {
-			ended = true;
 			job.progress(100);
 			break;
 		}
