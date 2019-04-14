@@ -24,7 +24,7 @@
 			<div class="attaches" v-show="files.length != 0">
 				<x-draggable class="files" :list="files" :options="{ animation: 150 }">
 					<div class="file" v-for="file in files" :key="file.id">
-						<div class="img" :style="`background-image: url(${file.thumbnailUrl})`" @click="detachMedia(file)"></div>
+						<div class="img" :style="`background-image: url(${file.thumbnailUrl || '/assets/thumbnail-not-available.png'})`" @click="detachMedia(file)"></div>
 					</div>
 				</x-draggable>
 			</div>
@@ -506,6 +506,7 @@ export default Vue.extend({
 							height 64px
 							background-size cover
 							background-position center center
+							background-color: rgba(128, 128, 128, 0.3)
 
 			> .mk-uploader
 				margin 8px 0 0 0
