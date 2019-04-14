@@ -28,7 +28,7 @@ export default class MiOS extends EventEmitter {
 	};
 
 	public get instanceName() {
-		return this.meta ? this.meta.data.name : 'Misskey';
+		return this.meta ? (this.meta.data.name || 'Misskey') : 'Misskey';
 	}
 
 	private isMetaFetching = false;
