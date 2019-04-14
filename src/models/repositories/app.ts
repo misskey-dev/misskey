@@ -25,6 +25,7 @@ export class AppRepository extends Repository<App> {
 		return {
 			id: app.id,
 			name: app.name,
+			callbackUrl: app.callbackUrl,
 			...(opts.includeSecret ? { secret: app.secret } : {}),
 			...(me ? {
 				isAuthorized: await AccessTokens.count({
