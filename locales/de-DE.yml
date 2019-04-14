@@ -471,7 +471,6 @@ desktop/views/components/post-form.vue:
   posting: "Posting"
   attach-media-from-local: "Medien von deinem PC hinzufügen"
   attach-media-from-drive: "Medien von deinem Speicher hinzufügen"
-  attach-cancel: "Hinzufügen abbrechen"
   create-poll: "Eine Abstimmung erstellen"
   text-remain: "{} Zeichen verbleibend"
   visibility: "Sichtbarkeit"
