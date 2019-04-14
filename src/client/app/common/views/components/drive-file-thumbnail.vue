@@ -105,9 +105,7 @@ export default Vue.extend({
 		},
 		isThumbnailAvailable(): boolean {
 			return this.file.thumbnailUrl
-				? this.file.thumbnailUrl.endsWith('?thumbnail')
-					? (this.is === 'image' || this.is === 'video')
-					: true
+				? (this.is === 'image' || this.is === 'video')
 				: false;
 		},
 		background(): string {

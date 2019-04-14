@@ -769,7 +769,6 @@ export default Vue.extend({
 	> .mk-uploader
 		height 100px
 		padding 16px
-		background #fff
 
 	> input
 		display none

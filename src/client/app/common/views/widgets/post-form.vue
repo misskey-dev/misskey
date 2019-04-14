@@ -21,14 +21,7 @@
 					<fa :icon="['far', 'laugh']"/>
 				</button>
 			</div>
-			<div class="files" v-show="files.length != 0">
-				<x-draggable :list="files" :options="{ animation: 150 }">
-					<div v-for="file in files" :key="file.id">
-						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
-						<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
-					</div>
-				</x-draggable>
-			</div>
+			<x-post-form-attaches class="files" :files="files" :detachMediaFn="detachMedia"/>
 			<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia"/>
 			<footer>
@@ -45,7 +38,7 @@
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import * as XDraggable from 'vuedraggable';
+import XPostFormAttaches from '../components/post-form-attaches.vue';
 
 export default define({
 	name: 'post-form',
@@ -56,7 +49,7 @@ export default define({
 	i18n: i18n('desktop/views/widgets/post-form.vue'),
 
 	components: {
-		XDraggable
+		XPostFormAttaches
 	},
 
 	data() {
@@ -248,38 +241,6 @@ export default define({
 			&:focus
 				& + .emoji
 					opacity 0.7
-
-	> .files
-		> div
-			padding 4px
-
-			&:after
-				content ""
-				display block
-				clear both
-
-			> div
-				float left
-				border solid 4px transparent
-				cursor move
-
-				&:hover > .remove
-					display block
-
-				> .img
-					width 64px
-					height 64px
-					background-size cover
-					background-position center center
-
-				> .remove
-					display none
-					position absolute
-					top -6px
-					right -6px
-					width 16px
-					height 16px
-					cursor pointer
 
 	> input[type=file]
 		display none

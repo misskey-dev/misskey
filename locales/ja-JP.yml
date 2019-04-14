@@ -964,7 +964,6 @@ desktop/views/components/post-form.vue:
   posting: "投稿中"
   attach-media-from-local: "PCからメディアを添付"
   attach-media-from-drive: "ドライブからメディアを添付"
-  attach-cancel: "添付取り消し"
   insert-a-kao: "v('ω')v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
@@ -1069,6 +1068,11 @@ common/views/components/password-settings.vue:
   not-match: "新しいパスワードが一致しません"
   changed: "パスワードを変更しました"
   failed: "パスワード変更に失敗しました"
+
+common/views/components/post-form-attaches.vue:
+  attach-cancel: "添付取り消し"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
 
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
