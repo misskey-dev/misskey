@@ -224,6 +224,7 @@ common/views/components/theme.vue:
   invalid-theme: "Thema ist ungültig"
   already-installed: "Thema ist bereits installiert"
   author: "Autor"
+  desc: "Beschreibung"
   export: "Exportieren"
   import: "Importieren"
 common/views/components/cw-button.vue:
@@ -329,6 +330,7 @@ common/views/components/visibility-chooser.vue:
   local-followers: "Follower (nur lokal)"
 common/views/components/profile-editor.vue:
   title: "Dein Profil"
+  name: "Name"
   avatar: "Avatar"
   banner: "Banner"
   save: "Speichern"
@@ -504,6 +506,7 @@ desktop/views/components/settings.2fa.vue:
 common/views/components/api-settings.vue:
   enter-password: "Bitte Passwort eingeben"
   console:
+    parameter: "Parameter"
     send: "Senden"
 common/views/components/drive-settings.vue:
   in-use: "benutzt"
@@ -660,3 +663,34 @@ deck/deck.user-column.vue:
   activity: "Aktivität"
   timeline: "Zeitleiste"
   pinned-notes: "Angeheftete Beiträge"
+docs:
+  edit-this-page-on-github: "Hast Du einen Fehler gefunden oder Lust, diese Dokumentation zu verbessern?"
+  edit-this-page-on-github-link: "Seite auf GitHub bearbeiten!"
+  api:
+    entities:
+      properties: "Eigenschaften"
+    endpoints:
+      params: "Parameter"
+      no-params: "Keine Parameter."
+      res: "Antwort"
+      require-credential: "Dieser Endpunkt erfordert eine Authentifizierung."
+      require-permission: "Dieser Endpunkt erfordert die {permission} Berechtigung."
+      has-limit: "Es gibt eine Ratenbegrenzung."
+      duration-limit: "Es sind maximal {max} Anfragen pro {duration} Millisekunden möglich."
+      min-interval-limit: "Es ist nur eine Anfrage alle {interval} Millisekunden möglich."
+      show-src: "Quellcode anzeigen."
+      show-src-link: "Quellcode auf GitHub anzeigen"
+      generated: "Dieses Dokument wird automatisch anhand der API-Definition generiert."
+    props:
+      name: "Name"
+      type: "Typ"
+      description: "Beschreibung"
+dev/views/index.vue:
+  manage-apps: "Anwendungen verwalten"
+dev/views/apps.vue:
+  manage-apps: "Anwendungen verwalten"
+  create-app: "Anwendung erstellen"
+  app-missing: "Keine Anwendungen"
+dev/views/new-app.vue:
+  create-app: "Erstelle Anwendung"
+  app-name: "Name der Anwendung"
