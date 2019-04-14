@@ -78,11 +78,11 @@ common:
   note-visibility:
     public: "Öffentlich"
     home: "Startseite"
-    home-desc: "Nur auf die Startseite posten"
+    home-desc: "Auf die Startseite posten"
     followers: "Abonnenten"
     followers-desc: "Nur für diejenigen sichtbar, die dir folgen"
     specified: "Direkt"
-    specified-desc: "Nur für bestimmte Benutzer posten"
+    specified-desc: "Nur für bestimmte Benutzer sichtbar"
     local-public: "Öffentlich (nur lokal)"
     local-home: "Home (nur lokal)"
     local-followers: "Follower (nur lokal)"
@@ -92,7 +92,7 @@ common:
     c: "Was geht dir durch den Kopf?"
     d: "Willst du etwas sagen?"
     e: "Schreib hier etwas!"
-    f: "Warte darauf, das du schreibst."
+    f: "Warte darauf, das du schreibst..."
   _settings:
     profile: "Dein Profil"
     notification: "Benachrichtigungen"
@@ -104,7 +104,7 @@ common:
   update-available: "Eine neue Version von Misskey ist verfügbar ({newer}, aktuell ist {current}). Lade die Seite neu um die aktuelle Version zu laden"
   my-token-regenerated: "Dein Token wurde generiert. Du wirst jetzt abgemeldet."
   verified-user: "Verifizierter Benutzer"
-  do-not-use-in-production: "Dies ist eine Entwicklungsversion. Nicht in einer Produktionsumgebung verwenden."
+  do-not-use-in-production: "Dies ist eine Entwicklungsversion. Nicht in einer Produktivumgebung verwenden."
   error:
     retry: "Erneut versuchen"
   reversi:
@@ -118,7 +118,7 @@ common:
     analog-clock: "Analoge Uhr"
     profile: "Profil"
     calendar: "Kalender"
-    timemachine: "Kalender (Zeitmaschiene)"
+    timemachine: "Kalender (Zeitmaschine)"
     activity: "Aktivitäten"
     rss: "RSS Leser"
     memo: "Notizen"
@@ -179,7 +179,7 @@ common/views/components/games/reversi/reversi.room.vue:
   ready: "Bereit"
 common/views/components/connect-failed.vue:
   title: "Verbindung zum Server ist fehlgeschlagen"
-  description: "Es gibt entweder ein Problem mit deiner Internetverbindung, der Server ist nicht erreichbar oder wird gerade gewartet. Bitte versuche es später noch einmal."
+  description: "Entweder gibt es ein Problem mit deiner Internetverbindung oder der Server ist zur Zeit nicht erreichbar oder wird gewartet. Bitte versuche es später noch einmal."
   thanks: "Vielen Dank für das nutzen von Misskey."
   troubleshoot: "Problembehandlung"
 common/views/components/connect-failed.troubleshooter.vue:
@@ -654,4 +654,9 @@ deck:
   list: "Listen"
   rename: "Umbenennen"
 deck/deck.user-column.vue:
+  following: "Folgen"
+  followers: "Folgende"
+  images: "Bilder"
   activity: "Aktivität"
+  timeline: "Zeitleiste"
+  pinned-notes: "Angeheftete Beiträge"
