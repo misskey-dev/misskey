@@ -93,7 +93,7 @@ export class Meta {
 	@Column('varchar', {
 		length: 512,
 		nullable: true,
-		default: 'https://ai.misskey.xyz/aiart/yubitun.png'
+		default: 'https://xn--931a.moe/aiart/yubitun.png'
 	})
 	public errorImageUrl: string | null;
 
