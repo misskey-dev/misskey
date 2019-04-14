@@ -25,7 +25,7 @@ If you encounter any problems with updating, please try the following:
   * 例えば`game.settings.map`は`game.map`になる
 
 ### 既知の問題
-* アプリが作成できない
+* ユーザー認証無しでのアプリが作成できない
   * 依存ライブラリの問題と思わるため、対応が難しい
 
 ### Migration
