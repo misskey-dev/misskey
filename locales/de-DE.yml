@@ -319,11 +319,11 @@ common/views/components/uploader.vue:
 common/views/components/visibility-chooser.vue:
   public: "Öffentlich"
   home: "Home"
-  home-desc: "Nur auf die Startseite posten"
+  home-desc: "Auf die Startseite posten"
   followers: "Folgende"
   followers-desc: "Nur für diejenigen sichtbar, die dir folgen"
   specified: "Direkt"
-  specified-desc: "Poste nur für bestimmte Benutzer"
+  specified-desc: "Nur für bestimmte Benutzer sichtbar"
   local-public: "Öffentlich (nur lokal)"
   local-home: "Home (nur lokal)"
   local-followers: "Follower (nur lokal)"
@@ -400,8 +400,8 @@ desktop/views/components/drive.file.vue:
     copied: "Kopieren erfolgreich"
     copied-url-to-clipboard: "URL wurde in die Zwischenablage kopiert"
 desktop/views/components/drive.folder.vue:
-  unable-to-process: "Der Vorgang konnte nicht beendet werden"
-  circular-reference-detected: "Das Zielverzeichnis ist ein Unterverzeichnis des Verzeichnisses welches du verschieben möchtest"
+  unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
+  circular-reference-detected: "Das Zielverzeichnis ist innerhalb des Verzeichnisses, dass du verschieben möchtest"
   unhandled-error: "Unbekannter Fehler"
   contextmenu:
     move-to-this-folder: "Verschiebe in diesen Ordner"
@@ -416,7 +416,7 @@ desktop/views/components/drive.vue:
   empty-drive-description: "Du kannst rechts klicken und \"Datei hochladen\" auswählen oder eine Datei per Drag and Drop auf das Fenster ziehen."
   empty-folder: "Dieser Ordner ist leer"
   unable-to-process: "Der Vorgang konnte nicht beendet werden"
-  circular-reference-detected: "Das Zielverzeichnis ist ein Unterverzeichnis des Verzeichnisses welches du verschieben möchtest"
+  circular-reference-detected: "Das Zielverzeichnis ist innerhalb des Verzeichnisses, dass du verschieben möchtest"
   unhandled-error: "Unbekannter Fehler"
   url-upload: "Von einer URL hochladen"
   url-of-file: "URL der Datei, welche du hochladen möchtest"
@@ -478,7 +478,7 @@ desktop/views/components/post-form.vue:
   error: "Fehler"
   enter-username: "Bitte gib einen Benutzernamen ein..."
 desktop/views/components/post-form-window.vue:
-  note: "Neue Notiz"
+  note: "Neuer Beitrag"
   reply: "Antworten"
   attaches: "{} Medien hinzugefügt"
   uploading-media: "Lade {} Medien hoch"
@@ -492,7 +492,7 @@ desktop/views/components/renote-form.vue:
   success: "Weitergesagt!"
   failure: "Weitersagen fehlgeschlagen"
 desktop/views/components/renote-form-window.vue:
-  title: "Bist du dir sicher, dass du das reposten willst?"
+  title: "Bist du dir sicher, dass du das weitersagen willst?"
 desktop/views/components/settings.2fa.vue:
   url: "https://www.google.de/intl/de/landing/2step/"
   register: "Ein Gerät registrieren"
