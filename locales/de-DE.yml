@@ -47,7 +47,7 @@ common:
   drive: "Drive"
   messaging: "Unterhaltungen"
   home: "Home"
-  favorites: "Diese Notiz favorisieren"
+  favorites: "Diesen Beitrag favorisieren"
   weekday-short:
     sunday: "So"
     monday: "Mo"
@@ -255,7 +255,7 @@ common/views/components/nav.vue:
   develop: "Entwickler"
   feedback: "Feedback"
 common/views/components/note-menu.vue:
-  favorite: "Diese Notiz favorisieren"
+  favorite: "Diesen Beitrag favorisieren"
   unfavorite: "Aus Favoriten entfernen"
   pin: "An die Profilseite pinnen"
   delete: "Löschen"
@@ -440,15 +440,15 @@ desktop/views/input-dialog.vue:
   cancel: "Abbrechen"
   ok: "OK"
 desktop/views/components/note-detail.vue:
-  private: "Dieser Post ist privat"
+  private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
   location: "Ort"
   renote: "Anmerkung"
   add-reaction: "Reaktion hinzufügen"
 desktop/views/components/note.vue:
   reply: "Antworten"
-  renote: "Anmerkung"
-  private: "Dieser Post ist privat"
+  renote: "Anmerken"
+  private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
 desktop/views/components/notes.vue:
   error: "Laden fehlgeschlagen."
@@ -460,9 +460,9 @@ desktop/views/components/post-form.vue:
   hide-contents: "Inhalt verstecken"
   reply-placeholder: "Antworte auf diese Anmerkung..."
   quote-placeholder: "Zitiere diese Anmerkung..."
-  submit: "Beitragsform"
+  submit: "Abschicken"
   reply: "Antworten"
-  renote: "Anmerkung"
+  renote: "Anmerken"
   posted: "Gepostet!"
   replied: "Geantwortet!"
   reposted: "Weitergesagt!"
@@ -511,7 +511,7 @@ common/views/components/drive-settings.vue:
 common/views/components/mute-and-block.vue:
   save: "Speichern"
 desktop/views/components/sub-note-content.vue:
-  private: "Dieser Post ist privat"
+  private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
   poll: "Umfrage"
 desktop/views/components/settings.tags.vue:
@@ -601,22 +601,22 @@ mobile/views/components/drive.file-detail.vue:
   download: "Download"
   rename: "Umbenennen"
 mobile/views/components/note.vue:
-  private: "Dieser Post ist privat"
+  private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
   location: "Ort"
 mobile/views/components/note-detail.vue:
   reply: "Antworten"
-  private: "Dieser Post ist privat"
+  private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
   location: "Ort"
 mobile/views/components/notifications.vue:
   empty: "Keine Benachrichtigungen"
 mobile/views/components/post-form.vue:
   reply: "Antworten"
-  renote: "Anmerkung"
+  renote: "Anmerken"
   reply-placeholder: "Antworte auf diese Anmerkung..."
 mobile/views/components/sub-note-content.vue:
-  private: "Dieser Post ist privat"
+  private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
   poll: "Umfrage"
 mobile/views/components/ui.nav.vue:
@@ -633,7 +633,7 @@ mobile/views/pages/home.vue:
   global: "Global"
 mobile/views/pages/widgets.vue:
   add-widget: "Hinzufügen"
-  customization-tips: "Anpassung-Tipps"
+  customization-tips: "Anpassungs-Tipps"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivität"
 mobile/views/pages/note.vue:
