@@ -35,6 +35,7 @@ export default define(meta, async (ps, user) => {
 	const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
 	const query = Notes.createQueryBuilder('note')
+		.where('note.userHost IS NULL')
 		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
 		.andWhere(`note.visibility = 'public'`)
 		.leftJoinAndSelect('note.user', 'user');
