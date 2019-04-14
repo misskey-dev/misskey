@@ -334,7 +334,6 @@ desktop/views/components/post-form.vue:
   posting: "Bezig met plaatsen"
   attach-media-from-local: "Media bijvoegen van je computer"
   attach-media-from-drive: "Media bijvoegen uit je Drive"
-  attach-cancel: "Bijlage annuleren"
   create-poll: "Peiling creëren"
   text-remain: "{} resterende tekens"
 desktop/views/components/post-form-window.vue:
