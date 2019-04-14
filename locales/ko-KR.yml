@@ -873,7 +873,6 @@ desktop/views/components/post-form.vue:
   posting: "게시중"
   attach-media-from-local: "PC에서 미디어 첨부"
   attach-media-from-drive: "드라이브에서 미디어 첨부"
-  attach-cancel: "첨부 취소"
   insert-a-kao: "v('ω')v"
   create-poll: "투표 만들기"
   text-remain: "{}문자 남음"
@@ -966,6 +965,9 @@ common/views/components/password-settings.vue:
   not-match: "새 비밀번호가 일치하지 않습니다"
   changed: "비밀번호를 변경하였습니다"
   failed: "비밀번호 변경을 실패하였습니다."
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "열람주의로 설정"
+  unmark-as-sensitive: "열람주의 해제"
 desktop/views/components/sub-note-content.vue:
   private: "이 글은 비공개입니다"
   deleted: "이 글은 삭제되었습니다"
