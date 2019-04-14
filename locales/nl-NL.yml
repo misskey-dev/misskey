@@ -334,7 +334,6 @@ desktop/views/components/post-form.vue:
   posting: "Bezig met plaatsen"
   attach-media-from-local: "Media bijvoegen van je computer"
   attach-media-from-drive: "Media bijvoegen uit je Drive"
-  attach-cancel: "Bijlage annuleren"
   create-poll: "Peiling creëren"
   text-remain: "{} resterende tekens"
 desktop/views/components/post-form-window.vue:
@@ -384,8 +383,6 @@ desktop/views/components/sub-note-content.vue:
   poll: "Peilingen"
 desktop/views/components/settings.tags.vue:
   add: "Toevoegen"
-desktop/views/components/taskmanager.vue:
-  title: "Taakbeheer"
 desktop/views/components/timeline.vue:
   home: "Startpagina"
   local: "Lokaal"

@@ -1,7 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Report, { packMany } from '../../../../models/abuse-user-report';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
+import { AbuseUserReports } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	tags: ['admin'],
@@ -17,37 +18,18 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 	}
 };
 
 export default define(meta, async (ps) => {
-	const sort = {
-		_id: -1
-	};
-	const query = {} as any;
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
+	const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-	const reports = await Report
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const reports = await query.take(ps.limit!).getMany();
 
-	return await packMany(reports);
+	return await AbuseUserReports.packMany(reports);
 });

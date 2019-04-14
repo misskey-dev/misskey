@@ -1,29 +1,25 @@
-import * as mongo from 'mongodb';
-import User, { isLocalUser, isRemoteUser } from '../../models/user';
-import Following from '../../models/following';
-import renderPerson from '../../remote/activitypub/renderer/person';
 import renderUpdate from '../../remote/activitypub/renderer/update';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
+import { Followings, Users } from '../../models';
+import { User } from '../../models/entities/user';
+import { renderPerson } from '../../remote/activitypub/renderer/person';
 
-export async function publishToFollowers(userId: mongo.ObjectID) {
-	const user = await User.findOne({
-		_id: userId
-	});
+export async function publishToFollowers(userId: User['id']) {
+	const user = await Users.findOne(userId);
+	if (user == null) throw new Error('user not found');
 
-	const followers = await Following.find({
-		followeeId: user._id
+	const followers = await Followings.find({
+		followeeId: user.id
 	});
 
 	const queue: string[] = [];
 
 	// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
-	if (isLocalUser(user)) {
+	if (Users.isLocalUser(user)) {
 		for (const following of followers) {
-			const follower = following._follower;
-
-			if (isRemoteUser(follower)) {
-				const inbox = follower.sharedInbox || follower.inbox;
+			if (Followings.isRemoteFollower(following)) {
+				const inbox = following.followerSharedInbox || following.followerInbox;
 				if (!queue.includes(inbox)) queue.push(inbox);
 			}
 		}

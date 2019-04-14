@@ -1,11 +1,12 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import deleteNote from '../../../../services/note/delete';
-import User from '../../../../models/user';
 import define from '../../define';
 import * as ms from 'ms';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { Users } from '../../../../models';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	stability: 'stable',
@@ -19,7 +20,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'note-write',
+	kind: 'write:notes',
 
 	limit: {
 		duration: ms('1hour'),
@@ -30,7 +31,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
@@ -59,9 +59,10 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	if (!user.isAdmin && !user.isModerator && !note.userId.equals(user._id)) {
+	if (!user.isAdmin && !user.isModerator && (note.userId !== user.id)) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	await deleteNote(await User.findOne({ _id: note.userId }), note);
+	// この操作を行うのが投稿者とは限らない(例えばモデレーター)ため
+	await deleteNote(await Users.findOne(note.userId).then(ensure), note);
 });

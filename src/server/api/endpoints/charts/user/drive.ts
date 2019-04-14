@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserDriveChart, { perUserDriveLogSchema } from '../../../../../services/chart/per-user-drive';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import { convertLog } from '../../../../../services/chart';
+import { ID } from '../../../../../misc/cafy-id';
+import { convertLog } from '../../../../../services/chart/core';
+import { perUserDriveChart } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -31,7 +31,6 @@ export const meta = {
 
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -39,9 +38,9 @@ export const meta = {
 		}
 	},
 
-	res: convertLog(perUserDriveLogSchema),
+	res: convertLog(perUserDriveChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return await perUserDriveChart.getChart(ps.span as any, ps.limit, ps.userId);
+	return await perUserDriveChart.getChart(ps.span as any, ps.limit!, ps.userId);
 });

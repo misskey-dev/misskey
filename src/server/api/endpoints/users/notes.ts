@@ -1,10 +1,13 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Note, { packMany } from '../../../../models/note';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import Following from '../../../../models/following';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { Notes } from '../../../../models';
+import { generateMuteQuery } from '../../common/generate-mute-query';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -16,7 +19,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -42,17 +44,15 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
-				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
+				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
 			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
-				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
+				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
 			}
 		},
 
@@ -102,15 +102,6 @@ export const meta = {
 			}
 		},
 
-		mediaOnly: {
-			validator: $.optional.bool,
-			default: false,
-			deprecated: true,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
-
 		fileType: {
 			validator: $.optional.arr($.str),
 			desc: {
@@ -150,67 +141,44 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	const isFollowing = me == null ? false : ((await Following.findOne({
-		followerId: me._id,
-		followeeId: user._id
-	})) != null);
-
 	//#region Construct query
-	const sort = { } as any;
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere('note.userId = :userId', { userId: user.id })
+		.leftJoinAndSelect('note.user', 'user');
 
-	const visibleQuery = me == null ? [{
-		visibility: { $in: ['public', 'home'] }
-	}] : [{
-		visibility: {
-			$in: isFollowing ? ['public', 'home', 'followers'] : ['public', 'home']
+	if (me) generateVisibilityQuery(query, me);
+	if (me) generateMuteQuery(query, me);
+
+	if (ps.withFiles) {
+		query.andWhere('note.fileIds != \'{}\'');
+	}
+
+	if (ps.fileType != null) {
+		query.andWhere('note.fileIds != \'{}\'');
+		query.andWhere(new Brackets(qb => {
+			for (const type of ps.fileType!) {
+				const i = ps.fileType!.indexOf(type);
+				qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+			}
+		}));
+
+		if (ps.excludeNsfw) {
+			// v11 TODO
+			/*query['_files.isSensitive'] = {
+				$ne: true
+			};*/
 		}
-	}, {
-		// myself (for specified/private)
-		userId: me._id
-	}, {
-		// to me (for specified)
-		visibleUserIds: { $in: [ me._id ] }
-	}];
-
-	const query = {
-		$and: [ {} ],
-		deletedAt: null,
-		userId: user._id,
-		$or: visibleQuery
-	} as any;
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		sort._id = -1;
-		query._id = {
-			$lt: ps.untilId
-		};
-	} else if (ps.sinceDate) {
-		sort.createdAt = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		sort.createdAt = -1;
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
-	} else {
-		sort._id = -1;
 	}
 
 	if (!ps.includeReplies) {
-		query.replyId = null;
+		query.andWhere('note.replyId IS NULL');
 	}
 
+	/* TODO
 	if (ps.includeMyRenotes === false) {
 		query.$and.push({
 			$or: [{
-				userId: { $ne: user._id }
+				userId: { $ne: user.id }
 			}, {
 				renoteId: null
 			}, {
@@ -222,35 +190,11 @@ export default define(meta, async (ps, me) => {
 			}]
 		});
 	}
+	*/
 
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.fileIds = {
-			$exists: true,
-			$ne: []
-		};
-	}
-
-	if (ps.fileType) {
-		query.fileIds = { $exists: true, $ne: [] };
-
-		query['_files.contentType'] = {
-			$in: ps.fileType
-		};
-
-		if (ps.excludeNsfw) {
-			query['_files.metadata.isSensitive'] = {
-				$ne: true
-			};
-		}
-	}
 	//#endregion
 
-	const notes = await Note.find(query, {
-		limit: ps.limit,
-		sort: sort
-	});
+	const timeline = await query.take(ps.limit!).getMany();
 
-	return await packMany(notes, me);
+	return await Notes.packMany(timeline, user);
 });

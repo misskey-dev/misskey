@@ -22,7 +22,7 @@
 		<div>
 			<span class="type"><mk-file-type-icon :type="file.type"/> {{ file.type }}</span>
 			<span class="separator"></span>
-			<span class="data-size">{{ file.datasize | bytes }}</span>
+			<span class="data-size">{{ file.size | bytes }}</span>
 			<span class="separator"></span>
 			<span class="created-at" @click="showCreatedAt"><fa :icon="['far', 'clock']"/><mk-time :time="file.createdAt"/></span>
 			<template v-if="file.isSensitive">
@@ -85,8 +85,8 @@ export default Vue.extend({
 		},
 
 		style(): any {
-			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3 ? {
-				'background-color': `rgb(${ this.file.properties.avgColor.join(',') })`
+			return this.file.properties.avgColor ? {
+				'background-color': this.file.properties.avgColor
 			} : {};
 		},
 

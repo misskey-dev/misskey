@@ -1,14 +1,15 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import DriveFile, { packMany } from '../../../../models/drive-file';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
+import { DriveFiles } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	tags: ['drive'],
 
 	requireCredential: true,
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		limit: {
@@ -18,12 +19,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		type: {
@@ -40,35 +39,18 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const sort = {
-		_id: -1
-	};
-
-	const query = {
-		'metadata.userId': user._id,
-		'metadata.deletedAt': { $exists: false }
-	} as any;
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
+	const query = makePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId)
+		.andWhere('file.userId = :userId', { userId: user.id });
 
 	if (ps.type) {
-		query.contentType = new RegExp(`^${ps.type.replace(/\*/g, '.+?')}$`);
+		if (ps.type.endsWith('/*')) {
+			query.andWhere('file.type like :type', { type: ps.type.replace('/*', '/') + '%' });
+		} else {
+			query.andWhere('file.type = :type', { type: ps.type });
+		}
 	}
 
-	const files = await DriveFile
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const files = await query.take(ps.limit!).getMany();
 
-		return await packMany(files, { self: true });
+	return await DriveFiles.packMany(files, { detail: false, self: true });
 });

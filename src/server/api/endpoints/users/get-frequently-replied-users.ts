@@ -1,12 +1,11 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Note from '../../../../models/note';
-import { pack } from '../../../../models/user';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { maximum } from '../../../../prelude/array';
-import { getHideUserIds } from '../../common/get-hide-users';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Not, In } from 'typeorm';
+import { Notes, Users } from '../../../../models';
 
 export const meta = {
 	tags: ['users'],
@@ -16,7 +15,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -53,21 +51,16 @@ export default define(meta, async (ps, me) => {
 	});
 
 	// Fetch recent notes
-	const recentNotes = await Note.find({
-		userId: user._id,
-		replyId: {
-			$exists: true,
-			$ne: null
-		}
-	}, {
-		sort: {
-			_id: -1
+	const recentNotes = await Notes.find({
+		where: {
+			userId: user.id,
+			replyId: Not(null)
 		},
-		limit: 1000,
-		fields: {
-			_id: false,
-			replyId: true
-		}
+		order: {
+			id: -1
+		},
+		take: 1000,
+		select: ['replyId']
 	});
 
 	// 投稿が少なかったら中断
@@ -75,21 +68,12 @@ export default define(meta, async (ps, me) => {
 		return [];
 	}
 
-	const hideUserIds = await getHideUserIds(me);
-	hideUserIds.push(user._id);
-
-	const replyTargetNotes = await Note.find({
-		_id: {
-			$in: recentNotes.map(p => p.replyId)
+	// TODO ミュートを考慮
+	const replyTargetNotes = await Notes.find({
+		where: {
+			id: In(recentNotes.map(p => p.replyId)),
 		},
-		userId: {
-			$nin: hideUserIds
-		}
-	}, {
-		fields: {
-			_id: false,
-			userId: true
-		}
+		select: ['userId']
 	});
 
 	const repliedUsers: any = {};
@@ -110,11 +94,11 @@ export default define(meta, async (ps, me) => {
 	const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);
 
 	// Extract top replied users
-	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
+	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit!);
 
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
-		user: await pack(user, me, { detail: true }),
+		user: await Users.pack(user, me, { detail: true }),
 		weight: repliedUsers[user] / peak
 	})));
 

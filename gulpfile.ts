@@ -120,7 +120,7 @@ gulp.task('copy:client', () =>
 		])
 			.pipe(isProduction ? (imagemin as any)() : gutil.noop())
 			.pipe(rename(path => {
-				path.dirname = path.dirname.replace('assets', '.');
+				path.dirname = path.dirname!.replace('assets', '.');
 			}))
 			.pipe(gulp.dest('./built/client/assets/'))
 );

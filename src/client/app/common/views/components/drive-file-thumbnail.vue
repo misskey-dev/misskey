@@ -105,15 +105,11 @@ export default Vue.extend({
 		},
 		isThumbnailAvailable(): boolean {
 			return this.file.thumbnailUrl
-				? this.file.thumbnailUrl.endsWith('?thumbnail')
-					? (this.is === 'image' || this.is === 'video')
-					: true
+				? (this.is === 'image' || this.is === 'video')
 				: false;
 		},
 		background(): string {
-			return this.file.properties.avgColor && this.file.properties.avgColor.length == 3
-				? `rgb(${this.file.properties.avgColor.join(',')})`
-				: 'transparent';
+			return this.file.properties.avgColor || 'transparent';
 		}
 	},
 	mounted() {
@@ -122,10 +118,10 @@ export default Vue.extend({
 	},
 	methods: {
 		onThumbnailLoaded() {
-			if (this.file.properties.avgColor && this.file.properties.avgColor.length == 3) {
+			if (this.file.properties.avgColor) {
 				anime({
 					targets: this.$refs.thumbnail,
-					backgroundColor: `rgba(${this.file.properties.avgColor.join(',')}, 0)`,
+					backgroundColor: this.file.properties.avgColor.replace('255)', '0)'),
 					duration: 100,
 					easing: 'linear'
 				});

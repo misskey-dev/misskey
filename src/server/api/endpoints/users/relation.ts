@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import ID, { transform, ObjectId } from '../../../../misc/cafy-id';
-import { getRelation } from '../../../../models/user';
 import define from '../../define';
+import { ID } from '../../../../misc/cafy-id';
+import { Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -15,7 +15,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
-			transform: (v: any): ObjectId | ObjectId[] => Array.isArray(v) ? v.map(x => transform(x)) : transform(v),
 			desc: {
 				'ja-JP': 'ユーザーID (配列でも可)'
 			}
@@ -26,7 +25,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
 
-	const relations = await Promise.all(ids.map(id => getRelation(me._id, id)));
+	const relations = await Promise.all(ids.map(id => Users.getRelation(me.id, id)));
 
 	return Array.isArray(ps.userId) ? relations : relations[0];
 });

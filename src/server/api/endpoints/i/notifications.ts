@@ -1,11 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Notification from '../../../../models/notification';
-import { packMany } from '../../../../models/notification';
-import { getFriendIds } from '../../common/get-friends';
-import read from '../../common/read-notification';
+import { ID } from '../../../../misc/cafy-id';
+import { readNotification } from '../../common/read-notification';
 import define from '../../define';
-import { getHideUserIds } from '../../common/get-hide-users';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { Notifications, Followings, Mutings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -17,7 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-read',
+	kind: 'read:notifications',
 
 	params: {
 		limit: {
@@ -27,12 +25,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		following: {
@@ -46,12 +42,12 @@ export const meta = {
 		},
 
 		includeTypes: {
-			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])),
+			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest'])),
 			default: [] as string[]
 		},
 
 		excludeTypes: {
-			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'poll_vote', 'receiveFollowRequest'])),
+			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest'])),
 			default: [] as string[]
 		}
 	},
@@ -65,63 +61,38 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const hideUserIds = await getHideUserIds(user);
+	const followingQuery = Followings.createQueryBuilder('following')
+		.select('following.followeeId')
+		.where('following.followerId = :followerId', { followerId: user.id });
 
-	const query = {
-		notifieeId: user._id,
-		$and: [{
-			notifierId: {
-				$nin: hideUserIds
-			}
-		}]
-	} as any;
+	const mutingQuery = Mutings.createQueryBuilder('muting')
+		.select('muting.muteeId')
+		.where('muting.muterId = :muterId', { muterId: user.id });
 
-	const sort = {
-		_id: -1
-	};
+	const query = makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
+		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
+		.leftJoinAndSelect('notification.notifier', 'notifier');
+
+	query.andWhere(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`);
+	query.setParameters(mutingQuery.getParameters());
 
 	if (ps.following) {
-		// ID list of the user itself and other users who the user follows
-		const followingIds = await getFriendIds(user._id);
-
-		query.$and.push({
-			notifierId: {
-				$in: followingIds
-			}
-		});
+		query.andWhere(`((notification.notifierId IN (${ followingQuery.getQuery() })) OR (notification.notifierId = :meId))`, { meId: user.id });
+		query.setParameters(followingQuery.getParameters());
 	}
 
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
+	if (ps.includeTypes!.length > 0) {
+		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
+	} else if (ps.excludeTypes!.length > 0) {
+		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
 	}
 
-	if (ps.includeTypes.length > 0) {
-		query.type = {
-			$in: ps.includeTypes
-		};
-	} else if (ps.excludeTypes.length > 0) {
-		query.type = {
-			$nin: ps.excludeTypes
-		};
-	}
-
-	const notifications = await Notification
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const notifications = await query.take(ps.limit!).getMany();
 
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {
-		read(user._id, notifications);
+		readNotification(user.id, notifications.map(x => x.id));
 	}
 
-	return await packMany(notifications);
+	return await Notifications.packMany(notifications);
 });

@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import Instance from '../../../../models/instance';
+import { Instances } from '../../../../models';
+import { toPuny } from '../../../../misc/convert-host';
 
 export const meta = {
 	tags: ['federation'],
@@ -15,8 +16,8 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const instance = await Instance
-		.findOne({ host: ps.host });
+	const instance = await Instances
+		.findOne({ host: toPuny(ps.host) });
 
 	return instance;
 });

@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import Favorite from '../../../../../models/favorite';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
+import { NoteFavorites } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -22,7 +22,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
@@ -53,19 +52,15 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// if already favorited
-	const exist = await Favorite.findOne({
-		noteId: note._id,
-		userId: user._id
+	const exist = await NoteFavorites.findOne({
+		noteId: note.id,
+		userId: user.id
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		throw new ApiError(meta.errors.notFavorited);
 	}
 
 	// Delete favorite
-	await Favorite.remove({
-		_id: exist._id
-	});
-
-	return;
+	await NoteFavorites.delete(exist.id);
 });

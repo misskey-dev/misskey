@@ -1,7 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Mute, { packMany } from '../../../../models/mute';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { Mutings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -13,7 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account/read',
+	kind: 'read:mutes',
 
 	params: {
 		limit: {
@@ -23,12 +24,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 	},
 
@@ -41,30 +40,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = {
-		muterId: me._id
-	} as any;
+	const query = makePaginationQuery(Mutings.createQueryBuilder('muting'), ps.sinceId, ps.untilId)
+		.andWhere(`muting.muterId = :meId`, { meId: me.id });
 
-	const sort = {
-		_id: -1
-	};
+	const mutings = await query
+		.take(ps.limit!)
+		.getMany();
 
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const mutes = await Mute
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	return await packMany(mutes, me);
+	return await Mutings.packMany(mutings, me);
 });

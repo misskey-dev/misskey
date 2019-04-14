@@ -1,3 +1,5 @@
+import { Users, Signins } from '../models';
+
 // node built/tools/show-signin-history username
 //  => {Success} {Date} {IPAddrsss}
 
@@ -7,19 +9,16 @@
 // node built/tools/show-signin-history username all
 //  with full request headers
 
-import User from '../models/user';
-import Signin from '../models/signin';
-
-async function main(username: string, headers: string[]) {
-	const user = await User.findOne({
+async function main(username: string, headers?: string[]) {
+	const user = await Users.findOne({
 		host: null,
 		usernameLower: username.toLowerCase(),
 	});
 
-	if (user === null) throw 'User not found';
+	if (user == null) throw new Error('User not found');
 
-	const history = await Signin.find({
-		userId: user._id
+	const history = await Signins.find({
+		userId: user.id
 	});
 
 	for (const signin of history) {
@@ -40,7 +39,7 @@ async function main(username: string, headers: string[]) {
 const args = process.argv.slice(2);
 
 let username = args[0];
-let headers: string[];
+let headers: string[] | undefined;
 
 if (args[1] != null) {
 	headers = args[1].split(/,/).map(header => header.toLowerCase());

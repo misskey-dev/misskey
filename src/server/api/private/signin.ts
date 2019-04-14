@@ -1,11 +1,13 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import User, { ILocalUser } from '../../../models/user';
-import Signin, { pack } from '../../../models/signin';
 import { publishMainStream } from '../../../services/stream';
 import signin from '../common/signin';
 import config from '../../../config';
+import { Users, Signins, UserProfiles } from '../../../models';
+import { ILocalUser } from '../../../models/entities/user';
+import { genId } from '../../../misc/gen-id';
+import { ensure } from '../../../prelude/ensure';
 
 export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
@@ -32,30 +34,27 @@ export default async (ctx: Koa.BaseContext) => {
 	}
 
 	// Fetch user
-	const user = await User.findOne({
+	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
 		host: null
-	}, {
-			fields: {
-				data: false,
-				profile: false
-			}
-		}) as ILocalUser;
+	}) as ILocalUser;
 
-	if (user === null) {
+	if (user == null) {
 		ctx.throw(404, {
 			error: 'user not found'
 		});
 		return;
 	}
 
+	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
+
 	// Compare password
-	const same = await bcrypt.compare(password, user.password);
+	const same = await bcrypt.compare(password, profile.password!);
 
 	if (same) {
-		if (user.twoFactorEnabled) {
+		if (profile.twoFactorEnabled) {
 			const verified = (speakeasy as any).totp.verify({
-				secret: user.twoFactorSecret,
+				secret: profile.twoFactorSecret,
 				encoding: 'base32',
 				token: token
 			});
@@ -77,14 +76,15 @@ export default async (ctx: Koa.BaseContext) => {
 	}
 
 	// Append signin history
-	const record = await Signin.insert({
+	const record = await Signins.save({
+		id: genId(),
 		createdAt: new Date(),
-		userId: user._id,
+		userId: user.id,
 		ip: ctx.ip,
 		headers: ctx.headers,
 		success: same
 	});
 
 	// Publish signin event
-	publishMainStream(user._id, 'signin', await pack(record));
+	publishMainStream(user.id, 'signin', await Signins.pack(record));
 };

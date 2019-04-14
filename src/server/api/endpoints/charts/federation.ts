@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import federationChart from '../../../../services/chart/federation';
+import { convertLog } from '../../../../services/chart/core';
+import { federationChart } from '../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -28,14 +29,9 @@ export const meta = {
 		},
 	},
 
-	res: {
-		type: 'array',
-		items: {
-			type: 'object',
-		},
-	},
+	res: convertLog(federationChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return await federationChart.getChart(ps.span as any, ps.limit);
+	return await federationChart.getChart(ps.span as any, ps.limit!);
 });

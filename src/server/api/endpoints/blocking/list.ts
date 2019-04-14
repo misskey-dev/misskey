@@ -1,7 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Blocking, { packMany } from '../../../../models/blocking';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
+import { Blockings } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	desc: {
@@ -13,7 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-read',
+	kind: 'read:blocks',
 
 	params: {
 		limit: {
@@ -23,12 +24,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 	},
 
@@ -41,30 +40,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = {
-		blockerId: me._id
-	} as any;
+	const query = makePaginationQuery(Blockings.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
+		.andWhere(`blocking.blockerId = :meId`, { meId: me.id });
 
-	const sort = {
-		_id: -1
-	};
+	const blockings = await query
+		.take(ps.limit!)
+		.getMany();
 
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const blockings = await Blocking
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	return await packMany(blockings, me);
+	return await Blockings.packMany(blockings, me);
 });

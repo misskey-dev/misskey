@@ -130,20 +130,6 @@ import * as tinycolor from 'tinycolor2';
 import * as JSON5 from 'json5';
 import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 
-// 後方互換性のため
-function convertOldThemedefinition(t) {
-	const t2 = {
-		id: t.meta.id,
-		name: t.meta.name,
-		author: t.meta.author,
-		base: t.meta.base,
-		vars: t.meta.vars,
-		props: t
-	};
-	delete t2.props.meta;
-	return t2;
-}
-
 export default Vue.extend({
 	i18n: i18n('common/views/components/theme.vue'),
 	components: {
@@ -231,20 +217,6 @@ export default Vue.extend({
 		}
 	},
 
-	beforeCreate() {
-		// migrate old theme definitions
-		// 後方互換性のため
-		this.$store.commit('device/set', {
-			key: 'themes', value: this.$store.state.device.themes.map(t => {
-				if (t.id == null) {
-					return convertOldThemedefinition(t);
-				} else {
-					return t;
-				}
-			})
-		});
-	},
-
 	methods: {
 		install(code) {
 			let theme;
@@ -257,11 +229,6 @@ export default Vue.extend({
 					text: this.$t('invalid-theme')
 				});
 				return;
-			}
-
-			// 後方互換性のため
-			if (theme.id == null && theme.meta != null) {
-				theme = convertOldThemedefinition(theme);
 			}
 
 			if (theme.id == null) {

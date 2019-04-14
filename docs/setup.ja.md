@@ -22,44 +22,29 @@ adduser --disabled-password --disabled-login misskey
 これらのソフトウェアをインストール・設定してください:
 
 #### 依存関係 :package:
-* **[Node.js](https://nodejs.org/en/)** (10.0.0以上)
-* **[MongoDB](https://www.mongodb.com/)** (3.6以上)
+* **[Node.js](https://nodejs.org/en/)** (11.7.0以上)
+* **[PostgreSQL](https://www.postgresql.org/)** (10以上)
+* **[Redis](https://redis.io/)**
 
 ##### オプション
-* [Redis](https://redis.io/)
-	* Redisはオプションですが、インストールすることを強く推奨します。
-	* インストールしなくていいのは、あなたのインスタンスが自分専用のときだけとお考えください。
-	* 具体的には、Redisをインストールしないと、次の事が出来なくなります:
-		* Misskeyプロセスを複数起動しての負荷分散
-		* レートリミット
-		* ジョブキュー
-		* Twitter連携
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* MongoDBの設定
-----------------------------------------------------------------
-ルートで:
-1. `mongo` mongoシェルを起動
-2. `use misskey` misskeyデータベースを使用
-3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` misskeyユーザーを作成
-4. `exit` mongoシェルを終了
-
-*4.* Misskeyのインストール
+*3.* Misskeyのインストール
 ----------------------------------------------------------------
 1. `su - misskey` misskeyユーザーを使用
 2. `git clone -b master git://github.com/syuilo/misskey.git` masterブランチからMisskeyレポジトリをクローン
 3. `cd misskey` misskeyディレクトリに移動
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+4. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 5. `npm install` Misskeyの依存パッケージをインストール
 
-*5.* 設定ファイルを作成する
+*4.* 設定ファイルを作成する
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする。
 2. `default.yml` を編集する。
 
-*6.* Misskeyのビルド
+*5.* Misskeyのビルド
 ----------------------------------------------------------------
 
 次のコマンドでMisskeyをビルドしてください:
@@ -73,6 +58,12 @@ Debianをお使いであれば、`build-essential`パッケージをインスト
 2. `node-gyp configure`
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
+
+*6.* データベースを初期化
+----------------------------------------------------------------
+``` shell
+npm run init
+```
 
 *7.* 以上です！
 ----------------------------------------------------------------
@@ -113,7 +104,7 @@ CentOSで1024以下のポートを使用してMisskeyを使用する場合は`Ex
 
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git fetch`
-2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+2. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する

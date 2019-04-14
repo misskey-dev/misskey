@@ -1,12 +1,11 @@
 import $ from 'cafy';
-import ID, { transform, transformMany } from '../../../../misc/cafy-id';
-import User, { pack, isRemoteUser } from '../../../../models/user';
-import resolveRemoteUser from '../../../../remote/resolve-user';
+import { resolveUser } from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
 import { ApiError } from '../../error';
-
-const cursorOption = { fields: { data: false } };
+import { ID } from '../../../../misc/cafy-id';
+import { Users } from '../../../../models';
+import { In } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -20,7 +19,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -29,7 +27,6 @@ export const meta = {
 
 		userIds: {
 			validator: $.optional.arr($.type(ID)).unique(),
-			transform: transformMany,
 			desc: {
 				'ja-JP': 'ユーザーID (配列)'
 			}
@@ -68,42 +65,40 @@ export default define(meta, async (ps, me) => {
 	let user;
 
 	if (ps.userIds) {
-		const users = await User.find({
-			_id: {
-				$in: ps.userIds
-			}
+		const users = await Users.find({
+			id: In(ps.userIds)
 		});
 
-		return await Promise.all(users.map(u => pack(u, me, {
+		return await Promise.all(users.map(u => Users.pack(u, me, {
 			detail: true
 		})));
 	} else {
 		// Lookup user
-		if (typeof ps.host === 'string') {
-			user = await resolveRemoteUser(ps.username, ps.host, cursorOption).catch(e => {
+		if (typeof ps.host === 'string' && typeof ps.username === 'string') {
+			user = await resolveUser(ps.username, ps.host).catch(e => {
 				apiLogger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.failedToResolveRemoteUser);
 			});
 		} else {
 			const q: any = ps.userId != null
-				? { _id: ps.userId }
-				: { usernameLower: ps.username.toLowerCase(), host: null };
+				? { id: ps.userId }
+				: { usernameLower: ps.username!.toLowerCase(), host: null };
 
-			user = await User.findOne(q, cursorOption);
+			user = await Users.findOne(q);
 		}
 
-		if (user === null) {
+		if (user == null) {
 			throw new ApiError(meta.errors.noSuchUser);
 		}
 
 		// ユーザー情報更新
-		if (isRemoteUser(user)) {
+		if (Users.isRemoteUser(user)) {
 			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				resolveRemoteUser(ps.username, ps.host, { }, true);
+				resolveUser(user.username, user.host, { }, true);
 			}
 		}
 
-		return await pack(user, me, {
+		return await Users.pack(user, me, {
 			detail: true
 		});
 	}

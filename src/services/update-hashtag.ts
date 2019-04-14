@@ -1,103 +1,106 @@
-import { IUser, isLocalUser, isRemoteUser } from '../models/user';
-import Hashtag from '../models/hashtag';
-import hashtagChart from './chart/hashtag';
+import { User } from '../models/entities/user';
+import { Hashtags, Users } from '../models';
+import { hashtagChart } from './chart';
+import { genId } from '../misc/gen-id';
+import { Hashtag } from '../models/entities/hashtag';
 
-export async function updateHashtag(user: IUser, tag: string, isUserAttached = false, inc = true) {
+export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();
 
-	const index = await Hashtag.findOne({ tag });
+	const index = await Hashtags.findOne({ name: tag });
 
 	if (index == null && !inc) return;
 
 	if (index != null) {
-		const $push = {} as any;
-		const $pull = {} as any;
-		const $inc = {} as any;
+		const q = Hashtags.createQueryBuilder('tag').update()
+			.where('tag.name = :name', { name: tag });
+
+		const set = {} as any;
 
 		if (isUserAttached) {
 			if (inc) {
 				// 自分が初めてこのタグを使ったなら
-				if (!index.attachedUserIds.some(id => id.equals(user._id))) {
-					$push.attachedUserIds = user._id;
-					$inc.attachedUsersCount = 1;
+				if (!index.attachedUserIds.some(id => id === user.id)) {
+					set.attachedUserIds = () => `array_append(tag.attachedUserIds, '${user.id}')`;
+					set.attachedUsersCount = () => `tag.attachedUsersCount + 1`;
 				}
 				// 自分が(ローカル内で)初めてこのタグを使ったなら
-				if (isLocalUser(user) && !index.attachedLocalUserIds.some(id => id.equals(user._id))) {
-					$push.attachedLocalUserIds = user._id;
-					$inc.attachedLocalUsersCount = 1;
+				if (Users.isLocalUser(user) && !index.attachedLocalUserIds.some(id => id === user.id)) {
+					set.attachedLocalUserIds = () => `array_append(tag.attachedLocalUserIds, '${user.id}')`;
+					set.attachedLocalUsersCount = () => `tag.attachedLocalUsersCount + 1`;
 				}
 				// 自分が(リモートで)初めてこのタグを使ったなら
-				if (isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id.equals(user._id))) {
-					$push.attachedRemoteUserIds = user._id;
-					$inc.attachedRemoteUsersCount = 1;
+				if (Users.isRemoteUser(user) && !index.attachedRemoteUserIds.some(id => id === user.id)) {
+					set.attachedRemoteUserIds = () => `array_append(tag.attachedRemoteUserIds, '${user.id}')`;
+					set.attachedRemoteUsersCount = () => `tag.attachedRemoteUsersCount + 1`;
 				}
 			} else {
-				$pull.attachedUserIds = user._id;
-				$inc.attachedUsersCount = -1;
-				if (isLocalUser(user)) {
-					$pull.attachedLocalUserIds = user._id;
-					$inc.attachedLocalUsersCount = -1;
+				set.attachedUserIds = () => `array_remove(tag.attachedUserIds, '${user.id}')`;
+				set.attachedUsersCount = () => `tag.attachedUsersCount - 1`;
+				if (Users.isLocalUser(user)) {
+					set.attachedLocalUserIds = () => `array_remove(tag.attachedLocalUserIds, '${user.id}')`;
+					set.attachedLocalUsersCount = () => `tag.attachedLocalUsersCount - 1`;
 				} else {
-					$pull.attachedRemoteUserIds = user._id;
-					$inc.attachedRemoteUsersCount = -1;
+					set.attachedRemoteUserIds = () => `array_remove(tag.attachedRemoteUserIds, '${user.id}')`;
+					set.attachedRemoteUsersCount = () => `tag.attachedRemoteUsersCount - 1`;
 				}
 			}
 		} else {
 			// 自分が初めてこのタグを使ったなら
-			if (!index.mentionedUserIds.some(id => id.equals(user._id))) {
-				$push.mentionedUserIds = user._id;
-				$inc.mentionedUsersCount = 1;
+			if (!index.mentionedUserIds.some(id => id === user.id)) {
+				set.mentionedUserIds = () => `array_append(tag.mentionedUserIds, '${user.id}')`;
+				set.mentionedUsersCount = () => `tag.mentionedUsersCount + 1`;
 			}
 			// 自分が(ローカル内で)初めてこのタグを使ったなら
-			if (isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id.equals(user._id))) {
-				$push.mentionedLocalUserIds = user._id;
-				$inc.mentionedLocalUsersCount = 1;
+			if (Users.isLocalUser(user) && !index.mentionedLocalUserIds.some(id => id === user.id)) {
+				set.mentionedLocalUserIds = () => `array_append(tag.mentionedLocalUserIds, '${user.id}')`;
+				set.mentionedLocalUsersCount = () => `tag.mentionedLocalUsersCount + 1`;
 			}
 			// 自分が(リモートで)初めてこのタグを使ったなら
-			if (isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id.equals(user._id))) {
-				$push.mentionedRemoteUserIds = user._id;
-				$inc.mentionedRemoteUsersCount = 1;
+			if (Users.isRemoteUser(user) && !index.mentionedRemoteUserIds.some(id => id === user.id)) {
+				set.mentionedRemoteUserIds = () => `array_append(tag.mentionedRemoteUserIds, '${user.id}')`;
+				set.mentionedRemoteUsersCount = () => `tag.mentionedRemoteUsersCount + 1`;
 			}
 		}
 
-		const q = {} as any;
-		if (Object.keys($push).length > 0) q.$push = $push;
-		if (Object.keys($pull).length > 0) q.$pull = $pull;
-		if (Object.keys($inc).length > 0) q.$inc = $inc;
-		if (Object.keys(q).length > 0) Hashtag.update({ tag }, q);
+		if (Object.keys(set).length > 0) {
+			q.execute();
+		}
 	} else {
 		if (isUserAttached) {
-			Hashtag.insert({
-				tag,
+			Hashtags.save({
+				id: genId(),
+				name: tag,
 				mentionedUserIds: [],
 				mentionedUsersCount: 0,
 				mentionedLocalUserIds: [],
 				mentionedLocalUsersCount: 0,
 				mentionedRemoteUserIds: [],
 				mentionedRemoteUsersCount: 0,
-				attachedUserIds: [user._id],
+				attachedUserIds: [user.id],
 				attachedUsersCount: 1,
-				attachedLocalUserIds: isLocalUser(user) ? [user._id] : [],
-				attachedLocalUsersCount: isLocalUser(user) ? 1 : 0,
-				attachedRemoteUserIds: isRemoteUser(user) ? [user._id] : [],
-				attachedRemoteUsersCount: isRemoteUser(user) ? 1 : 0,
-			});
+				attachedLocalUserIds: Users.isLocalUser(user) ? [user.id] : [],
+				attachedLocalUsersCount: Users.isLocalUser(user) ? 1 : 0,
+				attachedRemoteUserIds: Users.isRemoteUser(user) ? [user.id] : [],
+				attachedRemoteUsersCount: Users.isRemoteUser(user) ? 1 : 0,
+			} as Hashtag);
 		} else {
-			Hashtag.insert({
-				tag,
-				mentionedUserIds: [user._id],
+			Hashtags.save({
+				id: genId(),
+				name: tag,
+				mentionedUserIds: [user.id],
 				mentionedUsersCount: 1,
-				mentionedLocalUserIds: isLocalUser(user) ? [user._id] : [],
-				mentionedLocalUsersCount: isLocalUser(user) ? 1 : 0,
-				mentionedRemoteUserIds: isRemoteUser(user) ? [user._id] : [],
-				mentionedRemoteUsersCount: isRemoteUser(user) ? 1 : 0,
+				mentionedLocalUserIds: Users.isLocalUser(user) ? [user.id] : [],
+				mentionedLocalUsersCount: Users.isLocalUser(user) ? 1 : 0,
+				mentionedRemoteUserIds: Users.isRemoteUser(user) ? [user.id] : [],
+				mentionedRemoteUsersCount: Users.isRemoteUser(user) ? 1 : 0,
 				attachedUserIds: [],
 				attachedUsersCount: 0,
 				attachedLocalUserIds: [],
 				attachedLocalUsersCount: 0,
 				attachedRemoteUserIds: [],
 				attachedRemoteUsersCount: 0,
-			});
+			} as Hashtag);
 		}
 	}
 

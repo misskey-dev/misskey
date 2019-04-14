@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User, { IUser } from '../../../../models/user';
-import Following from '../../../../models/following';
 import deleteFollowing from '../../../../services/following/delete';
+import { Users, Followings } from '../../../../models';
+import { User } from '../../../../models/entities/user';
 
 export const meta = {
 	desc: {
@@ -19,7 +19,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID which you want to suspend'
@@ -29,9 +28,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await User.findOne({
-		_id: ps.userId
-	});
+	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {
 		throw new Error('user not found');
@@ -45,27 +42,21 @@ export default define(meta, async (ps) => {
 		throw new Error('cannot suspend moderator');
 	}
 
-	await User.findOneAndUpdate({
-		_id: user._id
-	}, {
-		$set: {
-			isSuspended: true
-		}
+	await Users.update(user.id, {
+		isSuspended: true
 	});
 
 	unFollowAll(user);
-
-	return;
 });
 
-async function unFollowAll(follower: IUser) {
-	const followings = await Following.find({
-		followerId: follower._id
+async function unFollowAll(follower: User) {
+	const followings = await Followings.find({
+		followerId: follower.id
 	});
 
 	for (const following of followings) {
-		const followee = await User.findOne({
-			_id: following.followeeId
+		const followee = await Users.findOne({
+			id: following.followeeId
 		});
 
 		if (followee == null) {

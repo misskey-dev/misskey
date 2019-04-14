@@ -158,14 +158,14 @@ export default Vue.extend({
 
 	computed: {
 		alwaysMarkNsfw: {
-			get() { return this.$store.state.i.settings.alwaysMarkNsfw; },
+			get() { return this.$store.state.i.alwaysMarkNsfw; },
 			set(value) { this.$root.api('i/update', { alwaysMarkNsfw: value }); }
 		},
 
 		bannerStyle(): any {
 			if (this.$store.state.i.bannerUrl == null) return {};
 			return {
-				backgroundColor: this.$store.state.i.bannerColor && this.$store.state.i.bannerColor.length == 3 ? `rgb(${ this.$store.state.i.bannerColor.join(',') })` : null,
+				backgroundColor: this.$store.state.i.bannerColor,
 				backgroundImage: `url(${ this.$store.state.i.bannerUrl })`
 			};
 		},
@@ -178,10 +178,10 @@ export default Vue.extend({
 		this.email = this.$store.state.i.email;
 		this.name = this.$store.state.i.name;
 		this.username = this.$store.state.i.username;
-		this.location = this.$store.state.i.profile.location;
+		this.location = this.$store.state.i.location;
 		this.description = this.$store.state.i.description;
 		this.lang = this.$store.state.i.lang;
-		this.birthday = this.$store.state.i.profile.birthday;
+		this.birthday = this.$store.state.i.birthday;
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isCat = this.$store.state.i.isCat;

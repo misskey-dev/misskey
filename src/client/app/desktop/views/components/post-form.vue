@@ -27,15 +27,7 @@
 			<button class="emoji" @click="emoji" ref="emoji">
 				<fa :icon="['far', 'laugh']"/>
 			</button>
-			<div class="files" :class="{ with: poll }" v-show="files.length != 0">
-				<x-draggable :list="files" :options="{ animation: 150 }">
-					<div v-for="file in files" :key="file.id">
-						<div class="img" :style="{ backgroundImage: `url(${file.thumbnailUrl})` }" :title="file.name"></div>
-						<img class="remove" @click="detachMedia(file.id)" src="/assets/desktop/remove.png" :title="$t('attach-cancel')" alt=""/>
-					</div>
-				</x-draggable>
-				<p class="remain">{{ 4 - files.length }}/4</p>
-			</div>
+			<x-post-form-attaches class="files" :class="{ with: poll }" :files="files"/>
 			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		</div>
 	</div>
@@ -65,7 +57,6 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import * as XDraggable from 'vuedraggable';
 import getFace from '../../../common/scripts/get-face';
 import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
 import { parse } from '../../../../../mfm/parse';
@@ -74,13 +65,14 @@ import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
 import extractMentions from '../../../../../misc/extract-mentions';
+import XPostFormAttaches from '../../../common/views/components/post-form-attaches.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/post-form.vue'),
 
 	components: {
-		XDraggable,
-		MkVisibilityChooser
+		MkVisibilityChooser,
+		XPostFormAttaches
 	},
 
 	props: {
@@ -513,7 +505,7 @@ export default Vue.extend({
 
 		kao() {
 			this.text += getFace();
-		}
+		},
 	}
 });
 </script>
@@ -617,46 +609,6 @@ export default Vue.extend({
 				&.with
 					border-bottom solid 1px var(--primaryAlpha01) !important
 					border-radius 0
-
-				> .remain
-					display block
-					position absolute
-					top 8px
-					right 8px
-					margin 0
-					padding 0
-					color var(--primaryAlpha04)
-
-				> div
-					padding 4px
-
-					&:after
-						content ""
-						display block
-						clear both
-
-					> div
-						float left
-						border solid 4px transparent
-						cursor move
-
-						&:hover > .remove
-							display block
-
-						> .img
-							width 64px
-							height 64px
-							background-size cover
-							background-position center center
-
-						> .remove
-							display none
-							position absolute
-							top -6px
-							right -6px
-							width 16px
-							height 16px
-							cursor pointer
 
 			> .mk-poll-editor
 				background var(--desktopPostFormTextareaBg)

@@ -106,7 +106,7 @@ export default Vue.extend({
 		async nav(game, actualNav = true) {
 			if (this.selfNav) {
 				// 受け取ったゲーム情報が省略されたものなら完全な情報を取得する
-				if (game != null && (game.settings == null || game.settings.map == null)) {
+				if (game != null && game.map == null) {
 					game = await this.$root.api('games/reversi/games/show', {
 						gameId: game.id
 					});

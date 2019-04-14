@@ -1,9 +1,11 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Mute from '../../../../models/mute';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { genId } from '../../../../misc/gen-id';
+import { Mutings, NoteWatchings } from '../../../../models';
+import { Muting } from '../../../../models/entities/muting';
 
 export const meta = {
 	desc: {
@@ -15,12 +17,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account/write',
+	kind: 'write:mutes',
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -53,7 +54,7 @@ export default define(meta, async (ps, user) => {
 	const muter = user;
 
 	// 自分自身
-	if (user._id.equals(ps.userId)) {
+	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.muteeIsYourself);
 	}
 
@@ -64,21 +65,25 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check if already muting
-	const exist = await Mute.findOne({
-		muterId: muter._id,
-		muteeId: mutee._id
+	const exist = await Mutings.findOne({
+		muterId: muter.id,
+		muteeId: mutee.id
 	});
 
-	if (exist !== null) {
+	if (exist != null) {
 		throw new ApiError(meta.errors.alreadyMuting);
 	}
 
 	// Create mute
-	await Mute.insert({
+	await Mutings.save({
+		id: genId(),
 		createdAt: new Date(),
-		muterId: muter._id,
-		muteeId: mutee._id,
-	});
+		muterId: muter.id,
+		muteeId: mutee.id,
+	} as Muting);
 
-	return;
+	NoteWatchings.delete({
+		userId: muter.id,
+		noteUserId: mutee.id
+	});
 });

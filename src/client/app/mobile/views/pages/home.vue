@@ -9,7 +9,7 @@
 				<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
 				<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
 				<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
-				<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
+				<span v-if="src == 'list'"><fa icon="list"/>{{ list.name }}</span>
 				<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
 			</span>
 			<span style="margin-left:8px">

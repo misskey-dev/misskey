@@ -22,37 +22,28 @@ adduser --disabled-password --disabled-login misskey
 Installez les paquets suivants :
 
 #### Dépendences :package:
-* **[Node.js](https://nodejs.org/en/)** >= 10.0.0
-* **[MongoDB](https://www.mongodb.com/)** >= 3.6
+* **[Node.js](https://nodejs.org/en/)** >= 11.7.0
+* **[PostgreSQL](https://www.postgresql.org/)** >= 10
+* **[Redis](https://redis.io/)**
 
 ##### Optionnels
-* [Redis](https://redis.io/)
-  * Redis est optionnel mais nous vous recommandons vivement de l'installer
 * [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Paramètrage de MongoDB
-----------------------------------------------------------------
-En root :
-1. `mongo` Ouvrez le shell mongo
-2. `use misskey` Utilisez la base de données misskey
-3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` Créez l'utilisateur misskey.
-4. `exit` Vous avez terminé !
-
-*4.* Installation de Misskey
+*3.* Installation de Misskey
 ----------------------------------------------------------------
 1. `su - misskey` Basculez vers l'utilisateur misskey.
 2. `git clone -b master git://github.com/syuilo/misskey.git` Clonez la branche master du dépôt misskey.
 3. `cd misskey` Accédez au dossier misskey.
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
+4. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
 5. `npm install` Installez les dépendances de misskey.
 
-*5.* Création du fichier de configuration
+*4.* Création du fichier de configuration
 ----------------------------------------------------------------
 1. `cp .config/example.yml .config/default.yml` Copiez le fichier `.config/example.yml` et renommez-le`default.yml`.
 2. Editez le fichier `default.yml`
 
-*6.* Construction de Misskey
+*5.* Construction de Misskey
 ----------------------------------------------------------------
 
 Construisez Misskey comme ceci :
@@ -68,7 +59,7 @@ Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
 
-*7.* C'est tout.
+*6.* C'est tout.
 ----------------------------------------------------------------
 Excellent ! Maintenant, vous avez un environnement prêt pour lancer Misskey
 
@@ -107,7 +98,7 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 
 ### Méthode de mise à jour vers la plus récente version de Misskey
 1. `git fetch`
-2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+2. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. Consultez [ChangeLog](../CHANGELOG.md) pour les information de migration.

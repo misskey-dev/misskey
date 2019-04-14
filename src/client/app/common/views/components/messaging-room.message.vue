@@ -11,7 +11,7 @@
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"
-							:style="{ backgroundColor: message.file.properties.avgColor && message.file.properties.avgColor.length == 3 ? `rgb(${message.file.properties.avgColor.join(',')})` : 'transparent' }"/>
+							:style="{ backgroundColor: message.file.properties.avgColor || 'transparent' }"/>
 						<p v-else>{{ message.file.name }}</p>
 					</a>
 				</div>

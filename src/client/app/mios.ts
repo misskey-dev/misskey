@@ -28,7 +28,7 @@ export default class MiOS extends EventEmitter {
 	};
 
 	public get instanceName() {
-		return this.meta ? this.meta.data.name : 'Misskey';
+		return this.meta ? (this.meta.data.name || 'Misskey') : 'Misskey';
 	}
 
 	private isMetaFetching = false;
@@ -275,21 +275,6 @@ export default class MiOS extends EventEmitter {
 				this.store.commit('settings/set', {
 					key: x.key,
 					value: x.value
-				});
-			});
-
-			main.on('homeUpdated', x => {
-				this.store.commit('settings/setHome', x);
-			});
-
-			main.on('mobileHomeUpdated', x => {
-				this.store.commit('settings/setMobileHome', x);
-			});
-
-			main.on('widgetUpdated', x => {
-				this.store.commit('settings/updateWidget', {
-					id: x.id,
-					data: x.data
 				});
 			});
 

@@ -1,11 +1,10 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import UserList from '../../../../../models/user-list';
-import { pack as packUser } from '../../../../../models/user';
+import { ID } from '../../../../../misc/cafy-id';
 import { publishUserListStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
+import { UserLists, UserListJoinings, Users } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -17,17 +16,15 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 		listId: {
 			validator: $.type(ID),
-			transform: transform,
 		},
 
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -52,9 +49,9 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	// Fetch the list
-	const userList = await UserList.findOne({
-		_id: ps.listId,
-		userId: me._id,
+	const userList = await UserLists.findOne({
+		id: ps.listId,
+		userId: me.id,
 	});
 
 	if (userList == null) {
@@ -68,11 +65,7 @@ export default define(meta, async (ps, me) => {
 	});
 
 	// Pull the user
-	await UserList.update({ _id: userList._id }, {
-		$pull: {
-			userIds: user._id
-		}
-	});
+	await UserListJoinings.delete({ userId: user.id });
 
-	publishUserListStream(userList._id, 'userRemoved', await packUser(user));
+	publishUserListStream(userList.id, 'userRemoved', await Users.pack(user));
 });

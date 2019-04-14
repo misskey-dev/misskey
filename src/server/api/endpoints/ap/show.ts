@@ -1,15 +1,16 @@
 import $ from 'cafy';
 import define from '../../define';
 import config from '../../../../config';
-import * as mongo from 'mongodb';
-import User, { pack as packUser, IUser } from '../../../../models/user';
 import { createPerson } from '../../../../remote/activitypub/models/person';
-import Note, { pack as packNote, INote } from '../../../../models/note';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
-import Instance from '../../../../models/instance';
 import { extractDbHost } from '../../../../misc/convert-host';
+import { Users, Notes } from '../../../../models';
+import { Note } from '../../../../models/entities/note';
+import { User } from '../../../../models/entities/user';
+import fetchMeta from '../../../../misc/fetch-meta';
+import { validActor } from '../../../../remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],
@@ -53,25 +54,40 @@ export default define(meta, async (ps) => {
 async function fetchAny(uri: string) {
 	// URIがこのサーバーを指しているなら、ローカルユーザーIDとしてDBからフェッチ
 	if (uri.startsWith(config.url + '/')) {
-		const id = new mongo.ObjectID(uri.split('/').pop());
-		const [user, note] = await Promise.all([
-			User.findOne({ _id: id }),
-			Note.findOne({ _id: id })
-		]);
+		const parts = uri.split('/');
+		const id = parts.pop();
+		const type = parts.pop();
 
-		const packed = await mergePack(user, note);
-		if (packed !== null) return packed;
+		if (type === 'notes') {
+			const note = await Notes.findOne(id);
+
+			if (note) {
+				return {
+					type: 'Note',
+					object: await Notes.pack(note, null, { detail: true })
+				};
+			}
+		} else if (type === 'users') {
+			const user = await Users.findOne(id);
+
+			if (user) {
+				return {
+					type: 'User',
+					object: await Users.pack(user, null, { detail: true })
+				};
+			}
+		}
 	}
 
 	// ブロックしてたら中断
-	const instance = await Instance.findOne({ host: extractDbHost(uri) });
-	if (instance && instance.isBlocked) return null;
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(extractDbHost(uri))) return null;
 
 	// URI(AP Object id)としてDB検索
 	{
 		const [user, note] = await Promise.all([
-			User.findOne({ uri: uri }),
-			Note.findOne({ uri: uri })
+			Users.findOne({ uri: uri }),
+			Notes.findOne({ uri: uri })
 		]);
 
 		const packed = await mergePack(user, note);
@@ -86,8 +102,8 @@ async function fetchAny(uri: string) {
 	// これはDBに存在する可能性があるため再度DB検索
 	if (uri !== object.id) {
 		const [user, note] = await Promise.all([
-			User.findOne({ uri: object.id }),
-			Note.findOne({ uri: object.id })
+			Users.findOne({ uri: object.id }),
+			Notes.findOne({ uri: object.id })
 		]);
 
 		const packed = await mergePack(user, note);
@@ -95,11 +111,11 @@ async function fetchAny(uri: string) {
 	}
 
 	// それでもみつからなければ新規であるため登録
-	if (object.type === 'Person') {
+	if (validActor.includes(object.type)) {
 		const user = await createPerson(object.id);
 		return {
 			type: 'User',
-			object: await packUser(user, null, { detail: true })
+			object: await Users.pack(user, null, { detail: true })
 		};
 	}
 
@@ -107,25 +123,25 @@ async function fetchAny(uri: string) {
 		const note = await createNote(object.id);
 		return {
 			type: 'Note',
-			object: await packNote(note, null, { detail: true })
+			object: await Notes.pack(note!, null, { detail: true })
 		};
 	}
 
 	return null;
 }
 
-async function mergePack(user: IUser, note: INote) {
-	if (user !== null) {
+async function mergePack(user: User | null | undefined, note: Note | null | undefined) {
+	if (user != null) {
 		return {
 			type: 'User',
-			object: await packUser(user, null, { detail: true })
+			object: await Users.pack(user, null, { detail: true })
 		};
 	}
 
-	if (note !== null) {
+	if (note != null) {
 		return {
 			type: 'Note',
-			object: await packNote(note, null, { detail: true })
+			object: await Notes.pack(note, null, { detail: true })
 		};
 	}
 

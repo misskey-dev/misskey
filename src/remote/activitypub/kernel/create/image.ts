@@ -1,4 +1,4 @@
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import { createImage } from '../../models/image';
 
 export default async function(actor: IRemoteUser, image: any): Promise<void> {

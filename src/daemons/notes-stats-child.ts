@@ -1,26 +1,28 @@
-import Note from '../models/note';
+import { MoreThanOrEqual, getRepository } from 'typeorm';
+import { Note } from '../models/entities/note';
+import { initDb } from '../db/postgre';
 
 const interval = 5000;
 
-async function tick() {
-	const [all, local] = await Promise.all([Note.count({
-		createdAt: {
-			$gte: new Date(Date.now() - interval)
-		}
-	}), Note.count({
-		createdAt: {
-			$gte: new Date(Date.now() - interval)
-		},
-		'_user.host': null
-	})]);
+initDb().then(() => {
+	const Notes = getRepository(Note);
 
-	const stats = {
-		all, local
-	};
+	async function tick() {
+		const [all, local] = await Promise.all([Notes.count({
+			createdAt: MoreThanOrEqual(new Date(Date.now() - interval))
+		}), Notes.count({
+			createdAt: MoreThanOrEqual(new Date(Date.now() - interval)),
+			userHost: null
+		})]);
 
-	process.send(stats);
-}
+		const stats = {
+			all, local
+		};
 
-tick();
+		process.send!(stats);
+	}
 
-setInterval(tick, interval);
+	tick();
+
+	setInterval(tick, interval);
+});

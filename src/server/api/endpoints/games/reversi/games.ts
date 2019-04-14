@@ -1,7 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import ReversiGame, { pack } from '../../../../../models/games/reversi/game';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
+import { ReversiGames } from '../../../../../models';
+import { makePaginationQuery } from '../../../common/make-pagination-query';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['games'],
@@ -14,12 +16,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		my: {
@@ -30,39 +30,20 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const q: any = ps.my ? {
-		isStarted: true,
-		$or: [{
-			user1Id: user._id
-		}, {
-			user2Id: user._id
-		}]
-	} : {
-		isStarted: true
-	};
+	const query = makePaginationQuery(ReversiGames.createQueryBuilder('game'), ps.sinceId, ps.untilId)
+		.andWhere('game.isStarted = TRUE');
 
-	const sort = {
-		_id: -1
-	};
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		q._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		q._id = {
-			$lt: ps.untilId
-		};
+	if (ps.my) {
+		query.andWhere(new Brackets(qb => { qb
+			.where('game.user1Id = :userId', { userId: user.id })
+			.orWhere('game.user2Id = :userId', { userId: user.id });
+		}));
 	}
 
 	// Fetch games
-	const games = await ReversiGame.find(q, {
-		sort: sort,
-		limit: ps.limit
-	});
+	const games = await query.take(ps.limit!).getMany();
 
-	return await Promise.all(games.map((g) => pack(g, user, {
+	return await Promise.all(games.map((g) => ReversiGames.pack(g, user, {
 		detail: false
 	})));
 });

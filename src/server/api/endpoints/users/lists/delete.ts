@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import UserList from '../../../../../models/user-list';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { UserLists } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -14,12 +14,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 		listId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象となるユーザーリストのID',
 				'en-US': 'ID of target user list'
@@ -37,16 +36,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const userList = await UserList.findOne({
-		_id: ps.listId,
-		userId: user._id
+	const userList = await UserLists.findOne({
+		id: ps.listId,
+		userId: user.id
 	});
 
 	if (userList == null) {
 		throw new ApiError(meta.errors.noSuchList);
 	}
 
-	await UserList.remove({
-		_id: userList._id
-	});
+	await UserLists.delete(userList.id);
 });

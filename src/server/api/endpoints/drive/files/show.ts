@@ -1,10 +1,9 @@
 import $ from 'cafy';
-import * as mongo from 'mongodb';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import DriveFile, { pack, IDriveFile } from '../../../../../models/drive-file';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import config from '../../../../../config';
 import { ApiError } from '../../../error';
+import { DriveFile } from '../../../../../models/entities/drive-file';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -18,12 +17,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		fileId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のファイルID',
 				'en-US': 'Target file ID'
@@ -65,49 +63,33 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	let file: IDriveFile;
+	let file: DriveFile | undefined;
 
 	if (ps.fileId) {
-		file = await DriveFile.findOne({
-			_id: ps.fileId,
-			'metadata.deletedAt': { $exists: false }
-		});
+		file = await DriveFiles.findOne(ps.fileId);
 	} else if (ps.url) {
-		const isInternalStorageUrl = ps.url.startsWith(config.driveUrl);
-		if (isInternalStorageUrl) {
-			// Extract file ID from url
-			// e.g.
-			// http://misskey.local/files/foo?original=bar --> foo
-			const fileId = new mongo.ObjectID(ps.url.replace(config.driveUrl, '').replace(/\?(.*)$/, '').replace(/\//g, ''));
-			file = await DriveFile.findOne({
-				_id: fileId,
-				'metadata.deletedAt': { $exists: false }
-			});
-		} else {
-			file = await DriveFile.findOne({
-				$or: [{
-					'metadata.url': ps.url
-				}, {
-					'metadata.webpublicUrl': ps.url
-				}, {
-					'metadata.thumbnailUrl': ps.url
-				}],
-				'metadata.deletedAt': { $exists: false }
-			});
-		}
+		file = await DriveFiles.findOne({
+			where: [{
+				url: ps.url
+			}, {
+				webpublicUrl: ps.url
+			}, {
+				thumbnailUrl: ps.url
+			}],
+		});
 	} else {
 		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}
 
-	if (!user.isAdmin && !user.isModerator && !file.metadata.userId.equals(user._id)) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
-
-	if (file === null) {
+	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	return await pack(file, {
+	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
+		throw new ApiError(meta.errors.accessDenied);
+	}
+
+	return await DriveFiles.pack(file, {
 		detail: true,
 		self: true
 	});

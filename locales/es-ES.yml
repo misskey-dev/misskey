@@ -169,15 +169,6 @@ common:
   you: "Tú"
 auth/views/form.vue:
   permission-ask: "La aplicación requiere los siguientes permisos:"
-  account-read: "Viendo información de la cuenta:"
-  account-write: "Modificar información de la cuenta:"
-  note-write: "Publicación."
-  like-write: "Para reaccionar a las publicaciones."
-  following-write: "Seguir o dejar de seguir"
-  drive-read: "Leer tu unidad."
-  drive-write: "Cargar o borrar archivos de tu unidad."
-  notification-read: "Leer tus notificaciones."
-  notification-write: "Administrar tus notificaciones."
   cancel: "Cancelar"
   accept: "Garantizar acceso."
 auth/views/index.vue:
@@ -631,7 +622,6 @@ desktop/views/components/post-form.vue:
   posting: "Publicando"
   attach-media-from-local: "Agregar medios de tu dispositivo"
   attach-media-from-drive: "Adjunta multimedia desde tu Disco"
-  attach-cancel: "Quitar el archivo adjunto"
   create-poll: "Crea una encuesta"
   text-remain: "quedan {} caracteres"
   recent-tags: "Reciente"
@@ -697,6 +687,9 @@ common/views/components/mute-and-block.vue:
   mute: "Silenciar"
   block: "Bloquear"
   save: "Guardar"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "Marcar como 'sensible'"
+  unmark-as-sensitive: "Desmarcar como 'sensible'"
 desktop/views/components/sub-note-content.vue:
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
@@ -708,7 +701,6 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/timeline.vue:
   home: "Inicio"
   local: "Local"
-  hybrid: "Social"
   global: "Global"
   list: "Listas"
   hashtag: "Hashtags"
@@ -768,7 +760,6 @@ admin/views/instance.vue:
   recaptcha-secret-key: "clave secreta reCAPTCHA"
   invite: "Invitar"
   save: "Guardar"
-  external-user-recommendation-timeout: "Tiempo de espera"
   email: "Correo electrónico"
   smtp-host: "Host SMTP"
   smtp-port: "Puerto SMTP"
@@ -898,7 +889,6 @@ mobile/views/pages/user-lists.vue:
 mobile/views/pages/home.vue:
   home: "Inicio"
   local: "Local"
-  hybrid: "Social"
   global: "Global"
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
@@ -921,7 +911,6 @@ mobile/views/pages/user/home.photos.vue:
 deck:
   home: "Inicio"
   local: "Local"
-  hybrid: "Social"
   hashtag: "Etiquetas"
   global: "Global"
   notifications: "Notificaciones"
@@ -929,12 +918,3 @@ deck:
   rename: "Renombrar"
 deck/deck.user-column.vue:
   activity: "Actividad"
-dev/views/new-app.vue:
-  account-read: "Viendo información de la cuenta:"
-  account-write: "Modificar información de la cuenta:"
-  note-write: "Publicación."
-  following-write: "Seguir o dejar de seguir"
-  drive-read: "Leer tu unidad."
-  drive-write: "Cargar o borrar archivos de tu unidad."
-  notification-read: "Leer tus notificaciones."
-  notification-write: "Administrar tus notificaciones."

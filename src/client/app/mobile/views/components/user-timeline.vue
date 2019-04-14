@@ -27,12 +27,12 @@ export default Vue.extend({
 					notes.pop();
 					return {
 						notes: notes,
-						cursor: new Date(notes[notes.length - 1].createdAt).getTime()
+						more: true
 					};
 				} else {
 					return {
 						notes: notes,
-						cursor: null
+						more: false
 					};
 				}
 			})

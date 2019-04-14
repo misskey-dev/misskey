@@ -1,14 +1,15 @@
 import $ from 'cafy';
-import ID, { transform, transformMany } from '../../../../misc/cafy-id';
 import * as ms from 'ms';
 import { length } from 'stringz';
-import Note, { INote, isValidCw, pack } from '../../../../models/note';
-import User, { IUser } from '../../../../models/user';
-import DriveFile, { IDriveFile } from '../../../../models/drive-file';
 import create from '../../../../services/note/create';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
+import { ID } from '../../../../misc/cafy-id';
+import { User } from '../../../../models/entities/user';
+import { Users, DriveFiles, Notes } from '../../../../models';
+import { DriveFile } from '../../../../models/entities/drive-file';
+import { Note } from '../../../../models/entities/note';
 
 let maxNoteTextLength = 1000;
 
@@ -34,7 +35,7 @@ export const meta = {
 		max: 300
 	},
 
-	kind: 'note-write',
+	kind: 'write:notes',
 
 	params: {
 		visibility: {
@@ -47,7 +48,6 @@ export const meta = {
 
 		visibleUserIds: {
 			validator: $.optional.arr($.type(ID)).unique().min(0),
-			transform: transformMany,
 			desc: {
 				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
 			}
@@ -64,7 +64,7 @@ export const meta = {
 		},
 
 		cw: {
-			validator: $.optional.nullable.str.pipe(isValidCw),
+			validator: $.optional.nullable.str.pipe(Notes.validateCw),
 			desc: {
 				'ja-JP': 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
 			}
@@ -129,7 +129,6 @@ export const meta = {
 
 		fileIds: {
 			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
-			transform: transformMany,
 			desc: {
 				'ja-JP': '添付するファイル'
 			}
@@ -137,7 +136,6 @@ export const meta = {
 
 		mediaIds: {
 			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
-			transform: transformMany,
 			deprecated: true,
 			desc: {
 				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
@@ -146,7 +144,6 @@ export const meta = {
 
 		replyId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '返信対象'
 			}
@@ -154,7 +151,6 @@ export const meta = {
 
 		renoteId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': 'Renote対象'
 			}
@@ -227,32 +223,29 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user, app) => {
-	let visibleUsers: IUser[] = [];
+	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
-		visibleUsers = await Promise.all(ps.visibleUserIds.map(id => User.findOne({
-			_id: id
-		})));
+		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))
+			.filter(x => x != null) as User[];
 	}
 
-	let files: IDriveFile[] = [];
+	let files: DriveFile[] = [];
 	const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
 	if (fileIds != null) {
-		files = await Promise.all(fileIds.map(fileId => {
-			return DriveFile.findOne({
-				_id: fileId,
-				'metadata.userId': user._id
-			});
-		}));
+		files = (await Promise.all(fileIds.map(fileId =>
+			DriveFiles.findOne({
+				id: fileId,
+				userId: user.id
+			})
+		))).filter(file => file != null) as DriveFile[];
 
-		files = files.filter(file => file != null);
+		files = files;
 	}
 
-	let renote: INote = null;
+	let renote: Note | undefined;
 	if (ps.renoteId != null) {
 		// Fetch renote to note
-		renote = await Note.findOne({
-			_id: ps.renoteId
-		});
+		renote = await Notes.findOne(ps.renoteId);
 
 		if (renote == null) {
 			throw new ApiError(meta.errors.noSuchRenoteTarget);
@@ -261,14 +254,12 @@ export default define(meta, async (ps, user, app) => {
 		}
 	}
 
-	let reply: INote = null;
+	let reply: Note | undefined;
 	if (ps.replyId != null) {
 		// Fetch reply
-		reply = await Note.findOne({
-			_id: ps.replyId
-		});
+		reply = await Notes.findOne(ps.replyId);
 
-		if (reply === null) {
+		if (reply == null) {
 			throw new ApiError(meta.errors.noSuchReplyTarget);
 		}
 
@@ -279,12 +270,6 @@ export default define(meta, async (ps, user, app) => {
 	}
 
 	if (ps.poll) {
-		(ps.poll as any).choices = (ps.poll as any).choices.map((choice: string, i: number) => ({
-			id: i, // IDを付与
-			text: choice.trim(),
-			votes: 0
-		}));
-
 		if (typeof ps.poll.expiresAt === 'number') {
 			if (ps.poll.expiresAt < Date.now())
 				throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
@@ -298,11 +283,6 @@ export default define(meta, async (ps, user, app) => {
 		throw new ApiError(meta.errors.contentRequired);
 	}
 
-	// 後方互換性のため
-	if (ps.visibility == 'private') {
-		ps.visibility = 'specified';
-	}
-
 	// 投稿を作成
 	const note = await create(user, {
 		createdAt: new Date(),
@@ -312,7 +292,7 @@ export default define(meta, async (ps, user, app) => {
 			multiple: ps.poll.multiple || false,
 			expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null
 		} : undefined,
-		text: ps.text,
+		text: ps.text || undefined,
 		reply,
 		renote,
 		cw: ps.cw,
@@ -328,6 +308,6 @@ export default define(meta, async (ps, user, app) => {
 	});
 
 	return {
-		createdNote: await pack(note, user)
+		createdNote: await Notes.pack(note, user)
 	};
 });

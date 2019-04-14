@@ -62,7 +62,7 @@
 		</div>
 	</div>
 
-	<div class="notification poll_vote" v-if="notification.type == 'poll_vote'">
+	<div class="notification pollVote" v-if="notification.type == 'pollVote'">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div>
 			<header>

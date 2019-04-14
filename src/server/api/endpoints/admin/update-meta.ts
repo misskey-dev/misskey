@@ -1,6 +1,7 @@
 import $ from 'cafy';
-import Meta from '../../../../models/meta';
 import define from '../../define';
+import { Metas } from '../../../../models';
+import { Meta } from '../../../../models/entities/meta';
 
 export const meta = {
 	desc: {
@@ -55,7 +56,7 @@ export const meta = {
 			}
 		},
 
-		hidedTags: {
+		hiddenTags: {
 			validator: $.optional.nullable.arr($.str),
 			desc: {
 				'ja-JP': '統計などで無視するハッシュタグ'
@@ -253,27 +254,6 @@ export const meta = {
 			}
 		},
 
-		enableExternalUserRecommendation: {
-			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '外部ユーザーレコメンデーションを有効にする'
-			}
-		},
-
-		externalUserRecommendationEngine: {
-			validator: $.optional.nullable.str,
-			desc: {
-				'ja-JP': '外部ユーザーレコメンデーションのサードパーティエンジン'
-			}
-		},
-
-		externalUserRecommendationTimeout: {
-			validator: $.optional.nullable.num.min(0),
-			desc: {
-				'ja-JP': '外部ユーザーレコメンデーションのタイムアウト (ミリ秒)'
-			}
-		},
-
 		enableEmail: {
 			validator: $.optional.bool,
 			desc: {
@@ -347,7 +327,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const set = {} as any;
+	const set = {} as Partial<Meta>;
 
 	if (ps.announcements) {
 		set.announcements = ps.announcements;
@@ -373,8 +353,8 @@ export default define(meta, async (ps) => {
 		set.useStarForReactionFallback = ps.useStarForReactionFallback;
 	}
 
-	if (Array.isArray(ps.hidedTags)) {
-		set.hidedTags = ps.hidedTags;
+	if (Array.isArray(ps.hiddenTags)) {
+		set.hiddenTags = ps.hiddenTags;
 	}
 
 	if (ps.mascotImageUrl !== undefined) {
@@ -430,11 +410,11 @@ export default define(meta, async (ps) => {
 	}
 
 	if (ps.maintainerName !== undefined) {
-		set['maintainer.name'] = ps.maintainerName;
+		set.maintainerName = ps.maintainerName;
 	}
 
 	if (ps.maintainerEmail !== undefined) {
-		set['maintainer.email'] = ps.maintainerEmail;
+		set.maintainerEmail = ps.maintainerEmail;
 	}
 
 	if (ps.langs !== undefined) {
@@ -481,18 +461,6 @@ export default define(meta, async (ps) => {
 		set.discordClientSecret = ps.discordClientSecret;
 	}
 
-	if (ps.enableExternalUserRecommendation !== undefined) {
-		set.enableExternalUserRecommendation = ps.enableExternalUserRecommendation;
-	}
-
-	if (ps.externalUserRecommendationEngine !== undefined) {
-		set.externalUserRecommendationEngine = ps.externalUserRecommendationEngine;
-	}
-
-	if (ps.externalUserRecommendationTimeout !== undefined) {
-		set.externalUserRecommendationTimeout = ps.externalUserRecommendationTimeout;
-	}
-
 	if (ps.enableEmail !== undefined) {
 		set.enableEmail = ps.enableEmail;
 	}
@@ -537,9 +505,11 @@ export default define(meta, async (ps) => {
 		set.swPrivateKey = ps.swPrivateKey;
 	}
 
-	await Meta.update({}, {
-		$set: set
-	}, { upsert: true });
+	const meta = await Metas.findOne();
 
-	return;
+	if (meta) {
+		await Metas.update(meta.id, set);
+	} else {
+		await Metas.save(set);
+	}
 });

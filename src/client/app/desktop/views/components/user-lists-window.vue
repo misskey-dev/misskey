@@ -4,7 +4,7 @@
 
 	<div class="xkxvokkjlptzyewouewmceqcxhpgzprp">
 		<button class="ui" @click="add">{{ $t('create-list') }}</button>
-		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.title }}</a>
+		<a v-for="list in lists" :key="list.id" @click="choice(list)">{{ list.name }}</a>
 	</div>
 </mk-window>
 </template>

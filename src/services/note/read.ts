@@ -1,59 +1,35 @@
-import * as mongo from 'mongodb';
-import isObjectId from '../../misc/is-objectid';
 import { publishMainStream } from '../stream';
-import User from '../../models/user';
-import NoteUnread from '../../models/note-unread';
+import { Note } from '../../models/entities/note';
+import { User } from '../../models/entities/user';
+import { NoteUnreads } from '../../models';
 
 /**
  * Mark a note as read
  */
 export default (
-	user: string | mongo.ObjectID,
-	note: string | mongo.ObjectID
+	userId: User['id'],
+	noteId: Note['id']
 ) => new Promise<any>(async (resolve, reject) => {
-
-	const userId: mongo.ObjectID = isObjectId(user)
-		? user as mongo.ObjectID
-		: new mongo.ObjectID(user);
-
-	const noteId: mongo.ObjectID = isObjectId(note)
-		? note as mongo.ObjectID
-		: new mongo.ObjectID(note);
-
 	// Remove document
-	const res = await NoteUnread.remove({
+	const res = await NoteUnreads.delete({
 		userId: userId,
 		noteId: noteId
 	});
 
-	if (res.deletedCount == 0) {
+	// v11 TODO: https://github.com/typeorm/typeorm/issues/2415
+	if (res.affected == 0) {
 		return;
 	}
 
-	const count1 = await NoteUnread
-		.count({
-			userId: userId,
-			isSpecified: false
-		}, {
-			limit: 1
-		});
+	const count1 = await NoteUnreads.count({
+		userId: userId,
+		isSpecified: false
+	});
 
-	const count2 = await NoteUnread
-		.count({
-			userId: userId,
-			isSpecified: true
-		}, {
-			limit: 1
-		});
-
-	if (count1 == 0 || count2 == 0) {
-		User.update({ _id: userId }, {
-			$set: {
-				hasUnreadMentions: count1 != 0 || count2 != 0,
-				hasUnreadSpecifiedNotes: count2 != 0
-			}
-		});
-	}
+	const count2 = await NoteUnreads.count({
+		userId: userId,
+		isSpecified: true
+	});
 
 	if (count1 == 0) {
 		// 全て既読になったイベントを発行

@@ -1,7 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import DriveFolder, { pack } from '../../../../models/drive-folder';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
+import { DriveFolders } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	desc: {
@@ -13,7 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		limit: {
@@ -23,18 +24,15 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
 			default: null as any,
-			transform: transform,
 		}
 	},
 
@@ -47,29 +45,16 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const sort = {
-		_id: -1
-	};
-	const query = {
-		userId: user._id,
-		parentId: ps.folderId
-	} as any;
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
+	const query = makePaginationQuery(DriveFolders.createQueryBuilder('folder'), ps.sinceId, ps.untilId)
+		.andWhere('folder.userId = :userId', { userId: user.id });
+
+	if (ps.folderId) {
+		query.andWhere('folder.parentId = :parentId', { parentId: ps.folderId });
+	} else {
+		query.andWhere('folder.parentId IS NULL');
 	}
 
-	const folders = await DriveFolder
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
+	const folders = await query.take(ps.limit!).getMany();
 
-	return await Promise.all(folders.map(folder => pack(folder)));
+	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
 });

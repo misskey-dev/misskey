@@ -11,13 +11,41 @@ This guide describes how to install and setup Misskey with Docker.
 ----------------------------------------------------------------
 1. `git clone -b master git://github.com/syuilo/misskey.git` Clone Misskey repository's master branch.
 2. `cd misskey` Move to misskey directory.
-3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest) tag.
+3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest) tag.
 
 *2.* Configure Misskey
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` Copy the `.config/example.yml` and rename it to `default.yml`.
-2. `cp .config/mongo_initdb_example.js .config/mongo_initdb.js` Copy the `.config/mongo_initdb_example.js` and rename it to `mongo_initdb.js`.
-3. Edit `default.yml` and `mongo_initdb.js`.
+
+Create configuration files with following:
+
+```bash
+cd .config
+cp example.yml default.yml
+cp docker_example.env docker.env
+```
+
+### `default.yml`
+
+Edit this file the same as non-Docker environment.  
+However hostname of Postgresql, Redis and Elasticsearch are not `localhost`, they are set in `docker-compose.yml`.  
+The following is default hostname:
+
+| Service       | Hostname |
+|---------------|----------|
+| Postgresql    | `db`     |
+| Redis         | `redis`  |
+| Elasticsearch | `es`     |
+
+### `docker.env`
+
+Configure Postgresql in this file.  
+The minimum required settings are:
+
+| name                | Description   |
+|---------------------|---------------|
+| `POSTGRES_PASSWORD` | Password      |
+| `POSTGRES_USER`     | Username      |
+| `POSTGRES_DB`       | Database name |
 
 *3.* Configure Docker
 ----------------------------------------------------------------
@@ -39,7 +67,7 @@ Just `docker-compose up -d`. GLHF!
 ### How to update your Misskey server to the latest version
 1. `git fetch`
 2. `git stash`
-3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
 4. `git stash pop`
 5. `docker-compose build`
 6. Check [ChangeLog](../CHANGELOG.md) for migration information

@@ -70,15 +70,15 @@ html
 			table
 				tr
 					th Instance
-					td= meta.name
+					td= meta.name || 'Misskey'
 				tr
 					th Description
 					td= meta.description
 				tr
 					th Maintainer
 					td
-						= meta.maintainer.name
-						|  &lt;#{meta.maintainer.email}&gt;
+						= meta.maintainerName
+						|  &lt;#{meta.maintainerEmail}&gt;
 				tr
 					th System
 					td= os
@@ -93,10 +93,10 @@ html
 					td= cpu.model
 				tr
 					th Original users
-					td= meta.stats.originalUsersCount
+					td= originalUsersCount
 				tr
 					th Original notes
-					td= meta.stats.originalNotesCount
+					td= originalNotesCount
 				tr
 					th Registration
 					td= !meta.disableRegistration ? 'yes' : 'no'

@@ -1,38 +1,47 @@
-import { toUnicode, toASCII } from 'punycode';
-import User, { IUser, IRemoteUser } from '../models/user';
 import webFinger from './webfinger';
 import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';
 import { URL } from 'url';
 import { remoteLogger } from './logger';
 import chalk from 'chalk';
+import { User, IRemoteUser } from '../models/entities/user';
+import { Users } from '../models';
+import { toPuny } from '../misc/convert-host';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export default async (username: string, _host: string, option?: any, resync?: boolean): Promise<IUser> => {
+export async function resolveUser(username: string, host: string | null, option?: any, resync = false): Promise<User> {
 	const usernameLower = username.toLowerCase();
 
-	if (_host == null) {
+	if (host == null) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await User.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null }).then(u => {
+			if (u == null) {
+				throw new Error('user not found');
+			} else {
+				return u;
+			}
+		});
 	}
 
-	const configHostAscii = toASCII(config.host).toLowerCase();
-	const configHost = toUnicode(configHostAscii);
+	host = toPuny(host);
 
-	const hostAscii = toASCII(_host).toLowerCase();
-	const host = toUnicode(hostAscii);
-
-	if (configHost == host) {
+	if (config.host == host) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await User.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null }).then(u => {
+			if (u == null) {
+				throw new Error('user not found');
+			} else {
+				return u;
+			}
+		});
 	}
 
-	const user = await User.findOne({ usernameLower, host }, option);
+	const user = await Users.findOne({ usernameLower, host }, option);
 
-	const acctLower = `${usernameLower}@${hostAscii}`;
+	const acctLower = `${usernameLower}@${host}`;
 
-	if (user === null) {
+	if (user == null) {
 		const self = await resolveSelf(acctLower);
 
 		logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
@@ -50,17 +59,15 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 
 			// validate uri
 			const uri = new URL(self.href);
-			if (uri.hostname !== hostAscii) {
+			if (uri.hostname !== host) {
 				throw new Error(`Invalied uri`);
 			}
 
-			await User.update({
+			await Users.update({
 				usernameLower,
 				host: host
 			}, {
-				$set: {
-					uri: self.href
-				}
+				uri: self.href
 			});
 		} else {
 			logger.info(`uri is fine: ${acctLower}`);
@@ -69,20 +76,26 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 		await updatePerson(self.href);
 
 		logger.info(`return resynced remote user: ${acctLower}`);
-		return await User.findOne({ uri: self.href });
+		return await Users.findOne({ uri: self.href }).then(u => {
+			if (u == null) {
+				throw new Error('user not found');
+			} else {
+				return u;
+			}
+		});
 	}
 
 	logger.info(`return existing remote user: ${acctLower}`);
 	return user;
-};
+}
 
 async function resolveSelf(acctLower: string) {
 	logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 	const finger = await webFinger(acctLower).catch(e => {
-		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${e.message} (${e.status})`);
-		throw e;
+		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ e.statusCode || e.message }`);
+		throw new Error(`Failed to WebFinger for ${acctLower}: ${ e.statusCode || e.message }`);
 	});
-	const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
+	const self = finger.links.find(link => link.rel != null && link.rel.toLowerCase() === 'self');
 	if (!self) {
 		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
 		throw new Error('self link not found');

@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Mute from '../../../../models/mute';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
+import { Mutings } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -15,12 +15,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account/write',
+	kind: 'write:mutes',
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -53,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	const muter = user;
 
 	// Check if the mutee is yourself
-	if (user._id.equals(ps.userId)) {
+	if (user.id === ps.userId) {
 		throw new ApiError(meta.errors.muteeIsYourself);
 	}
 
@@ -64,19 +63,17 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Check not muting
-	const exist = await Mute.findOne({
-		muterId: muter._id,
-		muteeId: mutee._id
+	const exist = await Mutings.findOne({
+		muterId: muter.id,
+		muteeId: mutee.id
 	});
 
-	if (exist === null) {
+	if (exist == null) {
 		throw new ApiError(meta.errors.notMuting);
 	}
 
 	// Delete mute
-	await Mute.remove({
-		_id: exist._id
+	await Mutings.delete({
+		id: exist.id
 	});
-
-	return;
 });

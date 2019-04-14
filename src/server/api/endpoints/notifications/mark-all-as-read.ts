@@ -1,7 +1,6 @@
-import Notification from '../../../../models/notification';
 import { publishMainStream } from '../../../../services/stream';
-import User from '../../../../models/user';
 import define from '../../define';
+import { Notifications } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -13,29 +12,18 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'notification-write'
+	kind: 'write:notifications'
 };
 
 export default define(meta, async (ps, user) => {
 	// Update documents
-	await Notification.update({
-		notifieeId: user._id,
-		isRead: false
+	await Notifications.update({
+		notifieeId: user.id,
+		isRead: false,
 	}, {
-		$set: {
-			isRead: true
-		}
-	}, {
-		multi: true
-	});
-
-	// Update flag
-	User.update({ _id: user._id }, {
-		$set: {
-			hasUnreadNotification: false
-		}
+		isRead: true
 	});
 
 	// 全ての通知を読みましたよというイベントを発行
-	publishMainStream(user._id, 'readAllNotifications');
+	publishMainStream(user.id, 'readAllNotifications');
 });

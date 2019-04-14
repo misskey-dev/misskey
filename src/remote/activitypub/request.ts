@@ -4,13 +4,15 @@ import { URL } from 'url';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
 import * as promiseAny from 'promise-any';
-import { toUnicode } from 'punycode';
 
 import config from '../../config';
-import { ILocalUser } from '../../models/user';
+import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import Instance from '../../models/instance';
+import { UserKeypairs } from '../../models';
+import fetchMeta from '../../misc/fetch-meta';
+import { toPuny } from '../../misc/convert-host';
+import { ensure } from '../../prelude/ensure';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -23,8 +25,8 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	// ブロックしてたら中断
 	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-	const instance = await Instance.findOne({ host: toUnicode(host) });
-	if (instance && instance.isBlocked) return;
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(toPuny(host))) return;
 
 	const data = JSON.stringify(object);
 
@@ -35,7 +37,11 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	const addr = await resolveAddr(hostname);
 	if (!addr) return;
 
-	const _ = new Promise((resolve, reject) => {
+	const keypair = await UserKeypairs.findOne({
+		userId: user.id
+	}).then(ensure);
+
+	await new Promise((resolve, reject) => {
 		const req = request({
 			protocol,
 			hostname: addr,
@@ -51,7 +57,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 				'Digest': `SHA-256=${hash}`
 			}
 		}, res => {
-			if (res.statusCode >= 400) {
+			if (res.statusCode! >= 400) {
 				logger.warn(`${url} --> ${res.statusCode}`);
 				reject(res);
 			} else {
@@ -62,13 +68,13 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 		sign(req, {
 			authorizationHeaderName: 'Signature',
-			key: user.keypair,
-			keyId: `${config.url}/users/${user._id}/publickey`,
+			key: keypair.privateKey,
+			keyId: `${config.url}/users/${user.id}/publickey`,
 			headers: ['date', 'host', 'digest']
 		});
 
 		// Signature: Signature ... => Signature: ...
-		let sig = req.getHeader('Signature').toString();
+		let sig = req.getHeader('Signature')!.toString();
 		sig = sig.replace(/^Signature /, '');
 		req.setHeader('Signature', sig);
 
@@ -81,8 +87,6 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 		req.end(data);
 	});
-
-	await _;
 
 	//#region Log
 	publishApLogStream({
@@ -107,7 +111,7 @@ async function resolveAddr(domain: string) {
 
 function resolveAddrInner(domain: string, options: IRunOptions = {}): Promise<string> {
 	return new Promise((res, rej) => {
-		lookup(domain, options, (error: any, address: string | string[]) => {
+		lookup(domain, options, (error, address) => {
 			if (error) return rej(error);
 			return res(Array.isArray(address) ? address[0] : address);
 		});
