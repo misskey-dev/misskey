@@ -19,7 +19,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	}
 
 	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
-		return thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.thumbnailUrl || file.url);
+		return thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
 	}
 
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
