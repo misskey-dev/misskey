@@ -873,7 +873,6 @@ desktop/views/components/post-form.vue:
   posting: "发送中"
   attach-media-from-local: "从设备中添加媒体文件"
   attach-media-from-drive: "从网盘中添加媒体文件"
-  attach-cancel: "删除附件"
   insert-a-kao: "v('ω')v"
   create-poll: "创建一个投票"
   text-remain: "还剩{}字"
@@ -966,6 +965,9 @@ common/views/components/password-settings.vue:
   not-match: "新密码不匹配"
   changed: "密码已更改"
   failed: "更改密码失败"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "标记为“敏感”"
+  unmark-as-sensitive: "取消标记为“敏感”"
 desktop/views/components/sub-note-content.vue:
   private: "这个帖子是私密的"
   deleted: "帖子已删除"
