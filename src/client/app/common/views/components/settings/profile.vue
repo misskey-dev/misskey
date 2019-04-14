@@ -7,6 +7,13 @@
 			<mk-avatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true"/>
 		</div>
 
+		<ui-horizon-group class="fit-bottom">
+			<ui-button @click="changeAvatar()"><fa icon="image"/> {{ $t('avatar') }}</ui-button>
+			<ui-button @click="changeBanner()"><fa icon="image"/> {{ $t('banner') }}</ui-button>
+		</ui-horizon-group>
+	</section>
+
+	<section>
 		<ui-form :disabled="saving">
 			<ui-input v-model="name" :max="30">
 				<span>{{ $t('name') }}</span>
@@ -38,18 +45,6 @@
 				<template #icon><fa icon="language"/></template>
 				<option v-for="lang in unique(Object.values(langmap).map(x => x.nativeName)).map(name => Object.keys(langmap).find(k => langmap[k].nativeName == name))" :value="lang" :key="lang">{{ langmap[lang].nativeName }}</option>
 			</ui-select>
-
-			<ui-input type="file" @change="onAvatarChange">
-				<span>{{ $t('avatar') }}</span>
-				<template #icon><fa icon="image"/></template>
-				<template #desc v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
-			</ui-input>
-
-			<ui-input type="file" @change="onBannerChange">
-				<span>{{ $t('banner') }}</span>
-				<template #icon><fa icon="image"/></template>
-				<template #desc v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
-			</ui-input>
 
 			<ui-button @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</ui-form>
@@ -118,7 +113,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { apiUrl, host } from '../../../../config';
+import { host } from '../../../../config';
 import { toUnicode } from 'punycode';
 import langmap from 'langmap';
 import { unique } from '../../../../../../prelude/array';
@@ -169,6 +164,13 @@ export default Vue.extend({
 				backgroundImage: `url(${ this.$store.state.i.bannerUrl })`
 			};
 		},
+		
+		avatarId() {
+			return this.$store.state.i.avatarId
+		},
+		bannerId() {
+			return this.$store.state.i.bannerId
+		},
 	},
 
 	created() {
@@ -182,8 +184,6 @@ export default Vue.extend({
 		this.description = this.$store.state.i.description;
 		this.lang = this.$store.state.i.lang;
 		this.birthday = this.$store.state.i.birthday;
-		this.avatarId = this.$store.state.i.avatarId;
-		this.bannerId = this.$store.state.i.bannerId;
 		this.isCat = this.$store.state.i.isCat;
 		this.isBot = this.$store.state.i.isBot;
 		this.isLocked = this.$store.state.i.isLocked;
@@ -192,48 +192,44 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onAvatarChange([file]) {
-			this.avatarUploading = true;
-
-			const data = new FormData();
-			data.append('file', file);
-			data.append('i', this.$store.state.i.token);
-
-			fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: data
-			})
-				.then(response => response.json())
-				.then(f => {
-					this.avatarId = f.id;
-					this.avatarUploading = false;
+		changeAvatar() {
+			this.$chooseDriveFile({
+				multiple: false
+			}).then(file => {
+				this.saving = true;
+				return this.$root.api('i/update', {
+					avatarId: file.id || undefined
 				})
-				.catch(e => {
-					this.avatarUploading = false;
-					alert('%18n:@upload-failed%');
+			}).then(i => {
+				this.saving = false;
+				this.$store.state.i.avatarId = i.avatarId;
+				this.$store.state.i.avatarUrl = i.avatarUrl;
+
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('saved')
 				});
+			});
 		},
 
-		onBannerChange([file]) {
-			this.bannerUploading = true;
-
-			const data = new FormData();
-			data.append('file', file);
-			data.append('i', this.$store.state.i.token);
-
-			fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: data
-			})
-				.then(response => response.json())
-				.then(f => {
-					this.bannerId = f.id;
-					this.bannerUploading = false;
+		changeBanner() {
+			this.$chooseDriveFile({
+				multiple: false
+			}).then(file => {
+				this.saving = true;
+				return this.$root.api('i/update', {
+					bannerId: file.id || undefined
 				})
-				.catch(e => {
-					this.bannerUploading = false;
-					alert('%18n:@upload-failed%');
+			}).then(i => {
+				this.saving = false;
+				this.$store.state.i.bannerId = i.bannerId;
+				this.$store.state.i.bannerUrl = i.bannerUrl;
+
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('saved')
 				});
+			});
 		},
 
 		save(notify) {
@@ -245,8 +241,6 @@ export default Vue.extend({
 				description: this.description || null,
 				lang: this.lang,
 				birthday: this.birthday || null,
-				avatarId: this.avatarId || undefined,
-				bannerId: this.bannerId || undefined,
 				isCat: !!this.isCat,
 				isBot: !!this.isBot,
 				isLocked: !!this.isLocked,
@@ -254,10 +248,6 @@ export default Vue.extend({
 				autoAcceptFollowed: !!this.autoAcceptFollowed
 			}).then(i => {
 				this.saving = false;
-				this.$store.state.i.avatarId = i.avatarId;
-				this.$store.state.i.avatarUrl = i.avatarUrl;
-				this.$store.state.i.bannerId = i.bannerId;
-				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
 					this.$root.dialog({
