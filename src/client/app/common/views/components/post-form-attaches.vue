@@ -56,9 +56,9 @@ export default Vue.extend({
 			this.$root.api('drive/files/update', {
 				fileId: file.id,
 				isSensitive: !file.isSensitive
+			}).then(() => {
+				file.isSensitive = !file.isSensitive;
 			});
-
-			file.isSensitive = !file.isSensitive;
 		},
 		showFileMenu(file, ev: MouseEvent) {
 			this.$root.new(XMenu, {
