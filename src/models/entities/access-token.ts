@@ -25,7 +25,8 @@ export class AccessToken {
 	})
 	public hash: string;
 
-	@RelationId((self: AccessToken) => self.user)
+	@Index()
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {
