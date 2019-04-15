@@ -26,7 +26,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'vote-write',
+	kind: 'write:votes',
 
 	params: {
 		noteId: {

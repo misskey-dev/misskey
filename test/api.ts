@@ -18,6 +18,8 @@ import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, react, uploadFile } from './utils';
 
+import { kinds } from '../src/server/api/kinds';
+
 describe('API', () => {
 	let p: childProcess.ChildProcess;
 
@@ -792,7 +794,7 @@ describe('API', () => {
 				parentId: folderA.id
 			}, arisugawa);
 
-			expect(res).have.status(400);
+			assert.strictEqual(res.status, 400);
 		}));
 
 		it('存在しない親フォルダを設定できない', async(async () => {
@@ -964,6 +966,14 @@ describe('API', () => {
 			assert.strictEqual(res.body.length, 1);
 			assert.strictEqual(res.body[0].id, alicePost.id);
 		}));
+	});
+
+	describe('kinds', () => {
+		it('登録されていないパーミッションを利用しているAPIがない', () => {
+			const res = kinds();
+
+			assert.strictEqual(typeof res === 'object', true);
+		});
 	});
 });
 */

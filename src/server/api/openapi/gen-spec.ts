@@ -3,7 +3,7 @@ import { Context } from 'cafy';
 import config from '../../../config';
 import { errors as basicErrors } from './errors';
 import { schemas } from './schemas';
-import { description } from './description';
+import { getDescription } from './description';
 import { convertOpenApiSchema } from '../../../misc/schema';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
@@ -13,7 +13,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		info: {
 			version: 'v1',
 			title: 'Misskey API',
-			description: '**Misskey is a decentralized microblogging platform.**\n\n' + description,
+			description: getDescription(lang),
 			'x-logo': { url: '/assets/api-doc.png' }
 		},
 
@@ -110,7 +110,10 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 
 		let desc = (endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.') + '\n\n';
 		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;
-		if (endpoint.meta.kind) desc += ` / **Permission**: *${endpoint.meta.kind}*`;
+		if (endpoint.meta.kind) {
+			const kind = endpoint.meta.kind;
+			desc += ` / **Permission**: *${kind}*`;
+		}
 
 		const info = {
 			operationId: endpoint.name,
