@@ -3,6 +3,7 @@ import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles } from '..';
 import rap from '@prezzemolo/rap';
 import { ensure } from '../../prelude/ensure';
+import config from '../../config';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -88,7 +89,7 @@ export class UserRepository extends Repository<User> {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: user.avatarUrl,
+			avatarUrl: user.avatarUrl ? user.avatarUrl : config.url + '/avatar/' + user.id,
 			avatarColor: user.avatarColor,
 			isAdmin: user.isAdmin || undefined,
 			isBot: user.isBot || undefined,
