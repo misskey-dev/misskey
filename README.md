@@ -59,7 +59,7 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 ---
 
-...and more! Experience Misskey with your own eyes at [misskey.xyz](https://misskey.xyz) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
+...and more! Experience Misskey with your own eyes at [misskey.io](https://misskey.io/) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
 
 Screen shots
 ----------------------------------------------------------------
@@ -103,7 +103,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5888816/36da0f7c15954df0ab13f9abdf227f66/1.jpeg?token-time=2145916800&token-hash=at8QpJXJ8C0zINY_NmoMKv-MhXVoUK-YzTgaJPJzJYU%3D" alt="Hiroshi Seki" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12190916/fb7fa7983c14425f890369535b1506a4/3.png?token-time=2145916800&token-hash=oH_i7gJjNT7Ot6j9JiVwy7ZJIBqACVnzLqlz4YrDAZA%3D" alt="weep" width="100"></td>
-<td><img src="https://c8.patreon.com/2/200/12059069" alt="naga_rus" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13099460/43cecdbaa63a40d79bf50a96b9910b9d/1.jpe?token-time=2145916800&token-hash=bqwLTk0Wo0hUJJ8J5y7ii05bLzz-_CDA7Bo0Mp4RFU0%3D" alt="ne_moni" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12913507/f7181eacafe8469a93033d85f5969c29/4.jpe?token-time=2145916800&token-hash=zEyJqVM7u9d8Ri-65fJYSJcWF1jBH1nJ5a3taRzrTmw%3D" alt="Melilot" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5670915/ee175f0bfb6347ffa4ea101a8c097bff/1.jpg?token-time=2145916800&token-hash=mPLM9CA-riFHx-myr3bLZJuH2xBRHA9se5VbHhLIOuA%3D" alt="osapon" width="100"></td>
@@ -111,7 +110,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr><tr>
 <td><a href="https://www.patreon.com/rane_hs">Hiroshi Seki</a></td>
 <td><a href="https://www.patreon.com/weepjp">weep</a></td>
-<td><a href="https://www.patreon.com/user?u=12059069">naga_rus</a></td>
 <td><a href="https://www.patreon.com/user?u=13099460">ne_moni</a></td>
 <td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>
 <td><a href="https://www.patreon.com/osapon">osapon</a></td>
@@ -165,7 +163,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr><tr>
 </tr></table>
 
-**Last updated:** Sun, 14 Apr 2019 08:13:12 UTC
+**Last updated:** Mon, 15 Apr 2019 01:59:07 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright

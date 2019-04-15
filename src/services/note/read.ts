@@ -11,15 +11,15 @@ export default (
 	noteId: Note['id']
 ) => new Promise<any>(async (resolve, reject) => {
 	// Remove document
-	const res = await NoteUnreads.delete({
+	/*const res = */await NoteUnreads.delete({
 		userId: userId,
 		noteId: noteId
 	});
 
 	// v11 TODO: https://github.com/typeorm/typeorm/issues/2415
-	if (res.affected == 0) {
-		return;
-	}
+	//if (res.affected == 0) {
+	//	return;
+	//}
 
 	const count1 = await NoteUnreads.count({
 		userId: userId,

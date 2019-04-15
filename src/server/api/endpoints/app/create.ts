@@ -3,6 +3,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { Apps } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
+import { unique } from '../../../../prelude/array';
 
 export const meta = {
 	tags: ['app'],
@@ -34,6 +35,9 @@ export default define(meta, async (ps, user) => {
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 
+	// for backward compatibility
+	const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));
+
 	// Create account
 	const app = await Apps.save({
 		id: genId(),
@@ -41,7 +45,7 @@ export default define(meta, async (ps, user) => {
 		userId: user ? user.id : null,
 		name: ps.name,
 		description: ps.description,
-		permission: ps.permission,
+		permission,
 		callbackUrl: ps.callbackUrl,
 		secret: secret
 	});
