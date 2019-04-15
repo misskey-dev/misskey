@@ -59,7 +59,7 @@ export default async (endpoint: string, user: User | null | undefined, app: App 
 		});
 	}
 
-	if (ep.meta.requireCredential && ep.meta.limit) {
+	if (ep.meta.requireCredential && ep.meta.limit && !user!.isAdmin && !user!.isModerator) {
 		// Rate limit
 		await limiter(ep, user!).catch(e => {
 			throw new ApiError({
