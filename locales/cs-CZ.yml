@@ -70,8 +70,9 @@ common:
   followers: "Sledující"
   favorites: "Oblíbené"
   permissions:
-    'read:drive': "Prohlížet Disk"
-    'write:drive': "Pracovat s Diskem"
+    "read:drive": "Prohlížet Disk"
+    "write:drive": "Pracovat s Diskem"
+    "write:votes": "Hlasovat"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
     explore: "Najít uživatele"
@@ -1185,4 +1186,3 @@ deck/deck.user-column.vue:
   activity: "Aktivita"
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
-  app-desc: "Stručný popis nebo představení vaší aplikace."
