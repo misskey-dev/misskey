@@ -140,7 +140,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr></table>
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17195955/be45e5e14c3e48b2bee0456c84e19df4/4.jpe?token-time=2145916800&token-hash=UslrPVM-8TXOe8AapuNiaFYjcIJgPNcU-fKpGbfGJNI%3D" alt="Damillora" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/16900731/935a10339daa4ede8e555903a0707060/1.png?token-time=2145916800&token-hash=c1XAS1qGBPxVdCvnICxtAUmx41mVkMG87h7cIRF9YYE%3D" alt="Atsuko Tominaga" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/16900731/83884b38afc74d4cbe83c30a13b10edd/1.png?token-time=2145916800&token-hash=R5Tog8RWg0rguRoCIoir3lThokrdPvs8Utfikhc0nhY%3D" alt="Atsuko Tominaga" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/3.png?token-time=2145916800&token-hash=FTm3WVom4dJ9NwWMU4OpCL_8Yc13WiwEbKrDPyTZTPs%3D" alt="natalie" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13034746/c711c7f58e204ecfbc2fd646bc8a4eee/1.jpe?token-time=2145916800&token-hash=EWxXhVbZYH7KB4IDT3joc8TbIg8zPO40x1r5IDn3R7c%3D" alt="Hiratake" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/18072312/98e894d960314fa7bc236a72a39488fe/1.jpe?token-time=2145916800&token-hash=qA8j97lIZNc-74AuZ0p4F3ms6sKPeKjtNt2vEuwpsyo%3D" alt="Hekovic" width="100"></td>
@@ -163,7 +163,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr><tr>
 </tr></table>
 
-**Last updated:** Mon, 15 Apr 2019 01:59:07 UTC
+**Last updated:** Mon, 15 Apr 2019 12:07:08 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
