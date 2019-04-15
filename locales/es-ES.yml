@@ -52,6 +52,8 @@ common:
   home: "Inicio"
   following: "Siguiendo"
   favorites: "Me gusta esta nota"
+  permissions:
+    "write:votes": "Vota"
   weekday-short:
     sunday: "domingo"
     monday: "lunes"
