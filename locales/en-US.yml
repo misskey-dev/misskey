@@ -80,7 +80,10 @@ common:
     "write:favorites": "Work with Favorites"
     "read:following": "View Follower info"
     "write:following": "Work with Follow info"
-    "read:messaging": "View conversation"
+    "read:messaging": "View Messaging"
+    "write:messaging": "Work with Messaging"
+    "read:mutes": "View Muted"
+    "write:mutes": "Work with Muted"
     "write:votes": "Vote"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
