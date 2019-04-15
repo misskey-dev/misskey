@@ -57,7 +57,13 @@ Build misskey with the following:
 
 `docker-compose build`
 
-*5.* That is it.
+*5.* Init DB
+----------------------------------------------------------------
+``` shell
+docker-compose run --rm web npm run init
+```
+
+*6.* That is it.
 ----------------------------------------------------------------
 Well done! Now you have an environment to run Misskey.
 
