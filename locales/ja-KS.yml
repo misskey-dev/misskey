@@ -60,6 +60,8 @@ common:
   following: "フォローしとる"
   followers: "フォロワー"
   favorites: "お気に入り"
+  permissions:
+    "write:votes": "投票するで"
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -1272,10 +1274,7 @@ dev/views/new-app.vue:
   create-app: "アプリケーション作る"
   app-name: "アプリケーションの名前"
   app-name-desc: "あんたのアプリの名前。"
-  app-name-ex: "ex) 関西ミスキー保安協会"
   app-overview: "このアプリどんなん？"
-  app-desc: "あんたのアプリどんなんか教えて"
-  app-desc-ex: "ex) 関西人なら誰でも口ずさめるこのCMがついにMisskeyへ。"
   callback-url: "コールバックURL (無くてもええで)"
   callback-url-desc: "ユーザーが認証フォームで認証した後どこに連れてくかを設定できるで"
   authority: "権限"
