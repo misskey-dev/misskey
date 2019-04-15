@@ -5,6 +5,13 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+10.101.0
+----------
+* WebFingerリクエストで Proxy, Keep-Alive などをサポート
+* AP actor Service のサポートが不完全な問題を修正
+* Punycodeなインスタンスが重複登録される問題を修正
+* ObjectStrage利用時にドライブファイルアイコンが表示されない問題を修正
+
 10.100.0
 ----------
 * ユーザーリストでフォローボタンを表示するように
