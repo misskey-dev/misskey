@@ -130,8 +130,6 @@ export default Vue.extend({
 			} else if (this.src == 'tag') {
 				this.tagTl = this.$store.state.device.tl.arg;
 			}
-		} else if (this.$store.state.i.followingCount == 0) {
-			this.src = 'hybrid';
 		}
 	},
 

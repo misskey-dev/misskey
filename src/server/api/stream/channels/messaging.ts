@@ -23,7 +23,7 @@ export default class extends Channel {
 	public onMessage(type: string, body: any) {
 		switch (type) {
 			case 'read':
-				read(this.user!.id, this.otherpartyId, body.id);
+				read(this.user!.id, this.otherpartyId, [body.id]);
 				break;
 		}
 	}
