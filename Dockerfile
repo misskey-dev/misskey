@@ -2,8 +2,6 @@ FROM node:11-alpine AS base
 
 ENV NODE_ENV=production
 
-RUN npm i -g npm@latest
-
 WORKDIR /misskey
 
 FROM base AS builder
@@ -21,7 +19,6 @@ RUN apk add --no-cache \
     pkgconfig \
     python \
     zlib-dev
-RUN npm i -g yarn
 
 COPY package.json ./
 RUN yarn install
