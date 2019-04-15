@@ -63,7 +63,8 @@ common:
   followers: "Śledzący"
   favorites: "Moje ulubione"
   permissions:
-    'read:drive': "Wyświetl dysk"
+    "read:drive": "Wyświetl dysk"
+    "write:votes": "Zagłosuj"
   empty-timeline-info:
     explore: "Poznaj"
   weekday-short:
