@@ -5,6 +5,17 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+11.1.0 (2019/04/15)
+-------------------
+### Improvements
+* アイコン未設定時にランダムな画像を表示するように
+* 管理者やモデレーターはレートリミット無効に
+
+### Fixes
+* メンションの「あなた」インジケーターが表示されない問題を修正
+* ブロックAPIでエラーが発生する問題を修正
+* プッシュ通知の購読に失敗する問題を修正
+
 11.0.3 (2019/04/15)
 -------------------
 ### Fixes

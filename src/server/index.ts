@@ -25,6 +25,7 @@ import Logger from '../services/logger';
 import { program } from '../argv';
 import { UserProfiles } from '../models';
 import { networkChart } from '../services/chart';
+import { genAvatar } from '../misc/gen-avatar';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
@@ -71,6 +72,12 @@ const router = new Router();
 router.use(activityPub.routes());
 router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
+
+router.get('/avatar/:x', ctx => {
+	const avatar = genAvatar(ctx.params.x);
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = avatar;
+});
 
 router.get('/verify-email/:code', async ctx => {
 	const profile = await UserProfiles.findOne({
