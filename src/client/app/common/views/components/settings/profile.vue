@@ -4,7 +4,7 @@
 
 	<section class="esokaraujimuwfttfzgocmutcihewscl">
 		<div class="header" :style="bannerStyle">
-			<mk-avatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true"/>
+			<mk-avatar class="avatar" ref="avatar" :user="i" :disable-preview="true" :disable-link="true"/>
 		</div>
 
 		<ui-horizon-group class="fit-bottom">
@@ -136,8 +136,6 @@ export default Vue.extend({
 			description: null,
 			lang: null,
 			birthday: null,
-			avatarId: null,
-			bannerId: null,
 			isCat: false,
 			isBot: false,
 			isLocked: false,
@@ -164,13 +162,10 @@ export default Vue.extend({
 				backgroundImage: `url(${ this.$store.state.i.bannerUrl })`
 			};
 		},
-		
-		avatarId() {
-			return this.$store.state.i.avatarId
-		},
-		bannerId() {
-			return this.$store.state.i.bannerId
-		},
+
+		i() {
+			return this.$store.state.i
+		}
 	},
 
 	created() {
@@ -193,43 +188,11 @@ export default Vue.extend({
 
 	methods: {
 		changeAvatar() {
-			this.$chooseDriveFile({
-				multiple: false
-			}).then(file => {
-				this.saving = true;
-				return this.$root.api('i/update', {
-					avatarId: file.id || undefined
-				})
-			}).then(i => {
-				this.saving = false;
-				this.$store.state.i.avatarId = i.avatarId;
-				this.$store.state.i.avatarUrl = i.avatarUrl;
-
-				this.$root.dialog({
-					type: 'success',
-					text: this.$t('saved')
-				});
-			});
+			this.$updateAvatar();
 		},
 
 		changeBanner() {
-			this.$chooseDriveFile({
-				multiple: false
-			}).then(file => {
-				this.saving = true;
-				return this.$root.api('i/update', {
-					bannerId: file.id || undefined
-				})
-			}).then(i => {
-				this.saving = false;
-				this.$store.state.i.bannerId = i.bannerId;
-				this.$store.state.i.bannerUrl = i.bannerUrl;
-
-				this.$root.dialog({
-					type: 'success',
-					text: this.$t('saved')
-				});
-			});
+			this.$updateBanner();
 		},
 
 		save(notify) {
@@ -255,6 +218,12 @@ export default Vue.extend({
 						text: this.$t('saved')
 					});
 				}
+			}).catch(e => {
+				this.saving = false
+				this.$root.dialog({
+					type: 'error',
+					text: e.message || e
+				});
 			});
 		},
 

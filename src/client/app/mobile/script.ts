@@ -34,6 +34,8 @@ import PostForm from './views/components/post-form-dialog.vue';
 import FileChooser from './views/components/drive-file-chooser.vue';
 import FolderChooser from './views/components/drive-folder-chooser.vue';
 
+import updateUserImage from './api/update-user-image';
+
 /**
  * init
  */
@@ -96,6 +98,14 @@ init((launch, os) => {
 
 			$notify(message) {
 				alert(message);
+			},
+
+			$updateAvatar(file) {
+				return updateUserImage(this, 'avatar')(file)
+			},
+
+			$updateBanner(file) {
+				return updateUserImage(this, 'banner')(file)
 			}
 		}
 	});

@@ -1,5 +1,5 @@
 <template>
-	<mk-window ref="window" is-modal width="800px" :can-close="false">
+	<mk-window class="aeyrbxcw" ref="window" is-modal width="800px" :can-close="false">
 		<template #header><fa icon="crop"/>{{ title }}</template>
 		<div class="body">
 			<vue-cropper ref="cropper"
@@ -9,10 +9,10 @@
 				:container-style="{ width: '100%', 'max-height': '400px' }"
 			/>
 		</div>
-		<div :class="$style.actions">
-			<button :class="$style.skip" @click="skip">{{ $t('skip') }}</button>
-			<button :class="$style.cancel" @click="cancel">{{ $t('cancel') }}</button>
-			<button :class="$style.ok" @click="ok">{{ $t('ok') }}</button>
+		<div class="actions">
+			<ui-button class="skip" @click="skip">{{ $t('skip') }}</ui-button>
+			<ui-button class="cancel" @click="cancel">{{ $t('cancel') }}</ui-button>
+			<ui-button primary class="ok" @click="ok">{{ $t('ok') }}</ui-button>
 		</div>
 	</mk-window>
 </template>
@@ -70,92 +70,33 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" module>
+<style lang="stylus" scoped>
+.aeyrbxcw
+	header
+		> [data-icon]
+			margin-right 4px
 
+	.img
+		width 100%
+		max-height 400px
 
-.header
-	> [data-icon]
-		margin-right 4px
+	.actions
+		display flex
+		align-items center
+		padding 12px
+		color: var(--faceText)
+		background var(--face)
 
-.img
-	width 100%
-	max-height 400px
+		> *
+			margin 4px
+			width auto
+			min-width 120px
 
-.actions
-	height 72px
-	background var(--primaryLighten95)
+		> .cancel
+			margin-left auto
 
-.ok
-.cancel
-.skip
-	display block
-	position absolute
-	bottom 16px
-	cursor pointer
-	padding 0
-	margin 0
-	height 40px
-	font-size 1em
-	outline none
-	border-radius 4px
-
-	&:focus
-		&:after
-			content ""
-			pointer-events none
-			position absolute
-			top -5px
-			right -5px
-			bottom -5px
-			left -5px
-			border 2px solid var(--primaryAlpha03)
-			border-radius 8px
-
-	&:disabled
-		opacity 0.7
-		cursor default
-
-.ok
-.cancel
-	width 120px
-
-.ok
-	right 16px
-	color var(--primaryForeground)
-	background linear-gradient(to bottom, var(--primaryLighten25) 0%, var(--primaryLighten10) 100%)
-	border solid 1px var(--primaryLighten15)
-
-	&:not(:disabled)
-		font-weight bold
-
-	&:hover:not(:disabled)
-		background linear-gradient(to bottom, var(--primaryLighten8) 0%, var(--primaryDarken8) 100%)
-		border-color var(--primary)
-
-	&:active:not(:disabled)
-		background var(--primary)
-		border-color var(--primary)
-
-.cancel
-.skip
-	color #888
-	background linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%)
-	border solid 1px #e2e2e2
-
-	&:hover
-		background linear-gradient(to bottom, #f9f9f9 0%, #ececec 100%)
-		border-color #dcdcdc
-
-	&:active
-		background #ececec
-		border-color #dcdcdc
-
-.cancel
-	right 148px
-
-.skip
-	left 16px
-	width 150px
+		> .ok
+			margin-left 8px
 
 </style>
 

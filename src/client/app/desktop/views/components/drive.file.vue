@@ -35,8 +35,6 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
-import updateAvatar from '../../api/update-avatar';
-import updateBanner from '../../api/update-banner';
 import { appendQuery } from '../../../../../prelude/url';
 import XFileThumbnail from '../../../common/views/components/drive-file-thumbnail.vue';
 
@@ -182,11 +180,11 @@ export default Vue.extend({
 		},
 
 		setAsAvatar() {
-			updateAvatar(this.$root)(this.file);
+			this.$updateAvatar(this.file);
 		},
 
 		setAsBanner() {
-			updateBanner(this.$root)(this.file);
+			this.$updateBanner(this.file);
 		},
 
 		addApp() {

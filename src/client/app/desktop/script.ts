@@ -31,6 +31,8 @@ import MkChooseFolderFromDriveWindow from './views/components/choose-folder-from
 import MkHomeTimeline from './views/home/timeline.vue';
 import Notification from './views/components/ui-notification.vue';
 
+import updateUserImage from './api/update-user-image';
+
 import { url } from '../config';
 import MiOS from '../mios';
 
@@ -112,6 +114,14 @@ init(async (launch, os) => {
 				this.$root.new(Notification, {
 					message
 				});
+			},
+
+			$updateAvatar(file) {
+				return updateUserImage(this, 'avatar')(file)
+			},
+
+			$updateBanner(file) {
+				return updateUserImage(this, 'banner')(file)
 			}
 		}
 	});

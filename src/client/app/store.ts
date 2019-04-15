@@ -93,7 +93,7 @@ export default (os: MiOS) => new Vuex.Store({
 		},
 
 		updateIKeyValue(state, x) {
-			state.i[x.key] = x.value;
+			state.i = { ...state.i, [x.key]: x.value };
 		},
 
 		indicate(state, x) {

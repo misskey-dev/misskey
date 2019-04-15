@@ -196,7 +196,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	for (const tag of tags) updateHashtag(user!, tag, true, true);
 	for (const tag of (user!.tags || []).filter(x => !tags.includes(x))) updateHashtag(user!, tag, true, false);
 
-	//#region アイコンとヘッダー画像をフェッチ
+	//#region アバターとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<DriveFile | null>([
 		person.icon,
 		person.image
@@ -290,7 +290,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	logger.info(`Updating the Person: ${person.id}`);
 
-	// アイコンとヘッダー画像をフェッチ
+	// アバターとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<DriveFile | null>([
 		person.icon,
 		person.image

@@ -191,7 +191,7 @@ common:
     deck-column-width-wide: "広"
     use-shadow: "UIに影を使用"
     rounded-corners: "UIの角を丸める"
-    circle-icons: "円形のアイコンを使用"
+    circle-icons: "円形のアバターを使用"
     contrasted-acct: "ユーザー名にコントラストを付ける"
     wallpaper: "壁紙"
     choose-wallpaper: "壁紙を選択"
@@ -301,6 +301,20 @@ common:
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
   you: "あなた"
+
+  banner:
+    name: "バナー"
+    crop-title: "バナーのクロップ"
+    uploading: "新しいバナーをアップロードしています"
+    updated: "バナーを更新しました"
+    choose: "バナーにする画像を選択"
+  avatar:
+    name: "アバター"
+    crop-title: "アバターのクロップ"
+    uploading: "新しいアバターをアップロードしています"
+    updated: "アバターを更新しました"
+    choose: "アバターにする画像を選択"
+  invalid-filetype: "この形式のファイルはサポートされていません"
 
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
@@ -681,7 +695,7 @@ common/views/components/profile-editor.vue:
   you-can-include-hashtags: "ハッシュタグを含めることができます。"
   language: "言語"
   birthday: "誕生日"
-  avatar: "アイコン"
+  avatar: "アバター"
   banner: "バナー"
   is-cat: "このアカウントはCatです"
   is-bot: "このアカウントはBotです"
@@ -794,19 +808,6 @@ common/views/pages/follow.vue:
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
 
-desktop:
-  banner-crop-title: "バナーとして表示する部分を選択"
-  banner: "バナー"
-  uploading-banner: "新しいバナーをアップロードしています"
-  banner-updated: "バナーを更新しました"
-  choose-banner: "バナーにする画像を選択"
-  avatar-crop-title: "アバターとして表示する部分を選択"
-  avatar: "アバター"
-  uploading-avatar: "新しいアバターをアップロードしています"
-  avatar-updated: "アバターを更新しました"
-  choose-avatar: "アバターにする画像を選択"
-  invalid-filetype: "この形式のファイルはサポートされていません"
-
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
@@ -844,7 +845,7 @@ desktop/views/components/drive-window.vue:
   used: "使用中"
 
 desktop/views/components/drive.file.vue:
-  avatar: "アイコン"
+  avatar: "アバター"
   banner: "バナー"
   nsfw: "閲覧注意"
   contextmenu:
@@ -854,7 +855,7 @@ desktop/views/components/drive.file.vue:
     copy-url: "URLをコピー"
     download: "ダウンロード"
     else-files: "その他..."
-    set-as-avatar: "アイコンに設定"
+    set-as-avatar: "アバターに設定"
     set-as-banner: "バナーに設定"
     open-in-app: "アプリで開く"
     add-app: "アプリを追加"
@@ -1649,6 +1650,9 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   admin: "管理"
   about: "Misskeyについて"
+
+mobile/views/components/crop.vue:
+  skip: クロップをスキップ
 
 mobile/views/pages/user-lists.vue:
   title: "リスト"
