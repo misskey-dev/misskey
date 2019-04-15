@@ -5,6 +5,11 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+11.1.3 (2019/04/16)
+-------------------
+### Fixes
+* アプリからAPIにリクエストするときにランダムなユーザーがリクエストしたことになる問題を修正
+
 11.1.2 (2019/04/15)
 -------------------
 ### Fixes

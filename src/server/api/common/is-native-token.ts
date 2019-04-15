@@ -1,1 +1,1 @@
-export default (token: string) => token.startsWith('0');
+export default (token: string) => token.length === 16;
