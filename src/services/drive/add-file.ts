@@ -209,7 +209,7 @@ async function deleteOldFile(user: IRemoteUser) {
 	}
 
 	if (user.bannerId) {
-		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId })
+		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
 	}
 
 	q.orderBy('file.id', 'DESC');
