@@ -242,7 +242,7 @@ export default Vue.extend({
 
 		> div:nth-child(1)
 			> .thumbnail
-				display block
+				display flex
 				width 64px
 				height 64px
 				background-size cover
