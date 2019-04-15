@@ -212,7 +212,7 @@ async function deleteOldFile(user: IRemoteUser) {
 		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
 	}
 
-	q.orderBy('file.id', 'DESC');
+	q.orderBy('file.id', 'ASC');
 
 	const oldFile = await q.getOne();
 
