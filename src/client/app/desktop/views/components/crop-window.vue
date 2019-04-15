@@ -1,6 +1,6 @@
 <template>
 	<mk-window class="aeyrbxcw" ref="window" is-modal width="800px" :can-close="false">
-		<template #header><fa icon="crop"/>{{ title }}</template>
+		<template #header><fa :icon="faCrop"/>{{ title }}</template>
 		<div class="body">
 			<vue-cropper ref="cropper"
 				:src="imageUrl"
@@ -22,6 +22,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import VueCropper from 'vue-cropperjs';
 import * as url from '../../../../../prelude/url';
+import { faCrop } from '@fortawesome/free-solid-svg-icons'
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/crop-window.vue'),
@@ -41,6 +42,11 @@ export default Vue.extend({
 			type: Number,
 			required: true
 		}
+	},
+	data() {
+		return {
+			faCrop
+		};
 	},
 	computed: {
 		imageUrl() {

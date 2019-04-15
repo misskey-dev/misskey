@@ -56,9 +56,9 @@ export default (self: any, ab: 'avatar' | 'banner') => {
 		return self.$root.api('i/update', {
 			[`${ab}Id`]: file.id
 		}).then(i => {
-			self.$store.commit('updateIKeyValue', { key: `${ab}Color`, value: i[`${ab}Color`] });
-			self.$store.commit('updateIKeyValue', { key: `${ab}Id`, value: i[`${ab}Id`] });
-			self.$store.commit('updateIKeyValue', { key: `${ab}Url`, value: i[`${ab}Url`] });
+			self.$root.$store.commit('updateIKeyValue', { key: `${ab}Color`, value: i[`${ab}Color`] });
+			self.$root.$store.commit('updateIKeyValue', { key: `${ab}Id`, value: i[`${ab}Id`] });
+			self.$root.$store.commit('updateIKeyValue', { key: `${ab}Url`, value: i[`${ab}Url`] });
 
 			self.$root.dialog({
 				title: locale['common'][ab]['updated'],
