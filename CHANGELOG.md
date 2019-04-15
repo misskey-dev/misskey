@@ -5,6 +5,14 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+11.1.2 (2019/04/15)
+-------------------
+### Fixes
+* 画像描画の依存関係を変更
+* リモートユーザーのファイルを削除するときに古い方からではなく新しい方から削除されるのを修正
+* リアクションしてないのにリアクションしたことになる問題を修正
+* APIドキュメントの修正
+
 11.1.1 (2019/04/15)
 -------------------
 ### Fixes

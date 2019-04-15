@@ -2,10 +2,11 @@
  * Random avatar generator
  */
 
-import { createCanvas } from 'canvas';
+const p = require('pureimage');
 import * as gen from 'random-seed';
+import { WriteStream } from 'fs';
 
-const size = 512; // px
+const size = 256; // px
 const n = 5; // resolution
 const margin = (size / n) / 1.5;
 const colors = [
@@ -35,9 +36,9 @@ const sideN = Math.floor(n / 2);
 /**
  * Generate buffer of random avatar by seed
  */
-export function genAvatar(seed: string) {
+export function genAvatar(seed: string, stream: WriteStream): Promise<void> {
 	const rand = gen.create(seed);
-	const canvas = createCanvas(size, size);
+	const canvas = p.make(size, size);
 	const ctx = canvas.getContext('2d');
 
 	ctx.fillStyle = bg;
@@ -85,5 +86,5 @@ export function genAvatar(seed: string) {
 		}
 	}
 
-	return canvas.toBuffer();
+	return p.encodePNGToStream(canvas, stream);
 }
