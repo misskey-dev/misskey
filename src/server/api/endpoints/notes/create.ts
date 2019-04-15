@@ -238,8 +238,6 @@ export default define(meta, async (ps, user, app) => {
 				userId: user.id
 			})
 		))).filter(file => file != null) as DriveFile[];
-
-		files = files;
 	}
 
 	let renote: Note | undefined;
