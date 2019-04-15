@@ -877,7 +877,6 @@ desktop/views/components/post-form.vue:
   posting: "Posting"
   attach-media-from-local: "Attach media from your device"
   attach-media-from-drive: "Attach media from your Drive"
-  attach-cancel: "Cancel attachment"
   insert-a-kao: "v('ω')v"
   create-poll: "Create a poll"
   text-remain: "{} characters remaining"
@@ -970,6 +969,10 @@ common/views/components/password-settings.vue:
   not-match: "The new passwords do not match"
   changed: "Password changed"
   failed: "Failed to change password"
+common/views/components/post-form-attaches.vue:
+  attach-cancel: "Remove Attachment"
+  mark-as-sensitive: "Mark as 'sensitive'"
+  unmark-as-sensitive: "Unmark as 'sensitive'"
 desktop/views/components/sub-note-content.vue:
   private: "This post is private"
   deleted: "This post has been deleted"
