@@ -1581,6 +1581,9 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "閲覧注意"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
+  delete: "削除"
+  set-as-avatar: "アバターにする"
+  set-as-banner: "バナーにする"
 
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"
