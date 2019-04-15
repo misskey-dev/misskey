@@ -72,8 +72,15 @@ common:
   permissions:
     "read:account": "View account information"
     "write:account": "Update your account information"
+    "read:blocks": "View Blocks"
+    "write:blocks": "Work with Blocks"
     "read:drive": "Browse the Drive"
     "write:drive": "Work with the Drive"
+    "read:favorites": "View Favorites"
+    "write:favorites": "Work with Favorites"
+    "read:following": "View Follower info"
+    "write:following": "Work with Follow info"
+    "read:messaging": "View conversation"
     "write:votes": "Vote"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
