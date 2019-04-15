@@ -23,6 +23,10 @@ common:
   load-more: "Leer más"
   enter-password: "Escribe una contraseña"
   2fa: "Autenticación de dos factores"
+  dark-mode: "Modo oscuro"
+  signin: "Iniciar sesión"
+  signup: "¡Regístrate!"
+  signout: "Cerrar Sesión"
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
@@ -51,7 +55,11 @@ common:
   drive: "Drive"
   messaging: "Conversación"
   home: "Inicio"
+  deck: "Deck"
+  timeline: "Linea de tiempo"
+  explore: "Explorar"
   following: "Siguiendo"
+  followers: "Seguidores"
   favorites: "Me gusta esta nota"
   permissions:
     "write:votes": "Vota"
