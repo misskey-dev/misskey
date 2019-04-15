@@ -20,6 +20,7 @@ common:
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
   do-not-copy-paste: "Por favor no copies código aquí. Tu cuenta puede resultar comprometida."
+  load-more: "Leer más"
   enter-password: "Escribe una contraseña"
   2fa: "Autenticación de dos factores"
   got-it: "¡Listo!"
