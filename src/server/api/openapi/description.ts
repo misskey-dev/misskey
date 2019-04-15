@@ -1,6 +1,14 @@
 import config from '../../../config';
+import { IKindInfo, kinds } from '../kinds';
 
-export const description = `
+export function getDescription(lang = 'ja-JP'): string {
+	const permissionTable = (Object.entries(kinds()) as [string, IKindInfo][])
+		.map(e => `|${e[0]}|${e[1].descs[lang]}|${e[1].endpoints.map(f => `[${f}](#operation/${f})`).join(', ')}|`)
+		.join('\n');
+
+	const descriptions = {
+		'ja-JP': `**Misskey is a decentralized microblogging platform.**
+
 ## Usage
 **APIはすべてPOSTでリクエスト/レスポンスともにJSON形式です。**
 一部のAPIはリクエストに認証情報(APIキー)が必要です。リクエストの際に\`i\`というパラメータでAPIキーを添付してください。
@@ -44,4 +52,12 @@ APIキーの生成方法を擬似コードで表すと次のようになりま�
 \`\`\` js
 const i = sha256(userToken + secretKey);
 \`\`\`
-`;
+
+## Permissions
+|Permisson (kind)|Description|Endpoints|
+|:--|:--|:--|
+${permissionTable}
+`
+	} as { [x: string]: string };
+	return lang in descriptions ? descriptions[lang] : descriptions['ja-JP'];
+}

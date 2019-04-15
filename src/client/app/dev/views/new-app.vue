@@ -1,35 +1,22 @@
 <template>
 <mk-ui>
-	<b-card :header="$t('header')">
+	<b-card :header="$t('new-app')">
+		<b-alert show variant="info"><fa icon="info-circle"/> {{ $t('new-app-info') }}</b-alert>
 		<b-form @submit.prevent="onSubmit" autocomplete="off">
-			<b-form-group :label="$t('app-name')" :description="$t('description')">
-				<b-form-input v-model="name" type="text" :placeholder="$t('placeholder')" autocomplete="off" required/>
+			<b-form-group :label="$t('app-name')" :description="$t('app-name-desc')">
+				<b-form-input v-model="name" type="text" :placeholder="$t('app-name-placeholder')" autocomplete="off" required/>
 			</b-form-group>
-			<b-form-group :label="$t('app-overview')" :description="$t('description')">
-				<b-textarea v-model="description" :placeholder="$t('placeholder')" autocomplete="off" required></b-textarea>
+			<b-form-group :label="$t('app-overview')" :description="$t('app-overview-desc')">
+				<b-textarea v-model="description" :placeholder="$t('app-overview-placeholder')" autocomplete="off" required></b-textarea>
 			</b-form-group>
-			<b-form-group :label="$t('callback-url')" :description="$t('description')">
-				<b-input v-model="cb" type="url" placeholder="ex) https://your.app.example.com/callback.php" autocomplete="off"/>
+			<b-form-group :label="$t('callback-url')" :description="$t('callback-url-desc')">
+				<b-input v-model="cb" type="url" :placeholder="$t('callback-url-placeholder')" autocomplete="off"/>
 			</b-form-group>
-			<b-card :header="$t('header')">
-				<b-form-group :description="$t('description')">
+			<b-card :header="$t('authority')">
+				<b-form-group :description="$t('authority-desc')">
 					<b-alert show variant="warning"><fa icon="exclamation-triangle"/> {{ $t('authority-warning') }}</b-alert>
 					<b-form-checkbox-group v-model="permission" stacked>
-						<b-form-checkbox value="read:account">{{ $t('read:account') }}</b-form-checkbox>
-						<b-form-checkbox value="write:account">{{ $t('write:account') }}</b-form-checkbox>
-						<b-form-checkbox value="write:notes">{{ $t('write:notes') }}</b-form-checkbox>
-						<b-form-checkbox value="read:reactions">{{ $t('read:reactions') }}</b-form-checkbox>
-						<b-form-checkbox value="write:reactions">{{ $t('write:reactions') }}</b-form-checkbox>
-						<b-form-checkbox value="read:following">{{ $t('read:following') }}</b-form-checkbox>
-						<b-form-checkbox value="write:following">{{ $t('write:following') }}</b-form-checkbox>
-						<b-form-checkbox value="read:mutes">{{ $t('read:mutes') }}</b-form-checkbox>
-						<b-form-checkbox value="write:mutes">{{ $t('write:mutes') }}</b-form-checkbox>
-						<b-form-checkbox value="read:blocks">{{ $t('read:blocks') }}</b-form-checkbox>
-						<b-form-checkbox value="write:blocks">{{ $t('write:blocks') }}</b-form-checkbox>
-						<b-form-checkbox value="read:drive">{{ $t('read:drive') }}</b-form-checkbox>
-						<b-form-checkbox value="write:drive">{{ $t('write:drive') }}</b-form-checkbox>
-						<b-form-checkbox value="read:notifications">{{ $t('read:notifications') }}</b-form-checkbox>
-						<b-form-checkbox value="write:notifications">{{ $t('write:notifications') }}</b-form-checkbox>
+						<b-form-checkbox v-for="v in permissionsList" :value="v" :key="v">{{ $t(`@.permissions.${v}`) }} ({{ v }})</b-form-checkbox>
 					</b-form-checkbox-group>
 				</b-form-group>
 			</b-card>
@@ -43,6 +30,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
+
 export default Vue.extend({
 	i18n: i18n('dev/views/new-app.vue'),
 	data() {
@@ -51,8 +39,14 @@ export default Vue.extend({
 			description: '',
 			cb: '',
 			nidState: null,
-			permission: []
+			permission: [],
+			permissionsList: []
 		};
+	},
+	created() {
+		this.$root.api('permissions').then(permissions => {
+			this.permissionsList = permissions
+		});
 	},
 	methods: {
 		onSubmit() {
