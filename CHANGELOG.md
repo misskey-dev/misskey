@@ -5,6 +5,13 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+11.1.1 (2019/04/15)
+-------------------
+### Fixes
+* Metaタグの application-name を Misskey で固定するように修正
+* トークメッセージが既読にならない問題を修正
+* デフォルトでHTLを表示するように
+
 11.1.0 (2019/04/15)
 -------------------
 ### Improvements
