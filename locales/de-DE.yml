@@ -66,6 +66,9 @@ common:
     "write:account": "Accountinformationen bearbeiten."
     "read:drive": "Dateien anzeigen"
     "write:drive": "Dateien bearbeiten"
+    "read:favorites": "Favoriten anzeigen"
+    "read:messaging": "Unterhaltung anzeigen"
+    "write:messaging": "Unterhaltung bearbeiten"
     "write:votes": "Abstimmen"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Beiträge von Benutzern, denen du folgst, werden in der Zeitleiste angezeigt."
