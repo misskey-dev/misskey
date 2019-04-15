@@ -30,6 +30,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
+import { kinds } from '../../../../server/api/kinds';
 
 export default Vue.extend({
 	i18n: i18n('dev/views/new-app.vue'),
@@ -40,13 +41,8 @@ export default Vue.extend({
 			cb: '',
 			nidState: null,
 			permission: [],
-			permissionsList: []
+			permissionsList: kinds
 		};
-	},
-	created() {
-		this.$root.api('permissions').then(permissions => {
-			this.permissionsList = permissions
-		});
 	},
 	methods: {
 		onSubmit() {

@@ -18,8 +18,6 @@ import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, signup, request, post, react, uploadFile } from './utils';
 
-import { kinds } from '../src/server/api/kinds';
-
 describe('API', () => {
 	let p: childProcess.ChildProcess;
 
@@ -966,14 +964,6 @@ describe('API', () => {
 			assert.strictEqual(res.body.length, 1);
 			assert.strictEqual(res.body[0].id, alicePost.id);
 		}));
-	});
-
-	describe('kinds', () => {
-		it('登録されていないパーミッションを利用しているAPIがない', () => {
-			const res = kinds();
-
-			assert.strictEqual(typeof res === 'object', true);
-		});
 	});
 });
 */
