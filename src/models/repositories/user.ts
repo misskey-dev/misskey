@@ -122,6 +122,7 @@ export class UserRepository extends Repository<User> {
 				bannerUrl: user.bannerUrl,
 				bannerColor: user.bannerColor,
 				isLocked: user.isLocked,
+				isModerator: user.isModerator || undefined,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,

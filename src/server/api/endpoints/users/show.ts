@@ -65,6 +65,10 @@ export default define(meta, async (ps, me) => {
 	let user;
 
 	if (ps.userIds) {
+		if (ps.userIds.length === 0) {
+			return [];
+		}
+
 		const users = await Users.find({
 			id: In(ps.userIds)
 		});
