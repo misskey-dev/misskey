@@ -282,6 +282,7 @@ common:
     nav: "导航"
     tips: "提示"
     hashtags: "标签"
+    queue: "队列"
   dev: "构建应用程序失败，请再试一次。"
   ai-chan-kawaii: "小蓝真可爱"
   you: "您"
@@ -1462,7 +1463,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "引用这个帖子t... (可选)"
   reply-placeholder: "回复这个帖子"
   cw-placeholder: "评论帖子（可选）"
-  location-alert: "您的设备不提供定位服务"
+  geolocation-alert: "您的设备不提供位置服务"
   error: "错误"
   username-prompt: "请输入用户名"
 mobile/views/components/sub-note-content.vue:
