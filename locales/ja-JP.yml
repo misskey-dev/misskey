@@ -1550,6 +1550,7 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "投稿"
   note: "投稿"
+  something-happened: "何らかの事情で投稿できませんでした。"
 
 desktop/views/widgets/profile.vue:
   update-banner: "クリックでバナー編集"

@@ -107,7 +107,10 @@ export default Vue.extend({
 
 	methods: {
 		hint() {
-			alert(this.$t('widgets-hints'));
+			this.$root.dialog({
+				type: 'info',
+				text: this.$t('widgets-hints')
+			});
 		},
 
 		widgetFunc(id) {

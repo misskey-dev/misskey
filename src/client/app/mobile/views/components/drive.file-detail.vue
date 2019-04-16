@@ -136,7 +136,10 @@ export default Vue.extend({
 		},
 
 		showCreatedAt() {
-			alert(new Date(this.file.createdAt).toLocaleString());
+			this.$root.dialog({
+				type: 'info',
+				text: (new Date(this.file.createdAt)).toLocaleString()
+			});
 		}
 	}
 });
@@ -150,11 +153,13 @@ export default Vue.extend({
 
 		> .preview
 			width fit-content
+			width -moz-fit-content
 			max-width 100%
 			margin 0 auto
 			box-shadow 1px 1px 4px rgba(#000, 0.2)
 			overflow hidden
 			color var(--driveFileIcon)
+			justify-content center
 
 		> footer
 			padding 8px 8px 0 8px
