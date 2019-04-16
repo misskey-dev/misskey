@@ -1128,7 +1128,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "この投稿を持ってくる(オプション)"
   reply-placeholder: "この投稿への返信..."
   cw-placeholder: "内容への注釈 (オプション)"
-  location-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
+  geolocation-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
   error: "エラー"
   username-prompt: "ユーザー名を入力してや"
 mobile/views/components/sub-note-content.vue:
