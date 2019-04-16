@@ -1115,7 +1115,7 @@ mobile/views/components/post-form.vue:
   reply: "Odpovědět"
   renote: "Renotovat"
   reply-placeholder: "Odpovědět na tento příspěvěk"
-  location-alert: "Vaše zařízení nepodporuje lokační službu"
+  geolocation-alert: "Vaše zařízení nepodporuje lokační službu"
   error: "Chyba"
   username-prompt: "Zadejte uživatelské jméno"
 mobile/views/components/sub-note-content.vue:
