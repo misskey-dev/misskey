@@ -87,6 +87,8 @@ common:
     "write:notes": "创建或删除帖子"
     "read:notifications": "查看通知"
     "write:notifications": "管理通知"
+    "read:reactions": "查看回应"
+    "write:reactions": "回应操作"
     "write:votes": "投票"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
@@ -981,6 +983,7 @@ common/views/components/password-settings.vue:
   changed: "密码已更改"
   failed: "更改密码失败"
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "删除附件"
   mark-as-sensitive: "标记为“敏感”"
   unmark-as-sensitive: "取消标记为“敏感”"
 desktop/views/components/sub-note-content.vue:
@@ -1400,6 +1403,7 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "帖子"
   note: "帖子"
+  something-happened: "由于某种原因无法发帖。"
 desktop/views/widgets/profile.vue:
   update-banner: "点击来剪辑背景"
   update-avatar: "点击来剪辑头像"
@@ -1626,6 +1630,7 @@ dev/views/apps.vue:
   create-app: "创建应用"
   app-missing: "没有应用"
 dev/views/new-app.vue:
+  new-app: "新应用"
   create-app: "正在创建应用"
   app-name: "应用名称"
   app-name-desc: "您应用的名称"
