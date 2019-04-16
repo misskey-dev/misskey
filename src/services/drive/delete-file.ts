@@ -43,7 +43,7 @@ export default async function(file: DriveFile, isExpired = false) {
 
 		// TODO: トランザクション
 		Notes.createQueryBuilder('note').delete()
-			.andWhere(':id = ANY(note.fileIds)', { id: file.id })
+			.where(':id = ANY(note.fileIds)', { id: file.id })
 			.execute();
 	}
 
