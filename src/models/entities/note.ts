@@ -93,12 +93,12 @@ export class Note {
 	})
 	public localOnly: boolean;
 
-	@Column('integer', {
+	@Column('smallint', {
 		default: 0
 	})
 	public renoteCount: number;
 
-	@Column('integer', {
+	@Column('smallint', {
 		default: 0
 	})
 	public repliesCount: number;
