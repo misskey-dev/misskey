@@ -29,7 +29,8 @@
 			</header>
 			<x-draggable
 				:list="widgets"
-				:options="{ handle: '.handle', animation: 150 }"
+				handle=".handle"
+				animation="150"
 				@sort="onWidgetSort"
 			>
 				<div v-for="widget in widgets" class="customize-container" :key="widget.id">

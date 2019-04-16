@@ -542,8 +542,8 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					this.$root.dialog({
-						title: this.$t('no-updates'),
-						text: this.$t('no-updates-desc')
+						title: this.$t('@._settings.no-updates'),
+						text: this.$t('@._settings.no-updates-desc')
 					});
 				} else {
 					this.$root.dialog({
