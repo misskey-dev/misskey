@@ -130,7 +130,7 @@ common:
     apps: "应用程序"
     tags: "标签"
     mute-and-block: "屏蔽/拉黑"
-    blocking: "屏蔽"
+    blocking: "拉黑"
     security: "安全性"
     signin: "登录历史"
     password: "密码"
