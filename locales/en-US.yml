@@ -292,6 +292,7 @@ common:
     nav: "Navigation"
     tips: "Tips"
     hashtags: "Hashtags"
+    queue: "Queue"
   dev: "Failed to create the application. Please try again."
   ai-chan-kawaii: "Ai-chan kawaii!"
   you: "You"
@@ -1473,7 +1474,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Quote this post... (optional)"
   reply-placeholder: "Reply to this note..."
   cw-placeholder: "Comments for the post (optional)"
-  location-alert: "Your device does not provide location services"
+  geolocation-alert: "Your device does not provide location services."
   error: "Error"
   username-prompt: "Enter user name"
 mobile/views/components/sub-note-content.vue:
