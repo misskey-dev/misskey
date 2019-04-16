@@ -282,6 +282,7 @@ common:
     nav: "내비게이션"
     tips: "팁"
     hashtags: "해시태그"
+    queue: "큐"
   dev: "앱을 만드는 데 실패했습니다. 다시 시도하시기 바랍니다."
   ai-chan-kawaii: "아이쨩 귀여워"
   you: "당신"
@@ -1463,7 +1464,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "이 글을 인용... (선택적)"
   reply-placeholder: "이 글에 답글..."
   cw-placeholder: "내용 주석 (선택적)"
-  location-alert: "사용하시는 장치가 위치정보 기능에 대응하지 않습니다"
+  geolocation-alert: "사용하시는 장치가 위치정보 기능에 대응하지 않습니다"
   error: "오류"
   username-prompt: "사용자명을 입력하여 주십시오"
 mobile/views/components/sub-note-content.vue:
