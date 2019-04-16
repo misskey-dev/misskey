@@ -103,7 +103,7 @@ export class NoteRepository extends Repository<Note> {
 		const host = note.userHost;
 
 		async function populatePoll() {
-			const poll = await Polls.findOne({ noteId: note.id }).then(ensure);
+			const poll = await Polls.findOne(note.id).then(ensure);
 			const choices = poll.choices.map(c => ({
 				text: c,
 				votes: poll.votes[poll.choices.indexOf(c)],
