@@ -42,8 +42,8 @@ export default async function(file: DriveFile, isExpired = false) {
 		DriveFiles.delete(file.id);
 
 		// TODO: トランザクション
-		Notes.createQueryBuilder('note').delete()
-			.where(':id = ANY(note.fileIds)', { id: file.id })
+		Notes.createQueryBuilder().delete()
+			.where(':id = ANY(fileIds)', { id: file.id })
 			.execute();
 	}
 
