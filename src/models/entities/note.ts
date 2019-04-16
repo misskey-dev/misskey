@@ -129,12 +129,14 @@ export class Note {
 	})
 	public score: number;
 
+	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}'
 	})
 	public fileIds: DriveFile['id'][];
 
+	@Index()
 	@Column('varchar', {
 		length: 256, array: true, default: '{}'
 	})

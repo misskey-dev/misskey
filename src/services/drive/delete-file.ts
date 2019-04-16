@@ -2,7 +2,7 @@ import * as Minio from 'minio';
 import config from '../../config';
 import { DriveFile } from '../../models/entities/drive-file';
 import { InternalStorage } from './internal-storage';
-import { DriveFiles, Instances } from '../../models';
+import { DriveFiles, Instances, Notes } from '../../models';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 
 export default async function(file: DriveFile, isExpired = false) {
@@ -40,6 +40,11 @@ export default async function(file: DriveFile, isExpired = false) {
 		});
 	} else {
 		DriveFiles.delete(file.id);
+
+		// TODO: トランザクション
+		Notes.createQueryBuilder('note').delete()
+			.andWhere(':id = ANY(note.fileIds)', { id: file.id })
+			.execute();
 	}
 
 	// 統計を更新
