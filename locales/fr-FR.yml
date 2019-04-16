@@ -275,6 +275,7 @@ common:
     nav: "Navigation"
     tips: "Conseils"
     hashtags: "Hashtags"
+    queue: "File d'attente"
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
   ai-chan-kawaii: "Ai-Chan est mignonne !"
   you: "Vous"
@@ -1435,7 +1436,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Citer ce billet ... (Facultatif)"
   reply-placeholder: "Répondre à cette note"
   cw-placeholder: "Commenter le contenu (optionnel)"
-  location-alert: "Votre appareil ne prend pas en charge les services de localisation"
+  geolocation-alert: "Votre appareil ne prend pas en charge les services de localisation"
   error: "Erreur"
   username-prompt: "Saisir un nom d'utilisateur"
 mobile/views/components/sub-note-content.vue:
