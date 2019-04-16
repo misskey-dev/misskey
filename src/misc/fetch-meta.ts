@@ -1,6 +1,5 @@
 import { Meta } from '../models/entities/meta';
 import { getConnection } from 'typeorm';
-import { genId } from './gen-id';
 
 export default async function(): Promise<Meta> {
 	return await getConnection().transaction(async transactionalEntityManager => {
@@ -15,7 +14,7 @@ export default async function(): Promise<Meta> {
 			return meta;
 		} else {
 			return await transactionalEntityManager.save(Meta, {
-				id: genId(),
+				id: 'x'
 			}) as Meta;
 		}
 	});
