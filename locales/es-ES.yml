@@ -915,6 +915,7 @@ mobile/views/components/post-form.vue:
   reply: "Responder"
   renote: "Republicar"
   reply-placeholder: "Responder a esta nota..."
+  geolocation-alert: "Tu dispositivo no tiene soporte de geolocalización."
 mobile/views/components/sub-note-content.vue:
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
