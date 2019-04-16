@@ -47,11 +47,8 @@ adduser --disabled-password --disabled-login misskey
 
 4. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
 
-	```bash
-	git checkout \
-	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-	```
+	`git checkout master`
+
 5. Misskeyの依存パッケージをインストール
 
 	`npm install`
@@ -132,15 +129,8 @@ npm run init
 `systemctl status misskey`と入力すると、サービスの状態を調べることができます。
 
 ### Misskeyを最新バージョンにアップデートする方法:
-1. `git fetch`
-2. 　
-
-	```bash
-	git checkout \
-	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-	```
-
+1. `git checkout master`
+2. `git pull`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する

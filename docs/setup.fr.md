@@ -46,11 +46,7 @@ Installez les paquets suivants :
 
 4. Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
 
-	```bash
-	git checkout \
-	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-	```
+	`git checkout master`
  
 5. Installez les dépendances de misskey.
 
@@ -126,14 +122,8 @@ Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-v
 Vous pouvez vérifier si le service a démarré en utilisant la commande `systemctl status misskey`.
 
 ### Méthode de mise à jour vers la plus récente version de Misskey
-1. `git fetch`
-2. 　
-
-	```bash
-	git checkout \
-	$(curl -s 'https://api.github.com/repos/syuilo/misskey/releases/latest' \
-	| sed -En 's/.*"tag_name": "([^"]+)".*/\1/gp')
-	```
+1. `git checkout master`
+2. `git pull`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. Consultez [ChangeLog](../CHANGELOG.md) pour les information de migration.
