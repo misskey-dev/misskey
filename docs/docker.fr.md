@@ -10,9 +10,23 @@ Ce guide explique comment installer et configurer Misskey avec Docker.
 
 *1.* Télécharger Misskey
 ----------------------------------------------------------------
-1. `git clone -b master git://github.com/syuilo/misskey.git` Clone le dépôt de Misskey sur la branche master.
-2. `cd misskey` Naviguez dans le dossier du dépôt.
-3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` Checkout sur le tag de la [dernière version](https://github.com/syuilo/misskey/releases/latest).
+1. Clone le dépôt de Misskey sur la branche master.
+
+	`git clone -b master git://github.com/syuilo/misskey.git`
+
+2. Naviguez dans le dossier du dépôt.
+
+	`cd misskey`
+
+3. Checkout sur le tag de la [dernière version](https://github.com/syuilo/misskey/releases/latest).
+
+	```bash
+	git tag | grep '^10\.' | sort -V --reverse | \
+	while read tag_name; do \
+	if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+	| grep -qE '"(draft|prerelease)": true'; \
+	then git checkout $tag_name; break; fi ; done
+	```
 
 *2.* Configuration de Misskey
 ----------------------------------------------------------------
@@ -40,7 +54,15 @@ Utilisez la commande `docker-compose up -d`. GLHF!
 ### How to update your Misskey server to the latest version
 1. `git fetch`
 2. `git stash`
-3. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+3. 
+
+	```bash
+	git tag | grep '^10\.' | sort -V --reverse | \
+	while read tag_name; do \
+	if ! curl -s "https://api.github.com/repos/syuilo/misskey/releases/tags/$tag_name" \
+	| grep -qE '"(draft|prerelease)": true'; \
+	then git checkout $tag_name; break; fi ; done
+	```
 4. `git stash pop`
 5. `docker-compose build`
 6. Consultez le [ChangeLog](../CHANGELOG.md) pour avoir les éventuelles informations de migration
@@ -52,14 +74,28 @@ Utilisez la commande `docker-compose up -d`. GLHF!
 ### Configuration d'ElasticSearch (pour la fonction de recherche)
 *1.* Préparation de l'environnement
 ----------------------------------------------------------------
-1. `mkdir elasticsearch && chown 1000:1000 elasticsearch` Permet de créer le dossier d'accueil de la base ElasticSearch aves les bons droits
-2. `sysctl -w vm.max_map_count=262144` Augmente la valeur max du paramètre map_count du système (valeur minimum pour pouvoir lancer ES)
+1. Permet de créer le dossier d'accueil de la base ElasticSearch aves les bons droits
+
+	`mkdir elasticsearch && chown 1000:1000 elasticsearch`
+
+2. Augmente la valeur max du paramètre map_count du système (valeur minimum pour pouvoir lancer ES)
+
+	`sysctl -w vm.max_map_count=262144`
 
 *2.* Après lancement du docker-compose, initialisation de la base ElasticSearch
 ----------------------------------------------------------------
-1. `docker-compose -it web /bin/sh` Connexion dans le conteneur web
-2. `apk add curl` Ajout du paquet curl
-3. `curl -X PUT "es:9200/misskey" -H 'Content-Type: application/json' -d'{ "settings" : { "index" : { } }}'` Création de la base ES
+1. Connexion dans le conteneur web
+
+	`docker-compose -it web /bin/sh`
+
+2. Ajout du paquet curl
+
+	`apk add curl`
+
+3. Création de la base ES
+
+	`curl -X PUT "es:9200/misskey" -H 'Content-Type: application/json' -d'{ "settings" : { "index" : { } }}'`
+
 4. `exit`
 
 ----------------------------------------------------------------
