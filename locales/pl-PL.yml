@@ -1083,7 +1083,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Zacytuj ten wpis… (nieobowiązkowe)"
   reply-placeholder: "Odpowiedź na ten wpis…"
   cw-placeholder: "Treść ostrzeżenia (opcjonalnie)"
-  location-alert: "Twoje urządzenie nie pozwala na przekazywanie informacji o lokalizacji"
+  geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
   error: "Błąd"
   username-prompt: "Wprowadź nazwę użytkownika"
 mobile/views/components/sub-note-content.vue:
