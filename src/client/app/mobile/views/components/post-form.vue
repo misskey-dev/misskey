@@ -283,14 +283,21 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert(this.$t('location-alert'));
+				this.$root.dialog({
+					type: 'warning',
+					text: this.$t('geolocation-alert')
+				});
 				return;
 			}
 
 			navigator.geolocation.getCurrentPosition(pos => {
 				this.geo = pos.coords;
 			}, err => {
-				alert(`%i18n:@error%: ${err.message}`);
+				this.$root.dialog({
+					type: 'error',
+					title: this.$t('error')
+					text: err.message
+				});
 			}, {
 					enableHighAccuracy: true
 				});

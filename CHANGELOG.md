@@ -5,6 +5,16 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+11.1.4 (2019/04/17)
+-------------------
+### Fixes
+* タイムライン取得時に削除されたファイルを添付している投稿が含まれているとサーバーでエラーになる問題を修正
+* 管理画面のインスタンスメニューで変更前の設定が読み込まれないことがある問題を修正
+* 猫ではないのに猫のままで表示される問題を修正
+* admin/driveのアイコンがずれてる問題を修正
+* チャートで大きな数値を扱えない問題を修正
+* UIの修正
+
 11.1.3 (2019/04/16)
 -------------------
 ### Fixes

@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "11.1.3",
+	"version": "11.1.4",
 	"codename": "daybreak",
 	"repository": {
 		"type": "git",
@@ -64,8 +64,6 @@
 		"@types/lolex": "3.1.1",
 		"@types/minio": "7.0.1",
 		"@types/mocha": "5.2.6",
-		"@types/mongodb": "3.1.22",
-		"@types/monk": "6.0.0",
 		"@types/node": "11.13.4",
 		"@types/nodemailer": "4.6.7",
 		"@types/nprogress": "0.0.29",
@@ -167,8 +165,6 @@
 		"mocha": "6.1.3",
 		"moji": "0.5.1",
 		"moment": "2.24.0",
-		"mongodb": "3.2.3",
-		"monk": "6.0.6",
 		"ms": "2.1.1",
 		"nested-property": "0.0.7",
 		"node-fetch": "2.3.0",

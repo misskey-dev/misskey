@@ -50,7 +50,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		document.title = `%i18n:@search%: ${this.q} | ${this.$root.instanceName}`;
+		document.title = `${this.$t('search')}: ${this.q} | ${this.$root.instanceName}`;
 	},
 	methods: {
 		inited() {

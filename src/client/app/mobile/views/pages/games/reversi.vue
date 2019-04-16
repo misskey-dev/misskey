@@ -15,7 +15,7 @@ export default Vue.extend({
 		XReversi: () => import('../../../../common/views/components/games/reversi/reversi.vue').then(m => m.default)
 	},
 	mounted() {
-		document.title = `${this.$root.instanceName} %i18n:@reversi%`;
+		document.title = `${this.$root.instanceName} | ${this.$t('reversi')}`;
 	},
 	methods: {
 		nav(game, actualNav) {

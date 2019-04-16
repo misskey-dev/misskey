@@ -79,7 +79,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 					flatColumns(v.properties, p);
 				} else {
 					columns[this.columnPrefix + p] = {
-						type: 'integer',
+						type: 'bigint',
 					};
 				}
 			}

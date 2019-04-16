@@ -84,7 +84,7 @@
 				<ui-info v-else warn>{{ $t('email-not-verified') }}</ui-info>
 			</template>
 			<ui-input v-model="email" type="email"><span>{{ $t('email-address') }}</span></ui-input>
-			<ui-button @click="updateEmail()"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+			<ui-button @click="updateEmail()" :disabled="email === $store.state.i.email"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</div>
 	</section>
 

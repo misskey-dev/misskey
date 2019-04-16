@@ -364,7 +364,10 @@ export default Vue.extend({
 
 		setGeo() {
 			if (navigator.geolocation == null) {
-				alert(this.$t('geolocation-alert'));
+				this.$root.dialog({
+					type: 'warning',
+					text: this.$t('geolocation-alert')
+				});
 				return;
 			}
 
@@ -372,7 +375,11 @@ export default Vue.extend({
 				this.geo = pos.coords;
 				this.$emit('geo-attached', this.geo);
 			}, err => {
-				alert(`%i18n:@error%: ${err.message}`);
+				this.$root.dialog({
+					type: 'error',
+					title: this.$t('error')
+					text: err.message
+				});
 			}, {
 					enableHighAccuracy: true
 				});
