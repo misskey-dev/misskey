@@ -4,7 +4,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 
 import initStore from './store';
-import { apiUrl, version } from './config';
+import { apiUrl, version, locale } from './config';
 import Progress from './common/scripts/loading';
 
 import Err from './common/views/components/connect-failed.vue';
@@ -281,7 +281,7 @@ export default class MiOS extends EventEmitter {
 			// トークンが再生成されたとき
 			// このままではMisskeyが利用できないので強制的にサインアウトさせる
 			main.on('myTokenRegenerated', () => {
-				alert('%i18n:common.my-token-regenerated%');
+				alert(locale['common']['my-token-regenerated'])
 				this.signout();
 			});
 		}

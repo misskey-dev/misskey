@@ -188,7 +188,10 @@ export default define({
 			}).then(data => {
 				this.clear();
 			}).catch(err => {
-				alert('Something happened');
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('something-happened')
+				});
 			}).then(() => {
 				this.posting = false;
 				this.$nextTick(() => {

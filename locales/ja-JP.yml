@@ -313,6 +313,7 @@ common:
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
+    queue: "キュー"
 
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
@@ -1549,6 +1550,7 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "投稿"
   note: "投稿"
+  something-happened: "何らかの事情で投稿できませんでした。"
 
 desktop/views/widgets/profile.vue:
   update-banner: "クリックでバナー編集"
@@ -1641,7 +1643,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "この投稿への返信..."
   cw-placeholder: "内容への注釈 (オプション)"
-  location-alert: "お使いの端末は位置情報に対応していません"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
   error: "エラー"
   username-prompt: "ユーザー名を入力してください"
 

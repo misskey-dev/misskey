@@ -79,7 +79,10 @@ export default Vue.extend({
 				localStorage.setItem('i', res.i);
 				location.reload();
 			}).catch(() => {
-				alert(this.$t('login-failed'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('login-failed')
+				});
 				this.signing = false;
 			});
 		}
