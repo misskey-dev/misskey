@@ -84,6 +84,8 @@ export class UserRepository extends Repository<User> {
 		const pins = opts.detail ? await UserNotePinings.find({ userId: user.id }) : [];
 		const profile = opts.detail ? await UserProfiles.findOne({ userId: user.id }).then(ensure) : null;
 
+		const falsy = opts.detail ? false : undefined;
+
 		return await rap({
 			id: user.id,
 			name: user.name,
@@ -91,10 +93,10 @@ export class UserRepository extends Repository<User> {
 			host: user.host,
 			avatarUrl: user.avatarUrl ? user.avatarUrl : config.url + '/avatar/' + user.id,
 			avatarColor: user.avatarColor,
-			isAdmin: user.isAdmin || undefined,
-			isBot: user.isBot || undefined,
-			isCat: user.isCat || undefined,
-			isVerified: user.isVerified || undefined,
+			isAdmin: user.isAdmin || falsy,
+			isBot: user.isBot || falsy,
+			isCat: user.isCat || falsy,
+			isVerified: user.isVerified || falsy,
 
 			// カスタム絵文字添付
 			emojis: user.emojis.length > 0 ? Emojis.find({
@@ -123,7 +125,7 @@ export class UserRepository extends Repository<User> {
 				bannerUrl: user.bannerUrl,
 				bannerColor: user.bannerColor,
 				isLocked: user.isLocked,
-				isModerator: user.isModerator || undefined,
+				isModerator: user.isModerator || falsy,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
