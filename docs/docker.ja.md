@@ -9,9 +9,17 @@ Dockerを使ったMisskey構築方法
 
 *1.* Misskeyのダウンロード
 ----------------------------------------------------------------
-1. `git clone -b master git://github.com/syuilo/misskey.git` masterブランチからMisskeyレポジトリをクローン
-2. `cd misskey` misskeyディレクトリに移動
-3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+1. masterブランチからMisskeyレポジトリをクローン
+
+	`git clone -b master git://github.com/syuilo/misskey.git`
+
+2. misskeyディレクトリに移動
+
+	`cd misskey`
+
+3. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+
+	`git checkout master`
 
 *2.* 設定ファイルの作成と編集
 ----------------------------------------------------------------
@@ -71,9 +79,9 @@ docker-compose run --rm web npm run init
 `docker-compose up -d`するだけです。GLHF!
 
 ### Misskeyを最新バージョンにアップデートする方法:
-1. `git fetch`
-2. `git stash`
-3. `git checkout $(git tag -l | grep -Ev -- '-(rc|alpha)\.[0-9]+$' | sort -V | tail -n 1)`
+1. `git stash`
+2. `git checkout master`
+3. `git pull`
 4. `git stash pop`
 5. `docker-compose build`
 6. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
