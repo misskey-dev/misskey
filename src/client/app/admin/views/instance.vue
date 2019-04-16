@@ -195,7 +195,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then(meta => {
+		this.$root.getMeta(true).then(meta => {
 			this.maintainerName = meta.maintainerName;
 			this.maintainerEmail = meta.maintainerEmail;
 			this.disableRegistration = meta.disableRegistration;
