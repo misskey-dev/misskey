@@ -1379,8 +1379,6 @@ mobile/views/components/drive.vue:
   file-count: "Fichier·s"
   nothing-in-drive: "Rien"
   folder-is-empty: "Ce dossier est vide"
-  prompt: "Que veux-tu faire ? (Entrez un nombre): <1 → Télécharger le fichier | 2 → Télécharger le fichier avec l'URL | 3 → Créer le dossier | 4 → Modifier le nom du dossier | 5 → Déplacer ce dossier | 6 → Supprimer ce dossier >"
-  deletion-alert: "Désolé ! La suppression d’un dossier n’est pas encore implémentée."
   folder-name: "Nom du dossier"
   url-prompt: "URL du fichier que vous souhaitez téléverser"
   uploading: "Envoi demandé. Le téléversement pourrait prendre un certain temps avant de s'achever."
@@ -1457,6 +1455,10 @@ mobile/views/components/ui.nav.vue:
   game: "Jeux"
   admin: "Admin"
   about: "À propos de Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Téléverser un fichier"
+    create-folder: "Créer un dossier"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
   enter-list-name: "Nom de la liste"
