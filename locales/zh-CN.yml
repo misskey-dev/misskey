@@ -1422,8 +1422,6 @@ mobile/views/components/drive.vue:
   file-count: "文件"
   nothing-in-drive: "网盘为空"
   folder-is-empty: "这文件夹是空的"
-  prompt: "您想要干什么呢？(请输入数字):<1 → 上传文件 | 2 → 从URL上传文件 | 3 → 创建新文件夹 | 4 → 更改这个文件夹的名称 | 5 → 移动这个文件夹 | 6 → 删除这个文件夹>"
-  deletion-alert: "抱歉！ 删除文件夹功能尚未实现。"
   folder-name: "文件夹名称"
   here-is-root: "当前位置为根目录。"
   url-prompt: "要上传的文件的URL"
@@ -1501,6 +1499,10 @@ mobile/views/components/ui.nav.vue:
   game: "游戏"
   admin: "管理"
   about: "关于 Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "上传文件"
+    create-folder: "创建文件夹"
 mobile/views/pages/user-lists.vue:
   title: "列表"
   enter-list-name: "输入要列出的列表的名称"
