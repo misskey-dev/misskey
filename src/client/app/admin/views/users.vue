@@ -232,6 +232,8 @@ export default Vue.extend({
 		},
 
 		async silenceUser() {
+			if (!await this.getConfirmed(this.$t('silence-confirm'))) return;
+
 			const process = async () => {
 				await this.$root.api('admin/silence-user', { userId: this.user._id });
 				this.$root.dialog({
@@ -251,6 +253,8 @@ export default Vue.extend({
 		},
 
 		async unsilenceUser() {
+			if (!await this.getConfirmed(this.$t('unsilence-confirm'))) return;
+
 			const process = async () => {
 				await this.$root.api('admin/unsilence-user', { userId: this.user._id });
 				this.$root.dialog({
