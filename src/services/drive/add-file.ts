@@ -363,16 +363,14 @@ export default async function(
 
 				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				const value = info.isOpaque ? `rgba(${r},${g},${b},0)` : `rgba(${r},${g},${b},255)`;
-
-				properties['avgColor'] = value;
+				properties['avgColor'] = `rgb(${r},${g},${b})`;
 			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 

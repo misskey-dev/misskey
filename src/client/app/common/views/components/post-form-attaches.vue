@@ -32,7 +32,7 @@ export default Vue.extend({
 
 	props: {
 		files: {
-			type: Object,
+			type: Array,
 			required: true
 		},
 		detachMediaFn: {

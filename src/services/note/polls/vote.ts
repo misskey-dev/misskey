@@ -67,7 +67,7 @@ export default async function(user: User, note: Note, choice: number) {
 		}
 	});
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	// ローカルユーザーが投票した場合この投稿をWatchする
 	if (Users.isLocalUser(user) && profile!.autoWatch) {

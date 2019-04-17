@@ -46,10 +46,40 @@ Convert な(na) to にゃ(nya)
 Revert Nyaize
 
 ## Code style
-### Use semicolon
-To avoid ASI Hazard
+### セミコロンを省略しない
+ASI Hazardを避けるためでもある
 
-### Don't use `export default`
+### 中括弧を省略しない
+Bad:
+``` ts
+if (foo)
+	bar;
+else
+	baz;
+```
+
+Good:
+``` ts
+if (foo) {
+	bar;
+} else {
+	baz;
+}
+```
+
+ただし**`if`が一行**の時だけは省略しても良い
+Good:
+``` ts
+if (foo) bar;
+```
+
+### `export default`を使わない
+インテリセンスと相性が悪かったりするため
+
+参考:
+* https://gfx.hatenablog.com/entry/2017/11/24/135343
+* https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
+
 Bad:
 ``` ts
 export default function(foo: string): string {

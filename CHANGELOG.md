@@ -5,6 +5,13 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+11.1.5 (2019/04/17)
+-------------------
+### Fixes
+* ユーザー名に含まれているカスタム絵文字が表示されないことがある問題を修正
+* 壁紙の設定ができない問題を修正
+* デザインの調整
+
 11.1.4 (2019/04/17)
 -------------------
 ### Fixes

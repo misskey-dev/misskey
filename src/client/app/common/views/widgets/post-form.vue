@@ -21,7 +21,7 @@
 					<fa :icon="['far', 'laugh']"/>
 				</button>
 			</div>
-			<x-post-form-attaches class="files" :files="files" :detachMediaFn="detachMedia"/>
+			<x-post-form-attaches class="files" :files="files" :detach-media-fn="detachMedia"/>
 			<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia"/>
 			<footer>
