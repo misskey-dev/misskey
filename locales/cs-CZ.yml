@@ -70,6 +70,7 @@ common:
   followers: "Sledující"
   favorites: "Oblíbené"
   permissions:
+    "read:account": "Zobrazit informace o účtu"
     "read:drive": "Prohlížet Disk"
     "write:drive": "Pracovat s Diskem"
     "write:votes": "Hlasovat"
