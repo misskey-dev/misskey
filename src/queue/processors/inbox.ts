@@ -36,41 +36,41 @@ export default async (job: Bull.Job): Promise<void> => {
 	if (keyIdLower.startsWith('acct:')) {
 		logger.warn(`Old keyId is no longer supported. ${keyIdLower}`);
 		return;
+	}
+
+	// アクティビティ内のホストの検証
+	const host = toPuny(new URL(signature.keyId).hostname);
+	try {
+		ValidateActivity(activity, host);
+	} catch (e) {
+		logger.warn(e.message);
+		return;
+	}
+
+	// ブロックしてたら中断
+	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(host)) {
+		logger.info(`Blocked request: ${host}`);
+		return;
+	}
+
+	const _key = await UserPublickeys.findOne({
+		keyId: signature.keyId
+	});
+
+	if (_key) {
+		// 登録済みユーザー
+		user = await Users.findOne(_key.userId) as IRemoteUser;
+		key = _key;
 	} else {
-		// アクティビティ内のホストの検証
-		const host = toPuny(new URL(signature.keyId).hostname);
-		try {
-			ValidateActivity(activity, host);
-		} catch (e) {
-			logger.warn(e.message);
-			return;
+		// 未登録ユーザーの場合はリモート解決
+		user = await resolvePerson(activity.actor) as IRemoteUser;
+		if (user == null) {
+			throw new Error('failed to resolve user');
 		}
 
-		// ブロックしてたら中断
-		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const meta = await fetchMeta();
-		if (meta.blockedHosts.includes(host)) {
-			logger.info(`Blocked request: ${host}`);
-			return;
-		}
-
-		const _key = await UserPublickeys.findOne({
-			keyId: signature.keyId
-		});
-
-		if (_key) {
-			// 登録済みユーザー
-			user = await Users.findOne(_key.userId) as IRemoteUser;
-			key = _key;
-		} else {
-			// 未登録ユーザーの場合はリモート解決
-			user = await resolvePerson(activity.actor) as IRemoteUser;
-			if (user == null) {
-				throw new Error('failed to resolve user');
-			}
-
-			key = await UserPublickeys.findOne(user.id).then(ensure);
-		}
+		key = await UserPublickeys.findOne(user.id).then(ensure);
 	}
 
 	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
