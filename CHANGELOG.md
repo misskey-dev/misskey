@@ -5,6 +5,14 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+11.1.6 (2019/04/18)
+-------------------
+### Fixes
+* 未認知ユーザーからActivityが飛んできた場合に処理できない問題を修正
+* その投稿を見たのにも関わらずメンションインジケーターが点灯し続ける問題を修正
+* ハッシュタグの判定を改善
+* サーバーのエラーハンドリングを改善
+
 11.1.5 (2019/04/17)
 -------------------
 ### Fixes
