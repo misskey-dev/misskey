@@ -23,6 +23,8 @@ common:
   timeline: "Tijdlijn"
   followers: "Volgers"
   favorites: "Deze notitie toevoegen aan favorieten"
+  permissions:
+    "write:votes": "Stemmen"
   weekday-short:
     sunday: "Z"
     monday: "M"

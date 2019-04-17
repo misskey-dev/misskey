@@ -70,8 +70,14 @@ common:
   followers: "Sledující"
   favorites: "Oblíbené"
   permissions:
-    'read:drive': "Prohlížet Disk"
-    'write:drive': "Pracovat s Diskem"
+    "read:account": "Zobrazit informace o účtu"
+    "read:drive": "Prohlížet Disk"
+    "write:drive": "Pracovat s Diskem"
+    "read:favorites": "Prohlížet oblíbené"
+    "read:messaging": "Prohlížet konverzaci"
+    "write:messaging": "Pracovat s konverzaci"
+    "read:mutes": "Prohlížet ztlumené"
+    "write:votes": "Hlasovat"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
     explore: "Najít uživatele"
@@ -1114,7 +1120,7 @@ mobile/views/components/post-form.vue:
   reply: "Odpovědět"
   renote: "Renotovat"
   reply-placeholder: "Odpovědět na tento příspěvěk"
-  location-alert: "Vaše zařízení nepodporuje lokační službu"
+  geolocation-alert: "Vaše zařízení nepodporuje lokační službu"
   error: "Chyba"
   username-prompt: "Zadejte uživatelské jméno"
 mobile/views/components/sub-note-content.vue:
@@ -1185,4 +1191,3 @@ deck/deck.user-column.vue:
   activity: "Aktivita"
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
-  app-desc: "Stručný popis nebo představení vaší aplikace."
