@@ -95,7 +95,6 @@ export default Vue.extend({
 		background-size cover
 		background-position center
 		background-attachment fixed
-		opacity 0.3
 
 	> .content.sidebar.left
 		padding-left 68px
