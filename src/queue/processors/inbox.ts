@@ -35,37 +35,8 @@ export default async (job: Bull.Job): Promise<void> => {
 	let key: UserPublickey;
 
 	if (keyIdLower.startsWith('acct:')) {
-		const acct = parseAcct(keyIdLower.slice('acct:'.length));
-		const host = toPunyNullable(acct.host);
-		const username = toPuny(acct.username);
-
-		if (host === null) {
-			logger.warn(`request was made by local user: @${username}`);
-			return;
-		}
-
-		// アクティビティ内のホストの検証
-		try {
-			ValidateActivity(activity, host);
-		} catch (e) {
-			logger.warn(e.message);
-			return;
-		}
-
-		// ブロックしてたら中断
-		// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
-		const meta = await fetchMeta();
-		if (meta.blockedHosts.includes(host)) {
-			logger.info(`Blocked request: ${host}`);
-			return;
-		}
-
-		user = await Users.findOne({
-			usernameLower: username.toLowerCase(),
-			host: host
-		}) as IRemoteUser;
-
-		key = await UserPublickeys.findOne(user.id).then(ensure);
+		logger.warn(`Old keyId is no longer supported. ${keyIdLower}`);
+		return;
 	} else {
 		// アクティビティ内のホストの検証
 		const host = toPuny(new URL(signature.keyId).hostname);
@@ -84,34 +55,35 @@ export default async (job: Bull.Job): Promise<void> => {
 			return;
 		}
 
-		key = await UserPublickeys.findOne({
+		const _key = await UserPublickeys.findOne({
 			keyId: signature.keyId
-		}).then(ensure);
+		});
 
-		user = await Users.findOne(key.userId) as IRemoteUser;
+		if (_key) {
+			// 登録済みユーザー
+			user = await Users.findOne(_key.userId) as IRemoteUser;
+			key = _key;
+		} else {
+			// 未登録ユーザーの場合はリモート解決
+			user = await resolvePerson(activity.actor) as IRemoteUser;
+			if (user == null) {
+				throw new Error('failed to resolve user');
+			}
+
+			key = await UserPublickeys.findOne(user.id).then(ensure);
+		}
 	}
 
 	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
 	if (activity.type === 'Update') {
 		if (activity.object && validActor.includes(activity.object.type)) {
-			if (user == null) {
-				logger.warn('Update activity received, but user not registed.');
-			} else if (!httpSignature.verifySignature(signature, key.keyPem)) {
+			if (!httpSignature.verifySignature(signature, key.keyPem)) {
 				logger.warn('Update activity received, but signature verification failed.');
 			} else {
 				updatePerson(activity.actor, null, activity.object);
 			}
 			return;
 		}
-	}
-
-	// アクティビティを送信してきたユーザーがまだMisskeyサーバーに登録されていなかったら登録する
-	if (user == null) {
-		user = await resolvePerson(activity.actor) as IRemoteUser;
-	}
-
-	if (user == null) {
-		throw new Error('failed to resolve user');
 	}
 
 	if (!httpSignature.verifySignature(signature, key.keyPem)) {
