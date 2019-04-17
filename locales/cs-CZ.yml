@@ -1078,7 +1078,6 @@ mobile/views/components/drive.vue:
   used: "využito"
   file-count: "Soubor(ů)"
   folder-is-empty: "Tato složka je prázdná"
-  deletion-alert: "Omlouváme se, ale mazání složek ještě nebylo implementováno."
   folder-name: "Název složky"
   url-prompt: "URL adresa souboru, který chcete nahrát"
   uploading: "Byl zahájen upload. Může chvilku trvat než bude dokončen."
@@ -1139,6 +1138,10 @@ mobile/views/components/ui.nav.vue:
   game: "Hry"
   admin: "Administrace"
   about: "O Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Nahrát soubor"
+    create-folder: "Vytvořit složku"
 mobile/views/pages/user-lists.vue:
   title: "Seznamy"
 mobile/views/pages/signup.vue:
