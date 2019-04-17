@@ -1,6 +1,6 @@
 <template>
 <div class="mk-ui" v-hotkey.global="keymap">
-	<div class="bg" v-if="$store.getters.isSignedIn && $store.state.i.wallpaperUrl" :style="style"></div>
+	<div class="bg" v-if="$store.getters.isSignedIn && $store.state.settings.wallpaper" :style="style"></div>
 	<x-header class="header" v-if="navbar == 'top'" v-show="!zenMode" ref="header"/>
 	<x-sidebar class="sidebar" v-if="navbar != 'top'" v-show="!zenMode" ref="sidebar"/>
 	<div class="content" :class="[{ sidebar: navbar != 'top', zen: zenMode }, navbar]">
@@ -33,10 +33,9 @@ export default Vue.extend({
 		},
 
 		style(): any {
-			if (!this.$store.getters.isSignedIn || this.$store.state.i.wallpaperUrl == null) return {};
+			if (!this.$store.getters.isSignedIn || this.$store.state.settings.wallpaper == null) return {};
 			return {
-				backgroundColor: this.$store.state.i.wallpaperColor && this.$store.state.i.wallpaperColor.length == 3 ? `rgb(${ this.$store.state.i.wallpaperColor.join(',') })` : null,
-				backgroundImage: `url(${ this.$store.state.i.wallpaperUrl })`
+				backgroundImage: `url(${ this.$store.state.settings.wallpaper })`
 			};
 		},
 

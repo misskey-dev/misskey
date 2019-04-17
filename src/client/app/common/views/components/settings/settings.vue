@@ -525,15 +525,11 @@ export default Vue.extend({
 			this.$chooseDriveFile({
 				multiple: false
 			}).then(file => {
-				this.$root.api('i/update', {
-					wallpaperId: file.id
-				});
+				this.$store.dispatch('settings/set', { key: 'wallpaper', value: file.url });
 			});
 		},
 		deleteWallpaper() {
-			this.$root.api('i/update', {
-				wallpaperId: null
-			});
+			this.$store.dispatch('settings/set', { key: 'wallpaper', value: null });
 		},
 		checkForUpdate() {
 			this.checkingForUpdate = true;
