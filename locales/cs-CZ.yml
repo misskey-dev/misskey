@@ -73,6 +73,10 @@ common:
     "read:account": "Zobrazit informace o účtu"
     "read:drive": "Prohlížet Disk"
     "write:drive": "Pracovat s Diskem"
+    "read:favorites": "Prohlížet oblíbené"
+    "read:messaging": "Prohlížet konverzaci"
+    "write:messaging": "Pracovat s konverzaci"
+    "read:mutes": "Prohlížet ztlumené"
     "write:votes": "Hlasovat"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
