@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import rap from '@prezzemolo/rap';
 import { Muting } from '../entities/muting';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(Muting)
 export class MutingRepository extends Repository<Muting> {
@@ -16,7 +17,7 @@ export class MutingRepository extends Repository<Muting> {
 		src: Muting['id'] | Muting,
 		me?: any
 	) {
-		const muting = typeof src === 'object' ? src : await this.findOne(src);
+		const muting = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return await rap({
 			id: muting.id,

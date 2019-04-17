@@ -8,13 +8,7 @@ import Logger from '../../services/logger';
 const logger = new Logger('limiter');
 
 export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => {
-	// Redisがインストールされてない場合は常に許可
-	if (limiterDB == null) {
-		ok();
-		return;
-	}
-
-	const limitation = endpoint.meta.limit;
+	const limitation = endpoint.meta.limit!;
 
 	const key = limitation.hasOwnProperty('key')
 		? limitation.key
@@ -41,7 +35,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => 
 			id: `${user.id}:${key}:min`,
 			duration: limitation.minInterval,
 			max: 1,
-			db: limiterDB
+			db: limiterDB!
 		});
 
 		minIntervalLimiter.get((err, info) => {
@@ -69,7 +63,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => 
 			id: `${user.id}:${key}`,
 			duration: limitation.duration,
 			max: limitation.max,
-			db: limiterDB
+			db: limiterDB!
 		});
 
 		limiter.get((err, info) => {

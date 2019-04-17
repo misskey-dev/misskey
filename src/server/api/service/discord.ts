@@ -10,6 +10,7 @@ import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -43,7 +44,7 @@ router.get('/disconnect/discord', async ctx => {
 	const user = await Users.findOne({
 		host: null,
 		token: userToken
-	});
+	}).then(ensure);
 
 	await UserProfiles.update({
 		userId: user.id
@@ -71,8 +72,8 @@ async function getOAuth2() {
 
 	if (meta.enableDiscordIntegration) {
 		return new OAuth2(
-			meta.discordClientId,
-			meta.discordClientSecret,
+			meta.discordClientId!,
+			meta.discordClientSecret!,
 			'https://discordapp.com/',
 			'api/oauth2/authorize',
 			'api/oauth2/token');
@@ -103,7 +104,7 @@ router.get('/connect/discord', async ctx => {
 	redis.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/signin/discord', async ctx => {
@@ -129,7 +130,7 @@ router.get('/signin/discord', async ctx => {
 	redis.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOAuth2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/dc/cb', async ctx => {
@@ -164,24 +165,22 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{
-					grant_type: 'authorization_code',
-					redirect_uri
-				},
-				(err, accessToken, refreshToken, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
+			oauth2!.getOAuthAccessToken(code, {
+				grant_type: 'authorization_code',
+				redirect_uri
+			}, (err, accessToken, refreshToken, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
 					res({
 						accessToken,
 						refreshToken,
 						expiresDate: Date.now() + Number(result.expires_in) * 1000
 					});
-				}));
+				}
+			}));
 
 		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
 			request({
@@ -191,10 +190,11 @@ router.get('/dc/cb', async ctx => {
 					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
-				if (err)
+				if (err) {
 					rej(err);
-				else
+				} else {
 					res(JSON.parse(body));
+				}
 			}));
 
 		if (!id || !username || !discriminator) {
@@ -246,24 +246,22 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{
-					grant_type: 'authorization_code',
-					redirect_uri
-				},
-				(err, accessToken, refreshToken, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
-						res({
-							accessToken,
-							refreshToken,
-							expiresDate: Date.now() + Number(result.expires_in) * 1000
-						});
-				}));
+			oauth2!.getOAuthAccessToken(code, {
+				grant_type: 'authorization_code',
+				redirect_uri
+			}, (err, accessToken, refreshToken, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
+					res({
+						accessToken,
+						refreshToken,
+						expiresDate: Date.now() + Number(result.expires_in) * 1000
+					});
+				}
+			}));
 
 		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
 			request({
@@ -273,10 +271,11 @@ router.get('/dc/cb', async ctx => {
 					'User-Agent': config.userAgent
 				}
 			}, (err, response, body) => {
-				if (err)
+				if (err) {
 					rej(err);
-				else
+				} else {
 					res(JSON.parse(body));
+				}
 			}));
 
 		if (!id || !username || !discriminator) {
@@ -287,7 +286,7 @@ router.get('/dc/cb', async ctx => {
 		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		});
+		}).then(ensure);
 
 		await UserProfiles.update({ userId: user.id }, {
 			discord: true,

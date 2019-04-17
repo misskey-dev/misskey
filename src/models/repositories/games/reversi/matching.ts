@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import rap from '@prezzemolo/rap';
 import { ReversiMatching } from '../../../entities/games/reversi/matching';
 import { Users } from '../../..';
+import { ensure } from '../../../../prelude/ensure';
 
 @EntityRepository(ReversiMatching)
 export class ReversiMatchingRepository extends Repository<ReversiMatching> {
@@ -9,7 +10,7 @@ export class ReversiMatchingRepository extends Repository<ReversiMatching> {
 		src: ReversiMatching['id'] | ReversiMatching,
 		me: any
 	) {
-		const matching = typeof src === 'object' ? src : await this.findOne(src);
+		const matching = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return await rap({
 			id: matching.id,

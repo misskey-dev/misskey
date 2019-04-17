@@ -25,6 +25,8 @@ import Logger from '../services/logger';
 import { program } from '../argv';
 import { UserProfiles } from '../models';
 import { networkChart } from '../services/chart';
+import { genAvatar } from '../misc/gen-avatar';
+import { createTemp } from '../misc/create-temp';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
@@ -32,7 +34,7 @@ export const serverLogger = new Logger('server', 'gray', false);
 const app = new Koa();
 app.proxy = true;
 
-if (!['production', 'test'].includes(process.env.NODE_ENV)) {
+if (!['production', 'test'].includes(process.env.NODE_ENV || '')) {
 	// Logger
 	app.use(koaLogger(str => {
 		serverLogger.info(str);
@@ -71,6 +73,13 @@ const router = new Router();
 router.use(activityPub.routes());
 router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
+
+router.get('/avatar/:x', async ctx => {
+	const [temp] = await createTemp();
+	await genAvatar(ctx.params.x, fs.createWriteStream(temp));
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = fs.createReadStream(temp);
+});
 
 router.get('/verify-email/:code', async ctx => {
 	const profile = await UserProfiles.findOne({

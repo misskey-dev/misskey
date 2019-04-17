@@ -14,6 +14,7 @@ import { PollVotes, NoteWatchings, Users, Polls, UserProfiles } from '../../../.
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
 import { genId } from '../../../../../misc/gen-id';
+import { ensure } from '../../../../../prelude/ensure';
 
 export const meta = {
 	desc: {
@@ -25,7 +26,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'vote-write',
+	kind: 'write:votes',
 
 	params: {
 		noteId: {
@@ -87,7 +88,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noPoll);
 	}
 
-	const poll = await Polls.findOne({ noteId: note.id });
+	const poll = await Polls.findOne({ noteId: note.id }).then(ensure);
 
 	if (poll.expiresAt && poll.expiresAt < createdAt) {
 		throw new ApiError(meta.errors.alreadyExpired);
@@ -123,7 +124,7 @@ export default define(meta, async (ps, user) => {
 
 	// Increment votes count
 	const index = ps.choice + 1; // In SQL, array index is 1 based
-	await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE noteId = '${poll.noteId}'`);
+	await Polls.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
 
 	publishNoteStream(note.id, 'pollVoted', {
 		choice: ps.choice,
@@ -149,7 +150,7 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// この投稿をWatchする
 	if (profile.autoWatch !== false) {
@@ -158,7 +159,7 @@ export default define(meta, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note.userHost != null) {
-		const pollOwner: IRemoteUser = await Users.findOne(note.userId);
+		const pollOwner = await Users.findOne(note.userId).then(ensure) as IRemoteUser;
 
 		deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
 	}

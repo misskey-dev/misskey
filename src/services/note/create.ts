@@ -10,23 +10,24 @@ import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
-import { erase, concat } from '../../prelude/array';
+import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, Polls, UserProfiles } from '../../models';
+import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, UserProfiles } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
-import { Not } from 'typeorm';
+import { Not, getConnection } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
 import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import { ensure } from '../../prelude/ensure';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -83,25 +84,25 @@ class NotificationManager {
 }
 
 type Option = {
-	createdAt?: Date;
-	name?: string;
-	text?: string;
-	reply?: Note;
-	renote?: Note;
-	files?: DriveFile[];
-	geo?: any;
-	poll?: IPoll;
-	viaMobile?: boolean;
-	localOnly?: boolean;
-	cw?: string;
+	createdAt?: Date | null;
+	name?: string | null;
+	text?: string | null;
+	reply?: Note | null;
+	renote?: Note | null;
+	files?: DriveFile[] | null;
+	geo?: any | null;
+	poll?: IPoll | null;
+	viaMobile?: boolean | null;
+	localOnly?: boolean | null;
+	cw?: string | null;
 	visibility?: string;
-	visibleUsers?: User[];
-	apMentions?: User[];
-	apHashtags?: string[];
-	apEmojis?: string[];
-	questionUri?: string;
-	uri?: string;
-	app?: App;
+	visibleUsers?: User[] | null;
+	apMentions?: User[] | null;
+	apHashtags?: string[] | null;
+	apEmojis?: string[] | null;
+	questionUri?: string | null;
+	uri?: string | null;
+	app?: App | null;
 };
 
 export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
@@ -115,10 +116,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	// サイレンス
 	if (user.isSilenced && data.visibility == 'public') {
 		data.visibility = 'home';
-	}
-
-	if (data.visibleUsers) {
-		data.visibleUsers = erase(null, data.visibleUsers);
 	}
 
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
@@ -156,10 +153,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	// Parse MFM if needed
 	if (!tags || !emojis || !mentionedUsers) {
-		const tokens = data.text ? parse(data.text) : [];
-		const cwTokens = data.cw ? parse(data.cw) : [];
+		const tokens = data.text ? parse(data.text)! : [];
+		const cwTokens = data.cw ? parse(data.cw)! : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat(data.poll.choices.map(choice => parse(choice)))
+			? concat(data.poll.choices.map(choice => parse(choice)!))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
@@ -173,29 +170,27 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	tags = tags.filter(tag => tag.length <= 100);
 
-	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply.userId)) {
-		mentionedUsers.push(await Users.findOne(data.reply.userId));
+	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
+		mentionedUsers.push(await Users.findOne(data.reply.userId).then(ensure));
 	}
 
 	if (data.visibility == 'specified') {
+		if (data.visibleUsers == null) throw new Error('invalid param');
+
 		for (const u of data.visibleUsers) {
 			if (!mentionedUsers.some(x => x.id === u.id)) {
 				mentionedUsers.push(u);
 			}
 		}
 
-		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply.userId)) {
-			data.visibleUsers.push(await Users.findOne(data.reply.userId));
+		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
+			data.visibleUsers.push(await Users.findOne(data.reply.userId).then(ensure));
 		}
 	}
 
 	const note = await insertNote(user, data, tags, emojis, mentionedUsers);
 
 	res(note);
-
-	if (note == null) {
-		return;
-	}
 
 	// 統計を更新
 	notesChart.update(note, true);
@@ -219,6 +214,8 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	// 未読通知を作成
 	if (data.visibility == 'specified') {
+		if (data.visibleUsers == null) throw new Error('invalid param');
+
 		for (const u of data.visibleUsers) {
 			insertNoteUnread(u, note, true);
 		}
@@ -256,7 +253,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// If has in reply to note
 	if (data.reply) {
@@ -325,29 +322,33 @@ function incRenoteCount(renote: Note) {
 	Notes.increment({ id: renote.id }, 'score', 1);
 }
 
-async function publish(user: User, note: Note, reply: Note, renote: Note, noteActivity: any) {
+async function publish(user: User, note: Note, reply: Note | null | undefined, renote: Note | null | undefined, noteActivity: any) {
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && reply.userHost !== null) {
-			deliver(user, noteActivity, reply.userInbox);
+			Users.findOne(reply.userId).then(ensure).then(u => {
+				deliver(user, noteActivity, u.inbox);
+			});
 		}
 
 		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 		if (renote && renote.userHost !== null) {
-			deliver(user, noteActivity, renote.userInbox);
+			Users.findOne(renote.userId).then(ensure).then(u => {
+				deliver(user, noteActivity, u.inbox);
+			});
 		}
 	}
 
 	if (['public', 'home', 'followers'].includes(note.visibility)) {
 		// フォロワーに配信
-		publishToFollowers(note, user, noteActivity, reply);
+		publishToFollowers(note, user, noteActivity);
 	}
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
-	const insert: Partial<Note> = {
-		id: genId(data.createdAt),
-		createdAt: data.createdAt,
+	const insert = new Note({
+		id: genId(data.createdAt!),
+		createdAt: data.createdAt!,
 		fileIds: data.files ? data.files.map(file => file.id) : [],
 		replyId: data.reply ? data.reply.id : null,
 		renoteId: data.renote ? data.renote.id : null,
@@ -358,8 +359,8 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		tags: tags.map(tag => tag.toLowerCase()),
 		emojis,
 		userId: user.id,
-		viaMobile: data.viaMobile,
-		localOnly: data.localOnly,
+		viaMobile: data.viaMobile!,
+		localOnly: data.localOnly!,
 		geo: data.geo || null,
 		appId: data.app ? data.app.id : null,
 		visibility: data.visibility as any,
@@ -377,8 +378,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		renoteUserId: data.renote ? data.renote.userId : null,
 		renoteUserHost: data.renote ? data.renote.userHost : null,
 		userHost: user.host,
-		userInbox: user.inbox,
-	};
+	});
 
 	if (data.uri != null) insert.uri = data.uri;
 
@@ -394,38 +394,48 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 	// 投稿を作成
 	try {
-		const note = await Notes.save(insert);
+		let note: Note;
+		if (insert.hasPoll) {
+			// Start transaction
+			await getConnection().transaction(async transactionalEntityManager => {
+				note = await transactionalEntityManager.save(insert);
 
-		if (note.hasPoll) {
-			await Polls.save({
-				noteId: note.id,
-				choices: data.poll.choices,
-				expiresAt: data.poll.expiresAt,
-				multiple: data.poll.multiple,
-				votes: new Array(data.poll.choices.length).fill(0),
-				noteVisibility: note.visibility,
-				userId: user.id,
-				userHost: user.host
-			} as Poll);
+				const poll = new Poll({
+					noteId: note.id,
+					choices: data.poll!.choices,
+					expiresAt: data.poll!.expiresAt,
+					multiple: data.poll!.multiple,
+					votes: new Array(data.poll!.choices.length).fill(0),
+					noteVisibility: note.visibility,
+					userId: user.id,
+					userHost: user.host
+				});
+
+				await transactionalEntityManager.save(poll);
+			});
+		} else {
+			note = await Notes.save(insert);
 		}
 
-		return note;
+		return note!;
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
-			return null;
+			const err = new Error('Duplicated note');
+			err.name = 'duplicated';
+			throw err;
 		}
 
 		console.error(e);
 
-		throw 'something happened';
+		throw new Error('something happened');
 	}
 }
 
 function index(note: Note) {
 	if (note.text == null || config.elasticsearch == null) return;
 
-	es.index({
+	es!.index({
 		index: 'misskey',
 		type: 'note',
 		id: note.id.toString(),
@@ -457,7 +467,7 @@ async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: Notificati
 	}
 }
 
-async function publishToFollowers(note: Note, user: User, noteActivity: any, reply: Note) {
+async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 	const followers = await Followings.find({
 		followeeId: note.userId
 	});
@@ -465,7 +475,7 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any, rep
 	const queue: string[] = [];
 
 	for (const following of followers) {
-		if (following.followerHost !== null) {
+		if (Followings.isRemoteFollower(following)) {
 			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
 			if (Users.isLocalUser(user)) {
 				const inbox = following.followerSharedInbox || following.followerInbox;
@@ -514,11 +524,9 @@ async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse
 
 	const mentions = extractMentions(tokens);
 
-	let mentionedUsers = await Promise.all(mentions.map(m =>
+	let mentionedUsers = (await Promise.all(mentions.map(m =>
 		resolveUser(m.username, m.host || user.host).catch(() => null)
-	));
-
-	mentionedUsers = mentionedUsers.filter(x => x != null);
+	))).filter(x => x != null) as User[];
 
 	// Drop duplicate users
 	mentionedUsers = mentionedUsers.filter((u, i, self) =>

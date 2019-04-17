@@ -12,7 +12,7 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e'
 };
 
-export default async (endpoint: string, user: User, app: App, data: any, file?: any) => {
+export default async (endpoint: string, user: User | null | undefined, app: App | null | undefined, data: any, file?: any) => {
 	const isSecure = user != null && app == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);
@@ -39,15 +39,15 @@ export default async (endpoint: string, user: User, app: App, data: any, file?: 
 		});
 	}
 
-	if (ep.meta.requireCredential && user.isSuspended) {
+	if (ep.meta.requireCredential && user!.isSuspended) {
 		throw new ApiError(accessDenied, { reason: 'Your account has been suspended.' });
 	}
 
-	if (ep.meta.requireAdmin && !user.isAdmin) {
+	if (ep.meta.requireAdmin && !user!.isAdmin) {
 		throw new ApiError(accessDenied, { reason: 'You are not the admin.' });
 	}
 
-	if (ep.meta.requireModerator && !user.isAdmin && !user.isModerator) {
+	if (ep.meta.requireModerator && !user!.isAdmin && !user!.isModerator) {
 		throw new ApiError(accessDenied, { reason: 'You are not a moderator.' });
 	}
 
@@ -59,9 +59,9 @@ export default async (endpoint: string, user: User, app: App, data: any, file?: 
 		});
 	}
 
-	if (ep.meta.requireCredential && ep.meta.limit) {
+	if (ep.meta.requireCredential && ep.meta.limit && !user!.isAdmin && !user!.isModerator) {
 		// Rate limit
-		await limiter(ep, user).catch(e => {
+		await limiter(ep, user!).catch(e => {
 			throw new ApiError({
 				message: 'Rate limit exceeded. Please try again later.',
 				code: 'RATE_LIMIT_EXCEEDED',
@@ -80,7 +80,11 @@ export default async (endpoint: string, user: User, app: App, data: any, file?: 
 			apiLogger.error(`Internal error occurred in ${ep.name}`, {
 				ep: ep.name,
 				ps: data,
-				e: e
+				e: {
+					message: e.message,
+					code: e.name,
+					stack: e.stack
+				}
 			});
 			throw new ApiError(null, {
 				e: {

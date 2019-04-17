@@ -63,7 +63,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	let file: DriveFile;
+	let file: DriveFile | undefined;
 
 	if (ps.fileId) {
 		file = await DriveFiles.findOne(ps.fileId);
@@ -81,12 +81,12 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.fileIdOrUrlRequired);
 	}
 
-	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
-
 	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);
+	}
+
+	if (!user.isAdmin && !user.isModerator && (file.userId !== user.id)) {
+		throw new ApiError(meta.errors.accessDenied);
 	}
 
 	return await DriveFiles.pack(file, {

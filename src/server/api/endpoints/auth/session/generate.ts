@@ -10,6 +10,11 @@ export const meta = {
 	tags: ['auth'],
 
 	requireCredential: false,
+	
+	desc: {
+		'ja-JP': 'アプリを認証するためのトークンを作成します。',
+		'en-US': 'Generate a token for authorize application.'
+	},
 
 	params: {
 		appSecret: {

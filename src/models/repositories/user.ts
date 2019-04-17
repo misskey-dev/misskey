@@ -2,6 +2,8 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles } from '..';
 import rap from '@prezzemolo/rap';
+import { ensure } from '../../prelude/ensure';
+import config from '../../config';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -51,7 +53,7 @@ export class UserRepository extends Repository<User> {
 
 	public packMany(
 		users: (User['id'] | User)[],
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
@@ -63,7 +65,7 @@ export class UserRepository extends Repository<User> {
 
 	public async pack(
 		src: User['id'] | User,
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
@@ -75,27 +77,26 @@ export class UserRepository extends Repository<User> {
 			includeSecrets: false
 		}, options);
 
-		const user = typeof src === 'object' ? src : await this.findOne(src);
+		const user = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await UserNotePinings.find({ userId: user.id }) : [];
-		const profile = opts.detail ? await UserProfiles.findOne({ userId: user.id }) : null;
+		const profile = opts.detail ? await UserProfiles.findOne(user.id).then(ensure) : null;
+
+		const falsy = opts.detail ? false : undefined;
 
 		return await rap({
 			id: user.id,
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			uri: user.uri,
-			avatarUrl: user.avatarUrl,
-			bannerUrl: user.bannerUrl,
+			avatarUrl: user.avatarUrl ? user.avatarUrl : config.url + '/avatar/' + user.id,
 			avatarColor: user.avatarColor,
-			bannerColor: user.bannerColor,
-			isAdmin: user.isAdmin,
-			isBot: user.isBot,
-			isCat: user.isCat,
-			isVerified: user.isVerified,
+			isAdmin: user.isAdmin || falsy,
+			isBot: user.isBot || falsy,
+			isCat: user.isCat || falsy,
+			isVerified: user.isVerified || falsy,
 
 			// カスタム絵文字添付
 			emojis: user.emojis.length > 0 ? Emojis.find({
@@ -118,9 +119,16 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.detail ? {
-				description: profile.description,
-				location: profile.location,
-				birthday: profile.birthday,
+				url: profile!.url,
+				createdAt: user.createdAt,
+				updatedAt: user.updatedAt,
+				bannerUrl: user.bannerUrl,
+				bannerColor: user.bannerColor,
+				isLocked: user.isLocked,
+				isModerator: user.isModerator || falsy,
+				description: profile!.description,
+				location: profile!.location,
+				birthday: profile!.birthday,
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,
@@ -133,9 +141,9 @@ export class UserRepository extends Repository<User> {
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
-				autoWatch: profile.autoWatch,
-				alwaysMarkNsfw: profile.alwaysMarkNsfw,
-				carefulBot: profile.carefulBot,
+				autoWatch: profile!.autoWatch,
+				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
+				carefulBot: profile!.carefulBot,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: user.id,
@@ -156,9 +164,9 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				clientData: profile.clientData,
-				email: profile.email,
-				emailVerified: profile.emailVerified,
+				clientData: profile!.clientData,
+				email: profile!.email,
+				emailVerified: profile!.emailVerified,
 			} : {}),
 
 			...(relation ? {

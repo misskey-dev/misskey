@@ -71,7 +71,7 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 
 	default:
 		apLogger.warn(`unknown activity type: ${(activity as any).type}`);
-		return null;
+		return;
 	}
 };
 

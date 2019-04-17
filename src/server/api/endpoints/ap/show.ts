@@ -10,6 +10,7 @@ import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { validActor } from '../../../../remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],
@@ -110,7 +111,7 @@ async function fetchAny(uri: string) {
 	}
 
 	// それでもみつからなければ新規であるため登録
-	if (object.type === 'Person') {
+	if (validActor.includes(object.type)) {
 		const user = await createPerson(object.id);
 		return {
 			type: 'User',
@@ -122,14 +123,14 @@ async function fetchAny(uri: string) {
 		const note = await createNote(object.id);
 		return {
 			type: 'Note',
-			object: await Notes.pack(note, null, { detail: true })
+			object: await Notes.pack(note!, null, { detail: true })
 		};
 	}
 
 	return null;
 }
 
-async function mergePack(user: User, note: Note) {
+async function mergePack(user: User | null | undefined, note: Note | null | undefined) {
 	if (user != null) {
 		return {
 			type: 'User',

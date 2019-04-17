@@ -10,18 +10,31 @@ import { toPuny } from '../misc/convert-host';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export async function resolveUser(username: string, host: string, option?: any, resync = false): Promise<User> {
+export async function resolveUser(username: string, host: string | null, option?: any, resync = false): Promise<User> {
 	const usernameLower = username.toLowerCase();
-	host = toPuny(host);
 
 	if (host == null) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await Users.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null }).then(u => {
+			if (u == null) {
+				throw new Error('user not found');
+			} else {
+				return u;
+			}
+		});
 	}
+
+	host = toPuny(host);
 
 	if (config.host == host) {
 		logger.info(`return local user: ${usernameLower}`);
-		return await Users.findOne({ usernameLower, host: null });
+		return await Users.findOne({ usernameLower, host: null }).then(u => {
+			if (u == null) {
+				throw new Error('user not found');
+			} else {
+				return u;
+			}
+		});
 	}
 
 	const user = await Users.findOne({ usernameLower, host }, option);
@@ -63,7 +76,13 @@ export async function resolveUser(username: string, host: string, option?: any, 
 		await updatePerson(self.href);
 
 		logger.info(`return resynced remote user: ${acctLower}`);
-		return await Users.findOne({ uri: self.href });
+		return await Users.findOne({ uri: self.href }).then(u => {
+			if (u == null) {
+				throw new Error('user not found');
+			} else {
+				return u;
+			}
+		});
 	}
 
 	logger.info(`return existing remote user: ${acctLower}`);
@@ -76,7 +95,7 @@ async function resolveSelf(acctLower: string) {
 		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ e.statusCode || e.message }`);
 		throw new Error(`Failed to WebFinger for ${acctLower}: ${ e.statusCode || e.message }`);
 	});
-	const self = finger.links.find(link => link.rel && link.rel.toLowerCase() === 'self');
+	const self = finger.links.find(link => link.rel != null && link.rel.toLowerCase() === 'self');
 	if (!self) {
 		logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
 		throw new Error('self link not found');

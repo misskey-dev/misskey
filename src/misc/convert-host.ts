@@ -2,7 +2,7 @@ import config from '../config';
 import { toASCII } from 'punycode';
 import { URL } from 'url';
 
-export function getFullApAccount(username: string, host: string) {
+export function getFullApAccount(username: string, host: string | null) {
 	return host ? `${username}@${toPuny(host)}` : `${username}@${toPuny(config.host)}`;
 }
 
@@ -17,6 +17,10 @@ export function extractDbHost(uri: string) {
 }
 
 export function toPuny(host: string) {
+	return toASCII(host.toLowerCase());
+}
+
+export function toPunyNullable(host: string | null | undefined): string | null {
 	if (host == null) return null;
 	return toASCII(host.toLowerCase());
 }

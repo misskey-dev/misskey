@@ -5,6 +5,7 @@ import * as QRCode from 'qrcode';
 import config from '../../../../../config';
 import define from '../../../define';
 import { UserProfiles } from '../../../../../models';
+import { ensure } from '../../../../../prelude/ensure';
 
 export const meta = {
 	requireCredential: true,
@@ -19,10 +20,10 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password);
+	const same = await bcrypt.compare(ps.password, profile.password!);
 
 	if (!same) {
 		throw new Error('incorrect password');

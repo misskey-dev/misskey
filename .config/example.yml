@@ -65,10 +65,10 @@ db:
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
 
-#redis:
-#  host: localhost
-#  port: 6379
-#  pass: example-pass
+redis:
+  host: localhost
+  port: 6379
+  #pass: example-pass
 
 #   ┌─────────────────────────────┐
 #───┘ Elasticsearch configuration └─────────────────────────────
@@ -127,28 +127,12 @@ drive:
 # change it according to your preferences.
 
 # Available methods:
-# aid1 ... Use AID for ID generation (with random 1 char)
-# aid2 ... Use AID for ID generation (with random 2 chars)
-# aid3 ... Use AID for ID generation (with random 3 chars)
-# aid4 ... Use AID for ID generation (with random 4 chars)
-# ulid ... Use ulid for ID generation
-# objectid ... This is left for backward compatibility.
+# aid ... Short, Millisecond accuracy
+# meid ... Similar to ObjectID, Millisecond accuracy
+# ulid ... Millisecond accuracy
+# objectid ... This is left for backward compatibility
 
-# AID(n) is the original ID generation method.
-# The trailing n represents the number of random characters that
-# will be suffixed.
-# The larger n is the safer. If n is small, the possibility of
-# collision at the same time increases, but there are also
-# advantages such as shortening of the URL.
-
-# ULID: Universally Unique Lexicographically Sortable Identifier.
-# for more details: https://github.com/ulid/spec
-# * Normally, AID should be sufficient.
-
-# ObjectID is the method used in previous versions of Misskey.
-# * Choose this if you are migrating from a previous Misskey.
-
-id: 'aid2'
+id: 'aid'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────

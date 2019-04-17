@@ -41,7 +41,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Fetch games
-	const games = await query.take(ps.limit).getMany();
+	const games = await query.take(ps.limit!).getMany();
 
 	return await Promise.all(games.map((g) => ReversiGames.pack(g, user, {
 		detail: false

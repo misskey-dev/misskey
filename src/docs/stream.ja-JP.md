@@ -130,10 +130,12 @@ Misskeyのストリームに接続しただけでは、まだリアルタイム�
 ```json
 {
 	type: 'api',
-	id: 'xxxxxxxxxxxxxxxx',
-	endpoint: 'notes/create',
-	data: {
-		text: 'yee haw!'
+	body: {
+		id: 'xxxxxxxxxxxxxxxx',
+		endpoint: 'notes/create',
+		data: {
+			text: 'yee haw!'
+		}
 	}
 }
 ```

@@ -16,7 +16,7 @@ import { NoteReaction } from '../../../models/entities/note-reaction';
 import { createNotification } from '../../create-notification';
 import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
 
-export default async (user: User, note: Note, reaction: string) => {
+export default async (user: User, note: Note, reaction?: string) => {
 	// Myself
 	if (note.userId === user.id) {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
@@ -49,7 +49,8 @@ export default async (user: User, note: Note, reaction: string) => {
 		})
 		.where('id = :id', { id: note.id })
 		.execute();
-	// v11 inc score
+
+	Notes.increment({ id: note.id }, 'score', 1);
 
 	perUserReactionsChart.update(user, note);
 
@@ -79,10 +80,10 @@ export default async (user: User, note: Note, reaction: string) => {
 		}
 	});
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
-	if (Users.isLocalUser(user) && profile.autoWatch) {
+	if (Users.isLocalUser(user) && profile!.autoWatch) {
 		watch(user.id, note);
 	}
 
@@ -90,7 +91,9 @@ export default async (user: User, note: Note, reaction: string) => {
 	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
 	if (Users.isLocalUser(user) && note.userHost !== null) {
 		const content = renderActivity(renderLike(user, note, reaction));
-		deliver(user, content, note.userInbox);
+		Users.findOne(note.userId).then(u => {
+			deliver(user, content, u!.inbox);
+		});
 	}
 	//#endregion
 };

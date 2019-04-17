@@ -3,6 +3,7 @@ import del from '../services/drive/delete-file';
 import { DriveFiles } from '../models';
 import { Not } from 'typeorm';
 import { DriveFile } from '../models/entities/drive-file';
+import { ensure } from '../prelude/ensure';
 
 const limit = promiseLimit(16);
 
@@ -17,7 +18,7 @@ DriveFiles.find({
 });
 
 async function job(file: DriveFile): Promise<any> {
-	file = await DriveFiles.findOne(file.id);
+	file = await DriveFiles.findOne(file.id).then(ensure);
 
 	await del(file, true);
 

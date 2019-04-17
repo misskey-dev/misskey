@@ -1,9 +1,11 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
-import { id } from '../id';
 
 @Entity()
 export class Meta {
-	@PrimaryColumn(id())
+	@PrimaryColumn({
+		type: 'varchar',
+		length: 32
+	})
 	public id: string;
 
 	@Column('varchar', {
@@ -83,27 +85,27 @@ export class Meta {
 	public blockedHosts: string[];
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true,
 		default: '/assets/ai.png'
 	})
 	public mascotImageUrl: string | null;
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true
 	})
 	public bannerUrl: string | null;
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true,
-		default: 'https://ai.misskey.xyz/aiart/yubitun.png'
+		default: 'https://xn--931a.moe/aiart/yubitun.png'
 	})
 	public errorImageUrl: string | null;
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 		nullable: true
 	})
 	public iconUrl: string | null;

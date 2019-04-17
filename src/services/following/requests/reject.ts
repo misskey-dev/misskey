@@ -13,7 +13,7 @@ export default async function(followee: User, follower: User) {
 			followerId: follower.id
 		});
 
-		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
+		const content = renderActivity(renderReject(renderFollow(follower, followee, request!.requestId!), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 

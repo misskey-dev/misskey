@@ -28,13 +28,13 @@ export default class Connection {
 	constructor(
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
-		user: User,
-		app: App
+		user: User | null | undefined,
+		app: App | null | undefined
 	) {
 		this.wsConnection = wsConnection;
-		this.user = user;
-		this.app = app;
 		this.subscriber = subscriber;
+		if (user) this.user = user;
+		if (app) this.app = app;
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
@@ -52,6 +52,8 @@ export default class Connection {
 	 */
 	@autobind
 	private async onWsConnectionMessage(data: websocket.IMessage) {
+		if (data.utf8Data == null) return;
+
 		const { type, body } = JSON.parse(data.utf8Data);
 
 		switch (type) {
@@ -89,7 +91,7 @@ export default class Connection {
 	@autobind
 	private onReadNotification(payload: any) {
 		if (!payload.id) return;
-		readNotification(this.user.id, [payload.id]);
+		readNotification(this.user!.id, [payload.id]);
 	}
 
 	/**
@@ -109,7 +111,7 @@ export default class Connection {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 		}
 
-		if (payload.read) {
+		if (payload.read && this.user) {
 			readNote(this.user.id, payload.id);
 		}
 	}
@@ -221,7 +223,7 @@ export default class Connection {
 	private async updateFollowing() {
 		const followings = await Followings.find({
 			where: {
-				followerId: this.user.id
+				followerId: this.user!.id
 			},
 			select: ['followeeId']
 		});
@@ -233,7 +235,7 @@ export default class Connection {
 	private async updateMuting() {
 		const mutings = await Mutings.find({
 			where: {
-				muterId: this.user.id
+				muterId: this.user!.id
 			},
 			select: ['muteeId']
 		});
@@ -247,7 +249,7 @@ export default class Connection {
 	@autobind
 	public dispose() {
 		for (const c of this.channels.filter(c => c.dispose)) {
-			c.dispose();
+			if (c.dispose) c.dispose();
 		}
 
 		if (this.followingClock) clearInterval(this.followingClock);

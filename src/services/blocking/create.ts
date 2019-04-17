@@ -66,7 +66,7 @@ async function cancelRequest(follower: User, followee: User) {
 
 	// リモートからフォローリクエストを受けていたらReject送信
 	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
-		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId), followee));
+		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId!), followee));
 		deliver(followee, content, follower.inbox);
 	}
 }

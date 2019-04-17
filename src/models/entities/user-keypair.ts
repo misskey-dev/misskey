@@ -22,4 +22,12 @@ export class UserKeypair {
 		length: 4096,
 	})
 	public privateKey: string;
+
+	constructor(data: Partial<UserKeypair>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
 }

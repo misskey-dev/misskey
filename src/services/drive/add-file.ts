@@ -55,10 +55,10 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
-		let webpublicKey: string = null;
-		let webpublicUrl: string = null;
-		let thumbnailKey: string = null;
-		let thumbnailUrl: string = null;
+		let webpublicKey: string | null = null;
+		let webpublicUrl: string | null = null;
+		let thumbnailKey: string | null = null;
+		let thumbnailUrl: string | null = null;
 		//#endregion
 
 		//#region Uploads
@@ -106,8 +106,8 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 
 		const url = InternalStorage.saveFromPath(accessKey, path);
 
-		let thumbnailUrl: string;
-		let webpublicUrl: string;
+		let thumbnailUrl: string | null = null;
+		let webpublicUrl: string | null = null;
 
 		if (alts.thumbnail) {
 			thumbnailUrl = InternalStorage.saveFromBuffer(thumbnailAccessKey, alts.thumbnail.data);
@@ -143,7 +143,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
  */
 export async function generateAlts(path: string, type: string, generateWeb: boolean) {
 	// #region webpublic
-	let webpublic: IImage;
+	let webpublic: IImage | null = null;
 
 	if (generateWeb) {
 		logger.info(`creating web image`);
@@ -163,7 +163,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #endregion webpublic
 
 	// #region thumbnail
-	let thumbnail: IImage;
+	let thumbnail: IImage | null = null;
 
 	if (['image/jpeg', 'image/webp'].includes(type)) {
 		thumbnail = await ConvertToJpeg(path, 498, 280);
@@ -188,7 +188,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
  * Upload to ObjectStorage
  */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
-	const minio = new Minio.Client(config.drive.config);
+	const minio = new Minio.Client(config.drive!.config);
 
 	const metadata = {
 		'Content-Type': type,
@@ -197,17 +197,24 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
 
-	await minio.putObject(config.drive.bucket, key, stream, null, metadata);
+	await minio.putObject(config.drive!.bucket!, key, stream, undefined, metadata);
 }
 
 async function deleteOldFile(user: IRemoteUser) {
-	const oldFile = await DriveFiles.createQueryBuilder()
-		.select('file')
-		.where('file.id != :avatarId', { avatarId: user.avatarId })
-		.andWhere('file.id != :bannerId', { bannerId: user.bannerId })
-		.andWhere('file.userId = :userId', { userId: user.id })
-		.orderBy('file.id', 'DESC')
-		.getOne();
+	const q = DriveFiles.createQueryBuilder('file')
+		.where('file.userId = :userId', { userId: user.id });
+
+	if (user.avatarId) {
+		q.andWhere('file.id != :avatarId', { avatarId: user.avatarId });
+	}
+
+	if (user.bannerId) {
+		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
+	}
+
+	q.orderBy('file.id', 'ASC');
+
+	const oldFile = await q.getOne();
 
 	if (oldFile) {
 		delFile(oldFile, true);
@@ -232,14 +239,14 @@ async function deleteOldFile(user: IRemoteUser) {
 export default async function(
 	user: User,
 	path: string,
-	name: string = null,
-	comment: string = null,
+	name: string | null = null,
+	comment: string | null = null,
 	folderId: any = null,
 	force: boolean = false,
 	isLink: boolean = false,
-	url: string = null,
-	uri: string = null,
-	sensitive: boolean = null
+	url: string | null = null,
+	uri: string | null = null,
+	sensitive: boolean | null = null
 ): Promise<DriveFile> {
 	// Calc md5 hash
 	const calcHash = new Promise<string>((res, rej) => {
@@ -297,10 +304,10 @@ export default async function(
 		// If usage limit exceeded
 		if (usage + size > driveCapacity) {
 			if (Users.isLocalUser(user)) {
-				throw 'no-free-space';
+				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-				deleteOldFile(user);
+				deleteOldFile(user as IRemoteUser);
 			}
 		}
 	}
@@ -316,7 +323,7 @@ export default async function(
 			userId: user.id
 		});
 
-		if (driveFolder == null) throw 'folder-not-found';
+		if (driveFolder == null) throw new Error('folder-not-found');
 
 		return driveFolder;
 	};
@@ -356,16 +363,14 @@ export default async function(
 
 				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				const value = info.isOpaque ? `rgba(${r},${g},${b},0)` : `rgba(${r},${g},${b},255)`;
-
-				properties['avgColor'] = value;
+				properties['avgColor'] = `rgb(${r},${g},${b})`;
 			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
@@ -378,7 +383,7 @@ export default async function(
 	file.comment = comment;
 	file.properties = properties;
 	file.isLink = isLink;
-	file.isSensitive = Users.isLocalUser(user) && profile.alwaysMarkNsfw ? true :
+	file.isSensitive = Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
 		(sensitive !== null && sensitive !== undefined)
 			? sensitive
 			: false;
@@ -411,7 +416,7 @@ export default async function(
 				file = await DriveFiles.findOne({
 					uri: file.uri,
 					userId: user.id
-				});
+				}) as DriveFile;
 			} else {
 				logger.error(e);
 				throw e;

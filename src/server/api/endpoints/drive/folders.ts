@@ -54,7 +54,7 @@ export default define(meta, async (ps, user) => {
 		query.andWhere('folder.parentId IS NULL');
 	}
 
-	const folders = await query.take(ps.limit).getMany();
+	const folders = await query.take(ps.limit!).getMany();
 
 	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
 });

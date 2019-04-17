@@ -37,6 +37,8 @@ common:
   home: "Hjem"
   followers: "Følgere"
   favorites: "Merket som favoritt"
+  permissions:
+    "write:votes": "Stem"
   weekday-short:
     sunday: "S"
     monday: "M"

@@ -118,7 +118,6 @@ export default Vue.extend({
 				fileType: image,
 				excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
 				limit: 9,
-				untilDate: new Date().getTime() + 1000 * 86400 * 365
 			}).then(notes => {
 				for (const note of notes) {
 					for (const file of note.files) {

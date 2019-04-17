@@ -9,6 +9,7 @@ import signin from '../common/signin';
 import fetchMeta from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
 	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
@@ -42,7 +43,7 @@ router.get('/disconnect/twitter', async ctx => {
 	const user = await Users.findOne({
 		host: null,
 		token: userToken
-	});
+	}).then(ensure);
 
 	await UserProfiles.update({
 		userId: user.id
@@ -66,7 +67,7 @@ router.get('/disconnect/twitter', async ctx => {
 async function getTwAuth() {
 	const meta = await fetchMeta();
 
-	if (meta.enableTwitterIntegration) {
+	if (meta.enableTwitterIntegration && meta.twitterConsumerKey && meta.twitterConsumerSecret) {
 		return autwh({
 			consumerKey: meta.twitterConsumerKey,
 			consumerSecret: meta.twitterConsumerSecret,
@@ -90,14 +91,14 @@ router.get('/connect/twitter', async ctx => {
 	}
 
 	const twAuth = await getTwAuth();
-	const twCtx = await twAuth.begin();
+	const twCtx = await twAuth!.begin();
 	redis.set(userToken, JSON.stringify(twCtx));
 	ctx.redirect(twCtx.url);
 });
 
 router.get('/signin/twitter', async ctx => {
 	const twAuth = await getTwAuth();
-	const twCtx = await twAuth.begin();
+	const twCtx = await twAuth!.begin();
 
 	const sessid = uuid();
 
@@ -137,7 +138,7 @@ router.get('/tw/cb', async ctx => {
 
 		const twCtx = await get;
 
-		const result = await twAuth.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
+		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
 		const link = await UserProfiles.createQueryBuilder()
 			.where('twitter @> :twitter', {
@@ -170,12 +171,12 @@ router.get('/tw/cb', async ctx => {
 
 		const twCtx = await get;
 
-		const result = await twAuth.done(JSON.parse(twCtx), verifier);
+		const result = await twAuth!.done(JSON.parse(twCtx), verifier);
 
 		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		});
+		}).then(ensure);
 
 		await UserProfiles.update({ userId: user.id }, {
 			twitter: true,

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { Metas } from '../../../../models';
+import { getConnection } from 'typeorm';
 import { Meta } from '../../../../models/entities/meta';
 
 export const meta = {
@@ -516,11 +516,17 @@ export default define(meta, async (ps) => {
 		set.swPrivateKey = ps.swPrivateKey;
 	}
 
-	const meta = await Metas.findOne();
+	await getConnection().transaction(async transactionalEntityManager => {
+		const meta = await transactionalEntityManager.findOne(Meta, {
+			order: {
+				id: 'DESC'
+			}
+		});
 
-	if (meta) {
-		await Metas.update(meta.id, set);
-	} else {
-		await Metas.save(set);
-	}
+		if (meta) {
+			await transactionalEntityManager.update(Meta, meta.id, set);
+		} else {
+			await transactionalEntityManager.save(Meta, set);
+		}
+	});
 });

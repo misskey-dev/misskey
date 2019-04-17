@@ -44,7 +44,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere(`blocking.blockerId = :meId`, { meId: me.id });
 
 	const blockings = await query
-		.take(ps.limit)
+		.take(ps.limit!)
 		.getMany();
 
 	return await Blockings.packMany(blockings, me);

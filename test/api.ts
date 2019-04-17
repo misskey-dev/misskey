@@ -11,7 +11,7 @@
  * TS_NODE_FILES=true and TS_NODE_TRANSPILE_ONLY=true
  * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
-
+/*
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
@@ -442,7 +442,6 @@ describe('API', () => {
 	});
 
 	describe('drive', () => {
-		/*
 		it('ドライブ情報を取得できる', async(async () => {
 			const bob = await signup({ username: 'bob' });
 			await uploadFile({
@@ -461,7 +460,7 @@ describe('API', () => {
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			expect(res.body).have.property('usage').eql(1792);
-		}));*/
+		}));
 	});
 
 	describe('drive/files/create', () => {
@@ -793,7 +792,7 @@ describe('API', () => {
 				parentId: folderA.id
 			}, arisugawa);
 
-			expect(res).have.status(400);
+			assert.strictEqual(res.status, 400);
 		}));
 
 		it('存在しない親フォルダを設定できない', async(async () => {
@@ -967,3 +966,4 @@ describe('API', () => {
 		}));
 	});
 });
+*/

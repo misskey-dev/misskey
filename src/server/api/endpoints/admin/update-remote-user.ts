@@ -28,5 +28,5 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const user = await getRemoteUser(ps.userId);
-	await updatePerson(user.uri);
+	await updatePerson(user.uri!);
 });

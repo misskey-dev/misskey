@@ -4,7 +4,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Users, Followings } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { toPuny } from '../../../../misc/convert-host';
+import { toPunyNullable } from '../../../../misc/convert-host';
 
 export const meta = {
 	desc: {
@@ -66,7 +66,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId != null
 		? { id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: toPuny(ps.host) });
+		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) });
 
 	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
@@ -76,7 +76,7 @@ export default define(meta, async (ps, me) => {
 		.andWhere(`following.followerId = :userId`, { userId: user.id });
 
 	const followings = await query
-		.take(ps.limit)
+		.take(ps.limit!)
 		.getMany();
 
 	return await Followings.packMany(followings, me, { populateFollowee: true });

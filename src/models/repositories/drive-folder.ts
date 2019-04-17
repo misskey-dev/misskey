@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { DriveFolders, DriveFiles } from '..';
 import rap from '@prezzemolo/rap';
 import { DriveFolder } from '../entities/drive-folder';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(DriveFolder)
 export class DriveFolderRepository extends Repository<DriveFolder> {
@@ -22,7 +23,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 			detail: false
 		}, options);
 
-		const folder = typeof src === 'object' ? src : await this.findOne(src);
+		const folder = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return await rap({
 			id: folder.id,

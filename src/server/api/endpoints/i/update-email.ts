@@ -9,6 +9,7 @@ import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import { apiLogger } from '../../logger';
 import { Users, UserProfiles } from '../../../../models';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	requireCredential: true,
@@ -32,10 +33,10 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password);
+	const same = await bcrypt.compare(ps.password, profile.password!);
 
 	if (!same) {
 		throw new Error('incorrect password');
@@ -75,12 +76,12 @@ export default define(meta, async (ps, user) => {
 				user: meta.smtpUser,
 				pass: meta.smtpPass
 			} : undefined
-		});
+		} as any);
 
 		const link = `${config.url}/verify-email/${code}`;
 
 		transporter.sendMail({
-			from: meta.email,
+			from: meta.email!,
 			to: ps.email,
 			subject: meta.name || 'Misskey',
 			text: `To verify email, please click this link: ${link}`

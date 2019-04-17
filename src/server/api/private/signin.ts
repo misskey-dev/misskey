@@ -7,6 +7,7 @@ import config from '../../../config';
 import { Users, Signins, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { genId } from '../../../misc/gen-id';
+import { ensure } from '../../../prelude/ensure';
 
 export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
@@ -45,10 +46,10 @@ export default async (ctx: Koa.BaseContext) => {
 		return;
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// Compare password
-	const same = await bcrypt.compare(password, profile.password);
+	const same = await bcrypt.compare(password, profile.password!);
 
 	if (same) {
 		if (profile.twoFactorEnabled) {

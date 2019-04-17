@@ -40,6 +40,12 @@ export class UserProfile {
 	}[];
 
 	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'Remote URL of the user.'
+	})
+	public url: string | null;
+
+	@Column('varchar', {
 		length: 128, nullable: true,
 		comment: 'The email address of the User.'
 	})
@@ -192,4 +198,12 @@ export class UserProfile {
 	})
 	public userHost: string | null;
 	//#endregion
+
+	constructor(data: Partial<UserProfile>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
 }

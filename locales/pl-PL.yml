@@ -23,6 +23,7 @@ common:
   enter-password: "Wprowadź Hasło"
   2fa: "Uwierzytelnienie dwuetapowe"
   customize-home: "Dostosuj stronę główną"
+  featured-notes: "Wyróżnienia"
   dark-mode: "Tryb ciemny"
   signin: "Zaloguj się"
   signup: "Rejestracja"
@@ -61,6 +62,9 @@ common:
   following: "Śledzisz"
   followers: "Śledzący"
   favorites: "Moje ulubione"
+  permissions:
+    "read:drive": "Wyświetl dysk"
+    "write:votes": "Zagłosuj"
   empty-timeline-info:
     explore: "Poznaj"
   weekday-short:
@@ -201,15 +205,6 @@ common:
   you: "Ty"
 auth/views/form.vue:
   permission-ask: "Ta aplikacja wymaga następujących uprawnień:"
-  account-read: "Wyświetlanie informacji o koncie:"
-  account-write: "Modyfikowanie informacji o koncie:"
-  note-write: "Publikacja."
-  like-write: "Reagowanie na wpisy."
-  following-write: "Śledzenie i cofanie śledzenia."
-  drive-read: "Odczytywanie Twojego dysku."
-  drive-write: "Wysyłanie i usuwanie plików na Twoim dysku."
-  notification-read: "Odczytywanie Twoich powiadomień."
-  notification-write: "Zarządzanie Twoimi powiadomieniami."
   cancel: "Anuluj"
   accept: "Przyznaj dostęp."
 auth/views/index.vue:
@@ -715,7 +710,6 @@ desktop/views/components/post-form.vue:
   posting: "Wysyłanie"
   attach-media-from-local: "Załącz zawartość multimedialną z komputera"
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
-  attach-cancel: "Usuń załącznik"
   insert-a-kao: "v('ω')v"
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
@@ -795,6 +789,9 @@ common/views/components/password-settings.vue:
   enter-current-password: "Wprowadź obecne hasło"
   enter-new-password: "Wprowadź nowe hasło"
   enter-new-password-again: "Wprowadź ponownie nowe hasło"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "Oznacz jako zawartość wrażliwą"
+  unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
 desktop/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
@@ -805,12 +802,9 @@ desktop/views/components/settings.tags.vue:
   query: "Zapytanie (opcjonalne)"
   add: "Dodaj"
   save: "Zapisz"
-desktop/views/components/taskmanager.vue:
-  title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Bezpośrednie wpisy"
@@ -882,8 +876,6 @@ admin/views/instance.vue:
   save: "Zapisz"
   saved: "Zapisano"
   user-recommendation-config: "Polecani użytkownicy"
-  external-user-recommendation-engine: "Silnik"
-  external-user-recommendation-engine-desc: "Np: https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
   email: "Adres e-mail"
 admin/views/charts.vue:
   notes: "Wpisy"
@@ -1091,7 +1083,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Zacytuj ten wpis… (nieobowiązkowe)"
   reply-placeholder: "Odpowiedź na ten wpis…"
   cw-placeholder: "Treść ostrzeżenia (opcjonalnie)"
-  location-alert: "Twoje urządzenie nie pozwala na przekazywanie informacji o lokalizacji"
+  geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
   error: "Błąd"
   username-prompt: "Wprowadź nazwę użytkownika"
 mobile/views/components/sub-note-content.vue:
@@ -1119,7 +1111,6 @@ mobile/views/pages/signup.vue:
 mobile/views/pages/home.vue:
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Bezpośrednie wpisy"
@@ -1169,7 +1160,6 @@ deck:
   widgets: "Widżety"
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   hashtag: "Hashtag"
   global: "Globalne"
   mentions: "Wspomnienia"
@@ -1224,11 +1214,3 @@ dev/views/apps.vue:
 dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
-  account-read: "Wyświetlanie informacji o koncie:"
-  account-write: "Modyfikowanie informacji o koncie:"
-  note-write: "Publikacja."
-  following-write: "Śledzenie i cofanie śledzenia."
-  drive-read: "Odczytywanie Twojego dysku."
-  drive-write: "Wysyłanie i usuwanie plików na Twoim dysku."
-  notification-read: "Odczytywanie Twoich powiadomień."
-  notification-write: "Zarządzanie Twoimi powiadomieniami."

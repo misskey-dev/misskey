@@ -3,6 +3,7 @@ import config from '../../config';
 import { User } from '../../models/entities/user';
 import { Notes, DriveFiles, UserProfiles } from '../../models';
 import { In } from 'typeorm';
+import { ensure } from '../../prelude/ensure';
 
 export default async function(user: User) {
 	const author: Author = {
@@ -10,7 +11,7 @@ export default async function(user: User) {
 		name: user.name || user.username
 	};
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	const notes = await Notes.find({
 		where: {
@@ -47,9 +48,9 @@ export default async function(user: User) {
 			title: `New note by ${author.name}`,
 			link: `${config.url}/notes/${note.id}`,
 			date: note.createdAt,
-			description: note.cw,
-			content: note.text,
-			image: file ? DriveFiles.getPublicUrl(file) : null
+			description: note.cw || undefined,
+			content: note.text || undefined,
+			image: file ? DriveFiles.getPublicUrl(file) || undefined : undefined
 		});
 	}
 
