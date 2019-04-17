@@ -182,6 +182,7 @@ export class NoteRepository extends Repository<Note> {
 			files: DriveFiles.packMany(note.fileIds),
 			replyId: note.replyId,
 			renoteId: note.renoteId,
+			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri || undefined,
 
 			...(opts.detail ? {

@@ -20,21 +20,21 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<void> => {
 	const uri = (object as any).id;
 
 	switch (object.type) {
-	case 'Note':
-	case 'Question':
-	case 'Article':
-		deleteNote(actor, uri);
-		break;
-
-	case 'Tombstone':
-		const note = await Notes.findOne({ uri });
-		if (note != null) {
+		case 'Note':
+		case 'Question':
+		case 'Article':
 			deleteNote(actor, uri);
-		}
-		break;
+			break;
 
-	default:
-		apLogger.warn(`Unknown type: ${object.type}`);
-		break;
+		case 'Tombstone':
+			const note = await Notes.findOne({ uri });
+			if (note != null) {
+				deleteNote(actor, uri);
+			}
+			break;
+
+		default:
+			apLogger.warn(`Unknown type: ${object.type}`);
+			break;
 	}
 };
