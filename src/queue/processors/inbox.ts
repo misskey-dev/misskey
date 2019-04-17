@@ -14,7 +14,6 @@ import { UserPublickey } from '../../models/entities/user-publickey';
 import fetchMeta from '../../misc/fetch-meta';
 import { toPuny, toPunyNullable } from '../../misc/convert-host';
 import { validActor } from '../../remote/activitypub/type';
-import { ensure } from '../../prelude/ensure';
 
 const logger = new Logger('inbox');
 
@@ -31,8 +30,8 @@ export default async (job: Bull.Job): Promise<void> => {
 	//#endregion
 
 	const keyIdLower = signature.keyId.toLowerCase();
-	let user: IRemoteUser;
-	let key: UserPublickey;
+	let user: IRemoteUser | undefined;
+	let key: UserPublickey | undefined;
 
 	if (keyIdLower.startsWith('acct:')) {
 		const acct = parseAcct(keyIdLower.slice('acct:'.length));
@@ -65,7 +64,7 @@ export default async (job: Bull.Job): Promise<void> => {
 			host: host
 		}) as IRemoteUser;
 
-		key = await UserPublickeys.findOne(user.id).then(ensure);
+		key = await UserPublickeys.findOne(user.id);
 	} else {
 		// アクティビティ内のホストの検証
 		const host = toPuny(new URL(signature.keyId).hostname);
@@ -86,15 +85,15 @@ export default async (job: Bull.Job): Promise<void> => {
 
 		key = await UserPublickeys.findOne({
 			keyId: signature.keyId
-		}).then(ensure);
+		});
 
-		user = await Users.findOne(key.userId) as IRemoteUser;
+		if (key) user = await Users.findOne(key.userId) as IRemoteUser;
 	}
 
 	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
 	if (activity.type === 'Update') {
 		if (activity.object && validActor.includes(activity.object.type)) {
-			if (user == null) {
+			if (user == null || key == null) {
 				logger.warn('Update activity received, but user not registed.');
 			} else if (!httpSignature.verifySignature(signature, key.keyPem)) {
 				logger.warn('Update activity received, but signature verification failed.');
@@ -110,7 +109,7 @@ export default async (job: Bull.Job): Promise<void> => {
 		user = await resolvePerson(activity.actor) as IRemoteUser;
 	}
 
-	if (user == null) {
+	if (user == null || key == null) {
 		throw new Error('failed to resolve user');
 	}
 
