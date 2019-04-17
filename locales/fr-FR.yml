@@ -72,6 +72,8 @@ common:
     "write:account": "Mettre à jour les informations de votre compte"
     "read:drive": "Parcourir le Drive"
     "write:drive": "Écrire sur le Drive"
+    "read:favorites": "Afficher les favoris"
+    "read:reactions": "Lire les réactions"
     "write:votes": "Vote"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Les utilisateurs suivants afficheront leurs publications sur votre fil."
@@ -136,6 +138,7 @@ common:
     appearance: "Apparence"
     behavior: "Comportement"
     fetch-on-scroll: "Chargement automatique lors du défilement"
+    fetch-on-scroll-desc: "Chargement automatique du contenu lors du défilement de la page."
     note-visibility: "Visibilité de la publication"
     default-note-visibility: "Visibilité par défaut"
     remember-note-visibility: "Se souvenir du mode de visibilité de la publication"
@@ -955,6 +958,7 @@ common/views/components/password-settings.vue:
   changed: "Mot de passe modifié avec succès"
   failed: "Échec lors de la modification du mot de passe"
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "Enlever le fichier attaché"
   mark-as-sensitive: "Marquer comme sensible"
   unmark-as-sensitive: "Ne pas marquer comme sensible"
 desktop/views/components/sub-note-content.vue:
