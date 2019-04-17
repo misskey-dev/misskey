@@ -363,9 +363,7 @@ export default async function(
 
 				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				const value = info.isOpaque ? `rgba(${r},${g},${b},0)` : `rgba(${r},${g},${b},255)`;
-
-				properties['avgColor'] = value;
+				properties['avgColor'] = `rgb(${r},${g},${b})`;
 			} catch (e) { }
 		};
 
