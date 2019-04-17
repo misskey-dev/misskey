@@ -1,6 +1,5 @@
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
-import parseAcct from '../../misc/acct/parse';
 import { IRemoteUser } from '../../models/entities/user';
 import perform from '../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
@@ -12,7 +11,7 @@ import { Instances, Users, UserPublickeys } from '../../models';
 import { instanceChart } from '../../services/chart';
 import { UserPublickey } from '../../models/entities/user-publickey';
 import fetchMeta from '../../misc/fetch-meta';
-import { toPuny, toPunyNullable } from '../../misc/convert-host';
+import { toPuny } from '../../misc/convert-host';
 import { validActor } from '../../remote/activitypub/type';
 import { ensure } from '../../prelude/ensure';
 
