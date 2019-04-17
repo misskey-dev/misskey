@@ -12,7 +12,7 @@
 		<div class="mkw-polls--body">
 			<div class="poll" v-if="!fetching && poll != null">
 				<p v-if="poll.text"><router-link :to="poll | notePage">
-					<misskey-flavored-markdown :text="poll.text" :author="poll.user" :custom-emojis="poll.emojis"/>
+					<mfm :text="poll.text" :author="poll.user" :custom-emojis="poll.emojis"/>
 				</router-link></p>
 				<p v-if="!poll.text"><router-link :to="poll | notePage"><fa icon="link"/></router-link></p>
 				<mk-poll :note="poll"/>
