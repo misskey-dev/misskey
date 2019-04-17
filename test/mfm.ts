@@ -562,6 +562,14 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('ignore 】', () => {
+				const tokens = parse('#foo】');
+				assert.deepStrictEqual(tokens, [
+					leaf('hashtag', { hashtag: 'foo' }),
+					text('】'),
+				]);
+			});
+
 			it('allow including number', () => {
 				const tokens = parse('#foo123');
 				assert.deepStrictEqual(tokens, [
