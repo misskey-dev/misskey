@@ -1406,8 +1406,6 @@ mobile/views/components/drive.vue:
   file-count: "파일"
   nothing-in-drive: "드라이브에 아무것도 없습니다"
   folder-is-empty: "폴더가 비어있습니다"
-  prompt: "무엇을 하시겠습니까? (숫자를 입력하여 주십시오): <1 → 파일 업로드 | 2 → 파일을 URL에서 업로드 | 3 → 폴더 만들기 | 4 → 이 폴더의 이름을 변경 | 5 → 현재 폴더 이동| 6 → 현재 폴더 삭제>"
-  deletion-alert: "죄송합니다! 폴더 삭제는 아직 구현되지 않았습니다..."
   folder-name: "폴더 이름"
   here-is-root: "현재 경로는 루트 경로로 폴더가 아닙니다."
   url-prompt: "업로드 하려는 파일의 URL"
@@ -1485,6 +1483,10 @@ mobile/views/components/ui.nav.vue:
   game: "게임"
   admin: "관리"
   about: "Misskey에 대하여"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "파일 업로드"
+    create-folder: "폴더 만들기"
 mobile/views/pages/user-lists.vue:
   title: "리스트"
   enter-list-name: "리스트명을 입력하십시오"
