@@ -82,7 +82,7 @@ export class UserRepository extends Repository<User> {
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await UserNotePinings.find({ userId: user.id }) : [];
-		const profile = opts.detail ? await UserProfiles.findOne({ userId: user.id }).then(ensure) : null;
+		const profile = opts.detail ? await UserProfiles.findOne(user.id).then(ensure) : null;
 
 		const falsy = opts.detail ? false : undefined;
 

@@ -11,7 +11,7 @@ export default async function(user: User) {
 		name: user.name || user.username
 	};
 
-	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	const notes = await Notes.find({
 		where: {

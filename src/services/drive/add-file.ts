@@ -372,7 +372,7 @@ export default async function(
 		propPromises = [calcWh(), calcAvg()];
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 

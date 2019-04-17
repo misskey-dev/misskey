@@ -80,7 +80,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 		}
 	});
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
 	if (Users.isLocalUser(user) && profile!.autoWatch) {

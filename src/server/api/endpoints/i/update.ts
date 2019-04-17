@@ -160,7 +160,7 @@ export default define(meta, async (ps, user, app) => {
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
 
-	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) profileUpdates.description = ps.description;

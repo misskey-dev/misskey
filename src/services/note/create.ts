@@ -253,7 +253,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// If has in reply to note
 	if (data.reply) {
