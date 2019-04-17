@@ -1416,8 +1416,6 @@ mobile/views/components/drive.vue:
   file-count: "File(s)"
   nothing-in-drive: "There's nothing stored."
   folder-is-empty: "This folder is empty"
-  prompt: "What do you want to do? (Please enter a number): <1 → Upload a file | 2 → Upload a file from a URL | 3 → Create a folder | 4 → Change this folder's name | 5 → Move this folder | 6 → Delete this folder>"
-  deletion-alert: "Sorry! Deleting a folder is not yet implemented."
   folder-name: "Folder name"
   here-is-root: "Currently, you are on the root, not inside of any folder."
   url-prompt: "URL of the file you want to upload"
@@ -1495,6 +1493,10 @@ mobile/views/components/ui.nav.vue:
   game: "Games"
   admin: "Admin"
   about: "About Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Upload a file"
+    create-folder: "Create a folder"
 mobile/views/pages/user-lists.vue:
   title: "Lists"
   enter-list-name: "Enter a name of the list to make"
