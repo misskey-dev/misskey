@@ -1026,8 +1026,6 @@ mobile/views/components/drive.vue:
   file-count: "Plik(i)"
   nothing-in-drive: "Pusto"
   folder-is-empty: "Ten katalog jest pusty"
-  prompt: "Co chcesz zrobić? (wprowadź odpowiednią cyfrę): <1 → Wysłać plik | 2 → Wysłać plik z adresu URL | 3 → Utworzyć katalog | 4 → Zmienić nazwę tego katalogu | 5 → Przenieść ten katalog | 6 → Usunąć ten katalog>"
-  deletion-alert: "Przepraszamy. Usuwanie katalogów nie zostało jeszcze zaimplementowane."
   folder-name: "Nazwa katalogu"
   url-prompt: "Adres URL pliku, który chcesz wysłać"
   uploading: "Rozpoczęto wysyłanie. Może to trochę potrwać."
@@ -1103,6 +1101,10 @@ mobile/views/components/ui.nav.vue:
   game: "Gry"
   admin: "Admin"
   about: "O Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Wyślij plik"
+    create-folder: "Utwórz katalog"
 mobile/views/pages/user-lists.vue:
   title: "Listy"
   enter-list-name: "Wprowadź nazwę listy"
