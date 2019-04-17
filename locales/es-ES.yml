@@ -931,6 +931,10 @@ mobile/views/components/ui.nav.vue:
   game: "Juegos"
   admin: "Admin"
   about: "Sobre"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Subir fichero"
+    create-folder: "Crear una carpeta"
 mobile/views/pages/user-lists.vue:
   title: "Listas"
 mobile/views/pages/home.vue:
