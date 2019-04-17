@@ -676,6 +676,10 @@ mobile/views/components/ui.nav.vue:
   user-lists: "Listen"
   game: "Spielen"
   about: "Über"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Eine Datei hochladen"
+    create-folder: "Ein Verzeichnis erstellen"
 mobile/views/pages/user-lists.vue:
   title: "Listen"
 mobile/views/pages/home.vue:
