@@ -593,6 +593,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "Odebrat z tohoto seznamu"
   delete-are-you-sure: "Smazat seznam \"$1\"?"
   deleted: "Smazáno"
+common/views/components/user-lists.vue:
+  list-name: "Název seznamu"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   next: "Další"
@@ -832,8 +834,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Odmítnout"
 desktop/views/components/user-lists-window.vue:
   title: "Seznamy uživatelů"
-  create-list: "Vytvořit seznam"
-  list-name: "Název seznamu"
 desktop/views/components/user-preview.vue:
   notes: "Příspěvky"
 desktop/views/components/users-list.vue:
