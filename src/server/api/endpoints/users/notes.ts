@@ -142,7 +142,7 @@ export default define(meta, async (ps, me) => {
 	});
 
 	//#region Construct query
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.userId = :userId', { userId: user.id })
 		.leftJoinAndSelect('note.user', 'user');
 
