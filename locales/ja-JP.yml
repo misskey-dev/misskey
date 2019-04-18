@@ -35,6 +35,7 @@ common:
   signup: "新規登録"
   signout: "ログアウト"
   reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
+  fetching-as-ap-object: "連合に照会中"
 
   got-it: "わかった"
   customization-tips:
