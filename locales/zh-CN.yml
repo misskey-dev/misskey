@@ -1513,7 +1513,11 @@ mobile/views/components/ui.nav.vue:
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "上传文件"
+    url-upload: "从URL上传文件"
     create-folder: "创建文件夹"
+    rename-folder: "重命名文件夹"
+    move-folder: "移动此文件夹"
+    delete-folder: "删除此文件夹"
 mobile/views/pages/user-lists.vue:
   title: "列表"
   enter-list-name: "输入要列出的列表的名称"
