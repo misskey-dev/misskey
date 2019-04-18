@@ -148,10 +148,7 @@ export default Vue.extend({
 		},
 
 		list() {
-			const w = this.$root.new(MkUserListsWindow);
-			w.$once('choosen', list => {
-				this.$router.push(`i/lists/${ list.id }`);
-			});
+			this.$root.new(MkUserListsWindow);
 		},
 
 		followRequests() {

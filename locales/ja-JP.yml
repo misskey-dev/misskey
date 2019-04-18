@@ -748,6 +748,10 @@ common/views/components/user-list-editor.vue:
   delete-are-you-sure: "リスト「$1」を削除しますか？"
   deleted: "削除しました"
 
+common/views/components/user-lists.vue:
+  create-list: "リストを作成"
+  list-name: "リスト名"
+
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
   no-broadcasts: "お知らせはありません"
@@ -1154,8 +1158,6 @@ desktop/views/components/received-follow-requests-window.vue:
 
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
-  create-list: "リストを作成"
-  list-name: "リスト名"
 
 desktop/views/components/user-preview.vue:
   notes: "投稿"
@@ -1689,7 +1691,6 @@ mobile/views/pages/drive.vue:
 
 mobile/views/pages/user-lists.vue:
   title: "リスト"
-  enter-list-name: "リスト名を入力してください"
 
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
