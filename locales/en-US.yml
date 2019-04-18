@@ -502,7 +502,7 @@ common/views/components/user-menu.vue:
   silence: "Silence"
   unsilence: "Unsilence"
   silence-confirm: "Are you sure that you want to silence this user?"
-  unsilence-confirm: "Are you sure that you want to unmute this user?"
+  unsilence-confirm: "Are you sure that you want to stop silencing this user?"
   suspend: "Suspend"
   unsuspend: "Unsuspend"
   suspend-confirm: "Are you sure that you want to suspend this user?"
@@ -1216,7 +1216,9 @@ admin/views/users.vue:
   unsuspend-confirm: "Are you sure you want to unsuspend this account?"
   unsuspended: "The user has successfully unsuspended."
   make-silence: "Silence"
+  silence-confirm: "Silence user?"
   unmake-silence: "Unsilence"
+  unsilence-confirm: "Are you certain that you want to stop silencing this user?"
   verify: "Verify account"
   verify-confirm: "Do you want this to be a verified account?"
   verified: "The account is now being verified"
@@ -1410,6 +1412,7 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "Post"
   note: "Post"
+  something-happened: "Could not be posted in this circumstance."
 desktop/views/widgets/profile.vue:
   update-banner: "Click to edit your banner"
   update-avatar: "Click to edit your avatar"
@@ -1432,6 +1435,7 @@ mobile/views/components/drive.vue:
   here-is-root: "Currently, you are on the root, not inside of any folder."
   url-prompt: "URL of the file you want to upload"
   uploading: "Upload requested. It may take a while for the upload to finish."
+  folder-name-cannot-empty: "Folder name cannot be empty."
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose files"
 mobile/views/components/drive-folder-chooser.vue:
