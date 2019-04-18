@@ -36,7 +36,8 @@ export default Vue.extend({
 				includeReplies: this.mode == 'with-replies',
 				includeMyRenotes: this.mode != 'my-posts',
 				withFiles: this.mode == 'with-media',
-				untilDate: cursor ? cursor : new Date().getTime() + 1000 * 86400 * 365
+				untilDate: cursor ? undefined : (this.date ? this.date.getTime() : undefined),
+				untilId: cursor ? cursor : undefined
 			}).then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();
@@ -62,10 +63,11 @@ export default Vue.extend({
 
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
-	},
-
-	beforeDestroy() {
-		document.removeEventListener('keydown', this.onDocumentKeydown);
+		this.$root.$on('warp', this.warp);
+		this.$once('hook:beforeDestroy', () => {
+			this.$root.$off('warp', this.warp);
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+		});
 	},
 
 	methods: {

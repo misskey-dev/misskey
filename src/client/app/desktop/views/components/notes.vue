@@ -123,7 +123,7 @@ export default Vue.extend({
 		},
 
 		fetchMore() {
-			if (!this.more || this.moreFetching) return;
+			if (!this.more || this.moreFetching || this.notes.length === 0) return;
 			this.moreFetching = true;
 			this.makePromise(this.notes[this.notes.length - 1].id).then(x => {
 				this.notes = this.notes.concat(x.notes);

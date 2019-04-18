@@ -14,7 +14,7 @@
 
 	<section>
 		<header><fa icon="terminal"/> {{ $t('console.title') }}</header>
-		<ui-input v-model="endpoint">
+		<ui-input v-model="endpoint" :datalist="endpoints">
 			<span>{{ $t('console.endpoint') }}</span>
 		</ui-input>
 		<ui-textarea v-model="body">
@@ -39,13 +39,21 @@ import * as JSON5 from 'json5';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/api-settings.vue'),
+
 	data() {
 		return {
 			endpoint: '',
 			body: '{}',
 			res: null,
-			sending: false
+			sending: false,
+			endpoints: []
 		};
+	},
+
+	created() {
+		this.$root.api('endpoints').then(endpoints => {
+			this.endpoints = endpoints;
+		});
 	},
 
 	methods: {

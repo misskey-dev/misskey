@@ -17,11 +17,13 @@ export default Vue.extend({
 
 	data() {
 		return {
+			date: null,
 			makePromise: cursor => this.$root.api('users/notes', {
 				userId: this.user.id,
 				limit: fetchLimit + 1,
 				withFiles: this.withMedia,
-				untilDate: cursor ? cursor : new Date().getTime() + 1000 * 86400 * 365
+				untilDate: cursor ? undefined : (this.date ? this.date.getTime() : undefined),
+				untilId: cursor ? cursor : undefined
 			}).then(notes => {
 				if (notes.length == fetchLimit + 1) {
 					notes.pop();
@@ -37,6 +39,20 @@ export default Vue.extend({
 				}
 			})
 		};
+	},
+
+	created() {
+		this.$root.$on('warp', this.warp);
+		this.$once('hook:beforeDestroy', () => {
+			this.$root.$off('warp', this.warp);
+		});
+	},
+
+	methods: {
+		warp(date) {
+			this.date = date;
+			(this.$refs.timeline as any).reload();
+		}
 	}
 });
 </script>

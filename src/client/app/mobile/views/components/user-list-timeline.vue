@@ -15,10 +15,12 @@ export default Vue.extend({
 	data() {
 		return {
 			connection: null,
+			date: null,
 			makePromise: cursor => this.$root.api('notes/user-list-timeline', {
 				listId: this.list.id,
 				limit: fetchLimit + 1,
 				untilId: cursor ? cursor : undefined,
+				untilDate: cursor ? undefined : (this.date ? this.date.getTime() : undefined),
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
 				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
 				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
@@ -45,6 +47,11 @@ export default Vue.extend({
 
 	mounted() {
 		this.init();
+
+		this.$root.$on('warp', this.warp);
+		this.$once('hook:beforeDestroy', () => {
+			this.$root.$off('warp', this.warp);
+		});
 	},
 
 	beforeDestroy() {
@@ -72,6 +79,11 @@ export default Vue.extend({
 		},
 
 		onUserRemoved() {
+			(this.$refs.timeline as any).reload();
+		},
+
+		warp(date) {
+			this.date = date;
 			(this.$refs.timeline as any).reload();
 		}
 	}

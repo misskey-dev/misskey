@@ -458,10 +458,14 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 					},
 					dialog(opts) {
 						const vm = this.new(Dialog, opts);
-						return new Promise((res) => {
+						const p: any = new Promise((res) => {
 							vm.$once('ok', result => res({ canceled: false, result }));
 							vm.$once('cancel', () => res({ canceled: true }));
 						});
+						p.close = () => {
+							vm.close();
+						};
+						return p;
 					}
 				},
 				router,

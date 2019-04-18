@@ -23,6 +23,7 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
+				:list="id"
 			>
 			<input v-else ref="input"
 				:type="type"
@@ -37,7 +38,11 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
+				:list="id"
 			>
+			<datalist :id="id" v-if="datalist">
+				<option v-for="data in datalist" :value="data"/>
+			</datalist>
 		</template>
 		<template v-else>
 			<input ref="input"
@@ -130,6 +135,10 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		datalist: {
+			type: Array,
+			required: false,
+		},
 		inline: {
 			type: Boolean,
 			required: false,
@@ -147,7 +156,8 @@ export default Vue.extend({
 		return {
 			v: this.value,
 			focused: false,
-			passwordStrength: ''
+			passwordStrength: '',
+			id: Math.random().toString()
 		};
 	},
 	computed: {
