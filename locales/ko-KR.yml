@@ -667,6 +667,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "이 리스트에서 제거"
   delete-are-you-sure: "리스트 \"$1\"을 삭제하시겠습니까?"
   deleted: "삭제하였습니다"
+common/views/components/user-lists.vue:
+  list-name: "리스트 이름"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
   no-broadcasts: "공지사항이 없습니다"
@@ -1015,8 +1017,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "거부"
 desktop/views/components/user-lists-window.vue:
   title: "리스트"
-  create-list: "리스트 만들기"
-  list-name: "리스트 이름"
 desktop/views/components/user-preview.vue:
   notes: "글"
   following: "팔로잉"
@@ -1489,7 +1489,6 @@ mobile/views/pages/drive.vue:
     create-folder: "폴더 만들기"
 mobile/views/pages/user-lists.vue:
   title: "리스트"
-  enter-list-name: "리스트명을 입력하십시오"
 mobile/views/pages/signup.vue:
   lets-start: "📦 이제 시작해도 됩니다"
 mobile/views/pages/followers.vue:
