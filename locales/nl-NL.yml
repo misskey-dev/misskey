@@ -403,7 +403,6 @@ desktop/views/components/ui.header.search.vue:
   placeholder: "Zoeken"
 desktop/views/components/user-lists-window.vue:
   title: "Lijsten"
-  create-list: "Lijst creëren"
 desktop/views/components/user-preview.vue:
   notes: "Berichten"
   following: "Volgend"
