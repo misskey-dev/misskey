@@ -32,7 +32,7 @@ describe('Streaming', () => {
 		p.on('message', message => {
 			if (message === 'ok') {
 				(p.channel as any).onread = () => {};
-				initDb(true).then(async connection => {
+				initDb(true).then(async (connection: any) => {
 					Followings = connection.getRepository(Following);
 					done();
 				});
@@ -44,7 +44,7 @@ describe('Streaming', () => {
 		p.kill();
 	});
 
-	const follow = async (follower, followee) => {
+	const follow = async (follower: any, followee: any) => {
 		await Followings.save({
 			id: 'a',
 			createdAt: new Date(),
