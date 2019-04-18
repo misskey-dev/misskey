@@ -318,11 +318,9 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
 		featured: person.featured,
 		emojis: emojiNames,
-		description: person.summary ? fromHtml(person.summary) : null,
 		name: person.name,
 		url: person.url,
 		endpoints: person.endpoints,
-		fields,
 		tags,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
@@ -350,6 +348,8 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	});
 
 	await UserProfiles.update({ userId: exist.id }, {
+		fields,
+		description: person.summary ? fromHtml(person.summary) : null,
 		twitterUserId: services.twitter.userId,
 		twitterScreenName: services.twitter.screenName,
 		githubId: services.github.id,
