@@ -124,8 +124,8 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c8.patreon.com/2/200/17866454" alt="sikyosyounin" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/3.png?token-time=2145916800&token-hash=KjfQL8nf3AIf6WqzLshBYAyX44piAqOAZiYXgZS_H6A%3D" alt="YUKIMOCHI" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/17463605" alt="Sampot" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/19356899/496b4681d33b4520bd7688e0fd19c04d/1.jpeg?token-time=2145916800&token-hash=3aMtpAjhwf01G3Uf8iIKYL8FUXXgxV7NvoQLne7lAKE%3D" alt="Ryosuke Yamamoto" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13737140/1adf7835017d479280d90fe8d30aade2/1.png?token-time=2145916800&token-hash=0pdle8h5pDZrww0BDOjdz6zO-HudeGTh36a3qi1biVU%3D" alt="Satsuki Yanagi" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17880724/311738c8a48f4a6b9443c2445a75adde/1.jpe?token-time=2145916800&token-hash=CPxGQhKIlEaa6WUcgbyHixyKEhakiw9RFdOhsIJBQ_o%3D" alt="takimura" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/gutfuckllc">gutfuckllc</a></td>
 <td><a href="https://www.patreon.com/mydarkstar">mydarkstar</a></td>
@@ -135,10 +135,11 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=17866454">sikyosyounin</a></td>
 <td><a href="https://www.patreon.com/yukimochi">YUKIMOCHI</a></td>
 <td><a href="https://www.patreon.com/user?u=17463605">Sampot</a></td>
+<td><a href="https://www.patreon.com/user?u=19356899">Ryosuke Yamamoto</a></td>
 <td><a href="https://www.patreon.com/user?u=13737140">Satsuki Yanagi</a></td>
-<td><a href="https://www.patreon.com/takimura">takimura</a></td>
 </tr></table>
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17880724/311738c8a48f4a6b9443c2445a75adde/1.jpe?token-time=2145916800&token-hash=CPxGQhKIlEaa6WUcgbyHixyKEhakiw9RFdOhsIJBQ_o%3D" alt="takimura" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17195955/be45e5e14c3e48b2bee0456c84e19df4/4.jpe?token-time=2145916800&token-hash=UslrPVM-8TXOe8AapuNiaFYjcIJgPNcU-fKpGbfGJNI%3D" alt="Damillora" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/16900731/83884b38afc74d4cbe83c30a13b10edd/1.png?token-time=2145916800&token-hash=R5Tog8RWg0rguRoCIoir3lThokrdPvs8Utfikhc0nhY%3D" alt="Atsuko Tominaga" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/3.png?token-time=2145916800&token-hash=FTm3WVom4dJ9NwWMU4OpCL_8Yc13WiwEbKrDPyTZTPs%3D" alt="natalie" width="100"></td>
@@ -147,8 +148,8 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1.jpeg?token-time=2145916800&token-hash=L55UhJ0rcuNAH3w_ryeeGN4hC6taoOixyAhraEi0bzw%3D" alt="dansup" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/619786/32cf01444db24e578cd1982c197f6fc6/1.jpeg?token-time=2145916800&token-hash=d8jBQLMOHD87KtXs5C9fk1o58DMF73pQ-dYH3uZJPBE%3D" alt="Gargron" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5731881/4b6038e6cda34c04b83a5fcce3806a93/1.png?token-time=2145916800&token-hash=hBayGfOmQH3kRMdNnDe4oCZD_9fsJWSt29xXR3KRMVk%3D" alt="Nokotaro Takeda" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1.jpeg?token-time=2145916800&token-hash=vGe7wXGqmA8Q7m-kDNb6fyGdwk-Dxk4F-ut8ZZu51RM%3D" alt="Takashi Shibuya" width="100"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/takimura">takimura</a></td>
 <td><a href="https://www.patreon.com/damillora">Damillora</a></td>
 <td><a href="https://www.patreon.com/user?u=16900731">Atsuko Tominaga</a></td>
 <td><a href="https://www.patreon.com/user?u=4389829">natalie</a></td>
@@ -157,13 +158,14 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/dansup">dansup</a></td>
 <td><a href="https://www.patreon.com/mastodon">Gargron</a></td>
 <td><a href="https://www.patreon.com/takenoko">Nokotaro Takeda</a></td>
-<td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1.jpeg?token-time=2145916800&token-hash=vGe7wXGqmA8Q7m-kDNb6fyGdwk-Dxk4F-ut8ZZu51RM%3D" alt="Takashi Shibuya" width="100"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Mon, 15 Apr 2019 12:07:08 UTC
+**Last updated:** Thu, 18 Apr 2019 23:38:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
