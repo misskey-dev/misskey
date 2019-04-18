@@ -975,7 +975,7 @@ common/views/components/drive-settings.vue:
 common/views/components/mute-and-block.vue:
   mute-and-block: "屏蔽/拉黑"
   mute: "屏蔽"
-  block: "拉黑中"
+  block: "拉黑"
   no-muted-users: "无屏蔽用户"
   no-blocked-users: "无拉黑的用户"
   word-mute: "文字屏蔽"
