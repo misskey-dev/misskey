@@ -84,6 +84,8 @@ common:
     "write:messaging": "Work with Messaging"
     "read:mutes": "View Muted"
     "write:mutes": "Work with Muted"
+    "write:notes": "Create and delete posts"
+    "read:notifications": "View notifications"
     "write:votes": "Vote"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
