@@ -20,11 +20,11 @@ export default class extends Channel {
 
 	@autobind
 	private async onNote(note: any) {
-		// 自分自身の投稿 または その投稿のユーザーをフォローしている または ホームのローカルの投稿 の場合だけ
+		// 自分自身の投稿 または その投稿のユーザーをフォローしている または 全体公開のローカルの投稿 の場合だけ
 		if (!(
 			this.user!.id === note.userId ||
 			this.following.includes(note.userId) ||
-			(note.user.host == null && note.visibility === 'home')
+			(note.user.host == null && note.visibility === 'public')
 		)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
