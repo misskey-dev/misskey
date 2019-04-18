@@ -72,13 +72,13 @@ export default Vue.extend({
 
 	computed: {
 		widgets(): any[] {
-			return this.$store.state.settings.mobileHome;
+			return this.$store.state.device.mobileHome;
 		}
 	},
 
 	created() {
 		if (this.widgets.length == 0) {
-			this.widgets = [{
+			this.$store.commit('device/setMobileHome', [{
 				name: 'calendar',
 				id: 'a', data: {}
 			}, {
@@ -96,8 +96,7 @@ export default Vue.extend({
 			}, {
 				name: 'version',
 				id: 'g', data: {}
-			}];
-			this.saveHome();
+			}]);
 		}
 	},
 
@@ -123,7 +122,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.commit('settings/addMobileHomeWidget', {
+			this.$store.commit('device/addMobileHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				data: {}
@@ -131,11 +130,11 @@ export default Vue.extend({
 		},
 
 		removeWidget(widget) {
-			this.$store.commit('settings/removeMobileHomeWidget', widget);
+			this.$store.commit('device/removeMobileHomeWidget', widget);
 		},
 
 		saveHome() {
-			this.$store.commit('settings/setMobileHome', this.widgets);
+			this.$store.commit('device/setMobileHome', this.widgets);
 		}
 	}
 });
