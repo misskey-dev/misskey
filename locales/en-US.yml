@@ -1435,7 +1435,7 @@ mobile/views/components/drive.vue:
   here-is-root: "Currently, you are on the root, not inside of any folder."
   url-prompt: "URL of the file you want to upload"
   uploading: "Upload requested. It may take a while for the upload to finish."
-  folder-name-cannot-empty: "Folder name cannot be empty."
+  folder-name-cannot-empty: "Folder name cannot be blank."
 mobile/views/components/drive-file-chooser.vue:
   select-file: "Choose files"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1513,6 +1513,9 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Upload a file"
     create-folder: "Create a folder"
+    rename-folder: "Rename folder"
+    move-folder: "Move this folder"
+    delete-folder: "Delete this folder"
 mobile/views/pages/user-lists.vue:
   title: "Lists"
   enter-list-name: "Enter a name of the list to make"
@@ -1642,6 +1645,7 @@ dev/views/apps.vue:
   create-app: "Create app"
   app-missing: "No apps"
 dev/views/new-app.vue:
+  new-app: "New Application"
   create-app: "Creating application"
   app-name: "Application name"
   app-name-desc: "The name of your app"
