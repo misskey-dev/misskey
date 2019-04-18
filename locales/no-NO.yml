@@ -192,6 +192,8 @@ common/views/components/profile-editor.vue:
     user-lists: "Lister"
 common/views/components/user-list-editor.vue:
   users: "Bruker"
+common/views/components/user-lists.vue:
+  list-name: "Liste navn"
 common/views/widgets/broadcast.vue:
   fetching: "Henter"
   next: "Neste"
@@ -310,7 +312,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Avslå"
 desktop/views/components/user-lists-window.vue:
   title: "Brukerlister"
-  list-name: "Liste navn"
 desktop/views/components/user-preview.vue:
   notes: "Innlegg"
   following: "Følger"
