@@ -484,6 +484,31 @@ describe('Streaming', () => {
 			});
 		}));
 
+		it('フォローしているユーザーのホーム投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					assert.deepStrictEqual(body.text, 'foo');
+					ws.close();
+					done();
+				}
+			});
+
+			// ホーム投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+		}));
+
 		it('フォローしていないローカルユーザーのホーム投稿は流れない', () => new Promise(async done => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
