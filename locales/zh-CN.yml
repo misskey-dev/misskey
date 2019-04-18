@@ -690,6 +690,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "从此列表中删除"
   delete-are-you-sure: "删除列表“$1”？"
   deleted: "已删除"
+common/views/components/user-lists.vue:
+  list-name: "列表名称"
 common/views/widgets/broadcast.vue:
   fetching: "确认中"
   no-broadcasts: "没有公告"
@@ -1038,8 +1040,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "拒绝"
 desktop/views/components/user-lists-window.vue:
   title: "用户列表"
-  create-list: "创建列表"
-  list-name: "列表名称"
 desktop/views/components/user-preview.vue:
   notes: "帖子"
   following: "关注中"
@@ -1520,7 +1520,6 @@ mobile/views/pages/drive.vue:
     delete-folder: "删除此文件夹"
 mobile/views/pages/user-lists.vue:
   title: "列表"
-  enter-list-name: "输入要列出的列表的名称"
 mobile/views/pages/signup.vue:
   lets-start: "您的账户现已准备就绪！ 📦"
 mobile/views/pages/followers.vue:
