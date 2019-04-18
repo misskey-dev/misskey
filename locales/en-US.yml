@@ -690,6 +690,7 @@ common/views/components/user-list-editor.vue:
   delete-are-you-sure: "Delete list \"$1\"?"
   deleted: "Deleted successfully"
 common/views/components/user-lists.vue:
+  create-list: "Create a list"
   list-name: "List name"
 common/views/widgets/broadcast.vue:
   fetching: "Checking"
@@ -1512,6 +1513,7 @@ mobile/views/components/ui.nav.vue:
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Upload a file"
+    url-upload: "Upload a file from a URL"
     create-folder: "Create a folder"
     rename-folder: "Rename folder"
     move-folder: "Move this folder"
