@@ -689,6 +689,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "Remove from this list"
   delete-are-you-sure: "Delete list \"$1\"?"
   deleted: "Deleted successfully"
+common/views/components/user-lists.vue:
+  list-name: "List name"
 common/views/widgets/broadcast.vue:
   fetching: "Checking"
   no-broadcasts: "No announcements"
@@ -1037,8 +1039,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Reject"
 desktop/views/components/user-lists-window.vue:
   title: "User lists"
-  create-list: "Create a list"
-  list-name: "List name"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
@@ -1518,7 +1518,6 @@ mobile/views/pages/drive.vue:
     delete-folder: "Delete this folder"
 mobile/views/pages/user-lists.vue:
   title: "Lists"
-  enter-list-name: "Enter a name of the list to make"
 mobile/views/pages/signup.vue:
   lets-start: "Your account is now ready! 📦"
 mobile/views/pages/followers.vue:
