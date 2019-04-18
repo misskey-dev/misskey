@@ -658,6 +658,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "Retirer de cette liste"
   delete-are-you-sure: "Voulez-vous vraiment supprimer la liste « $1 » ?"
   deleted: "Supprimé"
+common/views/components/user-lists.vue:
+  list-name: "Nom de la liste"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
   no-broadcasts: "Aucune annonce"
@@ -1005,8 +1007,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Refuser"
 desktop/views/components/user-lists-window.vue:
   title: "Listes de l'utilisateur"
-  create-list: "Créer une liste"
-  list-name: "Nom de la liste"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
@@ -1465,7 +1465,6 @@ mobile/views/pages/drive.vue:
     create-folder: "Créer un dossier"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
-  enter-list-name: "Nom de la liste"
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
