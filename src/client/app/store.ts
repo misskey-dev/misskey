@@ -358,7 +358,7 @@ export default (os: MiOS) => new Vuex.Store({
 					ctx.commit('set', x);
 
 					if (ctx.rootGetters.isSignedIn) {
-						os.api('i/update_client_setting', {
+						os.api('i/update-client-setting', {
 							name: x.key,
 							value: x.value
 						});
