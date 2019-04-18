@@ -16,9 +16,10 @@ import fetchMeta from '../../misc/fetch-meta';
 import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
-import { Users, Notes, Emojis } from '../../models';
+import { Users, Notes, Emojis, UserProfiles } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
+import { ensure } from '../../prelude/ensure';
 
 const client = `${__dirname}/../../client/`;
 
@@ -151,9 +152,10 @@ router.get('/@:user', async (ctx, next) => {
 	});
 
 	if (user != null) {
+		const profile = await UserProfiles.findOne(user.id).then(ensure);
 		const meta = await fetchMeta();
 		await ctx.render('user', {
-			user,
+			user, profile,
 			instanceName: meta.name || 'Misskey'
 		});
 		ctx.set('Cache-Control', 'public, max-age=180');

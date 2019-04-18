@@ -14,7 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'favorites-read',
+	kind: 'read:favorites',
 
 	params: {
 		limit: {
@@ -38,7 +38,7 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('favorite.note', 'note');
 
 	const favorites = await query
-		.take(ps.limit)
+		.take(ps.limit!)
 		.getMany();
 
 	return await NoteFavorites.packMany(favorites, user);

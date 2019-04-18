@@ -31,7 +31,7 @@ export default define(meta, async (ps, user) => {
 		where: {
 			userId: user.id
 		},
-		take: ps.limit,
+		take: ps.limit!,
 		skip: ps.offset,
 		order: {
 			id: ps.sort == 'asc' ? 1 : -1

@@ -44,6 +44,7 @@ export default define(meta, async (ps, user) => {
 
 	await SwSubscriptions.save({
 		id: genId(),
+		createdAt: new Date(),
 		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,

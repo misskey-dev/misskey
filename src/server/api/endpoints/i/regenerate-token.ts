@@ -3,7 +3,8 @@ import * as bcrypt from 'bcryptjs';
 import { publishMainStream } from '../../../../services/stream';
 import generateUserToken from '../../common/generate-native-user-token';
 import define from '../../define';
-import { Users } from '../../../../models';
+import { Users, UserProfiles } from '../../../../models';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	requireCredential: true,
@@ -18,8 +19,10 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
+
 	// Compare password
-	const same = await bcrypt.compare(ps.password, user.password);
+	const same = await bcrypt.compare(ps.password, profile.password!);
 
 	if (!same) {
 		throw new Error('incorrect password');

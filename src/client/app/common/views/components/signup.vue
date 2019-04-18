@@ -153,7 +153,10 @@ export default Vue.extend({
 					location.href = '/';
 				});
 			}).catch(() => {
-				alert(this.$t('some-error'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('some-error')
+				});
 
 				if (this.meta.enableRecaptcha) {
 					(window as any).grecaptcha.reset();

@@ -8,15 +8,16 @@ import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
-import { DriveFiles, UserServiceLinkings, UserKeypairs } from '../../../models';
+import { DriveFiles, UserProfiles, UserKeypairs } from '../../../models';
+import { ensure } from '../../../prelude/ensure';
 
 export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
 
-	const [avatar, banner, links] = await Promise.all([
-		DriveFiles.findOne(user.avatarId),
-		DriveFiles.findOne(user.bannerId),
-		UserServiceLinkings.findOne({ userId: user.id })
+	const [avatar, banner, profile] = await Promise.all([
+		user.avatarId ? DriveFiles.findOne(user.avatarId) : Promise.resolve(undefined),
+		user.bannerId ? DriveFiles.findOne(user.bannerId) : Promise.resolve(undefined),
+		UserProfiles.findOne(user.id).then(ensure)
 	]);
 
 	const attachment: {
@@ -27,41 +28,41 @@ export async function renderPerson(user: ILocalUser) {
 		identifier?: IIdentifier
 	}[] = [];
 
-	if (links.twitter) {
+	if (profile.twitter) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${links.twitterUserId}" rel="me nofollow noopener" target="_blank"><span>@${links.twitterScreenName}</span></a>`,
+			value: `<a href="https://twitter.com/intent/user?user_id=${profile.twitterUserId}" rel="me nofollow noopener" target="_blank"><span>@${profile.twitterScreenName}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:twitter',
-				value: `${links.twitterUserId}@${links.twitterScreenName}`
+				value: `${profile.twitterUserId}@${profile.twitterScreenName}`
 			}
 		});
 	}
 
-	if (links.github) {
+	if (profile.github) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'GitHub',
-			value: `<a href="https://github.com/${links.githubLogin}" rel="me nofollow noopener" target="_blank"><span>@${links.githubLogin}</span></a>`,
+			value: `<a href="https://github.com/${profile.githubLogin}" rel="me nofollow noopener" target="_blank"><span>@${profile.githubLogin}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:github',
-				value: `${links.githubId}@${links.githubLogin}`
+				value: `${profile.githubId}@${profile.githubLogin}`
 			}
 		});
 	}
 
-	if (links.discord) {
+	if (profile.discord) {
 		attachment.push({
 			type: 'PropertyValue',
 			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${links.discordId}" rel="me nofollow noopener" target="_blank"><span>${links.discordUsername}#${links.discordDiscriminator}</span></a>`,
+			value: `<a href="https://discordapp.com/users/${profile.discordId}" rel="me nofollow noopener" target="_blank"><span>${profile.discordUsername}#${profile.discordDiscriminator}</span></a>`,
 			identifier: {
 				type: 'PropertyValue',
 				name: 'misskey:authentication:discord',
-				value: `${links.discordId}@${links.discordUsername}#${links.discordDiscriminator}`
+				value: `${profile.discordId}@${profile.discordUsername}#${profile.discordDiscriminator}`
 			}
 		});
 	}
@@ -76,9 +77,7 @@ export async function renderPerson(user: ILocalUser) {
 		...hashtagTags,
 	];
 
-	const keypair = await UserKeypairs.findOne({
-		userId: user.id
-	});
+	const keypair = await UserKeypairs.findOne(user.id).then(ensure);
 
 	return {
 		type: user.isBot ? 'Service' : 'Person',
@@ -93,9 +92,9 @@ export async function renderPerson(user: ILocalUser) {
 		url: `${config.url}/@${user.username}`,
 		preferredUsername: user.username,
 		name: user.name,
-		summary: toHtml(parse(user.description)),
-		icon: user.avatarId && renderImage(avatar),
-		image: user.bannerId && renderImage(banner),
+		summary: toHtml(parse(profile.description)),
+		icon: avatar ? renderImage(avatar) : null,
+		image: banner ? renderImage(banner) : null,
 		tag,
 		manuallyApprovesFollowers: user.isLocked,
 		publicKey: renderKey(user, keypair),

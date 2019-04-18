@@ -32,7 +32,7 @@ describe('Streaming', () => {
 		p.on('message', message => {
 			if (message === 'ok') {
 				(p.channel as any).onread = () => {};
-				initDb(true).then(async connection => {
+				initDb(true).then(async (connection: any) => {
 					Followings = connection.getRepository(Following);
 					done();
 				});
@@ -44,7 +44,7 @@ describe('Streaming', () => {
 		p.kill();
 	});
 
-	const follow = async (follower, followee) => {
+	const follow = async (follower: any, followee: any) => {
 		await Followings.save({
 			id: 'a',
 			createdAt: new Date(),
@@ -381,11 +381,11 @@ describe('Streaming', () => {
 		}));
 	});
 
-	describe('Social Timeline', () => {
+	describe('Hybrid Timeline', () => {
 		it('自分の投稿が流れる', () => new Promise(async done => {
 			const me = await signup();
 
-			const ws = await connectStream(me, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(me, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, me.id);
 					ws.close();
@@ -402,7 +402,7 @@ describe('Streaming', () => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
@@ -422,7 +422,7 @@ describe('Streaming', () => {
 			// Alice が Bob をフォロー
 			await follow(alice, bob);
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					ws.close();
@@ -441,7 +441,7 @@ describe('Streaming', () => {
 
 			let fired = false;
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					fired = true;
 				}
@@ -467,7 +467,7 @@ describe('Streaming', () => {
 				userId: bob.id
 			}, alice);
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					assert.deepStrictEqual(body.userId, bob.id);
 					assert.deepStrictEqual(body.text, 'foo');
@@ -484,13 +484,63 @@ describe('Streaming', () => {
 			});
 		}));
 
+		it('フォローしているユーザーのホーム投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					assert.deepStrictEqual(body.text, 'foo');
+					ws.close();
+					done();
+				}
+			});
+
+			// ホーム投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+		}));
+
+		it('フォローしていないローカルユーザーのホーム投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// ホーム投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 3000);
+		}));
+
 		it('フォローしていないローカルユーザーのフォロワー宛て投稿は流れない', () => new Promise(async done => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
 
 			let fired = false;
 
-			const ws = await connectStream(alice, 'socialTimeline', ({ type, body }) => {
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
 				if (type == 'note') {
 					fired = true;
 				}

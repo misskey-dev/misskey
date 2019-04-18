@@ -19,7 +19,7 @@ initDb().then(() => {
 			all, local
 		};
 
-		process.send(stats);
+		process.send!(stats);
 	}
 
 	tick();

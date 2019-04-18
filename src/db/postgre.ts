@@ -36,10 +36,10 @@ import { Emoji } from '../models/entities/emoji';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 import { ReversiMatching } from '../models/entities/games/reversi/matching';
 import { UserNotePining } from '../models/entities/user-note-pinings';
-import { UserServiceLinking } from '../models/entities/user-service-linking';
 import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
+import { UserProfile } from '../models/entities/user-profile';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -76,8 +76,6 @@ class MyCustomLogger implements Logger {
 }
 
 export function initDb(justBorrow = false, sync = false, log = false) {
-	const enableLogging = log || !['production', 'test'].includes(process.env.NODE_ENV);
-
 	try {
 		const conn = getConnection();
 		return Promise.resolve(conn);
@@ -92,8 +90,8 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 		database: config.db.db,
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
-		logging: enableLogging,
-		logger: enableLogging ? new MyCustomLogger() : null,
+		logging: log,
+		logger: log ? new MyCustomLogger() : undefined,
 		entities: [
 			Meta,
 			Instance,
@@ -101,12 +99,12 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			AuthSession,
 			AccessToken,
 			User,
+			UserProfile,
 			UserKeypair,
 			UserPublickey,
 			UserList,
 			UserListJoining,
 			UserNotePining,
-			UserServiceLinking,
 			Following,
 			FollowRequest,
 			Muting,

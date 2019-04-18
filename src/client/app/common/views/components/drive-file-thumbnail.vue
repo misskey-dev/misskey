@@ -105,9 +105,7 @@ export default Vue.extend({
 		},
 		isThumbnailAvailable(): boolean {
 			return this.file.thumbnailUrl
-				? this.file.thumbnailUrl.endsWith('?thumbnail')
-					? (this.is === 'image' || this.is === 'video')
-					: true
+				? (this.is === 'image' || this.is === 'video')
 				: false;
 		},
 		background(): string {
@@ -123,7 +121,7 @@ export default Vue.extend({
 			if (this.file.properties.avgColor) {
 				anime({
 					targets: this.$refs.thumbnail,
-					backgroundColor: this.file.properties.avgColor.replace('255)', '0)'),
+					backgroundColor: 'transparent', // TODO fade
 					duration: 100,
 					easing: 'linear'
 				});

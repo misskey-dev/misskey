@@ -44,7 +44,7 @@ function greet() {
 export async function masterMain() {
 	greet();
 
-	let config: Config;
+	let config!: Config;
 
 	try {
 		// initialize app

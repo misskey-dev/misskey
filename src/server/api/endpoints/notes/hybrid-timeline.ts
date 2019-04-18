@@ -17,6 +17,8 @@ export const meta = {
 
 	tags: ['notes'],
 
+	requireCredential: true,
+
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
@@ -95,7 +97,7 @@ export const meta = {
 
 	errors: {
 		stlDisabled: {
-			message: 'Social timeline has been disabled.',
+			message: 'Hybrid timeline has been disabled.',
 			code: 'STL_DISABLED',
 			id: '620763f4-f621-4533-ab33-0577a1a3c342'
 		},
@@ -185,7 +187,7 @@ export default define(meta, async (ps, user) => {
 	}
 	//#endregion
 
-	const timeline = await query.take(ps.limit).getMany();
+	const timeline = await query.take(ps.limit!).getMany();
 
 	if (user) {
 		activeUsersChart.update(user);

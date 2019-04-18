@@ -34,7 +34,7 @@
 					<button @click="addWidget">{{ $t('add') }}</button>
 				</div>
 				<div class="trash">
-					<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
+					<x-draggable v-model="trash" group="x" @add="onTrash"></x-draggable>
 					<p>{{ $t('@.trash') }}</p>
 				</div>
 			</div>
@@ -45,7 +45,8 @@
 					:list="widgets[place]"
 					:class="place"
 					:data-place="place"
-					:options="{ group: 'x', animation: 150 }"
+					group="x"
+					animation="150"
 					@sort="onWidgetSort"
 					:key="place"
 				>

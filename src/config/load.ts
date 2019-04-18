@@ -25,11 +25,11 @@ export default function load() {
 
 	const mixin = {} as Mixin;
 
-	const url = validateUrl(config.url);
+	const url = tryCreateUrl(config.url);
 
-	config.url = normalizeUrl(config.url);
+	config.url = url.origin;
 
-	config.port = config.port || parseInt(process.env.PORT, 10);
+	config.port = config.port || parseInt(process.env.PORT || '', 10);
 
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;
@@ -52,15 +52,4 @@ function tryCreateUrl(url: string) {
 	} catch (e) {
 		throw `url="${url}" is not a valid URL.`;
 	}
-}
-
-function validateUrl(url: string) {
-	const result = tryCreateUrl(url);
-	if (result.pathname.replace('/', '').length) throw `url="${url}" is not a valid URL, has a pathname.`;
-	if (!url.includes(result.host)) throw `url="${url}" is not a valid URL, has an invalid hostname.`;
-	return result;
-}
-
-function normalizeUrl(url: string) {
-	return url.endsWith('/') ? url.substr(0, url.length - 1) : url;
 }

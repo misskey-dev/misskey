@@ -16,13 +16,6 @@ export class Note {
 	public createdAt: Date;
 
 	@Index()
-	@Column('timestamp with time zone', {
-		nullable: true,
-		comment: 'The updated date of the Note.'
-	})
-	public updatedAt: Date | null;
-
-	@Index()
 	@Column({
 		...id(),
 		nullable: true,
@@ -100,12 +93,12 @@ export class Note {
 	})
 	public localOnly: boolean;
 
-	@Column('integer', {
+	@Column('smallint', {
 		default: 0
 	})
 	public renoteCount: number;
 
-	@Column('integer', {
+	@Column('smallint', {
 		default: 0
 	})
 	public repliesCount: number;
@@ -126,22 +119,24 @@ export class Note {
 
 	@Index({ unique: true })
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 		comment: 'The URI of a note. it will be null when the note is local.'
 	})
 	public uri: string | null;
 
 	@Column('integer', {
-		default: 0
+		default: 0, select: false
 	})
 	public score: number;
 
+	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}'
 	})
 	public fileIds: DriveFile['id'][];
 
+	@Index()
 	@Column('varchar', {
 		length: 256, array: true, default: '{}'
 	})
@@ -183,7 +178,7 @@ export class Note {
 	public hasPoll: boolean;
 
 	@Column('jsonb', {
-		nullable: true, default: {}
+		nullable: true, default: null
 	})
 	public geo: any | null;
 
@@ -194,12 +189,6 @@ export class Note {
 		comment: '[Denormalized]'
 	})
 	public userHost: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: '[Denormalized]'
-	})
-	public userInbox: string | null;
 
 	@Column({
 		...id(),
@@ -227,6 +216,14 @@ export class Note {
 	})
 	public renoteUserHost: string | null;
 	//#endregion
+
+	constructor(data: Partial<Note>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
 }
 
 export type IMentionedRemoteUsers = {

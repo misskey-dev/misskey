@@ -35,6 +35,7 @@ common:
   signup: "新規登録"
   signout: "ログアウト"
   reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
+  fetching-as-ap-object: "連合に照会中"
 
   got-it: "わかった"
   customization-tips:
@@ -74,10 +75,26 @@ common:
   favorites: "お気に入り"
 
   permissions:
-    'read:account': "アカウントの情報を見る"
-    'write:account': "アカウントの情報を変更する"
-    'read:drive': "ドライブを見る"
-    'write:drive': "ドライブを操作する"
+    "read:account": "アカウントの情報を見る"
+    "write:account": "アカウントの情報を変更する"
+    "read:blocks": "ブロックを見る"
+    "write:blocks": "ブロックを操作する"
+    "read:drive": "ドライブを見る"
+    "write:drive": "ドライブを操作する"
+    "read:favorites": "お気に入りを見る"
+    "write:favorites": "お気に入りを操作する"
+    "read:following": "フォローの情報を見る"
+    "write:following": "フォロー・フォロー解除する"
+    "read:messaging": "トークを見る"
+    "write:messaging": "トークを操作する"
+    "read:mutes": "ミュートを見る"
+    "write:mutes": "ミュートを操作する"
+    "write:notes": "投稿を作成・削除する"
+    "read:notifications": "通知を見る"
+    "write:notifications": "通知を操作する"
+    "read:reactions": "リアクションを見る"
+    "write:reactions": "リアクションを操作する"
+    "write:votes": "投票する"
 
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
@@ -297,6 +314,7 @@ common:
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
+    queue: "キュー"
 
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
@@ -510,8 +528,12 @@ common/views/components/user-menu.vue:
   mention: "メンション"
   mute: "ミュート"
   unmute: "ミュート解除"
+  mute-confirm: "このユーザーをミュートしますか？"
+  unmute-confirm: "このユーザーをミュート解除しますか？"
   block: "ブロック"
   unblock: "ブロック解除"
+  block-confirm: "このユーザーをブロックしますか？"
+  unblock-confirm: "このユーザーをブロック解除しますか？"
   push-to-list: "リストに追加"
   select-list: "リストを選択してください"
   report-abuse: "スパムを報告"
@@ -519,8 +541,12 @@ common/views/components/user-menu.vue:
   report-abuse-reported: "管理者に報告されました。ご協力ありがとうございました。"
   silence: "サイレンス"
   unsilence: "サイレンス解除"
+  silence-confirm: "このユーザーをサイレンスしますか？"
+  unsilence-confirm: "このユーザーをサイレンス解除しますか？"
   suspend: "凍結"
   unsuspend: "凍結解除"
+  suspend-confirm: "このユーザーを凍結しますか？"
+  unsuspend-confirm: "このユーザーを凍結解除しますか？"
 
 common/views/components/poll.vue:
   vote-to: "「{}」に投票する"
@@ -968,7 +994,6 @@ desktop/views/components/post-form.vue:
   posting: "投稿中"
   attach-media-from-local: "PCからメディアを添付"
   attach-media-from-drive: "ドライブからメディアを添付"
-  attach-cancel: "添付取り消し"
   insert-a-kao: "v('ω')v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
@@ -1074,6 +1099,11 @@ common/views/components/password-settings.vue:
   changed: "パスワードを変更しました"
   failed: "パスワード変更に失敗しました"
 
+common/views/components/post-form-attaches.vue:
+  attach-cancel: "添付取り消し"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
+
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
@@ -1086,13 +1116,10 @@ desktop/views/components/settings.tags.vue:
   add: "追加"
   save: "保存"
 
-desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
-
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
-  social: "ソーシャル"
+  hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "ダイレクト投稿"
@@ -1320,7 +1347,9 @@ admin/views/users.vue:
   unsuspend-confirm: "凍結を解除しますか？"
   unsuspended: "凍結を解除しました"
   make-silence: "サイレンス"
+  silence-confirm: "サイレンスしますか？"
   unmake-silence: "サイレンスの解除"
+  unsilence-confirm: "サイレンスを解除しますか？"
   verify: "公式アカウントにする"
   verify-confirm: "公式アカウントにしますか？"
   verified: "公式アカウントにしました"
@@ -1534,6 +1563,7 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "投稿"
   note: "投稿"
+  something-happened: "何らかの事情で投稿できませんでした。"
 
 desktop/views/widgets/profile.vue:
   update-banner: "クリックでバナー編集"
@@ -1556,12 +1586,11 @@ mobile/views/components/drive.vue:
   file-count: "ファイル"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
-  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
-  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
   folder-name: "フォルダー名"
   here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+  folder-name-cannot-empty: "フォルダ名を空白にすることはできません。"
 
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
@@ -1626,7 +1655,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "この投稿への返信..."
   cw-placeholder: "内容への注釈 (オプション)"
-  location-alert: "お使いの端末は位置情報に対応していません"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
   error: "エラー"
   username-prompt: "ユーザー名を入力してください"
 
@@ -1651,6 +1680,15 @@ mobile/views/components/ui.nav.vue:
   admin: "管理"
   about: "Misskeyについて"
 
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "ファイルをアップロード"
+    url-upload: "ファイルをURLでアップロード"
+    create-folder: "フォルダーを作成"
+    rename-folder: "フォルダー名を変更"
+    move-folder: "このフォルダを移動"
+    delete-folder: "このフォルダを削除"
+
 mobile/views/pages/user-lists.vue:
   title: "リスト"
 
@@ -1666,7 +1704,7 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
-  social: "ソーシャル"
+  hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あなた宛て"
   messages: "ダイレクト投稿"
@@ -1736,7 +1774,7 @@ deck:
   widgets: "ウィジェット"
   home: "ホーム"
   local: "ローカル"
-  social: "ソーシャル"
+  hybrid: "ソーシャル"
   hashtag: "ハッシュタグ"
   global: "グローバル"
   mentions: "あなた宛て"
@@ -1804,14 +1842,17 @@ dev/views/apps.vue:
   app-missing: "アプリなし"
 
 dev/views/new-app.vue:
+  new-app: "新しいアプリケーション"
+  new-app-info: "アプリケーションはAPIからでも作成できます。 (app/create)"
   create-app: "アプリケーションの作成"
   app-name: "アプリケーション名"
+  app-name-placeholder: "ex) Misskey for iOS"
   app-name-desc: "あなたのアプリの名称。"
-  app-name-ex: "ex) Misskey for iOS"
   app-overview: "アプリの概要"
-  app-desc: "あなたのアプリの簡単な説明や紹介。"
-  app-desc-ex: "ex) Misskey iOSクライアント。"
+  app-overview-placeholder: " ex) Misskey iOSクライアント。"
+  app-overview-desc: "あなたのアプリの簡単な説明や紹介。"
   callback-url: "コールバックURL (オプション)"
+  callback-url-placeholder: "ex) https://your.app.example.com/callback.php"
   callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
   authority: "権限"
   authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"

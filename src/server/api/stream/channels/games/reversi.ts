@@ -11,7 +11,7 @@ export default class extends Channel {
 	@autobind
 	public async init(params: any) {
 		// Subscribe reversi stream
-		this.subscriber.on(`reversiStream:${this.user.id}`, data => {
+		this.subscriber.on(`reversiStream:${this.user!.id}`, data => {
 			this.send(data);
 		});
 	}
@@ -22,7 +22,7 @@ export default class extends Channel {
 			case 'ping':
 				if (body.id == null) return;
 				const matching = await ReversiMatchings.findOne({
-					parentId: this.user.id,
+					parentId: this.user!.id,
 					childId: body.id
 				});
 				if (matching == null) return;

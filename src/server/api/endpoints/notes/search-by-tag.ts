@@ -100,7 +100,7 @@ export default define(meta, async (ps, me) => {
 	} else {
 		let i = 0;
 		query.andWhere(new Brackets(qb => {
-			for (const tags of ps.query) {
+			for (const tags of ps.query!) {
 				qb.orWhere(new Brackets(qb => {
 					for (const tag of tags) {
 						qb.andWhere(`:tag${i} = ANY(note.tags)`, { [`tag${i}`]: tag });
@@ -140,7 +140,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Search notes
-	const notes = await query.take(ps.limit).getMany();
+	const notes = await query.take(ps.limit!).getMany();
 
 	return await Notes.packMany(notes, me);
 });

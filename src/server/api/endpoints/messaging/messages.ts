@@ -17,7 +17,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-read',
+	kind: 'read:messaging',
 
 	params: {
 		userId: {

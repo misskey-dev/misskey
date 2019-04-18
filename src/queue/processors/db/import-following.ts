@@ -5,7 +5,7 @@ import follow from '../../../services/following/create';
 import parseAcct from '../../../misc/acct/parse';
 import { resolveUser } from '../../../remote/resolve-user';
 import { downloadTextFile } from '../../../misc/download-text-file';
-import { isSelfHost, toDbHost } from '../../../misc/convert-host';
+import { isSelfHost, toPuny } from '../../../misc/convert-host';
 import { Users, DriveFiles } from '../../../models';
 
 const logger = queueLogger.createSubLogger('import-following');
@@ -13,13 +13,19 @@ const logger = queueLogger.createSubLogger('import-following');
 export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing following of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne({
-		id: job.data.user.id
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
 	const file = await DriveFiles.findOne({
 		id: job.data.fileId
 	});
+	if (file == null) {
+		done();
+		return;
+	}
 
 	const csv = await downloadTextFile(file.url);
 
@@ -31,11 +37,11 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 		try {
 			const { username, host } = parseAcct(line.trim());
 
-			let target = isSelfHost(host) ? await Users.findOne({
+			let target = isSelfHost(host!) ? await Users.findOne({
 				host: null,
 				usernameLower: username.toLowerCase()
 			}) : await Users.findOne({
-				host: toDbHost(host),
+				host: toPuny(host!),
 				usernameLower: username.toLowerCase()
 			});
 

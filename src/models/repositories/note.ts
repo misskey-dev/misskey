@@ -5,6 +5,7 @@ import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import rap from '@prezzemolo/rap';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
@@ -12,7 +13,7 @@ export class NoteRepository extends Repository<Note> {
 		return x.trim().length <= 100;
 	}
 
-	private async hideNote(packedNote: any, meId: User['id']) {
+	private async hideNote(packedNote: any, meId: User['id'] | null) {
 		let hide = false;
 
 		// visibility が specified かつ自分が指定されていなかったら非表示
@@ -75,7 +76,7 @@ export class NoteRepository extends Repository<Note> {
 
 	public packMany(
 		notes: (Note['id'] | Note)[],
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -86,7 +87,7 @@ export class NoteRepository extends Repository<Note> {
 
 	public async pack(
 		src: Note['id'] | Note,
-		me?: User['id'] | User,
+		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -98,11 +99,11 @@ export class NoteRepository extends Repository<Note> {
 		}, options);
 
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
-		const note = typeof src === 'object' ? src : await this.findOne(src);
+		const note = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 		const host = note.userHost;
 
 		async function populatePoll() {
-			const poll = await Polls.findOne({ noteId: note.id });
+			const poll = await Polls.findOne(note.id).then(ensure);
 			const choices = poll.choices.map(c => ({
 				text: c,
 				votes: poll.votes[poll.choices.indexOf(c)],
@@ -111,7 +112,7 @@ export class NoteRepository extends Repository<Note> {
 
 			if (poll.multiple) {
 				const votes = await PollVotes.find({
-					userId: meId,
+					userId: meId!,
 					noteId: note.id
 				});
 
@@ -121,7 +122,7 @@ export class NoteRepository extends Repository<Note> {
 				}
 			} else {
 				const vote = await PollVotes.findOne({
-					userId: meId,
+					userId: meId!,
 					noteId: note.id
 				});
 
@@ -139,7 +140,7 @@ export class NoteRepository extends Repository<Note> {
 
 		async function populateMyReaction() {
 			const reaction = await NoteReactions.findOne({
-				userId: meId,
+				userId: meId!,
 				noteId: note.id,
 			});
 
@@ -147,7 +148,7 @@ export class NoteRepository extends Repository<Note> {
 				return reaction.reaction;
 			}
 
-			return null;
+			return undefined;
 		}
 
 		let text = note.text;
@@ -161,14 +162,15 @@ export class NoteRepository extends Repository<Note> {
 		const packed = await rap({
 			id: note.id,
 			createdAt: note.createdAt,
-			app: note.appId ? Apps.pack(note.appId) : null,
+			app: note.appId ? Apps.pack(note.appId) : undefined,
 			userId: note.userId,
 			user: Users.pack(note.user || note.userId, meId),
 			text: text,
 			cw: note.cw,
 			visibility: note.visibility,
-			visibleUserIds: note.visibleUserIds,
-			viaMobile: note.viaMobile,
+			localOnly: note.localOnly || undefined,
+			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
+			viaMobile: note.viaMobile || undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
 			reactions: note.reactions,
@@ -176,22 +178,23 @@ export class NoteRepository extends Repository<Note> {
 				name: In(reactionEmojis),
 				host: host
 			}) : [],
-			tags: note.tags,
 			fileIds: note.fileIds,
 			files: DriveFiles.packMany(note.fileIds),
 			replyId: note.replyId,
 			renoteId: note.renoteId,
+			mentions: note.mentions.length > 0 ? note.mentions : undefined,
+			uri: note.uri || undefined,
 
 			...(opts.detail ? {
 				reply: note.replyId ? this.pack(note.replyId, meId, {
 					detail: false
-				}) : null,
+				}) : undefined,
 
 				renote: note.renoteId ? this.pack(note.renoteId, meId, {
 					detail: true
-				}) : null,
+				}) : undefined,
 
-				poll: note.hasPoll ? populatePoll() : null,
+				poll: note.hasPoll ? populatePoll() : undefined,
 
 				...(meId ? {
 					myReaction: populateMyReaction()

@@ -5,7 +5,7 @@
 			<span :class="$style.title">
 				<span v-if="src == 'home'"><fa icon="home"/>{{ $t('home') }}</span>
 				<span v-if="src == 'local'"><fa :icon="['far', 'comments']"/>{{ $t('local') }}</span>
-				<span v-if="src == 'social'"><fa icon="share-alt"/>{{ $t('social') }}</span>
+				<span v-if="src == 'hybrid'"><fa icon="share-alt"/>{{ $t('hybrid') }}</span>
 				<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
 				<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
 				<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
@@ -32,14 +32,14 @@
 				<div>
 					<span :data-active="src == 'home'" @click="src = 'home'"><fa icon="home"/> {{ $t('home') }}</span>
 					<span :data-active="src == 'local'" @click="src = 'local'" v-if="enableLocalTimeline"><fa :icon="['far', 'comments']"/> {{ $t('local') }}</span>
-					<span :data-active="src == 'social'" @click="src = 'social'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('social') }}</span>
+					<span :data-active="src == 'hybrid'" @click="src = 'hybrid'" v-if="enableLocalTimeline"><fa icon="share-alt"/> {{ $t('hybrid') }}</span>
 					<span :data-active="src == 'global'" @click="src = 'global'" v-if="enableGlobalTimeline"><fa icon="globe"/> {{ $t('global') }}</span>
 					<div class="hr"></div>
 					<span :data-active="src == 'mentions'" @click="src = 'mentions'"><fa icon="at"/> {{ $t('mentions') }}<i class="badge" v-if="$store.state.i.hasUnreadMentions"><fa icon="circle"/></i></span>
 					<span :data-active="src == 'messages'" @click="src = 'messages'"><fa :icon="['far', 'envelope']"/> {{ $t('messages') }}<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></span>
 					<template v-if="lists">
 						<div class="hr" v-if="lists.length > 0"></div>
-						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id"><fa icon="list"/> {{ l.title }}</span>
+						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id"><fa icon="list"/> {{ l.name }}</span>
 					</template>
 					<div class="hr" v-if="$store.state.settings.tagTimelines && $store.state.settings.tagTimelines.length > 0"></div>
 					<span v-for="tl in $store.state.settings.tagTimelines" :data-active="src == 'tag' && tagTl == tl" @click="src = 'tag'; tagTl = tl" :key="tl.id"><fa icon="hashtag"/> {{ tl.title }}</span>
@@ -50,7 +50,7 @@
 		<div class="tl">
 			<x-tl v-if="src == 'home'" ref="tl" key="home" src="home"/>
 			<x-tl v-if="src == 'local'" ref="tl" key="local" src="local"/>
-			<x-tl v-if="src == 'social'" ref="tl" key="social" src="social"/>
+			<x-tl v-if="src == 'hybrid'" ref="tl" key="hybrid" src="hybrid"/>
 			<x-tl v-if="src == 'global'" ref="tl" key="global" src="global"/>
 			<x-tl v-if="src == 'mentions'" ref="tl" key="mentions" src="mentions"/>
 			<x-tl v-if="src == 'messages'" ref="tl" key="messages" src="messages"/>
@@ -120,7 +120,7 @@ export default Vue.extend({
 			) && this.src === 'global') this.src = 'local';
 			if (!(
 				this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
-			) && ['local', 'social'].includes(this.src)) this.src = 'home';
+			) && ['local', 'hybrid'].includes(this.src)) this.src = 'home';
 		});
 
 		if (this.$store.state.device.tl) {
@@ -130,8 +130,6 @@ export default Vue.extend({
 			} else if (this.src == 'tag') {
 				this.tagTl = this.$store.state.device.tl.arg;
 			}
-		} else if (this.$store.state.i.followingCount == 0) {
-			this.src = 'social';
 		}
 	},
 

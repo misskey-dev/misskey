@@ -1,33 +1,19 @@
 import redis from '../db/redis';
-import Xev from 'xev';
 import { User } from '../models/entities/user';
 import { Note } from '../models/entities/note';
 import { UserList } from '../models/entities/user-list';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 
 class Publisher {
-	private ev: Xev;
-
-	constructor() {
-		// Redisがインストールされてないときはプロセス間通信を使う
-		if (redis == null) {
-			this.ev = new Xev();
-		}
-	}
-
-	private publish = (channel: string, type: string, value?: any): void => {
+	private publish = (channel: string, type: string | null, value?: any): void => {
 		const message = type == null ? value : value == null ?
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		if (this.ev) {
-			this.ev.emit(channel, message);
-		} else {
-			redis.publish('misskey', JSON.stringify({
-				channel: channel,
-				message: message
-			}));
-		}
+		redis.publish('misskey', JSON.stringify({
+			channel: channel,
+			message: message
+		}));
 	}
 
 	public publishMainStream = (userId: User['id'], type: string, value?: any): void => {

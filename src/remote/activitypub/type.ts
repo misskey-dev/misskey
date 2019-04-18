@@ -12,7 +12,7 @@ export interface IObject {
 	attachment?: any[];
 	inReplyTo?: any;
 	replies?: ICollection;
-	content: string;
+	content?: string;
 	name?: string;
 	startTime?: Date;
 	endTime?: Date;
@@ -44,16 +44,16 @@ export interface IOrderedCollection extends IObject {
 
 export interface INote extends IObject {
 	type: 'Note' | 'Question';
-	_misskey_content: string;
-	_misskey_quote: string;
-	_misskey_question: string;
+	_misskey_content?: string;
+	_misskey_quote?: string;
+	_misskey_question?: string;
 }
 
 export interface IQuestion extends IObject {
 	type: 'Note' | 'Question';
-	_misskey_content: string;
-	_misskey_quote: string;
-	_misskey_question: string;
+	_misskey_content?: string;
+	_misskey_quote?: string;
+	_misskey_question?: string;
 	oneOf?: IQuestionChoice[];
 	anyOf?: IQuestionChoice[];
 	endTime?: Date;
@@ -64,6 +64,8 @@ interface IQuestionChoice {
 	replies?: ICollection;
 	_misskey_votes?: number;
 }
+
+export const validActor = ['Person', 'Service'];
 
 export interface IPerson extends IObject {
 	type: 'Person';
@@ -127,7 +129,7 @@ export interface IRemove extends IActivity {
 
 export interface ILike extends IActivity {
 	type: 'Like';
-	_misskey_reaction: string;
+	_misskey_reaction?: string;
 }
 
 export interface IAnnounce extends IActivity {

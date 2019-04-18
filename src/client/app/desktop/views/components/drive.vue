@@ -320,7 +320,10 @@ export default Vue.extend({
 							});
 							break;
 						default:
-							alert(this.$t('unhandled-error'));
+							this.$root.dialog({
+								type: 'error',
+								text: this.$t('unhandled-error')
+							});
 					}
 				});
 			}
@@ -769,7 +772,6 @@ export default Vue.extend({
 	> .mk-uploader
 		height 100px
 		padding 16px
-		background #fff
 
 	> input
 		display none

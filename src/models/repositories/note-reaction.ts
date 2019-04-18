@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { NoteReaction } from '../entities/note-reaction';
 import { Users } from '..';
+import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(NoteReaction)
 export class NoteReactionRepository extends Repository<NoteReaction> {
@@ -8,7 +9,7 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 		src: NoteReaction['id'] | NoteReaction,
 		me?: any
 	) {
-		const reaction = typeof src === 'object' ? src : await this.findOne(src);
+		const reaction = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		return {
 			id: reaction.id,

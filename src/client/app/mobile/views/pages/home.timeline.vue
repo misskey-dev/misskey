@@ -54,6 +54,12 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$root.$on('warp', this.warp);
+		this.$once('hook:beforeDestroy', () => {
+			this.$root.$off('warp', this.warp);
+			this.connection.dispose();
+		});
+
 		const prepend = note => {
 			(this.$refs.timeline as any).prepend(note);
 		};
@@ -78,9 +84,9 @@ export default Vue.extend({
 			this.endpoint = 'notes/local-timeline';
 			this.connection = this.$root.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
-		} else if (this.src == 'social') {
-			this.endpoint = 'notes/social-timeline';
-			this.connection = this.$root.stream.useSharedConnection('socialTimeline');
+		} else if (this.src == 'hybrid') {
+			this.endpoint = 'notes/hybrid-timeline';
+			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			this.endpoint = 'notes/global-timeline';
@@ -123,10 +129,6 @@ export default Vue.extend({
 				};
 			}
 		});
-	},
-
-	beforeDestroy() {
-		this.connection.dispose();
 	},
 
 	methods: {

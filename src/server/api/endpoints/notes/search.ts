@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 		index: 'misskey',
 		type: 'note',
 		body: {
-			size: ps.limit,
+			size: ps.limit!,
 			from: ps.offset,
 			query: {
 				simple_query_string: {

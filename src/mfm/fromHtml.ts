@@ -3,8 +3,6 @@ import { URL } from 'url';
 import { urlRegex } from './prelude';
 
 export function fromHtml(html: string): string {
-	if (html == null) return null;
-
 	const dom = parseFragment(html) as DefaultTreeDocumentFragment;
 
 	let text = '';

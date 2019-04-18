@@ -29,7 +29,7 @@ export const meta = {
 export default define(meta, async (ps) => {
 	const query = makePaginationQuery(AbuseUserReports.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-	const reports = await query.take(ps.limit).getMany();
+	const reports = await query.take(ps.limit!).getMany();
 
 	return await AbuseUserReports.packMany(reports);
 });

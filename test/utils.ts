@@ -76,7 +76,7 @@ export const uploadFile = (user: any, path?: string): Promise<any> => new Promis
 	});
 });
 
-export function connectStream(user: any, channel: string, listener: any, params?: any): Promise<WebSocket> {
+export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
 		const ws = new WebSocket(`ws://localhost/streaming?i=${user.token}`);
 

@@ -45,18 +45,6 @@ export class User {
 	})
 	public name: string | null;
 
-	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: 'The location of the User.'
-	})
-	public location: string | null;
-
-	@Column('char', {
-		length: 10, nullable: true,
-		comment: 'The birthday (YYYY-MM-DD) of the User.'
-	})
-	public birthday: string | null;
-
 	@Column('integer', {
 		default: 0,
 		comment: 'The count of followers.'
@@ -101,12 +89,6 @@ export class User {
 	@JoinColumn()
 	public banner: DriveFile | null;
 
-	@Column('varchar', {
-		length: 1024, nullable: true,
-		comment: 'The description (bio) of the User.'
-	})
-	public description: string | null;
-
 	@Index()
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
@@ -114,38 +96,12 @@ export class User {
 	public tags: string[];
 
 	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: 'The email address of the User.'
-	})
-	public email: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public emailVerifyCode: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public emailVerified: boolean;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public twoFactorTempSecret: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-	})
-	public twoFactorSecret: string | null;
-
-	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 	})
 	public avatarUrl: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 	})
 	public bannerUrl: string | null;
 
@@ -206,11 +162,6 @@ export class User {
 	})
 	public isVerified: boolean;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public twoFactorEnabled: boolean;
-
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})
@@ -224,35 +175,29 @@ export class User {
 	public host: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
-		comment: 'The inbox of the User. It will be null if the origin of the user is local.'
+		length: 512, nullable: true,
+		comment: 'The inbox URL of the User. It will be null if the origin of the user is local.'
 	})
 	public inbox: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
-		comment: 'The sharedInbox of the User. It will be null if the origin of the user is local.'
+		length: 512, nullable: true,
+		comment: 'The sharedInbox URL of the User. It will be null if the origin of the user is local.'
 	})
 	public sharedInbox: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
-		comment: 'The featured of the User. It will be null if the origin of the user is local.'
+		length: 512, nullable: true,
+		comment: 'The featured URL of the User. It will be null if the origin of the user is local.'
 	})
 	public featured: string | null;
 
 	@Index()
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 		comment: 'The URI of the User. It will be null if the origin of the user is local.'
 	})
 	public uri: string | null;
-
-	@Column('varchar', {
-		length: 128, nullable: true,
-		comment: 'The password hash of the User. It will be null if the origin of the user is local.'
-	})
-	public password: string | null;
 
 	@Index({ unique: true })
 	@Column('char', {
@@ -261,31 +206,13 @@ export class User {
 	})
 	public token: string | null;
 
-	@Column('jsonb', {
-		default: {},
-		comment: 'The client-specific data of the User.'
-	})
-	public clientData: Record<string, any>;
+	constructor(data: Partial<User>) {
+		if (data == null) return;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public autoWatch: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public autoAcceptFollowed: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public alwaysMarkNsfw: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public carefulBot: boolean;
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
 }
 
 export interface ILocalUser extends User {

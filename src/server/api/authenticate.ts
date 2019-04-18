@@ -3,7 +3,7 @@ import { User } from '../../models/entities/user';
 import { App } from '../../models/entities/app';
 import { Users, AccessTokens, Apps } from '../../models';
 
-export default async (token: string): Promise<[User, App]> => {
+export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}
@@ -14,7 +14,7 @@ export default async (token: string): Promise<[User, App]> => {
 			.findOne({ token });
 
 		if (user == null) {
-			throw 'user not found';
+			throw new Error('user not found');
 		}
 
 		return [user, null];
@@ -24,14 +24,16 @@ export default async (token: string): Promise<[User, App]> => {
 		});
 
 		if (accessToken == null) {
-			throw 'invalid signature';
+			throw new Error('invalid signature');
 		}
 
 		const app = await Apps
 			.findOne(accessToken.appId);
 
 		const user = await Users
-			.findOne(accessToken.userId);
+			.findOne({
+				id: accessToken.userId // findOne(accessToken.userId) のように書かないのは後方互換性のため
+			});
 
 		return [user, app];
 	}

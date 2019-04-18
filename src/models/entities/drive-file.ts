@@ -95,9 +95,9 @@ export class DriveFile {
 
 	@Index({ unique: true })
 	@Column('varchar', {
-		length: 256,
+		length: 256, nullable: true,
 	})
-	public accessKey: string;
+	public accessKey: string | null;
 
 	@Index({ unique: true })
 	@Column('varchar', {
@@ -150,5 +150,5 @@ export class DriveFile {
 		default: false,
 		comment: 'Whether the DriveFile is direct link to remote server.'
 	})
-	public isRemote: boolean;
+	public isLink: boolean;
 }

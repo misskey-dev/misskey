@@ -5,7 +5,7 @@ import create from '../../../../services/blocking/create';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { Blockings, NoteWatchings } from '../../../../models';
+import { Blockings, NoteWatchings, Users } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -89,5 +89,5 @@ export default define(meta, async (ps, user) => {
 		noteUserId: blockee.id
 	});
 
-	return await Blockings.pack(blockee.id, user);
+	return await Users.pack(blockee.id, user);
 });

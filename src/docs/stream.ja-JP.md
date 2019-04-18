@@ -130,10 +130,12 @@ Misskeyのストリームに接続しただけでは、まだリアルタイム�
 ```json
 {
 	type: 'api',
-	id: 'xxxxxxxxxxxxxxxx',
-	endpoint: 'notes/create',
-	data: {
-		text: 'yee haw!'
+	body: {
+		id: 'xxxxxxxxxxxxxxxx',
+		endpoint: 'notes/create',
+		data: {
+			text: 'yee haw!'
+		}
 	}
 }
 ```
@@ -339,7 +341,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 #### `note`
 ローカルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
 
-## `socialTimeline`
+## `hybridTimeline`
 ソーシャルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
 
 ### 流れてくるイベント一覧

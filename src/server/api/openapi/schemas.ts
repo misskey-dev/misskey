@@ -1,4 +1,3 @@
-
 export const schemas = {
 	Error: {
 		type: 'object',

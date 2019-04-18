@@ -56,20 +56,12 @@ function cpuUsage() {
 
 // MEMORY(excl buffer + cache) STAT
 async function usedMem() {
-	try {
-		const data = await sysUtils.mem();
-		return data.active;
-	} catch (error) {
-		throw error;
-	}
+	const data = await sysUtils.mem();
+	return data.active;
 }
 
 // TOTAL MEMORY STAT
 async function totalMem() {
-	try {
-		const data = await sysUtils.mem();
-		return data.total;
-	} catch (error) {
-		throw error;
-	}
+	const data = await sysUtils.mem();
+	return data.total;
 }

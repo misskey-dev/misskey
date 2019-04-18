@@ -1,14 +1,10 @@
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
+import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
 
 @Entity()
 export class UserKeypair {
 	@PrimaryColumn(id())
-	public id: string;
-
-	@Index({ unique: true })
-	@Column(id())
 	public userId: User['id'];
 
 	@OneToOne(type => User, {
@@ -26,4 +22,12 @@ export class UserKeypair {
 		length: 4096,
 	})
 	public privateKey: string;
+
+	constructor(data: Partial<UserKeypair>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
 }

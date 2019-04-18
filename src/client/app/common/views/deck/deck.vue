@@ -145,11 +145,11 @@ export default Vue.extend({
 					}
 				}, {
 					icon: 'share-alt',
-					text: this.$t('@deck.social'),
+					text: this.$t('@deck.hybrid'),
 					action: () => {
 						this.$store.commit('device/addDeckColumn', {
 							id: uuid(),
-							type: 'social'
+							type: 'hybrid'
 						});
 					}
 				}, {
@@ -302,7 +302,7 @@ export default Vue.extend({
 
 		isTlColumn(id) {
 			const column = this.columns.find(c => c.id === id);
-			return ['home', 'local', 'social', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(column.type);
+			return ['home', 'local', 'hybrid', 'global', 'list', 'hashtag', 'mentions', 'direct'].includes(column.type);
 		}
 	}
 });

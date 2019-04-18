@@ -32,7 +32,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = `${this.$root.instanceName} | %i18n:@notifications%`;
+		document.title = `${this.$root.instanceName} | ${this.$t('@.favorites')}`;
 	},
 	methods: {
 		fetch() {

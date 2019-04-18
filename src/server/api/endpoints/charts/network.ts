@@ -33,5 +33,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await networkChart.getChart(ps.span as any, ps.limit);
+	return await networkChart.getChart(ps.span as any, ps.limit!);
 });

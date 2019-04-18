@@ -5,6 +5,7 @@ import { DriveFiles, Followings, Users, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { name, schema } from '../schemas/instance';
 import { Note } from '../../../../models/entities/note';
+import { toPuny } from '../../../../misc/convert-host';
 
 type InstanceLog = SchemaType<typeof schema>;
 
@@ -79,7 +80,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 			requests: {
 				received: 1
 			}
-		}, host);
+		}, toPuny(host));
 	}
 
 	@autobind
@@ -94,7 +95,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 
 		await this.inc({
 			requests: update
-		}, host);
+		}, toPuny(host));
 	}
 
 	@autobind
@@ -104,7 +105,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 				total: 1,
 				inc: 1
 			}
-		}, host);
+		}, toPuny(host));
 	}
 
 	@autobind
@@ -126,7 +127,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 				dec: isAdditional ? 0 : 1,
 				diffs: diffs
 			}
-		}, host);
+		}, toPuny(host));
 	}
 
 	@autobind
@@ -137,7 +138,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 				inc: isAdditional ? 1 : 0,
 				dec: isAdditional ? 0 : 1,
 			}
-		}, host);
+		}, toPuny(host));
 	}
 
 	@autobind
@@ -148,7 +149,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 				inc: isAdditional ? 1 : 0,
 				dec: isAdditional ? 0 : 1,
 			}
-		}, host);
+		}, toPuny(host));
 	}
 
 	@autobind

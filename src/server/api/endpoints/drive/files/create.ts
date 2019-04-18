@@ -92,6 +92,6 @@ export default define(meta, async (ps, user, app, file, cleanup) => {
 		apiLogger.error(e);
 		throw new ApiError();
 	} finally {
-		cleanup();
+		cleanup!();
 	}
 });

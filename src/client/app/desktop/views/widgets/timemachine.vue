@@ -14,7 +14,7 @@ export default define({
 }).extend({
 	methods: {
 		chosen(date) {
-			this.$emit('chosen', date);
+			this.$root.$emit('warp', date);
 		},
 		func() {
 			if (this.props.design == 5) {
