@@ -27,10 +27,10 @@ mongodb:
   port: 27017
   db: misskey
 ```
-3. `npm i`
-4. `npm run build`
-5. `npm run init`
-6. migration ブランチに切り替え
+3. migration ブランチに切り替え
+4. `npm i`
+5. `npm run build`
+6. `npm run init`
 7. `npm run migrate`
 8. master ブランチに戻す
 9. enjoy
