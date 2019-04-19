@@ -27,6 +27,8 @@ import { Emoji } from './models/entities/emoji';
 import { toPuny as _toPuny } from './misc/convert-host';
 import { UserProfile } from './models/entities/user-profile';
 import { MessagingMessage } from './models/entities/messaging-message';
+import { Muting } from './models/entities/muting';
+import { Blocking } from './models/entities/blocking';
 
 function toPuny(x: string | null): string | null {
 	if (x == null) return null;
@@ -64,6 +66,8 @@ const _DriveFile = db.get<any>('driveFiles.files');
 const _DriveFolder = db.get<any>('driveFolders');
 const _Note = db.get<any>('notes');
 const _Following = db.get<any>('following');
+const _Blocking = db.get<any>('blocking');
+const _Muting = db.get<any>('mute');
 const _PollVote = db.get<any>('pollVotes');
 const _Favorite = db.get<any>('favorites');
 const _NoteReaction = db.get<any>('noteReactions');
@@ -85,6 +89,8 @@ async function main() {
 	const DriveFolders = getRepository(DriveFolder);
 	const Notes = getRepository(Note);
 	const Followings = getRepository(Following);
+	const Blockings = getRepository(Blocking);
+	const Mutings = getRepository(Muting);
 	const Polls = getRepository(Poll);
 	const PollVotes = getRepository(PollVote);
 	const NoteFavorites = getRepository(NoteFavorite);
@@ -154,6 +160,24 @@ async function main() {
 			followeeHost: following._followee ? toPuny(following._followee.host) : null,
 			followeeInbox: following._followee ? following._followee.inbox : null,
 			followeeSharedInbox: following._followee ? following._followee.sharedInbo : null
+		});
+	}
+
+	async function migrateBlocking(blocking: any) {
+		await Blockings.save({
+			id: blocking._id.toHexString(),
+			createdAt: new Date(),
+			blockerId: blocking.blockerId.toHexString(),
+			blockeeId: blocking.blockeeId.toHexString(),
+		});
+	}
+
+	async function migrateMuting(muting: any) {
+		await Blockings.save({
+			id: muting._id.toHexString(),
+			createdAt: new Date(),
+			muterId: muting.muterId.toHexString(),
+			muteeId: muting.muteeId.toHexString(),
 		});
 	}
 
@@ -379,6 +403,36 @@ async function main() {
 		}
 	}
 
+	let allBlockingsCount = await _Blocking.count();
+	if (test && allBlockingsCount > limit) allBlockingsCount = limit;
+	for (let i = 0; i < allBlockingsCount; i++) {
+		const blocking = await _Blocking.findOne({}, {
+			skip: i
+		});
+		try {
+			await migrateBlocking(blocking);
+			console.log(`BLOCKING (${i + 1}/${allBlockingsCount}) ${blocking._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`BLOCKING (${i + 1}/${allBlockingsCount}) ${blocking._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	let allMutingsCount = await _Muting.count();
+	if (test && allMutingsCount > limit) allMutingsCount = limit;
+	for (let i = 0; i < allMutingsCount; i++) {
+		const muting = await _Muting.findOne({}, {
+			skip: i
+		});
+		try {
+			await migrateMuting(muting);
+			console.log(`MUTING (${i + 1}/${allMutingsCount}) ${muting._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`MUTING (${i + 1}/${allMutingsCount}) ${muting._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
 	let allDriveFoldersCount = await _DriveFolder.count();
 	if (test && allDriveFoldersCount > limit) allDriveFoldersCount = limit;
 	for (let i = 0; i < allDriveFoldersCount; i++) {
@@ -518,9 +572,9 @@ async function main() {
 		});
 		try {
 			await migrateMessagingMessage(message);
-			console.log(`EMOJI (${i + 1}/${allMessagingMessagesCount}) ${message._id} ${chalk.green('DONE')}`);
+			console.log(`MESSAGE (${i + 1}/${allMessagingMessagesCount}) ${message._id} ${chalk.green('DONE')}`);
 		} catch (e) {
-			console.log(`EMOJI (${i + 1}/${allMessagingMessagesCount}) ${message._id} ${chalk.red('ERR')}`);
+			console.log(`MESSAGE (${i + 1}/${allMessagingMessagesCount}) ${message._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
