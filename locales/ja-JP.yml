@@ -640,8 +640,8 @@ common/views/components/emoji-picker.vue:
   flags: "旗"
 
 common/views/components/settings/client-mode.vue:
-  title: "クライアント"
-  select-app-type: "利用するクライアントのモード"
+  title: "モード"
+  intro: "デスクトップ版とモバイル版のどちらを使うかを指定できます。"
   choices:
     auto: "自動で選択"
     desktop: "デスクトップ版に固定"

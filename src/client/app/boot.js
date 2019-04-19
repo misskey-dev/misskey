@@ -35,12 +35,12 @@
 	const url = new URL(location.href);
 
 	//#region Detect app name
-	var appType = null;
+	window.appType = null;
 
-	if (`${url.pathname}/`.startsWith('/docs/')) appType = 'docs';
-	if (`${url.pathname}/`.startsWith('/dev/')) appType = 'dev';
-	if (`${url.pathname}/`.startsWith('/auth/')) appType = 'auth';
-	if (`${url.pathname}/`.startsWith('/admin/')) appType = 'admin';
+	if (`${url.pathname}/`.startsWith('/docs/')) window.appType = 'docs';
+	if (`${url.pathname}/`.startsWith('/dev/')) window.appType = 'dev';
+	if (`${url.pathname}/`.startsWith('/auth/')) window.appType = 'auth';
+	if (`${url.pathname}/`.startsWith('/admin/')) window.appType = 'admin';
 	//#endregion
 
 	// Script version
@@ -84,7 +84,9 @@
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
-	const isMobile = /mobile|iphone|ipad|android/.test(ua) || window.innerWidth < 576;
+	const isMobile = settings.device.appTypeForce === 'mobile' ||
+		(settings.device.appTypeForce !== 'desktop'
+			&& (/mobile|iphone|ipad|android/.test(ua) || window.innerWidth < 576));
 
 	// Get the <head> element
 	const head = document.getElementsByTagName('head')[0];
@@ -103,15 +105,15 @@
 	}
 
 	// Switch desktop or mobile version
-	if (appType == null) {
-		appType = isMobile ? 'mobile' : 'desktop';
+	if (window.appType == null) {
+		window.appType = isMobile ? 'mobile' : 'desktop';
 	}
 
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${appType}.${ver}.js`);
+	script.setAttribute('src', `/assets/${window.appType}.${ver}.js`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);
