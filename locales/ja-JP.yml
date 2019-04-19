@@ -460,8 +460,6 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
 
-
-
 common/views/components/media-banner.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
