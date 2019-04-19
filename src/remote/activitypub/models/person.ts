@@ -319,8 +319,6 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		featured: person.featured,
 		emojis: emojiNames,
 		name: person.name,
-		url: person.url,
-		endpoints: person.endpoints,
 		tags,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
@@ -348,6 +346,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	});
 
 	await UserProfiles.update({ userId: exist.id }, {
+		url: person.url,
 		fields,
 		description: person.summary ? fromHtml(person.summary) : null,
 		twitterUserId: services.twitter.userId,
