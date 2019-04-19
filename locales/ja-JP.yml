@@ -460,6 +460,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   flush: "キャッシュの削除"
   set-version: "バージョン指定"
 
+
+
 common/views/components/media-banner.vue:
   sensitive: "閲覧注意"
   click-to-show: "クリックして表示"
@@ -636,6 +638,17 @@ common/views/components/emoji-picker.vue:
   objects: "物"
   symbols: "記号"
   flags: "旗"
+
+common/views/components/settings/client-mode.vue:
+  title: "クライアント"
+  select-app-type: "利用するクライアントのモード"
+  choices:
+    auto: "自動で選択"
+    desktop: "デスクトップ版に固定"
+    mobile: "モバイル版に固定"
+  desktop: "デスクトップ"
+  mobile: "モバイル"
+  info: "変更はページの再度読み込み後に反映されます。"
 
 common/views/components/signin.vue:
   username: "ユーザー名"

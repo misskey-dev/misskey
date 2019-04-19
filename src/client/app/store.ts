@@ -60,6 +60,7 @@ const defaultDeviceSettings = {
 	soundVolume: 0.5,
 	mediaVolume: 0.5,
 	lang: null,
+	appTypeForce: 'auto',
 	debug: false,
 	lightmode: false,
 	loadRawImages: false,

@@ -35,12 +35,12 @@
 	const url = new URL(location.href);
 
 	//#region Detect app name
-	let app = null;
+	var appType = null;
 
-	if (`${url.pathname}/`.startsWith('/docs/')) app = 'docs';
-	if (`${url.pathname}/`.startsWith('/dev/')) app = 'dev';
-	if (`${url.pathname}/`.startsWith('/auth/')) app = 'auth';
-	if (`${url.pathname}/`.startsWith('/admin/')) app = 'admin';
+	if (`${url.pathname}/`.startsWith('/docs/')) appType = 'docs';
+	if (`${url.pathname}/`.startsWith('/dev/')) appType = 'dev';
+	if (`${url.pathname}/`.startsWith('/auth/')) appType = 'auth';
+	if (`${url.pathname}/`.startsWith('/admin/')) appType = 'admin';
 	//#endregion
 
 	// Script version
@@ -103,15 +103,15 @@
 	}
 
 	// Switch desktop or mobile version
-	if (app == null) {
-		app = isMobile ? 'mobile' : 'desktop';
+	if (appType == null) {
+		appType = isMobile ? 'mobile' : 'desktop';
 	}
 
 	// Load an app script
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${app}.${ver}.js`);
+	script.setAttribute('src', `/assets/${appType}.${ver}.js`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	head.appendChild(script);
