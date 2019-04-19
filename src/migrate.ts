@@ -26,6 +26,7 @@ import { extractPublic } from './crypto_key';
 import { Emoji } from './models/entities/emoji';
 import { toPuny as _toPuny } from './misc/convert-host';
 import { UserProfile } from './models/entities/user-profile';
+import { MessagingMessage } from './models/entities/messaging-message';
 
 function toPuny(x: string | null): string | null {
 	if (x == null) return null;
@@ -67,6 +68,7 @@ const _PollVote = db.get<any>('pollVotes');
 const _Favorite = db.get<any>('favorites');
 const _NoteReaction = db.get<any>('noteReactions');
 const _Emoji = db.get<any>('emoji');
+const _MessagingMessage = db.get<any>('messagingMessages');
 const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	const db = await nativeDbConn();
 	const bucket = new mongo.GridFSBucket(db, {
@@ -90,6 +92,7 @@ async function main() {
 	const UserPublickeys = getRepository(UserPublickey);
 	const UserKeypairs = getRepository(UserKeypair);
 	const Emojis = getRepository(Emoji);
+	const MessagingMessages = getRepository(MessagingMessage);
 
 	async function migrateUser(user: any) {
 		await Users.save({
@@ -330,6 +333,18 @@ async function main() {
 		});
 	}
 
+	async function migrateMessagingMessage(message: any) {
+		await MessagingMessages.save({
+			id: message._id.toHexString(),
+			createdAt: message.createdAt,
+			text: message.text,
+			userId: message.userId.toHexString(),
+			recipientId: message.recipientId.toHexString(),
+			fileId: message.fileId ? message.fileId.toHexString() : null,
+			isRead: message.isRead || false,
+		});
+	}
+
 	let allUsersCount = await _User.count({
 		deletedAt: { $exists: false }
 	});
@@ -492,6 +507,20 @@ async function main() {
 			console.log(`EMOJI (${i + 1}/${allEmojisCount}) ${emoji._id} ${chalk.green('DONE')}`);
 		} catch (e) {
 			console.log(`EMOJI (${i + 1}/${allEmojisCount}) ${emoji._id} ${chalk.red('ERR')}`);
+			console.error(e);
+		}
+	}
+
+	const allMessagingMessagesCount = await _MessagingMessage.count();
+	for (let i = 0; i < allMessagingMessagesCount; i++) {
+		const message = await _MessagingMessage.findOne({}, {
+			skip: i
+		});
+		try {
+			await migrateMessagingMessage(message);
+			console.log(`EMOJI (${i + 1}/${allMessagingMessagesCount}) ${message._id} ${chalk.green('DONE')}`);
+		} catch (e) {
+			console.log(`EMOJI (${i + 1}/${allMessagingMessagesCount}) ${message._id} ${chalk.red('ERR')}`);
 			console.error(e);
 		}
 	}
