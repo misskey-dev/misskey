@@ -16,6 +16,11 @@ export function extractDbHost(uri: string) {
 	return toDbHost(url.hostname);
 }
 
+export function extractApHost(uri: string) {
+	const url = new URL(uri);
+	return toApHost(url.hostname);
+}
+
 export function toDbHost(host: string) {
 	if (host == null) return null;
 	return toUnicode(host.toLowerCase());
