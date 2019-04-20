@@ -86,6 +86,17 @@ async function fetchAny(uri: string) {
 	// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
 	// これはDBに存在する可能性があるため再度DB検索
 	if (uri !== object.id) {
+		if (object.id.startsWith(config.url + '/')) {
+			const id = new mongo.ObjectID(object.id.split('/').pop());
+			const [user, note] = await Promise.all([
+				User.findOne({ _id: id }),
+				Note.findOne({ _id: id })
+			]);
+
+			const packed = await mergePack(user, note);
+			if (packed !== null) return packed;
+		}
+
 		const [user, note] = await Promise.all([
 			User.findOne({ uri: object.id }),
 			Note.findOne({ uri: object.id })
