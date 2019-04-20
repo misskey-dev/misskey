@@ -9,7 +9,7 @@ import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
 import Instance from '../../../../models/instance';
-import { extractDbHost, isSelfHost, extractApHost } from '../../../../misc/convert-host';
+import { extractDbHost } from '../../../../misc/convert-host';
 import { validActor } from '../../../../remote/activitypub/type';
 
 export const meta = {
