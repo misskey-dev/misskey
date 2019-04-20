@@ -22,5 +22,5 @@ function getRandom() {
 }
 
 export function genMeid(date: Date): string {
-	return 'f' + getTime(date.getTime()) + getRandom();
+	return getTime(date.getTime()) + getRandom();
 }
