@@ -5,6 +5,42 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+How to migrate to v11 from v10
+------------------------------
+1. v11をインストールしたい場所に syuilo/misskey をクローン
+2. config を設定する
+	* PostgreSQL(`db`)の設定とは別に、v10からMongoDBの設定をコピペしてくる(例は下にあります)
+	* `id`の設定を`meid`または`objectid`にする
+
+``` yml
+db:
+  host: localhost
+  port: 5432
+  db: misskey
+  user: x
+  pass: x
+
+mongodb:
+  user: x
+  pass: x
+  host: localhost
+  port: 27017
+  db: misskey
+```
+3. migration ブランチに切り替え
+4. `npm i`
+5. `npm run build`
+6. `npm run init`
+7. `npm run migrate`
+8. master ブランチに戻す
+9. enjoy
+
+11.2.1 (2019/04/21)
+-------------------
+### Fixes
+* MEIDが25桁になっているのを修正
+* リモートユーザー情報が更新されない問題を修正
+
 11.2.0 (2019/04/18)
 -------------------
 ### Improvements
