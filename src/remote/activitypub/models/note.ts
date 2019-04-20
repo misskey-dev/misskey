@@ -20,9 +20,31 @@ import { apLogger } from '../logger';
 import { IDriveFile } from '../../../models/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import Instance from '../../../models/instance';
-import { extractDbHost } from '../../../misc/convert-host';
+import { extractDbHost, extractApHost } from '../../../misc/convert-host';
 
 const logger = apLogger;
+
+export function validateNote(object: any, uri: string) {
+	const expectHost = extractApHost(uri);
+
+	if (object == null) {
+		return new Error('invalid Note: object is null');
+	}
+
+	if (!['Note', 'Question', 'Article'].includes(object.type)) {
+		return new Error(`invalid Note: invalied object type ${object.type}`);
+	}
+
+	if (object.id && extractApHost(object.id) !== expectHost) {
+		return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${extractApHost(object.id)}`);
+	}
+
+	if (object.attributedTo && extractApHost(object.attributedTo) !== expectHost) {
+		return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${extractApHost(object.attributedTo)}`);
+	}
+
+	return null;
+}
 
 /**
  * Noteをフェッチします。
@@ -57,8 +79,10 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const object: any = await resolver.resolve(value);
 
-	if (!object || !['Note', 'Question', 'Article'].includes(object.type)) {
-		logger.error(`invalid note: ${value}`, {
+	const entryUri = value.id || value;
+	const err = validateNote(object, entryUri);
+	if (err) {
+		logger.error(`${err.message}`, {
 			resolver: {
 				history: resolver.getHistory()
 			},
