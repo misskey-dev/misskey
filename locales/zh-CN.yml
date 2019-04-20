@@ -691,6 +691,7 @@ common/views/components/user-list-editor.vue:
   delete-are-you-sure: "删除列表“$1”？"
   deleted: "已删除"
 common/views/components/user-lists.vue:
+  create-list: "创建列表"
   list-name: "列表名称"
 common/views/widgets/broadcast.vue:
   fetching: "确认中"
