@@ -21,11 +21,15 @@ RUN apk add --no-cache \
     pkgconfig \
     python \
     zlib-dev
+RUN npm i -g node-gyp
 
 COPY package.json ./
 RUN npm i
+
 COPY . ./
-RUN npm run build
+RUN node-gyp configure \
+ && node-gyp build \
+ && npm run build
 
 FROM base AS runner
 
