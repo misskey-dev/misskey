@@ -116,7 +116,7 @@ async function fetchAny(uri: string) {
 	}
 
 	if (['Note', 'Question', 'Article'].includes(object.type)) {
-		const note = await createNote(object.id);
+		const note = await createNote(object.id, null, true);
 		return {
 			type: 'Note',
 			object: await packNote(note, null, { detail: true })
