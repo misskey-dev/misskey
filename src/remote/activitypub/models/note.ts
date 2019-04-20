@@ -25,6 +25,28 @@ import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 
+export function validateNote(object: any, uri: string) {
+	const expectHost = extractDbHost(uri);
+
+	if (object == null) {
+		return new Error('invalid Note: object is null');
+	}
+
+	if (!['Note', 'Question', 'Article'].includes(object.type)) {
+		return new Error(`invalid Note: invalied object type ${object.type}`);
+	}
+
+	if (object.id && extractDbHost(object.id) !== expectHost) {
+		return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${extractDbHost(object.id)}`);
+	}
+
+	if (object.attributedTo && extractDbHost(object.attributedTo) !== expectHost) {
+		return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${extractDbHost(object.attributedTo)}`);
+	}
+
+	return null;
+}
+
 /**
  * Noteをフェッチします。
  *
@@ -59,8 +81,10 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const object: any = await resolver.resolve(value);
 
-	if (!object || !['Note', 'Question', 'Article'].includes(object.type)) {
-		logger.error(`invalid note: ${value}`, {
+	const entryUri = value.id || value;
+	const err = validateNote(object, entryUri);
+	if (err) {
+		logger.error(`${err.message}`, {
 			resolver: {
 				history: resolver.getHistory()
 			},
