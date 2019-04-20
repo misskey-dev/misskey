@@ -247,7 +247,7 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	// リモートサーバーからフェッチしてきて登録
 	// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
 	// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
-	return await createNote(uri, resolver).catch(e => {
+	return await createNote(uri, resolver, true).catch(e => {
 		if (e.name === 'duplicated') {
 			return fetchNote(uri).then(note => {
 				if (note == null) {
