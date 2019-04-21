@@ -344,13 +344,13 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		url: person.url,
 		fields,
 		description: person.summary ? fromHtml(person.summary) : null,
-		twitterUserId: services.twitter.userId,
-		twitterScreenName: services.twitter.screenName,
-		githubId: services.github.id,
-		githubLogin: services.github.login,
-		discordId: services.discord.id,
-		discordUsername: services.discord.username,
-		discordDiscriminator: services.discord.discriminator,
+		twitterUserId: services.twitter ? services.twitter.userId : null,
+		twitterScreenName: services.twitter ? services.twitter.screenName : null,
+		githubId: services.github ? services.github.id : null,
+		githubLogin: services.github ? services.github.login : null,
+		discordId: services.discord ? services.discord.id : null,
+		discordUsername: services.discord ? services.discord.username : null,
+		discordDiscriminator: services.discord ? services.discord.discriminator : null,
 	});
 
 	// ハッシュタグ更新
