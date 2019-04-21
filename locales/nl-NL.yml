@@ -403,7 +403,6 @@ desktop/views/components/ui.header.search.vue:
   placeholder: "Zoeken"
 desktop/views/components/user-lists-window.vue:
   title: "Lijsten"
-  create-list: "Lijst creëren"
 desktop/views/components/user-preview.vue:
   notes: "Berichten"
   following: "Volgend"
@@ -557,6 +556,10 @@ mobile/views/components/ui.nav.vue:
   user-lists: "Lijsten"
   game: "Othello spelen"
   about: "Over Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Bestand uploaden"
+    create-folder: "Map creëren"
 mobile/views/pages/user-lists.vue:
   title: "Lijsten"
 mobile/views/pages/home.vue:

@@ -95,13 +95,6 @@ export default define(meta, async (ps, me) => {
 			throw new ApiError(meta.errors.noSuchUser);
 		}
 
-		// ユーザー情報更新
-		if (Users.isRemoteUser(user)) {
-			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				resolveUser(user.username, user.host, { }, true);
-			}
-		}
-
 		return await Users.pack(user, me, {
 			detail: true
 		});

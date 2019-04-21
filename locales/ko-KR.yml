@@ -667,6 +667,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "이 리스트에서 제거"
   delete-are-you-sure: "리스트 \"$1\"을 삭제하시겠습니까?"
   deleted: "삭제하였습니다"
+common/views/components/user-lists.vue:
+  list-name: "리스트 이름"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
   no-broadcasts: "공지사항이 없습니다"
@@ -1015,8 +1017,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "거부"
 desktop/views/components/user-lists-window.vue:
   title: "리스트"
-  create-list: "리스트 만들기"
-  list-name: "리스트 이름"
 desktop/views/components/user-preview.vue:
   notes: "글"
   following: "팔로잉"
@@ -1406,8 +1406,6 @@ mobile/views/components/drive.vue:
   file-count: "파일"
   nothing-in-drive: "드라이브에 아무것도 없습니다"
   folder-is-empty: "폴더가 비어있습니다"
-  prompt: "무엇을 하시겠습니까? (숫자를 입력하여 주십시오): <1 → 파일 업로드 | 2 → 파일을 URL에서 업로드 | 3 → 폴더 만들기 | 4 → 이 폴더의 이름을 변경 | 5 → 현재 폴더 이동| 6 → 현재 폴더 삭제>"
-  deletion-alert: "죄송합니다! 폴더 삭제는 아직 구현되지 않았습니다..."
   folder-name: "폴더 이름"
   here-is-root: "현재 경로는 루트 경로로 폴더가 아닙니다."
   url-prompt: "업로드 하려는 파일의 URL"
@@ -1485,9 +1483,12 @@ mobile/views/components/ui.nav.vue:
   game: "게임"
   admin: "관리"
   about: "Misskey에 대하여"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "파일 업로드"
+    create-folder: "폴더 만들기"
 mobile/views/pages/user-lists.vue:
   title: "리스트"
-  enter-list-name: "리스트명을 입력하십시오"
 mobile/views/pages/signup.vue:
   lets-start: "📦 이제 시작해도 됩니다"
 mobile/views/pages/followers.vue:
