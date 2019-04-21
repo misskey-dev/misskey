@@ -96,9 +96,6 @@ export default define(meta, async (ps, me) => {
 			throw new ApiError(meta.errors.noSuchUser);
 		}
 
-		// ユーザー情報更新
-		resolveRemoteUser(ps.username, ps.host, { }, false);
-
 		return await pack(user, me, {
 			detail: true
 		});
