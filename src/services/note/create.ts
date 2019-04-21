@@ -34,6 +34,7 @@ import Instance from '../../models/instance';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
+import { genId } from '../../misc/gen-id';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -434,6 +435,7 @@ async function publish(user: IUser, note: INote, noteObj: any, reply: INote, ren
 
 async function insertNote(user: IUser, data: Option, tags: string[], emojis: string[], mentionedUsers: IUser[]) {
 	const insert: any = {
+		_id: genId(data.createdAt),
 		createdAt: data.createdAt,
 		fileIds: data.files ? data.files.map(file => file._id) : [],
 		replyId: data.reply ? data.reply._id : null,
