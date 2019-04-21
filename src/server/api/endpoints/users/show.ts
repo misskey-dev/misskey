@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import ID, { transform, transformMany } from '../../../../misc/cafy-id';
-import User, { pack, isRemoteUser } from '../../../../models/user';
+import User, { pack } from '../../../../models/user';
 import resolveRemoteUser from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
@@ -94,13 +94,6 @@ export default define(meta, async (ps, me) => {
 
 		if (user === null) {
 			throw new ApiError(meta.errors.noSuchUser);
-		}
-
-		// ユーザー情報更新
-		if (isRemoteUser(user)) {
-			if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-				resolveRemoteUser(ps.username, ps.host, { }, true);
-			}
 		}
 
 		return await pack(user, me, {
