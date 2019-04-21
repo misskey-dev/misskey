@@ -144,6 +144,7 @@ export class UserRepository extends Repository<User> {
 				autoWatch: profile!.autoWatch,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
+				twoFactorEnabled: profile!.twoFactorEnabled,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: user.id,
