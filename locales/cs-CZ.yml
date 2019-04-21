@@ -77,6 +77,9 @@ common:
     "read:messaging": "Prohlížet konverzaci"
     "write:messaging": "Pracovat s konverzaci"
     "read:mutes": "Prohlížet ztlumené"
+    "read:notifications": "Prohlížet oznámení"
+    "write:notifications": "Pracovat s oznámeními"
+    "read:reactions": "Prohlížet reakce"
     "write:votes": "Hlasovat"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
@@ -285,6 +288,7 @@ common:
     nav: "Navigace"
     tips: "Tipy"
     hashtags: "Hashtagy"
+    queue: "Ve frontě"
   dev: "Nepodařilo se vytvořit aplikace. Prosím zkuste to znovu."
   ai-chan-kawaii: "Ai-chan kawaii!"
   you: "Vy"
@@ -593,6 +597,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "Odebrat z tohoto seznamu"
   delete-are-you-sure: "Smazat seznam \"$1\"?"
   deleted: "Smazáno"
+common/views/components/user-lists.vue:
+  list-name: "Název seznamu"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   next: "Další"
@@ -832,8 +838,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Odmítnout"
 desktop/views/components/user-lists-window.vue:
   title: "Seznamy uživatelů"
-  create-list: "Vytvořit seznam"
-  list-name: "Název seznamu"
 desktop/views/components/user-preview.vue:
   notes: "Příspěvky"
 desktop/views/components/users-list.vue:
@@ -1078,7 +1082,6 @@ mobile/views/components/drive.vue:
   used: "využito"
   file-count: "Soubor(ů)"
   folder-is-empty: "Tato složka je prázdná"
-  deletion-alert: "Omlouváme se, ale mazání složek ještě nebylo implementováno."
   folder-name: "Název složky"
   url-prompt: "URL adresa souboru, který chcete nahrát"
   uploading: "Byl zahájen upload. Může chvilku trvat než bude dokončen."
@@ -1139,6 +1142,10 @@ mobile/views/components/ui.nav.vue:
   game: "Hry"
   admin: "Administrace"
   about: "O Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Nahrát soubor"
+    create-folder: "Vytvořit složku"
 mobile/views/pages/user-lists.vue:
   title: "Seznamy"
 mobile/views/pages/signup.vue:

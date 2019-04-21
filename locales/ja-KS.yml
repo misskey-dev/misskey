@@ -478,6 +478,8 @@ common/views/components/profile-editor.vue:
   enter-password: "パスワードを入れてや"
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
+common/views/components/user-lists.vue:
+  list-name: "リスト名"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
   no-broadcasts: "お知らせはあらへんで"
@@ -815,8 +817,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "許さん"
 desktop/views/components/user-lists-window.vue:
   title: "リスト"
-  create-list: "新しいリストを作成"
-  list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "投稿"
   following: "フォロー"
@@ -1071,8 +1071,6 @@ mobile/views/components/drive.vue:
   file-count: "ファイル"
   nothing-in-drive: "ドライブには何もあらへんで。"
   folder-is-empty: "このフォルダ何もないわ"
-  prompt: "何すんの？(数字を入れてや): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
-  deletion-alert: "フォルダの削除は未実装やねん...。堪忍な！"
   folder-name: "フォルダー名"
   url-prompt: "このURLのファイルをアップロードしたいねん"
   uploading: "アップロードをリクエストしたで。アップロードが完了するまで時間がかかるかも分からん、知らんけど。"
@@ -1149,9 +1147,12 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   admin: "管理"
   about: "Misskeyってなんや？"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "ファイル上げる"
+    create-folder: "フォルダー作る"
 mobile/views/pages/user-lists.vue:
   title: "リスト"
-  enter-list-name: "リスト名を入力してや"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めようや"
 mobile/views/pages/followers.vue:

@@ -466,6 +466,8 @@ common/views/components/profile-editor.vue:
   enter-password: "Escribe una contraseña"
 common/views/components/user-list-editor.vue:
   users: "Usuarios"
+common/views/components/user-lists.vue:
+  list-name: "Nombre de lista"
 common/views/widgets/broadcast.vue:
   fetching: "Recuperando"
   no-broadcasts: "Sin emisión"
@@ -773,8 +775,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Rechazar"
 desktop/views/components/user-lists-window.vue:
   title: "Listas de usuario"
-  create-list: "Crear lista"
-  list-name: "Nombre de lista"
 desktop/views/components/user-preview.vue:
   notes: "Publicaciones"
   following: "Sigue"
@@ -931,6 +931,10 @@ mobile/views/components/ui.nav.vue:
   game: "Juegos"
   admin: "Admin"
   about: "Sobre"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Subir fichero"
+    create-folder: "Crear una carpeta"
 mobile/views/pages/user-lists.vue:
   title: "Listas"
 mobile/views/pages/home.vue:

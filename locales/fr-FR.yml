@@ -72,6 +72,8 @@ common:
     "write:account": "Mettre à jour les informations de votre compte"
     "read:drive": "Parcourir le Drive"
     "write:drive": "Écrire sur le Drive"
+    "read:favorites": "Afficher les favoris"
+    "read:reactions": "Lire les réactions"
     "write:votes": "Vote"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Les utilisateurs suivants afficheront leurs publications sur votre fil."
@@ -136,6 +138,7 @@ common:
     appearance: "Apparence"
     behavior: "Comportement"
     fetch-on-scroll: "Chargement automatique lors du défilement"
+    fetch-on-scroll-desc: "Chargement automatique du contenu lors du défilement de la page."
     note-visibility: "Visibilité de la publication"
     default-note-visibility: "Visibilité par défaut"
     remember-note-visibility: "Se souvenir du mode de visibilité de la publication"
@@ -655,6 +658,8 @@ common/views/components/user-list-editor.vue:
   remove-user: "Retirer de cette liste"
   delete-are-you-sure: "Voulez-vous vraiment supprimer la liste « $1 » ?"
   deleted: "Supprimé"
+common/views/components/user-lists.vue:
+  list-name: "Nom de la liste"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
   no-broadcasts: "Aucune annonce"
@@ -955,6 +960,7 @@ common/views/components/password-settings.vue:
   changed: "Mot de passe modifié avec succès"
   failed: "Échec lors de la modification du mot de passe"
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "Enlever le fichier attaché"
   mark-as-sensitive: "Marquer comme sensible"
   unmark-as-sensitive: "Ne pas marquer comme sensible"
 desktop/views/components/sub-note-content.vue:
@@ -1001,8 +1007,6 @@ desktop/views/components/received-follow-requests-window.vue:
   reject: "Refuser"
 desktop/views/components/user-lists-window.vue:
   title: "Listes de l'utilisateur"
-  create-list: "Créer une liste"
-  list-name: "Nom de la liste"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
@@ -1379,8 +1383,6 @@ mobile/views/components/drive.vue:
   file-count: "Fichier·s"
   nothing-in-drive: "Rien"
   folder-is-empty: "Ce dossier est vide"
-  prompt: "Que veux-tu faire ? (Entrez un nombre): <1 → Télécharger le fichier | 2 → Télécharger le fichier avec l'URL | 3 → Créer le dossier | 4 → Modifier le nom du dossier | 5 → Déplacer ce dossier | 6 → Supprimer ce dossier >"
-  deletion-alert: "Désolé ! La suppression d’un dossier n’est pas encore implémentée."
   folder-name: "Nom du dossier"
   url-prompt: "URL du fichier que vous souhaitez téléverser"
   uploading: "Envoi demandé. Le téléversement pourrait prendre un certain temps avant de s'achever."
@@ -1457,9 +1459,12 @@ mobile/views/components/ui.nav.vue:
   game: "Jeux"
   admin: "Admin"
   about: "À propos de Misskey"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Téléverser un fichier"
+    create-folder: "Créer un dossier"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
-  enter-list-name: "Nom de la liste"
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
