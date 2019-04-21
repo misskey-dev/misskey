@@ -41,6 +41,13 @@ export default async (username: string, _host: string, option?: any, resync?: bo
 
 	// resyncオプション OR ユーザー情報が古い場合は、WebFilgerからやりなおして返す
 	if (resync || user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
+		// 繋がらないインスタンスに何回も試行するのを防ぐ, 後続の同様処理の連続試行を防ぐ ため 試行前にも更新する
+		await User.update({ _id: user._id }, {
+			$set: {
+				lastFetchedAt: new Date(),
+			},
+		});
+
 		logger.info(`try resync: ${acctLower}`);
 		const self = await resolveSelf(acctLower);
 
