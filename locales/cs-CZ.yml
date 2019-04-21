@@ -77,6 +77,9 @@ common:
     "read:messaging": "Prohlížet konverzaci"
     "write:messaging": "Pracovat s konverzaci"
     "read:mutes": "Prohlížet ztlumené"
+    "read:notifications": "Prohlížet oznámení"
+    "write:notifications": "Pracovat s oznámeními"
+    "read:reactions": "Prohlížet reakce"
     "write:votes": "Hlasovat"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
@@ -285,6 +288,7 @@ common:
     nav: "Navigace"
     tips: "Tipy"
     hashtags: "Hashtagy"
+    queue: "Ve frontě"
   dev: "Nepodařilo se vytvořit aplikace. Prosím zkuste to znovu."
   ai-chan-kawaii: "Ai-chan kawaii!"
   you: "Vy"
