@@ -1,5 +1,4 @@
 import { EntityRepository, Repository } from 'typeorm';
-import rap from '@prezzemolo/rap';
 import { ReversiMatching } from '../../../entities/games/reversi/matching';
 import { Users } from '../../..';
 import { ensure } from '../../../../prelude/ensure';

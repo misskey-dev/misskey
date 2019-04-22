@@ -4,8 +4,9 @@ import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMes
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType, bool, types } from '../../misc/schema';
-import { packedNoteSchema } from './note';
 import { awaitAll } from '../../prelude/await-all';
+
+export type PackedUser = SchemaType<typeof packedUserSchema>;
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -73,7 +74,7 @@ export class UserRepository extends Repository<User> {
 			includeSecrets?: boolean,
 			includeHasUnreadNotes?: boolean
 		}
-	): Promise<SchemaType<typeof packedUserSchema>> {
+	): Promise<PackedUser> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false
@@ -87,37 +88,6 @@ export class UserRepository extends Repository<User> {
 		const profile = opts.detail ? await UserProfiles.findOne(user.id).then(ensure) : null;
 
 		const falsy = opts.detail ? false : undefined;
-
-		const detail = opts.detail ? {
-			url: profile!.url,
-			createdAt: user.createdAt.toISOString(),
-			updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
-			bannerUrl: user.bannerUrl,
-			bannerColor: user.bannerColor,
-			isLocked: user.isLocked,
-			isModerator: user.isModerator || falsy,
-			description: profile!.description,
-			location: profile!.location,
-			birthday: profile!.birthday,
-			followersCount: user.followersCount,
-			followingCount: user.followingCount,
-			notesCount: user.notesCount,
-			pinnedNoteIds: pins.map(pin => pin.noteId),
-			pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
-				detail: true
-			}),
-		} : {};
-
-		const hasUnreadNotes = opts.includeHasUnreadNotes ? {
-			hasUnreadSpecifiedNotes: NoteUnreads.count({
-				where: { userId: user.id, isSpecified: true },
-				take: 1
-			}).then(count => count > 0),
-			hasUnreadMentions: NoteUnreads.count({
-				where: { userId: user.id },
-				take: 1
-			}).then(count => count > 0),
-		} : {};
 
 		const packed = {
 			id: user.id,
@@ -140,9 +110,36 @@ export class UserRepository extends Repository<User> {
 				select: ['name', 'host', 'url', 'aliases']
 			}) : [],
 
-			...hasUnreadNotes,
+			...(opts.includeHasUnreadNotes ? {
+				hasUnreadSpecifiedNotes: NoteUnreads.count({
+					where: { userId: user.id, isSpecified: true },
+					take: 1
+				}).then(count => count > 0),
+				hasUnreadMentions: NoteUnreads.count({
+					where: { userId: user.id },
+					take: 1
+				}).then(count => count > 0),
+			} : {}),
 
-			...detail,
+			...(opts.detail ? {
+				url: profile!.url,
+				createdAt: user.createdAt.toISOString(),
+				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
+				bannerUrl: user.bannerUrl,
+				bannerColor: user.bannerColor,
+				isLocked: user.isLocked,
+				isModerator: user.isModerator || falsy,
+				description: profile!.description,
+				location: profile!.location,
+				birthday: profile!.birthday,
+				followersCount: user.followersCount,
+				followingCount: user.followingCount,
+				notesCount: user.notesCount,
+				pinnedNoteIds: pins.map(pin => pin.noteId),
+				pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
+					detail: true
+				}),
+			} : {}),
 
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
@@ -338,7 +335,11 @@ export const packedUserSchema = {
 		pinnedNotes: {
 			type: types.array,
 			nullable: bool.false, optional: bool.true,
-			items: packedNoteSchema
+			items: {
+				type: types.object,
+				nullable: bool.false, optional: bool.false,
+				ref: 'Note'
+			}
 		},
 		isCat: {
 			type: types.boolean,
@@ -372,5 +373,4 @@ export const packedUserSchema = {
 			nullable: bool.false, optional: bool.true,
 		},
 	},
-//	required: ['id', 'name', 'username', 'createdAt']
 };

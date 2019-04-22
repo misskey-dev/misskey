@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users, Notes } from '..';
-import rap from '@prezzemolo/rap';
 import { Notification } from '../entities/notification';
 import { ensure } from '../../prelude/ensure';
+import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(Notification)
 export class NotificationRepository extends Repository<Notification> {
@@ -17,7 +17,7 @@ export class NotificationRepository extends Repository<Notification> {
 	) {
 		const notification = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
-		return await rap({
+		return await awaitAll({
 			id: notification.id,
 			createdAt: notification.createdAt,
 			type: notification.type,

@@ -4,9 +4,11 @@ import { User } from '../entities/user';
 import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
-import rap from '@prezzemolo/rap';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType, types, bool } from '../../misc/schema';
+import { awaitAll } from '../../prelude/await-all';
+
+export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
@@ -93,7 +95,7 @@ export class NoteRepository extends Repository<Note> {
 			detail?: boolean;
 			skipHide?: boolean;
 		}
-	): Promise<SchemaType<typeof packedNoteSchema>> {
+	): Promise<PackedNote> {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false
@@ -160,9 +162,9 @@ export class NoteRepository extends Repository<Note> {
 
 		const reactionEmojis = unique(concat([note.emojis, Object.keys(note.reactions)]));
 
-		const packed = await rap({
+		const packed = await awaitAll({
 			id: note.id,
-			createdAt: note.createdAt,
+			createdAt: note.createdAt.toISOString(),
 			app: note.appId ? Apps.pack(note.appId) : undefined,
 			userId: note.userId,
 			user: Users.pack(note.user || note.userId, meId),
@@ -247,7 +249,7 @@ export const packedNoteSchema = {
 		},
 		user: {
 			type: types.object,
-			ref: '#/components/schemas/User',
+			ref: 'User',
 			optional: bool.false, nullable: bool.false,
 		},
 		replyId: {
@@ -265,14 +267,18 @@ export const packedNoteSchema = {
 		reply: {
 			type: types.object,
 			optional: bool.true, nullable: bool.true,
-			ref: '#/components/schemas/Note'
+			ref: 'Note'
 		},
 		renote: {
 			type: types.object,
 			optional: bool.true, nullable: bool.true,
-			ref: '#/components/schemas/Note'
+			ref: 'Note'
 		},
 		viaMobile: {
+			type: types.boolean,
+			optional: bool.true, nullable: bool.false,
+		},
+		isHidden: {
 			type: types.boolean,
 			optional: bool.true, nullable: bool.false,
 		},
@@ -281,5 +287,4 @@ export const packedNoteSchema = {
 			optional: bool.false, nullable: bool.false,
 		},
 	},
-	//required: ['id', 'userId', 'createdAt']
 };

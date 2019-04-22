@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
-import rap from '@prezzemolo/rap';
 import { AbuseUserReport } from '../entities/abuse-user-report';
 import { ensure } from '../../prelude/ensure';
 

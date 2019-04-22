@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { DriveFolders, DriveFiles } from '..';
-import rap from '@prezzemolo/rap';
 import { DriveFolder } from '../entities/drive-folder';
 import { ensure } from '../../prelude/ensure';
 

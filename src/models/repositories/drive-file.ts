@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { DriveFile } from '../entities/drive-file';
 import { Users, DriveFolders } from '..';
-import rap from '@prezzemolo/rap';
 import { User } from '../entities/user';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';

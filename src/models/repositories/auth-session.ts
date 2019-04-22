@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Apps } from '..';
-import rap from '@prezzemolo/rap';
 import { AuthSession } from '../entities/auth-session';
 import { ensure } from '../../prelude/ensure';
 

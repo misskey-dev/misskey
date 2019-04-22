@@ -2,6 +2,7 @@ import autobind from 'autobind-decorator';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 import { Notes } from '../../../../models';
+import { PackedNote } from '../../../../models/repositories/note';
 
 export default class extends Channel {
 	public readonly chName = 'hashtag';
@@ -20,7 +21,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onNote(note: any) {
+	private async onNote(note: PackedNote) {
 		const noteTags = note.tags.map((t: string) => t.toLowerCase());
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(tag.toLowerCase())));
 		if (!matched) return;
