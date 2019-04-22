@@ -290,12 +290,17 @@ export default Vue.extend({
 				this.exportTarget == 'mute' ? 'i/export-mute' :
 				this.exportTarget == 'blocking' ? 'i/export-blocking' :
 				this.exportTarget == 'user-lists' ? 'i/export-user-lists' :
-				null, {});
-
-			this.$root.dialog({
-				type: 'info',
-				text: this.$t('export-requested')
-			});
+				null, {}).then(() => {
+					this.$root.dialog({
+						type: 'info',
+						text: this.$t('export-requested')
+					});
+				}).catch((e: any) => {
+					this.$root.dialog({
+						type: 'error',
+						text: e.message
+					});
+				});
 		},
 
 		doImport() {
