@@ -1,3 +1,5 @@
+import { packedUserSchema } from '../../../models/repositories/user';
+
 export const schemas = {
 	Error: {
 		type: 'object',
@@ -26,75 +28,7 @@ export const schemas = {
 		required: ['error']
 	},
 
-	User: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this User.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
-			},
-			username: {
-				type: 'string',
-				description: 'The screen name, handle, or alias that this user identifies themselves with.',
-				example: 'ai'
-			},
-			name: {
-				type: 'string',
-				nullable: true,
-				description: 'The name of the user, as they’ve defined it.',
-				example: '藍'
-			},
-			host: {
-				type: 'string',
-				nullable: true,
-				example: 'misskey.example.com'
-			},
-			description: {
-				type: 'string',
-				nullable: true,
-				description: 'The user-defined UTF-8 string describing their account.',
-				example: 'Hi masters, I am Ai!'
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the user account was created on Misskey.'
-			},
-			followersCount: {
-				type: 'number',
-				description: 'The number of followers this account currently has.'
-			},
-			followingCount: {
-				type: 'number',
-				description: 'The number of users this account is following.'
-			},
-			notesCount: {
-				type: 'number',
-				description: 'The number of Notes (including renotes) issued by the user.'
-			},
-			isBot: {
-				type: 'boolean',
-				description: 'Whether this account is a bot.'
-			},
-			isCat: {
-				type: 'boolean',
-				description: 'Whether this account is a cat.'
-			},
-			isAdmin: {
-				type: 'boolean',
-				description: 'Whether this account is the admin.'
-			},
-			isVerified: {
-				type: 'boolean'
-			},
-			isLocked: {
-				type: 'boolean'
-			},
-		},
-		required: ['id', 'name', 'username', 'createdAt']
-	},
+	User: packedUserSchema,
 
 	UserList: {
 		type: 'object',

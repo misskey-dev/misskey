@@ -6,6 +6,7 @@ import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import rap from '@prezzemolo/rap';
 import { ensure } from '../../prelude/ensure';
+import { SchemaType, types, bool } from '../../misc/schema';
 
 @EntityRepository(Note)
 export class NoteRepository extends Repository<Note> {
@@ -92,7 +93,7 @@ export class NoteRepository extends Repository<Note> {
 			detail?: boolean;
 			skipHide?: boolean;
 		}
-	): Promise<Record<string, any>> {
+	): Promise<SchemaType<typeof packedNoteSchema>> {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false
@@ -213,3 +214,72 @@ export class NoteRepository extends Repository<Note> {
 		return packed;
 	}
 }
+
+export const packedNoteSchema = {
+	type: types.object,
+	optional: bool.false, nullable: bool.false,
+	properties: {
+		id: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+			description: 'The unique identifier for this Note.',
+			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+		},
+		createdAt: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'date-time',
+			description: 'The date that the Note was created on Misskey.'
+		},
+		text: {
+			type: types.string,
+			optional: bool.false, nullable: bool.true,
+		},
+		cw: {
+			type: types.string,
+			optional: bool.true, nullable: bool.true,
+		},
+		userId: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+		},
+		user: {
+			type: types.object,
+			ref: '#/components/schemas/User',
+			optional: bool.false, nullable: bool.false,
+		},
+		replyId: {
+			type: types.string,
+			optional: bool.true, nullable: bool.true,
+			format: 'id',
+			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+		},
+		renoteId: {
+			type: types.string,
+			optional: bool.true, nullable: bool.true,
+			format: 'id',
+			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+		},
+		reply: {
+			type: types.object,
+			optional: bool.true, nullable: bool.true,
+			ref: '#/components/schemas/Note'
+		},
+		renote: {
+			type: types.object,
+			optional: bool.true, nullable: bool.true,
+			ref: '#/components/schemas/Note'
+		},
+		viaMobile: {
+			type: types.boolean,
+			optional: bool.true, nullable: bool.false,
+		},
+		visibility: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+		},
+	},
+	//required: ['id', 'userId', 'createdAt']
+};

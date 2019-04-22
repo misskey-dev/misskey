@@ -1,9 +1,11 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles } from '..';
-import rap from '@prezzemolo/rap';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
+import { SchemaType, bool, types } from '../../misc/schema';
+import { packedNoteSchema } from './note';
+import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -71,7 +73,7 @@ export class UserRepository extends Repository<User> {
 			includeSecrets?: boolean,
 			includeHasUnreadNotes?: boolean
 		}
-	): Promise<Record<string, any>> {
+	): Promise<SchemaType<typeof packedUserSchema>> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false
@@ -86,7 +88,38 @@ export class UserRepository extends Repository<User> {
 
 		const falsy = opts.detail ? false : undefined;
 
-		return await rap({
+		const detail = opts.detail ? {
+			url: profile!.url,
+			createdAt: user.createdAt.toISOString(),
+			updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
+			bannerUrl: user.bannerUrl,
+			bannerColor: user.bannerColor,
+			isLocked: user.isLocked,
+			isModerator: user.isModerator || falsy,
+			description: profile!.description,
+			location: profile!.location,
+			birthday: profile!.birthday,
+			followersCount: user.followersCount,
+			followingCount: user.followingCount,
+			notesCount: user.notesCount,
+			pinnedNoteIds: pins.map(pin => pin.noteId),
+			pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
+				detail: true
+			}),
+		} : {};
+
+		const hasUnreadNotes = opts.includeHasUnreadNotes ? {
+			hasUnreadSpecifiedNotes: NoteUnreads.count({
+				where: { userId: user.id, isSpecified: true },
+				take: 1
+			}).then(count => count > 0),
+			hasUnreadMentions: NoteUnreads.count({
+				where: { userId: user.id },
+				take: 1
+			}).then(count => count > 0),
+		} : {};
+
+		const packed = {
 			id: user.id,
 			name: user.name,
 			username: user.username,
@@ -107,37 +140,10 @@ export class UserRepository extends Repository<User> {
 				select: ['name', 'host', 'url', 'aliases']
 			}) : [],
 
-			...(opts.includeHasUnreadNotes ? {
-				hasUnreadSpecifiedNotes: NoteUnreads.count({
-					where: { userId: user.id, isSpecified: true },
-					take: 1
-				}).then(count => count > 0),
-				hasUnreadMentions: NoteUnreads.count({
-					where: { userId: user.id },
-					take: 1
-				}).then(count => count > 0),
-			} : {}),
+			...hasUnreadNotes,
 
-			...(opts.detail ? {
-				url: profile!.url,
-				createdAt: user.createdAt,
-				updatedAt: user.updatedAt,
-				bannerUrl: user.bannerUrl,
-				bannerColor: user.bannerColor,
-				isLocked: user.isLocked,
-				isModerator: user.isModerator || falsy,
-				description: profile!.description,
-				location: profile!.location,
-				birthday: profile!.birthday,
-				followersCount: user.followersCount,
-				followingCount: user.followingCount,
-				notesCount: user.notesCount,
-				pinnedNoteIds: pins.map(pin => pin.noteId),
-				pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
-					detail: true
-				}),
-			} : {}),
-
+			...detail,
+/*
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
@@ -178,8 +184,10 @@ export class UserRepository extends Repository<User> {
 				isBlocking: relation.isBlocking,
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
-			} : {})
-		});
+			} : {})*/
+		};
+
+		return await awaitAll(packed);
 	}
 
 	public isLocalUser(user: User): user is ILocalUser {
@@ -216,3 +224,153 @@ export class UserRepository extends Repository<User> {
 	}
 	//#endregion
 }
+
+export const packedUserSchema = {
+	type: types.object,
+	nullable: bool.false, optional: bool.false,
+	properties: {
+		id: {
+			type: types.string,
+			nullable: bool.false, optional: bool.false,
+			format: 'id',
+			description: 'The unique identifier for this User.',
+			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+		},
+		username: {
+			type: types.string,
+			nullable: bool.false, optional: bool.false,
+			description: 'The screen name, handle, or alias that this user identifies themselves with.',
+			example: 'ai'
+		},
+		name: {
+			type: types.string,
+			nullable: bool.true, optional: bool.false,
+			description: 'The name of the user, as they’ve defined it.',
+			example: '藍'
+		},
+		url: {
+			type: types.string,
+			format: 'url',
+			nullable: bool.true, optional: bool.true,
+		},
+		avatarUrl: {
+			type: types.string,
+			format: 'url',
+			nullable: bool.true, optional: bool.false,
+		},
+		avatarColor: {
+			type: types.any,
+			nullable: bool.true, optional: bool.false,
+		},
+		bannerUrl: {
+			type: types.string,
+			format: 'url',
+			nullable: bool.true, optional: bool.true,
+		},
+		bannerColor: {
+			type: types.any,
+			nullable: bool.true, optional: bool.true,
+		},
+		emojis: {
+			type: types.any,
+			nullable: bool.true, optional: bool.false,
+		},
+		host: {
+			type: types.string,
+			nullable: bool.true, optional: bool.false,
+			example: 'misskey.example.com'
+		},
+		description: {
+			type: types.string,
+			nullable: bool.true, optional: bool.true,
+			description: 'The user-defined UTF-8 string describing their account.',
+			example: 'Hi masters, I am Ai!'
+		},
+		birthday: {
+			type: types.string,
+			nullable: bool.true, optional: bool.true,
+			example: '2018-03-12'
+		},
+		createdAt: {
+			type: types.string,
+			nullable: bool.false, optional: bool.true,
+			format: 'date-time',
+			description: 'The date that the user account was created on Misskey.'
+		},
+		updatedAt: {
+			type: types.string,
+			nullable: bool.true, optional: bool.true,
+			format: 'date-time',
+		},
+		location: {
+			type: types.string,
+			nullable: bool.true, optional: bool.true,
+		},
+		followersCount: {
+			type: types.number,
+			nullable: bool.false, optional: bool.true,
+			description: 'The number of followers this account currently has.'
+		},
+		followingCount: {
+			type: types.number,
+			nullable: bool.false, optional: bool.true,
+			description: 'The number of users this account is following.'
+		},
+		notesCount: {
+			type: types.number,
+			nullable: bool.false, optional: bool.true,
+			description: 'The number of Notes (including renotes) issued by the user.'
+		},
+		isBot: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+			description: 'Whether this account is a bot.'
+		},
+		pinnedNoteIds: {
+			type: types.array,
+			nullable: bool.false, optional: bool.true,
+			items: {
+				type: types.string,
+				nullable: bool.false, optional: bool.false,
+				format: 'id',
+			}
+		},
+		pinnedNotes: {
+			type: types.array,
+			nullable: bool.false, optional: bool.true,
+			items: packedNoteSchema
+		},
+		isCat: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+			description: 'Whether this account is a cat.'
+		},
+		isAdmin: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+			description: 'Whether this account is the admin.'
+		},
+		isModerator: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+			description: 'Whether this account is a moderator.'
+		},
+		isVerified: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+		},
+		isLocked: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+		},
+		hasUnreadSpecifiedNotes: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+		},
+		hasUnreadMentions: {
+			type: types.boolean,
+			nullable: bool.false, optional: bool.true,
+		},
+	},
+//	required: ['id', 'name', 'username', 'createdAt']
+};
