@@ -88,12 +88,14 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 		<td><img src="https://avatars0.githubusercontent.com/u/10798641?s=460&v=4" alt="AyaMorisawa" width="100"></td>
 		<td><img src="https://avatars1.githubusercontent.com/u/30769358?s=460&v=4" alt="mei23" width="100"></td>
 		<td><img src="https://avatars2.githubusercontent.com/u/20679825?s=460&v=4" alt="acid-chicken" width="100"></td>
+		<td><img src="https://avatars2.githubusercontent.com/u/6533808?s=460&v=4" alt="rinsuki" width="100"></td>
 	</tr>
 	<tr>
 		<td align="center"><a href="https://github.com/syuilo">@syuilo</a></td>
 		<td align="center"><a href="https://github.com/AyaMorisawa">@AyaMorisawa</a></td>
 		<td align="center"><a href="https://github.com/mei23">@mei23</a></td>
 		<td align="center"><a href="https://github.com/acid-chicken">@acid-chicken</a></td>
+		<td align="center"><a href="https://github.com/rinsuki">@rinsuki</a></td>
 	</tr>
 </table>
 

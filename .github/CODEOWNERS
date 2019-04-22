@@ -1,7 +1,7 @@
 # PATH                                          OWNERS
 /.autogen/                                      @acid-chicken
 /.circleci/                                     @syuilo @acid-chicken
-/.config/                                       @syuilo @AyaMorisawa @mei23 @acid-chicken
+/.config/                                       @syuilo @AyaMorisawa @mei23 @acid-chicken @rinsuki
 # /.config/mongo_initdb_example.js              @khws4v1
 /.github/                                       @syuilo @AyaMorisawa @acid-chicken
 /.vscode/                                       @acid-chicken
@@ -12,7 +12,7 @@
 # /docs/*.fr.md                                 @BoFFire
 # /docs/docker.*.md                             @khws4v1
 /locales/                                       @syuilo
-/src/                                           @syuilo @AyaMorisawa @mei23 @acid-chicken
+/src/                                           @syuilo @AyaMorisawa @mei23 @acid-chicken @rinsuki
 # /src/crypto_key.cc                            @akihikodaki
 # /src/crypto_key.d.ts                          @akihikodaki
 /.dockerignore                                  @syuilo # @khws4v1
