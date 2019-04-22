@@ -1,15 +1,19 @@
+import { types, bool } from '../../../../misc/schema';
+
 export const logSchema = {
 	/**
 	 * フォローしている
 	 */
 	followings: {
-		type: 'object' as 'object',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
 		properties: {
 			/**
 			 * フォローしている合計
 			 */
 			total: {
-				type: 'number' as 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'フォローしている合計',
 			},
 
@@ -17,7 +21,8 @@ export const logSchema = {
 			 * フォローした数
 			 */
 			inc: {
-				type: 'number' as 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'フォローした数',
 			},
 
@@ -25,7 +30,8 @@ export const logSchema = {
 			 * フォロー解除した数
 			 */
 			dec: {
-				type: 'number' as 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'フォロー解除した数',
 			},
 		}
@@ -35,13 +41,15 @@ export const logSchema = {
 	 * フォローされている
 	 */
 	followers: {
-		type: 'object' as 'object',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
 		properties: {
 			/**
 			 * フォローされている合計
 			 */
 			total: {
-				type: 'number' as 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'フォローされている合計',
 			},
 
@@ -49,7 +57,8 @@ export const logSchema = {
 			 * フォローされた数
 			 */
 			inc: {
-				type: 'number' as 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'フォローされた数',
 			},
 
@@ -57,7 +66,8 @@ export const logSchema = {
 			 * フォロー解除された数
 			 */
 			dec: {
-				type: 'number' as 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'フォロー解除された数',
 			},
 		}
@@ -65,14 +75,14 @@ export const logSchema = {
 };
 
 export const schema = {
-	type: 'object' as 'object',
+	type: types.object,
 	properties: {
 		local: {
-			type: 'object' as 'object',
+			type: types.object,
 			properties: logSchema
 		},
 		remote: {
-			type: 'object' as 'object',
+			type: types.object,
 			properties: logSchema
 		},
 	}

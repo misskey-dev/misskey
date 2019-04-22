@@ -67,8 +67,8 @@ export type SchemaType<p extends Schema> =
 
 export function convertOpenApiSchema(schema: Schema) {
 	const x = JSON.parse(JSON.stringify(schema)); // copy
-	if (!['string', 'number', 'boolean', 'array', 'object'].includes(x.type)) {
-		x['$ref'] = `#/components/schemas/${x.type}`;
+	if (x.ref) {
+		x['$ref'] = `#/components/schemas/${x.ref}`;
 	}
 	if (x.type === 'array' && x.items) {
 		x.items = convertOpenApiSchema(x.items);
