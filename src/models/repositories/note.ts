@@ -226,7 +226,7 @@ export const packedNoteSchema = {
 			optional: bool.false, nullable: bool.false,
 			format: 'id',
 			description: 'The unique identifier for this Note.',
-			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: types.string,
@@ -256,13 +256,13 @@ export const packedNoteSchema = {
 			type: types.string,
 			optional: bool.true, nullable: bool.true,
 			format: 'id',
-			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			example: 'xxxxxxxxxx',
 		},
 		renoteId: {
 			type: types.string,
 			optional: bool.true, nullable: bool.true,
 			format: 'id',
-			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			example: 'xxxxxxxxxx',
 		},
 		reply: {
 			type: types.object,

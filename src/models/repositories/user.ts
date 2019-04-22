@@ -231,7 +231,7 @@ export const packedUserSchema = {
 			nullable: bool.false, optional: bool.false,
 			format: 'id',
 			description: 'The unique identifier for this User.',
-			example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+			example: 'xxxxxxxxxx',
 		},
 		username: {
 			type: types.string,

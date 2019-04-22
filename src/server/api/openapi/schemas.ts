@@ -1,6 +1,7 @@
 import { packedUserSchema } from '../../../models/repositories/user';
 import { Schema } from '../../../misc/schema';
 import { packedNoteSchema } from '../../../models/repositories/note';
+import { packedUserListSchema } from '../../../models/repositories/user-list';
 
 function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -50,27 +51,7 @@ export const schemas = {
 
 	User: convertSchemaToOpenApiSchema(packedUserSchema),
 
-	UserList: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this UserList.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the UserList was created.'
-			},
-			title: {
-				type: 'string',
-				description: 'The name of the UserList.'
-			},
-		},
-		required: ['id', 'createdAt', 'title']
-	},
+	UserList: convertSchemaToOpenApiSchema(packedUserListSchema),
 
 	MessagingMessage: {
 		type: 'object',
@@ -79,7 +60,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this MessagingMessage.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -114,7 +95,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this notification.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -137,7 +118,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this Drive file.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -170,7 +151,7 @@ export const schemas = {
 				format: 'id',
 				nullable: true,
 				description: 'The parent folder ID of this Drive file.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			isSensitive: {
 				type: 'boolean',
@@ -187,7 +168,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this Drive folder.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -211,7 +192,7 @@ export const schemas = {
 				format: 'id',
 				nullable: true,
 				description: 'The parent folder ID of this folder.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			parent: {
 				$ref: '#/components/schemas/DriveFolder'
@@ -227,7 +208,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this following.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -261,7 +242,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this mute.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -283,7 +264,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this block.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',
@@ -305,7 +286,7 @@ export const schemas = {
 				type: 'string',
 				format: 'id',
 				description: 'The unique identifier for this reaction.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+				example: 'xxxxxxxxxx',
 			},
 			createdAt: {
 				type: 'string',

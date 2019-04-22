@@ -59,7 +59,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			deprecated: (param.data || {}).deprecated,
 			...((param.data || {}).default ? { default: (param.data || {}).default } : {}),
 			type: param.name === 'ID' ? 'string' : param.name.toLowerCase(),
-			...(param.name === 'ID' ? { example: 'xxxxxxxxxxxxxxxxxxxxxxxx', format: 'id' } : {}),
+			...(param.name === 'ID' ? { example: 'xxxxxxxxxx', format: 'id' } : {}),
 			nullable: param.isNullable,
 			...(param.name === 'String' ? {
 				...((param as any).enum ? { enum: (param as any).enum } : {}),
