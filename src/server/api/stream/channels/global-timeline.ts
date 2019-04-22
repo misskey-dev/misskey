@@ -22,6 +22,8 @@ export default class extends Channel {
 
 	@autobind
 	private async onNote(note: any) {
+		if (note.visibility !== 'public') return;
+
 		// リプライなら再pack
 		if (note.replyId != null) {
 			note.reply = await Notes.pack(note.replyId, this.user, {
