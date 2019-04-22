@@ -28,10 +28,10 @@ export default Vue.extend({
 			this.$root.dialog({
 				title: this.$t('list-name'),
 				input: true
-			}).then(async ({ canceled, result: title }) => {
+			}).then(async ({ canceled, result: name }) => {
 				if (canceled) return;
 				const list = await this.$root.api('users/lists/create', {
-					title
+					name
 				});
 
 				this.lists.push(list)

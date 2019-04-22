@@ -46,13 +46,16 @@ const logSchema = {
 
 export const schema = {
 	type: types.object,
+	optional: bool.false, nullable: bool.false,
 	properties: {
 		local: {
 			type: types.object,
+			optional: bool.false, nullable: bool.false,
 			properties: logSchema
 		},
 		remote: {
 			type: types.object,
+			optional: bool.false, nullable: bool.false,
 			properties: logSchema
 		},
 	}

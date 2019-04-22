@@ -121,6 +121,7 @@ export const schema = {
 
 		followers: {
 			type: types.object,
+			optional: bool.false, nullable: bool.false,
 			properties: {
 				total: {
 					type: types.number,
