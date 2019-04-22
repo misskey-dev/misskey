@@ -143,7 +143,7 @@ export class UserRepository extends Repository<User> {
 			...hasUnreadNotes,
 
 			...detail,
-/*
+
 			...(opts.detail && meId === user.id ? {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
@@ -184,7 +184,7 @@ export class UserRepository extends Repository<User> {
 				isBlocking: relation.isBlocking,
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
-			} : {})*/
+			} : {})
 		};
 
 		return await awaitAll(packed);

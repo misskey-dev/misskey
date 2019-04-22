@@ -1,4 +1,24 @@
 import { packedUserSchema } from '../../../models/repositories/user';
+import { Schema } from '../../../misc/schema';
+import { packedNoteSchema } from '../../../models/repositories/note';
+
+function convertSchemaToOpenApiSchema(schema: Schema) {
+	const res: any = schema;
+
+	if (schema.type === 'object' && schema.properties) {
+		res.required = Object.entries(schema.properties).filter(([k, v]) => v.optional !== true).map(([k]) => k);
+
+		for (const k of Object.keys(schema.properties)) {
+			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k]);
+		}
+	}
+
+	if (schema.ref) {
+		res.$ref = `#/components/schemas/${schema.ref}`;
+	}
+
+	return res;
+}
 
 export const schemas = {
 	Error: {
@@ -28,7 +48,7 @@ export const schemas = {
 		required: ['error']
 	},
 
-	User: packedUserSchema,
+	User: convertSchemaToOpenApiSchema(packedUserSchema),
 
 	UserList: {
 		type: 'object',
@@ -85,58 +105,7 @@ export const schemas = {
 		required: ['id', 'createdAt']
 	},
 
-	Note: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this Note.',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the Note was created on Misskey.'
-			},
-			text: {
-				type: 'string'
-			},
-			cw: {
-				type: 'string'
-			},
-			userId: {
-				type: 'string',
-				format: 'id',
-			},
-			user: {
-				$ref: '#/components/schemas/User'
-			},
-			replyId: {
-				type: 'string',
-				format: 'id',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
-			},
-			renoteId: {
-				type: 'string',
-				format: 'id',
-				example: 'xxxxxxxxxxxxxxxxxxxxxxxx',
-			},
-			reply: {
-				$ref: '#/components/schemas/Note'
-			},
-			renote: {
-				$ref: '#/components/schemas/Note'
-			},
-			viaMobile: {
-				type: 'boolean'
-			},
-			visibility: {
-				type: 'string'
-			},
-		},
-		required: ['id', 'userId', 'createdAt']
-	},
+	Note: convertSchemaToOpenApiSchema(packedNoteSchema),
 
 	Notification: {
 		type: 'object',
