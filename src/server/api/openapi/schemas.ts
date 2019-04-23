@@ -3,8 +3,12 @@ import { Schema } from '../../../misc/schema';
 import { packedNoteSchema } from '../../../models/repositories/note';
 import { packedUserListSchema } from '../../../models/repositories/user-list';
 import { packedAppSchema } from '../../../models/repositories/app';
+import { packedMessagingMessageSchema } from '../../../models/repositories/messaging-message';
+import { packedNotificationSchema } from '../../../models/repositories/notification';
+import { packedDriveFileSchema } from '../../../models/repositories/drive-file';
+import { packedDriveFolderSchema } from '../../../models/repositories/drive-folder';
 
-function convertSchemaToOpenApiSchema(schema: Schema) {
+export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
 
 	if (schema.type === 'object' && schema.properties) {
@@ -60,153 +64,15 @@ export const schemas = {
 
 	App: convertSchemaToOpenApiSchema(packedAppSchema),
 
-	MessagingMessage: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this MessagingMessage.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the MessagingMessage was created.'
-			},
-			text: {
-				type: 'string',
-				nullable: true
-			},
-			file: {
-				type: 'DriveFile',
-				nullable: true
-			},
-			recipientId: {
-				type: 'string',
-				format: 'id',
-			},
-			recipient: {
-				$ref: '#/components/schemas/User'
-			},
-		},
-		required: ['id', 'createdAt']
-	},
+	MessagingMessage: convertSchemaToOpenApiSchema(packedMessagingMessageSchema),
 
 	Note: convertSchemaToOpenApiSchema(packedNoteSchema),
 
-	Notification: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this notification.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the notification was created.'
-			},
-			type: {
-				type: 'string',
-				enum: ['follow', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote'],
-				description: 'The type of the notification.'
-			},
-		},
-		required: ['id', 'createdAt', 'type']
-	},
+	Notification: convertSchemaToOpenApiSchema(packedNotificationSchema),
 
-	DriveFile: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this Drive file.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the Drive file was created on Misskey.'
-			},
-			name: {
-				type: 'string',
-				description: 'The file name with extension.',
-				example: 'lenna.jpg'
-			},
-			type: {
-				type: 'string',
-				description: 'The MIME type of this Drive file.',
-				example: 'image/jpeg'
-			},
-			md5: {
-				type: 'string',
-				format: 'md5',
-				description: 'The MD5 hash of this Drive file.',
-				example: '15eca7fba0480996e2245f5185bf39f2'
-			},
-			size: {
-				type: 'number',
-				description: 'The size of this Drive file. (bytes)',
-				example: 51469
-			},
-			folderId: {
-				type: 'string',
-				format: 'id',
-				nullable: true,
-				description: 'The parent folder ID of this Drive file.',
-				example: 'xxxxxxxxxx',
-			},
-			isSensitive: {
-				type: 'boolean',
-				description: 'Whether this Drive file is sensitive.',
-			},
-		},
-		required: ['id', 'createdAt', 'name', 'type', 'size', 'md5']
-	},
+	DriveFile: convertSchemaToOpenApiSchema(packedDriveFileSchema),
 
-	DriveFolder: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this Drive folder.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the Drive folder was created.'
-			},
-			name: {
-				type: 'string',
-				description: 'The folder name.',
-			},
-			foldersCount: {
-				type: 'number',
-				description: 'The count of child folders.',
-			},
-			filesCount: {
-				type: 'number',
-				description: 'The count of child files.',
-			},
-			parentId: {
-				type: 'string',
-				format: 'id',
-				nullable: true,
-				description: 'The parent folder ID of this folder.',
-				example: 'xxxxxxxxxx',
-			},
-			parent: {
-				$ref: '#/components/schemas/DriveFolder'
-			},
-		},
-		required: ['id', 'createdAt', 'name']
-	},
+	DriveFolder: convertSchemaToOpenApiSchema(packedDriveFolderSchema),
 
 	Following: {
 		type: 'object',
