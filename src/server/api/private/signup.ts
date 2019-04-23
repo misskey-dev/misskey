@@ -135,7 +135,7 @@ export default async (ctx: Koa.BaseContext) => {
 		includeSecrets: true
 	});
 
-	res.token = secret;
+	(res as any).token = secret;
 
 	ctx.body = res;
 };
