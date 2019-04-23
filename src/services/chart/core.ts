@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
-import { Schema } from '../../misc/schema';
+import { Schema, bool, types } from '../../misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
@@ -449,7 +449,8 @@ export function convertLog(logSchema: Schema): Schema {
 	if (v.type === 'number') {
 		v.type = 'array';
 		v.items = {
-			type: 'number'
+			type: types.number,
+			optional: bool.false, nullable: bool.false,
 		};
 	} else if (v.type === 'object') {
 		for (const k of Object.keys(v.properties!)) {

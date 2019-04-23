@@ -1,8 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
-import rap from '@prezzemolo/rap';
 import { Following } from '../entities/following';
 import { ensure } from '../../prelude/ensure';
+import { awaitAll } from '../../prelude/await-all';
+import { SchemaType, types, bool } from '../../misc/schema';
 
 type LocalFollowerFollowing = Following & {
 	followerHost: null;
@@ -27,6 +28,8 @@ type RemoteFolloweeFollowing = Following & {
 	followeeInbox: string;
 	followeeSharedInbox: string;
 };
+
+export type PackedFollowing = SchemaType<typeof packedFollowingSchema>;
 
 @EntityRepository(Following)
 export class FollowingRepository extends Repository<Following> {
@@ -64,22 +67,64 @@ export class FollowingRepository extends Repository<Following> {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
 		}
-	) {
+	): Promise<PackedFollowing> {
 		const following = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		if (opts == null) opts = {};
 
-		return await rap({
+		return await awaitAll({
 			id: following.id,
-			createdAt: following.createdAt,
+			createdAt: following.createdAt.toISOString(),
 			followeeId: following.followeeId,
 			followerId: following.followerId,
 			followee: opts.populateFollowee ? Users.pack(following.followee || following.followeeId, me, {
 				detail: true
-			}) : null,
+			}) : undefined,
 			follower: opts.populateFollower ? Users.pack(following.follower || following.followerId, me, {
 				detail: true
-			}) : null,
+			}) : undefined,
 		});
 	}
 }
+
+export const packedFollowingSchema = {
+	type: types.object,
+	optional: bool.false, nullable: bool.false,
+	properties: {
+		id: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+			description: 'The unique identifier for this following.',
+			example: 'xxxxxxxxxx',
+		},
+		createdAt: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'date-time',
+			description: 'The date that the following was created.'
+		},
+		followeeId: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+		},
+		followee: {
+			type: types.object,
+			optional: bool.true, nullable: bool.false,
+			ref: 'User',
+			description: 'The followee.'
+		},
+		followerId: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+		},
+		follower: {
+			type: types.object,
+			optional: bool.true, nullable: bool.false,
+			ref: 'User',
+			description: 'The follower.'
+		},
+	}
+};

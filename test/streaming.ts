@@ -628,7 +628,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
@@ -658,7 +658,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			let fired = false;
@@ -689,7 +689,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
@@ -724,7 +724,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン

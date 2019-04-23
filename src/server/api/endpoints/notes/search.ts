@@ -4,6 +4,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { In } from 'typeorm';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -32,10 +33,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {

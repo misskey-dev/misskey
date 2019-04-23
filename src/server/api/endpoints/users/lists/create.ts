@@ -3,6 +3,7 @@ import define from '../../../define';
 import { UserLists } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
 import { UserList } from '../../../../../models/entities/user-list';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -17,10 +18,16 @@ export const meta = {
 	kind: 'write:account',
 
 	params: {
-		title: {
+		name: {
 			validator: $.str.range(1, 100)
 		}
-	}
+	},
+
+	res: {
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'UserList',
+	},
 };
 
 export default define(meta, async (ps, user) => {
@@ -28,7 +35,7 @@ export default define(meta, async (ps, user) => {
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
-		name: ps.title,
+		name: ps.name,
 	} as UserList);
 
 	return await UserLists.pack(userList);

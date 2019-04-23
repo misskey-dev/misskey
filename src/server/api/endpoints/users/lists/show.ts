@@ -3,6 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { UserLists } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -23,7 +24,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'UserList'
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'UserList',
 	},
 
 	errors: {

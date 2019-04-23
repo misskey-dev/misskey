@@ -5,6 +5,7 @@ import define from '../define';
 import fetchMeta from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
+import { types, bool } from '../../../misc/schema';
 
 export const meta = {
 	stability: 'stable',
@@ -26,32 +27,40 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
 		properties: {
 			version: {
-				type: 'string',
+				type: types.string,
+				optional: bool.false, nullable: bool.false,
 				description: 'The version of Misskey of this instance.',
 				example: pkg.version
 			},
 			name: {
-				type: 'string',
+				type: types.string,
+				optional: bool.false, nullable: bool.false,
 				description: 'The name of this instance.',
 			},
 			description: {
-				type: 'string',
+				type: types.string,
+				optional: bool.false, nullable: bool.false,
 				description: 'The description of this instance.',
 			},
 			announcements: {
-				type: 'array',
+				type: types.array,
+				optional: bool.false, nullable: bool.false,
 				items: {
-					type: 'object',
+					type: types.object,
+					optional: bool.false, nullable: bool.false,
 					properties: {
 						title: {
-							type: 'string',
+							type: types.string,
+							optional: bool.false, nullable: bool.false,
 							description: 'The title of the announcement.',
 						},
 						text: {
-							type: 'string',
+							type: types.string,
+							optional: bool.false, nullable: bool.false,
 							description: 'The text of the announcement. (can be HTML)',
 						},
 					}
@@ -59,19 +68,23 @@ export const meta = {
 				description: 'The announcements of this instance.',
 			},
 			disableRegistration: {
-				type: 'boolean',
+				type: types.boolean,
+				optional: bool.false, nullable: bool.false,
 				description: 'Whether disabled open registration.',
 			},
 			disableLocalTimeline: {
-				type: 'boolean',
+				type: types.boolean,
+				optional: bool.false, nullable: bool.false,
 				description: 'Whether disabled LTL and STL.',
 			},
 			disableGlobalTimeline: {
-				type: 'boolean',
+				type: types.boolean,
+				optional: bool.false, nullable: bool.false,
 				description: 'Whether disabled GTL.',
 			},
 			enableEmojiReaction: {
-				type: 'boolean',
+				type: types.boolean,
+				optional: bool.false, nullable: bool.false,
 				description: 'Whether enabled emoji reaction.',
 			},
 		}

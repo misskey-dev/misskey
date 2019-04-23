@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Apps } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	tags: ['app'],
@@ -11,6 +12,12 @@ export const meta = {
 		appId: {
 			validator: $.type(ID),
 		},
+	},
+
+	res: {
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'App',
 	},
 
 	errors: {
