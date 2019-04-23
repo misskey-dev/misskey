@@ -7,6 +7,7 @@ import { packedMessagingMessageSchema } from '../../../models/repositories/messa
 import { packedNotificationSchema } from '../../../models/repositories/notification';
 import { packedDriveFileSchema } from '../../../models/repositories/drive-file';
 import { packedDriveFolderSchema } from '../../../models/repositories/drive-folder';
+import { packedFollowingSchema } from '../../../models/repositories/following';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -74,39 +75,7 @@ export const schemas = {
 
 	DriveFolder: convertSchemaToOpenApiSchema(packedDriveFolderSchema),
 
-	Following: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this following.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the following was created.'
-			},
-			followeeId: {
-				type: 'string',
-				format: 'id',
-			},
-			followee: {
-				$ref: '#/components/schemas/User',
-				description: 'The followee.'
-			},
-			followerId: {
-				type: 'string',
-				format: 'id',
-			},
-			follower: {
-				$ref: '#/components/schemas/User',
-				description: 'The follower.'
-			},
-		},
-		required: ['id', 'createdAt', 'followeeId', 'followerId']
-	},
+	Following: convertSchemaToOpenApiSchema(packedFollowingSchema),
 
 	Muting: {
 		type: 'object',
