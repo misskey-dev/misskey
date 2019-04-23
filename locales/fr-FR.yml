@@ -73,6 +73,8 @@ common:
     "read:drive": "Parcourir le Drive"
     "write:drive": "Écrire sur le Drive"
     "read:favorites": "Afficher les favoris"
+    "write:notes": "Créer ou supprimer des publications"
+    "read:notifications": "Afficher les notifications"
     "read:reactions": "Lire les réactions"
     "write:votes": "Vote"
   empty-timeline-info:
@@ -307,6 +309,7 @@ common/views/pages/explore.vue:
   explore: "Explorer {host}"
   users-info: "Actuellement, {users} utilisateurs se sont inscrit ici"
 common/views/components/url-preview.vue:
+  enable-player: "Activer la lecture"
   disable-player: "Fermer le lecteur"
 common/views/components/user-list.vue:
   no-users: "Il n'y a aucun utilisateur"
@@ -647,6 +650,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "Liste des comptes bloqués"
     user-lists: "Listes"
   export-requested: "Vous avez demandé une exportation. Cela peut prendre un certain temps. Une fois l'exportation terminée, le fichier résultant sera ajouté dans le Drive."
+  import-requested: "Vous avez initié un import. Ceci peut prendre un peu de temps."
   enter-password: "Veuillez saisir votre mot de passe"
   danger-zone: "Zone de danger"
   delete-account: "Supprimer le compte"
@@ -659,6 +663,7 @@ common/views/components/user-list-editor.vue:
   delete-are-you-sure: "Voulez-vous vraiment supprimer la liste « $1 » ?"
   deleted: "Supprimé"
 common/views/components/user-lists.vue:
+  create-list: "Créer une liste"
   list-name: "Nom de la liste"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
