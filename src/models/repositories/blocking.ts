@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import { Blocking } from '../entities/blocking';
 import { ensure } from '../../prelude/ensure';
+import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(Blocking)
 export class BlockingRepository extends Repository<Blocking> {
@@ -18,7 +19,7 @@ export class BlockingRepository extends Repository<Blocking> {
 	) {
 		const blocking = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
-		return await rap({
+		return await awaitAll({
 			id: blocking.id,
 			blockee: Users.pack(blocking.blockeeId, me, {
 				detail: true

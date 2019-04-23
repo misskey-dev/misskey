@@ -5,6 +5,7 @@ import { ApiError } from '../../error';
 import { Users, Followings } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { toPunyNullable } from '../../../../misc/convert-host';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -48,10 +49,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Following',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Following',
+		}
 	},
 
 	errors: {

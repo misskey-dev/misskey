@@ -3,6 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFiles } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	stability: 'stable',
@@ -29,10 +30,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {

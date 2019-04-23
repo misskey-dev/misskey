@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import { Following } from '../entities/following';
 import { ensure } from '../../prelude/ensure';
+import { awaitAll } from '../../prelude/await-all';
 
 type LocalFollowerFollowing = Following & {
 	followerHost: null;
@@ -68,7 +69,7 @@ export class FollowingRepository extends Repository<Following> {
 
 		if (opts == null) opts = {};
 
-		return await rap({
+		return await awaitAll({
 			id: following.id,
 			createdAt: following.createdAt,
 			followeeId: following.followeeId,

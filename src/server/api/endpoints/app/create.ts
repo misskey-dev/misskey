@@ -4,12 +4,13 @@ import define from '../../define';
 import { Apps } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
 import { unique } from '../../../../prelude/array';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	tags: ['app'],
 
 	requireCredential: false,
-	
+
 	desc: {
 		'ja-JP': 'アプリを作成します。',
 		'en-US': 'Create a application.'
@@ -50,29 +51,12 @@ export const meta = {
 			}
 		},
 	},
-	
+
 	res: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				description: 'アプリケーションのID'
-			},
-			name: {
-				type: 'string',
-				description: 'アプリケーションの名前'
-			},
-			callbackUrl: {
-				type: 'string',
-				nullable: true,
-				description: 'コールバックするURL'
-			},
-			secret: {
-				type: 'string',
-				description: 'アプリケーションのシークレットキー'
-			}
-		}
-	}
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'App',
+	},
 };
 
 export default define(meta, async (ps, user) => {

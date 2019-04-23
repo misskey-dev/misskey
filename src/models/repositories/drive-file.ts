@@ -4,6 +4,7 @@ import { Users, DriveFolders } from '..';
 import { User } from '../entities/user';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
+import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(DriveFile)
 export class DriveFileRepository extends Repository<DriveFile> {
@@ -89,7 +90,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 
 		const file = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
-		return await rap({
+		return await awaitAll({
 			id: file.id,
 			createdAt: file.createdAt,
 			name: file.name,

@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { DriveFiles } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -24,7 +25,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'DriveFile',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
+		items: {
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'DriveFile',
+		}
 	},
 };
 

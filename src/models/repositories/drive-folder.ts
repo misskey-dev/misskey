@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { DriveFolders, DriveFiles } from '..';
 import { DriveFolder } from '../entities/drive-folder';
 import { ensure } from '../../prelude/ensure';
+import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(DriveFolder)
 export class DriveFolderRepository extends Repository<DriveFolder> {
@@ -24,7 +25,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 
 		const folder = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
-		return await rap({
+		return await awaitAll({
 			id: folder.id,
 			createdAt: folder.createdAt,
 			name: folder.name,
