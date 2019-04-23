@@ -53,6 +53,8 @@ export const schemas = {
 
 	UserList: convertSchemaToOpenApiSchema(packedUserListSchema),
 
+	App: convertSchemaToOpenApiSchema(packedAppSchema),
+
 	MessagingMessage: {
 		type: 'object',
 		properties: {
