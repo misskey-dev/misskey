@@ -8,6 +8,8 @@ import { packedNotificationSchema } from '../../../models/repositories/notificat
 import { packedDriveFileSchema } from '../../../models/repositories/drive-file';
 import { packedDriveFolderSchema } from '../../../models/repositories/drive-folder';
 import { packedFollowingSchema } from '../../../models/repositories/following';
+import { packedMutingSchema } from '../../../models/repositories/muting';
+import { packedBlockingSchema } from '../../../models/repositories/blocking';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -77,49 +79,9 @@ export const schemas = {
 
 	Following: convertSchemaToOpenApiSchema(packedFollowingSchema),
 
-	Muting: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this mute.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the mute was created.'
-			},
-			mutee: {
-				$ref: '#/components/schemas/User',
-				description: 'The mutee.'
-			},
-		},
-		required: ['id', 'createdAt', 'mutee']
-	},
+	Muting: convertSchemaToOpenApiSchema(packedMutingSchema),
 
-	Blocking: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this block.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the block was created.'
-			},
-			blockee: {
-				$ref: '#/components/schemas/User',
-				description: 'The blockee.'
-			},
-		},
-		required: ['id', 'createdAt', 'blockee']
-	},
+	Blocking: convertSchemaToOpenApiSchema(packedBlockingSchema),
 
 	Reaction: {
 		type: 'object',
