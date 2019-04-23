@@ -111,7 +111,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c8.patreon.com/2/200/16869916" alt="見当かなみ" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/rane_hs">Hiroshi Seki</a></td>
-<td><a href="https://www.patreon.com/weepjp">weep</a></td>
+<td><a href="https://www.patreon.com/friendsni">weep</a></td>
 <td><a href="https://www.patreon.com/user?u=13099460">ne_moni</a></td>
 <td><a href="https://www.patreon.com/user?u=12913507">Melilot</a></td>
 <td><a href="https://www.patreon.com/osapon">osapon</a></td>
@@ -167,7 +167,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Thu, 18 Apr 2019 23:38:06 UTC
+**Last updated:** Tue, 23 Apr 2019 14:46:11 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
