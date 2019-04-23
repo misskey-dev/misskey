@@ -10,6 +10,7 @@ import { packedDriveFolderSchema } from '../../../models/repositories/drive-fold
 import { packedFollowingSchema } from '../../../models/repositories/following';
 import { packedMutingSchema } from '../../../models/repositories/muting';
 import { packedBlockingSchema } from '../../../models/repositories/blocking';
+import { packedNoteReactionSchema } from '../../../models/repositories/note-reaction';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -62,65 +63,17 @@ export const schemas = {
 	},
 
 	User: convertSchemaToOpenApiSchema(packedUserSchema),
-
 	UserList: convertSchemaToOpenApiSchema(packedUserListSchema),
-
 	App: convertSchemaToOpenApiSchema(packedAppSchema),
-
 	MessagingMessage: convertSchemaToOpenApiSchema(packedMessagingMessageSchema),
-
 	Note: convertSchemaToOpenApiSchema(packedNoteSchema),
-
 	Notification: convertSchemaToOpenApiSchema(packedNotificationSchema),
-
 	DriveFile: convertSchemaToOpenApiSchema(packedDriveFileSchema),
-
 	DriveFolder: convertSchemaToOpenApiSchema(packedDriveFolderSchema),
-
 	Following: convertSchemaToOpenApiSchema(packedFollowingSchema),
-
 	Muting: convertSchemaToOpenApiSchema(packedMutingSchema),
-
 	Blocking: convertSchemaToOpenApiSchema(packedBlockingSchema),
-
-	Reaction: {
-		type: 'object',
-		properties: {
-			id: {
-				type: 'string',
-				format: 'id',
-				description: 'The unique identifier for this reaction.',
-				example: 'xxxxxxxxxx',
-			},
-			createdAt: {
-				type: 'string',
-				format: 'date-time',
-				description: 'The date that the reaction was created.'
-			},
-			user: {
-				$ref: '#/components/schemas/User',
-				description: 'User who performed this reaction.'
-			},
-			type: {
-				type: 'string',
-				enum: [
-					'like',
-					'love',
-					'laugh',
-					'hmm',
-					'surprise',
-					'congrats',
-					'angry',
-					'confused',
-					'rip',
-					'pudding',
-					'star'
-				],
-				description: 'The reaction type.'
-			},
-		},
-		required: ['id', 'createdAt', 'user', 'type']
-	},
+	NoteReaction: convertSchemaToOpenApiSchema(packedNoteReactionSchema),
 
 	Hashtag: {
 		type: 'object',

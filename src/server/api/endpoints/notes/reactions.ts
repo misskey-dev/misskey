@@ -50,7 +50,7 @@ export const meta = {
 		items: {
 			type: types.object,
 			optional: bool.false, nullable: bool.false,
-			ref: 'Note',
+			ref: 'NoteReaction',
 		}
 	},
 
