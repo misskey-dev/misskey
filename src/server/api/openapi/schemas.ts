@@ -2,6 +2,7 @@ import { packedUserSchema } from '../../../models/repositories/user';
 import { Schema } from '../../../misc/schema';
 import { packedNoteSchema } from '../../../models/repositories/note';
 import { packedUserListSchema } from '../../../models/repositories/user-list';
+import { packedAppSchema } from '../../../models/repositories/app';
 
 function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -12,6 +13,10 @@ function convertSchemaToOpenApiSchema(schema: Schema) {
 		for (const k of Object.keys(schema.properties)) {
 			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k]);
 		}
+	}
+
+	if (schema.type === 'array' && schema.items) {
+		res.items = convertSchemaToOpenApiSchema(schema.items);
 	}
 
 	if (schema.ref) {
