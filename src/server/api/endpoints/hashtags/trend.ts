@@ -1,5 +1,5 @@
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 
@@ -24,7 +24,7 @@ export const meta = {
 };
 
 export default define(meta, async () => {
-	const instance = await fetchMeta();
+	const instance = await fetchMeta(true);
 	const hiddenTags = instance.hiddenTags.map(t => t.toLowerCase());
 
 	const tagNotes = await Notes.createQueryBuilder('note')

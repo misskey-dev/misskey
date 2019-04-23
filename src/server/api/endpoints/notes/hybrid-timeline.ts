@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Followings, Notes } from '../../../../models';
@@ -109,7 +109,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// TODO どっかにキャッシュ
 	const m = await fetchMeta();
 	if (m.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
 		throw new ApiError(meta.errors.stlDisabled);

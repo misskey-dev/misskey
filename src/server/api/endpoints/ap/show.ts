@@ -9,7 +9,7 @@ import { extractDbHost } from '../../../../misc/convert-host';
 import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { validActor } from '../../../../remote/activitypub/type';
 
 export const meta = {

@@ -3,7 +3,7 @@ import * as ms from 'ms';
 import { length } from 'stringz';
 import create from '../../../../services/note/create';
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
 import { User } from '../../../../models/entities/user';

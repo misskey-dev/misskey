@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
@@ -83,7 +83,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// TODO どっかにキャッシュ
 	const m = await fetchMeta();
 	if (m.disableLocalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {

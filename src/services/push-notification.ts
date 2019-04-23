@@ -1,7 +1,7 @@
 import * as push from 'web-push';
 import config from '../config';
 import { SwSubscriptions } from '../models';
-import fetchMeta from '../misc/fetch-meta';
+import { fetchMeta } from '../misc/fetch-meta';
 
 export default async function(userId: string, type: string, body?: any) {
 	const meta = await fetchMeta();

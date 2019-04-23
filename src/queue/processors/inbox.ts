@@ -10,7 +10,7 @@ import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-ins
 import { Instances, Users, UserPublickeys } from '../../models';
 import { instanceChart } from '../../services/chart';
 import { UserPublickey } from '../../models/entities/user-publickey';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { validActor } from '../../remote/activitypub/type';
 import { ensure } from '../../prelude/ensure';
@@ -48,7 +48,6 @@ export default async (job: Bull.Job): Promise<void> => {
 	}
 
 	// ブロックしてたら中断
-	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(host)) {
 		logger.info(`Blocked request: ${host}`);

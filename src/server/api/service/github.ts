@@ -7,7 +7,7 @@ import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { ensure } from '../../../prelude/ensure';
@@ -65,7 +65,7 @@ router.get('/disconnect/github', async ctx => {
 });
 
 async function getOath2() {
-	const meta = await fetchMeta();
+	const meta = await fetchMeta(true);
 
 	if (meta.enableGithubIntegration && meta.githubClientId && meta.githubClientSecret) {
 		return new OAuth2(

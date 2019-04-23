@@ -2,7 +2,7 @@ import $ from 'cafy';
 import * as os from 'os';
 import config from '../../../config';
 import define from '../define';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
 import { types, bool } from '../../../misc/schema';
@@ -92,7 +92,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const instance = await fetchMeta();
+	const instance = await fetchMeta(true);
 
 	const emojis = await Emojis.find({ host: null });
 

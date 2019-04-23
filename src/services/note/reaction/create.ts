@@ -5,7 +5,7 @@ import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';

@@ -9,7 +9,7 @@ import * as sharp from 'sharp';
 import { publishMainStream, publishDriveStream } from '../stream';
 import delFile from './delete-file';
 import config from '../../config';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
