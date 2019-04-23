@@ -22,7 +22,7 @@ export default class extends Channel {
 
 	@autobind
 	private async onNote(note: PackedNote) {
-		const noteTags = note.tags.map((t: string) => t.toLowerCase());
+		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
 		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(tag.toLowerCase())));
 		if (!matched) return;
 
