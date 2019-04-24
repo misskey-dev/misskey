@@ -195,7 +195,7 @@ async function main() {
 			_id: file.metadata.userId
 		});
 		if (user == null) return;
-		if (file.metadata.storage && file.metadata.storage.key) { // when object storage
+		if (file.metadata.storageProps && file.metadata.storageProps.key) { // when object storage
 			await DriveFiles.save({
 				id: file._id.toHexString(),
 				userId: user._id.toHexString(),
@@ -208,7 +208,7 @@ async function main() {
 				size: file.length,
 				url: file.metadata.url,
 				uri: file.metadata.uri,
-				accessKey: file.metadata.storage.key,
+				accessKey: file.metadata.storageProps.key,
 				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
 				storedInternal: false,
 				isLink: false
