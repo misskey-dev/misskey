@@ -35,7 +35,7 @@ mongodb:
 8. master ブランチに戻す
 9. enjoy
 
-unreleased
+11.3.0 (2019/04/24)
 -------------------
 ### Improvements
 * お知らせにMFMを使えるように
