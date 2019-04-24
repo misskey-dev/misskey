@@ -60,9 +60,9 @@ export default Vue.extend({
 	},
 
 	methods: {
-		init() {
+		async init() {
 			this.fetching = true;
-			this.makePromise().then(x => {
+			await (this.makePromise()).then(x => {
 				if (Array.isArray(x)) {
 					this.us = x;
 				} else {
@@ -76,9 +76,9 @@ export default Vue.extend({
 			});
 		},
 
-		fetchMoreUsers() {
+		async fetchMoreUsers() {
 			this.fetchingMoreUsers = true;
-			this.makePromise(this.cursor).then(x => {
+			await (this.makePromise(this.cursor)).then(x => {
 				this.us = this.us.concat(x.users);
 				this.cursor = x.cursor;
 				this.fetchingMoreUsers = false;

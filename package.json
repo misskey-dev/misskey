@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "11.3.1",
+	"version": "11.4.0",
 	"codename": "daybreak",
 	"repository": {
 		"type": "git",
@@ -23,6 +23,7 @@
 		"format": "gulp format"
 	},
 	"dependencies": {
+		"@elastic/elasticsearch": "7.0.0-rc.2",
 		"@fortawesome/fontawesome-svg-core": "1.2.15",
 		"@fortawesome/free-brands-svg-icons": "5.7.2",
 		"@fortawesome/free-regular-svg-icons": "5.7.2",
@@ -35,7 +36,6 @@
 		"@types/dateformat": "3.0.0",
 		"@types/deep-equal": "1.0.1",
 		"@types/double-ended-queue": "2.1.0",
-		"@types/elasticsearch": "5.0.32",
 		"@types/file-type": "10.9.1",
 		"@types/gulp": "4.0.6",
 		"@types/gulp-mocha": "0.0.32",
@@ -113,7 +113,6 @@
 		"deep-equal": "1.0.1",
 		"diskusage": "1.1.0",
 		"double-ended-queue": "2.1.0-0",
-		"elasticsearch": "15.4.1",
 		"emojilib": "2.4.0",
 		"eslint": "5.16.0",
 		"eslint-plugin-vue": "5.2.2",

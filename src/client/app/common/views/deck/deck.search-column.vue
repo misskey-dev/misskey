@@ -14,6 +14,7 @@
 import Vue from 'vue';
 import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
+import { genSearchQuery } from '../../../common/scripts/gen-search-query';
 
 const limit = 20;
 
@@ -25,10 +26,10 @@ export default Vue.extend({
 
 	data() {
 		return {
-			makePromise: cursor => this.$root.api('notes/search', {
+			makePromise: async cursor => this.$root.api('notes/search', {
 				limit: limit + 1,
 				offset: cursor ? cursor : undefined,
-				query: this.q
+				...(await genSearchQuery(this, this.q))
 			}).then(notes => {
 				if (notes.length == limit + 1) {
 					notes.pop();

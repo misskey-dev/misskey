@@ -105,9 +105,9 @@ export default Vue.extend({
 			this.init();
 		},
 
-		init() {
+		async init() {
 			this.fetching = true;
-			this.makePromise().then(x => {
+			await (this.makePromise()).then(x => {
 				if (Array.isArray(x)) {
 					this.notes = x;
 				} else {
@@ -122,7 +122,7 @@ export default Vue.extend({
 			});
 		},
 
-		fetchMore() {
+		async fetchMore() {
 			if (!this.more || this.moreFetching || this.notes.length === 0) return;
 			this.moreFetching = true;
 			this.makePromise(this.notes[this.notes.length - 1].id).then(x => {

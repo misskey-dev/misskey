@@ -43,7 +43,7 @@
 				<div class="announcements" v-if="announcements && announcements.length > 0">
 					<article v-for="announcement in announcements">
 						<span v-html="announcement.title" class="title"></span>
-						<mfm :text="announcement.text"/>
+						<div><mfm :text="announcement.text"/></div>
 						<img v-if="announcement.image" :src="announcement.image" alt="" style="display: block; max-height: 120px; max-width: 100%;"/>
 					</article>
 				</div>

@@ -106,8 +106,6 @@ type Option = {
 };
 
 export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
-	const isFirstNote = user.notesCount === 0;
-
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
@@ -195,8 +193,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	// 統計を更新
 	notesChart.update(note, true);
 	perUserNotesChart.update(user, note, true);
-	// ローカルユーザーのチャートはタイムライン取得時に更新しているのでリモートユーザーの場合だけでよい
-	if (Users.isRemoteUser(user)) activeUsersChart.update(user);
 
 	// Register host
 	if (Users.isRemoteUser(user)) {
@@ -212,19 +208,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
 
-	// 未読通知を作成
-	if (data.visibility == 'specified') {
-		if (data.visibleUsers == null) throw new Error('invalid param');
-
-		for (const u of data.visibleUsers) {
-			insertNoteUnread(u, note, true);
-		}
-	} else {
-		for (const u of mentionedUsers) {
-			insertNoteUnread(u, note, false);
-		}
-	}
-
 	if (data.reply) {
 		saveReply(data.reply, note);
 	}
@@ -233,75 +216,91 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		incRenoteCount(data.renote);
 	}
 
-	// Pack the note
-	const noteObj = await Notes.pack(note);
-
-	if (isFirstNote) {
-		(noteObj as any).isFirstNote = true;
-	}
-
-	publishNotesStream(noteObj);
-
-	const nm = new NotificationManager(user, note);
-	const nmRelatedPromises = [];
-
-	createMentionedEvents(mentionedUsers, note, nm);
-
-	const noteActivity = await renderNoteOrRenoteActivity(data, note);
-
-	if (Users.isLocalUser(user)) {
-		deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
-	}
-
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
-
-	// If has in reply to note
-	if (data.reply) {
-		// Fetch watchers
-		nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
-
-		// この投稿をWatchする
-		if (Users.isLocalUser(user) && profile.autoWatch) {
-			watch(user.id, data.reply);
-		}
-
-		// 通知
-		if (data.reply.userHost === null) {
-			nm.push(data.reply.userId, 'reply');
-			publishMainStream(data.reply.userId, 'reply', noteObj);
-		}
-	}
-
-	// If it is renote
-	if (data.renote) {
-		const type = data.text ? 'quote' : 'renote';
-
-		// Notify
-		if (data.renote.userHost === null) {
-			nm.push(data.renote.userId, type);
-		}
-
-		// Fetch watchers
-		nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
-
-		// この投稿をWatchする
-		if (Users.isLocalUser(user) && profile.autoWatch) {
-			watch(user.id, data.renote);
-		}
-
-		// Publish event
-		if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-			publishMainStream(data.renote.userId, 'renote', noteObj);
-		}
-	}
-
 	if (!silent) {
-		publish(user, note, data.reply, data.renote, noteActivity);
-	}
+		// ローカルユーザーのチャートはタイムライン取得時に更新しているのでリモートユーザーの場合だけでよい
+		if (Users.isRemoteUser(user)) activeUsersChart.update(user);
 
-	Promise.all(nmRelatedPromises).then(() => {
-		nm.deliver();
-	});
+		// 未読通知を作成
+		if (data.visibility == 'specified') {
+			if (data.visibleUsers == null) throw new Error('invalid param');
+
+			for (const u of data.visibleUsers) {
+				insertNoteUnread(u, note, true);
+			}
+		} else {
+			for (const u of mentionedUsers) {
+				insertNoteUnread(u, note, false);
+			}
+		}
+
+		// Pack the note
+		const noteObj = await Notes.pack(note);
+
+		if (user.notesCount === 0) {
+			(noteObj as any).isFirstNote = true;
+		}
+
+		publishNotesStream(noteObj);
+
+		const nm = new NotificationManager(user, note);
+		const nmRelatedPromises = [];
+
+		createMentionedEvents(mentionedUsers, note, nm);
+
+		const noteActivity = await renderNoteOrRenoteActivity(data, note);
+
+		if (Users.isLocalUser(user)) {
+			deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
+		}
+
+		const profile = await UserProfiles.findOne(user.id).then(ensure);
+
+		// If has in reply to note
+		if (data.reply) {
+			// Fetch watchers
+			nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
+
+			// この投稿をWatchする
+			if (Users.isLocalUser(user) && profile.autoWatch) {
+				watch(user.id, data.reply);
+			}
+
+			// 通知
+			if (data.reply.userHost === null) {
+				nm.push(data.reply.userId, 'reply');
+				publishMainStream(data.reply.userId, 'reply', noteObj);
+			}
+		}
+
+		// If it is renote
+		if (data.renote) {
+			const type = data.text ? 'quote' : 'renote';
+
+			// Notify
+			if (data.renote.userHost === null) {
+				nm.push(data.renote.userId, type);
+			}
+
+			// Fetch watchers
+			nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
+
+			// この投稿をWatchする
+			if (Users.isLocalUser(user) && profile.autoWatch) {
+				watch(user.id, data.renote);
+			}
+
+			// Publish event
+			if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
+				publishMainStream(data.renote.userId, 'renote', noteObj);
+			}
+		}
+
+		publish(user, note, data.reply, data.renote, noteActivity);
+
+		Promise.all(nmRelatedPromises).then(() => {
+			nm.deliver();
+		});
+	}
 
 	// Register to search database
 	index(note);
@@ -436,11 +435,12 @@ function index(note: Note) {
 	if (note.text == null || config.elasticsearch == null) return;
 
 	es!.index({
-		index: 'misskey',
-		type: 'note',
+		index: 'misskey_note',
 		id: note.id.toString(),
 		body: {
-			text: note.text
+			text: note.text.toLowerCase(),
+			userId: note.userId,
+			userHost: note.userHost
 		}
 	});
 }
