@@ -97,6 +97,7 @@ export default define({
 		},
 
 		attachMedia(driveFile) {
+			if (!driveFile) return;
 			this.files.push(driveFile);
 			this.$emit('change-attached-files', this.files);
 		},
