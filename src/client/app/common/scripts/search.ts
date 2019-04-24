@@ -3,7 +3,7 @@ import { faHistory } from '@fortawesome/free-solid-svg-icons';
 export async function search(v: any, q: string) {
 	q = q.trim();
 
-	if (q.startsWith('@')) {
+	if (q.startsWith('@') && !q.includes(' ')) {
 		v.$router.push(`/${q}`);
 		return;
 	}

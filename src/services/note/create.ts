@@ -435,11 +435,12 @@ function index(note: Note) {
 	if (note.text == null || config.elasticsearch == null) return;
 
 	es!.index({
-		index: 'misskey',
-		type: 'note',
+		index: 'misskey_note',
 		id: note.id.toString(),
 		body: {
-			text: note.text
+			text: note.text.toLowerCase(),
+			userId: note.userId,
+			userHost: note.userHost
 		}
 	});
 }
