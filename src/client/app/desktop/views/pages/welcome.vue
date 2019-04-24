@@ -44,7 +44,8 @@
 				<div v-if="announcements && announcements.length > 0">
 					<div v-for="announcement in announcements">
 						<h1 v-html="announcement.title"></h1>
-						<div v-html="announcement.text"></div>
+						<mfm :text="announcement.text"/>
+						<img v-if="announcement.image" :src="announcement.image" alt="" style="display: block; max-height: 130px; max-width: 100%;"/>
 					</div>
 				</div>
 			</div>

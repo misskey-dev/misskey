@@ -18,7 +18,8 @@
 			<p class="fetching" v-if="fetching">{{ $t('fetching') }}<mk-ellipsis/></p>
 			<h1 v-if="!fetching">{{ announcements.length == 0 ? $t('no-broadcasts') : announcements[i].title }}</h1>
 			<p v-if="!fetching">
-				<span v-if="announcements.length != 0" v-html="announcements[i].text"></span>
+				<mfm v-if="announcements.length != 0" :text="announcements[i].text"/>
+				<img v-if="announcements.length != 0 && announcements[i].image" :src="announcements[i].image" alt="" style="display: block; max-height: 130px; max-width: 100%;"/>
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>
 			</p>
 			<a v-if="announcements.length > 1" @click="next">{{ $t('next') }} &gt;&gt;</a>

@@ -9,6 +9,9 @@
 			<ui-textarea v-model="announcement.text">
 				<span>{{ $t('text') }}</span>
 			</ui-textarea>
+			<ui-input v-model="announcement.image">
+				<span>{{ $t('image-url') }}</span>
+			</ui-input>
 			<ui-horizon-group class="fit-bottom">
 				<ui-button @click="save()"><fa :icon="['far', 'save']"/> {{ $t('save') }}</ui-button>
 				<ui-button @click="remove(i)"><fa :icon="['far', 'trash-alt']"/> {{ $t('remove') }}</ui-button>
@@ -43,7 +46,8 @@ export default Vue.extend({
 		add() {
 			this.announcements.unshift({
 				title: '',
-				text: ''
+				text: '',
+				image: null
 			});
 		},
 

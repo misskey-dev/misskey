@@ -43,7 +43,8 @@
 				<div class="announcements" v-if="announcements && announcements.length > 0">
 					<article v-for="announcement in announcements">
 						<span v-html="announcement.title" class="title"></span>
-						<div v-html="announcement.text"></div>
+						<mfm :text="announcement.text"/>
+						<img v-if="announcement.image" :src="announcement.image" alt="" style="display: block; max-height: 120px; max-width: 100%;"/>
 					</article>
 				</div>
 				<a :href="aboutUrl"><p class="about">{{ $t('about') }}</p></a>
