@@ -19,7 +19,7 @@ export const cafeTheme: Theme = require('../themes/cafe.json5');
 export const japaneseSushiSetTheme: Theme = require('../themes/japanese-sushi-set.json5');
 export const gruvboxDarkTheme: Theme = require('../themes/gruvbox-dark.json5');
 export const monokaiTheme: Theme = require('../themes/monokai.json5');
-export const colorfulTheme: Theme = require('../themes/colorful.json5');
+export const vividTheme: Theme = require('../themes/vivid.json5');
 export const rainyTheme: Theme = require('../themes/rainy.json5');
 export const mauveTheme: Theme = require('../themes/mauve.json5');
 export const grayTheme: Theme = require('../themes/gray.json5');
@@ -35,7 +35,7 @@ export const builtinThemes = [
 	japaneseSushiSetTheme,
 	gruvboxDarkTheme,
 	monokaiTheme,
-	colorfulTheme,
+	vividTheme,
 	rainyTheme,
 	mauveTheme,
 	grayTheme,
