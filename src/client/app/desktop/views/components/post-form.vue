@@ -275,6 +275,7 @@ export default Vue.extend({
 		},
 
 		attachMedia(driveFile) {
+			if (!driveFile) return;
 			this.files.push(driveFile);
 			this.$emit('change-attached-files', this.files);
 		},
