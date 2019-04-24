@@ -101,6 +101,32 @@ async function fetchAny(uri: string) {
 	// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
 	// これはDBに存在する可能性があるため再度DB検索
 	if (uri !== object.id) {
+		if (object.id.startsWith(config.url + '/')) {
+			const parts = object.id.split('/');
+			const id = parts.pop();
+			const type = parts.pop();
+
+			if (type === 'notes') {
+				const note = await Notes.findOne(id);
+
+				if (note) {
+					return {
+						type: 'Note',
+						object: await Notes.pack(note, null, { detail: true })
+					};
+				}
+			} else if (type === 'users') {
+				const user = await Users.findOne(id);
+
+				if (user) {
+					return {
+						type: 'User',
+						object: await Users.pack(user, null, { detail: true })
+					};
+				}
+			}
+		}
+
 		const [user, note] = await Promise.all([
 			Users.findOne({ uri: object.id }),
 			Notes.findOne({ uri: object.id })
