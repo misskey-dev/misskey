@@ -240,7 +240,9 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		(noteObj as any).isFirstNote = true;
 	}
 
-	publishNotesStream(noteObj);
+	if (!silent) {
+		publishNotesStream(noteObj);
+	}
 
 	const nm = new NotificationManager(user, note);
 	const nmRelatedPromises = [];
