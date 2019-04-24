@@ -25,13 +25,8 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
+		type: types.boolean,
 		optional: bool.false, nullable: bool.false,
-		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
-			ref: 'DriveFile',
-		}
 	},
 };
 
@@ -41,7 +36,5 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 	});
 
-	return {
-		file: file ? await DriveFiles.pack(file, { self: true }) : null
-	};
+	return file != null;
 });
