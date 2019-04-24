@@ -215,11 +215,6 @@ export default Vue.extend({
 		@media (min-width 500px)
 			padding 28px 32px 18px 32px
 
-		&:after
-			content ""
-			display block
-			clear both
-
 		> header
 			display flex
 			line-height 1.1em
@@ -236,6 +231,7 @@ export default Vue.extend({
 					height 60px
 
 			> div
+				min-width 0
 
 				> .name
 					display inline-block
