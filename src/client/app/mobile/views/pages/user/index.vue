@@ -18,7 +18,7 @@
 				</div>
 				<div class="title">
 					<h1><mk-user-name :user="user" :key="user.id"/></h1>
-					<span class="username"><mk-acct :user="user" :detail="true" /></span>
+					<span class="username"><mk-acct :user="user" :detail="true" :key="user.id"/></span>
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
 				</div>
 				<div class="description">
