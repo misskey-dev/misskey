@@ -9,6 +9,7 @@ import { getUser } from '../../../common/getters';
 import { MessagingMessages, DriveFiles, Mutings } from '../../../../../models';
 import { MessagingMessage } from '../../../../../models/entities/messaging-message';
 import { genId } from '../../../../../misc/gen-id';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -41,7 +42,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'MessagingMessage',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'MessagingMessage',
 	},
 
 	errors: {

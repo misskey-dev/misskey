@@ -237,7 +237,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	const noteObj = await Notes.pack(note);
 
 	if (isFirstNote) {
-		noteObj.isFirstNote = true;
+		(noteObj as any).isFirstNote = true;
 	}
 
 	publishNotesStream(noteObj);

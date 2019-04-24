@@ -164,7 +164,7 @@ export const meta = {
 		},
 
 		maintainerName: {
-			validator: $.optional.str,
+			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': 'インスタンスの管理者名'
 			}

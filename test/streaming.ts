@@ -594,6 +594,31 @@ describe('Streaming', () => {
 				text: 'foo'
 			});
 		}));
+
+		it('ホーム投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'globalTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// ホーム投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 3000);
+		}));
 	});
 
 	describe('UserList Timeline', () => {
@@ -603,7 +628,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
@@ -633,7 +658,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			let fired = false;
@@ -664,7 +689,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
@@ -699,7 +724,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン

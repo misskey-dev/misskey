@@ -20,7 +20,7 @@ import { Note } from '../../../models/entities/note';
 import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
@@ -233,7 +233,6 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	if (uri == null) throw new Error('missing uri');
 
 	// ブロックしてたら中断
-	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(extractDbHost(uri))) throw { statusCode: 451 };
 

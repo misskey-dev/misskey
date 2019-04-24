@@ -2,9 +2,8 @@ import endpoints from '../endpoints';
 import { Context } from 'cafy';
 import config from '../../../config';
 import { errors as basicErrors } from './errors';
-import { schemas } from './schemas';
+import { schemas, convertSchemaToOpenApiSchema } from './schemas';
 import { getDescription } from './description';
-import { convertOpenApiSchema } from '../../../misc/schema';
 
 export function genOpenapiSpec(lang = 'ja-JP') {
 	const spec = {
@@ -59,7 +58,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			deprecated: (param.data || {}).deprecated,
 			...((param.data || {}).default ? { default: (param.data || {}).default } : {}),
 			type: param.name === 'ID' ? 'string' : param.name.toLowerCase(),
-			...(param.name === 'ID' ? { example: 'xxxxxxxxxxxxxxxxxxxxxxxx', format: 'id' } : {}),
+			...(param.name === 'ID' ? { example: 'xxxxxxxxxx', format: 'id' } : {}),
 			nullable: param.isNullable,
 			...(param.name === 'String' ? {
 				...((param as any).enum ? { enum: (param as any).enum } : {}),
@@ -106,7 +105,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 
 		const required = endpoint.meta.params ? Object.entries(endpoint.meta.params).filter(([k, v]) => !v.validator.isOptional).map(([k, v]) => k) : [];
 
-		const resSchema = endpoint.meta.res ? convertOpenApiSchema(endpoint.meta.res) : {};
+		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res) : {};
 
 		let desc = (endpoint.meta.desc ? endpoint.meta.desc[lang] : 'No description provided.') + '\n\n';
 		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;

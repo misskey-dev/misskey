@@ -6,7 +6,7 @@ import redis from '../../../db/redis';
 import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { ensure } from '../../../prelude/ensure';
@@ -65,7 +65,7 @@ router.get('/disconnect/twitter', async ctx => {
 });
 
 async function getTwAuth() {
-	const meta = await fetchMeta();
+	const meta = await fetchMeta(true);
 
 	if (meta.enableTwitterIntegration && meta.twitterConsumerKey && meta.twitterConsumerSecret) {
 		return autwh({

@@ -4,6 +4,7 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFile } from '../../../../../models/entities/drive-file';
 import { DriveFiles } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	stability: 'stable',
@@ -38,7 +39,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'DriveFile',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'DriveFile',
 	},
 
 	errors: {

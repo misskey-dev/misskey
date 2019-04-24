@@ -77,11 +77,11 @@ export default Vue.extend({
 				input: {
 					default: this.list.name
 				}
-			}).then(({ canceled, result: title }) => {
+			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
 				this.$root.api('users/lists/update', {
 					listId: this.list.id,
-					title: title
+					name: name
 				});
 			});
 		},

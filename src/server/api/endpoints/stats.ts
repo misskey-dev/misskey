@@ -1,6 +1,7 @@
 import define from '../define';
 import { Notes, Users } from '../../../models';
 import { federationChart, driveChart } from '../../../services/chart';
+import { bool, types } from '../../../misc/schema';
 
 export const meta = {
 	requireCredential: false,
@@ -15,26 +16,32 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
 		properties: {
 			notesCount: {
-				type: 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'The count of all (local/remote) notes of this instance.',
 			},
 			originalNotesCount: {
-				type: 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'The count of all local notes of this instance.',
 			},
 			usersCount: {
-				type: 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'The count of all (local/remote) accounts of this instance.',
 			},
 			originalUsersCount: {
-				type: 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'The count of all local accounts of this instance.',
 			},
 			instances: {
-				type: 'number',
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 				description: 'The count of federated instances.',
 			},
 		}
@@ -42,7 +49,14 @@ export const meta = {
 };
 
 export default define(meta, async () => {
-	const [notesCount, originalNotesCount, usersCount, originalUsersCount, instances, driveUsageLocal, driveUsageRemote] = await Promise.all([
+	const [notesCount,
+		originalNotesCount,
+		usersCount,
+		originalUsersCount,
+		instances,
+		driveUsageLocal,
+		driveUsageRemote
+	] = await Promise.all([
 		Notes.count(),
 		Notes.count({ userHost: null }),
 		Users.count(),
@@ -53,6 +67,12 @@ export default define(meta, async () => {
 	]);
 
 	return {
-		notesCount, originalNotesCount, usersCount, originalUsersCount, instances, driveUsageLocal, driveUsageRemote
+		notesCount,
+		originalNotesCount,
+		usersCount,
+		originalUsersCount,
+		instances,
+		driveUsageLocal,
+		driveUsageRemote
 	};
 });

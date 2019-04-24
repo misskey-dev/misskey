@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	requireCredential: false,
@@ -47,9 +48,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'User'
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'User',
 		}
 	},
 };

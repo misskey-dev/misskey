@@ -1,8 +1,12 @@
+import { types, bool } from '../../../../misc/schema';
+
 export const schema = {
-	type: 'object' as 'object',
+	type: types.object,
+	optional: bool.false, nullable: bool.false,
 	properties: {
 		foo: {
-			type: 'number' as 'number',
+			type: types.number,
+			optional: bool.false, nullable: bool.false,
 			description: ''
 		},
 	}

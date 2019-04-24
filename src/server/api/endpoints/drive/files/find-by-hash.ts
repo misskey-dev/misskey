@@ -1,10 +1,13 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import { DriveFolders } from '../../../../../models';
+import { DriveFiles } from '../../../../../models';
 import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
+	desc: {
+		'ja-JP': '与えられたMD5ハッシュ値を持つファイルを取得します。',
+	},
+
 	tags: ['drive'],
 
 	requireCredential: true,
@@ -12,17 +15,12 @@ export const meta = {
 	kind: 'read:drive',
 
 	params: {
-		name: {
-			validator: $.str
-		},
-
-		parentId: {
-			validator: $.optional.nullable.type(ID),
-			default: null as any,
+		md5: {
+			validator: $.str,
 			desc: {
-				'ja-JP': 'フォルダID'
+				'ja-JP': 'ファイルのMD5ハッシュ'
 			}
-		},
+		}
 	},
 
 	res: {
@@ -31,17 +29,16 @@ export const meta = {
 		items: {
 			type: types.object,
 			optional: bool.false, nullable: bool.false,
-			ref: 'DriveFolder',
+			ref: 'DriveFile',
 		}
 	},
 };
 
 export default define(meta, async (ps, user) => {
-	const folders = await DriveFolders.find({
-		name: ps.name,
+	const files = await DriveFiles.find({
+		md5: ps.md5,
 		userId: user.id,
-		parentId: ps.parentId
 	});
 
-	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
+	return await DriveFiles.packMany(files, { self: true });
 });

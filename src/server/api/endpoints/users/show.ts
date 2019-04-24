@@ -6,6 +6,7 @@ import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
 import { Users } from '../../../../models';
 import { In } from 'typeorm';
+import { bool, types } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -42,7 +43,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'User',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'User',
 	},
 
 	errors: {

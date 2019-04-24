@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import * as nodemailer from 'nodemailer';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import rndstr from 'rndstr';
 import config from '../../../../config';
 import * as ms from 'ms';
@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 			emailVerifyCode: code
 		});
 
-		const meta = await fetchMeta();
+		const meta = await fetchMeta(true);
 
 		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
 

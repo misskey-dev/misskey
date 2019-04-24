@@ -44,20 +44,20 @@ export function getDescription(lang = 'ja-JP'): string {
 	const descriptions = {
 		'ja-JP': `**Misskey is a decentralized microblogging platform.**
 
-## Usage
+# Usage
 **APIはすべてPOSTでリクエスト/レスポンスともにJSON形式です。**
 一部のAPIはリクエストに認証情報(APIキー)が必要です。リクエストの際に\`i\`というパラメータでAPIキーを添付してください。
 
-### 自分のアカウントのAPIキーを取得する
+## 自分のアカウントのAPIキーを取得する
 「設定 > API」で、自分のAPIキーを取得できます。
 
 > アカウントを不正利用される可能性があるため、このトークンは第三者に教えないでください(アプリなどにも入力しないでください)。
 
-### アプリケーションとしてAPIキーを取得する
+## アプリケーションとしてAPIキーを取得する
 直接ユーザーのAPIキーをアプリケーションが扱うのはセキュリティ上のリスクがあるので、
 アプリケーションからAPIを利用する際には、アプリケーションとアプリケーションを利用するユーザーが結び付けられた専用のAPIキーを発行します。
 
-#### 1.アプリケーションを登録する
+### 1.アプリケーションを登録する
 まず、あなたのアプリケーションやWebサービス(以後、あなたのアプリと呼びます)をMisskeyに登録します。
 [デベロッパーセンター](/dev)にアクセスし、「アプリ > アプリ作成」からアプリを作成してください。
 
@@ -65,7 +65,7 @@ export function getDescription(lang = 'ja-JP'): string {
 
 > アプリに成りすまされる可能性があるため、極力このシークレットキーは公開しないようにしてください。</p>
 
-#### 2.ユーザーに認証させる
+### 2.ユーザーに認証させる
 アプリを使ってもらうには、ユーザーにアカウントへのアクセスの許可をもらう必要があります。
 
 認証セッションを開始するには、[${config.apiUrl}/auth/session/generate](#operation/auth/session/generate) へパラメータに\`appSecret\`としてシークレットキーを含めたリクエストを送信します。
@@ -76,7 +76,7 @@ export function getDescription(lang = 'ja-JP'): string {
 
 あなたのアプリがコールバックURLを設定していない場合、ユーザーがあなたのアプリの連携を許可したことを(何らかの方法で(たとえばボタンを押させるなど))確認出来るようにしてください。
 
-#### 3.アクセストークンを取得する
+### 3.アクセストークンを取得する
 ユーザーが連携を許可したら、[${config.apiUrl}/auth/session/userkey](#operation/auth/session/userkey) へリクエストを送信します。
 
 上手くいけば、認証したユーザーのアクセストークンがレスポンスとして取得できます。おめでとうございます！
@@ -88,7 +88,7 @@ APIキーの生成方法を擬似コードで表すと次のようになりま�
 const i = sha256(userToken + secretKey);
 \`\`\`
 
-## Permissions
+# Permissions
 |Permisson (kind)|Description|Endpoints|
 |:--|:--|:--|
 ${permissionTable}

@@ -10,7 +10,7 @@ import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 import { UserKeypairs } from '../../models';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
 
@@ -24,7 +24,6 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	const { protocol, host, hostname, port, pathname, search } = new URL(url);
 
 	// ブロックしてたら中断
-	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(toPuny(host))) return;
 
