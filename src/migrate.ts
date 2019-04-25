@@ -173,7 +173,7 @@ async function main() {
 	}
 
 	async function migrateMuting(muting: any) {
-		await Blockings.save({
+		await Mutings.save({
 			id: muting._id.toHexString(),
 			createdAt: new Date(),
 			muterId: muting.muterId.toHexString(),
