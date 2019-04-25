@@ -49,17 +49,6 @@ export class FollowingRepository extends Repository<Following> {
 		return following.followeeHost != null;
 	}
 
-	public packMany(
-		followings: any[],
-		me?: any,
-		opts?: {
-			populateFollowee?: boolean;
-			populateFollower?: boolean;
-		}
-	) {
-		return Promise.all(followings.map(x => this.pack(x, me, opts)));
-	}
-
 	public async pack(
 		src: Following['id'] | Following,
 		me?: any,
@@ -84,6 +73,17 @@ export class FollowingRepository extends Repository<Following> {
 				detail: true
 			}) : undefined,
 		});
+	}
+
+	public packMany(
+		followings: any[],
+		me?: any,
+		opts?: {
+			populateFollowee?: boolean;
+			populateFollower?: boolean;
+		}
+	) {
+		return Promise.all(followings.map(x => this.pack(x, me, opts)));
 	}
 }
 

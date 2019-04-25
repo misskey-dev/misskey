@@ -6,12 +6,6 @@ export type PackedHashtag = SchemaType<typeof packedHashtagSchema>;
 
 @EntityRepository(Hashtag)
 export class HashtagRepository extends Repository<Hashtag> {
-	public packMany(
-		hashtags: Hashtag[],
-	) {
-		return Promise.all(hashtags.map(x => this.pack(x)));
-	}
-
 	public async pack(
 		src: Hashtag,
 	): Promise<PackedHashtag> {
@@ -24,6 +18,12 @@ export class HashtagRepository extends Repository<Hashtag> {
 			attachedLocalUsersCount: src.attachedLocalUsersCount,
 			attachedRemoteUsersCount: src.attachedRemoteUsersCount,
 		};
+	}
+
+	public packMany(
+		hashtags: Hashtag[],
+	) {
+		return Promise.all(hashtags.map(x => this.pack(x)));
 	}
 }
 

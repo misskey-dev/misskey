@@ -9,13 +9,6 @@ export type PackedBlocking = SchemaType<typeof packedBlockingSchema>;
 
 @EntityRepository(Blocking)
 export class BlockingRepository extends Repository<Blocking> {
-	public packMany(
-		blockings: any[],
-		me: any
-	) {
-		return Promise.all(blockings.map(x => this.pack(x, me)));
-	}
-
 	public async pack(
 		src: Blocking['id'] | Blocking,
 		me?: any
@@ -30,6 +23,13 @@ export class BlockingRepository extends Repository<Blocking> {
 				detail: true
 			})
 		});
+	}
+
+	public packMany(
+		blockings: any[],
+		me: any
+	) {
+		return Promise.all(blockings.map(x => this.pack(x, me)));
 	}
 }
 

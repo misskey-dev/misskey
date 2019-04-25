@@ -5,13 +5,6 @@ import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(NoteFavorite)
 export class NoteFavoriteRepository extends Repository<NoteFavorite> {
-	public packMany(
-		favorites: any[],
-		me: any
-	) {
-		return Promise.all(favorites.map(x => this.pack(x, me)));
-	}
-
 	public async pack(
 		src: NoteFavorite['id'] | NoteFavorite,
 		me?: any
@@ -22,5 +15,12 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 			id: favorite.id,
 			note: await Notes.pack(favorite.note || favorite.noteId, me),
 		};
+	}
+
+	public packMany(
+		favorites: any[],
+		me: any
+	) {
+		return Promise.all(favorites.map(x => this.pack(x, me)));
 	}
 }

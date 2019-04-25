@@ -67,17 +67,6 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return parseInt(sum, 10) || 0;
 	}
 
-	public packMany(
-		files: any[],
-		options?: {
-			detail?: boolean
-			self?: boolean,
-			withUser?: boolean,
-		}
-	) {
-		return Promise.all(files.map(f => this.pack(f, options)));
-	}
-
 	public async pack(
 		src: DriveFile['id'] | DriveFile,
 		options?: {
@@ -110,6 +99,17 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			}) : null,
 			user: opts.withUser ? Users.pack(file.userId!) : null
 		});
+	}
+
+	public packMany(
+		files: any[],
+		options?: {
+			detail?: boolean
+			self?: boolean,
+			withUser?: boolean,
+		}
+	) {
+		return Promise.all(files.map(f => this.pack(f, options)));
 	}
 }
 

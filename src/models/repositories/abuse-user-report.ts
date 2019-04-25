@@ -6,12 +6,6 @@ import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(AbuseUserReport)
 export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
-	public packMany(
-		reports: any[],
-	) {
-		return Promise.all(reports.map(x => this.pack(x)));
-	}
-
 	public async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {
@@ -29,5 +23,11 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 				detail: true
 			}),
 		});
+	}
+
+	public packMany(
+		reports: any[],
+	) {
+		return Promise.all(reports.map(x => this.pack(x)));
 	}
 }
