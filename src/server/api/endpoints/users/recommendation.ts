@@ -44,6 +44,7 @@ export default define(meta, async (ps, me) => {
 		.where('user.isLocked = FALSE')
 		.where('user.host IS NULL')
 		.where('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
+		.where('user.id != :meId', { meId: me.id })
 		.orderBy('user.followersCount', 'DESC');
 
 	generateMuteQueryForUsers(query, me);
