@@ -7,6 +7,13 @@ If you encounter any problems with updating, please try the following:
 
 How to migrate to v11 from v10
 ------------------------------
+### 移行の注意点
+**以下のデータは引き継がれません**
+* 通知
+* リモートの投稿
+* リバーシの対局
+
+### 手順
 1. v11をインストールしたい場所に syuilo/misskey をクローン
 2. config を設定する
 	* PostgreSQL(`db`)の設定とは別に、v10からMongoDBの設定をコピペしてくる(例は下にあります)
