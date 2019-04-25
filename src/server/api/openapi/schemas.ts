@@ -11,6 +11,7 @@ import { packedFollowingSchema } from '../../../models/repositories/following';
 import { packedMutingSchema } from '../../../models/repositories/muting';
 import { packedBlockingSchema } from '../../../models/repositories/blocking';
 import { packedNoteReactionSchema } from '../../../models/repositories/note-reaction';
+import { packedHashtagSchema } from '../../../models/repositories/hashtag';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -74,48 +75,5 @@ export const schemas = {
 	Muting: convertSchemaToOpenApiSchema(packedMutingSchema),
 	Blocking: convertSchemaToOpenApiSchema(packedBlockingSchema),
 	NoteReaction: convertSchemaToOpenApiSchema(packedNoteReactionSchema),
-
-	Hashtag: {
-		type: 'object',
-		properties: {
-			tag: {
-				type: 'string',
-				description: 'The hashtag name. No # prefixed.',
-				example: 'misskey',
-			},
-			mentionedUsersCount: {
-				type: 'number',
-				description: 'Number of all users using this hashtag.'
-			},
-			mentionedLocalUsersCount: {
-				type: 'number',
-				description: 'Number of local users using this hashtag.'
-			},
-			mentionedRemoteUsersCount: {
-				type: 'number',
-				description: 'Number of remote users using this hashtag.'
-			},
-			attachedUsersCount: {
-				type: 'number',
-				description: 'Number of all users who attached this hashtag to profile.'
-			},
-			attachedLocalUsersCount: {
-				type: 'number',
-				description: 'Number of local users who attached this hashtag to profile.'
-			},
-			attachedRemoteUsersCount: {
-				type: 'number',
-				description: 'Number of remote users who attached this hashtag to profile.'
-			},
-		},
-		required: [
-			'tag',
-			'mentionedUsersCount',
-			'mentionedLocalUsersCount',
-			'mentionedRemoteUsersCount',
-			'attachedUsersCount',
-			'attachedLocalUsersCount',
-			'attachedRemoteUsersCount',
-		]
-	},
+	Hashtag: convertSchemaToOpenApiSchema(packedHashtagSchema),
 };

@@ -92,5 +92,5 @@ export default define(meta, async (ps, me) => {
 
 	const tags = await query.take(ps.limit!).getMany();
 
-	return tags;
+	return Hashtags.packMany(tags);
 });
