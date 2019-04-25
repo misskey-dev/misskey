@@ -103,7 +103,7 @@ async function main() {
 	async function migrateUser(user: any) {
 		await Users.save({
 			id: user._id.toHexString(),
-			createdAt: user.createdAt || new Date(),
+			createdAt: typeof user.createdAt === 'number' ? new Date(user.createdAt) : (user.createdAt || new Date()),
 			username: user.username,
 			usernameLower: user.username.toLowerCase(),
 			host: toPuny(user.host),
