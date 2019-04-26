@@ -54,9 +54,9 @@
 		<x-v v-model="value.args[0]" :title="$t('script.blocks._random.min')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
 		<x-v v-model="value.args[1]" :title="$t('script.blocks._random.max')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
 	</section>
-	<section v-if="value.type === 'ref'" class="">
+	<section v-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
-			<option v-for="v in variables.filter(x => getExpectedType ? typeInference(x) === getExpectedType() : true)" :value="v.id">{{ v.name }}</option>
+			<option v-for="v in variables.filter(x => getExpectedType && getExpectedType() != null ? ((typeInference(x) === null) || (typeInference(x) === getExpectedType())) : true)" :value="v.id">{{ v.name }}</option>
 		</select>
 	</section>
 </x-container>
@@ -241,4 +241,14 @@ export default Vue.extend({
 		box-shadow none
 		padding 16px
 		font-size 16px
+
+.hpdwcrvs
+	padding 16px
+
+	> select
+		display block
+		padding 4px
+		font-size 16px
+		width 100%
+
 </style>

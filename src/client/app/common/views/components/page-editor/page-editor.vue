@@ -36,6 +36,11 @@
 			<summary>Source</summary>
 			<pre>{{ JSON.stringify({ content, variables }, null, 2) }}</pre>
 		</details>
+
+		<details>
+			<summary>Assembly</summary>
+			<pre v-for="variable in variables">{{ variable.name }} = {{ new Compiler(variables).compile(variable) }}</pre>
+		</details>
 	</section>
 </div>
 </template>
@@ -52,7 +57,7 @@ import XText from './page-editor.text.vue';
 import XImage from './page-editor.image.vue';
 import XButton from './page-editor.button.vue';
 import * as uuid from 'uuid';
-import { blockDefs } from '../../../scripts/aiscript';
+import { blockDefs, Compiler } from '../../../scripts/aiscript';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -74,6 +79,7 @@ export default Vue.extend({
 			title: '',
 			content: [],
 			variables: [],
+			Compiler,
 			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
 		};
 	},

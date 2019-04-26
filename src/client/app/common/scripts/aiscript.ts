@@ -193,3 +193,43 @@ export function typeInference(v: Block, variables: Variable[] = []) {
 		return def.out;
 	}
 }
+
+export class Compiler {
+	private variables: Variable[];
+
+	constructor(variables: Variable[]) {
+		this.variables = variables;
+	}
+
+	public compile(v: Block): string {
+		if (v.type === 'expression') {
+			return v.value;
+		} else if (v.type === 'ref') {
+			return this.variables.find(va => va.id === v.value).name;
+		} else if (v.type === 'text') {
+			return '"' + v.value + '"'; // todo escape
+		} else if (v.type === 'multiLineText') {
+			return '"' + v.value + '"'; // todo escape
+		} else if (v.type === 'number') {
+			return v.value;
+		} else if (v.type === 'if') {
+			return `if(${this.compile(v.args[0])}, ${this.compile(v.args[1])}, ${this.compile(v.args[2])})`;
+		} else if (v.type === 'eq') {
+			return `eq(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
+		} else if (v.type === 'gt') {
+			return `gt(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
+		} else if (v.type === 'lt') {
+			return `lt(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
+		} else if (v.type === 'gtOrEq') {
+			return `gt_eq(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
+		} else if (v.type === 'ltOrEq') {
+			return `lt_eq(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
+		} else if (v.type === 'not') {
+			return `not(${this.compile(v.args[0])})`;
+		} else if (v.type === 'random') {
+			return `random(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
+		}
+
+		console.warn('Unknown type:', v.type);
+	}
+}

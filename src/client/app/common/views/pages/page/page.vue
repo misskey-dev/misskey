@@ -21,6 +21,7 @@ import XSection from './page.section.vue';
 import XText from './page.text.vue';
 import XImage from './page.image.vue';
 import XButton from './page.button.vue';
+import { Compiler } from '../../../scripts/aiscript';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -41,6 +42,7 @@ export default Vue.extend({
 			root: null,
 			page: null,
 			variables: [],
+			compiler: null,
 			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
 		};
 	},
@@ -51,6 +53,7 @@ export default Vue.extend({
 			pageId: this.pageId,
 		}).then(page => {
 			this.page = page;
+			this.compiler = new Compiler(this.page.variables);
 			this.calcVariables();
 		});
 	},
@@ -80,41 +83,12 @@ export default Vue.extend({
 		},
 
 		evaluateVariable(v) {
-			console.log('Complied:', this.complie(v));
-			return this.evaluateFormula(this.complie(v));
+			const bin = this.compiler.compile(v);
+			console.log('Complied:', bin);
+			return this.evaluateExpression(bin);
 		},
 
-		complie(v): string {
-			if (v.type === 'expression') {
-				return v.value;
-			} else if (v.type === 'text') {
-				return '"' + v.value + '"'; // todo escape
-			} else if (v.type === 'multiLineText') {
-				return '"' + v.value + '"'; // todo escape
-			} else if (v.type === 'number') {
-				return parseInt(v.value, 10);
-			} else if (v.type === 'if') {
-				return `if(${this.complie(v.args[0])}, ${this.complie(v.args[1])}, ${this.complie(v.args[2])})`;
-			} else if (v.type === 'eq') {
-				return `eq(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
-			} else if (v.type === 'gt') {
-				return `gt(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
-			} else if (v.type === 'lt') {
-				return `lt(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
-			} else if (v.type === 'gtOrEq') {
-				return `gt_eq(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
-			} else if (v.type === 'ltOrEq') {
-				return `lt_eq(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
-			} else if (v.type === 'not') {
-				return `not(${this.complie(v.args[0])})`;
-			} else if (v.type === 'random') {
-				return `random(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
-			}
-
-			console.warn('Unknown type:', v.type);
-		},
-
-		evaluateFormula(expression) {
+		evaluateExpression(expression) {
 			console.log(expression);
 
 			const num = expression.trim().match(/^[0-9]+$/);
@@ -137,24 +111,24 @@ export default Vue.extend({
 
 			const args = [];
 
-			let argFormula = '';
+			let argExpression = '';
 			let pendingOpenBrackets = 0;
 			for (let i = 0; i < argsPart.length; i++) {
 				const char = argsPart[i];
 				if (char === ',' && pendingOpenBrackets === 0) {
-					args.push(this.evaluateFormula(argFormula));
+					args.push(this.evaluateExpression(argExpression));
 					i++;
-					argFormula = '';
+					argExpression = '';
 					continue;
 				} else if (char === '(') {
 					pendingOpenBrackets++;
 				} else if (char === ')') {
 					pendingOpenBrackets--;
 				}
-				argFormula += char;
+				argExpression += char;
 			}
-			if (argFormula.length > 0) {
-				args.push(this.evaluateFormula(argFormula));
+			if (argExpression.length > 0) {
+				args.push(this.evaluateExpression(argExpression));
 			}
 
 			const funcs = {
