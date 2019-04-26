@@ -21,7 +21,7 @@ import XSection from './page.section.vue';
 import XText from './page.text.vue';
 import XImage from './page.image.vue';
 import XButton from './page.button.vue';
-import { Compiler } from '../../../scripts/aiscript';
+import { AiScript } from '../../../scripts/aiscript';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -53,25 +53,12 @@ export default Vue.extend({
 			pageId: this.pageId,
 		}).then(page => {
 			this.page = page;
-			this.compiler = new Compiler(this.page.variables);
+			this.compiler = new AiScript(this.page.variables);
 			this.calcVariables();
 		});
 	},
 
 	methods: {
-		getVariableValue(name) {
-			const v = this.variables.find(v => v.name === name);
-			if (v) {
-				return v.value;
-			} else {
-				this.$root.dialog({
-					type: 'error',
-					text: `Script: No such variable '${name}'`
-				});
-				throw new Error();
-			}
-		},
-
 		calcVariables() {
 			this.variables = [];
 			for (const v of this.page.variables) {
@@ -85,73 +72,15 @@ export default Vue.extend({
 		evaluateVariable(v) {
 			const bin = this.compiler.compile(v);
 			console.log('Complied:', bin);
-			return this.evaluateExpression(bin);
+			try {
+				return this.compiler.evaluateExpression(bin);
+			} catch(e) {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			}
 		},
-
-		evaluateExpression(expression) {
-			console.log(expression);
-
-			const num = expression.trim().match(/^[0-9]+$/);
-			if (num) {
-				return parseInt(num[0], 10);
-			}
-
-			const str = expression.trim().match(/^"(.+?)"$/);
-			if (str) {
-				return this.interpolate(str[0].slice(1, -1));
-			}
-
-			const variable = expression.trim().match(/^[a-zA-Z]+$/);
-			if (variable) {
-				return this.getVariableValue(variable[0]);
-			}
-
-			const funcName = expression.substr(0, expression.indexOf('('));
-			const argsPart = expression.substr(expression.indexOf('(')).slice(1, -1);
-
-			const args = [];
-
-			let argExpression = '';
-			let pendingOpenBrackets = 0;
-			for (let i = 0; i < argsPart.length; i++) {
-				const char = argsPart[i];
-				if (char === ',' && pendingOpenBrackets === 0) {
-					args.push(this.evaluateExpression(argExpression));
-					i++;
-					argExpression = '';
-					continue;
-				} else if (char === '(') {
-					pendingOpenBrackets++;
-				} else if (char === ')') {
-					pendingOpenBrackets--;
-				}
-				argExpression += char;
-			}
-			if (argExpression.length > 0) {
-				args.push(this.evaluateExpression(argExpression));
-			}
-
-			const funcs = {
-				not: (a) => !a,
-				eq: (a, b) => a === b,
-				gt: (a, b) => a > b,
-				lt: (a, b) => a < b,
-				gt_eq: (a, b) => a >= b,
-				lt_eq: (a, b) => a <= b,
-				if: (bool, a, b) => bool ? a : b,
-				random: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
-			};
-
-			const res = funcs[funcName](...args);
-
-			console.log(funcName, args, res);
-
-			return res;
-		},
-
-		interpolate(str: string) {
-			return str.replace(/\{(.+?)\}/g, match => this.getVariableValue(match.slice(1, -1).trim()).toString());
-		}
 	}
 });
 </script>

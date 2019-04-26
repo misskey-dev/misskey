@@ -23,40 +23,40 @@
 		<input v-model="value.value" type="number"/>
 	</section>
 	<section v-else-if="value.type === 'if'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._if.if')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._if.then')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
-		<x-v v-model="value.args[2]" :title="$t('script.blocks._if.else')" :get-expected-type="() => _getExpectedType(2)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._if.if')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._if.then')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[2]" :title="$t('script.blocks._if.else')" :get-expected-type="() => _getExpectedType(2)" :ai-script="aiScript"/>
 	</section>
 	<section v-else-if="value.type === 'eq'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._eq.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._eq.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._eq.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._eq.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
 	</section>
 	<section v-else-if="value.type === 'lt'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._lt.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._lt.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._lt.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._lt.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
 	</section>
 	<section v-else-if="value.type === 'gt'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._gt.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._gt.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._gt.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._gt.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
 	</section>
 	<section v-else-if="value.type === 'ltOrEq'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._ltOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._ltOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._ltOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._ltOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
 	</section>
 	<section v-else-if="value.type === 'gtOrEq'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._gtOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._gtOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._gtOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._gtOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
 	</section>
 	<section v-else-if="value.type === 'not'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks.not')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks.not')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
 	</section>
 	<section v-else-if="value.type === 'random'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._random.min')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._random.max')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._random.min')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._random.max')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
 	</section>
 	<section v-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
-			<option v-for="v in variables.filter(x => getExpectedType && getExpectedType() != null ? ((typeInference(x) === null) || (typeInference(x) === getExpectedType())) : true)" :value="v.id">{{ v.name }}</option>
+			<option v-for="v in aiScript.getVariablesByType(getExpectedType ? getExpectedType() : null)" :value="v.id">{{ v.name }}</option>
 		</select>
 	</section>
 </x-container>
@@ -83,7 +83,7 @@ import {
 	faDice,
 	faSortNumericUp,
 } from '@fortawesome/free-solid-svg-icons';
-import { typeCheck, funcDefs, getExpectedType, typeInference } from '../../../scripts/aiscript';
+import { AiScript } from '../../../scripts/aiscript';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -109,7 +109,7 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
-		variables: {
+		aiScript: {
 			required: true,
 		}
 	},
@@ -118,7 +118,6 @@ export default Vue.extend({
 		return {
 			error: null,
 			warn: null,
-			typeInference,
 			faSuperscript, faPencilAlt, faSquareRootAlt
 		};
 	},
@@ -126,6 +125,7 @@ export default Vue.extend({
 	computed: {
 		icon(): any {
 			if (this.value.type === 'expression') return faSuperscript;
+			if (this.value.type === 'ref') return faSuperscript;
 			if (this.value.type === 'if') return faShareAlt;
 			if (this.value.type === 'eq') return faEquals;
 			if (this.value.type === 'notEq') return faNotEqual;
@@ -163,8 +163,8 @@ export default Vue.extend({
 			if (t === 'multiLineText') return;
 			if (t === 'ref') return;
 
-			for (let i = 0; i < funcDefs[t].in.length; i++) {
-				const inType = funcDefs[t].in[i];
+			for (let i = 0; i < AiScript.funcDefs[t].in.length; i++) {
+				const inType = AiScript.funcDefs[t].in[i];
 				if (typeof inType !== 'number') {
 					if (inType === 'number') this.value.args[i].type = 'number';
 					if (inType === 'string') this.value.args[i].type = 'text';
@@ -173,7 +173,7 @@ export default Vue.extend({
 		});
 
 		this.$watch('value.args', (args) => {
-			const fn = funcDefs[this.value.type];
+			const fn = AiScript.funcDefs[this.value.type];
 			const emptySlotIndex = args.findIndex(x => x.type === null);
 			if (emptySlotIndex !== -1 && emptySlotIndex < fn.in.length) {
 				this.warn = {
@@ -185,14 +185,15 @@ export default Vue.extend({
 		}, {
 			deep: true
 		});
-
+/*
 		this.$watch('value', (v) => {
-			if (v.type === null) return;
-			if (v.type === 'expression') return;
-			if (v.type === 'number') return;
-			if (v.type === 'text') return;
-			if (v.type === 'multiLineText') return;
 			this.error = typeCheck(v);
+		}, {
+			deep: true
+		});
+*/
+		this.$watch('aiScript.variables', () => {
+			this.error = this.aiScript.typeCheck(this.value);
 		}, {
 			deep: true
 		});
@@ -213,7 +214,7 @@ export default Vue.extend({
 		},
 
 		_getExpectedType(slot: number) {
-			return getExpectedType(this.value, slot, this.variables);
+			return this.aiScript.getExpectedType(this.value, slot);
 		}
 	}
 });

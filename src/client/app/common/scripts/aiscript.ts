@@ -1,3 +1,10 @@
+/**
+ * AiScript
+ * compiler & type checker
+ */
+
+import autobind from 'autobind-decorator';
+
 export type Block = {
 	type: string;
 	args: Block[];
@@ -7,77 +14,6 @@ export type Block = {
 export type Variable = Block & {
 	id: string;
 	name: string;
-};
-
-export const blockDefs = [{
-	type: 'if', out: null
-}, {
-	type: 'eq', out: 'boolean'
-}, {
-	type: 'notEq', out: 'boolean'
-}, {
-	type: 'and', out: 'boolean'
-}, {
-	type: 'or', out: 'boolean'
-}, {
-	type: 'gt', out: 'boolean'
-}, {
-	type: 'lt', out: 'boolean'
-}, {
-	type: 'gtOrEq', out: 'boolean'
-}, {
-	type: 'ltOrEq', out: 'boolean'
-}, {
-	type: 'not', out: 'boolean'
-}, {
-	type: 'text', out: 'string'
-}, {
-	type: 'multiLineText', out: 'string'
-}, {
-	type: 'textList', out: 'stringArray'
-}, {
-	type: 'expression', out: null
-}, {
-	type: 'random', out: 'number'
-}, {
-	type: 'number', out: 'number'
-}, {
-	type: 'ref', out: null
-}];
-
-export const funcDefs = {
-	not: {
-		in: ['boolean'],
-		out: 'boolean'
-	},
-	eq: {
-		in: [0, 0],
-		out: 'boolean'
-	},
-	gt: {
-		in: ['number', 'number'],
-		out: 'boolean'
-	},
-	lt: {
-		in: ['number', 'number'],
-		out: 'boolean'
-	},
-	gtEq: {
-		in: ['number', 'number'],
-		out: 'boolean'
-	},
-	ltEq: {
-		in: ['number', 'number'],
-		out: 'boolean'
-	},
-	if: {
-		in: ['boolean', 0, 0],
-		out: 0
-	},
-	random: {
-		in: ['number', 'number'],
-		out: 'number'
-	}
 };
 
 export function isLiteralBlock(v: Block) {
@@ -90,35 +26,117 @@ export function isLiteralBlock(v: Block) {
 	return false;
 }
 
-export function typeCheck(v: Block, variables: Variable[] = []) {
-	if (isLiteralBlock(v)) return null;
+type TypeError = {
+	arg: number;
+	expect: string;
+	actual: string;
+};
 
-	const generic: string[] = [];
-	const def = funcDefs[v.type];
-	if (def == null) {
-		console.warn('Unknown type', v.type);
-		return;
+export class AiScript {
+	private variables: Variable[];
+
+	public static blockDefs = [{
+		type: 'if', out: null
+	}, {
+		type: 'eq', out: 'boolean'
+	}, {
+		type: 'notEq', out: 'boolean'
+	}, {
+		type: 'and', out: 'boolean'
+	}, {
+		type: 'or', out: 'boolean'
+	}, {
+		type: 'gt', out: 'boolean'
+	}, {
+		type: 'lt', out: 'boolean'
+	}, {
+		type: 'gtOrEq', out: 'boolean'
+	}, {
+		type: 'ltOrEq', out: 'boolean'
+	}, {
+		type: 'not', out: 'boolean'
+	}, {
+		type: 'text', out: 'string'
+	}, {
+		type: 'multiLineText', out: 'string'
+	}, {
+		type: 'textList', out: 'stringArray'
+	}, {
+		type: 'expression', out: null
+	}, {
+		type: 'random', out: 'number'
+	}, {
+		type: 'number', out: 'number'
+	}, {
+		type: 'ref', out: null
+	}];
+
+	public static funcDefs = {
+		not: {
+			in: ['boolean'],
+			out: 'boolean'
+		},
+		eq: {
+			in: [0, 0],
+			out: 'boolean'
+		},
+		gt: {
+			in: ['number', 'number'],
+			out: 'boolean'
+		},
+		lt: {
+			in: ['number', 'number'],
+			out: 'boolean'
+		},
+		gtEq: {
+			in: ['number', 'number'],
+			out: 'boolean'
+		},
+		ltEq: {
+			in: ['number', 'number'],
+			out: 'boolean'
+		},
+		if: {
+			in: ['boolean', 0, 0],
+			out: 0
+		},
+		random: {
+			in: ['number', 'number'],
+			out: 'number'
+		}
+	};
+
+	constructor(variables: Variable[]) {
+		this.variables = variables;
 	}
 
-	for (let i = 0; i < def.in.length; i++) {
-		const arg = def.in[i];
-		const type = typeInference(v.args[i], variables);
-		if (type === null) continue;
+	@autobind
+	public typeCheck(v: Block): TypeError | null {
+		if (isLiteralBlock(v)) return null;
 
-		if (typeof arg === 'number') {
-			if (generic[arg] === undefined) {
-				generic[arg] = type;
-			} else {
-				if (type !== generic[arg]) {
+		const def = AiScript.funcDefs[v.type];
+		if (def == null) {
+			throw new Error('Unknown type: ' + v.type);
+		}
+
+		const generic: string[] = [];
+
+		for (let i = 0; i < def.in.length; i++) {
+			const arg = def.in[i];
+			const type = this.typeInference(v.args[i]);
+			if (type === null) continue;
+
+			if (typeof arg === 'number') {
+				if (generic[arg] === undefined) {
+					generic[arg] = type;
+				} else if (type !== generic[arg]) {
 					return {
 						arg: i,
 						expect: generic[arg],
 						actual: type
 					};
 				}
-			}
-		} else {
-			if (type !== arg) {
+			} else if (type !== arg) {
 				return {
 					arg: i,
 					expect: arg,
@@ -126,81 +144,84 @@ export function typeCheck(v: Block, variables: Variable[] = []) {
 				};
 			}
 		}
-	}
-}
 
-export function getExpectedType(v: Block, slot: number, variables: Variable[] = []) {
-	const generic: string[] = [];
-	const def = funcDefs[v.type];
-	if (def == null) {
-		console.warn('Unknown type', v.type);
-		return;
+		return null;
 	}
 
-	for (let i = 0; i < def.in.length; i++) {
-		const arg = def.in[i];
-		const type = typeInference(v.args[i], variables);
-		if (type === null) continue;
-
-		if (typeof arg === 'number') {
-			if (generic[arg] === undefined) {
-				generic[arg] = type;
-			}
+	@autobind
+	public getExpectedType(v: Block, slot: number): string | null {
+		const def = AiScript.funcDefs[v.type];
+		if (def == null) {
+			throw new Error('Unknown type: ' + v.type);
 		}
-	}
 
-	if (typeof def.in[slot] === 'number') {
-		return generic[def.in[slot]] || null;
-	} else {
-		return def.in[slot];
-	}
-}
+		const generic: string[] = [];
 
-export function typeInference(v: Block, variables: Variable[] = []) {
-	if (v.type === null) return null;
-	if (v.type === 'text') return 'string';
-	if (v.type === 'multiLineText') return 'string';
-	if (v.type === 'number') return 'number';
-	if (v.type === 'expression') return null;
-	if (v.type === 'ref') {
-		const variable = variables.find(va => va.id === v.value);
-		if (variable == null) return null;
-		return typeInference(variable, variables);
-	}
+		for (let i = 0; i < def.in.length; i++) {
+			const arg = def.in[i];
+			const type = this.typeInference(v.args[i]);
+			if (type === null) continue;
 
-	const generic: string[] = [];
-
-	const def = funcDefs[v.type];
-
-	for (let i = 0; i < def.in.length; i++) {
-		const arg = def.in[i];
-		if (typeof arg === 'number') {
-			const type = typeInference(v.args[i], variables);
-
-			if (generic[arg] === undefined) {
-				generic[arg] = type;
-			} else {
-				if (type !== generic[arg]) {
-					generic[arg] = null;
+			if (typeof arg === 'number') {
+				if (generic[arg] === undefined) {
+					generic[arg] = type;
 				}
 			}
 		}
+
+		if (typeof def.in[slot] === 'number') {
+			return generic[def.in[slot]] || null;
+		} else {
+			return def.in[slot];
+		}
 	}
 
-	if (typeof def.out === 'number') {
-		return generic[def.out];
-	} else {
-		return def.out;
+	@autobind
+	public typeInference(v: Block): string | null {
+		if (v.type === null) return null;
+		if (v.type === 'text') return 'string';
+		if (v.type === 'multiLineText') return 'string';
+		if (v.type === 'number') return 'number';
+		if (v.type === 'expression') return null;
+		if (v.type === 'ref') {
+			const variable = this.variables.find(va => va.id === v.value);
+			if (variable == null) return null;
+			return this.typeInference(variable);
+		}
+
+		const generic: string[] = [];
+
+		const def = AiScript.funcDefs[v.type];
+
+		for (let i = 0; i < def.in.length; i++) {
+			const arg = def.in[i];
+			if (typeof arg === 'number') {
+				const type = this.typeInference(v.args[i]);
+
+				if (generic[arg] === undefined) {
+					generic[arg] = type;
+				} else {
+					if (type !== generic[arg]) {
+						generic[arg] = null;
+					}
+				}
+			}
+		}
+
+		if (typeof def.out === 'number') {
+			return generic[def.out];
+		} else {
+			return def.out;
+		}
 	}
-}
 
-export class Compiler {
-	private variables: Variable[];
-
-	constructor(variables: Variable[]) {
-		this.variables = variables;
+	@autobind
+	public getVariablesByType(type: string | null): Variable[] {
+		if (type == null) return this.variables;
+		return this.variables.filter(x => (this.typeInference(x) === null) || (this.typeInference(x) === type));
 	}
 
+	@autobind
 	public compile(v: Block): string {
 		if (v.type === 'expression') {
 			return v.value;
@@ -230,6 +251,81 @@ export class Compiler {
 			return `random(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
 		}
 
-		console.warn('Unknown type:', v.type);
+		throw new Error('Unknown type: ' + v.type);
+	}
+
+	@autobind
+	public evaluateExpression(expression: string): any {
+		const num = expression.trim().match(/^[0-9]+$/);
+		if (num) {
+			return parseInt(num[0], 10);
+		}
+
+		const str = expression.trim().match(/^"(.+?)"$/);
+		if (str) {
+			return this.interpolate(str[0].slice(1, -1));
+		}
+
+		const variable = expression.trim().match(/^[a-zA-Z]+$/);
+		if (variable) {
+			return this.getVariableValue(variable[0]);
+		}
+
+		const funcName = expression.substr(0, expression.indexOf('('));
+		const argsPart = expression.substr(expression.indexOf('(')).slice(1, -1);
+
+		const args = [];
+
+		let argExpression = '';
+		let pendingOpenBrackets = 0;
+		for (let i = 0; i < argsPart.length; i++) {
+			const char = argsPart[i];
+			if (char === ',' && pendingOpenBrackets === 0) {
+				args.push(this.evaluateExpression(argExpression));
+				i++;
+				argExpression = '';
+				continue;
+			} else if (char === '(') {
+				pendingOpenBrackets++;
+			} else if (char === ')') {
+				pendingOpenBrackets--;
+			}
+			argExpression += char;
+		}
+		if (argExpression.length > 0) {
+			args.push(this.evaluateExpression(argExpression));
+		}
+
+		const funcs = {
+			not: (a) => !a,
+			eq: (a, b) => a === b,
+			gt: (a, b) => a > b,
+			lt: (a, b) => a < b,
+			gt_eq: (a, b) => a >= b,
+			lt_eq: (a, b) => a <= b,
+			if: (bool, a, b) => bool ? a : b,
+			random: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
+		};
+
+		const res = funcs[funcName](...args);
+
+		console.log(funcName, args, res);
+
+		return res;
+	}
+
+	@autobind
+	private getVariableValue(name: string): any {
+		const v = this.variables.find(v => v.name === name);
+		if (v) {
+			return v.value;
+		} else {
+			throw new Error(`Script: No such variable '${name}'`);
+		}
+	}
+
+	@autobind
+	public interpolate(str: string) {
+		return str.replace(/\{(.+?)\}/g, match => this.getVariableValue(match.slice(1, -1).trim()).toString());
 	}
 }

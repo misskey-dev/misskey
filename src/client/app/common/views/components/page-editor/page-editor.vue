@@ -26,7 +26,7 @@
 			<section class="">
 				<div class="variables">
 					<template v-for="variable in variables">
-						<x-variable :x="variable" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :variables="variables"/>
+						<x-variable :x="variable" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :ai-script="aiScript"/>
 					</template>
 				</div>
 			</section>
@@ -57,7 +57,7 @@ import XText from './page-editor.text.vue';
 import XImage from './page-editor.image.vue';
 import XButton from './page-editor.button.vue';
 import * as uuid from 'uuid';
-import { blockDefs, Compiler } from '../../../scripts/aiscript';
+import { AiScript } from '../../../scripts/aiscript';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -79,12 +79,13 @@ export default Vue.extend({
 			title: '',
 			content: [],
 			variables: [],
-			Compiler,
+			aiScript: null,
 			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
 		};
 	},
 
 	created() {
+		this.aiScript = new AiScript(this.variables);
 		if (this.page) {
 			this.$root.api('pages/show', {
 				pageId: this.page,
@@ -199,7 +200,7 @@ export default Vue.extend({
 		},
 
 		getScriptItemList(type: string = null) {
-			return blockDefs.filter(block => type === null || block.out === null || block.out === type).map(block => ({
+			return AiScript.blockDefs.filter(block => type === null || block.out === null || block.out === type).map(block => ({
 				value: block.type,
 				text: this.$t(`script.blocks.${block.type}`)
 			}));
@@ -207,7 +208,7 @@ export default Vue.extend({
 
 		compile(v) {
 			try {
-				return new Compiler(this.variables).compile(v);
+				return this.aiScript.compile(v);
 			} catch(e) {
 				return null;
 			}

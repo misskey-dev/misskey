@@ -126,10 +126,12 @@ export default Vue.extend({
 		color #b19e49
 		margin 0
 		padding 16px 16px 0 16px
+		font-size 14px
 
 	> .error
 		color #f00
 		margin 0
 		padding 16px 16px 0 16px
+		font-size 14px
 
 </style>

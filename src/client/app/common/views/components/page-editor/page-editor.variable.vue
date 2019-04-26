@@ -8,7 +8,7 @@
 	</section>
 </x-container>
 
-<x-v v-else v-model="x" :title="x.name" :removable="true" @remove="() => $emit('remove')" :variables="variables"/>
+<x-v v-else v-model="x" :title="x.name" :removable="true" @remove="() => $emit('remove')" :ai-script="aiScript"/>
 </template>
 
 <script lang="ts">
@@ -29,7 +29,7 @@ export default Vue.extend({
 		x: {
 			required: true
 		},
-		variables: {
+		aiScript: {
 			required: true,
 		}
 	},
