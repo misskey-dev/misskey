@@ -20,7 +20,7 @@ import { faBolt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from './page-editor.container.vue';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/page-editor.button.vue'),
+	i18n: i18n('pages'),
 
 	components: {
 		XContainer

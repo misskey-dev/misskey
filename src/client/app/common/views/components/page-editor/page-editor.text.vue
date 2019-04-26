@@ -15,7 +15,7 @@ import { faAlignLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from './page-editor.container.vue';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/page-editor.text.vue'),
+	i18n: i18n('pages'),
 
 	components: {
 		XContainer

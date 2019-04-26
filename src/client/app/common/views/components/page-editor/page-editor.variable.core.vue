@@ -1,13 +1,16 @@
 <template>
-<x-container :removable="removable">
-	<template #header><fa :icon="icon"/> <template v-if="title">{{ title }} <span class="turmquns">({{ typeText }})</span></template><template v-else>{{ typeText }}</template></template>
+<x-container :removable="removable" :error="error" :warn="warn">
+	<template #header><fa v-if="icon" :icon="icon"/> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
 		<button @click="changeType()">
 			<fa :icon="faPencilAlt"/>
 		</button>
 	</template>
 
-	<section v-if="value.type === 'formula'" class="tbwccoaw">
+	<section v-if="value.type === null" class="pbglfege" @click="changeType()">
+		{{ $t('script.emptySlot') }}
+	</section>
+	<section v-if="value.type === 'expression'" class="tbwccoaw">
 		<input v-model="value.value"/>
 	</section>
 	<section v-if="value.type === 'text'" class="tbwccoaw">
@@ -16,10 +19,45 @@
 	<section v-if="value.type === 'multiLineText'" class="tbwccoaw">
 		<textarea v-model="value.value"></textarea>
 	</section>
+	<section v-if="value.type === 'number'" class="tbwccoaw">
+		<input v-model="value.value" type="number"/>
+	</section>
 	<section v-else-if="value.type === 'if'" class="" style="padding:16px;">
-		<x-v v-model="value.x" title="もし"/>
-		<x-v v-model="value.a" title="ならば"/>
-		<x-v v-model="value.b" title="そうでなければ"/>
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._if.if')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._if.then')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+		<x-v v-model="value.args[2]" :title="$t('script.blocks._if.else')" :get-expected-type="() => _getExpectedType(2)" :variables="variables"/>
+	</section>
+	<section v-else-if="value.type === 'eq'" class="" style="padding:16px;">
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._eq.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._eq.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+	</section>
+	<section v-else-if="value.type === 'lt'" class="" style="padding:16px;">
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._lt.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._lt.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+	</section>
+	<section v-else-if="value.type === 'gt'" class="" style="padding:16px;">
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._gt.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._gt.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+	</section>
+	<section v-else-if="value.type === 'ltOrEq'" class="" style="padding:16px;">
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._ltOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._ltOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+	</section>
+	<section v-else-if="value.type === 'gtOrEq'" class="" style="padding:16px;">
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._gtOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._gtOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+	</section>
+	<section v-else-if="value.type === 'not'" class="" style="padding:16px;">
+		<x-v v-model="value.args[0]" :title="$t('script.blocks.not')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+	</section>
+	<section v-else-if="value.type === 'random'" class="" style="padding:16px;">
+		<x-v v-model="value.args[0]" :title="$t('script.blocks._random.min')" :get-expected-type="() => _getExpectedType(0)" :variables="variables"/>
+		<x-v v-model="value.args[1]" :title="$t('script.blocks._random.max')" :get-expected-type="() => _getExpectedType(1)" :variables="variables"/>
+	</section>
+	<section v-if="value.type === 'ref'" class="">
+		<select v-model="value.value">
+			<option v-for="v in variables.filter(x => getExpectedType ? typeInference(x) === getExpectedType() : true)" :value="v.id">{{ v.name }}</option>
+		</select>
 	</section>
 </x-container>
 </template>
@@ -28,16 +66,39 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
-import { faSuperscript, faPencilAlt, faAlignLeft, faCodeBranch, faSquareRootAlt, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
+import {
+	faSuperscript,
+	faPencilAlt,
+	faAlignLeft,
+	faShareAlt,
+	faSquareRootAlt,
+	faQuoteRight,
+	faEquals,
+	faGreaterThan,
+	faLessThan,
+	faGreaterThanEqual,
+	faLessThanEqual,
+	faExclamation,
+	faNotEqual,
+	faDice,
+	faSortNumericUp,
+} from '@fortawesome/free-solid-svg-icons';
+import { typeCheck, funcDefs, getExpectedType, typeInference } from '../../../scripts/aiscript';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/page-editor.text.vue'),
+	i18n: i18n('pages'),
 
 	components: {
 		XContainer
 	},
 
+	inject: ['getScriptItemList'],
+
 	props: {
+		getExpectedType: {
+			required: false,
+			default: null
+		},
 		value: {
 			required: true
 		},
@@ -48,26 +109,41 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		variables: {
+			required: true,
+		}
 	},
 
 	data() {
 		return {
-			faSuperscript, faPencilAlt, faCodeBranch, faSquareRootAlt
+			error: null,
+			warn: null,
+			typeInference,
+			faSuperscript, faPencilAlt, faSquareRootAlt
 		};
 	},
 
 	computed: {
 		icon(): any {
-			if (this.value.type === 'formula') return faSuperscript;
-			if (this.value.type === 'if') return faCodeBranch;
+			if (this.value.type === 'expression') return faSuperscript;
+			if (this.value.type === 'if') return faShareAlt;
+			if (this.value.type === 'eq') return faEquals;
+			if (this.value.type === 'notEq') return faNotEqual;
+			if (this.value.type === 'and') return null;
+			if (this.value.type === 'or') return null;
+			if (this.value.type === 'gt') return faGreaterThan;
+			if (this.value.type === 'lt') return faLessThan;
+			if (this.value.type === 'gtOrEq') return faGreaterThanEqual;
+			if (this.value.type === 'ltOrEq') return faLessThanEqual;
+			if (this.value.type === 'not') return faExclamation;
 			if (this.value.type === 'text') return faQuoteRight;
 			if (this.value.type === 'multiLineText') return faAlignLeft;
+			if (this.value.type === 'random') return faDice;
+			if (this.value.type === 'number') return faSortNumericUp;
 		},
 		typeText(): any {
-			if (this.value.type === 'formula') return '式';
-			if (this.value.type === 'if') return 'IF';
-			if (this.value.type === 'text') return 'テキスト';
-			if (this.value.type === 'multiLineText') return 'テキスト(複数行)';
+			if (this.value.type === null) return null;
+			return this.$t(`script.blocks.${this.value.type}`);
 		},
 	},
 
@@ -77,9 +153,49 @@ export default Vue.extend({
 
 	created() {
 		if (this.value.value == null) Vue.set(this.value, 'value', '');
-		if (this.value.x == null) Vue.set(this.value, 'x', { type: 'formula' });
-		if (this.value.a == null) Vue.set(this.value, 'a', { type: 'formula' });
-		if (this.value.b == null) Vue.set(this.value, 'b', { type: 'formula' });
+		if (this.value.args == null) Vue.set(this.value, 'args', [{ type: null }, { type: null }, { type: null }]);
+
+		this.$watch('value.type', (t) => {
+			if (t === null) return;
+			if (t === 'expression') return;
+			if (t === 'number') return;
+			if (t === 'text') return;
+			if (t === 'multiLineText') return;
+			if (t === 'ref') return;
+
+			for (let i = 0; i < funcDefs[t].in.length; i++) {
+				const inType = funcDefs[t].in[i];
+				if (typeof inType !== 'number') {
+					if (inType === 'number') this.value.args[i].type = 'number';
+					if (inType === 'string') this.value.args[i].type = 'text';
+				}
+			}
+		});
+
+		this.$watch('value.args', (args) => {
+			const fn = funcDefs[this.value.type];
+			const emptySlotIndex = args.findIndex(x => x.type === null);
+			if (emptySlotIndex !== -1 && emptySlotIndex < fn.in.length) {
+				this.warn = {
+					slot: emptySlotIndex
+				};
+			} else {
+				this.warn = null;
+			}
+		}, {
+			deep: true
+		});
+
+		this.$watch('value', (v) => {
+			if (v.type === null) return;
+			if (v.type === 'expression') return;
+			if (v.type === 'number') return;
+			if (v.type === 'text') return;
+			if (v.type === 'multiLineText') return;
+			this.error = typeCheck(v);
+		}, {
+			deep: true
+		});
 	},
 
 	methods: {
@@ -88,22 +204,16 @@ export default Vue.extend({
 				type: null,
 				title: 'Select type',
 				select: {
-					items: [{
-						value: 'if', text: 'IF'
-					}, {
-						value: 'text', text: 'Text'
-					}, {
-						value: 'multiLineText', text: 'Text(複数行)'
-					}, {
-						value: 'list', text: 'List'
-					}, {
-						value: 'formula', text: 'Expression'
-					}]
+					items: this.getScriptItemList(this.getExpectedType ? this.getExpectedType() : null)
 				},
 				showCancelButton: true
 			});
 			if (canceled) return;
 			this.value.type = type;
+		},
+
+		_getExpectedType(slot: number) {
+			return getExpectedType(this.value, slot, this.variables);
 		}
 	}
 });
@@ -112,6 +222,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .turmquns
 	opacity 0.7
+
+.pbglfege
+	opacity 0.5
+	padding 16px
+	text-align center
+	cursor pointer
 
 .tbwccoaw
 	> input

@@ -85,37 +85,55 @@ export default Vue.extend({
 		},
 
 		complie(v): string {
-			if (v.type === 'formula') {
+			if (v.type === 'expression') {
 				return v.value;
 			} else if (v.type === 'text') {
 				return '"' + v.value + '"'; // todo escape
 			} else if (v.type === 'multiLineText') {
 				return '"' + v.value + '"'; // todo escape
+			} else if (v.type === 'number') {
+				return parseInt(v.value, 10);
 			} else if (v.type === 'if') {
-				return `if(${this.complie(v.x)}, ${this.complie(v.a)}, ${this.complie(v.b)})`;
+				return `if(${this.complie(v.args[0])}, ${this.complie(v.args[1])}, ${this.complie(v.args[2])})`;
+			} else if (v.type === 'eq') {
+				return `eq(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
+			} else if (v.type === 'gt') {
+				return `gt(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
+			} else if (v.type === 'lt') {
+				return `lt(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
+			} else if (v.type === 'gtOrEq') {
+				return `gt_eq(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
+			} else if (v.type === 'ltOrEq') {
+				return `lt_eq(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
+			} else if (v.type === 'not') {
+				return `not(${this.complie(v.args[0])})`;
+			} else if (v.type === 'random') {
+				return `random(${this.complie(v.args[0])}, ${this.complie(v.args[1])})`;
 			}
+
+			console.warn('Unknown type:', v.type);
 		},
 
-		evaluateFormula(formula) {
-			console.log(formula);
+		evaluateFormula(expression) {
+			console.log(expression);
 
-			const num = formula.trim().match(/^[0-9]+$/);
+			const num = expression.trim().match(/^[0-9]+$/);
 			if (num) {
 				return parseInt(num[0], 10);
 			}
 
-			const str = formula.trim().match(/^"(.+?)"$/);
+			const str = expression.trim().match(/^"(.+?)"$/);
 			if (str) {
-				return str[0].slice(1, -1);
+				return this.interpolate(str[0].slice(1, -1));
 			}
 
-			const variable = formula.trim().match(/^[a-zA-Z]+$/);
+			const variable = expression.trim().match(/^[a-zA-Z]+$/);
 			if (variable) {
 				return this.getVariableValue(variable[0]);
 			}
 
-			const funcName = formula.substr(0, formula.indexOf('('));
-			const argsPart = formula.substr(formula.indexOf('(')).slice(1, -1);
+			const funcName = expression.substr(0, expression.indexOf('('));
+			const argsPart = expression.substr(expression.indexOf('(')).slice(1, -1);
 
 			const args = [];
 
@@ -140,7 +158,12 @@ export default Vue.extend({
 			}
 
 			const funcs = {
+				not: (a) => !a,
 				eq: (a, b) => a === b,
+				gt: (a, b) => a > b,
+				lt: (a, b) => a < b,
+				gt_eq: (a, b) => a >= b,
+				lt_eq: (a, b) => a <= b,
 				if: (bool, a, b) => bool ? a : b,
 				random: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
 			};
@@ -153,7 +176,7 @@ export default Vue.extend({
 		},
 
 		interpolate(str: string) {
-			return str.replace(/\{\{\{(.+?)\}\}\}/g, match => this.getVariableValue(match.slice(3, -3).trim()).toString());
+			return str.replace(/\{(.+?)\}/g, match => this.getVariableValue(match.slice(1, -1).trim()).toString());
 		}
 	}
 });

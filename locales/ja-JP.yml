@@ -1813,26 +1813,6 @@ docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "このページをGitHubで編集"
 
-  api:
-    entities:
-      properties: "プロパティ"
-    endpoints:
-      params: "パラメータ"
-      no-params: "パラメータはありません"
-      res: "レスポンス"
-      require-credential: "このエンドポイントは認証情報が必須です。"
-      require-permission: "このエンドポイントは{permission}の権限を必要とします。"
-      has-limit: "レートリミットがあります。"
-      duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
-      min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
-      show-src: "このエンドポイントのソースコードも閲覧できます。"
-      show-src-link: "コードをGitHubで見る"
-      generated: "このドキュメントはAPI定義に基づき自動生成されています。"
-    props:
-      name: "名前"
-      type: "型"
-      description: "説明"
-
 dev/views/index.vue:
   manage-apps: "アプリの管理"
 
@@ -1857,3 +1837,62 @@ dev/views/new-app.vue:
   authority: "権限"
   authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
+
+pages:
+  script:
+    blocks:
+      if: "分岐"
+      text: "テキスト"
+      multiLineText: "テキスト(複数行)"
+      textList: "テキストのリスト"
+      expression: "式"
+      eq: "AとBが同じ"
+      _eq:
+        a: "A"
+        b: "B"
+      notEq: "AとBが違う"
+      _notEq:
+        a: "A"
+        b: "B"
+      and: "AかつB"
+      _and:
+        a: "A"
+        b: "B"
+      or: "AまたはB"
+      _or:
+        a: "A"
+        b: "B"
+      lt: "AがBより小さい"
+      _lt:
+        a: "A"
+        b: "B"
+      gt: "AがBより大きい"
+      _gt:
+        a: "A"
+        b: "B"
+      ltOrEq: "AがBと同じか小さい"
+      _ltOrEq:
+        a: "A"
+        b: "B"
+      gtOrEq: "AがBと同じか大きい"
+      _gtOrEq:
+        a: "A"
+        b: "B"
+      _if:
+        if: "もし"
+        then: "なら"
+        else: "そうでなければ"
+      not: "否定"
+      random: "ランダム"
+      _random:
+        min: "最小"
+        max: "最大"
+      number: "数"
+    typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
+    thereIsEmptySlot: "スロット{slot}が空です！"
+    types:
+      string: "テキスト"
+      number: "数値"
+      boolean: "フラグ"
+      array: "リスト"
+    emptySlot: "空のスロット"

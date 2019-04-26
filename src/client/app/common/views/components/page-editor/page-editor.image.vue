@@ -22,7 +22,7 @@ import XContainer from './page-editor.container.vue';
 import XFileThumbnail from '../drive-file-thumbnail.vue';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/page-editor.image.vue'),
+	i18n: i18n('pages'),
 
 	components: {
 		XContainer, XFileThumbnail

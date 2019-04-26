@@ -1,5 +1,5 @@
 <template>
-<div class="cpjygsrt">
+<div class="cpjygsrt" :class="{ error: error != null, warn: warn != null }">
 	<header>
 		<div class="title"><slot name="header"></slot></div>
 		<div class="buttons">
@@ -13,6 +13,8 @@
 			</button>
 		</div>
 	</header>
+	<p v-show="showBody" class="error" v-if="error != null">{{ $t('script.typeError', { slot: error.arg + 1, expect: $t(`script.types.${error.expect}`), actual: $t(`script.types.${error.actual}`) }) }}</p>
+	<p v-show="showBody" class="warn" v-if="warn != null">{{ $t('script.thereIsEmptySlot', { slot: warn.slot + 1 }) }}</p>
 	<div v-show="showBody">
 		<slot></slot>
 	</div>
@@ -22,8 +24,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import i18n from '../../../../i18n';
 
 export default Vue.extend({
+	i18n: i18n('pages'),
+
 	props: {
 		expanded: {
 			type: Boolean,
@@ -32,6 +37,14 @@ export default Vue.extend({
 		removable: {
 			type: Boolean,
 			default: true
+		},
+		error: {
+			required: false,
+			default: null
+		},
+		warn: {
+			required: false,
+			default: null
 		}
 	},
 	data() {
@@ -58,6 +71,15 @@ export default Vue.extend({
 	background var(--face)
 	border solid 2px rgba(#000, 0.1)
 	border-radius 6px
+
+	&:hover
+		border solid 2px rgba(#000, 0.15)
+
+	&.warn
+		border solid 2px #dec44c
+
+	&.error
+		border solid 2px #f00
 
 	& + .cpjygsrt
 		margin-top 16px
@@ -99,5 +121,15 @@ export default Vue.extend({
 
 				&:active
 					color var(--faceTextButtonActive)
+
+	> .warn
+		color #b19e49
+		margin 0
+		padding 16px 16px 0 16px
+
+	> .error
+		color #f00
+		margin 0
+		padding 16px 16px 0 16px
 
 </style>

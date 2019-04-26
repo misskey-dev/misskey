@@ -1,5 +1,5 @@
 <template>
-<x-container @remove="() => $emit('remove')" v-if="x.type === 'formula'">
+<x-container @remove="() => $emit('remove')" v-if="x.type === 'expression'">
 	<template #header><fa :icon="faSuperscript"/> {{ x.name }}</template>
 
 	<section class="oenmsdfp">
@@ -8,7 +8,7 @@
 	</section>
 </x-container>
 
-<x-v v-else v-model="x" :title="x.name" :removable="true" @remove="() => $emit('remove')"/>
+<x-v v-else v-model="x" :title="x.name" :removable="true" @remove="() => $emit('remove')" :variables="variables"/>
 </template>
 
 <script lang="ts">
@@ -19,7 +19,7 @@ import XContainer from './page-editor.container.vue';
 import XV from './page-editor.variable.core.vue';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/page-editor.text.vue'),
+	i18n: i18n('pages'),
 
 	components: {
 		XContainer, XV
@@ -29,6 +29,9 @@ export default Vue.extend({
 		x: {
 			required: true
 		},
+		variables: {
+			required: true,
+		}
 	},
 
 	data() {

@@ -32,7 +32,7 @@ import XButton from './page-editor.button.vue';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/page-editor.section.vue'),
+	i18n: i18n('pages'),
 
 	components: {
 		XContainer, XText, XImage, XButton

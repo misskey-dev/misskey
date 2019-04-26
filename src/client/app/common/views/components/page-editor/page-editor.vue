@@ -20,27 +20,21 @@
 
 		<details>
 			<summary>Scripting</summary>
-			<x-container :removable="false">
-				<template #header><fa :icon="faSquareRootAlt"/> Variables</template>
-				<template #func>
-					<button @click="addVariable()">
-						<fa :icon="faPlus"/>
-					</button>
-				</template>
+			<fa :icon="faSquareRootAlt"/> Variables
+			<ui-button @click="addVariable()"><fa :icon="faPlus"/></ui-button>
 
-				<section class="" style="padding:16px;">
-					<div class="variables">
-						<template v-for="variable in variables">
-							<x-variable :x="variable" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id"/>
-						</template>
-					</div>
-				</section>
-			</x-container>
+			<section class="">
+				<div class="variables">
+					<template v-for="variable in variables">
+						<x-variable :x="variable" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :variables="variables"/>
+					</template>
+				</div>
+			</section>
 		</details>
 
 		<details>
 			<summary>Source</summary>
-			<div>{{ JSON.stringify(content) }}</div>
+			<pre>{{ JSON.stringify({ content, variables }, null, 2) }}</pre>
 		</details>
 	</section>
 </div>
@@ -58,9 +52,10 @@ import XText from './page-editor.text.vue';
 import XImage from './page-editor.image.vue';
 import XButton from './page-editor.button.vue';
 import * as uuid from 'uuid';
+import { blockDefs } from '../../../scripts/aiscript';
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/page-editor.vue'),
+	i18n: i18n('pages'),
 
 	components: {
 		XContainer, XVariable, XSection, XText, XImage, XButton
@@ -93,6 +88,12 @@ export default Vue.extend({
 				this.content = page.content;
 				this.variables = page.variables;
 			});
+		}
+	},
+
+	provide() {
+		return {
+			getScriptItemList: this.getScriptItemList
 		}
 	},
 
@@ -135,8 +136,6 @@ export default Vue.extend({
 					}, {
 						value: 'text', text: 'Text'
 					}, {
-						value: 'multiLineText', text: 'Text(複数行)'
-					}, {
 						value: 'image', text: 'Image'
 					}, {
 						value: 'button', text: 'Button'
@@ -164,15 +163,7 @@ export default Vue.extend({
 				type: null,
 				title: 'Select type',
 				select: {
-					items: [{
-						value: 'if', text: 'IF'
-					}, {
-						value: 'text', text: 'Text'
-					}, {
-						value: 'list', text: 'List'
-					}, {
-						value: 'formula', text: 'Expression'
-					}]
+					items: this.getScriptItemList()
 				},
 				showCancelButton: true
 			});
@@ -199,7 +190,14 @@ export default Vue.extend({
 				...this.content.slice(i + 1)
 			];
 			this.content = newValue;
-		}
+		},
+
+		getScriptItemList(type: string = null) {
+			return blockDefs.filter(block => type === null || block.out === null || block.out === type).map(block => ({
+				value: block.type,
+				text: this.$t(`script.blocks.${block.type}`)
+			}));
+		},
 	}
 });
 </script>
