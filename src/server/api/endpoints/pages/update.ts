@@ -1,0 +1,95 @@
+import $ from 'cafy';
+import define from '../../define';
+import { ApiError } from '../../error';
+import { Pages, DriveFiles } from '../../../../models';
+import { ID } from '../../../../misc/cafy-id';
+
+export const meta = {
+	desc: {
+		'ja-JP': '指定したページの情報を更新します。',
+	},
+
+	tags: ['pages'],
+
+	requireCredential: true,
+
+	params: {
+		pageId: {
+			validator: $.type(ID),
+			desc: {
+				'ja-JP': '対象のページのID',
+				'en-US': 'Target page ID.'
+			}
+		},
+
+		title: {
+			validator: $.str,
+		},
+
+		content: {
+			validator: $.arr($.obj())
+		},
+
+		variables: {
+			validator: $.arr($.obj())
+		},
+
+		eyeCathcingImageFileId: {
+			validator: $.optional.type(ID),
+		}
+	},
+
+	errors: {
+		noSuchPage: {
+			message: 'No such page.',
+			code: 'NO_SUCH_PAGE',
+			id: '21149b9e-3616-4778-9592-c4ce89f5a864'
+		},
+
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '3c15cd52-3b4b-4274-967d-6456fc4f792b'
+		},
+
+		noSuchFile: {
+			message: 'No such file.',
+			code: 'NO_SUCH_FILE',
+			id: 'cfc23c7c-3887-490e-af30-0ed576703c82'
+		},
+	}
+};
+
+export default define(meta, async (ps, user) => {
+	const page = await Pages.findOne(ps.pageId);
+	if (page == null) {
+		throw new ApiError(meta.errors.noSuchPage);
+	}
+	if (page.userId !== user.id) {
+		throw new ApiError(meta.errors.accessDenied);
+	}
+
+	let eyeCatchingImageFile = null;
+	if (ps.eyeCathcingImageFileId != null) {
+		eyeCatchingImageFile = await DriveFiles.findOne({
+			id: ps.eyeCathcingImageFileId,
+			userId: user.id
+		});
+
+		if (eyeCatchingImageFile == null) {
+			throw new ApiError(meta.errors.noSuchFile);
+		}
+	}
+
+	await Pages.update(page.id, {
+		updatedAt: new Date(),
+		title: ps.title,
+		content: ps.content,
+		variables: ps.variables,
+		eyeCatchingImageFileId: ps.eyeCathcingImageFileId === null
+			? null
+			: ps.eyeCathcingImageFileId === undefined
+				? page.eyeCatchingImageFileId
+				: eyeCatchingImageFile!.id,
+	});
+});

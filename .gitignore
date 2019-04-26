@@ -20,3 +20,4 @@ api-docs.json
 yarn.lock
 .DS_Store
 /files
+ormconfig.json

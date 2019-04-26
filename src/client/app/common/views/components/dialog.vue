@@ -230,7 +230,7 @@ export default Vue.extend({
 			font-size 32px
 
 			&.success
-				color #37ec92
+				color #85da5a
 
 			&.error
 				color #ec4137

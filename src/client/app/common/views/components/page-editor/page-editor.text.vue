@@ -1,0 +1,56 @@
+<template>
+<x-container @remove="() => $emit('remove')">
+	<template #header><fa :icon="faAlignLeft"/> Text</template>
+
+	<section class="ihymsbbe">
+		<textarea v-model="value.text"></textarea>
+	</section>
+</x-container>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import i18n from '../../../../i18n';
+import { faAlignLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import XContainer from './page-editor.container.vue';
+
+export default Vue.extend({
+	i18n: i18n('common/views/components/page-editor.text.vue'),
+
+	components: {
+		XContainer
+	},
+
+	props: {
+		value: {
+			required: true
+		},
+	},
+
+	data() {
+		return {
+			faAlignLeft, faPencilAlt
+		};
+	},
+
+	created() {
+		if (this.value.text == null) Vue.set(this.value, 'text', '');
+	},
+});
+</script>
+
+<style lang="stylus" scoped>
+.ihymsbbe
+	> textarea
+		display block
+		-webkit-appearance none
+		-moz-appearance none
+		appearance none
+		width 100%
+		min-width 100%
+		min-height 150px
+		border none
+		box-shadow none
+		padding 16px
+
+</style>

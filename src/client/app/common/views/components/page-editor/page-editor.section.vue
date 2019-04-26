@@ -1,0 +1,134 @@
+<template>
+<x-container @remove="() => $emit('remove')">
+	<template #header><fa :icon="faStickyNote"/> {{ value.title }}</template>
+	<template #func>
+		<button @click="rename()">
+			<fa :icon="faPencilAlt"/>
+		</button>
+		<button @click="add()">
+			<fa :icon="faPlus"/>
+		</button>
+	</template>
+
+	<section class="ilrvjyvi">
+		<div class="children">
+			<template v-for="child in value.children">
+				<component :is="'x-' + child.type" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
+			</template>
+		</div>
+	</section>
+</x-container>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import i18n from '../../../../i18n';
+import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
+import XContainer from './page-editor.container.vue';
+import XText from './page-editor.text.vue';
+import XImage from './page-editor.image.vue';
+import XButton from './page-editor.button.vue';
+import * as uuid from 'uuid';
+
+export default Vue.extend({
+	i18n: i18n('common/views/components/page-editor.section.vue'),
+
+	components: {
+		XContainer, XText, XImage, XButton
+	},
+
+	props: {
+		value: {
+			required: true
+		},
+	},
+
+	data() {
+		return {
+			faStickyNote, faPlus, faPencilAlt
+		};
+	},
+
+	beforeCreate() {
+		this.$options.components.XSection = require('./page-editor.section.vue').default;
+	},
+
+	created() {
+		if (this.value.title == null) Vue.set(this.value, 'title', null);
+		if (this.value.children == null) Vue.set(this.value, 'children', []);
+	},
+
+	mounted() {
+		if (this.value.title == null) {
+			this.rename();
+		}
+	},
+
+	methods: {
+		async rename() {
+			const { canceled, result: title } = await this.$root.dialog({
+				title: 'Enter title',
+				input: {
+					type: 'text',
+					default: this.value.title
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			this.value.title = title;
+		},
+
+		async add() {
+			const { canceled, result: type } = await this.$root.dialog({
+				type: null,
+				title: 'Select type',
+				select: {
+					items: [{
+						value: 'section', text: 'Section'
+					}, {
+						value: 'text', text: 'Text'
+					}, {
+						value: 'image', text: 'Image'
+					}, {
+						value: 'button', text: 'Button'
+					}]
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			const id = uuid.v4();
+			this.value.children.push({ id, type });
+		},
+
+		updateItem(v) {
+			const i = this.value.children.findIndex(x => x.id === v.id);
+			const newValue = [
+				...this.value.children.slice(0, i),
+				v,
+				...this.value.children.slice(i + 1)
+			];
+			this.value.children = newValue;
+			this.$emit('input', this.value);
+		},
+
+		remove(el) {
+			const i = this.value.children.findIndex(x => x.id === el.id);
+			const newValue = [
+				...this.value.children.slice(0, i),
+				...this.value.children.slice(i + 1)
+			];
+			this.value.children = newValue;
+			this.$emit('input', this.value);
+		}
+	}
+});
+</script>
+
+<style lang="stylus" scoped>
+.ilrvjyvi
+	> .children
+		padding 16px
+
+</style>

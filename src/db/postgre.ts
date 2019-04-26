@@ -40,6 +40,7 @@ import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
 import { UserProfile } from '../models/entities/user-profile';
+import { Page } from '../models/entities/page';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -114,6 +115,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			NoteReaction,
 			NoteWatching,
 			NoteUnread,
+			Page,
 			Log,
 			DriveFile,
 			DriveFolder,

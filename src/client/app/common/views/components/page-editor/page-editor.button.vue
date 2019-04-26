@@ -1,0 +1,63 @@
+<template>
+<x-container @remove="() => $emit('remove')">
+	<template #header><fa :icon="faBolt"/> Button</template>
+
+	<section class="xfhsjczc">
+		<input v-model="value.text" placeholder="Button text"/>
+		<select v-model="value.action">
+			<option value="dialog">Show dialog</option>
+			<option value="post">Post</option>
+		</select>
+		<input v-model="value.props.content" placeholder="Dialog content"/>
+	</section>
+</x-container>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import i18n from '../../../../i18n';
+import { faBolt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import XContainer from './page-editor.container.vue';
+
+export default Vue.extend({
+	i18n: i18n('common/views/components/page-editor.button.vue'),
+
+	components: {
+		XContainer
+	},
+
+	props: {
+		value: {
+			required: true
+		},
+	},
+
+	data() {
+		return {
+			faBolt, faPencilAlt
+		};
+	},
+
+	created() {
+		if (this.value.text == null) Vue.set(this.value, 'text', '');
+		if (this.value.action == null) Vue.set(this.value, 'action', 'dialog');
+		if (this.value.props == null) Vue.set(this.value, 'props', {});
+	},
+});
+</script>
+
+<style lang="stylus" scoped>
+.xfhsjczc
+	> input
+		display block
+		-webkit-appearance none
+		-moz-appearance none
+		appearance none
+		width 100%
+		min-width 100%
+		border none
+		box-shadow none
+		padding 16px
+		font-size 16px
+
+</style>

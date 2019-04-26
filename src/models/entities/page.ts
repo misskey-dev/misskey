@@ -1,0 +1,85 @@
+import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import { User } from './user';
+import { id } from '../id';
+import { DriveFile } from './drive-file';
+
+@Entity()
+export class Page {
+	@PrimaryColumn(id())
+	public id: string;
+
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The created date of the Page.'
+	})
+	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The updated date of the Page.'
+	})
+	public updatedAt: Date;
+
+	@Column('varchar', {
+		length: 256,
+	})
+	public title: string;
+
+	@Index()
+	@Column({
+		...id(),
+		comment: 'The ID of author.'
+	})
+	public userId: User['id'];
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public user: User | null;
+
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public eyeCatchingImageFileId: DriveFile['id'] | null;
+
+	@ManyToOne(type => DriveFile, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public eyeCatchingImageFile: DriveFile | null;
+
+	@Column('jsonb', {
+		default: []
+	})
+	public content: Record<string, any>[];
+
+	@Column('jsonb', {
+		default: []
+	})
+	public variables: Record<string, any>[];
+
+	/**
+	 * public ... 公開
+	 * followers ... フォロワーのみ
+	 * specified ... visibleUserIds で指定したユーザーのみ
+	 */
+	@Column('enum', { enum: ['public', 'followers', 'specified'] })
+	public visibility: 'public' | 'followers' | 'specified';
+
+	@Index()
+	@Column({
+		...id(),
+		array: true, default: '{}'
+	})
+	public visibleUserIds: User['id'][];
+
+	constructor(data: Partial<Page>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
+}

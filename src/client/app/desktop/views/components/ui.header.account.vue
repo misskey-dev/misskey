@@ -35,6 +35,13 @@
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
+				<li @click="page">
+					<router-link to="/i/pages/new">
+						<i><fa :icon="faStickyNote"/></i>
+						<span>{{ $t('pages') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</router-link>
+				</li>
 				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<p>
 						<i><fa :icon="['far', 'envelope']"/></i>
@@ -95,14 +102,14 @@ import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 import { faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
-import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
+import { faMoon, faSun, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.account.vue'),
 	data() {
 		return {
 			isOpen: false,
-			faHome, faColumns, faMoon, faSun
+			faHome, faColumns, faMoon, faSun, faStickyNote
 		};
 	},
 	computed: {
