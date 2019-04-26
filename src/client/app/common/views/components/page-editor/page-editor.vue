@@ -39,7 +39,7 @@
 
 		<details>
 			<summary>Assembly</summary>
-			<pre v-for="variable in variables">{{ variable.name }} = {{ new Compiler(variables).compile(variable) }}</pre>
+			<pre v-for="variable in variables">{{ variable.name }} = {{ compile(variable) }}</pre>
 		</details>
 	</section>
 </div>
@@ -204,6 +204,14 @@ export default Vue.extend({
 				text: this.$t(`script.blocks.${block.type}`)
 			}));
 		},
+
+		compile(v) {
+			try {
+				return new Compiler(this.variables).compile(v);
+			} catch(e) {
+				return null;
+			}
+		}
 	}
 });
 </script>
