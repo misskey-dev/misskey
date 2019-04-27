@@ -1,6 +1,6 @@
 /**
  * AiScript
- * compiler & type checker
+ * evaluator & type checker
  */
 
 import autobind from 'autobind-decorator';
