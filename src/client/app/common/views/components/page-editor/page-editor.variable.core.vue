@@ -40,11 +40,7 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
-import {
-	faSuperscript,
-	faPencilAlt,
-	faSquareRootAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { faSuperscript, faPencilAlt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
 import { AiScript } from '../../../scripts/aiscript';
 
 export default Vue.extend({
