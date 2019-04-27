@@ -1,5 +1,6 @@
 <template>
 <div class="">
+	<img v-if="image" :src="image.url"/>
 </div>
 </template>
 
@@ -13,13 +14,21 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
+		page: {
+			required: true
+		},
 	},
 
 	data() {
 		return {
+			image: null,
 			faStickyNote, faPlus, faPencilAlt
 		};
 	},
+
+	created() {
+		this.image = this.page.attachedFiles.find(x => x.id === this.value.fileId);
+	}
 });
 </script>
 

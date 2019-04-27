@@ -102,7 +102,9 @@ export default Vue.extend({
 	created() {
 		if (this.value.value == null) Vue.set(this.value, 'value', '');
 
-		this.init();
+		if (this.value.args == null) {
+			this.init();
+		}
 
 		this.$watch('value.type', (t) => {
 			this.init();

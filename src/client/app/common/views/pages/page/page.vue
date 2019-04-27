@@ -1,13 +1,15 @@
 <template>
-<div class="iroscrza">
+<div class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 	<template v-if="page">
 		<header>
 			<div class="title">{{ page.title }}</div>
 		</header>
 
-		<template v-for="child in page.content">
-			<component :is="'x-' + child.type" :value="child" :ai-script="aiScript" :key="child.id"/>
-		</template>
+		<div>
+			<template v-for="child in page.content">
+				<component :is="'x-' + child.type" :value="child" :page="page" :ai-script="aiScript" :key="child.id" :h="2"/>
+			</template>
+		</div>
 	</template>
 </div>
 </template>
@@ -74,9 +76,8 @@ export default Vue.extend({
 		> .title
 			z-index 1
 			margin 0
-			padding 0 16px
-			line-height 42px
-			font-size 0.9em
+			padding 32px 64px
+			font-size 24px
 			font-weight bold
 			color var(--faceHeaderText)
 			box-shadow 0 var(--lineWidth) rgba(#000, 0.07)
@@ -86,5 +87,10 @@ export default Vue.extend({
 
 			&:empty
 				display none
+
+	> div
+		padding 48px 64px
+		color var(--text)
+		font-size 18px
 
 </style>

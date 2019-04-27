@@ -1,10 +1,10 @@
 <template>
 <section class="sdgxphyu">
-	<h1>{{ value.title }}</h1>
+	<component :is="'h' + h">{{ value.title }}</component>
 
 	<div class="children">
 		<template v-for="child in value.children">
-			<component :is="'x-' + child.type" :value="child" :ai-script="aiScript" :key="child.id"/>
+			<component :is="'x-' + child.type" :value="child" :page="page" :ai-script="aiScript" :key="child.id" :h="h + 1"/>
 		</template>
 	</div>
 </section>
@@ -29,6 +29,12 @@ export default Vue.extend({
 		},
 		aiScript: {
 			required: true
+		},
+		page: {
+			required: true
+		},
+		h: {
+			required: true
 		}
 	},
 
@@ -46,7 +52,13 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .sdgxphyu
+	margin 1.5em 0
+
+	> h2
+		font-size 24px
+		margin 0 0 0.5em 0
+
 	> .children
-		padding 16px
+		//padding 16px
 
 </style>

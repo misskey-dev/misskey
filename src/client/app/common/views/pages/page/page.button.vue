@@ -1,7 +1,7 @@
 <template>
-<div class="">
+<span class="kudkigyw">
 	<ui-button @click="click()">{{ value.text }}</ui-button>
-</div>
+</span>
 </template>
 
 <script lang="ts">
@@ -39,4 +39,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+.kudkigyw
+	display inline-block
+	min-width 300px
+	max-width 450px
+	margin 8px 0
 </style>
