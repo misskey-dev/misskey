@@ -26,7 +26,7 @@
 			<section class="">
 				<div class="variables">
 					<template v-for="variable in variables">
-						<x-variable :x="variable" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :ai-script="aiScript"/>
+						<x-variable :value="variable" :removable="true" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :ai-script="aiScript" :id="variable.id" :title="variable.name"/>
 					</template>
 				</div>
 			</section>
@@ -52,7 +52,7 @@ import i18n from '../../../../i18n';
 import { faICursor, faPlus, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XContainer from './page-editor.container.vue';
-import XVariable from './page-editor.variable.vue';
+import XVariable from './page-editor.script-block.vue';
 import XSection from './page-editor.section.vue';
 import XText from './page-editor.text.vue';
 import XImage from './page-editor.image.vue';

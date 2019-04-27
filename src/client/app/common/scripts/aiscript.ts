@@ -53,10 +53,10 @@ const funcDefs = {
 	lt: {
 		in: ['number', 'number'], out: 'boolean', icon: faLessThan,
 	},
-	gt_eq: {
+	gtEq: {
 		in: ['number', 'number'], out: 'boolean', icon: faGreaterThanEqual,
 	},
-	lt_eq: {
+	ltEq: {
 		in: ['number', 'number'], out: 'boolean', icon: faLessThanEqual,
 	},
 	if: {
@@ -68,7 +68,7 @@ const funcDefs = {
 	random: {
 		in: ['number'], out: 'boolean', icon: faDice,
 	},
-	random_pick: {
+	randomPick: {
 		in: [0], out: 0, icon: faDice,
 	},
 };
@@ -79,8 +79,6 @@ const blockDefs = [{
 	type: 'multiLineText', out: 'string', icon: faAlignLeft,
 }, {
 	type: 'textList', out: 'stringArray', icon: faList,
-}, {
-	type: 'expression', out: null, icon: faSuperscript,
 }, {
 	type: 'number', out: 'number', icon: faSortNumericUp,
 }, {
@@ -120,7 +118,6 @@ export class AiScript {
 		if (v.type === 'multiLineText') return true;
 		if (v.type === 'textList') return true;
 		if (v.type === 'number') return true;
-		if (v.type === 'expression') return true;
 		if (v.type === 'ref') return true;
 		return false;
 	}
@@ -198,7 +195,6 @@ export class AiScript {
 		if (v.type === 'multiLineText') return 'string';
 		if (v.type === 'textList') return 'stringArray';
 		if (v.type === 'number') return 'number';
-		if (v.type === 'expression') return null;
 		if (v.type === 'ref') {
 			const variable = this.variables.find(va => va.id === v.value);
 			if (variable) {
@@ -298,12 +294,12 @@ export class AiScript {
 			eq: (a, b) => a === b,
 			gt: (a, b) => a > b,
 			lt: (a, b) => a < b,
-			gt_eq: (a, b) => a >= b,
-			lt_eq: (a, b) => a <= b,
+			gtEq: (a, b) => a >= b,
+			ltEq: (a, b) => a <= b,
 			if: (bool, a, b) => bool ? a : b,
 			random: (probability) => Math.floor(Math.random() * 100) < probability,
 			rannum: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
-			random_pick: (list) => list[Math.floor(Math.random() * list.length)]
+			randomPick: (list) => list[Math.floor(Math.random() * list.length)]
 		};
 
 		const fnName = block.type;

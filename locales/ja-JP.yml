@@ -1844,13 +1844,12 @@ pages:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
       textList: "テキストのリスト"
-      expression: "式"
       eq: "AとBが同じ"
       _eq:
         arg1: "A"
         arg2: "B"
-      not_eq: "AとBが異なる"
-      _not_eq:
+      notEq: "AとBが異なる"
+      _notEq:
         arg1: "A"
         arg2: "B"
       and: "AかつB"
@@ -1869,12 +1868,12 @@ pages:
       _gt:
         arg1: "A"
         arg2: "B"
-      lt_eq: "AがBと同じか小さい"
-      _lt_eq:
+      ltEq: "AがBと同じか小さい"
+      _ltEq:
         arg1: "A"
         arg2: "B"
-      gt_eq: "AがBと同じか大きい"
-      _gt_eq:
+      gtEq: "AがBと同じか大きい"
+      _gtEq:
         arg1: "A"
         arg2: "B"
       if: "分岐"
@@ -1892,8 +1891,8 @@ pages:
       _rannum:
         arg1: "最小"
         arg2: "最大"
-      random_pick: "リストからランダムに選択"
-      _random_pick:
+      randomPick: "リストからランダムに選択"
+      _randomPick:
         arg1: "リスト"
       number: "数"
       ref: "変数"

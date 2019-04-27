@@ -10,9 +10,6 @@
 	<section v-if="value.type === null" class="pbglfege" @click="changeType()">
 		{{ $t('script.emptySlot') }}
 	</section>
-	<section v-else-if="value.type === 'expression'" class="tbwccoaw">
-		<input v-model="value.value"/>
-	</section>
 	<section v-else-if="value.type === 'text'" class="tbwccoaw">
 		<input v-model="value.value"/>
 	</section>
@@ -99,7 +96,7 @@ export default Vue.extend({
 	},
 
 	beforeCreate() {
-		this.$options.components.XV = require('./page-editor.variable.core.vue').default;
+		this.$options.components.XV = require('./page-editor.script-block.vue').default;
 	},
 
 	created() {
