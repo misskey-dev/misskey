@@ -1901,5 +1901,6 @@ pages:
       number: "数値"
       boolean: "フラグ"
       array: "リスト"
+      stringArray: "テキストのリスト"
     emptySlot: "空のスロット"
     enviromentVariables: "環境変数"

@@ -39,7 +39,7 @@
 
 		<details>
 			<summary>Assembly</summary>
-			<pre v-for="variable in variables">{{ variable.name }} = {{ compile(variable) }}</pre>
+			<pre v-for="variable in variables">{{ variable.name }} = {{ compile(variable) }} --> {{ evaluate(variable) }}</pre>
 		</details>
 	</section>
 </div>
@@ -211,6 +211,15 @@ export default Vue.extend({
 			try {
 				return this.aiScript.compile(v);
 			} catch(e) {
+				return null;
+			}
+		},
+
+		evaluate(v) {
+			try {
+				return this.aiScript.evaluateVariable(v);
+			} catch(e) {
+				console.error(e);
 				return null;
 			}
 		}

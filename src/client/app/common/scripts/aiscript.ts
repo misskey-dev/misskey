@@ -10,6 +10,7 @@ import {
 	faAlignLeft,
 	faShareAlt,
 	faSquareRootAlt,
+	faList,
 	faQuoteRight,
 	faEquals,
 	faGreaterThan,
@@ -74,7 +75,7 @@ const blockDefs = [{
 }, {
 	type: 'multiLineText', out: 'string', icon: faAlignLeft,
 }, {
-	type: 'textList', out: 'stringArray', icon: faAlignLeft,
+	type: 'textList', out: 'stringArray', icon: faList,
 }, {
 	type: 'expression', out: null, icon: faSuperscript,
 }, {
@@ -115,6 +116,7 @@ export class AiScript {
 		if (v.type === null) return true;
 		if (v.type === 'text') return true;
 		if (v.type === 'multiLineText') return true;
+		if (v.type === 'textList') return true;
 		if (v.type === 'number') return true;
 		if (v.type === 'expression') return true;
 		if (v.type === 'ref') return true;
@@ -192,6 +194,7 @@ export class AiScript {
 		if (v.type === null) return null;
 		if (v.type === 'text') return 'string';
 		if (v.type === 'multiLineText') return 'string';
+		if (v.type === 'textList') return 'stringArray';
 		if (v.type === 'number') return 'number';
 		if (v.type === 'expression') return null;
 		if (v.type === 'ref') {
@@ -260,6 +263,8 @@ export class AiScript {
 			return '"' + v.value + '"'; // todo escape
 		} else if (v.type === 'multiLineText') {
 			return '"' + v.value + '"'; // todo escape
+		} else if (v.type === 'textList') {
+			return '[' + (v.value || '').trim().split('\n').map(s => '"' + s + '"').join(', ') + ']'; // todo escape
 		} else if (v.type === 'number') {
 			return v.value;
 		} else {
@@ -287,6 +292,37 @@ export class AiScript {
 		const str = expression.trim().match(/^"(.+?)"$/);
 		if (str) {
 			return this.interpolate(str[0].slice(1, -1));
+		}
+
+		if (expression.trim().match(/^""$/)) {
+			return '';
+		}
+
+		if (expression.trim()[0] === '[') {
+			const list = [];
+			const listPart = expression.trim().slice(1, -1);
+
+			let listEl = '';
+			let pendingOpenBrackets = 0;
+			for (let i = 0; i < listPart.length; i++) {
+				const char = listPart[i];
+				if (char === ',' && pendingOpenBrackets === 0) {
+					list.push(this.evaluateExpression(listEl));
+					i++;
+					listEl = '';
+					continue;
+				} else if (char === '[') {
+					pendingOpenBrackets++;
+				} else if (char === ']') {
+					pendingOpenBrackets--;
+				}
+				listEl += char;
+			}
+			if (listEl.length > 0) {
+				list.push(this.evaluateExpression(listEl));
+			}
+
+			return list;
 		}
 
 		const variable = expression.trim().match(/^[a-zA-Z]+$/);
@@ -371,7 +407,8 @@ export class AiScript {
 	@autobind
 	public evaluateVariable(v) {
 		const bin = this.compile(v);
-		console.log('Complied:', bin);
-		return this.evaluateExpression(bin);
+		const val = this.evaluateExpression(bin);
+		console.log('Complied:', bin, 'Eval:', val);
+		return val;
 	}
 }
