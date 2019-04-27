@@ -3,9 +3,7 @@
 	<component :is="'h' + h">{{ value.title }}</component>
 
 	<div class="children">
-		<template v-for="child in value.children">
-			<component :is="'x-' + child.type" :value="child" :page="page" :script="script" :key="child.id" :h="h + 1"/>
-		</template>
+		<x-block v-for="child in value.children" :value="child" :page="page" :script="script" :key="child.id" :h="h + 1"/>
 	</div>
 </section>
 </template>
@@ -14,15 +12,8 @@
 import Vue from 'vue';
 import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
-import XText from './page.text.vue';
-import XImage from './page.image.vue';
-import XButton from './page.button.vue';
 
 export default Vue.extend({
-	components: {
-		XText, XImage, XButton
-	},
-
 	props: {
 		value: {
 			required: true
@@ -45,7 +36,7 @@ export default Vue.extend({
 	},
 
 	beforeCreate() {
-		this.$options.components.XSection = require('./page.section.vue').default;
+		this.$options.components.XBlock = require('./page.block.vue').default
 	},
 });
 </script>
@@ -55,7 +46,15 @@ export default Vue.extend({
 	margin 1.5em 0
 
 	> h2
-		font-size 24px
+		font-size 1.35em
+		margin 0 0 0.5em 0
+
+	> h3
+		font-size 1em
+		margin 0 0 0.5em 0
+
+	> h4
+		font-size 1em
 		margin 0 0 0.5em 0
 
 	> .children

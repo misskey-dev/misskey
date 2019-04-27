@@ -1842,6 +1842,7 @@ pages:
   new-page: "ページの作成"
   edit-page: "ページの編集"
   variables: "変数"
+  variables-info: "変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。"
   title: "タイトル"
   url: "ページURL"
   align-center: "中央寄せ"
@@ -1850,6 +1851,12 @@ pages:
   fontSansSerif: "サンセリフ"
   set-eye-catchig-image: "アイキャッチ画像を設定"
   remove-eye-catchig-image: "アイキャッチ画像を削除"
+  blocks:
+    text: "テキスト"
+    section: "セクション"
+    image: "画像"
+    button: "ボタン"
+    input: "ユーザー入力"
   script:
     blocks:
       text: "テキスト"
@@ -1917,3 +1924,4 @@ pages:
       stringArray: "テキストのリスト"
     emptySlot: "空のスロット"
     enviromentVariables: "環境変数"
+    pageVariables: "ページ要素"

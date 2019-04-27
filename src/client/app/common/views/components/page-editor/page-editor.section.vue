@@ -12,9 +12,7 @@
 
 	<section class="ilrvjyvi">
 		<div class="children">
-			<template v-for="child in value.children">
-				<component :is="'x-' + child.type" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
-			</template>
+			<x-block v-for="child in value.children" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
 		</div>
 	</section>
 </x-container>
@@ -26,16 +24,13 @@ import i18n from '../../../../i18n';
 import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XContainer from './page-editor.container.vue';
-import XText from './page-editor.text.vue';
-import XImage from './page-editor.image.vue';
-import XButton from './page-editor.button.vue';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
 
 	components: {
-		XContainer, XText, XImage, XButton
+		XContainer
 	},
 
 	props: {
@@ -51,7 +46,7 @@ export default Vue.extend({
 	},
 
 	beforeCreate() {
-		this.$options.components.XSection = require('./page-editor.section.vue').default;
+		this.$options.components.XBlock = require('./page-editor.block.vue').default
 	},
 
 	created() {

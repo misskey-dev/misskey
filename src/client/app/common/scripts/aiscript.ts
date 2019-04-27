@@ -30,14 +30,15 @@ export type Block = {
 };
 
 export type Variable = Block & {
-	id: string;
 	name: string;
 };
 
+type Type = 'string' | 'number' | 'boolean' | 'stringArray';
+
 type TypeError = {
 	arg: number;
-	expect: string;
-	actual: string;
+	expect: Type;
+	actual: Type;
 };
 
 const funcDefs = {
@@ -87,8 +88,11 @@ const blockDefs = [{
 	type: k, out: v.out || null, icon: v.icon
 }))];
 
+type PageVar = { name: string; value: any; type: Type; };
+
 export class AiScript {
 	private variables: Variable[];
+	private pageVars: PageVar[];
 	private envVars: { name: string, value: any }[];
 
 	public static envVarsDef = {
@@ -101,14 +105,25 @@ export class AiScript {
 	public static blockDefs = blockDefs;
 	public static funcDefs = funcDefs;
 
-	constructor(variables: Variable[], user?: any, visitor?: any) {
+	constructor(variables: Variable[], pageVars: PageVar[] = [], user?: any, visitor?: any) {
 		this.variables = variables;
+		this.pageVars = pageVars;
 
 		this.envVars = [
 			{ name: 'AI', value: 'kawaii' },
 			{ name: 'LOGIN', value: visitor != null },
 			{ name: 'NAME', value: visitor ? visitor.name : '' }
 		];
+	}
+
+	@autobind
+	public injectPageVars(pageVars: PageVar[]) {
+		this.pageVars = pageVars;
+	}
+
+	@autobind
+	public updatePageVar(name: string, value: any) {
+		this.pageVars.find(v => v.name === name).value = value;
 	}
 
 	@autobind
@@ -131,7 +146,7 @@ export class AiScript {
 			throw new Error('Unknown type: ' + v.type);
 		}
 
-		const generic: string[] = [];
+		const generic: Type[] = [];
 
 		for (let i = 0; i < def.in.length; i++) {
 			const arg = def.in[i];
@@ -161,13 +176,13 @@ export class AiScript {
 	}
 
 	@autobind
-	public getExpectedType(v: Block, slot: number): string | null {
+	public getExpectedType(v: Block, slot: number): Type | null {
 		const def = AiScript.funcDefs[v.type];
 		if (def == null) {
 			throw new Error('Unknown type: ' + v.type);
 		}
 
-		const generic: string[] = [];
+		const generic: Type[] = [];
 
 		for (let i = 0; i < def.in.length; i++) {
 			const arg = def.in[i];
@@ -189,27 +204,32 @@ export class AiScript {
 	}
 
 	@autobind
-	public typeInference(v: Block): string | null {
+	public typeInference(v: Block): Type | null {
 		if (v.type === null) return null;
 		if (v.type === 'text') return 'string';
 		if (v.type === 'multiLineText') return 'string';
 		if (v.type === 'textList') return 'stringArray';
 		if (v.type === 'number') return 'number';
 		if (v.type === 'ref') {
-			const variable = this.variables.find(va => va.id === v.value);
+			const variable = this.variables.find(va => va.name === v.value);
 			if (variable) {
 				return this.typeInference(variable);
-			} else {
-				const envVar = AiScript.envVarsDef[v.value];
-				if (envVar) {
-					return envVar;
-				} else {
-					return null;
-				}
 			}
+
+			const pageVar = this.pageVars.find(va => va.name === v.value);
+			if (pageVar) {
+				return pageVar.type;
+			}
+
+			const envVar = AiScript.envVarsDef[v.value];
+			if (envVar) {
+				return envVar;
+			}
+
+			return null;
 		}
 
-		const generic: string[] = [];
+		const generic: Type[] = [];
 
 		const def = AiScript.funcDefs[v.type];
 
@@ -236,20 +256,27 @@ export class AiScript {
 	}
 
 	@autobind
-	public getVariablesByType(type: string | null): Variable[] {
+	public getVariablesByType(type: Type | null): Variable[] {
 		if (type == null) return this.variables;
 		return this.variables.filter(x => (this.typeInference(x) === null) || (this.typeInference(x) === type));
 	}
 
 	@autobind
-	public getEnvVariablesByType(type: string | null): string[] {
+	public getEnvVarsByType(type: Type | null): string[] {
 		if (type == null) return Object.keys(AiScript.envVarsDef);
 		return Object.entries(AiScript.envVarsDef).filter(([k, v]) => type === v).map(([k, v]) => k);
 	}
 
 	@autobind
+	public getPageVarsByType(type: Type | null): string[] {
+		if (type == null) return this.pageVars.map(v => v.name);
+		return this.pageVars.filter(v => type === v.type).map(v => v.name);
+	}
+
+	@autobind
 	private interpolate(str: string, values: { name: string, value: any }[]) {
-		return str.replace(/\{(.+?)\}/g, match => this.getVariableValue(match.slice(1, -1).trim(), values).toString());
+		return str.replace(/\{(.+?)\}/g, match =>
+			(this.getVariableValue(match.slice(1, -1).trim(), values) || '').toString());
 	}
 
 	@autobind
@@ -283,12 +310,7 @@ export class AiScript {
 		}
 
 		if (block.type === 'ref') {
-			const v = this.variables.find(x => x.id === block.value);
-			if (v) {
-				return this.getVariableValue(v.name, values);
-			} else {
-				return this.getVariableValue(block.value, values);
-			}
+			return this.getVariableValue(block.value, values);
 		}
 
 		if (block.args === undefined) return null;
@@ -328,12 +350,17 @@ export class AiScript {
 		const v = values.find(v => v.name === name);
 		if (v) {
 			return v.value;
-		} else {
-			if (AiScript.envVarsDef[name]) {
-				return this.envVars.find(x => x.name === name).value;
-			} else {
-				throw new Error(`Script: No such variable '${name}'`);
-			}
 		}
+
+		const pageVar = this.pageVars.find(v => v.name === name);
+		if (pageVar) {
+			return pageVar.value;
+		}
+
+		if (AiScript.envVarsDef[name]) {
+			return this.envVars.find(x => x.name === name).value;
+		}
+
+		throw new Error(`Script: No such variable '${name}'`);
 	}
 }

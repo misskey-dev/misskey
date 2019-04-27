@@ -1,7 +1,7 @@
 <template>
-<div class="">
-	<mfm :text="text" :is-note="false" :i="$store.state.i" :key="text"/>
-</div>
+<span class="kudkigyw">
+	<ui-input v-model="v">{{ value.text }}</ui-input>
+</span>
 </template>
 
 <script lang="ts">
@@ -21,18 +21,24 @@ export default Vue.extend({
 
 	data() {
 		return {
-			text: this.script.interpolate(this.value.text),
+			v: this.value.default,
 			faStickyNote, faPlus, faPencilAlt
 		};
 	},
 
-	created() {
-		this.$watch('script.vars', () => {
-			this.text = this.script.interpolate(this.value.text);
-		}, { deep: true });
+	watch: {
+		v() {
+			this.script.aiScript.updatePageVar(this.value.name, this.v);
+			this.script.reEval();
+		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
+.kudkigyw
+	display inline-block
+	min-width 300px
+	max-width 450px
+	margin 8px 0
 </style>

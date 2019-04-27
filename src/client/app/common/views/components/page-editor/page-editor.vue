@@ -38,7 +38,7 @@
 			</template>
 
 			<div class="content" v-for="child in content">
-				<component :is="'x-' + child.type" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
+				<x-block :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
 			</div>
 
 			<ui-button @click="add()"><fa :icon="faPlus"/></ui-button>
@@ -50,11 +50,22 @@
 		<div class="qmuvgica">
 			<div class="variables" v-show="variables.length > 0">
 				<template v-for="variable in variables">
-					<x-variable :value="variable" :removable="true" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :ai-script="aiScript" :id="variable.id" :title="variable.name"/>
+					<x-variable
+						:value="variable"
+						:removable="true"
+						@input="v => updateVariable(v)"
+						@remove="() => removeVariable(variable)"
+						:key="variable.name"
+						:ai-script="aiScript"
+						:name="variable.name"
+						:title="variable.name"
+					/>
 				</template>
 			</div>
 
 			<ui-button @click="addVariable()" class="add"><fa :icon="faPlus"/></ui-button>
+
+			<ui-info v-html="$t('variables-info')"></ui-info>
 
 			<details>
 				<summary>Preview</summary>
@@ -71,12 +82,8 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { faICursor, faPlus, faSquareRootAlt, faCog } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import XContainer from './page-editor.container.vue';
 import XVariable from './page-editor.script-block.vue';
-import XSection from './page-editor.section.vue';
-import XText from './page-editor.text.vue';
-import XImage from './page-editor.image.vue';
-import XButton from './page-editor.button.vue';
+import XBlock from './page-editor.block.vue';
 import * as uuid from 'uuid';
 import { AiScript } from '../../../scripts/aiscript';
 import { url } from '../../../../config';
@@ -85,7 +92,7 @@ export default Vue.extend({
 	i18n: i18n('pages'),
 
 	components: {
-		XContainer, XVariable, XSection, XText, XImage, XButton
+		XVariable, XBlock
 	},
 
 	props: {
@@ -123,11 +130,32 @@ export default Vue.extend({
 					fileId: this.eyeCatchingImageId,
 				});
 			}
-		}
+		},
 	},
 
 	created() {
 		this.aiScript = new AiScript(this.variables);
+
+		this.$watch('content', () => {
+			const pageVars = [];
+			const collectPageVars = (xs: any[]) => {
+				for (const x of xs) {
+					if (x.type === 'input') {
+						pageVars.push({
+							name: x.name,
+							type: x.inputType,
+							value: x.value
+						});
+					}
+					if (x.children) {
+						collectPageVars(x.children);
+					}
+				}
+			};
+			collectPageVars(this.content);
+			this.aiScript.injectPageVars(pageVars);
+		}, { deep: true });
+
 		if (this.page) {
 			this.$root.api('pages/show', {
 				pageId: this.page,
@@ -201,13 +229,15 @@ export default Vue.extend({
 				title: 'Select type',
 				select: {
 					items: [{
-						value: 'section', text: 'Section'
+						value: 'section', text: this.$t('blocks.section')
 					}, {
-						value: 'text', text: 'Text'
+						value: 'text', text: this.$t('blocks.text')
 					}, {
-						value: 'image', text: 'Image'
+						value: 'image', text: this.$t('blocks.image')
 					}, {
-						value: 'button', text: 'Button'
+						value: 'button', text: this.$t('blocks.button')
+					}, {
+						value: 'input', text: this.$t('blocks.input')
 					}]
 				},
 				showCancelButton: true
@@ -238,8 +268,7 @@ export default Vue.extend({
 			});
 			if (canceled2) return;
 
-			const id = uuid.v4();
-			this.variables.push({ id, name, type });
+			this.variables.push({ name, type });
 		},
 
 		updateItem(v) {

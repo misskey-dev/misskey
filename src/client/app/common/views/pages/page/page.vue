@@ -4,10 +4,8 @@
 		<div class="title">{{ page.title }}</div>
 	</header>
 
-	<div>
-		<template v-for="child in page.content">
-			<component :is="'x-' + child.type" :value="child" :page="page" :script="script" :key="child.id" :h="2"/>
-		</template>
+	<div v-if="script">
+		<x-block v-for="child in page.content" :value="child" @input="v => updateBlock(v)" :page="page" :script="script" :key="child.id" :h="2"/>
 	</div>
 
 	<footer>
@@ -22,10 +20,7 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { faICursor, faPlus, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
-import XSection from './page.section.vue';
-import XText from './page.text.vue';
-import XImage from './page.image.vue';
-import XButton from './page.button.vue';
+import XBlock from './page.block.vue';
 import { AiScript } from '../../../scripts/aiscript';
 
 class Script {
@@ -42,7 +37,8 @@ class Script {
 	}
 
 	public interpolate(str: string) {
-		return str.replace(/\{(.+?)\}/g, match => this.vars.find(x => x.name === match.slice(1, -1).trim()).value.toString());
+		return str.replace(/\{(.+?)\}/g, match =>
+			(this.vars.find(x => x.name === match.slice(1, -1).trim()).value || '').toString());
 	}
 }
 
@@ -50,7 +46,7 @@ export default Vue.extend({
 	i18n: i18n(),
 
 	components: {
-		XSection, XText, XImage, XButton
+		XBlock
 	},
 
 	props: {
@@ -78,9 +74,32 @@ export default Vue.extend({
 			username: this.username,
 		}).then(page => {
 			this.page = page;
-			this.script = new Script(new AiScript(this.page.variables));
+			const pageVars = this.getPageVars();
+			this.script = new Script(new AiScript(this.page.variables, pageVars));
 		});
 	},
+
+	methods: {
+		getPageVars() {
+			const pageVars = [];
+			const collectPageVars = (xs: any[]) => {
+				for (const x of xs) {
+					if (x.type === 'input') {
+						pageVars.push({
+							name: x.name,
+							type: x.inputType,
+							value: x.default
+						});
+					}
+					if (x.children) {
+						collectPageVars(x.children);
+					}
+				}
+			};
+			collectPageVars(this.page.content);
+			return pageVars;
+		},
+	}
 });
 </script>
 
