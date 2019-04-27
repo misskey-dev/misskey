@@ -39,6 +39,8 @@ export class PageRepository extends Repository<Page> {
 			name: src.name,
 			alignCenter: src.alignCenter,
 			font: src.font,
+			eyeCatchingImageId: src.eyeCatchingImageId,
+			eyeCatchingImage: src.eyeCatchingImageId ? await DriveFiles.pack(src.eyeCatchingImageId) : null,
 			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles))
 		});
 	}

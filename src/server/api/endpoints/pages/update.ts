@@ -38,8 +38,8 @@ export const meta = {
 			validator: $.arr($.obj())
 		},
 
-		eyeCathcingImageFileId: {
-			validator: $.optional.type(ID),
+		eyeCatchingImageId: {
+			validator: $.optional.nullable.type(ID),
 		},
 
 		font: {
@@ -81,14 +81,14 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	let eyeCatchingImageFile = null;
-	if (ps.eyeCathcingImageFileId != null) {
-		eyeCatchingImageFile = await DriveFiles.findOne({
-			id: ps.eyeCathcingImageFileId,
+	let eyeCatchingImage = null;
+	if (ps.eyeCatchingImageId != null) {
+		eyeCatchingImage = await DriveFiles.findOne({
+			id: ps.eyeCatchingImageId,
 			userId: user.id
 		});
 
-		if (eyeCatchingImageFile == null) {
+		if (eyeCatchingImage == null) {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
 	}
@@ -101,10 +101,10 @@ export default define(meta, async (ps, user) => {
 		variables: ps.variables,
 		alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
 		font: ps.font === undefined ? page.font : ps.font,
-		eyeCatchingImageFileId: ps.eyeCathcingImageFileId === null
+		eyeCatchingImageId: ps.eyeCatchingImageId === null
 			? null
-			: ps.eyeCathcingImageFileId === undefined
-				? page.eyeCatchingImageFileId
-				: eyeCatchingImageFile!.id,
+			: ps.eyeCatchingImageId === undefined
+				? page.eyeCatchingImageId
+				: eyeCatchingImage!.id,
 	});
 });

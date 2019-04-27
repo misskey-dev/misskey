@@ -1,56 +1,76 @@
 <template>
-<div class="gwbmwxkm" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
-	<header>
-		<div class="title"><fa :icon="faStickyNote"/> {{ pageId ? 'Edit page' : 'New page' }}</div>
-		<div class="buttons">
-			<button @click="save()">
-				<fa :icon="faSave"/>
-			</button>
-		</div>
-	</header>
+<div>
+	<div class="gwbmwxkm" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
+		<header>
+			<div class="title"><fa :icon="faStickyNote"/> {{ pageId ? $t('edit-page') : $t('new-page') }}</div>
+			<div class="buttons">
+				<button @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
+				<button @click="save()"><fa :icon="faSave"/></button>
+			</div>
+		</header>
 
-	<section style="padding:16px;">
-		<ui-input v-model="title"></ui-input>
+		<section>
+			<ui-input v-model="title">
+				<span>{{ $t('title') }}</span>
+			</ui-input>
 
-		<template v-for="child in content">
-			<component :is="'x-' + child.type" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
-		</template>
+			<template v-if="showOptions">
+				<ui-input v-model="name">
+					<template #prefix>{{ url }}/@{{ $store.state.i.username }}/pages/</template>
+					<span>{{ $t('url') }}</span>
+				</ui-input>
 
-		<ui-button @click="add()"><fa :icon="faPlus"/> {{ $t('add-item') }}</ui-button>
+				<ui-switch v-model="alignCenter">{{ $t('align-center') }}</ui-switch>
 
-		<details>
-			<summary>Scripting</summary>
-			<fa :icon="faSquareRootAlt"/> Variables
-			<ui-button @click="addVariable()"><fa :icon="faPlus"/></ui-button>
+				<ui-select v-model="font">
+					<template #label>{{ $t('font') }}</template>
+					<option value="serif">{{ $t('fontSerif') }}</option>
+					<option value="sans-serif">{{ $t('fontSansSerif') }}</option>
+				</ui-select>
 
-			<section class="">
-				<div class="variables">
-					<template v-for="variable in variables">
-						<x-variable :value="variable" :removable="true" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :ai-script="aiScript" :id="variable.id" :title="variable.name"/>
-					</template>
+				<div class="eyeCatch">
+					<ui-button v-if="eyeCatchingImageId == null" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catchig-image') }}</ui-button>
+					<div v-else-if="eyeCatchingImage">
+						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
+						<ui-button @click="removeEyeCatchingImage()"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catchig-image') }}</ui-button>
+					</div>
 				</div>
-			</section>
-		</details>
+			</template>
 
-		<details>
-			<summary>Source</summary>
-			<pre>{{ JSON.stringify({ content, variables }, null, 2) }}</pre>
-		</details>
+			<div class="content" v-for="child in content">
+				<component :is="'x-' + child.type" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
+			</div>
 
-		<details>
-			<summary>Assembly</summary>
-			<pre>{{ JSON.stringify(evVars, null, 2) }}</pre>
-			<ui-button @click="ev()">eval</ui-button>
-		</details>
-	</section>
+			<ui-button @click="add()"><fa :icon="faPlus"/></ui-button>
+		</section>
+	</div>
+
+	<ui-container :body-togglable="true">
+		<template #header><fa :icon="faSquareRootAlt"/> {{ $t('variables') }}</template>
+		<div class="qmuvgica">
+			<div class="variables" v-show="variables.length > 0">
+				<template v-for="variable in variables">
+					<x-variable :value="variable" :removable="true" @input="v => updateVariable(v)" @remove="() => removeVariable(variable)" :key="variable.id" :ai-script="aiScript" :id="variable.id" :title="variable.name"/>
+				</template>
+			</div>
+
+			<ui-button @click="addVariable()" class="add"><fa :icon="faPlus"/></ui-button>
+
+			<details>
+				<summary>Preview</summary>
+				<pre>{{ JSON.stringify(evVars, null, 2) }}</pre>
+				<ui-button @click="ev()">eval</ui-button>
+			</details>
+		</div>
+	</ui-container>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faICursor, faPlus, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
+import { faICursor, faPlus, faSquareRootAlt, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XContainer from './page-editor.container.vue';
 import XVariable from './page-editor.script-block.vue';
 import XSection from './page-editor.section.vue';
@@ -59,6 +79,7 @@ import XImage from './page-editor.image.vue';
 import XButton from './page-editor.button.vue';
 import * as uuid from 'uuid';
 import { AiScript } from '../../../scripts/aiscript';
+import { url } from '../../../../config';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -78,12 +99,31 @@ export default Vue.extend({
 		return {
 			pageId: null,
 			title: '',
+			name: '',
+			eyeCatchingImage: null,
+			eyeCatchingImageId: null,
+			font: 'sans-serif',
 			content: [],
+			alignCenter: false,
 			variables: [],
 			evVars: [],
 			aiScript: null,
-			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
+			showOptions: false,
+			url,
+			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt, faCog, faTrashAlt
 		};
+	},
+
+	watch: {
+		async eyeCatchingImageId() {
+			if (this.eyeCatchingImageId == null) {
+				this.eyeCatchingImage = null;
+			} else {
+				this.eyeCatchingImage = await this.$root.api('drive/files/show', {
+					fileId: this.eyeCatchingImageId,
+				});
+			}
+		}
 	},
 
 	created() {
@@ -94,9 +134,20 @@ export default Vue.extend({
 			}).then(page => {
 				this.pageId = page.id;
 				this.title = page.title;
+				this.name = page.name || '';
+				this.font = page.font;
+				this.alignCenter = page.alignCenter;
 				this.content = page.content;
 				this.variables = page.variables;
+				this.eyeCatchingImageId = page.eyeCatchingImageId;
 			});
+		} else {
+			const id = uuid.v4();
+			this.content = [{
+				id,
+				type: 'text',
+				text: 'Hello World!'
+			}];
 		}
 	},
 
@@ -111,9 +162,13 @@ export default Vue.extend({
 			if (this.pageId) {
 				this.$root.api('pages/update', {
 					pageId: this.pageId,
-					title: this.title,
+					title: this.title.trim(),
+					name: this.name.trim() === '' ? null : name.trim(),
+					font: this.font,
+					alignCenter: this.alignCenter,
 					content: this.content,
 					variables: this.variables,
+					eyeCatchingImageId: this.eyeCatchingImageId,
 				}).then(page => {
 					this.$root.dialog({
 						type: 'success',
@@ -122,9 +177,13 @@ export default Vue.extend({
 				});
 			} else {
 				this.$root.api('pages/create', {
-					title: this.title,
+					title: this.title.trim(),
+					name: this.name.trim() === '' ? null : name.trim(),
+					font: this.font,
+					alignCenter: this.alignCenter,
 					content: this.content,
 					variables: this.variables,
+					eyeCatchingImageId: this.eyeCatchingImageId,
 				}).then(page => {
 					this.pageId = page.id;
 					this.$root.dialog({
@@ -216,6 +275,18 @@ export default Vue.extend({
 				console.error(e);
 				this.evVars = [];
 			}
+		},
+
+		setEyeCatchingImage() {
+			this.$chooseDriveFile({
+				multiple: false
+			}).then(file => {
+				this.eyeCatchingImageId = file.id;
+			});
+		},
+
+		removeEyeCatchingImage() {
+			this.eyeCatchingImageId = null;
 		}
 	}
 });
@@ -225,6 +296,7 @@ export default Vue.extend({
 .gwbmwxkm
 	overflow hidden
 	background var(--face)
+	margin-bottom 16px
 
 	&.round
 		border-radius 6px
@@ -269,5 +341,33 @@ export default Vue.extend({
 
 				&:active
 					color var(--faceTextButtonActive)
+
+	> section
+		padding 0 32px 32px 32px
+
+		@media (max-width 500px)
+			padding 0 16px 16px 16px
+
+		> .content
+			margin-bottom 16px
+
+		> .eyeCatch
+			margin-bottom 16px
+
+			> div
+				> img
+					max-width 100%
+
+.qmuvgica
+	padding 32px
+
+	@media (max-width 500px)
+		padding 16px
+
+	> .variables
+		margin-bottom 16px
+
+	> .add
+		margin-bottom 16px
 
 </style>

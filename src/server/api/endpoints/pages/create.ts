@@ -42,8 +42,8 @@ export const meta = {
 			validator: $.arr($.obj())
 		},
 
-		eyeCathcingImageFileId: {
-			validator: $.optional.type(ID),
+		eyeCatchingImageId: {
+			validator: $.optional.nullable.type(ID),
 		},
 
 		font: {
@@ -73,14 +73,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	let eyeCatchingImageFile = null;
-	if (ps.eyeCathcingImageFileId != null) {
-		eyeCatchingImageFile = await DriveFiles.findOne({
-			id: ps.eyeCathcingImageFileId,
+	let eyeCatchingImage = null;
+	if (ps.eyeCatchingImageId != null) {
+		eyeCatchingImage = await DriveFiles.findOne({
+			id: ps.eyeCatchingImageId,
 			userId: user.id
 		});
 
-		if (eyeCatchingImageFile == null) {
+		if (eyeCatchingImage == null) {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
 	}
@@ -93,7 +93,7 @@ export default define(meta, async (ps, user) => {
 		name: ps.name,
 		content: ps.content,
 		variables: ps.variables,
-		eyeCatchingImageFileId: eyeCatchingImageFile ? eyeCatchingImageFile.id : null,
+		eyeCatchingImageId: eyeCatchingImage ? eyeCatchingImage.id : null,
 		userId: user.id,
 		visibility: 'public',
 		alignCenter: ps.alignCenter,

@@ -58,13 +58,13 @@ export class Page {
 		...id(),
 		nullable: true,
 	})
-	public eyeCatchingImageFileId: DriveFile['id'] | null;
+	public eyeCatchingImageId: DriveFile['id'] | null;
 
 	@ManyToOne(type => DriveFile, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
-	public eyeCatchingImageFile: DriveFile | null;
+	public eyeCatchingImage: DriveFile | null;
 
 	@Column('jsonb', {
 		default: []

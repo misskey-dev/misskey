@@ -27,6 +27,6 @@ export default Vue.extend({
 main
 	margin 0 auto
 	padding 16px
-	max-width 1000px
+	max-width 900px
 
 </style>

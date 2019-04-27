@@ -1839,6 +1839,17 @@ dev/views/new-app.vue:
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
 
 pages:
+  new-page: "ページの作成"
+  edit-page: "ページの編集"
+  variables: "変数"
+  title: "タイトル"
+  url: "ページURL"
+  align-center: "中央寄せ"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  set-eye-catchig-image: "アイキャッチ画像を設定"
+  remove-eye-catchig-image: "アイキャッチ画像を削除"
   script:
     blocks:
       text: "テキスト"
