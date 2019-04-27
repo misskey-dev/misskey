@@ -30,8 +30,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.optional.nullable.str,
-			default: null
+			validator: $.str,
 		},
 
 		content: {

@@ -36,7 +36,7 @@
 					</p>
 				</li>
 				<li @click="page">
-					<router-link to="/i/pages/new">
+					<router-link to="/i/pages">
 						<i><fa :icon="faStickyNote"/></i>
 						<span>{{ $t('pages') }}</span>
 						<i><fa icon="angle-right"/></i>

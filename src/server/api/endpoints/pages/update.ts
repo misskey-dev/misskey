@@ -1,4 +1,5 @@
 import $ from 'cafy';
+import * as ms from 'ms';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Pages, DriveFiles } from '../../../../models';
@@ -12,6 +13,13 @@ export const meta = {
 	tags: ['pages'],
 
 	requireCredential: true,
+
+	kind: 'write:pages',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 300
+	},
 
 	params: {
 		pageId: {
@@ -27,7 +35,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.optional.nullable.str,
+			validator: $.optional.str,
 		},
 
 		content: {

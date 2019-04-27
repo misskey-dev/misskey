@@ -44,6 +44,12 @@ export class PageRepository extends Repository<Page> {
 			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles))
 		});
 	}
+
+	public packMany(
+		pages: Page[],
+	) {
+		return Promise.all(pages.map(x => this.pack(x)));
+	}
 }
 
 export const packedPageSchema = {

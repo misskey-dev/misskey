@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<main>
-		<x-page :page-id="pageId"/>
+		<x-page :page-name="page" :username="user"/>
 	</main>
 </mk-ui>
 </template>
@@ -15,10 +15,14 @@ export default Vue.extend({
 	},
 
 	props: {
-		pageId: {
+		page: {
 			type: String,
-			required: false
-		}
+			required: true
+		},
+		user: {
+			type: String,
+			required: true
+		},
 	}
 });
 </script>

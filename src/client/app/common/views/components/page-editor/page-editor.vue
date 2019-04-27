@@ -99,7 +99,7 @@ export default Vue.extend({
 		return {
 			pageId: null,
 			title: '',
-			name: '',
+			name: Date.now().toString(),
 			eyeCatchingImage: null,
 			eyeCatchingImageId: null,
 			font: 'sans-serif',
@@ -134,7 +134,7 @@ export default Vue.extend({
 			}).then(page => {
 				this.pageId = page.id;
 				this.title = page.title;
-				this.name = page.name || '';
+				this.name = page.name;
 				this.font = page.font;
 				this.alignCenter = page.alignCenter;
 				this.content = page.content;
@@ -163,7 +163,7 @@ export default Vue.extend({
 				this.$root.api('pages/update', {
 					pageId: this.pageId,
 					title: this.title.trim(),
-					name: this.name.trim() === '' ? null : name.trim(),
+					name: this.name.trim(),
 					font: this.font,
 					alignCenter: this.alignCenter,
 					content: this.content,
@@ -178,7 +178,7 @@ export default Vue.extend({
 			} else {
 				this.$root.api('pages/create', {
 					title: this.title.trim(),
-					name: this.name.trim() === '' ? null : name.trim(),
+					name: this.name.trim(),
 					font: this.font,
 					alignCenter: this.alignCenter,
 					content: this.content,

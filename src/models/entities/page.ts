@@ -29,9 +29,8 @@ export class Page {
 	@Index()
 	@Column('varchar', {
 		length: 256,
-		nullable: true,
 	})
-	public name: string | null;
+	public name: string;
 
 	@Column('boolean')
 	public alignCenter: boolean;

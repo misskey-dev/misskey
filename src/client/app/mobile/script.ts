@@ -135,6 +135,7 @@ init((launch, os) => {
 			{ path: '/signup', name: 'signup', component: MkSignup },
 			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
 			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
+			{ path: '/i/pages', name: 'pages', component: () => import('./views/pages/pages.vue').then(m => m.default) },
 			{ path: '/i/lists', name: 'user-lists', component: MkUserLists },
 			{ path: '/i/lists/:list', name: 'user-list', component: MkUserList },
 			{ path: '/i/received-follow-requests', name: 'received-follow-requests', component: MkReceivedFollowRequests },
@@ -158,7 +159,7 @@ init((launch, os) => {
 				{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
 				{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
 			]},
-			{ path: '/@:user/pages/:pageId', props: true, component: () => import('./views/pages/page.vue').then(m => m.default) },
+			{ path: '/@:user/pages/:page', props: true, component: () => import('./views/pages/page.vue').then(m => m.default) },
 			{ path: '/notes/:note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '*', component: MkNotFound }

@@ -9,6 +9,11 @@
 			<component :is="'x-' + child.type" :value="child" :page="page" :script="script" :key="child.id" :h="2"/>
 		</template>
 	</div>
+
+	<footer>
+		<small>@{{ page.user.username }}</small>
+		<router-link v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId" :to="`/i/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
+	</footer>
 </div>
 </template>
 
@@ -49,10 +54,14 @@ export default Vue.extend({
 	},
 
 	props: {
-		pageId: {
+		pageName: {
 			type: String,
-			required: false
-		}
+			required: true
+		},
+		username: {
+			type: String,
+			required: true
+		},
 	},
 
 	data() {
@@ -65,7 +74,8 @@ export default Vue.extend({
 
 	created() {
 		this.$root.api('pages/show', {
-			pageId: this.pageId,
+			name: this.pageName,
+			username: this.username,
 		}).then(page => {
 			this.page = page;
 			this.script = new Script(new AiScript(this.page.variables));
@@ -110,5 +120,12 @@ export default Vue.extend({
 		padding 48px 64px
 		color var(--text)
 		font-size 18px
+
+	> footer
+		padding 0 64px 38px 64px
+
+		> small
+			display block
+			opacity 0.5
 
 </style>
