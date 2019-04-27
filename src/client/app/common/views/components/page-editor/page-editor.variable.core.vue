@@ -10,57 +10,28 @@
 	<section v-if="value.type === null" class="pbglfege" @click="changeType()">
 		{{ $t('script.emptySlot') }}
 	</section>
-	<section v-if="value.type === 'expression'" class="tbwccoaw">
+	<section v-else-if="value.type === 'expression'" class="tbwccoaw">
 		<input v-model="value.value"/>
 	</section>
-	<section v-if="value.type === 'text'" class="tbwccoaw">
+	<section v-else-if="value.type === 'text'" class="tbwccoaw">
 		<input v-model="value.value"/>
 	</section>
-	<section v-if="value.type === 'multiLineText'" class="tbwccoaw">
+	<section v-else-if="value.type === 'multiLineText'" class="tbwccoaw">
 		<textarea v-model="value.value"></textarea>
 	</section>
-	<section v-if="value.type === 'number'" class="tbwccoaw">
+	<section v-else-if="value.type === 'number'" class="tbwccoaw">
 		<input v-model="value.value" type="number"/>
 	</section>
-	<section v-else-if="value.type === 'if'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._if.if')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._if.then')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[2]" :title="$t('script.blocks._if.else')" :get-expected-type="() => _getExpectedType(2)" :ai-script="aiScript"/>
-	</section>
-	<section v-else-if="value.type === 'eq'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._eq.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._eq.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
-	</section>
-	<section v-else-if="value.type === 'lt'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._lt.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._lt.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
-	</section>
-	<section v-else-if="value.type === 'gt'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._gt.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._gt.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
-	</section>
-	<section v-else-if="value.type === 'ltOrEq'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._ltOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._ltOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
-	</section>
-	<section v-else-if="value.type === 'gtOrEq'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._gtOrEq.a')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._gtOrEq.b')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
-	</section>
-	<section v-else-if="value.type === 'not'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks.not')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-	</section>
-	<section v-else-if="value.type === 'random'" class="" style="padding:16px;">
-		<x-v v-model="value.args[0]" :title="$t('script.blocks._random.min')" :get-expected-type="() => _getExpectedType(0)" :ai-script="aiScript"/>
-		<x-v v-model="value.args[1]" :title="$t('script.blocks._random.max')" :get-expected-type="() => _getExpectedType(1)" :ai-script="aiScript"/>
-	</section>
-	<section v-if="value.type === 'ref'" class="hpdwcrvs">
+	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
 			<option v-for="v in aiScript.getVariablesByType(getExpectedType ? getExpectedType() : null)" :value="v.id">{{ v.name }}</option>
 			<optgroup :label="$t('script.enviromentVariables')">
 				<option v-for="v in aiScript.getEnvVariablesByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
+	</section>
+	<section v-else class="" style="padding:16px;">
+		<x-v v-for="(x, i) in AiScript.funcDefs[value.type].in" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :key="i"/>
 	</section>
 </x-container>
 </template>
@@ -119,6 +90,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			AiScript,
 			error: null,
 			warn: null,
 			faSuperscript, faPencilAlt, faSquareRootAlt
@@ -142,6 +114,7 @@ export default Vue.extend({
 			if (this.value.type === 'text') return faQuoteRight;
 			if (this.value.type === 'multiLineText') return faAlignLeft;
 			if (this.value.type === 'random') return faDice;
+			if (this.value.type === 'randomNumber') return faDice;
 			if (this.value.type === 'number') return faSortNumericUp;
 		},
 		typeText(): any {

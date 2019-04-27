@@ -32,6 +32,61 @@ type TypeError = {
 	actual: string;
 };
 
+const funcDefs = {
+	not: {
+		in: ['boolean'],
+		out: 'boolean'
+	},
+	eq: {
+		in: [0, 0],
+		out: 'boolean'
+	},
+	gt: {
+		in: ['number', 'number'],
+		out: 'boolean'
+	},
+	lt: {
+		in: ['number', 'number'],
+		out: 'boolean'
+	},
+	gtEq: {
+		in: ['number', 'number'],
+		out: 'boolean'
+	},
+	ltEq: {
+		in: ['number', 'number'],
+		out: 'boolean'
+	},
+	if: {
+		in: ['boolean', 0, 0],
+		out: 0
+	},
+	randomNumber: {
+		in: ['number', 'number'],
+		out: 'number'
+	},
+	random: {
+		in: ['number'],
+		out: 'boolean'
+	},
+};
+
+const blockDefs = [{
+	type: 'text', out: 'string'
+}, {
+	type: 'multiLineText', out: 'string'
+}, {
+	type: 'textList', out: 'stringArray'
+}, {
+	type: 'expression', out: null
+}, {
+	type: 'number', out: 'number'
+}, {
+	type: 'ref', out: null
+}, ...Object.entries(funcDefs).map(([k, v]) => ({
+	type: k, out: v.out || null
+}))];
+
 export class AiScript {
 	private variables: Variable[];
 	private variableValues: { name: string, value: any }[] = [];
@@ -44,76 +99,8 @@ export class AiScript {
 		LOGIN: 'boolean',
 	};
 
-	public static blockDefs = [{
-		type: 'if', out: null
-	}, {
-		type: 'eq', out: 'boolean'
-	}, {
-		type: 'notEq', out: 'boolean'
-	}, {
-		type: 'and', out: 'boolean'
-	}, {
-		type: 'or', out: 'boolean'
-	}, {
-		type: 'gt', out: 'boolean'
-	}, {
-		type: 'lt', out: 'boolean'
-	}, {
-		type: 'gtOrEq', out: 'boolean'
-	}, {
-		type: 'ltOrEq', out: 'boolean'
-	}, {
-		type: 'not', out: 'boolean'
-	}, {
-		type: 'text', out: 'string'
-	}, {
-		type: 'multiLineText', out: 'string'
-	}, {
-		type: 'textList', out: 'stringArray'
-	}, {
-		type: 'expression', out: null
-	}, {
-		type: 'random', out: 'number'
-	}, {
-		type: 'number', out: 'number'
-	}, {
-		type: 'ref', out: null
-	}];
-
-	public static funcDefs = {
-		not: {
-			in: ['boolean'],
-			out: 'boolean'
-		},
-		eq: {
-			in: [0, 0],
-			out: 'boolean'
-		},
-		gt: {
-			in: ['number', 'number'],
-			out: 'boolean'
-		},
-		lt: {
-			in: ['number', 'number'],
-			out: 'boolean'
-		},
-		gtEq: {
-			in: ['number', 'number'],
-			out: 'boolean'
-		},
-		ltEq: {
-			in: ['number', 'number'],
-			out: 'boolean'
-		},
-		if: {
-			in: ['boolean', 0, 0],
-			out: 0
-		},
-		random: {
-			in: ['number', 'number'],
-			out: 'number'
-		}
-	};
+	public static blockDefs = blockDefs;
+	public static funcDefs = funcDefs;
 
 	constructor(variables: Variable[], user?: any, visitor?: any) {
 		this.variables = variables;
@@ -252,6 +239,8 @@ export class AiScript {
 
 	@autobind
 	public compile(v: Block): string {
+		const camelToSnake = p => p.replace(/([A-Z])/g, s => '_' + s.charAt(0).toLowerCase());
+
 		if (v.type === 'expression') {
 			return v.value;
 		} else if (v.type === 'ref') {
@@ -266,25 +255,19 @@ export class AiScript {
 			return '"' + v.value + '"'; // todo escape
 		} else if (v.type === 'number') {
 			return v.value;
-		} else if (v.type === 'if') {
-			return `if(${this.compile(v.args[0])}, ${this.compile(v.args[1])}, ${this.compile(v.args[2])})`;
-		} else if (v.type === 'eq') {
-			return `eq(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
-		} else if (v.type === 'gt') {
-			return `gt(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
-		} else if (v.type === 'lt') {
-			return `lt(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
-		} else if (v.type === 'gtOrEq') {
-			return `gt_eq(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
-		} else if (v.type === 'ltOrEq') {
-			return `lt_eq(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
-		} else if (v.type === 'not') {
-			return `not(${this.compile(v.args[0])})`;
-		} else if (v.type === 'random') {
-			return `random(${this.compile(v.args[0])}, ${this.compile(v.args[1])})`;
-		}
+		} else {
+			const fn = AiScript.funcDefs[v.type];
+			if (fn == null) {
+				throw new Error('Unknown type: ' + v.type);
+			}
 
-		throw new Error('Unknown type: ' + v.type);
+			const args: string[] = [];
+			for (let i = 0; i < fn.in.length; i++) {
+				args.push(this.compile(v.args[i]));
+			}
+
+			return `${camelToSnake(v.type)}(${args.join(', ')})`;
+		}
 	}
 
 	@autobind
@@ -337,7 +320,8 @@ export class AiScript {
 			gt_eq: (a, b) => a >= b,
 			lt_eq: (a, b) => a <= b,
 			if: (bool, a, b) => bool ? a : b,
-			random: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
+			random: (probability) => Math.floor(Math.random() * 100) < probability,
+			random_number: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
 		};
 
 		const res = funcs[funcName](...args);

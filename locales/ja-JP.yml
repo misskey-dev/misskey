@@ -1841,52 +1841,55 @@ dev/views/new-app.vue:
 pages:
   script:
     blocks:
-      if: "分岐"
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
       textList: "テキストのリスト"
       expression: "式"
       eq: "AとBが同じ"
       _eq:
-        a: "A"
-        b: "B"
+        arg1: "A"
+        arg2: "B"
       notEq: "AとBが違う"
       _notEq:
-        a: "A"
-        b: "B"
+        arg1: "A"
+        arg2: "B"
       and: "AかつB"
       _and:
-        a: "A"
-        b: "B"
+        arg1: "A"
+        arg2: "B"
       or: "AまたはB"
       _or:
-        a: "A"
-        b: "B"
+        arg1: "A"
+        arg2: "B"
       lt: "AがBより小さい"
       _lt:
-        a: "A"
-        b: "B"
+        arg1: "A"
+        arg2: "B"
       gt: "AがBより大きい"
       _gt:
-        a: "A"
-        b: "B"
-      ltOrEq: "AがBと同じか小さい"
-      _ltOrEq:
-        a: "A"
-        b: "B"
-      gtOrEq: "AがBと同じか大きい"
-      _gtOrEq:
-        a: "A"
-        b: "B"
+        arg1: "A"
+        arg2: "B"
+      ltEq: "AがBと同じか小さい"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: "AがBと同じか大きい"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "分岐"
       _if:
-        if: "もし"
-        then: "なら"
-        else: "そうでなければ"
+        arg1: "もし"
+        arg2: "なら"
+        arg3: "そうでなければ"
       not: "否定"
       random: "ランダム"
       _random:
-        min: "最小"
-        max: "最大"
+        arg1: "確率"
+      randomNumber: "乱数"
+      _randomNumber:
+        arg1: "最小"
+        arg2: "最大"
       number: "数"
       ref: "変数"
     typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
