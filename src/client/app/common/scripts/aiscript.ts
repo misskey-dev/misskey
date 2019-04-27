@@ -68,6 +68,9 @@ const funcDefs = {
 	random: {
 		in: ['number'], out: 'boolean', icon: faDice,
 	},
+	random_pick: {
+		in: [0], out: 0, icon: faDice,
+	},
 };
 
 const blockDefs = [{
@@ -88,7 +91,6 @@ const blockDefs = [{
 
 export class AiScript {
 	private variables: Variable[];
-	private variableValues: { name: string, value: any }[] = [];
 	private envVars: { name: string, value: any }[];
 
 	public static envVarsDef = {
@@ -250,110 +252,46 @@ export class AiScript {
 	}
 
 	@autobind
-	public compile(v: Block): string {
-		if (v.type === 'expression') {
-			return v.value;
-		} else if (v.type === 'ref') {
-			if (AiScript.envVarsDef[v.value]) {
-				return v.value;
-			} else {
-				return this.variables.find(va => va.id === v.value).name;
-			}
-		} else if (v.type === 'text') {
-			return '"' + v.value + '"'; // todo escape
-		} else if (v.type === 'multiLineText') {
-			return '"' + v.value + '"'; // todo escape
-		} else if (v.type === 'textList') {
-			return '[' + (v.value || '').trim().split('\n').map(s => '"' + s + '"').join(', ') + ']'; // todo escape
-		} else if (v.type === 'number') {
-			return v.value;
-		} else {
-			const fn = AiScript.funcDefs[v.type];
-			if (fn == null) {
-				throw new Error('Unknown type: ' + v.type);
-			}
-
-			const args: string[] = [];
-			for (let i = 0; i < fn.in.length; i++) {
-				args.push(this.compile(v.args[i]));
-			}
-
-			return `${v.type}(${args.join(', ')})`;
-		}
+	private interpolate(str: string, values: { name: string, value: any }[]) {
+		return str.replace(/\{(.+?)\}/g, match => this.getVariableValue(match.slice(1, -1).trim(), values).toString());
 	}
 
 	@autobind
-	public evaluateExpression(expression: string): any {
-		const num = expression.trim().match(/^[0-9]+$/);
-		if (num) {
-			return parseInt(num[0], 10);
+	public evaluateVars() {
+		const values: { name: string, value: any }[] = [];
+		for (const v of this.variables) {
+			values.push({
+				name: v.name,
+				value: this.evaluate(v, values)
+			});
+		}
+		return values;
+	}
+
+	@autobind
+	private evaluate(block: Block, values: { name: string, value: any }[]): any {
+		if (block.type === null) {
+			return null;
 		}
 
-		const str = expression.trim().match(/^"(.+?)"$/);
-		if (str) {
-			return this.interpolate(str[0].slice(1, -1));
+		if (block.type === 'number') {
+			return parseInt(block.value, 10);
 		}
 
-		if (expression.trim().match(/^""$/)) {
-			return '';
+		if (block.type === 'text' || block.type === 'multiLineText') {
+			return this.interpolate(block.value, values);
 		}
 
-		if (expression.trim()[0] === '[') {
-			const list = [];
-			const listPart = expression.trim().slice(1, -1);
-
-			let listEl = '';
-			let pendingOpenBrackets = 0;
-			for (let i = 0; i < listPart.length; i++) {
-				const char = listPart[i];
-				if (char === ',' && pendingOpenBrackets === 0) {
-					list.push(this.evaluateExpression(listEl));
-					i++;
-					listEl = '';
-					continue;
-				} else if (char === '[') {
-					pendingOpenBrackets++;
-				} else if (char === ']') {
-					pendingOpenBrackets--;
-				}
-				listEl += char;
-			}
-			if (listEl.length > 0) {
-				list.push(this.evaluateExpression(listEl));
-			}
-
-			return list;
+		if (block.type === 'textList') {
+			return block.value.trim().split('\n');
 		}
 
-		const variable = expression.trim().match(/^[a-zA-Z]+$/);
-		if (variable) {
-			return this.getVariableValue(variable[0]);
+		if (block.type === 'ref') {
+			const name = this.variables.find(x => x.id === block.value).name;
+			return this.getVariableValue(name, values);
 		}
 
-		const funcName = expression.substr(0, expression.indexOf('('));
-		const argsPart = expression.substr(expression.indexOf('(')).slice(1, -1);
-
-		const args = [];
-
-		let argExpression = '';
-		let pendingOpenBrackets = 0;
-		for (let i = 0; i < argsPart.length; i++) {
-			const char = argsPart[i];
-			if (char === ',' && pendingOpenBrackets === 0) {
-				args.push(this.evaluateExpression(argExpression));
-				i++;
-				argExpression = '';
-				continue;
-			} else if (char === '(') {
-				pendingOpenBrackets++;
-			} else if (char === ')') {
-				pendingOpenBrackets--;
-			}
-			argExpression += char;
-		}
-		if (argExpression.length > 0) {
-			args.push(this.evaluateExpression(argExpression));
-		}
+		if (block.args === undefined) return null;
 
 		const funcs = {
 			not: (a) => !a,
@@ -364,19 +302,30 @@ export class AiScript {
 			lt_eq: (a, b) => a <= b,
 			if: (bool, a, b) => bool ? a : b,
 			random: (probability) => Math.floor(Math.random() * 100) < probability,
-			rannum: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
+			rannum: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
+			random_pick: (list) => list[Math.floor(Math.random() * list.length)]
 		};
 
-		const res = funcs[funcName](...args);
+		const fnName = block.type;
 
-		console.log(funcName, args, res);
+		const fn = funcs[fnName];
+		if (fn == null) {
+			console.error('Unknown function: ' + fnName);
+			throw new Error('Unknown function: ' + fnName);
+		}
+
+		const args = block.args.map(x => this.evaluate(x, values));
+
+		const res = fn(...args);
+
+		console.log(fnName, args, res);
 
 		return res;
 	}
 
 	@autobind
-	private getVariableValue(name: string): any {
-		const v = this.variableValues.find(v => v.name === name);
+	private getVariableValue(name: string, values: { name: string, value: any }[]): any {
+		const v = values.find(v => v.name === name);
 		if (v) {
 			return v.value;
 		} else {
@@ -386,29 +335,5 @@ export class AiScript {
 				throw new Error(`Script: No such variable '${name}'`);
 			}
 		}
-	}
-
-	@autobind
-	public interpolate(str: string) {
-		return str.replace(/\{(.+?)\}/g, match => this.getVariableValue(match.slice(1, -1).trim()).toString());
-	}
-
-	@autobind
-	public calcVariables() {
-		this.variableValues = [];
-		for (const v of this.variables) {
-			this.variableValues.push({
-				name: v.name,
-				value: this.evaluateVariable(v)
-			});
-		}
-	}
-
-	@autobind
-	public evaluateVariable(v) {
-		const bin = this.compile(v);
-		const val = this.evaluateExpression(bin);
-		console.log('Complied:', bin, 'Eval:', val);
-		return val;
 	}
 }

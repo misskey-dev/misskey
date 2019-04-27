@@ -1892,6 +1892,9 @@ pages:
       _rannum:
         arg1: "最小"
         arg2: "最大"
+      random_pick: "リストからランダムに選択"
+      _random_pick:
+        arg1: "リスト"
       number: "数"
       ref: "変数"
     typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"

@@ -6,7 +6,7 @@
 
 	<div>
 		<template v-for="child in page.content">
-			<component :is="'x-' + child.type" :value="child" :page="page" :ai-script="aiScript" :key="child.id" :h="2"/>
+			<component :is="'x-' + child.type" :value="child" :page="page" :script="script" :key="child.id" :h="2"/>
 		</template>
 	</div>
 </div>
@@ -22,6 +22,24 @@ import XText from './page.text.vue';
 import XImage from './page.image.vue';
 import XButton from './page.button.vue';
 import { AiScript } from '../../../scripts/aiscript';
+
+class Script {
+	public aiScript: AiScript;
+	public vars: any;
+
+	constructor(aiScript) {
+		this.aiScript = aiScript;
+		this.vars = this.aiScript.evaluateVars();
+	}
+
+	public reEval() {
+		this.vars = this.aiScript.evaluateVars();
+	}
+
+	public interpolate(str: string) {
+		return str.replace(/\{(.+?)\}/g, match => this.vars.find(x => x.name === match.slice(1, -1).trim()).value.toString());
+	}
+}
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -40,7 +58,7 @@ export default Vue.extend({
 	data() {
 		return {
 			page: null,
-			aiScript: null,
+			script: null,
 			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
 		};
 	},
@@ -50,8 +68,7 @@ export default Vue.extend({
 			pageId: this.pageId,
 		}).then(page => {
 			this.page = page;
-			this.aiScript = new AiScript(this.page.variables);
-			this.aiScript.calcVariables();
+			this.script = new Script(new AiScript(this.page.variables));
 		});
 	},
 });

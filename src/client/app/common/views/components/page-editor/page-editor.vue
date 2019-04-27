@@ -39,7 +39,8 @@
 
 		<details>
 			<summary>Assembly</summary>
-			<pre v-for="variable in variables">{{ variable.name }} = {{ compile(variable) }} --> {{ evaluate(variable) }}</pre>
+			<pre>{{ JSON.stringify(evVars, null, 2) }}</pre>
+			<ui-button @click="ev()">eval</ui-button>
 		</details>
 	</section>
 </div>
@@ -79,6 +80,7 @@ export default Vue.extend({
 			title: '',
 			content: [],
 			variables: [],
+			evVars: [],
 			aiScript: null,
 			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
 		};
@@ -207,20 +209,12 @@ export default Vue.extend({
 			}));
 		},
 
-		compile(v) {
+		ev() {
 			try {
-				return this.aiScript.compile(v);
-			} catch(e) {
-				return null;
-			}
-		},
-
-		evaluate(v) {
-			try {
-				return this.aiScript.evaluateVariable(v);
+				this.evVars = this.aiScript.evaluateVars();
 			} catch(e) {
 				console.error(e);
-				return null;
+				this.evVars = [];
 			}
 		}
 	}
