@@ -61,7 +61,7 @@ const funcDefs = {
 	if: {
 		in: ['boolean', 0, 0], out: 0, icon: faShareAlt,
 	},
-	random_number: {
+	rannum: {
 		in: ['number', 'number'], out: 'number', icon: faDice,
 	},
 	random: {
@@ -123,7 +123,6 @@ export class AiScript {
 
 	@autobind
 	public typeCheck(v: Block): TypeError | null {
-		if (v.args == null || v.args.length == 0) return null;
 		if (AiScript.isLiteralBlock(v)) return null;
 
 		const def = AiScript.funcDefs[v.type];
@@ -208,8 +207,6 @@ export class AiScript {
 				}
 			}
 		}
-
-		if (v.args === undefined) return null;
 
 		const generic: string[] = [];
 
@@ -331,7 +328,7 @@ export class AiScript {
 			lt_eq: (a, b) => a <= b,
 			if: (bool, a, b) => bool ? a : b,
 			random: (probability) => Math.floor(Math.random() * 100) < probability,
-			random_number: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
+			rannum: (min, max) => min + Math.floor(Math.random() * (max - min + 1))
 		};
 
 		const res = funcs[funcName](...args);

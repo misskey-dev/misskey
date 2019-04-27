@@ -106,6 +106,7 @@ export default Vue.extend({
 		});
 
 		this.$watch('value.args', (args) => {
+			if (args == null) return;
 			const fn = AiScript.funcDefs[this.value.type];
 			const emptySlotIndex = args.findIndex(x => x.type === null);
 			if (emptySlotIndex !== -1 && emptySlotIndex < fn.in.length) {
@@ -120,7 +121,7 @@ export default Vue.extend({
 		});
 
 		this.$watch('aiScript.variables', () => {
-			if (this.value) {
+			if (this.type != null && this.value) {
 				this.error = this.aiScript.typeCheck(this.value);
 			}
 		}, {
@@ -131,7 +132,6 @@ export default Vue.extend({
 	methods: {
 		init() {
 			if (AiScript.isLiteralBlock(this.value)) {
-				//Vue.set(this.value, 'args', [{ type: null }]);
 				return;
 			}
 

@@ -1849,8 +1849,8 @@ pages:
       _eq:
         arg1: "A"
         arg2: "B"
-      notEq: "AとBが違う"
-      _notEq:
+      not_eq: "AとBが異なる"
+      _not_eq:
         arg1: "A"
         arg2: "B"
       and: "AかつB"
@@ -1883,11 +1883,13 @@ pages:
         arg2: "なら"
         arg3: "そうでなければ"
       not: "否定"
+      _not:
+        arg1: "否定"
       random: "ランダム"
       _random:
         arg1: "確率"
-      randomNumber: "乱数"
-      _randomNumber:
+      rannum: "乱数"
+      _rannum:
         arg1: "最小"
         arg2: "最大"
       number: "数"
