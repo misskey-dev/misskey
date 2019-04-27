@@ -1,5 +1,5 @@
 <template>
-<div v-if="page" class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, fontFamily: page.font }">
+<div v-if="page" class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, center: page.alignCenter }" :style="{ fontFamily: page.font }">
 	<header>
 		<div class="title">{{ page.title }}</div>
 	</header>
@@ -78,6 +78,9 @@ export default Vue.extend({
 .iroscrza
 	overflow hidden
 	background var(--face)
+
+	&.center
+		text-align center
 
 	&.round
 		border-radius 6px

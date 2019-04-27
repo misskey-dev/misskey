@@ -1,6 +1,6 @@
 <template>
 <div class="">
-	<mfm :text="value.text" :is-note="false" :i="$store.state.i"/>
+	<mfm :text="text" :is-note="false" :i="$store.state.i"/>
 </div>
 </template>
 
@@ -14,10 +14,14 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
+		script: {
+			required: true
+		}
 	},
 
 	data() {
 		return {
+			text: this.script.interpolate(this.value.text),
 			faStickyNote, faPlus, faPencilAlt
 		};
 	},

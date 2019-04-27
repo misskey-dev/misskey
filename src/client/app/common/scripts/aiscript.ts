@@ -283,8 +283,12 @@ export class AiScript {
 		}
 
 		if (block.type === 'ref') {
-			const name = this.variables.find(x => x.id === block.value).name;
-			return this.getVariableValue(name, values);
+			const v = this.variables.find(x => x.id === block.value);
+			if (v) {
+				return this.getVariableValue(v.name, values);
+			} else {
+				return this.getVariableValue(block.value, values);
+			}
 		}
 
 		if (block.args === undefined) return null;
