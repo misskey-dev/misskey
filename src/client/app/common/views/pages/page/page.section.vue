@@ -4,7 +4,7 @@
 
 	<div class="children">
 		<template v-for="child in value.children">
-			<component :is="'x-' + child.type" :value="child" :root="root" :key="child.id"/>
+			<component :is="'x-' + child.type" :value="child" :ai-script="aiScript" :key="child.id"/>
 		</template>
 	</div>
 </section>
@@ -27,7 +27,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		root: {
+		aiScript: {
 			required: true
 		}
 	},

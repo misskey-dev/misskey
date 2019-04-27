@@ -31,7 +31,7 @@
 		</select>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<x-v v-for="(x, i) in AiScript.funcDefs[value.type].in" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :key="i"/>
 	</section>
 </x-container>
 </template>
@@ -98,23 +98,11 @@ export default Vue.extend({
 
 	created() {
 		if (this.value.value == null) Vue.set(this.value, 'value', '');
-		if (this.value.args == null) Vue.set(this.value, 'args', [{ type: null }, { type: null }, { type: null }]);
+
+		this.init();
 
 		this.$watch('value.type', (t) => {
-			if (t === null) return;
-			if (t === 'expression') return;
-			if (t === 'number') return;
-			if (t === 'text') return;
-			if (t === 'multiLineText') return;
-			if (t === 'ref') return;
-
-			for (let i = 0; i < AiScript.funcDefs[t].in.length; i++) {
-				const inType = AiScript.funcDefs[t].in[i];
-				if (typeof inType !== 'number') {
-					if (inType === 'number') this.value.args[i].type = 'number';
-					if (inType === 'string') this.value.args[i].type = 'text';
-				}
-			}
+			this.init();
 		});
 
 		this.$watch('value.args', (args) => {
@@ -130,21 +118,38 @@ export default Vue.extend({
 		}, {
 			deep: true
 		});
-/*
-		this.$watch('value', (v) => {
-			this.error = typeCheck(v);
-		}, {
-			deep: true
-		});
-*/
+
 		this.$watch('aiScript.variables', () => {
-			this.error = this.aiScript.typeCheck(this.value);
+			if (this.value) {
+				this.error = this.aiScript.typeCheck(this.value);
+			}
 		}, {
 			deep: true
 		});
 	},
 
 	methods: {
+		init() {
+			if (AiScript.isLiteralBlock(this.value)) {
+				//Vue.set(this.value, 'args', [{ type: null }]);
+				return;
+			}
+
+			const empties = [];
+			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
+				empties.push({ type: null });
+			}
+			Vue.set(this.value, 'args', empties);
+
+			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
+				const inType = AiScript.funcDefs[this.value.type].in[i];
+				if (typeof inType !== 'number') {
+					if (inType === 'number') this.value.args[i].type = 'number';
+					if (inType === 'string') this.value.args[i].type = 'text';
+				}
+			}
+		},
+
 		async changeType() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,

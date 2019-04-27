@@ -129,6 +129,7 @@ export default Vue.extend({
 						type: 'success',
 						text: 'Page crated'
 					});
+					this.$router.push(`/i/pages/edit/${this.pageId}`);
 				});
 			}
 		},

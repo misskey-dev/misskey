@@ -1869,12 +1869,12 @@ pages:
       _gt:
         arg1: "A"
         arg2: "B"
-      ltEq: "AがBと同じか小さい"
-      _ltEq:
+      lt_eq: "AがBと同じか小さい"
+      _lt_eq:
         arg1: "A"
         arg2: "B"
-      gtEq: "AがBと同じか大きい"
-      _gtEq:
+      gt_eq: "AがBと同じか大きい"
+      _gt_eq:
         arg1: "A"
         arg2: "B"
       if: "分岐"

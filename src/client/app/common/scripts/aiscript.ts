@@ -7,7 +7,6 @@ import autobind from 'autobind-decorator';
 
 import {
 	faSuperscript,
-	faPencilAlt,
 	faAlignLeft,
 	faShareAlt,
 	faSquareRootAlt,
@@ -33,16 +32,6 @@ export type Variable = Block & {
 	id: string;
 	name: string;
 };
-
-export function isLiteralBlock(v: Block) {
-	if (v.type === null) return true;
-	if (v.type === 'text') return true;
-	if (v.type === 'multiLineText') return true;
-	if (v.type === 'number') return true;
-	if (v.type === 'expression') return true;
-	if (v.type === 'ref') return true;
-	return false;
-}
 
 type TypeError = {
 	arg: number;
@@ -122,8 +111,20 @@ export class AiScript {
 	}
 
 	@autobind
+	public static isLiteralBlock(v: Block) {
+		if (v.type === null) return true;
+		if (v.type === 'text') return true;
+		if (v.type === 'multiLineText') return true;
+		if (v.type === 'number') return true;
+		if (v.type === 'expression') return true;
+		if (v.type === 'ref') return true;
+		return false;
+	}
+
+	@autobind
 	public typeCheck(v: Block): TypeError | null {
-		if (isLiteralBlock(v)) return null;
+		if (v.args == null || v.args.length == 0) return null;
+		if (AiScript.isLiteralBlock(v)) return null;
 
 		const def = AiScript.funcDefs[v.type];
 		if (def == null) {
@@ -207,6 +208,8 @@ export class AiScript {
 				}
 			}
 		}
+
+		if (v.args === undefined) return null;
 
 		const generic: string[] = [];
 
