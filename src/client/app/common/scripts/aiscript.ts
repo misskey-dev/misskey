@@ -282,12 +282,28 @@ export class AiScript {
 	@autobind
 	public evaluateVars() {
 		const values: { name: string, value: any }[] = [];
+
 		for (const v of this.variables) {
 			values.push({
 				name: v.name,
 				value: this.evaluate(v, values)
 			});
 		}
+
+		for (const v of this.pageVars) {
+			values.push({
+				name: v.name,
+				value: v.value
+			});
+		}
+
+		for (const v of this.envVars) {
+			values.push({
+				name: v.name,
+				value: v.value
+			});
+		}
+
 		return values;
 	}
 

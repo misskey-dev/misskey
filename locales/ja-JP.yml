@@ -1841,6 +1841,7 @@ dev/views/new-app.vue:
 pages:
   new-page: "ページの作成"
   edit-page: "ページの編集"
+  edit-this-page: "このページを編集"
   variables: "変数"
   variables-info: "変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。"
   title: "タイトル"
@@ -1857,6 +1858,10 @@ pages:
     image: "画像"
     button: "ボタン"
     input: "ユーザー入力"
+    _button:
+      action: "ボタンを押したときの動作"
+      _action:
+        dialog: "ダイアログを表示する"
   script:
     blocks:
       text: "テキスト"

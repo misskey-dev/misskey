@@ -65,7 +65,7 @@
 
 			<ui-button @click="addVariable()" class="add"><fa :icon="faPlus"/></ui-button>
 
-			<ui-info v-html="$t('variables-info')"></ui-info>
+			<ui-info><span v-html="$t('variables-info')"></span></ui-info>
 
 			<details>
 				<summary>Preview</summary>
