@@ -43,19 +43,7 @@ import XContainer from './page-editor.container.vue';
 import {
 	faSuperscript,
 	faPencilAlt,
-	faAlignLeft,
-	faShareAlt,
 	faSquareRootAlt,
-	faQuoteRight,
-	faEquals,
-	faGreaterThan,
-	faLessThan,
-	faGreaterThanEqual,
-	faLessThanEqual,
-	faExclamation,
-	faNotEqual,
-	faDice,
-	faSortNumericUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { AiScript } from '../../../scripts/aiscript';
 
@@ -99,23 +87,8 @@ export default Vue.extend({
 
 	computed: {
 		icon(): any {
-			if (this.value.type === 'expression') return faSuperscript;
-			if (this.value.type === 'ref') return faSuperscript;
-			if (this.value.type === 'if') return faShareAlt;
-			if (this.value.type === 'eq') return faEquals;
-			if (this.value.type === 'notEq') return faNotEqual;
-			if (this.value.type === 'and') return null;
-			if (this.value.type === 'or') return null;
-			if (this.value.type === 'gt') return faGreaterThan;
-			if (this.value.type === 'lt') return faLessThan;
-			if (this.value.type === 'gtOrEq') return faGreaterThanEqual;
-			if (this.value.type === 'ltOrEq') return faLessThanEqual;
-			if (this.value.type === 'not') return faExclamation;
-			if (this.value.type === 'text') return faQuoteRight;
-			if (this.value.type === 'multiLineText') return faAlignLeft;
-			if (this.value.type === 'random') return faDice;
-			if (this.value.type === 'randomNumber') return faDice;
-			if (this.value.type === 'number') return faSortNumericUp;
+			if (this.value.type === null) return null;
+			return AiScript.blockDefs.find(x => x.type === this.value.type).icon;
 		},
 		typeText(): any {
 			if (this.value.type === null) return null;

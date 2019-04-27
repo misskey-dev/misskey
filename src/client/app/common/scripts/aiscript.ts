@@ -5,6 +5,24 @@
 
 import autobind from 'autobind-decorator';
 
+import {
+	faSuperscript,
+	faPencilAlt,
+	faAlignLeft,
+	faShareAlt,
+	faSquareRootAlt,
+	faQuoteRight,
+	faEquals,
+	faGreaterThan,
+	faLessThan,
+	faGreaterThanEqual,
+	faLessThanEqual,
+	faExclamation,
+	faNotEqual,
+	faDice,
+	faSortNumericUp,
+} from '@fortawesome/free-solid-svg-icons';
+
 export type Block = {
 	type: string;
 	args: Block[];
@@ -34,57 +52,48 @@ type TypeError = {
 
 const funcDefs = {
 	not: {
-		in: ['boolean'],
-		out: 'boolean'
+		in: ['boolean'], out: 'boolean', icon: faExclamation,
 	},
 	eq: {
-		in: [0, 0],
-		out: 'boolean'
+		in: [0, 0], out: 'boolean', icon: faEquals,
 	},
 	gt: {
-		in: ['number', 'number'],
-		out: 'boolean'
+		in: ['number', 'number'], out: 'boolean', icon: faGreaterThan,
 	},
 	lt: {
-		in: ['number', 'number'],
-		out: 'boolean'
+		in: ['number', 'number'], out: 'boolean', icon: faLessThan,
 	},
-	gtEq: {
-		in: ['number', 'number'],
-		out: 'boolean'
+	gt_eq: {
+		in: ['number', 'number'], out: 'boolean', icon: faGreaterThanEqual,
 	},
-	ltEq: {
-		in: ['number', 'number'],
-		out: 'boolean'
+	lt_eq: {
+		in: ['number', 'number'], out: 'boolean', icon: faLessThanEqual,
 	},
 	if: {
-		in: ['boolean', 0, 0],
-		out: 0
+		in: ['boolean', 0, 0], out: 0, icon: faShareAlt,
 	},
-	randomNumber: {
-		in: ['number', 'number'],
-		out: 'number'
+	random_number: {
+		in: ['number', 'number'], out: 'number', icon: faDice,
 	},
 	random: {
-		in: ['number'],
-		out: 'boolean'
+		in: ['number'], out: 'boolean', icon: faDice,
 	},
 };
 
 const blockDefs = [{
-	type: 'text', out: 'string'
+	type: 'text', out: 'string', icon: faQuoteRight,
 }, {
-	type: 'multiLineText', out: 'string'
+	type: 'multiLineText', out: 'string', icon: faAlignLeft,
 }, {
-	type: 'textList', out: 'stringArray'
+	type: 'textList', out: 'stringArray', icon: faAlignLeft,
 }, {
-	type: 'expression', out: null
+	type: 'expression', out: null, icon: faSuperscript,
 }, {
-	type: 'number', out: 'number'
+	type: 'number', out: 'number', icon: faSortNumericUp,
 }, {
-	type: 'ref', out: null
+	type: 'ref', out: null, icon: faSuperscript,
 }, ...Object.entries(funcDefs).map(([k, v]) => ({
-	type: k, out: v.out || null
+	type: k, out: v.out || null, icon: v.icon
 }))];
 
 export class AiScript {
@@ -239,8 +248,6 @@ export class AiScript {
 
 	@autobind
 	public compile(v: Block): string {
-		const camelToSnake = p => p.replace(/([A-Z])/g, s => '_' + s.charAt(0).toLowerCase());
-
 		if (v.type === 'expression') {
 			return v.value;
 		} else if (v.type === 'ref') {
@@ -266,7 +273,7 @@ export class AiScript {
 				args.push(this.compile(v.args[i]));
 			}
 
-			return `${camelToSnake(v.type)}(${args.join(', ')})`;
+			return `${v.type}(${args.join(', ')})`;
 		}
 	}
 
