@@ -24,14 +24,14 @@
 	</section>
 	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
-			<option v-for="v in aiScript.getVariablesByType(getExpectedType ? getExpectedType() : null)" :value="v.id">{{ v.name }}</option>
+			<option v-for="v in aiScript.getVariablesByType(getExpectedType ? getExpectedType() : null).filter(x => x.id !== id)" :value="v.id">{{ v.name }}</option>
 			<optgroup :label="$t('script.enviromentVariables')">
 				<option v-for="v in aiScript.getEnvVariablesByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :id="id" :key="i"/>
 	</section>
 </x-container>
 </template>
@@ -69,7 +69,10 @@ export default Vue.extend({
 		},
 		aiScript: {
 			required: true,
-		}
+		},
+		id: {
+			required: true,
+		},
 	},
 
 	data() {

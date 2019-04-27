@@ -8,7 +8,7 @@
 	</section>
 </x-container>
 
-<x-v v-else v-model="x" :title="x.name" :removable="true" @remove="() => $emit('remove')" :ai-script="aiScript"/>
+<x-v v-else v-model="x" :title="x.name" :removable="true" @remove="() => $emit('remove')" :ai-script="aiScript" :id="x.id"/>
 </template>
 
 <script lang="ts">
