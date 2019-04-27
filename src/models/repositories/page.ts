@@ -36,6 +36,9 @@ export class PageRepository extends Repository<Page> {
 			content: src.content,
 			variables: src.variables,
 			title: src.title,
+			name: src.name,
+			alignCenter: src.alignCenter,
+			font: src.font,
 			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles))
 		});
 	}

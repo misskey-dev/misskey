@@ -29,6 +29,11 @@ export const meta = {
 			validator: $.str,
 		},
 
+		name: {
+			validator: $.optional.nullable.str,
+			default: null
+		},
+
 		content: {
 			validator: $.arr($.obj())
 		},
@@ -39,7 +44,17 @@ export const meta = {
 
 		eyeCathcingImageFileId: {
 			validator: $.optional.type(ID),
-		}
+		},
+
+		font: {
+			validator: $.optional.str.or(['serif', 'sans-serif']),
+			default: 'sans-serif'
+		},
+
+		alignCenter: {
+			validator: $.optional.bool,
+			default: false
+		},
 	},
 
 	res: {
@@ -75,11 +90,14 @@ export default define(meta, async (ps, user) => {
 		createdAt: new Date(),
 		updatedAt: new Date(),
 		title: ps.title,
+		name: ps.name,
 		content: ps.content,
 		variables: ps.variables,
 		eyeCatchingImageFileId: eyeCatchingImageFile ? eyeCatchingImageFile.id : null,
 		userId: user.id,
 		visibility: 'public',
+		alignCenter: ps.alignCenter,
+		font: ps.font
 	}));
 
 	return await Pages.pack(page);

@@ -1,5 +1,5 @@
 <template>
-<div class="">
+<div class="lzyxtsnt">
 	<img v-if="image" :src="image.url"/>
 </div>
 </template>
@@ -33,4 +33,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+.lzyxtsnt
+	> img
+		max-width 100%
 </style>

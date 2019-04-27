@@ -26,6 +26,10 @@ export const meta = {
 			validator: $.str,
 		},
 
+		name: {
+			validator: $.optional.nullable.str,
+		},
+
 		content: {
 			validator: $.arr($.obj())
 		},
@@ -36,7 +40,15 @@ export const meta = {
 
 		eyeCathcingImageFileId: {
 			validator: $.optional.type(ID),
-		}
+		},
+
+		font: {
+			validator: $.optional.str.or(['serif', 'sans-serif']),
+		},
+
+		alignCenter: {
+			validator: $.optional.bool,
+		},
 	},
 
 	errors: {
@@ -84,8 +96,11 @@ export default define(meta, async (ps, user) => {
 	await Pages.update(page.id, {
 		updatedAt: new Date(),
 		title: ps.title,
+		name: ps.name === undefined ? page.name : ps.name,
 		content: ps.content,
 		variables: ps.variables,
+		alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
+		font: ps.font === undefined ? page.font : ps.font,
 		eyeCatchingImageFileId: ps.eyeCathcingImageFileId === null
 			? null
 			: ps.eyeCathcingImageFileId === undefined

@@ -1,16 +1,14 @@
 <template>
-<div class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
-	<template v-if="page">
-		<header>
-			<div class="title">{{ page.title }}</div>
-		</header>
+<div v-if="page" class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, fontFamily: page.font }">
+	<header>
+		<div class="title">{{ page.title }}</div>
+	</header>
 
-		<div>
-			<template v-for="child in page.content">
-				<component :is="'x-' + child.type" :value="child" :page="page" :ai-script="aiScript" :key="child.id" :h="2"/>
-			</template>
-		</div>
-	</template>
+	<div>
+		<template v-for="child in page.content">
+			<component :is="'x-' + child.type" :value="child" :page="page" :ai-script="aiScript" :key="child.id" :h="2"/>
+		</template>
+	</div>
 </div>
 </template>
 

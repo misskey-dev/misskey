@@ -4,6 +4,7 @@ import { id } from '../id';
 import { DriveFile } from './drive-file';
 
 @Entity()
+@Index(['userId', 'name'], { unique: true })
 export class Page {
 	@PrimaryColumn(id())
 	public id: string;
@@ -24,6 +25,21 @@ export class Page {
 		length: 256,
 	})
 	public title: string;
+
+	@Index()
+	@Column('varchar', {
+		length: 256,
+		nullable: true,
+	})
+	public name: string | null;
+
+	@Column('boolean')
+	public alignCenter: boolean;
+
+	@Column('varchar', {
+		length: 32,
+	})
+	public font: string;
 
 	@Index()
 	@Column({
