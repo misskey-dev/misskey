@@ -6,7 +6,7 @@
 		</header>
 
 		<template v-for="child in page.content">
-			<component :is="'x-' + child.type" :value="child" :root="root" :key="child.id"/>
+			<component :is="'x-' + child.type" :value="child" :ai-script="aiScript" :key="child.id"/>
 		</template>
 	</template>
 </div>
@@ -39,49 +39,21 @@ export default Vue.extend({
 
 	data() {
 		return {
-			root: null,
 			page: null,
-			variables: [],
-			compiler: null,
+			aiScript: null,
 			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
 		};
 	},
 
 	created() {
-		this.root = this;
 		this.$root.api('pages/show', {
 			pageId: this.pageId,
 		}).then(page => {
 			this.page = page;
-			this.compiler = new AiScript(this.page.variables);
-			this.calcVariables();
+			this.aiScript = new AiScript(this.page.variables);
+			this.aiScript.calcVariables();
 		});
 	},
-
-	methods: {
-		calcVariables() {
-			this.variables = [];
-			for (const v of this.page.variables) {
-				this.variables.push({
-					name: v.name,
-					value: this.evaluateVariable(v)
-				});
-			}
-		},
-
-		evaluateVariable(v) {
-			const bin = this.compiler.compile(v);
-			console.log('Complied:', bin);
-			try {
-				return this.compiler.evaluateExpression(bin);
-			} catch(e) {
-				this.$root.dialog({
-					type: 'error',
-					text: e.toString()
-				});
-			}
-		},
-	}
 });
 </script>
 

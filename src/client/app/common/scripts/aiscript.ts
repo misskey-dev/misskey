@@ -34,6 +34,15 @@ type TypeError = {
 
 export class AiScript {
 	private variables: Variable[];
+	private variableValues: { name: string, value: any }[] = [];
+	private envVars: { name: string, value: any }[];
+
+	public static envVarsDef = {
+		AI: 'string',
+		NAME: 'string',
+		NOTES_COUNT: 'number',
+		LOGIN: 'boolean',
+	};
 
 	public static blockDefs = [{
 		type: 'if', out: null
@@ -106,8 +115,14 @@ export class AiScript {
 		}
 	};
 
-	constructor(variables: Variable[]) {
+	constructor(variables: Variable[], user?: any, visitor?: any) {
 		this.variables = variables;
+
+		this.envVars = [
+			{ name: 'AI', value: 'kawaii' },
+			{ name: 'LOGIN', value: visitor != null },
+			{ name: 'NAME', value: visitor ? visitor.name : '' }
+		];
 	}
 
 	@autobind
@@ -185,8 +200,16 @@ export class AiScript {
 		if (v.type === 'expression') return null;
 		if (v.type === 'ref') {
 			const variable = this.variables.find(va => va.id === v.value);
-			if (variable == null) return null;
-			return this.typeInference(variable);
+			if (variable) {
+				return this.typeInference(variable);
+			} else {
+				const envVar = AiScript.envVarsDef[v.value];
+				if (envVar) {
+					return envVar;
+				} else {
+					return null;
+				}
+			}
 		}
 
 		const generic: string[] = [];
@@ -222,11 +245,21 @@ export class AiScript {
 	}
 
 	@autobind
+	public getEnvVariablesByType(type: string | null): string[] {
+		if (type == null) return Object.keys(AiScript.envVarsDef);
+		return Object.entries(AiScript.envVarsDef).filter(([k, v]) => type === v).map(([k, v]) => k);
+	}
+
+	@autobind
 	public compile(v: Block): string {
 		if (v.type === 'expression') {
 			return v.value;
 		} else if (v.type === 'ref') {
-			return this.variables.find(va => va.id === v.value).name;
+			if (AiScript.envVarsDef[v.value]) {
+				return v.value;
+			} else {
+				return this.variables.find(va => va.id === v.value).name;
+			}
 		} else if (v.type === 'text') {
 			return '"' + v.value + '"'; // todo escape
 		} else if (v.type === 'multiLineText') {
@@ -316,16 +349,38 @@ export class AiScript {
 
 	@autobind
 	private getVariableValue(name: string): any {
-		const v = this.variables.find(v => v.name === name);
+		const v = this.variableValues.find(v => v.name === name);
 		if (v) {
 			return v.value;
 		} else {
-			throw new Error(`Script: No such variable '${name}'`);
+			if (AiScript.envVarsDef[name]) {
+				return this.envVars.find(x => x.name === name).value;
+			} else {
+				throw new Error(`Script: No such variable '${name}'`);
+			}
 		}
 	}
 
 	@autobind
 	public interpolate(str: string) {
 		return str.replace(/\{(.+?)\}/g, match => this.getVariableValue(match.slice(1, -1).trim()).toString());
+	}
+
+	@autobind
+	public calcVariables() {
+		this.variableValues = [];
+		for (const v of this.variables) {
+			this.variableValues.push({
+				name: v.name,
+				value: this.evaluateVariable(v)
+			});
+		}
+	}
+
+	@autobind
+	public evaluateVariable(v) {
+		const bin = this.compile(v);
+		console.log('Complied:', bin);
+		return this.evaluateExpression(bin);
 	}
 }

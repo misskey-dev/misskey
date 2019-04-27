@@ -57,6 +57,9 @@
 	<section v-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
 			<option v-for="v in aiScript.getVariablesByType(getExpectedType ? getExpectedType() : null)" :value="v.id">{{ v.name }}</option>
+			<optgroup :label="$t('script.enviromentVariables')">
+				<option v-for="v in aiScript.getEnvVariablesByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
+			</optgroup>
 		</select>
 	</section>
 </x-container>

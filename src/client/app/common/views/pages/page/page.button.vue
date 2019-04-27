@@ -14,7 +14,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		root: {
+		aiScript: {
 			required: true
 		}
 	},
@@ -27,10 +27,10 @@ export default Vue.extend({
 
 	methods: {
 		click() {
-			this.root.calcVariables();
+			this.aiScript.calcVariables();
 			if (this.value.action === 'dialog') {
 				this.$root.dialog({
-					text: this.root.interpolate(this.value.props.content)
+					text: this.aiScript.interpolate(this.value.props.content)
 				});
 			}
 		}

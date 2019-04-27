@@ -1888,7 +1888,7 @@ pages:
         min: "最小"
         max: "最大"
       number: "数"
-      ref: "参照"
+      ref: "変数"
     typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
     thereIsEmptySlot: "スロット{slot}が空です！"
     types:
@@ -1897,3 +1897,4 @@ pages:
       boolean: "フラグ"
       array: "リスト"
     emptySlot: "空のスロット"
+    enviromentVariables: "環境変数"
