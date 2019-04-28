@@ -298,6 +298,11 @@ export class AiScript {
 	}
 
 	@autobind
+	public getVarByName(name: string): Variable {
+		return this.variables.find(x => x.name === name);
+	}
+
+	@autobind
 	public getEnvVarsByType(type: Type | null): string[] {
 		if (type == null) return Object.keys(AiScript.envVarsDef);
 		return Object.entries(AiScript.envVarsDef).filter(([k, v]) => type === v).map(([k, v]) => k);

@@ -33,18 +33,20 @@
 			</optgroup>
 		</select>
 	</section>
-	<section v-else-if="value.type === 'in'" class="tbwccoaw">
-		<input v-model="value.value" type="number"/>
+	<section v-else-if="value.type === 'in'" class="hpdwcrvs">
+		<select v-model="value.value">
+			<option v-for="(v, i) in fnSlots" :value="i">{{ v }}</option>
+		</select>
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:16px;">
-		<ui-input v-model="value.value.slots"/>
-		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :name="name"/>
+		<ui-textarea v-model="value.value.slots"></ui-textarea>
+		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :fn-slots="value.value.slots.split('\n')" :name="name"/>
 	</section>
 	<section v-else-if="value.type.startsWith('fn:')" class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="aiScript.getVarByName(value.type.split(':')[1]).value.slots.split('\n')[i]" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :fn-slots="fnSlots" :key="i"/>
 	</section>
 </x-container>
 </template>
@@ -87,6 +89,9 @@ export default Vue.extend({
 		name: {
 			required: true,
 		},
+		fnSlots: {
+			required: false,
+		},
 	},
 
 	data() {
@@ -123,14 +128,17 @@ export default Vue.extend({
 			if (this.value.type === 'fn') {
 				const id = uuid.v4();
 				this.value.value = {};
-				Vue.set(this.value.value, 'slots', []);
+				Vue.set(this.value.value, 'slots', '');
 				Vue.set(this.value.value, 'expression', { id, type: null });
 				return;
 			}
 
 			if (this.value.type && this.value.type.startsWith('fn:')) {
+				const fnName = this.value.type.split(':')[1];
+				const fn = this.aiScript.getVarByName(fnName);
+
 				const empties = [];
-				for (let i = 0; i < 2; i++) { // todo
+				for (let i = 0; i < fn.value.slots.split('\n').length; i++) {
 					const id = uuid.v4();
 					empties.push({ id, type: null });
 				}
