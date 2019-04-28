@@ -33,6 +33,16 @@
 			</optgroup>
 		</select>
 	</section>
+	<section v-else-if="value.type === 'in'" class="tbwccoaw">
+		<input v-model="value.value" type="number"/>
+	</section>
+	<section v-else-if="value.type === 'fn'" class="" style="padding:16px;">
+		<ui-input v-model="value.value.slots"/>
+		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :name="name"/>
+	</section>
+	<section v-else-if="value.type.startsWith('fn:')" class="" style="padding:16px;">
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
+	</section>
 	<section v-else class="" style="padding:16px;">
 		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :key="i"/>
 	</section>
@@ -91,6 +101,7 @@ export default Vue.extend({
 	computed: {
 		icon(): any {
 			if (this.value.type === null) return null;
+			if (this.value.type.startsWith('fn:')) return null;
 			return AiScript.blockDefs.find(x => x.type === this.value.type).icon;
 		},
 		typeText(): any {
@@ -104,14 +115,45 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.value.value == null) Vue.set(this.value, 'value', '');
-
-		if (this.value.args == null) {
-			this.init();
-		}
+		if (this.value.value == null) Vue.set(this.value, 'value', null);
 
 		this.$watch('value.type', (t) => {
-			this.init();
+			this.warn = null;
+
+			if (this.value.type === 'fn') {
+				const id = uuid.v4();
+				this.value.value = {};
+				Vue.set(this.value.value, 'slots', []);
+				Vue.set(this.value.value, 'expression', { id, type: null });
+				return;
+			}
+
+			if (this.value.type && this.value.type.startsWith('fn:')) {
+				const empties = [];
+				for (let i = 0; i < 2; i++) { // todo
+					const id = uuid.v4();
+					empties.push({ id, type: null });
+				}
+				Vue.set(this.value, 'args', empties);
+				return;
+			}
+
+			if (AiScript.isLiteralBlock(this.value)) return;
+
+			const empties = [];
+			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
+				const id = uuid.v4();
+				empties.push({ id, type: null });
+			}
+			Vue.set(this.value, 'args', empties);
+
+			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
+				const inType = AiScript.funcDefs[this.value.type].in[i];
+				if (typeof inType !== 'number') {
+					if (inType === 'number') this.value.args[i].type = 'number';
+					if (inType === 'string') this.value.args[i].type = 'text';
+				}
+			}
 		});
 
 		this.$watch('value.args', (args) => {
@@ -119,9 +161,8 @@ export default Vue.extend({
 				this.warn = null;
 				return;
 			}
-			const fn = AiScript.funcDefs[this.value.type];
 			const emptySlotIndex = args.findIndex(x => x.type === null);
-			if (emptySlotIndex !== -1 && emptySlotIndex < fn.in.length) {
+			if (emptySlotIndex !== -1 && emptySlotIndex < args.length) {
 				this.warn = {
 					slot: emptySlotIndex
 				};
@@ -142,29 +183,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		init() {
-			this.warn = null;
-
-			if (AiScript.isLiteralBlock(this.value)) {
-				return;
-			}
-
-			const empties = [];
-			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
-				const id = uuid.v4();
-				empties.push({ id, type: null });
-			}
-			Vue.set(this.value, 'args', empties);
-
-			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
-				const inType = AiScript.funcDefs[this.value.type].in[i];
-				if (typeof inType !== 'number') {
-					if (inType === 'number') this.value.args[i].type = 'number';
-					if (inType === 'string') this.value.args[i].type = 'text';
-				}
-			}
-		},
-
 		async changeType() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,

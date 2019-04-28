@@ -313,6 +313,17 @@ export default Vue.extend({
 				}
 			}
 
+			const userFns = this.variables.filter(x => x.type === 'fn');
+			if (userFns.length > 0) {
+				list.unshift({
+					label: this.$t(`script.categories.fn`),
+					items: userFns.map(v => ({
+						value: 'fn:' + v.name,
+						text: v.name
+					}))
+				});
+			}
+
 			return list;
 		},
 

@@ -1896,6 +1896,7 @@ pages:
       comparison: "比較"
       random: "ランダム"
       value: "値"
+      fn: "関数"
     blocks:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
@@ -1978,6 +1979,12 @@ pages:
         arg1: "リスト"
       number: "数"
       ref: "変数"
+      in: "入力"
+      _in:
+        arg1: "スロット番号"
+      fn: "関数"
+      _fn:
+        arg1: "出力"
     typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
     thereIsEmptySlot: "スロット{slot}が空です！"
     types:

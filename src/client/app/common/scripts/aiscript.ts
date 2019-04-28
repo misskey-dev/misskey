@@ -79,6 +79,8 @@ const blockDefs = [
 	{ type: 'textList',      out: 'stringArray', category: 'value', icon: faList, },
 	{ type: 'number',        out: 'number',      category: 'value', icon: faSortNumericUp, },
 	{ type: 'ref',           out: null,          category: 'value', icon: faSuperscript, },
+	{ type: 'in',            out: null,          category: 'value', icon: faSuperscript, },
+	{ type: 'fn',            out: 'function',    category: 'value', icon: faSuperscript, },
 	...Object.entries(funcDefs).map(([k, v]) => ({
 		type: k, out: v.out || null, category: v.category, icon: v.icon
 	}))
@@ -164,6 +166,8 @@ export class AiScript {
 		if (v.type === 'textList') return true;
 		if (v.type === 'number') return true;
 		if (v.type === 'ref') return true;
+		if (v.type === 'fn') return true;
+		if (v.type === 'in') return true;
 		return false;
 	}
 
@@ -258,6 +262,8 @@ export class AiScript {
 
 			return null;
 		}
+		if (v.type === 'fn') return null; // todo
+		if (v.type === 'in') return null; // todo
 
 		const generic: Type[] = [];
 
@@ -338,7 +344,7 @@ export class AiScript {
 	}
 
 	@autobind
-	private evaluate(block: Block, values: { name: string, value: any }[]): any {
+	private evaluate(block: Block, values: { name: string, value: any }[], slotArg: any[] = []): any {
 		if (block.type === null) {
 			return null;
 		}
@@ -357,6 +363,21 @@ export class AiScript {
 
 		if (block.type === 'ref') {
 			return this.getVariableValue(block.value, values);
+		}
+
+		if (block.type === 'in') {
+			return slotArg[parseInt(block.value, 10)];
+		}
+
+		if (block.type === 'fn') { // ユーザー関数定義
+			return slotArg => this.evaluate(block.value.expression, values, slotArg);
+		}
+
+		if (block.type.startsWith('fn:')) { // ユーザー関数呼び出し
+			const fnName = block.type.split(':')[1];
+			const fn = this.getVariableValue(fnName, values);
+			const args = block.args.map(x => this.evaluate(x, values));
+			return fn(args);
 		}
 
 		if (block.args === undefined) return null;
@@ -395,7 +416,7 @@ export class AiScript {
 			throw new Error('Unknown function: ' + fnName);
 		}
 
-		const args = block.args.map(x => this.evaluate(x, values));
+		const args = block.args.map(x => this.evaluate(x, values, slotArg));
 
 		return fn(...args);
 	}
