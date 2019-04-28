@@ -14,7 +14,8 @@ type Params<T extends IEndpointMeta> = {
 export type Response = Record<string, any> | void;
 
 type executor<T extends IEndpointMeta> =
-	(params: Params<T>, user: ILocalUser, app: App, file?: any, cleanup?: Function) => Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
+	(params: Params<T>, user: ILocalUser, app: App, file?: any, cleanup?: Function) =>
+		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 		: (params: any, user: ILocalUser, app: App, file?: any) => Promise<any> {
