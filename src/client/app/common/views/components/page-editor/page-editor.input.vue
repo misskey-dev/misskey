@@ -3,7 +3,7 @@
 	<template #header><fa :icon="faBolt"/> {{ $t('blocks.input') }}</template>
 
 	<section class="dnvasjon">
-		<ui-input v-model="value.name"><span>{{ $t('blocks._input.name') }}</span></ui-input>
+		<ui-input v-model="value.name"><template #prefix><fa :icon="faSquareRootAlt"/></template><span>{{ $t('blocks._input.name') }}</span></ui-input>
 		<ui-input v-model="value.text"><span>{{ $t('blocks._input.text') }}</span></ui-input>
 		<ui-select v-model="value.inputType">
 			<template #label>{{ $t('blocks._input.inputType') }}</template>
@@ -18,7 +18,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from './page-editor.container.vue';
 
 export default Vue.extend({
@@ -36,7 +36,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faBolt
+			faBolt, faSquareRootAlt
 		};
 	},
 

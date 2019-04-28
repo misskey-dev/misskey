@@ -16,8 +16,8 @@
 	<section v-else-if="value.type === 'multiLineText'" class="tbwccoaw">
 		<textarea v-model="value.value"></textarea>
 	</section>
-	<section v-else-if="value.type === 'textList'" class="tbwccoaw">
-		<textarea v-model="value.value"></textarea>
+	<section v-else-if="value.type === 'textList'" class="frvuzvoi">
+		<ui-textarea v-model="value.value"></ui-textarea>
 	</section>
 	<section v-else-if="value.type === 'number'" class="tbwccoaw">
 		<input v-model="value.value" type="number"/>
@@ -197,16 +197,21 @@ export default Vue.extend({
 
 .tbwccoaw
 	> input
+	> textarea
 		display block
 		-webkit-appearance none
 		-moz-appearance none
 		appearance none
 		width 100%
+		max-width 100%
 		min-width 100%
 		border none
 		box-shadow none
 		padding 16px
 		font-size 16px
+
+	> textarea
+		min-height 100px
 
 .hpdwcrvs
 	padding 16px

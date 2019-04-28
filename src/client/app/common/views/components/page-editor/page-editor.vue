@@ -233,7 +233,7 @@ export default Vue.extend({
 		},
 
 		async addVariable() {
-			const { canceled, result: name } = await this.$root.dialog({
+			let { canceled, result: name } = await this.$root.dialog({
 				title: 'Enter name',
 				input: {
 					type: 'text',
@@ -241,6 +241,16 @@ export default Vue.extend({
 				showCancelButton: true
 			});
 			if (canceled) return;
+
+			name = name.trim();
+
+			if (this.aiScript.isUsedName(name)) {
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('the-variable-name-is-already-used')
+				});
+				return;
+			}
 
 			const { canceled2, result: type } = await this.$root.dialog({
 				type: null,

@@ -3,7 +3,7 @@
 	<template #header><fa :icon="faBolt"/> {{ $t('blocks.switch') }}</template>
 
 	<section class="kjuadyyj">
-		<ui-input v-model="value.name"><span>{{ $t('blocks._switch.name') }}</span></ui-input>
+		<ui-input v-model="value.name"><template #prefix><fa :icon="faSquareRootAlt"/></template><span>{{ $t('blocks._switch.name') }}</span></ui-input>
 		<ui-input v-model="value.text"><span>{{ $t('blocks._switch.text') }}</span></ui-input>
 		<ui-switch v-model="value.default"><span>{{ $t('blocks._switch.default') }}</span></ui-switch>
 	</section>
@@ -13,7 +13,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from './page-editor.container.vue';
 
 export default Vue.extend({
@@ -31,7 +31,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faBolt
+			faBolt, faSquareRootAlt
 		};
 	},
 

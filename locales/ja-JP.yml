@@ -1854,6 +1854,7 @@ pages:
   set-eye-catchig-image: "アイキャッチ画像を設定"
   remove-eye-catchig-image: "アイキャッチ画像を削除"
   choose-block: "ブロックを追加"
+  the-variable-name-is-already-used: "その変数名は既に使われています"
   blocks:
     text: "テキスト"
     section: "セクション"

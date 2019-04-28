@@ -397,4 +397,21 @@ export class AiScript {
 
 		throw new Error(`Script: No such variable '${name}'`);
 	}
+
+	@autobind
+	public isUsedName(name: string) {
+		if (this.variables.some(v => v.name === name)) {
+			return true;
+		}
+
+		if (this.pageVars.some(v => v.name === name)) {
+			return true;
+		}
+
+		if (AiScript.envVarsDef[name]) {
+			return true;
+		}
+
+		return false;
+	}
 }
