@@ -131,6 +131,11 @@ export class AiScript {
 	}
 
 	@autobind
+	public updateRandomSeed(seed: string) {
+		this.opts.randomSeed = seed;
+	}
+
+	@autobind
 	public static isLiteralBlock(v: Block) {
 		if (v.type === null) return true;
 		if (v.type === 'text') return true;

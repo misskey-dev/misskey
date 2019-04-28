@@ -1871,7 +1871,9 @@ pages:
       action: "ボタンを押したときの動作"
       _action:
         dialog: "ダイアログを表示する"
-        reset-random: "乱数をリセット"
+        _dialog:
+          content: "内容"
+        resetRandom: "乱数をリセット"
   script:
     categories:
       flow: "制御"

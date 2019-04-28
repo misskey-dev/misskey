@@ -27,11 +27,14 @@ export default Vue.extend({
 
 	methods: {
 		click() {
-			this.script.reEval();
 			if (this.value.action === 'dialog') {
+				this.script.reEval();
 				this.$root.dialog({
-					text: this.script.interpolate(this.value.props.content)
+					text: this.script.interpolate(this.value.content)
 				});
+			} else if (this.value.action === 'resetRandom') {
+				this.script.aiScript.updateRandomSeed(Math.random());
+				this.script.reEval();
 			}
 		}
 	}
