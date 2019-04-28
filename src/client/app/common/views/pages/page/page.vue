@@ -131,6 +131,7 @@ export default Vue.extend({
 
 	> footer
 		padding 0 64px 38px 64px
+		color var(--text)
 
 		> small
 			display block
