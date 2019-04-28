@@ -194,6 +194,7 @@ export default Vue.extend({
 	padding 16px
 	text-align center
 	cursor pointer
+	color var(--text)
 
 .tbwccoaw
 	> input
@@ -209,6 +210,8 @@ export default Vue.extend({
 		box-shadow none
 		padding 16px
 		font-size 16px
+		background transparent
+		color var(--text)
 
 	> textarea
 		min-height 100px

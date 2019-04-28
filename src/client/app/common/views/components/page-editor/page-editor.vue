@@ -182,7 +182,7 @@ export default Vue.extend({
 				}).then(page => {
 					this.$root.dialog({
 						type: 'success',
-						text: 'Page updated'
+						text: this.$t('page-updated')
 					});
 				});
 			} else {
@@ -198,7 +198,7 @@ export default Vue.extend({
 					this.pageId = page.id;
 					this.$root.dialog({
 						type: 'success',
-						text: 'Page crated'
+						text: this.$t('page-created')
 					});
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
 				});

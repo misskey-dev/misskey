@@ -52,5 +52,6 @@ export default Vue.extend({
 		border none
 		box-shadow none
 		padding 16px
-
+		background transparent
+		color var(--text)
 </style>

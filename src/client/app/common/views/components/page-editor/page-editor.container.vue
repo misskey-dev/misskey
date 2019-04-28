@@ -69,11 +69,11 @@ export default Vue.extend({
 .cpjygsrt
 	overflow hidden
 	background var(--face)
-	border solid 2px rgba(#000, 0.1)
+	border solid 2px var(--pageBlockBorder)
 	border-radius 6px
 
 	&:hover
-		border solid 2px rgba(#000, 0.15)
+		border solid 2px var(--pageBlockBorderHover)
 
 	&.warn
 		border solid 2px #dec44c
@@ -85,8 +85,6 @@ export default Vue.extend({
 		margin-top 16px
 
 	> header
-		background var(--faceHeader)
-
 		> .title
 			z-index 1
 			margin 0
@@ -95,7 +93,7 @@ export default Vue.extend({
 			font-size 0.9em
 			font-weight bold
 			color var(--faceHeaderText)
-			box-shadow 0 var(--lineWidth) rgba(#000, 0.07)
+			box-shadow 0 1px rgba(#000, 0.07)
 
 			> [data-icon]
 				margin-right 6px
