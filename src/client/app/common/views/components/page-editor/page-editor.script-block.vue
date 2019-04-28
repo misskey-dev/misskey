@@ -24,7 +24,7 @@
 	</section>
 	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
-			<option v-for="v in aiScript.getVariablesByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
+			<option v-for="v in aiScript.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$t('script.pageVariables')">
 				<option v-for="v in aiScript.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>

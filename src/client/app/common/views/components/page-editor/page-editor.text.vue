@@ -1,6 +1,6 @@
 <template>
 <x-container @remove="() => $emit('remove')">
-	<template #header><fa :icon="faAlignLeft"/> Text</template>
+	<template #header><fa :icon="faAlignLeft"/> {{ $t('blocks.text') }}</template>
 
 	<section class="ihymsbbe">
 		<textarea v-model="value.text"></textarea>

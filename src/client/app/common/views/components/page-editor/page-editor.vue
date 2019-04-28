@@ -66,12 +66,6 @@
 			<ui-button @click="addVariable()" class="add"><fa :icon="faPlus"/></ui-button>
 
 			<ui-info><span v-html="$t('variables-info')"></span></ui-info>
-
-			<details>
-				<summary>Preview</summary>
-				<pre>{{ JSON.stringify(evVars, null, 2) }}</pre>
-				<ui-button @click="ev()">eval</ui-button>
-			</details>
 		</div>
 	</ui-container>
 </div>
@@ -113,7 +107,6 @@ export default Vue.extend({
 			content: [],
 			alignCenter: false,
 			variables: [],
-			evVars: [],
 			aiScript: null,
 			showOptions: false,
 			url,
@@ -134,7 +127,11 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.aiScript = new AiScript(this.variables);
+		this.aiScript = new AiScript();
+
+		this.$watch('variables', () => {
+			this.aiScript.injectVars(this.variables);
+		}, { deep: true });
 
 		this.$watch('content', () => {
 			const pageVars = [];
@@ -316,15 +313,6 @@ export default Vue.extend({
 			}
 
 			return list;
-		},
-
-		ev() {
-			try {
-				this.evVars = this.aiScript.evaluateVars();
-			} catch(e) {
-				console.error(e);
-				this.evVars = [];
-			}
 		},
 
 		setEyeCatchingImage() {

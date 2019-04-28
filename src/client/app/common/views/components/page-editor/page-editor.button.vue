@@ -1,6 +1,6 @@
 <template>
 <x-container @remove="() => $emit('remove')">
-	<template #header><fa :icon="faBolt"/> Button</template>
+	<template #header><fa :icon="faBolt"/> {{ $t('blocks.button') }}</template>
 
 	<section class="xfhsjczc">
 		<ui-input v-model="value.text"><span>{{ $t('blocks._button.text') }}</span></ui-input>

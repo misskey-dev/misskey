@@ -116,6 +116,11 @@ export class AiScript {
 	}
 
 	@autobind
+	public injectVars(vars: Variable[]) {
+		this.variables = vars;
+	}
+
+	@autobind
 	public injectPageVars(pageVars: PageVar[]) {
 		this.pageVars = pageVars;
 	}
@@ -255,7 +260,7 @@ export class AiScript {
 	}
 
 	@autobind
-	public getVariablesByType(type: Type | null): Variable[] {
+	public getVarsByType(type: Type | null): Variable[] {
 		if (type == null) return this.variables;
 		return this.variables.filter(x => (this.typeInference(x) === null) || (this.typeInference(x) === type));
 	}

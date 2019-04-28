@@ -1,6 +1,6 @@
 <template>
 <x-container @remove="() => $emit('remove')">
-	<template #header><fa :icon="faImage"/> Image</template>
+	<template #header><fa :icon="faImage"/> {{ $t('blocks.image') }}</template>
 	<template #func>
 		<button @click="choose()">
 			<fa :icon="faFolderOpen"/>
