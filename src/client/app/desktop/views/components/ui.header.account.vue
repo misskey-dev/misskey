@@ -9,42 +9,42 @@
 			<ul>
 				<li>
 					<router-link :to="`/@${ $store.state.i.username }`">
-						<i><fa icon="user"/></i>
+						<i><fa icon="user" fixed-width/></i>
 						<span>{{ $t('profile') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="drive">
 					<p>
-						<i><fa icon="cloud"/></i>
+						<i><fa icon="cloud" fixed-width/></i>
 						<span>{{ $t('@.drive') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li>
 					<router-link to="/i/favorites">
-						<i><fa icon="star"/></i>
+						<i><fa icon="star" fixed-width/></i>
 						<span>{{ $t('@.favorites') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="list">
 					<p>
-						<i><fa icon="list"/></i>
+						<i><fa icon="list" fixed-width/></i>
 						<span>{{ $t('lists') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
 				<li @click="page">
 					<router-link to="/i/pages">
-						<i><fa :icon="faStickyNote"/></i>
-						<span>{{ $t('pages') }}</span>
+						<i><fa :icon="faStickyNote" fixed-width/></i>
+						<span>{{ $t('@.pages') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<p>
-						<i><fa :icon="['far', 'envelope']"/></i>
+						<i><fa :icon="['far', 'envelope']" fixed-width/></i>
 						<span>{{ $t('follow-requests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
 						<i><fa icon="angle-right"/></i>
 					</p>
@@ -53,14 +53,14 @@
 			<ul>
 				<li>
 					<router-link to="/i/settings">
-						<i><fa icon="cog"/></i>
+						<i><fa icon="cog" fixed-width/></i>
 						<span>{{ $t('@.settings') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
 				<li v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
 					<a href="/admin">
-						<i><fa icon="terminal"/></i>
+						<i><fa icon="terminal" fixed-width/></i>
 						<span>{{ $t('admin') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</a>
@@ -83,7 +83,7 @@
 			<ul>
 				<li @click="signout">
 					<p class="signout">
-						<i><fa icon="power-off"/></i>
+						<i><fa icon="power-off" fixed-width/></i>
 						<span>{{ $t('@.signout') }}</span>
 					</p>
 				</li>

@@ -1,9 +1,9 @@
 extends ./base
 
 block vars
-	- const user = note.user;
-	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
-	- const url = `${config.url}/notes/${note.id}`;
+	- const user = page.user;
+	- const title = page.title;
+	- const url = `${config.url}/@${user.username}/${page.name}`;
 
 block title
 	= `${title} | ${instanceName}`
@@ -16,25 +16,15 @@ block og
 	meta(property='og:title'       content= title)
 	meta(property='og:description' content= summary)
 	meta(property='og:url'         content= url)
-	meta(property='og:image'       content= user.avatarUrl)
+	meta(property='og:image'       content= page.eyeCatchingImage ? page.eyeCatchingImage.thumbnailUrl : user.avatarUrl)
 
 block meta
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)
-	meta(name='misskey:note-id' content=note.id)
+	meta(name='misskey:page-id' content=page.id)
 
 	meta(name='twitter:card' content='summary')
 
 	// todo
 	if user.twitter
 		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
-
-	if note.prev
-		link(rel='prev' href=`${config.url}/notes/${note.prev}`)
-	if note.next
-		link(rel='next' href=`${config.url}/notes/${note.next}`)
-
-	if !user.host
-		link(rel='alternate' href=url type='application/activity+json')
-	if note.uri
-		link(rel='alternate' href=note.uri type='application/activity+json')

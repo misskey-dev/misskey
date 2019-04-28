@@ -107,31 +107,34 @@ export default Vue.extend({
 		box-shadow 0 3px 8px rgba(0, 0, 0, 0.2)
 
 	> header
-		background var(--faceHeader)
-
 		> .title
 			z-index 1
 			margin 0
 			padding 32px 64px
 			font-size 24px
 			font-weight bold
-			color var(--faceHeaderText)
+			color var(--text)
 			box-shadow 0 var(--lineWidth) rgba(#000, 0.07)
 
-			> [data-icon]
-				margin-right 6px
-
-			&:empty
-				display none
+			@media (max-width 600px)
+				padding 16px 32px
+				font-size 20px
 
 	> div
-		padding 48px 64px
 		color var(--text)
+		padding 48px 64px
 		font-size 18px
 
+		@media (max-width 600px)
+			padding 24px 32px
+			font-size 16px
+
 	> footer
-		padding 0 64px 38px 64px
 		color var(--text)
+		padding 0 64px 38px 64px
+
+		@media (max-width 600px)
+			padding 0 32px 28px 32px
 
 		> small
 			display block
