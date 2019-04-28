@@ -1,7 +1,7 @@
 <template>
-<span class="kudkigyw">
-	<ui-input v-model="v">{{ value.text }}</ui-input>
-</span>
+<div>
+	<ui-input class="kudkigyw" v-model="v" :type="value.inputType">{{ value.text }}</ui-input>
+</div>
 </template>
 
 <script lang="ts">

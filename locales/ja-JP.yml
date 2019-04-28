@@ -1875,6 +1875,22 @@ pages:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
       textList: "テキストのリスト"
+      add: "+ 足す"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- 引く"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× 掛ける"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ 割る"
+      _divide:
+        arg1: "A"
+        arg2: "B"
       eq: "AとBが同じ"
       _eq:
         arg1: "A"

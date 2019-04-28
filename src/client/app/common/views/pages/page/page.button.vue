@@ -1,7 +1,7 @@
 <template>
-<span class="kudkigyw">
-	<ui-button @click="click()">{{ value.text }}</ui-button>
-</span>
+<div>
+	<ui-button class="kudkigyw" @click="click()">{{ value.text }}</ui-button>
+</div>
 </template>
 
 <script lang="ts">

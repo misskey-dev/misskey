@@ -11,6 +11,10 @@ import {
 	faAlignLeft,
 	faShareAlt,
 	faSquareRootAlt,
+	faPlus,
+	faMinus,
+	faTimes,
+	faDivide,
 	faList,
 	faQuoteRight,
 	faEquals,
@@ -23,6 +27,7 @@ import {
 	faDice,
 	faSortNumericUp,
 } from '@fortawesome/free-solid-svg-icons';
+import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
 export type Block = {
 	id: string;
@@ -45,10 +50,15 @@ type TypeError = {
 
 const funcDefs = {
 	if:              { in: ['boolean', 0, 0],      out: 0,         category: 'flow',       icon: faShareAlt, },
-	not:             { in: ['boolean'],            out: 'boolean', category: 'logical',    icon: faExclamation, },
-	or:              { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical',    icon: faExclamation, },
-	and:             { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical',    icon: faExclamation, },
+	not:             { in: ['boolean'],            out: 'boolean', category: 'logical',    icon: faFlag, },
+	or:              { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical',    icon: faFlag, },
+	and:             { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical',    icon: faFlag, },
+	add:             { in: ['number', 'number'],   out: 'number',  category: 'operation',  icon: faPlus, },
+	subtract:        { in: ['number', 'number'],   out: 'number',  category: 'operation',  icon: faMinus, },
+	multiply:        { in: ['number', 'number'],   out: 'number',  category: 'operation',  icon: faTimes, },
+	divide:          { in: ['number', 'number'],   out: 'number',  category: 'operation',  icon: faDivide, },
 	eq:              { in: [0, 0],                 out: 'boolean', category: 'comparison', icon: faEquals, },
+	notEq:           { in: [0, 0],                 out: 'boolean', category: 'comparison', icon: faNotEqual, },
 	gt:              { in: ['number', 'number'],   out: 'boolean', category: 'comparison', icon: faGreaterThan, },
 	lt:              { in: ['number', 'number'],   out: 'boolean', category: 'comparison', icon: faLessThan, },
 	gtEq:            { in: ['number', 'number'],   out: 'boolean', category: 'comparison', icon: faGreaterThanEqual, },
@@ -323,14 +333,21 @@ export class AiScript {
 		const date = new Date();
 		const day = `${this.opts.visitor ? this.opts.visitor.id : ''} ${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`;
 
-		const funcs = {
+		const funcs: { [p in keyof typeof funcDefs]: any } = {
 			not: (a) => !a,
 			eq: (a, b) => a === b,
+			notEq: (a, b) => a !== b,
 			gt: (a, b) => a > b,
 			lt: (a, b) => a < b,
 			gtEq: (a, b) => a >= b,
 			ltEq: (a, b) => a <= b,
+			or: (a, b) => a || b,
+			and: (a, b) => a && b,
 			if: (bool, a, b) => bool ? a : b,
+			add: (a, b) => a + b,
+			subtract: (a, b) => a - b,
+			multiply: (a, b) => a * b,
+			divide: (a, b) => a / b,
 			random: (probability) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
 			rannum: (min, max) => min + Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * (max - min + 1)),
 			randomPick: (list) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],
