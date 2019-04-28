@@ -2,12 +2,15 @@
 <x-container @remove="() => $emit('remove')">
 	<template #header><fa :icon="faBolt"/> {{ $t('blocks.input') }}</template>
 
-	<section class="xfhsjczc">
-		<input v-model="value.name" placeholder="Input name"/>
-		<select v-model="value.inputType">
-			<option value="string">String</option>
-			<option value="number">Number</option>
-		</select>
+	<section class="dnvasjon">
+		<ui-input v-model="value.name"><span>{{ $t('blocks._input.name') }}</span></ui-input>
+		<ui-input v-model="value.text"><span>{{ $t('blocks._input.text') }}</span></ui-input>
+		<ui-select v-model="value.inputType">
+			<template #label>{{ $t('blocks._input.inputType') }}</template>
+			<option value="string">{{ $t('blocks._input._inputType.string') }}</option>
+			<option value="number">{{ $t('blocks._input._inputType.number') }}</option>
+		</ui-select>
+		<ui-input v-model="value.default" :type="value.inputType"><span>{{ $t('blocks._input.default') }}</span></ui-input>
 	</section>
 </x-container>
 </template>
@@ -45,17 +48,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.xfhsjczc
-	> input
-		display block
-		-webkit-appearance none
-		-moz-appearance none
-		appearance none
-		width 100%
-		min-width 100%
-		border none
-		box-shadow none
-		padding 16px
-		font-size 16px
+.dnvasjon
+	padding 0 16px 0 16px
 
 </style>

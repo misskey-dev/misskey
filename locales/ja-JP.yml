@@ -1858,7 +1858,16 @@ pages:
     image: "画像"
     button: "ボタン"
     input: "ユーザー入力"
+    _input:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+      inputType: "入力の種類"
+      _inputType:
+        string: "テキスト"
+        number: "数値"
     _button:
+      text: "タイトル"
       action: "ボタンを押したときの動作"
       _action:
         dialog: "ダイアログを表示する"

@@ -3,11 +3,11 @@
 	<template #header><fa :icon="faBolt"/> Button</template>
 
 	<section class="xfhsjczc">
-		<input v-model="value.text" placeholder="Button text"/>
-		<select v-model="value.action">
-			<option value="dialog">Show dialog</option>
-			<option value="post">Post</option>
-		</select>
+		<ui-input v-model="value.text"><span>{{ $t('blocks._button.text') }}</span></ui-input>
+		<ui-select v-model="value.action">
+			<template #label>{{ $t('blocks._button.action') }}</template>
+			<option value="dialog">{{ $t('blocks._button._action.dialog') }}</option>
+		</ui-select>
 		<input v-model="value.props.content" placeholder="Dialog content"/>
 	</section>
 </x-container>
@@ -48,16 +48,6 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .xfhsjczc
-	> input
-		display block
-		-webkit-appearance none
-		-moz-appearance none
-		appearance none
-		width 100%
-		min-width 100%
-		border none
-		box-shadow none
-		padding 16px
-		font-size 16px
+	padding 0 16px 16px 16px
 
 </style>
