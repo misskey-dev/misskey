@@ -4,6 +4,7 @@
  */
 
 import autobind from 'autobind-decorator';
+import * as seedrandom from 'seedrandom';
 
 import {
 	faSuperscript,
@@ -24,6 +25,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export type Block = {
+	id: string;
 	type: string;
 	args: Block[];
 	value: any;
@@ -42,51 +44,33 @@ type TypeError = {
 };
 
 const funcDefs = {
-	not: {
-		in: ['boolean'], out: 'boolean', icon: faExclamation,
-	},
-	eq: {
-		in: [0, 0], out: 'boolean', icon: faEquals,
-	},
-	gt: {
-		in: ['number', 'number'], out: 'boolean', icon: faGreaterThan,
-	},
-	lt: {
-		in: ['number', 'number'], out: 'boolean', icon: faLessThan,
-	},
-	gtEq: {
-		in: ['number', 'number'], out: 'boolean', icon: faGreaterThanEqual,
-	},
-	ltEq: {
-		in: ['number', 'number'], out: 'boolean', icon: faLessThanEqual,
-	},
-	if: {
-		in: ['boolean', 0, 0], out: 0, icon: faShareAlt,
-	},
-	rannum: {
-		in: ['number', 'number'], out: 'number', icon: faDice,
-	},
-	random: {
-		in: ['number'], out: 'boolean', icon: faDice,
-	},
-	randomPick: {
-		in: [0], out: 0, icon: faDice,
-	},
+	if:              { in: ['boolean', 0, 0],      out: 0,         category: 'flow',       icon: faShareAlt, },
+	not:             { in: ['boolean'],            out: 'boolean', category: 'logical',    icon: faExclamation, },
+	or:              { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical',    icon: faExclamation, },
+	and:             { in: ['boolean', 'boolean'], out: 'boolean', category: 'logical',    icon: faExclamation, },
+	eq:              { in: [0, 0],                 out: 'boolean', category: 'comparison', icon: faEquals, },
+	gt:              { in: ['number', 'number'],   out: 'boolean', category: 'comparison', icon: faGreaterThan, },
+	lt:              { in: ['number', 'number'],   out: 'boolean', category: 'comparison', icon: faLessThan, },
+	gtEq:            { in: ['number', 'number'],   out: 'boolean', category: 'comparison', icon: faGreaterThanEqual, },
+	ltEq:            { in: ['number', 'number'],   out: 'boolean', category: 'comparison', icon: faLessThanEqual, },
+	rannum:          { in: ['number', 'number'],   out: 'number',  category: 'random',     icon: faDice, },
+	random:          { in: ['number'],             out: 'boolean', category: 'random',     icon: faDice, },
+	randomPick:      { in: [0],                    out: 0,         category: 'random',     icon: faDice, },
+	dailyRannum:     { in: ['number', 'number'],   out: 'number',  category: 'random',     icon: faDice, },
+	dailyRandom:     { in: ['number'],             out: 'boolean', category: 'random',     icon: faDice, },
+	dailyRandomPick: { in: [0],                    out: 0,         category: 'random',     icon: faDice, },
 };
 
-const blockDefs = [{
-	type: 'text', out: 'string', icon: faQuoteRight,
-}, {
-	type: 'multiLineText', out: 'string', icon: faAlignLeft,
-}, {
-	type: 'textList', out: 'stringArray', icon: faList,
-}, {
-	type: 'number', out: 'number', icon: faSortNumericUp,
-}, {
-	type: 'ref', out: null, icon: faSuperscript,
-}, ...Object.entries(funcDefs).map(([k, v]) => ({
-	type: k, out: v.out || null, icon: v.icon
-}))];
+const blockDefs = [
+	{ type: 'text',          out: 'string',      category: 'value', icon: faQuoteRight, },
+	{ type: 'multiLineText', out: 'string',      category: 'value', icon: faAlignLeft, },
+	{ type: 'textList',      out: 'stringArray', category: 'value', icon: faList, },
+	{ type: 'number',        out: 'number',      category: 'value', icon: faSortNumericUp, },
+	{ type: 'ref',           out: null,          category: 'value', icon: faSuperscript, },
+	...Object.entries(funcDefs).map(([k, v]) => ({
+		type: k, out: v.out || null, category: v.category, icon: v.icon
+	}))
+];
 
 type PageVar = { name: string; value: any; type: Type; };
 
@@ -104,15 +88,20 @@ export class AiScript {
 
 	public static blockDefs = blockDefs;
 	public static funcDefs = funcDefs;
+	private opts: {
+		randomSeed?: string; user?: any; visitor?: any;
+	};
 
-	constructor(variables: Variable[], pageVars: PageVar[] = [], user?: any, visitor?: any) {
+	constructor(variables: Variable[], pageVars: PageVar[] = [], opts: AiScript['opts'] = {}) {
 		this.variables = variables;
 		this.pageVars = pageVars;
+		this.opts = opts;
 
 		this.envVars = [
 			{ name: 'AI', value: 'kawaii' },
-			{ name: 'LOGIN', value: visitor != null },
-			{ name: 'NAME', value: visitor ? visitor.name : '' }
+			{ name: 'LOGIN', value: opts.visitor != null },
+			{ name: 'NAME', value: opts.visitor ? opts.visitor.name : '' },
+			{ name: 'USERID', value: opts.visitor ? opts.visitor.id : '' },
 		];
 	}
 
@@ -331,6 +320,9 @@ export class AiScript {
 
 		if (block.args === undefined) return null;
 
+		const date = new Date();
+		const day = `${this.opts.visitor ? this.opts.visitor.id : ''} ${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`;
+
 		const funcs = {
 			not: (a) => !a,
 			eq: (a, b) => a === b,
@@ -339,9 +331,12 @@ export class AiScript {
 			gtEq: (a, b) => a >= b,
 			ltEq: (a, b) => a <= b,
 			if: (bool, a, b) => bool ? a : b,
-			random: (probability) => Math.floor(Math.random() * 100) < probability,
-			rannum: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
-			randomPick: (list) => list[Math.floor(Math.random() * list.length)]
+			random: (probability) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
+			rannum: (min, max) => min + Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * (max - min + 1)),
+			randomPick: (list) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],
+			dailyRandom: (probability) => Math.floor(seedrandom(`${day}:${block.id}`)() * 100) < probability,
+			dailyRannum: (min, max) => min + Math.floor(seedrandom(`${day}:${block.id}`)() * (max - min + 1)),
+			dailyRandomPick: (list) => list[Math.floor(seedrandom(`${day}:${block.id}`)() * list.length)],
 		};
 
 		const fnName = block.type;

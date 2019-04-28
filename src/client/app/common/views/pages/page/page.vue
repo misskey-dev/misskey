@@ -75,7 +75,11 @@ export default Vue.extend({
 		}).then(page => {
 			this.page = page;
 			const pageVars = this.getPageVars();
-			this.script = new Script(new AiScript(this.page.variables, pageVars));
+			this.script = new Script(new AiScript(this.page.variables, pageVars, {
+				randomSeed: Math.random(),
+				user: page.user,
+				visitor: this.$store.state.i
+			}));
 		});
 	},
 

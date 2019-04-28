@@ -45,6 +45,7 @@ import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
 import { faSuperscript, faPencilAlt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
 import { AiScript } from '../../../scripts/aiscript';
+import * as uuid from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -53,7 +54,7 @@ export default Vue.extend({
 		XContainer
 	},
 
-	inject: ['getScriptItemList'],
+	inject: ['getScriptBlockList'],
 
 	props: {
 		getExpectedType: {
@@ -150,7 +151,8 @@ export default Vue.extend({
 
 			const empties = [];
 			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
-				empties.push({ type: null });
+				const id = uuid.v4();
+				empties.push({ id, type: null });
 			}
 			Vue.set(this.value, 'args', empties);
 
@@ -168,7 +170,7 @@ export default Vue.extend({
 				type: null,
 				title: 'Select type',
 				select: {
-					items: this.getScriptItemList(this.getExpectedType ? this.getExpectedType() : null)
+					groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 				},
 				showCancelButton: true
 			});

@@ -1862,7 +1862,15 @@ pages:
       action: "ボタンを押したときの動作"
       _action:
         dialog: "ダイアログを表示する"
+        reset-random: "乱数をリセット"
   script:
+    categories:
+      flow: "制御"
+      logical: "論理演算"
+      operation: "計算"
+      comparison: "比較"
+      random: "ランダム"
+      value: "値"
     blocks:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
@@ -1883,19 +1891,19 @@ pages:
       _or:
         arg1: "A"
         arg2: "B"
-      lt: "AがBより小さい"
+      lt: "< AがBより小さい"
       _lt:
         arg1: "A"
         arg2: "B"
-      gt: "AがBより大きい"
+      gt: "> AがBより大きい"
       _gt:
         arg1: "A"
         arg2: "B"
-      ltEq: "AがBと同じか小さい"
+      ltEq: "<= AがBと同じか小さい"
       _ltEq:
         arg1: "A"
         arg2: "B"
-      gtEq: "AがBと同じか大きい"
+      gtEq: ">= AがBと同じか大きい"
       _gtEq:
         arg1: "A"
         arg2: "B"
@@ -1916,6 +1924,16 @@ pages:
         arg2: "最大"
       randomPick: "リストからランダムに選択"
       _randomPick:
+        arg1: "リスト"
+      dailyRandom: "ランダム (ユーザーごとに日替わり)"
+      _dailyRandom:
+        arg1: "確率"
+      dailyRannum: "乱数 (ユーザーごとに日替わり)"
+      _dailyRannum:
+        arg1: "最小"
+        arg2: "最大"
+      dailyRandomPick: "リストからランダムに選択 (ユーザーごとに日替わり)"
+      _dailyRandomPick:
         arg1: "リスト"
       number: "数"
       ref: "変数"

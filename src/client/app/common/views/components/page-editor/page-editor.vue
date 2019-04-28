@@ -181,7 +181,7 @@ export default Vue.extend({
 
 	provide() {
 		return {
-			getScriptItemList: this.getScriptItemList
+			getScriptBlockList: this.getScriptBlockList
 		}
 	},
 
@@ -262,13 +262,14 @@ export default Vue.extend({
 				type: null,
 				title: 'Select type',
 				select: {
-					items: this.getScriptItemList()
+					groupedItems: this.getScriptBlockList()
 				},
 				showCancelButton: true
 			});
 			if (canceled2) return;
 
-			this.variables.push({ name, type });
+			const id = uuid.v4();
+			this.variables.push({ id, name, type });
 		},
 
 		updateItem(v) {
@@ -290,11 +291,31 @@ export default Vue.extend({
 			this.content = newValue;
 		},
 
-		getScriptItemList(type: string = null) {
-			return AiScript.blockDefs.filter(block => type === null || block.out === null || block.out === type).map(block => ({
-				value: block.type,
-				text: this.$t(`script.blocks.${block.type}`)
-			}));
+		getScriptBlockList(type: string = null) {
+			const list = [];
+
+			const blocks = AiScript.blockDefs.filter(block => type === null || block.out === null || block.out === type);
+
+			for (const block of blocks) {
+				const category = list.find(x => x.category === block.category);
+				if (category) {
+					category.items.push({
+						value: block.type,
+						text: this.$t(`script.blocks.${block.type}`)
+					});
+				} else {
+					list.push({
+						category: block.category,
+						label: this.$t(`script.categories.${block.category}`),
+						items: [{
+							value: block.type,
+							text: this.$t(`script.blocks.${block.type}`)
+						}]
+					});
+				}
+			}
+
+			return list;
 		},
 
 		ev() {
