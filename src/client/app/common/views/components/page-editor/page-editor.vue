@@ -4,6 +4,7 @@
 		<header>
 			<div class="title"><fa :icon="faStickyNote"/> {{ pageId ? $t('edit-page') : $t('new-page') }}</div>
 			<div class="buttons">
+				<button @click="del()"><fa :icon="faTrashAlt"/></button>
 				<button @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
 				<button @click="save()"><fa :icon="faSave"/></button>
 			</div>
@@ -69,6 +70,7 @@
 
 			<template v-if="moreDetails">
 				<ui-info><span v-html="$t('variables-info2')"></span></ui-info>
+				<ui-info><span v-html="$t('variables-info3')"></span></ui-info>
 			</template>
 		</div>
 	</ui-container>
@@ -208,6 +210,25 @@ export default Vue.extend({
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
 				});
 			}
+		},
+
+		del() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('are-you-sure-delete'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+				this.$root.api('pages/delete', {
+					pageId: this.pageId,
+				}).then(() => {
+					this.$root.dialog({
+						type: 'success',
+						text: this.$t('page-deleted')
+					});
+					this.$router.push(`/i/pages`);
+				});
+			});
 		},
 
 		async add() {

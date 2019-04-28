@@ -1,19 +1,17 @@
 <template>
-<div class="vhpxefrj" tabindex="-1" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
-	<router-link :to="`/@${page.user.username}/pages/${page.name}`">
-		<div class="thumbnail" v-if="page.eyeCatchingImage" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
-		<article>
-			<header>
-				<h1 :title="page.title">{{ page.title }}</h1>
-			</header>
-			<p v-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
-			<footer>
-				<img class="icon" v-if="icon" :src="icon"/>
-				<p>{{ page.user | userName }}</p>
-			</footer>
-		</article>
-	</router-link>
-</div>
+<router-link :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
+	<div class="thumbnail" v-if="page.eyeCatchingImage" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
+	<article>
+		<header>
+			<h1 :title="page.title">{{ page.title }}</h1>
+		</header>
+		<p v-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
+		<footer>
+			<img class="icon" :src="page.user.avatarUrl"/>
+			<p>{{ page.user | userName }}</p>
+		</footer>
+	</article>
+</router-link>
 </template>
 
 <script lang="ts">
@@ -31,6 +29,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .vhpxefrj
+	display block
 	overflow hidden
 	width 100%
 	background var(--face)

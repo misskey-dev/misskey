@@ -349,7 +349,7 @@ export class AiScript {
 	}
 
 	@autobind
-	private evaluate(block: Block, values: { name: string, value: any }[], slotArg: any[] = []): any {
+	private evaluate(block: Block, values: { name: string, value: any }[], slotArg: Record<string, any> = {}): any {
 		if (block.type === null) {
 			return null;
 		}
@@ -371,18 +371,24 @@ export class AiScript {
 		}
 
 		if (block.type === 'in') {
-			return slotArg[parseInt(block.value, 10)];
+			return slotArg[block.value];
 		}
 
 		if (block.type === 'fn') { // ユーザー関数定義
-			return slotArg => this.evaluate(block.value.expression, values, slotArg);
+			return {
+				slots: block.value.slots,
+				exec: slotArg => this.evaluate(block.value.expression, values, slotArg)
+			};
 		}
 
 		if (block.type.startsWith('fn:')) { // ユーザー関数呼び出し
 			const fnName = block.type.split(':')[1];
 			const fn = this.getVariableValue(fnName, values);
-			const args = block.args.map(x => this.evaluate(x, values));
-			return fn(args);
+			for (let i = 0; i < fn.slots.length; i++) {
+				const name = fn.slots[i];
+				slotArg[name] = this.evaluate(block.args[i], values);
+			}
+			return fn.exec(slotArg);
 		}
 
 		if (block.args === undefined) return null;

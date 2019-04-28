@@ -25,7 +25,9 @@ export default Vue.extend({
 
 	watch: {
 		v() {
-			this.script.aiScript.updatePageVar(this.value.name, this.v);
+			let v = this.v;
+			if (this.value.inputType === 'number') v = parseInt(v, 10);
+			this.script.aiScript.updatePageVar(this.value.name, v);
 			this.script.reEval();
 		}
 	}
