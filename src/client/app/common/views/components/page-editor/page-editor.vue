@@ -234,7 +234,7 @@ export default Vue.extend({
 
 		async addVariable() {
 			let { canceled, result: name } = await this.$root.dialog({
-				title: 'Enter name',
+				title: this.$t('enter-variable-name'),
 				input: {
 					type: 'text',
 				},
@@ -252,18 +252,8 @@ export default Vue.extend({
 				return;
 			}
 
-			const { canceled2, result: type } = await this.$root.dialog({
-				type: null,
-				title: 'Select type',
-				select: {
-					groupedItems: this.getScriptBlockList()
-				},
-				showCancelButton: true
-			});
-			if (canceled2) return;
-
 			const id = uuid.v4();
-			this.variables.push({ id, name, type });
+			this.variables.push({ id, name, type: null });
 		},
 
 		updateItem(v) {
@@ -283,6 +273,15 @@ export default Vue.extend({
 				...this.content.slice(i + 1)
 			];
 			this.content = newValue;
+		},
+
+		removeVariable(v) {
+			const i = this.variables.findIndex(x => x.name === v.name);
+			const newValue = [
+				...this.variables.slice(0, i),
+				...this.variables.slice(i + 1)
+			];
+			this.variables = newValue;
 		},
 
 		getScriptBlockList(type: string = null) {

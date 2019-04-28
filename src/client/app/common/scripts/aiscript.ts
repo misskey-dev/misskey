@@ -29,6 +29,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
+import { version } from '../../config';
+
 export type Block = {
 	id: string;
 	type: string;
@@ -84,35 +86,54 @@ const blockDefs = [
 
 type PageVar = { name: string; value: any; type: Type; };
 
+const envVarsDef = {
+	AI: 'string',
+	VERSION: 'string',
+	LOGIN: 'boolean',
+	NAME: 'string',
+	USERNAME: 'string',
+	USERID: 'string',
+	NOTES_COUNT: 'number',
+	FOLLOWERS_COUNT: 'number',
+	FOLLOWING_COUNT: 'number',
+	IS_CAT: 'boolean',
+	MY_NOTES_COUNT: 'number',
+	MY_FOLLOWERS_COUNT: 'number',
+	MY_FOLLOWING_COUNT: 'number',
+};
+
 export class AiScript {
 	private variables: Variable[];
 	private pageVars: PageVar[];
-	private envVars: { name: string, value: any }[];
+	private envVars: Record<keyof typeof envVarsDef, any>;
 
-	public static envVarsDef = {
-		AI: 'string',
-		NAME: 'string',
-		NOTES_COUNT: 'number',
-		LOGIN: 'boolean',
-	};
-
+	public static envVarsDef = envVarsDef;
 	public static blockDefs = blockDefs;
 	public static funcDefs = funcDefs;
 	private opts: {
 		randomSeed?: string; user?: any; visitor?: any;
 	};
 
-	constructor(variables: Variable[], pageVars: PageVar[] = [], opts: AiScript['opts'] = {}) {
+	constructor(variables: Variable[] = [], pageVars: PageVar[] = [], opts: AiScript['opts'] = {}) {
 		this.variables = variables;
 		this.pageVars = pageVars;
 		this.opts = opts;
 
-		this.envVars = [
-			{ name: 'AI', value: 'kawaii' },
-			{ name: 'LOGIN', value: opts.visitor != null },
-			{ name: 'NAME', value: opts.visitor ? opts.visitor.name : '' },
-			{ name: 'USERID', value: opts.visitor ? opts.visitor.id : '' },
-		];
+		this.envVars = {
+			AI: 'kawaii',
+			VERSION: version,
+			LOGIN: opts.visitor != null,
+			NAME: opts.visitor ? opts.visitor.name : '',
+			USERNAME: opts.visitor ? opts.visitor.username : '',
+			USERID: opts.visitor ? opts.visitor.id : '',
+			NOTES_COUNT: opts.visitor ? opts.visitor.notesCount : 0,
+			FOLLOWERS_COUNT: opts.visitor ? opts.visitor.followersCount : 0,
+			FOLLOWING_COUNT: opts.visitor ? opts.visitor.followingCount : 0,
+			IS_CAT: opts.visitor ? opts.visitor.isCat : false,
+			MY_NOTES_COUNT: opts.user ? opts.user.notesCount : 0,
+			MY_FOLLOWERS_COUNT: opts.user ? opts.user.followersCount : 0,
+			MY_FOLLOWING_COUNT: opts.user ? opts.user.followingCount : 0,
+		};
 	}
 
 	@autobind
@@ -306,10 +327,10 @@ export class AiScript {
 			});
 		}
 
-		for (const v of this.envVars) {
+		for (const [k, v] of Object.entries(this.envVars)) {
 			values.push({
-				name: v.name,
-				value: v.value
+				name: k,
+				value: v
 			});
 		}
 
@@ -392,7 +413,7 @@ export class AiScript {
 		}
 
 		if (AiScript.envVarsDef[name]) {
-			return this.envVars.find(x => x.name === name).value;
+			return this.envVars[name].value;
 		}
 
 		throw new Error(`Script: No such variable '${name}'`);

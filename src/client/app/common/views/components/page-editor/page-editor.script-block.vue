@@ -1,5 +1,5 @@
 <template>
-<x-container :removable="removable" :error="error" :warn="warn">
+<x-container :removable="removable" @remove="() => $emit('remove')" :error="error" :warn="warn">
 	<template #header><fa v-if="icon" :icon="icon"/> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
 		<button @click="changeType()">
@@ -168,7 +168,7 @@ export default Vue.extend({
 		async changeType() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: 'Select type',
+				title: this.$t('select-type'),
 				select: {
 					groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 				},
