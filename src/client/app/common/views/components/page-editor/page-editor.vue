@@ -65,7 +65,11 @@
 
 			<ui-button @click="addVariable()" class="add"><fa :icon="faPlus"/></ui-button>
 
-			<ui-info><span v-html="$t('variables-info')"></span></ui-info>
+			<ui-info><span v-html="$t('variables-info')"></span><a @click="() => moreDetails = true" style="display:block;">{{ $t('more-details') }}</a></ui-info>
+
+			<template v-if="moreDetails">
+				<ui-info><span v-html="$t('variables-info2')"></span></ui-info>
+			</template>
 		</div>
 	</ui-container>
 </div>
@@ -110,6 +114,7 @@ export default Vue.extend({
 			variables: [],
 			aiScript: null,
 			showOptions: false,
+			moreDetails: false,
 			url,
 			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt, faCog, faTrashAlt
 		};
