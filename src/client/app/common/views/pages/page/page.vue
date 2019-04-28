@@ -22,6 +22,7 @@ import { faICursor, faPlus, faSquareRootAlt } from '@fortawesome/free-solid-svg-
 import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { AiScript } from '../../../scripts/aiscript';
+import { collectPageVars } from '../../../scripts/collect-page-vars';
 
 class Script {
 	public aiScript: AiScript;
@@ -43,7 +44,7 @@ class Script {
 }
 
 export default Vue.extend({
-	i18n: i18n(),
+	i18n: i18n('pages'),
 
 	components: {
 		XBlock
@@ -85,23 +86,7 @@ export default Vue.extend({
 
 	methods: {
 		getPageVars() {
-			const pageVars = [];
-			const collectPageVars = (xs: any[]) => {
-				for (const x of xs) {
-					if (x.type === 'input') {
-						pageVars.push({
-							name: x.name,
-							type: x.inputType,
-							value: x.default
-						});
-					}
-					if (x.children) {
-						collectPageVars(x.children);
-					}
-				}
-			};
-			collectPageVars(this.page.content);
-			return pageVars;
+			return collectPageVars(this.page.content);
 		},
 	}
 });

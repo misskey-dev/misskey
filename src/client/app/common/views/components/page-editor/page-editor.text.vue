@@ -11,7 +11,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faAlignLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
 import XContainer from './page-editor.container.vue';
 
 export default Vue.extend({
@@ -29,7 +29,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faAlignLeft, faPencilAlt
+			faAlignLeft,
 		};
 	},
 

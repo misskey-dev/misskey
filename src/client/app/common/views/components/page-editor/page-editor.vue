@@ -81,6 +81,7 @@ import XBlock from './page-editor.block.vue';
 import * as uuid from 'uuid';
 import { AiScript } from '../../../scripts/aiscript';
 import { url } from '../../../../config';
+import { collectPageVars } from '../../../scripts/collect-page-vars';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -134,23 +135,7 @@ export default Vue.extend({
 		}, { deep: true });
 
 		this.$watch('content', () => {
-			const pageVars = [];
-			const collectPageVars = (xs: any[]) => {
-				for (const x of xs) {
-					if (x.type === 'input') {
-						pageVars.push({
-							name: x.name,
-							type: x.inputType,
-							value: x.value
-						});
-					}
-					if (x.children) {
-						collectPageVars(x.children);
-					}
-				}
-			};
-			collectPageVars(this.content);
-			this.aiScript.injectPageVars(pageVars);
+			this.aiScript.injectPageVars(collectPageVars(this.content));
 		}, { deep: true });
 
 		if (this.page) {
@@ -223,7 +208,7 @@ export default Vue.extend({
 		async add() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: 'Select type',
+				title: this.$t('choose-block'),
 				select: {
 					items: [{
 						value: 'section', text: this.$t('blocks.section')
@@ -235,6 +220,8 @@ export default Vue.extend({
 						value: 'button', text: this.$t('blocks.button')
 					}, {
 						value: 'input', text: this.$t('blocks.input')
+					}, {
+						value: 'switch', text: this.$t('blocks.switch')
 					}]
 				},
 				showCancelButton: true

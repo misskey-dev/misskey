@@ -1852,6 +1852,7 @@ pages:
   fontSansSerif: "サンセリフ"
   set-eye-catchig-image: "アイキャッチ画像を設定"
   remove-eye-catchig-image: "アイキャッチ画像を削除"
+  choose-block: "ブロックを追加"
   blocks:
     text: "テキスト"
     section: "セクション"
@@ -1866,6 +1867,11 @@ pages:
       _inputType:
         string: "テキスト"
         number: "数値"
+    switch: "スイッチ"
+    _switch:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
     _button:
       text: "タイトル"
       action: "ボタンを押したときの動作"

@@ -10,8 +10,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	props: {
@@ -27,12 +25,6 @@ export default Vue.extend({
 		h: {
 			required: true
 		}
-	},
-
-	data() {
-		return {
-			faStickyNote, faPlus, faPencilAlt
-		};
 	},
 
 	beforeCreate() {

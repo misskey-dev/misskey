@@ -1,6 +1,6 @@
 <template>
 <div>
-	<ui-input class="kudkigyw" v-model="v" :type="value.inputType">{{ value.text }}</ui-input>
+	<ui-switch v-model="v">{{ value.text }}</ui-switch>
 </div>
 </template>
 
@@ -31,11 +31,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="stylus" scoped>
-.kudkigyw
-	display inline-block
-	min-width 300px
-	max-width 450px
-	margin 8px 0
-</style>

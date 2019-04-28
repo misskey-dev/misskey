@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faBolt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from './page-editor.container.vue';
 
 export default Vue.extend({
@@ -35,7 +35,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faBolt, faPencilAlt
+			faBolt
 		};
 	},
 

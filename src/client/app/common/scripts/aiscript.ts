@@ -376,11 +376,7 @@ export class AiScript {
 
 		const args = block.args.map(x => this.evaluate(x, values));
 
-		const res = fn(...args);
-
-		console.log(fnName, args, res);
-
-		return res;
+		return fn(...args);
 	}
 
 	@autobind

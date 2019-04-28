@@ -9,10 +9,11 @@ import XText from './page-editor.text.vue';
 import XImage from './page-editor.image.vue';
 import XButton from './page-editor.button.vue';
 import XInput from './page-editor.input.vue';
+import XSwitch from './page-editor.switch.vue';
 
 export default Vue.extend({
 	components: {
-		XSection, XText, XImage, XButton, XInput
+		XSection, XText, XImage, XButton, XInput, XSwitch
 	},
 
 	props: {

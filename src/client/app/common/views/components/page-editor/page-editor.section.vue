@@ -77,16 +77,20 @@ export default Vue.extend({
 		async add() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: 'Select type',
+				title: this.$t('choose-block'),
 				select: {
 					items: [{
-						value: 'section', text: 'Section'
+						value: 'section', text: this.$t('blocks.section')
 					}, {
-						value: 'text', text: 'Text'
+						value: 'text', text: this.$t('blocks.text')
 					}, {
-						value: 'image', text: 'Image'
+						value: 'image', text: this.$t('blocks.image')
 					}, {
-						value: 'button', text: 'Button'
+						value: 'button', text: this.$t('blocks.button')
+					}, {
+						value: 'input', text: this.$t('blocks.input')
+					}, {
+						value: 'switch', text: this.$t('blocks.switch')
 					}]
 				},
 				showCancelButton: true
