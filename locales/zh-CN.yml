@@ -1666,7 +1666,6 @@ pages:
   font: "字体"
   fontSerif: "衬线字体"
   fontSansSerif: "无衬线字体"
-  set-eye-catchig-image: "设置引人注目的图片"
   blocks:
     image: "图片"
     _input:
