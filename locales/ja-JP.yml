@@ -1906,6 +1906,8 @@ pages:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
       textList: "テキストのリスト"
+      _textList:
+        info: "ひとつひとつを改行で区切ってください"
       add: "+ 足す"
       _add:
         arg1: "A"
