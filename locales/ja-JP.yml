@@ -1842,6 +1842,7 @@ dev/views/new-app.vue:
 pages:
   new-page: "ページの作成"
   edit-page: "ページの編集"
+  read-page: "ソースを表示中"
   page-created: "ページを作成しました"
   page-updated: "ページを更新しました"
   are-you-sure-delete: "このページを削除しますか？"
@@ -1871,6 +1872,9 @@ pages:
     section: "セクション"
     image: "画像"
     button: "ボタン"
+    if: "もし"
+    _if:
+      variable: "変数"
     input: "ユーザー入力"
     _input:
       name: "変数名"

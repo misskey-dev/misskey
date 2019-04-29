@@ -1,6 +1,6 @@
 <template>
 <div class="hkcxmtwj">
-	<ui-switch v-model="v">{{ value.text }}</ui-switch>
+	<ui-switch v-model="v">{{ script.interpolate(value.text) }}</ui-switch>
 </div>
 </template>
 

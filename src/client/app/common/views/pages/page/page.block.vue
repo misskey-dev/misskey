@@ -10,10 +10,11 @@ import XImage from './page.image.vue';
 import XButton from './page.button.vue';
 import XInput from './page.input.vue';
 import XSwitch from './page.switch.vue';
+import XIf from './page.if.vue';
 
 export default Vue.extend({
 	components: {
-		XText, XSection, XImage, XButton, XInput, XSwitch
+		XText, XSection, XImage, XButton, XInput, XSwitch, XIf
 	},
 
 	props: {
