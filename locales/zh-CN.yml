@@ -1622,25 +1622,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "发现错误或想要为文档做出贡献？"
   edit-this-page-on-github-link: "在GitHub上编辑这个页面。"
-  api:
-    entities:
-      properties: "属性"
-    endpoints:
-      params: "参数"
-      no-params: "没有参数"
-      res: "回应"
-      require-credential: "此端点需要身份验证信息。"
-      require-permission: "此端点需要{permission}权限。"
-      has-limit: "有一个速率限制。"
-      duration-limit: "如果您发送请求在{duration}毫秒内多于{max}次，则无法发送更多请求。"
-      min-interval-limit: "如果自上次请求后未传递{interval}毫秒，则无法发送请求。"
-      show-src: "您可以查看此端点的源代码。"
-      show-src-link: "查阅GitHub上的代码"
-      generated: "该文档由API定义生成。"
-    props:
-      name: "名称"
-      type: "型号"
-      description: "描述"
 dev/views/index.vue:
   manage-apps: "管理应用"
 dev/views/apps.vue:
@@ -1663,3 +1644,27 @@ dev/views/new-app.vue:
   authority: "权限"
   authority-desc: "只能通过API访问此处请求的功能。"
   authority-warning: "您可以在创建应用程序后对其进行更改，但如果您授予不同的权限，则当时关联的所有用户密钥都将失效。"
+pages:
+  title: "标题"
+  blocks:
+    image: "图片"
+    _input:
+      text: "标题"
+    _switch:
+      text: "标题"
+    _button:
+      text: "标题"
+      _action:
+        _dialog:
+          content: "内容"
+  script:
+    categories:
+      random: "随机"
+    blocks:
+      random: "随机"
+      _randomPick:
+        arg1: "列表"
+      _dailyRandomPick:
+        arg1: "列表"
+    types:
+      array: "列表"
