@@ -2013,7 +2013,7 @@ pages:
       _numberToString:
         arg1: "数値"
       ref: "変数"
-      in: "入力"
+      in: "引数"
       _in:
         arg1: "スロット番号"
       fn: "関数"

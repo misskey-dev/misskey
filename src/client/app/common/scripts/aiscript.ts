@@ -73,10 +73,10 @@ const funcDefs = {
 	stringToNumber:  { in: ['string'],                     out: 'number',  category: 'convert',    icon: faExchangeAlt, },
 	numberToString:  { in: ['number'],                     out: 'string',  category: 'convert',    icon: faExchangeAlt, },
 	rannum:          { in: ['number', 'number'],           out: 'number',  category: 'random',     icon: faDice, },
-	random:          { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
-	randomPick:      { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 	dailyRannum:     { in: ['number', 'number'],           out: 'number',  category: 'random',     icon: faDice, },
+	random:          { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
 	dailyRandom:     { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
+	randomPick:      { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 	dailyRandomPick: { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 };
 
