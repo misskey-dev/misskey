@@ -62,6 +62,7 @@ common:
   month-and-day: "{month}月 {day}日"
   trash: "垃圾箱"
   drive: "网盘"
+  pages: "页面"
   messaging: "聊天"
   home: "首页"
   deck: "Deck"
@@ -1645,6 +1646,15 @@ dev/views/new-app.vue:
   authority-desc: "只能通过API访问此处请求的功能。"
   authority-warning: "您可以在创建应用程序后对其进行更改，但如果您授予不同的权限，则当时关联的所有用户密钥都将失效。"
 pages:
+  new-page: "创建页面"
+  edit-page: "编辑页面"
+  page-created: "页面已创建"
+  page-updated: "页面已更新"
+  are-you-sure-delete: "是否删除此页面？"
+  page-deleted: "该页面已被删除。"
+  edit-this-page: "编辑此页面"
+  view-page: "查看页面"
+  variables: "变量"
   title: "标题"
   blocks:
     image: "图片"
@@ -1666,5 +1676,6 @@ pages:
         arg1: "列表"
       _dailyRandomPick:
         arg1: "列表"
+      ref: "变量"
     types:
       array: "列表"
