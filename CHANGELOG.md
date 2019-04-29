@@ -42,8 +42,40 @@ mongodb:
 8. master ブランチに戻す
 9. enjoy
 
-unreleased
+11.5.0 (2019/04/29)
 -------------------
+### 注意
+このアップデートを適用した後、プロセスを起動(もしくは再起動)する前にまず以下の手順を実行してください
+
+#### 1
+`ormconfig.json`という名前で、Misskeyのインストール場所(package.jsonとかがあるディレクトリ)に新たなファイルを作る。中身は次のようにします:
+``` json
+{
+	"type": "postgres",
+	"host": "PostgreSQLのホスト",
+	"port": 5432,
+	"username": "PostgreSQLのユーザー名",
+	"password": "PostgreSQLのパスワード",
+	"database": "PostgreSQLのデータベース名",
+	"entities": ["src/models/entities/*.ts"],
+	"migrations": ["migration/*.ts"],
+	"cli": {
+		"migrationsDir": "migration"
+	}
+}
+```
+上記の各種PostgreSQLの設定(ポートも)は、設定ファイルに書いてあるものをコピーしてください。
+
+#### 2
+```
+npm i -g ts-node
+```
+
+#### 3
+```
+ts-node ./node_modules/typeorm/cli.js migration:run
+```
+
 ### New features
 #### MisskeyPages
 ページ(記事)を作成できるように。
