@@ -71,7 +71,7 @@ export class Instance {
 	/**
 	 * ドライブ使用量
 	 */
-	@Column('integer', {
+	@Column('bigint', {
 		default: 0,
 	})
 	public driveUsage: number;
