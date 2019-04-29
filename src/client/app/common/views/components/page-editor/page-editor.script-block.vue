@@ -16,8 +16,8 @@
 	<section v-else-if="value.type === 'multiLineText'" class="tbwccoaw">
 		<textarea v-model="value.value"></textarea>
 	</section>
-	<section v-else-if="value.type === 'textList'" class="frvuzvoi">
-		<ui-textarea v-model="value.value"></ui-textarea>
+	<section v-else-if="value.type === 'textList'" class="tbwccoaw">
+		<textarea v-model="value.value" :placeholder="$t('script.blocks._textList.info')"></textarea>
 	</section>
 	<section v-else-if="value.type === 'number'" class="tbwccoaw">
 		<input v-model="value.value" type="number"/>

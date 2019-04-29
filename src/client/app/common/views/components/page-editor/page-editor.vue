@@ -11,6 +11,8 @@
 		</header>
 
 		<section>
+			<a class="view" v-if="pageId" :href="`/@${ $store.state.i.username }/pages/${ currentName }`" target="_blank"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</a>
+
 			<ui-input v-model="title">
 				<span>{{ $t('title') }}</span>
 			</ui-input>
@@ -84,7 +86,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faICursor, faPlus, faSquareRootAlt, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus, faSquareRootAlt, faCog, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XVariable from './page-editor.script-block.vue';
 import XBlock from './page-editor.block.vue';
@@ -110,6 +112,7 @@ export default Vue.extend({
 	data() {
 		return {
 			pageId: null,
+			currentName: null,
 			title: '',
 			summary: null,
 			name: Date.now().toString(),
@@ -123,7 +126,7 @@ export default Vue.extend({
 			showOptions: false,
 			moreDetails: false,
 			url,
-			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt, faCog, faTrashAlt
+			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt, faCog, faTrashAlt, faExternalLinkSquareAlt
 		};
 	},
 
@@ -157,6 +160,7 @@ export default Vue.extend({
 				this.pageId = page.id;
 				this.title = page.title;
 				this.name = page.name;
+				this.currentName = page.name;
 				this.summary = page.summary;
 				this.font = page.font;
 				this.alignCenter = page.alignCenter;
@@ -194,6 +198,7 @@ export default Vue.extend({
 					variables: this.variables,
 					eyeCatchingImageId: this.eyeCatchingImageId,
 				}).then(page => {
+					this.currentName = this.name.trim();
 					this.$root.dialog({
 						type: 'success',
 						text: this.$t('page-updated')
@@ -211,6 +216,7 @@ export default Vue.extend({
 					eyeCatchingImageId: this.eyeCatchingImageId,
 				}).then(page => {
 					this.pageId = page.id;
+					this.currentName = this.name.trim();
 					this.$root.dialog({
 						type: 'success',
 						text: this.$t('page-created')
@@ -426,6 +432,10 @@ export default Vue.extend({
 
 		@media (max-width 500px)
 			padding 0 16px 16px 16px
+
+		> .view
+			display inline-block
+			margin 16px 0 0 0
 
 		> .content
 			margin-bottom 16px

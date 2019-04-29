@@ -1,7 +1,7 @@
 <template>
 <component class="dmtdnykelhudezerjlfpbhgovrgnqqgr"
 	:is="link ? 'a' : 'button'"
-	:class="{ inline, primary, wait }"
+	:class="{ inline, primary, wait, round: $store.state.device.roundedCorners }"
 	:type="type"
 	@click="$emit('click')"
 	@mousedown="onMousedown"
@@ -116,13 +116,15 @@ export default Vue.extend({
 	font-size 16px
 	line-height 24px
 	border none
-	border-radius 6px
 	outline none
 	box-shadow none
 	text-decoration none
 	user-select none
 	color var(--text)
 	background var(--buttonBg)
+
+	&.round
+		border-radius 6px
 
 	&:not(:disabled):hover
 		background var(--buttonHoverBg)
@@ -157,7 +159,9 @@ export default Vue.extend({
 			bottom -5px
 			left -5px
 			border 2px solid var(--primaryAlpha03)
-			border-radius 10px
+
+	&.round:focus:after
+		border-radius 10px
 
 	&:not(.inline) + .dmtdnykelhudezerjlfpbhgovrgnqqgr
 		margin-top 16px
@@ -197,7 +201,6 @@ export default Vue.extend({
 		left 0
 		width 100%
 		height 100%
-		border-radius 6px
 		overflow hidden
 
 		>>> div
@@ -209,6 +212,9 @@ export default Vue.extend({
 			opacity 1
 			transform scale(1)
 			transition all 0.5s cubic-bezier(0, .5, .5, 1)
+
+	&.round > .ripples
+		border-radius 6px
 
 	&.primary > .ripples >>> div
 		background rgba(0, 0, 0, 0.15)

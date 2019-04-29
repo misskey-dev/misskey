@@ -1,7 +1,7 @@
 <template>
 <div class="felqjxyj" :class="{ splash }">
 	<div class="bg" ref="bg" @click="onBgClick"></div>
-	<div class="main" ref="main">
+	<div class="main" ref="main" :class="{ round: $store.state.device.roundedCorners }">
 		<template v-if="type == 'signin'">
 			<mk-signin/>
 		</template>
@@ -229,9 +229,11 @@ export default Vue.extend({
 		width calc(100% - 32px)
 		text-align center
 		background var(--face)
-		border-radius 8px
 		color var(--faceText)
 		opacity 0
+
+		&.round
+			border-radius 8px
 
 		> .icon
 			font-size 32px
