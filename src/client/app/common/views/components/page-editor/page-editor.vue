@@ -16,6 +16,10 @@
 			</ui-input>
 
 			<template v-if="showOptions">
+				<ui-input v-model="summary">
+					<span>{{ $t('summary') }}</span>
+				</ui-input>
+
 				<ui-input v-model="name">
 					<template #prefix>{{ url }}/@{{ $store.state.i.username }}/pages/</template>
 					<span>{{ $t('url') }}</span>
@@ -107,6 +111,7 @@ export default Vue.extend({
 		return {
 			pageId: null,
 			title: '',
+			summary: null,
 			name: Date.now().toString(),
 			eyeCatchingImage: null,
 			eyeCatchingImageId: null,
@@ -152,6 +157,7 @@ export default Vue.extend({
 				this.pageId = page.id;
 				this.title = page.title;
 				this.name = page.name;
+				this.summary = page.summary;
 				this.font = page.font;
 				this.alignCenter = page.alignCenter;
 				this.content = page.content;
@@ -181,6 +187,7 @@ export default Vue.extend({
 					pageId: this.pageId,
 					title: this.title.trim(),
 					name: this.name.trim(),
+					summary: this.summary,
 					font: this.font,
 					alignCenter: this.alignCenter,
 					content: this.content,
@@ -196,6 +203,7 @@ export default Vue.extend({
 				this.$root.api('pages/create', {
 					title: this.title.trim(),
 					name: this.name.trim(),
+					summary: this.summary,
 					font: this.font,
 					alignCenter: this.alignCenter,
 					content: this.content,

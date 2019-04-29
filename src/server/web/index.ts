@@ -224,7 +224,6 @@ router.get('/@:user/pages/:page', async ctx => {
 		const meta = await fetchMeta();
 		await ctx.render('page', {
 			page: _page,
-			summary: '',
 			instanceName: meta.name || 'Misskey'
 		});
 

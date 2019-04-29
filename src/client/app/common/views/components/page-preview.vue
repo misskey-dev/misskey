@@ -5,7 +5,7 @@
 		<header>
 			<h1 :title="page.title">{{ page.title }}</h1>
 		</header>
-		<p v-if="description" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
+		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
 			<img class="icon" :src="page.user.avatarUrl"/>
 			<p>{{ page.user | userName }}</p>

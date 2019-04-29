@@ -37,6 +37,7 @@ export class PageRepository extends Repository<Page> {
 			variables: src.variables,
 			title: src.title,
 			name: src.name,
+			summary: src.summary,
 			alignCenter: src.alignCenter,
 			font: src.font,
 			eyeCatchingImageId: src.eyeCatchingImageId,

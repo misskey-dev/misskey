@@ -9,12 +9,12 @@ block title
 	= `${title} | ${instanceName}`
 
 block desc
-	meta(name='description' content= summary)
+	meta(name='description' content= page.summary)
 
 block og
 	meta(property='og:type'        content='article')
 	meta(property='og:title'       content= title)
-	meta(property='og:description' content= summary)
+	meta(property='og:description' content= page.summary)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= page.eyeCatchingImage ? page.eyeCatchingImage.thumbnailUrl : user.avatarUrl)
 

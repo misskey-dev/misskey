@@ -38,6 +38,10 @@ export const meta = {
 			validator: $.optional.str,
 		},
 
+		summary: {
+			validator: $.optional.nullable.str,
+		},
+
 		content: {
 			validator: $.arr($.obj())
 		},
@@ -105,6 +109,7 @@ export default define(meta, async (ps, user) => {
 		updatedAt: new Date(),
 		title: ps.title,
 		name: ps.name === undefined ? page.name : ps.name,
+		summary: ps.name === undefined ? page.summary : ps.summary,
 		content: ps.content,
 		variables: ps.variables,
 		alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,

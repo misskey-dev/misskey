@@ -1854,6 +1854,7 @@ pages:
   more-details: "詳しい説明"
   title: "タイトル"
   url: "ページURL"
+  summary: "ページの要約"
   align-center: "中央寄せ"
   font: "フォント"
   fontSerif: "セリフ"

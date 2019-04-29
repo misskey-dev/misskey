@@ -32,6 +32,11 @@ export class Page {
 	})
 	public name: string;
 
+	@Column('varchar', {
+		length: 256, nullable: true
+	})
+	public summary: string | null;
+
 	@Column('boolean')
 	public alignCenter: boolean;
 

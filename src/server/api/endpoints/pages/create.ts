@@ -33,6 +33,10 @@ export const meta = {
 			validator: $.str,
 		},
 
+		summary: {
+			validator: $.optional.nullable.str,
+		},
+
 		content: {
 			validator: $.arr($.obj())
 		},
@@ -90,6 +94,7 @@ export default define(meta, async (ps, user) => {
 		updatedAt: new Date(),
 		title: ps.title,
 		name: ps.name,
+		summary: ps.summary,
 		content: ps.content,
 		variables: ps.variables,
 		eyeCatchingImageId: eyeCatchingImage ? eyeCatchingImage.id : null,
