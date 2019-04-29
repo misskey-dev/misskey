@@ -969,3 +969,15 @@ deck:
   rename: "Renombrar"
 deck/deck.user-column.vue:
   activity: "Actividad"
+pages:
+  script:
+    categories:
+      random: "Aleatorio"
+    blocks:
+      random: "Aleatorio"
+      _randomPick:
+        arg1: "Listas"
+      _dailyRandomPick:
+        arg1: "Listas"
+    types:
+      array: "Listas"
