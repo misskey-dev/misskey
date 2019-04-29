@@ -31,6 +31,7 @@ class Script {
 	constructor(aiScript) {
 		this.aiScript = aiScript;
 		this.vars = this.aiScript.evaluateVars();
+		console.log(this.vars);
 	}
 
 	public reEval() {
@@ -38,8 +39,10 @@ class Script {
 	}
 
 	public interpolate(str: string) {
-		return str.replace(/\{(.+?)\}/g, match =>
-			(this.vars.find(x => x.name === match.slice(1, -1).trim()).value || '').toString());
+		return str.replace(/\{(.+?)\}/g, match => {
+			const v = this.vars.find(x => x.name === match.slice(1, -1).trim()).value;
+			return v == null ? 'NULL' : v.toString();
+		});
 	}
 }
 

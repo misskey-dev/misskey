@@ -316,8 +316,10 @@ export class AiScript {
 
 	@autobind
 	private interpolate(str: string, values: { name: string, value: any }[]) {
-		return str.replace(/\{(.+?)\}/g, match =>
-			(this.getVariableValue(match.slice(1, -1).trim(), values) || '').toString());
+		return str.replace(/\{(.+?)\}/g, match => {
+			const v = this.getVariableValue(match.slice(1, -1).trim(), values);
+			return v == null ? 'NULL' : v.toString();
+		});
 	}
 
 	@autobind
