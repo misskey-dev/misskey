@@ -445,7 +445,7 @@ export class AiScript {
 		}
 
 		if (AiScript.envVarsDef[name]) {
-			return this.envVars[name].value;
+			return this.envVars[name];
 		}
 
 		throw new Error(`Script: No such variable '${name}'`);
