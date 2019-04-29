@@ -1907,6 +1907,7 @@ pages:
       value: "値"
       fn: "関数"
       text: "テキスト操作"
+      convert: "変換"
     blocks:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
@@ -2005,6 +2006,12 @@ pages:
       _dailyRandomPick:
         arg1: "リスト"
       number: "数"
+      stringToNumber: "テキストを数値に"
+      _stringToNumber:
+        arg1: "テキスト"
+      numberToString: "数値をテキストに"
+      _numberToString:
+        arg1: "数値"
       ref: "変数"
       in: "入力"
       _in:
