@@ -65,6 +65,7 @@ common:
 
   trash: "ゴミ箱"
   drive: "ドライブ"
+  pages: "ページ"
   messaging: "トーク"
   home: "ホーム"
   deck: "デッキ"
@@ -1813,26 +1814,6 @@ docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "このページをGitHubで編集"
 
-  api:
-    entities:
-      properties: "プロパティ"
-    endpoints:
-      params: "パラメータ"
-      no-params: "パラメータはありません"
-      res: "レスポンス"
-      require-credential: "このエンドポイントは認証情報が必須です。"
-      require-permission: "このエンドポイントは{permission}の権限を必要とします。"
-      has-limit: "レートリミットがあります。"
-      duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
-      min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
-      show-src: "このエンドポイントのソースコードも閲覧できます。"
-      show-src-link: "コードをGitHubで見る"
-      generated: "このドキュメントはAPI定義に基づき自動生成されています。"
-    props:
-      name: "名前"
-      type: "型"
-      description: "説明"
-
 dev/views/index.vue:
   manage-apps: "アプリの管理"
 
@@ -1857,3 +1838,165 @@ dev/views/new-app.vue:
   authority: "権限"
   authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
+
+pages:
+  new-page: "ページの作成"
+  edit-page: "ページの編集"
+  page-created: "ページを作成しました"
+  page-updated: "ページを更新しました"
+  are-you-sure-delete: "このページを削除しますか？"
+  page-deleted: "ページを削除しました"
+  edit-this-page: "このページを編集"
+  variables: "変数"
+  variables-info: "変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。"
+  variables-info2: "変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。"
+  variables-info3: "ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。"
+  more-details: "詳しい説明"
+  title: "タイトル"
+  url: "ページURL"
+  summary: "ページの要約"
+  align-center: "中央寄せ"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  set-eye-catchig-image: "アイキャッチ画像を設定"
+  remove-eye-catchig-image: "アイキャッチ画像を削除"
+  choose-block: "ブロックを追加"
+  select-type: "種類を選択"
+  enter-variable-name: "変数名を決めてください"
+  the-variable-name-is-already-used: "その変数名は既に使われています"
+  blocks:
+    text: "テキスト"
+    section: "セクション"
+    image: "画像"
+    button: "ボタン"
+    input: "ユーザー入力"
+    _input:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+      inputType: "入力の種類"
+      _inputType:
+        string: "テキスト"
+        number: "数値"
+    switch: "スイッチ"
+    _switch:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+    _button:
+      text: "タイトル"
+      action: "ボタンを押したときの動作"
+      _action:
+        dialog: "ダイアログを表示する"
+        _dialog:
+          content: "内容"
+        resetRandom: "乱数をリセット"
+  script:
+    categories:
+      flow: "制御"
+      logical: "論理演算"
+      operation: "計算"
+      comparison: "比較"
+      random: "ランダム"
+      value: "値"
+      fn: "関数"
+    blocks:
+      text: "テキスト"
+      multiLineText: "テキスト(複数行)"
+      textList: "テキストのリスト"
+      add: "+ 足す"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- 引く"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× 掛ける"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ 割る"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      eq: "AとBが同じ"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "AとBが異なる"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "AかつB"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "AまたはB"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< AがBより小さい"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> AがBより大きい"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= AがBと同じか小さい"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= AがBと同じか大きい"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "分岐"
+      _if:
+        arg1: "もし"
+        arg2: "なら"
+        arg3: "そうでなければ"
+      not: "否定"
+      _not:
+        arg1: "否定"
+      random: "ランダム"
+      _random:
+        arg1: "確率"
+      rannum: "乱数"
+      _rannum:
+        arg1: "最小"
+        arg2: "最大"
+      randomPick: "リストからランダムに選択"
+      _randomPick:
+        arg1: "リスト"
+      dailyRandom: "ランダム (ユーザーごとに日替わり)"
+      _dailyRandom:
+        arg1: "確率"
+      dailyRannum: "乱数 (ユーザーごとに日替わり)"
+      _dailyRannum:
+        arg1: "最小"
+        arg2: "最大"
+      dailyRandomPick: "リストからランダムに選択 (ユーザーごとに日替わり)"
+      _dailyRandomPick:
+        arg1: "リスト"
+      number: "数"
+      ref: "変数"
+      in: "入力"
+      _in:
+        arg1: "スロット番号"
+      fn: "関数"
+      _fn:
+        arg1: "出力"
+    typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
+    thereIsEmptySlot: "スロット{slot}が空です！"
+    types:
+      string: "テキスト"
+      number: "数値"
+      boolean: "フラグ"
+      array: "リスト"
+      stringArray: "テキストのリスト"
+    emptySlot: "空のスロット"
+    enviromentVariables: "環境変数"
+    pageVariables: "ページ要素"

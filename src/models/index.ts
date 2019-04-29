@@ -35,6 +35,7 @@ import { AbuseUserReportRepository } from './repositories/abuse-user-report';
 import { AuthSessionRepository } from './repositories/auth-session';
 import { UserProfile } from './entities/user-profile';
 import { HashtagRepository } from './repositories/hashtag';
+import { PageRepository } from './repositories/page';
 
 export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
@@ -72,3 +73,4 @@ export const MessagingMessages = getCustomRepository(MessagingMessageRepository)
 export const ReversiGames = getCustomRepository(ReversiGameRepository);
 export const ReversiMatchings = getCustomRepository(ReversiMatchingRepository);
 export const Logs = getRepository(Log);
+export const Pages = getCustomRepository(PageRepository);
