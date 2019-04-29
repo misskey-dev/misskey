@@ -1730,18 +1730,23 @@ pages:
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "- 减"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "× 乘"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "÷ 除"
       _divide:
         arg1: "A"
         arg2: "B"
+      eq: "A和B相等"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A和B不等"
       _notEq:
         arg1: "A"
         arg2: "B"
