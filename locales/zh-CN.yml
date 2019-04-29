@@ -1666,12 +1666,27 @@ pages:
   font: "字体"
   fontSerif: "衬线字体"
   fontSansSerif: "无衬线字体"
+  choose-block: "添加块"
+  select-type: "类型选择"
+  enter-variable-name: "请确定变量名"
+  the-variable-name-is-already-used: "变量名已使用"
   blocks:
+    text: "文本"
     image: "图片"
+    button: "按钮"
+    input: "用户输入"
     _input:
+      name: "变量名"
       text: "标题"
+      default: "默认值"
+      inputType: "输入类型"
+      _inputType:
+        string: "文本"
+        number: "数值"
     _switch:
+      name: "变量名"
       text: "标题"
+      default: "默认值"
     _button:
       text: "标题"
       _action:
@@ -1681,6 +1696,15 @@ pages:
     categories:
       random: "随机"
     blocks:
+      text: "文本"
+      _strLen:
+        arg1: "文本"
+      _strPick:
+        arg1: "文本"
+      _strReplace:
+        arg1: "文本"
+      _strReverse:
+        arg1: "文本"
       random: "随机"
       _randomPick:
         arg1: "列表"
@@ -1688,4 +1712,6 @@ pages:
         arg1: "列表"
       ref: "变量"
     types:
+      string: "文本"
+      number: "数值"
       array: "列表"
