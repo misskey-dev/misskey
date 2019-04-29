@@ -1570,25 +1570,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation ?"
   edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
-  api:
-    entities:
-      properties: "Propriétés"
-    endpoints:
-      params: "Paramètres"
-      no-params: "Aucun paramètre"
-      res: "Réponse"
-      require-credential: "Ce point de communication nécessite une authentification."
-      require-permission: "Ce point de communication nécessite la permission {permission}."
-      has-limit: "Il y’a un taux limite."
-      duration-limit: "Si vous avez envoyé plus de {max} requêtes en {duration} millisecondes, vous ne serez pas en mesure d'envoyer d'autres requêtes."
-      min-interval-limit: "Vous ne pourrez pas effectuer une nouvelle requête si {interval} millisecondes ne se sont pas écoulées depuis la dernière demande."
-      show-src: "Vous pouvez voir le code source ce point de communication."
-      show-src-link: "Consulter le code sur GitHub"
-      generated: "Ce document est généré à partir de la définition de l’API."
-    props:
-      name: "Nom"
-      type: "Type"
-      description: "Description"
 dev/views/index.vue:
   manage-apps: "Gestion des applications"
 dev/views/apps.vue:
@@ -1605,3 +1586,27 @@ dev/views/new-app.vue:
   authority: "Autorisations "
   authority-desc: "Sont accessibles via l’API, uniquement les fonctionnalités demandées ici."
   authority-warning: "Vous pouvez le changer même après avoir créé l'application, mais si vous attribuez une nouvelle permission, toutes les clés utilisateur associées seront dès lors invalides."
+pages:
+  title: "Titre"
+  blocks:
+    image: "Images"
+    _input:
+      text: "Titre"
+    _switch:
+      text: "Titre"
+    _button:
+      text: "Titre"
+      _action:
+        _dialog:
+          content: "Contenu"
+  script:
+    categories:
+      random: "Aléatoire"
+    blocks:
+      random: "Aléatoire"
+      _randomPick:
+        arg1: "Listes"
+      _dailyRandomPick:
+        arg1: "Listes"
+    types:
+      array: "Listes"
