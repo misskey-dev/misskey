@@ -43,6 +43,13 @@ export default Vue.extend({
 	created() {
 		if (this.value.name == null) Vue.set(this.value, 'name', '');
 		if (this.value.inputType == null) Vue.set(this.value, 'inputType', 'string');
+
+		this.$watch('value.inputType', t => {
+			if (this.value.default != null) {
+				if (t === 'number') this.value.default = parseInt(this.value.default, 10);
+				if (t === 'string') this.value.default = this.value.default.toString();
+			}
+		});
 	},
 });
 </script>

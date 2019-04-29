@@ -184,7 +184,11 @@ export default Vue.extend({
 			this.v = v;
 		},
 		v(v) {
-			this.$emit('input', v);
+			if (this.type === 'number') {
+				this.$emit('input', parseInt(v, 10));
+			} else {
+				this.$emit('input', v);
+			}
 
 			if (this.withPasswordMeter) {
 				if (v == '') {
