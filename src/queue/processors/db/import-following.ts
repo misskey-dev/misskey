@@ -34,7 +34,8 @@ export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
 		linenum++;
 
 		try {
-			const { username, host } = parseAcct(line.trim());
+			const acct = line.split(',')[0].trim();
+			const { username, host } = parseAcct(acct);
 
 			let target = isSelfHost(host) ? await User.findOne({
 				host: null,
