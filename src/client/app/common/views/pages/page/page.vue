@@ -31,7 +31,6 @@ class Script {
 	constructor(aiScript) {
 		this.aiScript = aiScript;
 		this.vars = this.aiScript.evaluateVars();
-		console.log(this.vars);
 	}
 
 	public reEval() {
