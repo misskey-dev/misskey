@@ -36,4 +36,8 @@ export default Vue.extend({
 .hkcxmtwj
 	display inline-block
 	margin 16px auto
+
+	& + .hkcxmtwj
+		margin-left 16px
+
 </style>
