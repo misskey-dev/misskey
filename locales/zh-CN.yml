@@ -1689,29 +1689,89 @@ pages:
       default: "默认值"
     _button:
       text: "标题"
+      action: "按下按钮时的行为"
       _action:
+        dialog: "显示对话框"
         _dialog:
           content: "内容"
+        resetRandom: "随机值重置"
   script:
     categories:
+      flow: "控制"
+      logical: "逻辑运算"
+      operation: "计算"
+      comparison: "比较"
       random: "随机"
+      value: "值"
+      fn: "函数"
+      text: "文本操作"
     blocks:
       text: "文本"
+      multiLineText: "文本 (多行)"
+      textList: "文本列表"
+      _textList:
+        info: "情使用换行符分隔每行"
+      strLen: "文本长度"
       _strLen:
         arg1: "文本"
+      strPick: "字符提取"
       _strPick:
         arg1: "文本"
+        arg2: "字符位置"
+      strReplace: "文本替换"
       _strReplace:
         arg1: "文本"
+        arg2: "替换之前"
+        arg3: "替换之后"
+      strReverse: "文本反向"
       _strReverse:
         arg1: "文本"
+      add: "+ 加"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       random: "随机"
       _randomPick:
         arg1: "列表"
       _dailyRandomPick:
         arg1: "列表"
       ref: "变量"
+      fn: "函数"
     types:
       string: "文本"
       number: "数值"
       array: "列表"
+      stringArray: "文本列表"
