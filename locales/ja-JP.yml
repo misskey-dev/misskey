@@ -1902,12 +1902,28 @@ pages:
       random: "ランダム"
       value: "値"
       fn: "関数"
+      text: "テキスト操作"
     blocks:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
       textList: "テキストのリスト"
       _textList:
         info: "ひとつひとつを改行で区切ってください"
+      strLen: "テキストの長さ"
+      _strLen:
+        arg1: "テキスト"
+      strPick: "文字取り出し"
+      _strPick:
+        arg1: "テキスト"
+        arg2: "文字の位置"
+      strReplace: "テキスト置き換え"
+      _strReplace:
+        arg1: "テキスト"
+        arg2: "置き換え前"
+        arg3: "置き換え後"
+      strReverse: "テキストを反転"
+      _strReverse:
+        arg1: "テキスト"
       add: "+ 足す"
       _add:
         arg1: "A"
