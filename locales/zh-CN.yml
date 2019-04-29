@@ -1674,6 +1674,8 @@ pages:
     text: "文本"
     image: "图片"
     button: "按钮"
+    _if:
+      variable: "变量"
     input: "用户输入"
     _input:
       name: "变量名"
