@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="hkcxmtwj">
 	<ui-switch v-model="v">{{ value.text }}</ui-switch>
 </div>
 </template>
@@ -31,3 +31,9 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.hkcxmtwj
+	display inline-block
+	margin 16px auto
+</style>
