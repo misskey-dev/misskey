@@ -1190,23 +1190,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Znalazłeś błąd lub chcesz pomóc w tworzeniu dokumentacji?"
   edit-this-page-on-github-link: "Edytuj stronę na GitHubie!"
-  api:
-    entities:
-      properties: "Właściwości"
-    endpoints:
-      params: "Parametry"
-      no-params: "Brak parametrów."
-      res: "Odpowiedź"
-      require-credential: "Punkt końcowy wymaga informacji o uwierzytelnieniu."
-      require-permission: "Ten punkt końcowy wymaga uprawnienia {permission}."
-      has-limit: "Istnieje limit częstotliwości."
-      min-interval-limit: "Nie możesz wykonać żądania przed upłynięciem {interval} od ostatniego żądania."
-      show-src: "Możesz zobaczyć kod źródłowy tego punktu końcowego."
-      show-src-link: "Zobacz kod na GitHubie"
-    props:
-      name: "Nazwa"
-      type: "Rodzaj"
-      description: "Opis"
 dev/views/index.vue:
   manage-apps: "Zarządzaj aplikacjami"
 dev/views/apps.vue:
@@ -1215,3 +1198,24 @@ dev/views/apps.vue:
 dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
+pages:
+  title: "Tytuł"
+  blocks:
+    image: "Zdjęcia"
+    _input:
+      text: "Tytuł"
+    _switch:
+      text: "Tytuł"
+    _button:
+      text: "Tytuł"
+  script:
+    categories:
+      random: "Losowy"
+    blocks:
+      random: "Losowy"
+      _randomPick:
+        arg1: "Listy"
+      _dailyRandomPick:
+        arg1: "Listy"
+    types:
+      array: "Listy"
