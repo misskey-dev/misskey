@@ -1775,6 +1775,10 @@ pages:
         arg1: "列表"
       _dailyRandomPick:
         arg1: "列表"
+      _stringToNumber:
+        arg1: "文本"
+      _numberToString:
+        arg1: "数值"
       ref: "变量"
       fn: "函数"
     types:
