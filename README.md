@@ -1,6 +1,6 @@
 <a href="https://xn--931a.moe/"><img src="https://github.com/syuilo/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/></a>
 
-[![Misskey](/assets/title.png)](https://misskey.xyz/)
+[![Misskey](/assets/title.png)](https://misskey.io/)
 ================================================================
 
 [![CircleCI](https://img.shields.io/circleci/project/github/syuilo/misskey.svg?style=for-the-badge&logo=circleci)](https://circleci.com/gh/syuilo/misskey)
@@ -10,7 +10,7 @@
 **A forever evolving, sophisticated microblogging platform.**
 
 <p align="justify">
-<a href="https://misskey.xyz">Misskey</a> is a decentralized microblogging platform born on Earth.
+<a href="https://misskey.io">Misskey</a> is a decentralized microblogging platform born on Earth.
 Since it exists within the Fediverse (a universe where various social media platforms are organized),
 it is mutually linked with other social media platforms.
 Why don't you take a short break from the hustle and bustle of the city, and dive into a new Internet? <a href="https://joinmisskey.github.io/">Find an instance!</a>

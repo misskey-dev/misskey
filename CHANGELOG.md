@@ -7,6 +7,13 @@ If you encounter any problems with updating, please try the following:
 
 How to migrate to v11 from v10
 ------------------------------
+### 移行の注意点
+**以下のデータは引き継がれません**
+* 通知
+* リモートの投稿
+* リバーシの対局
+
+### 手順
 1. v11をインストールしたい場所に syuilo/misskey をクローン
 2. config を設定する
 	* PostgreSQL(`db`)の設定とは別に、v10からMongoDBの設定をコピペしてくる(例は下にあります)
@@ -34,6 +41,64 @@ mongodb:
 7. `npm run migrate`
 8. master ブランチに戻す
 9. enjoy
+
+11.5.0 (2019/04/29)
+-------------------
+### 注意
+このアップデートを適用した後、プロセスを起動(もしくは再起動)する前にまず以下の手順を実行してください
+
+#### 1
+`ormconfig.json`という名前で、Misskeyのインストール場所(package.jsonとかがあるディレクトリ)に新たなファイルを作る。中身は次のようにします:
+``` json
+{
+	"type": "postgres",
+	"host": "PostgreSQLのホスト",
+	"port": 5432,
+	"username": "PostgreSQLのユーザー名",
+	"password": "PostgreSQLのパスワード",
+	"database": "PostgreSQLのデータベース名",
+	"entities": ["src/models/entities/*.ts"],
+	"migrations": ["migration/*.ts"],
+	"cli": {
+		"migrationsDir": "migration"
+	}
+}
+```
+上記の各種PostgreSQLの設定(ポートも)は、設定ファイルに書いてあるものをコピーしてください。
+
+#### 2
+```
+npm i -g ts-node
+```
+
+#### 3
+```
+ts-node ./node_modules/typeorm/cli.js migration:run
+```
+
+### New features
+#### MisskeyPages
+ページ(記事)を作成できるように。
+
+* 後から何度でも編集できる
+* アイキャッチを設定できる
+* フォントを設定できる
+* 画像を好きな位置に挿入できる
+* URLを決められる
+* タイトルを設定できる
+* 見出しを設定できる
+* ページの要約を設定できる(URLプレビュー時などに便利)
+* 変数や式(aka AiScript)を使用して動的なページも作れる
+* 目次自動生成(coming soon)
+
+ページを気に入ったら「いいね」しよう (coming soon)
+
+### Improvements
+* APIコンソールでパラメータテンプレートを表示するように
+
+### Fixes
+* おすすめユーザーに自分自身が含まれる問題を修正
+* ユーザーサジェストで表示名が変わらない問題を修正
 
 11.4.0 (2019/04/25)
 -------------------

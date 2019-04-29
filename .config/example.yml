@@ -132,6 +132,9 @@ drive:
 # ulid ... Millisecond accuracy
 # objectid ... This is left for backward compatibility
 
+# ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
+# ID SETTINGS AFTER THAT!
+
 id: 'aid'
 
 #   ┌─────────────────────┐

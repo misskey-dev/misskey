@@ -9,12 +9,6 @@ export type PackedNotification = SchemaType<typeof packedNotificationSchema>;
 
 @EntityRepository(Notification)
 export class NotificationRepository extends Repository<Notification> {
-	public packMany(
-		notifications: any[],
-	) {
-		return Promise.all(notifications.map(x => this.pack(x)));
-	}
-
 	public async pack(
 		src: Notification['id'] | Notification,
 	): Promise<PackedNotification> {
@@ -47,6 +41,12 @@ export class NotificationRepository extends Repository<Notification> {
 				choice: notification.choice
 			} : {})
 		});
+	}
+
+	public packMany(
+		notifications: any[],
+	) {
+		return Promise.all(notifications.map(x => this.pack(x)));
 	}
 }
 

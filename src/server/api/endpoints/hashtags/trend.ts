@@ -2,6 +2,7 @@ import define from '../../define';
 import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
+import { types, bool } from '../../../../misc/schema';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -21,6 +22,33 @@ export const meta = {
 	tags: ['hashtags'],
 
 	requireCredential: false,
+
+	res: {
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
+		items: {
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			properties: {
+				tag: {
+					type: types.string,
+					optional: bool.false, nullable: bool.false,
+				},
+				chart: {
+					type: types.array,
+					optional: bool.false, nullable: bool.false,
+					items: {
+						type: types.number,
+						optional: bool.false, nullable: bool.false,
+					}
+				},
+				usersCount: {
+					type: types.number,
+					optional: bool.false, nullable: bool.false,
+				}
+			}
+		}
+	}
 };
 
 export default define(meta, async () => {

@@ -76,17 +76,6 @@ export class NoteRepository extends Repository<Note> {
 		}
 	}
 
-	public packMany(
-		notes: (Note['id'] | Note)[],
-		me?: User['id'] | User | null | undefined,
-		options?: {
-			detail?: boolean;
-			skipHide?: boolean;
-		}
-	) {
-		return Promise.all(notes.map(n => this.pack(n, me, options)));
-	}
-
 	public async pack(
 		src: Note['id'] | Note,
 		me?: User['id'] | User | null | undefined,
@@ -213,6 +202,17 @@ export class NoteRepository extends Repository<Note> {
 		}
 
 		return packed;
+	}
+
+	public packMany(
+		notes: (Note['id'] | Note)[],
+		me?: User['id'] | User | null | undefined,
+		options?: {
+			detail?: boolean;
+			skipHide?: boolean;
+		}
+	) {
+		return Promise.all(notes.map(n => this.pack(n, me, options)));
 	}
 }
 

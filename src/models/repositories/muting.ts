@@ -9,13 +9,6 @@ export type PackedMuting = SchemaType<typeof packedMutingSchema>;
 
 @EntityRepository(Muting)
 export class MutingRepository extends Repository<Muting> {
-	public packMany(
-		mutings: any[],
-		me: any
-	) {
-		return Promise.all(mutings.map(x => this.pack(x, me)));
-	}
-
 	public async pack(
 		src: Muting['id'] | Muting,
 		me?: any
@@ -30,6 +23,13 @@ export class MutingRepository extends Repository<Muting> {
 				detail: true
 			})
 		});
+	}
+
+	public packMany(
+		mutings: any[],
+		me: any
+	) {
+		return Promise.all(mutings.map(x => this.pack(x, me)));
 	}
 }
 

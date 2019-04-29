@@ -23,6 +23,7 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
+				@change="$emit('change', $event)"
 				:list="id"
 			>
 			<input v-else ref="input"
@@ -38,6 +39,7 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
+				@change="$emit('change', $event)"
 				:list="id"
 			>
 			<datalist :id="id" v-if="datalist">
@@ -60,7 +62,7 @@
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
 	<div class="toggle" v-if="withPasswordToggle">
-		<a @click='togglePassword'>
+		<a @click="togglePassword">
 			<span v-if="type == 'password'"><fa :icon="['fa', 'eye']"/> {{ $t('@.show-password') }}</span>
 			<span v-if="type != 'password'"><fa :icon="['far', 'eye-slash']"/> {{ $t('@.hide-password') }}</span>
 		</a>
