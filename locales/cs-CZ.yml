@@ -1198,3 +1198,26 @@ deck/deck.user-column.vue:
   activity: "Aktivita"
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
+pages:
+  title: "Titulek"
+  blocks:
+    _input:
+      text: "Titulek"
+    _switch:
+      text: "Titulek"
+    _button:
+      text: "Titulek"
+      _action:
+        _dialog:
+          content: "Obsah"
+  script:
+    categories:
+      random: "Náhodně"
+    blocks:
+      random: "Náhodně"
+      _randomPick:
+        arg1: "Seznamy"
+      _dailyRandomPick:
+        arg1: "Seznamy"
+    types:
+      array: "Seznamy"
