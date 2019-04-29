@@ -53,6 +53,7 @@ common:
   month-and-day: "{day}/{month}"
   trash: "Papierkorb"
   drive: "Drive"
+  pages: "Seite"
   messaging: "Unterhaltungen"
   home: "Home"
   deck: "Stapel"
@@ -64,6 +65,7 @@ common:
   permissions:
     "read:account": "Accountinformationen anzeigen."
     "write:account": "Accountinformationen bearbeiten."
+    "read:blocks": "Blöcke anzeigen"
     "read:drive": "Dateien anzeigen"
     "write:drive": "Dateien bearbeiten"
     "read:favorites": "Favoriten anzeigen"
