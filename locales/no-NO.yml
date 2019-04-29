@@ -489,14 +489,17 @@ deck/deck.user-column.vue:
   following: "Følger"
   followers: "Følgere"
   images: "Bilder"
-docs:
-  api:
-    entities:
-      properties: "Egenskaper"
-    endpoints:
-      params: "Parametere"
-      res: "Respons"
-    props:
-      name: "Navn"
-      type: "Type"
-      description: "Beskrivelse"
+pages:
+  blocks:
+    image: "Bilder"
+  script:
+    categories:
+      random: "Tilfeldig"
+    blocks:
+      random: "Tilfeldig"
+      _randomPick:
+        arg1: "Lister"
+      _dailyRandomPick:
+        arg1: "Lister"
+    types:
+      array: "Lister"
