@@ -1589,25 +1589,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "틀린 점이나 개선할 점을 찾으셨나요?"
   edit-this-page-on-github-link: "이 페이지를 GitHub에서 편집"
-  api:
-    entities:
-      properties: "프로퍼티"
-    endpoints:
-      params: "매개변수"
-      no-params: "매개변수가 없습니다"
-      res: "응답"
-      require-credential: "이 엔드포인트는 인증 정보가 필수적입니다."
-      require-permission: "이 엔드포인트는 {permission} 권한을 필요로 합니다."
-      has-limit: "Rate limit(요청 비율 제한)이 있습니다."
-      duration-limit: "최근 {duration} 밀리초 사이에 엔드포인트로의 요청 수의 합계가 {max}를 넘는 경우 요청이 불가능합니다."
-      min-interval-limit: "이전 요청으로부터 {interval} 밀리초가 지나지 않은 경우 요청할 수 없습니다."
-      show-src: "이 엔드포인트에 대한 소스코드를 확인할 수 있습니다."
-      show-src-link: "코드를 Github에서 보기"
-      generated: "이 문서는 API 정의를 기반으로 자동으로 생성됩니다."
-    props:
-      name: "이름"
-      type: "자료형"
-      description: "설명"
 dev/views/index.vue:
   manage-apps: "앱 관리"
 dev/views/apps.vue:
@@ -1624,3 +1605,27 @@ dev/views/new-app.vue:
   authority: "권한"
   authority-desc: "이곳에서 요청한 권한에 한정하여 API로 액세스할 수 있습니다."
   authority-warning: "앱을 생성한 뒤에도 변경할 수 있지만, 새로운 권한을 설정하는 경우 그 시점부터 예전에 발급받았던 유저 키는 모두 무효화됩니다."
+pages:
+  title: "제목"
+  blocks:
+    image: "이미지"
+    _input:
+      text: "제목"
+    _switch:
+      text: "제목"
+    _button:
+      text: "제목"
+      _action:
+        _dialog:
+          content: "내용"
+  script:
+    categories:
+      random: "랜덤"
+    blocks:
+      random: "랜덤"
+      _randomPick:
+        arg1: "리스트"
+      _dailyRandomPick:
+        arg1: "리스트"
+    types:
+      array: "리스트"
