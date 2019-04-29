@@ -35,7 +35,7 @@
 						<i><fa icon="angle-right"/></i>
 					</p>
 				</li>
-				<li @click="page">
+				<li>
 					<router-link to="/i/pages">
 						<i><fa :icon="faStickyNote" fixed-width/></i>
 						<span>{{ $t('@.pages') }}</span>

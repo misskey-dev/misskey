@@ -38,8 +38,10 @@ class Script {
 	}
 
 	public interpolate(str: string) {
-		return str.replace(/\{(.+?)\}/g, match =>
-			(this.vars.find(x => x.name === match.slice(1, -1).trim()).value || '').toString());
+		return str.replace(/\{(.+?)\}/g, match => {
+			const v = this.vars.find(x => x.name === match.slice(1, -1).trim()).value;
+			return v == null ? 'NULL' : v.toString();
+		});
 	}
 }
 
