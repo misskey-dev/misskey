@@ -1667,17 +1667,35 @@ pages:
   choose-block: "Add a block"
   select-type: "Select a type"
   enter-variable-name: "Please choose a variable name"
+  the-variable-name-is-already-used: "This variable name is already used"
+  content-blocks: "Content"
+  input-blocks: "Input"
+  special-blocks: "Special"
+  post-from-post-form: "Post this content"
+  posted-from-post-form: "Posted!"
   blocks:
+    text: "Text"
+    textarea: "Text area"
+    section: "Section"
     image: "Images"
+    button: "Button"
+    if: "If"
     _if:
       variable: "Variables"
     post: "Post form"
     _post:
       text: "Content"
+    textInput: "Text input"
     _textInput:
+      name: "Variable name"
       text: "Title"
+      default: "Default value"
+    textareaInput: "Multiple type text input"
     _textareaInput:
+      name: "Variable name"
       text: "Title"
+      default: "Default value"
+    numberInput: "Numeric input"
     _numberInput:
       text: "Title"
     _switch:
@@ -1691,11 +1709,67 @@ pages:
     categories:
       random: "Random"
     blocks:
+      text: "Text"
+      _strLen:
+        arg1: "Text"
+      _strPick:
+        arg1: "Text"
+      _strReplace:
+        arg1: "Text"
+      _strReverse:
+        arg1: "Text"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A or B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "A is smaller than B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "A is bigger than B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "A is smaller or same than B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: "A is bigger or same than B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "Branch"
+      _if:
+        arg1: "If"
+        arg2: "then"
+        arg3: "else"
+      not: "denial"
+      _not:
+        arg1: "denial"
       random: "Random"
+      _random:
+        arg1: "Probability"
+      rannum: "Random number"
+      _rannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
+      randomPick: "Choose at random from the list"
       _randomPick:
         arg1: "Lists"
+      dailyRandom: "Random (Daily for each user)"
+      _dailyRandom:
+        arg1: "Probability"
+      _dailyRannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
       _dailyRandomPick:
         arg1: "Lists"
+      _stringToNumber:
+        arg1: "Text"
       ref: "Variables"
     types:
+      string: "Text"
       array: "Lists"
