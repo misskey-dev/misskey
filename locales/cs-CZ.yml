@@ -1201,7 +1201,14 @@ dev/views/new-app.vue:
 pages:
   title: "Titulek"
   blocks:
-    _input:
+    post: "Formulář pro psaní"
+    _post:
+      text: "Obsah"
+    _textInput:
+      text: "Titulek"
+    _textareaInput:
+      text: "Titulek"
+    _numberInput:
       text: "Titulek"
     _switch:
       text: "Titulek"
