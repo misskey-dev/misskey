@@ -22,6 +22,7 @@ export default class extends Channel {
 					break;
 				}
 				case 'mention': {
+					if (mute.map(m => m.muteeId).includes(body.userId)) return;
 					if (body.isHidden) return;
 					break;
 				}
