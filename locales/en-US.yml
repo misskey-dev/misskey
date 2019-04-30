@@ -1740,8 +1740,29 @@ pages:
         arg1: "Text"
         arg2: "Before replacement"
         arg3: "After replacement"
+      strReverse: "Flip text"
       _strReverse:
         arg1: "Text"
+      add: "+ Plus"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- Minus"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
       _and:
         arg1: "A"
         arg2: "B"
