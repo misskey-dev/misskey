@@ -1676,15 +1676,21 @@ pages:
     button: "按钮"
     _if:
       variable: "变量"
-    input: "用户输入"
-    _input:
+    post: "投稿形式"
+    _post:
+      text: "内容"
+    _textInput:
       name: "变量名"
       text: "标题"
       default: "默认值"
-      inputType: "输入类型"
-      _inputType:
-        string: "文本"
-        number: "数值"
+    _textareaInput:
+      name: "变量名"
+      text: "标题"
+      default: "默认值"
+    _numberInput:
+      name: "变量名"
+      text: "标题"
+      default: "默认值"
     _switch:
       name: "变量名"
       text: "标题"
