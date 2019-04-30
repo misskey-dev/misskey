@@ -1609,7 +1609,14 @@ pages:
   title: "제목"
   blocks:
     image: "이미지"
-    _input:
+    post: "게시 양식"
+    _post:
+      text: "내용"
+    _textInput:
+      text: "제목"
+    _textareaInput:
+      text: "제목"
+    _numberInput:
       text: "제목"
     _switch:
       text: "제목"
