@@ -50,6 +50,7 @@ mongodb:
 * MisskeyPagesに 複数行テキスト入力 を追加
 * MisskeyPagesに 投稿フォーム を追加
 * MisskeyPagesに 変換系関数 を追加
+* MisskeyPagesに 環境変数 URL を追加
 * MisskeyPagesでボタンやスイッチなどのテキストに変数使えるように
 
 ### Fixes
