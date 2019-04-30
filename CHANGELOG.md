@@ -42,6 +42,20 @@ mongodb:
 8. master ブランチに戻す
 9. enjoy
 
+11.7.0 (2019/04/30)
+-------------------
+### Improvements
+* MisskeyPagesに ifブロック を追加
+* MisskeyPagesに テキストエリア を追加
+* MisskeyPagesに 複数行テキスト入力 を追加
+* MisskeyPagesに 投稿フォーム を追加
+* MisskeyPagesに 変換系関数 を追加
+* MisskeyPagesでボタンやスイッチなどのテキストに変数使えるように
+
+### Fixes
+* OGPのサイト名を修正
+* デザインの調整
+
 11.6.0 (2019/04/29)
 -------------------
 ### Improvements

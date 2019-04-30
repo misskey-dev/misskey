@@ -1,6 +1,6 @@
 <template>
-<div class="hkcxmtwj">
-	<ui-switch v-model="v">{{ script.interpolate(value.text) }}</ui-switch>
+<div>
+	<ui-input class="kudkigyw" v-model="v" type="number">{{ script.interpolate(value.text) }}</ui-input>
 </div>
 </template>
 
@@ -33,11 +33,9 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.hkcxmtwj
+.kudkigyw
 	display inline-block
-	margin 16px auto
-
-	& + .hkcxmtwj
-		margin-left 16px
-
+	min-width 300px
+	max-width 450px
+	margin 8px 0
 </style>

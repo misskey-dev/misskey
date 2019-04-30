@@ -12,9 +12,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
 import { faBolt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
-import XContainer from './page-editor.container.vue';
+import i18n from '../../../../../i18n';
+import XContainer from '../page-editor.container.vue';
 
 export default Vue.extend({
 	i18n: i18n('pages'),

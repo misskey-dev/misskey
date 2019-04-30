@@ -1,6 +1,6 @@
 <template>
-<div class="hkcxmtwj">
-	<ui-switch v-model="v">{{ script.interpolate(value.text) }}</ui-switch>
+<div>
+	<ui-textarea class="" v-model="v">{{ script.interpolate(value.text) }}</ui-textarea>
 </div>
 </template>
 
@@ -33,11 +33,4 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.hkcxmtwj
-	display inline-block
-	margin 16px auto
-
-	& + .hkcxmtwj
-		margin-left 16px
-
 </style>

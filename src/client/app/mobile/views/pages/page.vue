@@ -33,4 +33,7 @@ main
 	padding 16px
 	max-width 1000px
 
+	@media (min-width 600px)
+		padding 32px
+
 </style>

@@ -2,16 +2,16 @@
 <div>
 	<div class="gwbmwxkm" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 		<header>
-			<div class="title"><fa :icon="faStickyNote"/> {{ pageId ? $t('edit-page') : $t('new-page') }}</div>
+			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('read-page') : pageId ? $t('edit-page') : $t('new-page') }}</div>
 			<div class="buttons">
-				<button @click="del()"><fa :icon="faTrashAlt"/></button>
+				<button @click="del()" v-if="!readonly"><fa :icon="faTrashAlt"/></button>
 				<button @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
-				<button @click="save()"><fa :icon="faSave"/></button>
+				<button @click="save()" v-if="!readonly"><fa :icon="faSave"/></button>
 			</div>
 		</header>
 
 		<section>
-			<a class="view" v-if="pageId" :href="`/@${ $store.state.i.username }/pages/${ currentName }`" target="_blank"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</a>
+			<a class="view" v-if="pageId" :href="`/@${ author.username }/pages/${ currentName }`" target="_blank"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</a>
 
 			<ui-input v-model="title">
 				<span>{{ $t('title') }}</span>
@@ -23,7 +23,7 @@
 				</ui-input>
 
 				<ui-input v-model="name">
-					<template #prefix>{{ url }}/@{{ $store.state.i.username }}/pages/</template>
+					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<span>{{ $t('url') }}</span>
 				</ui-input>
 
@@ -45,10 +45,10 @@
 			</template>
 
 			<div class="content" v-for="child in content">
-				<x-block :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
+				<x-block :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id" :ai-script="aiScript"/>
 			</div>
 
-			<ui-button @click="add()"><fa :icon="faPlus"/></ui-button>
+			<ui-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></ui-button>
 		</section>
 	</div>
 
@@ -70,7 +70,7 @@
 				</template>
 			</div>
 
-			<ui-button @click="addVariable()" class="add"><fa :icon="faPlus"/></ui-button>
+			<ui-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></ui-button>
 
 			<ui-info><span v-html="$t('variables-info')"></span><a @click="() => moreDetails = true" style="display:block;">{{ $t('more-details') }}</a></ui-info>
 
@@ -106,11 +106,17 @@ export default Vue.extend({
 		page: {
 			type: String,
 			required: false
-		}
+		},
+		readonly: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	data() {
 		return {
+			author: this.$store.state.i,
 			pageId: null,
 			currentName: null,
 			title: '',
@@ -157,6 +163,7 @@ export default Vue.extend({
 			this.$root.api('pages/show', {
 				pageId: this.page,
 			}).then(page => {
+				this.author = page.user;
 				this.pageId = page.id;
 				this.title = page.title;
 				this.name = page.name;
@@ -180,7 +187,9 @@ export default Vue.extend({
 
 	provide() {
 		return {
-			getScriptBlockList: this.getScriptBlockList
+			readonly: this.readonly,
+			getScriptBlockList: this.getScriptBlockList,
+			getPageBlockList: this.getPageBlockList
 		}
 	},
 
@@ -250,19 +259,7 @@ export default Vue.extend({
 				type: null,
 				title: this.$t('choose-block'),
 				select: {
-					items: [{
-						value: 'section', text: this.$t('blocks.section')
-					}, {
-						value: 'text', text: this.$t('blocks.text')
-					}, {
-						value: 'image', text: this.$t('blocks.image')
-					}, {
-						value: 'button', text: this.$t('blocks.button')
-					}, {
-						value: 'input', text: this.$t('blocks.input')
-					}, {
-						value: 'switch', text: this.$t('blocks.switch')
-					}]
+					groupedItems: this.getPageBlockList()
 				},
 				showCancelButton: true
 			});
@@ -322,6 +319,33 @@ export default Vue.extend({
 				...this.variables.slice(i + 1)
 			];
 			this.variables = newValue;
+		},
+
+		getPageBlockList() {
+			return [{
+				label: this.$t('content-blocks'),
+				items: [
+					{ value: 'section', text: this.$t('blocks.section') },
+					{ value: 'text', text: this.$t('blocks.text') },
+					{ value: 'image', text: this.$t('blocks.image') },
+					{ value: 'textarea', text: this.$t('blocks.textarea') },
+				]
+			}, {
+				label: this.$t('input-blocks'),
+				items: [
+					{ value: 'button', text: this.$t('blocks.button') },
+					{ value: 'textInput', text: this.$t('blocks.textInput') },
+					{ value: 'textareaInput', text: this.$t('blocks.textareaInput') },
+					{ value: 'numberInput', text: this.$t('blocks.numberInput') },
+					{ value: 'switch', text: this.$t('blocks.switch') }
+				]
+			}, {
+				label: this.$t('special-blocks'),
+				items: [
+					{ value: 'if', text: this.$t('blocks.if') },
+					{ value: 'post', text: this.$t('blocks.post') }
+				]
+			}];
 		},
 
 		getScriptBlockList(type: string = null) {
@@ -436,6 +460,7 @@ export default Vue.extend({
 		> .view
 			display inline-block
 			margin 16px 0 0 0
+			font-size 14px
 
 		> .content
 			margin-bottom 16px

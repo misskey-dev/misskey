@@ -8,12 +8,17 @@ import XText from './page.text.vue';
 import XSection from './page.section.vue';
 import XImage from './page.image.vue';
 import XButton from './page.button.vue';
-import XInput from './page.input.vue';
+import XNumberInput from './page.number-input.vue';
+import XTextInput from './page.text-input.vue';
+import XTextareaInput from './page.textarea-input.vue';
 import XSwitch from './page.switch.vue';
+import XIf from './page.if.vue';
+import XTextarea from './page.textarea.vue';
+import XPost from './page.post.vue';
 
 export default Vue.extend({
 	components: {
-		XText, XSection, XImage, XButton, XInput, XSwitch
+		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf
 	},
 
 	props: {

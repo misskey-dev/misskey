@@ -26,6 +26,7 @@ import {
 	faNotEqual,
 	faDice,
 	faSortNumericUp,
+	faExchangeAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
@@ -69,11 +70,13 @@ const funcDefs = {
 	strPick:         { in: ['string', 'number'],           out: 'string',  category: 'text',       icon: faQuoteRight, },
 	strReplace:      { in: ['string', 'string', 'string'], out: 'string',  category: 'text',       icon: faQuoteRight, },
 	strReverse:      { in: ['string'],                     out: 'string',  category: 'text',       icon: faQuoteRight, },
+	stringToNumber:  { in: ['string'],                     out: 'number',  category: 'convert',    icon: faExchangeAlt, },
+	numberToString:  { in: ['number'],                     out: 'string',  category: 'convert',    icon: faExchangeAlt, },
 	rannum:          { in: ['number', 'number'],           out: 'number',  category: 'random',     icon: faDice, },
-	random:          { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
-	randomPick:      { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 	dailyRannum:     { in: ['number', 'number'],           out: 'number',  category: 'random',     icon: faDice, },
+	random:          { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
 	dailyRandom:     { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
+	randomPick:      { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 	dailyRandomPick: { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 };
 
@@ -94,6 +97,7 @@ type PageVar = { name: string; value: any; type: Type; };
 
 const envVarsDef = {
 	AI: 'string',
+	URL: 'string',
 	VERSION: 'string',
 	LOGIN: 'boolean',
 	NAME: 'string',
@@ -117,7 +121,7 @@ export class AiScript {
 	public static blockDefs = blockDefs;
 	public static funcDefs = funcDefs;
 	private opts: {
-		randomSeed?: string; user?: any; visitor?: any;
+		randomSeed?: string; user?: any; visitor?: any; page?: any; url?: string;
 	};
 
 	constructor(variables: Variable[] = [], pageVars: PageVar[] = [], opts: AiScript['opts'] = {}) {
@@ -128,6 +132,7 @@ export class AiScript {
 		this.envVars = {
 			AI: 'kawaii',
 			VERSION: version,
+			URL: opts.page ? `${opts.url}/@${opts.page.user.username}/pages/${opts.page.name}` : '',
 			LOGIN: opts.visitor != null,
 			NAME: opts.visitor ? opts.visitor.name : '',
 			USERNAME: opts.visitor ? opts.visitor.username : '',
@@ -421,6 +426,8 @@ export class AiScript {
 			strPick: (a, b) => a[b - 1],
 			strReplace: (a, b, c) => a.split(b).join(c),
 			strReverse: (a) => a.split('').reverse().join(''),
+			stringToNumber: (a) => parseInt(a),
+			numberToString: (a) => a.toString(),
 			random: (probability) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
 			rannum: (min, max) => min + Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * (max - min + 1)),
 			randomPick: (list) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],

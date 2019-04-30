@@ -23,6 +23,7 @@ import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { AiScript } from '../../../scripts/aiscript';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
+import { url } from '../../../../config';
 
 class Script {
 	public aiScript: AiScript;
@@ -38,6 +39,7 @@ class Script {
 	}
 
 	public interpolate(str: string) {
+		if (str == null) return null;
 		return str.replace(/\{(.+?)\}/g, match => {
 			const v = this.vars.find(x => x.name === match.slice(1, -1).trim()).value;
 			return v == null ? 'NULL' : v.toString();
@@ -81,7 +83,9 @@ export default Vue.extend({
 			this.script = new Script(new AiScript(this.page.variables, pageVars, {
 				randomSeed: Math.random(),
 				user: page.user,
-				visitor: this.$store.state.i
+				visitor: this.$store.state.i,
+				page: page,
+				url: url
 			}));
 		});
 	},

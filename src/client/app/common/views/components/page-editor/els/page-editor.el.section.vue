@@ -12,7 +12,7 @@
 
 	<section class="ilrvjyvi">
 		<div class="children">
-			<x-block v-for="child in value.children" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id"/>
+			<x-block v-for="child in value.children" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id" :ai-script="aiScript"/>
 		</div>
 	</section>
 </x-container>
@@ -20,11 +20,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
+import * as uuid from 'uuid';
 import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
-import XContainer from './page-editor.container.vue';
-import * as uuid from 'uuid';
+import i18n from '../../../../../i18n';
+import XContainer from '../page-editor.container.vue';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -33,9 +33,14 @@ export default Vue.extend({
 		XContainer
 	},
 
+	inject: ['getPageBlockList'],
+
 	props: {
 		value: {
 			required: true
+		},
+		aiScript: {
+			required: true,
 		},
 	},
 
@@ -46,7 +51,7 @@ export default Vue.extend({
 	},
 
 	beforeCreate() {
-		this.$options.components.XBlock = require('./page-editor.block.vue').default
+		this.$options.components.XBlock = require('../page-editor.block.vue').default
 	},
 
 	created() {
@@ -79,19 +84,7 @@ export default Vue.extend({
 				type: null,
 				title: this.$t('choose-block'),
 				select: {
-					items: [{
-						value: 'section', text: this.$t('blocks.section')
-					}, {
-						value: 'text', text: this.$t('blocks.text')
-					}, {
-						value: 'image', text: this.$t('blocks.image')
-					}, {
-						value: 'button', text: this.$t('blocks.button')
-					}, {
-						value: 'input', text: this.$t('blocks.input')
-					}, {
-						value: 'switch', text: this.$t('blocks.switch')
-					}]
+					groupedItems: this.getPageBlockList()
 				},
 				showCancelButton: true
 			});

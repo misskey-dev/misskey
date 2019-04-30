@@ -2,10 +2,22 @@ export function collectPageVars(content) {
 	const pageVars = [];
 	const collect = (xs: any[]) => {
 		for (const x of xs) {
-			if (x.type === 'input') {
+			if (x.type === 'textInput') {
 				pageVars.push({
 					name: x.name,
-					type: x.inputType,
+					type: 'string',
+					value: x.default
+				});
+			} else if (x.type === 'textareaInput') {
+				pageVars.push({
+					name: x.name,
+					type: 'string',
+					value: x.default
+				});
+			} else if (x.type === 'numberInput') {
+				pageVars.push({
+					name: x.name,
+					type: 'number',
 					value: x.default
 				});
 			} else if (x.type === 'switch') {
