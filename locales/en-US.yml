@@ -1643,7 +1643,14 @@ pages:
   title: "Title"
   blocks:
     image: "Images"
-    _input:
+    post: "Post form"
+    _post:
+      text: "Content"
+    _textInput:
+      text: "Title"
+    _textareaInput:
+      text: "Title"
+    _numberInput:
       text: "Title"
     _switch:
       text: "Title"
