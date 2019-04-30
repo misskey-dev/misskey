@@ -970,6 +970,8 @@ deck:
 deck/deck.user-column.vue:
   activity: "Actividad"
 pages:
+  blocks:
+    post: "Formulario"
   script:
     categories:
       random: "Aleatorio"
