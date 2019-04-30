@@ -1202,7 +1202,12 @@ pages:
   title: "Tytuł"
   blocks:
     image: "Zdjęcia"
-    _input:
+    post: "Formularz tworzenia"
+    _textInput:
+      text: "Tytuł"
+    _textareaInput:
+      text: "Tytuł"
+    _numberInput:
       text: "Tytuł"
     _switch:
       text: "Tytuł"
