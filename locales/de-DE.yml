@@ -737,6 +737,8 @@ dev/views/new-app.vue:
   authority-desc: "Nur die hier eingetragenen Berechtigungen, werden per API zur Verfügung stehen."
   authority-warning: "Dies kann auch nach dem erstellen der Anwendung geändert werden, allerdings werden dann alle bisher generierten Token ungültig."
 pages:
+  blocks:
+    post: "\"Neuer Beitrag\"-Formular"
   script:
     categories:
       random: "Zufällige Auswahl"
