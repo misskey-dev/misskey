@@ -2,8 +2,8 @@
 <x-container @remove="() => $emit('remove')">
 	<template #header><fa :icon="faPaperPlane"/> {{ $t('blocks.post') }}</template>
 
-	<section>
-		<textarea v-model="value.text"></textarea>
+	<section style="padding: 0 16px 16px 16px;">
+		<ui-textarea v-model="value.text">{{ $t('blocks._post.text') }}</ui-textarea>
 	</section>
 </x-container>
 </template>
