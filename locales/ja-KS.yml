@@ -1265,6 +1265,7 @@ dev/views/new-app.vue:
 pages:
   blocks:
     image: "画像"
+    post: "投稿フォーム"
   script:
     categories:
       random: "いんじゃんほい"
