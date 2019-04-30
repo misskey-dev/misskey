@@ -12,6 +12,7 @@ import { packedMutingSchema } from '../../../models/repositories/muting';
 import { packedBlockingSchema } from '../../../models/repositories/blocking';
 import { packedNoteReactionSchema } from '../../../models/repositories/note-reaction';
 import { packedHashtagSchema } from '../../../models/repositories/hashtag';
+import { packedPageSchema } from '../../../models/repositories/page';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -76,4 +77,5 @@ export const schemas = {
 	Blocking: convertSchemaToOpenApiSchema(packedBlockingSchema),
 	NoteReaction: convertSchemaToOpenApiSchema(packedNoteReactionSchema),
 	Hashtag: convertSchemaToOpenApiSchema(packedHashtagSchema),
+	Page: convertSchemaToOpenApiSchema(packedPageSchema),
 };

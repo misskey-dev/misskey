@@ -84,5 +84,51 @@ export const packedPageSchema = {
 	type: types.object,
 	optional: bool.false, nullable: bool.false,
 	properties: {
+		id: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		createdAt: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'date-time',
+		},
+		updatedAt: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'date-time',
+		},
+		title: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+		},
+		name: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+		},
+		summary: {
+			type: types.string,
+			optional: bool.false, nullable: bool.true,
+		},
+		content: {
+			type: types.array,
+			optional: bool.false, nullable: bool.false,
+		},
+		variables: {
+			type: types.array,
+			optional: bool.false, nullable: bool.false,
+		},
+		userId: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+		},
+		user: {
+			type: types.object,
+			ref: 'User',
+			optional: bool.false, nullable: bool.false,
+		},
 	}
 };
