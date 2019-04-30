@@ -279,3 +279,4 @@ dev/views/index.vue:
 pages:
   blocks:
     image: "Imagens"
+    post: "Formulário de publicação"
