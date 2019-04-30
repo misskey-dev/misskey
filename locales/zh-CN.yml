@@ -1670,23 +1670,33 @@ pages:
   select-type: "类型选择"
   enter-variable-name: "请确定变量名"
   the-variable-name-is-already-used: "变量名已使用"
+  content-blocks: "内容"
+  input-blocks: "输入"
+  special-blocks: "特殊"
+  post-from-post-form: "发布此内容"
+  posted-from-post-form: "已发布"
   blocks:
     text: "文本"
+    textarea: "文本区域"
     image: "图片"
     button: "按钮"
+    if: "如果"
     _if:
       variable: "变量"
     post: "投稿形式"
     _post:
       text: "内容"
+    textInput: "文本输入"
     _textInput:
       name: "变量名"
       text: "标题"
       default: "默认值"
+    textareaInput: "多行文本输入"
     _textareaInput:
       name: "变量名"
       text: "标题"
       default: "默认值"
+    numberInput: "数值输入"
     _numberInput:
       name: "变量名"
       text: "标题"
@@ -1758,9 +1768,11 @@ pages:
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A和B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A或B"
       _or:
         arg1: "A"
         arg2: "B"
