@@ -1776,31 +1776,63 @@ pages:
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A小于B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A大于B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "<= A小于等于B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A大于等于B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "分支"
+      _if:
+        arg1: "如果"
+        arg2: "的话"
+        arg3: "否则"
       random: "随机"
+      _random:
+        arg1: "概率"
+      rannum: "随机"
+      _rannum:
+        arg1: "最小"
+        arg2: "最大"
+      randomPick: "从列表中随机选择"
       _randomPick:
         arg1: "列表"
+      dailyRandom: "随机(每个用户每日)"
+      _dailyRandom:
+        arg1: "概率"
+      dailyRannum: "随机数(每个用户每日)"
+      _dailyRannum:
+        arg1: "最小"
+        arg2: "最大"
+      dailyRandomPick: "从列表中随机选择(每个用户每日)"
       _dailyRandomPick:
         arg1: "列表"
+      number: "数字"
+      stringToNumber: "文本到数字"
       _stringToNumber:
         arg1: "文本"
+      numberToString: "数字到文本"
       _numberToString:
         arg1: "数值"
       ref: "变量"
+      in: "参数"
       fn: "函数"
+      _fn:
+        arg1: "输出"
     types:
       string: "文本"
       number: "数值"
+      boolean: "布尔值"
       array: "列表"
       stringArray: "文本列表"
+    enviromentVariables: "环境变量"
