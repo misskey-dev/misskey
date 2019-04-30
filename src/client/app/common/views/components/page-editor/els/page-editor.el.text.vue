@@ -54,4 +54,5 @@ export default Vue.extend({
 		padding 16px
 		background transparent
 		color var(--text)
+		font-size 14px
 </style>
