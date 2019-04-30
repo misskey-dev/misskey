@@ -1867,28 +1867,50 @@ pages:
   select-type: "種類を選択"
   enter-variable-name: "変数名を決めてください"
   the-variable-name-is-already-used: "その変数名は既に使われています"
+  content-blocks: "コンテンツ"
+  input-blocks: "入力"
+  special-blocks: "特殊"
+  post-from-post-form: "この内容を投稿"
+  posted-from-post-form: "投稿しました"
   blocks:
     text: "テキスト"
+    textarea: "テキストエリア"
     section: "セクション"
     image: "画像"
     button: "ボタン"
+
     if: "もし"
     _if:
       variable: "変数"
-    input: "ユーザー入力"
-    _input:
+
+    post: "投稿フォーム"
+    _post:
+      text: "内容"
+
+    textInput: "テキスト入力"
+    _textInput:
       name: "変数名"
       text: "タイトル"
       default: "デフォルト値"
-      inputType: "入力の種類"
-      _inputType:
-        string: "テキスト"
-        number: "数値"
+
+    textareaInput: "複数行テキスト入力"
+    _textareaInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    numberInput: "数値入力"
+    _numberInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
     switch: "スイッチ"
     _switch:
       name: "変数名"
       text: "タイトル"
       default: "デフォルト値"
+
     _button:
       text: "タイトル"
       action: "ボタンを押したときの動作"
@@ -1897,6 +1919,7 @@ pages:
         _dialog:
           content: "内容"
         resetRandom: "乱数をリセット"
+
   script:
     categories:
       flow: "制御"

@@ -1,6 +1,6 @@
 <template>
 <div>
-	<ui-input class="kudkigyw" v-model="v" :type="value.inputType">{{ script.interpolate(value.text) }}</ui-input>
+	<ui-input class="kudkigyw" v-model="v" type="text">{{ script.interpolate(value.text) }}</ui-input>
 </div>
 </template>
 
@@ -25,9 +25,7 @@ export default Vue.extend({
 
 	watch: {
 		v() {
-			let v = this.v;
-			if (this.value.inputType === 'number') v = parseInt(v, 10);
-			this.script.aiScript.updatePageVar(this.value.name, v);
+			this.script.aiScript.updatePageVar(this.value.name, this.v);
 			this.script.reEval();
 		}
 	}

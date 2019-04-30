@@ -84,7 +84,7 @@ export default Vue.extend({
 				type: null,
 				title: this.$t('choose-block'),
 				select: {
-					items: this.getPageBlockList()
+					groupedItems: this.getPageBlockList()
 				},
 				showCancelButton: true
 			});

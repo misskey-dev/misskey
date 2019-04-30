@@ -6,15 +6,19 @@
 import Vue from 'vue';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
+import XTextarea from './els/page-editor.el.textarea.vue';
 import XImage from './els/page-editor.el.image.vue';
 import XButton from './els/page-editor.el.button.vue';
-import XInput from './els/page-editor.el.input.vue';
+import XTextInput from './els/page-editor.el.text-input.vue';
+import XTextareaInput from './els/page-editor.el.textarea-input.vue';
+import XNumberInput from './els/page-editor.el.text-input.vue';
 import XSwitch from './els/page-editor.el.switch.vue';
 import XIf from './els/page-editor.el.if.vue';
+import XPost from './els/page-editor.el.post.vue';
 
 export default Vue.extend({
 	components: {
-		XSection, XText, XImage, XButton, XInput, XSwitch, XIf
+		XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost
 	},
 
 	props: {

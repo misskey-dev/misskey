@@ -23,6 +23,7 @@ import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { AiScript } from '../../../scripts/aiscript';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
+import { url } from '../../../../config';
 
 class Script {
 	public aiScript: AiScript;
@@ -82,7 +83,9 @@ export default Vue.extend({
 			this.script = new Script(new AiScript(this.page.variables, pageVars, {
 				randomSeed: Math.random(),
 				user: page.user,
-				visitor: this.$store.state.i
+				visitor: this.$store.state.i,
+				page: page,
+				url: url
 			}));
 		});
 	},

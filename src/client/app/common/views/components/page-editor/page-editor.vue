@@ -259,7 +259,7 @@ export default Vue.extend({
 				type: null,
 				title: this.$t('choose-block'),
 				select: {
-					items: this.getPageBlockList()
+					groupedItems: this.getPageBlockList()
 				},
 				showCancelButton: true
 			});
@@ -323,19 +323,28 @@ export default Vue.extend({
 
 		getPageBlockList() {
 			return [{
-				value: 'section', text: this.$t('blocks.section')
+				label: this.$t('content-blocks'),
+				items: [
+					{ value: 'section', text: this.$t('blocks.section') },
+					{ value: 'text', text: this.$t('blocks.text') },
+					{ value: 'image', text: this.$t('blocks.image') },
+					{ value: 'textarea', text: this.$t('blocks.textarea') },
+				]
 			}, {
-				value: 'text', text: this.$t('blocks.text')
+				label: this.$t('input-blocks'),
+				items: [
+					{ value: 'button', text: this.$t('blocks.button') },
+					{ value: 'textInput', text: this.$t('blocks.textInput') },
+					{ value: 'textareaInput', text: this.$t('blocks.textareaInput') },
+					{ value: 'numberInput', text: this.$t('blocks.numberInput') },
+					{ value: 'switch', text: this.$t('blocks.switch') }
+				]
 			}, {
-				value: 'image', text: this.$t('blocks.image')
-			}, {
-				value: 'button', text: this.$t('blocks.button')
-			}, {
-				value: 'input', text: this.$t('blocks.input')
-			}, {
-				value: 'switch', text: this.$t('blocks.switch')
-			}, {
-				value: 'if', text: this.$t('blocks.if')
+				label: this.$t('special-blocks'),
+				items: [
+					{ value: 'if', text: this.$t('blocks.if') },
+					{ value: 'post', text: this.$t('blocks.post') }
+				]
 			}];
 		},
 

@@ -27,6 +27,33 @@ export class PageRepository extends Repository<Page> {
 			}
 		};
 		collectFile(src.content);
+
+		// 後方互換性のため
+		let migrated = false;
+		const migrate = (xs: any[]) => {
+			for (const x of xs) {
+				if (x.type === 'input') {
+					if (x.inputType === 'text') {
+						x.type = 'textInput';
+					}
+					if (x.inputType === 'number') {
+						x.type = 'numberInput';
+						if (x.default) x.default = parseInt(x.default, 10);
+					}
+					migrated = true;
+				}
+				if (x.children) {
+					migrate(x.children);
+				}
+			}
+		};
+		migrate(src.content);
+		if (migrated) {
+			this.update(src.id, {
+				content: src.content
+			});
+		}
+
 		return await awaitAll({
 			id: src.id,
 			createdAt: src.createdAt.toISOString(),

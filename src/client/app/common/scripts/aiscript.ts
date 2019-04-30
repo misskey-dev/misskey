@@ -97,6 +97,7 @@ type PageVar = { name: string; value: any; type: Type; };
 
 const envVarsDef = {
 	AI: 'string',
+	URL: 'string',
 	VERSION: 'string',
 	LOGIN: 'boolean',
 	NAME: 'string',
@@ -120,7 +121,7 @@ export class AiScript {
 	public static blockDefs = blockDefs;
 	public static funcDefs = funcDefs;
 	private opts: {
-		randomSeed?: string; user?: any; visitor?: any;
+		randomSeed?: string; user?: any; visitor?: any; page?: any; url?: string;
 	};
 
 	constructor(variables: Variable[] = [], pageVars: PageVar[] = [], opts: AiScript['opts'] = {}) {
@@ -131,6 +132,7 @@ export class AiScript {
 		this.envVars = {
 			AI: 'kawaii',
 			VERSION: version,
+			URL: opts.page ? `${opts.url}/@${opts.page.user.username}/pages/${opts.page.name}` : '',
 			LOGIN: opts.visitor != null,
 			NAME: opts.visitor ? opts.visitor.name : '',
 			USERNAME: opts.visitor ? opts.visitor.username : '',
