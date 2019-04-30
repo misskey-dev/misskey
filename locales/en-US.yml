@@ -34,6 +34,7 @@ common:
   signup: "Sign up"
   signout: "Logout"
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
+  fetching-as-ap-object: "Inquiring to union"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -1697,25 +1698,48 @@ pages:
       default: "Default value"
     numberInput: "Numeric input"
     _numberInput:
+      name: "Variable name"
       text: "Title"
+      default: "Default value"
+    switch: "Switch"
     _switch:
+      name: "Variable name"
       text: "Title"
+      default: "Default value"
     _button:
       text: "Title"
+      action: "Operation when the button pressed"
       _action:
+        dialog: "Show a dialog"
         _dialog:
           content: "Content"
+        resetRandom: "Reset a random number"
   script:
     categories:
+      flow: "Control"
+      logical: "Logical operation"
+      operation: "Compute"
+      comparison: "Compare"
       random: "Random"
+      value: "Value"
+      fn: "Function"
+      text: "Text operation"
+      convert: "Variable"
     blocks:
       text: "Text"
+      multiLineText: "Text (Multiple lines)"
+      textList: "List of text"
+      strLen: "Length of text"
       _strLen:
         arg1: "Text"
+      strPick: "Extract character"
       _strPick:
         arg1: "Text"
+        arg2: "Position of character"
       _strReplace:
         arg1: "Text"
+        arg2: "Before replacement"
+        arg3: "After replacement"
       _strReverse:
         arg1: "Text"
       _and:
@@ -1762,14 +1786,34 @@ pages:
       dailyRandom: "Random (Daily for each user)"
       _dailyRandom:
         arg1: "Probability"
+      dailyRannum: "Random number (Daily for each user)"
       _dailyRannum:
         arg1: "Minimum"
         arg2: "Maximum"
+      dailyRandomPick: "Choose at random from the list (Daily for each user)"
       _dailyRandomPick:
         arg1: "Lists"
+      number: "Number"
+      stringToNumber: "Text to number"
       _stringToNumber:
         arg1: "Text"
+      numberToString: "Number to text"
+      _numberToString:
+        arg1: "Number"
       ref: "Variables"
+      in: "Argument"
+      _in:
+        arg1: "Number of slots"
+      fn: "Function"
+      _fn:
+        arg1: "Output"
+    thereIsEmptySlot: "Slot {slot} is empty!"
     types:
       string: "Text"
+      number: "Number"
+      boolean: "Flag"
       array: "Lists"
+      stringArray: "List of text"
+    emptySlot: "Empty slot"
+    enviromentVariables: "Environment variable"
+    pageVariables: "Page element"
