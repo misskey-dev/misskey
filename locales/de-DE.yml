@@ -743,10 +743,14 @@ pages:
     categories:
       random: "Zufällige Auswahl"
     blocks:
+      _join:
+        arg1: "Listen"
       random: "Zufällige Auswahl"
       _randomPick:
         arg1: "Listen"
       _dailyRandomPick:
         arg1: "Listen"
+      _seedRandomPick:
+        arg2: "Listen"
     types:
       array: "Listen"
