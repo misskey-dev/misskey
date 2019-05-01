@@ -1844,6 +1844,7 @@ pages:
       numberToString: "Number to text"
       _numberToString:
         arg1: "Number"
+      splitStrByLine: "Split the text by lines"
       _splitStrByLine:
         arg1: "Text"
       ref: "Variables"
@@ -1851,6 +1852,7 @@ pages:
       _fn:
         slots: "Slots"
         arg1: "Output"
+      for: "Repeat"
     thereIsEmptySlot: "Slot {slot} is empty!"
     types:
       string: "Text"
