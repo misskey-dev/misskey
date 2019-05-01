@@ -44,9 +44,9 @@ export type Variable = Block & {
 	name: string;
 };
 
-export type Type = 'string' | 'number' | 'boolean' | 'stringArray';
+export type Type = 'string' | 'number' | 'boolean' | 'stringArray' | null;
 
-export const funcDefs = {
+export const funcDefs: Record<string, { in: any[]; out: any; category: string; icon: any; }> = {
 	if:              { in: ['boolean', 0, 0],              out: 0,             category: 'flow',       icon: faShareAlt, },
 	for:             { in: ['number', 'function'],         out: null,          category: 'flow',       icon: faRecycle, },
 	not:             { in: ['boolean'],                    out: 'boolean',     category: 'logical',    icon: faFlag, },
@@ -81,7 +81,7 @@ export const funcDefs = {
 	seedRandomPick:  { in: [null, 0],                      out: 0,             category: 'random',     icon: faDice, },
 };
 
-export const literalDefs = {
+export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {
 	text:          { out: 'string',      category: 'value', icon: faQuoteRight, },
 	multiLineText: { out: 'string',      category: 'value', icon: faAlignLeft, },
 	textList:      { out: 'stringArray', category: 'value', icon: faList, },
@@ -105,7 +105,7 @@ export function isFnBlock(block: Block): block is FnBlock {
 
 export type PageVar = { name: string; value: any; type: Type; };
 
-export const envVarsDef = {
+export const envVarsDef: Record<string, Type> = {
 	AI: 'string',
 	URL: 'string',
 	VERSION: 'string',

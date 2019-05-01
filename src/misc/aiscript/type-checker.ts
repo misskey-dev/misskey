@@ -58,7 +58,7 @@ export class ASTypeChecker {
 	}
 
 	@autobind
-	public getExpectedType(v: Block, slot: number): Type | null {
+	public getExpectedType(v: Block, slot: number): Type {
 		const def = funcDefs[v.type];
 		if (def == null) {
 			throw new Error('Unknown type: ' + v.type);
@@ -86,7 +86,7 @@ export class ASTypeChecker {
 	}
 
 	@autobind
-	public infer(v: Block): Type | null {
+	public infer(v: Block): Type {
 		if (v.type === null) return null;
 		if (v.type === 'text') return 'string';
 		if (v.type === 'multiLineText') return 'string';
@@ -140,19 +140,19 @@ export class ASTypeChecker {
 	}
 
 	@autobind
-	public getVarsByType(type: Type | null): Variable[] {
+	public getVarsByType(type: Type): Variable[] {
 		if (type == null) return this.variables;
 		return this.variables.filter(x => (this.infer(x) === null) || (this.infer(x) === type));
 	}
 
 	@autobind
-	public getEnvVarsByType(type: Type | null): string[] {
+	public getEnvVarsByType(type: Type): string[] {
 		if (type == null) return Object.keys(envVarsDef);
 		return Object.entries(envVarsDef).filter(([k, v]) => v === null || type === v).map(([k, v]) => k);
 	}
 
 	@autobind
-	public getPageVarsByType(type: Type | null): string[] {
+	public getPageVarsByType(type: Type): string[] {
 		if (type == null) return this.pageVars.map(v => v.name);
 		return this.pageVars.filter(v => type === v.type).map(v => v.name);
 	}
