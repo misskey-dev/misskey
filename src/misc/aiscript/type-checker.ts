@@ -32,7 +32,7 @@ export class ASTypeChecker {
 
 		for (let i = 0; i < def.in.length; i++) {
 			const arg = def.in[i];
-			const type = this.typeInference(v.args[i]);
+			const type = this.infer(v.args[i]);
 			if (type === null) continue;
 
 			if (typeof arg === 'number') {
@@ -68,7 +68,7 @@ export class ASTypeChecker {
 
 		for (let i = 0; i < def.in.length; i++) {
 			const arg = def.in[i];
-			const type = this.typeInference(v.args[i]);
+			const type = this.infer(v.args[i]);
 			if (type === null) continue;
 
 			if (typeof arg === 'number') {
@@ -86,7 +86,7 @@ export class ASTypeChecker {
 	}
 
 	@autobind
-	public typeInference(v: Block): Type | null {
+	public infer(v: Block): Type | null {
 		if (v.type === null) return null;
 		if (v.type === 'text') return 'string';
 		if (v.type === 'multiLineText') return 'string';
@@ -95,7 +95,7 @@ export class ASTypeChecker {
 		if (v.type === 'ref') {
 			const variable = this.variables.find(va => va.name === v.value);
 			if (variable) {
-				return this.typeInference(variable);
+				return this.infer(variable);
 			}
 
 			const pageVar = this.pageVars.find(va => va.name === v.value);
@@ -120,7 +120,7 @@ export class ASTypeChecker {
 		for (let i = 0; i < def.in.length; i++) {
 			const arg = def.in[i];
 			if (typeof arg === 'number') {
-				const type = this.typeInference(v.args[i]);
+				const type = this.infer(v.args[i]);
 
 				if (generic[arg] === undefined) {
 					generic[arg] = type;
@@ -142,7 +142,7 @@ export class ASTypeChecker {
 	@autobind
 	public getVarsByType(type: Type | null): Variable[] {
 		if (type == null) return this.variables;
-		return this.variables.filter(x => (this.typeInference(x) === null) || (this.typeInference(x) === type));
+		return this.variables.filter(x => (this.infer(x) === null) || (this.infer(x) === type));
 	}
 
 	@autobind
