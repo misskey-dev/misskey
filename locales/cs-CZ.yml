@@ -377,6 +377,7 @@ common/views/components/theme.vue:
   installed: "\"{}\" byl nainstalován"
   create-a-theme: "Vytvořit motiv"
   save-created-theme: "Uložit motiv"
+  text-color: "Barva textu"
   base-theme: "Základní vzhled"
   base-theme-light: "Světlý"
   base-theme-dark: "Tmavý"
@@ -454,6 +455,7 @@ common/views/components/user-menu.vue:
   suspend: "Zmrazit"
 common/views/components/poll.vue:
   vote-count: "{} hlasů"
+  total-votes: "{} hlasů celkem"
   vote: "Hlasovat"
   show-result: "Podívat se na výsledky"
   voted: "Už jste hlasovaly"
@@ -464,10 +466,21 @@ common/views/components/poll.vue:
   remaining-seconds: "zbývá {s} sekund"
 common/views/components/poll-editor.vue:
   no-only-one-choice: "Musíte vybrat alespoň dvě možnosti"
+  choice-n: "Volba {}"
+  remove: "Odstranit tuto možnost"
+  add: "+ Přidat možnost"
   destroy: "Zahodit dotazník"
+  expiration: "Termín"
   infinite: "Nekonečne"
   at: "Výběr data a času"
+  deadline-date: "Termín ukončení"
+  interval: "Trvání"
+  second: "Sekunda"
+  minute: "Minuta"
+  hour: "Hodina"
   day: "Ne"
+common/views/components/reaction-picker.vue:
+  choose-reaction: "Vyberte svoji reakci"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Emoji"
   people: "Lidé"
