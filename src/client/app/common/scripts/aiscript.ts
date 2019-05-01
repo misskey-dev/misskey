@@ -27,17 +27,26 @@ import {
 	faDice,
 	faSortNumericUp,
 	faExchangeAlt,
+	faRecycle,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
 import { version } from '../../config';
 
-export type Block = {
+export type Block<V = any> = {
 	id: string;
 	type: string;
 	args: Block[];
-	value: any;
+	value: V;
 };
+
+type FnBlock = Block<{
+	slots: {
+		name: string;
+		type: Type;
+	}[];
+	expression: Block;
+}>;
 
 export type Variable = Block & {
 	name: string;
@@ -53,6 +62,7 @@ type TypeError = {
 
 const funcDefs = {
 	if:              { in: ['boolean', 0, 0],              out: 0,         category: 'flow',       icon: faShareAlt, },
+	for:             { in: ['number', 'function'],         out: 0,         category: 'flow',       icon: faRecycle, },
 	not:             { in: ['boolean'],                    out: 'boolean', category: 'logical',    icon: faFlag, },
 	or:              { in: ['boolean', 'boolean'],         out: 'boolean', category: 'logical',    icon: faFlag, },
 	and:             { in: ['boolean', 'boolean'],         out: 'boolean', category: 'logical',    icon: faFlag, },
@@ -98,6 +108,10 @@ const blockDefs = [
 		type: k, out: v.out, category: v.category, icon: v.icon
 	}))
 ];
+
+function isFnBlock(block: Block): block is FnBlock {
+	return block.type === 'fn';
+}
 
 type PageVar = { name: string; value: any; type: Type; };
 
@@ -326,7 +340,7 @@ export class AiScript {
 	@autobind
 	private interpolate(str: string, values: { name: string, value: any }[]) {
 		return str.replace(/\{(.+?)\}/g, match => {
-			const v = this.getVariableValue(match.slice(1, -1).trim(), values);
+			const v = this.getVarVal(match.slice(1, -1).trim(), values);
 			return v == null ? 'NULL' : v.toString();
 		});
 	}
@@ -378,23 +392,23 @@ export class AiScript {
 		}
 
 		if (block.type === 'ref') {
-			return this.getVariableValue(block.value, values);
+			return this.getVarVal(block.value, values);
 		}
 
 		if (block.type === 'in') {
 			return slotArg[block.value];
 		}
 
-		if (block.type === 'fn') { // ユーザー関数定義
+		if (isFnBlock(block)) { // ユーザー関数定義
 			return {
-				slots: block.value.slots,
+				slots: block.value.slots.map(x => x.name),
 				exec: slotArg => this.evaluate(block.value.expression, values, slotArg)
 			};
 		}
 
 		if (block.type.startsWith('fn:')) { // ユーザー関数呼び出し
 			const fnName = block.type.split(':')[1];
-			const fn = this.getVariableValue(fnName, values);
+			const fn = this.getVarVal(fnName, values);
 			for (let i = 0; i < fn.slots.length; i++) {
 				const name = fn.slots[i];
 				slotArg[name] = this.evaluate(block.args[i], values);
@@ -418,6 +432,14 @@ export class AiScript {
 			or: (a, b) => a || b,
 			and: (a, b) => a && b,
 			if: (bool, a, b) => bool ? a : b,
+			for: (times, fn) => {
+				const result = [];
+				for (let i = 0; i < times; i++) {
+					slotArg[fn.slots[0]] = i + 1;
+					result.push(fn.exec(slotArg));
+				}
+				return result;
+			},
 			add: (a, b) => a + b,
 			subtract: (a, b) => a - b,
 			multiply: (a, b) => a * b,
@@ -449,8 +471,13 @@ export class AiScript {
 		return fn(...args);
 	}
 
+	/**
+	 * 指定した名前の変数の値を取得します
+	 * @param name 変数名
+	 * @param values ユーザー定義変数のリスト
+	 */
 	@autobind
-	private getVariableValue(name: string, values: { name: string, value: any }[]): any {
+	private getVarVal(name: string, values: { name: string, value: any }[]): any {
 		const v = values.find(v => v.name === name);
 		if (v) {
 			return v.value;

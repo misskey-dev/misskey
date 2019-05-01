@@ -35,15 +35,18 @@
 	</section>
 	<section v-else-if="value.type === 'in'" class="hpdwcrvs">
 		<select v-model="value.value">
-			<option v-for="v in fnSlots" :value="v">{{ v }}</option>
+			<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
 		</select>
 	</section>
-	<section v-else-if="value.type === 'fn'" class="" style="padding:16px;">
-		<ui-textarea v-model="slots"></ui-textarea>
+	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
+		<ui-textarea v-model="slots">
+			<span>{{ $t('script.blocks._fn.slots') }}</span>
+			<template #desc>{{ $t('script.blocks._fn.slots-info') }}</template>
+		</ui-textarea>
 		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :fn-slots="value.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="value.type.startsWith('fn:')" class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="aiScript.getVarByName(value.type.split(':')[1]).value.slots[i]" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="aiScript.getVarByName(value.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
 		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :fn-slots="fnSlots" :key="i"/>
@@ -118,7 +121,10 @@ export default Vue.extend({
 
 	watch: {
 		slots() {
-			this.value.value.slots = this.slots.split('\n');
+			this.value.value.slots = this.slots.split('\n').map(x => ({
+				name: x,
+				type: null
+			}));
 		}
 	},
 
@@ -129,7 +135,7 @@ export default Vue.extend({
 	created() {
 		if (this.value.value == null) Vue.set(this.value, 'value', null);
 
-		if (this.value.value && this.value.value.slots) this.slots = this.value.value.slots.join('\n');
+		if (this.value.value && this.value.value.slots) this.slots = this.value.value.slots.map(x => x.name).join('\n');
 
 		this.$watch('value.type', (t) => {
 			this.warn = null;

@@ -2036,12 +2036,18 @@ pages:
       _numberToString:
         arg1: "数値"
       ref: "変数"
-      in: "引数"
+      in: "スロット入力"
       _in:
         arg1: "スロット番号"
       fn: "関数"
       _fn:
+        slots: "スロット"
+        slots-info: "スロットひとつひとつを改行で区切ってください"
         arg1: "出力"
+      for: "繰り返し"
+      _for:
+        arg1: "回数"
+        arg2: "処理"
     typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
     thereIsEmptySlot: "スロット{slot}が空です！"
     types:
