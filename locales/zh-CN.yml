@@ -1826,12 +1826,18 @@ pages:
       dailyRandomPick: "从列表中随机选择(每个用户每日)"
       _dailyRandomPick:
         arg1: "列表"
+      seedRandom: "随机 (种子)"
       _seedRandom:
+        arg1: "种子"
         arg2: "概率"
+      seedRannum: "随机数(种子)"
       _seedRannum:
+        arg1: "种子"
         arg2: "最小"
         arg3: "最大"
+      seedRandomPick: "从列表中随机选择 (种子)"
       _seedRandomPick:
+        arg1: "种子"
         arg2: "列表"
       number: "数字"
       stringToNumber: "文本到数字"
@@ -1844,6 +1850,10 @@ pages:
       fn: "函数"
       _fn:
         arg1: "输出"
+      for: "重复"
+      _for:
+        arg1: "次数"
+        arg2: "处理"
     types:
       string: "文本"
       number: "数值"
