@@ -1744,6 +1744,8 @@ pages:
       strReverse: "文本反向"
       _strReverse:
         arg1: "文本"
+      _join:
+        arg1: "列表"
       add: "+ 加"
       _add:
         arg1: "A"
@@ -1817,6 +1819,13 @@ pages:
       dailyRandomPick: "从列表中随机选择(每个用户每日)"
       _dailyRandomPick:
         arg1: "列表"
+      _seedRandom:
+        arg2: "概率"
+      _seedRannum:
+        arg2: "最小"
+        arg3: "最大"
+      _seedRandomPick:
+        arg2: "列表"
       number: "数字"
       stringToNumber: "文本到数字"
       _stringToNumber:
