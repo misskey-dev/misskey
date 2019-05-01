@@ -1648,6 +1648,7 @@ dev/views/new-app.vue:
 pages:
   new-page: "创建页面"
   edit-page: "编辑页面"
+  read-page: "查看源"
   page-created: "页面已创建"
   page-updated: "页面已更新"
   are-you-sure-delete: "是否删除此页面？"
@@ -1744,8 +1745,14 @@ pages:
       strReverse: "文本反向"
       _strReverse:
         arg1: "文本"
+      strConcat: "合并两个文本"
+      _strConcat:
+        arg1: "文本1"
+        arg2: "文本"
+      join: "合并文本"
       _join:
         arg1: "列表"
+        arg2: "分隔符"
       add: "+ 加"
       _add:
         arg1: "A"
