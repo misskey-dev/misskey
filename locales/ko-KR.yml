@@ -1629,10 +1629,14 @@ pages:
     categories:
       random: "랜덤"
     blocks:
+      _join:
+        arg1: "리스트"
       random: "랜덤"
       _randomPick:
         arg1: "리스트"
       _dailyRandomPick:
         arg1: "리스트"
+      _seedRandomPick:
+        arg2: "리스트"
     types:
       array: "리스트"
