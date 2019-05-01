@@ -21,12 +21,12 @@ import i18n from '../../../../i18n';
 import { faICursor, faPlus, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
-import { AiScript } from '../../../scripts/aiscript';
+import { ASEvaluator } from '../../../../../../misc/aiscript/evaluator';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
 import { url } from '../../../../config';
 
 class Script {
-	public aiScript: AiScript;
+	public aiScript: ASEvaluator;
 	private onError: any;
 	public vars: Record<string, any>;
 
@@ -86,7 +86,7 @@ export default Vue.extend({
 		}).then(page => {
 			this.page = page;
 			const pageVars = this.getPageVars();
-			this.script = new Script(new AiScript(this.page.variables, pageVars, {
+			this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
 				randomSeed: Math.random(),
 				user: page.user,
 				visitor: this.$store.state.i,

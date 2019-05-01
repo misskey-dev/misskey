@@ -92,7 +92,8 @@ import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-
 import XVariable from './page-editor.script-block.vue';
 import XBlock from './page-editor.block.vue';
 import * as uuid from 'uuid';
-import { AiScript } from '../../../scripts/aiscript';
+import { blockDefs } from '../../../../../../misc/aiscript/index';
+import { ASTypeChecker } from '../../../../../../misc/aiscript/type-checker';
 import { url } from '../../../../config';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
 
@@ -150,14 +151,14 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.aiScript = new AiScript();
+		this.aiScript = new ASTypeChecker();
 
 		this.$watch('variables', () => {
-			this.aiScript.injectVars(this.variables);
+			this.aiScript.variables = this.variables;
 		}, { deep: true });
 
 		this.$watch('content', () => {
-			this.aiScript.injectPageVars(collectPageVars(this.content));
+			this.aiScript.pageVars = collectPageVars(this.content);
 		}, { deep: true });
 
 		if (this.page) {
@@ -352,7 +353,7 @@ export default Vue.extend({
 		getScriptBlockList(type: string = null) {
 			const list = [];
 
-			const blocks = AiScript.blockDefs.filter(block => type === null || block.out === null || block.out === type);
+			const blocks = blockDefs.filter(block => type === null || block.out === null || block.out === type);
 
 			for (const block of blocks) {
 				const category = list.find(x => x.category === block.category);

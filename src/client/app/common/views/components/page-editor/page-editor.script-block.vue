@@ -57,7 +57,7 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
 import { faSuperscript, faPencilAlt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
-import { AiScript } from '../../../scripts/aiscript';
+import { isLiteralBlock, funcDefs, blockDefs } from '../../../../../../misc/aiscript/index';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
@@ -97,7 +97,6 @@ export default Vue.extend({
 
 	data() {
 		return {
-			AiScript,
 			error: null,
 			warn: null,
 			slots: '',
@@ -109,7 +108,7 @@ export default Vue.extend({
 		icon(): any {
 			if (this.value.type === null) return null;
 			if (this.value.type.startsWith('fn:')) return null;
-			return AiScript.blockDefs.find(x => x.type === this.value.type).icon;
+			return blockDefs.find(x => x.type === this.value.type).icon;
 		},
 		typeText(): any {
 			if (this.value.type === null) return null;
@@ -160,17 +159,17 @@ export default Vue.extend({
 				return;
 			}
 
-			if (AiScript.isLiteralBlock(this.value)) return;
+			if (isLiteralBlock(this.value)) return;
 
 			const empties = [];
-			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
+			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {
 				const id = uuid.v4();
 				empties.push({ id, type: null });
 			}
 			Vue.set(this.value, 'args', empties);
 
-			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
-				const inType = AiScript.funcDefs[this.value.type].in[i];
+			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {
+				const inType = funcDefs[this.value.type].in[i];
 				if (typeof inType !== 'number') {
 					if (inType === 'number') this.value.args[i].type = 'number';
 					if (inType === 'string') this.value.args[i].type = 'text';
