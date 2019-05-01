@@ -1842,6 +1842,8 @@ pages:
       numberToString: "数字到文本"
       _numberToString:
         arg1: "数值"
+      _splitStrByLine:
+        arg1: "文本"
       ref: "变量"
       fn: "函数"
       _fn:
