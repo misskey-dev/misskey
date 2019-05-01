@@ -27,7 +27,7 @@ import { url } from '../../../../config';
 
 class Script {
 	public aiScript: AiScript;
-	public vars: any;
+	public vars: Record<string, any>;
 
 	constructor(aiScript) {
 		this.aiScript = aiScript;
@@ -41,7 +41,7 @@ class Script {
 	public interpolate(str: string) {
 		if (str == null) return null;
 		return str.replace(/\{(.+?)\}/g, match => {
-			const v = this.vars.find(x => x.name === match.slice(1, -1).trim()).value;
+			const v = this.vars[match.slice(1, -1).trim()];
 			return v == null ? 'NULL' : v.toString();
 		});
 	}

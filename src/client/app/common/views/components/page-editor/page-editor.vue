@@ -77,6 +77,7 @@
 			<template v-if="moreDetails">
 				<ui-info><span v-html="$t('variables-info2')"></span></ui-info>
 				<ui-info><span v-html="$t('variables-info3')"></span></ui-info>
+				<ui-info><span v-html="$t('variables-info4')"></span></ui-info>
 			</template>
 		</div>
 	</ui-container>

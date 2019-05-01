@@ -25,17 +25,15 @@
 	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
 			<option v-for="v in aiScript.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
+			<optgroup :label="$t('script.argVariables')">
+				<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
+			</optgroup>
 			<optgroup :label="$t('script.pageVariables')">
 				<option v-for="v in aiScript.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$t('script.enviromentVariables')">
 				<option v-for="v in aiScript.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
-		</select>
-	</section>
-	<section v-else-if="value.type === 'in'" class="hpdwcrvs">
-		<select v-model="value.value">
-			<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
 		</select>
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
@@ -115,6 +113,7 @@ export default Vue.extend({
 		},
 		typeText(): any {
 			if (this.value.type === null) return null;
+			if (this.value.type.startsWith('fn:')) return this.value.type.split(':')[1];
 			return this.$t(`script.blocks.${this.value.type}`);
 		},
 	},

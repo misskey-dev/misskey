@@ -101,7 +101,6 @@ const literalDefs = {
 	textList:      { out: 'stringArray', category: 'value', icon: faList, },
 	number:        { out: 'number',      category: 'value', icon: faSortNumericUp, },
 	ref:           { out: null,          category: 'value', icon: faSuperscript, },
-	in:            { out: null,          category: 'value', icon: faSuperscript, },
 	fn:            { out: 'function',    category: 'value', icon: faSuperscript, },
 };
 
@@ -138,6 +137,50 @@ const envVarsDef = {
 	SEED: null,
 	YMD: 'string',
 };
+
+class AiScriptError extends Error {
+	constructor(...params) {
+		super(...params);
+
+		// Maintains proper stack trace for where our error was thrown (only available on V8)
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, AiScriptError);
+		}
+	}
+}
+
+class Scope {
+	private layerdStates: Record<string, any>[];
+	public name: string;
+
+	constructor(layerdStates: Scope['layerdStates'], name?: Scope['name']) {
+		this.layerdStates = layerdStates;
+		this.name = name || 'anonymous';
+	}
+
+	@autobind
+	public createChildScope(states: Record<string, any>, name?: Scope['name']): Scope {
+		const layer = [states, ...this.layerdStates];
+		return new Scope(layer, name);
+	}
+
+	/**
+	 * 指定した名前の変数の値を取得します
+	 * @param name 変数名
+	 */
+	@autobind
+	public getState(name: string): any {
+		for (const later of this.layerdStates) {
+			const state = later[name];
+			if (state !== undefined) {
+				return state;
+			}
+		}
+
+		throw new AiScriptError(
+			`No such variable '${name}' in scope '${this.name}'`);
+	}
+}
 
 export class AiScript {
 	private variables: Variable[];
@@ -298,7 +341,7 @@ export class AiScript {
 			return null;
 		}
 		if (v.type === 'fn') return null; // todo
-		if (v.type === 'in') return null; // todo
+		if (v.type.startsWith('fn:')) return null; // todo
 
 		const generic: Type[] = [];
 
@@ -350,43 +393,34 @@ export class AiScript {
 	}
 
 	@autobind
-	private interpolate(str: string, values: { name: string, value: any }[]) {
+	private interpolate(str: string, scope: Scope) {
 		return str.replace(/\{(.+?)\}/g, match => {
-			const v = this.getVarVal(match.slice(1, -1).trim(), values);
+			const v = scope.getState(match.slice(1, -1).trim());
 			return v == null ? 'NULL' : v.toString();
 		});
 	}
 
 	@autobind
-	public evaluateVars() {
-		const values: { name: string, value: any }[] = [];
+	public evaluateVars(): Record<string, any> {
+		const values: Record<string, any> = {};
 
-		for (const v of this.variables) {
-			values.push({
-				name: v.name,
-				value: this.evaluate(v, values)
-			});
+		for (const [k, v] of Object.entries(this.envVars)) {
+			values[k] = v;
 		}
 
 		for (const v of this.pageVars) {
-			values.push({
-				name: v.name,
-				value: v.value
-			});
+			values[v.name] = v.value;
 		}
 
-		for (const [k, v] of Object.entries(this.envVars)) {
-			values.push({
-				name: k,
-				value: v
-			});
+		for (const v of this.variables) {
+			values[v.name] = this.evaluate(v, new Scope([values]));
 		}
 
 		return values;
 	}
 
 	@autobind
-	private evaluate(block: Block, values: { name: string, value: any }[], slotArg: Record<string, any> = {}): any {
+	private evaluate(block: Block, scope: Scope): any {
 		if (block.type === null) {
 			return null;
 		}
@@ -396,7 +430,7 @@ export class AiScript {
 		}
 
 		if (block.type === 'text' || block.type === 'multiLineText') {
-			return this.interpolate(block.value || '', values);
+			return this.interpolate(block.value || '', scope);
 		}
 
 		if (block.type === 'textList') {
@@ -404,28 +438,27 @@ export class AiScript {
 		}
 
 		if (block.type === 'ref') {
-			return this.getVarVal(block.value, values);
-		}
-
-		if (block.type === 'in') {
-			return slotArg[block.value];
+			return scope.getState(block.value);
 		}
 
 		if (isFnBlock(block)) { // ユーザー関数定義
 			return {
 				slots: block.value.slots.map(x => x.name),
-				exec: slotArg => this.evaluate(block.value.expression, values, slotArg)
+				exec: slotArg => {
+					return this.evaluate(block.value.expression, scope.createChildScope(slotArg, block.id));
+				}
 			};
 		}
 
 		if (block.type.startsWith('fn:')) { // ユーザー関数呼び出し
 			const fnName = block.type.split(':')[1];
-			const fn = this.getVarVal(fnName, values);
+			const fn = scope.getState(fnName);
+			const args = {};
 			for (let i = 0; i < fn.slots.length; i++) {
 				const name = fn.slots[i];
-				slotArg[name] = this.evaluate(block.args[i], values);
+				args[name] = this.evaluate(block.args[i], scope);
 			}
-			return fn.exec(slotArg);
+			return fn.exec(args);
 		}
 
 		if (block.args === undefined) return null;
@@ -447,8 +480,9 @@ export class AiScript {
 			for: (times, fn) => {
 				const result = [];
 				for (let i = 0; i < times; i++) {
-					slotArg[fn.slots[0]] = i + 1;
-					result.push(fn.exec(slotArg));
+					result.push(fn.exec({
+						[fn.slots[0]]: i + 1
+					}));
 				}
 				return result;
 			},
@@ -476,40 +510,12 @@ export class AiScript {
 		};
 
 		const fnName = block.type;
-
 		const fn = funcs[fnName];
 		if (fn == null) {
-			console.error('Unknown function: ' + fnName);
-			throw new Error('Unknown function: ' + fnName);
+			throw new AiScriptError(`No such function '${fnName}'`);
+		} else {
+			return fn(...block.args.map(x => this.evaluate(x, scope)));
 		}
-
-		const args = block.args.map(x => this.evaluate(x, values, slotArg));
-
-		return fn(...args);
-	}
-
-	/**
-	 * 指定した名前の変数の値を取得します
-	 * @param name 変数名
-	 * @param values ユーザー定義変数のリスト
-	 */
-	@autobind
-	private getVarVal(name: string, values: { name: string, value: any }[]): any {
-		const v = values.find(v => v.name === name);
-		if (v) {
-			return v.value;
-		}
-
-		const pageVar = this.pageVars.find(v => v.name === name);
-		if (pageVar) {
-			return pageVar.value;
-		}
-
-		if (AiScript.envVarsDef[name] !== undefined) {
-			return this.envVars[name];
-		}
-
-		throw new Error(`Script: No such variable '${name}'`);
 	}
 
 	@autobind
