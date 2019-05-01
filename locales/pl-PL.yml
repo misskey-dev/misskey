@@ -1217,10 +1217,14 @@ pages:
     categories:
       random: "Losowy"
     blocks:
+      _join:
+        arg1: "Listy"
       random: "Losowy"
       _randomPick:
         arg1: "Listy"
       _dailyRandomPick:
         arg1: "Listy"
+      _seedRandomPick:
+        arg2: "Listy"
     types:
       array: "Listy"
