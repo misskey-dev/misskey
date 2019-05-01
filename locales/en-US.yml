@@ -1831,8 +1831,6 @@ pages:
       _numberToString:
         arg1: "Number"
       ref: "Variables"
-      _in:
-        arg1: "Number of slots"
       fn: "Function"
       _fn:
         arg1: "Output"
