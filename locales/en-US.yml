@@ -1743,6 +1743,8 @@ pages:
       strReverse: "Flip text"
       _strReverse:
         arg1: "Text"
+      _join:
+        arg1: "Lists"
       add: "+ Plus"
       _add:
         arg1: "A"
@@ -1814,6 +1816,13 @@ pages:
       dailyRandomPick: "Choose at random from the list (Daily for each user)"
       _dailyRandomPick:
         arg1: "Lists"
+      _seedRandom:
+        arg2: "Probability"
+      _seedRannum:
+        arg2: "Minimum"
+        arg3: "Maximum"
+      _seedRandomPick:
+        arg2: "Lists"
       number: "Number"
       stringToNumber: "Text to number"
       _stringToNumber:
