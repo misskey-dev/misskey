@@ -184,6 +184,7 @@ async function main() {
 	async function migrateDriveFolder(folder: any) {
 		await DriveFolders.save({
 			id: folder._id.toHexString(),
+			userId: folder.userId.toHexString(),
 			createdAt: folder.createdAt || new Date(),
 			name: folder.name,
 			parentId: folder.parentId ? folder.parentId.toHexString() : null,
