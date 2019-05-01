@@ -1830,6 +1830,8 @@ pages:
       numberToString: "Number to text"
       _numberToString:
         arg1: "Number"
+      _splitStrByLine:
+        arg1: "Text"
       ref: "Variables"
       fn: "Function"
       _fn:
