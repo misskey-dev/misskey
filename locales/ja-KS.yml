@@ -1270,10 +1270,14 @@ pages:
     categories:
       random: "いんじゃんほい"
     blocks:
+      _join:
+        arg1: "リスト"
       random: "いんじゃんほい"
       _randomPick:
         arg1: "リスト"
       _dailyRandomPick:
         arg1: "リスト"
+      _seedRandomPick:
+        arg2: "リスト"
     types:
       array: "リスト"
