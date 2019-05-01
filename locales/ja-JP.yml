@@ -1953,10 +1953,6 @@ pages:
       strReverse: "テキストを反転"
       _strReverse:
         arg1: "テキスト"
-      strConcat: "2つのテキストを連結"
-      _strConcat:
-        arg1: "テキスト1"
-        arg2: "テキスト2"
       join: "テキストを連結"
       _join:
         arg1: "リスト"
