@@ -36,10 +36,10 @@
 				</ui-select>
 
 				<div class="eyeCatch">
-					<ui-button v-if="eyeCatchingImageId == null" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catchig-image') }}</ui-button>
+					<ui-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catchig-image') }}</ui-button>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-						<ui-button @click="removeEyeCatchingImage()"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catchig-image') }}</ui-button>
+						<ui-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catchig-image') }}</ui-button>
 					</div>
 				</div>
 			</template>
@@ -81,14 +81,22 @@
 			</template>
 		</div>
 	</ui-container>
+
+	<ui-container :body-togglable="true" :expanded="false">
+		<template #header><fa :icon="faCode"/> {{ $t('inspector') }}</template>
+		<div style="padding:0 32px 32px 32px;">
+			<ui-textarea :value="JSON.stringify(content, null, 2)" readonly tall>{{ $t('content') }}</ui-textarea>
+			<ui-textarea :value="JSON.stringify(variables, null, 2)" readonly tall>{{ $t('variables') }}</ui-textarea>
+		</div>
+	</ui-container>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../../i18n';
-import { faICursor, faPlus, faMagic, faCog, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import i18n from '../../../../i18n';
 import XVariable from './page-editor.script-block.vue';
 import XBlock from './page-editor.block.vue';
 import * as uuid from 'uuid';
@@ -106,7 +114,7 @@ export default Vue.extend({
 
 	props: {
 		page: {
-			type: String,
+			type: Object,
 			required: false
 		},
 		readonly: {
@@ -134,7 +142,7 @@ export default Vue.extend({
 			showOptions: false,
 			moreDetails: false,
 			url,
-			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt
+			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode
 		};
 	},
 
@@ -162,21 +170,17 @@ export default Vue.extend({
 		}, { deep: true });
 
 		if (this.page) {
-			this.$root.api('pages/show', {
-				pageId: this.page,
-			}).then(page => {
-				this.author = page.user;
-				this.pageId = page.id;
-				this.title = page.title;
-				this.name = page.name;
-				this.currentName = page.name;
-				this.summary = page.summary;
-				this.font = page.font;
-				this.alignCenter = page.alignCenter;
-				this.content = page.content;
-				this.variables = page.variables;
-				this.eyeCatchingImageId = page.eyeCatchingImageId;
-			});
+			this.author = this.page.user;
+			this.pageId = this.page.id;
+			this.title = this.page.title;
+			this.name = this.page.name;
+			this.currentName = this.page.name;
+			this.summary = this.page.summary;
+			this.font = this.page.font;
+			this.alignCenter = this.page.alignCenter;
+			this.content = this.page.content;
+			this.variables = this.page.variables;
+			this.eyeCatchingImageId = this.page.eyeCatchingImageId;
 		} else {
 			const id = uuid.v4();
 			this.content = [{

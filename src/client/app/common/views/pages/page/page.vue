@@ -11,6 +11,7 @@
 	<footer>
 		<small>@{{ page.user.username }}</small>
 		<router-link v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId" :to="`/i/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
+		<router-link :to="`./${page.name}/view-source`">{{ $t('view-source') }}</router-link>
 	</footer>
 </div>
 </template>
@@ -153,5 +154,11 @@ export default Vue.extend({
 		> small
 			display block
 			opacity 0.5
+
+		> a
+			font-size 14px
+
+		> a + a
+			margin-left 8px
 
 </style>
