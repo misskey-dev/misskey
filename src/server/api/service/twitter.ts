@@ -141,12 +141,8 @@ router.get('/tw/cb', async ctx => {
 		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where('twitter @> :twitter', {
-				twitter: {
-					userId: result.userId,
-				},
-			})
-			.andWhere('userHost IS NULL')
+			.where('"twitterUserId" = :id', { id: result.userId })
+			.andWhere('"userHost" IS NULL')
 			.getOne();
 
 		if (link == null) {
