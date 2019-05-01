@@ -1731,6 +1731,8 @@ pages:
       text: "Text"
       multiLineText: "Text (Multiple lines)"
       textList: "List of text"
+      _textList:
+        info: "Separate each one with a newline"
       strLen: "Length of text"
       _strLen:
         arg1: "Text"
