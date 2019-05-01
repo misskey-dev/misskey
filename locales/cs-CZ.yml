@@ -1221,10 +1221,14 @@ pages:
     categories:
       random: "Náhodně"
     blocks:
+      _join:
+        arg1: "Seznamy"
       random: "Náhodně"
       _randomPick:
         arg1: "Seznamy"
       _dailyRandomPick:
         arg1: "Seznamy"
+      _seedRandomPick:
+        arg2: "Seznamy"
     types:
       array: "Seznamy"
