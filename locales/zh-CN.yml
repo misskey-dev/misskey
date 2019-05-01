@@ -1745,10 +1745,6 @@ pages:
       strReverse: "文本反向"
       _strReverse:
         arg1: "文本"
-      strConcat: "合并两个文本"
-      _strConcat:
-        arg1: "文本1"
-        arg2: "文本"
       join: "合并文本"
       _join:
         arg1: "列表"
