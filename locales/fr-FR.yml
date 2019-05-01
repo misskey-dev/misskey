@@ -1610,10 +1610,14 @@ pages:
     categories:
       random: "Aléatoire"
     blocks:
+      _join:
+        arg1: "Listes"
       random: "Aléatoire"
       _randomPick:
         arg1: "Listes"
       _dailyRandomPick:
         arg1: "Listes"
+      _seedRandomPick:
+        arg2: "Listes"
     types:
       array: "Listes"
