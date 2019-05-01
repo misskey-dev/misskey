@@ -139,8 +139,12 @@ const envVarsDef = {
 };
 
 class AiScriptError extends Error {
-	constructor(...params) {
-		super(...params);
+	public info?: any;
+
+	constructor(message: string, info?: any) {
+		super(message);
+
+		this.info = info;
 
 		// Maintains proper stack trace for where our error was thrown (only available on V8)
 		if (Error.captureStackTrace) {
@@ -178,7 +182,9 @@ class Scope {
 		}
 
 		throw new AiScriptError(
-			`No such variable '${name}' in scope '${this.name}'`);
+			`No such variable '${name}' in scope '${this.name}'`, {
+				scope: this.layerdStates
+			});
 	}
 }
 

@@ -27,15 +27,21 @@ import { url } from '../../../../config';
 
 class Script {
 	public aiScript: AiScript;
+	private onError: any;
 	public vars: Record<string, any>;
 
-	constructor(aiScript) {
+	constructor(aiScript, onError) {
 		this.aiScript = aiScript;
-		this.vars = this.aiScript.evaluateVars();
+		this.onError = onError;
+		this.eval();
 	}
 
-	public reEval() {
-		this.vars = this.aiScript.evaluateVars();
+	public eval() {
+		try {
+			this.vars = this.aiScript.evaluateVars();
+		} catch (e) {
+			this.onError(e);
+		}
 	}
 
 	public interpolate(str: string) {
@@ -86,7 +92,9 @@ export default Vue.extend({
 				visitor: this.$store.state.i,
 				page: page,
 				url: url
-			}));
+			}), e => {
+				console.dir(e);
+			});
 		});
 	},
 
