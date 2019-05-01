@@ -2050,7 +2050,7 @@ pages:
       _seedRandomPick:
         arg1: "シード"
         arg2: "リスト"
-      number: "数"
+      number: "数値"
       stringToNumber: "テキストを数値に"
       _stringToNumber:
         arg1: "テキスト"
