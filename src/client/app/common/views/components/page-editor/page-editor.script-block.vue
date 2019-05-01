@@ -56,7 +56,7 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { isLiteralBlock, funcDefs, blockDefs } from '../../../../../../misc/aiscript/index';
 import * as uuid from 'uuid';
 
@@ -107,7 +107,7 @@ export default Vue.extend({
 	computed: {
 		icon(): any {
 			if (this.value.type === null) return null;
-			if (this.value.type.startsWith('fn:')) return null;
+			if (this.value.type.startsWith('fn:')) return faPlug;
 			return blockDefs.find(x => x.type === this.value.type).icon;
 		},
 		typeText(): any {
