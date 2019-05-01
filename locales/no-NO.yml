@@ -496,10 +496,14 @@ pages:
     categories:
       random: "Tilfeldig"
     blocks:
+      _join:
+        arg1: "Lister"
       random: "Tilfeldig"
       _randomPick:
         arg1: "Lister"
       _dailyRandomPick:
         arg1: "Lister"
+      _seedRandomPick:
+        arg2: "Lister"
     types:
       array: "Lister"
