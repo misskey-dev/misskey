@@ -976,10 +976,14 @@ pages:
     categories:
       random: "Aleatorio"
     blocks:
+      _join:
+        arg1: "Listas"
       random: "Aleatorio"
       _randomPick:
         arg1: "Listas"
       _dailyRandomPick:
         arg1: "Listas"
+      _seedRandomPick:
+        arg2: "Listas"
     types:
       array: "Listas"
