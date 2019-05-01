@@ -62,7 +62,7 @@ type TypeError = {
 
 const funcDefs = {
 	if:              { in: ['boolean', 0, 0],              out: 0,         category: 'flow',       icon: faShareAlt, },
-	for:             { in: ['number', 'function'],         out: 0,         category: 'flow',       icon: faRecycle, },
+	for:             { in: ['number', 'function'],         out: null,      category: 'flow',       icon: faRecycle, },
 	not:             { in: ['boolean'],                    out: 'boolean', category: 'logical',    icon: faFlag, },
 	or:              { in: ['boolean', 'boolean'],         out: 'boolean', category: 'logical',    icon: faFlag, },
 	and:             { in: ['boolean', 'boolean'],         out: 'boolean', category: 'logical',    icon: faFlag, },
@@ -80,14 +80,19 @@ const funcDefs = {
 	strPick:         { in: ['string', 'number'],           out: 'string',  category: 'text',       icon: faQuoteRight, },
 	strReplace:      { in: ['string', 'string', 'string'], out: 'string',  category: 'text',       icon: faQuoteRight, },
 	strReverse:      { in: ['string'],                     out: 'string',  category: 'text',       icon: faQuoteRight, },
+	strConcat:       { in: ['string', 'string'],           out: 'string',  category: 'text',       icon: faQuoteRight, },
+	join:            { in: ['stringArray', 'string'],      out: 'string',  category: 'text',       icon: faQuoteRight, },
 	stringToNumber:  { in: ['string'],                     out: 'number',  category: 'convert',    icon: faExchangeAlt, },
 	numberToString:  { in: ['number'],                     out: 'string',  category: 'convert',    icon: faExchangeAlt, },
 	rannum:          { in: ['number', 'number'],           out: 'number',  category: 'random',     icon: faDice, },
 	dailyRannum:     { in: ['number', 'number'],           out: 'number',  category: 'random',     icon: faDice, },
+	seedRannum:      { in: [null, 'number', 'number'],     out: 'number',  category: 'random',     icon: faDice, },
 	random:          { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
 	dailyRandom:     { in: ['number'],                     out: 'boolean', category: 'random',     icon: faDice, },
+	seedRandom:      { in: [null, 'number'],               out: 'boolean', category: 'random',     icon: faDice, },
 	randomPick:      { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 	dailyRandomPick: { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
+	seedRandomPick:  { in: [null, 0],                      out: 0,         category: 'random',     icon: faDice, },
 };
 
 const literalDefs = {
@@ -130,6 +135,8 @@ const envVarsDef = {
 	MY_NOTES_COUNT: 'number',
 	MY_FOLLOWERS_COUNT: 'number',
 	MY_FOLLOWING_COUNT: 'number',
+	SEED: null,
+	YMD: 'string',
 };
 
 export class AiScript {
@@ -149,6 +156,8 @@ export class AiScript {
 		this.pageVars = pageVars;
 		this.opts = opts;
 
+		const date = new Date();
+
 		this.envVars = {
 			AI: 'kawaii',
 			VERSION: version,
@@ -164,6 +173,8 @@ export class AiScript {
 			MY_NOTES_COUNT: opts.user ? opts.user.notesCount : 0,
 			MY_FOLLOWERS_COUNT: opts.user ? opts.user.followersCount : 0,
 			MY_FOLLOWING_COUNT: opts.user ? opts.user.followingCount : 0,
+			SEED: opts.randomSeed ? opts.randomSeed : '',
+			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
 		};
 	}
 
@@ -185,6 +196,7 @@ export class AiScript {
 	@autobind
 	public updateRandomSeed(seed: string) {
 		this.opts.randomSeed = seed;
+		this.envVars.SEED = seed;
 	}
 
 	@autobind
@@ -279,7 +291,7 @@ export class AiScript {
 			}
 
 			const envVar = AiScript.envVarsDef[v.value];
-			if (envVar) {
+			if (envVar !== undefined) {
 				return envVar;
 			}
 
@@ -328,7 +340,7 @@ export class AiScript {
 	@autobind
 	public getEnvVarsByType(type: Type | null): string[] {
 		if (type == null) return Object.keys(AiScript.envVarsDef);
-		return Object.entries(AiScript.envVarsDef).filter(([k, v]) => type === v).map(([k, v]) => k);
+		return Object.entries(AiScript.envVarsDef).filter(([k, v]) => v === null || type === v).map(([k, v]) => k);
 	}
 
 	@autobind
@@ -384,7 +396,7 @@ export class AiScript {
 		}
 
 		if (block.type === 'text' || block.type === 'multiLineText') {
-			return this.interpolate(block.value, values);
+			return this.interpolate(block.value || '', values);
 		}
 
 		if (block.type === 'textList') {
@@ -419,7 +431,7 @@ export class AiScript {
 		if (block.args === undefined) return null;
 
 		const date = new Date();
-		const day = `${this.opts.visitor ? this.opts.visitor.id : ''} ${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`;
+		const day = `${this.opts.visitor ? this.opts.visitor.id : ''} ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 
 		const funcs: { [p in keyof typeof funcDefs]: any } = {
 			not: (a) => !a,
@@ -448,6 +460,8 @@ export class AiScript {
 			strPick: (a, b) => a[b - 1],
 			strReplace: (a, b, c) => a.split(b).join(c),
 			strReverse: (a) => a.split('').reverse().join(''),
+			strConcat: (a, b) => a + b,
+			join: (texts, separator) => texts.join(separator || ''),
 			stringToNumber: (a) => parseInt(a),
 			numberToString: (a) => a.toString(),
 			random: (probability) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
@@ -456,6 +470,9 @@ export class AiScript {
 			dailyRandom: (probability) => Math.floor(seedrandom(`${day}:${block.id}`)() * 100) < probability,
 			dailyRannum: (min, max) => min + Math.floor(seedrandom(`${day}:${block.id}`)() * (max - min + 1)),
 			dailyRandomPick: (list) => list[Math.floor(seedrandom(`${day}:${block.id}`)() * list.length)],
+			seedRandom: (seed, probability) => Math.floor(seedrandom(seed)() * 100) < probability,
+			seedRannum: (seed, min, max) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
+			seedRandomPick: (seed, list) => list[Math.floor(seedrandom(seed)() * list.length)],
 		};
 
 		const fnName = block.type;
@@ -488,7 +505,7 @@ export class AiScript {
 			return pageVar.value;
 		}
 
-		if (AiScript.envVarsDef[name]) {
+		if (AiScript.envVarsDef[name] !== undefined) {
 			return this.envVars[name];
 		}
 

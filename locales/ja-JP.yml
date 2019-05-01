@@ -1952,6 +1952,14 @@ pages:
       strReverse: "テキストを反転"
       _strReverse:
         arg1: "テキスト"
+      strConcat: "2つのテキストを連結"
+      _strConcat:
+        arg1: "テキスト1"
+        arg2: "テキスト2"
+      join: "テキストを連結"
+      _join:
+        arg1: "リスト"
+        arg2: "区切り"
       add: "+ 足す"
       _add:
         arg1: "A"
@@ -2028,6 +2036,19 @@ pages:
       dailyRandomPick: "リストからランダムに選択 (ユーザーごとに日替わり)"
       _dailyRandomPick:
         arg1: "リスト"
+      seedRandom: "ランダム (シード)"
+      _seedRandom:
+        arg1: "シード"
+        arg2: "確率"
+      seedRannum: "乱数 (シード)"
+      _seedRannum:
+        arg1: "シード"
+        arg2: "最小"
+        arg3: "最大"
+      seedRandomPick: "リストからランダムに選択 (シード)"
+      _seedRandomPick:
+        arg1: "シード"
+        arg2: "リスト"
       number: "数"
       stringToNumber: "テキストを数値に"
       _stringToNumber:
