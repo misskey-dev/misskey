@@ -1848,11 +1848,15 @@ pages:
   are-you-sure-delete: "このページを削除しますか？"
   page-deleted: "ページを削除しました"
   edit-this-page: "このページを編集"
+  view-source: "ソースを表示"
   view-page: "ページを見る"
+  inspector: "インスペクター"
+  content: "ページブロック"
   variables: "変数"
   variables-info: "変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。"
   variables-info2: "変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。"
   variables-info3: "ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。"
+  variables-info4: "関数を使うと、値の算出処理を再利用可能な形にまとめることができます。関数を作るには、「関数」タイプの変数を作成します。関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、AiScript標準で関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。"
   more-details: "詳しい説明"
   title: "タイトル"
   url: "ページURL"
@@ -1952,6 +1956,10 @@ pages:
       strReverse: "テキストを反転"
       _strReverse:
         arg1: "テキスト"
+      join: "テキストを連結"
+      _join:
+        arg1: "リスト"
+        arg2: "区切り"
       add: "+ 足す"
       _add:
         arg1: "A"
@@ -2028,20 +2036,39 @@ pages:
       dailyRandomPick: "リストからランダムに選択 (ユーザーごとに日替わり)"
       _dailyRandomPick:
         arg1: "リスト"
-      number: "数"
+      seedRandom: "ランダム (シード)"
+      _seedRandom:
+        arg1: "シード"
+        arg2: "確率"
+      seedRannum: "乱数 (シード)"
+      _seedRannum:
+        arg1: "シード"
+        arg2: "最小"
+        arg3: "最大"
+      seedRandomPick: "リストからランダムに選択 (シード)"
+      _seedRandomPick:
+        arg1: "シード"
+        arg2: "リスト"
+      number: "数値"
       stringToNumber: "テキストを数値に"
       _stringToNumber:
         arg1: "テキスト"
       numberToString: "数値をテキストに"
       _numberToString:
         arg1: "数値"
+      splitStrByLine: "テキストを行で分割"
+      _splitStrByLine:
+        arg1: "テキスト"
       ref: "変数"
-      in: "引数"
-      _in:
-        arg1: "スロット番号"
       fn: "関数"
       _fn:
+        slots: "スロット"
+        slots-info: "スロットひとつひとつを改行で区切ってください"
         arg1: "出力"
+      for: "繰り返し"
+      _for:
+        arg1: "回数"
+        arg2: "処理"
     typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
     thereIsEmptySlot: "スロット{slot}が空です！"
     types:
@@ -2053,3 +2080,4 @@ pages:
     emptySlot: "空のスロット"
     enviromentVariables: "環境変数"
     pageVariables: "ページ要素"
+    argVariables: "入力スロット"

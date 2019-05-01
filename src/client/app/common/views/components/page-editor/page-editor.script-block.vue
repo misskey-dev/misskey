@@ -25,6 +25,9 @@
 	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
 			<option v-for="v in aiScript.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
+			<optgroup :label="$t('script.argVariables')">
+				<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
+			</optgroup>
 			<optgroup :label="$t('script.pageVariables')">
 				<option v-for="v in aiScript.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
@@ -33,17 +36,15 @@
 			</optgroup>
 		</select>
 	</section>
-	<section v-else-if="value.type === 'in'" class="hpdwcrvs">
-		<select v-model="value.value">
-			<option v-for="v in fnSlots" :value="v">{{ v }}</option>
-		</select>
-	</section>
-	<section v-else-if="value.type === 'fn'" class="" style="padding:16px;">
-		<ui-textarea v-model="slots"></ui-textarea>
+	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
+		<ui-textarea v-model="slots">
+			<span>{{ $t('script.blocks._fn.slots') }}</span>
+			<template #desc>{{ $t('script.blocks._fn.slots-info') }}</template>
+		</ui-textarea>
 		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :fn-slots="value.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="value.type.startsWith('fn:')" class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="aiScript.getVarByName(value.type.split(':')[1]).value.slots[i]" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="aiScript.getVarByName(value.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
 		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :fn-slots="fnSlots" :key="i"/>
@@ -55,8 +56,8 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
-import { faSuperscript, faPencilAlt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
-import { AiScript } from '../../../scripts/aiscript';
+import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
+import { isLiteralBlock, funcDefs, blockDefs } from '../../../../../../misc/aiscript/index';
 import * as uuid from 'uuid';
 
 export default Vue.extend({
@@ -96,29 +97,32 @@ export default Vue.extend({
 
 	data() {
 		return {
-			AiScript,
 			error: null,
 			warn: null,
 			slots: '',
-			faSuperscript, faPencilAlt, faSquareRootAlt
+			faPencilAlt
 		};
 	},
 
 	computed: {
 		icon(): any {
 			if (this.value.type === null) return null;
-			if (this.value.type.startsWith('fn:')) return null;
-			return AiScript.blockDefs.find(x => x.type === this.value.type).icon;
+			if (this.value.type.startsWith('fn:')) return faPlug;
+			return blockDefs.find(x => x.type === this.value.type).icon;
 		},
 		typeText(): any {
 			if (this.value.type === null) return null;
+			if (this.value.type.startsWith('fn:')) return this.value.type.split(':')[1];
 			return this.$t(`script.blocks.${this.value.type}`);
 		},
 	},
 
 	watch: {
 		slots() {
-			this.value.value.slots = this.slots.split('\n');
+			this.value.value.slots = this.slots.split('\n').map(x => ({
+				name: x,
+				type: null
+			}));
 		}
 	},
 
@@ -129,7 +133,7 @@ export default Vue.extend({
 	created() {
 		if (this.value.value == null) Vue.set(this.value, 'value', null);
 
-		if (this.value.value && this.value.value.slots) this.slots = this.value.value.slots.join('\n');
+		if (this.value.value && this.value.value.slots) this.slots = this.value.value.slots.map(x => x.name).join('\n');
 
 		this.$watch('value.type', (t) => {
 			this.warn = null;
@@ -155,17 +159,17 @@ export default Vue.extend({
 				return;
 			}
 
-			if (AiScript.isLiteralBlock(this.value)) return;
+			if (isLiteralBlock(this.value)) return;
 
 			const empties = [];
-			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
+			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {
 				const id = uuid.v4();
 				empties.push({ id, type: null });
 			}
 			Vue.set(this.value, 'args', empties);
 
-			for (let i = 0; i < AiScript.funcDefs[this.value.type].in.length; i++) {
-				const inType = AiScript.funcDefs[this.value.type].in[i];
+			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {
+				const inType = funcDefs[this.value.type].in[i];
 				if (typeof inType !== 'number') {
 					if (inType === 'number') this.value.args[i].type = 'number';
 					if (inType === 'string') this.value.args[i].type = 'text';

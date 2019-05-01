@@ -20,13 +20,13 @@ export default Vue.extend({
 	methods: {
 		click() {
 			if (this.value.action === 'dialog') {
-				this.script.reEval();
+				this.script.eval();
 				this.$root.dialog({
 					text: this.script.interpolate(this.value.content)
 				});
 			} else if (this.value.action === 'resetRandom') {
 				this.script.aiScript.updateRandomSeed(Math.random());
-				this.script.reEval();
+				this.script.eval();
 			}
 		}
 	}

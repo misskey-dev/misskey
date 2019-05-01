@@ -146,7 +146,7 @@ init((launch, os) => {
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/i/drive/file/:file', component: MkDrive },
 			{ path: '/i/pages/new', component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
-			{ path: '/i/pages/edit/:page', props: true, component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
+			{ path: '/i/pages/edit/:pageId', props: true, component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
@@ -160,6 +160,7 @@ init((launch, os) => {
 				{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
 			]},
 			{ path: '/@:user/pages/:page', props: true, component: () => import('./views/pages/page.vue').then(m => m.default) },
+			{ path: '/@:user/pages/:pageName/view-source', props: true, component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
 			{ path: '/notes/:note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '*', component: MkNotFound }

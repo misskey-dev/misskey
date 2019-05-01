@@ -1,5 +1,5 @@
 <template>
-<div v-show="script.vars.find(x => x.name === value.var).value">
+<div v-show="script.vars[value.var]">
 	<x-block v-for="child in value.children" :value="child" :page="page" :script="script" :key="child.id" :h="h"/>
 </div>
 </template>

@@ -11,6 +11,7 @@
 	<footer>
 		<small>@{{ page.user.username }}</small>
 		<router-link v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId" :to="`/i/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
+		<router-link :to="`./${page.name}/view-source`">{{ $t('view-source') }}</router-link>
 	</footer>
 </div>
 </template>
@@ -18,30 +19,36 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faICursor, faPlus, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
-import { AiScript } from '../../../scripts/aiscript';
+import { ASEvaluator } from '../../../../../../misc/aiscript/evaluator';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
 import { url } from '../../../../config';
 
 class Script {
-	public aiScript: AiScript;
-	public vars: any;
+	public aiScript: ASEvaluator;
+	private onError: any;
+	public vars: Record<string, any>;
 
-	constructor(aiScript) {
+	constructor(aiScript, onError) {
 		this.aiScript = aiScript;
-		this.vars = this.aiScript.evaluateVars();
+		this.onError = onError;
+		this.eval();
 	}
 
-	public reEval() {
-		this.vars = this.aiScript.evaluateVars();
+	public eval() {
+		try {
+			this.vars = this.aiScript.evaluateVars();
+		} catch (e) {
+			this.onError(e);
+		}
 	}
 
 	public interpolate(str: string) {
 		if (str == null) return null;
 		return str.replace(/\{(.+?)\}/g, match => {
-			const v = this.vars.find(x => x.name === match.slice(1, -1).trim()).value;
+			const v = this.vars[match.slice(1, -1).trim()];
 			return v == null ? 'NULL' : v.toString();
 		});
 	}
@@ -69,7 +76,7 @@ export default Vue.extend({
 		return {
 			page: null,
 			script: null,
-			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
+			faPlus, faICursor, faSave, faStickyNote
 		};
 	},
 
@@ -80,13 +87,15 @@ export default Vue.extend({
 		}).then(page => {
 			this.page = page;
 			const pageVars = this.getPageVars();
-			this.script = new Script(new AiScript(this.page.variables, pageVars, {
+			this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
 				randomSeed: Math.random(),
 				user: page.user,
 				visitor: this.$store.state.i,
 				page: page,
 				url: url
-			}));
+			}), e => {
+				console.dir(e);
+			});
 		});
 	},
 
@@ -145,5 +154,11 @@ export default Vue.extend({
 		> small
 			display block
 			opacity 0.5
+
+		> a
+			font-size 14px
+
+		> a + a
+			margin-left 8px
 
 </style>

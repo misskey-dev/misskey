@@ -42,6 +42,19 @@ mongodb:
 8. master ブランチに戻す
 9. enjoy
 
+11.8.0 (2019/05/01)
+-------------------
+### Improvements
+* MisskeyPagesで関数を作成できるように
+* MisskeyPagesでソースを表示できるように
+* MisskeyPagesにシードを与えるランダム関数を追加
+* MisskeyPagesに複数行テキストをテキストのリストに変換する関数を追加
+
+### Fixes
+* APIドキュメントが見れなくなっていたのを修正
+* mention (あなた宛て) streaming にミュートが効かない問題を修正
+* デザインの調整
+
 11.7.0 (2019/04/30)
 -------------------
 ### Improvements
@@ -50,6 +63,7 @@ mongodb:
 * MisskeyPagesに 複数行テキスト入力 を追加
 * MisskeyPagesに 投稿フォーム を追加
 * MisskeyPagesに 変換系関数 を追加
+* MisskeyPagesに 環境変数 URL を追加
 * MisskeyPagesでボタンやスイッチなどのテキストに変数使えるように
 
 ### Fixes

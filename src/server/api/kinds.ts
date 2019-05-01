@@ -18,5 +18,7 @@ export const kinds = [
 	'write:notifications',
 	'read:reactions',
 	'write:reactions',
-	'write:votes'
+	'write:votes',
+	'read:pages',
+	'write:pages',
 ];
