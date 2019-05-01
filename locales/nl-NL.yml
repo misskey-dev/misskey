@@ -624,9 +624,13 @@ pages:
     image: "Afbeeldingen"
   script:
     blocks:
+      _join:
+        arg1: "Lijsten"
       _randomPick:
         arg1: "Lijsten"
       _dailyRandomPick:
         arg1: "Lijsten"
+      _seedRandomPick:
+        arg2: "Lijsten"
     types:
       array: "Lijsten"
