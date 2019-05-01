@@ -54,6 +54,7 @@ common:
   month-and-day: "{month}-{day}"
   trash: "Kosz"
   drive: "Dysk"
+  pages: "Strony"
   messaging: "Rozmowy"
   home: "Strona główna"
   deck: "Tablice"
