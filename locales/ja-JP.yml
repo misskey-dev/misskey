@@ -2053,6 +2053,9 @@ pages:
       numberToString: "数値をテキストに"
       _numberToString:
         arg1: "数値"
+      splitStrByLine: "テキストを行で分割"
+      _splitStrByLine:
+        arg1: "テキスト"
       ref: "変数"
       fn: "関数"
       _fn:
