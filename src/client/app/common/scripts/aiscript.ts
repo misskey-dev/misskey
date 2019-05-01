@@ -80,16 +80,22 @@ const funcDefs = {
 	dailyRandomPick: { in: [0],                            out: 0,         category: 'random',     icon: faDice, },
 };
 
+const literalDefs = {
+	text:          { out: 'string',      category: 'value', icon: faQuoteRight, },
+	multiLineText: { out: 'string',      category: 'value', icon: faAlignLeft, },
+	textList:      { out: 'stringArray', category: 'value', icon: faList, },
+	number:        { out: 'number',      category: 'value', icon: faSortNumericUp, },
+	ref:           { out: null,          category: 'value', icon: faSuperscript, },
+	in:            { out: null,          category: 'value', icon: faSuperscript, },
+	fn:            { out: 'function',    category: 'value', icon: faSuperscript, },
+};
+
 const blockDefs = [
-	{ type: 'text',          out: 'string',      category: 'value', icon: faQuoteRight, },
-	{ type: 'multiLineText', out: 'string',      category: 'value', icon: faAlignLeft, },
-	{ type: 'textList',      out: 'stringArray', category: 'value', icon: faList, },
-	{ type: 'number',        out: 'number',      category: 'value', icon: faSortNumericUp, },
-	{ type: 'ref',           out: null,          category: 'value', icon: faSuperscript, },
-	{ type: 'in',            out: null,          category: 'value', icon: faSuperscript, },
-	{ type: 'fn',            out: 'function',    category: 'value', icon: faSuperscript, },
+	...Object.entries(literalDefs).map(([k, v]) => ({
+		type: k, out: v.out, category: v.category, icon: v.icon
+	})),
 	...Object.entries(funcDefs).map(([k, v]) => ({
-		type: k, out: v.out || null, category: v.category, icon: v.icon
+		type: k, out: v.out, category: v.category, icon: v.icon
 	}))
 ];
 
@@ -170,13 +176,7 @@ export class AiScript {
 	@autobind
 	public static isLiteralBlock(v: Block) {
 		if (v.type === null) return true;
-		if (v.type === 'text') return true;
-		if (v.type === 'multiLineText') return true;
-		if (v.type === 'textList') return true;
-		if (v.type === 'number') return true;
-		if (v.type === 'ref') return true;
-		if (v.type === 'fn') return true;
-		if (v.type === 'in') return true;
+		if (literalDefs[v.type]) return true;
 		return false;
 	}
 
