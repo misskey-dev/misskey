@@ -3,7 +3,8 @@
  */
 
 import {
-	faSuperscript,
+	faMagic,
+	faSquareRootAlt,
 	faAlignLeft,
 	faShareAlt,
 	faPlus,
@@ -86,8 +87,8 @@ export const literalDefs: Record<string, { out: any; category: string; icon: any
 	multiLineText: { out: 'string',      category: 'value', icon: faAlignLeft, },
 	textList:      { out: 'stringArray', category: 'value', icon: faList, },
 	number:        { out: 'number',      category: 'value', icon: faSortNumericUp, },
-	ref:           { out: null,          category: 'value', icon: faSuperscript, },
-	fn:            { out: 'function',    category: 'value', icon: faSuperscript, },
+	ref:           { out: null,          category: 'value', icon: faMagic, },
+	fn:            { out: 'function',    category: 'value', icon: faSquareRootAlt, },
 };
 
 export const blockDefs = [

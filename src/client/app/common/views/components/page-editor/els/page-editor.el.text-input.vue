@@ -3,7 +3,7 @@
 	<template #header><fa :icon="faBolt"/> {{ $t('blocks.textInput') }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
-		<ui-input v-model="value.name"><template #prefix><fa :icon="faSquareRootAlt"/></template><span>{{ $t('blocks._textInput.name') }}</span></ui-input>
+		<ui-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('blocks._textInput.name') }}</span></ui-input>
 		<ui-input v-model="value.text"><span>{{ $t('blocks._textInput.text') }}</span></ui-input>
 		<ui-input v-model="value.default" type="text"><span>{{ $t('blocks._textInput.default') }}</span></ui-input>
 	</section>
@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBolt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faMagic } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../../../../i18n';
 import XContainer from '../page-editor.container.vue';
 
@@ -31,7 +31,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faBolt, faSquareRootAlt
+			faBolt, faMagic
 		};
 	},
 

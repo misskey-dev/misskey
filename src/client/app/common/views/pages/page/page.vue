@@ -18,7 +18,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faICursor, faPlus, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { ASEvaluator } from '../../../../../../misc/aiscript/evaluator';
@@ -75,7 +75,7 @@ export default Vue.extend({
 		return {
 			page: null,
 			script: null,
-			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt
+			faPlus, faICursor, faSave, faStickyNote
 		};
 	},
 

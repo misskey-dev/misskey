@@ -56,7 +56,7 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
-import { faSuperscript, faPencilAlt, faSquareRootAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { isLiteralBlock, funcDefs, blockDefs } from '../../../../../../misc/aiscript/index';
 import * as uuid from 'uuid';
 
@@ -100,7 +100,7 @@ export default Vue.extend({
 			error: null,
 			warn: null,
 			slots: '',
-			faSuperscript, faPencilAlt, faSquareRootAlt
+			faPencilAlt
 		};
 	},
 

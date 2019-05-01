@@ -53,7 +53,7 @@
 	</div>
 
 	<ui-container :body-togglable="true">
-		<template #header><fa :icon="faSquareRootAlt"/> {{ $t('variables') }}</template>
+		<template #header><fa :icon="faMagic"/> {{ $t('variables') }}</template>
 		<div class="qmuvgica">
 			<div class="variables" v-show="variables.length > 0">
 				<template v-for="variable in variables">
@@ -87,7 +87,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faICursor, faPlus, faSquareRootAlt, faCog, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus, faMagic, faCog, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XVariable from './page-editor.script-block.vue';
 import XBlock from './page-editor.block.vue';
@@ -134,7 +134,7 @@ export default Vue.extend({
 			showOptions: false,
 			moreDetails: false,
 			url,
-			faPlus, faICursor, faSave, faStickyNote, faSquareRootAlt, faCog, faTrashAlt, faExternalLinkSquareAlt
+			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt
 		};
 	},
 
