@@ -113,16 +113,6 @@ export class ASEvaluator {
 	}
 
 	@autobind
-	public getVarByName(name: string): Variable {
-		const v = this.variables.find(x => x.name === name);
-		if (v !== undefined) {
-			return v;
-		} else {
-			throw new AiScriptError(`No such variable '${name}'`);
-		}
-	}
-
-	@autobind
 	private interpolate(str: string, scope: Scope) {
 		return str.replace(/\{(.+?)\}/g, match => {
 			const v = scope.getState(match.slice(1, -1).trim());

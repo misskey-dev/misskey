@@ -140,6 +140,16 @@ export class ASTypeChecker {
 	}
 
 	@autobind
+	public getVarByName(name: string): Variable {
+		const v = this.variables.find(x => x.name === name);
+		if (v !== undefined) {
+			return v;
+		} else {
+			throw new Error(`No such variable '${name}'`);
+		}
+	}
+
+	@autobind
 	public getVarsByType(type: Type): Variable[] {
 		if (type == null) return this.variables;
 		return this.variables.filter(x => (this.infer(x) === null) || (this.infer(x) === type));
