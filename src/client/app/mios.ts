@@ -195,7 +195,7 @@ export default class MiOS extends EventEmitter {
 			});
 		} else {
 			// Get token from cookie or localStorage
-			const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1] || localStorage.getItem('i');
+			const i = (document.cookie.match(/i=(\w+)/) || [null, null])[1] || localStorage.getItem('i');
 
 			fetchme(i, me => {
 				if (me) {

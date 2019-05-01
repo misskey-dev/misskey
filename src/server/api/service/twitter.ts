@@ -12,7 +12,7 @@ import { ILocalUser } from '../../../models/entities/user';
 import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
-	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+	return ((ctx.headers['cookie'] || '').match(/i=(\w+)/) || [null, null])[1];
 }
 
 function compareOrigin(ctx: Koa.BaseContext) {
