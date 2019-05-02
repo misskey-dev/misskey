@@ -140,6 +140,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr></table>
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17880724/311738c8a48f4a6b9443c2445a75adde/1.jpe?token-time=2145916800&token-hash=CPxGQhKIlEaa6WUcgbyHixyKEhakiw9RFdOhsIJBQ_o%3D" alt="takimura" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17195955/be45e5e14c3e48b2bee0456c84e19df4/4.jpe?token-time=2145916800&token-hash=UslrPVM-8TXOe8AapuNiaFYjcIJgPNcU-fKpGbfGJNI%3D" alt="Damillora" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/16900731/83884b38afc74d4cbe83c30a13b10edd/1.png?token-time=2145916800&token-hash=R5Tog8RWg0rguRoCIoir3lThokrdPvs8Utfikhc0nhY%3D" alt="Atsuko Tominaga" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/3.png?token-time=2145916800&token-hash=FTm3WVom4dJ9NwWMU4OpCL_8Yc13WiwEbKrDPyTZTPs%3D" alt="natalie" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13034746/c711c7f58e204ecfbc2fd646bc8a4eee/1.jpe?token-time=2145916800&token-hash=EWxXhVbZYH7KB4IDT3joc8TbIg8zPO40x1r5IDn3R7c%3D" alt="Hiratake" width="100"></td>
@@ -149,6 +150,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/619786/32cf01444db24e578cd1982c197f6fc6/1.jpeg?token-time=2145916800&token-hash=d8jBQLMOHD87KtXs5C9fk1o58DMF73pQ-dYH3uZJPBE%3D" alt="Gargron" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/takimura">takimura</a></td>
+<td><a href="https://www.patreon.com/damillora">Damillora</a></td>
 <td><a href="https://www.patreon.com/user?u=16900731">Atsuko Tominaga</a></td>
 <td><a href="https://www.patreon.com/user?u=4389829">natalie</a></td>
 <td><a href="https://www.patreon.com/hiratake">Hiratake</a></td>
@@ -165,7 +167,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Thu, 02 May 2019 09:49:12 UTC
+**Last updated:** Thu, 02 May 2019 17:26:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
