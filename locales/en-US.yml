@@ -1708,6 +1708,9 @@ pages:
       name: "Variable name"
       text: "Title"
       default: "Default value"
+    _counter:
+      name: "Variable name"
+      text: "Title"
     _button:
       text: "Title"
       action: "Operation when the button pressed"
