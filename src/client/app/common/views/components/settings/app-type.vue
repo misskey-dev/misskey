@@ -7,7 +7,6 @@
 		<ui-select v-model="appTypeForce" :placeholder="$t('intro')">
 			<option v-for="x in ['auto', 'desktop', 'mobile']" :value="x" :key="x">{{ $t(`choices.${x}`) }}</option>
 		</ui-select>
-		<ui-info>Current: <i>{{ $t(currentAppType) }}</i></ui-info>
 		<ui-info warn>{{ $t('info') }}</ui-info>
 	</section>
 </ui-card>
@@ -19,12 +18,10 @@ import i18n from '../../../../i18n';
 import { faMobileAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default Vue.extend({
-	i18n: i18n('common/views/components/settings/client-mode.vue'),
+	i18n: i18n('common/views/components/settings/app-type.vue'),
 
 	data() {
 		return {
-			currentAppType: (window as any).appType,
-
 			faMobileAlt
 		};
 	},
