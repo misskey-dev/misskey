@@ -7,56 +7,6 @@ type Fn = {
 	exec: (args: Record<string, any>) => ReturnType<ASEvaluator['evaluate']>;
 };
 
-class AiScriptError extends Error {
-	public info?: any;
-
-	constructor(message: string, info?: any) {
-		super(message);
-
-		this.info = info;
-
-		// Maintains proper stack trace for where our error was thrown (only available on V8)
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, AiScriptError);
-		}
-	}
-}
-
-class Scope {
-	private layerdStates: Record<string, any>[];
-	public name: string;
-
-	constructor(layerdStates: Scope['layerdStates'], name?: Scope['name']) {
-		this.layerdStates = layerdStates;
-		this.name = name || 'anonymous';
-	}
-
-	@autobind
-	public createChildScope(states: Record<string, any>, name?: Scope['name']): Scope {
-		const layer = [states, ...this.layerdStates];
-		return new Scope(layer, name);
-	}
-
-	/**
-	 * 指定した名前の変数の値を取得します
-	 * @param name 変数名
-	 */
-	@autobind
-	public getState(name: string): any {
-		for (const later of this.layerdStates) {
-			const state = later[name];
-			if (state !== undefined) {
-				return state;
-			}
-		}
-
-		throw new AiScriptError(
-			`No such variable '${name}' in scope '${this.name}'`, {
-				scope: this.layerdStates
-			});
-	}
-}
-
 /**
  * AiScript evaluator
  */
@@ -236,5 +186,55 @@ export class ASEvaluator {
 		} else {
 			return fn(...block.args.map(x => this.evaluate(x, scope)));
 		}
+	}
+}
+
+class AiScriptError extends Error {
+	public info?: any;
+
+	constructor(message: string, info?: any) {
+		super(message);
+
+		this.info = info;
+
+		// Maintains proper stack trace for where our error was thrown (only available on V8)
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, AiScriptError);
+		}
+	}
+}
+
+class Scope {
+	private layerdStates: Record<string, any>[];
+	public name: string;
+
+	constructor(layerdStates: Scope['layerdStates'], name?: Scope['name']) {
+		this.layerdStates = layerdStates;
+		this.name = name || 'anonymous';
+	}
+
+	@autobind
+	public createChildScope(states: Record<string, any>, name?: Scope['name']): Scope {
+		const layer = [states, ...this.layerdStates];
+		return new Scope(layer, name);
+	}
+
+	/**
+	 * 指定した名前の変数の値を取得します
+	 * @param name 変数名
+	 */
+	@autobind
+	public getState(name: string): any {
+		for (const later of this.layerdStates) {
+			const state = later[name];
+			if (state !== undefined) {
+				return state;
+			}
+		}
+
+		throw new AiScriptError(
+			`No such variable '${name}' in scope '${this.name}'`, {
+				scope: this.layerdStates
+			});
 	}
 }

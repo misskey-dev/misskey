@@ -1,5 +1,5 @@
 <template>
-<x-container @remove="() => $emit('remove')">
+<x-container @remove="() => $emit('remove')" :draggable="true">
 	<template #header><fa :icon="faQuestion"/> {{ $t('blocks.if') }}</template>
 	<template #func>
 		<button @click="add()">
@@ -19,9 +19,7 @@
 			</optgroup>
 		</ui-select>
 
-		<div class="children">
-			<x-block v-for="child in value.children" :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id" :ai-script="aiScript"/>
-		</div>
+		<x-blocks class="children" v-model="value.children" :ai-script="aiScript"/>
 	</section>
 </x-container>
 </template>
@@ -58,7 +56,7 @@ export default Vue.extend({
 	},
 
 	beforeCreate() {
-		this.$options.components.XBlock = require('../page-editor.block.vue').default
+		this.$options.components.XBlocks = require('../page-editor.blocks.vue').default
 	},
 
 	created() {
@@ -81,27 +79,6 @@ export default Vue.extend({
 			const id = uuid.v4();
 			this.value.children.push({ id, type });
 		},
-
-		updateItem(v) {
-			const i = this.value.children.findIndex(x => x.id === v.id);
-			const newValue = [
-				...this.value.children.slice(0, i),
-				v,
-				...this.value.children.slice(i + 1)
-			];
-			this.value.children = newValue;
-			this.$emit('input', this.value);
-		},
-
-		remove(el) {
-			const i = this.value.children.findIndex(x => x.id === el.id);
-			const newValue = [
-				...this.value.children.slice(0, i),
-				...this.value.children.slice(i + 1)
-			];
-			this.value.children = newValue;
-			this.$emit('input', this.value);
-		}
 	}
 });
 </script>
