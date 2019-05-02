@@ -1212,6 +1212,8 @@ pages:
       text: "Tytuł"
     _switch:
       text: "Tytuł"
+    _counter:
+      text: "Tytuł"
     _button:
       text: "Tytuł"
   script:
