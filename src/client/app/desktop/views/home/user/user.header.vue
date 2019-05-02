@@ -1,7 +1,7 @@
 <template>
 <div class="header" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
 	<div class="banner-container" :style="style">
-		<div class="banner" ref="banner" :style="style" @click="onBannerClick"></div>
+		<div class="banner" ref="banner" :style="style"></div>
 		<div class="fade"></div>
 		<div class="title">
 			<p class="name">
@@ -105,14 +105,6 @@ export default Vue.extend({
 			if (blur <= 10) banner.style.filter = `blur(${blur}px)`;
 		},
 
-		onBannerClick() {
-			if (!this.$store.getters.isSignedIn || this.$store.state.i.id != this.user.id) return;
-
-			this.$updateBanner().then(i => {
-				this.user.bannerUrl = i.bannerUrl;
-			});
-		},
-
 		menu() {
 			this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
@@ -171,9 +163,6 @@ export default Vue.extend({
 
 			> .menu
 				height 100%
-				display block
-				position absolute
-				left -42px
 				padding 0 14px
 				color #fff
 				text-shadow 0 0 8px #000
