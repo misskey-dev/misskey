@@ -73,12 +73,10 @@ export default Vue.extend({
 	watch: {
 		queue(x) {
 			if (x.length > 0) {
-				const self = this
 				this.$store.commit('indicate', {
 					text: this.$t('@.to-new-note'),
 					icon: faArrowUp,
 					onClick: () => {
-						self.releaseQueue();
 						window.scroll({
 							top: 0,
 							behavior: "smooth"
