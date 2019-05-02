@@ -1706,6 +1706,9 @@ pages:
       name: "变量名"
       text: "标题"
       default: "默认值"
+    _counter:
+      name: "变量名"
+      text: "标题"
     _button:
       text: "标题"
       action: "按下按钮时的行为"
