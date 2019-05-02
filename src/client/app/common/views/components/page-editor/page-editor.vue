@@ -44,9 +44,7 @@
 				</div>
 			</template>
 
-			<div class="content" v-for="child in content">
-				<x-block :value="child" @input="v => updateItem(v)" @remove="() => remove(child)" :key="child.id" :ai-script="aiScript"/>
-			</div>
+			<x-blocks class="content" v-model="content" :ai-script="aiScript"/>
 
 			<ui-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></ui-button>
 		</section>
@@ -98,7 +96,7 @@ import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } fr
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../../../i18n';
 import XVariable from './page-editor.script-block.vue';
-import XBlock from './page-editor.block.vue';
+import XBlocks from './page-editor.blocks.vue';
 import * as uuid from 'uuid';
 import { blockDefs } from '../../../../../../misc/aiscript/index';
 import { ASTypeChecker } from '../../../../../../misc/aiscript/type-checker';
@@ -109,7 +107,7 @@ export default Vue.extend({
 	i18n: i18n('pages'),
 
 	components: {
-		XVariable, XBlock
+		XVariable, XBlocks
 	},
 
 	props: {
@@ -299,25 +297,6 @@ export default Vue.extend({
 			this.variables.push({ id, name, type: null });
 		},
 
-		updateItem(v) {
-			const i = this.content.findIndex(x => x.id === v.id);
-			const newValue = [
-				...this.content.slice(0, i),
-				v,
-				...this.content.slice(i + 1)
-			];
-			this.content = newValue;
-		},
-
-		remove(el) {
-			const i = this.content.findIndex(x => x.id === el.id);
-			const newValue = [
-				...this.content.slice(0, i),
-				...this.content.slice(i + 1)
-			];
-			this.content = newValue;
-		},
-
 		removeVariable(v) {
 			const i = this.variables.findIndex(x => x.name === v.name);
 			const newValue = [
@@ -343,7 +322,8 @@ export default Vue.extend({
 					{ value: 'textInput', text: this.$t('blocks.textInput') },
 					{ value: 'textareaInput', text: this.$t('blocks.textareaInput') },
 					{ value: 'numberInput', text: this.$t('blocks.numberInput') },
-					{ value: 'switch', text: this.$t('blocks.switch') }
+					{ value: 'switch', text: this.$t('blocks.switch') },
+					{ value: 'counter', text: this.$t('blocks.counter') }
 				]
 			}, {
 				label: this.$t('special-blocks'),

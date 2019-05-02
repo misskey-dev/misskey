@@ -1915,6 +1915,12 @@ pages:
       text: "タイトル"
       default: "デフォルト値"
 
+    counter: "カウンター"
+    _counter:
+      name: "変数名"
+      text: "タイトル"
+      inc: "増加値"
+
     _button:
       text: "タイトル"
       action: "ボタンを押したときの動作"

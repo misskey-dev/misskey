@@ -1,5 +1,5 @@
 <template>
-<x-container @remove="() => $emit('remove')">
+<x-container @remove="() => $emit('remove')" :draggable="true">
 	<template #header><fa :icon="faPaperPlane"/> {{ $t('blocks.post') }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
@@ -31,10 +31,6 @@ export default Vue.extend({
 		return {
 			faPaperPlane
 		};
-	},
-
-	beforeCreate() {
-		this.$options.components.XBlock = require('../page-editor.block.vue').default
 	},
 
 	created() {

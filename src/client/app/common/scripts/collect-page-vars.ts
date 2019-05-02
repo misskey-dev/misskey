@@ -26,6 +26,12 @@ export function collectPageVars(content) {
 					type: 'boolean',
 					value: x.default || false
 				});
+			} else if (x.type === 'counter') {
+				pageVars.push({
+					name: x.name,
+					type: 'number',
+					value: 0
+				});
 			} else if (x.children) {
 				collect(x.children);
 			}

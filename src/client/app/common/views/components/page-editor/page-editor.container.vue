@@ -1,6 +1,6 @@
 <template>
-<div class="cpjygsrt" :class="{ error: error != null, warn: warn != null }">
-	<header>
+<div class="cpjygsrt" :class="{ error: error != null, warn: warn != null, draggable }">
+	<header class="drag-handle">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="buttons">
 			<slot name="func"></slot>
@@ -37,6 +37,10 @@ export default Vue.extend({
 		removable: {
 			type: Boolean,
 			default: true
+		},
+		draggable: {
+			type: Boolean,
+			default: false
 		},
 		error: {
 			required: false,
@@ -119,6 +123,10 @@ export default Vue.extend({
 
 				&:active
 					color var(--faceTextButtonActive)
+
+	&.draggable
+		> header
+			cursor move
 
 	> .warn
 		color #b19e49
