@@ -1601,6 +1601,8 @@ pages:
       text: "Titre"
     _switch:
       text: "Titre"
+    _counter:
+      text: "Titre"
     _button:
       text: "Titre"
       _action:
