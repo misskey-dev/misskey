@@ -33,10 +33,12 @@ export default Vue.extend({
 	},
 	computed: {
 		canonical(): string {
-			return `@${this.username}@${toUnicode(this.host)}`;
+			return this.host === localHost ? `@${this.username}` : `@${this.username}@${toUnicode(this.host)}`;
 		},
 		isMe(): boolean {
-			return this.$store.getters.isSignedIn && this.canonical.toLowerCase() === `@${this.$store.state.i.username}@${toUnicode(localHost)}`.toLowerCase();
+			return this.$store.getters.isSignedIn && (
+				`@${this.username}@${toUnicode(this.host)}` === `@${this.$store.state.i.username}@${toUnicode(localHost)}`.toLowerCase()
+			);
 		}
 	},
 	methods: {

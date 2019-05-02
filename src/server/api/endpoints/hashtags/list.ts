@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import Hashtag from '../../../../models/hashtag';
+import { Hashtags } from '../../../../models';
 
 export const meta = {
 	tags: ['hashtags'],
@@ -54,40 +54,39 @@ export const meta = {
 	},
 };
 
-const sort: any = {
-	'+mentionedUsers': { mentionedUsersCount: -1 },
-	'-mentionedUsers': { mentionedUsersCount: 1 },
-	'+mentionedLocalUsers': { mentionedLocalUsersCount: -1 },
-	'-mentionedLocalUsers': { mentionedLocalUsersCount: 1 },
-	'+mentionedRemoteUsers': { mentionedRemoteUsersCount: -1 },
-	'-mentionedRemoteUsers': { mentionedRemoteUsersCount: 1 },
-	'+attachedUsers': { attachedUsersCount: -1 },
-	'-attachedUsers': { attachedUsersCount: 1 },
-	'+attachedLocalUsers': { attachedLocalUsersCount: -1 },
-	'-attachedLocalUsers': { attachedLocalUsersCount: 1 },
-	'+attachedRemoteUsers': { attachedRemoteUsersCount: -1 },
-	'-attachedRemoteUsers': { attachedRemoteUsersCount: 1 },
-};
-
 export default define(meta, async (ps, me) => {
-	const q = {} as any;
-	if (ps.attachedToUserOnly) q.attachedUsersCount = { $ne: 0 };
-	if (ps.attachedToLocalUserOnly) q.attachedLocalUsersCount = { $ne: 0 };
-	if (ps.attachedToRemoteUserOnly) q.attachedRemoteUsersCount = { $ne: 0 };
-	const tags = await Hashtag
-		.find(q, {
-			limit: ps.limit,
-			sort: sort[ps.sort],
-			fields: {
-				tag: true,
-				mentionedUsersCount: true,
-				mentionedLocalUsersCount: true,
-				mentionedRemoteUsersCount: true,
-				attachedUsersCount: true,
-				attachedLocalUsersCount: true,
-				attachedRemoteUsersCount: true
-			}
-		});
+	const query = Hashtags.createQueryBuilder('tag');
+
+	if (ps.attachedToUserOnly) query.andWhere('tag.attachedUsersCount != 0');
+	if (ps.attachedToLocalUserOnly) query.andWhere('tag.attachedLocalUsersCount != 0');
+	if (ps.attachedToRemoteUserOnly) query.andWhere('tag.attachedRemoteUsersCount != 0');
+
+	switch (ps.sort) {
+		case '+mentionedUsers': query.orderBy('tag.mentionedUsersCount', 'DESC'); break;
+		case '-mentionedUsers': query.orderBy('tag.mentionedUsersCount', 'ASC'); break;
+		case '+mentionedLocalUsers': query.orderBy('tag.mentionedLocalUsersCount', 'DESC'); break;
+		case '-mentionedLocalUsers': query.orderBy('tag.mentionedLocalUsersCount', 'ASC'); break;
+		case '+mentionedRemoteUsers': query.orderBy('tag.mentionedRemoteUsersCount', 'DESC'); break;
+		case '-mentionedRemoteUsers': query.orderBy('tag.mentionedRemoteUsersCount', 'ASC'); break;
+		case '+attachedUsers': query.orderBy('tag.attachedUsersCount', 'DESC'); break;
+		case '-attachedUsers': query.orderBy('tag.attachedUsersCount', 'ASC'); break;
+		case '+attachedLocalUsers': query.orderBy('tag.attachedLocalUsersCount', 'DESC'); break;
+		case '-attachedLocalUsers': query.orderBy('tag.attachedLocalUsersCount', 'ASC'); break;
+		case '+attachedRemoteUsers': query.orderBy('tag.attachedRemoteUsersCount', 'DESC'); break;
+		case '-attachedRemoteUsers': query.orderBy('tag.attachedRemoteUsersCount', 'ASC'); break;
+	}
+
+	query.select([
+		'tag.name',
+		'tag.mentionedUsersCount',
+		'tag.mentionedLocalUsersCount',
+		'tag.mentionedRemoteUsersCount',
+		'tag.attachedUsersCount',
+		'tag.attachedLocalUsersCount',
+		'tag.attachedRemoteUsersCount',
+	]);
+
+	const tags = await query.take(ps.limit!).getMany();
 
 	return tags;
 });

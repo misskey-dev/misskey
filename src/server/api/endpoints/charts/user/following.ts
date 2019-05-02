@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import perUserFollowingChart, { perUserFollowingLogSchema } from '../../../../../services/chart/per-user-following';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import { convertLog } from '../../../../../services/chart';
+import { ID } from '../../../../../misc/cafy-id';
+import { convertLog } from '../../../../../services/chart/core';
+import { perUserFollowingChart } from '../../../../../services/chart';
 
 export const meta = {
 	stability: 'stable',
@@ -31,7 +31,6 @@ export const meta = {
 
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -39,9 +38,9 @@ export const meta = {
 		}
 	},
 
-	res: convertLog(perUserFollowingLogSchema),
+	res: convertLog(perUserFollowingChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return  await perUserFollowingChart.getChart(ps.span as any, ps.limit, ps.userId);
+	return await perUserFollowingChart.getChart(ps.span as any, ps.limit!, ps.userId);
 });

@@ -1,47 +1,57 @@
 import autobind from 'autobind-decorator';
-import Mute from '../../../../models/mute';
-import { pack } from '../../../../models/note';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { Notes } from '../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
 
-	private mutedUserIds: string[] = [];
-
 	@autobind
 	public async init(params: any) {
 		const meta = await fetchMeta();
-		if (meta.disableLocalTimeline && !this.user.isAdmin && !this.user.isModerator) return;
+		if (meta.disableLocalTimeline && !this.user!.isAdmin && !this.user!.isModerator) return;
 
 		// Subscribe events
-		this.subscriber.on('hybridTimeline', this.onNewNote);
-		this.subscriber.on(`hybridTimeline:${this.user._id}`, this.onNewNote);
-
-		const mute = await Mute.find({ muterId: this.user._id });
-		this.mutedUserIds = mute.map(m => m.muteeId.toString());
+		this.subscriber.on('notesStream', this.onNote);
 	}
 
 	@autobind
-	private async onNewNote(note: any) {
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await pack(note.replyId, this.user, {
+	private async onNote(note: any) {
+		// 自分自身の投稿 または その投稿のユーザーをフォローしている または ローカルの投稿 の場合だけ
+		if (!(
+			this.user!.id === note.userId ||
+			this.following.includes(note.userId) ||
+			note.user.host == null
+		)) return;
+
+		if (['followers', 'specified'].includes(note.visibility)) {
+			note = await Notes.pack(note.id, this.user!, {
 				detail: true
 			});
-		}
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await pack(note.renoteId, this.user, {
-				detail: true
-			});
-		}
+
+			if (note.isHidden) {
+				return;
+			}
+		} else {
+			// リプライなら再pack
+			if (note.replyId != null) {
+				note.reply = await Notes.pack(note.replyId, this.user!, {
+					detail: true
+				});
+			}
+			// Renoteなら再pack
+			if (note.renoteId != null) {
+				note.renote = await Notes.pack(note.renoteId, this.user!, {
+					detail: true
+				});
+			}
+	}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (shouldMuteThisNote(note, this.mutedUserIds)) return;
+		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
 	}
@@ -49,7 +59,6 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		// Unsubscribe events
-		this.subscriber.off('hybridTimeline', this.onNewNote);
-		this.subscriber.off(`hybridTimeline:${this.user._id}`, this.onNewNote);
+		this.subscriber.off('notesStream', this.onNote);
 	}
 }

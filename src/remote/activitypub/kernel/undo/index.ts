@@ -1,4 +1,4 @@
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import { IUndo, IFollow, IBlock, ILike } from '../../type';
 import unfollow from './follow';
 import unblock from './block';
@@ -39,6 +39,4 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 			undoLike(actor, object as ILike);
 			break;
 	}
-
-	return null;
 };

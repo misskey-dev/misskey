@@ -2,17 +2,17 @@ import * as Queue from 'bull';
 import * as httpSignature from 'http-signature';
 
 import config from '../config';
-import { ILocalUser } from '../models/user';
+import { ILocalUser } from '../models/entities/user';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
 import processInbox from './processors/inbox';
 import processDb from './processors/db';
 import { queueLogger } from './logger';
-import { IDriveFile } from '../models/drive-file';
+import { DriveFile } from '../models/entities/drive-file';
 
 function initializeQueue(name: string) {
-	return new Queue(name, config.redis != null ? {
+	return new Queue(name, {
 		redis: {
 			port: config.redis.port,
 			host: config.redis.host,
@@ -20,7 +20,15 @@ function initializeQueue(name: string) {
 			db: config.redis.db || 0,
 		},
 		prefix: config.redis.prefix ? `${config.redis.prefix}:queue` : 'queue'
-	} : null);
+	});
+}
+
+function renderError(e: Error): any {
+	return {
+		stack: e.stack,
+		message: e.message,
+		name: e.name
+	};
 }
 
 export const deliverQueue = initializeQueue('deliver');
@@ -34,16 +42,16 @@ deliverQueue
 	.on('waiting', (jobId) => deliverLogger.debug(`waiting id=${jobId}`))
 	.on('active', (job) => deliverLogger.debug(`active id=${job.id} to=${job.data.to}`))
 	.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) id=${job.id} to=${job.data.to}`))
-	.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) id=${job.id} to=${job.data.to}`))
-	.on('error', (error) => deliverLogger.error(`error ${error}`))
+	.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) id=${job.id} to=${job.data.to}`, { job, e: renderError(err) }))
+	.on('error', (job: any, err: Error) => deliverLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => deliverLogger.warn(`stalled id=${job.id} to=${job.data.to}`));
 
 inboxQueue
 	.on('waiting', (jobId) => inboxLogger.debug(`waiting id=${jobId}`))
 	.on('active', (job) => inboxLogger.debug(`active id=${job.id}`))
 	.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) id=${job.id}`))
-	.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`))
-	.on('error', (error) => inboxLogger.error(`error ${error}`))
+	.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`, { job, e: renderError(err) }))
+	.on('error', (job: any, err: Error) => inboxLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => inboxLogger.warn(`stalled id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`));
 
 export function deliver(user: ILocalUser, content: any, to: any) {
@@ -78,15 +86,6 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 			type: 'exponential',
 			delay: 1000
 		},
-		removeOnComplete: true,
-		removeOnFail: true
-	});
-}
-
-export function createDeleteNotesJob(user: ILocalUser) {
-	return dbQueue.add('deleteNotes', {
-		user: user
-	}, {
 		removeOnComplete: true,
 		removeOnFail: true
 	});
@@ -146,7 +145,7 @@ export function createExportUserListsJob(user: ILocalUser) {
 	});
 }
 
-export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['_id']) {
+export function createImportFollowingJob(user: ILocalUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importFollowing', {
 		user: user,
 		fileId: fileId
@@ -156,7 +155,7 @@ export function createImportFollowingJob(user: ILocalUser, fileId: IDriveFile['_
 	});
 }
 
-export function createImportUserListsJob(user: ILocalUser, fileId: IDriveFile['_id']) {
+export function createImportUserListsJob(user: ILocalUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,
 		fileId: fileId

@@ -46,10 +46,40 @@ Convert な(na) to にゃ(nya)
 Revert Nyaize
 
 ## Code style
-### Use semicolon
-To avoid ASI Hazard
+### セミコロンを省略しない
+ASI Hazardを避けるためでもある
 
-### Don't use `export default`
+### 中括弧を省略しない
+Bad:
+``` ts
+if (foo)
+	bar;
+else
+	baz;
+```
+
+Good:
+``` ts
+if (foo) {
+	bar;
+} else {
+	baz;
+}
+```
+
+ただし**`if`が一行**の時だけは省略しても良い
+Good:
+``` ts
+if (foo) bar;
+```
+
+### `export default`を使わない
+インテリセンスと相性が悪かったりするため
+
+参考:
+* https://gfx.hatenablog.com/entry/2017/11/24/135343
+* https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
+
 Bad:
 ``` ts
 export default function(foo: string): string {
@@ -74,4 +104,96 @@ src ... Source code
 
 test ... Test code
 
+```
+
+## Notes
+### placeholder
+SQLをクエリビルダで組み立てる際、使用するプレースホルダは重複してはならない
+例えば
+``` ts
+query.andWhere(new Brackets(qb => {
+	for (const type of ps.fileType) {
+		qb.orWhere(`:type = ANY(note.attachedFileTypes)`, { type: type });
+	}
+}));
+```
+と書くと、ループ中で`type`というプレースホルダが複数回使われてしまいおかしくなる
+だから次のようにする必要がある
+```ts
+query.andWhere(new Brackets(qb => {
+	for (const type of ps.fileType) {
+		const i = ps.fileType.indexOf(type);
+		qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+	}
+}));
+```
+
+### `null` in SQL
+SQLを発行する際、パラメータが`null`になる可能性のある場合はSQL文を出し分けなければならない
+例えば
+``` ts
+query.where('file.folderId = :folderId', { folderId: ps.folderId });
+```
+という処理で、`ps.folderId`が`null`だと結果的に`file.folderId = null`のようなクエリが発行されてしまい、これは正しいSQLではないので期待した結果が得られない
+だから次のようにする必要がある
+``` ts
+if (ps.folderId) {
+	query.where('file.folderId = :folderId', { folderId: ps.folderId });
+} else {
+	query.where('file.folderId IS NULL');
+}
+```
+
+### `[]` in SQL
+SQLを発行する際、`IN`のパラメータが`[]`(空の配列)になる可能性のある場合はSQL文を出し分けなければならない
+例えば
+``` ts
+const users = await Users.find({
+	id: In(userIds)
+});
+```
+という処理で、`userIds`が`[]`だと結果的に`user.id IN ()`のようなクエリが発行されてしまい、これは正しいSQLではないので期待した結果が得られない
+だから次のようにする必要がある
+``` ts
+const users = userIds.length > 0 ? await Users.find({
+	id: In(userIds)
+}) : [];
+```
+
+### 配列のインデックス in SQL
+SQLでは配列のインデックスは**1始まり**。
+`[a, b, c]`の `a`にアクセスしたいなら`[0]`ではなく`[1]`と書く
+
+### `undefined`にご用心
+MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合 **`undefined`** が返ってくるので注意。
+MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
+
+### 簡素な`undefined`チェック
+データベースからレコードを取得するときに、プログラムの流れ的に(ほぼ)絶対`undefined`にはならない場合でも、`undefined`チェックしないとTypeScriptに怒られます。
+でもいちいち複数行を費やして、発生するはずのない`undefined`をチェックするのも面倒なので、`ensure`というユーティリティ関数を用意しています。
+例えば、
+``` ts
+const user = await Users.findOne(userId);
+// この時点で user の型は User | undefined
+if (user == null) {
+	throw 'missing user';
+}
+// この時点で user の型は User
+```
+という処理を`ensure`を使うと
+``` ts
+const user = await Users.findOne(userId).then(ensure);
+// この時点で user の型は User
+```
+という風に書けます。
+もちろん`ensure`内部でエラーを握りつぶすようなことはしておらず、万が一`undefined`だった場合はPromiseがRejectされ後続の処理は実行されません。
+``` ts
+const user = await Users.findOne(userId).then(ensure);
+// 万が一 Users.findOne の結果が undefined だったら、ensure でエラーが発生するので
+// この行に到達することは無い
+// なので、.then(ensure) は
+// if (user == null) {
+//	throw 'missing user';
+// }
+// の糖衣構文のような扱いです
 ```

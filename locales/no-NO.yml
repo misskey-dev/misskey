@@ -37,6 +37,8 @@ common:
   home: "Hjem"
   followers: "Følgere"
   favorites: "Merket som favoritt"
+  permissions:
+    "write:votes": "Stem"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -244,8 +246,6 @@ desktop/views/components/home.vue:
 desktop/views/input-dialog.vue:
   cancel: "Avbryt"
   ok: "Ok"
-desktop/views/components/messaging-window.vue:
-  title: "Samtaler"
 desktop/views/components/note-detail.vue:
   location: "Lokasjon"
 desktop/views/components/note.vue:
@@ -290,7 +290,6 @@ desktop/views/components/timeline.vue:
   home: "Hjem"
   local: "Lokalt"
   global: "Globalt"
-  messages: "Samtaler"
   list: "Lister"
   list-name: "Liste navn"
 desktop/views/components/ui.header.vue:
@@ -394,8 +393,6 @@ desktop/views/pages/user/user.timeline.vue:
   default: "Innlegg"
   with-replies: "Innlegg og svar"
   with-media: "Media"
-desktop/views/widgets/messaging.vue:
-  title: "Melding"
 desktop/views/widgets/notifications.vue:
   title: "Notifikasjon"
 desktop/views/widgets/polls.vue:
@@ -456,7 +453,6 @@ mobile/views/pages/home.vue:
   home: "Hjem"
   local: "Lokalt"
   global: "Globalt"
-  messages: "Samtaler"
 mobile/views/pages/widgets.vue:
   add-widget: "Legg til"
 mobile/views/pages/received-follow-requests.vue:

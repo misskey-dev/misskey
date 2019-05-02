@@ -6,6 +6,10 @@
  *
  * To specify test:
  * > mocha test/mfm.ts --require ts-node/register -g 'test name'
+ *
+ * If the tests not start, try set following enviroment variables:
+ * TS_NODE_FILES=true and TS_NODE_TRANSPILE_ONLY=true
+ * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
  */
 
 import * as assert from 'assert';
@@ -555,6 +559,14 @@ describe('MFM', () => {
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'foo' }),
 					text(']'),
+				]);
+			});
+
+			it('ignore 】', () => {
+				const tokens = parse('#foo】');
+				assert.deepStrictEqual(tokens, [
+					leaf('hashtag', { hashtag: 'foo' }),
+					text('】'),
 				]);
 			});
 
@@ -1137,7 +1149,7 @@ describe('MFM', () => {
 			it('exlude emotes', () => {
 				const tokens = parse('*.*');
 				assert.deepStrictEqual(tokens, [
-					text("*.*"),
+					text('*.*'),
 				]);
 			});
 

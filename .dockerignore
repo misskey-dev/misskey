@@ -5,8 +5,8 @@
 .vscode
 Dockerfile
 build/
+db/
 docker-compose.yml
-node_modules/
-mongo/
-redis/
 elasticsearch/
+node_modules/
+redis/

@@ -29,7 +29,8 @@
 			</header>
 			<x-draggable
 				:list="widgets"
-				:options="{ handle: '.handle', animation: 150 }"
+				handle=".handle"
+				animation="150"
 				@sort="onWidgetSort"
 			>
 				<div v-for="widget in widgets" class="customize-container" :key="widget.id">
@@ -106,7 +107,10 @@ export default Vue.extend({
 
 	methods: {
 		hint() {
-			alert(this.$t('widgets-hints'));
+			this.$root.dialog({
+				type: 'info',
+				text: this.$t('widgets-hints')
+			});
 		},
 
 		widgetFunc(id) {
@@ -119,7 +123,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.dispatch('settings/addMobileHomeWidget', {
+			this.$store.commit('settings/addMobileHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				data: {}
@@ -127,14 +131,11 @@ export default Vue.extend({
 		},
 
 		removeWidget(widget) {
-			this.$store.dispatch('settings/removeMobileHomeWidget', widget);
+			this.$store.commit('settings/removeMobileHomeWidget', widget);
 		},
 
 		saveHome() {
 			this.$store.commit('settings/setMobileHome', this.widgets);
-			this.$root.api('i/update_mobile_home', {
-				home: this.widgets
-			});
 		}
 	}
 });

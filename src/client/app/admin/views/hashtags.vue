@@ -3,7 +3,7 @@
 	<ui-card>
 		<template #title>{{ $t('hided-tags') }}</template>
 		<section>
-			<textarea class="jdnqwkzlnxcfftthoybjxrebyolvoucw" v-model="hidedTags"></textarea>
+			<textarea class="jdnqwkzlnxcfftthoybjxrebyolvoucw" v-model="hiddenTags"></textarea>
 			<ui-button @click="save">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
@@ -18,18 +18,18 @@ export default Vue.extend({
 	i18n: i18n('admin/views/hashtags.vue'),
 	data() {
 		return {
-			hidedTags: '',
+			hiddenTags: '',
 		};
 	},
 	created() {
 		this.$root.getMeta().then(meta => {
-			this.hidedTags = meta.hidedTags.join('\n');
+			this.hiddenTags = meta.hiddenTags.join('\n');
 		});
 	},
 	methods: {
 		save() {
 			this.$root.api('admin/update-meta', {
-				hidedTags: this.hidedTags.split('\n')
+				hiddenTags: this.hiddenTags.split('\n')
 			}).then(() => {
 				//this.$root.os.apis.dialog({ text: `Saved` });
 			}).catch(e => {

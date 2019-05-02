@@ -106,16 +106,6 @@ export default Vue.extend({
 				value: deck
 			});
 		}
-
-		// 互換性のため
-		if (this.$store.state.device.deck != null && this.$store.state.device.deck.layout == null) {
-			this.$store.commit('device/set', {
-				key: 'deck',
-				value: Object.assign({}, this.$store.state.device.deck, {
-					layout: this.$store.state.device.deck.columns.map(c => [c.id])
-				})
-			});
-		}
 	},
 
 	mounted() {
@@ -199,7 +189,7 @@ export default Vue.extend({
 							title: this.$t('@deck.select-list'),
 							select: {
 								items: lists.map(list => ({
-									value: list.id, text: list.title
+									value: list.id, text: list.name
 								}))
 							},
 							showCancelButton: true

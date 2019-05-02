@@ -21,20 +21,14 @@ app.use(async (ctx, next) => {
 // Init router
 const router = new Router();
 
-router.get('/default-avatar.jpg', ctx => {
-	const file = fs.createReadStream(`${__dirname}/assets/avatar.jpg`);
-	ctx.set('Content-Type', 'image/jpeg');
-	ctx.body = file;
-});
-
 router.get('/app-default.jpg', ctx => {
 	const file = fs.createReadStream(`${__dirname}/assets/dummy.png`);
 	ctx.set('Content-Type', 'image/jpeg');
 	ctx.body = file;
 });
 
-router.get('/:id', sendDriveFile);
-router.get('/:id/*', sendDriveFile);
+router.get('/:key', sendDriveFile);
+router.get('/:key/*', sendDriveFile);
 
 // Register router
 app.use(router.routes());

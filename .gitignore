@@ -8,14 +8,15 @@
 built
 /data
 /.cache-loader
+/db
+/elasticsearch
 npm-debug.log
 *.pem
 run.bat
 api-docs.json
 *.log
 /redis
-/mongo
-/elasticsearch
 *.code-workspace
 yarn.lock
 .DS_Store
+/files

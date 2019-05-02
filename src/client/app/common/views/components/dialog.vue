@@ -183,9 +183,6 @@ export default Vue.extend({
 	height 100%
 
 	&.splash
-		&, *
-			pointer-events none !important
-
 		> .main
 			min-width 0
 			width initial

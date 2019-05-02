@@ -1,72 +1,38 @@
-import * as mongo from 'mongodb';
-import isObjectId from '../../../misc/is-objectid';
-import { default as Notification, INotification } from '../../../models/notification';
 import { publishMainStream } from '../../../services/stream';
-import Mute from '../../../models/mute';
-import User from '../../../models/user';
+import { User } from '../../../models/entities/user';
+import { Notification } from '../../../models/entities/notification';
+import { Mutings, Notifications } from '../../../models';
+import { In, Not } from 'typeorm';
 
 /**
  * Mark notifications as read
  */
-export default (
-	user: string | mongo.ObjectID,
-	message: string | string[] | INotification | INotification[] | mongo.ObjectID | mongo.ObjectID[]
-) => new Promise<any>(async (resolve, reject) => {
-
-	const userId = isObjectId(user)
-		? user
-		: new mongo.ObjectID(user);
-
-	const ids: mongo.ObjectID[] = Array.isArray(message)
-		? isObjectId(message[0])
-			? (message as mongo.ObjectID[])
-			: typeof message[0] === 'string'
-				? (message as string[]).map(m => new mongo.ObjectID(m))
-				: (message as INotification[]).map(m => m._id)
-		: isObjectId(message)
-			? [(message as mongo.ObjectID)]
-			: typeof message === 'string'
-				? [new mongo.ObjectID(message)]
-				: [(message as INotification)._id];
-
-	const mute = await Mute.find({
+export async function readNotification(
+	userId: User['id'],
+	notificationIds: Notification['id'][]
+) {
+	const mute = await Mutings.find({
 		muterId: userId
 	});
 	const mutedUserIds = mute.map(m => m.muteeId);
 
 	// Update documents
-	await Notification.update({
-		_id: { $in: ids },
+	await Notifications.update({
+		id: In(notificationIds),
 		isRead: false
 	}, {
-			$set: {
-				isRead: true
-			}
-		}, {
-			multi: true
-		});
+		isRead: true
+	});
 
 	// Calc count of my unread notifications
-	const count = await Notification
-		.count({
-			notifieeId: userId,
-			notifierId: {
-				$nin: mutedUserIds
-			},
-			isRead: false
-		}, {
-				limit: 1
-			});
+	const count = await Notifications.count({
+		notifieeId: userId,
+		...(mutedUserIds.length > 0 ? { notifierId: Not(In(mutedUserIds)) } : {}),
+		isRead: false
+	});
 
-	if (count == 0) {
-		// Update flag
-		User.update({ _id: userId }, {
-			$set: {
-				hasUnreadNotification: false
-			}
-		});
-
+	if (count === 0) {
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllNotifications');
 	}
-});
+}

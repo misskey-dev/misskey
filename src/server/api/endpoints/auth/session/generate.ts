@@ -1,15 +1,20 @@
 import * as uuid from 'uuid';
 import $ from 'cafy';
-import App from '../../../../../models/app';
-import AuthSess from '../../../../../models/auth-session';
 import config from '../../../../../config';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { Apps, AuthSessions } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	tags: ['auth'],
 
 	requireCredential: false,
+	
+	desc: {
+		'ja-JP': 'アプリを認証するためのトークンを作成します。',
+		'en-US': 'Generate a token for authorize application.'
+	},
 
 	params: {
 		appSecret: {
@@ -46,7 +51,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	// Lookup app
-	const app = await App.findOne({
+	const app = await Apps.findOne({
 		secret: ps.appSecret
 	});
 
@@ -58,9 +63,10 @@ export default define(meta, async (ps) => {
 	const token = uuid.v4();
 
 	// Create session token document
-	const doc = await AuthSess.insert({
+	const doc = await AuthSessions.save({
+		id: genId(),
 		createdAt: new Date(),
-		appId: app._id,
+		appId: app.id,
 		token: token
 	});
 

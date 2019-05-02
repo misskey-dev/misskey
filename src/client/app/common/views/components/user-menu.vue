@@ -73,7 +73,7 @@ export default Vue.extend({
 				title: t,
 				select: {
 					items: lists.map(list => ({
-						value: list.id, text: list.title
+						value: list.id, text: list.name
 					}))
 				},
 				showCancelButton: true
@@ -89,8 +89,10 @@ export default Vue.extend({
 			});
 		},
 
-		toggleMute() {
+		async toggleMute() {
 			if (this.user.isMuted) {
+				if (!await this.getConfirmed(this.$t('unmute-confirm'))) return;
+
 				this.$root.api('mute/delete', {
 					userId: this.user.id
 				}).then(() => {
@@ -102,6 +104,8 @@ export default Vue.extend({
 					});
 				});
 			} else {
+				if (!await this.getConfirmed(this.$t('mute-confirm'))) return;
+
 				this.$root.api('mute/create', {
 					userId: this.user.id
 				}).then(() => {
@@ -115,8 +119,10 @@ export default Vue.extend({
 			}
 		},
 
-		toggleBlock() {
+		async toggleBlock() {
 			if (this.user.isBlocking) {
+				if (!await this.getConfirmed(this.$t('unblock-confirm'))) return;
+
 				this.$root.api('blocking/delete', {
 					userId: this.user.id
 				}).then(() => {
@@ -128,6 +134,8 @@ export default Vue.extend({
 					});
 				});
 			} else {
+				if (!await this.getConfirmed(this.$t('block-confirm'))) return;
+
 				this.$root.api('blocking/create', {
 					userId: this.user.id
 				}).then(() => {
@@ -164,7 +172,9 @@ export default Vue.extend({
 			});
 		},
 
-		toggleSilence() {
+		async toggleSilence() {
+			if (!await this.getConfirmed(this.$t(this.user.isSilenced ? 'unsilence-confirm' : 'silence-confirm'))) return;
+
 			this.$root.api(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
 				userId: this.user.id
 			}).then(() => {
@@ -181,7 +191,9 @@ export default Vue.extend({
 			});
 		},
 
-		toggleSuspend() {
+		async toggleSuspend() {
+			if (!await this.getConfirmed(this.$t(this.user.isSuspended ? 'unsuspend-confirm' : 'suspend-confirm'))) return;
+
 			this.$root.api(this.user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
 				userId: this.user.id
 			}).then(() => {
@@ -196,7 +208,18 @@ export default Vue.extend({
 					text: e
 				});
 			});
-		}
+		},
+
+		async getConfirmed(text: string): Promise<Boolean> {
+			const confirm = await this.$root.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				title: 'confirm',
+				text,
+			});
+
+			return !confirm.canceled;
+		},
 	}
 });
 </script>

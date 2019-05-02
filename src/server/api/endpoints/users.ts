@@ -1,10 +1,7 @@
 import $ from 'cafy';
-import User, { pack } from '../../../models/user';
 import define from '../define';
-import { fallback } from '../../../prelude/symbol';
-import { getHideUserIds } from '../common/get-hide-users';
-
-const nonnull = { $ne: null as any };
+import { Users } from '../../../models';
+import { generateMuteQueryForUsers } from '../common/generate-mute-query';
 
 export const meta = {
 	tags: ['users'],
@@ -63,53 +60,38 @@ export const meta = {
 	},
 };
 
-const state: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-	'admin': { isAdmin: true },
-	'moderator': { isModerator: true },
-	'adminOrModerator': {
-		$or: [
-			{ isAdmin: true },
-			{ isModerator: true }
-		]
-	},
-	'verified': { isVerified: true },
-	'alive': {
-		updatedAt: { $gt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }
-	},
-	[fallback]: {}
-};
-
-const origin: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-	'local': { host: null },
-	'remote': { host: nonnull },
-	[fallback]: {}
-};
-
-const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-	'+follower': { followersCount: -1 },
-	'-follower': { followersCount: 1 },
-	'+createdAt': { createdAt: -1 },
-	'-createdAt': { createdAt: 1 },
-	'+updatedAt': { updatedAt: -1 },
-	'-updatedAt': { updatedAt: 1 },
-	[fallback]: { _id: -1 }
-};
-
 export default define(meta, async (ps, me) => {
-	const hideUserIds = await getHideUserIds(me);
+	const query = Users.createQueryBuilder('user');
 
-	const users = await User
-		.find({
-			$and: [
-				state[ps.state] || state[fallback],
-				origin[ps.origin] || origin[fallback]
-			],
-			...(hideUserIds && hideUserIds.length > 0 ? { _id: { $nin: hideUserIds } } : {})
-		}, {
-			limit: ps.limit,
-			sort: sort[ps.sort] || sort[fallback],
-			skip: ps.offset
-		});
+	switch (ps.state) {
+		case 'admin': query.where('user.isAdmin = TRUE'); break;
+		case 'moderator': query.where('user.isModerator = TRUE'); break;
+		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR isModerator = TRUE'); break;
+		case 'verified': query.where('user.isVerified = TRUE'); break;
+		case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
+	}
 
-	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
+	switch (ps.origin) {
+		case 'local': query.andWhere('user.host IS NULL'); break;
+		case 'remote': query.andWhere('user.host IS NOT NULL'); break;
+	}
+
+	switch (ps.sort) {
+		case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
+		case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
+		case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
+		case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
+		case '+updatedAt': query.orderBy('user.updatedAt', 'DESC'); break;
+		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
+		default: query.orderBy('user.id', 'ASC'); break;
+	}
+
+	if (me) generateMuteQueryForUsers(query, me);
+
+	query.take(ps.limit!);
+	query.skip(ps.offset);
+
+	const users = await query.getMany();
+
+	return await Users.packMany(users, me, { detail: true });
 });

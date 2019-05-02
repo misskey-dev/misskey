@@ -1,17 +1,14 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/messaging-message';
-import { isValidText } from '../../../../../models/messaging-message';
-import User from '../../../../../models/user';
-import Mute from '../../../../../models/mute';
-import DriveFile from '../../../../../models/drive-file';
-import { pack } from '../../../../../models/messaging-message';
+import { ID } from '../../../../../misc/cafy-id';
 import { publishMainStream } from '../../../../../services/stream';
 import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../services/stream';
 import pushSw from '../../../../../services/push-notification';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
+import { MessagingMessages, DriveFiles, Mutings } from '../../../../../models';
+import { MessagingMessage } from '../../../../../models/entities/messaging-message';
+import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -23,12 +20,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-write',
+	kind: 'write:messaging',
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -36,12 +32,11 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.optional.str.pipe(isValidText)
+			validator: $.optional.str.pipe(MessagingMessages.isValidText)
 		},
 
 		fileId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		}
 	},
 
@@ -78,7 +73,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Myself
-	if (ps.userId.equals(user._id)) {
+	if (ps.userId === user.id) {
 		throw new ApiError(meta.errors.recipientIsYourself);
 	}
 
@@ -90,12 +85,12 @@ export default define(meta, async (ps, user) => {
 
 	let file = null;
 	if (ps.fileId != null) {
-		file = await DriveFile.findOne({
-			_id: ps.fileId,
-			'metadata.userId': user._id
+		file = await DriveFiles.findOne({
+			id: ps.fileId,
+			userId: user.id
 		});
 
-		if (file === null) {
+		if (file == null) {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
 	}
@@ -105,16 +100,17 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.contentRequired);
 	}
 
-	const message = await Message.insert({
+	const message = await MessagingMessages.save({
+		id: genId(),
 		createdAt: new Date(),
-		fileId: file ? file._id : undefined,
-		recipientId: recipient._id,
-		text: ps.text ? ps.text.trim() : undefined,
-		userId: user._id,
+		fileId: file ? file.id : null,
+		recipientId: recipient.id,
+		text: ps.text ? ps.text.trim() : null,
+		userId: user.id,
 		isRead: false
-	});
+	} as MessagingMessage);
 
-	const messageObj = await pack(message);
+	const messageObj = await MessagingMessages.pack(message);
 
 	// 自分のストリーム
 	publishMessagingStream(message.userId, message.recipientId, 'message', messageObj);
@@ -126,25 +122,17 @@ export default define(meta, async (ps, user) => {
 	publishMessagingIndexStream(message.recipientId, 'message', messageObj);
 	publishMainStream(message.recipientId, 'messagingMessage', messageObj);
 
-	// Update flag
-	User.update({ _id: recipient._id }, {
-		$set: {
-			hasUnreadMessagingMessage: true
-		}
-	});
-
 	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
-		const freshMessage = await Message.findOne({ _id: message._id }, { isRead: true });
+		const freshMessage = await MessagingMessages.findOne({ id: message.id });
 		if (freshMessage == null) return; // メッセージが削除されている場合もある
 		if (!freshMessage.isRead) {
 			//#region ただしミュートされているなら発行しない
-			const mute = await Mute.find({
-				muterId: recipient._id,
-				deletedAt: { $exists: false }
+			const mute = await Mutings.find({
+				muterId: recipient.id,
 			});
 			const mutedUserIds = mute.map(m => m.muteeId.toString());
-			if (mutedUserIds.indexOf(user._id.toString()) != -1) {
+			if (mutedUserIds.indexOf(user.id) != -1) {
 				return;
 			}
 			//#endregion

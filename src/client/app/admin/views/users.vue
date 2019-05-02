@@ -165,7 +165,7 @@ export default Vue.extend({
 
 		/** 処理対象ユーザーの情報を更新する */
 		async refreshUser() {
-			this.$root.api('admin/show-user', { userId: this.user._id }).then(info => {
+			this.$root.api('admin/show-user', { userId: this.user.id }).then(info => {
 				this.user = info;
 			});
 		},
@@ -173,7 +173,7 @@ export default Vue.extend({
 		async resetPassword() {
 			if (!await this.getConfirmed(this.$t('reset-password-confirm'))) return;
 
-			this.$root.api('admin/reset-password', { userId: this.user._id }).then(res => {
+			this.$root.api('admin/reset-password', { userId: this.user.id }).then(res => {
 				this.$root.dialog({
 					type: 'success',
 					text: this.$t('password-updated', { password: res.password })
@@ -187,7 +187,7 @@ export default Vue.extend({
 			this.verifying = true;
 
 			const process = async () => {
-				await this.$root.api('admin/verify-user', { userId: this.user._id });
+				await this.$root.api('admin/verify-user', { userId: this.user.id });
 				this.$root.dialog({
 					type: 'success',
 					text: this.$t('verified')
@@ -212,7 +212,7 @@ export default Vue.extend({
 			this.unverifying = true;
 
 			const process = async () => {
-				await this.$root.api('admin/unverify-user', { userId: this.user._id });
+				await this.$root.api('admin/unverify-user', { userId: this.user.id });
 				this.$root.dialog({
 					type: 'success',
 					text: this.$t('unverified')
@@ -232,8 +232,10 @@ export default Vue.extend({
 		},
 
 		async silenceUser() {
+			if (!await this.getConfirmed(this.$t('silence-confirm'))) return;
+
 			const process = async () => {
-				await this.$root.api('admin/silence-user', { userId: this.user._id });
+				await this.$root.api('admin/silence-user', { userId: this.user.id });
 				this.$root.dialog({
 					type: 'success',
 					splash: true
@@ -251,8 +253,10 @@ export default Vue.extend({
 		},
 
 		async unsilenceUser() {
+			if (!await this.getConfirmed(this.$t('unsilence-confirm'))) return;
+
 			const process = async () => {
-				await this.$root.api('admin/unsilence-user', { userId: this.user._id });
+				await this.$root.api('admin/unsilence-user', { userId: this.user.id });
 				this.$root.dialog({
 					type: 'success',
 					splash: true
@@ -275,7 +279,7 @@ export default Vue.extend({
 			this.suspending = true;
 
 			const process = async () => {
-				await this.$root.api('admin/suspend-user', { userId: this.user._id });
+				await this.$root.api('admin/suspend-user', { userId: this.user.id });
 				this.$root.dialog({
 					type: 'success',
 					text: this.$t('suspended')
@@ -300,7 +304,7 @@ export default Vue.extend({
 			this.unsuspending = true;
 
 			const process = async () => {
-				await this.$root.api('admin/unsuspend-user', { userId: this.user._id });
+				await this.$root.api('admin/unsuspend-user', { userId: this.user.id });
 				this.$root.dialog({
 					type: 'success',
 					text: this.$t('unsuspended')
@@ -320,7 +324,7 @@ export default Vue.extend({
 		},
 
 		async updateRemoteUser() {
-			this.$root.api('admin/update-remote-user', { userId: this.user._id }).then(res => {
+			this.$root.api('admin/update-remote-user', { userId: this.user.id }).then(res => {
 				this.$root.dialog({
 					type: 'success',
 					text: this.$t('remote-user-updated')

@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import Emoji from '../../../../../models/emoji';
 import define from '../../../define';
-import ID from '../../../../../misc/cafy-id';
 import { detectUrlMine } from '../../../../../misc/detect-url-mine';
+import { ID } from '../../../../../misc/cafy-id';
+import { Emojis } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -34,23 +34,17 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const emoji = await Emoji.findOne({
-		_id: ps.id
-	});
+	const emoji = await Emojis.findOne(ps.id);
 
 	if (emoji == null) throw new Error('emoji not found');
 
 	const type = await detectUrlMine(ps.url);
 
-	await Emoji.update({ _id: emoji._id }, {
-		$set: {
-			updatedAt: new Date(),
-			name: ps.name,
-			aliases: ps.aliases,
-			url: ps.url,
-			type,
-		}
+	await Emojis.update(emoji.id, {
+		updatedAt: new Date(),
+		name: ps.name,
+		aliases: ps.aliases,
+		url: ps.url,
+		type,
 	});
-
-	return;
 });

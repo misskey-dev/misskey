@@ -1,19 +1,19 @@
 import * as fs from 'fs';
-import { ILocalUser } from '../../models/user';
-import { IApp } from '../../models/app';
+import { ILocalUser } from '../../models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
+import { App } from '../../models/entities/app';
 
 type Params<T extends IEndpointMeta> = {
-	[P in keyof T['params']]: T['params'][P]['transform'] extends Function
-		? ReturnType<T['params'][P]['transform']>
-		: ReturnType<T['params'][P]['validator']['get']>[0];
+	[P in keyof T['params']]: NonNullable<T['params']>[P]['transform'] extends Function
+		? ReturnType<NonNullable<T['params']>[P]['transform']>
+		: ReturnType<NonNullable<T['params']>[P]['validator']['get']>[0];
 };
 
 export type Response = Record<string, any> | void;
 
-export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T>, user: ILocalUser, app: IApp, file?: any, cleanup?: Function) => Promise<Response>): (params: any, user: ILocalUser, app: IApp, file?: any) => Promise<any> {
-	return (params: any, user: ILocalUser, app: IApp, file?: any) => {
+export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T>, user: ILocalUser, app: App, file?: any, cleanup?: Function) => Promise<Response>): (params: any, user: ILocalUser, app: App, file?: any) => Promise<any> {
+	return (params: any, user: ILocalUser, app: App, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
 		}
@@ -34,11 +34,11 @@ export default function <T extends IEndpointMeta>(meta: T, cb: (params: Params<T
 	};
 }
 
-function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, ApiError] {
+function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, ApiError | null] {
 	if (defs.params == null) return [params, null];
 
 	const x: any = {};
-	let err: ApiError = null;
+	let err: ApiError | null = null;
 	Object.entries(defs.params).some(([k, def]) => {
 		const [v, e] = def.validator.get(params[k]);
 		if (e) {

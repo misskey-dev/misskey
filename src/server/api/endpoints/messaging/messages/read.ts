@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/messaging-message';
+import { ID } from '../../../../../misc/cafy-id';
 import read from '../../../common/read-messaging-message';
 import define from '../../../define';
 import { ApiError } from '../../../error';
+import { MessagingMessages } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -15,12 +15,11 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-write',
+	kind: 'write:messaging',
 
 	params: {
 		messageId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '既読にするメッセージのID',
 				'en-US': 'The ID of a message that you want to mark as read'
@@ -38,16 +37,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const message = await Message.findOne({
-		_id: ps.messageId,
-		recipientId: user._id
+	const message = await MessagingMessages.findOne({
+		id: ps.messageId,
+		recipientId: user.id
 	});
 
 	if (message == null) {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	read(user._id, message.userId, message);
-
-	return;
+	read(user.id, message.userId, [message.id]);
 });

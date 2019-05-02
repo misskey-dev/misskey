@@ -3,18 +3,20 @@ import * as os from 'os';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
 import { program } from '../argv';
-import Log from '../models/log';
+import { getRepository } from 'typeorm';
+import { Log } from '../models/entities/log';
+import { genId } from '../misc/gen-id';
 
 type Domain = {
 	name: string;
-	color: string;
+	color?: string;
 };
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
 
 export default class Logger {
 	private domain: Domain;
-	private parentLogger: Logger;
+	private parentLogger: Logger | null = null;
 	private store: boolean;
 
 	constructor(domain: string, color?: string, store = true) {
@@ -31,9 +33,8 @@ export default class Logger {
 		return logger;
 	}
 
-	private log(level: Level, message: string, data: Record<string, any>, important = false, subDomains: Domain[] = [], store = true): void {
+	private log(level: Level, message: string, data?: Record<string, any> | null, important = false, subDomains: Domain[] = [], store = true): void {
 		if (program.quiet) return;
-		if (process.env.NODE_ENV === 'test') return;
 		if (!this.store) store = false;
 
 		if (this.parentLogger) {
@@ -65,19 +66,21 @@ export default class Logger {
 		console.log(important ? chalk.bold(log) : log);
 
 		if (store) {
-			Log.insert({
+			const Logs = getRepository(Log);
+			Logs.insert({
+				id: genId(),
 				createdAt: new Date(),
 				machine: os.hostname(),
-				worker: worker,
+				worker: worker.toString(),
 				domain: [this.domain].concat(subDomains).map(d => d.name),
 				level: level,
 				message: message,
 				data: data,
-			});
+			} as Log);
 		}
 	}
 
-	public error(x: string | Error, data?: Record<string, any>, important = false): void { // 実行を継続できない状況で使う
+	public error(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
 		if (x instanceof Error) {
 			data = data || {};
 			data.e = x;
@@ -87,21 +90,21 @@ export default class Logger {
 		}
 	}
 
-	public warn(message: string, data?: Record<string, any>, important = false): void {　// 実行を継続できるが改善すべき状況で使う
+	public warn(message: string, data?: Record<string, any> | null, important = false): void {　// 実行を継続できるが改善すべき状況で使う
 		this.log('warning', message, data, important);
 	}
 
-	public succ(message: string, data?: Record<string, any>, important = false): void { // 何かに成功した状況で使う
+	public succ(message: string, data?: Record<string, any> | null, important = false): void { // 何かに成功した状況で使う
 		this.log('success', message, data, important);
 	}
 
-	public debug(message: string, data?: Record<string, any>, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
+	public debug(message: string, data?: Record<string, any> | null, important = false): void { // デバッグ用に使う(開発者に必要だが利用者に不要な情報)
 		if (process.env.NODE_ENV != 'production' || program.verbose) {
 			this.log('debug', message, data, important);
 		}
 	}
 
-	public info(message: string, data?: Record<string, any>, important = false): void { // それ以外
+	public info(message: string, data?: Record<string, any> | null, important = false): void { // それ以外
 		this.log('info', message, data, important);
 	}
 }

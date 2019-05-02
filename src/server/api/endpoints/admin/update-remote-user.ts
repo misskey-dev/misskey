@@ -1,6 +1,5 @@
-import * as mongo from 'mongodb';
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { getRemoteUser } from '../../common/getters';
 import { updatePerson } from '../../../../remote/activitypub/models/person';
@@ -19,7 +18,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID which you want to update'
@@ -29,11 +27,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	await updatePersonById(ps.userId);
-	return;
+	const user = await getRemoteUser(ps.userId);
+	await updatePerson(user.uri!);
 });
-
-async function updatePersonById(userId: mongo.ObjectID) {
-	const user = await getRemoteUser(userId);
-	await updatePerson(user.uri);
-}

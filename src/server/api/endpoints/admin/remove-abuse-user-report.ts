@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import AbuseUserReport from '../../../../models/abuse-user-report';
+import { AbuseUserReports } from '../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -12,23 +12,16 @@ export const meta = {
 	params: {
 		reportId: {
 			validator: $.type(ID),
-			transform: transform
 		},
 	}
 };
 
 export default define(meta, async (ps) => {
-	const report = await AbuseUserReport.findOne({
-		_id: ps.reportId
-	});
+	const report = await AbuseUserReports.findOne(ps.reportId);
 
 	if (report == null) {
 		throw new Error('report not found');
 	}
 
-	await AbuseUserReport.remove({
-		_id: report._id
-	});
-
-	return;
+	await AbuseUserReports.delete(report.id);
 });

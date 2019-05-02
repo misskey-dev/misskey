@@ -1,8 +1,7 @@
 import autobind from 'autobind-decorator';
-import * as mongo from 'mongodb';
-import Matching, { pack } from '../../../../../models/games/reversi/matching';
 import { publishMainStream } from '../../../../../services/stream';
 import Channel from '../../channel';
+import { ReversiMatchings } from '../../../../../models';
 
 export default class extends Channel {
 	public readonly chName = 'gamesReversi';
@@ -12,7 +11,7 @@ export default class extends Channel {
 	@autobind
 	public async init(params: any) {
 		// Subscribe reversi stream
-		this.subscriber.on(`reversiStream:${this.user._id}`, data => {
+		this.subscriber.on(`reversiStream:${this.user!.id}`, data => {
 			this.send(data);
 		});
 	}
@@ -22,12 +21,12 @@ export default class extends Channel {
 		switch (type) {
 			case 'ping':
 				if (body.id == null) return;
-				const matching = await Matching.findOne({
-					parentId: this.user._id,
-					childId: new mongo.ObjectID(body.id)
+				const matching = await ReversiMatchings.findOne({
+					parentId: this.user!.id,
+					childId: body.id
 				});
 				if (matching == null) return;
-				publishMainStream(matching.childId, 'reversiInvited', await pack(matching, matching.childId));
+				publishMainStream(matching.childId, 'reversiInvited', await ReversiMatchings.pack(matching, matching.childId));
 				break;
 		}
 	}

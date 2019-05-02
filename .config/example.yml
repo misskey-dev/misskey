@@ -1,8 +1,16 @@
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Misskey configuration
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+#   ┌─────┐
+#───┘ URL └─────────────────────────────────────────────────────
+
 # Final accessible URL seen by a user.
 url: https://example.tld/
 
+#   ┌───────────────────────┐
+#───┘ Port and TLS settings └───────────────────────────────────
 
-### Port and TLS settings ######################################
 #
 # Misskey supports two deployment options for public.
 #
@@ -30,28 +38,51 @@ url: https://example.tld/
 #   You need to set Certificate in 'https' section.
 
 # To use option 1, uncomment below line.
-# port: 3000    # A port that your Misskey server should listen.
+#port: 3000    # A port that your Misskey server should listen.
 
 # To use option 2, uncomment below lines.
-# port: 443
-#
-# https:
-#   # path for certification
-#   key: /etc/letsencrypt/live/example.tld/privkey.pem
-#   cert: /etc/letsencrypt/live/example.tld/fullchain.pem
+#port: 443
 
-################################################################
+#https:
+#  # path for certification
+#  key: /etc/letsencrypt/live/example.tld/privkey.pem
+#  cert: /etc/letsencrypt/live/example.tld/fullchain.pem
 
+#   ┌──────────────────────────┐
+#───┘ PostgreSQL configuration └────────────────────────────────
 
-mongodb:
+db:
   host: localhost
-  port: 27017
+  port: 5432
+
+  # Database name
   db: misskey
+
+  # Auth
   user: example-misskey-user
   pass: example-misskey-pass
 
+#   ┌─────────────────────┐
+#───┘ Redis configuration └─────────────────────────────────────
+
+redis:
+  host: localhost
+  port: 6379
+  #pass: example-pass
+
+#   ┌─────────────────────────────┐
+#───┘ Elasticsearch configuration └─────────────────────────────
+
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  pass: null
+
+#   ┌────────────────────────────────────┐
+#───┘ File storage (Drive) configuration └──────────────────────
+
 drive:
-  storage: 'db'
+  storage: 'fs'
 
   # OR
 
@@ -88,25 +119,27 @@ drive:
   #   accessKey: XXX
   #   secretKey: YYY
 
+#   ┌───────────────┐
+#───┘ ID generation └───────────────────────────────────────────
+
+# You can select the ID generation method.
+# You don't usually need to change this setting, but you can
+# change it according to your preferences.
+
+# Available methods:
+# aid ... Short, Millisecond accuracy
+# meid ... Similar to ObjectID, Millisecond accuracy
+# ulid ... Millisecond accuracy
+# objectid ... This is left for backward compatibility
+
+id: 'aid'
+
+#   ┌─────────────────────┐
+#───┘ Other configuration └─────────────────────────────────────
+
 # If enabled:
 #  The first account created is automatically marked as Admin.
 autoAdmin: true
-
-#
-# Below settings are optional
-#
-
-# Redis
-#redis:
-#  host: localhost
-#  port: 6379
-#  pass: example-pass
-
-# Elasticsearch
-#elasticsearch:
-#  host: localhost
-#  port: 9200
-#  pass: null
 
 # Whether disable HSTS
 #disableHsts: true

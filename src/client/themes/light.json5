@@ -7,7 +7,7 @@
 	kind: 'light',
 
 	vars: {
-		primary: '#fb4e4e',
+		primary: '#f18570',
 		secondary: '#fff',
 		text: '#666',
 	},
@@ -181,7 +181,7 @@
 		desktopTimelineSrcHover: ':darken<7<$text',
 		desktopWindowTitle: '$text',
 		desktopWindowShadow: 'rgba(0, 0, 0, 0.2)',
-		desktopDriveBg: '@bg',
+		desktopDriveBg: '#fff',
 		desktopDriveFolderBg: ':lighten<31<$primary',
 		desktopDriveFolderHoverBg: ':lighten<27<$primary',
 		desktopDriveFolderActiveBg: ':lighten<25<$primary',

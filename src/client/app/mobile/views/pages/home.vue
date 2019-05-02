@@ -9,7 +9,7 @@
 				<span v-if="src == 'global'"><fa icon="globe"/>{{ $t('global') }}</span>
 				<span v-if="src == 'mentions'"><fa icon="at"/>{{ $t('mentions') }}</span>
 				<span v-if="src == 'messages'"><fa :icon="['far', 'envelope']"/>{{ $t('messages') }}</span>
-				<span v-if="src == 'list'"><fa icon="list"/>{{ list.title }}</span>
+				<span v-if="src == 'list'"><fa icon="list"/>{{ list.name }}</span>
 				<span v-if="src == 'tag'"><fa icon="hashtag"/>{{ tagTl.title }}</span>
 			</span>
 			<span style="margin-left:8px">
@@ -39,7 +39,7 @@
 					<span :data-active="src == 'messages'" @click="src = 'messages'"><fa :icon="['far', 'envelope']"/> {{ $t('messages') }}<i class="badge" v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa icon="circle"/></i></span>
 					<template v-if="lists">
 						<div class="hr" v-if="lists.length > 0"></div>
-						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id"><fa icon="list"/> {{ l.title }}</span>
+						<span v-for="l in lists" :data-active="src == 'list' && list == l" @click="src = 'list'; list = l" :key="l.id"><fa icon="list"/> {{ l.name }}</span>
 					</template>
 					<div class="hr" v-if="$store.state.settings.tagTimelines && $store.state.settings.tagTimelines.length > 0"></div>
 					<span v-for="tl in $store.state.settings.tagTimelines" :data-active="src == 'tag' && tagTl == tl" @click="src = 'tag'; tagTl = tl" :key="tl.id"><fa icon="hashtag"/> {{ tl.title }}</span>
@@ -130,8 +130,6 @@ export default Vue.extend({
 			} else if (this.src == 'tag') {
 				this.tagTl = this.$store.state.device.tl.arg;
 			}
-		} else if (this.$store.state.i.followingCount == 0) {
-			this.src = 'hybrid';
 		}
 	},
 

@@ -1,12 +1,11 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Note from '../../../../models/note';
-import { packMany } from '../../../../models/note';
-import UserList from '../../../../models/user-list';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { getFriends } from '../../common/get-friends';
-import { getHideUserIds } from '../../common/get-hide-users';
 import { ApiError } from '../../error';
+import { UserLists, UserListJoinings, Notes } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { activeUsersChart } from '../../../../services/chart';
 
 export const meta = {
 	desc: {
@@ -21,7 +20,6 @@ export const meta = {
 	params: {
 		listId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': 'リストのID'
 			}
@@ -37,17 +35,15 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
-				'ja-JP': '指定すると、この投稿を基点としてより新しい投稿を取得します'
+				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
 			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
-				'ja-JP': '指定すると、この投稿を基点としてより古い投稿を取得します'
+				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
 			}
 		},
 
@@ -95,14 +91,6 @@ export const meta = {
 				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
 			}
 		},
-
-		mediaOnly: {
-			validator: $.optional.bool,
-			deprecated: true,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します (このパラメータは廃止予定です。代わりに withFiles を使ってください。)'
-			}
-		},
 	},
 
 	res: {
@@ -122,94 +110,28 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const [list, followings, hideUserIds] = await Promise.all([
-		// リストを取得
-		// Fetch the list
-		UserList.findOne({
-			_id: ps.listId,
-			userId: user._id
-		}),
-
-		// フォローを取得
-		// Fetch following
-		getFriends(user._id, true, false),
-
-		// 隠すユーザーを取得
-		getHideUserIds(user)
-	]);
+	const list = await UserLists.findOne({
+		id: ps.listId,
+		userId: user.id
+	});
 
 	if (list == null) {
 		throw new ApiError(meta.errors.noSuchList);
 	}
 
-	if (list.userIds.length == 0) {
-		return [];
-	}
-
 	//#region Construct query
-	const sort = {
-		_id: -1
-	};
+	const listQuery = UserListJoinings.createQueryBuilder('joining')
+		.select('joining.userId')
+		.where('joining.userListId = :userListId', { userListId: list.id });
 
-	const listQuery = list.userIds.map(u => ({
-		userId: u,
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere(`note.userId IN (${ listQuery.getQuery() })`)
+		.leftJoinAndSelect('note.user', 'user')
+		.setParameters(listQuery.getParameters());
 
-		/*// リプライは含めない(ただし投稿者自身の投稿へのリプライ、自分の投稿へのリプライ、自分のリプライは含める)
-		$or: [{
-			// リプライでない
-			replyId: null
-		}, { // または
-			// リプライだが返信先が投稿者自身の投稿
-			$expr: {
-				$eq: ['$_reply.userId', '$userId']
-			}
-		}, { // または
-			// リプライだが返信先が自分(フォロワー)の投稿
-			'_reply.userId': user._id
-		}, { // または
-			// 自分(フォロワー)が送信したリプライ
-			userId: user._id
-		}]*/
-	}));
+	generateVisibilityQuery(query, user);
 
-	const visibleQuery = [{
-		visibility: { $in: ['public', 'home'] }
-	}, {
-		// myself (for specified/private)
-		userId: user._id
-	}, {
-		// to me (for specified)
-		visibleUserIds: { $in: [user._id] }
-	}, {
-		visibility: 'followers',
-		userId: { $in: followings.map(f => f.id) }
-	}];
-
-	const query = {
-		$and: [{
-			deletedAt: null,
-
-			$and: [{
-				// リストに入っている人のタイムラインへの投稿
-				$or: listQuery
-			}, {
-				// visible for me
-				$or: visibleQuery
-			}],
-
-			// mute
-			userId: {
-				$nin: hideUserIds
-			},
-			'_reply.userId': {
-				$nin: hideUserIds
-			},
-			'_renote.userId': {
-				$nin: hideUserIds
-			},
-		}]
-	} as any;
-
+	/* TODO
 	// MongoDBではトップレベルで否定ができないため、De Morganの法則を利用してクエリします。
 	// つまり、「『自分の投稿かつRenote』ではない」を「『自分の投稿ではない』または『Renoteではない』」と表現します。
 	// for details: https://en.wikipedia.org/wiki/De_Morgan%27s_laws
@@ -217,7 +139,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.includeMyRenotes === false) {
 		query.$and.push({
 			$or: [{
-				userId: { $ne: user._id }
+				userId: { $ne: user.id }
 			}, {
 				renoteId: null
 			}, {
@@ -233,7 +155,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.includeRenotedMyNotes === false) {
 		query.$and.push({
 			$or: [{
-				'_renote.userId': { $ne: user._id }
+				'_renote.userId': { $ne: user.id }
 			}, {
 				renoteId: null
 			}, {
@@ -260,41 +182,16 @@ export default define(meta, async (ps, user) => {
 				poll: { $ne: null }
 			}]
 		});
-	}
+	}*/
 
-	const withFiles = ps.withFiles != null ? ps.withFiles : ps.mediaOnly;
-
-	if (withFiles) {
-		query.$and.push({
-			fileIds: { $exists: true, $ne: [] }
-		});
-	}
-
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	} else if (ps.sinceDate) {
-		sort._id = 1;
-		query.createdAt = {
-			$gt: new Date(ps.sinceDate)
-		};
-	} else if (ps.untilDate) {
-		query.createdAt = {
-			$lt: new Date(ps.untilDate)
-		};
+	if (ps.withFiles) {
+		query.andWhere('note.fileIds != \'{}\'');
 	}
 	//#endregion
 
-	const timeline = await Note.find(query, {
-		limit: ps.limit,
-		sort: sort
-	});
+	const timeline = await query.take(ps.limit!).getMany();
 
-	return await packMany(timeline, user);
+	activeUsersChart.update(user);
+
+	return await Notes.packMany(timeline, user);
 });

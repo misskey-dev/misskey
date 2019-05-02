@@ -19,7 +19,7 @@
 			</ui-horizon-group>
 
 			<div class="nqjzuvev">
-				<code v-for="log in logs" :key="log._id" :class="log.level">
+				<code v-for="log in logs" :key="log.id" :class="log.level">
 					<details>
 						<summary><mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
 						<vue-json-pretty v-if="log.data" :data="log.data"></vue-json-pretty>

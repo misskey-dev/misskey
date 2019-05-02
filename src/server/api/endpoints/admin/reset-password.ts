@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import User from '../../../../models/user';
 import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
+import { Users, UserProfiles } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -18,7 +18,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーID',
 				'en-US': 'The user ID which you want to suspend'
@@ -28,9 +27,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const user = await User.findOne({
-		_id: ps.userId
-	});
+	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {
 		throw new Error('user not found');
@@ -45,12 +42,10 @@ export default define(meta, async (ps) => {
 	// Generate hash of password
 	const hash = bcrypt.hashSync(passwd);
 
-	await User.findOneAndUpdate({
-		_id: user._id
+	await UserProfiles.update({
+		userId: user.id
 	}, {
-		$set: {
-			password: hash
-		}
+		password: hash
 	});
 
 	return {

@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
-import Instance from '../../../../models/instance';
+import { Instances } from '../../../../models';
+import fetchMeta from '../../../../misc/fetch-meta';
 
 export const meta = {
 	tags: ['federation'],
@@ -37,92 +38,55 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	let sort;
+	const query = Instances.createQueryBuilder('instance');
 
-	if (ps.sort) {
-		if (ps.sort == '+notes') {
-			sort = {
-				notesCount: -1
-			};
-		} else if (ps.sort == '-notes') {
-			sort = {
-				notesCount: 1
-			};
-		} else if (ps.sort == '+users') {
-			sort = {
-				usersCount: -1
-			};
-		} else if (ps.sort == '-users') {
-			sort = {
-				usersCount: 1
-			};
-		} else if (ps.sort == '+following') {
-			sort = {
-				followingCount: -1
-			};
-		} else if (ps.sort == '-following') {
-			sort = {
-				followingCount: 1
-			};
-		} else if (ps.sort == '+followers') {
-			sort = {
-				followersCount: -1
-			};
-		} else if (ps.sort == '-followers') {
-			sort = {
-				followersCount: 1
-			};
-		} else if (ps.sort == '+caughtAt') {
-			sort = {
-				caughtAt: -1
-			};
-		} else if (ps.sort == '-caughtAt') {
-			sort = {
-				caughtAt: 1
-			};
-		} else if (ps.sort == '+lastCommunicatedAt') {
-			sort = {
-				lastCommunicatedAt: -1
-			};
-		} else if (ps.sort == '-lastCommunicatedAt') {
-			sort = {
-				lastCommunicatedAt: 1
-			};
-		} else if (ps.sort == '+driveUsage') {
-			sort = {
-				driveUsage: -1
-			};
-		} else if (ps.sort == '-driveUsage') {
-			sort = {
-				driveUsage: 1
-			};
-		} else if (ps.sort == '+driveFiles') {
-			sort = {
-				driveFiles: -1
-			};
-		} else if (ps.sort == '-driveFiles') {
-			sort = {
-				driveFiles: 1
-			};
-		}
-	} else {
-		sort = {
-			_id: -1
-		};
+	switch (ps.sort) {
+		case '+notes': query.orderBy('instance.notesCount', 'DESC'); break;
+		case '-notes': query.orderBy('instance.notesCount', 'ASC'); break;
+		case '+usersCount': query.orderBy('instance.usersCount', 'DESC'); break;
+		case '-usersCount': query.orderBy('instance.usersCount', 'ASC'); break;
+		case '+followingCount': query.orderBy('instance.followingCount', 'DESC'); break;
+		case '-followingCount': query.orderBy('instance.followingCount', 'ASC'); break;
+		case '+followersCount': query.orderBy('instance.followersCount', 'DESC'); break;
+		case '-followersCount': query.orderBy('instance.followersCount', 'ASC'); break;
+		case '+caughtAt': query.orderBy('instance.caughtAt', 'DESC'); break;
+		case '-caughtAt': query.orderBy('instance.caughtAt', 'ASC'); break;
+		case '+lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'DESC'); break;
+		case '-lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'ASC'); break;
+		case '+driveUsage': query.orderBy('instance.driveUsage', 'DESC'); break;
+		case '-driveUsage': query.orderBy('instance.driveUsage', 'ASC'); break;
+		case '+driveFiles': query.orderBy('instance.driveFiles', 'DESC'); break;
+		case '-driveFiles': query.orderBy('instance.driveFiles', 'ASC'); break;
+
+		default: query.orderBy('instance.id', 'DESC'); break;
 	}
 
-	const q = {} as any;
+	if (typeof ps.blocked === 'boolean') {
+		const meta = await fetchMeta();
+		if (ps.blocked) {
+			query.andWhere('instance.host IN (:...blocks)', { blocks: meta.blockedHosts });
+		} else {
+			query.andWhere('instance.host NOT IN (:...blocks)', { blocks: meta.blockedHosts });
+		}
+	}
 
-	if (typeof ps.blocked === 'boolean') q.isBlocked = ps.blocked;
-	if (typeof ps.notResponding === 'boolean') q.isNotResponding = ps.notResponding;
-	if (typeof ps.markedAsClosed === 'boolean') q.isMarkedAsClosed = ps.markedAsClosed;
+	if (typeof ps.notResponding === 'boolean') {
+		if (ps.notResponding) {
+			query.andWhere('instance.isNotResponding = TRUE');
+		} else {
+			query.andWhere('instance.isNotResponding = FALSE');
+		}
+	}
 
-	const instances = await Instance
-		.find(q, {
-			limit: ps.limit,
-			sort: sort,
-			skip: ps.offset
-		});
+	if (typeof ps.markedAsClosed === 'boolean') {
+		if (ps.markedAsClosed) {
+			query.andWhere('instance.isMarkedAsClosed = TRUE');
+		} else {
+			query.andWhere('instance.isMarkedAsClosed = FALSE');
+		}
+	}
+
+	const instances = await query.take(ps.limit!).skip(ps.offset).getMany();
 
 	return instances;
 });

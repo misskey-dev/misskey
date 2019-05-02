@@ -379,43 +379,30 @@ export default Vue.extend({
 			});
 		},
 
-		openContextMenu() {
-			const fn = window.prompt(this.$t('prompt'));
-			if (fn == null || fn == '') return;
-			switch (fn) {
-				case '1':
-					this.selectLocalFile();
-					break;
-				case '2':
-					this.urlUpload();
-					break;
-				case '3':
-					this.createFolder();
-					break;
-				case '4':
-					this.renameFolder();
-					break;
-				case '5':
-					this.moveFolder();
-					break;
-				case '6':
-					this.deleteFolder();
-					break;
-			}
-		},
-
 		selectLocalFile() {
 			(this.$refs.file as any).click();
 		},
 
 		createFolder() {
-			const name = window.prompt(this.$t('folder-name'));
-			if (name == null || name == '') return;
-			this.$root.api('drive/folders/create', {
-				name: name,
-				parentId: this.folder ? this.folder.id : undefined
-			}).then(folder => {
-				this.addFolder(folder, true);
+			this.$root.dialog({
+				title: this.$t('folder-name')
+				input: {
+					default: this.folder.name
+				}
+			}).then(({ result: name }) => {
+				if (!name) {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('folder-name-cannot-empty')
+					});
+					return;
+				}
+				this.$root.api('drive/folders/create', {
+					name: name,
+					parentId: this.folder ? this.folder.id : undefined
+				}).then(folder => {
+					this.addFolder(folder, true);
+				});
 			});
 		},
 
@@ -427,13 +414,25 @@ export default Vue.extend({
 				});
 				return;
 			}
-			const name = window.prompt(this.$t('folder-name'), this.folder.name);
-			if (name == null || name == '') return;
-			this.$root.api('drive/folders/update', {
-				name: name,
-				folderId: this.folder.id
-			}).then(folder => {
-				this.cd(folder);
+			this.$root.dialog({
+				title: this.$t('folder-name')
+				input: {
+					default: this.folder.name
+				}
+			}).then(({ result: name }) => {
+				if (!name) {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('cannot-empty')
+					});
+					return;
+				}
+				this.$root.api('drive/folders/update', {
+					name: name,
+					folderId: this.folder.id
+				}).then(folder => {
+					this.cd(folder);
+				});
 			});
 		},
 

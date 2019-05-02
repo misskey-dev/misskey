@@ -34,7 +34,7 @@
 					<button @click="addWidget">{{ $t('add') }}</button>
 				</div>
 				<div class="trash">
-					<x-draggable v-model="trash" :options="{ group: 'x' }" @add="onTrash"></x-draggable>
+					<x-draggable v-model="trash" group="x" @add="onTrash"></x-draggable>
 					<p>{{ $t('@.trash') }}</p>
 				</div>
 			</div>
@@ -45,7 +45,8 @@
 					:list="widgets[place]"
 					:class="place"
 					:data-place="place"
-					:options="{ group: 'x', animation: 150 }"
+					group="x"
+					animation="150"
 					@sort="onWidgetSort"
 					:key="place"
 				>
@@ -101,7 +102,7 @@ export default Vue.extend({
 	computed: {
 		home(): any[] {
 			if (this.$store.getters.isSignedIn) {
-				return this.$store.state.settings.home || [];
+				return this.$store.state.device.home || [];
 			} else {
 				return [{
 					name: 'instance',
@@ -182,12 +183,8 @@ export default Vue.extend({
 			}
 			//#endregion
 
-			if (this.$store.state.settings.home == null) {
-				this.$root.api('i/update_home', {
-					home: _defaultDesktopHomeWidgets
-				}).then(() => {
-					this.$store.commit('settings/setHome', _defaultDesktopHomeWidgets);
-				});
+			if (this.$store.state.device.home == null) {
+				this.$store.commit('device/setHome', _defaultDesktopHomeWidgets);
 			}
 		}
 	},
@@ -226,7 +223,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.dispatch('settings/addHomeWidget', {
+			this.$store.commit('device/addHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				place: 'left',
@@ -237,12 +234,9 @@ export default Vue.extend({
 		saveHome() {
 			const left = this.widgets.left;
 			const right = this.widgets.right;
-			this.$store.commit('settings/setHome', left.concat(right));
+			this.$store.commit('device/setHome', left.concat(right));
 			for (const w of left) w.place = 'left';
 			for (const w of right) w.place = 'right';
-			this.$root.api('i/update_home', {
-				home: this.home
-			});
 		},
 
 		done() {

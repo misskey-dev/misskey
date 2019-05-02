@@ -1,8 +1,7 @@
 import $ from 'cafy';
-import Vote from '../../../../../models/poll-vote';
-import Note, { pack } from '../../../../../models/note';
 import define from '../../../define';
-import { getHideUserIds } from '../../../common/get-hide-users';
+import { Polls, Mutings, Notes, PollVotes } from '../../../../../models';
+import { Brackets, In } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -28,51 +27,46 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// Get votes
-	const votes = await Vote.find({
-		userId: user._id
-	}, {
-		fields: {
-			_id: false,
-			noteId: true
-		}
+	const query = Polls.createQueryBuilder('poll')
+		.where('poll.userHost IS NULL')
+		.andWhere(`poll.userId != :meId`, { meId: user.id })
+		.andWhere(`poll.noteVisibility = 'public'`)
+		.andWhere(new Brackets(qb => { qb
+			.where('poll.expiresAt IS NULL')
+			.orWhere('poll.expiresAt > :now', { now: new Date() });
+		}));
+
+	//#region exclude arleady voted polls
+	const votedQuery = PollVotes.createQueryBuilder('vote')
+		.select('vote.noteId')
+		.where('vote.userId = :meId', { meId: user.id });
+
+	query
+		.andWhere(`poll.noteId NOT IN (${ votedQuery.getQuery() })`);
+
+	query.setParameters(votedQuery.getParameters());
+	//#endregion
+
+	//#region mute
+	const mutingQuery = Mutings.createQueryBuilder('muting')
+		.select('muting.muteeId')
+		.where('muting.muterId = :muterId', { muterId: user.id });
+
+	query
+		.andWhere(`poll.userId NOT IN (${ mutingQuery.getQuery() })`);
+
+	query.setParameters(mutingQuery.getParameters());
+	//#endregion
+
+	const polls = await query.take(ps.limit!).skip(ps.offset).getMany();
+
+	if (polls.length === 0) return [];
+
+	const notes = await Notes.find({
+		id: In(polls.map(poll => poll.noteId))
 	});
 
-	const nin = votes && votes.length != 0 ? votes.map(v => v.noteId) : [];
-
-	// 隠すユーザーを取得
-	const hideUserIds = await getHideUserIds(user);
-
-	const notes = await Note.find({
-		'_user.host': null,
-		_id: {
-			$nin: nin
-		},
-		userId: {
-			$ne: user._id,
-			$nin: hideUserIds
-		},
-		visibility: 'public',
-		poll: {
-			$exists: true,
-			$ne: null
-		},
-		$or: [{
-			'poll.expiresAt': null
-		}, {
-			'poll.expiresAt': {
-				$gt: new Date()
-			}
-		}],
-	}, {
-		limit: ps.limit,
-		skip: ps.offset,
-		sort: {
-			_id: -1
-		}
-	});
-
-	return await Promise.all(notes.map(note => pack(note, user, {
+	return await Notes.packMany(notes, user, {
 		detail: true
-	})));
+	});
 });

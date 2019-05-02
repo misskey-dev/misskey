@@ -1,8 +1,8 @@
 import config from '../../../config';
-import { ILocalUser, IRemoteUser } from '../../../models/user';
+import { ILocalUser, IRemoteUser } from '../../../models/entities/user';
 
-export default (blocker?: ILocalUser, blockee?: IRemoteUser) => ({
+export default (blocker: ILocalUser, blockee: IRemoteUser) => ({
 	type: 'Block',
-	actor: `${config.url}/users/${blocker._id}`,
+	actor: `${config.url}/users/${blocker.id}`,
 	object: blockee.uri
 });

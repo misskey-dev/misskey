@@ -1,12 +1,12 @@
-import * as mongo from 'mongodb';
 import * as Router from 'koa-router';
 
 import config from '../config';
 import parseAcct from '../misc/acct/parse';
-import User from '../models/user';
 import Acct from '../misc/acct/type';
 import { links } from './nodeinfo';
 import { escapeAttribute, escapeValue } from '../prelude/xml';
+import { Users } from '../models';
+import { User } from '../models/entities/user';
 
 // Init router
 const router = new Router();
@@ -47,18 +47,18 @@ router.get('/.well-known/nodeinfo', async ctx => {
 });
 
 router.get(webFingerPath, async ctx => {
+	const fromId = (id: User['id']): Record<string, any> => ({
+		id,
+		host: null
+	});
+
 	const generateQuery = (resource: string) =>
 		resource.startsWith(`${config.url.toLowerCase()}/users/`) ?
-			fromId(new mongo.ObjectID(resource.split('/').pop())) :
+			fromId(resource.split('/').pop()!) :
 			fromAcct(parseAcct(
-				resource.startsWith(`${config.url.toLowerCase()}/@`) ? resource.split('/').pop() :
+				resource.startsWith(`${config.url.toLowerCase()}/@`) ? resource.split('/').pop()! :
 				resource.startsWith('acct:') ? resource.slice('acct:'.length) :
 				resource));
-
-	const fromId = (_id: mongo.ObjectID): Record<string, any> => ({
-			_id,
-			host: null
-		});
 
 	const fromAcct = (acct: Acct): Record<string, any> | number =>
 		!acct.host || acct.host === config.host.toLowerCase() ? {
@@ -78,9 +78,9 @@ router.get(webFingerPath, async ctx => {
 		return;
 	}
 
-	const user = await User.findOne(query);
+	const user = await Users.findOne(query);
 
-	if (user === null) {
+	if (user == null) {
 		ctx.status = 404;
 		return;
 	}
@@ -89,7 +89,7 @@ router.get(webFingerPath, async ctx => {
 	const self = {
 		rel: 'self',
 		type: 'application/activity+json',
-		href: `${config.url}/users/${user._id}`
+		href: `${config.url}/users/${user.id}`
 	};
 	const profilePage = {
 		rel: 'http://webfinger.net/rel/profile-page',

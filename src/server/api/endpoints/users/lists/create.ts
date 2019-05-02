@@ -1,6 +1,8 @@
 import $ from 'cafy';
-import UserList, { pack } from '../../../../../models/user-list';
 import define from '../../../define';
+import { UserLists } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
+import { UserList } from '../../../../../models/entities/user-list';
 
 export const meta = {
 	desc: {
@@ -12,7 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'account-write',
+	kind: 'write:account',
 
 	params: {
 		title: {
@@ -22,12 +24,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const userList = await UserList.insert({
+	const userList = await UserLists.save({
+		id: genId(),
 		createdAt: new Date(),
-		userId: user._id,
-		title: ps.title,
-		userIds: []
-	});
+		userId: user.id,
+		name: ps.title,
+	} as UserList);
 
-	return await pack(userList);
+	return await UserLists.pack(userList);
 });

@@ -1,5 +1,5 @@
-import FollowRequest, { pack } from '../../../../../models/follow-request';
 import define from '../../../define';
+import { FollowRequests } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -11,13 +11,13 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'following-read'
+	kind: 'read:following'
 };
 
 export default define(meta, async (ps, user) => {
-	const reqs = await FollowRequest.find({
-		followeeId: user._id
+	const reqs = await FollowRequests.find({
+		followeeId: user.id
 	});
 
-	return await Promise.all(reqs.map(req => pack(req)));
+	return await Promise.all(reqs.map(req => FollowRequests.pack(req)));
 });

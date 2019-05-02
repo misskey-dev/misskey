@@ -1,7 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Signin, { pack } from '../../../../models/signin';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
+import { Signins } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	requireCredential: true,
@@ -16,41 +17,19 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		}
 	}
 };
 
 export default define(meta, async (ps, user) => {
-	const query = {
-		userId: user._id
-	} as any;
+	const query = makePaginationQuery(Signins.createQueryBuilder('signin'), ps.sinceId, ps.untilId)
+		.andWhere(`signin.userId = :meId`, { meId: user.id });
 
-	const sort = {
-		_id: -1
-	};
+	const history = await query.take(ps.limit!).getMany();
 
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const history = await Signin
-		.find(query, {
-			limit: ps.limit,
-			sort: sort
-		});
-
-	return await Promise.all(history.map(record => pack(record)));
+	return await Promise.all(history.map(record => Signins.pack(record)));
 });

@@ -1,7 +1,6 @@
 import $ from 'cafy';
-import Hashtag from '../../../../models/hashtag';
 import define from '../../define';
-import * as escapeRegexp from 'escape-regexp';
+import { Hashtags } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -46,16 +45,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const hashtags = await Hashtag
-		.find({
-			tag: new RegExp('^' + escapeRegexp(ps.query.toLowerCase()))
-		}, {
-			sort: {
-				count: -1
-			},
-			limit: ps.limit,
-			skip: ps.offset
-		});
+	const hashtags = await Hashtags.createQueryBuilder('tag')
+		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
+		.orderBy('tag.count', 'DESC')
+		.groupBy('tag.id')
+		.take(ps.limit!)
+		.skip(ps.offset)
+		.getMany();
 
-	return hashtags.map(tag => tag.tag);
+	return hashtags.map(tag => tag.name);
 });

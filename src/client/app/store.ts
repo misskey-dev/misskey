@@ -7,8 +7,6 @@ import { erase } from '../../prelude/array';
 import getNoteSummary from '../../misc/get-note-summary';
 
 const defaultSettings = {
-	home: null,
-	mobileHome: [],
 	keepCw: false,
 	tagTimelines: [],
 	fetchOnScroll: true,
@@ -30,6 +28,7 @@ const defaultSettings = {
 	iLikeSushi: false,
 	rememberNoteVisibility: false,
 	defaultNoteVisibility: 'public',
+	wallpaper: null,
 	webSearchEngine: 'https://www.google.com/?#q={{query}}',
 	mutedWords: [],
 	games: {
@@ -41,6 +40,8 @@ const defaultSettings = {
 };
 
 const defaultDeviceSettings = {
+	home: null,
+	mobileHome: [],
 	deck: null,
 	deckMode: false,
 	deckColumnAlign: 'center',
@@ -120,7 +121,7 @@ export default (os: MiOS) => new Vuex.Store({
 	actions: {
 		login(ctx, i) {
 			ctx.commit('updateI', i);
-			ctx.dispatch('settings/merge', i.clientSettings);
+			ctx.dispatch('settings/merge', i.clientData);
 		},
 
 		logout(ctx) {
@@ -134,8 +135,8 @@ export default (os: MiOS) => new Vuex.Store({
 				ctx.commit('updateIKeyValue', { key, value });
 			}
 
-			if (me.clientSettings) {
-				ctx.dispatch('settings/merge', me.clientSettings);
+			if (me.clientData) {
+				ctx.dispatch('settings/merge', me.clientData);
 			}
 		},
 	},
@@ -160,6 +161,48 @@ export default (os: MiOS) => new Vuex.Store({
 
 				setVisibility(state, visibility) {
 					state.visibility = visibility;
+				},
+
+				setHome(state, data) {
+					state.home = data;
+				},
+
+				addHomeWidget(state, widget) {
+					state.home.unshift(widget);
+				},
+
+				setMobileHome(state, data) {
+					state.mobileHome = data;
+				},
+
+				updateWidget(state, x) {
+					let w;
+
+					//#region Desktop home
+					if (state.home) {
+						w = state.home.find(w => w.id == x.id);
+						if (w) {
+							w.data = x.data;
+						}
+					}
+					//#endregion
+
+					//#region Mobile home
+					if (state.mobileHome) {
+						w = state.mobileHome.find(w => w.id == x.id);
+						if (w) {
+							w.data = x.data;
+						}
+					}
+					//#endregion
+				},
+
+				addMobileHomeWidget(state, widget) {
+					state.mobileHome.unshift(widget);
+				},
+
+				removeMobileHomeWidget(state, widget) {
+					state.mobileHome = state.mobileHome.filter(w => w.id != widget.id);
 				},
 
 				addDeckColumn(state, column) {
@@ -301,48 +344,6 @@ export default (os: MiOS) => new Vuex.Store({
 				set(state, x: { key: string; value: any }) {
 					nestedProperty.set(state, x.key, x.value);
 				},
-
-				setHome(state, data) {
-					state.home = data;
-				},
-
-				addHomeWidget(state, widget) {
-					state.home.unshift(widget);
-				},
-
-				setMobileHome(state, data) {
-					state.mobileHome = data;
-				},
-
-				updateWidget(state, x) {
-					let w;
-
-					//#region Desktop home
-					if (state.home) {
-						w = state.home.find(w => w.id == x.id);
-						if (w) {
-							w.data = x.data;
-						}
-					}
-					//#endregion
-
-					//#region Mobile home
-					if (state.mobileHome) {
-						w = state.mobileHome.find(w => w.id == x.id);
-						if (w) {
-							w.data = x.data;
-						}
-					}
-					//#endregion
-				},
-
-				addMobileHomeWidget(state, widget) {
-					state.mobileHome.unshift(widget);
-				},
-
-				removeMobileHomeWidget(state, widget) {
-					state.mobileHome = state.mobileHome.filter(w => w.id != widget.id);
-				},
 			},
 
 			actions: {
@@ -363,30 +364,6 @@ export default (os: MiOS) => new Vuex.Store({
 						});
 					}
 				},
-
-				addHomeWidget(ctx, widget) {
-					ctx.commit('addHomeWidget', widget);
-
-					os.api('i/update_home', {
-						home: ctx.state.home
-					});
-				},
-
-				addMobileHomeWidget(ctx, widget) {
-					ctx.commit('addMobileHomeWidget', widget);
-
-					os.api('i/update_mobile_home', {
-						home: ctx.state.mobileHome
-					});
-				},
-
-				removeMobileHomeWidget(ctx, widget) {
-					ctx.commit('removeMobileHomeWidget', widget);
-
-					os.api('i/update_mobile_home', {
-						home: ctx.state.mobileHome.filter(w => w.id != widget.id)
-					});
-				}
 			}
 		}
 	}

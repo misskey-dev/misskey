@@ -19,12 +19,14 @@ import activityPub from './activitypub';
 import nodeinfo from './nodeinfo';
 import wellKnown from './well-known';
 import config from '../config';
-import networkChart from '../services/chart/network';
 import apiServer from './api';
 import { sum } from '../prelude/array';
-import User from '../models/user';
 import Logger from '../services/logger';
 import { program } from '../argv';
+import { UserProfiles } from '../models';
+import { networkChart } from '../services/chart';
+import { genAvatar } from '../misc/gen-avatar';
+import { createTemp } from '../misc/create-temp';
 
 export const serverLogger = new Logger('server', 'gray', false);
 
@@ -32,7 +34,7 @@ export const serverLogger = new Logger('server', 'gray', false);
 const app = new Koa();
 app.proxy = true;
 
-if (!['production', 'test'].includes(process.env.NODE_ENV)) {
+if (!['production', 'test'].includes(process.env.NODE_ENV || '')) {
 	// Logger
 	app.use(koaLogger(str => {
 		serverLogger.info(str);
@@ -72,18 +74,25 @@ router.use(activityPub.routes());
 router.use(nodeinfo.routes());
 router.use(wellKnown.routes());
 
-router.get('/verify-email/:code', async ctx => {
-	const user = await User.findOne({ emailVerifyCode: ctx.params.code });
+router.get('/avatar/:x', async ctx => {
+	const [temp] = await createTemp();
+	await genAvatar(ctx.params.x, fs.createWriteStream(temp));
+	ctx.set('Content-Type', 'image/png');
+	ctx.body = fs.createReadStream(temp);
+});
 
-	if (user != null) {
+router.get('/verify-email/:code', async ctx => {
+	const profile = await UserProfiles.findOne({
+		emailVerifyCode: ctx.params.code
+	});
+
+	if (profile != null) {
 		ctx.body = 'Verify succeeded!';
 		ctx.status = 200;
 
-		User.update({ _id: user._id }, {
-			$set: {
-				emailVerified: true,
-				emailVerifyCode: null
-			}
+		UserProfiles.update({ userId: profile.userId }, {
+			emailVerified: true,
+			emailVerifyCode: null
 		});
 	} else {
 		ctx.status = 404;

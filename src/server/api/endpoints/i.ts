@@ -1,5 +1,5 @@
-import { pack } from '../../../models/user';
 import define from '../define';
+import { Users } from '../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -22,7 +22,7 @@ export const meta = {
 export default define(meta, async (ps, user, app) => {
 	const isSecure = user != null && app == null;
 
-	return await pack(user, user, {
+	return await Users.pack(user, user, {
 		detail: true,
 		includeHasUnreadNotes: true,
 		includeSecrets: isSecure

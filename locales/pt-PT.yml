@@ -119,9 +119,6 @@ common:
   you: "Você"
 auth/views/form.vue:
   permission-ask: "Este aplicativo precisa das seguintes permissões:"
-  account-read: "Ver informações da conta."
-  account-write: "Modificar informações da conta."
-  note-write: "Publicar"
   cancel: "Cancelar"
   accept: "Permitir acesso"
 auth/views/index.vue:
@@ -292,7 +289,3 @@ docs:
       description: "Descrição"
 dev/views/index.vue:
   manage-apps: "Gerenciar aplicativos"
-dev/views/new-app.vue:
-  account-read: "Ver informações da conta."
-  account-write: "Modificar informações da conta."
-  note-write: "Publicar"

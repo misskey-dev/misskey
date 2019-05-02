@@ -1,9 +1,12 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import Note, { packMany } from '../../../../models/note';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { generateVisibilityQuery } from '../../common/generate-visibility-query';
+import { generateMuteQuery } from '../../common/generate-mute-query';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { Notes } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -18,7 +21,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID'
@@ -32,12 +34,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		}
 	},
 
@@ -63,29 +63,14 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	const sort = {
-		_id: -1
-	};
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		.andWhere(`note.renoteId = :renoteId`, { renoteId: note.id })
+		.leftJoinAndSelect('note.user', 'user');
 
-	const query = {
-		renoteId: note._id
-	} as any;
+	if (user) generateVisibilityQuery(query, user);
+	if (user) generateMuteQuery(query, user);
 
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
+	const renotes = await query.take(ps.limit!).getMany();
 
-	const renotes = await Note.find(query, {
-		limit: ps.limit,
-		sort: sort
-	});
-
-	return await packMany(renotes, user);
+	return await Notes.packMany(renotes, user);
 });

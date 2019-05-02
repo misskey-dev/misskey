@@ -1,31 +1,27 @@
 import { Buffer } from 'buffer';
 import * as fs from 'fs';
 
-import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
 import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
 
-import DriveFile, { IMetadata, getDriveFileBucket, IDriveFile } from '../../models/drive-file';
-import DriveFolder from '../../models/drive-folder';
-import { pack } from '../../models/drive-file';
 import { publishMainStream, publishDriveStream } from '../stream';
-import { isLocalUser, IUser, IRemoteUser, isRemoteUser } from '../../models/user';
 import delFile from './delete-file';
 import config from '../../config';
-import { getDriveFileWebpublicBucket } from '../../models/drive-file-webpublic';
-import { getDriveFileThumbnailBucket } from '../../models/drive-file-thumbnail';
-import driveChart from '../../services/chart/drive';
-import perUserDriveChart from '../../services/chart/per-user-drive';
-import instanceChart from '../../services/chart/instance';
 import fetchMeta from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
-import Instance from '../../models/instance';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
+import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
+import { InternalStorage } from './internal-storage';
+import { DriveFile } from '../../models/entities/drive-file';
+import { IRemoteUser, User } from '../../models/entities/user';
+import { driveChart, perUserDriveChart, instanceChart } from '../chart';
+import { genId } from '../../misc/gen-id';
+import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -36,11 +32,10 @@ const logger = driveLogger.createSubLogger('register', 'yellow');
  * @param type Content-Type for original
  * @param hash Hash for original
  * @param size Size for original
- * @param metadata
  */
-async function save(path: string, name: string, type: string, hash: string, size: number, metadata: IMetadata): Promise<IDriveFile> {
+async function save(file: DriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<DriveFile> {
 	// thunbnail, webpublic を必要なら生成
-	const alts = await generateAlts(path, type, !metadata.uri);
+	const alts = await generateAlts(path, type, !file.uri);
 
 	if (config.drive && config.drive.storage == 'minio') {
 		//#region ObjectStorage params
@@ -60,10 +55,10 @@ async function save(path: string, name: string, type: string, hash: string, size
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
-		let webpublicKey = null as string;
-		let webpublicUrl = null as string;
-		let thumbnailKey = null as string;
-		let thumbnailUrl = null as string;
+		let webpublicKey: string | null = null;
+		let webpublicUrl: string | null = null;
+		let thumbnailKey: string | null = null;
+		let thumbnailUrl: string | null = null;
 		//#endregion
 
 		//#region Uploads
@@ -91,58 +86,52 @@ async function save(path: string, name: string, type: string, hash: string, size
 		await Promise.all(uploads);
 		//#endregion
 
-		//#region DB
-		Object.assign(metadata, {
-			withoutChunks: true,
-			storage: 'minio',
-			storageProps: {
-				key,
-				webpublicKey,
-				thumbnailKey,
-			},
-			url,
-			webpublicUrl,
-			thumbnailUrl,
-		} as IMetadata);
+		file.url = url;
+		file.thumbnailUrl = thumbnailUrl;
+		file.webpublicUrl = webpublicUrl;
+		file.accessKey = key;
+		file.thumbnailAccessKey = thumbnailKey;
+		file.webpublicAccessKey = webpublicKey;
+		file.name = name;
+		file.type = type;
+		file.md5 = hash;
+		file.size = size;
+		file.storedInternal = false;
 
-		const file = await DriveFile.insert({
-			length: size,
-			uploadDate: new Date(),
-			md5: hash,
-			filename: name,
-			metadata: metadata,
-			contentType: type
-		});
-		//#endregion
+		return await DriveFiles.save(file);
+	} else { // use internal storage
+		const accessKey = uuid.v4();
+		const thumbnailAccessKey = uuid.v4();
+		const webpublicAccessKey = uuid.v4();
 
-		return file;
-	} else {	// use MongoDB GridFS
-		// #region store original
-		const originalDst = await getDriveFileBucket();
+		const url = InternalStorage.saveFromPath(accessKey, path);
 
-		// web用(Exif削除済み)がある場合はオリジナルにアクセス制限
-		if (alts.webpublic) metadata.accessKey = uuid.v4();
-
-		const originalFile = await storeOriginal(originalDst, name, path, type, metadata);
-
-		logger.info(`original stored to ${originalFile._id}`);
-		// #endregion store original
-
-		// #region store webpublic
-		if (alts.webpublic) {
-			const webDst = await getDriveFileWebpublicBucket();
-			const webFile = await storeAlts(webDst, name, alts.webpublic.data, alts.webpublic.type, originalFile._id);
-			logger.info(`web stored ${webFile._id}`);
-		}
-		// #endregion store webpublic
+		let thumbnailUrl: string | null = null;
+		let webpublicUrl: string | null = null;
 
 		if (alts.thumbnail) {
-			const thumDst = await getDriveFileThumbnailBucket();
-			const thumFile = await storeAlts(thumDst, name, alts.thumbnail.data, alts.thumbnail.type, originalFile._id);
-			logger.info(`web stored ${thumFile._id}`);
+			thumbnailUrl = InternalStorage.saveFromBuffer(thumbnailAccessKey, alts.thumbnail.data);
+			logger.info(`thumbnail stored: ${thumbnailAccessKey}`);
 		}
 
-		return originalFile;
+		if (alts.webpublic) {
+			webpublicUrl = InternalStorage.saveFromBuffer(webpublicAccessKey, alts.webpublic.data);
+			logger.info(`web stored: ${webpublicAccessKey}`);
+		}
+
+		file.storedInternal = true;
+		file.url = url;
+		file.thumbnailUrl = thumbnailUrl;
+		file.webpublicUrl = webpublicUrl;
+		file.accessKey = accessKey;
+		file.thumbnailAccessKey = thumbnailAccessKey;
+		file.webpublicAccessKey = webpublicAccessKey;
+		file.name = name;
+		file.type = type;
+		file.md5 = hash;
+		file.size = size;
+
+		return await DriveFiles.save(file);
 	}
 }
 
@@ -154,7 +143,7 @@ async function save(path: string, name: string, type: string, hash: string, size
  */
 export async function generateAlts(path: string, type: string, generateWeb: boolean) {
 	// #region webpublic
-	let webpublic: IImage;
+	let webpublic: IImage | null = null;
 
 	if (generateWeb) {
 		logger.info(`creating web image`);
@@ -174,7 +163,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #endregion webpublic
 
 	// #region thumbnail
-	let thumbnail: IImage;
+	let thumbnail: IImage | null = null;
 
 	if (['image/jpeg', 'image/webp'].includes(type)) {
 		thumbnail = await ConvertToJpeg(path, 498, 280);
@@ -199,7 +188,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
  * Upload to ObjectStorage
  */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
-	const minio = new Minio.Client(config.drive.config);
+	const minio = new Minio.Client(config.drive!.config);
 
 	const metadata = {
 		'Content-Type': type,
@@ -208,54 +197,24 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
 
-	await minio.putObject(config.drive.bucket, key, stream, null, metadata);
-}
-
-/**
- * GridFSBucketにオリジナルを格納する
- */
-export async function storeOriginal(bucket: mongodb.GridFSBucket, name: string, path: string, contentType: string, metadata: any) {
-	return new Promise<IDriveFile>((resolve, reject) => {
-		const writeStream = bucket.openUploadStream(name, {
-			contentType,
-			metadata
-		});
-
-		writeStream.once('finish', resolve);
-		writeStream.on('error', reject);
-		fs.createReadStream(path).pipe(writeStream);
-	});
-}
-
-/**
- * GridFSBucketにオリジナル以外を格納する
- */
-export async function storeAlts(bucket: mongodb.GridFSBucket, name: string, data: Buffer, contentType: string, originalId: mongodb.ObjectID) {
-	return new Promise<IDriveFile>((resolve, reject) => {
-		const writeStream = bucket.openUploadStream(name, {
-			contentType,
-			metadata: {
-				originalId
-			}
-		});
-
-		writeStream.once('finish', resolve);
-		writeStream.on('error', reject);
-		writeStream.end(data);
-	});
+	await minio.putObject(config.drive!.bucket!, key, stream, undefined, metadata);
 }
 
 async function deleteOldFile(user: IRemoteUser) {
-	const oldFile = await DriveFile.findOne({
-		_id: {
-			$nin: [user.avatarId, user.bannerId]
-		},
-		'metadata.userId': user._id
-	}, {
-		sort: {
-			_id: 1
-		}
-	});
+	const q = DriveFiles.createQueryBuilder('file')
+		.where('file.userId = :userId', { userId: user.id });
+
+	if (user.avatarId) {
+		q.andWhere('file.id != :avatarId', { avatarId: user.avatarId });
+	}
+
+	if (user.bannerId) {
+		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
+	}
+
+	q.orderBy('file.id', 'ASC');
+
+	const oldFile = await q.getOne();
 
 	if (oldFile) {
 		delFile(oldFile, true);
@@ -278,17 +237,17 @@ async function deleteOldFile(user: IRemoteUser) {
  * @return Created drive file
  */
 export default async function(
-	user: IUser,
+	user: User,
 	path: string,
-	name: string = null,
-	comment: string = null,
-	folderId: mongodb.ObjectID = null,
+	name: string | null = null,
+	comment: string | null = null,
+	folderId: any = null,
 	force: boolean = false,
 	isLink: boolean = false,
-	url: string = null,
-	uri: string = null,
-	sensitive: boolean = null
-): Promise<IDriveFile> {
+	url: string | null = null,
+	uri: string | null = null,
+	sensitive: boolean | null = null
+): Promise<DriveFile> {
 	// Calc md5 hash
 	const calcHash = new Promise<string>((res, rej) => {
 		const readable = fs.createReadStream(path);
@@ -322,55 +281,33 @@ export default async function(
 
 	if (!force) {
 		// Check if there is a file with the same hash
-		const much = await DriveFile.findOne({
+		const much = await DriveFiles.findOne({
 			md5: hash,
-			'metadata.userId': user._id,
-			'metadata.deletedAt': { $exists: false }
+			userId: user.id,
 		});
 
 		if (much) {
-			logger.info(`file with same hash is found: ${much._id}`);
+			logger.info(`file with same hash is found: ${much.id}`);
 			return much;
 		}
 	}
 
 	//#region Check drive usage
 	if (!isLink) {
-		const usage = await DriveFile
-			.aggregate([{
-				$match: {
-					'metadata.userId': user._id,
-					'metadata.deletedAt': { $exists: false }
-				}
-			}, {
-				$project: {
-					length: true
-				}
-			}, {
-				$group: {
-					_id: null,
-					usage: { $sum: '$length' }
-				}
-			}])
-			.then((aggregates: any[]) => {
-				if (aggregates.length > 0) {
-					return aggregates[0].usage;
-				}
-				return 0;
-			});
-
-		logger.debug(`drive usage is ${usage}`);
+		const usage = await DriveFiles.clacDriveUsageOf(user);
 
 		const instance = await fetchMeta();
-		const driveCapacity = 1024 * 1024 * (isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+		const driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);
+
+		logger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
 		// If usage limit exceeded
 		if (usage + size > driveCapacity) {
-			if (isLocalUser(user)) {
-				throw 'no-free-space';
+			if (Users.isLocalUser(user)) {
+				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-				deleteOldFile(user);
+				deleteOldFile(user as IRemoteUser);
 			}
 		}
 	}
@@ -381,12 +318,12 @@ export default async function(
 			return null;
 		}
 
-		const driveFolder = await DriveFolder.findOne({
-			_id: folderId,
-			userId: user._id
+		const driveFolder = await DriveFolders.findOne({
+			id: folderId,
+			userId: user.id
 		});
 
-		if (driveFolder == null) throw 'folder-not-found';
+		if (driveFolder == null) throw new Error('folder-not-found');
 
 		return driveFolder;
 	};
@@ -426,95 +363,85 @@ export default async function(
 
 				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				const value = info.isOpaque ? [r, g, b] : [r, g, b, 255];
-
-				properties['avgColor'] = value;
+				properties['avgColor'] = `rgb(${r},${g},${b})`;
 			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];
 	}
 
+	const profile = await UserProfiles.findOne(user.id);
+
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
-	const metadata = {
-		userId: user._id,
-		_user: {
-			host: user.host
-		},
-		folderId: folder !== null ? folder._id : null,
-		comment: comment,
-		properties: properties,
-		withoutChunks: isLink,
-		isRemote: isLink,
-		isSensitive: isLocalUser(user) && user.settings.alwaysMarkNsfw ? true :
-			(sensitive !== null && sensitive !== undefined)
-				? sensitive
-				: false
-	} as IMetadata;
+	let file = new DriveFile();
+	file.id = genId();
+	file.createdAt = new Date();
+	file.userId = user.id;
+	file.userHost = user.host;
+	file.folderId = folder !== null ? folder.id : null;
+	file.comment = comment;
+	file.properties = properties;
+	file.isLink = isLink;
+	file.isSensitive = Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
+		(sensitive !== null && sensitive !== undefined)
+			? sensitive
+			: false;
 
 	if (url !== null) {
-		metadata.src = url;
+		file.src = url;
 
 		if (isLink) {
-			metadata.url = url;
+			file.url = url;
 		}
 	}
 
 	if (uri !== null) {
-		metadata.uri = uri;
+		file.uri = uri;
 	}
-
-	let driveFile: IDriveFile;
 
 	if (isLink) {
 		try {
-			driveFile = await DriveFile.insert({
-				length: 0,
-				uploadDate: new Date(),
-				md5: hash,
-				filename: detectedName,
-				metadata: metadata,
-				contentType: mime
-			});
+			file.size = 0;
+			file.md5 = hash;
+			file.name = detectedName;
+			file.type = mime;
+
+			file = await DriveFiles.save(file);
 		} catch (e) {
 			// duplicate key error (when already registered)
-			if (e.code === 11000) {
-				logger.info(`already registered ${metadata.uri}`);
+			if (isDuplicateKeyValueError(e)) {
+				logger.info(`already registered ${file.uri}`);
 
-				driveFile = await DriveFile.findOne({
-					'metadata.uri': metadata.uri,
-					'metadata.userId': user._id
-				});
+				file = await DriveFiles.findOne({
+					uri: file.uri,
+					userId: user.id
+				}) as DriveFile;
 			} else {
 				logger.error(e);
 				throw e;
 			}
 		}
 	} else {
-		driveFile = await (save(path, detectedName, mime, hash, size, metadata));
+		file = await (save(file, path, detectedName, mime, hash, size));
 	}
 
-	logger.succ(`drive file has been created ${driveFile._id}`);
+	logger.succ(`drive file has been created ${file.id}`);
 
-	pack(driveFile).then(packedFile => {
+	DriveFiles.pack(file).then(packedFile => {
 		// Publish driveFileCreated event
-		publishMainStream(user._id, 'driveFileCreated', packedFile);
-		publishDriveStream(user._id, 'fileCreated', packedFile);
+		publishMainStream(user.id, 'driveFileCreated', packedFile);
+		publishDriveStream(user.id, 'fileCreated', packedFile);
 	});
 
 	// 統計を更新
-	driveChart.update(driveFile, true);
-	perUserDriveChart.update(driveFile, true);
-	if (isRemoteUser(driveFile.metadata._user)) {
-		instanceChart.updateDrive(driveFile, true);
-		Instance.update({ host: driveFile.metadata._user.host }, {
-			$inc: {
-				driveUsage: driveFile.length,
-				driveFiles: 1
-			}
-		});
+	driveChart.update(file, true);
+	perUserDriveChart.update(file, true);
+	if (file.userHost !== null) {
+		instanceChart.updateDrive(file, true);
+		Instances.increment({ host: file.userHost }, 'driveUsage', file.size);
+		Instances.increment({ host: file.userHost }, 'driveFiles', 1);
 	}
 
-	return driveFile;
+	return file;
 }

@@ -5,7 +5,7 @@
 	</template>
 	<div class="wwtwuxyh" v-if="!fetching">
 		<div class="is-suspended" v-if="user.isSuspended"><p><fa icon="exclamation-triangle"/> {{ $t('@.user-suspended') }}</p></div>
-		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
+		<div class="is-remote" v-if="user.host != null"><p><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url" target="_blank">{{ $t('@.view-on-remote') }}</a></p></div>
 		<header>
 			<div class="banner" :style="style"></div>
 			<div class="body">
@@ -36,11 +36,11 @@
 					</dl>
 				</div>
 				<div class="info">
-					<p class="location" v-if="user.host === null && user.profile.location">
-						<fa icon="map-marker"/>{{ user.profile.location }}
+					<p class="location" v-if="user.host === null && user.location">
+						<fa icon="map-marker"/>{{ user.location }}
 					</p>
-					<p class="birthday" v-if="user.host === null && user.profile.birthday">
-						<fa icon="birthday-cake"/>{{ user.profile.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ $t('years-old', { age }) }})
+					<p class="birthday" v-if="user.host === null && user.birthday">
+						<fa icon="birthday-cake"/>{{ user.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ $t('years-old', { age }) }})
 					</p>
 				</div>
 				<div class="status">
@@ -104,7 +104,7 @@ export default Vue.extend({
 	},
 	computed: {
 		age(): number {
-			return age(this.user.profile.birthday);
+			return age(this.user.birthday);
 		},
 		avator(): string {
 			return this.$store.state.device.disableShowingAnimatedImages
@@ -114,7 +114,7 @@ export default Vue.extend({
 		style(): any {
 			if (this.user.bannerUrl == null) return {};
 			return {
-				backgroundColor: this.user.bannerColor && this.user.bannerColor.length == 3 ? `rgb(${ this.user.bannerColor.join(',') })` : null,
+				backgroundColor: this.user.bannerColor,
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
 		}

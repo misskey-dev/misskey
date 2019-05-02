@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import DriveFile from '../../../../../models/drive-file';
 import { ApiError } from '../../../error';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -13,7 +13,6 @@ export const meta = {
 	params: {
 		fileId: {
 			validator: $.type(ID),
-			transform: transform,
 		},
 	},
 
@@ -27,9 +26,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const file = await DriveFile.findOne({
-		_id: ps.fileId
-	});
+	const file = await DriveFiles.findOne(ps.fileId);
 
 	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);

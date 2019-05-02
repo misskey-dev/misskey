@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import Message from '../../../../../models/messaging-message';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { publishMessagingStream } from '../../../../../services/stream';
 import * as ms from 'ms';
 import { ApiError } from '../../../error';
+import { MessagingMessages } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -18,7 +18,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'messaging-write',
+	kind: 'write:messaging',
 
 	limit: {
 		duration: ms('1hour'),
@@ -29,7 +29,6 @@ export const meta = {
 	params: {
 		messageId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のメッセージのID',
 				'en-US': 'Target message ID.'
@@ -47,19 +46,17 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const message = await Message.findOne({
-		_id: ps.messageId,
-		userId: user._id
+	const message = await MessagingMessages.findOne({
+		id: ps.messageId,
+		userId: user.id
 	});
 
-	if (message === null) {
+	if (message == null) {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	await Message.remove({ _id: message._id });
+	await MessagingMessages.delete(message.id);
 
-	publishMessagingStream(message.userId, message.recipientId, 'deleted', message._id);
-	publishMessagingStream(message.recipientId, message.userId, 'deleted', message._id);
-
-	return;
+	publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
+	publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
 });

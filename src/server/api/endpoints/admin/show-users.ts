@@ -1,7 +1,6 @@
 import $ from 'cafy';
-import User, { pack } from '../../../../models/user';
 import define from '../../define';
-import { fallback } from '../../../../prelude/symbol';
+import { Users } from '../../../../models';
 
 export const meta = {
 	tags: ['admin'],
@@ -55,51 +54,38 @@ export const meta = {
 	}
 };
 
-const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-	'+follower': { followersCount: -1 },
-	'-follower': { followersCount: 1 },
-	'+createdAt': { createdAt: -1 },
-	'-createdAt': { createdAt: 1 },
-	'+updatedAt': { updatedAt: -1 },
-	'-updatedAt': { updatedAt: 1 },
-	[fallback]: { _id: -1 }
-};
-
 export default define(meta, async (ps, me) => {
-	const q = {
-		$and: []
-	} as any;
+	const query = Users.createQueryBuilder('user');
 
-	// state
-	q.$and.push(
-		ps.state == 'admin' ? { isAdmin: true } :
-		ps.state == 'moderator' ? { isModerator: true } :
-		ps.state == 'adminOrModerator' ? {
-			$or: [{
-				isAdmin: true
-			}, {
-				isModerator: true
-			}]
-		} :
-		ps.state == 'verified' ? { isVerified: true } :
-		ps.state == 'silenced' ? { isSilenced: true } :
-		ps.state == 'suspended' ? { isSuspended: true } :
-		{}
-	);
+	switch (ps.state) {
+		case 'admin': query.where('user.isAdmin = TRUE'); break;
+		case 'moderator': query.where('user.isModerator = TRUE'); break;
+		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR isModerator = TRUE'); break;
+		case 'verified': query.where('user.isVerified = TRUE'); break;
+		case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
+		case 'silenced': query.where('user.isSilenced = TRUE'); break;
+		case 'suspended': query.where('user.isSuspended = TRUE'); break;
+	}
 
-	// origin
-	q.$and.push(
-		ps.origin == 'local' ? { host: null } :
-		ps.origin == 'remote' ? { host: { $ne: null } } :
-		{}
-	);
+	switch (ps.origin) {
+		case 'local': query.andWhere('user.host IS NULL'); break;
+		case 'remote': query.andWhere('user.host IS NOT NULL'); break;
+	}
 
-	const users = await User
-		.find(q, {
-			limit: ps.limit,
-			sort: sort[ps.sort] || sort[fallback],
-			skip: ps.offset
-		});
+	switch (ps.sort) {
+		case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
+		case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
+		case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
+		case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
+		case '+updatedAt': query.orderBy('user.updatedAt', 'DESC'); break;
+		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
+		default: query.orderBy('user.id', 'ASC'); break;
+	}
 
-	return await Promise.all(users.map(user => pack(user, me, { detail: true })));
+	query.take(ps.limit!);
+	query.skip(ps.offset);
+
+	const users = await query.getMany();
+
+	return await Users.packMany(users, me, { detail: true });
 });

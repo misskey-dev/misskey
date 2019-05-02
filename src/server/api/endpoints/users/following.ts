@@ -1,11 +1,10 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import User from '../../../../models/user';
-import Following from '../../../../models/following';
-import { pack } from '../../../../models/user';
-import { getFriendIds } from '../../common/get-friends';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
+import { Users, Followings } from '../../../../models';
+import { makePaginationQuery } from '../../common/make-pagination-query';
+import { toPunyNullable } from '../../../../misc/convert-host';
 
 export const meta = {
 	desc: {
@@ -20,7 +19,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象のユーザーのID',
 				'en-US': 'Target user ID'
@@ -35,38 +33,25 @@ export const meta = {
 			validator: $.optional.nullable.str
 		},
 
+		sinceId: {
+			validator: $.optional.type(ID),
+		},
+
+		untilId: {
+			validator: $.optional.type(ID),
+		},
+
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
-
-		cursor: {
-			validator: $.optional.type(ID),
-			default: null as any,
-			transform: transform,
-		},
-
-		iknow: {
-			validator: $.optional.bool,
-			default: false,
-		}
 	},
 
 	res: {
-		type: 'object',
-		properties: {
-			users: {
-				type: 'array',
-				items: {
-					type: 'User',
-				}
-			},
-			next: {
-				type: 'string',
-				format: 'id',
-				nullable: true
-			}
-		}
+		type: 'array',
+		items: {
+			type: 'Following',
+		},
 	},
 
 	errors: {
@@ -79,54 +64,20 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const q: any = ps.userId != null
-		? { _id: ps.userId }
-		: { usernameLower: ps.username.toLowerCase(), host: ps.host };
+	const user = await Users.findOne(ps.userId != null
+		? { id: ps.userId }
+		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) });
 
-	const user = await User.findOne(q);
-
-	if (user === null) {
+	if (user == null) {
 		throw new ApiError(meta.errors.noSuchUser);
 	}
 
-	const query = {
-		followerId: user._id
-	} as any;
+	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+		.andWhere(`following.followerId = :userId`, { userId: user.id });
 
-	// ログインしていてかつ iknow フラグがあるとき
-	if (me && ps.iknow) {
-		// Get my friends
-		const myFriends = await getFriendIds(me._id);
+	const followings = await query
+		.take(ps.limit!)
+		.getMany();
 
-		query.followeeId = {
-			$in: myFriends
-		};
-	}
-
-	// カーソルが指定されている場合
-	if (ps.cursor) {
-		query._id = {
-			$lt: ps.cursor
-		};
-	}
-
-	// Get followers
-	const following = await Following
-		.find(query, {
-			limit: ps.limit + 1,
-			sort: { _id: -1 }
-		});
-
-	// 「次のページ」があるかどうか
-	const inStock = following.length === ps.limit + 1;
-	if (inStock) {
-		following.pop();
-	}
-
-	const users = await Promise.all(following.map(f => pack(f.followeeId, me, { detail: true })));
-
-	return {
-		users: users,
-		next: inStock ? following[following.length - 1]._id : null,
-	};
+	return await Followings.packMany(followings, me, { populateFollowee: true });
 });

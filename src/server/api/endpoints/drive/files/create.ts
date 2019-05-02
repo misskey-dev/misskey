@@ -1,11 +1,11 @@
 import * as ms from 'ms';
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import { validateFileName, pack } from '../../../../../models/drive-file';
+import { ID } from '../../../../../misc/cafy-id';
 import create from '../../../../../services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
+import { DriveFiles } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -24,12 +24,11 @@ export const meta = {
 
 	requireFile: true,
 
-	kind: 'drive-write',
+	kind: 'write:drive',
 
 	params: {
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			transform: transform,
 			default: null as any,
 			desc: {
 				'ja-JP': 'フォルダID'
@@ -78,7 +77,7 @@ export default define(meta, async (ps, user, app, file, cleanup) => {
 			name = null;
 		} else if (name === 'blob') {
 			name = null;
-		} else if (!validateFileName(name)) {
+		} else if (!DriveFiles.validateFileName(name)) {
 			throw new ApiError(meta.errors.invalidFileName);
 		}
 	} else {
@@ -88,11 +87,11 @@ export default define(meta, async (ps, user, app, file, cleanup) => {
 	try {
 		// Create file
 		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
-		return pack(driveFile, { self: true });
+		return DriveFiles.pack(driveFile, { self: true });
 	} catch (e) {
 		apiLogger.error(e);
 		throw new ApiError();
 	} finally {
-		cleanup();
+		cleanup!();
 	}
 });

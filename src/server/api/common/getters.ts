@@ -1,18 +1,15 @@
-import * as mongo from 'mongodb';
-import Note from '../../../models/note';
-import User, { isRemoteUser, isLocalUser } from '../../../models/user';
 import { IdentifiableError } from '../../../misc/identifiable-error';
+import { User } from '../../../models/entities/user';
+import { Note } from '../../../models/entities/note';
+import { Notes, Users } from '../../../models';
 
 /**
  * Get note for API processing
  */
-export async function getNote(noteId: mongo.ObjectID) {
-	const note = await Note.findOne({
-		_id: noteId,
-		deletedAt: { $exists: false }
-	});
+export async function getNote(noteId: Note['id']) {
+	const note = await Notes.findOne(noteId);
 
-	if (note === null) {
+	if (note == null) {
 		throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
 	}
 
@@ -22,23 +19,10 @@ export async function getNote(noteId: mongo.ObjectID) {
 /**
  * Get user for API processing
  */
-export async function getUser(userId: mongo.ObjectID) {
-	const user = await User.findOne({
-		_id: userId,
-		$or: [{
-			isDeleted: { $exists: false }
-		}, {
-			isDeleted: false
-		}]
-	}, {
-		fields: {
-			data: false,
-			profile: false,
-			clientSettings: false
-		}
-	});
+export async function getUser(userId: User['id']) {
+	const user = await Users.findOne(userId);
 
-	if (user === null) {
+	if (user == null) {
 		throw new IdentifiableError('15348ddd-432d-49c2-8a5a-8069753becff', 'No such user.');
 	}
 
@@ -48,11 +32,11 @@ export async function getUser(userId: mongo.ObjectID) {
 /**
  * Get remote user for API processing
  */
-export async function getRemoteUser(userId: mongo.ObjectID) {
+export async function getRemoteUser(userId: User['id']) {
 	const user = await getUser(userId);
 
-	if (!isRemoteUser(user)) {
-		throw 'user is not a remote user';
+	if (!Users.isRemoteUser(user)) {
+		throw new Error('user is not a remote user');
 	}
 
 	return user;
@@ -61,11 +45,11 @@ export async function getRemoteUser(userId: mongo.ObjectID) {
 /**
  * Get local user for API processing
  */
-export async function getLocalUser(userId: mongo.ObjectID) {
+export async function getLocalUser(userId: User['id']) {
 	const user = await getUser(userId);
 
-	if (!isLocalUser(user)) {
-		throw 'user is not a local user';
+	if (!Users.isLocalUser(user)) {
+		throw new Error('user is not a local user');
 	}
 
 	return user;

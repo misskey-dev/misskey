@@ -21,8 +21,8 @@
 		</template>
 	</component>
 
-	<footer v-if="cursor != null">
-		<button @click="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+	<footer v-if="more">
+		<button @click="fetchMore()" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('@.load-more') }}</template>
 			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>
 		</button>
@@ -54,7 +54,7 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			inited: false,
-			cursor: null
+			more: false
 		};
 	},
 
@@ -125,7 +125,7 @@ export default Vue.extend({
 					this.notes = x;
 				} else {
 					this.notes = x.notes;
-					this.cursor = x.cursor;
+					this.more = x.more;
 				}
 				this.inited = true;
 				this.fetching = false;
@@ -135,12 +135,12 @@ export default Vue.extend({
 			});
 		},
 
-		more() {
-			if (this.cursor == null || this.moreFetching) return;
+		fetchMore() {
+			if (!this.more || this.moreFetching) return;
 			this.moreFetching = true;
-			this.makePromise(this.cursor).then(x => {
+			this.makePromise(this.notes[this.notes.length - 1].id).then(x => {
 				this.notes = this.notes.concat(x.notes);
-				this.cursor = x.cursor;
+				this.more = x.more;
 				this.moreFetching = false;
 			}, e => {
 				this.moreFetching = false;
@@ -163,6 +163,7 @@ export default Vue.extend({
 				// オーバーフローしたら古い投稿は捨てる
 				if (this.notes.length >= displayLimit) {
 					this.notes = this.notes.slice(0, displayLimit);
+					this.more = true;
 				}
 			} else {
 				this.queue.push(note);
@@ -192,7 +193,7 @@ export default Vue.extend({
 				if (this.$el.offsetHeight == 0) return;
 
 				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) this.more();
+				if (current > document.body.offsetHeight - 8) this.fetchMore();
 			}
 		}
 	}

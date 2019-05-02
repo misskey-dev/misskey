@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import Emoji from '../../../../../models/emoji';
 import define from '../../../define';
-import ID from '../../../../../misc/cafy-id';
+import { ID } from '../../../../../misc/cafy-id';
+import { Emojis } from '../../../../../models';
 
 export const meta = {
 	desc: {
@@ -21,13 +21,9 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const emoji = await Emoji.findOne({
-		_id: ps.id
-	});
+	const emoji = await Emojis.findOne(ps.id);
 
 	if (emoji == null) throw new Error('emoji not found');
 
-	await Emoji.remove({ _id: emoji._id });
-
-	return;
+	await Emojis.delete(emoji.id);
 });

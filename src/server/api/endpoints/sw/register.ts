@@ -1,7 +1,8 @@
 import $ from 'cafy';
-import Subscription from '../../../../models/sw-subscription';
 import define from '../../define';
 import fetchMeta from '../../../../misc/fetch-meta';
+import { genId } from '../../../../misc/gen-id';
+import { SwSubscriptions } from '../../../../models';
 
 export const meta = {
 	tags: ['account'],
@@ -25,12 +26,11 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// if already subscribed
-	const exist = await Subscription.findOne({
-		userId: user._id,
+	const exist = await SwSubscriptions.findOne({
+		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,
 		publickey: ps.publickey,
-		deletedAt: { $exists: false }
 	});
 
 	const instance = await fetchMeta();
@@ -42,8 +42,10 @@ export default define(meta, async (ps, user) => {
 		};
 	}
 
-	await Subscription.insert({
-		userId: user._id,
+	await SwSubscriptions.save({
+		id: genId(),
+		createdAt: new Date(),
+		userId: user.id,
 		endpoint: ps.endpoint,
 		auth: ps.auth,
 		publickey: ps.publickey

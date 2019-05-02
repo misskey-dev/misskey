@@ -2,7 +2,7 @@
 <div class="nhasjydimbopojusarffqjyktglcuxjy" v-if="meta">
 	<div class="banner" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }"></div>
 
-	<h1>{{ meta.name }}</h1>
+	<h1>{{ meta.name || 'Misskey' }}</h1>
 	<p v-html="meta.description || this.$t('@.about')"></p>
 	<router-link to="/">{{ $t('start') }}</router-link>
 </div>

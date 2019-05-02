@@ -1,9 +1,9 @@
 import Resolver from '../../resolver';
 import deleteNote from './note';
-import Note from '../../../../models/note';
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import { IDelete } from '../../type';
 import { apLogger } from '../../logger';
+import { Notes } from '../../../../models';
 
 /**
  * 削除アクティビティを捌きます
@@ -20,21 +20,21 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<void> => {
 	const uri = (object as any).id;
 
 	switch (object.type) {
-	case 'Note':
-	case 'Question':
-	case 'Article':
-		deleteNote(actor, uri);
-		break;
-
-	case 'Tombstone':
-		const note = await Note.findOne({ uri });
-		if (note != null) {
+		case 'Note':
+		case 'Question':
+		case 'Article':
 			deleteNote(actor, uri);
-		}
-		break;
+			break;
 
-	default:
-		apLogger.warn(`Unknown type: ${object.type}`);
-		break;
+		case 'Tombstone':
+			const note = await Notes.findOne({ uri });
+			if (note != null) {
+				deleteNote(actor, uri);
+			}
+			break;
+
+		default:
+			apLogger.warn(`Unknown type: ${object.type}`);
+			break;
 	}
 };

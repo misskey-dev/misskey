@@ -1,5 +1,5 @@
 import { Object } from '../type';
-import { IRemoteUser } from '../../../models/user';
+import { IRemoteUser } from '../../../models/entities/user';
 import create from './create';
 import performDeleteActivity from './delete';
 import performUpdateActivity from './update';
@@ -71,7 +71,7 @@ const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 
 	default:
 		apLogger.warn(`unknown activity type: ${(activity as any).type}`);
-		return null;
+		return;
 	}
 };
 

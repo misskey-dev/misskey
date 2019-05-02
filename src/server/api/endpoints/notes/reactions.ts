@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../misc/cafy-id';
-import NoteReaction, { pack } from '../../../../models/note-reaction';
+import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
+import { NoteReactions } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -18,7 +18,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			transform: transform,
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'The ID of the target note'
@@ -37,12 +36,10 @@ export const meta = {
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			transform: transform,
 		},
 	},
 
@@ -69,29 +66,17 @@ export default define(meta, async (ps, user) => {
 	});
 
 	const query = {
-		noteId: note._id
-	} as any;
-
-	const sort = {
-		_id: -1
+		noteId: note.id
 	};
 
-	if (ps.sinceId) {
-		sort._id = 1;
-		query._id = {
-			$gt: ps.sinceId
-		};
-	} else if (ps.untilId) {
-		query._id = {
-			$lt: ps.untilId
-		};
-	}
-
-	const reactions = await NoteReaction.find(query, {
-		limit: ps.limit,
+	const reactions = await NoteReactions.find({
+		where: query,
+		take: ps.limit!,
 		skip: ps.offset,
-		sort: sort
+		order: {
+			id: -1
+		}
 	});
 
-	return await Promise.all(reactions.map(reaction => pack(reaction, user)));
+	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
 });

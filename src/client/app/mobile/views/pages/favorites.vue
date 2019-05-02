@@ -8,7 +8,7 @@
 				<mk-note-detail class="post" :note="favorite.note" :key="favorite.note.id"/>
 			</template>
 		</sequential-entrance>
-		<ui-button v-if="existMore" @click="more">{{ $t('@.load-more') }}</ui-button>
+		<ui-button v-if="existMore" @click="fetchMore()">{{ $t('@.load-more') }}</ui-button>
 	</main>
 </mk-ui>
 </template>
@@ -32,7 +32,7 @@ export default Vue.extend({
 		this.fetch();
 	},
 	mounted() {
-		document.title = `${this.$root.instanceName} | %i18n:@notifications%`;
+		document.title = `${this.$root.instanceName} | ${this.$t('@.favorites')}`;
 	},
 	methods: {
 		fetch() {
@@ -53,7 +53,7 @@ export default Vue.extend({
 				Progress.done();
 			});
 		},
-		more() {
+		fetchMore() {
 			this.moreFetching = true;
 			this.$root.api('i/favorites', {
 				limit: 11,

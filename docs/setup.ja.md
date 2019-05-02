@@ -22,44 +22,46 @@ adduser --disabled-password --disabled-login misskey
 これらのソフトウェアをインストール・設定してください:
 
 #### 依存関係 :package:
-* **[Node.js](https://nodejs.org/en/)** (10.0.0以上)
-* **[MongoDB](https://www.mongodb.com/)** (3.6以上)
+* **[Node.js](https://nodejs.org/en/)** (11.7.0以上)
+* **[PostgreSQL](https://www.postgresql.org/)** (10以上)
+* **[Redis](https://redis.io/)**
 
 ##### オプション
-* [Redis](https://redis.io/)
-	* Redisはオプションですが、インストールすることを強く推奨します。
-	* インストールしなくていいのは、あなたのインスタンスが自分専用のときだけとお考えください。
-	* 具体的には、Redisをインストールしないと、次の事が出来なくなります:
-		* Misskeyプロセスを複数起動しての負荷分散
-		* レートリミット
-		* ジョブキュー
-		* Twitter連携
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* MongoDBの設定
+*3.* Misskeyのインストール
 ----------------------------------------------------------------
-ルートで:
-1. `mongo` mongoシェルを起動
-2. `use misskey` misskeyデータベースを使用
-3. `db.createUser( { user: "misskey", pwd: "<password>", roles: [ { role: "readWrite", db: "misskey" } ] } )` misskeyユーザーを作成
-4. `exit` mongoシェルを終了
+1. misskeyユーザーを使用
 
-*4.* Misskeyのインストール
-----------------------------------------------------------------
-1. `su - misskey` misskeyユーザーを使用
-2. `git clone -b master git://github.com/syuilo/misskey.git` masterブランチからMisskeyレポジトリをクローン
-3. `cd misskey` misskeyディレクトリに移動
-4. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)` [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
-5. `npm install` Misskeyの依存パッケージをインストール
+	`su - misskey`
 
-*5.* 設定ファイルを作成する
+2. masterブランチからMisskeyレポジトリをクローン
+
+	`git clone -b master git://github.com/syuilo/misskey.git`
+
+3. misskeyディレクトリに移動
+
+	`cd misskey`
+
+4. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+
+	`git checkout master`
+
+5. Misskeyの依存パッケージをインストール
+
+	`npm install`
+
+*4.* 設定ファイルを作成する
 ----------------------------------------------------------------
-1. `cp .config/example.yml .config/default.yml` `.config/example.yml`をコピーし名前を`default.yml`にする。
+1. `.config/example.yml`をコピーし名前を`default.yml`にする。
+
+	`cp .config/example.yml .config/default.yml`
+
 2. `default.yml` を編集する。
 
-*6.* Misskeyのビルド
+*5.* Misskeyのビルド
 ----------------------------------------------------------------
 
 次のコマンドでMisskeyをビルドしてください:
@@ -74,6 +76,12 @@ Debianをお使いであれば、`build-essential`パッケージをインスト
 3. `node-gyp build`
 4. `NODE_ENV=production npm run build`
 
+*6.* データベースを初期化
+----------------------------------------------------------------
+``` shell
+npm run init
+```
+
 *7.* 以上です！
 ----------------------------------------------------------------
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
@@ -82,38 +90,47 @@ Debianをお使いであれば、`build-essential`パッケージをインスト
 `NODE_ENV=production npm start`するだけです。GLHF!
 
 ### systemdを用いた起動
-1. systemdサービスのファイルを作成: `/etc/systemd/system/misskey.service`
+1. systemdサービスのファイルを作成
+
+	`/etc/systemd/system/misskey.service`
+
 2. エディタで開き、以下のコードを貼り付けて保存:
 
-```
-[Unit]
-Description=Misskey daemon
+	```
+	[Unit]
+	Description=Misskey daemon
 
-[Service]
-Type=simple
-User=misskey
-ExecStart=/usr/bin/npm start
-WorkingDirectory=/home/misskey/misskey
-Environment="NODE_ENV=production"
-TimeoutSec=60
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=misskey
-Restart=always
+	[Service]
+	Type=simple
+	User=misskey
+	ExecStart=/usr/bin/npm start
+	WorkingDirectory=/home/misskey/misskey
+	Environment="NODE_ENV=production"
+	TimeoutSec=60
+	StandardOutput=syslog
+	StandardError=syslog
+	SyslogIdentifier=misskey
+	Restart=always
 
-[Install]
-WantedBy=multi-user.target
-```
-CentOSで1024以下のポートを使用してMisskeyを使用する場合は`ExecStart=/usr/bin/sudo /usr/bin/npm start`に変更する必要があります。
+	[Install]
+	WantedBy=multi-user.target
+	```
 
-3. `systemctl daemon-reload ; systemctl enable misskey` systemdを再読み込みしmisskeyサービスを有効化
-4. `systemctl start misskey` misskeyサービスの起動
+	CentOSで1024以下のポートを使用してMisskeyを使用する場合は`ExecStart=/usr/bin/sudo /usr/bin/npm start`に変更する必要があります。
+
+3. systemdを再読み込みしmisskeyサービスを有効化
+
+	`systemctl daemon-reload ; systemctl enable misskey`
+
+4. misskeyサービスの起動
+
+	`systemctl start misskey`
 
 `systemctl status misskey`と入力すると、サービスの状態を調べることができます。
 
 ### Misskeyを最新バージョンにアップデートする方法:
-1. `git fetch`
-2. `git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)`
+1. `git checkout master`
+2. `git pull`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
 5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する

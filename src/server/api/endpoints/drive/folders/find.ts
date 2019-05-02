@@ -1,14 +1,14 @@
 import $ from 'cafy';
-import ID, { transform } from '../../../../../misc/cafy-id';
-import DriveFolder, { pack } from '../../../../../models/drive-folder';
+import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
+import { DriveFolders } from '../../../../../models';
 
 export const meta = {
 	tags: ['drive'],
 
 	requireCredential: true,
 
-	kind: 'drive-read',
+	kind: 'read:drive',
 
 	params: {
 		name: {
@@ -17,7 +17,6 @@ export const meta = {
 
 		parentId: {
 			validator: $.optional.nullable.type(ID),
-			transform: transform,
 			default: null as any,
 			desc: {
 				'ja-JP': 'フォルダID'
@@ -34,12 +33,11 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const folders = await DriveFolder
-		.find({
-			name: ps.name,
-			userId: user._id,
-			parentId: ps.parentId
-		});
+	const folders = await DriveFolders.find({
+		name: ps.name,
+		userId: user.id,
+		parentId: ps.parentId
+	});
 
-	return await Promise.all(folders.map(folder => pack(folder)));
+	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
 });

@@ -1,6 +1,6 @@
 <template>
 <mk-window ref="window" width="450px" height="500px" @closed="destroyDom">
-	<template #header><fa icon="list"/> {{ list.title }}</template>
+	<template #header><fa icon="list"/> {{ list.name }}</template>
 
 	<x-editor :list="list"/>
 </mk-window>

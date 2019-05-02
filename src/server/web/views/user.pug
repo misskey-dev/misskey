@@ -9,24 +9,27 @@ block title
 	= `${title} | ${instanceName}`
 
 block desc
-	meta(name='description' content= user.description)
+	meta(name='description' content= profile.description)
 
 block og
 	meta(property='og:type'        content='blog')
 	meta(property='og:title'       content= title)
-	meta(property='og:description' content= user.description)
+	meta(property='og:description' content= profile.description)
 	meta(property='og:url'         content= url)
 	meta(property='og:image'       content= img)
 
 block meta
+	meta(name='misskey:user-username' content=user.username)
+	meta(name='misskey:user-id' content=user.id)
+
 	meta(name='twitter:card' content='summary')
 
-	if user.twitter
-		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
+	if profile.twitter
+		meta(name='twitter:creator' content=`@${profile.twitter.screenName}`)
 
 	if !user.host
-		link(rel='alternate' href=`${config.url}/users/${user._id}` type='application/activity+json')
+		link(rel='alternate' href=`${config.url}/users/${user.id}` type='application/activity+json')
 	if user.uri
 		link(rel='alternate' href=user.uri type='application/activity+json')
-	if user.url
-		link(rel='alternate' href=user.url type='text/html')
+	if profile.url
+		link(rel='alternate' href=profile.url type='text/html')

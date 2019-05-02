@@ -20,7 +20,7 @@ export default Vue.extend({
 	},
 	computed: {
 		reactions(): any {
-			return this.note.reactionCounts;
+			return this.note.reactions;
 		},
 		isMe(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;

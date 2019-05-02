@@ -1,5 +1,5 @@
 import Resolver from '../../resolver';
-import { IRemoteUser } from '../../../../models/user';
+import { IRemoteUser } from '../../../../models/entities/user';
 import announceNote from './note';
 import { IAnnounce, INote } from '../../type';
 import { apLogger } from '../../logger';
