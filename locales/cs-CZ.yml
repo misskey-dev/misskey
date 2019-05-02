@@ -1225,6 +1225,8 @@ pages:
       text: "Titulek"
     _switch:
       text: "Titulek"
+    _counter:
+      text: "Titulek"
     _button:
       text: "Titulek"
       _action:
