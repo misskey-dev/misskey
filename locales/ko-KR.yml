@@ -1620,6 +1620,8 @@ pages:
       text: "제목"
     _switch:
       text: "제목"
+    _counter:
+      text: "제목"
     _button:
       text: "제목"
       _action:
