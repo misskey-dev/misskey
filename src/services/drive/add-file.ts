@@ -406,6 +406,7 @@ export default async function(
 			file.md5 = hash;
 			file.name = detectedName;
 			file.type = mime;
+			file.storedInternal = false;
 
 			file = await DriveFiles.save(file);
 		} catch (e) {
