@@ -193,12 +193,8 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where('github @> :github', {
-				github: {
-					id: id,
-				},
-			})
-			.andWhere('userHost IS NULL')
+			.where('"githubId" = :id', { id: id })
+			.andWhere('"userHost" IS NULL')
 			.getOne();
 
 		if (link == null) {

@@ -203,12 +203,8 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const profile = await UserProfiles.createQueryBuilder()
-			.where('discord @> :discord', {
-				discord: {
-					id: id,
-				},
-			})
-			.andWhere('userHost IS NULL')
+			.where('"discordId" = :id', { id: id })
+			.andWhere('"userHost" IS NULL')
 			.getOne();
 
 		if (profile == null) {
