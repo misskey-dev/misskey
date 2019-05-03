@@ -61,6 +61,7 @@ common:
   month-and-day: "{day}. {month}."
   trash: "Koš"
   drive: "Disk"
+  pages: "Stránky"
   messaging: "Konverzace"
   home: "Domů"
   deck: "Deck"
