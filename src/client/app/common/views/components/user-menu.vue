@@ -7,7 +7,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import { faExclamationCircle, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 
@@ -27,19 +26,23 @@ export default Vue.extend({
 			icon: ['fas', 'list'],
 			text: this.$t('push-to-list'),
 			action: this.pushList
-		}, null, {
-			icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
-			text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
-			action: this.toggleMute
-		}, {
-			icon: 'ban',
-			text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
-			action: this.toggleBlock
-		}, null, {
-			icon: faExclamationCircle,
-			text: this.$t('report-abuse'),
-			action: this.reportAbuse
-		}];
+		}] as any;
+		
+		if (this.$store.getters.isSignedIn && this.$store.state.i.id != this.user.id) {
+			menu = menu.concat([null, {
+				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
+				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
+				action: this.toggleMute
+			}, {
+				icon: 'ban',
+				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
+				action: this.toggleBlock
+			}, null, {
+				icon: faExclamationCircle,
+				text: this.$t('report-abuse'),
+				action: this.reportAbuse
+			}]);
+		}
 
 		if (this.$store.getters.isSignedIn && (this.$store.state.i.isAdmin || this.$store.state.i.isModerator)) {
 			menu = menu.concat([null, {
