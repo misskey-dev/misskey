@@ -1631,6 +1631,7 @@ dev/views/apps.vue:
   app-missing: "No apps"
 dev/views/new-app.vue:
   new-app: "New Application"
+  new-app-info: "You can also create an application with the API. (app/create)"
   create-app: "Creating application"
   app-name: "Application name"
   app-name-placeholder: "ex) Misskey for iOS"
@@ -1708,9 +1709,11 @@ pages:
       name: "Variable name"
       text: "Title"
       default: "Default value"
+    counter: "Counter"
     _counter:
       name: "Variable name"
       text: "Title"
+      inc: "Increase number"
     _button:
       text: "Title"
       action: "Operation when the button pressed"
