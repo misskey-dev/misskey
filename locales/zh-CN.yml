@@ -1768,6 +1768,9 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      _remind:
+        arg1: "A"
+        arg2: "B"
       eq: "A和B相等"
       _eq:
         arg1: "A"
