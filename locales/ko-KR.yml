@@ -34,6 +34,7 @@ common:
   signup: "신규 등록"
   signout: "로그아웃"
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
+  fetching-as-ap-object: "연합에서 조회 중"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -61,6 +62,7 @@ common:
   month-and-day: "{month}월 {day}일"
   trash: "휴지통"
   drive: "드라이브"
+  pages: "페이지"
   messaging: "대화"
   home: "홈"
   deck: "덱"
@@ -72,8 +74,16 @@ common:
   permissions:
     "read:account": "계정 정보 보기"
     "write:account": "계정 정보 변경"
+    "read:blocks": "차단 보기"
+    "write:blocks": "차단 수정"
     "read:drive": "드라이브 보기"
     "write:drive": "드라이브 수정"
+    "read:favorites": "즐겨찾기 보기"
+    "write:favorites": "즐겨찾기 수정"
+    "read:following": "팔로우 정보 보기"
+    "write:following": "팔로잉, 팔로우 수정"
+    "read:messaging": "대화 보기"
+    "write:messaging": "대화 수정"
     "write:votes": "투표하기"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
