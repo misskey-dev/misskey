@@ -127,6 +127,7 @@ export class UserRepository extends Repository<User> {
 				pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
 					detail: true
 				}),
+				twoFactorEnabled: profile!.twoFactorEnabled,
 			} : {}),
 
 			...(opts.detail && meId === user.id ? {
@@ -135,7 +136,6 @@ export class UserRepository extends Repository<User> {
 				autoWatch: profile!.autoWatch,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
-				twoFactorEnabled: profile!.twoFactorEnabled,
 				hasUnreadMessagingMessage: MessagingMessages.count({
 					where: {
 						recipientId: user.id,
