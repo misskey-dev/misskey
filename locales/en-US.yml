@@ -1770,6 +1770,9 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      _remind:
+        arg1: "A"
+        arg2: "B"
       eq: "A and B are equal"
       _eq:
         arg1: "A"
