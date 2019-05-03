@@ -115,7 +115,7 @@
 		"dateformat": "3.0.3",
 		"deep-equal": "1.0.1",
 		"deepcopy": "0.6.3",
-		"diskusage": "1.1.0",
+		"diskusage": "1.1.1",
 		"double-ended-queue": "2.1.0-0",
 		"elasticsearch": "15.4.1",
 		"emojilib": "2.4.0",
