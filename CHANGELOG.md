@@ -5,6 +5,37 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
+Migration
+------------------------------
+#### 1
+`ormconfig.json`という名前で、Misskeyのインストール場所(package.jsonとかがあるディレクトリ)に新たなファイルを作る。中身は次のようにします:
+``` json
+{
+	"type": "postgres",
+	"host": "PostgreSQLのホスト",
+	"port": 5432,
+	"username": "PostgreSQLのユーザー名",
+	"password": "PostgreSQLのパスワード",
+	"database": "PostgreSQLのデータベース名",
+	"entities": ["src/models/entities/*.ts"],
+	"migrations": ["migration/*.ts"],
+	"cli": {
+		"migrationsDir": "migration"
+	}
+}
+```
+上記の各種PostgreSQLの設定(ポートも)は、設定ファイルに書いてあるものをコピーしてください。
+
+#### 2
+```
+npm i -g ts-node
+```
+
+#### 3
+```
+ts-node ./node_modules/typeorm/cli.js migration:run
+```
+
 How to migrate to v11 from v10
 ------------------------------
 ### 移行の注意点
@@ -41,6 +72,23 @@ mongodb:
 7. `npm run migrate`
 8. master ブランチに戻す
 9. enjoy
+
+11.10.0 (2019/05/03)
+-------------------
+### 注意
+このアップデートを適用した後、プロセスを起動(もしくは再起動)する前に[マイグレーション](#migration)の手順を実行してください
+
+### Improvements
+* MisskeyPagesに割った余りを求める関数を追加
+* Mastodon v2.8.0 のフォローリストをインポートできるように
+* エクスポートリクエストに失敗したらエラーを表示するように
+* エクスポートファイルでは同一ハッシュチェックをしないように
+
+### Fixes
+* 2段階認証を設定するとログインできなくなる問題を修正
+* ファイルをアップロードできないことがある問題を修正
+* リモートファイルをキャッシュしない設定だとサムネイル時にオリジナル画像が表示されない問題を修正
+* 外部サービス連携の不具合を修正
 
 11.9.0 (2019/05/02)
 -------------------
@@ -104,36 +152,7 @@ mongodb:
 11.5.0 (2019/04/29)
 -------------------
 ### 注意
-このアップデートを適用した後、プロセスを起動(もしくは再起動)する前にまず以下の手順を実行してください
-
-#### 1
-`ormconfig.json`という名前で、Misskeyのインストール場所(package.jsonとかがあるディレクトリ)に新たなファイルを作る。中身は次のようにします:
-``` json
-{
-	"type": "postgres",
-	"host": "PostgreSQLのホスト",
-	"port": 5432,
-	"username": "PostgreSQLのユーザー名",
-	"password": "PostgreSQLのパスワード",
-	"database": "PostgreSQLのデータベース名",
-	"entities": ["src/models/entities/*.ts"],
-	"migrations": ["migration/*.ts"],
-	"cli": {
-		"migrationsDir": "migration"
-	}
-}
-```
-上記の各種PostgreSQLの設定(ポートも)は、設定ファイルに書いてあるものをコピーしてください。
-
-#### 2
-```
-npm i -g ts-node
-```
-
-#### 3
-```
-ts-node ./node_modules/typeorm/cli.js migration:run
-```
+このアップデートを適用した後、プロセスを起動(もしくは再起動)する前に[マイグレーション](migration)の手順を実行してください
 
 ### New features
 #### MisskeyPages

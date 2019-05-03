@@ -393,6 +393,8 @@ export default async function(
 
 		if (isLink) {
 			file.url = url;
+			file.thumbnailUrl = url;
+			file.webpublicUrl = url;
 		}
 	}
 

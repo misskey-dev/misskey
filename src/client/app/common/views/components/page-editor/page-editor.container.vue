@@ -1,11 +1,14 @@
 <template>
-<div class="cpjygsrt" :class="{ error: error != null, warn: warn != null, draggable }">
-	<header class="drag-handle">
+<div class="cpjygsrt" :class="{ error: error != null, warn: warn != null }">
+	<header>
 		<div class="title"><slot name="header"></slot></div>
 		<div class="buttons">
 			<slot name="func"></slot>
 			<button v-if="removable" @click="remove()">
 				<fa :icon="faTrashAlt"/>
+			</button>
+			<button v-if="draggable" class="drag-handle">
+				<fa :icon="faBars"/>
 			</button>
 			<button @click="toggleContent(!showBody)">
 				<template v-if="showBody"><fa icon="angle-up"/></template>
@@ -23,6 +26,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../../../i18n';
 
@@ -54,7 +58,7 @@ export default Vue.extend({
 	data() {
 		return {
 			showBody: this.expanded,
-			faTrashAlt
+			faTrashAlt, faBars
 		};
 	},
 	methods: {
@@ -124,9 +128,8 @@ export default Vue.extend({
 				&:active
 					color var(--faceTextButtonActive)
 
-	&.draggable
-		> header
-			cursor move
+			.drag-handle
+				cursor move
 
 	> .warn
 		color #b19e49

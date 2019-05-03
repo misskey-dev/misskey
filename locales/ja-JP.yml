@@ -1982,6 +1982,10 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      remind: "÷ 割った余り"
+      _remind:
+        arg1: "A"
+        arg2: "B"
       eq: "AとBが同じ"
       _eq:
         arg1: "A"

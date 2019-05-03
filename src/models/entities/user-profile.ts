@@ -144,10 +144,10 @@ export class UserProfile {
 	})
 	public githubAccessToken: string | null;
 
-	@Column('integer', {
-		nullable: true, default: null,
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
 	})
-	public githubId: number | null;
+	public githubId: string | null;
 
 	@Column('varchar', {
 		length: 64, nullable: true, default: null,
@@ -169,10 +169,10 @@ export class UserProfile {
 	})
 	public discordRefreshToken: string | null;
 
-	@Column('integer', {
-		nullable: true, default: null,
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
 	})
-	public discordExpiresDate: number | null;
+	public discordExpiresDate: string | null;
 
 	@Column('varchar', {
 		length: 64, nullable: true, default: null,
