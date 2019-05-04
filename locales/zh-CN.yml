@@ -1852,6 +1852,7 @@ pages:
       numberToString: "数字到文本"
       _numberToString:
         arg1: "数值"
+      splitStrByLine: "将文本按行拆分"
       _splitStrByLine:
         arg1: "文本"
       ref: "变量"
@@ -1869,3 +1870,4 @@ pages:
       array: "列表"
       stringArray: "文本列表"
     enviromentVariables: "环境变量"
+    pageVariables: "页面元素"
