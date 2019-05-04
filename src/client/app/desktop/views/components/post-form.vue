@@ -377,7 +377,7 @@ export default Vue.extend({
 			}, err => {
 				this.$root.dialog({
 					type: 'error',
-					title: this.$t('error')
+					title: this.$t('error'),
 					text: err.message
 				});
 			}, {

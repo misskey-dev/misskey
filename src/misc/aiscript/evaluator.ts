@@ -64,7 +64,7 @@ export class ASEvaluator {
 
 	@autobind
 	private interpolate(str: string, scope: Scope) {
-		return str.replace(/\{(.+?)\}/g, match => {
+		return str.replace(/{(.+?)}/g, match => {
 			const v = scope.getState(match.slice(1, -1).trim());
 			return v == null ? 'NULL' : v.toString();
 		});

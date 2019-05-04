@@ -273,7 +273,7 @@ export default Vue.extend({
 
 		import_() {
 			(this.$refs.file as any).click();
-		}
+		},
 
 		export_() {
 			const blob = new Blob([this.selectedThemeCode], {

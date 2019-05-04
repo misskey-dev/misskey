@@ -166,7 +166,7 @@ export default Vue.extend({
 			> .follow-button
 				position absolute
 				top 8px
-				right 0px
+				right 0
 
 	> .more
 		display block

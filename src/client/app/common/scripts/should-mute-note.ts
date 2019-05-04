@@ -11,9 +11,9 @@ export default function(me, settings, note) {
 	return (
 		(!isMyNote && note.reply && includesMutedWords(note.reply.text)) ||
 		(!isMyNote && note.renote && includesMutedWords(note.renote.text)) ||
-		(settings.showMyRenotes === false && isMyNote && isPureRenote) ||
-		(settings.showRenotedMyNotes === false && isPureRenote && note.renote.userId == me.id) ||
-		(settings.showLocalRenotes === false && isPureRenote && note.renote.user.host == null) ||
+		(!settings.showMyRenotes && isMyNote && isPureRenote) ||
+		(!settings.showRenotedMyNotes && isPureRenote && note.renote.userId == me.id) ||
+		(!settings.showLocalRenotes && isPureRenote && note.renote.user.host == null) ||
 		(!isMyNote && includesMutedWords(note.text))
 	);
 }

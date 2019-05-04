@@ -750,12 +750,17 @@ export default Vue.extend({
 				bottom 0
 				animation-delay -1.0s
 
-			@keyframes sk-rotate { 100% { transform: rotate(360deg); }}
+			@keyframes sk-rotate {
+				100% {
+					transform: rotate(360deg);
+				}
+			}
 
 			@keyframes sk-bounce {
 				0%, 100% {
 					transform: scale(0.0);
-				} 50% {
+				}
+				50% {
 					transform: scale(1.0);
 				}
 			}

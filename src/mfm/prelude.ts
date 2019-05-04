@@ -36,4 +36,4 @@ export function createTree(type: string, children: MfmForest, props: any): MfmTr
 	return T.createTree({ type, props }, children);
 }
 
-export const urlRegex = /^https?:\/\/[\w\/:%#@\$&\?!\(\)\[\]~\.,=\+\-]+/;
+export const urlRegex = /^https?:\/\/[\w\/:%#@$&?!()\[\]~.,=+\-]+/;
