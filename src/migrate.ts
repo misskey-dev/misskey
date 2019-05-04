@@ -239,24 +239,38 @@ async function main() {
 			_id: file.metadata.userId
 		});
 		if (user == null) return;
+
+		const fileToSave: any = {
+			id: file._id.toHexString(),
+			userId: user._id.toHexString(),
+			userHost: toPuny(user.host),
+			createdAt: file.uploadDate || new Date(),
+			md5: file.md5,
+			name: file.filename,
+			type: file.contentType,
+			properties: file.metadata.properties || {},
+			size: file.length,
+			// url: [different],
+			uri: file.metadata.uri,
+			// accessKey: [different],
+			folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
+			// storedInternal: [different],
+			// isLink: [different],
+			isSensitive: file.metadata.isSensitive === true,
+			comment: file.metadata.comment && (file.metadata.comment.length > 0) && file.metadata.comment || null,
+			thumbnailUrl: file.metadata.thumbnailUrl,
+			thumbnailAccessKey: file.metadata.storageProps && file.metadata.storageProps.thumbnailAccessKey || null,
+			webpublicUrl: file.metadata.webpublicUrl,
+			webpublicAccessKey: file.metadata.storageProps && file.metadata.storageProps.webpublicAccessKey || null,
+		};
+
 		if (file.metadata.storageProps && file.metadata.storageProps.key) { // when object storage
-			await DriveFiles.save({
-				id: file._id.toHexString(),
-				userId: user._id.toHexString(),
-				userHost: toPuny(user.host),
-				createdAt: file.uploadDate || new Date(),
-				md5: file.md5,
-				name: file.filename,
-				type: file.contentType,
-				properties: file.metadata.properties || {},
-				size: file.length,
-				url: file.metadata.url,
-				uri: file.metadata.uri,
-				accessKey: file.metadata.storageProps.key,
-				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
-				storedInternal: false,
-				isLink: false
-			});
+			fileToSave.url = file.metadata.url;
+			fileToSave.accessKey = file.metadata.storageProps.key;
+			fileToSave.storedInternal = false;
+			fileToSave.isLink = false;
+
+			await DriveFiles.save(fileToSave);
 		} else if (!file.metadata.isLink) {
 			const [temp, clean] = await createTemp();
 			await new Promise(async (res, rej) => {
@@ -272,42 +286,21 @@ async function main() {
 
 			const key = uuid.v4();
 			const url = InternalStorage.saveFromPath(key, temp);
-			await DriveFiles.save({
-				id: file._id.toHexString(),
-				userId: user._id.toHexString(),
-				userHost: toPuny(user.host),
-				createdAt: file.uploadDate || new Date(),
-				md5: file.md5,
-				name: file.filename,
-				type: file.contentType,
-				properties: file.metadata.properties,
-				size: file.length,
-				url: url,
-				uri: file.metadata.uri,
-				accessKey: key,
-				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
-				storedInternal: true,
-				isLink: false
-			});
+
+			fileToSave.url = url;
+			fileToSave.accessKey = key;
+			fileToSave.storedInternal = true;
+			fileToSave.isLink = false;
+
+			await DriveFiles.save(fileToSave);
 			clean();
 		} else {
-			await DriveFiles.save({
-				id: file._id.toHexString(),
-				userId: user._id.toHexString(),
-				userHost: toPuny(user.host),
-				createdAt: file.uploadDate || new Date(),
-				md5: file.md5,
-				name: file.filename,
-				type: file.contentType,
-				properties: file.metadata.properties,
-				size: file.length,
-				url: file.metadata.url,
-				uri: file.metadata.uri,
-				accessKey: null,
-				folderId: file.metadata.folderId ? file.metadata.folderId.toHexString() : null,
-				storedInternal: false,
-				isLink: true
-			});
+			fileToSave.url = file.metadata.url;
+			fileToSave.accessKey = null;
+			fileToSave.storedInternal = false;
+			fileToSave.isLink = true;
+
+			await DriveFiles.save(fileToSave);
 		}
 	}
 
