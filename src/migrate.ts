@@ -104,6 +104,7 @@ async function main() {
 		await Users.save({
 			id: user._id.toHexString(),
 			createdAt: typeof user.createdAt === 'number' ? new Date(user.createdAt) : (user.createdAt || new Date()),
+			updatedAt: typeof user.updatedAt === 'number' ? new Date(user.updatedAt) : (user.updatedAt || null),
 			username: user.username,
 			usernameLower: user.username.toLowerCase(),
 			host: toPuny(user.host),
@@ -119,17 +120,59 @@ async function main() {
 			inbox: user.inbox,
 			sharedInbox: user.sharedInbox,
 			uri: user.uri,
+			emojis: user.emojis || [] as string[],
+			tags: user.tags || [] as string[],
+			isSuspended: user.isSuspended,
+			isSilenced: user.isSilenced,
+			isLocked: user.isLocked || false,
 		});
-		await UserProfiles.save({
+
+		const userProfileToSave: any = {
 			userId: user._id.toHexString(),
 			description: user.description,
 			userHost: toPuny(user.host),
 			autoAcceptFollowed: true,
 			autoWatch: false,
+			alwaysMarkNsfw: user.settings ? user.settings.alwaysMarkNsfw : false,
 			password: user.password,
 			location: user.profile ? user.profile.location : null,
 			birthday: user.profile ? user.profile.birthday : null,
-		});
+			email: user.email,
+			emailVerified: user.emailVerified || false,
+			emailVerifyCode: user.emailVerifyCode,
+			twoFactorSecret: user.twoFactorSecret,
+			twoFactorEnabled: user.twoFactorEnabled,
+			twoFactorTempSecret: user.twoFactorTempSecret,
+			carefulBot: user.carefulBot
+		};
+
+		if (user.twitter) {
+			userProfileToSave.twitter = true;
+			userProfileToSave.twitterAccessToken = user.twitter.accessToken;
+			userProfileToSave.twitterAccessTokenSecret = user.twitter.accessTokenSecret;
+			userProfileToSave.twitterUserId = user.twitter.userId;
+			userProfileToSave.twitterScreenName = user.twitter.screenName;
+		}
+
+		if (user.github) {
+			userProfileToSave.github = true;
+			userProfileToSave.githubAccessToken = user.github.accessToken;
+			userProfileToSave.githubId = Number(user.github.id);
+			userProfileToSave.githubLogin = user.github.login;
+		}
+
+		if (user.discord) {
+			userProfileToSave.discord = true;
+			userProfileToSave.discordAccessToken = user.discord.accessToken;
+			userProfileToSave.discordrefreshToken = user.discord.refreshToken;
+			userProfileToSave.discordExpiresDate = user.discord.expiresDate; // number.
+			userProfileToSave.discordId = user.discord.id;
+			userProfileToSave.discordUsername = user.discord.username;
+			userProfileToSave.discordDiscriminator = user.discord.discriminator;
+		}
+
+		await UserProfiles.save(userProfileToSave);
+
 		if (user.publicKey) {
 			await UserPublickeys.save({
 				userId: user._id.toHexString(),
