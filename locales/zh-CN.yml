@@ -1845,6 +1845,8 @@ pages:
       _seedRandomPick:
         arg1: "种子"
         arg2: "列表"
+      _DRPWPM:
+        arg1: "文本列表"
       number: "数值"
       stringToNumber: "文本到数字"
       _stringToNumber:
