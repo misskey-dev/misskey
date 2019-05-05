@@ -1849,8 +1849,10 @@ pages:
         arg2: "列表"
       _DRPWPM:
         arg1: "文本列表"
+      pick: "从列表中选择"
       _pick:
         arg1: "列表"
+        arg2: "位置"
       number: "数值"
       stringToNumber: "文本到数字"
       _stringToNumber:
