@@ -1709,6 +1709,7 @@ pages:
       name: "变量名"
       text: "标题"
       default: "默认值"
+    counter: "计数器"
     _counter:
       name: "变量名"
       text: "标题"
