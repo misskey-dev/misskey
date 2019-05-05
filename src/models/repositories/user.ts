@@ -128,6 +128,19 @@ export class UserRepository extends Repository<User> {
 					detail: true
 				}),
 				twoFactorEnabled: profile!.twoFactorEnabled,
+				twitter: profile!.twitter ? {
+					id: profile!.twitterUserId,
+					screenName: profile!.twitterScreenName
+				} : null,
+				github: profile!.github ? {
+					id: profile!.githubId,
+					login: profile!.githubLogin
+				} : null,
+				discord: profile!.discord ? {
+					id: profile!.discordId,
+					username: profile!.discordUsername,
+					discriminator: profile!.discordDiscriminator
+				} : null,
 			} : {}),
 
 			...(opts.detail && meId === user.id ? {
