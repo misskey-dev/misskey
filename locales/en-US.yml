@@ -1844,6 +1844,8 @@ pages:
       _seedRandomPick:
         arg1: "Seed"
         arg2: "Lists"
+      _DRPWPM:
+        arg1: "List of text"
       number: "Number"
       stringToNumber: "Text to number"
       _stringToNumber:
