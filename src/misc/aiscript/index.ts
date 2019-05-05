@@ -81,6 +81,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	randomPick:      { in: [0],                            out: 0,             category: 'random',     icon: faDice, },
 	dailyRandomPick: { in: [0],                            out: 0,             category: 'random',     icon: faDice, },
 	seedRandomPick:  { in: [null, 0],                      out: 0,             category: 'random',     icon: faDice, },
+	dailyRPWPM:      { in: ['stringArray'],                out: 'string',      category: 'random',     icon: faDice, }, // dailyRandomPickWithProbabilityMapping
 };
 
 export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {

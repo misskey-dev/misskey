@@ -178,6 +178,27 @@ export class ASEvaluator {
 			seedRandom: (seed: any, probability: number) => Math.floor(seedrandom(seed)() * 100) < probability,
 			seedRannum: (seed: any, min: number, max: number) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
 			seedRandomPick: (seed: any, list: any[]) => list[Math.floor(seedrandom(seed)() * list.length)],
+			dailyRPWPM: (list: string[]) => {
+				const xs = [];
+				let totalFactor = 0;
+				for (const x of list) {
+					const parts = x.split(' ');
+					const factor = parseInt(parts.pop()!, 10);
+					const text = parts.join(' ');
+					totalFactor += factor;
+					xs.push({ factor, text });
+				}
+				const r = seedrandom(`${day}:${block.id}`)() * totalFactor;
+				let stackedFactor = 0;
+				for (const x of xs) {
+					if (r >= stackedFactor && r <= x.factor) {
+						return x.text;
+					} else {
+						stackedFactor += x.factor;
+					}
+				}
+				return xs[0].text;
+			},
 		};
 
 		const fnName = block.type;
