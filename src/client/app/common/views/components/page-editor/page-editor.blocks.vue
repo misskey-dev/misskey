@@ -14,7 +14,7 @@ import XImage from './els/page-editor.el.image.vue';
 import XButton from './els/page-editor.el.button.vue';
 import XTextInput from './els/page-editor.el.text-input.vue';
 import XTextareaInput from './els/page-editor.el.textarea-input.vue';
-import XNumberInput from './els/page-editor.el.text-input.vue';
+import XNumberInput from './els/page-editor.el.number-input.vue';
 import XSwitch from './els/page-editor.el.switch.vue';
 import XIf from './els/page-editor.el.if.vue';
 import XPost from './els/page-editor.el.post.vue';
