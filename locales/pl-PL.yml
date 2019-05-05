@@ -1219,6 +1219,7 @@ pages:
   script:
     categories:
       random: "Losowy"
+      list: "Listy"
     blocks:
       _join:
         arg1: "Listy"
@@ -1229,5 +1230,7 @@ pages:
         arg1: "Listy"
       _seedRandomPick:
         arg2: "Listy"
+      _pick:
+        arg1: "Listy"
     types:
       array: "Listy"
