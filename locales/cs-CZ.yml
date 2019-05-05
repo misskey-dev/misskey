@@ -1236,6 +1236,7 @@ pages:
   script:
     categories:
       random: "Náhodně"
+      list: "Seznamy"
     blocks:
       _join:
         arg1: "Seznamy"
@@ -1246,5 +1247,7 @@ pages:
         arg1: "Seznamy"
       _seedRandomPick:
         arg2: "Seznamy"
+      _pick:
+        arg1: "Seznamy"
     types:
       array: "Seznamy"
