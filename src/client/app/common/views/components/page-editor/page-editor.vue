@@ -337,7 +337,7 @@ export default Vue.extend({
 		getScriptBlockList(type: string = null) {
 			const list = [];
 
-			const blocks = blockDefs.filter(block => type === null || block.out === null || block.out === type);
+			const blocks = blockDefs.filter(block => type === null || block.out === null || block.out === type || typeof block.out === 'number');
 
 			for (const block of blocks) {
 				const category = list.find(x => x.category === block.category);
