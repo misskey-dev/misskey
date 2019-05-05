@@ -2059,8 +2059,8 @@ pages:
       _seedRandomPick:
         arg1: "シード"
         arg2: "リスト"
-      dailyRPWPM: "確率付きリストからランダムに選択 (ユーザーごとに日替わり)"
-      _ddailyRPWPM:
+      DRPWPM: "確率付きリストからランダムに選択 (ユーザーごとに日替わり)"
+      _DRPWPM:
         arg1: "テキストのリスト"
       number: "数値"
       stringToNumber: "テキストを数値に"
