@@ -72,9 +72,12 @@ common:
   favorites: "Oblíbené"
   permissions:
     "read:account": "Zobrazit informace o účtu"
+    "read:blocks": "View blocking"
+    "write:blocks": "Work with blocks"
     "read:drive": "Prohlížet Disk"
     "write:drive": "Pracovat s Diskem"
     "read:favorites": "Prohlížet oblíbené"
+    "read:following": "View following"
     "read:messaging": "Prohlížet konverzaci"
     "write:messaging": "Pracovat s konverzaci"
     "read:mutes": "Prohlížet ztlumené"
