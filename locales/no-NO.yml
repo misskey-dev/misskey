@@ -495,6 +495,7 @@ pages:
   script:
     categories:
       random: "Tilfeldig"
+      list: "Lister"
     blocks:
       _join:
         arg1: "Lister"
@@ -505,5 +506,7 @@ pages:
         arg1: "Lister"
       _seedRandomPick:
         arg2: "Lister"
+      _pick:
+        arg1: "Lister"
     types:
       array: "Lister"
