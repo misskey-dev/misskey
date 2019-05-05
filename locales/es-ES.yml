@@ -975,6 +975,7 @@ pages:
   script:
     categories:
       random: "Aleatorio"
+      list: "Listas"
     blocks:
       _join:
         arg1: "Listas"
@@ -985,5 +986,7 @@ pages:
         arg1: "Listas"
       _seedRandomPick:
         arg2: "Listas"
+      _pick:
+        arg1: "Listas"
     types:
       array: "Listas"
