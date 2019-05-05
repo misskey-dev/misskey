@@ -1676,6 +1676,7 @@ pages:
   script:
     categories:
       random: "랜덤"
+      list: "리스트"
     blocks:
       _join:
         arg1: "리스트"
@@ -1686,5 +1687,7 @@ pages:
         arg1: "리스트"
       _seedRandomPick:
         arg2: "리스트"
+      _pick:
+        arg1: "리스트"
     types:
       array: "리스트"
