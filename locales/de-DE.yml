@@ -742,6 +742,7 @@ pages:
   script:
     categories:
       random: "Zufällige Auswahl"
+      list: "Listen"
     blocks:
       _join:
         arg1: "Listen"
@@ -752,5 +753,7 @@ pages:
         arg1: "Listen"
       _seedRandomPick:
         arg2: "Listen"
+      _pick:
+        arg1: "Listen"
     types:
       array: "Listen"
