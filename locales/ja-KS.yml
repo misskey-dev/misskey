@@ -1269,6 +1269,7 @@ pages:
   script:
     categories:
       random: "いんじゃんほい"
+      list: "リスト"
     blocks:
       _join:
         arg1: "リスト"
@@ -1279,5 +1280,7 @@ pages:
         arg1: "リスト"
       _seedRandomPick:
         arg2: "リスト"
+      _pick:
+        arg1: "リスト"
     types:
       array: "リスト"
