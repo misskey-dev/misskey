@@ -49,7 +49,7 @@ export default Vue.extend({
 	padding 0 8px
 
 	&.shadow
-		box-shadow 0 0px 8px rgba(0, 0, 0, 0.25)
+		box-shadow 0 0 8px rgba(0, 0, 0, 0.25)
 
 	&, *
 		user-select none

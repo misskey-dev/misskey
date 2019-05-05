@@ -128,6 +128,19 @@ export class UserRepository extends Repository<User> {
 					detail: true
 				}),
 				twoFactorEnabled: profile!.twoFactorEnabled,
+				twitter: profile!.twitter ? {
+					id: profile!.twitterUserId,
+					screenName: profile!.twitterScreenName
+				} : null,
+				github: profile!.github ? {
+					id: profile!.githubId,
+					login: profile!.githubLogin
+				} : null,
+				discord: profile!.discord ? {
+					id: profile!.discordId,
+					username: profile!.discordUsername,
+					discriminator: profile!.discordDiscriminator
+				} : null,
 			} : {}),
 
 			...(opts.detail && meId === user.id ? {
@@ -217,7 +230,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public isValidBirthday(birthday: string): boolean {
-		return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
+		return typeof birthday == 'string' && /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.test(birthday);
 	}
 	//#endregion
 }

@@ -160,7 +160,7 @@ export default Vue.extend({
 				this.$emit('top');
 			}
 
-			if (this.$store.state.settings.fetchOnScroll !== false) {
+			if (this.$store.state.settings.fetchOnScroll) {
 				const current = this.$refs.body.scrollTop + this.$refs.body.clientHeight;
 				if (current > this.$refs.body.scrollHeight - 1) this.$emit('bottom');
 			}

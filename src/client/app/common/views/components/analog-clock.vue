@@ -80,7 +80,7 @@ export default Vue.extend({
 
 		ms(): number {
 			return this.now.getMilliseconds() * this.smooth;
-		}
+		},
 		s(): number {
 			return this.now.getSeconds();
 		},

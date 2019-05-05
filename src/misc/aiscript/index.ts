@@ -23,6 +23,7 @@ import {
 	faSortNumericUp,
 	faExchangeAlt,
 	faRecycle,
+	faIndent,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
@@ -72,6 +73,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	stringToNumber:  { in: ['string'],                     out: 'number',      category: 'convert',    icon: faExchangeAlt, },
 	numberToString:  { in: ['number'],                     out: 'string',      category: 'convert',    icon: faExchangeAlt, },
 	splitStrByLine:  { in: ['string'],                     out: 'stringArray', category: 'convert',    icon: faExchangeAlt, },
+	pick:            { in: [null],                         out: null,          category: 'list',       icon: faIndent, },
 	rannum:          { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: faDice, },
 	dailyRannum:     { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: faDice, },
 	seedRannum:      { in: [null, 'number', 'number'],     out: 'number',      category: 'random',     icon: faDice, },
@@ -81,6 +83,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	randomPick:      { in: [0],                            out: 0,             category: 'random',     icon: faDice, },
 	dailyRandomPick: { in: [0],                            out: 0,             category: 'random',     icon: faDice, },
 	seedRandomPick:  { in: [null, 0],                      out: 0,             category: 'random',     icon: faDice, },
+	DRPWPM:      { in: ['stringArray'],                out: 'string',      category: 'random',     icon: faDice, }, // dailyRandomPickWithProbabilityMapping
 };
 
 export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {

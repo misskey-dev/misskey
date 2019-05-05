@@ -64,7 +64,7 @@ export class ASEvaluator {
 
 	@autobind
 	private interpolate(str: string, scope: Scope) {
-		return str.replace(/\{(.+?)\}/g, match => {
+		return str.replace(/{(.+?)}/g, match => {
 			const v = scope.getState(match.slice(1, -1).trim());
 			return v == null ? 'NULL' : v.toString();
 		});
@@ -169,6 +169,7 @@ export class ASEvaluator {
 			stringToNumber: (a: string) => parseInt(a),
 			numberToString: (a: number) => a.toString(),
 			splitStrByLine: (a: string) => a.split('\n'),
+			pick: (list: any[], i: number) => list[i - 1],
 			random: (probability: number) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
 			rannum: (min: number, max: number) => min + Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * (max - min + 1)),
 			randomPick: (list: any[]) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],
@@ -178,6 +179,27 @@ export class ASEvaluator {
 			seedRandom: (seed: any, probability: number) => Math.floor(seedrandom(seed)() * 100) < probability,
 			seedRannum: (seed: any, min: number, max: number) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
 			seedRandomPick: (seed: any, list: any[]) => list[Math.floor(seedrandom(seed)() * list.length)],
+			DRPWPM: (list: string[]) => {
+				const xs = [];
+				let totalFactor = 0;
+				for (const x of list) {
+					const parts = x.split(' ');
+					const factor = parseInt(parts.pop()!, 10);
+					const text = parts.join(' ');
+					totalFactor += factor;
+					xs.push({ factor, text });
+				}
+				const r = seedrandom(`${day}:${block.id}`)() * totalFactor;
+				let stackedFactor = 0;
+				for (const x of xs) {
+					if (r >= stackedFactor && r <= x.factor) {
+						return x.text;
+					} else {
+						stackedFactor += x.factor;
+					}
+				}
+				return xs[0].text;
+			},
 		};
 
 		const fnName = block.type;

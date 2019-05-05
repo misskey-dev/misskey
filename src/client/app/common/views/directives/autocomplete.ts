@@ -102,7 +102,7 @@ class Autocomplete {
 			}
 		}
 
-		if (isHashtag && opened == false) {
+		if (isHashtag && !opened) {
 			const hashtag = text.substr(hashtagIndex + 1);
 			if (!hashtag.includes(' ')) {
 				this.open('hashtag', hashtag);
@@ -110,7 +110,7 @@ class Autocomplete {
 			}
 		}
 
-		if (isEmoji && opened == false) {
+		if (isEmoji && !opened) {
 			const emoji = text.substr(emojiIndex + 1);
 			if (!emoji.includes(' ')) {
 				this.open('emoji', emoji);

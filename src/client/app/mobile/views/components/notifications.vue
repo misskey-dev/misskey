@@ -115,7 +115,7 @@ export default Vue.extend({
 		},
 
 		onScroll() {
-			if (this.$store.state.settings.fetchOnScroll !== false) {
+			if (this.$store.state.settings.fetchOnScroll) {
 				// 親要素が display none だったら弾く
 				// https://github.com/syuilo/misskey/issues/1569
 				// http://d.hatena.ne.jp/favril/20091105/1257403319

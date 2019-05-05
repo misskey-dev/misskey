@@ -36,10 +36,10 @@
 				</ui-select>
 
 				<div class="eyeCatch">
-					<ui-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catchig-image') }}</ui-button>
+					<ui-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catching-image') }}</ui-button>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-						<ui-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catchig-image') }}</ui-button>
+						<ui-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catching-image') }}</ui-button>
 					</div>
 				</div>
 			</template>
@@ -337,7 +337,7 @@ export default Vue.extend({
 		getScriptBlockList(type: string = null) {
 			const list = [];
 
-			const blocks = blockDefs.filter(block => type === null || block.out === null || block.out === type);
+			const blocks = blockDefs.filter(block => type === null || block.out === null || block.out === type || typeof block.out === 'number');
 
 			for (const block of blocks) {
 				const category = list.find(x => x.category === block.category);

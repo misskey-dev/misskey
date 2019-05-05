@@ -322,7 +322,7 @@ root(fill)
 
 			> .value
 				display block
-				width 0%
+				width 0
 				height 100%
 				background transparent
 				border-radius 6px

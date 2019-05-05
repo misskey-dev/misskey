@@ -295,7 +295,7 @@ export default Vue.extend({
 			}, err => {
 				this.$root.dialog({
 					type: 'error',
-					title: this.$t('error')
+					title: this.$t('error'),
 					text: err.message
 				});
 			}, {
@@ -341,7 +341,7 @@ export default Vue.extend({
 
 		post() {
 			this.posting = true;
-			const viaMobile = this.$store.state.settings.disableViaMobile !== true;
+			const viaMobile = !this.$store.state.settings.disableViaMobile;
 			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,

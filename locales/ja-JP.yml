@@ -1865,8 +1865,8 @@ pages:
   font: "フォント"
   fontSerif: "セリフ"
   fontSansSerif: "サンセリフ"
-  set-eye-catchig-image: "アイキャッチ画像を設定"
-  remove-eye-catchig-image: "アイキャッチ画像を削除"
+  set-eye-catching-image: "アイキャッチ画像を設定"
+  remove-eye-catching-image: "アイキャッチ画像を削除"
   choose-block: "ブロックを追加"
   select-type: "種類を選択"
   enter-variable-name: "変数名を決めてください"
@@ -1941,6 +1941,7 @@ pages:
       fn: "関数"
       text: "テキスト操作"
       convert: "変換"
+      list: "リスト"
     blocks:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
@@ -2059,6 +2060,13 @@ pages:
       _seedRandomPick:
         arg1: "シード"
         arg2: "リスト"
+      DRPWPM: "確率付きリストからランダムに選択 (ユーザーごとに日替わり)"
+      _DRPWPM:
+        arg1: "テキストのリスト"
+      pick: "リストから選択"
+      _pick:
+        arg1: "リスト"
+        arg2: "位置"
       number: "数値"
       stringToNumber: "テキストを数値に"
       _stringToNumber:

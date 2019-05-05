@@ -202,7 +202,7 @@ export default Vue.extend({
 		left 0
 		z-index 1
 		width 100%
-		box-shadow 0 0px 2px rgba(#000, 0.2)
+		box-shadow 0 0 2px rgba(#000, 0.2)
 
 		> .form
 			background rgba(0, 0, 0, 0.02)
