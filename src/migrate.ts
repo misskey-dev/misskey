@@ -305,7 +305,7 @@ async function main() {
 	}
 
 	async function migrateNote(note: any) {
-		await Notes.save({
+		const noteToSave = {
 			id: note._id.toHexString(),
 			createdAt: note.createdAt || new Date(),
 			text: note.text,
@@ -315,24 +315,34 @@ async function main() {
 			viaMobile: note.viaMobile || false,
 			geo: note.geo,
 			appId: null,
-			visibility: note.visibility || 'public',
+			visibility: note.visibility && (note.visibility === 'private' ? 'specified' : note.visibility) || 'public', // there is no 'private' visibility more.
 			visibleUserIds: note.visibleUserIds ? note.visibleUserIds.map((id: any) => id.toHexString()) : [],
 			replyId: note.replyId ? note.replyId.toHexString() : null,
 			renoteId: note.renoteId ? note.renoteId.toHexString() : null,
 			userHost: null,
 			fileIds: note.fileIds ? note.fileIds.map((id: any) => id.toHexString()) : [],
 			localOnly: note.localOnly || false,
-			hasPoll: note.poll != null
-		});
+			hasPoll: note.poll != null,
+			name: note.name && (note.name.length > 0) && note.name || null,
+			emojis: note.emojis || ([] as string[]),
+			renoteCount: note.renoteCount || 0,
+			repliesCount: note.repliesCount || 0,
+			mentions: note.mentions && note.mentions.map((id: any) => id.toHexString()) || [],
+			mentionedRemoteUsers: note.mentionedRemoteUsers && JSON.stringify(note.mentionedRemoteUsers) || '[]',
+			score: note.score || 0,
+			uri: note.uri || null
+		};
+
+		await Notes.save(noteToSave);
 
 		if (note.poll) {
 			await Polls.save({
 				noteId: note._id.toHexString(),
 				choices: note.poll.choices.map((x: any) => x.text),
 				expiresAt: note.poll.expiresAt,
-				multiple: note.poll.multiple,
+				multiple: note.poll.multiple || false,
 				votes: note.poll.choices.map((x: any) => x.votes),
-				noteVisibility: note.visibility,
+				noteVisibility: note.visibility && (note.visibility === 'private' ? 'specified' : note.visibility) || 'public', // there is no 'private' visibility more.
 				userId: note.userId.toHexString(),
 				userHost: null
 			});
@@ -506,16 +516,19 @@ async function main() {
 		}
 	}
 
-	let allNotesCount = await _Note.count({
+	const migrateRemoteNote = false; // making this true will migrate remotes
+	const noteCondition = {
 		'_user.host': null,
 		'metadata.deletedAt': { $exists: false }
-	});
+	};
+	if (migrateRemoteNote) {
+		delete noteCondition['_user.host'];
+	}
+
+	let allNotesCount = await _Note.count(noteCondition);
 	if (test && allNotesCount > limit) allNotesCount = limit;
 	for (let i = 0; i < allNotesCount; i++) {
-		const note = await _Note.findOne({
-			'_user.host': null,
-			'metadata.deletedAt': { $exists: false }
-		}, {
+		const note = await _Note.findOne(noteCondition, {
 			skip: i
 		});
 		try {
