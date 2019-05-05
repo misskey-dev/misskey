@@ -1941,6 +1941,7 @@ pages:
       fn: "関数"
       text: "テキスト操作"
       convert: "変換"
+      list: "リスト"
     blocks:
       text: "テキスト"
       multiLineText: "テキスト(複数行)"
@@ -2062,6 +2063,10 @@ pages:
       DRPWPM: "確率付きリストからランダムに選択 (ユーザーごとに日替わり)"
       _DRPWPM:
         arg1: "テキストのリスト"
+      pick: "リストから選択"
+      _pick:
+        arg1: "リスト"
+        arg2: "位置"
       number: "数値"
       stringToNumber: "テキストを数値に"
       _stringToNumber:

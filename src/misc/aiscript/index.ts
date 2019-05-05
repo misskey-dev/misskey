@@ -23,6 +23,7 @@ import {
 	faSortNumericUp,
 	faExchangeAlt,
 	faRecycle,
+	faIndent,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
@@ -72,6 +73,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	stringToNumber:  { in: ['string'],                     out: 'number',      category: 'convert',    icon: faExchangeAlt, },
 	numberToString:  { in: ['number'],                     out: 'string',      category: 'convert',    icon: faExchangeAlt, },
 	splitStrByLine:  { in: ['string'],                     out: 'stringArray', category: 'convert',    icon: faExchangeAlt, },
+	pick:            { in: [null],                         out: null,          category: 'list',       icon: faIndent, },
 	rannum:          { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: faDice, },
 	dailyRannum:     { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: faDice, },
 	seedRannum:      { in: [null, 'number', 'number'],     out: 'number',      category: 'random',     icon: faDice, },

@@ -169,6 +169,7 @@ export class ASEvaluator {
 			stringToNumber: (a: string) => parseInt(a),
 			numberToString: (a: number) => a.toString(),
 			splitStrByLine: (a: string) => a.split('\n'),
+			pick: (list: any[], i: number) => list[i - 1],
 			random: (probability: number) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
 			rannum: (min: number, max: number) => min + Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * (max - min + 1)),
 			randomPick: (list: any[]) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],
