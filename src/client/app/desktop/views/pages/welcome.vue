@@ -352,7 +352,7 @@ export default Vue.extend({
 				padding 0 16px
 				line-height 48px
 				background var(--faceHeader)
-				box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+				box-shadow 0 1px 0 rgba(0, 0, 0, 0.1)
 
 				& + div
 					max-height calc(100% - 48px)

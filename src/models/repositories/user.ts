@@ -217,7 +217,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public isValidBirthday(birthday: string): boolean {
-		return typeof birthday == 'string' && /^([0-9]{4})\-([0-9]{2})-([0-9]{2})$/.test(birthday);
+		return typeof birthday == 'string' && /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.test(birthday);
 	}
 	//#endregion
 }

@@ -180,7 +180,7 @@ export default Vue.extend({
 				this.releaseQueue();
 			}
 
-			if (this.$store.state.settings.fetchOnScroll !== false) {
+			if (this.$store.state.settings.fetchOnScroll) {
 				const current = window.scrollY + window.innerHeight;
 				if (current > document.body.offsetHeight - 8) this.fetchMore();
 			}
