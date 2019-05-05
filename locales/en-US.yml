@@ -1666,8 +1666,6 @@ pages:
   font: "Font"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
-  set-eye-catchig-image: "Set a eye-catching image"
-  remove-eye-catchig-image: "Delete a eye-catching image"
   choose-block: "Add a block"
   select-type: "Select a type"
   enter-variable-name: "Please choose a variable name"
