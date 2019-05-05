@@ -1731,6 +1731,7 @@ pages:
       fn: "Function"
       text: "Text operation"
       convert: "Variable"
+      list: "Lists"
     blocks:
       text: "Text"
       multiLineText: "Text (Multiple lines)"
@@ -1846,6 +1847,8 @@ pages:
         arg2: "Lists"
       _DRPWPM:
         arg1: "List of text"
+      _pick:
+        arg1: "Lists"
       number: "Number"
       stringToNumber: "Text to number"
       _stringToNumber:
