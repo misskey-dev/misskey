@@ -1731,6 +1731,7 @@ pages:
       value: "值"
       fn: "函数"
       text: "文本操作"
+      list: "列表"
     blocks:
       text: "文本"
       multiLineText: "文本 (多行)"
@@ -1847,6 +1848,8 @@ pages:
         arg2: "列表"
       _DRPWPM:
         arg1: "文本列表"
+      _pick:
+        arg1: "列表"
       number: "数值"
       stringToNumber: "文本到数字"
       _stringToNumber:
