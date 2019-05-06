@@ -1593,19 +1593,35 @@ pages:
   blocks:
     text: "Texte"
     textarea: "Zone de texte"
+    section: "Section"
     image: "Images"
+    button: "Bouton"
+    if: "Si"
+    _if:
+      variable: "Variables"
     post: "Champs de publication"
     _post:
       text: "Contenu"
     _textInput:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
     _textareaInput:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
     _numberInput:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
+    switch: "Basculer"
     _switch:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
+    counter: "Compteur"
     _counter:
+      name: "Nom de la variable"
       text: "Titre"
     _button:
       text: "Titre"
