@@ -1630,20 +1630,77 @@ pages:
           content: "Contenu"
   script:
     categories:
+      flow: "Contrôle"
+      logical: "Opération logique"
+      operation: "Calculer"
+      comparison: "Comparer"
       random: "Aléatoire"
+      value: "Valeur"
+      fn: "Fonction"
       list: "Listes"
     blocks:
       text: "Texte"
+      strLen: "Longueur du texte"
       _strLen:
         arg1: "Texte"
+      strPick: "Extraire un caractère"
       _strPick:
         arg1: "Texte"
       _strReplace:
         arg1: "Texte"
+        arg2: "Avant le remplacement"
+        arg3: "Après le remplacement"
+      strReverse: "Inverser le texte"
       _strReverse:
         arg1: "Texte"
       _join:
         arg1: "Listes"
+        arg2: "Séparateur"
+      add: "+ Plus"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- Moins"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× Multiplier par"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ Diviser par"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      eq: "A et B sont équivalents"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A et B sont différents"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       random: "Aléatoire"
       _randomPick:
         arg1: "Listes"
@@ -1653,10 +1710,20 @@ pages:
         arg2: "Listes"
       _pick:
         arg1: "Listes"
+      number: "Numérique"
       _stringToNumber:
         arg1: "Texte"
+      _numberToString:
+        arg1: "Numérique"
       _splitStrByLine:
         arg1: "Texte"
+      fn: "Fonction"
+      _fn:
+        arg1: "Sortie"
+      for: "Répéter"
     types:
       string: "Texte"
+      number: "Numérique"
       array: "Listes"
+      stringArray: "Liste de texte"
+    enviromentVariables: "Variables d'environnement"
