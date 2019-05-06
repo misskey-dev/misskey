@@ -1707,6 +1707,7 @@ pages:
       name: "变量名"
       text: "标题"
       default: "默认值"
+    switch: "开关"
     _switch:
       name: "变量名"
       text: "标题"
