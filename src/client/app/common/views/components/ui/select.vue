@@ -5,10 +5,9 @@
 		<span class="label" ref="label"><slot name="label"></slot></span>
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<select ref="input"
-			:value="v"
+			v-model="v"
 			:required="required"
 			:disabled="disabled"
-			@input="$emit('input', $event.target.value)"
 			@focus="focused = true"
 			@blur="focused = false"
 		>
@@ -56,18 +55,20 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			v: this.value,
 			focused: false
 		};
 	},
 	computed: {
+		v: {
+			get() {
+				return this.value;
+			},
+			set(v) {
+				this.$emit('input', v);
+			}
+		},
 		filled(): boolean {
 			return this.v != '' && this.v != null;
-		}
-	},
-	watch: {
-		value(v) {
-			this.v = v;
 		}
 	},
 	mounted() {
