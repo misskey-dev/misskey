@@ -1866,16 +1866,22 @@ pages:
       ref: "变量"
       fn: "函数"
       _fn:
+        slots: "插槽"
+        slots-info: "请使用换行符分隔每个插槽"
         arg1: "输出"
       for: "重复"
       _for:
         arg1: "次数"
         arg2: "处理"
+    typeError: "插槽{slot}需要接受“{expect}”，但是实际输入为“{actual}”"
+    thereIsEmptySlot: "插槽{slot}为空！"
     types:
       string: "文本"
       number: "数值"
       boolean: "布尔值"
       array: "列表"
       stringArray: "文本列表"
+    emptySlot: "空插槽"
     enviromentVariables: "环境变量"
     pageVariables: "页面元素"
+    argVariables: "输入插槽"
