@@ -60,6 +60,7 @@ common:
   month-and-day: "{day}-{month}"
   trash: "Corbeille"
   drive: "Drive"
+  pages: "Pages"
   messaging: "Conversations"
   home: "Principal"
   deck: "Deck"
@@ -1469,6 +1470,7 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Téléverser un fichier"
     create-folder: "Créer un dossier"
+    rename-folder: "Renommer le dossier"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
 mobile/views/pages/signup.vue:
@@ -1589,6 +1591,8 @@ dev/views/new-app.vue:
 pages:
   title: "Titre"
   blocks:
+    text: "Texte"
+    textarea: "Zone de texte"
     image: "Images"
     post: "Champs de publication"
     _post:
@@ -1613,6 +1617,15 @@ pages:
       random: "Aléatoire"
       list: "Listes"
     blocks:
+      text: "Texte"
+      _strLen:
+        arg1: "Texte"
+      _strPick:
+        arg1: "Texte"
+      _strReplace:
+        arg1: "Texte"
+      _strReverse:
+        arg1: "Texte"
       _join:
         arg1: "Listes"
       random: "Aléatoire"
@@ -1624,5 +1637,10 @@ pages:
         arg2: "Listes"
       _pick:
         arg1: "Listes"
+      _stringToNumber:
+        arg1: "Texte"
+      _splitStrByLine:
+        arg1: "Texte"
     types:
+      string: "Texte"
       array: "Listes"
