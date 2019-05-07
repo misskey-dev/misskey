@@ -21,7 +21,7 @@ export default class Stream extends EventEmitter {
 
 		const user = os.store.state.i;
 
-		this.stream = new ReconnectingWebsocket(wsUrl + (user ? `?i=${user.token}` : ''));
+		this.stream = new ReconnectingWebsocket(wsUrl + (user ? `?i=${user.token}` : ''), '', { minReconnectionDelay: 1 }); // https://github.com/pladaria/reconnecting-websocket/issues/91
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
