@@ -302,13 +302,13 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async check(crc32: string) {
+	private async check(crc32: string | number) {
 		const game = await ReversiGames.findOne(this.gameId!);
 		if (game == null) throw new Error('game not found');
 
 		if (!game.isStarted) return;
 
-		if (crc32 !== game.crc32) {
+		if (crc32.toString() !== game.crc32) {
 			this.send('rescue', await ReversiGames.pack(game, this.user));
 		}
 	}
