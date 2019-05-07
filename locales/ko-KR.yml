@@ -1653,9 +1653,23 @@ pages:
   page-updated: "페이지를 수정했습니다"
   are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
   page-deleted: "페이지가 삭제되었습니다"
+  edit-this-page: "이 페이지를 편집"
+  view-source: "소스 보기"
+  view-page: "페이지 보기"
+  inspector: "인스펙터"
+  content: "페이지 블록"
+  variables: "변수"
   title: "제목"
+  url: "페이지 URL"
+  summary: "페이지 요약"
+  align-center: "가운데 정렬"
+  font: "글꼴"
+  fontSerif: "세리프"
+  fontSansSerif: "산 세리프"
   blocks:
     image: "이미지"
+    _if:
+      variable: "변수"
     post: "게시 양식"
     _post:
       text: "내용"
@@ -1690,5 +1704,6 @@ pages:
         arg2: "리스트"
       _pick:
         arg1: "리스트"
+      ref: "변수"
     types:
       array: "리스트"
