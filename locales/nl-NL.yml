@@ -619,13 +619,22 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Heb je een fout ontdekt of wil je bijdragen aan de documentatie? "
   edit-this-page-on-github-link: "Bewerk deze pagina op GitHub!"
-  api:
-    entities:
-      properties: "Eigenschappen"
-    endpoints:
-      params: "Parameters"
-      res: "Antwoord"
-    props:
-      name: "Naam"
-      type: "Type"
-      description: "Omschrijving"
+pages:
+  blocks:
+    image: "Afbeeldingen"
+  script:
+    categories:
+      list: "Lijsten"
+    blocks:
+      _join:
+        arg1: "Lijsten"
+      _randomPick:
+        arg1: "Lijsten"
+      _dailyRandomPick:
+        arg1: "Lijsten"
+      _seedRandomPick:
+        arg2: "Lijsten"
+      _pick:
+        arg1: "Lijsten"
+    types:
+      array: "Lijsten"

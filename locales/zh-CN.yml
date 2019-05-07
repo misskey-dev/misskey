@@ -62,6 +62,7 @@ common:
   month-and-day: "{month}月 {day}日"
   trash: "垃圾箱"
   drive: "网盘"
+  pages: "页面"
   messaging: "聊天"
   home: "首页"
   deck: "Deck"
@@ -1622,25 +1623,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "发现错误或想要为文档做出贡献？"
   edit-this-page-on-github-link: "在GitHub上编辑这个页面。"
-  api:
-    entities:
-      properties: "属性"
-    endpoints:
-      params: "参数"
-      no-params: "没有参数"
-      res: "回应"
-      require-credential: "此端点需要身份验证信息。"
-      require-permission: "此端点需要{permission}权限。"
-      has-limit: "有一个速率限制。"
-      duration-limit: "如果您发送请求在{duration}毫秒内多于{max}次，则无法发送更多请求。"
-      min-interval-limit: "如果自上次请求后未传递{interval}毫秒，则无法发送请求。"
-      show-src: "您可以查看此端点的源代码。"
-      show-src-link: "查阅GitHub上的代码"
-      generated: "该文档由API定义生成。"
-    props:
-      name: "名称"
-      type: "型号"
-      description: "描述"
 dev/views/index.vue:
   manage-apps: "管理应用"
 dev/views/apps.vue:
@@ -1663,3 +1645,247 @@ dev/views/new-app.vue:
   authority: "权限"
   authority-desc: "只能通过API访问此处请求的功能。"
   authority-warning: "您可以在创建应用程序后对其进行更改，但如果您授予不同的权限，则当时关联的所有用户密钥都将失效。"
+pages:
+  new-page: "创建页面"
+  edit-page: "编辑页面"
+  read-page: "查看源"
+  page-created: "页面已创建"
+  page-updated: "页面已更新"
+  are-you-sure-delete: "是否删除此页面？"
+  page-deleted: "该页面已被删除。"
+  edit-this-page: "编辑此页面"
+  view-source: "查看源代码"
+  view-page: "查看页面"
+  inspector: "检查器"
+  content: "页面内容"
+  variables: "变量"
+  variables-info: "您可以使用变量创建动态页面。在文本中通过<b>{变量名}</b>的写法来嵌入变量值。例如在文本<b>Hello { thing } world!</b>中，如果变量(thing)的值为<b>ai</b>，那么该文本会成为<b>Hello ai world!</b>。"
+  variables-info2: "因为变量的计算(计算变量值)是从上到下执行的，所以不能在变量中引用下面的变量。例如从上到下依次定义了<b>A，B，C</b>3个变量，那么<b>C</b>中可以引用<b>A</b>或<b>B</b>，但是<b>A</b>无法引用<b>B</b>或<b>C</b>。"
+  variables-info3: "为了接收来自用户的输入，页面上设有“用户输入”块，在“变量名称”中设置要在其中保存输入值的变量名(变量会自动创建)。您可以使用该变量执行操作以响应用户输入。"
+  variables-info4: "通过使用函数，您可以将数值计算过程组合成可重用的形式。要创建函数，需要创建一个“函数”类型的变量。你可以将函数设定为槽函数(参数)的格式，槽函数的值可作为函数中的变量使用。另外，AiScript标准中还有一些函数会将函数作为参数(称为高阶函数)。\n除了已经预先定义的函数外，您也可以将它们设置为这些高阶函数的槽函数。"
+  more-details: "详细说明"
+  title: "标题"
+  url: "页面URL"
+  summary: "页面摘要"
+  align-center: "居中"
+  font: "字体"
+  fontSerif: "衬线字体"
+  fontSansSerif: "无衬线字体"
+  choose-block: "添加块"
+  select-type: "类型选择"
+  enter-variable-name: "请确定变量名"
+  the-variable-name-is-already-used: "变量名已使用"
+  content-blocks: "内容"
+  input-blocks: "输入"
+  special-blocks: "特殊"
+  post-from-post-form: "发布此内容"
+  posted-from-post-form: "已发布"
+  blocks:
+    text: "文本"
+    textarea: "文本区域"
+    section: "章节"
+    image: "图片"
+    button: "按钮"
+    if: "如果"
+    _if:
+      variable: "变量"
+    post: "投稿形式"
+    _post:
+      text: "内容"
+    textInput: "文本输入"
+    _textInput:
+      name: "变量名"
+      text: "标题"
+      default: "默认值"
+    textareaInput: "多行文本输入"
+    _textareaInput:
+      name: "变量名"
+      text: "标题"
+      default: "默认值"
+    numberInput: "数值输入"
+    _numberInput:
+      name: "变量名"
+      text: "标题"
+      default: "默认值"
+    switch: "开关"
+    _switch:
+      name: "变量名"
+      text: "标题"
+      default: "默认值"
+    counter: "计数器"
+    _counter:
+      name: "变量名"
+      text: "标题"
+      inc: "增加值"
+    _button:
+      text: "标题"
+      action: "按下按钮时的行为"
+      _action:
+        dialog: "显示对话框"
+        _dialog:
+          content: "内容"
+        resetRandom: "随机值重置"
+  script:
+    categories:
+      flow: "控制"
+      logical: "逻辑运算"
+      operation: "计算"
+      comparison: "比较"
+      random: "随机"
+      value: "值"
+      fn: "函数"
+      text: "文本操作"
+      list: "列表"
+    blocks:
+      text: "文本"
+      multiLineText: "文本 (多行)"
+      textList: "文本列表"
+      _textList:
+        info: "情使用换行符分隔每行"
+      strLen: "文本长度"
+      _strLen:
+        arg1: "文本"
+      strPick: "字符提取"
+      _strPick:
+        arg1: "文本"
+        arg2: "字符位置"
+      strReplace: "文本替换"
+      _strReplace:
+        arg1: "文本"
+        arg2: "替换之前"
+        arg3: "替换之后"
+      strReverse: "文本反向"
+      _strReverse:
+        arg1: "文本"
+      join: "合并文本"
+      _join:
+        arg1: "列表"
+        arg2: "分隔符"
+      add: "+ 加"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- 减"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× 乘"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ 除"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      remind: "÷ 取模"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      eq: "A和B相等"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A和B不等"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A和B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A或B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< A小于B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> A大于B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A小于等于B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A大于等于B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "分支"
+      _if:
+        arg1: "如果"
+        arg2: "的话"
+        arg3: "否则"
+      random: "随机"
+      _random:
+        arg1: "概率"
+      rannum: "随机"
+      _rannum:
+        arg1: "最小"
+        arg2: "最大"
+      randomPick: "从列表中随机选择"
+      _randomPick:
+        arg1: "列表"
+      dailyRandom: "随机(每个用户每日)"
+      _dailyRandom:
+        arg1: "概率"
+      dailyRannum: "随机数(每个用户每日)"
+      _dailyRannum:
+        arg1: "最小"
+        arg2: "最大"
+      dailyRandomPick: "从列表中随机选择(每个用户每日)"
+      _dailyRandomPick:
+        arg1: "列表"
+      seedRandom: "随机 (种子)"
+      _seedRandom:
+        arg1: "种子"
+        arg2: "概率"
+      seedRannum: "随机数(种子)"
+      _seedRannum:
+        arg1: "种子"
+        arg2: "最小"
+        arg3: "最大"
+      seedRandomPick: "从列表中随机选择 (种子)"
+      _seedRandomPick:
+        arg1: "种子"
+        arg2: "列表"
+      _DRPWPM:
+        arg1: "文本列表"
+      pick: "从列表中选择"
+      _pick:
+        arg1: "列表"
+        arg2: "位置"
+      number: "数值"
+      stringToNumber: "文本到数字"
+      _stringToNumber:
+        arg1: "文本"
+      numberToString: "数字到文本"
+      _numberToString:
+        arg1: "数值"
+      splitStrByLine: "将文本按行拆分"
+      _splitStrByLine:
+        arg1: "文本"
+      ref: "变量"
+      fn: "函数"
+      _fn:
+        slots: "槽函数"
+        slots-info: "请使用换行符分隔每个槽函数"
+        arg1: "输出"
+      for: "重复"
+      _for:
+        arg1: "次数"
+        arg2: "处理"
+    typeError: "槽函数{slot}需要传入“{expect}”，但是实际传入为“{actual}”！"
+    thereIsEmptySlot: "槽函数{slot}为空！"
+    types:
+      string: "文本"
+      number: "数值"
+      boolean: "布尔值"
+      array: "列表"
+      stringArray: "文本列表"
+    emptySlot: "空白槽函数"
+    enviromentVariables: "环境变量"
+    pageVariables: "页面元素"
+    argVariables: "输入槽函数"

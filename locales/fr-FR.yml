@@ -60,6 +60,7 @@ common:
   month-and-day: "{day}-{month}"
   trash: "Corbeille"
   drive: "Drive"
+  pages: "Pages"
   messaging: "Conversations"
   home: "Principal"
   deck: "Deck"
@@ -1469,6 +1470,7 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Téléverser un fichier"
     create-folder: "Créer un dossier"
+    rename-folder: "Renommer le dossier"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
 mobile/views/pages/signup.vue:
@@ -1570,25 +1572,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation ?"
   edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
-  api:
-    entities:
-      properties: "Propriétés"
-    endpoints:
-      params: "Paramètres"
-      no-params: "Aucun paramètre"
-      res: "Réponse"
-      require-credential: "Ce point de communication nécessite une authentification."
-      require-permission: "Ce point de communication nécessite la permission {permission}."
-      has-limit: "Il y’a un taux limite."
-      duration-limit: "Si vous avez envoyé plus de {max} requêtes en {duration} millisecondes, vous ne serez pas en mesure d'envoyer d'autres requêtes."
-      min-interval-limit: "Vous ne pourrez pas effectuer une nouvelle requête si {interval} millisecondes ne se sont pas écoulées depuis la dernière demande."
-      show-src: "Vous pouvez voir le code source ce point de communication."
-      show-src-link: "Consulter le code sur GitHub"
-      generated: "Ce document est généré à partir de la définition de l’API."
-    props:
-      name: "Nom"
-      type: "Type"
-      description: "Description"
 dev/views/index.vue:
   manage-apps: "Gestion des applications"
 dev/views/apps.vue:
@@ -1605,3 +1588,142 @@ dev/views/new-app.vue:
   authority: "Autorisations "
   authority-desc: "Sont accessibles via l’API, uniquement les fonctionnalités demandées ici."
   authority-warning: "Vous pouvez le changer même après avoir créé l'application, mais si vous attribuez une nouvelle permission, toutes les clés utilisateur associées seront dès lors invalides."
+pages:
+  title: "Titre"
+  blocks:
+    text: "Texte"
+    textarea: "Zone de texte"
+    section: "Section"
+    image: "Images"
+    button: "Bouton"
+    if: "Si"
+    _if:
+      variable: "Variables"
+    post: "Champs de publication"
+    _post:
+      text: "Contenu"
+    _textInput:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    _textareaInput:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    _numberInput:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    switch: "Basculer"
+    _switch:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    counter: "Compteur"
+    _counter:
+      name: "Nom de la variable"
+      text: "Titre"
+    _button:
+      text: "Titre"
+      _action:
+        _dialog:
+          content: "Contenu"
+  script:
+    categories:
+      flow: "Contrôle"
+      logical: "Opération logique"
+      operation: "Calculer"
+      comparison: "Comparer"
+      random: "Aléatoire"
+      value: "Valeur"
+      fn: "Fonction"
+      list: "Listes"
+    blocks:
+      text: "Texte"
+      strLen: "Longueur du texte"
+      _strLen:
+        arg1: "Texte"
+      strPick: "Extraire un caractère"
+      _strPick:
+        arg1: "Texte"
+      _strReplace:
+        arg1: "Texte"
+        arg2: "Avant le remplacement"
+        arg3: "Après le remplacement"
+      strReverse: "Inverser le texte"
+      _strReverse:
+        arg1: "Texte"
+      _join:
+        arg1: "Listes"
+        arg2: "Séparateur"
+      add: "+ Plus"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- Moins"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× Multiplier par"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ Diviser par"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      eq: "A et B sont équivalents"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A et B sont différents"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      random: "Aléatoire"
+      _randomPick:
+        arg1: "Listes"
+      _dailyRandomPick:
+        arg1: "Listes"
+      _seedRandomPick:
+        arg2: "Listes"
+      _pick:
+        arg1: "Listes"
+      number: "Numérique"
+      _stringToNumber:
+        arg1: "Texte"
+      _numberToString:
+        arg1: "Numérique"
+      _splitStrByLine:
+        arg1: "Texte"
+      fn: "Fonction"
+      _fn:
+        arg1: "Sortie"
+      for: "Répéter"
+    types:
+      string: "Texte"
+      number: "Numérique"
+      array: "Listes"
+      stringArray: "Liste de texte"
+    enviromentVariables: "Variables d'environnement"

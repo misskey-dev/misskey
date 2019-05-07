@@ -274,18 +274,9 @@ deck/deck.user-column.vue:
   timeline: "Linha do tempo"
 docs:
   edit-this-page-on-github-link: "Edite esta página no GitHub!"
-  api:
-    entities:
-      properties: "Propriedades"
-    endpoints:
-      params: "Parâmetros"
-      no-params: "Sem parâmetros"
-      res: "Resposta"
-      show-src-link: "Veja o código no GitHub"
-      generated: "Este documento foi gerado pelas definições da API."
-    props:
-      name: "Nome"
-      type: "Tipo"
-      description: "Descrição"
 dev/views/index.vue:
   manage-apps: "Gerenciar aplicativos"
+pages:
+  blocks:
+    image: "Imagens"
+    post: "Formulário de publicação"
