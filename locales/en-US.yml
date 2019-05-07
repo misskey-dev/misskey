@@ -1852,6 +1852,7 @@ pages:
         arg1: "List of text"
       _pick:
         arg1: "Lists"
+        arg2: "Position"
       number: "Number"
       stringToNumber: "Text to number"
       _stringToNumber:
