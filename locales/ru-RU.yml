@@ -146,3 +146,9 @@ mobile/views/components/sub-note-content.vue:
   poll: "Голосования"
 mobile/views/pages/widgets.vue:
   customization-tips: "Советы по настройке"
+pages:
+  script:
+    categories:
+      random: "Случайно"
+    blocks:
+      random: "Случайно"

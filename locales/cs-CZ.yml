@@ -61,6 +61,7 @@ common:
   month-and-day: "{day}. {month}."
   trash: "Koš"
   drive: "Disk"
+  pages: "Stránky"
   messaging: "Konverzace"
   home: "Domů"
   deck: "Deck"
@@ -71,12 +72,20 @@ common:
   favorites: "Oblíbené"
   permissions:
     "read:account": "Zobrazit informace o účtu"
+    "write:account": "Narábět s účtem"
+    "read:blocks": "Prohlížet blokování"
+    "write:blocks": "Narábět s blokováním"
     "read:drive": "Prohlížet Disk"
     "write:drive": "Pracovat s Diskem"
     "read:favorites": "Prohlížet oblíbené"
+    "write:favorites": "Narábět s oblíbeními"
+    "read:following": "Prohlížet následování"
+    "write:following": "Pracovat s následováním"
     "read:messaging": "Prohlížet konverzaci"
     "write:messaging": "Pracovat s konverzaci"
     "read:mutes": "Prohlížet ztlumené"
+    "write:mutes": "Narábět s utíšeními"
+    "write:notes": "Narábět s poznámkami"
     "read:notifications": "Prohlížet oznámení"
     "write:notifications": "Pracovat s oznámeními"
     "read:reactions": "Prohlížet reakce"
@@ -377,6 +386,7 @@ common/views/components/theme.vue:
   installed: "\"{}\" byl nainstalován"
   create-a-theme: "Vytvořit motiv"
   save-created-theme: "Uložit motiv"
+  text-color: "Barva textu"
   base-theme: "Základní vzhled"
   base-theme-light: "Světlý"
   base-theme-dark: "Tmavý"
@@ -454,6 +464,7 @@ common/views/components/user-menu.vue:
   suspend: "Zmrazit"
 common/views/components/poll.vue:
   vote-count: "{} hlasů"
+  total-votes: "{} hlasů celkem"
   vote: "Hlasovat"
   show-result: "Podívat se na výsledky"
   voted: "Už jste hlasovaly"
@@ -464,10 +475,21 @@ common/views/components/poll.vue:
   remaining-seconds: "zbývá {s} sekund"
 common/views/components/poll-editor.vue:
   no-only-one-choice: "Musíte vybrat alespoň dvě možnosti"
+  choice-n: "Volba {}"
+  remove: "Odstranit tuto možnost"
+  add: "+ Přidat možnost"
   destroy: "Zahodit dotazník"
+  expiration: "Termín"
   infinite: "Nekonečne"
   at: "Výběr data a času"
+  deadline-date: "Termín ukončení"
+  interval: "Trvání"
+  second: "Sekunda"
+  minute: "Minuta"
+  hour: "Hodina"
   day: "Ne"
+common/views/components/reaction-picker.vue:
+  choose-reaction: "Vyberte svoji reakci"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Emoji"
   people: "Lidé"
@@ -1198,3 +1220,42 @@ deck/deck.user-column.vue:
   activity: "Aktivita"
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
+pages:
+  title: "Titulek"
+  blocks:
+    post: "Formulář pro psaní"
+    _post:
+      text: "Obsah"
+    _textInput:
+      text: "Titulek"
+    _textareaInput:
+      text: "Titulek"
+    _numberInput:
+      text: "Titulek"
+    _switch:
+      text: "Titulek"
+    _counter:
+      text: "Titulek"
+    _button:
+      text: "Titulek"
+      _action:
+        _dialog:
+          content: "Obsah"
+  script:
+    categories:
+      random: "Náhodně"
+      list: "Seznamy"
+    blocks:
+      _join:
+        arg1: "Seznamy"
+      random: "Náhodně"
+      _randomPick:
+        arg1: "Seznamy"
+      _dailyRandomPick:
+        arg1: "Seznamy"
+      _seedRandomPick:
+        arg2: "Seznamy"
+      _pick:
+        arg1: "Seznamy"
+    types:
+      array: "Seznamy"

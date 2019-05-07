@@ -10,7 +10,7 @@
 		<span>{{ $t('password') }}</span>
 		<template #prefix><fa icon="lock"/></template>
 	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required>
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 		<span>{{ $t('@.2fa') }}</span>
 		<template #prefix><fa icon="gavel"/></template>
 	</ui-input>

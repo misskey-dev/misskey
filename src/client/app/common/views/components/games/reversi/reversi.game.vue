@@ -200,6 +200,7 @@ export default Vue.extend({
 		// 通信を取りこぼしてもいいように定期的にポーリングさせる
 		if (this.game.isStarted && !this.game.isEnded) {
 			this.pollingClock = setInterval(() => {
+				if (this.game.isEnded) return;
 				const crc32 = CRC32.str(this.logs.map(x => x.pos.toString()).join(''));
 				this.connection.send('check', {
 					crc32: crc32

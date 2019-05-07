@@ -34,6 +34,7 @@ common:
   signup: "신규 등록"
   signout: "로그아웃"
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
+  fetching-as-ap-object: "연합에서 조회 중"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -61,6 +62,7 @@ common:
   month-and-day: "{month}월 {day}일"
   trash: "휴지통"
   drive: "드라이브"
+  pages: "페이지"
   messaging: "대화"
   home: "홈"
   deck: "덱"
@@ -72,8 +74,23 @@ common:
   permissions:
     "read:account": "계정 정보 보기"
     "write:account": "계정 정보 변경"
+    "read:blocks": "차단 보기"
+    "write:blocks": "차단 수정"
     "read:drive": "드라이브 보기"
     "write:drive": "드라이브 수정"
+    "read:favorites": "즐겨찾기 보기"
+    "write:favorites": "즐겨찾기 수정"
+    "read:following": "팔로우 정보 보기"
+    "write:following": "팔로잉, 팔로우 수정"
+    "read:messaging": "대화 보기"
+    "write:messaging": "대화 수정"
+    "read:mutes": "뮤트 보기"
+    "write:mutes": "뮤트 수정"
+    "write:notes": "글 작성, 삭제"
+    "read:notifications": "글 보기"
+    "write:notifications": "알림 수정"
+    "read:reactions": "리액션 보기"
+    "write:reactions": "리액션 수정"
     "write:votes": "투표하기"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
@@ -293,12 +310,12 @@ auth/views/form.vue:
   accept: "접근 권한 허용"
 auth/views/index.vue:
   loading: "로드 중"
-  denied: "어플리케이션의 연계를 취소하였습니다."
+  denied: "애플리케이션의 연계를 취소하였습니다."
   denied-paragraph: "이 앱이 당신의 계정에 액세스할 수 없습니다."
   already-authorized: "이 앱은 이미 연결되어 있습니다."
-  allowed: "어플리케이션의 연동을 허용하였습니다."
-  callback-url: "어플리케이션으로 돌아갑니다."
-  please-go-back: "어플리케이션으로 돌아가여 시도하여 주십시오."
+  allowed: "애플리케이션의 연동을 허용하였습니다."
+  callback-url: "애플리케이션으로 돌아갑니다."
+  please-go-back: "애플리케이션으로 돌아가여 시도하여 주십시오."
   error: "세션이 존재하지 않습니다."
   sign-in: "로그인 해주시기 바랍니다"
 common/views/pages/explore.vue:
@@ -474,8 +491,12 @@ common/views/components/user-menu.vue:
   mention: "멘션"
   mute: "뮤트"
   unmute: "뮤트 해제"
+  mute-confirm: "이 사용자를 뮤트하시겠습니까?"
+  unmute-confirm: "이 사용자를 뮤트 해제하시겠습니까?"
   block: "차단"
   unblock: "차단 해제"
+  block-confirm: "이 사용자를 차단하시겠습니까?"
+  unblock-confirm: "이 사용자를 차단 해제하시겠습니까?"
   push-to-list: "리스트에 추가"
   select-list: "리스트를 선택하여 주십시오"
   report-abuse: "스팸 신고"
@@ -483,8 +504,12 @@ common/views/components/user-menu.vue:
   report-abuse-reported: "관리자에게 보고되었습니다. 협조해주셔서 감사합니다."
   silence: "침묵"
   unsilence: "침묵 해제"
+  silence-confirm: "이 사용자를 침묵하시겠습니까?"
+  unsilence-confirm: "이 사용자를 침묵 해제하시겠습니까?"
   suspend: "정지"
   unsuspend: "정지 해제"
+  suspend-confirm: "이 사용자를 정지하시겠습니까?"
+  unsuspend-confirm: "이 사용자를 정지 해제하시겠습니까?"
 common/views/components/poll.vue:
   vote-to: "\"{}\"에 투표하기"
   vote-count: "{}표"
@@ -668,6 +693,7 @@ common/views/components/user-list-editor.vue:
   delete-are-you-sure: "리스트 \"$1\"을 삭제하시겠습니까?"
   deleted: "삭제하였습니다"
 common/views/components/user-lists.vue:
+  create-list: "리스트 만들기"
   list-name: "리스트 이름"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
@@ -946,7 +972,7 @@ common/views/components/api-settings.vue:
     sending: "응답을 기다리는 중"
     response: "결과"
 desktop/views/components/settings.apps.vue:
-  no-apps: "연결된 어플리케이션이 없습니다"
+  no-apps: "연결된 애플리케이션이 없습니다"
 common/views/components/drive-settings.vue:
   max: "최대 용량"
   in-use: "사용중"
@@ -1194,7 +1220,9 @@ admin/views/users.vue:
   unsuspend-confirm: "정지를 해제하시겠습니까?"
   unsuspended: "정지를 해제하였습니다"
   make-silence: "침묵"
+  silence-confirm: "침묵으로 설정합니까?"
   unmake-silence: "침묵 해제"
+  unsilence-confirm: "침묵 해제하시겠습니까?"
   verify: "공식 계정으로 설정"
   verify-confirm: "공식 계정으로 설정하시겠습니까?"
   verified: "공식 계정으로 설정하였습니다"
@@ -1388,6 +1416,7 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "글쓰기"
   note: "글쓰기"
+  something-happened: "알 수 없는 문제로 글을 게시할 수 없습니다."
 desktop/views/widgets/profile.vue:
   update-banner: "클릭하여 배너 변경"
   update-avatar: "클릭하여 아바타 변경"
@@ -1410,6 +1439,7 @@ mobile/views/components/drive.vue:
   here-is-root: "현재 경로는 루트 경로로 폴더가 아닙니다."
   url-prompt: "업로드 하려는 파일의 URL"
   uploading: "업로드를 요청하였습니다. 업로드가 완료될 때까지 시간이 소요될 수 있습니다."
+  folder-name-cannot-empty: "폴더 이름은 비워둘 수 없습니다."
 mobile/views/components/drive-file-chooser.vue:
   select-file: "파일 선택"
 mobile/views/components/drive-folder-chooser.vue:
@@ -1486,7 +1516,11 @@ mobile/views/components/ui.nav.vue:
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "파일 업로드"
+    url-upload: "파일을 URL로부터 업로드"
     create-folder: "폴더 만들기"
+    rename-folder: "폴더 이름 바꾸기"
+    move-folder: "이 폴더를 이동"
+    delete-folder: "이 폴더를 삭제"
 mobile/views/pages/user-lists.vue:
   title: "리스트"
 mobile/views/pages/signup.vue:
@@ -1589,25 +1623,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "틀린 점이나 개선할 점을 찾으셨나요?"
   edit-this-page-on-github-link: "이 페이지를 GitHub에서 편집"
-  api:
-    entities:
-      properties: "프로퍼티"
-    endpoints:
-      params: "매개변수"
-      no-params: "매개변수가 없습니다"
-      res: "응답"
-      require-credential: "이 엔드포인트는 인증 정보가 필수적입니다."
-      require-permission: "이 엔드포인트는 {permission} 권한을 필요로 합니다."
-      has-limit: "Rate limit(요청 비율 제한)이 있습니다."
-      duration-limit: "최근 {duration} 밀리초 사이에 엔드포인트로의 요청 수의 합계가 {max}를 넘는 경우 요청이 불가능합니다."
-      min-interval-limit: "이전 요청으로부터 {interval} 밀리초가 지나지 않은 경우 요청할 수 없습니다."
-      show-src: "이 엔드포인트에 대한 소스코드를 확인할 수 있습니다."
-      show-src-link: "코드를 Github에서 보기"
-      generated: "이 문서는 API 정의를 기반으로 자동으로 생성됩니다."
-    props:
-      name: "이름"
-      type: "자료형"
-      description: "설명"
 dev/views/index.vue:
   manage-apps: "앱 관리"
 dev/views/apps.vue:
@@ -1615,12 +1630,64 @@ dev/views/apps.vue:
   create-app: "앱 생성"
   app-missing: "앱 없음"
 dev/views/new-app.vue:
-  create-app: "어플리케이션 생성"
-  app-name: "어플리케이션 이름"
+  new-app: "새 애플리케이션"
+  new-app-info: "애플리케이션은 API에서도 생성할 수 있습니다. (app/create)"
+  create-app: "애플리케이션 생성"
+  app-name: "애플리케이션 이름"
+  app-name-placeholder: "ex) Misskey for iOS"
   app-name-desc: "앱의 이름."
   app-overview: "앱 개요"
+  app-overview-placeholder: "ex) Misskey iOS 클라이언트."
+  app-overview-desc: "애플리케이션에 대한 간단한 설명이나 소개"
   callback-url: "콜백 URL (옵션)"
+  callback-url-placeholder: "ex) https://your.app.example.com/callback.php"
   callback-url-desc: "사용자가 인증 폼에서 인증한 뒤 리다이렉트할 URL을 설정합니다."
   authority: "권한"
   authority-desc: "이곳에서 요청한 권한에 한정하여 API로 액세스할 수 있습니다."
   authority-warning: "앱을 생성한 뒤에도 변경할 수 있지만, 새로운 권한을 설정하는 경우 그 시점부터 예전에 발급받았던 유저 키는 모두 무효화됩니다."
+pages:
+  new-page: "페이지 만들기"
+  edit-page: "페이지 수정"
+  read-page: "소스 표시중"
+  page-created: "페이지를 만들었습니다"
+  page-updated: "페이지를 수정했습니다"
+  are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
+  title: "제목"
+  blocks:
+    image: "이미지"
+    post: "게시 양식"
+    _post:
+      text: "내용"
+    _textInput:
+      text: "제목"
+    _textareaInput:
+      text: "제목"
+    _numberInput:
+      text: "제목"
+    _switch:
+      text: "제목"
+    _counter:
+      text: "제목"
+    _button:
+      text: "제목"
+      _action:
+        _dialog:
+          content: "내용"
+  script:
+    categories:
+      random: "랜덤"
+      list: "리스트"
+    blocks:
+      _join:
+        arg1: "리스트"
+      random: "랜덤"
+      _randomPick:
+        arg1: "리스트"
+      _dailyRandomPick:
+        arg1: "리스트"
+      _seedRandomPick:
+        arg2: "리스트"
+      _pick:
+        arg1: "리스트"
+    types:
+      array: "리스트"

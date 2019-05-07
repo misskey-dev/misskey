@@ -54,6 +54,7 @@ common:
   month-and-day: "{month}-{day}"
   trash: "Kosz"
   drive: "Dysk"
+  pages: "Strony"
   messaging: "Rozmowy"
   home: "Strona główna"
   deck: "Tablice"
@@ -127,6 +128,7 @@ common:
     behavior: "Zachowanie"
     fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
     note-visibility: "Widoczność wpisów"
+    remember-note-visibility: "Zapamiętaj widoczność wpisów"
     web-search-engine: "Wyszukiwarka internetowa"
     line-width: "Szerokości linii"
     line-width-thin: "Cienka"
@@ -1190,23 +1192,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Znalazłeś błąd lub chcesz pomóc w tworzeniu dokumentacji?"
   edit-this-page-on-github-link: "Edytuj stronę na GitHubie!"
-  api:
-    entities:
-      properties: "Właściwości"
-    endpoints:
-      params: "Parametry"
-      no-params: "Brak parametrów."
-      res: "Odpowiedź"
-      require-credential: "Punkt końcowy wymaga informacji o uwierzytelnieniu."
-      require-permission: "Ten punkt końcowy wymaga uprawnienia {permission}."
-      has-limit: "Istnieje limit częstotliwości."
-      min-interval-limit: "Nie możesz wykonać żądania przed upłynięciem {interval} od ostatniego żądania."
-      show-src: "Możesz zobaczyć kod źródłowy tego punktu końcowego."
-      show-src-link: "Zobacz kod na GitHubie"
-    props:
-      name: "Nazwa"
-      type: "Rodzaj"
-      description: "Opis"
 dev/views/index.vue:
   manage-apps: "Zarządzaj aplikacjami"
 dev/views/apps.vue:
@@ -1215,3 +1200,38 @@ dev/views/apps.vue:
 dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
+pages:
+  title: "Tytuł"
+  blocks:
+    image: "Zdjęcia"
+    post: "Formularz tworzenia"
+    _textInput:
+      text: "Tytuł"
+    _textareaInput:
+      text: "Tytuł"
+    _numberInput:
+      text: "Tytuł"
+    _switch:
+      text: "Tytuł"
+    _counter:
+      text: "Tytuł"
+    _button:
+      text: "Tytuł"
+  script:
+    categories:
+      random: "Losowy"
+      list: "Listy"
+    blocks:
+      _join:
+        arg1: "Listy"
+      random: "Losowy"
+      _randomPick:
+        arg1: "Listy"
+      _dailyRandomPick:
+        arg1: "Listy"
+      _seedRandomPick:
+        arg2: "Listy"
+      _pick:
+        arg1: "Listy"
+    types:
+      array: "Listy"

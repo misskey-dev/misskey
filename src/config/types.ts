@@ -44,6 +44,8 @@ export type Source = {
 	clusterLimit?: number;
 
 	id: string;
+
+	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
 };
 
 /**

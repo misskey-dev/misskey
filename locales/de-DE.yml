@@ -53,6 +53,7 @@ common:
   month-and-day: "{day}/{month}"
   trash: "Papierkorb"
   drive: "Drive"
+  pages: "Seite"
   messaging: "Unterhaltungen"
   home: "Home"
   deck: "Stapel"
@@ -64,6 +65,7 @@ common:
   permissions:
     "read:account": "Accountinformationen anzeigen."
     "write:account": "Accountinformationen bearbeiten."
+    "read:blocks": "Blöcke anzeigen"
     "read:drive": "Dateien anzeigen"
     "write:drive": "Dateien bearbeiten"
     "read:favorites": "Favoriten anzeigen"
@@ -718,25 +720,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Hast Du einen Fehler gefunden oder Lust, diese Dokumentation zu verbessern?"
   edit-this-page-on-github-link: "Seite auf GitHub bearbeiten!"
-  api:
-    entities:
-      properties: "Eigenschaften"
-    endpoints:
-      params: "Parameter"
-      no-params: "Keine Parameter."
-      res: "Antwort"
-      require-credential: "Dieser Endpunkt erfordert eine Authentifizierung."
-      require-permission: "Dieser Endpunkt erfordert die {permission} Berechtigung."
-      has-limit: "Es gibt eine Ratenbegrenzung."
-      duration-limit: "Es sind maximal {max} Anfragen pro {duration} Millisekunden möglich."
-      min-interval-limit: "Es ist nur eine Anfrage alle {interval} Millisekunden möglich."
-      show-src: "Quellcode anzeigen."
-      show-src-link: "Quellcode auf GitHub anzeigen"
-      generated: "Dieses Dokument wird automatisch anhand der API-Definition generiert."
-    props:
-      name: "Name"
-      type: "Typ"
-      description: "Beschreibung"
 dev/views/index.vue:
   manage-apps: "Anwendungen verwalten"
 dev/views/apps.vue:
@@ -753,3 +736,24 @@ dev/views/new-app.vue:
   authority: "Berechtigungen"
   authority-desc: "Nur die hier eingetragenen Berechtigungen, werden per API zur Verfügung stehen."
   authority-warning: "Dies kann auch nach dem erstellen der Anwendung geändert werden, allerdings werden dann alle bisher generierten Token ungültig."
+pages:
+  blocks:
+    post: "\"Neuer Beitrag\"-Formular"
+  script:
+    categories:
+      random: "Zufällige Auswahl"
+      list: "Listen"
+    blocks:
+      _join:
+        arg1: "Listen"
+      random: "Zufällige Auswahl"
+      _randomPick:
+        arg1: "Listen"
+      _dailyRandomPick:
+        arg1: "Listen"
+      _seedRandomPick:
+        arg2: "Listen"
+      _pick:
+        arg1: "Listen"
+    types:
+      array: "Listen"
