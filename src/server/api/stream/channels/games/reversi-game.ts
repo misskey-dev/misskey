@@ -308,9 +308,6 @@ export default class extends Channel {
 
 		if (!game.isStarted) return;
 
-		// 互換性のため
-		if (game.crc32 == null) return;
-
 		if (crc32 !== game.crc32) {
 			this.send('rescue', await ReversiGames.pack(game, this.user));
 		}
