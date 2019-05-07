@@ -230,7 +230,7 @@ export default Vue.extend({
 				this.game.map = Object.values(maps).find(x => x.name == this.mapName).data;
 			}
 			this.$forceUpdate();
-			this.updateSettings();
+			this.updateSettings('map');
 		},
 
 		onPixelClick(pos, pixel) {
