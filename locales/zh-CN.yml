@@ -1820,6 +1820,9 @@ pages:
         arg1: "如果"
         arg2: "的话"
         arg3: "否则"
+      not: "否定"
+      _not:
+        arg1: "否定"
       random: "随机"
       _random:
         arg1: "概率"
