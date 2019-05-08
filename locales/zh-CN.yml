@@ -1671,6 +1671,8 @@ pages:
   font: "字体"
   fontSerif: "衬线字体"
   fontSansSerif: "无衬线字体"
+  set-eye-catching-image: "设置封面图片"
+  remove-eye-catching-image: "删除封面图片"
   choose-block: "添加块"
   select-type: "类型选择"
   enter-variable-name: "请确定变量名"
@@ -1851,6 +1853,7 @@ pages:
       _seedRandomPick:
         arg1: "种子"
         arg2: "列表"
+      DRPWPM: "从概率列表中随机选择(每用户每天)"
       _DRPWPM:
         arg1: "文本列表"
       pick: "从列表中选择"
