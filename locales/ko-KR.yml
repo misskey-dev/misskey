@@ -1714,17 +1714,31 @@ pages:
     _counter:
       name: "변수명"
       text: "제목"
+      inc: "증가치"
     _button:
       text: "제목"
+      action: "버튼을 눌렀을 때의 동작"
       _action:
+        dialog: "대화상자를 표시"
         _dialog:
           content: "내용"
+        resetRandom: "난수를 초기화"
   script:
     categories:
+      flow: "흐름 제어"
+      logical: "논리 연산"
+      operation: "계산"
+      comparison: "비교"
       random: "랜덤"
+      value: "값"
+      fn: "함수"
+      text: "텍스트 조작"
+      convert: "변환"
       list: "리스트"
     blocks:
       text: "텍스트"
+      multiLineText: "텍스트 (여러줄)"
+      textList: "텍스트 목록"
       _strLen:
         arg1: "텍스트"
       _strPick:
@@ -1742,6 +1756,8 @@ pages:
         arg1: "리스트"
       _seedRandomPick:
         arg2: "리스트"
+      _DRPWPM:
+        arg1: "텍스트 목록"
       _pick:
         arg1: "리스트"
       _stringToNumber:
@@ -1749,6 +1765,8 @@ pages:
       _splitStrByLine:
         arg1: "텍스트"
       ref: "변수"
+      fn: "함수"
     types:
       string: "텍스트"
       array: "리스트"
+      stringArray: "텍스트 목록"
