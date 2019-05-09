@@ -263,7 +263,6 @@ common:
   update-available-title: "更新があります"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
-  verified-user: "公式アカウント"
   hide-password: "パスワードを隠す"
   show-password: "パスワードを表示する"
 
@@ -339,7 +338,6 @@ auth/views/index.vue:
   sign-in: "サインインしてください"
 
 common/views/pages/explore.vue:
-  verified-users: "公式アカウント"
   popular-users: "人気のユーザー"
   recently-updated-users: "最近投稿したユーザー"
   recently-registered-users: "新規ユーザー"
@@ -1351,12 +1349,6 @@ admin/views/users.vue:
   silence-confirm: "サイレンスしますか？"
   unmake-silence: "サイレンスの解除"
   unsilence-confirm: "サイレンスを解除しますか？"
-  verify: "公式アカウントにする"
-  verify-confirm: "公式アカウントにしますか？"
-  verified: "公式アカウントにしました"
-  unverify: "公式アカウントを解除する"
-  unverify-confirm: "公式アカウントを解除しますか？"
-  unverified: "公式アカウントを解除しました"
   update-remote-user: "リモートユーザー情報の更新"
   remote-user-updated: "リモートユーザー情報を更新しました"
   users:
@@ -1373,7 +1365,6 @@ admin/views/users.vue:
       admin: "管理者"
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"
-      verified: "公式アカウント"
       silenced: "サイレンス済み"
       suspended: "凍結済み"
     origin:

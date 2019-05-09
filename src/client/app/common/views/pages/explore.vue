@@ -26,9 +26,6 @@
 	</mk-user-list>
 
 	<template v-if="tag == null">
-		<mk-user-list :make-promise="verifiedUsers">
-			<fa :icon="faBookmark" fixed-width/>{{ $t('verified-users') }}
-		</mk-user-list>
 		<mk-user-list :make-promise="popularUsers">
 			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
 		</mk-user-list>
@@ -60,12 +57,6 @@ export default Vue.extend({
 
 	data() {
 		return {
-			verifiedUsers: () => this.$root.api('users', {
-				state: 'verified',
-				origin: 'local',
-				sort: '+follower',
-				limit: 10
-			}),
 			popularUsers: () => this.$root.api('users', {
 				state: 'alive',
 				origin: 'local',
