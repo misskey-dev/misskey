@@ -84,40 +84,54 @@ redis:
 drive:
   storage: 'fs'
 
-  # OR
+# OR
 
-  # storage: 'minio'
-  # bucket:
-  # prefix:
-  # config:
-  #   endPoint:
-  #   port:
-  #   useSSL:
-  #   accessKey:
-  #   secretKey:
+#drive:
+#  storage: 'minio'
+#  bucket:
+#  prefix:
+#  config:
+#    endPoint:
+#    port:
+#    useSSL:
+#    accessKey:
+#    secretKey:
 
-  # S3 example
-  # storage: 'minio'
-  # bucket: bucket-name
-  # prefix: files
-  # config:
-  #   endPoint: s3-us-west-2.amazonaws.com
-  #   region: us-west-2
-  #   useSSL: true
-  #   accessKey: XXX
-  #   secretKey: YYY
+# S3/GCS example
+#
+# * Replace <endpoint> to
+#     S3: see https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
+#     GCS: use 'storage.googleapis.com'
+#
+# * Replace <region> to
+#     S3: see https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
+#     GCS: not needed (just delete the region line)
+#
+#drive:
+#  storage: 'minio'
+#  bucket: bucket-name
+#  prefix: files
+#  baseUrl: https://bucket-name.<endpoint>
+#  config:
+#    endPoint: <endpoint>
+#    region: <region>
+#    useSSL: true
+#    accessKey: XXX
+#    secretKey: YYY
 
-  # S3 example (with CDN, custom domain)
-  # storage: 'minio'
-  # bucket: drive.example.com
-  # prefix: files
-  # baseUrl: https://drive.example.com
-  # config:
-  #   endPoint: s3-us-west-2.amazonaws.com
-  #   region: us-west-2
-  #   useSSL: true
-  #   accessKey: XXX
-  #   secretKey: YYY
+# S3/GCS example (with CDN, custom domain)
+#
+#drive:
+#  storage: 'minio'
+#  bucket: drive.example.com
+#  prefix: files
+#  baseUrl: https://drive.example.com
+#  config:
+#    endPoint: <endpoint>
+#    region: <region>
+#    useSSL: true
+#    accessKey: XXX
+#    secretKey: YYY
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
