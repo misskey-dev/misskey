@@ -234,7 +234,6 @@ common:
   update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
   my-token-regenerated: "Votre jeton vient d’être généré, vous allez maintenant être déconnecté."
-  verified-user: "Compte vérifié"
   hide-password: "Masquer le mot de passe"
   show-password: "Afficher le mot de passe"
   do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
@@ -302,7 +301,6 @@ auth/views/index.vue:
   error: "La session n’existe pas."
   sign-in: "Veuillez vous connecter"
 common/views/pages/explore.vue:
-  verified-users: "Comptes vérifiés"
   popular-users: "Utilisateurs populaires"
   recently-updated-users: "Utilisateurs actifs récemment"
   recently-registered-users: "Les nouveaux inscrits"
@@ -1188,12 +1186,6 @@ admin/views/users.vue:
   unsuspended: "La suspension de l’utilisateur a été levée avec succès"
   make-silence: "Mettre en sourdine"
   unmake-silence: "Enlever la sourdine"
-  verify: "Vérification du compte"
-  verify-confirm: "Souhaiteriez-vous rendre votre compte comme étant un compte vérifié ?"
-  verified: "Le compte a été vérifié"
-  unverify: "Enlever la vérification du compte"
-  unverify-confirm: "Désirez-vous considérer ce compte comme étant non-vérifié ?"
-  unverified: "Ce compte n'est plus vérifié"
   update-remote-user: "Mettre à jour les informations de l’utilisateur·rice distant·e"
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   users:
@@ -1210,7 +1202,6 @@ admin/views/users.vue:
       admin: "Admin"
       moderator: "Modérateur"
       adminOrModerator: "Administrateur/Modérateur"
-      verified: "Compte vérifié"
       silenced: "Déjà mis en sourdine"
       suspended: "Suspendu"
     origin:
