@@ -1728,6 +1728,7 @@ pages:
       value: "值"
       fn: "函数"
       text: "文本操作"
+      convert: "转换"
       list: "列表"
     blocks:
       text: "文本"
