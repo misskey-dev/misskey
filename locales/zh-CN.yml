@@ -251,7 +251,6 @@ common:
   update-available-title: "有可用更新"
   update-available: "新的 Misskey 版本现已发布({newer}。目前版本{current}). 刷新页面以应用更新。"
   my-token-regenerated: "您的 Token 已被重置, 您将自动登出。"
-  verified-user: "认证用户"
   hide-password: "隐藏密码"
   show-password: "显示密码"
   do-not-use-in-production: "这是一个开发者测试版. 请勿在生产环境中使用."
@@ -319,7 +318,6 @@ auth/views/index.vue:
   error: "会话不存在。"
   sign-in: "请登录。"
 common/views/pages/explore.vue:
-  verified-users: "官方账户"
   popular-users: "热门用户"
   recently-updated-users: "活跃用户"
   recently-registered-users: "新用户"
@@ -1223,12 +1221,6 @@ admin/views/users.vue:
   silence-confirm: "确认屏蔽？"
   unmake-silence: "解除禁言"
   unsilence-confirm: "解除屏蔽？"
-  verify: "认证用户"
-  verify-confirm: "是否官方账号？"
-  verified: "此账户已被认证"
-  unverify: "解除账户认证"
-  unverify-confirm: "是否解除官方账号认证？"
-  unverified: "该帐户未经认证"
   update-remote-user: "更新远程用户信息"
   remote-user-updated: "远程用户信息已更新"
   users:
@@ -1245,7 +1237,6 @@ admin/views/users.vue:
       admin: "管理员"
       moderator: "版主"
       adminOrModerator: "管理员+版主"
-      verified: "官方认证账户"
       silenced: "已禁言"
       suspended: "已冻结"
     origin:
