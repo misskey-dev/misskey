@@ -153,7 +153,6 @@ common:
   update-available-title: "Aktualisierung verfügbar"
   update-available: "Eine neue Version von Misskey ist verfügbar ({newer}, aktuell ist {current}). Lade die Seite neu um die aktuelle Version zu laden"
   my-token-regenerated: "Dein Token wurde generiert. Du wirst jetzt abgemeldet."
-  verified-user: "Verifizierter Benutzer"
   do-not-use-in-production: "Dies ist eine Entwicklungsversion. Nicht in einer Produktivumgebung verwenden."
   error:
     retry: "Erneut versuchen"
@@ -199,8 +198,6 @@ auth/views/index.vue:
   please-go-back: "Bitte gehe zurück zur Anwendung."
   error: "Sitzung ist nicht vorhanden."
   sign-in: "Bitte melde dich an."
-common/views/pages/explore.vue:
-  verified-users: "Verifizierter Benutzer"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Warten auf {}"
@@ -605,8 +602,6 @@ admin/views/drive.vue:
   delete: "Löschen"
 admin/views/users.vue:
   users:
-    state:
-      verified: "Verifizierter Benutzer"
     origin:
       local: "Lokal"
 admin/views/emoji.vue:
