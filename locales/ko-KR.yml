@@ -251,7 +251,6 @@ common:
   update-available-title: "업데이트가 있습니다"
   update-available: "Misskey의 새로운 버전이 있습니다 ({newer}. 현재 {current}을 사용 중). 페이지를 다시 로드하면 업데이트가 적용됩니다."
   my-token-regenerated: "당신의 토큰이 업데이트되었으므로 로그아웃합니다."
-  verified-user: "공식 계정"
   hide-password: "비밀번호 숨기기"
   show-password: "비밀번호 표시"
   do-not-use-in-production: "이것은 개발 빌드입니다. 프로덕션 환경에서 사용하지 마십시오."
@@ -319,7 +318,6 @@ auth/views/index.vue:
   error: "세션이 존재하지 않습니다."
   sign-in: "로그인 해주시기 바랍니다"
 common/views/pages/explore.vue:
-  verified-users: "공식 계정"
   popular-users: "인기 사용자"
   recently-updated-users: "최근 게시한 사용자"
   recently-registered-users: "신규 사용자"
@@ -1223,12 +1221,6 @@ admin/views/users.vue:
   silence-confirm: "침묵으로 설정합니까?"
   unmake-silence: "침묵 해제"
   unsilence-confirm: "침묵 해제하시겠습니까?"
-  verify: "공식 계정으로 설정"
-  verify-confirm: "공식 계정으로 설정하시겠습니까?"
-  verified: "공식 계정으로 설정하였습니다"
-  unverify: "공식 계정 해제"
-  unverify-confirm: "공식 계정을 해제하시겠습니까?"
-  unverified: "공식 계정을 해제하였습니다"
   update-remote-user: "원격 사용자 정보 갱신"
   remote-user-updated: "원격 사용자 정보를 갱신하였습니다"
   users:
@@ -1245,7 +1237,6 @@ admin/views/users.vue:
       admin: "관리자"
       moderator: "모더레이터"
       adminOrModerator: "관리자+모더레이터"
-      verified: "공식 계정"
       silenced: "침묵됨"
       suspended: "정지됨"
     origin:
