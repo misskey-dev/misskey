@@ -249,7 +249,6 @@ common:
   update-available-title: "Aktualizace k dispozici"
   update-available: "Je k dispozici nová verze Misskey ({newer},vaše verze je {current}). Pro aplikování nové verze znovunačtěte stránku."
   my-token-regenerated: "Váš token byl regenerován, proto budete odhlášen/a."
-  verified-user: "Ověřené účty"
   hide-password: "Skrýt heslo"
   show-password: "Zobrazit heslo"
   do-not-use-in-production: "Tohle je vývojářský build. Nepoužívejte v produkci."
@@ -312,7 +311,6 @@ auth/views/index.vue:
   error: "Taková relace neexistuje."
   sign-in: "Prosím přihlaste se."
 common/views/pages/explore.vue:
-  verified-users: "Ověřené účty"
   popular-users: "Populární uživatelé"
   recently-updated-users: "Nedávno aktívni uživatelé"
   recently-registered-users: "Nedávno registrovaní uživatelé"
@@ -976,12 +974,6 @@ admin/views/users.vue:
   reset-password: "Resetovat heslo"
   reset-password-confirm: "Opravdu chcete resetovat Vaše heslo?"
   password-updated: "Heslo je nyní \"{password}\""
-  verify: "Ověřit účet"
-  verify-confirm: "Chcete aby toto byl ověřený účet?"
-  verified: "Účet se nyní ověřuje"
-  unverify: "Zrušit ověření účtu"
-  unverify-confirm: "Opravdu chcete zrušit designaci \"ověřený účet\"?"
-  unverified: "Ruší se potvrzení účtu"
   update-remote-user: "Aktualizovat informace o vzdáleném účtu"
   users:
     title: "Uživatel"
@@ -989,7 +981,6 @@ admin/views/users.vue:
       all: "Všechny"
       moderator: "Moderátor"
       adminOrModerator: "Admin/Moderátor"
-      verified: "Ověřený účet"
     origin:
       title: "Původ"
       combined: "Lokální + Vzdálené"
