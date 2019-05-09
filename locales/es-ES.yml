@@ -200,7 +200,6 @@ common:
   update-available-title: "Actualización disponible"
   update-available: "Hay disponible una nueva versión de Misskey ({newer}, la versión actual es {current}). Refresca la página para aplicar las actualizaciones."
   my-token-regenerated: "Tu token se ha regenerado vas a ser desconectado."
-  verified-user: "Cuenta verificada"
   hide-password: "Ocultar contraseña"
   show-password: "Mostrar contraseña"
   do-not-use-in-production: "Esto está en desarrollo, no usarlo para producción."
@@ -268,7 +267,6 @@ auth/views/index.vue:
   error: "Esta sesión no existe."
   sign-in: "Por favor inicia sesión."
 common/views/pages/explore.vue:
-  verified-users: "Cuenta verificada"
   popular-users: "Usuarios populares"
   recently-updated-users: "Usuarios activos recientemente"
   recently-registered-users: "Usuarios que se han unido recientemente"
@@ -979,7 +977,6 @@ admin/views/users.vue:
     state:
       all: "Todo"
       moderator: "Moderadores"
-      verified: "Cuenta verificada"
     origin:
       local: "Local"
 admin/views/emoji.vue:
