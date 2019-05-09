@@ -1659,6 +1659,7 @@ pages:
   inspector: "인스펙터"
   content: "페이지 블록"
   variables: "변수"
+  more-details: "자세한 설명"
   title: "제목"
   url: "페이지 URL"
   summary: "페이지 요약"
@@ -1666,22 +1667,52 @@ pages:
   font: "글꼴"
   fontSerif: "세리프"
   fontSansSerif: "산 세리프"
+  set-eye-catching-image: "아이캐치 이미지를 설정"
+  remove-eye-catching-image: "아이캐치 이미지를 삭제"
+  choose-block: "블록 추가"
+  select-type: "종류 선택"
+  enter-variable-name: "변수명을 설정해주십시오"
+  the-variable-name-is-already-used: "그 변수명은 이미 사용중입니다"
+  content-blocks: "콘텐츠"
+  input-blocks: "입력"
+  special-blocks: "특수"
+  post-from-post-form: "이 내용을 올리기"
+  posted-from-post-form: "게시하였습니다"
   blocks:
+    text: "텍스트"
+    textarea: "텍스트 영역"
+    section: "섹션"
     image: "이미지"
+    button: "버튼"
+    if: "만약"
     _if:
       variable: "변수"
     post: "게시 양식"
     _post:
       text: "내용"
+    textInput: "텍스트 입력"
     _textInput:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    textareaInput: "여러 줄 텍스트 입력"
     _textareaInput:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    numberInput: "수치 입력"
     _numberInput:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    switch: "스위치"
     _switch:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    counter: "카운터"
     _counter:
+      name: "변수명"
       text: "제목"
     _button:
       text: "제목"
@@ -1693,6 +1724,15 @@ pages:
       random: "랜덤"
       list: "리스트"
     blocks:
+      text: "텍스트"
+      _strLen:
+        arg1: "텍스트"
+      _strPick:
+        arg1: "텍스트"
+      _strReplace:
+        arg1: "텍스트"
+      _strReverse:
+        arg1: "텍스트"
       _join:
         arg1: "리스트"
       random: "랜덤"
@@ -1704,6 +1744,11 @@ pages:
         arg2: "리스트"
       _pick:
         arg1: "리스트"
+      _stringToNumber:
+        arg1: "텍스트"
+      _splitStrByLine:
+        arg1: "텍스트"
       ref: "변수"
     types:
+      string: "텍스트"
       array: "리스트"
