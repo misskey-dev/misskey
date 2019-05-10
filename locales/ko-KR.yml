@@ -293,7 +293,7 @@ common:
     notifications: "알림"
     users: "추천 사용자"
     polls: "투표"
-    post-form: "게시 양식"
+    post-form: "글 입력란"
     server: "서버 정보"
     nav: "내비게이션"
     tips: "팁"
@@ -1677,7 +1677,7 @@ pages:
     if: "만약"
     _if:
       variable: "변수"
-    post: "게시 양식"
+    post: "글 입력란"
     _post:
       text: "내용"
     textInput: "텍스트 입력"
