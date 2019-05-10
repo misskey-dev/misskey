@@ -1729,34 +1729,127 @@ pages:
       text: "텍스트"
       multiLineText: "텍스트 (여러줄)"
       textList: "텍스트 목록"
+      strLen: "텍스트의 길이"
       _strLen:
         arg1: "텍스트"
+      strPick: "문자 추출"
       _strPick:
         arg1: "텍스트"
+        arg2: "문자 위치"
+      strReplace: "텍스트 치환"
       _strReplace:
         arg1: "텍스트"
+        arg2: "치환 전"
+        arg3: "치환 후"
+      strReverse: "텍스트 뒤집기"
       _strReverse:
         arg1: "텍스트"
+      join: "텍스트 접합"
       _join:
         arg1: "리스트"
+        arg2: "구분자"
+      add: "+ 더하기"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- 빼기"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× 곱하기"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ 나누기"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      remind: "÷ 나눈 나머지"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      eq: "A와 B가 동일"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A와 B가 다름"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A 그리고 B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A 혹은 B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< A가 B보다 작음"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> A가 B보다 큼"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A가 B보다 작거나 같음"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "분기"
+      _if:
+        arg1: "만약"
+        arg2: "그러면"
+        arg3: "그렇지 않으면"
+      not: "부정"
+      _not:
+        arg1: "부정"
       random: "랜덤"
+      _random:
+        arg1: "확률"
+      rannum: "난수"
+      _rannum:
+        arg1: "최소"
+        arg2: "최대"
       _randomPick:
         arg1: "리스트"
+      _dailyRandom:
+        arg1: "확률"
+      _dailyRannum:
+        arg1: "최소"
+        arg2: "최대"
       _dailyRandomPick:
         arg1: "리스트"
+      _seedRandom:
+        arg2: "확률"
+      _seedRannum:
+        arg2: "최소"
+        arg3: "최대"
       _seedRandomPick:
         arg2: "리스트"
       _DRPWPM:
         arg1: "텍스트 목록"
       _pick:
         arg1: "리스트"
+      number: "수치"
       _stringToNumber:
         arg1: "텍스트"
+      _numberToString:
+        arg1: "수치"
       _splitStrByLine:
         arg1: "텍스트"
       ref: "변수"
       fn: "함수"
     types:
       string: "텍스트"
+      number: "수치"
+      boolean: "플래그"
       array: "리스트"
       stringArray: "텍스트 목록"
+    emptySlot: "빈 슬롯"
+    enviromentVariables: "환경 변수"
+    pageVariables: "페이지 요소"
+    argVariables: "입력 슬롯"
