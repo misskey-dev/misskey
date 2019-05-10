@@ -105,7 +105,7 @@ export class ASEvaluator {
 		}
 
 		if (block.type === 'textList') {
-			return block.value.trim().split('\n');
+			return this.interpolate(block.value || '', scope).trim().split('\n');
 		}
 
 		if (block.type === 'ref') {
