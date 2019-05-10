@@ -338,6 +338,7 @@ auth/views/index.vue:
   sign-in: "サインインしてください"
 
 common/views/pages/explore.vue:
+  pinned-users: "ピン留めされたユーザー"
   popular-users: "人気のユーザー"
   recently-updated-users: "最近投稿したユーザー"
   recently-registered-users: "新規ユーザー"
@@ -1262,7 +1263,7 @@ admin/views/instance.vue:
   invite: "招待"
   save: "保存"
   saved: "保存しました"
-  user-recommendation-config: "おすすめユーザー"
+  pinned-users: "ピン留めユーザー"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使われます。"
   enable-email: "メール配信を有効にする"
