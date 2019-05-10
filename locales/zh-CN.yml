@@ -1137,7 +1137,6 @@ admin/views/instance.vue:
   invite: "邀请"
   save: "保存"
   saved: "保存完毕"
-  user-recommendation-config: "推荐用户"
   email-config: "电子邮件服务器设置"
   email-config-info: "用于确认电子邮件和密码重置等。"
   enable-email: "启用电子邮件送递"
