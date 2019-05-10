@@ -897,7 +897,6 @@ admin/views/instance.vue:
   invite: "来てや"
   save: "保存"
   saved: "保存したで！"
-  user-recommendation-config: "このユーザーええで"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使うで。"
   enable-email: "メール配信を有効にする"
