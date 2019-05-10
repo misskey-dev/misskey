@@ -53,20 +53,19 @@
 	<ui-container :body-togglable="true">
 		<template #header><fa :icon="faMagic"/> {{ $t('variables') }}</template>
 		<div class="qmuvgica">
-			<div class="variables" v-show="variables.length > 0">
-				<template v-for="variable in variables">
-					<x-variable
-						:value="variable"
-						:removable="true"
-						@input="v => updateVariable(v)"
-						@remove="() => removeVariable(variable)"
-						:key="variable.name"
-						:ai-script="aiScript"
-						:name="variable.name"
-						:title="variable.name"
-					/>
-				</template>
-			</div>
+			<x-draggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+				<x-variable v-for="variable in variables"
+					:value="variable"
+					:removable="true"
+					@input="v => updateVariable(v)"
+					@remove="() => removeVariable(variable)"
+					:key="variable.name"
+					:ai-script="aiScript"
+					:name="variable.name"
+					:title="variable.name"
+					:draggable="true"
+				/>
+			</x-draggable>
 
 			<ui-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></ui-button>
 
@@ -92,6 +91,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import * as XDraggable from 'vuedraggable';
 import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../../../i18n';
@@ -107,7 +107,7 @@ export default Vue.extend({
 	i18n: i18n('pages'),
 
 	components: {
-		XVariable, XBlocks
+		XDraggable, XVariable, XBlocks
 	},
 
 	props: {

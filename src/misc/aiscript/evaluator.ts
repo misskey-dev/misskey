@@ -31,7 +31,7 @@ export class ASEvaluator {
 			VERSION: opts.version,
 			URL: opts.page ? `${opts.url}/@${opts.page.user.username}/pages/${opts.page.name}` : '',
 			LOGIN: opts.visitor != null,
-			NAME: opts.visitor ? opts.visitor.name : '',
+			NAME: opts.visitor ? opts.visitor.name || opts.visitor.username : '',
 			USERNAME: opts.visitor ? opts.visitor.username : '',
 			USERID: opts.visitor ? opts.visitor.id : '',
 			NOTES_COUNT: opts.visitor ? opts.visitor.notesCount : 0,
@@ -42,7 +42,8 @@ export class ASEvaluator {
 			MY_FOLLOWERS_COUNT: opts.user ? opts.user.followersCount : 0,
 			MY_FOLLOWING_COUNT: opts.user ? opts.user.followingCount : 0,
 			SEED: opts.randomSeed ? opts.randomSeed : '',
-			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
+			NULL: null
 		};
 	}
 
@@ -104,7 +105,7 @@ export class ASEvaluator {
 		}
 
 		if (block.type === 'textList') {
-			return block.value.trim().split('\n');
+			return this.interpolate(block.value || '', scope).trim().split('\n');
 		}
 
 		if (block.type === 'ref') {

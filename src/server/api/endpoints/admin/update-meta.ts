@@ -56,6 +56,13 @@ export const meta = {
 			}
 		},
 
+		pinnedUsers: {
+			validator: $.optional.nullable.arr($.str),
+			desc: {
+				'ja-JP': 'ピン留めユーザー'
+			}
+		},
+
 		hiddenTags: {
 			validator: $.optional.nullable.arr($.str),
 			desc: {
@@ -351,6 +358,10 @@ export default define(meta, async (ps) => {
 
 	if (typeof ps.useStarForReactionFallback === 'boolean') {
 		set.useStarForReactionFallback = ps.useStarForReactionFallback;
+	}
+
+	if (Array.isArray(ps.pinnedUsers)) {
+		set.pinnedUsers = ps.pinnedUsers;
 	}
 
 	if (Array.isArray(ps.hiddenTags)) {

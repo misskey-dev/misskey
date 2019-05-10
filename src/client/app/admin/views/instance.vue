@@ -83,6 +83,14 @@
 	</ui-card>
 
 	<ui-card>
+		<template #title>{{ $t('pinned-users') }}</template>
+		<section>
+			<ui-textarea v-model="pinnedUsers"></ui-textarea>
+			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
 		<template #title>{{ $t('invite') }}</template>
 		<section>
 			<ui-button @click="invite">{{ $t('invite') }}</ui-button>
@@ -190,6 +198,7 @@ export default Vue.extend({
 			enableServiceWorker: false,
 			swPublicKey: null,
 			swPrivateKey: null,
+			pinnedUsers: [],
 			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt
 		};
 	},
@@ -239,6 +248,7 @@ export default Vue.extend({
 			this.enableServiceWorker = meta.enableServiceWorker;
 			this.swPublicKey = meta.swPublickey;
 			this.swPrivateKey = meta.swPrivateKey;
+			this.pinnedUsers = meta.pinnedUsers.join('\n');
 		});
 	},
 
@@ -297,7 +307,8 @@ export default Vue.extend({
 				smtpPass: this.smtpAuth ? this.smtpPass : '',
 				enableServiceWorker: this.enableServiceWorker,
 				swPublicKey: this.swPublicKey,
-				swPrivateKey: this.swPrivateKey
+				swPrivateKey: this.swPrivateKey,
+				pinnedUsers: this.pinnedUsers.split('\n')
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',

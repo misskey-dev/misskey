@@ -127,6 +127,7 @@ export const envVarsDef: Record<string, Type> = {
 	MY_FOLLOWING_COUNT: 'number',
 	SEED: null,
 	YMD: 'string',
+	NULL: null,
 };
 
 export function isLiteralBlock(v: Block) {

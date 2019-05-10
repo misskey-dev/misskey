@@ -1,5 +1,5 @@
 <template>
-<x-container :removable="removable" @remove="() => $emit('remove')" :error="error" :warn="warn">
+<x-container :removable="removable" @remove="() => $emit('remove')" :error="error" :warn="warn" :draggable="draggable">
 	<template #header><fa v-if="icon" :icon="icon"/> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
 		<button @click="changeType()">
@@ -93,6 +93,10 @@ export default Vue.extend({
 		fnSlots: {
 			required: false,
 		},
+		draggable: {
+			required: false,
+			default: false
+		}
 	},
 
 	data() {

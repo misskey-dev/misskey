@@ -13,8 +13,8 @@
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
-			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.name}`" :key="'local:' + tag.name" class="local">{{ tag.name }}</router-link>
-			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.name}`" :key="'remote:' + tag.name">{{ tag.name }}</router-link>
+			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
+			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
 		</div>
 	</ui-container>
 
@@ -26,8 +26,8 @@
 	</mk-user-list>
 
 	<template v-if="tag == null">
-		<mk-user-list :make-promise="verifiedUsers">
-			<fa :icon="faBookmark" fixed-width/>{{ $t('verified-users') }}
+		<mk-user-list :make-promise="pinnedUsers">
+			<fa :icon="faBookmark" fixed-width/>{{ $t('pinned-users') }}
 		</mk-user-list>
 		<mk-user-list :make-promise="popularUsers">
 			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
@@ -60,12 +60,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			verifiedUsers: () => this.$root.api('users', {
-				state: 'verified',
-				origin: 'local',
-				sort: '+follower',
-				limit: 10
-			}),
+			pinnedUsers: () => this.$root.api('pinned-users'),
 			popularUsers: () => this.$root.api('users', {
 				state: 'alive',
 				origin: 'local',
