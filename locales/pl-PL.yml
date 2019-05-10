@@ -874,7 +874,6 @@ admin/views/instance.vue:
   invite: "Zaproś"
   save: "Zapisz"
   saved: "Zapisano"
-  user-recommendation-config: "Polecani użytkownicy"
   email: "Adres e-mail"
 admin/views/charts.vue:
   notes: "Wpisy"
