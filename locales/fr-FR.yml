@@ -1595,7 +1595,26 @@ pages:
   are-you-sure-delete: "Confirmez-vous la suppression de cette page ?"
   page-deleted: "La page a bien été supprimée."
   edit-this-page: "Éditer cette page"
+  view-source: "Afficher la source"
+  view-page: "Afficher la page"
+  inspector: "Inspecteur"
+  content: "Bloc de page"
+  variables: "Variables"
+  more-details: "Description"
   title: "Titre"
+  url: "URL de page"
+  summary: "Résumé de page"
+  align-center: "Centrée"
+  font: "Police de caractères"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  choose-block: "Ajouter un bloc"
+  select-type: "Choisir un type"
+  enter-variable-name: "Veuillez choisir un nom de variable"
+  the-variable-name-is-already-used: "Cette variable est déjà utilisée"
+  content-blocks: "Contenu du cadre"
+  special-blocks: "Spécial"
+  posted-from-post-form: "Publié !"
   blocks:
     text: "Texte"
     textarea: "Zone de texte"
@@ -1608,6 +1627,7 @@ pages:
     post: "Champs de publication"
     _post:
       text: "Contenu"
+    textInput: "Entrée textuelle"
     _textInput:
       name: "Nom de la variable"
       text: "Titre"
@@ -1616,6 +1636,7 @@ pages:
       name: "Nom de la variable"
       text: "Titre"
       default: "Valeur par défaut"
+    numberInput: "Entrée numérique"
     _numberInput:
       name: "Nom de la variable"
       text: "Titre"
@@ -1723,6 +1744,7 @@ pages:
         arg1: "Numérique"
       _splitStrByLine:
         arg1: "Texte"
+      ref: "Variables"
       fn: "Fonction"
       _fn:
         arg1: "Sortie"
