@@ -1137,7 +1137,6 @@ admin/views/instance.vue:
   invite: "초대"
   save: "저장"
   saved: "저장하였습니다"
-  user-recommendation-config: "추천 사용자"
   email-config: "메일 서버 설정"
   email-config-info: "메일 주소 확인 혹은 비밀번호 재설정에 사용 됩니다."
   enable-email: "메일 발신 활성화"
