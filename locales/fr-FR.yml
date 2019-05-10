@@ -139,7 +139,7 @@ common:
     notification: "Notifications"
     apps: "Applications"
     tags: "Hashtags"
-    mute-and-block: "Silencer / Bloquer"
+    mute-and-block: "Silencés / Bloqués"
     blocking: "En cours blocage"
     security: "Sécurité"
     signin: "Historique des connexions"
