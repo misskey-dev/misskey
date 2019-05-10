@@ -1104,7 +1104,6 @@ admin/views/instance.vue:
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
-  user-recommendation-config: "Utilisateurs"
   email-config: "Paramètres du serveur de messagerie"
   email-config-info: "Utilisé pour confirmer votre adresse de courrier électronique et la réinitialisation de votre mot de passe."
   enable-email: "Activation de la distribution du courrier"
