@@ -922,7 +922,6 @@ admin/views/instance.vue:
   invite: "Pozvat"
   save: "Uložit"
   saved: "Uloženo"
-  user-recommendation-config: "Doporučení uživatelé"
   email: "Emailová adresa"
   smtp-port: "SMTP Port"
   smtp-auth: "Provést SMTP autentikaci"
