@@ -368,7 +368,7 @@ async function main() {
 				});
 
 				if (mongoRenoteNoteLocal === null) {
-					throw `=> ${chalk.yellow('SKIP')}: referenced "local" reply note does not exist: ${note.renoteId}`;
+					throw `=> ${chalk.yellow('SKIP')}: referenced "local" renote note does not exist: ${note.renoteId}`;
 				}
 			}
 		}
