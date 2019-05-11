@@ -102,6 +102,16 @@ async function main() {
 	const Emojis = getRepository(Emoji);
 	const MessagingMessages = getRepository(MessagingMessage);
 
+	async function validateNoteExistOnMigrated(noteId: string) {
+		if (!isMigrateRemoteNote) {
+			const noteMigrated = await Notes.findOne(noteId);
+
+			if (noteMigrated === undefined) {
+				throw `=> ${chalk.yellow('SKIP')}: referenced note does not exist in migrated notes: ${noteId}`;
+			}
+		}
+	}
+
 	async function migrateUser(user: any) {
 		await Users.save({
 			id: user._id.toHexString(),
@@ -392,32 +402,44 @@ async function main() {
 	}
 
 	async function migratePollVote(vote: any) {
-		await PollVotes.save({
+		const voteToSave = {
 			id: vote._id.toHexString(),
 			createdAt: vote.createdAt,
 			noteId: vote.noteId.toHexString(),
 			userId: vote.userId.toHexString(),
 			choice: vote.choice
-		});
+		};
+
+		await validateNoteExistOnMigrated(voteToSave.noteId);
+
+		await PollVotes.save(voteToSave);
 	}
 
 	async function migrateNoteFavorite(favorite: any) {
-		await NoteFavorites.save({
+		const favoriteToSave = {
 			id: favorite._id.toHexString(),
 			createdAt: favorite.createdAt,
 			noteId: favorite.noteId.toHexString(),
 			userId: favorite.userId.toHexString(),
-		});
+		};
+
+		await validateNoteExistOnMigrated(favoriteToSave.noteId);
+
+		await NoteFavorites.save(favoriteToSave);
 	}
 
 	async function migrateNoteReaction(reaction: any) {
-		await NoteReactions.save({
+		const reactionToSave = {
 			id: reaction._id.toHexString(),
 			createdAt: reaction.createdAt,
 			noteId: reaction.noteId.toHexString(),
 			userId: reaction.userId.toHexString(),
 			reaction: reaction.reaction
-		});
+		};
+
+		await validateNoteExistOnMigrated(reactionToSave.noteId);
+
+		await NoteReactions.save(reactionToSave);
 	}
 
 	async function reMigrateUser(user: any) {
