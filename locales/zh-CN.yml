@@ -318,6 +318,7 @@ auth/views/index.vue:
   error: "会话不存在。"
   sign-in: "请登录。"
 common/views/pages/explore.vue:
+  pinned-users: "已置顶用户"
   popular-users: "热门用户"
   recently-updated-users: "活跃用户"
   recently-registered-users: "新用户"
@@ -1137,6 +1138,7 @@ admin/views/instance.vue:
   invite: "邀请"
   save: "保存"
   saved: "保存完毕"
+  pinned-users: "置顶用户"
   email-config: "电子邮件服务器设置"
   email-config-info: "用于确认电子邮件和密码重置等。"
   enable-email: "启用电子邮件送递"
