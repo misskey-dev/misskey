@@ -477,7 +477,7 @@ export async function updateFeatured(userId: User['id']) {
 	// delete
 	await UserNotePinings.delete({ userId: user.id });
 
-	// とりあえずidを別の時間をで生成して順番を維持
+	// とりあえずidを別の時間で生成して順番を維持
 	let td = 0;
 	for (const note of featuredNotes.filter(note => note != null)) {
 		td -= 1000;
