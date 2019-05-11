@@ -72,7 +72,10 @@ export class UserRepository extends Repository<User> {
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
-		const pins = opts.detail ? await UserNotePinings.find({ userId: user.id }) : [];
+		const pins = opts.detail ? await UserNotePinings.find({
+			where: { userId: user.id },
+			order: { id: 'DESC' }
+		}) : [];
 		const profile = opts.detail ? await UserProfiles.findOne(user.id).then(ensure) : null;
 
 		const falsy = opts.detail ? false : undefined;

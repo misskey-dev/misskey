@@ -474,9 +474,15 @@ export async function updateFeatured(userId: User['id']) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver))));
 
+	// delete
+	await UserNotePinings.delete({ userId: user.id });
+
+	// とりあえずidを別の時間をで生成して順番を維持
+	let td = 0;
 	for (const note of featuredNotes.filter(note => note != null)) {
+		td -= 1000;
 		UserNotePinings.save({
-			id: genId(),
+			id: genId(new Date(Date.now() + td)),
 			createdAt: new Date(),
 			userId: user.id,
 			noteId: note!.id
