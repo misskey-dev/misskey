@@ -81,6 +81,8 @@ const getDriveFileBucket = async (): Promise<mongo.GridFSBucket> => {
 	return bucket;
 };
 
+const isMigrateRemoteNote = false; // making this true will try to migrate remote notes (possibly could cause errors)
+
 async function main() {
 	await initDb();
 	const Users = getRepository(User);
@@ -321,6 +323,7 @@ async function main() {
 			renoteId: note.renoteId ? note.renoteId.toHexString() : null,
 			userHost: null,
 			fileIds: note.fileIds ? note.fileIds.map((id: any) => id.toHexString()) : [],
+			attachedFileTypes: ([] as string[]), // see below
 			localOnly: note.localOnly || false,
 			hasPoll: note.poll != null,
 			name: note.name && (note.name.length > 0) && note.name || null,
@@ -332,6 +335,45 @@ async function main() {
 			score: note.score || 0,
 			uri: note.uri || null
 		};
+
+		// validate existance of referenced notes (on migrated)
+		if ((!isMigrateRemoteNote) && (noteToSave.replyId !== null || noteToSave.renoteId !== null)) {
+			// skip when reply does not exist on local
+			if (noteToSave.replyId !== null) {
+				const mongoReplyNoteLocal = await _Note.findOne({
+					'_user.host': null,
+					'_id': note.replyId
+				});
+
+				if (mongoReplyNoteLocal === null) {
+					throw `=> ${chalk.yellow('SKIP')}: referenced "local" reply note does not exist: ${note.replyId}`;
+				}
+			}
+
+			// skip when reply does not exist on local
+			if (noteToSave.renoteId !== null) {
+				const mongoRenoteNoteLocal = await _Note.findOne({
+					'_user.host': null,
+					'_id': note.renoteId
+				});
+
+				if (mongoRenoteNoteLocal === null) {
+					throw `=> ${chalk.yellow('SKIP')}: referenced "local" reply note does not exist: ${note.renoteId}`;
+				}
+			}
+		}
+
+		if (noteToSave.fileIds.length !== 0) {
+			const filesMigrated = await DriveFiles.findByIds(noteToSave.fileIds);
+
+			// remove attachments which user removed after creating note
+			if (noteToSave.fileIds.length !== filesMigrated.length) {
+				console.warn(`NOTE ${noteToSave.id} ${chalk.yellow('MODIFIED')}: file count is different: before: ${noteToSave.fileIds.length} => after: ${filesMigrated.length}`);
+				noteToSave.fileIds = filesMigrated.map(file => file.id) || [];
+			}
+
+			noteToSave.attachedFileTypes = filesMigrated.map(file => file.type);
+		}
 
 		await Notes.save(noteToSave);
 
@@ -516,12 +558,11 @@ async function main() {
 		}
 	}
 
-	const migrateRemoteNote = false; // making this true will migrate remotes
 	const noteCondition = {
 		'_user.host': null,
 		'metadata.deletedAt': { $exists: false }
 	};
-	if (migrateRemoteNote) {
+	if (isMigrateRemoteNote) {
 		delete noteCondition['_user.host'];
 	}
 
