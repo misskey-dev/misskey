@@ -2,18 +2,14 @@ import { mfmLanguage } from './language';
 import { MfmForest } from './prelude';
 import { normalize } from './normalize';
 
-export function parse(source: string | null): MfmForest | null {
-	if (source == null || source == '') {
-		return null;
-	}
-
-	return normalize(mfmLanguage.root.tryParse(source));
+export function parse<T extends string | null>(source: T): T extends string ? MfmForest : null {
+	return typeof source === 'string' ?
+		normalize(mfmLanguage.root.tryParse(source)) :
+		null as any;
 }
 
-export function parsePlain(source: string | null): MfmForest | null {
-	if (source == null || source == '') {
-		return null;
-	}
-
-	return normalize(mfmLanguage.plain.tryParse(source));
+export function parsePlain<T extends string | null>(source: T): T extends string ? MfmForest : null {
+	return typeof source === 'string' ?
+		normalize(mfmLanguage.plain.tryParse(source)) :
+		null as any;
 }
