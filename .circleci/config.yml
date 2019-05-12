@@ -1,6 +1,12 @@
 version: 2.1
 
 executors:
+  v11-node12:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
+    docker:
+      - image: misskey/ci:v11-node12
+      - image: circleci/postgres:latest
+      - image: circleci/redis:latest
   v11-node11:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
     docker:
@@ -17,16 +23,16 @@ executors:
     docker:
       - image: misskey/ci:v10-node11
       - image: circleci/mongo:latest
-  v10-node8:
+  v10-node10:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
     docker:
-      - image: misskey/ci:v10-node8
+      - image: misskey/ci:v10-node10
       - image: circleci/mongo:latest
       - image: circleci/redis:latest
-  v10-node8-redis:
+  v10-node10-redis:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
     docker:
-      - image: misskey/ci:v10-node8
+      - image: misskey/ci:v10-node10
       - image: circleci/mongo:latest
       - image: circleci/redis:latest
   docker:
@@ -39,7 +45,7 @@ jobs:
     parameters:
       executor:
         type: string
-        default: "v11-node11"
+        default: "v11-node12"
       target:
         type: string
         default: "v11"
@@ -92,7 +98,7 @@ jobs:
     parameters:
       executor:
         type: string
-        default: "v11-node11"
+        default: "v11-node12"
       target:
         type: string
         default: "v11"
@@ -158,6 +164,23 @@ workflows:
   nodejs:
     jobs:
       - nodejs-build:
+          name: build-v11-node12
+          executor: v11-node12
+          target: v11
+          filters:
+            branches:
+              ignore:
+                - imgbot
+                - l10n_develop
+                - patch/autogen/v10
+                - patch/autogen/v11
+      - nodejs-test:
+          name: test-v11-node12
+          executor: v11-node12
+          target: v11
+          requires:
+            - build-v11-node12
+      - nodejs-build:
           name: build-v11-node11
           executor: v11-node11
           target: v11
@@ -209,8 +232,8 @@ workflows:
           requires:
             - build-v10-node11-redis
       - nodejs-build:
-          name: build-v10-node8
-          executor: v10-node8
+          name: build-v10-node10
+          executor: v10-node10
           target: v10
           filters:
             branches:
@@ -220,14 +243,14 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: test-v10-node8
-          executor: v10-node8
+          name: test-v10-node10
+          executor: v10-node10
           target: v10
           requires:
-            - build-v10-node8
+            - build-v10-node10
       - nodejs-build:
-          name: build-v10-node8-redis
-          executor: v10-node8-redis
+          name: build-v10-node10-redis
+          executor: v10-node10-redis
           target: v10
           filters:
             branches:
@@ -237,11 +260,11 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: test-v10-node8-redis
-          executor: v10-node8-redis
+          name: test-v10-node10-redis
+          executor: v10-node10-redis
           target: v10
           requires:
-            - build-v10-node8-redis
+            - build-v10-node10-redis
   docker:
     jobs:
       - docker-ok:
