@@ -148,7 +148,7 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
                 - v10
-      - tnodejs-est:
+      - nodejs-test:
           name: auto-test-v11-node11
           executor: v11-node11
           requires:
