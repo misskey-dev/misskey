@@ -1,27 +1,52 @@
 version: 2.1
 
 executors:
-  default:
+  v11-node11:
     working_directory: /tmp/workspace
     docker:
       - image: misskey/ci:v11-node11
-      - image: misskey/ci:latest
-      - image: circleci/mongo:latest
-  with-redis:
+      - image: circleci/postgres:latest
+      - image: circleci/redis:latest
+  v11-node8:
     working_directory: /tmp/workspace
     docker:
-      - image: misskey/ci:latest
+      - image: misskey/ci:v11-node8
+      - image: circleci/postgres:latest
+      - image: circleci/redis:latest
+  v10-node11:
+    working_directory: /tmp/workspace
+    docker:
+      - image: misskey/ci:v10-node11
+      - image: circleci/mongo:latest
+  v10-node11-redis:
+    working_directory: /tmp/workspace
+    docker:
+      - image: misskey/ci:v10-node11
+      - image: circleci/mongo:latest
+  v10-node8:
+    working_directory: /tmp/workspace
+    docker:
+      - image: misskey/ci:v10-node8
       - image: circleci/mongo:latest
       - image: circleci/redis:latest
-      - image: circleci/postgres:latest
+  v10-node8-redis:
+    working_directory: /tmp/workspace
+    docker:
+      - image: misskey/ci:v10-node8
+      - image: circleci/mongo:latest
+      - image: circleci/redis:latest
   docker:
     working_directory: /tmp/workspace
     docker:
-      - image: docker:latest
+      - image: misskey/ci:docker
 
 jobs:
-  build:
-    executor: default
+  nodejs-build:
+    parameters:
+      executor:
+        type: string
+        default: "v11-node11"
+    executor: <<parameters.executor>>
     steps:
       - checkout
       - run:
@@ -43,8 +68,8 @@ jobs:
       - run:
           name: Configure
           command: |
-            cp .circleci/misskey/default.yml .config
-            cp .circleci/misskey/test.yml .config
+            cp .circleci/<<parameters.executor>>/default.yml .config
+            cp .circleci/<<parameters.executor>>/test.yml .config
       - run:
           name: Build
           command: |
@@ -59,27 +84,15 @@ jobs:
           root: .
           paths:
             - .
-  test:
+  nodejs-test:
     parameters:
       executor:
         type: string
         default: "default"
-      without_redis:
-        type: boolean
-        default: false
     executor: <<parameters.executor>>
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - when:
-          condition: <<parameters.without_redis>>
-          steps:
-            - run:
-                name: Configure
-                command: |
-                  mv .config/test.yml .config/test_redis.yml
-                  touch .config/test.yml
-                  cat .config/test_redis.yml | while IFS= read line; do if [[ "$line" = '# __REDIS__' ]]; then break; else echo "$line" >> .config/test.yml; fi; done
       - run:
           name: Test
           command: |
@@ -90,11 +103,7 @@ jobs:
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-  docker:
-    parameters:
-      with_deploy:
-        type: boolean
-        default: false
+  docker-build:
     executor: docker
     steps:
       - checkout
@@ -103,94 +112,143 @@ jobs:
           name: Build
           command: |
             docker build -t misskey/misskey .
-      - when:
-          condition: <<parameters.with_deploy>>
-          steps:
-            - run:
-                name: Deploy
-                command: |
-                  if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
-                   then
-                    apk update && apk add jq
-                    docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
-                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                    docker push misskey/misskey
-                   else
-                    echo -e '\033[0;33mAborted deploying to Docker Hub\033[0;39m'
-                  fi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  docker-deploy:
+    executor: docker
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Deploy
+          command: |
+            if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
+              then
+              docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
+              docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+              docker push misskey/misskey
+              else
+              echo -e '\033[0;33mAborted deploying to Docker Hub\033[0;39m'
+            fi
 
 workflows:
   version: 2
   nodejs:
     jobs:
-      - hold:
-          name: manual-build-trigger
-          type: approval
+      - nodejs-build:
+          name: auto-build-v11-node11
+          executor: v11-node11
           filters:
             branches:
-              ignore: master
-      - build:
-          name: manual-build
+              ignore:
+                - l10n_develop
+                - imgbot
+                - patch/autogen/v10
+                - patch/autogen/v11
+                - v10
+      - tnodejs-est:
+          name: auto-test-v11-node11
+          executor: v11-node11
           requires:
-            - manual-build-trigger
+            - auto-build-v11-node11
           filters:
             branches:
-              ignore: master
-      - build:
-          name: auto-build
+              ignore:
+                - l10n_develop
+                - imgbot
+                - patch/autogen/v10
+                - patch/autogen/v11
+                - v10
+      - nodejs-build:
+          name: auto-build-v11-node8
+          executor: v11-node8
           filters:
             branches:
-              only: master
-      - test:
-          name: manual-test-with-redis
-          executor: with-redis
+              ignore:
+                - l10n_develop
+                - imgbot
+                - patch/autogen/v10
+                - patch/autogen/v11
+                - v10
+      - nodejs-test:
+          name: auto-test-v11-node8
+          executor: v11-node8
           requires:
-            - manual-build
+            - auto-build-v11-node8
           filters:
             branches:
-              ignore: master
-      - test:
-          name: auto-test-without-redis
-          executor: with-redis
+              ignore:
+                - l10n_develop
+                - imgbot
+                - patch/autogen/v10
+                - patch/autogen/v11
+                - v10
+      - nodejs-build:
+          name: auto-build-v10-node11
+          executor: v10-node11
+          filters:
+            branches:
+              only: v10
+      - nodejs-test:
+          name: auto-test-v10-node11
+          executor: v10-node11
           requires:
-            - auto-build
+            - auto-build-v10-node11
           filters:
             branches:
-              only: master
-      - test:
-          name: manual-test-with-redis
-          without_redis: true
+              only: v10
+      - nodejs-build:
+          name: auto-build-v10-node11-redis
+          executor: v10-node11-redis
+          filters:
+            branches:
+              only: v10
+      - nodejs-test:
+          name: auto-test-v10-node11-redis
+          executor: v10-node11-redis
           requires:
-            - manual-build
+            - auto-build-v10-node11-redis
           filters:
             branches:
-              ignore: master
-      - test:
-          name: auto-test-without-redis
-          without_redis: true
+              only: v10
+      - nodejs-build:
+          name: auto-build-v10-node8
+          executor: v10-node8
+          filters:
+            branches:
+              only: v10
+      - nodejs-test:
+          name: auto-test-v10-node8
+          executor: v10-node8
           requires:
-            - auto-build
+            - auto-build-v10-node8
           filters:
             branches:
-              only: master
+              only: v10
+      - nodejs-build:
+          name: auto-build-v10-node8-redis
+          executor: v10-node8-redis
+          filters:
+            branches:
+              only: v10
+      - nodejs-test:
+          name: auto-test-v10-node8-redis
+          executor: v10-node8-redis
+          requires:
+            - auto-build-v10-node8-redis
+          filters:
+            branches:
+              only: v10
   docker:
     jobs:
-      - hold:
-          name: manual-build-trigger
-          type: approval
-          filters:
-            branches:
-              ignore: master
-      - docker:
-          name: manual-build
-          requires:
-            - manual-build-trigger
-          filters:
-            branches:
-              ignore: master
-      - docker:
+      - docker-build:
           name: auto-build
-          with_deploy: true
+      - docker-deploy:
+          name: auto-deploy
+          requires:
+            - auto-build
           filters:
             branches:
               only: master
