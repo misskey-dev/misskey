@@ -7,12 +7,6 @@ executors:
       - image: misskey/ci:v11-node11
       - image: circleci/postgres:latest
       - image: circleci/redis:latest
-  v11-node8:
-    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
-    docker:
-      - image: misskey/ci:v11-node8
-      - image: circleci/postgres:latest
-      - image: circleci/redis:latest
   v10-node11:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
     docker:
@@ -123,7 +117,7 @@ jobs:
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-  docker:
+  docker-build:
     parameters:
       deploy:
         type: boolean
@@ -151,6 +145,13 @@ jobs:
                   else
                     echo -e '\033[0;33mDeploy Aborted\033[0;39m'
                   fi
+  docker-ok:
+    executor: docker
+    steps:
+      - run:
+          name: OK
+          command: |
+            echo -e '\033[0;32mOK\033[0;39m'
 
 workflows:
   version: 2
@@ -173,23 +174,6 @@ workflows:
           target: v11
           requires:
             - build-v11-node11
-      - nodejs-build:
-          name: build-v11-node8
-          executor: v11-node8
-          target: v11
-          filters:
-            branches:
-              ignore:
-                - imgbot
-                - l10n_develop
-                - patch/autogen/v10
-                - patch/autogen/v11
-      - nodejs-test:
-          name: test-v11-node8
-          executor: v11-node8
-          target: v11
-          requires:
-            - build-v11-node8
       - nodejs-build:
           name: build-v10-node11
           executor: v10-node11
@@ -260,17 +244,13 @@ workflows:
             - build-v10-node8-redis
   docker:
     jobs:
-      - docker:
-          name: build-docker
+      - docker-ok:
+          name: skip-docker
+          deploy: true
           filters:
             branches:
-              ignore:
-                - imgbot
-                - l10n_develop
-                - master
-                - patch/autogen/v10
-                - patch/autogen/v11
-      - docker:
+              ignore: master
+      - docker-build:
           name: deploy-docker
           deploy: true
           filters:
