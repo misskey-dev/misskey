@@ -318,6 +318,7 @@ auth/views/index.vue:
   error: "세션이 존재하지 않습니다."
   sign-in: "로그인 해주시기 바랍니다"
 common/views/pages/explore.vue:
+  pinned-users: "고정된 사용자"
   popular-users: "인기 사용자"
   recently-updated-users: "최근 게시한 사용자"
   recently-registered-users: "신규 사용자"
@@ -1137,6 +1138,7 @@ admin/views/instance.vue:
   invite: "초대"
   save: "저장"
   saved: "저장하였습니다"
+  pinned-users: "고정된 사용자"
   email-config: "메일 서버 설정"
   email-config-info: "메일 주소 확인 혹은 비밀번호 재설정에 사용 됩니다."
   enable-email: "메일 발신 활성화"
@@ -1796,6 +1798,7 @@ pages:
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A가 B보다 크거나 같음"
       _gtEq:
         arg1: "A"
         arg2: "B"
@@ -1814,6 +1817,7 @@ pages:
       _rannum:
         arg1: "최소"
         arg2: "최대"
+      randomPick: "목록에서 임의로 선택"
       _randomPick:
         arg1: "리스트"
       _dailyRandom:
