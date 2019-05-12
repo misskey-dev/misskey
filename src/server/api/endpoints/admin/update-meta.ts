@@ -70,6 +70,27 @@ export const meta = {
 			}
 		},
 
+		enableExternalUserRecommendation: {
+			validator: $.optional.bool,
+			desc: {
+				'ja-JP': '外部ユーザーレコメンデーションを有効にする'
+			}
+		},
+
+		externalUserRecommendationEngine: {
+			validator: $.optional.nullable.str,
+			desc: {
+				'ja-JP': '外部ユーザーレコメンデーションのサードパーティエンジン'
+			}
+		},
+
+		externalUserRecommendationTimeout: {
+			validator: $.optional.nullable.num.min(0),
+			desc: {
+				'ja-JP': '外部ユーザーレコメンデーションのタイムアウト (ミリ秒)'
+			}
+		},
+
 		mascotImageUrl: {
 			validator: $.optional.nullable.str,
 			desc: {
@@ -470,6 +491,18 @@ export default define(meta, async (ps) => {
 
 	if (ps.discordClientSecret !== undefined) {
 		set.discordClientSecret = ps.discordClientSecret;
+	}
+
+	if (ps.enableExternalUserRecommendation !== undefined) {
+		set.enableExternalUserRecommendation = ps.enableExternalUserRecommendation;
+	}
+
+	if (ps.externalUserRecommendationEngine !== undefined) {
+		set.externalUserRecommendationEngine = ps.externalUserRecommendationEngine;
+	}
+
+	if (ps.externalUserRecommendationTimeout !== undefined) {
+		set.externalUserRecommendationTimeout = ps.externalUserRecommendationTimeout;
 	}
 
 	if (ps.enableEmail !== undefined) {

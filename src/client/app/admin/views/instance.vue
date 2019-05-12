@@ -78,6 +78,12 @@
 			<ui-input v-model="summalyProxy">URL</ui-input>
 		</section>
 		<section>
+			<header><fa :icon="faUserPlus"/> {{ $t('user-recommendation-config') }}</header>
+			<ui-switch v-model="enableExternalUserRecommendation">{{ $t('enable-external-user-recommendation') }}</ui-switch>
+			<ui-input v-model="externalUserRecommendationEngine" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-engine') }}<template #desc>{{ $t('external-user-recommendation-engine-desc') }}</template></ui-input>
+			<ui-input v-model="externalUserRecommendationTimeout" type="number" :disabled="!enableExternalUserRecommendation">{{ $t('external-user-recommendation-timeout') }}<template #suffix>ms</template><template #desc>{{ $t('external-user-recommendation-timeout-desc') }}</template></ui-input>
+		</section>
+		<section>
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
@@ -186,6 +192,9 @@ export default Vue.extend({
 			discordClientSecret: null,
 			proxyAccount: null,
 			inviteCode: null,
+			enableExternalUserRecommendation: false,
+			externalUserRecommendationEngine: null,
+			externalUserRecommendationTimeout: null,
 			summalyProxy: null,
 			enableEmail: false,
 			email: null,
@@ -236,6 +245,9 @@ export default Vue.extend({
 			this.enableDiscordIntegration = meta.enableDiscordIntegration;
 			this.discordClientId = meta.discordClientId;
 			this.discordClientSecret = meta.discordClientSecret;
+			this.enableExternalUserRecommendation = meta.enableExternalUserRecommendation;
+			this.externalUserRecommendationEngine = meta.externalUserRecommendationEngine;
+			this.externalUserRecommendationTimeout = meta.externalUserRecommendationTimeout;
 			this.summalyProxy = meta.summalyProxy;
 			this.enableEmail = meta.enableEmail;
 			this.email = meta.email;
@@ -297,6 +309,9 @@ export default Vue.extend({
 				enableDiscordIntegration: this.enableDiscordIntegration,
 				discordClientId: this.discordClientId,
 				discordClientSecret: this.discordClientSecret,
+				enableExternalUserRecommendation: this.enableExternalUserRecommendation,
+				externalUserRecommendationEngine: this.externalUserRecommendationEngine,
+				externalUserRecommendationTimeout: parseInt(this.externalUserRecommendationTimeout, 10),
 				summalyProxy: this.summalyProxy,
 				enableEmail: this.enableEmail,
 				email: this.email,

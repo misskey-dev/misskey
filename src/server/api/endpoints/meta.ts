@@ -155,6 +155,11 @@ export default define(meta, async (ps, me) => {
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
 			serviceWorker: instance.enableServiceWorker,
+			userRecommendation: {
+				external: instance.enableExternalUserRecommendation,
+				engine: instance.externalUserRecommendationEngine,
+				timeout: instance.externalUserRecommendationTimeout
+			}
 		};
 	}
 
@@ -170,6 +175,9 @@ export default define(meta, async (ps, me) => {
 		response.githubClientSecret = instance.githubClientSecret;
 		response.discordClientId = instance.discordClientId;
 		response.discordClientSecret = instance.discordClientSecret;
+		response.enableExternalUserRecommendation = instance.enableExternalUserRecommendation;
+		response.externalUserRecommendationEngine = instance.externalUserRecommendationEngine;
+		response.externalUserRecommendationTimeout = instance.externalUserRecommendationTimeout;
 		response.summalyProxy = instance.summalyProxy;
 		response.email = instance.email;
 		response.smtpSecure = instance.smtpSecure;
