@@ -1828,11 +1828,14 @@ pages:
       _dailyRandomPick:
         arg1: "리스트"
       _seedRandom:
+        arg1: "시드"
         arg2: "확률"
       _seedRannum:
+        arg1: "시드"
         arg2: "최소"
         arg3: "최대"
       _seedRandomPick:
+        arg1: "시드"
         arg2: "리스트"
       _DRPWPM:
         arg1: "텍스트 목록"
