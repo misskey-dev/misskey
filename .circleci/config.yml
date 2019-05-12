@@ -157,7 +157,7 @@ workflows:
   nodejs:
     jobs:
       - nodejs-build:
-          name: auto-build-v11-node11
+          name: build-v11-node11
           executor: v11-node11
           target: v11
           filters:
@@ -168,13 +168,13 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: auto-test-v11-node11
+          name: test-v11-node11
           executor: v11-node11
           target: v11
           requires:
-            - auto-build-v11-node11
+            - build-v11-node11
       - nodejs-build:
-          name: auto-build-v11-node8
+          name: build-v11-node8
           executor: v11-node8
           target: v11
           filters:
@@ -185,13 +185,13 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: auto-test-v11-node8
+          name: test-v11-node8
           executor: v11-node8
           target: v11
           requires:
-            - auto-build-v11-node8
+            - build-v11-node8
       - nodejs-build:
-          name: auto-build-v10-node11
+          name: build-v10-node11
           executor: v10-node11
           target: v10
           filters:
@@ -202,13 +202,13 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: auto-test-v10-node11
+          name: test-v10-node11
           executor: v10-node11
           target: v10
           requires:
-            - auto-build-v10-node11
+            - build-v10-node11
       - nodejs-build:
-          name: auto-build-v10-node11-redis
+          name: build-v10-node11-redis
           executor: v10-node11-redis
           target: v10
           filters:
@@ -219,13 +219,13 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: auto-test-v10-node11-redis
+          name: test-v10-node11-redis
           executor: v10-node11-redis
           target: v10
           requires:
-            - auto-build-v10-node11-redis
+            - build-v10-node11-redis
       - nodejs-build:
-          name: auto-build-v10-node8
+          name: build-v10-node8
           executor: v10-node8
           target: v10
           filters:
@@ -236,13 +236,13 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: auto-test-v10-node8
+          name: test-v10-node8
           executor: v10-node8
           target: v10
           requires:
-            - auto-build-v10-node8
+            - build-v10-node8
       - nodejs-build:
-          name: auto-build-v10-node8-redis
+          name: build-v10-node8-redis
           executor: v10-node8-redis
           target: v10
           filters:
@@ -253,15 +253,15 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - nodejs-test:
-          name: auto-test-v10-node8-redis
+          name: test-v10-node8-redis
           executor: v10-node8-redis
           target: v10
           requires:
-            - auto-build-v10-node8-redis
+            - build-v10-node8-redis
   docker:
     jobs:
       - docker:
-          name: auto-build
+          name: build-docker
           filters:
             branches:
               ignore:
@@ -271,7 +271,7 @@ workflows:
                 - patch/autogen/v10
                 - patch/autogen/v11
       - docker:
-          name: auto-deploy
+          name: deploy-docker
           deploy: true
           filters:
             branches:
