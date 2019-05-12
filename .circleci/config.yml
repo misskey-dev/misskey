@@ -98,7 +98,10 @@ jobs:
     parameters:
       executor:
         type: string
-        default: "default"
+        default: "v11-node11"
+      target:
+        type: string
+        default: "v11"
     executor: <<parameters.executor>>
     steps:
       - attach_workspace:
