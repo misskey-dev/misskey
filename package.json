@@ -164,8 +164,6 @@
 		"mocha": "6.1.4",
 		"moji": "0.5.1",
 		"moment": "2.24.0",
-		"mongodb": "3.2.3",
-		"monk": "6.0.6",
 		"ms": "2.1.1",
 		"nested-property": "0.0.7",
 		"node-fetch": "2.5.0",
