@@ -246,7 +246,6 @@ workflows:
     jobs:
       - docker-ok:
           name: skip-docker
-          deploy: true
           filters:
             branches:
               ignore: master
