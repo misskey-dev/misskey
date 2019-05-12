@@ -268,4 +268,21 @@ export class Meta {
 		nullable: true
 	})
 	public discordClientSecret: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableExternalUserRecommendation: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true
+	})
+	public externalUserRecommendationEngine: string | null;
+
+	@Column('integer', {
+		default: 60000,
+		comment: 'milliseconds'
+	})
+	public externalUserRecommendationTimeout: number;
 }
