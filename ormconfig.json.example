@@ -1,0 +1,13 @@
+{
+	"type": "postgres",
+	"host": "PostgreSQLのホスト",
+	"port": 5432,
+	"username": "PostgreSQLのユーザー名",
+	"password": "PostgreSQLのパスワード",
+	"database": "PostgreSQLのデータベース名",
+	"entities": ["src/models/entities/*.ts"],
+	"migrations": ["migration/*.ts"],
+	"cli": {
+		"migrationsDir": "migration"
+	}
+}
