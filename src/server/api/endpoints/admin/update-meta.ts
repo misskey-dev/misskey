@@ -85,7 +85,7 @@ export const meta = {
 		},
 
 		externalUserRecommendationTimeout: {
-			validator: $.optional.nullable.num.min(0),
+			validator: $.optional.num.min(0),
 			desc: {
 				'ja-JP': '外部ユーザーレコメンデーションのタイムアウト (ミリ秒)'
 			}
