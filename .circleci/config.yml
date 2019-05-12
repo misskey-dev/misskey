@@ -5,6 +5,13 @@ executors:
     working_directory: /tmp/workspace
     docker:
       - image: misskey/ci:v11-node11
+      - image: misskey/ci:latest
+      - image: circleci/mongo:latest
+  with-redis:
+    working_directory: /tmp/workspace
+    docker:
+      - image: misskey/ci:latest
+      - image: circleci/mongo:latest
       - image: circleci/redis:latest
       - image: circleci/postgres:latest
   docker:
