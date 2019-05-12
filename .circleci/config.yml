@@ -4,8 +4,9 @@ executors:
   default:
     working_directory: /tmp/workspace
     docker:
-      - image: misskey/ci:latest
+      - image: misskey/ci:v11-node11
       - image: circleci/redis:latest
+      - image: circleci/postgres:latest
   docker:
     working_directory: /tmp/workspace
     docker:
