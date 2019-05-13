@@ -197,3 +197,13 @@ const user = await Users.findOne(userId).then(ensure);
 // }
 // の糖衣構文のような扱いです
 ```
+
+### Migration作成方法
+コードの変更をした後、`ormconfig.json`（書き方はCONTRIBUTING.mdを参照）を用意し、
+
+```
+npm i -g ts-node
+ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
+```
+
+作成されたスクリプトは不必要な変更を含むため除去してください。

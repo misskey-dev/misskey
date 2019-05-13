@@ -508,6 +508,7 @@ common/views/components/nav.vue:
   repository: "リポジトリ"
   develop: "開発者"
   feedback: "フィードバック"
+  tos: "利用規約"
 
 common/views/components/note-menu.vue:
   mention: "メンション"
@@ -628,6 +629,8 @@ common/views/components/signup.vue:
   password-matched: "確認されました"
   password-not-matched: "一致していません"
   recaptcha: "認証"
+  agree-to: "{0}に同意します。"
+  tos: "利用規約"
   create: "アカウント作成"
   some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
 
@@ -1215,10 +1218,15 @@ admin/views/instance.vue:
   instance-name: "インスタンス名"
   instance-description: "インスタンスの紹介"
   host: "ホスト"
+  icon-url: "アイコンURL"
+  logo-url: "ロゴURL"
   banner-url: "バナー画像URL"
   error-image-url: "エラー画像URL"
   languages: "インスタンスの対象言語"
   languages-desc: "スペースで区切って複数設定できます。"
+  tos-url: "利用規約URL"
+  repository-url: "リポジトリURL"
+  feedback-url: "フィードバックURL"
   maintainer-config: "管理者情報"
   maintainer-name: "管理者名"
   maintainer-email: "管理者の連絡先"
