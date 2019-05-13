@@ -8,7 +8,7 @@
 		<div class="is-remote" v-if="user.host != null">
 			<details>
 				<summary><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}</summary>
-				<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
+				<a :href="user.url || user.uri" rel="nofollow noopener" target="_blank">{{ $t('@.view-on-remote') }}</a>
 			</details>
 		</div>
 		<header :style="bannerStyle">

@@ -9,7 +9,7 @@
 	</blockquote>
 </div>
 <div v-else class="mk-url-preview">
-	<a :class="{ mini: narrow, compact }" :href="url" target="_blank" :title="url" v-if="!fetching">
+	<a :class="{ mini: narrow, compact }" :href="url" rel="nofollow noopener" target="_blank" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
 			<button v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enable-player')"><fa :icon="['far', 'play-circle']"/></button>
 		</div>
