@@ -6,9 +6,9 @@
 		<a :href="ToSUrl" target="_blank">{{ $t('tos') }}</a>
 	</template>
 	<i>・</i>
-	<a :href="repositoryUrl" target="_blank">{{ $t('repository') }}</a>
+	<a :href="repositoryUrl" rel="noopener" target="_blank">{{ $t('repository') }}</a>
 	<i>・</i>
-	<a :href="feedbackUrl" target="_blank">{{ $t('feedback') }}</a>
+	<a :href="feedbackUrl" rel="noopener" target="_blank">{{ $t('feedback') }}</a>
 	<i>・</i>
 	<a href="/dev" target="_blank">{{ $t('develop') }}</a>
 </span>
