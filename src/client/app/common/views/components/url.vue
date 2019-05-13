@@ -1,5 +1,5 @@
 <template>
-<a class="mk-url" :href="url" :target="target">
+<a class="mk-url" :href="url" :rel="rel" :target="target">
 	<span class="schema">{{ schema }}//</span>
 	<span class="hostname">{{ hostname }}</span>
 	<span class="port" v-if="port != ''">:{{ port }}</span>
@@ -15,7 +15,7 @@ import Vue from 'vue';
 import { toUnicode as decodePunycode } from 'punycode';
 
 export default Vue.extend({
-	props: ['url', 'target'],
+	props: ['url', 'rel', 'target'],
 	data() {
 		return {
 			schema: null,

@@ -24,6 +24,9 @@ block meta
 
 	meta(name='twitter:card' content='summary')
 
+	if user.host
+		meta(name='robots' content='noindex')
+
 	if profile.twitter
 		meta(name='twitter:creator' content=`@${profile.twitter.screenName}`)
 
