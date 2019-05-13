@@ -9,7 +9,7 @@
 			<div class="content" v-if="!message.isDeleted">
 				<mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
-					<a :href="message.file.url" target="_blank" :title="message.file.name">
+					<a :href="message.file.url" rel="noopener" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"
 							:style="{ backgroundColor: message.file.properties.avgColor && message.file.properties.avgColor.length == 3 ? `rgb(${message.file.properties.avgColor.join(',')})` : 'transparent' }"/>
 						<p v-else>{{ message.file.name }}</p>

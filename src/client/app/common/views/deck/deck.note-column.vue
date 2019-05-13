@@ -8,7 +8,7 @@
 		<div class="is-remote" v-if="note.user.host != null">
 			<details>
 				<summary><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-post') }}</summary>
-				<a :href="note.url || note.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
+				<a :href="note.url || note.uri" rel="nofollow noopener" target="_blank">{{ $t('@.view-on-remote') }}</a>
 			</details>
 		</div>
 		<mk-note :note="note" :detail="true" :key="note.id"/>
