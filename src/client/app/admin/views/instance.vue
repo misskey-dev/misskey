@@ -10,6 +10,9 @@
 			<ui-input v-model="mascotImageUrl"><template #icon><fa icon="link"/></template>{{ $t('logo-url') }}</ui-input>
 			<ui-input v-model="bannerUrl"><template #icon><fa icon="link"/></template>{{ $t('banner-url') }}</ui-input>
 			<ui-input v-model="errorImageUrl"><template #icon><fa icon="link"/></template>{{ $t('error-image-url') }}</ui-input>
+			<ui-input v-model="ToSUrl"><template #icon><fa icon="link"/></template>{{ $t('tos-url') }}</ui-input>
+			<ui-input v-model="repositoryUrl"><template #icon><fa icon="link"/></template>{{ $t('repository-url') }}</ui-input>
+			<ui-input v-model="feedbackUrl"><template #icon><fa icon="link"/></template>{{ $t('feedback-url') }}</ui-input>
 			<ui-input v-model="languages"><template #icon><fa icon="language"/></template>{{ $t('languages') }}<template #desc>{{ $t('languages-desc') }}</template></ui-input>
 		</section>
 		<section class="fit-bottom">
@@ -156,6 +159,9 @@ export default Vue.extend({
 			host: toUnicode(host),
 			maintainerName: null,
 			maintainerEmail: null,
+			ToSUrl: null,
+			repositoryUrl: "https://github.com/syuilo/misskey",
+			feedbackUrl: null,
 			disableRegistration: false,
 			disableLocalTimeline: false,
 			disableGlobalTimeline: false,
@@ -207,6 +213,9 @@ export default Vue.extend({
 		this.$root.getMeta(true).then(meta => {
 			this.maintainerName = meta.maintainerName;
 			this.maintainerEmail = meta.maintainerEmail;
+			this.ToSUrl = meta.ToSUrl;
+			this.repositoryUrl = meta.repositoryUrl;
+			this.feedbackUrl = meta.feedbackUrl;
 			this.disableRegistration = meta.disableRegistration;
 			this.disableLocalTimeline = meta.disableLocalTimeline;
 			this.disableGlobalTimeline = meta.disableGlobalTimeline;
@@ -268,6 +277,9 @@ export default Vue.extend({
 			this.$root.api('admin/update-meta', {
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
+				ToSUrl: this.ToSUrl,
+				repositoryUrl: this.repositoryUrl,
+				feedbackUrl: this.feedbackUrl,
 				disableRegistration: this.disableRegistration,
 				disableLocalTimeline: this.disableLocalTimeline,
 				disableGlobalTimeline: this.disableGlobalTimeline,

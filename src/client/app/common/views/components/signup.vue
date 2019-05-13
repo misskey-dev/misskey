@@ -37,8 +37,13 @@
 				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('password-not-matched') }}</p>
 			</template>
 		</ui-input>
+		<ui-switch v-model="ToSAgreement" v-if="meta.ToSUrl">
+			<i18n path="agree-to">
+				<a :href="meta.ToSUrl" target="_blank">{{ $t('tos') }}</a>
+			</i18n>
+		</ui-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<ui-button type="submit">{{ $t('create') }}</ui-button>
+		<ui-button type="submit" :disabled="!(meta.ToSUrl ? ToSAgreement : true)">{{ $t('create') }}</ui-button>
 	</template>
 </form>
 </template>
@@ -64,7 +69,8 @@ export default Vue.extend({
 			usernameState: null,
 			passwordStrength: '',
 			passwordRetypeState: null,
-			meta: null
+			meta: {},
+			ToSAgreement: false
 		}
 	},
 

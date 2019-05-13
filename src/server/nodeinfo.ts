@@ -26,6 +26,7 @@ const nodeinfo2 = async () => {
 			maintainerName,
 			maintainerEmail,
 			langs,
+			ToSUrl,
 			announcements,
 			disableRegistration,
 			disableLocalTimeline,
@@ -77,6 +78,7 @@ const nodeinfo2 = async () => {
 				email: maintainerEmail
 			},
 			langs,
+			ToSUrl,
 			announcements,
 			disableRegistration,
 			disableLocalTimeline,
