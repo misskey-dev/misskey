@@ -1861,6 +1861,7 @@ pages:
       _fn:
         slots: "슬롯"
         arg1: "출력"
+    thereIsEmptySlot: "슬롯 {slot}이(가) 비었습니다!"
     types:
       string: "텍스트"
       number: "수치"
