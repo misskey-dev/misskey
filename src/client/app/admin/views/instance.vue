@@ -87,8 +87,10 @@
 
 	<ui-card>
 		<template #title>{{ $t('pinned-users') }}</template>
-		<section>
-			<ui-textarea v-model="pinnedUsers"></ui-textarea>
+		<section class="fit-top">
+			<ui-textarea v-model="pinnedUsers">
+				<template #desc>{{ $t('pinned-users-info') }}</template>
+			</ui-textarea>
 			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
@@ -204,7 +206,7 @@ export default Vue.extend({
 			enableServiceWorker: false,
 			swPublicKey: null,
 			swPrivateKey: null,
-			pinnedUsers: [],
+			pinnedUsers: '',
 			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt
 		};
 	},

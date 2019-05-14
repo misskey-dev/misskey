@@ -1272,6 +1272,7 @@ admin/views/instance.vue:
   save: "保存"
   saved: "保存しました"
   pinned-users: "ピン留めユーザー"
+  pinned-users-info: "ピン留めしたいユーザーを改行で区切って記述します。"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使われます。"
   enable-email: "メール配信を有効にする"
