@@ -1345,6 +1345,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "每小时"
     day: "每天"
+  blocked-hosts: "拉黑"
 desktop/views/pages/welcome.vue:
   about: "更多信息..."
   timeline: "时间线"
