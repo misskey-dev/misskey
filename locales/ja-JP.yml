@@ -1441,6 +1441,7 @@ admin/views/federation.vue:
   latest-request-received-at: "直近のリクエスト受信"
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  delete-all-files: "ファイルをすべて削除"
   block: "ブロック"
   marked-as-closed: "閉鎖されているとマーク"
   lookup: "照会"

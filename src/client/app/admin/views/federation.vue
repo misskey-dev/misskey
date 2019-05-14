@@ -79,6 +79,10 @@
 					<div ref="chart"></div>
 				</details>
 				<details>
+					<summary>{{ $t('delete-all-files') }}</summary>
+					<ui-button @click="deleteAllFiles()" style="margin-top: 16px;"><fa :icon="faTrashAlt"/> {{ $t('delete-all-files') }}</ui-button>
+				</details>
+				<details>
 					<summary>{{ $t('remove-all-following') }}</summary>
 					<ui-button @click="removeAllFollowing()" style="margin-top: 16px;"><fa :icon="faMinusCircle"/> {{ $t('remove-all-following') }}</ui-button>
 					<ui-info warn>{{ $t('remove-all-following-info', { host: instance.host }) }}</ui-info>
@@ -158,7 +162,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faTrafficLight, faInbox } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faTrafficLight, faInbox } from '@fortawesome/free-solid-svg-icons';
 import ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
 
@@ -186,7 +190,7 @@ export default Vue.extend({
 			chartSpan: 'hour',
 			chartInstance: null,
 			blockedHosts: '',
-			faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faPaperPlane, faTrafficLight, faInbox
+			faTrashAlt, faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faPaperPlane, faTrafficLight, faInbox
 		};
 	},
 
@@ -298,6 +302,17 @@ export default Vue.extend({
 
 		removeAllFollowing() {
 			this.$root.api('admin/federation/remove-all-following', {
+				host: this.instance.host
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+			});
+		},
+
+		deleteAllFiles() {
+			this.$root.api('admin/federation/delete-all-files', {
 				host: this.instance.host
 			}).then(() => {
 				this.$root.dialog({
