@@ -1073,10 +1073,14 @@ admin/views/instance.vue:
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
   host: "Hôte"
+  icon-url: "URL de l'icône"
+  logo-url: "URL do logo"
   banner-url: "URL de l’image de la bannière"
   error-image-url: "URL de l’image d’erreur"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
+  tos-url: "URL des conditions d'utilisation"
+  repository-url: "URL du dépôt"
   maintainer-config: "Informations de l’administrateur"
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
@@ -1474,8 +1478,11 @@ mobile/views/components/ui.nav.vue:
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Téléverser un fichier"
+    url-upload: "Transférer un fichier depuis une URL"
     create-folder: "Créer un dossier"
     rename-folder: "Renommer le dossier"
+    move-folder: "Déplacer ce dossier"
+    delete-folder: "Supprimer ce dossier"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
 mobile/views/pages/signup.vue:
@@ -1584,6 +1591,7 @@ dev/views/apps.vue:
   create-app: "Créer une app"
   app-missing: "Aucune application"
 dev/views/new-app.vue:
+  new-app: "Nouvelle application"
   create-app: "Création d’une application"
   app-name: "Nom de l’application"
   app-name-desc: "Le nom de votre application"
@@ -1617,6 +1625,7 @@ pages:
   the-variable-name-is-already-used: "Cette variable est déjà utilisée"
   content-blocks: "Contenu du cadre"
   special-blocks: "Spécial"
+  post-from-post-form: "Publier ce contenu"
   posted-from-post-form: "Publié !"
   blocks:
     text: "Texte"
@@ -1653,6 +1662,7 @@ pages:
     _counter:
       name: "Nom de la variable"
       text: "Titre"
+      inc: "Augmenter le chiffre"
     _button:
       text: "Titre"
       _action:
