@@ -1352,6 +1352,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1시간마다"
     day: "1일마다"
+  blocked-hosts: "차단"
 desktop/views/pages/welcome.vue:
   about: "자세히..."
   timeline: "타임라인"
