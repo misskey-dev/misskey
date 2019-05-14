@@ -460,6 +460,7 @@ common/views/components/nav.vue:
   repository: "Dépôt"
   develop: "Développeurs"
   feedback: "Suggestions"
+  tos: "Conditions d'utilisation"
 common/views/components/note-menu.vue:
   mention: "Mention"
   detail: "Détails"
@@ -566,6 +567,7 @@ common/views/components/signup.vue:
   password-matched: "OK"
   password-not-matched: "Les mots de passe ne correspondent pas."
   recaptcha: "Vérifier"
+  tos: "Conditions d'utilisation"
   create: "Créer un compte"
   some-error: "La création du compte a échoué. Veuillez réessayer."
 common/views/components/special-message.vue:
@@ -1311,6 +1313,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "Par heure"
     day: "Par jour"
+  blocked-hosts: "En cours blocage"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   timeline: "Fil d’actualité"
