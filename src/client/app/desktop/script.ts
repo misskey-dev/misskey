@@ -155,11 +155,11 @@ init(async (launch, os) => {
 					{ path: '/featured', name: 'featured', component: () => import('./views/home/featured.vue').then(m => m.default) },
 					{ path: '/explore', name: 'explore', component: () => import('../common/views/pages/explore.vue').then(m => m.default) },
 					{ path: '/explore/tags/:tag', name: 'explore-tag', props: true, component: () => import('../common/views/pages/explore.vue').then(m => m.default) },
-					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) },
-					{ path: '/i/pages', component: () => import('./views/home/pages.vue').then(m => m.default) },
+					{ path: '/i/favorites', component: () => import('./views/home/favorites.vue').then(m => m.default) }
 				]},
 			{ path: '/@:user/pages/:page', props: true, component: () => import('./views/pages/page.vue').then(m => m.default) },
 			{ path: '/@:user/pages/:pageName/view-source', props: true, component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
+			{ path: '/i/pages', component: () => import('./views/pages/pages.vue').then(m => m.default) },
 			{ path: '/i/pages/new', component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
 			{ path: '/i/pages/edit/:pageId', props: true, component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },

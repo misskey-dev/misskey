@@ -1,13 +1,15 @@
 <template>
-<div class="rknalgpo" v-if="!fetching">
-	<ui-button @click="create()"><fa :icon="faPlus"/></ui-button>
-	<sequential-entrance animation="entranceFromTop" delay="25">
-		<template v-for="page in pages">
-			<x-page-preview class="page" :page="page" :key="page.id"/>
-		</template>
-	</sequential-entrance>
-	<ui-button v-if="existMore" @click="fetchMore()">{{ $t('@.load-more') }}</ui-button>
-</div>
+<mk-ui>
+	<main v-if="!fetching">
+		<ui-button @click="create()"><fa :icon="faPlus"/></ui-button>
+		<sequential-entrance animation="entranceFromTop" delay="25">
+			<template v-for="page in pages">
+				<x-page-preview class="page" :page="page" :key="page.id"/>
+			</template>
+		</sequential-entrance>
+		<ui-button v-if="existMore" @click="fetchMore()">{{ $t('@.load-more') }}</ui-button>
+	</main>
+</mk-ui>
 </template>
 
 <script lang="ts">
@@ -79,8 +81,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.rknalgpo
+main
 	margin 0 auto
+	padding 16px
+	max-width 950px
 
 	> * > .page
 		margin-bottom 8px
