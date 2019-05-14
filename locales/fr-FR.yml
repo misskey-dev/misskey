@@ -1666,10 +1666,12 @@ pages:
       inc: "Augmenter le chiffre"
     _button:
       text: "Titre"
+      action: "L'opération lorsque le bouton sera pressé"
       _action:
         dialog: "Afficher une fenêtre de dialogue"
         _dialog:
           content: "Contenu"
+        resetRandom: "Réinitialiser le nombre aléatoire"
   script:
     categories:
       flow: "Contrôle"
