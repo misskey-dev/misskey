@@ -1044,6 +1044,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "za hodinu"
     day: "za den"
+  blocked-hosts: "Blokován"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Časová osa"
