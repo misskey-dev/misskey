@@ -68,7 +68,7 @@ common:
   explore: "Découvrir"
   following: "Suit"
   followers: "Abonné·e·s"
-  favorites: "Mettre cette note en favoris"
+  favorites: "Favorites"
   permissions:
     "read:account": "Afficher les informations du compte"
     "write:account": "Mettre à jour les informations de votre compte"
