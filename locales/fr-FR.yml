@@ -1624,6 +1624,7 @@ pages:
   enter-variable-name: "Veuillez choisir un nom de variable"
   the-variable-name-is-already-used: "Cette variable est déjà utilisée"
   content-blocks: "Contenu du cadre"
+  input-blocks: "Entrée"
   special-blocks: "Spécial"
   post-from-post-form: "Publier ce contenu"
   posted-from-post-form: "Publié !"
@@ -1746,13 +1747,20 @@ pages:
         arg1: "Listes"
       _dailyRandomPick:
         arg1: "Listes"
+      _seedRannum:
+        arg2: "Min"
+        arg3: "Max"
       _seedRandomPick:
         arg2: "Listes"
+      pick: "Sélectionner dans la liste"
       _pick:
         arg1: "Listes"
+        arg2: "Position"
       number: "Numérique"
+      stringToNumber: "Chaîne en chiffres"
       _stringToNumber:
         arg1: "Texte"
+      numberToString: "Chiffres en chaîne"
       _numberToString:
         arg1: "Numérique"
       _splitStrByLine:
@@ -1760,6 +1768,7 @@ pages:
       ref: "Variables"
       fn: "Fonction"
       _fn:
+        slots: "Emplacement"
         arg1: "Sortie"
       for: "Répéter"
     types:
