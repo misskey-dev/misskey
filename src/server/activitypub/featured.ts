@@ -21,7 +21,10 @@ export default async (ctx: Router.IRouterContext) => {
 		return;
 	}
 
-	const pinings = await UserNotePinings.find({ userId: user.id });
+	const pinings = await UserNotePinings.find({
+		where: { userId: user.id },
+		order: { id: 'DESC' }
+	});
 
 	const pinnedNotes = await Promise.all(pinings.map(pining =>
 		Notes.findOne(pining.noteId).then(ensure)));

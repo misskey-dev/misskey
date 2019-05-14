@@ -543,8 +543,8 @@ export default Vue.extend({
 					});
 				} else {
 					this.$root.dialog({
-						title: this.$t('update-available'),
-						text: this.$t('update-available-desc')
+						title: this.$t('@._settings.update-available'),
+						text: this.$t('@._settings.update-available-desc')
 					});
 				}
 			});

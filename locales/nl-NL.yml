@@ -422,8 +422,6 @@ admin/views/dashboard.vue:
   notes: "Bericht"
 admin/views/abuse.vue:
   remove-report: "Verwijderen"
-admin/views/instance.vue:
-  user-recommendation-config: "Aanbevolen gebruikers"
 admin/views/charts.vue:
   notes: "Bericht"
   users: "Gebruiker"

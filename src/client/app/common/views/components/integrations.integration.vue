@@ -1,5 +1,5 @@
 <template>
-<a class="zxrjzpcj" :href="url" :class="service" target="_blank">
+<a class="zxrjzpcj" :href="url" :class="service" rel="noopener" target="_blank">
 	<fa :icon="icon" size="lg" fixed-width /><span>{{ text }}</span>
 </a>
 </template>

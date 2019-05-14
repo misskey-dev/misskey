@@ -43,8 +43,8 @@ export class Note {
 	@JoinColumn()
 	public renote: Note | null;
 
-	@Column({
-		type: 'text', nullable: true
+	@Column('varchar', {
+		length: 8192, nullable: true
 	})
 	public text: string | null;
 

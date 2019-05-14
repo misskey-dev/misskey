@@ -70,6 +70,13 @@ export const meta = {
 			}
 		},
 
+		blockedHosts: {
+			validator: $.optional.nullable.arr($.str),
+			desc: {
+				'ja-JP': 'ブロックするホスト'
+			}
+		},
+
 		mascotImageUrl: {
 			validator: $.optional.nullable.str,
 			desc: {
@@ -330,6 +337,27 @@ export const meta = {
 				'ja-JP': 'ServiceWorkerのVAPIDキーペアの秘密鍵'
 			}
 		},
+
+		ToSUrl: {
+			validator: $.optional.nullable.str,
+			desc: {
+				'ja-JP': '利用規約のURL'
+			}
+		},
+
+		repositoryUrl: {
+			validator: $.optional.str,
+			desc: {
+				'ja-JP': 'リポジトリのURL'
+			}
+		},
+
+		feedbackUrl: {
+			validator: $.optional.str,
+			desc: {
+				'ja-JP': 'フィードバックのURL'
+			}
+		}
 	}
 };
 
@@ -366,6 +394,10 @@ export default define(meta, async (ps) => {
 
 	if (Array.isArray(ps.hiddenTags)) {
 		set.hiddenTags = ps.hiddenTags;
+	}
+
+	if (Array.isArray(ps.blockedHosts)) {
+		set.blockedHosts = ps.blockedHosts;
 	}
 
 	if (ps.mascotImageUrl !== undefined) {
@@ -514,6 +546,18 @@ export default define(meta, async (ps) => {
 
 	if (ps.swPrivateKey !== undefined) {
 		set.swPrivateKey = ps.swPrivateKey;
+	}
+
+	if (ps.ToSUrl !== undefined) {
+		set.ToSUrl = ps.ToSUrl;
+	}
+
+	if (ps.repositoryUrl !== undefined) {
+		set.repositoryUrl = ps.repositoryUrl;
+	}
+
+	if (ps.feedbackUrl !== undefined) {
+		set.feedbackUrl = ps.feedbackUrl;
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {
