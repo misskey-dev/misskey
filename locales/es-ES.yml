@@ -1003,6 +1003,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "Por hora"
     day: "Por día"
+  blocked-hosts: "Bloquear"
 desktop/views/pages/selectdrive.vue:
   cancel: "Cancelar"
 desktop/views/pages/user-list.users.vue:
