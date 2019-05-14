@@ -1667,6 +1667,7 @@ pages:
     _button:
       text: "Titre"
       _action:
+        dialog: "Afficher une fenêtre de dialogue"
         _dialog:
           content: "Contenu"
   script:
