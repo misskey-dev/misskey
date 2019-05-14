@@ -8,32 +8,13 @@ If you encounter any problems with updating, please try the following:
 Migration
 ------------------------------
 #### 1
-`ormconfig.json`という名前で、Misskeyのインストール場所(package.jsonとかがあるディレクトリ)に新たなファイルを作る。中身は次のようにします:
-``` json
-{
-	"type": "postgres",
-	"host": "PostgreSQLのホスト",
-	"port": 5432,
-	"username": "PostgreSQLのユーザー名",
-	"password": "PostgreSQLのパスワード",
-	"database": "PostgreSQLのデータベース名",
-	"entities": ["src/models/entities/*.ts"],
-	"migrations": ["migration/*.ts"],
-	"cli": {
-		"migrationsDir": "migration"
-	}
-}
-```
-上記の各種PostgreSQLの設定(ポートも)は、設定ファイルに書いてあるものをコピーしてください。
-
-#### 2
 ```
 npm i -g ts-node
 ```
 
-#### 3
+#### 2
 ```
-ts-node ./node_modules/typeorm/cli.js migration:run
+npm run migrate
 ```
 
 How to migrate to v11 from v10
