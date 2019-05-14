@@ -991,6 +991,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"
+  blocked-hosts: "ブロック"
 desktop/views/pages/welcome.vue:
   about: "もうちょい……"
   timeline: "タイムライン"
