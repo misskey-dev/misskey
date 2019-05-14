@@ -948,6 +948,7 @@ admin/views/federation.vue:
     blocked: "Zablokuj"
   chart-srcs:
     requests: "Żądania"
+  blocked-hosts: "Zablokuj"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Oś czasu"
