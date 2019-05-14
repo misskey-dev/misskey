@@ -89,7 +89,6 @@ common:
   update-available-title: "Atualização disponível"
   update-available: "Uma nova versão de Misskey está disponível ({newer}). A versão atual é {current}. Recarregue a página para atualizar."
   my-token-regenerated: "Seu token foi recriado, portanto você foi deslogado."
-  verified-user: "Conta verificada"
   reversi:
     drawn: "Empatado"
     my-turn: "Seu turno"
@@ -129,8 +128,6 @@ auth/views/index.vue:
   please-go-back: "Por favor, volte ao aplicativo."
   error: "A sessão não existe."
   sign-in: "Por favor, entre."
-common/views/pages/explore.vue:
-  verified-users: "Conta verificada"
 common/views/components/games/reversi/reversi.index.vue:
   invite: "Convidar"
   rule: "Como jogar"
@@ -194,10 +191,6 @@ admin/views/instance.vue:
   invite: "Convidar"
 admin/views/drive.vue:
   delete: "Apagar"
-admin/views/users.vue:
-  users:
-    state:
-      verified: "Conta verificada"
 admin/views/emoji.vue:
   emojis:
     remove: "Apagar"

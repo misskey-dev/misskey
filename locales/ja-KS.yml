@@ -121,7 +121,6 @@ common:
   update-available-title: "更新があんで"
   update-available: "Misskeyの新しいバージョンがあんで({newer}。現在{current}をつこてるわ)。ページを再度読み込みしたると更新が適用されるわ。"
   my-token-regenerated: "あんさんのトークンが更新されたらしいわ。すまんがとりあえずサインアウトすんで。"
-  verified-user: "アメちゃん付きアカウント"
   do-not-use-in-production: "開発ビルドや。本番環境で使わんといて！知らんで！"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "ちゃんとした情報見せてや！"
@@ -181,7 +180,6 @@ auth/views/index.vue:
   error: "セッションが存在してへん。"
   sign-in: "サインインしてや"
 common/views/pages/explore.vue:
-  verified-users: "アメちゃん付きアカウント"
   federated: "連合"
 common/views/components/games/reversi/reversi.vue:
   matching:
@@ -899,7 +897,6 @@ admin/views/instance.vue:
   invite: "来てや"
   save: "保存"
   saved: "保存したで！"
-  user-recommendation-config: "このユーザーええで"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使うで。"
   enable-email: "メール配信を有効にする"
@@ -956,7 +953,6 @@ admin/views/users.vue:
     state:
       all: "すべて"
       moderator: "モデレーター"
-      verified: "アメちゃん付きアカウント"
     origin:
       local: "ローカル"
 admin/views/emoji.vue:
@@ -995,6 +991,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"
+  blocked-hosts: "ブロック"
 desktop/views/pages/welcome.vue:
   about: "もうちょい……"
   timeline: "タイムライン"

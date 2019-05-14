@@ -166,7 +166,6 @@ common:
   update-available-title: "Aktualizacja jest dostępna"
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
-  verified-user: "Zweryfikowane konto"
   hide-password: "Ukryj hasło"
   show-password: "Pokaż hasło"
   view-on-remote: "Dla dopełnienia, zobacz to zdalnie."
@@ -218,8 +217,6 @@ auth/views/index.vue:
   please-go-back: "Wróć do aplikacji."
   error: "Sesja nie istnieje."
   sign-in: "Proszę zalogować się."
-common/views/pages/explore.vue:
-  verified-users: "Zweryfikowane konto"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Oczekiwanie na {}"
@@ -877,7 +874,6 @@ admin/views/instance.vue:
   invite: "Zaproś"
   save: "Zapisz"
   saved: "Zapisano"
-  user-recommendation-config: "Polecani użytkownicy"
   email: "Adres e-mail"
 admin/views/charts.vue:
   notes: "Wpisy"
@@ -907,7 +903,6 @@ admin/views/users.vue:
     state:
       all: "Wszyscy"
       moderator: "Moderatorzy"
-      verified: "Zweryfikowane konto"
     origin:
       title: "Źródło"
       local: "Lokalny"
@@ -953,6 +948,7 @@ admin/views/federation.vue:
     blocked: "Zablokuj"
   chart-srcs:
     requests: "Żądania"
+  blocked-hosts: "Zablokuj"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Oś czasu"
