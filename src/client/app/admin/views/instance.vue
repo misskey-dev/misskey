@@ -86,7 +86,7 @@
 	</ui-card>
 
 	<ui-card>
-		<template #title>{{ $t('pinned-users') }}</template>
+		<template #title><fa :icon="faThumbtack"/> {{ $t('pinned-users') }}</template>
 		<section class="fit-top">
 			<ui-textarea v-model="pinnedUsers">
 				<template #desc>{{ $t('pinned-users-info') }}</template>
@@ -149,7 +149,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import { url, host } from '../../config';
 import { toUnicode } from 'punycode';
-import { faHeadset, faShieldAlt, faGhost, faUserPlus, faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faShieldAlt, faGhost, faUserPlus, faBolt, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope as farEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -207,7 +207,7 @@ export default Vue.extend({
 			swPublicKey: null,
 			swPrivateKey: null,
 			pinnedUsers: '',
-			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt
+			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt, faThumbtack
 		};
 	},
 
