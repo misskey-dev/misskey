@@ -54,7 +54,6 @@
 					<span>{{ $t('latest-request-received-at') }}</span>
 					<template #prefix><fa :icon="faInbox"/></template>
 				</ui-input>
-				<ui-switch v-model="instance.isBlocked" @change="updateInstance()">{{ $t('block') }}</ui-switch>
 				<ui-switch v-model="instance.isMarkedAsClosed" @change="updateInstance()">{{ $t('marked-as-closed') }}</ui-switch>
 				<details>
 					<summary>{{ $t('charts') }}</summary>
@@ -142,6 +141,16 @@
 			<ui-info v-if="instances.length == limit">{{ $t('result-is-truncated', { n: limit }) }}</ui-info>
 		</section>
 	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faBan"/> {{ $t('blocked-hosts') }}</template>
+		<section class="fit-top">
+			<ui-textarea v-model="blockedHosts">
+				<template #desc>{{ $t('blocked-hosts-info') }}</template>
+			</ui-textarea>
+			<ui-button @click="saveBlockedHosts">{{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -149,7 +158,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faTrafficLight, faInbox } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faTrafficLight, faInbox } from '@fortawesome/free-solid-svg-icons';
 import ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
 
@@ -176,7 +185,8 @@ export default Vue.extend({
 			chartSrc: 'requests',
 			chartSpan: 'hour',
 			chartInstance: null,
-			faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faPaperPlane, faTrafficLight, faInbox
+			blockedHosts: '',
+			faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faPaperPlane, faTrafficLight, faInbox
 		};
 	},
 
@@ -246,6 +256,10 @@ export default Vue.extend({
 
 	mounted() {
 		this.fetchInstances();
+
+		this.$root.getMeta().then(meta => {
+			this.blockedHosts = meta.blockedHosts.join('\n');
+		});
 	},
 
 	beforeDestroy() {
@@ -477,6 +491,22 @@ export default Vue.extend({
 				}]
 			};
 		},
+
+		saveBlockedHosts() {
+			this.$root.api('admin/update-meta', {
+				blockedHosts: this.blockedHosts.split('\n')
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('saved')
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		}
 	}
 });
 </script>

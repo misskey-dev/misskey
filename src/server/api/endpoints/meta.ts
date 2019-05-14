@@ -165,6 +165,7 @@ export default define(meta, async (ps, me) => {
 		response.useStarForReactionFallback = instance.useStarForReactionFallback;
 		response.pinnedUsers = instance.pinnedUsers;
 		response.hiddenTags = instance.hiddenTags;
+		response.blockedHosts = instance.blockedHosts;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;
 		response.twitterConsumerKey = instance.twitterConsumerKey;

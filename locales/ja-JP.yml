@@ -1486,6 +1486,8 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"
+  blocked-hosts: "ブロック"
+  blocked-hosts-info: "ブロックしたいホストを改行で区切って記述します。"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."

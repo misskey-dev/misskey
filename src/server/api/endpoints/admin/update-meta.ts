@@ -70,6 +70,13 @@ export const meta = {
 			}
 		},
 
+		blockedHosts: {
+			validator: $.optional.nullable.arr($.str),
+			desc: {
+				'ja-JP': 'ブロックするホスト'
+			}
+		},
+
 		mascotImageUrl: {
 			validator: $.optional.nullable.str,
 			desc: {
@@ -387,6 +394,10 @@ export default define(meta, async (ps) => {
 
 	if (Array.isArray(ps.hiddenTags)) {
 		set.hiddenTags = ps.hiddenTags;
+	}
+
+	if (Array.isArray(ps.blockedHosts)) {
+		set.blockedHosts = ps.blockedHosts;
 	}
 
 	if (ps.mascotImageUrl !== undefined) {
