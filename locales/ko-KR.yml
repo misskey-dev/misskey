@@ -1065,7 +1065,6 @@ admin/views/index.vue:
   users: "사용자"
   federation: "연합"
   announcements: "공지사항"
-  hashtags: "해시태그"
   abuse: "스팸 신고"
   queue: "작업 대기열"
   logs: "로그"
