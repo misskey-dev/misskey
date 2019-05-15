@@ -12,7 +12,7 @@ import config from '../../config';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
+import { IImage, convertToJpeg, convertToWebp, convertToPng, convertToGif, convertToApng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
@@ -149,11 +149,15 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		logger.info(`creating web image`);
 
 		if (['image/jpeg'].includes(type)) {
-			webpublic = await ConvertToJpeg(path, 2048, 2048);
+			webpublic = await convertToJpeg(path, 2048, 2048);
 		} else if (['image/webp'].includes(type)) {
-			webpublic = await ConvertToWebp(path, 2048, 2048);
+			webpublic = await convertToWebp(path, 2048, 2048);
 		} else if (['image/png'].includes(type)) {
-			webpublic = await ConvertToPng(path, 2048, 2048);
+			webpublic = await convertToPng(path, 2048, 2048);
+		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+			webpublic = await convertToApng(path);
+		} else if (['image/gif'].includes(type)) {
+			webpublic = await convertToGif(path);
 		} else {
 			logger.info(`web image not created (not an image)`);
 		}
@@ -166,9 +170,11 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	let thumbnail: IImage | null = null;
 
 	if (['image/jpeg', 'image/webp'].includes(type)) {
-		thumbnail = await ConvertToJpeg(path, 498, 280);
+		thumbnail = await convertToJpeg(path, 498, 280);
 	} else if (['image/png'].includes(type)) {
-		thumbnail = await ConvertToPng(path, 498, 280);
+		thumbnail = await convertToPng(path, 498, 280);
+	} else if (['image/gif'].includes(type)) {
+		thumbnail = await convertToGif(path);
 	} else if (type.startsWith('video/')) {
 		try {
 			thumbnail = await GenerateVideoThumbnail(path);
