@@ -1164,6 +1164,7 @@ admin/views/instance.vue:
   save: "保存"
   saved: "保存完毕"
   pinned-users: "置顶用户"
+  pinned-users-info: "描述您要置顶的用户，以换行符分隔。"
   email-config: "电子邮件服务器设置"
   email-config-info: "用于确认电子邮件和密码重置等。"
   enable-email: "启用电子邮件送递"
@@ -1249,6 +1250,8 @@ admin/views/users.vue:
   unsilence-confirm: "解除屏蔽？"
   update-remote-user: "更新远程用户信息"
   remote-user-updated: "远程用户信息已更新"
+  delete-all-files: "删除所有文件"
+  delete-all-files-confirm: "删除所有文件吗？"
   users:
     title: "用户"
     sort:
@@ -1324,6 +1327,7 @@ admin/views/federation.vue:
   latest-request-received-at: "上次收到的请求"
   remove-all-following: "取消所有关注"
   remove-all-following-info: "取消{host}的所有关注者。当实例不存在时执行。"
+  delete-all-files: "删除所有文件"
   block: "拉黑"
   marked-as-closed: "标记为已关闭"
   lookup: "查询"
@@ -1371,6 +1375,7 @@ admin/views/federation.vue:
     hour: "每小时"
     day: "每天"
   blocked-hosts: "拉黑"
+  blocked-hosts-info: "描述您要阻止的主机，以换行符分隔。"
 desktop/views/pages/welcome.vue:
   about: "更多信息..."
   timeline: "时间线"
