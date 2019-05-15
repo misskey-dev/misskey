@@ -472,6 +472,7 @@ common/views/components/nav.vue:
   repository: "代码库"
   develop: "开发人员"
   feedback: "反馈"
+  tos: "服务条款"
 common/views/components/note-menu.vue:
   mention: "提到"
   detail: "详细信息"
@@ -584,6 +585,8 @@ common/views/components/signup.vue:
   password-matched: "确认"
   password-not-matched: "密码不一致"
   recaptcha: "验证"
+  agree-to: "同意{0}"
+  tos: "服务条款"
   create: "创建一个账户"
   some-error: "由于某种原因，创建帐户失败。请再试一次。"
 common/views/components/special-message.vue:
@@ -1089,6 +1092,7 @@ admin/views/instance.vue:
   instance-name: "实例名称"
   instance-description: "实例介绍"
   host: "主机名"
+  icon-url: "图标URL"
   banner-url: "背景图片地址"
   error-image-url: "无效的图像URL"
   languages: "实例语言"
