@@ -1046,7 +1046,6 @@ admin/views/index.vue:
   users: "Utilisateurs"
   federation: "Fédération"
   announcements: "Annonces"
-  hashtags: "Hashtags"
   abuse: "Abus"
   queue: "File d’attente"
   logs: "Journaux"
