@@ -1084,6 +1084,7 @@ admin/views/instance.vue:
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
   drive-config: "Paramètres du lecteur"
+  object-storage-endpoint: "Point de terminaison"
   cache-remote-files: "Mettre en cache des fichiers distants"
   local-drive-capacity-mb: "Volume du lecteur par utilisateur"
   remote-drive-capacity-mb: "Volume du lecteur par utilisateur distant"
