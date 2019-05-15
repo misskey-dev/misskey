@@ -508,6 +508,7 @@ common/views/components/nav.vue:
   repository: "リポジトリ"
   develop: "開発者"
   feedback: "フィードバック"
+  tos: "利用規約"
 
 common/views/components/note-menu.vue:
   mention: "メンション"
@@ -628,6 +629,8 @@ common/views/components/signup.vue:
   password-matched: "確認されました"
   password-not-matched: "一致していません"
   recaptcha: "認証"
+  agree-to: "{0}に同意します。"
+  tos: "利用規約"
   create: "アカウント作成"
   some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
 
@@ -1215,10 +1218,15 @@ admin/views/instance.vue:
   instance-name: "インスタンス名"
   instance-description: "インスタンスの紹介"
   host: "ホスト"
+  icon-url: "アイコンURL"
+  logo-url: "ロゴURL"
   banner-url: "バナー画像URL"
   error-image-url: "エラー画像URL"
   languages: "インスタンスの対象言語"
   languages-desc: "スペースで区切って複数設定できます。"
+  tos-url: "利用規約URL"
+  repository-url: "リポジトリURL"
+  feedback-url: "フィードバックURL"
   maintainer-config: "管理者情報"
   maintainer-name: "管理者名"
   maintainer-email: "管理者の連絡先"
@@ -1270,6 +1278,7 @@ admin/views/instance.vue:
   external-user-recommendation-timeout: "タイムアウト"
   external-user-recommendation-timeout-desc: "ミリ秒単位 (例: 60000)"
   pinned-users: "ピン留めユーザー"
+  pinned-users-info: "ピン留めしたいユーザーを改行で区切って記述します。"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使われます。"
   enable-email: "メール配信を有効にする"
@@ -1438,6 +1447,7 @@ admin/views/federation.vue:
   latest-request-received-at: "直近のリクエスト受信"
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  delete-all-files: "ファイルをすべて削除"
   block: "ブロック"
   marked-as-closed: "閉鎖されているとマーク"
   lookup: "照会"
@@ -1484,6 +1494,8 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"
+  blocked-hosts: "ブロック"
+  blocked-hosts-info: "ブロックしたいホストを改行で区切って記述します。"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."

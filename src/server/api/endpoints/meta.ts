@@ -106,6 +106,9 @@ export default define(meta, async (ps, me) => {
 		uri: config.url,
 		description: instance.description,
 		langs: instance.langs,
+		ToSUrl: instance.ToSUrl,
+		repositoryUrl: instance.repositoryUrl,
+		feedbackUrl: instance.feedbackUrl,
 
 		secure: config.https != null,
 		machine: os.hostname(),
@@ -167,6 +170,7 @@ export default define(meta, async (ps, me) => {
 		response.useStarForReactionFallback = instance.useStarForReactionFallback;
 		response.pinnedUsers = instance.pinnedUsers;
 		response.hiddenTags = instance.hiddenTags;
+		response.blockedHosts = instance.blockedHosts;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;
 		response.twitterConsumerKey = instance.twitterConsumerKey;

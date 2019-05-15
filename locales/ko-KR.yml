@@ -251,7 +251,6 @@ common:
   update-available-title: "업데이트가 있습니다"
   update-available: "Misskey의 새로운 버전이 있습니다 ({newer}. 현재 {current}을 사용 중). 페이지를 다시 로드하면 업데이트가 적용됩니다."
   my-token-regenerated: "당신의 토큰이 업데이트되었으므로 로그아웃합니다."
-  verified-user: "공식 계정"
   hide-password: "비밀번호 숨기기"
   show-password: "비밀번호 표시"
   do-not-use-in-production: "이것은 개발 빌드입니다. 프로덕션 환경에서 사용하지 마십시오."
@@ -294,7 +293,7 @@ common:
     notifications: "알림"
     users: "추천 사용자"
     polls: "투표"
-    post-form: "게시 양식"
+    post-form: "글 입력란"
     server: "서버 정보"
     nav: "내비게이션"
     tips: "팁"
@@ -319,7 +318,7 @@ auth/views/index.vue:
   error: "세션이 존재하지 않습니다."
   sign-in: "로그인 해주시기 바랍니다"
 common/views/pages/explore.vue:
-  verified-users: "공식 계정"
+  pinned-users: "고정된 사용자"
   popular-users: "인기 사용자"
   recently-updated-users: "최근 게시한 사용자"
   recently-registered-users: "신규 사용자"
@@ -473,6 +472,7 @@ common/views/components/nav.vue:
   repository: "저장소"
   develop: "개발자"
   feedback: "피드백"
+  tos: "이용 약관"
 common/views/components/note-menu.vue:
   mention: "멘션"
   detail: "상세"
@@ -585,6 +585,7 @@ common/views/components/signup.vue:
   password-matched: "확인되었습니다"
   password-not-matched: "일치하지 않습니다"
   recaptcha: "자동 가입 방지"
+  tos: "이용 약관"
   create: "계정 만들기"
   some-error: "알 수 없는 이유로 계정 만들기에 실패했습니다. 다시 한번 시도해 주세요."
 common/views/components/special-message.vue:
@@ -1091,10 +1092,15 @@ admin/views/instance.vue:
   instance-name: "인스턴스 이름"
   instance-description: "인스턴스의 소개"
   host: "관리자"
+  icon-url: "아이콘 URL"
+  logo-url: "로고 URL"
   banner-url: "배너 이미지 URL"
   error-image-url: "오류 이미지 URL"
   languages: "인스턴스의 대상 언어"
   languages-desc: "공백으로 구분하여 여러 개 설정할 수 있습니다."
+  tos-url: "이용약관 URL"
+  repository-url: "저장소 URL"
+  feedback-url: "피드백 URL"
   maintainer-config: "관리자 정보"
   maintainer-name: "관리자 이름"
   maintainer-email: "관리자 연락처"
@@ -1139,7 +1145,7 @@ admin/views/instance.vue:
   invite: "초대"
   save: "저장"
   saved: "저장하였습니다"
-  user-recommendation-config: "추천 사용자"
+  pinned-users: "고정된 사용자"
   email-config: "메일 서버 설정"
   email-config-info: "메일 주소 확인 혹은 비밀번호 재설정에 사용 됩니다."
   enable-email: "메일 발신 활성화"
@@ -1223,12 +1229,6 @@ admin/views/users.vue:
   silence-confirm: "침묵으로 설정합니까?"
   unmake-silence: "침묵 해제"
   unsilence-confirm: "침묵 해제하시겠습니까?"
-  verify: "공식 계정으로 설정"
-  verify-confirm: "공식 계정으로 설정하시겠습니까?"
-  verified: "공식 계정으로 설정하였습니다"
-  unverify: "공식 계정 해제"
-  unverify-confirm: "공식 계정을 해제하시겠습니까?"
-  unverified: "공식 계정을 해제하였습니다"
   update-remote-user: "원격 사용자 정보 갱신"
   remote-user-updated: "원격 사용자 정보를 갱신하였습니다"
   users:
@@ -1245,7 +1245,6 @@ admin/views/users.vue:
       admin: "관리자"
       moderator: "모더레이터"
       adminOrModerator: "관리자+모더레이터"
-      verified: "공식 계정"
       silenced: "침묵됨"
       suspended: "정지됨"
     origin:
@@ -1353,6 +1352,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1시간마다"
     day: "1일마다"
+  blocked-hosts: "차단"
 desktop/views/pages/welcome.vue:
   about: "자세히..."
   timeline: "타임라인"
@@ -1652,42 +1652,224 @@ pages:
   page-created: "페이지를 만들었습니다"
   page-updated: "페이지를 수정했습니다"
   are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
+  page-deleted: "페이지가 삭제되었습니다"
+  edit-this-page: "이 페이지를 편집"
+  view-source: "소스 보기"
+  view-page: "페이지 보기"
+  inspector: "인스펙터"
+  content: "페이지 블록"
+  variables: "변수"
+  more-details: "자세한 설명"
   title: "제목"
+  url: "페이지 URL"
+  summary: "페이지 요약"
+  align-center: "가운데 정렬"
+  font: "글꼴"
+  fontSerif: "세리프"
+  fontSansSerif: "산 세리프"
+  set-eye-catching-image: "아이캐치 이미지를 설정"
+  remove-eye-catching-image: "아이캐치 이미지를 삭제"
+  choose-block: "블록 추가"
+  select-type: "종류 선택"
+  enter-variable-name: "변수명을 설정해주십시오"
+  the-variable-name-is-already-used: "그 변수명은 이미 사용중입니다"
+  content-blocks: "콘텐츠"
+  input-blocks: "입력"
+  special-blocks: "특수"
+  post-from-post-form: "이 내용을 올리기"
+  posted-from-post-form: "게시하였습니다"
   blocks:
+    text: "텍스트"
+    textarea: "텍스트 영역"
+    section: "섹션"
     image: "이미지"
-    post: "게시 양식"
+    button: "버튼"
+    if: "만약"
+    _if:
+      variable: "변수"
+    post: "글 입력란"
     _post:
       text: "내용"
+    textInput: "텍스트 입력"
     _textInput:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    textareaInput: "여러 줄 텍스트 입력"
     _textareaInput:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    numberInput: "수치 입력"
     _numberInput:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    switch: "스위치"
     _switch:
+      name: "변수명"
       text: "제목"
+      default: "기본값"
+    counter: "카운터"
     _counter:
+      name: "변수명"
       text: "제목"
+      inc: "증가치"
     _button:
       text: "제목"
+      action: "버튼을 눌렀을 때의 동작"
       _action:
+        dialog: "대화상자를 표시"
         _dialog:
           content: "내용"
+        resetRandom: "난수를 초기화"
   script:
     categories:
+      flow: "흐름 제어"
+      logical: "논리 연산"
+      operation: "계산"
+      comparison: "비교"
       random: "랜덤"
+      value: "값"
+      fn: "함수"
+      text: "텍스트 조작"
+      convert: "변환"
       list: "리스트"
     blocks:
+      text: "텍스트"
+      multiLineText: "텍스트 (여러줄)"
+      textList: "텍스트 목록"
+      strLen: "텍스트의 길이"
+      _strLen:
+        arg1: "텍스트"
+      strPick: "문자 추출"
+      _strPick:
+        arg1: "텍스트"
+        arg2: "문자 위치"
+      strReplace: "텍스트 치환"
+      _strReplace:
+        arg1: "텍스트"
+        arg2: "치환 전"
+        arg3: "치환 후"
+      strReverse: "텍스트 뒤집기"
+      _strReverse:
+        arg1: "텍스트"
+      join: "텍스트 접합"
       _join:
         arg1: "리스트"
+        arg2: "구분자"
+      add: "+ 더하기"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- 빼기"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× 곱하기"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ 나누기"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      remind: "÷ 나눈 나머지"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      eq: "A와 B가 동일"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A와 B가 다름"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A 그리고 B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A 혹은 B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< A가 B보다 작음"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> A가 B보다 큼"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A가 B보다 작거나 같음"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A가 B보다 크거나 같음"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "분기"
+      _if:
+        arg1: "만약"
+        arg2: "그러면"
+        arg3: "그렇지 않으면"
+      not: "부정"
+      _not:
+        arg1: "부정"
       random: "랜덤"
+      _random:
+        arg1: "확률"
+      rannum: "난수"
+      _rannum:
+        arg1: "최소"
+        arg2: "최대"
+      randomPick: "목록에서 임의로 선택"
       _randomPick:
         arg1: "리스트"
+      _dailyRandom:
+        arg1: "확률"
+      _dailyRannum:
+        arg1: "최소"
+        arg2: "최대"
       _dailyRandomPick:
         arg1: "리스트"
+      _seedRandom:
+        arg1: "시드"
+        arg2: "확률"
+      _seedRannum:
+        arg1: "시드"
+        arg2: "최소"
+        arg3: "최대"
       _seedRandomPick:
+        arg1: "시드"
         arg2: "리스트"
+      _DRPWPM:
+        arg1: "텍스트 목록"
       _pick:
         arg1: "리스트"
+      number: "수치"
+      stringToNumber: "텍스트를 수치로"
+      _stringToNumber:
+        arg1: "텍스트"
+      _numberToString:
+        arg1: "수치"
+      _splitStrByLine:
+        arg1: "텍스트"
+      ref: "변수"
+      fn: "함수"
+      _fn:
+        slots: "슬롯"
+        arg1: "출력"
+    thereIsEmptySlot: "슬롯 {slot}이(가) 비었습니다!"
     types:
+      string: "텍스트"
+      number: "수치"
+      boolean: "플래그"
       array: "리스트"
+      stringArray: "텍스트 목록"
+    emptySlot: "빈 슬롯"
+    enviromentVariables: "환경 변수"
+    pageVariables: "페이지 요소"
+    argVariables: "입력 슬롯"

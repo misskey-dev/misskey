@@ -285,4 +285,24 @@ export class Meta {
 		comment: 'milliseconds'
 	})
 	public externalUserRecommendationTimeout: number;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public ToSUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		default: 'https://github.com/syuilo/misskey',
+		nullable: false
+	})
+	public repositoryUrl: string;
+
+	@Column('varchar', {
+		length: 512,
+		default: 'https://github.com/syuilo/misskey/issues/new',
+		nullable: true
+	})
+	public feedbackUrl: string | null;
 }
