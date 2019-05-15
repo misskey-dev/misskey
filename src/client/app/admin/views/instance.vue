@@ -2,7 +2,7 @@
 <div>
 	<ui-card>
 		<template #title><fa icon="cog"/> {{ $t('instance') }}</template>
-		<section class="fit-top fit-bottom">
+		<section class="fit-top">
 			<ui-input :value="host" readonly>{{ $t('host') }}</ui-input>
 			<ui-input v-model="name">{{ $t('instance-name') }}</ui-input>
 			<ui-textarea v-model="description">{{ $t('instance-description') }}</ui-textarea>
@@ -11,49 +11,63 @@
 			<ui-input v-model="bannerUrl"><template #icon><fa icon="link"/></template>{{ $t('banner-url') }}</ui-input>
 			<ui-input v-model="errorImageUrl"><template #icon><fa icon="link"/></template>{{ $t('error-image-url') }}</ui-input>
 			<ui-input v-model="ToSUrl"><template #icon><fa icon="link"/></template>{{ $t('tos-url') }}</ui-input>
-			<ui-input v-model="repositoryUrl"><template #icon><fa icon="link"/></template>{{ $t('repository-url') }}</ui-input>
-			<ui-input v-model="feedbackUrl"><template #icon><fa icon="link"/></template>{{ $t('feedback-url') }}</ui-input>
 			<ui-input v-model="languages"><template #icon><fa icon="language"/></template>{{ $t('languages') }}<template #desc>{{ $t('languages-desc') }}</template></ui-input>
+			<details>
+				<summary>{{ $t('advanced-config') }}</summary>
+				<ui-input v-model="repositoryUrl"><template #icon><fa icon="link"/></template>{{ $t('repository-url') }}</ui-input>
+				<ui-input v-model="feedbackUrl"><template #icon><fa icon="link"/></template>{{ $t('feedback-url') }}</ui-input>
+			</details>
 		</section>
 		<section class="fit-bottom">
 			<header><fa :icon="faHeadset"/> {{ $t('maintainer-config') }}</header>
 			<ui-input v-model="maintainerName">{{ $t('maintainer-name') }}</ui-input>
 			<ui-input v-model="maintainerEmail" type="email"><template #icon><fa :icon="farEnvelope"/></template>{{ $t('maintainer-email') }}</ui-input>
 		</section>
+		<section>
+			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
+			<ui-button v-if="disableRegistration" @click="invite">{{ $t('invite') }}</ui-button>
+		</section>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faPencilAlt"/> {{ $t('note-and-tl') }}</template>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="maxNoteTextLength">{{ $t('max-note-text-length') }}</ui-input>
 		</section>
 		<section>
-			<ui-switch v-model="disableRegistration">{{ $t('disable-registration') }}</ui-switch>
 			<ui-switch v-model="disableLocalTimeline">{{ $t('disable-local-timeline') }}</ui-switch>
 			<ui-switch v-model="disableGlobalTimeline">{{ $t('disable-global-timeline') }}</ui-switch>
 			<ui-info>{{ $t('disabling-timelines-info') }}</ui-info>
+		</section>
+		<section>
 			<ui-switch v-model="enableEmojiReaction">{{ $t('enable-emoji-reaction') }}</ui-switch>
 			<ui-switch v-model="useStarForReactionFallback">{{ $t('use-star-for-reaction-fallback') }}</ui-switch>
 		</section>
-		<section class="fit-bottom">
-			<header><fa icon="cloud"/> {{ $t('drive-config') }}</header>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa icon="cloud"/> {{ $t('drive-config') }}</template>
+		<section>
 			<ui-switch v-model="cacheRemoteFiles">{{ $t('cache-remote-files') }}<template #desc>{{ $t('cache-remote-files-desc') }}</template></ui-switch>
+		</section>
+		<section class="fit-top fit-bottom">
 			<ui-input v-model="localDriveCapacityMb" type="number">{{ $t('local-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
 			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('remote-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
 		</section>
-		<section class="fit-bottom">
-			<header><fa :icon="faShieldAlt"/> {{ $t('recaptcha-config') }}</header>
-			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
-			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
-			<ui-horizon-group inputs>
-				<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-site-key') }}</ui-input>
-				<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-secret-key') }}</ui-input>
-			</ui-horizon-group>
-		</section>
 		<section>
-			<header><fa :icon="faGhost"/> {{ $t('proxy-account-config') }}</header>
-			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
-			<ui-input v-model="proxyAccount"><template #prefix>@</template>{{ $t('proxy-account-username') }}<template #desc>{{ $t('proxy-account-username-desc') }}</template></ui-input>
-			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="farEnvelope"/> {{ $t('email-config') }}</template>
 		<section>
-			<header><fa :icon="farEnvelope"/> {{ $t('email-config') }}</header>
 			<ui-switch v-model="enableEmail">{{ $t('enable-email') }}<template #desc>{{ $t('email-config-info') }}</template></ui-switch>
 			<ui-input v-model="email" type="email" :disabled="!enableEmail">{{ $t('email') }}</ui-input>
 			<ui-horizon-group inputs>
@@ -63,12 +77,30 @@
 			<ui-switch v-model="smtpAuth">{{ $t('smtp-auth') }}</ui-switch>
 			<ui-horizon-group inputs>
 				<ui-input v-model="smtpUser" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-user') }}</ui-input>
-				<ui-input v-model="smtpPass" type="password" :withPasswordToggle="true" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-pass') }}</ui-input>
+				<ui-input v-model="smtpPass" type="password" :with-password-toggle="true" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-pass') }}</ui-input>
 			</ui-horizon-group>
 			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<template #desc>{{ $t('smtp-secure-info') }}</template></ui-switch>
 		</section>
 		<section>
-			<header><fa :icon="faBolt"/> {{ $t('serviceworker-config') }}</header>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faGhost"/> {{ $t('proxy-account-config') }}</template>
+		<section>
+			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
+			<ui-input v-model="proxyAccount"><template #prefix>@</template>{{ $t('proxy-account-username') }}<template #desc>{{ $t('proxy-account-username-desc') }}</template></ui-input>
+			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
+		</section>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faBolt"/> {{ $t('serviceworker-config') }}</template>
+		<section>
 			<ui-switch v-model="enableServiceWorker">{{ $t('enable-serviceworker') }}<template #desc>{{ $t('serviceworker-info') }}</template></ui-switch>
 			<ui-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></ui-info>
 			<ui-horizon-group inputs class="fit-bottom">
@@ -77,11 +109,22 @@
 			</ui-horizon-group>
 		</section>
 		<section>
-			<header>summaly Proxy</header>
-			<ui-input v-model="summalyProxy">URL</ui-input>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faShieldAlt"/> {{ $t('recaptcha-config') }}</template>
+		<section class="fit-bottom">
+			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
+			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
+			<ui-horizon-group inputs>
+				<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-site-key') }}</ui-input>
+				<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-secret-key') }}</ui-input>
+			</ui-horizon-group>
 		</section>
 		<section>
-			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 
@@ -91,56 +134,67 @@
 			<ui-textarea v-model="pinnedUsers">
 				<template #desc>{{ $t('pinned-users-info') }}</template>
 			</ui-textarea>
-			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
 
 	<ui-card>
-		<template #title>{{ $t('invite') }}</template>
+		<template #title><fa :icon="faShieldAlt"/> {{ $t('external-service-integration-config') }}</template>
 		<section>
-			<ui-button @click="invite">{{ $t('invite') }}</ui-button>
-			<p v-if="inviteCode">Code: <code>{{ inviteCode }}</code></p>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<template #title><fa :icon="['fab', 'twitter']"/> {{ $t('twitter-integration-config') }}</template>
-		<section>
+			<header><fa :icon="['fab', 'twitter']"/> {{ $t('twitter-integration-config') }}</header>
 			<ui-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</ui-switch>
 			<ui-horizon-group>
 				<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa icon="key"/></template>{{ $t('twitter-integration-consumer-key') }}</ui-input>
 				<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa icon="key"/></template>{{ $t('twitter-integration-consumer-secret') }}</ui-input>
 			</ui-horizon-group>
 			<ui-info>{{ $t('twitter-integration-info', { url: `${url}/api/tw/cb` }) }}</ui-info>
-			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
-	</ui-card>
-
-	<ui-card>
-		<template #title><fa :icon="['fab', 'github']"/> {{ $t('github-integration-config') }}</template>
 		<section>
+			<header><fa :icon="['fab', 'github']"/> {{ $t('github-integration-config') }}</header>
 			<ui-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</ui-switch>
 			<ui-horizon-group>
 				<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa icon="key"/></template>{{ $t('github-integration-client-id') }}</ui-input>
 				<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa icon="key"/></template>{{ $t('github-integration-client-secret') }}</ui-input>
 			</ui-horizon-group>
 			<ui-info>{{ $t('github-integration-info', { url: `${url}/api/gh/cb` }) }}</ui-info>
-			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
 		</section>
-	</ui-card>
-
-	<ui-card>
-		<template #title><fa :icon="['fab', 'discord']"/> {{ $t('discord-integration-config') }}</template>
 		<section>
+			<header><fa :icon="['fab', 'discord']"/> {{ $t('discord-integration-config') }}</header>
 			<ui-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</ui-switch>
 			<ui-horizon-group>
 				<ui-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa icon="key"/></template>{{ $t('discord-integration-client-id') }}</ui-input>
 				<ui-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa icon="key"/></template>{{ $t('discord-integration-client-secret') }}</ui-input>
 			</ui-horizon-group>
 			<ui-info>{{ $t('discord-integration-info', { url: `${url}/api/dc/cb` }) }}</ui-info>
-			<ui-button @click="updateMeta">{{ $t('save') }}</ui-button>
+		</section>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</section>
 	</ui-card>
+
+	<details>
+		<summary style="color:var(--text);">{{ $t('advanced-config') }}</summary>
+
+		<ui-card>
+			<template #title><fa :icon="faHashtag"/> {{ $t('hidden-tags') }}</template>
+			<section class="fit-top">
+				<ui-textarea v-model="hiddenTags">
+					<template #desc>{{ $t('hidden-tags-info') }}</template>
+				</ui-textarea>
+				<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+			</section>
+		</ui-card>
+
+		<ui-card>
+			<template #title>summaly Proxy</template>
+			<section class="fit-top fit-bottom">
+				<ui-input v-model="summalyProxy">URL</ui-input>
+			</section>
+			<section>
+				<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+			</section>
+		</ui-card>
+	</details>
 </div>
 </template>
 
@@ -149,8 +203,8 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import { url, host } from '../../config';
 import { toUnicode } from 'punycode';
-import { faHeadset, faShieldAlt, faGhost, faUserPlus, faBolt, faThumbtack } from '@fortawesome/free-solid-svg-icons';
-import { faEnvelope as farEnvelope } from '@fortawesome/free-regular-svg-icons';
+import { faHeadset, faShieldAlt, faGhost, faUserPlus, faBolt, faThumbtack, faPencilAlt, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope as farEnvelope, faSave } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/instance.vue'),
@@ -193,7 +247,6 @@ export default Vue.extend({
 			discordClientId: null,
 			discordClientSecret: null,
 			proxyAccount: null,
-			inviteCode: null,
 			summalyProxy: null,
 			enableEmail: false,
 			email: null,
@@ -207,7 +260,8 @@ export default Vue.extend({
 			swPublicKey: null,
 			swPrivateKey: null,
 			pinnedUsers: '',
-			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt, faThumbtack
+			hiddenTags: '',
+			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt, faThumbtack, faPencilAlt, faSave, faHashtag
 		};
 	},
 
@@ -260,13 +314,17 @@ export default Vue.extend({
 			this.swPublicKey = meta.swPublickey;
 			this.swPrivateKey = meta.swPrivateKey;
 			this.pinnedUsers = meta.pinnedUsers.join('\n');
+			this.hiddenTags = meta.hiddenTags.join('\n');
 		});
 	},
 
 	methods: {
 		invite() {
 			this.$root.api('admin/invite').then(x => {
-				this.inviteCode = x.code;
+				this.$root.dialog({
+					type: 'info',
+					text: x.code
+				});
 			}).catch(e => {
 				this.$root.dialog({
 					type: 'error',
@@ -322,7 +380,8 @@ export default Vue.extend({
 				enableServiceWorker: this.enableServiceWorker,
 				swPublicKey: this.swPublicKey,
 				swPrivateKey: this.swPrivateKey,
-				pinnedUsers: this.pinnedUsers.split('\n')
+				pinnedUsers: this.pinnedUsers.split('\n'),
+				hiddenTags: this.hiddenTags.split('\n'),
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
