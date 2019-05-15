@@ -9,8 +9,9 @@
 			<ui-button @click="showUser"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 
 			<div class="user" v-if="user">
-				<x-user :user='user'/>
+				<x-user :user="user"/>
 				<div class="actions">
+					<ui-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('update-remote-user') }}</ui-button>
 					<ui-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('reset-password') }}</ui-button>
 					<ui-horizon-group>
 						<ui-button @click="silenceUser"><fa :icon="faMicrophoneSlash"/> {{ $t('make-silence') }}</ui-button>
@@ -20,7 +21,7 @@
 						<ui-button @click="suspendUser" :disabled="suspending"><fa :icon="faSnowflake"/> {{ $t('suspend') }}</ui-button>
 						<ui-button @click="unsuspendUser" :disabled="unsuspending">{{ $t('unsuspend') }}</ui-button>
 					</ui-horizon-group>
-					<ui-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('update-remote-user') }}</ui-button>
+					<ui-button @click="deleteAllFiles"><fa :icon="faTrashAlt"/> {{ $t('delete-all-files') }}</ui-button>
 					<ui-textarea v-if="user" :value="user | json5" readonly tall style="margin-top:16px;"></ui-textarea>
 				</div>
 			</div>
@@ -67,7 +68,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import parseAcct from "../../../../misc/acct/parse";
 import { faUsers, faTerminal, faSearch, faKey, faSync, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
-import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
+import { faSnowflake, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XUser from './users.user.vue';
 
 export default Vue.extend({
@@ -88,7 +89,7 @@ export default Vue.extend({
 			offset: 0,
 			users: [],
 			existMore: false,
-			faTerminal, faUsers, faSnowflake, faSearch, faKey, faSync, faMicrophoneSlash
+			faTerminal, faUsers, faSnowflake, faSearch, faKey, faSync, faMicrophoneSlash, faTrashAlt
 		};
 	},
 
@@ -275,6 +276,25 @@ export default Vue.extend({
 			});
 
 			this.refreshUser();
+		},
+
+		async deleteAllFiles() {
+			if (!await this.getConfirmed(this.$t('delete-all-files-confirm'))) return;
+
+			const process = async () => {
+				await this.$root.api('admin/delete-all-files-of-a-user', { userId: this.user.id });
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
 		},
 
 		async getConfirmed(text: string): Promise<Boolean> {

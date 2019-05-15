@@ -1365,6 +1365,8 @@ admin/views/users.vue:
   unsilence-confirm: "サイレンスを解除しますか？"
   update-remote-user: "リモートユーザー情報の更新"
   remote-user-updated: "リモートユーザー情報を更新しました"
+  delete-all-files: "すべてのファイルを削除"
+  delete-all-files-confirm: "すべてのファイルを削除しますか？"
   users:
     title: "ユーザー"
     sort:
