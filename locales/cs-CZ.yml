@@ -897,6 +897,7 @@ admin/views/instance.vue:
   maintainer-config: "Informace o administrátorovi"
   maintainer-name: "Jméno administrátora"
   maintainer-email: "Kontakt na administrátora"
+  object-storage-endpoint: "Endpoint"
   mb: "V megabajtech"
   recaptcha-config: "nastavení služby reCAPTCHA"
   recaptcha-info: "reCAPTCHA token je povinný. Můžete jej získat na https://www.google.com/recaptcha/intro/"
