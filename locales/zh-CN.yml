@@ -1063,7 +1063,6 @@ admin/views/index.vue:
   users: "用户"
   federation: "联合"
   announcements: "公告"
-  hashtags: "标签"
   abuse: "举报垃圾信息"
   queue: "作业队列"
   logs: "登录"
