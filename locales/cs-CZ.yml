@@ -873,7 +873,6 @@ admin/views/index.vue:
   users: "Uživatelé"
   federation: "Z fedivesmíru"
   announcements: "Oznámení"
-  hashtags: "Hashtagy"
   queue: "Fronta úloh"
   logs: "Logy"
   back-to-misskey: "Zpět na Misskey"
