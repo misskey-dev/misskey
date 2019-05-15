@@ -855,7 +855,6 @@ admin/views/index.vue:
   moderators: "Moderatorzy"
   users: "Użytkownicy"
   announcements: "Ogłoszenia"
-  hashtags: "Hashtagi"
 admin/views/dashboard.vue:
   dashboard: "Kokpit"
   accounts: "Konta"
