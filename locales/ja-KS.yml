@@ -836,7 +836,6 @@ admin/views/index.vue:
   users: "ユーザー"
   federation: "連合"
   announcements: "知っといてや"
-  hashtags: "ハッシュタグ"
   back-to-misskey: "Misskeyに戻る"
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
