@@ -27,13 +27,6 @@ export type Source = {
 		port: number;
 		pass: string;
 	};
-	drive?: {
-		storage: string;
-		bucket?: string;
-		prefix?: string;
-		baseUrl?: string;
-		config?: any;
-	};
 
 	autoAdmin?: boolean;
 

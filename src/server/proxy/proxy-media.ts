@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as Koa from 'koa';
 import { serverLogger } from '..';
-import { IImage, ConvertToPng, ConvertToJpeg } from '../../services/drive/image-processor';
+import { IImage, convertToPng, convertToJpeg } from '../../services/drive/image-processor';
 import { createTemp } from '../../misc/create-temp';
 import { downloadUrl } from '../../misc/donwload-url';
 import { detectMine } from '../../misc/detect-mine';
@@ -20,9 +20,9 @@ export async function proxyMedia(ctx: Koa.BaseContext) {
 		let image: IImage;
 
 		if ('static' in ctx.query && ['image/png', 'image/gif'].includes(type)) {
-			image = await ConvertToPng(path, 498, 280);
+			image = await convertToPng(path, 498, 280);
 		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif'].includes(type)) {
-			image = await ConvertToJpeg(path, 200, 200);
+			image = await convertToJpeg(path, 200, 200);
 		} else {
 			image = {
 				data: fs.readFileSync(path),

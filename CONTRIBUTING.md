@@ -199,7 +199,7 @@ const user = await Users.findOne(userId).then(ensure);
 ```
 
 ### Migration作成方法
-コードの変更をした後、`ormconfig.json`（書き方はCONTRIBUTING.mdを参照）を用意し、
+コードの変更をした後、`ormconfig.json`（`npm run ormconfig`で生成）を用意し、
 
 ```
 npm i -g ts-node

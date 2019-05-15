@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "11.13.0",
+	"version": "11.14.0",
 	"codename": "daybreak",
 	"repository": {
 		"type": "git",
@@ -12,6 +12,8 @@
 	"scripts": {
 		"start": "node ./index.js",
 		"init": "node ./built/init.js",
+		"ormconfig": "node ./built/ormconfig.js",
+		"migrate": "npm run ormconfig && ts-node ./node_modules/typeorm/cli.js migration:run",
 		"build": "webpack && gulp build",
 		"webpack": "webpack",
 		"watch": "webpack --watch",

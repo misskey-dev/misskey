@@ -8,32 +8,13 @@ If you encounter any problems with updating, please try the following:
 Migration
 ------------------------------
 #### 1
-`ormconfig.json`という名前で、Misskeyのインストール場所(package.jsonとかがあるディレクトリ)に新たなファイルを作る。中身は次のようにします:
-``` json
-{
-	"type": "postgres",
-	"host": "PostgreSQLのホスト",
-	"port": 5432,
-	"username": "PostgreSQLのユーザー名",
-	"password": "PostgreSQLのパスワード",
-	"database": "PostgreSQLのデータベース名",
-	"entities": ["src/models/entities/*.ts"],
-	"migrations": ["migration/*.ts"],
-	"cli": {
-		"migrationsDir": "migration"
-	}
-}
-```
-上記の各種PostgreSQLの設定(ポートも)は、設定ファイルに書いてあるものをコピーしてください。
-
-#### 2
 ```
 npm i -g ts-node
 ```
 
-#### 3
+#### 2
 ```
-ts-node ./node_modules/typeorm/cli.js migration:run
+npm run migrate
 ```
 
 How to migrate to v11 from v10
@@ -73,6 +54,20 @@ mongodb:
 8. master ブランチに戻す
 9. enjoy
 
+11.14.0 (2019/05/16)
+--------------------
+### 注意
+このバージョンからオブジェクトストレージの設定は設定ファイルではなく管理画面から行うようになりました。
+オブジェクトストレージを使用している場合、アップデートした後管理画面にアクセスしオブジェクトストレージの設定を再度行ってください。
+
+### ✨Improvements
+* 特定のユーザーのファイルをすべて削除できるように
+* インスタンスの設定画面を整理
+
+### 🐛Fixes
+* GIF画像のサムネイルが生成されないのを修正
+* 管理画面の「ログ」で複数の除外条件を設定できない問題を修正
+
 11.13.0 (2019/05/14)
 --------------------
 ### 注意
@@ -85,12 +80,13 @@ mongodb:
 * ユーザーや外部インスタンスが生成するリンクにnofollowを追加
 * リモートのユーザーページやノートページにnoindexを追加
 * 自分のユーザーメニューにはミュートなどを表示しないように
+* デザインの調整
 
 ### 🐛Fixes
 * インスタンスブロックを設定できない問題を修正
 * ピン留め投稿の表示順がおかしい問題を修正
 * 設定の「アップデートを確認」でメッセージが正しく表示されない問題を修正
-* FFirefoxで自分のメニューが開けない問題を修正
+* Firefoxで自分のメニューが開けない問題を修正
 * Welcomeページのタグクラウドが動かない問題を修正
 
 11.12.0 (2019/05/10)
