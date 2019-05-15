@@ -8,7 +8,6 @@ import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
 import delFile from './delete-file';
-import config from '../../config';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
@@ -37,7 +36,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 	// thunbnail, webpublic を必要なら生成
 	const alts = await generateAlts(path, type, !file.uri);
 
-	if (config.drive && config.drive.storage == 'minio') {
+	const meta = await fetchMeta();
+
+	if (meta.useObjectStorage) {
 		//#region ObjectStorage params
 		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
 
@@ -47,11 +48,11 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/webp') ext = '.webp';
 		}
 
-		const baseUrl = config.drive.baseUrl
-			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
+		const baseUrl = meta.objectStorageBaseUrl
+			|| `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
 
 		// for original
-		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const key = `${meta.objectStoragePrefix}/${uuid.v4()}${ext}`;
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
@@ -68,7 +69,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		];
 
 		if (alts.webpublic) {
-			webpublicKey = `${config.drive.prefix}/${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.webpublic.ext}`;
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
@@ -76,7 +77,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		}
 
 		if (alts.thumbnail) {
-			thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -194,7 +195,15 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
  * Upload to ObjectStorage
  */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
-	const minio = new Minio.Client(config.drive!.config);
+	const meta = await fetchMeta();
+
+	const minio = new Minio.Client({
+		endPoint: meta.objectStorageEndpoint!,
+		port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
+		useSSL: meta.objectStorageUseSSL,
+		accessKey: meta.objectStorageAccessKey!,
+		secretKey: meta.objectStorageSecretKey!,
+	});
 
 	const metadata = {
 		'Content-Type': type,
@@ -203,7 +212,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
 
-	await minio.putObject(config.drive!.bucket!, key, stream, undefined, metadata);
+	await minio.putObject(meta.objectStorageBucket!, key, stream, undefined, metadata);
 }
 
 async function deleteOldFile(user: IRemoteUser) {

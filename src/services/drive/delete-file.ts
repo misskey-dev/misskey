@@ -1,9 +1,9 @@
 import * as Minio from 'minio';
-import config from '../../config';
 import { DriveFile } from '../../models/entities/drive-file';
 import { InternalStorage } from './internal-storage';
 import { DriveFiles, Instances, Notes } from '../../models';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
+import { fetchMeta } from '../../misc/fetch-meta';
 
 export default async function(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
@@ -17,16 +17,24 @@ export default async function(file: DriveFile, isExpired = false) {
 			InternalStorage.del(file.webpublicAccessKey!);
 		}
 	} else if (!file.isLink) {
-		const minio = new Minio.Client(config.drive!.config);
+		const meta = await fetchMeta();
 
-		await minio.removeObject(config.drive!.bucket!, file.accessKey!);
+		const minio = new Minio.Client({
+			endPoint: meta.objectStorageEndpoint!,
+			port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
+			useSSL: meta.objectStorageUseSSL,
+			accessKey: meta.objectStorageAccessKey!,
+			secretKey: meta.objectStorageSecretKey!,
+		});
+
+		await minio.removeObject(meta.objectStorageBucket!, file.accessKey!);
 
 		if (file.thumbnailUrl) {
-			await minio.removeObject(config.drive!.bucket!, file.thumbnailAccessKey!);
+			await minio.removeObject(meta.objectStorageBucket!, file.thumbnailAccessKey!);
 		}
 
 		if (file.webpublicUrl) {
-			await minio.removeObject(config.drive!.bucket!, file.webpublicAccessKey!);
+			await minio.removeObject(meta.objectStorageBucket!, file.webpublicAccessKey!);
 		}
 	}
 

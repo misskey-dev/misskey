@@ -54,74 +54,37 @@
 	<ui-card>
 		<template #title><fa icon="cloud"/> {{ $t('drive-config') }}</template>
 		<section>
+			<ui-switch v-model="useObjectStorage">{{ $t('use-object-storage') }}</ui-switch>
+			<template v-if="useObjectStorage">
+				<ui-info>
+					<i18n path="object-storage-s3-info">
+						<a href="https://docs.aws.amazon.com/general/latest/gr/rande.html" target="_blank">{{ $t('object-storage-s3-info-here') }}</a>
+					</i18n>
+				</ui-info>
+				<ui-info>{{ $t('object-storage-gcs-info') }}</ui-info>
+				<ui-input v-model="objectStorageBaseUrl" :disabled="!useObjectStorage">{{ $t('object-storage-base-url') }}</ui-input>
+				<ui-horizon-group inputs>
+					<ui-input v-model="objectStorageBucket" :disabled="!useObjectStorage">{{ $t('object-storage-bucket') }}</ui-input>
+					<ui-input v-model="objectStoragePrefix" :disabled="!useObjectStorage">{{ $t('object-storage-prefix') }}</ui-input>
+				</ui-horizon-group>
+				<ui-input v-model="objectStorageEndpoint" :disabled="!useObjectStorage">{{ $t('object-storage-endpoint') }}</ui-input>
+				<ui-horizon-group inputs>
+					<ui-input v-model="objectStorageRegion" :disabled="!useObjectStorage">{{ $t('object-storage-region') }}</ui-input>
+					<ui-input v-model="objectStoragePort" type="number" :disabled="!useObjectStorage">{{ $t('object-storage-port') }}</ui-input>
+				</ui-horizon-group>
+				<ui-horizon-group inputs>
+					<ui-input v-model="objectStorageAccessKey" :disabled="!useObjectStorage"><template #icon><fa icon="key"/></template>{{ $t('object-storage-access-key') }}</ui-input>
+					<ui-input v-model="objectStorageSecretKey" :disabled="!useObjectStorage"><template #icon><fa icon="key"/></template>{{ $t('object-storage-secret-key') }}</ui-input>
+				</ui-horizon-group>
+				<ui-switch v-model="objectStorageUseSSL" :disabled="!useObjectStorage">{{ $t('object-storage-use-ssl') }}</ui-switch>
+			</template>
+		</section>
+		<section>
 			<ui-switch v-model="cacheRemoteFiles">{{ $t('cache-remote-files') }}<template #desc>{{ $t('cache-remote-files-desc') }}</template></ui-switch>
 		</section>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="localDriveCapacityMb" type="number">{{ $t('local-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
 			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('remote-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
-		</section>
-		<section>
-			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<template #title><fa :icon="farEnvelope"/> {{ $t('email-config') }}</template>
-		<section>
-			<ui-switch v-model="enableEmail">{{ $t('enable-email') }}<template #desc>{{ $t('email-config-info') }}</template></ui-switch>
-			<ui-input v-model="email" type="email" :disabled="!enableEmail">{{ $t('email') }}</ui-input>
-			<ui-horizon-group inputs>
-				<ui-input v-model="smtpHost" :disabled="!enableEmail">{{ $t('smtp-host') }}</ui-input>
-				<ui-input v-model="smtpPort" type="number" :disabled="!enableEmail">{{ $t('smtp-port') }}</ui-input>
-			</ui-horizon-group>
-			<ui-switch v-model="smtpAuth">{{ $t('smtp-auth') }}</ui-switch>
-			<ui-horizon-group inputs>
-				<ui-input v-model="smtpUser" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-user') }}</ui-input>
-				<ui-input v-model="smtpPass" type="password" :with-password-toggle="true" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-pass') }}</ui-input>
-			</ui-horizon-group>
-			<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<template #desc>{{ $t('smtp-secure-info') }}</template></ui-switch>
-		</section>
-		<section>
-			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<template #title><fa :icon="faGhost"/> {{ $t('proxy-account-config') }}</template>
-		<section>
-			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
-			<ui-input v-model="proxyAccount"><template #prefix>@</template>{{ $t('proxy-account-username') }}<template #desc>{{ $t('proxy-account-username-desc') }}</template></ui-input>
-			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
-		</section>
-		<section>
-			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<template #title><fa :icon="faBolt"/> {{ $t('serviceworker-config') }}</template>
-		<section>
-			<ui-switch v-model="enableServiceWorker">{{ $t('enable-serviceworker') }}<template #desc>{{ $t('serviceworker-info') }}</template></ui-switch>
-			<ui-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></ui-info>
-			<ui-horizon-group inputs class="fit-bottom">
-				<ui-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa icon="key"/></template>{{ $t('vapid-publickey') }}</ui-input>
-				<ui-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa icon="key"/></template>{{ $t('vapid-privatekey') }}</ui-input>
-			</ui-horizon-group>
-		</section>
-		<section>
-			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
-		</section>
-	</ui-card>
-
-	<ui-card>
-		<template #title><fa :icon="faShieldAlt"/> {{ $t('recaptcha-config') }}</template>
-		<section class="fit-bottom">
-			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
-			<ui-info>{{ $t('recaptcha-info') }}</ui-info>
-			<ui-horizon-group inputs>
-				<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-site-key') }}</ui-input>
-				<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-secret-key') }}</ui-input>
-			</ui-horizon-group>
 		</section>
 		<section>
 			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
@@ -139,33 +102,108 @@
 	</ui-card>
 
 	<ui-card>
+		<template #title><fa :icon="faGhost"/> {{ $t('proxy-account-config') }}</template>
+		<section>
+			<ui-info>{{ $t('proxy-account-info') }}</ui-info>
+			<ui-input v-model="proxyAccount"><template #prefix>@</template>{{ $t('proxy-account-username') }}<template #desc>{{ $t('proxy-account-username-desc') }}</template></ui-input>
+			<ui-info warn>{{ $t('proxy-account-warn') }}</ui-info>
+		</section>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="farEnvelope"/> {{ $t('email-config') }}</template>
+		<section>
+			<ui-switch v-model="enableEmail">{{ $t('enable-email') }}<template #desc>{{ $t('email-config-info') }}</template></ui-switch>
+			<template v-if="enableEmail">
+				<ui-input v-model="email" type="email" :disabled="!enableEmail">{{ $t('email') }}</ui-input>
+				<ui-horizon-group inputs>
+					<ui-input v-model="smtpHost" :disabled="!enableEmail">{{ $t('smtp-host') }}</ui-input>
+					<ui-input v-model="smtpPort" type="number" :disabled="!enableEmail">{{ $t('smtp-port') }}</ui-input>
+				</ui-horizon-group>
+				<ui-switch v-model="smtpAuth">{{ $t('smtp-auth') }}</ui-switch>
+				<ui-horizon-group inputs>
+					<ui-input v-model="smtpUser" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-user') }}</ui-input>
+					<ui-input v-model="smtpPass" type="password" :with-password-toggle="true" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-pass') }}</ui-input>
+				</ui-horizon-group>
+				<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<template #desc>{{ $t('smtp-secure-info') }}</template></ui-switch>
+			</template>
+		</section>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faBolt"/> {{ $t('serviceworker-config') }}</template>
+		<section>
+			<ui-switch v-model="enableServiceWorker">{{ $t('enable-serviceworker') }}<template #desc>{{ $t('serviceworker-info') }}</template></ui-switch>
+			<template v-if="enableServiceWorker">
+				<ui-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></ui-info>
+				<ui-horizon-group inputs class="fit-bottom">
+					<ui-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa icon="key"/></template>{{ $t('vapid-publickey') }}</ui-input>
+					<ui-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa icon="key"/></template>{{ $t('vapid-privatekey') }}</ui-input>
+				</ui-horizon-group>
+			</template>
+		</section>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faShieldAlt"/> {{ $t('recaptcha-config') }}</template>
+		<section :class="enableRecaptcha ? 'fit-bottom' : ''">
+			<ui-switch v-model="enableRecaptcha">{{ $t('enable-recaptcha') }}</ui-switch>
+			<template v-if="enableRecaptcha">
+				<ui-info>{{ $t('recaptcha-info') }}</ui-info>
+				<ui-horizon-group inputs>
+					<ui-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-site-key') }}</ui-input>
+					<ui-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa icon="key"/></template>{{ $t('recaptcha-secret-key') }}</ui-input>
+				</ui-horizon-group>
+			</template>
+		</section>
+		<section>
+			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
+
+	<ui-card>
 		<template #title><fa :icon="faShieldAlt"/> {{ $t('external-service-integration-config') }}</template>
 		<section>
 			<header><fa :icon="['fab', 'twitter']"/> {{ $t('twitter-integration-config') }}</header>
 			<ui-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</ui-switch>
-			<ui-horizon-group>
-				<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa icon="key"/></template>{{ $t('twitter-integration-consumer-key') }}</ui-input>
-				<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa icon="key"/></template>{{ $t('twitter-integration-consumer-secret') }}</ui-input>
-			</ui-horizon-group>
-			<ui-info>{{ $t('twitter-integration-info', { url: `${url}/api/tw/cb` }) }}</ui-info>
+			<template v-if="enableTwitterIntegration">
+				<ui-horizon-group>
+					<ui-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa icon="key"/></template>{{ $t('twitter-integration-consumer-key') }}</ui-input>
+					<ui-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa icon="key"/></template>{{ $t('twitter-integration-consumer-secret') }}</ui-input>
+				</ui-horizon-group>
+				<ui-info>{{ $t('twitter-integration-info', { url: `${url}/api/tw/cb` }) }}</ui-info>
+			</template>
 		</section>
 		<section>
 			<header><fa :icon="['fab', 'github']"/> {{ $t('github-integration-config') }}</header>
 			<ui-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</ui-switch>
-			<ui-horizon-group>
-				<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa icon="key"/></template>{{ $t('github-integration-client-id') }}</ui-input>
-				<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa icon="key"/></template>{{ $t('github-integration-client-secret') }}</ui-input>
-			</ui-horizon-group>
-			<ui-info>{{ $t('github-integration-info', { url: `${url}/api/gh/cb` }) }}</ui-info>
+			<template v-if="enableGithubIntegration">
+				<ui-horizon-group>
+					<ui-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa icon="key"/></template>{{ $t('github-integration-client-id') }}</ui-input>
+					<ui-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa icon="key"/></template>{{ $t('github-integration-client-secret') }}</ui-input>
+				</ui-horizon-group>
+				<ui-info>{{ $t('github-integration-info', { url: `${url}/api/gh/cb` }) }}</ui-info>
+			</template>
 		</section>
 		<section>
 			<header><fa :icon="['fab', 'discord']"/> {{ $t('discord-integration-config') }}</header>
 			<ui-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</ui-switch>
-			<ui-horizon-group>
-				<ui-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa icon="key"/></template>{{ $t('discord-integration-client-id') }}</ui-input>
-				<ui-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa icon="key"/></template>{{ $t('discord-integration-client-secret') }}</ui-input>
-			</ui-horizon-group>
-			<ui-info>{{ $t('discord-integration-info', { url: `${url}/api/dc/cb` }) }}</ui-info>
+			<template v-if="enableDiscordIntegration">
+				<ui-horizon-group>
+					<ui-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa icon="key"/></template>{{ $t('discord-integration-client-id') }}</ui-input>
+					<ui-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa icon="key"/></template>{{ $t('discord-integration-client-secret') }}</ui-input>
+				</ui-horizon-group>
+				<ui-info>{{ $t('discord-integration-info', { url: `${url}/api/dc/cb` }) }}</ui-info>
+			</template>
 		</section>
 		<section>
 			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
@@ -261,6 +299,16 @@ export default Vue.extend({
 			swPrivateKey: null,
 			pinnedUsers: '',
 			hiddenTags: '',
+			useObjectStorage: false,
+			objectStorageBaseUrl: null,
+			objectStorageBucket: null,
+			objectStoragePrefix: null,
+			objectStorageEndpoint: null,
+			objectStorageRegion: null,
+			objectStoragePort: null,
+			objectStorageAccessKey: null,
+			objectStorageSecretKey: null,
+			objectStorageUseSSL: false,
 			faHeadset, faShieldAlt, faGhost, faUserPlus, farEnvelope, faBolt, faThumbtack, faPencilAlt, faSave, faHashtag
 		};
 	},
@@ -315,6 +363,16 @@ export default Vue.extend({
 			this.swPrivateKey = meta.swPrivateKey;
 			this.pinnedUsers = meta.pinnedUsers.join('\n');
 			this.hiddenTags = meta.hiddenTags.join('\n');
+			this.useObjectStorage = meta.useObjectStorage;
+			this.objectStorageBaseUrl = meta.objectStorageBaseUrl;
+			this.objectStorageBucket = meta.objectStorageBucket;
+			this.objectStoragePrefix = meta.objectStoragePrefix;
+			this.objectStorageEndpoint = meta.objectStorageEndpoint;
+			this.objectStorageRegion = meta.objectStorageRegion;
+			this.objectStoragePort = meta.objectStoragePort;
+			this.objectStorageAccessKey = meta.objectStorageAccessKey;
+			this.objectStorageSecretKey = meta.objectStorageSecretKey;
+			this.objectStorageUseSSL = meta.objectStorageUseSSL;
 		});
 	},
 
@@ -382,6 +440,16 @@ export default Vue.extend({
 				swPrivateKey: this.swPrivateKey,
 				pinnedUsers: this.pinnedUsers.split('\n'),
 				hiddenTags: this.hiddenTags.split('\n'),
+				useObjectStorage: this.useObjectStorage,
+				objectStorageBaseUrl: this.objectStorageBaseUrl ? this.objectStorageBaseUrl : null,
+				objectStorageBucket: this.objectStorageBucket ? this.objectStorageBucket : null,
+				objectStoragePrefix: this.objectStoragePrefix ? this.objectStoragePrefix : null,
+				objectStorageEndpoint: this.objectStorageEndpoint ? this.objectStorageEndpoint : null,
+				objectStorageRegion: this.objectStorageRegion ? this.objectStorageRegion : null,
+				objectStoragePort: this.objectStoragePort ? this.objectStoragePort : null,
+				objectStorageAccessKey: this.objectStorageAccessKey ? this.objectStorageAccessKey : null,
+				objectStorageSecretKey: this.objectStorageSecretKey ? this.objectStorageSecretKey : null,
+				objectStorageUseSSL: this.objectStorageUseSSL,
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',

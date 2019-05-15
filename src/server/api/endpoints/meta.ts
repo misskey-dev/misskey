@@ -153,7 +153,7 @@ export default define(meta, async (ps, me) => {
 			globalTimeLine: !instance.disableGlobalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
 			recaptcha: instance.enableRecaptcha,
-			objectStorage: config.drive && config.drive.storage === 'minio',
+			objectStorage: instance.useObjectStorage,
 			twitter: instance.enableTwitterIntegration,
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
@@ -182,6 +182,16 @@ export default define(meta, async (ps, me) => {
 		response.smtpUser = instance.smtpUser;
 		response.smtpPass = instance.smtpPass;
 		response.swPrivateKey = instance.swPrivateKey;
+		response.useObjectStorage = instance.useObjectStorage;
+		response.objectStorageBaseUrl = instance.objectStorageBaseUrl;
+		response.objectStorageBucket = instance.objectStorageBucket;
+		response.objectStoragePrefix = instance.objectStoragePrefix;
+		response.objectStorageEndpoint = instance.objectStorageEndpoint;
+		response.objectStorageRegion = instance.objectStorageRegion;
+		response.objectStoragePort = instance.objectStoragePort;
+		response.objectStorageAccessKey = instance.objectStorageAccessKey;
+		response.objectStorageSecretKey = instance.objectStorageSecretKey;
+		response.objectStorageUseSSL = instance.objectStorageUseSSL;
 	}
 
 	return response;
