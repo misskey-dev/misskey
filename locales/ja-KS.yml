@@ -860,6 +860,7 @@ admin/views/instance.vue:
   maintainer-name: "管理者名"
   maintainer-email: "管理者の連絡先"
   drive-config: "ドライブの設定"
+  object-storage-endpoint: "エンドポイント"
   cache-remote-files: "リモートのファイルをキャッシュする"
   cache-remote-files-desc: "この設定を無効にすると、リモートファイルをこっちで保管せずに直接リンク張るようになるで。サーバーのストレージは軽くやろうけど、プライバシー設定で直リンクを向こうにしとるユーザーはファイルが見れへんし、サムネイルが無いから通信量が増えたりするから、普通はオンにしといてな。"
   local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
