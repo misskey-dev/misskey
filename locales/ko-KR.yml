@@ -1683,6 +1683,7 @@ pages:
   inspector: "인스펙터"
   content: "페이지 블록"
   variables: "변수"
+  variables-info: "변수를 사용하면 동적인 페이지를 만들 수 있습니다. 텍스트에 <b>{ 변수명 }</b>을 적으면 그 위치에 변수의 값을 집어넣습니다. 예를 들자면 <b>Hello { thing } world!</b> 라는 텍스트가 있을 때, 변수(thing)의 값이 <b>ai</b>인 경우 텍스트는 <b>Hello ai world!</b>가 됩니다."
   more-details: "자세한 설명"
   title: "제목"
   url: "페이지 URL"
