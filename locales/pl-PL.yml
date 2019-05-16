@@ -866,6 +866,7 @@ admin/views/abuse.vue:
   remove-report: "Usuń"
 admin/views/instance.vue:
   instance: "Instancja"
+  recaptcha-preview: "Pokaż podgląd"
   github-integration-client-id: "Client ID"
   github-integration-client-secret: "Client Secret"
   discord-integration-client-id: "Client ID"
