@@ -165,6 +165,10 @@
 				</ui-horizon-group>
 			</template>
 		</section>
+		<section v-if="enableRecaptcha && recaptchaSiteKey">
+			<header>{{ $t('recaptcha-preview') }}</header>
+			<div ref="recaptcha" style="margin: 16px 0 0 0;" :key="recaptchaSiteKey"></div>
+		</section>
 		<section>
 			<ui-button @click="updateMeta"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</section>
@@ -373,6 +377,34 @@ export default Vue.extend({
 			this.objectStorageAccessKey = meta.objectStorageAccessKey;
 			this.objectStorageSecretKey = meta.objectStorageSecretKey;
 			this.objectStorageUseSSL = meta.objectStorageUseSSL;
+		});
+	},
+
+	mounted() {
+		const renderRecaptchaPreview = () => {
+			if (!(window as any).grecaptcha) return;
+			if (!this.$refs.recaptcha) return;
+			if (!this.recaptchaSiteKey) return;
+			(window as any).grecaptcha.render(this.$refs.recaptcha, {
+				sitekey: this.recaptchaSiteKey
+			});
+		};
+
+		window.onRecaotchaLoad = () => {
+			renderRecaptchaPreview();
+		};
+
+		const head = document.getElementsByTagName('head')[0];
+		const script = document.createElement('script');
+		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js?onload=onRecaotchaLoad');
+		head.appendChild(script);
+
+		this.$watch('enableRecaptcha', () => {
+			renderRecaptchaPreview();
+		});
+
+		this.$watch('recaptchaSiteKey', () => {
+			renderRecaptchaPreview();
 		});
 	},
 
