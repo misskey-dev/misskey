@@ -1902,6 +1902,7 @@ pages:
       _for:
         arg1: "횟수"
         arg2: "처리"
+    typeError: "슬롯 {slot}은 \"{expect}\"를 사용할 수 있지만 \"{actual}이 들어있습니다!"
     thereIsEmptySlot: "슬롯 {slot}이(가) 비었습니다!"
     types:
       string: "텍스트"
