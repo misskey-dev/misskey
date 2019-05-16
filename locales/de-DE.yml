@@ -592,6 +592,7 @@ admin/views/dashboard.vue:
 admin/views/abuse.vue:
   remove-report: "Löschen"
 admin/views/instance.vue:
+  recaptcha-preview: "Vorschau"
   invite: "Einladen"
   save: "Speichern"
 admin/views/charts.vue:
