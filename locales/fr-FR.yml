@@ -68,7 +68,7 @@ common:
   explore: "Découvrir"
   following: "Suit"
   followers: "Abonné·e·s"
-  favorites: "Mettre cette note en favoris"
+  favorites: "Favorites"
   permissions:
     "read:account": "Afficher les informations du compte"
     "write:account": "Mettre à jour les informations de votre compte"
@@ -1046,7 +1046,6 @@ admin/views/index.vue:
   users: "Utilisateurs"
   federation: "Fédération"
   announcements: "Annonces"
-  hashtags: "Hashtags"
   abuse: "Abus"
   queue: "File d’attente"
   logs: "Journaux"
@@ -1073,14 +1072,19 @@ admin/views/instance.vue:
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
   host: "Hôte"
+  icon-url: "URL de l'icône"
+  logo-url: "URL do logo"
   banner-url: "URL de l’image de la bannière"
   error-image-url: "URL de l’image d’erreur"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
+  tos-url: "URL des conditions d'utilisation"
+  repository-url: "URL du dépôt"
   maintainer-config: "Informations de l’administrateur"
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
   drive-config: "Paramètres du lecteur"
+  object-storage-endpoint: "Point de terminaison"
   cache-remote-files: "Mettre en cache des fichiers distants"
   local-drive-capacity-mb: "Volume du lecteur par utilisateur"
   remote-drive-capacity-mb: "Volume du lecteur par utilisateur distant"
@@ -1474,8 +1478,11 @@ mobile/views/components/ui.nav.vue:
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Téléverser un fichier"
+    url-upload: "Transférer un fichier depuis une URL"
     create-folder: "Créer un dossier"
     rename-folder: "Renommer le dossier"
+    move-folder: "Déplacer ce dossier"
+    delete-folder: "Supprimer ce dossier"
 mobile/views/pages/user-lists.vue:
   title: "Listes"
 mobile/views/pages/signup.vue:
@@ -1584,6 +1591,7 @@ dev/views/apps.vue:
   create-app: "Créer une app"
   app-missing: "Aucune application"
 dev/views/new-app.vue:
+  new-app: "Nouvelle application"
   create-app: "Création d’une application"
   app-name: "Nom de l’application"
   app-name-desc: "Le nom de votre application"
@@ -1616,7 +1624,9 @@ pages:
   enter-variable-name: "Veuillez choisir un nom de variable"
   the-variable-name-is-already-used: "Cette variable est déjà utilisée"
   content-blocks: "Contenu du cadre"
+  input-blocks: "Entrée"
   special-blocks: "Spécial"
+  post-from-post-form: "Publier ce contenu"
   posted-from-post-form: "Publié !"
   blocks:
     text: "Texte"
@@ -1653,11 +1663,15 @@ pages:
     _counter:
       name: "Nom de la variable"
       text: "Titre"
+      inc: "Augmenter le chiffre"
     _button:
       text: "Titre"
+      action: "L'opération lorsque le bouton sera pressé"
       _action:
+        dialog: "Afficher une fenêtre de dialogue"
         _dialog:
           content: "Contenu"
+        resetRandom: "Réinitialiser le nombre aléatoire"
   script:
     categories:
       flow: "Contrôle"
@@ -1736,13 +1750,20 @@ pages:
         arg1: "Listes"
       _dailyRandomPick:
         arg1: "Listes"
+      _seedRannum:
+        arg2: "Min"
+        arg3: "Max"
       _seedRandomPick:
         arg2: "Listes"
+      pick: "Sélectionner dans la liste"
       _pick:
         arg1: "Listes"
+        arg2: "Position"
       number: "Numérique"
+      stringToNumber: "Chaîne en chiffres"
       _stringToNumber:
         arg1: "Texte"
+      numberToString: "Chiffres en chaîne"
       _numberToString:
         arg1: "Numérique"
       _splitStrByLine:
@@ -1750,6 +1771,7 @@ pages:
       ref: "Variables"
       fn: "Fonction"
       _fn:
+        slots: "Emplacement"
         arg1: "Sortie"
       for: "Répéter"
     types:

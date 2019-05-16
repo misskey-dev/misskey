@@ -910,7 +910,6 @@ admin/views/index.vue:
   moderators: "Moderadores"
   users: "Usuarios"
   federation: "Federado"
-  hashtags: "Hashtags"
   queue: "Cola de trabajos"
   logs: "Registros"
   back-to-misskey: "Volver a Misskey"
