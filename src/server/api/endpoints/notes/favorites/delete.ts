@@ -13,7 +13,7 @@ export const meta = {
 		'en-US': 'Unfavorite a note.'
 	},
 
-	tags: ['favorites'],
+	tags: ['notes', 'favorites'],
 
 	requireCredential: true,
 
