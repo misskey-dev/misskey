@@ -944,7 +944,7 @@ admin/views/instance.vue:
   maintainer-email: "Contactar con el administrador"
   drive-config: "Ajustes del Drive"
   cache-remote-files: "Mantener en cache los archivos remotos"
-  recaptcha-secret-key: "clave secreta reCAPTCHA"
+  recaptcha-preview: "Vista previa"
   invite: "Invitar"
   save: "Guardar"
   saved: "Guardado"
