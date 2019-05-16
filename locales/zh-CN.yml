@@ -1128,6 +1128,7 @@ admin/views/instance.vue:
   recaptcha-config: "reCAPTCHA设置"
   recaptcha-info: "reCAPTCHA token是必要的. 请从 https://www.google.com/recaptcha/intro/ 获取。\n请注意, 该功能在中国大陆不可用。"
   enable-recaptcha: "启用 reCAPTCHA\n(请注意, 此功能在中国大陆不可用. 如果启用, 可能导致无法正常使用登录或注册等功能)"
+  recaptcha-site-key: "网站密钥"
   recaptcha-secret-key: "密钥"
   recaptcha-preview: "预览"
   hidden-tags: "隐藏哈希标签"
