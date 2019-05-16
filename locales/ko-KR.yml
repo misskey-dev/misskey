@@ -1767,6 +1767,8 @@ pages:
       text: "텍스트"
       multiLineText: "텍스트 (여러줄)"
       textList: "텍스트 목록"
+      _textList:
+        info: "각각을 줄 바꿈으로 구분해주십시오"
       strLen: "텍스트의 길이"
       _strLen:
         arg1: "텍스트"
@@ -1866,13 +1868,16 @@ pages:
       dailyRandomPick: "목록에서 임의로 선택 (하루동안 결과 유지)"
       _dailyRandomPick:
         arg1: "리스트"
+      seedRandom: "무작위 (시드)"
       _seedRandom:
         arg1: "시드"
         arg2: "확률"
+      seedRannum: "난수 (시드)"
       _seedRannum:
         arg1: "시드"
         arg2: "최소"
         arg3: "최대"
+      seedRandomPick: "목록에서 무작위로 선택 (시드)"
       _seedRandomPick:
         arg1: "시드"
         arg2: "리스트"
@@ -1890,13 +1895,14 @@ pages:
       numberToString: "수치를 텍스트로"
       _numberToString:
         arg1: "수치"
-      splitStrByLine: "텍스트를 행단위로 분할"
+      splitStrByLine: "텍스트를 행 단위로 분할"
       _splitStrByLine:
         arg1: "텍스트"
       ref: "변수"
       fn: "함수"
       _fn:
         slots: "슬롯"
+        slots-info: "각 슬롯을 줄 바꿈으로 구분하여 주십시오"
         arg1: "출력"
       for: "반복"
       _for:
