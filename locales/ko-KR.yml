@@ -1165,6 +1165,7 @@ admin/views/instance.vue:
   save: "저장"
   saved: "저장하였습니다"
   pinned-users: "고정된 사용자"
+  pinned-users-info: "고정해두고 싶은 사용자를 줄바꿈으로 구분하여 기술합니다."
   email-config: "메일 서버 설정"
   email-config-info: "메일 주소 확인 혹은 비밀번호 재설정에 사용 됩니다."
   enable-email: "메일 발신 활성화"
@@ -1250,6 +1251,8 @@ admin/views/users.vue:
   unsilence-confirm: "침묵 해제하시겠습니까?"
   update-remote-user: "원격 사용자 정보 갱신"
   remote-user-updated: "원격 사용자 정보를 갱신하였습니다"
+  delete-all-files: "모든 파일 삭제"
+  delete-all-files-confirm: "모든 파일을 삭제하시겠습니까?"
   users:
     title: "사용자"
     sort:
@@ -1325,6 +1328,7 @@ admin/views/federation.vue:
   latest-request-received-at: "마지막으로 요청을 받은 시간"
   remove-all-following: "모든 팔로잉 해제"
   remove-all-following-info: "{host}(으)로부터 모든 팔로잉을 해제합니다. 해당 인스턴스가 더 이상 존재하지 않게 된 경우 등에 실행하십시오."
+  delete-all-files: "파일을 모두 삭제"
   block: "차단"
   marked-as-closed: "폐쇄된 것으로 표시"
   lookup: "조회"
