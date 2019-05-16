@@ -1898,6 +1898,7 @@ pages:
       _fn:
         slots: "슬롯"
         arg1: "출력"
+      for: "반복"
       _for:
         arg1: "횟수"
         arg2: "처리"
