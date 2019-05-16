@@ -199,6 +199,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	const minio = new Minio.Client({
 		endPoint: meta.objectStorageEndpoint!,
+		region: meta.objectStorageRegion ? meta.objectStorageRegion : undefined,
 		port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
 		useSSL: meta.objectStorageUseSSL,
 		accessKey: meta.objectStorageAccessKey!,
