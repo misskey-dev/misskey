@@ -1890,6 +1890,7 @@ pages:
       numberToString: "수치를 텍스트로"
       _numberToString:
         arg1: "수치"
+      splitStrByLine: "텍스트를 행단위로 분할"
       _splitStrByLine:
         arg1: "텍스트"
       ref: "변수"
@@ -1899,6 +1900,7 @@ pages:
         arg1: "출력"
       _for:
         arg1: "횟수"
+        arg2: "처리"
     thereIsEmptySlot: "슬롯 {slot}이(가) 비었습니다!"
     types:
       string: "텍스트"
