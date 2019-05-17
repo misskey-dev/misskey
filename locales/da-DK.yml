@@ -2,3 +2,6 @@
 common:
   misskey: "En ⭐ i fediverset"
   about-title: "En ⭐ i fediverset."
+  about: "Tak, fordi du fandt Misskey. Misskey er en <b> decentral mikroblog platform </b> født på Jorden. Den findes i Fediverset (et univers med forskellige sociale medieplatforme). Den er tæt integreret med andre sociale medier platforme. Hvorfor ikke tage en pause fra trængsel og travlhed i storbyen og hoppe ind i en ny type internet?"
+  intro:
+    title: "Hvad er Misskey?"
