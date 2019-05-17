@@ -490,6 +490,7 @@ deck/deck.user-column.vue:
   followers: "Følgere"
   images: "Bilder"
 pages:
+  like: "Lik"
   blocks:
     image: "Bilder"
   script:
