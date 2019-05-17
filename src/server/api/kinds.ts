@@ -21,4 +21,6 @@ export const kinds = [
 	'write:votes',
 	'read:pages',
 	'write:pages',
+	'write:page-likes',
+	'read:page-likes',
 ];

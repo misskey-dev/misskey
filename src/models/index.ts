@@ -36,6 +36,7 @@ import { AuthSessionRepository } from './repositories/auth-session';
 import { UserProfile } from './entities/user-profile';
 import { HashtagRepository } from './repositories/hashtag';
 import { PageRepository } from './repositories/page';
+import { PageLikeRepository } from './repositories/page-like';
 
 export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
@@ -74,3 +75,4 @@ export const ReversiGames = getCustomRepository(ReversiGameRepository);
 export const ReversiMatchings = getCustomRepository(ReversiMatchingRepository);
 export const Logs = getRepository(Log);
 export const Pages = getCustomRepository(PageRepository);
+export const PageLikes = getCustomRepository(PageLikeRepository);
