@@ -57,7 +57,13 @@ common:
     days_ago: "{} dag(e) siden"
     weeks_ago: "{} uge(r) siden"
     months_ago: "{} måned(er) siden"
+    years_ago: "{} år siden"
+  month-and-day: "{day}-{month}"
+  trash: "Skraldespand"
   drive: "Drev"
+  pages: "Sider"
+  messaging: "Konversationer"
+  home: "Hjem"
 admin/views/dashboard.vue:
   drive: "Drev"
 admin/views/charts.vue:
