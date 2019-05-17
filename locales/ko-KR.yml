@@ -1680,6 +1680,7 @@ pages:
   edit-this-page: "이 페이지를 편집"
   view-source: "소스 보기"
   view-page: "페이지 보기"
+  like: "좋아요"
   inspector: "인스펙터"
   content: "페이지 블록"
   variables: "변수"
