@@ -618,6 +618,7 @@ docs:
   edit-this-page-on-github: "Heb je een fout ontdekt of wil je bijdragen aan de documentatie? "
   edit-this-page-on-github-link: "Bewerk deze pagina op GitHub!"
 pages:
+  like: "Leuk"
   blocks:
     image: "Afbeeldingen"
   script:
