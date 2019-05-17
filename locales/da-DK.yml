@@ -1,7 +1,14 @@
 ---
+meta:
+  lang: "Dansk"
 common:
   misskey: "En ⭐ i fediverset"
   about-title: "En ⭐ i fediverset."
   about: "Tak, fordi du fandt Misskey. Misskey er en <b> decentral mikroblog platform </b> født på Jorden. Den findes i Fediverset (et univers med forskellige sociale medieplatforme). Den er tæt integreret med andre sociale medier platforme. Hvorfor ikke tage en pause fra trængsel og travlhed i storbyen og hoppe ind i en ny type internet?"
   intro:
     title: "Hvad er Misskey?"
+    about: "Misskey er en open-source, <b>decentraliseret microblogging platform</b>. Den har en sofistikeret brugerflade, som kan tilpasses fuldstændigt. Den giver mulighed for at udtrykke mange forskellige reaktioner på poster. Desuden tilbyder den gratis opbevaring af filer med et integreret håndteringssystem samt andre avancerede funktioner. Oven i dette er Misskey tilknyttet et netværk ved navn “Fediverse”, som gør os i stand til at kommunikere med brugere på andre SNS'er. For eksempel vil en post, som du har skrevet, ikke kun blive sendt til brugere af Misskey men også til brugere af Mastodon og Pleroma. Det svarer lidt til at sende radio transmissioner mellem planeter for at etablere en kommunikation."
+    features: "Funktioner"
+    rich-contents: "Post"
+    rich-contents-desc: "Bare skriv løs om dine ideer, aktuelle emner eller alt muligt andet, som du gerne vil dele med andre. Det kan være, at du gerne vil udsmykke dine ord, vedhæfte dine yndlingsbilleder, sende filer, tilføje videoer eller oprette en afstemning. Alle de nævnte ting er muligt med Misskey!"
+    reaction: "Reaktioner"
