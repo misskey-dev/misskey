@@ -270,6 +270,7 @@ docs:
 dev/views/index.vue:
   manage-apps: "Gerenciar aplicativos"
 pages:
+  like: "Curtir"
   blocks:
     image: "Imagens"
     post: "Formulário de publicação"
