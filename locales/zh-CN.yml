@@ -1680,6 +1680,7 @@ pages:
   edit-this-page: "编辑此页面"
   view-source: "查看源代码"
   view-page: "查看页面"
+  like: "赞"
   inspector: "检查器"
   content: "页面内容"
   variables: "变量"
