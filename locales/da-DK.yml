@@ -12,3 +12,13 @@ common:
     rich-contents: "Post"
     rich-contents-desc: "Bare skriv løs om dine ideer, aktuelle emner eller alt muligt andet, som du gerne vil dele med andre. Det kan være, at du gerne vil udsmykke dine ord, vedhæfte dine yndlingsbilleder, sende filer, tilføje videoer eller oprette en afstemning. Alle de nævnte ting er muligt med Misskey!"
     reaction: "Reaktioner"
+    reaction-desc: "Den nemmeste måde at udtrykke dine reaktioner på. Misskey giver mulighed for at tilføje forskellige reaktioner på andres poster. Reaktionerne vil aldrig blive vist på andre SNS'er, som kun er i stand til at udveksle \"likes\"."
+    ui: "Brugerflade"
+    ui-desc: "En enkelt brugerflade vil aldrig passe helt for alle. Derfor er Misskey's brugerflade gennemført justerbar, så den kan ramme dine ønsker helt præcist. Du kan designe dit helt eget personlige udtryk ved at rette layoutet af din tidslinie og tilpasse udvalgte widgets, som desuden kan flyttes frit rundt."
+    drive: "Drev"
+    drive-desc: "Vil du poste et billede, som du tidligere har uploadet? Har du brug for at navngive filer og organisere dem i mapper, som du selv har navngivet? Så er Misskey Drev den bedste løsning for dig. Den gør det så let som ingenting at dele dine filer online."
+  drive: "Drev"
+admin/views/dashboard.vue:
+  drive: "Drev"
+admin/views/charts.vue:
+  drive: "Drev"
