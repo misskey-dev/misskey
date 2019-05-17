@@ -1211,6 +1211,7 @@ deck/deck.user-column.vue:
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
 pages:
+  like: "Lajk"
   title: "Titulek"
   blocks:
     post: "Formulář pro psaní"
