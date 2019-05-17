@@ -1197,6 +1197,7 @@ dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
 pages:
+  like: "Lubię"
   title: "Tytuł"
   blocks:
     image: "Zdjęcia"
