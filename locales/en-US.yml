@@ -1658,6 +1658,7 @@ pages:
   edit-this-page: "Edit this page"
   view-source: "View Source"
   view-page: "View page"
+  like: "Like"
   inspector: "Inspector"
   content: "Page block"
   variables: "Variables"
