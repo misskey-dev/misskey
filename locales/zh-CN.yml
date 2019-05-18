@@ -253,6 +253,7 @@ common:
   my-token-regenerated: "您的 Token 已被重置, 您将自动登出。"
   hide-password: "隐藏密码"
   show-password: "显示密码"
+  enter-username: "请输入用户名"
   do-not-use-in-production: "这是一个开发者测试版. 请勿在生产环境中使用."
   user-suspended: "该用户已被冻结。"
   is-remote-user: "此用户信息可能不准确。"
@@ -448,18 +449,15 @@ common/views/components/messaging.vue:
   search-user: "查找用户"
   you: "您"
   no-history: "没有历史记录"
+  user: "用户"
 common/views/components/messaging-room.vue:
-  empty: "没有对话"
   no-history: "没有更多的历史记录"
-  resize-form: "拖动以调整大小"
   new-message: "新信息"
-  only-one-file-attached: "只有一个附件可以附加到消息中。"
 common/views/components/messaging-room.form.vue:
   input-message-here: "在此键入信息"
   send: "发送"
   attach-from-local: "从电脑中添加文件"
   attach-from-drive: "从网盘中添加文件"
-  only-one-file-attached: "在信息中只允许添加一个附件"
 common/views/components/messaging-room.message.vue:
   is-read: "已读"
   deleted: "此消息已被删除"
@@ -694,7 +692,11 @@ common/views/components/user-list-editor.vue:
   remove-user: "从此列表中删除"
   delete-are-you-sure: "删除列表“$1”？"
   deleted: "已删除"
+  add-user: "添加用户"
+common/views/components/user-group-editor.vue:
+  deleted: "已删除"
 common/views/components/user-lists.vue:
+  user-lists: "列表"
   create-list: "创建列表"
   list-name: "列表名称"
 common/views/widgets/broadcast.vue:
@@ -758,6 +760,8 @@ common/views/pages/follow.vue:
   request-pending: "发送关注申请"
   follow-processing: "申请处理中"
   follow-request: "关注请求"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "关注申请"
 desktop:
   banner-crop-title: "裁剪显示为背景的部分"
   banner: "背景"
@@ -1039,12 +1043,6 @@ desktop/views/components/ui.header.post.vue:
   post: "撰写新帖子"
 desktop/views/components/ui.header.search.vue:
   placeholder: "搜索"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "关注申请"
-  accept: "接收"
-  reject: "拒绝"
-desktop/views/components/user-lists-window.vue:
-  title: "用户列表"
 desktop/views/components/user-preview.vue:
   notes: "帖子"
   following: "关注中"
@@ -1571,10 +1569,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "活动"
 mobile/views/pages/share.vue:
   share-with: "共享{name}"
-mobile/views/pages/received-follow-requests.vue:
-  title: "关注申请"
-  accept: "批准"
-  reject: "拒绝"
 mobile/views/pages/note.vue:
   title: "帖文"
   prev: "上一个帖子"
