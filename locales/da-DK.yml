@@ -317,10 +317,29 @@ auth/views/index.vue:
   callback-url: "Hopper tilbage til app."
   please-go-back: "Hop tilbage til app."
   error: "Sessionen eksisterer ikke."
+  sign-in: "Log ind."
+common/views/pages/explore.vue:
+  pinned-users: "Fremhævede brugere"
+  popular-users: "Populære brugere"
+  recently-updated-users: "Senest aktive brugere"
+  recently-registered-users: "Brugere som er kommet til for nyligt"
+  popular-tags: "Populære tags"
+  federated: "Fra Fediverset"
+  explore: "Udforsk {host}"
+  users-info: "Lige nu er {users} brugere registreret her"
+common/views/components/url-preview.vue:
+  enable-player: "Aktiver afspilning"
+  disable-player: "Stop afspilning"
+common/views/components/user-list.vue:
+  no-users: "Der er ingen brugere"
 common/views/components/games/reversi/reversi.vue:
   matching:
+    waiting-for: "Venter på {}"
     cancel: "Annuller"
 common/views/components/games/reversi/reversi.game.vue:
+  surrender: "Giv op"
+  surrendered: "Af taberen"
+  is-llotheo: "Den med færrest vinder (Llotheo)"
   looped-map: "Vendebrikker"
   can-put-everywhere: "Kan placeres hvorsomhelst"
 common/views/components/games/reversi/reversi.index.vue:
@@ -345,6 +364,10 @@ common/views/components/games/reversi/reversi.room.vue:
   black-or-white: "Sort/hvid"
   black-is: "Sort er {}"
   rules: "Regler"
+  is-llotheo: "Den med færrest vinder (Llotheo)"
+  looped-map: "Vendebrikker"
+  can-put-everywhere: "Kan placeres hvorsomhelst"
+  settings-of-the-bot: "Bot indstillinger"
   cancel: "Annuller"
 common/views/components/theme.vue:
   theme: "Tema"
