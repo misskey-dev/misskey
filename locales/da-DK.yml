@@ -46,6 +46,7 @@ common:
     reversi-invited: "Invitation til spil"
     reversi-invited-by: "Inviteret af {}:"
     notified-by: "Besked fra {}:"
+    reply-from: "Svar fra {}:"
     quoted-by: "Citeret af {}:"
   time:
     unknown: "ukendt"
@@ -72,6 +73,7 @@ common:
   favorites: "Favoritter"
   permissions:
     "read:account": "Se konto indstillinger"
+    "write:account": "Opdater dine konto informationer"
   note-visibility:
     followers-desc: "Skriv kun til dine følgere"
     specified: "Direkte"
