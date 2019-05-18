@@ -551,18 +551,59 @@ common/views/components/reaction-picker.vue:
   choose-reaction: "Vælg reaktion"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Brugerdefineret emoji"
+  people: "Personer"
+  animals-and-nature: "Dyr og natur"
+  food-and-drink: "Mad og drikke"
+  activity: "Aktivitet"
+  travel-and-places: "Rejser og steder"
+  objects: "Objekt"
+  symbols: "Symboler"
+  flags: "Flag"
+common/views/components/signin.vue:
+  username: "Brugernavn"
+  password: "Adgangskode"
+  token: "Token"
+  signing-in: "Log ind"
+  or: "Eller"
+  signin-with-twitter: "Log ind med Twitter"
+  signin-with-github: "Log ind med GitHub"
+  signin-with-discord: "Log ind med Discord"
+  login-failed: "Fejl ved log ind. Sørg for, at du har skrevet korrekt brugernavn og adgangskode."
 common/views/components/signup.vue:
+  invitation-code: "Invitationskode"
+  invitation-info: "Kontakt en <a href=\"{}\">administrator</a>, hvis du ikke har en invitationskode."
+  username: "Brugernavn"
+  checking: "Tjekker"
+  available: "Tilgængelig"
   unavailable: "Ikke tilgængelig"
   error: "Netværksfejl"
   invalid-format: "bogstaver, tal og \"_\" er tilladt."
   too-short: "Må ikke være tom!"
   too-long: "Brug højst 20 tegn."
+  password: "Adgangskode"
   tos: "Betingelser for anvendelsen"
 common/views/components/visibility-chooser.vue:
   local-public: "Offentlig (på den lokale server)"
   local-home: "Hjem (på den lokale server)"
   local-followers: "Følgere (på den lokale server)"
+common/views/components/language-settings.vue:
+  title: "Vis sprog"
+  pick-language: "Vælg sprog"
+  recommended: "Anbefalet"
+  auto: "Automatisk"
+  specify-language: "Angiv sprog"
+  info: "Du er nødt til at genindlæse siden, før ændringerne slår igennem."
 common/views/components/profile-editor.vue:
+  title: "Profil"
+  name: "Navn"
+  account: "Konto"
+  location: "Sted"
+  description: "Om mig"
+  you-can-include-hashtags: "Du må gerne bruge hashtags i din profil beskrivelse"
+  language: "Sprog"
+  birthday: "Fødselsdag"
+  avatar: "Ikon"
+  banner: "Banner"
   export: "Eksport"
   import: "Import"
 common/views/components/user-groups.vue:
@@ -600,6 +641,8 @@ desktop/views/components/renote-form.vue:
   failure: "Fejl under gen-postering"
 desktop/views/components/renote-form-window.vue:
   title: "Ønsker du at gen-postere den?"
+desktop/views/components/settings.2fa.vue:
+  token: "Token"
 common/views/components/api-settings.vue:
   console:
     send: "Send"
@@ -610,6 +653,7 @@ desktop/views/components/sub-note-content.vue:
 desktop/views/components/ui.header.account.vue:
   groups: "Gruppe"
 admin/views/dashboard.vue:
+  accounts: "Konto"
   drive: "Drev"
 admin/views/abuse.vue:
   details: "Detaljer"
@@ -632,6 +676,8 @@ admin/views/federation.vue:
   status: "Status"
 desktop/views/pages/selectdrive.vue:
   cancel: "Annuller"
+desktop/views/pages/user-list.users.vue:
+  username: "Brugernavn"
 desktop/views/pages/user/user.followers-you-know.vue:
   loading: "Henter"
 desktop/views/pages/user/user.friends.vue:
