@@ -44,6 +44,8 @@ import uiSwitch from './ui/switch.vue';
 import uiRadio from './ui/radio.vue';
 import uiSelect from './ui/select.vue';
 import uiInfo from './ui/info.vue';
+import uiMargin from './ui/margin.vue';
+import uiHr from './ui/hr.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
@@ -91,5 +93,7 @@ Vue.component('ui-switch', uiSwitch);
 Vue.component('ui-radio', uiRadio);
 Vue.component('ui-select', uiSelect);
 Vue.component('ui-info', uiInfo);
+Vue.component('ui-margin', uiMargin);
+Vue.component('ui-hr', uiHr);
 Vue.component('form-button', formButton);
 Vue.component('form-radio', formRadio);

@@ -1,5 +1,5 @@
 <template>
-<router-link :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
+<router-link :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
 	<div class="thumbnail" v-if="page.eyeCatchingImage" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
 	<article>
 		<header>
@@ -32,16 +32,13 @@ export default Vue.extend({
 	display block
 	overflow hidden
 	width 100%
-	background var(--face)
+	border solid var(--lineWidth) var(--urlPreviewBorder)
+	border-radius 4px
+	overflow hidden
 
-	&.round
-		border-radius 8px
-
-	&.shadow
-		box-shadow 0 4px 16px rgba(#000, 0.1)
-
-		@media (min-width 500px)
-			box-shadow 0 8px 32px rgba(#000, 0.1)
+	&:hover
+		text-decoration none
+		border-color var(--urlPreviewBorderHover)
 
 	> .thumbnail
 		position absolute

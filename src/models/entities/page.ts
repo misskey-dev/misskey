@@ -95,6 +95,11 @@ export class Page {
 	})
 	public visibleUserIds: User['id'][];
 
+	@Column('integer', {
+		default: 0
+	})
+	public likedCount: number;
+
 	constructor(data: Partial<Page>) {
 		if (data == null) return;
 

@@ -265,6 +265,7 @@ common:
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
   hide-password: "パスワードを隠す"
   show-password: "パスワードを表示する"
+  enter-username: "ユーザー名を入力してください"
 
   do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
   user-suspended: "このユーザーは凍結されています。"
@@ -480,20 +481,24 @@ common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あなた"
   no-history: "履歴はありません"
+  user: "ユーザー"
+  group: "グループ"
+  start-with-user: "ユーザーとトークを開始"
+  start-with-group: "グループとトークを開始"
 
 common/views/components/messaging-room.vue:
-  empty: "このユーザーと話したことはありません"
+  not-talked-user: "このユーザーとの会話はありません"
+  not-talked-group: "このグループでの会話はありません"
   no-history: "これより過去の履歴はありません"
-  resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "メッセージに添付できるファイルはひとつです"
 
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージを入力"
   send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "メッセージに添付できるファイルはひとつです"
 
 common/views/components/messaging-room.message.vue:
   is-read: "既読"
@@ -750,10 +755,26 @@ common/views/components/user-list-editor.vue:
   remove-user: "このリストから削除"
   delete-are-you-sure: "リスト「$1」を削除しますか？"
   deleted: "削除しました"
+  add-user: "ユーザーを追加"
+
+common/views/components/user-group-editor.vue:
+  users: "メンバー"
+  rename: "グループ名を変更"
+  delete: "グループを削除"
+  remove-user: "このグループから削除"
+  delete-are-you-sure: "グループ「$1」を削除しますか？"
+  deleted: "削除しました"
+  add-user: "メンバーを追加"
 
 common/views/components/user-lists.vue:
+  user-lists: "リスト"
   create-list: "リストを作成"
   list-name: "リスト名"
+
+common/views/components/user-groups.vue:
+  user-groups: "グループ"
+  create-group: "グループを作成"
+  group-name: "グループ名"
 
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
@@ -826,6 +847,11 @@ common/views/pages/follow.vue:
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
+
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "フォロー申請"
+  accept: "承認"
+  reject: "拒否"
 
 desktop:
   banner-crop-title: "バナーとして表示する部分を選択"
@@ -1139,6 +1165,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   lists: "リスト"
+  groups: "グループ"
   follow-requests: "フォロー申請"
   admin: "管理"
 
@@ -1153,14 +1180,6 @@ desktop/views/components/ui.header.post.vue:
 
 desktop/views/components/ui.header.search.vue:
   placeholder: "検索"
-
-desktop/views/components/received-follow-requests-window.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
-
-desktop/views/components/user-lists-window.vue:
-  title: "リスト"
 
 desktop/views/components/user-preview.vue:
   notes: "投稿"
@@ -1700,6 +1719,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "フォロー申請"
   search: "検索"
   user-lists: "リスト"
+  user-groups: "グループ"
   widgets: "ウィジェット"
   game: "ゲーム"
   admin: "管理"
@@ -1713,9 +1733,6 @@ mobile/views/pages/drive.vue:
     rename-folder: "フォルダー名を変更"
     move-folder: "このフォルダを移動"
     delete-folder: "このフォルダを削除"
-
-mobile/views/pages/user-lists.vue:
-  title: "リスト"
 
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
@@ -1748,11 +1765,6 @@ mobile/views/pages/widgets/activity.vue:
 
 mobile/views/pages/share.vue:
   share-with: "{name}で共有"
-
-mobile/views/pages/received-follow-requests.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
 
 mobile/views/pages/note.vue:
   title: "投稿"
@@ -1874,6 +1886,10 @@ pages:
   edit-this-page: "このページを編集"
   view-source: "ソースを表示"
   view-page: "ページを見る"
+  like: "いいね"
+  unlike: "いいね解除"
+  liked-pages: "いいねしたページ"
+  my-pages: "自分のページ"
   inspector: "インスペクター"
   content: "ページブロック"
   variables: "変数"

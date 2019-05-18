@@ -1,13 +1,13 @@
 import $ from 'cafy';
 import define from '../../define';
 import { MessagingMessage } from '../../../../models/entities/messaging-message';
-import { MessagingMessages, Mutings } from '../../../../models';
+import { MessagingMessages, Mutings, UserGroupJoinings } from '../../../../models';
 import { Brackets } from 'typeorm';
 import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'Messagingの履歴を取得します。',
+		'ja-JP': 'トークの履歴を取得します。',
 		'en-US': 'Show messaging history.'
 	},
 
@@ -21,6 +21,11 @@ export const meta = {
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
+		},
+
+		group: {
+			validator: $.optional.bool,
+			default: false
 		}
 	},
 
@@ -40,26 +45,46 @@ export default define(meta, async (ps, user) => {
 		muterId: user.id,
 	});
 
+	const groups = ps.group ? await UserGroupJoinings.find({
+		userId: user.id,
+	}).then(xs => xs.map(x => x.userGroupId)) : [];
+
+	if (ps.group && groups.length === 0) {
+		return [];
+	}
+
 	const history: MessagingMessage[] = [];
 
 	for (let i = 0; i < ps.limit!; i++) {
-		const found = history.map(m => (m.userId === user.id) ? m.recipientId : m.userId);
+		const found = ps.group
+			? history.map(m => m.groupId!)
+			: history.map(m => (m.userId === user.id) ? m.recipientId! : m.userId!);
 
 		const query = MessagingMessages.createQueryBuilder('message')
-			.where(new Brackets(qb => { qb
-				.where(`message.userId = :userId`, { userId: user.id })
-				.orWhere(`message.recipientId = :userId`, { userId: user.id });
-			}))
 			.orderBy('message.createdAt', 'DESC');
 
-		if (found.length > 0) {
-			query.andWhere(`message.userId NOT IN (:...found)`, { found: found });
-			query.andWhere(`message.recipientId NOT IN (:...found)`, { found: found });
-		}
+		if (ps.group) {
+			query.where(`message.groupId IN (:...groups)`, { groups: groups });
 
-		if (mute.length > 0) {
-			query.andWhere(`message.userId NOT IN (:...mute)`, { mute: mute.map(m => m.muteeId) });
-			query.andWhere(`message.recipientId NOT IN (:...mute)`, { mute: mute.map(m => m.muteeId) });
+			if (found.length > 0) {
+				query.andWhere(`message.groupId NOT IN (:...found)`, { found: found });
+			}
+		} else {
+			query.where(new Brackets(qb => { qb
+				.where(`message.userId = :userId`, { userId: user.id })
+				.orWhere(`message.recipientId = :userId`, { userId: user.id });
+			}));
+			query.andWhere(`message.groupId IS NULL`);
+
+			if (found.length > 0) {
+				query.andWhere(`message.userId NOT IN (:...found)`, { found: found });
+				query.andWhere(`message.recipientId NOT IN (:...found)`, { found: found });
+			}
+
+			if (mute.length > 0) {
+				query.andWhere(`message.userId NOT IN (:...mute)`, { mute: mute.map(m => m.muteeId) });
+				query.andWhere(`message.recipientId NOT IN (:...mute)`, { mute: mute.map(m => m.muteeId) });
+			}
 		}
 
 		const message = await query.getOne();

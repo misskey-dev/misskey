@@ -2,6 +2,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { User } from './user';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
+import { UserGroup } from './user-group';
 
 @Entity()
 export class MessagingMessage {
@@ -29,16 +30,29 @@ export class MessagingMessage {
 
 	@Index()
 	@Column({
-		...id(),
+		...id(), nullable: true,
 		comment: 'The recipient user ID.'
 	})
-	public recipientId: User['id'];
+	public recipientId: User['id'] | null;
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
 	public recipient: User | null;
+
+	@Index()
+	@Column({
+		...id(), nullable: true,
+		comment: 'The recipient group ID.'
+	})
+	public groupId: UserGroup['id'] | null;
+
+	@ManyToOne(type => UserGroup, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public group: UserGroup | null;
 
 	@Column('varchar', {
 		length: 4096, nullable: true
@@ -49,6 +63,12 @@ export class MessagingMessage {
 		default: false,
 	})
 	public isRead: boolean;
+
+	@Column({
+		...id(),
+		array: true, default: '{}'
+	})
+	public reads: User['id'][];
 
 	@Column({
 		...id(),

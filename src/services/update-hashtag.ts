@@ -64,6 +64,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 		}
 
 		if (Object.keys(set).length > 0) {
+			q.set(set);
 			q.execute();
 		}
 	} else {

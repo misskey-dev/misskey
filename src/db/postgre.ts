@@ -24,6 +24,8 @@ import { SwSubscription } from '../models/entities/sw-subscription';
 import { Blocking } from '../models/entities/blocking';
 import { UserList } from '../models/entities/user-list';
 import { UserListJoining } from '../models/entities/user-list-joining';
+import { UserGroup } from '../models/entities/user-group';
+import { UserGroupJoining } from '../models/entities/user-group-joining';
 import { Hashtag } from '../models/entities/hashtag';
 import { NoteFavorite } from '../models/entities/note-favorite';
 import { AbuseUserReport } from '../models/entities/abuse-user-report';
@@ -41,6 +43,7 @@ import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
 import { UserProfile } from '../models/entities/user-profile';
 import { Page } from '../models/entities/page';
+import { PageLike } from '../models/entities/page-like';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -105,6 +108,8 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			UserPublickey,
 			UserList,
 			UserListJoining,
+			UserGroup,
+			UserGroupJoining,
 			UserNotePining,
 			Following,
 			FollowRequest,
@@ -116,6 +121,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			NoteWatching,
 			NoteUnread,
 			Page,
+			PageLike,
 			Log,
 			DriveFile,
 			DriveFolder,
