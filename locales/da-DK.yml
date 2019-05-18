@@ -761,6 +761,12 @@ common/views/widgets/tips.vue:
   tips-line11: "Du kan sende poster til bruger siden ved at klikke på \"...\""
   tips-line13: "Alle filer tilknyttet en post gemmes på dit drev."
   tips-line14: "Når du tilpasser layoutet på startsiden, kan du højreklikke på en widget for at ændre dens design."
+  tips-line17: "Du kan fremhæve en tekstbid ved at omgive den med ** **."
+  tips-line19: "Flere vinduer kan kobles af og vises uden for browseren."
+  tips-line20: "Procentdelen af kalender-widgeten viser procentdelen af den tid, der er gået."
+  tips-line21: "Du kan også bruge Misskey's API til at udvikle bots."
+  tips-line23: "Ai Chan Kawaii!"
+  tips-line24: "Misskey har været i drift siden 2014."
 desktop:
   banner: "Banner"
   uploading-banner: "Overfør et nyt banner"
