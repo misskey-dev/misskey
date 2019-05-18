@@ -456,11 +456,13 @@ common/views/components/messaging-room.vue:
   not-talked-group: "没有群组的会话记录"
   no-history: "没有更多的历史记录"
   new-message: "新信息"
+  only-one-file-attached: "只能添加一个附件"
 common/views/components/messaging-room.form.vue:
   input-message-here: "在此键入信息"
   send: "发送"
   attach-from-local: "从电脑中添加文件"
   attach-from-drive: "从网盘中添加文件"
+  only-one-file-attached: "只能添加一个附件"
 common/views/components/messaging-room.message.vue:
   is-read: "已读"
   deleted: "此消息已被删除"
@@ -697,6 +699,9 @@ common/views/components/user-list-editor.vue:
   deleted: "已删除"
   add-user: "添加用户"
 common/views/components/user-group-editor.vue:
+  users: "成员"
+  rename: "更改群组名"
+  delete: "删除群组"
   deleted: "已删除"
 common/views/components/user-lists.vue:
   user-lists: "列表"
