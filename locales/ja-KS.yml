@@ -121,6 +121,7 @@ common:
   update-available-title: "更新があんで"
   update-available: "Misskeyの新しいバージョンがあんで({newer}。現在{current}をつこてるわ)。ページを再度読み込みしたると更新が適用されるわ。"
   my-token-regenerated: "あんさんのトークンが更新されたらしいわ。すまんがとりあえずサインアウトすんで。"
+  enter-username: "ユーザー名を入力してや"
   do-not-use-in-production: "開発ビルドや。本番環境で使わんといて！知らんで！"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "ちゃんとした情報見せてや！"
@@ -294,18 +295,15 @@ common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あんさん"
   no-history: "履歴はあらへんで"
+  user: "ユーザー"
 common/views/components/messaging-room.vue:
-  empty: "このユーザーと話したことはあらへんで"
   no-history: "これより過去の履歴はあらへんで"
-  resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあるで"
-  only-one-file-attached: "メッセージに添付できんのはひとつのファイルのみやで"
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージ書いてや"
   send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
-  only-one-file-attached: "メッセージに添付できんのはひとつのファイルのみやで"
 common/views/components/messaging-room.message.vue:
   is-read: "既読"
   deleted: "このメッセージは削除されたわ"
@@ -476,7 +474,9 @@ common/views/components/profile-editor.vue:
   enter-password: "パスワードを入れてや"
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
+  add-user: "ユーザー増やす"
 common/views/components/user-lists.vue:
+  user-lists: "リスト"
   list-name: "リスト名"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
@@ -536,6 +536,8 @@ common/views/pages/follow.vue:
   request-pending: "フォローの許し待っとる"
   follow-processing: "今フォロー処理やっとる‥"
   follow-request: "フォロー許してくれや！言うてみる"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "フォロー許してくれや！言うてみる"
 desktop:
   banner-crop-title: "どこバナーとして出す？"
   banner: "バナー"
@@ -809,12 +811,6 @@ desktop/views/components/ui.header.post.vue:
   post: "新規投稿"
 desktop/views/components/ui.header.search.vue:
   placeholder: "検索"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "フォロー許してくれや！言うてみる"
-  accept: "許す"
-  reject: "許さん"
-desktop/views/components/user-lists-window.vue:
-  title: "リスト"
 desktop/views/components/user-preview.vue:
   notes: "投稿"
   following: "フォロー"
@@ -1171,10 +1167,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "やっとること"
 mobile/views/pages/share.vue:
   share-with: "{name}で共有"
-mobile/views/pages/received-follow-requests.vue:
-  title: "フォロー許してくれや！"
-  accept: "許す"
-  reject: "許さん"
 mobile/views/pages/note.vue:
   title: "投稿"
   prev: "前のやつ"
