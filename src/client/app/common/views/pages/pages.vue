@@ -7,7 +7,7 @@
 			<sequential-entrance animation="entranceFromTop" delay="25" tag="div" class="pages">
 				<x-page-preview v-for="page in pages" class="page" :page="page" :key="page.id"/>
 			</sequential-entrance>
-			<ui-button v-if="existMore" @click="fetchMore()">{{ $t('@.load-more') }}</ui-button>
+			<ui-button v-if="existMore" @click="fetchMore()" style="margin-top:16px;">{{ $t('@.load-more') }}</ui-button>
 		</div>
 	</ui-container>
 
@@ -133,11 +133,11 @@ export default Vue.extend({
 	> .new
 		margin-bottom 16px
 
-	> * > .page
+	> * > .page:not(:last-child)
 		margin-bottom 8px
 
 	@media (min-width 500px)
-		> * > .page
+		> * > .page:not(:last-child)
 			margin-bottom 16px
 
 </style>
