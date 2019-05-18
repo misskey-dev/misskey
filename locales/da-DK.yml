@@ -455,6 +455,13 @@ common/views/components/user-menu.vue:
   report-abuse: "Meld misbrug"
   report-abuse-detail: "Hvilken form for misbrug har du været ude for?"
   report-abuse-reported: "Denne hændelse er nu videresendt til administratoren. Mange tak for hjælpen."
+  silence: "Gør tavs"
+  unsilence: "Fortryd at du har gjort tavs"
+  silence-confirm: "Er du sikker på, at du vil gøre denne bruger tavs?"
+  unsilence-confirm: "Er du sikker på, at du har fortrudt, at du har gjort denne bruger tavs?"
+  suspend: "Udeluk"
+  unsuspend: "Fortryd udelukkelse"
+  suspend-confirm: "Er du sikker på, at du vil udelukke denne bruger?"
 common/views/components/poll-editor.vue:
   day: "Søn"
 common/views/components/signup.vue:
