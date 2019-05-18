@@ -173,6 +173,8 @@ export default Vue.extend({
 				font-size 14px
 
 			> header
+				color var(--text)
+
 				> .username
 					margin-left 8px
 					opacity 0.7
