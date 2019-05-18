@@ -74,6 +74,16 @@ common:
   permissions:
     "read:account": "Se konto indstillinger"
     "write:account": "Opdater dine konto informationer"
+    "read:blocks": "Vis blokke"
+    "write:blocks": "Rediger blokke"
+    "read:drive": "Gennemse drevet"
+    "write:drive": "Rediger drevet"
+    "read:favorites": "Mine favoritter"
+    "write:favorites": "Rediger favoritterne"
+    "read:following": "Vis info om følgere"
+    "write:following": "Rediger info om følgere"
+    "read:messaging": "Se meddelelser"
+    "write:messaging": "Rediger meddelelser"
   note-visibility:
     followers-desc: "Skriv kun til dine følgere"
     specified: "Direkte"
