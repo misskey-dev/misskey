@@ -767,7 +767,22 @@ common/views/widgets/tips.vue:
   tips-line21: "Du kan også bruge Misskey's API til at udvikle bots."
   tips-line23: "Ai Chan Kawaii!"
   tips-line24: "Misskey har været i drift siden 2014."
+  tips-line25: "Du kan modtage notifikationer, selv om Misskey ikke er åben, hvis du anvender en browser, der er i stand til at håndtere notifikationer."
+common/views/pages/not-found.vue:
+  page-not-found: "Siden kan ikke findes"
+common/views/pages/follow.vue:
+  signed-in-as: "Logget ind som {}"
+  following: "Følger"
+  follow: "Følg"
+  request-pending: "Ventende anmodninger om at blive følger"
+  follow-processing: "Anmoder om behandling"
+  follow-request: "Anmodning om at blive følger"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Anmodninger om at blive følgere"
+  accept: "Accepter"
+  reject: "Afvis"
 desktop:
+  banner-crop-title: "Beskær den del, der vises som et banner"
   banner: "Banner"
   uploading-banner: "Overfør et nyt banner"
   banner-updated: "Banner er overført med succes"
@@ -814,9 +829,26 @@ desktop/views/components/drive.file.vue:
   contextmenu:
     rename: "Omdøb"
     mark-as-sensitive: "Marker som 'følsom'"
+    unmark-as-sensitive: "Fjern markering som 'følsom'"
+    copy-url: "Kopier webadresse"
+    download: "Download"
+    else-files: "Andre"
+    set-as-avatar: "Vælg som avatar"
+    set-as-banner: "Vælg som banner"
+    open-in-app: "Åbn i app"
+    add-app: "Tilføj app"
+    rename-file: "Omdøb fil"
+    input-new-file-name: "Angiv nyt navn"
+    copied: "Kopieret"
+    copied-url-to-clipboard: "Webadressen er kopieret til klippebordet"
 desktop/views/components/drive.folder.vue:
+  unable-to-process: "Handlingen kunne ikke gennemføres."
+  circular-reference-detected: "Destinationsmappen er en undermappe til den mappe, som du forsøger at flytte."
   contextmenu:
     rename: "Omdøb"
+desktop/views/components/drive.vue:
+  unable-to-process: "Handlingen kunne ikke gennemføres."
+  circular-reference-detected: "Destinationsmappen er en undermappe til den mappe, som du forsøger at flytte."
 desktop/views/input-dialog.vue:
   cancel: "Annuller"
 desktop/views/components/note-detail.vue:
@@ -852,6 +884,7 @@ common/views/components/mute-and-block.vue:
   save: "Gem"
 common/views/components/post-form-attaches.vue:
   mark-as-sensitive: "Marker som 'følsom'"
+  unmark-as-sensitive: "Fjern markering som 'følsom'"
 desktop/views/components/sub-note-content.vue:
   poll: "Afstemninger"
 desktop/views/components/settings.tags.vue:
@@ -877,6 +910,7 @@ admin/views/charts.vue:
 admin/views/drive.vue:
   delete: "Slet"
   mark-as-sensitive: "Marker som 'følsom'"
+  unmark-as-sensitive: "Fjern markering som 'følsom'"
 admin/views/emoji.vue:
   emojis:
     remove: "Slet"
@@ -885,6 +919,7 @@ admin/views/announcements.vue:
   remove: "Slet"
   saved: "Gemt"
 admin/views/federation.vue:
+  following: "Følger"
   status: "Status"
 desktop/views/pages/selectdrive.vue:
   cancel: "Annuller"
@@ -905,8 +940,14 @@ desktop/views/widgets/polls.vue:
 mobile/views/components/drive.vue:
   used: "I brug"
 mobile/views/components/drive.file-detail.vue:
+  download: "Download"
   rename: "Omdøb"
   mark-as-sensitive: "Marker som 'følsom'"
+  unmark-as-sensitive: "Fjern markering som 'følsom'"
+common/views/components/follow-button.vue:
+  following: "Følger"
+  request-pending: "Ventende anmodninger om at blive følger"
+  follow-processing: "Anmoder om behandling"
 mobile/views/components/post-form.vue:
   renote: "Gen-postering"
 mobile/views/components/sub-note-content.vue:
