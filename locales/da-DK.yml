@@ -414,8 +414,45 @@ common/views/components/theme.vue:
   installed: "\"{}\" er blevet installeret"
   create-a-theme: "Opret et tema"
   save-created-theme: "Gem tema"
+  primary-color: "Primær farve"
+  secondary-color: "Sekundær farve"
+  text-color: "Tekst farve"
+  base-theme: "Grundtema"
+  base-theme-light: "Lyst"
+  base-theme-dark: "Mørkt"
+  find-more-theme: "Find flere temaer"
+  theme-name: "Tema navn"
+  preview-created-theme: "Før-visning"
+  invalid-theme: "Temaet er ikke gyldigt"
+  already-installed: "Teamet er allerede installeret"
+  saved: "Gemt"
+  manage-themes: "Administrer temaer"
+  builtin-themes: "Standard temaer"
+  my-themes: "Mine temaer"
+  installed-themes: "Installerede temaer"
+  select-theme: "Vælg dit tema"
+  uninstall: "Afinstaller"
+  uninstalled: "\"{}\" er blevet afinstalleret"
+  author: "Skribent"
+  desc: "Beskrivelse"
+  export: "Eksport"
+  import: "Import"
+  import-by-code: "eller indsæt kode"
+  theme-name-required: "Temaet skal have et navn"
 common/views/components/cw-button.vue:
+  hide: "Skjul"
+  show: "Se mere"
+  chars: "{count} karakterer"
+  files: "{count} filer"
   poll: "Afstemninger"
+common/views/components/messaging.vue:
+  search-user: "Find en bruger"
+  you: "Du"
+  no-history: "Uden historik"
+  user: "Bruger"
+  group: "Gruppe"
+  start-with-user: "Start chat med bruger"
+  start-with-group: "Start chat med gruppe"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Skriv meddelelsen her"
   send: "Send"
@@ -480,6 +517,11 @@ common/views/components/visibility-chooser.vue:
   local-public: "Offentlig (på den lokale server)"
   local-home: "Hjem (på den lokale server)"
   local-followers: "Følgere (på den lokale server)"
+common/views/components/profile-editor.vue:
+  export: "Eksport"
+  import: "Import"
+common/views/components/user-groups.vue:
+  user-groups: "Gruppe"
 common/views/widgets/posts-monitor.vue:
   title: "Graf over poster"
 common/views/widgets/memo.vue:
@@ -520,13 +562,17 @@ common/views/components/drive-settings.vue:
   stats: "Statistik"
 desktop/views/components/sub-note-content.vue:
   poll: "Afstemninger"
+desktop/views/components/ui.header.account.vue:
+  groups: "Gruppe"
 admin/views/dashboard.vue:
   drive: "Drev"
 admin/views/abuse.vue:
   details: "Detaljer"
   remove-report: "Slet"
 admin/views/instance.vue:
+  recaptcha-preview: "Før-visning"
   invite: "Inviter"
+  saved: "Gemt"
 admin/views/charts.vue:
   drive: "Drev"
 admin/views/drive.vue:
@@ -536,6 +582,7 @@ admin/views/emoji.vue:
     remove: "Slet"
 admin/views/announcements.vue:
   remove: "Slet"
+  saved: "Gemt"
 admin/views/federation.vue:
   status: "Status"
 desktop/views/pages/selectdrive.vue:
@@ -556,6 +603,7 @@ mobile/views/components/post-form.vue:
 mobile/views/components/sub-note-content.vue:
   poll: "Afstemninger"
 mobile/views/components/ui.nav.vue:
+  user-groups: "Gruppe"
   about: "Om"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
