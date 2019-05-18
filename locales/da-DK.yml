@@ -167,6 +167,16 @@ common:
     show-reversi-board-labels: "Vis række- og kolonne-etiketter i Reversi"
     use-avatar-reversi-stones: "Anvend avatar som en sten i Reversi"
     disable-animated-mfm: "Deaktiver animeret tekst i en post"
+    disable-showing-animated-images: "Afspil ikke animerede billeder"
+    suggest-recent-hashtags: "Vis de seneste populære hashtags på post formularen"
+    always-show-nsfw: "Vis altid indhold, der er mærket som Upassende På Jobbet"
+    always-mark-nsfw: "Marker altid poster med medie bilag som Upassende På Jobbet"
+    show-full-acct: "Vis aldrig værtsnavnet på brugernavnet"
+    show-via: "vis via"
+    reduce-motion: "Reducer bevægelse på skærmen"
+    this-setting-is-this-device-only: "Indstillingen gælder kun for denne enhed"
+    use-os-default-emojis: "Anvend standard emojis fra operativsystemet"
+    line-width: "Linietykkelse"
 common/views/components/poll-editor.vue:
   day: "Søn"
 common/views/components/visibility-chooser.vue:
