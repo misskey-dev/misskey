@@ -200,6 +200,15 @@ common:
   cancel: "Afbryd"
   update-available-title: "Opdatering tilgængelig"
   update-available: "En y version af Misskey er nu tilgængelig ({newer}, den aktuelle version er {current}). Genindlæs siden for at få opdateringerne til at slå igennem."
+  my-token-regenerated: "Din token er blevet genopbygget, så du bliver logget ud."
+  hide-password: "Skjul adgangskoden"
+  show-password: "Vis adgangskoden"
+  enter-username: "Indtast brugernavn"
+  do-not-use-in-production: "Dette er en instans til udvikling. Bør ikke benyttes til produktion."
+  user-suspended: "Denne bruger er blevet udelukket."
+  is-remote-user: "Oplysningerne om denne bruger er muligvis ikke fyldestgørende"
+  is-remote-post: "Indholdet af denne post er spejlet fra andetsteds"
+  view-on-remote: "Se den fulde version eksternt"
 auth/views/index.vue:
   loading: "Henter"
 common/views/components/note-menu.vue:
