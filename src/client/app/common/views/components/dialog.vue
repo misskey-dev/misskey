@@ -18,6 +18,7 @@
 				<fa icon="spinner" pulse v-if="type === 'waiting'"/>
 			</div>
 			<header v-if="title" v-html="title"></header>
+			<header v-if="title == null && user">{{ $t('@.enter-username') }}</header>
 			<div class="body" v-if="text" v-html="text"></div>
 			<ui-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></ui-input>
 			<ui-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></ui-input>

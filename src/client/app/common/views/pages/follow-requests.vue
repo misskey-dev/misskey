@@ -1,27 +1,30 @@
 <template>
-<mk-ui>
-	<template #header><fa :icon="['far', 'envelope']"/>{{ $t('title') }}</template>
-
-	<main>
-		<div v-for="req in requests">
-			<router-link :key="req.id" :to="req.follower | userPage">
-				<mk-user-name :user="req.follower"/>
-			</router-link>
-			<span>
-				<a @click="accept(req.follower)">{{ $t('accept') }}</a>|<a @click="reject(req.follower)">{{ $t('reject') }}</a>
-			</span>
+<div>
+	<ui-container :body-togglable="true">
+		<template #header>{{ $t('received-follow-requests') }}</template>
+		<div v-if="!fetching">
+			<sequential-entrance animation="entranceFromTop" delay="25" tag="div" class="mcbzkkaw">
+				<div v-for="req in requests">
+					<router-link :key="req.id" :to="req.follower | userPage">
+						<mk-user-name :user="req.follower"/>
+					</router-link>
+					<span>
+						<a @click="accept(req.follower)">{{ $t('accept') }}</a>|<a @click="reject(req.follower)">{{ $t('reject') }}</a>
+					</span>
+				</div>
+			</sequential-entrance>
 		</div>
-	</main>
-</mk-ui>
+	</ui-container>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import Progress from '../../../common/scripts/loading';
+import Progress from '../../scripts/loading';
 
 export default Vue.extend({
-	i18n: i18n('mobile/views/pages/received-follow-requests.vue'),
+	i18n: i18n('common/views/pages/follow-requests.vue'),
 	data() {
 		return {
 			fetching: true,
@@ -29,14 +32,10 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		document.title = this.$t('title');
-
 		Progress.start();
-
 		this.$root.api('following/requests/list').then(requests => {
 			this.fetching = false;
 			this.requests = requests;
-
 			Progress.done();
 		});
 	},
@@ -56,7 +55,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-main
+.mcbzkkaw
 	> div
 		display flex
 		padding 16px
