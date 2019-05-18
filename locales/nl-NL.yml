@@ -558,8 +558,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Bestand uploaden"
     create-folder: "Map creëren"
-mobile/views/pages/user-lists.vue:
-  title: "Lijsten"
 mobile/views/pages/home.vue:
   home: "Startpagina"
   local: "Lokaal"
