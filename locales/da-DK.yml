@@ -604,6 +604,12 @@ common/views/components/profile-editor.vue:
   birthday: "Fødselsdag"
   avatar: "Ikon"
   banner: "Banner"
+  is-cat: "Denne konto er en Kat"
+  is-bot: "Denne konto er en Bot"
+  is-locked: "Anmodning fra følgere kræver godkendelse"
+  careful-bot: "Følger anmodninger fra bots kræver godkendelse"
+  auto-accept-followed: "Accepter automatisk følgere af personer, som du selv følger"
+  advanced: "Avanceret"
   export: "Eksport"
   import: "Import"
 common/views/components/user-groups.vue:
