@@ -395,17 +395,13 @@ common/views/components/messaging.vue:
   you: "Tu"
   no-history: "Sin historial"
 common/views/components/messaging-room.vue:
-  empty: "Sin conversaciones"
   no-history: "El historial se ha acabado"
-  resize-form: "Arrastra para redimensionar"
   new-message: "Nuevo mensaje"
-  only-one-file-attached: "Un único archivo se puede conectar al mensaje"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Escribe el mensaje aquí"
   send: "Enviar"
   attach-from-local: "Adjunta ficheros desde tu PC"
   attach-from-drive: "Adjunta ficheros desde tu disco"
-  only-one-file-attached: "Un único archivo se puede conectar al mensaje"
 common/views/components/messaging-room.message.vue:
   is-read: "Leer"
   deleted: "El mensaje se ha borrado"
@@ -588,6 +584,7 @@ common/views/components/user-list-editor.vue:
   delete: "Eliminar lista"
   remove-user: "Eliminar de la lista"
 common/views/components/user-lists.vue:
+  user-lists: "Listas"
   list-name: "Nombre de lista"
 common/views/widgets/broadcast.vue:
   fetching: "Recuperando"
@@ -647,6 +644,8 @@ common/views/pages/follow.vue:
   request-pending: "Solicitud pendiente"
   follow-processing: "Solicitud en proceso"
   follow-request: "Solicitar suscripción"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Solicitudes de seguimiento"
 desktop:
   banner-crop-title: "Corta la parte que aparece como un banner"
   banner: "Banner"
@@ -890,12 +889,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Crear una publicación"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Buscar"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "Solicitudes de seguidores"
-  accept: "Aceptar"
-  reject: "Rechazar"
-desktop/views/components/user-lists-window.vue:
-  title: "Listas de usuario"
 desktop/views/components/user-preview.vue:
   notes: "Publicaciones"
   following: "Sigue"
@@ -1091,10 +1084,6 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Consejos de personalización"
 mobile/views/pages/widgets/activity.vue:
   activity: "Actividad"
-mobile/views/pages/received-follow-requests.vue:
-  title: "Solicitudes de seguimiento"
-  accept: "Aceptar"
-  reject: "Rechazar"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
