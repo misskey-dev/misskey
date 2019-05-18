@@ -67,9 +67,8 @@ export default Vue.extend({
 			required: false
 		},
 		select: {
-			type: String,
 			required: false,
-			selected: ''
+			selected: null
 		},
 		user: {
 			required: false
