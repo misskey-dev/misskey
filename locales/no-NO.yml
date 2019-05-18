@@ -130,6 +130,7 @@ common/views/components/cw-button.vue:
   hide: "Skjul"
 common/views/components/messaging.vue:
   you: "Du"
+  user: "Bruker"
 common/views/components/messaging-room.form.vue:
   send: "Send"
 common/views/components/messaging-room.message.vue:
@@ -193,6 +194,7 @@ common/views/components/profile-editor.vue:
 common/views/components/user-list-editor.vue:
   users: "Bruker"
 common/views/components/user-lists.vue:
+  user-lists: "Lister"
   list-name: "Liste navn"
 common/views/widgets/broadcast.vue:
   fetching: "Henter"
@@ -307,11 +309,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Skriv nytt innlegg"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Søk"
-desktop/views/components/received-follow-requests-window.vue:
-  accept: "Godta"
-  reject: "Avslå"
-desktop/views/components/user-lists-window.vue:
-  title: "Brukerlister"
 desktop/views/components/user-preview.vue:
   notes: "Innlegg"
   following: "Følger"
@@ -456,9 +453,6 @@ mobile/views/pages/home.vue:
   global: "Globalt"
 mobile/views/pages/widgets.vue:
   add-widget: "Legg til"
-mobile/views/pages/received-follow-requests.vue:
-  accept: "Godta"
-  reject: "Avslå"
 mobile/views/pages/note.vue:
   title: "Innlegg"
   prev: "Forrige innlegg"
