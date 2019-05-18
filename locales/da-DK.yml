@@ -854,12 +854,37 @@ desktop/views/input-dialog.vue:
 desktop/views/components/note-detail.vue:
   renote: "Gen-postering"
 desktop/views/components/note.vue:
+  reply: "Svar"
   renote: "Gen-postering"
   detail: "Detaljer"
 desktop/views/components/post-form.vue:
+  reply: "Svar"
   renote: "Gen-postering"
+  posted: "Afsendt!"
+  replied: "Besvaret!"
   reposted: "Gen-posteret!"
+  note-failed: "Fejl under afsendelse"
+  reply-failed: "Fejl under besvarelse"
   renote-failed: "Fejl under gen-postering"
+  posting: "Afsender"
+  attach-media-from-local: "Vedhæft medie fra din enhed"
+  attach-media-from-drive: "Vedhæft medie fra dit drev"
+  insert-a-kao: "v('ω')v"
+  create-poll: "Opret en afstemning"
+  text-remain: "Der mangler {} tegn"
+  recent-tags: "Seneste"
+  local-only-message: "Denne post vil kun blive offentliggjort lokalt"
+  click-to-tagging: "Klik for at tagge"
+  visibility: "Synlighed"
+  geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
+  error: "Fejl"
+  enter-username: "Angiv brugernavn"
+  annotations: "Kommentarer til posten (frivillige)"
+desktop/views/components/post-form-window.vue:
+  note: "Ny post"
+  reply: "Svar"
+  attaches: "{} medier er vedhæftet"
+  uploading-media: "Har overført {} medier"
 desktop/views/components/progress-dialog.vue:
   waiting: "Venter"
 desktop/views/components/renote-form.vue:
@@ -872,6 +897,9 @@ desktop/views/components/renote-form.vue:
   failure: "Fejl under gen-postering"
 desktop/views/components/renote-form-window.vue:
   title: "Ønsker du at gen-postere den?"
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user} følger"
+  followers: "{user}s følger"
 desktop/views/components/settings.2fa.vue:
   token: "Token"
 common/views/components/api-settings.vue:
@@ -893,6 +921,8 @@ desktop/views/components/timeline.vue:
   hashtag: "Hashtags"
 desktop/views/components/ui.header.account.vue:
   groups: "Gruppe"
+desktop/views/components/ui.header.post.vue:
+  post: "Ny post"
 admin/views/dashboard.vue:
   accounts: "Konto"
   drive: "Drev"
@@ -948,8 +978,12 @@ common/views/components/follow-button.vue:
   following: "Følger"
   request-pending: "Ventende anmodninger om at blive følger"
   follow-processing: "Anmoder om behandling"
+mobile/views/components/note-detail.vue:
+  reply: "Svar"
 mobile/views/components/post-form.vue:
+  reply: "Svar"
   renote: "Gen-postering"
+  geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
 mobile/views/components/sub-note-content.vue:
   poll: "Afstemninger"
 mobile/views/components/ui.nav.vue:
