@@ -169,7 +169,7 @@ common:
     disable-animated-mfm: "Deaktiver animeret tekst i en post"
     disable-showing-animated-images: "Afspil ikke animerede billeder"
     suggest-recent-hashtags: "Vis de seneste populære hashtags på post formularen"
-    always-show-nsfw: "Vis altid indhold, der er mærket som Upassende På Jobbet"
+    always-show-nsfw: "Vis altid indhold, der er markeret som Upassende På Jobbet"
     always-mark-nsfw: "Marker altid poster med medie bilag som Upassende På Jobbet"
     show-full-acct: "Vis aldrig værtsnavnet på brugernavnet"
     show-via: "vis via"
@@ -725,17 +725,55 @@ common/views/widgets/posts-monitor.vue:
 common/views/widgets/memo.vue:
   title: "Selvklæbende noter"
 desktop:
+  banner: "Banner"
   uploading-banner: "Overfør et nyt banner"
   banner-updated: "Banner er overført med succes"
   choose-banner: "Vælg banner"
+  avatar-crop-title: "Beskær den del, der vises som en avatar"
+  avatar: "Avatar"
+  uploading-avatar: "Overfør en ny avatar"
+  avatar-updated: "Avatar er overført med succes"
+  choose-avatar: "Vælg et billede til din avatar"
+  invalid-filetype: "Denne filtype kan ikke benyttes her"
 desktop/views/components/activity.chart.vue:
+  total: "Sort ... Total"
+  notes: "Blå ... Noter"
+  replies: "Rød ... Svar"
   renotes: "Grøn ... Gen-postering"
+desktop/views/components/activity.vue:
+  title: "Aktivitet"
+  toggle: "Skift visning"
+desktop/views/components/calendar.vue:
+  title: "{year} / {month}"
+  prev: "Forrige måned"
+  next: "Næste måned"
+  go: "Klik for at navigere"
 desktop/views/components/choose-file-from-drive-window.vue:
+  chosen-files: "{count} fil(er) er valgt"
+  upload: "Overfør filer fra din enhed"
   cancel: "Annuller"
+  ok: "OK"
+  choose-prompt: "Vælg filer"
 desktop/views/components/choose-folder-from-drive-window.vue:
   cancel: "Annuller"
+  ok: "OK"
+  choose-prompt: "Vælg en mappe"
 desktop/views/components/crop-window.vue:
+  skip: "Afbryd beskæring"
   cancel: "Annuller"
+  ok: "OK"
+desktop/views/components/drive-window.vue:
+  used: "I brug"
+desktop/views/components/drive.file.vue:
+  avatar: "Avatar"
+  banner: "Banner"
+  nsfw: "Upassende På Jobbet"
+  contextmenu:
+    rename: "Omdøb"
+    mark-as-sensitive: "Marker som 'følsom'"
+desktop/views/components/drive.folder.vue:
+  contextmenu:
+    rename: "Omdøb"
 desktop/views/input-dialog.vue:
   cancel: "Annuller"
 desktop/views/components/note-detail.vue:
@@ -765,7 +803,10 @@ common/views/components/api-settings.vue:
   console:
     send: "Send"
 common/views/components/drive-settings.vue:
+  in-use: "I brug"
   stats: "Statistik"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "Marker som 'følsom'"
 desktop/views/components/sub-note-content.vue:
   poll: "Afstemninger"
 desktop/views/components/ui.header.account.vue:
@@ -785,6 +826,7 @@ admin/views/charts.vue:
   drive: "Drev"
 admin/views/drive.vue:
   delete: "Slet"
+  mark-as-sensitive: "Marker som 'følsom'"
 admin/views/emoji.vue:
   emojis:
     remove: "Slet"
@@ -808,6 +850,11 @@ desktop/views/pages/user/user.header.vue:
   day: "Søn"
 desktop/views/widgets/polls.vue:
   title: "Afstemninger"
+mobile/views/components/drive.vue:
+  used: "I brug"
+mobile/views/components/drive.file-detail.vue:
+  rename: "Omdøb"
+  mark-as-sensitive: "Marker som 'følsom'"
 mobile/views/components/post-form.vue:
   renote: "Gen-postering"
 mobile/views/components/sub-note-content.vue:
@@ -817,8 +864,15 @@ mobile/views/components/ui.nav.vue:
   about: "Om"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
+mobile/views/pages/widgets/activity.vue:
+  activity: "Aktivitet"
+mobile/views/pages/user/home.vue:
+  activity: "Aktivitet"
 deck:
   select-list: "Vælg liste"
+  rename: "Omdøb"
+deck/deck.user-column.vue:
+  activity: "Aktivitet"
 pages:
   like: "Synes om"
   blocks:
