@@ -286,7 +286,7 @@ common:
     rss: "RSS læser"
     memo: "Selvklæbende noter"
     trends: "Tendenser"
-    photo-stream: "Foto kavalkade"
+    photo-stream: "Billedkavalkade"
     posts-monitor: "Graf over poster"
     slideshow: "Billedkarrusel"
     version: "Version"
@@ -720,10 +720,37 @@ common/views/widgets/broadcast.vue:
   fetching: "Tjekker"
   no-broadcasts: "Ingen meddelelser"
   have-a-nice-day: "Hav en god dag!"
+  next: "Næste"
+common/views/widgets/calendar.vue:
+  year: "År {}"
+  month: "{},"
+  day: "{}"
+  today: "I dag:"
+  this-month: "Måned:"
+  this-year: "År:"
+common/views/widgets/photo-stream.vue:
+  title: "Billedkavalkade"
+  no-photos: "Ingen billeder"
 common/views/widgets/posts-monitor.vue:
   title: "Graf over poster"
+  toggle: "Skift mellem visninger"
+common/views/widgets/hashtags.vue:
+  title: "Hashtags"
+common/views/widgets/server.vue:
+  title: "Server info"
+  toggle: "Skift mellem visninger"
 common/views/widgets/memo.vue:
   title: "Selvklæbende noter"
+  memo: "Skriv her!"
+  save: "Gem"
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "For at kunne angive en mappe er du nødt til at gå ud af tilpasnings indstillingerne"
+  folder: "Klik og angiv en mappe"
+  no-image: "Der er ikke noget billede i denne mappe"
+common/views/widgets/tips.vue:
+  tips-line1: "Du kan fokusere på tidslinien med <kbd>t</kbd>"
+  tips-line2: "Åbn post formularen med <kbd>p</kbd> eller <kbd>n</kbd>."
+  tips-line3: "Du kan trække og slippe filer på post formularen"
 desktop:
   banner: "Banner"
   uploading-banner: "Overfør et nyt banner"
@@ -742,7 +769,7 @@ desktop/views/components/activity.chart.vue:
   renotes: "Grøn ... Gen-postering"
 desktop/views/components/activity.vue:
   title: "Aktivitet"
-  toggle: "Skift visning"
+  toggle: "Skift mellem visninger"
 desktop/views/components/calendar.vue:
   title: "{year} / {month}"
   prev: "Forrige måned"
@@ -805,10 +832,16 @@ common/views/components/api-settings.vue:
 common/views/components/drive-settings.vue:
   in-use: "I brug"
   stats: "Statistik"
+common/views/components/mute-and-block.vue:
+  save: "Gem"
 common/views/components/post-form-attaches.vue:
   mark-as-sensitive: "Marker som 'følsom'"
 desktop/views/components/sub-note-content.vue:
   poll: "Afstemninger"
+desktop/views/components/settings.tags.vue:
+  save: "Gem"
+desktop/views/components/timeline.vue:
+  hashtag: "Hashtags"
 desktop/views/components/ui.header.account.vue:
   groups: "Gruppe"
 admin/views/dashboard.vue:
@@ -820,6 +853,7 @@ admin/views/abuse.vue:
 admin/views/instance.vue:
   recaptcha-preview: "Før-visning"
   invite: "Inviter"
+  save: "Gem"
   saved: "Gemt"
   email: "Email adresse"
 admin/views/charts.vue:
@@ -831,6 +865,7 @@ admin/views/emoji.vue:
   emojis:
     remove: "Slet"
 admin/views/announcements.vue:
+  save: "Gem"
   remove: "Slet"
   saved: "Gemt"
 admin/views/federation.vue:
@@ -845,6 +880,7 @@ desktop/views/pages/user/user.friends.vue:
   loading: "Henter"
 desktop/views/pages/user/user.photos.vue:
   loading: "Henter"
+  no-photos: "Ingen billeder"
 desktop/views/pages/user/user.header.vue:
   month: "Man"
   day: "Søn"
@@ -868,7 +904,10 @@ mobile/views/pages/widgets/activity.vue:
   activity: "Aktivitet"
 mobile/views/pages/user/home.vue:
   activity: "Aktivitet"
+mobile/views/pages/user/home.photos.vue:
+  no-photos: "Ingen billeder"
 deck:
+  hashtag: "Hashtags"
   select-list: "Vælg liste"
   rename: "Omdøb"
 deck/deck.user-column.vue:
