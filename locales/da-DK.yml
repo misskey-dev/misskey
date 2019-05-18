@@ -453,6 +453,8 @@ common/views/components/user-menu.vue:
   push-to-list: "Tilføj til liste"
   select-list: "Vælg liste"
   report-abuse: "Meld misbrug"
+  report-abuse-detail: "Hvilken form for misbrug har du været ude for?"
+  report-abuse-reported: "Denne hændelse er nu videresendt til administratoren. Mange tak for hjælpen."
 common/views/components/poll-editor.vue:
   day: "Søn"
 common/views/components/signup.vue:
