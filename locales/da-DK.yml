@@ -118,7 +118,15 @@ common:
     hmm: "Hmm...?"
     surprise: "Wauw"
     congrats: "Tillykke"
+    angry: "Vred"
+    confused: "Forvirret"
+    rip: "Hvil i fred"
+    pudding: "Budding"
   note-visibility:
+    public: "Offentlig"
+    home: "Hjem"
+    home-desc: "Post udelukkende til tidslinien"
+    followers: "Følgere"
     followers-desc: "Skriv kun til dine følgere"
     specified: "Direkte"
     specified-desc: "Skriv kun til udvalgte brugere"
@@ -156,6 +164,9 @@ common:
     keep-cw: "Bevar indholdsvarsel"
     keep-cw-desc: "Det indholdsvarsel, som står på det oprindelige indlæg, vil som standard blive overført til eventuelle svar på indlægget."
     i-like-sushi: "Jeg foretrækker sushi frem for budding"
+    show-reversi-board-labels: "Vis række- og kolonne-etiketter i Reversi"
+    use-avatar-reversi-stones: "Anvend avatar som en sten i Reversi"
+    disable-animated-mfm: "Deaktiver animeret tekst i en post"
 common/views/components/poll-editor.vue:
   day: "Søn"
 common/views/components/visibility-chooser.vue:
