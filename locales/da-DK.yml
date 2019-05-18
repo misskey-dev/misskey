@@ -422,11 +422,41 @@ common/views/components/nav.vue:
   status: "Status"
   wiki: "Wiki"
   donors: "Donatorer"
-  repository: "Kodelager"
+  repository: "Repo"
+  develop: "Udviklere"
+  feedback: "Tilbagemeldinger"
+  tos: "Betingelser for anvendelsen"
 common/views/components/note-menu.vue:
+  mention: "Omtale"
+  detail: "Detaljer"
+  copy-content: "Kopier indholdet"
+  copy-link: "Kopier link"
+  favorite: "Marker denne note som favorit"
+  unfavorite: "Fjern favorit-markering"
+  watch: "Hold øje med"
+  unwatch: "Hold ikke længere øje med"
+  pin: "Tilknyt til din profil"
+  unpin: "Fjern tilknytning til din profil"
   delete: "Slet"
+  delete-confirm: "Er du helt sikker på, at du vil slette denne post?"
+  remote: "Vis den oprindelige note"
+common/views/components/user-menu.vue:
+  mention: "Omtale"
+  mute: "Annuller"
+  unmute: "Fortryd annullering"
+  mute-confirm: "Er du sikker på, at du vil annullere denne bruger?"
+  unmute-confirm: "Er du sikker på, at du vil fjerne annulleringen af denne bruger?"
+  block: "Bloker"
+  unblock: "Fjern blokering"
+  block-confirm: "Er du sikker på, at du vil blokere denne bruger?"
+  unblock-confirm: "Er du sikker på, at du vil fjerne blokeringen af denne bruger?"
+  push-to-list: "Tilføj til liste"
+  select-list: "Vælg liste"
+  report-abuse: "Meld misbrug"
 common/views/components/poll-editor.vue:
   day: "Søn"
+common/views/components/signup.vue:
+  tos: "Betingelser for anvendelsen"
 common/views/components/visibility-chooser.vue:
   local-public: "Offentlig (på den lokale server)"
   local-home: "Hjem (på den lokale server)"
@@ -449,6 +479,7 @@ desktop/views/components/note-detail.vue:
   renote: "Gen-postering"
 desktop/views/components/note.vue:
   renote: "Gen-postering"
+  detail: "Detaljer"
 desktop/views/components/post-form.vue:
   renote: "Gen-postering"
   reposted: "Gen-posteret!"
@@ -473,6 +504,7 @@ desktop/views/components/sub-note-content.vue:
 admin/views/dashboard.vue:
   drive: "Drev"
 admin/views/abuse.vue:
+  details: "Detaljer"
   remove-report: "Slet"
 admin/views/instance.vue:
   invite: "Inviter"
@@ -508,6 +540,8 @@ mobile/views/components/ui.nav.vue:
   about: "Om"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
+deck:
+  select-list: "Vælg liste"
 pages:
   like: "Synes om"
   blocks:
