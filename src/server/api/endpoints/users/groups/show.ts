@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
-import { UserGroups } from '../../../../../models';
+import { UserGroups, UserGroupJoinings } from '../../../../../models';
 import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
@@ -42,10 +42,18 @@ export default define(meta, async (ps, me) => {
 	// Fetch the group
 	const userGroup = await UserGroups.findOne({
 		id: ps.groupId,
-		userId: me.id,
 	});
 
 	if (userGroup == null) {
+		throw new ApiError(meta.errors.noSuchGroup);
+	}
+
+	const joining = await UserGroupJoinings.findOne({
+		userId: me.id,
+		userGroupId: userGroup.id
+	});
+
+	if (joining == null && userGroup.userId !== me.id) {
 		throw new ApiError(meta.errors.noSuchGroup);
 	}
 
