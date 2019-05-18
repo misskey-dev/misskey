@@ -676,8 +676,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Eine Datei hochladen"
     create-folder: "Ein Verzeichnis erstellen"
-mobile/views/pages/user-lists.vue:
-  title: "Listen"
 mobile/views/pages/home.vue:
   home: "Home"
   local: "Lokal"
