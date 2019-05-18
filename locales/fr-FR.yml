@@ -243,6 +243,7 @@ common:
   my-token-regenerated: "Votre jeton vient d’être généré, vous allez maintenant être déconnecté."
   hide-password: "Masquer le mot de passe"
   show-password: "Afficher le mot de passe"
+  enter-username: "Saisir un nom d'utilisateur"
   do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
   user-suspended: "Cet·te utilisateur·trice a été suspendu·e"
   is-remote-user: "Les informations à propos de ce compte peuvent être incomplètes."
@@ -436,18 +437,15 @@ common/views/components/messaging.vue:
   search-user: "Trouver un utilisateur"
   you: "Vous"
   no-history: "Pas d'historique"
+  user: "Utilisateur·rice·s"
 common/views/components/messaging-room.vue:
-  empty: "Pas de conversations"
   no-history: "Aucun historique"
-  resize-form: "Faites glisser pour redimensionner"
   new-message: "Nouveau message"
-  only-one-file-attached: "Un seul fichier peut être joint au message"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Tapez ici votre message"
   send: "Envoyer"
   attach-from-local: "Joindre un fichier depuis votre ordinateur"
   attach-from-drive: "Joindre un fichier depuis votre Drive"
-  only-one-file-attached: "Un seul fichier uniquement peut être joint au message"
 common/views/components/messaging-room.message.vue:
   is-read: "Lu"
   deleted: "Ce message a été supprimé"
@@ -675,7 +673,11 @@ common/views/components/user-list-editor.vue:
   remove-user: "Retirer de cette liste"
   delete-are-you-sure: "Voulez-vous vraiment supprimer la liste « $1 » ?"
   deleted: "Supprimé"
+  add-user: "Ajouter un utilisateur"
+common/views/components/user-group-editor.vue:
+  deleted: "Supprimé"
 common/views/components/user-lists.vue:
+  user-lists: "Listes"
   create-list: "Créer une liste"
   list-name: "Nom de la liste"
 common/views/widgets/broadcast.vue:
@@ -738,6 +740,8 @@ common/views/pages/follow.vue:
   request-pending: "Demande d’abonnement en attente"
   follow-processing: "Demande en attente"
   follow-request: "Demande d’abonnement"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Demandes d’abonnement"
 desktop:
   banner-crop-title: "Découpez la partie qui apparaîtra comme bannière"
   banner: "Bannière"
@@ -1019,12 +1023,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Rédiger une nouvelle publication"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Chercher"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "Demandes d’abonnement"
-  accept: "Accepter"
-  reject: "Refuser"
-desktop/views/components/user-lists-window.vue:
-  title: "Listes de l'utilisateur"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
@@ -1507,10 +1505,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "Activité"
 mobile/views/pages/share.vue:
   share-with: "Partager avec {name}"
-mobile/views/pages/received-follow-requests.vue:
-  title: "Demandes d’abonnement"
-  accept: "Accepter"
-  reject: "Refuser"
 mobile/views/pages/note.vue:
   title: "Publication"
   prev: "Note précédente"
