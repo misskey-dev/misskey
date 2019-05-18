@@ -168,6 +168,7 @@ common:
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   hide-password: "Ukryj hasło"
   show-password: "Pokaż hasło"
+  enter-username: "Wprowadź nazwę użytkownika"
   view-on-remote: "Dla dopełnienia, zobacz to zdalnie."
   renoted-by: "{user} udostępnił(a)"
   error:
@@ -323,18 +324,15 @@ common/views/components/messaging.vue:
   search-user: "Znajdź użytkownika"
   you: "Ty"
   no-history: "Brak historii"
+  user: "Użytkownicy"
 common/views/components/messaging-room.vue:
-  empty: "Brak konwersacji"
   no-history: "Brak dalszej historii"
-  resize-form: "Przeciągnij aby zmienić rozmiar"
   new-message: "Nowa wiadomość"
-  only-one-file-attached: "Tylko JEDEN plik może zostać dołączony do wiadomości"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Wprowadź wiadomość tutaj"
   send: "Wyślij"
   attach-from-local: "Załącz pliki z komputera"
   attach-from-drive: "Załącz pliki z dysku"
-  only-one-file-attached: "Tylko jeden plik może zostać dołączony do wiadomości"
 common/views/components/messaging-room.message.vue:
   is-read: "Przeczytano"
   deleted: "Wiadomość została usunięta"
@@ -511,7 +509,11 @@ common/views/components/user-list-editor.vue:
   remove-user: "Usuń z tej listy"
   delete-are-you-sure: "Usunąć listę \"$1\"?"
   deleted: "Usunięto"
+  add-user: "Dodaj użytkownika"
+common/views/components/user-group-editor.vue:
+  deleted: "Usunięto"
 common/views/components/user-lists.vue:
+  user-lists: "Listy"
   list-name: "Nazwa listy"
 common/views/widgets/broadcast.vue:
   fetching: "Sprawdzanie"
@@ -568,6 +570,8 @@ common/views/pages/follow.vue:
   request-pending: "Oczekiwanie na pozwolenie"
   follow-processing: "Przetwarzanie śledzenia"
   follow-request: "Poproś o śledzenie"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Prośby o śledzenie"
 desktop:
   banner: "Baner"
   uploading-banner: "Wysyłanie baneru"
@@ -829,12 +833,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Utwórz nowy wpis"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Szukaj"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "Prośby o śledzenie"
-  accept: "Zatwierdź"
-  reject: "Odmów"
-desktop/views/components/user-lists-window.vue:
-  title: "Listy"
 desktop/views/components/user-preview.vue:
   notes: "Wpisy"
   following: "Śledzeni"
@@ -1119,10 +1117,6 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Wskazówki o dostosowywaniu"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktywność"
-mobile/views/pages/received-follow-requests.vue:
-  title: "Prośby o śledzenie"
-  accept: "Zatwierdź"
-  reject: "Odmów"
 mobile/views/pages/note.vue:
   title: "Wpis"
   prev: "Poprzedni wpis"
