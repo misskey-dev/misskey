@@ -110,6 +110,14 @@ common:
     wednesday: "Onsdag"
     thursday: "Torsdag"
     friday: "Fredag"
+    saturday: "Lørdag"
+  reactions:
+    like: "Synes om"
+    love: "Elsker"
+    laugh: "Ler"
+    hmm: "Hmm...?"
+    surprise: "Wauw"
+    congrats: "Tillykke"
   note-visibility:
     followers-desc: "Skriv kun til dine følgere"
     specified: "Direkte"
@@ -163,3 +171,5 @@ desktop/views/pages/user/user.header.vue:
   day: "Søn"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
+pages:
+  like: "Synes om"
