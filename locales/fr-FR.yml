@@ -675,11 +675,16 @@ common/views/components/user-list-editor.vue:
   deleted: "Supprimé"
   add-user: "Ajouter un utilisateur"
 common/views/components/user-group-editor.vue:
+  rename: "Renommer le groupe"
+  delete: "Supprimer le groupe"
   deleted: "Supprimé"
+  add-user: "Ajouter un membre"
 common/views/components/user-lists.vue:
   user-lists: "Listes"
   create-list: "Créer une liste"
   list-name: "Nom de la liste"
+common/views/components/user-groups.vue:
+  create-group: "Créer un groupe"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
   no-broadcasts: "Aucune annonce"
@@ -742,6 +747,8 @@ common/views/pages/follow.vue:
   follow-request: "Demande d’abonnement"
 common/views/pages/follow-requests.vue:
   received-follow-requests: "Demandes d’abonnement"
+  accept: "Accepter"
+  reject: "Refuser"
 desktop:
   banner-crop-title: "Découpez la partie qui apparaîtra comme bannière"
   banner: "Bannière"
@@ -1013,6 +1020,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   lists: "Listes"
+  groups: "Groupes"
   follow-requests: "Demandes d’abonnement"
   admin: "Admin"
 desktop/views/components/ui.header.nav.vue:
