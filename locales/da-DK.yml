@@ -209,6 +209,27 @@ common:
   is-remote-user: "Oplysningerne om denne bruger er muligvis ikke fyldestgørende"
   is-remote-post: "Indholdet af denne post er spejlet fra andetsteds"
   view-on-remote: "Se den fulde version eksternt"
+  renoted-by: "Bemærket af {user}"
+  no-notes: "Uden noter"
+  turn-on-darkmode: "Skift til mørk baggrund"
+  turn-off-darkmode: "Lys baggrund"
+  error:
+    title: "Noget gik galt :("
+    retry: "Prøv igen"
+  reversi:
+    drawn: "Tegn"
+    my-turn: "Din tur"
+    opponent-turn: "Modstanderens tur"
+    turn-of: "{name}s tur"
+    past-turn-of: "{name}s tur forinden"
+    won: "{name} vandt"
+    black: "Sort"
+    white: "Hvid"
+    total: "I alt"
+    this-turn: "Runde {count}"
+  widgets:
+    analog-clock: "Analogt ur"
+    profile: "Profil"
 auth/views/index.vue:
   loading: "Henter"
 common/views/components/note-menu.vue:
