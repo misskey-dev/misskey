@@ -1719,6 +1719,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "フォロー申請"
   search: "検索"
   user-lists: "リスト"
+  user-groups: "グループ"
   widgets: "ウィジェット"
   game: "ゲーム"
   admin: "管理"
@@ -1732,9 +1733,6 @@ mobile/views/pages/drive.vue:
     rename-folder: "フォルダー名を変更"
     move-folder: "このフォルダを移動"
     delete-folder: "このフォルダを削除"
-
-mobile/views/pages/user-lists.vue:
-  title: "リスト"
 
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
