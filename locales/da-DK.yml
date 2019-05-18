@@ -849,6 +849,8 @@ desktop/views/components/drive.folder.vue:
 desktop/views/components/drive.vue:
   unable-to-process: "Handlingen kunne ikke gennemføres."
   circular-reference-detected: "Destinationsmappen er en undermappe til den mappe, som du forsøger at flytte."
+desktop/views/components/home.vue:
+  done: "Send"
 desktop/views/input-dialog.vue:
   cancel: "Annuller"
 desktop/views/components/note-detail.vue:
@@ -901,8 +903,24 @@ desktop/views/pages/user-following-or-followers.vue:
   following: "{user} følger"
   followers: "{user}s følger"
 desktop/views/components/settings.2fa.vue:
+  intro: "Du kan forbedre sikkerheden ved at indføre to-faktor godkendelse. I så fald vil du både få brug for en adgangskode til log ind og en fysisk enhed (f.eks. en smartphone), som er registreret på forhånd."
+  detail: "Mere info..."
+  url: "https://www.google.com/landing/2step/"
+  caution: "Hvis du mister adgangen til din registrerede enhed, vil du ikke længere være i stand til at koble dig på Misskey!"
+  register: "Registrer en enhed"
+  already-registered: "Denne enhed er allerede registreret"
+  unregister: "Af-registrer"
+  unregistered: "To-faktor godkendelse er de-aktiveret."
+  enter-password: "Angiv adgangskoden"
+  authenticator: "Allerførst skal du installere Google Authenticator på din enhed:"
+  howtoinstall: "Sådan installerer du"
   token: "Token"
+  scan: "Og derefter, scan QR koden:"
+  done: "Angiv det token, som vises på din enhed:"
+  submit: "Send"
+  success: "Indstillingerne er gemt!"
 common/views/components/api-settings.vue:
+  enter-password: "Angiv adgangskoden"
   console:
     send: "Send"
 common/views/components/drive-settings.vue:
