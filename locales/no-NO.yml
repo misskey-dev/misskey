@@ -445,8 +445,6 @@ mobile/views/components/ui.nav.vue:
   user-lists: "Lister"
   game: "Spill"
   admin: "Admin"
-mobile/views/pages/user-lists.vue:
-  title: "Lister"
 mobile/views/pages/home.vue:
   home: "Hjem"
   local: "Lokalt"
