@@ -207,7 +207,24 @@ common:
     show-clock-on-header: "Vis uret i øverste højre hjørne"
     show-reply-target: "Vis hvad der svares på"
     timeline: "Tidslinie"
-    show-my-renotes: "Vis mine genposteringer på tidslinien"
+    show-my-renotes: "Vis mine gen-posteringer på tidslinien"
+    show-renoted-my-notes: "Vis gen-posteringer af dine egne poster på tidslinien"
+    show-local-renotes: "Vis gen-posteringer af lokale poster på tidslinien"
+    remain-deleted-note: "Fortsæt med at vise slettede noter"
+    sound: "Lyd"
+    enable-sounds: "Aktiver lyd"
+    enable-sounds-desc: "Afspil en lyd, når du modtager en post/besked. Denne indstilling gemmes i browseren."
+    volume: "Volumen"
+    test: "Test"
+    update: "Misskey opdatering"
+    version: "Aktuel version:"
+    latest-version: "Seneste version:"
+    update-checking: "Kikker efter opdateringer"
+    do-update: "Kikker efter opdateringer"
+    update-settings: "Avancerede indstillinger"
+    no-updates: "Der er ikke kommet nogen opdateringer"
+    no-updates-desc: "Din Misskey er opdateret"
+    update-available: "Der er kommet en ny version"
     debug-mode-desc: "Denne indstilling er gemt i browseren"
     navbar-position: "Placering af navigationsbaren"
     navbar-position-top: "Top"
@@ -239,7 +256,7 @@ common:
   is-remote-user: "Oplysningerne om denne bruger er muligvis ikke fyldestgørende"
   is-remote-post: "Indholdet af denne post er spejlet fra andetsteds"
   view-on-remote: "Se den fulde version eksternt"
-  renoted-by: "Bemærket af {user}"
+  renoted-by: "Gen-posteret af {user}"
   no-notes: "Uden noter"
   turn-on-darkmode: "Skift til mørk baggrund"
   turn-off-darkmode: "Lys baggrund"
@@ -261,8 +278,13 @@ common:
     analog-clock: "Analogt ur"
     profile: "Profil"
     calendar: "Kalender"
+auth/views/form.vue:
+  cancel: "Annuller"
 auth/views/index.vue:
   loading: "Henter"
+common/views/components/games/reversi/reversi.vue:
+  matching:
+    cancel: "Annuller"
 common/views/components/games/reversi/reversi.game.vue:
   looped-map: "Vendebrikker"
   can-put-everywhere: "Kan placeres hvorsomhelst"
@@ -288,6 +310,7 @@ common/views/components/games/reversi/reversi.room.vue:
   black-or-white: "Sort/hvid"
   black-is: "Sort er {}"
   rules: "Regler"
+  cancel: "Annuller"
 common/views/components/note-menu.vue:
   delete: "Slet"
 common/views/components/poll-editor.vue:
@@ -296,6 +319,34 @@ common/views/components/visibility-chooser.vue:
   local-public: "Offentlig (på den lokale server)"
   local-home: "Hjem (på den lokale server)"
   local-followers: "Følgere (på den lokale server)"
+desktop/views/components/activity.chart.vue:
+  renotes: "Grøn ... Gen-postering"
+desktop/views/components/choose-file-from-drive-window.vue:
+  cancel: "Annuller"
+desktop/views/components/choose-folder-from-drive-window.vue:
+  cancel: "Annuller"
+desktop/views/components/crop-window.vue:
+  cancel: "Annuller"
+desktop/views/input-dialog.vue:
+  cancel: "Annuller"
+desktop/views/components/note-detail.vue:
+  renote: "Gen-postering"
+desktop/views/components/note.vue:
+  renote: "Gen-postering"
+desktop/views/components/post-form.vue:
+  renote: "Gen-postering"
+  reposted: "Gen-posteret!"
+  renote-failed: "Fejl under gen-postering"
+desktop/views/components/renote-form.vue:
+  quote: "Citat"
+  cancel: "Annuller"
+  renote: "Gen-postering"
+  renote-home: "Gen-postering (hjem)"
+  reposting: "Gen-posterer"
+  success: "Gen-posteret!"
+  failure: "Fejl under gen-postering"
+desktop/views/components/renote-form-window.vue:
+  title: "Ønsker du at gen-postere den?"
 admin/views/dashboard.vue:
   drive: "Drev"
 admin/views/abuse.vue:
@@ -311,6 +362,8 @@ admin/views/emoji.vue:
     remove: "Slet"
 admin/views/announcements.vue:
   remove: "Slet"
+desktop/views/pages/selectdrive.vue:
+  cancel: "Annuller"
 desktop/views/pages/user/user.followers-you-know.vue:
   loading: "Henter"
 desktop/views/pages/user/user.friends.vue:
@@ -320,6 +373,8 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "Man"
   day: "Søn"
+mobile/views/components/post-form.vue:
+  renote: "Gen-postering"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
 pages:
