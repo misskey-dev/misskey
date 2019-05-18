@@ -395,11 +395,34 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet-desc: "Tjek en ekstra gang, at du har forbindelse til internettet"
   no-server: "Ude af stand til at skabe forbindelse til Misskey serveren"
   no-server-desc: "Netværksforbindelsen på din enhed er normal, men du kunne ikke koble dig på Misskey serveren. Årsagen kan være, at serveren er nede, eller at den er under vedligeholdelse. Prøv igen senere."
+  success: "Du er nu blevet koblet til Misskey serveren"
+  success-desc: "Det ser ud til, at der er forbindelse. Genindlæs siden."
+  flush: "Ryd cachen"
+  set-version: "Angiv version"
+common/views/components/media-banner.vue:
+  sensitive: "Upassende På Jobbet"
+  click-to-show: "Klik for at se"
 common/views/components/theme.vue:
   theme: "Tema"
   light-theme: "Valgbare temaer med lys baggrund"
 common/views/components/cw-button.vue:
   poll: "Afstemninger"
+common/views/components/messaging-room.form.vue:
+  input-message-here: "Skriv meddelelsen her"
+  send: "Send"
+  attach-from-local: "Vedhæft filen fra din enhed"
+  attach-from-drive: "Vedhæft filen fra dit drev"
+  only-one-file-attached: "Kan kun indeholde én vedhæftning"
+common/views/components/messaging-room.message.vue:
+  is-read: "Læst"
+  deleted: "Denne meddelelse er slettet"
+common/views/components/nav.vue:
+  about: "Om"
+  stats: "Statistik"
+  status: "Status"
+  wiki: "Wiki"
+  donors: "Donatorer"
+  repository: "Kodelager"
 common/views/components/note-menu.vue:
   delete: "Slet"
 common/views/components/poll-editor.vue:
@@ -440,6 +463,11 @@ desktop/views/components/renote-form.vue:
   failure: "Fejl under gen-postering"
 desktop/views/components/renote-form-window.vue:
   title: "Ønsker du at gen-postere den?"
+common/views/components/api-settings.vue:
+  console:
+    send: "Send"
+common/views/components/drive-settings.vue:
+  stats: "Statistik"
 desktop/views/components/sub-note-content.vue:
   poll: "Afstemninger"
 admin/views/dashboard.vue:
@@ -457,6 +485,8 @@ admin/views/emoji.vue:
     remove: "Slet"
 admin/views/announcements.vue:
   remove: "Slet"
+admin/views/federation.vue:
+  status: "Status"
 desktop/views/pages/selectdrive.vue:
   cancel: "Annuller"
 desktop/views/pages/user/user.followers-you-know.vue:
@@ -474,6 +504,8 @@ mobile/views/components/post-form.vue:
   renote: "Gen-postering"
 mobile/views/components/sub-note-content.vue:
   poll: "Afstemninger"
+mobile/views/components/ui.nav.vue:
+  about: "Om"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
 pages:
