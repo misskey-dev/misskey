@@ -84,6 +84,32 @@ common:
     "write:following": "Rediger info om følgere"
     "read:messaging": "Se meddelelser"
     "write:messaging": "Rediger meddelelser"
+    "read:mutes": "Se annullerede poster"
+    "write:mutes": "Rediger annullerede poster"
+    "write:notes": "Opret og slet poster"
+    "read:notifications": "Vis notifikationer"
+    "write:notifications": "Rediger notifikationer"
+    "read:reactions": "Vis reaktioner"
+    "write:reactions": "Rediger reaktioner"
+    "write:votes": "Stem"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "Følgende brugere vil få vist deres poster på tidslinien."
+    explore: "Find brugere"
+  weekday-short:
+    sunday: "Søn"
+    monday: "Man"
+    tuesday: "Tirs"
+    wednesday: "Ons"
+    thursday: "Tors"
+    friday: "Fre"
+    saturday: "Lør"
+  weekday:
+    sunday: "Søndag"
+    monday: "Mandag"
+    tuesday: "Tirsdag"
+    wednesday: "Onsdag"
+    thursday: "Torsdag"
+    friday: "Fredag"
   note-visibility:
     followers-desc: "Skriv kun til dine følgere"
     specified: "Direkte"
@@ -122,6 +148,8 @@ common:
     keep-cw: "Bevar indholdsvarsel"
     keep-cw-desc: "Det indholdsvarsel, som står på det oprindelige indlæg, vil som standard blive overført til eventuelle svar på indlægget."
     i-like-sushi: "Jeg foretrækker sushi frem for budding"
+common/views/components/poll-editor.vue:
+  day: "Søn"
 common/views/components/visibility-chooser.vue:
   local-public: "Offentlig (på den lokale server)"
   local-home: "Hjem (på den lokale server)"
@@ -130,5 +158,8 @@ admin/views/dashboard.vue:
   drive: "Drev"
 admin/views/charts.vue:
   drive: "Drev"
+desktop/views/pages/user/user.header.vue:
+  month: "Man"
+  day: "Søn"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
