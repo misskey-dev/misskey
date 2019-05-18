@@ -442,7 +442,7 @@ common/views/components/theme.vue:
 common/views/components/cw-button.vue:
   hide: "Skjul"
   show: "Se mere"
-  chars: "{count} karakterer"
+  chars: "{count} tegn"
   files: "{count} filer"
   poll: "Afstemninger"
 common/views/components/messaging.vue:
@@ -453,6 +453,12 @@ common/views/components/messaging.vue:
   group: "Gruppe"
   start-with-user: "Start chat med bruger"
   start-with-group: "Start chat med gruppe"
+common/views/components/messaging-room.vue:
+  not-talked-user: "Ingen bruger sessionshistorik"
+  not-talked-group: "Intet gruppesessions dokument"
+  no-history: "Der er ingen yderligere historik"
+  new-message: "Ny besked"
+  only-one-file-attached: "Kan kun indeholde én vedhæftning"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Skriv meddelelsen her"
   send: "Send"
@@ -509,9 +515,31 @@ common/views/components/user-menu.vue:
   unsuspend: "Ophæv udelukkelse"
   suspend-confirm: "Er du sikker på, at du vil udelukke denne bruger?"
   unsuspend-confirm: "Er du sikker på, at du vil ophæve udelukkelsen af denne bruger?"
+common/views/components/poll.vue:
+  vote-to: "Stem på '{}'"
+  vote-count: "{} stemmer"
+  total-votes: "{} stemmer i alt"
+  vote: "Stem"
+  show-result: "Vis resultatet"
+  voted: "Stemt"
+  closed: "Afsluttet"
+  remaining-days: "{d} dage og {h} timer tilbage"
+  remaining-hours: "{h} timer og {m} minutter tilbage"
+  remaining-minutes: "{m} minutter og {s} sekunder tilbage"
+  remaining-seconds: "{s} sekunder tilbage"
 common/views/components/poll-editor.vue:
+  no-only-one-choice: "Der skal vælges mindst to muligheder"
+  choice-n: "Valgmulighed {}"
+  remove: "Slet valgmulighed"
+  add: "Tilføj valgmulighed"
+  destroy: "Drop afstemningen"
   day: "Søn"
 common/views/components/signup.vue:
+  unavailable: "Ikke tilgængelig"
+  error: "Netværksfejl"
+  invalid-format: "bogstaver, tal og \"_\" er tilladt."
+  too-short: "Må ikke være tom!"
+  too-long: "Brug højst 20 tegn."
   tos: "Betingelser for anvendelsen"
 common/views/components/visibility-chooser.vue:
   local-public: "Offentlig (på den lokale server)"
