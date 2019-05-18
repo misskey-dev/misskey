@@ -301,10 +301,22 @@ common:
     hashtags: "Hashtags"
     queue: "Kø"
   dev: "Fejl under oprettelse af app. Prøv igen."
+  ai-chan-kawaii: "Ai Chan Kawaii!"
+  you: "Du"
 auth/views/form.vue:
+  share-access: "Vil du tillade, at <i>{name}</i> får adgang til din konto?"
+  permission-ask: "Denne app kræver følgende tilladelser:"
   cancel: "Annuller"
+  accept: "Åbn for adgang."
 auth/views/index.vue:
   loading: "Henter"
+  denied: "Adgang til app er blevet afvist."
+  denied-paragraph: "Denne app vil ikke give adgang for din konto."
+  already-authorized: "Der er allerede adgang til denne app."
+  allowed: "Der er adgang til app."
+  callback-url: "Hopper tilbage til app."
+  please-go-back: "Hop tilbage til app."
+  error: "Sessionen eksisterer ikke."
 common/views/components/games/reversi/reversi.vue:
   matching:
     cancel: "Annuller"
@@ -334,6 +346,9 @@ common/views/components/games/reversi/reversi.room.vue:
   black-is: "Sort er {}"
   rules: "Regler"
   cancel: "Annuller"
+common/views/components/theme.vue:
+  theme: "Tema"
+  light-theme: "Valgbare temaer med lys baggrund"
 common/views/components/cw-button.vue:
   poll: "Afstemninger"
 common/views/components/note-menu.vue:
