@@ -225,6 +225,9 @@ common:
     no-updates: "Der er ikke kommet nogen opdateringer"
     no-updates-desc: "Din Misskey er opdateret"
     update-available: "Der er kommet en ny version"
+    update-available-desc: "Opdateringer vil slå igennem efter genindlæsning af siden."
+    advanced-settings: "Avancerede indstillinger"
+    debug-mode: "Aktiver debug"
     debug-mode-desc: "Denne indstilling er gemt i browseren"
     navbar-position: "Placering af navigationsbaren"
     navbar-position-top: "Top"
@@ -278,6 +281,26 @@ common:
     analog-clock: "Analogt ur"
     profile: "Profil"
     calendar: "Kalender"
+    timemachine: "Kalender (tidsmaskine)"
+    activity: "Aktivitet"
+    rss: "RSS læser"
+    memo: "Selvklæbende noter"
+    trends: "Tendenser"
+    photo-stream: "Foto kavalkade"
+    posts-monitor: "Graf over poster"
+    slideshow: "Billedkarrusel"
+    version: "Version"
+    broadcast: "Offentliggør"
+    notifications: "Notifikation"
+    users: "Anbefalede brugere"
+    polls: "Afstemninger"
+    post-form: "Post formular"
+    server: "Server info"
+    nav: "Navigation"
+    tips: "Tips og tricks"
+    hashtags: "Hashtags"
+    queue: "Kø"
+  dev: "Fejl under oprettelse af app. Prøv igen."
 auth/views/form.vue:
   cancel: "Annuller"
 auth/views/index.vue:
@@ -311,6 +334,8 @@ common/views/components/games/reversi/reversi.room.vue:
   black-is: "Sort er {}"
   rules: "Regler"
   cancel: "Annuller"
+common/views/components/cw-button.vue:
+  poll: "Afstemninger"
 common/views/components/note-menu.vue:
   delete: "Slet"
 common/views/components/poll-editor.vue:
@@ -319,6 +344,10 @@ common/views/components/visibility-chooser.vue:
   local-public: "Offentlig (på den lokale server)"
   local-home: "Hjem (på den lokale server)"
   local-followers: "Følgere (på den lokale server)"
+common/views/widgets/posts-monitor.vue:
+  title: "Graf over poster"
+common/views/widgets/memo.vue:
+  title: "Selvklæbende noter"
 desktop/views/components/activity.chart.vue:
   renotes: "Grøn ... Gen-postering"
 desktop/views/components/choose-file-from-drive-window.vue:
@@ -347,6 +376,8 @@ desktop/views/components/renote-form.vue:
   failure: "Fejl under gen-postering"
 desktop/views/components/renote-form-window.vue:
   title: "Ønsker du at gen-postere den?"
+desktop/views/components/sub-note-content.vue:
+  poll: "Afstemninger"
 admin/views/dashboard.vue:
   drive: "Drev"
 admin/views/abuse.vue:
@@ -373,12 +404,18 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "Man"
   day: "Søn"
+desktop/views/widgets/polls.vue:
+  title: "Afstemninger"
 mobile/views/components/post-form.vue:
   renote: "Gen-postering"
+mobile/views/components/sub-note-content.vue:
+  poll: "Afstemninger"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
 pages:
   like: "Synes om"
+  blocks:
+    post: "Post formular"
   script:
     categories:
       random: "Tilfældig"
