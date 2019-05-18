@@ -230,8 +230,18 @@ common:
   widgets:
     analog-clock: "Analogt ur"
     profile: "Profil"
+    calendar: "Kalender"
 auth/views/index.vue:
   loading: "Henter"
+common/views/components/games/reversi/reversi.game.vue:
+  looped-map: "Repeterende kort"
+  can-put-everywhere: "Kan placeres hvorsomhelst"
+common/views/components/games/reversi/reversi.index.vue:
+  title: "Misskey Reversi"
+  sub-title: "Spil Reversi med dine venner!"
+  invite: "Inviter"
+  rule: "Spilleregler"
+  mode-invite: "Inviter"
 common/views/components/note-menu.vue:
   delete: "Slet"
 common/views/components/poll-editor.vue:
@@ -244,6 +254,8 @@ admin/views/dashboard.vue:
   drive: "Drev"
 admin/views/abuse.vue:
   remove-report: "Slet"
+admin/views/instance.vue:
+  invite: "Inviter"
 admin/views/charts.vue:
   drive: "Drev"
 admin/views/drive.vue:
