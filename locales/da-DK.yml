@@ -684,12 +684,50 @@ common/views/components/profile-editor.vue:
     all-notes: "Alle poster"
     following-list: "Liste over følgere"
     mute-list: "Liste over annullerede konti"
+    blocking-list: "Liste over blokerede konti"
+    user-lists: "Lister"
+  export-requested: "Du har bedt om en eksport. Det kan tage et stykke tid. Når eksporten er gennemført, vil eksport-filen blive lagt på dit drev."
+  import-requested: "Du har sat en import i gang. Det kan tage et stykke tid."
+  enter-password: "Angiv din adgangskode"
+  danger-zone: "Risici"
+  delete-account: "Slet kontoen"
+  account-deleted: "Kontoen er slettet. Det kan vare lidt, inden alle data forsvinder."
+common/views/components/user-list-editor.vue:
+  users: "Bruger"
+  rename: "Omdøb listen"
+  delete: "Slet liste"
+  remove-user: "Fjern fra denne liste"
+  delete-are-you-sure: "Slet liste \"$1\"?"
+  deleted: "Slettet med succes"
+  add-user: "Tilføj en bruger"
+common/views/components/user-group-editor.vue:
+  users: "Brugere"
+  rename: "Omdøb gruppe"
+  delete: "Slet gruppe"
+  remove-user: "Fjern bruger fra denne gruppe"
+  delete-are-you-sure: "Er du sikker på, at du vil slette gruppen \"$ 1\"?"
+  deleted: "Slettet"
+  add-user: "Tilføj bruger"
+common/views/components/user-lists.vue:
+  user-lists: "Lister"
+  create-list: "Opret en liste"
+  list-name: "Liste navn"
 common/views/components/user-groups.vue:
   user-groups: "Gruppe"
+  create-group: "Opret gruppe"
+  group-name: "Gruppenavn"
+common/views/widgets/broadcast.vue:
+  fetching: "Tjekker"
+  no-broadcasts: "Ingen meddelelser"
+  have-a-nice-day: "Hav en god dag!"
 common/views/widgets/posts-monitor.vue:
   title: "Graf over poster"
 common/views/widgets/memo.vue:
   title: "Selvklæbende noter"
+desktop:
+  uploading-banner: "Overfør et nyt banner"
+  banner-updated: "Banner er overført med succes"
+  choose-banner: "Vælg banner"
 desktop/views/components/activity.chart.vue:
   renotes: "Grøn ... Gen-postering"
 desktop/views/components/choose-file-from-drive-window.vue:
