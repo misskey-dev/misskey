@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ $t('@.messaging') }}</template>
-	<x-messaging @navigate="navigate" :header-top="48"/>
+	<x-messaging @navigate="navigate" @navigateGroup="navigateGroup" :header-top="48"/>
 </mk-ui>
 </template>
 
@@ -21,6 +21,9 @@ export default Vue.extend({
 	methods: {
 		navigate(user) {
 			(this as any).$router.push(`/i/messaging/${getAcct(user)}`);
+		},
+		navigateGroup(group) {
+			(this as any).$router.push(`/i/messaging/group/${group.id}`);
 		}
 	}
 });

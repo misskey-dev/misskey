@@ -23,4 +23,6 @@ export const kinds = [
 	'write:pages',
 	'write:page-likes',
 	'read:page-likes',
+	'read:user-groups',
+	'write:user-groups',
 ];

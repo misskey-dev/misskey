@@ -1,18 +1,23 @@
 <template>
 <div class="cudqjmnl">
-	<ui-card>
-		<template #title><fa :icon="faList"/> {{ list.name }}</template>
+	<ui-container v-if="list">
+		<template #header><fa :icon="faListUl"/> {{ list.name }}</template>
 
-		<section>
-			<ui-button @click="rename"><fa :icon="faICursor"/> {{ $t('rename') }}</ui-button>
-			<ui-button @click="del"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
+		<section class="fwvevrks">
+			<ui-margin>
+				<ui-button @click="rename"><fa :icon="faICursor"/> {{ $t('rename') }}</ui-button>
+				<ui-button @click="del"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
+			</ui-margin>
 		</section>
-	</ui-card>
+	</ui-container>
 
-	<ui-card>
-		<template #title><fa :icon="faUsers"/> {{ $t('users') }}</template>
+	<ui-container>
+		<template #header><fa :icon="faUsers"/> {{ $t('users') }}</template>
 
 		<section>
+			<ui-margin>
+				<ui-button @click="add"><fa :icon="faPlus"/> {{ $t('add-user') }}</ui-button>
+			</ui-margin>
 			<sequential-entrance animation="entranceFromTop" delay="25">
 				<div class="phcqulfl" v-for="user in users">
 					<div>
@@ -32,34 +37,44 @@
 				</div>
 			</sequential-entrance>
 		</section>
-	</ui-card>
+	</ui-container>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { faList, faICursor, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faListUl, faICursor, faUsers, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/user-list-editor.vue'),
 
 	props: {
-		list: {
+		listId: {
 			required: true
 		}
 	},
 
 	data() {
 		return {
+			list: null,
 			users: [],
-			faList, faICursor, faTrashAlt, faUsers
+			faListUl, faICursor, faTrashAlt, faUsers, faPlus
 		};
 	},
 
-	mounted() {
-		this.fetchUsers();
+	created() {
+		this.$root.api('users/lists/show', {
+			listId: this.listId
+		}).then(list => {
+			this.list = list;
+			this.fetchUsers();
+			this.$emit('init', {
+				title: this.list.name,
+				icon: faListUl
+			});
+		});
 	},
 
 	methods: {
@@ -117,6 +132,21 @@ export default Vue.extend({
 			}).then(() => {
 				this.fetchUsers();
 			});
+		},
+
+		async add() {
+			const { result: user } = await this.$root.dialog({
+				user: {
+					local: true
+				}
+			});
+			if (user == null) return;
+			this.$root.api('users/lists/push', {
+				listId: this.list.id,
+				userId: user.id
+			}).then(() => {
+				this.fetchUsers();
+			});
 		}
 	}
 });
@@ -126,7 +156,7 @@ export default Vue.extend({
 .cudqjmnl
 	.phcqulfl
 		display flex
-		padding 16px 0
+		padding 16px
 		border-top solid 1px var(--faceDivider)
 
 		> div:first-child

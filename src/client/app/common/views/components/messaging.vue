@@ -21,36 +21,62 @@
 		</div>
 	</div>
 	<div class="history" v-if="messages.length > 0">
-		<template>
-			<a v-for="message in messages"
-				class="user"
-				:href="`/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
-				:data-is-me="isMe(message)"
-				:data-is-read="message.isRead"
-				@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"
-				:key="message.id"
-			>
-				<div>
-					<mk-avatar class="avatar" :user="isMe(message) ? message.recipient : message.user"/>
-					<header>
-						<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
-						<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
-						<mk-time :time="message.createdAt"/>
-					</header>
-					<div class="body">
-						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
-					</div>
+		<div class="title">{{ $t('user') }}</div>
+		<a v-for="message in messages"
+			class="user"
+			:href="`/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+			:data-is-me="isMe(message)"
+			:data-is-read="message.isRead"
+			@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"
+			:key="message.id"
+		>
+			<div>
+				<mk-avatar class="avatar" :user="isMe(message) ? message.recipient : message.user"/>
+				<header>
+					<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
+					<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
+					<mk-time :time="message.createdAt"/>
+				</header>
+				<div class="body">
+					<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
 				</div>
-			</a>
-		</template>
+			</div>
+		</a>
 	</div>
-	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
+	<div class="history" v-if="groupMessages.length > 0">
+		<div class="title">{{ $t('group') }}</div>
+		<a v-for="message in groupMessages"
+			class="user"
+			:href="`/i/messaging/group/${message.groupId}`"
+			:data-is-me="isMe(message)"
+			:data-is-read="message.reads.includes($store.state.i.id)"
+			@click.prevent="navigateGroup(message.group)"
+			:key="message.id"
+		>
+			<div>
+				<mk-avatar class="avatar" :user="message.user"/>
+				<header>
+					<span class="name">{{ message.group.name }}</span>
+					<mk-time :time="message.createdAt"/>
+				</header>
+				<div class="body">
+					<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
+				</div>
+			</div>
+		</a>
+	</div>
+	<p class="no-history" v-if="!fetching && (messages.length == 0 && groupMessages.length == 0)">{{ $t('no-history') }}</p>
 	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<ui-margin>
+		<ui-button @click="startUser()"><fa :icon="faUser"/> {{ $t('start-with-user') }}</ui-button>
+		<ui-button @click="startGroup()"><fa :icon="faUsers"/> {{ $t('start-with-group') }}</ui-button>
+	</ui-margin>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../../i18n';
 import getAcct from '../../../../../misc/acct/render';
 
@@ -71,9 +97,11 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			messages: [],
+			groupMessages: [],
 			q: null,
 			result: [],
-			connection: null
+			connection: null,
+			faUser, faUsers
 		};
 	},
 	mounted() {
@@ -82,9 +110,12 @@ export default Vue.extend({
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		this.$root.api('messaging/history').then(messages => {
-			this.messages = messages;
-			this.fetching = false;
+		this.$root.api('messaging/history', { group: false }).then(messages => {
+			this.$root.api('messaging/history', { group: true }).then(groupMessages => {
+				this.messages = messages;
+				this.groupMessages = groupMessages;
+				this.fetching = false;
+			});
 		});
 	},
 	beforeDestroy() {
@@ -96,16 +127,27 @@ export default Vue.extend({
 			return message.userId == this.$store.state.i.id;
 		},
 		onMessage(message) {
-			this.messages = this.messages.filter(m => !(
-				(m.recipientId == message.recipientId && m.userId == message.userId) ||
-				(m.recipientId == message.userId && m.userId == message.recipientId)));
+			if (message.recipientId) {
+				this.messages = this.messages.filter(m => !(
+					(m.recipientId == message.recipientId && m.userId == message.userId) ||
+					(m.recipientId == message.userId && m.userId == message.recipientId)));
 
-			this.messages.unshift(message);
+				this.messages.unshift(message);
+			} else if (message.groupId) {
+				this.groupMessages = this.groupMessages.filter(m => m.groupId !== message.groupId);
+				this.groupMessages.unshift(message);
+			}
 		},
 		onRead(ids) {
 			for (const id of ids) {
 				const found = this.messages.find(m => m.id == id);
-				if (found) found.isRead = true;
+				if (found) {
+					if (found.recipientId) {
+						found.isRead = true;
+					} else if (found.groupId) {
+						found.reads.push(this.$store.state.i.id);
+					}
+				}
 			}
 		},
 		search() {
@@ -124,6 +166,9 @@ export default Vue.extend({
 		},
 		navigate(user) {
 			this.$emit('navigate', user);
+		},
+		navigateGroup(group) {
+			this.$emit('navigateGroup', group);
 		},
 		onSearchKeydown(e) {
 			switch (e.which) {
@@ -161,6 +206,30 @@ export default Vue.extend({
 					(list.childNodes[i].nextElementSibling || list.childNodes[0]).focus();
 					break;
 			}
+		},
+		async startUser() {
+			const { result: user } = await this.$root.dialog({
+				user: {
+					local: true
+				}
+			});
+			if (user == null) return;
+			this.navigate(user);
+		},
+		async startGroup() {
+			const groups = await this.$root.api('users/groups/joined');
+			const { canceled, result: group } = await this.$root.dialog({
+				type: null,
+				title: this.$t('select-group'),
+				select: {
+					items: groups.map(group => ({
+						value: group, text: group.name
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			this.navigateGroup(group);
 		}
 	}
 });
@@ -173,6 +242,9 @@ export default Vue.extend({
 		font-size 0.8em
 
 		> .history
+			> .title
+				padding 8px
+
 			> a
 				&:last-child
 					border-bottom none
@@ -311,6 +383,13 @@ export default Vue.extend({
 						color rgba(#000, 0.3)
 
 	> .history
+		> .title
+			padding 6px 16px
+			margin 0 auto
+			max-width 500px
+			background rgba(0, 0, 0, 0.05)
+			color var(--text)
+			font-size 85%
 
 		> a
 			display block

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import { publishMessagingStream } from '../../../../../services/stream';
+import { publishMessagingStream, publishGroupMessagingStream } from '../../../../../services/stream';
 import * as ms from 'ms';
 import { ApiError } from '../../../error';
 import { MessagingMessages } from '../../../../../models';
@@ -10,7 +10,7 @@ export const meta = {
 	stability: 'stable',
 
 	desc: {
-		'ja-JP': '指定したメッセージを削除します。',
+		'ja-JP': '指定したトークメッセージを削除します。',
 		'en-US': 'Delete a message.'
 	},
 
@@ -57,6 +57,10 @@ export default define(meta, async (ps, user) => {
 
 	await MessagingMessages.delete(message.id);
 
-	publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
-	publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
+	if (message.recipientId) {
+		publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
+		publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
+	} else if (message.groupId) {
+		publishGroupMessagingStream(message.groupId, 'deleted', message.id);
+	}
 });

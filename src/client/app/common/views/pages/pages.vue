@@ -50,6 +50,11 @@ export default Vue.extend({
 	},
 	created() {
 		this.fetch();
+
+		this.$emit('init', {
+			title: this.$t('@.pages'),
+			icon: faStickyNote
+		});
 	},
 	methods: {
 		async fetch() {

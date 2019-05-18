@@ -24,6 +24,8 @@ import { SwSubscription } from '../models/entities/sw-subscription';
 import { Blocking } from '../models/entities/blocking';
 import { UserList } from '../models/entities/user-list';
 import { UserListJoining } from '../models/entities/user-list-joining';
+import { UserGroup } from '../models/entities/user-group';
+import { UserGroupJoining } from '../models/entities/user-group-joining';
 import { Hashtag } from '../models/entities/hashtag';
 import { NoteFavorite } from '../models/entities/note-favorite';
 import { AbuseUserReport } from '../models/entities/abuse-user-report';
@@ -106,6 +108,8 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			UserPublickey,
 			UserList,
 			UserListJoining,
+			UserGroup,
+			UserGroupJoining,
 			UserNotePining,
 			Following,
 			FollowRequest,

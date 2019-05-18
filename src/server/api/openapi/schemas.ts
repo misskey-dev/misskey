@@ -13,6 +13,7 @@ import { packedBlockingSchema } from '../../../models/repositories/blocking';
 import { packedNoteReactionSchema } from '../../../models/repositories/note-reaction';
 import { packedHashtagSchema } from '../../../models/repositories/hashtag';
 import { packedPageSchema } from '../../../models/repositories/page';
+import { packedUserGroupSchema } from '../../../models/repositories/user-group';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -66,6 +67,7 @@ export const schemas = {
 
 	User: convertSchemaToOpenApiSchema(packedUserSchema),
 	UserList: convertSchemaToOpenApiSchema(packedUserListSchema),
+	UserGroup: convertSchemaToOpenApiSchema(packedUserGroupSchema),
 	App: convertSchemaToOpenApiSchema(packedAppSchema),
 	MessagingMessage: convertSchemaToOpenApiSchema(packedMessagingMessageSchema),
 	Note: convertSchemaToOpenApiSchema(packedNoteSchema),

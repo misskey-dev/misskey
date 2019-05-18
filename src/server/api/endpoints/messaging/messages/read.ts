@@ -1,13 +1,13 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import read from '../../../common/read-messaging-message';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { MessagingMessages } from '../../../../../models';
+import { readUserMessagingMessage, readGroupMessagingMessage } from '../../../common/read-messaging-message';
 
 export const meta = {
 	desc: {
-		'ja-JP': '指定した自分宛てのメッセージを既読にします。',
+		'ja-JP': '指定した自分宛てのトークメッセージを既読にします。',
 		'en-US': 'Mark as read a message of messaging.'
 	},
 
@@ -39,12 +39,21 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const message = await MessagingMessages.findOne({
 		id: ps.messageId,
-		recipientId: user.id
 	});
 
 	if (message == null) {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	read(user.id, message.userId, [message.id]);
+	if (message.recipientId) {
+		await readUserMessagingMessage(user.id, message.recipientId, [message.id]).catch(e => {
+			if (e.id === 'e140a4bf-49ce-4fb6-b67c-b78dadf6b52f') throw new ApiError(meta.errors.noSuchMessage);
+			throw e;
+		});
+	} else if (message.groupId) {
+		await readGroupMessagingMessage(user.id, message.groupId, [message.id]).catch(e => {
+			if (e.id === '930a270c-714a-46b2-b776-ad27276dc569') throw new ApiError(meta.errors.noSuchMessage);
+			throw e;
+		});
+	}
 });

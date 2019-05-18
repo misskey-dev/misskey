@@ -1,34 +1,45 @@
 <template>
 <x-column>
 	<template #header>
-		<fa :icon="faHashtag"/>{{ $t('@.explore') }}
+		<fa :icon="icon"/>{{ title }}
 	</template>
 
 	<div>
-		<x-explore v-bind="$attrs"/>
+		<component :is="component" @init="init" v-bind="$attrs"/>
 	</div>
 </x-column>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
-import XExplore from '../../../common/views/pages/explore.vue';
-import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	i18n: i18n(),
-
 	components: {
 		XColumn,
-		XExplore,
+	},
+
+	props: {
+		component: {
+			required: true
+		}
 	},
 
 	data() {
 		return {
-			faHashtag
+			title: null,
+			icon: null,
 		};
+	},
+
+	mounted() {
+	},
+
+	methods: {
+		init(v) {
+			this.title = v.title;
+			this.icon = v.icon;
+		}
 	}
 });
 </script>

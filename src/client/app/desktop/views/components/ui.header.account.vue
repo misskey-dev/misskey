@@ -28,12 +28,19 @@
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
-				<li @click="list">
-					<p>
+				<li>
+					<router-link to="/i/lists">
 						<i><fa icon="list" fixed-width/></i>
 						<span>{{ $t('lists') }}</span>
 						<i><fa icon="angle-right"/></i>
-					</p>
+					</router-link>
+				</li>
+				<li>
+					<router-link to="/i/groups">
+						<i><fa :icon="faUsers" fixed-width/></i>
+						<span>{{ $t('groups') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</router-link>
 				</li>
 				<li>
 					<router-link to="/i/pages">
@@ -42,12 +49,12 @@
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
-				<li @click="followRequests" v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
-					<p>
+				<li v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
+					<router-link to="/i/follow-requests">
 						<i><fa :icon="['far', 'envelope']" fixed-width/></i>
 						<span>{{ $t('follow-requests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
 						<i><fa icon="angle-right"/></i>
-					</p>
+					</router-link>
 				</li>
 			</ul>
 			<ul>
@@ -96,12 +103,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import MkUserListsWindow from './user-lists-window.vue';
-import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 // import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
-import { faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faColumns, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faMoon, faSun, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -109,7 +114,7 @@ export default Vue.extend({
 	data() {
 		return {
 			isOpen: false,
-			faHome, faColumns, faMoon, faSun, faStickyNote
+			faHome, faColumns, faMoon, faSun, faStickyNote, faUsers
 		};
 	},
 	computed: {
@@ -146,14 +151,6 @@ export default Vue.extend({
 		drive() {
 			this.close();
 			this.$root.new(MkDriveWindow);
-		},
-		list() {
-			this.close();
-			this.$root.new(MkUserListsWindow);
-		},
-		followRequests() {
-			this.close();
-			this.$root.new(MkFollowRequestsWindow);
 		},
 		signout() {
 			this.$root.signout();
