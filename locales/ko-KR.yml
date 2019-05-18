@@ -1543,8 +1543,6 @@ mobile/views/pages/drive.vue:
     rename-folder: "폴더 이름 바꾸기"
     move-folder: "이 폴더를 이동"
     delete-folder: "이 폴더를 삭제"
-mobile/views/pages/user-lists.vue:
-  title: "리스트"
 mobile/views/pages/signup.vue:
   lets-start: "📦 이제 시작해도 됩니다"
 mobile/views/pages/followers.vue:
