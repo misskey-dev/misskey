@@ -1480,8 +1480,6 @@ mobile/views/pages/drive.vue:
     rename-folder: "Renommer le dossier"
     move-folder: "Déplacer ce dossier"
     delete-folder: "Supprimer ce dossier"
-mobile/views/pages/user-lists.vue:
-  title: "Listes"
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
