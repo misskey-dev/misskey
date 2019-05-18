@@ -1551,6 +1551,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "关注申请"
   search: "搜索"
   user-lists: "列表"
+  user-groups: "群组"
   widgets: "小部件"
   game: "游戏"
   admin: "管理"
@@ -1563,8 +1564,6 @@ mobile/views/pages/drive.vue:
     rename-folder: "重命名文件夹"
     move-folder: "移动此文件夹"
     delete-folder: "删除此文件夹"
-mobile/views/pages/user-lists.vue:
-  title: "列表"
 mobile/views/pages/signup.vue:
   lets-start: "您的账户现已准备就绪！ 📦"
 mobile/views/pages/followers.vue:
