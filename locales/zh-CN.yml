@@ -450,7 +450,10 @@ common/views/components/messaging.vue:
   you: "您"
   no-history: "没有历史记录"
   user: "用户"
+  group: "群组"
 common/views/components/messaging-room.vue:
+  not-talked-user: "没有用户的会话记录"
+  not-talked-group: "没有群组的会话记录"
   no-history: "没有更多的历史记录"
   new-message: "新信息"
 common/views/components/messaging-room.form.vue:
@@ -699,6 +702,8 @@ common/views/components/user-lists.vue:
   user-lists: "列表"
   create-list: "创建列表"
   list-name: "列表名称"
+common/views/components/user-groups.vue:
+  user-groups: "群组"
 common/views/widgets/broadcast.vue:
   fetching: "确认中"
   no-broadcasts: "没有公告"
@@ -1033,6 +1038,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "个人资料"
   lists: "列表"
+  groups: "群组"
   follow-requests: "关注申请"
   admin: "管理"
 desktop/views/components/ui.header.nav.vue:
