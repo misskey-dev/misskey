@@ -68,8 +68,11 @@ export default Vue.extend({
 			required: false
 		},
 		select: {
-			required: false,
-			selected: null
+			required: false
+		},
+		selected: {
+			type: String,
+			required: false
 		},
 		user: {
 			required: false
@@ -99,7 +102,7 @@ export default Vue.extend({
 		return {
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			userInputValue: null,
-			selectedValue: this.select.selected,
+			selectedValue: this.selected,
 			faTimesCircle, faQuestionCircle
 		};
 	},
