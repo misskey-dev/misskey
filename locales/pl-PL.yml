@@ -1101,8 +1101,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Wyślij plik"
     create-folder: "Utwórz katalog"
-mobile/views/pages/user-lists.vue:
-  title: "Listy"
 mobile/views/pages/signup.vue:
   lets-start: "Rozpocznijmy! 📦"
 mobile/views/pages/home.vue:
