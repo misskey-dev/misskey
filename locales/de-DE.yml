@@ -281,9 +281,7 @@ common/views/components/messaging.vue:
   you: "Du"
   no-history: "Keine Chronik"
 common/views/components/messaging-room.vue:
-  empty: "Keine Unterhaltungen"
   no-history: "Keine weitere Chronik vorhanden"
-  resize-form: "Ziehen um die Größe zu verändern"
   new-message: "Neue Nachricht"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Nachricht hier eingeben"
@@ -386,6 +384,8 @@ common/views/components/profile-editor.vue:
   export-targets:
     user-lists: "Listen"
   enter-password: "Bitte Passwort eingeben"
+common/views/components/user-lists.vue:
+  user-lists: "Listen"
 common/views/widgets/broadcast.vue:
   fetching: "Laden"
   no-broadcasts: "Keine Broadcasts"
@@ -583,8 +583,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Einen neuen Post erstellen"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Suchen"
-desktop/views/components/user-lists-window.vue:
-  title: "Listen"
 desktop/views/components/users-list.vue:
   fetching: "Lade…"
 admin/views/dashboard.vue:
