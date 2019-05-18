@@ -1,7 +1,7 @@
 <template>
 <div>
 	<ui-card>
-		<template #title><fa icon="broadcast-tower"/> {{ $t('announcements') }}</template>
+		<template #title><fa :icon="faBroadcastTower"/> {{ $t('announcements') }}</template>
 		<section v-for="(announcement, i) in announcements" class="fit-top">
 			<ui-input v-model="announcement.title" @change="save">
 				<span>{{ $t('title') }}</span>
@@ -18,7 +18,7 @@
 			</ui-horizon-group>
 		</section>
 		<section>
-			<ui-button @click="add"><fa icon="plus"/> {{ $t('add') }}</ui-button>
+			<ui-button @click="add"><fa :icon="faPlus"/> {{ $t('add') }}</ui-button>
 		</section>
 	</ui-card>
 </div>
@@ -27,12 +27,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
+import { faBroadcastTower, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/announcements.vue'),
 	data() {
 		return {
 			announcements: [],
+			faBroadcastTower, faPlus
 		};
 	},
 
