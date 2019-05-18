@@ -178,6 +178,11 @@ common:
     use-os-default-emojis: "Anvend standard emojis fra operativsystemet"
     line-width: "Linietykkelse"
     line-width-thin: "Tynd linie"
+    line-width-normal: "Normal tykkelse"
+    line-width-thick: "Tyk linie"
+    font-size: "Tekst størrelse"
+    font-size-medium: "Normal tykkelse"
+    deck-column-width-normal: "Normal tykkelse"
     debug-mode-desc: "Denne indstilling er gemt i browseren"
     navbar-position: "Placering af navigationsbaren"
     navbar-position-top: "Top"
@@ -234,14 +239,30 @@ common:
 auth/views/index.vue:
   loading: "Henter"
 common/views/components/games/reversi/reversi.game.vue:
-  looped-map: "Repeterende kort"
+  looped-map: "Vendebrikker"
   can-put-everywhere: "Kan placeres hvorsomhelst"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "Spil Reversi med dine venner!"
   invite: "Inviter"
   rule: "Spilleregler"
+  rule-desc: "Reversi er et strategi spil for to deltagere, og det spilles på et bræt med 8 gange 8 felter. På felterne skal placeres 64 ens brikker, som er sorte på den ene side og hvide på den anden. Deltagerne vælger hver sin farve og placerer på skift en brik med deres egen farve opad. Det gælder om at placere brikker med sin egen farve i hver sin ende af en stribe brikker med modstanderens farve, for det giver ret til at vende de mellemliggende brikker rundt, så de får ens egen farve. Vinderen er den, som til sidst har erobret flest felter på brættet."
   mode-invite: "Inviter"
+  mode-invite-desc: "Spil med en udvalgt bruger"
+  invitations: "Du har fået en invitation!"
+  my-games: "Mine spil"
+  all-games: "Alle spil"
+  enter-username: "Angiv brugernavn"
+  game-state:
+    ended: "Slut"
+    playing: "I gang"
+common/views/components/games/reversi/reversi.room.vue:
+  settings-of-the-game: "Spilleindstillinger"
+  choose-map: "Vælg en brikfarve"
+  random: "Tilfældig"
+  black-or-white: "Sort/hvid"
+  black-is: "Sort er {}"
+  rules: "Regler"
 common/views/components/note-menu.vue:
   delete: "Slet"
 common/views/components/poll-editor.vue:
@@ -278,3 +299,8 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
 pages:
   like: "Synes om"
+  script:
+    categories:
+      random: "Tilfældig"
+    blocks:
+      random: "Tilfældig"
