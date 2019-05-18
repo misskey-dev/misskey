@@ -1,7 +1,7 @@
 <template>
 <x-column>
 	<template #header>
-		<fa :icon="icon"/>{{ title }}
+		<fa v-if="icon" :icon="icon"/>{{ title }}
 	</template>
 
 	<div>
