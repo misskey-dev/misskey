@@ -253,6 +253,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   hide-password: "Hide Password"
   show-password: "Show Password"
+  enter-username: "Enter user name"
   do-not-use-in-production: "This is a development build. Do not use in production."
   user-suspended: "This user has been suspended."
   is-remote-user: "The information about this user may not be entirely complete."
@@ -448,18 +449,15 @@ common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
   no-history: "Without history"
+  user: "User"
 common/views/components/messaging-room.vue:
-  empty: "No conversations"
   no-history: "There is no further history"
-  resize-form: "Drag to resize"
   new-message: "New message"
-  only-one-file-attached: "Only ONE file can be attached to a message."
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
   attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
-  only-one-file-attached: "Only one file can be attached to the message."
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
   deleted: "This message has been deleted"
@@ -694,7 +692,11 @@ common/views/components/user-list-editor.vue:
   remove-user: "Remove from this list"
   delete-are-you-sure: "Delete list \"$1\"?"
   deleted: "Deleted successfully"
+  add-user: "Add a user"
+common/views/components/user-group-editor.vue:
+  deleted: "Deleted"
 common/views/components/user-lists.vue:
+  user-lists: "Lists"
   create-list: "Create a list"
   list-name: "List name"
 common/views/widgets/broadcast.vue:
@@ -758,6 +760,8 @@ common/views/pages/follow.vue:
   request-pending: "Pending follow request"
   follow-processing: "Processing follow"
   follow-request: "Follow request"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Follow requests"
 desktop:
   banner-crop-title: "Crop the part that appears as a banner"
   banner: "Banner"
@@ -1039,12 +1043,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Compose new Post"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Search"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "Follow requests"
-  accept: "Accept"
-  reject: "Reject"
-desktop/views/components/user-lists-window.vue:
-  title: "User lists"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
@@ -1549,10 +1547,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
   share-with: "Share on {name}"
-mobile/views/pages/received-follow-requests.vue:
-  title: "Follow requests"
-  accept: "Accept"
-  reject: "Reject"
 mobile/views/pages/note.vue:
   title: "Post"
   prev: "Previous note"
