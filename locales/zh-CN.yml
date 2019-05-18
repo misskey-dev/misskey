@@ -451,6 +451,8 @@ common/views/components/messaging.vue:
   no-history: "没有历史记录"
   user: "用户"
   group: "群组"
+  start-with-user: "开始用户聊天"
+  start-with-group: "开始群组聊天"
 common/views/components/messaging-room.vue:
   not-talked-user: "没有用户的会话记录"
   not-talked-group: "没有群组的会话记录"
@@ -702,13 +704,18 @@ common/views/components/user-group-editor.vue:
   users: "成员"
   rename: "更改群组名"
   delete: "删除群组"
+  remove-user: "从本群组中删除"
+  delete-are-you-sure: "确定要删除「$1」组？"
   deleted: "已删除"
+  add-user: "添加成员"
 common/views/components/user-lists.vue:
   user-lists: "列表"
   create-list: "创建列表"
   list-name: "列表名称"
 common/views/components/user-groups.vue:
   user-groups: "群组"
+  create-group: "创建群组"
+  group-name: "群组名"
 common/views/widgets/broadcast.vue:
   fetching: "确认中"
   no-broadcasts: "没有公告"
@@ -772,6 +779,8 @@ common/views/pages/follow.vue:
   follow-request: "关注请求"
 common/views/pages/follow-requests.vue:
   received-follow-requests: "关注申请"
+  accept: "接受"
+  reject: "拒绝"
 desktop:
   banner-crop-title: "裁剪显示为背景的部分"
   banner: "背景"
@@ -1686,6 +1695,9 @@ pages:
   view-source: "查看源代码"
   view-page: "查看页面"
   like: "赞"
+  unlike: "取消赞"
+  liked-pages: "喜欢的页面"
+  my-pages: "个人页面"
   inspector: "检查器"
   content: "页面内容"
   variables: "变量"
