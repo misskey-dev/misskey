@@ -1156,8 +1156,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Nahrát soubor"
     create-folder: "Vytvořit složku"
-mobile/views/pages/user-lists.vue:
-  title: "Seznamy"
 mobile/views/pages/signup.vue:
   lets-start: "Váš účet je připraven! 📦"
 mobile/views/pages/home.vue:
