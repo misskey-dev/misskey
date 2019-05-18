@@ -177,6 +177,33 @@ common:
     this-setting-is-this-device-only: "Indstillingen gælder kun for denne enhed"
     use-os-default-emojis: "Anvend standard emojis fra operativsystemet"
     line-width: "Linietykkelse"
+    line-width-thin: "Tynd linie"
+    debug-mode-desc: "Denne indstilling er gemt i browseren"
+    navbar-position: "Placering af navigationsbaren"
+    navbar-position-top: "Top"
+    navbar-position-left: "Venstre"
+    navbar-position-right: "Højre"
+    i-am-under-limited-internet: "Mit internet kører med lav hastighed"
+    post-style: "Stil for visning af noter"
+    post-style-standard: "Standard"
+    post-style-smart: "Smart"
+    notification-position: "Vis notifikationer"
+    notification-position-bottom: "Bund"
+    notification-position-top: "Top"
+    disable-via-mobile: "Marker aldrig posten som \"fra mobil\""
+    load-raw-images: "Vis vedhæftede bilag i original kvalitet"
+    load-remote-media: "Vis medie-materiale fra en ekstern server"
+  search: "Søg"
+  delete: "Slet"
+  loading: "Henter"
+  ok: "Bekræft"
+  cancel: "Afbryd"
+  update-available-title: "Opdatering tilgængelig"
+  update-available: "En y version af Misskey er nu tilgængelig ({newer}, den aktuelle version er {current}). Genindlæs siden for at få opdateringerne til at slå igennem."
+auth/views/index.vue:
+  loading: "Henter"
+common/views/components/note-menu.vue:
+  delete: "Slet"
 common/views/components/poll-editor.vue:
   day: "Søn"
 common/views/components/visibility-chooser.vue:
@@ -185,8 +212,23 @@ common/views/components/visibility-chooser.vue:
   local-followers: "Følgere (på den lokale server)"
 admin/views/dashboard.vue:
   drive: "Drev"
+admin/views/abuse.vue:
+  remove-report: "Slet"
 admin/views/charts.vue:
   drive: "Drev"
+admin/views/drive.vue:
+  delete: "Slet"
+admin/views/emoji.vue:
+  emojis:
+    remove: "Slet"
+admin/views/announcements.vue:
+  remove: "Slet"
+desktop/views/pages/user/user.followers-you-know.vue:
+  loading: "Henter"
+desktop/views/pages/user/user.friends.vue:
+  loading: "Henter"
+desktop/views/pages/user/user.photos.vue:
+  loading: "Henter"
 desktop/views/pages/user/user.header.vue:
   month: "Man"
   day: "Søn"
