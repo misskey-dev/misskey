@@ -610,7 +610,29 @@ common/views/components/notification-settings.vue:
   auto-watch-desc: "Modtag automatisk notifikationer om poster, som du har reageret eller svaret på."
 common/views/components/integration-settings.vue:
   title: "Service samarbejde"
+  connect: "Tilslut"
+  disconnect: "Frakobl"
+  connected-to: "Du er tilsluttet næste konto"
+common/views/components/github-setting.vue:
+  description: "Når du tilslutter din GitHub konto til din Misskey konto, bliver du i stand til at se info om din GitHub konto på din profil, og du vil få mulighed for at logge ind via GitHub."
+  connected-to: "Du er tilsluttet denne GitHub konto"
+  detail: "Flere detaljer"
+  reconnect: "Tilslut igen"
+  connect: "Tilslut til din GitHub konto"
+  disconnect: "Frakobl"
+common/views/components/discord-setting.vue:
+  description: "Når du tilslutter din Discord konto til din Misskey konto, bliver du i stand til at se info om din Discord konto på din profil, og du vil få mulighed for at logge ind via Discord."
+  connected-to: "Du er tilsluttet denne Discord konto"
+  detail: "Detaljer..."
+  reconnect: "Tilslut igen"
+  connect: "Tilslut din Discord konto"
+  disconnect: "Frakobl"
+common/views/components/uploader.vue:
+  waiting: "Venter"
 common/views/components/visibility-chooser.vue:
+  public: "Offentlig"
+  home: "Hjem"
+  home-desc: "Post kun til startsiden"
   local-public: "Offentlig (på den lokale server)"
   local-home: "Hjem (på den lokale server)"
   local-followers: "Følgere (på den lokale server)"
@@ -665,6 +687,8 @@ desktop/views/components/post-form.vue:
   renote: "Gen-postering"
   reposted: "Gen-posteret!"
   renote-failed: "Fejl under gen-postering"
+desktop/views/components/progress-dialog.vue:
+  waiting: "Venter"
 desktop/views/components/renote-form.vue:
   quote: "Citat"
   cancel: "Annuller"
