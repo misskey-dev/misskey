@@ -1143,8 +1143,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "ファイル上げる"
     create-folder: "フォルダー作る"
-mobile/views/pages/user-lists.vue:
-  title: "リスト"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めようや"
 mobile/views/pages/followers.vue:
