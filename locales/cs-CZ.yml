@@ -619,9 +619,12 @@ common/views/components/user-list-editor.vue:
   add-user: "Přidat uživatele"
 common/views/components/user-group-editor.vue:
   deleted: "Smazáno"
+  invite: "Pozvat"
 common/views/components/user-lists.vue:
   user-lists: "Seznamy"
   list-name: "Název seznamu"
+common/views/components/user-groups.vue:
+  invites: "Pozvat"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   next: "Další"
