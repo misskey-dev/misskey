@@ -707,7 +707,7 @@ common/views/components/user-group-editor.vue:
   remove-user: "从本群组中删除"
   delete-are-you-sure: "确定要删除「$1」组？"
   deleted: "已删除"
-  add-user: "添加成员"
+  invite: "邀请"
 common/views/components/user-lists.vue:
   user-lists: "列表"
   create-list: "创建列表"
@@ -716,6 +716,8 @@ common/views/components/user-groups.vue:
   user-groups: "群组"
   create-group: "创建群组"
   group-name: "群组名"
+  invites: "邀请"
+  reject-invite: "拒绝"
 common/views/widgets/broadcast.vue:
   fetching: "确认中"
   no-broadcasts: "没有公告"
