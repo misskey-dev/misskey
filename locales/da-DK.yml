@@ -1197,8 +1197,33 @@ admin/views/instance.vue:
   smtp-pass: "SMTP adgangskode"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Aktiver ServiceWorker"
+  serviceworker-info: "Skal være aktiveret for at give push notifikationer."
+  vapid-publickey: "Offentlig nøgle til VAPID"
+  vapid-privatekey: "Privat nøgle til VAPID"
+  vapid-info: "Hvis du vil aktivere ServiceWorker, skal du generere en VAPID-nøgle. Medmindre du har angivet den globale node_modules placering andetsteds, skal du køre den som root:"
 admin/views/charts.vue:
+  title: "Graf"
+  per-day: "pr. dag"
+  per-hour: "pr. time"
+  federation: "Forening"
+  notes: "Poster"
+  users: "Brugere"
   drive: "Drev"
+  network: "Netværk"
+  charts:
+    federation-instances: "Sæt antallet af instanser op eller ned"
+    federation-instances-total: "Antal instanser i alt"
+    notes: "Fremgang eller tilbagegang i antal poster (lokale + eksterne)"
+    local-notes: "Fremgang eller tilbagegang i antal poster (lokale)"
+    remote-notes: "Fremgang eller tilbagegang i antal poster (eksterne)"
+    notes-total: "Antal poster i alt"
+    users: "Fremgang eller tilbagegang i antal brugere"
+    users-total: "Antal brugere i alt"
+    active-users: "Aktive brugere"
+    drive: "Fremgang eller tilbagegang i brugen af drevet"
+    drive-total: "Forbrugt plads på drevet i alt"
+    drive-files: "Fremgang eller tilbagegang i antal filer på drevet"
+    drive-files-total: "Antal filer i alt på drevet"
 admin/views/drive.vue:
   origin:
     local: "Lokal"
@@ -1232,6 +1257,16 @@ admin/views/federation.vue:
   states:
     all: "Alle"
     blocked: "Bloker"
+  charts: "Graf"
+  chart-srcs:
+    users: "Fremgang eller tilbagegang i antal brugere"
+    users-total: "Antal brugere i alt"
+    notes-total: "Antal poster i alt"
+    drive-usage: "Fremgang eller tilbagegang i brugen af drevet"
+    drive-usage-total: "Forbrugt plads på drevet i alt"
+  chart-spans:
+    hour: "pr. time"
+    day: "pr. dag"
   blocked-hosts: "Bloker"
 desktop/views/pages/selectdrive.vue:
   cancel: "Annuller"
