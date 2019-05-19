@@ -1446,6 +1446,8 @@ desktop/views/pages/user/user.header.vue:
   followers: "Følgere"
   is-bot: "Denne konto er en bot"
   no-description: "Ingen brugerbeskrivelse"
+  years-old: "{age} år"
+  year: "-"
   month: "Man"
   day: "Søn"
   follows-you: "Følger dig"
@@ -1689,8 +1691,62 @@ pages:
       strLen: "Længde af tekststrengen"
       _strLen:
         arg1: "Tekst"
+      strPick: "Udtræk et tegn"
+      _strPick:
+        arg1: "Text"
+        arg2: "Tegnets position"
+      strReplace: "Erstat tekststreng(e)"
+      _strReplace:
+        arg1: "Tekst"
+        arg2: "Før søg-og-erstat"
+        arg3: "Efter søg-og-erstat"
+      strReverse: "Vend teksten rundt"
+      _strReverse:
+        arg1: "Tekst"
+      join: "Sammenflet tekst"
       _join:
         arg1: "Lister"
+        arg2: "Skilletegn"
+      add: "+ Plus"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       random: "Tilfældig"
       _randomPick:
         arg1: "Lister"
@@ -1702,7 +1758,26 @@ pages:
         arg1: "Punktliste"
       _pick:
         arg1: "Lister"
+      number: "Tal"
+      _numberToString:
+        arg1: "Tal"
       fn: "Funktion"
+      _fn:
+        slots-info: "Brug linjeskift til at adskille slot-funktionerne"
+        arg1: "Output"
+      for: "Gentag"
+      _for:
+        arg1: "Antal gange"
+        arg2: "Proces"
+    typeError: "Slot-funktionen {slot} skal gennemløbe i \"{expect}\", men den faktiske indtastning er \"{actual}\"!"
+    thereIsEmptySlot: "Slot-funktionen {slot} er tom!"
     types:
+      string: "Tekst"
+      number: "Tal"
+      boolean: "Sand/falsk"
       array: "Lister"
       stringArray: "Punktliste"
+    emptySlot: "Tomt slot"
+    enviromentVariables: "Miljø variabel"
+    pageVariables: "Side element"
+    argVariables: "Input slot"
