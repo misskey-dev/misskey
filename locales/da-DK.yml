@@ -1419,18 +1419,38 @@ desktop/views/pages/selectdrive.vue:
   ok: "OK"
   cancel: "Annuller"
   upload: "Overfør filer fra din enhed"
+desktop/views/pages/search.vue:
+  not-available: "Søgefunktionen er deaktiverede i indstillingerne for denne instans."
+  not-found: "Ingen poster fundet for \"{q}\""
+desktop/views/pages/tag.vue:
+  no-posts-found: "Ingen poster fundet med \"{q}\"."
 desktop/views/pages/user-list.users.vue:
+  users: "Bruger"
+  add-user: "Tilføj en bruger"
   username: "Brugernavn"
 desktop/views/pages/user/user.followers-you-know.vue:
+  title: "Følgere som du måske kender"
   loading: "Henter"
+  no-users: "Ingen følgere du kender"
 desktop/views/pages/user/user.friends.vue:
+  title: "Hyppige omtaler"
   loading: "Henter"
+  no-users: "Ingen hyppige omtaler"
 desktop/views/pages/user/user.photos.vue:
+  title: "Billeder"
   loading: "Henter"
   no-photos: "Ingen billeder"
 desktop/views/pages/user/user.header.vue:
+  posts: "Poster"
+  following: "Følger"
+  followers: "Følgere"
+  is-bot: "Denne konto er en bot"
+  no-description: "Ingen brugerbeskrivelse"
   month: "Man"
   day: "Søn"
+  follows-you: "Følger dig"
+desktop/views/pages/user/user.timeline.vue:
+  with-media: "Medier"
 desktop/views/widgets/notifications.vue:
   title: "Notifikationer"
 desktop/views/widgets/polls.vue:
@@ -1455,6 +1475,7 @@ mobile/views/components/media-video.vue:
   click-to-show: "Klik for at vise"
 common/views/components/follow-button.vue:
   following: "Følger"
+  follow: "Følger"
   request-pending: "Ventende anmodninger om at blive følger"
   follow-processing: "Anmoder om behandling"
   follow-request: "Anmodninger om at blive følger"
@@ -1470,6 +1491,7 @@ mobile/views/components/note-detail.vue:
 mobile/views/components/notifications.vue:
   empty: "Der er ingen notifikationer!"
 mobile/views/components/post-form.vue:
+  add-visible-user: "Tilføj en bruger"
   reply: "Svar"
   renote: "Gen-postering"
   reply-placeholder: "Svar på denne post"
@@ -1483,6 +1505,7 @@ mobile/views/components/ui.header.vue:
   welcome-back: "Velkommen tilbage!"
   adjective: "Hr."
 mobile/views/components/ui.nav.vue:
+  timeline: "Tidslinje"
   notifications: "Notifikationer"
   follow-requests: "Anmodninger om at blive følger"
   search: "Søg"
@@ -1495,27 +1518,59 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Overfør en fil"
     create-folder: "Opret en mappe"
+mobile/views/pages/signup.vue:
+  lets-start: "Din konto er nu klar! 📦"
+mobile/views/pages/followers.vue:
+  followers-of: "{name}s følgere"
+mobile/views/pages/following.vue:
+  following-of: "{name}s følger"
 mobile/views/pages/home.vue:
   home: "Startside"
   local: "Lokal"
   hybrid: "Social"
   global: "Global"
   mentions: "Omtaler"
+  messages: "Direkte poster"
+mobile/views/pages/tag.vue:
+  no-posts-found: "Ingen poster fundet med \"{q}\"."
 mobile/views/pages/widgets.vue:
   dashboard: "Kontrolpanel"
+  widgets-hints: "Du kan tilføje / slette / flytte rundt på widgets. For at flytte widgeten skal du trække “三”. Klik på \"×\" for at slette widgeten. Nogle widgets kan tilpasses direkte ved at klikke på dem."
   add-widget: "Tilføj"
   customization-tips: "Tips om tilpasning"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivitet"
+mobile/views/pages/share.vue:
+  share-with: "Del med {name}"
 mobile/views/pages/note.vue:
+  title: "Post"
   prev: "Forrige post"
   next: "Næste post"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Søg"
+  not-found: "Ingen poster fundet for \"{q}\""
+mobile/views/pages/selectdrive.vue:
+  select-file: "Vælg fil(er)"
+mobile/views/pages/settings.vue:
+  signed-in-as: "Logget ind som {}"
+mobile/views/pages/user.vue:
+  follows-you: "Følger dig"
+  following: "Følger"
+  followers: "Følgere"
+  notes: "Poster"
+  overview: "Oversigt"
+  timeline: "Tidslinje"
+  media: "Medier"
+  years-old: "{age} år"
 mobile/views/pages/user/home.vue:
+  recent-notes: "Seneste poster"
+  images: "Billeder"
   activity: "Aktivitet"
+  keywords: "Nøgleord"
+  frequently-replied-users: "Hyppige omtaler"
+  followers-you-know: "Følgere som du måske kender"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Ingen billeder"
 deck:
@@ -1530,11 +1585,17 @@ deck:
   select-list: "Vælg liste"
   rename: "Omdøb"
 deck/deck.user-column.vue:
+  follows-you: "Følger dig"
+  following: "Følger"
+  followers: "Følgere"
+  images: "Billeder"
   activity: "Aktivitet"
+  timeline: "Tidslinje"
 pages:
   like: "Synes om"
   title: "Titel"
   blocks:
+    image: "Billeder"
     post: "Post formular"
     _post:
       text: "Indhold"
