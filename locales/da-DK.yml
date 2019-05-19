@@ -1650,20 +1650,45 @@ pages:
       name: "Variabel navn"
       text: "Titel"
       default: "Standard værdi"
+    switch: "Kontakt"
     _switch:
+      name: "Variabel navn"
       text: "Titel"
+      default: "Standard værdi"
+    counter: "Tæller"
     _counter:
+      name: "Variabel navn"
       text: "Titel"
+      inc: "Forhøj tallet med en"
     _button:
       text: "Titel"
+      action: "Handling når der trykkes på knappen"
       _action:
+        dialog: "Vis dialogboks"
         _dialog:
           content: "Indhold"
+        resetRandom: "Nulstil tilfældigt tal"
   script:
     categories:
+      flow: "Kontrol"
+      logical: "Logisk handling"
+      operation: "Eksekver"
+      comparison: "Sammenlign"
       random: "Tilfældig"
+      value: "Værdi"
+      fn: "Funktion"
+      text: "Tekstmanipulation"
+      convert: "Konverter"
       list: "Lister"
     blocks:
+      text: "Text"
+      multiLineText: "Tekst med linjeskift"
+      textList: "Punktliste"
+      _textList:
+        info: "Brug linjeskift til at adskille linjerne"
+      strLen: "Længde af tekststrengen"
+      _strLen:
+        arg1: "Tekst"
       _join:
         arg1: "Lister"
       random: "Tilfældig"
@@ -1673,7 +1698,11 @@ pages:
         arg1: "Lister"
       _seedRandomPick:
         arg2: "Lister"
+      _DRPWPM:
+        arg1: "Punktliste"
       _pick:
         arg1: "Lister"
+      fn: "Funktion"
     types:
       array: "Lister"
+      stringArray: "Punktliste"
