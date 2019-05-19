@@ -583,9 +583,13 @@ common/views/components/user-list-editor.vue:
   rename: "Cambiar el nombre de la lista"
   delete: "Eliminar lista"
   remove-user: "Eliminar de la lista"
+common/views/components/user-group-editor.vue:
+  invite: "Invitar"
 common/views/components/user-lists.vue:
   user-lists: "Listas"
   list-name: "Nombre de lista"
+common/views/components/user-groups.vue:
+  invites: "Invitar"
 common/views/widgets/broadcast.vue:
   fetching: "Recuperando"
   no-broadcasts: "Sin emisión"
