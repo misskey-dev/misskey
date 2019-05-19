@@ -1452,23 +1452,55 @@ desktop/views/pages/user/user.header.vue:
   day: "Søn"
   follows-you: "Følger dig"
 desktop/views/pages/user/user.timeline.vue:
+  default: "Poster"
+  with-replies: "Poster og svar"
   with-media: "Medier"
+  my-posts: "Mine poster"
 desktop/views/widgets/notifications.vue:
   title: "Notifikationer"
 desktop/views/widgets/polls.vue:
   title: "Afstemninger"
+  refresh: "Genopfrisk"
   nothing: "Der er ingen notifikationer!"
+desktop/views/widgets/post-form.vue:
+  title: "Post"
+  note: "Post"
+  something-happened: "Kunne af uvisse årsager ikke postes"
+desktop/views/widgets/profile.vue:
+  update-banner: "Klik for at redigere dit banner"
+  update-avatar: "Klik for at redigere din avatar"
 desktop/views/widgets/trends.vue:
+  title: "Tendenser"
+  refresh: "Genopfrisk"
   nothing: "Der er ingen notifikationer!"
+desktop/views/widgets/users.vue:
+  title: "Anbefalede brugere"
+  refresh: "Genopfrisk"
+  no-one: "Hvad synes du?"
 mobile/views/components/drive.vue:
   used: "I brug"
+  folder-count: "Mappe(r)"
+  count-separator: ","
+  file-count: "Fil(er)"
+  nothing-in-drive: "Der er ikke gemt noget"
+  folder-is-empty: "Denne mappe er tom"
   folder-name: "Mappenavn"
+  here-is-root: "Lige nu befinder du dig i bunden - ikke i en mappe."
   url-prompt: "Webadresse på filen, som du vil overføre"
+  uploading: "Overførslen er sat i gang. Det kan tage et stykke tid."
+  folder-name-cannot-empty: "Et mappe er nødt til at have et navn"
+mobile/views/components/drive-file-chooser.vue:
+  select-file: "Vælg fil"
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: "Vælg mappe"
 mobile/views/components/drive.file.vue:
   nsfw: "Indholdet er Upassende På Jobbet"
 mobile/views/components/drive.file-detail.vue:
   download: "Download"
   rename: "Omdøb"
+  move: "Flyt"
+  hash: "Hashtag (md5)"
+  exif: "EXIF"
   nsfw: "Indholdet er Upassende På Jobbet"
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
@@ -1487,15 +1519,26 @@ mobile/views/components/note.vue:
   location: "Placering"
 mobile/views/components/note-detail.vue:
   reply: "Svar"
+  reaction: "Reaktion"
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
   location: "Placering"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
 mobile/views/components/notifications.vue:
   empty: "Der er ingen notifikationer!"
 mobile/views/components/post-form.vue:
   add-visible-user: "Tilføj en bruger"
+  submit: "Post"
   reply: "Svar"
   renote: "Gen-postering"
+  quote-placeholder: "Citer denne post... (valgfrit)"
   reply-placeholder: "Svar på denne post"
   geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
 mobile/views/components/sub-note-content.vue:
