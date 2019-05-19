@@ -160,6 +160,10 @@ common/views/components/profile-editor.vue:
   name: "Nome"
   export-targets:
     following-list: "Seguindo"
+common/views/components/user-group-editor.vue:
+  invite: "Convidar"
+common/views/components/user-groups.vue:
+  invites: "Convidar"
 common/views/widgets/posts-monitor.vue:
   title: "Gráfico de publicações"
 common/views/widgets/memo.vue:
