@@ -1306,8 +1306,14 @@ admin/views/moderators.vue:
     title: "Opret redaktør"
     add: "Opret"
     added: "Redaktør er oprettet"
+    remove: "Fjern"
+    removed: "Redaktøren er nu fjernet"
 admin/views/emoji.vue:
   add-emoji:
+    title: "Tilføj emoji"
+    name: "Navn på emoji"
+    name-desc: "Du kan bruge tegnene fra a til z, 0 til 9 og \"_\""
+    aliases: "Aliasser"
     aliases-desc: "Du kan tilføje flere med mellemrum imellem"
     url: "Webadresse for billede"
     add: "Tilføj"
@@ -1326,23 +1332,39 @@ admin/views/announcements.vue:
   save: "Gem"
   remove: "Slet"
   add: "Tilføj"
+  title: "Titel"
+  text: "Indhold"
   saved: "Gemt"
   _remove:
     are-you-sure: "Er du sikker på, at du vil slette \"$1\"?"
     removed: "Slettet"
+admin/views/hashtags.vue:
+  hided-tags: "Skjulte tags"
 admin/views/federation.vue:
   instance: "Instans"
   host: "Vært"
+  notes: "Poster"
+  users: "Brugere"
   following: "Følger"
+  followers: "Følgere"
   caught-at: "Oprettet den"
   status: "Status"
+  latest-request-sent-at: "Tidspunkt for afsendelse af seneste forespørgsel"
+  latest-request-received-at: "Seneste forespørgsel blev modtaget den"
+  remove-all-following: "Annuller alle følgere"
+  remove-all-following-info: "Annuller alle konti fra værten {host}. Udføres når værten ikke længere eksisterer."
+  delete-all-files: "Slet alle filer"
   block: "Bloker"
+  marked-as-closed: "Marker som lukket"
   lookup: "Opslag"
   instances: "Forenede"
+  instance-not-registered: "Instansen kan ikke findes"
   sort: "Sorter efter"
   sorts:
     caughtAtAsc: "Tidspunkt for oprettelse (ældste først)"
     caughtAtDesc: "Tidspunkt for oprettelse (seneste først)"
+    lastCommunicatedAtAsc: "Tidspunktet for den tidligere interaktion"
+    lastCommunicatedAtDesc: "Tidspunktet for den senere interaktion"
   state: "Sorter efter"
   states:
     all: "Alle"
@@ -1472,8 +1494,26 @@ deck/deck.user-column.vue:
   activity: "Aktivitet"
 pages:
   like: "Synes om"
+  title: "Titel"
   blocks:
     post: "Post formular"
+    _post:
+      text: "Indhold"
+    _textInput:
+      text: "Titel"
+    _textareaInput:
+      text: "Titel"
+    _numberInput:
+      text: "Titel"
+    _switch:
+      text: "Titel"
+    _counter:
+      text: "Titel"
+    _button:
+      text: "Titel"
+      _action:
+        _dialog:
+          content: "Indhold"
   script:
     categories:
       random: "Tilfældig"
