@@ -13,6 +13,8 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 
 		return {
 			id: favorite.id,
+			createdAt: favorite.createdAt,
+			noteId: favorite.noteId,
 			note: await Notes.pack(favorite.note || favorite.noteId, me),
 		};
 	}
