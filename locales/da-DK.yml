@@ -984,13 +984,32 @@ common/views/components/media-image.vue:
 common/views/components/api-settings.vue:
   intro: "For at få adgang til API'en skal du sætte denne nøgle til at være søgeordet \"i\" i anmodningsparameteren."
   caution: "Indtast ikke denne nøgle i nogen app, og fortæl heller ikke andre om den. I modsat fald kan din konto blive kompromitteret."
+  regeneration-of-token: "Hvis din nøgle er kompromitteret, kan du genskabe den."
+  regenerate-token: "Genskab nøgle"
+  token: "Nøgle:"
   enter-password: "Angiv adgangskoden"
   console:
+    title: "API konsol"
+    endpoint: "Endpoint"
+    parameter: "Parametre"
+    credential-info: "Denne konsol kræver ikke parameteren \"i\"."
     send: "Send"
+    sending: "Sender"
+    response: "Svar"
+desktop/views/components/settings.apps.vue:
+  no-apps: "Der er ingen tilsluttede apps"
 common/views/components/drive-settings.vue:
+  max: "Kapacitet"
   in-use: "I brug"
   stats: "Statistik"
 common/views/components/mute-and-block.vue:
+  mute-and-block: "Annuller / Bloker"
+  mute: "Annuller"
+  block: "Bloker"
+  no-muted-users: "Ingen annullerede brugere"
+  no-blocked-users: "Ingen blokerede brugere"
+  word-mute: "Ordfilter"
+  muted-words: "Frafiltrerede ord"
   save: "Gem"
 common/views/components/post-form-attaches.vue:
   mark-as-sensitive: "Marker som 'følsom'"
@@ -1017,6 +1036,7 @@ admin/views/abuse.vue:
   details: "Detaljer"
   remove-report: "Slet"
 admin/views/instance.vue:
+  object-storage-endpoint: "Endpoint"
   recaptcha-preview: "Før-visning"
   invite: "Inviter"
   save: "Gem"
@@ -1041,6 +1061,10 @@ admin/views/announcements.vue:
 admin/views/federation.vue:
   following: "Følger"
   status: "Status"
+  block: "Bloker"
+  states:
+    blocked: "Bloker"
+  blocked-hosts: "Bloker"
 desktop/views/pages/selectdrive.vue:
   cancel: "Annuller"
 desktop/views/pages/user-list.users.vue:
