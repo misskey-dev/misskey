@@ -1835,27 +1835,47 @@ pages:
       dailyRandom: "Tilfældigt (pr. bruger pr. dag)"
       _dailyRandom:
         arg1: "Sandsynlighed"
+      dailyRannum: "Tilfældigt antal (pr. bruger pr. dag)"
       _dailyRannum:
         arg1: "Minimum"
         arg2: "Maximum"
+      dailyRandomPick: "Tilfældigt valgt fra listen (pr. bruger pr. dag)"
       _dailyRandomPick:
         arg1: "Lister"
+      seedRandom: "Tilfældig (frø)"
       _seedRandom:
+        arg1: "Frø"
         arg2: "Sandsynlighed"
+      seedRannum: "Tilfældigt antal (frø)"
       _seedRannum:
+        arg1: "Frø"
         arg2: "Minimum"
         arg3: "Maximum"
+      seedRandomPick: "Vælg tilfældigt (frø) fra listen"
       _seedRandomPick:
+        arg1: "Frø"
         arg2: "Lister"
+      DRPWPM: "Tilfældigt valgt fra sandsynlighedslisten (pr. bruger pr. dag)"
       _DRPWPM:
         arg1: "Punktliste"
+      pick: "Vælg fra listen"
       _pick:
         arg1: "Lister"
+        arg2: "Position"
       number: "Tal"
+      stringToNumber: "Tekst til tal"
+      _stringToNumber:
+        arg1: "Tekst"
+      numberToString: "Tal til tekst"
       _numberToString:
         arg1: "Tal"
+      splitStrByLine: "Del teksten op i linjer"
+      _splitStrByLine:
+        arg1: "Tekst"
+      ref: "Variabel"
       fn: "Funktion"
       _fn:
+        slots: "Slot-funktion"
         slots-info: "Brug linjeskift til at adskille slot-funktionerne"
         arg1: "Output"
       for: "Gentag"
