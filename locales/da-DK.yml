@@ -1383,20 +1383,42 @@ admin/views/federation.vue:
     blocked: "Bloker"
     not-responding: "Uden svar"
     marked-as-closed: "Markeret som lukkede"
+  result-is-truncated: "Vis de øverste {n} elementer."
   charts: "Graf"
   chart-srcs:
     requests: "Netværkskald"
     users: "Fremgang eller tilbagegang i antal brugere"
     users-total: "Antal brugere i alt"
+    notes: "Sæt antallet af poster op eller ned"
     notes-total: "Antal poster i alt"
+    ff: "Stigning i antal følgere"
+    ff-total: "Det samlede antal følgere"
     drive-usage: "Fremgang eller tilbagegang i brugen af drevet"
     drive-usage-total: "Forbrugt plads på drevet i alt"
+    drive-files: "Sæt antallet af filer på drevet op eller ned"
+    drive-files-total: "Samlet antal filer på drev"
   chart-spans:
     hour: "pr. time"
     day: "pr. dag"
   blocked-hosts: "Bloker"
+  blocked-hosts-info: "Beskrivelse af værterne du vil blokere, adskilt af linjeskift."
+desktop/views/pages/welcome.vue:
+  about: "Mere info..."
+  timeline: "Tidslinje"
+  announcements: "Annonceringer"
+  photos: "Seneste billeder"
+  powered-by-misskey: "Leveret af <b>Misskey</b>."
+  info: "Information"
+desktop/views/pages/drive.vue:
+  title: "Misskey drev"
+desktop/views/pages/note.vue:
+  prev: "Forrige post"
+  next: "Næste post"
 desktop/views/pages/selectdrive.vue:
+  title: "Vælg fil(er)"
+  ok: "OK"
   cancel: "Annuller"
+  upload: "Overfør filer fra din enhed"
 desktop/views/pages/user-list.users.vue:
   username: "Brugernavn"
 desktop/views/pages/user/user.followers-you-know.vue:
@@ -1485,6 +1507,9 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivitet"
+mobile/views/pages/note.vue:
+  prev: "Forrige post"
+  next: "Næste post"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
