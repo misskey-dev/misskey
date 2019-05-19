@@ -475,9 +475,13 @@ common/views/components/profile-editor.vue:
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
   add-user: "ユーザー増やす"
+common/views/components/user-group-editor.vue:
+  invite: "招待"
 common/views/components/user-lists.vue:
   user-lists: "リスト"
   list-name: "リスト名"
+common/views/components/user-groups.vue:
+  invites: "招待"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
   no-broadcasts: "お知らせはあらへんで"
