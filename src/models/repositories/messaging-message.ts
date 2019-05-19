@@ -35,7 +35,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			user: await Users.pack(message.user || message.userId, me),
 			recipientId: message.recipientId,
 			recipient: message.recipientId && opts.populateRecipient ? await Users.pack(message.recipient || message.recipientId, me) : undefined,
-			groupId: message.recipientId,
+			groupId: message.groupId,
 			group: message.groupId && opts.populateGroup ? await UserGroups.pack(message.group || message.groupId) : undefined,
 			fileId: message.fileId,
 			file: message.fileId ? await DriveFiles.pack(message.fileId) : null,
