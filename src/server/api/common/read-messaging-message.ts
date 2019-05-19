@@ -42,7 +42,7 @@ export async function readUserMessagingMessage(
 	publishMessagingStream(otherpartyId, userId, 'read', messageIds);
 	publishMessagingIndexStream(userId, 'read', messageIds);
 
-	if (!Users.getHasUnreadMessagingMessage(userId)) {
+	if (!await Users.getHasUnreadMessagingMessage(userId)) {
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllMessagingMessages');
 	}
@@ -96,7 +96,7 @@ export async function readGroupMessagingMessage(
 	});
 	publishMessagingIndexStream(userId, 'read', reads);
 
-	if (!Users.getHasUnreadMessagingMessage(userId)) {
+	if (!await Users.getHasUnreadMessagingMessage(userId)) {
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllMessagingMessages');
 	}
