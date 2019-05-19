@@ -1010,15 +1010,28 @@ common/views/components/mute-and-block.vue:
   no-blocked-users: "Ingen blokerede brugere"
   word-mute: "Ordfilter"
   muted-words: "Frafiltrerede ord"
+  muted-words-description: "Mellemrum mellem ord vil blive håndteret, som om der står AND i mellem ordene i søgningen (dvs. alle ord skal være til stede). Linieskift mellem ord vil føre til, at der søges med OR mellem ordene (dvs. kun det ene af ordene behøver være til stede)."
   save: "Gem"
+common/views/components/password-settings.vue:
+  reset: "Skift adgangskode"
+  enter-current-password: "Angiv den nuværende adgangskode"
+  enter-new-password: "Angiv den nye adgangskode"
+  enter-new-password-again: "Skriv den nye adgangskode igen"
+  not-match: "Du har skrevet den nye adgangskode på to forskellige måder"
+  changed: "Adgangskoden er ændret"
+  failed: "Fejl ved ændring af adgangskode"
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "Fjern den vedhæftede fil"
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
 desktop/views/components/sub-note-content.vue:
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
+  media-count: "{} medie(r) er vedhæftet"
   poll: "Afstemninger"
 desktop/views/components/settings.tags.vue:
+  title: "Tags"
+  query: "Søgning (valgfri)"
   add: "Tilføj"
   save: "Gem"
 desktop/views/components/timeline.vue:
@@ -1122,6 +1135,7 @@ mobile/views/components/post-form.vue:
 mobile/views/components/sub-note-content.vue:
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
+  media-count: "{} medie(r) er vedhæftet"
   poll: "Afstemninger"
 mobile/views/components/ui.nav.vue:
   search: "Søg"
