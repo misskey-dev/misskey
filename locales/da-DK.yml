@@ -28,7 +28,7 @@ common:
   enter-password: "Skriv din adgangskode"
   2fa: "To-faktor adgangsstyring"
   customize-home: "Tilpas dit layout"
-  featured-notes: "Fremhævede noter"
+  featured-notes: "Fremhævede poster"
   dark-mode: "Nat design"
   signin: "Log ind"
   signup: "Bliv bruger"
@@ -210,7 +210,7 @@ common:
     show-my-renotes: "Vis mine gen-posteringer på tidslinien"
     show-renoted-my-notes: "Vis gen-posteringer af dine egne poster på tidslinien"
     show-local-renotes: "Vis gen-posteringer af lokale poster på tidslinien"
-    remain-deleted-note: "Fortsæt med at vise slettede noter"
+    remain-deleted-note: "Fortsæt med at vise slettede poster"
     sound: "Lyd"
     enable-sounds: "Aktiver lyd"
     enable-sounds-desc: "Afspil en lyd, når du modtager en post/besked. Denne indstilling gemmes i browseren."
@@ -234,7 +234,7 @@ common:
     navbar-position-left: "Venstre"
     navbar-position-right: "Højre"
     i-am-under-limited-internet: "Mit internet kører med lav hastighed"
-    post-style: "Stil for visning af noter"
+    post-style: "Stil for visning af poster"
     post-style-standard: "Standard"
     post-style-smart: "Smart"
     notification-position: "Vis notifikationer"
@@ -260,7 +260,7 @@ common:
   is-remote-post: "Indholdet af denne post er spejlet fra andetsteds"
   view-on-remote: "Se den fulde version eksternt"
   renoted-by: "Gen-posteret af {user}"
-  no-notes: "Uden noter"
+  no-notes: "Uden poster"
   turn-on-darkmode: "Skift til mørk baggrund"
   turn-off-darkmode: "Lys baggrund"
   error:
@@ -1035,13 +1035,36 @@ desktop/views/components/settings.tags.vue:
   add: "Tilføj"
   save: "Gem"
 desktop/views/components/timeline.vue:
+  home: "Startside"
+  local: "Lokal"
+  hybrid: "Social"
+  global: "Global"
+  mentions: "Omtaler"
+  messages: "Direkte poster"
+  list: "Liste"
   hashtag: "Hashtags"
+  add-tag-timeline: "Tilføj hashtag sky"
+  add-list: "Tilføj liste"
+  list-name: "Navn på liste"
+desktop/views/components/ui.header.vue:
+  welcome-back: "Velkommen tilbage!"
+  adjective: "Hr."
 desktop/views/components/ui.header.account.vue:
+  profile: "Din profil"
+  lists: "Lister"
   groups: "Gruppe"
+  follow-requests: "Anmodninger om at blive følger"
+  admin: "Administration"
+desktop/views/components/ui.header.nav.vue:
+  game: "Spil"
+desktop/views/components/ui.header.notifications.vue:
+  title: "Notifikationer"
 desktop/views/components/ui.header.post.vue:
   post: "Ny post"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Søg"
+desktop/views/components/user-preview.vue:
+  notes: "Poster"
 admin/views/dashboard.vue:
   accounts: "Konto"
   drive: "Drev"
@@ -1058,9 +1081,15 @@ admin/views/instance.vue:
 admin/views/charts.vue:
   drive: "Drev"
 admin/views/drive.vue:
+  origin:
+    local: "Lokal"
   delete: "Slet"
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
+admin/views/users.vue:
+  users:
+    origin:
+      local: "Lokal"
 admin/views/emoji.vue:
   add-emoji:
     add: "Tilføj"
@@ -1092,6 +1121,8 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "Man"
   day: "Søn"
+desktop/views/widgets/notifications.vue:
+  title: "Notifikationer"
 desktop/views/widgets/polls.vue:
   title: "Afstemninger"
   nothing: "Der er ingen notifikationer!"
@@ -1116,6 +1147,7 @@ common/views/components/follow-button.vue:
   following: "Følger"
   request-pending: "Ventende anmodninger om at blive følger"
   follow-processing: "Anmoder om behandling"
+  follow-request: "Anmodninger om at blive følger"
 mobile/views/components/note.vue:
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
@@ -1137,14 +1169,28 @@ mobile/views/components/sub-note-content.vue:
   deleted: "Posten er blevet fjernet"
   media-count: "{} medie(r) er vedhæftet"
   poll: "Afstemninger"
+mobile/views/components/ui.header.vue:
+  welcome-back: "Velkommen tilbage!"
+  adjective: "Hr."
 mobile/views/components/ui.nav.vue:
+  notifications: "Notifikationer"
+  follow-requests: "Anmodninger om at blive følger"
   search: "Søg"
+  user-lists: "Lister"
   user-groups: "Gruppe"
+  game: "Spil"
+  admin: "Administration"
   about: "Om"
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Overfør en fil"
     create-folder: "Opret en mappe"
+mobile/views/pages/home.vue:
+  home: "Startside"
+  local: "Lokal"
+  hybrid: "Social"
+  global: "Global"
+  mentions: "Omtaler"
 mobile/views/pages/widgets.vue:
   add-widget: "Tilføj"
   customization-tips: "Tips om tilpasning"
@@ -1159,7 +1205,14 @@ mobile/views/pages/user/home.vue:
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Ingen billeder"
 deck:
+  home: "Startside"
+  local: "Lokal"
+  hybrid: "Social"
   hashtag: "Hashtags"
+  global: "Global"
+  mentions: "Omtaler"
+  notifications: "Notifikationer"
+  list: "Lister"
   select-list: "Vælg liste"
   rename: "Omdøb"
 deck/deck.user-column.vue:
@@ -1171,5 +1224,18 @@ pages:
   script:
     categories:
       random: "Tilfældig"
+      list: "Lister"
     blocks:
+      _join:
+        arg1: "Lister"
       random: "Tilfældig"
+      _randomPick:
+        arg1: "Lister"
+      _dailyRandomPick:
+        arg1: "Lister"
+      _seedRandomPick:
+        arg2: "Lister"
+      _pick:
+        arg1: "Lister"
+    types:
+      array: "Lister"
