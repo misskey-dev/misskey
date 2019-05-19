@@ -459,11 +459,13 @@ common/views/components/messaging-room.vue:
   not-talked-group: "이 그룹과의 대화가 없습니다"
   no-history: "이것보다 과거의 기록이 없습니다"
   new-message: "새 메시지가 있습니다"
+  only-one-file-attached: "메시지에 첨부할 수 있는 파일은 하나까지입니다"
 common/views/components/messaging-room.form.vue:
   input-message-here: "여기에 메시지를 입력하세요"
   send: "전송"
   attach-from-local: "PC에서 파일 첨부"
   attach-from-drive: "드라이브에서 파일 첨부"
+  only-one-file-attached: "메시지에 첨부할 수 있는 파일은 하나까지입니다"
 common/views/components/messaging-room.message.vue:
   is-read: "읽음"
   deleted: "이 메시지는 삭제되었습니다"
@@ -700,15 +702,27 @@ common/views/components/user-list-editor.vue:
   deleted: "삭제하였습니다"
   add-user: "사용자 추가"
 common/views/components/user-group-editor.vue:
+  users: "멤버"
+  rename: "그룹명을 변경"
+  delete: "그룹을 삭제"
+  remove-user: "이 그룹에서 삭제"
+  delete-are-you-sure: "그룹 「$1」을 삭제하시겠습니까?"
   deleted: "삭제하였습니다"
   invite: "초대"
+  invited: "초대를 보냈습니다"
 common/views/components/user-lists.vue:
   user-lists: "리스트"
   create-list: "리스트 만들기"
   list-name: "리스트 이름"
 common/views/components/user-groups.vue:
   user-groups: "그룹"
+  create-group: "그룹 만들기"
+  group-name: "그룹명"
+  owned-groups: "자신의 그룹"
+  joined-groups: "참여중인 그룹"
   invites: "초대"
+  accept-invite: "참여"
+  reject-invite: "거부"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
   no-broadcasts: "공지사항이 없습니다"
@@ -772,6 +786,8 @@ common/views/pages/follow.vue:
   follow-request: "팔로우 요청"
 common/views/pages/follow-requests.vue:
   received-follow-requests: "팔로우 요청"
+  accept: "승인"
+  reject: "거부"
 desktop:
   banner-crop-title: "배너로 표시할 부분을 선택"
   banner: "배너"
@@ -1685,6 +1701,7 @@ pages:
   view-source: "소스 보기"
   view-page: "페이지 보기"
   like: "좋아요"
+  unlike: "좋아요 해제"
   liked-pages: "좋아요한 페이지"
   my-pages: "내 페이지"
   inspector: "인스펙터"
