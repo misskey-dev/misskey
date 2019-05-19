@@ -450,7 +450,13 @@ common/views/components/messaging.vue:
   you: "당신"
   no-history: "기록이 없습니다"
   user: "사용자"
+  group: "그룹"
+  start-with-user: "사용자와 대화 시작"
+  start-with-group: "그룹과 대화 시작"
+  select-group: "그룹을 선택하여 주십시오"
 common/views/components/messaging-room.vue:
+  not-talked-user: "이 사용자와의 대화가 없습니다"
+  not-talked-group: "이 그룹과의 대화가 없습니다"
   no-history: "이것보다 과거의 기록이 없습니다"
   new-message: "새 메시지가 있습니다"
 common/views/components/messaging-room.form.vue:
@@ -701,6 +707,7 @@ common/views/components/user-lists.vue:
   create-list: "리스트 만들기"
   list-name: "리스트 이름"
 common/views/components/user-groups.vue:
+  user-groups: "그룹"
   invites: "초대"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
@@ -1036,6 +1043,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "프로필"
   lists: "리스트"
+  groups: "그룹"
   follow-requests: "팔로우 요청"
   admin: "관리"
 desktop/views/components/ui.header.nav.vue:
@@ -1534,6 +1542,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "팔로우 요청"
   search: "검색"
   user-lists: "리스트"
+  user-groups: "그룹"
   widgets: "위젯"
   game: "게임"
   admin: "관리"
