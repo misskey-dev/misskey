@@ -42,7 +42,13 @@ export const meta = {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
 			id: '0b5cc374-3681-41da-861e-8bc1146f7a55'
-		}
+		},
+
+		isOwner: {
+			message: 'The user is the owner.',
+			code: 'IS_OWNER',
+			id: '1546eed5-4414-4dea-81c1-b0aec4f6d2af'
+		},
 	}
 };
 
@@ -62,6 +68,10 @@ export default define(meta, async (ps, me) => {
 		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 		throw e;
 	});
+
+	if (user.id === userGroup.userId) {
+		throw new ApiError(meta.errors.isOwner);
+	}
 
 	// Pull the user
 	await UserGroupJoinings.delete({ userId: user.id });
