@@ -384,8 +384,12 @@ common/views/components/profile-editor.vue:
   export-targets:
     user-lists: "Listen"
   enter-password: "Bitte Passwort eingeben"
+common/views/components/user-group-editor.vue:
+  invite: "Einladen"
 common/views/components/user-lists.vue:
   user-lists: "Listen"
+common/views/components/user-groups.vue:
+  invites: "Einladen"
 common/views/widgets/broadcast.vue:
   fetching: "Laden"
   no-broadcasts: "Keine Broadcasts"
