@@ -844,11 +844,32 @@ desktop/views/components/drive.file.vue:
 desktop/views/components/drive.folder.vue:
   unable-to-process: "Handlingen kunne ikke gennemføres."
   circular-reference-detected: "Destinationsmappen er en undermappe til den mappe, som du forsøger at flytte."
+  unhandled-error: "Ukendt fejl"
   contextmenu:
+    move-to-this-folder: "Flyt til denne mappe"
+    show-in-new-window: "Åbn i nyt vindue"
     rename: "Omdøb"
+    rename-folder: "Omdøb mappe"
+    input-new-folder-name: "Angiv nyt navn"
 desktop/views/components/drive.vue:
+  search: "Søg"
+  empty-draghover: "Smid det her! Fordi du ved, at jeg er meget sød, ikke?"
+  empty-drive: "Dit medielager er tomt"
+  empty-drive-description: "Højreklik for at åbne menuen, eller træk og slip filer her for at overføre."
+  empty-folder: "Denne mappe er tom"
   unable-to-process: "Handlingen kunne ikke gennemføres."
   circular-reference-detected: "Destinationsmappen er en undermappe til den mappe, som du forsøger at flytte."
+  unhandled-error: "Ukendt fejl"
+  url-upload: "Overfør fra webadresse"
+  url-of-file: "Webadresse på filen, som du vil overføre"
+  url-upload-requested: "Der er anmodet om overførsel"
+  may-take-time: "Det kan tage noget tid at gennemføre overførslen."
+  create-folder: "Opret en mappe"
+  folder-name: "Mappenavn"
+  contextmenu:
+    create-folder: "Opret en mappe"
+    upload: "Overfør en fil"
+    url-upload: "Overfør fra webadresse"
 desktop/views/components/home.vue:
   done: "Send"
 desktop/views/input-dialog.vue:
@@ -941,6 +962,8 @@ desktop/views/components/ui.header.account.vue:
   groups: "Gruppe"
 desktop/views/components/ui.header.post.vue:
   post: "Ny post"
+desktop/views/components/ui.header.search.vue:
+  placeholder: "Søg"
 admin/views/dashboard.vue:
   accounts: "Konto"
   drive: "Drev"
@@ -987,6 +1010,8 @@ desktop/views/widgets/polls.vue:
   title: "Afstemninger"
 mobile/views/components/drive.vue:
   used: "I brug"
+  folder-name: "Mappenavn"
+  url-prompt: "Webadresse på filen, som du vil overføre"
 mobile/views/components/drive.file-detail.vue:
   download: "Download"
   rename: "Omdøb"
@@ -1005,12 +1030,19 @@ mobile/views/components/post-form.vue:
 mobile/views/components/sub-note-content.vue:
   poll: "Afstemninger"
 mobile/views/components/ui.nav.vue:
+  search: "Søg"
   user-groups: "Gruppe"
   about: "Om"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Overfør en fil"
+    create-folder: "Opret en mappe"
 mobile/views/pages/widgets.vue:
   customization-tips: "Tips om tilpasning"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivitet"
+mobile/views/pages/search.vue:
+  search: "Søg"
 mobile/views/pages/user/home.vue:
   activity: "Aktivitet"
 mobile/views/pages/user/home.photos.vue:
