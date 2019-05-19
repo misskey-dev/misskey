@@ -1224,10 +1224,26 @@ admin/views/charts.vue:
     drive-total: "Forbrugt plads på drevet i alt"
     drive-files: "Fremgang eller tilbagegang i antal filer på drevet"
     drive-files-total: "Antal filer i alt på drevet"
+    network-requests: "Netværkskald"
+    network-time: "Svartid"
+    network-usage: "Trafik"
 admin/views/drive.vue:
+  operation: "Drift"
+  fileid-or-url: "Fil ID eller webadresse"
+  file-not-found: "Filen kunne ikke findes"
+  lookup: "Forespørgsel"
+  sort:
+    title: "Sorter efter"
+    createdAtAsc: "Alder - ældste først"
+    createdAtDesc: "Alder - seneste først"
+    sizeAsc: "Størrelse - mindste først"
+    sizeDesc: "Størrelse - største først"
   origin:
+    title: "Oprindelse"
+    combined: "Lokal + ekstern"
     local: "Lokal"
   delete: "Slet"
+  deleted: "Slettet"
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
 admin/views/users.vue:
@@ -1239,14 +1255,28 @@ admin/views/users.vue:
       local: "Lokal"
 admin/views/emoji.vue:
   add-emoji:
+    aliases-desc: "Du kan tilføje flere med mellemrum imellem"
+    url: "Webadresse for billede"
     add: "Tilføj"
+    info: "Vi anbefaler PNG billeder under 50 KB."
+    added: "Emoji er tilføjet"
   emojis:
+    title: "Emojis"
+    update: "Opdatering"
     remove: "Slet"
+  updated: "Opdateret"
+  remove-emoji:
+    are-you-sure: "Er du sikker på, at du vil slette \"$1\"?"
+    removed: "Slettet"
 admin/views/announcements.vue:
+  announcements: "Annonceringer"
   save: "Gem"
   remove: "Slet"
   add: "Tilføj"
   saved: "Gemt"
+  _remove:
+    are-you-sure: "Er du sikker på, at du vil slette \"$1\"?"
+    removed: "Slettet"
 admin/views/federation.vue:
   instance: "Instans"
   host: "Vært"
@@ -1259,6 +1289,7 @@ admin/views/federation.vue:
     blocked: "Bloker"
   charts: "Graf"
   chart-srcs:
+    requests: "Netværkskald"
     users: "Fremgang eller tilbagegang i antal brugere"
     users-total: "Antal brugere i alt"
     notes-total: "Antal poster i alt"
