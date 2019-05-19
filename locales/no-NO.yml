@@ -193,9 +193,13 @@ common/views/components/profile-editor.vue:
     user-lists: "Lister"
 common/views/components/user-list-editor.vue:
   users: "Bruker"
+common/views/components/user-group-editor.vue:
+  invite: "Inviter"
 common/views/components/user-lists.vue:
   user-lists: "Lister"
   list-name: "Liste navn"
+common/views/components/user-groups.vue:
+  invites: "Inviter"
 common/views/widgets/broadcast.vue:
   fetching: "Henter"
   next: "Neste"
