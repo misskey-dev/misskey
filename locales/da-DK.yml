@@ -474,16 +474,16 @@ common/views/components/nav.vue:
   status: "Status"
   wiki: "Wiki"
   donors: "Donatorer"
-  repository: "Repo"
+  repository: "Systemets kode-repo"
   develop: "Udviklere"
   feedback: "Tilbagemeldinger"
-  tos: "Betingelser for anvendelsen"
+  tos: "Brugerbetingelser"
 common/views/components/note-menu.vue:
   mention: "Omtale"
   detail: "Detaljer"
   copy-content: "Kopier indholdet"
   copy-link: "Kopier link"
-  favorite: "Marker denne note som favorit"
+  favorite: "Marker denne post som favorit"
   unfavorite: "Fjern favorit-markering"
   watch: "Hold øje med"
   unwatch: "Hold ikke længere øje med"
@@ -491,7 +491,7 @@ common/views/components/note-menu.vue:
   unpin: "Fjern tilknytning til din profil"
   delete: "Slet"
   delete-confirm: "Er du helt sikker på, at du vil slette denne post?"
-  remote: "Vis den oprindelige note"
+  remote: "Vis den oprindelige post"
 common/views/components/user-menu.vue:
   mention: "Omtale"
   mute: "Annuller"
@@ -591,7 +591,7 @@ common/views/components/signup.vue:
   password-not-matched: "Ikke godkendt"
   recaptcha: "Verificering"
   agree-to: "Enig {0}"
-  tos: "Betingelser for anvendelsen"
+  tos: "Brugerbetingelser"
   create: "Opret en konto"
   some-error: "Af en eller anden grund mislykkedes forsøget på at oprette en konto. Prøv igen."
 common/views/components/special-message.vue:
@@ -1065,13 +1065,59 @@ desktop/views/components/ui.header.search.vue:
   placeholder: "Søg"
 desktop/views/components/user-preview.vue:
   notes: "Poster"
+  following: "Følger"
+  followers: "Følgere"
+desktop/views/components/users-list.vue:
+  all: "Alle"
+  iknow: "Som du ved"
+  fetching: "Indlæser..."
+desktop/views/components/users-list-item.vue:
+  followed: "Følger dig"
+desktop/views/components/window.vue:
+  popout: "Pop op vindue"
+  close: "Luk"
+admin/views/index.vue:
+  dashboard: "Kontrolpanel"
+  instance: "Instans"
+  emoji: "Emoji"
+  moderators: "Redaktører"
+  users: "Brugere"
+  federation: "Forening"
+  announcements: "Annonceringer"
+  abuse: "Misbrug"
+  queue: "Job kø"
+  logs: "Logs"
+  back-to-misskey: "Tilbage til Misskey"
 admin/views/dashboard.vue:
+  dashboard: "Kontrolpanel"
   accounts: "Konto"
+  notes: "Poster"
   drive: "Drev"
+  instances: "Instans"
+  this-instance: "Denne instans"
+  federated: "Forenede"
+admin/views/queue.vue:
+  title: "Kø"
+  remove-all-jobs: "Ryd alle job køer"
 admin/views/abuse.vue:
+  title: "Misbrug"
+  target: "Mål"
+  reporter: "Kilde"
   details: "Detaljer"
   remove-report: "Slet"
 admin/views/instance.vue:
+  instance: "Instans"
+  instance-name: "Instans navn"
+  instance-description: "Beskrivelse af instans"
+  host: "Vært"
+  icon-url: "Ikonets webadresse"
+  logo-url: "Logoets webadresse"
+  banner-url: "Banner billedets webadresse"
+  error-image-url: "Fejl billedets webadresse"
+  languages: "Sproget på denne instans"
+  languages-desc: "Du kan angive flere ved at adskille med mellemrum"
+  tos-url: "Webadresse for brugerbetingelser"
+  repository-url: "Webadresse for systemets kode-repo"
   object-storage-endpoint: "Endpoint"
   recaptcha-preview: "Før-visning"
   invite: "Inviter"
@@ -1088,6 +1134,9 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Fjern markering som 'følsom'"
 admin/views/users.vue:
   users:
+    state:
+      all: "Alle"
+      moderator: "Redaktører"
     origin:
       local: "Lokal"
 admin/views/emoji.vue:
@@ -1101,10 +1150,14 @@ admin/views/announcements.vue:
   add: "Tilføj"
   saved: "Gemt"
 admin/views/federation.vue:
+  instance: "Instans"
+  host: "Vært"
   following: "Følger"
   status: "Status"
   block: "Bloker"
+  instances: "Forenede"
   states:
+    all: "Alle"
     blocked: "Bloker"
   blocked-hosts: "Bloker"
 desktop/views/pages/selectdrive.vue:
@@ -1192,6 +1245,7 @@ mobile/views/pages/home.vue:
   global: "Global"
   mentions: "Omtaler"
 mobile/views/pages/widgets.vue:
+  dashboard: "Kontrolpanel"
   add-widget: "Tilføj"
   customization-tips: "Tips om tilpasning"
 mobile/views/pages/widgets/activity.vue:
