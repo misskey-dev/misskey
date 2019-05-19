@@ -1365,6 +1365,10 @@ admin/views/federation.vue:
     caughtAtDesc: "Tidspunkt for oprettelse (seneste først)"
     lastCommunicatedAtAsc: "Tidspunktet for den tidligere interaktion"
     lastCommunicatedAtDesc: "Tidspunktet for den senere interaktion"
+    notesAsc: "Poster (mindste først)"
+    notesDesc: "Poster (største først)"
+    usersAsc: "Antal følgere (færrest først)"
+    usersDesc: "Antal følgere (flest først)"
   state: "Sorter efter"
   states:
     all: "Alle"
