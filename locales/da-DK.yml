@@ -1540,7 +1540,10 @@ mobile/views/components/post-form.vue:
   renote: "Gen-postering"
   quote-placeholder: "Citer denne post... (valgfrit)"
   reply-placeholder: "Svar på denne post"
+  cw-placeholder: "Kommentar til indholdet (valgfrit)"
   geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
+  error: "Fejl"
+  username-prompt: "Angiv brugernavn"
 mobile/views/components/sub-note-content.vue:
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
@@ -1556,13 +1559,18 @@ mobile/views/components/ui.nav.vue:
   search: "Søg"
   user-lists: "Lister"
   user-groups: "Gruppe"
+  widgets: "Widgets"
   game: "Spil"
   admin: "Administration"
   about: "Om"
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Overfør en fil"
+    url-upload: "Overfør fil fra webadresse"
     create-folder: "Opret en mappe"
+    rename-folder: "Omdøb mappe"
+    move-folder: "Flyt denne mappe"
+    delete-folder: "Slet denne mappe"
 mobile/views/pages/signup.vue:
   lets-start: "Din konto er nu klar! 📦"
 mobile/views/pages/followers.vue:
@@ -1667,6 +1675,10 @@ dev/views/apps.vue:
   app-missing: "Ingen apps"
 dev/views/new-app.vue:
   new-app: "Ny app"
+  new-app-info: "Du kan også oprette en app fra API'en. (app / opret)"
+  create-app: "Opretter app"
+  app-name: "Navn på app"
+  app-name-placeholder: "F.eks. Misskey for iOS"
 pages:
   like: "Synes om"
   title: "Titel"
@@ -1754,47 +1766,85 @@ pages:
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "- Minus"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "× Multiplicer"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "÷ Divider"
       _divide:
         arg1: "A"
         arg2: "B"
+      remind: "÷ Tomo"
       _remind:
         arg1: "A"
         arg2: "B"
+      eq: "A og B er ens"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A og B er forskellige"
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A og B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A eller B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "A er mindre end B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "A er større end B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "A er mindre end eller lig med B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: "A er større end eller lig med B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Branch"
+      _if:
+        arg1: "Hvis"
+        arg2: "så"
+        arg3: "ellers"
+      not: "negation"
+      _not:
+        arg1: "negation"
       random: "Tilfældig"
+      _random:
+        arg1: "Sandsynlighed"
+      rannum: "Tilfældigt tal"
+      _rannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
+      randomPick: "Vælg tilfældig fra listen"
       _randomPick:
         arg1: "Lister"
+      dailyRandom: "Tilfældigt (pr. bruger pr. dag)"
+      _dailyRandom:
+        arg1: "Sandsynlighed"
+      _dailyRannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
       _dailyRandomPick:
         arg1: "Lister"
+      _seedRandom:
+        arg2: "Sandsynlighed"
+      _seedRannum:
+        arg2: "Minimum"
+        arg3: "Maximum"
       _seedRandomPick:
         arg2: "Lister"
       _DRPWPM:
