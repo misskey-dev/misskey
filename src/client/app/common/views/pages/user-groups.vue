@@ -1,36 +1,70 @@
 <template>
-<ui-container>
-	<template #header><fa :icon="faUsers"/> {{ $t('user-groups') }}</template>
-	<ui-margin>
-		<ui-button @click="add"><fa :icon="faPlus"/> {{ $t('create-group') }}</ui-button>
-	</ui-margin>
-	<div class="hwgkdrbl" v-for="group in groups" :key="group.id">
-		<ui-hr/>
+<div>
+	<ui-container>
+		<template #header><fa :icon="faUsers"/> {{ $t('owned-groups') }}</template>
 		<ui-margin>
-			<router-link :to="`/i/groups/${group.id}`">{{ group.name }}</router-link>
+			<ui-button @click="add"><fa :icon="faPlus"/> {{ $t('create-group') }}</ui-button>
 		</ui-margin>
-	</div>
-</ui-container>
+		<div class="hwgkdrbl" v-for="group in ownedGroups" :key="group.id">
+			<ui-hr/>
+			<ui-margin>
+				<router-link :to="`/i/groups/${group.id}`">{{ group.name }}</router-link>
+			</ui-margin>
+		</div>
+	</ui-container>
+
+	<ui-container>
+		<template #header><fa :icon="faUsers"/> {{ $t('joined-groups') }}</template>
+		<div class="hwgkdrbl" v-for="(group, i) in joinedGroups" :key="group.id">
+			<ui-hr v-if="i != 0"/>
+			<ui-margin>
+				<router-link :to="`/i/groups/${group.id}`">{{ group.name }}</router-link>
+			</ui-margin>
+		</div>
+	</ui-container>
+
+	<ui-container>
+		<template #header><fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
+		<div class="fvlojuur" v-for="(invite, i) in invites" :key="invite.id">
+			<ui-hr v-if="i != 0"/>
+			<ui-margin>
+				<div class="name">{{ invite.group.name }}</div>
+				<ui-horizon-group>
+					<ui-button @click="acceptInvite(invite)"><fa :icon="faCheck"/> {{ $t('accept-invite') }}</ui-button>
+					<ui-button @click="rejectInvite(invite)"><fa :icon="faBan"/> {{ $t('reject-invite') }}</ui-button>
+				</ui-horizon-group>
+			</ui-margin>
+		</div>
+	</ui-container>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { faUsers, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faPlus, faCheck, faBan, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/user-groups.vue'),
 	data() {
 		return {
-			fetching: true,
-			groups: [],
-			faUsers, faPlus
+			ownedGroups: [],
+			joinedGroups: [],
+			invites: [],
+			faUsers, faPlus, faCheck, faBan, faEnvelopeOpenText
 		};
 	},
 	mounted() {
 		this.$root.api('users/groups/owned').then(groups => {
-			this.fetching = false;
-			this.groups = groups;
+			this.ownedGroups = groups;
+		});
+
+		this.$root.api('users/groups/joined').then(groups => {
+			this.joinedGroups = groups;
+		});
+
+		this.$root.api('i/user-group-invites').then(invites => {
+			this.invites = invites;
 		});
 
 		this.$emit('init', {
@@ -45,13 +79,35 @@ export default Vue.extend({
 				input: true
 			}).then(async ({ canceled, result: name }) => {
 				if (canceled) return;
-				const list = await this.$root.api('users/groups/create', {
+				const group = await this.$root.api('users/groups/create', {
 					name
 				});
 
-				this.groups.push(list)
+				this.ownedGroups.push(group)
 			});
 		},
+		acceptInvite(invite) {
+			this.$root.api('users/groups/invitations/accept', {
+				inviteId: invite.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+				this.$root.api('i/user-group-invites').then(invites => {
+					this.invites = invites;
+				});
+			});
+		},
+		rejectInvite(invite) {
+			this.$root.api('users/groups/invitations/reject', {
+				inviteId: invite.id
+			}).then(() => {
+				this.$root.api('i/user-group-invites').then(invites => {
+					this.invites = invites;
+				});
+			});
+		}
 	}
 });
 </script>

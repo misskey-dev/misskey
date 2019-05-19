@@ -217,12 +217,13 @@ export default Vue.extend({
 			this.navigate(user);
 		},
 		async startGroup() {
-			const groups = await this.$root.api('users/groups/joined');
+			const groups1 = await this.$root.api('users/groups/owned');
+			const groups2 = await this.$root.api('users/groups/joined');
 			const { canceled, result: group } = await this.$root.dialog({
 				type: null,
 				title: this.$t('select-group'),
 				select: {
-					items: groups.map(group => ({
+					items: groups1.concat(groups2).map(group => ({
 						value: group, text: group.name
 					}))
 				},

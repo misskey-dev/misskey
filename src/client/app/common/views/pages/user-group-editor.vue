@@ -16,7 +16,7 @@
 
 		<section>
 			<ui-margin>
-				<ui-button @click="add"><fa :icon="faPlus"/> {{ $t('add-user') }}</ui-button>
+				<ui-button @click="invite()"><fa :icon="faPlus"/> {{ $t('invite') }}</ui-button>
 			</ui-margin>
 			<sequential-entrance animation="entranceFromTop" delay="25">
 				<div class="kjlrfbes" v-for="user in users">
@@ -134,18 +134,22 @@ export default Vue.extend({
 			});
 		},
 
-		async add() {
+		async invite() {
+			const t = this.$t('invited');
 			const { result: user } = await this.$root.dialog({
 				user: {
 					local: true
 				}
 			});
 			if (user == null) return;
-			this.$root.api('users/groups/push', {
+			this.$root.api('users/groups/invite', {
 				groupId: this.group.id,
 				userId: user.id
 			}).then(() => {
-				this.fetchUsers();
+				this.$root.dialog({
+					type: 'success',
+					text: t
+				});
 			});
 		}
 	}

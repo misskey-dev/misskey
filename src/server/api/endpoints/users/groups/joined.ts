@@ -1,6 +1,7 @@
 import define from '../../../define';
 import { UserGroups, UserGroupJoinings } from '../../../../../models';
 import { types, bool } from '../../../../../misc/schema';
+import { Not, In } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -25,8 +26,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
+	const ownedGroups = await UserGroups.find({
+		userId: me.id,
+	});
+
 	const joinings = await UserGroupJoinings.find({
 		userId: me.id,
+		userGroupId: Not(In(ownedGroups.map(x => x.id)))
 	});
 
 	return await Promise.all(joinings.map(x => UserGroups.pack(x.userGroupId)));
