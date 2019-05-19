@@ -695,10 +695,13 @@ common/views/components/user-list-editor.vue:
   add-user: "사용자 추가"
 common/views/components/user-group-editor.vue:
   deleted: "삭제하였습니다"
+  invite: "초대"
 common/views/components/user-lists.vue:
   user-lists: "리스트"
   create-list: "리스트 만들기"
   list-name: "리스트 이름"
+common/views/components/user-groups.vue:
+  invites: "초대"
 common/views/widgets/broadcast.vue:
   fetching: "확인중"
   no-broadcasts: "공지사항이 없습니다"
