@@ -707,7 +707,7 @@ common/views/components/user-group-editor.vue:
   remove-user: "Fjern bruger fra denne gruppe"
   delete-are-you-sure: "Er du sikker på, at du vil slette gruppen \"$ 1\"?"
   deleted: "Slettet"
-  add-user: "Tilføj bruger"
+  invite: "Inviter"
 common/views/components/user-lists.vue:
   user-lists: "Lister"
   create-list: "Opret en liste"
@@ -716,6 +716,8 @@ common/views/components/user-groups.vue:
   user-groups: "Gruppe"
   create-group: "Opret gruppe"
   group-name: "Gruppenavn"
+  invites: "Inviter"
+  reject-invite: "Afvis"
 common/views/widgets/broadcast.vue:
   fetching: "Tjekker"
   no-broadcasts: "Ingen meddelelser"
