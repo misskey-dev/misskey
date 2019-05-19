@@ -695,10 +695,13 @@ common/views/components/user-list-editor.vue:
   add-user: "Add a user"
 common/views/components/user-group-editor.vue:
   deleted: "Deleted"
+  invite: "Invite"
 common/views/components/user-lists.vue:
   user-lists: "Lists"
   create-list: "Create a list"
   list-name: "List name"
+common/views/components/user-groups.vue:
+  invites: "Invite"
 common/views/widgets/broadcast.vue:
   fetching: "Checking"
   no-broadcasts: "No announcements"
