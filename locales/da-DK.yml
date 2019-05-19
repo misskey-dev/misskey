@@ -250,7 +250,7 @@ common:
   cancel: "Afbryd"
   update-available-title: "Opdatering tilgængelig"
   update-available: "En ny version af Misskey er nu tilgængelig ({newer}, den aktuelle version er {current}). Genindlæs siden for at få opdateringerne til at slå igennem."
-  my-token-regenerated: "Din token er blevet genopbygget, så du bliver logget ud."
+  my-token-regenerated: "Din nøgle er blevet genopbygget, så du bliver logget ud."
   hide-password: "Skjul adgangskoden"
   show-password: "Vis adgangskoden"
   enter-username: "Indtast brugernavn"
@@ -562,7 +562,7 @@ common/views/components/emoji-picker.vue:
 common/views/components/signin.vue:
   username: "Brugernavn"
   password: "Adgangskode"
-  token: "Token"
+  token: "Nøgle"
   signing-in: "Log ind"
   or: "Eller"
   signin-with-twitter: "Log ind med Twitter"
@@ -655,7 +655,7 @@ common/views/components/profile-editor.vue:
   title: "Profil"
   name: "Navn"
   account: "Konto"
-  location: "Sted"
+  location: "Placering"
   description: "Om mig"
   you-can-include-hashtags: "Du må gerne bruge hashtags i din profil beskrivelse"
   language: "Sprog"
@@ -893,7 +893,7 @@ desktop/views/input-dialog.vue:
 desktop/views/components/note-detail.vue:
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
-  location: "Sted"
+  location: "Placering"
   renote: "Gen-postering"
   add-reaction: "Tilføj en reaktion"
   undo-reaction: "Fortryd reaktion"
@@ -913,6 +913,10 @@ desktop/views/components/notifications.vue:
 desktop/views/components/post-form.vue:
   add-visible-user: "+Tilføj bruger"
   attach-location-information: "Vedhæft oplysninger om placering"
+  hide-contents: "Skjul indhold"
+  reply-placeholder: "Svar på denne post"
+  quote-placeholder: "Citer denne post"
+  submit: "Post"
   reply: "Svar"
   renote: "Gen-postering"
   posted: "Afsendt!"
@@ -967,15 +971,19 @@ desktop/views/components/settings.2fa.vue:
   enter-password: "Angiv adgangskoden"
   authenticator: "Allerførst skal du installere Google Authenticator på din enhed:"
   howtoinstall: "Sådan installerer du"
-  token: "Token"
+  token: "Nøgle"
   scan: "Og derefter, scan QR koden:"
-  done: "Angiv det token, som vises på din enhed:"
+  done: "Angiv den nøgle, som vises på din enhed:"
   submit: "Send"
   success: "Indstillingerne er gemt!"
+  failed: "Fejl ved opsætningen. Tjek at din nøgle er korrekt."
+  info: "Næste gang du logger på Misskey, vil den nøgle og adgangskode, der vises på din enhed, være obligatorisk."
 common/views/components/media-image.vue:
   sensitive: "Indholdet er Upassende På Jobbet"
   click-to-show: "Klik for at vise"
 common/views/components/api-settings.vue:
+  intro: "For at få adgang til API'en skal du sætte denne nøgle til at være søgeordet \"i\" i anmodningsparameteren."
+  caution: "Indtast ikke denne nøgle i nogen app, og fortæl heller ikke andre om den. I modsat fald kan din konto blive kompromitteret."
   enter-password: "Angiv adgangskoden"
   console:
     send: "Send"
@@ -1074,17 +1082,18 @@ common/views/components/follow-button.vue:
 mobile/views/components/note.vue:
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
-  location: "Sted"
+  location: "Placering"
 mobile/views/components/note-detail.vue:
   reply: "Svar"
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
-  location: "Sted"
+  location: "Placering"
 mobile/views/components/notifications.vue:
   empty: "Der er ingen notifikationer!"
 mobile/views/components/post-form.vue:
   reply: "Svar"
   renote: "Gen-postering"
+  reply-placeholder: "Svar på denne post"
   geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
 mobile/views/components/sub-note-content.vue:
   private: "Posten er privat"
