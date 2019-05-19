@@ -1569,42 +1569,87 @@ mobile/views/pages/user/home.vue:
   images: "Billeder"
   activity: "Aktivitet"
   keywords: "Nøgleord"
+  domains: "Domæner"
   frequently-replied-users: "Hyppige omtaler"
   followers-you-know: "Følgere som du måske kender"
+  last-used-at: "Senest aktiv:"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "Ingen billeder"
 deck:
+  widgets: "Widgets"
   home: "Startside"
   local: "Lokal"
   hybrid: "Social"
   hashtag: "Hashtags"
   global: "Global"
   mentions: "Omtaler"
+  direct: "Direkte poster"
   notifications: "Notifikationer"
   list: "Lister"
   select-list: "Vælg liste"
+  swap-left: "Flyt til venstre"
+  swap-right: "Flyt til højre"
+  swap-up: "Flyt op"
+  swap-down: "Flyt ned"
+  remove: "Fjern"
+  add-column: "Tilføj en kolonne"
   rename: "Omdøb"
+  stack-left: "Fold sammen til venstre"
+  pop-right: "Parker til højre"
+  disabled-timeline:
+    title: "Tidslinjen er deaktiveret"
+    description: "Tidslinjen er deaktiveret af serverens administrator"
+deck/deck.tl-column.vue:
+  is-media-only: "Poster med medieindhold"
+  edit: "Valgmuligheder"
 deck/deck.user-column.vue:
   follows-you: "Følger dig"
+  posts: "Poster"
   following: "Følger"
   followers: "Følgere"
   images: "Billeder"
   activity: "Aktivitet"
   timeline: "Tidslinje"
+  pinned-notes: "Fremhævede poster"
+docs:
+  edit-this-page-on-github: "Har du fundet en fejl, eller ønsker at bidrage til dokumentationen?"
+  edit-this-page-on-github-link: "Rediger denne side på GitHub"
+dev/views/index.vue:
+  manage-apps: "Administrer apps"
+dev/views/apps.vue:
+  manage-apps: "Administrer apps"
+  create-app: "Opret app"
+  app-missing: "Ingen apps"
+dev/views/new-app.vue:
+  new-app: "Ny app"
 pages:
   like: "Synes om"
   title: "Titel"
   blocks:
+    section: "Sektion"
     image: "Billeder"
+    button: "Knap"
+    if: "Hvis"
+    _if:
+      variable: "Variabel"
     post: "Post formular"
     _post:
       text: "Indhold"
+    textInput: "Indtastet tekst"
     _textInput:
+      name: "Variabel navn"
       text: "Titel"
+      default: "Standard værdi"
+    textareaInput: "Tekst med flere linjer"
     _textareaInput:
+      name: "Variabel navn"
       text: "Titel"
+      default: "Standard værdi"
+    numberInput: "Indtastet tal"
     _numberInput:
+      name: "Variabel navn"
       text: "Titel"
+      default: "Standard værdi"
     _switch:
       text: "Titel"
     _counter:
