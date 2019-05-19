@@ -1269,12 +1269,43 @@ admin/views/users.vue:
   suspended: "Udelukket med succes"
   unsuspend: "Annuller udelukkelse"
   unsuspend-confirm: "Er du sikker på, at du vil annullere udelukkelsen på denne konto?"
+  unsuspended: "Brugerens udelukkelse er annulleret med succes"
+  make-silence: "Gør tavs"
+  silence-confirm: "Vil du gøre brugeren tavs?"
+  unmake-silence: "Vil du annullere, at brugeren er gjort tavs?"
+  unsilence-confirm: "Er du sikker på, at du vil omgøre, at brugeren er gjort tavs?"
+  update-remote-user: "Opdater informationen om den eksterne bruger"
+  remote-user-updated: "Informationen om den eksterne bruger er nu blevet opdateret."
+  delete-all-files: "Slet alle filer"
+  delete-all-files-confirm: "Er du sikker på, at alle filerne skal slettes?"
   users:
+    title: "Bruger"
+    sort:
+      title: "Sorter efter"
+      createdAtAsc: "Tidspunkt for oprettelse (ældste først)"
+      createdAtDesc: "Tidspunkt for oprettelse (seneste først)"
+      updatedAtAsc: "Tidspunkt for seneste opdatering (ældste først)"
+      updatedAtDesc: "Tidspunkt for seneste opdatering (seneste først)"
     state:
+      title: "Sorter efter"
       all: "Alle"
+      admin: "Administrator"
       moderator: "Redaktører"
+      adminOrModerator: "Administrator/Redaktør"
+      silenced: "Brugeren er i forvejen gjort tavs"
+      suspended: "Udelukket"
     origin:
+      title: "Oprindelse"
+      combined: "Lokal + Ekstern"
       local: "Lokal"
+      remote: "Ekstern"
+    createdAt: "Oprettet den"
+    updatedAt: "Opdateret den"
+admin/views/moderators.vue:
+  add-moderator:
+    title: "Opret redaktør"
+    add: "Opret"
+    added: "Redaktør er oprettet"
 admin/views/emoji.vue:
   add-emoji:
     aliases-desc: "Du kan tilføje flere med mellemrum imellem"
@@ -1303,10 +1334,16 @@ admin/views/federation.vue:
   instance: "Instans"
   host: "Vært"
   following: "Følger"
+  caught-at: "Oprettet den"
   status: "Status"
   block: "Bloker"
   lookup: "Opslag"
   instances: "Forenede"
+  sort: "Sorter efter"
+  sorts:
+    caughtAtAsc: "Tidspunkt for oprettelse (ældste først)"
+    caughtAtDesc: "Tidspunkt for oprettelse (seneste først)"
+  state: "Sorter efter"
   states:
     all: "Alle"
     blocked: "Bloker"
