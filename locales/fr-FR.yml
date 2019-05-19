@@ -678,13 +678,15 @@ common/views/components/user-group-editor.vue:
   rename: "Renommer le groupe"
   delete: "Supprimer le groupe"
   deleted: "Supprimé"
-  add-user: "Ajouter un membre"
+  invite: "Inviter"
 common/views/components/user-lists.vue:
   user-lists: "Listes"
   create-list: "Créer une liste"
   list-name: "Nom de la liste"
 common/views/components/user-groups.vue:
   create-group: "Créer un groupe"
+  invites: "Inviter"
+  reject-invite: "Refuser"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
   no-broadcasts: "Aucune annonce"
