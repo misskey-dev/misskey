@@ -453,6 +453,7 @@ common/views/components/messaging.vue:
   group: "Gruppe"
   start-with-user: "Start chat med bruger"
   start-with-group: "Start chat med gruppe"
+  select-group: "Vælg gruppe"
 common/views/components/messaging-room.vue:
   not-talked-user: "Ingen bruger sessionshistorik"
   not-talked-group: "Intet gruppesessions dokument"
@@ -708,6 +709,7 @@ common/views/components/user-group-editor.vue:
   delete-are-you-sure: "Er du sikker på, at du vil slette gruppen \"$ 1\"?"
   deleted: "Slettet"
   invite: "Inviter"
+  invited: "Inviterede"
 common/views/components/user-lists.vue:
   user-lists: "Lister"
   create-list: "Opret en liste"
@@ -716,7 +718,10 @@ common/views/components/user-groups.vue:
   user-groups: "Gruppe"
   create-group: "Opret gruppe"
   group-name: "Gruppenavn"
+  owned-groups: "Egne grupper"
+  joined-groups: "Tilsluttede grupper"
   invites: "Inviter"
+  accept-invite: "Tag imod invitation"
   reject-invite: "Afvis"
 common/views/widgets/broadcast.vue:
   fetching: "Tjekker"
@@ -1244,11 +1249,26 @@ admin/views/drive.vue:
     title: "Oprindelse"
     combined: "Lokal + ekstern"
     local: "Lokal"
+    remote: "Ekstern"
   delete: "Slet"
   deleted: "Slettet"
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
+  marked-as-sensitive: "Marker som 'følsom'"
+  unmarked-as-sensitive: "Fjern markering som 'følsom'"
 admin/views/users.vue:
+  operation: "Drift"
+  username-or-userid: "Brugernavn eller bruger ID"
+  user-not-found: "Bruger kunne ikke findes"
+  lookup: "Opslag"
+  reset-password: "Nulstil adgangskode"
+  reset-password-confirm: "Er du sikker på, at du vil nulstille din adgangskode?"
+  password-updated: "Adgangskoden er nu \"{password}\""
+  suspend: "Udeluk"
+  suspend-confirm: "Er du sikker på, at du vil udelukke denne konto?"
+  suspended: "Udelukket med succes"
+  unsuspend: "Annuller udelukkelse"
+  unsuspend-confirm: "Er du sikker på, at du vil annullere udelukkelsen på denne konto?"
   users:
     state:
       all: "Alle"
@@ -1285,6 +1305,7 @@ admin/views/federation.vue:
   following: "Følger"
   status: "Status"
   block: "Bloker"
+  lookup: "Opslag"
   instances: "Forenede"
   states:
     all: "Alle"
