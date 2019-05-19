@@ -870,17 +870,49 @@ desktop/views/components/drive.vue:
     create-folder: "Opret en mappe"
     upload: "Overfør en fil"
     url-upload: "Overfør fra webadresse"
+desktop/views/components/media-video.vue:
+  sensitive: "Indholdet er Upassende På Jobbet"
+  click-to-show: "Klik for at vise"
+desktop/views/components/followers-window.vue:
+  followers: "{}s følgere"
+desktop/views/components/followers.vue:
+  empty: "Det ser ikke ud til, at du har nogen følgere."
+desktop/views/components/following-window.vue:
+  following: "Følger {}"
+desktop/views/components/following.vue:
+  empty: "Det ser ikke ud til, at du følger brugeren..."
+desktop/views/components/game-window.vue:
+  game: "Reversi"
 desktop/views/components/home.vue:
   done: "Send"
+  add-widget: "Tilføj widget:"
+  add: "Tilføj"
 desktop/views/input-dialog.vue:
   cancel: "Annuller"
+  ok: "OK"
 desktop/views/components/note-detail.vue:
+  private: "Posten er privat"
+  deleted: "Posten er blevet fjernet"
+  location: "Sted"
   renote: "Gen-postering"
+  add-reaction: "Tilføj en reaktion"
+  undo-reaction: "Fortryd reaktion"
 desktop/views/components/note.vue:
   reply: "Svar"
   renote: "Gen-postering"
+  add-reaction: "Tilføj en reaktion"
+  undo-reaction: "Fortryd reaktion"
   detail: "Detaljer"
+  private: "Posten er privat"
+  deleted: "Posten er blevet fjernet"
+desktop/views/components/notes.vue:
+  error: "Fejl ved indlæsning"
+  retry: "Prøv igen"
+desktop/views/components/notifications.vue:
+  empty: "Der er ingen notifikationer!"
 desktop/views/components/post-form.vue:
+  add-visible-user: "+Tilføj bruger"
+  attach-location-information: "Vedhæft oplysninger om placering"
   reply: "Svar"
   renote: "Gen-postering"
   posted: "Afsendt!"
@@ -940,6 +972,9 @@ desktop/views/components/settings.2fa.vue:
   done: "Angiv det token, som vises på din enhed:"
   submit: "Send"
   success: "Indstillingerne er gemt!"
+common/views/components/media-image.vue:
+  sensitive: "Indholdet er Upassende På Jobbet"
+  click-to-show: "Klik for at vise"
 common/views/components/api-settings.vue:
   enter-password: "Angiv adgangskoden"
   console:
@@ -953,8 +988,11 @@ common/views/components/post-form-attaches.vue:
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
 desktop/views/components/sub-note-content.vue:
+  private: "Posten er privat"
+  deleted: "Posten er blevet fjernet"
   poll: "Afstemninger"
 desktop/views/components/settings.tags.vue:
+  add: "Tilføj"
   save: "Gem"
 desktop/views/components/timeline.vue:
   hashtag: "Hashtags"
@@ -983,11 +1021,14 @@ admin/views/drive.vue:
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
 admin/views/emoji.vue:
+  add-emoji:
+    add: "Tilføj"
   emojis:
     remove: "Slet"
 admin/views/announcements.vue:
   save: "Gem"
   remove: "Slet"
+  add: "Tilføj"
   saved: "Gemt"
 admin/views/federation.vue:
   following: "Følger"
@@ -1008,26 +1049,46 @@ desktop/views/pages/user/user.header.vue:
   day: "Søn"
 desktop/views/widgets/polls.vue:
   title: "Afstemninger"
+  nothing: "Der er ingen notifikationer!"
+desktop/views/widgets/trends.vue:
+  nothing: "Der er ingen notifikationer!"
 mobile/views/components/drive.vue:
   used: "I brug"
   folder-name: "Mappenavn"
   url-prompt: "Webadresse på filen, som du vil overføre"
+mobile/views/components/drive.file.vue:
+  nsfw: "Indholdet er Upassende På Jobbet"
 mobile/views/components/drive.file-detail.vue:
   download: "Download"
   rename: "Omdøb"
+  nsfw: "Indholdet er Upassende På Jobbet"
   mark-as-sensitive: "Marker som 'følsom'"
   unmark-as-sensitive: "Fjern markering som 'følsom'"
+mobile/views/components/media-video.vue:
+  sensitive: "Indholdet er Upassende På Jobbet"
+  click-to-show: "Klik for at vise"
 common/views/components/follow-button.vue:
   following: "Følger"
   request-pending: "Ventende anmodninger om at blive følger"
   follow-processing: "Anmoder om behandling"
+mobile/views/components/note.vue:
+  private: "Posten er privat"
+  deleted: "Posten er blevet fjernet"
+  location: "Sted"
 mobile/views/components/note-detail.vue:
   reply: "Svar"
+  private: "Posten er privat"
+  deleted: "Posten er blevet fjernet"
+  location: "Sted"
+mobile/views/components/notifications.vue:
+  empty: "Der er ingen notifikationer!"
 mobile/views/components/post-form.vue:
   reply: "Svar"
   renote: "Gen-postering"
   geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
 mobile/views/components/sub-note-content.vue:
+  private: "Posten er privat"
+  deleted: "Posten er blevet fjernet"
   poll: "Afstemninger"
 mobile/views/components/ui.nav.vue:
   search: "Søg"
@@ -1038,9 +1099,12 @@ mobile/views/pages/drive.vue:
     upload: "Overfør en fil"
     create-folder: "Opret en mappe"
 mobile/views/pages/widgets.vue:
+  add-widget: "Tilføj"
   customization-tips: "Tips om tilpasning"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktivitet"
+mobile/views/pages/games/reversi.vue:
+  reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Søg"
 mobile/views/pages/user/home.vue:
