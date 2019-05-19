@@ -512,9 +512,12 @@ common/views/components/user-list-editor.vue:
   add-user: "Dodaj użytkownika"
 common/views/components/user-group-editor.vue:
   deleted: "Usunięto"
+  invite: "Zaproś"
 common/views/components/user-lists.vue:
   user-lists: "Listy"
   list-name: "Nazwa listy"
+common/views/components/user-groups.vue:
+  invites: "Zaproś"
 common/views/widgets/broadcast.vue:
   fetching: "Sprawdzanie"
   no-broadcasts: "Brak transmisji"
