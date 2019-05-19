@@ -4,6 +4,7 @@ import { UserGroup } from './user-group';
 import { id } from '../id';
 
 @Entity()
+@Index(['userId', 'userGroupId'], { unique: true })
 export class UserGroupJoining {
 	@PrimaryColumn(id())
 	public id: string;

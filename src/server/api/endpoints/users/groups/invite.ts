@@ -3,14 +3,14 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { UserGroups, UserGroupJoinings } from '../../../../../models';
+import { UserGroups, UserGroupJoinings, UserGroupInvites } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
-import { UserGroupJoining } from '../../../../../models/entities/user-group-joining';
+import { UserGroupInvite } from '../../../../../models/entities/user-group-invite';
 
 export const meta = {
 	desc: {
-		'ja-JP': '指定したユーザーグループに指定したユーザーを追加します。',
-		'en-US': 'Add a user to a user group.'
+		'ja-JP': '指定したユーザーグループに指定したユーザーを招待します。',
+		'en-US': 'Invite a user to a user group.'
 	},
 
 	tags: ['groups', 'users'],
@@ -50,6 +50,12 @@ export const meta = {
 			message: 'That user has already been added to that group.',
 			code: 'ALREADY_ADDED',
 			id: '7e35c6a0-39b2-4488-aea6-6ee20bd5da2c'
+		},
+
+		alreadyInvited: {
+			message: 'That user has already been invited to that group.',
+			code: 'ALREADY_INVITED',
+			id: 'ee0f58b4-b529-4d13-b761-b9a3e69f97e6'
 		}
 	}
 };
@@ -71,20 +77,28 @@ export default define(meta, async (ps, me) => {
 		throw e;
 	});
 
-	const exist = await UserGroupJoinings.findOne({
+	const joining = await UserGroupJoinings.findOne({
 		userGroupId: userGroup.id,
 		userId: user.id
 	});
 
-	if (exist) {
+	if (joining) {
 		throw new ApiError(meta.errors.alreadyAdded);
 	}
 
-	// Push the user
-	await UserGroupJoinings.save({
+	const invite = await UserGroupInvites.findOne({
+		userGroupId: userGroup.id,
+		userId: user.id
+	});
+
+	if (invite) {
+		throw new ApiError(meta.errors.alreadyInvited);
+	}
+
+	await UserGroupInvites.save({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		userGroupId: userGroup.id
-	} as UserGroupJoining);
+	} as UserGroupInvite);
 });

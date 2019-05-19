@@ -485,6 +485,7 @@ common/views/components/messaging.vue:
   group: "グループ"
   start-with-user: "ユーザーとトークを開始"
   start-with-group: "グループとトークを開始"
+  select-group: "グループを選択してください"
 
 common/views/components/messaging-room.vue:
   not-talked-user: "このユーザーとの会話はありません"
@@ -764,7 +765,8 @@ common/views/components/user-group-editor.vue:
   remove-user: "このグループから削除"
   delete-are-you-sure: "グループ「$1」を削除しますか？"
   deleted: "削除しました"
-  add-user: "メンバーを追加"
+  invite: "招待"
+  invited: "招待を送信しました"
 
 common/views/components/user-lists.vue:
   user-lists: "リスト"
@@ -775,6 +777,11 @@ common/views/components/user-groups.vue:
   user-groups: "グループ"
   create-group: "グループを作成"
   group-name: "グループ名"
+  owned-groups: "自分のグループ"
+  joined-groups: "参加しているグループ"
+  invites: "招待"
+  accept-invite: "参加"
+  reject-invite: "拒否"
 
 common/views/widgets/broadcast.vue:
   fetching: "確認中"

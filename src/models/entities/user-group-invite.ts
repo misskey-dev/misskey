@@ -1,16 +1,16 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
-import { UserList } from './user-list';
+import { UserGroup } from './user-group';
 import { id } from '../id';
 
 @Entity()
-@Index(['userId', 'userListId'], { unique: true })
-export class UserListJoining {
+@Index(['userId', 'userGroupId'], { unique: true })
+export class UserGroupInvite {
 	@PrimaryColumn(id())
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the UserListJoining.'
+		comment: 'The created date of the UserGroupInvite.'
 	})
 	public createdAt: Date;
 
@@ -30,13 +30,13 @@ export class UserListJoining {
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The list ID.'
+		comment: 'The group ID.'
 	})
-	public userListId: UserList['id'];
+	public userGroupId: UserGroup['id'];
 
-	@ManyToOne(type => UserList, {
+	@ManyToOne(type => UserGroup, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
-	public userList: UserList | null;
+	public userGroup: UserGroup | null;
 }
