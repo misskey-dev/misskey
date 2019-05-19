@@ -3,8 +3,8 @@
 	<ui-container :body-togglable="true">
 		<template #header>{{ $t('received-follow-requests') }}</template>
 		<div v-if="!fetching">
-			<sequential-entrance animation="entranceFromTop" delay="25" tag="div" class="mcbzkkaw">
-				<div v-for="req in requests">
+			<sequential-entrance animation="entranceFromTop" delay="25" tag="div">
+				<div v-for="req in requests" class="mcbzkkaw">
 					<router-link :key="req.id" :to="req.follower | userPage">
 						<mk-user-name :user="req.follower"/>
 					</router-link>
@@ -56,13 +56,12 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mcbzkkaw
-	> div
-		display flex
-		padding 16px
-		border solid 1px var(--faceDivider)
-		border-radius 4px
+	display flex
+	padding 16px
+	border solid 1px var(--faceDivider)
+	border-radius 4px
 
-		> span
-			margin 0 0 0 auto
+	> span
+		margin 0 0 0 auto
 
 </style>
