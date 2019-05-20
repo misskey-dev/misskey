@@ -16,7 +16,7 @@
 			</p>
 		</template>
 	</component>
-	<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMoreNotifications" :disabled="moreFetching">
+	<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore" :disabled="moreFetching">
 		<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? this.$t('@.loading') : this.$t('@.load-more') }}
 	</button>
 	<p class="empty" v-if="empty">{{ $t('empty') }}</p>
