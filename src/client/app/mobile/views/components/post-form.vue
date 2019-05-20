@@ -22,7 +22,7 @@
 			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="{ model: 'cw' }">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }"></textarea>
 			<x-post-form-attaches class="attaches" :files="files"/>
-			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
+			<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 			<footer>
 				<button class="upload" @click="chooseFile"><fa icon="upload"/></button>
@@ -64,7 +64,8 @@ import XPostFormAttaches from '../../../common/views/components/post-form-attach
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/post-form.vue'),
 	components: {
-		XPostFormAttaches
+		XPostFormAttaches,
+		XPollEditor: () => import('../../../common/views/components/poll-editor.vue').then(m => m.default)
 	},
 
 	props: {

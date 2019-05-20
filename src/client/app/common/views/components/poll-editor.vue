@@ -1,5 +1,5 @@
 <template>
-<div class="mk-poll-editor">
+<div class="zmdxowus">
 	<p class="caution" v-if="choices.length < 2">
 		<fa icon="exclamation-triangle"/>{{ $t('no-only-one-choice') }}
 	</p>
@@ -134,7 +134,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-poll-editor
+.zmdxowus
 	padding 8px
 
 	> .caution
