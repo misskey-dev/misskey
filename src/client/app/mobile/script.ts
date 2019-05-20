@@ -11,16 +11,13 @@ import './style.styl';
 import init from '../init';
 
 import MkIndex from './views/pages/index.vue';
-import MkDeck from '../common/views/deck/deck.vue';
 import MkSignup from './views/pages/signup.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
-import MkWidgets from './views/pages/widgets.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkNote from './views/pages/note.vue';
 import MkSearch from './views/pages/search.vue';
-import MkFavorites from './views/pages/favorites.vue';
 import UI from './views/pages/ui.vue';
 import MkReversi from './views/pages/games/reversi.vue';
 import MkTag from './views/pages/tag.vue';
@@ -29,7 +26,6 @@ import MkFollow from '../common/views/pages/follow.vue';
 import MkNotFound from '../common/views/pages/not-found.vue';
 import DeckColumn from '../common/views/deck/deck.column-template.vue';
 
-import PostForm from './views/components/post-form-dialog.vue';
 import FileChooser from './views/components/drive-file-chooser.vue';
 import FolderChooser from './views/components/drive-folder-chooser.vue';
 
@@ -54,16 +50,16 @@ init((launch, os) => {
 					document.documentElement.style.overflow = 'auto';
 				}
 
-				const vm = this.$root.new(PostForm, {
+				this.$root.newAsync(() => import('./views/components/post-form-dialog.vue').then(m => m.default), {
 					reply: o.reply,
 					mention: o.mention,
 					renote: o.renote
+				}).then(vm => {
+					vm.$once('cancel', recover);
+					vm.$once('posted', recover);
+					if (o.cb) vm.$once('closed', o.cb);
+					(vm as any).focus();
 				});
-
-				vm.$once('cancel', recover);
-				vm.$once('posted', recover);
-				if (o.cb) vm.$once('closed', o.cb);
-				(vm as any).focus();
 			},
 
 			$chooseDriveFile(opts) {
@@ -114,7 +110,7 @@ init((launch, os) => {
 		mode: 'history',
 		routes: [
 			...(os.store.state.device.inDeckMode
-				? [{ path: '/', name: 'index', component: MkDeck, children: [
+				? [{ path: '/', name: 'index', component: () => import('../common/views/deck/deck.vue').then(m => m.default), children: [
 					{ path: '/@:user', component: () => import('../common/views/deck/deck.user-column.vue').then(m => m.default), children: [
 						{ path: '', name: 'user', component: () => import('../common/views/deck/deck.user-column.home.vue').then(m => m.default) },
 						{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
@@ -123,10 +119,10 @@ init((launch, os) => {
 					{ path: '/notes/:note', name: 'note', component: () => import('../common/views/deck/deck.note-column.vue').then(m => m.default) },
 					{ path: '/search', component: () => import('../common/views/deck/deck.search-column.vue').then(m => m.default) },
 					{ path: '/tags/:tag', name: 'tag', component: () => import('../common/views/deck/deck.hashtag-column.vue').then(m => m.default) },
-					{ path: '/featured', name: 'featured', component: () => import('../common/views/deck/deck.featured-column.vue').then(m => m.default) },
+					{ path: '/featured', name: 'featured', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/featured.vue').then(m => m.default), platform: 'deck' }) },
 					{ path: '/explore', name: 'explore', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/explore.vue').then(m => m.default) }) },
 					{ path: '/explore/tags/:tag', name: 'explore-tag', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/explore.vue').then(m => m.default), tag: route.params.tag }) },
-					{ path: '/i/favorites', component: () => import('../common/views/deck/deck.favorites-column.vue').then(m => m.default) },
+					{ path: '/i/favorites', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/favorites.vue').then(m => m.default), platform: 'deck' }) },
 					{ path: '/i/pages', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/pages.vue').then(m => m.default) }) },
 					{ path: '/i/lists', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/user-lists.vue').then(m => m.default) }) },
 					{ path: '/i/lists/:listId', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/user-list-editor.vue').then(m => m.default), listId: route.params.listId }) },
@@ -138,14 +134,14 @@ init((launch, os) => {
 		]),
 			{ path: '/signup', name: 'signup', component: MkSignup },
 			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
-			{ path: '/i/favorites', name: 'favorites', component: MkFavorites },
+			{ path: '/i/favorites', name: 'favorites', component: UI, props: route => ({ component: () => import('../common/views/pages/favorites.vue').then(m => m.default), platform: 'mobile' }) },
 			{ path: '/i/pages', name: 'pages', component: UI, props: route => ({ component: () => import('../common/views/pages/pages.vue').then(m => m.default) }) },
 			{ path: '/i/lists', name: 'user-lists', component: UI, props: route => ({ component: () => import('../common/views/pages/user-lists.vue').then(m => m.default) }) },
 			{ path: '/i/lists/:list', component: UI, props: route => ({ component: () => import('../common/views/pages/user-list-editor.vue').then(m => m.default), listId: route.params.list }) },
 			{ path: '/i/groups', name: 'user-groups', component: UI, props: route => ({ component: () => import('../common/views/pages/user-groups.vue').then(m => m.default) }) },
 			{ path: '/i/groups/:group', component: UI, props: route => ({ component: () => import('../common/views/pages/user-group-editor.vue').then(m => m.default), groupId: route.params.group }) },
 			{ path: '/i/follow-requests', name: 'follow-requests', component: UI, props: route => ({ component: () => import('../common/views/pages/follow-requests.vue').then(m => m.default) }) },
-			{ path: '/i/widgets', name: 'widgets', component: MkWidgets },
+			{ path: '/i/widgets', name: 'widgets', component: () => import('./views/pages/widgets.vue').then(m => m.default) },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },
 			{ path: '/i/messaging/group/:group', component: MkMessagingRoom },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
@@ -157,7 +153,7 @@ init((launch, os) => {
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
-			{ path: '/featured', name: 'featured', component: () => import('./views/pages/featured.vue').then(m => m.default) },
+			{ path: '/featured', name: 'featured', component: UI, props: route => ({ component: () => import('../common/views/pages/featured.vue').then(m => m.default), platform: 'mobile' }) },
 			{ path: '/explore', name: 'explore', component: UI, props: route => ({ component: () => import('../common/views/pages/explore.vue').then(m => m.default) }) },
 			{ path: '/explore/tags/:tag', name: 'explore-tag', component: UI, props: route => ({ component: () => import('../common/views/pages/explore.vue').then(m => m.default), tag: route.params.tag }) },
 			{ path: '/share', component: MkShare },

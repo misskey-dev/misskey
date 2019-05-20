@@ -1,5 +1,5 @@
 <template>
-<div class="mk-post-form"
+<div class="gjisdzwh"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -28,7 +28,7 @@
 				<fa :icon="['far', 'laugh']"/>
 			</button>
 			<x-post-form-attaches class="files" :class="{ with: poll }" :files="files"/>
-			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
+			<x-poll-editor class="poll-editor" v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		</div>
 	</div>
 	<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
@@ -72,7 +72,8 @@ export default Vue.extend({
 
 	components: {
 		MkVisibilityChooser,
-		XPostFormAttaches
+		XPostFormAttaches,
+		XPollEditor: () => import('../../../common/views/components/poll-editor.vue').then(m => m.default)
 	},
 
 	props: {
@@ -518,7 +519,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-post-form
+.gjisdzwh
 	display block
 	padding 16px
 	background var(--desktopPostFormBg)
@@ -617,7 +618,7 @@ export default Vue.extend({
 					border-bottom solid 1px var(--primaryAlpha01) !important
 					border-radius 0
 
-			> .mk-poll-editor
+			> .poll-editor
 				background var(--desktopPostFormTextareaBg)
 				border solid 1px var(--primaryAlpha01)
 				border-top none

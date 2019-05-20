@@ -38,7 +38,6 @@
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import XPostFormAttaches from '../components/post-form-attaches.vue';
 
 export default define({
 	name: 'post-form',
@@ -49,7 +48,7 @@ export default define({
 	i18n: i18n('desktop/views/widgets/post-form.vue'),
 
 	components: {
-		XPostFormAttaches
+		XPostFormAttaches: () => import('../components/post-form-attaches.vue').then(m => m.default)
 	},
 
 	data() {

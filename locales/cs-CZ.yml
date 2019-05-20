@@ -251,6 +251,7 @@ common:
   my-token-regenerated: "Váš token byl regenerován, proto budete odhlášen/a."
   hide-password: "Skrýt heslo"
   show-password: "Zobrazit heslo"
+  enter-username: "Zadejte uživatelské jméno"
   do-not-use-in-production: "Tohle je vývojářský build. Nepoužívejte v produkci."
   user-suspended: "Tomuto uživateli byl pozastaven účet."
   is-remote-user: "Informace o tomto uživateli nemusí být kompletní."
@@ -414,14 +415,12 @@ common/views/components/messaging.vue:
   search-user: "Najít uživatele"
   you: "Vy"
   no-history: "Žádná historie"
+  user: "Uživatel"
 common/views/components/messaging-room.vue:
-  empty: "Žádné zprávy"
   new-message: "Máte novou zprávu"
-  only-one-file-attached: "Jenom JEDEN soubor může být přiložen ke zprávě."
 common/views/components/messaging-room.form.vue:
   send: "Odeslat"
   attach-from-local: "Přiložit soubory z Vašeho zařízení"
-  only-one-file-attached: "Jenom JEDEN soubor může být přiložen ke zprávě."
 common/views/components/messaging-room.message.vue:
   is-read: "Přečtené"
   deleted: "Tato zpráva byla odstraněna"
@@ -617,8 +616,15 @@ common/views/components/user-list-editor.vue:
   remove-user: "Odebrat z tohoto seznamu"
   delete-are-you-sure: "Smazat seznam \"$1\"?"
   deleted: "Smazáno"
+  add-user: "Přidat uživatele"
+common/views/components/user-group-editor.vue:
+  deleted: "Smazáno"
+  invite: "Pozvat"
 common/views/components/user-lists.vue:
+  user-lists: "Seznamy"
   list-name: "Název seznamu"
+common/views/components/user-groups.vue:
+  invites: "Pozvat"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   next: "Další"
@@ -853,11 +859,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Nový příspěvek"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Vyhledávání"
-desktop/views/components/received-follow-requests-window.vue:
-  accept: "Přijmout"
-  reject: "Odmítnout"
-desktop/views/components/user-lists-window.vue:
-  title: "Seznamy uživatelů"
 desktop/views/components/user-preview.vue:
   notes: "Příspěvky"
 desktop/views/components/users-list.vue:
@@ -902,8 +903,7 @@ admin/views/instance.vue:
   recaptcha-config: "nastavení služby reCAPTCHA"
   recaptcha-info: "reCAPTCHA token je povinný. Můžete jej získat na https://www.google.com/recaptcha/intro/"
   enable-recaptcha: "povolit reCAPTCHA"
-  recaptcha-site-key: "reCAPTCHA klíč stránky (site key)"
-  recaptcha-secret-key: "reCAPTCHA tajný klíč"
+  recaptcha-preview: "Náhled"
   twitter-integration-config: "Nastavení spojení s Twitterem"
   twitter-integration-info: "The callback URL is set on {url}."
   enable-twitter-integration: "Povolit připojení k Twitteru"
@@ -1159,8 +1159,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Nahrát soubor"
     create-folder: "Vytvořit složku"
-mobile/views/pages/user-lists.vue:
-  title: "Seznamy"
 mobile/views/pages/signup.vue:
   lets-start: "Váš účet je připraven! 📦"
 mobile/views/pages/home.vue:
@@ -1177,9 +1175,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "Aktivita"
 mobile/views/pages/share.vue:
   share-with: "Sdílet na {name}"
-mobile/views/pages/received-follow-requests.vue:
-  accept: "Přijmout"
-  reject: "Odmítnout"
 mobile/views/pages/note.vue:
   prev: "Předchozí příspěvěk"
   next: "Následující příspěvek"
@@ -1212,6 +1207,7 @@ deck/deck.user-column.vue:
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
 pages:
+  like: "Lajk"
   title: "Titulek"
   blocks:
     post: "Formulář pro psaní"

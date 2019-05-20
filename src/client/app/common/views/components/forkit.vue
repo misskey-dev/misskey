@@ -19,7 +19,6 @@ export default Vue.extend({
 });
 </script>
 
-
 <style lang="stylus" scoped>
 .a
 	display block

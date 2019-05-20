@@ -456,6 +456,18 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 						document.body.appendChild(x.$el);
 						return x;
 					},
+					newAsync(vm, props) {
+						return new Promise((res) => {
+							vm().then(vm => {
+								const x = new vm({
+									parent: this,
+									propsData: props
+								}).$mount();
+								document.body.appendChild(x.$el);
+								res(x);
+							});
+						});
+					},
 					dialog(opts) {
 						const vm = this.new(Dialog, opts);
 						const p: any = new Promise((res) => {

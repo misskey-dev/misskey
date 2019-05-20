@@ -29,7 +29,7 @@ export default Vue.extend({
 			ToSUrl: null
 		}
 	},
-	
+
 	mounted() {
 		this.$root.getMeta(true).then(meta => {
 			this.repositoryUrl = meta.repositoryUrl;

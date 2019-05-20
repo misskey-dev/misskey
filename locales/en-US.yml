@@ -253,6 +253,7 @@ common:
   my-token-regenerated: "Your token has been regenerated, so you will be signed out."
   hide-password: "Hide Password"
   show-password: "Show Password"
+  enter-username: "Enter user name"
   do-not-use-in-production: "This is a development build. Do not use in production."
   user-suspended: "This user has been suspended."
   is-remote-user: "The information about this user may not be entirely complete."
@@ -448,18 +449,15 @@ common/views/components/messaging.vue:
   search-user: "Find a user"
   you: "You"
   no-history: "Without history"
+  user: "User"
 common/views/components/messaging-room.vue:
-  empty: "No conversations"
   no-history: "There is no further history"
-  resize-form: "Drag to resize"
   new-message: "New message"
-  only-one-file-attached: "Only ONE file can be attached to a message."
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
   attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
-  only-one-file-attached: "Only one file can be attached to the message."
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
   deleted: "This message has been deleted"
@@ -472,6 +470,7 @@ common/views/components/nav.vue:
   repository: "Repository"
   develop: "Developers"
   feedback: "Feedback"
+  tos: "Terms Of Service"
 common/views/components/note-menu.vue:
   mention: "Mention"
   detail: "Details"
@@ -584,6 +583,8 @@ common/views/components/signup.vue:
   password-matched: "OK"
   password-not-matched: "Doesn't match"
   recaptcha: "Verification"
+  agree-to: "Accept {0}."
+  tos: "Terms Of Service"
   create: "Create an Account"
   some-error: "An attempt at account creation has failed for some reason. Please try again."
 common/views/components/special-message.vue:
@@ -691,9 +692,16 @@ common/views/components/user-list-editor.vue:
   remove-user: "Remove from this list"
   delete-are-you-sure: "Delete list \"$1\"?"
   deleted: "Deleted successfully"
+  add-user: "Add a user"
+common/views/components/user-group-editor.vue:
+  deleted: "Deleted"
+  invite: "Invite"
 common/views/components/user-lists.vue:
+  user-lists: "Lists"
   create-list: "Create a list"
   list-name: "List name"
+common/views/components/user-groups.vue:
+  invites: "Invite"
 common/views/widgets/broadcast.vue:
   fetching: "Checking"
   no-broadcasts: "No announcements"
@@ -755,6 +763,8 @@ common/views/pages/follow.vue:
   request-pending: "Pending follow request"
   follow-processing: "Processing follow"
   follow-request: "Follow request"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Follow requests"
 desktop:
   banner-crop-title: "Crop the part that appears as a banner"
   banner: "Banner"
@@ -1036,12 +1046,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Compose new Post"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Search"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "Follow requests"
-  accept: "Accept"
-  reject: "Reject"
-desktop/views/components/user-lists-window.vue:
-  title: "User lists"
 desktop/views/components/user-preview.vue:
   notes: "Posts"
   following: "Following"
@@ -1089,14 +1093,21 @@ admin/views/instance.vue:
   instance-name: "Instance name"
   instance-description: "Instance description"
   host: "Host"
+  icon-url: "URL of the icon"
+  logo-url: "URL of the logo"
   banner-url: "Banner image URL"
   error-image-url: "Error image URL"
   languages: "Language of this instance"
   languages-desc: "You can add more than one, separated by spaces."
+  tos-url: "Terms of Service URL"
+  repository-url: "Repository URL"
+  feedback-url: "URL for feedback"
   maintainer-config: "Administrator information"
   maintainer-name: "Administrator name"
   maintainer-email: "Contact Administrator"
+  advanced-config: "Other settings"
   drive-config: "Drive settings"
+  object-storage-base-url: "URL"
   object-storage-endpoint: "Endpoint"
   cache-remote-files: "Cache remote files"
   cache-remote-files-desc: "Without this parameter, all remote files are linked to their host server directly. This will be an effective solution to save your server storage, however make remote files invisible to users who set direct-link disabled, since no thumbnail will be generated, increase traffic. It is recommended that this parameter set enabled."
@@ -1106,8 +1117,7 @@ admin/views/instance.vue:
   recaptcha-config: "the reCAPTCHA settings"
   recaptcha-info: "reCAPTCHA token is required. Please get it on https://www.google.com/recaptcha/intro/"
   enable-recaptcha: "enable reCAPTCHA"
-  recaptcha-site-key: "reCAPTCHA site key"
-  recaptcha-secret-key: "reCAPTCHA secret key"
+  recaptcha-preview: "Preview"
   twitter-integration-config: "Settings of connecting to Twitter"
   twitter-integration-info: "The callback URL is set on {url}."
   enable-twitter-integration: "Enable connection to Twitter"
@@ -1514,8 +1524,6 @@ mobile/views/pages/drive.vue:
     rename-folder: "Rename folder"
     move-folder: "Move this folder"
     delete-folder: "Delete this folder"
-mobile/views/pages/user-lists.vue:
-  title: "Lists"
 mobile/views/pages/signup.vue:
   lets-start: "Your account is now ready! 📦"
 mobile/views/pages/followers.vue:
@@ -1540,10 +1548,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "Activity"
 mobile/views/pages/share.vue:
   share-with: "Share on {name}"
-mobile/views/pages/received-follow-requests.vue:
-  title: "Follow requests"
-  accept: "Accept"
-  reject: "Reject"
 mobile/views/pages/note.vue:
   title: "Post"
   prev: "Previous note"
@@ -1649,6 +1653,7 @@ pages:
   edit-this-page: "Edit this page"
   view-source: "View Source"
   view-page: "View page"
+  like: "Like"
   inspector: "Inspector"
   content: "Page block"
   variables: "Variables"

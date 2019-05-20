@@ -281,9 +281,7 @@ common/views/components/messaging.vue:
   you: "Du"
   no-history: "Keine Chronik"
 common/views/components/messaging-room.vue:
-  empty: "Keine Unterhaltungen"
   no-history: "Keine weitere Chronik vorhanden"
-  resize-form: "Ziehen um die Größe zu verändern"
   new-message: "Neue Nachricht"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Nachricht hier eingeben"
@@ -386,6 +384,12 @@ common/views/components/profile-editor.vue:
   export-targets:
     user-lists: "Listen"
   enter-password: "Bitte Passwort eingeben"
+common/views/components/user-group-editor.vue:
+  invite: "Einladen"
+common/views/components/user-lists.vue:
+  user-lists: "Listen"
+common/views/components/user-groups.vue:
+  invites: "Einladen"
 common/views/widgets/broadcast.vue:
   fetching: "Laden"
   no-broadcasts: "Keine Broadcasts"
@@ -583,8 +587,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Einen neuen Post erstellen"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Suchen"
-desktop/views/components/user-lists-window.vue:
-  title: "Listen"
 desktop/views/components/users-list.vue:
   fetching: "Lade…"
 admin/views/dashboard.vue:
@@ -592,6 +594,7 @@ admin/views/dashboard.vue:
 admin/views/abuse.vue:
   remove-report: "Löschen"
 admin/views/instance.vue:
+  recaptcha-preview: "Vorschau"
   invite: "Einladen"
   save: "Speichern"
 admin/views/charts.vue:
@@ -677,8 +680,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Eine Datei hochladen"
     create-folder: "Ein Verzeichnis erstellen"
-mobile/views/pages/user-lists.vue:
-  title: "Listen"
 mobile/views/pages/home.vue:
   home: "Home"
   local: "Lokal"
@@ -732,6 +733,7 @@ dev/views/new-app.vue:
   authority-desc: "Nur die hier eingetragenen Berechtigungen, werden per API zur Verfügung stehen."
   authority-warning: "Dies kann auch nach dem erstellen der Anwendung geändert werden, allerdings werden dann alle bisher generierten Token ungültig."
 pages:
+  like: "Gefällt mir"
   blocks:
     post: "\"Neuer Beitrag\"-Formular"
   script:

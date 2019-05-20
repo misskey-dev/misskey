@@ -12,7 +12,7 @@
 
 	<div class="mk-post-form-window--body">
 		<mk-note-preview v-if="reply" class="notePreview" :note="reply"/>
-		<mk-post-form ref="form"
+		<x-post-form ref="form"
 			:reply="reply"
 			:mention="mention"
 			@posted="onPosted"
@@ -27,9 +27,15 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
+import XPostForm from './post-form.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/post-form-window.vue'),
+
+	components: {
+		XPostForm
+	},
+
 	props: {
 		reply: {
 			type: Object,

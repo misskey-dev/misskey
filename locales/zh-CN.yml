@@ -253,6 +253,7 @@ common:
   my-token-regenerated: "您的 Token 已被重置, 您将自动登出。"
   hide-password: "隐藏密码"
   show-password: "显示密码"
+  enter-username: "请输入用户名"
   do-not-use-in-production: "这是一个开发者测试版. 请勿在生产环境中使用."
   user-suspended: "该用户已被冻结。"
   is-remote-user: "此用户信息可能不准确。"
@@ -448,18 +449,22 @@ common/views/components/messaging.vue:
   search-user: "查找用户"
   you: "您"
   no-history: "没有历史记录"
+  user: "用户"
+  group: "群组"
+  start-with-user: "开始用户聊天"
+  start-with-group: "开始群组聊天"
 common/views/components/messaging-room.vue:
-  empty: "没有对话"
+  not-talked-user: "没有用户的会话记录"
+  not-talked-group: "没有群组的会话记录"
   no-history: "没有更多的历史记录"
-  resize-form: "拖动以调整大小"
   new-message: "新信息"
-  only-one-file-attached: "只有一个附件可以附加到消息中。"
+  only-one-file-attached: "只能添加一个附件"
 common/views/components/messaging-room.form.vue:
   input-message-here: "在此键入信息"
   send: "发送"
   attach-from-local: "从电脑中添加文件"
   attach-from-drive: "从网盘中添加文件"
-  only-one-file-attached: "在信息中只允许添加一个附件"
+  only-one-file-attached: "只能添加一个附件"
 common/views/components/messaging-room.message.vue:
   is-read: "已读"
   deleted: "此消息已被删除"
@@ -694,9 +699,25 @@ common/views/components/user-list-editor.vue:
   remove-user: "从此列表中删除"
   delete-are-you-sure: "删除列表“$1”？"
   deleted: "已删除"
+  add-user: "添加用户"
+common/views/components/user-group-editor.vue:
+  users: "成员"
+  rename: "更改群组名"
+  delete: "删除群组"
+  remove-user: "从本群组中删除"
+  delete-are-you-sure: "确定要删除「$1」组？"
+  deleted: "已删除"
+  invite: "邀请"
 common/views/components/user-lists.vue:
+  user-lists: "列表"
   create-list: "创建列表"
   list-name: "列表名称"
+common/views/components/user-groups.vue:
+  user-groups: "群组"
+  create-group: "创建群组"
+  group-name: "群组名"
+  invites: "邀请"
+  reject-invite: "拒绝"
 common/views/widgets/broadcast.vue:
   fetching: "确认中"
   no-broadcasts: "没有公告"
@@ -758,6 +779,10 @@ common/views/pages/follow.vue:
   request-pending: "发送关注申请"
   follow-processing: "申请处理中"
   follow-request: "关注请求"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "关注申请"
+  accept: "接受"
+  reject: "拒绝"
 desktop:
   banner-crop-title: "裁剪显示为背景的部分"
   banner: "背景"
@@ -1029,6 +1054,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "个人资料"
   lists: "列表"
+  groups: "群组"
   follow-requests: "关注申请"
   admin: "管理"
 desktop/views/components/ui.header.nav.vue:
@@ -1039,12 +1065,6 @@ desktop/views/components/ui.header.post.vue:
   post: "撰写新帖子"
 desktop/views/components/ui.header.search.vue:
   placeholder: "搜索"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "关注申请"
-  accept: "接收"
-  reject: "拒绝"
-desktop/views/components/user-lists-window.vue:
-  title: "用户列表"
 desktop/views/components/user-preview.vue:
   notes: "帖子"
   following: "关注中"
@@ -1128,8 +1148,9 @@ admin/views/instance.vue:
   recaptcha-config: "reCAPTCHA设置"
   recaptcha-info: "reCAPTCHA token是必要的. 请从 https://www.google.com/recaptcha/intro/ 获取。\n请注意, 该功能在中国大陆不可用。"
   enable-recaptcha: "启用 reCAPTCHA\n(请注意, 此功能在中国大陆不可用. 如果启用, 可能导致无法正常使用登录或注册等功能)"
-  recaptcha-site-key: "reCAPTCHA site key"
-  recaptcha-secret-key: "reCAPTCHA secret key"
+  recaptcha-site-key: "网站密钥"
+  recaptcha-secret-key: "密钥"
+  recaptcha-preview: "预览"
   hidden-tags: "隐藏哈希标签"
   hidden-tags-info: "使用换行符分隔要从集合中排除的哈希标签。"
   external-service-integration-config: "连接外部服务"
@@ -1532,6 +1553,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "关注申请"
   search: "搜索"
   user-lists: "列表"
+  user-groups: "群组"
   widgets: "小部件"
   game: "游戏"
   admin: "管理"
@@ -1544,8 +1566,6 @@ mobile/views/pages/drive.vue:
     rename-folder: "重命名文件夹"
     move-folder: "移动此文件夹"
     delete-folder: "删除此文件夹"
-mobile/views/pages/user-lists.vue:
-  title: "列表"
 mobile/views/pages/signup.vue:
   lets-start: "您的账户现已准备就绪！ 📦"
 mobile/views/pages/followers.vue:
@@ -1570,10 +1590,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "活动"
 mobile/views/pages/share.vue:
   share-with: "共享{name}"
-mobile/views/pages/received-follow-requests.vue:
-  title: "关注申请"
-  accept: "批准"
-  reject: "拒绝"
 mobile/views/pages/note.vue:
   title: "帖文"
   prev: "上一个帖子"
@@ -1679,6 +1695,10 @@ pages:
   edit-this-page: "编辑此页面"
   view-source: "查看源代码"
   view-page: "查看页面"
+  like: "赞"
+  unlike: "取消赞"
+  liked-pages: "喜欢的页面"
+  my-pages: "个人页面"
   inspector: "检查器"
   content: "页面内容"
   variables: "变量"
