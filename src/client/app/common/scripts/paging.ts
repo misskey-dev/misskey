@@ -117,7 +117,7 @@ export default (opts) => ({
 				if (cancel) return;
 			}
 
-			if (this.isScrollTop()) {
+			if (this.isScrollTop == null || this.isScrollTop()) {
 				// Prepend the item
 				this.items.unshift(item);
 
