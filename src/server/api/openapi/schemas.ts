@@ -14,6 +14,7 @@ import { packedNoteReactionSchema } from '../../../models/repositories/note-reac
 import { packedHashtagSchema } from '../../../models/repositories/hashtag';
 import { packedPageSchema } from '../../../models/repositories/page';
 import { packedUserGroupSchema } from '../../../models/repositories/user-group';
+import { packedNoteFavoriteSchema } from '../../../models/repositories/note-favorite';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -71,13 +72,14 @@ export const schemas = {
 	App: convertSchemaToOpenApiSchema(packedAppSchema),
 	MessagingMessage: convertSchemaToOpenApiSchema(packedMessagingMessageSchema),
 	Note: convertSchemaToOpenApiSchema(packedNoteSchema),
+	NoteReaction: convertSchemaToOpenApiSchema(packedNoteReactionSchema),
+	NoteFavorite: convertSchemaToOpenApiSchema(packedNoteFavoriteSchema),
 	Notification: convertSchemaToOpenApiSchema(packedNotificationSchema),
 	DriveFile: convertSchemaToOpenApiSchema(packedDriveFileSchema),
 	DriveFolder: convertSchemaToOpenApiSchema(packedDriveFolderSchema),
 	Following: convertSchemaToOpenApiSchema(packedFollowingSchema),
 	Muting: convertSchemaToOpenApiSchema(packedMutingSchema),
 	Blocking: convertSchemaToOpenApiSchema(packedBlockingSchema),
-	NoteReaction: convertSchemaToOpenApiSchema(packedNoteReactionSchema),
 	Hashtag: convertSchemaToOpenApiSchema(packedHashtagSchema),
 	Page: convertSchemaToOpenApiSchema(packedPageSchema),
 };
