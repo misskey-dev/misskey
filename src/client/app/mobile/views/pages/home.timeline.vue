@@ -7,7 +7,7 @@
 		</div>
 	</ui-container>
 
-	<mk-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')"/>
+	<mk-notes ref="timeline" :pagination="pagination" @loaded="() => $emit('loaded')"/>
 </div>
 </template>
 

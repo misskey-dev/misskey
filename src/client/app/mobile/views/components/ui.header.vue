@@ -1,6 +1,5 @@
 <template>
 <div class="header" ref="root" :class="{ shadow: $store.state.device.useShadow }">
-	<p class="warn" v-if="env != 'production'">{{ $t('@.do-not-use-in-production') }} <a href="/assets/flush.html?force">Flush</a></p>
 	<div class="main" ref="main">
 		<div class="backdrop"></div>
 		<div class="content" ref="mainContainer">

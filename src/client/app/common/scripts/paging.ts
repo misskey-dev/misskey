@@ -82,8 +82,10 @@ export default (opts) => ({
 				}
 				this.inited = true;
 				this.fetching = false;
+				if (opts.onInited) opts.onInited(this);
 			}, e => {
 				this.fetching = false;
+				if (opts.onInited) opts.onInited(this);
 			});
 		},
 

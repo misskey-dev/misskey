@@ -59,6 +59,10 @@ export default Vue.extend({
 				if (document.hidden || !self.isScrollTop()) {
 					self.$store.commit('pushBehindNote', note);
 				}
+			},
+
+			onInited: (self) => {
+				self.$emit('loaded');
 			}
 		}),
 	],
