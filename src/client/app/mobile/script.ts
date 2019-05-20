@@ -50,7 +50,7 @@ init((launch, os) => {
 					document.documentElement.style.overflow = 'auto';
 				}
 
-				this.$root.new(() => import('./views/components/post-form-dialog.vue').then(m => m.default), {
+				this.$root.newAsync(() => import('./views/components/post-form-dialog.vue').then(m => m.default), {
 					reply: o.reply,
 					mention: o.mention,
 					renote: o.renote
