@@ -1,6 +1,6 @@
 <template>
 <div>
-	<ui-container>
+	<ui-container :body-togglable="true">
 		<template #header><fa :icon="faUsers"/> {{ $t('owned-groups') }}</template>
 		<ui-margin>
 			<ui-button @click="add"><fa :icon="faPlus"/> {{ $t('create-group') }}</ui-button>
@@ -13,7 +13,7 @@
 		</div>
 	</ui-container>
 
-	<ui-container>
+	<ui-container :body-togglable="true">
 		<template #header><fa :icon="faUsers"/> {{ $t('joined-groups') }}</template>
 		<div class="hwgkdrbl" v-for="(group, i) in joinedGroups" :key="group.id">
 			<ui-hr v-if="i != 0"/>
@@ -23,7 +23,7 @@
 		</div>
 	</ui-container>
 
-	<ui-container>
+	<ui-container :body-togglable="true">
 		<template #header><fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
 		<div class="fvlojuur" v-for="(invite, i) in invites" :key="invite.id">
 			<ui-hr v-if="i != 0"/>
