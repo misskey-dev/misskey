@@ -30,7 +30,7 @@
 	<ui-container>
 		<template #header><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</template>
 		<div>
-			<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
+			<x-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')"/>
 		</div>
 	</ui-container>
 </div>
@@ -42,8 +42,6 @@ import i18n from '../../../i18n';
 import XNotes from './deck.notes.vue';
 import { concat } from '../../../../../prelude/array';
 import ApexCharts from 'apexcharts';
-
-const fetchLimit = 10;
 
 export default Vue.extend({
 	i18n: i18n('deck/deck.user-column.vue'),
@@ -63,49 +61,38 @@ export default Vue.extend({
 		return {
 			withFiles: false,
 			images: [],
-			makePromise: null,
 			chart: null as ApexCharts
 		};
+	},
+
+	computed: {
+		pagination() {
+			return {
+				endpoint: 'users/notes',
+				limit: 10,
+				params: init => ({
+					userId: this.user.id,
+					untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+					withFiles: this.withFiles,
+					includeMyRenotes: this.$store.state.settings.showMyRenotes,
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+				})
+			}
+		}
 	},
 
 	watch: {
 		user() {
 			this.fetch();
-			this.genPromiseMaker();
 		}
 	},
 
 	created() {
 		this.fetch();
-		this.genPromiseMaker();
 	},
 
 	methods: {
-		genPromiseMaker() {
-			this.makePromise = cursor => this.$root.api('users/notes', {
-				userId: this.user.id,
-				limit: fetchLimit + 1,
-				untilId: cursor ? cursor : undefined,
-				withFiles: this.withFiles,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			}).then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-					return {
-						notes: notes,
-						more: true
-					};
-				} else {
-					return {
-						notes: notes,
-						more: false
-					};
-				}
-			});
-		},
-
 		fetch() {
 			const image = [
 				'image/jpeg',

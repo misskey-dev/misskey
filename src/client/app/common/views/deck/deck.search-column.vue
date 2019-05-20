@@ -5,7 +5,7 @@
 	</template>
 
 	<div>
-		<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
+		<x-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')"/>
 	</div>
 </x-column>
 </template>
@@ -16,8 +16,6 @@ import XColumn from './deck.column.vue';
 import XNotes from './deck.notes.vue';
 import { genSearchQuery } from '../../../common/scripts/gen-search-query';
 
-const limit = 20;
-
 export default Vue.extend({
 	components: {
 		XColumn,
@@ -26,24 +24,11 @@ export default Vue.extend({
 
 	data() {
 		return {
-			makePromise: async cursor => this.$root.api('notes/search', {
-				limit: limit + 1,
-				offset: cursor ? cursor : undefined,
-				...(await genSearchQuery(this, this.q))
-			}).then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-					return {
-						notes: notes,
-						cursor: cursor ? cursor + limit : limit
-					};
-				} else {
-					return {
-						notes: notes,
-						more: false
-					};
-				}
-			})
+			pagination: {
+				endpoint: 'notes/search',
+				limit: 20,
+				params: () => genSearchQuery(this, this.q)
+			}
 		};
 	},
 

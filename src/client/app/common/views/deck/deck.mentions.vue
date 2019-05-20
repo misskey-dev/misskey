@@ -1,12 +1,10 @@
 <template>
-<x-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
+<x-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')"/>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import XNotes from './deck.notes.vue';
-
-const fetchLimit = 10;
 
 export default Vue.extend({
 	components: {
@@ -16,26 +14,16 @@ export default Vue.extend({
 	data() {
 		return {
 			connection: null,
-			makePromise: cursor => this.$root.api('notes/mentions', {
-				limit: fetchLimit + 1,
-				untilId: cursor ? cursor : undefined,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			}).then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-					return {
-						notes: notes,
-						more: true
-					};
-				} else {
-					return {
-						notes: notes,
-						more: false
-					};
-				}
-			})
+			pagination: {
+				endpoint: 'notes/mentions',
+				limit: 10,
+				params: init => ({
+					untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+					includeMyRenotes: this.$store.state.settings.showMyRenotes,
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+				})
+			}
 		};
 	},
 

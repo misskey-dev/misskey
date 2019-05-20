@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="inited">
+	<mk-notes ref="timeline" :pagination="pagination" @inited="inited">
 		<template #header>
 			<header class="oxgbmvii">
 				<span><fa icon="search"/> {{ q }}</span>
@@ -16,30 +16,15 @@ import i18n from '../../../i18n';
 import Progress from '../../../common/scripts/loading';
 import { genSearchQuery } from '../../../common/scripts/gen-search-query';
 
-const limit = 20;
-
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/search.vue'),
 	data() {
 		return {
-			makePromise: async cursor => this.$root.api('notes/search', {
-				limit: limit + 1,
-				offset: cursor ? cursor : undefined,
-				...(await genSearchQuery(this, this.q))
-			}).then(notes => {
-				if (notes.length == limit + 1) {
-					notes.pop();
-					return {
-						notes: notes,
-						cursor: cursor ? cursor + limit : limit
-					};
-				} else {
-					return {
-						notes: notes,
-						more: false
-					};
-				}
-			})
+			pagination: {
+				endpoint: 'notes/search',
+				limit: 20,
+				params: () => genSearchQuery(this, this.q)
+			}
 		};
 	},
 	computed: {
