@@ -47,7 +47,7 @@ export default Vue.extend({
 
 	mixins: [
 		paging({
-			displayLimit: 20,
+			limit: 20,
 
 			onQueueChanged: (self, q) => {
 				self.count(q.length);

@@ -24,7 +24,7 @@ export default Vue.extend({
 		return {
 			pagination: {
 				endpoint: 'notes/featured',
-				limit: 30,
+				limit: 29,
 			},
 
 			notesComponent:
