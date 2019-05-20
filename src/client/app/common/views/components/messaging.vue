@@ -21,42 +21,23 @@
 		</div>
 	</div>
 	<div class="history" v-if="messages.length > 0">
-		<div class="title">{{ $t('user') }}</div>
 		<a v-for="message in messages"
 			class="user"
-			:href="`/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+			:href="message.groupId ? `/i/messaging/group/${message.groupId}` : `/i/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 			:data-is-me="isMe(message)"
-			:data-is-read="message.isRead"
-			@click.prevent="navigate(isMe(message) ? message.recipient : message.user)"
+			:data-is-read="message.groupId ? message.reads.includes($store.state.i.id) : message.isRead"
+			@click.prevent="message.groupId ? navigateGroup(message.group) : navigate(isMe(message) ? message.recipient : message.user)"
 			:key="message.id"
 		>
 			<div>
-				<mk-avatar class="avatar" :user="isMe(message) ? message.recipient : message.user"/>
-				<header>
-					<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
-					<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
+				<mk-avatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
+				<header v-if="message.groupId">
+					<span class="name">{{ message.group.name }}</span>
 					<mk-time :time="message.createdAt"/>
 				</header>
-				<div class="body">
-					<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
-				</div>
-			</div>
-		</a>
-	</div>
-	<div class="history" v-if="groupMessages.length > 0">
-		<div class="title">{{ $t('group') }}</div>
-		<a v-for="message in groupMessages"
-			class="user"
-			:href="`/i/messaging/group/${message.groupId}`"
-			:data-is-me="isMe(message)"
-			:data-is-read="message.reads.includes($store.state.i.id)"
-			@click.prevent="navigateGroup(message.group)"
-			:key="message.id"
-		>
-			<div>
-				<mk-avatar class="avatar" :user="message.user"/>
-				<header>
-					<span class="name">{{ message.group.name }}</span>
+				<header v-else>
+					<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
+					<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
 					<mk-time :time="message.createdAt"/>
 				</header>
 				<div class="body">
@@ -97,7 +78,6 @@ export default Vue.extend({
 			fetching: true,
 			moreFetching: false,
 			messages: [],
-			groupMessages: [],
 			q: null,
 			result: [],
 			connection: null,
@@ -110,10 +90,11 @@ export default Vue.extend({
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		this.$root.api('messaging/history', { group: false }).then(messages => {
+		this.$root.api('messaging/history', { group: false }).then(userMessages => {
 			this.$root.api('messaging/history', { group: true }).then(groupMessages => {
+				const messages = userMessages.concat(groupMessages);
+				messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 				this.messages = messages;
-				this.groupMessages = groupMessages;
 				this.fetching = false;
 			});
 		});
@@ -134,8 +115,8 @@ export default Vue.extend({
 
 				this.messages.unshift(message);
 			} else if (message.groupId) {
-				this.groupMessages = this.groupMessages.filter(m => m.groupId !== message.groupId);
-				this.groupMessages.unshift(message);
+				this.messages = this.messages.filter(m => m.groupId !== message.groupId);
+				this.messages.unshift(message);
 			}
 		},
 		onRead(ids) {
@@ -243,9 +224,6 @@ export default Vue.extend({
 		font-size 0.8em
 
 		> .history
-			> .title
-				padding 8px
-
 			> a
 				&:last-child
 					border-bottom none
@@ -384,14 +362,6 @@ export default Vue.extend({
 						color rgba(#000, 0.3)
 
 	> .history
-		> .title
-			padding 6px 16px
-			margin 0 auto
-			max-width 500px
-			background rgba(0, 0, 0, 0.05)
-			color var(--text)
-			font-size 85%
-
 		> a
 			display block
 			text-decoration none
