@@ -38,13 +38,21 @@ export default async function(user: User, note: Note, quiet = false) {
 		if (Users.isLocalUser(user)) {
 			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
 
-			const followings = await Followings.find({
-				followeeId: user.id,
-				followerHost: Not(null)
+			const queue: string[] = [];
+
+			const followers = await Followings.find({
+				followeeId: note.userId
 			});
 
-			for (const following of followings) {
-				deliver(user, content, following.followerInbox);
+			for (const following of followers) {
+				if (Followings.isRemoteFollower(following)) {
+					const inbox = following.followerSharedInbox || following.followerInbox;
+					if (!queue.includes(inbox)) queue.push(inbox);
+				}
+			}
+
+			for (const inbox of queue) {
+				deliver(user as any, content, inbox);
 			}
 		}
 		//#endregion
