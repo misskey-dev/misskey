@@ -40,7 +40,11 @@ export default Vue.extend({
 	inject: ['column', 'isScrollTop', 'count'],
 
 	mixins: [
-		paging({}),
+		paging({
+			onQueueChanged: (self, q) => {
+				self.count(q.length);
+			},
+		}),
 	],
 
 	data() {
@@ -49,9 +53,6 @@ export default Vue.extend({
 			pagination: {
 				endpoint: 'i/notifications',
 				limit: 20,
-				onQueueChanged: (self, q) => {
-					self.count(q.length);
-				},
 			}
 		};
 	},
