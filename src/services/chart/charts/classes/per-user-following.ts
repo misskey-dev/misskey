@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Followings, Users } from '../../../../models';
-import { Not } from 'typeorm';
+import { Not, IsNull } from 'typeorm';
 import { User } from '../../../../models/entities/user';
 import { name, schema } from '../schemas/per-user-following';
 
@@ -45,8 +45,8 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 		] = await Promise.all([
 			Followings.count({ followerId: group, followeeHost: null }),
 			Followings.count({ followeeId: group, followerHost: null }),
-			Followings.count({ followerId: group, followeeHost: Not(null) }),
-			Followings.count({ followeeId: group, followerHost: Not(null) })
+			Followings.count({ followerId: group, followeeHost: Not(IsNull()) }),
+			Followings.count({ followeeId: group, followerHost: Not(IsNull()) })
 		]);
 
 		return {

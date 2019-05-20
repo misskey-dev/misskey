@@ -128,6 +128,20 @@ query.andWhere(new Brackets(qb => {
 }));
 ```
 
+### Not `null` in TypeORM
+```ts
+const foo = await Foos.findOne({
+	bar: Not(null)
+});
+```
+のようなクエリ(`bar`が`null`ではない)は期待通りに動作しない。
+次のようにします:
+```ts
+const foo = await Foos.findOne({
+	bar: Not(IsNull())
+});
+```
+
 ### `null` in SQL
 SQLを発行する際、パラメータが`null`になる可能性のある場合はSQL文を出し分けなければならない
 例えば
