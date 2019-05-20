@@ -86,3 +86,5 @@ admin/views/dashboard.vue:
   drive: "雲端硬碟"
 admin/views/charts.vue:
   drive: "雲端硬碟"
+pages:
+  like: "贊"

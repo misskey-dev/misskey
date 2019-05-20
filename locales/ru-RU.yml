@@ -147,6 +147,7 @@ mobile/views/components/sub-note-content.vue:
 mobile/views/pages/widgets.vue:
   customization-tips: "Советы по настройке"
 pages:
+  like: "Нравится"
   script:
     categories:
       random: "Случайно"
