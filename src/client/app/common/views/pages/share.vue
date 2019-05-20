@@ -3,7 +3,7 @@
 	<h1>{{ $t('share-with', { name }) }}</h1>
 	<div>
 		<mk-signin v-if="!$store.getters.isSignedIn"/>
-		<mk-post-form v-else-if="!posted" :initial-text="template" :instant="true" @posted="posted = true"/>
+		<x-post-form v-else-if="!posted" :initial-text="template" :instant="true" @posted="posted = true"/>
 		<p v-if="posted" class="posted"><fa icon="check"/></p>
 	</div>
 	<ui-button class="close" v-if="posted" @click="close">{{ $t('@.close') }}</ui-button>
@@ -16,6 +16,9 @@ import i18n from '../../../i18n';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/share.vue'),
+	components: {
+		XPostForm: () => import('../../../desktop/views/components/post-form.vue').then(m => m.default)
+	},
 	data() {
 		return {
 			name: null,
@@ -35,15 +38,15 @@ export default Vue.extend({
 			return t.trim();
 		}
 	},
-	methods: {
-		close() {
-			window.close();
-		}
-	},
 	mounted() {
 		this.$root.getMeta().then(meta => {
 			this.name = meta.name || 'Misskey';
 		});
+	},
+	methods: {
+		close() {
+			window.close();
+		}
 	}
 });
 </script>

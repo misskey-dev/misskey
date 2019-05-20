@@ -1,5 +1,5 @@
 <template>
-<div class="mk-post-form">
+<div class="gafaadew">
 	<div class="form">
 		<header>
 			<button class="cancel" @click="cancel"><fa icon="times"/></button>
@@ -387,7 +387,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-post-form
+.gafaadew
 	max-width 500px
 	width calc(100% - 16px)
 	margin 8px auto

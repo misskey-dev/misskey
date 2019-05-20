@@ -449,12 +449,25 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 					getMetaSync: os.getMetaSync,
 					signout: os.signout,
 					new(vm, props) {
-						const x = new vm({
-							parent: this,
-							propsData: props
-						}).$mount();
-						document.body.appendChild(x.$el);
-						return x;
+						if (typeof vm === 'function') {
+							return new Promise((res) => {
+								vm().then(vm => {
+									const x = new vm({
+										parent: this,
+										propsData: props
+									}).$mount();
+									document.body.appendChild(x.$el);
+									res(x);
+								});
+							});
+						} else {
+							const x = new vm({
+								parent: this,
+								propsData: props
+							}).$mount();
+							document.body.appendChild(x.$el);
+							return x;
+						}
 					},
 					dialog(opts) {
 						const vm = this.new(Dialog, opts);

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-post-form"
+<div class="gjisdzwh"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -519,7 +519,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.mk-post-form
+.gjisdzwh
 	display block
 	padding 16px
 	background var(--desktopPostFormBg)
