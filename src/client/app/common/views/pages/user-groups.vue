@@ -9,6 +9,7 @@
 			<ui-hr/>
 			<ui-margin>
 				<router-link :to="`/i/groups/${group.id}`">{{ group.name }}</router-link>
+				<x-avatars :user-ids="group.userIds" style="margin-top:8px;"/>
 			</ui-margin>
 		</div>
 	</ui-container>
@@ -18,7 +19,8 @@
 		<div class="hwgkdrbl" v-for="(group, i) in joinedGroups" :key="group.id">
 			<ui-hr v-if="i != 0"/>
 			<ui-margin>
-				<router-link :to="`/i/groups/${group.id}`">{{ group.name }}</router-link>
+				<div>{{ group.name }}</div>
+				<x-avatars :user-ids="group.userIds" style="margin-top:8px;"/>
 			</ui-margin>
 		</div>
 	</ui-container>
@@ -29,6 +31,7 @@
 			<ui-hr v-if="i != 0"/>
 			<ui-margin>
 				<div class="name">{{ invite.group.name }}</div>
+				<x-avatars :user-ids="invite.group.userIds" style="margin-top:8px;"/>
 				<ui-horizon-group>
 					<ui-button @click="acceptInvite(invite)"><fa :icon="faCheck"/> {{ $t('accept-invite') }}</ui-button>
 					<ui-button @click="rejectInvite(invite)"><fa :icon="faBan"/> {{ $t('reject-invite') }}</ui-button>
@@ -41,11 +44,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../../i18n';
 import { faUsers, faPlus, faCheck, faBan, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
+import i18n from '../../../i18n';
+import XAvatars from '../../views/components/avatars.vue';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/user-groups.vue'),
+	components: {
+		XAvatars
+	},
 	data() {
 		return {
 			ownedGroups: [],

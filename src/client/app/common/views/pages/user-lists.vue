@@ -8,6 +8,7 @@
 		<ui-hr/>
 		<ui-margin>
 			<router-link :to="`/i/lists/${list.id}`">{{ list.name }}</router-link>
+			<x-avatars :user-ids="list.userIds" style="margin-top:8px;"/>
 		</ui-margin>
 	</div>
 </ui-container>
@@ -17,9 +18,13 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { faListUl, faPlus } from '@fortawesome/free-solid-svg-icons';
+import XAvatars from '../../views/components/avatars.vue';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/user-lists.vue'),
+	components: {
+		XAvatars
+	},
 	data() {
 		return {
 			fetching: true,
