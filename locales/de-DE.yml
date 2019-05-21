@@ -12,7 +12,9 @@ common:
     rich-contents: "Notizen"
     rich-contents-desc: "Poste einfach deine Ideen, Interessen und alles, was du teilen möchtest. Gestalte deine Nachrichten, teile deine Lieblingsbilder, sende Dateien und Videos und erstelle Umfragen – das und mehr kann Misskey!"
     reaction: "Reaktionen"
+    reaction-desc: "Der einfachste Weg, deine Gefühle mit anderen zu teilen. Mit Misskey kannst du auf verschiedenste Arten auf Beiträge reagieren, statt nur zu „liken“."
     ui: "Benutzeroberfläche"
+    ui-desc: "Geschmäcker sind verschieden. Deswegen ist Misskeys Oberfläche hochanpassbar und modular. Mache die Startseite zu deiner Startseite, indem du das Layout deiner Timeline änderst und mit Widgets staffierst."
     drive: "Drive"
   adblock:
     detected: "Bitte deaktiviere den Werbeblocker."
