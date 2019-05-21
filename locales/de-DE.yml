@@ -10,6 +10,7 @@ common:
     about: "Misskey ist eine Quelloffene, <b>dezentralisierte microblogging Software</b>. Es bietet eine erweiterbare Benutzeroberfläche, verschiedenste Möglichkeiten auf Beiträge zu reagieren, kostenlosen Datenspeicher, und andere fortschrittliche Funktionen. Zusätzlich ist Misskey dazu in der Lage, sich mittels des Fediverse mit beliebig vielen anderen ActivityPub-kompatiblen Diensten zu verbinden. Wenn du zum Beispiel einen Betrag mit Misskey abschickst, wird dieser auch für Nutzer von Mastodon oder Pleroma sichtbar sein. So ähnlich wie eine Radioübertragung zwischen Planeten."
     features: "Funktionen"
     rich-contents: "Notizen"
+    rich-contents-desc: "Poste einfach deine Ideen, Interessen und alles, was du teilen möchtest. Gestalte deine Nachrichten, teile deine Lieblingsbilder, sende Dateien und Videos und erstelle Umfragen – das und mehr kann Misskey!"
     reaction: "Reaktionen"
     ui: "Benutzeroberfläche"
     drive: "Drive"
@@ -61,7 +62,7 @@ common:
   explore: "Entdecken"
   following: "Folgt"
   followers: "Folgende"
-  favorites: "Diesen Beitrag favorisieren"
+  favorites: "Favoriten"
   permissions:
     "read:account": "Accountinformationen anzeigen."
     "write:account": "Accountinformationen bearbeiten."
@@ -280,6 +281,7 @@ common/views/components/messaging.vue:
   search-user: "Einen Nutzer suchen"
   you: "Du"
   no-history: "Keine Chronik"
+  group: "Gruppen"
 common/views/components/messaging-room.vue:
   no-history: "Keine weitere Chronik vorhanden"
   new-message: "Neue Nachricht"
@@ -389,6 +391,8 @@ common/views/components/user-group-editor.vue:
 common/views/components/user-lists.vue:
   user-lists: "Listen"
 common/views/components/user-groups.vue:
+  user-groups: "Gruppen"
+  owned-groups: "Meine Gruppen"
   invites: "Einladen"
 common/views/widgets/broadcast.vue:
   fetching: "Laden"
@@ -579,6 +583,7 @@ desktop/views/components/timeline.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Dein Profil"
   lists: "Listen"
+  groups: "Gruppen"
 desktop/views/components/ui.header.nav.vue:
   game: "Spielen"
 desktop/views/components/ui.header.notifications.vue:
@@ -674,6 +679,7 @@ mobile/views/components/ui.nav.vue:
   notifications: "Benachrichtigungen"
   search: "Suchen"
   user-lists: "Listen"
+  user-groups: "Gruppen"
   game: "Spielen"
   about: "Über"
 mobile/views/pages/drive.vue:
