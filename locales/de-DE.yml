@@ -232,6 +232,10 @@ common:
     navbar-position-top: "Oben"
     navbar-position-left: "Links"
     navbar-position-right: "Rechts"
+    i-am-under-limited-internet: "Ich möchte Datenvolumen sparen"
+    post-style: "Beitrags-Anzeigestil"
+    post-style-standard: "Standard"
+    post-style-smart: "Smart"
     notification-position-top: "Oben"
   search: "Suche"
   delete: "Löschen"
@@ -290,6 +294,9 @@ common/views/components/games/reversi/reversi.vue:
     cancel: "Abbrechen"
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Aufgeben"
+  is-llotheo: "Der niedrigere gewinnt (Llotheo)"
+  looped-map: "Spielbrettenden verbinden"
+  can-put-everywhere: "Setzen ist überall erlaubt"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "Spiele Reversi mit deinen Freunden!"
@@ -307,7 +314,14 @@ common/views/components/games/reversi/reversi.room.vue:
   black-or-white: "Schwarz/Weiß"
   black-is: "Schwarz ist {}"
   rules: "Regeln"
+  is-llotheo: "Der niedrigere gewinnt (Llotheo)"
+  looped-map: "Spielbrettenden verbinden"
+  can-put-everywhere: "Setzen ist überall erlaubt"
+  settings-of-the-bot: "Bot-Einstellungen"
+  this-game-is-started-soon: "Spiel beginnt gleich"
   waiting-for-other: "Warte auf den Gegner"
+  waiting-for-me: "Warten, bis du bereit bist"
+  waiting-for-both: "Vorbereiten…"
   cancel: "Abbrechen"
   ready: "Bereit"
 common/views/components/connect-failed.vue:
@@ -338,6 +352,7 @@ common/views/components/media-banner.vue:
   sensitive: "Dieser Inhalt ist NSFW"
   click-to-show: "Klicke zum den Inhalt anzusehen"
 common/views/components/theme.vue:
+  theme: "Design"
   light-theme: "Thema"
   dark-theme: "Thema während des Nachtmodus"
   light-themes: "Helles Thema"
