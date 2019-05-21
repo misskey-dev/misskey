@@ -357,6 +357,8 @@ common/views/components/theme.vue:
   dark-theme: "Thema während des Nachtmodus"
   light-themes: "Helles Thema"
   dark-themes: "Dunkles Thema"
+  install-a-theme: "Design wird installiert"
+  theme-code: "Design-Quelltext"
   install: "Anwenden"
   installed: "\"{}\" wurde installiert"
   create-a-theme: "Thema erstellen"
@@ -367,20 +369,36 @@ common/views/components/theme.vue:
   base-theme: "Basisthema"
   base-theme-light: "Hell"
   base-theme-dark: "Dunkel"
+  find-more-theme: "Mehr Designs finden"
   theme-name: "Name des Themas"
   preview-created-theme: "Vorschau"
   invalid-theme: "Thema ist ungültig"
   already-installed: "Thema ist bereits installiert"
+  saved: "Gespeichert"
+  manage-themes: "Designs verwalten"
+  builtin-themes: "Standard-Designs"
+  my-themes: "Meine Designs"
+  installed-themes: "Installierte Designs"
+  select-theme: "Design wählen"
+  uninstall: "Deinstallieren"
+  uninstalled: "„{}“ wurde deinstalliert"
   author: "Autor"
   desc: "Beschreibung"
   export: "Exportieren"
   import: "Importieren"
+  import-by-code: "oder Quelltext einfügen"
+  theme-name-required: "Design-Name ist erforderlich"
 common/views/components/cw-button.vue:
+  hide: "Ausblenden"
+  show: "Mehr"
+  chars: "{count} Zeichen"
+  files: "{count} Dateien"
   poll: "Umfrage"
 common/views/components/messaging.vue:
   search-user: "Einen Nutzer suchen"
   you: "Du"
   no-history: "Keine Chronik"
+  user: "Benutzer"
   group: "Gruppen"
 common/views/components/messaging-room.vue:
   no-history: "Keine weitere Chronik vorhanden"
@@ -403,12 +421,19 @@ common/views/components/nav.vue:
   develop: "Entwickler"
   feedback: "Feedback"
 common/views/components/note-menu.vue:
+  mention: "Erwähnungen"
+  detail: "Details"
+  copy-content: "Inhalt kopieren"
+  copy-link: "Link kopieren"
   favorite: "Diesen Beitrag favorisieren"
   unfavorite: "Aus Favoriten entfernen"
+  watch: "Beobachten"
   pin: "An die Profilseite pinnen"
   delete: "Löschen"
   delete-confirm: "Diesen Beitrag löschen?"
   remote: "Auf Quelle anzeigen"
+common/views/components/user-menu.vue:
+  mention: "Erwähnungen"
 common/views/components/poll.vue:
   vote-to: "Stimme für '{}'"
   vote-count: "{} Stimmen"
@@ -605,6 +630,7 @@ desktop/views/components/note-detail.vue:
 desktop/views/components/note.vue:
   reply: "Antworten"
   renote: "Anmerken"
+  detail: "Details"
   private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
 desktop/views/components/notes.vue:
@@ -697,11 +723,13 @@ desktop/views/components/users-list.vue:
 admin/views/dashboard.vue:
   drive: "Drive"
 admin/views/abuse.vue:
+  details: "Details"
   remove-report: "Löschen"
 admin/views/instance.vue:
   recaptcha-preview: "Vorschau"
   invite: "Einladen"
   save: "Speichern"
+  saved: "Gespeichert"
 admin/views/charts.vue:
   drive: "Drive"
 admin/views/drive.vue:
@@ -721,6 +749,7 @@ admin/views/announcements.vue:
   save: "Speichern"
   remove: "Löschen"
   add: "Hinzufügen"
+  saved: "Gespeichert"
 admin/views/federation.vue:
   status: "Status"
 desktop/views/pages/note.vue:
