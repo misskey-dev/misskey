@@ -59,12 +59,11 @@ import { erase, unique } from '../../../../../prelude/array';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
 import extractMentions from '../../../../../misc/extract-mentions';
-import XPostFormAttaches from '../../../common/views/components/post-form-attaches.vue';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/post-form.vue'),
 	components: {
-		XPostFormAttaches,
+		XPostFormAttaches: () => import('../../../common/views/components/post-form-attaches.vue').then(m => m.default),
 		XPollEditor: () => import('../../../common/views/components/poll-editor.vue').then(m => m.default)
 	},
 

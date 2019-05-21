@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :pagination="pagination" @inited="inited">
+	<mk-notes ref="timeline" :pagination="pagination" @loaded="inited">
 		<template #header>
 			<header class="wqraeznr">
 				<span><fa icon="hashtag"/> {{ $route.params.tag }}</span>
@@ -35,12 +35,10 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
-		window.addEventListener('scroll', this.onScroll, { passive: true });
 		Progress.start();
 	},
 	beforeDestroy() {
 		document.removeEventListener('keydown', this.onDocumentKeydown);
-		window.removeEventListener('scroll', this.onScroll);
 	},
 	methods: {
 		onDocumentKeydown(e) {

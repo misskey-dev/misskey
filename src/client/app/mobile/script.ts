@@ -25,6 +25,7 @@ import MkShare from '../common/views/pages/share.vue';
 import MkFollow from '../common/views/pages/follow.vue';
 import MkNotFound from '../common/views/pages/not-found.vue';
 import DeckColumn from '../common/views/deck/deck.column-template.vue';
+import PostFormDialog from './views/components/post-form-dialog.vue';
 
 import FileChooser from './views/components/drive-file-chooser.vue';
 import FolderChooser from './views/components/drive-folder-chooser.vue';
@@ -50,16 +51,15 @@ init((launch, os) => {
 					document.documentElement.style.overflow = 'auto';
 				}
 
-				this.$root.newAsync(() => import('./views/components/post-form-dialog.vue').then(m => m.default), {
+				const vm = this.$root.new(PostFormDialog, {
 					reply: o.reply,
 					mention: o.mention,
 					renote: o.renote
-				}).then(vm => {
-					vm.$once('cancel', recover);
-					vm.$once('posted', recover);
-					if (o.cb) vm.$once('closed', o.cb);
-					(vm as any).focus();
 				});
+				vm.$once('cancel', recover);
+				vm.$once('posted', recover);
+				if (o.cb) vm.$once('closed', o.cb);
+				(vm as any).focus();
 			},
 
 			$chooseDriveFile(opts) {
