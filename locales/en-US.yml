@@ -450,6 +450,8 @@ common/views/components/messaging.vue:
   you: "You"
   no-history: "Without history"
   user: "User"
+  group: "Group"
+  select-group: "Select Group"
 common/views/components/messaging-room.vue:
   no-history: "There is no further history"
   new-message: "New message"
@@ -694,6 +696,9 @@ common/views/components/user-list-editor.vue:
   deleted: "Deleted successfully"
   add-user: "Add a user"
 common/views/components/user-group-editor.vue:
+  users: "Members"
+  rename: "Rename group"
+  delete: "Delete Group"
   deleted: "Deleted"
   invite: "Invite"
 common/views/components/user-lists.vue:
@@ -701,7 +706,13 @@ common/views/components/user-lists.vue:
   create-list: "Create a list"
   list-name: "List name"
 common/views/components/user-groups.vue:
+  user-groups: "Group"
+  create-group: "Create a group"
+  group-name: "Group name"
+  owned-groups: "My groups"
   invites: "Invite"
+  accept-invite: "Join"
+  reject-invite: "Decline"
 common/views/widgets/broadcast.vue:
   fetching: "Checking"
   no-broadcasts: "No announcements"
@@ -765,6 +776,8 @@ common/views/pages/follow.vue:
   follow-request: "Follow request"
 common/views/pages/follow-requests.vue:
   received-follow-requests: "Follow requests"
+  accept: "Accept"
+  reject: "Reject"
 desktop:
   banner-crop-title: "Crop the part that appears as a banner"
   banner: "Banner"
@@ -1036,6 +1049,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   lists: "Lists"
+  groups: "Group"
   follow-requests: "Follow requests"
   admin: "Admin"
 desktop/views/components/ui.header.nav.vue:
@@ -1512,6 +1526,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "Follow requests"
   search: "Search"
   user-lists: "Lists"
+  user-groups: "Group"
   widgets: "Widgets"
   game: "Games"
   admin: "Admin"
