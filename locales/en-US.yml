@@ -1248,6 +1248,8 @@ admin/views/users.vue:
   unsilence-confirm: "Are you certain that you want to stop silencing this user?"
   update-remote-user: "Update information about remote user"
   remote-user-updated: "The information regarding the remote user has been updated."
+  delete-all-files: "Delete all files"
+  delete-all-files-confirm: "Are you sure that you want to delete all files?"
   users:
     title: "Users"
     sort:
@@ -1323,6 +1325,7 @@ admin/views/federation.vue:
   latest-request-received-at: "Last request received at"
   remove-all-following: "Withold all followers"
   remove-all-following-info: "Unfollow all accounts from {host}. Please run this if the instance no longer exists."
+  delete-all-files: "Remove all files"
   block: "Block"
   marked-as-closed: "Marked as closed"
   lookup: "Look up"
@@ -1669,6 +1672,8 @@ pages:
   view-source: "View Source"
   view-page: "View page"
   like: "Like"
+  liked-pages: "Favorite pages"
+  my-pages: "My pages"
   inspector: "Inspector"
   content: "Page block"
   variables: "Variables"
