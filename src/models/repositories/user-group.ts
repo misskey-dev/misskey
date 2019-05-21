@@ -21,6 +21,7 @@ export class UserGroupRepository extends Repository<UserGroup> {
 			id: userGroup.id,
 			createdAt: userGroup.createdAt.toISOString(),
 			name: userGroup.name,
+			owner: userGroup.userId,
 			userIds: users.map(x => x.userId)
 		};
 	}
@@ -47,6 +48,11 @@ export const packedUserGroupSchema = {
 			type: types.string,
 			optional: bool.false, nullable: bool.false,
 			description: 'The name of the UserGroup.'
+		},
+		owner: {
+			type: types.string,
+			nullable: bool.false, optional: bool.false,
+			format: 'id',
 		},
 		userIds: {
 			type: types.array,
