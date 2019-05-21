@@ -451,8 +451,11 @@ common/views/components/messaging.vue:
   no-history: "Without history"
   user: "User"
   group: "Group"
-  select-group: "Select Group"
+  start-with-user: "Start chatting with a user"
+  start-with-group: "Start a group and chat"
+  select-group: "Select a group"
 common/views/components/messaging-room.vue:
+  not-talked-group: "There is no conversation in this group"
   no-history: "There is no further history"
   new-message: "New message"
 common/views/components/messaging-room.form.vue:
@@ -698,9 +701,11 @@ common/views/components/user-list-editor.vue:
 common/views/components/user-group-editor.vue:
   users: "Members"
   rename: "Rename group"
-  delete: "Delete Group"
+  delete: "Delete group"
+  remove-user: "Remove a user from this group"
   deleted: "Deleted"
   invite: "Invite"
+  invited: "The invitation was successfully sent"
 common/views/components/user-lists.vue:
   user-lists: "Lists"
   create-list: "Create a list"
@@ -710,6 +715,7 @@ common/views/components/user-groups.vue:
   create-group: "Create a group"
   group-name: "Group name"
   owned-groups: "My groups"
+  joined-groups: "Membership in groups"
   invites: "Invite"
   accept-invite: "Join"
   reject-invite: "Decline"
