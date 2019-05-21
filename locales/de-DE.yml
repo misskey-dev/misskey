@@ -20,6 +20,7 @@ common:
     outro: "Probiere Misskey aus und entdecke Misskeys einzigartige Funktionen. Wenn dir diese Instanz nicht zusagt, nimm einfach eine andere. Dank Misskeys dezentralem System kannst du dich überall mit deinen Freunden verbinden. Also dann, GLHF!"
   adblock:
     detected: "Bitte deaktiviere den Werbeblocker."
+    warning: "<strong>Misskey hat keine Werbung.</strong> Allerdings können Werbeblocker für unerwartete Probleme und fehlende Funktionen sorgen."
   application-authorization: "Autorisierte Anwendungen"
   close: "Schließen"
   load-more: "Mehr laden"
