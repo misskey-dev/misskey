@@ -19,7 +19,7 @@
 		<div class="hwgkdrbl" v-for="(group, i) in joinedGroups" :key="group.id">
 			<ui-hr v-if="i != 0"/>
 			<ui-margin>
-				<div>{{ group.name }}</div>
+				<div style="color:var(--text);">{{ group.name }}</div>
 				<x-avatars :user-ids="group.userIds" style="margin-top:8px;"/>
 			</ui-margin>
 		</div>
@@ -30,7 +30,7 @@
 		<div class="fvlojuur" v-for="(invite, i) in invites" :key="invite.id">
 			<ui-hr v-if="i != 0"/>
 			<ui-margin>
-				<div class="name">{{ invite.group.name }}</div>
+				<div class="name" style="color:var(--text);">{{ invite.group.name }}</div>
 				<x-avatars :user-ids="invite.group.userIds" style="margin-top:8px;"/>
 				<ui-horizon-group>
 					<ui-button @click="acceptInvite(invite)"><fa :icon="faCheck"/> {{ $t('accept-invite') }}</ui-button>
