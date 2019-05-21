@@ -23,6 +23,7 @@ common:
     warning: "<strong>Misskey hat keine Werbung.</strong> Allerdings können Werbeblocker für unerwartete Probleme und fehlende Funktionen sorgen."
   application-authorization: "Autorisierte Anwendungen"
   close: "Schließen"
+  do-not-copy-paste: "Bitte keinen Code einfügen. Ihr Account könnte gefährdet werden."
   load-more: "Mehr laden"
   enter-password: "Bitte Passwort eingeben"
   2fa: "Zwei-Faktor-Authentifizierung"
