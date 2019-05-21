@@ -73,6 +73,10 @@ export default Vue.extend({
 						sound.play();
 					}
 				}
+			},
+
+			onInited: (self) => {
+				self.$emit('loaded');
 			}
 		}),
 	],

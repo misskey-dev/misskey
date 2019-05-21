@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :pagination="pagination" @inited="inited">
+	<mk-notes ref="timeline" :pagination="pagination" @loaded="inited">
 		<template #header>
 			<header class="wqraeznr">
 				<span><fa icon="hashtag"/> {{ $route.params.tag }}</span>
