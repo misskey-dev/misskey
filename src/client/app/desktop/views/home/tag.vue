@@ -35,12 +35,10 @@ export default Vue.extend({
 	},
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
-		window.addEventListener('scroll', this.onScroll, { passive: true });
 		Progress.start();
 	},
 	beforeDestroy() {
 		document.removeEventListener('keydown', this.onDocumentKeydown);
-		window.removeEventListener('scroll', this.onScroll);
 	},
 	methods: {
 		onDocumentKeydown(e) {
