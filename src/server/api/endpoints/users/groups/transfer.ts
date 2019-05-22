@@ -74,7 +74,7 @@ export default define(meta, async (ps, me) => {
 		userId: user.id
 	});
 
-	if (!joining) {
+	if (joining == null) {
 		throw new ApiError(meta.errors.noSuchGroupMember);
 	}
 
