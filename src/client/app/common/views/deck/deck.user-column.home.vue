@@ -30,7 +30,7 @@
 	<ui-container>
 		<template #header><fa :icon="['far', 'comment-alt']"/> {{ $t('timeline') }}</template>
 		<div>
-			<x-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')"/>
+			<x-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')" :key="user.id"/>
 		</div>
 	</ui-container>
 </div>
