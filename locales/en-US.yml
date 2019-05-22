@@ -455,14 +455,17 @@ common/views/components/messaging.vue:
   start-with-group: "Start a group and chat"
   select-group: "Select a group"
 common/views/components/messaging-room.vue:
+  not-talked-user: "You have not talked to this user yet"
   not-talked-group: "There is no conversation in this group"
   no-history: "There is no further history"
   new-message: "New message"
+  only-one-file-attached: "You can only attach one file to a message"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Enter message here"
   send: "Send"
   attach-from-local: "Attach files from your device"
   attach-from-drive: "Attach files from your Drive"
+  only-one-file-attached: "You can only attach one file to a message"
 common/views/components/messaging-room.message.vue:
   is-read: "Read"
   deleted: "This message has been deleted"
@@ -702,6 +705,7 @@ common/views/components/user-group-editor.vue:
   users: "Members"
   rename: "Rename group"
   delete: "Delete group"
+  transfer: "transfer group"
   remove-user: "Remove a user from this group"
   deleted: "Deleted"
   invite: "Invite"
