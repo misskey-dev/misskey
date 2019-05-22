@@ -1065,7 +1065,7 @@ admin/views/index.vue:
   instance: "Instance"
   emoji: "Émoji"
   moderators: "Modérateurs"
-  users: "Utilisateurs"
+  users: "Utilisateur·rice·s"
   federation: "Fédération"
   announcements: "Annonces"
   abuse: "Abus"
@@ -1236,7 +1236,7 @@ admin/views/users.vue:
   update-remote-user: "Mettre à jour les informations de l’utilisateur·rice distant·e"
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   users:
-    title: "Utilisateurs"
+    title: "Utilisateur·rice·s"
     sort:
       title: "Trier par"
       createdAtAsc: "Date d’inscription (Ascendant)"
@@ -1451,7 +1451,7 @@ mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 common/views/components/follow-button.vue:
-  following: "Abonné"
+  following: "Abonné·e"
   follow: " Suivre"
   request-pending: "Demande en attente"
   follow-processing: "En cours d’abonnement"
@@ -1517,9 +1517,9 @@ mobile/views/pages/drive.vue:
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
-  followers-of: "Abonnés de {name}"
+  followers-of: "Abonné·e·s de {name}"
 mobile/views/pages/following.vue:
-  following-of: "Abonnés de {name}"
+  following-of: "Abonné·e·s de {name}"
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
