@@ -29,10 +29,10 @@
 					<div>
 						<header>
 							<b><mk-user-name :user="user"/></b>
-							<span class="is-owner" v-if="group.owner === user.id">owner</span>
+							<span class="is-owner" v-if="group.ownerId === user.id">owner</span>
 							<span class="username">@{{ user | acct }}</span>
 						</header>
-						<div v-if="group.owner !== user.id">
+						<div v-if="group.ownerId !== user.id">
 							<a @click="remove(user)">{{ $t('remove-user') }}</a>
 						</div>
 					</div>
