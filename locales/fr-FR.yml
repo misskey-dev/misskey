@@ -439,14 +439,21 @@ common/views/components/messaging.vue:
   you: "Vous"
   no-history: "Pas d'historique"
   user: "Utilisateur·rice·s"
+  group: "Groupe"
+  start-with-user: "Initier une discussion avec un·e utilisateur·rice"
+  select-group: "Sélectionner un groupe"
 common/views/components/messaging-room.vue:
+  not-talked-user: "Vous n'avez pas encore discuté avec cet·te utilisateur·rice"
+  not-talked-group: "Il n y a aucune conversation dans ce groupe"
   no-history: "Aucun historique"
   new-message: "Nouveau message"
+  only-one-file-attached: "Vous ne pouvez joindre qu'un seul fichier au message"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Tapez ici votre message"
   send: "Envoyer"
   attach-from-local: "Joindre un fichier depuis votre ordinateur"
   attach-from-drive: "Joindre un fichier depuis votre Drive"
+  only-one-file-attached: "Vous ne pouvez joindre qu'un seul fichier au message"
 common/views/components/messaging-room.message.vue:
   is-read: "Lu"
   deleted: "Ce message a été supprimé"
@@ -685,6 +692,7 @@ common/views/components/user-lists.vue:
   create-list: "Créer une liste"
   list-name: "Nom de la liste"
 common/views/components/user-groups.vue:
+  user-groups: "Groupe"
   create-group: "Créer un groupe"
   invites: "Inviter"
   reject-invite: "Refuser"
@@ -1487,6 +1495,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "Demandes d’abonnement"
   search: "Rechercher"
   user-lists: "Listes"
+  user-groups: "Groupe"
   widgets: "Modules"
   game: "Jeux"
   admin: "Admin"
