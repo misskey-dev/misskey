@@ -805,7 +805,7 @@ desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
   notes: "Blue ... Notes"
   replies: "Red ... Replies"
-  renotes: "Green ... Repost"
+  renotes: "Green ... Renotes"
 desktop/views/components/activity.vue:
   title: "Activity"
   toggle: "Toggle views"
@@ -902,7 +902,7 @@ desktop/views/components/note-detail.vue:
   private: "Post is private"
   deleted: "Post has been removed"
   location: "Location"
-  renote: "Repost"
+  renote: "Renote"
   add-reaction: "Add a reaction"
   undo-reaction: "Reverse reaction"
 desktop/views/components/note.vue:
@@ -926,10 +926,10 @@ desktop/views/components/post-form.vue:
   quote-placeholder: "Quote this Post..."
   submit: "Post"
   reply: "Reply"
-  renote: "Repost"
+  renote: "Renote"
   posted: "Posted!"
   replied: "Replied!"
-  reposted: "Reposted!"
+  reposted: "Renoted!"
   note-failed: "Failed to post"
   reply-failed: "Failed to reply"
   renote-failed: "Failed to Renote"
@@ -957,13 +957,13 @@ desktop/views/components/progress-dialog.vue:
 desktop/views/components/renote-form.vue:
   quote: "Quote..."
   cancel: "Cancel"
-  renote: "Repost"
+  renote: "Renote"
   renote-home: "Renote (Home)"
   reposting: "Renoting..."
-  success: "Reposted!"
-  failure: "Failed to Repost"
+  success: "Renoted!"
+  failure: "Failed to Renote"
 desktop/views/components/renote-form-window.vue:
-  title: "Do you want to Renote it?"
+  title: "Do you want to renote it?"
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}'s following"
   followers: "{user}'s follower"
