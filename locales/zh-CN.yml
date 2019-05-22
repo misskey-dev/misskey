@@ -453,6 +453,7 @@ common/views/components/messaging.vue:
   group: "群组"
   start-with-user: "开始用户聊天"
   start-with-group: "开始群组聊天"
+  select-group: "请选择群组"
 common/views/components/messaging-room.vue:
   not-talked-user: "没有用户的会话记录"
   not-talked-group: "没有群组的会话记录"
@@ -704,6 +705,7 @@ common/views/components/user-group-editor.vue:
   users: "成员"
   rename: "更改群组名"
   delete: "删除群组"
+  transfer: "群组转让"
   remove-user: "从本群组中删除"
   delete-are-you-sure: "确定要删除「$1」组？"
   deleted: "已删除"
