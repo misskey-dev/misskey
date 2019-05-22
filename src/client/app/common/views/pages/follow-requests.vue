@@ -22,6 +22,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import Progress from '../../scripts/loading';
+import { faUserClock } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/pages/follow-requests.vue'),
@@ -30,6 +31,12 @@ export default Vue.extend({
 			fetching: true,
 			requests: []
 		};
+	},
+	created() {
+		this.$emit('init', {
+			title: this.$t('received-follow-requests'),
+			icon: faUserClock
+		});
 	},
 	mounted() {
 		Progress.start();
