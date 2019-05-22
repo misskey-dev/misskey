@@ -158,6 +158,7 @@ export default Vue.extend({
 		},
 
 		async invite() {
+			const t = this.$t('invited');
 			const { result: user } = await this.$root.dialog({
 				user: {
 					local: true
@@ -170,7 +171,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
-					text: this.$t('invited')
+					text: t
 				});
 			}).catch(e => {
 				this.$root.dialog({
