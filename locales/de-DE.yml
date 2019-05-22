@@ -322,12 +322,23 @@ common/views/pages/explore.vue:
   pinned-users: "Vorgeschlagen"
   popular-users: "Beliebt"
   recently-updated-users: "Kürzlich aktiv"
+  recently-registered-users: "Neue Benutzer"
+  popular-tags: "Beliebte Tags"
+  federated: "Aus dem Fediverse"
+  explore: "{host} erkunden"
+  users-info: "Momentan sind {users} Nutzer hier registriert"
+common/views/components/url-preview.vue:
+  enable-player: "Player öffnen"
+  disable-player: "Player schließen"
+common/views/components/user-list.vue:
+  no-users: "Keine Benutzer"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Warten auf {}"
     cancel: "Abbrechen"
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Aufgeben"
+  surrendered: "durch Aufgabe"
   is-llotheo: "Der niedrigere gewinnt (Llotheo)"
   looped-map: "Spielbrettenden verbinden"
   can-put-everywhere: "Setzen ist überall erlaubt"
