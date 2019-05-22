@@ -103,6 +103,10 @@ export default Vue.extend({
 				});
 				this.$root.api('i/user-group-invites').then(invites => {
 					this.invites = invites;
+				}).then(() => {
+					this.$root.api('users/groups/joined').then(groups => {
+						this.joinedGroups = groups;
+					});
 				});
 			});
 		},
