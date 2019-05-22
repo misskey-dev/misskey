@@ -7,6 +7,7 @@
 			<ui-margin>
 				<ui-button @click="rename"><fa :icon="faICursor"/> {{ $t('rename') }}</ui-button>
 				<ui-button @click="del"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</ui-button>
+				<ui-button @click="transfer"><fa :icon="faCrown"/> {{ $t('transfer') }}</ui-button>
 			</ui-margin>
 		</section>
 	</ui-container>
@@ -28,9 +29,10 @@
 					<div>
 						<header>
 							<b><mk-user-name :user="user"/></b>
+							<span class="is-owner" v-if="group.owner === user.id">owner</span>
 							<span class="username">@{{ user | acct }}</span>
 						</header>
-						<div>
+						<div v-if="group.owner !== user.id">
 							<a @click="remove(user)">{{ $t('remove-user') }}</a>
 						</div>
 					</div>
@@ -44,7 +46,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { faICursor, faUsers, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCrown, faICursor, faUsers, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -60,7 +62,7 @@ export default Vue.extend({
 		return {
 			group: null,
 			users: [],
-			faICursor, faTrashAlt, faUsers, faPlus
+			faCrown, faICursor, faTrashAlt, faUsers, faPlus
 		};
 	},
 
@@ -78,6 +80,14 @@ export default Vue.extend({
 	},
 
 	methods: {
+		fetchGroup() {
+			this.$root.api('users/groups/show', {
+				groupId: this.group.id
+			}).then(group => {
+				this.group = group;
+			})
+		},
+
 		fetchUsers() {
 			this.$root.api('users/show', {
 				userIds: this.group.userIds
@@ -97,8 +107,15 @@ export default Vue.extend({
 				this.$root.api('users/groups/update', {
 					groupId: this.group.id,
 					name: name
+				}).then(() => {
+					this.fetchGroup();
+				}).catch(e => {
+					this.$root.dialog({
+						type: 'error',
+						text: e
+					});
 				});
-			});
+			})
 		},
 
 		del() {
@@ -130,7 +147,13 @@ export default Vue.extend({
 				groupId: this.group.id,
 				userId: user.id
 			}).then(() => {
+				this.fetchGroup();
 				this.fetchUsers();
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
 			});
 		},
 
@@ -149,6 +172,43 @@ export default Vue.extend({
 				this.$root.dialog({
 					type: 'success',
 					text: t
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
+		async transfer() {
+			const { result: user } = await this.$root.dialog({
+				user: {
+					local: true
+				}
+			});
+			if (user == null) return;
+
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('transfer-are-you-sure').replace('$1', this.group.name).replace('$2', user.username),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('users/groups/transfer', {
+					groupId: this.group.id,
+					userId: user.id
+				}).then(() => {
+					this.$root.dialog({
+						type: 'success',
+						text: this.$t('transferred')
+					});
+				}).catch(e => {
+					this.$root.dialog({
+						type: 'error',
+						text: e
+					});
 				});
 			});
 		}
@@ -178,6 +238,16 @@ export default Vue.extend({
 
 			> header
 				color var(--text)
+
+				> .is-owner
+					flex-shrink 0
+					align-self center
+					margin-left 8px
+					padding 1px 6px
+					font-size 80%
+					background var(--groupUserListOwnerBg)
+					color var(--groupUserListOwnerFg)
+					border-radius 3px
 
 				> .username
 					margin-left 8px
