@@ -276,6 +276,7 @@ common:
     black: "Schwarz"
     white: "Weiß"
     total: "Gesamt"
+    this-turn: "{count}. Zug"
   widgets:
     analog-clock: "Analoge Uhr"
     profile: "Profil"
@@ -286,8 +287,10 @@ common:
     memo: "Notizen"
     trends: "Trends"
     photo-stream: "Bilder"
+    posts-monitor: "Beitrags-Aktivität"
     slideshow: "Diashow"
     version: "Version"
+    broadcast: "Ankündigungen"
     notifications: "Benachrichtigungen"
     users: "Empfohlene Benutzer"
     polls: "Umfrage"
@@ -296,7 +299,9 @@ common:
     nav: "Navigation"
     tips: "Tipps"
     hashtags: "Hashtags"
+    queue: "Warteschlange"
   dev: "Fehler beim Erstellen der Applikation. Bitte versuche es erneut."
+  ai-chan-kawaii: "Ai-chan kawaii!"
   you: "Du"
 auth/views/form.vue:
   share-access: "Erlaubst Du <i>{name}</i> auf deinen Account zuzugreifen?"
@@ -306,11 +311,17 @@ auth/views/form.vue:
 auth/views/index.vue:
   loading: "Lädt"
   denied: "Autorisierung der Anwendung wurde verweigert."
+  denied-paragraph: "Diese App kann nicht auf deinen Account zugreifen."
   already-authorized: "Diese Anwendung ist bereits autorisiert."
   allowed: "Autorisierung der Anwendung wurde erlaubt."
+  callback-url: "Zur App zurückkehren"
   please-go-back: "Bitte gehe zurück zur Anwendung."
   error: "Sitzung ist nicht vorhanden."
   sign-in: "Bitte melde dich an."
+common/views/pages/explore.vue:
+  pinned-users: "Vorgeschlagen"
+  popular-users: "Beliebt"
+  recently-updated-users: "Kürzlich aktiv"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Warten auf {}"
@@ -560,6 +571,7 @@ common/views/widgets/photo-stream.vue:
   title: "Fotostream"
   no-photos: "Keine Fotos"
 common/views/widgets/posts-monitor.vue:
+  title: "Beitrags-Aktivität"
   toggle: "Sicht umschalten"
 common/views/widgets/server.vue:
   title: "Serverinformationen"
