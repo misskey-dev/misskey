@@ -38,6 +38,7 @@ common:
   got-it: "Verstanden!"
   customization-tips:
     title: "Anpassung-Tipps"
+    paragraph: "<p>Du kannst deine Startseite anpassen, indem du Widgets hinzufügst und verschiebst.</p><p><strong>Klicke <strong>rechts</strong></strong> auf ein Widget, um dessen Aussehen zu verändern.</p><p>Um ein Widget zu löschen, klicke und ziehe es auf den <strong>Papierkorb</strong> am Kopfende der Seite.</p><p>Wenn du fertig bist, drücke auf den Beenden-Knopf oben rechts.</p>"
     gotit: "Verstanden!"
   notification:
     file-uploaded: "Datei hochgeladen!"
@@ -236,7 +237,11 @@ common:
     post-style: "Beitrags-Anzeigestil"
     post-style-standard: "Standard"
     post-style-smart: "Smart"
+    notification-position: "Benachrichtigungen anzeigen"
+    notification-position-bottom: "Unten"
     notification-position-top: "Oben"
+    disable-via-mobile: "Beitrag nicht als „vom Handy“ markieren"
+    load-raw-images: "Anhänge in voller Größe laden"
   search: "Suche"
   delete: "Löschen"
   loading: "Laden"
@@ -624,7 +629,7 @@ desktop/views/components/followers.vue:
 desktop/views/components/following.vue:
   empty: "Du folgst niemanden"
 desktop/views/components/home.vue:
-  done: "Verbunden"
+  done: "Beenden"
   add-widget: "Widget hinzufügen:"
   add: "Hinzufügen"
 desktop/views/input-dialog.vue:
