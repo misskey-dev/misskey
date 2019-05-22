@@ -4,6 +4,7 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 import { UserGroups, UserGroupJoinings } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -29,6 +30,12 @@ export const meta = {
 				'en-US': 'Target user ID'
 			}
 		},
+	},
+
+	res: {
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'UserGroup',
 	},
 
 	errors: {

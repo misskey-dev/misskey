@@ -3,6 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { UserGroups } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -32,6 +33,12 @@ export const meta = {
 				'en-US': 'name of this user group'
 			}
 		}
+	},
+
+	res: {
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'UserGroup',
 	},
 
 	errors: {
