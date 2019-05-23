@@ -550,6 +550,7 @@ common/views/components/poll-editor.vue:
   day: "일"
 common/views/components/reaction-picker.vue:
   choose-reaction: "리액션 선택"
+  input-reaction-placeholder: "또는 이모지 입력"
 common/views/components/emoji-picker.vue:
   custom-emoji: "커스텀 이모지"
   people: "사람들"
