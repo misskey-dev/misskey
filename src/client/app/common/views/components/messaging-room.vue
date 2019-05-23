@@ -300,17 +300,13 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-messaging-room
-	display flex
-	flex 1
-	flex-direction column
-	height 100%
 	background var(--messagingRoomBg)
 
 	> .body
 		width 100%
 		max-width 600px
 		margin 0 auto
-		flex 1
+		min-height calc(100% - 103px)
 
 		> .init,
 		> .empty
