@@ -8,6 +8,7 @@ const json = {
 	username: config.db.user,
 	password: config.db.pass,
 	database: config.db.db,
+	extra: config.db.extra,
 	entities: ['src/models/entities/*.ts'],
 	migrations: ['migration/*.ts'],
 	cli: {
