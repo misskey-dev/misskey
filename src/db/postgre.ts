@@ -93,6 +93,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
+		extra: config.db.extra,
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
 		logging: log,

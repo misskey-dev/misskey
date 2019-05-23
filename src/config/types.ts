@@ -14,6 +14,7 @@ export type Source = {
 		db: string;
 		user: string;
 		pass: string;
+		extra?: { [x: string]: string };
 	};
 	redis: {
 		host: string;

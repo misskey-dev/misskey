@@ -62,6 +62,10 @@ db:
   user: example-misskey-user
   pass: example-misskey-pass
 
+  # Extra Connection options
+  #extra:
+  #  ssl: true
+
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
 
