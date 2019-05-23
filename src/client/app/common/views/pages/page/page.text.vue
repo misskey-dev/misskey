@@ -1,5 +1,5 @@
 <template>
-<div class="">
+<div class="mrdgzndn">
 	<mfm :text="text" :is-note="false" :i="$store.state.i" :key="text"/>
 </div>
 </template>
@@ -32,4 +32,10 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+.mrdgzndn
+	&:not(:first-child)
+		margin-top 0.5em
+
+	&:not(:last-child)
+		margin-bottom 0.5em
 </style>
