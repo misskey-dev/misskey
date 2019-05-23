@@ -1281,6 +1281,7 @@ admin/views/instance.vue:
   mb: "メガバイト単位"
   recaptcha-config: "reCAPTCHAの設定"
   recaptcha-info: "reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。"
+  recaptcha-info2: "v3は非対応です。v2を使用してください。"
   enable-recaptcha: "reCAPTCHAを有効にする"
   recaptcha-site-key: "サイトキー"
   recaptcha-secret-key: "シークレットキー"
