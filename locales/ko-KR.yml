@@ -1155,6 +1155,7 @@ admin/views/instance.vue:
   mb: "메가바이트 단위"
   recaptcha-config: "reCAPCHA 설정"
   recaptcha-info: "reCAPCHA를 사용하도록 설정하는 경우 reCAPCHA 토큰을 확보해야 합니다. https://www.google.com/recaptcha/intro/ 에 접속하여 토큰을 가져와주십시오."
+  recaptcha-info2: "v3는지원하지 않습니다. v2를 사용하여 주십시오."
   enable-recaptcha: "reCAPCHA 활성화"
   recaptcha-site-key: "사이트 키"
   recaptcha-secret-key: "시크릿 키"
