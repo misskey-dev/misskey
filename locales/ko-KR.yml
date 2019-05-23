@@ -42,7 +42,7 @@ common:
     gotit: "Got it!"
   notification:
     file-uploaded: "파일이 업로드되었습니다"
-    message-from: "{}님으로부터 메시지:"
+    message-from: "{}님의 메시지:"
     reversi-invited: "게임 초대가 있습니다"
     reversi-invited-by: "{}님으로부터"
     notified-by: "{}님으로부터"
@@ -51,7 +51,7 @@ common:
   time:
     unknown: "알 수 없는 시간"
     future: "미래"
-    just_now: "방금"
+    just_now: "방금 전"
     seconds_ago: "{}초 전"
     minutes_ago: "{}분 전"
     hours_ago: "{}시간 전"
