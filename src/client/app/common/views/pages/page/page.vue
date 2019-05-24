@@ -25,7 +25,7 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { ASEvaluator } from '../../../../../../misc/aiscript/evaluator';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
@@ -91,6 +91,10 @@ export default Vue.extend({
 			username: this.username,
 		}).then(page => {
 			this.page = page;
+			this.$emit('init', {
+				title: this.page.title,
+				icon: faStickyNote
+			});
 			const pageVars = this.getPageVars();
 			this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
 				randomSeed: Math.random(),
