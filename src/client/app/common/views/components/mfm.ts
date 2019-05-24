@@ -8,7 +8,7 @@ import { concat, sum } from '../../../../../prelude/array';
 import MkFormula from './formula.vue';
 import MkCode from './code.vue';
 import MkGoogle from './google.vue';
-import { host } from '../../../config';
+import { host, url } from '../../../config';
 import { preorderF, countNodesF } from '../../../../../prelude/tree';
 
 function sumTextsLength(ts: MfmForest): number {
@@ -175,7 +175,9 @@ export default Vue.component('misskey-flavored-markdown', {
 						props: {
 							url: token.node.props.url,
 							rel: 'nofollow noopener',
-							target: '_blank'
+							...(token.node.props.url.startsWith(url) ? {} : {
+								target: '_blank'
+							})
 						},
 						attrs: {
 							style: 'color:var(--mfmUrl);'
