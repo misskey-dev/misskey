@@ -96,6 +96,18 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 		extra: config.db.extra,
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
+		cache: {
+			type: 'redis',
+			options: {
+				host: config.redis.host,
+				port: config.redis.port,
+				options:{
+					auth_pass: config.redis.pass,
+					prefix: config.redis.prefix,
+					db: config.redis.db || 0
+				}
+			}
+		},
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
 		entities: [
