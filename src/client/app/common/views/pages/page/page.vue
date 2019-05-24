@@ -162,6 +162,10 @@ export default Vue.extend({
 				padding 16px 32px
 				font-size 20px
 
+			@media (max-width 400px)
+				padding 10px 20px
+				font-size 16px
+
 	> div
 		color var(--text)
 		padding 24px 32px
@@ -171,6 +175,10 @@ export default Vue.extend({
 			padding 24px 32px
 			font-size 16px
 
+		@media (max-width 400px)
+			padding 20px 20px
+			font-size 15px
+
 	> footer
 		color var(--text)
 		padding 0 32px 28px 32px
@@ -178,12 +186,16 @@ export default Vue.extend({
 		@media (max-width 600px)
 			padding 0 32px 28px 32px
 
+		@media (max-width 400px)
+			padding 0 20px 20px 20px
+			font-size 14px
+
 		> small
 			display block
 			opacity 0.5
 
 		> a
-			font-size 14px
+			font-size 90%
 
 		> a + a
 			margin-left 8px
