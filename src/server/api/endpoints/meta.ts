@@ -94,7 +94,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const instance = await fetchMeta(true);
 
-	const emojis = await Emojis.find({ host: null });
+	const emojis = await Emojis.find({ where: { host: null }, cache: 3600000 }); // 1 hour
 
 	const response: any = {
 		maintainerName: instance.maintainerName,
