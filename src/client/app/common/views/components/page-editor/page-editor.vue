@@ -11,7 +11,7 @@
 		</header>
 
 		<section>
-			<a class="view" v-if="pageId" :href="`/@${ author.username }/pages/${ currentName }`" target="_blank"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</a>
+			<a class="view" v-if="pageId" :href="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</a>
 
 			<ui-input v-model="title">
 				<span>{{ $t('title') }}</span>
