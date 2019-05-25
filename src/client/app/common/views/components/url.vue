@@ -5,7 +5,7 @@
 		<span class="hostname">{{ hostname }}</span>
 		<span class="port" v-if="port != ''">:{{ port }}</span>
 	</template>
-	<span class="pathname" v-if="pathname != ''">{{ pathname }}</span>
+	<span class="pathname" v-if="pathname != ''">{{ self ? pathname.substr(1) : pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
 	<fa icon="external-link-square-alt" v-if="!self"/>
