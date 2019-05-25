@@ -7,7 +7,11 @@ Before creating a new issue, please search existing issues to avoid duplication.
 If you find the existing issue, please add your reaction or comment to the issue.
 
 ## Localization (l10n)
-Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
+Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
+You can improve our translations with your Crowdin account.
+Changes you make in Crowdin will be merged into develop branch.
+
+If you can't find the language you want to contribute with, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 

@@ -11,7 +11,7 @@
 		</header>
 
 		<section>
-			<a class="view" v-if="pageId" :href="`/@${ author.username }/pages/${ currentName }`" target="_blank"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</a>
+			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</router-link>
 
 			<ui-input v-model="title">
 				<span>{{ $t('title') }}</span>
@@ -111,20 +111,25 @@ export default Vue.extend({
 	},
 
 	props: {
-		page: {
-			type: Object,
+		initPageId: {
+			type: String,
 			required: false
 		},
-		readonly: {
-			type: Boolean,
-			required: false,
-			default: false
+		initPageName: {
+			type: String,
+			required: false
+		},
+		initUser: {
+			type: String,
+			required: false
 		},
 	},
 
 	data() {
 		return {
 			author: this.$store.state.i,
+			readonly: false,
+			page: null,
 			pageId: null,
 			currentName: null,
 			title: '',
@@ -156,7 +161,7 @@ export default Vue.extend({
 		},
 	},
 
-	created() {
+	async created() {
 		this.aiScript = new ASTypeChecker();
 
 		this.$watch('variables', () => {
@@ -166,6 +171,18 @@ export default Vue.extend({
 		this.$watch('content', () => {
 			this.aiScript.pageVars = collectPageVars(this.content);
 		}, { deep: true });
+
+		if (this.initPageId) {
+			this.page = await this.$root.api('pages/show', {
+				pageId: this.initPageId,
+			});
+		} else if (this.initPageName && this.initUser) {
+			this.page = await this.$root.api('pages/show', {
+				name: this.initPageName,
+				username: this.initUser,
+			});
+			this.readonly = true;
+		}
 
 		if (this.page) {
 			this.author = this.page.user;

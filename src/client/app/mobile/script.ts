@@ -128,6 +128,7 @@ init((launch, os) => {
 					{ path: '/i/lists/:listId', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/user-list-editor.vue').then(m => m.default), listId: route.params.listId }) },
 					{ path: '/i/groups', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/user-groups.vue').then(m => m.default) }) },
 					{ path: '/i/groups/:groupId', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/user-group-editor.vue').then(m => m.default), groupId: route.params.groupId }) },
+					{ path: '/i/follow-requests', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/follow-requests.vue').then(m => m.default) }) },
 				]}]
 			: [
 				{ path: '/', name: 'index', component: MkIndex },
@@ -148,8 +149,8 @@ init((launch, os) => {
 			{ path: '/i/drive', name: 'drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
 			{ path: '/i/drive/file/:file', component: MkDrive },
-			{ path: '/i/pages/new', component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
-			{ path: '/i/pages/edit/:pageId', props: true, component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
+			{ path: '/i/pages/new', component: UI, props: route => ({ component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default) }) },
+			{ path: '/i/pages/edit/:pageId', component: UI, props: route => ({ component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default), initPageId: route.params.pageId }) },
 			{ path: '/selectdrive', component: MkSelectDrive },
 			{ path: '/search', component: MkSearch },
 			{ path: '/tags/:tag', component: MkTag },
@@ -162,8 +163,8 @@ init((launch, os) => {
 				{ path: 'following', component: () => import('../common/views/pages/following.vue').then(m => m.default) },
 				{ path: 'followers', component: () => import('../common/views/pages/followers.vue').then(m => m.default) },
 			]},
-			{ path: '/@:user/pages/:page', props: true, component: () => import('./views/pages/page.vue').then(m => m.default) },
-			{ path: '/@:user/pages/:pageName/view-source', props: true, component: () => import('./views/pages/page-editor.vue').then(m => m.default) },
+			{ path: '/@:user/pages/:page', component: UI, props: route => ({ component: () => import('../common/views/pages/page/page.vue').then(m => m.default), pageName: route.params.page, username: route.params.user }) },
+			{ path: '/@:user/pages/:pageName/view-source', component: UI, props: route => ({ component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default), initUser: route.params.user, initPageName: route.params.pageName }) },
 			{ path: '/notes/:note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '*', component: MkNotFound }

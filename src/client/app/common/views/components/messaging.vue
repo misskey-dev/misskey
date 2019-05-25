@@ -46,7 +46,7 @@
 			</div>
 		</a>
 	</div>
-	<p class="no-history" v-if="!fetching && (messages.length == 0 && groupMessages.length == 0)">{{ $t('no-history') }}</p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
 	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 	<ui-margin>
 		<ui-button @click="startUser()"><fa :icon="faUser"/> {{ $t('start-with-user') }}</ui-button>

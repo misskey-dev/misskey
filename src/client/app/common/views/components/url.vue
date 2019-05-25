@@ -1,29 +1,35 @@
 <template>
-<a class="mk-url" :href="url" :rel="rel" :target="target">
-	<span class="schema">{{ schema }}//</span>
-	<span class="hostname">{{ hostname }}</span>
-	<span class="port" v-if="port != ''">:{{ port }}</span>
-	<span class="pathname" v-if="pathname != ''">{{ pathname }}</span>
+<component :is="self ? 'router-link' : 'a'" class="mk-url" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target">
+	<template v-if="!self">
+		<span class="schema">{{ schema }}//</span>
+		<span class="hostname">{{ hostname }}</span>
+		<span class="port" v-if="port != ''">:{{ port }}</span>
+	</template>
+	<span class="pathname" v-if="pathname != ''">{{ self ? pathname.substr(1) : pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
-	<fa icon="external-link-square-alt"/>
-</a>
+	<fa icon="external-link-square-alt" v-if="!self"/>
+</component>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { toUnicode as decodePunycode } from 'punycode';
+import { url as local } from '../../../config';
 
 export default Vue.extend({
 	props: ['url', 'rel', 'target'],
 	data() {
 		return {
+			local,
 			schema: null,
 			hostname: null,
 			port: null,
 			pathname: null,
 			query: null,
-			hash: null
+			hash: null,
+			self: this.url.startsWith(local),
+			attr: this.url.startsWith(local) ? 'to' : 'href'
 		};
 	},
 	created() {

@@ -591,6 +591,7 @@ common/views/components/poll-editor.vue:
 
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
+  input-reaction-placeholder: "または絵文字を入力"
 
 common/views/components/emoji-picker.vue:
   custom-emoji: "カスタム絵文字"
@@ -762,6 +763,9 @@ common/views/components/user-group-editor.vue:
   users: "メンバー"
   rename: "グループ名を変更"
   delete: "グループを削除"
+  transfer: "グループを譲渡"
+  transfer-are-you-sure: "グループ「$1」を「@$2」さんに譲渡しますか？"
+  transferred: "グループを譲渡しました"
   remove-user: "このグループから削除"
   delete-are-you-sure: "グループ「$1」を削除しますか？"
   deleted: "削除しました"
@@ -1278,6 +1282,7 @@ admin/views/instance.vue:
   mb: "メガバイト単位"
   recaptcha-config: "reCAPTCHAの設定"
   recaptcha-info: "reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。"
+  recaptcha-info2: "v3は非対応です。v2を使用してください。"
   enable-recaptcha: "reCAPTCHAを有効にする"
   recaptcha-site-key: "サイトキー"
   recaptcha-secret-key: "シークレットキー"

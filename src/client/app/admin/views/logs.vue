@@ -26,6 +26,8 @@
 					</details>
 				</code>
 			</div>
+
+			<ui-button @click="deleteAll()">{{ $t('delete-all') }}</ui-button>
 		</section>
 	</ui-card>
 </div>
@@ -77,6 +79,15 @@ export default Vue.extend({
 				limit: 100
 			}).then(logs => {
 				this.logs = logs.reverse();
+			});
+		},
+
+		deleteAll() {
+			this.$root.api('admin/delete-logs').then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
 			});
 		}
 	}

@@ -59,6 +59,7 @@ export default define(meta, async () => {
 		.where(`note.createdAt > :date`, { date: new Date(Date.now() - rangeA) })
 		.andWhere(`note.tags != '{}'`)
 		.select(['note.tags', 'note.userId'])
+		.cache(60000) // 1 min
 		.getMany();
 
 	if (tagNotes.length === 0) {
@@ -108,6 +109,7 @@ export default define(meta, async () => {
 			.where(':tag = ANY(note.tags)', { tag: tag })
 			.andWhere('note.createdAt < :lt', { lt: new Date(Date.now() - (interval * i)) })
 			.andWhere('note.createdAt > :gt', { gt: new Date(Date.now() - (interval * (i + 1))) })
+			.cache(60000) // 1 min
 			.getRawOne()
 			.then(x => parseInt(x.count, 10))
 		)));
@@ -119,6 +121,7 @@ export default define(meta, async () => {
 		.select('count(distinct note.userId)')
 		.where(':tag = ANY(note.tags)', { tag: tag })
 		.andWhere('note.createdAt > :gt', { gt: new Date(Date.now() - (interval * range)) })
+		.cache(60000) // 1 min
 		.getRawOne()
 		.then(x => parseInt(x.count, 10))
 	));

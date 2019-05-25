@@ -25,7 +25,7 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { ASEvaluator } from '../../../../../../misc/aiscript/evaluator';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
@@ -91,6 +91,10 @@ export default Vue.extend({
 			username: this.username,
 		}).then(page => {
 			this.page = page;
+			this.$emit('init', {
+				title: this.page.title,
+				icon: faStickyNote
+			});
 			const pageVars = this.getPageVars();
 			this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
 				randomSeed: Math.random(),
@@ -148,8 +152,8 @@ export default Vue.extend({
 		> .title
 			z-index 1
 			margin 0
-			padding 32px 64px
-			font-size 24px
+			padding 16px 32px
+			font-size 20px
 			font-weight bold
 			color var(--text)
 			box-shadow 0 var(--lineWidth) rgba(#000, 0.07)
@@ -158,28 +162,40 @@ export default Vue.extend({
 				padding 16px 32px
 				font-size 20px
 
+			@media (max-width 400px)
+				padding 10px 20px
+				font-size 16px
+
 	> div
 		color var(--text)
-		padding 48px 64px
-		font-size 18px
+		padding 24px 32px
+		font-size 16px
 
 		@media (max-width 600px)
 			padding 24px 32px
 			font-size 16px
 
+		@media (max-width 400px)
+			padding 20px 20px
+			font-size 15px
+
 	> footer
 		color var(--text)
-		padding 0 64px 38px 64px
+		padding 0 32px 28px 32px
 
 		@media (max-width 600px)
 			padding 0 32px 28px 32px
+
+		@media (max-width 400px)
+			padding 0 20px 20px 20px
+			font-size 14px
 
 		> small
 			display block
 			opacity 0.5
 
 		> a
-			font-size 14px
+			font-size 90%
 
 		> a + a
 			margin-left 8px

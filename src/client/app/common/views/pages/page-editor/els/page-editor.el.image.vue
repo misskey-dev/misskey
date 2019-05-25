@@ -19,7 +19,7 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faImage, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../../../../i18n';
 import XContainer from '../page-editor.container.vue';
-import XFileThumbnail from '../../drive-file-thumbnail.vue';
+import XFileThumbnail from '../../../components/drive-file-thumbnail.vue';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
