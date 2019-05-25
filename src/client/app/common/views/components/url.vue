@@ -1,8 +1,10 @@
 <template>
 <component :is="self ? 'router-link' : 'a'" class="mk-url" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target">
-	<span class="schema">{{ schema }}//</span>
-	<span class="hostname">{{ hostname }}</span>
-	<span class="port" v-if="port != ''">:{{ port }}</span>
+	<template v-if="!self">
+		<span class="schema">{{ schema }}//</span>
+		<span class="hostname">{{ hostname }}</span>
+		<span class="port" v-if="port != ''">:{{ port }}</span>
+	</template>
 	<span class="pathname" v-if="pathname != ''">{{ pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
