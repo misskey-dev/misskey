@@ -1,5 +1,5 @@
 <template>
-<component :is="self ? 'router-link' : 'a'" class="mk-url" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target">
+<component :is="hasRoute ? 'router-link' : 'a'" class="mk-url" :[attr]="hasRoute ? url.substr(local.length) : url" :rel="rel" :target="target">
 	<template v-if="!self">
 		<span class="schema">{{ schema }}//</span>
 		<span class="hostname">{{ hostname }}</span>
@@ -8,7 +8,7 @@
 	<span class="pathname" v-if="pathname != ''">{{ self ? pathname.substr(1) : pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
-	<fa icon="external-link-square-alt" v-if="!self"/>
+	<fa icon="external-link-square-alt" v-if="target === '_blank'"/>
 </component>
 </template>
 
@@ -18,8 +18,13 @@ import { toUnicode as decodePunycode } from 'punycode';
 import { url as local } from '../../../config';
 
 export default Vue.extend({
-	props: ['url', 'rel', 'target'],
+	props: ['url', 'rel'],
 	data() {
+		const isSelf = this.url.startsWith(local);
+		const hasRoute =
+			this.url.substr(local.length).startsWith('/@') ||
+			this.url.substr(local.length).startsWith('/notes/') ||
+			this.url.substr(local.length).startsWith('/pages/');
 		return {
 			local,
 			schema: null,
@@ -28,8 +33,10 @@ export default Vue.extend({
 			pathname: null,
 			query: null,
 			hash: null,
-			self: this.url.startsWith(local),
-			attr: this.url.startsWith(local) ? 'to' : 'href'
+			self: isSelf,
+			hasRoute: hasRoute,
+			attr: hasRoute ? 'to' : 'href',
+			target: hasRoute ? null : '_blank'
 		};
 	},
 	created() {
