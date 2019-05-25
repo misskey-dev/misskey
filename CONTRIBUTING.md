@@ -3,8 +3,10 @@
 
 ## Issues
 Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
-Before creating a new issue, please search existing issues to avoid duplication.
-If you find the existing issue, please add your reaction or comment to the issue.
+
+* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
+* If you have multiple independent issues, please submit them separately.
+
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
