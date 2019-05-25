@@ -13,7 +13,7 @@
 		<div class="body">
 			<div class="main block">
 				<div>
-					<h1 v-if="name != null">{{ name }}</h1>
+					<h1 v-if="name != null && name != ''">{{ name }}</h1>
 					<h1 v-else><img svg-inline src="../../../../assets/title.svg" alt="Misskey"></h1>
 
 					<div class="info">
