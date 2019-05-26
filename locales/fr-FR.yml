@@ -1085,13 +1085,24 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "File d'attente"
   remove-all-jobs: "Enlever toutes les tâches en attente"
+  jobs: "Tâches"
   queue: "File d'attente"
+  domains:
+    deliver: "Délivrées"
+    inbox: "Reçues"
   state: "État"
 admin/views/logs.vue:
   logs: "Journaux"
+  domain: "Domaine"
+  level: "Niveau"
   levels:
+    all: "Tous"
     info: "Informations"
+    success: "Succès"
+    warning: "Avertissement"
     error: "Erreur"
+    debug: "Débogage"
+  delete-all: "Effacer tout"
 admin/views/abuse.vue:
   title: "Abus"
   target: "Cible"
@@ -1115,9 +1126,12 @@ admin/views/instance.vue:
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
   advanced-config: "Autres réglages"
+  note-and-tl: "Notes et fils"
   drive-config: "Paramètres du lecteur"
   object-storage-base-url: "URL"
+  object-storage-prefix: "Préfixe"
   object-storage-endpoint: "Point de terminaison"
+  object-storage-region: "Région"
   object-storage-port: "Port"
   object-storage-access-key: "Clé d'accès"
   object-storage-secret-key: "Clé secrète"
@@ -1130,6 +1144,7 @@ admin/views/instance.vue:
   recaptcha-config: "Paramètres de reCAPTCHA"
   recaptcha-info: "Si activé, un jeton reCAPTCHA est requis. Vous pouvez en obtenir un sur https://www.google.com/recaptcha/intro/"
   enable-recaptcha: "Activation de reCAPTCHA"
+  recaptcha-site-key: "Clé du site"
   recaptcha-secret-key: "Clé secrète"
   recaptcha-preview: "Prévisualisation"
   hidden-tags: "Tags cachés"
@@ -1629,14 +1644,21 @@ dev/views/new-app.vue:
   new-app: "Nouvelle application"
   create-app: "Création d’une application"
   app-name: "Nom de l’application"
+  app-name-placeholder: "p. ex. Misskey pour iOS"
   app-name-desc: "Le nom de votre application"
   app-overview: "Description courte de l’application"
+  app-overview-placeholder: "p. ex. Misskey pour iOS"
+  app-overview-desc: "Brève description introductive à votre application."
   callback-url: "L’Url de callback (facultatif)"
+  callback-url-placeholder: "p. ex. https://votre.app.example.com/callback.php"
   callback-url-desc: "Vous pouvez définir l’URL de redirection lorsque l’utilisateur s’est authentifié via formulaire d’authentification."
   authority: "Autorisations "
   authority-desc: "Sont accessibles via l’API, uniquement les fonctionnalités demandées ici."
   authority-warning: "Vous pouvez le changer même après avoir créé l'application, mais si vous attribuez une nouvelle permission, toutes les clés utilisateur associées seront dès lors invalides."
 pages:
+  new-page: "Créer une page"
+  edit-page: "Modifier une page"
+  read-page: "Voir la source"
   page-created: "Page a été créée !"
   are-you-sure-delete: "Confirmez-vous la suppression de cette page ?"
   page-deleted: "La page a bien été supprimée."
@@ -1644,6 +1666,7 @@ pages:
   view-source: "Afficher la source"
   view-page: "Afficher la page"
   like: "Bien"
+  my-pages: "Mes pages"
   inspector: "Inspecteur"
   content: "Bloc de page"
   variables: "Variables"
@@ -1717,9 +1740,11 @@ pages:
       random: "Aléatoire"
       value: "Valeur"
       fn: "Fonction"
+      text: "Actions texte"
       list: "Listes"
     blocks:
       text: "Texte"
+      textList: "Liste de texte"
       strLen: "Longueur du texte"
       _strLen:
         arg1: "Texte"
@@ -1763,21 +1788,27 @@ pages:
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A et B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A ou B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "A est plus petit que B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "A est supérieur à B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "A est plus petit ou égal à B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: "A est supérieur ou égal à B"
       _gtEq:
         arg1: "A"
         arg2: "B"
@@ -1789,6 +1820,12 @@ pages:
       _not:
         arg1: "négation"
       random: "Aléatoire"
+      _random:
+        arg1: "Probabilité"
+      rannum: "Nombre aléatoire"
+      _rannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
       _randomPick:
         arg1: "Listes"
       _dailyRandom:
