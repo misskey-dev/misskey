@@ -1235,6 +1235,19 @@ admin/views/queue.vue:
   title: "キュー"
   remove-all-jobs: "すべてのジョブをクリア"
 
+admin/views/logs.vue:
+  logs: "ログ"
+  domain: "ドメイン"
+  level: "レベル"
+  levels:
+    all: "全て"
+    info: "情報"
+    success: "成功"
+    warning: "警告"
+    error: "エラー"
+    debug: "デバッグ"
+  delete-all: "全て削除"
+
 admin/views/abuse.vue:
   title: "スパム報告"
   target: "対象"
