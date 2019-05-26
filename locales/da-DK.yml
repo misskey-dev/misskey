@@ -1106,6 +1106,8 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Kø"
   remove-all-jobs: "Ryd alle job køer"
+  queue: "Kø"
+  state: "Sorter efter"
 admin/views/logs.vue:
   logs: "Logs"
   levels:
@@ -1407,6 +1409,7 @@ admin/views/federation.vue:
     day: "pr. dag"
   blocked-hosts: "Bloker"
   blocked-hosts-info: "Beskrivelse af værterne du vil blokere, adskilt af linjeskift."
+  save: "Gem"
 desktop/views/pages/welcome.vue:
   about: "Mere info..."
   timeline: "Tidslinje"
