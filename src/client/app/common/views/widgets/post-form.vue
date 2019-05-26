@@ -38,6 +38,7 @@
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
 import insertTextAtCursor from 'insert-text-at-cursor';
+import * as moment from 'moment';
 
 export default define({
 	name: 'post-form',
