@@ -921,6 +921,8 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Cola"
   remove-all-jobs: "Limpiar todos los trabajos pendientes"
+admin/views/logs.vue:
+  logs: "Registros"
 admin/views/abuse.vue:
   title: "Abuso"
   target: "Destinatario"
