@@ -50,7 +50,7 @@ export async function masterMain() {
 		// initialize app
 		config = await init();
 
-		if (config.port == null) {
+		if (config.port == null || Number.isNaN(config.port)) {
 			bootLogger.error('The port is not configured. Please configure port.', null, true);
 			process.exit(1);
 		}
