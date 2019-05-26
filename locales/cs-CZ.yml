@@ -419,7 +419,6 @@ common/views/components/messaging.vue:
   you: "Vy"
   no-history: "Žádná historie"
   user: "Uživatel"
-  group: "Skupina"
 common/views/components/messaging-room.vue:
   new-message: "Máte novou zprávu"
 common/views/components/messaging-room.form.vue:
@@ -623,13 +622,15 @@ common/views/components/user-list-editor.vue:
   add-user: "Přidat uživatele"
 common/views/components/user-group-editor.vue:
   users: "Členové"
+  transfer: "Přesunout skupinu"
+  transferred: "Skupina přesunuta"
   deleted: "Smazáno"
   invite: "Pozvat"
 common/views/components/user-lists.vue:
   user-lists: "Seznamy"
   list-name: "Název seznamu"
 common/views/components/user-groups.vue:
-  user-groups: "Skupina"
+  user-groups: "Skupiny"
   invites: "Pozvat"
   reject-invite: "Odmítnout"
 common/views/widgets/broadcast.vue:
@@ -863,7 +864,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Váš profil"
   lists: "Seznamy"
-  groups: "Skupina"
+  groups: "Skupiny"
   admin: "Administrace"
 desktop/views/components/ui.header.nav.vue:
   game: "Hry"
@@ -1169,7 +1170,7 @@ mobile/views/components/ui.nav.vue:
   notifications: "Oznámení"
   search: "Vyhledávání"
   user-lists: "Seznamy"
-  user-groups: "Skupina"
+  user-groups: "Skupiny"
   widgets: "Widgety"
   game: "Hry"
   admin: "Administrace"
