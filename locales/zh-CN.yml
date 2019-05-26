@@ -1110,6 +1110,11 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "队列"
   remove-all-jobs: "清除所有作业"
+admin/views/logs.vue:
+  logs: "登录"
+  levels:
+    info: "信息"
+    error: "错误"
 admin/views/abuse.vue:
   title: "举报垃圾信息"
   target: "目标"
