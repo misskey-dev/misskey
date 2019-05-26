@@ -373,8 +373,10 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet-desc: "Jste připojen k síti, ale zdá se že stále chybí připojení k Internetu. Prosím zkontrolujte Vaše připojení k Internetu."
   no-server: "Nelze se připojit k serveru Misskey"
 common/views/components/media-banner.vue:
+  sensitive: "Choulostivý obsah"
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/theme.vue:
+  theme: "Vzhled"
   light-theme: "Motiv pro použití ve světlém vzhledu"
   dark-theme: "Motiv pro použití v tmavém vzhledu"
   light-themes: "Světlý vzhled"
@@ -385,6 +387,7 @@ common/views/components/theme.vue:
   installed: "\"{}\" byl nainstalován"
   create-a-theme: "Vytvořit motiv"
   save-created-theme: "Uložit motiv"
+  primary-color: "Základní barva"
   text-color: "Barva textu"
   base-theme: "Základní vzhled"
   base-theme-light: "Světlý"
@@ -416,6 +419,7 @@ common/views/components/messaging.vue:
   you: "Vy"
   no-history: "Žádná historie"
   user: "Uživatel"
+  group: "Skupina"
 common/views/components/messaging-room.vue:
   new-message: "Máte novou zprávu"
 common/views/components/messaging-room.form.vue:
@@ -618,13 +622,16 @@ common/views/components/user-list-editor.vue:
   deleted: "Smazáno"
   add-user: "Přidat uživatele"
 common/views/components/user-group-editor.vue:
+  users: "Členové"
   deleted: "Smazáno"
   invite: "Pozvat"
 common/views/components/user-lists.vue:
   user-lists: "Seznamy"
   list-name: "Název seznamu"
 common/views/components/user-groups.vue:
+  user-groups: "Skupina"
   invites: "Pozvat"
+  reject-invite: "Odmítnout"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   next: "Další"
@@ -653,6 +660,9 @@ common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
 common/views/pages/not-found.vue:
   page-not-found: "Stránka nenalezena"
+common/views/pages/follow-requests.vue:
+  accept: "Přijmout"
+  reject: "Odmítnout"
 desktop:
   banner: "Baner"
   avatar-crop-title: "Vyberte část, která se zobrazí jako avatar"
@@ -850,6 +860,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Váš profil"
   lists: "Seznamy"
+  groups: "Skupina"
   admin: "Administrace"
 desktop/views/components/ui.header.nav.vue:
   game: "Hry"
@@ -1151,6 +1162,7 @@ mobile/views/components/ui.nav.vue:
   notifications: "Oznámení"
   search: "Vyhledávání"
   user-lists: "Seznamy"
+  user-groups: "Skupina"
   widgets: "Widgety"
   game: "Hry"
   admin: "Administrace"
