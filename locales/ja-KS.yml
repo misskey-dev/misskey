@@ -845,6 +845,10 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "ワイのインスタンス"
   federated: "連合"
+admin/views/logs.vue:
+  levels:
+    info: "情報"
+    error: "エラー"
 admin/views/abuse.vue:
   details: "もっと"
   remove-report: "削除"
