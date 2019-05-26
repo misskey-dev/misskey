@@ -1,4 +1,4 @@
-import fetchMeta from './fetch-meta';
+import { fetchMeta } from './fetch-meta';
 import { ILocalUser } from '../models/entities/user';
 import { Users } from '../models';
 import { ensure } from '../prelude/ensure';

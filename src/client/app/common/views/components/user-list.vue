@@ -2,13 +2,13 @@
 <ui-container :body-togglable="true">
 	<template #header><slot></slot></template>
 
-	<mk-error v-if="!fetching && !inited" @retry="init()"/>
+	<mk-error v-if="error" @retry="init()"/>
 
 	<div class="efvhhmdq" :class="{ iconOnly }" v-size="[{ lt: 500, class: 'narrow' }]">
-		<div class="no-users" v-if="inited && us.length == 0">
+		<div class="no-users" v-if="empty">
 			<p>{{ $t('no-users') }}</p>
 		</div>
-		<div class="user" v-for="user in us" :key="user.id">
+		<div class="user" v-for="user in users" :key="user.id">
 			<mk-avatar class="avatar" :user="user"/>
 			<div class="body" v-if="!iconOnly">
 				<div class="name">
@@ -21,8 +21,8 @@
 				<mk-follow-button class="follow-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 			</div>
 		</div>
-		<button class="more" :class="{ fetching: fetchingMoreUsers }" v-if="cursor != null" @click="fetchMoreUsers()" :disabled="fetchingMoreUsers">
-			<template v-if="fetchingMoreUsers"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreUsers ? $t('@.loading') : $t('@.load-more') }}
+		<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
+			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('@.loading') : $t('@.load-more') }}
 		</button>
 	</div>
 </ui-container>
@@ -31,13 +31,21 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
+import paging from '../../../common/scripts/paging';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/user-list.vue'),
 
+	mixins: [
+		paging({}),
+	],
+
 	props: {
-		makePromise: {
+		pagination: {
 			required: true
+		},
+		extract: {
+			required: false
 		},
 		iconOnly: {
 			type: Boolean,
@@ -45,46 +53,9 @@ export default Vue.extend({
 		}
 	},
 
-	data() {
-		return {
-			fetching: true,
-			fetchingMoreUsers: false,
-			us: [],
-			inited: false,
-			more: false
-		};
-	},
-
-	created() {
-		this.init();
-	},
-
-	methods: {
-		init() {
-			this.fetching = true;
-			this.makePromise().then(x => {
-				if (Array.isArray(x)) {
-					this.us = x;
-				} else {
-					this.us = x.users;
-					this.cursor = x.cursor;
-				}
-				this.inited = true;
-				this.fetching = false;
-			}, e => {
-				this.fetching = false;
-			});
-		},
-
-		fetchMoreUsers() {
-			this.fetchingMoreUsers = true;
-			this.makePromise(this.cursor).then(x => {
-				this.us = this.us.concat(x.users);
-				this.cursor = x.cursor;
-				this.fetchingMoreUsers = false;
-			}, e => {
-				this.fetchingMoreUsers = false;
-			});
+	computed: {
+		users() {
+			return this.extract ? this.extract(this.items) : this.items;
 		}
 	}
 });
@@ -166,7 +137,7 @@ export default Vue.extend({
 			> .follow-button
 				position absolute
 				top 8px
-				right 0px
+				right 0
 
 	> .more
 		display block

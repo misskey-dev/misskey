@@ -1,14 +1,35 @@
 import { Meta } from '../models/entities/meta';
-import { Metas } from '../models';
-import { genId } from './gen-id';
+import { getConnection } from 'typeorm';
 
-export default async function(): Promise<Meta> {
-	const meta = await Metas.findOne();
-	if (meta) {
-		return meta;
-	} else {
-		return Metas.save({
-			id: genId(),
-		} as Meta);
-	}
+let cache: Meta;
+
+export async function fetchMeta(noCache = false): Promise<Meta> {
+	if (!noCache && cache) return cache;
+
+	return await getConnection().transaction(async transactionalEntityManager => {
+		// バグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
+		const meta = await transactionalEntityManager.findOne(Meta, {
+			order: {
+				id: 'DESC'
+			}
+		});
+
+		if (meta) {
+			cache = meta;
+			return meta;
+		} else {
+			const saved = await transactionalEntityManager.save(Meta, {
+				id: 'x'
+			}) as Meta;
+
+			cache = saved;
+			return saved;
+		}
+	});
 }
+
+setInterval(() => {
+	fetchMeta(true).then(meta => {
+		cache = meta;
+	});
+}, 5000);

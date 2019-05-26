@@ -140,7 +140,7 @@ export default Vue.extend({
 			if (this.file.properties.avgColor) {
 				anime({
 					targets: this.$refs.thumbnail,
-					backgroundColor: this.file.properties.avgColor.replace('255)', '0)'),
+					backgroundColor: 'transparent', // TODO fade
 					duration: 100,
 					easing: 'linear'
 				});

@@ -5,7 +5,7 @@ import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';
@@ -80,7 +80,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 		}
 	});
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
 	if (Users.isLocalUser(user) && profile!.autoWatch) {

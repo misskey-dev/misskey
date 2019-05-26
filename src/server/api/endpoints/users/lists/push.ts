@@ -80,5 +80,5 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Push the user
-	pushUserToUserList(user, userList);
+	await pushUserToUserList(user, userList);
 });

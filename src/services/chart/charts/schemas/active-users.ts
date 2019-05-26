@@ -1,9 +1,12 @@
+import { types, bool } from '../../../../misc/schema';
+
 export const logSchema = {
 	/**
 	 * アクティブユーザー数
 	 */
 	count: {
-		type: 'number' as 'number',
+		type: types.number,
+		optional: bool.false, nullable: bool.false,
 		description: 'アクティブユーザー数',
 	},
 };
@@ -12,14 +15,17 @@ export const logSchema = {
  * アクティブユーザーに関するチャート
  */
 export const schema = {
-	type: 'object' as 'object',
+	type: types.object,
+	optional: bool.false, nullable: bool.false,
 	properties: {
 		local: {
-			type: 'object' as 'object',
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
 			properties: logSchema
 		},
 		remote: {
-			type: 'object' as 'object',
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
 			properties: logSchema
 		},
 	}

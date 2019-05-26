@@ -3,6 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFolders } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	stability: 'stable',
@@ -29,7 +30,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'DriveFolder',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'DriveFolder',
 	},
 
 	errors: {

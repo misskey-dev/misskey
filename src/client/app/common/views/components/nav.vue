@@ -1,12 +1,16 @@
 <template>
 <span class="mk-nav">
 	<a :href="aboutUrl">{{ $t('about') }}</a>
+	<template v-if="ToSUrl !== null">
+		<i>・</i>
+		<a :href="ToSUrl" target="_blank">{{ $t('tos') }}</a>
+	</template>
 	<i>・</i>
-	<a :href="repositoryUrl">{{ $t('repository') }}</a>
+	<a :href="repositoryUrl" rel="noopener" target="_blank">{{ $t('repository') }}</a>
 	<i>・</i>
-	<a :href="feedbackUrl" target="_blank">{{ $t('feedback') }}</a>
+	<a :href="feedbackUrl" rel="noopener" target="_blank">{{ $t('feedback') }}</a>
 	<i>・</i>
-	<a href="/dev">{{ $t('develop') }}</a>
+	<a href="/dev" target="_blank">{{ $t('develop') }}</a>
 </span>
 </template>
 
@@ -21,8 +25,17 @@ export default Vue.extend({
 		return {
 			aboutUrl: `/docs/${lang}/about`,
 			repositoryUrl: 'https://github.com/syuilo/misskey',
-			feedbackUrl: 'https://github.com/syuilo/misskey/issues/new'
+			feedbackUrl: 'https://github.com/syuilo/misskey/issues/new',
+			ToSUrl: null
 		}
+	},
+
+	mounted() {
+		this.$root.getMeta(true).then(meta => {
+			this.repositoryUrl = meta.repositoryUrl;
+			this.feedbackUrl = meta.feedbackUrl;
+			this.ToSUrl = meta.ToSUrl;
+		})
 	}
 });
 </script>

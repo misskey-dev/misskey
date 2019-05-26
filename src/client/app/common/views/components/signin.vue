@@ -10,14 +10,14 @@
 		<span>{{ $t('password') }}</span>
 		<template #prefix><fa icon="lock"/></template>
 	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="number" required>
+	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 		<span>{{ $t('@.2fa') }}</span>
 		<template #prefix><fa icon="gavel"/></template>
 	</ui-input>
 	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('@.signin') }}</ui-button>
-	<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`">{{ $t('signin-with-twitter') }}</a></p>
-	<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`">{{ $t('signin-with-github') }}</a></p>
-	<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`">{{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
+	<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="['fab', 'twitter']"/> {{ $t('signin-with-twitter') }}</a></p>
+	<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="['fab', 'github']"/> {{ $t('signin-with-github') }}</a></p>
+	<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="['fab', 'discord']"/> {{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
 </form>
 </template>
 
@@ -79,7 +79,10 @@ export default Vue.extend({
 				localStorage.setItem('i', res.i);
 				location.reload();
 			}).catch(() => {
-				alert(this.$t('login-failed'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('login-failed')
+				});
 				this.signing = false;
 			});
 		}

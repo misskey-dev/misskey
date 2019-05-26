@@ -8,11 +8,10 @@ import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
 import delFile from './delete-file';
-import config from '../../config';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
+import { IImage, convertToJpeg, convertToWebp, convertToPng, convertToGif, convertToApng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
@@ -37,7 +36,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 	// thunbnail, webpublic を必要なら生成
 	const alts = await generateAlts(path, type, !file.uri);
 
-	if (config.drive && config.drive.storage == 'minio') {
+	const meta = await fetchMeta();
+
+	if (meta.useObjectStorage) {
 		//#region ObjectStorage params
 		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
 
@@ -47,11 +48,11 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/webp') ext = '.webp';
 		}
 
-		const baseUrl = config.drive.baseUrl
-			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
+		const baseUrl = meta.objectStorageBaseUrl
+			|| `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
 
 		// for original
-		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const key = `${meta.objectStoragePrefix}/${uuid.v4()}${ext}`;
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
@@ -68,7 +69,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		];
 
 		if (alts.webpublic) {
-			webpublicKey = `${config.drive.prefix}/${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.webpublic.ext}`;
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
@@ -76,7 +77,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		}
 
 		if (alts.thumbnail) {
-			thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -149,11 +150,15 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		logger.info(`creating web image`);
 
 		if (['image/jpeg'].includes(type)) {
-			webpublic = await ConvertToJpeg(path, 2048, 2048);
+			webpublic = await convertToJpeg(path, 2048, 2048);
 		} else if (['image/webp'].includes(type)) {
-			webpublic = await ConvertToWebp(path, 2048, 2048);
+			webpublic = await convertToWebp(path, 2048, 2048);
 		} else if (['image/png'].includes(type)) {
-			webpublic = await ConvertToPng(path, 2048, 2048);
+			webpublic = await convertToPng(path, 2048, 2048);
+		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+			webpublic = await convertToApng(path);
+		} else if (['image/gif'].includes(type)) {
+			webpublic = await convertToGif(path);
 		} else {
 			logger.info(`web image not created (not an image)`);
 		}
@@ -166,9 +171,11 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	let thumbnail: IImage | null = null;
 
 	if (['image/jpeg', 'image/webp'].includes(type)) {
-		thumbnail = await ConvertToJpeg(path, 498, 280);
+		thumbnail = await convertToJpeg(path, 498, 280);
 	} else if (['image/png'].includes(type)) {
-		thumbnail = await ConvertToPng(path, 498, 280);
+		thumbnail = await convertToPng(path, 498, 280);
+	} else if (['image/gif'].includes(type)) {
+		thumbnail = await convertToGif(path);
 	} else if (type.startsWith('video/')) {
 		try {
 			thumbnail = await GenerateVideoThumbnail(path);
@@ -188,7 +195,16 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
  * Upload to ObjectStorage
  */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
-	const minio = new Minio.Client(config.drive!.config);
+	const meta = await fetchMeta();
+
+	const minio = new Minio.Client({
+		endPoint: meta.objectStorageEndpoint!,
+		region: meta.objectStorageRegion ? meta.objectStorageRegion : undefined,
+		port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
+		useSSL: meta.objectStorageUseSSL,
+		accessKey: meta.objectStorageAccessKey!,
+		secretKey: meta.objectStorageSecretKey!,
+	});
 
 	const metadata = {
 		'Content-Type': type,
@@ -197,7 +213,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
 
-	await minio.putObject(config.drive!.bucket!, key, stream, undefined, metadata);
+	await minio.putObject(meta.objectStorageBucket!, key, stream, undefined, metadata);
 }
 
 async function deleteOldFile(user: IRemoteUser) {
@@ -212,7 +228,7 @@ async function deleteOldFile(user: IRemoteUser) {
 		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
 	}
 
-	q.orderBy('file.id', 'DESC');
+	q.orderBy('file.id', 'ASC');
 
 	const oldFile = await q.getOne();
 
@@ -363,16 +379,14 @@ export default async function(
 
 				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				const value = info.isOpaque ? `rgba(${r},${g},${b},0)` : `rgba(${r},${g},${b},255)`;
-
-				properties['avgColor'] = value;
+				properties['avgColor'] = `rgb(${r},${g},${b})`;
 			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];
 	}
 
-	const profile = await UserProfiles.findOne({ userId: user.id });
+	const profile = await UserProfiles.findOne(user.id);
 
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
@@ -395,6 +409,8 @@ export default async function(
 
 		if (isLink) {
 			file.url = url;
+			file.thumbnailUrl = url;
+			file.webpublicUrl = url;
 		}
 	}
 
@@ -408,6 +424,7 @@ export default async function(
 			file.md5 = hash;
 			file.name = detectedName;
 			file.type = mime;
+			file.storedInternal = false;
 
 			file = await DriveFiles.save(file);
 		} catch (e) {

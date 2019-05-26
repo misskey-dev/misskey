@@ -137,7 +137,6 @@ export default prop => ({
 					Vue.set(this.$_ns_target, 'deletedAt', body.deletedAt);
 					Vue.set(this.$_ns_target, 'renote', null);
 					this.$_ns_target.text = null;
-					this.$_ns_target.tags = [];
 					this.$_ns_target.fileIds = [];
 					this.$_ns_target.poll = null;
 					this.$_ns_target.geo = null;
@@ -145,8 +144,6 @@ export default prop => ({
 					break;
 				}
 			}
-
-			this.$emit(`update:${prop}`, this.$_ns_note_);
 		},
 	}
 });

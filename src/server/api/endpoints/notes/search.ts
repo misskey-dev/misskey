@@ -4,6 +4,8 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { In } from 'typeorm';
+import { types, bool } from '../../../../misc/schema';
+import { ID } from '../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
@@ -28,14 +30,27 @@ export const meta = {
 		offset: {
 			validator: $.optional.num.min(0),
 			default: 0
-		}
+		},
+
+		host: {
+			validator: $.optional.nullable.str,
+			default: undefined
+		},
+
+		userId: {
+			validator: $.optional.nullable.type(ID),
+			default: null
+		},
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {
@@ -50,30 +65,51 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	if (es == null) throw new ApiError(meta.errors.searchingNotAvailable);
 
-	const response = await es.search({
-		index: 'misskey',
-		type: 'note',
+	const userQuery = ps.userId != null ? [{
+		term: {
+			userId: ps.userId
+		}
+	}] : [];
+
+	const hostQuery = ps.userId == null ?
+		ps.host === null ? [{
+			bool: {
+				must_not: {
+					exists: {
+						field: 'userHost'
+					}
+				}
+			}
+		}] : ps.host !== undefined ? [{
+			term: {
+				userHost: ps.host
+			}
+		}] : []
+	: [];
+
+	const result = await es.search({
+		index: 'misskey_note',
 		body: {
 			size: ps.limit!,
 			from: ps.offset,
 			query: {
-				simple_query_string: {
-					fields: ['text'],
-					query: ps.query,
-					default_operator: 'and'
+				bool: {
+					must: [{
+						simple_query_string: {
+							fields: ['text'],
+							query: ps.query.toLowerCase(),
+							default_operator: 'and'
+						},
+					}, ...hostQuery, ...userQuery]
 				}
 			},
-			sort: [
-				{ _doc: 'desc' }
-			]
+			sort: [{
+				_doc: 'desc'
+			}]
 		}
 	});
 
-	if (response.hits.total === 0) {
-		return [];
-	}
-
-	const hits = response.hits.hits.map((hit: any) => hit.id);
+	const hits = result.body.hits.hits.map((hit: any) => hit._id);
 
 	if (hits.length === 0) return [];
 

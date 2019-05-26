@@ -232,5 +232,11 @@
 		adminDashboardCardBg: '$secondary',
 		adminDashboardCardFg: '$text',
 		adminDashboardCardDivider: 'rgba(0, 0, 0, 0.3)',
+
+		pageBlockBorder: 'rgba(255, 255, 255, 0.1)',
+		pageBlockBorderHover: 'rgba(255, 255, 255, 0.15)',
+
+		groupUserListOwnerFg: '#f15f71',
+		groupUserListOwnerBg: '#5d282e'
 	},
 }

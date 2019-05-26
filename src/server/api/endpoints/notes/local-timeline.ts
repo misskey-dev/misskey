@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
@@ -9,6 +9,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { activeUsersChart } from '../../../../services/chart';
 import { Brackets } from 'typeorm';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -63,10 +64,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {
@@ -79,7 +83,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// TODO どっかにキャッシュ
 	const m = await fetchMeta();
 	if (m.disableLocalTimeline) {
 		if (user == null || (!user.isAdmin && !user.isModerator)) {
@@ -122,9 +125,11 @@ export default define(meta, async (ps, user) => {
 
 	const timeline = await query.take(ps.limit!).getMany();
 
-	if (user) {
-		activeUsersChart.update(user);
-	}
+	process.nextTick(() => {
+		if (user) {
+			activeUsersChart.update(user);
+		}
+	});
 
 	return await Notes.packMany(timeline, user);
 });

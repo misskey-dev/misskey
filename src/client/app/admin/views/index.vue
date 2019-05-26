@@ -28,7 +28,6 @@
 			<li @click="nav('federation')" :class="{ active: page == 'federation' }"><fa :icon="faGlobe" fixed-width/>{{ $t('federation') }}</li>
 			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
 			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
-			<li @click="nav('hashtags')" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('hashtags') }}</li>
 			<li @click="nav('abuse')" :class="{ active: page == 'abuse' }"><fa :icon="faExclamationCircle" fixed-width/>{{ $t('abuse') }}</li>
 		</ul>
 		<div class="back-to-misskey">
@@ -48,7 +47,6 @@
 			<div v-if="page == 'users'"><x-users/></div>
 			<div v-if="page == 'emoji'"><x-emoji/></div>
 			<div v-if="page == 'announcements'"><x-announcements/></div>
-			<div v-if="page == 'hashtags'"><x-hashtags/></div>
 			<div v-if="page == 'drive'"><x-drive/></div>
 			<div v-if="page == 'federation'"><x-federation/></div>
 			<div v-if="page == 'abuse'"><x-abuse/></div>
@@ -68,7 +66,6 @@ import XLogs from "./logs.vue";
 import XModerators from "./moderators.vue";
 import XEmoji from "./emoji.vue";
 import XAnnouncements from "./announcements.vue";
-import XHashtags from "./hashtags.vue";
 import XUsers from "./users.vue";
 import XDrive from "./drive.vue";
 import XAbuse from "./abuse.vue";
@@ -91,7 +88,6 @@ export default Vue.extend({
 		XModerators,
 		XEmoji,
 		XAnnouncements,
-		XHashtags,
 		XUsers,
 		XDrive,
 		XAbuse,

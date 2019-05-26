@@ -17,7 +17,7 @@ export async function renderPerson(user: ILocalUser) {
 	const [avatar, banner, profile] = await Promise.all([
 		user.avatarId ? DriveFiles.findOne(user.avatarId) : Promise.resolve(undefined),
 		user.bannerId ? DriveFiles.findOne(user.bannerId) : Promise.resolve(undefined),
-		UserProfiles.findOne({ userId: user.id }).then(ensure)
+		UserProfiles.findOne(user.id).then(ensure)
 	]);
 
 	const attachment: {

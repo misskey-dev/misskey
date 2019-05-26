@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
+	<mk-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')">
 		<template #header>
 			<slot></slot>
 		</template>
@@ -11,34 +11,23 @@
 <script lang="ts">
 import Vue from 'vue';
 
-const fetchLimit = 10;
-
 export default Vue.extend({
 	props: ['list'],
 	data() {
 		return {
 			connection: null,
-			makePromise: cursor => this.$root.api('notes/user-list-timeline', {
-				listId: this.list.id,
-				limit: fetchLimit + 1,
-				untilId: cursor ? cursor : undefined,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			}).then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-					return {
-						notes: notes,
-						more: true
-					};
-				} else {
-					return {
-						notes: notes,
-						more: false
-					};
-				}
-			})
+			date: null,
+			pagination: {
+				endpoint: 'notes/user-list-timeline',
+				limit: 10,
+				params: init => ({
+					listId: this.list.id,
+					untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+					includeMyRenotes: this.$store.state.settings.showMyRenotes,
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+				})
+			}
 		};
 	},
 	watch: {
@@ -46,6 +35,10 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.init();
+		this.$root.$on('warp', this.warp);
+		this.$once('hook:beforeDestroy', () => {
+			this.$root.$off('warp', this.warp);
+		});
 	},
 	beforeDestroy() {
 		this.connection.dispose();
@@ -67,6 +60,10 @@ export default Vue.extend({
 			(this.$refs.timeline as any).reload();
 		},
 		onUserRemoved() {
+			(this.$refs.timeline as any).reload();
+		},
+		warp(date) {
+			this.date = date;
 			(this.$refs.timeline as any).reload();
 		}
 	}

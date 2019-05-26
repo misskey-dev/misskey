@@ -12,11 +12,11 @@ import * as views from 'koa-views';
 
 import docs from './docs';
 import packFeed from './feed';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
-import { Users, Notes, Emojis, UserProfiles } from '../../models';
+import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
@@ -203,10 +203,45 @@ router.get('/notes/:note', async ctx => {
 
 	ctx.status = 404;
 });
+
+// Page
+router.get('/@:user/pages/:page', async ctx => {
+	const { username, host } = parseAcct(ctx.params.user);
+	const user = await Users.findOne({
+		usernameLower: username.toLowerCase(),
+		host
+	});
+
+	if (user == null) return;
+
+	const page = await Pages.findOne({
+		name: ctx.params.page,
+		userId: user.id
+	});
+
+	if (page) {
+		const _page = await Pages.pack(page);
+		const meta = await fetchMeta();
+		await ctx.render('page', {
+			page: _page,
+			instanceName: meta.name || 'Misskey'
+		});
+
+		if (['public'].includes(page.visibility)) {
+			ctx.set('Cache-Control', 'public, max-age=180');
+		} else {
+			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+		}
+
+		return;
+	}
+
+	ctx.status = 404;
+});
 //#endregion
 
 router.get('/info', async ctx => {
-	const meta = await fetchMeta();
+	const meta = await fetchMeta(true);
 	const emojis = await Emojis.find({
 		where: { host: null }
 	});

@@ -20,10 +20,32 @@ import { Note } from '../../../models/entities/note';
 import { IObject, INote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
+
+export function validateNote(object: any, uri: string) {
+	const expectHost = extractDbHost(uri);
+
+	if (object == null) {
+		return new Error('invalid Note: object is null');
+	}
+
+	if (!['Note', 'Question', 'Article'].includes(object.type)) {
+		return new Error(`invalid Note: invalied object type ${object.type}`);
+	}
+
+	if (object.id && extractDbHost(object.id) !== expectHost) {
+		return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${extractDbHost(object.id)}`);
+	}
+
+	if (object.attributedTo && extractDbHost(object.attributedTo) !== expectHost) {
+		return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${extractDbHost(object.attributedTo)}`);
+	}
+
+	return null;
+}
 
 /**
  * Noteをフェッチします。
@@ -59,8 +81,10 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	const object: any = await resolver.resolve(value);
 
-	if (!object || !['Note', 'Question', 'Article'].includes(object.type)) {
-		logger.error(`invalid note: ${value}`, {
+	const entryUri = value.id || value;
+	const err = validateNote(object, entryUri);
+	if (err) {
+		logger.error(`${err.message}`, {
 			resolver: {
 				history: resolver.getHistory()
 			},
@@ -233,7 +257,6 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	if (uri == null) throw new Error('missing uri');
 
 	// ブロックしてたら中断
-	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(extractDbHost(uri))) throw { statusCode: 451 };
 
@@ -248,7 +271,7 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	// リモートサーバーからフェッチしてきて登録
 	// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
 	// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
-	return await createNote(uri, resolver).catch(e => {
+	return await createNote(uri, resolver, true).catch(e => {
 		if (e.name === 'duplicated') {
 			return fetchNote(uri).then(note => {
 				if (note == null) {

@@ -1,9 +1,11 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
-import { id } from '../id';
 
 @Entity()
 export class Meta {
-	@PrimaryColumn(id())
+	@PrimaryColumn({
+		type: 'varchar',
+		length: 32
+	})
 	public id: string;
 
 	@Column('varchar', {
@@ -66,6 +68,11 @@ export class Meta {
 		length: 64, array: true, default: '{}'
 	})
 	public langs: string[];
+
+	@Column('varchar', {
+		length: 256, array: true, default: '{}'
+	})
+	public pinnedUsers: string[];
 
 	@Column('varchar', {
 		length: 256, array: true, default: '{}'
@@ -261,4 +268,81 @@ export class Meta {
 		nullable: true
 	})
 	public discordClientSecret: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public ToSUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		default: 'https://github.com/syuilo/misskey',
+		nullable: false
+	})
+	public repositoryUrl: string;
+
+	@Column('varchar', {
+		length: 512,
+		default: 'https://github.com/syuilo/misskey/issues/new',
+		nullable: true
+	})
+	public feedbackUrl: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public useObjectStorage: boolean;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public objectStorageBucket: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public objectStoragePrefix: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public objectStorageBaseUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public objectStorageEndpoint: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public objectStorageRegion: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public objectStorageAccessKey: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public objectStorageSecretKey: string | null;
+
+	@Column('integer', {
+		nullable: true
+	})
+	public objectStoragePort: number | null;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public objectStorageUseSSL: boolean;
 }

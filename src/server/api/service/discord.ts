@@ -7,13 +7,13 @@ import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
-	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+	return ((ctx.headers['cookie'] || '').match(/i=(\w+)/) || [null, null])[1];
 }
 
 function compareOrigin(ctx: Koa.BaseContext) {
@@ -68,7 +68,7 @@ router.get('/disconnect/discord', async ctx => {
 });
 
 async function getOAuth2() {
-	const meta = await fetchMeta();
+	const meta = await fetchMeta(true);
 
 	if (meta.enableDiscordIntegration) {
 		return new OAuth2(
@@ -203,12 +203,8 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const profile = await UserProfiles.createQueryBuilder()
-			.where('discord @> :discord', {
-				discord: {
-					id: id,
-				},
-			})
-			.andWhere('userHost IS NULL')
+			.where('"discordId" = :id', { id: id })
+			.andWhere('"userHost" IS NULL')
 			.getOne();
 
 		if (profile == null) {

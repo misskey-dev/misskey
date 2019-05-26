@@ -3,13 +3,14 @@ import * as ms from 'ms';
 import { length } from 'stringz';
 import create from '../../../../services/note/create';
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
 import { User } from '../../../../models/entities/user';
 import { Users, DriveFiles, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
+import { types, bool } from '../../../../misc/schema';
 
 let maxNoteTextLength = 1000;
 
@@ -174,10 +175,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
 		properties: {
 			createdNote: {
-				type: 'Note',
+				type: types.object,
+				optional: bool.false, nullable: bool.false,
+				ref: 'Note',
 				description: '作成した投稿'
 			}
 		}
@@ -238,8 +242,6 @@ export default define(meta, async (ps, user, app) => {
 				userId: user.id
 			})
 		))).filter(file => file != null) as DriveFile[];
-
-		files = files;
 	}
 
 	let renote: Note | undefined;

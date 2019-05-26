@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../define';
 import { Users } from '../../../models';
 import { generateMuteQueryForUsers } from '../common/generate-mute-query';
+import { types, bool } from '../../../misc/schema';
 
 export const meta = {
 	tags: ['users'],
@@ -36,7 +37,6 @@ export const meta = {
 				'admin',
 				'moderator',
 				'adminOrModerator',
-				'verified',
 				'alive'
 			]),
 			default: 'all'
@@ -53,9 +53,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'User',
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'User',
 		}
 	},
 };
@@ -67,7 +70,6 @@ export default define(meta, async (ps, me) => {
 		case 'admin': query.where('user.isAdmin = TRUE'); break;
 		case 'moderator': query.where('user.isModerator = TRUE'); break;
 		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR isModerator = TRUE'); break;
-		case 'verified': query.where('user.isVerified = TRUE'); break;
 		case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
 	}
 
@@ -81,8 +83,8 @@ export default define(meta, async (ps, me) => {
 		case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
 		case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
 		case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
-		case '+updatedAt': query.orderBy('user.updatedAt', 'DESC'); break;
-		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
+		case '+updatedAt': query.andWhere('user.updatedAt IS NOT NULL').orderBy('user.updatedAt', 'DESC'); break;
+		case '-updatedAt': query.andWhere('user.updatedAt IS NOT NULL').orderBy('user.updatedAt', 'ASC'); break;
 		default: query.orderBy('user.id', 'ASC'); break;
 	}
 

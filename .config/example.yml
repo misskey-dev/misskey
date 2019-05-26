@@ -62,6 +62,10 @@ db:
   user: example-misskey-user
   pass: example-misskey-pass
 
+  # Extra Connection options
+  #extra:
+  #  ssl: true
+
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
 
@@ -78,47 +82,6 @@ redis:
 #  port: 9200
 #  pass: null
 
-#   ┌────────────────────────────────────┐
-#───┘ File storage (Drive) configuration └──────────────────────
-
-drive:
-  storage: 'fs'
-
-  # OR
-
-  # storage: 'minio'
-  # bucket:
-  # prefix:
-  # config:
-  #   endPoint:
-  #   port:
-  #   useSSL:
-  #   accessKey:
-  #   secretKey:
-
-  # S3 example
-  # storage: 'minio'
-  # bucket: bucket-name
-  # prefix: files
-  # config:
-  #   endPoint: s3-us-west-2.amazonaws.com
-  #   region: us-west-2
-  #   useSSL: true
-  #   accessKey: XXX
-  #   secretKey: YYY
-
-  # S3 example (with CDN, custom domain)
-  # storage: 'minio'
-  # bucket: drive.example.com
-  # prefix: files
-  # baseUrl: https://drive.example.com
-  # config:
-  #   endPoint: s3-us-west-2.amazonaws.com
-  #   region: us-west-2
-  #   useSSL: true
-  #   accessKey: XXX
-  #   secretKey: YYY
-
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 
@@ -131,6 +94,9 @@ drive:
 # meid ... Similar to ObjectID, Millisecond accuracy
 # ulid ... Millisecond accuracy
 # objectid ... This is left for backward compatibility
+
+# ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
+# ID SETTINGS AFTER THAT!
 
 id: 'aid'
 
@@ -146,3 +112,6 @@ autoAdmin: true
 
 # Clustering
 #clusterLimit: 1
+
+# IP address family used for outgoing request (ipv4, ipv6 or dual)
+#outgoingAddressFamily: ipv4

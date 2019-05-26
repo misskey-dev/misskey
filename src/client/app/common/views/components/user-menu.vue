@@ -7,7 +7,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import { faExclamationCircle, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 
@@ -27,19 +26,23 @@ export default Vue.extend({
 			icon: ['fas', 'list'],
 			text: this.$t('push-to-list'),
 			action: this.pushList
-		}, null, {
-			icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
-			text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
-			action: this.toggleMute
-		}, {
-			icon: 'ban',
-			text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
-			action: this.toggleBlock
-		}, null, {
-			icon: faExclamationCircle,
-			text: this.$t('report-abuse'),
-			action: this.reportAbuse
-		}];
+		}] as any;
+
+		if (this.$store.getters.isSignedIn && this.$store.state.i.id != this.user.id) {
+			menu = menu.concat([null, {
+				icon: this.user.isMuted ? ['fas', 'eye'] : ['far', 'eye-slash'],
+				text: this.user.isMuted ? this.$t('unmute') : this.$t('mute'),
+				action: this.toggleMute
+			}, {
+				icon: 'ban',
+				text: this.user.isBlocking ? this.$t('unblock') : this.$t('block'),
+				action: this.toggleBlock
+			}, null, {
+				icon: faExclamationCircle,
+				text: this.$t('report-abuse'),
+				action: this.reportAbuse
+			}]);
+		}
 
 		if (this.$store.getters.isSignedIn && (this.$store.state.i.isAdmin || this.$store.state.i.isModerator)) {
 			menu = menu.concat([null, {
@@ -89,8 +92,10 @@ export default Vue.extend({
 			});
 		},
 
-		toggleMute() {
+		async toggleMute() {
 			if (this.user.isMuted) {
+				if (!await this.getConfirmed(this.$t('unmute-confirm'))) return;
+
 				this.$root.api('mute/delete', {
 					userId: this.user.id
 				}).then(() => {
@@ -102,6 +107,8 @@ export default Vue.extend({
 					});
 				});
 			} else {
+				if (!await this.getConfirmed(this.$t('mute-confirm'))) return;
+
 				this.$root.api('mute/create', {
 					userId: this.user.id
 				}).then(() => {
@@ -115,8 +122,10 @@ export default Vue.extend({
 			}
 		},
 
-		toggleBlock() {
+		async toggleBlock() {
 			if (this.user.isBlocking) {
+				if (!await this.getConfirmed(this.$t('unblock-confirm'))) return;
+
 				this.$root.api('blocking/delete', {
 					userId: this.user.id
 				}).then(() => {
@@ -128,6 +137,8 @@ export default Vue.extend({
 					});
 				});
 			} else {
+				if (!await this.getConfirmed(this.$t('block-confirm'))) return;
+
 				this.$root.api('blocking/create', {
 					userId: this.user.id
 				}).then(() => {
@@ -164,7 +175,9 @@ export default Vue.extend({
 			});
 		},
 
-		toggleSilence() {
+		async toggleSilence() {
+			if (!await this.getConfirmed(this.$t(this.user.isSilenced ? 'unsilence-confirm' : 'silence-confirm'))) return;
+
 			this.$root.api(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
 				userId: this.user.id
 			}).then(() => {
@@ -181,7 +194,9 @@ export default Vue.extend({
 			});
 		},
 
-		toggleSuspend() {
+		async toggleSuspend() {
+			if (!await this.getConfirmed(this.$t(this.user.isSuspended ? 'unsuspend-confirm' : 'suspend-confirm'))) return;
+
 			this.$root.api(this.user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
 				userId: this.user.id
 			}).then(() => {
@@ -196,7 +211,18 @@ export default Vue.extend({
 					text: e
 				});
 			});
-		}
+		},
+
+		async getConfirmed(text: string): Promise<Boolean> {
+			const confirm = await this.$root.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				title: 'confirm',
+				text,
+			});
+
+			return !confirm.canceled;
+		},
 	}
 });
 </script>

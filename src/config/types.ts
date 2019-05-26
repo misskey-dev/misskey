@@ -14,6 +14,7 @@ export type Source = {
 		db: string;
 		user: string;
 		pass: string;
+		extra?: { [x: string]: string };
 	};
 	redis: {
 		host: string;
@@ -27,13 +28,6 @@ export type Source = {
 		port: number;
 		pass: string;
 	};
-	drive?: {
-		storage: string;
-		bucket?: string;
-		prefix?: string;
-		baseUrl?: string;
-		config?: any;
-	};
 
 	autoAdmin?: boolean;
 
@@ -44,6 +38,8 @@ export type Source = {
 	clusterLimit?: number;
 
 	id: string;
+
+	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
 };
 
 /**

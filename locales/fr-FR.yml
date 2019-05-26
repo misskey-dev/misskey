@@ -13,7 +13,7 @@ common:
     rich-contents-desc: "Partagez vos idées, les événements et les sujets qui vous tiennent à cœur ainsi que tout autre chose que vous souhaitez partager avec les autres. Si vous le désirez, vous pouvez décorer vos messages en utilisant une syntaxe différente ou en y joignant des sondages et des fichiers, tels que les photos ou les vidéos que vous aimez."
     reaction: "Réactions"
     reaction-desc: "Une manière simple d'exprimer vos émotions. Misskey peut attacher diverses réactions aux publications des autres utilisateurs. Si vous essayez les réactions sur Misskey, vous ne pourrez plus retourner sur une autre plateforme de réseaux sociaux n'offrant que des « J'aime »."
-    ui: "Interface utilisateur"
+    ui: "Interface"
     ui-desc: "Aucune interface graphique ne peut plaire à tout le monde. Par conséquent, Misskey possède une interface utilisateur hautement personnalisable selon vos goûts. Vous pouvez rendre votre page d'accueil originale en modifiant la mise en page de votre fil et en déplaçant les widgets que vous pouvez facilement ajuster pour vous approprier cet espace."
     drive: "Drive"
     drive-desc: "Vous voulez poster une photo que vous avez déjà transférée ? Vous souhaitez organiser, nommer et créer un dossier pour vos fichiers téléversés ? Misskey Drive est la meilleure solution pour vous. Très facile de partager vos fichiers en ligne."
@@ -33,6 +33,7 @@ common:
   signin: "Se connecter"
   signup: "S'enregistrer"
   signout: "Se déconnecter"
+  reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -59,6 +60,7 @@ common:
   month-and-day: "{day}-{month}"
   trash: "Corbeille"
   drive: "Drive"
+  pages: "Pages"
   messaging: "Conversations"
   home: "Principal"
   deck: "Deck"
@@ -66,12 +68,24 @@ common:
   explore: "Découvrir"
   following: "Suit"
   followers: "Abonné·e·s"
-  favorites: "Mettre cette note en favoris"
+  favorites: "Favorites"
   permissions:
-    'read:account': "Afficher les informations du compte"
-    'write:account': "Mettre à jour les informations de votre compte"
-    'read:drive': "Parcourir le Drive"
-    'write:drive': "Écrire sur le Drive"
+    "read:account": "Afficher les informations du compte"
+    "write:account": "Mettre à jour les informations de votre compte"
+    "read:blocks": "Voir les blocs"
+    "write:blocks": "Écrire des blocs"
+    "read:drive": "Parcourir le Drive"
+    "write:drive": "Écrire sur le Drive"
+    "read:favorites": "Afficher les favoris"
+    "write:favorites": "Écrire des favoris"
+    "read:messaging": "Lire les conversations"
+    "write:messaging": "Utiliser la messagerie"
+    "write:notes": "Créer ou supprimer des publications"
+    "read:notifications": "Afficher les notifications"
+    "write:notifications": "Gérer vos notifications"
+    "read:reactions": "Lire les réactions"
+    "write:reactions": "Gérer vos réactions"
+    "write:votes": "Vote"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Les utilisateurs suivants afficheront leurs publications sur votre fil."
     explore: "Trouver des utilisateurs"
@@ -126,7 +140,7 @@ common:
     notification: "Notifications"
     apps: "Applications"
     tags: "Hashtags"
-    mute-and-block: "Silencer / Bloquer"
+    mute-and-block: "Silencés / Bloqués"
     blocking: "En cours blocage"
     security: "Sécurité"
     signin: "Historique des connexions"
@@ -135,6 +149,7 @@ common:
     appearance: "Apparence"
     behavior: "Comportement"
     fetch-on-scroll: "Chargement automatique lors du défilement"
+    fetch-on-scroll-desc: "Chargement automatique du contenu lors du défilement de la page."
     note-visibility: "Visibilité de la publication"
     default-note-visibility: "Visibilité par défaut"
     remember-note-visibility: "Se souvenir du mode de visibilité de la publication"
@@ -185,6 +200,7 @@ common:
     show-clock-on-header: "Afficher l'horloge sur le coté supérieur droit"
     timeline: "Fil d’actualité"
     show-my-renotes: "Afficher mes republications dans le fil"
+    show-renoted-my-notes: "Afficher les partages de mes propres notes sur le fil"
     remain-deleted-note: "Continuer à afficher les notes supprimées"
     sound: "Son"
     enable-sounds: "Activer les sons"
@@ -205,16 +221,16 @@ common:
     debug-mode: "Activer le mode débogage"
     debug-mode-desc: "Ce paramètre est stocké dans le navigateur."
     navbar-position: "Position de la barre de navigation"
-    navbar-position-top: "en haut"
+    navbar-position-top: "En haut"
     navbar-position-left: "À gauche"
-    navbar-position-right: "à droite"
+    navbar-position-right: "À droite"
     i-am-under-limited-internet: "J'ai un accès Internet limité"
     post-style: "Style d'affichage des notes"
     post-style-standard: "Standard"
     post-style-smart: "Intelligent"
     notification-position: "Afficher les notifications"
     notification-position-bottom: "en bas"
-    notification-position-top: "en haut"
+    notification-position-top: "En haut"
     disable-via-mobile: "Enlever la mention publié via 'mobile'"
     load-raw-images: "Afficher les photos jointes dans leur qualité originale"
     load-remote-media: "Afficher les médias depuis le serveur distant"
@@ -226,9 +242,9 @@ common:
   update-available-title: "Mise à jour disponible"
   update-available: "Une nouvelle version de Misskey est disponible ({newer}, version actuelle: {current}). Veuillez recharger la page pour appliquer la mise à jour."
   my-token-regenerated: "Votre jeton vient d’être généré, vous allez maintenant être déconnecté."
-  verified-user: "Compte vérifié"
   hide-password: "Masquer le mot de passe"
   show-password: "Afficher le mot de passe"
+  enter-username: "Saisir un nom d'utilisateur"
   do-not-use-in-production: "Il s’agit d’une version de développement. Ne pas utiliser dans un environnement de production."
   user-suspended: "Cet·te utilisateur·trice a été suspendu·e"
   is-remote-user: "Les informations à propos de ce compte peuvent être incomplètes."
@@ -274,6 +290,7 @@ common:
     nav: "Navigation"
     tips: "Conseils"
     hashtags: "Hashtags"
+    queue: "File d'attente"
   dev: "Échec lors de la création de l’application. Veuillez réessayer."
   ai-chan-kawaii: "Ai-Chan est mignonne !"
   you: "Vous"
@@ -293,7 +310,6 @@ auth/views/index.vue:
   error: "La session n’existe pas."
   sign-in: "Veuillez vous connecter"
 common/views/pages/explore.vue:
-  verified-users: "Comptes vérifiés"
   popular-users: "Utilisateurs populaires"
   recently-updated-users: "Utilisateurs actifs récemment"
   recently-registered-users: "Les nouveaux inscrits"
@@ -302,6 +318,7 @@ common/views/pages/explore.vue:
   explore: "Explorer {host}"
   users-info: "Actuellement, {users} utilisateurs se sont inscrit ici"
 common/views/components/url-preview.vue:
+  enable-player: "Activer la lecture"
   disable-player: "Fermer le lecteur"
 common/views/components/user-list.vue:
   no-users: "Il n'y a aucun utilisateur"
@@ -421,18 +438,22 @@ common/views/components/messaging.vue:
   search-user: "Trouver un utilisateur"
   you: "Vous"
   no-history: "Pas d'historique"
+  user: "Utilisateur·rice·s"
+  group: "Groupe"
+  start-with-user: "Initier une discussion avec un·e utilisateur·rice"
+  select-group: "Sélectionner un groupe"
 common/views/components/messaging-room.vue:
-  empty: "Pas de conversations"
+  not-talked-user: "Vous n'avez pas encore discuté avec cet·te utilisateur·rice"
+  not-talked-group: "Il n y a aucune conversation dans ce groupe"
   no-history: "Aucun historique"
-  resize-form: "Faites glisser pour redimensionner"
   new-message: "Nouveau message"
-  only-one-file-attached: "Un seul fichier peut être joint au message"
+  only-one-file-attached: "Vous ne pouvez joindre qu'un seul fichier au message"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Tapez ici votre message"
   send: "Envoyer"
   attach-from-local: "Joindre un fichier depuis votre ordinateur"
   attach-from-drive: "Joindre un fichier depuis votre Drive"
-  only-one-file-attached: "Un seul fichier uniquement peut être joint au message"
+  only-one-file-attached: "Vous ne pouvez joindre qu'un seul fichier au message"
 common/views/components/messaging-room.message.vue:
   is-read: "Lu"
   deleted: "Ce message a été supprimé"
@@ -445,6 +466,7 @@ common/views/components/nav.vue:
   repository: "Dépôt"
   develop: "Développeurs"
   feedback: "Suggestions"
+  tos: "Conditions d'utilisation"
 common/views/components/note-menu.vue:
   mention: "Mention"
   detail: "Détails"
@@ -463,8 +485,12 @@ common/views/components/user-menu.vue:
   mention: "Mention"
   mute: "Silencier"
   unmute: "Enlever la sourdine"
+  mute-confirm: "Rendre muet cet utilisateur ?"
+  unmute-confirm: "Ne plus masquer cet utilisateur ?"
   block: "Bloquer"
   unblock: "Débloquer"
+  block-confirm: "Bloquer cet utilisateur ?"
+  unblock-confirm: "Débloquer cet utilisateur ?"
   push-to-list: "Ajouter à une liste"
   select-list: "Sélectionnez une liste"
   report-abuse: "Signaler un abus"
@@ -547,6 +573,7 @@ common/views/components/signup.vue:
   password-matched: "OK"
   password-not-matched: "Les mots de passe ne correspondent pas."
   recaptcha: "Vérifier"
+  tos: "Conditions d'utilisation"
   create: "Créer un compte"
   some-error: "La création du compte a échoué. Veuillez réessayer."
 common/views/components/special-message.vue:
@@ -642,6 +669,7 @@ common/views/components/profile-editor.vue:
     blocking-list: "Liste des comptes bloqués"
     user-lists: "Listes"
   export-requested: "Vous avez demandé une exportation. Cela peut prendre un certain temps. Une fois l'exportation terminée, le fichier résultant sera ajouté dans le Drive."
+  import-requested: "Vous avez initié un import. Ceci peut prendre un peu de temps."
   enter-password: "Veuillez saisir votre mot de passe"
   danger-zone: "Zone de danger"
   delete-account: "Supprimer le compte"
@@ -653,6 +681,26 @@ common/views/components/user-list-editor.vue:
   remove-user: "Retirer de cette liste"
   delete-are-you-sure: "Voulez-vous vraiment supprimer la liste « $1 » ?"
   deleted: "Supprimé"
+  add-user: "Ajouter un utilisateur"
+common/views/components/user-group-editor.vue:
+  rename: "Renommer le groupe"
+  delete: "Supprimer le groupe"
+  deleted: "Supprimé"
+  invite: "Inviter"
+  invited: "Invitation envoyée avec succès"
+common/views/components/user-lists.vue:
+  user-lists: "Listes"
+  create-list: "Créer une liste"
+  list-name: "Nom de la liste"
+common/views/components/user-groups.vue:
+  user-groups: "Groupe"
+  create-group: "Créer un groupe"
+  group-name: "Nom du groupe"
+  owned-groups: "Mes groupes"
+  joined-groups: "Membre dans les groupes"
+  invites: "Inviter"
+  accept-invite: "Participer"
+  reject-invite: "Refuser"
 common/views/widgets/broadcast.vue:
   fetching: "Récupération"
   no-broadcasts: "Aucune annonce"
@@ -713,6 +761,10 @@ common/views/pages/follow.vue:
   request-pending: "Demande d’abonnement en attente"
   follow-processing: "Demande en attente"
   follow-request: "Demande d’abonnement"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Demandes d’abonnement"
+  accept: "Accepter"
+  reject: "Refuser"
 desktop:
   banner-crop-title: "Découpez la partie qui apparaîtra comme bannière"
   banner: "Bannière"
@@ -953,6 +1005,7 @@ common/views/components/password-settings.vue:
   changed: "Mot de passe modifié avec succès"
   failed: "Échec lors de la modification du mot de passe"
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "Enlever le fichier attaché"
   mark-as-sensitive: "Marquer comme sensible"
   unmark-as-sensitive: "Ne pas marquer comme sensible"
 desktop/views/components/sub-note-content.vue:
@@ -983,6 +1036,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Votre profil"
   lists: "Listes"
+  groups: "Groupes"
   follow-requests: "Demandes d’abonnement"
   admin: "Admin"
 desktop/views/components/ui.header.nav.vue:
@@ -993,14 +1047,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Rédiger une nouvelle publication"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Chercher"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "Demandes d’abonnement"
-  accept: "Accepter"
-  reject: "Refuser"
-desktop/views/components/user-lists-window.vue:
-  title: "Listes de l'utilisateur"
-  create-list: "Créer une liste"
-  list-name: "Nom de la liste"
 desktop/views/components/user-preview.vue:
   notes: "Publications"
   following: "Abonné à"
@@ -1019,10 +1065,9 @@ admin/views/index.vue:
   instance: "Instance"
   emoji: "Émoji"
   moderators: "Modérateurs"
-  users: "Utilisateurs"
+  users: "Utilisateur·rice·s"
   federation: "Fédération"
   announcements: "Annonces"
-  hashtags: "Hashtags"
   abuse: "Abus"
   queue: "File d’attente"
   logs: "Journaux"
@@ -1049,14 +1094,26 @@ admin/views/instance.vue:
   instance-name: "Nom de l’instance"
   instance-description: "Description de l’instance"
   host: "Hôte"
+  icon-url: "URL de l'icône"
+  logo-url: "URL do logo"
   banner-url: "URL de l’image de la bannière"
   error-image-url: "URL de l’image d’erreur"
   languages: "Langue de l’instance"
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
+  tos-url: "URL des conditions d'utilisation"
+  repository-url: "URL du dépôt"
   maintainer-config: "Informations de l’administrateur"
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
+  advanced-config: "Autres réglages"
   drive-config: "Paramètres du lecteur"
+  object-storage-base-url: "URL"
+  object-storage-endpoint: "Point de terminaison"
+  object-storage-port: "Port"
+  object-storage-access-key: "Clé d'accès"
+  object-storage-secret-key: "Clé secrète"
+  object-storage-use-ssl: "Utiliser SSL"
+  object-storage-s3-info-here: "ici"
   cache-remote-files: "Mettre en cache des fichiers distants"
   local-drive-capacity-mb: "Volume du lecteur par utilisateur"
   remote-drive-capacity-mb: "Volume du lecteur par utilisateur distant"
@@ -1064,8 +1121,9 @@ admin/views/instance.vue:
   recaptcha-config: "Paramètres de reCAPTCHA"
   recaptcha-info: "Si activé, un jeton reCAPTCHA est requis. Vous pouvez en obtenir un sur https://www.google.com/recaptcha/intro/"
   enable-recaptcha: "Activation de reCAPTCHA"
-  recaptcha-site-key: "Clé reCAPTCHA du site"
-  recaptcha-secret-key: "Clé secrète reCAPTCHA"
+  recaptcha-secret-key: "Clé secrète"
+  recaptcha-preview: "Prévisualisation"
+  hidden-tags: "Tags cachés"
   twitter-integration-config: "Paramètres de connexion à Twitter"
   twitter-integration-info: "L'URL de callback est {url}."
   enable-twitter-integration: "Activer la connexion à Twitter"
@@ -1093,7 +1151,6 @@ admin/views/instance.vue:
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
-  user-recommendation-config: "Utilisateurs"
   email-config: "Paramètres du serveur de messagerie"
   email-config-info: "Utilisé pour confirmer votre adresse de courrier électronique et la réinitialisation de votre mot de passe."
   enable-email: "Activation de la distribution du courrier"
@@ -1174,17 +1231,12 @@ admin/views/users.vue:
   unsuspend-confirm: "Souhaiteriez-vous ne plus suspendre ce compte ?"
   unsuspended: "La suspension de l’utilisateur a été levée avec succès"
   make-silence: "Mettre en sourdine"
+  silence-confirm: "Mettre l'utilisateur sous silence ?"
   unmake-silence: "Enlever la sourdine"
-  verify: "Vérification du compte"
-  verify-confirm: "Souhaiteriez-vous rendre votre compte comme étant un compte vérifié ?"
-  verified: "Le compte a été vérifié"
-  unverify: "Enlever la vérification du compte"
-  unverify-confirm: "Désirez-vous considérer ce compte comme étant non-vérifié ?"
-  unverified: "Ce compte n'est plus vérifié"
   update-remote-user: "Mettre à jour les informations de l’utilisateur·rice distant·e"
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   users:
-    title: "Utilisateurs"
+    title: "Utilisateur·rice·s"
     sort:
       title: "Trier par"
       createdAtAsc: "Date d’inscription (Ascendant)"
@@ -1197,7 +1249,6 @@ admin/views/users.vue:
       admin: "Admin"
       moderator: "Modérateur"
       adminOrModerator: "Administrateur/Modérateur"
-      verified: "Compte vérifié"
       silenced: "Déjà mis en sourdine"
       suspended: "Suspendu"
     origin:
@@ -1296,6 +1347,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "Par heure"
     day: "Par jour"
+  blocked-hosts: "En cours blocage"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   timeline: "Fil d’actualité"
@@ -1377,8 +1429,6 @@ mobile/views/components/drive.vue:
   file-count: "Fichier·s"
   nothing-in-drive: "Rien"
   folder-is-empty: "Ce dossier est vide"
-  prompt: "Que veux-tu faire ? (Entrez un nombre): <1 → Télécharger le fichier | 2 → Télécharger le fichier avec l'URL | 3 → Créer le dossier | 4 → Modifier le nom du dossier | 5 → Déplacer ce dossier | 6 → Supprimer ce dossier >"
-  deletion-alert: "Désolé ! La suppression d’un dossier n’est pas encore implémentée."
   folder-name: "Nom du dossier"
   url-prompt: "URL du fichier que vous souhaitez téléverser"
   uploading: "Envoi demandé. Le téléversement pourrait prendre un certain temps avant de s'achever."
@@ -1401,7 +1451,7 @@ mobile/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 common/views/components/follow-button.vue:
-  following: "Abonné"
+  following: "Abonné·e"
   follow: " Suivre"
   request-pending: "Demande en attente"
   follow-processing: "En cours d’abonnement"
@@ -1434,7 +1484,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Citer ce billet ... (Facultatif)"
   reply-placeholder: "Répondre à cette note"
   cw-placeholder: "Commenter le contenu (optionnel)"
-  location-alert: "Votre appareil ne prend pas en charge les services de localisation"
+  geolocation-alert: "Votre appareil ne prend pas en charge les services de localisation"
   error: "Erreur"
   username-prompt: "Saisir un nom d'utilisateur"
 mobile/views/components/sub-note-content.vue:
@@ -1451,19 +1501,25 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "Demandes d’abonnement"
   search: "Rechercher"
   user-lists: "Listes"
+  user-groups: "Groupe"
   widgets: "Modules"
   game: "Jeux"
   admin: "Admin"
   about: "À propos de Misskey"
-mobile/views/pages/user-lists.vue:
-  title: "Listes"
-  enter-list-name: "Nom de la liste"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Téléverser un fichier"
+    url-upload: "Transférer un fichier depuis une URL"
+    create-folder: "Créer un dossier"
+    rename-folder: "Renommer le dossier"
+    move-folder: "Déplacer ce dossier"
+    delete-folder: "Supprimer ce dossier"
 mobile/views/pages/signup.vue:
   lets-start: "Votre compte est prêt ! 📦"
 mobile/views/pages/followers.vue:
-  followers-of: "Abonnés de {name}"
+  followers-of: "Abonné·e·s de {name}"
 mobile/views/pages/following.vue:
-  following-of: "Abonnés de {name}"
+  following-of: "Abonné·e·s de {name}"
 mobile/views/pages/home.vue:
   home: "Accueil"
   local: "Local"
@@ -1481,10 +1537,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "Activité"
 mobile/views/pages/share.vue:
   share-with: "Partager avec {name}"
-mobile/views/pages/received-follow-requests.vue:
-  title: "Demandes d’abonnement"
-  accept: "Accepter"
-  reject: "Refuser"
 mobile/views/pages/note.vue:
   title: "Publication"
   prev: "Note précédente"
@@ -1557,25 +1609,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation ?"
   edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
-  api:
-    entities:
-      properties: "Propriétés"
-    endpoints:
-      params: "Paramètres"
-      no-params: "Aucun paramètre"
-      res: "Réponse"
-      require-credential: "Ce point de communication nécessite une authentification."
-      require-permission: "Ce point de communication nécessite la permission {permission}."
-      has-limit: "Il y’a un taux limite."
-      duration-limit: "Si vous avez envoyé plus de {max} requêtes en {duration} millisecondes, vous ne serez pas en mesure d'envoyer d'autres requêtes."
-      min-interval-limit: "Vous ne pourrez pas effectuer une nouvelle requête si {interval} millisecondes ne se sont pas écoulées depuis la dernière demande."
-      show-src: "Vous pouvez voir le code source ce point de communication."
-      show-src-link: "Consulter le code sur GitHub"
-      generated: "Ce document est généré à partir de la définition de l’API."
-    props:
-      name: "Nom"
-      type: "Type"
-      description: "Description"
 dev/views/index.vue:
   manage-apps: "Gestion des applications"
 dev/views/apps.vue:
@@ -1583,15 +1616,212 @@ dev/views/apps.vue:
   create-app: "Créer une app"
   app-missing: "Aucune application"
 dev/views/new-app.vue:
+  new-app: "Nouvelle application"
   create-app: "Création d’une application"
   app-name: "Nom de l’application"
   app-name-desc: "Le nom de votre application"
-  app-name-ex: "p. ex. Misskey pour iOS"
   app-overview: "Description courte de l’application"
-  app-desc: "Brève description introductive à votre application."
-  app-desc-ex: "p. ex) Misskey pour iOS"
   callback-url: "L’Url de callback (facultatif)"
   callback-url-desc: "Vous pouvez définir l’URL de redirection lorsque l’utilisateur s’est authentifié via formulaire d’authentification."
   authority: "Autorisations "
   authority-desc: "Sont accessibles via l’API, uniquement les fonctionnalités demandées ici."
   authority-warning: "Vous pouvez le changer même après avoir créé l'application, mais si vous attribuez une nouvelle permission, toutes les clés utilisateur associées seront dès lors invalides."
+pages:
+  page-created: "Page a été créée !"
+  are-you-sure-delete: "Confirmez-vous la suppression de cette page ?"
+  page-deleted: "La page a bien été supprimée."
+  edit-this-page: "Éditer cette page"
+  view-source: "Afficher la source"
+  view-page: "Afficher la page"
+  like: "Bien"
+  inspector: "Inspecteur"
+  content: "Bloc de page"
+  variables: "Variables"
+  more-details: "Description"
+  title: "Titre"
+  url: "URL de page"
+  summary: "Résumé de page"
+  align-center: "Centrée"
+  font: "Police de caractères"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  choose-block: "Ajouter un bloc"
+  select-type: "Choisir un type"
+  enter-variable-name: "Veuillez choisir un nom de variable"
+  the-variable-name-is-already-used: "Cette variable est déjà utilisée"
+  content-blocks: "Contenu du cadre"
+  input-blocks: "Entrée"
+  special-blocks: "Spécial"
+  post-from-post-form: "Publier ce contenu"
+  posted-from-post-form: "Publié !"
+  blocks:
+    text: "Texte"
+    textarea: "Zone de texte"
+    section: "Section"
+    image: "Images"
+    button: "Bouton"
+    if: "Si"
+    _if:
+      variable: "Variables"
+    post: "Champs de publication"
+    _post:
+      text: "Contenu"
+    textInput: "Entrée textuelle"
+    _textInput:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    _textareaInput:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    numberInput: "Entrée numérique"
+    _numberInput:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    switch: "Basculer"
+    _switch:
+      name: "Nom de la variable"
+      text: "Titre"
+      default: "Valeur par défaut"
+    counter: "Compteur"
+    _counter:
+      name: "Nom de la variable"
+      text: "Titre"
+      inc: "Augmenter le chiffre"
+    _button:
+      text: "Titre"
+      action: "L'opération lorsque le bouton sera pressé"
+      _action:
+        dialog: "Afficher une fenêtre de dialogue"
+        _dialog:
+          content: "Contenu"
+        resetRandom: "Réinitialiser le nombre aléatoire"
+  script:
+    categories:
+      flow: "Contrôle"
+      logical: "Opération logique"
+      operation: "Calculer"
+      comparison: "Comparer"
+      random: "Aléatoire"
+      value: "Valeur"
+      fn: "Fonction"
+      list: "Listes"
+    blocks:
+      text: "Texte"
+      strLen: "Longueur du texte"
+      _strLen:
+        arg1: "Texte"
+      strPick: "Extraire un caractère"
+      _strPick:
+        arg1: "Texte"
+      _strReplace:
+        arg1: "Texte"
+        arg2: "Avant le remplacement"
+        arg3: "Après le remplacement"
+      strReverse: "Inverser le texte"
+      _strReverse:
+        arg1: "Texte"
+      _join:
+        arg1: "Listes"
+        arg2: "Séparateur"
+      add: "+ Plus"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- Moins"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× Multiplier par"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ Diviser par"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      eq: "A et B sont équivalents"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A et B sont différents"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      _if:
+        arg1: "Si"
+        arg2: "donc"
+        arg3: "sinon"
+      not: "négation"
+      _not:
+        arg1: "négation"
+      random: "Aléatoire"
+      _randomPick:
+        arg1: "Listes"
+      _dailyRandom:
+        arg1: "Probabilité"
+      _dailyRannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
+      _dailyRandomPick:
+        arg1: "Listes"
+      _seedRandom:
+        arg2: "Probabilité"
+      _seedRannum:
+        arg2: "Min"
+        arg3: "Max"
+      _seedRandomPick:
+        arg2: "Listes"
+      _DRPWPM:
+        arg1: "Liste de texte"
+      pick: "Sélectionner dans la liste"
+      _pick:
+        arg1: "Listes"
+        arg2: "Position"
+      number: "Numérique"
+      stringToNumber: "Chaîne en chiffres"
+      _stringToNumber:
+        arg1: "Texte"
+      numberToString: "Chiffres en chaîne"
+      _numberToString:
+        arg1: "Numérique"
+      _splitStrByLine:
+        arg1: "Texte"
+      ref: "Variables"
+      fn: "Fonction"
+      _fn:
+        slots: "Emplacement"
+        arg1: "Sortie"
+      for: "Répéter"
+    thereIsEmptySlot: "Slot {slot} est vide !"
+    types:
+      string: "Texte"
+      number: "Numérique"
+      array: "Listes"
+      stringArray: "Liste de texte"
+    emptySlot: "Slot vide"
+    enviromentVariables: "Variables d'environnement"
+    pageVariables: "Élément de page"

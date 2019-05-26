@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Instances } from '../../../../models';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 
 export const meta = {
 	tags: ['federation'],
@@ -62,7 +62,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (typeof ps.blocked === 'boolean') {
-		const meta = await fetchMeta();
+		const meta = await fetchMeta(true);
 		if (ps.blocked) {
 			query.andWhere('instance.host IN (:...blocks)', { blocks: meta.blockedHosts });
 		} else {

@@ -4,14 +4,9 @@ executors:
   default:
     working_directory: /tmp/workspace
     docker:
-      - image: misskey/ci:latest
-      - image: circleci/mongo:latest
-  with-redis:
-    working_directory: /tmp/workspace
-    docker:
-      - image: misskey/ci:latest
-      - image: circleci/mongo:latest
+      - image: misskey/ci:v11-node11
       - image: circleci/redis:latest
+      - image: circleci/postgres:latest
   docker:
     working_directory: /tmp/workspace
     docker:
@@ -62,22 +57,10 @@ jobs:
       executor:
         type: string
         default: "default"
-      without_redis:
-        type: boolean
-        default: false
     executor: <<parameters.executor>>
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - when:
-          condition: <<parameters.without_redis>>
-          steps:
-            - run:
-                name: Configure
-                command: |
-                  mv .config/test.yml .config/test_redis.yml
-                  touch .config/test.yml
-                  cat .config/test_redis.yml | while IFS= read line; do if [[ "$line" = '# __REDIS__' ]]; then break; else echo "$line" >> .config/test.yml; fi; done
       - run:
           name: Test
           command: |
@@ -140,32 +123,14 @@ workflows:
             branches:
               only: master
       - test:
-          name: manual-test-with-redis
-          executor: with-redis
+          name: manual-test
           requires:
             - manual-build
           filters:
             branches:
               ignore: master
       - test:
-          name: auto-test-without-redis
-          executor: with-redis
-          requires:
-            - auto-build
-          filters:
-            branches:
-              only: master
-      - test:
-          name: manual-test-with-redis
-          without_redis: true
-          requires:
-            - manual-build
-          filters:
-            branches:
-              ignore: master
-      - test:
-          name: auto-test-without-redis
-          without_redis: true
+          name: auto-test
           requires:
             - auto-build
           filters:

@@ -4,6 +4,7 @@ import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	stability: 'stable',
@@ -28,7 +29,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'Note',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'Note',
 	},
 
 	errors: {

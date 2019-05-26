@@ -23,6 +23,8 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
+				@change="$emit('change', $event)"
+				:list="id"
 			>
 			<input v-else ref="input"
 				:type="type"
@@ -37,7 +39,12 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
+				@change="$emit('change', $event)"
+				:list="id"
 			>
+			<datalist :id="id" v-if="datalist">
+				<option v-for="data in datalist" :value="data"/>
+			</datalist>
 		</template>
 		<template v-else>
 			<input ref="input"
@@ -55,7 +62,7 @@
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
 	<div class="toggle" v-if="withPasswordToggle">
-		<a @click='togglePassword'>
+		<a @click="togglePassword">
 			<span v-if="type == 'password'"><fa :icon="['fa', 'eye']"/> {{ $t('@.show-password') }}</span>
 			<span v-if="type != 'password'"><fa :icon="['far', 'eye-slash']"/> {{ $t('@.hide-password') }}</span>
 		</a>
@@ -130,6 +137,10 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		datalist: {
+			type: Array,
+			required: false,
+		},
 		inline: {
 			type: Boolean,
 			required: false,
@@ -147,7 +158,8 @@ export default Vue.extend({
 		return {
 			v: this.value,
 			focused: false,
-			passwordStrength: ''
+			passwordStrength: '',
+			id: Math.random().toString()
 		};
 	},
 	computed: {
@@ -172,7 +184,11 @@ export default Vue.extend({
 			this.v = v;
 		},
 		v(v) {
-			this.$emit('input', v);
+			if (this.type === 'number') {
+				this.$emit('input', parseInt(v, 10));
+			} else {
+				this.$emit('input', v);
+			}
 
 			if (this.withPasswordMeter) {
 				if (v == '') {
@@ -306,7 +322,7 @@ root(fill)
 
 			> .value
 				display block
-				width 0%
+				width 0
 				height 100%
 				background transparent
 				border-radius 6px

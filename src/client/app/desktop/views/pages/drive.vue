@@ -34,7 +34,7 @@ export default Vue.extend({
 			document.title = title;
 		},
 		onOpenFolder(folder) {
-			const title = folder.name + ' | %i18n:@title%';
+			const title = `${folder.name} | ${this.$t('title')}`;
 
 			// Rewrite URL
 			history.pushState(null, title, `/i/drive/folder/${folder.id}`);

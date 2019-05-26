@@ -26,7 +26,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'vote-write',
+	kind: 'write:votes',
 
 	params: {
 		noteId: {
@@ -150,7 +150,7 @@ export default define(meta, async (ps, user) => {
 		}
 	});
 
-	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// この投稿をWatchする
 	if (profile.autoWatch !== false) {

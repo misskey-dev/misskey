@@ -1,8 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
-import rap from '@prezzemolo/rap';
 import { Following } from '../entities/following';
 import { ensure } from '../../prelude/ensure';
+import { awaitAll } from '../../prelude/await-all';
+import { SchemaType, types, bool } from '../../misc/schema';
 
 type LocalFollowerFollowing = Following & {
 	followerHost: null;
@@ -28,6 +29,8 @@ type RemoteFolloweeFollowing = Following & {
 	followeeSharedInbox: string;
 };
 
+export type PackedFollowing = SchemaType<typeof packedFollowingSchema>;
+
 @EntityRepository(Following)
 export class FollowingRepository extends Repository<Following> {
 	public isLocalFollower(following: Following): following is LocalFollowerFollowing {
@@ -46,6 +49,32 @@ export class FollowingRepository extends Repository<Following> {
 		return following.followeeHost != null;
 	}
 
+	public async pack(
+		src: Following['id'] | Following,
+		me?: any,
+		opts?: {
+			populateFollowee?: boolean;
+			populateFollower?: boolean;
+		}
+	): Promise<PackedFollowing> {
+		const following = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+
+		if (opts == null) opts = {};
+
+		return await awaitAll({
+			id: following.id,
+			createdAt: following.createdAt.toISOString(),
+			followeeId: following.followeeId,
+			followerId: following.followerId,
+			followee: opts.populateFollowee ? Users.pack(following.followee || following.followeeId, me, {
+				detail: true
+			}) : undefined,
+			follower: opts.populateFollower ? Users.pack(following.follower || following.followerId, me, {
+				detail: true
+			}) : undefined,
+		});
+	}
+
 	public packMany(
 		followings: any[],
 		me?: any,
@@ -56,30 +85,46 @@ export class FollowingRepository extends Repository<Following> {
 	) {
 		return Promise.all(followings.map(x => this.pack(x, me, opts)));
 	}
-
-	public async pack(
-		src: Following['id'] | Following,
-		me?: any,
-		opts?: {
-			populateFollowee?: boolean;
-			populateFollower?: boolean;
-		}
-	) {
-		const following = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
-
-		if (opts == null) opts = {};
-
-		return await rap({
-			id: following.id,
-			createdAt: following.createdAt,
-			followeeId: following.followeeId,
-			followerId: following.followerId,
-			followee: opts.populateFollowee ? Users.pack(following.followee || following.followeeId, me, {
-				detail: true
-			}) : null,
-			follower: opts.populateFollower ? Users.pack(following.follower || following.followerId, me, {
-				detail: true
-			}) : null,
-		});
-	}
 }
+
+export const packedFollowingSchema = {
+	type: types.object,
+	optional: bool.false, nullable: bool.false,
+	properties: {
+		id: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+			description: 'The unique identifier for this following.',
+			example: 'xxxxxxxxxx',
+		},
+		createdAt: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'date-time',
+			description: 'The date that the following was created.'
+		},
+		followeeId: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+		},
+		followee: {
+			type: types.object,
+			optional: bool.true, nullable: bool.false,
+			ref: 'User',
+			description: 'The followee.'
+		},
+		followerId: {
+			type: types.string,
+			optional: bool.false, nullable: bool.false,
+			format: 'id',
+		},
+		follower: {
+			type: types.object,
+			optional: bool.true, nullable: bool.false,
+			ref: 'User',
+			description: 'The follower.'
+		},
+	}
+};

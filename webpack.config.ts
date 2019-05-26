@@ -95,7 +95,7 @@ module.exports = {
 				loader: 'css-loader'
 			}, postcss]
 		}, {
-			test: /\.(eot|woff|woff2|svg|ttf)([\?]?.*)$/,
+			test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
 			loader: 'url-loader'
 		}, {
 			test: /\.json5$/,

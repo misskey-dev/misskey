@@ -3,11 +3,17 @@
 
 ## Issues
 Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
-Before creating a new issue, please search existing issues to avoid duplication.
-If you find the existing issue, please add your reaction or comment to the issue.
+
+* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
+* If you have multiple independent issues, please submit them separately.
+
 
 ## Localization (l10n)
-Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
+Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
+You can improve our translations with your Crowdin account.
+Changes you make in Crowdin will be merged into develop branch.
+
+If you can't find the language you want to contribute with, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
@@ -15,16 +21,16 @@ Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
 Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 
 ## Documentation
-* Documents for contributors are located in `/docs`.
-* Documents for instance admins are located in `/docs`.
-* Documents for end users are located in `src/docs`.
+* Documents for contributors are located in [`/docs`](/docs).
+* Documents for instance admins are located in [`/docs`](/docs).
+* Documents for end users are located in [`/src/docs`](/src/docs).
 
 ## Test
-* Test codes are located in `/test`.
+* Test codes are located in [`/test`](/test).
 
 ## Continuous integration
 Misskey uses CircleCI for automated test.
-Configuration files are located in `/.circleci`.
+Configuration files are located in [`/.circleci`](/.circleci).
 
 ## Glossary
 ### AP
@@ -46,10 +52,40 @@ Convert な(na) to にゃ(nya)
 Revert Nyaize
 
 ## Code style
-### Use semicolon
-To avoid ASI Hazard
+### セミコロンを省略しない
+ASI Hazardを避けるためでもある
 
-### Don't use `export default`
+### 中括弧を省略しない
+Bad:
+``` ts
+if (foo)
+	bar;
+else
+	baz;
+```
+
+Good:
+``` ts
+if (foo) {
+	bar;
+} else {
+	baz;
+}
+```
+
+ただし**`if`が一行**の時だけは省略しても良い
+Good:
+``` ts
+if (foo) bar;
+```
+
+### `export default`を使わない
+インテリセンスと相性が悪かったりするため
+
+参考:
+* https://gfx.hatenablog.com/entry/2017/11/24/135343
+* https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
+
 Bad:
 ``` ts
 export default function(foo: string): string {
@@ -96,6 +132,20 @@ query.andWhere(new Brackets(qb => {
 		qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
 	}
 }));
+```
+
+### Not `null` in TypeORM
+```ts
+const foo = await Foos.findOne({
+	bar: Not(null)
+});
+```
+のようなクエリ(`bar`が`null`ではない)は期待通りに動作しない。
+次のようにします:
+```ts
+const foo = await Foos.findOne({
+	bar: Not(IsNull())
+});
 ```
 
 ### `null` in SQL
@@ -167,3 +217,13 @@ const user = await Users.findOne(userId).then(ensure);
 // }
 // の糖衣構文のような扱いです
 ```
+
+### Migration作成方法
+コードの変更をした後、`ormconfig.json`（`npm run ormconfig`で生成）を用意し、
+
+```
+npm i -g ts-node
+ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
+```
+
+作成されたスクリプトは不必要な変更を含むため除去してください。

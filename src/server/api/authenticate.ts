@@ -31,7 +31,9 @@ export default async (token: string): Promise<[User | null | undefined, App | nu
 			.findOne(accessToken.appId);
 
 		const user = await Users
-			.findOne(accessToken.userId);
+			.findOne({
+				id: accessToken.userId // findOne(accessToken.userId) のように書かないのは後方互換性のため
+			});
 
 		return [user, app];
 	}

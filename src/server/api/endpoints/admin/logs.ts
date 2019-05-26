@@ -53,16 +53,18 @@ export default define(meta, async (ps) => {
 		if (blackDomains.length > 0) {
 			query.andWhere(new Brackets(qb => {
 				for (const blackDomain of blackDomains) {
-					const subDomains = blackDomain.split('.');
-					let i = 0;
-					for (const subDomain of subDomains) {
-						const p = `blackSubDomain_${subDomain}_${i}`;
-						// 全体で否定できないのでド・モルガンの法則で
-						// !(P && Q) を !P || !Q で表す
-						// SQL is 1 based, so we need '+ 1'
-						qb.orWhere(`log.domain[${i + 1}] != :${p}`, { [p]: subDomain });
-						i++;
-					}
+					qb.andWhere(new Brackets(qb => {
+						const subDomains = blackDomain.split('.');
+						let i = 0;
+						for (const subDomain of subDomains) {
+							const p = `blackSubDomain_${subDomain}_${i}`;
+							// 全体で否定できないのでド・モルガンの法則で
+							// !(P && Q) を !P || !Q で表す
+							// SQL is 1 based, so we need '+ 1'
+							qb.orWhere(`log.domain[${i + 1}] != :${p}`, { [p]: subDomain });
+							i++;
+						}
+					}));
 				}
 			}));
 		}

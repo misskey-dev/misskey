@@ -14,7 +14,7 @@
 
 	<section>
 		<header><fa icon="terminal"/> {{ $t('console.title') }}</header>
-		<ui-input v-model="endpoint">
+		<ui-input v-model="endpoint" :datalist="endpoints" @change="onEndpointChange()">
 			<span>{{ $t('console.endpoint') }}</span>
 		</ui-input>
 		<ui-textarea v-model="body">
@@ -39,13 +39,21 @@ import * as JSON5 from 'json5';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/api-settings.vue'),
+
 	data() {
 		return {
 			endpoint: '',
 			body: '{}',
 			res: null,
-			sending: false
+			sending: false,
+			endpoints: []
 		};
+	},
+
+	created() {
+		this.$root.api('endpoints').then(endpoints => {
+			this.endpoints = endpoints;
+		});
 	},
 
 	methods: {
@@ -71,6 +79,22 @@ export default Vue.extend({
 			}, err => {
 				this.sending = false;
 				this.res = JSON5.stringify(err, null, 2);
+			});
+		},
+
+		onEndpointChange() {
+			this.$root.api('endpoint', { endpoint: this.endpoint }).then(endpoint => {
+				const body = {};
+				for (const p of endpoint.params) {
+					body[p.name] =
+						p.type === 'String' ? '' :
+						p.type === 'Number' ? 0 :
+						p.type === 'Boolean' ? false :
+						p.type === 'Array' ? [] :
+						p.type === 'Object' ? {} :
+						null;
+				}
+				this.body = JSON5.stringify(body, null, 2);
 			});
 		}
 	}

@@ -1,15 +1,13 @@
 import $ from 'cafy';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
-import * as nodemailer from 'nodemailer';
-import fetchMeta from '../../../../misc/fetch-meta';
 import rndstr from 'rndstr';
 import config from '../../../../config';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
-import { apiLogger } from '../../logger';
 import { Users, UserProfiles } from '../../../../models';
 import { ensure } from '../../../../prelude/ensure';
+import { sendEmail } from '../../../../services/send-email';
 
 export const meta = {
 	requireCredential: true,
@@ -33,7 +31,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const profile = await UserProfiles.findOne({ userId: user.id }).then(ensure);
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	// Compare password
 	const same = await bcrypt.compare(ps.password, profile.password!);
@@ -63,36 +61,9 @@ export default define(meta, async (ps, user) => {
 			emailVerifyCode: code
 		});
 
-		const meta = await fetchMeta();
-
-		const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';
-
-		const transporter = nodemailer.createTransport({
-			host: meta.smtpHost,
-			port: meta.smtpPort,
-			secure: meta.smtpSecure,
-			ignoreTLS: !enableAuth,
-			auth: enableAuth ? {
-				user: meta.smtpUser,
-				pass: meta.smtpPass
-			} : undefined
-		} as any);
-
 		const link = `${config.url}/verify-email/${code}`;
 
-		transporter.sendMail({
-			from: meta.email!,
-			to: ps.email,
-			subject: meta.name || 'Misskey',
-			text: `To verify email, please click this link: ${link}`
-		}, (error, info) => {
-			if (error) {
-				apiLogger.error(error);
-				return;
-			}
-
-			apiLogger.info('Message sent: %s', info.messageId);
-		});
+		sendEmail(ps.email, 'Email verification', `To verify email, please click this link: ${link}`);
 	}
 
 	return iObj;

@@ -2,6 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { DriveFiles } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	requireCredential: true,
@@ -22,7 +23,17 @@ export const meta = {
 				'ja-JP': 'フォルダID'
 			}
 		},
-	}
+	},
+
+	res: {
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
+		items: {
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'DriveFile',
+		}
+	},
 };
 
 export default define(meta, async (ps, user) => {

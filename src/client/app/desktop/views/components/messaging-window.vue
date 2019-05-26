@@ -1,7 +1,7 @@
 <template>
 <mk-window ref="window" width="500px" height="560px" @closed="destroyDom">
 	<template #header :class="$style.header"><fa icon="comments"/>{{ $t('@.messaging') }}</template>
-	<x-messaging :class="$style.content" @navigate="navigate"/>
+	<x-messaging :class="$style.content" @navigate="navigate" @navigateGroup="navigateGroup"/>
 </mk-window>
 </template>
 
@@ -19,6 +19,11 @@ export default Vue.extend({
 		navigate(user) {
 			this.$root.new(MkMessagingRoomWindow, {
 				user: user
+			});
+		},
+		navigateGroup(group) {
+			this.$root.new(MkMessagingRoomWindow, {
+				group: group
 			});
 		}
 	}

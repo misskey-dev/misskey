@@ -81,15 +81,15 @@
 	</div>
 
 	<template v-if="notification.type == 'quote'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<mk-note :note="notification.note"/>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<mk-note :note="notification.note"/>
 	</template>
 
 	<template v-if="notification.type == 'mention'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<mk-note :note="notification.note"/>
 	</template>
 </div>
 </template>
@@ -105,17 +105,6 @@ export default Vue.extend({
 			getNoteSummary
 		};
 	},
-	methods: {
-		onNoteUpdated(note) {
-			switch (this.notification.type) {
-				case 'quote':
-				case 'reply':
-				case 'mention':
-					Vue.set(this.notification, 'note', note);
-					break;
-			}
-		}
-	}
 });
 </script>
 

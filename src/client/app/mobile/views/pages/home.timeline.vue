@@ -7,15 +7,13 @@
 		</div>
 	</ui-container>
 
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
+	<mk-notes ref="timeline" :pagination="pagination" @loaded="() => $emit('loaded')"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-
-const fetchLimit = 10;
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/home.timeline.vue'),
@@ -43,7 +41,7 @@ export default Vue.extend({
 			},
 			query: {},
 			endpoint: null,
-			makePromise: null
+			pagination: null
 		};
 	},
 
@@ -54,6 +52,12 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$root.$on('warp', this.warp);
+		this.$once('hook:beforeDestroy', () => {
+			this.$root.$off('warp', this.warp);
+			this.connection.dispose();
+		});
+
 		const prepend = note => {
 			(this.$refs.timeline as any).prepend(note);
 		};
@@ -104,29 +108,14 @@ export default Vue.extend({
 			this.connection.on('mention', onNote);
 		}
 
-		this.makePromise = cursor => this.$root.api(this.endpoint, {
-			limit: fetchLimit + 1,
-			untilDate: cursor ? undefined : (this.date ? this.date.getTime() : undefined),
-			untilId: cursor ? cursor : undefined,
-			...this.baseQuery, ...this.query
-		}).then(notes => {
-			if (notes.length == fetchLimit + 1) {
-				notes.pop();
-				return {
-					notes: notes,
-					more: true
-				};
-			} else {
-				return {
-					notes: notes,
-					more: false
-				};
-			}
-		});
-	},
-
-	beforeDestroy() {
-		this.connection.dispose();
+		this.pagination = {
+			endpoint: this.endpoint,
+			limit: 10,
+			params: init => ({
+				untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+				...this.baseQuery, ...this.query
+			})
+		};
 	},
 
 	methods: {

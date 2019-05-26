@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn, RelationId } from 'typeorm';
+import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
 import { id } from '../id';
@@ -25,7 +25,8 @@ export class AccessToken {
 	})
 	public hash: string;
 
-	@RelationId((self: AccessToken) => self.user)
+	@Index()
+	@Column(id())
 	public userId: User['id'];
 
 	@ManyToOne(type => User, {

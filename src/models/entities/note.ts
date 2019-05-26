@@ -43,8 +43,8 @@ export class Note {
 	@JoinColumn()
 	public renote: Note | null;
 
-	@Column({
-		type: 'text', nullable: true
+	@Column('varchar', {
+		length: 8192, nullable: true
 	})
 	public text: string | null;
 
@@ -93,12 +93,12 @@ export class Note {
 	})
 	public localOnly: boolean;
 
-	@Column('integer', {
+	@Column('smallint', {
 		default: 0
 	})
 	public renoteCount: number;
 
-	@Column('integer', {
+	@Column('smallint', {
 		default: 0
 	})
 	public repliesCount: number;
@@ -129,12 +129,14 @@ export class Note {
 	})
 	public score: number;
 
+	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}'
 	})
 	public fileIds: DriveFile['id'][];
 
+	@Index()
 	@Column('varchar', {
 		length: 256, array: true, default: '{}'
 	})

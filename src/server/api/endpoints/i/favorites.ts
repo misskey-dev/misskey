@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { NoteFavorites } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -14,7 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 
-	kind: 'favorites-read',
+	kind: 'read:favorites',
 
 	params: {
 		limit: {
@@ -29,7 +30,17 @@ export const meta = {
 		untilId: {
 			validator: $.optional.type(ID),
 		},
-	}
+	},
+
+	res: {
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
+		items: {
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'NoteFavorite',
+		}
+	},
 };
 
 export default define(meta, async (ps, user) => {

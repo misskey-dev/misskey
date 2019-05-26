@@ -85,7 +85,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.succ(`Exported to: ${path}`);
 
 	const fileName = 'following-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
-	const driveFile = await addFile(user, path, fileName);
+	const driveFile = await addFile(user, path, fileName, null, null, true);
 
 	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();

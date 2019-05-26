@@ -37,7 +37,7 @@ export async function resolveUser(username: string, host: string | null, option?
 		});
 	}
 
-	const user = await Users.findOne({ usernameLower, host }, option);
+	const user = await Users.findOne({ usernameLower, host }, option) as IRemoteUser;
 
 	const acctLower = `${usernameLower}@${host}`;
 
@@ -48,14 +48,20 @@ export async function resolveUser(username: string, host: string | null, option?
 		return await createPerson(self.href);
 	}
 
-	if (resync) {
+	// resyncオプション OR ユーザー情報が古い場合は、WebFilgerからやりなおして返す
+	if (resync || user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
+		// 繋がらないインスタンスに何回も試行するのを防ぐ, 後続の同様処理の連続試行を防ぐ ため 試行前にも更新する
+		await Users.update(user.id, {
+			lastFetchedAt: new Date(),
+		});
+
 		logger.info(`try resync: ${acctLower}`);
 		const self = await resolveSelf(acctLower);
 
-		if ((user as IRemoteUser).uri !== self.href) {
+		if (user.uri !== self.href) {
 			// if uri mismatch, Fix (user@host <=> AP's Person id(IRemoteUser.uri)) mapping.
 			logger.info(`uri missmatch: ${acctLower}`);
-			logger.info(`recovery missmatch uri for (username=${username}, host=${host}) from ${(user as IRemoteUser).uri} to ${self.href}`);
+			logger.info(`recovery missmatch uri for (username=${username}, host=${host}) from ${user.uri} to ${self.href}`);
 
 			// validate uri
 			const uri = new URL(self.href);

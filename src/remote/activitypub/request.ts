@@ -10,7 +10,7 @@ import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 import { UserKeypairs } from '../../models';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
 
@@ -24,7 +24,6 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	const { protocol, host, hostname, port, pathname, search } = new URL(url);
 
 	// ブロックしてたら中断
-	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(toPuny(host))) return;
 
@@ -102,11 +101,18 @@ export default async (user: ILocalUser, url: string, object: any) => {
  * Resolve host (with cached, asynchrony)
  */
 async function resolveAddr(domain: string) {
+	const af = config.outgoingAddressFamily || 'ipv4';
+	const useV4 = af == 'ipv4' || af == 'dual';
+	const useV6 = af == 'ipv6' || af == 'dual';
+
+	const promises = [];
+
+	if (!useV4 && !useV6) throw 'No usable address family available';
+	if (useV4) promises.push(resolveAddrInner(domain, { family: 4 }));
+	if (useV6) promises.push(resolveAddrInner(domain, { family: 6 }));
+
 	// v4/v6で先に取得できた方を採用する
-	return await promiseAny([
-		resolveAddrInner(domain, { family: 4 }),
-		resolveAddrInner(domain, { family: 6 })
-	]);
+	return await promiseAny(promises);
 }
 
 function resolveAddrInner(domain: string, options: IRunOptions = {}): Promise<string> {

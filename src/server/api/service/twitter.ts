@@ -6,13 +6,13 @@ import redis from '../../../db/redis';
 import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
-	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+	return ((ctx.headers['cookie'] || '').match(/i=(\w+)/) || [null, null])[1];
 }
 
 function compareOrigin(ctx: Koa.BaseContext) {
@@ -65,7 +65,7 @@ router.get('/disconnect/twitter', async ctx => {
 });
 
 async function getTwAuth() {
-	const meta = await fetchMeta();
+	const meta = await fetchMeta(true);
 
 	if (meta.enableTwitterIntegration && meta.twitterConsumerKey && meta.twitterConsumerSecret) {
 		return autwh({
@@ -141,12 +141,8 @@ router.get('/tw/cb', async ctx => {
 		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where('twitter @> :twitter', {
-				twitter: {
-					userId: result.userId,
-				},
-			})
-			.andWhere('userHost IS NULL')
+			.where('"twitterUserId" = :id', { id: result.userId })
+			.andWhere('"userHost" IS NULL')
 			.getOne();
 
 		if (link == null) {

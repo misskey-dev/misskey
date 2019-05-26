@@ -792,7 +792,7 @@ describe('API', () => {
 				parentId: folderA.id
 			}, arisugawa);
 
-			expect(res).have.status(400);
+			assert.strictEqual(res.status, 400);
 		}));
 
 		it('存在しない親フォルダを設定できない', async(async () => {

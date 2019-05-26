@@ -72,8 +72,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import MkUserListsWindow from './user-lists-window.vue';
-import MkFollowRequestsWindow from './received-follow-requests-window.vue';
 import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import MkMessagingWindow from './messaging-window.vue';
@@ -148,10 +146,7 @@ export default Vue.extend({
 		},
 
 		list() {
-			const w = this.$root.new(MkUserListsWindow);
-			w.$once('choosen', list => {
-				this.$router.push(`i/lists/${ list.id }`);
-			});
+			this.$root.new(MkUserListsWindow);
 		},
 
 		followRequests() {

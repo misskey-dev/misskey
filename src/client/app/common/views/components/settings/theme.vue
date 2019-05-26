@@ -45,7 +45,7 @@
 			</ui-select>
 		</label>
 
-		<a href="https://assets.msky.cafe/theme/list" target="_blank">{{ $t('find-more-theme') }}</a>
+		<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank">{{ $t('find-more-theme') }}</a>
 
 		<details class="creator">
 			<summary><fa icon="palette"/> {{ $t('create-a-theme') }}</summary>
@@ -273,7 +273,7 @@ export default Vue.extend({
 
 		import_() {
 			(this.$refs.file as any).click();
-		}
+		},
 
 		export_() {
 			const blob = new Blob([this.selectedThemeCode], {

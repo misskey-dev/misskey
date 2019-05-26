@@ -5,7 +5,7 @@ import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { Blockings } from '../../../../models';
+import { Blockings, Users } from '../../../../models';
 
 export const meta = {
 	stability: 'stable',
@@ -84,5 +84,5 @@ export default define(meta, async (ps, user) => {
 	// Delete blocking
 	await deleteBlocking(blocker, blockee);
 
-	return await Blockings.pack(blockee.id, user);
+	return await Users.pack(blockee.id, user);
 });

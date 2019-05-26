@@ -52,7 +52,7 @@ for (const endpoint of endpoints) {
 	} else {
 		if (endpoint.name.includes('-')) {
 			// 後方互換性のため
-			router.post(`/${endpoint.name.replace(/\-/g, '_')}`, handler.bind(null, endpoint));
+			router.post(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint));
 		}
 		router.post(`/${endpoint.name}`, handler.bind(null, endpoint));
 	}

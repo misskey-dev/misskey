@@ -4,7 +4,7 @@
 		<template #header><fa icon="comments"/>{{ $t('@.messaging') }}</template>
 		<template #func><button @click="add"><fa icon="plus"/></button></template>
 
-		<x-messaging ref="index" compact @navigate="navigate"/>
+		<x-messaging ref="index" compact @navigate="navigate" @navigateGroup="navigateGroup"/>
 	</ui-container>
 </div>
 </template>
@@ -29,6 +29,11 @@ export default define({
 		navigate(user) {
 			this.$root.new(MkMessagingRoomWindow, {
 				user: user
+			});
+		},
+		navigateGroup(group) {
+			this.$root.new(MkMessagingRoomWindow, {
+				group: group
 			});
 		},
 		add() {

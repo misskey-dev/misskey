@@ -480,7 +480,7 @@ export default Vue.extend({
 		&:focus
 			&:not([data-is-modal])
 				> .body
-						box-shadow 0 0 0px 1px var(--primaryAlpha05), 0 2px 12px 0 var(--desktopWindowShadow)
+						box-shadow 0 0 0 1px var(--primaryAlpha05), 0 2px 12px 0 var(--desktopWindowShadow)
 
 		> .handle
 			$size = 8px
