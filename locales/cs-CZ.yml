@@ -1066,6 +1066,7 @@ admin/views/federation.vue:
     hour: "za hodinu"
     day: "za den"
   blocked-hosts: "Blokován"
+  save: "Uložit"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Časová osa"
