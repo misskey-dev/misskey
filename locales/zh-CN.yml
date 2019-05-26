@@ -1110,6 +1110,8 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "队列"
   remove-all-jobs: "清除所有作业"
+  queue: "队列"
+  state: "状态"
 admin/views/logs.vue:
   logs: "登录"
   levels:
@@ -1412,6 +1414,7 @@ admin/views/federation.vue:
     day: "每天"
   blocked-hosts: "拉黑"
   blocked-hosts-info: "描述您要阻止的主机，以换行符分隔。"
+  save: "保存"
 desktop/views/pages/welcome.vue:
   about: "更多信息..."
   timeline: "时间线"
