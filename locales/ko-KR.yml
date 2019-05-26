@@ -1110,6 +1110,8 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "큐"
   remove-all-jobs: "모든 작업 제거"
+  queue: "큐"
+  state: "상태"
 admin/views/logs.vue:
   logs: "로그"
   levels:
@@ -1412,6 +1414,7 @@ admin/views/federation.vue:
     day: "1일마다"
   blocked-hosts: "차단"
   blocked-hosts-info: "차단할 호스트를 줄바꿈으로 구분하여 기술합니다."
+  save: "저장"
 desktop/views/pages/welcome.vue:
   about: "자세히..."
   timeline: "타임라인"
