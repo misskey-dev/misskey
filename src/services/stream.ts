@@ -1,33 +1,20 @@
 import redis from '../db/redis';
-import Xev from 'xev';
 import { User } from '../models/entities/user';
 import { Note } from '../models/entities/note';
 import { UserList } from '../models/entities/user-list';
 import { ReversiGame } from '../models/entities/games/reversi/game';
+import { UserGroup } from '../models/entities/user-group';
 
 class Publisher {
-	private ev: Xev;
-
-	constructor() {
-		// Redisがインストールされてないときはプロセス間通信を使う
-		if (redis == null) {
-			this.ev = new Xev();
-		}
-	}
-
-	private publish = (channel: string, type: string, value?: any): void => {
+	private publish = (channel: string, type: string | null, value?: any): void => {
 		const message = type == null ? value : value == null ?
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		if (this.ev) {
-			this.ev.emit(channel, message);
-		} else {
-			redis.publish('misskey', JSON.stringify({
-				channel: channel,
-				message: message
-			}));
-		}
+		redis.publish('misskey', JSON.stringify({
+			channel: channel,
+			message: message
+		}));
 	}
 
 	public publishMainStream = (userId: User['id'], type: string, value?: any): void => {
@@ -51,6 +38,10 @@ class Publisher {
 
 	public publishMessagingStream = (userId: User['id'], otherpartyId: User['id'], type: string, value?: any): void => {
 		this.publish(`messagingStream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	public publishGroupMessagingStream = (groupId: UserGroup['id'], type: string, value?: any): void => {
+		this.publish(`messagingStream:${groupId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	public publishMessagingIndexStream = (userId: User['id'], type: string, value?: any): void => {
@@ -88,6 +79,7 @@ export const publishNoteStream = publisher.publishNoteStream;
 export const publishNotesStream = publisher.publishNotesStream;
 export const publishUserListStream = publisher.publishUserListStream;
 export const publishMessagingStream = publisher.publishMessagingStream;
+export const publishGroupMessagingStream = publisher.publishGroupMessagingStream;
 export const publishMessagingIndexStream = publisher.publishMessagingIndexStream;
 export const publishReversiStream = publisher.publishReversiStream;
 export const publishReversiGameStream = publisher.publishReversiGameStream;

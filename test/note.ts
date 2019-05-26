@@ -161,7 +161,7 @@ describe('Note', () => {
 
 	it('文字数ぎりぎりで怒られない', async(async () => {
 		const post = {
-			text: '!'.repeat(1000)
+			text: '!'.repeat(500)
 		};
 		const res = await request('/notes/create', post, alice);
 		assert.strictEqual(res.status, 200);
@@ -169,7 +169,7 @@ describe('Note', () => {
 
 	it('文字数オーバーで怒られる', async(async () => {
 		const post = {
-			text: '!'.repeat(1001)
+			text: '!'.repeat(501)
 		};
 		const res = await request('/notes/create', post, alice);
 		assert.strictEqual(res.status, 400);

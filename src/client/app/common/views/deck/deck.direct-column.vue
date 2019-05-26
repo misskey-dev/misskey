@@ -2,7 +2,7 @@
 <x-column :name="name" :column="column" :is-stacked="isStacked">
 	<template #header><fa :icon="['far', 'envelope']"/>{{ name }}</template>
 
-	<x-direct/>
+	<x-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')"/>
 </x-column>
 </template>
 
@@ -10,13 +10,14 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import XColumn from './deck.column.vue';
-import XDirect from './deck.direct.vue';
+import XNotes from './deck.notes.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
+
 	components: {
 		XColumn,
-		XDirect
+		XNotes
 	},
 
 	props: {
@@ -30,6 +31,22 @@ export default Vue.extend({
 		}
 	},
 
+	data() {
+		return {
+			connection: null,
+			pagination: {
+				endpoint: 'notes/mentions',
+				limit: 10,
+				params: {
+					includeMyRenotes: this.$store.state.settings.showMyRenotes,
+					includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+					includeLocalRenotes: this.$store.state.settings.showLocalRenotes,
+					visibility: 'specified'
+				}
+			}
+		};
+	},
+
 	computed: {
 		name(): string {
 			if (this.column.name) return this.column.name;
@@ -37,9 +54,25 @@ export default Vue.extend({
 		}
 	},
 
+	mounted() {
+		this.connection = this.$root.stream.useSharedConnection('main');
+		this.connection.on('mention', this.onNote);
+	},
+
+	beforeDestroy() {
+		this.connection.dispose();
+	},
+
 	methods: {
+		onNote(note) {
+			// Prepend a note
+			if (note.visibility == 'specified') {
+				(this.$refs.timeline as any).prepend(note);
+			}
+		},
+
 		focus() {
-			this.$refs.tl.focus();
+			this.$refs.timeline.focus();
 		}
 	}
 });

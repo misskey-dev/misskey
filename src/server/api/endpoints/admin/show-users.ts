@@ -36,7 +36,6 @@ export const meta = {
 				'admin',
 				'moderator',
 				'adminOrModerator',
-				'verified',
 				'silenced',
 				'suspended',
 			]),
@@ -61,7 +60,6 @@ export default define(meta, async (ps, me) => {
 		case 'admin': query.where('user.isAdmin = TRUE'); break;
 		case 'moderator': query.where('user.isModerator = TRUE'); break;
 		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR isModerator = TRUE'); break;
-		case 'verified': query.where('user.isVerified = TRUE'); break;
 		case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
 		case 'silenced': query.where('user.isSilenced = TRUE'); break;
 		case 'suspended': query.where('user.isSuspended = TRUE'); break;
@@ -82,7 +80,7 @@ export default define(meta, async (ps, me) => {
 		default: query.orderBy('user.id', 'ASC'); break;
 	}
 
-	query.take(ps.limit);
+	query.take(ps.limit!);
 	query.skip(ps.offset);
 
 	const users = await query.getMany();

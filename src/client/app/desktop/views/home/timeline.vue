@@ -1,6 +1,6 @@
 <template>
 <div class="pwbzawku">
-	<mk-post-form class="form" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
+	<x-post-form class="form" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
 	<div class="main">
 		<component :is="src == 'list' ? 'mk-user-list-timeline' : 'x-core'" ref="tl" v-bind="options">
 			<header class="zahtxcqi">
@@ -31,8 +31,10 @@ import MkSettingsWindow from '../components/settings-window.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/timeline.vue'),
+
 	components: {
-		XCore
+		XCore,
+		XPostForm: () => import('../components/post-form.vue').then(m => m.default)
 	},
 
 	data() {
@@ -88,8 +90,6 @@ export default Vue.extend({
 			} else if (this.src == 'tag') {
 				this.tagTl = this.$store.state.device.tl.arg;
 			}
-		} else if (this.$store.state.i.followingCount == 0) {
-			this.src = 'hybrid';
 		}
 	},
 
@@ -125,10 +125,10 @@ export default Vue.extend({
 					this.$root.dialog({
 						title: this.$t('list-name'),
 						input: true
-					}).then(async ({ canceled, result: title }) => {
+					}).then(async ({ canceled, result: name }) => {
 						if (canceled) return;
 						const list = await this.$root.api('users/lists/create', {
-							title
+							name
 						});
 
 						this.list = list;

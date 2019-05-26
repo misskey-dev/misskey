@@ -29,7 +29,7 @@ export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Signins.createQueryBuilder('signin'), ps.sinceId, ps.untilId)
 		.andWhere(`signin.userId = :meId`, { meId: user.id });
 
-	const history = await query.take(ps.limit).getMany();
+	const history = await query.take(ps.limit!).getMany();
 
 	return await Promise.all(history.map(record => Signins.pack(record)));
 });

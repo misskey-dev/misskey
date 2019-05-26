@@ -525,15 +525,11 @@ export default Vue.extend({
 			this.$chooseDriveFile({
 				multiple: false
 			}).then(file => {
-				this.$root.api('i/update', {
-					wallpaperId: file.id
-				});
+				this.$store.dispatch('settings/set', { key: 'wallpaper', value: file.url });
 			});
 		},
 		deleteWallpaper() {
-			this.$root.api('i/update', {
-				wallpaperId: null
-			});
+			this.$store.dispatch('settings/set', { key: 'wallpaper', value: null });
 		},
 		checkForUpdate() {
 			this.checkingForUpdate = true;
@@ -542,13 +538,13 @@ export default Vue.extend({
 				this.latestVersion = newer;
 				if (newer == null) {
 					this.$root.dialog({
-						title: this.$t('no-updates'),
-						text: this.$t('no-updates-desc')
+						title: this.$t('@._settings.no-updates'),
+						text: this.$t('@._settings.no-updates-desc')
 					});
 				} else {
 					this.$root.dialog({
-						title: this.$t('update-available'),
-						text: this.$t('update-available-desc')
+						title: this.$t('@._settings.update-available'),
+						text: this.$t('@._settings.update-available-desc')
 					});
 				}
 			});

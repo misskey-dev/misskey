@@ -4,6 +4,7 @@ import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
 import { NoteReactions } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -44,9 +45,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Reaction'
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'NoteReaction',
 		}
 	},
 
@@ -71,7 +75,7 @@ export default define(meta, async (ps, user) => {
 
 	const reactions = await NoteReactions.find({
 		where: query,
-		take: ps.limit,
+		take: ps.limit!,
 		skip: ps.offset,
 		order: {
 			id: -1

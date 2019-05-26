@@ -52,7 +52,7 @@ function match(e: KeyboardEvent, patterns: action['patterns']): boolean {
 		pattern.ctrl == e.ctrlKey &&
 		pattern.shift == e.shiftKey &&
 		pattern.alt == e.altKey &&
-		e.metaKey == false
+		!e.metaKey
 	);
 }
 

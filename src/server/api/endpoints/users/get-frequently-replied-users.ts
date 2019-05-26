@@ -4,8 +4,9 @@ import define from '../../define';
 import { maximum } from '../../../../prelude/array';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { Not, In } from 'typeorm';
+import { Not, In, IsNull } from 'typeorm';
 import { Notes, Users } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	tags: ['users'],
@@ -28,9 +29,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'User',
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'User',
 		}
 	},
 
@@ -54,7 +58,7 @@ export default define(meta, async (ps, me) => {
 	const recentNotes = await Notes.find({
 		where: {
 			userId: user.id,
-			replyId: Not(null)
+			replyId: Not(IsNull())
 		},
 		order: {
 			id: -1
@@ -94,7 +98,7 @@ export default define(meta, async (ps, me) => {
 	const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);
 
 	// Extract top replied users
-	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
+	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit!);
 
 	// Make replies object (includes weights)
 	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({

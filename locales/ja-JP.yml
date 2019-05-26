@@ -35,6 +35,7 @@ common:
   signup: "新規登録"
   signout: "ログアウト"
   reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
+  fetching-as-ap-object: "連合に照会中"
 
   got-it: "わかった"
   customization-tips:
@@ -64,6 +65,7 @@ common:
 
   trash: "ゴミ箱"
   drive: "ドライブ"
+  pages: "ページ"
   messaging: "トーク"
   home: "ホーム"
   deck: "デッキ"
@@ -74,10 +76,26 @@ common:
   favorites: "お気に入り"
 
   permissions:
-    'read:account': "アカウントの情報を見る"
-    'write:account': "アカウントの情報を変更する"
-    'read:drive': "ドライブを見る"
-    'write:drive': "ドライブを操作する"
+    "read:account": "アカウントの情報を見る"
+    "write:account": "アカウントの情報を変更する"
+    "read:blocks": "ブロックを見る"
+    "write:blocks": "ブロックを操作する"
+    "read:drive": "ドライブを見る"
+    "write:drive": "ドライブを操作する"
+    "read:favorites": "お気に入りを見る"
+    "write:favorites": "お気に入りを操作する"
+    "read:following": "フォローの情報を見る"
+    "write:following": "フォロー・フォロー解除する"
+    "read:messaging": "トークを見る"
+    "write:messaging": "トークを操作する"
+    "read:mutes": "ミュートを見る"
+    "write:mutes": "ミュートを操作する"
+    "write:notes": "投稿を作成・削除する"
+    "read:notifications": "通知を見る"
+    "write:notifications": "通知を操作する"
+    "read:reactions": "リアクションを見る"
+    "write:reactions": "リアクションを操作する"
+    "write:votes": "投票する"
 
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
@@ -245,9 +263,9 @@ common:
   update-available-title: "更新があります"
   update-available: "Misskeyの新しいバージョンがあります({newer}。現在{current}を利用中)。ページを再度読み込みすると更新が適用されます。"
   my-token-regenerated: "あなたのトークンが更新されたのでサインアウトします。"
-  verified-user: "公式アカウント"
   hide-password: "パスワードを隠す"
   show-password: "パスワードを表示する"
+  enter-username: "ユーザー名を入力してください"
 
   do-not-use-in-production: "これは開発ビルドです。本番環境で使用しないでください。"
   user-suspended: "このユーザーは凍結されています。"
@@ -297,6 +315,7 @@ common:
     nav: "ナビゲーション"
     tips: "ヒント"
     hashtags: "ハッシュタグ"
+    queue: "キュー"
 
   dev: "アプリの作成に失敗しました。再度お試しください。"
   ai-chan-kawaii: "藍ちゃかわいい"
@@ -320,7 +339,7 @@ auth/views/index.vue:
   sign-in: "サインインしてください"
 
 common/views/pages/explore.vue:
-  verified-users: "公式アカウント"
+  pinned-users: "ピン留めされたユーザー"
   popular-users: "人気のユーザー"
   recently-updated-users: "最近投稿したユーザー"
   recently-registered-users: "新規ユーザー"
@@ -462,20 +481,25 @@ common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あなた"
   no-history: "履歴はありません"
+  user: "ユーザー"
+  group: "グループ"
+  start-with-user: "ユーザーとトークを開始"
+  start-with-group: "グループとトークを開始"
+  select-group: "グループを選択してください"
 
 common/views/components/messaging-room.vue:
-  empty: "このユーザーと話したことはありません"
+  not-talked-user: "このユーザーとの会話はありません"
+  not-talked-group: "このグループでの会話はありません"
   no-history: "これより過去の履歴はありません"
-  resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあります"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "メッセージに添付できるファイルはひとつです"
 
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージを入力"
   send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
-  only-one-file-attached: "メッセージに添付できるのはひとつのファイルのみです"
+  only-one-file-attached: "メッセージに添付できるファイルはひとつです"
 
 common/views/components/messaging-room.message.vue:
   is-read: "既読"
@@ -490,6 +514,7 @@ common/views/components/nav.vue:
   repository: "リポジトリ"
   develop: "開発者"
   feedback: "フィードバック"
+  tos: "利用規約"
 
 common/views/components/note-menu.vue:
   mention: "メンション"
@@ -510,8 +535,12 @@ common/views/components/user-menu.vue:
   mention: "メンション"
   mute: "ミュート"
   unmute: "ミュート解除"
+  mute-confirm: "このユーザーをミュートしますか？"
+  unmute-confirm: "このユーザーをミュート解除しますか？"
   block: "ブロック"
   unblock: "ブロック解除"
+  block-confirm: "このユーザーをブロックしますか？"
+  unblock-confirm: "このユーザーをブロック解除しますか？"
   push-to-list: "リストに追加"
   select-list: "リストを選択してください"
   report-abuse: "スパムを報告"
@@ -519,8 +548,12 @@ common/views/components/user-menu.vue:
   report-abuse-reported: "管理者に報告されました。ご協力ありがとうございました。"
   silence: "サイレンス"
   unsilence: "サイレンス解除"
+  silence-confirm: "このユーザーをサイレンスしますか？"
+  unsilence-confirm: "このユーザーをサイレンス解除しますか？"
   suspend: "凍結"
   unsuspend: "凍結解除"
+  suspend-confirm: "このユーザーを凍結しますか？"
+  unsuspend-confirm: "このユーザーを凍結解除しますか？"
 
 common/views/components/poll.vue:
   vote-to: "「{}」に投票する"
@@ -558,6 +591,7 @@ common/views/components/poll-editor.vue:
 
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
+  input-reaction-placeholder: "または絵文字を入力"
 
 common/views/components/emoji-picker.vue:
   custom-emoji: "カスタム絵文字"
@@ -602,6 +636,8 @@ common/views/components/signup.vue:
   password-matched: "確認されました"
   password-not-matched: "一致していません"
   recaptcha: "認証"
+  agree-to: "{0}に同意します。"
+  tos: "利用規約"
   create: "アカウント作成"
   some-error: "何らかの原因によりアカウントの作成に失敗しました。再度お試しください。"
 
@@ -721,6 +757,35 @@ common/views/components/user-list-editor.vue:
   remove-user: "このリストから削除"
   delete-are-you-sure: "リスト「$1」を削除しますか？"
   deleted: "削除しました"
+  add-user: "ユーザーを追加"
+
+common/views/components/user-group-editor.vue:
+  users: "メンバー"
+  rename: "グループ名を変更"
+  delete: "グループを削除"
+  transfer: "グループを譲渡"
+  transfer-are-you-sure: "グループ「$1」を「@$2」さんに譲渡しますか？"
+  transferred: "グループを譲渡しました"
+  remove-user: "このグループから削除"
+  delete-are-you-sure: "グループ「$1」を削除しますか？"
+  deleted: "削除しました"
+  invite: "招待"
+  invited: "招待を送信しました"
+
+common/views/components/user-lists.vue:
+  user-lists: "リスト"
+  create-list: "リストを作成"
+  list-name: "リスト名"
+
+common/views/components/user-groups.vue:
+  user-groups: "グループ"
+  create-group: "グループを作成"
+  group-name: "グループ名"
+  owned-groups: "自分のグループ"
+  joined-groups: "参加しているグループ"
+  invites: "招待"
+  accept-invite: "参加"
+  reject-invite: "拒否"
 
 common/views/widgets/broadcast.vue:
   fetching: "確認中"
@@ -793,6 +858,11 @@ common/views/pages/follow.vue:
   request-pending: "フォロー許可待ち"
   follow-processing: "フォロー処理中"
   follow-request: "フォロー申請"
+
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "フォロー申請"
+  accept: "承認"
+  reject: "拒否"
 
 desktop:
   banner-crop-title: "バナーとして表示する部分を選択"
@@ -964,7 +1034,6 @@ desktop/views/components/post-form.vue:
   posting: "投稿中"
   attach-media-from-local: "PCからメディアを添付"
   attach-media-from-drive: "ドライブからメディアを添付"
-  attach-cancel: "添付取り消し"
   insert-a-kao: "v('ω')v"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
@@ -1070,6 +1139,11 @@ common/views/components/password-settings.vue:
   changed: "パスワードを変更しました"
   failed: "パスワード変更に失敗しました"
 
+common/views/components/post-form-attaches.vue:
+  attach-cancel: "添付取り消し"
+  mark-as-sensitive: "閲覧注意に設定"
+  unmark-as-sensitive: "閲覧注意を解除"
+
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
@@ -1102,6 +1176,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "プロフィール"
   lists: "リスト"
+  groups: "グループ"
   follow-requests: "フォロー申請"
   admin: "管理"
 
@@ -1116,16 +1191,6 @@ desktop/views/components/ui.header.post.vue:
 
 desktop/views/components/ui.header.search.vue:
   placeholder: "検索"
-
-desktop/views/components/received-follow-requests-window.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
-
-desktop/views/components/user-lists-window.vue:
-  title: "リスト"
-  create-list: "リストを作成"
-  list-name: "リスト名"
 
 desktop/views/components/user-preview.vue:
   notes: "投稿"
@@ -1152,7 +1217,6 @@ admin/views/index.vue:
   users: "ユーザー"
   federation: "連合"
   announcements: "お知らせ"
-  hashtags: "ハッシュタグ"
   abuse: "スパム報告"
   queue: "ジョブキュー"
   logs: "ログ"
@@ -1170,6 +1234,28 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "キュー"
   remove-all-jobs: "すべてのジョブをクリア"
+  jobs: "ジョブ"
+  queue: "キュー"
+  domains:
+    deliver: "配送"
+    inbox: "受信"
+  state: "状態"
+  states:
+    delayed: "遅延"
+  result-is-truncated: "結果は省略されています"
+
+admin/views/logs.vue:
+  logs: "ログ"
+  domain: "ドメイン"
+  level: "レベル"
+  levels:
+    all: "全て"
+    info: "情報"
+    success: "成功"
+    warning: "警告"
+    error: "エラー"
+    debug: "デバッグ"
+  delete-all: "全て削除"
 
 admin/views/abuse.vue:
   title: "スパム報告"
@@ -1183,14 +1269,34 @@ admin/views/instance.vue:
   instance-name: "インスタンス名"
   instance-description: "インスタンスの紹介"
   host: "ホスト"
+  icon-url: "アイコンURL"
+  logo-url: "ロゴURL"
   banner-url: "バナー画像URL"
   error-image-url: "エラー画像URL"
   languages: "インスタンスの対象言語"
   languages-desc: "スペースで区切って複数設定できます。"
+  tos-url: "利用規約URL"
+  repository-url: "リポジトリURL"
+  feedback-url: "フィードバックURL"
   maintainer-config: "管理者情報"
   maintainer-name: "管理者名"
   maintainer-email: "管理者の連絡先"
+  advanced-config: "その他の設定"
+  note-and-tl: "投稿とタイムライン"
   drive-config: "ドライブの設定"
+  use-object-storage: "オブジェクトストレージを使用する"
+  object-storage-base-url: "URL"
+  object-storage-bucket: "バケット名"
+  object-storage-prefix: "プレフィックス"
+  object-storage-endpoint: "エンドポイント"
+  object-storage-region: "リージョン"
+  object-storage-port: "ポート"
+  object-storage-access-key: "アクセスキー"
+  object-storage-secret-key: "シークレットキー"
+  object-storage-use-ssl: "SSLを使用"
+  object-storage-s3-info: "Amazon S3をオブジェクトストレージとして使用する場合の「エンドポイント」と「リージョン」の設定については{0}をご確認ください。"
+  object-storage-s3-info-here: "こちら"
+  object-storage-gcs-info: "Google Cloud Storageをオブジェクトストレージとして使用する場合、「エンドポイント」は storage.googleapis.com に設定し、「リージョン」は空欄にします。"
   cache-remote-files: "リモートのファイルをキャッシュする"
   cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
   local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
@@ -1198,9 +1304,14 @@ admin/views/instance.vue:
   mb: "メガバイト単位"
   recaptcha-config: "reCAPTCHAの設定"
   recaptcha-info: "reCAPTCHAを有効にする場合、reCAPTCHAトークンを取得する必要があります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してください。"
+  recaptcha-info2: "v3は非対応です。v2を使用してください。"
   enable-recaptcha: "reCAPTCHAを有効にする"
-  recaptcha-site-key: "reCAPTCHA site key"
-  recaptcha-secret-key: "reCAPTCHA secret key"
+  recaptcha-site-key: "サイトキー"
+  recaptcha-secret-key: "シークレットキー"
+  recaptcha-preview: "プレビュー"
+  hidden-tags: "非表示ハッシュタグ"
+  hidden-tags-info: "集計から除外するハッシュタグを改行で区切って記述します。"
+  external-service-integration-config: "外部サービス連携"
   twitter-integration-config: "Twitter連携の設定"
   twitter-integration-info: "コールバックURLは {url} に設定します。"
   enable-twitter-integration: "Twitter連携を有効にする"
@@ -1231,7 +1342,8 @@ admin/views/instance.vue:
   invite: "招待"
   save: "保存"
   saved: "保存しました"
-  user-recommendation-config: "おすすめユーザー"
+  pinned-users: "ピン留めユーザー"
+  pinned-users-info: "ピン留めしたいユーザーを改行で区切って記述します。"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使われます。"
   enable-email: "メール配信を有効にする"
@@ -1315,15 +1427,13 @@ admin/views/users.vue:
   unsuspend-confirm: "凍結を解除しますか？"
   unsuspended: "凍結を解除しました"
   make-silence: "サイレンス"
+  silence-confirm: "サイレンスしますか？"
   unmake-silence: "サイレンスの解除"
-  verify: "公式アカウントにする"
-  verify-confirm: "公式アカウントにしますか？"
-  verified: "公式アカウントにしました"
-  unverify: "公式アカウントを解除する"
-  unverify-confirm: "公式アカウントを解除しますか？"
-  unverified: "公式アカウントを解除しました"
+  unsilence-confirm: "サイレンスを解除しますか？"
   update-remote-user: "リモートユーザー情報の更新"
   remote-user-updated: "リモートユーザー情報を更新しました"
+  delete-all-files: "すべてのファイルを削除"
+  delete-all-files-confirm: "すべてのファイルを削除しますか？"
   users:
     title: "ユーザー"
     sort:
@@ -1338,7 +1448,6 @@ admin/views/users.vue:
       admin: "管理者"
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"
-      verified: "公式アカウント"
       silenced: "サイレンス済み"
       suspended: "凍結済み"
     origin:
@@ -1405,6 +1514,7 @@ admin/views/federation.vue:
   latest-request-received-at: "直近のリクエスト受信"
   remove-all-following: "フォローを全解除"
   remove-all-following-info: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
+  delete-all-files: "ファイルをすべて削除"
   block: "ブロック"
   marked-as-closed: "閉鎖されているとマーク"
   lookup: "照会"
@@ -1451,6 +1561,9 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"
+  blocked-hosts: "ブロック"
+  blocked-hosts-info: "ブロックしたいホストを改行で区切って記述します。"
+  save: "保存"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
@@ -1529,6 +1642,7 @@ desktop/views/widgets/polls.vue:
 desktop/views/widgets/post-form.vue:
   title: "投稿"
   note: "投稿"
+  something-happened: "何らかの事情で投稿できませんでした。"
 
 desktop/views/widgets/profile.vue:
   update-banner: "クリックでバナー編集"
@@ -1551,12 +1665,11 @@ mobile/views/components/drive.vue:
   file-count: "ファイル"
   nothing-in-drive: "ドライブには何もありません"
   folder-is-empty: "このフォルダは空です"
-  prompt: "何をしますか？(数字を入力してください): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
-  deletion-alert: "ごめんなさい！フォルダの削除は未実装です...。"
   folder-name: "フォルダー名"
   here-is-root: "現在いる場所はルートで、フォルダではありません。"
   url-prompt: "アップロードしたいファイルのURL"
   uploading: "アップロードをリクエストしました。アップロードが完了するまで時間がかかる場合があります。"
+  folder-name-cannot-empty: "フォルダ名を空白にすることはできません。"
 
 mobile/views/components/drive-file-chooser.vue:
   select-file: "ファイルを選択"
@@ -1621,7 +1734,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "この投稿を引用... (オプション)"
   reply-placeholder: "この投稿への返信..."
   cw-placeholder: "内容への注釈 (オプション)"
-  location-alert: "お使いの端末は位置情報に対応していません"
+  geolocation-alert: "お使いの端末は位置情報に対応していません"
   error: "エラー"
   username-prompt: "ユーザー名を入力してください"
 
@@ -1641,14 +1754,20 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "フォロー申請"
   search: "検索"
   user-lists: "リスト"
+  user-groups: "グループ"
   widgets: "ウィジェット"
   game: "ゲーム"
   admin: "管理"
   about: "Misskeyについて"
 
-mobile/views/pages/user-lists.vue:
-  title: "リスト"
-  enter-list-name: "リスト名を入力してください"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "ファイルをアップロード"
+    url-upload: "ファイルをURLでアップロード"
+    create-folder: "フォルダーを作成"
+    rename-folder: "フォルダー名を変更"
+    move-folder: "このフォルダを移動"
+    delete-folder: "このフォルダを削除"
 
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めましょう"
@@ -1681,11 +1800,6 @@ mobile/views/pages/widgets/activity.vue:
 
 mobile/views/pages/share.vue:
   share-with: "{name}で共有"
-
-mobile/views/pages/received-follow-requests.vue:
-  title: "フォロー申請"
-  accept: "承認"
-  reject: "拒否"
 
 mobile/views/pages/note.vue:
   title: "投稿"
@@ -1771,26 +1885,6 @@ docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "このページをGitHubで編集"
 
-  api:
-    entities:
-      properties: "プロパティ"
-    endpoints:
-      params: "パラメータ"
-      no-params: "パラメータはありません"
-      res: "レスポンス"
-      require-credential: "このエンドポイントは認証情報が必須です。"
-      require-permission: "このエンドポイントは{permission}の権限を必要とします。"
-      has-limit: "レートリミットがあります。"
-      duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
-      min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
-      show-src: "このエンドポイントのソースコードも閲覧できます。"
-      show-src-link: "コードをGitHubで見る"
-      generated: "このドキュメントはAPI定義に基づき自動生成されています。"
-    props:
-      name: "名前"
-      type: "型"
-      description: "説明"
-
 dev/views/index.vue:
   manage-apps: "アプリの管理"
 
@@ -1800,15 +1894,283 @@ dev/views/apps.vue:
   app-missing: "アプリなし"
 
 dev/views/new-app.vue:
+  new-app: "新しいアプリケーション"
+  new-app-info: "アプリケーションはAPIからでも作成できます。 (app/create)"
   create-app: "アプリケーションの作成"
   app-name: "アプリケーション名"
+  app-name-placeholder: "ex) Misskey for iOS"
   app-name-desc: "あなたのアプリの名称。"
-  app-name-ex: "ex) Misskey for iOS"
   app-overview: "アプリの概要"
-  app-desc: "あなたのアプリの簡単な説明や紹介。"
-  app-desc-ex: "ex) Misskey iOSクライアント。"
+  app-overview-placeholder: " ex) Misskey iOSクライアント。"
+  app-overview-desc: "あなたのアプリの簡単な説明や紹介。"
   callback-url: "コールバックURL (オプション)"
+  callback-url-placeholder: "ex) https://your.app.example.com/callback.php"
   callback-url-desc: "ユーザーが認証フォームで認証した際にリダイレクトするURLを設定できます。"
   authority: "権限"
   authority-desc: "ここで要求した機能だけがAPIからアクセスできます。"
   authority-warning: "アプリ作成後も変更できますが、新たな権限を付与する場合、その時点で関連付けられているユーザーキーはすべて無効になります。"
+
+pages:
+  new-page: "ページの作成"
+  edit-page: "ページの編集"
+  read-page: "ソースを表示中"
+  page-created: "ページを作成しました"
+  page-updated: "ページを更新しました"
+  are-you-sure-delete: "このページを削除しますか？"
+  page-deleted: "ページを削除しました"
+  edit-this-page: "このページを編集"
+  view-source: "ソースを表示"
+  view-page: "ページを見る"
+  like: "いいね"
+  unlike: "いいね解除"
+  liked-pages: "いいねしたページ"
+  my-pages: "自分のページ"
+  inspector: "インスペクター"
+  content: "ページブロック"
+  variables: "変数"
+  variables-info: "変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。"
+  variables-info2: "変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。"
+  variables-info3: "ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。"
+  variables-info4: "関数を使うと、値の算出処理を再利用可能な形にまとめることができます。関数を作るには、「関数」タイプの変数を作成します。関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、AiScript標準で関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。"
+  more-details: "詳しい説明"
+  title: "タイトル"
+  url: "ページURL"
+  summary: "ページの要約"
+  align-center: "中央寄せ"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  set-eye-catching-image: "アイキャッチ画像を設定"
+  remove-eye-catching-image: "アイキャッチ画像を削除"
+  choose-block: "ブロックを追加"
+  select-type: "種類を選択"
+  enter-variable-name: "変数名を決めてください"
+  the-variable-name-is-already-used: "その変数名は既に使われています"
+  content-blocks: "コンテンツ"
+  input-blocks: "入力"
+  special-blocks: "特殊"
+  post-from-post-form: "この内容を投稿"
+  posted-from-post-form: "投稿しました"
+  blocks:
+    text: "テキスト"
+    textarea: "テキストエリア"
+    section: "セクション"
+    image: "画像"
+    button: "ボタン"
+
+    if: "もし"
+    _if:
+      variable: "変数"
+
+    post: "投稿フォーム"
+    _post:
+      text: "内容"
+
+    textInput: "テキスト入力"
+    _textInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    textareaInput: "複数行テキスト入力"
+    _textareaInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    numberInput: "数値入力"
+    _numberInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    switch: "スイッチ"
+    _switch:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    counter: "カウンター"
+    _counter:
+      name: "変数名"
+      text: "タイトル"
+      inc: "増加値"
+
+    _button:
+      text: "タイトル"
+      action: "ボタンを押したときの動作"
+      _action:
+        dialog: "ダイアログを表示する"
+        _dialog:
+          content: "内容"
+        resetRandom: "乱数をリセット"
+
+  script:
+    categories:
+      flow: "制御"
+      logical: "論理演算"
+      operation: "計算"
+      comparison: "比較"
+      random: "ランダム"
+      value: "値"
+      fn: "関数"
+      text: "テキスト操作"
+      convert: "変換"
+      list: "リスト"
+    blocks:
+      text: "テキスト"
+      multiLineText: "テキスト(複数行)"
+      textList: "テキストのリスト"
+      _textList:
+        info: "ひとつひとつを改行で区切ってください"
+      strLen: "テキストの長さ"
+      _strLen:
+        arg1: "テキスト"
+      strPick: "文字取り出し"
+      _strPick:
+        arg1: "テキスト"
+        arg2: "文字の位置"
+      strReplace: "テキスト置き換え"
+      _strReplace:
+        arg1: "テキスト"
+        arg2: "置き換え前"
+        arg3: "置き換え後"
+      strReverse: "テキストを反転"
+      _strReverse:
+        arg1: "テキスト"
+      join: "テキストを連結"
+      _join:
+        arg1: "リスト"
+        arg2: "区切り"
+      add: "+ 足す"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- 引く"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× 掛ける"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ 割る"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      remind: "÷ 割った余り"
+      _remind:
+        arg1: "A"
+        arg2: "B"
+      eq: "AとBが同じ"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "AとBが異なる"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "AかつB"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "AまたはB"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< AがBより小さい"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> AがBより大きい"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= AがBと同じか小さい"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= AがBと同じか大きい"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "分岐"
+      _if:
+        arg1: "もし"
+        arg2: "なら"
+        arg3: "そうでなければ"
+      not: "否定"
+      _not:
+        arg1: "否定"
+      random: "ランダム"
+      _random:
+        arg1: "確率"
+      rannum: "乱数"
+      _rannum:
+        arg1: "最小"
+        arg2: "最大"
+      randomPick: "リストからランダムに選択"
+      _randomPick:
+        arg1: "リスト"
+      dailyRandom: "ランダム (ユーザーごとに日替わり)"
+      _dailyRandom:
+        arg1: "確率"
+      dailyRannum: "乱数 (ユーザーごとに日替わり)"
+      _dailyRannum:
+        arg1: "最小"
+        arg2: "最大"
+      dailyRandomPick: "リストからランダムに選択 (ユーザーごとに日替わり)"
+      _dailyRandomPick:
+        arg1: "リスト"
+      seedRandom: "ランダム (シード)"
+      _seedRandom:
+        arg1: "シード"
+        arg2: "確率"
+      seedRannum: "乱数 (シード)"
+      _seedRannum:
+        arg1: "シード"
+        arg2: "最小"
+        arg3: "最大"
+      seedRandomPick: "リストからランダムに選択 (シード)"
+      _seedRandomPick:
+        arg1: "シード"
+        arg2: "リスト"
+      DRPWPM: "確率付きリストからランダムに選択 (ユーザーごとに日替わり)"
+      _DRPWPM:
+        arg1: "テキストのリスト"
+      pick: "リストから選択"
+      _pick:
+        arg1: "リスト"
+        arg2: "位置"
+      number: "数値"
+      stringToNumber: "テキストを数値に"
+      _stringToNumber:
+        arg1: "テキスト"
+      numberToString: "数値をテキストに"
+      _numberToString:
+        arg1: "数値"
+      splitStrByLine: "テキストを行で分割"
+      _splitStrByLine:
+        arg1: "テキスト"
+      ref: "変数"
+      fn: "関数"
+      _fn:
+        slots: "スロット"
+        slots-info: "スロットひとつひとつを改行で区切ってください"
+        arg1: "出力"
+      for: "繰り返し"
+      _for:
+        arg1: "回数"
+        arg2: "処理"
+    typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
+    thereIsEmptySlot: "スロット{slot}が空です！"
+    types:
+      string: "テキスト"
+      number: "数値"
+      boolean: "フラグ"
+      array: "リスト"
+      stringArray: "テキストのリスト"
+    emptySlot: "空のスロット"
+    enviromentVariables: "環境変数"
+    pageVariables: "ページ要素"
+    argVariables: "入力スロット"

@@ -23,6 +23,7 @@ common:
   enter-password: "Wprowadź Hasło"
   2fa: "Uwierzytelnienie dwuetapowe"
   customize-home: "Dostosuj stronę główną"
+  featured-notes: "Wyróżnienia"
   dark-mode: "Tryb ciemny"
   signin: "Zaloguj się"
   signup: "Rejestracja"
@@ -53,6 +54,7 @@ common:
   month-and-day: "{month}-{day}"
   trash: "Kosz"
   drive: "Dysk"
+  pages: "Strony"
   messaging: "Rozmowy"
   home: "Strona główna"
   deck: "Tablice"
@@ -61,6 +63,9 @@ common:
   following: "Śledzisz"
   followers: "Śledzący"
   favorites: "Moje ulubione"
+  permissions:
+    "read:drive": "Wyświetl dysk"
+    "write:votes": "Zagłosuj"
   empty-timeline-info:
     explore: "Poznaj"
   weekday-short:
@@ -123,6 +128,7 @@ common:
     behavior: "Zachowanie"
     fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
     note-visibility: "Widoczność wpisów"
+    remember-note-visibility: "Zapamiętaj widoczność wpisów"
     web-search-engine: "Wyszukiwarka internetowa"
     line-width: "Szerokości linii"
     line-width-thin: "Cienka"
@@ -160,9 +166,9 @@ common:
   update-available-title: "Aktualizacja jest dostępna"
   update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
-  verified-user: "Zweryfikowane konto"
   hide-password: "Ukryj hasło"
   show-password: "Pokaż hasło"
+  enter-username: "Wprowadź nazwę użytkownika"
   view-on-remote: "Dla dopełnienia, zobacz to zdalnie."
   renoted-by: "{user} udostępnił(a)"
   error:
@@ -201,15 +207,6 @@ common:
   you: "Ty"
 auth/views/form.vue:
   permission-ask: "Ta aplikacja wymaga następujących uprawnień:"
-  account-read: "Wyświetlanie informacji o koncie:"
-  account-write: "Modyfikowanie informacji o koncie:"
-  note-write: "Publikacja."
-  like-write: "Reagowanie na wpisy."
-  following-write: "Śledzenie i cofanie śledzenia."
-  drive-read: "Odczytywanie Twojego dysku."
-  drive-write: "Wysyłanie i usuwanie plików na Twoim dysku."
-  notification-read: "Odczytywanie Twoich powiadomień."
-  notification-write: "Zarządzanie Twoimi powiadomieniami."
   cancel: "Anuluj"
   accept: "Przyznaj dostęp."
 auth/views/index.vue:
@@ -221,8 +218,6 @@ auth/views/index.vue:
   please-go-back: "Wróć do aplikacji."
   error: "Sesja nie istnieje."
   sign-in: "Proszę zalogować się."
-common/views/pages/explore.vue:
-  verified-users: "Zweryfikowane konto"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Oczekiwanie na {}"
@@ -329,18 +324,15 @@ common/views/components/messaging.vue:
   search-user: "Znajdź użytkownika"
   you: "Ty"
   no-history: "Brak historii"
+  user: "Użytkownicy"
 common/views/components/messaging-room.vue:
-  empty: "Brak konwersacji"
   no-history: "Brak dalszej historii"
-  resize-form: "Przeciągnij aby zmienić rozmiar"
   new-message: "Nowa wiadomość"
-  only-one-file-attached: "Tylko JEDEN plik może zostać dołączony do wiadomości"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Wprowadź wiadomość tutaj"
   send: "Wyślij"
   attach-from-local: "Załącz pliki z komputera"
   attach-from-drive: "Załącz pliki z dysku"
-  only-one-file-attached: "Tylko jeden plik może zostać dołączony do wiadomości"
 common/views/components/messaging-room.message.vue:
   is-read: "Przeczytano"
   deleted: "Wiadomość została usunięta"
@@ -517,6 +509,15 @@ common/views/components/user-list-editor.vue:
   remove-user: "Usuń z tej listy"
   delete-are-you-sure: "Usunąć listę \"$1\"?"
   deleted: "Usunięto"
+  add-user: "Dodaj użytkownika"
+common/views/components/user-group-editor.vue:
+  deleted: "Usunięto"
+  invite: "Zaproś"
+common/views/components/user-lists.vue:
+  user-lists: "Listy"
+  list-name: "Nazwa listy"
+common/views/components/user-groups.vue:
+  invites: "Zaproś"
 common/views/widgets/broadcast.vue:
   fetching: "Sprawdzanie"
   no-broadcasts: "Brak transmisji"
@@ -572,6 +573,8 @@ common/views/pages/follow.vue:
   request-pending: "Oczekiwanie na pozwolenie"
   follow-processing: "Przetwarzanie śledzenia"
   follow-request: "Poproś o śledzenie"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "Prośby o śledzenie"
 desktop:
   banner: "Baner"
   uploading-banner: "Wysyłanie baneru"
@@ -715,7 +718,6 @@ desktop/views/components/post-form.vue:
   posting: "Wysyłanie"
   attach-media-from-local: "Załącz zawartość multimedialną z komputera"
   attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
-  attach-cancel: "Usuń załącznik"
   insert-a-kao: "v('ω')v"
   create-poll: "Utwórz ankietę"
   text-remain: "pozostałe znaki: {}"
@@ -795,6 +797,9 @@ common/views/components/password-settings.vue:
   enter-current-password: "Wprowadź obecne hasło"
   enter-new-password: "Wprowadź nowe hasło"
   enter-new-password-again: "Wprowadź ponownie nowe hasło"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "Oznacz jako zawartość wrażliwą"
+  unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
 desktop/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
@@ -805,12 +810,9 @@ desktop/views/components/settings.tags.vue:
   query: "Zapytanie (opcjonalne)"
   add: "Dodaj"
   save: "Zapisz"
-desktop/views/components/taskmanager.vue:
-  title: "Menedżer zadań"
 desktop/views/components/timeline.vue:
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Bezpośrednie wpisy"
@@ -834,14 +836,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Utwórz nowy wpis"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Szukaj"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "Prośby o śledzenie"
-  accept: "Zatwierdź"
-  reject: "Odmów"
-desktop/views/components/user-lists-window.vue:
-  title: "Listy"
-  create-list: "Utwórz listę"
-  list-name: "Nazwa listy"
 desktop/views/components/user-preview.vue:
   notes: "Wpisy"
   following: "Śledzeni"
@@ -862,7 +856,6 @@ admin/views/index.vue:
   moderators: "Moderatorzy"
   users: "Użytkownicy"
   announcements: "Ogłoszenia"
-  hashtags: "Hashtagi"
 admin/views/dashboard.vue:
   dashboard: "Kokpit"
   accounts: "Konta"
@@ -874,6 +867,7 @@ admin/views/abuse.vue:
   remove-report: "Usuń"
 admin/views/instance.vue:
   instance: "Instancja"
+  recaptcha-preview: "Pokaż podgląd"
   github-integration-client-id: "Client ID"
   github-integration-client-secret: "Client Secret"
   discord-integration-client-id: "Client ID"
@@ -881,9 +875,6 @@ admin/views/instance.vue:
   invite: "Zaproś"
   save: "Zapisz"
   saved: "Zapisano"
-  user-recommendation-config: "Polecani użytkownicy"
-  external-user-recommendation-engine: "Silnik"
-  external-user-recommendation-engine-desc: "Np: https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
   email: "Adres e-mail"
 admin/views/charts.vue:
   notes: "Wpisy"
@@ -913,7 +904,6 @@ admin/views/users.vue:
     state:
       all: "Wszyscy"
       moderator: "Moderatorzy"
-      verified: "Zweryfikowane konto"
     origin:
       title: "Źródło"
       local: "Lokalny"
@@ -959,6 +949,7 @@ admin/views/federation.vue:
     blocked: "Zablokuj"
   chart-srcs:
     requests: "Żądania"
+  blocked-hosts: "Zablokuj"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Oś czasu"
@@ -1034,8 +1025,6 @@ mobile/views/components/drive.vue:
   file-count: "Plik(i)"
   nothing-in-drive: "Pusto"
   folder-is-empty: "Ten katalog jest pusty"
-  prompt: "Co chcesz zrobić? (wprowadź odpowiednią cyfrę): <1 → Wysłać plik | 2 → Wysłać plik z adresu URL | 3 → Utworzyć katalog | 4 → Zmienić nazwę tego katalogu | 5 → Przenieść ten katalog | 6 → Usunąć ten katalog>"
-  deletion-alert: "Przepraszamy. Usuwanie katalogów nie zostało jeszcze zaimplementowane."
   folder-name: "Nazwa katalogu"
   url-prompt: "Adres URL pliku, który chcesz wysłać"
   uploading: "Rozpoczęto wysyłanie. Może to trochę potrwać."
@@ -1091,7 +1080,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "Zacytuj ten wpis… (nieobowiązkowe)"
   reply-placeholder: "Odpowiedź na ten wpis…"
   cw-placeholder: "Treść ostrzeżenia (opcjonalnie)"
-  location-alert: "Twoje urządzenie nie pozwala na przekazywanie informacji o lokalizacji"
+  geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
   error: "Błąd"
   username-prompt: "Wprowadź nazwę użytkownika"
 mobile/views/components/sub-note-content.vue:
@@ -1111,15 +1100,15 @@ mobile/views/components/ui.nav.vue:
   game: "Gry"
   admin: "Admin"
   about: "O Misskey"
-mobile/views/pages/user-lists.vue:
-  title: "Listy"
-  enter-list-name: "Wprowadź nazwę listy"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "Wyślij plik"
+    create-folder: "Utwórz katalog"
 mobile/views/pages/signup.vue:
   lets-start: "Rozpocznijmy! 📦"
 mobile/views/pages/home.vue:
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   global: "Globalne"
   mentions: "Wspomnienia"
   messages: "Bezpośrednie wpisy"
@@ -1129,10 +1118,6 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Wskazówki o dostosowywaniu"
 mobile/views/pages/widgets/activity.vue:
   activity: "Aktywność"
-mobile/views/pages/received-follow-requests.vue:
-  title: "Prośby o śledzenie"
-  accept: "Zatwierdź"
-  reject: "Odmów"
 mobile/views/pages/note.vue:
   title: "Wpis"
   prev: "Poprzedni wpis"
@@ -1169,7 +1154,6 @@ deck:
   widgets: "Widżety"
   home: "Strona główna"
   local: "Lokalne"
-  hybrid: "Społeczność"
   hashtag: "Hashtag"
   global: "Globalne"
   mentions: "Wspomnienia"
@@ -1199,23 +1183,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "Znalazłeś błąd lub chcesz pomóc w tworzeniu dokumentacji?"
   edit-this-page-on-github-link: "Edytuj stronę na GitHubie!"
-  api:
-    entities:
-      properties: "Właściwości"
-    endpoints:
-      params: "Parametry"
-      no-params: "Brak parametrów."
-      res: "Odpowiedź"
-      require-credential: "Punkt końcowy wymaga informacji o uwierzytelnieniu."
-      require-permission: "Ten punkt końcowy wymaga uprawnienia {permission}."
-      has-limit: "Istnieje limit częstotliwości."
-      min-interval-limit: "Nie możesz wykonać żądania przed upłynięciem {interval} od ostatniego żądania."
-      show-src: "Możesz zobaczyć kod źródłowy tego punktu końcowego."
-      show-src-link: "Zobacz kod na GitHubie"
-    props:
-      name: "Nazwa"
-      type: "Rodzaj"
-      description: "Opis"
 dev/views/index.vue:
   manage-apps: "Zarządzaj aplikacjami"
 dev/views/apps.vue:
@@ -1224,11 +1191,39 @@ dev/views/apps.vue:
 dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
-  account-read: "Wyświetlanie informacji o koncie:"
-  account-write: "Modyfikowanie informacji o koncie:"
-  note-write: "Publikacja."
-  following-write: "Śledzenie i cofanie śledzenia."
-  drive-read: "Odczytywanie Twojego dysku."
-  drive-write: "Wysyłanie i usuwanie plików na Twoim dysku."
-  notification-read: "Odczytywanie Twoich powiadomień."
-  notification-write: "Zarządzanie Twoimi powiadomieniami."
+pages:
+  like: "Lubię"
+  title: "Tytuł"
+  blocks:
+    image: "Zdjęcia"
+    post: "Formularz tworzenia"
+    _textInput:
+      text: "Tytuł"
+    _textareaInput:
+      text: "Tytuł"
+    _numberInput:
+      text: "Tytuł"
+    _switch:
+      text: "Tytuł"
+    _counter:
+      text: "Tytuł"
+    _button:
+      text: "Tytuł"
+  script:
+    categories:
+      random: "Losowy"
+      list: "Listy"
+    blocks:
+      _join:
+        arg1: "Listy"
+      random: "Losowy"
+      _randomPick:
+        arg1: "Listy"
+      _dailyRandomPick:
+        arg1: "Listy"
+      _seedRandomPick:
+        arg2: "Listy"
+      _pick:
+        arg1: "Listy"
+    types:
+      array: "Listy"

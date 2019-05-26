@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { Emojis } from '../../../../../models';
+import { toPunyNullable } from '../../../../../misc/convert-host';
 
 export const meta = {
 	desc: {
@@ -22,7 +23,7 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const emojis = await Emojis.find({
-		host: ps.host
+		host: toPunyNullable(ps.host)
 	});
 
 	return emojis.map(e => ({

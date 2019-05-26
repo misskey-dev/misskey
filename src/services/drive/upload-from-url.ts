@@ -1,4 +1,3 @@
-import * as URL from 'url';
 import create from './add-file';
 import { User } from '../../models/entities/user';
 import { driveLogger } from './logger';
@@ -13,14 +12,14 @@ const logger = driveLogger.createSubLogger('downloader');
 export default async (
 	url: string,
 	user: User,
-	folderId: DriveFolder['id'] = null,
-	uri: string = null,
+	folderId: DriveFolder['id'] | null = null,
+	uri: string | null = null,
 	sensitive = false,
 	force = false,
 	link = false
 ): Promise<DriveFile> => {
-	let name = URL.parse(url).pathname.split('/').pop();
-	if (!DriveFiles.validateFileName(name)) {
+	let name = new URL(url).pathname.split('/').pop() || null;
+	if (name == null || !DriveFiles.validateFileName(name)) {
 		name = null;
 	}
 
@@ -50,6 +49,6 @@ export default async (
 	if (error) {
 		throw error;
 	} else {
-		return driveFile;
+		return driveFile!;
 	}
 };

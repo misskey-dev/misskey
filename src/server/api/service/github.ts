@@ -7,12 +7,13 @@ import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
 import * as uuid from 'uuid';
 import signin from '../common/signin';
-import fetchMeta from '../../../misc/fetch-meta';
-import { Users, UserServiceLinkings } from '../../../models';
+import { fetchMeta } from '../../../misc/fetch-meta';
+import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
-	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+	return ((ctx.headers['cookie'] || '').match(/i=(\w+)/) || [null, null])[1];
 }
 
 function compareOrigin(ctx: Koa.BaseContext) {
@@ -43,9 +44,9 @@ router.get('/disconnect/github', async ctx => {
 	const user = await Users.findOne({
 		host: null,
 		token: userToken
-	});
+	}).then(ensure);
 
-	await UserServiceLinkings.update({
+	await UserProfiles.update({
 		userId: user.id
 	}, {
 		github: false,
@@ -64,9 +65,9 @@ router.get('/disconnect/github', async ctx => {
 });
 
 async function getOath2() {
-	const meta = await fetchMeta();
+	const meta = await fetchMeta(true);
 
-	if (meta.enableGithubIntegration) {
+	if (meta.enableGithubIntegration && meta.githubClientId && meta.githubClientSecret) {
 		return new OAuth2(
 			meta.githubClientId,
 			meta.githubClientSecret,
@@ -99,7 +100,7 @@ router.get('/connect/github', async ctx => {
 	redis.set(userToken, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/signin/github', async ctx => {
@@ -124,7 +125,7 @@ router.get('/signin/github', async ctx => {
 	redis.set(sessid, JSON.stringify(params));
 
 	const oauth2 = await getOath2();
-	ctx.redirect(oauth2.getAuthorizeUrl(params));
+	ctx.redirect(oauth2!.getAuthorizeUrl(params));
 });
 
 router.get('/gh/cb', async ctx => {
@@ -159,17 +160,17 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
-				code,
-				{ redirect_uri },
-				(err, accessToken, refresh, result) => {
-					if (err)
-						rej(err);
-					else if (result.error)
-						rej(result.error);
-					else
-						res({ accessToken });
-				}));
+			oauth2!.getOAuthAccessToken(code, {
+				redirect_uri
+			}, (err, accessToken, refresh, result) => {
+				if (err) {
+					rej(err);
+				} else if (result.error) {
+					rej(result.error);
+				} else {
+					res({ accessToken });
+				}
+			}));
 
 		const { login, id } = await new Promise<any>((res, rej) =>
 			request({
@@ -191,13 +192,9 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const link = await UserServiceLinkings.createQueryBuilder()
-			.where('github @> :github', {
-				github: {
-					id: id,
-				},
-			})
-			.andWhere('userHost IS NULL')
+		const link = await UserProfiles.createQueryBuilder()
+			.where('"githubId" = :id', { id: id })
+			.andWhere('"userHost" IS NULL')
 			.getOne();
 
 		if (link == null) {
@@ -226,7 +223,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const { accessToken } = await new Promise<any>((res, rej) =>
-			oauth2.getOAuthAccessToken(
+			oauth2!.getOAuthAccessToken(
 				code,
 				{ redirect_uri },
 				(err, accessToken, refresh, result) => {
@@ -261,9 +258,9 @@ router.get('/gh/cb', async ctx => {
 		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		});
+		}).then(ensure);
 
-		await UserServiceLinkings.update({ userId: user.id }, {
+		await UserProfiles.update({ userId: user.id }, {
 			github: true,
 			githubAccessToken: accessToken,
 			githubId: id,

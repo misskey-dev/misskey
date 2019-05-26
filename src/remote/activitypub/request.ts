@@ -4,14 +4,15 @@ import { URL } from 'url';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
 import * as promiseAny from 'promise-any';
-import { toUnicode } from 'punycode';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
 import { UserKeypairs } from '../../models';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
+import { toPuny } from '../../misc/convert-host';
+import { ensure } from '../../prelude/ensure';
 
 export const logger = apLogger.createSubLogger('deliver');
 
@@ -23,9 +24,8 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	const { protocol, host, hostname, port, pathname, search } = new URL(url);
 
 	// ブロックしてたら中断
-	// TODO: いちいちデータベースにアクセスするのはコスト高そうなのでどっかにキャッシュしておく
 	const meta = await fetchMeta();
-	if (meta.blockedHosts.includes(toUnicode(host))) return;
+	if (meta.blockedHosts.includes(toPuny(host))) return;
 
 	const data = JSON.stringify(object);
 
@@ -38,9 +38,9 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	const keypair = await UserKeypairs.findOne({
 		userId: user.id
-	});
+	}).then(ensure);
 
-	const _ = new Promise((resolve, reject) => {
+	await new Promise((resolve, reject) => {
 		const req = request({
 			protocol,
 			hostname: addr,
@@ -56,7 +56,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 				'Digest': `SHA-256=${hash}`
 			}
 		}, res => {
-			if (res.statusCode >= 400) {
+			if (res.statusCode! >= 400) {
 				logger.warn(`${url} --> ${res.statusCode}`);
 				reject(res);
 			} else {
@@ -73,7 +73,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 		});
 
 		// Signature: Signature ... => Signature: ...
-		let sig = req.getHeader('Signature').toString();
+		let sig = req.getHeader('Signature')!.toString();
 		sig = sig.replace(/^Signature /, '');
 		req.setHeader('Signature', sig);
 
@@ -86,8 +86,6 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 		req.end(data);
 	});
-
-	await _;
 
 	//#region Log
 	publishApLogStream({
@@ -103,16 +101,23 @@ export default async (user: ILocalUser, url: string, object: any) => {
  * Resolve host (with cached, asynchrony)
  */
 async function resolveAddr(domain: string) {
+	const af = config.outgoingAddressFamily || 'ipv4';
+	const useV4 = af == 'ipv4' || af == 'dual';
+	const useV6 = af == 'ipv6' || af == 'dual';
+
+	const promises = [];
+
+	if (!useV4 && !useV6) throw 'No usable address family available';
+	if (useV4) promises.push(resolveAddrInner(domain, { family: 4 }));
+	if (useV6) promises.push(resolveAddrInner(domain, { family: 6 }));
+
 	// v4/v6で先に取得できた方を採用する
-	return await promiseAny([
-		resolveAddrInner(domain, { family: 4 }),
-		resolveAddrInner(domain, { family: 6 })
-	]);
+	return await promiseAny(promises);
 }
 
 function resolveAddrInner(domain: string, options: IRunOptions = {}): Promise<string> {
 	return new Promise((res, rej) => {
-		lookup(domain, options, (error: any, address: string | string[]) => {
+		lookup(domain, options, (error, address) => {
 			if (error) return rej(error);
 			return res(Array.isArray(address) ? address[0] : address);
 		});

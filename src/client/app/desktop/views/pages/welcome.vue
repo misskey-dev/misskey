@@ -13,7 +13,7 @@
 		<div class="body">
 			<div class="main block">
 				<div>
-					<h1 v-if="name != null">{{ name }}</h1>
+					<h1 v-if="name != null && name != ''">{{ name }}</h1>
 					<h1 v-else><img svg-inline src="../../../../assets/title.svg" alt="Misskey"></h1>
 
 					<div class="info">
@@ -44,7 +44,8 @@
 				<div v-if="announcements && announcements.length > 0">
 					<div v-for="announcement in announcements">
 						<h1 v-html="announcement.title"></h1>
-						<div v-html="announcement.text"></div>
+						<mfm :text="announcement.text"/>
+						<img v-if="announcement.image" :src="announcement.image" alt="" style="display: block; max-height: 130px; max-width: 100%;"/>
 					</div>
 				</div>
 			</div>
@@ -351,7 +352,7 @@ export default Vue.extend({
 				padding 0 16px
 				line-height 48px
 				background var(--faceHeader)
-				box-shadow 0 1px 0px rgba(0, 0, 0, 0.1)
+				box-shadow 0 1px 0 rgba(0, 0, 0, 0.1)
 
 				& + div
 					max-height calc(100% - 48px)

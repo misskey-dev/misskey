@@ -4,7 +4,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as uuid from 'uuid';
 
 import initStore from './store';
-import { apiUrl, version } from './config';
+import { apiUrl, version, locale } from './config';
 import Progress from './common/scripts/loading';
 
 import Err from './common/views/components/connect-failed.vue';
@@ -28,7 +28,7 @@ export default class MiOS extends EventEmitter {
 	};
 
 	public get instanceName() {
-		return this.meta ? this.meta.data.name : 'Misskey';
+		return this.meta ? (this.meta.data.name || 'Misskey') : 'Misskey';
 	}
 
 	private isMetaFetching = false;
@@ -173,9 +173,10 @@ export default class MiOS extends EventEmitter {
 
 			// Init service worker
 			if (this.shouldRegisterSw) {
-				this.getMeta().then(data => {
-					this.registerSw(data.swPublickey);
-				});
+				// #4813
+				//this.getMeta().then(data => {
+				//	this.registerSw(data.swPublickey);
+				//});
 			}
 		};
 
@@ -195,7 +196,7 @@ export default class MiOS extends EventEmitter {
 			});
 		} else {
 			// Get token from cookie or localStorage
-			const i = (document.cookie.match(/i=(!\w+)/) || [null, null])[1] || localStorage.getItem('i');
+			const i = (document.cookie.match(/i=(\w+)/) || [null, null])[1] || localStorage.getItem('i');
 
 			fetchme(i, me => {
 				if (me) {
@@ -281,7 +282,7 @@ export default class MiOS extends EventEmitter {
 			// トークンが再生成されたとき
 			// このままではMisskeyが利用できないので強制的にサインアウトさせる
 			main.on('myTokenRegenerated', () => {
-				alert('%i18n:common.my-token-regenerated%');
+				alert(locale['common']['my-token-regenerated'])
 				this.signout();
 			});
 		}
@@ -504,7 +505,7 @@ class WindowSystem extends EventEmitter {
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
 	const padding = '='.repeat((4 - base64String.length % 4) % 4);
 	const base64 = (base64String + padding)
-		.replace(/\-/g, '+')
+		.replace(/-/g, '+')
 		.replace(/_/g, '/');
 
 	const rawData = window.atob(base64);

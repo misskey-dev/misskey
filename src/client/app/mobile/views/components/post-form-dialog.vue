@@ -2,7 +2,7 @@
 <div class="ulveipglmagnxfgvitaxyszerjwiqmwl">
 	<div class="bg" ref="bg"></div>
 	<div class="main" ref="main">
-		<mk-post-form ref="form"
+		<x-post-form ref="form"
 			:reply="reply"
 			:renote="renote"
 			:mention="mention"
@@ -17,8 +17,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import anime from 'animejs';
+import XPostForm from './post-form.vue';
 
 export default Vue.extend({
+	components: {
+		XPostForm
+	},
+
 	props: {
 		reply: {
 			type: Object,

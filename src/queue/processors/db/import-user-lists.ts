@@ -5,7 +5,7 @@ import parseAcct from '../../../misc/acct/parse';
 import { resolveUser } from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '../../../misc/download-text-file';
-import { isSelfHost, toDbHost } from '../../../misc/convert-host';
+import { isSelfHost, toPuny } from '../../../misc/convert-host';
 import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 
@@ -14,13 +14,19 @@ const logger = queueLogger.createSubLogger('import-user-lists');
 export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne({
-		id: job.data.user.id
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
 	const file = await DriveFiles.findOne({
 		id: job.data.fileId
 	});
+	if (file == null) {
+		done();
+		return;
+	}
 
 	const csv = await downloadTextFile(file.url);
 
@@ -43,21 +49,19 @@ export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
 			});
 		}
 
-		let target = isSelfHost(host) ? await Users.findOne({
+		let target = isSelfHost(host!) ? await Users.findOne({
 			host: null,
 			usernameLower: username.toLowerCase()
 		}) : await Users.findOne({
-			host: toDbHost(host),
+			host: toPuny(host!),
 			usernameLower: username.toLowerCase()
 		});
-
-		if (host == null && target == null) continue;
-
-		if (await UserListJoinings.findOne({ userListId: list.id, userId: target.id }) != null) continue;
 
 		if (target == null) {
 			target = await resolveUser(username, host);
 		}
+
+		if (await UserListJoinings.findOne({ userListId: list.id, userId: target.id }) != null) continue;
 
 		pushUserToUserList(target, list);
 	}

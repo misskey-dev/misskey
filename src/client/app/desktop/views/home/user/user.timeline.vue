@@ -1,8 +1,8 @@
 <template>
 <div>
-	<mk-notes ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')">
+	<mk-notes ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')">
 		<template #header>
-			<header class="oh5y2r7l5lx8j6jj791ykeiwgihheguk">
+			<header class="kugajpep">
 				<span :data-active="mode == 'default'" @click="mode = 'default'"><fa :icon="['far', 'comment-alt']"/> {{ $t('default') }}</span>
 				<span :data-active="mode == 'with-replies'" @click="mode = 'with-replies'"><fa icon="comments"/> {{ $t('with-replies') }}</span>
 				<span :data-active="mode == 'with-media'" @click="mode = 'with-media'"><fa :icon="['far', 'images']"/> {{ $t('with-media') }}</span>
@@ -17,8 +17,6 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 
-const fetchLimit = 10;
-
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/user/user.timeline.vue'),
 
@@ -30,27 +28,17 @@ export default Vue.extend({
 			mode: 'default',
 			unreadCount: 0,
 			date: null,
-			makePromise: cursor => this.$root.api('users/notes', {
-				userId: this.user.id,
-				limit: fetchLimit + 1,
-				includeReplies: this.mode == 'with-replies',
-				includeMyRenotes: this.mode != 'my-posts',
-				withFiles: this.mode == 'with-media',
-				untilId: cursor ? cursor : undefined
-			}).then(notes => {
-				if (notes.length == fetchLimit + 1) {
-					notes.pop();
-					return {
-						notes: notes,
-						more: true
-					};
-				} else {
-					return {
-						notes: notes,
-						more: false
-					};
-				}
-			})
+			pagination: {
+				endpoint: 'users/notes',
+				limit: 10,
+				params: init => ({
+					userId: this.user.id,
+					untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+					includeReplies: this.mode == 'with-replies',
+					includeMyRenotes: this.mode != 'my-posts',
+					withFiles: this.mode == 'with-media',
+				})
+			}
 		};
 	},
 
@@ -62,10 +50,11 @@ export default Vue.extend({
 
 	mounted() {
 		document.addEventListener('keydown', this.onDocumentKeydown);
-	},
-
-	beforeDestroy() {
-		document.removeEventListener('keydown', this.onDocumentKeydown);
+		this.$root.$on('warp', this.warp);
+		this.$once('hook:beforeDestroy', () => {
+			this.$root.$off('warp', this.warp);
+			document.removeEventListener('keydown', this.onDocumentKeydown);
+		});
 	},
 
 	methods: {
@@ -86,7 +75,7 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.oh5y2r7l5lx8j6jj791ykeiwgihheguk
+.kugajpep
 	padding 0 8px
 	z-index 10
 	background var(--faceHeader)

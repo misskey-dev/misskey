@@ -38,10 +38,10 @@ export default Vue.extend({
 				const data = new FormData();
 				data.append('md5', getMD5(fileData));
 
-				this.$root.api('drive/files/check_existence', {
+				this.$root.api('drive/files/find-by-hash', {
 					md5: getMD5(fileData)
 				}).then(resp => {
-					resolve(resp.file);
+					resolve(resp.length > 0 ? resp[0] : null);
 				});
 			});
 		},

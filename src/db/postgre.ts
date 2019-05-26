@@ -24,6 +24,9 @@ import { SwSubscription } from '../models/entities/sw-subscription';
 import { Blocking } from '../models/entities/blocking';
 import { UserList } from '../models/entities/user-list';
 import { UserListJoining } from '../models/entities/user-list-joining';
+import { UserGroup } from '../models/entities/user-group';
+import { UserGroupJoining } from '../models/entities/user-group-joining';
+import { UserGroupInvite } from '../models/entities/user-group-invite';
 import { Hashtag } from '../models/entities/hashtag';
 import { NoteFavorite } from '../models/entities/note-favorite';
 import { AbuseUserReport } from '../models/entities/abuse-user-report';
@@ -36,10 +39,12 @@ import { Emoji } from '../models/entities/emoji';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 import { ReversiMatching } from '../models/entities/games/reversi/matching';
 import { UserNotePining } from '../models/entities/user-note-pinings';
-import { UserServiceLinking } from '../models/entities/user-service-linking';
 import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
+import { UserProfile } from '../models/entities/user-profile';
+import { Page } from '../models/entities/page';
+import { PageLike } from '../models/entities/page-like';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -76,8 +81,6 @@ class MyCustomLogger implements Logger {
 }
 
 export function initDb(justBorrow = false, sync = false, log = false) {
-	const enableLogging = log || !['production', 'test'].includes(process.env.NODE_ENV);
-
 	try {
 		const conn = getConnection();
 		return Promise.resolve(conn);
@@ -90,10 +93,23 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
+		extra: config.db.extra,
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
-		logging: enableLogging,
-		logger: enableLogging ? new MyCustomLogger() : null,
+		cache: {
+			type: 'redis',
+			options: {
+				host: config.redis.host,
+				port: config.redis.port,
+				options:{
+					auth_pass: config.redis.pass,
+					prefix: config.redis.prefix,
+					db: config.redis.db || 0
+				}
+			}
+		},
+		logging: log,
+		logger: log ? new MyCustomLogger() : undefined,
 		entities: [
 			Meta,
 			Instance,
@@ -101,12 +117,15 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			AuthSession,
 			AccessToken,
 			User,
+			UserProfile,
 			UserKeypair,
 			UserPublickey,
 			UserList,
 			UserListJoining,
+			UserGroup,
+			UserGroupJoining,
+			UserGroupInvite,
 			UserNotePining,
-			UserServiceLinking,
 			Following,
 			FollowRequest,
 			Muting,
@@ -116,6 +135,8 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			NoteReaction,
 			NoteWatching,
 			NoteUnread,
+			Page,
+			PageLike,
 			Log,
 			DriveFile,
 			DriveFolder,

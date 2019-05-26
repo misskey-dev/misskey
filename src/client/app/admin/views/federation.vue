@@ -54,7 +54,6 @@
 					<span>{{ $t('latest-request-received-at') }}</span>
 					<template #prefix><fa :icon="faInbox"/></template>
 				</ui-input>
-				<ui-switch v-model="instance.isBlocked" @change="updateInstance()">{{ $t('block') }}</ui-switch>
 				<ui-switch v-model="instance.isMarkedAsClosed" @change="updateInstance()">{{ $t('marked-as-closed') }}</ui-switch>
 				<details>
 					<summary>{{ $t('charts') }}</summary>
@@ -78,6 +77,10 @@
 						</ui-select>
 					</ui-horizon-group>
 					<div ref="chart"></div>
+				</details>
+				<details>
+					<summary>{{ $t('delete-all-files') }}</summary>
+					<ui-button @click="deleteAllFiles()" style="margin-top: 16px;"><fa :icon="faTrashAlt"/> {{ $t('delete-all-files') }}</ui-button>
 				</details>
 				<details>
 					<summary>{{ $t('remove-all-following') }}</summary>
@@ -130,7 +133,7 @@
 					<span>{{ $t('status') }}</span>
 				</header>
 				<div v-for="instance in instances" :style="{ opacity: instance.isNotResponding ? 0.5 : 1 }">
-					<a @click.prevent="showInstance(instance.host)" target="_blank" :href="`https://${instance.host}`" :style="{ textDecoration: instance.isMarkedAsClosed ? 'line-through' : 'none' }">{{ instance.host }}</a>
+					<a @click.prevent="showInstance(instance.host)" rel="nofollow noopener" target="_blank" :href="`https://${instance.host}`" :style="{ textDecoration: instance.isMarkedAsClosed ? 'line-through' : 'none' }">{{ instance.host }}</a>
 					<span>{{ instance.notesCount | number }}</span>
 					<span>{{ instance.usersCount | number }}</span>
 					<span>{{ instance.followingCount | number }}</span>
@@ -142,6 +145,16 @@
 			<ui-info v-if="instances.length == limit">{{ $t('result-is-truncated', { n: limit }) }}</ui-info>
 		</section>
 	</ui-card>
+
+	<ui-card>
+		<template #title><fa :icon="faBan"/> {{ $t('blocked-hosts') }}</template>
+		<section class="fit-top">
+			<ui-textarea v-model="blockedHosts">
+				<template #desc>{{ $t('blocked-hosts-info') }}</template>
+			</ui-textarea>
+			<ui-button @click="saveBlockedHosts">{{ $t('save') }}</ui-button>
+		</section>
+	</ui-card>
 </div>
 </template>
 
@@ -149,7 +162,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faTrafficLight, faInbox } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faTrafficLight, faInbox } from '@fortawesome/free-solid-svg-icons';
 import ApexCharts from 'apexcharts';
 import * as tinycolor from 'tinycolor2';
 
@@ -176,7 +189,8 @@ export default Vue.extend({
 			chartSrc: 'requests',
 			chartSpan: 'hour',
 			chartInstance: null,
-			faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faPaperPlane, faTrafficLight, faInbox
+			blockedHosts: '',
+			faTrashAlt, faBan, faGlobe, faTerminal, faSearch, faMinusCircle, faServer, faCrosshairs, faEnvelopeOpenText, faUsers, faCaretDown, faCaretUp, faPaperPlane, faTrafficLight, faInbox
 		};
 	},
 
@@ -246,6 +260,10 @@ export default Vue.extend({
 
 	mounted() {
 		this.fetchInstances();
+
+		this.$root.getMeta().then(meta => {
+			this.blockedHosts = meta.blockedHosts.join('\n');
+		});
 	},
 
 	beforeDestroy() {
@@ -284,6 +302,17 @@ export default Vue.extend({
 
 		removeAllFollowing() {
 			this.$root.api('admin/federation/remove-all-following', {
+				host: this.instance.host
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+			});
+		},
+
+		deleteAllFiles() {
+			this.$root.api('admin/federation/delete-all-files', {
 				host: this.instance.host
 			}).then(() => {
 				this.$root.dialog({
@@ -477,6 +506,22 @@ export default Vue.extend({
 				}]
 			};
 		},
+
+		saveBlockedHosts() {
+			this.$root.api('admin/update-meta', {
+				blockedHosts: this.blockedHosts.split('\n')
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('saved')
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		}
 	}
 });
 </script>

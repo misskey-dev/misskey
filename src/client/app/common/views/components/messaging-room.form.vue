@@ -33,7 +33,16 @@ import * as autosize from 'autosize';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/messaging-room.form.vue'),
-	props: ['user'],
+	props: {
+		user: {
+			type: Object,
+			requird: false,
+		},
+		group: {
+			type: Object,
+			requird: false,
+		},
+	},
 	data() {
 		return {
 			text: null,
@@ -43,7 +52,7 @@ export default Vue.extend({
 	},
 	computed: {
 		draftId(): string {
-			return this.user.id;
+			return this.user ? 'user:' + this.user.id : 'group:' + this.group.id;
 		},
 		canSend(): boolean {
 			return (this.text != null && this.text != '') || this.file != null;
@@ -85,7 +94,10 @@ export default Vue.extend({
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					alert(this.$t('only-one-file-attached'));
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('only-one-file-attached')
+					});
 				}
 			}
 		},
@@ -107,7 +119,10 @@ export default Vue.extend({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				alert(this.$t('only-one-file-attached'));
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('only-one-file-attached')
+				});
 				return;
 			}
 
@@ -153,7 +168,8 @@ export default Vue.extend({
 		send() {
 			this.sending = true;
 			this.$root.api('messaging/messages/create', {
-				userId: this.user.id,
+				userId: this.user ? this.user.id : undefined,
+				groupId: this.group ? this.group.id : undefined,
 				text: this.text ? this.text : undefined,
 				fileId: this.file ? this.file.id : undefined
 			}).then(message => {

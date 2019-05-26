@@ -161,7 +161,10 @@ export default Vue.extend({
 							});
 							break;
 						default:
-							alert(this.$t('unhandled-error'));
+							this.$root.dialog({
+								type: 'error',
+								text: this.$t('unhandled-error')
+							});
 					}
 				});
 			}

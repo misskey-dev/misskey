@@ -9,6 +9,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
+import { search } from '../../../common/scripts/search';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.search.vue'),
@@ -22,29 +23,11 @@ export default Vue.extend({
 		async onSubmit() {
 			if (this.wait) return;
 
-			const q = this.q.trim();
-			if (q.startsWith('@')) {
-				this.$router.push(`/${q}`);
-			} else if (q.startsWith('#')) {
-				this.$router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
-			} else if (q.startsWith('https://')) {
-				this.wait = true;
-				try {
-					const res = await this.$root.api('ap/show', {
-						uri: q
-					});
-					if (res.type == 'User') {
-						this.$router.push(`/@${res.object.username}@${res.object.host}`);
-					} else if (res.type == 'Note') {
-						this.$router.push(`/notes/${res.object.id}`);
-					}
-				} catch (e) {
-					// TODO
-				}
+			this.wait = true;
+			search(this, this.q).finally(() => {
 				this.wait = false;
-			} else {
-				this.$router.push(`/search?q=${encodeURIComponent(q)}`);
-			}
+				this.q = '';
+			});
 		}
 	}
 });

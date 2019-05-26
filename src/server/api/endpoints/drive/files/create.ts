@@ -6,6 +6,7 @@ import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
 import { DriveFiles } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -56,7 +57,9 @@ export const meta = {
 	},
 
 	res: {
-		type: 'DriveFile',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'DriveFile',
 	},
 
 	errors: {
@@ -87,11 +90,11 @@ export default define(meta, async (ps, user, app, file, cleanup) => {
 	try {
 		// Create file
 		const driveFile = await create(user, file.path, name, null, ps.folderId, ps.force, false, null, null, ps.isSensitive);
-		return DriveFiles.pack(driveFile, { self: true });
+		return await DriveFiles.pack(driveFile, { self: true });
 	} catch (e) {
 		apiLogger.error(e);
 		throw new ApiError();
 	} finally {
-		cleanup();
+		cleanup!();
 	}
 });

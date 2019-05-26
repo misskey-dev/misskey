@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { DriveFiles } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -24,7 +25,8 @@ export const meta = {
 	},
 
 	res: {
-		type: 'DriveFile',
+		type: types.boolean,
+		optional: bool.false, nullable: bool.false,
 	},
 };
 
@@ -34,7 +36,5 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 	});
 
-	return {
-		file: file ? await DriveFiles.pack(file, { self: true }) : null
-	};
+	return file != null;
 });

@@ -32,7 +32,7 @@ describe('Streaming', () => {
 		p.on('message', message => {
 			if (message === 'ok') {
 				(p.channel as any).onread = () => {};
-				initDb(true).then(async connection => {
+				initDb(true).then(async (connection: any) => {
 					Followings = connection.getRepository(Following);
 					done();
 				});
@@ -44,7 +44,7 @@ describe('Streaming', () => {
 		p.kill();
 	});
 
-	const follow = async (follower, followee) => {
+	const follow = async (follower: any, followee: any) => {
 		await Followings.save({
 			id: 'a',
 			createdAt: new Date(),
@@ -484,6 +484,56 @@ describe('Streaming', () => {
 			});
 		}));
 
+		it('フォローしているユーザーのホーム投稿が流れる', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			// Alice が Bob をフォロー
+			await request('/following/create', {
+				userId: bob.id
+			}, alice);
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					assert.deepStrictEqual(body.userId, bob.id);
+					assert.deepStrictEqual(body.text, 'foo');
+					ws.close();
+					done();
+				}
+			});
+
+			// ホーム投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+		}));
+
+		it('フォローしていないローカルユーザーのホーム投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'hybridTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// ホーム投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 3000);
+		}));
+
 		it('フォローしていないローカルユーザーのフォロワー宛て投稿は流れない', () => new Promise(async done => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
@@ -544,6 +594,31 @@ describe('Streaming', () => {
 				text: 'foo'
 			});
 		}));
+
+		it('ホーム投稿は流れない', () => new Promise(async done => {
+			const alice = await signup({ username: 'alice' });
+			const bob = await signup({ username: 'bob' });
+
+			let fired = false;
+
+			const ws = await connectStream(alice, 'globalTimeline', ({ type, body }) => {
+				if (type == 'note') {
+					fired = true;
+				}
+			});
+
+			// ホーム投稿
+			post(bob, {
+				text: 'foo',
+				visibility: 'home'
+			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 3000);
+		}));
 	});
 
 	describe('UserList Timeline', () => {
@@ -553,7 +628,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
@@ -583,7 +658,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			let fired = false;
@@ -614,7 +689,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン
@@ -649,7 +724,7 @@ describe('Streaming', () => {
 
 			// リスト作成
 			const list = await request('/users/lists/create', {
-				title: 'my list'
+				name: 'my list'
 			}, alice).then(x => x.body);
 
 			// Alice が Bob をリスイン

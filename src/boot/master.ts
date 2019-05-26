@@ -27,7 +27,7 @@ function greet() {
 		console.log(' ' + chalk.gray(v) + ('                        |___|\n'.substr(v.length)));
 		//#endregion
 
-		console.log(' Misskey is maintained by @syuilo, @AyaMorisawa, @mei23, and @acid-chicken.');
+		console.log(' Misskey is maintained by @syuilo, @AyaMorisawa, @mei23, @acid-chicken, and @rinsuki.');
 		console.log(chalk.keyword('orange')(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
 
 		console.log('');
@@ -44,13 +44,13 @@ function greet() {
 export async function masterMain() {
 	greet();
 
-	let config: Config;
+	let config!: Config;
 
 	try {
 		// initialize app
 		config = await init();
 
-		if (config.port == null) {
+		if (config.port == null || Number.isNaN(config.port)) {
 			bootLogger.error('The port is not configured. Please configure port.', null, true);
 			process.exit(1);
 		}

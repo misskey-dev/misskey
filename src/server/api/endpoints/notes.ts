@@ -3,6 +3,7 @@ import { ID } from '../../../misc/cafy-id';
 import define from '../define';
 import { makePaginationQuery } from '../common/make-pagination-query';
 import { Notes } from '../../../models';
+import { types, bool } from '../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -62,9 +63,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
 		}
 	},
 };
@@ -100,7 +104,7 @@ export default define(meta, async (ps) => {
 	//	query.isBot = bot;
 	//}
 
-	const notes = await query.take(ps.limit).getMany();
+	const notes = await query.take(ps.limit!).getMany();
 
 	return await Notes.packMany(notes);
 });

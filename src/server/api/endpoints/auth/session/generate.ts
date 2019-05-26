@@ -5,11 +5,17 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { Apps, AuthSessions } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	tags: ['auth'],
 
 	requireCredential: false,
+
+	desc: {
+		'ja-JP': 'アプリを認証するためのトークンを作成します。',
+		'en-US': 'Generate a token for authorize application.'
+	},
 
 	params: {
 		appSecret: {
@@ -22,14 +28,18 @@ export const meta = {
 	},
 
 	res: {
-		type: 'object',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
 		properties: {
 			token: {
-				type: 'string',
+				type: types.string,
+				optional: bool.false, nullable: bool.false,
 				description: 'セッションのトークン'
 			},
 			url: {
-				type: 'string',
+				type: types.string,
+				optional: bool.false, nullable: bool.false,
+				format: 'url',
 				description: 'セッションのURL'
 			},
 		}

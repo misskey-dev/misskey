@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as request from 'request-promise-native';
 import summaly from 'summaly';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import Logger from '../../services/logger';
 import config from '../../config';
 import { query } from '../../prelude/url';
@@ -43,7 +43,7 @@ module.exports = async (ctx: Koa.BaseContext) => {
 	}
 };
 
-function wrap(url: string): string {
+function wrap(url?: string): string | null {
 	return url != null
 		? url.match(/^https?:\/\//)
 			? `${config.url}/proxy/preview.jpg?${query({

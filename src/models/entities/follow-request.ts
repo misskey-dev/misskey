@@ -53,13 +53,13 @@ export class FollowRequest {
 	public followerHost: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]'
 	})
 	public followerInbox: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]'
 	})
 	public followerSharedInbox: string | null;
@@ -71,13 +71,13 @@ export class FollowRequest {
 	public followeeHost: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]'
 	})
 	public followeeInbox: string | null;
 
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]'
 	})
 	public followeeSharedInbox: string | null;

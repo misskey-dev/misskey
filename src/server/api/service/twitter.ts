@@ -6,12 +6,13 @@ import redis from '../../../db/redis';
 import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';
-import fetchMeta from '../../../misc/fetch-meta';
-import { Users, UserServiceLinkings } from '../../../models';
+import { fetchMeta } from '../../../misc/fetch-meta';
+import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
+import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.BaseContext) {
-	return ((ctx.headers['cookie'] || '').match(/i=(!\w+)/) || [null, null])[1];
+	return ((ctx.headers['cookie'] || '').match(/i=(\w+)/) || [null, null])[1];
 }
 
 function compareOrigin(ctx: Koa.BaseContext) {
@@ -42,9 +43,9 @@ router.get('/disconnect/twitter', async ctx => {
 	const user = await Users.findOne({
 		host: null,
 		token: userToken
-	});
+	}).then(ensure);
 
-	await UserServiceLinkings.update({
+	await UserProfiles.update({
 		userId: user.id
 	}, {
 		twitter: false,
@@ -64,9 +65,9 @@ router.get('/disconnect/twitter', async ctx => {
 });
 
 async function getTwAuth() {
-	const meta = await fetchMeta();
+	const meta = await fetchMeta(true);
 
-	if (meta.enableTwitterIntegration) {
+	if (meta.enableTwitterIntegration && meta.twitterConsumerKey && meta.twitterConsumerSecret) {
 		return autwh({
 			consumerKey: meta.twitterConsumerKey,
 			consumerSecret: meta.twitterConsumerSecret,
@@ -90,14 +91,14 @@ router.get('/connect/twitter', async ctx => {
 	}
 
 	const twAuth = await getTwAuth();
-	const twCtx = await twAuth.begin();
+	const twCtx = await twAuth!.begin();
 	redis.set(userToken, JSON.stringify(twCtx));
 	ctx.redirect(twCtx.url);
 });
 
 router.get('/signin/twitter', async ctx => {
 	const twAuth = await getTwAuth();
-	const twCtx = await twAuth.begin();
+	const twCtx = await twAuth!.begin();
 
 	const sessid = uuid();
 
@@ -137,15 +138,11 @@ router.get('/tw/cb', async ctx => {
 
 		const twCtx = await get;
 
-		const result = await twAuth.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
+		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
-		const link = await UserServiceLinkings.createQueryBuilder()
-			.where('twitter @> :twitter', {
-				twitter: {
-					userId: result.userId,
-				},
-			})
-			.andWhere('userHost IS NULL')
+		const link = await UserProfiles.createQueryBuilder()
+			.where('"twitterUserId" = :id', { id: result.userId })
+			.andWhere('"userHost" IS NULL')
 			.getOne();
 
 		if (link == null) {
@@ -170,14 +167,14 @@ router.get('/tw/cb', async ctx => {
 
 		const twCtx = await get;
 
-		const result = await twAuth.done(JSON.parse(twCtx), verifier);
+		const result = await twAuth!.done(JSON.parse(twCtx), verifier);
 
 		const user = await Users.findOne({
 			host: null,
 			token: userToken
-		});
+		}).then(ensure);
 
-		await UserServiceLinkings.update({ userId: user.id }, {
+		await UserProfiles.update({ userId: user.id }, {
 			twitter: true,
 			twitterAccessToken: result.accessToken,
 			twitterAccessTokenSecret: result.accessTokenSecret,

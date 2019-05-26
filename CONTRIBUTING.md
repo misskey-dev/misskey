@@ -3,11 +3,17 @@
 
 ## Issues
 Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
-Before creating a new issue, please search existing issues to avoid duplication.
-If you find the existing issue, please add your reaction or comment to the issue.
+
+* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
+* If you have multiple independent issues, please submit them separately.
+
 
 ## Localization (l10n)
-Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
+Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
+You can improve our translations with your Crowdin account.
+Changes you make in Crowdin will be merged into develop branch.
+
+If you can't find the language you want to contribute with, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
@@ -15,16 +21,16 @@ Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
 Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 
 ## Documentation
-* Documents for contributors are located in `/docs`.
-* Documents for instance admins are located in `/docs`.
-* Documents for end users are located in `src/docs`.
+* Documents for contributors are located in [`/docs`](/docs).
+* Documents for instance admins are located in [`/docs`](/docs).
+* Documents for end users are located in [`/src/docs`](/src/docs).
 
 ## Test
-* Test codes are located in `/test`.
+* Test codes are located in [`/test`](/test).
 
 ## Continuous integration
 Misskey uses CircleCI for automated test.
-Configuration files are located in `/.circleci`.
+Configuration files are located in [`/.circleci`](/.circleci).
 
 ## Glossary
 ### AP
@@ -46,10 +52,40 @@ Convert な(na) to にゃ(nya)
 Revert Nyaize
 
 ## Code style
-### Use semicolon
-To avoid ASI Hazard
+### セミコロンを省略しない
+ASI Hazardを避けるためでもある
 
-### Don't use `export default`
+### 中括弧を省略しない
+Bad:
+``` ts
+if (foo)
+	bar;
+else
+	baz;
+```
+
+Good:
+``` ts
+if (foo) {
+	bar;
+} else {
+	baz;
+}
+```
+
+ただし**`if`が一行**の時だけは省略しても良い
+Good:
+``` ts
+if (foo) bar;
+```
+
+### `export default`を使わない
+インテリセンスと相性が悪かったりするため
+
+参考:
+* https://gfx.hatenablog.com/entry/2017/11/24/135343
+* https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
+
 Bad:
 ``` ts
 export default function(foo: string): string {
@@ -98,6 +134,20 @@ query.andWhere(new Brackets(qb => {
 }));
 ```
 
+### Not `null` in TypeORM
+```ts
+const foo = await Foos.findOne({
+	bar: Not(null)
+});
+```
+のようなクエリ(`bar`が`null`ではない)は期待通りに動作しない。
+次のようにします:
+```ts
+const foo = await Foos.findOne({
+	bar: Not(IsNull())
+});
+```
+
 ### `null` in SQL
 SQLを発行する際、パラメータが`null`になる可能性のある場合はSQL文を出し分けなければならない
 例えば
@@ -130,6 +180,50 @@ const users = userIds.length > 0 ? await Users.find({
 }) : [];
 ```
 
+### 配列のインデックス in SQL
+SQLでは配列のインデックスは**1始まり**。
+`[a, b, c]`の `a`にアクセスしたいなら`[0]`ではなく`[1]`と書く
+
 ### `undefined`にご用心
 MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合 **`undefined`** が返ってくるので注意。
 MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
+
+### 簡素な`undefined`チェック
+データベースからレコードを取得するときに、プログラムの流れ的に(ほぼ)絶対`undefined`にはならない場合でも、`undefined`チェックしないとTypeScriptに怒られます。
+でもいちいち複数行を費やして、発生するはずのない`undefined`をチェックするのも面倒なので、`ensure`というユーティリティ関数を用意しています。
+例えば、
+``` ts
+const user = await Users.findOne(userId);
+// この時点で user の型は User | undefined
+if (user == null) {
+	throw 'missing user';
+}
+// この時点で user の型は User
+```
+という処理を`ensure`を使うと
+``` ts
+const user = await Users.findOne(userId).then(ensure);
+// この時点で user の型は User
+```
+という風に書けます。
+もちろん`ensure`内部でエラーを握りつぶすようなことはしておらず、万が一`undefined`だった場合はPromiseがRejectされ後続の処理は実行されません。
+``` ts
+const user = await Users.findOne(userId).then(ensure);
+// 万が一 Users.findOne の結果が undefined だったら、ensure でエラーが発生するので
+// この行に到達することは無い
+// なので、.then(ensure) は
+// if (user == null) {
+//	throw 'missing user';
+// }
+// の糖衣構文のような扱いです
+```
+
+### Migration作成方法
+コードの変更をした後、`ormconfig.json`（`npm run ormconfig`で生成）を用意し、
+
+```
+npm i -g ts-node
+ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
+```
+
+作成されたスクリプトは不必要な変更を含むため除去してください。

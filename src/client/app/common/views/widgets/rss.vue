@@ -7,7 +7,7 @@
 		<div class="mkw-rss--body" :data-mobile="platform == 'mobile'">
 			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 			<div class="feed" v-else>
-				<a v-for="item in items" :href="item.link" target="_blank" :title="item.title">{{ item.title }}</a>
+				<a v-for="item in items" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 			</div>
 		</div>
 	</ui-container>

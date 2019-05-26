@@ -35,7 +35,7 @@ export class Log {
 	public machine: string;
 
 	@Column('varchar', {
-		length: 1024
+		length: 2048
 	})
 	public message: string;
 

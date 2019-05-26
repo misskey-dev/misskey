@@ -1,5 +1,6 @@
 import define from '../../../define';
 import { UserLists } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -13,10 +14,13 @@ export const meta = {
 	kind: 'read:account',
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'UserList',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'UserList',
+		}
 	},
 };
 

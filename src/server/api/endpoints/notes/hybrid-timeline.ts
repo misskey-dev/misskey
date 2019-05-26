@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Followings, Notes } from '../../../../models';
@@ -9,6 +9,7 @@ import { Brackets } from 'typeorm';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { activeUsersChart } from '../../../../services/chart';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -16,6 +17,8 @@ export const meta = {
 	},
 
 	tags: ['notes'],
+
+	requireCredential: true,
 
 	params: {
 		limit: {
@@ -87,10 +90,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {
@@ -103,7 +109,6 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	// TODO どっかにキャッシュ
 	const m = await fetchMeta();
 	if (m.disableLocalTimeline && !user.isAdmin && !user.isModerator) {
 		throw new ApiError(meta.errors.stlDisabled);
@@ -185,11 +190,13 @@ export default define(meta, async (ps, user) => {
 	}
 	//#endregion
 
-	const timeline = await query.take(ps.limit).getMany();
+	const timeline = await query.take(ps.limit!).getMany();
 
-	if (user) {
-		activeUsersChart.update(user);
-	}
+	process.nextTick(() => {
+		if (user) {
+			activeUsersChart.update(user);
+		}
+	});
 
 	return await Notes.packMany(timeline, user);
 });

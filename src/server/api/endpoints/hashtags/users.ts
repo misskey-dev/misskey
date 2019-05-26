@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	requireCredential: false,
@@ -47,9 +48,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'User'
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'User',
 		}
 	},
 };
@@ -79,7 +83,7 @@ export default define(meta, async (ps, me) => {
 		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
 	}
 
-	const users = await query.take(ps.limit).getMany();
+	const users = await query.take(ps.limit!).getMany();
 
 	return await Users.packMany(users, me, { detail: true });
 });

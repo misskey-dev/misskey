@@ -1,4 +1,4 @@
-FROM node:11-alpine AS base
+FROM node:12.1-alpine AS base
 
 ENV NODE_ENV=production
 
@@ -21,12 +21,11 @@ RUN apk add --no-cache \
     pkgconfig \
     python \
     zlib-dev
-RUN npm i -g yarn
 
 COPY package.json ./
-RUN yarn install
+RUN npm i
 COPY . ./
-RUN yarn build
+RUN npm run build
 
 FROM base AS runner
 
@@ -40,4 +39,4 @@ COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
 COPY . ./
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "migrateandstart"]

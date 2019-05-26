@@ -1,6 +1,7 @@
 import define from '../define';
-import fetchMeta from '../../../misc/fetch-meta';
+import { fetchMeta } from '../../../misc/fetch-meta';
 import { DriveFiles } from '../../../models';
+import { types, bool } from '../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -15,20 +16,23 @@ export const meta = {
 	kind: 'read:drive',
 
 	res: {
-		type: 'object',
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
 		properties: {
 			capacity: {
-				type: 'number'
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 			},
 			usage: {
-				type: 'number'
+				type: types.number,
+				optional: bool.false, nullable: bool.false,
 			}
 		}
 	}
 };
 
 export default define(meta, async (ps, user) => {
-	const instance = await fetchMeta();
+	const instance = await fetchMeta(true);
 
 	// Calculate drive usage
 	const usage = await DriveFiles.clacDriveUsageOf(user);

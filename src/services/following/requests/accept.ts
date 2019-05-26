@@ -16,7 +16,7 @@ export default async function(followee: User, follower: User) {
 	await insertFollowingDoc(followee, follower);
 
 	if (Users.isRemoteUser(follower) && request) {
-		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId), followee as ILocalUser));
+		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId!), followee as ILocalUser));
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 

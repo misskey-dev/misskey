@@ -9,10 +9,10 @@ export default class extends Channel {
 
 	@autobind
 	public async init(params: any) {
-		const mute = await Mutings.find({ muterId: this.user.id });
+		const mute = await Mutings.find({ muterId: this.user!.id });
 
 		// Subscribe main stream channel
-		this.subscriber.on(`mainStream:${this.user.id}`, async data => {
+		this.subscriber.on(`mainStream:${this.user!.id}`, async data => {
 			const { type, body } = data;
 
 			switch (type) {
@@ -22,6 +22,7 @@ export default class extends Channel {
 					break;
 				}
 				case 'mention': {
+					if (mute.map(m => m.muteeId).includes(body.userId)) return;
 					if (body.isHidden) return;
 					break;
 				}

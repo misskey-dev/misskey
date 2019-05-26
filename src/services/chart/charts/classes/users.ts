@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Users } from '../../../../models';
-import { Not } from 'typeorm';
+import { Not, IsNull } from 'typeorm';
 import { User } from '../../../../models/entities/user';
 import { name, schema } from '../schemas/users';
 
@@ -29,7 +29,7 @@ export default class UsersChart extends Chart<UsersLog> {
 	protected async fetchActual(): Promise<DeepPartial<UsersLog>> {
 		const [localCount, remoteCount] = await Promise.all([
 			Users.count({ host: null }),
-			Users.count({ host: Not(null) })
+			Users.count({ host: Not(IsNull()) })
 		]);
 
 		return {

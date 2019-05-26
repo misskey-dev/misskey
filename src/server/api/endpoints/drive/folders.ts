@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { DriveFolders } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -37,10 +38,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'DriveFolder',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'DriveFolder',
+		}
 	},
 };
 
@@ -54,7 +58,7 @@ export default define(meta, async (ps, user) => {
 		query.andWhere('folder.parentId IS NULL');
 	}
 
-	const folders = await query.take(ps.limit).getMany();
+	const folders = await query.take(ps.limit!).getMany();
 
 	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
 });

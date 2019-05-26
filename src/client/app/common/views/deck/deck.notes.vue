@@ -1,8 +1,8 @@
 <template>
 <div class="eamppglmnmimdhrlzhplwpvyeaqmmhxu">
-	<div class="empty" v-if="notes.length == 0 && !fetching && inited">{{ $t('@.no-notes') }}</div>
+	<div class="empty" v-if="empty">{{ $t('@.no-notes') }}</div>
 
-	<mk-error v-if="!fetching && !inited" @retry="init()"/>
+	<mk-error v-if="error" @retry="init()"/>
 
 	<div class="placeholder" v-if="fetching">
 		<template v-for="i in 10">
@@ -16,7 +16,6 @@
 			<mk-note
 				:note="note"
 				:key="note.id"
-				@update:note="onNoteUpdated(i, $event)"
 				:compact="true"
 			/>
 			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
@@ -39,33 +38,47 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import shouldMuteNote from '../../../common/scripts/should-mute-note';
-
-const displayLimit = 20;
+import paging from '../../../common/scripts/paging';
 
 export default Vue.extend({
 	i18n: i18n(),
 
 	inject: ['column', 'isScrollTop', 'count'],
 
+	mixins: [
+		paging({
+			limit: 20,
+
+			onQueueChanged: (self, q) => {
+				self.count(q.length);
+			},
+
+			onPrepend: (self, note, silent) => {
+				// 弾く
+				if (shouldMuteNote(self.$store.state.i, self.$store.state.settings, note)) return false;
+
+				// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+				if (document.hidden || !self.isScrollTop()) {
+					self.$store.commit('pushBehindNote', note);
+				}
+			}
+		}),
+	],
+
 	props: {
-		makePromise: {
+		pagination: {
 			required: true
+		},
+		extract: {
+			required: false
 		}
 	},
 
-	data() {
-		return {
-			rootEl: null,
-			notes: [],
-			queue: [],
-			fetching: true,
-			moreFetching: false,
-			inited: false,
-			more: false
-		};
-	},
-
 	computed: {
+		notes() {
+			return this.extract ? this.extract(this.items) : this.items;
+		},
+
 		_notes(): any[] {
 			return (this.notes as any).map(note => {
 				const date = new Date(note.createdAt).getDate();
@@ -74,15 +87,6 @@ export default Vue.extend({
 				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return note;
 			});
-		}
-	},
-
-	watch: {
-		queue(q) {
-			this.count(q.length);
-		},
-		makePromise() {
-			this.init();
 		}
 	},
 
@@ -101,87 +105,6 @@ export default Vue.extend({
 		focus() {
 			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
 		},
-
-		onNoteUpdated(i, note) {
-			Vue.set((this as any).notes, i, note);
-		},
-
-		reload() {
-			this.init();
-		},
-
-		init() {
-			this.queue = [];
-			this.notes = [];
-			this.fetching = true;
-			this.makePromise().then(x => {
-				if (Array.isArray(x)) {
-					this.notes = x;
-				} else {
-					this.notes = x.notes;
-					this.more = x.more;
-				}
-				this.inited = true;
-				this.fetching = false;
-				this.$emit('inited');
-			}, e => {
-				this.fetching = false;
-			});
-		},
-
-		fetchMore() {
-			if (!this.more || this.moreFetching) return;
-			this.moreFetching = true;
-			this.makePromise(this.notes[this.notes.length - 1].id).then(x => {
-				this.notes = this.notes.concat(x.notes);
-				this.more = x.more;
-				this.moreFetching = false;
-			}, e => {
-				this.moreFetching = false;
-			});
-		},
-
-		prepend(note, silent = false) {
-			// 弾く
-			if (shouldMuteNote(this.$store.state.i, this.$store.state.settings, note)) return;
-
-			// タブが非表示ならタイトルで通知
-			if (document.hidden) {
-				this.$store.commit('pushBehindNote', note);
-			}
-
-			if (this.isScrollTop()) {
-				// Prepend the note
-				this.notes.unshift(note);
-
-				// オーバーフローしたら古い投稿は捨てる
-				if (this.notes.length >= displayLimit) {
-					this.notes = this.notes.slice(0, displayLimit);
-					this.more = true;
-				}
-			} else {
-				this.queue.push(note);
-			}
-		},
-
-		append(note) {
-			this.notes.push(note);
-		},
-
-		releaseQueue() {
-			for (const n of this.queue) {
-				this.prepend(n, true);
-			}
-			this.queue = [];
-		},
-
-		onTop() {
-			this.releaseQueue();
-		},
-
-		onBottom() {
-			this.fetchMore();
-		}
 	}
 });
 </script>

@@ -7,6 +7,7 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -43,10 +44,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 };
 
@@ -74,7 +78,7 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	const mentions = await query.take(ps.limit).getMany();
+	const mentions = await query.take(ps.limit!).getMany();
 
 	for (const note of mentions) {
 		read(user.id, note.id);

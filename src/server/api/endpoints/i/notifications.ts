@@ -4,6 +4,7 @@ import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notifications, Followings, Mutings } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -53,10 +54,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Notification',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Notification',
+		}
 	},
 };
 
@@ -81,13 +85,13 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	if (ps.includeTypes.length > 0) {
+	if (ps.includeTypes!.length > 0) {
 		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
-	} else if (ps.excludeTypes.length > 0) {
+	} else if (ps.excludeTypes!.length > 0) {
 		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
 	}
 
-	const notifications = await query.take(ps.limit).getMany();
+	const notifications = await query.take(ps.limit!).getMany();
 
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {

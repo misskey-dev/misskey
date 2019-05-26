@@ -1,13 +1,14 @@
 import * as promiseLimit from 'promise-limit';
 import del from '../services/drive/delete-file';
 import { DriveFiles } from '../models';
-import { Not } from 'typeorm';
+import { Not, IsNull } from 'typeorm';
 import { DriveFile } from '../models/entities/drive-file';
+import { ensure } from '../prelude/ensure';
 
 const limit = promiseLimit(16);
 
 DriveFiles.find({
-	userHost: Not(null)
+	userHost: Not(IsNull())
 }).then(async files => {
 	console.log(`there is ${files.length} files`);
 
@@ -17,7 +18,7 @@ DriveFiles.find({
 });
 
 async function job(file: DriveFile): Promise<any> {
-	file = await DriveFiles.findOne(file.id);
+	file = await DriveFiles.findOne(file.id).then(ensure);
 
 	await del(file, true);
 

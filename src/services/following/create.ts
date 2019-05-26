@@ -9,11 +9,12 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Logger from '../logger';
 import { IdentifiableError } from '../../misc/identifiable-error';
 import { User } from '../../models/entities/user';
-import { Followings, Users, FollowRequests, Blockings, Instances } from '../../models';
+import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '../../models';
 import { instanceChart, perUserFollowingChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import { ensure } from '../../prelude/ensure';
 
 const logger = new Logger('following/create');
 
@@ -115,11 +116,13 @@ export default async function(follower: User, followee: User, requestId?: string
 		if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 	}
 
+	const followeeProfile = await UserProfiles.findOne(followee.id).then(ensure);
+
 	// フォロー対象が鍵アカウントである or
 	// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
 	// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
 	// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
-	if (followee.isLocked || (followee.carefulBot && follower.isBot) || (Users.isLocalUser(follower) && Users.isRemoteUser(followee))) {
+	if (followee.isLocked || (followeeProfile.carefulBot && follower.isBot) || (Users.isLocalUser(follower) && Users.isRemoteUser(followee))) {
 		let autoAccept = false;
 
 		// 鍵アカウントであっても、既にフォローされていた場合はスルー
@@ -132,7 +135,7 @@ export default async function(follower: User, followee: User, requestId?: string
 		}
 
 		// フォローしているユーザーは自動承認オプション
-		if (!autoAccept && (Users.isLocalUser(followee) && followee.autoAcceptFollowed)) {
+		if (!autoAccept && (Users.isLocalUser(followee) && followeeProfile.autoAcceptFollowed)) {
 			const followed = await Followings.findOne({
 				followerId: followee.id,
 				followeeId: follower.id

@@ -10,6 +10,7 @@ import { DriveFiles, Notes, Users, Emojis, Polls } from '../../../models';
 import { In } from 'typeorm';
 import { Emoji } from '../../../models/entities/emoji';
 import { Poll } from '../../../models/entities/poll';
+import { ensure } from '../../../prelude/ensure';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
 	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 0
@@ -17,15 +18,15 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		: Promise.resolve([]);
 
 	let inReplyTo;
-	let inReplyToNote: Note;
+	let inReplyToNote: Note | undefined;
 
 	if (note.replyId) {
 		inReplyToNote = await Notes.findOne(note.replyId);
 
-		if (inReplyToNote !== null) {
+		if (inReplyToNote != null) {
 			const inReplyToUser = await Users.findOne(inReplyToNote.userId);
 
-			if (inReplyToUser !== null) {
+			if (inReplyToUser != null) {
 				if (inReplyToNote.uri) {
 					inReplyTo = inReplyToNote.uri;
 				} else {
@@ -51,9 +52,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		}
 	}
 
-	const user = await Users.findOne({
-		id: note.userId
-	});
+	const user = await Users.findOne(note.userId).then(ensure);
 
 	const attributedTo = `${config.url}/users/${user.id}`;
 
@@ -85,13 +84,13 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 	const files = await promisedFiles;
 
 	let text = note.text;
-	let poll: Poll;
+	let poll: Poll | undefined;
 
 	if (note.hasPoll) {
 		poll = await Polls.findOne({ noteId: note.id });
 	}
 
-	let question: string;
+	let question: string | undefined;
 	if (poll) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note.id}`;
@@ -144,7 +143,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 			name: text,
 			replies: {
 				type: 'Collection',
-				totalItems: poll.votes[i]
+				totalItems: poll!.votes[i]
 			}
 		}))
 	} : {};
@@ -179,5 +178,5 @@ export async function getEmojis(names: string[]): Promise<Emoji[]> {
 		}))
 	);
 
-	return emojis.filter(emoji => emoji != null);
+	return emojis.filter(emoji => emoji != null) as Emoji[];
 }

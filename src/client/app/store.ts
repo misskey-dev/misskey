@@ -28,6 +28,7 @@ const defaultSettings = {
 	iLikeSushi: false,
 	rememberNoteVisibility: false,
 	defaultNoteVisibility: 'public',
+	wallpaper: null,
 	webSearchEngine: 'https://www.google.com/?#q={{query}}',
 	mutedWords: [],
 	games: {
@@ -125,7 +126,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 		logout(ctx) {
 			ctx.commit('updateI', null);
-			document.cookie = 'i=;';
+			document.cookie = `i=; max-age=0; domain=${document.location.hostname}`;
 			localStorage.removeItem('i');
 		},
 
@@ -357,7 +358,7 @@ export default (os: MiOS) => new Vuex.Store({
 					ctx.commit('set', x);
 
 					if (ctx.rootGetters.isSignedIn) {
-						os.api('i/update_client_setting', {
+						os.api('i/update-client-setting', {
 							name: x.key,
 							value: x.value
 						});

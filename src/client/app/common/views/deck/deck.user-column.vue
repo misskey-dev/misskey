@@ -8,7 +8,7 @@
 		<div class="is-remote" v-if="user.host != null">
 			<details>
 				<summary><fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}</summary>
-				<a :href="user.url || user.uri" target="_blank">{{ $t('@.view-on-remote') }}</a>
+				<a :href="user.url" rel="nofollow noopener" target="_blank">{{ $t('@.view-on-remote') }}</a>
 			</details>
 		</div>
 		<header :style="bannerStyle">
@@ -205,7 +205,7 @@ export default Vue.extend({
 			top -32px
 			left 0
 			right 0
-			width 0px
+			width 0
 			margin 0 auto
 			border-top solid 16px transparent
 			border-left solid 16px transparent

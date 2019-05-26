@@ -84,7 +84,7 @@
 				<ui-info v-else warn>{{ $t('email-not-verified') }}</ui-info>
 			</template>
 			<ui-input v-model="email" type="email"><span>{{ $t('email-address') }}</span></ui-input>
-			<ui-button @click="updateEmail()"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+			<ui-button @click="updateEmail()" :disabled="email === $store.state.i.email"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</div>
 	</section>
 
@@ -290,12 +290,17 @@ export default Vue.extend({
 				this.exportTarget == 'mute' ? 'i/export-mute' :
 				this.exportTarget == 'blocking' ? 'i/export-blocking' :
 				this.exportTarget == 'user-lists' ? 'i/export-user-lists' :
-				null, {});
-
-			this.$root.dialog({
-				type: 'info',
-				text: this.$t('export-requested')
-			});
+				null, {}).then(() => {
+					this.$root.dialog({
+						type: 'info',
+						text: this.$t('export-requested')
+					});
+				}).catch((e: any) => {
+					this.$root.dialog({
+						type: 'error',
+						text: e.message
+					});
+				});
 		},
 
 		doImport() {

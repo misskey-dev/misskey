@@ -3,6 +3,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { Users, Followings } from '../../../../models';
 import { generateMuteQueryForUsers } from '../../common/generate-mute-query';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -28,9 +29,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'User',
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'User',
 		}
 	},
 };
@@ -38,8 +42,9 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where('user.isLocked = FALSE')
-		.where('user.host IS NULL')
-		.where('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
+		.andWhere('user.host IS NULL')
+		.andWhere('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
+		.andWhere('user.id != :meId', { meId: me.id })
 		.orderBy('user.followersCount', 'DESC');
 
 	generateMuteQueryForUsers(query, me);
@@ -53,7 +58,7 @@ export default define(meta, async (ps, me) => {
 
 	query.setParameters(followingQuery.getParameters());
 
-	const users = await query.take(ps.limit).skip(ps.offset).getMany();
+	const users = await query.take(ps.limit!).skip(ps.offset).getMany();
 
 	return await Users.packMany(users, me, { detail: true });
 });

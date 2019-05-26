@@ -15,7 +15,6 @@ import signin from './private/signin';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
-import { toASCII } from 'punycode';
 import { Instances } from '../../models';
 
 // Init app
@@ -53,7 +52,7 @@ for (const endpoint of endpoints) {
 	} else {
 		if (endpoint.name.includes('-')) {
 			// 後方互換性のため
-			router.post(`/${endpoint.name.replace(/\-/g, '_')}`, handler.bind(null, endpoint));
+			router.post(`/${endpoint.name.replace(/-/g, '_')}`, handler.bind(null, endpoint));
 		}
 		router.post(`/${endpoint.name}`, handler.bind(null, endpoint));
 	}
@@ -71,9 +70,7 @@ router.get('/v1/instance/peers', async ctx => {
 		select: ['host']
 	});
 
-	const punyCodes = instances.map(instance => toASCII(instance.host));
-
-	ctx.body = punyCodes;
+	ctx.body = instances.map(instance => instance.host);
 });
 
 // Return 404 for unknown API

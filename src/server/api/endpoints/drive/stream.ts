@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { DriveFiles } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	tags: ['drive'],
@@ -26,15 +27,18 @@ export const meta = {
 		},
 
 		type: {
-			validator: $.optional.str.match(/^[a-zA-Z\/\-\*]+$/)
+			validator: $.optional.str.match(/^[a-zA-Z\/\-*]+$/)
 		}
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'DriveFile',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'DriveFile',
+		}
 	},
 };
 
@@ -50,7 +54,7 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	const files = await query.take(ps.limit).getMany();
+	const files = await query.take(ps.limit!).getMany();
 
 	return await DriveFiles.packMany(files, { detail: false, self: true });
 });

@@ -10,7 +10,10 @@ import extractHashtags from '../../../../misc/extract-hashtags';
 import * as langmap from 'langmap';
 import { updateHashtag } from '../../../../services/update-hashtag';
 import { ApiError } from '../../error';
-import { Users, DriveFiles } from '../../../../models';
+import { Users, DriveFiles, UserProfiles } from '../../../../models';
+import { User } from '../../../../models/entities/user';
+import { UserProfile } from '../../../../models/entities/user-profile';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	desc: {
@@ -154,22 +157,25 @@ export const meta = {
 export default define(meta, async (ps, user, app) => {
 	const isSecure = user != null && app == null;
 
-	const updates = {} as any;
+	const updates = {} as Partial<User>;
+	const profileUpdates = {} as Partial<UserProfile>;
+
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	if (ps.name !== undefined) updates.name = ps.name;
-	if (ps.description !== undefined) updates.description = ps.description;
-	if (ps.lang !== undefined) updates.lang = ps.lang;
-	if (ps.location !== undefined) updates.location = ps.location;
-	if (ps.birthday !== undefined) updates.birthday = ps.birthday;
+	if (ps.description !== undefined) profileUpdates.description = ps.description;
+	//if (ps.lang !== undefined) updates.lang = ps.lang;
+	if (ps.location !== undefined) profileUpdates.location = ps.location;
+	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
-	if (typeof ps.carefulBot == 'boolean') updates.carefulBot = ps.carefulBot;
-	if (typeof ps.autoAcceptFollowed == 'boolean') updates.autoAcceptFollowed = ps.autoAcceptFollowed;
+	if (typeof ps.carefulBot == 'boolean') profileUpdates.carefulBot = ps.carefulBot;
+	if (typeof ps.autoAcceptFollowed == 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch == 'boolean') updates.autoWatch = ps.autoWatch;
-	if (typeof ps.alwaysMarkNsfw == 'boolean') updates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (typeof ps.autoWatch == 'boolean') profileUpdates.autoWatch = ps.autoWatch;
+	if (typeof ps.alwaysMarkNsfw == 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);
@@ -177,7 +183,7 @@ export default define(meta, async (ps, user, app) => {
 		if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 		if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
 
-		updates.avatarUrl = avatar.thumbnailUrl;
+		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
 
 		if (avatar.properties.avgColor) {
 			updates.avatarColor = avatar.properties.avgColor;
@@ -190,7 +196,7 @@ export default define(meta, async (ps, user, app) => {
 		if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 		if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
 
-		updates.bannerUrl = banner.webpublicUrl;
+		updates.bannerUrl = DriveFiles.getPublicUrl(banner, false);
 
 		if (banner.properties.avgColor) {
 			updates.bannerColor = banner.properties.avgColor;
@@ -198,18 +204,22 @@ export default define(meta, async (ps, user, app) => {
 	}
 
 	//#region emojis/tags
+
 	let emojis = [] as string[];
 	let tags = [] as string[];
 
-	if (updates.name != null) {
-		const tokens = parsePlain(updates.name);
-		emojis = emojis.concat(extractEmojis(tokens));
+	const newName = updates.name === undefined ? user.name : updates.name;
+	const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
+
+	if (newName != null) {
+		const tokens = parsePlain(newName);
+		emojis = emojis.concat(extractEmojis(tokens!));
 	}
 
-	if (updates.description != null) {
-		const tokens = parse(updates.description);
-		emojis = emojis.concat(extractEmojis(tokens));
-		tags = extractHashtags(tokens).map(tag => tag.toLowerCase());
+	if (newDescription != null) {
+		const tokens = parse(newDescription);
+		emojis = emojis.concat(extractEmojis(tokens!));
+		tags = extractHashtags(tokens!).map(tag => tag.toLowerCase());
 	}
 
 	updates.emojis = emojis;
@@ -220,7 +230,8 @@ export default define(meta, async (ps, user, app) => {
 	for (const tag of user.tags.filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
 	//#endregion
 
-	await Users.update(user.id, updates);
+	if (Object.keys(updates).length > 0) await Users.update(user.id, updates);
+	if (Object.keys(profileUpdates).length > 0) await UserProfiles.update({ userId: user.id }, profileUpdates);
 
 	const iObj = await Users.pack(user.id, user, {
 		detail: true,

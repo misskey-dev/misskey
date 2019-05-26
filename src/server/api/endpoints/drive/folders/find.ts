@@ -2,6 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { DriveFolders } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	tags: ['drive'],
@@ -25,10 +26,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'DriveFolder',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'DriveFolder',
+		}
 	},
 };
 

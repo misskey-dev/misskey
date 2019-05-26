@@ -1,6 +1,6 @@
 import * as Router from 'koa-router';
 import config from '../config';
-import fetchMeta from '../misc/fetch-meta';
+import { fetchMeta } from '../misc/fetch-meta';
 // import User from '../models/user';
 import { name as softwareName, version, repository } from '../../package.json';
 // import Note from '../models/note';
@@ -26,6 +26,9 @@ const nodeinfo2 = async () => {
 			maintainerName,
 			maintainerEmail,
 			langs,
+			ToSUrl,
+			repositoryUrl,
+			feedbackUrl,
 			announcements,
 			disableRegistration,
 			disableLocalTimeline,
@@ -44,7 +47,7 @@ const nodeinfo2 = async () => {
 		// localPosts,
 		// localComments
 	] = await Promise.all([
-		fetchMeta(),
+		fetchMeta(true),
 		// User.count({ host: null }),
 		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
 		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
@@ -77,6 +80,9 @@ const nodeinfo2 = async () => {
 				email: maintainerEmail
 			},
 			langs,
+			ToSUrl,
+			repositoryUrl,
+			feedbackUrl,
 			announcements,
 			disableRegistration,
 			disableLocalTimeline,

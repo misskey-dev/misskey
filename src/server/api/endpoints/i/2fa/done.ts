@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
 import define from '../../../define';
-import { Users } from '../../../../../models';
+import { UserProfiles } from '../../../../../models';
+import { ensure } from '../../../../../prelude/ensure';
 
 export const meta = {
 	requireCredential: true,
@@ -16,24 +17,26 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const _token = ps.token.replace(/\s/g, '');
+	const token = ps.token.replace(/\s/g, '');
 
-	if (user.twoFactorTempSecret == null) {
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
+
+	if (profile.twoFactorTempSecret == null) {
 		throw new Error('二段階認証の設定が開始されていません');
 	}
 
 	const verified = (speakeasy as any).totp.verify({
-		secret: user.twoFactorTempSecret,
+		secret: profile.twoFactorTempSecret,
 		encoding: 'base32',
-		token: _token
+		token: token
 	});
 
 	if (!verified) {
 		throw new Error('not verified');
 	}
 
-	await Users.update(user.id, {
-		twoFactorSecret: user.twoFactorTempSecret,
+	await UserProfiles.update({ userId: user.id }, {
+		twoFactorSecret: profile.twoFactorTempSecret,
 		twoFactorEnabled: true
 	});
 });

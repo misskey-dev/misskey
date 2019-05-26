@@ -9,7 +9,8 @@ import { extractDbHost } from '../../../../misc/convert-host';
 import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
+import { validActor } from '../../../../remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],
@@ -100,6 +101,32 @@ async function fetchAny(uri: string) {
 	// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
 	// これはDBに存在する可能性があるため再度DB検索
 	if (uri !== object.id) {
+		if (object.id.startsWith(config.url + '/')) {
+			const parts = object.id.split('/');
+			const id = parts.pop();
+			const type = parts.pop();
+
+			if (type === 'notes') {
+				const note = await Notes.findOne(id);
+
+				if (note) {
+					return {
+						type: 'Note',
+						object: await Notes.pack(note, null, { detail: true })
+					};
+				}
+			} else if (type === 'users') {
+				const user = await Users.findOne(id);
+
+				if (user) {
+					return {
+						type: 'User',
+						object: await Users.pack(user, null, { detail: true })
+					};
+				}
+			}
+		}
+
 		const [user, note] = await Promise.all([
 			Users.findOne({ uri: object.id }),
 			Notes.findOne({ uri: object.id })
@@ -110,7 +137,7 @@ async function fetchAny(uri: string) {
 	}
 
 	// それでもみつからなければ新規であるため登録
-	if (object.type === 'Person') {
+	if (validActor.includes(object.type)) {
 		const user = await createPerson(object.id);
 		return {
 			type: 'User',
@@ -119,17 +146,17 @@ async function fetchAny(uri: string) {
 	}
 
 	if (['Note', 'Question', 'Article'].includes(object.type)) {
-		const note = await createNote(object.id);
+		const note = await createNote(object.id, undefined, true);
 		return {
 			type: 'Note',
-			object: await Notes.pack(note, null, { detail: true })
+			object: await Notes.pack(note!, null, { detail: true })
 		};
 	}
 
 	return null;
 }
 
-async function mergePack(user: User, note: Note) {
+async function mergePack(user: User | null | undefined, note: Note | null | undefined) {
 	if (user != null) {
 		return {
 			type: 'User',

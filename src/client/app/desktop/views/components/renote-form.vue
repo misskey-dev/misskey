@@ -10,7 +10,7 @@
 		</footer>
 	</template>
 	<template v-if="quote">
-		<mk-post-form ref="form" :renote="note" @posted="onChildFormPosted"/>
+		<x-post-form ref="form" :renote="note" @posted="onChildFormPosted"/>
 	</template>
 </div>
 </template>
@@ -21,6 +21,10 @@ import i18n from '../../../i18n';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/renote-form.vue'),
+
+	components: {
+		XPostForm: () => import('./post-form.vue').then(m => m.default)
+	},
 
 	props: {
 		note: {

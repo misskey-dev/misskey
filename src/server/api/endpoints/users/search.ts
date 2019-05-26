@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { Users } from '../../../../models';
 import { User } from '../../../../models/entities/user';
+import { bool, types } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -54,9 +55,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'User',
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'User',
 		}
 	},
 };
@@ -71,16 +75,16 @@ export default define(meta, async (ps, me) => {
 			.where('user.host IS NULL')
 			.andWhere('user.isSuspended = FALSE')
 			.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
-			.take(ps.limit)
+			.take(ps.limit!)
 			.skip(ps.offset)
 			.getMany();
 
-		if (users.length < ps.limit && !ps.localOnly) {
+		if (users.length < ps.limit! && !ps.localOnly) {
 			const otherUsers = await Users.createQueryBuilder('user')
 				.where('user.host IS NOT NULL')
 				.andWhere('user.isSuspended = FALSE')
 				.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
-				.take(ps.limit - users.length)
+				.take(ps.limit! - users.length)
 				.getMany();
 
 			users = users.concat(otherUsers);

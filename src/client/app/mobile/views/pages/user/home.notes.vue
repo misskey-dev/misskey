@@ -23,7 +23,6 @@ export default Vue.extend({
 	mounted() {
 		this.$root.api('users/notes', {
 			userId: this.user.id,
-			untilDate: new Date().getTime() + 1000 * 86400 * 365
 		}).then(notes => {
 			this.notes = notes;
 			this.fetching = false;

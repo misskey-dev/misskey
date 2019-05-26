@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Hashtags } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	tags: ['hashtags'],
@@ -47,9 +48,12 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Hashtag'
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Hashtag',
 		}
 	},
 };
@@ -86,7 +90,7 @@ export default define(meta, async (ps, me) => {
 		'tag.attachedRemoteUsersCount',
 	]);
 
-	const tags = await query.take(ps.limit).getMany();
+	const tags = await query.take(ps.limit!).getMany();
 
-	return tags;
+	return Hashtags.packMany(tags);
 });

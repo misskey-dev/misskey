@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { DriveFiles } from '../../../../models';
-import { Not } from 'typeorm';
+import { Not, IsNull } from 'typeorm';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { name, schema } from '../schemas/drive';
 
@@ -31,7 +31,7 @@ export default class DriveChart extends Chart<DriveLog> {
 	protected async fetchActual(): Promise<DeepPartial<DriveLog>> {
 		const [localCount, remoteCount, localSize, remoteSize] = await Promise.all([
 			DriveFiles.count({ userHost: null }),
-			DriveFiles.count({ userHost: Not(null) }),
+			DriveFiles.count({ userHost: Not(IsNull()) }),
 			DriveFiles.clacDriveUsageOfLocal(),
 			DriveFiles.clacDriveUsageOfRemote()
 		]);

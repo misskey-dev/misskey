@@ -14,9 +14,11 @@ const logger = queueLogger.createSubLogger('export-following');
 export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.info(`Exporting following of ${job.data.user.id} ...`);
 
-	const user = await Users.findOne({
-		id: job.data.user.id
-	});
+	const user = await Users.findOne(job.data.user.id);
+	if (user == null) {
+		done();
+		return;
+	}
 
 	// Create temp file
 	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
@@ -31,10 +33,9 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	let exportedCount = 0;
-	let ended = false;
 	let cursor: any = null;
 
-	while (!ended) {
+	while (true) {
 		const followings = await Followings.find({
 			where: {
 				followerId: user.id,
@@ -47,7 +48,6 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 		});
 
 		if (followings.length === 0) {
-			ended = true;
 			job.progress(100);
 			break;
 		}
@@ -56,6 +56,10 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 
 		for (const following of followings) {
 			const u = await Users.findOne({ id: following.followeeId });
+			if (u == null) {
+				exportedCount++; continue;
+			}
+
 			const content = getFullApAccount(u.username, u.host);
 			await new Promise((res, rej) => {
 				stream.write(content + '\n', err => {
@@ -81,7 +85,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	logger.succ(`Exported to: ${path}`);
 
 	const fileName = 'following-' + dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss') + '.csv';
-	const driveFile = await addFile(user, path, fileName);
+	const driveFile = await addFile(user, path, fileName, null, null, true);
 
 	logger.succ(`Exported to: ${driveFile.id}`);
 	cleanup();

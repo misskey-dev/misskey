@@ -15,6 +15,7 @@ import { Users, Notes } from '../../models';
 import { makePaginationQuery } from '../api/common/make-pagination-query';
 import { Brackets } from 'typeorm';
 import { Note } from '../../models/entities/note';
+import { ensure } from '../../prelude/ensure';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = ctx.params.user;
@@ -73,11 +74,11 @@ export default async (ctx: Router.IRouterContext) => {
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
 				since_id: notes[0].id
-			})}` : null,
+			})}` : undefined,
 			notes.length ? `${partOf}?${url.query({
 				page: 'true',
 				until_id: notes[notes.length - 1].id
-			})}` : null
+			})}` : undefined
 		);
 
 		ctx.body = renderActivity(rendered);
@@ -99,9 +100,9 @@ export default async (ctx: Router.IRouterContext) => {
  * Pack Create<Note> or Announce Activity
  * @param note Note
  */
-export async function packActivity(note: Note): Promise<object> {
+export async function packActivity(note: Note): Promise<any> {
 	if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
-		const renote = await Notes.findOne(note.renoteId);
+		const renote = await Notes.findOne(note.renoteId).then(ensure);
 		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`, note);
 	}
 

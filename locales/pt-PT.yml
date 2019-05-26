@@ -89,7 +89,6 @@ common:
   update-available-title: "Atualização disponível"
   update-available: "Uma nova versão de Misskey está disponível ({newer}). A versão atual é {current}. Recarregue a página para atualizar."
   my-token-regenerated: "Seu token foi recriado, portanto você foi deslogado."
-  verified-user: "Conta verificada"
   reversi:
     drawn: "Empatado"
     my-turn: "Seu turno"
@@ -119,9 +118,6 @@ common:
   you: "Você"
 auth/views/form.vue:
   permission-ask: "Este aplicativo precisa das seguintes permissões:"
-  account-read: "Ver informações da conta."
-  account-write: "Modificar informações da conta."
-  note-write: "Publicar"
   cancel: "Cancelar"
   accept: "Permitir acesso"
 auth/views/index.vue:
@@ -132,8 +128,6 @@ auth/views/index.vue:
   please-go-back: "Por favor, volte ao aplicativo."
   error: "A sessão não existe."
   sign-in: "Por favor, entre."
-common/views/pages/explore.vue:
-  verified-users: "Conta verificada"
 common/views/components/games/reversi/reversi.index.vue:
   invite: "Convidar"
   rule: "Como jogar"
@@ -166,6 +160,10 @@ common/views/components/profile-editor.vue:
   name: "Nome"
   export-targets:
     following-list: "Seguindo"
+common/views/components/user-group-editor.vue:
+  invite: "Convidar"
+common/views/components/user-groups.vue:
+  invites: "Convidar"
 common/views/widgets/posts-monitor.vue:
   title: "Gráfico de publicações"
 common/views/widgets/memo.vue:
@@ -197,10 +195,6 @@ admin/views/instance.vue:
   invite: "Convidar"
 admin/views/drive.vue:
   delete: "Apagar"
-admin/views/users.vue:
-  users:
-    state:
-      verified: "Conta verificada"
 admin/views/emoji.vue:
   emojis:
     remove: "Apagar"
@@ -277,22 +271,10 @@ deck/deck.user-column.vue:
   timeline: "Linha do tempo"
 docs:
   edit-this-page-on-github-link: "Edite esta página no GitHub!"
-  api:
-    entities:
-      properties: "Propriedades"
-    endpoints:
-      params: "Parâmetros"
-      no-params: "Sem parâmetros"
-      res: "Resposta"
-      show-src-link: "Veja o código no GitHub"
-      generated: "Este documento foi gerado pelas definições da API."
-    props:
-      name: "Nome"
-      type: "Tipo"
-      description: "Descrição"
 dev/views/index.vue:
   manage-apps: "Gerenciar aplicativos"
-dev/views/new-app.vue:
-  account-read: "Ver informações da conta."
-  account-write: "Modificar informações da conta."
-  note-write: "Publicar"
+pages:
+  like: "Curtir"
+  blocks:
+    image: "Imagens"
+    post: "Formulário de publicação"

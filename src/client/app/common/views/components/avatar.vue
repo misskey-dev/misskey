@@ -78,6 +78,7 @@ export default Vue.extend({
 .mk-avatar
 	display inline-block
 	vertical-align bottom
+	flex-shrink 0
 
 	&:not(.cat)
 		overflow hidden

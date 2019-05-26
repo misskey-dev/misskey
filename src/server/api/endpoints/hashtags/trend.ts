@@ -1,7 +1,8 @@
 import define from '../../define';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
+import { types, bool } from '../../../../misc/schema';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -21,16 +22,44 @@ export const meta = {
 	tags: ['hashtags'],
 
 	requireCredential: false,
+
+	res: {
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
+		items: {
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			properties: {
+				tag: {
+					type: types.string,
+					optional: bool.false, nullable: bool.false,
+				},
+				chart: {
+					type: types.array,
+					optional: bool.false, nullable: bool.false,
+					items: {
+						type: types.number,
+						optional: bool.false, nullable: bool.false,
+					}
+				},
+				usersCount: {
+					type: types.number,
+					optional: bool.false, nullable: bool.false,
+				}
+			}
+		}
+	}
 };
 
 export default define(meta, async () => {
-	const instance = await fetchMeta();
+	const instance = await fetchMeta(true);
 	const hiddenTags = instance.hiddenTags.map(t => t.toLowerCase());
 
 	const tagNotes = await Notes.createQueryBuilder('note')
 		.where(`note.createdAt > :date`, { date: new Date(Date.now() - rangeA) })
 		.andWhere(`note.tags != '{}'`)
 		.select(['note.tags', 'note.userId'])
+		.cache(60000) // 1 min
 		.getMany();
 
 	if (tagNotes.length === 0) {
@@ -80,6 +109,7 @@ export default define(meta, async () => {
 			.where(':tag = ANY(note.tags)', { tag: tag })
 			.andWhere('note.createdAt < :lt', { lt: new Date(Date.now() - (interval * i)) })
 			.andWhere('note.createdAt > :gt', { gt: new Date(Date.now() - (interval * (i + 1))) })
+			.cache(60000) // 1 min
 			.getRawOne()
 			.then(x => parseInt(x.count, 10))
 		)));
@@ -91,6 +121,7 @@ export default define(meta, async () => {
 		.select('count(distinct note.userId)')
 		.where(':tag = ANY(note.tags)', { tag: tag })
 		.andWhere('note.createdAt > :gt', { gt: new Date(Date.now() - (interval * range)) })
+		.cache(60000) // 1 min
 		.getRawOne()
 		.then(x => parseInt(x.count, 10))
 	));

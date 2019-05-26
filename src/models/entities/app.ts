@@ -53,7 +53,7 @@ export class App {
 	public permission: string[];
 
 	@Column('varchar', {
-		length: 256, nullable: true,
+		length: 512, nullable: true,
 		comment: 'The callbackUrl of the App.'
 	})
 	public callbackUrl: string | null;

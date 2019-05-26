@@ -21,7 +21,7 @@ export class SwSubscription {
 	public user: User | null;
 
 	@Column('varchar', {
-		length: 256,
+		length: 512,
 	})
 	public endpoint: string;
 

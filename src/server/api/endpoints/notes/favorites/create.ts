@@ -14,11 +14,11 @@ export const meta = {
 		'en-US': 'Favorite a note.'
 	},
 
-	tags: ['favorites'],
+	tags: ['notes', 'favorites'],
 
 	requireCredential: true,
 
-	kind: 'favorite-write',
+	kind: 'write:favorites',
 
 	params: {
 		noteId: {

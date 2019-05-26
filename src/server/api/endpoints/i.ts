@@ -1,5 +1,6 @@
 import define from '../define';
 import { Users } from '../../../models';
+import { types, bool } from '../../../misc/schema';
 
 export const meta = {
 	stability: 'stable',
@@ -15,8 +16,10 @@ export const meta = {
 	params: {},
 
 	res: {
-		type: 'User',
-	}
+		type: types.object,
+		optional: bool.false, nullable: bool.false,
+		ref: 'User',
+	},
 };
 
 export default define(meta, async (ps, user, app) => {

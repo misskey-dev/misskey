@@ -2,7 +2,8 @@ import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
-import { DriveFiles } from '../../../../../models';
+import { DriveFiles, Notes } from '../../../../../models';
+import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	stability: 'stable',
@@ -29,10 +30,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {
@@ -55,8 +59,11 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchFile);
 	}
 
-	/* v11 TODO
-	return await packMany(file.metadata.attachedNoteIds || [], user, {
+	const notes = await Notes.createQueryBuilder('note')
+		.where(':file = ANY(note.fileIds)', { file: file.id })
+		.getMany();
+
+	return await Notes.packMany(notes, user, {
 		detail: true
-	});*/
+	});
 });

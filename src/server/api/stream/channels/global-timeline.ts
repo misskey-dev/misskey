@@ -1,8 +1,9 @@
 import autobind from 'autobind-decorator';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import Channel from '../channel';
-import fetchMeta from '../../../../misc/fetch-meta';
+import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
+import { PackedNote } from '../../../../models/repositories/note';
 
 export default class extends Channel {
 	public readonly chName = 'globalTimeline';
@@ -21,7 +22,9 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onNote(note: any) {
+	private async onNote(note: PackedNote) {
+		if (note.visibility !== 'public') return;
+
 		// リプライなら再pack
 		if (note.replyId != null) {
 			note.reply = await Notes.pack(note.replyId, this.user, {

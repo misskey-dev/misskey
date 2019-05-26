@@ -58,7 +58,7 @@ export default define(meta, async (ps, user) => {
 	query.setParameters(mutingQuery.getParameters());
 	//#endregion
 
-	const polls = await query.take(ps.limit).skip(ps.offset).getMany();
+	const polls = await query.take(ps.limit!).skip(ps.offset).getMany();
 
 	if (polls.length === 0) return [];
 

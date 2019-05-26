@@ -13,29 +13,29 @@
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
-			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.name}`" :key="'local:' + tag.name" class="local">{{ tag.name }}</router-link>
-			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.name}`" :key="'remote:' + tag.name">{{ tag.name }}</router-link>
+			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
+			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
 		</div>
 	</ui-container>
 
-	<mk-user-list v-if="tag != null" :make-promise="tagUsers" :key="`${tag}-local`">
+	<mk-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}-local`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
 	</mk-user-list>
-	<mk-user-list v-if="tag != null" :make-promise="tagRemoteUsers" :key="`${tag}-remote`">
+	<mk-user-list v-if="tag != null" :pagination="tagRemoteUsers" :key="`${tag}-remote`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }} ({{ $t('federated') }})
 	</mk-user-list>
 
 	<template v-if="tag == null">
-		<mk-user-list :make-promise="verifiedUsers">
-			<fa :icon="faBookmark" fixed-width/>{{ $t('verified-users') }}
+		<mk-user-list :pagination="pinnedUsers">
+			<fa :icon="faBookmark" fixed-width/>{{ $t('pinned-users') }}
 		</mk-user-list>
-		<mk-user-list :make-promise="popularUsers">
+		<mk-user-list :pagination="popularUsers">
 			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
 		</mk-user-list>
-		<mk-user-list :make-promise="recentlyUpdatedUsers">
+		<mk-user-list :pagination="recentlyUpdatedUsers">
 			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
 		</mk-user-list>
-		<mk-user-list :make-promise="recentlyRegisteredUsers">
+		<mk-user-list :pagination="recentlyRegisteredUsers">
 			<fa :icon="faPlus" fixed-width/>{{ $t('recently-registered-users') }}
 		</mk-user-list>
 	</template>
@@ -60,29 +60,21 @@ export default Vue.extend({
 
 	data() {
 		return {
-			verifiedUsers: () => this.$root.api('users', {
-				state: 'verified',
-				origin: 'local',
-				sort: '+follower',
-				limit: 10
-			}),
-			popularUsers: () => this.$root.api('users', {
+			pinnedUsers: { endpoint: 'pinned-users' },
+			popularUsers: { endpoint: 'users', limit: 10, params: {
 				state: 'alive',
 				origin: 'local',
 				sort: '+follower',
-				limit: 10
-			}),
-			recentlyUpdatedUsers: () => this.$root.api('users', {
+			} },
+			recentlyUpdatedUsers: { endpoint: 'users', limit: 10, params: {
 				origin: 'local',
 				sort: '+updatedAt',
-				limit: 10
-			}),
-			recentlyRegisteredUsers: () => this.$root.api('users', {
+			} },
+			recentlyRegisteredUsers: { endpoint: 'users', limit: 10, params: {
 				origin: 'local',
 				state: 'alive',
 				sort: '+createdAt',
-				limit: 10
-			}),
+			} },
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
@@ -93,24 +85,30 @@ export default Vue.extend({
 	},
 
 	computed: {
-		tagUsers(): () => Promise<any> {
-			return () => this.$root.api('hashtags/users', {
-				tag: this.tag,
-				state: 'alive',
-				origin: 'local',
-				sort: '+follower',
-				limit: 30
-			});
+		tagUsers(): any {
+			return {
+				endpoint: 'hashtags/users',
+				limit: 30,
+				params: {
+					tag: this.tag,
+					state: 'alive',
+					origin: 'local',
+					sort: '+follower',
+				}
+			};
 		},
 
-		tagRemoteUsers(): () => Promise<any> {
-			return () => this.$root.api('hashtags/users', {
-				tag: this.tag,
-				state: 'alive',
-				origin: 'remote',
-				sort: '+follower',
-				limit: 30
-			});
+		tagRemoteUsers(): any {
+			return {
+				endpoint: 'hashtags/users',
+				limit: 30,
+				params: {
+					tag: this.tag,
+					state: 'alive',
+					origin: 'remote',
+					sort: '+follower',
+				}
+			};
 		},
 	},
 
@@ -121,6 +119,10 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$emit('init', {
+			title: this.$t('@.explore'),
+			icon: faHashtag
+		});
 		this.$root.api('hashtags/list', {
 			sort: '+attachedLocalUsers',
 			attachedToLocalUserOnly: true,

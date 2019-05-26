@@ -37,6 +37,8 @@ common:
   home: "Hjem"
   followers: "Følgere"
   favorites: "Merket som favoritt"
+  permissions:
+    "write:votes": "Stem"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -128,6 +130,7 @@ common/views/components/cw-button.vue:
   hide: "Skjul"
 common/views/components/messaging.vue:
   you: "Du"
+  user: "Bruker"
 common/views/components/messaging-room.form.vue:
   send: "Send"
 common/views/components/messaging-room.message.vue:
@@ -190,6 +193,13 @@ common/views/components/profile-editor.vue:
     user-lists: "Lister"
 common/views/components/user-list-editor.vue:
   users: "Bruker"
+common/views/components/user-group-editor.vue:
+  invite: "Inviter"
+common/views/components/user-lists.vue:
+  user-lists: "Lister"
+  list-name: "Liste navn"
+common/views/components/user-groups.vue:
+  invites: "Inviter"
 common/views/widgets/broadcast.vue:
   fetching: "Henter"
   next: "Neste"
@@ -303,12 +313,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Skriv nytt innlegg"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Søk"
-desktop/views/components/received-follow-requests-window.vue:
-  accept: "Godta"
-  reject: "Avslå"
-desktop/views/components/user-lists-window.vue:
-  title: "Brukerlister"
-  list-name: "Liste navn"
 desktop/views/components/user-preview.vue:
   notes: "Innlegg"
   following: "Følger"
@@ -445,17 +449,12 @@ mobile/views/components/ui.nav.vue:
   user-lists: "Lister"
   game: "Spill"
   admin: "Admin"
-mobile/views/pages/user-lists.vue:
-  title: "Lister"
 mobile/views/pages/home.vue:
   home: "Hjem"
   local: "Lokalt"
   global: "Globalt"
 mobile/views/pages/widgets.vue:
   add-widget: "Legg til"
-mobile/views/pages/received-follow-requests.vue:
-  accept: "Godta"
-  reject: "Avslå"
 mobile/views/pages/note.vue:
   title: "Innlegg"
   prev: "Forrige innlegg"
@@ -486,14 +485,25 @@ deck/deck.user-column.vue:
   following: "Følger"
   followers: "Følgere"
   images: "Bilder"
-docs:
-  api:
-    entities:
-      properties: "Egenskaper"
-    endpoints:
-      params: "Parametere"
-      res: "Respons"
-    props:
-      name: "Navn"
-      type: "Type"
-      description: "Beskrivelse"
+pages:
+  like: "Lik"
+  blocks:
+    image: "Bilder"
+  script:
+    categories:
+      random: "Tilfeldig"
+      list: "Lister"
+    blocks:
+      _join:
+        arg1: "Lister"
+      random: "Tilfeldig"
+      _randomPick:
+        arg1: "Lister"
+      _dailyRandomPick:
+        arg1: "Lister"
+      _seedRandomPick:
+        arg2: "Lister"
+      _pick:
+        arg1: "Lister"
+    types:
+      array: "Lister"

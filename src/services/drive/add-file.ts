@@ -8,14 +8,13 @@ import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
 import delFile from './delete-file';
-import config from '../../config';
-import fetchMeta from '../../misc/fetch-meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, ConvertToJpeg, ConvertToWebp, ConvertToPng } from './image-processor';
+import { IImage, convertToJpeg, convertToWebp, convertToPng, convertToGif, convertToApng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
-import { DriveFiles, DriveFolders, Users, Instances } from '../../models';
+import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
 import { InternalStorage } from './internal-storage';
 import { DriveFile } from '../../models/entities/drive-file';
 import { IRemoteUser, User } from '../../models/entities/user';
@@ -37,7 +36,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 	// thunbnail, webpublic を必要なら生成
 	const alts = await generateAlts(path, type, !file.uri);
 
-	if (config.drive && config.drive.storage == 'minio') {
+	const meta = await fetchMeta();
+
+	if (meta.useObjectStorage) {
 		//#region ObjectStorage params
 		let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) || ['']);
 
@@ -47,18 +48,18 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/webp') ext = '.webp';
 		}
 
-		const baseUrl = config.drive.baseUrl
-			|| `${ config.drive.config.useSSL ? 'https' : 'http' }://${ config.drive.config.endPoint }${ config.drive.config.port ? `:${config.drive.config.port}` : '' }/${ config.drive.bucket }`;
+		const baseUrl = meta.objectStorageBaseUrl
+			|| `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
 
 		// for original
-		const key = `${config.drive.prefix}/${uuid.v4()}${ext}`;
+		const key = `${meta.objectStoragePrefix}/${uuid.v4()}${ext}`;
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
-		let webpublicKey: string = null;
-		let webpublicUrl: string = null;
-		let thumbnailKey: string = null;
-		let thumbnailUrl: string = null;
+		let webpublicKey: string | null = null;
+		let webpublicUrl: string | null = null;
+		let thumbnailKey: string | null = null;
+		let thumbnailUrl: string | null = null;
 		//#endregion
 
 		//#region Uploads
@@ -68,7 +69,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		];
 
 		if (alts.webpublic) {
-			webpublicKey = `${config.drive.prefix}/${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.webpublic.ext}`;
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
@@ -76,7 +77,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		}
 
 		if (alts.thumbnail) {
-			thumbnailKey = `${config.drive.prefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -106,8 +107,8 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 
 		const url = InternalStorage.saveFromPath(accessKey, path);
 
-		let thumbnailUrl: string;
-		let webpublicUrl: string;
+		let thumbnailUrl: string | null = null;
+		let webpublicUrl: string | null = null;
 
 		if (alts.thumbnail) {
 			thumbnailUrl = InternalStorage.saveFromBuffer(thumbnailAccessKey, alts.thumbnail.data);
@@ -143,17 +144,21 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
  */
 export async function generateAlts(path: string, type: string, generateWeb: boolean) {
 	// #region webpublic
-	let webpublic: IImage;
+	let webpublic: IImage | null = null;
 
 	if (generateWeb) {
 		logger.info(`creating web image`);
 
 		if (['image/jpeg'].includes(type)) {
-			webpublic = await ConvertToJpeg(path, 2048, 2048);
+			webpublic = await convertToJpeg(path, 2048, 2048);
 		} else if (['image/webp'].includes(type)) {
-			webpublic = await ConvertToWebp(path, 2048, 2048);
+			webpublic = await convertToWebp(path, 2048, 2048);
 		} else if (['image/png'].includes(type)) {
-			webpublic = await ConvertToPng(path, 2048, 2048);
+			webpublic = await convertToPng(path, 2048, 2048);
+		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+			webpublic = await convertToApng(path);
+		} else if (['image/gif'].includes(type)) {
+			webpublic = await convertToGif(path);
 		} else {
 			logger.info(`web image not created (not an image)`);
 		}
@@ -163,12 +168,14 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #endregion webpublic
 
 	// #region thumbnail
-	let thumbnail: IImage;
+	let thumbnail: IImage | null = null;
 
 	if (['image/jpeg', 'image/webp'].includes(type)) {
-		thumbnail = await ConvertToJpeg(path, 498, 280);
+		thumbnail = await convertToJpeg(path, 498, 280);
 	} else if (['image/png'].includes(type)) {
-		thumbnail = await ConvertToPng(path, 498, 280);
+		thumbnail = await convertToPng(path, 498, 280);
+	} else if (['image/gif'].includes(type)) {
+		thumbnail = await convertToGif(path);
 	} else if (type.startsWith('video/')) {
 		try {
 			thumbnail = await GenerateVideoThumbnail(path);
@@ -188,7 +195,16 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
  * Upload to ObjectStorage
  */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
-	const minio = new Minio.Client(config.drive.config);
+	const meta = await fetchMeta();
+
+	const minio = new Minio.Client({
+		endPoint: meta.objectStorageEndpoint!,
+		region: meta.objectStorageRegion ? meta.objectStorageRegion : undefined,
+		port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
+		useSSL: meta.objectStorageUseSSL,
+		accessKey: meta.objectStorageAccessKey!,
+		secretKey: meta.objectStorageSecretKey!,
+	});
 
 	const metadata = {
 		'Content-Type': type,
@@ -197,17 +213,24 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
 
-	await minio.putObject(config.drive.bucket, key, stream, null, metadata);
+	await minio.putObject(meta.objectStorageBucket!, key, stream, undefined, metadata);
 }
 
 async function deleteOldFile(user: IRemoteUser) {
-	const oldFile = await DriveFiles.createQueryBuilder()
-		.select('file')
-		.where('file.id != :avatarId', { avatarId: user.avatarId })
-		.andWhere('file.id != :bannerId', { bannerId: user.bannerId })
-		.andWhere('file.userId = :userId', { userId: user.id })
-		.orderBy('file.id', 'DESC')
-		.getOne();
+	const q = DriveFiles.createQueryBuilder('file')
+		.where('file.userId = :userId', { userId: user.id });
+
+	if (user.avatarId) {
+		q.andWhere('file.id != :avatarId', { avatarId: user.avatarId });
+	}
+
+	if (user.bannerId) {
+		q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
+	}
+
+	q.orderBy('file.id', 'ASC');
+
+	const oldFile = await q.getOne();
 
 	if (oldFile) {
 		delFile(oldFile, true);
@@ -232,14 +255,14 @@ async function deleteOldFile(user: IRemoteUser) {
 export default async function(
 	user: User,
 	path: string,
-	name: string = null,
-	comment: string = null,
+	name: string | null = null,
+	comment: string | null = null,
 	folderId: any = null,
 	force: boolean = false,
 	isLink: boolean = false,
-	url: string = null,
-	uri: string = null,
-	sensitive: boolean = null
+	url: string | null = null,
+	uri: string | null = null,
+	sensitive: boolean | null = null
 ): Promise<DriveFile> {
 	// Calc md5 hash
 	const calcHash = new Promise<string>((res, rej) => {
@@ -297,10 +320,10 @@ export default async function(
 		// If usage limit exceeded
 		if (usage + size > driveCapacity) {
 			if (Users.isLocalUser(user)) {
-				throw 'no-free-space';
+				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-				deleteOldFile(user);
+				deleteOldFile(user as IRemoteUser);
 			}
 		}
 	}
@@ -316,7 +339,7 @@ export default async function(
 			userId: user.id
 		});
 
-		if (driveFolder == null) throw 'folder-not-found';
+		if (driveFolder == null) throw new Error('folder-not-found');
 
 		return driveFolder;
 	};
@@ -356,14 +379,14 @@ export default async function(
 
 				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				const value = info.isOpaque ? `rgba(${r},${g},${b},0)` : `rgba(${r},${g},${b},255)`;
-
-				properties['avgColor'] = value;
+				properties['avgColor'] = `rgb(${r},${g},${b})`;
 			} catch (e) { }
 		};
 
 		propPromises = [calcWh(), calcAvg()];
 	}
+
+	const profile = await UserProfiles.findOne(user.id);
 
 	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
 
@@ -375,8 +398,8 @@ export default async function(
 	file.folderId = folder !== null ? folder.id : null;
 	file.comment = comment;
 	file.properties = properties;
-	file.isRemote = isLink;
-	file.isSensitive = Users.isLocalUser(user) && user.alwaysMarkNsfw ? true :
+	file.isLink = isLink;
+	file.isSensitive = Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
 		(sensitive !== null && sensitive !== undefined)
 			? sensitive
 			: false;
@@ -386,6 +409,8 @@ export default async function(
 
 		if (isLink) {
 			file.url = url;
+			file.thumbnailUrl = url;
+			file.webpublicUrl = url;
 		}
 	}
 
@@ -399,6 +424,7 @@ export default async function(
 			file.md5 = hash;
 			file.name = detectedName;
 			file.type = mime;
+			file.storedInternal = false;
 
 			file = await DriveFiles.save(file);
 		} catch (e) {
@@ -409,7 +435,7 @@ export default async function(
 				file = await DriveFiles.findOne({
 					uri: file.uri,
 					userId: user.id
-				});
+				}) as DriveFile;
 			} else {
 				logger.error(e);
 				throw e;

@@ -5,6 +5,7 @@ import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';
 import { Note } from '../../../../models/entities/note';
 import { Notes } from '../../../../models';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -37,10 +38,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {
@@ -64,12 +68,13 @@ export default define(meta, async (ps, user) => {
 	async function get(id: any) {
 		i++;
 		const p = await Notes.findOne(id);
+		if (p == null) return;
 
-		if (i > ps.offset) {
+		if (i > ps.offset!) {
 			conversation.push(p);
 		}
 
-		if (conversation.length == ps.limit) {
+		if (conversation.length == ps.limit!) {
 			return;
 		}
 

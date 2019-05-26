@@ -1,8 +1,9 @@
 import * as sharp from 'sharp';
+import * as fs from 'fs';
 
 export type IImage = {
 	data: Buffer;
-	ext: string;
+	ext: string | null;
 	type: string;
 };
 
@@ -10,7 +11,7 @@ export type IImage = {
  * Convert to JPEG
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function ConvertToJpeg(path: string, width: number, height: number): Promise<IImage> {
+export async function convertToJpeg(path: string, width: number, height: number): Promise<IImage> {
 	const data = await sharp(path)
 		.resize(width, height, {
 			fit: 'inside',
@@ -34,7 +35,7 @@ export async function ConvertToJpeg(path: string, width: number, height: number)
  * Convert to WebP
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function ConvertToWebp(path: string, width: number, height: number): Promise<IImage> {
+export async function convertToWebp(path: string, width: number, height: number): Promise<IImage> {
 	const data = await sharp(path)
 		.resize(width, height, {
 			fit: 'inside',
@@ -57,7 +58,7 @@ export async function ConvertToWebp(path: string, width: number, height: number)
  * Convert to PNG
  *   with resize, remove metadata, resolve orientation, stop animation
  */
-export async function ConvertToPng(path: string, width: number, height: number): Promise<IImage> {
+export async function convertToPng(path: string, width: number, height: number): Promise<IImage> {
 	const data = await sharp(path)
 		.resize(width, height, {
 			fit: 'inside',
@@ -71,5 +72,31 @@ export async function ConvertToPng(path: string, width: number, height: number):
 		data,
 		ext: 'png',
 		type: 'image/png'
+	};
+}
+
+/**
+ * Convert to GIF (Actually just NOP)
+ */
+export async function convertToGif(path: string): Promise<IImage> {
+	const data = await fs.promises.readFile(path);
+
+	return {
+		data,
+		ext: 'gif',
+		type: 'image/gif'
+	};
+}
+
+/**
+ * Convert to APNG (Actually just NOP)
+ */
+export async function convertToApng(path: string): Promise<IImage> {
+	const data = await fs.promises.readFile(path);
+
+	return {
+		data,
+		ext: 'apng',
+		type: 'image/apng'
 	};
 }

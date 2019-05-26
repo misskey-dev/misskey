@@ -6,8 +6,6 @@ mongodb:
   db: test-misskey
   user: admin
   pass: ''
-drive:
-  storage: 'db'
 # __REDIS__
 redis:
   host: localhost

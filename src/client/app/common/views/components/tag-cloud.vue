@@ -4,7 +4,7 @@
 	<p class="empty" v-else-if="tags.length == 0"><fa icon="exclamation-circle"/>{{ $t('empty') }}</p>
 	<div v-else>
 		<vue-word-cloud
-				:words="tags.slice(0, 20).map(x => [x.name, x.count])"
+				:words="tags.slice(0, 20).map(x => [x.tag, x.count])"
 				:color="color"
 				:spacing="1">
 			<template slot-scope="{word, text, weight}">
@@ -43,7 +43,7 @@ export default Vue.extend({
 	},
 	methods: {
 		fetch() {
-			this.$root.api('aggregation/hashtags').then(tags => {
+			this.$root.api('hashtags/trend').then(tags => {
 				this.tags = tags;
 				this.fetching = false;
 			});

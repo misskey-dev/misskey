@@ -60,6 +60,8 @@ common:
   following: "フォローしとる"
   followers: "フォロワー"
   favorites: "お気に入り"
+  permissions:
+    "write:votes": "投票するで"
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -119,7 +121,7 @@ common:
   update-available-title: "更新があんで"
   update-available: "Misskeyの新しいバージョンがあんで({newer}。現在{current}をつこてるわ)。ページを再度読み込みしたると更新が適用されるわ。"
   my-token-regenerated: "あんさんのトークンが更新されたらしいわ。すまんがとりあえずサインアウトすんで。"
-  verified-user: "アメちゃん付きアカウント"
+  enter-username: "ユーザー名を入力してや"
   do-not-use-in-production: "開発ビルドや。本番環境で使わんといて！知らんで！"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "ちゃんとした情報見せてや！"
@@ -166,15 +168,6 @@ common:
 auth/views/form.vue:
   share-access: "あんたのアカウントに<i>{name}</i>がアクセスしようとしてるで？ええか？"
   permission-ask: "このアプリは次の権限を要求してんで:"
-  account-read: "アカウントの情報を見させてもらうで。"
-  account-write: "アカウントの情報を操作させてもらうで。"
-  note-write: "投稿させてもらうで。"
-  like-write: "いいねしたりいいね解除させてもらうで。"
-  following-write: "フォローしたりフォロー解除させてもらうで。"
-  drive-read: "ドライブを見させてもらうで。"
-  drive-write: "ドライブを操作させてもらうで。"
-  notification-read: "通知を見させてもらうで。"
-  notification-write: "通知を操作させてもらうで。"
   cancel: "やめとくわ"
   accept: "アクセスを許可や！"
 auth/views/index.vue:
@@ -188,7 +181,6 @@ auth/views/index.vue:
   error: "セッションが存在してへん。"
   sign-in: "サインインしてや"
 common/views/pages/explore.vue:
-  verified-users: "アメちゃん付きアカウント"
   federated: "連合"
 common/views/components/games/reversi/reversi.vue:
   matching:
@@ -303,18 +295,15 @@ common/views/components/messaging.vue:
   search-user: "ユーザーを探す"
   you: "あんさん"
   no-history: "履歴はあらへんで"
+  user: "ユーザー"
 common/views/components/messaging-room.vue:
-  empty: "このユーザーと話したことはあらへんで"
   no-history: "これより過去の履歴はあらへんで"
-  resize-form: "ドラッグしてフォームの広さを調整"
   new-message: "新しいメッセージがあるで"
-  only-one-file-attached: "メッセージに添付できんのはひとつのファイルのみやで"
 common/views/components/messaging-room.form.vue:
   input-message-here: "ここにメッセージ書いてや"
   send: "送信"
   attach-from-local: "PCからファイルを添付する"
   attach-from-drive: "ドライブからファイルを添付する"
-  only-one-file-attached: "メッセージに添付できんのはひとつのファイルのみやで"
 common/views/components/messaging-room.message.vue:
   is-read: "既読"
   deleted: "このメッセージは削除されたわ"
@@ -485,6 +474,14 @@ common/views/components/profile-editor.vue:
   enter-password: "パスワードを入れてや"
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
+  add-user: "ユーザー増やす"
+common/views/components/user-group-editor.vue:
+  invite: "招待"
+common/views/components/user-lists.vue:
+  user-lists: "リスト"
+  list-name: "リスト名"
+common/views/components/user-groups.vue:
+  invites: "招待"
 common/views/widgets/broadcast.vue:
   fetching: "見てみるわ…"
   no-broadcasts: "お知らせはあらへんで"
@@ -543,6 +540,8 @@ common/views/pages/follow.vue:
   request-pending: "フォローの許し待っとる"
   follow-processing: "今フォロー処理やっとる‥"
   follow-request: "フォロー許してくれや！言うてみる"
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "フォロー許してくれや！言うてみる"
 desktop:
   banner-crop-title: "どこバナーとして出す？"
   banner: "バナー"
@@ -688,7 +687,6 @@ desktop/views/components/post-form.vue:
   posting: "投稿中"
   attach-media-from-local: "PCからメディア持ってくる"
   attach-media-from-drive: "ドライブからメディア持ってくる"
-  attach-cancel: "くっつけるのやめよか"
   create-poll: "アンケートを作成"
   text-remain: "残り{}文字"
   recent-tags: "最近のタグ"
@@ -779,6 +777,9 @@ common/views/components/password-settings.vue:
   enter-new-password-again: "もっぺん入れてや"
   not-match: "パスワードがおうとらん"
   changed: "パスワード変えたわ"
+common/views/components/post-form-attaches.vue:
+  mark-as-sensitive: "見たらあかん感じにしとく"
+  unmark-as-sensitive: "やっぱ見せたるわ"
 desktop/views/components/sub-note-content.vue:
   private: "この投稿は見せられへんわ"
   deleted: "この投稿なんか無くなってもうたわ"
@@ -787,12 +788,9 @@ desktop/views/components/sub-note-content.vue:
 desktop/views/components/settings.tags.vue:
   add: "増やす"
   save: "保存"
-desktop/views/components/taskmanager.vue:
-  title: "タスクマネージャ"
 desktop/views/components/timeline.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あんた宛て"
   messages: "ダイレクト投稿"
@@ -817,14 +815,6 @@ desktop/views/components/ui.header.post.vue:
   post: "新規投稿"
 desktop/views/components/ui.header.search.vue:
   placeholder: "検索"
-desktop/views/components/received-follow-requests-window.vue:
-  title: "フォロー許してくれや！言うてみる"
-  accept: "許す"
-  reject: "許さん"
-desktop/views/components/user-lists-window.vue:
-  title: "リスト"
-  create-list: "新しいリストを作成"
-  list-name: "リスト名"
 desktop/views/components/user-preview.vue:
   notes: "投稿"
   following: "フォロー"
@@ -846,7 +836,6 @@ admin/views/index.vue:
   users: "ユーザー"
   federation: "連合"
   announcements: "知っといてや"
-  hashtags: "ハッシュタグ"
   back-to-misskey: "Misskeyに戻る"
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
@@ -871,6 +860,7 @@ admin/views/instance.vue:
   maintainer-name: "管理者名"
   maintainer-email: "管理者の連絡先"
   drive-config: "ドライブの設定"
+  object-storage-endpoint: "エンドポイント"
   cache-remote-files: "リモートのファイルをキャッシュする"
   cache-remote-files-desc: "この設定を無効にすると、リモートファイルをこっちで保管せずに直接リンク張るようになるで。サーバーのストレージは軽くやろうけど、プライバシー設定で直リンクを向こうにしとるユーザーはファイルが見れへんし、サムネイルが無いから通信量が増えたりするから、普通はオンにしといてな。"
   local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
@@ -879,8 +869,7 @@ admin/views/instance.vue:
   recaptcha-config: "reCAPTCHAの設定"
   recaptcha-info: "reCAPTCHAを有効にするにはreCAPTCHAトークンが要るで。https://www.google.com/recaptcha/intro/ にアクセスしてトークンを取得してな。"
   enable-recaptcha: "reCAPTCHAを有効にする"
-  recaptcha-site-key: "reCAPTCHA site key"
-  recaptcha-secret-key: "reCAPTCHA secret key"
+  recaptcha-preview: "試してみる"
   twitter-integration-config: "Twitter連携の設定"
   twitter-integration-info: "コールバックURLは {url} に設定してや。"
   enable-twitter-integration: "Twitter連携を有効にする"
@@ -907,12 +896,6 @@ admin/views/instance.vue:
   invite: "来てや"
   save: "保存"
   saved: "保存したで！"
-  user-recommendation-config: "このユーザーええで"
-  enable-external-user-recommendation: "外部ユーザーレコメンデーションを使えるようにする"
-  external-user-recommendation-engine: "エンジン"
-  external-user-recommendation-engine-desc: "例: https://vinayaka.distsn.org/cgi-bin/vinayaka-user-match-misskey-api.cgi?{{host}}+{{user}}+{{limit}}+{{offset}}"
-  external-user-recommendation-timeout: "タイムアウト"
-  external-user-recommendation-timeout-desc: "ミリ秒単位 (例: 300000)"
   email-config: "メールサーバーの設定"
   email-config-info: "メールアドレス確認やパスワードリセットの際に使うで。"
   enable-email: "メール配信を有効にする"
@@ -969,7 +952,6 @@ admin/views/users.vue:
     state:
       all: "すべて"
       moderator: "モデレーター"
-      verified: "アメちゃん付きアカウント"
     origin:
       local: "ローカル"
 admin/views/emoji.vue:
@@ -1008,6 +990,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "1時間ごと"
     day: "1日ごと"
+  blocked-hosts: "ブロック"
 desktop/views/pages/welcome.vue:
   about: "もうちょい……"
   timeline: "タイムライン"
@@ -1084,8 +1067,6 @@ mobile/views/components/drive.vue:
   file-count: "ファイル"
   nothing-in-drive: "ドライブには何もあらへんで。"
   folder-is-empty: "このフォルダ何もないわ"
-  prompt: "何すんの？(数字を入れてや): <1 → ファイルをアップロード | 2 → ファイルをURLでアップロード | 3 → フォルダ作成 | 4 → このフォルダ名を変更 | 5 → このフォルダを移動 | 6 → このフォルダを削除>"
-  deletion-alert: "フォルダの削除は未実装やねん...。堪忍な！"
   folder-name: "フォルダー名"
   url-prompt: "このURLのファイルをアップロードしたいねん"
   uploading: "アップロードをリクエストしたで。アップロードが完了するまで時間がかかるかも分からん、知らんけど。"
@@ -1141,7 +1122,7 @@ mobile/views/components/post-form.vue:
   quote-placeholder: "この投稿を持ってくる(オプション)"
   reply-placeholder: "この投稿への返信..."
   cw-placeholder: "内容への注釈 (オプション)"
-  location-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
+  geolocation-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
   error: "エラー"
   username-prompt: "ユーザー名を入力してや"
 mobile/views/components/sub-note-content.vue:
@@ -1162,9 +1143,10 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   admin: "管理"
   about: "Misskeyってなんや？"
-mobile/views/pages/user-lists.vue:
-  title: "リスト"
-  enter-list-name: "リスト名を入力してや"
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "ファイル上げる"
+    create-folder: "フォルダー作る"
 mobile/views/pages/signup.vue:
   lets-start: "📦 始めようや"
 mobile/views/pages/followers.vue:
@@ -1174,7 +1156,6 @@ mobile/views/pages/following.vue:
 mobile/views/pages/home.vue:
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
   global: "グローバル"
   mentions: "あんた宛て"
   messages: "ダイレクト投稿"
@@ -1188,10 +1169,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "やっとること"
 mobile/views/pages/share.vue:
   share-with: "{name}で共有"
-mobile/views/pages/received-follow-requests.vue:
-  title: "フォロー許してくれや！"
-  accept: "許す"
-  reject: "許さん"
 mobile/views/pages/note.vue:
   title: "投稿"
   prev: "前のやつ"
@@ -1229,7 +1206,6 @@ deck:
   widgets: "ウィジェット"
   home: "ホーム"
   local: "ローカル"
-  hybrid: "ソーシャル"
   hashtag: "ハッシュタグ"
   global: "グローバル"
   mentions: "あんた宛て"
@@ -1260,25 +1236,6 @@ deck/deck.user-column.vue:
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
   edit-this-page-on-github-link: "このページをGitHubで編集"
-  api:
-    entities:
-      properties: "プロパティ"
-    endpoints:
-      params: "パラメータ"
-      no-params: "パラメータはありません"
-      res: "レスポンス"
-      require-credential: "このエンドポイントは認証情報が必須です。"
-      require-permission: "このエンドポイントは{permission}の権限を必要とします。"
-      has-limit: "レートリミットがあります。"
-      duration-limit: "直近{duration}ミリ秒の間のこのエンドポイントへのリクエスト数の合計が{max}を超える場合はリクエストできません。"
-      min-interval-limit: "前回のリクエストから{interval}ミリ秒経っていない場合はリクエストできません。"
-      show-src: "このエンドポイントのソースコードも閲覧できます。"
-      show-src-link: "コードをGitHubで見る"
-      generated: "このドキュメントはAPI定義に基づき自動生成されています。"
-    props:
-      name: "名前"
-      type: "型"
-      description: "説明"
 dev/views/index.vue:
   manage-apps: "アプリの管理"
 dev/views/apps.vue:
@@ -1289,21 +1246,32 @@ dev/views/new-app.vue:
   create-app: "アプリケーション作る"
   app-name: "アプリケーションの名前"
   app-name-desc: "あんたのアプリの名前。"
-  app-name-ex: "ex) 関西ミスキー保安協会"
   app-overview: "このアプリどんなん？"
-  app-desc: "あんたのアプリどんなんか教えて"
-  app-desc-ex: "ex) 関西人なら誰でも口ずさめるこのCMがついにMisskeyへ。"
   callback-url: "コールバックURL (無くてもええで)"
   callback-url-desc: "ユーザーが認証フォームで認証した後どこに連れてくかを設定できるで"
   authority: "権限"
   authority-desc: "ここにチェックした機能しかAPIからアクセスできひんから気ぃつけてな"
   authority-warning: "アプリ作った後でも変えれるけど、新しいやつ追加したらそん時関連付いてるユーザーキーは全部ほかされるで。"
-  account-read: "アカウントの情報見せて"
-  account-write: "アカウントの情報いじらせて"
-  note-write: "投稿させて"
-  reaction-write: "リアクションしたりそれをキャンセルさせて"
-  following-write: "フォローとかフォロー解除させて"
-  drive-read: "ドライブ見せて"
-  drive-write: "ドライブいじらせて"
-  notification-read: "通知見せて"
-  notification-write: "通知いじらせて"
+pages:
+  like: "ええやん"
+  blocks:
+    image: "画像"
+    post: "投稿フォーム"
+  script:
+    categories:
+      random: "いんじゃんほい"
+      list: "リスト"
+    blocks:
+      _join:
+        arg1: "リスト"
+      random: "いんじゃんほい"
+      _randomPick:
+        arg1: "リスト"
+      _dailyRandomPick:
+        arg1: "リスト"
+      _seedRandomPick:
+        arg2: "リスト"
+      _pick:
+        arg1: "リスト"
+    types:
+      array: "リスト"

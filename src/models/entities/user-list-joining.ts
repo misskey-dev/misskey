@@ -4,6 +4,7 @@ import { UserList } from './user-list';
 import { id } from '../id';
 
 @Entity()
+@Index(['userId', 'userListId'], { unique: true })
 export class UserListJoining {
 	@PrimaryColumn(id())
 	public id: string;

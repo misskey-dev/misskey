@@ -12,7 +12,7 @@ import { queueLogger } from './logger';
 import { DriveFile } from '../models/entities/drive-file';
 
 function initializeQueue(name: string) {
-	return new Queue(name, config.redis != null ? {
+	return new Queue(name, {
 		redis: {
 			port: config.redis.port,
 			host: config.redis.host,
@@ -20,7 +20,15 @@ function initializeQueue(name: string) {
 			db: config.redis.db || 0,
 		},
 		prefix: config.redis.prefix ? `${config.redis.prefix}:queue` : 'queue'
-	} : null);
+	});
+}
+
+function renderError(e: Error): any {
+	return {
+		stack: e.stack,
+		message: e.message,
+		name: e.name
+	};
 }
 
 export const deliverQueue = initializeQueue('deliver');
@@ -34,16 +42,16 @@ deliverQueue
 	.on('waiting', (jobId) => deliverLogger.debug(`waiting id=${jobId}`))
 	.on('active', (job) => deliverLogger.debug(`active id=${job.id} to=${job.data.to}`))
 	.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) id=${job.id} to=${job.data.to}`))
-	.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) id=${job.id} to=${job.data.to}`))
-	.on('error', (error) => deliverLogger.error(`error ${error}`))
+	.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) id=${job.id} to=${job.data.to}`, { job, e: renderError(err) }))
+	.on('error', (job: any, err: Error) => deliverLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => deliverLogger.warn(`stalled id=${job.id} to=${job.data.to}`));
 
 inboxQueue
 	.on('waiting', (jobId) => inboxLogger.debug(`waiting id=${jobId}`))
 	.on('active', (job) => inboxLogger.debug(`active id=${job.id}`))
 	.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) id=${job.id}`))
-	.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`))
-	.on('error', (error) => inboxLogger.error(`error ${error}`))
+	.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`, { job, e: renderError(err) }))
+	.on('error', (job: any, err: Error) => inboxLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => inboxLogger.warn(`stalled id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`));
 
 export function deliver(user: ILocalUser, content: any, to: any) {

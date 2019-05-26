@@ -9,7 +9,7 @@
 			<div class="content" v-if="!message.isDeleted">
 				<mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
-					<a :href="message.file.url" target="_blank" :title="message.file.name">
+					<a :href="message.file.url" rel="noopener" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"
 							:style="{ backgroundColor: message.file.properties.avgColor || 'transparent' }"/>
 						<p v-else>{{ message.file.name }}</p>
@@ -23,7 +23,12 @@
 		<div></div>
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
-			<span class="read" v-if="isMe && message.isRead">{{ $t('is-read') }}</span>
+			<template v-if="isGroup">
+				<span class="read" v-if="message.reads.length > 0">{{ $t('is-read') }} {{ message.reads.length }}</span>
+			</template>
+			<template v-else>
+				<span class="read" v-if="isMe && message.isRead">{{ $t('is-read') }}</span>
+			</template>
 			<mk-time :time="message.createdAt"/>
 			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
 		</footer>
@@ -42,6 +47,9 @@ export default Vue.extend({
 	props: {
 		message: {
 			required: true
+		},
+		isGroup: {
+			required: false
 		}
 	},
 	computed: {

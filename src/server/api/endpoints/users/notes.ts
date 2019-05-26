@@ -8,6 +8,7 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { Brackets } from 'typeorm';
+import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -119,10 +120,13 @@ export const meta = {
 	},
 
 	res: {
-		type: 'array',
+		type: types.array,
+		optional: bool.false, nullable: bool.false,
 		items: {
-			type: 'Note',
-		},
+			type: types.object,
+			optional: bool.false, nullable: bool.false,
+			ref: 'Note',
+		}
 	},
 
 	errors: {
@@ -142,7 +146,7 @@ export default define(meta, async (ps, me) => {
 	});
 
 	//#region Construct query
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.userId = :userId', { userId: user.id })
 		.leftJoinAndSelect('note.user', 'user');
 
@@ -153,11 +157,11 @@ export default define(meta, async (ps, me) => {
 		query.andWhere('note.fileIds != \'{}\'');
 	}
 
-	if (ps.fileType) {
+	if (ps.fileType != null) {
 		query.andWhere('note.fileIds != \'{}\'');
 		query.andWhere(new Brackets(qb => {
-			for (const type of ps.fileType) {
-				const i = ps.fileType.indexOf(type);
+			for (const type of ps.fileType!) {
+				const i = ps.fileType!.indexOf(type);
 				qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
 			}
 		}));
@@ -194,7 +198,7 @@ export default define(meta, async (ps, me) => {
 
 	//#endregion
 
-	const timeline = await query.take(ps.limit).getMany();
+	const timeline = await query.take(ps.limit!).getMany();
 
-	return await Notes.packMany(timeline, user);
+	return await Notes.packMany(timeline, me);
 });
