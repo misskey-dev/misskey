@@ -807,6 +807,7 @@ admin/views/announcements.vue:
   saved: "Gespeichert"
 admin/views/federation.vue:
   status: "Status"
+  save: "Speichern"
 desktop/views/pages/note.vue:
   prev: "Vorheriger Kommentar"
   next: "Nächster Kommentar"
