@@ -1234,6 +1234,15 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "キュー"
   remove-all-jobs: "すべてのジョブをクリア"
+  jobs: "ジョブ"
+  queue: "キュー"
+  domains:
+    deliver: "配送"
+    inbox: "受信"
+  state: "状態"
+  states:
+    delayed: "遅延"
+  result-is-truncated: "結果は省略されています"
 
 admin/views/logs.vue:
   logs: "ログ"
