@@ -1239,12 +1239,13 @@ admin/views/logs.vue:
   logs: "ログ"
   domain: "ドメイン"
   level: "レベル"
-  levels.all: "全て"
-  levels.info: "情報"
-  levels.success: "成功"
-  levels.warning: "警告"
-  levels.error: "エラー"
-  levels.debug: "デバッグ"
+  levels:
+    all: "全て"
+    info: "情報"
+    success: "成功"
+    warning: "警告"
+    error: "エラー"
+    debug: "デバッグ"
   delete-all: "全て削除"
 
 admin/views/abuse.vue:
