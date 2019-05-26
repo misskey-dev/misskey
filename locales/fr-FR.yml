@@ -1083,6 +1083,11 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "File d'attente"
   remove-all-jobs: "Enlever toutes les tâches en attente"
+admin/views/logs.vue:
+  logs: "Journaux"
+  levels:
+    info: "Informations"
+    error: "Erreur"
 admin/views/abuse.vue:
   title: "Abus"
   target: "Cible"
