@@ -1083,6 +1083,8 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "File d'attente"
   remove-all-jobs: "Enlever toutes les tâches en attente"
+  queue: "File d'attente"
+  state: "État"
 admin/views/logs.vue:
   logs: "Journaux"
   levels:
@@ -1353,6 +1355,7 @@ admin/views/federation.vue:
     hour: "Par heure"
     day: "Par jour"
   blocked-hosts: "En cours blocage"
+  save: "Enregistrer"
 desktop/views/pages/welcome.vue:
   about: "à propos"
   timeline: "Fil d’actualité"
