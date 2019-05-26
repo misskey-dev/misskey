@@ -370,6 +370,7 @@ admin/views/federation.vue:
   status: "Status"
   states:
     all: "Alle"
+  save: "Lagre"
 desktop/views/pages/welcome.vue:
   announcements: "Kunngjøringer"
   info: "Informasjon"
