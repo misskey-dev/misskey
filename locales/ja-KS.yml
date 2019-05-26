@@ -995,6 +995,7 @@ admin/views/federation.vue:
     hour: "1時間ごと"
     day: "1日ごと"
   blocked-hosts: "ブロック"
+  save: "保存"
 desktop/views/pages/welcome.vue:
   about: "もうちょい……"
   timeline: "タイムライン"
