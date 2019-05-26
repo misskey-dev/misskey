@@ -33,7 +33,6 @@
 		"@fortawesome/free-solid-svg-icons": "5.7.2",
 		"@fortawesome/vue-fontawesome": "0.1.5",
 		"@koa/cors": "2.2.3",
-		"@prezzemolo/zip": "0.0.3",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.5.11",
 		"@types/dateformat": "3.0.0",
