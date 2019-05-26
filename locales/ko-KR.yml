@@ -1110,13 +1110,27 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "큐"
   remove-all-jobs: "모든 작업 제거"
+  jobs: "작업"
   queue: "큐"
+  domains:
+    deliver: "전송"
+    inbox: "수신"
   state: "상태"
+  states:
+    delayed: "지연"
+  result-is-truncated: "결과는 생략되었습니다"
 admin/views/logs.vue:
   logs: "로그"
+  domain: "도메인"
+  level: "수준"
   levels:
+    all: "전체"
     info: "정보"
+    success: "성공"
+    warning: "경고"
     error: "오류"
+    debug: "디버그"
+  delete-all: "모두 삭제"
 admin/views/abuse.vue:
   title: "스팸 신고"
   target: "대상"
