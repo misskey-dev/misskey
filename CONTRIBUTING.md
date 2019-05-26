@@ -3,8 +3,10 @@
 
 ## Issues
 Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
-Before creating a new issue, please search existing issues to avoid duplication.
-If you find the existing issue, please add your reaction or comment to the issue.
+
+* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
+* If you have multiple independent issues, please submit them separately.
+
 
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
@@ -19,16 +21,16 @@ If you can't find the language you want to contribute with, please open an issue
 Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 
 ## Documentation
-* Documents for contributors are located in `/docs`.
-* Documents for instance admins are located in `/docs`.
-* Documents for end users are located in `src/docs`.
+* Documents for contributors are located in [`/docs`](/docs).
+* Documents for instance admins are located in [`/docs`](/docs).
+* Documents for end users are located in [`/src/docs`](/src/docs).
 
 ## Test
-* Test codes are located in `/test`.
+* Test codes are located in [`/test`](/test).
 
 ## Continuous integration
 Misskey uses CircleCI for automated test.
-Configuration files are located in `/.circleci`.
+Configuration files are located in [`/.circleci`](/.circleci).
 
 ## Glossary
 ### AP
