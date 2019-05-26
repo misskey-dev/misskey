@@ -1106,6 +1106,11 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Kø"
   remove-all-jobs: "Ryd alle job køer"
+admin/views/logs.vue:
+  logs: "Logs"
+  levels:
+    info: "Information"
+    error: "Fejl"
 admin/views/abuse.vue:
   title: "Misbrug"
   target: "Mål"
