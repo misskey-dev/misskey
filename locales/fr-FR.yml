@@ -683,8 +683,10 @@ common/views/components/user-list-editor.vue:
   deleted: "Supprimé"
   add-user: "Ajouter un utilisateur"
 common/views/components/user-group-editor.vue:
+  users: "Membres"
   rename: "Renommer le groupe"
   delete: "Supprimer le groupe"
+  remove-user: "Enlever un utilisateur de ce groupe"
   deleted: "Supprimé"
   invite: "Inviter"
   invited: "Invitation envoyée avec succès"
