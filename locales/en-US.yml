@@ -719,7 +719,7 @@ common/views/components/user-lists.vue:
   create-list: "Create a list"
   list-name: "List name"
 common/views/components/user-groups.vue:
-  user-groups: "Group"
+  user-groups: "Groups"
   create-group: "Create a group"
   group-name: "Group name"
   owned-groups: "My groups"
@@ -1063,7 +1063,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Your profile"
   lists: "Lists"
-  groups: "Group"
+  groups: "Groups"
   follow-requests: "Follow requests"
   admin: "Admin"
 desktop/views/components/ui.header.nav.vue:
@@ -1576,7 +1576,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "Follow requests"
   search: "Search"
   user-lists: "Lists"
-  user-groups: "Group"
+  user-groups: "Groups"
   widgets: "Widgets"
   game: "Games"
   admin: "Admin"
@@ -1916,6 +1916,7 @@ pages:
         arg2: "Lists"
       _DRPWPM:
         arg1: "List of text"
+      pick: "Select from list"
       _pick:
         arg1: "Lists"
         arg2: "Position"
