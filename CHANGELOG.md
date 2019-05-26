@@ -17,43 +17,6 @@ npm i -g ts-node
 npm run migrate
 ```
 
-How to migrate to v11 from v10
-------------------------------
-### 移行の注意点
-**以下のデータは引き継がれません**
-* 通知
-* リモートの投稿
-* リバーシの対局
-
-### 手順
-1. v11をインストールしたい場所に syuilo/misskey をクローン
-2. config を設定する
-	* PostgreSQL(`db`)の設定とは別に、v10からMongoDBの設定をコピペしてくる(例は下にあります)
-	* `id`の設定を`meid`または`objectid`にする
-
-``` yml
-db:
-  host: localhost
-  port: 5432
-  db: misskey
-  user: x
-  pass: x
-
-mongodb:
-  user: x
-  pass: x
-  host: localhost
-  port: 27017
-  db: misskey
-```
-3. migration ブランチに切り替え
-4. `npm i`
-5. `npm run build`
-6. `npm run init`
-7. `npm run migrate`
-8. master ブランチに戻す
-9. enjoy
-
 11.19.0 (2019/05/25)
 --------------------
 ### ✨Improvements
@@ -497,7 +460,40 @@ mongodb:
   * 依存ライブラリの問題と思わるため、対応が難しい
 
 ### Migration
-coming soon...
+#### 移行の注意点
+**以下のデータは引き継がれません**
+* 通知
+* リモートの投稿
+* リバーシの対局
+
+#### 手順
+1. v11をインストールしたい場所に syuilo/misskey をクローン
+2. config を設定する
+	* PostgreSQL(`db`)の設定とは別に、v10からMongoDBの設定をコピペしてくる(例は下にあります)
+	* `id`の設定を`meid`または`objectid`にする
+
+``` yml
+db:
+  host: localhost
+  port: 5432
+  db: misskey
+  user: x
+  pass: x
+
+mongodb:
+  user: x
+  pass: x
+  host: localhost
+  port: 27017
+  db: misskey
+```
+3. migration ブランチに切り替え
+4. `npm i`
+5. `npm run build`
+6. `npm run init`
+7. `npm run migrate`
+8. master ブランチに戻す
+9. enjoy
 
 10.100.0
 ----------
