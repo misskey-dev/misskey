@@ -899,6 +899,11 @@ admin/views/dashboard.vue:
   instances: "Instance"
   this-instance: "Tato instance"
   federated: "Z fedivesmíru"
+admin/views/logs.vue:
+  logs: "Logy"
+  levels:
+    info: "Informace"
+    error: "Chyba"
 admin/views/abuse.vue:
   details: "Popis"
   remove-report: "Odstranit"
