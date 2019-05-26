@@ -1935,6 +1935,9 @@ pages:
         slots: "Slots"
         arg1: "Output"
       for: "Repeat"
+      _for:
+        arg1: "Count"
+        arg2: "Action"
     thereIsEmptySlot: "Slot {slot} is empty!"
     types:
       string: "Text"
