@@ -328,6 +328,10 @@ admin/views/index.vue:
 admin/views/dashboard.vue:
   notes: "Innlegg"
   drive: "Disk"
+admin/views/logs.vue:
+  levels:
+    info: "Informasjon"
+    error: "Feil"
 admin/views/abuse.vue:
   details: "Detaljer"
   remove-report: "Slett"
