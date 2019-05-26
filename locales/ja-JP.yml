@@ -1541,6 +1541,7 @@ admin/views/federation.vue:
     day: "1日ごと"
   blocked-hosts: "ブロック"
   blocked-hosts-info: "ブロックしたいホストを改行で区切って記述します。"
+  save: "保存"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
