@@ -1110,6 +1110,11 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "큐"
   remove-all-jobs: "모든 작업 제거"
+admin/views/logs.vue:
+  logs: "로그"
+  levels:
+    info: "정보"
+    error: "오류"
 admin/views/abuse.vue:
   title: "스팸 신고"
   target: "대상"
