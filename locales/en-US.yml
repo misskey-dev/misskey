@@ -1109,6 +1109,8 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Queue"
   remove-all-jobs: "Clear all queued jobs"
+  queue: "Queue"
+  state: "Sort"
 admin/views/logs.vue:
   logs: "Logs"
   levels:
@@ -1398,6 +1400,7 @@ admin/views/federation.vue:
     hour: "Hourly"
     day: "Daily"
   blocked-hosts: "Blocking"
+  save: "Save"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   timeline: "Timeline"
