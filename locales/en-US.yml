@@ -1109,6 +1109,11 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Queue"
   remove-all-jobs: "Clear all queued jobs"
+admin/views/logs.vue:
+  logs: "Logs"
+  levels:
+    info: "Information"
+    error: "Error"
 admin/views/abuse.vue:
   title: "Abuse"
   target: "Target"
