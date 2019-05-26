@@ -1597,7 +1597,7 @@ deck:
   remove: "Supprimer la colonne"
   add-column: "Ajouter une colonne"
   rename: "Renommer"
-  stack-left: "Vers la gauche"
+  stack-left: "Empiler à gauche"
   pop-right: "Vers la droite"
   disabled-timeline:
     title: "Le fil été désactivé"
