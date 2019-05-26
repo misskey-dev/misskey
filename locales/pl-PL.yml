@@ -862,6 +862,10 @@ admin/views/dashboard.vue:
   notes: "Wpisy"
   drive: "Dysk"
   instances: "Instancja"
+admin/views/logs.vue:
+  levels:
+    info: "Informacje"
+    error: "Błąd"
 admin/views/abuse.vue:
   details: "Szczegóły"
   remove-report: "Usuń"
