@@ -21,16 +21,16 @@ If you can't find the language you want to contribute with, please open an issue
 Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 
 ## Documentation
-* Documents for contributors are located in `/docs`.
-* Documents for instance admins are located in `/docs`.
-* Documents for end users are located in `src/docs`.
+* Documents for contributors are located in [`/docs`](/docs).
+* Documents for instance admins are located in [`/docs`](/docs).
+* Documents for end users are located in [`/src/docs`](/src/docs).
 
 ## Test
-* Test codes are located in `/test`.
+* Test codes are located in [`/test`](/test).
 
 ## Continuous integration
 Misskey uses CircleCI for automated test.
-Configuration files are located in `/.circleci`.
+Configuration files are located in [`/.circleci`](/.circleci).
 
 ## Glossary
 ### AP
