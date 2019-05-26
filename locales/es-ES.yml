@@ -921,6 +921,7 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Cola"
   remove-all-jobs: "Limpiar todos los trabajos pendientes"
+  queue: "Cola"
 admin/views/logs.vue:
   logs: "Registros"
 admin/views/abuse.vue:
@@ -1002,6 +1003,7 @@ admin/views/federation.vue:
     hour: "Por hora"
     day: "Por día"
   blocked-hosts: "Bloquear"
+  save: "Guardar"
 desktop/views/pages/selectdrive.vue:
   cancel: "Cancelar"
 desktop/views/pages/user-list.users.vue:
