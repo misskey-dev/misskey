@@ -17,20 +17,15 @@ import Progress from '../../../common/scripts/loading';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/tag.vue'),
-	data() {
-		return {
-			pagination: {
+	computed: {
+		pagination() {
+			return {
 				endpoint: 'notes/search-by-tag',
 				limit: 20,
 				params: {
 					tag: this.$route.params.tag
 				}
-			}
-		};
-	},
-	watch: {
-		$route() {
-			this.$refs.timeline.reload();
+			};
 		}
 	},
 	mounted() {
