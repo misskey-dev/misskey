@@ -39,7 +39,6 @@
 		"@types/dateformat": "3.0.0",
 		"@types/deep-equal": "1.0.1",
 		"@types/double-ended-queue": "2.1.0",
-		"@types/file-type": "10.9.1",
 		"@types/gulp": "4.0.6",
 		"@types/gulp-mocha": "0.0.32",
 		"@types/gulp-rename": "0.0.33",
