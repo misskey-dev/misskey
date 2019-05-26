@@ -660,6 +660,9 @@ common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
 common/views/pages/not-found.vue:
   page-not-found: "Stránka nenalezena"
+common/views/pages/follow.vue:
+  following: "Sledování"
+  follow: "Sledovat"
 common/views/pages/follow-requests.vue:
   accept: "Přijmout"
   reject: "Odmítnout"
@@ -1037,6 +1040,7 @@ admin/views/federation.vue:
   host: "Hostitel"
   notes: "Poznámky"
   users: "Uživatelé"
+  following: "Sledování"
   caught-at: "Vytvořeno"
   status: "Status"
   latest-request-received-at: "Poslední požadavek přijat"
@@ -1094,6 +1098,8 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "Žádné obrázky"
 desktop/views/pages/user/user.header.vue:
   posts: "Poznámky"
+  following: "Sledovaní"
+  followers: "Sledující"
   month: "Po"
   day: "Ne"
 desktop/views/widgets/notifications.vue:
@@ -1122,6 +1128,7 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/media-video.vue:
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/follow-button.vue:
+  following: "Sledování"
   follow-processing: "Zpracovávám"
 mobile/views/components/note.vue:
   private: "Tento příspěvek je soukromý"
