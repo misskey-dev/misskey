@@ -14,6 +14,10 @@
 			<ui-button @click="show()"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 			<ui-textarea v-if="file" :value="file | json5" readonly tall style="margin-top:16px;"></ui-textarea>
 		</section>
+		<section>
+			<ui-button @click="cleanUp()"><fa :icon="faTrashAlt"/> {{ $t('clean-up') }}</ui-button>
+			<ui-button @click="cleanRemoteFiles()"><fa :icon="faTrashAlt"/> {{ $t('clean-remote-files') }}</ui-button>
+		</section>
 	</ui-card>
 
 	<ui-card>
@@ -227,6 +231,29 @@ export default Vue.extend({
 				});
 			});
 		},
+
+		cleanRemoteFiles() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('clean-remote-files-are-you-sure'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+				this.$root.api('admin/drive/clean-remote-files');
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+			});
+		},
+
+		cleanUp() {
+			this.$root.api('admin/drive/cleanup');
+			this.$root.dialog({
+				type: 'success',
+				splash: true
+			});
+		}
 	}
 });
 </script>

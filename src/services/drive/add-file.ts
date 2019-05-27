@@ -7,7 +7,7 @@ import * as uuid from 'uuid';
 import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
-import delFile from './delete-file';
+import { deleteFile } from './delete-file';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
@@ -233,7 +233,7 @@ async function deleteOldFile(user: IRemoteUser) {
 	const oldFile = await q.getOne();
 
 	if (oldFile) {
-		delFile(oldFile, true);
+		deleteFile(oldFile, true);
 	}
 }
 

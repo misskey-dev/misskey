@@ -9,7 +9,7 @@
 	</blockquote>
 </div>
 <div v-else class="mk-url-preview">
-	<component :is="self ? 'router-link' : 'a'" :class="{ mini: narrow, compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="self ? null : '_blank'" :title="url" v-if="!fetching">
+	<component :is="hasRoute ? 'router-link' : 'a'" :class="{ mini: narrow, compact }" :[attr]="hasRoute ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
 			<button v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enable-player')"><fa :icon="['far', 'play-circle']"/></button>
 		</div>
@@ -61,7 +61,13 @@ export default Vue.extend({
 	},
 
 	data() {
+		const isSelf = this.url.startsWith(local);
+		const hasRoute =
+			this.url.substr(local.length).startsWith('/@') ||
+			this.url.substr(local.length).startsWith('/notes/') ||
+			this.url.substr(local.length).startsWith('/pages/');
 		return {
+			local,
 			fetching: true,
 			title: null,
 			description: null,
@@ -75,9 +81,10 @@ export default Vue.extend({
 			},
 			tweetUrl: null,
 			playerEnabled: false,
-			local,
-			self: this.url.startsWith(local),
-			attr: this.url.startsWith(local) ? 'to' : 'href'
+			self: isSelf,
+			hasRoute: hasRoute,
+			attr: hasRoute ? 'to' : 'href',
+			target: hasRoute ? null : '_blank'
 		};
 	},
 

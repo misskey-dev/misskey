@@ -101,6 +101,34 @@ common:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
     explore: "ユーザーを探索する"
 
+  post-form:
+    attach-location-information: "位置情報を添付する"
+    hide-contents: "内容を隠す"
+    reply-placeholder: "この投稿への返信..."
+    quote-placeholder: "この投稿を引用..."
+    option-quote-placeholder: "この投稿を引用... (オプション)"
+    quote-attached: "引用付き"
+    quote-question: "引用として添付しますか？"
+    submit: "投稿"
+    reply: "返信"
+    renote: "Renote"
+    posting: "投稿中"
+    attach-media-from-local: "PCからメディアを添付"
+    attach-media-from-drive: "ドライブからメディアを添付"
+    insert-a-kao: "v('ω')v"
+    create-poll: "アンケートを作成"
+    text-remain: "残り{}文字"
+    recent-tags: "最近"
+    local-only-message: "この投稿はローカルにのみ公開されます"
+    click-to-tagging: "クリックでタグ付け"
+    visibility: "公開範囲"
+    geolocation-alert: "お使いの端末は位置情報に対応していません"
+    error: "エラー"
+    enter-username: "ユーザー名を入力してください"
+    add-visible-user: "ユーザーを追加"
+    cw-placeholder: "内容への注釈 (オプション)"
+    username-prompt: "ユーザー名を入力してください"
+
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -1017,34 +1045,12 @@ desktop/views/components/notifications.vue:
   empty: "ありません！"
 
 desktop/views/components/post-form.vue:
-  add-visible-user: "+ユーザーを追加"
-  attach-location-information: "位置情報を添付する"
-  hide-contents: "内容を隠す"
-  reply-placeholder: "この投稿への返信..."
-  quote-placeholder: "この投稿を引用..."
-  submit: "投稿"
-  reply: "返信"
-  renote: "Renote"
   posted: "投稿しました！"
   replied: "返信しました！"
   reposted: "Renoteしました！"
   note-failed: "投稿に失敗しました"
   reply-failed: "返信に失敗しました"
   renote-failed: "Renoteに失敗しました"
-  posting: "投稿中"
-  attach-media-from-local: "PCからメディアを添付"
-  attach-media-from-drive: "ドライブからメディアを添付"
-  insert-a-kao: "v('ω')v"
-  create-poll: "アンケートを作成"
-  text-remain: "残り{}文字"
-  recent-tags: "最近"
-  local-only-message: "この投稿はローカルにのみ公開されます"
-  click-to-tagging: "クリックでタグ付け"
-  visibility: "公開範囲"
-  geolocation-alert: "お使いの端末は位置情報に対応していません"
-  error: "エラー"
-  enter-username: "ユーザー名を入力してください"
-  annotations: "内容への注釈 (オプション)"
 
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
@@ -1234,6 +1240,33 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "キュー"
   remove-all-jobs: "すべてのジョブをクリア"
+  jobs: "ジョブ"
+  queue: "キュー"
+  domains:
+    deliver: "配送"
+    inbox: "受信"
+    db: "データベース"
+    objectStorage: "オブジェクトストレージ"
+  state: "状態"
+  states:
+    active: "処理中"
+    delayed: "予約済み"
+    waiting: "順番待ち"
+  result-is-truncated: "結果は省略されています"
+  other-queues: "その他のキュー"
+
+admin/views/logs.vue:
+  logs: "ログ"
+  domain: "ドメイン"
+  level: "レベル"
+  levels:
+    all: "全て"
+    info: "情報"
+    success: "成功"
+    warning: "警告"
+    error: "エラー"
+    debug: "デバッグ"
+  delete-all: "全て削除"
 
 admin/views/abuse.vue:
   title: "スパム報告"
@@ -1389,6 +1422,9 @@ admin/views/drive.vue:
   unmark-as-sensitive: "閲覧注意を解除"
   marked-as-sensitive: "閲覧注意に設定しました"
   unmarked-as-sensitive: "閲覧注意を解除しました"
+  clean-remote-files: "リモートファイルのキャッシュを削除"
+  clean-remote-files-are-you-sure: "すべてのリモートファイルのキャッシュを削除してもよろしいですか？"
+  clean-up: "クリーンアップ"
 
 admin/views/users.vue:
   operation: "操作"
@@ -1541,6 +1577,7 @@ admin/views/federation.vue:
     day: "1日ごと"
   blocked-hosts: "ブロック"
   blocked-hosts-info: "ブロックしたいホストを改行で区切って記述します。"
+  save: "保存"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."
@@ -1702,18 +1739,6 @@ mobile/views/components/note-sub.vue:
 
 mobile/views/components/notifications.vue:
   empty: "ありません！"
-
-mobile/views/components/post-form.vue:
-  add-visible-user: "ユーザーを追加"
-  submit: "投稿"
-  reply: "返信"
-  renote: "Renote"
-  quote-placeholder: "この投稿を引用... (オプション)"
-  reply-placeholder: "この投稿への返信..."
-  cw-placeholder: "内容への注釈 (オプション)"
-  geolocation-alert: "お使いの端末は位置情報に対応していません"
-  error: "エラー"
-  username-prompt: "ユーザー名を入力してください"
 
 mobile/views/components/sub-note-content.vue:
   private: "この投稿は非公開です"

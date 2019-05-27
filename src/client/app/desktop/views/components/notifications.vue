@@ -104,18 +104,18 @@
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
 							</p>
-							<a class="note-preview" :href="notification.note | notePage" :title="getNoteSummary(notification.note)">
+							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
-							</a>
+							</router-link>
 						</div>
 					</template>
 
 					<template v-if="notification.type == 'pollVote'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p><fa icon="chart-pie"/><a :href="notification.user | userPage" v-user-preview="notification.user.id">
+							<p><fa icon="chart-pie"/><router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
 								<mk-user-name :user="notification.user"/>
-							</a></p>
+							</router-link></p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>
 									<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>

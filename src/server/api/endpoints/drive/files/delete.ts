@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import del from '../../../../../services/drive/delete-file';
+import { deleteFile } from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
@@ -57,7 +57,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Delete
-	await del(file);
+	await deleteFile(file);
 
 	// Publish fileDeleted event
 	publishDriveStream(user.id, 'fileDeleted', file.id);

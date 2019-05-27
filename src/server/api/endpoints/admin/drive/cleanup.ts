@@ -1,4 +1,4 @@
-import $ from 'cafy';
+import { IsNull } from 'typeorm';
 import define from '../../../define';
 import { deleteFile } from '../../../../../services/drive/delete-file';
 import { DriveFiles } from '../../../../../models';
@@ -8,17 +8,11 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-
-	params: {
-		host: {
-			validator: $.str
-		}
-	}
 };
 
 export default define(meta, async (ps, me) => {
 	const files = await DriveFiles.find({
-		userHost: ps.host
+		userId: IsNull()
 	});
 
 	for (const file of files) {
