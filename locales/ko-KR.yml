@@ -96,6 +96,8 @@ common:
     follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
     explore: "사용자 탐색"
   post-form:
+    attach-location-information: "위치 정보를 첨부합니다"
+    hide-contents: "내용 숨기기"
     submit: "글쓰기"
     reply: "답글 달기"
     renote: "리노트"
