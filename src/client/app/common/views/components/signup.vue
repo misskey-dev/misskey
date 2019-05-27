@@ -43,7 +43,7 @@
 			</i18n>
 		</ui-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<ui-button type="submit" :disabled="!(meta.ToSUrl ? ToSAgreement : true)">{{ $t('create') }}</ui-button>
+		<ui-button type="submit" :disabled="!(meta.ToSUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'">{{ $t('create') }}</ui-button>
 	</template>
 </form>
 </template>
