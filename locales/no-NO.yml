@@ -39,6 +39,10 @@ common:
   favorites: "Merket som favoritt"
   permissions:
     "write:votes": "Stem"
+  post-form:
+    submit: "Innlegg"
+    reply: "Svar"
+    error: "Feil"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -261,13 +265,6 @@ desktop/views/components/note.vue:
   detail: "Detaljer"
 desktop/views/components/notes.vue:
   retry: "Prøv på nytt"
-desktop/views/components/post-form.vue:
-  submit: "Send"
-  reply: "Svar"
-  posting: "Publiserer"
-  recent-tags: "Nylig"
-  visibility: "Synlighet"
-  error: "Feil"
 desktop/views/components/post-form-window.vue:
   note: "Nytt innlegg"
   reply: "Svar"
@@ -442,10 +439,6 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "katt"
-mobile/views/components/post-form.vue:
-  submit: "Send"
-  reply: "Svar"
-  error: "Feil"
 mobile/views/components/ui.header.vue:
   adjective: "Mr."
 mobile/views/components/ui.nav.vue:
