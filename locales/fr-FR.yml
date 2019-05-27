@@ -110,6 +110,7 @@ common:
     error: "Erreur"
     enter-username: "Saisir un nom d'utilisateur"
     add-visible-user: "Ajouter un utilisateur"
+    cw-placeholder: "Commenter le contenu (optionnel)"
     username-prompt: "Saisir un nom d'utilisateur"
   weekday-short:
     sunday: "D"
@@ -221,6 +222,7 @@ common:
     delete-wallpaper: "Supprimer le fond d'écran"
     post-form-on-timeline: "Afficher le champs de saisie en haut du fil"
     show-clock-on-header: "Afficher l'horloge sur le coté supérieur droit"
+    show-reply-target: "Afficher les réponses"
     timeline: "Fil d’actualité"
     show-my-renotes: "Afficher mes republications dans le fil"
     show-renoted-my-notes: "Afficher les partages de mes propres notes sur le fil"
@@ -1094,6 +1096,10 @@ admin/views/queue.vue:
     deliver: "Délivrées"
     inbox: "Reçues"
   state: "État"
+  states:
+    active: "en cours"
+    delayed: "Programmé"
+    waiting: "En file d'attente"
 admin/views/logs.vue:
   logs: "Journaux"
   domain: "Domaine"
