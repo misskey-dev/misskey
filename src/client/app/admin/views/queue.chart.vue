@@ -176,6 +176,6 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .wptihjuy
 	min-height 200px !important
-	margin 0 -8px -8px -8px
+	margin -8px
 
 </style>

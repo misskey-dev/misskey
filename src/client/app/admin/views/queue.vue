@@ -2,13 +2,27 @@
 <div>
 	<ui-card>
 		<template #title><fa :icon="faChartBar"/> {{ $t('title') }}</template>
-		<section class="wptihjuy">
-			<header><fa :icon="faPaperPlane"/> Deliver</header>
+		<section>
+			<header><fa :icon="faPaperPlane"/> {{ $t('domains.deliver') }}</header>
 			<x-chart v-if="connection" :connection="connection" :limit="chartLimit" type="deliver"/>
 		</section>
-		<section class="wptihjuy">
-			<header><fa :icon="faInbox"/> Inbox</header>
+		<section>
+			<header><fa :icon="faInbox"/> {{ $t('domains.inbox') }}</header>
 			<x-chart v-if="connection" :connection="connection" :limit="chartLimit" type="inbox"/>
+		</section>
+		<section>
+			<details>
+				<summary>{{ $t('other-queues') }}</summary>
+				<section>
+					<header><fa :icon="faDatabase"/> {{ $t('domains.db') }}</header>
+					<x-chart v-if="connection" :connection="connection" :limit="chartLimit" type="db"/>
+				</section>
+				<ui-hr/>
+				<section>
+					<header><fa :icon="faCloud"/> {{ $t('domains.objectStorage') }}</header>
+					<x-chart v-if="connection" :connection="connection" :limit="chartLimit" type="objectStorage"/>
+				</section>
+			</details>
 		</section>
 		<section>
 			<ui-button @click="removeAllJobs">{{ $t('remove-all-jobs') }}</ui-button>
@@ -23,9 +37,13 @@
 					<template #label>{{ $t('queue') }}</template>
 					<option value="deliver">{{ $t('domains.deliver') }}</option>
 					<option value="inbox">{{ $t('domains.inbox') }}</option>
+					<option value="db">{{ $t('domains.db') }}</option>
+					<option value="objectStorage">{{ $t('domains.objectStorage') }}</option>
 				</ui-select>
 				<ui-select v-model="state">
 					<template #label>{{ $t('state') }}</template>
+					<option value="active">{{ $t('states.active') }}</option>
+					<option value="waiting">{{ $t('states.waiting') }}</option>
 					<option value="delayed">{{ $t('states.delayed') }}</option>
 				</ui-select>
 			</ui-horizon-group>
@@ -48,7 +66,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTasks, faInbox } from '@fortawesome/free-solid-svg-icons';
+import { faTasks, faInbox, faDatabase, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faPaperPlane, faChartBar } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../i18n';
 import XChart from './queue.chart.vue';
@@ -68,7 +86,7 @@ export default Vue.extend({
 			jobsLimit: 50,
 			domain: 'deliver',
 			state: 'delayed',
-			faTasks, faPaperPlane, faInbox, faChartBar
+			faTasks, faPaperPlane, faInbox, faChartBar, faDatabase, faCloud
 		};
 	},
 

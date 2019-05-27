@@ -1245,10 +1245,15 @@ admin/views/queue.vue:
   domains:
     deliver: "配送"
     inbox: "受信"
+    db: "データベース"
+    objectStorage: "オブジェクトストレージ"
   state: "状態"
   states:
-    delayed: "遅延"
+    active: "処理中"
+    delayed: "予約済み"
+    waiting: "順番待ち"
   result-is-truncated: "結果は省略されています"
+  other-queues: "その他のキュー"
 
 admin/views/logs.vue:
   logs: "ログ"
