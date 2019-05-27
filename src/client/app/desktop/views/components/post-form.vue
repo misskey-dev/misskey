@@ -18,7 +18,7 @@
 		</div>
 		<div class="with-quote" v-if="quoteId">{{ $t('@.post-form.quote-attached') }}</div>
 		<div class="local-only" v-if="localOnly == true">{{ $t('@.post-form.local-only-message') }}</div>
-		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.annotations')" v-autocomplete="{ model: 'cw' }">
+		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.cw-placeholder')" v-autocomplete="{ model: 'cw' }">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
 				ref="text" v-model="text" :disabled="posting"
