@@ -1417,6 +1417,9 @@ admin/views/drive.vue:
   unmark-as-sensitive: "閲覧注意を解除"
   marked-as-sensitive: "閲覧注意に設定しました"
   unmarked-as-sensitive: "閲覧注意を解除しました"
+  clean-remote-files: "リモートファイルのキャッシュを削除"
+  clean-remote-files-are-you-sure: "すべてのリモートファイルのキャッシュを削除してもよろしいですか？"
+  clean-up: "クリーンアップ"
 
 admin/views/users.vue:
   operation: "操作"

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import del from '../../../../services/drive/delete-file';
+import { deleteFile } from '../../../../services/drive/delete-file';
 import { DriveFiles } from '../../../../models';
 import { ID } from '../../../../misc/cafy-id';
 
@@ -27,6 +27,6 @@ export default define(meta, async (ps, me) => {
 	});
 
 	for (const file of files) {
-		del(file);
+		deleteFile(file);
 	}
 });
