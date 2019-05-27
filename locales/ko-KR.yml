@@ -1121,8 +1121,6 @@ admin/views/queue.vue:
     deliver: "전송"
     inbox: "수신"
   state: "상태"
-  states:
-    delayed: "지연"
   result-is-truncated: "결과는 생략되었습니다"
 admin/views/logs.vue:
   logs: "로그"
