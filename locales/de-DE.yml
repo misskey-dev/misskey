@@ -95,6 +95,11 @@ common:
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Beiträge von Benutzern, denen du folgst, werden in der Zeitleiste angezeigt."
     explore: "Benutzer finden"
+  post-form:
+    reply: "Antworten"
+    renote: "Anmerkung"
+    enter-username: "Bitte gib einen Benutzernamen ein"
+    username-prompt: "Bitte gib einen Benutzernamen ein"
   weekday-short:
     sunday: "So"
     monday: "Mo"
@@ -684,7 +689,7 @@ desktop/views/components/note-detail.vue:
   add-reaction: "Reaktion hinzufügen"
 desktop/views/components/note.vue:
   reply: "Antworten"
-  renote: "Anmerken"
+  renote: "Anmerkung"
   detail: "Details"
   private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
@@ -694,27 +699,12 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "Keine Benachrichtigungen"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Nutzer hinzufügen"
-  hide-contents: "Inhalt verstecken"
-  reply-placeholder: "Antworte auf diese Anmerkung..."
-  quote-placeholder: "Zitiere diese Anmerkung..."
-  submit: "Abschicken"
-  reply: "Antworten"
-  renote: "Anmerken"
   posted: "Gepostet!"
   replied: "Geantwortet!"
   reposted: "Weitergesagt!"
   note-failed: "Anmerkung fehlgeschlagen"
   reply-failed: "Antwort fehlgeschlagen"
   renote-failed: "Anmerkung fehlgeschlagen"
-  posting: "Posting"
-  attach-media-from-local: "Medien von deinem PC hinzufügen"
-  attach-media-from-drive: "Medien von deinem Speicher hinzufügen"
-  create-poll: "Eine Abstimmung erstellen"
-  text-remain: "{} Zeichen verbleibend"
-  visibility: "Sichtbarkeit"
-  error: "Fehler"
-  enter-username: "Bitte gib einen Benutzernamen ein..."
 desktop/views/components/post-form-window.vue:
   note: "Neuer Beitrag"
   reply: "Antworten"
@@ -852,10 +842,6 @@ mobile/views/components/note-detail.vue:
   location: "Ort"
 mobile/views/components/notifications.vue:
   empty: "Keine Benachrichtigungen"
-mobile/views/components/post-form.vue:
-  reply: "Antworten"
-  renote: "Anmerken"
-  reply-placeholder: "Antworte auf diese Anmerkung..."
 mobile/views/components/sub-note-content.vue:
   private: "Dieser Beitrag ist privat"
   deleted: "Dieser Beitrag wurde entfernt"
