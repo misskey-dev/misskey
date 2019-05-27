@@ -1120,8 +1120,15 @@ admin/views/queue.vue:
   domains:
     deliver: "전송"
     inbox: "수신"
+    db: "데이터베이스"
+    objectStorage: "오브젝트 스토리지"
   state: "상태"
+  states:
+    active: "처리중"
+    delayed: "지연됨"
+    waiting: "대기열에 들어감"
   result-is-truncated: "결과는 생략되었습니다"
+  other-queues: "기타 큐"
 admin/views/logs.vue:
   logs: "로그"
   domain: "도메인"
