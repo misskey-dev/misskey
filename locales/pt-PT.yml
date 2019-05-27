@@ -45,6 +45,9 @@ common:
   trash: "Lixo"
   timeline: "Linha do tempo"
   followers: "Seguidores"
+  post-form:
+    enter-username: "Digite o nome de usuário."
+    username-prompt: "Digite o nome de usuário."
   weekday-short:
     sunday: "Dom"
     monday: "Seg"
@@ -89,6 +92,7 @@ common:
   update-available-title: "Atualização disponível"
   update-available: "Uma nova versão de Misskey está disponível ({newer}). A versão atual é {current}. Recarregue a página para atualizar."
   my-token-regenerated: "Seu token foi recriado, portanto você foi deslogado."
+  enter-username: "Digite o nome de usuário."
   reversi:
     drawn: "Empatado"
     my-turn: "Seu turno"
