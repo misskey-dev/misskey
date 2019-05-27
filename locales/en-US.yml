@@ -1102,8 +1102,6 @@ admin/views/queue.vue:
     deliver: "Delivers"
     inbox: "Received"
   state: "Sort"
-  states:
-    delayed: "Delayed"
   result-is-truncated: "Result is truncated"
 admin/views/logs.vue:
   logs: "Logs"
