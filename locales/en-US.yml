@@ -346,7 +346,7 @@ auth/views/index.vue:
   error: "Session does not exist."
   sign-in: "Please sign in."
 common/views/pages/explore.vue:
-  pinned-users: "Higlighted users"
+  pinned-users: "Pinned users"
   popular-users: "Popular users"
   recently-updated-users: "Recently active users"
   recently-registered-users: "Users who joined recently"
@@ -1225,7 +1225,7 @@ admin/views/instance.vue:
   invite: "Invite"
   save: "Save"
   saved: "Saved"
-  pinned-users: "Higlighted user"
+  pinned-users: "Pinned user"
   pinned-users-info: "List up the users delimited by line breaks that you want to show as 'Pinned Users'."
   email-config: "Email server settings"
   email-config-info: "Used to confirm email and password reset etc."
@@ -1293,6 +1293,7 @@ admin/views/drive.vue:
   marked-as-sensitive: "Set a sensitive content notice"
   unmarked-as-sensitive: "Remove the sensitive content notice"
   clean-remote-files: "Clear the remote files cache"
+  clean-remote-files-are-you-sure: "Are you sure you want to remove all cached files from remote?"
   clean-up: "Clean up"
 admin/views/users.vue:
   operation: "Operations"
@@ -1832,6 +1833,7 @@ pages:
       strReverse: "Flip text"
       _strReverse:
         arg1: "Text"
+      join: "Text Concatenation"
       _join:
         arg1: "Lists"
         arg2: "Separator"
