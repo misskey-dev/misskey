@@ -104,6 +104,7 @@ common:
     submit: "帖子"
     reply: "回复"
     renote: "转推"
+    posting: "发送中"
     error: "错误"
     enter-username: "输入用户名"
     add-visible-user: "添加用户"
