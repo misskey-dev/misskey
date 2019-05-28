@@ -1117,9 +1117,15 @@ admin/views/queue.vue:
   remove-all-jobs: "清除所有作业"
   jobs: "任务"
   queue: "队列"
+  domains:
+    db: "数据库"
+    objectStorage: "对象存储"
   state: "状态"
+  other-queues: "其他队列"
 admin/views/logs.vue:
   logs: "登录"
+  domain: "域"
+  level: "级别"
   levels:
     info: "信息"
     error: "错误"
