@@ -1118,17 +1118,29 @@ admin/views/queue.vue:
   jobs: "任务"
   queue: "队列"
   domains:
+    deliver: "交付"
+    inbox: "收件箱"
     db: "数据库"
     objectStorage: "对象存储"
   state: "状态"
+  states:
+    active: "处理中"
+    delayed: "已预订"
+    waiting: "队列等待中"
+  result-is-truncated: "结果已省略"
   other-queues: "其他队列"
 admin/views/logs.vue:
   logs: "登录"
   domain: "域"
   level: "级别"
   levels:
+    all: "所有"
     info: "信息"
+    success: "成功"
+    warning: "警告"
     error: "错误"
+    debug: "调试"
+  delete-all: "全部删除"
 admin/views/abuse.vue:
   title: "举报垃圾信息"
   target: "目标"
@@ -1280,6 +1292,9 @@ admin/views/drive.vue:
   unmark-as-sensitive: "取消标记为“敏感”"
   marked-as-sensitive: "标记为“敏感”"
   unmarked-as-sensitive: "取消标记为“敏感”"
+  clean-remote-files: "删除远程文件缓存"
+  clean-remote-files-are-you-sure: "确定要删除所有远程文件缓存吗？"
+  clean-up: "清除缓存"
 admin/views/users.vue:
   operation: "操作"
   username-or-userid: "用户名或用户ID"
