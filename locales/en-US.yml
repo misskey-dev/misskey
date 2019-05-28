@@ -1853,6 +1853,7 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      remind: "÷ Remaindering"
       _remind:
         arg1: "A"
         arg2: "B"
@@ -1916,16 +1917,20 @@ pages:
       dailyRandomPick: "Choose at random from the list (Daily for each user)"
       _dailyRandomPick:
         arg1: "Lists"
+      seedRandom: "Random (Seed)"
       _seedRandom:
         arg1: "Seed"
         arg2: "Probability"
+      seedRannum: "Random number (Seed)"
       _seedRannum:
         arg1: "Seed"
         arg2: "Minimum"
         arg3: "Maximum"
+      seedRandomPick: "Randomly selected from list (Seed)"
       _seedRandomPick:
         arg1: "Seed"
         arg2: "Lists"
+      DRPWPM: "Randomly selected from weighted list (Daily updated per user)"
       _DRPWPM:
         arg1: "List of text"
       pick: "Select from list"
