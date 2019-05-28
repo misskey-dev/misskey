@@ -1108,6 +1108,7 @@ admin/views/queue.vue:
     active: "en cours"
     delayed: "Programmé"
     waiting: "En file d'attente"
+  other-queues: "Autres files d’attente"
 admin/views/logs.vue:
   logs: "Journaux"
   domain: "Domaine"
@@ -1165,6 +1166,7 @@ admin/views/instance.vue:
   recaptcha-secret-key: "Clé secrète"
   recaptcha-preview: "Prévisualisation"
   hidden-tags: "Tags cachés"
+  external-service-integration-config: "Services connectés"
   twitter-integration-config: "Paramètres de connexion à Twitter"
   twitter-integration-info: "L'URL de callback est {url}."
   enable-twitter-integration: "Activer la connexion à Twitter"
@@ -1189,6 +1191,7 @@ admin/views/instance.vue:
   disable-local-timeline: "Désactiver le fil local"
   disable-global-timeline: "Désactiver le fil global"
   disabling-timelines-info: "Même si vous désactivez ces fils, l'administrateur et les modérateurs peuvent continuer à les utiliser."
+  enable-emoji-reaction: "Activer les pictogrammes dans les réactions"
   invite: "Inviter"
   save: "Sauvegarder"
   saved: "Enregistré"
@@ -1257,6 +1260,7 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Ne pas marquer comme sensible"
   marked-as-sensitive: "Marqué comme sensible"
   unmarked-as-sensitive: "Marqué comme non sensible"
+  clean-up: "Nettoyage"
 admin/views/users.vue:
   operation: "Actions"
   username-or-userid: "Nom d’utilisateur·rice ou ID utilisateur"
