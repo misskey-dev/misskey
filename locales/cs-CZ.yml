@@ -94,6 +94,7 @@ common:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
     explore: "Najít uživatele"
   post-form:
+    submit: "Odeslat"
     reply: "Odpovědět"
     renote: "Renotovat"
     error: "Chyba"
