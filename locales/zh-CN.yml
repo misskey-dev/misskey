@@ -96,6 +96,11 @@ common:
     follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
     explore: "查找用户"
   post-form:
+    attach-location-information: "添加位置信息"
+    hide-contents: "隐藏内容"
+    reply-placeholder: "回复此贴..."
+    quote-placeholder: "引用此帖…"
+    option-quote-placeholder: "引用此帖…(可选)"
     submit: "帖子"
     reply: "回复"
     renote: "转推"
