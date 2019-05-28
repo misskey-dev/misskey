@@ -470,6 +470,7 @@ common/views/components/messaging.vue:
   user: "Utilisateur·rice·s"
   group: "Groupe"
   start-with-user: "Initier une discussion avec un·e utilisateur·rice"
+  start-with-group: "Démarrer un groupe et converser"
   select-group: "Sélectionner un groupe"
 common/views/components/messaging-room.vue:
   not-talked-user: "Vous n'avez pas encore discuté avec cet·te utilisateur·rice"
@@ -561,6 +562,7 @@ common/views/components/poll-editor.vue:
   day: "D"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Choisissez votre réaction"
+  input-reaction-placeholder: "ou insérez un émoji"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Émoji personnalisé"
   people: "Personnes"
@@ -717,6 +719,7 @@ common/views/components/user-group-editor.vue:
   rename: "Renommer le groupe"
   delete: "Supprimer le groupe"
   transfer: "Transférer de groupe"
+  transferred: "Groupe transféré"
   remove-user: "Enlever un utilisateur de ce groupe"
   deleted: "Supprimé"
   invite: "Inviter"
@@ -1099,6 +1102,7 @@ admin/views/queue.vue:
   domains:
     deliver: "Délivrées"
     inbox: "Reçues"
+    db: "Base de données"
   state: "État"
   states:
     active: "en cours"
