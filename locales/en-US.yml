@@ -1193,6 +1193,7 @@ admin/views/instance.vue:
   recaptcha-secret-key: "Secret Key"
   recaptcha-preview: "Preview"
   hidden-tags: "Hidden hashtags"
+  hidden-tags-info: "List up the hashtags delimited by line breaks that you want exclude from statistics."
   external-service-integration-config: "Connect an external service"
   twitter-integration-config: "Settings of connecting to Twitter"
   twitter-integration-info: "The callback URL is set on {url}."
@@ -1225,6 +1226,7 @@ admin/views/instance.vue:
   save: "Save"
   saved: "Saved"
   pinned-users: "Higlighted user"
+  pinned-users-info: "List up the users delimited by line breaks that you want to show as 'Pinned Users'."
   email-config: "Email server settings"
   email-config-info: "Used to confirm email and password reset etc."
   enable-email: "Enable email delivery"
@@ -1290,6 +1292,8 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Unmark as 'sensitive'"
   marked-as-sensitive: "Set a sensitive content notice"
   unmarked-as-sensitive: "Remove the sensitive content notice"
+  clean-remote-files: "Clear the remote files cache"
+  clean-up: "Clean up"
 admin/views/users.vue:
   operation: "Operations"
   username-or-userid: "Username or user ID"
@@ -1435,6 +1439,7 @@ admin/views/federation.vue:
     hour: "Hourly"
     day: "Daily"
   blocked-hosts: "Blocking"
+  blocked-hosts-info: "List up the hosts delimited by line breaks that you want to block."
   save: "Save"
 desktop/views/pages/welcome.vue:
   about: "More details..."
