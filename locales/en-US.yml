@@ -1951,11 +1951,13 @@ pages:
       fn: "Function"
       _fn:
         slots: "Slots"
+        slots-info: "Please delimit each slot with a line break"
         arg1: "Output"
       for: "Repeat"
       _for:
         arg1: "Count"
         arg2: "Action"
+    typeError: "Slot {slot} accepts \"{expect}\" type, but It actually contains \"{actual}\" type!"
     thereIsEmptySlot: "Slot {slot} is empty!"
     types:
       string: "Text"
