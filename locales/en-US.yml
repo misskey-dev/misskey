@@ -1736,6 +1736,7 @@ pages:
   inspector: "Inspector"
   content: "Page block"
   variables: "Variables"
+  variables-info: "You can make your page more dynamic by using variables. If you write down <b>{ variable name }</b> in the text, you can embed the value of the variable there. For example, if the source text is <b>Hello { thing } world!</b> and the value of variable 'thing' is <b> ai </b>, that text becomes to <b>Hello ai world!</b>."
   more-details: "Description"
   title: "Title"
   url: "Page URL"
