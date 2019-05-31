@@ -1737,6 +1737,7 @@ pages:
   content: "Page block"
   variables: "Variables"
   variables-info: "You can make your page more dynamic by using variables. If you write down <b>{ variable name }</b> in the text, you can embed the value of the variable there. For example, if the source text is <b>Hello { thing } world!</b> and the value of variable 'thing' is <b> ai </b>, that text becomes to <b>Hello ai world!</b>."
+  variables-info2: "Because the evaluation(=calculating) of variables are performed from top to bottom, the variable cannot refer another variable which exists on later line. For example, when defining three variables <b>A</b>, <b>B</b> and <b>C</b>, variable <b>C</b> <i>can</i> refer the variable <b>A</b> and <b>B</b> in its expression, but variable <b>A</b> <i>cannot</i> refer the variable <b>B</b> or <b>C</b> in its expression."
   more-details: "Description"
   title: "Title"
   url: "Page URL"
