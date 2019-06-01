@@ -1738,6 +1738,8 @@ pages:
   variables: "Variables"
   variables-info: "You can make your page more dynamic by using variables. If you write down <b>{ variable name }</b> in the text, you can embed the value of the variable there. For example, if the source text is <b>Hello { thing } world!</b> and the value of variable 'thing' is <b> ai </b>, that text becomes to <b>Hello ai world!</b>."
   variables-info2: "Because the evaluation(=calculating) of variables are performed from top to bottom, the variable cannot refer another variable which exists on later line. For example, when defining three variables <b>A</b>, <b>B</b> and <b>C</b>, variable <b>C</b> <i>can</i> refer the variable <b>A</b> and <b>B</b> in its expression, but variable <b>A</b> <i>cannot</i> refer the variable <b>B</b> or <b>C</b> in its expression."
+  variables-info3: "If you want to get some input from the user, place a 'User Input' block on the page and set the variable name as which you want to store that input in 'variable name' (variables are created automatically). You can use that variable to perform actions in response to user's input."
+  variables-info4: "Function allows make your processing logic as group in a reusable way. To create a function, create a variable of type 'Function'. A function can have a slot (Argument) whose value is available as a variable in the function. There are also functions that take functions as arguments in the AiScript standard (called the higher-order function.). In addition to the predefined functions, you can also set them in the slots of such higher-order functions on the fly."
   more-details: "Description"
   title: "Title"
   url: "Page URL"
