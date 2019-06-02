@@ -236,6 +236,9 @@ auth/views/index.vue:
   please-go-back: "Wróć do aplikacji."
   error: "Sesja nie istnieje."
   sign-in: "Proszę zalogować się."
+common/views/pages/explore.vue:
+  popular-users: "Popularni użytkownicy"
+  popular-tags: "Popularne tagi"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Oczekiwanie na {}"
