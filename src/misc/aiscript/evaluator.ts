@@ -16,7 +16,12 @@ export class ASEvaluator {
 	private envVars: Record<keyof typeof envVarsDef, unknown>;
 
 	private opts: {
-		randomSeed: string; user?: unknown; visitor?: unknown; page?: unknown; url?: string; version: string;
+		randomSeed: string;
+		user?: unknown;
+		visitor?: unknown;
+		page?: unknown;
+		url?: string;
+		version: string;
 	};
 
 	constructor(variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
