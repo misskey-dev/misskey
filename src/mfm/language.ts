@@ -186,5 +186,5 @@ export const mfmLanguage = P.createLanguage({
 		const code = P.regexp(emojiRegex).map(x => createLeaf('emoji', { emoji: x }));
 		return P.alt(name, code);
 	},
-	text: () => P.unknown.map(x => createLeaf('text', { text: x }))
+	text: () => P.any.map(x => createLeaf('text', { text: x }))
 });
