@@ -6,11 +6,20 @@ const ev = new Xev();
 
 const interval = 3000;
 
+type QueueStatsValue = {
+	activeSincePrevTick: number;
+	active: number;
+	waiting: number;
+	delayed: number;
+};
+
+export type QueueStats = Record<'deliver' | 'inbox' | 'db' | 'objectStorage', QueueStatsValue>;
+
 /**
  * Report queue stats regularly
  */
 export default function() {
-	const log = new Deque<unknown>();
+	const log = new Deque<QueueStats>();
 
 	ev.on('requestQueueStatsLog', x => {
 		ev.emit(`queueStatsLog:${x.id}`, log.toArray().slice(0, x.length || 50));
