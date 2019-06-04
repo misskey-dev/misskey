@@ -9,11 +9,22 @@ const ev = new Xev();
 
 const interval = 1000;
 
+export type ServerStats = {
+	cpu_usage: number;
+	mem: {
+		total: number;
+		used: number;
+	};
+	disk: diskusage.DiskUsage;
+	os_uptime: number;
+	process_uptime: number;
+};
+
 /**
  * Report server stats regularly
  */
 export default function() {
-	const log = new Deque<unknown>();
+	const log = new Deque<ServerStats>();
 
 	ev.on('requestServerStatsLog', x => {
 		ev.emit(`serverStatsLog:${x.id}`, log.toArray().slice(0, x.length || 50));
@@ -47,7 +58,7 @@ export default function() {
 
 // CPU STAT
 function cpuUsage() {
-	return new Promise((res, rej) => {
+	return new Promise<number>((res, rej) => {
 		osUtils.cpuUsage((cpuUsage: number) => {
 			res(cpuUsage);
 		});
