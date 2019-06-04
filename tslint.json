@@ -40,6 +40,7 @@
 			true,
 			{ "name": ["*", "forEach"], "message": "Use for-of loop instead." }
 		],
+		"no-any": true,
 		"no-duplicate-string": false,
 		"no-commented-code": false,
 		"cognitive-complexity": false,
