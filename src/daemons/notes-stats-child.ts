@@ -1,6 +1,7 @@
 import { MoreThanOrEqual, getRepository } from 'typeorm';
 import { Note } from '../models/entities/note';
 import { initDb } from '../db/postgre';
+import { Stats } from './notes-stats';
 
 const interval = 5000;
 
@@ -15,7 +16,7 @@ initDb().then(() => {
 			userHost: null
 		})]);
 
-		const stats = {
+		const stats: Stats = {
 			all, local
 		};
 

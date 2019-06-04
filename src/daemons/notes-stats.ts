@@ -4,8 +4,13 @@ import Xev from 'xev';
 
 const ev = new Xev();
 
+export type Stats = {
+	all: number;
+	local: number;
+};
+
 export default function() {
-	const log = new Deque<unknown>();
+	const log = new Deque<Stats>();
 
 	const p = childProcess.fork(__dirname + '/notes-stats-child.js');
 
