@@ -3,19 +3,23 @@ import * as T from '../prelude/tree';
 
 export type Node<T, P> = { type: T, props: P };
 
+export type TextNode = Node<'text', {
+	text: string;
+}>;
+
 export type MentionNode = Node<'mention', {
-	canonical: string,
-	username: string,
-	host: string,
-	acct: string
+	canonical: string;
+	username: string;
+	host: string;
+	acct: string;
 }>;
 
 export type HashtagNode = Node<'hashtag', {
-	hashtag: string
+	hashtag: string;
 }>;
 
 export type EmojiNode = Node<'emoji', {
-	name: string
+	name: string;
 }>;
 
 export type MfmNode<T = object> =
@@ -26,7 +30,11 @@ export type MfmNode<T = object> =
 
 export type MfmTree<T = object> = Tree<MfmNode<T>>;
 
+export type MfmTreeOf<T extends MfmNode> = Tree<T>;
+
 export type MfmForest<T = object> = MfmTree<T>[];
+
+export type MfmForestOf<T extends MfmNode> = Tree<T>[];
 
 export function createLeaf<T>(type: string, props: T): MfmTree<T> {
 	return T.createLeaf({ type, props });
