@@ -17,7 +17,7 @@ declare module 'querystring' {
 	}
 
 	function stringify(obj?: IParsedUrlQueryInput, sep?: string, eq?: string, options?: IStringifyOptions): string;
-	function parse(str: string, sep?: string, eq?: string, options?: ParseOptions): IParsedUrlQuery;
+	function parse(str: string, sep?: string, eq?: string, options?: IParseOptions): IParsedUrlQuery;
 	function escape(str: string): string;
 	function unescape(str: string): string;
 }
