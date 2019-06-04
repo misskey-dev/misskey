@@ -2,20 +2,19 @@ import { User } from '../models/entities/user';
 import { Hashtags, Users } from '../models';
 import { hashtagChart } from './chart';
 import { genId } from '../misc/gen-id';
-import { Hashtag } from '../models/entities/hashtag';
 
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();
 
 	const index = await Hashtags.findOne({ name: tag });
 
-	if (index == null && !inc) return;
+	if (!index && !inc) return;
 
-	if (index != null) {
+	if (index) {
 		const q = Hashtags.createQueryBuilder('tag').update()
 			.where('tag.name = :name', { name: tag });
 
-		const set = {} as unknown;
+		const set: Record<string, () => string> = {};
 
 		if (isUserAttached) {
 			if (inc) {
@@ -63,7 +62,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 			}
 		}
 
-		if (Object.keys(set).length > 0) {
+		if (Object.keys(set).length) {
 			q.set(set);
 			q.execute();
 		}
@@ -84,7 +83,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 				attachedLocalUsersCount: Users.isLocalUser(user) ? 1 : 0,
 				attachedRemoteUserIds: Users.isRemoteUser(user) ? [user.id] : [],
 				attachedRemoteUsersCount: Users.isRemoteUser(user) ? 1 : 0,
-			} as Hashtag);
+			});
 		} else {
 			Hashtags.save({
 				id: genId(),
@@ -101,7 +100,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 				attachedLocalUsersCount: 0,
 				attachedRemoteUserIds: [],
 				attachedRemoteUsersCount: 0,
-			} as Hashtag);
+			});
 		}
 	}
 
