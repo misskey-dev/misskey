@@ -6,7 +6,7 @@ export class ID<Maybe = string> extends Context<string | (Maybe extends {} ? str
 	constructor(optional = false, nullable = false) {
 		super(optional, nullable);
 
-		this.push((v: unknown) => {
+		this.push(v => {
 			if (typeof v !== 'string') {
 				return new Error('must-be-an-id');
 			}
