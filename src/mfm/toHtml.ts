@@ -23,7 +23,7 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 		return el;
 	};
 
-	const handlers: { [key: string]: (token: MfmTree) => HTMLElement } = {
+	const handlers: { [key: string]: (token: MfmTree) => Node } = {
 		bold: makeBasicHandler('b'),
 
 		big: makeBasicHandler('strong'),
