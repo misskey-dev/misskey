@@ -1,8 +1,10 @@
+import { PackedNote } from '../models/repositories/note';
+
 /**
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-const summarize = (note: unknown): string => {
+const summarize = (note: PackedNote): string => {
 	if (note.deletedAt) {
 		return '(削除された投稿)';
 	}

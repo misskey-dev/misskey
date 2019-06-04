@@ -216,6 +216,7 @@ export class NoteRepository extends Repository<Note> {
 	}
 }
 
+// ToDo: Compensate missing schemas
 export const packedNoteSchema = {
 	type: types.object,
 	optional: bool.false, nullable: bool.false,
