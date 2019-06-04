@@ -1,4 +1,6 @@
-export default function(note: unknown, mutedUserIds: string[]): boolean {
+import { PackedNote } from '../models/repositories/note';
+
+export default function(note: PackedNote, mutedUserIds: string[]): boolean {
 	if (mutedUserIds.includes(note.userId)) {
 		return true;
 	}
