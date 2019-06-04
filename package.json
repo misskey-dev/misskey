@@ -25,6 +25,10 @@
 		"test": "gulp test",
 		"format": "gulp format"
 	},
+	"resolutions": {
+		"gulp-cssnano/cssnano/postcss-svgo/svgo/js-yaml": "^3.13.1",
+		"video-thumbnail-generator/lodash": "^4.17.11"
+	},
 	"dependencies": {
 		"@elastic/elasticsearch": "7.0.0-rc.2",
 		"@fortawesome/fontawesome-svg-core": "1.2.15",
