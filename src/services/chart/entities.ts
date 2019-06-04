@@ -1,8 +1,15 @@
+import * as requireAll from 'require-all';
+import { Schema } from '../../misc/schema';
 import Chart from './core';
 
-export const entities = Object.values(require('require-all')({
+export interface ISchemaModule {
+	name: string;
+	schema: Schema;
+}
+
+export const entities = Object.values(requireAll({
 	dirname: __dirname + '/charts/schemas',
-	resolve: (x: unknown) => {
-		return Chart.schemaToEntity(x.name, x.schema);
+	resolve({ name, schema }: ISchemaModule) {
+		return Chart.schemaToEntity(name, schema);
 	}
 }));
