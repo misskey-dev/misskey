@@ -1,7 +1,7 @@
 import parseAcct from '../misc/acct/parse';
 import { resolveUser } from '../remote/resolve-user';
 
-async function main(acct: string): Promise<unknown> {
+async function main(acct: string) {
 	const { username, host } = parseAcct(acct);
 	await resolveUser(username, host, {}, true);
 }

@@ -1,7 +1,7 @@
 import { Emojis } from '../models';
 import { genId } from '../misc/gen-id';
 
-async function main(name: string, url: string, alias?: string): Promise<unknown> {
+async function main(name: string, url: string, alias?: string) {
 	const aliases = alias != null ? [ alias ] : [];
 
 	await Emojis.save({
