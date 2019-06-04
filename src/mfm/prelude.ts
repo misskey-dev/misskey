@@ -26,7 +26,9 @@ export type MfmNode<T = object> =
 	MentionNode |
 	HashtagNode |
 	EmojiNode |
-	Node<string, T>;
+	MfmNodeOf<T>;
+
+export type MfmNodeOf<T = object, U = string> = Node<U, T>;
 
 export type MfmTree<T = object> = Tree<MfmNode<T>>;
 

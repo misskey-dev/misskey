@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom';
 import config from '../config';
 import { intersperse } from '../prelude/array';
-import { MfmForest, MfmTree } from './prelude';
+import { MfmForest, MfmTree, MfmTreeOf, MfmNodeOf } from './prelude';
 import { IMentionedRemoteUsers } from '../models/entities/note';
 
 export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
@@ -23,6 +23,10 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 		return el;
 	};
 
+	const unavailable = (token: MfmTree, key: string, typeOf?: string) =>
+		!(key in token.node.props) &&
+		(!typeOf || typeof (token.node.props as Record<string, unknown>)[key] === typeOf);
+
 	const handlers: { [key: string]: (token: MfmTree) => Node } = {
 		bold: makeBasicHandler('b'),
 
@@ -42,7 +46,13 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 
 		flip: makeBasicHandler('i'),
 
-		blockCode(token) {
+		blockCode(unknownToken) {
+			if (unavailable(unknownToken, 'code', 'string')) throw 'props of "code" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				code: string;
+			}>>;
+
 			const pre = doc.createElement('pre');
 			const inner = doc.createElement('code');
 			inner.innerHTML = token.node.props.code;
@@ -52,11 +62,25 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 
 		center: makeBasicHandler('div'),
 
-		emoji(token) {
+		emoji(unknownToken) {
+			if (unavailable(unknownToken, 'emoji', 'string')) throw 'props of "emoji" is missing.';
+			if (unavailable(unknownToken, 'name', 'string')) throw 'props of "name" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				emoji: string;
+				name: string;
+			}>>;
+
 			return doc.createTextNode(token.node.props.emoji ? token.node.props.emoji : `:${token.node.props.name}:`);
 		},
 
-		hashtag(token) {
+		hashtag(unknownToken) {
+			if (unavailable(unknownToken, 'hashtag', 'string')) throw 'props of "hashtag" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				hashtag: string;
+			}>>;
+
 			const a = doc.createElement('a');
 			a.href = `${config.url}/tags/${token.node.props.hashtag}`;
 			a.textContent = `#${token.node.props.hashtag}`;
@@ -70,14 +94,30 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 
 		mathBlock: makeBasicHandler('code'),
 
-		link(token) {
+		link(unknownToken) {
+			if (unavailable(unknownToken, 'url', 'string')) throw 'props of "url" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				url: string;
+			}>>;
+
 			const a = doc.createElement('a');
 			a.href = token.node.props.url;
 			appendChildren(token.children, a);
 			return a;
 		},
 
-		mention(token) {
+		mention(unknownToken) {
+			if (unavailable(unknownToken, 'username', 'string')) throw 'props of "username" is missing.';
+			if (unavailable(unknownToken, 'host', 'string')) throw 'props of "host" is missing.';
+			if (unavailable(unknownToken, 'acct', 'string')) throw 'props of "acct" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				username: string;
+				host: string;
+				acct: string;
+			}>>;
+
 			const a = doc.createElement('a');
 			const { username, host, acct } = token.node.props;
 			switch (host) {
@@ -101,9 +141,15 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 
 		title: makeBasicHandler('h1'),
 
-		text(token) {
+		text(unknownToken) {
+			if (unavailable(unknownToken, 'text', 'string')) throw 'props of "text" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				text: string;
+			}>>;
+
 			const el = doc.createElement('span');
-			const nodes = (token.node.props.text as string).split(/\r\n|\r|\n/).map(x => doc.createTextNode(x) as Node);
+			const nodes = token.node.props.text.split(/\r\n|\r|\n/).map(doc.createTextNode);
 
 			for (const x of intersperse<Node | 'br'>('br', nodes)) {
 				el.appendChild(x === 'br' ? doc.createElement('br') : x);
@@ -112,14 +158,28 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 			return el;
 		},
 
-		url(token) {
+		url(unknownToken) {
+			if (unavailable(unknownToken, 'url', 'string')) throw 'props of "url" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				url: string;
+			}>>;
+
 			const a = doc.createElement('a');
 			a.href = token.node.props.url;
 			a.textContent = token.node.props.url;
 			return a;
 		},
 
-		search(token) {
+		search(unknownToken) {
+			if (unavailable(unknownToken, 'query', 'string')) throw 'props of "query" is missing.';
+			if (unavailable(unknownToken, 'content', 'string')) throw 'props of "content" is missing.';
+
+			const token = unknownToken as MfmTreeOf<MfmNodeOf<{
+				query: string;
+				content: string;
+			}>>;
+
 			const a = doc.createElement('a');
 			a.href = `https://www.google.com/?#q=${token.node.props.query}`;
 			a.textContent = token.node.props.content;
