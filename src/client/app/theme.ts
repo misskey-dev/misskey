@@ -1,14 +1,5 @@
 import * as tinycolor from 'tinycolor2';
-
-export type Theme = {
-	id: string;
-	name: string;
-	author: string;
-	desc?: string;
-	base?: 'dark' | 'light';
-	vars: { [key: string]: string };
-	props: { [key: string]: string };
-};
+import { Theme } from '../../theme';
 
 export const lightTheme: Theme = require('../themes/light.json5');
 export const darkTheme: Theme = require('../themes/dark.json5');

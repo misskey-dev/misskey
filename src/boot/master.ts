@@ -14,6 +14,7 @@ import { program } from '../argv';
 import { showMachineInfo } from '../misc/show-machine-info';
 import { initDb } from '../db/postgre';
 import Xev from 'xev';
+import { Theme } from '../theme';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -116,7 +117,7 @@ function showEnvironment(): void {
 }
 
 const pluginService = {
-	registerTheme(theme: any) {
+	registerTheme(theme: Theme) {
 		const ev = new Xev();
 		ev.emit('registerPluginTheme', theme);
 	}

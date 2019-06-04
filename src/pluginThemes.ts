@@ -1,6 +1,8 @@
-const themes: any[] = [];
+import { Theme } from './theme';
 
-export function registerTheme(theme: any) {
+const themes: Theme[] = [];
+
+export function registerTheme(theme: Theme) {
 	themes.push(theme);
 }
 

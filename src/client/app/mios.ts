@@ -9,7 +9,8 @@ import Progress from './common/scripts/loading';
 
 import Err from './common/views/components/connect-failed.vue';
 import Stream from './common/scripts/stream';
-import { Theme, builtinThemes } from './theme';
+import { builtinThemes } from './theme';
+import { Theme } from '../../theme';
 import { concat } from '../../prelude/array';
 
 //#region api requests

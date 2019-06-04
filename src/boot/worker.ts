@@ -2,6 +2,7 @@ import * as cluster from 'cluster';
 import { initDb } from '../db/postgre';
 import Xev from 'xev';
 import { registerTheme } from '../pluginThemes';
+import { Theme } from '../theme';
 
 const ev = new Xev();
 
@@ -21,7 +22,7 @@ export async function workerMain() {
 		// Send a 'ready' message to parent process
 		process.send!('ready');
 
-		ev.on('registerPluginTheme', theme => {
+		ev.on('registerPluginTheme', (theme: Theme) => {
 			registerTheme(theme);
 		});
 	}
