@@ -52,13 +52,13 @@ export default Vue.extend({
 					file._note = note;
 				}
 			}
-			const files = concat(notes.map((n: any): any[] => n.files));
+			const files = concat(notes.map((n: unknown): unknown[] => n.files));
 			this.images = files.filter(f => image.includes(f.type)).slice(0, 9);
 			this.fetching = false;
 		});
 	},
 	methods: {
-		thumbnail(image: any): string {
+		thumbnail(image: unknown): string {
 			return this.$store.state.device.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;

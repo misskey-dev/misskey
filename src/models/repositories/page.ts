@@ -19,7 +19,7 @@ export class PageRepository extends Repository<Page> {
 		const page = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		const attachedFiles: Promise<DriveFile | undefined>[] = [];
-		const collectFile = (xs: any[]) => {
+		const collectFile = (xs: unknown[]) => {
 			for (const x of xs) {
 				if (x.type === 'image') {
 					attachedFiles.push(DriveFiles.findOne({
@@ -36,7 +36,7 @@ export class PageRepository extends Repository<Page> {
 
 		// 後方互換性のため
 		let migrated = false;
-		const migrate = (xs: any[]) => {
+		const migrate = (xs: unknown[]) => {
 			for (const x of xs) {
 				if (x.type === 'input') {
 					if (x.inputType === 'text') {

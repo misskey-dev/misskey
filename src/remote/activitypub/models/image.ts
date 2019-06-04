@@ -12,13 +12,13 @@ const logger = apLogger;
 /**
  * Imageを作成します。
  */
-export async function createImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
+export async function createImage(actor: IRemoteUser, value: unknown): Promise<DriveFile> {
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
 		throw new Error('actor has been suspended');
 	}
 
-	const image = await new Resolver().resolve(value) as any;
+	const image = await new Resolver().resolve(value) as unknown;
 
 	if (image.url == null) {
 		throw new Error('invalid image: url not privided');
@@ -53,7 +53,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
  * Misskeyに対象のImageが登録されていればそれを返し、そうでなければ
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
-export async function resolveImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
+export async function resolveImage(actor: IRemoteUser, value: unknown): Promise<DriveFile> {
 	// TODO
 
 	// リモートサーバーからフェッチしてきて登録

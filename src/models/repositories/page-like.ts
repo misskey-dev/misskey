@@ -7,7 +7,7 @@ import { ensure } from '../../prelude/ensure';
 export class PageLikeRepository extends Repository<PageLike> {
 	public async pack(
 		src: PageLike['id'] | PageLike,
-		me?: any
+		me?: unknown
 	) {
 		const like = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
@@ -18,8 +18,8 @@ export class PageLikeRepository extends Repository<PageLike> {
 	}
 
 	public packMany(
-		likes: any[],
-		me: any
+		likes: unknown[],
+		me: unknown
 	) {
 		return Promise.all(likes.map(x => this.pack(x, me)));
 	}

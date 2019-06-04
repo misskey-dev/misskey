@@ -1,6 +1,6 @@
 export function collectPageVars(content) {
 	const pageVars = [];
-	const collect = (xs: any[]) => {
+	const collect = (xs: unknown[]) => {
 		for (const x of xs) {
 			if (x.type === 'textInput') {
 				pageVars.push({

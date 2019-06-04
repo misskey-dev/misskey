@@ -6,7 +6,7 @@ import MkUserPreview from '../components/user-preview.vue';
 
 export default {
 	bind(el, binding, vn) {
-		const self = el._userPreviewDirective_ = {} as any;
+		const self = el._userPreviewDirective_ = {} as unknown;
 
 		self.user = binding.value;
 		self.tag = null;

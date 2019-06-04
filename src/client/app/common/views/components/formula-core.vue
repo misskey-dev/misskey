@@ -19,10 +19,10 @@ export default Vue.extend({
 		}
 	},
 	computed: {
-		compiledFormula(): any {
+		compiledFormula(): unknown {
 			return katex.renderToString(this.formula, {
 				throwOnError: false
-			} as any);
+			} as unknown);
 		}
 	}
 });

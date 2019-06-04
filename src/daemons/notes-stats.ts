@@ -5,7 +5,7 @@ import Xev from 'xev';
 const ev = new Xev();
 
 export default function() {
-	const log = new Deque<any>();
+	const log = new Deque<unknown>();
 
 	const p = childProcess.fork(__dirname + '/notes-stats-child.js');
 

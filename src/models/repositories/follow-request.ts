@@ -7,7 +7,7 @@ import { ensure } from '../../prelude/ensure';
 export class FollowRequestRepository extends Repository<FollowRequest> {
 	public async pack(
 		src: FollowRequest['id'] | FollowRequest,
-		me?: any
+		me?: unknown
 	) {
 		const request = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 

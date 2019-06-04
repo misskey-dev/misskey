@@ -31,7 +31,7 @@ export default Vue.extend({
 	},
 	methods: {
 		popout() {
-			const folder = (this.$refs.browser as any) ? (this.$refs.browser as any).folder : null;
+			const folder = (this.$refs.browser as unknown) ? (this.$refs.browser as unknown).folder : null;
 			if (folder) {
 				return `${url}/i/drive/folder/${folder.id}`;
 			} else {

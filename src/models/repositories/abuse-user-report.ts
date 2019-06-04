@@ -26,7 +26,7 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 	}
 
 	public packMany(
-		reports: any[],
+		reports: unknown[],
 	) {
 		return Promise.all(reports.map(x => this.pack(x)));
 	}

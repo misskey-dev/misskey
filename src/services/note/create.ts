@@ -90,7 +90,7 @@ type Option = {
 	reply?: Note | null;
 	renote?: Note | null;
 	files?: DriveFile[] | null;
-	geo?: any | null;
+	geo?: unknown | null;
 	poll?: IPoll | null;
 	viaMobile?: boolean | null;
 	localOnly?: boolean | null;
@@ -237,7 +237,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const noteObj = await Notes.pack(note);
 
 		if (user.notesCount === 0) {
-			(noteObj as any).isFirstNote = true;
+			(noteObj as unknown).isFirstNote = true;
 		}
 
 		publishNotesStream(noteObj);
@@ -321,7 +321,7 @@ function incRenoteCount(renote: Note) {
 	Notes.increment({ id: renote.id }, 'score', 1);
 }
 
-async function publish(user: User, note: Note, reply: Note | null | undefined, renote: Note | null | undefined, noteActivity: any) {
+async function publish(user: User, note: Note, reply: Note | null | undefined, renote: Note | null | undefined, noteActivity: unknown) {
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && reply.userHost !== null) {
@@ -362,7 +362,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		localOnly: data.localOnly!,
 		geo: data.geo || null,
 		appId: data.app ? data.app.id : null,
-		visibility: data.visibility as any,
+		visibility: data.visibility as unknown,
 		visibleUserIds: data.visibility == 'specified'
 			? data.visibleUsers
 				? data.visibleUsers.map(u => u.id)
@@ -467,7 +467,7 @@ async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: Notificati
 	}
 }
 
-async function publishToFollowers(note: Note, user: User, noteActivity: any) {
+async function publishToFollowers(note: Note, user: User, noteActivity: unknown) {
 	const followers = await Followings.find({
 		followeeId: note.userId
 	});
@@ -485,11 +485,11 @@ async function publishToFollowers(note: Note, user: User, noteActivity: any) {
 	}
 
 	for (const inbox of queue) {
-		deliver(user as any, noteActivity, inbox);
+		deliver(user as unknown, noteActivity, inbox);
 	}
 }
 
-function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: any) {
+function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: unknown) {
 	for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
 		deliver(user, noteActivity, (u as IRemoteUser).inbox);
 	}

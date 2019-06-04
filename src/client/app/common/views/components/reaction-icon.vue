@@ -19,7 +19,7 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		str(): any {
+		str(): unknown {
 			switch (this.reaction) {
 				case 'like': return '👍';
 				case 'love': return '❤';

@@ -56,20 +56,20 @@ export default Vue.extend({
 
 		onNote(note) {
 			// Prepend a note
-			(this.$refs.timeline as any).prepend(note);
+			(this.$refs.timeline as unknown).prepend(note);
 		},
 
 		onUserAdded() {
-			(this.$refs.timeline as any).reload();
+			(this.$refs.timeline as unknown).reload();
 		},
 
 		onUserRemoved() {
-			(this.$refs.timeline as any).reload();
+			(this.$refs.timeline as unknown).reload();
 		},
 
 		warp(date) {
 			this.date = date;
-			(this.$refs.timeline as any).reload();
+			(this.$refs.timeline as unknown).reload();
 		}
 	}
 });

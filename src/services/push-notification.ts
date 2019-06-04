@@ -3,7 +3,7 @@ import config from '../config';
 import { SwSubscriptions } from '../models';
 import { fetchMeta } from '../misc/fetch-meta';
 
-export default async function(userId: string, type: string, body?: any) {
+export default async function(userId: string, type: string, body?: unknown) {
 	const meta = await fetchMeta();
 
 	if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
@@ -29,7 +29,7 @@ export default async function(userId: string, type: string, body?: any) {
 
 		push.sendNotification(pushSubscription, JSON.stringify({
 			type, body
-		})).catch((err: any) => {
+		})).catch((err: unknown) => {
 			//swLogger.info(err.statusCode);
 			//swLogger.info(err.headers);
 			//swLogger.info(err.body);

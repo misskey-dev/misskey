@@ -1,4 +1,4 @@
-type Obj = { [key: string]: any };
+type Obj = { [key: string]: unknown };
 
 declare module 'nested-property' {
 	interface IHasNestedPropertyOptions {
@@ -9,9 +9,9 @@ declare module 'nested-property' {
 		validPath?: boolean;
 	}
 
-	export function set<T>(object: T, property: string, value: any): T;
+	export function set<T>(object: T, property: string, value: unknown): T;
 
-	export function get(object: Obj, property: string): any;
+	export function get(object: Obj, property: string): unknown;
 
 	export function has(object: Obj, property: string, options?: IHasNestedPropertyOptions): boolean;
 

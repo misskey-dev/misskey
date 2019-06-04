@@ -180,7 +180,7 @@ export class Note {
 	@Column('jsonb', {
 		nullable: true, default: null
 	})
-	public geo: any | null;
+	public geo: unknown | null;
 
 	//#region Denormalized fields
 	@Index()
@@ -221,7 +221,7 @@ export class Note {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {
-			(this as any)[k] = v;
+			(this as unknown)[k] = v;
 		}
 	}
 }

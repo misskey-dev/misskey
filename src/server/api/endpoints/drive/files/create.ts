@@ -30,7 +30,7 @@ export const meta = {
 	params: {
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: null as any,
+			default: null as unknown,
 			desc: {
 				'ja-JP': 'フォルダID'
 			}
@@ -39,7 +39,7 @@ export const meta = {
 		isSensitive: {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
-			transform: (v: any): boolean => v === true || v === 'true',
+			transform: (v: unknown): boolean => v === true || v === 'true',
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'
@@ -49,7 +49,7 @@ export const meta = {
 		force: {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
-			transform: (v: any): boolean => v === true || v === 'true',
+			transform: (v: unknown): boolean => v === true || v === 'true',
 			desc: {
 				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
 			}

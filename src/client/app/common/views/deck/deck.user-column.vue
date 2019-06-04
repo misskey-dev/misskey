@@ -84,7 +84,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		bannerStyle(): any {
+		bannerStyle(): unknown {
 			if (this.user == null) return {};
 			if (this.user.bannerUrl == null) return {};
 			return {

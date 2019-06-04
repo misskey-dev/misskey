@@ -34,7 +34,7 @@ export default Vue.extend({
 	i18n: i18n('auth/views/form.vue'),
 	props: ['session'],
 	computed: {
-		app(): any {
+		app(): unknown {
 			return this.session.app;
 		}
 	},

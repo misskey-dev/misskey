@@ -51,20 +51,20 @@ export default Vue.extend({
 	},
 	methods: {
 		ok() {
-			(this.$refs.cropper as any).getCroppedCanvas().toBlob(blob => {
+			(this.$refs.cropper as unknown).getCroppedCanvas().toBlob(blob => {
 				this.$emit('cropped', blob);
-				(this.$refs.window as any).close();
+				(this.$refs.window as unknown).close();
 			});
 		},
 
 		skip() {
 			this.$emit('skipped');
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		},
 
 		cancel() {
 			this.$emit('canceled');
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		}
 	}
 });

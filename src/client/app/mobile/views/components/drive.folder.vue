@@ -11,7 +11,7 @@ import Vue from 'vue';
 export default Vue.extend({
 	props: ['folder'],
 	computed: {
-		browser(): any {
+		browser(): unknown {
 			return this.$parent;
 		}
 	},

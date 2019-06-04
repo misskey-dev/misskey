@@ -198,7 +198,7 @@ export default Vue.extend({
 
 				const strength = getPasswordStrength(v);
 				this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
-				(this.$refs.passwordMetar as any).style.width = `${strength * 100}%`;
+				(this.$refs.passwordMetar as unknown).style.width = `${strength * 100}%`;
 			}
 		}
 	},
@@ -252,7 +252,7 @@ export default Vue.extend({
 			this.$refs.file.click();
 		},
 		onChangeFile() {
-			this.v = Array.from((this.$refs.file as any).files);
+			this.v = Array.from((this.$refs.file as unknown).files);
 			this.$emit('input', this.v);
 			this.$emit('change', this.v);
 		}

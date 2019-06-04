@@ -35,7 +35,7 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		poll(): any {
+		poll(): unknown {
 			return this.note.poll;
 		},
 		total(): number {

@@ -40,5 +40,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await hashtagChart.getChart(ps.span as any, ps.limit!, ps.tag);
+	return await hashtagChart.getChart(ps.span as unknown, ps.limit!, ps.tag);
 });

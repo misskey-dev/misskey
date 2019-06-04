@@ -109,12 +109,12 @@ export default Vue.extend({
 	},
 
 	computed: {
-		icon(): any {
+		icon(): unknown {
 			if (this.value.type === null) return null;
 			if (this.value.type.startsWith('fn:')) return faPlug;
 			return blockDefs.find(x => x.type === this.value.type).icon;
 		},
-		typeText(): any {
+		typeText(): unknown {
 			if (this.value.type === null) return null;
 			if (this.value.type.startsWith('fn:')) return this.value.type.split(':')[1];
 			return this.$t(`script.blocks.${this.value.type}`);

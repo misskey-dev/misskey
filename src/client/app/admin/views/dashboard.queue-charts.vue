@@ -36,7 +36,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		latestStats(): any {
+		latestStats(): unknown {
 			return this.stats[this.stats.length - 1];
 		}
 	},
@@ -99,7 +99,7 @@ export default Vue.extend({
 				show: false
 			},
 			colors: ['#00E396', '#00BCD4', '#FFB300', '#e53935'],
-			series: [{ data: [] }, { data: [] }, { data: [] }, { data: [] }] as any,
+			series: [{ data: [] }, { data: [] }, { data: [] }, { data: [] }] as unknown,
 			xaxis: {
 				type: 'numeric',
 				labels: {

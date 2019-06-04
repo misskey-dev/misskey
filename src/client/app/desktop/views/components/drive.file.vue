@@ -53,7 +53,7 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		browser(): any {
+		browser(): unknown {
 			return this.$parent;
 		},
 		isSelected(): boolean {

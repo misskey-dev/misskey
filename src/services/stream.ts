@@ -6,7 +6,7 @@ import { ReversiGame } from '../models/entities/games/reversi/game';
 import { UserGroup } from '../models/entities/user-group';
 
 class Publisher {
-	private publish = (channel: string, type: string | null, value?: any): void => {
+	private publish = (channel: string, type: string | null, value?: unknown): void => {
 		const message = type == null ? value : value == null ?
 			{ type: type, body: null } :
 			{ type: type, body: value };
@@ -17,54 +17,54 @@ class Publisher {
 		}));
 	}
 
-	public publishMainStream = (userId: User['id'], type: string, value?: any): void => {
+	public publishMainStream = (userId: User['id'], type: string, value?: unknown): void => {
 		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishDriveStream = (userId: User['id'], type: string, value?: any): void => {
+	public publishDriveStream = (userId: User['id'], type: string, value?: unknown): void => {
 		this.publish(`driveStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishNoteStream = (noteId: Note['id'], type: string, value: any): void => {
+	public publishNoteStream = (noteId: Note['id'], type: string, value: unknown): void => {
 		this.publish(`noteStream:${noteId}`, type, {
 			id: noteId,
 			body: value
 		});
 	}
 
-	public publishUserListStream = (listId: UserList['id'], type: string, value?: any): void => {
+	public publishUserListStream = (listId: UserList['id'], type: string, value?: unknown): void => {
 		this.publish(`userListStream:${listId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishMessagingStream = (userId: User['id'], otherpartyId: User['id'], type: string, value?: any): void => {
+	public publishMessagingStream = (userId: User['id'], otherpartyId: User['id'], type: string, value?: unknown): void => {
 		this.publish(`messagingStream:${userId}-${otherpartyId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishGroupMessagingStream = (groupId: UserGroup['id'], type: string, value?: any): void => {
+	public publishGroupMessagingStream = (groupId: UserGroup['id'], type: string, value?: unknown): void => {
 		this.publish(`messagingStream:${groupId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishMessagingIndexStream = (userId: User['id'], type: string, value?: any): void => {
+	public publishMessagingIndexStream = (userId: User['id'], type: string, value?: unknown): void => {
 		this.publish(`messagingIndexStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishReversiStream = (userId: User['id'], type: string, value?: any): void => {
+	public publishReversiStream = (userId: User['id'], type: string, value?: unknown): void => {
 		this.publish(`reversiStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishReversiGameStream = (gameId: ReversiGame['id'], type: string, value?: any): void => {
+	public publishReversiGameStream = (gameId: ReversiGame['id'], type: string, value?: unknown): void => {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
-	public publishNotesStream = (note: any): void => {
+	public publishNotesStream = (note: unknown): void => {
 		this.publish('notesStream', null, note);
 	}
 
-	public publishApLogStream = (log: any): void => {
+	public publishApLogStream = (log: unknown): void => {
 		this.publish('apLog', null, log);
 	}
 
-	public publishAdminStream = (userId: User['id'], type: string, value?: any): void => {
+	public publishAdminStream = (userId: User['id'], type: string, value?: unknown): void => {
 		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }

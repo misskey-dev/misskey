@@ -10,7 +10,7 @@ const interval = 3000;
  * Report queue stats regularly
  */
 export default function() {
-	const log = new Deque<any>();
+	const log = new Deque<unknown>();
 
 	ev.on('requestQueueStatsLog', x => {
 		ev.emit(`queueStatsLog:${x.id}`, log.toArray().slice(0, x.length || 50));

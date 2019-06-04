@@ -3,7 +3,7 @@ import { toASCII } from 'punycode';
 
 export default {
 	bind(el, binding, vn) {
-		const self = el._autoCompleteDirective_ = {} as any;
+		const self = el._autoCompleteDirective_ = {} as unknown;
 		self.x = new Autocomplete(el, vn.context, binding.value);
 		self.x.attach();
 	},
@@ -18,9 +18,9 @@ export default {
  * オートコンプリートを管理するクラス。
  */
 class Autocomplete {
-	private suggestion: any;
-	private textarea: any;
-	private vm: any;
+	private suggestion: unknown;
+	private textarea: unknown;
+	private vm: unknown;
 	private currentType: string;
 	private opts: {
 		model: string;

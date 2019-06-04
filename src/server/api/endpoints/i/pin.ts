@@ -36,7 +36,7 @@ export const meta = {
 		},
 
 		pinLimitExceeded: {
-			message: 'You can not pin notes any more.',
+			message: 'You can not pin notes unknown more.',
 			code: 'PIN_LIMIT_EXCEEDED',
 			id: '72dab508-c64d-498f-8740-a8eec1ba385a'
 		},

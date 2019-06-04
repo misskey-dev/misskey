@@ -76,7 +76,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		browser(): any {
+		browser(): unknown {
 			return this.$parent;
 		},
 
@@ -84,7 +84,7 @@ export default Vue.extend({
 			return this.file.type.split('/')[0];
 		},
 
-		style(): any {
+		style(): unknown {
 			return this.file.properties.avgColor ? {
 				'background-color': this.file.properties.avgColor
 			} : {};

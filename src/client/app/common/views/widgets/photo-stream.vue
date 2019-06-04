@@ -79,7 +79,7 @@ export default define({
 			e.dataTransfer.setData('mk_drive_file', JSON.stringify(file));
 		},
 
-		thumbnail(image: any): string {
+		thumbnail(image: unknown): string {
 			return this.$store.state.device.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;

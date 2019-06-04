@@ -28,7 +28,7 @@ export default Vue.extend({
 			return this.$store.getters.isSignedIn && this.$store.state.i.hasUnreadNotification;
 		},
 
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				'shift+n': this.toggle
 			};

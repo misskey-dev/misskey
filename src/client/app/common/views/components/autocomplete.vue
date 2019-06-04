@@ -40,7 +40,7 @@ type EmojiDef = {
 	isCustomEmoji?: boolean;
 };
 
-const lib = Object.entries(emojilib.lib).filter((x: any) => {
+const lib = Object.entries(emojilib.lib).filter((x: unknown) => {
 	return x[1].category != 'flags';
 });
 
@@ -51,14 +51,14 @@ const char2file = (char: string) => {
 	return codes.join('-');
 };
 
-const emjdb: EmojiDef[] = lib.map((x: any) => ({
+const emjdb: EmojiDef[] = lib.map((x: unknown) => ({
 	emoji: x[1].char,
 	name: x[0],
 	aliasOf: null,
 	url: `${twemojiBase}/2/svg/${char2file(x[1].char)}.svg`
 }));
 
-for (const x of lib as any) {
+for (const x of lib as unknown) {
 	if (x[1].keywords) {
 		for (const k of x[1].keywords) {
 			emjdb.push({
@@ -274,7 +274,7 @@ export default Vue.extend({
 				case 13: // [ENTER]
 					if (this.select !== -1) {
 						cancel();
-						(this.items[this.select] as any).click();
+						(this.items[this.select] as unknown).click();
 					} else {
 						this.close();
 					}
@@ -322,7 +322,7 @@ export default Vue.extend({
 			}
 
 			this.items[this.select].setAttribute('data-selected', 'true');
-			(this.items[this.select] as any).focus();
+			(this.items[this.select] as unknown).focus();
 		}
 	}
 });

@@ -56,7 +56,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		mfmAst(): any {
+		mfmAst(): unknown {
 			return JSON5.stringify(parse(this.mfm), null, 2);
 		}
 	},

@@ -65,7 +65,7 @@ export default Vue.extend({
 
 	methods: {
 		onNote(note) {
-			(this.$refs.timeline as any).prepend(note);
+			(this.$refs.timeline as unknown).prepend(note);
 		},
 
 		focus() {

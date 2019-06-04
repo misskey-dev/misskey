@@ -257,7 +257,7 @@ export default async function(
 	path: string,
 	name: string | null = null,
 	comment: string | null = null,
-	folderId: any = null,
+	folderId: unknown = null,
 	force: boolean = false,
 	isLink: boolean = false,
 	url: string | null = null,
@@ -344,7 +344,7 @@ export default async function(
 		return driveFolder;
 	};
 
-	const properties: {[key: string]: any} = {};
+	const properties: {[key: string]: unknown} = {};
 
 	let propPromises: Promise<void>[] = [];
 
@@ -371,7 +371,7 @@ export default async function(
 			logger.debug('calculating average color...');
 
 			try {
-				const info = await (img as any).stats();
+				const info = await (img as unknown).stats();
 
 				const r = Math.round(info.channels[0].mean);
 				const g = Math.round(info.channels[1].mean);

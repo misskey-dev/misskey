@@ -102,7 +102,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	}
 
 	public packMany(
-		files: any[],
+		files: unknown[],
 		options?: {
 			detail?: boolean
 			self?: boolean,

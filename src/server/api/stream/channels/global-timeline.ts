@@ -11,7 +11,7 @@ export default class extends Channel {
 	public static requireCredential = false;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		const meta = await fetchMeta();
 		if (meta.disableGlobalTimeline) {
 			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;

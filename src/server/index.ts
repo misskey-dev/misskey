@@ -106,7 +106,7 @@ app.use(mount(require('./web')));
 
 function createServer() {
 	if (config.https) {
-		const certs: any = {};
+		const certs: unknown = {};
 		for (const k of Object.keys(config.https)) {
 			certs[k] = fs.readFileSync(config.https[k]);
 		}
@@ -140,9 +140,9 @@ export default () => new Promise(resolve => {
 	server.listen(config.port, resolve);
 
 	//#region Network stats
-	let queue: any[] = [];
+	let queue: unknown[] = [];
 
-	requestStats(server, (stats: any) => {
+	requestStats(server, (stats: unknown) => {
 		if (stats.ok) {
 			queue.push(stats);
 		}

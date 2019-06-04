@@ -59,7 +59,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		style(): any {
+		style(): unknown {
 			return {
 				'box-shadow': this.$store.state.device.useShadow ? '0 0px 8px rgba(0, 0, 0, 0.2)' : 'none'
 			};

@@ -44,7 +44,7 @@ export class NotificationRepository extends Repository<Notification> {
 	}
 
 	public packMany(
-		notifications: any[],
+		notifications: unknown[],
 	) {
 		return Promise.all(notifications.map(x => this.pack(x)));
 	}

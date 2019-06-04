@@ -58,8 +58,8 @@ export default Vue.extend({
 	},
 
 	computed: {
-		_notifications(): any[] {
-			return (this.items as any).map(notification => {
+		_notifications(): unknown[] {
+			return (this.items as unknown).map(notification => {
 				const date = new Date(notification.createdAt).getDate();
 				const month = new Date(notification.createdAt).getMonth() + 1;
 				notification._date = date;

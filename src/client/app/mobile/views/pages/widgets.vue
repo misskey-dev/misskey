@@ -71,7 +71,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		widgets(): any[] {
+		widgets(): unknown[] {
 			return this.$store.state.device.mobileHome;
 		}
 	},

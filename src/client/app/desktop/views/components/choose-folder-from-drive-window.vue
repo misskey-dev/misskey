@@ -28,11 +28,11 @@ export default Vue.extend({
 	},
 	methods: {
 		ok() {
-			this.$emit('selected', (this.$refs.browser as any).folder);
-			(this.$refs.window as any).close();
+			this.$emit('selected', (this.$refs.browser as unknown).folder);
+			(this.$refs.window as unknown).close();
 		},
 		cancel() {
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		}
 	}
 });

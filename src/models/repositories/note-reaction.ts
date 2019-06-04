@@ -10,7 +10,7 @@ export type PackedNoteReaction = SchemaType<typeof packedNoteReactionSchema>;
 export class NoteReactionRepository extends Repository<NoteReaction> {
 	public async pack(
 		src: NoteReaction['id'] | NoteReaction,
-		me?: any
+		me?: unknown
 	): Promise<PackedNoteReaction> {
 		const reaction = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 

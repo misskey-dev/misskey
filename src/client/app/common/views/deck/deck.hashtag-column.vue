@@ -28,7 +28,7 @@ export default Vue.extend({
 			return this.$route.params.tag;
 		},
 
-		tagTl(): any {
+		tagTl(): unknown {
 			return {
 				query: [[this.tag]]
 			};

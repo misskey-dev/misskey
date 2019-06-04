@@ -1,7 +1,7 @@
 import { apiUrl, locale } from '../../config';
 import ProgressDialog from '../views/components/progress-dialog.vue';
 
-export default ($root: any) => {
+export default ($root: unknown) => {
 
 	const cropImage = file => new Promise(async (resolve, reject) => {
 		const CropWindow = await import('../views/components/crop-window.vue').then(x => x.default);
@@ -51,14 +51,14 @@ export default ($root: any) => {
 		const xhr = new XMLHttpRequest();
 		xhr.open('POST', apiUrl + '/drive/files/create', true);
 		xhr.onload = e => {
-			const file = JSON.parse((e.target as any).response);
-			(dialog as any).close();
+			const file = JSON.parse((e.target as unknown).response);
+			(dialog as unknown).close();
 			resolve(file);
 		};
 		xhr.onerror = reject;
 
 		xhr.upload.onprogress = e => {
-			if (e.lengthComputable) (dialog as any).update(e.loaded, e.total);
+			if (e.lengthComputable) (dialog as unknown).update(e.loaded, e.total);
 		};
 
 		xhr.send(data);

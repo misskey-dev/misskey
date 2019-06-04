@@ -4,9 +4,9 @@ import * as glob from 'glob';
 import { Schema } from '../../misc/schema';
 
 export type Param = {
-	validator: Context<any>;
-	transform?: any;
-	default?: any;
+	validator: Context<unknown>;
+	transform?: unknown;
+	default?: unknown;
 	deprecated?: boolean;
 	desc?: { [key: string]: string };
 	ref?: string;
@@ -100,7 +100,7 @@ export interface IEndpointMeta {
 
 export interface IEndpoint {
 	name: string;
-	exec: any;
+	exec: unknown;
 	meta: IEndpointMeta;
 }
 

@@ -34,7 +34,7 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		imageStyle(): any {
+		imageStyle(): unknown {
 			return {
 				'background-image': `url(${this.video.thumbnailUrl})`
 			};

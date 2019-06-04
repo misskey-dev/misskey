@@ -105,7 +105,7 @@ export default Vue.extend({
 
 	mounted() {
 		this.$nextTick(() => {
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 			main.style.top = '15%';
 			main.style.left = (window.innerWidth / 2) - (main.offsetWidth / 2) + 'px';
 
@@ -128,8 +128,8 @@ export default Vue.extend({
 
 			this.top();
 
-			const bg = this.$refs.bg as any;
-			const main = this.$refs.main as any;
+			const bg = this.$refs.bg as unknown;
+			const main = this.$refs.main as unknown;
 
 			if (this.isModal) {
 				bg.style.pointerEvents = 'auto';
@@ -160,8 +160,8 @@ export default Vue.extend({
 		close() {
 			this.$emit('before-close');
 
-			const bg = this.$refs.bg as any;
-			const main = this.$refs.main as any;
+			const bg = this.$refs.bg as unknown;
+			const main = this.$refs.main as unknown;
 
 			if (this.isModal) {
 				bg.style.pointerEvents = 'none';
@@ -192,7 +192,7 @@ export default Vue.extend({
 		popout() {
 			const url = typeof this.popoutUrl == 'function' ? this.popoutUrl() : this.popoutUrl;
 
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 
 			if (main) {
 				const position = main.getBoundingClientRect();
@@ -226,8 +226,8 @@ export default Vue.extend({
 			}
 
 			if (z > 0) {
-				(this.$refs.main as any).style.zIndex = z + 1;
-				if (this.isModal) (this.$refs.bg as any).style.zIndex = z + 1;
+				(this.$refs.main as unknown).style.zIndex = z + 1;
+				if (this.isModal) (this.$refs.bg as unknown).style.zIndex = z + 1;
 			}
 		},
 
@@ -240,7 +240,7 @@ export default Vue.extend({
 		},
 
 		onHeaderMousedown(e) {
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 
 			if (!contains(main, document.activeElement)) main.focus();
 
@@ -279,7 +279,7 @@ export default Vue.extend({
 
 		// 上ハンドル掴み時
 		onTopHandleMousedown(e) {
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 
 			const base = e.clientY;
 			const height = parseInt(getComputedStyle(main, '').height, 10);
@@ -305,7 +305,7 @@ export default Vue.extend({
 
 		// 右ハンドル掴み時
 		onRightHandleMousedown(e) {
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 
 			const base = e.clientX;
 			const width = parseInt(getComputedStyle(main, '').width, 10);
@@ -329,7 +329,7 @@ export default Vue.extend({
 
 		// 下ハンドル掴み時
 		onBottomHandleMousedown(e) {
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 
 			const base = e.clientY;
 			const height = parseInt(getComputedStyle(main, '').height, 10);
@@ -353,7 +353,7 @@ export default Vue.extend({
 
 		// 左ハンドル掴み時
 		onLeftHandleMousedown(e) {
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 
 			const base = e.clientX;
 			const width = parseInt(getComputedStyle(main, '').width, 10);
@@ -403,22 +403,22 @@ export default Vue.extend({
 
 		// 高さを適用
 		applyTransformHeight(height) {
-			(this.$refs.main as any).style.height = height + 'px';
+			(this.$refs.main as unknown).style.height = height + 'px';
 		},
 
 		// 幅を適用
 		applyTransformWidth(width) {
-			(this.$refs.main as any).style.width = width + 'px';
+			(this.$refs.main as unknown).style.width = width + 'px';
 		},
 
 		// Y座標を適用
 		applyTransformTop(top) {
-			(this.$refs.main as any).style.top = top + 'px';
+			(this.$refs.main as unknown).style.top = top + 'px';
 		},
 
 		// X座標を適用
 		applyTransformLeft(left) {
-			(this.$refs.main as any).style.left = left + 'px';
+			(this.$refs.main as unknown).style.left = left + 'px';
 		},
 
 		onDragover(e) {
@@ -436,7 +436,7 @@ export default Vue.extend({
 		},
 
 		onBrowserResize() {
-			const main = this.$refs.main as any;
+			const main = this.$refs.main as unknown;
 			const position = main.getBoundingClientRect();
 			const browserWidth = window.innerWidth;
 			const browserHeight = window.innerHeight;

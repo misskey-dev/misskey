@@ -50,7 +50,7 @@ export default Vue.extend({
 
 	mounted() {
 		this.$nextTick(() => {
-			(this.$refs.bg as any).style.pointerEvents = 'auto';
+			(this.$refs.bg as unknown).style.pointerEvents = 'auto';
 			anime({
 				targets: this.$refs.bg,
 				opacity: 1,
@@ -74,7 +74,7 @@ export default Vue.extend({
 		},
 
 		close() {
-			(this.$refs.bg as any).style.pointerEvents = 'none';
+			(this.$refs.bg as unknown).style.pointerEvents = 'none';
 			anime({
 				targets: this.$refs.bg,
 				opacity: 0,
@@ -82,7 +82,7 @@ export default Vue.extend({
 				easing: 'linear'
 			});
 
-			(this.$refs.main as any).style.pointerEvents = 'none';
+			(this.$refs.main as unknown).style.pointerEvents = 'none';
 			anime({
 				targets: this.$refs.main,
 				opacity: 0,

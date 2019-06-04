@@ -11,7 +11,7 @@ export default class extends Channel {
 	private q: string[][];
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		this.q = params.q;
 
 		if (this.q == null) return;

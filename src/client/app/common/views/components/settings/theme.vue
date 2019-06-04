@@ -188,7 +188,7 @@ export default Vue.extend({
 			return JSON5.stringify(this.selectedTheme, null, '\t');
 		},
 
-		myTheme(): any {
+		myTheme(): unknown {
 			return {
 				name: this.myThemeName,
 				author: this.$store.state.i.username,
@@ -272,7 +272,7 @@ export default Vue.extend({
 		},
 
 		import_() {
-			(this.$refs.file as any).click();
+			(this.$refs.file as unknown).click();
 		},
 
 		export_() {
@@ -283,7 +283,7 @@ export default Vue.extend({
 		},
 
 		onUpdateImportFile() {
-			const f = (this.$refs.file as any).files[0];
+			const f = (this.$refs.file as unknown).files[0];
 
 			const reader = new FileReader();
 

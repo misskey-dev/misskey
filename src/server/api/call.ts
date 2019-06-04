@@ -12,7 +12,7 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e'
 };
 
-export default async (endpoint: string, user: User | null | undefined, app: App | null | undefined, data: any, file?: any) => {
+export default async (endpoint: string, user: User | null | undefined, app: App | null | undefined, data: unknown, file?: unknown) => {
 	const isSecure = user != null && app == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);

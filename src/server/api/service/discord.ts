@@ -153,7 +153,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+		const { redirect_uri, state } = await new Promise<unknown>((res, rej) => {
 			redis.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
@@ -164,7 +164,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
+		const { accessToken, refreshToken, expiresDate } = await new Promise<unknown>((res, rej) =>
 			oauth2!.getOAuthAccessToken(code, {
 				grant_type: 'authorization_code',
 				redirect_uri
@@ -182,7 +182,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
+		const { id, username, discriminator } = await new Promise<unknown>((res, rej) =>
 			request({
 				url: 'https://discordapp.com/api/users/@me',
 				headers: {
@@ -230,7 +230,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+		const { redirect_uri, state } = await new Promise<unknown>((res, rej) => {
 			redis.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
@@ -241,7 +241,7 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const { accessToken, refreshToken, expiresDate } = await new Promise<any>((res, rej) =>
+		const { accessToken, refreshToken, expiresDate } = await new Promise<unknown>((res, rej) =>
 			oauth2!.getOAuthAccessToken(code, {
 				grant_type: 'authorization_code',
 				redirect_uri
@@ -259,7 +259,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
+		const { id, username, discriminator } = await new Promise<unknown>((res, rej) =>
 			request({
 				url: 'https://discordapp.com/api/users/@me',
 				headers: {

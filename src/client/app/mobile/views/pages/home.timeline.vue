@@ -59,7 +59,7 @@ export default Vue.extend({
 		});
 
 		const prepend = note => {
-			(this.$refs.timeline as any).prepend(note);
+			(this.$refs.timeline as unknown).prepend(note);
 		};
 
 		if (this.src == 'tag') {
@@ -120,12 +120,12 @@ export default Vue.extend({
 
 	methods: {
 		focus() {
-			(this.$refs.timeline as any).focus();
+			(this.$refs.timeline as unknown).focus();
 		},
 
 		warp(date) {
 			this.date = date;
-			(this.$refs.timeline as any).reload();
+			(this.$refs.timeline as unknown).reload();
 		}
 	}
 });

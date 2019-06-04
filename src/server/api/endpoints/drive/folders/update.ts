@@ -96,7 +96,7 @@ export default define(meta, async (ps, user) => {
 			}
 
 			// Check if the circular reference will occur
-			async function checkCircle(folderId: any): Promise<boolean> {
+			async function checkCircle(folderId: unknown): Promise<boolean> {
 				// Fetch folder
 				const folder2 = await DriveFolders.findOne({
 					id: folderId

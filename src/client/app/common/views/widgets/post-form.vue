@@ -84,7 +84,7 @@ export default define({
 		},
 
 		chooseFile() {
-			(this.$refs.file as any).click();
+			(this.$refs.file as unknown).click();
 		},
 
 		chooseFileFromDrive() {
@@ -118,11 +118,11 @@ export default define({
 		},
 
 		onChangeFile() {
-			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
+			for (const x of Array.from((this.$refs.file as unknown).files)) this.upload(x);
 		},
 
 		upload(file) {
-			(this.$refs.uploader as any).upload(file);
+			(this.$refs.uploader as unknown).upload(file);
 		},
 
 		onDragover(e) {

@@ -17,7 +17,7 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<void> => {
 
 	const object = await resolver.resolve(activity.object);
 
-	const uri = (object as any).id;
+	const uri = (object as unknown).id;
 
 	switch (object.type) {
 		case 'Note':

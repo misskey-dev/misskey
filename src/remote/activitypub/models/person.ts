@@ -34,7 +34,7 @@ const logger = apLogger;
  * @param x Fetched person object
  * @param uri Fetch target URI
  */
-function validatePerson(x: any, uri: string) {
+function validatePerson(x: unknown, uri: string) {
 	const expectHost = toPuny(new URL(uri).hostname);
 
 	if (x == null) {
@@ -115,7 +115,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	if (resolver == null) resolver = new Resolver();
 
-	const object = await resolver.resolve(uri) as any;
+	const object = await resolver.resolve(uri) as unknown;
 
 	const err = validatePerson(object, uri);
 
@@ -157,7 +157,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				uri: person.id,
 				tags,
 				isBot,
-				isCat: (person as any).isCat === true
+				isCat: (person as unknown).isCat === true
 			})) as IRemoteUser;
 
 			await transactionalEntityManager.save(new UserProfile({
@@ -273,7 +273,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	if (resolver == null) resolver = new Resolver();
 
-	const object = hint || await resolver.resolve(uri) as any;
+	const object = hint || await resolver.resolve(uri) as unknown;
 
 	const err = validatePerson(object, uri);
 
@@ -316,7 +316,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		name: person.name,
 		tags,
 		isBot: object.type == 'Service',
-		isCat: (person as any).isCat === true,
+		isCat: (person as unknown).isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
 	} as Partial<User>;
 
@@ -400,7 +400,7 @@ const isPropertyValue = (x: {
 		typeof x.value === 'string';
 
 const services: {
-		[x: string]: (id: string, username: string) => any
+		[x: string]: (id: string, username: string) => unknown
 	} = {
 	'misskey:authentication:twitter': (userId, screenName) => ({ userId, screenName }),
 	'misskey:authentication:github': (id, login) => ({ id, login }),
@@ -414,7 +414,7 @@ const $discord = (id: string, name: string) => {
 	return { id, username, discriminator };
 };
 
-function addService(target: { [x: string]: any }, source: IIdentifier) {
+function addService(target: { [x: string]: unknown }, source: IIdentifier) {
 	const service = services[source.name];
 
 	if (typeof source.value !== 'string')
@@ -431,7 +431,7 @@ export function analyzeAttachments(attachments: ITag[]) {
 		name: string,
 		value: string
 	}[] = [];
-	const services: { [x: string]: any } = {};
+	const services: { [x: string]: unknown } = {};
 
 	if (Array.isArray(attachments)) {
 		for (const attachment of attachments.filter(isPropertyValue)) {

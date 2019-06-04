@@ -61,7 +61,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		latestStats(): any {
+		latestStats(): unknown {
 			return this.stats.length > 0 ? this.stats[this.stats.length - 1][this.type] : null;
 		}
 	},
@@ -131,7 +131,7 @@ export default Vue.extend({
 					colors: tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--text')).toRgbString()
 				},
 			},
-			series: [] as any,
+			series: [] as unknown,
 			colors: ['#00E396', '#00BCD4', '#FFB300', '#e53935'],
 			xaxis: {
 				type: 'numeric',

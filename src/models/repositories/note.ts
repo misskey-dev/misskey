@@ -27,7 +27,7 @@ export class NoteRepository extends Repository<Note> {
 				hide = false;
 			} else {
 				// 指定されているかどうか
-				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
+				const specified = packedNote.visibleUserIds!.some((id: unknown) => meId === id);
 
 				if (specified) {
 					hide = false;

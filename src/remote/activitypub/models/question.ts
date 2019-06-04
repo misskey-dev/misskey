@@ -33,7 +33,7 @@ export async function extractPollFromQuestion(source: string | IQuestion): Promi
  * @param uri URI of AP Question object
  * @returns true if updated
  */
-export async function updateQuestion(value: any) {
+export async function updateQuestion(value: unknown) {
 	const uri = typeof value == 'string' ? value : value.id;
 
 	// URIがこのサーバーを指しているならスキップ

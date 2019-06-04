@@ -8,7 +8,7 @@ import { awaitAll } from '../../prelude/await-all';
 export class AuthSessionRepository extends Repository<AuthSession> {
 	public async pack(
 		src: AuthSession['id'] | AuthSession,
-		me?: any
+		me?: unknown
 	) {
 		const session = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 

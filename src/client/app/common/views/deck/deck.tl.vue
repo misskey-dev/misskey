@@ -45,7 +45,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		stream(): any {
+		stream(): unknown {
 			switch (this.src) {
 				case 'home': return this.$root.stream.useSharedConnection('homeTimeline');
 				case 'local': return this.$root.stream.useSharedConnection('localTimeline');
@@ -66,7 +66,7 @@ export default Vue.extend({
 
 	watch: {
 		mediaOnly() {
-			(this.$refs.timeline as any).reload();
+			(this.$refs.timeline as unknown).reload();
 		}
 	},
 
@@ -107,15 +107,15 @@ export default Vue.extend({
 	methods: {
 		onNote(note) {
 			if (this.mediaOnly && note.files.length == 0) return;
-			(this.$refs.timeline as any).prepend(note);
+			(this.$refs.timeline as unknown).prepend(note);
 		},
 
 		onChangeFollowing() {
-			(this.$refs.timeline as any).reload();
+			(this.$refs.timeline as unknown).reload();
 		},
 
 		focus() {
-			(this.$refs.timeline as any).focus();
+			(this.$refs.timeline as unknown).focus();
 		}
 	}
 });

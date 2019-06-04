@@ -8,7 +8,7 @@ import { url, lang } from './config';
 
 export default Vue.extend({
 	computed: {
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				'h|slash': this.help,
 				'd': this.dark

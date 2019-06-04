@@ -24,7 +24,7 @@ export default Vue.extend({
 	},
 	methods: {
 		close() {
-			(this as any).$refs.window.close();
+			(this as unknown).$refs.window.close();
 		}
 	}
 });

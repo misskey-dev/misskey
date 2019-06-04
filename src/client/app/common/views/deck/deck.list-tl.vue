@@ -64,7 +64,7 @@ export default Vue.extend({
 	methods: {
 		onNote(note) {
 			if (this.mediaOnly && note.files.length == 0) return;
-			(this.$refs.timeline as any).prepend(note);
+			(this.$refs.timeline as unknown).prepend(note);
 		},
 
 		onUserAdded() {

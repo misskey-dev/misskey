@@ -6,9 +6,9 @@ import call from './call';
 import { ApiError } from './error';
 
 export default (endpoint: IEndpoint, ctx: Koa.BaseContext) => new Promise((res) => {
-	const body = ctx.is('multipart/form-data') ? (ctx.req as any).body : ctx.request.body;
+	const body = ctx.is('multipart/form-data') ? (ctx.req as unknown).body : ctx.request.body;
 
-	const reply = (x?: any, y?: ApiError) => {
+	const reply = (x?: unknown, y?: ApiError) => {
 		if (x == null) {
 			ctx.status = 204;
 		} else if (typeof x === 'number') {
@@ -31,7 +31,7 @@ export default (endpoint: IEndpoint, ctx: Koa.BaseContext) => new Promise((res) 
 	// Authentication
 	authenticate(body['i']).then(([user, app]) => {
 		// API invoking
-		call(endpoint.name, user, app, body, (ctx.req as any).file).then((res: any) => {
+		call(endpoint.name, user, app, body, (ctx.req as unknown).file).then((res: unknown) => {
 			reply(res);
 		}).catch((e: ApiError) => {
 			reply(e.httpStatusCode ? e.httpStatusCode : e.kind == 'client' ? 400 : 500, e);

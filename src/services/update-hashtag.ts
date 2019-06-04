@@ -15,7 +15,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 		const q = Hashtags.createQueryBuilder('tag').update()
 			.where('tag.name = :name', { name: tag });
 
-		const set = {} as any;
+		const set = {} as unknown;
 
 		if (isUserAttached) {
 			if (inc) {

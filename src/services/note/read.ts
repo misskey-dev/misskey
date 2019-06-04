@@ -9,7 +9,7 @@ import { NoteUnreads } from '../../models';
 export default (
 	userId: User['id'],
 	noteId: Note['id']
-) => new Promise<any>(async (resolve, reject) => {
+) => new Promise<unknown>(async (resolve, reject) => {
 	// Remove document
 	/*const res = */await NoteUnreads.delete({
 		userId: userId,

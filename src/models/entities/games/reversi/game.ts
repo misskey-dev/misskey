@@ -116,12 +116,12 @@ export class ReversiGame {
 	@Column('jsonb', {
 		nullable: true, default: null,
 	})
-	public form1: any | null;
+	public form1: unknown | null;
 
 	@Column('jsonb', {
 		nullable: true, default: null,
 	})
-	public form2: any | null;
+	public form2: unknown | null;
 
 	/**
 	 * ログのposを文字列としてすべて連結したもののCRC32値

@@ -58,7 +58,7 @@ export const meta = {
 			validator: $.optional.nullable.str.pipe(text =>
 				length(text.trim()) <= maxNoteTextLength && text.trim() != ''
 			),
-			default: null as any,
+			default: null as unknown,
 			desc: {
 				'ja-JP': '投稿内容'
 			}

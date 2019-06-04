@@ -12,7 +12,7 @@ export default class extends Channel {
 	private groupId: string | null;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		this.otherpartyId = params.otherparty as string;
 		this.groupId = params.group as string;
 
@@ -39,7 +39,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	public onMessage(type: string, body: any) {
+	public onMessage(type: string, body: unknown) {
 		switch (type) {
 			case 'read':
 				if (this.otherpartyId) {

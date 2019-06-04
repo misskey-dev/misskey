@@ -59,11 +59,11 @@ export default Vue.extend({
 	methods: {
 		onPopState() {
 			if (this.$route.params.folder) {
-				(this.$refs as any).browser.cd(this.$route.params.folder, true);
+				(this.$refs as unknown).browser.cd(this.$route.params.folder, true);
 			} else if (this.$route.params.file) {
-				(this.$refs as any).browser.cf(this.$route.params.file, true);
+				(this.$refs as unknown).browser.cf(this.$route.params.file, true);
 			} else {
-				(this.$refs as any).browser.goRoot(true);
+				(this.$refs as unknown).browser.goRoot(true);
 			}
 		},
 		onMoveRoot(silent) {

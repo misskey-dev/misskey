@@ -16,7 +16,7 @@ const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
 const utc = moment.utc;
 
-export type Obj = { [key: string]: any };
+export type Obj = { [key: string]: unknown };
 
 export type DeepPartial<T> = {
 	[P in keyof T]?: DeepPartial<T[P]>;
@@ -49,7 +49,7 @@ type Log = {
 	/**
 	 * ユニークインクリメント用
 	 */
-	unique?: Record<string, any>;
+	unique?: Record<string, unknown>;
 };
 
 const camelToSnake = (str: string) => {
@@ -59,7 +59,7 @@ const camelToSnake = (str: string) => {
 /**
  * 様々なチャートの管理を司るクラス
  */
-export default abstract class Chart<T extends Record<string, any>> {
+export default abstract class Chart<T extends Record<string, unknown>> {
 	private static readonly columnPrefix = '___';
 	private static readonly columnDot = '_';
 
@@ -71,7 +71,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private static convertSchemaToFlatColumnDefinitions(schema: Schema) {
-		const columns = {} as any;
+		const columns = {} as unknown;
 		const flatColumns = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
 				const p = path ? `${path}${this.columnDot}${k}` : k;
@@ -90,7 +90,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private static convertFlattenColumnsToObject(x: Record<string, number>) {
-		const obj = {} as any;
+		const obj = {} as unknown;
 		for (const k of Object.keys(x).filter(k => k.startsWith(Chart.columnPrefix))) {
 			// now k is ___x_y_z
 			const path = k.substr(Chart.columnPrefix.length).split(Chart.columnDot).join('.');
@@ -100,7 +100,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static convertObjectToFlattenColumns(x: Record<string, any>) {
+	private static convertObjectToFlattenColumns(x: Record<string, unknown>) {
 		const columns = {} as Record<string, number>;
 		const flatten = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
@@ -117,7 +117,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static convertQuery(x: Record<string, any>) {
+	private static convertQuery(x: Record<string, unknown>) {
 		const query: Record<string, Function> = {};
 
 		const columns = Chart.convertObjectToFlattenColumns(x);
@@ -258,7 +258,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 		if (latest != null) {
 			const obj = Chart.convertFlattenColumnsToObject(
-				latest as Record<string, any>);
+				latest as Record<string, unknown>);
 
 			// 空ログデータを作成
 			data = await this.getNewLog(obj);
@@ -296,7 +296,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	protected commit(query: Record<string, Function>, group: string | null = null, uniqueKey?: string, uniqueValue?: string): Promise<any> {
+	protected commit(query: Record<string, Function>, group: string | null = null, uniqueKey?: string, uniqueValue?: string): Promise<unknown> {
 		const update = async (log: Log) => {
 			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
 			if (
@@ -332,12 +332,12 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	protected async inc(inc: DeepPartial<T>, group: string | null = null): Promise<void> {
-		await this.commit(Chart.convertQuery(inc as any), group);
+		await this.commit(Chart.convertQuery(inc as unknown), group);
 	}
 
 	@autobind
 	protected async incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string | null = null): Promise<void> {
-		await this.commit(Chart.convertQuery(inc as any), group, key, value);
+		await this.commit(Chart.convertQuery(inc as unknown), group, key, value);
 	}
 
 	@autobind
@@ -409,17 +409,17 @@ export default abstract class Chart<T extends Record<string, any>> {
 			const log = logs.find(l => utc(l.date * 1000).isSame(current));
 
 			if (log) {
-				const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
+				const data = Chart.convertFlattenColumnsToObject(log as Record<string, unknown>);
 				chart.unshift(data);
 			} else {
 				// 隙間埋め
 				const latest = logs.find(l => utc(l.date * 1000).isBefore(current));
-				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
+				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, unknown>) : null;
 				chart.unshift(this.getNewLog(data));
 			}
 		}
 
-		const res: ArrayValue<T> = {} as any;
+		const res: ArrayValue<T> = {} as unknown;
 
 		/**
 		 * [{ foo: 1, bar: 5 }, { foo: 2, bar: 6 }, { foo: 3, bar: 7 }]

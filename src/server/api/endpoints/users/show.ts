@@ -87,7 +87,7 @@ export default define(meta, async (ps, me) => {
 				throw new ApiError(meta.errors.failedToResolveRemoteUser);
 			});
 		} else {
-			const q: any = ps.userId != null
+			const q: unknown = ps.userId != null
 				? { id: ps.userId }
 				: { usernameLower: ps.username!.toLowerCase(), host: null };
 

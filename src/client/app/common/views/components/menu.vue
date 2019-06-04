@@ -33,7 +33,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.$nextTick(() => {
-			const popover = this.$refs.popover as any;
+			const popover = this.$refs.popover as unknown;
 
 			const rect = this.source.getBoundingClientRect();
 			const width = popover.offsetWidth;
@@ -92,7 +92,7 @@ export default Vue.extend({
 			this.close();
 		},
 		close() {
-			(this.$refs.backdrop as any).style.pointerEvents = 'none';
+			(this.$refs.backdrop as unknown).style.pointerEvents = 'none';
 			anime({
 				targets: this.$refs.backdrop,
 				opacity: 0,
@@ -100,7 +100,7 @@ export default Vue.extend({
 				easing: 'linear'
 			});
 
-			(this.$refs.popover as any).style.pointerEvents = 'none';
+			(this.$refs.popover as unknown).style.pointerEvents = 'none';
 			anime({
 				targets: this.$refs.popover,
 				opacity: 0,

@@ -57,7 +57,7 @@ export default Vue.extend({
 		canSend(): boolean {
 			return (this.text != null && this.text != '') || this.file != null;
 		},
-		room(): any {
+		room(): unknown {
 			return this.$parent;
 		}
 	},
@@ -142,7 +142,7 @@ export default Vue.extend({
 		},
 
 		chooseFile() {
-			(this.$refs.file as any).click();
+			(this.$refs.file as unknown).click();
 		},
 
 		chooseFileFromDrive() {
@@ -154,11 +154,11 @@ export default Vue.extend({
 		},
 
 		onChangeFile() {
-			this.upload((this.$refs.file as any).files[0]);
+			this.upload((this.$refs.file as unknown).files[0]);
 		},
 
 		upload(file) {
-			(this.$refs.uploader as any).upload(file);
+			(this.$refs.uploader as unknown).upload(file);
 		},
 
 		onUploaded(file) {

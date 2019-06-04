@@ -25,7 +25,7 @@ export default define(meta, async (ps, user) => {
 		throw new Error('二段階認証の設定が開始されていません');
 	}
 
-	const verified = (speakeasy as any).totp.verify({
+	const verified = (speakeasy as unknown).totp.verify({
 		secret: profile.twoFactorTempSecret,
 		encoding: 'base32',
 		token: token

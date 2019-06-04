@@ -6,8 +6,8 @@
  * @param last URL of last page (optional)
  * @param orderedItems attached objects (optional)
  */
-export default function(id: string, totalItems: any, first?: string, last?: string, orderedItems?: object) {
-	const page: any = {
+export default function(id: string, totalItems: unknown, first?: string, last?: string, orderedItems?: object) {
+	const page: unknown = {
 		id,
 		type: 'OrderedCollection',
 		totalItems,

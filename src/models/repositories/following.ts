@@ -51,7 +51,7 @@ export class FollowingRepository extends Repository<Following> {
 
 	public async pack(
 		src: Following['id'] | Following,
-		me?: any,
+		me?: unknown,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
@@ -76,8 +76,8 @@ export class FollowingRepository extends Repository<Following> {
 	}
 
 	public packMany(
-		followings: any[],
-		me?: any,
+		followings: unknown[],
+		me?: unknown,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;

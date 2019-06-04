@@ -25,7 +25,7 @@ import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 
-export function validateNote(object: any, uri: string) {
+export function validateNote(object: unknown, uri: string) {
 	const expectHost = extractDbHost(uri);
 
 	if (object == null) {
@@ -76,10 +76,10 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 /**
  * Noteを作成します。
  */
-export async function createNote(value: any, resolver?: Resolver, silent = false): Promise<Note | null> {
+export async function createNote(value: unknown, resolver?: Resolver, silent = false): Promise<Note | null> {
 	if (resolver == null) resolver = new Resolver();
 
-	const object: any = await resolver.resolve(value);
+	const object: unknown = await resolver.resolve(value);
 
 	const entryUri = value.id || value;
 	const err = validateNote(object, entryUri);

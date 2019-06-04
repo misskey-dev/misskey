@@ -55,7 +55,7 @@ export default (opts) => ({
 
 	methods: {
 		updateItem(i, item) {
-			Vue.set((this as any).items, i, item);
+			Vue.set((this as unknown).items, i, item);
 		},
 
 		reload() {

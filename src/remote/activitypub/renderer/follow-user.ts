@@ -7,7 +7,7 @@ import { ensure } from '../../../prelude/ensure';
  * Convert (local|remote)(Follower|Followee)ID to URL
  * @param id Follower|Followee ID
  */
-export default async function renderFollowUser(id: User['id']): Promise<any> {
+export default async function renderFollowUser(id: User['id']): Promise<unknown> {
 	const user = await Users.findOne(id).then(ensure);
 	return Users.isLocalUser(user) ? `${config.url}/users/${user.id}` : user.uri;
 }

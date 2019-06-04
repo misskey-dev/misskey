@@ -33,7 +33,7 @@ export default Vue.extend({
 			this.max = parseInt(max, 10);
 		},
 		close() {
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		}
 	}
 });

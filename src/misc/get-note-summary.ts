@@ -2,7 +2,7 @@
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-const summarize = (note: any): string => {
+const summarize = (note: unknown): string => {
 	if (note.deletedAt) {
 		return '(削除された投稿)';
 	}

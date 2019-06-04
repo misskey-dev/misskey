@@ -36,7 +36,7 @@ export default Vue.extend({
 	methods: {
 		warp(date) {
 			this.date = date;
-			(this.$refs.timeline as any).reload();
+			(this.$refs.timeline as unknown).reload();
 		}
 	}
 });

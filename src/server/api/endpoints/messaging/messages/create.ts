@@ -157,7 +157,7 @@ export default define(meta, async (ps, user) => {
 		text: ps.text ? ps.text.trim() : null,
 		userId: user.id,
 		isRead: false,
-		reads: [] as any[]
+		reads: [] as unknown[]
 	} as MessagingMessage);
 
 	const messageObj = await MessagingMessages.pack(message);

@@ -37,7 +37,7 @@ export class Meta {
 	@Column('jsonb', {
 		default: [],
 	})
-	public announcements: Record<string, any>[];
+	public announcements: Record<string, unknown>[];
 
 	@Column('boolean', {
 		default: false,

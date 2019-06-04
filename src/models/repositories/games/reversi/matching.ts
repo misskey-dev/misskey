@@ -8,7 +8,7 @@ import { awaitAll } from '../../../../prelude/await-all';
 export class ReversiMatchingRepository extends Repository<ReversiMatching> {
 	public async pack(
 		src: ReversiMatching['id'] | ReversiMatching,
-		me: any
+		me: unknown
 	) {
 		const matching = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 

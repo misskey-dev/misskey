@@ -51,14 +51,14 @@ export default Vue.extend({
 			this.files = files;
 		},
 		upload() {
-			(this.$refs.browser as any).selectLocalFile();
+			(this.$refs.browser as unknown).selectLocalFile();
 		},
 		ok() {
 			this.$emit('selected', this.multiple ? this.files : this.files[0]);
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		},
 		cancel() {
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		}
 	}
 });

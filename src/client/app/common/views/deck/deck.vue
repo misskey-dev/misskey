@@ -30,24 +30,24 @@ export default Vue.extend({
 	},
 
 	computed: {
-		columns(): any[] {
+		columns(): unknown[] {
 			if (this.$store.state.device.deck == null) return [];
 			return this.$store.state.device.deck.columns;
 		},
 
-		layout(): any[] {
+		layout(): unknown[] {
 			if (this.$store.state.device.deck == null) return [];
 			if (this.$store.state.device.deck.layout == null) return this.$store.state.device.deck.columns.map(c => [c.id]);
 			return this.$store.state.device.deck.layout;
 		},
 
-		style(): any {
+		style(): unknown {
 			return {
 				height: `calc(100vh - ${this.$store.state.uiHeaderHeight}px)`
 			};
 		},
 
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				't': this.focus
 			};

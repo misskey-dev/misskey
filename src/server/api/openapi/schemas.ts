@@ -17,7 +17,7 @@ import { packedUserGroupSchema } from '../../../models/repositories/user-group';
 import { packedNoteFavoriteSchema } from '../../../models/repositories/note-favorite';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
-	const res: any = schema;
+	const res: unknown = schema;
 
 	if (schema.type === 'object' && schema.properties) {
 		res.required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);

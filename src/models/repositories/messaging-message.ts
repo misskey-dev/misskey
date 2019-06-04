@@ -14,7 +14,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 
 	public async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
-		me?: any,
+		me?: unknown,
 		options?: {
 			populateRecipient?: boolean,
 			populateGroup?: boolean,

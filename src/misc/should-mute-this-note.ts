@@ -1,4 +1,4 @@
-export default function(note: any, mutedUserIds: string[]): boolean {
+export default function(note: unknown, mutedUserIds: string[]): boolean {
 	if (mutedUserIds.includes(note.userId)) {
 		return true;
 	}

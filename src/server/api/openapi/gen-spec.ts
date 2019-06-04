@@ -25,7 +25,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			url: config.apiUrl
 		}],
 
-		paths: {} as any,
+		paths: {} as unknown,
 
 		components: {
 			schemas: schemas,
@@ -41,7 +41,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 	};
 
 	function genProps(props: { [key: string]: Context; }) {
-		const properties = {} as any;
+		const properties = {} as unknown;
 
 		for (const [k, v] of Object.entries(props)) {
 			properties[k] = genProp(v);
@@ -50,8 +50,8 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 		return properties;
 	}
 
-	function genProp(param: Context): any {
-		const required = param.name === 'Object' ? (param as any).props ? Object.entries((param as any).props).filter(([k, v]: any) => !v.isOptional).map(([k, v]) => k) : [] : [];
+	function genProp(param: Context): unknown {
+		const required = param.name === 'Object' ? (param as unknown).props ? Object.entries((param as unknown).props).filter(([k, v]: unknown) => !v.isOptional).map(([k, v]) => k) : [] : [];
 		return {
 			description: (param.data || {}).desc,
 			default: (param.data || {}).default,
@@ -61,27 +61,27 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			...(param.name === 'ID' ? { example: 'xxxxxxxxxx', format: 'id' } : {}),
 			nullable: param.isNullable,
 			...(param.name === 'String' ? {
-				...((param as any).enum ? { enum: (param as any).enum } : {}),
-				...((param as any).minLength ? { minLength: (param as any).minLength } : {}),
-				...((param as any).maxLength ? { maxLength: (param as any).maxLength } : {}),
+				...((param as unknown).enum ? { enum: (param as unknown).enum } : {}),
+				...((param as unknown).minLength ? { minLength: (param as unknown).minLength } : {}),
+				...((param as unknown).maxLength ? { maxLength: (param as unknown).maxLength } : {}),
 			} : {}),
 			...(param.name === 'Number' ? {
-				...((param as any).minimum ? { minimum: (param as any).minimum } : {}),
-				...((param as any).maximum ? { maximum: (param as any).maximum } : {}),
+				...((param as unknown).minimum ? { minimum: (param as unknown).minimum } : {}),
+				...((param as unknown).maximum ? { maximum: (param as unknown).maximum } : {}),
 			} : {}),
 			...(param.name === 'Object' ? {
 				...(required.length > 0 ? { required } : {}),
-				properties: (param as any).props ? genProps((param as any).props) : {}
+				properties: (param as unknown).props ? genProps((param as unknown).props) : {}
 			} : {}),
 			...(param.name === 'Array' ? {
-				items: (param as any).ctx ? genProp((param as any).ctx) : {}
+				items: (param as unknown).ctx ? genProp((param as unknown).ctx) : {}
 			} : {})
 		};
 	}
 
 	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
-		const porops = {} as any;
-		const errors = {} as any;
+		const porops = {} as unknown;
+		const errors = {} as unknown;
 
 		if (endpoint.meta.errors) {
 			for (const e of Object.values(endpoint.meta.errors)) {
@@ -154,7 +154,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 					}
 				} : {
 					'204': {
-						description: 'OK (without any results)',
+						description: 'OK (without unknown results)',
 					}
 				}),
 				'400': {

@@ -149,7 +149,7 @@ export default Vue.extend({
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
-				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
+				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as unknown).grecaptcha.getResponse() : null
 			}).then(() => {
 				this.$root.api('signin', {
 					username: this.username,
@@ -165,7 +165,7 @@ export default Vue.extend({
 				});
 
 				if (this.meta.enableRecaptcha) {
-					(window as any).grecaptcha.reset();
+					(window as unknown).grecaptcha.reset();
 				}
 			});
 		}

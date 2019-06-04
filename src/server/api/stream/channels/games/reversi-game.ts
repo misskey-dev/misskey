@@ -15,7 +15,7 @@ export default class extends Channel {
 	private gameId: ReversiGame['id'] | null = null;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		this.gameId = params.gameId;
 
 		// Subscribe game stream
@@ -25,7 +25,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	public onMessage(type: string, body: any) {
+	public onMessage(type: string, body: unknown) {
 		switch (type) {
 			case 'accept': this.accept(true); break;
 			case 'cancelAccept': this.accept(false); break;
@@ -39,7 +39,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async updateSettings(key: string, value: any) {
+	private async updateSettings(key: string, value: unknown) {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
@@ -63,7 +63,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async initForm(form: any) {
+	private async initForm(form: unknown) {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
@@ -87,7 +87,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async updateForm(id: string, value: any) {
+	private async updateForm(id: string, value: unknown) {
 		if (this.user == null) return;
 
 		const game = await ReversiGames.findOne(this.gameId!);
@@ -98,7 +98,7 @@ export default class extends Channel {
 
 		const form = game.user1Id === this.user.id ? game.form2 : game.form1;
 
-		const item = form.find((i: any) => i.id == id);
+		const item = form.find((i: unknown) => i.id == id);
 
 		if (item == null) return;
 
@@ -120,7 +120,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async message(message: any) {
+	private async message(message: unknown) {
 		if (this.user == null) return;
 
 		message.id = Math.random();

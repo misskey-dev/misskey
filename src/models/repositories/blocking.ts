@@ -11,7 +11,7 @@ export type PackedBlocking = SchemaType<typeof packedBlockingSchema>;
 export class BlockingRepository extends Repository<Blocking> {
 	public async pack(
 		src: Blocking['id'] | Blocking,
-		me?: any
+		me?: unknown
 	): Promise<PackedBlocking> {
 		const blocking = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
@@ -26,8 +26,8 @@ export class BlockingRepository extends Repository<Blocking> {
 	}
 
 	public packMany(
-		blockings: any[],
-		me: any
+		blockings: unknown[],
+		me: unknown
 	) {
 		return Promise.all(blockings.map(x => this.pack(x, me)));
 	}

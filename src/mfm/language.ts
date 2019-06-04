@@ -171,10 +171,10 @@ export const mfmLanguage = P.createLanguage({
 	},
 	link: r => {
 		return P.seqObj(
-			['silent', P.string('?').fallback(null).map(x => x != null)] as any,
-			P.string('['), ['text', P.regexp(/[^\n\[\]]+/)] as any, P.string(']'),
-			P.string('('), ['url', r.url] as any, P.string(')'),
-		).map((x: any) => {
+			['silent', P.string('?').fallback(null).map(x => x != null)] as unknown,
+			P.string('['), ['text', P.regexp(/[^\n\[\]]+/)] as unknown, P.string(']'),
+			P.string('('), ['url', r.url] as unknown, P.string(')'),
+		).map((x: unknown) => {
 			return createTree('link', r.inline.atLeast(1).tryParse(x.text), {
 				silent: x.silent,
 				url: x.url.node.props.url
@@ -186,5 +186,5 @@ export const mfmLanguage = P.createLanguage({
 		const code = P.regexp(emojiRegex).map(x => createLeaf('emoji', { emoji: x }));
 		return P.alt(name, code);
 	},
-	text: () => P.any.map(x => createLeaf('text', { text: x }))
+	text: () => P.unknown.map(x => createLeaf('text', { text: x }))
 });

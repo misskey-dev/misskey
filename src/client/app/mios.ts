@@ -23,7 +23,7 @@ export default class MiOS extends EventEmitter {
 	 * Misskeyの /meta で取得できるメタ情報
 	 */
 	private meta: {
-		data: { [x: string]: any };
+		data: { [x: string]: unknown };
 		chachedAt: Date;
 	};
 
@@ -74,7 +74,7 @@ export default class MiOS extends EventEmitter {
 		this.shouldRegisterSw = shouldRegisterSw;
 
 		if (this.debug) {
-			(window as any).os = this;
+			(window as unknown).os = this;
 		}
 	}
 
@@ -375,7 +375,7 @@ export default class MiOS extends EventEmitter {
 	 * @param data パラメータ
 	 */
 	@autobind
-	public api(endpoint: string, data: { [x: string]: any } = {}, silent = false): Promise<{ [x: string]: any }> {
+	public api(endpoint: string, data: { [x: string]: unknown } = {}, silent = false): Promise<{ [x: string]: unknown }> {
 		if (!silent) {
 			if (++pending === 1) {
 				spinner = document.createElement('div');
@@ -392,7 +392,7 @@ export default class MiOS extends EventEmitter {
 
 		const promise = new Promise((resolve, reject) => {
 			// Append a credential
-			if (this.store.getters.isSignedIn) (data as any).i = this.store.state.i.token;
+			if (this.store.getters.isSignedIn) (data as unknown).i = this.store.state.i.token;
 
 			const req = {
 				id: uuid(),
@@ -450,7 +450,7 @@ export default class MiOS extends EventEmitter {
 	 */
 	@autobind
 	public getMeta(force = false) {
-		return new Promise<{ [x: string]: any }>(async (res, rej) => {
+		return new Promise<{ [x: string]: unknown }>(async (res, rej) => {
 			if (this.isMetaFetching) {
 				this.once('_meta_fetched_', () => {
 					res(this.meta.data);

@@ -27,7 +27,7 @@ export default Vue.extend({
 			this.destroyDom();
 		},
 		ok() {
-			this.$emit('selected', (this.$refs.browser as any).folder);
+			this.$emit('selected', (this.$refs.browser as unknown).folder);
 			this.destroyDom();
 		}
 	}

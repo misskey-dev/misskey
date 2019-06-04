@@ -81,7 +81,7 @@ export async function readGroupMessagingMessage(
 		// Update document
 		await MessagingMessages.createQueryBuilder().update()
 			.set({
-				reads: (() => `array_append("reads", '${joining.userId}')`) as any
+				reads: (() => `array_append("reads", '${joining.userId}')`) as unknown
 			})
 			.where('id = :id', { id: message.id })
 			.execute();

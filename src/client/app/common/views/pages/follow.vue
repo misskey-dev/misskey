@@ -54,7 +54,7 @@ export default Vue.extend({
 			return Vue.filter('userName')(this.$store.state.i);
 		},
 
-		bannerStyle(): any {
+		bannerStyle(): unknown {
 			if (this.user.bannerUrl == null) return {};
 			return {
 				backgroundColor: this.user.bannerColor,

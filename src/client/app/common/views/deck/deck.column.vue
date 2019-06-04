@@ -83,7 +83,7 @@ export default Vue.extend({
 			return this.column == null;
 		},
 
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				'shift+up': () => this.$parent.$emit('parentFocus', 'up'),
 				'shift+down': () => this.$parent.$emit('parentFocus', 'down'),

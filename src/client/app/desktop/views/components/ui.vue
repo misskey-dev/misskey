@@ -32,14 +32,14 @@ export default Vue.extend({
 			return this.$store.state.device.navbar;
 		},
 
-		style(): any {
+		style(): unknown {
 			if (!this.$store.getters.isSignedIn || this.$store.state.settings.wallpaper == null) return {};
 			return {
 				backgroundImage: `url(${ this.$store.state.settings.wallpaper })`
 			};
 		},
 
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				'p': this.post,
 				'n': this.post,

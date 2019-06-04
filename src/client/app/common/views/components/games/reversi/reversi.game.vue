@@ -134,15 +134,15 @@ export default Vue.extend({
 			return this.myColor === true ? false : true;
 		},
 
-		blackUser(): any {
+		blackUser(): unknown {
 			return this.game.black == 1 ? this.game.user1 : this.game.user2;
 		},
 
-		whiteUser(): any {
+		whiteUser(): unknown {
 			return this.game.black == 1 ? this.game.user2 : this.game.user1;
 		},
 
-		turnUser(): any {
+		turnUser(): unknown {
 			if (this.o.turn === true) {
 				return this.game.black == 1 ? this.game.user1 : this.game.user2;
 			} else if (this.o.turn === false) {
@@ -158,7 +158,7 @@ export default Vue.extend({
 			return this.turnUser.id == this.$store.state.i.id;
 		},
 
-		cellsStyle(): any {
+		cellsStyle(): unknown {
 			return {
 				'grid-template-rows': `repeat(${this.game.map.length}, 1fr)`,
 				'grid-template-columns': `repeat(${this.game.map[0].length}, 1fr)`

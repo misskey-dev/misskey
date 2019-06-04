@@ -25,7 +25,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				'esc': this.close,
 				'enter': this.post,
@@ -36,19 +36,19 @@ export default Vue.extend({
 
 	methods: {
 		post() {
-			(this.$refs.form as any).ok();
+			(this.$refs.form as unknown).ok();
 		},
 		quote() {
-			(this.$refs.form as any).onQuote();
+			(this.$refs.form as unknown).onQuote();
 		},
 		close() {
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		},
 		onPosted() {
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		},
 		onCanceled() {
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		},
 		onWindowClosed() {
 			this.$emit('closed');

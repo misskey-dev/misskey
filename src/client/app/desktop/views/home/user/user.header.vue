@@ -62,7 +62,7 @@ export default Vue.extend({
 	},
 	props: ['user'],
 	computed: {
-		style(): any {
+		style(): unknown {
 			if (this.user.bannerUrl == null) return {};
 			return {
 				backgroundColor: this.user.bannerColor,
@@ -93,7 +93,7 @@ export default Vue.extend({
 			this.$post({ mention: this.user });
 		},
 		onScroll() {
-			const banner = this.$refs.banner as any;
+			const banner = this.$refs.banner as unknown;
 
 			const top = window.scrollY;
 

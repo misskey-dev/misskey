@@ -11,7 +11,7 @@ import { genId } from '../../../misc/gen-id';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
-export async function importUserLists(job: Bull.Job, done: any): Promise<void> {
+export async function importUserLists(job: Bull.Job, done: unknown): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

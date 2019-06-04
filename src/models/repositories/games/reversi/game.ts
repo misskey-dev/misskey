@@ -7,7 +7,7 @@ import { ensure } from '../../../../prelude/ensure';
 export class ReversiGameRepository extends Repository<ReversiGame> {
 	public async pack(
 		src: ReversiGame['id'] | ReversiGame,
-		me?: any,
+		me?: unknown,
 		options?: {
 			detail?: boolean
 		}

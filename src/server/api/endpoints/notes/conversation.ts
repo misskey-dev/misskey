@@ -65,7 +65,7 @@ export default define(meta, async (ps, user) => {
 	const conversation: Note[] = [];
 	let i = 0;
 
-	async function get(id: any) {
+	async function get(id: unknown) {
 		i++;
 		const p = await Notes.findOne(id);
 		if (p == null) return;

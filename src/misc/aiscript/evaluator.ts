@@ -4,7 +4,7 @@ import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
 
 type Fn = {
 	slots: string[];
-	exec: (args: Record<string, any>) => ReturnType<ASEvaluator['evaluate']>;
+	exec: (args: Record<string, unknown>) => ReturnType<ASEvaluator['evaluate']>;
 };
 
 /**
@@ -13,10 +13,10 @@ type Fn = {
 export class ASEvaluator {
 	private variables: Variable[];
 	private pageVars: PageVar[];
-	private envVars: Record<keyof typeof envVarsDef, any>;
+	private envVars: Record<keyof typeof envVarsDef, unknown>;
 
 	private opts: {
-		randomSeed: string; user?: any; visitor?: any; page?: any; url?: string; version: string;
+		randomSeed: string; user?: unknown; visitor?: unknown; page?: unknown; url?: string; version: string;
 	};
 
 	constructor(variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
@@ -48,7 +48,7 @@ export class ASEvaluator {
 	}
 
 	@autobind
-	public updatePageVar(name: string, value: any) {
+	public updatePageVar(name: string, value: unknown) {
 		const pageVar = this.pageVars.find(v => v.name === name);
 		if (pageVar !== undefined) {
 			pageVar.value = value;
@@ -72,8 +72,8 @@ export class ASEvaluator {
 	}
 
 	@autobind
-	public evaluateVars(): Record<string, any> {
-		const values: Record<string, any> = {};
+	public evaluateVars(): Record<string, unknown> {
+		const values: Record<string, unknown> = {};
 
 		for (const [k, v] of Object.entries(this.envVars)) {
 			values[k] = v;
@@ -91,7 +91,7 @@ export class ASEvaluator {
 	}
 
 	@autobind
-	private evaluate(block: Block, scope: Scope): any {
+	private evaluate(block: Block, scope: Scope): unknown {
 		if (block.type === null) {
 			return null;
 		}
@@ -115,7 +115,7 @@ export class ASEvaluator {
 		if (isFnBlock(block)) { // ユーザー関数定義
 			return {
 				slots: block.value.slots.map(x => x.name),
-				exec: (slotArg: Record<string, any>) => {
+				exec: (slotArg: Record<string, unknown>) => {
 					return this.evaluate(block.value.expression, scope.createChildScope(slotArg, block.id));
 				}
 			} as Fn;
@@ -124,7 +124,7 @@ export class ASEvaluator {
 		if (block.type.startsWith('fn:')) { // ユーザー関数呼び出し
 			const fnName = block.type.split(':')[1];
 			const fn = scope.getState(fnName);
-			const args = {} as Record<string, any>;
+			const args = {} as Record<string, unknown>;
 			for (let i = 0; i < fn.slots.length; i++) {
 				const name = fn.slots[i];
 				args[name] = this.evaluate(block.args[i], scope);
@@ -141,13 +141,13 @@ export class ASEvaluator {
 			not: (a: boolean) => !a,
 			or: (a: boolean, b: boolean) => a || b,
 			and: (a: boolean, b: boolean) => a && b,
-			eq: (a: any, b: any) => a === b,
-			notEq: (a: any, b: any) => a !== b,
+			eq: (a: unknown, b: unknown) => a === b,
+			notEq: (a: unknown, b: unknown) => a !== b,
 			gt: (a: number, b: number) => a > b,
 			lt: (a: number, b: number) => a < b,
 			gtEq: (a: number, b: number) => a >= b,
 			ltEq: (a: number, b: number) => a <= b,
-			if: (bool: boolean, a: any, b: any) => bool ? a : b,
+			if: (bool: boolean, a: unknown, b: unknown) => bool ? a : b,
 			for: (times: number, fn: Fn) => {
 				const result = [];
 				for (let i = 0; i < times; i++) {
@@ -170,16 +170,16 @@ export class ASEvaluator {
 			stringToNumber: (a: string) => parseInt(a),
 			numberToString: (a: number) => a.toString(),
 			splitStrByLine: (a: string) => a.split('\n'),
-			pick: (list: any[], i: number) => list[i - 1],
+			pick: (list: unknown[], i: number) => list[i - 1],
 			random: (probability: number) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
 			rannum: (min: number, max: number) => min + Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * (max - min + 1)),
-			randomPick: (list: any[]) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],
+			randomPick: (list: unknown[]) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],
 			dailyRandom: (probability: number) => Math.floor(seedrandom(`${day}:${block.id}`)() * 100) < probability,
 			dailyRannum: (min: number, max: number) => min + Math.floor(seedrandom(`${day}:${block.id}`)() * (max - min + 1)),
-			dailyRandomPick: (list: any[]) => list[Math.floor(seedrandom(`${day}:${block.id}`)() * list.length)],
-			seedRandom: (seed: any, probability: number) => Math.floor(seedrandom(seed)() * 100) < probability,
-			seedRannum: (seed: any, min: number, max: number) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
-			seedRandomPick: (seed: any, list: any[]) => list[Math.floor(seedrandom(seed)() * list.length)],
+			dailyRandomPick: (list: unknown[]) => list[Math.floor(seedrandom(`${day}:${block.id}`)() * list.length)],
+			seedRandom: (seed: unknown, probability: number) => Math.floor(seedrandom(seed)() * 100) < probability,
+			seedRannum: (seed: unknown, min: number, max: number) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
+			seedRandomPick: (seed: unknown, list: unknown[]) => list[Math.floor(seedrandom(seed)() * list.length)],
 			DRPWPM: (list: string[]) => {
 				const xs = [];
 				let totalFactor = 0;
@@ -204,7 +204,7 @@ export class ASEvaluator {
 		};
 
 		const fnName = block.type;
-		const fn = (funcs as any)[fnName];
+		const fn = (funcs as unknown)[fnName];
 		if (fn == null) {
 			throw new AiScriptError(`No such function '${fnName}'`);
 		} else {
@@ -214,9 +214,9 @@ export class ASEvaluator {
 }
 
 class AiScriptError extends Error {
-	public info?: any;
+	public info?: unknown;
 
-	constructor(message: string, info?: any) {
+	constructor(message: string, info?: unknown) {
 		super(message);
 
 		this.info = info;
@@ -229,7 +229,7 @@ class AiScriptError extends Error {
 }
 
 class Scope {
-	private layerdStates: Record<string, any>[];
+	private layerdStates: Record<string, unknown>[];
 	public name: string;
 
 	constructor(layerdStates: Scope['layerdStates'], name?: Scope['name']) {
@@ -238,7 +238,7 @@ class Scope {
 	}
 
 	@autobind
-	public createChildScope(states: Record<string, any>, name?: Scope['name']): Scope {
+	public createChildScope(states: Record<string, unknown>, name?: Scope['name']): Scope {
 		const layer = [states, ...this.layerdStates];
 		return new Scope(layer, name);
 	}
@@ -248,7 +248,7 @@ class Scope {
 	 * @param name 変数名
 	 */
 	@autobind
-	public getState(name: string): any {
+	public getState(name: string): unknown {
 		for (const later of this.layerdStates) {
 			const state = later[name];
 			if (state !== undefined) {

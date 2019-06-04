@@ -85,7 +85,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		tagUsers(): any {
+		tagUsers(): unknown {
 			return {
 				endpoint: 'hashtags/users',
 				limit: 30,
@@ -98,7 +98,7 @@ export default Vue.extend({
 			};
 		},
 
-		tagRemoteUsers(): any {
+		tagRemoteUsers(): unknown {
 			return {
 				endpoint: 'hashtags/users',
 				limit: 30,

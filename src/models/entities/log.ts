@@ -42,5 +42,5 @@ export class Log {
 	@Column('jsonb', {
 		default: {}
 	})
-	public data: Record<string, any>;
+	public data: Record<string, unknown>;
 }

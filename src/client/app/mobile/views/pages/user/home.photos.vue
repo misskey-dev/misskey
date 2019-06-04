@@ -52,7 +52,7 @@ export default Vue.extend({
 		});
 	},
 	methods: {
-		thumbnail(image: any): string {
+		thumbnail(image: unknown): string {
 			return this.$store.state.device.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;

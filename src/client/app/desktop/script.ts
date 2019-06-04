@@ -209,11 +209,11 @@ init(async (launch, os) => {
 	 */
 	if ('Notification' in window && os.store.getters.isSignedIn) {
 		// 許可を得ていなかったらリクエスト
-		if ((Notification as any).permission == 'default') {
+		if ((Notification as unknown).permission == 'default') {
 			await Notification.requestPermission();
 		}
 
-		if ((Notification as any).permission == 'granted') {
+		if ((Notification as unknown).permission == 'granted') {
 			registerNotifications(os);
 		}
 	}
@@ -252,7 +252,7 @@ function registerNotifications(os: MiOS) {
 		});
 		n.onclick = () => {
 			n.close();
-			/*(riot as any).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
+			/*(riot as unknown).mount(document.body.appendChild(document.createElement('mk-messaging-room-window')), {
 				user: message.user
 			});*/
 		};

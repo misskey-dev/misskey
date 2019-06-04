@@ -86,7 +86,7 @@ export class UserProfile {
 		default: {},
 		comment: 'The client-specific data of the User.'
 	})
-	public clientData: Record<string, any>;
+	public clientData: Record<string, unknown>;
 
 	@Column('boolean', {
 		default: false,
@@ -203,7 +203,7 @@ export class UserProfile {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {
-			(this as any)[k] = v;
+			(this as unknown)[k] = v;
 		}
 	}
 }

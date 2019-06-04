@@ -14,7 +14,7 @@ export default class extends Channel {
 	private listUsersClock: NodeJS.Timer;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		this.listId = params.listId as string;
 
 		// Subscribe stream

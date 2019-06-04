@@ -47,7 +47,7 @@ router.get('/.well-known/nodeinfo', async ctx => {
 });
 
 router.get(webFingerPath, async ctx => {
-	const fromId = (id: User['id']): Record<string, any> => ({
+	const fromId = (id: User['id']): Record<string, unknown> => ({
 		id,
 		host: null
 	});
@@ -60,7 +60,7 @@ router.get(webFingerPath, async ctx => {
 				resource.startsWith('acct:') ? resource.slice('acct:'.length) :
 				resource));
 
-	const fromAcct = (acct: Acct): Record<string, any> | number =>
+	const fromAcct = (acct: Acct): Record<string, unknown> | number =>
 		!acct.host || acct.host === config.host.toLowerCase() ? {
 			usernameLower: acct.username,
 			host: null

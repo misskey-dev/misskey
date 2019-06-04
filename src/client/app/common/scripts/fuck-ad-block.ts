@@ -1,6 +1,6 @@
-declare const fuckAdBlock: any;
+declare const fuckAdBlock: unknown;
 
-export default ($root: any) => {
+export default ($root: unknown) => {
 	require('fuckadblock');
 
 	function adBlockDetected() {

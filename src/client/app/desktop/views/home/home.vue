@@ -100,7 +100,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		home(): any[] {
+		home(): unknown[] {
 			if (this.$store.getters.isSignedIn) {
 				return this.$store.state.device.home || [];
 			} else {
@@ -118,19 +118,19 @@ export default Vue.extend({
 				}];
 			}
 		},
-		left(): any[] {
+		left(): unknown[] {
 			return this.home.filter(w => w.place == 'left');
 		},
-		right(): any[] {
+		right(): unknown[] {
 			return this.home.filter(w => w.place == 'right');
 		},
-		widgets(): any {
+		widgets(): unknown {
 			return {
 				left: this.left,
 				right: this.right
 			};
 		},
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				't': this.focus
 			};
@@ -210,7 +210,7 @@ export default Vue.extend({
 		},
 
 		onWidgetContextmenu(widgetId) {
-			const w = (this.$refs[widgetId] as any)[0];
+			const w = (this.$refs[widgetId] as unknown)[0];
 			if (w.func) w.func();
 		},
 
@@ -244,7 +244,7 @@ export default Vue.extend({
 		},
 
 		focus() {
-			(this.$refs.content as any).focus();
+			(this.$refs.content as unknown).focus();
 		}
 	}
 });

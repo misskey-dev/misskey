@@ -51,7 +51,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			}
 
 			for (const inbox of queue) {
-				deliver(user as any, content, inbox);
+				deliver(user as unknown, content, inbox);
 			}
 		}
 		//#endregion

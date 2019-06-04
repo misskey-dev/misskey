@@ -39,7 +39,7 @@ export default Vue.extend({
 		onDocumentKeydown(e) {
 			if (e.target.tagName != 'INPUT' && e.target.tagName != 'TEXTAREA') {
 				if (e.which == 84) { // t
-					(this.$refs.timeline as any).focus();
+					(this.$refs.timeline as unknown).focus();
 				}
 			}
 		},

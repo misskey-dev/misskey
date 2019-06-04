@@ -67,7 +67,7 @@ export default Vue.extend({
 		onNote(note) {
 			// Prepend a note
 			if (note.visibility == 'specified') {
-				(this.$refs.timeline as any).prepend(note);
+				(this.$refs.timeline as unknown).prepend(note);
 			}
 		},
 

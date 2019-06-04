@@ -33,8 +33,8 @@ import { url } from '../../../../config';
 
 class Script {
 	public aiScript: ASEvaluator;
-	private onError: any;
-	public vars: Record<string, any>;
+	private onError: unknown;
+	public vars: Record<string, unknown>;
 
 	constructor(aiScript, onError) {
 		this.aiScript = aiScript;

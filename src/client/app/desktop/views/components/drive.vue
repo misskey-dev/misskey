@@ -197,11 +197,11 @@ export default Vue.extend({
 			this.addFile(file, true);
 		},
 
-		onMousedown(e): any {
+		onMousedown(e): unknown {
 			if (contains(this.$refs.foldersContainer, e.target) || contains(this.$refs.filesContainer, e.target)) return true;
 
-			const main = this.$refs.main as any;
-			const selection = this.$refs.selection as any;
+			const main = this.$refs.main as unknown;
+			const selection = this.$refs.selection as unknown;
 
 			const rect = main.getBoundingClientRect();
 
@@ -244,7 +244,7 @@ export default Vue.extend({
 			document.documentElement.addEventListener('mouseup', up);
 		},
 
-		onDragover(e): any {
+		onDragover(e): unknown {
 			// ドラッグ元が自分自身の所有するアイテムだったら
 			if (this.isDragSource) {
 				// 自分自身にはドロップさせない
@@ -273,7 +273,7 @@ export default Vue.extend({
 			this.draghover = false;
 		},
 
-		onDrop(e): any {
+		onDrop(e): unknown {
 			this.draghover = false;
 
 			// ドロップされてきたものがファイルだったら
@@ -331,7 +331,7 @@ export default Vue.extend({
 		},
 
 		selectLocalFile() {
-			(this.$refs.fileInput as any).click();
+			(this.$refs.fileInput as unknown).click();
 		},
 
 		urlUpload() {
@@ -372,14 +372,14 @@ export default Vue.extend({
 		},
 
 		onChangeFileInput() {
-			for (const file of Array.from((this.$refs.fileInput as any).files)) {
+			for (const file of Array.from((this.$refs.fileInput as unknown).files)) {
 				this.upload(file, this.folder);
 			}
 		},
 
 		upload(file, folder) {
 			if (folder && typeof folder == 'object') folder = folder.id;
-			(this.$refs.uploader as any).upload(file, folder);
+			(this.$refs.uploader as unknown).upload(file, folder);
 		},
 
 		chooseFile(file) {

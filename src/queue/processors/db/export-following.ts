@@ -11,7 +11,7 @@ import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-following');
 
-export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
+export async function exportFollowing(job: Bull.Job, done: unknown): Promise<void> {
 	logger.info(`Exporting following of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
@@ -21,7 +21,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	}
 
 	// Create temp file
-	const [path, cleanup] = await new Promise<[string, any]>((res, rej) => {
+	const [path, cleanup] = await new Promise<[string, unknown]>((res, rej) => {
 		tmp.file((e, path, fd, cleanup) => {
 			if (e) return rej(e);
 			res([path, cleanup]);
@@ -33,7 +33,7 @@ export async function exportFollowing(job: Bull.Job, done: any): Promise<void> {
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	let exportedCount = 0;
-	let cursor: any = null;
+	let cursor: unknown = null;
 
 	while (true) {
 		const followings = await Followings.find({

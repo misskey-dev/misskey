@@ -96,7 +96,7 @@ export default define(meta, async (ps, me) => {
 
 	const emojis = await Emojis.find({ where: { host: null }, cache: 3600000 }); // 1 hour
 
-	const response: any = {
+	const response: unknown = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
 

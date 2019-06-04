@@ -1,4 +1,4 @@
-export type obj = { [x: string]: any };
+export type obj = { [x: string]: unknown };
 
 export interface IObject {
 	'@context': string | obj | obj[];
@@ -9,17 +9,17 @@ export interface IObject {
 	cc?: string[];
 	to?: string[];
 	attributedTo: string;
-	attachment?: any[];
-	inReplyTo?: any;
+	attachment?: unknown[];
+	inReplyTo?: unknown;
 	replies?: ICollection;
 	content?: string;
 	name?: string;
 	startTime?: Date;
 	endTime?: Date;
-	icon?: any;
-	image?: any;
+	icon?: unknown;
+	image?: unknown;
 	url?: string;
-	tag?: any[];
+	tag?: unknown[];
 	sensitive?: boolean;
 }
 
@@ -74,12 +74,12 @@ export interface IPerson extends IObject {
 	manuallyApprovesFollowers: boolean;
 	inbox: string;
 	sharedInbox?: string;
-	publicKey: any;
-	followers: any;
-	following: any;
-	featured?: any;
-	outbox: any;
-	endpoints: any;
+	publicKey: unknown;
+	followers: unknown;
+	following: unknown;
+	featured?: unknown;
+	outbox: unknown;
+	endpoints: unknown;
 }
 
 export const isCollection = (object: IObject): object is ICollection =>

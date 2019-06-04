@@ -33,5 +33,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await federationChart.getChart(ps.span as any, ps.limit!);
+	return await federationChart.getChart(ps.span as unknown, ps.limit!);
 });

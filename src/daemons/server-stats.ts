@@ -13,7 +13,7 @@ const interval = 1000;
  * Report server stats regularly
  */
 export default function() {
-	const log = new Deque<any>();
+	const log = new Deque<unknown>();
 
 	ev.on('requestServerStatsLog', x => {
 		ev.emit(`serverStatsLog:${x.id}`, log.toArray().slice(0, x.length || 50));

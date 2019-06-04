@@ -7,7 +7,7 @@ import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('delete-drive-files');
 
-export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> {
+export async function deleteDriveFiles(job: Bull.Job, done: unknown): Promise<void> {
 	logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
@@ -17,7 +17,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 	}
 
 	let deletedCount = 0;
-	let cursor: any = null;
+	let cursor: unknown = null;
 
 	while (true) {
 		const files = await DriveFiles.find({

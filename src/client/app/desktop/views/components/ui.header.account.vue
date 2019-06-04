@@ -118,7 +118,7 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		keymap(): any {
+		keymap(): unknown {
 			return {
 				'a|m': this.toggle
 			};

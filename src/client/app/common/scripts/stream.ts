@@ -52,7 +52,7 @@ export default class Stream extends EventEmitter {
 	}
 
 	@autobind
-	public connectToChannel(channel: string, params?: any): NonSharedConnection {
+	public connectToChannel(channel: string, params?: unknown): NonSharedConnection {
 		const connection = new NonSharedConnection(this, channel, params);
 		this.nonSharedConnections.push(connection);
 		return connection;
@@ -147,7 +147,7 @@ class Pool {
 	public id: string;
 	protected stream: Stream;
 	public users = 0;
-	private disposeTimerId: any;
+	private disposeTimerId: unknown;
 	private isConnected = false;
 
 	constructor(stream: Stream, channel: string) {
@@ -267,9 +267,9 @@ class SharedConnection extends Connection {
 
 class NonSharedConnection extends Connection {
 	public id: string;
-	protected params: any;
+	protected params: unknown;
 
-	constructor(stream: Stream, channel: string, params?: any) {
+	constructor(stream: Stream, channel: string, params?: unknown) {
 		super(stream, channel);
 
 		this.params = params;

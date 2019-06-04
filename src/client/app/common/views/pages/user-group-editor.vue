@@ -142,7 +142,7 @@ export default Vue.extend({
 			});
 		},
 
-		remove(user: any) {
+		remove(user: unknown) {
 			this.$root.api('users/groups/pull', {
 				groupId: this.group.id,
 				userId: user.id

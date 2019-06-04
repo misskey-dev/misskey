@@ -24,7 +24,7 @@ function initializeQueue(name: string) {
 	});
 }
 
-function renderError(e: Error): any {
+function renderError(e: Error): unknown {
 	return {
 		stack: e.stack,
 		message: e.message,
@@ -47,7 +47,7 @@ deliverQueue
 	.on('active', (job) => deliverLogger.debug(`active id=${job.id} to=${job.data.to}`))
 	.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) id=${job.id} to=${job.data.to}`))
 	.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) id=${job.id} to=${job.data.to}`, { job, e: renderError(err) }))
-	.on('error', (job: any, err: Error) => deliverLogger.error(`error ${err}`, { job, e: renderError(err) }))
+	.on('error', (job: unknown, err: Error) => deliverLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => deliverLogger.warn(`stalled id=${job.id} to=${job.data.to}`));
 
 inboxQueue
@@ -55,7 +55,7 @@ inboxQueue
 	.on('active', (job) => inboxLogger.debug(`active id=${job.id}`))
 	.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) id=${job.id}`))
 	.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`, { job, e: renderError(err) }))
-	.on('error', (job: any, err: Error) => inboxLogger.error(`error ${err}`, { job, e: renderError(err) }))
+	.on('error', (job: unknown, err: Error) => inboxLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => inboxLogger.warn(`stalled id=${job.id} activity=${job.data.activity ? job.data.activity.id : 'none'}`));
 
 dbQueue
@@ -63,7 +63,7 @@ dbQueue
 	.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
 	.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
 	.on('failed', (job, err) => dbLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
-	.on('error', (job: any, err: Error) => dbLogger.error(`error ${err}`, { job, e: renderError(err) }))
+	.on('error', (job: unknown, err: Error) => dbLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => dbLogger.warn(`stalled id=${job.id}`));
 
 objectStorageQueue
@@ -71,10 +71,10 @@ objectStorageQueue
 	.on('active', (job) => objectStorageLogger.debug(`active id=${job.id}`))
 	.on('completed', (job, result) => objectStorageLogger.debug(`completed(${result}) id=${job.id}`))
 	.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
-	.on('error', (job: any, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
+	.on('error', (job: unknown, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: ILocalUser, content: any, to: any) {
+export function deliver(user: ILocalUser, content: unknown, to: unknown) {
 	if (content == null) return null;
 
 	const data = {
@@ -94,7 +94,7 @@ export function deliver(user: ILocalUser, content: any, to: any) {
 	});
 }
 
-export function inbox(activity: any, signature: httpSignature.IParsedSignature) {
+export function inbox(activity: unknown, signature: httpSignature.IParsedSignature) {
 	const data = {
 		activity: activity,
 		signature

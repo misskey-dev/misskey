@@ -19,7 +19,7 @@ export default Vue.extend({
 		},
 	},
 	computed: {
-		reactions(): any {
+		reactions(): unknown {
 			return this.note.reactions;
 		},
 		isMe(): boolean {

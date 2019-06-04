@@ -4,7 +4,7 @@ export const types = {
 	number: 'number' as 'number',
 	array: 'array' as 'array',
 	object: 'object' as 'object',
-	any: 'any' as 'any',
+	unknown: 'unknown' as 'unknown',
 };
 
 export const bool = {
@@ -13,13 +13,13 @@ export const bool = {
 };
 
 export type Schema = {
-	type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
+	type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'unknown';
 	nullable: boolean;
 	optional: boolean;
 	items?: Schema;
 	properties?: Obj;
 	description?: string;
-	example?: any;
+	example?: unknown;
 	format?: string;
 	ref?: string;
 	enum?: string[];
@@ -44,7 +44,7 @@ export type ObjType<s extends Obj> =
 
 // https://qiita.com/hrsh7th@github/items/84e8968c3601009cdcf2
 type MyType<T extends Schema> = {
-	0: any;
+	0: unknown;
 	1: SchemaType<T>;
 }[T extends Schema ? 1 : 0];
 
@@ -63,5 +63,5 @@ export type SchemaType<p extends Schema> =
 	p['type'] extends 'boolean' ? NullOrUndefined<p, boolean> :
 	p['type'] extends 'array' ? NullOrUndefined<p, MyType<NonNullable<p['items']>>[]> :
 	p['type'] extends 'object' ? NullOrUndefined<p, ObjType<NonNullable<p['properties']>>> :
-	p['type'] extends 'any' ? NullOrUndefined<p, any> :
-	any;
+	p['type'] extends 'unknown' ? NullOrUndefined<p, unknown> :
+	unknown;

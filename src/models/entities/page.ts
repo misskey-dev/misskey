@@ -73,12 +73,12 @@ export class Page {
 	@Column('jsonb', {
 		default: []
 	})
-	public content: Record<string, any>[];
+	public content: Record<string, unknown>[];
 
 	@Column('jsonb', {
 		default: []
 	})
-	public variables: Record<string, any>[];
+	public variables: Record<string, unknown>[];
 
 	/**
 	 * public ... 公開
@@ -104,7 +104,7 @@ export class Page {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {
-			(this as any)[k] = v;
+			(this as unknown)[k] = v;
 		}
 	}
 }

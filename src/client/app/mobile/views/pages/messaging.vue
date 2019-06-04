@@ -20,10 +20,10 @@ export default Vue.extend({
 	},
 	methods: {
 		navigate(user) {
-			(this as any).$router.push(`/i/messaging/${getAcct(user)}`);
+			(this as unknown).$router.push(`/i/messaging/${getAcct(user)}`);
 		},
 		navigateGroup(group) {
-			(this as any).$router.push(`/i/messaging/group/${group.id}`);
+			(this as unknown).$router.push(`/i/messaging/group/${group.id}`);
 		}
 	}
 });

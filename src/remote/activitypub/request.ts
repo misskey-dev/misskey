@@ -3,7 +3,7 @@ import { sign } from 'http-signature';
 import { URL } from 'url';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
-import * as promiseAny from 'promise-any';
+import * as promiseAny from 'promise-unknown';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
@@ -16,7 +16,7 @@ import { ensure } from '../../prelude/ensure';
 
 export const logger = apLogger.createSubLogger('deliver');
 
-export default async (user: ILocalUser, url: string, object: any) => {
+export default async (user: ILocalUser, url: string, object: unknown) => {
 	logger.info(`--> ${url}`);
 
 	const timeout = 10 * 1000;

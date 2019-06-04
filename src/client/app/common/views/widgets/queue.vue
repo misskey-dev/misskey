@@ -71,7 +71,7 @@ export default define({
 	},
 
 	computed: {
-		latestStats(): any {
+		latestStats(): unknown {
 			return this.stats[this.stats.length - 1];
 		}
 	},
@@ -98,7 +98,7 @@ export default define({
 				width: 1
 			},
 			colors: ['#00E396', '#00BCD4', '#FFB300', '#e53935'],
-			series: [{ data: [] }, { data: [] }, { data: [] }, { data: [] }] as any,
+			series: [{ data: [] }, { data: [] }, { data: [] }, { data: [] }] as unknown,
 			yaxis: {
 				min: 0,
 			}

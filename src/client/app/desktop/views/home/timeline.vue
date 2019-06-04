@@ -48,7 +48,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		options(): any {
+		options(): unknown {
 			return {
 				...(this.src == 'list' ? { list: this.list } : { src: this.src }),
 				...(this.src == 'tag' ? { tagTl: this.tagTl } : {}),
@@ -74,7 +74,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then((meta: Record<string, any>) => {
+		this.$root.getMeta().then((meta: Record<string, unknown>) => {
 			if (!(
 				this.enableGlobalTimeline = !meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
 			) && this.src === 'global') this.src = 'local';
@@ -94,7 +94,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		(this.$refs.tl as any).$once('loaded', () => {
+		(this.$refs.tl as unknown).$once('loaded', () => {
 			this.$emit('loaded');
 		});
 	},
@@ -108,11 +108,11 @@ export default Vue.extend({
 		},
 
 		focus() {
-			(this.$refs.tl as any).focus();
+			(this.$refs.tl as unknown).focus();
 		},
 
 		warp(date) {
-			(this.$refs.tl as any).warp(date);
+			(this.$refs.tl as unknown).warp(date);
 		},
 
 		async chooseList() {

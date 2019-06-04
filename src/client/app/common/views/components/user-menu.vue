@@ -26,7 +26,7 @@ export default Vue.extend({
 			icon: ['fas', 'list'],
 			text: this.$t('push-to-list'),
 			action: this.pushList
-		}] as any;
+		}] as unknown;
 
 		if (this.$store.getters.isSignedIn && this.$store.state.i.id != this.user.id) {
 			menu = menu.concat([null, {

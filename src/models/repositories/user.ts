@@ -291,7 +291,7 @@ export const packedUserSchema = {
 			nullable: bool.true, optional: bool.false,
 		},
 		avatarColor: {
-			type: types.any,
+			type: types.unknown,
 			nullable: bool.true, optional: bool.false,
 		},
 		bannerUrl: {
@@ -300,11 +300,11 @@ export const packedUserSchema = {
 			nullable: bool.true, optional: bool.true,
 		},
 		bannerColor: {
-			type: types.any,
+			type: types.unknown,
 			nullable: bool.true, optional: bool.true,
 		},
 		emojis: {
-			type: types.any,
+			type: types.unknown,
 			nullable: bool.true, optional: bool.false,
 		},
 		host: {

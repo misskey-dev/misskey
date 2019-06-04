@@ -101,7 +101,7 @@ export default Vue.extend({
 			return Math.PI * (this.s + this.ms / 1000) / 30;
 		},
 
-		graduations(): any {
+		graduations(): unknown {
 			const angles = [];
 			for (let i = 0; i < 60; i++) {
 				const angle = Math.PI * i / 30;

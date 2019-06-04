@@ -37,7 +37,7 @@ export default Vue.extend({
 	},
 	methods: {
 		warp(date) {
-			(this.$refs.tl as any).warp(date);
+			(this.$refs.tl as unknown).warp(date);
 		}
 	}
 });

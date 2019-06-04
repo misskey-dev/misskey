@@ -1,7 +1,7 @@
 import config from '../../../config';
 import { ILocalUser } from '../../../models/entities/user';
 
-export default (object: any, user: ILocalUser) => ({
+export default (object: unknown, user: ILocalUser) => ({
 	type: 'Reject',
 	actor: `${config.url}/users/${user.id}`,
 	object

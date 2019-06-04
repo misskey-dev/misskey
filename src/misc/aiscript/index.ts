@@ -27,7 +27,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
-export type Block<V = any> = {
+export type Block<V = unknown> = {
 	id: string;
 	type: string;
 	args: Block[];
@@ -48,7 +48,7 @@ export type Variable = Block & {
 
 export type Type = 'string' | 'number' | 'boolean' | 'stringArray' | null;
 
-export const funcDefs: Record<string, { in: any[]; out: any; category: string; icon: any; }> = {
+export const funcDefs: Record<string, { in: unknown[]; out: unknown; category: string; icon: unknown; }> = {
 	if:              { in: ['boolean', 0, 0],              out: 0,             category: 'flow',       icon: faShareAlt, },
 	for:             { in: ['number', 'function'],         out: null,          category: 'flow',       icon: faRecycle, },
 	not:             { in: ['boolean'],                    out: 'boolean',     category: 'logical',    icon: faFlag, },
@@ -86,7 +86,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	DRPWPM:      { in: ['stringArray'],                out: 'string',      category: 'random',     icon: faDice, }, // dailyRandomPickWithProbabilityMapping
 };
 
-export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {
+export const literalDefs: Record<string, { out: unknown; category: string; icon: unknown; }> = {
 	text:          { out: 'string',      category: 'value', icon: faQuoteRight, },
 	multiLineText: { out: 'string',      category: 'value', icon: faAlignLeft, },
 	textList:      { out: 'stringArray', category: 'value', icon: faList, },
@@ -108,7 +108,7 @@ export function isFnBlock(block: Block): block is FnBlock {
 	return block.type === 'fn';
 }
 
-export type PageVar = { name: string; value: any; type: Type; };
+export type PageVar = { name: string; value: unknown; type: Type; };
 
 export const envVarsDef: Record<string, Type> = {
 	AI: 'string',

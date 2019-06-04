@@ -383,10 +383,10 @@ export default Vue.extend({
 
 	mounted() {
 		const renderRecaptchaPreview = () => {
-			if (!(window as any).grecaptcha) return;
+			if (!(window as unknown).grecaptcha) return;
 			if (!this.$refs.recaptcha) return;
 			if (!this.recaptchaSiteKey) return;
-			(window as any).grecaptcha.render(this.$refs.recaptcha, {
+			(window as unknown).grecaptcha.render(this.$refs.recaptcha, {
 				sitekey: this.recaptchaSiteKey
 			});
 		};

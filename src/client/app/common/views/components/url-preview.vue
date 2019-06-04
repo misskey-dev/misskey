@@ -93,7 +93,7 @@ export default Vue.extend({
 
 		if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
 			this.tweetUrl = url;
-			const twttr = (window as any).twttr || {};
+			const twttr = (window as unknown).twttr || {};
 			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
 
 			if (twttr.widgets) {
@@ -108,7 +108,7 @@ export default Vue.extend({
 					head.appendChild(script);
 				}
 				twttr.ready = loadTweet;
-				(window as any).twttr = twttr;
+				(window as unknown).twttr = twttr;
 			}
 			return;
 		}

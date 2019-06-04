@@ -111,7 +111,7 @@ export default Vue.extend({
 				? getStaticImageUrl(this.user.avatarUrl)
 				: this.user.avatarUrl;
 		},
-		style(): any {
+		style(): unknown {
 			if (this.user.bannerUrl == null) return {};
 			return {
 				backgroundColor: this.user.bannerColor,

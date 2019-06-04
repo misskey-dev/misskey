@@ -11,7 +11,7 @@ export type PackedMuting = SchemaType<typeof packedMutingSchema>;
 export class MutingRepository extends Repository<Muting> {
 	public async pack(
 		src: Muting['id'] | Muting,
-		me?: any
+		me?: unknown
 	): Promise<PackedMuting> {
 		const muting = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
@@ -26,8 +26,8 @@ export class MutingRepository extends Repository<Muting> {
 	}
 
 	public packMany(
-		mutings: any[],
-		me: any
+		mutings: unknown[],
+		me: unknown
 	) {
 		return Promise.all(mutings.map(x => this.pack(x, me)));
 	}

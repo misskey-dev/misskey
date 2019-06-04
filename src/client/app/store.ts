@@ -148,7 +148,7 @@ export default (os: MiOS) => new Vuex.Store({
 			state: defaultDeviceSettings,
 
 			mutations: {
-				set(state, x: { key: string; value: any }) {
+				set(state, x: { key: string; value: unknown }) {
 					state[x.key] = x.value;
 				},
 
@@ -341,7 +341,7 @@ export default (os: MiOS) => new Vuex.Store({
 			state: defaultSettings,
 
 			mutations: {
-				set(state, x: { key: string; value: any }) {
+				set(state, x: { key: string; value: unknown }) {
 					nestedProperty.set(state, x.key, x.value);
 				},
 			},

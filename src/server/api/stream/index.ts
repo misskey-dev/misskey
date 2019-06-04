@@ -21,7 +21,7 @@ export default class Connection {
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
-	private subscribingNotes: any = {};
+	private subscribingNotes: unknown = {};
 	private followingClock: NodeJS.Timer;
 	private mutingClock: NodeJS.Timer;
 
@@ -74,7 +74,7 @@ export default class Connection {
 	 * APIリクエスト要求時
 	 */
 	@autobind
-	private async onApiRequest(payload: any) {
+	private async onApiRequest(payload: unknown) {
 		// 新鮮なデータを利用するためにユーザーをフェッチ
 		const user = this.user ? await Users.findOne(this.user.id) : null;
 
@@ -89,7 +89,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private onReadNotification(payload: any) {
+	private onReadNotification(payload: unknown) {
 		if (!payload.id) return;
 		readNotification(this.user!.id, [payload.id]);
 	}
@@ -98,7 +98,7 @@ export default class Connection {
 	 * 投稿購読要求時
 	 */
 	@autobind
-	private onSubscribeNote(payload: any) {
+	private onSubscribeNote(payload: unknown) {
 		if (!payload.id) return;
 
 		if (this.subscribingNotes[payload.id] == null) {
@@ -120,7 +120,7 @@ export default class Connection {
 	 * 投稿購読解除要求時
 	 */
 	@autobind
-	private onUnsubscribeNote(payload: any) {
+	private onUnsubscribeNote(payload: unknown) {
 		if (!payload.id) return;
 
 		this.subscribingNotes[payload.id]--;
@@ -131,7 +131,7 @@ export default class Connection {
 	}
 
 	@autobind
-	private async onNoteStreamMessage(data: any) {
+	private async onNoteStreamMessage(data: unknown) {
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
 			type: data.type,
@@ -143,7 +143,7 @@ export default class Connection {
 	 * チャンネル接続要求時
 	 */
 	@autobind
-	private onChannelConnectRequested(payload: any) {
+	private onChannelConnectRequested(payload: unknown) {
 		const { channel, id, params, pong } = payload;
 		this.connectChannel(id, params, channel, pong);
 	}
@@ -152,7 +152,7 @@ export default class Connection {
 	 * チャンネル切断要求時
 	 */
 	@autobind
-	private onChannelDisconnectRequested(payload: any) {
+	private onChannelDisconnectRequested(payload: unknown) {
 		const { id } = payload;
 		this.disconnectChannel(id);
 	}
@@ -161,7 +161,7 @@ export default class Connection {
 	 * クライアントにメッセージ送信
 	 */
 	@autobind
-	public sendMessageToWs(type: string, payload: any) {
+	public sendMessageToWs(type: string, payload: unknown) {
 		this.wsConnection.send(JSON.stringify({
 			type: type,
 			body: payload
@@ -172,17 +172,17 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@autobind
-	public connectChannel(id: string, params: any, channel: string, pong = false) {
-		if ((channels as any)[channel].requireCredential && this.user == null) {
+	public connectChannel(id: string, params: unknown, channel: string, pong = false) {
+		if ((channels as unknown)[channel].requireCredential && this.user == null) {
 			return;
 		}
 
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
-		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
+		if ((channels as unknown)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
 		}
 
-		const ch: Channel = new (channels as any)[channel](id, this);
+		const ch: Channel = new (channels as unknown)[channel](id, this);
 		this.channels.push(ch);
 		ch.init(params);
 
@@ -212,7 +212,7 @@ export default class Connection {
 	 * @param data メッセージ
 	 */
 	@autobind
-	private onChannelMessageRequested(data: any) {
+	private onChannelMessageRequested(data: unknown) {
 		const channel = this.channels.find(c => c.id === data.id);
 		if (channel != null && channel.onMessage != null) {
 			channel.onMessage(data.type, data.body);

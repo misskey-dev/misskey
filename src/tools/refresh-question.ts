@@ -1,6 +1,6 @@
 import { updateQuestion } from '../remote/activitypub/models/question';
 
-async function main(uri: string): Promise<any> {
+async function main(uri: string): Promise<unknown> {
 	return await updateQuestion(uri);
 }
 

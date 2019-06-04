@@ -9,7 +9,7 @@ export default class extends Channel {
 	public static requireCredential = true;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		// Subscribe reversi stream
 		this.subscriber.on(`reversiStream:${this.user!.id}`, data => {
 			this.send(data);
@@ -17,7 +17,7 @@ export default class extends Channel {
 	}
 
 	@autobind
-	public async onMessage(type: string, body: any) {
+	public async onMessage(type: string, body: unknown) {
 		switch (type) {
 			case 'ping':
 				if (body.id == null) return;

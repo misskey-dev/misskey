@@ -125,7 +125,7 @@ export default Vue.extend({
 			});
 		},
 
-		remove(user: any) {
+		remove(user: unknown) {
 			this.$root.api('users/lists/pull', {
 				listId: this.list.id,
 				userId: user.id

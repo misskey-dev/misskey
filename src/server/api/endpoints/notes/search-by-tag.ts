@@ -32,7 +32,7 @@ export const meta = {
 
 		reply: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
+			default: null as unknown,
 			desc: {
 				'ja-JP': '返信に限定するか否か'
 			}
@@ -40,7 +40,7 @@ export const meta = {
 
 		renote: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
+			default: null as unknown,
 			desc: {
 				'ja-JP': 'Renoteに限定するか否か'
 			}
@@ -55,7 +55,7 @@ export const meta = {
 
 		poll: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
+			default: null as unknown,
 			desc: {
 				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
 			}

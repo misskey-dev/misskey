@@ -162,7 +162,7 @@ export default Vue.extend({
 			set(value) { this.$root.api('i/update', { alwaysMarkNsfw: value }); }
 		},
 
-		bannerStyle(): any {
+		bannerStyle(): unknown {
 			if (this.$store.state.i.bannerUrl == null) return {};
 			return {
 				backgroundColor: this.$store.state.i.bannerColor,
@@ -295,7 +295,7 @@ export default Vue.extend({
 						type: 'info',
 						text: this.$t('export-requested')
 					});
-				}).catch((e: any) => {
+				}).catch((e: unknown) => {
 					this.$root.dialog({
 						type: 'error',
 						text: e.message
@@ -315,7 +315,7 @@ export default Vue.extend({
 						type: 'info',
 						text: this.$t('import-requested')
 					});
-				}).catch((e: any) => {
+				}).catch((e: unknown) => {
 					this.$root.dialog({
 						type: 'error',
 						text: e.message

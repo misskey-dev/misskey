@@ -8,7 +8,7 @@ import { types, bool } from '../../misc/schema';
 export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 	public async pack(
 		src: NoteFavorite['id'] | NoteFavorite,
-		me?: any
+		me?: unknown
 	) {
 		const favorite = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
@@ -21,8 +21,8 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 	}
 
 	public packMany(
-		favorites: any[],
-		me: any
+		favorites: unknown[],
+		me: unknown
 	) {
 		return Promise.all(favorites.map(x => this.pack(x, me)));
 	}

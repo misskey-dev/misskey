@@ -61,7 +61,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		data(): any {
+		data(): unknown {
 			if (this.chart == null) return null;
 			switch (this.src) {
 				case 'federation-instances': return this.federationInstancesChart(false);
@@ -83,7 +83,7 @@ export default Vue.extend({
 			}
 		},
 
-		stats(): any[] {
+		stats(): unknown[] {
 			const stats =
 				this.span == 'day' ? this.chart.perDay :
 				this.span == 'hour' ? this.chart.perHour :
@@ -242,7 +242,7 @@ export default Vue.extend({
 			return arr.map((v, i) => ({ x: this.getDate(i).getTime(), y: v }));
 		},
 
-		federationInstancesChart(total: boolean): any {
+		federationInstancesChart(total: boolean): unknown {
 			return {
 				series: [{
 					name: 'Instances',
@@ -254,7 +254,7 @@ export default Vue.extend({
 			};
 		},
 
-		notesChart(type: string): any {
+		notesChart(type: string): unknown {
 			return {
 				series: [{
 					name: 'All',
@@ -288,7 +288,7 @@ export default Vue.extend({
 			};
 		},
 
-		notesTotalChart(): any {
+		notesTotalChart(): unknown {
 			return {
 				series: [{
 					name: 'Combined',
@@ -306,7 +306,7 @@ export default Vue.extend({
 			};
 		},
 
-		usersChart(total: boolean): any {
+		usersChart(total: boolean): unknown {
 			return {
 				series: [{
 					name: 'Combined',
@@ -333,7 +333,7 @@ export default Vue.extend({
 			};
 		},
 
-		activeUsersChart(): any {
+		activeUsersChart(): unknown {
 			return {
 				series: [{
 					name: 'Combined',
@@ -351,7 +351,7 @@ export default Vue.extend({
 			};
 		},
 
-		driveChart(): any {
+		driveChart(): unknown {
 			return {
 				bytes: true,
 				series: [{
@@ -385,7 +385,7 @@ export default Vue.extend({
 			};
 		},
 
-		driveTotalChart(): any {
+		driveTotalChart(): unknown {
 			return {
 				bytes: true,
 				series: [{
@@ -404,7 +404,7 @@ export default Vue.extend({
 			};
 		},
 
-		driveFilesChart(): any {
+		driveFilesChart(): unknown {
 			return {
 				series: [{
 					name: 'All',
@@ -437,7 +437,7 @@ export default Vue.extend({
 			};
 		},
 
-		driveFilesTotalChart(): any {
+		driveFilesTotalChart(): unknown {
 			return {
 				series: [{
 					name: 'Combined',
@@ -455,7 +455,7 @@ export default Vue.extend({
 			};
 		},
 
-		networkRequestsChart(): any {
+		networkRequestsChart(): unknown {
 			return {
 				series: [{
 					name: 'Incoming',
@@ -464,7 +464,7 @@ export default Vue.extend({
 			};
 		},
 
-		networkTimeChart(): any {
+		networkTimeChart(): unknown {
 			const data = [];
 
 			for (let i = 0; i < limit; i++) {
@@ -479,7 +479,7 @@ export default Vue.extend({
 			};
 		},
 
-		networkUsageChart(): any {
+		networkUsageChart(): unknown {
 			return {
 				bytes: true,
 				series: [{

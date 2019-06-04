@@ -130,7 +130,7 @@ router.get('/tw/cb', async ctx => {
 			return;
 		}
 
-		const get = new Promise<any>((res, rej) => {
+		const get = new Promise<unknown>((res, rej) => {
 			redis.get(sessid, async (_, twCtx) => {
 				res(twCtx);
 			});
@@ -159,7 +159,7 @@ router.get('/tw/cb', async ctx => {
 			return;
 		}
 
-		const get = new Promise<any>((res, rej) => {
+		const get = new Promise<unknown>((res, rej) => {
 			redis.get(userToken, async (_, twCtx) => {
 				res(twCtx);
 			});

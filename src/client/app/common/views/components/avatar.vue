@@ -43,7 +43,7 @@ export default Vue.extend({
 		cat(): boolean {
 			return this.user.isCat && this.$store.state.settings.circleIcons;
 		},
-		style(): any {
+		style(): unknown {
 			return {
 				borderRadius: this.$store.state.settings.circleIcons ? '100%' : null
 			};
@@ -53,7 +53,7 @@ export default Vue.extend({
 				? getStaticImageUrl(this.user.avatarUrl)
 				: this.user.avatarUrl;
 		},
-		icon(): any {
+		icon(): unknown {
 			return {
 				backgroundColor: this.user.avatarColor,
 				backgroundImage: this.lightmode ? null : `url(${this.url})`,

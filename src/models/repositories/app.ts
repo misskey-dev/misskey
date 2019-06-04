@@ -10,7 +10,7 @@ export type PackedApp = SchemaType<typeof packedAppSchema>;
 export class AppRepository extends Repository<App> {
 	public async pack(
 		src: App['id'] | App,
-		me?: any,
+		me?: unknown,
 		options?: {
 			detail?: boolean,
 			includeSecret?: boolean,

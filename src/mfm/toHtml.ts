@@ -13,11 +13,11 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 
 	const doc = window.document;
 
-	function appendChildren(children: MfmForest, targetElement: any): void {
+	function appendChildren(children: MfmForest, targetElement: unknown): void {
 		for (const child of children.map(t => handlers[t.node.type](t))) targetElement.appendChild(child);
 	}
 
-	const handlers: { [key: string]: (token: MfmTree) => any } = {
+	const handlers: { [key: string]: (token: MfmTree) => unknown } = {
 		bold(token) {
 			const el = doc.createElement('b');
 			appendChildren(token.children, el);

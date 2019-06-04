@@ -58,7 +58,7 @@ export class Poll {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {
-			(this as any)[k] = v;
+			(this as unknown)[k] = v;
 		}
 	}
 }

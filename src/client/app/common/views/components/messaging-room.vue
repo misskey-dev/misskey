@@ -73,8 +73,8 @@ export default Vue.extend({
 	},
 
 	computed: {
-		_messages(): any[] {
-			return (this.messages as any).map(message => {
+		_messages(): unknown[] {
+			return (this.messages as unknown).map(message => {
 				const date = new Date(message.createdAt).getDate();
 				const month = new Date(message.createdAt).getMonth() + 1;
 				message._date = date;
@@ -83,7 +83,7 @@ export default Vue.extend({
 			});
 		},
 
-		form(): any {
+		form(): unknown {
 			return this.$refs.form;
 		}
 	},

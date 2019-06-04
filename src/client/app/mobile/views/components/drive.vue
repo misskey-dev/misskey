@@ -98,7 +98,7 @@ export default Vue.extend({
 	watch: {
 		top() {
 			if (this.isNaked) {
-				(this.$refs.nav as any).style.top = `${this.top}px`;
+				(this.$refs.nav as unknown).style.top = `${this.top}px`;
 			}
 		}
 	},
@@ -120,7 +120,7 @@ export default Vue.extend({
 		}
 
 		if (this.isNaked) {
-			(this.$refs.nav as any).style.top = `${this.top}px`;
+			(this.$refs.nav as unknown).style.top = `${this.top}px`;
 		}
 	},
 	beforeDestroy() {
@@ -380,7 +380,7 @@ export default Vue.extend({
 		},
 
 		selectLocalFile() {
-			(this.$refs.file as any).click();
+			(this.$refs.file as unknown).click();
 		},
 
 		createFolder() {
@@ -468,8 +468,8 @@ export default Vue.extend({
 		},
 
 		onChangeLocalFile() {
-			for (const f of Array.from((this.$refs.file as any).files)) {
-				(this.$refs.uploader as any).upload(f, this.folder);
+			for (const f of Array.from((this.$refs.file as unknown).files)) {
+				(this.$refs.uploader as unknown).upload(f, this.folder);
 			}
 		},
 

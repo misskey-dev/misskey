@@ -22,17 +22,17 @@ export type MfmNode =
 	MentionNode |
 	HashtagNode |
 	EmojiNode |
-	Node<string, any>;
+	Node<string, unknown>;
 
 export type MfmTree = Tree<MfmNode>;
 
 export type MfmForest = MfmTree[];
 
-export function createLeaf(type: string, props: any): MfmTree {
+export function createLeaf(type: string, props: unknown): MfmTree {
 	return T.createLeaf({ type, props });
 }
 
-export function createTree(type: string, children: MfmForest, props: any): MfmTree {
+export function createTree(type: string, children: MfmForest, props: unknown): MfmTree {
 	return T.createTree({ type, props }, children);
 }
 

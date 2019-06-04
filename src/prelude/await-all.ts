@@ -5,7 +5,7 @@ type AwaitAll<T> = {
 };
 
 export async function awaitAll<T>(obj: T): Promise<AwaitAll<T>> {
-	const target = {} as any;
+	const target = {} as unknown;
 	const keys = Object.keys(obj);
 	const values = Object.values(obj);
 

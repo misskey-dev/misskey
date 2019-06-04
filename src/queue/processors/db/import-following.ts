@@ -10,7 +10,7 @@ import { Users, DriveFiles } from '../../../models';
 
 const logger = queueLogger.createSubLogger('import-following');
 
-export async function importFollowing(job: Bull.Job, done: any): Promise<void> {
+export async function importFollowing(job: Bull.Job, done: unknown): Promise<void> {
 	logger.info(`Importing following of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

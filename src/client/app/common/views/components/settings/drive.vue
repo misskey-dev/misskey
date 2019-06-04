@@ -31,7 +31,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		meterStyle(): any {
+		meterStyle(): unknown {
 			return {
 				width: `${this.usage / this.capacity * 100}%`,
 				background: tinycolor({

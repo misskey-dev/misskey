@@ -17,10 +17,10 @@ const jobs = {
 	exportUserLists,
 	importFollowing,
 	importUserLists
-} as any;
+} as unknown;
 
 export default function(dbQueue: Bull.Queue) {
 	for (const [k, v] of Object.entries(jobs)) {
-		dbQueue.process(k, v as any);
+		dbQueue.process(k, v as unknown);
 	}
 }

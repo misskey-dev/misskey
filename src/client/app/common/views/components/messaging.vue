@@ -157,12 +157,12 @@ export default Vue.extend({
 				case 40: // [↓]
 					e.preventDefault();
 					e.stopPropagation();
-					(this.$refs.searchResult as any).childNodes[0].focus();
+					(this.$refs.searchResult as unknown).childNodes[0].focus();
 					break;
 			}
 		},
 		onSearchResultKeydown(i, e) {
-			const list = this.$refs.searchResult as any;
+			const list = this.$refs.searchResult as unknown;
 
 			const cancel = () => {
 				e.preventDefault();
@@ -172,7 +172,7 @@ export default Vue.extend({
 			switch (true) {
 				case e.which == 27: // [ESC]
 					cancel();
-					(this.$refs.search as any).focus();
+					(this.$refs.search as unknown).focus();
 					break;
 
 				case e.which == 9 && e.shiftKey: // [TAB] + [Shift]

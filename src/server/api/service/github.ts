@@ -148,7 +148,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+		const { redirect_uri, state } = await new Promise<unknown>((res, rej) => {
 			redis.get(sessid, async (_, state) => {
 				res(JSON.parse(state));
 			});
@@ -159,7 +159,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const { accessToken } = await new Promise<any>((res, rej) =>
+		const { accessToken } = await new Promise<unknown>((res, rej) =>
 			oauth2!.getOAuthAccessToken(code, {
 				redirect_uri
 			}, (err, accessToken, refresh, result) => {
@@ -172,7 +172,7 @@ router.get('/gh/cb', async ctx => {
 				}
 			}));
 
-		const { login, id } = await new Promise<any>((res, rej) =>
+		const { login, id } = await new Promise<unknown>((res, rej) =>
 			request({
 				url: 'https://api.github.com/user',
 				headers: {
@@ -211,7 +211,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const { redirect_uri, state } = await new Promise<any>((res, rej) => {
+		const { redirect_uri, state } = await new Promise<unknown>((res, rej) => {
 			redis.get(userToken, async (_, state) => {
 				res(JSON.parse(state));
 			});
@@ -222,7 +222,7 @@ router.get('/gh/cb', async ctx => {
 			return;
 		}
 
-		const { accessToken } = await new Promise<any>((res, rej) =>
+		const { accessToken } = await new Promise<unknown>((res, rej) =>
 			oauth2!.getOAuthAccessToken(
 				code,
 				{ redirect_uri },
@@ -235,7 +235,7 @@ router.get('/gh/cb', async ctx => {
 						res({ accessToken });
 				}));
 
-		const { login, id } = await new Promise<any>((res, rej) =>
+		const { login, id } = await new Promise<unknown>((res, rej) =>
 			request({
 				url: 'https://api.github.com/user',
 				headers: {

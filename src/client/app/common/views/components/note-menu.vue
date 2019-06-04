@@ -22,7 +22,7 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		items(): any[] {
+		items(): unknown[] {
 			return [{
 				icon: 'at',
 				text: this.$t('mention'),

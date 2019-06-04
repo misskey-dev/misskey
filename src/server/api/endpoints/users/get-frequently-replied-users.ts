@@ -80,7 +80,7 @@ export default define(meta, async (ps, me) => {
 		select: ['userId']
 	});
 
-	const repliedUsers: any = {};
+	const repliedUsers: unknown = {};
 
 	// Extract replies from recent notes
 	for (const userId of replyTargetNotes.map(x => x.userId.toString())) {

@@ -24,8 +24,8 @@ function getLang(lang: string): string {
 	}
 }
 
-async function genVars(lang: string): Promise<{ [key: string]: any }> {
-	const vars = {} as { [key: string]: any };
+async function genVars(lang: string): Promise<{ [key: string]: unknown }> {
+	const vars = {} as { [key: string]: unknown };
 
 	vars['lang'] = lang;
 
@@ -60,7 +60,7 @@ async function genVars(lang: string): Promise<{ [key: string]: any }> {
 const router = new Router();
 
 router.get('/assets/*', async ctx => {
-	await send(ctx as any, ctx.params[0], {
+	await send(ctx as unknown, ctx.params[0], {
 		root: `${__dirname}/../../docs/assets/`,
 		maxage: ms('1 days')
 	});

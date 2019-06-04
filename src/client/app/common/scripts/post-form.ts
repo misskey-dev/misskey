@@ -181,7 +181,7 @@ export default (opts) => ({
 					if (draft.data.poll) {
 						this.poll = true;
 						this.$nextTick(() => {
-							(this.$refs.poll as any).set(draft.data.poll);
+							(this.$refs.poll as unknown).set(draft.data.poll);
 						});
 					}
 					this.$emit('change-attached-files', this.files);
@@ -208,11 +208,11 @@ export default (opts) => ({
 		},
 
 		focus() {
-			(this.$refs.text as any).focus();
+			(this.$refs.text as unknown).focus();
 		},
 
 		chooseFile() {
-			(this.$refs.file as any).click();
+			(this.$refs.file as unknown).click();
 		},
 
 		chooseFileFromDrive() {
@@ -234,11 +234,11 @@ export default (opts) => ({
 		},
 
 		onChangeFile() {
-			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
+			for (const x of Array.from((this.$refs.file as unknown).files)) this.upload(x);
 		},
 
 		upload(file) {
-			(this.$refs.uploader as any).upload(file);
+			(this.$refs.uploader as unknown).upload(file);
 		},
 
 		onChangeUploadings(uploads) {
@@ -416,7 +416,7 @@ export default (opts) => ({
 				data: {
 					text: this.text,
 					files: this.files,
-					poll: this.poll && this.$refs.poll ? (this.$refs.poll as any).get() : undefined
+					poll: this.poll && this.$refs.poll ? (this.$refs.poll as unknown).get() : undefined
 				}
 			};
 
@@ -443,7 +443,7 @@ export default (opts) => ({
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
-				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
+				poll: this.poll ? (this.$refs.poll as unknown).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,

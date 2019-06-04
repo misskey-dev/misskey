@@ -10,7 +10,7 @@ import { toPuny } from '../misc/convert-host';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export async function resolveUser(username: string, host: string | null, option?: any, resync = false): Promise<User> {
+export async function resolveUser(username: string, host: string | null, option?: unknown, resync = false): Promise<User> {
 	const usernameLower = username.toLowerCase();
 
 	if (host == null) {

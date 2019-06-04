@@ -195,7 +195,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		data(): any {
+		data(): unknown {
 			if (this.chart == null) return null;
 			switch (this.chartSrc) {
 				case 'requests': return this.requestsChart();
@@ -212,7 +212,7 @@ export default Vue.extend({
 			}
 		},
 
-		stats(): any[] {
+		stats(): unknown[] {
 			const stats =
 				this.chartSpan == 'day' ? this.chart.perDay :
 				this.chartSpan == 'hour' ? this.chart.perHour :
@@ -419,7 +419,7 @@ export default Vue.extend({
 			return arr.map((v, i) => ({ x: this.getDate(i).getTime(), y: v }));
 		},
 
-		requestsChart(): any {
+		requestsChart(): unknown {
 			return {
 				series: [{
 					name: 'Incoming',
@@ -434,7 +434,7 @@ export default Vue.extend({
 			};
 		},
 
-		usersChart(total: boolean): any {
+		usersChart(total: boolean): unknown {
 			return {
 				series: [{
 					name: 'Users',
@@ -447,7 +447,7 @@ export default Vue.extend({
 			};
 		},
 
-		notesChart(total: boolean): any {
+		notesChart(total: boolean): unknown {
 			return {
 				series: [{
 					name: 'Notes',
@@ -460,7 +460,7 @@ export default Vue.extend({
 			};
 		},
 
-		ffChart(total: boolean): any {
+		ffChart(total: boolean): unknown {
 			return {
 				series: [{
 					name: 'Following',
@@ -480,7 +480,7 @@ export default Vue.extend({
 			};
 		},
 
-		driveUsageChart(total: boolean): any {
+		driveUsageChart(total: boolean): unknown {
 			return {
 				bytes: true,
 				series: [{
@@ -494,7 +494,7 @@ export default Vue.extend({
 			};
 		},
 
-		driveFilesChart(total: boolean): any {
+		driveFilesChart(total: boolean): unknown {
 			return {
 				series: [{
 					name: 'Drive files',

@@ -63,7 +63,7 @@ export default Vue.extend({
 
 	mounted() {
 		this.$nextTick(() => {
-			(this.$refs.form as any).focus();
+			(this.$refs.form as unknown).focus();
 		});
 	},
 
@@ -81,7 +81,7 @@ export default Vue.extend({
 			this.geo = null;
 		},
 		onPosted() {
-			(this.$refs.window as any).close();
+			(this.$refs.window as unknown).close();
 		},
 		onWindowClosed() {
 			this.$emit('closed');

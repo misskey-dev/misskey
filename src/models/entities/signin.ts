@@ -28,7 +28,7 @@ export class Signin {
 	public ip: string;
 
 	@Column('jsonb')
-	public headers: Record<string, any>;
+	public headers: Record<string, unknown>;
 
 	@Column('boolean')
 	public success: boolean;

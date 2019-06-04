@@ -10,17 +10,17 @@ export default class extends Channel {
 	public static requireCredential = false;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		ev.addListener('queueStats', this.onStats);
 	}
 
 	@autobind
-	private onStats(stats: any) {
+	private onStats(stats: unknown) {
 		this.send('stats', stats);
 	}
 
 	@autobind
-	public onMessage(type: string, body: any) {
+	public onMessage(type: string, body: unknown) {
 		switch (type) {
 			case 'requestLog':
 				ev.once(`queueStatsLog:${body.id}`, statsLog => {

@@ -65,7 +65,7 @@ export default Vue.extend({
 			this.quote = true;
 
 			this.$nextTick(() => {
-				(this.$refs.form as any).focus();
+				(this.$refs.form as unknown).focus();
 			});
 		},
 

@@ -330,8 +330,8 @@ console.info(
 	'color: red; background: yellow; font-size: 16px; font-weight: bold;');
 
 // BootTimer解除
-window.clearTimeout((window as any).mkBootTimer);
-delete (window as any).mkBootTimer;
+window.clearTimeout((window as unknown).mkBootTimer);
+delete (window as unknown).mkBootTimer;
 
 //#region Set lang attr
 const html = document.documentElement;
@@ -470,7 +470,7 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 					},
 					dialog(opts) {
 						const vm = this.new(Dialog, opts);
-						const p: any = new Promise((res) => {
+						const p: unknown = new Promise((res) => {
 							vm.$once('ok', result => res({ canceled: false, result }));
 							vm.$once('cancel', () => res({ canceled: true }));
 						});

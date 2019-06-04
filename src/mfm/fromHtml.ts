@@ -13,17 +13,17 @@ export function fromHtml(html: string): string {
 
 	return text.trim();
 
-	function getText(node: any): string {
+	function getText(node: unknown): string {
 		if (node.nodeName == '#text') return node.value;
 
 		if (node.childNodes) {
-			return node.childNodes.map((n: any) => getText(n)).join('');
+			return node.childNodes.map((n: unknown) => getText(n)).join('');
 		}
 
 		return '';
 	}
 
-	function analyze(node: any) {
+	function analyze(node: unknown) {
 		switch (node.nodeName) {
 			case '#text':
 				text += node.value;
@@ -35,8 +35,8 @@ export function fromHtml(html: string): string {
 
 			case 'a':
 				const txt = getText(node);
-				const rel = node.attrs.find((x: any) => x.name == 'rel');
-				const href = node.attrs.find((x: any) => x.name == 'href');
+				const rel = node.attrs.find((x: unknown) => x.name == 'rel');
+				const href = node.attrs.find((x: unknown) => x.name == 'href');
 				const isHashtag = rel && rel.value.match('tag') !== null;
 
 				// ハッシュタグ / hrefがない / txtがURL

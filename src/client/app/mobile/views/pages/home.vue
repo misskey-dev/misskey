@@ -114,7 +114,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then((meta: Record<string, any>) => {
+		this.$root.getMeta().then((meta: Record<string, unknown>) => {
 			if (!(
 				this.enableGlobalTimeline = !meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
 			) && this.src === 'global') this.src = 'local';
@@ -138,7 +138,7 @@ export default Vue.extend({
 
 		Progress.start();
 
-		(this.$refs.tl as any).$once('loaded', () => {
+		(this.$refs.tl as unknown).$once('loaded', () => {
 			Progress.done();
 		});
 	},

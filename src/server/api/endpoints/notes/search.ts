@@ -109,7 +109,7 @@ export default define(meta, async (ps, me) => {
 		}
 	});
 
-	const hits = result.body.hits.hits.map((hit: any) => hit._id);
+	const hits = result.body.hits.hits.map((hit: unknown) => hit._id);
 
 	if (hits.length === 0) return [];
 

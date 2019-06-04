@@ -7,7 +7,7 @@ export default class extends Channel {
 	public static requireCredential = true;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		// Subscribe drive stream
 		this.subscriber.on(`driveStream:${this.user!.id}`, data => {
 			this.send(data);

@@ -8,7 +8,7 @@ export default prop => ({
 	},
 
 	computed: {
-		$_ns_note_(): any {
+		$_ns_note_(): unknown {
 			return this[prop];
 		},
 
@@ -19,7 +19,7 @@ export default prop => ({
 				this.$_ns_note_.poll == null);
 		},
 
-		$_ns_target(): any {
+		$_ns_target(): unknown {
 			return this.$_ns_isRenote ? this.$_ns_note_.renote : this.$_ns_note_;
 		},
 	},
@@ -51,7 +51,7 @@ export default prop => ({
 			if (this.$store.getters.isSignedIn) {
 				const data = {
 					id: this.$_ns_target.id
-				} as any;
+				} as unknown;
 
 				if (
 					(this.$_ns_target.visibleUserIds || []).includes(this.$store.state.i.id) ||

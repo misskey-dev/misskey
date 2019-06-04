@@ -6,7 +6,7 @@ type Notification = {
 	title: string;
 	body: string;
 	icon: string;
-	onclick?: any;
+	onclick?: unknown;
 };
 
 // TODO: i18n

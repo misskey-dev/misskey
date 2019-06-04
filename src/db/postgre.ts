@@ -55,15 +55,15 @@ class MyCustomLogger implements Logger {
 		});
 	}
 
-	public logQuery(query: string, parameters?: any[]) {
+	public logQuery(query: string, parameters?: unknown[]) {
 		sqlLogger.info(this.highlight(query));
 	}
 
-	public logQueryError(error: string, query: string, parameters?: any[]) {
+	public logQueryError(error: string, query: string, parameters?: unknown[]) {
 		sqlLogger.error(this.highlight(query));
 	}
 
-	public logQuerySlow(time: number, query: string, parameters?: any[]) {
+	public logQuerySlow(time: number, query: string, parameters?: unknown[]) {
 		sqlLogger.warn(this.highlight(query));
 	}
 
@@ -152,7 +152,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			Signin,
 			ReversiGame,
 			ReversiMatching,
-			...charts as any
+			...charts as unknown
 		]
 	});
 }

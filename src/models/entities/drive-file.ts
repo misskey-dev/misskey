@@ -68,9 +68,9 @@ export class DriveFile {
 
 	@Column('jsonb', {
 		default: {},
-		comment: 'The any properties of the DriveFile. For example, it includes image width/height.'
+		comment: 'The unknown properties of the DriveFile. For example, it includes image width/height.'
 	})
-	public properties: Record<string, any>;
+	public properties: Record<string, unknown>;
 
 	@Column('boolean')
 	public storedInternal: boolean;

@@ -88,8 +88,8 @@ export default Vue.extend({
 	},
 
 	computed: {
-		_notes(): any[] {
-			return (this.items as any).map(item => {
+		_notes(): unknown[] {
+			return (this.items as unknown).map(item => {
 				const date = new Date(item.createdAt).getDate();
 				const month = new Date(item.createdAt).getMonth() + 1;
 				item._date = date;
@@ -101,7 +101,7 @@ export default Vue.extend({
 
 	methods: {
 		focus() {
-			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
+			(this.$refs.notes as unknown).children[0].focus ? (this.$refs.notes as unknown).children[0].focus() : (this.$refs.notes as unknown).$el.children[0].focus();
 		},
 	}
 });

@@ -12,7 +12,7 @@ import { Emoji } from '../../../models/entities/emoji';
 import { Poll } from '../../../models/entities/poll';
 import { ensure } from '../../../prelude/ensure';
 
-export default async function renderNote(note: Note, dive = true): Promise<any> {
+export default async function renderNote(note: Note, dive = true): Promise<unknown> {
 	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 0
 		? DriveFiles.find({ id: In(note.fileIds) })
 		: Promise.resolve([]);

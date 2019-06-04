@@ -75,7 +75,7 @@ export default Vue.extend({
 		add() {
 			this.choices.push('');
 			this.$nextTick(() => {
-				(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+				(this.$refs.choices as unknown).childNodes[this.choices.length - 1].childNodes[0].focus();
 			});
 		},
 

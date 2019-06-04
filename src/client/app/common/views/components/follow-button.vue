@@ -56,7 +56,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		iconAndText(): any[] {
+		iconAndText(): unknown[] {
 			return (
 				(this.hasPendingFollowRequestFromYou && this.user.isLocked) ? ['hourglass-half', this.$t('request-pending')] :
 				(this.hasPendingFollowRequestFromYou && !this.user.isLocked) ? ['spinner', this.$t('follow-processing')] :

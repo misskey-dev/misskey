@@ -7,13 +7,13 @@ export default class extends Channel {
 	public static requireCredential = false;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		// Subscribe events
 		this.subscriber.on('apLog', this.onLog);
 	}
 
 	@autobind
-	private async onLog(log: any) {
+	private async onLog(log: unknown) {
 		this.send('log', log);
 	}
 

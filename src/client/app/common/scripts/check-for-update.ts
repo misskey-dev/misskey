@@ -1,6 +1,6 @@
 import { version as current } from '../../config';
 
-export default async function($root: any, force = false, silent = false) {
+export default async function($root: unknown, force = false, silent = false) {
 	const meta = await $root.getMeta(force);
 	const newer = meta.version;
 

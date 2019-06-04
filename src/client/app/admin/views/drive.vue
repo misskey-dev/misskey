@@ -160,7 +160,7 @@ export default Vue.extend({
 			});
 		},
 
-		async del(file: any) {
+		async del(file: unknown) {
 			const process = async () => {
 				await this.$root.api('drive/files/delete', { fileId: file.id });
 				this.$root.dialog({
@@ -177,7 +177,7 @@ export default Vue.extend({
 			});
 		},
 
-		toggleSensitive(file: any) {
+		toggleSensitive(file: unknown) {
 			this.$root.api('drive/files/update', {
 				fileId: file.id,
 				isSensitive: !file.isSensitive

@@ -11,15 +11,15 @@ type Params<T extends IEndpointMeta> = {
 		: ReturnType<NonNullable<T['params']>[P]['validator']['get']>[0];
 };
 
-export type Response = Record<string, any> | void;
+export type Response = Record<string, unknown> | void;
 
 type executor<T extends IEndpointMeta> =
-	(params: Params<T>, user: ILocalUser, app: App, file?: any, cleanup?: Function) =>
+	(params: Params<T>, user: ILocalUser, app: App, file?: unknown, cleanup?: Function) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
-		: (params: any, user: ILocalUser, app: App, file?: any) => Promise<any> {
-	return (params: any, user: ILocalUser, app: App, file?: any) => {
+		: (params: unknown, user: ILocalUser, app: App, file?: unknown) => Promise<unknown> {
+	return (params: unknown, user: ILocalUser, app: App, file?: unknown) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
 		}
@@ -40,10 +40,10 @@ export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 	};
 }
 
-function getParams<T extends IEndpointMeta>(defs: T, params: any): [Params<T>, ApiError | null] {
+function getParams<T extends IEndpointMeta>(defs: T, params: unknown): [Params<T>, ApiError | null] {
 	if (defs.params == null) return [params, null];
 
-	const x: any = {};
+	const x: unknown = {};
 	let err: ApiError | null = null;
 	Object.entries(defs.params).some(([k, def]) => {
 		const [v, e] = def.validator.get(params[k]);

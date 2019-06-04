@@ -78,7 +78,7 @@ export default define({
 			const index = Math.floor(Math.random() * this.images.length);
 			const img = `url(${ this.images[index].url })`;
 
-			(this.$refs.slideB as any).style.backgroundImage = img;
+			(this.$refs.slideB as unknown).style.backgroundImage = img;
 
 			anime({
 				targets: this.$refs.slideB,
@@ -87,9 +87,9 @@ export default define({
 				easing: 'linear',
 				complete: () => {
 					// 既にこのウィジェットがunmountされていたら要素がない
-					if ((this.$refs.slideA as any) == null) return;
+					if ((this.$refs.slideA as unknown) == null) return;
 
-					(this.$refs.slideA as any).style.backgroundImage = img;
+					(this.$refs.slideA as unknown).style.backgroundImage = img;
 					anime({
 						targets: this.$refs.slideB,
 						opacity: 0,
@@ -108,8 +108,8 @@ export default define({
 			}).then(images => {
 				this.images = images;
 				this.fetching = false;
-				(this.$refs.slideA as any).style.backgroundImage = '';
-				(this.$refs.slideB as any).style.backgroundImage = '';
+				(this.$refs.slideA as unknown).style.backgroundImage = '';
+				(this.$refs.slideB as unknown).style.backgroundImage = '';
 				this.change();
 			});
 		},

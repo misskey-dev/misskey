@@ -33,7 +33,7 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		checkExistence(fileData: ArrayBuffer): Promise<any> {
+		checkExistence(fileData: ArrayBuffer): Promise<unknown> {
 			return new Promise((resolve, reject) => {
 				const data = new FormData();
 				data.append('md5', getMD5(fileData));
@@ -46,13 +46,13 @@ export default Vue.extend({
 			});
 		},
 
-		upload(file: File, folder: any) {
+		upload(file: File, folder: unknown) {
 			if (folder && typeof folder == 'object') folder = folder.id;
 
 			const id = Math.random();
 
 			const reader = new FileReader();
-			reader.onload = (e: any) => {
+			reader.onload = (e: unknown) => {
 				this.checkExistence(e.target.result).then(result => {
 					if (result !== null) {
 						this.$emit('uploaded', result);
@@ -78,7 +78,7 @@ export default Vue.extend({
 
 					const xhr = new XMLHttpRequest();
 					xhr.open('POST', apiUrl + '/drive/files/create', true);
-					xhr.onload = (e: any) => {
+					xhr.onload = (e: unknown) => {
 						const driveFile = JSON.parse(e.target.response);
 
 						this.$emit('uploaded', driveFile);

@@ -33,5 +33,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await driveChart.getChart(ps.span as any, ps.limit!);
+	return await driveChart.getChart(ps.span as unknown, ps.limit!);
 });

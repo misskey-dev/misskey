@@ -40,7 +40,7 @@ export const meta = {
 	}
 };
 
-const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
+const sort: unknown = { // < https://github.com/Microsoft/TypeScript/issues/1863
 	'+createdAt': { createdAt: -1 },
 	'-createdAt': { createdAt: 1 },
 	'+size': { size: -1 },
@@ -49,7 +49,7 @@ const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 };
 
 export default define(meta, async (ps, me) => {
-	const q = {} as any;
+	const q = {} as unknown;
 
 	if (ps.origin == 'local') q['userHost'] = null;
 	if (ps.origin == 'remote') q['userHost'] = { $ne: null };

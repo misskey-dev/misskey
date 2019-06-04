@@ -17,7 +17,7 @@ export class UserGroupInviteRepository extends Repository<UserGroupInvite> {
 	}
 
 	public packMany(
-		invites: any[],
+		invites: unknown[],
 	) {
 		return Promise.all(invites.map(x => this.pack(x)));
 	}

@@ -10,7 +10,7 @@ export default class extends Channel {
 	public static requireCredential = true;
 
 	@autobind
-	public async init(params: any) {
+	public async init(params: unknown) {
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
 	}

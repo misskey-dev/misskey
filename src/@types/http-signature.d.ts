@@ -36,7 +36,7 @@ declare module 'http-signature' {
 	}
 
 	interface IRequestSignerConstructorOptionsFromFunction {
-		sign?: (data: string, cb: (err: any, sig: ISignature) => void) => void;
+		sign?: (data: string, cb: (err: unknown, sig: ISignature) => void) => void;
 	}
 
 	class RequestSigner {
@@ -48,7 +48,7 @@ declare module 'http-signature' {
 
 		public writeTarget(method: string, path: string): void;
 
-		public sign(cb: (err: any, authz: string) => void): void;
+		public sign(cb: (err: unknown, authz: string) => void): void;
 	}
 
 	interface ISignRequestOptions extends IOptions {
@@ -63,7 +63,7 @@ declare module 'http-signature' {
 	export function sign(request: ClientRequest, options: ISignRequestOptions): boolean;
 	export function signRequest(request: ClientRequest, options: ISignRequestOptions): boolean;
 	export function createSigner(): RequestSigner;
-	export function isSigner(obj: any): obj is RequestSigner;
+	export function isSigner(obj: unknown): obj is RequestSigner;
 
 	export function sshKeyToPEM(key: string): string;
 	export function sshKeyFingerprint(key: string): string;
