@@ -13,64 +13,34 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 
 	const doc = window.document;
 
-	function appendChildren(children: MfmForest, targetElement: unknown): void {
+	function appendChildren(children: MfmForest, targetElement: HTMLElement): void {
 		for (const child of children.map(t => handlers[t.node.type](t))) targetElement.appendChild(child);
 	}
 
-	const handlers: { [key: string]: (token: MfmTree) => unknown } = {
-		bold(token) {
-			const el = doc.createElement('b');
-			appendChildren(token.children, el);
-			return el;
-		},
+	const makeBasicHandler = (tagName: string) => (token: MfmTree) => {
+		const el = doc.createElement(tagName);
+		appendChildren(token.children, el);
+		return el;
+	};
 
-		big(token) {
-			const el = doc.createElement('strong');
-			appendChildren(token.children, el);
-			return el;
-		},
+	const handlers: { [key: string]: (token: MfmTree) => HTMLElement } = {
+		bold: makeBasicHandler('b'),
 
-		small(token) {
-			const el = doc.createElement('small');
-			appendChildren(token.children, el);
-			return el;
-		},
+		big: makeBasicHandler('strong'),
 
-		strike(token) {
-			const el = doc.createElement('del');
-			appendChildren(token.children, el);
-			return el;
-		},
+		small: makeBasicHandler('small'),
 
-		italic(token) {
-			const el = doc.createElement('i');
-			appendChildren(token.children, el);
-			return el;
-		},
+		strike: makeBasicHandler('del'),
 
-		motion(token) {
-			const el = doc.createElement('i');
-			appendChildren(token.children, el);
-			return el;
-		},
+		italic: makeBasicHandler('i'),
 
-		spin(token) {
-			const el = doc.createElement('i');
-			appendChildren(token.children, el);
-			return el;
-		},
+		motion: makeBasicHandler('i'),
 
-		jump(token) {
-			const el = doc.createElement('i');
-			appendChildren(token.children, el);
-			return el;
-		},
+		spin: makeBasicHandler('i'),
 
-		flip(token) {
-			const el = doc.createElement('span');
-			appendChildren(token.children, el);
-			return el;
-		},
+		jump: makeBasicHandler('i'),
+
+		flip: makeBasicHandler('i'),
 
 		blockCode(token) {
 			const pre = doc.createElement('pre');
@@ -80,11 +50,7 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 			return pre;
 		},
 
-		center(token) {
-			const el = doc.createElement('div');
-			appendChildren(token.children, el);
-			return el;
-		},
+		center: makeBasicHandler('div'),
 
 		emoji(token) {
 			return doc.createTextNode(token.node.props.emoji ? token.node.props.emoji : `:${token.node.props.name}:`);
@@ -98,23 +64,11 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 			return a;
 		},
 
-		inlineCode(token) {
-			const el = doc.createElement('code');
-			el.textContent = token.node.props.code;
-			return el;
-		},
+		inlineCode: makeBasicHandler('code'),
 
-		mathInline(token) {
-			const el = doc.createElement('code');
-			el.textContent = token.node.props.formula;
-			return el;
-		},
+		mathInline: makeBasicHandler('code'),
 
-		mathBlock(token) {
-			const el = doc.createElement('code');
-			el.textContent = token.node.props.formula;
-			return el;
-		},
+		mathBlock: makeBasicHandler('code'),
 
 		link(token) {
 			const a = doc.createElement('a');
@@ -143,17 +97,9 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 			return a;
 		},
 
-		quote(token) {
-			const el = doc.createElement('blockquote');
-			appendChildren(token.children, el);
-			return el;
-		},
+		quote: makeBasicHandler('blockquote'),
 
-		title(token) {
-			const el = doc.createElement('h1');
-			appendChildren(token.children, el);
-			return el;
-		},
+		title: makeBasicHandler('h1'),
 
 		text(token) {
 			const el = doc.createElement('span');
