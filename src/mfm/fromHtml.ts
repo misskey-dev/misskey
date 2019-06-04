@@ -1,5 +1,6 @@
-import { parseFragment, DefaultTreeDocumentFragment } from 'parse5';
+import { parseFragment, DefaultTreeDocumentFragment, DefaultTreeNode, DefaultTreeTextNode, DefaultTreeElement, DefaultTreeParentNode } from 'parse5';
 import { URL } from 'url';
+import { concat } from '../prelude/string';
 import { urlRegex } from './prelude';
 
 export function fromHtml(html: string): string {
@@ -13,30 +14,42 @@ export function fromHtml(html: string): string {
 
 	return text.trim();
 
-	function getText(node: unknown): string {
-		if (node.nodeName == '#text') return node.value;
+	function getText(unknownNode: DefaultTreeNode): string {
+		if (unknownNode.nodeName == '#text') {
+			const node = unknownNode as DefaultTreeTextNode;
 
-		if (node.childNodes) {
-			return node.childNodes.map((n: unknown) => getText(n)).join('');
+			return node.value;
+		}
+
+		if ('childNodes' in unknownNode) {
+			const node = unknownNode as DefaultTreeParentNode;
+
+			return concat(node.childNodes.map(getText));
 		}
 
 		return '';
 	}
 
-	function analyze(node: unknown) {
-		switch (node.nodeName) {
-			case '#text':
+	function analyze(unknownNode: DefaultTreeNode) {
+		switch (unknownNode.nodeName) {
+			case '#text': {
+				const node = unknownNode as DefaultTreeTextNode;
+
 				text += node.value;
 				break;
+			}
 
-			case 'br':
+			case 'br': {
 				text += '\n';
 				break;
+			}
 
-			case 'a':
+			case 'a': {
+				const node = unknownNode as DefaultTreeElement;
+
 				const txt = getText(node);
-				const rel = node.attrs.find((x: unknown) => x.name == 'rel');
-				const href = node.attrs.find((x: unknown) => x.name == 'href');
+				const rel = node.attrs.find(x => x.name == 'rel');
+				const href = node.attrs.find(x => x.name == 'href');
 				const isHashtag = rel && rel.value.match('tag') !== null;
 
 				// ハッシュタグ / hrefがない / txtがURL
@@ -59,8 +72,11 @@ export function fromHtml(html: string): string {
 					text += `[${txt}](${href.value})`;
 				}
 				break;
+			}
 
-			case 'p':
+			case 'p': {
+				const node = unknownNode as DefaultTreeElement;
+
 				text += '\n\n';
 				if (node.childNodes) {
 					for (const n of node.childNodes) {
@@ -68,14 +84,18 @@ export function fromHtml(html: string): string {
 					}
 				}
 				break;
+			}
 
-			default:
+			default: {
+				const node = unknownNode as unknown as DefaultTreeParentNode;
+
 				if (node.childNodes) {
 					for (const n of node.childNodes) {
 						analyze(n);
 					}
 				}
 				break;
+			}
 		}
 	}
 }
