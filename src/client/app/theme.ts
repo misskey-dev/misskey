@@ -12,34 +12,12 @@ export type Theme = {
 
 export const lightTheme: Theme = require('../themes/light.json5');
 export const darkTheme: Theme = require('../themes/dark.json5');
-export const lavenderTheme: Theme = require('../themes/lavender.json5');
 export const futureTheme: Theme = require('../themes/future.json5');
-export const halloweenTheme: Theme = require('../themes/halloween.json5');
-export const cafeTheme: Theme = require('../themes/cafe.json5');
-export const japaneseSushiSetTheme: Theme = require('../themes/japanese-sushi-set.json5');
-export const gruvboxDarkTheme: Theme = require('../themes/gruvbox-dark.json5');
-export const monokaiTheme: Theme = require('../themes/monokai.json5');
-export const vividTheme: Theme = require('../themes/vivid.json5');
-export const rainyTheme: Theme = require('../themes/rainy.json5');
-export const mauveTheme: Theme = require('../themes/mauve.json5');
-export const grayTheme: Theme = require('../themes/gray.json5');
-export const tweetDeckTheme: Theme = require('../themes/tweet-deck.json5');
 
 export const builtinThemes = [
 	lightTheme,
 	darkTheme,
-	lavenderTheme,
 	futureTheme,
-	halloweenTheme,
-	cafeTheme,
-	japaneseSushiSetTheme,
-	gruvboxDarkTheme,
-	monokaiTheme,
-	vividTheme,
-	rainyTheme,
-	mauveTheme,
-	grayTheme,
-	tweetDeckTheme,
 ];
 
 export function applyTheme(theme: Theme, persisted = true) {

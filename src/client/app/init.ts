@@ -16,7 +16,7 @@ import App from './app.vue';
 import checkForUpdate from './common/scripts/check-for-update';
 import MiOS from './mios';
 import { version, codename, lang, locale } from './config';
-import { builtinThemes, applyTheme, futureTheme } from './theme';
+import { applyTheme, futureTheme } from './theme';
 import Dialog from './common/views/components/dialog.vue';
 
 if (localStorage.getItem('theme') == null) {
@@ -364,28 +364,31 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 			os.store.watch(s => {
 				return s.device.darkmode;
 			}, v => {
-				const themes = os.store.state.device.themes.concat(builtinThemes);
-				const dark = themes.find(t => t.id == os.store.state.device.darkTheme);
-				const light = themes.find(t => t.id == os.store.state.device.lightTheme);
-				applyTheme(v ? dark : light);
+				os.getThemes().then(themes => {
+					const dark = themes.find(t => t.id == os.store.state.device.darkTheme);
+					const light = themes.find(t => t.id == os.store.state.device.lightTheme);
+					applyTheme(v ? dark : light);
+				});
 			});
 			os.store.watch(s => {
 				return s.device.lightTheme;
 			}, v => {
-				const themes = os.store.state.device.themes.concat(builtinThemes);
-				const theme = themes.find(t => t.id == v);
-				if (!os.store.state.device.darkmode) {
-					applyTheme(theme);
-				}
+				os.getThemes().then(themes => {
+					const theme = themes.find(t => t.id == v);
+					if (!os.store.state.device.darkmode) {
+						applyTheme(theme);
+					}
+				});
 			});
 			os.store.watch(s => {
 				return s.device.darkTheme;
 			}, v => {
-				const themes = os.store.state.device.themes.concat(builtinThemes);
-				const theme = themes.find(t => t.id == v);
-				if (os.store.state.device.darkmode) {
-					applyTheme(theme);
-				}
+				os.getThemes().then(themes => {
+					const theme = themes.find(t => t.id == v);
+					if (os.store.state.device.darkmode) {
+						applyTheme(theme);
+					}
+				});
 			});
 			//#endregion
 
@@ -447,6 +450,8 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 					api: os.api,
 					getMeta: os.getMeta,
 					getMetaSync: os.getMetaSync,
+					getThemes: os.getThemes,
+					getPresetThemes: os.getPresetThemes,
 					signout: os.signout,
 					new(vm, props) {
 						const x = new vm({

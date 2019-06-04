@@ -9,6 +9,8 @@ import Progress from './common/scripts/loading';
 
 import Err from './common/views/components/connect-failed.vue';
 import Stream from './common/scripts/stream';
+import { Theme, builtinThemes } from './theme';
+import { concat } from '../../prelude/array';
 
 //#region api requests
 let spinner = null;
@@ -476,6 +478,28 @@ export default class MiOS extends EventEmitter {
 			} else {
 				res(this.meta.data);
 			}
+		});
+	}
+
+	/**
+	 * プリセットテーマ一覧を取得します
+	 */
+	@autobind
+	public getPresetThemes() {
+		return new Promise<Theme[]>(async (res, rej) => {
+			const pluginThemes = await this.api('plugins/themes') as Theme[];
+			res(concat([builtinThemes, pluginThemes]));
+		});
+	}
+
+	/**
+	 * テーマ一覧を取得します
+	 */
+	@autobind
+	public getThemes() {
+		return new Promise<Theme[]>(async (res, rej) => {
+			const installedThemes = this.store.state.device.themes as Theme[];
+			res(concat([await this.getPresetThemes(), installedThemes]));
 		});
 	}
 }

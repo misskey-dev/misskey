@@ -47,7 +47,14 @@ gulp.task('build:copy:views', () =>
 	gulp.src('./src/server/web/views/**/*').pipe(gulp.dest('./built/server/web/views'))
 );
 
-gulp.task('build:copy', gulp.parallel('build:copy:views', () =>
+gulp.task('build:copy:plugins', () =>
+	gulp.src([
+		'./src/plugins/**/*',
+		'!./src/plugins/**/*.ts'
+	]).pipe(gulp.dest('./built/plugins'))
+);
+
+gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:plugins', () =>
 	gulp.src([
 		'./src/const.json',
 		'./src/server/web/views/**/*',

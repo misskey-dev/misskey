@@ -93,7 +93,7 @@
 			<summary><fa icon="folder-open"/> {{ $t('manage-themes') }}</summary>
 			<ui-select v-model="selectedThemeId" :placeholder="$t('select-theme')">
 				<optgroup :label="$t('builtin-themes')">
-					<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+					<option v-for="x in presetThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 				</optgroup>
 				<optgroup :label="$t('my-themes')">
 					<option v-for="x in installedThemes.filter(t => t.author == this.$store.state.i.username)" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -113,7 +113,7 @@
 					<span>{{ $t('theme-code') }}</span>
 				</ui-textarea>
 				<ui-button @click="export_()" link :download="`${selectedTheme.name}.misskeytheme`" ref="export"><fa icon="box"/> {{ $t('export') }}</ui-button>
-				<ui-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> {{ $t('uninstall') }}</ui-button>
+				<ui-button @click="uninstall()" v-if="!presetThemes.some(t => t.id == selectedTheme.id)"><fa :icon="['far', 'trash-alt']"/> {{ $t('uninstall') }}</ui-button>
 			</template>
 		</details>
 	</section>
@@ -123,7 +123,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { lightTheme, darkTheme, builtinThemes, applyTheme, Theme } from '../../../../theme';
+import { lightTheme, darkTheme, applyTheme, Theme } from '../../../../theme';
 import { Chrome } from 'vue-color';
 import * as uuid from 'uuid';
 import * as tinycolor from 'tinycolor2';
@@ -138,7 +138,8 @@ export default Vue.extend({
 
 	data() {
 		return {
-			builtinThemes: builtinThemes,
+			themes: [],
+			presetThemes: [],
 			installThemeCode: null,
 			selectedThemeId: null,
 			myThemeBase: 'light',
@@ -151,11 +152,17 @@ export default Vue.extend({
 		};
 	},
 
-	computed: {
-		themes(): Theme[] {
-			return builtinThemes.concat(this.$store.state.device.themes);
-		},
+	created() {
+		this.$root.getThemes().then(themes => {
+			this.themes = themes;
+		});
 
+		this.$root.getPresetThemes().then(presetThemes => {
+			this.presetThemes = presetThemes;
+		});
+	}
+
+	computed: {
 		darkThemes(): Theme[] {
 			return this.themes.filter(t => t.base == 'dark' || t.kind == 'dark');
 		},

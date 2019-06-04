@@ -21,11 +21,11 @@ export default async function() {
 	process.title = `Misskey (${cluster.isMaster ? 'master' : 'worker'})`;
 
 	if (cluster.isMaster || program.disableClustering) {
-		await masterMain();
-
 		if (cluster.isMaster) {
 			ev.mount();
 		}
+
+		await masterMain();
 	}
 
 	if (cluster.isWorker || program.disableClustering) {

@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as os from 'os';
 import * as cluster from 'cluster';
 import chalk from 'chalk';
@@ -12,6 +13,7 @@ import * as pkg from '../../package.json';
 import { program } from '../argv';
 import { showMachineInfo } from '../misc/show-machine-info';
 import { initDb } from '../db/postgre';
+import Xev from 'xev';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
@@ -75,6 +77,10 @@ export async function masterMain() {
 		await spawnWorkers(config.clusterLimit);
 	}
 
+	loadPlugins();
+
+	bootLogger.succ('All plugins loaded');
+
 	if (!program.noDaemons) {
 		require('../daemons/server-stats').default();
 		require('../daemons/notes-stats').default();
@@ -107,6 +113,24 @@ function showEnvironment(): void {
 	}
 
 	logger.info(`You ${isRoot() ? '' : 'do not '}have root privileges`);
+}
+
+const pluginService = {
+	registerTheme(theme: any) {
+		const ev = new Xev();
+		ev.emit('registerPluginTheme', theme);
+	}
+};
+
+function loadPlugins(): void {
+	const plugins = [
+		path.resolve(`${__dirname}/../plugins/featured-themes`)
+	];
+	for (const plugin of plugins) {
+		const pluginMeta = require(`${plugin}/plugin-meta.json`);
+		bootLogger.info(`Plugin loaded: ${pluginMeta.name} v${pluginMeta.version}`);
+		require(`${plugin}/main.js`).onActivate(pluginService);
+	}
 }
 
 /**
