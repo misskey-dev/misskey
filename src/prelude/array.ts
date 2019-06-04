@@ -117,6 +117,6 @@ export function cumulativeSum(xs: number[]): number[] {
 }
 
 // Object.fromEntries()
-export function fromEntries(xs: [string, unknown][]): { [x: string]: unknown; } {
-	return xs.reduce((obj, [k, v]) => Object.assign(obj, { [k]: v }), {} as { [x: string]: unknown; });
+export function fromEntries<T>(xs: [string, T][]): Record<string, T> {
+	return xs.reduce<Record<string, T>>((obj, [k, v]) => Object.assign(obj, { [k]: v }), {});
 }
