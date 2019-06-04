@@ -1,7 +1,7 @@
 import { Tree } from '../prelude/tree';
 import * as T from '../prelude/tree';
 
-type Node<T, P> = { type: T, props: P };
+export type Node<T, P> = { type: T, props: P };
 
 export type MentionNode = Node<'mention', {
 	canonical: string,
@@ -18,21 +18,21 @@ export type EmojiNode = Node<'emoji', {
 	name: string
 }>;
 
-export type MfmNode =
+export type MfmNode<T = object> =
 	MentionNode |
 	HashtagNode |
 	EmojiNode |
-	Node<string, unknown>;
+	Node<string, T>;
 
-export type MfmTree = Tree<MfmNode>;
+export type MfmTree<T = object> = Tree<MfmNode<T>>;
 
-export type MfmForest = MfmTree[];
+export type MfmForest<T = object> = MfmTree<T>[];
 
-export function createLeaf(type: string, props: unknown): MfmTree {
+export function createLeaf<T>(type: string, props: T): MfmTree<T> {
 	return T.createLeaf({ type, props });
 }
 
-export function createTree(type: string, children: MfmForest, props: unknown): MfmTree {
+export function createTree<T>(type: string, children: MfmForest<T>, props: T): MfmTree<T> {
 	return T.createTree({ type, props }, children);
 }
 

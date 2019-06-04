@@ -1,9 +1,10 @@
 import * as P from 'parsimmon';
-import { createLeaf, createTree, urlRegex } from './prelude';
+import { createLeaf, createTree, urlRegex, Node } from './prelude';
 import { takeWhile, cumulativeSum } from '../prelude/array';
 import parseAcct from '../misc/acct/parse';
 import { toUnicode } from 'punycode';
 import { emojiRegex } from '../misc/emoji-regex';
+import { Tree } from '../prelude/tree';
 
 export function removeOrphanedBrackets(s: string): string {
 	const openBrackets = ['(', '「'];
@@ -170,11 +171,15 @@ export const mfmLanguage = P.createLanguage({
 		}).map(x => createLeaf('url', { url: x }));
 	},
 	link: r => {
-		return P.seqObj(
-			['silent', P.string('?').fallback(null).map(x => x != null)] as unknown,
-			P.string('['), ['text', P.regexp(/[^\n\[\]]+/)] as unknown, P.string(']'),
-			P.string('('), ['url', r.url] as unknown, P.string(')'),
-		).map((x: unknown) => {
+		return P.seqObj<{
+			silent: boolean;
+			text: string;
+			url: Tree<Node<'url', { url: string }>>;
+		}>(
+			['silent', P.string('?').fallback(null).map(x => x != null)],
+			P.string('['), ['text', P.regexp(/[^\n\[\]]+/)], P.string(']'),
+			P.string('('), ['url', r.url], P.string(')'),
+		).map(x => {
 			return createTree('link', r.inline.atLeast(1).tryParse(x.text), {
 				silent: x.silent,
 				url: x.url.node.props.url
