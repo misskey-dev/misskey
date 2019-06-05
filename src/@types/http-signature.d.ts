@@ -19,10 +19,12 @@ declare module 'http-signature' {
 		clockSkew?: number;
 	}
 
-	interface IParsedSignature  {
+	interface IParsedSignature {
 		scheme: string;
 		params: ISignature;
 		signingString: string;
+		algorithm: ISignature['algorithm'];
+		keyId: ISignature['keyId'];
 	}
 
 	type RequestSignerConstructorOptions =
