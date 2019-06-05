@@ -115,7 +115,7 @@ export async function exportNotes(job: Bull.Job, done: Bull.DoneCallback): Promi
 	done();
 }
 
-function serialize(note: Note, poll: Poll | null = null): unknown {
+function serialize(note: Note, poll: Poll | null = null) {
 	return {
 		id: note.id,
 		text: note.text,
