@@ -46,7 +46,7 @@ export async function exportNotes(job: Bull.Job, done: Bull.DoneCallback): Promi
 	});
 
 	let exportedNotesCount = 0;
-	let cursor: unknown = null;
+	let cursor: string | undefined;
 
 	while (true) {
 		const notes = await Notes.find({

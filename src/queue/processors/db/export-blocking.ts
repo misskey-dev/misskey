@@ -33,7 +33,7 @@ export async function exportBlocking(job: Bull.Job, done: Bull.DoneCallback): Pr
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	let exportedCount = 0;
-	let cursor: unknown = null;
+	let cursor: string | undefined;
 
 	while (true) {
 		const blockings = await Blockings.find({

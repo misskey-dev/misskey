@@ -33,7 +33,7 @@ export async function exportMute(job: Bull.Job, done: Bull.DoneCallback): Promis
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	let exportedCount = 0;
-	let cursor: unknown = null;
+	let cursor: string | undefined;
 
 	while (true) {
 		const mutes = await Mutings.find({

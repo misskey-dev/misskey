@@ -33,7 +33,7 @@ export async function exportFollowing(job: Bull.Job, done: Bull.DoneCallback): P
 	const stream = fs.createWriteStream(path, { flags: 'a' });
 
 	let exportedCount = 0;
-	let cursor: unknown = null;
+	let cursor: string | undefined;
 
 	while (true) {
 		const followings = await Followings.find({

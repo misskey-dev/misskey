@@ -17,7 +17,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: Bull.DoneCallback): 
 	}
 
 	let deletedCount = 0;
-	let cursor: unknown = null;
+	let cursor: string | undefined;
 
 	while (true) {
 		const files = await DriveFiles.find({
