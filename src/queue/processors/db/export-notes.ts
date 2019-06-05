@@ -23,7 +23,7 @@ export async function exportNotes(job: Bull.Job, done: Bull.DoneCallback): Promi
 	}
 
 	// Create temp file
-	const [path, cleanup] = await new Promise<[string, unknown]>((res, rej) => {
+	const [path, cleanup] = await new Promise<[string, () => void]>((res, rej) => {
 		tmp.file((e, path, fd, cleanup) => {
 			if (e) return rej(e);
 			res([path, cleanup]);
