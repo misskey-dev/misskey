@@ -3,7 +3,7 @@ import { sign } from 'http-signature';
 import { URL } from 'url';
 import * as crypto from 'crypto';
 import { lookup, IRunOptions } from 'lookup-dns-cache';
-import * as promiseAny from 'promise-unknown';
+import * as promiseAny from 'promise-any';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
