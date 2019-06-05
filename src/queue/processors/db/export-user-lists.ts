@@ -11,7 +11,7 @@ import { In } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 
-export async function exportUserLists(job: Bull.Job, done: unknown): Promise<void> {
+export async function exportUserLists(job: Bull.Job, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

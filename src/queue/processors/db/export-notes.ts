@@ -13,7 +13,7 @@ import { ensure } from '../../../prelude/ensure';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
-export async function exportNotes(job: Bull.Job, done: unknown): Promise<void> {
+export async function exportNotes(job: Bull.Job, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

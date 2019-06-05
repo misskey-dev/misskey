@@ -11,7 +11,7 @@ import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-blocking');
 
-export async function exportBlocking(job: Bull.Job, done: unknown): Promise<void> {
+export async function exportBlocking(job: Bull.Job, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

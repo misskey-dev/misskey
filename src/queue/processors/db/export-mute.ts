@@ -11,7 +11,7 @@ import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-mute');
 
-export async function exportMute(job: Bull.Job, done: unknown): Promise<void> {
+export async function exportMute(job: Bull.Job, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Exporting mute of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
