@@ -7,10 +7,11 @@ import chalk from 'chalk';
 import { User, IRemoteUser } from '../models/entities/user';
 import { Users } from '../models';
 import { toPuny } from '../misc/convert-host';
+import { FindOneOptions } from 'typeorm';
 
 const logger = remoteLogger.createSubLogger('resolve-user');
 
-export async function resolveUser(username: string, host: string | null, option?: unknown, resync = false): Promise<User> {
+export async function resolveUser(username: string, host: string | null, option?: FindOneOptions, resync = false): Promise<User> {
 	const usernameLower = username.toLowerCase();
 
 	if (host == null) {

@@ -1,7 +1,7 @@
-export type obj = { [x: string]: unknown };
+import { ITag } from './models/tag';
 
 export interface IObject {
-	'@context': string | obj | obj[];
+	'@context': string | {} | {}[];
 	type: string;
 	id?: string;
 	summary?: string;
@@ -9,17 +9,17 @@ export interface IObject {
 	cc?: string[];
 	to?: string[];
 	attributedTo: string;
-	attachment?: unknown[];
-	inReplyTo?: unknown;
+	attachment?: IObject[];
+	inReplyTo?: string;
 	replies?: ICollection;
 	content?: string;
 	name?: string;
 	startTime?: Date;
 	endTime?: Date;
-	icon?: unknown;
-	image?: unknown;
+	icon?: IObject;
+	image?: IObject;
 	url?: string;
-	tag?: unknown[];
+	tag?: ITag[];
 	sensitive?: boolean;
 }
 
@@ -40,6 +40,24 @@ export interface IOrderedCollection extends IObject {
 	type: 'OrderedCollection';
 	totalItems: number;
 	orderedItems: IObject | string | IObject[] | string[];
+}
+
+/**
+ * Abstracted one of Collection or OrderedCollection
+ */
+export interface ICollectionLike extends IObject {
+	type: 'Collection' | 'OrderedCollection';
+	totalItems: number;
+	objects: IObject | string | IObject[] | string[];
+	items?: IObject | string | IObject[] | string[];
+	orderedItems?: IObject | string | IObject[] | string[];
+}
+
+/**
+ * Abstracted one of Document or Image
+ */
+export interface IDocumentLike extends IObject {
+	type: 'Document' | 'Image';
 }
 
 export interface INote extends IObject {
@@ -90,6 +108,12 @@ export const isOrderedCollection = (object: IObject): object is IOrderedCollecti
 
 export const isCollectionOrOrderedCollection = (object: IObject): object is ICollection | IOrderedCollection =>
 	isCollection(object) || isOrderedCollection(object);
+
+export const isDocumentLike = (object: IObject): object is IDocumentLike =>
+	object.type === 'Document' || object.type === 'Image';
+
+export const isNote = (object: IObject): object is INote =>
+	object.type === 'Note' || object.type === 'Question';
 
 export interface ICreate extends IActivity {
 	type: 'Create';

@@ -4,6 +4,7 @@ import { IRemoteUser } from '../../../../models/entities/user';
 import { IDelete } from '../../type';
 import { apLogger } from '../../logger';
 import { Notes } from '../../../../models';
+import { ensure } from '../../../../prelude/ensure';
 
 /**
  * 削除アクティビティを捌きます
@@ -17,7 +18,7 @@ export default async (actor: IRemoteUser, activity: IDelete): Promise<void> => {
 
 	const object = await resolver.resolve(activity.object);
 
-	const uri = (object as unknown).id;
+	const uri = typeof object == 'string' ? object : ensure(object.id);
 
 	switch (object.type) {
 		case 'Note':

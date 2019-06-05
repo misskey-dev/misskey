@@ -1,5 +1,5 @@
 import * as request from 'request-promise-native';
-import { IObject } from './type';
+import { IObject, isCollection, ICollectionLike, isOrderedCollection } from './type';
 import config from '../../config';
 
 export default class Resolver {
@@ -14,31 +14,23 @@ export default class Resolver {
 		return Array.from(this.history);
 	}
 
-	public async resolveCollection(value: unknown) {
-		const collection = typeof value === 'string'
+	public async resolveCollection(value: IObject | string): Promise<ICollectionLike> {
+		const collection = (typeof value === 'string'
 			? await this.resolve(value)
-			: value;
+			: value) as ICollectionLike;
 
-		switch (collection.type) {
-			case 'Collection': {
-				collection.objects = collection.items;
-				break;
-			}
-
-			case 'OrderedCollection': {
-				collection.objects = collection.orderedItems;
-				break;
-			}
-
-			default: {
-				throw new Error(`unknown collection type: ${collection.type}`);
-			}
+		if (isCollection(collection)) {
+			collection.objects = collection.items;
+		} else if (isOrderedCollection(collection)) {
+			collection.objects = collection.orderedItems;
+		} else {
+			throw new Error(`unknown collection type: ${collection.type}`);
 		}
 
 		return collection;
 	}
 
-	public async resolve(value: unknown): Promise<IObject> {
+	public async resolve(value: IObject | string): Promise<IObject> {
 		if (value == null) {
 			throw new Error('resolvee is null (or undefined)');
 		}

@@ -17,7 +17,7 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject, INote } from '../type';
+import { IObject, INote, isNote } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
@@ -25,7 +25,7 @@ import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 
-export function validateNote(object: unknown, uri: string) {
+export function validateNote(object: INote, uri: string) {
 	const expectHost = extractDbHost(uri);
 
 	if (object == null) {
@@ -76,25 +76,28 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 /**
  * Noteを作成します。
  */
-export async function createNote(value: unknown, resolver?: Resolver, silent = false): Promise<Note | null> {
+export async function createNote(value: IObject | string, resolver?: Resolver, silent = false): Promise<Note | null> {
+	// Resolve to Note
 	if (resolver == null) resolver = new Resolver();
 
-	const object: unknown = await resolver.resolve(value);
+	const note = await resolver.resolve(value);
 
-	const entryUri = value.id || value;
-	const err = validateNote(object, entryUri);
+	if (!isNote(note)) {
+		throw new Error(`Target is not a Note ${note.type}`);
+	}
+
+	const entryUri = typeof value == 'string' ? value : ensure(value.id);
+	const err = validateNote(note, entryUri);
 	if (err) {
 		logger.error(`${err.message}`, {
 			resolver: {
 				history: resolver.getHistory()
 			},
 			value: value,
-			object: object
+			object: note
 		});
 		throw new Error('invalid note');
 	}
-
-	const note: INote = object;
 
 	logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
