@@ -110,11 +110,11 @@ export default class InstanceChart extends Chart<InstanceLog> {
 
 	@autobind
 	public async updateNote(host: string, note: Note, isAdditional: boolean) {
-		const diffs = {} as unknown;
+		const diffs = {} as Record<'reply' | 'renote' | 'normal', 1 | -1>;
 
-		if (note.replyId != null) {
+		if (note.replyId) {
 			diffs.reply = isAdditional ? 1 : -1;
-		} else if (note.renoteId != null) {
+		} else if (note.renoteId) {
 			diffs.renote = isAdditional ? 1 : -1;
 		} else {
 			diffs.normal = isAdditional ? 1 : -1;
