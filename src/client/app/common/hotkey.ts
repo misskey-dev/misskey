@@ -1,32 +1,35 @@
 import keyCode from './keycode';
 import { concat } from '../../../prelude/array';
 
-type pattern = {
+const hotkeyGlobal = Symbol();
+const misskeyReservedKeys = Symbol();
+const keyHandler = Symbol();
+
+type Pattern = {
 	which: string[];
 	ctrl?: boolean;
 	shift?: boolean;
 	alt?: boolean;
 };
 
-type action = {
-	patterns: pattern[];
-
-	callback: Function;
+type Action = {
+	patterns: Pattern[];
+	callback(e: KeyboardEvent): void;
 };
 
-const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): action => {
-	const result = {
+const getKeyMap = (keymap: unknown) => typeof keymap === 'object' && keymap ? Object.entries(keymap as Record<string, Action['callback']>).map(([patterns, callback]): Action => {
+	const result: Action = {
 		patterns: [],
-		callback: callback
-	} as action;
+		callback
+	};
 
 	result.patterns = patterns.split('|').map(part => {
-		const pattern = {
+		const pattern: Pattern = {
 			which: [],
 			ctrl: false,
 			alt: false,
 			shift: false
-		} as pattern;
+		};
 
 		const keys = part.trim().split('+').map(x => x.trim().toLowerCase());
 		for (const key of keys) {
@@ -42,11 +45,11 @@ const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): a
 	});
 
 	return result;
-});
+}) : [];
 
 const ignoreElemens = ['input', 'textarea'];
 
-function match(e: KeyboardEvent, patterns: action['patterns']): boolean {
+function match(e: KeyboardEvent, patterns: Action['patterns']): boolean {
 	const key = e.code.toLowerCase();
 	return patterns.some(pattern => pattern.which.includes(key) &&
 		pattern.ctrl == e.ctrlKey &&
@@ -56,28 +59,46 @@ function match(e: KeyboardEvent, patterns: action['patterns']): boolean {
 	);
 }
 
+type DirectiveBinding = {
+	name: string;
+	value?: unknown;
+	oldValue?: unknown;
+	expression?: unknown;
+	arg?: string;
+	oldArg?: string;
+	readonly modifiers: Record<string, boolean>;
+};
+
+type DirectiveFunction = (el: HTMLElement, binding: DirectiveBinding, vnode: unknown, oldVnode: unknown) => void;
+
+type DirectiveOptions = Partial<Record<'bind' | 'inserted' | 'update' | 'componentUpdated' | 'unbind', DirectiveFunction>>;
+
+type Vue = {
+	directive(id: string, definition?: DirectiveOptions | DirectiveFunction): DirectiveOptions
+};
+
 export default {
-	install(Vue) {
+	install(Vue: Vue) {
 		Vue.directive('hotkey', {
 			bind(el, binding) {
-				el._hotkey_global = binding.modifiers.global === true;
+				el[hotkeyGlobal] = binding.modifiers.global === true;
 
 				const actions = getKeyMap(binding.value);
 
 				// flatten
 				const reservedKeys = concat(actions.map(a => a.patterns));
 
-				el._misskey_reservedKeys = reservedKeys;
+				el[misskeyReservedKeys] = reservedKeys;
 
-				el._keyHandler = (e: KeyboardEvent) => {
-					const targetReservedKeys = document.activeElement ? ((document.activeElement as unknown)._misskey_reservedKeys || []) : [];
+				el[keyHandler] = (e: KeyboardEvent) => {
+					const targetReservedKeys = document.activeElement ? (document.activeElement[misskeyReservedKeys] || []) : [];
 					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
 
 					for (const action of actions) {
 						const matched = match(e, action.patterns);
 
 						if (matched) {
-							if (el._hotkey_global && match(e, targetReservedKeys)) return;
+							if (el[hotkeyGlobal] && match(e, targetReservedKeys)) return;
 
 							e.preventDefault();
 							e.stopPropagation();
@@ -87,18 +108,18 @@ export default {
 					}
 				};
 
-				if (el._hotkey_global) {
-					document.addEventListener('keydown', el._keyHandler);
+				if (el[hotkeyGlobal]) {
+					document.addEventListener('keydown', el[keyHandler]);
 				} else {
-					el.addEventListener('keydown', el._keyHandler);
+					el.addEventListener('keydown', el[keyHandler]);
 				}
 			},
 
 			unbind(el) {
-				if (el._hotkey_global) {
-					document.removeEventListener('keydown', el._keyHandler);
+				if (el[hotkeyGlobal]) {
+					document.removeEventListener('keydown', el[keyHandler]);
 				} else {
-					el.removeEventListener('keydown', el._keyHandler);
+					el.removeEventListener('keydown', el[keyHandler]);
 				}
 			}
 		});
