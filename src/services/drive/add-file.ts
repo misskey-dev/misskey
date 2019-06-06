@@ -21,6 +21,7 @@ import { IRemoteUser, User } from '../../models/entities/user';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import { FindOperator } from 'typeorm';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -257,7 +258,7 @@ export default async function(
 	path: string,
 	name: string | null = null,
 	comment: string | null = null,
-	folderId: unknown = null,
+	folderId: string | FindOperator<string> | undefined | null = null,
 	force: boolean = false,
 	isLink: boolean = false,
 	url: string | null = null,
@@ -344,7 +345,7 @@ export default async function(
 		return driveFolder;
 	};
 
-	const properties: {[key: string]: unknown} = {};
+	const properties: Record<string, unknown> = {};
 
 	let propPromises: Promise<void>[] = [];
 
