@@ -123,7 +123,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<void> => {
  * @param activity Activity
  * @param host Expect host
  */
-function ValidateActivity(activity: unknown, host: string) {
+function ValidateActivity(activity: IActivity, host: string) {
 	// id (if exists)
 	if (typeof activity.id === 'string') {
 		const uriHost = toPuny(new URL(activity.id).hostname);
