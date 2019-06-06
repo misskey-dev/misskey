@@ -75,7 +75,7 @@ objectStorageQueue
 	.on('error', err => objectStorageLogger.error(`error ${err}`, { e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: ILocalUser, content: object, to: string) {
+export function deliver(user: ILocalUser, content: object | null, to: string) {
 	if (content == null) return null;
 
 	const data = {
