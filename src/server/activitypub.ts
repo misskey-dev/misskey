@@ -25,17 +25,21 @@ const router = new Router();
 //#region Routing
 
 function inbox(ctx: Router.IRouterContext) {
-	let signature;
-
 	ctx.req.headers.authorization = `Signature ${ctx.req.headers.signature}`;
 
-	try {
-		signature = httpSignature.parseRequest(ctx.req, { 'headers': [] });
-	} catch (e) {
-		ctx.status = 401;
+	const signature = (x => {
+		try {
+			return httpSignature.parseRequest(x, { 'headers': [] });
+		} catch (e) {
+			return void(ctx.status = 401);
+		}
+	})(ctx.req);
+
+	if (!signature) {
 		return;
 	}
 
+	// TODO: Validate body
 	processInbox(ctx.request.body, signature);
 
 	ctx.status = 202;
