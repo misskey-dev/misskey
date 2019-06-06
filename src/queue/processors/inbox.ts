@@ -12,13 +12,18 @@ import { instanceChart } from '../../services/chart';
 import { UserPublickey } from '../../models/entities/user-publickey';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
-import { validActor } from '../../remote/activitypub/type';
+import { validActor, IActivity } from '../../remote/activitypub/type';
 import { ensure } from '../../prelude/ensure';
 
 const logger = new Logger('inbox');
 
+export type InboxJobData = {
+	signature: httpSignature.IParsedSignature;
+	activity: IActivity;
+};
+
 // ユーザーのinboxにアクティビティが届いた時の処理
-export default async (job: Bull.Job): Promise<void> => {
+export default async (job: Bull.Job<InboxJobData>): Promise<void> => {
 	const signature = job.data.signature;
 	const activity = job.data.activity;
 

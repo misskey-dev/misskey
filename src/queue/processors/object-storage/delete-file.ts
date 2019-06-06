@@ -2,7 +2,7 @@ import * as Bull from 'bull';
 import * as Minio from 'minio';
 import { fetchMeta } from '../../../misc/fetch-meta';
 
-export default async (job: Bull.Job) => {
+export default async (job: Bull.Job<{ key: string }>) => {
 	const meta = await fetchMeta();
 
 	const minio = new Minio.Client({
@@ -14,9 +14,7 @@ export default async (job: Bull.Job) => {
 		secretKey: meta.objectStorageSecretKey!,
 	});
 
-	const key: string = job.data.key;
-
-	await minio.removeObject(meta.objectStorageBucket!, key);
+	await minio.removeObject(meta.objectStorageBucket!, job.data.key);
 
 	return 'Success';
 };

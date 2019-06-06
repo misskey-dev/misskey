@@ -7,10 +7,12 @@ import { resolveUser } from '../../../remote/resolve-user';
 import { downloadTextFile } from '../../../misc/download-text-file';
 import { isSelfHost, toPuny } from '../../../misc/convert-host';
 import { Users, DriveFiles } from '../../../models';
+import { ILocalUser } from '../../../models/entities/user';
+import { DriveFile } from '../../../models/entities/drive-file';
 
 const logger = queueLogger.createSubLogger('import-following');
 
-export async function importFollowing(job: Bull.Job, done: Bull.DoneCallback): Promise<void> {
+export async function importFollowing(job: Bull.Job<{ user: ILocalUser, fileId: DriveFile['id'] }>, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Importing following of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

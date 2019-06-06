@@ -5,15 +5,16 @@ import config from '../config';
 import { ILocalUser } from '../models/entities/user';
 import { program } from '../argv';
 
-import processDeliver from './processors/deliver';
-import processInbox from './processors/inbox';
+import processDeliver, { DeliverJobData } from './processors/deliver';
+import processInbox, { InboxJobData } from './processors/inbox';
 import processDb from './processors/db';
 import procesObjectStorage from './processors/object-storage';
 import { queueLogger } from './logger';
 import { DriveFile } from '../models/entities/drive-file';
+import { IActivity } from '../remote/activitypub/type';
 
-function initializeQueue(name: string) {
-	return new Queue(name, {
+function initializeQueue<T>(name: string) {
+	return new Queue<T>(name, {
 		redis: {
 			port: config.redis.port,
 			host: config.redis.host,
@@ -32,8 +33,8 @@ function renderError(e: Error) {
 	};
 }
 
-export const deliverQueue = initializeQueue('deliver');
-export const inboxQueue = initializeQueue('inbox');
+export const deliverQueue = initializeQueue<DeliverJobData>('deliver');
+export const inboxQueue = initializeQueue<InboxJobData>('inbox');
 export const dbQueue = initializeQueue('db');
 export const objectStorageQueue = initializeQueue('objectStorage');
 
@@ -74,7 +75,7 @@ objectStorageQueue
 	.on('error', err => objectStorageLogger.error(`error ${err}`, { e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: ILocalUser, content: unknown, to: unknown) {
+export function deliver(user: ILocalUser, content: object, to: string) {
 	if (content == null) return null;
 
 	const data = {
@@ -94,9 +95,9 @@ export function deliver(user: ILocalUser, content: unknown, to: unknown) {
 	});
 }
 
-export function inbox(activity: unknown, signature: httpSignature.IParsedSignature) {
+export function inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
 	const data = {
-		activity: activity,
+		activity,
 		signature
 	};
 
@@ -113,7 +114,7 @@ export function inbox(activity: unknown, signature: httpSignature.IParsedSignatu
 
 export function createDeleteDriveFilesJob(user: ILocalUser) {
 	return dbQueue.add('deleteDriveFiles', {
-		user: user
+		user
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -122,7 +123,7 @@ export function createDeleteDriveFilesJob(user: ILocalUser) {
 
 export function createExportNotesJob(user: ILocalUser) {
 	return dbQueue.add('exportNotes', {
-		user: user
+		user
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -131,7 +132,7 @@ export function createExportNotesJob(user: ILocalUser) {
 
 export function createExportFollowingJob(user: ILocalUser) {
 	return dbQueue.add('exportFollowing', {
-		user: user
+		user
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -140,7 +141,7 @@ export function createExportFollowingJob(user: ILocalUser) {
 
 export function createExportMuteJob(user: ILocalUser) {
 	return dbQueue.add('exportMute', {
-		user: user
+		user
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -149,7 +150,7 @@ export function createExportMuteJob(user: ILocalUser) {
 
 export function createExportBlockingJob(user: ILocalUser) {
 	return dbQueue.add('exportBlocking', {
-		user: user
+		user
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -158,7 +159,7 @@ export function createExportBlockingJob(user: ILocalUser) {
 
 export function createExportUserListsJob(user: ILocalUser) {
 	return dbQueue.add('exportUserLists', {
-		user: user
+		user
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -167,8 +168,8 @@ export function createExportUserListsJob(user: ILocalUser) {
 
 export function createImportFollowingJob(user: ILocalUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importFollowing', {
-		user: user,
-		fileId: fileId
+		user,
+		fileId
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -177,8 +178,8 @@ export function createImportFollowingJob(user: ILocalUser, fileId: DriveFile['id
 
 export function createImportUserListsJob(user: ILocalUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importUserLists', {
-		user: user,
-		fileId: fileId
+		user,
+		fileId
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true
@@ -187,7 +188,7 @@ export function createImportUserListsJob(user: ILocalUser, fileId: DriveFile['id
 
 export function createDeleteObjectStorageFileJob(key: string) {
 	return objectStorageQueue.add('deleteFile', {
-		key: key
+		key
 	}, {
 		removeOnComplete: true,
 		removeOnFail: true

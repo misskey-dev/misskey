@@ -4,10 +4,11 @@ import { queueLogger } from '../../logger';
 import { deleteFile } from '../../../services/drive/delete-file';
 import { Users, DriveFiles } from '../../../models';
 import { MoreThan } from 'typeorm';
+import { ILocalUser } from '../../../models/entities/user';
 
 const logger = queueLogger.createSubLogger('delete-drive-files');
 
-export async function deleteDriveFiles(job: Bull.Job, done: Bull.DoneCallback): Promise<void> {
+export async function deleteDriveFiles(job: Bull.Job<{ user: ILocalUser }>, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

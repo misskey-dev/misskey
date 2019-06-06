@@ -4,12 +4,19 @@ import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-ins
 import Logger from '../../services/logger';
 import { Instances } from '../../models';
 import { instanceChart } from '../../services/chart';
+import { ILocalUser } from '../../models/entities/user';
 
 const logger = new Logger('deliver');
 
 let latest: string | null = null;
 
-export default async (job: Bull.Job) => {
+export type DeliverJobData = {
+	user: ILocalUser;
+	content: object;
+	to: string;
+};
+
+export default async (job: Bull.Job<DeliverJobData>) => {
 	const { host } = new URL(job.data.to);
 
 	try {
