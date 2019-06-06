@@ -1,6 +1,7 @@
 import { faHistory } from '@fortawesome/free-solid-svg-icons';
+import { Root } from '../../init';
 
-export async function search(v: unknown, q: string) {
+export async function search(v: { $root: Root }, q: string) {
 	q = q.trim();
 
 	if (q.startsWith('@') && !q.includes(' ')) {
