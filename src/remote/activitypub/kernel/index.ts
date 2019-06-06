@@ -70,7 +70,7 @@ const self = async (actor: IRemoteUser, activity: ActivityStreamsObject): Promis
 		break;
 
 	default:
-		apLogger.warn(`unknown activity type: ${(activity as unknown).type}`);
+		apLogger.warn(`unknown activity type: ${activity.type}`);
 		return;
 	}
 };

@@ -90,7 +90,7 @@ export default abstract class Chart<T extends Record<string, unknown>> {
 
 	@autobind
 	private static convertFlattenColumnsToObject(x: Record<string, number>) {
-		const obj = {} as unknown;
+		const obj = {};
 		for (const k of Object.keys(x).filter(k => k.startsWith(Chart.columnPrefix))) {
 			// now k is ___x_y_z
 			const path = k.substr(Chart.columnPrefix.length).split(Chart.columnDot).join('.');
@@ -332,12 +332,12 @@ export default abstract class Chart<T extends Record<string, unknown>> {
 
 	@autobind
 	protected async inc(inc: DeepPartial<T>, group: string | null = null): Promise<void> {
-		await this.commit(Chart.convertQuery(inc as unknown), group);
+		await this.commit(Chart.convertQuery(inc), group);
 	}
 
 	@autobind
 	protected async incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string | null = null): Promise<void> {
-		await this.commit(Chart.convertQuery(inc as unknown), group, key, value);
+		await this.commit(Chart.convertQuery(inc), group, key, value);
 	}
 
 	@autobind
@@ -419,7 +419,7 @@ export default abstract class Chart<T extends Record<string, unknown>> {
 			}
 		}
 
-		const res: ArrayValue<T> = {} as unknown;
+		const res: ArrayValue<T> = {};
 
 		/**
 		 * [{ foo: 1, bar: 5 }, { foo: 2, bar: 6 }, { foo: 3, bar: 7 }]

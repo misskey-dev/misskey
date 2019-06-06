@@ -33,5 +33,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await activeUsersChart.getChart(ps.span as unknown, ps.limit!);
+	return await activeUsersChart.getChart(ps.span, ps.limit!);
 });

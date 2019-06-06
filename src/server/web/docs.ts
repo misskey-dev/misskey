@@ -60,7 +60,7 @@ async function genVars(lang: string): Promise<{ [key: string]: unknown }> {
 const router = new Router();
 
 router.get('/assets/*', async ctx => {
-	await send(ctx as unknown, ctx.params[0], {
+	await send(ctx, ctx.params[0], {
 		root: `${__dirname}/../../docs/assets/`,
 		maxage: ms('1 days')
 	});

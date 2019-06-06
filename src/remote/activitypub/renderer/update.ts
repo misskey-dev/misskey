@@ -8,7 +8,7 @@ export default (object: unknown, user: ILocalUser) => {
 		type: 'Update',
 		to: [ 'https://www.w3.org/ns/activitystreams#Public' ],
 		object
-	} as unknown;
+	};
 
 	return activity;
 };

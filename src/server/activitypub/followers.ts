@@ -44,7 +44,7 @@ export default async (ctx: Router.IRouterContext) => {
 	if (page) {
 		const query = {
 			followeeId: user.id
-		} as unknown;
+		};
 
 		// カーソルが指定されている場合
 		if (cursor) {

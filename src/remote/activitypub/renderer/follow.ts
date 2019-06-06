@@ -7,7 +7,7 @@ export default (follower: User, followee: User, requestId?: string) => {
 		type: 'Follow',
 		actor: Users.isLocalUser(follower) ? `${config.url}/users/${follower.id}` : follower.uri,
 		object: Users.isLocalUser(followee) ? `${config.url}/users/${followee.id}` : followee.uri
-	} as unknown;
+	};
 
 	if (requestId) follow.id = requestId;
 

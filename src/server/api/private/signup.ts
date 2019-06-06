@@ -15,7 +15,7 @@ import { UserProfile } from '../../../models/entities/user-profile';
 import { getConnection } from 'typeorm';
 
 export default async (ctx: Koa.BaseContext) => {
-	const body = ctx.request.body as unknown;
+	const body = ctx.request.body;
 
 	const instance = await fetchMeta(true);
 
@@ -96,7 +96,7 @@ export default async (ctx: Koa.BaseContext) => {
 				cipher: undefined,
 				passphrase: undefined
 			}
-		} as unknown, (e, publicKey, privateKey) =>
+		}, (e, publicKey, privateKey) =>
 			e ? j(e) : s([publicKey, privateKey])
 		));
 
@@ -135,7 +135,7 @@ export default async (ctx: Koa.BaseContext) => {
 		includeSecrets: true
 	});
 
-	(res as unknown).token = secret;
+	res.token = secret;
 
 	ctx.body = res;
 };

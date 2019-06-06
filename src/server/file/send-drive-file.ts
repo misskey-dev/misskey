@@ -25,7 +25,7 @@ export default async function(ctx: Koa.BaseContext) {
 
 	if (file == null) {
 		ctx.status = 404;
-		await send(ctx as unknown, '/dummy.png', { root: assets });
+		await send(ctx, '/dummy.png', { root: assets });
 		return;
 	}
 

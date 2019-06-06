@@ -173,16 +173,16 @@ export default class Connection {
 	 */
 	@autobind
 	public connectChannel(id: string, params: unknown, channel: string, pong = false) {
-		if ((channels as unknown)[channel].requireCredential && this.user == null) {
+		if (channels[channel].requireCredential && this.user == null) {
 			return;
 		}
 
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
-		if ((channels as unknown)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
+		if (channels[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
 		}
 
-		const ch: Channel = new (channels as unknown)[channel](id, this);
+		const ch: Channel = new channels[channel](id, this);
 		this.channels.push(ch);
 		ch.init(params);
 

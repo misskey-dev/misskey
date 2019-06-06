@@ -18,7 +18,7 @@ export async function sendEmail(to: string, subject: string, text: string) {
 			user: meta.smtpUser,
 			pass: meta.smtpPass
 		} : undefined
-	} as unknown);
+	});
 
 	try {
 		const info = await transporter.sendMail({

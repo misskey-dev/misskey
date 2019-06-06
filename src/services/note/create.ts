@@ -237,7 +237,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const noteObj = await Notes.pack(note);
 
 		if (user.notesCount === 0) {
-			(noteObj as unknown).isFirstNote = true;
+			noteObj.isFirstNote = true;
 		}
 
 		publishNotesStream(noteObj);
@@ -362,7 +362,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		localOnly: data.localOnly!,
 		geo: data.geo || null,
 		appId: data.app ? data.app.id : null,
-		visibility: data.visibility as unknown,
+		visibility: data.visibility,
 		visibleUserIds: data.visibility == 'specified'
 			? data.visibleUsers
 				? data.visibleUsers.map(u => u.id)
@@ -485,7 +485,7 @@ async function publishToFollowers(note: Note, user: User, noteActivity: unknown)
 	}
 
 	for (const inbox of queue) {
-		deliver(user as unknown, noteActivity, inbox);
+		deliver(user, noteActivity, inbox);
 	}
 }
 

@@ -8,7 +8,7 @@ export default (object: unknown, note: Note) => {
 		type: 'Create',
 		published: note.createdAt.toISOString(),
 		object
-	} as unknown;
+	};
 
 	if (object.to) activity.to = object.to;
 	if (object.cc) activity.cc = object.cc;

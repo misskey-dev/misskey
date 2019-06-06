@@ -96,7 +96,7 @@ async function fetchAny(uri: string) {
 
 	// リモートから一旦オブジェクトフェッチ
 	const resolver = new Resolver();
-	const object = await resolver.resolve(uri) as unknown;
+	const object = await resolver.resolve(uri);
 
 	// /@user のような正規id以外で取得できるURIが指定されていた場合、ここで初めて正規URIが確定する
 	// これはDBに存在する可能性があるため再度DB検索

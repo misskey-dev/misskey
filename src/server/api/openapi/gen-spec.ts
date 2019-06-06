@@ -25,7 +25,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			url: config.apiUrl
 		}],
 
-		paths: {} as unknown,
+		paths: {},
 
 		components: {
 			schemas: schemas,
@@ -41,7 +41,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 	};
 
 	function genProps(props: { [key: string]: Context; }) {
-		const properties = {} as unknown;
+		const properties = {};
 
 		for (const [k, v] of Object.entries(props)) {
 			properties[k] = genProp(v);
@@ -51,7 +51,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 	}
 
 	function genProp(param: Context): unknown {
-		const required = param.name === 'Object' ? (param as unknown).props ? Object.entries((param as unknown).props).filter(([k, v]: unknown) => !v.isOptional).map(([k, v]) => k) : [] : [];
+		const required = param.name === 'Object' ? param.props ? Object.entries(param.props).filter(([k, v]: unknown) => !v.isOptional).map(([k, v]) => k) : [] : [];
 		return {
 			description: (param.data || {}).desc,
 			default: (param.data || {}).default,
@@ -61,27 +61,27 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			...(param.name === 'ID' ? { example: 'xxxxxxxxxx', format: 'id' } : {}),
 			nullable: param.isNullable,
 			...(param.name === 'String' ? {
-				...((param as unknown).enum ? { enum: (param as unknown).enum } : {}),
-				...((param as unknown).minLength ? { minLength: (param as unknown).minLength } : {}),
-				...((param as unknown).maxLength ? { maxLength: (param as unknown).maxLength } : {}),
+				...(param.enum ? { enum: param.enum } : {}),
+				...(param.minLength ? { minLength: param.minLength } : {}),
+				...(param.maxLength ? { maxLength: param.maxLength } : {}),
 			} : {}),
 			...(param.name === 'Number' ? {
-				...((param as unknown).minimum ? { minimum: (param as unknown).minimum } : {}),
-				...((param as unknown).maximum ? { maximum: (param as unknown).maximum } : {}),
+				...(param.minimum ? { minimum: param.minimum } : {}),
+				...(param.maximum ? { maximum: param.maximum } : {}),
 			} : {}),
 			...(param.name === 'Object' ? {
 				...(required.length > 0 ? { required } : {}),
-				properties: (param as unknown).props ? genProps((param as unknown).props) : {}
+				properties: param.props ? genProps(param.props) : {}
 			} : {}),
 			...(param.name === 'Array' ? {
-				items: (param as unknown).ctx ? genProp((param as unknown).ctx) : {}
+				items: param.ctx ? genProp(param.ctx) : {}
 			} : {})
 		};
 	}
 
 	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
-		const porops = {} as unknown;
-		const errors = {} as unknown;
+		const porops = {};
+		const errors = {};
 
 		if (endpoint.meta.errors) {
 			for (const e of Object.values(endpoint.meta.errors)) {

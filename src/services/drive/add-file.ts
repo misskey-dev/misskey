@@ -371,7 +371,7 @@ export default async function(
 			logger.debug('calculating average color...');
 
 			try {
-				const info = await (img as unknown).stats();
+				const info = await img.stats();
 
 				const r = Math.round(info.channels[0].mean);
 				const g = Math.round(info.channels[1].mean);

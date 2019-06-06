@@ -14,7 +14,7 @@ export default function(id: string, totalItems: unknown, orderedItems: unknown, 
 		type: 'OrderedCollectionPage',
 		totalItems,
 		orderedItems
-	} as unknown;
+	};
 
 	if (prev) page.prev = prev;
 	if (next) page.next = next;

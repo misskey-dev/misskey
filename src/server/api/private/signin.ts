@@ -13,7 +13,7 @@ export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
 	ctx.set('Access-Control-Allow-Credentials', 'true');
 
-	const body = ctx.request.body as unknown;
+	const body = ctx.request.body;
 	const username = body['username'];
 	const password = body['password'];
 	const token = body['token'];
@@ -53,7 +53,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 	if (same) {
 		if (profile.twoFactorEnabled) {
-			const verified = (speakeasy as unknown).totp.verify({
+			const verified = speakeasy.totp.verify({
 				secret: profile.twoFactorSecret,
 				encoding: 'base32',
 				token: token

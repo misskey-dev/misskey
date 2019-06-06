@@ -115,7 +115,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	if (resolver == null) resolver = new Resolver();
 
-	const object = await resolver.resolve(uri) as unknown;
+	const object = await resolver.resolve(uri);
 
 	const err = validatePerson(object, uri);
 
@@ -157,7 +157,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				uri: person.id,
 				tags,
 				isBot,
-				isCat: (person as unknown).isCat === true
+				isCat: person.isCat === true
 			})) as IRemoteUser;
 
 			await transactionalEntityManager.save(new UserProfile({
@@ -273,7 +273,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	if (resolver == null) resolver = new Resolver();
 
-	const object = hint || await resolver.resolve(uri) as unknown;
+	const object = hint || await resolver.resolve(uri);
 
 	const err = validatePerson(object, uri);
 
@@ -316,7 +316,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		name: person.name,
 		tags,
 		isBot: object.type == 'Service',
-		isCat: (person as unknown).isCat === true,
+		isCat: person.isCat === true,
 		isLocked: person.manuallyApprovesFollowers,
 	} as Partial<User>;
 

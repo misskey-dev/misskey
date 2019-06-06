@@ -27,7 +27,7 @@ export const meta = {
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: undefined as unknown,
+			default: undefined,
 			desc: {
 				'ja-JP': 'フォルダID'
 			}
@@ -35,7 +35,7 @@ export const meta = {
 
 		name: {
 			validator: $.optional.str.pipe(DriveFiles.validateFileName),
-			default: undefined as unknown,
+			default: undefined,
 			desc: {
 				'ja-JP': 'ファイル名',
 				'en-US': 'Name of the file'
@@ -44,7 +44,7 @@ export const meta = {
 
 		isSensitive: {
 			validator: $.optional.bool,
-			default: undefined as unknown,
+			default: undefined,
 			desc: {
 				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
 				'en-US': 'Whether this media is NSFW'

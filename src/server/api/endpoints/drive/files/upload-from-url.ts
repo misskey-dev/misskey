@@ -29,7 +29,7 @@ export const meta = {
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: null as unknown,
+			default: null,
 		},
 
 		isSensitive: {

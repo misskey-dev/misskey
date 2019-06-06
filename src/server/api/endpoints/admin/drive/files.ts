@@ -49,7 +49,7 @@ const sort: unknown = { // < https://github.com/Microsoft/TypeScript/issues/1863
 };
 
 export default define(meta, async (ps, me) => {
-	const q = {} as unknown;
+	const q = {};
 
 	if (ps.origin == 'local') q['userHost'] = null;
 	if (ps.origin == 'remote') q['userHost'] = { $ne: null };

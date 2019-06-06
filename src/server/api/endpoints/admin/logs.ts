@@ -17,12 +17,12 @@ export const meta = {
 
 		level: {
 			validator: $.optional.nullable.str,
-			default: null as unknown
+			default: null
 		},
 
 		domain: {
 			validator: $.optional.nullable.str,
-			default: null as unknown
+			default: null
 		}
 	}
 };
