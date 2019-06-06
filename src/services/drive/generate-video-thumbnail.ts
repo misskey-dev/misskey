@@ -4,7 +4,7 @@ import { IImage, convertToJpeg } from './image-processor';
 const ThumbnailGenerator = require('video-thumbnail-generator').default;
 
 export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
-	const [outDir, cleanup] = await new Promise<[string, unknown]>((res, rej) => {
+	const [outDir, cleanup] = await new Promise<[string, () => void]>((res, rej) => {
 		tmp.dir((e, path, cleanup) => {
 			if (e) return rej(e);
 			res([path, cleanup]);
