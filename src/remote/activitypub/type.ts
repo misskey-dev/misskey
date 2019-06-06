@@ -1,5 +1,7 @@
 import { ITag } from './models/tag';
 
+type Items = IObject | string | IObject[] | string[];
+
 export interface IObject {
 	'@context': string | {} | {}[];
 	type: string;
@@ -33,13 +35,13 @@ export interface IActivity extends IObject {
 export interface ICollection extends IObject {
 	type: 'Collection';
 	totalItems: number;
-	items: IObject | string | IObject[] | string[];
+	items: Items;
 }
 
 export interface IOrderedCollection extends IObject {
 	type: 'OrderedCollection';
 	totalItems: number;
-	orderedItems: IObject | string | IObject[] | string[];
+	orderedItems: Items;
 }
 
 /**
@@ -48,9 +50,9 @@ export interface IOrderedCollection extends IObject {
 export interface ICollectionLike extends IObject {
 	type: 'Collection' | 'OrderedCollection';
 	totalItems: number;
-	objects: IObject | string | IObject[] | string[];
-	items?: IObject | string | IObject[] | string[];
-	orderedItems?: IObject | string | IObject[] | string[];
+	objects: Items;
+	items?: Items;
+	orderedItems?: Items;
 }
 
 /**
