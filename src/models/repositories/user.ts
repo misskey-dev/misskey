@@ -230,6 +230,14 @@ export class UserRepository extends Repository<User> {
 		return !this.isLocalUser(user);
 	}
 
+	public filterLocalUserOnly(users: User[]): ILocalUser[] {
+		return users.filter(this.isLocalUser);
+	}
+
+	public filterRemoteUserOnly(users: User[]): IRemoteUser[] {
+		return users.filter(this.isRemoteUser);
+	}
+
 	//#region Validators
 	public validateUsername(username: string, remote = false): boolean {
 		return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
