@@ -10,7 +10,7 @@ import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
 import config from '../../config';
 import { updateHashtag } from '../update-hashtag';
-import { concat } from '../../prelude/array';
+import { concat, unique } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
@@ -28,6 +28,8 @@ import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 import { ensure } from '../../prelude/ensure';
+import { MfmForest } from '../../mfm/prelude';
+import { AsyncReturnType } from '../../prelude/type';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -95,7 +97,7 @@ type Option = {
 	viaMobile?: boolean | null;
 	localOnly?: boolean | null;
 	cw?: string | null;
-	visibility?: string;
+	visibility?: Note['visibility'];
 	visibleUsers?: User[] | null;
 	apMentions?: User[] | null;
 	apHashtags?: string[] | null;
@@ -234,7 +236,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 
 		// Pack the note
-		const noteObj = await Notes.pack(note);
+		const noteObj: AsyncReturnType<(typeof Notes)['pack']> & { isFirstNote?: boolean; } = await Notes.pack(note);
 
 		if (user.notesCount === 0) {
 			noteObj.isFirstNote = true;
@@ -321,19 +323,23 @@ function incRenoteCount(renote: Note) {
 	Notes.increment({ id: renote.id }, 'score', 1);
 }
 
-async function publish(user: User, note: Note, reply: Note | null | undefined, renote: Note | null | undefined, noteActivity: unknown) {
+async function publish(user: User, note: Note, reply: Note | null | undefined, renote: Note | null | undefined, noteActivity: object | null) {
 	if (Users.isLocalUser(user)) {
 		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 		if (reply && reply.userHost !== null) {
 			Users.findOne(reply.userId).then(ensure).then(u => {
-				deliver(user, noteActivity, u.inbox);
+				if (u.inbox) {
+					deliver(user, noteActivity, u.inbox);
+				}
 			});
 		}
 
 		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 		if (renote && renote.userHost !== null) {
 			Users.findOne(renote.userId).then(ensure).then(u => {
-				deliver(user, noteActivity, u.inbox);
+				if (u.inbox) {
+					deliver(user, noteActivity, u.inbox);
+				}
 			});
 		}
 	}
@@ -467,31 +473,25 @@ async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: Notificati
 	}
 }
 
-async function publishToFollowers(note: Note, user: User, noteActivity: unknown) {
+async function publishToFollowers(note: Note, user: User, noteActivity: Parameters<typeof deliver>[1]) {
 	const followers = await Followings.find({
 		followeeId: note.userId
 	});
 
-	const queue: string[] = [];
-
-	for (const following of followers) {
-		if (Followings.isRemoteFollower(following)) {
-			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
-			if (Users.isLocalUser(user)) {
-				const inbox = following.followerSharedInbox || following.followerInbox;
-				if (!queue.includes(inbox)) queue.push(inbox);
-			}
+	if (Users.isLocalUser(user)) {
+		for (const inbox of unique(followers
+			.filter(Followings.isRemoteFollower)
+			.map(({ followerSharedInbox, followerInbox }) => followerSharedInbox || followerInbox))) {
+			deliver(user, noteActivity, inbox);
 		}
-	}
-
-	for (const inbox of queue) {
-		deliver(user, noteActivity, inbox);
 	}
 }
 
-function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: unknown) {
-	for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
-		deliver(user, noteActivity, (u as IRemoteUser).inbox);
+function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: Parameters<typeof deliver>[1]) {
+	for (const u of Users.filterRemoteUserOnly(mentionedUsers)) {
+		if (u.inbox) {
+			deliver(user, noteActivity, u.inbox);
+		}
 	}
 }
 
@@ -519,7 +519,7 @@ function incNotesCountOfUser(user: User) {
 	});
 }
 
-async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse>): Promise<User[]> {
+async function extractMentionedUsers(user: User, tokens: MfmForest | null): Promise<User[]> {
 	if (tokens == null) return [];
 
 	const mentions = extractMentions(tokens);
