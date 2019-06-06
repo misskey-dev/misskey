@@ -28,7 +28,7 @@ export default (opts: Opts = {}) => ({
 	},
 
 	computed: {
-		keymap(): unknown {
+		keymap() {
 			return {
 				'r': () => this.reply(true),
 				'e|a|plus': () => this.react(true),
@@ -61,7 +61,7 @@ export default (opts: Opts = {}) => ({
 				this.note.poll == null);
 		},
 
-		appearNote(): unknown {
+		appearNote() {
 			return this.isRenote ? this.note.renote : this.note;
 		},
 
@@ -118,7 +118,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		renoteDirectly() {
-			(this as unknown).api('notes/create', {
+			this.api('notes/create', {
 				renoteId: this.appearNote.id
 			});
 		},

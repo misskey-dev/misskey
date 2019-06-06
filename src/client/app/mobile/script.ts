@@ -59,7 +59,7 @@ init((launch, os) => {
 				vm.$once('cancel', recover);
 				vm.$once('posted', recover);
 				if (o.cb) vm.$once('closed', o.cb);
-				(vm as unknown).focus();
+				vm.focus();
 			},
 
 			$chooseDriveFile(opts) {

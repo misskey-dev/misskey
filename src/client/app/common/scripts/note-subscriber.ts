@@ -51,7 +51,7 @@ export default prop => ({
 			if (this.$store.getters.isSignedIn) {
 				const data = {
 					id: this.$_ns_target.id
-				} as unknown;
+				};
 
 				if (
 					(this.$_ns_target.visibleUserIds || []).includes(this.$store.state.i.id) ||

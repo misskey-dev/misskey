@@ -3,7 +3,7 @@ import { toASCII } from 'punycode';
 
 export default {
 	bind(el, binding, vn) {
-		const self = el._autoCompleteDirective_ = {} as unknown;
+		const self = el._autoCompleteDirective_ = {};
 		self.x = new Autocomplete(el, vn.context, binding.value);
 		self.x.attach();
 	},

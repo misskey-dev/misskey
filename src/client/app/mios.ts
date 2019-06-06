@@ -74,7 +74,7 @@ export default class MiOS extends EventEmitter {
 		this.shouldRegisterSw = shouldRegisterSw;
 
 		if (this.debug) {
-			(window as unknown).os = this;
+			window.os = this;
 		}
 	}
 
@@ -392,7 +392,7 @@ export default class MiOS extends EventEmitter {
 
 		const promise = new Promise((resolve, reject) => {
 			// Append a credential
-			if (this.store.getters.isSignedIn) (data as unknown).i = this.store.state.i.token;
+			if (this.store.getters.isSignedIn) data.i = this.store.state.i.token;
 
 			const req = {
 				id: uuid(),

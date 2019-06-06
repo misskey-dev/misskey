@@ -52,14 +52,14 @@ export default ($root: Root) => {
 		const xhr = new XMLHttpRequest();
 		xhr.open('POST', apiUrl + '/drive/files/create', true);
 		xhr.onload = e => {
-			const file = JSON.parse((e.target as unknown).response);
-			(dialog as unknown).close();
+			const file = JSON.parse(e.target.response);
+			dialog.close();
 			resolve(file);
 		};
 		xhr.onerror = reject;
 
 		xhr.upload.onprogress = e => {
-			if (e.lengthComputable) (dialog as unknown).update(e.loaded, e.total);
+			if (e.lengthComputable) dialog.update(e.loaded, e.total);
 		};
 
 		xhr.send(data);

@@ -331,8 +331,8 @@ console.info(
 	'color: red; background: yellow; font-size: 16px; font-weight: bold;');
 
 // BootTimer解除
-window.clearTimeout((window as unknown).mkBootTimer);
-delete (window as unknown).mkBootTimer;
+window.clearTimeout(window.mkBootTimer);
+delete window.mkBootTimer;
 
 //#region Set lang attr
 const html = document.documentElement;

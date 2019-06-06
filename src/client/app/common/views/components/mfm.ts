@@ -79,7 +79,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'italic': {
-					return (createElement as unknown)('i', {
+					return createElement('i', {
 						attrs: {
 							style: 'font-style: oblique;'
 						},
@@ -90,7 +90,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					bigCount++;
 					const isLong = sumTextsLength(token.children) > 15 || countNodesF(token.children) > 5;
 					const isMany = bigCount > 3;
-					return (createElement as unknown)('strong', {
+					return createElement('strong', {
 						attrs: {
 							style: `display: inline-block; font-size: ${ isMany ? '100%' : '150%' };`
 						},
@@ -121,7 +121,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					motionCount++;
 					const isLong = sumTextsLength(token.children) > 15 || countNodesF(token.children) > 5;
 					const isMany = motionCount > 5;
-					return (createElement as unknown)('span', {
+					return createElement('span', {
 						attrs: {
 							style: 'display: inline-block;'
 						},
@@ -143,7 +143,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					const style = (this.$store.state.settings.disableAnimatedMfm || isLong || isMany)
 						? ''
 						: `animation: spin 1.5s linear infinite; animation-direction: ${direction};`;
-					return (createElement as unknown)('span', {
+					return createElement('span', {
 						attrs: {
 							style: 'display: inline-block;' + style
 						},
@@ -154,7 +154,7 @@ export default Vue.component('misskey-flavored-markdown', {
 					motionCount++;
 					const isLong = sumTextsLength(token.children) > 30 || countNodesF(token.children) > 5;
 					const isMany = motionCount > 5;
-					return (createElement as unknown)('span', {
+					return createElement('span', {
 						attrs: {
 							style: (this.$store.state.settings.disableAnimatedMfm || isLong || isMany) ? 'display: inline-block;' : 'display: inline-block; animation: jump 0.75s linear infinite;'
 						},
@@ -162,7 +162,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'flip': {
-					return (createElement as unknown)('span', {
+					return createElement('span', {
 						attrs: {
 							style: 'display: inline-block; transform: scaleX(-1);'
 						},
