@@ -1,4 +1,4 @@
-import { Object } from '../type';
+import { ActivityStreamsObject } from '../type';
 import { IRemoteUser } from '../../../models/entities/user';
 import create from './create';
 import performDeleteActivity from './delete';
@@ -14,7 +14,7 @@ import remove from './remove';
 import block from './block';
 import { apLogger } from '../logger';
 
-const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
+const self = async (actor: IRemoteUser, activity: ActivityStreamsObject): Promise<void> => {
 	switch (activity.type) {
 	case 'Create':
 		await create(actor, activity);

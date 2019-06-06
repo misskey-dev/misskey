@@ -166,7 +166,7 @@ export interface IBlock extends IActivity {
 	type: 'Block';
 }
 
-export type Object =
+export type ActivityStreamsObject =
 	ICollection |
 	IOrderedCollection |
 	ICreate |
