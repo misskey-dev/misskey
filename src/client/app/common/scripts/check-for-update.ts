@@ -1,10 +1,11 @@
 import { version as current } from '../../config';
+import { Root } from '../../init';
 
-export default async function($root: unknown, force = false, silent = false) {
+export default async function($root: Root, force = false, silent = false) {
 	const meta = await $root.getMeta(force);
 	const newer = meta.version;
 
-	if (newer != current) {
+	if (typeof newer === 'string' && newer != current) {
 		localStorage.setItem('should-refresh', 'true');
 		localStorage.setItem('v', newer);
 

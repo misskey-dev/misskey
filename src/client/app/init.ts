@@ -26,6 +26,7 @@ if (localStorage.getItem('theme') == null) {
 //#region FontAwesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 import {
 	faRetweet,
@@ -350,6 +351,61 @@ if (localStorage.getItem('should-refresh') == 'true') {
 	localStorage.removeItem('should-refresh');
 	location.reload(true);
 }
+
+type DialogInputOptions = {
+	type?: string;
+	placeholder?: string;
+};
+
+type DialogSelectItemOptions = {
+	items: {
+		text?: string;
+		value?: string;
+	}[];
+};
+
+type DialogSelectGroupedItemOptions = {
+	groupedItems: (DialogSelectItemOptions & {
+		label?: string;
+	})[];
+};
+
+type DialogSelectOptions = DialogSelectItemOptions | DialogSelectGroupedItemOptions;
+
+type DialogOptions = {
+	type?: 'signin' | 'success' | 'error' | 'warning' | 'info' | 'question' | 'waiting';
+	title?: string;
+	text?: string;
+	input?: DialogInputOptions;
+	select?: DialogSelectOptions;
+	user?: boolean;
+	icon?: IconDefinition;
+	showOkButton?: boolean;
+	showCancelButton?: boolean;
+	cancelableByBgClick?: boolean;
+	splash?: boolean;
+};
+
+type DialogOkResult = {
+	canceled: false;
+	result: unknown;
+};
+
+type DialogCancelResult = {
+	canceled: true;
+};
+
+type DialogResult = DialogOkResult | DialogCancelResult;
+
+export type Root = {
+	api: MiOS['api'],
+	getMeta: MiOS['getMeta'],
+	getMetaSync: MiOS['getMetaSync'],
+	signout: MiOS['signout'],
+	new: <T extends Vue, U extends object>(vm: T, props: U) => T & U;
+	newAsync: <T extends Vue, U extends object>(vm: Promise<T>, props: U) => Promise<T & U>;
+	dialog: (opts: DialogOptions) => Promise<DialogResult>;
+};
 
 // MiOSを初期化してコールバックする
 export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS) => void, sw = false) => {

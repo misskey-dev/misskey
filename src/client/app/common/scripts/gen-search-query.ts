@@ -1,7 +1,8 @@
 import parseAcct from '../../../../misc/acct/parse';
 import { host as localHost } from '../../config';
+import { Root } from '../../init';
 
-export async function genSearchQuery(v: unknown, q: string) {
+export async function genSearchQuery(v: { $root: Root }, q: string) {
 	let host: string;
 	let userId: string;
 	if (q.split(' ').some(x => x.startsWith('@'))) {

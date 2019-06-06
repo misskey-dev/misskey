@@ -1,6 +1,8 @@
+import { Root } from '../../init';
+
 declare const fuckAdBlock: unknown;
 
-export default ($root: unknown) => {
+export default ($root: Root) => {
 	require('fuckadblock');
 
 	function adBlockDetected() {

@@ -1,7 +1,8 @@
 import { apiUrl, locale } from '../../config';
 import ProgressDialog from '../views/components/progress-dialog.vue';
+import { Root } from '../../init';
 
-export default ($root: unknown) => {
+export default ($root: Root) => {
 
 	const cropImage = file => new Promise(async (resolve, reject) => {
 		const CropWindow = await import('../views/components/crop-window.vue').then(x => x.default);
