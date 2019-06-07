@@ -6,8 +6,6 @@ db:
   db: test-misskey
   user: admin
   pass: ''
-drive:
-  storage: 'fs'
 redis:
   host: localhost
   port: 6379
