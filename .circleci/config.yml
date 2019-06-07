@@ -1,20 +1,55 @@
 version: 2.1
 
 executors:
-  default:
-    working_directory: /tmp/workspace
+  v11-node12:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
+    docker:
+      - image: misskey/ci:v11-node12
+      - image: circleci/postgres:latest
+      - image: circleci/redis:latest
+  v11-node11:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
     docker:
       - image: misskey/ci:v11-node11
-      - image: circleci/redis:latest
       - image: circleci/postgres:latest
-  docker:
-    working_directory: /tmp/workspace
+      - image: circleci/redis:latest
+  v10-node11:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
     docker:
-      - image: docker:latest
+      - image: misskey/ci:v10-node11
+      - image: circleci/mongo:latest
+  v10-node11-redis:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
+    docker:
+      - image: misskey/ci:v10-node11
+      - image: circleci/mongo:latest
+  v10-node10:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
+    docker:
+      - image: misskey/ci:v10-node10
+      - image: circleci/mongo:latest
+      - image: circleci/redis:latest
+  v10-node10-redis:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
+    docker:
+      - image: misskey/ci:v10-node10
+      - image: circleci/mongo:latest
+      - image: circleci/redis:latest
+  docker:
+    working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
+    docker:
+      - image: misskey/ci:docker
 
 jobs:
-  build:
-    executor: default
+  nodejs-build:
+    parameters:
+      executor:
+        type: string
+        default: "v11-node12"
+      target:
+        type: string
+        default: "v11"
+    executor: <<parameters.executor>>
     steps:
       - checkout
       - run:
@@ -36,13 +71,20 @@ jobs:
       - run:
           name: Configure
           command: |
-            cp .circleci/misskey/default.yml .config
-            cp .circleci/misskey/test.yml .config
+            cp .circleci/<<parameters.executor>>/default.yml .config
+            cp .circleci/<<parameters.executor>>/test.yml .config
       - run:
           name: Build
           command: |
-            yarn build
-            touch yarn.lock
+            excepted="<<parameters.target>>"
+            actual="v$(cat package.json | jq -r '.version' | awk -F. '{print $1}')"
+            if [ $excepted = $actual ]
+             then
+              yarn build
+              touch yarn.lock
+             else
+              echo -e '\033[0;33mBuild Aborted\033[0;39m'
+            fi
       - save_cache:
           name: Cache npm packages
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
@@ -52,108 +94,187 @@ jobs:
           root: .
           paths:
             - .
-  test:
+  nodejs-test:
     parameters:
       executor:
         type: string
-        default: "default"
+        default: "v11-node12"
+      target:
+        type: string
+        default: "v11"
     executor: <<parameters.executor>>
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
       - run:
           name: Test
           command: |
-            yarn test
+            excepted="<<parameters.target>>"
+            actual="v$(cat package.json | jq -r '.version' | awk -F. '{print $1}')"
+            if [ $excepted = $actual ]
+             then
+              yarn test
+             else
+              echo -e '\033[0;33mTest Aborted\033[0;39m'
+            fi
             touch yarn.lock
       - save_cache:
           name: Cache npm packages
           key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-  docker:
+  docker-build:
     parameters:
-      with_deploy:
+      deploy:
         type: boolean
         default: false
     executor: docker
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Build
           command: |
             docker build -t misskey/misskey .
       - when:
-          condition: <<parameters.with_deploy>>
+          condition: <<parameters.deploy>>
           steps:
             - run:
                 name: Deploy
                 command: |
                   if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
-                   then
-                    apk update && apk add jq
+                  then
                     docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
                     docker push misskey/misskey
-                   else
-                    echo -e '\033[0;33mAborted deploying to Docker Hub\033[0;39m'
+                  else
+                    echo -e '\033[0;33mDeploy Aborted\033[0;39m'
                   fi
+  docker-ok:
+    executor: docker
+    steps:
+      - run:
+          name: OK
+          command: |
+            echo -e '\033[0;32mOK\033[0;39m'
 
 workflows:
   version: 2
   nodejs:
     jobs:
-      - hold:
-          name: manual-build-trigger
-          type: approval
+      - nodejs-build:
+          name: build-v11-node12
+          executor: v11-node12
+          target: v11
           filters:
             branches:
-              ignore: master
-      - build:
-          name: manual-build
+              ignore:
+                - imgbot
+                - l10n_develop
+                - patch/autogen/v10
+                - patch/autogen/v11
+      - nodejs-test:
+          name: test-v11-node12
+          executor: v11-node12
+          target: v11
           requires:
-            - manual-build-trigger
+            - build-v11-node12
+      - nodejs-build:
+          name: build-v11-node11
+          executor: v11-node11
+          target: v11
           filters:
             branches:
-              ignore: master
-      - build:
-          name: auto-build
-          filters:
-            branches:
-              only: master
-      - test:
-          name: manual-test
+              ignore:
+                - imgbot
+                - l10n_develop
+                - patch/autogen/v10
+                - patch/autogen/v11
+      - nodejs-test:
+          name: test-v11-node11
+          executor: v11-node11
+          target: v11
           requires:
-            - manual-build
+            - build-v11-node11
+      - nodejs-build:
+          name: build-v10-node11
+          executor: v10-node11
+          target: v10
           filters:
             branches:
-              ignore: master
-      - test:
-          name: auto-test
+              ignore:
+                - imgbot
+                - l10n_develop
+                - patch/autogen/v10
+                - patch/autogen/v11
+      - nodejs-test:
+          name: test-v10-node11
+          executor: v10-node11
+          target: v10
           requires:
-            - auto-build
+            - build-v10-node11
+      - nodejs-build:
+          name: build-v10-node11-redis
+          executor: v10-node11-redis
+          target: v10
           filters:
             branches:
-              only: master
+              ignore:
+                - imgbot
+                - l10n_develop
+                - patch/autogen/v10
+                - patch/autogen/v11
+      - nodejs-test:
+          name: test-v10-node11-redis
+          executor: v10-node11-redis
+          target: v10
+          requires:
+            - build-v10-node11-redis
+      - nodejs-build:
+          name: build-v10-node10
+          executor: v10-node10
+          target: v10
+          filters:
+            branches:
+              ignore:
+                - imgbot
+                - l10n_develop
+                - patch/autogen/v10
+                - patch/autogen/v11
+      - nodejs-test:
+          name: test-v10-node10
+          executor: v10-node10
+          target: v10
+          requires:
+            - build-v10-node10
+      - nodejs-build:
+          name: build-v10-node10-redis
+          executor: v10-node10-redis
+          target: v10
+          filters:
+            branches:
+              ignore:
+                - imgbot
+                - l10n_develop
+                - patch/autogen/v10
+                - patch/autogen/v11
+      - nodejs-test:
+          name: test-v10-node10-redis
+          executor: v10-node10-redis
+          target: v10
+          requires:
+            - build-v10-node10-redis
   docker:
     jobs:
-      - hold:
-          name: manual-build-trigger
-          type: approval
+      - docker-ok:
+          name: skip-docker
           filters:
             branches:
               ignore: master
-      - docker:
-          name: manual-build
-          requires:
-            - manual-build-trigger
-          filters:
-            branches:
-              ignore: master
-      - docker:
-          name: auto-build
-          with_deploy: true
+      - docker-build:
+          name: deploy-docker
+          deploy: true
           filters:
             branches:
               only: master

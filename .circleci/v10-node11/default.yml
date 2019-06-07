@@ -1,0 +1,10 @@
+url: 'http://misskey.local'
+port: 80
+mongodb:
+  host: localhost
+  port: 27017
+  db: misskey
+  user: syuilo
+  pass: ''
+drive:
+  storage: 'db'
