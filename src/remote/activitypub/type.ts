@@ -2,7 +2,7 @@ import { ITag } from './models/tag';
 
 type Items = IObject | string | IObject[] | string[];
 
-export interface IObject {
+export interface IObject { // TODO: Better types
 	'@context': string | {} | {}[];
 	type: string;
 	id?: string;
@@ -12,7 +12,7 @@ export interface IObject {
 	to?: string[];
 	attributedTo: string;
 	attachment?: IObject[];
-	inReplyTo?: string;
+	inReplyTo?: string | IObject;
 	replies?: ICollection;
 	content?: string;
 	name?: string;

@@ -11,13 +11,14 @@ import { In } from 'typeorm';
 import { Emoji } from '../../../models/entities/emoji';
 import { Poll } from '../../../models/entities/poll';
 import { ensure } from '../../../prelude/ensure';
+import { IObject } from '../type';
 
-export default async function renderNote(note: Note, dive = true): Promise<unknown> {
-	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 0
-		? DriveFiles.find({ id: In(note.fileIds) })
-		: Promise.resolve([]);
+export default async function renderNote(note: Note, dive = true): Promise<IObject> {
+	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length ?
+		DriveFiles.find({ id: In(note.fileIds) }) :
+		Promise.resolve([]);
 
-	let inReplyTo;
+	let inReplyTo: string | IObject | undefined;
 	let inReplyToNote: Note | undefined;
 
 	if (note.replyId) {
@@ -38,11 +39,9 @@ export default async function renderNote(note: Note, dive = true): Promise<unkno
 				}
 			}
 		}
-	} else {
-		inReplyTo = null;
 	}
 
-	let quote;
+	let quote: string | undefined;
 
 	if (note.renoteId) {
 		const renote = await Notes.findOne(note.renoteId);
@@ -116,7 +115,7 @@ export default async function renderNote(note: Note, dive = true): Promise<unkno
 		apText += `\n\nRE: ${quote}`;
 	}
 
-	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
+	const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw || undefined;
 
 	const content = toHtml(Object.assign({}, note, {
 		text: apText
