@@ -80,6 +80,11 @@ common:
     "read:notifications": "Ver notificaciones"
     "read:reactions": "Ver reacciones"
     "write:votes": "Vota"
+  post-form:
+    reply: "Responder"
+    renote: "Volver a publicar"
+    enter-username: "Ingresar nombre de usuario"
+    username-prompt: "Ingresar nombre de usuario"
   weekday-short:
     sunday: "domingo"
     monday: "lunes"
@@ -202,6 +207,7 @@ common:
   my-token-regenerated: "Tu token se ha regenerado vas a ser desconectado."
   hide-password: "Ocultar contraseña"
   show-password: "Mostrar contraseña"
+  enter-username: "Ingresar nombre de usuario"
   do-not-use-in-production: "Esto está en desarrollo, no usarlo para producción."
   user-suspended: "Este usuario ha sido suspendido"
   is-remote-user: "La información sobre este usuario puede no estar completa"
@@ -766,7 +772,7 @@ desktop/views/components/note-detail.vue:
   add-reaction: "Agregar una reacción"
 desktop/views/components/note.vue:
   reply: "Responder"
-  renote: "Republicar"
+  renote: "Volver a publicar"
   add-reaction: "Reacción"
   detail: "Detalles"
   private: "Esta publicación es privada"
@@ -777,32 +783,12 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "No hay notificaciones"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Agregar usuario"
-  attach-location-information: "Agregar localización"
-  hide-contents: "Esconder contenidos"
-  reply-placeholder: "Responder a esta nota..."
-  quote-placeholder: "Citar esta nota..."
-  submit: "Publicar"
-  reply: "Responder"
-  renote: "Republicar"
   posted: "¡Publicado!"
   replied: "¡Respondido!"
   reposted: "¡Republicado!"
   note-failed: "Error al publicar nota"
   reply-failed: "Error al responder"
   renote-failed: "Error al republicar"
-  posting: "Publicando"
-  attach-media-from-local: "Agregar medios de tu dispositivo"
-  attach-media-from-drive: "Adjunta multimedia desde tu Disco"
-  create-poll: "Crea una encuesta"
-  text-remain: "quedan {} caracteres"
-  recent-tags: "Reciente"
-  click-to-tagging: "Click para etiquetar"
-  visibility: "Visibilidad"
-  geolocation-alert: "Tu dispositivo no tiene soporte de geolocalización."
-  error: "Error"
-  enter-username: "Por favor escribe un nombre de usuario..."
-  annotations: "Anotaciones a la publicación (opcional)"
 desktop/views/components/post-form-window.vue:
   note: "Nota nueva"
   reply: "Responder"
@@ -921,6 +907,9 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Cola"
   remove-all-jobs: "Limpiar todos los trabajos pendientes"
+  queue: "Cola"
+admin/views/logs.vue:
+  logs: "Registros"
 admin/views/abuse.vue:
   title: "Abuso"
   target: "Destinatario"
@@ -1000,6 +989,7 @@ admin/views/federation.vue:
     hour: "Por hora"
     day: "Por día"
   blocked-hosts: "Bloquear"
+  save: "Guardar"
 desktop/views/pages/selectdrive.vue:
   cancel: "Cancelar"
 desktop/views/pages/user-list.users.vue:
@@ -1052,11 +1042,6 @@ mobile/views/components/note-detail.vue:
   location: "Localización"
 mobile/views/components/notifications.vue:
   empty: "No hay notificaciones"
-mobile/views/components/post-form.vue:
-  reply: "Responder"
-  renote: "Republicar"
-  reply-placeholder: "Responder a esta nota..."
-  geolocation-alert: "Tu dispositivo no tiene soporte de geolocalización."
 mobile/views/components/sub-note-content.vue:
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"

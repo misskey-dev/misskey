@@ -68,6 +68,24 @@ common:
     "write:votes": "Zagłosuj"
   empty-timeline-info:
     explore: "Poznaj"
+  post-form:
+    hide-contents: "Ukryj zawartość"
+    reply-placeholder: "Odpowiedź na ten wpis…"
+    quote-placeholder: "Zacytuj ten wpis…"
+    submit: "Wpis"
+    reply: "Odpowiedz"
+    renote: "Udostępnij"
+    posting: "Wysyłanie"
+    attach-media-from-local: "Załącz zawartość multimedialną z komputera"
+    attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
+    create-poll: "Utwórz ankietę"
+    text-remain: "pozostałe znaki: {}"
+    recent-tags: "Ostatnie"
+    visibility: "Widoczność"
+    error: "Błąd"
+    enter-username: "Wprowadź nazwę użytkownika"
+    add-visible-user: "Dodaj użytkownika"
+    username-prompt: "Wprowadź nazwę użytkownika"
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -218,6 +236,9 @@ auth/views/index.vue:
   please-go-back: "Wróć do aplikacji."
   error: "Sesja nie istnieje."
   sign-in: "Proszę zalogować się."
+common/views/pages/explore.vue:
+  popular-users: "Popularni użytkownicy"
+  popular-tags: "Popularne tagi"
 common/views/components/games/reversi/reversi.vue:
   matching:
     waiting-for: "Oczekiwanie na {}"
@@ -701,33 +722,12 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "Brak powiadomień"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Dodaj użytkownika"
-  attach-location-information: "Załącz informacje o lokalizacji"
-  hide-contents: "Ukryj zawartość"
-  reply-placeholder: "Odpowiedz na ten wpis…"
-  quote-placeholder: "Zacytuj ten wpis…"
-  submit: "Wyślij"
-  reply: "Odpowiedz"
-  renote: "Udostępnienie"
   posted: "Opublikowano!"
   replied: "Odpowiedziano!"
   reposted: "Udostępniono!"
   note-failed: "Nie udało się wysłać"
   reply-failed: "Nie udało się odpowiedzieć"
   renote-failed: "Nie udało się udostępnić"
-  posting: "Wysyłanie"
-  attach-media-from-local: "Załącz zawartość multimedialną z komputera"
-  attach-media-from-drive: "Załącz zawartość multimedialną z dysku"
-  insert-a-kao: "v('ω')v"
-  create-poll: "Utwórz ankietę"
-  text-remain: "pozostałe znaki: {}"
-  recent-tags: "Ostatnie"
-  click-to-tagging: "Naciśnij aby oznaczyć"
-  visibility: "Widoczność"
-  geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
-  error: "Bład"
-  enter-username: "Wprowadź nazwę użytkownika…"
-  annotations: "Treść ostrzeżenia (opcjonalnie)"
 desktop/views/components/post-form-window.vue:
   note: "Nowy wpis"
   reply: "Odpowiedz"
@@ -862,6 +862,10 @@ admin/views/dashboard.vue:
   notes: "Wpisy"
   drive: "Dysk"
   instances: "Instancja"
+admin/views/logs.vue:
+  levels:
+    info: "Informacje"
+    error: "Błąd"
 admin/views/abuse.vue:
   details: "Szczegóły"
   remove-report: "Usuń"
@@ -950,6 +954,7 @@ admin/views/federation.vue:
   chart-srcs:
     requests: "Żądania"
   blocked-hosts: "Zablokuj"
+  save: "Zapisz"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Oś czasu"
@@ -1072,17 +1077,6 @@ mobile/views/components/note-sub.vue:
   cat: "kot"
 mobile/views/components/notifications.vue:
   empty: "Brak powiadomień"
-mobile/views/components/post-form.vue:
-  add-visible-user: "Dodaj użytkownika"
-  submit: "Wyślij"
-  reply: "Odpowiedz"
-  renote: "Udostępnij"
-  quote-placeholder: "Zacytuj ten wpis… (nieobowiązkowe)"
-  reply-placeholder: "Odpowiedź na ten wpis…"
-  cw-placeholder: "Treść ostrzeżenia (opcjonalnie)"
-  geolocation-alert: "Twoje urządzenie nie obsługuje geolokalizacji."
-  error: "Błąd"
-  username-prompt: "Wprowadź nazwę użytkownika"
 mobile/views/components/sub-note-content.vue:
   private: "ten wpis jest prywatny"
   deleted: "ten wpis został usunięty"
