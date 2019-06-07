@@ -165,6 +165,7 @@ export class NoteRepository extends Repository<Note> {
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
 			reactions: note.reactions,
+			tags: note.tags.length > 0 ? note.tags : undefined,
 			emojis: reactionEmojis.length > 0 ? Emojis.find({
 				name: In(reactionEmojis),
 				host: host
