@@ -1,11 +1,23 @@
+# Visual Studio Code
+/.vscode
+
+# Intelij-IDEA
+/.idea
+
+# Node.js
+/node_modules
+
+# yarn
+yarn.lock
+
+# config
 /.config/*
 !/.config/example.yml
 !/.config/mongo_initdb_example.js
-/.vscode
-/node_modules
+
+# misskey
 /build
 /built
-built
 /data
 /.cache-loader
 /db
@@ -17,7 +29,6 @@ api-docs.json
 *.log
 /redis
 *.code-workspace
-yarn.lock
 .DS_Store
 /files
 ormconfig.json

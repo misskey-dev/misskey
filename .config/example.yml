@@ -62,6 +62,10 @@ db:
   user: example-misskey-user
   pass: example-misskey-pass
 
+  # Extra Connection options
+  #extra:
+  #  ssl: true
+
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
 
@@ -77,61 +81,6 @@ redis:
 #  host: localhost
 #  port: 9200
 #  pass: null
-
-#   ┌────────────────────────────────────┐
-#───┘ File storage (Drive) configuration └──────────────────────
-
-drive:
-  storage: 'fs'
-
-# OR
-
-#drive:
-#  storage: 'minio'
-#  bucket:
-#  prefix:
-#  config:
-#    endPoint:
-#    port:
-#    useSSL:
-#    accessKey:
-#    secretKey:
-
-# S3/GCS example
-#
-# * Replace <endpoint> to
-#     S3: see https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
-#     GCS: use 'storage.googleapis.com'
-#
-# * Replace <region> to
-#     S3: see https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
-#     GCS: not needed (just delete the region line)
-#
-#drive:
-#  storage: 'minio'
-#  bucket: bucket-name
-#  prefix: files
-#  baseUrl: https://bucket-name.<endpoint>
-#  config:
-#    endPoint: <endpoint>
-#    region: <region>
-#    useSSL: true
-#    accessKey: XXX
-#    secretKey: YYY
-
-# S3/GCS example (with CDN, custom domain)
-#
-#drive:
-#  storage: 'minio'
-#  bucket: drive.example.com
-#  prefix: files
-#  baseUrl: https://drive.example.com
-#  config:
-#    endPoint: <endpoint>
-#    region: <region>
-#    useSSL: true
-#    accessKey: XXX
-#    secretKey: YYY
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────

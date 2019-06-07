@@ -4,7 +4,7 @@ import define from '../../define';
 import { maximum } from '../../../../prelude/array';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { Not, In } from 'typeorm';
+import { Not, In, IsNull } from 'typeorm';
 import { Notes, Users } from '../../../../models';
 import { types, bool } from '../../../../misc/schema';
 
@@ -58,7 +58,7 @@ export default define(meta, async (ps, me) => {
 	const recentNotes = await Notes.find({
 		where: {
 			userId: user.id,
-			replyId: Not(null)
+			replyId: Not(IsNull())
 		},
 		order: {
 			id: -1

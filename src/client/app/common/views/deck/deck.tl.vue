@@ -6,7 +6,7 @@
 	</p>
 	<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 </div>
-<x-notes v-else ref="timeline" :make-promise="makePromise" @inited="() => $emit('loaded')"/>
+<x-notes v-else ref="timeline" :pagination="pagination" @inited="() => $emit('loaded')"/>
 </template>
 
 <script lang="ts">
@@ -14,8 +14,6 @@ import Vue from 'vue';
 import XNotes from './deck.notes.vue';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../../i18n';
-
-const fetchLimit = 10;
 
 export default Vue.extend({
 	i18n: i18n('deck'),
@@ -42,7 +40,7 @@ export default Vue.extend({
 			connection: null,
 			disabled: false,
 			faMinusCircle,
-			makePromise: null
+			pagination: null
 		};
 	},
 
@@ -73,27 +71,17 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.makePromise = cursor => this.$root.api(this.endpoint, {
-			limit: fetchLimit + 1,
-			untilId: cursor ? cursor : undefined,
-			withFiles: this.mediaOnly,
-			includeMyRenotes: this.$store.state.settings.showMyRenotes,
-			includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-			includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-		}).then(notes => {
-			if (notes.length == fetchLimit + 1) {
-				notes.pop();
-				return {
-					notes: notes,
-					more: true
-				};
-			} else {
-				return {
-					notes: notes,
-					more: false
-				};
-			}
-		});
+		this.pagination = {
+			endpoint: this.endpoint,
+			limit: 10,
+			params: init => ({
+				untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+				withFiles: this.mediaOnly,
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+			})
+		};
 	},
 
 	mounted() {

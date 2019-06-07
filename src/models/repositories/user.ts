@@ -1,6 +1,6 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserGroupJoinings } from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType, bool, types } from '../../misc/schema';
@@ -52,6 +52,31 @@ export class UserRepository extends Repository<User> {
 			isBlocked: fromBlocked != null,
 			isMuted: mute != null
 		};
+	}
+
+	public async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
+		const joinings = await UserGroupJoinings.find({ userId: userId });
+
+		const groupQs = Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder('message')
+			.where(`message.groupId = :groupId`, { groupId: j.userGroupId })
+			.andWhere('message.userId != :userId', { userId: userId })
+			.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
+			.andWhere('message.createdAt > :joinedAt', { joinedAt: j.createdAt }) // 自分が加入する前の会話については、未読扱いしない
+			.getOne().then(x => x != null)));
+
+		const [withUser, withGroups] = await Promise.all([
+			// TODO: ミュートを考慮
+			MessagingMessages.count({
+				where: {
+					recipientId: userId,
+					isRead: false
+				},
+				take: 1
+			}).then(count => count > 0),
+			groupQs
+		]);
+
+		return withUser || withGroups.some(x => x);
 	}
 
 	public async pack(
@@ -151,13 +176,8 @@ export class UserRepository extends Repository<User> {
 				autoWatch: profile!.autoWatch,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
-				hasUnreadMessagingMessage: MessagingMessages.count({
-					where: {
-						recipientId: user.id,
-						isRead: false
-					},
-					take: 1
-				}).then(count => count > 0),
+				autoAcceptFollowed: profile!.autoAcceptFollowed,
+				hasUnreadMessagingMessage: this.getHasUnreadMessagingMessage(user.id),
 				hasUnreadNotification: Notifications.count({
 					where: {
 						notifieeId: user.id,

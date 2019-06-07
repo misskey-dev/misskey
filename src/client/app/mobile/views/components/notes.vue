@@ -1,8 +1,8 @@
 <template>
 <div class="ivaojijs" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
-	<div class="empty" v-if="notes.length == 0 && !fetching && inited">{{ $t('@.no-notes') }}</div>
+	<div class="empty" v-if="empty">{{ $t('@.no-notes') }}</div>
 
-	<mk-error v-if="!fetching && !inited" @retry="init()"/>
+	<mk-error v-if="error" @retry="init()"/>
 
 	<div class="placeholder" v-if="fetching">
 		<template v-for="i in 10">
@@ -13,8 +13,8 @@
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notes" class="transition" tag="div">
 		<template v-for="(note, i) in _notes">
-			<mk-note :note="note" :key="note.id" @update:note="onNoteUpdated(i, $event)"/>
-			<p class="date" :key="note.id + '_date'" v-if="i != notes.length - 1 && note._date != _notes[i + 1]._date">
+			<mk-note :note="note" :key="note.id"/>
+			<p class="date" :key="note.id + '_date'" v-if="i != items.length - 1 && note._date != _notes[i + 1]._date">
 				<span><fa icon="angle-up"/>{{ note._datetext }}</span>
 				<span><fa icon="angle-down"/>{{ _notes[i + 1]._datetext }}</span>
 			</p>
@@ -34,157 +34,56 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import shouldMuteNote from '../../../common/scripts/should-mute-note';
-
-const displayLimit = 30;
+import paging from '../../../common/scripts/paging';
 
 export default Vue.extend({
 	i18n: i18n(),
 
-	props: {
-		makePromise: {
-			required: true
-		}
-	},
+	mixins: [
+		paging({
+			captureWindowScroll: true,
 
-	data() {
-		return {
-			notes: [],
-			queue: [],
-			fetching: true,
-			moreFetching: false,
-			inited: false,
-			more: false
-		};
+			onQueueChanged: (self, x) => {
+				if (x.length > 0) {
+					self.$store.commit('indicate', true);
+				} else {
+					self.$store.commit('indicate', false);
+				}
+			},
+
+			onPrepend: (self, note) => {
+				// 弾く
+				if (shouldMuteNote(self.$store.state.i, self.$store.state.settings, note)) return false;
+
+				// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+				if (document.hidden || !self.isScrollTop()) {
+					self.$store.commit('pushBehindNote', note);
+				}
+			},
+
+			onInited: (self) => {
+				self.$emit('loaded');
+			}
+		}),
+	],
+
+	props: {
+		pagination: {
+			required: true
+		},
 	},
 
 	computed: {
 		_notes(): any[] {
-			return (this.notes as any).map(note => {
-				const date = new Date(note.createdAt).getDate();
-				const month = new Date(note.createdAt).getMonth() + 1;
-				note._date = date;
-				note._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
-				return note;
+			return (this.items as any).map(item => {
+				const date = new Date(item.createdAt).getDate();
+				const month = new Date(item.createdAt).getMonth() + 1;
+				item._date = date;
+				item._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
+				return item;
 			});
 		}
 	},
-
-	watch: {
-		queue(x) {
-			if (x.length > 0) {
-				this.$store.commit('indicate', true);
-			} else {
-				this.$store.commit('indicate', false);
-			}
-		}
-	},
-
-	created() {
-		this.init();
-	},
-
-	mounted() {
-		window.addEventListener('scroll', this.onScroll, { passive: true });
-	},
-
-	beforeDestroy() {
-		window.removeEventListener('scroll', this.onScroll);
-	},
-
-	methods: {
-		isScrollTop() {
-			return window.scrollY <= 8;
-		},
-
-		onNoteUpdated(i, note) {
-			Vue.set((this as any).notes, i, note);
-		},
-
-		reload() {
-			this.queue = [];
-			this.notes = [];
-			this.init();
-		},
-
-		async init() {
-			this.fetching = true;
-			await (this.makePromise()).then(x => {
-				if (Array.isArray(x)) {
-					this.notes = x;
-				} else {
-					this.notes = x.notes;
-					this.more = x.more;
-				}
-				this.inited = true;
-				this.fetching = false;
-				this.$emit('inited');
-			}, e => {
-				this.fetching = false;
-			});
-		},
-
-		async fetchMore() {
-			if (!this.more || this.moreFetching || this.notes.length === 0) return;
-			this.moreFetching = true;
-			await (this.makePromise(this.notes[this.notes.length - 1].id)).then(x => {
-				this.notes = this.notes.concat(x.notes);
-				this.more = x.more;
-				this.moreFetching = false;
-			}, e => {
-				this.moreFetching = false;
-			});
-		},
-
-		prepend(note, silent = false) {
-			// 弾く
-			if (shouldMuteNote(this.$store.state.i, this.$store.state.settings, note)) return;
-
-			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
-			if (document.hidden || !this.isScrollTop()) {
-				this.$store.commit('pushBehindNote', note);
-			}
-
-			if (this.isScrollTop()) {
-				// Prepend the note
-				this.notes.unshift(note);
-
-				// オーバーフローしたら古い投稿は捨てる
-				if (this.notes.length >= displayLimit) {
-					this.notes = this.notes.slice(0, displayLimit);
-					this.more = true;
-				}
-			} else {
-				this.queue.push(note);
-			}
-		},
-
-		append(note) {
-			this.notes.push(note);
-		},
-
-		releaseQueue() {
-			for (const n of this.queue) {
-				this.prepend(n, true);
-			}
-			this.queue = [];
-		},
-
-		onScroll() {
-			if (this.isScrollTop()) {
-				this.releaseQueue();
-			}
-
-			if (this.$store.state.settings.fetchOnScroll) {
-				// 親要素が display none だったら弾く
-				// https://github.com/syuilo/misskey/issues/1569
-				// http://d.hatena.ne.jp/favril/20091105/1257403319
-				if (this.$el.offsetHeight == 0) return;
-
-				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) this.fetchMore();
-			}
-		}
-	}
 });
 </script>
 

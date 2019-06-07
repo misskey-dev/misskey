@@ -94,7 +94,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const instance = await fetchMeta(true);
 
-	const emojis = await Emojis.find({ host: null });
+	const emojis = await Emojis.find({ where: { host: null }, cache: 3600000 }); // 1 hour
 
 	const response: any = {
 		maintainerName: instance.maintainerName,
@@ -106,6 +106,9 @@ export default define(meta, async (ps, me) => {
 		uri: config.url,
 		description: instance.description,
 		langs: instance.langs,
+		ToSUrl: instance.ToSUrl,
+		repositoryUrl: instance.repositoryUrl,
+		feedbackUrl: instance.feedbackUrl,
 
 		secure: config.https != null,
 		machine: os.hostname(),
@@ -150,7 +153,7 @@ export default define(meta, async (ps, me) => {
 			globalTimeLine: !instance.disableGlobalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
 			recaptcha: instance.enableRecaptcha,
-			objectStorage: config.drive && config.drive.storage === 'minio',
+			objectStorage: instance.useObjectStorage,
 			twitter: instance.enableTwitterIntegration,
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
@@ -162,6 +165,7 @@ export default define(meta, async (ps, me) => {
 		response.useStarForReactionFallback = instance.useStarForReactionFallback;
 		response.pinnedUsers = instance.pinnedUsers;
 		response.hiddenTags = instance.hiddenTags;
+		response.blockedHosts = instance.blockedHosts;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccount = instance.proxyAccount;
 		response.twitterConsumerKey = instance.twitterConsumerKey;
@@ -178,6 +182,16 @@ export default define(meta, async (ps, me) => {
 		response.smtpUser = instance.smtpUser;
 		response.smtpPass = instance.smtpPass;
 		response.swPrivateKey = instance.swPrivateKey;
+		response.useObjectStorage = instance.useObjectStorage;
+		response.objectStorageBaseUrl = instance.objectStorageBaseUrl;
+		response.objectStorageBucket = instance.objectStorageBucket;
+		response.objectStoragePrefix = instance.objectStoragePrefix;
+		response.objectStorageEndpoint = instance.objectStorageEndpoint;
+		response.objectStorageRegion = instance.objectStorageRegion;
+		response.objectStoragePort = instance.objectStoragePort;
+		response.objectStorageAccessKey = instance.objectStorageAccessKey;
+		response.objectStorageSecretKey = instance.objectStorageSecretKey;
+		response.objectStorageUseSSL = instance.objectStorageUseSSL;
 	}
 
 	return response;

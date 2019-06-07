@@ -1,7 +1,7 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import deleteFile from '../../../services/drive/delete-file';
+import { deleteFile } from '../../../services/drive/delete-file';
 import { Users, DriveFiles } from '../../../models';
 import { MoreThan } from 'typeorm';
 

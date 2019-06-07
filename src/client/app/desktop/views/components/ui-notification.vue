@@ -29,7 +29,7 @@ export default Vue.extend({
 					easing: 'easeInElastic',
 					complete: () => this.destroyDom()
 				});
-			}, 6000);
+			}, 5000);
 		});
 	}
 });
@@ -52,6 +52,7 @@ export default Vue.extend({
 	box-shadow 0 2px 4px var(--desktopNotificationShadow)
 	transform translateY(-64px)
 	opacity 0
+	pointer-events none
 
 	> p
 		margin 0

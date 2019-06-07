@@ -24,6 +24,9 @@ import { SwSubscription } from '../models/entities/sw-subscription';
 import { Blocking } from '../models/entities/blocking';
 import { UserList } from '../models/entities/user-list';
 import { UserListJoining } from '../models/entities/user-list-joining';
+import { UserGroup } from '../models/entities/user-group';
+import { UserGroupJoining } from '../models/entities/user-group-joining';
+import { UserGroupInvite } from '../models/entities/user-group-invite';
 import { Hashtag } from '../models/entities/hashtag';
 import { NoteFavorite } from '../models/entities/note-favorite';
 import { AbuseUserReport } from '../models/entities/abuse-user-report';
@@ -41,6 +44,7 @@ import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
 import { UserProfile } from '../models/entities/user-profile';
 import { Page } from '../models/entities/page';
+import { PageLike } from '../models/entities/page-like';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -89,8 +93,21 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
+		extra: config.db.extra,
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
+		cache: {
+			type: 'redis',
+			options: {
+				host: config.redis.host,
+				port: config.redis.port,
+				options:{
+					auth_pass: config.redis.pass,
+					prefix: config.redis.prefix,
+					db: config.redis.db || 0
+				}
+			}
+		},
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
 		entities: [
@@ -105,6 +122,9 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			UserPublickey,
 			UserList,
 			UserListJoining,
+			UserGroup,
+			UserGroupJoining,
+			UserGroupInvite,
 			UserNotePining,
 			Following,
 			FollowRequest,
@@ -116,6 +136,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			NoteWatching,
 			NoteUnread,
 			Page,
+			PageLike,
 			Log,
 			DriveFile,
 			DriveFolder,

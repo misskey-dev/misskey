@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '../entities/messaging-message';
-import { Users, DriveFiles } from '..';
+import { Users, DriveFiles, UserGroups } from '..';
 import { ensure } from '../../prelude/ensure';
 import { types, bool, SchemaType } from '../../misc/schema';
 
@@ -16,11 +16,13 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 		src: MessagingMessage['id'] | MessagingMessage,
 		me?: any,
 		options?: {
-			populateRecipient: boolean
+			populateRecipient?: boolean,
+			populateGroup?: boolean,
 		}
 	): Promise<PackedMessagingMessage> {
 		const opts = options || {
-			populateRecipient: true
+			populateRecipient: true,
+			populateGroup: true,
 		};
 
 		const message = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
@@ -32,10 +34,13 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			userId: message.userId,
 			user: await Users.pack(message.user || message.userId, me),
 			recipientId: message.recipientId,
-			recipient: opts.populateRecipient ? await Users.pack(message.recipient || message.recipientId, me) : undefined,
+			recipient: message.recipientId && opts.populateRecipient ? await Users.pack(message.recipient || message.recipientId, me) : undefined,
+			groupId: message.groupId,
+			group: message.groupId && opts.populateGroup ? await UserGroups.pack(message.group || message.groupId) : undefined,
 			fileId: message.fileId,
 			file: message.fileId ? await DriveFiles.pack(message.fileId) : null,
-			isRead: message.isRead
+			isRead: message.isRead,
+			reads: message.reads,
 		};
 	}
 }
@@ -83,17 +88,36 @@ export const packedMessagingMessageSchema = {
 		},
 		recipientId: {
 			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			optional: bool.false, nullable: bool.true,
 			format: 'id',
 		},
 		recipient: {
 			type: types.object,
-			optional: bool.true, nullable: bool.false,
+			optional: bool.true, nullable: bool.true,
 			ref: 'User'
+		},
+		groupId: {
+			type: types.string,
+			optional: bool.false, nullable: bool.true,
+			format: 'id',
+		},
+		group: {
+			type: types.object,
+			optional: bool.true, nullable: bool.true,
+			ref: 'UserGroup'
 		},
 		isRead: {
 			type: types.boolean,
 			optional: bool.true, nullable: bool.false,
+		},
+		reads: {
+			type: types.array,
+			optional: bool.true, nullable: bool.false,
+			items: {
+				type: types.string,
+				optional: bool.false, nullable: bool.false,
+				format: 'id'
+			}
 		},
 	},
 };

@@ -3,11 +3,17 @@
 
 ## Issues
 Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
-Before creating a new issue, please search existing issues to avoid duplication.
-If you find the existing issue, please add your reaction or comment to the issue.
+
+* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
+* If you have multiple independent issues, please submit them separately.
+
 
 ## Localization (l10n)
-Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
+Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
+You can improve our translations with your Crowdin account.
+Changes you make in Crowdin will be merged into develop branch.
+
+If you can't find the language you want to contribute with, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
@@ -15,16 +21,16 @@ Please use [Crowdin](https://crowdin.com/project/misskey) for localization.
 Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 
 ## Documentation
-* Documents for contributors are located in `/docs`.
-* Documents for instance admins are located in `/docs`.
-* Documents for end users are located in `src/docs`.
+* Documents for contributors are located in [`/docs`](/docs).
+* Documents for instance admins are located in [`/docs`](/docs).
+* Documents for end users are located in [`/src/docs`](/src/docs).
 
 ## Test
-* Test codes are located in `/test`.
+* Test codes are located in [`/test`](/test).
 
 ## Continuous integration
 Misskey uses CircleCI for automated test.
-Configuration files are located in `/.circleci`.
+Configuration files are located in [`/.circleci`](/.circleci).
 
 ## Glossary
 ### AP
@@ -128,6 +134,20 @@ query.andWhere(new Brackets(qb => {
 }));
 ```
 
+### Not `null` in TypeORM
+```ts
+const foo = await Foos.findOne({
+	bar: Not(null)
+});
+```
+のようなクエリ(`bar`が`null`ではない)は期待通りに動作しない。
+次のようにします:
+```ts
+const foo = await Foos.findOne({
+	bar: Not(IsNull())
+});
+```
+
 ### `null` in SQL
 SQLを発行する際、パラメータが`null`になる可能性のある場合はSQL文を出し分けなければならない
 例えば
@@ -197,3 +217,13 @@ const user = await Users.findOne(userId).then(ensure);
 // }
 // の糖衣構文のような扱いです
 ```
+
+### Migration作成方法
+コードの変更をした後、`ormconfig.json`（`npm run ormconfig`で生成）を用意し、
+
+```
+npm i -g ts-node
+ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
+```
+
+作成されたスクリプトは不必要な変更を含むため除去してください。

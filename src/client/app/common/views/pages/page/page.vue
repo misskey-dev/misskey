@@ -12,6 +12,11 @@
 		<small>@{{ page.user.username }}</small>
 		<router-link v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId" :to="`/i/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
 		<router-link :to="`./${page.name}/view-source`">{{ $t('view-source') }}</router-link>
+		<div class="like">
+			<button @click="unlike()" v-if="page.isLiked" :title="$t('unlike')"><fa :icon="faHeartS"/></button>
+			<button @click="like()" v-else :title="$t('like')"><fa :icon="faHeart"/></button>
+			<span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span>
+		</div>
 	</footer>
 </div>
 </template>
@@ -19,8 +24,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import { faICursor, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faStickyNote } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { ASEvaluator } from '../../../../../../misc/aiscript/evaluator';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
@@ -76,7 +81,7 @@ export default Vue.extend({
 		return {
 			page: null,
 			script: null,
-			faPlus, faICursor, faSave, faStickyNote
+			faHeartS, faHeart
 		};
 	},
 
@@ -86,6 +91,10 @@ export default Vue.extend({
 			username: this.username,
 		}).then(page => {
 			this.page = page;
+			this.$emit('init', {
+				title: this.page.title,
+				icon: faStickyNote
+			});
 			const pageVars = this.getPageVars();
 			this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
 				randomSeed: Math.random(),
@@ -103,6 +112,24 @@ export default Vue.extend({
 		getPageVars() {
 			return collectPageVars(this.page.content);
 		},
+
+		like() {
+			this.$root.api('pages/like', {
+				pageId: this.page.id,
+			}).then(() => {
+				this.page.isLiked = true;
+				this.page.likedCount++;
+			});
+		},
+
+		unlike() {
+			this.$root.api('pages/unlike', {
+				pageId: this.page.id,
+			}).then(() => {
+				this.page.isLiked = false;
+				this.page.likedCount--;
+			});
+		}
 	}
 });
 </script>
@@ -125,8 +152,8 @@ export default Vue.extend({
 		> .title
 			z-index 1
 			margin 0
-			padding 32px 64px
-			font-size 24px
+			padding 16px 32px
+			font-size 20px
 			font-weight bold
 			color var(--text)
 			box-shadow 0 var(--lineWidth) rgba(#000, 0.07)
@@ -135,30 +162,45 @@ export default Vue.extend({
 				padding 16px 32px
 				font-size 20px
 
+			@media (max-width 400px)
+				padding 10px 20px
+				font-size 16px
+
 	> div
 		color var(--text)
-		padding 48px 64px
-		font-size 18px
+		padding 24px 32px
+		font-size 16px
 
 		@media (max-width 600px)
 			padding 24px 32px
 			font-size 16px
 
+		@media (max-width 400px)
+			padding 20px 20px
+			font-size 15px
+
 	> footer
 		color var(--text)
-		padding 0 64px 38px 64px
+		padding 0 32px 28px 32px
 
 		@media (max-width 600px)
 			padding 0 32px 28px 32px
+
+		@media (max-width 400px)
+			padding 0 20px 20px 20px
+			font-size 14px
 
 		> small
 			display block
 			opacity 0.5
 
 		> a
-			font-size 14px
+			font-size 90%
 
 		> a + a
 			margin-left 8px
+
+		> .like
+			margin-top 16px
 
 </style>

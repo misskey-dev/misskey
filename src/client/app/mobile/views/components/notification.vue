@@ -5,7 +5,7 @@
 		<div>
 			<header>
 				<mk-reaction-icon :reaction="notification.reaction"/>
-				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
+				<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
@@ -21,7 +21,7 @@
 		<div>
 			<header>
 				<fa icon="retweet"/>
-				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
+				<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
@@ -37,7 +37,7 @@
 		<div>
 			<header>
 				<fa icon="user-plus"/>
-				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
+				<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 		</div>
@@ -48,7 +48,7 @@
 		<div>
 			<header>
 				<fa icon="user-clock"/>
-				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
+				<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 		</div>
@@ -59,7 +59,7 @@
 		<div>
 			<header>
 				<fa icon="chart-pie"/>
-				<router-link :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
+				<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
 			<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
@@ -71,15 +71,15 @@
 	</div>
 
 	<template v-if="notification.type == 'quote'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<mk-note :note="notification.note"/>
 	</template>
 
 	<template v-if="notification.type == 'reply'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<mk-note :note="notification.note"/>
 	</template>
 
 	<template v-if="notification.type == 'mention'">
-		<mk-note :note="notification.note" @update:note="onNoteUpdated"/>
+		<mk-note :note="notification.note"/>
 	</template>
 </div>
 </template>
@@ -95,17 +95,6 @@ export default Vue.extend({
 			getNoteSummary
 		};
 	},
-	methods: {
-		onNoteUpdated(note) {
-			switch (this.notification.type) {
-				case 'quote':
-				case 'reply':
-				case 'mention':
-					Vue.set(this.notification, 'note', note);
-					break;
-			}
-		}
-	}
 });
 </script>
 
@@ -140,6 +129,12 @@ export default Vue.extend({
 
 				[data-icon], .mk-reaction-icon
 					margin-right 4px
+
+				> .name
+					text-overflow ellipsis
+					white-space nowrap
+					min-width 0
+					overflow hidden
 
 				> .mk-time
 					margin-left auto

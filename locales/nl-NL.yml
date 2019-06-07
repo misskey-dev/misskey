@@ -104,10 +104,9 @@ common/views/components/messaging.vue:
   search-user: "Gebruiker zoeken"
   you: "Jij"
   no-history: "Geen geschiedenis"
+  user: "Gebruiker"
 common/views/components/messaging-room.vue:
-  empty: "Geen gesprekken"
   no-history: "Er is geen verdere geschiedenis"
-  resize-form: "Versleep om grootte te wijzigen"
   new-message: "Nieuw bericht"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Voer hier je bericht in"
@@ -202,6 +201,9 @@ common/views/components/profile-editor.vue:
   enter-password: "Voer het wachtwoord in"
 common/views/components/user-list-editor.vue:
   users: "Gebruiker"
+  add-user: "Gebruiker toevoegen"
+common/views/components/user-lists.vue:
+  user-lists: "Lijsten"
 common/views/widgets/broadcast.vue:
   fetching: "Bezig met ophalen"
   no-broadcasts: "Geen uitzendingen"
@@ -401,8 +403,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Nieuw bericht opstellen"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Zoeken"
-desktop/views/components/user-lists-window.vue:
-  title: "Lijsten"
 desktop/views/components/user-preview.vue:
   notes: "Berichten"
   following: "Volgend"
@@ -422,8 +422,6 @@ admin/views/dashboard.vue:
   notes: "Bericht"
 admin/views/abuse.vue:
   remove-report: "Verwijderen"
-admin/views/instance.vue:
-  user-recommendation-config: "Aanbevolen gebruikers"
 admin/views/charts.vue:
   notes: "Bericht"
   users: "Gebruiker"
@@ -560,8 +558,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Bestand uploaden"
     create-folder: "Map creëren"
-mobile/views/pages/user-lists.vue:
-  title: "Lijsten"
 mobile/views/pages/home.vue:
   home: "Startpagina"
   local: "Lokaal"
@@ -620,6 +616,7 @@ docs:
   edit-this-page-on-github: "Heb je een fout ontdekt of wil je bijdragen aan de documentatie? "
   edit-this-page-on-github-link: "Bewerk deze pagina op GitHub!"
 pages:
+  like: "Leuk"
   blocks:
     image: "Afbeeldingen"
   script:

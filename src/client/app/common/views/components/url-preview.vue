@@ -9,7 +9,7 @@
 	</blockquote>
 </div>
 <div v-else class="mk-url-preview">
-	<a :class="{ mini: narrow, compact }" :href="url" target="_blank" :title="url" v-if="!fetching">
+	<component :is="hasRoute ? 'router-link' : 'a'" :class="{ mini: narrow, compact }" :[attr]="hasRoute ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 		<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
 			<button v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enable-player')"><fa :icon="['far', 'play-circle']"/></button>
 		</div>
@@ -23,17 +23,18 @@
 				<p :title="sitename">{{ sitename }}</p>
 			</footer>
 		</article>
-	</a>
+	</component>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { url as misskeyUrl } from '../../../config';
+import { url as local } from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/url-preview.vue'),
+
 	props: {
 		url: {
 			type: String,
@@ -60,7 +61,13 @@ export default Vue.extend({
 	},
 
 	data() {
+		const isSelf = this.url.startsWith(local);
+		const hasRoute =
+			this.url.substr(local.length).startsWith('/@') ||
+			this.url.substr(local.length).startsWith('/notes/') ||
+			this.url.substr(local.length).startsWith('/pages/');
 		return {
+			local,
 			fetching: true,
 			title: null,
 			description: null,
@@ -74,7 +81,10 @@ export default Vue.extend({
 			},
 			tweetUrl: null,
 			playerEnabled: false,
-			misskeyUrl,
+			self: isSelf,
+			hasRoute: hasRoute,
+			attr: hasRoute ? 'to' : 'href',
+			target: hasRoute ? null : '_blank'
 		};
 	},
 

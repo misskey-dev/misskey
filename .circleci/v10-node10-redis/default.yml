@@ -6,8 +6,6 @@ mongodb:
   db: misskey
   user: syuilo
   pass: ''
-drive:
-  storage: 'db'
 redis:
   host: localhost
   port: 6379

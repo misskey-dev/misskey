@@ -1,6 +1,11 @@
 <template>
-<div class="mk-post-form">
-	<div class="form">
+<div class="gafaadew">
+	<div class="form"
+		@dragover.stop="onDragover"
+		@dragenter="onDragenter"
+		@dragleave="onDragleave"
+		@drop.stop="onDrop"
+	>
 		<header>
 			<button class="cancel" @click="cancel"><fa icon="times"/></button>
 			<div>
@@ -17,12 +22,13 @@
 					<mk-user-name :user="u"/>
 					<a @click="removeVisibleUser(u)">[x]</a>
 				</span>
-				<a @click="addVisibleUser">+{{ $t('add-visible-user') }}</a>
+				<a @click="addVisibleUser">+{{ $t('@.post-form.add-visible-user') }}</a>
 			</div>
-			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotations')" v-autocomplete="{ model: 'cw' }">
-			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }"></textarea>
+			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.cw-placeholder')" v-autocomplete="{ model: 'cw' }">
+			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @paste="onPaste"></textarea>
+			<div class="with-quote" v-if="quoteId">{{ $t('@.post-form.quote-attached') }}</div>
 			<x-post-form-attaches class="attaches" :files="files"/>
-			<mk-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
+			<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 			<footer>
 				<button class="upload" @click="chooseFile"><fa icon="upload"/></button>
@@ -50,343 +56,27 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import insertTextAtCursor from 'insert-text-at-cursor';
-import MkVisibilityChooser from '../../../common/views/components/visibility-chooser.vue';
-import getFace from '../../../common/scripts/get-face';
-import { parse } from '../../../../../mfm/parse';
-import { host } from '../../../config';
-import { erase, unique } from '../../../../../prelude/array';
-import { length } from 'stringz';
-import { toASCII } from 'punycode';
-import extractMentions from '../../../../../misc/extract-mentions';
-import XPostFormAttaches from '../../../common/views/components/post-form-attaches.vue';
+import form from '../../../common/scripts/post-form';
 
 export default Vue.extend({
-	i18n: i18n('mobile/views/components/post-form.vue'),
-	components: {
-		XPostFormAttaches
-	},
+	i18n: i18n(),
 
-	props: {
-		reply: {
-			type: Object,
-			required: false
-		},
-		renote: {
-			type: Object,
-			required: false
-		},
-		mention: {
-			type: Object,
-			required: false
-		},
-		initialText: {
-			type: String,
-			required: false
-		},
-		instant: {
-			type: Boolean,
-			required: false,
-			default: false
-		}
-	},
-
-	data() {
-		return {
-			posting: false,
-			text: '',
-			uploadings: [],
-			files: [],
-			poll: false,
-			pollChoices: [],
-			pollMultiple: false,
-			geo: null,
-			visibility: 'public',
-			visibleUsers: [],
-			localOnly: false,
-			useCw: false,
-			cw: null,
-			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			maxNoteTextLength: 1000
-		};
-	},
-
-	created() {
-		this.$root.getMeta().then(meta => {
-			this.maxNoteTextLength = meta.maxNoteTextLength;
-		});
-	},
-
-	computed: {
-		draftId(): string {
-			return this.renote
-				? `renote:${this.renote.id}`
-				: this.reply
-					? `reply:${this.reply.id}`
-					: 'note';
-		},
-
-		placeholder(): string {
-			const xs = [
-				this.$t('@.note-placeholders.a'),
-				this.$t('@.note-placeholders.b'),
-				this.$t('@.note-placeholders.c'),
-				this.$t('@.note-placeholders.d'),
-				this.$t('@.note-placeholders.e'),
-				this.$t('@.note-placeholders.f')
-			];
-			const x = xs[Math.floor(Math.random() * xs.length)];
-
-			return this.renote
-				? this.$t('quote-placeholder')
-				: this.reply
-					? this.$t('reply-placeholder')
-					: x;
-		},
-
-		submitText(): string {
-			return this.renote
-				? this.$t('renote')
-				: this.reply
-					? this.$t('reply')
-					: this.$t('submit');
-		},
-
-		canPost(): boolean {
-			return !this.posting &&
-				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(this.text.trim().length <= this.maxNoteTextLength) &&
-				(!this.poll || this.pollChoices.length >= 2);
-		}
-	},
-
-	mounted() {
-		if (this.initialText) {
-			this.text = this.initialText;
-		}
-
-		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
-		}
-
-		if (this.mention) {
-			this.text = this.mention.host ? `@${this.mention.username}@${toASCII(this.mention.host)}` : `@${this.mention.username}`;
-			this.text += ' ';
-		}
-
-		if (this.reply && this.reply.text != null) {
-			const ast = parse(this.reply.text);
-
-			for (const x of extractMentions(ast)) {
-				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
-
-				// 自分は除外
-				if (this.$store.state.i.username == x.username && x.host == null) continue;
-				if (this.$store.state.i.username == x.username && x.host == host) continue;
-
-				// 重複は除外
-				if (this.text.indexOf(`${mention} `) != -1) continue;
-
-				this.text += `${mention} `;
-			}
-		}
-
-		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
-
-		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
-			this.visibility = this.reply.visibility;
-		}
-
-		if (this.reply) {
-			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
-				this.visibleUsers.push(user);
-			});
-		}
-
-		// keep cw when reply
-		if (this.$store.state.settings.keepCw && this.reply && this.reply.cw) {
-			this.useCw = true;
-			this.cw = this.reply.cw;
-		}
-
-		this.focus();
-
-		this.$nextTick(() => {
-			this.focus();
-		});
-	},
+	mixins: [
+		form({
+			mobile: true
+		}),
+	],
 
 	methods: {
-		trimmedLength(text: string) {
-			return length(text.trim());
-		},
-
-		addTag(tag: string) {
-			insertTextAtCursor(this.$refs.text, ` #${tag} `);
-		},
-
-		focus() {
-			(this.$refs.text as any).focus();
-		},
-
-		addVisibleUser() {
-			this.$root.dialog({
-				title: this.$t('enter-username'),
-				user: true
-			}).then(({ canceled, result: user }) => {
-				if (canceled) return;
-				this.visibleUsers.push(user);
-			});
-		},
-
-		chooseFile() {
-			(this.$refs.file as any).click();
-		},
-
-		chooseFileFromDrive() {
-			this.$chooseDriveFile({
-				multiple: true
-			}).then(files => {
-				for (const x of files) this.attachMedia(x);
-			});
-		},
-
-		attachMedia(driveFile) {
-			this.files.push(driveFile);
-			this.$emit('change-attached-files', this.files);
-		},
-
-		detachMedia(id) {
-			this.files = this.files.filter(x => x.id != id);
-			this.$emit('change-attached-files', this.files);
-		},
-
-		onChangeFile() {
-			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
-		},
-
-		onPollUpdate() {
-			const got = this.$refs.poll.get();
-			this.pollChoices = got.choices;
-			this.pollMultiple = got.multiple;
-		},
-
-		upload(file) {
-			(this.$refs.uploader as any).upload(file);
-		},
-
-		onChangeUploadings(uploads) {
-			this.$emit('change-uploadings', uploads);
-		},
-
-		setGeo() {
-			if (navigator.geolocation == null) {
-				this.$root.dialog({
-					type: 'warning',
-					text: this.$t('geolocation-alert')
-				});
-				return;
-			}
-
-			navigator.geolocation.getCurrentPosition(pos => {
-				this.geo = pos.coords;
-			}, err => {
-				this.$root.dialog({
-					type: 'error',
-					title: this.$t('error'),
-					text: err.message
-				});
-			}, {
-					enableHighAccuracy: true
-				});
-		},
-
-		removeGeo() {
-			this.geo = null;
-		},
-
-		setVisibility() {
-			const w = this.$root.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton,
-				currentVisibility: this.visibility
-			});
-			w.$once('chosen', v => {
-				this.applyVisibility(v);
-			});
-		},
-
-		applyVisibility(v :string) {
-			const m = v.match(/^local-(.+)/);
-			if (m) {
-				this.localOnly = true;
-				this.visibility = m[1];
-			} else {
-				this.localOnly = false;
-				this.visibility = v;
-			}
-		},
-
-		removeVisibleUser(user) {
-			this.visibleUsers = erase(user, this.visibleUsers);
-		},
-
-		clear() {
-			this.text = '';
-			this.files = [];
-			this.poll = false;
-			this.$emit('change-attached-files');
-		},
-
-		post() {
-			this.posting = true;
-			const viaMobile = !this.$store.state.settings.disableViaMobile;
-			this.$root.api('notes/create', {
-				text: this.text == '' ? undefined : this.text,
-				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
-				replyId: this.reply ? this.reply.id : undefined,
-				renoteId: this.renote ? this.renote.id : undefined,
-				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
-				cw: this.useCw ? this.cw || '' : undefined,
-				geo: this.geo ? {
-					coordinates: [this.geo.longitude, this.geo.latitude],
-					altitude: this.geo.altitude,
-					accuracy: this.geo.accuracy,
-					altitudeAccuracy: this.geo.altitudeAccuracy,
-					heading: isNaN(this.geo.heading) ? null : this.geo.heading,
-					speed: this.geo.speed,
-				} : null,
-				visibility: this.visibility,
-				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
-				localOnly: this.localOnly,
-				viaMobile: viaMobile
-			}).then(data => {
-				this.$emit('posted');
-			}).catch(err => {
-				this.posting = false;
-			});
-
-			if (this.text && this.text != '') {
-				const hashtags = parse(this.text).filter(x => x.node.type === 'hashtag').map(x => x.node.props.hashtag);
-				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
-				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
-			}
-		},
-
 		cancel() {
 			this.$emit('cancel');
 		},
-
-		kao() {
-			this.text += getFace();
-		}
 	}
 });
 </script>
 
 <style lang="stylus" scoped>
-.mk-post-form
+.gafaadew
 	max-width 500px
 	width calc(100% - 16px)
 	margin 8px auto

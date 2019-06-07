@@ -144,8 +144,6 @@ export default prop => ({
 					break;
 				}
 			}
-
-			this.$emit(`update:${prop}`, this.$_ns_note_);
 		},
 	}
 });

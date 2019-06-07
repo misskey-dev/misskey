@@ -210,17 +210,25 @@ export default Vue.extend({
 		}
 
 		this.$nextTick(() => {
-			if (this.$refs.prefix) {
-				this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
-				if (this.$refs.prefix.offsetWidth) {
-					this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
+			// このコンポーネントが作成された時、非表示状態である場合がある
+			// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
+			const clock = setInterval(() => {
+				if (this.$refs.prefix) {
+					this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
+					if (this.$refs.prefix.offsetWidth) {
+						this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
+					}
 				}
-			}
-			if (this.$refs.suffix) {
-				if (this.$refs.suffix.offsetWidth) {
-					this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+				if (this.$refs.suffix) {
+					if (this.$refs.suffix.offsetWidth) {
+						this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
+					}
 				}
-			}
+			}, 100);
+
+			this.$once('hook:beforeDestroy', () => {
+				clearInterval(clock);
+			});
 		});
 
 		this.$on('keydown', (e: KeyboardEvent) => {

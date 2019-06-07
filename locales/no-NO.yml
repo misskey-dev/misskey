@@ -130,6 +130,7 @@ common/views/components/cw-button.vue:
   hide: "Skjul"
 common/views/components/messaging.vue:
   you: "Du"
+  user: "Bruker"
 common/views/components/messaging-room.form.vue:
   send: "Send"
 common/views/components/messaging-room.message.vue:
@@ -192,8 +193,13 @@ common/views/components/profile-editor.vue:
     user-lists: "Lister"
 common/views/components/user-list-editor.vue:
   users: "Bruker"
+common/views/components/user-group-editor.vue:
+  invite: "Inviter"
 common/views/components/user-lists.vue:
+  user-lists: "Lister"
   list-name: "Liste navn"
+common/views/components/user-groups.vue:
+  invites: "Inviter"
 common/views/widgets/broadcast.vue:
   fetching: "Henter"
   next: "Neste"
@@ -307,11 +313,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Skriv nytt innlegg"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Søk"
-desktop/views/components/received-follow-requests-window.vue:
-  accept: "Godta"
-  reject: "Avslå"
-desktop/views/components/user-lists-window.vue:
-  title: "Brukerlister"
 desktop/views/components/user-preview.vue:
   notes: "Innlegg"
   following: "Følger"
@@ -448,17 +449,12 @@ mobile/views/components/ui.nav.vue:
   user-lists: "Lister"
   game: "Spill"
   admin: "Admin"
-mobile/views/pages/user-lists.vue:
-  title: "Lister"
 mobile/views/pages/home.vue:
   home: "Hjem"
   local: "Lokalt"
   global: "Globalt"
 mobile/views/pages/widgets.vue:
   add-widget: "Legg til"
-mobile/views/pages/received-follow-requests.vue:
-  accept: "Godta"
-  reject: "Avslå"
 mobile/views/pages/note.vue:
   title: "Innlegg"
   prev: "Forrige innlegg"
@@ -490,6 +486,7 @@ deck/deck.user-column.vue:
   followers: "Følgere"
   images: "Bilder"
 pages:
+  like: "Lik"
   blocks:
     image: "Bilder"
   script:

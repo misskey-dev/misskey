@@ -249,9 +249,9 @@ common:
   update-available-title: "Aktualizace k dispozici"
   update-available: "Je k dispozici nová verze Misskey ({newer},vaše verze je {current}). Pro aplikování nové verze znovunačtěte stránku."
   my-token-regenerated: "Váš token byl regenerován, proto budete odhlášen/a."
-  verified-user: "Ověřené účty"
   hide-password: "Skrýt heslo"
   show-password: "Zobrazit heslo"
+  enter-username: "Zadejte uživatelské jméno"
   do-not-use-in-production: "Tohle je vývojářský build. Nepoužívejte v produkci."
   user-suspended: "Tomuto uživateli byl pozastaven účet."
   is-remote-user: "Informace o tomto uživateli nemusí být kompletní."
@@ -312,7 +312,6 @@ auth/views/index.vue:
   error: "Taková relace neexistuje."
   sign-in: "Prosím přihlaste se."
 common/views/pages/explore.vue:
-  verified-users: "Ověřené účty"
   popular-users: "Populární uživatelé"
   recently-updated-users: "Nedávno aktívni uživatelé"
   recently-registered-users: "Nedávno registrovaní uživatelé"
@@ -416,14 +415,12 @@ common/views/components/messaging.vue:
   search-user: "Najít uživatele"
   you: "Vy"
   no-history: "Žádná historie"
+  user: "Uživatel"
 common/views/components/messaging-room.vue:
-  empty: "Žádné zprávy"
   new-message: "Máte novou zprávu"
-  only-one-file-attached: "Jenom JEDEN soubor může být přiložen ke zprávě."
 common/views/components/messaging-room.form.vue:
   send: "Odeslat"
   attach-from-local: "Přiložit soubory z Vašeho zařízení"
-  only-one-file-attached: "Jenom JEDEN soubor může být přiložen ke zprávě."
 common/views/components/messaging-room.message.vue:
   is-read: "Přečtené"
   deleted: "Tato zpráva byla odstraněna"
@@ -619,8 +616,15 @@ common/views/components/user-list-editor.vue:
   remove-user: "Odebrat z tohoto seznamu"
   delete-are-you-sure: "Smazat seznam \"$1\"?"
   deleted: "Smazáno"
+  add-user: "Přidat uživatele"
+common/views/components/user-group-editor.vue:
+  deleted: "Smazáno"
+  invite: "Pozvat"
 common/views/components/user-lists.vue:
+  user-lists: "Seznamy"
   list-name: "Název seznamu"
+common/views/components/user-groups.vue:
+  invites: "Pozvat"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   next: "Další"
@@ -855,11 +859,6 @@ desktop/views/components/ui.header.post.vue:
   post: "Nový příspěvek"
 desktop/views/components/ui.header.search.vue:
   placeholder: "Vyhledávání"
-desktop/views/components/received-follow-requests-window.vue:
-  accept: "Přijmout"
-  reject: "Odmítnout"
-desktop/views/components/user-lists-window.vue:
-  title: "Seznamy uživatelů"
 desktop/views/components/user-preview.vue:
   notes: "Příspěvky"
 desktop/views/components/users-list.vue:
@@ -875,7 +874,6 @@ admin/views/index.vue:
   users: "Uživatelé"
   federation: "Z fedivesmíru"
   announcements: "Oznámení"
-  hashtags: "Hashtagy"
   queue: "Fronta úloh"
   logs: "Logy"
   back-to-misskey: "Zpět na Misskey"
@@ -900,12 +898,12 @@ admin/views/instance.vue:
   maintainer-config: "Informace o administrátorovi"
   maintainer-name: "Jméno administrátora"
   maintainer-email: "Kontakt na administrátora"
+  object-storage-endpoint: "Endpoint"
   mb: "V megabajtech"
   recaptcha-config: "nastavení služby reCAPTCHA"
   recaptcha-info: "reCAPTCHA token je povinný. Můžete jej získat na https://www.google.com/recaptcha/intro/"
   enable-recaptcha: "povolit reCAPTCHA"
-  recaptcha-site-key: "reCAPTCHA klíč stránky (site key)"
-  recaptcha-secret-key: "reCAPTCHA tajný klíč"
+  recaptcha-preview: "Náhled"
   twitter-integration-config: "Nastavení spojení s Twitterem"
   twitter-integration-info: "The callback URL is set on {url}."
   enable-twitter-integration: "Povolit připojení k Twitteru"
@@ -924,7 +922,6 @@ admin/views/instance.vue:
   invite: "Pozvat"
   save: "Uložit"
   saved: "Uloženo"
-  user-recommendation-config: "Doporučení uživatelé"
   email: "Emailová adresa"
   smtp-port: "SMTP Port"
   smtp-auth: "Provést SMTP autentikaci"
@@ -976,12 +973,6 @@ admin/views/users.vue:
   reset-password: "Resetovat heslo"
   reset-password-confirm: "Opravdu chcete resetovat Vaše heslo?"
   password-updated: "Heslo je nyní \"{password}\""
-  verify: "Ověřit účet"
-  verify-confirm: "Chcete aby toto byl ověřený účet?"
-  verified: "Účet se nyní ověřuje"
-  unverify: "Zrušit ověření účtu"
-  unverify-confirm: "Opravdu chcete zrušit designaci \"ověřený účet\"?"
-  unverified: "Ruší se potvrzení účtu"
   update-remote-user: "Aktualizovat informace o vzdáleném účtu"
   users:
     title: "Uživatel"
@@ -989,7 +980,6 @@ admin/views/users.vue:
       all: "Všechny"
       moderator: "Moderátor"
       adminOrModerator: "Admin/Moderátor"
-      verified: "Ověřený účet"
     origin:
       title: "Původ"
       combined: "Lokální + Vzdálené"
@@ -1054,6 +1044,7 @@ admin/views/federation.vue:
   chart-spans:
     hour: "za hodinu"
     day: "za den"
+  blocked-hosts: "Blokován"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Časová osa"
@@ -1168,8 +1159,6 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Nahrát soubor"
     create-folder: "Vytvořit složku"
-mobile/views/pages/user-lists.vue:
-  title: "Seznamy"
 mobile/views/pages/signup.vue:
   lets-start: "Váš účet je připraven! 📦"
 mobile/views/pages/home.vue:
@@ -1186,9 +1175,6 @@ mobile/views/pages/widgets/activity.vue:
   activity: "Aktivita"
 mobile/views/pages/share.vue:
   share-with: "Sdílet na {name}"
-mobile/views/pages/received-follow-requests.vue:
-  accept: "Přijmout"
-  reject: "Odmítnout"
 mobile/views/pages/note.vue:
   prev: "Předchozí příspěvěk"
   next: "Následující příspěvek"
@@ -1221,6 +1207,7 @@ deck/deck.user-column.vue:
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
 pages:
+  like: "Lajk"
   title: "Titulek"
   blocks:
     post: "Formulář pro psaní"

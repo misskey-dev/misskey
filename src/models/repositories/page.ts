@@ -1,24 +1,30 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Page } from '../entities/page';
 import { SchemaType, types, bool } from '../../misc/schema';
-import { Users, DriveFiles } from '..';
+import { Users, DriveFiles, PageLikes } from '..';
 import { awaitAll } from '../../prelude/await-all';
 import { DriveFile } from '../entities/drive-file';
+import { User } from '../entities/user';
+import { ensure } from '../../prelude/ensure';
 
 export type PackedPage = SchemaType<typeof packedPageSchema>;
 
 @EntityRepository(Page)
 export class PageRepository extends Repository<Page> {
 	public async pack(
-		src: Page,
+		src: Page['id'] | Page,
+		me?: User['id'] | User | null | undefined,
 	): Promise<PackedPage> {
+		const meId = me ? typeof me === 'string' ? me : me.id : null;
+		const page = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+
 		const attachedFiles: Promise<DriveFile | undefined>[] = [];
 		const collectFile = (xs: any[]) => {
 			for (const x of xs) {
 				if (x.type === 'image') {
 					attachedFiles.push(DriveFiles.findOne({
 						id: x.fileId,
-						userId: src.userId
+						userId: page.userId
 					}));
 				}
 				if (x.children) {
@@ -26,7 +32,7 @@ export class PageRepository extends Repository<Page> {
 				}
 			}
 		};
-		collectFile(src.content);
+		collectFile(page.content);
 
 		// 後方互換性のため
 		let migrated = false;
@@ -47,29 +53,31 @@ export class PageRepository extends Repository<Page> {
 				}
 			}
 		};
-		migrate(src.content);
+		migrate(page.content);
 		if (migrated) {
-			this.update(src.id, {
-				content: src.content
+			this.update(page.id, {
+				content: page.content
 			});
 		}
 
 		return await awaitAll({
-			id: src.id,
-			createdAt: src.createdAt.toISOString(),
-			updatedAt: src.updatedAt.toISOString(),
-			userId: src.userId,
-			user: Users.pack(src.user || src.userId),
-			content: src.content,
-			variables: src.variables,
-			title: src.title,
-			name: src.name,
-			summary: src.summary,
-			alignCenter: src.alignCenter,
-			font: src.font,
-			eyeCatchingImageId: src.eyeCatchingImageId,
-			eyeCatchingImage: src.eyeCatchingImageId ? await DriveFiles.pack(src.eyeCatchingImageId) : null,
-			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles))
+			id: page.id,
+			createdAt: page.createdAt.toISOString(),
+			updatedAt: page.updatedAt.toISOString(),
+			userId: page.userId,
+			user: Users.pack(page.user || page.userId),
+			content: page.content,
+			variables: page.variables,
+			title: page.title,
+			name: page.name,
+			summary: page.summary,
+			alignCenter: page.alignCenter,
+			font: page.font,
+			eyeCatchingImageId: page.eyeCatchingImageId,
+			eyeCatchingImage: page.eyeCatchingImageId ? await DriveFiles.pack(page.eyeCatchingImageId) : null,
+			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles)),
+			likedCount: page.likedCount,
+			isLiked: meId ? await PageLikes.findOne({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
 		});
 	}
 

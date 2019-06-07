@@ -19,7 +19,7 @@
 						<li><router-link to="/" :data-active="$route.name == 'index'"><i><fa icon="home" fixed-width/></i>{{ $t('timeline') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><p @click="showNotifications = true"><i><fa :icon="['far', 'bell']" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></p></li>
 						<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']" fixed-width/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-						<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/received-follow-requests" :data-active="$route.name == 'received-follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
+						<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/follow-requests" :data-active="$route.name == 'follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/featured" :data-active="$route.name == 'featured'"><i><fa :icon="faNewspaper" fixed-width/></i>{{ $t('@.featured-notes') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/explore" :data-active="$route.name == 'explore' || $route.name == 'explore-tag'"><i><fa :icon="faHashtag" fixed-width/></i>{{ $t('@.explore') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/games/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
@@ -28,6 +28,7 @@
 						<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']" fixed-width/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><i><fa icon="star" fixed-width/></i>{{ $t('@.favorites') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'"><i><fa icon="list" fixed-width/></i>{{ $t('user-lists') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/i/groups" :data-active="$route.name == 'user-groups'"><i><fa :icon="faUsers" fixed-width/></i>{{ $t('user-groups') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><i><fa icon="cloud" fixed-width/></i>{{ $t('@.drive') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/pages" :data-active="$route.name == 'pages'"><i><fa :icon="faStickyNote" fixed-width/></i>{{ $t('@.pages') }}<i><fa icon="angle-right"/></i></router-link></li>
 					</ul>
@@ -66,7 +67,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import { lang } from '../../../config';
-import { faNewspaper, faHashtag, faHome, faColumns } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faHashtag, faHome, faColumns, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faMoon, faSun, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import { search } from '../../../common/scripts/search';
 
@@ -87,7 +88,7 @@ export default Vue.extend({
 			announcements: [],
 			searching: false,
 			showNotifications: false,
-			faNewspaper, faHashtag, faMoon, faSun, faHome, faColumns, faStickyNote
+			faNewspaper, faHashtag, faMoon, faSun, faHome, faColumns, faStickyNote, faUsers
 		};
 	},
 

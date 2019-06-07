@@ -14,7 +14,6 @@ import notificationPreview from './notification-preview.vue';
 import userTimeline from './user-timeline.vue';
 import userListTimeline from './user-list-timeline.vue';
 import uiContainer from './ui-container.vue';
-import postForm from './post-form.vue';
 
 Vue.component('mk-ui', ui);
 Vue.component('mk-note', note);
@@ -30,4 +29,3 @@ Vue.component('mk-notification-preview', notificationPreview);
 Vue.component('mk-user-timeline', userTimeline);
 Vue.component('mk-user-list-timeline', userListTimeline);
 Vue.component('ui-container', uiContainer);
-Vue.component('mk-post-form', postForm);

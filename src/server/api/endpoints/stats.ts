@@ -57,10 +57,10 @@ export default define(meta, async () => {
 		driveUsageLocal,
 		driveUsageRemote
 	] = await Promise.all([
-		Notes.count(),
-		Notes.count({ userHost: null }),
-		Users.count(),
-		Users.count({ host: null }),
+		Notes.count({ cache: 3600000 }), // 1 hour
+		Notes.count({ where: { userHost: null }, cache: 3600000 }),
+		Users.count({ cache: 3600000 }),
+		Users.count({ where: { host: null }, cache: 3600000 }),
 		federationChart.getChart('hour', 1).then(chart => chart.instance.total[0]),
 		driveChart.getChart('hour', 1).then(chart => chart.local.totalSize[0]),
 		driveChart.getChart('hour', 1).then(chart => chart.remote.totalSize[0]),
