@@ -100,7 +100,7 @@ export default async (ctx: Router.IRouterContext) => {
  * Pack Create<Note> or Announce Activity
  * @param note Note
  */
-export async function packActivity(note: Note): Promise<unknown> {
+export async function packActivity(note: Note) {
 	if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
 		const renote = await Notes.findOne(note.renoteId).then(ensure);
 		return renderAnnounce(renote.uri ? renote.uri : `${config.url}/notes/${renote.id}`, note);
