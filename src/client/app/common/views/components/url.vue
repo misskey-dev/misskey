@@ -21,10 +21,10 @@ export default Vue.extend({
 	props: ['url', 'rel'],
 	data() {
 		const isSelf = this.url.startsWith(local);
-		const hasRoute =
+		const hasRoute = isSelf && (
 			this.url.substr(local.length).startsWith('/@') ||
 			this.url.substr(local.length).startsWith('/notes/') ||
-			this.url.substr(local.length).startsWith('/pages/');
+			this.url.substr(local.length).startsWith('/pages/'));
 		return {
 			local,
 			schema: null,
