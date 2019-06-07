@@ -93,6 +93,14 @@ common:
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
     explore: "Najít uživatele"
+  post-form:
+    submit: "Odeslat"
+    reply: "Odpovědět"
+    renote: "Renotovat"
+    error: "Chyba"
+    enter-username: "Zadejte své uživatelské jméno"
+    add-visible-user: "Přidat uživatele"
+    username-prompt: "Zadejte své uživatelské jméno"
   weekday-short:
     sunday: "Ne"
     monday: "Po"
@@ -251,7 +259,7 @@ common:
   my-token-regenerated: "Váš token byl regenerován, proto budete odhlášen/a."
   hide-password: "Skrýt heslo"
   show-password: "Zobrazit heslo"
-  enter-username: "Zadejte uživatelské jméno"
+  enter-username: "Zadejte své uživatelské jméno"
   do-not-use-in-production: "Tohle je vývojářský build. Nepoužívejte v produkci."
   user-suspended: "Tomuto uživateli byl pozastaven účet."
   is-remote-user: "Informace o tomto uživateli nemusí být kompletní."
@@ -373,8 +381,10 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet-desc: "Jste připojen k síti, ale zdá se že stále chybí připojení k Internetu. Prosím zkontrolujte Vaše připojení k Internetu."
   no-server: "Nelze se připojit k serveru Misskey"
 common/views/components/media-banner.vue:
+  sensitive: "Choulostivý obsah"
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/theme.vue:
+  theme: "Vzhled"
   light-theme: "Motiv pro použití ve světlém vzhledu"
   dark-theme: "Motiv pro použití v tmavém vzhledu"
   light-themes: "Světlý vzhled"
@@ -385,6 +395,7 @@ common/views/components/theme.vue:
   installed: "\"{}\" byl nainstalován"
   create-a-theme: "Vytvořit motiv"
   save-created-theme: "Uložit motiv"
+  primary-color: "Základní barva"
   text-color: "Barva textu"
   base-theme: "Základní vzhled"
   base-theme-light: "Světlý"
@@ -618,13 +629,18 @@ common/views/components/user-list-editor.vue:
   deleted: "Smazáno"
   add-user: "Přidat uživatele"
 common/views/components/user-group-editor.vue:
+  users: "Členové"
+  transfer: "Přesunout skupinu"
+  transferred: "Skupina přesunuta"
   deleted: "Smazáno"
   invite: "Pozvat"
 common/views/components/user-lists.vue:
   user-lists: "Seznamy"
   list-name: "Název seznamu"
 common/views/components/user-groups.vue:
+  user-groups: "Skupiny"
   invites: "Pozvat"
+  reject-invite: "Odmítnout"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   next: "Další"
@@ -653,6 +669,12 @@ common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
 common/views/pages/not-found.vue:
   page-not-found: "Stránka nenalezena"
+common/views/pages/follow.vue:
+  following: "Sledování"
+  follow: "Sledovat"
+common/views/pages/follow-requests.vue:
+  accept: "Přijmout"
+  reject: "Odmítnout"
 desktop:
   banner: "Baner"
   avatar-crop-title: "Vyberte část, která se zobrazí jako avatar"
@@ -755,27 +777,11 @@ desktop/views/components/notes.vue:
   error: "Načítání selhalo."
   retry: "Opakovat"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Přidat uživatele"
-  attach-location-information: "Přidat informace o lokaci"
-  hide-contents: "Schovat obsah"
-  reply-placeholder: "Odpovědět na tento příspěvěk"
-  quote-placeholder: "Citovat tento příspěvek"
-  submit: "Příspěvek"
-  reply: "Odpovědět"
-  renote: "Renotovat"
   posted: "Odesláno!"
   replied: "Odpověděno!"
   reposted: "Renotováno!"
   note-failed: "Nepodařilo se přidat příspěvek"
   renote-failed: "Renotování neuspělo"
-  insert-a-kao: "v('ω')v"
-  create-poll: "Vytvořit anketu"
-  text-remain: "{0} znaků zbývá"
-  recent-tags: "Nejnovější"
-  visibility: "Viditelnost"
-  geolocation-alert: "Vaše zařízení nepodporuje lokační službu"
-  error: "Chyba"
-  enter-username: "Zadejte své uživatelské jméno..."
 desktop/views/components/post-form-window.vue:
   note: "Nový příspěvek"
   reply: "Odpovědět"
@@ -850,6 +856,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Váš profil"
   lists: "Seznamy"
+  groups: "Skupiny"
   admin: "Administrace"
 desktop/views/components/ui.header.nav.vue:
   game: "Hry"
@@ -884,6 +891,11 @@ admin/views/dashboard.vue:
   instances: "Instance"
   this-instance: "Tato instance"
   federated: "Z fedivesmíru"
+admin/views/logs.vue:
+  logs: "Logy"
+  levels:
+    info: "Informace"
+    error: "Chyba"
 admin/views/abuse.vue:
   details: "Popis"
   remove-report: "Odstranit"
@@ -1026,6 +1038,7 @@ admin/views/federation.vue:
   host: "Hostitel"
   notes: "Poznámky"
   users: "Uživatelé"
+  following: "Sledování"
   caught-at: "Vytvořeno"
   status: "Status"
   latest-request-received-at: "Poslední požadavek přijat"
@@ -1045,6 +1058,7 @@ admin/views/federation.vue:
     hour: "za hodinu"
     day: "za den"
   blocked-hosts: "Blokován"
+  save: "Uložit"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Časová osa"
@@ -1083,6 +1097,8 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "Žádné obrázky"
 desktop/views/pages/user/user.header.vue:
   posts: "Poznámky"
+  following: "Sledovaní"
+  followers: "Sledující"
   month: "Po"
   day: "Ne"
 desktop/views/widgets/notifications.vue:
@@ -1111,6 +1127,7 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/media-video.vue:
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/follow-button.vue:
+  following: "Sledování"
   follow-processing: "Zpracovávám"
 mobile/views/components/note.vue:
   private: "Tento příspěvek je soukromý"
@@ -1130,15 +1147,6 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "kočka"
-mobile/views/components/post-form.vue:
-  add-visible-user: "Přidat uživatele"
-  submit: "Příspěvek"
-  reply: "Odpovědět"
-  renote: "Renotovat"
-  reply-placeholder: "Odpovědět na tento příspěvěk"
-  geolocation-alert: "Vaše zařízení nepodporuje lokační službu"
-  error: "Chyba"
-  username-prompt: "Zadejte uživatelské jméno"
 mobile/views/components/sub-note-content.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
@@ -1151,6 +1159,7 @@ mobile/views/components/ui.nav.vue:
   notifications: "Oznámení"
   search: "Vyhledávání"
   user-lists: "Seznamy"
+  user-groups: "Skupiny"
   widgets: "Widgety"
   game: "Hry"
   admin: "Administrace"

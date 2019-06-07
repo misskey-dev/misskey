@@ -1,5 +1,5 @@
 <template>
-<div v-if="page" class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, center: page.alignCenter }" :style="{ fontFamily: page.font }">
+<div v-if="page" class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, center: page.alignCenter }" :style="{ fontFamily: page.font }" :key="path">
 	<header>
 		<div class="title">{{ page.title }}</div>
 	</header>
@@ -85,30 +85,46 @@ export default Vue.extend({
 		};
 	},
 
+	computed: {
+		path(): string {
+			return this.username + '/' + this.pageName;
+		}
+	},
+
+	watch: {
+		path() {
+			this.fetch();
+		}
+	},
+
 	created() {
-		this.$root.api('pages/show', {
-			name: this.pageName,
-			username: this.username,
-		}).then(page => {
-			this.page = page;
-			this.$emit('init', {
-				title: this.page.title,
-				icon: faStickyNote
-			});
-			const pageVars = this.getPageVars();
-			this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
-				randomSeed: Math.random(),
-				user: page.user,
-				visitor: this.$store.state.i,
-				page: page,
-				url: url
-			}), e => {
-				console.dir(e);
-			});
-		});
+		this.fetch();
 	},
 
 	methods: {
+		fetch() {
+			this.$root.api('pages/show', {
+				name: this.pageName,
+				username: this.username,
+			}).then(page => {
+				this.page = page;
+				this.$emit('init', {
+					title: this.page.title,
+					icon: faStickyNote
+				});
+				const pageVars = this.getPageVars();
+				this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
+					randomSeed: Math.random(),
+					user: page.user,
+					visitor: this.$store.state.i,
+					page: page,
+					url: url
+				}), e => {
+					console.dir(e);
+				});
+			});
+		},
+
 		getPageVars() {
 			return collectPageVars(this.page.content);
 		},

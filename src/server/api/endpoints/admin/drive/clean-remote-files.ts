@@ -12,7 +12,8 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const files = await DriveFiles.find({
-		userHost: Not(IsNull())
+		userHost: Not(IsNull()),
+		isLink: false,
 	});
 
 	for (const file of files) {

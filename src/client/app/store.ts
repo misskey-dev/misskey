@@ -31,12 +31,8 @@ const defaultSettings = {
 	wallpaper: null,
 	webSearchEngine: 'https://www.google.com/?#q={{query}}',
 	mutedWords: [],
-	games: {
-		reversi: {
-			showBoardLabels: false,
-			useAvatarStones: true,
-		}
-	}
+	gamesReversiShowBoardLabels: false,
+	gamesReversiUseAvatarStones: true,
 };
 
 const defaultDeviceSettings = {
