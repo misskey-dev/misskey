@@ -7,13 +7,13 @@ import { program } from '../argv';
 
 import processDeliver, { DeliverJobData } from './processors/deliver';
 import processInbox, { InboxJobData } from './processors/inbox';
-import processDb from './processors/db';
-import procesObjectStorage from './processors/object-storage';
+import processDb, { DbJobData } from './processors/db';
+import procesObjectStorage, { ObjectStorageJobData } from './processors/object-storage';
 import { queueLogger } from './logger';
 import { DriveFile } from '../models/entities/drive-file';
-import { IActivity } from '../remote/activitypub/type';
+import { IActivity, IObject } from '../remote/activitypub/type';
 
-function initializeQueue<T>(name: string) {
+function initializeQueue<T extends object>(name: string) {
 	return new Queue<T>(name, {
 		redis: {
 			port: config.redis.port,
@@ -35,8 +35,8 @@ function renderError(e: Error) {
 
 export const deliverQueue = initializeQueue<DeliverJobData>('deliver');
 export const inboxQueue = initializeQueue<InboxJobData>('inbox');
-export const dbQueue = initializeQueue('db');
-export const objectStorageQueue = initializeQueue('objectStorage');
+export const dbQueue = initializeQueue<DbJobData>('db');
+export const objectStorageQueue = initializeQueue<ObjectStorageJobData>('objectStorage');
 
 const deliverLogger = queueLogger.createSubLogger('deliver');
 const inboxLogger = queueLogger.createSubLogger('inbox');
@@ -75,7 +75,7 @@ objectStorageQueue
 	.on('error', err => objectStorageLogger.error(`error ${err}`, { e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: ILocalUser, content: object | null, to: string) {
+export function deliver(user: ILocalUser, content: IObject | null, to: string) {
 	if (content == null) return null;
 
 	const data = {

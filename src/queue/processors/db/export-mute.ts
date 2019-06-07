@@ -8,11 +8,11 @@ import dateFormat = require('dateformat');
 import { getFullApAccount } from '../../../misc/convert-host';
 import { Users, Mutings } from '../../../models';
 import { MoreThan } from 'typeorm';
-import { ILocalUser } from '../../../models/entities/user';
+import { DbJobData } from '.';
 
 const logger = queueLogger.createSubLogger('export-mute');
 
-export async function exportMute(job: Bull.Job<{ user: ILocalUser }>, done: Bull.DoneCallback): Promise<void> {
+export async function exportMute(job: Bull.Job<DbJobData>, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Exporting mute of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

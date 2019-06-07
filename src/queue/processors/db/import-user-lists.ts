@@ -8,12 +8,11 @@ import { downloadTextFile } from '../../../misc/download-text-file';
 import { isSelfHost, toPuny } from '../../../misc/convert-host';
 import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
 import { genId } from '../../../misc/gen-id';
-import { ILocalUser } from '../../../models/entities/user';
-import { DriveFile } from '../../../models/entities/drive-file';
+import { DbJobData } from '.';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 
-export async function importUserLists(job: Bull.Job<{ user: ILocalUser, fileId: DriveFile['id'] }>, done: Bull.DoneCallback): Promise<void> {
+export async function importUserLists(job: Bull.Job<DbJobData>, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Importing user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

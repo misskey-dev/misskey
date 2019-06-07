@@ -13,10 +13,11 @@ import { UserKeypairs } from '../../models';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
+import { IObject } from './type';
 
 export const logger = apLogger.createSubLogger('deliver');
 
-export default async (user: ILocalUser, url: string, object: unknown) => {
+export default async (user: ILocalUser, url: string, object: IObject) => {
 	logger.info(`--> ${url}`);
 
 	const timeout = 10 * 1000;

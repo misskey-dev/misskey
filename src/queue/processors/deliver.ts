@@ -5,6 +5,7 @@ import Logger from '../../services/logger';
 import { Instances } from '../../models';
 import { instanceChart } from '../../services/chart';
 import { ILocalUser } from '../../models/entities/user';
+import { IObject } from '../../remote/activitypub/type';
 
 const logger = new Logger('deliver');
 
@@ -12,7 +13,7 @@ let latest: string | null = null;
 
 export type DeliverJobData = {
 	user: ILocalUser;
-	content: object;
+	content: IObject;
 	to: string;
 };
 

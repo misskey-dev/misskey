@@ -7,6 +7,8 @@ import { exportBlocking } from './export-blocking';
 import { exportUserLists } from './export-user-lists';
 import { importFollowing } from './import-following';
 import { importUserLists } from './import-user-lists';
+import { ILocalUser } from '../../../models/entities/user';
+import { DriveFile } from '../../../models/entities/drive-file';
 
 const jobs = {
 	deleteDriveFiles,
@@ -19,7 +21,12 @@ const jobs = {
 	importUserLists
 };
 
-export default function(dbQueue: Bull.Queue) {
+export type DbJobData = {
+	user: ILocalUser;
+	fileId?: DriveFile['id'];
+};
+
+export default function(dbQueue: Bull.Queue<DbJobData>) {
 	for (const [k, v] of Object.entries(jobs)) {
 		dbQueue.process(k, v);
 	}

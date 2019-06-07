@@ -10,11 +10,11 @@ import { MoreThan } from 'typeorm';
 import { Note } from '../../../models/entities/note';
 import { Poll } from '../../../models/entities/poll';
 import { ensure } from '../../../prelude/ensure';
-import { ILocalUser } from '../../../models/entities/user';
+import { DbJobData } from '.';
 
 const logger = queueLogger.createSubLogger('export-notes');
 
-export async function exportNotes(job: Bull.Job<{ user: ILocalUser }>, done: Bull.DoneCallback): Promise<void> {
+export async function exportNotes(job: Bull.Job<DbJobData>, done: Bull.DoneCallback): Promise<void> {
 	logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
