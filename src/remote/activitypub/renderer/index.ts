@@ -1,10 +1,12 @@
 import config from '../../../config';
 import * as uuid from 'uuid';
 
-export const renderActivity = (x: unknown) => {
-	if (x == null) return null;
+const hasId = <T extends object>(x: T): x is T & { id: unknown } => 'id' in x;
 
-	if (x !== null && typeof x === 'object' && x.id == null) {
+export const renderActivity = (x: object | null | undefined) => {
+	if (!x) return null;
+
+	if (hasId(x)) {
 		x.id = `${config.url}/${uuid.v4()}`;
 	}
 
