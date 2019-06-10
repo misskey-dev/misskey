@@ -1,7 +1,7 @@
 <template>
 <div class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :class="{ isMobile: $root.isMobile }">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
-	<div class="popover" :class="{ hukidasi }" ref="popover">
+	<div class="popover" :class="{ bubble }" ref="popover">
 		<template v-for="item, i in items">
 			<div v-if="item === null"></div>
 			<button v-if="item" @click="clicked(item.action)" :tabindex="i">
@@ -28,7 +28,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			hukidasi: !this.$root.isMobile
+			bubble: !this.$root.isMobile
 		};
 	},
 	mounted() {
@@ -56,12 +56,12 @@ export default Vue.extend({
 
 			if (left + width - window.pageXOffset > window.innerWidth) {
 				left = window.innerWidth - width + window.pageXOffset;
-				this.hukidasi = false;
+				this.bubble = false;
 			}
 
 			if (top + height - window.pageYOffset > window.innerHeight) {
 				top = window.innerHeight - height + window.pageYOffset;
-				this.hukidasi = false;
+				this.bubble = false;
 			}
 
 			if (top < 0) {
@@ -150,7 +150,7 @@ export default Vue.extend({
 
 		$balloon-size = 16px
 
-		&.hukidasi
+		&.bubble
 			margin-top $balloon-size
 			transform-origin center -($balloon-size)
 
