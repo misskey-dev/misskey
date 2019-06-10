@@ -1,7 +1,7 @@
 <template>
 <div class="form">
 	<header>
-		<h1 v-html="$t('share-access', { name: app.name })"></h1>
+		<h1 v-html="$t('share-access', { name })"></h1>
 		<img :src="app.iconUrl"/>
 	</header>
 	<div class="app">
@@ -34,6 +34,11 @@ export default Vue.extend({
 	i18n: i18n('auth/views/form.vue'),
 	props: ['session'],
 	computed: {
+		name(): string {
+			const el = document.createElement('div');
+			el.textContent = this.app.name
+			return el.innerHTML;
+		},
 		app(): any {
 			return this.session.app;
 		}
