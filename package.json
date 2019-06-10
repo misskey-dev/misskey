@@ -22,6 +22,10 @@
 		"test": "gulp test",
 		"format": "gulp format"
 	},
+	"resolutions": {
+		"gulp-cssnano/cssnano/postcss-svgo/svgo/js-yaml": "^3.13.1",
+		"video-thumbnail-generator/lodash": "^4.17.11"
+	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "1.2.15",
 		"@fortawesome/free-brands-svg-icons": "5.7.2",
