@@ -96,7 +96,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 		extra: config.db.extra,
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
-		cache: {
+		cache: !config.db.disableCache ? {
 			type: 'redis',
 			options: {
 				host: config.redis.host,
@@ -107,7 +107,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 					db: config.redis.db || 0
 				}
 			}
-		},
+		} : false,
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
 		entities: [
