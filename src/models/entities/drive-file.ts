@@ -72,6 +72,7 @@ export class DriveFile {
 	})
 	public properties: Record<string, any>;
 
+	@Index()
 	@Column('boolean')
 	public storedInternal: boolean;
 
@@ -146,6 +147,7 @@ export class DriveFile {
 	/**
 	 * 外部の(信頼されていない)URLへの直リンクか否か
 	 */
+	@Index()
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the DriveFile is direct link to remote server.'

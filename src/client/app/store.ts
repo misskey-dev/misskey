@@ -33,6 +33,7 @@ const defaultSettings = {
 	mutedWords: [],
 	gamesReversiShowBoardLabels: false,
 	gamesReversiUseAvatarStones: true,
+	disableAnimatedMfm: false,
 };
 
 const defaultDeviceSettings = {

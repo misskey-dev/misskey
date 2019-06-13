@@ -5,6 +5,7 @@ export default (opts) => ({
 		return {
 			items: [],
 			queue: [],
+			offset: 0,
 			fetching: true,
 			moreFetching: false,
 			inited: false,
@@ -80,6 +81,7 @@ export default (opts) => ({
 					this.items = x;
 					this.more = false;
 				}
+				this.offset = x.length;
 				this.inited = true;
 				this.fetching = false;
 				if (opts.onInited) opts.onInited(this);
@@ -96,7 +98,11 @@ export default (opts) => ({
 			if (params && params.then) params = await params;
 			await this.$root.api(this.pagination.endpoint, {
 				limit: (this.pagination.limit || 10) + 1,
-				untilId: this.items[this.items.length - 1].id,
+				...(this.pagination.endpoint === 'notes/search' ? {
+					offset: this.offset,
+				} : {
+					untilId: this.items[this.items.length - 1].id,
+				}),
 				...params
 			}).then(x => {
 				if (x.length == (this.pagination.limit || 10) + 1) {
@@ -107,6 +113,7 @@ export default (opts) => ({
 					this.items = this.items.concat(x);
 					this.more = false;
 				}
+				this.offset += x.length;
 				this.moreFetching = false;
 			}, e => {
 				this.moreFetching = false;
