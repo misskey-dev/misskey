@@ -149,18 +149,22 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	if (generateWeb) {
 		logger.info(`creating web image`);
 
-		if (['image/jpeg'].includes(type)) {
-			webpublic = await convertToJpeg(path, 2048, 2048);
-		} else if (['image/webp'].includes(type)) {
-			webpublic = await convertToWebp(path, 2048, 2048);
-		} else if (['image/png'].includes(type)) {
-			webpublic = await convertToPng(path, 2048, 2048);
-		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
-			webpublic = await convertToApng(path);
-		} else if (['image/gif'].includes(type)) {
-			webpublic = await convertToGif(path);
-		} else {
-			logger.info(`web image not created (not an image)`);
+		try {
+			if (['image/jpeg'].includes(type)) {
+				webpublic = await convertToJpeg(path, 2048, 2048);
+			} else if (['image/webp'].includes(type)) {
+				webpublic = await convertToWebp(path, 2048, 2048);
+			} else if (['image/png'].includes(type)) {
+				webpublic = await convertToPng(path, 2048, 2048);
+			} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+				webpublic = await convertToApng(path);
+			} else if (['image/gif'].includes(type)) {
+				webpublic = await convertToGif(path);
+			} else {
+				logger.info(`web image not created (not an image)`);
+			}
+		} catch (e) {
+			logger.warn(`web image not created (an error occured)`, e);
 		}
 	} else {
 		logger.info(`web image not created (from remote)`);
@@ -170,18 +174,22 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 	// #region thumbnail
 	let thumbnail: IImage | null = null;
 
-	if (['image/jpeg', 'image/webp'].includes(type)) {
-		thumbnail = await convertToJpeg(path, 498, 280);
-	} else if (['image/png'].includes(type)) {
-		thumbnail = await convertToPng(path, 498, 280);
-	} else if (['image/gif'].includes(type)) {
-		thumbnail = await convertToGif(path);
-	} else if (type.startsWith('video/')) {
-		try {
-			thumbnail = await GenerateVideoThumbnail(path);
-		} catch (e) {
-			logger.error(`GenerateVideoThumbnail failed: ${e}`);
+	try {
+		if (['image/jpeg', 'image/webp'].includes(type)) {
+			thumbnail = await convertToJpeg(path, 498, 280);
+		} else if (['image/png'].includes(type)) {
+			thumbnail = await convertToPng(path, 498, 280);
+		} else if (['image/gif'].includes(type)) {
+			thumbnail = await convertToGif(path);
+		} else if (type.startsWith('video/')) {
+			try {
+				thumbnail = await GenerateVideoThumbnail(path);
+			} catch (e) {
+				logger.error(`GenerateVideoThumbnail failed: ${e}`);
+			}
 		}
+	} catch (e) {
+		logger.warn(`thumbnail not created (an error occured)`, e);
 	}
 	// #endregion thumbnail
 
