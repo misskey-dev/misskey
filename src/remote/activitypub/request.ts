@@ -29,13 +29,13 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	}
 
 	// closedなら中断
-	const closedhosts = await Instances.find({
+	const closedHosts = await Instances.find({
 		where: {
 			isMarkedAsClosed: true
 		},
 		cache: 60 * 1000
 	});
-	if (closedhosts.map(x => x.host).includes(toPuny(host))) {
+	if (closedHosts.map(x => x.host).includes(toPuny(host))) {
 		logger.info(`skip (closed) ${url}`);
 		return;
 	}
