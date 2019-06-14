@@ -435,6 +435,7 @@ common/views/components/theme.vue:
   desc: "Popis"
   export: "Exportovat"
   import: "Importovat"
+  import-by-code: "nebo zkopírujte kód"
   theme-name-required: "Jméno vzhledu je povinné"
 common/views/components/cw-button.vue:
   hide: "Skrýt"
@@ -507,10 +508,13 @@ common/views/components/poll-editor.vue:
   remove: "Odstranit tuto možnost"
   add: "+ Přidat možnost"
   destroy: "Zahodit dotazník"
+  multiple: "Více odpovědí je povoleno"
   expiration: "Termín"
   infinite: "Nekonečne"
   at: "Výběr data a času"
+  no-more: "Více už přidat nemůžete"
   deadline-date: "Termín ukončení"
+  deadline-time: "Doba trvání"
   interval: "Trvání"
   second: "Sekunda"
   minute: "Minuta"
@@ -518,6 +522,7 @@ common/views/components/poll-editor.vue:
   day: "Ne"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Vyberte svoji reakci"
+  input-reaction-placeholder: "nebo vložte Emoji"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Emoji"
   people: "Lidé"
@@ -531,6 +536,7 @@ common/views/components/emoji-picker.vue:
 common/views/components/signin.vue:
   username: "Přezdívka"
   password: "Heslo"
+  token: "Token"
   signing-in: "Přihlašování..."
   or: "Nebo"
   signin-with-twitter: "Přihlásit se pomocí účtu Twitter"
@@ -558,6 +564,7 @@ common/views/components/signup.vue:
   password-matched: "OK"
   password-not-matched: "Neshodují se"
   recaptcha: "Potvrzení"
+  tos: "Podmínky užívání"
   create: "Vytvořit účet"
   some-error: "Pokus o vytvoření účtu selhal. Prosím zkuste to znovu."
 common/views/components/special-message.vue:
@@ -596,6 +603,7 @@ common/views/components/visibility-chooser.vue:
   home: "Domů"
   specified-desc: "Poslat pouze zmíněným uživatelům"
   local-public: "Veřejná (pouze místní)"
+  local-public-desc: "Nepublikovat na vzdálených serverech"
   local-home: "Domovská (pouze místní)"
   local-followers: "Pro sledující (pouze místní)"
 common/views/components/trends.vue:
@@ -605,6 +613,8 @@ common/views/components/language-settings.vue:
   title: "Zobrazit jazyky"
   pick-language: "Zvolte jazyk"
   recommended: "Doporučené"
+  auto: "Automaticky"
+  specify-language: "Vyberte jazyk"
   info: "Pro aktivování změn musíte znovu načíst stránky."
 common/views/components/profile-editor.vue:
   title: "Profil"
@@ -631,6 +641,7 @@ common/views/components/profile-editor.vue:
   email-not-verified: "Váš email není potvrzen. Prosím zkontrolujte si svou schránku."
   export: "Exportovat"
   import: "Importovat"
+  export-and-import: "Import / Export"
   export-targets:
     following-list: "Seznam sledujících"
     mute-list: "Seznam ztlumených uživatelů"
@@ -650,19 +661,31 @@ common/views/components/user-list-editor.vue:
   add-user: "Přidat uživatele"
 common/views/components/user-group-editor.vue:
   users: "Členové"
+  rename: "Přejmenovat skupinu"
+  delete: "Odstranit skupinu"
   transfer: "Přesunout skupinu"
+  transfer-are-you-sure: "Jste si jistí že chcete přidat @$2 do skupiny: $1?"
   transferred: "Skupina přesunuta"
+  remove-user: "Odebrat uživatele z této skupiny"
+  delete-are-you-sure: "Jste si jistí že chcete smazat skupinu \"$1\"?"
   deleted: "Smazáno"
   invite: "Pozvat"
+  invited: "Pozvánka byla úspěšně odeslána"
 common/views/components/user-lists.vue:
   user-lists: "Seznamy"
+  create-list: "Vytvořit seznam"
   list-name: "Název seznamu"
 common/views/components/user-groups.vue:
   user-groups: "Skupiny"
+  create-group: "Vytvořit skupinu"
+  group-name: "Název skupiny"
+  owned-groups: "Moje skupiny"
   invites: "Pozvat"
   reject-invite: "Odmítnout"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
+  no-broadcasts: "Žádná nová oznámení"
+  have-a-nice-day: "Přejeme Vám příjemný den!"
   next: "Další"
 common/views/widgets/calendar.vue:
   year: "Rok {}"
@@ -820,6 +843,7 @@ desktop/views/components/renote-form-window.vue:
 desktop/views/components/settings.2fa.vue:
   detail: "Více…"
   url: "https://www.google.cz/landing/2step/"
+  token: "Token"
 common/views/components/media-image.vue:
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/api-settings.vue:
