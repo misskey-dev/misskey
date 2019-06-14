@@ -17,6 +17,8 @@ export async function proxyMedia(ctx: Koa.BaseContext) {
 
 		const [type, ext] = await detectMine(path);
 
+		if (!type.startsWith('image/')) throw 403;
+
 		let image: IImage;
 
 		if ('static' in ctx.query && ['image/png', 'image/gif'].includes(type)) {
