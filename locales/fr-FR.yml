@@ -154,7 +154,7 @@ common:
     specified-desc: "Publier uniquement aux utilisateur·rice·s mentionné·e·s"
     local-public: "Local (Public)"
     local-home: "Accueil (local uniquement)"
-    local-followers: "Local (Abonné·e·s)"
+    local-followers: "Abonné·e·s (Local uniquement)"
   note-placeholders:
     a: "Que faites-vous maintenant ?"
     b: "Quoi de neuf ?"
@@ -657,7 +657,7 @@ common/views/components/visibility-chooser.vue:
   local-public: "Local (Public)"
   local-public-desc: "Ne pas publier pour les distants"
   local-home: "Accueil (local uniquement)"
-  local-followers: "Local (Abonné·e·s)"
+  local-followers: "Abonné·e·s (Local uniquement)"
 common/views/components/trends.vue:
   count: "{} utilisateur·rice·s mentionné·e·s"
   empty: "Aucune tendance"
@@ -897,7 +897,7 @@ desktop/views/components/media-video.vue:
   sensitive: "Le contenu est NSFW"
   click-to-show: "Cliquer pour afficher"
 desktop/views/components/followers-window.vue:
-  followers: "{} abonné·e·s"
+  followers: "Abonné·e·s de {}"
 desktop/views/components/followers.vue:
   empty: "Il semble que vous n’avez pas encore d’abonné·e·s."
 desktop/views/components/following-window.vue:
@@ -1374,7 +1374,7 @@ admin/views/federation.vue:
     lastCommunicatedAtAsc: "La date et l'heure des interactions plus anciennes"
     lastCommunicatedAtDesc: "La date et l'heure des nouvelles interactions"
     notesDesc: "Description des notes"
-    usersAsc: "Peu d'abonnés"
+    usersAsc: "Peu d'abonné·e·s"
     followingAsc: "Les moins suivies"
     followingDesc: "Ayant le plus d'abonné·e·s"
     followersAsc: "Ayant le moins d'abonné·e·s"
