@@ -9,7 +9,7 @@ export const meta = {
 
 	params: {
 		username: {
-			validator: $.str.pipe(Users.validateUsername)
+			validator: $.use(Users.validateLocalUsername)
 		}
 	}
 };

@@ -53,12 +53,14 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: inbox is not a string');
 	}
 
-	if (!Users.validateUsername(x.preferredUsername, true)) {
+	if (!Users.validateRemoteUsername.ok(x.preferredUsername)) {
 		return new Error('invalid person: invalid username');
 	}
 
-	if (!Users.isValidName(x.name == '' ? null : x.name)) {
-		return new Error('invalid person: invalid name');
+	if (x.name != null && x.name != '') {
+		if (!Users.validateName.ok(x.name)) {
+			return new Error('invalid person: invalid name');
+		}
 	}
 
 	if (typeof x.id !== 'string') {
