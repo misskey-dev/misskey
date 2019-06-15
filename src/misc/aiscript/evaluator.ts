@@ -161,7 +161,7 @@ export class ASEvaluator {
 			subtract: (a: number, b: number) => a - b,
 			multiply: (a: number, b: number) => a * b,
 			divide: (a: number, b: number) => a / b,
-			remind: (a: number, b: number) => a % b,
+			mod: (a: number, b: number) => a % b,
 			strLen: (a: string) => a.length,
 			strPick: (a: string, b: number) => a[b - 1],
 			strReplace: (a: string, b: string, c: string) => a.split(b).join(c),

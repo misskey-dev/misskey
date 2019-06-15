@@ -2060,8 +2060,8 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
-      remind: "÷ 割った余り"
-      _remind:
+      mod: "÷ 割った余り"
+      _mod:
         arg1: "A"
         arg2: "B"
       eq: "AとBが同じ"
