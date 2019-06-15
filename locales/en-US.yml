@@ -1857,8 +1857,7 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
-      remind: "÷ Remaindering"
-      _remind:
+      _mod:
         arg1: "A"
         arg2: "B"
       eq: "A and B are equal"
