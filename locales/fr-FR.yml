@@ -1801,7 +1801,7 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
-      _remind:
+      _mod:
         arg1: "A"
         arg2: "B"
       eq: "A et B sont équivalents"
