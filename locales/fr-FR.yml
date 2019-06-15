@@ -1266,6 +1266,7 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Ne pas marquer comme sensible"
   marked-as-sensitive: "Marqué comme sensible"
   unmarked-as-sensitive: "Marqué comme non sensible"
+  clean-remote-files: "Nettoyer le cache des fichiers distants"
   clean-up: "Nettoyage"
 admin/views/users.vue:
   operation: "Actions"
@@ -1688,6 +1689,7 @@ pages:
   view-source: "Afficher la source"
   view-page: "Afficher la page"
   like: "Bien"
+  liked-pages: "Pages favorites"
   my-pages: "Mes pages"
   inspector: "Inspecteur"
   content: "Bloc de page"
