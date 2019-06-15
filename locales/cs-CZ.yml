@@ -380,6 +380,7 @@ common/views/components/games/reversi/reversi.room.vue:
   waiting-for-both: "Připravuji"
   cancel: "Zrušit"
   ready: "Připraveno"
+  cancel-ready: "Pokračovat v přípravě"
 common/views/components/connect-failed.vue:
   title: "Nelze se připojit k serveru"
   description: "Nastal problém s Vaším připojením k internetu, nebo server není dostupný nebo zrovna probíhá údržba. Prosím {zkuste to znova} za pár minut."
