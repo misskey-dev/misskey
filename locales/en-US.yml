@@ -1857,6 +1857,7 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "÷ Remaindering"
       _mod:
         arg1: "A"
         arg2: "B"
