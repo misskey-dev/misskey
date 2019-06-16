@@ -1761,8 +1761,7 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
-      remind: "÷ Tomo"
-      _remind:
+      _mod:
         arg1: "A"
         arg2: "B"
       eq: "A og B er ens"
