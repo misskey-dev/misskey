@@ -1188,7 +1188,7 @@ describe('MFM', () => {
 					tree('italic', [
 						text('bar')
 					], {}),
-					text('baz'),
+					text('\nbaz'),
 				]);
 			});
 		});
