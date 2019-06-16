@@ -98,7 +98,7 @@ export const mfmLanguage = P.createLanguage({
 			const text = input.substr(i);
 			const match = text.match(/^(\*|_)([a-zA-Z0-9]+?[\s\S]*?)\1/);
 			if (!match) return P.makeFailure(i, 'not a italic');
-			if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a italic');
+			if (input[i - 1] != null && input[i - 1] != ' ' && input[i - 1] != '\n') return P.makeFailure(i, 'not a italic');
 			return P.makeSuccess(i + match[0].length, match[2]);
 		});
 
