@@ -1175,9 +1175,9 @@ describe('MFM', () => {
 			});
 
 			it('require spaces', () => {
-				const tokens = parse('湊おじたん@４日目_L38b #pixiv https://www.pixiv.net/member_illust.php');
+				const tokens = parse('４日目_L38b a_b');
 				assert.deepStrictEqual(tokens, [
-					text('湊おじたん@４日目_L38b #pixiv https://www.pixiv.net/member_illust.php'),
+					text('４日目_L38b a_b'),
 				]);
 			});
 
