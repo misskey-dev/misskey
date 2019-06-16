@@ -1173,6 +1173,24 @@ describe('MFM', () => {
 					text('foo_bar_baz'),
 				]);
 			});
+
+			it('require spaces', () => {
+				const tokens = parse('湊おじたん@４日目_L38b #pixiv https://www.pixiv.net/member_illust.php');
+				assert.deepStrictEqual(tokens, [
+					text('湊おじたん@４日目_L38b #pixiv https://www.pixiv.net/member_illust.php'),
+				]);
+			});
+
+			it('newline sandwich', () => {
+				const tokens = parse('foo\n_bar_\nbaz');
+				assert.deepStrictEqual(tokens, [
+					text('foo\n'),
+					tree('italic', [
+						text('bar')
+					], {}),
+					text('baz'),
+				]);
+			});
 		});
 	});
 
