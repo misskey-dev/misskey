@@ -104,7 +104,7 @@ export const mfmLanguage = P.createLanguage({
 
 		return P.alt(xml, underscore).map(x => createTree('italic', r.inline.atLeast(1).tryParse(x), {}));
 	},
-	strike: r => P.regexp(/~~(.+?)~~/, 1).map(x => createTree('strike', r.inline.atLeast(1).tryParse(x), {})),
+	strike: r => P.regexp(/~~([^\n~]+?)~~/, 1).map(x => createTree('strike', r.inline.atLeast(1).tryParse(x), {})),
 	motion: r => {
 		const paren = P.regexp(/\(\(\(([\s\S]+?)\)\)\)/, 1);
 		const xml = P.regexp(/<motion>(.+?)<\/motion>/, 1);
