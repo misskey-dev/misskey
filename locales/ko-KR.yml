@@ -1857,8 +1857,8 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
-      remind: "÷ 나눈 나머지"
-      _remind:
+      mod: "÷ 나눈 나머지"
+      _mod:
         arg1: "A"
         arg2: "B"
       eq: "A와 B가 동일"

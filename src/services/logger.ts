@@ -90,7 +90,7 @@ export default class Logger {
 		}
 	}
 
-	public warn(message: string, data?: Record<string, any> | null, important = false): void {　// 実行を継続できるが改善すべき状況で使う
+	public warn(message: string, data?: Record<string, any> | null, important = false): void { // 実行を継続できるが改善すべき状況で使う
 		this.log('warning', message, data, important);
 	}
 

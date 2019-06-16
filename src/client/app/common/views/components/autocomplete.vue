@@ -16,7 +16,7 @@
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
-			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else-if="!useOsDefaultEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else>{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
@@ -31,6 +31,7 @@ import Vue from 'vue';
 import * as emojilib from 'emojilib';
 import contains from '../../../common/scripts/contains';
 import { twemojiBase } from '../../../../../misc/twemoji-base';
+import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 
 type EmojiDef = {
 	emoji: string;
@@ -78,6 +79,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			getStaticImageUrl,
 			fetching: true,
 			users: [],
 			hashtags: [],

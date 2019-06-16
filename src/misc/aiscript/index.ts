@@ -58,7 +58,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	subtract:        { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faMinus, },
 	multiply:        { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faTimes, },
 	divide:          { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faDivide, },
-	remind:          { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faDivide, },
+	mod:             { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faDivide, },
 	eq:              { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: faEquals, },
 	notEq:           { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: faNotEqual, },
 	gt:              { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: faGreaterThan, },

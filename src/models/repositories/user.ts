@@ -1,3 +1,4 @@
+import $ from 'cafy';
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserGroupJoinings } from '..';
@@ -231,29 +232,13 @@ export class UserRepository extends Repository<User> {
 	}
 
 	//#region Validators
-	public validateUsername(username: string, remote = false): boolean {
-		return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
-	}
-
-	public validatePassword(password: string): boolean {
-		return typeof password == 'string' && password != '';
-	}
-
-	public isValidName(name?: string): boolean {
-		return name === null || (typeof name == 'string' && name.length < 50 && name.trim() != '');
-	}
-
-	public isValidDescription(description: string): boolean {
-		return typeof description == 'string' && description.length < 500 && description.trim() != '';
-	}
-
-	public isValidLocation(location: string): boolean {
-		return typeof location == 'string' && location.length < 50 && location.trim() != '';
-	}
-
-	public isValidBirthday(birthday: string): boolean {
-		return typeof birthday == 'string' && /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.test(birthday);
-	}
+	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
+	public validateRemoteUsername = $.str.match(/^\w([\w-]*\w)?$/);
+	public validatePassword = $.str.min(1);
+	public validateName = $.str.min(1).max(50);
+	public validateDescription = $.str.min(1).max(500);
+	public validateLocation = $.str.min(1).max(50);
+	public validateBirthday = $.str.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
 	//#endregion
 }
 

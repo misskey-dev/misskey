@@ -9,7 +9,7 @@ import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import { UserKeypairs } from '../../models';
+import { UserKeypairs, Instances } from '../../models';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
@@ -17,15 +17,30 @@ import { ensure } from '../../prelude/ensure';
 export const logger = apLogger.createSubLogger('deliver');
 
 export default async (user: ILocalUser, url: string, object: any) => {
-	logger.info(`--> ${url}`);
-
 	const timeout = 10 * 1000;
 
 	const { protocol, host, hostname, port, pathname, search } = new URL(url);
 
 	// ブロックしてたら中断
 	const meta = await fetchMeta();
-	if (meta.blockedHosts.includes(toPuny(host))) return;
+	if (meta.blockedHosts.includes(toPuny(host))) {
+		logger.info(`skip (blocked) ${url}`);
+		return;
+	}
+
+	// closedなら中断
+	const closedHosts = await Instances.find({
+		where: {
+			isMarkedAsClosed: true
+		},
+		cache: 60 * 1000
+	});
+	if (closedHosts.map(x => x.host).includes(toPuny(host))) {
+		logger.info(`skip (closed) ${url}`);
+		return;
+	}
+
+	logger.info(`--> ${url}`);
 
 	const data = JSON.stringify(object);
 

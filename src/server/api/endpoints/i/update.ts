@@ -29,14 +29,14 @@ export const meta = {
 
 	params: {
 		name: {
-			validator: $.optional.nullable.str.pipe(Users.isValidName),
+			validator: $.optional.nullable.use(Users.validateName),
 			desc: {
 				'ja-JP': '名前(ハンドルネームやニックネーム)'
 			}
 		},
 
 		description: {
-			validator: $.optional.nullable.str.pipe(Users.isValidDescription),
+			validator: $.optional.nullable.use(Users.validateDescription),
 			desc: {
 				'ja-JP': 'アカウントの説明や自己紹介'
 			}
@@ -50,14 +50,14 @@ export const meta = {
 		},
 
 		location: {
-			validator: $.optional.nullable.str.pipe(Users.isValidLocation),
+			validator: $.optional.nullable.use(Users.validateLocation),
 			desc: {
 				'ja-JP': '住んでいる地域、所在'
 			}
 		},
 
 		birthday: {
-			validator: $.optional.nullable.str.pipe(Users.isValidBirthday),
+			validator: $.optional.nullable.use(Users.validateBirthday),
 			desc: {
 				'ja-JP': '誕生日 (YYYY-MM-DD形式)'
 			}

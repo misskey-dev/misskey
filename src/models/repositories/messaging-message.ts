@@ -8,7 +8,7 @@ export type PackedMessagingMessage = SchemaType<typeof packedMessagingMessageSch
 
 @EntityRepository(MessagingMessage)
 export class MessagingMessageRepository extends Repository<MessagingMessage> {
-	public isValidText(text: string): boolean {
+	public validateText(text: string): boolean {
 		return text.trim().length <= 1000 && text.trim() != '';
 	}
 

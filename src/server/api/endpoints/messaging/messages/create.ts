@@ -44,7 +44,7 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.optional.str.pipe(MessagingMessages.isValidText)
+			validator: $.optional.str.pipe(MessagingMessages.validateText)
 		},
 
 		fileId: {

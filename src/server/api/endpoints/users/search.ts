@@ -66,7 +66,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const isUsername = Users.validateUsername(ps.query.replace('@', ''), !ps.localOnly);
+	const isUsername = ps.localOnly ? Users.validateLocalUsername.ok(ps.query.replace('@', '')) : Users.validateRemoteUsername.ok(ps.query.replace('@', ''));
 
 	let users: User[] = [];
 
