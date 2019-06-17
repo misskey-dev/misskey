@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { url as local } from '../../../config';
+import { url as local, lang } from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/url-preview.vue'),
@@ -116,9 +116,11 @@ export default Vue.extend({
 		if (requestUrl.hostname === 'music.youtube.com')
 			requestUrl.hostname = 'youtube.com';
 
+		const requestLang = (lang || 'ja-JP').replace('ja-KS', 'ja-JP');
+
 		requestUrl.hash = '';
 
-		fetch(`/url?url=${encodeURIComponent(requestUrl.href)}`).then(res => {
+		fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
 			res.json().then(info => {
 				if (info.url == null) return;
 				this.title = info.title;
