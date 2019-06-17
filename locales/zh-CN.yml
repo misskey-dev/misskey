@@ -859,7 +859,7 @@ desktop/views/components/crop-window.vue:
   cancel: "取消"
   ok: "确定"
 desktop/views/components/drive-window.vue:
-  used: "使用中"
+  used: "已使用"
 desktop/views/components/drive.file.vue:
   avatar: "头像"
   banner: "背景"
@@ -1016,7 +1016,7 @@ desktop/views/components/settings.apps.vue:
   no-apps: "没有已连接的应用程序"
 common/views/components/drive-settings.vue:
   max: "容量"
-  in-use: "正在使用"
+  in-use: "已使用"
   stats: "统计"
 common/views/components/mute-and-block.vue:
   mute-and-block: "屏蔽/拉黑"
@@ -1518,7 +1518,7 @@ desktop/views/widgets/users.vue:
   refresh: "更多"
   no-one: "不是！"
 mobile/views/components/drive.vue:
-  used: "使用中"
+  used: "已使用"
   folder-count: "文件夹"
   count-separator: "，"
   file-count: "文件"
