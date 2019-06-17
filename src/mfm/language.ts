@@ -164,8 +164,10 @@ export const mfmLanguage = P.createLanguage({
 			} else
 				url = match[0];
 			url = removeOrphanedBrackets(url);
-			if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
-			if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
+			while (url.endsWith('.') || url.endsWith(',')) {
+				if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
+				if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
+			}
 			return P.makeSuccess(i + url.length, url);
 		}).map(x => createLeaf('url', { url: x }));
 	},

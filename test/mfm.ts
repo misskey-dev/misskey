@@ -804,6 +804,14 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('ignore trailing periods', () => {
+				const tokens = parse('https://example.com...');
+				assert.deepStrictEqual(tokens, [
+					leaf('url', { url: 'https://example.com' }),
+					text('...')
+				]);
+			});
+
 			it('with comma', () => {
 				const tokens = parse('https://example.com/foo?bar=a,b');
 				assert.deepStrictEqual(tokens, [
