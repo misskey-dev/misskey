@@ -163,6 +163,19 @@ export default abstract class Chart<T extends Record<string, any>> {
 				},
 				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
+			indices: [{
+				columns: ['date']
+			}, {
+				columns: ['span']
+			}, {
+				columns: ['group']
+			}, {
+				columns: ['span', 'date']
+			}, {
+				columns: ['date', 'group']
+			}, {
+				columns: ['span', 'date', 'group']
+			}]
 		});
 	}
 

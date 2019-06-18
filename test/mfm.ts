@@ -804,6 +804,14 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('ignore trailing periods', () => {
+				const tokens = parse('https://example.com...');
+				assert.deepStrictEqual(tokens, [
+					leaf('url', { url: 'https://example.com' }),
+					text('...')
+				]);
+			});
+
 			it('with comma', () => {
 				const tokens = parse('https://example.com/foo?bar=a,b');
 				assert.deepStrictEqual(tokens, [
@@ -1116,6 +1124,14 @@ describe('MFM', () => {
 					], {}),
 				]);
 			});
+
+			// https://misskey.io/notes/7u1kv5dmia
+			it('ignore internal tilde', () => {
+				const tokens = parse('~~~~~');
+				assert.deepStrictEqual(tokens, [
+					text('~~~~~')
+				]);
+			});
 		});
 
 		describe('italic', () => {
@@ -1171,6 +1187,24 @@ describe('MFM', () => {
 				const tokens = parse('foo_bar_baz');
 				assert.deepStrictEqual(tokens, [
 					text('foo_bar_baz'),
+				]);
+			});
+
+			it('require spaces', () => {
+				const tokens = parse('４日目_L38b a_b');
+				assert.deepStrictEqual(tokens, [
+					text('４日目_L38b a_b'),
+				]);
+			});
+
+			it('newline sandwich', () => {
+				const tokens = parse('foo\n_bar_\nbaz');
+				assert.deepStrictEqual(tokens, [
+					text('foo\n'),
+					tree('italic', [
+						text('bar')
+					], {}),
+					text('\nbaz'),
 				]);
 			});
 		});

@@ -1226,7 +1226,11 @@ admin/views/index.vue:
   abuse: "スパム報告"
   queue: "ジョブキュー"
   logs: "ログ"
+  db: "データベース"
   back-to-misskey: "Misskeyに戻る"
+
+admin/views/db.vue:
+  tables: "テーブル"
 
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"

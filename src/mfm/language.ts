@@ -98,13 +98,13 @@ export const mfmLanguage = P.createLanguage({
 			const text = input.substr(i);
 			const match = text.match(/^(\*|_)([a-zA-Z0-9]+?[\s\S]*?)\1/);
 			if (!match) return P.makeFailure(i, 'not a italic');
-			if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a italic');
+			if (input[i - 1] != null && input[i - 1] != ' ' && input[i - 1] != '\n') return P.makeFailure(i, 'not a italic');
 			return P.makeSuccess(i + match[0].length, match[2]);
 		});
 
 		return P.alt(xml, underscore).map(x => createTree('italic', r.inline.atLeast(1).tryParse(x), {}));
 	},
-	strike: r => P.regexp(/~~(.+?)~~/, 1).map(x => createTree('strike', r.inline.atLeast(1).tryParse(x), {})),
+	strike: r => P.regexp(/~~([^\n~]+?)~~/, 1).map(x => createTree('strike', r.inline.atLeast(1).tryParse(x), {})),
 	motion: r => {
 		const paren = P.regexp(/\(\(\(([\s\S]+?)\)\)\)/, 1);
 		const xml = P.regexp(/<motion>(.+?)<\/motion>/, 1);
@@ -164,8 +164,10 @@ export const mfmLanguage = P.createLanguage({
 			} else
 				url = match[0];
 			url = removeOrphanedBrackets(url);
-			if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
-			if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
+			while (url.endsWith('.') || url.endsWith(',')) {
+				if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
+				if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
+			}
 			return P.makeSuccess(i + url.length, url);
 		}).map(x => createLeaf('url', { url: x }));
 	},
