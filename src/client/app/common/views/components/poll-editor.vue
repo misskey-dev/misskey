@@ -89,9 +89,7 @@ export default Vue.extend({
 
 		get() {
 			const at = () => {
-				const [date] = moment(this.atDate).toISOString().split('T');
-				const [hour, minute] = this.atTime.split(':');
-				return moment(`${date}T${hour}:${minute}Z`).valueOf();
+				return moment(`${this.atDate} ${this.atTime}`).valueOf();
 			};
 
 			const after = () => {
