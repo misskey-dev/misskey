@@ -3,7 +3,6 @@ import * as httpSignature from 'http-signature';
 import { IRemoteUser } from '../../models/entities/user';
 import perform from '../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
-import { URL } from 'url';
 import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
