@@ -214,7 +214,7 @@
 		"style-loader": "0.23.1",
 		"stylus": "0.54.5",
 		"stylus-loader": "3.0.2",
-		"summaly": "2.2.0",
+		"summaly": "2.3.0",
 		"systeminformation": "4.11.1",
 		"syuilo-password-strength": "0.0.1",
 		"terser-webpack-plugin": "1.3.0",
