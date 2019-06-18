@@ -1105,6 +1105,8 @@ admin/views/index.vue:
   logs: "Logs"
   db: "Database"
   back-to-misskey: "Back to Misskey"
+admin/views/db.vue:
+  tables: "Tables"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "Accounts"
