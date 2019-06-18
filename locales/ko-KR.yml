@@ -1103,6 +1103,7 @@ admin/views/index.vue:
   abuse: "스팸 신고"
   queue: "작업 대기열"
   logs: "로그"
+  db: "데이터베이스"
   back-to-misskey: "Misskey로 돌아가기"
 admin/views/dashboard.vue:
   dashboard: "대시보드"
