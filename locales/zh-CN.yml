@@ -1103,6 +1103,7 @@ admin/views/index.vue:
   abuse: "举报垃圾信息"
   queue: "作业队列"
   logs: "登录"
+  db: "数据库"
   back-to-misskey: "返回 Misskey"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
