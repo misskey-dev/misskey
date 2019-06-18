@@ -172,6 +172,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 			}, {
 				columns: ['span', 'date']
 			}, {
+				columns: ['date', 'group']
+			}, {
 				columns: ['span', 'date', 'group']
 			}]
 		});
