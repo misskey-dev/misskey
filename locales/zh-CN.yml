@@ -1105,6 +1105,8 @@ admin/views/index.vue:
   logs: "登录"
   db: "数据库"
   back-to-misskey: "返回 Misskey"
+admin/views/db.vue:
+  tables: "表格"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "账户"
