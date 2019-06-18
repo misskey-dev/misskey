@@ -3,7 +3,7 @@
 	<ui-card>
 		<template #title><fa :icon="faDatabase"/> {{ $t('tables') }}</template>
 		<section v-if="tables">
-			<div v-for="table in Object.keys(tables)"><b>{{ table }}</b> {{ tables[table].count }} {{ tables[table].size | bytes }}</div>
+			<div v-for="table in Object.keys(tables)"><b>{{ table }}</b> {{ tables[table].count | number }} {{ tables[table].size | bytes }}</div>
 		</section>
 	</ui-card>
 </div>
