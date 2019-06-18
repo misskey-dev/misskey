@@ -6,6 +6,7 @@ import { fetchMeta } from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
 import { types, bool } from '../../../misc/schema';
+import { getConnection } from 'typeorm';
 
 export const meta = {
 	stability: 'stable',
@@ -114,6 +115,7 @@ export default define(meta, async (ps, me) => {
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,
+		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
 
 		cpu: {
 			model: os.cpus()[0].model,
