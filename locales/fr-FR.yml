@@ -1088,6 +1088,7 @@ admin/views/index.vue:
   abuse: "Abus"
   queue: "File d’attente"
   logs: "Journaux"
+  db: "Base de données"
   back-to-misskey: "Retour vers Misskey"
 admin/views/dashboard.vue:
   dashboard: "Tableau de bord"
