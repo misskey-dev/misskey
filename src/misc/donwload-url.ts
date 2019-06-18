@@ -25,6 +25,7 @@ export async function downloadUrl(url: string, path: string) {
 			rej(error);
 		});
 
+		// 多バイト文字が含まれてそうだったらリクエスト前にURIエンコードする
 		const requestUrl = new URL(url).pathname.match(/[^\u0021-\u00ff]/) ? encodeURI(url) : url;
 
 		const req = request({
