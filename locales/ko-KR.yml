@@ -1105,6 +1105,8 @@ admin/views/index.vue:
   logs: "로그"
   db: "데이터베이스"
   back-to-misskey: "Misskey로 돌아가기"
+admin/views/db.vue:
+  tables: "테이블"
 admin/views/dashboard.vue:
   dashboard: "대시보드"
   accounts: "계정"
