@@ -7,6 +7,7 @@ import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
 import { types, bool } from '../../../misc/schema';
 import { getConnection } from 'typeorm';
+import redis from '../../../db/redis';
 
 export const meta = {
 	stability: 'stable',
@@ -116,6 +117,7 @@ export default define(meta, async (ps, me) => {
 		os: os.platform(),
 		node: process.version,
 		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
+		redis: redis.server_info.redis_version,
 
 		cpu: {
 			model: os.cpus()[0].model,
