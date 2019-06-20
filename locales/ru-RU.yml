@@ -65,6 +65,7 @@ common:
   favorites: "Избранное"
   post-form:
     reply: "Ответить"
+    create-poll: "Создать опрос"
   weekday-short:
     sunday: "Вс"
     monday: "Пн"
