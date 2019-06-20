@@ -132,6 +132,12 @@
 			</section>
 
 			<section>
+				<header>{{ $t('@._settings.sync') }}</header>
+				<ui-input v-if="$root.isMobile" v-model="homeProfile">{{ $t('@._settings.home-profile') }}</ui-input>
+				<ui-input v-else v-model="mobileHomeProfile">{{ $t('@._settings.home-profile') }}</ui-input>
+			</section>
+
+			<section>
 				<header>{{ $t('@._settings.web-search-engine') }}</header>
 				<ui-input v-model="webSearchEngine">{{ $t('@._settings.web-search-engine') }}<template #desc>{{ $t('@._settings.web-search-engine-desc') }}</template></ui-input>
 			</section>
@@ -499,6 +505,16 @@ export default Vue.extend({
 		mobileNotificationPosition: {
 			get() { return this.$store.state.device.mobileNotificationPosition; },
 			set(value) { this.$store.commit('device/set', { key: 'mobileNotificationPosition', value }); }
+		},
+
+		homeProfile: {
+			get() { return this.$store.state.device.homeProfile; },
+			set(value) { this.$store.commit('device/set', { key: 'homeProfile', value }); }
+		},
+
+		mobileHomeProfile: {
+			get() { return this.$store.state.device.mobileHomeProfile; },
+			set(value) { this.$store.commit('device/set', { key: 'mobileHomeProfile', value }); }
 		},
 	},
 	created() {

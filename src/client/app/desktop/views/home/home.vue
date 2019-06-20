@@ -102,7 +102,11 @@ export default Vue.extend({
 	computed: {
 		home(): any[] {
 			if (this.$store.getters.isSignedIn) {
-				return this.$store.state.device.home || [];
+				if (this.$store.state.device.homeProfile) {
+					return this.$store.state.settings.homeProfiles[this.$store.state.device.homeProfile] || this.$store.state.device.home || [];
+				} else {
+					return this.$store.state.device.home || [];
+				}
 			} else {
 				return [{
 					name: 'instance',
@@ -186,6 +190,14 @@ export default Vue.extend({
 			if (this.$store.state.device.home == null) {
 				this.$store.commit('device/setHome', _defaultDesktopHomeWidgets);
 			}
+
+			if (this.$store.state.device.homeProfile) {
+				this.$watch('$store.state.device.home', () => {
+					this.$store.dispatch('settings/updateHomeProfile');
+				}, {
+					deep: true
+				});
+			}
 		}
 	},
 
@@ -245,7 +257,7 @@ export default Vue.extend({
 
 		focus() {
 			(this.$refs.content as any).focus();
-		}
+		},
 	}
 });
 </script>

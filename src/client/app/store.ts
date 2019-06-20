@@ -34,10 +34,14 @@ const defaultSettings = {
 	gamesReversiShowBoardLabels: false,
 	gamesReversiUseAvatarStones: true,
 	disableAnimatedMfm: false,
+	homeProfiles: {},
+	mobileHomeProfiles: {},
 };
 
 const defaultDeviceSettings = {
 	home: null,
+	homeProfile: null,
+	mobileHomeProfile: null,
 	mobileHome: [],
 	deck: null,
 	deckMode: false,
@@ -361,6 +365,32 @@ export default (os: MiOS) => new Vuex.Store({
 						});
 					}
 				},
+
+				updateHomeProfile(ctx) {
+					const profiles = ctx.state.homeProfiles;
+					profiles[ctx.rootState.device.homeProfile] = ctx.rootState.device.home;
+					ctx.commit('set', {
+						key: 'homeProfiles',
+						value: profiles
+					});
+					os.api('i/update-client-setting', {
+						name: 'homeProfiles',
+						value: profiles
+					});
+				},
+
+				updateMobileHomeProfile(ctx) {
+					const profiles = ctx.state.mobileHomeProfiles;
+					profiles[ctx.rootState.device.mobileHomeProfile] = ctx.rootState.device.mobileHome;
+					ctx.commit('set', {
+						key: 'mobileHomeProfiles',
+						value: profiles
+					});
+					os.api('i/update-client-setting', {
+						name: 'mobileHomeProfiles',
+						value: profiles
+					});
+				}
 			}
 		}
 	}

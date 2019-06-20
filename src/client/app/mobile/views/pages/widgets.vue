@@ -72,7 +72,11 @@ export default Vue.extend({
 
 	computed: {
 		widgets(): any[] {
-			return this.$store.state.device.mobileHome;
+			if (this.$store.state.device.mobileHomeProfile) {
+				return this.$store.state.settings.mobileHomeProfiles[this.$store.state.device.mobileHomeProfile] || this.$store.state.device.mobileHome;
+			} else {
+				return this.$store.state.device.mobileHome;
+			}
 		}
 	},
 
@@ -97,6 +101,14 @@ export default Vue.extend({
 				name: 'version',
 				id: 'g', data: {}
 			}]);
+		}
+
+		if (this.$store.state.device.mobileHomeProfile) {
+			this.$watch('$store.state.device.mobileHome', () => {
+				this.$store.dispatch('settings/updateMobileHomeProfile');
+			}, {
+				deep: true
+			});
 		}
 	},
 
