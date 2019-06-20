@@ -32,6 +32,7 @@ common:
   signin: "Войти"
   signup: "Регистрация"
   signout: "Выйти"
+  reload-to-apply-the-setting: "Вам необходимо перезагрузить страницу, чтобы применить настройки. Вы хотите перезагрузить сейчас?"
   customization-tips:
     title: "Советы по настройке"
     gotit: "Понятно!"
@@ -57,7 +58,13 @@ common:
   month-and-day: "{day}.{month}"
   trash: "Мусорное ведро"
   drive: "Drive"
+  pages: "Страницы"
   messaging: "Чат"
+  timeline: "Лента"
+  followers: "Подписчики"
+  favorites: "Избранное"
+  post-form:
+    reply: "Ответить"
   weekday-short:
     sunday: "Вс"
     monday: "Пн"
