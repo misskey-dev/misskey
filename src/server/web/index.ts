@@ -20,6 +20,7 @@ import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
+import { getConnection } from 'typeorm';
 
 const client = `${__dirname}/../../client/`;
 
@@ -250,6 +251,7 @@ router.get('/info', async ctx => {
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,
+		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
 		cpu: {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length
