@@ -25,20 +25,29 @@ import * as uuid from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('deck'),
+
 	components: {
 		XColumnCore
 	},
 
 	computed: {
+		deck() {
+			if (this.$store.state.device.deckProfile) {
+				return this.$store.state.settings.deckProfiles[this.$store.state.device.deckProfile] || this.$store.state.device.deck;
+			} else {
+				return this.$store.state.device.deck;
+			}
+		},
+
 		columns(): any[] {
-			if (this.$store.state.device.deck == null) return [];
-			return this.$store.state.device.deck.columns;
+			if (this.deck == null) return [];
+			return this.deck.columns;
 		},
 
 		layout(): any[] {
-			if (this.$store.state.device.deck == null) return [];
-			if (this.$store.state.device.deck.layout == null) return this.$store.state.device.deck.columns.map(c => [c.id]);
-			return this.$store.state.device.deck.layout;
+			if (this.deck == null) return [];
+			if (this.deck.layout == null) return this.deck.columns.map(c => [c.id]);
+			return this.deck.layout;
 		},
 
 		style(): any {
@@ -75,7 +84,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.$store.state.device.deck == null) {
+		if (this.deck == null) {
 			const deck = {
 				columns: [/*{
 					type: 'widgets',
@@ -104,6 +113,14 @@ export default Vue.extend({
 			this.$store.commit('device/set', {
 				key: 'deck',
 				value: deck
+			});
+		}
+
+		if (this.$store.state.device.deckProfile) {
+			this.$watch('$store.state.device.deck', () => {
+				this.$store.dispatch('settings/updateDeckProfile');
+			}, {
+				deep: true
 			});
 		}
 	},

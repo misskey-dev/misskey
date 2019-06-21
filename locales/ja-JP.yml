@@ -284,6 +284,7 @@ common:
     load-remote-media: "リモートサーバーのメディアを表示する"
     sync: "同期"
     home-profile: "ホームのプロファイル"
+    deck-profile: "デッキのプロファイル"
 
   search: "検索"
   delete: "削除"

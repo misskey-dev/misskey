@@ -36,6 +36,7 @@ const defaultSettings = {
 	disableAnimatedMfm: false,
 	homeProfiles: {},
 	mobileHomeProfiles: {},
+	deckProfiles: {},
 };
 
 const defaultDeviceSettings = {
@@ -44,6 +45,7 @@ const defaultDeviceSettings = {
 	mobileHomeProfile: null,
 	mobileHome: [],
 	deck: null,
+	deckProfile: null,
 	deckMode: false,
 	deckColumnAlign: 'center',
 	deckColumnWidth: 'normal',
@@ -390,7 +392,20 @@ export default (os: MiOS) => new Vuex.Store({
 						name: 'mobileHomeProfiles',
 						value: profiles
 					});
-				}
+				},
+
+				updateDeckProfile(ctx) {
+					const profiles = ctx.state.deckProfiles;
+					profiles[ctx.rootState.device.deckProfile] = ctx.rootState.device.deck;
+					ctx.commit('set', {
+						key: 'deckProfiles',
+						value: profiles
+					});
+					os.api('i/update-client-setting', {
+						name: 'deckProfiles',
+						value: profiles
+					});
+				},
 			}
 		}
 	}

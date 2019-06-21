@@ -135,6 +135,7 @@
 				<header>{{ $t('@._settings.sync') }}</header>
 				<ui-input v-if="$root.isMobile" v-model="homeProfile">{{ $t('@._settings.home-profile') }}</ui-input>
 				<ui-input v-else v-model="mobileHomeProfile">{{ $t('@._settings.home-profile') }}</ui-input>
+				<ui-input v-model="deckProfile">{{ $t('@._settings.deck-profile') }}</ui-input>
 			</section>
 
 			<section>
@@ -515,6 +516,11 @@ export default Vue.extend({
 		mobileHomeProfile: {
 			get() { return this.$store.state.device.mobileHomeProfile; },
 			set(value) { this.$store.commit('device/set', { key: 'mobileHomeProfile', value }); }
+		},
+
+		deckProfile: {
+			get() { return this.$store.state.device.deckProfile; },
+			set(value) { this.$store.commit('device/set', { key: 'deckProfile', value }); }
 		},
 	},
 	created() {
