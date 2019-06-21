@@ -32,11 +32,7 @@ export default Vue.extend({
 
 	computed: {
 		deck() {
-			if (this.$store.state.device.deckProfile) {
-				return this.$store.state.settings.deckProfiles[this.$store.state.device.deckProfile] || this.$store.state.device.deck;
-			} else {
-				return this.$store.state.device.deck;
-			}
+			return this.$store.getters.deck;
 		},
 
 		columns(): any[] {
@@ -115,14 +111,6 @@ export default Vue.extend({
 				value: deck
 			});
 		}
-
-		if (this.$store.state.device.deckProfile) {
-			this.$watch('$store.state.device.deck', () => {
-				this.$store.dispatch('settings/updateDeckProfile');
-			}, {
-				deep: true
-			});
-		}
 	},
 
 	mounted() {
@@ -146,7 +134,7 @@ export default Vue.extend({
 					icon: 'home',
 					text: this.$t('@deck.home'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'home'
 						});
@@ -155,7 +143,7 @@ export default Vue.extend({
 					icon: ['far', 'comments'],
 					text: this.$t('@deck.local'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'local'
 						});
@@ -164,7 +152,7 @@ export default Vue.extend({
 					icon: 'share-alt',
 					text: this.$t('@deck.hybrid'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'hybrid'
 						});
@@ -173,7 +161,7 @@ export default Vue.extend({
 					icon: 'globe',
 					text: this.$t('@deck.global'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'global'
 						});
@@ -182,7 +170,7 @@ export default Vue.extend({
 					icon: 'at',
 					text: this.$t('@deck.mentions'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'mentions'
 						});
@@ -191,7 +179,7 @@ export default Vue.extend({
 					icon: ['far', 'envelope'],
 					text: this.$t('@deck.direct'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'direct'
 						});
@@ -212,7 +200,7 @@ export default Vue.extend({
 							showCancelButton: true
 						});
 						if (canceled) return;
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'list',
 							list: lists.find(l => l.id === listId)
@@ -227,7 +215,7 @@ export default Vue.extend({
 							input: true
 						}).then(({ canceled, result: title }) => {
 							if (canceled) return;
-							this.$store.commit('device/addDeckColumn', {
+							this.$store.commit('addDeckColumn', {
 								id: uuid(),
 								type: 'hashtag',
 								tagTlId: this.$store.state.settings.tagTimelines.find(x => x.title == title).id
@@ -238,7 +226,7 @@ export default Vue.extend({
 					icon: ['far', 'bell'],
 					text: this.$t('@deck.notifications'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'notifications'
 						});
@@ -247,7 +235,7 @@ export default Vue.extend({
 					icon: 'calculator',
 					text: this.$t('@deck.widgets'),
 					action: () => {
-						this.$store.commit('device/addDeckColumn', {
+						this.$store.commit('addDeckColumn', {
 							id: uuid(),
 							type: 'widgets',
 							widgets: []
