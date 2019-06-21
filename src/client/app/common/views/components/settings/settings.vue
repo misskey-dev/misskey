@@ -133,9 +133,9 @@
 
 			<section>
 				<header>{{ $t('@._settings.sync') }}</header>
-				<ui-input v-if="$root.isMobile" v-model="mobileHomeProfile">{{ $t('@._settings.home-profile') }}</ui-input>
-				<ui-input v-else v-model="homeProfile">{{ $t('@._settings.home-profile') }}</ui-input>
-				<ui-input v-model="deckProfile">{{ $t('@._settings.deck-profile') }}</ui-input>
+				<ui-input v-if="$root.isMobile" v-model="mobileHomeProfile" :datalist="Object.keys($store.state.settings.mobileHomeProfiles)">{{ $t('@._settings.home-profile') }}</ui-input>
+				<ui-input v-else v-model="homeProfile" :datalist="Object.keys($store.state.settings.homeProfiles)">{{ $t('@._settings.home-profile') }}</ui-input>
+				<ui-input v-model="deckProfile" :datalist="Object.keys($store.state.settings.deckProfiles)">{{ $t('@._settings.deck-profile') }}</ui-input>
 			</section>
 
 			<section>
