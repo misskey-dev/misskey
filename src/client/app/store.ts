@@ -129,6 +129,11 @@ export default (os: MiOS) => new Vuex.Store({
 			os.store.dispatch('settings/updateHomeProfile');
 		},
 
+		setDeck(state, data) {
+			Vue.set(state.settings.deckProfiles, state.device.deckProfile, data);
+			os.store.dispatch('settings/updateDeckProfile');
+		},
+
 		addHomeWidget(state, widget) {
 			state.settings.homeProfiles[state.device.homeProfile].unshift(widget);
 			os.store.dispatch('settings/updateHomeProfile');

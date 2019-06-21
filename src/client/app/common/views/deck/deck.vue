@@ -106,10 +106,7 @@ export default Vue.extend({
 
 			deck.layout = deck.columns.map(c => [c.id]);
 
-			this.$store.commit('device/set', {
-				key: 'deck',
-				value: deck
-			});
+			this.$store.commit('setDeck', deck);
 		}
 	},
 
