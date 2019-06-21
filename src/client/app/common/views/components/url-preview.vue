@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { url as local } from '../../../config';
+import { url as local, lang } from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/url-preview.vue'),
@@ -89,10 +89,10 @@ export default Vue.extend({
 	},
 
 	created() {
-		const url = new URL(this.url);
+		const requestUrl = new URL(this.url);
 
-		if (this.detail && url.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(url.pathname)) {
-			this.tweetUrl = url;
+		if (this.detail && requestUrl.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(requestUrl.pathname)) {
+			this.tweetUrl = requestUrl;
 			const twttr = (window as any).twttr || {};
 			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
 
@@ -113,10 +113,15 @@ export default Vue.extend({
 			return;
 		}
 
-		if (url.hostname === 'music.youtube.com')
-			url.hostname = 'youtube.com';
+		if (requestUrl.hostname === 'music.youtube.com') {
+			requestUrl.hostname = 'youtube.com';
+		}
 
-		fetch(`/url?url=${encodeURIComponent(this.url)}`).then(res => {
+		const requestLang = (lang || 'ja-JP').replace('ja-KS', 'ja-JP');
+
+		requestUrl.hash = '';
+
+		fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${requestLang}`).then(res => {
 			res.json().then(info => {
 				if (info.url == null) return;
 				this.title = info.title;
