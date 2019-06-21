@@ -15,6 +15,8 @@ import block from './block';
 import { apLogger } from '../logger';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
+	if (actor.isSuspended) return;
+
 	switch (activity.type) {
 	case 'Create':
 		await create(actor, activity);
