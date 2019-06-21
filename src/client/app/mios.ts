@@ -173,10 +173,9 @@ export default class MiOS extends EventEmitter {
 
 			// Init service worker
 			if (this.shouldRegisterSw) {
-				// #4813
-				//this.getMeta().then(data => {
-				//	this.registerSw(data.swPublickey);
-				//});
+				this.getMeta().then(data => {
+					this.registerSw(data.swPublickey);
+				});
 			}
 		};
 
