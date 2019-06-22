@@ -1947,6 +1947,8 @@ pages:
       _pick:
         arg1: "列表"
         arg2: "位置"
+      _listLen:
+        arg1: "列表"
       number: "数值"
       stringToNumber: "文本到数字"
       _stringToNumber:
