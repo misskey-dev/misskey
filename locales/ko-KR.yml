@@ -1947,6 +1947,7 @@ pages:
       _pick:
         arg1: "리스트"
         arg2: "위치"
+      listLen: "리스트의 길이 가져오기"
       _listLen:
         arg1: "리스트"
       number: "수치"
