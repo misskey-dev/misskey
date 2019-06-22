@@ -1880,6 +1880,8 @@ pages:
       _pick:
         arg1: "Listes"
         arg2: "Position"
+      _listLen:
+        arg1: "Listes"
       number: "Numérique"
       stringToNumber: "Chaîne en chiffres"
       _stringToNumber:
