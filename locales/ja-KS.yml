@@ -1254,5 +1254,7 @@ pages:
         arg2: "リスト"
       _pick:
         arg1: "リスト"
+      _listLen:
+        arg1: "リスト"
     types:
       array: "リスト"

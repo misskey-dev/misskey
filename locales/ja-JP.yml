@@ -282,6 +282,9 @@ common:
     disable-via-mobile: "「モバイルからの投稿」フラグを付けない"
     load-raw-images: "添付された画像を高画質で表示する"
     load-remote-media: "リモートサーバーのメディアを表示する"
+    sync: "同期"
+    home-profile: "ホームのプロファイル"
+    deck-profile: "デッキのプロファイル"
 
   search: "検索"
   delete: "削除"
@@ -2148,6 +2151,9 @@ pages:
       _pick:
         arg1: "リスト"
         arg2: "位置"
+      listLen: "リストの長さを取得"
+      _listLen:
+        arg1: "リスト"
       number: "数値"
       stringToNumber: "テキストを数値に"
       _stringToNumber:

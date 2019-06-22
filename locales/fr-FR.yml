@@ -265,6 +265,7 @@ common:
     disable-via-mobile: "Enlever la mention publié via 'mobile'"
     load-raw-images: "Afficher les photos jointes dans leur qualité originale"
     load-remote-media: "Afficher les médias depuis le serveur distant"
+    sync: "Synchroniser"
   search: "Recherche"
   delete: "Supprimer"
   loading: "Chargement en cours …"
@@ -724,6 +725,7 @@ common/views/components/user-group-editor.vue:
   transfer: "Transférer de groupe"
   transferred: "Groupe transféré"
   remove-user: "Enlever un utilisateur de ce groupe"
+  delete-are-you-sure: "Désirez-vous vraiment supprimer le groupe $1 ?"
   deleted: "Supprimé"
   invite: "Inviter"
   invited: "Invitation envoyée avec succès"
@@ -1088,7 +1090,10 @@ admin/views/index.vue:
   abuse: "Abus"
   queue: "File d’attente"
   logs: "Journaux"
+  db: "Base de données"
   back-to-misskey: "Retour vers Misskey"
+admin/views/db.vue:
+  tables: "Tables"
 admin/views/dashboard.vue:
   dashboard: "Tableau de bord"
   accounts: "Comptes"
@@ -1875,6 +1880,8 @@ pages:
       _pick:
         arg1: "Listes"
         arg2: "Position"
+      _listLen:
+        arg1: "Listes"
       number: "Numérique"
       stringToNumber: "Chaîne en chiffres"
       _stringToNumber:

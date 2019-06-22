@@ -83,9 +83,19 @@ export default (opts: Opts = {}) => ({
 			if (this.appearNote.text) {
 				const ast = parse(this.appearNote.text);
 				// TODO: 再帰的にURL要素がないか調べる
-				return unique(ast
+				const urls = unique(ast
 					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
 					.map(t => t.node.props.url));
+
+				// unique without hash
+				// [ http://a/#1, http://a/#2, http://b/#3 ] => [ http://a/#1, http://b/#3 ]
+				const removeHash = x => x.replace(/#[^#]*$/, '');
+
+				return urls.reduce((array, url) => {
+					const removed = removeHash(url);
+					if (!array.map(x => removeHash(x)).includes(removed)) array.push(url);
+					return array;
+				}, []);
 			} else {
 				return null;
 			}

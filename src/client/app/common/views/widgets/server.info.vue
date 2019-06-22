@@ -4,6 +4,7 @@
 	<p>Machine: {{ meta.machine }}</p>
 	<p>Node: {{ meta.node }}</p>
 	<p>PSQL: {{ meta.psql }}</p>
+	<p>Redis: {{ meta.redis }}</p>
 	<p>Version: {{ meta.version }} </p>
 </div>
 </template>

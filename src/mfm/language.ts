@@ -157,12 +157,14 @@ export const mfmLanguage = P.createLanguage({
 			let url: string;
 			if (!match) {
 				const match = text.match(/^<(https?:\/\/.*?)>/);
-				if (!match)
+				if (!match) {
 					return P.makeFailure(i, 'not a url');
+				}
 				url = match[1];
 				i += 2;
-			} else
+			} else {
 				url = match[0];
+			}
 			url = removeOrphanedBrackets(url);
 			while (url.endsWith('.') || url.endsWith(',')) {
 				if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));

@@ -270,6 +270,9 @@ common:
     disable-via-mobile: "Don't mark the post as 'from mobile'"
     load-raw-images: "Show attached images in original quality"
     load-remote-media: "Show media from a remote server"
+    sync: "Sync"
+    home-profile: "Home profile"
+    deck-profile: "Deck profile"
   search: "Search"
   delete: "Delete"
   loading: "Loading"
@@ -1103,7 +1106,10 @@ admin/views/index.vue:
   abuse: "Abuse"
   queue: "Job Queue"
   logs: "Logs"
+  db: "Database"
   back-to-misskey: "Back to Misskey"
+admin/views/db.vue:
+  tables: "Tables"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "Accounts"
@@ -1941,6 +1947,8 @@ pages:
       _pick:
         arg1: "Lists"
         arg2: "Position"
+      _listLen:
+        arg1: "Lists"
       number: "Number"
       stringToNumber: "Text to number"
       _stringToNumber:
