@@ -1298,5 +1298,7 @@ pages:
         arg2: "Seznamy"
       _pick:
         arg1: "Seznamy"
+      _listLen:
+        arg1: "Seznamy"
     types:
       array: "Seznamy"

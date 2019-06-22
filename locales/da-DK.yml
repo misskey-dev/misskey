@@ -1844,6 +1844,8 @@ pages:
       _pick:
         arg1: "Lister"
         arg2: "Position"
+      _listLen:
+        arg1: "Lister"
       number: "Tal"
       stringToNumber: "Tekst til tal"
       _stringToNumber:

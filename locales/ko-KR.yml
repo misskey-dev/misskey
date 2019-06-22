@@ -116,7 +116,7 @@ common:
     local-only-message: "이 글은 로컬에만 공개되어 있습니다"
     click-to-tagging: "클릭하여 태그 넣기"
     visibility: "공개 범위"
-    geolocation-alert: "사용 중인 장치에서는 위치 정보를 사용할 수 없습니다"
+    geolocation-alert: "사용 중이신 장치에서는 위치 정보를 사용할 수 없습니다"
     error: "오류"
     enter-username: "사용자명을 입력해주세요"
     add-visible-user: "사용자 추가"
@@ -270,6 +270,9 @@ common:
     disable-via-mobile: "작성하는 글에 \"모바일에서 작성함\" 을 붙이지 않음"
     load-raw-images: "첨부 이미지를 고품질로 표시"
     load-remote-media: "원격 서버의 미디어를 표시"
+    sync: "동기화"
+    home-profile: "홈 프로필"
+    deck-profile: "덱 프로필"
   search: "검색"
   delete: "삭제"
   loading: "로드 중"
@@ -286,7 +289,7 @@ common:
   is-remote-user: "이 사용자 정보는 정확하지 않을 수 있습니다."
   is-remote-post: "이 글 정보는 복사본입니다."
   view-on-remote: "정확한 정보 보기"
-  renoted-by: "{user}이(가) 리노트"
+  renoted-by: "{user}님이 리노트"
   no-notes: "글이 없습니다"
   turn-on-darkmode: "어둠에 삼켜져라"
   turn-off-darkmode: "빛이 있으라"
@@ -1103,7 +1106,10 @@ admin/views/index.vue:
   abuse: "스팸 신고"
   queue: "작업 대기열"
   logs: "로그"
+  db: "데이터베이스"
   back-to-misskey: "Misskey로 돌아가기"
+admin/views/db.vue:
+  tables: "테이블"
 admin/views/dashboard.vue:
   dashboard: "대시보드"
   accounts: "계정"
@@ -1126,7 +1132,7 @@ admin/views/queue.vue:
   states:
     active: "처리중"
     delayed: "지연됨"
-    waiting: "대기열에 들어감"
+    waiting: "대기열에 있음"
   result-is-truncated: "결과는 생략되었습니다"
   other-queues: "기타 큐"
 admin/views/logs.vue:
@@ -1941,6 +1947,8 @@ pages:
       _pick:
         arg1: "리스트"
         arg2: "위치"
+      _listLen:
+        arg1: "리스트"
       number: "수치"
       stringToNumber: "텍스트를 수치로"
       _stringToNumber:

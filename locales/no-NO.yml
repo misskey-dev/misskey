@@ -503,5 +503,7 @@ pages:
         arg2: "Lister"
       _pick:
         arg1: "Lister"
+      _listLen:
+        arg1: "Lister"
     types:
       array: "Lister"
