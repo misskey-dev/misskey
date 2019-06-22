@@ -2151,6 +2151,9 @@ pages:
       _pick:
         arg1: "リスト"
         arg2: "位置"
+      listLen: "リストの長さを取得"
+      _listLen:
+        arg1: "リスト"
       number: "数値"
       stringToNumber: "テキストを数値に"
       _stringToNumber:
