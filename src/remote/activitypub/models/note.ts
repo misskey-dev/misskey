@@ -17,7 +17,7 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject, INote } from '../type';
+import { IObject, INote, getApIds, getOneApId, getApId } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
@@ -40,7 +40,7 @@ export function validateNote(object: any, uri: string) {
 		return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${extractDbHost(object.id)}`);
 	}
 
-	if (object.attributedTo && extractDbHost(object.attributedTo) !== expectHost) {
+	if (object.attributedTo && extractDbHost(getOneApId(object.attributedTo)) !== expectHost) {
 		return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${extractDbHost(object.attributedTo)}`);
 	}
 
@@ -53,8 +53,7 @@ export function validateNote(object: any, uri: string) {
  * Misskeyに対象のNoteが登録されていればそれを返します。
  */
 export async function fetchNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
-	const uri = typeof value == 'string' ? value : value.id;
-	if (uri == null) throw new Error('missing uri');
+	const uri = getApId(value);
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
@@ -76,12 +75,12 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 /**
  * Noteを作成します。
  */
-export async function createNote(value: any, resolver?: Resolver, silent = false): Promise<Note | null> {
+export async function createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
 	if (resolver == null) resolver = new Resolver();
 
 	const object: any = await resolver.resolve(value);
 
-	const entryUri = value.id || value;
+	const entryUri = getApId(value);
 	const err = validateNote(object, entryUri);
 	if (err) {
 		logger.error(`${err.message}`, {
@@ -101,7 +100,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	logger.info(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
-	const actor = await resolvePerson(note.attributedTo, resolver) as IRemoteUser;
+	const actor = await resolvePerson(getOneApId(note.attributedTo), resolver) as IRemoteUser;
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
@@ -109,8 +108,8 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 
 	//#region Visibility
-	note.to = note.to == null ? [] : typeof note.to == 'string' ? [note.to] : note.to;
-	note.cc = note.cc == null ? [] : typeof note.cc == 'string' ? [note.cc] : note.cc;
+	note.to = getApIds(note.to);
+	note.cc = getApIds(note.cc);
 
 	let visibility = 'public';
 	let visibleUsers: User[] = [];
@@ -221,7 +220,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-		updatePerson(note.attributedTo);
+		if (actor.uri) updatePerson(actor.uri);
 	}
 
 	return await post(actor, {
