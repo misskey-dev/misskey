@@ -1947,6 +1947,8 @@ pages:
       _pick:
         arg1: "Lists"
         arg2: "Position"
+      _listLen:
+        arg1: "Lists"
       number: "Number"
       stringToNumber: "Text to number"
       _stringToNumber:
