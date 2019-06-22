@@ -1109,5 +1109,7 @@ pages:
         arg2: "Listas"
       _pick:
         arg1: "Listas"
+      _listLen:
+        arg1: "Listas"
     types:
       array: "Listas"
