@@ -10,7 +10,8 @@ import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
 import { fetchMeta } from '../../../../misc/fetch-meta';
-import { validActor } from '../../../../remote/activitypub/type';
+import { validActor, validDocument } from '../../../../remote/activitypub/type';
+import { createPureDocument } from '../../../../remote/activitypub/models/document';
 
 export const meta = {
 	tags: ['federation'],
@@ -147,6 +148,14 @@ async function fetchAny(uri: string) {
 
 	if (['Note', 'Question', 'Article'].includes(object.type)) {
 		const note = await createNote(object.id, undefined, true);
+		return {
+			type: 'Note',
+			object: await Notes.pack(note!, null, { detail: true })
+		};
+	}
+
+	if (validDocument.includes(object.type)) {
+		const note = await createPureDocument(object.id, undefined, true);
 		return {
 			type: 'Note',
 			object: await Notes.pack(note!, null, { detail: true })

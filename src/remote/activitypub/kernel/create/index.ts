@@ -1,8 +1,8 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/entities/user';
-import createImage from './image';
+import { performCreateDocument } from './document';
 import createNote from './note';
-import { ICreate } from '../../type';
+import { ICreate, validDocument } from '../../type';
 import { apLogger } from '../../logger';
 
 const logger = apLogger;
@@ -23,19 +23,11 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 		throw e;
 	}
 
-	switch (object.type) {
-	case 'Image':
-		createImage(actor, object);
-		break;
-
-	case 'Note':
-	case 'Question':
-	case 'Article':
+	if (validDocument.includes(object.type)) {
+		performCreateDocument(actor, object);
+	} else if (['Note', 'Question', 'Article'].includes(object.type)) {
 		createNote(resolver, actor, object);
-		break;
-
-	default:
+	} else {
 		logger.warn(`Unknown type: ${object.type}`);
-		break;
 	}
 };

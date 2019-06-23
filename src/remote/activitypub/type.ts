@@ -91,6 +91,15 @@ interface IQuestionChoice {
 	_misskey_votes?: number;
 }
 
+export const validDocument = ['Audio', 'Document', 'Image', 'Page', 'Video'];
+
+export interface IApDocument extends IObject {
+	type: 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
+}
+
+export const isDocumentLike = (object: IObject): object is IApDocument =>
+	validDocument.includes(object.type);
+
 export const validActor = ['Person', 'Service'];
 
 export interface IPerson extends IObject {
