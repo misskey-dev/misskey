@@ -2,6 +2,7 @@ import $ from 'cafy';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import { UserProfiles } from '../../../../models';
+import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
 	requireCredential: true,
@@ -20,11 +21,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
+
 	await UserProfiles.createQueryBuilder().update()
 		.set({
-			clientData: {
+			clientData: Object.assign(profile.clientData, {
 				[ps.name]: ps.value
-			},
+			}),
 		})
 		.where('userId = :id', { id: user.id })
 		.execute();
