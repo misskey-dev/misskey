@@ -68,6 +68,8 @@ export interface IOrderedCollection extends IObject {
 	orderedItems: IObject | string | IObject[] | string[];
 }
 
+export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'];
+
 export interface INote extends IObject {
 	type: 'Note' | 'Question';
 	_misskey_content?: string;

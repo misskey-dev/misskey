@@ -17,7 +17,7 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject, INote, getApIds, getOneApId, getApId } from '../type';
+import { IObject, INote, getApIds, getOneApId, getApId, validPost } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
@@ -32,7 +32,7 @@ export function validateNote(object: any, uri: string) {
 		return new Error('invalid Note: object is null');
 	}
 
-	if (!['Note', 'Question', 'Article'].includes(object.type)) {
+	if (!validPost.includes(object.type)) {
 		return new Error(`invalid Note: invalied object type ${object.type}`);
 	}
 
