@@ -466,6 +466,7 @@ common/views/components/nav.vue:
   repository: "Úložiště"
   develop: "Vývojáři"
   feedback: "Zpětná vazba"
+  tos: "Podmínky užívání"
 common/views/components/note-menu.vue:
   mention: "Zmínění"
   detail: "Více"
