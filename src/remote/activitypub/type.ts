@@ -68,7 +68,7 @@ export interface IOrderedCollection extends IObject {
 	orderedItems: IObject | string | IObject[] | string[];
 }
 
-export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'];
+export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'] as const;
 
 export interface INote extends IObject {
 	type: 'Note' | 'Question';
@@ -92,15 +92,6 @@ interface IQuestionChoice {
 	replies?: ICollection;
 	_misskey_votes?: number;
 }
-
-export const validDocument = ['Audio', 'Document', 'Image', 'Page', 'Video'];
-
-export interface IApDocument extends IObject {
-	type: 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
-}
-
-export const isDocumentLike = (object: IObject): object is IApDocument =>
-	validDocument.includes(object.type);
 
 export const validActor = ['Person', 'Service'];
 
