@@ -48,14 +48,14 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	logger.info(`Creating the (Re)Note: ${uri}`);
 
 	//#region Visibility
-	activity.to = getApIds(activity.to);
-	activity.cc = getApIds(activity.cc);
+	const to = getApIds(activity.to);
+	const cc = getApIds(activity.cc);
 
-	const visibility = getVisibility(activity.to, activity.cc, actor);
+	const visibility = getVisibility(to, cc, actor);
 
 	let visibleUsers: User[] = [];
 	if (visibility == 'specified') {
-		visibleUsers = await Promise.all(activity.to.map(uri => resolvePerson(uri)));
+		visibleUsers = await Promise.all(to.map(uri => resolvePerson(uri)));
 	}
 	//#endergion
 

@@ -6,9 +6,9 @@ export interface IObject {
 	id?: string;
 	summary?: string;
 	published?: string;
-	cc?: string[] | string | IObject[] | IObject;
-	to?: string[] | string | IObject[] | IObject;
-	attributedTo: string[] | string | IObject[] | IObject;
+	cc?: IObject | string | (IObject | string)[];
+	to?: IObject | string | (IObject | string)[];
+	attributedTo: IObject | string | (IObject | string)[];
 	attachment?: any[];
 	inReplyTo?: any;
 	replies?: ICollection;
@@ -26,7 +26,7 @@ export interface IObject {
 /**
  * Get array of ActivityStreams Objects id
  */
-export function getApIds(value: string[] | string | IObject[] | IObject | undefined): string[] {
+export function getApIds(value: IObject | string | (IObject | string)[] | undefined): string[] {
 	if (value == null) return [];
 	const array = Array.isArray(value) ? value : [value];
 	return array.map(x => getApId(x));
@@ -35,7 +35,7 @@ export function getApIds(value: string[] | string | IObject[] | IObject | undefi
 /**
  * Get first ActivityStreams Object id
  */
-export function getOneApId(value: string[] | string | IObject[] | IObject): string {
+export function getOneApId(value: IObject | string | (IObject | string)[]): string {
 	const firstOne = Array.isArray(value) ? value[0] : value;
 	return getApId(firstOne);
 }

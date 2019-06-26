@@ -108,24 +108,24 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	}
 
 	//#region Visibility
-	note.to = getApIds(note.to);
-	note.cc = getApIds(note.cc);
+	const to = getApIds(note.to);
+	const cc = getApIds(note.cc);
 
 	let visibility = 'public';
 	let visibleUsers: User[] = [];
-	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
-		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
+	if (!to.includes('https://www.w3.org/ns/activitystreams#Public')) {
+		if (cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';
-		} else if (note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
+		} else if (to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
 			visibility = 'followers';
 		} else {
 			visibility = 'specified';
-			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, resolver)));
+			visibleUsers = await Promise.all(to.map(uri => resolvePerson(uri, resolver)));
 		}
 	}
 	//#endergion
 
-	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
+	const apMentions = await extractMentionedUsers(actor, to, cc, resolver);
 
 	const apHashtags = await extractHashtags(note.tag);
 
