@@ -216,7 +216,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const apEmojis = emojis.map(emoji => emoji.name);
 
 	const questionUri = note._misskey_question;
-	const poll = await extractPollFromQuestion(note._misskey_question || note).catch(() => undefined);
+	const poll = await extractPollFromQuestion(note._misskey_question || note, resolver).catch(() => undefined);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
