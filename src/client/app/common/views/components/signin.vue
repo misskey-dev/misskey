@@ -68,9 +68,9 @@ export default Vue.extend({
 			host: toUnicode(host),
 			meta: null,
 			totpLogin: false,
-			credential: null
-			challengeData: null
-			queryingKey: false
+			credential: null,
+			challengeData: null,
+			queryingKey: false,
 		};
 	},
 
