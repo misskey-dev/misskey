@@ -158,7 +158,7 @@ export default Vue.extend({
 				if(canceled) return;
 				return this.$root.api('i/2fa/remove-key', {
 					password,
-					credentialId: key.credentialId
+					credentialId: key.id
 				}).then(() => {
 					const keyIndex = this.$store.state.i.securityKeysList.indexOf(key);
 					if(keyIndex != -1) {
