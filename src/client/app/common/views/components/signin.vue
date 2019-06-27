@@ -142,8 +142,8 @@ export default Vue.extend({
 		onSubmit() {
 			this.signing = true;
 
-			if(!this.totpLogin && this.user) {
-				if(window.PublicKeyCredential && this.user.securityKeys) {
+			if (!this.totpLogin && this.user) {
+				if (window.PublicKeyCredential && this.user.securityKeys) {
 					this.$root.api('getkeys', {
 						username: this.username,
 						password: this.password
@@ -194,13 +194,16 @@ export default Vue.extend({
 	.securityKeys .or-hr
 		&
 			position relative
+
 		.or-msg
 			&:before
 				right 100%
 				margin-right 0.125em
+
 			&:after
 				left 100%
 				margin-left 0.125em
+
 			&:before, &:after
 				content ""
 				position absolute
@@ -208,6 +211,7 @@ export default Vue.extend({
 				width 100%
 				height 2px
 				background #555
+
 			&
 				position relative
 				margin auto

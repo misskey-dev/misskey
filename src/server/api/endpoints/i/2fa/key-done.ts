@@ -46,44 +46,44 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-        if (!profile.twoFactorEnabled) {
-                throw new Error('2fa not enabled');
+	if (!profile.twoFactorEnabled) {
+		throw new Error('2fa not enabled');
 	}
 
-        const clientData = JSON.parse(ps.clientDataJSON);
+	const clientData = JSON.parse(ps.clientDataJSON);
 
-        if(clientData.type != 'webauthn.create') {
-            throw new Error('not a creation attestation');
+	if (clientData.type != 'webauthn.create') {
+		throw new Error('not a creation attestation');
 	}
-	if(clientData.origin != (config.scheme + "://" + config.host)) {
-            throw new Error('origin mismatch');
+	if (clientData.origin != (config.scheme + '://' + config.host)) {
+		throw new Error('origin mismatch');
 	}  
 
-        const clientDataJSONHash = hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
+	const clientDataJSONHash = hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
 
-        const attestation = await cborDecodeFirst(ps.attestationObject);
+	const attestation = await cborDecodeFirst(ps.attestationObject);
 
-        const rpIdHash = attestation.authData.slice(0, 32);
-        if(!rpIdHashReal.equals(rpIdHash)) {
-            throw new Error('rpIdHash mismatch');
+	const rpIdHash = attestation.authData.slice(0, 32);
+	if (!rpIdHashReal.equals(rpIdHash)) {
+		throw new Error('rpIdHash mismatch');
 	}
         
-        const flags = attestation.authData[32];
-        if(!(flags & 1)) {
-   	    throw new Error('user not present');
+	const flags = attestation.authData[32];
+	if (flags & ~1) {
+		throw new Error('user not present');
 	}
 
-        const authData = Buffer.from(attestation.authData);
-        const credentialIdLength = authData.readUInt16BE(53);
-        const credentialId = authData.slice(55, 55 + credentialIdLength);
-        const publicKeyData = authData.slice(55 + credentialIdLength);
-        const publicKey: Map<Number, any> = await cborDecodeFirst(publicKeyData);
-        if(publicKey.get(3) != -7) {
-            throw new Error('alg mismatch');
-        }
+	const authData = Buffer.from(attestation.authData);
+	const credentialIdLength = authData.readUInt16BE(53);
+	const credentialId = authData.slice(55, 55 + credentialIdLength);
+	const publicKeyData = authData.slice(55 + credentialIdLength);
+	const publicKey: Map<Number, any> = await cborDecodeFirst(publicKeyData);
+	if (publicKey.get(3) != -7) {
+		throw new Error('alg mismatch');
+	}
 
-        if(!procedures[attestation.fmt]) {
-            throw new Error('unsupported fmt');
+	if (!procedures[attestation.fmt]) {
+		throw new Error('unsupported fmt');
 	}
 
         try {
@@ -101,39 +101,39 @@ export default define(meta, async (ps, user) => {
             throw new Error(err.message);
 	}
 
-        const attestationChallenge = await AttestationChallenges.findOne({
-	    userId: user.id,
-	    challengeId: ps.challengeId,
-	    registrationChallenge: true,
-	    challenge: hash(clientData.challenge).toString('hex')
+	const attestationChallenge = await AttestationChallenges.findOne({
+		userId: user.id,
+		challengeId: ps.challengeId,
+		registrationChallenge: true,
+		challenge: hash(clientData.challenge).toString('hex')
 	});
 
-        if(!attestationChallenge) {
-            throw new Error('non-existent challenge');
+	if (!attestationChallenge) {
+		throw new Error('non-existent challenge');
 	}
 
-        await AttestationChallenges.delete({
-	    userId: user.id,
-	    challengeId: ps.challengeId
+	await AttestationChallenges.delete({
+		userId: user.id,
+		challengeId: ps.challengeId
 	});
 
 	// Expired challenge (> 5min old)
-	if(new Date().getTime() - attestationChallenge.createdAt.getTime() >= 5 * 60 * 1000) {
-            throw new Error('expired challenge');
+	if (new Date().getTime() - attestationChallenge.createdAt.getTime() >= 5 * 60 * 1000) {
+		throw new Error('expired challenge');
 	}
 
-        const credentialIdString = credentialId.toString('hex');
+	const credentialIdString = credentialId.toString('hex');
 
-        await UserSecurityKeys.save({
-	    userId: user.id,
-            credentialId: credentialIdString,
-	    lastUsed: new Date(),
-	    name: ps.name,
-	    publicKey: verificationData.publicKey.toString('hex')
+	await UserSecurityKeys.save({
+		userId: user.id,
+		credentialId: credentialIdString,
+		lastUsed: new Date(),
+		name: ps.name,
+		publicKey: verificationData.publicKey.toString('hex')
 	});
 
 	return {
-            credentialId: credentialIdString,
-	    name: ps.name
+		credentialId: credentialIdString,
+		name: ps.name
 	};
 });

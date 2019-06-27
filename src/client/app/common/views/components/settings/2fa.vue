@@ -154,7 +154,7 @@ export default Vue.extend({
 				input: {
 					type: 'password'
 				}
-			}).then(({canceled, result: password}) => {
+			}).then(({ canceled, result: password }) => {
 				if(canceled) return;
 				return this.$root.api('i/2fa/remove-key', {
 					password,
@@ -230,16 +230,20 @@ export default Vue.extend({
 		margin 1.5em 0 1em
 		border none
 		border-top solid var(--lineWidth) var(--faceDivider)
+
 	h2.heading
 		margin 0
+
 	.key
 		padding 1em
 		margin 0.5em 0
 		background #161616
 		border-radius 6px
-	.key h3
-		margin-top 0
-		margin-bottom 0.3em
-	.key .last-used
-		margin-bottom 0.5em
+
+		h3
+			margin-top 0
+			margin-bottom .3em
+
+		.last-used
+			margin-bottom .5em
 </style>

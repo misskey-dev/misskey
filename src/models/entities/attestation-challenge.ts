@@ -1,6 +1,6 @@
-import {PrimaryColumn, Entity, JoinColumn, Column, OneToOne} from 'typeorm';
-import {UserProfile} from './user-profile';
-import {id} from '../id';
+import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
+import { UserProfile } from './user-profile';
+import { id } from '../id';
 
 @Entity()
 export class AttestationChallenge {
