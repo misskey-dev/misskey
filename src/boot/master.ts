@@ -79,6 +79,7 @@ export async function masterMain() {
 		require('../daemons/server-stats').default();
 		require('../daemons/notes-stats').default();
 		require('../daemons/queue-stats').default();
+		require('../daemons/janitor').default();
 	}
 
 	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);

@@ -8,10 +8,9 @@
 		<p>{{ $t('already-registered') }}</p>
 		<ui-button @click="unregister">{{ $t('unregister') }}</ui-button>
 
-
-		<hr v-if="supportsCredentials" class="totp-method-sep">
-
 		<template v-if="supportsCredentials">
+			<hr class="totp-method-sep">
+
 			<h2 class="heading">{{ $t('security-key-header') }}</h2>
 			<p>{{ $t('security-key') }}</p>
 			<div class="key-list">
