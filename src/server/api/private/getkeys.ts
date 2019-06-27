@@ -52,13 +52,13 @@ export default async (ctx: Koa.BaseContext) => {
 			userId: user.id
 		});
 
-		if(keys.length) {
-		        // 32 byte challenge
-		        const entropy = await randomBytes(32);
-		        const challenge = entropy.toString('base64')
-			      .replace(/=/g, "")
-		              .replace(/\+/g, "-")
-		              .replace(/\//g, "_");
+		if (keys.length) {
+			// 32 byte challenge
+			const entropy = await randomBytes(32);
+			const challenge = entropy.toString('base64')
+				.replace(/=/g, '')
+				.replace(/\+/g, '-')
+				.replace(/\//g, '_');
 
 			const challengeId = genId();
 

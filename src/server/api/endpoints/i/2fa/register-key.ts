@@ -32,29 +32,29 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-        if (!profile.twoFactorEnabled) {
-                throw new Error('2fa not enabled');
+	if (!profile.twoFactorEnabled) {
+		throw new Error('2fa not enabled');
 	}
 
-        // 32 byte challenge
-        const entropy = await randomBytes(32);
-        const challenge = entropy.toString('base64')
-	      .replace(/=/g, "")
-              .replace(/\+/g, "-")
-              .replace(/\//g, "_");
+	// 32 byte challenge
+	const entropy = await randomBytes(32);
+	const challenge = entropy.toString('base64')
+		.replace(/=/g, '')
+		.replace(/\+/g, '-')
+		.replace(/\//g, '_');
 
-        const challengeId = genId();
+	const challengeId = genId();
 
 	await AttestationChallenges.save({
-        	userId: user.id,
-                challengeId,
-	        challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
-	        createdAt: new Date(),
-	        registrationChallenge: true
+		userId: user.id,
+		challengeId,
+		challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
+		createdAt: new Date(),
+		registrationChallenge: true
 	});
 
 	return {
-	        challengeId,
+		challengeId,
 		challenge
 	};
 });

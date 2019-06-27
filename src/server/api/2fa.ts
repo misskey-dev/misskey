@@ -82,7 +82,7 @@ function verifyCertificateChain(certificates) {
 	return valid;
 }
 
-function PEMString(pemBuffer, type = "CERTIFICATE") {
+function PEMString(pemBuffer: Buffer, type = "CERTIFICATE") {
 	if (pemBuffer.length == 65 && pemBuffer[0] == 0x04) {
 		pemBuffer = Buffer.concat([PEM_PRELUDE, pemBuffer], 91);
 		type = "PUBLIC KEY";
@@ -381,7 +381,7 @@ export const procedures = {
 			rpIdHash: Buffer;
 			credentialId: Buffer;
 		}) {
-			const x5c: Array<Buffer> = attStmt.x5c;
+			const x5c: Buffer[] = attStmt.x5c;
 			if (x5c.length != 1) {
 				throw new Error("x5c length does not match expectation");
 			}

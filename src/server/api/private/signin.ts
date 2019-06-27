@@ -99,7 +99,7 @@ export default async (ctx: Koa.BaseContext) => {
 					registrationChallenge: false,
 					challenge: hash(clientData.challenge).toString('hex')
 				});
-				if(!challenge) {
+				if (!challenge) {
 					await fail(403, {
 						error: 'non-existent challenge'
 					});
@@ -111,7 +111,7 @@ export default async (ctx: Koa.BaseContext) => {
 					challengeId: body.challengeId
 				});
 
-				if(new Date().getTime() - challenge.createdAt.getTime() >= 5 * 60 * 1000) {
+				if (new Date().getTime() - challenge.createdAt.getTime() >= 5 * 60 * 1000) {
 					await fail(403, {
 						error: 'non-existent challenge'
 					});
@@ -121,8 +121,8 @@ export default async (ctx: Koa.BaseContext) => {
 				const securityKey = await UserSecurityKeys.findOne({
 					credentialId: Buffer.from(
 						body.credentialId
-							.replace(/\-/g, "+")
-							.replace(/_/g, "/"),
+							.replace(/\-/g, '+')
+							.replace(/_/g, '/'),
 							'base64'
 					).toString('hex')
 				});
@@ -142,7 +142,7 @@ export default async (ctx: Koa.BaseContext) => {
 					signature: Buffer.from(body.signature, 'hex'),
 					challenge: challenge.challenge
 				});
-				if(isValid) {
+				if (isValid) {
 					signin(ctx, user);
 				} else {
 					await fail(403, {
