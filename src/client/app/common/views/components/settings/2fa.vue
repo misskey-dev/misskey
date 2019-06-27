@@ -70,15 +70,10 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { hostname } from '../../../../config';
 import * as cbor from 'cbor';
+import { hexifyAB } from '../../../scripts/2fa';
 
 function stringifyAB(buffer) {
 	return String.fromCharCode.apply(null, new Uint8Array(buffer));
-}
-
-function hexifyAB(buffer) {
-	return Array.from(new Uint8Array(buffer))
-		.map(item => item.toString(16).padStart(2, 0))
-		.join('');
 }
 
 export default Vue.extend({

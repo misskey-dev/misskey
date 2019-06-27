@@ -44,12 +44,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
 import { toUnicode } from 'punycode';
-
-function hexifyAB(buffer) {
-	return Array.from(new Uint8Array(buffer))
-		.map(item => item.toString(16).padStart(2, 0))
-		.join('');
-}
+import { hexifyAB } from '../../scripts/2fa';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/signin.vue'),
