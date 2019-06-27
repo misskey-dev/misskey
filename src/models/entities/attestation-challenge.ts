@@ -1,4 +1,4 @@
-import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne, Index } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
 
@@ -7,6 +7,7 @@ export class AttestationChallenge {
 	@PrimaryColumn(id())
 	public id: string;
 
+	@Index()
 	@PrimaryColumn(id())
 	public userId: User['id'];
 
@@ -16,6 +17,7 @@ export class AttestationChallenge {
 	@JoinColumn()
 	public user: User | null;
 
+	@Index()
 	@Column('varchar', {
 		length: 64,
 		comment: 'Hex-encoded sha256 hash of the challenge.'

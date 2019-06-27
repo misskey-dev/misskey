@@ -1,4 +1,4 @@
-import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne, Index } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
 
@@ -9,6 +9,7 @@ export class UserSecurityKey {
 	})
 	public id: string;
 
+	@Index()
 	@Column(id())
 	public userId: User['id'];
 
@@ -18,6 +19,7 @@ export class UserSecurityKey {
 	@JoinColumn()
 	public user: User | null;
 
+	@Index()
 	@Column('varchar', {
 		comment:
 			'Variable-length public key used to verify attestations (hex-encoded).'
