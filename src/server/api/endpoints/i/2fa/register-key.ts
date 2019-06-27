@@ -47,7 +47,7 @@ export default define(meta, async (ps, user) => {
 
 	await AttestationChallenges.save({
 		userId: user.id,
-		challengeId,
+		id: challengeId,
 		challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
 		createdAt: new Date(),
 		registrationChallenge: true

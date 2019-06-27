@@ -104,7 +104,7 @@ export default define(meta, async (ps, user) => {
 
 	const attestationChallenge = await AttestationChallenges.findOne({
 		userId: user.id,
-		challengeId: ps.challengeId,
+		id: ps.challengeId,
 		registrationChallenge: true,
 		challenge: hash(clientData.challenge).toString('hex')
 	});
@@ -115,7 +115,7 @@ export default define(meta, async (ps, user) => {
 
 	await AttestationChallenges.delete({
 		userId: user.id,
-		challengeId: ps.challengeId
+		id: ps.challengeId
 	});
 
 	// Expired challenge (> 5min old)

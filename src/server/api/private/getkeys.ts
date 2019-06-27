@@ -64,7 +64,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 			await AttestationChallenges.save({
 				userId: user.id,
-				challengeId,
+				id: challengeId,
 				challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
 				createdAt: new Date(),
 				registrationChallenge: false

@@ -1,20 +1,20 @@
-import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
-import { UserProfile } from './user-profile';
+import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user';
 import { id } from '../id';
 
 @Entity()
 export class AttestationChallenge {
 	@PrimaryColumn(id())
-	public challengeId: string;
+	public id: string;
 
 	@PrimaryColumn(id())
-	public userId: UserProfile['userId'];
+	public userId: User['id'];
 
-	@OneToOne(type => UserProfile, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
-	public userProfile: UserProfile | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 64,

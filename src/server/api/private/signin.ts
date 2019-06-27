@@ -94,7 +94,7 @@ export default async (ctx: Koa.BaseContext) => {
 				const clientData = JSON.parse(clientDataJSON.toString('utf-8'));
 				const challenge = await AttestationChallenges.findOne({
 					userId: user.id,
-					challengeId: body.challengeId,
+					id: body.challengeId,
 					registrationChallenge: false,
 					challenge: hash(clientData.challenge).toString('hex')
 				});
@@ -107,7 +107,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 				await AttestationChallenges.delete({
 					userId: user.id,
-					challengeId: body.challengeId
+					id: body.challengeId
 				});
 
 				if (new Date().getTime() - challenge.createdAt.getTime() >= 5 * 60 * 1000) {
