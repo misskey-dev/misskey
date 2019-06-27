@@ -87,7 +87,8 @@ export default define(meta, async (ps, user) => {
 	}
 
         try {
-            var verificationData = procedures[attestation.fmt].verify({
+		// tslint:disable-next-line:no-var-keyword
+		var verificationData = procedures[attestation.fmt].verify({
     	         attStmt: attestation.attStmt,
 	         authenticatorData: authData,
    	         clientDataHash: clientDataJSONHash,
