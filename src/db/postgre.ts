@@ -43,6 +43,8 @@ import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
 import { UserProfile } from '../models/entities/user-profile';
+import { UserSecurityKey } from '../models/entities/user-security-key';
+import { AttestationChallenge } from '../models/entities/attestation-challenge';
 import { Page } from '../models/entities/page';
 import { PageLike } from '../models/entities/page-like';
 
@@ -118,6 +120,8 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			AccessToken,
 			User,
 			UserProfile,
+			UserSecurityKey,
+			AttestationChallenge,
 			UserKeypair,
 			UserPublickey,
 			UserList,

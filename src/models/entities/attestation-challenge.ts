@@ -1,0 +1,44 @@
+import {PrimaryColumn, Entity, JoinColumn, Column, OneToOne} from 'typeorm';
+import {UserProfile} from './user-profile';
+import {id} from '../id';
+
+@Entity()
+export class AttestationChallenge {
+	@PrimaryColumn(id())
+	public challengeId: string;
+
+	@PrimaryColumn(id())
+	public userId: UserProfile['userId'];
+
+	@OneToOne(type => UserProfile, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public userProfile: UserProfile | null;
+
+	@Column('varchar', {
+		length: 64,
+		comment: 'Hex-encoded sha256 hash of the challenge.'
+	})
+	public challenge: string;
+
+	@Column('timestamp with time zone', {
+		comment: 'The date challenge was created for expiry purposes.'
+	})
+	public createdAt: Date;
+
+	@Column('boolean', {
+		comment:
+			'Indicates that the challenge is only for registration purposes if true to prevent the challenge for being used as authentication.',
+		default: false
+	})
+	public registrationChallenge: boolean;
+
+	constructor(data: Partial<AttestationChallenge>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
+}
