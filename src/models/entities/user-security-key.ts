@@ -7,7 +7,7 @@ export class UserSecurityKey {
 	@PrimaryColumn('varchar', {
 		comment: 'Variable-length id given to navigator.credentials.get()'
 	})
-	public credentialId: string;
+	public id: string;
 
 	@Column(id())
 	public userId: User['id'];

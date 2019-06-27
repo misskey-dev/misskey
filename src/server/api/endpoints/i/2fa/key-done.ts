@@ -130,7 +130,7 @@ export default define(meta, async (ps, user) => {
 
 	await UserSecurityKeys.save({
 		userId: user.id,
-		credentialId: credentialIdString,
+		id: credentialIdString,
 		lastUsed: new Date(),
 		name: ps.name,
 		publicKey: verificationData.publicKey.toString('hex')

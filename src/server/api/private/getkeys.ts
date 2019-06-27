@@ -74,7 +74,7 @@ export default async (ctx: Koa.BaseContext) => {
 				challenge,
 				challengeId,
 				securityKeys: keys.map(key => ({
-					id: key.credentialId
+					id: key.id
 				}))
 			};
 			return;

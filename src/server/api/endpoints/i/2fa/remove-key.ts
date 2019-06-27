@@ -32,7 +32,7 @@ export default define(meta, async (ps, user) => {
 	// Make sure we only delete the user's own creds
 	await UserSecurityKeys.delete({
 		userId: user.id,
-		credentialId: ps.credentialId
+		id: ps.credentialId
 	});
 
 	return {};

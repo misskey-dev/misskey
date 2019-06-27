@@ -118,7 +118,7 @@ export default async (ctx: Koa.BaseContext) => {
 				}
 
 				const securityKey = await UserSecurityKeys.findOne({
-					credentialId: Buffer.from(
+					id: Buffer.from(
 						body.credentialId
 							.replace(/\-/g, '+')
 							.replace(/_/g, '/'),
