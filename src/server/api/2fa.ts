@@ -61,12 +61,7 @@ function verifyCertificateChain(certificates) {
 		const certificate = new jsrsasign.X509();
 		certificate.readCertPEM(Cert);
 
-		let CACert = '';
-		if (i + 1 >= certificates.length) {
-			CACert = Cert;
-		} else {
-			CACert = certificates[i + 1];
-		}
+		const CACert = i + 1 >= certificates.length ? Cert : certificates[i + 1];
 
 		const certStruct = jsrsasign.ASN1HEX.getTLVbyList(certificate.hex, 0, [0]);
 		const algorithm = certificate.getSignatureAlgorithmField();

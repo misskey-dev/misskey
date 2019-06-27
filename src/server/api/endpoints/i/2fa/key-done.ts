@@ -75,7 +75,7 @@ export default define(meta, async (ps, user) => {
 	const flags = attestation.authData[32];
 
 	// tslint:disable-next-line:no-bitwise
-	if (flags & ~1) {
+	if (!(flags & 1)) {
 		throw new Error('user not present');
 	}
 
@@ -137,7 +137,7 @@ export default define(meta, async (ps, user) => {
 	});
 
 	return {
-		credentialId: credentialIdString,
+		id: credentialIdString,
 		name: ps.name
 	};
 });
