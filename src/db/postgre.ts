@@ -103,7 +103,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			options: {
 				host: config.redis.host,
 				port: config.redis.port,
-				options:{
+				options: {
 					password: config.redis.pass,
 					prefix: config.redis.prefix,
 					db: config.redis.db || 0

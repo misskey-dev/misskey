@@ -205,7 +205,7 @@ export class UserRepository extends Repository<User> {
 						where: {
 							userId: user.id
 						},
-						select: ["credentialId", "name", "lastUsed"]
+						select: ['credentialId', 'name', 'lastUsed']
 					})
 					: []
 

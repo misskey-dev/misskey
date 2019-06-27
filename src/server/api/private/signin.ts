@@ -19,7 +19,6 @@ export default async (ctx: Koa.BaseContext) => {
 	const password = body['password'];
 	const token = body['token'];
 
-
 	if (typeof username != 'string') {
 		ctx.status = 400;
 		return;
@@ -53,7 +52,7 @@ export default async (ctx: Koa.BaseContext) => {
 	// Compare password
 	const same = await bcrypt.compare(password, profile.password!);
 
-	async function fail(status?: Number, failure?: {error: String}) {
+	async function fail(status?: number, failure?: {error: string}) {
 		// Append signin history
 		const record = await Signins.save({
 			id: genId(),
@@ -67,7 +66,7 @@ export default async (ctx: Koa.BaseContext) => {
 		// Publish signin event
 		publishMainStream(user.id, 'signin', await Signins.pack(record));
 
-		if(status && failure) {
+		if (status && failure) {
 			ctx.throw(status, failure);
 		}
 	}

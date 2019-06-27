@@ -70,18 +70,18 @@ export default async (ctx: Koa.BaseContext) => {
 				registrationChallenge: false
 			});
 
-		        ctx.body = {
+			ctx.body = {
 				challenge,
-			 	challengeId,
+				challengeId,
 				securityKeys: keys.map(key => ({
-		 			id: key.credentialId
+					id: key.credentialId
 				}))
 			};
 			return;
 		} else {
-         		ctx.throw(403, {
-         			error: 'no keys found'
-         		});
+			ctx.throw(403, {
+				error: 'no keys found'
+			});
 			return;
 		}
 	} else {
