@@ -112,8 +112,7 @@ export default Vue.extend({
 				this.queryingKey = false;
 				console.warn(err);
 				return Promise.reject(null);
-			})
-			.then(credential => {
+			}).then(credential => {
 				this.queryingKey = false;
 				this.signing = true;
 				return this.$root.api('signin', {
