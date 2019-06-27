@@ -1,43 +1,41 @@
-import { types, bool } from '../../../../misc/schema';
-
 const logSchema = {
 	total: {
-		type: types.number,
-		optional: bool.false, nullable: bool.false,
+		type: 'number' as const,
+		optional: false as const, nullable: false as const,
 		description: '集計期間時点での、全投稿数'
 	},
 
 	inc: {
-		type: types.number,
-		optional: bool.false, nullable: bool.false,
+		type: 'number' as const,
+		optional: false as const, nullable: false as const,
 		description: '増加した投稿数'
 	},
 
 	dec: {
-		type: types.number,
-		optional: bool.false, nullable: bool.false,
+		type: 'number' as const,
+		optional: false as const, nullable: false as const,
 		description: '減少した投稿数'
 	},
 
 	diffs: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		properties: {
 			normal: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: '通常の投稿数の差分'
 			},
 
 			reply: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: 'リプライの投稿数の差分'
 			},
 
 			renote: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: 'Renoteの投稿数の差分'
 			},
 		}
@@ -45,17 +43,17 @@ const logSchema = {
 };
 
 export const schema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		local: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			properties: logSchema
 		},
 		remote: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			properties: logSchema
 		},
 	}

@@ -5,7 +5,6 @@ import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { MessagingMessages, UserGroups, UserGroupJoinings } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { types, bool } from '../../../../misc/schema';
 import { Brackets } from 'typeorm';
 import { readUserMessagingMessage, readGroupMessagingMessage } from '../../common/read-messaging-message';
 
@@ -58,11 +57,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'MessagingMessage',
 		}
 	},

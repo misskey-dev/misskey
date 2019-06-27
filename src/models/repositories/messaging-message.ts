@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '../entities/messaging-message';
 import { Users, DriveFiles, UserGroups } from '..';
 import { ensure } from '../../prelude/ensure';
-import { types, bool, SchemaType } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 
 export type PackedMessagingMessage = SchemaType<typeof packedMessagingMessageSchema>;
 
@@ -46,76 +46,76 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 }
 
 export const packedMessagingMessageSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this MessagingMessage.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the MessagingMessage was created.'
 		},
 		userId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 		},
 		user: {
-			type: types.object,
+			type: 'object' as const,
 			ref: 'User',
-			optional: bool.true, nullable: bool.false,
+			optional: true as const, nullable: false as const,
 		},
 		text: {
-			type: types.string,
-			optional: bool.false, nullable: bool.true,
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
 		},
 		fileId: {
-			type: types.string,
-			optional: bool.true, nullable: bool.true,
+			type: 'string' as const,
+			optional: true as const, nullable: true as const,
 			format: 'id',
 		},
 		file: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 			ref: 'DriveFile',
 		},
 		recipientId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.true,
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
 			format: 'id',
 		},
 		recipient: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 			ref: 'User'
 		},
 		groupId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.true,
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
 			format: 'id',
 		},
 		group: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 			ref: 'UserGroup'
 		},
 		isRead: {
-			type: types.boolean,
-			optional: bool.true, nullable: bool.false,
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const,
 		},
 		reads: {
-			type: types.array,
-			optional: bool.true, nullable: bool.false,
+			type: 'array' as const,
+			optional: true as const, nullable: false as const,
 			items: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				format: 'id'
 			}
 		},

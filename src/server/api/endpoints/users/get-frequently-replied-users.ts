@@ -6,7 +6,6 @@ import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { Not, In, IsNull } from 'typeorm';
 import { Notes, Users } from '../../../../models';
-import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	tags: ['users'],
@@ -29,11 +28,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'User',
 		}
 	},

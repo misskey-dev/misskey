@@ -1,15 +1,13 @@
-import { types, bool } from '../../../../misc/schema';
-
 export const schema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		/**
 		 * 集計期間時点での、全ドライブファイル数
 		 */
 		totalCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: '集計期間時点での、全ドライブファイル数'
 		},
 
@@ -17,8 +15,8 @@ export const schema = {
 		 * 集計期間時点での、全ドライブファイルの合計サイズ
 		 */
 		totalSize: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: '集計期間時点での、全ドライブファイルの合計サイズ'
 		},
 
@@ -26,8 +24,8 @@ export const schema = {
 		 * 増加したドライブファイル数
 		 */
 		incCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: '増加したドライブファイル数'
 		},
 
@@ -35,8 +33,8 @@ export const schema = {
 		 * 増加したドライブ使用量
 		 */
 		incSize: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: '増加したドライブ使用量'
 		},
 
@@ -44,8 +42,8 @@ export const schema = {
 		 * 減少したドライブファイル数
 		 */
 		decCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: '減少したドライブファイル数'
 		},
 
@@ -53,8 +51,8 @@ export const schema = {
 		 * 減少したドライブ使用量
 		 */
 		decSize: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: '減少したドライブ使用量'
 		},
 	}

@@ -3,7 +3,6 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { Apps, AuthSessions, AccessTokens, Users } from '../../../../../models';
 import { ensure } from '../../../../../prelude/ensure';
-import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	tags: ['auth'],
@@ -29,18 +28,18 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		properties: {
 			accessToken: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				description: 'ユーザーのアクセストークン',
 			},
 
 			user: {
-				type: types.object,
-				optional: bool.false, nullable: bool.false,
+				type: 'object' as const,
+				optional: false as const, nullable: false as const,
 				ref: 'User',
 				description: '認証したユーザー'
 			},
