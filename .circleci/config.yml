@@ -79,11 +79,11 @@ jobs:
             excepted="<<parameters.target>>"
             actual="v$(cat package.json | jq -r '.version' | awk -F. '{print $1}')"
             if [ $excepted = $actual ]
-             then
-              yarn build
-              touch yarn.lock
-             else
-              echo -e '\033[0;33mBuild Aborted\033[0;39m'
+              then
+                yarn build
+                touch yarn.lock
+              else
+                echo -e '\033[0;33mBuild Aborted\033[0;39m'
             fi
       - save_cache:
           name: Cache npm packages
@@ -112,10 +112,10 @@ jobs:
             excepted="<<parameters.target>>"
             actual="v$(cat package.json | jq -r '.version' | awk -F. '{print $1}')"
             if [ $excepted = $actual ]
-             then
-              yarn test
-             else
-              echo -e '\033[0;33mTest Aborted\033[0;39m'
+              then
+                yarn test
+              else
+                echo -e '\033[0;33mTest Aborted\033[0;39m'
             fi
             touch yarn.lock
       - save_cache:
@@ -144,12 +144,12 @@ jobs:
                 name: Deploy
                 command: |
                   if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
-                  then
-                    docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
-                    docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                    docker push misskey/misskey
-                  else
-                    echo -e '\033[0;33mDeploy Aborted\033[0;39m'
+                    then
+                      docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
+                      docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+                      docker push misskey/misskey
+                    else
+                      echo -e '\033[0;33mDeploy Aborted\033[0;39m'
                   fi
   docker-ok:
     executor: docker
