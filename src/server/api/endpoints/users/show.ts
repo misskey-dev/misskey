@@ -52,7 +52,7 @@ export const meta = {
 			message: 'Failed to resolve remote user.',
 			code: 'FAILED_TO_RESOLVE_REMOTE_USER',
 			id: 'ef7b9be4-9cba-4e6f-ab41-90ed171c7d3c',
-			kind: 'server' as 'server'
+			kind: 'server' as const
 		},
 
 		noSuchUser: {
