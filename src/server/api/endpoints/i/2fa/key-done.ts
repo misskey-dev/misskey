@@ -4,13 +4,15 @@ import define from '../../../define';
 import {
 	UserProfiles,
 	UserSecurityKeys,
-	AttestationChallenges
+	AttestationChallenges,
+	Users
 } from '../../../../../models';
 import {ensure} from '../../../../../prelude/ensure';
 import config from '../../../../../config';
 import {promisify} from 'util';
 import * as cbor from 'cbor';
 import {procedures, hash} from '../../../2fa';
+import { publishMainStream } from '../../../../../services/stream';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst);
 
@@ -135,6 +137,12 @@ export default define(meta, async (ps, user) => {
 		name: ps.name,
 		publicKey: verificationData.publicKey.toString('hex')
 	});
+
+	// Publish meUpdated event
+	publishMainStream(user.id, 'meUpdated', await Users.pack(user.id, user, {
+		detail: true,
+		includeSecrets: true
+	}));
 
 	return {
 		id: credentialIdString,

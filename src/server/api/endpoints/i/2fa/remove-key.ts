@@ -1,8 +1,9 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import define from '../../../define';
-import { UserProfiles, UserSecurityKeys } from '../../../../../models';
+import { UserProfiles, UserSecurityKeys, Users } from '../../../../../models';
 import { ensure } from '../../../../../prelude/ensure';
+import { publishMainStream } from '../../../../../services/stream';
 
 export const meta = {
 	requireCredential: true,
@@ -34,6 +35,12 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 		id: ps.credentialId
 	});
+
+	// Publish meUpdated event
+	publishMainStream(user.id, 'meUpdated', await Users.pack(user.id, user, {
+		detail: true,
+		includeSecrets: true
+	}));
 
 	return {};
 });

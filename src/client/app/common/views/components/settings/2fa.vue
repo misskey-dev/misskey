@@ -143,7 +143,6 @@ export default Vue.extend({
 			}).then(key => {
 				this.registration = null;
 				key.lastUsed = new Date();
-				this.$store.state.i.securityKeysList.push(key);
 				this.$notify(this.$t('success'));
 			})
 		},
@@ -160,10 +159,6 @@ export default Vue.extend({
 					password,
 					credentialId: key.id
 				}).then(() => {
-					const keyIndex = this.$store.state.i.securityKeysList.indexOf(key);
-					if(keyIndex != -1) {
-						this.$store.state.i.securityKeysList.splice(keyIndex, 1);
-					}
 					this.$notify(this.$t('key-unregistered'));
 				});
 			});
