@@ -154,7 +154,7 @@ export default Vue.extend({
 					type: 'password'
 				}
 			}).then(({ canceled, result: password }) => {
-				if(canceled) return;
+				if (canceled) return;
 				return this.$root.api('i/2fa/remove-key', {
 					password,
 					credentialId: key.id
@@ -178,7 +178,7 @@ export default Vue.extend({
 					this.registration = {
 						password,
 						challengeId: registration.challengeId,
-						stage: 0
+						stage: 0,
 						publicKeyOptions: {
 							challenge: Buffer.from(
 								registration.challenge
