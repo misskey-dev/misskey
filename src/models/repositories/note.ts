@@ -144,8 +144,8 @@ export class NoteRepository extends Repository<Note> {
 
 		let text = note.text;
 
-		if (note.name) {
-			text = `【${note.name}】\n${note.text}`;
+		if (note.name && note.uri) {
+			text = `【${note.name}】\n${(note.text || '').trim()}\n${note.uri}`;
 		}
 
 		const reactionEmojis = unique(concat([note.emojis, Object.keys(note.reactions)]));
