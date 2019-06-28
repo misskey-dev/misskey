@@ -68,7 +68,6 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { hostname } from '../../../../config';
-import * as cbor from 'cbor';
 import { hexifyAB } from '../../../scripts/2fa';
 
 function stringifyAB(buffer) {
