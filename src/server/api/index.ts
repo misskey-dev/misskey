@@ -12,7 +12,6 @@ import endpoints from './endpoints';
 import handler from './api-handler';
 import signup from './private/signup';
 import signin from './private/signin';
-import getkeys from './private/getkeys';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
@@ -61,7 +60,6 @@ for (const endpoint of endpoints) {
 
 router.post('/signup', signup);
 router.post('/signin', signin);
-router.post('/getkeys', getkeys);
 
 router.use(discord.routes());
 router.use(github.routes());

@@ -143,7 +143,7 @@ export default Vue.extend({
 
 			if (!this.totpLogin && this.user) {
 				if (window.PublicKeyCredential && this.user.securityKeys) {
-					this.$root.api('getkeys', {
+					this.$root.api('i/2fa/getkeys', {
 						username: this.username,
 						password: this.password
 					}).then(res => {
