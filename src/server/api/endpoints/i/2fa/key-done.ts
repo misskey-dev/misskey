@@ -1,5 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
+import { promisify } from 'util';
+import * as cbor from 'cbor';
 import define from '../../../define';
 import {
 	UserProfiles,
@@ -7,11 +9,9 @@ import {
 	AttestationChallenges,
 	Users
 } from '../../../../../models';
-import {ensure} from '../../../../../prelude/ensure';
+import { ensure } from '../../../../../prelude/ensure';
 import config from '../../../../../config';
-import {promisify} from 'util';
-import * as cbor from 'cbor';
-import {procedures, hash} from '../../../2fa';
+import { procedures, hash } from '../../../2fa';
 import { publishMainStream } from '../../../../../services/stream';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst);
