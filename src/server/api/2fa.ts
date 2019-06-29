@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 import config from '../../config';
-import * as jsrsasign from 'jsrsasign';
+const jsrsasign = require('jsrsasign');
 
 const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);
@@ -37,14 +37,14 @@ function base64URLDecode(source: string) {
 	return Buffer.from(source.replace(/\-/g, '+').replace(/_/g, '/'), 'base64');
 }
 
-function getCertSubject(certificate) {
+function getCertSubject(certificate: string) {
 	const subjectCert = new jsrsasign.X509();
 	subjectCert.readCertPEM(certificate);
 
 	const subjectString = subjectCert.getSubjectString();
 	const subjectFields = subjectString.slice(1).split('/');
 
-	const fields = {};
+	const fields = {} as Record<string, string>;
 	for (const field of subjectFields) {
 		const eqIndex = field.indexOf('=');
 		fields[field.substring(0, eqIndex)] = field.substring(eqIndex + 1);
@@ -53,7 +53,7 @@ function getCertSubject(certificate) {
 	return fields;
 }
 
-function verifyCertificateChain(certificates) {
+function verifyCertificateChain(certificates: string[]) {
 	let valid = true;
 
 	for (let i = 0; i < certificates.length; i++) {
@@ -146,12 +146,12 @@ export function verifyLogin({
 export const procedures = {
 	none: {
 		verify({publicKey}: {publicKey: Map<number, Buffer>}) {
-			const negTwo: Buffer = publicKey.get(-2);
+			const negTwo = publicKey.get(-2);
 
 			if (!negTwo || negTwo.length != 32) {
 				throw new Error('invalid or no -2 key given');
 			}
-			const negThree: Buffer = publicKey.get(-3);
+			const negThree = publicKey.get(-3);
 			if (!negThree || negThree.length != 32) {
 				throw new Error('invalid or no -3 key given');
 			}
