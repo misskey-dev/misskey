@@ -16,13 +16,12 @@
 		<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="['fab', 'github']"/> {{ $t('signin-with-github') }}</a></p>
 		<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="['fab', 'discord']"/> {{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
 	</div>
-	<div class="2fa-signin" v-if="totpLogin" v-bind:class="{ securityKeys: user && user.securityKeys }">
+	<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 		<div v-if="user && user.securityKeys" class="twofa-group tap-group">
 			<p>{{ $t('tap-key') }}</p>
-			<ui-button @click="queryKey" v-if="!this.queryingKey">
+			<ui-button @click="queryKey" v-if="!queryingKey">
 				{{ $t('@.error.retry') }}
 			</ui-button>
-
 		</div>
 		<div class="or-hr" v-if="user && user.securityKeys">
 			<p class="or-msg">{{ $t('or') }}</p>
