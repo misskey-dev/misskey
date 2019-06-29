@@ -72,6 +72,7 @@ common:
     hide-contents: "Ukryj zawartość"
     reply-placeholder: "Odpowiedź na ten wpis…"
     quote-placeholder: "Zacytuj ten wpis…"
+    quote-attached: "Z cytatem"
     submit: "Wpis"
     reply: "Odpowiedz"
     renote: "Udostępnij"
