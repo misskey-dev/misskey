@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 import config from '../../config';
-const jsrsasign = require('jsrsasign');
+import * as jsrsasign from 'jsrsasign';
 
 const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);

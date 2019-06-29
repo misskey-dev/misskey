@@ -140,7 +140,7 @@ export default Vue.extend({
 		onSubmit() {
 			this.signing = true;
 
-			if (!this.totpLogin && this.user) {
+			if (!this.totpLogin && this.user && this.user.twoFactorEnabled) {
 				if (window.PublicKeyCredential && this.user.securityKeys) {
 					this.$root.api('i/2fa/getkeys', {
 						username: this.username,
