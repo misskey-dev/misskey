@@ -1,7 +1,6 @@
 import define from '../define';
 import { Notes, Users } from '../../../models';
 import { federationChart, driveChart } from '../../../services/chart';
-import { bool, types } from '../../../misc/schema';
 
 export const meta = {
 	requireCredential: false,
@@ -16,32 +15,32 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		properties: {
 			notesCount: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The count of all (local/remote) notes of this instance.',
 			},
 			originalNotesCount: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The count of all local notes of this instance.',
 			},
 			usersCount: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The count of all (local/remote) accounts of this instance.',
 			},
 			originalUsersCount: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The count of all local accounts of this instance.',
 			},
 			instances: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The count of federated instances.',
 			},
 		}

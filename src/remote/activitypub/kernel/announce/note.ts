@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
 import { IRemoteUser, User } from '../../../../models/entities/user';
-import { IAnnounce, INote } from '../../type';
+import { IAnnounce, INote, getApId, getApIds } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
 import { apLogger } from '../../logger';
@@ -14,15 +14,11 @@ const logger = apLogger;
  * アナウンスアクティビティを捌きます
  */
 export default async function(resolver: Resolver, actor: IRemoteUser, activity: IAnnounce, note: INote): Promise<void> {
-	const uri = activity.id || activity;
+	const uri = getApId(activity);
 
 	// アナウンサーが凍結されていたらスキップ
 	if (actor.isSuspended) {
 		return;
-	}
-
-	if (typeof uri !== 'string') {
-		throw new Error('invalid announce');
 	}
 
 	// アナウンス先をブロックしてたら中断
@@ -52,11 +48,14 @@ export default async function(resolver: Resolver, actor: IRemoteUser, activity: 
 	logger.info(`Creating the (Re)Note: ${uri}`);
 
 	//#region Visibility
-	const visibility = getVisibility(activity.to || [], activity.cc || [], actor);
+	const to = getApIds(activity.to);
+	const cc = getApIds(activity.cc);
+
+	const visibility = getVisibility(to, cc, actor);
 
 	let visibleUsers: User[] = [];
 	if (visibility == 'specified') {
-		visibleUsers = await Promise.all((note.to || []).map(uri => resolvePerson(uri)));
+		visibleUsers = await Promise.all(to.map(uri => resolvePerson(uri)));
 	}
 	//#endergion
 

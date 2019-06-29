@@ -1,17 +1,3 @@
-export const types = {
-	boolean: 'boolean' as 'boolean',
-	string: 'string' as 'string',
-	number: 'number' as 'number',
-	array: 'array' as 'array',
-	object: 'object' as 'object',
-	any: 'any' as 'any',
-};
-
-export const bool = {
-	true: true as true,
-	false: false as false,
-};
-
 export type Schema = {
 	type: 'boolean' | 'number' | 'string' | 'array' | 'object' | 'any';
 	nullable: boolean;
