@@ -3,7 +3,7 @@ port: 80
 mongodb:
   host: localhost
   port: 27017
-  db: test-misskey
+  db: misskey
   user: syuilo
   pass: ''
 # __REDIS__

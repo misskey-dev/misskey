@@ -8,7 +8,7 @@ executors:
       - image: circleci/postgres:latest
         environment:
           POSTGRES_USER: syuilo
-          POSTGRES_DB: test-misskey
+          POSTGRES_DB: misskey
       - image: circleci/redis:latest
   v11-node11:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
@@ -17,7 +17,7 @@ executors:
       - image: circleci/postgres:latest
         environment:
           POSTGRES_USER: syuilo
-          POSTGRES_DB: test-misskey
+          POSTGRES_DB: misskey
       - image: circleci/redis:latest
   v10-node11:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
