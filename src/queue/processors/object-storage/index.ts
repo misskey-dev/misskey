@@ -1,8 +1,10 @@
 import * as Bull from 'bull';
 import deleteFile from './delete-file';
+import cleanRemoteFiles from './clean-remote-files';
 
 const jobs = {
 	deleteFile,
+	cleanRemoteFiles,
 } as any;
 
 export default function(q: Bull.Queue) {
