@@ -16,9 +16,11 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
+import { Connection } from 'typeorm';
 import { async, signup, request, post, uploadFile } from './utils';
-import { Note } from '../built/models/entities/note';
-const initDb = require('../built/db/postgre.js').initDb;
+const { Note }: { Note: new () => unknown } = require('../built/models/entities/note');
+// tslint:disable-next-line: bool-param-default
+const { initDb }: { initDb(justBorrow?: boolean, sync?: boolean, log?: boolean): Promise<Connection> } = require('../built/db/postgre.js');
 
 describe('Note', () => {
 	let p: childProcess.ChildProcess;
