@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Page } from '../entities/page';
-import { SchemaType, types, bool } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 import { Users, DriveFiles, PageLikes } from '..';
 import { awaitAll } from '../../prelude/await-all';
 import { DriveFile } from '../entities/drive-file';
@@ -89,54 +89,54 @@ export class PageRepository extends Repository<Page> {
 }
 
 export const packedPageSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 		},
 		updatedAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 		},
 		title: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 		},
 		name: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 		},
 		summary: {
-			type: types.string,
-			optional: bool.false, nullable: bool.true,
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
 		},
 		content: {
-			type: types.array,
-			optional: bool.false, nullable: bool.false,
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
 		},
 		variables: {
-			type: types.array,
-			optional: bool.false, nullable: bool.false,
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
 		},
 		userId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 		},
 		user: {
-			type: types.object,
+			type: 'object' as const,
 			ref: 'User',
-			optional: bool.false, nullable: bool.false,
+			optional: false as const, nullable: false as const,
 		},
 	}
 };

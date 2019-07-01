@@ -22,7 +22,7 @@ export default async function(follower: User, followee: User, silent = false) {
 		return;
 	}
 
-	Followings.delete(following.id);
+	await Followings.delete(following.id);
 
 	//#region Decrement following count
 	Users.decrement({ id: follower.id }, 'followingCount', 1);

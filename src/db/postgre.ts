@@ -80,6 +80,51 @@ class MyCustomLogger implements Logger {
 	}
 }
 
+export const entities = [
+	Meta,
+	Instance,
+	App,
+	AuthSession,
+	AccessToken,
+	User,
+	UserProfile,
+	UserKeypair,
+	UserPublickey,
+	UserList,
+	UserListJoining,
+	UserGroup,
+	UserGroupJoining,
+	UserGroupInvite,
+	UserNotePining,
+	Following,
+	FollowRequest,
+	Muting,
+	Blocking,
+	Note,
+	NoteFavorite,
+	NoteReaction,
+	NoteWatching,
+	NoteUnread,
+	Page,
+	PageLike,
+	Log,
+	DriveFile,
+	DriveFolder,
+	Poll,
+	PollVote,
+	Notification,
+	Emoji,
+	Hashtag,
+	SwSubscription,
+	AbuseUserReport,
+	RegistrationTicket,
+	MessagingMessage,
+	Signin,
+	ReversiGame,
+	ReversiMatching,
+	...charts as any
+];
+
 export function initDb(justBorrow = false, sync = false, log = false) {
 	try {
 		const conn = getConnection();
@@ -96,63 +141,20 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 		extra: config.db.extra,
 		synchronize: process.env.NODE_ENV === 'test' || sync,
 		dropSchema: process.env.NODE_ENV === 'test' && !justBorrow,
-		cache: {
+		cache: !config.db.disableCache ? {
 			type: 'redis',
 			options: {
 				host: config.redis.host,
 				port: config.redis.port,
 				options:{
-					auth_pass: config.redis.pass,
+					password: config.redis.pass,
 					prefix: config.redis.prefix,
 					db: config.redis.db || 0
 				}
 			}
-		},
+		} : false,
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
-		entities: [
-			Meta,
-			Instance,
-			App,
-			AuthSession,
-			AccessToken,
-			User,
-			UserProfile,
-			UserKeypair,
-			UserPublickey,
-			UserList,
-			UserListJoining,
-			UserGroup,
-			UserGroupJoining,
-			UserGroupInvite,
-			UserNotePining,
-			Following,
-			FollowRequest,
-			Muting,
-			Blocking,
-			Note,
-			NoteFavorite,
-			NoteReaction,
-			NoteWatching,
-			NoteUnread,
-			Page,
-			PageLike,
-			Log,
-			DriveFile,
-			DriveFolder,
-			Poll,
-			PollVote,
-			Notification,
-			Emoji,
-			Hashtag,
-			SwSubscription,
-			AbuseUserReport,
-			RegistrationTicket,
-			MessagingMessage,
-			Signin,
-			ReversiGame,
-			ReversiMatching,
-			...charts as any
-		]
+		entities: entities
 	});
 }

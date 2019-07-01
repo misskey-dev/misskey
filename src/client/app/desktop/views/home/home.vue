@@ -84,6 +84,7 @@ import XWelcome from '../pages/welcome.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/home.vue'),
+
 	components: {
 		XDraggable,
 		XWelcome
@@ -102,7 +103,7 @@ export default Vue.extend({
 	computed: {
 		home(): any[] {
 			if (this.$store.getters.isSignedIn) {
-				return this.$store.state.device.home || [];
+				return this.$store.getters.home || [];
 			} else {
 				return [{
 					name: 'instance',
@@ -138,7 +139,9 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.$store.getters.isSignedIn) {
+		if (!this.$store.getters.isSignedIn) return;
+
+		if (this.$store.getters.home == null) {
 			const defaultDesktopHomeWidgets = {
 				left: [
 					'profile',
@@ -183,9 +186,7 @@ export default Vue.extend({
 			}
 			//#endregion
 
-			if (this.$store.state.device.home == null) {
-				this.$store.commit('device/setHome', _defaultDesktopHomeWidgets);
-			}
+			this.$store.commit('setHome', _defaultDesktopHomeWidgets);
 		}
 	},
 
@@ -223,7 +224,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.commit('device/addHomeWidget', {
+			this.$store.commit('addHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),
 				place: 'left',
@@ -234,7 +235,7 @@ export default Vue.extend({
 		saveHome() {
 			const left = this.widgets.left;
 			const right = this.widgets.right;
-			this.$store.commit('device/setHome', left.concat(right));
+			this.$store.commit('setHome', left.concat(right));
 			for (const w of left) w.place = 'left';
 			for (const w of right) w.place = 'right';
 		},
@@ -245,7 +246,7 @@ export default Vue.extend({
 
 		focus() {
 			(this.$refs.content as any).focus();
-		}
+		},
 	}
 });
 </script>

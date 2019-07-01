@@ -62,6 +62,14 @@ common:
   favorites: "お気に入り"
   permissions:
     "write:votes": "投票するで"
+  post-form:
+    submit: "投稿"
+    reply: "返す"
+    renote: "Renote"
+    error: "エラー"
+    enter-username: "ユーザー名を入力してや"
+    add-visible-user: "ユーザー増やす"
+    username-prompt: "ユーザー名を入力してや"
   weekday-short:
     sunday: "日"
     monday: "月"
@@ -670,33 +678,12 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "あらへん！"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+ユーザー増やす"
-  attach-location-information: "いる場所くっつけるで"
-  hide-contents: "内容を隠す"
-  reply-placeholder: "この投稿への返信..."
-  quote-placeholder: "この投稿を引用..."
-  submit: "投稿"
-  reply: "返信"
-  renote: "Renote"
   posted: "投稿したで！"
   replied: "返信したで！"
   reposted: "Renoteしたで！"
   note-failed: "投稿に失敗したで"
   reply-failed: "返信に失敗したで"
   renote-failed: "Renoteでけへん"
-  posting: "投稿中"
-  attach-media-from-local: "PCからメディア持ってくる"
-  attach-media-from-drive: "ドライブからメディア持ってくる"
-  create-poll: "アンケートを作成"
-  text-remain: "残り{}文字"
-  recent-tags: "最近のタグ"
-  local-only-message: "この投稿はローカルだけ公開されるで"
-  click-to-tagging: "クリックでタグ付け"
-  visibility: "公開範囲"
-  geolocation-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
-  error: "エラー"
-  enter-username: "ユーザー名を入力してや"
-  annotations: "もっと教えてな(別にええけど)"
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
   reply: "返す"
@@ -845,6 +832,10 @@ admin/views/dashboard.vue:
   instances: "インスタンス"
   this-instance: "ワイのインスタンス"
   federated: "連合"
+admin/views/logs.vue:
+  levels:
+    info: "情報"
+    error: "エラー"
 admin/views/abuse.vue:
   details: "もっと"
   remove-report: "削除"
@@ -991,6 +982,7 @@ admin/views/federation.vue:
     hour: "1時間ごと"
     day: "1日ごと"
   blocked-hosts: "ブロック"
+  save: "保存"
 desktop/views/pages/welcome.vue:
   about: "もうちょい……"
   timeline: "タイムライン"
@@ -1114,17 +1106,6 @@ mobile/views/components/note-sub.vue:
   cat: "cat"
 mobile/views/components/notifications.vue:
   empty: "あらへん！"
-mobile/views/components/post-form.vue:
-  add-visible-user: "ユーザー増やす"
-  submit: "投稿"
-  reply: "返す"
-  renote: "Renote"
-  quote-placeholder: "この投稿を持ってくる(オプション)"
-  reply-placeholder: "この投稿への返信..."
-  cw-placeholder: "内容への注釈 (オプション)"
-  geolocation-alert: "あんさんのつことる端末は位置情報に対応しとらんみたいやわ、知らんけど。"
-  error: "エラー"
-  username-prompt: "ユーザー名を入力してや"
 mobile/views/components/sub-note-content.vue:
   private: "この投稿は見せられへんわ"
   deleted: "この投稿なんか無くなってもうたわ"
@@ -1272,6 +1253,8 @@ pages:
       _seedRandomPick:
         arg2: "リスト"
       _pick:
+        arg1: "リスト"
+      _listLen:
         arg1: "リスト"
     types:
       array: "リスト"

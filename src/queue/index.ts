@@ -194,6 +194,13 @@ export function createDeleteObjectStorageFileJob(key: string) {
 	});
 }
 
+export function createCleanRemoteFilesJob() {
+	return objectStorageQueue.add('cleanRemoteFiles', {}, {
+		removeOnComplete: true,
+		removeOnFail: true
+	});
+}
+
 export default function() {
 	if (!program.onlyServer) {
 		deliverQueue.process(128, processDeliver);

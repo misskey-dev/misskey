@@ -25,6 +25,10 @@ common:
   favorites: "Deze notitie toevoegen aan favorieten"
   permissions:
     "write:votes": "Stemmen"
+  post-form:
+    submit: "Bericht"
+    reply: "Beantwoorden"
+    add-visible-user: "Gebruiker toevoegen"
   weekday-short:
     sunday: "Z"
     monday: "M"
@@ -325,21 +329,12 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "Geen meldingen"
 desktop/views/components/post-form.vue:
-  reply-placeholder: "Deze notitie beantwoorden..."
-  quote-placeholder: "Deze notitie citeren..."
-  submit: "Bericht"
-  reply: "Beantwoorden"
   posted: "Geplaatst!"
   replied: "Beantwoord!"
   reposted: "Hergeplaatst!"
   note-failed: "Noteren mislukt"
   reply-failed: "Beantwoorden mislukt"
   renote-failed: "Renote mislukt"
-  posting: "Bezig met plaatsen"
-  attach-media-from-local: "Media bijvoegen van je computer"
-  attach-media-from-drive: "Media bijvoegen uit je Drive"
-  create-poll: "Peiling creëren"
-  text-remain: "{} resterende tekens"
 desktop/views/components/post-form-window.vue:
   note: "Nieuwe notitie"
   reply: "Beantwoorden"
@@ -538,11 +533,6 @@ mobile/views/components/note-detail.vue:
   location: "Locatie"
 mobile/views/components/notifications.vue:
   empty: "Geen meldingen"
-mobile/views/components/post-form.vue:
-  add-visible-user: "Gebruiker toevoegen"
-  submit: "Plaatsen"
-  reply: "Antwoord"
-  reply-placeholder: "Deze notitie beantwoorden..."
 mobile/views/components/sub-note-content.vue:
   private: "(dit bericht is privé)"
   media-count: "{} media"
@@ -632,6 +622,8 @@ pages:
       _seedRandomPick:
         arg2: "Lijsten"
       _pick:
+        arg1: "Lijsten"
+      _listLen:
         arg1: "Lijsten"
     types:
       array: "Lijsten"

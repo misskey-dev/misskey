@@ -12,18 +12,20 @@ module.exports = async (ctx: Koa.BaseContext) => {
 	const meta = await fetchMeta();
 
 	logger.info(meta.summalyProxy
-		? `(Proxy) Getting preview of ${ctx.query.url} ...`
-		: `Getting preview of ${ctx.query.url} ...`);
+		? `(Proxy) Getting preview of ${ctx.query.url}@${ctx.query.lang} ...`
+		: `Getting preview of ${ctx.query.url}@${ctx.query.lang} ...`);
 
 	try {
 		const summary = meta.summalyProxy ? await request.get({
 			url: meta.summalyProxy,
 			qs: {
-				url: ctx.query.url
+				url: ctx.query.url,
+				lang: ctx.query.lang || 'ja-JP'
 			},
 			json: true
 		}) : await summaly(ctx.query.url, {
-			followRedirects: false
+			followRedirects: false,
+			lang: ctx.query.lang || 'ja-JP'
 		});
 
 		logger.succ(`Got preview of ${ctx.query.url}: ${summary.title}`);
@@ -36,7 +38,7 @@ module.exports = async (ctx: Koa.BaseContext) => {
 
 		ctx.body = summary;
 	} catch (e) {
-		logger.error(`Failed to get preview of ${ctx.query.url}: ${e}`);
+		logger.warn(`Failed to get preview of ${ctx.query.url}: ${e}`);
 		ctx.status = 200;
 		ctx.set('Cache-Control', 'max-age=86400, immutable');
 		ctx.body = '{}';

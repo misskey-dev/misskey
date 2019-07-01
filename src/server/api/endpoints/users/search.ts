@@ -2,7 +2,6 @@ import $ from 'cafy';
 import define from '../../define';
 import { Users } from '../../../../models';
 import { User } from '../../../../models/entities/user';
-import { bool, types } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -55,18 +54,18 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'User',
 		}
 	},
 };
 
 export default define(meta, async (ps, me) => {
-	const isUsername = Users.validateUsername(ps.query.replace('@', ''), !ps.localOnly);
+	const isUsername = ps.localOnly ? Users.validateLocalUsername.ok(ps.query.replace('@', '')) : Users.validateRemoteUsername.ok(ps.query.replace('@', ''));
 
 	let users: User[] = [];
 

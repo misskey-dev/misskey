@@ -93,6 +93,25 @@ common:
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
     explore: "Najít uživatele"
+  post-form:
+    attach-location-information: "Přidat informace o lokaci"
+    hide-contents: "Schovat obsah"
+    reply-placeholder: "Odpovědět na tento příspěvek"
+    quote-placeholder: "Citovat tento příspěvek"
+    submit: "Odeslat"
+    reply: "Odpovědět"
+    renote: "Renotovat"
+    attach-media-from-local: "Uplodovat soubor z vašeho zařízení"
+    insert-a-kao: "v('ω')v"
+    create-poll: "Vytvořit anketu"
+    text-remain: "zbývá ještě {} znaků"
+    recent-tags: "Nejnovější"
+    visibility: "Viditelnost"
+    geolocation-alert: "Vaše zařízení nedalo k dispozici lokaci"
+    error: "Chyba"
+    enter-username: "Zadejte své uživatelské jméno"
+    add-visible-user: "Přidat uživatele"
+    username-prompt: "Zadejte své uživatelské jméno"
   weekday-short:
     sunday: "Ne"
     monday: "Po"
@@ -251,7 +270,7 @@ common:
   my-token-regenerated: "Váš token byl regenerován, proto budete odhlášen/a."
   hide-password: "Skrýt heslo"
   show-password: "Zobrazit heslo"
-  enter-username: "Zadejte uživatelské jméno"
+  enter-username: "Zadejte své uživatelské jméno"
   do-not-use-in-production: "Tohle je vývojářský build. Nepoužívejte v produkci."
   user-suspended: "Tomuto uživateli byl pozastaven účet."
   is-remote-user: "Informace o tomto uživateli nemusí být kompletní."
@@ -308,7 +327,10 @@ auth/views/form.vue:
   accept: "Povolit přístup"
 auth/views/index.vue:
   loading: "Načítám..."
+  denied-paragraph: "Tato aplikace nebude mít přístup k Vašemu účtu."
   already-authorized: "Tato aplikace byla již autorizována."
+  callback-url: "Zpátky do aplikace."
+  please-go-back: "Prosím vraťte se zpátky do aplikace."
   error: "Taková relace neexistuje."
   sign-in: "Prosím přihlaste se."
 common/views/pages/explore.vue:
@@ -358,23 +380,30 @@ common/views/components/games/reversi/reversi.room.vue:
   waiting-for-both: "Připravuji"
   cancel: "Zrušit"
   ready: "Připraveno"
+  cancel-ready: "Pokračovat v přípravě"
 common/views/components/connect-failed.vue:
   title: "Nelze se připojit k serveru"
   description: "Nastal problém s Vaším připojením k internetu, nebo server není dostupný nebo zrovna probíhá údržba. Prosím {zkuste to znova} za pár minut."
   thanks: "Děkujeme že jste použili Misskey."
 common/views/components/connect-failed.troubleshooter.vue:
+  title: "Poradce při potížích"
   network: "Síťové připojení"
   checking-network: "Prověřit síťové připojení"
   internet: "Připojení k internetu"
   checking-internet: "Ověřuji připojení k internetu."
   server: "Připojení k serveru"
+  checking-server: "Spojuji se se serverem"
   no-network-desc: "Ujistěte se že jste připojeni k Internetu."
   no-internet: "Nejste připojeni k internetu"
   no-internet-desc: "Jste připojen k síti, ale zdá se že stále chybí připojení k Internetu. Prosím zkontrolujte Vaše připojení k Internetu."
   no-server: "Nelze se připojit k serveru Misskey"
+  success: "Úspěšně se podařilo spojit s Misskey serverem"
+  flush: "Vyčistit mezipaměť"
 common/views/components/media-banner.vue:
+  sensitive: "Choulostivý obsah"
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/theme.vue:
+  theme: "Vzhled"
   light-theme: "Motiv pro použití ve světlém vzhledu"
   dark-theme: "Motiv pro použití v tmavém vzhledu"
   light-themes: "Světlý vzhled"
@@ -385,6 +414,7 @@ common/views/components/theme.vue:
   installed: "\"{}\" byl nainstalován"
   create-a-theme: "Vytvořit motiv"
   save-created-theme: "Uložit motiv"
+  primary-color: "Základní barva"
   text-color: "Barva textu"
   base-theme: "Základní vzhled"
   base-theme-light: "Světlý"
@@ -392,8 +422,10 @@ common/views/components/theme.vue:
   find-more-theme: "Najít další vzhledy"
   theme-name: "Jméno vzhledu"
   preview-created-theme: "Náhled"
+  invalid-theme: "Vzhled není validní"
   already-installed: "Tento vzhled je již nainstalován."
   saved: "Uloženo"
+  manage-themes: "Správa vzhledů"
   builtin-themes: "Standardní vzhledy"
   my-themes: "Moje vzhledy"
   installed-themes: "Nainstalované vzhledy"
@@ -404,6 +436,7 @@ common/views/components/theme.vue:
   desc: "Popis"
   export: "Exportovat"
   import: "Importovat"
+  import-by-code: "nebo zkopírujte kód"
   theme-name-required: "Jméno vzhledu je povinné"
 common/views/components/cw-button.vue:
   hide: "Skrýt"
@@ -476,10 +509,13 @@ common/views/components/poll-editor.vue:
   remove: "Odstranit tuto možnost"
   add: "+ Přidat možnost"
   destroy: "Zahodit dotazník"
+  multiple: "Více odpovědí je povoleno"
   expiration: "Termín"
   infinite: "Nekonečne"
   at: "Výběr data a času"
+  no-more: "Více už přidat nemůžete"
   deadline-date: "Termín ukončení"
+  deadline-time: "Doba trvání"
   interval: "Trvání"
   second: "Sekunda"
   minute: "Minuta"
@@ -487,6 +523,7 @@ common/views/components/poll-editor.vue:
   day: "Ne"
 common/views/components/reaction-picker.vue:
   choose-reaction: "Vyberte svoji reakci"
+  input-reaction-placeholder: "nebo vložte Emoji"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Emoji"
   people: "Lidé"
@@ -500,6 +537,7 @@ common/views/components/emoji-picker.vue:
 common/views/components/signin.vue:
   username: "Přezdívka"
   password: "Heslo"
+  token: "Token"
   signing-in: "Přihlašování..."
   or: "Nebo"
   signin-with-twitter: "Přihlásit se pomocí účtu Twitter"
@@ -527,6 +565,7 @@ common/views/components/signup.vue:
   password-matched: "OK"
   password-not-matched: "Neshodují se"
   recaptcha: "Potvrzení"
+  tos: "Podmínky užívání"
   create: "Vytvořit účet"
   some-error: "Pokus o vytvoření účtu selhal. Prosím zkuste to znovu."
 common/views/components/special-message.vue:
@@ -565,6 +604,7 @@ common/views/components/visibility-chooser.vue:
   home: "Domů"
   specified-desc: "Poslat pouze zmíněným uživatelům"
   local-public: "Veřejná (pouze místní)"
+  local-public-desc: "Nepublikovat na vzdálených serverech"
   local-home: "Domovská (pouze místní)"
   local-followers: "Pro sledující (pouze místní)"
 common/views/components/trends.vue:
@@ -574,6 +614,8 @@ common/views/components/language-settings.vue:
   title: "Zobrazit jazyky"
   pick-language: "Zvolte jazyk"
   recommended: "Doporučené"
+  auto: "Automaticky"
+  specify-language: "Vyberte jazyk"
   info: "Pro aktivování změn musíte znovu načíst stránky."
 common/views/components/profile-editor.vue:
   title: "Profil"
@@ -600,6 +642,7 @@ common/views/components/profile-editor.vue:
   email-not-verified: "Váš email není potvrzen. Prosím zkontrolujte si svou schránku."
   export: "Exportovat"
   import: "Importovat"
+  export-and-import: "Import / Export"
   export-targets:
     following-list: "Seznam sledujících"
     mute-list: "Seznam ztlumených uživatelů"
@@ -618,15 +661,32 @@ common/views/components/user-list-editor.vue:
   deleted: "Smazáno"
   add-user: "Přidat uživatele"
 common/views/components/user-group-editor.vue:
+  users: "Členové"
+  rename: "Přejmenovat skupinu"
+  delete: "Odstranit skupinu"
+  transfer: "Přesunout skupinu"
+  transfer-are-you-sure: "Jste si jistí že chcete přidat @$2 do skupiny: $1?"
+  transferred: "Skupina přesunuta"
+  remove-user: "Odebrat uživatele z této skupiny"
+  delete-are-you-sure: "Jste si jistí že chcete smazat skupinu \"$1\"?"
   deleted: "Smazáno"
   invite: "Pozvat"
+  invited: "Pozvánka byla úspěšně odeslána"
 common/views/components/user-lists.vue:
   user-lists: "Seznamy"
+  create-list: "Vytvořit seznam"
   list-name: "Název seznamu"
 common/views/components/user-groups.vue:
+  user-groups: "Skupiny"
+  create-group: "Vytvořit skupinu"
+  group-name: "Název skupiny"
+  owned-groups: "Moje skupiny"
   invites: "Pozvat"
+  reject-invite: "Odmítnout"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
+  no-broadcasts: "Žádná nová oznámení"
+  have-a-nice-day: "Přejeme Vám příjemný den!"
   next: "Další"
 common/views/widgets/calendar.vue:
   year: "Rok {}"
@@ -653,6 +713,12 @@ common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
 common/views/pages/not-found.vue:
   page-not-found: "Stránka nenalezena"
+common/views/pages/follow.vue:
+  following: "Sledování"
+  follow: "Sledovat"
+common/views/pages/follow-requests.vue:
+  accept: "Přijmout"
+  reject: "Odmítnout"
 desktop:
   banner: "Baner"
   avatar-crop-title: "Vyberte část, která se zobrazí jako avatar"
@@ -755,27 +821,11 @@ desktop/views/components/notes.vue:
   error: "Načítání selhalo."
   retry: "Opakovat"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Přidat uživatele"
-  attach-location-information: "Přidat informace o lokaci"
-  hide-contents: "Schovat obsah"
-  reply-placeholder: "Odpovědět na tento příspěvěk"
-  quote-placeholder: "Citovat tento příspěvek"
-  submit: "Příspěvek"
-  reply: "Odpovědět"
-  renote: "Renotovat"
   posted: "Odesláno!"
   replied: "Odpověděno!"
   reposted: "Renotováno!"
   note-failed: "Nepodařilo se přidat příspěvek"
   renote-failed: "Renotování neuspělo"
-  insert-a-kao: "v('ω')v"
-  create-poll: "Vytvořit anketu"
-  text-remain: "{0} znaků zbývá"
-  recent-tags: "Nejnovější"
-  visibility: "Viditelnost"
-  geolocation-alert: "Vaše zařízení nepodporuje lokační službu"
-  error: "Chyba"
-  enter-username: "Zadejte své uživatelské jméno..."
 desktop/views/components/post-form-window.vue:
   note: "Nový příspěvek"
   reply: "Odpovědět"
@@ -794,6 +844,7 @@ desktop/views/components/renote-form-window.vue:
 desktop/views/components/settings.2fa.vue:
   detail: "Více…"
   url: "https://www.google.cz/landing/2step/"
+  token: "Token"
 common/views/components/media-image.vue:
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/api-settings.vue:
@@ -850,6 +901,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Váš profil"
   lists: "Seznamy"
+  groups: "Skupiny"
   admin: "Administrace"
 desktop/views/components/ui.header.nav.vue:
   game: "Hry"
@@ -884,6 +936,11 @@ admin/views/dashboard.vue:
   instances: "Instance"
   this-instance: "Tato instance"
   federated: "Z fedivesmíru"
+admin/views/logs.vue:
+  logs: "Logy"
+  levels:
+    info: "Informace"
+    error: "Chyba"
 admin/views/abuse.vue:
   details: "Popis"
   remove-report: "Odstranit"
@@ -1026,6 +1083,7 @@ admin/views/federation.vue:
   host: "Hostitel"
   notes: "Poznámky"
   users: "Uživatelé"
+  following: "Sledování"
   caught-at: "Vytvořeno"
   status: "Status"
   latest-request-received-at: "Poslední požadavek přijat"
@@ -1045,6 +1103,7 @@ admin/views/federation.vue:
     hour: "za hodinu"
     day: "za den"
   blocked-hosts: "Blokován"
+  save: "Uložit"
 desktop/views/pages/welcome.vue:
   about: "O Misskey"
   timeline: "Časová osa"
@@ -1083,6 +1142,8 @@ desktop/views/pages/user/user.photos.vue:
   no-photos: "Žádné obrázky"
 desktop/views/pages/user/user.header.vue:
   posts: "Poznámky"
+  following: "Sledovaní"
+  followers: "Sledující"
   month: "Po"
   day: "Ne"
 desktop/views/widgets/notifications.vue:
@@ -1111,6 +1172,7 @@ mobile/views/components/drive.file-detail.vue:
 mobile/views/components/media-video.vue:
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/follow-button.vue:
+  following: "Sledování"
   follow-processing: "Zpracovávám"
 mobile/views/components/note.vue:
   private: "Tento příspěvek je soukromý"
@@ -1130,15 +1192,6 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "kočka"
-mobile/views/components/post-form.vue:
-  add-visible-user: "Přidat uživatele"
-  submit: "Příspěvek"
-  reply: "Odpovědět"
-  renote: "Renotovat"
-  reply-placeholder: "Odpovědět na tento příspěvěk"
-  geolocation-alert: "Vaše zařízení nepodporuje lokační službu"
-  error: "Chyba"
-  username-prompt: "Zadejte uživatelské jméno"
 mobile/views/components/sub-note-content.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
@@ -1151,6 +1204,7 @@ mobile/views/components/ui.nav.vue:
   notifications: "Oznámení"
   search: "Vyhledávání"
   user-lists: "Seznamy"
+  user-groups: "Skupiny"
   widgets: "Widgety"
   game: "Hry"
   admin: "Administrace"
@@ -1243,6 +1297,8 @@ pages:
       _seedRandomPick:
         arg2: "Seznamy"
       _pick:
+        arg1: "Seznamy"
+      _listLen:
         arg1: "Seznamy"
     types:
       array: "Seznamy"

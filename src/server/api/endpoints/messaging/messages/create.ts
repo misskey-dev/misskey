@@ -9,7 +9,6 @@ import { getUser } from '../../../common/getters';
 import { MessagingMessages, DriveFiles, Mutings, UserGroups, UserGroupJoinings } from '../../../../../models';
 import { MessagingMessage } from '../../../../../models/entities/messaging-message';
 import { genId } from '../../../../../misc/gen-id';
-import { types, bool } from '../../../../../misc/schema';
 import { User } from '../../../../../models/entities/user';
 import { UserGroup } from '../../../../../models/entities/user-group';
 import { Not } from 'typeorm';
@@ -44,7 +43,7 @@ export const meta = {
 		},
 
 		text: {
-			validator: $.optional.str.pipe(MessagingMessages.isValidText)
+			validator: $.optional.str.pipe(MessagingMessages.validateText)
 		},
 
 		fileId: {
@@ -53,8 +52,8 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		ref: 'MessagingMessage',
 	},
 

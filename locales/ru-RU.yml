@@ -26,6 +26,13 @@ common:
   do-not-copy-paste: "Пожалуйста, не вводите и не вставляйте сюда код. Аккаунту может угрожать опасность."
   load-more: "Загрузить больше"
   enter-password: "Пожалуйста, введите ваш пароль"
+  2fa: "Двухфакторная аутентификация"
+  customize-home: "Настройка домашней страницы"
+  dark-mode: "Тёмная тема"
+  signin: "Войти"
+  signup: "Регистрация"
+  signout: "Выйти"
+  reload-to-apply-the-setting: "Вам необходимо перезагрузить страницу, чтобы применить настройки. Вы хотите перезагрузить сейчас?"
   customization-tips:
     title: "Советы по настройке"
     gotit: "Понятно!"
@@ -51,7 +58,14 @@ common:
   month-and-day: "{day}.{month}"
   trash: "Мусорное ведро"
   drive: "Drive"
+  pages: "Страницы"
   messaging: "Чат"
+  timeline: "Лента"
+  followers: "Подписчики"
+  favorites: "Избранное"
+  post-form:
+    reply: "Ответить"
+    create-poll: "Создать опрос"
   weekday-short:
     sunday: "Вс"
     monday: "Пн"

@@ -2,7 +2,6 @@ import define from '../../define';
 import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
-import { types, bool } from '../../../../misc/schema';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要
@@ -24,27 +23,27 @@ export const meta = {
 	requireCredential: false,
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			properties: {
 				tag: {
-					type: types.string,
-					optional: bool.false, nullable: bool.false,
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
 				},
 				chart: {
-					type: types.array,
-					optional: bool.false, nullable: bool.false,
+					type: 'array' as const,
+					optional: false as const, nullable: false as const,
 					items: {
-						type: types.number,
-						optional: bool.false, nullable: bool.false,
+						type: 'number' as const,
+						optional: false as const, nullable: false as const,
 					}
 				},
 				usersCount: {
-					type: types.number,
-					optional: bool.false, nullable: bool.false,
+					type: 'number' as const,
+					optional: false as const, nullable: false as const,
 				}
 			}
 		}

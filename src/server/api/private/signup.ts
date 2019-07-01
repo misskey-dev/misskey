@@ -58,13 +58,13 @@ export default async (ctx: Koa.BaseContext) => {
 	}
 
 	// Validate username
-	if (!Users.validateUsername(username)) {
+	if (!Users.validateLocalUsername.ok(username)) {
 		ctx.status = 400;
 		return;
 	}
 
 	// Validate password
-	if (!Users.validatePassword(password)) {
+	if (!Users.validatePassword.ok(password)) {
 		ctx.status = 400;
 		return;
 	}

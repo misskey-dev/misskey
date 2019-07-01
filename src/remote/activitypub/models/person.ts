@@ -6,7 +6,6 @@ import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { fromHtml } from '../../../mfm/fromHtml';
-import { URL } from 'url';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
 import { ITag, extractHashtags } from './tag';
@@ -53,12 +52,14 @@ function validatePerson(x: any, uri: string) {
 		return new Error('invalid person: inbox is not a string');
 	}
 
-	if (!Users.validateUsername(x.preferredUsername, true)) {
+	if (!Users.validateRemoteUsername.ok(x.preferredUsername)) {
 		return new Error('invalid person: invalid username');
 	}
 
-	if (!Users.isValidName(x.name == '' ? null : x.name)) {
-		return new Error('invalid person: invalid name');
+	if (x.name != null && x.name != '') {
+		if (!Users.validateName.ok(x.name)) {
+			return new Error('invalid person: invalid name');
+		}
 	}
 
 	if (typeof x.id !== 'string') {

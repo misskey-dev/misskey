@@ -1,9 +1,10 @@
+import $ from 'cafy';
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserGroupJoinings } from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
-import { SchemaType, bool, types } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 
 export type PackedUser = SchemaType<typeof packedUserSchema>;
@@ -231,177 +232,161 @@ export class UserRepository extends Repository<User> {
 	}
 
 	//#region Validators
-	public validateUsername(username: string, remote = false): boolean {
-		return typeof username == 'string' && (remote ? /^\w([\w-]*\w)?$/ : /^\w{1,20}$/).test(username);
-	}
-
-	public validatePassword(password: string): boolean {
-		return typeof password == 'string' && password != '';
-	}
-
-	public isValidName(name?: string): boolean {
-		return name === null || (typeof name == 'string' && name.length < 50 && name.trim() != '');
-	}
-
-	public isValidDescription(description: string): boolean {
-		return typeof description == 'string' && description.length < 500 && description.trim() != '';
-	}
-
-	public isValidLocation(location: string): boolean {
-		return typeof location == 'string' && location.length < 50 && location.trim() != '';
-	}
-
-	public isValidBirthday(birthday: string): boolean {
-		return typeof birthday == 'string' && /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.test(birthday);
-	}
+	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
+	public validateRemoteUsername = $.str.match(/^\w([\w-]*\w)?$/);
+	public validatePassword = $.str.min(1);
+	public validateName = $.str.min(1).max(50);
+	public validateDescription = $.str.min(1).max(500);
+	public validateLocation = $.str.min(1).max(50);
+	public validateBirthday = $.str.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
 	//#endregion
 }
 
 export const packedUserSchema = {
-	type: types.object,
-	nullable: bool.false, optional: bool.false,
+	type: 'object' as const,
+	nullable: false as const, optional: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			nullable: bool.false, optional: bool.false,
+			type: 'string' as const,
+			nullable: false as const, optional: false as const,
 			format: 'id',
 			description: 'The unique identifier for this User.',
 			example: 'xxxxxxxxxx',
 		},
 		username: {
-			type: types.string,
-			nullable: bool.false, optional: bool.false,
+			type: 'string' as const,
+			nullable: false as const, optional: false as const,
 			description: 'The screen name, handle, or alias that this user identifies themselves with.',
 			example: 'ai'
 		},
 		name: {
-			type: types.string,
-			nullable: bool.true, optional: bool.false,
+			type: 'string' as const,
+			nullable: true as const, optional: false as const,
 			description: 'The name of the user, as they’ve defined it.',
 			example: '藍'
 		},
 		url: {
-			type: types.string,
+			type: 'string' as const,
 			format: 'url',
-			nullable: bool.true, optional: bool.true,
+			nullable: true as const, optional: true as const,
 		},
 		avatarUrl: {
-			type: types.string,
+			type: 'string' as const,
 			format: 'url',
-			nullable: bool.true, optional: bool.false,
+			nullable: true as const, optional: false as const,
 		},
 		avatarColor: {
-			type: types.any,
-			nullable: bool.true, optional: bool.false,
+			type: 'any' as const,
+			nullable: true as const, optional: false as const,
 		},
 		bannerUrl: {
-			type: types.string,
+			type: 'string' as const,
 			format: 'url',
-			nullable: bool.true, optional: bool.true,
+			nullable: true as const, optional: true as const,
 		},
 		bannerColor: {
-			type: types.any,
-			nullable: bool.true, optional: bool.true,
+			type: 'any' as const,
+			nullable: true as const, optional: true as const,
 		},
 		emojis: {
-			type: types.any,
-			nullable: bool.true, optional: bool.false,
+			type: 'any' as const,
+			nullable: true as const, optional: false as const,
 		},
 		host: {
-			type: types.string,
-			nullable: bool.true, optional: bool.false,
+			type: 'string' as const,
+			nullable: true as const, optional: false as const,
 			example: 'misskey.example.com'
 		},
 		description: {
-			type: types.string,
-			nullable: bool.true, optional: bool.true,
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
 			description: 'The user-defined UTF-8 string describing their account.',
 			example: 'Hi masters, I am Ai!'
 		},
 		birthday: {
-			type: types.string,
-			nullable: bool.true, optional: bool.true,
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
 			example: '2018-03-12'
 		},
 		createdAt: {
-			type: types.string,
-			nullable: bool.false, optional: bool.true,
+			type: 'string' as const,
+			nullable: false as const, optional: true as const,
 			format: 'date-time',
 			description: 'The date that the user account was created on Misskey.'
 		},
 		updatedAt: {
-			type: types.string,
-			nullable: bool.true, optional: bool.true,
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
 			format: 'date-time',
 		},
 		location: {
-			type: types.string,
-			nullable: bool.true, optional: bool.true,
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
 		},
 		followersCount: {
-			type: types.number,
-			nullable: bool.false, optional: bool.true,
+			type: 'number' as const,
+			nullable: false as const, optional: true as const,
 			description: 'The number of followers this account currently has.'
 		},
 		followingCount: {
-			type: types.number,
-			nullable: bool.false, optional: bool.true,
+			type: 'number' as const,
+			nullable: false as const, optional: true as const,
 			description: 'The number of users this account is following.'
 		},
 		notesCount: {
-			type: types.number,
-			nullable: bool.false, optional: bool.true,
+			type: 'number' as const,
+			nullable: false as const, optional: true as const,
 			description: 'The number of Notes (including renotes) issued by the user.'
 		},
 		isBot: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 			description: 'Whether this account is a bot.'
 		},
 		pinnedNoteIds: {
-			type: types.array,
-			nullable: bool.false, optional: bool.true,
+			type: 'array' as const,
+			nullable: false as const, optional: true as const,
 			items: {
-				type: types.string,
-				nullable: bool.false, optional: bool.false,
+				type: 'string' as const,
+				nullable: false as const, optional: false as const,
 				format: 'id',
 			}
 		},
 		pinnedNotes: {
-			type: types.array,
-			nullable: bool.false, optional: bool.true,
+			type: 'array' as const,
+			nullable: false as const, optional: true as const,
 			items: {
-				type: types.object,
-				nullable: bool.false, optional: bool.false,
+				type: 'object' as const,
+				nullable: false as const, optional: false as const,
 				ref: 'Note'
 			}
 		},
 		isCat: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 			description: 'Whether this account is a cat.'
 		},
 		isAdmin: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 			description: 'Whether this account is the admin.'
 		},
 		isModerator: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 			description: 'Whether this account is a moderator.'
 		},
 		isLocked: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 		},
 		hasUnreadSpecifiedNotes: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 		},
 		hasUnreadMentions: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 		},
 	},
 };

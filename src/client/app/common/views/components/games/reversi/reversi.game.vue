@@ -23,11 +23,11 @@
 	</div>
 
 	<div class="board">
-		<div class="labels-x" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
+		<div class="labels-x" v-if="$store.state.settings.gamesReversiShowBoardLabels">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 		<div class="flex">
-			<div class="labels-y" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
+			<div class="labels-y" v-if="$store.state.settings.gamesReversiShowBoardLabels">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 			<div class="cells" :style="cellsStyle">
@@ -35,7 +35,7 @@
 						:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
 						@click="set(i)"
 						:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`">
-					<template v-if="$store.state.settings.games.reversi.useAvatarStones">
+					<template v-if="$store.state.settings.gamesReversiUseAvatarStones">
 						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
 						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
 					</template>
@@ -45,11 +45,11 @@
 					</template>
 				</div>
 			</div>
-			<div class="labels-y" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
+			<div class="labels-y" v-if="this.$store.state.settings.gamesReversiShowBoardLabels">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 		</div>
-		<div class="labels-x" v-if="this.$store.state.settings.games.reversi.showBoardLabels">
+		<div class="labels-x" v-if="this.$store.state.settings.gamesReversiShowBoardLabels">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>

@@ -1,28 +1,26 @@
-import { types, bool } from '../../../../misc/schema';
-
 export const schema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		foo: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			properties: {
 				total: {
-					type: types.number,
-					optional: bool.false, nullable: bool.false,
+					type: 'number' as const,
+					optional: false as const, nullable: false as const,
 					description: ''
 				},
 
 				inc: {
-					type: types.number,
-					optional: bool.false, nullable: bool.false,
+					type: 'number' as const,
+					optional: false as const, nullable: false as const,
 					description: ''
 				},
 
 				dec: {
-					type: types.number,
-					optional: bool.false, nullable: bool.false,
+					type: 'number' as const,
+					optional: false as const, nullable: false as const,
 					description: ''
 				},
 			}

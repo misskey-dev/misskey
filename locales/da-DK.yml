@@ -95,6 +95,14 @@ common:
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Følgende brugere vil få vist deres poster på tidslinjen."
     explore: "Find brugere"
+  post-form:
+    submit: "Post"
+    reply: "Svar"
+    renote: "Gen-postering"
+    error: "Fejl"
+    enter-username: "Angiv brugernavn"
+    add-visible-user: "Tilføj en bruger"
+    username-prompt: "Angiv brugernavn"
   weekday-short:
     sunday: "Søn"
     monday: "Man"
@@ -918,34 +926,12 @@ desktop/views/components/notes.vue:
 desktop/views/components/notifications.vue:
   empty: "Der er ingen notifikationer!"
 desktop/views/components/post-form.vue:
-  add-visible-user: "+Tilføj bruger"
-  attach-location-information: "Vedhæft oplysninger om placering"
-  hide-contents: "Skjul indhold"
-  reply-placeholder: "Svar på denne post"
-  quote-placeholder: "Citer denne post"
-  submit: "Post"
-  reply: "Svar"
-  renote: "Gen-postering"
   posted: "Afsendt!"
   replied: "Besvaret!"
   reposted: "Gen-posteret!"
   note-failed: "Fejl under afsendelse"
   reply-failed: "Fejl under besvarelse"
   renote-failed: "Fejl under gen-postering"
-  posting: "Afsender"
-  attach-media-from-local: "Vedhæft medie fra din enhed"
-  attach-media-from-drive: "Vedhæft medie fra dit drev"
-  insert-a-kao: "v('ω')v"
-  create-poll: "Opret en afstemning"
-  text-remain: "Der mangler {} tegn"
-  recent-tags: "Seneste"
-  local-only-message: "Denne post vil kun blive offentliggjort lokalt"
-  click-to-tagging: "Klik for at tagge"
-  visibility: "Synlighed"
-  geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
-  error: "Fejl"
-  enter-username: "Angiv brugernavn"
-  annotations: "Kommentarer til posten (frivillige)"
 desktop/views/components/post-form-window.vue:
   note: "Ny post"
   reply: "Svar"
@@ -1106,6 +1092,13 @@ admin/views/dashboard.vue:
 admin/views/queue.vue:
   title: "Kø"
   remove-all-jobs: "Ryd alle job køer"
+  queue: "Kø"
+  state: "Sorter efter"
+admin/views/logs.vue:
+  logs: "Logs"
+  levels:
+    info: "Information"
+    error: "Fejl"
 admin/views/abuse.vue:
   title: "Misbrug"
   target: "Mål"
@@ -1402,6 +1395,7 @@ admin/views/federation.vue:
     day: "pr. dag"
   blocked-hosts: "Bloker"
   blocked-hosts-info: "Beskrivelse af værterne du vil blokere, adskilt af linjeskift."
+  save: "Gem"
 desktop/views/pages/welcome.vue:
   about: "Mere info..."
   timeline: "Tidslinje"
@@ -1533,17 +1527,6 @@ mobile/views/components/note-sub.vue:
   cat: "cat"
 mobile/views/components/notifications.vue:
   empty: "Der er ingen notifikationer!"
-mobile/views/components/post-form.vue:
-  add-visible-user: "Tilføj en bruger"
-  submit: "Post"
-  reply: "Svar"
-  renote: "Gen-postering"
-  quote-placeholder: "Citer denne post... (valgfrit)"
-  reply-placeholder: "Svar på denne post"
-  cw-placeholder: "Kommentar til indholdet (valgfrit)"
-  geolocation-alert: "Din enhed giver ikke mulighed for at benytte placeringstjenester"
-  error: "Fejl"
-  username-prompt: "Angiv brugernavn"
 mobile/views/components/sub-note-content.vue:
   private: "Posten er privat"
   deleted: "Posten er blevet fjernet"
@@ -1778,8 +1761,7 @@ pages:
       _divide:
         arg1: "A"
         arg2: "B"
-      remind: "÷ Tomo"
-      _remind:
+      _mod:
         arg1: "A"
         arg2: "B"
       eq: "A og B er ens"
@@ -1862,6 +1844,8 @@ pages:
       _pick:
         arg1: "Lister"
         arg2: "Position"
+      _listLen:
+        arg1: "Lister"
       number: "Tal"
       stringToNumber: "Tekst til tal"
       _stringToNumber:

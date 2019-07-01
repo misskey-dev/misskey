@@ -3,7 +3,6 @@
  */
 
 import * as fs from 'fs';
-import { URL } from 'url';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
 import * as pkg from '../../package.json';

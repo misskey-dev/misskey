@@ -10,7 +10,6 @@ import { User } from '../../../../models/entities/user';
 import { Users, DriveFiles, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
-import { types, bool } from '../../../../misc/schema';
 
 let maxNoteTextLength = 1000;
 
@@ -40,7 +39,7 @@ export const meta = {
 
 	params: {
 		visibility: {
-			validator: $.optional.str.or(['public', 'home', 'followers', 'specified', 'private']),
+			validator: $.optional.str.or(['public', 'home', 'followers', 'specified']),
 			default: 'public',
 			desc: {
 				'ja-JP': '投稿の公開範囲'
@@ -175,12 +174,12 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		properties: {
 			createdNote: {
-				type: types.object,
-				optional: bool.false, nullable: bool.false,
+				type: 'object' as const,
+				optional: false as const, nullable: false as const,
 				ref: 'Note',
 				description: '作成した投稿'
 			}

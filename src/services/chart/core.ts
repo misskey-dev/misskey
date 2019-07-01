@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
-import { Schema, bool, types } from '../../misc/schema';
+import { Schema } from '../../misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 
@@ -163,6 +163,19 @@ export default abstract class Chart<T extends Record<string, any>> {
 				},
 				...Chart.convertSchemaToFlatColumnDefinitions(schema)
 			},
+			indices: [{
+				columns: ['date']
+			}, {
+				columns: ['span']
+			}, {
+				columns: ['group']
+			}, {
+				columns: ['span', 'date']
+			}, {
+				columns: ['date', 'group']
+			}, {
+				columns: ['span', 'date', 'group']
+			}]
 		});
 	}
 
@@ -449,8 +462,8 @@ export function convertLog(logSchema: Schema): Schema {
 	if (v.type === 'number') {
 		v.type = 'array';
 		v.items = {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 		};
 	} else if (v.type === 'object') {
 		for (const k of Object.keys(v.properties!)) {

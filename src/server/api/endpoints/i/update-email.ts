@@ -8,6 +8,7 @@ import * as bcrypt from 'bcryptjs';
 import { Users, UserProfiles } from '../../../../models';
 import { ensure } from '../../../../prelude/ensure';
 import { sendEmail } from '../../../../services/send-email';
+import { ApiError } from '../../error';
 
 export const meta = {
 	requireCredential: true,
@@ -27,6 +28,14 @@ export const meta = {
 		email: {
 			validator: $.optional.nullable.str
 		},
+	},
+
+	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: 'e54c1d7e-e7d6-4103-86b6-0a95069b4ad3'
+		},
 	}
 };
 
@@ -37,7 +46,7 @@ export default define(meta, async (ps, user) => {
 	const same = await bcrypt.compare(ps.password, profile.password!);
 
 	if (!same) {
-		throw new Error('incorrect password');
+		throw new ApiError(meta.errors.incorrectPassword);
 	}
 
 	await UserProfiles.update({ userId: user.id }, {

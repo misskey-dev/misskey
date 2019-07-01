@@ -124,7 +124,7 @@ export default Vue.extend({
 		this.connection = this.$root.stream.useSharedConnection('serverStats');
 
 		this.updateStats();
-		this.clock = setInterval(this.updateStats, 1000);
+		this.clock = setInterval(this.updateStats, 3000);
 
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;

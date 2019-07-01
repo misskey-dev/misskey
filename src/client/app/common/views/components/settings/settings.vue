@@ -132,6 +132,13 @@
 			</section>
 
 			<section>
+				<header>{{ $t('@._settings.sync') }}</header>
+				<ui-input v-if="$root.isMobile" v-model="mobileHomeProfile" :datalist="Object.keys($store.state.settings.mobileHomeProfiles)">{{ $t('@._settings.home-profile') }}</ui-input>
+				<ui-input v-else v-model="homeProfile" :datalist="Object.keys($store.state.settings.homeProfiles)">{{ $t('@._settings.home-profile') }}</ui-input>
+				<ui-input v-model="deckProfile" :datalist="Object.keys($store.state.settings.deckProfiles)">{{ $t('@._settings.deck-profile') }}</ui-input>
+			</section>
+
+			<section>
 				<header>{{ $t('@._settings.web-search-engine') }}</header>
 				<ui-input v-model="webSearchEngine">{{ $t('@._settings.web-search-engine') }}<template #desc>{{ $t('@._settings.web-search-engine-desc') }}</template></ui-input>
 			</section>
@@ -472,13 +479,13 @@ export default Vue.extend({
 		},
 
 		games_reversi_showBoardLabels: {
-			get() { return this.$store.state.settings.games.reversi.showBoardLabels; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.showBoardLabels', value }); }
+			get() { return this.$store.state.settings.gamesReversiShowBoardLabels; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'gamesReversiShowBoardLabels', value }); }
 		},
 
 		games_reversi_useAvatarStones: {
-			get() { return this.$store.state.settings.games.reversi.useAvatarStones; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'games.reversi.useAvatarStones', value }); }
+			get() { return this.$store.state.settings.gamesReversiUseAvatarStones; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'gamesReversiUseAvatarStones', value }); }
 		},
 
 		disableAnimatedMfm: {
@@ -499,6 +506,21 @@ export default Vue.extend({
 		mobileNotificationPosition: {
 			get() { return this.$store.state.device.mobileNotificationPosition; },
 			set(value) { this.$store.commit('device/set', { key: 'mobileNotificationPosition', value }); }
+		},
+
+		homeProfile: {
+			get() { return this.$store.state.device.homeProfile; },
+			set(value) { this.$store.commit('device/set', { key: 'homeProfile', value }); }
+		},
+
+		mobileHomeProfile: {
+			get() { return this.$store.state.device.mobileHomeProfile; },
+			set(value) { this.$store.commit('device/set', { key: 'mobileHomeProfile', value }); }
+		},
+
+		deckProfile: {
+			get() { return this.$store.state.device.deckProfile; },
+			set(value) { this.$store.commit('device/set', { key: 'deckProfile', value }); }
 		},
 	},
 	created() {

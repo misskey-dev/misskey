@@ -110,7 +110,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.commit('device/addDeckWidget', {
+			this.$store.commit('addDeckWidget', {
 				id: this.column.id,
 				widget: {
 					name: this.widgetAdderSelected,
@@ -123,14 +123,14 @@ export default Vue.extend({
 		},
 
 		removeWidget(widget) {
-			this.$store.commit('device/removeDeckWidget', {
+			this.$store.commit('removeDeckWidget', {
 				id: this.column.id,
 				widget
 			});
 		},
 
 		saveWidgets() {
-			this.$store.commit('device/updateDeckColumn', this.column);
+			this.$store.commit('updateDeckColumn', this.column);
 		}
 	}
 });

@@ -62,6 +62,9 @@ db:
   user: example-misskey-user
   pass: example-misskey-pass
 
+  # Whether disable Caching queries
+  #disableCache: true
+
   # Extra Connection options
   #extra:
   #  ssl: true
