@@ -119,6 +119,7 @@ jobs:
             actual="v$(cat package.json | jq -r '.version' | awk -F. '{print $1}')"
             if [ $excepted = $actual ]
               then
+                yarn init || echo -e '\033[0;33mInitialization Not Required\033[0;39m'
                 yarn test
               else
                 echo -e '\033[0;33mTest Aborted\033[0;39m'
