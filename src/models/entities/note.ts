@@ -217,7 +217,7 @@ export class Note {
 	public renoteUserHost: string | null;
 	//#endregion
 
-	constructor(data: Partial<Note>) {
+	constructor(data?: Partial<Note> | null) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {
