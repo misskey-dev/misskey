@@ -7,7 +7,7 @@ executors:
       - image: misskey/ci:v11-node12
       - image: circleci/postgres:latest
         environment:
-          POSTGRES_USER: admin
+          POSTGRES_USER: syuilo
           POSTGRES_DB: test-misskey
       - image: circleci/redis:latest
   v11-node11:
@@ -16,7 +16,7 @@ executors:
       - image: misskey/ci:v11-node11
       - image: circleci/postgres:latest
         environment:
-          POSTGRES_USER: admin
+          POSTGRES_USER: syuilo
           POSTGRES_DB: test-misskey
       - image: circleci/redis:latest
   v10-node11:

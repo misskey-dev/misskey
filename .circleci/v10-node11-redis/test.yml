@@ -4,7 +4,7 @@ mongodb:
   host: localhost
   port: 27017
   db: test-misskey
-  user: admin
+  user: syuilo
   pass: ''
 # __REDIS__
 redis:

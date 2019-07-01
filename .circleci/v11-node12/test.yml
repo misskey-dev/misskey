@@ -4,7 +4,7 @@ db:
   host: localhost
   port: 5432
   db: test-misskey
-  user: admin
+  user: syuilo
   pass: ''
 redis:
   host: localhost
