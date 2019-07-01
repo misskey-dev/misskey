@@ -31,12 +31,12 @@ declare module 'jsrsasign' {
 	type BinString = string;
 
 	/**
-	 * base64 string
+	 * base64 string /[A-Za-z0-9+/]=+/
 	 */
 	type Base64String = string;
 
 	/**
-	 * base64 URL encoded string
+	 * base64 URL encoded string /[A-Za-z0-9_-]/
 	 */
 	type Base64URLString = string;
 
