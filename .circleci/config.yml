@@ -6,12 +6,18 @@ executors:
     docker:
       - image: misskey/ci:v11-node12
       - image: circleci/postgres:latest
+        environment:
+          POSTGRES_USER: admin
+          POSTGRES_DB: test-misskey
       - image: circleci/redis:latest
   v11-node11:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
     docker:
       - image: misskey/ci:v11-node11
       - image: circleci/postgres:latest
+        environment:
+          POSTGRES_USER: admin
+          POSTGRES_DB: test-misskey
       - image: circleci/redis:latest
   v10-node11:
     working_directory: /tmp/605d145e08d777510640c4509145d45489e9b83b3ae630dda16370ce0cb38947
