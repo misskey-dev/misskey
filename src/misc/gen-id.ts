@@ -5,12 +5,12 @@ import { genMeidg } from './id/meidg';
 import { genObjectId } from './id/object-id';
 import config from '../config';
 
-const metohd = config.id.toLowerCase();
+const method = config.id.toLowerCase();
 
 export function genId(date?: Date): string {
 	if (!date || (date > new Date())) date = new Date();
 
-	switch (metohd) {
+	switch (method) {
 		case 'aid': return genAid(date);
 		case 'meid': return genMeid(date);
 		case 'meidg': return genMeidg(date);
