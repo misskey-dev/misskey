@@ -561,6 +561,7 @@ common/views/components/note-menu.vue:
   delete: "削除"
   delete-confirm: "この投稿を削除しますか？"
   remote: "投稿元で見る"
+  pin-limit-exceeded: "これ以上ピン留めできません。"
 
 common/views/components/user-menu.vue:
   mention: "メンション"
