@@ -6,7 +6,7 @@ import { In } from 'typeorm';
 import { ensure } from '../../prelude/ensure';
 
 export default async function(user: User) {
-	const author: Author = {
+	const author = {
 		link: `${config.url}/@${user.username}`,
 		name: user.name || user.username
 	};
@@ -30,13 +30,14 @@ export default async function(user: User) {
 		generator: 'Misskey',
 		description: `${user.notesCount} Notes, ${user.followingCount} Following, ${user.followersCount} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 		link: author.link,
-		image: user.avatarUrl,
+		image: user.avatarUrl ? user.avatarUrl : undefined,
 		feedLinks: {
 			json: `${author.link}.json`,
 			atom: `${author.link}.atom`,
 		},
-		author
-	} as FeedOptions);
+		author,
+		copyright: user.name || user.username
+	});
 
 	for (const note of notes) {
 		const files = note.fileIds.length > 0 ? await DriveFiles.find({

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import fileType from 'file-type';
+import fileType = require('file-type');
 import checkSvg from '../misc/check-svg';
 
 export async function detectMine(path: string) {
