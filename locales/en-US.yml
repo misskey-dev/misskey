@@ -523,6 +523,7 @@ common/views/components/note-menu.vue:
   delete: "Delete"
   delete-confirm: "Are you sure you want to delete this post?"
   remote: "Show original note"
+  pin-limit-exceeded: "You can't pin posts more than now."
 common/views/components/user-menu.vue:
   mention: "Mention"
   mute: "Mute"
