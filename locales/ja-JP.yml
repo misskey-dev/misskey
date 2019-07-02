@@ -1235,6 +1235,9 @@ admin/views/index.vue:
 
 admin/views/db.vue:
   tables: "テーブル"
+  vacuum: "バキューム"
+  vacuum-info: "データベースの掃除を行います。データはそのままで、ディスク使用量を減らします。通常この操作は自動で定期的に行われます。"
+  vacuum-exclamation: "バキュームを行うと、しばらくの間データベースの負荷が高くなり、ユーザーの操作を受け付けなくなる場合があります。"
 
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
