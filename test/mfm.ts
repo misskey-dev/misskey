@@ -844,11 +844,11 @@ describe('MFM', () => {
 			});
 
 			it('ignore parent []', () => {
-				const tokens = parse('[https://example.com/foo]');
+				const tokens = parse('foo [https://example.com/foo] bar');
 				assert.deepStrictEqual(tokens, [
-					text('['),
+					text('foo ['),
 					leaf('url', { url: 'https://example.com/foo' }),
-					text(']')
+					text('] bar')
 				]);
 			});
 
