@@ -65,6 +65,7 @@ common:
   favorites: "Moje ulubione"
   permissions:
     "read:drive": "Wyświetl dysk"
+    "read:messaging": "Zobacz konwersację"
     "write:votes": "Zagłosuj"
   empty-timeline-info:
     explore: "Poznaj"
