@@ -119,7 +119,7 @@ export default define({
 					const formatted = `${moment(file.lastModified).format(this.$store.state.settings.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 					const name = this.$store.state.settings.pasteDialog
 						? await this.$root.dialog({
-								title: this.$t('enter-file-name'),
+								title: this.$t('@.post-form.enter-file-name'),
 								input: {
 									default: formatted
 								},
