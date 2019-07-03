@@ -523,7 +523,7 @@ common/views/components/note-menu.vue:
   delete: "Delete"
   delete-confirm: "Are you sure you want to delete this post?"
   remote: "Show original note"
-  pin-limit-exceeded: "You can't pin posts more than now."
+  pin-limit-exceeded: "You can't pin any more posts."
 common/views/components/user-menu.vue:
   mention: "Mention"
   mute: "Mute"
@@ -1111,6 +1111,8 @@ admin/views/index.vue:
   back-to-misskey: "Back to Misskey"
 admin/views/db.vue:
   tables: "Tables"
+  vacuum: "Vacuum"
+  vacuum-info: "Tidies up the database. Keeps the data intact and reduces disk usage. This is usually done automatically and periodically."
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "Accounts"
