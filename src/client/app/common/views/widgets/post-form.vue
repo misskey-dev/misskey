@@ -135,7 +135,7 @@ export default define({
 			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
 		},
 
-		upload(file: any, name?: string) {
+		upload(file: File, name?: string) {
 			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
 		},
 
