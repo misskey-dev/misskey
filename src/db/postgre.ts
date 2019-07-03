@@ -43,6 +43,8 @@ import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
 import { UserProfile } from '../models/entities/user-profile';
+import { UserSecurityKey } from '../models/entities/user-security-key';
+import { AttestationChallenge } from '../models/entities/attestation-challenge';
 import { Page } from '../models/entities/page';
 import { PageLike } from '../models/entities/page-like';
 
@@ -96,6 +98,8 @@ export const entities = [
 	UserGroupJoining,
 	UserGroupInvite,
 	UserNotePining,
+	UserSecurityKey,
+	AttestationChallenge,
 	Following,
 	FollowRequest,
 	Muting,
@@ -146,7 +150,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			options: {
 				host: config.redis.host,
 				port: config.redis.port,
-				options:{
+				options: {
 					password: config.redis.pass,
 					prefix: config.redis.prefix,
 					db: config.redis.db || 0

@@ -4,10 +4,11 @@ import * as speakeasy from 'speakeasy';
 import { publishMainStream } from '../../../services/stream';
 import signin from '../common/signin';
 import config from '../../../config';
-import { Users, Signins, UserProfiles } from '../../../models';
+import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { genId } from '../../../misc/gen-id';
 import { ensure } from '../../../prelude/ensure';
+import { verifyLogin, hash } from '../2fa';
 
 export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
@@ -51,40 +52,116 @@ export default async (ctx: Koa.BaseContext) => {
 	// Compare password
 	const same = await bcrypt.compare(password, profile.password!);
 
-	if (same) {
-		if (profile.twoFactorEnabled) {
-			const verified = (speakeasy as any).totp.verify({
-				secret: profile.twoFactorSecret,
-				encoding: 'base32',
-				token: token
-			});
-
-			if (verified) {
-				signin(ctx, user);
-			} else {
-				ctx.throw(403, {
-					error: 'invalid token'
-				});
-			}
-		} else {
-			signin(ctx, user);
-		}
-	} else {
-		ctx.throw(403, {
-			error: 'incorrect password'
+	async function fail(status?: number, failure?: {error: string}) {
+		// Append signin history
+		const record = await Signins.save({
+			id: genId(),
+			createdAt: new Date(),
+			userId: user.id,
+			ip: ctx.ip,
+			headers: ctx.headers,
+			success: !!(status || failure)
 		});
+
+		// Publish signin event
+		publishMainStream(user.id, 'signin', await Signins.pack(record));
+
+		if (status && failure) {
+			ctx.throw(status, failure);
+		}
 	}
 
-	// Append signin history
-	const record = await Signins.save({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		ip: ctx.ip,
-		headers: ctx.headers,
-		success: same
-	});
+	if (!same) {
+		await fail(403, {
+			error: 'incorrect password'
+		});
+		return;
+	}
 
-	// Publish signin event
-	publishMainStream(user.id, 'signin', await Signins.pack(record));
+	if (!profile.twoFactorEnabled) {
+		signin(ctx, user);
+		return;
+	}
+
+	if (token) {
+		const verified = (speakeasy as any).totp.verify({
+			secret: profile.twoFactorSecret,
+			encoding: 'base32',
+			token: token
+		});
+
+		if (verified) {
+			signin(ctx, user);
+			return;
+		} else {
+			await fail(403, {
+				error: 'invalid token'
+			});
+			return;
+		}
+	} else {
+		const clientDataJSON = Buffer.from(body.clientDataJSON, 'hex');
+		const clientData = JSON.parse(clientDataJSON.toString('utf-8'));
+		const challenge = await AttestationChallenges.findOne({
+			userId: user.id,
+			id: body.challengeId,
+			registrationChallenge: false,
+			challenge: hash(clientData.challenge).toString('hex')
+		});
+
+		if (!challenge) {
+			await fail(403, {
+				error: 'non-existent challenge'
+			});
+			return;
+		}
+
+		await AttestationChallenges.delete({
+			userId: user.id,
+			id: body.challengeId
+		});
+
+		if (new Date().getTime() - challenge.createdAt.getTime() >= 5 * 60 * 1000) {
+			await fail(403, {
+				error: 'non-existent challenge'
+			});
+			return;
+		}
+
+		const securityKey = await UserSecurityKeys.findOne({
+			id: Buffer.from(
+				body.credentialId
+					.replace(/\-/g, '+')
+					.replace(/_/g, '/'),
+					'base64'
+			).toString('hex')
+		});
+
+		if (!securityKey) {
+			await fail(403, {
+				error: 'invalid credentialId'
+			});
+			return;
+		}
+
+		const isValid = verifyLogin({
+			publicKey: Buffer.from(securityKey.publicKey, 'hex'),
+			authenticatorData: Buffer.from(body.authenticatorData, 'hex'),
+			clientDataJSON,
+			clientData,
+			signature: Buffer.from(body.signature, 'hex'),
+			challenge: challenge.challenge
+		});
+
+		if (isValid) {
+			signin(ctx, user);
+		} else {
+			await fail(403, {
+				error: 'invalid challenge data'
+			});
+			return;
+		}
+	}
+
+	await fail();
 };

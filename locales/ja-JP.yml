@@ -646,6 +646,8 @@ common/views/components/signin.vue:
   signin-with-github: "GitHubでログイン"
   signin-with-discord: "Discordでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
+  tap-key: "セキュリティキーをクリックしてログイン"
+  enter-2fa-code: "認証コードを入力してください"
 
 common/views/components/signup.vue:
   invitation-code: "招待コード"
@@ -1100,6 +1102,15 @@ desktop/views/components/settings.2fa.vue:
   success: "設定が完了しました！"
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+  totp-header: "認証アプリ"
+  security-key-header: "セキュリティキー"
+  security-key: "セキュリティを強化するために、FIDO2をサポートするハードウェアセキュリティキーを使用してアカウントにログインできます。 サインインの際は、登録されたセキュリティキーまたは認証アプリが必要になります。"
+  last-used: "最後の使用:"
+  activate-key: "クリックしてセキュリティキーをアクティベートしてください"
+  security-key-name: "キー名"
+  register-security-key: "キーの登録を完了"
+  something-went-wrong: "わー！ キーを登録する際に問題が発生しました:"
+  key-unregistered: "キーが削除されました"
 
 common/views/components/media-image.vue:
   sensitive: "閲覧注意"

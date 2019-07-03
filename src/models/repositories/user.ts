@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserGroupJoinings } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings } from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
@@ -156,6 +156,11 @@ export class UserRepository extends Repository<User> {
 					detail: true
 				}),
 				twoFactorEnabled: profile!.twoFactorEnabled,
+				securityKeys: profile!.twoFactorEnabled
+					? UserSecurityKeys.count({
+						userId: user.id
+					}).then(result => result >= 1)
+					: false,
 				twitter: profile!.twitter ? {
 					id: profile!.twitterUserId,
 					screenName: profile!.twitterScreenName
@@ -195,6 +200,15 @@ export class UserRepository extends Repository<User> {
 				clientData: profile!.clientData,
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
+				securityKeysList: profile!.twoFactorEnabled
+					? UserSecurityKeys.find({
+						where: {
+							userId: user.id
+						},
+						select: ['id', 'name', 'lastUsed']
+					})
+					: []
+
 			} : {}),
 
 			...(relation ? {
