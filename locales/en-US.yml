@@ -1113,6 +1113,7 @@ admin/views/db.vue:
   tables: "Tables"
   vacuum: "Vacuum"
   vacuum-info: "Tidies up the database. Keeps the data intact and reduces disk usage. This is usually done automatically and periodically."
+  vacuum-exclamation: "Vacuuming can overload the database for a while, and cause users not to be able to participate in interactions."
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "Accounts"
