@@ -1,23 +1,40 @@
 <template>
-<form class="mk-signin" :class="{ signing }" @submit.prevent="onSubmit">
+<form class="mk-signin" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
-	<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
-		<span>{{ $t('username') }}</span>
-		<template #prefix>@</template>
-		<template #suffix>@{{ host }}</template>
-	</ui-input>
-	<ui-input v-model="password" type="password" :with-password-toggle="true" required>
-		<span>{{ $t('password') }}</span>
-		<template #prefix><fa icon="lock"/></template>
-	</ui-input>
-	<ui-input v-if="user && user.twoFactorEnabled" v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
-		<span>{{ $t('@.2fa') }}</span>
-		<template #prefix><fa icon="gavel"/></template>
-	</ui-input>
-	<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('@.signin') }}</ui-button>
-	<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="['fab', 'twitter']"/> {{ $t('signin-with-twitter') }}</a></p>
-	<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="['fab', 'github']"/> {{ $t('signin-with-github') }}</a></p>
-	<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="['fab', 'discord']"/> {{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
+	<div class="normal-signin" v-if="!totpLogin">
+		<ui-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
+			<span>{{ $t('username') }}</span>
+			<template #prefix>@</template>
+			<template #suffix>@{{ host }}</template>
+		</ui-input>
+		<ui-input v-model="password" type="password" :with-password-toggle="true" required>
+			<span>{{ $t('password') }}</span>
+			<template #prefix><fa icon="lock"/></template>
+		</ui-input>
+		<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('@.signin') }}</ui-button>
+		<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="['fab', 'twitter']"/> {{ $t('signin-with-twitter') }}</a></p>
+		<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="['fab', 'github']"/> {{ $t('signin-with-github') }}</a></p>
+		<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="['fab', 'discord']"/> {{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
+	</div>
+	<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
+		<div v-if="user && user.securityKeys" class="twofa-group tap-group">
+			<p>{{ $t('tap-key') }}</p>
+			<ui-button @click="queryKey" v-if="!queryingKey">
+				{{ $t('@.error.retry') }}
+			</ui-button>
+		</div>
+		<div class="or-hr" v-if="user && user.securityKeys">
+			<p class="or-msg">{{ $t('or') }}</p>
+		</div>
+		<div class="twofa-group totp-group">
+			<p style="margin-bottom:0;">{{ $t('enter-2fa-code') }}</p>
+			<ui-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
+				<span>{{ $t('@.2fa') }}</span>
+				<template #prefix><fa icon="gavel"/></template>
+			</ui-input>
+			<ui-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('@.signin') }}</ui-button>
+		</div>
+	</div>
 </form>
 </template>
 
@@ -26,6 +43,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { apiUrl, host } from '../../../config';
 import { toUnicode } from 'punycode';
+import { hexifyAB } from '../../scripts/2fa';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/signin.vue'),
@@ -47,7 +65,11 @@ export default Vue.extend({
 			token: '',
 			apiUrl,
 			host: toUnicode(host),
-			meta: null
+			meta: null,
+			totpLogin: false,
+			credential: null,
+			challengeData: null,
+			queryingKey: false,
 		};
 	},
 
@@ -68,23 +90,87 @@ export default Vue.extend({
 			});
 		},
 
-		onSubmit() {
-			this.signing = true;
-
-			this.$root.api('signin', {
-				username: this.username,
-				password: this.password,
-				token: this.user && this.user.twoFactorEnabled ? this.token : undefined
+		queryKey() {
+			this.queryingKey = true;
+			return navigator.credentials.get({
+				publicKey: {
+					challenge: Buffer.from(
+						this.challengeData.challenge
+							.replace(/\-/g, '+')
+							.replace(/_/g, '/'),
+							'base64'
+					),
+					allowCredentials: this.challengeData.securityKeys.map(key => ({
+						id: Buffer.from(key.id, 'hex'),
+						type: 'public-key',
+						transports: ['usb', 'ble', 'nfc']
+					})),
+					timeout: 60 * 1000
+				}
+			}).catch(err => {
+				this.queryingKey = false;
+				console.warn(err);
+				return Promise.reject(null);
+			}).then(credential => {
+				this.queryingKey = false;
+				this.signing = true;
+				return this.$root.api('signin', {
+					username: this.username,
+					password: this.password,
+					signature: hexifyAB(credential.response.signature),
+					authenticatorData: hexifyAB(credential.response.authenticatorData),
+					clientDataJSON: hexifyAB(credential.response.clientDataJSON),
+					credentialId: credential.id,
+					challengeId: this.challengeData.challengeId
+				});
 			}).then(res => {
 				localStorage.setItem('i', res.i);
 				location.reload();
-			}).catch(() => {
+			}).catch(err => {
+				if(err === null) return;
+				console.error(err);
 				this.$root.dialog({
 					type: 'error',
 					text: this.$t('login-failed')
 				});
 				this.signing = false;
 			});
+		},
+
+		onSubmit() {
+			this.signing = true;
+
+			if (!this.totpLogin && this.user && this.user.twoFactorEnabled) {
+				if (window.PublicKeyCredential && this.user.securityKeys) {
+					this.$root.api('i/2fa/getkeys', {
+						username: this.username,
+						password: this.password
+					}).then(res => {
+						this.totpLogin = true;
+						this.signing = false;
+						this.challengeData = res;
+						return this.queryKey();
+					});
+				} else {
+					this.totpLogin = true;
+					this.signing = false;
+				}
+			} else {
+				this.$root.api('signin', {
+					username: this.username,
+					password: this.password,
+					token: this.user && this.user.twoFactorEnabled ? this.token : undefined
+				}).then(res => {
+					localStorage.setItem('i', res.i);
+					location.reload();
+				}).catch(() => {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('login-failed')
+					});
+					this.signing = false;
+				});
+			}
 		}
 	}
 });
@@ -93,6 +179,48 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-signin
 	color #555
+
+	.or-hr,
+	.or-hr .or-msg,
+	.twofa-group,
+	.twofa-group p
+		color var(--text)
+
+	.tap-group > button
+		margin-bottom 1em
+
+	.securityKeys .or-hr
+		&
+			position relative
+
+		.or-msg
+			&:before
+				right 100%
+				margin-right 0.125em
+
+			&:after
+				left 100%
+				margin-left 0.125em
+
+			&:before, &:after
+				content ""
+				position absolute
+				top 50%
+				width 100%
+				height 2px
+				background #555
+
+			&
+				position relative
+				margin auto
+				left 0
+				right 0
+				top 0
+				bottom 0
+				font-size 1.5em
+				height 1.5em
+				width 3em
+				text-align center
 
 	&.signing
 		&, *
