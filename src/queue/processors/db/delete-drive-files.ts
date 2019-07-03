@@ -1,7 +1,7 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import { deleteFile } from '../../../services/drive/delete-file';
+import { deleteFileSync } from '../../../services/drive/delete-file';
 import { Users, DriveFiles } from '../../../models';
 import { MoreThan } from 'typeorm';
 
@@ -39,7 +39,7 @@ export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> 
 		cursor = files[files.length - 1].id;
 
 		for (const file of files) {
-			await deleteFile(file);
+			await deleteFileSync(file);
 			deletedCount++;
 		}
 
