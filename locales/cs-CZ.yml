@@ -260,6 +260,7 @@ common:
     disable-via-mobile: "Neoznačovat příspěvky jako „z mobilu“"
     load-raw-images: "Zobrazovat obrázky v původní kvalitě"
     load-remote-media: "Zobrazovat média ze vzdáleného serveru"
+    sync: "Synchronizace"
   search: "Hledání"
   delete: "Odstranit"
   loading: "Načítám..."
@@ -449,6 +450,7 @@ common/views/components/messaging.vue:
   you: "Vy"
   no-history: "Žádná historie"
   user: "Uživatel"
+  group: "Skupina"
 common/views/components/messaging-room.vue:
   new-message: "Máte novou zprávu"
 common/views/components/messaging-room.form.vue:
@@ -466,6 +468,7 @@ common/views/components/nav.vue:
   repository: "Úložiště"
   develop: "Vývojáři"
   feedback: "Zpětná vazba"
+  tos: "Podmínky užívání"
 common/views/components/note-menu.vue:
   mention: "Zmínění"
   detail: "Více"
@@ -984,6 +987,7 @@ admin/views/instance.vue:
   smtp-auth: "Provést SMTP autentikaci"
   smtp-user: "SMTP uživatel"
   smtp-pass: "SMTP heslo"
+  test-email: "Test"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Povolit ServiceWorker"
   vapid-publickey: "VAPID veřejný klíč"

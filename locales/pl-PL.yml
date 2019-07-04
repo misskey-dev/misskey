@@ -65,6 +65,7 @@ common:
   favorites: "Moje ulubione"
   permissions:
     "read:drive": "Wyświetl dysk"
+    "read:messaging": "Zobacz konwersację"
     "write:votes": "Zagłosuj"
   empty-timeline-info:
     explore: "Poznaj"
@@ -72,6 +73,7 @@ common:
     hide-contents: "Ukryj zawartość"
     reply-placeholder: "Odpowiedź na ten wpis…"
     quote-placeholder: "Zacytuj ten wpis…"
+    quote-attached: "Z cytatem"
     submit: "Wpis"
     reply: "Odpowiedz"
     renote: "Udostępnij"
@@ -880,6 +882,7 @@ admin/views/instance.vue:
   save: "Zapisz"
   saved: "Zapisano"
   email: "Adres e-mail"
+  test-email: "Test"
 admin/views/charts.vue:
   notes: "Wpisy"
   users: "Użytkownicy"

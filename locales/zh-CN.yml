@@ -1244,6 +1244,7 @@ admin/views/instance.vue:
   smtp-auth: "SMTP身份验证"
   smtp-user: "SMTP 用户名"
   smtp-pass: "SMTP 密码"
+  test-email: "测试"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "启用ServiceWorker"
   serviceworker-info: "您需要启用推送通知"

@@ -35,6 +35,7 @@ common:
   signout: "로그아웃"
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
   fetching-as-ap-object: "연합에서 조회 중"
+  unfollow-confirm: "{name} 님을 팔로우 해제하시겠습니까?"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -523,6 +524,7 @@ common/views/components/note-menu.vue:
   delete: "삭제"
   delete-confirm: "이 글을 삭제하시겠습니까?"
   remote: "글 원본 보기"
+  pin-limit-exceeded: "더 이상 고정할 수 없습니다."
 common/views/components/user-menu.vue:
   mention: "멘션"
   mute: "뮤트"
@@ -601,6 +603,8 @@ common/views/components/signin.vue:
   signin-with-github: "GitHub으로 로그인"
   signin-with-discord: "Discord로 로그인"
   login-failed: "로그인할 수 없습니다. 사용자명과 비밀번호를 확인하여 주십시오."
+  tap-key: "보안 키를 클릭하여 로그인"
+  enter-2fa-code: "인증 코드를 입력하여 주십시오"
 common/views/components/signup.vue:
   invitation-code: "초대 코드"
   invitation-info: "초대 코드가 없으신 분은 <a href=\"{}\">관리자</a>에게 연락하시기 바랍니다."
@@ -997,6 +1001,15 @@ desktop/views/components/settings.2fa.vue:
   success: "설정이 완료되었습니다!"
   failed: "설정에 실패했습니다. 토큰이 잘못되었는지 확인해주십시오."
   info: "다음 로그인부터는 이와 동일하게 비밀번호에 더해 장치에 표시된 토큰을 입력합니다."
+  totp-header: "인증 앱"
+  security-key-header: "보안 키"
+  security-key: "보안을 강화하려면 FIDO2를 지원하는 하드웨어 보안 키를 사용하여 계정에 로그인할 수 있습니다. 로그인 시 등록하였던 보안 키 또는 인증 앱이 필요하게 됩니다."
+  last-used: "마지막 사용:"
+  activate-key: "클릭하여 보안 키를 활성화하여 주십시오"
+  security-key-name: "키 이름"
+  register-security-key: "키 등록 완료"
+  something-went-wrong: "으악! 키를 등록하는 도중 문제가 발생하였습니다:"
+  key-unregistered: "키가 등록되어 있지 않습니다"
 common/views/components/media-image.vue:
   sensitive: "열람주의"
   click-to-show: "클릭하여 보기"
@@ -1110,6 +1123,9 @@ admin/views/index.vue:
   back-to-misskey: "Misskey로 돌아가기"
 admin/views/db.vue:
   tables: "테이블"
+  vacuum: "청소"
+  vacuum-info: "데이터베이스를 청소합니다. 데이터는 그대로인 채로 데이터의 사용량을 줄입니다. 일반적으로 이 작업은 자동으로 정기적으로 수행됩니다."
+  vacuum-exclamation: "청소를 수행하면 한동안 데이터베이스의 부하가 높아져 사용자 조작을 처리하지 못 할 수 있습니다."
 admin/views/dashboard.vue:
   dashboard: "대시보드"
   accounts: "계정"
@@ -1244,6 +1260,7 @@ admin/views/instance.vue:
   smtp-auth: "SMTP 인증 수행"
   smtp-user: "SMTP 사용자"
   smtp-pass: "SMTP 비밀번호"
+  test-email: "테스트"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "ServiceWorker 사용"
   serviceworker-info: "푸시알림을 수행하려면 사용해야 합니다."
@@ -1947,6 +1964,7 @@ pages:
       _pick:
         arg1: "리스트"
         arg2: "위치"
+      listLen: "리스트의 길이 가져오기"
       _listLen:
         arg1: "리스트"
       number: "수치"
