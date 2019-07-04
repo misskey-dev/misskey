@@ -8,6 +8,7 @@
 		</header>
 		<x-drive class="drive" ref="browser"
 			:select-file="true"
+			:type="type"
 			:multiple="multiple"
 			@change-selection="onChangeSelection"
 			@selected="onSelected"
@@ -25,7 +26,7 @@ export default Vue.extend({
 	components: {
 		XDrive: () => import('./drive.vue').then(m => m.default),
 	},
-	props: ['multiple'],
+	props: ['type', 'multiple'],
 	data() {
 		return {
 			files: []
