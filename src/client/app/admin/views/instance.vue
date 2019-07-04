@@ -129,6 +129,7 @@
 					<ui-input v-model="smtpPass" type="password" :with-password-toggle="true" :disabled="!enableEmail || !smtpAuth">{{ $t('smtp-pass') }}</ui-input>
 				</ui-horizon-group>
 				<ui-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtp-secure') }}<template #desc>{{ $t('smtp-secure-info') }}</template></ui-switch>
+				<ui-button @click="testEmail()">{{ $t('test-email') }}</ui-button>
 			</template>
 		</section>
 		<section>
@@ -415,6 +416,32 @@ export default Vue.extend({
 				this.$root.dialog({
 					type: 'info',
 					text: x.code
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
+		async testEmail() {
+			const { canceled, result: to } = await this.$root.dialog({
+				title: this.$t('test-email-to'),
+				input: {
+					type: 'email',
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			this.$root.api('admin/send-email', {
+				to: to,
+				subject: 'Test email',
+				text: 'Yo'
+			}).then(x => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
 				});
 			}).catch(e => {
 				this.$root.dialog({

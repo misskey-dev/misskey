@@ -1389,6 +1389,8 @@ admin/views/instance.vue:
   smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTPユーザー"
   smtp-pass: "SMTPパスワード"
+  test-email: "テスト"
+  test-email-to: "テストメールの送信先アドレス"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "ServiceWorkerを有効にする"
   serviceworker-info: "プッシュ通知を行うには有効する必要があります。"

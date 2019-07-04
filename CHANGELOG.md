@@ -26,6 +26,7 @@ unreleased
 * APNGサポート
 * アバターファイル選択でimage以外は表示しないように
 * データベース手動バキューム機能
+* メールサーバー設定が正しいか確認できるように
 * ピン止めの上限に達したときエラーを表示するように
 * AP: attributedTo, to, cc が Array や Object のパターンに対応
 * AP: object type が Audio, Document, Image, Page, Video のパターンに対応
