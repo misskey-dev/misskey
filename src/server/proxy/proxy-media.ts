@@ -15,15 +15,20 @@ export async function proxyMedia(ctx: Koa.BaseContext) {
 	try {
 		await downloadUrl(url, path);
 
-		const [type, ext] = await detectMine(path);
+		let [type, ext] = await detectMine(path);
+
+		if (type === 'image/apng') {
+			type = 'image/png';
+			ext = 'png';
+		}
 
 		if (!type.startsWith('image/')) throw 403;
 
 		let image: IImage;
 
-		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+		if ('static' in ctx.query && ['image/png', 'image/gif'].includes(type)) {
 			image = await convertToPng(path, 498, 280);
-		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif'].includes(type)) {
 			image = await convertToJpeg(path, 200, 200);
 		} else {
 			image = {

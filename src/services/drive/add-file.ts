@@ -36,6 +36,8 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 	// thunbnail, webpublic を必要なら生成
 	const alts = await generateAlts(path, type, !file.uri);
 
+	if (type === 'image/apng') type = 'image/png';
+
 	const meta = await fetchMeta();
 
 	if (meta.useObjectStorage) {
@@ -46,8 +48,6 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/jpeg') ext = '.jpg';
 			if (type === 'image/png') ext = '.png';
 			if (type === 'image/webp') ext = '.webp';
-			if (type === 'image/apng') ext = '.apng';
-			if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 		}
 
 		const baseUrl = meta.objectStorageBaseUrl
