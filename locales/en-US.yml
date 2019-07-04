@@ -602,7 +602,7 @@ common/views/components/signin.vue:
   signin-with-github: "Sign in with GitHub"
   signin-with-discord: "Sign in with Discord"
   login-failed: "Logging in has failed. Make sure you have entered the correct username and password."
-  tap-key: "Click on the security key to log in"
+  tap-key: "Click on the Security Key to log in"
   enter-2fa-code: "Enter your verification code"
 common/views/components/signup.vue:
   invitation-code: "Invitation code"
@@ -1001,12 +1001,12 @@ desktop/views/components/settings.2fa.vue:
   failed: "Failed to setup. Please ensure that the token is correct."
   info: "From the next time you sign in to Misskey, the token displayed on your device will be necessary too, as well as the password."
   totp-header: "Authenticator App"
-  security-key-header: "Security key"
+  security-key-header: "Security Key"
   security-key: "For additional security, you can log in to your account using a hardware Security Key that supports FIDO2. When you then sign in, you'll need the registered Security Key, or an authenticator app with you."
   last-used: "Last used:"
   activate-key: "Click to activate the Security Key"
   security-key-name: "Name the Key"
-  register-security-key: "Complete key registration"
+  register-security-key: "Complete Key registration"
   something-went-wrong: "Wow! There was a problem registering the Key:"
   key-unregistered: "The Key has been deleted"
 common/views/components/media-image.vue:
