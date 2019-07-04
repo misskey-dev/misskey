@@ -426,16 +426,8 @@ export default Vue.extend({
 		},
 
 		async testEmail() {
-			const { canceled, result: to } = await this.$root.dialog({
-				title: this.$t('test-email-to'),
-				input: {
-					type: 'email',
-				},
-				showCancelButton: true
-			});
-			if (canceled) return;
 			this.$root.api('admin/send-email', {
-				to: to,
+				to: this.maintainerEmail,
 				subject: 'Test email',
 				text: 'Yo'
 			}).then(x => {
