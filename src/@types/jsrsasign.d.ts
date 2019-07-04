@@ -568,7 +568,7 @@ declare module 'jsrsasign' {
 
 				public setAlgAndProvider(alg: string, prov: string): void;
 
-				public init(key: GetKeyParam, pass: string): void;
+				public init(key: GetKeyParam, pass?: string): void;
 
 				public updateString(str: string): void;
 
