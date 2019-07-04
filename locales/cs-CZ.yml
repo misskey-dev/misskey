@@ -987,6 +987,7 @@ admin/views/instance.vue:
   smtp-auth: "Provést SMTP autentikaci"
   smtp-user: "SMTP uživatel"
   smtp-pass: "SMTP heslo"
+  test-email: "Test"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Povolit ServiceWorker"
   vapid-publickey: "VAPID veřejný klíč"
