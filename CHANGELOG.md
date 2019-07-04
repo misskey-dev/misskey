@@ -17,6 +17,26 @@ npm i -g ts-node
 npm run migrate
 ```
 
+unreleased
+--------------------
+注意: このアップデート後に、`node built/tools/accept-migration Init 1000000000000`してください。
+
+### ✨Improvements
+* WebAuthnサポート
+* APNGサポート
+* アバターファイル選択でimage以外は表示しないように
+* データベース手動バキューム機能
+* ピン止めの上限に達したときエラーを表示するように
+* AP: attributedTo, to, cc が Array や Object のパターンに対応
+* AP: object type が Audio, Document, Image, Page, Video のパターンに対応
+
+### 🐛Fixes
+* 自分のインスタンスのルートURIへのリンクが無になる問題を修正
+* リモートファイルの削除が重い問題を修正
+* 投稿などの連続したスペースがひとつに纏まるのを修正
+* MFMのパース修正
+* マイグレーション時にエラーが出る問題を修正
+
 11.23.1 (2019/06/25)
 --------------------
 ### 🐛Fixes
