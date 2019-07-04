@@ -1259,6 +1259,7 @@ admin/views/instance.vue:
   smtp-auth: "Perform SMTP authentication"
   smtp-user: "SMTP User"
   smtp-pass: "SMTP Password"
+  test-email: "Test"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Enable ServiceWorker"
   serviceworker-info: "Must be enabled for push notifications."
