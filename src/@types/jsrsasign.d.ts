@@ -555,11 +555,12 @@ declare module 'jsrsasign' {
 				constructor(params?: ({
 					alg: string;
 					prov?: string;
-				} | {}) & {
+				} | {}) & ({
 					psssaltlen: number;
-				} & {
+				} | {}) & ({
 					prvkeypem: PEM;
-				});
+					prvkeypas?: never;
+				} | {}));
 
 				private _setAlgNames(): void;
 
