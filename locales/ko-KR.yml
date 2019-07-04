@@ -998,6 +998,9 @@ desktop/views/components/settings.2fa.vue:
   success: "설정이 완료되었습니다!"
   failed: "설정에 실패했습니다. 토큰이 잘못되었는지 확인해주십시오."
   info: "다음 로그인부터는 이와 동일하게 비밀번호에 더해 장치에 표시된 토큰을 입력합니다."
+  security-key-header: "보안 키"
+  something-went-wrong: "으악! 키를 등록하는 도중 문제가 발생하였습니다:"
+  key-unregistered: "키가 등록되어 있지 않습니다"
 common/views/components/media-image.vue:
   sensitive: "열람주의"
   click-to-show: "클릭하여 보기"
