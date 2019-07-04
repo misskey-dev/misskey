@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../../define';
 import { ID } from '../../../../../misc/cafy-id';
 import { Emojis } from '../../../../../models';
+import { getConnection } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -26,4 +27,6 @@ export default define(meta, async (ps) => {
 	if (emoji == null) throw new Error('emoji not found');
 
 	await Emojis.delete(emoji.id);
+
+	await getConnection().queryResultCache!.remove(['meta_emojis']);
 });
