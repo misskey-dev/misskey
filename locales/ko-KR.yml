@@ -35,6 +35,7 @@ common:
   signout: "로그아웃"
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
   fetching-as-ap-object: "연합에서 조회 중"
+  unfollow-confirm: "{name} 님을 팔로우 해제하시겠습니까?"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -523,7 +524,7 @@ common/views/components/note-menu.vue:
   delete: "삭제"
   delete-confirm: "이 글을 삭제하시겠습니까?"
   remote: "글 원본 보기"
-  pin-limit-exceeded: "더이상 고정할 수 없습니다."
+  pin-limit-exceeded: "더 이상 고정할 수 없습니다."
 common/views/components/user-menu.vue:
   mention: "멘션"
   mute: "뮤트"
