@@ -96,7 +96,7 @@ export async function convertToApng(path: string): Promise<IImage> {
 
 	return {
 		data,
-		ext: 'png',
-		type: 'image/png'
+		ext: 'apng',
+		type: 'image/vnd.mozilla.apng'
 	};
 }
