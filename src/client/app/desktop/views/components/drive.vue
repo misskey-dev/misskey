@@ -80,6 +80,11 @@ export default Vue.extend({
 			type: Object,
 			required: false
 		},
+		type: {
+			type: String,
+			required: false,
+			default: undefined 
+		},
 		multiple: {
 			type: Boolean,
 			default: false
@@ -540,6 +545,7 @@ export default Vue.extend({
 			// ファイル一覧取得
 			this.$root.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
+				type: this.type,
 				limit: filesMax + 1
 			}).then(files => {
 				if (files.length == filesMax + 1) {
@@ -570,6 +576,7 @@ export default Vue.extend({
 			// ファイル一覧取得
 			this.$root.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
+				type: this.type,
 				untilId: this.files[this.files.length - 1].id,
 				limit: max + 1
 			}).then(files => {
