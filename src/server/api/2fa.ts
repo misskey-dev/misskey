@@ -63,15 +63,15 @@ function verifyCertificateChain(certificates: string[]) {
 
 		const CACert = i + 1 >= certificates.length ? Cert : certificates[i + 1];
 
-		const certStruct = jsrsasign.ASN1HEX.getTLVbyList(certificate.hex, 0, [0]);
+		const certStruct = jsrsasign.ASN1HEX.getTLVbyList(certificate.hex!, 0, [0]);
 		const algorithm = certificate.getSignatureAlgorithmField();
 		const signatureHex = certificate.getSignatureValueHex();
 
 		// Verify against CA
-		const Signature = new jsrsasign.crypto.Signature({alg: algorithm});
+		const Signature = new jsrsasign.KJUR.crypto.Signature({alg: algorithm});
 		Signature.init(CACert);
 		Signature.updateHex(certStruct);
-		valid = valid && Signature.verify(signatureHex); // true if CA signed the certificate
+		valid = valid && !!Signature.verify(signatureHex); // true if CA signed the certificate
 	}
 
 	return valid;
@@ -260,7 +260,7 @@ export const procedures = {
 			}
 
 			const certificateChain = header.x5c
-				.map(key => PEMString(key))
+				.map((key: any) => PEMString(key))
 				.concat([GSR2]);
 
 			if (getCertSubject(certificateChain[0]).CN != 'attest.android.com') {
