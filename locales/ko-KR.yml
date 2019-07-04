@@ -1259,6 +1259,7 @@ admin/views/instance.vue:
   smtp-auth: "SMTP 인증 수행"
   smtp-user: "SMTP 사용자"
   smtp-pass: "SMTP 비밀번호"
+  test-email: "테스트"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "ServiceWorker 사용"
   serviceworker-info: "푸시알림을 수행하려면 사용해야 합니다."
