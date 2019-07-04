@@ -624,7 +624,7 @@ common/views/components/poll-editor.vue:
 
 common/views/components/reaction-picker.vue:
   choose-reaction: "リアクションを選択"
-  input-reaction-placeholder: "または絵文字を入力"
+  input-reaction-placeholder: "絵文字を入力"
 
 common/views/components/emoji-picker.vue:
   custom-emoji: "カスタム絵文字"

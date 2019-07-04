@@ -17,6 +17,10 @@
 		</div>
 		<div v-if="enableEmojiReaction" class="text">
 			<input v-model="text" :placeholder="$t('input-reaction-placeholder')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
+			<button title="OK" @click="reactText"><fa icon="check"/></button>
+			<button title="Pick" class="emoji" @click="emoji" ref="emoji" v-if="!$root.isMobile">
+				<fa :icon="['far', 'laugh']"/>
+			</button>
 		</div>
 	</div>
 </div>
@@ -162,6 +166,19 @@ export default Vue.extend({
 			if (!this.text) return;
 			if (!this.text.match(emojiRegex)) return;
 			this.reactText();
+		},
+
+		async emoji() {
+			const Picker = await import('../../../desktop/views/components/emoji-picker-dialog.vue').then(m => m.default);
+			const button = this.$refs.emoji;
+			const rect = button.getBoundingClientRect();
+			const vm = this.$root.new(Picker, {
+				x: button.offsetWidth + rect.left + window.pageXOffset,
+				y: rect.top + window.pageYOffset
+			});
+			vm.$once('chosen', emoji => {
+				this.react(emoji);
+			});
 		},
 
 		onMouseover(e) {
@@ -315,14 +332,15 @@ export default Vue.extend({
 					box-shadow inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15)
 
 		> .text
+			display flex
+			justify-content center
+			align-items center
 			width 216px
-			padding 0 8px 8px 8px
 
 			> input
 				width 100%
 				padding 10px
 				margin 0
-				text-align center
 				font-size 16px
 				color var(--desktopPostFormTextareaFg)
 				background var(--desktopPostFormTextareaBg)
@@ -338,5 +356,16 @@ export default Vue.extend({
 				&:focus
 					border-color var(--primaryAlpha05)
 					transition border-color 0s ease
+
+			> button
+				cursor pointer
+				padding 0 8px
+				margin 0
+				font-size 1em
+				color var(--desktopPostFormTransparentButtonFg)
+				background transparent
+				outline none
+				border solid 1px transparent
+				border-radius 4px
 
 </style>
