@@ -17,7 +17,7 @@ npm i -g ts-node
 npm run migrate
 ```
 
-unreleased
+11.24.0 (2019/07/05)
 --------------------
 注意: このアップデート後に、`node built/tools/accept-migration Init 1000000000000`してください。
 
