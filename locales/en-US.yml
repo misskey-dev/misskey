@@ -602,6 +602,7 @@ common/views/components/signin.vue:
   signin-with-github: "Sign in with GitHub"
   signin-with-discord: "Sign in with Discord"
   login-failed: "Logging in has failed. Make sure you have entered the correct username and password."
+  tap-key: "Click on the security key to log in"
 common/views/components/signup.vue:
   invitation-code: "Invitation code"
   invitation-info: "If you do not have an invitation code, please contact an <a href=\"{}\">administrator</a>."
