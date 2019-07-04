@@ -1217,6 +1217,7 @@ admin/views/instance.vue:
   smtp-auth: "Effectuer une authentification SMTP"
   smtp-user: "Utilisateur SMTP"
   smtp-pass: "Mot de passe SMTP"
+  test-email: "Test"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Activer ServiceWorker"
   serviceworker-info: "Devrait être activé pour les notifications push."
