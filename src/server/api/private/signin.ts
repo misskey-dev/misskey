@@ -9,6 +9,7 @@ import { ILocalUser } from '../../../models/entities/user';
 import { genId } from '../../../misc/gen-id';
 import { ensure } from '../../../prelude/ensure';
 import { verifyLogin, hash } from '../2fa';
+import { randomBytes } from 'crypto';
 
 export default async (ctx: Koa.BaseContext) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
@@ -99,7 +100,7 @@ export default async (ctx: Koa.BaseContext) => {
 			});
 			return;
 		}
-	} else {
+	} else if (body.credentialId) {
 		const clientDataJSON = Buffer.from(body.clientDataJSON, 'hex');
 		const clientData = JSON.parse(clientDataJSON.toString('utf-8'));
 		const challenge = await AttestationChallenges.findOne({
@@ -131,7 +132,7 @@ export default async (ctx: Koa.BaseContext) => {
 		const securityKey = await UserSecurityKeys.findOne({
 			id: Buffer.from(
 				body.credentialId
-					.replace(/\-/g, '+')
+					.replace(/-/g, '+')
 					.replace(/_/g, '/'),
 					'base64'
 			).toString('hex')
@@ -161,7 +162,44 @@ export default async (ctx: Koa.BaseContext) => {
 			});
 			return;
 		}
+	} else {
+		const keys = await UserSecurityKeys.find({
+			userId: user.id
+		});
+
+		if (keys.length === 0) {
+			await fail(403, {
+				error: 'no keys found'
+			});
+		}
+
+		// 32 byte challenge
+		const challenge = randomBytes(32).toString('base64')
+			.replace(/=/g, '')
+			.replace(/\+/g, '-')
+			.replace(/\//g, '_');
+
+		const challengeId = genId();
+
+		await AttestationChallenges.save({
+			userId: user.id,
+			id: challengeId,
+			challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),
+			createdAt: new Date(),
+			registrationChallenge: false
+		});
+
+		ctx.body = {
+			challenge,
+			challengeId,
+			securityKeys: keys.map(key => ({
+				id: key.id
+			}))
+		};
+		ctx.status = 200;
+		return;
 	}
 
 	await fail();
+	return;
 };

@@ -107,9 +107,8 @@ export default Vue.extend({
 					})),
 					timeout: 60 * 1000
 				}
-			}).catch(err => {
+			}).catch(() => {
 				this.queryingKey = false;
-				console.warn(err);
 				return Promise.reject(null);
 			}).then(credential => {
 				this.queryingKey = false;
@@ -127,8 +126,7 @@ export default Vue.extend({
 				localStorage.setItem('i', res.i);
 				location.reload();
 			}).catch(err => {
-				if(err === null) return;
-				console.error(err);
+				if (err === null) return;
 				this.$root.dialog({
 					type: 'error',
 					text: this.$t('login-failed')
@@ -142,7 +140,7 @@ export default Vue.extend({
 
 			if (!this.totpLogin && this.user && this.user.twoFactorEnabled) {
 				if (window.PublicKeyCredential && this.user.securityKeys) {
-					this.$root.api('i/2fa/getkeys', {
+					this.$root.api('signin', {
 						username: this.username,
 						password: this.password
 					}).then(res => {
@@ -150,6 +148,14 @@ export default Vue.extend({
 						this.signing = false;
 						this.challengeData = res;
 						return this.queryKey();
+					}).catch(() => {
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('login-failed')
+						});
+						this.challengeData = null;
+						this.totpLogin = false;
+						this.signing = false;
 					});
 				} else {
 					this.totpLogin = true;
