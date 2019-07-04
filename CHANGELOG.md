@@ -31,6 +31,7 @@ unreleased
 * AP: attributedTo, to, cc が Array や Object のパターンに対応
 * AP: object type が Audio, Document, Image, Page, Video のパターンに対応
 * フォロー解除時に確認ダイアログを表示するように
+* ユーザー入力ダイアログで、入力時にユーザーの存在を確認するように
 
 ### 🐛Fixes
 * 自分のインスタンスのルートURIへのリンクが無になる問題を修正

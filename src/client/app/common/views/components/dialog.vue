@@ -33,7 +33,7 @@
 				</template>
 			</ui-select>
 			<ui-horizon-group no-grow class="buttons fit-bottom" v-if="!splash && (showOkButton || showCancelButton)">
-				<ui-button @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user">{{ (showCancelButton || input || select || user) ? $t('@.ok') : $t('@.got-it') }}</ui-button>
+				<ui-button @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user" :disabled="!canOk">{{ (showCancelButton || input || select || user) ? $t('@.ok') : $t('@.got-it') }}</ui-button>
 				<ui-button @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('@.cancel') }}</ui-button>
 			</ui-horizon-group>
 		</template>
@@ -99,11 +99,26 @@ export default Vue.extend({
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			userInputValue: null,
 			selectedValue: this.select ? this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
+			canOk: true,
 			faTimesCircle, faQuestionCircle
 		};
 	},
 
+	watch: {
+		userInputValue() {
+			if (this.user) {
+				this.$root.api('users/show', parseAcct(this.userInputValue)).then(u => {
+					this.canOk = u != null;
+				}).catch(() => {
+					this.canOk = false;
+				});
+			}
+		}
+	},
+
 	mounted() {
+		if (this.user) this.canOk = false;
+
 		this.$nextTick(() => {
 			(this.$refs.bg as any).style.pointerEvents = 'auto';
 			anime({
@@ -131,6 +146,7 @@ export default Vue.extend({
 
 	methods: {
 		async ok() {
+			if (!this.canOk) return;
 			if (!this.showOkButton) return;
 
 			if (this.user) {
