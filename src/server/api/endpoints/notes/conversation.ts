@@ -5,7 +5,6 @@ import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';
 import { Note } from '../../../../models/entities/note';
 import { Notes } from '../../../../models';
-import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -38,11 +37,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'Note',
 		}
 	},

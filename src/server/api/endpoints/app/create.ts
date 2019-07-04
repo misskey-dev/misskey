@@ -4,7 +4,6 @@ import define from '../../define';
 import { Apps } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
 import { unique } from '../../../../prelude/array';
-import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	tags: ['app'],
@@ -53,8 +52,8 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		ref: 'App',
 	},
 };

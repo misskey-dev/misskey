@@ -6,9 +6,9 @@ export interface IObject {
 	id?: string;
 	summary?: string;
 	published?: string;
-	cc?: string[];
-	to?: string[];
-	attributedTo: string;
+	cc?: IObject | string | (IObject | string)[];
+	to?: IObject | string | (IObject | string)[];
+	attributedTo: IObject | string | (IObject | string)[];
 	attachment?: any[];
 	inReplyTo?: any;
 	replies?: ICollection;
@@ -21,6 +21,32 @@ export interface IObject {
 	url?: string;
 	tag?: any[];
 	sensitive?: boolean;
+}
+
+/**
+ * Get array of ActivityStreams Objects id
+ */
+export function getApIds(value: IObject | string | (IObject | string)[] | undefined): string[] {
+	if (value == null) return [];
+	const array = Array.isArray(value) ? value : [value];
+	return array.map(x => getApId(x));
+}
+
+/**
+ * Get first ActivityStreams Object id
+ */
+export function getOneApId(value: IObject | string | (IObject | string)[]): string {
+	const firstOne = Array.isArray(value) ? value[0] : value;
+	return getApId(firstOne);
+}
+
+/**
+ * Get ActivityStreams Object id
+ */
+export function getApId(value: string | IObject): string {
+	if (typeof value === 'string') return value;
+	if (typeof value.id === 'string') return value.id;
+	throw new Error(`cannot detemine id`);
 }
 
 export interface IActivity extends IObject {
@@ -42,8 +68,10 @@ export interface IOrderedCollection extends IObject {
 	orderedItems: IObject | string | IObject[] | string[];
 }
 
+export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'];
+
 export interface INote extends IObject {
-	type: 'Note' | 'Question';
+	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
 	_misskey_content?: string;
 	_misskey_quote?: string;
 	_misskey_question?: string;
@@ -58,6 +86,9 @@ export interface IQuestion extends IObject {
 	anyOf?: IQuestionChoice[];
 	endTime?: Date;
 }
+
+export const isQuestion = (object: IObject): object is IQuestion =>
+	object.type === 'Note' || object.type === 'Question';
 
 interface IQuestionChoice {
 	name?: string;

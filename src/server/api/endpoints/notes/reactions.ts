@@ -4,7 +4,6 @@ import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
 import { NoteReactions } from '../../../../models';
-import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -45,11 +44,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'NoteReaction',
 		}
 	},

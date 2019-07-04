@@ -843,6 +843,15 @@ describe('MFM', () => {
 				]);
 			});
 
+			it('ignore parent []', () => {
+				const tokens = parse('foo [https://example.com/foo] bar');
+				assert.deepStrictEqual(tokens, [
+					text('foo ['),
+					leaf('url', { url: 'https://example.com/foo' }),
+					text('] bar')
+				]);
+			});
+
 			it('ignore parent brackets 2', () => {
 				const tokens = parse('(foo https://example.com/foo)');
 				assert.deepStrictEqual(tokens, [

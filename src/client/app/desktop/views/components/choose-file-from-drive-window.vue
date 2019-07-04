@@ -11,6 +11,7 @@
 		<x-drive
 			ref="browser"
 			class="browser"
+			:type="type"
 			:multiple="multiple"
 			@selected="onSelected"
 			@change-selection="onChangeSelection"
@@ -33,6 +34,11 @@ export default Vue.extend({
 		XDrive: () => import('./drive.vue').then(m => m.default),
 	},
 	props: {
+		type: {
+			type: String,
+			required: false,
+			default: undefined 
+		},
 		multiple: {
 			default: false
 		}

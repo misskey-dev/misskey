@@ -1,4 +1,4 @@
 export const id = () => ({
-	type: 'varchar' as 'varchar',
+	type: 'varchar' as const,
 	length: 32
 });

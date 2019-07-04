@@ -987,7 +987,7 @@ desktop/views/components/settings.2fa.vue:
   url: "https://www.google.com/landing/2step/"
   caution: "If you lose access to your registered device, you won't be able to connect to Misskey anymore!"
   register: "Register a device"
-  already-registered: "This device is already registered"
+  already-registered: "Your account is currently registered to an authenticator application"
   unregister: "Unregister"
   unregistered: "Two-factor authentication has been disabled."
   enter-password: "Enter the password"
