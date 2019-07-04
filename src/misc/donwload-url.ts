@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import Logger from '../services/logger';
 
 export async function downloadUrl(url: string, path: string) {
-	const logger = new Logger('download-url');
+	const logger = new Logger('download');
 
 	await new Promise((res, rej) => {
 		logger.info(`Downloading ${chalk.cyan(url)} ...`);

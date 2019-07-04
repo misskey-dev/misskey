@@ -523,6 +523,7 @@ common/views/components/note-menu.vue:
   delete: "Delete"
   delete-confirm: "Are you sure you want to delete this post?"
   remote: "Show original note"
+  pin-limit-exceeded: "You can't pin any more posts."
 common/views/components/user-menu.vue:
   mention: "Mention"
   mute: "Mute"
@@ -601,6 +602,8 @@ common/views/components/signin.vue:
   signin-with-github: "Sign in with GitHub"
   signin-with-discord: "Sign in with Discord"
   login-failed: "Logging in has failed. Make sure you have entered the correct username and password."
+  tap-key: "Click on the Security Key to log in"
+  enter-2fa-code: "Enter your verification code"
 common/views/components/signup.vue:
   invitation-code: "Invitation code"
   invitation-info: "If you do not have an invitation code, please contact an <a href=\"{}\">administrator</a>."
@@ -984,7 +987,7 @@ desktop/views/components/settings.2fa.vue:
   url: "https://www.google.com/landing/2step/"
   caution: "If you lose access to your registered device, you won't be able to connect to Misskey anymore!"
   register: "Register a device"
-  already-registered: "This device is already registered"
+  already-registered: "Your account is currently registered to an authenticator application"
   unregister: "Unregister"
   unregistered: "Two-factor authentication has been disabled."
   enter-password: "Enter the password"
@@ -997,6 +1000,15 @@ desktop/views/components/settings.2fa.vue:
   success: "Settings saved!"
   failed: "Failed to setup. Please ensure that the token is correct."
   info: "From the next time you sign in to Misskey, the token displayed on your device will be necessary too, as well as the password."
+  totp-header: "Authenticator App"
+  security-key-header: "Security Key"
+  security-key: "For additional security, you can log in to your account using a hardware Security Key that supports FIDO2. When you then sign in, you'll need the registered Security Key, or an authenticator app with you."
+  last-used: "Last used:"
+  activate-key: "Click to activate the Security Key"
+  security-key-name: "Name the Key"
+  register-security-key: "Complete Key registration"
+  something-went-wrong: "Wow! There was a problem registering the Key:"
+  key-unregistered: "The Key has been deleted"
 common/views/components/media-image.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
@@ -1110,6 +1122,9 @@ admin/views/index.vue:
   back-to-misskey: "Back to Misskey"
 admin/views/db.vue:
   tables: "Tables"
+  vacuum: "Vacuum"
+  vacuum-info: "Tidies up the database. Keeps the data intact and reduces disk usage. This is usually done automatically and periodically."
+  vacuum-exclamation: "Vacuuming can overload the database for a while, and cause users not to be able to participate in interactions."
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "Accounts"
@@ -1244,6 +1259,7 @@ admin/views/instance.vue:
   smtp-auth: "Perform SMTP authentication"
   smtp-user: "SMTP User"
   smtp-pass: "SMTP Password"
+  test-email: "Test"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Enable ServiceWorker"
   serviceworker-info: "Must be enabled for push notifications."
@@ -1947,6 +1963,7 @@ pages:
       _pick:
         arg1: "Lists"
         arg2: "Position"
+      listLen: "Get length of list"
       _listLen:
         arg1: "Lists"
       number: "Number"

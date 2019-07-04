@@ -17,6 +17,29 @@ npm i -g ts-node
 npm run migrate
 ```
 
+11.24.0 (2019/07/05)
+--------------------
+注意: このアップデート後に、`node built/tools/accept-migration Init 1000000000000`してください。
+
+### ✨Improvements
+* WebAuthnサポート
+* APNGサポート
+* アバターファイル選択でimage以外は表示しないように
+* データベース手動バキューム機能
+* メールサーバー設定が正しいか確認できるように
+* ピン止めの上限に達したときエラーを表示するように
+* AP: attributedTo, to, cc が Array や Object のパターンに対応
+* AP: object type が Audio, Document, Image, Page, Video のパターンに対応
+* フォロー解除時に確認ダイアログを表示するように
+* ユーザー入力ダイアログで、入力時にユーザーの存在を確認するように
+
+### 🐛Fixes
+* 自分のインスタンスのルートURIへのリンクが無になる問題を修正
+* リモートファイルの削除が重い問題を修正
+* 投稿などの連続したスペースがひとつに纏まるのを修正
+* MFMのパース修正
+* マイグレーション時にエラーが出る問題を修正
+
 11.23.1 (2019/06/25)
 --------------------
 ### 🐛Fixes
@@ -588,10 +611,9 @@ mongodb:
 3. migration ブランチに切り替え
 4. `npm i`
 5. `npm run build`
-6. `npm run init`
-7. `npm run migrate`
-8. master ブランチに戻す
-9. enjoy
+6. `npm run migrate`
+7. master ブランチに戻す
+8. enjoy
 
 10.100.0
 ----------

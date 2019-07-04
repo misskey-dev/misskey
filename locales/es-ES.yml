@@ -939,6 +939,7 @@ admin/views/instance.vue:
   smtp-port: "Puerto SMTP"
   smtp-user: "Usuario SMTP"
   smtp-pass: "Contraseña SMTP"
+  test-email: "Prueba"
 admin/views/charts.vue:
   title: "Gráficos"
   per-day: "Por día"

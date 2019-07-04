@@ -775,6 +775,7 @@ admin/views/instance.vue:
   invite: "Einladen"
   save: "Speichern"
   saved: "Gespeichert"
+  test-email: "Test"
 admin/views/charts.vue:
   drive: "Drive"
 admin/views/drive.vue:

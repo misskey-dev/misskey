@@ -1,7 +1,7 @@
-import * as fs from 'fs';
-import config from './config';
+const config = require('./built/config').default;
+const entities = require('./built/db/postgre').entities;
 
-const json = {
+module.exports = {
 	type: 'postgres',
 	host: config.db.host,
 	port: config.db.port,
@@ -9,11 +9,9 @@ const json = {
 	password: config.db.pass,
 	database: config.db.db,
 	extra: config.db.extra,
-	entities: ['src/models/entities/*.ts'],
+	entities: entities,
 	migrations: ['migration/*.ts'],
 	cli: {
 		migrationsDir: 'migration'
 	}
 };
-
-fs.writeFileSync('ormconfig.json', JSON.stringify(json));

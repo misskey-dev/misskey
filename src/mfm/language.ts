@@ -6,8 +6,8 @@ import { toUnicode } from 'punycode';
 import { emojiRegex } from '../misc/emoji-regex';
 
 export function removeOrphanedBrackets(s: string): string {
-	const openBrackets = ['(', '「'];
-	const closeBrackets = [')', '」'];
+	const openBrackets = ['(', '「', '['];
+	const closeBrackets = [')', '」', ']'];
 	const xs = cumulativeSum(s.split('').map(c => {
 		if (openBrackets.includes(c)) return 1;
 		if (closeBrackets.includes(c)) return -1;

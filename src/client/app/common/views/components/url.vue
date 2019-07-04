@@ -5,6 +5,9 @@
 		<span class="hostname">{{ hostname }}</span>
 		<span class="port" v-if="port != ''">:{{ port }}</span>
 	</template>
+	<template v-if="pathname === '/' && self">
+		<span class="self">{{ hostname }}</span>
+	</template>
 	<span class="pathname" v-if="pathname != ''">{{ self ? pathname.substr(1) : pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
@@ -22,6 +25,7 @@ export default Vue.extend({
 	data() {
 		const isSelf = this.url.startsWith(local);
 		const hasRoute = isSelf && (
+			(this.url.substr(local.length) === '/') ||
 			this.url.substr(local.length).startsWith('/@') ||
 			this.url.substr(local.length).startsWith('/notes/') ||
 			this.url.substr(local.length).startsWith('/pages/'));
@@ -54,19 +58,28 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-url
 	word-break break-all
+
 	> [data-icon]
 		padding-left 2px
 		font-size .9em
 		font-weight 400
 		font-style normal
+
+	> .self
+		font-weight bold
+
 	> .schema
 		opacity 0.5
+
 	> .hostname
 		font-weight bold
+
 	> .pathname
 		opacity 0.8
+
 	> .query
 		opacity 0.5
+
 	> .hash
 		font-style italic
 </style>

@@ -41,7 +41,6 @@
 	if (`${url.pathname}/`.startsWith('/dev/')) app = 'dev';
 	if (`${url.pathname}/`.startsWith('/auth/')) app = 'auth';
 	if (`${url.pathname}/`.startsWith('/admin/')) app = 'admin';
-	if (`${url.pathname}/`.startsWith('/test/')) app = 'test';
 	//#endregion
 
 	// Script version

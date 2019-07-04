@@ -3,7 +3,6 @@ import define from '../../../define';
 import { UserGroups, UserGroupJoinings } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
 import { UserGroup } from '../../../../../models/entities/user-group';
-import { types, bool } from '../../../../../misc/schema';
 import { UserGroupJoining } from '../../../../../models/entities/user-group-joining';
 
 export const meta = {
@@ -25,8 +24,8 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		ref: 'UserGroup',
 	},
 };

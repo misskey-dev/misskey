@@ -3,7 +3,7 @@ import { Users, Notes } from '..';
 import { Notification } from '../entities/notification';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
-import { types, bool, SchemaType } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 
 export type PackedNotification = SchemaType<typeof packedNotificationSchema>;
 
@@ -51,37 +51,37 @@ export class NotificationRepository extends Repository<Notification> {
 }
 
 export const packedNotificationSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this notification.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the notification was created.'
 		},
 		type: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			enum: ['follow', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote'],
 			description: 'The type of the notification.'
 		},
 		userId: {
-			type: types.string,
-			optional: bool.true, nullable: bool.true,
+			type: 'string' as const,
+			optional: true as const, nullable: true as const,
 			format: 'id',
 		},
 		user: {
-			type: types.object,
+			type: 'object' as const,
 			ref: 'User',
-			optional: bool.true, nullable: bool.true,
+			optional: true as const, nullable: true as const,
 		},
 	}
 };

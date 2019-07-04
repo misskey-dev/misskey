@@ -5,7 +5,7 @@ import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import { ensure } from '../../prelude/ensure';
-import { SchemaType, types, bool } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
@@ -144,8 +144,8 @@ export class NoteRepository extends Repository<Note> {
 
 		let text = note.text;
 
-		if (note.name) {
-			text = `【${note.name}】\n${note.text}`;
+		if (note.name && note.uri) {
+			text = `【${note.name}】\n${(note.text || '').trim()}\n${note.uri}`;
 		}
 
 		const reactionEmojis = unique(concat([note.emojis, Object.keys(note.reactions)]));
@@ -218,125 +218,125 @@ export class NoteRepository extends Repository<Note> {
 }
 
 export const packedNoteSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this Note.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the Note was created on Misskey.'
 		},
 		text: {
-			type: types.string,
-			optional: bool.false, nullable: bool.true,
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
 		},
 		cw: {
-			type: types.string,
-			optional: bool.true, nullable: bool.true,
+			type: 'string' as const,
+			optional: true as const, nullable: true as const,
 		},
 		userId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 		},
 		user: {
-			type: types.object,
+			type: 'object' as const,
 			ref: 'User',
-			optional: bool.false, nullable: bool.false,
+			optional: false as const, nullable: false as const,
 		},
 		replyId: {
-			type: types.string,
-			optional: bool.true, nullable: bool.true,
+			type: 'string' as const,
+			optional: true as const, nullable: true as const,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		renoteId: {
-			type: types.string,
-			optional: bool.true, nullable: bool.true,
+			type: 'string' as const,
+			optional: true as const, nullable: true as const,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
 		reply: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 			ref: 'Note'
 		},
 		renote: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 			ref: 'Note'
 		},
 		viaMobile: {
-			type: types.boolean,
-			optional: bool.true, nullable: bool.false,
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const,
 		},
 		isHidden: {
-			type: types.boolean,
-			optional: bool.true, nullable: bool.false,
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const,
 		},
 		visibility: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 		},
 		mentions: {
-			type: types.array,
-			optional: bool.true, nullable: bool.false,
+			type: 'array' as const,
+			optional: true as const, nullable: false as const,
 			items: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				format: 'id'
 			}
 		},
 		visibleUserIds: {
-			type: types.array,
-			optional: bool.true, nullable: bool.false,
+			type: 'array' as const,
+			optional: true as const, nullable: false as const,
 			items: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				format: 'id'
 			}
 		},
 		fileIds: {
-			type: types.array,
-			optional: bool.true, nullable: bool.false,
+			type: 'array' as const,
+			optional: true as const, nullable: false as const,
 			items: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				format: 'id'
 			}
 		},
 		files: {
-			type: types.array,
-			optional: bool.true, nullable: bool.false,
+			type: 'array' as const,
+			optional: true as const, nullable: false as const,
 			items: {
-				type: types.object,
-				optional: bool.false, nullable: bool.false,
+				type: 'object' as const,
+				optional: false as const, nullable: false as const,
 				ref: 'DriveFile'
 			}
 		},
 		tags: {
-			type: types.array,
-			optional: bool.true, nullable: bool.false,
+			type: 'array' as const,
+			optional: true as const, nullable: false as const,
 			items: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 			}
 		},
 		poll: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 		},
 		geo: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 		},
 	},
 };

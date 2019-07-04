@@ -36,6 +36,7 @@ common:
   signout: "ログアウト"
   reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
   fetching-as-ap-object: "連合に照会中"
+  unfollow-confirm: "{name}さんをフォロー解除しますか？"
 
   got-it: "わかった"
   customization-tips:
@@ -561,6 +562,7 @@ common/views/components/note-menu.vue:
   delete: "削除"
   delete-confirm: "この投稿を削除しますか？"
   remote: "投稿元で見る"
+  pin-limit-exceeded: "これ以上ピン留めできません。"
 
 common/views/components/user-menu.vue:
   mention: "メンション"
@@ -645,6 +647,8 @@ common/views/components/signin.vue:
   signin-with-github: "GitHubでログイン"
   signin-with-discord: "Discordでログイン"
   login-failed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
+  tap-key: "セキュリティキーをクリックしてログイン"
+  enter-2fa-code: "認証コードを入力してください"
 
 common/views/components/signup.vue:
   invitation-code: "招待コード"
@@ -1099,6 +1103,15 @@ desktop/views/components/settings.2fa.vue:
   success: "設定が完了しました！"
   failed: "設定に失敗しました。トークンに誤りがないかご確認ください。"
   info: "次回サインインからは、同様にパスワードに加えてデバイスに表示されているトークンを入力します。"
+  totp-header: "認証アプリ"
+  security-key-header: "セキュリティキー"
+  security-key: "セキュリティを強化するために、FIDO2をサポートするハードウェアセキュリティキーを使用してアカウントにログインできます。 サインインの際は、登録されたセキュリティキーまたは認証アプリが必要になります。"
+  last-used: "最後の使用:"
+  activate-key: "クリックしてセキュリティキーをアクティベートしてください"
+  security-key-name: "キー名"
+  register-security-key: "キーの登録を完了"
+  something-went-wrong: "わー！ キーを登録する際に問題が発生しました:"
+  key-unregistered: "キーが削除されました"
 
 common/views/components/media-image.vue:
   sensitive: "閲覧注意"
@@ -1234,6 +1247,9 @@ admin/views/index.vue:
 
 admin/views/db.vue:
   tables: "テーブル"
+  vacuum: "バキューム"
+  vacuum-info: "データベースの掃除を行います。データはそのままで、ディスク使用量を減らします。通常この操作は自動で定期的に行われます。"
+  vacuum-exclamation: "バキュームを行うと、しばらくの間データベースの負荷が高くなり、ユーザーの操作を受け付けなくなる場合があります。"
 
 admin/views/dashboard.vue:
   dashboard: "ダッシュボード"
@@ -1373,6 +1389,7 @@ admin/views/instance.vue:
   smtp-auth: "SMTP認証を行う"
   smtp-user: "SMTPユーザー"
   smtp-pass: "SMTPパスワード"
+  test-email: "テスト"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "ServiceWorkerを有効にする"
   serviceworker-info: "プッシュ通知を行うには有効する必要があります。"

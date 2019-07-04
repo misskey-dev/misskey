@@ -46,6 +46,8 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/jpeg') ext = '.jpg';
 			if (type === 'image/png') ext = '.png';
 			if (type === 'image/webp') ext = '.webp';
+			if (type === 'image/apng') ext = '.apng';
+			if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 		}
 
 		const baseUrl = meta.objectStorageBaseUrl
@@ -181,6 +183,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			thumbnail = await convertToPng(path, 498, 280);
 		} else if (['image/gif'].includes(type)) {
 			thumbnail = await convertToGif(path);
+		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+			thumbnail = await convertToApng(path);
 		} else if (type.startsWith('video/')) {
 			try {
 				thumbnail = await GenerateVideoThumbnail(path);
@@ -356,7 +360,7 @@ export default async function(
 
 	let propPromises: Promise<void>[] = [];
 
-	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/webp'].includes(mime);
+	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime);
 
 	if (isImage) {
 		const img = sharp(path);

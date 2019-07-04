@@ -77,6 +77,7 @@ init(async (launch, os) => {
 					if (document.body.clientWidth > 800) {
 						const w = this.$root.new(MkChooseFileFromDriveWindow, {
 							title: o.title,
+							type: o.type,
 							multiple: o.multiple,
 							initFolder: o.currentFolder
 						});
