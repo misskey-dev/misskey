@@ -54,8 +54,11 @@ export default define(meta, async () => {
 	const instance = await fetchMeta(true);
 	const hiddenTags = instance.hiddenTags.map(t => t.toLowerCase());
 
+	const now = new Date(); // 5分単位で丸めた現在日時
+	now.setMinutes(Math.round(now.getMinutes() / 5) * 5, 0, 0);
+
 	const tagNotes = await Notes.createQueryBuilder('note')
-		.where(`note.createdAt > :date`, { date: new Date(Date.now() - rangeA) })
+		.where(`note.createdAt > :date`, { date: new Date(now.getTime() - rangeA) })
 		.andWhere(`note.tags != '{}'`)
 		.select(['note.tags', 'note.userId'])
 		.cache(60000) // 1 min
@@ -106,8 +109,8 @@ export default define(meta, async () => {
 		countPromises.push(Promise.all(hots.map(tag => Notes.createQueryBuilder('note')
 			.select('count(distinct note.userId)')
 			.where(':tag = ANY(note.tags)', { tag: tag })
-			.andWhere('note.createdAt < :lt', { lt: new Date(Date.now() - (interval * i)) })
-			.andWhere('note.createdAt > :gt', { gt: new Date(Date.now() - (interval * (i + 1))) })
+			.andWhere('note.createdAt < :lt', { lt: new Date(now.getTime() - (interval * i)) })
+			.andWhere('note.createdAt > :gt', { gt: new Date(now.getTime() - (interval * (i + 1))) })
 			.cache(60000) // 1 min
 			.getRawOne()
 			.then(x => parseInt(x.count, 10))
@@ -119,7 +122,7 @@ export default define(meta, async () => {
 	const totalCounts = await Promise.all(hots.map(tag => Notes.createQueryBuilder('note')
 		.select('count(distinct note.userId)')
 		.where(':tag = ANY(note.tags)', { tag: tag })
-		.andWhere('note.createdAt > :gt', { gt: new Date(Date.now() - (interval * range)) })
+		.andWhere('note.createdAt > :gt', { gt: new Date(now.getTime() - (interval * range)) })
 		.cache(60000) // 1 min
 		.getRawOne()
 		.then(x => parseInt(x.count, 10))

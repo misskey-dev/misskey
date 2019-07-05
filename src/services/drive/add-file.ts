@@ -207,6 +207,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
  * Upload to ObjectStorage
  */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+	if (type === 'image/apng') type = 'image/png';
+
 	const meta = await fetchMeta();
 
 	const minio = new Minio.Client({
