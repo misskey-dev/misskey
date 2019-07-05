@@ -163,6 +163,9 @@ export default Vue.extend({
 							columnWidth: '80%'
 						}
 					},
+					dataLabels: {
+						enabled: false
+					},
 					grid: {
 						clipMarkers: false,
 						padding: {
