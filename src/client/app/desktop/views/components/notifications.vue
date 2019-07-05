@@ -24,7 +24,7 @@
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>
-									<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+									<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 								<fa icon="quote-right"/>
 							</router-link>
 						</div>
@@ -40,7 +40,7 @@
 							</p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
 								<fa icon="quote-left"/>
-									<mfm :text="getNoteSummary(notification.note.renote)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.renote.emojis"/>
+									<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :custom-emojis="notification.note.renote.emojis"/>
 								<fa icon="quote-right"/>
 							</router-link>
 						</div>
@@ -55,7 +55,7 @@
 								</router-link>
 							</p>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-								<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+								<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 							</router-link>
 						</div>
 					</template>
@@ -91,7 +91,7 @@
 								</router-link>
 							</p>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-								<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+								<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 							</router-link>
 						</div>
 					</template>
@@ -105,7 +105,7 @@
 								</router-link>
 							</p>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-								<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+								<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 							</router-link>
 						</div>
 					</template>
@@ -118,7 +118,7 @@
 							</router-link></p>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>
-									<mfm :text="getNoteSummary(notification.note)" :should-break="false" :plain-text="true" :custom-emojis="notification.note.emojis"/>
+									<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 								<fa icon="quote-right"/>
 							</router-link>
 						</div>

@@ -1,5 +1,5 @@
 <template>
-<mfm-core v-bind="$attrs" class="havbbuyv" :class="{ plain: $attrs['plain-text'] }" v-once/>
+<mfm-core v-bind="$attrs" class="havbbuyv" :class="{ nowrap: $attrs['nowrap'] }" v-once/>
 </template>
 
 <script lang="ts">
@@ -17,7 +17,7 @@ export default Vue.extend({
 .havbbuyv
 	white-space pre-wrap
 
-	&.plain
+	&.nowrap
 		white-space pre
 
 	>>> .title
