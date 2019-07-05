@@ -34,7 +34,10 @@ unreleased
 
 11.24.0 (2019/07/05)
 --------------------
-注意: このアップデート後に、`node built/tools/accept-migration Init 1000000000000`してください。
+### 注意
+- このアップデート後に、`node built/tools/accept-migration Init 1000000000000`してください。
+- プロセスを起動(もしくは再起動)する前に[マイグレーション](#migration)の手順を実行してください
+
 
 ### ✨Improvements
 * WebAuthnサポート
