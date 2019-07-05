@@ -42,7 +42,7 @@ export default async function(ctx: Koa.BaseContext) {
 		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-thumb', extname: '.jpeg' })}`));
 		ctx.body = InternalStorage.read(key);
 	} else if (isWebpublic) {
-		ctx.set('Content-Type', file.type);
+		ctx.set('Content-Type', file.type === 'image/apng' ? 'image/png' : file.type);
 		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-web' })}`));
 		ctx.body = InternalStorage.read(key);
 	} else {
