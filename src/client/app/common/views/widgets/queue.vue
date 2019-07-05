@@ -90,6 +90,9 @@ export default define({
 					enabled: true,
 				}
 			},
+			dataLabels: {
+				enabled: false
+			},
 			tooltip: {
 				enabled: false
 			},

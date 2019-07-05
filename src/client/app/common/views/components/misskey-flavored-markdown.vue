@@ -1,5 +1,5 @@
 <template>
-<mfm-core v-bind="$attrs" class="havbbuyv" v-once/>
+<mfm-core v-bind="$attrs" class="havbbuyv" :class="{ plain: $attrs['plain-text'] }" v-once/>
 </template>
 
 <script lang="ts">
@@ -16,6 +16,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .havbbuyv
 	white-space pre-wrap
+
+	&.plain
+		white-space pre
 
 	>>> .title
 		display block
