@@ -22,11 +22,11 @@ export default Vue.component('misskey-flavored-markdown', {
 			type: String,
 			required: true
 		},
-		shouldBreak: {
+		plain: {
 			type: Boolean,
-			default: true
+			default: false
 		},
-		plainText: {
+		nowrap: {
 			type: Boolean,
 			default: false
 		},
@@ -50,7 +50,7 @@ export default Vue.component('misskey-flavored-markdown', {
 	render(createElement) {
 		if (this.text == null || this.text == '') return;
 
-		const ast = (this.plainText ? parsePlain : parse)(this.text);
+		const ast = (this.plain ? parsePlain : parse)(this.text);
 
 		let bigCount = 0;
 		let motionCount = 0;
@@ -60,7 +60,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'text': {
 					const text = token.node.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 
-					if (this.shouldBreak) {
+					if (!this.plain) {
 						const x = text.split('\n')
 							.map(t => t == '' ? [createElement('br')] : [createElement('span', t), createElement('br')]);
 						x[x.length - 1].pop();
@@ -270,7 +270,7 @@ export default Vue.component('misskey-flavored-markdown', {
 						},
 						props: {
 							customEmojis: this.customEmojis || customEmojis,
-							normal: this.plainText
+							normal: this.plain
 						}
 					})];
 				}

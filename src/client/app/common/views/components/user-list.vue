@@ -16,7 +16,7 @@
 					<p class="username">@{{ user | acct }}</p>
 				</div>
 				<div class="description" v-if="user.description" :title="user.description">
-					<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :should-break="false" :plain-text="true"/>
+					<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :plain="true" :nowrap="true"/>
 				</div>
 				<mk-follow-button class="follow-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 			</div>
