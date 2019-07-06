@@ -75,7 +75,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .gcafiosrssbtbnbzqupfmglvzgiaipyv
-	position fixed
+	position absolute
 	top 0
 	left 0
 	z-index 13000
