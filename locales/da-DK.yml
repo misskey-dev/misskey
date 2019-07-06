@@ -1664,6 +1664,8 @@ dev/views/new-app.vue:
   app-name: "Navn på app"
   app-name-placeholder: "F.eks. Misskey for iOS"
 pages:
+  pin-this-page: "Tilknyt til din profil"
+  unpin-this-page: "Fjern tilknytning til din profil"
   like: "Synes om"
   title: "Titel"
   blocks:
