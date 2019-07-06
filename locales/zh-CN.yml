@@ -1734,6 +1734,8 @@ pages:
   are-you-sure-delete: "是否删除此页面？"
   page-deleted: "该页面已被删除。"
   edit-this-page: "编辑此页面"
+  pin-this-page: "置顶"
+  unpin-this-page: "取消置顶"
   view-source: "查看源代码"
   view-page: "查看页面"
   like: "赞"
