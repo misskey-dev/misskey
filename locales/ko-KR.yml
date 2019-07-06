@@ -1821,6 +1821,7 @@ pages:
       inc: "증가치"
     _button:
       text: "제목"
+      colored: "색상"
       action: "버튼을 눌렀을 때의 동작"
       _action:
         dialog: "대화상자를 표시"
