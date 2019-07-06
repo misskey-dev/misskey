@@ -1234,6 +1234,8 @@ dev/views/new-app.vue:
   authority-desc: "ここにチェックした機能しかAPIからアクセスできひんから気ぃつけてな"
   authority-warning: "アプリ作った後でも変えれるけど、新しいやつ追加したらそん時関連付いてるユーザーキーは全部ほかされるで。"
 pages:
+  pin-this-page: "ピン留め"
+  unpin-this-page: "ピン留めやめる"
   like: "ええやん"
   blocks:
     image: "画像"
