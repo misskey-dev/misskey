@@ -156,6 +156,7 @@ export class UserRepository extends Repository<User> {
 					detail: true
 				}),
 				twoFactorEnabled: profile!.twoFactorEnabled,
+				usePasswordLessLogin: profile!.usePasswordLessLogin,
 				securityKeys: profile!.twoFactorEnabled
 					? UserSecurityKeys.count({
 						userId: user.id
@@ -208,7 +209,6 @@ export class UserRepository extends Repository<User> {
 						select: ['id', 'name', 'lastUsed']
 					})
 					: []
-
 			} : {}),
 
 			...(relation ? {

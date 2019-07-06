@@ -81,6 +81,11 @@ export class UserProfile {
 	})
 	public securityKeysAvailable: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public usePasswordLessLogin: boolean;
+
 	@Column('varchar', {
 		length: 128, nullable: true,
 		comment: 'The password hash of the User. It will be null if the origin of the user is local.'
