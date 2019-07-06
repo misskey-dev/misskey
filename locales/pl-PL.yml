@@ -1189,6 +1189,8 @@ dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
 pages:
+  pin-this-page: "Przypnij do profilu"
+  unpin-this-page: "Odepnij"
   like: "Lubię"
   title: "Tytuł"
   blocks:
