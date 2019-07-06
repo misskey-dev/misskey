@@ -4,6 +4,7 @@
 
 	<section class="xfhsjczc">
 		<ui-input v-model="value.text"><span>{{ $t('blocks._button.text') }}</span></ui-input>
+		<ui-switch v-model="value.primary"><span>{{ $t('blocks._button.colored') }}</span></ui-switch>
 		<ui-select v-model="value.action">
 			<template #label>{{ $t('blocks._button.action') }}</template>
 			<option value="dialog">{{ $t('blocks._button._action.dialog') }}</option>
@@ -52,6 +53,7 @@ export default Vue.extend({
 		if (this.value.content == null) Vue.set(this.value, 'content', null);
 		if (this.value.event == null) Vue.set(this.value, 'event', null);
 		if (this.value.message == null) Vue.set(this.value, 'message', null);
+		if (this.value.message == null) Vue.set(this.value, 'primary', false);
 	},
 });
 </script>

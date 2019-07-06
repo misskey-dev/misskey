@@ -2024,6 +2024,7 @@ pages:
 
     _button:
       text: "タイトル"
+      colored: "色付き"
       action: "ボタンを押したときの動作"
       _action:
         dialog: "ダイアログを表示する"
