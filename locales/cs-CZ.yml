@@ -101,6 +101,7 @@ common:
     submit: "Odeslat"
     reply: "Odpovědět"
     renote: "Renotovat"
+    posting: "Posílání"
     attach-media-from-local: "Uplodovat soubor z vašeho zařízení"
     insert-a-kao: "v('ω')v"
     create-poll: "Vytvořit anketu"
