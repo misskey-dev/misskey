@@ -28,6 +28,10 @@
 				</div>
 			</div>
 
+			<ui-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">
+				{{ $t('use-password-less-login') }}
+			</ui-switch>
+
 			<ui-info warn v-if="registration && registration.error">{{ $t('something-went-wrong') }} {{ registration.error }}</ui-info>
 			<ui-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('register') }}</ui-button>
 
@@ -80,10 +84,14 @@ export default Vue.extend({
 		return {
 			data: null,
 			supportsCredentials: !!navigator.credentials,
+			usePasswordLessLogin: false,
 			registration: null,
 			keyName: '',
 			token: null
 		};
+	},
+	created() {
+		this.usePasswordLessLogin = this.$store.state.i.usePasswordLessLogin;
 	},
 	methods: {
 		register() {
@@ -112,6 +120,9 @@ export default Vue.extend({
 				if (canceled) return;
 				this.$root.api('i/2fa/unregister', {
 					password: password
+				}).then(() => {
+					this.usePasswordLessLogin = false;
+					this.updatePasswordLessLogin();
 				}).then(() => {
 					this.$notify(this.$t('unregistered'));
 					this.$store.state.i.twoFactorEnabled = false;
@@ -157,6 +168,9 @@ export default Vue.extend({
 				return this.$root.api('i/2fa/remove-key', {
 					password,
 					credentialId: key.id
+				}).then(() => {
+					this.usePasswordLessLogin = false;
+					this.updatePasswordLessLogin();
 				}).then(() => {
 					this.$notify(this.$t('key-unregistered'));
 				});
@@ -212,6 +226,11 @@ export default Vue.extend({
 					this.registration.error = err.message;
 					this.registration.stage = -1;
 				});
+			});
+		},
+		updatePasswordLessLogin() {
+			this.$root.api('i/2fa/password-less', {
+				value: !!this.usePasswordLessLogin
 			});
 		}
 	}

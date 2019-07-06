@@ -7,7 +7,7 @@
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</ui-input>
-		<ui-input v-model="password" type="password" :with-password-toggle="true" required>
+		<ui-input v-model="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa icon="lock"/></template>
 		</ui-input>
@@ -28,6 +28,10 @@
 		</div>
 		<div class="twofa-group totp-group">
 			<p style="margin-bottom:0;">{{ $t('enter-2fa-code') }}</p>
+			<ui-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
+				<span>{{ $t('password') }}</span>
+				<template #prefix><fa icon="lock"/></template>
+			</ui-input>
 			<ui-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 				<span>{{ $t('@.2fa') }}</span>
 				<template #prefix><fa icon="gavel"/></template>

@@ -72,19 +72,25 @@ export default async (ctx: Koa.BaseContext) => {
 		}
 	}
 
-	if (!same) {
-		await fail(403, {
-			error: 'incorrect password'
-		});
-		return;
-	}
-
 	if (!profile.twoFactorEnabled) {
-		signin(ctx, user);
+		if (same) {
+			signin(ctx, user);
+		} else {
+			await fail(403, {
+				error: 'incorrect password'
+			});
+		}
 		return;
 	}
 
 	if (token) {
+		if (!same) {
+			await fail(403, {
+				error: 'incorrect password'
+			});
+			return;
+		}
+
 		const verified = (speakeasy as any).totp.verify({
 			secret: profile.twoFactorSecret,
 			encoding: 'base32',
@@ -101,6 +107,13 @@ export default async (ctx: Koa.BaseContext) => {
 			return;
 		}
 	} else if (body.credentialId) {
+		if (!same && !profile.usePasswordLessLogin) {
+			await fail(403, {
+				error: 'incorrect password'
+			});
+			return;
+		}
+
 		const clientDataJSON = Buffer.from(body.clientDataJSON, 'hex');
 		const clientData = JSON.parse(clientDataJSON.toString('utf-8'));
 		const challenge = await AttestationChallenges.findOne({
@@ -163,6 +176,13 @@ export default async (ctx: Koa.BaseContext) => {
 			return;
 		}
 	} else {
+		if (!same && !profile.usePasswordLessLogin) {
+			await fail(403, {
+				error: 'incorrect password'
+			});
+			return;
+		}
+
 		const keys = await UserSecurityKeys.find({
 			userId: user.id
 		});

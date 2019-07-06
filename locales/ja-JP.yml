@@ -1112,6 +1112,7 @@ desktop/views/components/settings.2fa.vue:
   register-security-key: "キーの登録を完了"
   something-went-wrong: "わー！ キーを登録する際に問題が発生しました:"
   key-unregistered: "キーが削除されました"
+  use-password-less-login: "パスワードなしのログインを使用"
 
 common/views/components/media-image.vue:
   sensitive: "閲覧注意"
