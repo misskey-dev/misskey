@@ -1091,6 +1091,7 @@ deck:
 deck/deck.user-column.vue:
   activity: "Actividad"
 pages:
+  pin-this-page: "Fijar en el perfil"
   like: "Me gusta"
   blocks:
     post: "Formulario"
