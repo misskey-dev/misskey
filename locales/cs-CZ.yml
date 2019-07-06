@@ -1266,6 +1266,8 @@ deck/deck.user-column.vue:
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
 pages:
+  pin-this-page: "Připnout"
+  unpin-this-page: "Odepnout"
   like: "Lajk"
   title: "Titulek"
   blocks:
