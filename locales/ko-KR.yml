@@ -1751,6 +1751,8 @@ pages:
   are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
   page-deleted: "페이지가 삭제되었습니다"
   edit-this-page: "이 페이지를 편집"
+  pin-this-page: "프로필에 고정"
+  unpin-this-page: "프로필에서 고정 해제"
   view-source: "소스 보기"
   view-page: "페이지 보기"
   like: "좋아요"
