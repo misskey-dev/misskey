@@ -1751,6 +1751,8 @@ pages:
   are-you-sure-delete: "Do you want to delete this page?"
   page-deleted: "The page has been deleted"
   edit-this-page: "Edit this page"
+  pin-this-page: "Pin to your profile"
+  unpin-this-page: "Unpin"
   view-source: "View Source"
   view-page: "View page"
   like: "Like"
