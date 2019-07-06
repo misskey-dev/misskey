@@ -84,14 +84,11 @@ export default Vue.extend({
 		return {
 			data: null,
 			supportsCredentials: !!navigator.credentials,
-			usePasswordLessLogin: false,
+			usePasswordLessLogin: this.$store.state.i.usePasswordLessLogin,
 			registration: null,
 			keyName: '',
 			token: null
 		};
-	},
-	created() {
-		this.usePasswordLessLogin = this.$store.state.i.usePasswordLessLogin;
 	},
 	methods: {
 		register() {
