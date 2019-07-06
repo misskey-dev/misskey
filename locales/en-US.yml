@@ -1010,6 +1010,7 @@ desktop/views/components/settings.2fa.vue:
   register-security-key: "Complete Key registration"
   something-went-wrong: "Wow! There was a problem registering the Key:"
   key-unregistered: "The Key has been deleted"
+  use-password-less-login: "Use Password-less login"
 common/views/components/media-image.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
