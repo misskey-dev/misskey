@@ -61,6 +61,10 @@ export const meta = {
 		alignCenter: {
 			validator: $.optional.bool,
 		},
+
+		hideTitleWhenPinned: {
+			validator: $.optional.bool,
+		},
 	},
 
 	errors: {
@@ -113,6 +117,7 @@ export default define(meta, async (ps, user) => {
 		content: ps.content,
 		variables: ps.variables,
 		alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
+		hideTitleWhenPinned: ps.hideTitleWhenPinned === undefined ? page.hideTitleWhenPinned : ps.hideTitleWhenPinned,
 		font: ps.font === undefined ? page.font : ps.font,
 		eyeCatchingImageId: ps.eyeCatchingImageId === null
 			? null

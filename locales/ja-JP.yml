@@ -1907,6 +1907,7 @@ deck/deck.user-column.vue:
   activity: "アクティビティ"
   timeline: "タイムライン"
   pinned-notes: "ピン留めされた投稿"
+  pinned-page: "ピン留めされたページ"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
@@ -1946,6 +1947,8 @@ pages:
   are-you-sure-delete: "このページを削除しますか？"
   page-deleted: "ページを削除しました"
   edit-this-page: "このページを編集"
+  pin-this-page: "ピン留め"
+  unpin-this-page: "ピン留め解除"
   view-source: "ソースを表示"
   view-page: "ページを見る"
   like: "いいね"
@@ -1964,6 +1967,7 @@ pages:
   url: "ページURL"
   summary: "ページの要約"
   align-center: "中央寄せ"
+  hide-title-when-pinned: "ピン留めされているときにタイトルを非表示"
   font: "フォント"
   fontSerif: "セリフ"
   fontSansSerif: "サンセリフ"

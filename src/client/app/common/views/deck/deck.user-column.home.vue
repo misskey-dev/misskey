@@ -1,5 +1,11 @@
 <template>
 <div>
+	<ui-container v-if="user.pinnedPage" :body-togglable="true">
+		<template #header><fa icon="thumbtack"/> {{ $t('pinned-page') }}</template>
+		<div>
+			<x-page :page="user.pinnedPage" :key="user.pinnedPage.id" :show-title="!user.pinnedPage.hideTitleWhenPinned"/>
+		</div>
+	</ui-container>
 	<ui-container v-if="user.pinnedNotes && user.pinnedNotes.length > 0" :body-togglable="true">
 		<template #header><fa icon="thumbtack"/> {{ $t('pinned-notes') }}</template>
 		<div>
@@ -48,6 +54,7 @@ export default Vue.extend({
 
 	components: {
 		XNotes,
+		XPage: () => import('../../../common/views/components/page/page.vue').then(m => m.default),
 	},
 
 	props: {

@@ -49,7 +49,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .kudkigyw
 	display inline-block
-	min-width 300px
+	min-width 200px
 	max-width 450px
 	margin 8px 0
 </style>

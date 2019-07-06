@@ -71,6 +71,7 @@ export class PageRepository extends Repository<Page> {
 			title: page.title,
 			name: page.name,
 			summary: page.summary,
+			hideTitleWhenPinned: page.hideTitleWhenPinned,
 			alignCenter: page.alignCenter,
 			font: page.font,
 			eyeCatchingImageId: page.eyeCatchingImageId,
