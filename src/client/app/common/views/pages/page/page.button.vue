@@ -30,7 +30,10 @@ export default Vue.extend({
 			} else if (this.value.action === 'pushEvent') {
 				this.$root.api('page-push', {
 					pageId: this.script.page.id,
-					event: this.value.event
+					event: this.value.event,
+					...(this.value.var ? {
+						var: this.script.vars[this.value.var]
+					} : {})
 				});
 
 				this.$root.dialog({

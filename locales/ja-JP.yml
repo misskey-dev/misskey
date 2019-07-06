@@ -2035,6 +2035,8 @@ pages:
         _pushEvent:
           event: "イベント名"
           message: "押したときに表示するメッセージ"
+          variable: "送信する変数"
+          no-variable: "なし"
 
   script:
     categories:
