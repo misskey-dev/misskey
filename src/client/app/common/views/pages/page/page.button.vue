@@ -27,6 +27,16 @@ export default Vue.extend({
 			} else if (this.value.action === 'resetRandom') {
 				this.script.aiScript.updateRandomSeed(Math.random());
 				this.script.eval();
+			} else if (this.value.action === 'pushEvent') {
+				this.$root.api('page-push', {
+					pageId: this.script.page.id,
+					event: this.value.event
+				});
+
+				this.$root.dialog({
+					type: 'success',
+					text: this.script.interpolate(this.value.message)
+				});
 			}
 		}
 	}

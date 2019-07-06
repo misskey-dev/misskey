@@ -2030,6 +2030,10 @@ pages:
         _dialog:
           content: "内容"
         resetRandom: "乱数をリセット"
+        pushEvent: "イベントを送信させる"
+        _pushEvent:
+          event: "イベント名"
+          message: "押したときに表示するメッセージ"
 
   script:
     categories:

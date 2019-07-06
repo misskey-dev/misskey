@@ -8,8 +8,15 @@
 			<template #label>{{ $t('blocks._button.action') }}</template>
 			<option value="dialog">{{ $t('blocks._button._action.dialog') }}</option>
 			<option value="resetRandom">{{ $t('blocks._button._action.resetRandom') }}</option>
+			<option value="pushEvent">{{ $t('blocks._button._action.pushEvent') }}</option>
 		</ui-select>
-		<ui-input v-if="value.action === 'dialog'" v-model="value.content"><span>{{ $t('blocks._button._action._dialog.content') }}</span></ui-input>
+		<template v-if="value.action === 'dialog'">
+			<ui-input v-model="value.content"><span>{{ $t('blocks._button._action._dialog.content') }}</span></ui-input>
+		</template>
+		<template v-else-if="value.action === 'pushEvent'">
+			<ui-input v-model="value.event"><span>{{ $t('blocks._button._action._pushEvent.event') }}</span></ui-input>
+			<ui-input v-model="value.message"><span>{{ $t('blocks._button._action._pushEvent.message') }}</span></ui-input>
+		</template>
 	</section>
 </x-container>
 </template>
@@ -43,6 +50,8 @@ export default Vue.extend({
 		if (this.value.text == null) Vue.set(this.value, 'text', '');
 		if (this.value.action == null) Vue.set(this.value, 'action', 'dialog');
 		if (this.value.content == null) Vue.set(this.value, 'content', null);
+		if (this.value.event == null) Vue.set(this.value, 'event', null);
+		if (this.value.message == null) Vue.set(this.value, 'message', null);
 	},
 });
 </script>

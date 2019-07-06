@@ -35,8 +35,10 @@ class Script {
 	public aiScript: ASEvaluator;
 	private onError: any;
 	public vars: Record<string, any>;
+	public page: Record<string, any>;
 
-	constructor(aiScript, onError) {
+	constructor(page, aiScript, onError) {
+		this.page = page;
 		this.aiScript = aiScript;
 		this.onError = onError;
 		this.eval();
@@ -113,7 +115,7 @@ export default Vue.extend({
 					icon: faStickyNote
 				});
 				const pageVars = this.getPageVars();
-				this.script = new Script(new ASEvaluator(this.page.variables, pageVars, {
+				this.script = new Script(this.page, new ASEvaluator(this.page.variables, pageVars, {
 					randomSeed: Math.random(),
 					user: page.user,
 					visitor: this.$store.state.i,
