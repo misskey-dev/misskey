@@ -1827,6 +1827,10 @@ pages:
         _dialog:
           content: "Content"
         resetRandom: "Reset a random number"
+        pushEvent: "Send an event"
+        _pushEvent:
+          event: "Name of the event"
+          message: "Message to display when pressed"
   script:
     categories:
       flow: "Control"
