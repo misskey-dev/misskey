@@ -1692,6 +1692,8 @@ pages:
   are-you-sure-delete: "Confirmez-vous la suppression de cette page ?"
   page-deleted: "La page a bien été supprimée."
   edit-this-page: "Éditer cette page"
+  pin-this-page: "Épingler sur votre profil"
+  unpin-this-page: "Désépingler"
   view-source: "Afficher la source"
   view-page: "Afficher la page"
   like: "Bien"
