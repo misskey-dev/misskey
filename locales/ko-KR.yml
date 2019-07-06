@@ -290,7 +290,7 @@ common:
   is-remote-user: "이 사용자 정보는 정확하지 않을 수 있습니다."
   is-remote-post: "이 글 정보는 복사본입니다."
   view-on-remote: "정확한 정보 보기"
-  renoted-by: "{user}님이 리노트"
+  renoted-by: "{user} 님이 리노트"
   no-notes: "글이 없습니다"
   turn-on-darkmode: "어둠에 삼켜져라"
   turn-off-darkmode: "빛이 있으라"
