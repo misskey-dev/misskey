@@ -911,6 +911,8 @@ dev/views/new-app.vue:
   authority-desc: "Nur die hier eingetragenen Berechtigungen, werden per API zur Verfügung stehen."
   authority-warning: "Dies kann auch nach dem erstellen der Anwendung geändert werden, allerdings werden dann alle bisher generierten Token ungültig."
 pages:
+  pin-this-page: "An die Profilseite pinnen"
+  unpin-this-page: "Lösen"
   like: "Gefällt mir"
   blocks:
     post: "\"Neuer Beitrag\"-Formular"
