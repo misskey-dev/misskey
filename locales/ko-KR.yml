@@ -1827,6 +1827,10 @@ pages:
         _dialog:
           content: "내용"
         resetRandom: "난수를 초기화"
+        pushEvent: "이벤트 보내기"
+        _pushEvent:
+          event: "이벤트 이름"
+          message: "눌렀을 때 표시할 메시지"
   script:
     categories:
       flow: "흐름 제어"
