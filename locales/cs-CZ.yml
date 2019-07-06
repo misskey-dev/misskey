@@ -102,7 +102,7 @@ common:
     reply: "Odpovědět"
     renote: "Renotovat"
     posting: "Posílání"
-    attach-media-from-local: "Uplodovat soubor z vašeho zařízení"
+    attach-media-from-local: "Nahrát soubor z vašeho zařízení"
     insert-a-kao: "v('ω')v"
     create-poll: "Vytvořit anketu"
     text-remain: "zbývá ještě {} znaků"
