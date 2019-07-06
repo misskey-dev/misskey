@@ -1821,6 +1821,7 @@ pages:
       inc: "Increase number"
     _button:
       text: "Title"
+      colored: "Color"
       action: "Operation when the button pressed"
       _action:
         dialog: "Show a dialog"
