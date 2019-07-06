@@ -35,6 +35,7 @@ common:
   signout: "Logout"
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
   fetching-as-ap-object: "Inquiring to union"
+  unfollow-confirm: "Do you want to unfollow {name}?"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -987,7 +988,7 @@ desktop/views/components/settings.2fa.vue:
   url: "https://www.google.com/landing/2step/"
   caution: "If you lose access to your registered device, you won't be able to connect to Misskey anymore!"
   register: "Register a device"
-  already-registered: "Your account is currently registered to an authenticator application"
+  already-registered: "This device is already registered"
   unregister: "Unregister"
   unregistered: "Two-factor authentication has been disabled."
   enter-password: "Enter the password"
