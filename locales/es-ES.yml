@@ -725,6 +725,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Renombrar"
     rename-folder: "Renombrar carpeta"
     input-new-folder-name: "Escribe el nombre nuevo"
+    else-folders: "Otros"
 desktop/views/components/drive.vue:
   search: "Buscar"
   empty-draghover: "¡Saluda!"
