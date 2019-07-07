@@ -972,6 +972,8 @@ desktop/views/components/drive.folder.vue:
   unable-to-process: "操作を完了できません"
   circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
   unhandled-error: "不明なエラー"
+  unable-to-delete: "削除できません"
+  has-child-files-or-folders: "このフォルダは空でないため、削除できません。"
   contextmenu:
     move-to-this-folder: "このフォルダへ移動"
     show-in-new-window: "新しいウィンドウで表示"

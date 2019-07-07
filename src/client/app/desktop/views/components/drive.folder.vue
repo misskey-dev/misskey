@@ -213,6 +213,21 @@ export default Vue.extend({
 		deleteFolder() {
 			this.$root.api('drive/folders/delete', {
 				folderId: this.folder.id
+			}).catch(err => {
+				switch(err.id) {
+					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
+						this.$root.dialog({
+							type: 'error',
+							title: this.$t('unable-to-delete'),
+							text: this.$t('has-child-files-or-folders')
+						});
+						break;
+					default:
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('unable-to-delete')
+						});
+				}
 			});
 		}
 	}
