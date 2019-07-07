@@ -363,6 +363,8 @@ common/views/components/emoji-picker.vue:
   objects: "物"
   symbols: "記号"
   flags: "旗"
+common/views/components/settings/app-type.vue:
+  info: "ページもっぺん読み込んだら反映したるで。"
 common/views/components/signin.vue:
   username: "ユーザー名"
   password: "パスワード"
