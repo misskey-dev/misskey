@@ -215,13 +215,6 @@ export default Vue.extend({
 				folderId: this.folder.id
 			}).catch(err => {
 				switch(err.id) {
-					case '1069098f-c281-440f-b085-f9932edbe091':
-						this.$root.dialog({
-							type: 'error',
-							title: this.$t('unable-to-delete'),
-							text: this.$t('no-such-folder')
-						});
-						break;
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 						this.$root.dialog({
 							type: 'error',
