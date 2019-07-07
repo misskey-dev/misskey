@@ -30,7 +30,10 @@ export default Vue.extend({
 			} else if (this.value.action === 'pushEvent') {
 				this.$root.api('page-push', {
 					pageId: this.script.page.id,
-					event: this.value.event
+					event: this.value.event,
+					...(this.value.var ? {
+						var: this.script.vars[this.value.var]
+					} : {})
 				});
 
 				this.$root.dialog({
@@ -46,7 +49,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .kudkigyw
 	display inline-block
-	min-width 300px
+	min-width 200px
 	max-width 450px
 	margin 8px 0
 </style>

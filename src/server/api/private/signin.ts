@@ -221,5 +221,4 @@ export default async (ctx: Koa.BaseContext) => {
 	}
 
 	await fail();
-	return;
 };

@@ -1,6 +1,6 @@
 <template>
-<div v-if="page" class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, center: page.alignCenter }" :style="{ fontFamily: page.font }" :key="path">
-	<header>
+<div class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, center: page.alignCenter }" :style="{ fontFamily: page.font }">
+	<header v-if="showTitle">
 		<div class="title">{{ page.title }}</div>
 	</header>
 
@@ -8,9 +8,13 @@
 		<x-block v-for="child in page.content" :value="child" @input="v => updateBlock(v)" :page="page" :script="script" :key="child.id" :h="2"/>
 	</div>
 
-	<footer>
+	<footer v-if="showFooter">
 		<small>@{{ page.user.username }}</small>
-		<router-link v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId" :to="`/i/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
+		<template v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId">
+			<router-link :to="`/i/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
+			<a v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)">{{ $t('unpin-this-page') }}</a>
+			<a v-else @click="pin(true)">{{ $t('pin-this-page') }}</a>
+		</template>
 		<router-link :to="`./${page.name}/view-source`">{{ $t('view-source') }}</router-link>
 		<div class="like">
 			<button @click="unlike()" v-if="page.isLiked" :title="$t('unlike')"><fa :icon="faHeartS"/></button>
@@ -25,7 +29,7 @@
 import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
-import { faHeart, faStickyNote } from '@fortawesome/free-regular-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { ASEvaluator } from '../../../../../../misc/aiscript/evaluator';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
@@ -69,64 +73,43 @@ export default Vue.extend({
 	},
 
 	props: {
-		pageName: {
-			type: String,
+		page: {
+			type: Object,
 			required: true
 		},
-		username: {
-			type: String,
-			required: true
+		showTitle: {
+			type: Boolean,
+			required: false,
+			default: true
+		},
+		showFooter: {
+			type: Boolean,
+			required: false,
+			default: false
 		},
 	},
 
 	data() {
 		return {
-			page: null,
 			script: null,
 			faHeartS, faHeart
 		};
 	},
 
-	computed: {
-		path(): string {
-			return this.username + '/' + this.pageName;
-		}
-	},
-
-	watch: {
-		path() {
-			this.fetch();
-		}
-	},
-
 	created() {
-		this.fetch();
+		const pageVars = this.getPageVars();
+		this.script = new Script(this.page, new ASEvaluator(this.page.variables, pageVars, {
+			randomSeed: Math.random(),
+			user: this.page.user,
+			visitor: this.$store.state.i,
+			page: this.page,
+			url: url
+		}), e => {
+			console.dir(e);
+		});
 	},
 
 	methods: {
-		fetch() {
-			this.$root.api('pages/show', {
-				name: this.pageName,
-				username: this.username,
-			}).then(page => {
-				this.page = page;
-				this.$emit('init', {
-					title: this.page.title,
-					icon: faStickyNote
-				});
-				const pageVars = this.getPageVars();
-				this.script = new Script(this.page, new ASEvaluator(this.page.variables, pageVars, {
-					randomSeed: Math.random(),
-					user: page.user,
-					visitor: this.$store.state.i,
-					page: page,
-					url: url
-				}), e => {
-					console.dir(e);
-				});
-			});
-		},
-
 		getPageVars() {
 			return collectPageVars(this.page.content);
 		},
@@ -146,6 +129,17 @@ export default Vue.extend({
 			}).then(() => {
 				this.page.isLiked = false;
 				this.page.likedCount--;
+			});
+		},
+
+		pin(pin) {
+			this.$root.api('i/update', {
+				pinnedPageId: pin ? this.page.id : null,
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
 			});
 		}
 	}

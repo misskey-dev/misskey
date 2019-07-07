@@ -16,6 +16,10 @@ export const meta = {
 
 		event: {
 			validator: $.str
+		},
+
+		var: {
+			validator: $.optional.nullable.any
 		}
 	},
 
@@ -37,6 +41,7 @@ export default define(meta, async (ps, user) => {
 	publishMainStream(user.id, 'pageEvent', {
 		pageId: ps.pageId,
 		event: ps.event,
+		var: ps.var,
 		user: await Users.pack(user, page.userId, {
 			detail: true
 		})

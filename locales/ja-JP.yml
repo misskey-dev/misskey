@@ -967,7 +967,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "閲覧注意を解除"
     copy-url: "URLをコピー"
     download: "ダウンロード"
-    else-files: "その他..."
+    else-files: "その他"
     set-as-avatar: "アイコンに設定"
     set-as-banner: "バナーに設定"
     open-in-app: "アプリで開く"
@@ -978,15 +978,20 @@ desktop/views/components/drive.file.vue:
     copied-url-to-clipboard: "URLをクリップボードにコピーしました"
 
 desktop/views/components/drive.folder.vue:
+  upload-folder: "既定アップロード先"
   unable-to-process: "操作を完了できません"
   circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
   unhandled-error: "不明なエラー"
+  unable-to-delete: "削除できません"
+  has-child-files-or-folders: "このフォルダは空でないため、削除できません。"
   contextmenu:
     move-to-this-folder: "このフォルダへ移動"
     show-in-new-window: "新しいウィンドウで表示"
     rename: "名前を変更"
     rename-folder: "フォルダ名の変更"
     input-new-folder-name: "新しいフォルダ名を入力してください"
+    else-folders: "その他"
+    set-as-upload-folder: "既定アップロード先に設定"
 
 desktop/views/components/drive.vue:
   search: "検索"
@@ -1150,6 +1155,9 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "使用中"
   stats: "統計"
+  default-upload-folder: "既定のアップロード先フォルダ"
+  default-upload-folder-name: "フォルダ"
+  change-default-upload-folder: "フォルダを変更"
 
 common/views/components/mute-and-block.vue:
   mute-and-block: "ミュートとブロック"
@@ -1916,6 +1924,7 @@ deck/deck.user-column.vue:
   activity: "アクティビティ"
   timeline: "タイムライン"
   pinned-notes: "ピン留めされた投稿"
+  pinned-page: "ピン留めされたページ"
 
 docs:
   edit-this-page-on-github: "間違いや改善点を見つけましたか？"
@@ -1955,6 +1964,8 @@ pages:
   are-you-sure-delete: "このページを削除しますか？"
   page-deleted: "ページを削除しました"
   edit-this-page: "このページを編集"
+  pin-this-page: "ピン留め"
+  unpin-this-page: "ピン留め解除"
   view-source: "ソースを表示"
   view-page: "ページを見る"
   like: "いいね"
@@ -1973,6 +1984,7 @@ pages:
   url: "ページURL"
   summary: "ページの要約"
   align-center: "中央寄せ"
+  hide-title-when-pinned: "ピン留めされているときにタイトルを非表示"
   font: "フォント"
   fontSerif: "セリフ"
   fontSansSerif: "サンセリフ"
@@ -2045,6 +2057,8 @@ pages:
         _pushEvent:
           event: "イベント名"
           message: "押したときに表示するメッセージ"
+          variable: "送信する変数"
+          no-variable: "なし"
 
   script:
     categories:

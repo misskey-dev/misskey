@@ -38,6 +38,7 @@ const defaultSettings = {
 	homeProfiles: {},
 	mobileHomeProfiles: {},
 	deckProfiles: {},
+	uploadFolder: null,
 };
 
 const defaultDeviceSettings = {
