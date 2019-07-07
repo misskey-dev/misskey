@@ -151,9 +151,18 @@ export default (opts) => ({
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
+			if (this.reply.visibility === 'specified') {
+				this.reply.visibleUserIds.forEach(uid => {
+					if (uid !== this.$store.state.i.id && uid !== this.reply.userId) {
+						this.$root.api('users/show', { userId: uid }).then(user => {
+							this.visibleUsers.push(user);
+						});
+					}
+				});
+			}
 		}
 
-		if (this.reply) {
+		if (this.reply && this.reply.userId !== this.$store.state.i.id) {
 			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
