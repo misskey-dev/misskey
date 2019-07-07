@@ -152,12 +152,10 @@ export default (opts) => ({
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 			if (this.reply.visibility === 'specified') {
-				this.reply.visibleUserIds.forEach(uid => {
-					if (uid !== this.$store.state.i.id && uid !== this.reply.userId) {
-						this.$root.api('users/show', { userId: uid }).then(user => {
-							this.visibleUsers.push(user);
-						});
-					}
+				this.$root.api('users/show', {
+					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$store.state.i.id && uid !== this.reply.userId)
+				}).then(users => {
+					this.visibleUsers.push(...users);
 				});
 			}
 		}
