@@ -958,7 +958,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "閲覧注意を解除"
     copy-url: "URLをコピー"
     download: "ダウンロード"
-    else-files: "その他..."
+    else-files: "その他"
     set-as-avatar: "アイコンに設定"
     set-as-banner: "バナーに設定"
     open-in-app: "アプリで開く"
@@ -969,6 +969,7 @@ desktop/views/components/drive.file.vue:
     copied-url-to-clipboard: "URLをクリップボードにコピーしました"
 
 desktop/views/components/drive.folder.vue:
+  upload-folder: "既定アップロード先"
   unable-to-process: "操作を完了できません"
   circular-reference-detected: "移動先のフォルダーは、移動するフォルダーのサブフォルダーです。"
   unhandled-error: "不明なエラー"
@@ -980,6 +981,8 @@ desktop/views/components/drive.folder.vue:
     rename: "名前を変更"
     rename-folder: "フォルダ名の変更"
     input-new-folder-name: "新しいフォルダ名を入力してください"
+    else-folders: "その他"
+    set-as-upload-folder: "既定アップロード先に設定"
 
 desktop/views/components/drive.vue:
   search: "検索"
@@ -1143,6 +1146,9 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "使用中"
   stats: "統計"
+  default-upload-folder: "既定のアップロード先フォルダ"
+  default-upload-folder-name: "フォルダ"
+  change-default-upload-folder: "フォルダを変更"
 
 common/views/components/mute-and-block.vue:
   mute-and-block: "ミュートとブロック"

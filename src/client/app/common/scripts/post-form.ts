@@ -245,7 +245,7 @@ export default (opts) => ({
 		},
 
 		upload(file) {
-			(this.$refs.uploader as any).upload(file);
+			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder);
 		},
 
 		onChangeUploadings(uploads) {

@@ -122,7 +122,7 @@ export default define({
 		},
 
 		upload(file) {
-			(this.$refs.uploader as any).upload(file);
+			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder);
 		},
 
 		onDragover(e) {
