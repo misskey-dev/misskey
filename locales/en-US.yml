@@ -890,6 +890,8 @@ desktop/views/components/drive.folder.vue:
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
   unhandled-error: "Unknown error"
+  unable-to-delete: "Unable to delete"
+  has-child-files-or-folders: "Since this folder is not empty, it can not be deleted."
   contextmenu:
     move-to-this-folder: "Move to this folder"
     show-in-new-window: "Open in new window"
@@ -1717,6 +1719,7 @@ deck/deck.user-column.vue:
   activity: "Activity"
   timeline: "Timeline"
   pinned-notes: "Pinned posts"
+  pinned-page: "Pinned page"
 docs:
   edit-this-page-on-github: "Found an error, or do you want to contribute to the documentation?"
   edit-this-page-on-github-link: "Edit this page at GitHub!"
@@ -1771,6 +1774,7 @@ pages:
   url: "Page URL"
   summary: "Summary of page"
   align-center: "Center align"
+  hide-title-when-pinned: "Hide page title when pinned to profile"
   font: "Font"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
@@ -1835,6 +1839,7 @@ pages:
         _pushEvent:
           event: "Name of the event"
           message: "Message to display when pressed"
+          variable: "Variable to send"
           no-variable: "None"
   script:
     categories:
