@@ -847,7 +847,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "Fjern markering som 'følsom'"
     copy-url: "Kopier webadresse"
     download: "Download"
-    else-files: "Andre"
+    else-files: "Avanceret"
     set-as-avatar: "Vælg som avatar"
     set-as-banner: "Vælg som banner"
     open-in-app: "Åbn i app"
@@ -866,6 +866,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Omdøb"
     rename-folder: "Omdøb mappe"
     input-new-folder-name: "Angiv nyt navn"
+    else-folders: "Avanceret"
 desktop/views/components/drive.vue:
   search: "Søg"
   empty-draghover: "Smid det her! Fordi du ved, at jeg er meget sød, ikke?"
@@ -995,6 +996,7 @@ common/views/components/drive-settings.vue:
   max: "Kapacitet"
   in-use: "I brug"
   stats: "Statistik"
+  default-upload-folder-name: "Mappe(r)"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Annuller / Bloker"
   mute: "Annuller"
