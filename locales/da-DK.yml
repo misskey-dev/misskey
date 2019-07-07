@@ -568,6 +568,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objekt"
   symbols: "Symboler"
   flags: "Flag"
+common/views/components/settings/app-type.vue:
+  info: "Du er nødt til at genindlæse siden, før ændringerne slår igennem."
 common/views/components/signin.vue:
   username: "Brugernavn"
   password: "Adgangskode"
