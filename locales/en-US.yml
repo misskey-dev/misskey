@@ -1835,6 +1835,7 @@ pages:
         _pushEvent:
           event: "Name of the event"
           message: "Message to display when pressed"
+          no-variable: "None"
   script:
     categories:
       flow: "Control"
