@@ -889,6 +889,7 @@ desktop/views/components/drive.file.vue:
     copied: "Copied"
     copied-url-to-clipboard: "URL has been copied to clipboard"
 desktop/views/components/drive.folder.vue:
+  upload-folder: "Default Upload loc."
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
   unhandled-error: "Unknown error"
@@ -901,6 +902,7 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "Rename folder"
     input-new-folder-name: "Enter new name"
     else-folders: "Other"
+    set-as-upload-folder: "Set as default upload folder"
 desktop/views/components/drive.vue:
   search: "Search"
   empty-draghover: "Drop it here! Yep, cuz you know I'm cute, right?"
@@ -1040,6 +1042,7 @@ common/views/components/drive-settings.vue:
   max: "Max"
   in-use: "In use"
   stats: "Statistics"
+  default-upload-folder: "Default upload folder"
   default-upload-folder-name: "Folder(s)"
   change-default-upload-folder: "Change folder"
 common/views/components/mute-and-block.vue:
