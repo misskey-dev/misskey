@@ -593,6 +593,8 @@ common/views/components/emoji-picker.vue:
   objects: "사물"
   symbols: "기호"
   flags: "깃발"
+common/views/components/settings/app-type.vue:
+  info: "변경사항은 페이지를 새로고침한 뒤에 반영됩니다."
 common/views/components/signin.vue:
   username: "사용자명"
   password: "비밀번호"
