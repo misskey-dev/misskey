@@ -877,7 +877,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "Unmark as 'sensitive'"
     copy-url: "Copy URL"
     download: "Download"
-    else-files: "Others"
+    else-files: "Other"
     set-as-avatar: "Set as an avatar"
     set-as-banner: "Set as a banner"
     open-in-app: "Open in app"
@@ -898,6 +898,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Rename"
     rename-folder: "Rename folder"
     input-new-folder-name: "Enter new name"
+    else-folders: "Other"
 desktop/views/components/drive.vue:
   search: "Search"
   empty-draghover: "Drop it here! Yep, cuz you know I'm cute, right?"
@@ -1037,6 +1038,7 @@ common/views/components/drive-settings.vue:
   max: "Max"
   in-use: "In use"
   stats: "Statistics"
+  default-upload-folder-name: "Folder(s)"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Mute / Block"
   mute: "Mute"
