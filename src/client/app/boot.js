@@ -84,12 +84,12 @@
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
-	let isMobile = /mobile|iphone|ipad|android/.test(ua) || window.innerWidth < 576
+	let isMobile = /mobile|iphone|ipad|android/.test(ua) || window.innerWidth < 576;
 	if (settings && settings.device.appTypeForce) {
 		if (settings.device.appTypeForce === 'mobile') {
-			isMobile = true
+			isMobile = true;
 		} else if (settings.device.appTypeForce === 'desktop') {
-			isMobile = false
+			isMobile = false;
 		}
 	}
 
