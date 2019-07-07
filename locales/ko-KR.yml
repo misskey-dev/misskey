@@ -908,7 +908,7 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "폴더 이름 변경"
     input-new-folder-name: "새 폴더 이름을 입력하여 주십시오"
     else-folders: "기타"
-    set-as-upload-folder: "기본 업로드 폴더를 설정"
+    set-as-upload-folder: "기본 업로드 위치로 설정"
 desktop/views/components/drive.vue:
   search: "검색"
   empty-draghover: "끌어놓으신 거 맞나요? 괜찮아요, 저는 귀여우니까요"
@@ -1048,7 +1048,7 @@ common/views/components/drive-settings.vue:
   max: "최대 용량"
   in-use: "사용중"
   stats: "통계"
-  default-upload-folder: "기본 업로드 폴더"
+  default-upload-folder: "기본 업로드 폴더 위치"
   default-upload-folder-name: "폴더"
   change-default-upload-folder: "폴더 변경"
 common/views/components/mute-and-block.vue:
