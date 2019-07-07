@@ -890,6 +890,8 @@ desktop/views/components/drive.folder.vue:
   unable-to-process: "작업을 완료할 수 없습니다"
   circular-reference-detected: "대상 폴더가 이동할 폴더의 하위 폴더입니다."
   unhandled-error: "알 수 없는 오류"
+  unable-to-delete: "삭제할 수 없습니다"
+  has-child-files-or-folders: "이 폴더는 비어있지 않기 때문에 삭제할 수 없습니다."
   contextmenu:
     move-to-this-folder: "이 폴더로 이동"
     show-in-new-window: "새 창으로 보기"
@@ -1717,6 +1719,7 @@ deck/deck.user-column.vue:
   activity: "활동"
   timeline: "타임라인"
   pinned-notes: "고정해놓은 글"
+  pinned-page: "고정해놓은 페이지"
 docs:
   edit-this-page-on-github: "틀린 점이나 개선할 점을 찾으셨나요?"
   edit-this-page-on-github-link: "이 페이지를 GitHub에서 편집"
@@ -1771,6 +1774,7 @@ pages:
   url: "페이지 URL"
   summary: "페이지 요약"
   align-center: "가운데 정렬"
+  hide-title-when-pinned: "프로필에 고정해놓은 경우 타이틀을 표시하지 않음"
   font: "글꼴"
   fontSerif: "세리프"
   fontSansSerif: "산 세리프"
@@ -1835,6 +1839,8 @@ pages:
         _pushEvent:
           event: "이벤트 이름"
           message: "눌렀을 때 표시할 메시지"
+          variable: "보낼 변수"
+          no-variable: "없음"
   script:
     categories:
       flow: "흐름 제어"
