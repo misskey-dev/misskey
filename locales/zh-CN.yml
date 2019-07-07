@@ -873,7 +873,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "取消标记为“敏感”"
     copy-url: "复制链接"
     download: "下载"
-    else-files: "其他..."
+    else-files: "其他"
     set-as-avatar: "设置为头像"
     set-as-banner: "设置为背景"
     open-in-app: "在应用程序中打开"
@@ -892,6 +892,7 @@ desktop/views/components/drive.folder.vue:
     rename: "重命名"
     rename-folder: "重命名文件夹"
     input-new-folder-name: "请输入新文件名"
+    else-folders: "其他"
 desktop/views/components/drive.vue:
   search: "搜索"
   empty-draghover: "放在这里！因为你知道我很可爱，对吗？"
@@ -1021,6 +1022,7 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "已使用"
   stats: "统计"
+  default-upload-folder-name: "文件夹"
 common/views/components/mute-and-block.vue:
   mute-and-block: "屏蔽/拉黑"
   mute: "屏蔽"
