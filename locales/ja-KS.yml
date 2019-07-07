@@ -601,7 +601,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "やっぱ見せたるわ"
     copy-url: "URLをコピー"
     download: "ダウンロード"
-    else-files: "まだあんで..."
+    else-files: "その他"
     set-as-avatar: "アイコンにする"
     set-as-banner: "バナーにする"
     open-in-app: "アプリで開く"
@@ -620,6 +620,7 @@ desktop/views/components/drive.folder.vue:
     rename: "名前を変えるで"
     rename-folder: "フォルダ名を変えるで"
     input-new-folder-name: "新しいフォルダ名を入力してや"
+    else-folders: "その他"
 desktop/views/components/drive.vue:
   search: "検索"
   empty-draghover: "ドロップするにゃ！お魚以外なら何でもいいにゃ！"
@@ -747,6 +748,7 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "使うとる"
   stats: "統計"
+  default-upload-folder-name: "フォルダ"
 common/views/components/mute-and-block.vue:
   mute-and-block: "ミュートとブロック"
   mute: "ミュート"
