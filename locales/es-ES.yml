@@ -458,6 +458,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objetos"
   symbols: "Símbolos"
   flags: "Países"
+common/views/components/settings/app-type.vue:
+  info: "Necesitas recargar la página para que los cambios tengan efecto."
 common/views/components/signin.vue:
   username: "Usuario"
   password: "Contraseña"
