@@ -877,7 +877,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "열람주의 해제"
     copy-url: "URL 복사"
     download: "다운로드"
-    else-files: "기타..."
+    else-files: "기타"
     set-as-avatar: "아이콘으로 설정"
     set-as-banner: "배너로 설정"
     open-in-app: "앱에서 열기"
@@ -898,6 +898,7 @@ desktop/views/components/drive.folder.vue:
     rename: "이름 변경"
     rename-folder: "폴더 이름 변경"
     input-new-folder-name: "새 폴더 이름을 입력하여 주십시오"
+    else-folders: "기타"
 desktop/views/components/drive.vue:
   search: "검색"
   empty-draghover: "끌어놓으신 거 맞나요? 괜찮아요, 저는 귀여우니까요"
@@ -1037,6 +1038,7 @@ common/views/components/drive-settings.vue:
   max: "최대 용량"
   in-use: "사용중"
   stats: "통계"
+  default-upload-folder-name: "폴더"
 common/views/components/mute-and-block.vue:
   mute-and-block: "뮤트 및 차단"
   mute: "뮤트"
