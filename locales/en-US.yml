@@ -593,6 +593,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objects"
   symbols: "Symbols"
   flags: "Flags"
+common/views/components/settings/app-type.vue:
+  info: "You need to reload the page for the changes to take effect."
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
