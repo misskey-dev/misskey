@@ -414,6 +414,8 @@ common/views/components/emoji-picker.vue:
   objects: "Rzeczy"
   symbols: "Symbole"
   flags: "Flagi"
+common/views/components/settings/app-type.vue:
+  info: "Musisz odświeżyć stronę, aby zmiany zostały uwzględnione."
 common/views/components/signin.vue:
   username: "Nazwa użytkownika"
   password: "Hasło"
