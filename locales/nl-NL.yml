@@ -260,7 +260,6 @@ desktop/views/components/drive.file.vue:
     rename: "Naam wijzigen"
     copy-url: "URL kopiëren"
     download: "Downloaden"
-    else-files: "Overig"
     set-as-avatar: "Instellen als gebruikersafbeelding"
     set-as-banner: "Instellen als omslagfoto"
     open-in-app: "Openen in app"
@@ -377,6 +376,7 @@ common/views/components/api-settings.vue:
 common/views/components/drive-settings.vue:
   in-use: "gebruikt"
   stats: "Statistieken"
+  default-upload-folder-name: "Map(pen)"
 desktop/views/components/sub-note-content.vue:
   private: "(dit bericht is privé)"
   poll: "Peilingen"
