@@ -632,7 +632,6 @@ desktop/views/components/drive.file.vue:
     rename: "Umbenennen"
     copy-url: "URL kopieren"
     download: "Download"
-    else-files: "Anderes…"
     set-as-avatar: "Als Avatar festlegen"
     set-as-banner: "Setze als Banner"
     open-in-app: "In der App öffnen"
