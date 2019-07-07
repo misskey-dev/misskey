@@ -637,6 +637,15 @@ common/views/components/emoji-picker.vue:
   symbols: "記号"
   flags: "旗"
 
+common/views/components/settings/app-type.vue:
+  title: "モード"
+  intro: "デスクトップ版とモバイル版のどちらを使うかを指定できます。"
+  choices:
+    auto: "自動で選択"
+    desktop: "デスクトップ版に固定"
+    mobile: "モバイル版に固定"
+  info: "変更はページの再度読み込み後に反映されます。"
+
 common/views/components/signin.vue:
   username: "ユーザー名"
   password: "パスワード"

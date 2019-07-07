@@ -62,7 +62,7 @@
 				</div>
 			</template>
 			<template v-else>
-				<div v-for="place in ['left', 'right']" :class="place">
+				<div v-for="place in ['left', 'right']" :class="place" :key="place">
 					<component v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="desktop"/>
 				</div>
 				<div class="main">
@@ -392,7 +392,7 @@ export default Vue.extend({
 					margin 0 auto
 
 		&:not(.side)
-			@media (max-width 1200px)
+			@media (max-width 1100px)
 				> *:not(.main)
 					display none
 

@@ -163,6 +163,7 @@
 		</ui-card>
 
 		<x-language/>
+		<x-app-type/>
 	</template>
 
 	<template v-if="page == null || page == 'notification'">
@@ -271,6 +272,7 @@ import XPassword from './password.vue';
 import XProfile from './profile.vue';
 import XApi from './api.vue';
 import XLanguage from './language.vue';
+import XAppType from './app-type.vue';
 import XNotification from './notification.vue';
 
 import { url, version } from '../../../../config';
@@ -291,6 +293,7 @@ export default Vue.extend({
 		XProfile,
 		XApi,
 		XLanguage,
+		XAppType,
 		XNotification,
 	},
 	props: {
