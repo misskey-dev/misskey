@@ -111,6 +111,9 @@ export default Vue.extend({
 						height: 150,
 						zoom: {
 							enabled: false
+						},
+						toolbar: {
+							show: false
 						}
 					},
 					plotOptions: {
