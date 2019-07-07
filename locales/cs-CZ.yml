@@ -765,7 +765,7 @@ desktop/views/components/drive.file.vue:
     rename: "Přejmenovat"
     copy-url: "Kopírovat URL"
     download: "Stáhnout"
-    else-files: "Více..."
+    else-files: "Ostatní"
     set-as-avatar: "Nastavit jako avatar"
     set-as-banner: "Nastavit jako baner"
     open-in-app: "Otevřít v aplikaci"
@@ -783,6 +783,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Přejmenovat"
     rename-folder: "Přejmenovat složku"
     input-new-folder-name: "Zadejte nové jméno"
+    else-folders: "Ostatní"
 desktop/views/components/drive.vue:
   empty-drive-description: "Klikněte pravým tlačítkem myši pro otevření menu, nebo sem přetáhněte soubor pro nahrání."
   empty-folder: "Tato složka je prázdná"
