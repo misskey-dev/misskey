@@ -580,6 +580,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objets"
   symbols: "Symboles"
   flags: "Drapeaux"
+common/views/components/settings/app-type.vue:
+  info: "Le rechargement de la page est requis afin d'appliquer les modifications."
 common/views/components/signin.vue:
   username: "Nom d'utilisateur·rice"
   password: "Mot de passe"
