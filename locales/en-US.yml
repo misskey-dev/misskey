@@ -1041,6 +1041,7 @@ common/views/components/drive-settings.vue:
   in-use: "In use"
   stats: "Statistics"
   default-upload-folder-name: "Folder(s)"
+  change-default-upload-folder: "Change folder"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Mute / Block"
   mute: "Mute"
