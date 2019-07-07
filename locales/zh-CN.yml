@@ -591,6 +591,8 @@ common/views/components/emoji-picker.vue:
   objects: "物品"
   symbols: "符号"
   flags: "旗帜"
+common/views/components/settings/app-type.vue:
+  info: "更改将在刷新页面后生效。"
 common/views/components/signin.vue:
   username: "用户名"
   password: "密码"
