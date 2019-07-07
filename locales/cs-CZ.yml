@@ -538,6 +538,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objekty"
   symbols: "Symboly"
   flags: "Vlajky"
+common/views/components/settings/app-type.vue:
+  info: "Pro aktivování změn musíte znovu načíst stránky."
 common/views/components/signin.vue:
   username: "Přezdívka"
   password: "Heslo"
