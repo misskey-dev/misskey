@@ -1012,7 +1012,7 @@ desktop/views/components/settings.2fa.vue:
   register-security-key: "키 등록 완료"
   something-went-wrong: "으악! 키를 등록하는 도중 문제가 발생하였습니다:"
   key-unregistered: "키가 등록되어 있지 않습니다"
-  use-password-less-login: "패스워드 없는 로그인 사용"
+  use-password-less-login: "비밀번호 없는 로그인 사용"
 common/views/components/media-image.vue:
   sensitive: "열람주의"
   click-to-show: "클릭하여 보기"
