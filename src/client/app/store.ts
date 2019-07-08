@@ -39,7 +39,7 @@ const defaultSettings = {
 	mobileHomeProfiles: {},
 	deckProfiles: {},
 	uploadFolder: null,
-	pastedFileName: 'YYYY-MM-DD hh-mm-ss [{{number}}]',
+	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	pasteDialog: false,
 };
 

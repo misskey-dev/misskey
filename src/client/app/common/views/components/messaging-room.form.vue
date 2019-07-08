@@ -30,7 +30,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as autosize from 'autosize';
-import * as moment from 'moment';
+import { formatTimeString } from '../../../../../misc/format-time-string';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/messaging-room.form.vue'),
@@ -94,7 +94,7 @@ export default Vue.extend({
 					const file = items[0].getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${moment(file.lastModified).format(this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
 					const name = this.$store.state.settings.pasteDialog
 						? await this.$root.dialog({
 							title: this.$t('@.post-form.enter-file-name'),

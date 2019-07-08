@@ -8,7 +8,7 @@ import { host, url } from '../../config';
 import i18n from '../../i18n';
 import { erase, unique } from '../../../../prelude/array';
 import extractMentions from '../../../../misc/extract-mentions';
-import * as moment from 'moment';
+import { formatTimeString } from '../../../../misc/format-time-string';
 
 export default (opts) => ({
 	i18n: i18n(),
@@ -341,7 +341,7 @@ export default (opts) => ({
 					const file = item.getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${moment(file.lastModified).format(this.$store.state.settings.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 					const name = this.$store.state.settings.pasteDialog
 						? await this.$root.dialog({
 								title: this.$t('@.post-form.enter-file-name'),
