@@ -123,6 +123,7 @@ common:
     add-visible-user: "Add a user"
     cw-placeholder: "Comments for the post (optional)"
     username-prompt: "Please enter username"
+    enter-file-name: "Edit file name"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -189,6 +190,8 @@ common:
     remember-note-visibility: "Remember post visibility"
     web-search-engine: "Web search engine"
     web-search-engine-desc: "Example: https://www.google.com/?#q={{query}}"
+    paste: "Paste"
+    paste-dialog: "Edit the pasted file name"
     keep-cw: "Preserve content warning"
     keep-cw-desc: "When replying to a post, the same content warning is set by default to the reply, as has been set by the original post."
     i-like-sushi: "I prefer sushi rather than pudding"
@@ -595,11 +598,11 @@ common/views/components/emoji-picker.vue:
   flags: "Flags"
 common/views/components/settings/app-type.vue:
   title: "Mode"
-  intro: "You can specify whether to use layout of the desktop or mobile."
+  intro: "You can specify whether you want to use the desktop, or the mobile layout."
   choices:
     auto: "Choose layout automatically"
-    desktop: "Always use Desktop layout"
-    mobile: "Always use Mobile layout"
+    desktop: "Always use the desktop layout"
+    mobile: "Always use the mobile layout"
   info: "You need to reload the page for the changes to take effect."
 common/views/components/signin.vue:
   username: "Username"
