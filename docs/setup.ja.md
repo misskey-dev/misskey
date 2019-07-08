@@ -133,7 +133,7 @@ npm run init
 2. `git pull`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
-5. [ChangeLog](../CHANGELOG.md)でマイグレーション情報を確認する
+5. `npm run migrate`
 
 なにか問題が発生した場合は、`npm run clean`または`npm run cleanall`すると直る場合があります。
 

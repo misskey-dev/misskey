@@ -132,7 +132,7 @@ You can check if the service is running with `systemctl status misskey`.
 2. `git pull`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
-5. Check [ChangeLog](../CHANGELOG.md) for migration information
+5. `npm run migrate`
 6. Restart your Misskey process to apply changes
 7. Enjoy
 
