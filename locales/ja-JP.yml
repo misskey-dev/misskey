@@ -129,6 +129,7 @@ common:
     add-visible-user: "ユーザーを追加"
     cw-placeholder: "内容への注釈 (オプション)"
     username-prompt: "ユーザー名を入力してください"
+    enter-file-name: "ファイル名を編集"
 
   weekday-short:
     sunday: "日"
@@ -201,6 +202,11 @@ common:
     remember-note-visibility: "投稿の公開範囲を記憶する"
     web-search-engine: "ウェブ検索エンジン"
     web-search-engine-desc: "例: https://www.google.com/?#q={{query}}"
+    paste: "ペースト"
+    pasted-file-name: "ペーストされたファイル名のテンプレート"
+    pasted-file-name-desc: "例: \"yyyy-MM-dd HH-mm-ss [{{number}}]\" → \"2018-03-20 21-30-24 1\""
+    paste-dialog: "ペースト時にファイル名を編集"
+    paste-dialog-desc: "ペースト時にファイル名を編集するダイアログを表示するようにします。"
     keep-cw: "CW保持"
     keep-cw-desc: "投稿にリプライする際、リプライ元の投稿にCWが設定されていたとき、デフォルトで同じCWを設定するようにします。"
     i-like-sushi: "私は(プリンよりむしろ)寿司が好き"

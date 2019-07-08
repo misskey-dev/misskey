@@ -46,7 +46,7 @@ export default Vue.extend({
 			});
 		},
 
-		upload(file: File, folder: any) {
+		upload(file: File, folder: any, name?: string) {
 			if (folder && typeof folder == 'object') folder = folder.id;
 
 			const id = Math.random();
@@ -61,7 +61,7 @@ export default Vue.extend({
 
 					const ctx = {
 						id: id,
-						name: file.name || 'untitled',
+						name: name || file.name || 'untitled',
 						progress: undefined,
 						img: window.URL.createObjectURL(file)
 					};
@@ -75,6 +75,7 @@ export default Vue.extend({
 					data.append('file', file);
 
 					if (folder) data.append('folderId', folder);
+					if (name) data.append('name', name);
 
 					const xhr = new XMLHttpRequest();
 					xhr.open('POST', apiUrl + '/drive/files/create', true);
