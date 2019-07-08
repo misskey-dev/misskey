@@ -35,6 +35,8 @@
 					<option value="sans-serif">{{ $t('fontSansSerif') }}</option>
 				</ui-select>
 
+				<ui-switch v-model="hideTitleWhenPinned">{{ $t('hide-title-when-pinned') }}</ui-switch>
+
 				<div class="eyeCatch">
 					<ui-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catching-image') }}</ui-button>
 					<div v-else-if="eyeCatchingImage">
@@ -140,6 +142,7 @@ export default Vue.extend({
 			font: 'sans-serif',
 			content: [],
 			alignCenter: false,
+			hideTitleWhenPinned: false,
 			variables: [],
 			aiScript: null,
 			showOptions: false,
@@ -192,6 +195,7 @@ export default Vue.extend({
 			this.currentName = this.page.name;
 			this.summary = this.page.summary;
 			this.font = this.page.font;
+			this.hideTitleWhenPinned = this.page.hideTitleWhenPinned;
 			this.alignCenter = this.page.alignCenter;
 			this.content = this.page.content;
 			this.variables = this.page.variables;
@@ -223,6 +227,7 @@ export default Vue.extend({
 					name: this.name.trim(),
 					summary: this.summary,
 					font: this.font,
+					hideTitleWhenPinned: this.hideTitleWhenPinned,
 					alignCenter: this.alignCenter,
 					content: this.content,
 					variables: this.variables,
@@ -240,6 +245,7 @@ export default Vue.extend({
 					name: this.name.trim(),
 					summary: this.summary,
 					font: this.font,
+					hideTitleWhenPinned: this.hideTitleWhenPinned,
 					alignCenter: this.alignCenter,
 					content: this.content,
 					variables: this.variables,

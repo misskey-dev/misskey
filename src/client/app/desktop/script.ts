@@ -148,6 +148,7 @@ init(async (launch, os) => {
 					{ path: '/i/groups', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/user-groups.vue').then(m => m.default) }) },
 					{ path: '/i/groups/:groupId', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/user-group-editor.vue').then(m => m.default), groupId: route.params.groupId }) },
 					{ path: '/i/follow-requests', component: DeckColumn, props: route => ({ component: () => import('../common/views/pages/follow-requests.vue').then(m => m.default) }) },
+					{ path: '/@:username/pages/:pageName', name: 'page', props: true, component: () => import('../common/views/deck/deck.page-column.vue').then(m => m.default) },
 				]}
 				: { path: '/', component: MkHome, children: [
 					{ path: '', name: 'index', component: MkHomeTimeline },
@@ -171,12 +172,11 @@ init(async (launch, os) => {
 					{ path: '/i/follow-requests', component: () => import('../common/views/pages/follow-requests.vue').then(m => m.default) },
 					{ path: '/i/pages/new', component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default) },
 					{ path: '/i/pages/edit/:pageId', component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default), props: route => ({ initPageId: route.params.pageId }) },
-					{ path: '/@:user/pages/:page', component: () => import('../common/views/pages/page/page.vue').then(m => m.default), props: route => ({ pageName: route.params.page, username: route.params.user }) },
+					{ path: '/@:user/pages/:page', component: () => import('../common/views/pages/page.vue').then(m => m.default), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 					{ path: '/@:user/pages/:pageName/view-source', component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 				]},
 			{ path: '/i/pages/new', component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default) },
 			{ path: '/i/pages/edit/:pageId', component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default), props: route => ({ initPageId: route.params.pageId }) },
-			{ path: '/@:user/pages/:page', component: () => import('../common/views/pages/page/page.vue').then(m => m.default), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 			{ path: '/@:user/pages/:pageName/view-source', component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 			{ path: '/i/messaging/group/:group', component: MkMessagingRoom },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },

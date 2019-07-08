@@ -34,6 +34,7 @@ common:
   signup: "S'enregistrer"
   signout: "Se déconnecter"
   reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
+  unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -532,8 +533,10 @@ common/views/components/user-menu.vue:
   report-abuse-reported: "Transmit à l’administrateur. Merci de votre collaboration."
   silence: "Mettre en sourdine"
   unsilence: "Enlever la sourdine"
+  silence-confirm: "Êtes-vous surs de vouloir mettre cet·te utilisateur·rice en sourdine ?"
   suspend: "Suspendre"
   unsuspend: "Ne plus suspendre"
+  suspend-confirm: "Êtes-vous surs de vouloir suspendre cet·te utilisateur·rice ?"
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
@@ -577,6 +580,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objets"
   symbols: "Symboles"
   flags: "Drapeaux"
+common/views/components/settings/app-type.vue:
+  info: "Le rechargement de la page est requis afin d'appliquer les modifications."
 common/views/components/signin.vue:
   username: "Nom d'utilisateur·rice"
   password: "Mot de passe"
@@ -587,6 +592,8 @@ common/views/components/signin.vue:
   signin-with-github: "Se connecter avec GitHub"
   signin-with-discord: "Se connecter avec Discord"
   login-failed: "Échec d’authentification. Veuillez vérifier que votre nom d’utilisateur et mot de passe sont corrects."
+  tap-key: "Cliquez sur la clé de sécurité pour vous connecter"
+  enter-2fa-code: "Entrez votre code de vérification"
 common/views/components/signup.vue:
   invitation-code: "Code d’invitation"
   invitation-info: "Si vous n’avez pas de code d’invitation, contactez un <a href=\"{}\">administrateur</a>."
@@ -723,6 +730,7 @@ common/views/components/user-group-editor.vue:
   rename: "Renommer le groupe"
   delete: "Supprimer le groupe"
   transfer: "Transférer de groupe"
+  transfer-are-you-sure: "Êtes vous surs de vouloir ajouter @$2 au groupe $1 ?"
   transferred: "Groupe transféré"
   remove-user: "Enlever un utilisateur de ce groupe"
   delete-are-you-sure: "Désirez-vous vraiment supprimer le groupe $1 ?"
@@ -857,7 +865,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "Ne pas marquer comme sensible"
     copy-url: "Copier l’URL"
     download: "Télécharger"
-    else-files: "Autres..."
+    else-files: "Avancé"
     set-as-avatar: "Utiliser en tant qu'avatar"
     set-as-banner: "Utiliser en tant que bannière"
     open-in-app: "Ouvrir dans l'application"
@@ -876,6 +884,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Renommer"
     rename-folder: "Renommer le dossier"
     input-new-folder-name: "Entrer un nouveau nom"
+    else-folders: "Avancé"
 desktop/views/components/drive.vue:
   search: "Rechercher"
   empty-draghover: "Drop Welcome!"
@@ -981,6 +990,12 @@ desktop/views/components/settings.2fa.vue:
   success: "Sauvegarde des paramètres avec succès !"
   failed: "L’opération a échoué. Veuillez vous assurer que le jeton a été saisi correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
+  security-key-header: "Clé de sécurité"
+  last-used: "Dernière utilisation :"
+  activate-key: "Cliquez pour activer la clé de sécurité"
+  security-key-name: "Nom de la clé"
+  key-unregistered: "La clé a été supprimée"
+  use-password-less-login: "Utiliser une connexion sans mot de passe"
 common/views/components/media-image.vue:
   sensitive: "Contenu sensible"
   click-to-show: "Cliquer pour afficher"
@@ -1005,6 +1020,7 @@ common/views/components/drive-settings.vue:
   max: "Maximale"
   in-use: "utilisé"
   stats: "Statistiques"
+  default-upload-folder-name: "Dossier·s"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Silencés / Bloqués"
   mute: "Mettre en sourdine"
@@ -1294,6 +1310,7 @@ admin/views/users.vue:
   update-remote-user: "Mettre à jour les informations de l’utilisateur·rice distant·e"
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   delete-all-files: "Supprimer tous les fichiers"
+  delete-all-files-confirm: "Êtes vous surs de vouloir supprimer tous les fichiers ?"
   users:
     title: "Utilisateur·rice·s"
     sort:
@@ -1692,6 +1709,8 @@ pages:
   are-you-sure-delete: "Confirmez-vous la suppression de cette page ?"
   page-deleted: "La page a bien été supprimée."
   edit-this-page: "Éditer cette page"
+  pin-this-page: "Épingler sur votre profil"
+  unpin-this-page: "Désépingler"
   view-source: "Afficher la source"
   view-page: "Afficher la page"
   like: "Bien"
@@ -1705,6 +1724,7 @@ pages:
   url: "URL de page"
   summary: "Résumé de page"
   align-center: "Centrée"
+  hide-title-when-pinned: "Masquer le titre de la page lorsque celle-ci est épinglée au profil"
   font: "Police de caractères"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
@@ -1757,12 +1777,19 @@ pages:
       inc: "Augmenter le chiffre"
     _button:
       text: "Titre"
+      colored: "Couleur"
       action: "L'opération lorsque le bouton sera pressé"
       _action:
         dialog: "Afficher une fenêtre de dialogue"
         _dialog:
           content: "Contenu"
         resetRandom: "Réinitialiser le nombre aléatoire"
+        pushEvent: "Envoyer un évènement"
+        _pushEvent:
+          event: "Nom de l'évènement"
+          message: "Message à afficher lorsque appuyé"
+          variable: "Variable à envoyer"
+          no-variable: "Aucune"
   script:
     categories:
       flow: "Contrôle"

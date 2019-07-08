@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages } from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
@@ -155,7 +155,10 @@ export class UserRepository extends Repository<User> {
 				pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
 					detail: true
 				}),
+				pinnedPageId: profile!.pinnedPageId,
+				pinnedPage: profile!.pinnedPageId ? Pages.pack(profile!.pinnedPageId, meId) : null,
 				twoFactorEnabled: profile!.twoFactorEnabled,
+				usePasswordLessLogin: profile!.usePasswordLessLogin,
 				securityKeys: profile!.twoFactorEnabled
 					? UserSecurityKeys.count({
 						userId: user.id
@@ -208,7 +211,6 @@ export class UserRepository extends Repository<User> {
 						select: ['id', 'name', 'lastUsed']
 					})
 					: []
-
 			} : {}),
 
 			...(relation ? {

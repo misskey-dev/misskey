@@ -1,6 +1,6 @@
 <template>
 <div>
-	<ui-button class="kudkigyw" @click="click()">{{ script.interpolate(value.text) }}</ui-button>
+	<ui-button class="kudkigyw" @click="click()" :primary="value.primary">{{ script.interpolate(value.text) }}</ui-button>
 </div>
 </template>
 
@@ -27,6 +27,19 @@ export default Vue.extend({
 			} else if (this.value.action === 'resetRandom') {
 				this.script.aiScript.updateRandomSeed(Math.random());
 				this.script.eval();
+			} else if (this.value.action === 'pushEvent') {
+				this.$root.api('page-push', {
+					pageId: this.script.page.id,
+					event: this.value.event,
+					...(this.value.var ? {
+						var: this.script.vars[this.value.var]
+					} : {})
+				});
+
+				this.$root.dialog({
+					type: 'success',
+					text: this.script.interpolate(this.value.message)
+				});
 			}
 		}
 	}
@@ -36,7 +49,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .kudkigyw
 	display inline-block
-	min-width 300px
+	min-width 200px
 	max-width 450px
 	margin 8px 0
 </style>

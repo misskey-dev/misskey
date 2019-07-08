@@ -140,7 +140,19 @@
 
 			<section>
 				<header>{{ $t('@._settings.web-search-engine') }}</header>
-				<ui-input v-model="webSearchEngine">{{ $t('@._settings.web-search-engine') }}<template #desc>{{ $t('@._settings.web-search-engine-desc') }}</template></ui-input>
+				<ui-input v-model="webSearchEngine">{{ $t('@._settings.web-search-engine') }}
+					<template #desc>{{ $t('@._settings.web-search-engine-desc') }}</template>
+				</ui-input>
+			</section>
+
+			<section v-if="!$root.isMobile">
+				<header>{{ $t('@._settings.paste') }}</header>
+				<ui-input v-model="pastedFileName">{{ $t('@._settings.pasted-file-name') }}
+					<template #desc>{{ $t('@._settings.pasted-file-name-desc') }}</template>
+				</ui-input>
+				<ui-switch v-model="pasteDialog">{{ $t('@._settings.paste-dialog') }}
+					<template #desc>{{ $t('@._settings.paste-dialog-desc') }}</template>
+				</ui-switch>
 			</section>
 		</ui-card>
 
@@ -163,6 +175,7 @@
 		</ui-card>
 
 		<x-language/>
+		<x-app-type/>
 	</template>
 
 	<template v-if="page == null || page == 'notification'">
@@ -271,6 +284,7 @@ import XPassword from './password.vue';
 import XProfile from './profile.vue';
 import XApi from './api.vue';
 import XLanguage from './language.vue';
+import XAppType from './app-type.vue';
 import XNotification from './notification.vue';
 
 import { url, version } from '../../../../config';
@@ -291,6 +305,7 @@ export default Vue.extend({
 		XProfile,
 		XApi,
 		XLanguage,
+		XAppType,
 		XNotification,
 	},
 	props: {
@@ -407,6 +422,16 @@ export default Vue.extend({
 		webSearchEngine: {
 			get() { return this.$store.state.settings.webSearchEngine; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'webSearchEngine', value }); }
+		},
+
+		pastedFileName: {
+			get() { return this.$store.state.settings.pastedFileName; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'pastedFileName', value }); }
+		},
+
+		pasteDialog: {
+			get() { return this.$store.state.settings.pasteDialog; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'pasteDialog', value }); }
 		},
 
 		showReplyTarget: {

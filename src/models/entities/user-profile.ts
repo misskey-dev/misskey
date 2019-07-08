@@ -1,6 +1,7 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { id } from '../id';
 import { User } from './user';
+import { Page } from './page';
 
 @Entity()
 export class UserProfile {
@@ -81,6 +82,11 @@ export class UserProfile {
 	})
 	public securityKeysAvailable: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public usePasswordLessLogin: boolean;
+
 	@Column('varchar', {
 		length: 128, nullable: true,
 		comment: 'The password hash of the User. It will be null if the origin of the user is local.'
@@ -112,6 +118,18 @@ export class UserProfile {
 		default: false,
 	})
 	public carefulBot: boolean;
+
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public pinnedPageId: Page['id'] | null;
+
+	@OneToOne(type => Page, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public pinnedPage: Page | null;
 
 	//#region Linking
 	@Column('boolean', {

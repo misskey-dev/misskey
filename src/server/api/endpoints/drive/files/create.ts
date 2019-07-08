@@ -35,6 +35,14 @@ export const meta = {
 			}
 		},
 
+		name: {
+			validator: $.optional.nullable.str,
+			default: null as any,
+			desc: {
+				'ja-JP': 'ファイル名（拡張子があるなら含めて）'
+			}
+		},
+
 		isSensitive: {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
@@ -72,7 +80,7 @@ export const meta = {
 
 export default define(meta, async (ps, user, app, file, cleanup) => {
 	// Get 'name' parameter
-	let name = file.originalname;
+	let name = ps.name || file.originalname;
 	if (name !== undefined && name !== null) {
 		name = name.trim();
 		if (name.length === 0) {

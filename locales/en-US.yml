@@ -35,6 +35,7 @@ common:
   signout: "Logout"
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
   fetching-as-ap-object: "Inquiring to union"
+  unfollow-confirm: "Do you want to unfollow {name}?"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -122,6 +123,7 @@ common:
     add-visible-user: "Add a user"
     cw-placeholder: "Comments for the post (optional)"
     username-prompt: "Please enter username"
+    enter-file-name: "Edit file name"
   weekday-short:
     sunday: "S"
     monday: "M"
@@ -188,6 +190,8 @@ common:
     remember-note-visibility: "Remember post visibility"
     web-search-engine: "Web search engine"
     web-search-engine-desc: "Example: https://www.google.com/?#q={{query}}"
+    paste: "Paste"
+    paste-dialog: "Edit the pasted file name"
     keep-cw: "Preserve content warning"
     keep-cw-desc: "When replying to a post, the same content warning is set by default to the reply, as has been set by the original post."
     i-like-sushi: "I prefer sushi rather than pudding"
@@ -592,6 +596,14 @@ common/views/components/emoji-picker.vue:
   objects: "Objects"
   symbols: "Symbols"
   flags: "Flags"
+common/views/components/settings/app-type.vue:
+  title: "Mode"
+  intro: "You can specify whether you want to use the desktop, or the mobile layout."
+  choices:
+    auto: "Choose layout automatically"
+    desktop: "Always use the desktop layout"
+    mobile: "Always use the mobile layout"
+  info: "You need to reload the page for the changes to take effect."
 common/views/components/signin.vue:
   username: "Username"
   password: "Password"
@@ -876,7 +888,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "Unmark as 'sensitive'"
     copy-url: "Copy URL"
     download: "Download"
-    else-files: "Others"
+    else-files: "Other"
     set-as-avatar: "Set as an avatar"
     set-as-banner: "Set as a banner"
     open-in-app: "Open in app"
@@ -886,15 +898,20 @@ desktop/views/components/drive.file.vue:
     copied: "Copied"
     copied-url-to-clipboard: "URL has been copied to clipboard"
 desktop/views/components/drive.folder.vue:
+  upload-folder: "Default Upload location"
   unable-to-process: "The operation could not be completed."
   circular-reference-detected: "The destination folder is a subfolder of the folder you wish to move."
   unhandled-error: "Unknown error"
+  unable-to-delete: "Unable to delete"
+  has-child-files-or-folders: "Since this folder is not empty, it can not be deleted."
   contextmenu:
     move-to-this-folder: "Move to this folder"
     show-in-new-window: "Open in new window"
     rename: "Rename"
     rename-folder: "Rename folder"
     input-new-folder-name: "Enter new name"
+    else-folders: "Other"
+    set-as-upload-folder: "Set as default upload folder"
 desktop/views/components/drive.vue:
   search: "Search"
   empty-draghover: "Drop it here! Yep, cuz you know I'm cute, right?"
@@ -987,7 +1004,7 @@ desktop/views/components/settings.2fa.vue:
   url: "https://www.google.com/landing/2step/"
   caution: "If you lose access to your registered device, you won't be able to connect to Misskey anymore!"
   register: "Register a device"
-  already-registered: "Your account is currently registered to an authenticator application"
+  already-registered: "This device is already registered"
   unregister: "Unregister"
   unregistered: "Two-factor authentication has been disabled."
   enter-password: "Enter the password"
@@ -1009,6 +1026,7 @@ desktop/views/components/settings.2fa.vue:
   register-security-key: "Complete Key registration"
   something-went-wrong: "Wow! There was a problem registering the Key:"
   key-unregistered: "The Key has been deleted"
+  use-password-less-login: "Use Password-less login"
 common/views/components/media-image.vue:
   sensitive: "NSFW"
   click-to-show: "Click to show"
@@ -1033,6 +1051,9 @@ common/views/components/drive-settings.vue:
   max: "Max"
   in-use: "In use"
   stats: "Statistics"
+  default-upload-folder: "Default upload folder location"
+  default-upload-folder-name: "Folder(s)"
+  change-default-upload-folder: "Change folder"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Mute / Block"
   mute: "Mute"
@@ -1715,6 +1736,7 @@ deck/deck.user-column.vue:
   activity: "Activity"
   timeline: "Timeline"
   pinned-notes: "Pinned posts"
+  pinned-page: "Pinned page"
 docs:
   edit-this-page-on-github: "Found an error, or do you want to contribute to the documentation?"
   edit-this-page-on-github-link: "Edit this page at GitHub!"
@@ -1749,6 +1771,8 @@ pages:
   are-you-sure-delete: "Do you want to delete this page?"
   page-deleted: "The page has been deleted"
   edit-this-page: "Edit this page"
+  pin-this-page: "Pin to your profile"
+  unpin-this-page: "Unpin"
   view-source: "View Source"
   view-page: "View page"
   like: "Like"
@@ -1767,6 +1791,7 @@ pages:
   url: "Page URL"
   summary: "Summary of page"
   align-center: "Center align"
+  hide-title-when-pinned: "Hide page title when pinned to profile"
   font: "Font"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
@@ -1820,12 +1845,19 @@ pages:
       inc: "Increase number"
     _button:
       text: "Title"
+      colored: "Color"
       action: "Operation when the button pressed"
       _action:
         dialog: "Show a dialog"
         _dialog:
           content: "Content"
         resetRandom: "Reset a random number"
+        pushEvent: "Send an event"
+        _pushEvent:
+          event: "Name of the event"
+          message: "Message to display when pressed"
+          variable: "Variable to send"
+          no-variable: "None"
   script:
     categories:
       flow: "Control"

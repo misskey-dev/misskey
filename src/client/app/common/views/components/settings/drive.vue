@@ -11,6 +11,12 @@
 		<header>{{ $t('stats') }}</header>
 		<div ref="chart" style="margin-bottom: -16px; margin-left: -8px; color: #000;"></div>
 	</section>
+
+	<section>
+		<header>{{ $t('default-upload-folder') }}</header>
+		<ui-input v-model="uploadFolderName" readonly>{{ $t('default-upload-folder-name') }}</ui-input>
+		<ui-button @click="chooseUploadFolder()">{{ $t('change-default-upload-folder') }}</ui-button>
+	</section>
 </ui-card>
 </template>
 
@@ -26,7 +32,8 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			usage: null,
-			capacity: null
+			capacity: null,
+			uploadFolderName: null
 		};
 	},
 
@@ -40,10 +47,25 @@ export default Vue.extend({
 					l: 0.5
 				})
 			};
-		}
+		},
+
+		uploadFolder: {
+			get() { return this.$store.state.settings.uploadFolder; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'uploadFolder', value }); }
+		},
 	},
 
 	mounted() {
+		if (this.uploadFolder == null) {
+			this.uploadFolderName = this.$t('@._settings.root');
+		} else {
+			this.$root.api('drive/folders/show', {
+				folderId: this.uploadFolder
+			}).then(folder => {
+				this.uploadFolderName = folder.name;
+			});
+		}
+	
 		this.$root.api('drive').then(info => {
 			this.capacity = info.capacity;
 			this.usage = info.usage;
@@ -89,6 +111,9 @@ export default Vue.extend({
 						height: 150,
 						zoom: {
 							enabled: false
+						},
+						toolbar: {
+							show: false
 						}
 					},
 					plotOptions: {
@@ -152,6 +177,13 @@ export default Vue.extend({
 
 				chart.render();
 			});
+		},
+
+		chooseUploadFolder() {
+			this.$chooseDriveFolder().then(folder => {
+				this.uploadFolder = folder ? folder.id : null;
+				this.uploadFolderName = folder ? folder.name : this.$t('@._settings.root');
+			})
 		}
 	}
 });

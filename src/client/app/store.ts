@@ -38,6 +38,9 @@ const defaultSettings = {
 	homeProfiles: {},
 	mobileHomeProfiles: {},
 	deckProfiles: {},
+	uploadFolder: null,
+	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
+	pasteDialog: false,
 };
 
 const defaultDeviceSettings = {
@@ -60,6 +63,7 @@ const defaultDeviceSettings = {
 	soundVolume: 0.5,
 	mediaVolume: 0.5,
 	lang: null,
+	appTypeForce: 'auto',
 	debug: false,
 	lightmode: false,
 	loadRawImages: false,

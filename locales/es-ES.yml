@@ -458,6 +458,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objetos"
   symbols: "Símbolos"
   flags: "Países"
+common/views/components/settings/app-type.vue:
+  info: "Necesitas recargar la página para que los cambios tengan efecto."
 common/views/components/signin.vue:
   username: "Usuario"
   password: "Contraseña"
@@ -725,6 +727,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Renombrar"
     rename-folder: "Renombrar carpeta"
     input-new-folder-name: "Escribe el nombre nuevo"
+    else-folders: "Otros"
 desktop/views/components/drive.vue:
   search: "Buscar"
   empty-draghover: "¡Saluda!"
@@ -1091,6 +1094,7 @@ deck:
 deck/deck.user-column.vue:
   activity: "Actividad"
 pages:
+  pin-this-page: "Fijar en el perfil"
   like: "Me gusta"
   blocks:
     post: "Formulario"

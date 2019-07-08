@@ -30,6 +30,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as autosize from 'autosize';
+import { formatTimeString } from '../../../../../misc/format-time-string';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/messaging-room.form.vue'),
@@ -84,13 +85,26 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		onPaste(e) {
+		async onPaste(e: ClipboardEvent) {
 			const data = e.clipboardData;
 			const items = data.items;
 
 			if (items.length == 1) {
 				if (items[0].kind == 'file') {
-					this.upload(items[0].getAsFile());
+					const file = items[0].getAsFile();
+					const lio = file.name.lastIndexOf('.');
+					const ext = lio >= 0 ? file.name.slice(lio) : '';
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
+					const name = this.$store.state.settings.pasteDialog
+						? await this.$root.dialog({
+							title: this.$t('@.post-form.enter-file-name'),
+							input: {
+								default: formatted
+							},
+							allowEmpty: false
+						}).then(({ canceled, result }) => canceled ? false : result)
+						: formatted;
+					if (name) this.upload(file, name);
 				}
 			} else {
 				if (items[0].kind == 'file') {
@@ -157,8 +171,8 @@ export default Vue.extend({
 			this.upload((this.$refs.file as any).files[0]);
 		},
 
-		upload(file) {
-			(this.$refs.uploader as any).upload(file);
+		upload(file: File, name?: string) {
+			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
 		},
 
 		onUploaded(file) {
