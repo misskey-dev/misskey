@@ -118,6 +118,8 @@ export default define({
 		line-height 16px
 		font-weight bold
 		color var(--text)
+		overflow hidden
+		text-overflow ellipsis
 
 	> .username
 		display block
