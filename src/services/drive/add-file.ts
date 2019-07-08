@@ -71,7 +71,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		];
 
 		if (alts.webpublic) {
-			webpublicKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid.v4()}.${alts.webpublic.ext}`;
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
@@ -79,7 +79,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		}
 
 		if (alts.thumbnail) {
-			thumbnailKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid.v4()}.${alts.thumbnail.ext}`;
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -104,8 +104,8 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		return await DriveFiles.save(file);
 	} else { // use internal storage
 		const accessKey = uuid.v4();
-		const thumbnailAccessKey = uuid.v4();
-		const webpublicAccessKey = uuid.v4();
+		const thumbnailAccessKey = 'thumbnail-' + uuid.v4();
+		const webpublicAccessKey = 'webpublic-' + uuid.v4();
 
 		const url = InternalStorage.saveFromPath(accessKey, path);
 
