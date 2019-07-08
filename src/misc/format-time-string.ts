@@ -42,7 +42,7 @@ function formatDateTimeString(date: Date, format: string): string {
 }
 
 export function formatTimeString(date: Date, format: string): string {
-	return format.replace(/\[(([^\[]|\[\])*)\]|([yMdHhmst]{1,4})/g, (match: string, localeformat?: string, unused?, datetimeformat?: string) => {
+	return format.replace(/\[(([^\[]|\[\])*)\]|(([yMdHhmst])\4{0,3})/g, (match: string, localeformat?: string, unused?, datetimeformat?: string) => {
 		if (localeformat) return formatLocaleString(date, localeformat);
 		if (datetimeformat) return formatDateTimeString(date, datetimeformat);
 		return match;
