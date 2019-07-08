@@ -24,6 +24,8 @@ function formatDateTimeString(date: Date, format: string): string {
 	return format
 		.replace(/yyyy/g, date.getFullYear().toString())
 		.replace(/yy/g, date.getFullYear().toString().slice(-2))
+		.replace(/MMMM/g, date.toLocaleString(window.navigator.language, { month: 'long'}))
+		.replace(/MMM/g, date.toLocaleString(window.navigator.language, { month: 'short'}))
 		.replace(/MM/g, (`0${date.getMonth() + 1}`).slice(-2))
 		.replace(/M/g, (date.getMonth() + 1).toString())
 		.replace(/dd/g, (`0${date.getDate()}`).slice(-2))
@@ -36,9 +38,7 @@ function formatDateTimeString(date: Date, format: string): string {
 		.replace(/m/g, date.getMinutes().toString())
 		.replace(/ss/g, (`0${date.getSeconds()}`).slice(-2))
 		.replace(/s/g, date.getSeconds().toString())
-		.replace(/tt/g, date.getHours() >= 12 ? 'PM' : 'AM')
-		.replace(/MMMM/g, date.toLocaleString(window.navigator.language, { month: 'long'}))
-		.replace(/MMM/g, date.toLocaleString(window.navigator.language, { month: 'short'}));
+		.replace(/tt/g, date.getHours() >= 12 ? 'PM' : 'AM');
 }
 
 export function formatTimeString(date: Date, format: string): string {
