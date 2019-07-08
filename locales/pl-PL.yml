@@ -414,6 +414,8 @@ common/views/components/emoji-picker.vue:
   objects: "Rzeczy"
   symbols: "Symbole"
   flags: "Flagi"
+common/views/components/settings/app-type.vue:
+  info: "Musisz odświeżyć stronę, aby zmiany zostały uwzględnione."
 common/views/components/signin.vue:
   username: "Nazwa użytkownika"
   password: "Hasło"
@@ -666,6 +668,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Zmień nazwę"
     rename-folder: "Zmień nazwę katalogu"
     input-new-folder-name: "Wprowadź nową nazwę"
+    else-folders: "Inne"
 desktop/views/components/drive.vue:
   search: "Szukaj"
   empty-draghover: "Przeciągnij tutaj!"
@@ -785,6 +788,7 @@ common/views/components/drive-settings.vue:
   max: "Max"
   in-use: "użyto"
   stats: "Statystyki"
+  default-upload-folder-name: "Katalog(i)"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Wycisz / Zablokuj"
   mute: "Wycisz"
@@ -1189,6 +1193,8 @@ dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
 pages:
+  pin-this-page: "Przypnij do profilu"
+  unpin-this-page: "Odepnij"
   like: "Lubię"
   title: "Tytuł"
   blocks:

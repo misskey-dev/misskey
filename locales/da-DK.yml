@@ -568,6 +568,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objekt"
   symbols: "Symboler"
   flags: "Flag"
+common/views/components/settings/app-type.vue:
+  info: "Du er nødt til at genindlæse siden, før ændringerne slår igennem."
 common/views/components/signin.vue:
   username: "Brugernavn"
   password: "Adgangskode"
@@ -847,7 +849,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "Fjern markering som 'følsom'"
     copy-url: "Kopier webadresse"
     download: "Download"
-    else-files: "Andre"
+    else-files: "Avanceret"
     set-as-avatar: "Vælg som avatar"
     set-as-banner: "Vælg som banner"
     open-in-app: "Åbn i app"
@@ -866,6 +868,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Omdøb"
     rename-folder: "Omdøb mappe"
     input-new-folder-name: "Angiv nyt navn"
+    else-folders: "Avanceret"
 desktop/views/components/drive.vue:
   search: "Søg"
   empty-draghover: "Smid det her! Fordi du ved, at jeg er meget sød, ikke?"
@@ -995,6 +998,7 @@ common/views/components/drive-settings.vue:
   max: "Kapacitet"
   in-use: "I brug"
   stats: "Statistik"
+  default-upload-folder-name: "Mappe(r)"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Annuller / Bloker"
   mute: "Annuller"
@@ -1664,6 +1668,8 @@ dev/views/new-app.vue:
   app-name: "Navn på app"
   app-name-placeholder: "F.eks. Misskey for iOS"
 pages:
+  pin-this-page: "Tilknyt til din profil"
+  unpin-this-page: "Fjern tilknytning til din profil"
   like: "Synes om"
   title: "Titel"
   blocks:

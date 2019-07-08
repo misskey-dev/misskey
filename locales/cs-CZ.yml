@@ -101,7 +101,8 @@ common:
     submit: "Odeslat"
     reply: "Odpovědět"
     renote: "Renotovat"
-    attach-media-from-local: "Uplodovat soubor z vašeho zařízení"
+    posting: "Posílání"
+    attach-media-from-local: "Nahrát soubor z vašeho zařízení"
     insert-a-kao: "v('ω')v"
     create-poll: "Vytvořit anketu"
     text-remain: "zbývá ještě {} znaků"
@@ -537,6 +538,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objekty"
   symbols: "Symboly"
   flags: "Vlajky"
+common/views/components/settings/app-type.vue:
+  info: "Pro aktivování změn musíte znovu načíst stránky."
 common/views/components/signin.vue:
   username: "Přezdívka"
   password: "Heslo"
@@ -764,7 +767,7 @@ desktop/views/components/drive.file.vue:
     rename: "Přejmenovat"
     copy-url: "Kopírovat URL"
     download: "Stáhnout"
-    else-files: "Více..."
+    else-files: "Ostatní"
     set-as-avatar: "Nastavit jako avatar"
     set-as-banner: "Nastavit jako baner"
     open-in-app: "Otevřít v aplikaci"
@@ -782,6 +785,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Přejmenovat"
     rename-folder: "Přejmenovat složku"
     input-new-folder-name: "Zadejte nové jméno"
+    else-folders: "Ostatní"
 desktop/views/components/drive.vue:
   empty-drive-description: "Klikněte pravým tlačítkem myši pro otevření menu, nebo sem přetáhněte soubor pro nahrání."
   empty-folder: "Tato složka je prázdná"
@@ -1265,6 +1269,8 @@ deck/deck.user-column.vue:
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
 pages:
+  pin-this-page: "Připnout"
+  unpin-this-page: "Odepnout"
   like: "Lajk"
   title: "Titulek"
   blocks:
