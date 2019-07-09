@@ -1,5 +1,5 @@
 <template>
-<div class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, center: page.alignCenter }" :style="{ fontFamily: page.font }">
+<div class="iroscrza" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners, center: page.alignCenter, serif: page.font === 'serif' }">
 	<header v-if="showTitle">
 		<div class="title">{{ page.title }}</div>
 	</header>
@@ -150,6 +150,10 @@ export default Vue.extend({
 .iroscrza
 	overflow hidden
 	background var(--face)
+	
+	&.serif
+		> div
+			font-family serif
 
 	&.center
 		text-align center
