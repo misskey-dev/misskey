@@ -136,6 +136,10 @@ You can check if the service is running with `systemctl status misskey`.
 6. Restart your Misskey process to apply changes
 7. Enjoy
 
+If you encounter any problems with updating, please try the following:
+1. `npm run clean` or `npm run cleanall`
+2. Retry update (Don't forget `npm i`)
+
 ----------------------------------------------------------------
 
 If you have any questions or troubles, feel free to contact us!
