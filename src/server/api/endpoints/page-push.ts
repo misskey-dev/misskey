@@ -42,6 +42,7 @@ export default define(meta, async (ps, user) => {
 		pageId: ps.pageId,
 		event: ps.event,
 		var: ps.var,
+		userId: user.id,
 		user: await Users.pack(user, page.userId, {
 			detail: true
 		})
