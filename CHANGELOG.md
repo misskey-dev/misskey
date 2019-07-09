@@ -5,17 +5,11 @@ If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
 2. Retry update (Don't forget `npm i`)
 
-Migration
-------------------------------
-#### 1
-```
-npm i -g ts-node
-```
-
-#### 2
-```
-npm run migrate
-```
+11.25.1 (2019/07/09)
+--------------------
+### 🐛Fixes
+* ページイベントが正しくストリームに流れてこない問題を修正
+* フォントの調整
 
 11.25.0 (2019/07/08)
 --------------------

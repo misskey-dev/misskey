@@ -10,10 +10,6 @@
 			<span class="separator" v-if="folder != null"><fa icon="angle-right"/></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
-		<!--
-			TODO: #343
-			<input class="search" type="search" placeholder="&#xf002; %i18n:@search%"/>
-		-->
 	</nav>
 	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
@@ -646,33 +642,6 @@ export default Vue.extend({
 
 					> [data-icon]
 						margin 0
-
-		> .search
-			display inline-block
-			vertical-align bottom
-			user-select text
-			cursor auto
-			margin 0
-			padding 0 18px
-			width 200px
-			font-size 1em
-			line-height 38px
-			background transparent
-			outline none
-			//border solid 1px #ddd
-			border none
-			border-radius 0
-			box-shadow none
-			transition color 0.5s ease, border 0.5s ease
-			font-family FontAwesome, sans-serif
-
-			&[data-active='true']
-				background #fff
-
-			&::-webkit-input-placeholder,
-			&:-ms-input-placeholder,
-			&:-moz-placeholder
-				color $ui-control-foreground-color
 
 	> .main
 		padding 8px

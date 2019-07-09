@@ -38,10 +38,11 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchPage);
 	}
 
-	publishMainStream(user.id, 'pageEvent', {
+	publishMainStream(page.userId, 'pageEvent', {
 		pageId: ps.pageId,
 		event: ps.event,
 		var: ps.var,
+		userId: user.id,
 		user: await Users.pack(user, page.userId, {
 			detail: true
 		})
