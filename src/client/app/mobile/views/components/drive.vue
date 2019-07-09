@@ -25,17 +25,17 @@
 				<template v-if="folder.filesCount > 0">{{ folder.filesCount }} {{ $t('file-count') }}</template>
 			</p>
 		</div>
-		<div class="folders" v-if="folders.length > 0">
+		<div class="folders" v-if="folders.length > 0 || moreFolders">
 			<x-folder class="folder" v-for="folder in folders" :key="folder.id" :folder="folder"/>
 			<p v-if="moreFolders">{{ $t('@.load-more') }}</p>
 		</div>
-		<div class="files" v-if="files.length > 0">
+		<div class="files" v-if="files.length > 0 || moreFiles">
 			<x-file class="file" v-for="file in files" :key="file.id" :file="file"/>
 			<button class="more" v-if="moreFiles" @click="fetchMoreFiles">
 				{{ fetchingMoreFiles ? this.$t('@.loading') : this.$t('@.load-more') }}
 			</button>
 		</div>
-		<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
+		<div class="empty" v-if="files.length == 0 && !moreFiles && folders.length == 0 && !moreFolders && !fetching">
 			<p v-if="folder == null">{{ $t('nothing-in-drive') }}</p>
 			<p v-if="folder != null">{{ $t('folder-is-empty') }}</p>
 		</div>
