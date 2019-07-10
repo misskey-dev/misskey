@@ -1861,6 +1861,10 @@ pages:
           message: "Message to display when pressed"
           variable: "Variable to send"
           no-variable: "None"
+    _radioButton:
+      name: "Variable name"
+      title: "Title"
+      default: "Default value"
   script:
     categories:
       flow: "Control"
