@@ -1861,9 +1861,11 @@ pages:
           message: "눌렀을 때 표시할 메시지"
           variable: "보낼 변수"
           no-variable: "없음"
+    radioButton: "선택지"
     _radioButton:
       name: "변수명"
       title: "제목"
+      values: "줄바꿈으로 구분된 선택지"
       default: "기본값"
   script:
     categories:
