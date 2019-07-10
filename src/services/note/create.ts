@@ -1,4 +1,4 @@
-import es from '../../db/elasticsearch';
+import searchClient from '../../db/searchClient';
 import { publishMainStream, publishNotesStream } from '../stream';
 import { deliver } from '../../queue';
 import renderNote from '../../remote/activitypub/renderer/note';
@@ -432,17 +432,9 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 }
 
 function index(note: Note) {
-	if (note.text == null || config.elasticsearch == null) return;
+	if (note.text == null || searchClient == null) return;
 
-	es!.index({
-		index: 'misskey_note',
-		id: note.id.toString(),
-		body: {
-			text: note.text.toLowerCase(),
-			userId: note.userId,
-			userHost: note.userHost
-		}
-	});
+	return searchClient.push(note);
 }
 
 async function notifyToWatchersOfRenotee(renote: Note, user: User, nm: NotificationManager, type: NotificationType) {

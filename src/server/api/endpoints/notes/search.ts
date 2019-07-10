@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import es from '../../../../db/elasticsearch';
+import searchClient from '../../../../db/searchClient';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
@@ -63,7 +63,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	if (es == null) throw new ApiError(meta.errors.searchingNotAvailable);
+	if (searchClient == null) throw new ApiError(meta.errors.searchingNotAvailable);
 
 	const userQuery = ps.userId != null ? [{
 		term: {
@@ -87,29 +87,7 @@ export default define(meta, async (ps, me) => {
 		}] : []
 	: [];
 
-	const result = await es.search({
-		index: 'misskey_note',
-		body: {
-			size: ps.limit!,
-			from: ps.offset,
-			query: {
-				bool: {
-					must: [{
-						simple_query_string: {
-							fields: ['text'],
-							query: ps.query.toLowerCase(),
-							default_operator: 'and'
-						},
-					}, ...hostQuery, ...userQuery]
-				}
-			},
-			sort: [{
-				_doc: 'desc'
-			}]
-		}
-	});
-
-	const hits = result.body.hits.hits.map((hit: any) => hit._id);
+	const hits = await searchClient.query(ps.query, {userHost: ps.host, userId: ps.userId});
 
 	if (hits.length === 0) return [];
 

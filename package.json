@@ -209,6 +209,7 @@
 		"sharp": "0.22.1",
 		"showdown": "1.9.0",
 		"showdown-highlightjs-extension": "0.1.2",
+		"sonic-channel": "1.2.5",
 		"speakeasy": "2.0.0",
 		"stringz": "1.0.0",
 		"style-loader": "0.23.1",
