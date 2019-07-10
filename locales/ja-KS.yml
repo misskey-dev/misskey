@@ -363,6 +363,8 @@ common/views/components/emoji-picker.vue:
   objects: "物"
   symbols: "記号"
   flags: "旗"
+common/views/components/settings/app-type.vue:
+  info: "ページもっぺん読み込んだら反映したるで。"
 common/views/components/signin.vue:
   username: "ユーザー名"
   password: "パスワード"
@@ -601,7 +603,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "やっぱ見せたるわ"
     copy-url: "URLをコピー"
     download: "ダウンロード"
-    else-files: "まだあんで..."
+    else-files: "その他"
     set-as-avatar: "アイコンにする"
     set-as-banner: "バナーにする"
     open-in-app: "アプリで開く"
@@ -620,6 +622,7 @@ desktop/views/components/drive.folder.vue:
     rename: "名前を変えるで"
     rename-folder: "フォルダ名を変えるで"
     input-new-folder-name: "新しいフォルダ名を入力してや"
+    else-folders: "その他"
 desktop/views/components/drive.vue:
   search: "検索"
   empty-draghover: "ドロップするにゃ！お魚以外なら何でもいいにゃ！"
@@ -747,6 +750,7 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "使うとる"
   stats: "統計"
+  default-upload-folder-name: "フォルダ"
 common/views/components/mute-and-block.vue:
   mute-and-block: "ミュートとブロック"
   mute: "ミュート"
@@ -1234,6 +1238,8 @@ dev/views/new-app.vue:
   authority-desc: "ここにチェックした機能しかAPIからアクセスできひんから気ぃつけてな"
   authority-warning: "アプリ作った後でも変えれるけど、新しいやつ追加したらそん時関連付いてるユーザーキーは全部ほかされるで。"
 pages:
+  pin-this-page: "ピン留め"
+  unpin-this-page: "ピン留めやめる"
   like: "ええやん"
   blocks:
     image: "画像"

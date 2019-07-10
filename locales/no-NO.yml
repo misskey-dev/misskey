@@ -286,6 +286,7 @@ common/views/components/api-settings.vue:
 common/views/components/drive-settings.vue:
   in-use: "brukt"
   stats: "Statistikk"
+  default-upload-folder-name: "Mappe(r)"
 common/views/components/mute-and-block.vue:
   save: "Lagre"
 desktop/views/components/settings.tags.vue:
@@ -484,6 +485,7 @@ deck/deck.user-column.vue:
   followers: "Følgere"
   images: "Bilder"
 pages:
+  pin-this-page: "Fest til profilen din"
   like: "Lik"
   blocks:
     image: "Bilder"

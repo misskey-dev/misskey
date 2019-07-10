@@ -32,6 +32,12 @@ export function collectPageVars(content) {
 					type: 'number',
 					value: 0
 				});
+			} else if (x.type === 'radioButton') {
+				pageVars.push({
+					name: x.name,
+					type: 'string',
+					value: x.default || ''
+				});
 			} else if (x.children) {
 				collect(x.children);
 			}

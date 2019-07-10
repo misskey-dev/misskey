@@ -57,6 +57,11 @@ export const meta = {
 			validator: $.optional.bool,
 			default: false
 		},
+
+		hideTitleWhenPinned: {
+			validator: $.optional.bool,
+			default: false
+		},
 	},
 
 	res: {
@@ -100,6 +105,7 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 		visibility: 'public',
 		alignCenter: ps.alignCenter,
+		hideTitleWhenPinned: ps.hideTitleWhenPinned,
 		font: ps.font
 	}));
 

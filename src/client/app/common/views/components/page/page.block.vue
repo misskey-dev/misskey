@@ -16,10 +16,11 @@ import XIf from './page.if.vue';
 import XTextarea from './page.textarea.vue';
 import XPost from './page.post.vue';
 import XCounter from './page.counter.vue';
+import XRadioButton from './page.radio-button.vue';
 
 export default Vue.extend({
 	components: {
-		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter
+		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton
 	},
 
 	props: {

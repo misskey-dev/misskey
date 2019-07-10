@@ -7,7 +7,7 @@
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</ui-input>
-		<ui-input v-model="password" type="password" :with-password-toggle="true" required>
+		<ui-input v-model="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa icon="lock"/></template>
 		</ui-input>
@@ -28,6 +28,10 @@
 		</div>
 		<div class="twofa-group totp-group">
 			<p style="margin-bottom:0;">{{ $t('enter-2fa-code') }}</p>
+			<ui-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
+				<span>{{ $t('password') }}</span>
+				<template #prefix><fa icon="lock"/></template>
+			</ui-input>
 			<ui-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 				<span>{{ $t('@.2fa') }}</span>
 				<template #prefix><fa icon="gavel"/></template>
@@ -107,9 +111,8 @@ export default Vue.extend({
 					})),
 					timeout: 60 * 1000
 				}
-			}).catch(err => {
+			}).catch(() => {
 				this.queryingKey = false;
-				console.warn(err);
 				return Promise.reject(null);
 			}).then(credential => {
 				this.queryingKey = false;
@@ -127,8 +130,7 @@ export default Vue.extend({
 				localStorage.setItem('i', res.i);
 				location.reload();
 			}).catch(err => {
-				if(err === null) return;
-				console.error(err);
+				if (err === null) return;
 				this.$root.dialog({
 					type: 'error',
 					text: this.$t('login-failed')
@@ -142,7 +144,7 @@ export default Vue.extend({
 
 			if (!this.totpLogin && this.user && this.user.twoFactorEnabled) {
 				if (window.PublicKeyCredential && this.user.securityKeys) {
-					this.$root.api('i/2fa/getkeys', {
+					this.$root.api('signin', {
 						username: this.username,
 						password: this.password
 					}).then(res => {
@@ -150,6 +152,14 @@ export default Vue.extend({
 						this.signing = false;
 						this.challengeData = res;
 						return this.queryKey();
+					}).catch(() => {
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('login-failed')
+						});
+						this.challengeData = null;
+						this.totpLogin = false;
+						this.signing = false;
 					});
 				} else {
 					this.totpLogin = true;

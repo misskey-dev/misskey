@@ -126,7 +126,7 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 2. `git pull`
 3. `npm install`
 4. `NODE_ENV=production npm run build`
-5. Consultez [ChangeLog](../CHANGELOG.md) pour les information de migration.
+5. `npm run migrate`
 
 ----------------------------------------------------------------
 

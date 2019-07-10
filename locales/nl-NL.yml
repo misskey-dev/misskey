@@ -260,7 +260,6 @@ desktop/views/components/drive.file.vue:
     rename: "Naam wijzigen"
     copy-url: "URL kopiëren"
     download: "Downloaden"
-    else-files: "Overig"
     set-as-avatar: "Instellen als gebruikersafbeelding"
     set-as-banner: "Instellen als omslagfoto"
     open-in-app: "Openen in app"
@@ -377,6 +376,7 @@ common/views/components/api-settings.vue:
 common/views/components/drive-settings.vue:
   in-use: "gebruikt"
   stats: "Statistieken"
+  default-upload-folder-name: "Map(pen)"
 desktop/views/components/sub-note-content.vue:
   private: "(dit bericht is privé)"
   poll: "Peilingen"
@@ -606,6 +606,7 @@ docs:
   edit-this-page-on-github: "Heb je een fout ontdekt of wil je bijdragen aan de documentatie? "
   edit-this-page-on-github-link: "Bewerk deze pagina op GitHub!"
 pages:
+  pin-this-page: "Vastmaken aan profielpagina"
   like: "Leuk"
   blocks:
     image: "Afbeeldingen"

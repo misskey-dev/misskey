@@ -446,7 +446,9 @@ export default abstract class Chart<T extends Record<string, any>> {
 				if (typeof v == 'object') {
 					dive(v, p);
 				} else {
-					nestedProperty.set(res, p, chart.map(s => nestedProperty.get(s, p)));
+					const values = chart.map(s => nestedProperty.get(s, p))
+						.map(v => parseInt(v, 10)); // TypeORMのバグ(？)で何故か数値カラムの値が文字列型になっているので数値に戻す
+					nestedProperty.set(res, p, values);
 				}
 			}
 		};

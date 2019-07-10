@@ -35,6 +35,7 @@ common:
   signout: "로그아웃"
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
   fetching-as-ap-object: "연합에서 조회 중"
+  unfollow-confirm: "{name} 님을 팔로우 해제하시겠습니까?"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -122,6 +123,7 @@ common:
     add-visible-user: "사용자 추가"
     cw-placeholder: "내용에 대한 주석 (옵션)"
     username-prompt: "사용자명을 입력해주세요"
+    enter-file-name: "파일 이름 수정"
   weekday-short:
     sunday: "일"
     monday: "월"
@@ -188,6 +190,11 @@ common:
     remember-note-visibility: "글의 공개 범위를 기억하기"
     web-search-engine: "웹 검색엔진"
     web-search-engine-desc: "예: https://www.google.com/?#q={{query}}"
+    paste: "붙여넣기"
+    pasted-file-name: "붙여넣은 파일의 이름 템플릿"
+    pasted-file-name-desc: "예시: \"yyyy-MM-dd HH-mm-ss [{{number}}]\" → \"2018-03-20 21-30-24 1\""
+    paste-dialog: "붙여넣기 시 파일 이름을 편집"
+    paste-dialog-desc: "붙여넣기 시 파일 이름을 편집할 수 있도록 대화 상자를 표시합니다."
     keep-cw: "CW 유지"
     keep-cw-desc: "글에 답글을 달 때, 답글할 글에 CW가 설정되어 있는 경우 기본값으로 동일한 CW를 설정하도록 합니다."
     i-like-sushi: "저는 (푸딩보다 차라리) 초밥이 좋아요"
@@ -289,7 +296,7 @@ common:
   is-remote-user: "이 사용자 정보는 정확하지 않을 수 있습니다."
   is-remote-post: "이 글 정보는 복사본입니다."
   view-on-remote: "정확한 정보 보기"
-  renoted-by: "{user}님이 리노트"
+  renoted-by: "{user} 님이 리노트"
   no-notes: "글이 없습니다"
   turn-on-darkmode: "어둠에 삼켜져라"
   turn-off-darkmode: "빛이 있으라"
@@ -523,6 +530,7 @@ common/views/components/note-menu.vue:
   delete: "삭제"
   delete-confirm: "이 글을 삭제하시겠습니까?"
   remote: "글 원본 보기"
+  pin-limit-exceeded: "더 이상 고정할 수 없습니다."
 common/views/components/user-menu.vue:
   mention: "멘션"
   mute: "뮤트"
@@ -591,6 +599,14 @@ common/views/components/emoji-picker.vue:
   objects: "사물"
   symbols: "기호"
   flags: "깃발"
+common/views/components/settings/app-type.vue:
+  title: "모드"
+  intro: "데스크톱과 모바일 중 어떤 레이아웃을 사용할 지 지정할 수 있습니다."
+  choices:
+    auto: "자동으로 선택"
+    desktop: "데스크톱 레이아웃으로 고정"
+    mobile: "모바일 레이아웃으로 고정"
+  info: "변경사항은 페이지를 새로고침한 뒤에 반영됩니다."
 common/views/components/signin.vue:
   username: "사용자명"
   password: "비밀번호"
@@ -601,6 +617,8 @@ common/views/components/signin.vue:
   signin-with-github: "GitHub으로 로그인"
   signin-with-discord: "Discord로 로그인"
   login-failed: "로그인할 수 없습니다. 사용자명과 비밀번호를 확인하여 주십시오."
+  tap-key: "보안 키를 클릭하여 로그인"
+  enter-2fa-code: "인증 코드를 입력하여 주십시오"
 common/views/components/signup.vue:
   invitation-code: "초대 코드"
   invitation-info: "초대 코드가 없으신 분은 <a href=\"{}\">관리자</a>에게 연락하시기 바랍니다."
@@ -873,7 +891,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "열람주의 해제"
     copy-url: "URL 복사"
     download: "다운로드"
-    else-files: "기타..."
+    else-files: "기타"
     set-as-avatar: "아이콘으로 설정"
     set-as-banner: "배너로 설정"
     open-in-app: "앱에서 열기"
@@ -883,15 +901,20 @@ desktop/views/components/drive.file.vue:
     copied: "복사 완료"
     copied-url-to-clipboard: "URL을 클립보드에 복사하였습니다"
 desktop/views/components/drive.folder.vue:
+  upload-folder: "기본 업로드 위치"
   unable-to-process: "작업을 완료할 수 없습니다"
   circular-reference-detected: "대상 폴더가 이동할 폴더의 하위 폴더입니다."
   unhandled-error: "알 수 없는 오류"
+  unable-to-delete: "삭제할 수 없습니다"
+  has-child-files-or-folders: "이 폴더는 비어있지 않기 때문에 삭제할 수 없습니다."
   contextmenu:
     move-to-this-folder: "이 폴더로 이동"
     show-in-new-window: "새 창으로 보기"
     rename: "이름 변경"
     rename-folder: "폴더 이름 변경"
     input-new-folder-name: "새 폴더 이름을 입력하여 주십시오"
+    else-folders: "기타"
+    set-as-upload-folder: "기본 업로드 위치로 설정"
 desktop/views/components/drive.vue:
   search: "검색"
   empty-draghover: "끌어놓으신 거 맞나요? 괜찮아요, 저는 귀여우니까요"
@@ -997,6 +1020,16 @@ desktop/views/components/settings.2fa.vue:
   success: "설정이 완료되었습니다!"
   failed: "설정에 실패했습니다. 토큰이 잘못되었는지 확인해주십시오."
   info: "다음 로그인부터는 이와 동일하게 비밀번호에 더해 장치에 표시된 토큰을 입력합니다."
+  totp-header: "인증 앱"
+  security-key-header: "보안 키"
+  security-key: "보안을 강화하려면 FIDO2를 지원하는 하드웨어 보안 키를 사용하여 계정에 로그인할 수 있습니다. 로그인 시 등록하였던 보안 키 또는 인증 앱이 필요하게 됩니다."
+  last-used: "마지막 사용:"
+  activate-key: "클릭하여 보안 키를 활성화하여 주십시오"
+  security-key-name: "키 이름"
+  register-security-key: "키 등록 완료"
+  something-went-wrong: "으악! 키를 등록하는 도중 문제가 발생하였습니다:"
+  key-unregistered: "키가 등록되어 있지 않습니다"
+  use-password-less-login: "비밀번호 없는 로그인 사용"
 common/views/components/media-image.vue:
   sensitive: "열람주의"
   click-to-show: "클릭하여 보기"
@@ -1021,6 +1054,9 @@ common/views/components/drive-settings.vue:
   max: "최대 용량"
   in-use: "사용중"
   stats: "통계"
+  default-upload-folder: "기본 업로드 폴더 위치"
+  default-upload-folder-name: "폴더"
+  change-default-upload-folder: "폴더 변경"
 common/views/components/mute-and-block.vue:
   mute-and-block: "뮤트 및 차단"
   mute: "뮤트"
@@ -1110,6 +1146,9 @@ admin/views/index.vue:
   back-to-misskey: "Misskey로 돌아가기"
 admin/views/db.vue:
   tables: "테이블"
+  vacuum: "청소"
+  vacuum-info: "데이터베이스를 청소합니다. 데이터는 그대로인 채로 데이터의 사용량을 줄입니다. 일반적으로 이 작업은 자동으로 정기적으로 수행됩니다."
+  vacuum-exclamation: "청소를 수행하면 한동안 데이터베이스의 부하가 높아져 사용자 조작을 처리하지 못 할 수 있습니다."
 admin/views/dashboard.vue:
   dashboard: "대시보드"
   accounts: "계정"
@@ -1244,6 +1283,7 @@ admin/views/instance.vue:
   smtp-auth: "SMTP 인증 수행"
   smtp-user: "SMTP 사용자"
   smtp-pass: "SMTP 비밀번호"
+  test-email: "테스트"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "ServiceWorker 사용"
   serviceworker-info: "푸시알림을 수행하려면 사용해야 합니다."
@@ -1699,6 +1739,7 @@ deck/deck.user-column.vue:
   activity: "활동"
   timeline: "타임라인"
   pinned-notes: "고정해놓은 글"
+  pinned-page: "고정해놓은 페이지"
 docs:
   edit-this-page-on-github: "틀린 점이나 개선할 점을 찾으셨나요?"
   edit-this-page-on-github-link: "이 페이지를 GitHub에서 편집"
@@ -1733,6 +1774,8 @@ pages:
   are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
   page-deleted: "페이지가 삭제되었습니다"
   edit-this-page: "이 페이지를 편집"
+  pin-this-page: "프로필에 고정"
+  unpin-this-page: "프로필에서 고정 해제"
   view-source: "소스 보기"
   view-page: "페이지 보기"
   like: "좋아요"
@@ -1751,6 +1794,7 @@ pages:
   url: "페이지 URL"
   summary: "페이지 요약"
   align-center: "가운데 정렬"
+  hide-title-when-pinned: "프로필에 고정해놓은 경우 타이틀을 표시하지 않음"
   font: "글꼴"
   fontSerif: "세리프"
   fontSansSerif: "산 세리프"
@@ -1804,12 +1848,25 @@ pages:
       inc: "증가치"
     _button:
       text: "제목"
+      colored: "색상"
       action: "버튼을 눌렀을 때의 동작"
       _action:
         dialog: "대화상자를 표시"
         _dialog:
           content: "내용"
         resetRandom: "난수를 초기화"
+        pushEvent: "이벤트 보내기"
+        _pushEvent:
+          event: "이벤트 이름"
+          message: "눌렀을 때 표시할 메시지"
+          variable: "보낼 변수"
+          no-variable: "없음"
+    radioButton: "선택지"
+    _radioButton:
+      name: "변수명"
+      title: "제목"
+      values: "줄바꿈으로 구분된 선택지"
+      default: "기본값"
   script:
     categories:
       flow: "흐름 제어"
@@ -1947,6 +2004,7 @@ pages:
       _pick:
         arg1: "리스트"
         arg2: "위치"
+      listLen: "리스트의 길이 가져오기"
       _listLen:
         arg1: "리스트"
       number: "수치"

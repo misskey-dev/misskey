@@ -1,5 +1,6 @@
 <template>
 <div class="lnctpgve">
+	<x-page v-if="user.pinnedPage" :page="user.pinnedPage" :key="user.pinnedPage.id" :show-title="!user.pinnedPage.hideTitleWhenPinned"/>
 	<mk-note-detail v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 	<!--<mk-calendar @chosen="warp" :start="new Date(user.createdAt)"/>-->
 	<div class="activity">
@@ -21,13 +22,15 @@ import i18n from '../../../../i18n';
 import XTimeline from './user.timeline.vue';
 import XPhotos from './user.photos.vue';
 import XActivity from '../../../../common/views/components/activity.vue';
+import XPage from '../../../../common/views/components/page/page.vue';
 
 export default Vue.extend({
 	i18n: i18n(),
 	components: {
 		XTimeline,
 		XPhotos,
-		XActivity
+		XActivity,
+		XPage,
 	},
 	props: {
 		user: {

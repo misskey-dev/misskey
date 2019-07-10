@@ -220,8 +220,7 @@ const user = await Users.findOne(userId).then(ensure);
 
 ### Migration作成方法
 ```
-npm i -g ts-node
-ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
+npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
 ```
 
 作成されたスクリプトは不必要な変更を含むため除去してください。

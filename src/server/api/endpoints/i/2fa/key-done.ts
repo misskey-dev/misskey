@@ -14,7 +14,7 @@ import config from '../../../../../config';
 import { procedures, hash } from '../../../2fa';
 import { publishMainStream } from '../../../../../services/stream';
 
-const cborDecodeFirst = promisify(cbor.decodeFirst);
+const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 
 export const meta = {
 	requireCredential: true,
@@ -90,11 +90,11 @@ export default define(meta, async (ps, user) => {
 		throw new Error('alg mismatch');
 	}
 
-	if (!procedures[attestation.fmt]) {
+	if (!(procedures as any)[attestation.fmt]) {
 		throw new Error('unsupported fmt');
 	}
 
-	const verificationData = procedures[attestation.fmt].verify({
+	const verificationData = (procedures as any)[attestation.fmt].verify({
 		attStmt: attestation.attStmt,
 		authenticatorData: authData,
 		clientDataHash: clientDataJSONHash,
