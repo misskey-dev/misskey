@@ -1715,6 +1715,10 @@ pages:
         _dialog:
           content: "Indhold"
         resetRandom: "Nulstil tilfældigt tal"
+    _radioButton:
+      name: "Variabel navn"
+      title: "Titel"
+      default: "Standard værdi"
   script:
     categories:
       flow: "Kontrol"

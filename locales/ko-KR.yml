@@ -1861,6 +1861,10 @@ pages:
           message: "눌렀을 때 표시할 메시지"
           variable: "보낼 변수"
           no-variable: "없음"
+    _radioButton:
+      name: "변수명"
+      title: "제목"
+      default: "기본값"
   script:
     categories:
       flow: "흐름 제어"

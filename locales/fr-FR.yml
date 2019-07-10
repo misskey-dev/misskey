@@ -1790,6 +1790,10 @@ pages:
           message: "Message à afficher lorsque appuyé"
           variable: "Variable à envoyer"
           no-variable: "Aucune"
+    _radioButton:
+      name: "Nom de la variable"
+      title: "Titre"
+      default: "Valeur par défaut"
   script:
     categories:
       flow: "Contrôle"
