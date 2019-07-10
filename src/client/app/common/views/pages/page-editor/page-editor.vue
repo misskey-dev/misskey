@@ -342,6 +342,7 @@ export default Vue.extend({
 				label: this.$t('input-blocks'),
 				items: [
 					{ value: 'button', text: this.$t('blocks.button') },
+					{ value: 'radioButton', text: this.$t('blocks.radioButton') },
 					{ value: 'textInput', text: this.$t('blocks.textInput') },
 					{ value: 'textareaInput', text: this.$t('blocks.textareaInput') },
 					{ value: 'numberInput', text: this.$t('blocks.numberInput') },

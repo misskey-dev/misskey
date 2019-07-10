@@ -2066,6 +2066,13 @@ pages:
           variable: "送信する変数"
           no-variable: "なし"
 
+    radioButton: "選択肢"
+    _radioButton:
+      name: "変数名"
+      title: "タイトル"
+      values: "改行で区切った選択肢"
+      default: "デフォルト値"
+
   script:
     categories:
       flow: "制御"
