@@ -1212,6 +1212,8 @@ pages:
       text: "Tytuł"
     _button:
       text: "Tytuł"
+    _radioButton:
+      title: "Tytuł"
   script:
     categories:
       random: "Losowy"
