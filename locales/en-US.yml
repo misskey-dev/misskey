@@ -1861,9 +1861,11 @@ pages:
           message: "Message to display when pressed"
           variable: "Variable to send"
           no-variable: "None"
+    radioButton: "Choices"
     _radioButton:
       name: "Variable name"
       title: "Title"
+      values: "Item of choices that delimited by line breaks"
       default: "Default value"
   script:
     categories:
