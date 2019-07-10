@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Hashtag } from '../entities/hashtag';
-import { SchemaType, types, bool } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 
 export type PackedHashtag = SchemaType<typeof packedHashtagSchema>;
 
@@ -28,43 +28,43 @@ export class HashtagRepository extends Repository<Hashtag> {
 }
 
 export const packedHashtagSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		tag: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			description: 'The hashtag name. No # prefixed.',
 			example: 'misskey',
 		},
 		mentionedUsersCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: 'Number of all users using this hashtag.'
 		},
 		mentionedLocalUsersCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: 'Number of local users using this hashtag.'
 		},
 		mentionedRemoteUsersCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: 'Number of remote users using this hashtag.'
 		},
 		attachedUsersCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: 'Number of all users who attached this hashtag to profile.'
 		},
 		attachedLocalUsersCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: 'Number of local users who attached this hashtag to profile.'
 		},
 		attachedRemoteUsersCount: {
-			type: types.number,
-			optional: bool.false, nullable: bool.false,
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
 			description: 'Number of remote users who attached this hashtag to profile.'
 		},
 	}

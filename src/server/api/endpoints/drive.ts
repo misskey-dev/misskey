@@ -1,7 +1,6 @@
 import define from '../define';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { DriveFiles } from '../../../models';
-import { types, bool } from '../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -16,16 +15,16 @@ export const meta = {
 	kind: 'read:drive',
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		properties: {
 			capacity: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 			},
 			usage: {
-				type: types.number,
-				optional: bool.false, nullable: bool.false,
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
 			}
 		}
 	}

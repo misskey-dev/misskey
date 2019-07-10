@@ -3,7 +3,7 @@ import { Users } from '..';
 import { Muting } from '../entities/muting';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
-import { types, bool, SchemaType } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 
 export type PackedMuting = SchemaType<typeof packedMutingSchema>;
 
@@ -34,30 +34,30 @@ export class MutingRepository extends Repository<Muting> {
 }
 
 export const packedMutingSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this muting.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the muting was created.'
 		},
 		muteeId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 		},
 		mutee: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'User',
 			description: 'The mutee.'
 		},

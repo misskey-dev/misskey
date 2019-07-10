@@ -15,6 +15,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .havbbuyv
+	white-space pre-wrap
+
 	>>> .title
 		display block
 		margin-bottom 4px

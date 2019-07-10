@@ -21,6 +21,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import VueCropper from 'vue-cropperjs';
+import 'cropperjs/dist/cropper.css';
 import * as url from '../../../../../prelude/url';
 
 export default Vue.extend({

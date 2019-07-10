@@ -4,7 +4,6 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { In } from 'typeorm';
-import { types, bool } from '../../../../misc/schema';
 import { ID } from '../../../../misc/cafy-id';
 
 export const meta = {
@@ -44,11 +43,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'Note',
 		}
 	},

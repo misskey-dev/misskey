@@ -1,14 +1,13 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/entities/user';
-import createImage from './image';
 import createNote from './note';
-import { ICreate } from '../../type';
+import { ICreate, getApId, validPost } from '../../type';
 import { apLogger } from '../../logger';
 
 const logger = apLogger;
 
 export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
-	const uri = activity.id || activity;
+	const uri = getApId(activity);
 
 	logger.info(`Create: ${uri}`);
 
@@ -23,19 +22,9 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 		throw e;
 	}
 
-	switch (object.type) {
-	case 'Image':
-		createImage(actor, object);
-		break;
-
-	case 'Note':
-	case 'Question':
-	case 'Article':
+	if (validPost.includes(object.type)) {
 		createNote(resolver, actor, object);
-		break;
-
-	default:
+	} else {
 		logger.warn(`Unknown type: ${object.type}`);
-		break;
 	}
 };

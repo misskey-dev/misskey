@@ -3,7 +3,7 @@ import { DriveFolders, DriveFiles } from '..';
 import { DriveFolder } from '../entities/drive-folder';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
-import { SchemaType, types, bool } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 
 export type PackedDriveFolder = SchemaType<typeof packedDriveFolderSchema>;
 
@@ -53,47 +53,47 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 }
 
 export const packedDriveFolderSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this Drive folder.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the Drive folder was created.'
 		},
 		name: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			description: 'The folder name.',
 		},
 		foldersCount: {
-			type: types.number,
-			optional: bool.true, nullable: bool.false,
+			type: 'number' as const,
+			optional: true as const, nullable: false as const,
 			description: 'The count of child folders.',
 		},
 		filesCount: {
-			type: types.number,
-			optional: bool.true, nullable: bool.false,
+			type: 'number' as const,
+			optional: true as const, nullable: false as const,
 			description: 'The count of child files.',
 		},
 		parentId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.true,
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
 			format: 'id',
 			description: 'The parent folder ID of this folder.',
 			example: 'xxxxxxxxxx',
 		},
 		parent: {
-			type: types.object,
-			optional: bool.true, nullable: bool.true,
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
 			ref: 'DriveFolder'
 		},
 	},

@@ -6,7 +6,6 @@ import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
 import { Users } from '../../../../models';
 import { In } from 'typeorm';
-import { bool, types } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -43,8 +42,8 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		ref: 'User',
 	},
 
@@ -53,7 +52,7 @@ export const meta = {
 			message: 'Failed to resolve remote user.',
 			code: 'FAILED_TO_RESOLVE_REMOTE_USER',
 			id: 'ef7b9be4-9cba-4e6f-ab41-90ed171c7d3c',
-			kind: 'server' as 'server'
+			kind: 'server' as const
 		},
 
 		noSuchUser: {

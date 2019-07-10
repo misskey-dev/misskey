@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { UserGroup } from '../entities/user-group';
 import { ensure } from '../../prelude/ensure';
 import { UserGroupJoinings } from '..';
-import { bool, types, SchemaType } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 
 export type PackedUserGroup = SchemaType<typeof packedUserGroupSchema>;
 
@@ -28,38 +28,38 @@ export class UserGroupRepository extends Repository<UserGroup> {
 }
 
 export const packedUserGroupSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this UserGroup.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the UserGroup was created.'
 		},
 		name: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			description: 'The name of the UserGroup.'
 		},
 		ownerId: {
-			type: types.string,
-			nullable: bool.false, optional: bool.false,
+			type: 'string' as const,
+			nullable: false as const, optional: false as const,
 			format: 'id',
 		},
 		userIds: {
-			type: types.array,
-			nullable: bool.false, optional: bool.true,
+			type: 'array' as const,
+			nullable: false as const, optional: true as const,
 			items: {
-				type: types.string,
-				nullable: bool.false, optional: bool.false,
+				type: 'string' as const,
+				nullable: false as const, optional: false as const,
 				format: 'id',
 			}
 		},
