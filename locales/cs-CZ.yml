@@ -1292,6 +1292,8 @@ pages:
       _action:
         _dialog:
           content: "Obsah"
+    _radioButton:
+      title: "Titulek"
   script:
     categories:
       random: "Náhodně"
