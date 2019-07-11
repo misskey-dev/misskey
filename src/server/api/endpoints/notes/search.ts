@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import searchClient from '../../../../db/searchClient';
 import define from '../../define';
-import { ApiError } from '../../error';
-import { Notes } from '../../../../models';
-import { In } from 'typeorm';
-import { ID } from '../../../../misc/cafy-id';
+import {ApiError} from '../../error';
+import {Notes} from '../../../../models';
+import {In} from 'typeorm';
+import {ID} from '../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
@@ -39,16 +39,18 @@ export const meta = {
 		userId: {
 			validator: $.optional.nullable.type(ID),
 			default: null
-		},
+		}
 	},
 
 	res: {
 		type: 'array' as const,
-		optional: false as const, nullable: false as const,
+		optional: false as const,
+		nullable: false as const,
 		items: {
 			type: 'object' as const,
-			optional: false as const, nullable: false as const,
-			ref: 'Note',
+			optional: false as const,
+			nullable: false as const,
+			ref: 'Note'
 		}
 	},
 
@@ -62,31 +64,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	if (searchClient == null) throw new ApiError(meta.errors.searchingNotAvailable);
+	if (searchClient == null)
+		throw new ApiError(meta.errors.searchingNotAvailable);
 
-	const userQuery = ps.userId != null ? [{
-		term: {
-			userId: ps.userId
-		}
-	}] : [];
-
-	const hostQuery = ps.userId == null ?
-		ps.host === null ? [{
-			bool: {
-				must_not: {
-					exists: {
-						field: 'userHost'
-					}
-				}
-			}
-		}] : ps.host !== undefined ? [{
-			term: {
-				userHost: ps.host
-			}
-		}] : []
-	: [];
-
-	const hits = await searchClient.query(ps.query, {userHost: ps.host, userId: ps.userId});
+	const hits = await searchClient.search(ps.query, {
+		userHost: ps.host,
+		userId: ps.userId
+	});
 
 	if (hits.length === 0) return [];
 

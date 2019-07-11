@@ -1,13 +1,14 @@
-import * as elasticsearch from "@elastic/elasticsearch";
-import config from "../config";
-import {SearchClientBase} from "./SearchClientBase";
+import * as elasticsearch from '@elastic/elasticsearch';
+import config from '../config';
+import {SearchClientBase} from './SearchClientBase';
+import {Note} from '../models/entities/note';
 
 const index = {
 	settings: {
 		analysis: {
 			analyzer: {
 				ngram: {
-					tokenizer: "ngram"
+					tokenizer: 'ngram'
 				}
 			}
 		}
@@ -15,16 +16,16 @@ const index = {
 	mappings: {
 		properties: {
 			text: {
-				type: "text",
+				type: 'text',
 				index: true,
-				analyzer: "ngram"
+				analyzer: 'ngram'
 			},
 			userId: {
-				type: "keyword",
+				type: 'keyword',
 				index: true
 			},
 			userHost: {
-				type: "keyword",
+				type: 'keyword',
 				index: true
 			}
 		}
@@ -32,7 +33,8 @@ const index = {
 };
 
 class ElasticSearch extends SearchClientBase {
-	constructor(address) {
+	constructor(address: string) {
+		super();
 		// Init ElasticSearch connection
 		this._client = new elasticsearch.Client({
 			node: address,
@@ -41,25 +43,34 @@ class ElasticSearch extends SearchClientBase {
 
 		this._client.indices
 			.exists({
-				index: "misskey_note"
+				index: 'misskey_note'
 			})
 			.then(exist => {
 				if (!exist.body) {
 					this._client.indices.create({
-						index: "misskey_note",
+						index: 'misskey_note',
 						body: index
 					});
 				}
 			});
 	}
 
-	search(content, qualifiers = {}, limit, offset) {
-		const queries = [
+	private _client: elasticsearch.Client;
+
+	public available = true;
+
+	public search(
+		content: string,
+		qualifiers: {userId?: string | null; userHost?: string | null} = {},
+		limit?: number,
+		offset?: number
+	) {
+		const queries: any[] = [
 			{
 				simple_query_string: {
-					fields: ["text"],
+					fields: ['text'],
 					query: content.toLowerCase(),
-					default_operator: "and"
+					default_operator: 'and'
 				}
 			}
 		];
@@ -68,13 +79,13 @@ class ElasticSearch extends SearchClientBase {
 			queries.push({
 				term: {userId: qualifiers.userId}
 			});
-		} else if (qualifiers.host !== undefined) {
-			if (qualifiers.host === null) {
+		} else if (qualifiers.userHost !== undefined) {
+			if (qualifiers.userHost === null) {
 				queries.push({
 					bool: {
 						must_not: {
 							exists: {
-								field: "userHost"
+								field: 'userHost'
 							}
 						}
 					}
@@ -82,7 +93,7 @@ class ElasticSearch extends SearchClientBase {
 			} else {
 				queries.push({
 					term: {
-						userHost: qualifiers.host
+						userHost: qualifiers.userHost
 					}
 				});
 			}
@@ -90,7 +101,7 @@ class ElasticSearch extends SearchClientBase {
 
 		return this._client
 			.search({
-				index: "misskey_note",
+				index: 'misskey_note',
 				body: {
 					size: limit,
 					from: offset,
@@ -104,17 +115,17 @@ class ElasticSearch extends SearchClientBase {
 			.then(result => result.body.hits.hits.map((hit: any) => hit._id));
 	}
 
-	push(note) {
+	public push(note: Note) {
 		const qualifierMap = {
 			text: note.text.toLowerCase()
 		};
 
-		for (const qualifierId in this.QUALIFIERS) {
-			qualifierMap[qualifierId] = note[this.QUALIFIERS[qualifierId]];
+		for (const [qualifierId, noteKey] of Object.entries(this.QUALIFIERS)) {
+			qualifierMap[qualifierId] = note[noteKey];
 		}
 
 		return this._client.index({
-			index: "misskey_note",
+			index: 'misskey_note',
 			id: note.id.toString(),
 			body: qualifierMap
 		});
@@ -124,5 +135,5 @@ class ElasticSearch extends SearchClientBase {
 export default (config.elasticsearch
 	? new ElasticSearch(
 			`http://${config.elasticsearch.host}:${config.elasticsearch.port}`
-	  )
+	)
 	: null);

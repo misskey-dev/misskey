@@ -88,6 +88,15 @@ redis:
 #  port: 9200
 #  pass: null
 
+#   ┌─────────────────────┐
+#───┘ Sonic configuration └─────────────────────────────
+
+#sonic:
+#  host: localhost
+#  port: 1491
+#  pass: example-pass
+
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 

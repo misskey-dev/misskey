@@ -1,15 +1,32 @@
-import * as Sonic from "sonic-channel";
-import config from "../config";
-import {SearchClientBase} from "./SearchClientBase";
+import * as Sonic from 'sonic-channel';
+import config from '../config';
+import {SearchClientBase} from './SearchClientBase';
+import {Note} from '../models/entities/note';
 
-function bindAll(obj: Object<string, function>, self: Object) {
-	for (const key in obj) {
-		obj[key] = obj[key].bind(self);
+function bindAll(obj: {[key: string]: (() => void) | ((err: Error) => void)}, self: SonicDriver) {
+	for (const [key, value] of Object.entries(obj)) {
+		obj[key] = value.bind(self);
 	}
+
+	return obj;
 }
 
 export class SonicDriver extends SearchClientBase {
-	constructor(connectionArgs) {
+	public available = true;
+
+	public _ingestQueue: (() => Promise<void>)[] = [];
+	public _searchQueue: (() => Promise<void>)[] = [];
+	public _searchReady = false;
+	public _ingestReady = false;
+
+	public _ingestClient: Sonic.Ingest;
+	public _searchClient: Sonic.Search;
+
+	constructor(connectionArgs: {
+		host: string;
+		port: number;
+		auth: string | null;
+	}) {
 		super();
 		this._ingestClient = new Sonic.Ingest(connectionArgs).connect(
 			bindAll(
@@ -22,12 +39,12 @@ export class SonicDriver extends SearchClientBase {
 					},
 					disconnected() {
 						this._ingestReady = false;
-						this.emit("disconnected");
+						this.emit('disconnected');
 					},
 					timeout() {},
 					retrying() {},
-					error(err) {
-						this.emit("error", err);
+					error(err: Error) {
+						this.emit('error', err);
 					}
 				},
 				this
@@ -45,98 +62,110 @@ export class SonicDriver extends SearchClientBase {
 					},
 					disconnected() {
 						this._searchReady = false;
-						this.emit("disconnected");
+						this.emit('disconnected');
 					},
 					timeout() {},
 					retrying() {},
-					error(err) {
-						this.emit("error", err);
+					error(err: Error) {
+						this.emit('error', err);
 					}
 				},
 				this
 			)
 		);
 	}
-	available = true;
-
-	_ingestQueue = [];
-	_searchQueue = [];
-	_searchReady = false;
-	_ingestReady = false;
 
 	get ready() {
 		return this._searchReady && this._ingestReady;
 	}
-	_emitReady() {
-		if (this.ready) this.emit("ready");
+	public _emitReady() {
+		if (this.ready) this.emit('ready');
 	}
-	async disconnect() {
-		this.ready = false;
+	public async disconnect() {
 		return await this.client.close();
 	}
 
-	search(content, qualifiers = {}, limit) {
-		function doSearch() {
-			return this._searchClient.query(
-				"misskey_note",
+	public search(
+		content: string,
+		qualifiers: {userId?: string | null; userHost?: string | null} = {},
+		limit: number = 20,
+		offset?: number
+	) {
+		const doSearch = () =>
+			this._searchClient.query(
+				'misskey_note',
 				pickQualifier(qualifiers),
 				content,
-				limit
+				limit,
+				offset
 			);
-		}
 
 		if (this._searchReady) {
 			return doSearch();
 		} else {
 			return new Promise((resolve, reject) => {
-				this._searchQueue.push(() => {
+				this._searchQueue.push(() =>
 					doSearch()
 						.then(resolve)
-						.catch(reject);
-				});
+						.catch(reject)
+				);
 			});
 		}
 	}
 
-	push(note) {
-		function doIngest() {
+	public push(note: Note) {
+		const doIngest = () => {
 			return Promise.all(
-				Object.entries(this.QUALIFIERS).map(([qualifierId, qualifierValue]) =>
-					this._ingestClient.push(
-						"misskey_note",
-						qualifierId + "-" + note.user[qualifierValue],
-
-						note.id,
-						note.text.toLowerCase()
+				Object.entries(this.QUALIFIERS)
+					.map(
+						([qualifierId, qualifierValue]) =>
+							qualifierId + '-' + note[qualifierValue]
 					)
-				)
+					.concat(['default'])
+					.map(bucket =>
+						this._ingestClient.push(
+							'misskey_note',
+							bucket,
+
+							note.id,
+							note.text.toLowerCase()
+						)
+					)
 			);
-		}
+		};
 
 		if (this._ingestReady) {
 			return doIngest();
 		} else {
 			return new Promise((resolve, reject) => {
-				this._ingestQueue.push(() => {
+				this._ingestQueue.push(() =>
 					doIngest()
 						.then(resolve)
-						.catch(reject);
-				});
+						.catch(reject)
+				);
 			});
 		}
 	}
+
+	public _runIngestQueue() {
+		return Promise.all(this._ingestQueue.map(cb => cb()));
+	}
+
+	public _runSearchQueue() {
+		return Promise.all(this._searchQueue.map(cb => cb()));
+	}
 }
 
-function pickQualifier(qualifiers) {
-	if (qualifiers.userId) return "userId-" + qualifiers.userId;
-	else if (qualifiers.userHost) return "userHost-" + qualifiers.userHost;
-	else return "default";
+function pickQualifier(qualifiers: {userId?: string | null; userHost?: string | null}) {
+	if (qualifiers.userId) return 'userId-' + qualifiers.userId;
+	else if (qualifiers.userHost) return 'userHost-' + qualifiers.userHost;
+	else return 'default';
 }
 
 export default (config.sonic
 	? new SonicDriver({
 			host: config.sonic.host,
 			port: config.sonic.port,
-			auth: config.sonic.password
-	  })
+			auth: config.sonic.pass === null ? undefined : config.sonic.pass
+	})
 	: null);
