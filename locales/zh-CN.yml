@@ -271,6 +271,8 @@ common:
     load-raw-images: "以原始质量显示附加图像"
     load-remote-media: "显示来自远程服务器的媒体"
     sync: "同步"
+    save: "保存"
+    saved: "已保存"
     home-profile: "定制首页数据"
     deck-profile: "定制Deck数据"
   search: "搜索"
