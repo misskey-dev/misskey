@@ -3,14 +3,6 @@ import config from '../config';
 import {SearchClientBase} from './SearchClientBase';
 import {Note} from '../models/entities/note';
 
-function bindAll(obj: {[key: string]: (() => void) | ((err: Error) => void)}, self: SonicDriver) {
-	for (const [key, value] of Object.entries(obj)) {
-		obj[key] = value.bind(self);
-	}
-
-	return obj;
-}
-
 export class SonicDriver extends SearchClientBase {
 	public available = true;
 
@@ -28,51 +20,43 @@ export class SonicDriver extends SearchClientBase {
 		auth: string | null;
 	}) {
 		super();
-		this._ingestClient = new Sonic.Ingest(connectionArgs).connect(
-			bindAll(
-				{
-					connected() {
-						// execute queue of queries
-						this._runIngestQueue();
-						this._ingestReady = true;
-						this._emitReady();
-					},
-					disconnected() {
-						this._ingestReady = false;
-						this.emit('disconnected');
-					},
-					timeout() {},
-					retrying() {},
-					error(err: Error) {
-						this.emit('error', err);
-					}
-				},
-				this
-			)
-		);
+		// Bad!
+		const self = this;
+		this._ingestClient = new Sonic.Ingest(connectionArgs).connect({
+			connected() {
+				// execute queue of queries
+				self._runIngestQueue();
+				self._ingestReady = true;
+				self._emitReady();
+			},
+			disconnected() {
+				self._ingestReady = false;
+				self.emit('disconnected');
+			},
+			timeout() {},
+			retrying() {},
+			error(err: Error) {
+				self.emit('error', err);
+			}
+		});
 
-		this._searchClient = new Sonic.Search(connectionArgs).connect(
-			bindAll(
-				{
-					connected() {
-						// execute queue of queries
-						this._runSearchQueue();
-						this._searchReady = true;
-						this._emitReady();
-					},
-					disconnected() {
-						this._searchReady = false;
-						this.emit('disconnected');
-					},
-					timeout() {},
-					retrying() {},
-					error(err: Error) {
-						this.emit('error', err);
-					}
-				},
-				this
-			)
-		);
+		self._searchClient = new Sonic.Search(connectionArgs).connect({
+			connected() {
+				// execute queue of queries
+				self._runSearchQueue();
+				self._searchReady = true;
+				self._emitReady();
+			},
+			disconnected() {
+				self._searchReady = false;
+				self.emit('disconnected');
+			},
+			timeout() {},
+			retrying() {},
+			error(err: Error) {
+				self.emit('error', err);
+			}
+		});
 	}
 
 	get ready() {
@@ -82,7 +66,10 @@ export class SonicDriver extends SearchClientBase {
 		if (this.ready) this.emit('ready');
 	}
 	public async disconnect() {
-		return await this.client.close();
+		return await Promise.all([
+		       this._searchClient.close(),
+		       this._ingestClient.close(),
+	       ]);
 	}
 
 	public search(
@@ -118,17 +105,17 @@ export class SonicDriver extends SearchClientBase {
 			return Promise.all(
 				Object.entries(this.QUALIFIERS)
 					.map(
-						([qualifierId, qualifierValue]) =>
-							qualifierId + '-' + note[qualifierValue]
+						([qualifierId, qualifierValue]: [string, string]) =>
+							qualifierId + '-' + String(note[qualifierValue])
 					)
 					.concat(['default'])
-					.map(bucket =>
+					.map((bucket: string) =>
 						this._ingestClient.push(
 							'misskey_note',
 							bucket,
 
 							note.id,
-							note.text.toLowerCase()
+							String(note.text && note.text.toLowerCase())
 						)
 					)
 			);
