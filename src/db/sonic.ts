@@ -115,7 +115,7 @@ export class SonicDriver extends SearchClientBase {
 							bucket,
 
 							note.id,
-							String(note.text && note.text.toLowerCase())
+							String(note.text).toLowerCase()
 						)
 					)
 			);

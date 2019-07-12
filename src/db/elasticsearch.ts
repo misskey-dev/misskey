@@ -117,11 +117,11 @@ class ElasticSearch extends SearchClientBase {
 
 	public push(note: Note) {
 		const qualifierMap = {
-			text: note.text.toLowerCase()
+			text: String(note.text).toLowerCase()
 		};
 
 		for (const [qualifierId, noteKey] of Object.entries(this.QUALIFIERS)) {
-			qualifierMap[qualifierId] = note[noteKey];
+			qualifierMap[qualifierId] = String(note[noteKey]);
 		}
 
 		return this._client.index({
