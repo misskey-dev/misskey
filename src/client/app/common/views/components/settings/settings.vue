@@ -143,13 +143,17 @@
 				<ui-input v-model="webSearchEngine">{{ $t('@._settings.web-search-engine') }}
 					<template #desc>{{ $t('@._settings.web-search-engine-desc') }}</template>
 				</ui-input>
+				<ui-button @click="save('webSearchEngine', webSearchEngine)"><fa :icon="faSave"/> {{ $t('@._settings.save') }}</ui-button>
 			</section>
 
 			<section v-if="!$root.isMobile">
 				<header>{{ $t('@._settings.paste') }}</header>
 				<ui-input v-model="pastedFileName">{{ $t('@._settings.pasted-file-name') }}
-					<template #desc>{{ $t('@._settings.pasted-file-name-desc') }}</template>
+					<template v-if="pastedFileName === this.$store.state.settings.pastedFileName" #desc>{{ $t('@._settings.pasted-file-name-desc') }}</template>
+					<template v-else #desc>{{ pastedFileNamePreview() }}</template>
 				</ui-input>
+				<ui-button @click="save('pastedFileName', pastedFileName)"><fa :icon="faSave"/> {{ $t('@._settings.save') }}</ui-button>
+
 				<ui-switch v-model="pasteDialog">{{ $t('@._settings.paste-dialog') }}
 					<template #desc>{{ $t('@._settings.paste-dialog-desc') }}</template>
 				</ui-switch>
@@ -289,6 +293,8 @@ import XNotification from './notification.vue';
 
 import { url, version } from '../../../../config';
 import checkForUpdate from '../../../scripts/check-for-update';
+import { formatTimeString } from '../../../../../../misc/format-time-string';
+import { faSave } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -319,8 +325,11 @@ export default Vue.extend({
 		return {
 			meta: null,
 			version,
+			webSearchEngine: this.$store.state.settings.webSearchEngine,
+			pastedFileName : this.$store.state.settings.pastedFileName,
 			latestVersion: undefined,
-			checkingForUpdate: false
+			checkingForUpdate: false,
+			faSave
 		};
 	},
 	computed: {
@@ -417,16 +426,6 @@ export default Vue.extend({
 		defaultNoteVisibility: {
 			get() { return this.$store.state.settings.defaultNoteVisibility; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
-		},
-
-		webSearchEngine: {
-			get() { return this.$store.state.settings.webSearchEngine; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'webSearchEngine', value }); }
-		},
-
-		pastedFileName: {
-			get() { return this.$store.state.settings.pastedFileName; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'pastedFileName', value }); }
 		},
 
 		pasteDialog: {
@@ -565,6 +564,17 @@ export default Vue.extend({
 				}
 			});
 		},
+		save(key, value) {
+			this.$store.dispatch('settings/set', {
+				key,
+				value
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('@._settings.saved')
+				})
+			});
+		},
 		customizeHome() {
 			location.href = '/?customize';
 		},
@@ -600,7 +610,10 @@ export default Vue.extend({
 			const sound = new Audio(`${url}/assets/message.mp3`);
 			sound.volume = this.$store.state.device.soundVolume;
 			sound.play();
-		}
+		},
+		pastedFileNamePreview() {
+			return `${formatTimeString(new Date(), this.pastedFileName).replace(/{{number}}/g, `1`)}.png`
+		},
 	}
 });
 </script>
