@@ -278,6 +278,8 @@ common:
     load-raw-images: "Show attached images in original quality"
     load-remote-media: "Show media from a remote server"
     sync: "Sync"
+    save: "Save"
+    saved: "Saved"
     home-profile: "Home profile"
     deck-profile: "Deck profile"
   search: "Search"

@@ -78,6 +78,7 @@ common:
   _settings:
     notification: "Notifikasjon"
     password: "Passord"
+    save: "Lagre"
   search: "Søk"
   delete: "Slett"
   loading: "Laster inn..."

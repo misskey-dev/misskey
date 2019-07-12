@@ -178,6 +178,8 @@ common:
     version: "Wersja:"
     do-update: "Sprawdź dostępność nowych aktualizacji"
     navbar-position-left: "Z lewej"
+    save: "Zapisz"
+    saved: "Zapisano"
   search: "Szukaj"
   delete: "Usuń"
   loading: "Ładowanie"

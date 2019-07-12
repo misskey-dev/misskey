@@ -262,6 +262,8 @@ common:
     load-raw-images: "Zobrazovat obrázky v původní kvalitě"
     load-remote-media: "Zobrazovat média ze vzdáleného serveru"
     sync: "Synchronizace"
+    save: "Uložit"
+    saved: "Uloženo"
   search: "Hledání"
   delete: "Odstranit"
   loading: "Načítám..."

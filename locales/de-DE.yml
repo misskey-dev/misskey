@@ -248,6 +248,8 @@ common:
     disable-via-mobile: "Beitrag nicht als „vom Handy“ markieren"
     load-raw-images: "Anhänge in voller Größe laden"
     load-remote-media: "Zeige Inhalte von fremden Servern"
+    save: "Speichern"
+    saved: "Gespeichert"
   search: "Suche"
   delete: "Löschen"
   loading: "Laden"

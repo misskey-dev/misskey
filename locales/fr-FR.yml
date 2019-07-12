@@ -267,6 +267,8 @@ common:
     load-raw-images: "Afficher les photos jointes dans leur qualité originale"
     load-remote-media: "Afficher les médias depuis le serveur distant"
     sync: "Synchroniser"
+    save: "Enregistrer"
+    saved: "enregistré"
   search: "Recherche"
   delete: "Supprimer"
   loading: "Chargement en cours …"

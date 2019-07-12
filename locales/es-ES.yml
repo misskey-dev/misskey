@@ -197,6 +197,8 @@ common:
     update-available-desc: "Las actualizaciones se aplicarán cuando la página se vuelva a cargar."
     advanced-settings: "Configuraciones avanzadas"
     navbar-position-left: "Izquierda"
+    save: "Guardar"
+    saved: "Guardado"
   search: "Buscar"
   delete: "eliminar"
   loading: "cargando"

@@ -278,6 +278,8 @@ common:
     load-raw-images: "첨부 이미지를 고품질로 표시"
     load-remote-media: "원격 서버의 미디어를 표시"
     sync: "동기화"
+    save: "저장"
+    saved: "저장하였습니다"
     home-profile: "홈 프로필"
     deck-profile: "덱 프로필"
   search: "검색"
