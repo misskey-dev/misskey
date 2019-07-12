@@ -290,6 +290,8 @@ common:
     load-raw-images: "添付された画像を高画質で表示する"
     load-remote-media: "リモートサーバーのメディアを表示する"
     sync: "同期"
+    save: "保存"
+    saved: "保存しました"
     home-profile: "ホームのプロファイル"
     deck-profile: "デッキのプロファイル"
 
