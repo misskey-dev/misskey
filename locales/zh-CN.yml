@@ -1148,6 +1148,9 @@ admin/views/index.vue:
   back-to-misskey: "返回 Misskey"
 admin/views/db.vue:
   tables: "表格"
+  vacuum: "VACUUM"
+  vacuum-info: "清理数据库。 保持数据完整并减少磁盘使用量。 此操作通常会自动定期执行。"
+  vacuum-exclamation: "运行VACUUM之后，数据库上的负载可能会持续一段时间，并且可能不响应用户操作。"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "账户"
@@ -1847,6 +1850,7 @@ pages:
       inc: "增加值"
     _button:
       text: "标题"
+      colored: "彩色"
       action: "按下按钮时的行为"
       _action:
         dialog: "显示对话框"
@@ -1856,11 +1860,14 @@ pages:
         pushEvent: "发送事件"
         _pushEvent:
           event: "事件名称"
+          message: "按下时显示的消息"
+          variable: "发送的变量"
           no-variable: "空"
-    radioButton: "选项"
+    radioButton: "选择项"
     _radioButton:
       name: "变量名"
       title: "标题"
+      values: "使用换行区分的选择项"
       default: "默认值"
   script:
     categories:
