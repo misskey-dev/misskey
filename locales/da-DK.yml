@@ -251,6 +251,8 @@ common:
     disable-via-mobile: "Marker aldrig posten som \"fra mobil\""
     load-raw-images: "Vis vedhæftede bilag i original kvalitet"
     load-remote-media: "Vis medie-materiale fra en ekstern server"
+    save: "Gem"
+    saved: "Gemt"
   search: "Søg"
   delete: "Slet"
   loading: "Henter"
