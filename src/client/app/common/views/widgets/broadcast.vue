@@ -23,8 +23,8 @@
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>
 			</p>
 			<div class="slider" v-if="announcements.length > 1">
-				<a class="prev" @click="prev"> <fa icon="angle-left" /> {{ $t('prev') }}</a>
-				<a class="next" @click="next">{{ $t('next') }} <fa icon="angle-right" /></a>
+				<fa icon="angle-left" /><a class="prev" @click="prev">{{ $t('prev') }}</a>
+				<a class="next" @click="next">{{ $t('next') }}</a><fa icon="angle-right" />
 			</div>
 		</div>
 	</ui-container>
