@@ -22,7 +22,10 @@
 				<img v-if="announcements.length != 0 && announcements[i].image" :src="announcements[i].image" alt="" style="display: block; max-height: 130px; max-width: 100%;"/>
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>
 			</p>
-			<a v-if="announcements.length > 1" @click="next">{{ $t('next') }} &gt;&gt;</a>
+			<div class="slider" v-if="announcements.length > 1">
+				<a class="prev" @click="prev"><fa icon="angle-left"/> {{ $t('prev') }}</a>
+				<a class="next" @click="next">{{ $t('next') }} <fa icon="angle-right" /></a>
+			</div>
 		</div>
 	</ui-container>
 </div>
@@ -58,6 +61,13 @@ export default define({
 				this.i = 0;
 			} else {
 				this.i++;
+			}
+		},
+		prev(){
+			if (this.i == 0){
+				this.i = this.announcements.length - 1;
+			} else {
+				this.i--;
 			}
 		},
 		func() {
@@ -144,9 +154,15 @@ export default define({
 		&.fetching
 			text-align center
 
-	> a
+	.slider
 		display block
-		font-size 0.7em
+		font-size 0.7em;
+
+		> .prev
+			float left;
+
+		> .next
+			float right
 
 	&[data-mobile]
 		> p
