@@ -123,6 +123,8 @@ common:
     password: "パスワード"
     other: "その他"
     timeline: "タイムライン"
+    save: "保存"
+    saved: "保存したで！"
   search: "検索"
   delete: "削除"
   loading: "読み込み中"
