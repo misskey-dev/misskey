@@ -22,7 +22,7 @@
 				<img v-if="announcements.length != 0 && announcements[i].image" :src="announcements[i].image" alt="" style="display: block; max-height: 130px; max-width: 100%;"/>
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>
 			</p>
-			<div class="slider" v-if="announcements.length > 1">
+			<div class="turn-page" v-if="announcements.length > 1">
 				<a class="prev" @click="prev"><fa icon="angle-left" />{{ $t('prev') }}</a>
 				<a class="next" @click="next">{{ $t('next') }}<fa icon="angle-right" /></a>
 			</div>
@@ -154,12 +154,12 @@ export default define({
 		&.fetching
 			text-align center
 
-	.slider
+	.turn-page
 		display block
-		font-size 0.7em;
+		font-size 0.7em
 
 		> .prev
-			float left;
+			float left
 
 		> .next
 			float right
