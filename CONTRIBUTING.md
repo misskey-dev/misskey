@@ -79,6 +79,20 @@ Good:
 if (foo) bar;
 ```
 
+### 特別な理由がない限り`===`を使う
+🥰
+
+### null系を除いて、bool以外の値をifに渡さない
+Bad:
+``` ts
+if (foo.length)
+```
+
+Good:
+``` ts
+if (foo.length > 0)
+```
+
 ### `export default`を使わない
 インテリセンスと相性が悪かったりするため
 
