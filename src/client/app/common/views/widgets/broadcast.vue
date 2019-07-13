@@ -23,8 +23,8 @@
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>
 			</p>
 			<div class="turn-page" v-if="announcements.length > 1">
-				<a class="prev" @click="prev"><fa icon="angle-left" />{{ $t('prev') }}</a>
-				<a class="next" @click="next">{{ $t('next') }}<fa icon="angle-right" /></a>
+				<a class="prev" @click="prev"><fa icon="faChevronLeft" fixed-width/>{{ $t('prev') }}</a>
+				<a class="next" @click="next">{{ $t('next') }}<fa icon="faChevronRight" fixed-width/></a>
 			</div>
 		</div>
 	</ui-container>
@@ -34,6 +34,7 @@
 <script lang="ts">
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 export default define({
 	name: 'broadcast',
