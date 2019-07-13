@@ -59,7 +59,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
-		.where(':tag = ANY(user.tags)', { tag: ps.tag });
+		.where(':tag = ANY(user.tags)', { tag: ps.tag.toLowerCase() });
 
 	const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
 
