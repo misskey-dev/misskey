@@ -23,8 +23,8 @@
 				<template v-if="announcements.length == 0">{{ $t('have-a-nice-day') }}</template>
 			</p>
 			<div class="turn-page" v-if="announcements.length > 1">
-				<a class="prev" @click="prev"><fa icon="faChevronLeft" fixed-width/>{{ $t('prev') }}</a>
-				<a class="next" @click="next">{{ $t('next') }}<fa icon="faChevronRight" fixed-width/></a>
+				<a class="prev" @click="prev"><fa :icon="faChevronLeft" fixed-width/> {{ $t('prev') }}</a>
+				<a class="next" @click="next">{{ $t('next') }} <fa :icon="faChevronRight" fixed-width/></a>
 			</div>
 		</div>
 	</ui-container>
