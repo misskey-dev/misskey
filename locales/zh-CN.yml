@@ -1395,6 +1395,11 @@ admin/views/moderators.vue:
     added: "已注册版主。"
     remove: "取消"
     removed: "取消注册版主"
+  logs:
+    title: "登录"
+    moderator: "版主"
+    type: "操作"
+    info: "信息"
 admin/views/emoji.vue:
   add-emoji:
     title: "添加emoji"

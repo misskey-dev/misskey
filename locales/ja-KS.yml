@@ -951,6 +951,11 @@ admin/views/users.vue:
       moderator: "モデレーター"
     origin:
       local: "ローカル"
+admin/views/moderators.vue:
+  logs:
+    moderator: "モデレーター"
+    type: "操作"
+    info: "情報"
 admin/views/emoji.vue:
   add-emoji:
     add: "増やす"

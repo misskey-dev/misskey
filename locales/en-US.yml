@@ -1395,6 +1395,12 @@ admin/views/moderators.vue:
     added: "Registered a Moderator."
     remove: "Discharge"
     removed: "The moderator has been discharged"
+  logs:
+    title: "Logs"
+    moderator: "Moderators"
+    type: "Operations"
+    at: "Timestamp"
+    info: "Information"
 admin/views/emoji.vue:
   add-emoji:
     title: "Add emoji"

@@ -1395,6 +1395,12 @@ admin/views/moderators.vue:
     added: "모더레이터를 등록하였습니다"
     remove: "해제"
     removed: "모더레이터 등록을 해제했습니다"
+  logs:
+    title: "로그"
+    moderator: "모더레이터"
+    type: "작업"
+    at: "일시"
+    info: "정보"
 admin/views/emoji.vue:
   add-emoji:
     title: "이모지 등록"

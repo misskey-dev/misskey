@@ -970,6 +970,10 @@ admin/views/users.vue:
       moderator: "Moderadores"
     origin:
       local: "Local"
+admin/views/moderators.vue:
+  logs:
+    title: "Registros"
+    moderator: "Moderadores"
 admin/views/emoji.vue:
   add-emoji:
     add: "Agregar"

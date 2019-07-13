@@ -352,6 +352,9 @@ admin/views/users.vue:
       all: "Alle"
     origin:
       local: "Lokalt"
+admin/views/moderators.vue:
+  logs:
+    info: "Informasjon"
 admin/views/emoji.vue:
   add-emoji:
     add: "Legg til"
