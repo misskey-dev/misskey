@@ -47,7 +47,8 @@ export default define({
 		return {
 			i: 0,
 			fetching: true,
-			announcements: []
+			announcements: [],
+			faChevronLeft, faChevronRight
 		};
 	},
 	mounted() {
