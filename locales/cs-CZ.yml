@@ -1057,6 +1057,11 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     title: "Vytvořit moderátora"
+  logs:
+    title: "Logy"
+    moderator: "Moderátoři"
+    type: "Operace"
+    info: "Informace"
 admin/views/emoji.vue:
   add-emoji:
     title: "Přidat emoji"

@@ -1343,6 +1343,11 @@ admin/views/moderators.vue:
     added: "Ajouté en tant que modérateur"
     remove: "Révoquer"
     removed: "Le modérateur a été révoqué"
+  logs:
+    title: "Journaux"
+    moderator: "Modérateurs"
+    type: "Actions"
+    info: "Informations"
 admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"

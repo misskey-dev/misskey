@@ -1308,6 +1308,11 @@ admin/views/moderators.vue:
     added: "Redaktør er oprettet"
     remove: "Fjern"
     removed: "Redaktøren er nu fjernet"
+  logs:
+    title: "Logs"
+    moderator: "Redaktører"
+    type: "Drift"
+    info: "Information"
 admin/views/emoji.vue:
   add-emoji:
     title: "Tilføj emoji"

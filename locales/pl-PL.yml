@@ -925,6 +925,9 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     add: "Zarejestruj się"
+  logs:
+    moderator: "Moderatorzy"
+    info: "Informacje"
 admin/views/emoji.vue:
   add-emoji:
     name: "Nazwa Emoji"
