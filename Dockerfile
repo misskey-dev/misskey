@@ -20,8 +20,8 @@ RUN apk add --no-cache \
     nasm \
     pkgconfig \
     python \
+    yarn \
     zlib-dev
-RUN npm i -g yarn
 
 COPY package.json ./
 RUN yarn install
