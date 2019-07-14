@@ -27,6 +27,7 @@ Installez les paquets suivants :
 * **[Redis](https://redis.io/)**
 
 ##### Optionnels
+* [Yarn](https://yarnpkg.com/) - recommander pour des raisons de sécurité
 * [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
 * [FFmpeg](https://www.ffmpeg.org/)
 
