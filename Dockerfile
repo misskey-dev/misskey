@@ -21,11 +21,12 @@ RUN apk add --no-cache \
     pkgconfig \
     python \
     zlib-dev
+RUN npm i -g yarn
 
 COPY package.json ./
-RUN npm i
+RUN yarn install
 COPY . ./
-RUN npm run build
+RUN yarn build
 
 FROM base AS runner
 
