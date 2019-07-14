@@ -32,6 +32,12 @@ Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 Misskey uses CircleCI for automated test.
 Configuration files are located in [`/.circleci`](/.circleci).
 
+## FAQ
+
+### Conflict occured at yarn.lock
+
+Just execute `npx yarn` (or `yarn` when you installed yarn in global) to fix it.
+
 ## Glossary
 ### AP
 Stands for _**A**ctivity**P**ub_.
