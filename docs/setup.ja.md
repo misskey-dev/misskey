@@ -27,6 +27,8 @@ adduser --disabled-password --disabled-login misskey
 * **[Redis](https://redis.io/)**
 
 ##### オプション
+* [Yarn](https://yarnpkg.com/)
+	* セキュリティの観点から推奨されます。
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
@@ -51,7 +53,7 @@ adduser --disabled-password --disabled-login misskey
 
 5. Misskeyの依存パッケージをインストール
 
-	`npx yarn install`
+	`yarn install` (yarn をインストールしない方針の場合は `npx yarn install`)
 
 *4.* 設定ファイルを作成する
 ----------------------------------------------------------------
@@ -131,7 +133,7 @@ npm run init
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git checkout master`
 2. `git pull`
-3. `npx yarn install`
+3. `yarn install` (yarn をインストールしない方針の場合は `npx yarn install`)
 4. `NODE_ENV=production npm run build`
 5. `npm run migrate`
 

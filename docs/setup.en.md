@@ -27,6 +27,7 @@ Please install and setup these softwares:
 * **[Redis](https://redis.io/)**
 
 ##### Optional
+* [Yarn](https://yarnpkg.com/) *Optional but recommended for security reason*
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 * [FFmpeg](https://www.ffmpeg.org/)
 
@@ -50,7 +51,7 @@ Please install and setup these softwares:
 
 5. Install misskey dependencies.
 
-	`npx yarn install`
+	`yarn` (or `npx yarn install` when you didn't have install yarn in global)
 
 *4.* Configure Misskey
 ----------------------------------------------------------------
@@ -130,7 +131,7 @@ You can check if the service is running with `systemctl status misskey`.
 ### How to update your Misskey server to the latest version
 1. `git checkout master`
 2. `git pull`
-3. `npx yarn install` or `yarn install`
+3. `yarn install` (or `npx yarn install` when you didn't have install yarn in global)
 4. `NODE_ENV=production npm run build`
 5. `npm run migrate`
 6. Restart your Misskey process to apply changes
@@ -138,7 +139,7 @@ You can check if the service is running with `systemctl status misskey`.
 
 If you encounter any problems with updating, please try the following:
 1. `npm run clean` or `npm run cleanall`
-2. Retry update (Don't forget `npx yarn install` or `yarn install`)
+2. Retry update (Don't forget `yarn install` (or `npx yarn install` when you didn't have install yarn in global))
 
 ----------------------------------------------------------------
 

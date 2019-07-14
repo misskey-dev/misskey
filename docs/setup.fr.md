@@ -50,7 +50,7 @@ Installez les paquets suivants :
  
 5. Installez les dépendances de misskey.
 
-	`npx yarn install`
+	`yarn install` (ou `npx yarn` lorsque vous n'avez pas installé "yarn" en global) <!-- Traduction Note: Il se peut que j'ai tort. -->
 
 *4.* Création du fichier de configuration
 ----------------------------------------------------------------
@@ -124,7 +124,7 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 ### Méthode de mise à jour vers la plus récente version de Misskey
 1. `git checkout master`
 2. `git pull`
-3. `npx yarn install`
+3. `yarn install` (ou `npx yarn install` lorsque vous n'avez pas installé "yarn" en global) <!-- Traduction Note: Il se peut que j'ai tort. -->
 4. `NODE_ENV=production npm run build`
 5. `npm run migrate`
 
