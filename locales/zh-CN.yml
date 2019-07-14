@@ -1399,6 +1399,7 @@ admin/views/moderators.vue:
     title: "登录"
     moderator: "版主"
     type: "操作"
+    at: "日期和时间"
     info: "信息"
 admin/views/emoji.vue:
   add-emoji:
