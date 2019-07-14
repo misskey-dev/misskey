@@ -637,7 +637,7 @@ mongodb:
   db: misskey
 ```
 3. migration ブランチに切り替え
-4. `npm i`
+4. `npx yarn install`
 5. `npm run build`
 6. `npm run migrate`
 7. master ブランチに戻す
