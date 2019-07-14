@@ -27,7 +27,7 @@
 	},
 	"resolutions": {
 		"gulp-cssnano/cssnano/postcss-svgo/svgo/js-yaml": "^3.13.1",
-		"video-thumbnail-generator/lodash": "^4.17.11"
+		"video-thumbnail-generator/lodash": "^4.17.13"
 	},
 	"dependencies": {
 		"@elastic/elasticsearch": "7.1.0",
