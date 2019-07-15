@@ -27,6 +27,8 @@ adduser --disabled-password --disabled-login misskey
 * **[Redis](https://redis.io/)**
 
 ##### オプション
+* [Yarn](https://yarnpkg.com/)
+	* セキュリティの観点から推奨されます。 yarn をインストールしない方針の場合は、文章中の `yarn` を適宜 `npx yarn` と読み替えてください。
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
@@ -51,7 +53,7 @@ adduser --disabled-password --disabled-login misskey
 
 5. Misskeyの依存パッケージをインストール
 
-	`npx yarn install`
+	`yarn install`
 
 *4.* 設定ファイルを作成する
 ----------------------------------------------------------------
@@ -66,20 +68,19 @@ adduser --disabled-password --disabled-login misskey
 
 次のコマンドでMisskeyをビルドしてください:
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 Debianをお使いであれば、`build-essential`パッケージをインストールする必要があります。
 
 何らかのモジュールでエラーが発生する場合はnode-gypを使ってください:
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
+1. `npx node-gyp configure`
+2. `npx node-gyp build`
+3. `NODE_ENV=production yarn build`
 
 *6.* データベースを初期化
 ----------------------------------------------------------------
 ``` shell
-npm run init
+yarn run init
 ```
 
 *7.* 以上です！
@@ -87,7 +88,7 @@ npm run init
 お疲れ様でした。これでMisskeyを動かす準備は整いました。
 
 ### 通常起動
-`NODE_ENV=production npm start`するだけです。GLHF!
+`NODE_ENV=production yarn start`するだけです。GLHF!
 
 ### systemdを用いた起動
 1. systemdサービスのファイルを作成
@@ -120,7 +121,7 @@ npm run init
 
 3. systemdを再読み込みしmisskeyサービスを有効化
 
-	`systemctl daemon-reload ; systemctl enable misskey`
+	`systemctl daemon-reload; systemctl enable misskey`
 
 4. misskeyサービスの起動
 
@@ -131,11 +132,11 @@ npm run init
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git checkout master`
 2. `git pull`
-3. `npx yarn install`
-4. `NODE_ENV=production npm run build`
-5. `npm run migrate`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
+5. `yarn migrate`
 
-なにか問題が発生した場合は、`npm run clean`または`npm run cleanall`すると直る場合があります。
+なにか問題が発生した場合は、`yarn clean`または`yarn cleanall`すると直る場合があります。
 
 ----------------------------------------------------------------
 

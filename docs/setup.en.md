@@ -27,6 +27,7 @@ Please install and setup these softwares:
 * **[Redis](https://redis.io/)**
 
 ##### Optional
+* [Yarn](https://yarnpkg.com/) *Optional but recommended for security reason. If you won't install it, use `npx yarn` instead of `yarn`.*
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 * [FFmpeg](https://www.ffmpeg.org/)
 
@@ -50,7 +51,7 @@ Please install and setup these softwares:
 
 5. Install misskey dependencies.
 
-	`npx yarn install`
+	`yarn`
 
 *4.* Configure Misskey
 ----------------------------------------------------------------
@@ -65,21 +66,20 @@ Please install and setup these softwares:
 
 Build misskey with the following:
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 If you're on Debian, you will need to install the `build-essential`, `python` package.
 
 If you're still encountering errors about some modules, use node-gyp:
 
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
+1. `npx node-gyp configure`
+2. `npx node-gyp build`
+3. `NODE_ENV=production yarn build`
 
 *6.* Init DB
 ----------------------------------------------------------------
 ``` shell
-npm run init
+yarn run init
 ```
 
 *7.* That is it.
@@ -130,15 +130,15 @@ You can check if the service is running with `systemctl status misskey`.
 ### How to update your Misskey server to the latest version
 1. `git checkout master`
 2. `git pull`
-3. `npx yarn install` or `yarn install`
-4. `NODE_ENV=production npm run build`
-5. `npm run migrate`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
+5. `yarn migrate`
 6. Restart your Misskey process to apply changes
 7. Enjoy
 
 If you encounter any problems with updating, please try the following:
-1. `npm run clean` or `npm run cleanall`
-2. Retry update (Don't forget `npx yarn install` or `yarn install`)
+1. `yarn clean` or `yarn cleanall`
+2. Retry update (Don't forget `yarn install`
 
 ----------------------------------------------------------------
 

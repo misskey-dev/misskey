@@ -35,7 +35,8 @@ Configuration files are located in [`/.circleci`](/.circleci).
 ## FAQ
 
 ### How to resolve conflictions occurred at yarn.lock?
-Just execute `npx yarn` (or `yarn` when you have yarn installed globally) to fix it.
+
+Just execute `yarn` to fix it.
 
 ## Glossary
 ### AP

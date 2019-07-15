@@ -27,8 +27,8 @@ Installez les paquets suivants :
 * **[Redis](https://redis.io/)**
 
 ##### Optionnels
-* [Yarn](https://yarnpkg.com/) - recommander pour des raisons de sécurité
-* [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
+* [Yarn](https://yarnpkg.com/) - *recommander pour des raisons de sécurité. Si vous ne l'installez pas, utilisez `npx yarn` au lieu de` yarn`.*
+* [Elasticsearch](https://www.elastic.co/) - *requis pour pouvoir activer la fonctionnalité de recherche.*
 * [FFmpeg](https://www.ffmpeg.org/)
 
 *3.* Installation de Misskey
@@ -51,7 +51,7 @@ Installez les paquets suivants :
  
 5. Installez les dépendances de misskey.
 
-	`npx yarn install`
+	`yarn install`
 
 *4.* Création du fichier de configuration
 ----------------------------------------------------------------
@@ -66,23 +66,22 @@ Installez les paquets suivants :
 
 Construisez Misskey comme ceci :
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential` et `python`.
 
 Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
+1. `npx node-gyp configure`
+2. `npx node-gyp build`
+3. `NODE_ENV=production yarn build`
 
 *6.* C'est tout.
 ----------------------------------------------------------------
 Excellent ! Maintenant, vous avez un environnement prêt pour lancer Misskey
 
 ### Lancement conventionnel
-Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-vous bien !
+Lancez tout simplement `NODE_ENV=production yarn start`. Bonne chance et amusez-vous bien !
 
 ### Démarrage avec systemd
 
@@ -125,9 +124,9 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 ### Méthode de mise à jour vers la plus récente version de Misskey
 1. `git checkout master`
 2. `git pull`
-3. `npx yarn install`
-4. `NODE_ENV=production npm run build`
-5. `npm run migrate`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
+5. `yarn migrate`
 
 ----------------------------------------------------------------
 
