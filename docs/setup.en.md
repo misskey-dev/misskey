@@ -72,10 +72,9 @@ If you're on Debian, you will need to install the `build-essential`, `python` pa
 
 If you're still encountering errors about some modules, use node-gyp:
 
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production yarn build`
+1. `npx node-gyp configure`
+2. `npx node-gyp build`
+3. `NODE_ENV=production yarn build`
 
 *6.* Init DB
 ----------------------------------------------------------------
