@@ -20,7 +20,6 @@ RUN apk add --no-cache \
     nasm \
     pkgconfig \
     python \
-    yarn \
     zlib-dev
 
 COPY package.json ./
