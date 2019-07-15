@@ -68,7 +68,7 @@ cp docker_example.env docker.env
 *5.* データベースを初期化
 ----------------------------------------------------------------
 ``` shell
-docker-compose run --rm web npm run init
+docker-compose run --rm web yarn run init
 ```
 
 *6.* 以上です！

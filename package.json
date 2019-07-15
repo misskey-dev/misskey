@@ -11,10 +11,10 @@
 	"private": true,
 	"scripts": {
 		"start": "node ./index.js",
-		"init": "npm run migrate",
+		"init": "yarn migrate || npx yarn migrate",
 		"ormconfig": "node ./built/ormconfig.js",
 		"migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
-		"migrateandstart": "npm run migrate && npm run start",
+		"migrateandstart": "(yarn migrate || npx yarn migrate) && (yarn start || npx yarn start)",
 		"build": "webpack && gulp build",
 		"webpack": "webpack",
 		"watch": "webpack --watch",
