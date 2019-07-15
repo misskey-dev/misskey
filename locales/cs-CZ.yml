@@ -454,9 +454,12 @@ common/views/components/messaging.vue:
   no-history: "Žádná historie"
   user: "Uživatel"
   group: "Skupina"
+  start-with-user: "Zahájit konverzaci s uživatelem"
+  start-with-group: "Zahájit skupinovou konverzaci"
 common/views/components/messaging-room.vue:
   new-message: "Máte novou zprávu"
 common/views/components/messaging-room.form.vue:
+  input-message-here: "Sem zadejte zprávu"
   send: "Odeslat"
   attach-from-local: "Přiložit soubory z Vašeho zařízení"
 common/views/components/messaging-room.message.vue:
