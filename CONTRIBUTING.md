@@ -7,18 +7,18 @@ Feature suggestions and bug reports are filed in https://github.com/syuilo/missk
 * Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
 * If you have multiple independent issues, please submit them separately.
 
-
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
 You can improve our translations with your Crowdin account.
-Changes you make in Crowdin will be merged into develop branch.
+Changes you make in Crowdin will be merged into the develop branch by @syuilo.
 
-If you can't find the language you want to contribute with, please open an issue.
+If you cannot find the language you want to contribute with, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Internationalization (i18n)
-Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
+Misskey uses the Vue.js plugin [Vue I18n](https://github.com/kazupon/vue-i18n).
+Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/introduction.html .
 
 ## Documentation
 * Documents for contributors are located in [`/docs`](/docs).
@@ -29,14 +29,13 @@ Misskey uses [vue-i18n](https://github.com/kazupon/vue-i18n).
 * Test codes are located in [`/test`](/test).
 
 ## Continuous integration
-Misskey uses CircleCI for automated test.
+Misskey uses CircleCI for executing automated tests.
 Configuration files are located in [`/.circleci`](/.circleci).
 
 ## FAQ
 
-### Conflict occured at yarn.lock
-
-Just execute `npx yarn` (or `yarn` when you installed yarn in global) to fix it.
+### How to resolve conflictions occurred at yarn.lock?
+Just execute `npx yarn` (or `yarn` when you have yarn installed globally) to fix it.
 
 ## Glossary
 ### AP
@@ -57,11 +56,15 @@ Convert な(na) to にゃ(nya)
 #### Denyaize
 Revert Nyaize
 
-## Code style
-### セミコロンを省略しない
-ASI Hazardを避けるためでもある
+## TypeScript Coding Style
+### Do not omit semicolons
+This is to avoid Automatic Semicolon Insertion (ASI) hazard.
 
-### 中括弧を省略しない
+Ref:
+* https://www.ecma-international.org/ecma-262/#sec-automatic-semicolon-insertion
+* https://github.com/tc39/ecma262/pull/1062
+
+### Do not omit curly brackets
 Bad:
 ``` ts
 if (foo)
@@ -79,16 +82,20 @@ if (foo) {
 }
 ```
 
-ただし**`if`が一行**の時だけは省略しても良い
+As a special case, you can omit the curly brackets if
+
+* the body of the `if`-statement have only one statement and,
+* the `if`-statement does not have `else`-clause.
+
 Good:
 ``` ts
 if (foo) bar;
 ```
 
-### 特別な理由がない限り`===`を使う
+### Do not use `==` when it can simply be replaced with `===`.
 🥰
 
-### null系を除いて、bool以外の値をifに渡さない
+### Use only boolean (or null related) values in the condition of an `if`-statement.
 Bad:
 ``` ts
 if (foo.length)
@@ -99,12 +106,12 @@ Good:
 if (foo.length > 0)
 ```
 
-### `export default`を使わない
-インテリセンスと相性が悪かったりするため
+### Do not use `export default`
+This is because the current language support does not work well with `export default`.
 
-参考:
-* https://gfx.hatenablog.com/entry/2017/11/24/135343
+Ref:
 * https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
+* https://gfx.hatenablog.com/entry/2017/11/24/135343
 
 Bad:
 ``` ts
