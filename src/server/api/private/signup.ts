@@ -1,11 +1,12 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
+import { publishMainStream } from '../../../services/stream';
 import { generateKeyPair } from 'crypto';
 import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
-import { Users, RegistrationTickets } from '../../../models';
+import { Users, Signins, RegistrationTickets } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
 import { User } from '../../../models/entities/user';
@@ -136,6 +137,19 @@ export default async (ctx: Koa.BaseContext) => {
 	});
 
 	usersChart.update(account, true);
+
+	// Append signin history
+	const record = await Signins.save({
+		id: genId(),
+		createdAt: new Date(),
+		userId: account.id,
+		ip: ctx.ip,
+		headers: ctx.headers,
+		success: true
+	});
+
+	// Publish signin event
+	publishMainStream(account.id, 'signin', await Signins.pack(record));
 
 	const res = await Users.pack(account, account, {
 		detail: true,
