@@ -52,9 +52,10 @@ export default define(meta, async (ps, me) => {
 		targetId: user.id,
 	});
 
-	unFollowAll(user);
-
-	doPostSuspend(user);
+	(async () => {
+		await doPostSuspend(user).catch(e => {});
+		await unFollowAll(user).catch(e => {});
+	})();
 });
 
 async function unFollowAll(follower: User) {
