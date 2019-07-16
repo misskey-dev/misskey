@@ -51,6 +51,26 @@
 				<template #desc v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
 			</ui-input>
 
+			<div class="fields">
+				<header>{{ $t('profile-metadata') }}</header>
+				<ui-horizon-group>
+					<ui-input v-model="fieldName0">{{ $t('metadata-label') }}</ui-input>
+					<ui-input v-model="fieldValue0">{{ $t('metadata-content') }}</ui-input>
+				</ui-horizon-group>
+				<ui-horizon-group>
+					<ui-input v-model="fieldName1">{{ $t('metadata-label') }}</ui-input>
+					<ui-input v-model="fieldValue1">{{ $t('metadata-content') }}</ui-input>
+				</ui-horizon-group>
+				<ui-horizon-group>
+					<ui-input v-model="fieldName2">{{ $t('metadata-label') }}</ui-input>
+					<ui-input v-model="fieldValue2">{{ $t('metadata-content') }}</ui-input>
+				</ui-horizon-group>
+				<ui-horizon-group>
+					<ui-input v-model="fieldName3">{{ $t('metadata-label') }}</ui-input>
+					<ui-input v-model="fieldValue3">{{ $t('metadata-content') }}</ui-input>
+				</ui-horizon-group>
+			</div>
+
 			<ui-button @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</ui-form>
 	</section>
@@ -189,6 +209,17 @@ export default Vue.extend({
 		this.isLocked = this.$store.state.i.isLocked;
 		this.carefulBot = this.$store.state.i.carefulBot;
 		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
+
+		if (this.$store.state.i.fields) {
+			this.fieldName0 = this.$store.state.i.fields[0].name;
+			this.fieldValue0 = this.$store.state.i.fields[0].value;
+			this.fieldName1 = this.$store.state.i.fields[1].name;
+			this.fieldValue1 = this.$store.state.i.fields[1].value;
+			this.fieldName2 = this.$store.state.i.fields[2].name;
+			this.fieldValue2 = this.$store.state.i.fields[2].value;
+			this.fieldName3 = this.$store.state.i.fields[3].name;
+			this.fieldValue3 = this.$store.state.i.fields[3].value;
+		}
 	},
 
 	methods: {
@@ -237,6 +268,13 @@ export default Vue.extend({
 		},
 
 		save(notify) {
+			const fields = [
+				{ name: this.fieldName0, value: this.fieldValue0 },
+				{ name: this.fieldName1, value: this.fieldValue1 },
+				{ name: this.fieldName2, value: this.fieldValue2 },
+				{ name: this.fieldName3, value: this.fieldValue3 },
+			];
+
 			this.saving = true;
 
 			this.$root.api('i/update', {
@@ -247,6 +285,7 @@ export default Vue.extend({
 				birthday: this.birthday || null,
 				avatarId: this.avatarId || undefined,
 				bannerId: this.bannerId || undefined,
+				fields,
 				isCat: !!this.isCat,
 				isBot: !!this.isBot,
 				isLocked: !!this.isLocked,
@@ -365,5 +404,12 @@ export default Vue.extend({
 			width 72px
 			height 72px
 			margin auto
+
+.fields
+	> header
+		padding 8px 0px
+		font-weight bold
+	> div
+		padding-left 16px
 
 </style>
