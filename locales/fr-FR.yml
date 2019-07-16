@@ -583,6 +583,11 @@ common/views/components/emoji-picker.vue:
   symbols: "Symboles"
   flags: "Drapeaux"
 common/views/components/settings/app-type.vue:
+  title: "Mode"
+  choices:
+    auto: "Choisir la disposition automatiquement"
+    desktop: "Toujours utiliser la disposition de bureau"
+    mobile: "Toujours utiliser la disposition mobile"
   info: "Le rechargement de la page est requis afin d'appliquer les modifications."
 common/views/components/signin.vue:
   username: "Nom d'utilisateur·rice"
