@@ -892,6 +892,7 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "Renommer le dossier"
     input-new-folder-name: "Entrer un nouveau nom"
     else-folders: "Avancé"
+    set-as-upload-folder: "Spécifier en tant que dossier de téléversement par défaut"
 desktop/views/components/drive.vue:
   search: "Rechercher"
   empty-draghover: "Drop Welcome!"
@@ -1001,6 +1002,7 @@ desktop/views/components/settings.2fa.vue:
   last-used: "Dernière utilisation :"
   activate-key: "Cliquez pour activer la clé de sécurité"
   security-key-name: "Nom de la clé"
+  something-went-wrong: "Oula ! Il y a eu un problème lors de l’enregistrement de la clé."
   key-unregistered: "La clé a été supprimée"
   use-password-less-login: "Utiliser une connexion sans mot de passe"
 common/views/components/media-image.vue:
@@ -1028,6 +1030,7 @@ common/views/components/drive-settings.vue:
   in-use: "utilisé"
   stats: "Statistiques"
   default-upload-folder-name: "Dossier·s"
+  change-default-upload-folder: "Changer de dossier"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Silencés / Bloqués"
   mute: "Mettre en sourdine"
@@ -1687,6 +1690,7 @@ deck/deck.user-column.vue:
   activity: "Activité"
   timeline: "Fil d’actualité"
   pinned-notes: "Notes épinglées"
+  pinned-page: "Page épinglée"
 docs:
   edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation ?"
   edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
@@ -1802,6 +1806,7 @@ pages:
           message: "Message à afficher lorsque appuyé"
           variable: "Variable à envoyer"
           no-variable: "Aucune"
+    radioButton: "Choix"
     _radioButton:
       name: "Nom de la variable"
       title: "Titre"
