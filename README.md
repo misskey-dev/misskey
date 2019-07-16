@@ -125,7 +125,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c8.patreon.com/2/200/16869916" alt="見当かなみ" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/18899730/6a22797f68254034a854d69ea2445fc8/1.png?token-time=2145916800&token-hash=b_uj57yxo5VzkSOUS7oXE_762dyOTB_oxzbO6lFNG3k%3D" alt="YuzuRyo61" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/11357794/923ce94cd8c44ba788ee931907881839/1.png?token-time=2145916800&token-hash=9nEQje_eMvUjq9a7L3uBqW-MQbS-rRMaMgd7UYVoFNM%3D" alt="mydarkstar" width="100"></td>
-<td><img src="https://c8.patreon.com/2/200/12718187" alt="Peter G." width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13039004/509d0c412eb14ae08d6a812a3054f7d6/1.jpe?token-time=2145916800&token-hash=UQRWf01TwHDV4Cls1K0YAOAjM29ssif7hLVq0ESQ0hs%3D" alt="nemu" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/17866454" alt="sikyosyounin" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/3.png?token-time=2145916800&token-hash=KjfQL8nf3AIf6WqzLshBYAyX44piAqOAZiYXgZS_H6A%3D" alt="YUKIMOCHI" width="100"></td>
@@ -135,7 +134,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=16869916">見当かなみ</a></td>
 <td><a href="https://www.patreon.com/Yuzulia">YuzuRyo61</a></td>
 <td><a href="https://www.patreon.com/mydarkstar">mydarkstar</a></td>
-<td><a href="https://www.patreon.com/user?u=12718187">Peter G.</a></td>
 <td><a href="https://www.patreon.com/user?u=13039004">nemu</a></td>
 <td><a href="https://www.patreon.com/user?u=17866454">sikyosyounin</a></td>
 <td><a href="https://www.patreon.com/yukimochi">YUKIMOCHI</a></td>
@@ -175,7 +173,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Mon, 01 Jul 2019 21:44:06 UTC
+**Last updated:** Tue, 16 Jul 2019 10:23:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
