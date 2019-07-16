@@ -82,7 +82,7 @@
 		"@types/ratelimiter": "2.1.28",
 		"@types/redis": "2.8.13",
 		"@types/rename": "1.0.1",
-		"@types/request": "2.48.1",
+		"@types/request": "2.48.2",
 		"@types/request-promise-native": "1.0.16",
 		"@types/request-stats": "3.0.0",
 		"@types/rimraf": "2.0.2",
