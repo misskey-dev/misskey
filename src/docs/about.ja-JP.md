@@ -1,3 +1,3 @@
-# Misskeyについて
+# Groundpolisについて
 
-MisskeyはミニブログSNSです。
+GroundpolisはミニブログSNSです。

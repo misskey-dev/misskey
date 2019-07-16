@@ -18,7 +18,7 @@ const ev = new Xev();
  * Init process
  */
 export default async function() {
-	process.title = `Misskey (${cluster.isMaster ? 'master' : 'worker'})`;
+	process.title = `Groundpolis (${cluster.isMaster ? 'master' : 'worker'})`;
 
 	if (cluster.isMaster || program.disableClustering) {
 		await masterMain();
@@ -32,7 +32,7 @@ export default async function() {
 		await workerMain();
 	}
 
-	// ユニットテスト時にMisskeyが子プロセスで起動された時のため
+	// ユニットテスト時にGroundpolisが子プロセスで起動された時のため
 	// それ以外のときは process.send は使えないので弾く
 	if (process.send) {
 		process.send('ok');

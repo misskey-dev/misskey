@@ -2,13 +2,13 @@
 :v: Thanks for your contributions :v:
 
 ## Issues
-Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
+Feature suggestions and bug reports are filed in https://github.com/xeltica/groundpolis/issues .
 
 * Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
 * If you have multiple independent issues, please submit them separately.
 
 ## Localization (l10n)
-Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
+Groundpolis uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
 You can improve our translations with your Crowdin account.
 Changes you make in Crowdin will be merged into the develop branch by @syuilo.
 
@@ -17,7 +17,7 @@ If you cannot find the language you want to contribute with, please open an issu
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Internationalization (i18n)
-Misskey uses the Vue.js plugin [Vue I18n](https://github.com/kazupon/vue-i18n).
+Groundpolis uses the Vue.js plugin [Vue I18n](https://github.com/kazupon/vue-i18n).
 Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/introduction.html .
 
 ## Documentation
@@ -29,7 +29,7 @@ Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/intr
 * Test codes are located in [`/test`](/test).
 
 ## Continuous integration
-Misskey uses CircleCI for executing automated tests.
+Groundpolis uses CircleCI for executing automated tests.
 Configuration files are located in [`/.circleci`](/.circleci).
 
 ## FAQ
@@ -129,7 +129,7 @@ export function something(foo: string): string {
 src ... Source code
 	@types ... Type definitions
 	prelude ... Independence utils for coding JavaScript without side effects
-	misc ... Independence utils for Misskey without side effects
+	misc ... Independence utils for Groundpolis without side effects
 	service ... Common functions with side effects
 	queue ... Job queues and Jobs
 	server ... Web Server

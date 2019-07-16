@@ -324,7 +324,7 @@ Vue.mixin({
  * APP ENTRY POINT!
  */
 
-console.info(`Misskey v${version} (${codename})`);
+console.info(`Groundpolis v${version} (${codename})`);
 console.info(
 	`%c${locale['common']['do-not-copy-paste']}`,
 	'color: red; background: yellow; font-size: 16px; font-weight: bold;');

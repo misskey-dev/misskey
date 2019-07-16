@@ -3,10 +3,10 @@
 	<div class="banner" :style="{ backgroundImage: banner ? `url(${banner})` : null }"></div>
 
 	<div>
-		<img svg-inline src="../../../../assets/title.svg" alt="Misskey">
+		<img svg-inline src="../../../../assets/title.svg" alt="Groundpolis">
 		<p class="host">{{ host }}</p>
 		<div class="about">
-			<h2>{{ name || 'Misskey' }}</h2>
+			<h2>{{ name || 'Groundpolis' }}</h2>
 			<p v-html="description || this.$t('@.about')"></p>
 			<router-link class="signup" to="/signup">{{ $t('@.signup') }}</router-link>
 		</div>

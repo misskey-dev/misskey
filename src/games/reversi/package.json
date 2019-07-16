@@ -1,14 +1,14 @@
 {
   "name": "misskey-reversi",
   "version": "0.0.5",
-  "description": "Misskey reversi engine",
+  "description": "Groundpolis reversi engine",
   "keywords": [
     "misskey"
   ],
   "author": "syuilo <i@syuilo.com>",
   "license": "MIT",
-  "repository": "https://github.com/syuilo/misskey.git",
-  "bugs": "https://github.com/syuilo/misskey/issues",
+  "repository": "https://github.com/xeltica/groundpolis.git",
+  "bugs": "https://github.com/xeltica/groundpolis/issues",
   "main": "./built/core.js",
   "types": "./built/core.d.ts",
   "scripts": {

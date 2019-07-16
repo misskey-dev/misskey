@@ -18,7 +18,7 @@ const bootLogger = logger.createSubLogger('boot', 'magenta', false);
 
 function greet() {
 	if (!program.quiet) {
-		//#region Misskey logo
+		//#region Groundpolis logo
 		const v = `v${pkg.version}`;
 		console.log('  _____ _         _           ');
 		console.log(' |     |_|___ ___| |_ ___ _ _ ');
@@ -27,15 +27,15 @@ function greet() {
 		console.log(' ' + chalk.gray(v) + ('                        |___|\n'.substr(v.length)));
 		//#endregion
 
-		console.log(' Misskey is maintained by @syuilo, @AyaMorisawa, @mei23, @acid-chicken, and @rinsuki.');
-		console.log(chalk.keyword('orange')(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
+		console.log(' Groundpolis is maintained by @syuilo, @AyaMorisawa, @mei23, @acid-chicken, and @rinsuki.');
+		console.log(chalk.keyword('orange')(' If you like Groundpolis, please donate to support development. https://www.patreon.com/syuilo'));
 
 		console.log('');
 		console.log(chalk`< ${os.hostname()} {gray (PID: ${process.pid.toString()})} >`);
 	}
 
-	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${pkg.version}`, null, true);
+	bootLogger.info('Welcome to Groundpolis!');
+	bootLogger.info(`Groundpolis v${pkg.version}`, null, true);
 }
 
 /**
@@ -69,7 +69,7 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
-	bootLogger.succ('Misskey initialized');
+	bootLogger.succ('Groundpolis initialized');
 
 	if (!program.disableClustering) {
 		await spawnWorkers(config.clusterLimit);

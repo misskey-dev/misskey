@@ -260,7 +260,7 @@ export default Vue.extend({
 			maintainerName: null,
 			maintainerEmail: null,
 			ToSUrl: null,
-			repositoryUrl: "https://github.com/syuilo/misskey",
+			repositoryUrl: "https://github.com/xeltica/groundpolis",
 			feedbackUrl: null,
 			disableRegistration: false,
 			disableLocalTimeline: false,

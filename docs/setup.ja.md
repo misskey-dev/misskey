@@ -1,16 +1,16 @@
-Misskey構築の手引き
+Groundpolis構築の手引き
 ================================================================
 
-Misskeyサーバーの構築にご関心をお寄せいただきありがとうございます！
-このガイドではMisskeyのインストール・セットアップ方法について解説します。
+Groundpolisサーバーの構築にご関心をお寄せいただきありがとうございます！
+このガイドではGroundpolisのインストール・セットアップ方法について解説します。
 
 [英語版もあります - English version also available](./setup.en.md)
 
 ----------------------------------------------------------------
 
-*1.* Misskeyユーザーの作成
+*1.* Groundpolisユーザーの作成
 ----------------------------------------------------------------
-Misskeyはrootユーザーで実行しない方がよいため、代わりにユーザーを作成します。
+Groundpolisはrootユーザーで実行しない方がよいため、代わりにユーザーを作成します。
 Debianの例:
 
 ```
@@ -33,25 +33,25 @@ adduser --disabled-password --disabled-login misskey
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Misskeyのインストール
+*3.* Groundpolisのインストール
 ----------------------------------------------------------------
 1. misskeyユーザーを使用
 
 	`su - misskey`
 
-2. masterブランチからMisskeyレポジトリをクローン
+2. masterブランチからGroundpolisレポジトリをクローン
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/xeltica/groundpolis.git`
 
 3. misskeyディレクトリに移動
 
 	`cd misskey`
 
-4. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+4. [最新のリリース](https://github.com/xeltica/groundpolis/releases/latest)を確認
 
 	`git checkout master`
 
-5. Misskeyの依存パッケージをインストール
+5. Groundpolisの依存パッケージをインストール
 
 	`yarn install`
 
@@ -63,10 +63,10 @@ adduser --disabled-password --disabled-login misskey
 
 2. `default.yml` を編集する。
 
-*5.* Misskeyのビルド
+*5.* Groundpolisのビルド
 ----------------------------------------------------------------
 
-次のコマンドでMisskeyをビルドしてください:
+次のコマンドでGroundpolisをビルドしてください:
 
 `NODE_ENV=production yarn build`
 
@@ -85,7 +85,7 @@ yarn run init
 
 *7.* 以上です！
 ----------------------------------------------------------------
-お疲れ様でした。これでMisskeyを動かす準備は整いました。
+お疲れ様でした。これでGroundpolisを動かす準備は整いました。
 
 ### 通常起動
 `NODE_ENV=production yarn start`するだけです。GLHF!
@@ -99,7 +99,7 @@ yarn run init
 
 	```
 	[Unit]
-	Description=Misskey daemon
+	Description=Groundpolis daemon
 
 	[Service]
 	Type=simple
@@ -117,7 +117,7 @@ yarn run init
 	WantedBy=multi-user.target
 	```
 
-	CentOSで1024以下のポートを使用してMisskeyを使用する場合は`ExecStart=/usr/bin/sudo /usr/bin/npm start`に変更する必要があります。
+	CentOSで1024以下のポートを使用してGroundpolisを使用する場合は`ExecStart=/usr/bin/sudo /usr/bin/npm start`に変更する必要があります。
 
 3. systemdを再読み込みしmisskeyサービスを有効化
 
@@ -129,7 +129,7 @@ yarn run init
 
 `systemctl status misskey`と入力すると、サービスの状態を調べることができます。
 
-### Misskeyを最新バージョンにアップデートする方法:
+### Groundpolisを最新バージョンにアップデートする方法:
 1. `git checkout master`
 2. `git pull`
 3. `yarn install`

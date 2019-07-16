@@ -232,7 +232,7 @@ export const packedNoteSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the Note was created on Misskey.'
+			description: 'The date that the Note was created on Groundpolis.'
 		},
 		text: {
 			type: 'string' as const,

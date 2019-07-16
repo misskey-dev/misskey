@@ -1,23 +1,23 @@
-Dockerを使ったMisskey構築方法
+Dockerを使ったGroundpolis構築方法
 ================================================================
 
-このガイドはDockerを使ったMisskeyセットアップ方法について解説します。
+このガイドはDockerを使ったGroundpolisセットアップ方法について解説します。
 
 [英語版もあります - English version also available](./docker.en.md)
 
 ----------------------------------------------------------------
 
-*1.* Misskeyのダウンロード
+*1.* Groundpolisのダウンロード
 ----------------------------------------------------------------
-1. masterブランチからMisskeyレポジトリをクローン
+1. masterブランチからGroundpolisレポジトリをクローン
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/xeltica/groundpolis.git`
 
 2. misskeyディレクトリに移動
 
 	`cd misskey`
 
-3. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+3. [最新のリリース](https://github.com/xeltica/groundpolis/releases/latest)を確認
 
 	`git checkout master`
 
@@ -59,9 +59,9 @@ cp docker_example.env docker.env
 ----------------------------------------------------------------
 `docker-compose.yml`を編集してください。
 
-*4.* Misskeyのビルド
+*4.* Groundpolisのビルド
 ----------------------------------------------------------------
-次のコマンドでMisskeyをビルドしてください:
+次のコマンドでGroundpolisをビルドしてください:
 
 `docker-compose build`
 
@@ -73,12 +73,12 @@ docker-compose run --rm web yarn run init
 
 *6.* 以上です！
 ----------------------------------------------------------------
-お疲れ様でした。これでMisskeyを動かす準備は整いました。
+お疲れ様でした。これでGroundpolisを動かす準備は整いました。
 
 ### 通常起動
 `docker-compose up -d`するだけです。GLHF!
 
-### Misskeyを最新バージョンにアップデートする方法:
+### Groundpolisを最新バージョンにアップデートする方法:
 1. `git stash`
 2. `git checkout master`
 3. `git pull`

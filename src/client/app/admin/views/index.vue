@@ -2,7 +2,7 @@
 <div class="mk-admin" :class="{ isMobile }">
 	<header v-show="isMobile">
 		<button class="nav" @click="navOpend = true"><fa icon="bars"/></button>
-		<span>MisskeyMyAdmin</span>
+		<span>GroundpolisMyAdmin</span>
 	</header>
 	<div class="nav-backdrop"
 		v-if="navOpend && isMobile"
@@ -35,7 +35,7 @@
 			<a href="/"><fa :icon="faArrowLeft"/> {{ $t('back-to-misskey') }}</a>
 		</div>
 		<div class="version">
-			<small>Misskey {{ version }}</small>
+			<small>Groundpolis {{ version }}</small>
 		</div>
 	</nav>
 	<main>

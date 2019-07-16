@@ -24,7 +24,7 @@ export async function sendEmail(to: string, subject: string, text: string) {
 		const info = await transporter.sendMail({
 			from: meta.email!,
 			to: to,
-			subject: subject || 'Misskey',
+			subject: subject || 'Groundpolis',
 			text: text
 		});
 

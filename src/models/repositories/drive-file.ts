@@ -128,7 +128,7 @@ export const packedDriveFileSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the Drive file was created on Misskey.'
+			description: 'The date that the Drive file was created on Groundpolis.'
 		},
 		name: {
 			type: 'string' as const,

@@ -14,7 +14,7 @@
 			<div class="main block">
 				<div>
 					<h1 v-if="name != null && name != ''">{{ name }}</h1>
-					<h1 v-else><img svg-inline src="../../../../assets/title.svg" alt="Misskey"></h1>
+					<h1 v-else><img svg-inline src="../../../../assets/title.svg" alt="Groundpolis"></h1>
 
 					<div class="info">
 						<span><b>{{ host }}</b> - <span v-html="$t('powered-by-misskey')"></span></span>
@@ -35,7 +35,7 @@
 						<span class="signin" @click="signin">{{ $t('@.signin') }}</span>
 					</p>
 
-					<img v-if="meta" :src="meta.mascotImageUrl" alt="" title="藍" class="char">
+					<!-- <img v-if="meta" :src="meta.mascotImageUrl" alt="" title="シトリン" class="char"> -->
 				</div>
 			</div>
 

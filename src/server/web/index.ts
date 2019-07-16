@@ -158,7 +158,7 @@ router.get('/@:user', async (ctx, next) => {
 		const meta = await fetchMeta();
 		await ctx.render('user', {
 			user, profile,
-			instanceName: meta.name || 'Misskey'
+			instanceName: meta.name || 'Groundpolis'
 		});
 		ctx.set('Cache-Control', 'public, max-age=180');
 	} else {
@@ -191,7 +191,7 @@ router.get('/notes/:note', async ctx => {
 		await ctx.render('note', {
 			note: _note,
 			summary: getNoteSummary(_note),
-			instanceName: meta.name || 'Misskey'
+			instanceName: meta.name || 'Groundpolis'
 		});
 
 		if (['public', 'home'].includes(note.visibility)) {
@@ -226,7 +226,7 @@ router.get('/@:user/pages/:page', async ctx => {
 		const meta = await fetchMeta();
 		await ctx.render('page', {
 			page: _page,
-			instanceName: meta.name || 'Misskey'
+			instanceName: meta.name || 'Groundpolis'
 		});
 
 		if (['public'].includes(page.visibility)) {
@@ -276,7 +276,7 @@ router.get('*', async ctx => {
 	const meta = await fetchMeta();
 	await ctx.render('base', {
 		img: meta.bannerUrl,
-		title: meta.name || 'Misskey',
+		title: meta.name || 'Groundpolis',
 		desc: meta.description,
 		icon: meta.iconUrl
 	});

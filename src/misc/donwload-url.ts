@@ -26,7 +26,7 @@ export async function downloadUrl(url: string, path: string) {
 		});
 
 		const req = request({
-			url: new URL(url).href, // https://github.com/syuilo/misskey/issues/2637
+			url: new URL(url).href, // https://github.com/xeltica/groundpolis/issues/2637
 			proxy: config.proxy,
 			timeout: 10 * 1000,
 			headers: {

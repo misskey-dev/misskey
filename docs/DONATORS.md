@@ -1,6 +1,6 @@
 DONATORS
 ========
-The list of people who have sent donation for Misskey.
+The list of people who have sent donation for Groundpolis.
 
 (In random order, honorific titles are omitted.)
 

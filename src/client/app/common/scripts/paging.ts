@@ -158,7 +158,7 @@ export default (opts) => ({
 
 			if (this.$store.state.settings.fetchOnScroll) {
 				// 親要素が display none だったら弾く
-				// https://github.com/syuilo/misskey/issues/1569
+				// https://github.com/xeltica/groundpolis/issues/1569
 				// http://d.hatena.ne.jp/favril/20091105/1257403319
 				if (this.$el.offsetHeight == 0) return;
 

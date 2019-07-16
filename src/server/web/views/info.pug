@@ -4,8 +4,8 @@ html
 
 	head
 		meta(charset='utf-8')
-		meta(name='application-name' content='Misskey')
-		title Misskey
+		meta(name='application-name' content='Groundpolis')
+		title Groundpolis
 		style.
 			html {
 				font-family: Roboto, HelveticaNeue, Arial, sans-serif;
@@ -65,12 +65,12 @@ html
 	body
 		main
 			header
-				h1 Misskey Version #{version}
+				h1 Groundpolis Version #{version}
 				img(src='/assets/misskey-php-like-logo.png' alt='')
 			table
 				tr
 					th Instance
-					td= meta.name || 'Misskey'
+					td= meta.name || 'Groundpolis'
 				tr
 					th Description
 					td= meta.description
@@ -138,4 +138,4 @@ html
 							| :#{emoji.name}:
 							= ' '
 			footer
-				p Misskey is open-source software. <a href="https://github.com/syuilo/misskey">View source</a>
+				p Groundpolis is open-source software. <a href="https://github.com/xeltica/groundpolis">View source</a>

@@ -1,3 +1,3 @@
-# About Misskey
+# About Groundpolis
 
-Misskey is a mini blog SNS.
+Groundpolis is a mini blog SNS.

@@ -16,11 +16,11 @@ let pending = 0;
 //#endregion
 
 /**
- * Misskey Operating System
+ * Groundpolis Operating System
  */
 export default class MiOS extends EventEmitter {
 	/**
-	 * Misskeyの /meta で取得できるメタ情報
+	 * Groundpolisの /meta で取得できるメタ情報
 	 */
 	private meta: {
 		data: { [x: string]: any };
@@ -28,7 +28,7 @@ export default class MiOS extends EventEmitter {
 	};
 
 	public get instanceName() {
-		return this.meta ? (this.meta.data.name || 'Misskey') : 'Misskey';
+		return this.meta ? (this.meta.data.name || 'Groundpolis') : 'Groundpolis';
 	}
 
 	private isMetaFetching = false;
@@ -279,7 +279,7 @@ export default class MiOS extends EventEmitter {
 			});
 
 			// トークンが再生成されたとき
-			// このままではMisskeyが利用できないので強制的にサインアウトさせる
+			// このままではGroundpolisが利用できないので強制的にサインアウトさせる
 			main.on('myTokenRegenerated', () => {
 				alert(locale['common']['my-token-regenerated']);
 				this.signout();
@@ -299,7 +299,7 @@ export default class MiOS extends EventEmitter {
 		// Reject when browser not service worker supported
 		if (!isSwSupported) return;
 
-		// Reject when not signed in to Misskey
+		// Reject when not signed in to Groundpolis
 		if (!this.store.getters.isSignedIn) return;
 
 		// When service worker activated
@@ -369,7 +369,7 @@ export default class MiOS extends EventEmitter {
 	public requests = [];
 
 	/**
-	 * Misskey APIにリクエストします
+	 * Groundpolis APIにリクエストします
 	 * @param endpoint エンドポイント名
 	 * @param data パラメータ
 	 */
@@ -436,7 +436,7 @@ export default class MiOS extends EventEmitter {
 	}
 
 	/**
-	 * Misskeyのメタ情報を取得します
+	 * Groundpolisのメタ情報を取得します
 	 */
 	@autobind
 	public getMetaSync() {
@@ -444,7 +444,7 @@ export default class MiOS extends EventEmitter {
 	}
 
 	/**
-	 * Misskeyのメタ情報を取得します
+	 * Groundpolisのメタ情報を取得します
 	 * @param force キャッシュを無視するか否か
 	 */
 	@autobind

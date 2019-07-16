@@ -4,9 +4,9 @@ meta:
 common:
   misskey: "En ⭐ av fediverse"
   about-title: "En ⭐ av fediverse"
-  about: "Takk for at du fant Misskey. Misskey er en <b>desentralisert mikroblogging platform</b> født på jorden. Siden den eksisterer sammen med Fediverset (Et univers hvor forskjellige sosiale media-plattformer blir organisert), så blir den gjensidig tilknyttet med andre sosiale media-plattformer. Hvorfor ikke ta en pause fra kjas og mas fra storbyen og hoppe inn i en ny type internett?"
+  about: "Takk for at du fant Groundpolis. Groundpolis er en <b>desentralisert mikroblogging platform</b> født på jorden. Siden den eksisterer sammen med Fediverset (Et univers hvor forskjellige sosiale media-plattformer blir organisert), så blir den gjensidig tilknyttet med andre sosiale media-plattformer. Hvorfor ikke ta en pause fra kjas og mas fra storbyen og hoppe inn i en ny type internett?"
   intro:
-    title: "Hva er Misskey?"
+    title: "Hva er Groundpolis?"
     features: "Funksjoner"
     rich-contents: "Innlegg"
     drive: "Disk"
@@ -82,7 +82,7 @@ common:
   search: "Søk"
   delete: "Slett"
   loading: "Laster inn..."
-  update-available: "En ny versjon av Misskey er nå tilgjengelig ({newer}, nåværende versjon er {current}). Last inn siden igjen for at oppdateringen skal tre i kraft."
+  update-available: "En ny versjon av Groundpolis er nå tilgjengelig ({newer}, nåværende versjon er {current}). Last inn siden igjen for at oppdateringen skal tre i kraft."
   my-token-regenerated: "Ditt synbol har blitt generert. Du vil nå bli utlogget."
   reversi:
     black: "Sort"
