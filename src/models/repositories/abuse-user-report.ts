@@ -14,6 +14,7 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 		return await awaitAll({
 			id: report.id,
 			createdAt: report.createdAt,
+			comment: report.comment,
 			reporterId: report.reporterId,
 			userId: report.userId,
 			reporter: Users.pack(report.reporter || report.reporterId, null, {

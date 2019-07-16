@@ -7,8 +7,8 @@ module.exports = async (ctx: Koa.BaseContext) => {
 
 	const instance = await fetchMeta(true);
 
-	json.short_name = instance.name || 'Misskey';
-	json.name = instance.name || 'Misskey';
+	json.short_name = instance.name || 'Groundpolis';
+	json.name = instance.name || 'Groundpolis';
 
 	ctx.set('Cache-Control', 'max-age=300');
 	ctx.body = json;

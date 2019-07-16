@@ -98,7 +98,7 @@ router.get('/*/*', async ctx => {
 		id: doc,
 		html: conv.makeHtml(md),
 		title: md.match(/^# (.+?)\r?\n/)![1],
-		src: `https://github.com/syuilo/misskey/tree/master/src/docs/${doc}.${lang}.md`
+		src: `https://github.com/xeltica/groundpolis/tree/master/src/docs/${doc}.${lang}.md`
 	}, await genVars(lang)));
 
 	ctx.set('Cache-Control', 'public, max-age=300');

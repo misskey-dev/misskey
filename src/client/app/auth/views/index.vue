@@ -27,7 +27,7 @@
 		<h1>{{ $t('sign-in') }}</h1>
 		<mk-signin/>
 	</main>
-	<footer><img src="/assets/auth/icon.svg" alt="Misskey"/></footer>
+	<footer><img src="/assets/auth/icon.svg" alt="Groundpolis"/></footer>
 </div>
 </template>
 

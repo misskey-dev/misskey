@@ -4,19 +4,19 @@ meta:
 common:
   misskey: "⭐ Fediwersum"
   about-title: "⭐ Fediwersum"
-  about: "Dziękujemy za znalezienie Misskey. Misskey jest <b>zdecentralizowaną platformą mikroblogową</b> powstałą na Ziemi. Ponieważ działa ona w Fediwersum (uniwersum, w którego skład wchodzi wiele sieci społecznościowych), jest ona połączona z innymi platformami społecznościowymi. Spróbujesz odpocząć od zatłoczoneo miasta i zanurzyć się w nowym Internecie?"
+  about: "Dziękujemy za znalezienie Groundpolis. Groundpolis jest <b>zdecentralizowaną platformą mikroblogową</b> powstałą na Ziemi. Ponieważ działa ona w Fediwersum (uniwersum, w którego skład wchodzi wiele sieci społecznościowych), jest ona połączona z innymi platformami społecznościowymi. Spróbujesz odpocząć od zatłoczoneo miasta i zanurzyć się w nowym Internecie?"
   intro:
-    title: "Czym jest Misskey?"
+    title: "Czym jest Groundpolis?"
     features: "Funkcje"
     rich-contents: "Wpis"
-    rich-contents-desc: "Po prostu opublikuj swój pomysł, gorące tematy i wszystko, co chcesz udostępnić. Możesz ozdobić swoje słowa, dołączyć swoje ulubione zdjęcia, wysłać pliki, w tym filmy i utworzyć ankietę - to są rzeczy, które możesz zrobić w Misskey!"
+    rich-contents-desc: "Po prostu opublikuj swój pomysł, gorące tematy i wszystko, co chcesz udostępnić. Możesz ozdobić swoje słowa, dołączyć swoje ulubione zdjęcia, wysłać pliki, w tym filmy i utworzyć ankietę - to są rzeczy, które możesz zrobić w Groundpolis!"
     reaction: "Reakcja"
     ui: "Interfejs"
     drive: "Dysk"
-    drive-desc: "Chcesz opublikować zdjęcie, które już przesłałeś? Chcesz uporządkować, nazwać i utworzyć folder dla przesłanych plików? Dysk Misskey to najlepsze rozwiązanie dla Ciebie. Bardzo łatwo udostępniać swoje pliki online."
+    drive-desc: "Chcesz opublikować zdjęcie, które już przesłałeś? Chcesz uporządkować, nazwać i utworzyć folder dla przesłanych plików? Dysk Groundpolis to najlepsze rozwiązanie dla Ciebie. Bardzo łatwo udostępniać swoje pliki online."
   adblock:
     detected: "Spróbuj wyłączyć blokadę reklam."
-    warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
+    warning: "<strong>Groundpolis nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
   application-authorization: "Współpraca aplikacji"
   close: "Zamknij"
   load-more: "Załaduj więcej"
@@ -174,17 +174,19 @@ common:
     sound: "Dźwięk"
     volume: "Głośność"
     test: "Test"
-    update: "Aktualizacja Misskey"
+    update: "Aktualizacja Groundpolis"
     version: "Wersja:"
     do-update: "Sprawdź dostępność nowych aktualizacji"
     navbar-position-left: "Z lewej"
+    save: "Zapisz"
+    saved: "Zapisano"
   search: "Szukaj"
   delete: "Usuń"
   loading: "Ładowanie"
   ok: "Możesz OK"
   cancel: "Anuluj"
   update-available-title: "Aktualizacja jest dostępna"
-  update-available: "Nowa wersja Misskey jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
+  update-available: "Nowa wersja Groundpolis jest dostępna ({newer}, obecna to {current}). Odśwież stronę, aby zastosować aktualizację."
   my-token-regenerated: "Twój token został wygenerowany. Zostaniesz wylogowany."
   hide-password: "Ukryj hasło"
   show-password: "Pokaż hasło"
@@ -249,7 +251,7 @@ common/views/components/games/reversi/reversi.game.vue:
   surrender: "Poddaj się"
   surrendered: "Przez poddanie się"
 common/views/components/games/reversi/reversi.index.vue:
-  title: "Misskey Reversi"
+  title: "Groundpolis Reversi"
   sub-title: "Zagraj w Reversi ze znajomymi!"
   invite: "Zaproś"
   rule: "Jak grać"
@@ -277,7 +279,7 @@ common/views/components/games/reversi/reversi.room.vue:
 common/views/components/connect-failed.vue:
   title: "Nie udało się połączyć z serwerem"
   description: "Wystąpił problem z Twoim połączeniem z Internetem, lub z serwerem. {Spróbuj ponownie} wkrótce."
-  thanks: "Dziękujemy za korzystanie z Misskey."
+  thanks: "Dziękujemy za korzystanie z Groundpolis."
   troubleshoot: "Rozwiązywanie problemów"
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Rozwiązywanie problemów"
@@ -293,8 +295,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-internet: "Brak połączenia z Internetem"
   no-internet-desc: "Upewnij się, że jesteś połączony z Internetem."
   no-server: "Nie udało się połączyć z serwerem"
-  no-server-desc: "Połączenie sieciowe działa, ale nie udało się połączyć z serwerem Misskey. Możliwe że serwer nie działa lub trwają prace konserwacyjne, spróbuj ponownie później."
-  success: "Pomyślnie połączono z serwerem Misskey"
+  no-server-desc: "Połączenie sieciowe działa, ale nie udało się połączyć z serwerem Groundpolis. Możliwe że serwer nie działa lub trwają prace konserwacyjne, spróbuj ponownie później."
+  success: "Pomyślnie połączono z serwerem Groundpolis"
   success-desc: "Wygląda na to, że udało się połączyć. Odśwież stronę."
   flush: "Wyczyść pamięć podręczną"
   set-version: "Określ wersję"
@@ -582,13 +584,13 @@ common/views/widgets/tips.vue:
   tips-line6: "Możesz przenieść katalog przeciągając go w Dysku."
   tips-line7: "Możesz przenieść katalog przeciągając go w Dysku."
   tips-line8: "Strona główna może zostać dostosowana w ustawieniach."
-  tips-line9: "Misskey jest dostępny na licencji AGPLv3."
+  tips-line9: "Groundpolis jest dostępny na licencji AGPLv3."
   tips-line11: "Możesz przypiąć wpis na stronie użytkownika klikając na „…”"
   tips-line17: "Oznaczenie tekstu **w ten sposób** wyróżni go."
   tips-line19: "Część okien może zostać odłączona z przeglądarki."
   tips-line21: "Możesz też używać API, aby tworzyć boty."
-  tips-line24: "Misskey zaczął działać w 2014."
-  tips-line25: "Możesz otrzymywać powiadomienia nawet jeżeli Misskey nie jest otwarty w obsługiwanej przeglądarce."
+  tips-line24: "Groundpolis zaczął działać w 2014."
+  tips-line25: "Możesz otrzymywać powiadomienia nawet jeżeli Groundpolis nie jest otwarty w obsługiwanej przeglądarce."
 common/views/pages/not-found.vue:
   page-not-found: "Strona nie została znaleziona"
 common/views/pages/follow.vue:
@@ -753,7 +755,7 @@ desktop/views/components/settings.2fa.vue:
   intro: "Jeżeli skonfigurujesz uwierzytelnianie dwuetapowe, aby zablokować się będziesz potrzebować (oprócz hasła) kodu ze skonfigurowanego urządzenia (np. smartfonu), co zwiększy bezpieczeństwo."
   detail: "Zobacz szczegóły…"
   url: "https://www.google.com/landing/2step/"
-  caution: "Jeżeli stracisz dostęp do urządzenia, nie będziesz mógł logować się do Misskey!"
+  caution: "Jeżeli stracisz dostęp do urządzenia, nie będziesz mógł logować się do Groundpolis!"
   register: "Zarejestruj urządzenie"
   already-registered: "Urządzenie jest już zarejestrowane"
   unregister: "Wyłącz"
@@ -767,7 +769,7 @@ desktop/views/components/settings.2fa.vue:
   submit: "Wyślij"
   success: "Pomyślnie ukończono konfigurację!"
   failed: "Nie udało się skonfigurować uwierzytelniania dwuetapowego, upewnij się że wprowadziłeś prawidłowy token."
-  info: "Od teraz, wprowadzaj token wyświetlany na urządzeniu przy każdym logowaniu do Misskey."
+  info: "Od teraz, wprowadzaj token wyświetlany na urządzeniu przy każdym logowaniu do Groundpolis."
 common/views/components/media-image.vue:
   sensitive: "To jest zawartość NSFW"
   click-to-show: "Naciśnij aby wyświetlić"
@@ -923,6 +925,9 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     add: "Zarejestruj się"
+  logs:
+    moderator: "Moderatorzy"
+    info: "Informacje"
 admin/views/emoji.vue:
   add-emoji:
     name: "Nazwa Emoji"
@@ -963,14 +968,14 @@ admin/views/federation.vue:
   blocked-hosts: "Zablokuj"
   save: "Zapisz"
 desktop/views/pages/welcome.vue:
-  about: "O Misskey"
+  about: "O Groundpolis"
   timeline: "Oś czasu"
   announcements: "Ogłoszenia"
   photos: "Ostatnie obrazy"
-  powered-by-misskey: "Oparto o <b>Misskey</b>."
+  powered-by-misskey: "Oparto o <b>Groundpolis</b>."
   info: "Informacje"
 desktop/views/pages/drive.vue:
-  title: "Dysk Misskey"
+  title: "Dysk Groundpolis"
 desktop/views/pages/note.vue:
   prev: "Poprzedni wpis"
   next: "Następny wpis"
@@ -1100,7 +1105,7 @@ mobile/views/components/ui.nav.vue:
   widgets: "Widżety"
   game: "Gry"
   admin: "Admin"
-  about: "O Misskey"
+  about: "O Groundpolis"
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Wyślij plik"
@@ -1212,6 +1217,8 @@ pages:
       text: "Tytuł"
     _button:
       text: "Tytuł"
+    _radioButton:
+      title: "Tytuł"
   script:
     categories:
       random: "Losowy"

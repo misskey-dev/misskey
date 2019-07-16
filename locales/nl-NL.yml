@@ -2,7 +2,7 @@
 meta:
   lang: "Nederlands"
 common:
-  misskey: "Deel alles met anderen die ook Misskey gebruiken."
+  misskey: "Deel alles met anderen die ook Groundpolis gebruiken."
   intro:
     rich-contents: "Bericht"
     reaction: "Reactie"
@@ -58,7 +58,7 @@ common:
   search: "Zoeken"
   delete: "Verwijderen"
   loading: "Bezig met laden"
-  update-available: "Er is een nieuwe versie van Misskey beschikbaar: {newer} (de huidige versie is {current}). Herlaad de pagina om de update toe te passen."
+  update-available: "Er is een nieuwe versie van Groundpolis beschikbaar: {newer} (de huidige versie is {current}). Herlaad de pagina om de update toe te passen."
   my-token-regenerated: "Je sleutel is gegenereerd; je wordt nu uitgelogd."
   widgets:
     profile: "Je profiel"
@@ -81,7 +81,7 @@ common/views/components/games/reversi/reversi.room.vue:
 common/views/components/connect-failed.vue:
   title: "Verbinden met server mislukt"
   description: "Er is een probleem met je internetverbinding, de server ligt plat of er wordt aan gewerkt. {Probeer} het later opnieuw."
-  thanks: "Bedankt voor het gebruiken van Misskey."
+  thanks: "Bedankt voor het gebruiken van Groundpolis."
   troubleshoot: "Probleemoplossing"
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Probleemoplossing"
@@ -96,9 +96,9 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-network-desc: "Zorg ervoor dat je verbonden bent met een netwerk."
   no-internet: "Er is geen internetverbinding"
   no-internet-desc: "Zorg ervoor dat je verbonden bent met het internet."
-  no-server: "Verbinden met Misskey-server mislukt"
-  no-server-desc: "De netwerkverbinding van je computer is goed, maar er kan geen verbinding worden gemaakt met de Misskey-server. Het kan dat de server plat ligt of dat eraan wordt gewerkt. Probeer het later opnieuw."
-  success: "Verbonden met de Misskey-server"
+  no-server: "Verbinden met Groundpolis-server mislukt"
+  no-server-desc: "De netwerkverbinding van je computer is goed, maar er kan geen verbinding worden gemaakt met de Groundpolis-server. Het kan dat de server plat ligt of dat eraan wordt gewerkt. Probeer het later opnieuw."
+  success: "Verbonden met de Groundpolis-server"
   success-desc: "Het verbinden lijkt te lukken. Herlaad de pagina."
   flush: "Cache leegmaken"
   set-version: "Versie opgeven"
@@ -353,7 +353,7 @@ desktop/views/components/settings.2fa.vue:
   intro: "Als je verificatie in twee stappen instelt, dan heb je niet alleen een wachtwoord nodig bij het inloggen, maar ook een geregistreerd fysiek apparaat (zoals je smartphone). Dit verhoogt de veiligheid. "
   detail: "Details bekijken..."
   url: "https://www.google.com/landing/2step/"
-  caution: "Als je geen toegang meer hebt tot je apparaat, dan kun je niet meer verbinden met Misskey!"
+  caution: "Als je geen toegang meer hebt tot je apparaat, dan kun je niet meer verbinden met Groundpolis!"
   register: "Apparaat registreren"
   already-registered: "Er is al een apparaat geregistreerd"
   unregister: "Uitschakelen"
@@ -367,7 +367,7 @@ desktop/views/components/settings.2fa.vue:
   submit: "Versturen"
   success: "Instellen voltooid!"
   failed: "Instellen mislukt. Zorg ervoor dat de sleutel juist is."
-  info: "Vanaf nu moet je ook de op je apparaat getoonde sleutel tonen bij het inloggen op Misskey."
+  info: "Vanaf nu moet je ook de op je apparaat getoonde sleutel tonen bij het inloggen op Groundpolis."
 common/views/components/api-settings.vue:
   enter-password: "Voer het wachtwoord in"
   console:
@@ -543,7 +543,7 @@ mobile/views/components/ui.nav.vue:
   search: "Zoeken"
   user-lists: "Lijsten"
   game: "Othello spelen"
-  about: "Over Misskey"
+  about: "Over Groundpolis"
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Bestand uploaden"

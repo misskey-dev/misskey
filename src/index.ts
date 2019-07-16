@@ -1,5 +1,5 @@
 /**
- * Misskey Entry Point!
+ * Groundpolis Entry Point!
  */
 
 Error.stackTraceLimit = Infinity;

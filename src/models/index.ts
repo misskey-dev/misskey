@@ -42,6 +42,7 @@ import { UserSecurityKey } from './entities/user-security-key';
 import { HashtagRepository } from './repositories/hashtag';
 import { PageRepository } from './repositories/page';
 import { PageLikeRepository } from './repositories/page-like';
+import { ModerationLogRepository } from './repositories/moderation-logs';
 
 export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
@@ -86,3 +87,4 @@ export const ReversiMatchings = getCustomRepository(ReversiMatchingRepository);
 export const Logs = getRepository(Log);
 export const Pages = getCustomRepository(PageRepository);
 export const PageLikes = getCustomRepository(PageLikeRepository);
+export const ModerationLogs = getCustomRepository(ModerationLogRepository);

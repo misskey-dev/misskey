@@ -198,7 +198,7 @@ export default Vue.extend({
 							),
 							rp: {
 								id: hostname,
-								name: 'Misskey'
+								name: 'Groundpolis'
 							},
 							user: {
 								id: Uint8Array.from(this.$store.state.i.id, c => c.charCodeAt(0)),

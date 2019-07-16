@@ -1,6 +1,6 @@
 # Docs
-These docs are for contributors of Misskey or admins of instance of Misskey.
+These docs are for contributors of Groundpolis or admins of instance of Groundpolis.
 Docs for users are located in `src/docs`.
 
-これらのドキュメントはMisskeyの開発者またはMisskeyインスタンス運営者向けです。
+これらのドキュメントはGroundpolisの開発者またはGroundpolisインスタンス運営者向けです。
 利用者向けのドキュメントは`src/docs`にあります。

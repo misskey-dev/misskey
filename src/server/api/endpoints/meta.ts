@@ -34,7 +34,7 @@ export const meta = {
 			version: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'The version of Misskey of this instance.',
+				description: 'The version of Groundpolis of this instance.',
 				example: pkg.version
 			},
 			name: {

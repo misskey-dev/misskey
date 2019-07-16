@@ -1,14 +1,14 @@
-Misskey Setup and Installation Guide
+Groundpolis Setup and Installation Guide
 ================================================================
 
-We thank you for your interest in setting up your Misskey server!
-This guide describes how to install and setup Misskey.
+We thank you for your interest in setting up your Groundpolis server!
+This guide describes how to install and setup Groundpolis.
 
 [Japanese version also available - 日本語版もあります](./setup.ja.md)
 
 ----------------------------------------------------------------
 
-*1.* Create Misskey user
+*1.* Create Groundpolis user
 ----------------------------------------------------------------
 Running misskey as root is not a good idea so we create a user for that.
 In debian for exemple :
@@ -27,10 +27,11 @@ Please install and setup these softwares:
 * **[Redis](https://redis.io/)**
 
 ##### Optional
+* [Yarn](https://yarnpkg.com/) *Optional but recommended for security reason. If you won't install it, use `npx yarn` instead of `yarn`.*
 * [Elasticsearch](https://www.elastic.co/) - required to enable the search feature
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Install Misskey
+*3.* Install Groundpolis
 ----------------------------------------------------------------
 1. Connect to misskey user.
 
@@ -38,21 +39,21 @@ Please install and setup these softwares:
 
 2. Clone the misskey repo from master branch.
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/xeltica/groundpolis.git`
 
 3. Navigate to misskey directory
 
 	`cd misskey`
 
-4. Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
+4. Checkout to the [latest release](https://github.com/xeltica/groundpolis/releases/latest)
 
 	`git checkout master`
 
 5. Install misskey dependencies.
 
-	`npm install`
+	`yarn`
 
-*4.* Configure Misskey
+*4.* Configure Groundpolis
 ----------------------------------------------------------------
 1. Copy the `.config/example.yml` and rename it to `default.yml`.
 
@@ -60,31 +61,30 @@ Please install and setup these softwares:
 
 2. Edit `default.yml`
 
-*5.* Build Misskey
+*5.* Build Groundpolis
 ----------------------------------------------------------------
 
 Build misskey with the following:
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 If you're on Debian, you will need to install the `build-essential`, `python` package.
 
 If you're still encountering errors about some modules, use node-gyp:
 
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
+1. `npx node-gyp configure`
+2. `npx node-gyp build`
+3. `NODE_ENV=production yarn build`
 
 *6.* Init DB
 ----------------------------------------------------------------
 ``` shell
-npm run init
+yarn run init
 ```
 
 *7.* That is it.
 ----------------------------------------------------------------
-Well done! Now, you have an environment that run to Misskey.
+Well done! Now, you have an environment that run to Groundpolis.
 
 ### Launch normally
 Just `NODE_ENV=production npm start`. GLHF!
@@ -99,7 +99,7 @@ Just `NODE_ENV=production npm start`. GLHF!
 
 	```
 	[Unit]
-	Description=Misskey daemon
+	Description=Groundpolis daemon
 
 	[Service]
 	Type=simple
@@ -127,14 +127,18 @@ Just `NODE_ENV=production npm start`. GLHF!
 
 You can check if the service is running with `systemctl status misskey`.
 
-### How to update your Misskey server to the latest version
+### How to update your Groundpolis server to the latest version
 1. `git checkout master`
 2. `git pull`
-3. `npm install`
-4. `NODE_ENV=production npm run build`
-5. `npm run migrate`
-6. Restart your Misskey process to apply changes
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
+5. `yarn migrate`
+6. Restart your Groundpolis process to apply changes
 7. Enjoy
+
+If you encounter any problems with updating, please try the following:
+1. `yarn clean` or `yarn cleanall`
+2. Retry update (Don't forget `yarn install`
 
 ----------------------------------------------------------------
 

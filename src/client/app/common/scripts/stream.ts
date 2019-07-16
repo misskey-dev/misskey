@@ -5,7 +5,7 @@ import { wsUrl } from '../../config';
 import MiOS from '../../mios';
 
 /**
- * Misskey stream connection
+ * Groundpolis stream connection
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;

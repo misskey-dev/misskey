@@ -29,8 +29,25 @@ export default Vue.extend({
 	computed: {
 		appTypeForce: {
 			get() { return this.$store.state.device.appTypeForce; },
-			set(value) { this.$store.commit('device/set', { key: 'appTypeForce', value }); }
+			set(value) {
+				this.$store.commit('device/set', { key: 'appTypeForce', value });
+				this.reload();
+			}
 		},
 	},
+
+	methods: {
+		reload() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('@.reload-to-apply-the-setting'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (!canceled) {
+					location.reload();
+				}
+			});
+		},
+	}
 });
 </script>

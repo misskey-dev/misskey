@@ -1,4 +1,4 @@
-# Sample nginx configuration for Misskey
+# Sample nginx configuration for Groundpolis
 #
 # 1. Replace example.tld to your domain
 # 2. Copy to /etc/nginx/sites-available/ and then symlink from /etc/nginx/sites-ebabled/

@@ -26,7 +26,7 @@ export class Instance {
 	public host: string;
 
 	/**
-	 * インスタンスのシステム (MastodonとかMisskeyとかPleromaとか)
+	 * インスタンスのシステム (MastodonとかGroundpolisとかPleromaとか)
 	 */
 	@Column('varchar', {
 		length: 64, nullable: true,

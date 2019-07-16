@@ -40,7 +40,7 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.$root.getMeta().then(meta => {
-			this.name = meta.name || 'Misskey';
+			this.name = meta.name || 'Groundpolis';
 		});
 	},
 	methods: {

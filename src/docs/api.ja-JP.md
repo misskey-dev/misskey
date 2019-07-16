@@ -1,3 +1,3 @@
-# Misskey API
+# Groundpolis API
 
 [APIリファレンス](/api-doc)

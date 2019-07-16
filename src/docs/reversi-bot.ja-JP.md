@@ -1,5 +1,5 @@
-# MisskeyリバーシBotの開発
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+# GroundpolisリバーシBotの開発
+Groundpolisのリバーシ機能に対応したBotの開発方法をここに記します。
 
 1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
 	* `i`: botアカウントのAPIキー

@@ -50,8 +50,8 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 /**
  * Imageを解決します。
  *
- * Misskeyに対象のImageが登録されていればそれを返し、そうでなければ
- * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
+ * Groundpolisに対象のImageが登録されていればそれを返し、そうでなければ
+ * リモートサーバーからフェッチしてGroundpolisに登録しそれを返します。
  */
 export async function resolveImage(actor: IRemoteUser, value: any): Promise<DriveFile> {
 	// TODO

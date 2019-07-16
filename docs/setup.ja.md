@@ -1,16 +1,16 @@
-Misskey構築の手引き
+Groundpolis構築の手引き
 ================================================================
 
-Misskeyサーバーの構築にご関心をお寄せいただきありがとうございます！
-このガイドではMisskeyのインストール・セットアップ方法について解説します。
+Groundpolisサーバーの構築にご関心をお寄せいただきありがとうございます！
+このガイドではGroundpolisのインストール・セットアップ方法について解説します。
 
 [英語版もあります - English version also available](./setup.en.md)
 
 ----------------------------------------------------------------
 
-*1.* Misskeyユーザーの作成
+*1.* Groundpolisユーザーの作成
 ----------------------------------------------------------------
-Misskeyはrootユーザーで実行しない方がよいため、代わりにユーザーを作成します。
+Groundpolisはrootユーザーで実行しない方がよいため、代わりにユーザーを作成します。
 Debianの例:
 
 ```
@@ -27,31 +27,33 @@ adduser --disabled-password --disabled-login misskey
 * **[Redis](https://redis.io/)**
 
 ##### オプション
+* [Yarn](https://yarnpkg.com/)
+	* セキュリティの観点から推奨されます。 yarn をインストールしない方針の場合は、文章中の `yarn` を適宜 `npx yarn` と読み替えてください。
 * [Elasticsearch](https://www.elastic.co/)
 	* 検索機能を有効にするためにはインストールが必要です。
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Misskeyのインストール
+*3.* Groundpolisのインストール
 ----------------------------------------------------------------
 1. misskeyユーザーを使用
 
 	`su - misskey`
 
-2. masterブランチからMisskeyレポジトリをクローン
+2. masterブランチからGroundpolisレポジトリをクローン
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/xeltica/groundpolis.git`
 
 3. misskeyディレクトリに移動
 
 	`cd misskey`
 
-4. [最新のリリース](https://github.com/syuilo/misskey/releases/latest)を確認
+4. [最新のリリース](https://github.com/xeltica/groundpolis/releases/latest)を確認
 
 	`git checkout master`
 
-5. Misskeyの依存パッケージをインストール
+5. Groundpolisの依存パッケージをインストール
 
-	`npm install`
+	`yarn install`
 
 *4.* 設定ファイルを作成する
 ----------------------------------------------------------------
@@ -61,33 +63,32 @@ adduser --disabled-password --disabled-login misskey
 
 2. `default.yml` を編集する。
 
-*5.* Misskeyのビルド
+*5.* Groundpolisのビルド
 ----------------------------------------------------------------
 
-次のコマンドでMisskeyをビルドしてください:
+次のコマンドでGroundpolisをビルドしてください:
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 Debianをお使いであれば、`build-essential`パッケージをインストールする必要があります。
 
 何らかのモジュールでエラーが発生する場合はnode-gypを使ってください:
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
+1. `npx node-gyp configure`
+2. `npx node-gyp build`
+3. `NODE_ENV=production yarn build`
 
 *6.* データベースを初期化
 ----------------------------------------------------------------
 ``` shell
-npm run init
+yarn run init
 ```
 
 *7.* 以上です！
 ----------------------------------------------------------------
-お疲れ様でした。これでMisskeyを動かす準備は整いました。
+お疲れ様でした。これでGroundpolisを動かす準備は整いました。
 
 ### 通常起動
-`NODE_ENV=production npm start`するだけです。GLHF!
+`NODE_ENV=production yarn start`するだけです。GLHF!
 
 ### systemdを用いた起動
 1. systemdサービスのファイルを作成
@@ -98,7 +99,7 @@ npm run init
 
 	```
 	[Unit]
-	Description=Misskey daemon
+	Description=Groundpolis daemon
 
 	[Service]
 	Type=simple
@@ -116,11 +117,11 @@ npm run init
 	WantedBy=multi-user.target
 	```
 
-	CentOSで1024以下のポートを使用してMisskeyを使用する場合は`ExecStart=/usr/bin/sudo /usr/bin/npm start`に変更する必要があります。
+	CentOSで1024以下のポートを使用してGroundpolisを使用する場合は`ExecStart=/usr/bin/sudo /usr/bin/npm start`に変更する必要があります。
 
 3. systemdを再読み込みしmisskeyサービスを有効化
 
-	`systemctl daemon-reload ; systemctl enable misskey`
+	`systemctl daemon-reload; systemctl enable misskey`
 
 4. misskeyサービスの起動
 
@@ -128,14 +129,14 @@ npm run init
 
 `systemctl status misskey`と入力すると、サービスの状態を調べることができます。
 
-### Misskeyを最新バージョンにアップデートする方法:
+### Groundpolisを最新バージョンにアップデートする方法:
 1. `git checkout master`
 2. `git pull`
-3. `npm install`
-4. `NODE_ENV=production npm run build`
-5. `npm run migrate`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
+5. `yarn migrate`
 
-なにか問題が発生した場合は、`npm run clean`または`npm run cleanall`すると直る場合があります。
+なにか問題が発生した場合は、`yarn clean`または`yarn cleanall`すると直る場合があります。
 
 ----------------------------------------------------------------
 

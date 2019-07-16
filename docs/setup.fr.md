@@ -1,14 +1,14 @@
-Guide d'installation et de configuration de Misskey
+Guide d'installation et de configuration de Groundpolis
 ================================================================
 
-Nous vous remerçions de l'intrêt que vous manifestez pour l'installation de votre propre instance Misskey !
-Ce guide décrit les étapes à suivre afin d'installer et de configurer une instance Misskey.
+Nous vous remerçions de l'intrêt que vous manifestez pour l'installation de votre propre instance Groundpolis !
+Ce guide décrit les étapes à suivre afin d'installer et de configurer une instance Groundpolis.
 
 [La version en japonnais est également disponible sur - 日本語版もあります](./setup.ja.md)
 
 ----------------------------------------------------------------
 
-*1.* Création de l'utilisateur Misskey
+*1.* Création de l'utilisateur Groundpolis
 ----------------------------------------------------------------
 Executer misskey en tant que super-utilisateur étant une mauvaise idée, nous allons créer un utilisateur dédié.
 Sous Debian, par exemple :
@@ -27,10 +27,11 @@ Installez les paquets suivants :
 * **[Redis](https://redis.io/)**
 
 ##### Optionnels
-* [Elasticsearch](https://www.elastic.co/) - requis pour pouvoir activer la fonctionnalité de recherche
+* [Yarn](https://yarnpkg.com/) - *recommander pour des raisons de sécurité. Si vous ne l'installez pas, utilisez `npx yarn` au lieu de` yarn`.*
+* [Elasticsearch](https://www.elastic.co/) - *requis pour pouvoir activer la fonctionnalité de recherche.*
 * [FFmpeg](https://www.ffmpeg.org/)
 
-*3.* Installation de Misskey
+*3.* Installation de Groundpolis
 ----------------------------------------------------------------
 1. Basculez vers l'utilisateur misskey.
 
@@ -38,19 +39,19 @@ Installez les paquets suivants :
 
 2. Clonez la branche master du dépôt misskey.
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/xeltica/groundpolis.git`
 
 3. Accédez au dossier misskey.
 
 	`cd misskey`
 
-4. Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
+4. Checkout sur le tag de la [version la plus récente](https://github.com/xeltica/groundpolis/releases/latest)
 
 	`git checkout master`
  
 5. Installez les dépendances de misskey.
 
-	`npm install`
+	`yarn install`
 
 *4.* Création du fichier de configuration
 ----------------------------------------------------------------
@@ -60,28 +61,27 @@ Installez les paquets suivants :
 
 2. Editez le fichier `default.yml`
 
-*5.* Construction de Misskey
+*5.* Construction de Groundpolis
 ----------------------------------------------------------------
 
-Construisez Misskey comme ceci :
+Construisez Groundpolis comme ceci :
 
-`NODE_ENV=production npm run build`
+`NODE_ENV=production yarn build`
 
 Si vous êtes sous Debian, vous serez amené à installer les paquets `build-essential` et `python`.
 
 Si vous rencontrez des erreurs concernant certains modules, utilisez node-gyp:
 
-1. `npm install -g node-gyp`
-2. `node-gyp configure`
-3. `node-gyp build`
-4. `NODE_ENV=production npm run build`
+1. `npx node-gyp configure`
+2. `npx node-gyp build`
+3. `NODE_ENV=production yarn build`
 
 *6.* C'est tout.
 ----------------------------------------------------------------
-Excellent ! Maintenant, vous avez un environnement prêt pour lancer Misskey
+Excellent ! Maintenant, vous avez un environnement prêt pour lancer Groundpolis
 
 ### Lancement conventionnel
-Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-vous bien !
+Lancez tout simplement `NODE_ENV=production yarn start`. Bonne chance et amusez-vous bien !
 
 ### Démarrage avec systemd
 
@@ -93,7 +93,7 @@ Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-v
 
 	```
 	[Unit]
-	Description=Misskey daemon
+	Description=Groundpolis daemon
 
 	[Service]
 	Type=simple
@@ -121,12 +121,12 @@ Lancez tout simplement `NODE_ENV=production npm start`. Bonne chance et amusez-v
 
 Vous pouvez vérifier si le service a démarré en utilisant la commande `systemctl status misskey`.
 
-### Méthode de mise à jour vers la plus récente version de Misskey
+### Méthode de mise à jour vers la plus récente version de Groundpolis
 1. `git checkout master`
 2. `git pull`
-3. `npm install`
-4. `NODE_ENV=production npm run build`
-5. `npm run migrate`
+3. `yarn install`
+4. `NODE_ENV=production yarn build`
+5. `yarn migrate`
 
 ----------------------------------------------------------------
 

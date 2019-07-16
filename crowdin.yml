@@ -1,3 +1,0 @@
-files:
-  - source: /locales/ja-JP.yml
-    translation: /locales/%locale%.yml

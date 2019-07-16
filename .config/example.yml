@@ -1,5 +1,5 @@
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Misskey configuration
+# Groundpolis configuration
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 #   ┌─────┐
@@ -15,14 +15,14 @@ url: https://example.tld/
 #───┘ Port and TLS settings └───────────────────────────────────
 
 #
-# Misskey supports two deployment options for public.
+# Groundpolis supports two deployment options for public.
 #
 
 # Option 1: With Reverse Proxy
 #
 #                 +----- https://example.tld/ ------------+
 #   +------+      |+-------------+      +----------------+|
-#   | User | ---> || Proxy (443) | ---> | Misskey (3000) ||
+#   | User | ---> || Proxy (443) | ---> | Groundpolis (3000) ||
 #   +------+      |+-------------+      +----------------+|
 #                 +---------------------------------------+
 #
@@ -33,15 +33,15 @@ url: https://example.tld/
 #
 #                 +- https://example.tld/ -+
 #   +------+      |   +---------------+    |
-#   | User | ---> |   | Misskey (443) |    |
+#   | User | ---> |   | Groundpolis (443) |    |
 #   +------+      |   +---------------+    |
 #                 +------------------------+
 #
-#   You need to run Misskey as root.
+#   You need to run Groundpolis as root.
 #   You need to set Certificate in 'https' section.
 
 # To use option 1, uncomment below line.
-#port: 3000    # A port that your Misskey server should listen.
+#port: 3000    # A port that your Groundpolis server should listen.
 
 # To use option 2, uncomment below lines.
 #port: 443

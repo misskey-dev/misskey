@@ -42,7 +42,7 @@ export function getDescription(lang = 'ja-JP'): string {
 		.join('\n');
 
 	const descriptions = {
-		'ja-JP': `**Misskey is a decentralized microblogging platform.**
+		'ja-JP': `**Groundpolis is a decentralized microblogging platform.**
 
 # Usage
 **APIはすべてPOSTでリクエスト/レスポンスともにJSON形式です。**
@@ -58,7 +58,7 @@ export function getDescription(lang = 'ja-JP'): string {
 アプリケーションからAPIを利用する際には、アプリケーションとアプリケーションを利用するユーザーが結び付けられた専用のAPIキーを発行します。
 
 ### 1.アプリケーションを登録する
-まず、あなたのアプリケーションやWebサービス(以後、あなたのアプリと呼びます)をMisskeyに登録します。
+まず、あなたのアプリケーションやWebサービス(以後、あなたのアプリと呼びます)をGroundpolisに登録します。
 [デベロッパーセンター](/dev)にアクセスし、「アプリ > アプリ作成」からアプリを作成してください。
 
 登録が済むとあなたのアプリのシークレットキーが入手できます。このシークレットキーは後で使用します。

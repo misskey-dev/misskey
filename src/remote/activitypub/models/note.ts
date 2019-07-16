@@ -50,7 +50,7 @@ export function validateNote(object: any, uri: string) {
 /**
  * Noteをフェッチします。
  *
- * Misskeyに対象のNoteが登録されていればそれを返します。
+ * Groundpolisに対象のNoteが登録されていればそれを返します。
  */
 export async function fetchNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
 	const uri = getApId(value);
@@ -248,8 +248,8 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 /**
  * Noteを解決します。
  *
- * Misskeyに対象のNoteが登録されていればそれを返し、そうでなければ
- * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
+ * Groundpolisに対象のNoteが登録されていればそれを返し、そうでなければ
+ * リモートサーバーからフェッチしてGroundpolisに登録しそれを返します。
  */
 export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
 	const uri = typeof value == 'string' ? value : value.id;

@@ -273,13 +273,13 @@ export const packedUserSchema = {
 			type: 'string' as const,
 			nullable: false as const, optional: false as const,
 			description: 'The screen name, handle, or alias that this user identifies themselves with.',
-			example: 'ai'
+			example: 'Citrine'
 		},
 		name: {
 			type: 'string' as const,
 			nullable: true as const, optional: false as const,
 			description: 'The name of the user, as they’ve defined it.',
-			example: '藍'
+			example: 'シトリン'
 		},
 		url: {
 			type: 'string' as const,
@@ -317,7 +317,7 @@ export const packedUserSchema = {
 			type: 'string' as const,
 			nullable: true as const, optional: true as const,
 			description: 'The user-defined UTF-8 string describing their account.',
-			example: 'Hi masters, I am Ai!'
+			example: 'Hi masters, I am Citrine!'
 		},
 		birthday: {
 			type: 'string' as const,
@@ -328,7 +328,7 @@ export const packedUserSchema = {
 			type: 'string' as const,
 			nullable: false as const, optional: true as const,
 			format: 'date-time',
-			description: 'The date that the user account was created on Misskey.'
+			description: 'The date that the user account was created on Groundpolis.'
 		},
 		updatedAt: {
 			type: 'string' as const,

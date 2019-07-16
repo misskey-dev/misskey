@@ -11,14 +11,14 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 
 		info: {
 			version: 'v1',
-			title: 'Misskey API',
+			title: 'Groundpolis API',
 			description: getDescription(lang),
 			'x-logo': { url: '/assets/api-doc.png' }
 		},
 
 		externalDocs: {
 			description: 'Repository',
-			url: 'https://github.com/syuilo/misskey'
+			url: 'https://github.com/xeltica/groundpolis'
 		},
 
 		servers: [{
@@ -120,7 +120,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			description: desc,
 			externalDocs: {
 				description: 'Source code',
-				url: `https://github.com/syuilo/misskey/blob/develop/src/server/api/endpoints/${endpoint.name}.ts`
+				url: `https://github.com/xeltica/groundpolis/blob/develop/src/server/api/endpoints/${endpoint.name}.ts`
 			},
 			...(endpoint.meta.tags ? {
 				tags: endpoint.meta.tags
@@ -191,7 +191,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 					}
 				},
 				'418': {
-					description: 'I\'m Ai',
+					description: 'I\'m Citrine',
 					content: {
 						'application/json': {
 							schema: {

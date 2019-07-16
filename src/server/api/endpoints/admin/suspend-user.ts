@@ -4,6 +4,7 @@ import define from '../../define';
 import deleteFollowing from '../../../../services/following/delete';
 import { Users, Followings } from '../../../../models';
 import { User } from '../../../../models/entities/user';
+import { insertModerationLog } from '../../../../services/insert-moderation-log';
 
 export const meta = {
 	desc: {
@@ -27,7 +28,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	const user = await Users.findOne(ps.userId as string);
 
 	if (user == null) {
@@ -44,6 +45,10 @@ export default define(meta, async (ps) => {
 
 	await Users.update(user.id, {
 		isSuspended: true
+	});
+
+	insertModerationLog(me, 'suspend', {
+		targetId: user.id,
 	});
 
 	unFollowAll(user);

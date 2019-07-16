@@ -104,6 +104,13 @@ export default async (ctx: Koa.BaseContext) => {
 
 	// Start transaction
 	await getConnection().transaction(async transactionalEntityManager => {
+		const exist = await transactionalEntityManager.findOne(User, {
+			usernameLower: username.toLowerCase(),
+			host: null
+		});
+
+		if (exist) throw 'already registered';
+
 		account = await transactionalEntityManager.save(new User({
 			id: genId(),
 			createdAt: new Date(),

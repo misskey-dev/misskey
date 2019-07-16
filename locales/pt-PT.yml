@@ -4,17 +4,17 @@ meta:
 common:
   misskey: "Uma ⭐ do fediverso"
   about-title: "Uma ⭐ do fediverso."
-  about: "Obrigado por encontrar Misskey. Uma <b>plataforma descentralizada de microblog</b> nascida na Terra. Já que ela existe no Fediverso (um universo onde várias plataformas de mídia social são organizadas), ela é ligada com outras plataformas.Por que você não tira uma folga do agito e confusão da cidade, e mergulha em uma nova internet?"
+  about: "Obrigado por encontrar Groundpolis. Uma <b>plataforma descentralizada de microblog</b> nascida na Terra. Já que ela existe no Fediverso (um universo onde várias plataformas de mídia social são organizadas), ela é ligada com outras plataformas.Por que você não tira uma folga do agito e confusão da cidade, e mergulha em uma nova internet?"
   intro:
-    title: "O que é Misskey?"
-    about: "Misskey é um <b>serviço de microblog descentralizado</b>. Personalização sofisticada da interface, variedade de reações a posts, armazenamento de arquivos grátis com gerenciamento integrado e outras funções avançadas estão disponíveis. Um sistema em rede chamado \"Fediverso\" permite que nos comuniquemos com usuários em outras redes sociais. Se você postar algo, por exemplo, seu post não será mandado apenas para o Misskey, mas também para o Mastodon. Apenas imagine que o planeta está enviando ondas de rádio para outros planetas para se comunicar."
+    title: "O que é Groundpolis?"
+    about: "Groundpolis é um <b>serviço de microblog descentralizado</b>. Personalização sofisticada da interface, variedade de reações a posts, armazenamento de arquivos grátis com gerenciamento integrado e outras funções avançadas estão disponíveis. Um sistema em rede chamado \"Fediverso\" permite que nos comuniquemos com usuários em outras redes sociais. Se você postar algo, por exemplo, seu post não será mandado apenas para o Groundpolis, mas também para o Mastodon. Apenas imagine que o planeta está enviando ondas de rádio para outros planetas para se comunicar."
     features: "Recursos"
     rich-contents: "Post"
-    rich-contents-desc: "Apenas poste suas ideias, temas do momento e qualquer coisa que você queira compartilhar. Você pode querer decorar suas palavras, anexar suas imagens favoritas, enviar arquivos, inclusive vídeos ou criar uma enquete. Essas são as coisas que você pode fazer em Misskey."
+    rich-contents-desc: "Apenas poste suas ideias, temas do momento e qualquer coisa que você queira compartilhar. Você pode querer decorar suas palavras, anexar suas imagens favoritas, enviar arquivos, inclusive vídeos ou criar uma enquete. Essas são as coisas que você pode fazer em Groundpolis."
     reaction: "Reações"
   adblock:
     detected: "Por favor, desative o bloqueador de anúncios."
-    warning: "Alguns recursos podem não estar disponíveis ou apresentar mal funcionamento se o bloqueio de anúncios estiver ativado. <strong>Misskey não está usando anúncios</strong>"
+    warning: "Alguns recursos podem não estar disponíveis ou apresentar mal funcionamento se o bloqueio de anúncios estiver ativado. <strong>Groundpolis não está usando anúncios</strong>"
   application-authorization: "Aplicativos autorizados"
   close: "Fechar"
   do-not-copy-paste: "Por favor, não digite ou copie o código aqui. A conta pode ser comprometida."
@@ -90,7 +90,7 @@ common:
   delete: "Apagar"
   loading: "Carregando"
   update-available-title: "Atualização disponível"
-  update-available: "Uma nova versão de Misskey está disponível ({newer}). A versão atual é {current}. Recarregue a página para atualizar."
+  update-available: "Uma nova versão de Groundpolis está disponível ({newer}). A versão atual é {current}. Recarregue a página para atualizar."
   my-token-regenerated: "Seu token foi recriado, portanto você foi deslogado."
   enter-username: "Digite o nome de usuário."
   reversi:
@@ -208,9 +208,9 @@ admin/views/federation.vue:
   followers: "Seguidores"
 desktop/views/pages/welcome.vue:
   timeline: "Timeline"
-  powered-by-misskey: "Desenvolvido por <b>Misskey</b>."
+  powered-by-misskey: "Desenvolvido por <b>Groundpolis</b>."
 desktop/views/pages/drive.vue:
-  title: "Drive Misskey"
+  title: "Drive Groundpolis"
 desktop/views/pages/note.vue:
   prev: "Nota anterior"
   next: "Próxima nota"

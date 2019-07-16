@@ -19,10 +19,11 @@ import XSwitch from './els/page-editor.el.switch.vue';
 import XIf from './els/page-editor.el.if.vue';
 import XPost from './els/page-editor.el.post.vue';
 import XCounter from './els/page-editor.el.counter.vue';
+import XRadioButton from './els/page-editor.el.radio-button.vue';
 
 export default Vue.extend({
 	components: {
-		XDraggable, XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter
+		XDraggable, XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton
 	},
 
 	props: {
