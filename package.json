@@ -1,11 +1,14 @@
 {
-	"name": "misskey",
-	"author": "syuilo <i@syuilo.com>",
+	"name": "groundpolis",
+	"author": "Xeltica <xeltica@gmail.com>",
+	"contributors": [
+		"syuilo <i@syuilo.com>"
+	],
 	"version": "11.25.1",
 	"codename": "daybreak",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/syuilo/misskey.git"
+		"url": "https://github.com/xeltica/groundpolis.git"
 	},
 	"main": "./index.js",
 	"private": true,
