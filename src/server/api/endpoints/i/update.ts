@@ -80,7 +80,7 @@ export const meta = {
 		fields: {
 			validator: $.optional.arr($.object()).range(1, 4),
 			desc: {
-				'ja-JP': 'fields'
+				'ja-JP': 'プロフィール補足情報'
 			}
 		},
 
