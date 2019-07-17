@@ -1369,6 +1369,8 @@ admin/views/users.vue:
   remote-user-updated: "The information regarding the remote user has been updated."
   delete-all-files: "Delete all files"
   delete-all-files-confirm: "Are you sure that you want to delete all files?"
+  username: "Username"
+  host: "Host"
   users:
     title: "Users"
     sort:
