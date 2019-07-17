@@ -61,7 +61,7 @@ export default async (ctx: Koa.BaseContext) => {
 			userId: user.id,
 			ip: ctx.ip,
 			headers: ctx.headers,
-			success: !!(status || failure)
+			success: false
 		});
 
 		// Publish signin event
