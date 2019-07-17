@@ -1367,6 +1367,8 @@ admin/views/users.vue:
   remote-user-updated: "远程用户信息已更新"
   delete-all-files: "删除所有文件"
   delete-all-files-confirm: "删除所有文件吗？"
+  username: "用户名"
+  host: "主机名"
   users:
     title: "用户"
     sort:
