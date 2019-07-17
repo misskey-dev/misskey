@@ -265,6 +265,9 @@ export default Vue.extend({
 						text: this.$t('saved')
 					});
 				}
+			}).catch(e => {
+				this.saving = false;
+				console.log(e);
 			});
 		},
 
