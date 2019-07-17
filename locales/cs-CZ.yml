@@ -647,6 +647,7 @@ common/views/components/profile-editor.vue:
   saved: "Profil byl úspěšně aktualizován"
   uploading: "Nahrávám"
   upload-failed: "Nahrávání selhalo"
+  unable-to-process: "Operace nemohla být dokončena."
   email: "Nastavení e-mailů"
   email-address: "Emailová adresa"
   email-verified: "Váš e-mail byl ověřen"
@@ -736,6 +737,7 @@ desktop:
   avatar: "Avatar"
   uploading-avatar: "Nahrál nový avatar"
   avatar-updated: "Vaše avatar byl aktualizován"
+  unable-to-process: "Operace nemohla být dokončena."
   invalid-filetype: "Tento formát souboru není podporován"
 desktop/views/components/activity.chart.vue:
   total: "Černá ... Celkem"
