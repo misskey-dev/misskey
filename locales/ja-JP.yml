@@ -804,6 +804,9 @@ common/views/components/profile-editor.vue:
   danger-zone: "危険な設定"
   delete-account: "アカウントを削除"
   account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
+  profile-metadata: "プロフィール補足情報"
+  metadata-label: "ラベル"
+  metadata-content: "内容"
 
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
