@@ -1369,6 +1369,8 @@ admin/views/users.vue:
   remote-user-updated: "원격 사용자 정보를 갱신하였습니다"
   delete-all-files: "모든 파일 삭제"
   delete-all-files-confirm: "모든 파일을 삭제하시겠습니까?"
+  username: "사용자명"
+  host: "관리자"
   users:
     title: "사용자"
     sort:
