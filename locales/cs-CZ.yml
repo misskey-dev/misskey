@@ -1046,6 +1046,8 @@ admin/views/users.vue:
   reset-password-confirm: "Opravdu chcete resetovat Vaše heslo?"
   password-updated: "Heslo je nyní \"{password}\""
   update-remote-user: "Aktualizovat informace o vzdáleném účtu"
+  username: "Přezdívka"
+  host: "Hostitel"
   users:
     title: "Uživatel"
     state:
