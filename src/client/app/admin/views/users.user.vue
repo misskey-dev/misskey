@@ -55,7 +55,7 @@ export default Vue.extend({
 
 	> div:last-child
 		flex 1
-		cursor: pointer
+		cursor pointer
 		padding-left 16px
 
 		@media (max-width 500px)
