@@ -966,6 +966,8 @@ admin/views/drive.vue:
   mark-as-sensitive: "Marcar como 'sensible'"
   unmark-as-sensitive: "Desmarcar como 'sensible'"
 admin/views/users.vue:
+  username: "Usuario"
+  host: "Host"
   users:
     state:
       all: "Todo"
