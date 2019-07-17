@@ -53,7 +53,7 @@ export default async (ctx: Koa.BaseContext) => {
 	// Compare password
 	const same = await bcrypt.compare(password, profile.password!);
 
-	async function fail(status?: number, failure?: {error: string}) {
+	async function postAuth(success: boolean, status?: number, failure?: { error: string }) {
 		// Append signin history
 		const record = await Signins.save({
 			id: genId(),
@@ -61,31 +61,33 @@ export default async (ctx: Koa.BaseContext) => {
 			userId: user.id,
 			ip: ctx.ip,
 			headers: ctx.headers,
-			success: !!(status || failure)
+			success
 		});
 
-		// Publish signin event
-		publishMainStream(user.id, 'signin', await Signins.pack(record));
-
-		if (status && failure) {
-			ctx.throw(status, failure);
+		if (success) {
+			// Publish signin event
+			publishMainStream(user.id, 'signin', await Signins.pack(record));
+		} else {
+			ctx.throw(status || 500, failure || { error: 'someting happened' });
 		}
 	}
 
 	if (!profile.twoFactorEnabled) {
 		if (same) {
 			signin(ctx, user);
+			await postAuth(true);
+			return;
 		} else {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'incorrect password'
 			});
+			return;
 		}
-		return;
 	}
 
 	if (token) {
 		if (!same) {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'incorrect password'
 			});
 			return;
@@ -99,16 +101,17 @@ export default async (ctx: Koa.BaseContext) => {
 
 		if (verified) {
 			signin(ctx, user);
+			await postAuth(true);
 			return;
 		} else {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'invalid token'
 			});
 			return;
 		}
 	} else if (body.credentialId) {
 		if (!same && !profile.usePasswordLessLogin) {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'incorrect password'
 			});
 			return;
@@ -124,7 +127,7 @@ export default async (ctx: Koa.BaseContext) => {
 		});
 
 		if (!challenge) {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'non-existent challenge'
 			});
 			return;
@@ -136,7 +139,7 @@ export default async (ctx: Koa.BaseContext) => {
 		});
 
 		if (new Date().getTime() - challenge.createdAt.getTime() >= 5 * 60 * 1000) {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'non-existent challenge'
 			});
 			return;
@@ -152,7 +155,7 @@ export default async (ctx: Koa.BaseContext) => {
 		});
 
 		if (!securityKey) {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'invalid credentialId'
 			});
 			return;
@@ -169,15 +172,17 @@ export default async (ctx: Koa.BaseContext) => {
 
 		if (isValid) {
 			signin(ctx, user);
+			await postAuth(true);
+			return;
 		} else {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'invalid challenge data'
 			});
 			return;
 		}
 	} else {
 		if (!same && !profile.usePasswordLessLogin) {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'incorrect password'
 			});
 			return;
@@ -188,9 +193,10 @@ export default async (ctx: Koa.BaseContext) => {
 		});
 
 		if (keys.length === 0) {
-			await fail(403, {
+			await postAuth(false, 403, {
 				error: 'no keys found'
 			});
+			return;
 		}
 
 		// 32 byte challenge
@@ -217,8 +223,8 @@ export default async (ctx: Koa.BaseContext) => {
 			}))
 		};
 		ctx.status = 200;
+		await postAuth(true);
 		return;
 	}
-
-	await fail();
+	// never get here
 };
