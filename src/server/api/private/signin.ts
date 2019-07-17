@@ -215,7 +215,6 @@ export default async (ctx: Koa.BaseContext) => {
 			}))
 		};
 		ctx.status = 200;
-		signin(ctx, user);
 		return;
 	}
 	// never get here
