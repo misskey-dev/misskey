@@ -427,6 +427,7 @@ admin/views/drive.vue:
     local: "Lokaal"
   delete: "Verwijderen"
 admin/views/users.vue:
+  username: "Gebruikersnaam"
   users:
     title: "Gebruiker"
     state:
