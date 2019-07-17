@@ -34,7 +34,7 @@
 		"radix": false,
 		"ban-types": [
 			true,
-			[]
+			["Object", "Use {} instead."]
 		],
 		"ban": [
 			true,
