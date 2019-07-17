@@ -200,13 +200,6 @@ init(async (launch, os) => {
 	// Launch the app
 	const [app, _] = launch(router);
 
-	if (os.store.getters.isSignedIn) {
-		/**
-		 * Fuck AD Block
-		 */
-		fuckAdBlock(app);
-	}
-
 	/**
 	 * Init Notification
 	 */
