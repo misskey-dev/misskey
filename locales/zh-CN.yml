@@ -745,6 +745,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "危险选项"
   delete-account: "删除帐户"
   account-deleted: "帐户已被删除。 数据会在一段时间之后清除。"
+  metadata-content: "内容"
 common/views/components/user-list-editor.vue:
   users: "用户"
   rename: "重命名列表"
