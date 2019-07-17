@@ -725,6 +725,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "Zone de danger"
   delete-account: "Supprimer le compte"
   account-deleted: "Le compte a été supprimé. Cela peut prendre un certain temps avant que toutes les données disparaissent."
+  metadata-content: "Contenu"
 common/views/components/user-list-editor.vue:
   users: "Utilisateur·rice"
   rename: "Renommer la liste"
