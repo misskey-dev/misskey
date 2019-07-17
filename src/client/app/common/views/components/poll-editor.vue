@@ -27,20 +27,18 @@
 			</ui-select>
 			<section v-if="expiration === 'at'">
 				<ui-input v-model="atDate" type="date">
-					<template #title>
-					  {{ $t('deadline-date') }}
-					</template>
+					<template #title>{{ $t('deadline-date') }}</template>
 				</ui-input>
 				<ui-input v-model="atTime" type="time">
-					<template #title>
-						{{ $t('deadline-time') }}
-					</template>
+					<template #title>{{ $t('deadline-time') }}</template>
 				</ui-input>
 			</section>
 			<section v-if="expiration === 'after'">
-				<ui-input v-model="after" type="number">{{ $t('interval') }}</ui-input>
+				<ui-input v-model="after" type="number">
+					<template #title>{{ $t('interval') }}</template>
+				</ui-input>
 				<ui-select v-model="unit">
-					<template #label>{{ $t('unit') }}</template>
+					<template #title>{{ $t('unit') }}</template>
 					<option value="second">{{ $t('second') }}</option>
 					<option value="minute">{{ $t('minute') }}</option>
 					<option value="hour">{{ $t('hour') }}</option>
