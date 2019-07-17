@@ -725,6 +725,7 @@ common/views/components/profile-editor.vue:
   saved: "프로필을 저장하였습니다"
   uploading: "업로드 중"
   upload-failed: "업로드에 실패하였습니다"
+  unable-to-process: "작업을 완료할 수 없습니다"
   email: "메일 설정"
   email-address: "메일 주소"
   email-verified: "매일 주소가 확인되었습니다"
@@ -853,6 +854,7 @@ desktop:
   uploading-avatar: "새로운 아바타를 업로드하고 있습니다"
   avatar-updated: "아바타가 변경되었습니다"
   choose-avatar: "아바타 이미지를 선택"
+  unable-to-process: "작업을 완료할 수 없습니다"
   invalid-filetype: "이 형식의 파일은 지원되지 않습니다"
 desktop/views/components/activity.chart.vue:
   total: "검은색 ... 전체"
