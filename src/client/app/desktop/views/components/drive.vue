@@ -10,10 +10,6 @@
 			<span class="separator" v-if="folder != null"><fa icon="angle-right"/></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
-		<!--
-			TODO: #343
-			<input class="search" type="search" placeholder="&#xf002; %i18n:@search%"/>
-		-->
 	</nav>
 	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
@@ -26,19 +22,19 @@
 	>
 		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
-			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
+			<div class="folders" ref="foldersContainer" v-if="folders.length > 0 || moreFolders">
 				<x-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
 				<ui-button v-if="moreFolders">{{ $t('@.load-more') }}</ui-button>
 			</div>
-			<div class="files" ref="filesContainer" v-if="files.length > 0">
+			<div class="files" ref="filesContainer" v-if="files.length > 0 || moreFiles">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
 				<ui-button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('@.load-more') }}</ui-button>
 			</div>
-			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
+			<div class="empty" v-if="files.length == 0 && !moreFiles && folders.length == 0 && !moreFolders && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
 				<p v-if="!draghover && folder == null"><strong>{{ $t('empty-drive') }}</strong><br/>{{ $t('empty-drive-description') }}</p>
 				<p v-if="!draghover && folder != null">{{ $t('empty-folder') }}</p>
@@ -79,6 +75,11 @@ export default Vue.extend({
 		initFolder: {
 			type: Object,
 			required: false
+		},
+		type: {
+			type: String,
+			required: false,
+			default: undefined 
 		},
 		multiple: {
 			type: Boolean,
@@ -540,6 +541,7 @@ export default Vue.extend({
 			// ファイル一覧取得
 			this.$root.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
+				type: this.type,
 				limit: filesMax + 1
 			}).then(files => {
 				if (files.length == filesMax + 1) {
@@ -570,6 +572,7 @@ export default Vue.extend({
 			// ファイル一覧取得
 			this.$root.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
+				type: this.type,
 				untilId: this.files[this.files.length - 1].id,
 				limit: max + 1
 			}).then(files => {
@@ -639,33 +642,6 @@ export default Vue.extend({
 
 					> [data-icon]
 						margin 0
-
-		> .search
-			display inline-block
-			vertical-align bottom
-			user-select text
-			cursor auto
-			margin 0
-			padding 0 18px
-			width 200px
-			font-size 1em
-			line-height 38px
-			background transparent
-			outline none
-			//border solid 1px #ddd
-			border none
-			border-radius 0
-			box-shadow none
-			transition color 0.5s ease, border 0.5s ease
-			font-family FontAwesome, sans-serif
-
-			&[data-active='true']
-				background #fff
-
-			&::-webkit-input-placeholder,
-			&:-ms-input-placeholder,
-			&:-moz-placeholder
-				color $ui-control-foreground-color
 
 	> .main
 		padding 8px

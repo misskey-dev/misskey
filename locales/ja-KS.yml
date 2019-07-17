@@ -123,6 +123,8 @@ common:
     password: "パスワード"
     other: "その他"
     timeline: "タイムライン"
+    save: "保存"
+    saved: "保存したで！"
   search: "検索"
   delete: "削除"
   loading: "読み込み中"
@@ -363,6 +365,8 @@ common/views/components/emoji-picker.vue:
   objects: "物"
   symbols: "記号"
   flags: "旗"
+common/views/components/settings/app-type.vue:
+  info: "ページもっぺん読み込んだら反映したるで。"
 common/views/components/signin.vue:
   username: "ユーザー名"
   password: "パスワード"
@@ -468,6 +472,7 @@ common/views/components/profile-editor.vue:
   saved: "プロフィールを保存したで"
   uploading: "アップロードしとります"
   upload-failed: "これアップロードでけへんわ"
+  unable-to-process: "あかん、無理やわ"
   email: "メール設定"
   email-address: "メールアドレス"
   email-verified: "このメールアドレスOKや！"
@@ -562,6 +567,7 @@ desktop:
   uploading-avatar: "新しいアバターをアップロードしとるで"
   avatar-updated: "アバターを更新したで"
   choose-avatar: "アバターにする画像選んでや"
+  unable-to-process: "あかん、無理やわ"
   invalid-filetype: "この形式のファイル無理やねん"
 desktop/views/components/activity.chart.vue:
   total: "黒いの ... 全部"
@@ -602,7 +608,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "やっぱ見せたるわ"
     copy-url: "URLをコピー"
     download: "ダウンロード"
-    else-files: "まだあんで..."
+    else-files: "その他"
     set-as-avatar: "アイコンにする"
     set-as-banner: "バナーにする"
     open-in-app: "アプリで開く"
@@ -621,6 +627,7 @@ desktop/views/components/drive.folder.vue:
     rename: "名前を変えるで"
     rename-folder: "フォルダ名を変えるで"
     input-new-folder-name: "新しいフォルダ名を入力してや"
+    else-folders: "その他"
 desktop/views/components/drive.vue:
   search: "検索"
   empty-draghover: "ドロップするにゃ！お魚以外なら何でもいいにゃ！"
@@ -748,6 +755,7 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "使うとる"
   stats: "統計"
+  default-upload-folder-name: "フォルダ"
 common/views/components/mute-and-block.vue:
   mute-and-block: "ミュートとブロック"
   mute: "ミュート"
@@ -939,6 +947,8 @@ admin/views/users.vue:
   reset-password: "パスワードをリセット"
   password-updated: "パスワードは現在「{password} 」やで"
   suspend: "凍結"
+  username: "ユーザー名"
+  host: "ホスト"
   users:
     title: "ユーザー"
     state:
@@ -946,6 +956,11 @@ admin/views/users.vue:
       moderator: "モデレーター"
     origin:
       local: "ローカル"
+admin/views/moderators.vue:
+  logs:
+    moderator: "モデレーター"
+    type: "操作"
+    info: "情報"
 admin/views/emoji.vue:
   add-emoji:
     add: "増やす"
@@ -1235,6 +1250,8 @@ dev/views/new-app.vue:
   authority-desc: "ここにチェックした機能しかAPIからアクセスできひんから気ぃつけてな"
   authority-warning: "アプリ作った後でも変えれるけど、新しいやつ追加したらそん時関連付いてるユーザーキーは全部ほかされるで。"
 pages:
+  pin-this-page: "ピン留め"
+  unpin-this-page: "ピン留めやめる"
   like: "ええやん"
   blocks:
     image: "画像"

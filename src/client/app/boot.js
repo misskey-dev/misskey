@@ -41,7 +41,6 @@
 	if (`${url.pathname}/`.startsWith('/dev/')) app = 'dev';
 	if (`${url.pathname}/`.startsWith('/auth/')) app = 'auth';
 	if (`${url.pathname}/`.startsWith('/admin/')) app = 'admin';
-	if (`${url.pathname}/`.startsWith('/test/')) app = 'test';
 	//#endregion
 
 	// Script version
@@ -85,7 +84,14 @@
 
 	// Detect the user agent
 	const ua = navigator.userAgent.toLowerCase();
-	const isMobile = /mobile|iphone|ipad|android/.test(ua);
+	let isMobile = /mobile|iphone|ipad|android/.test(ua) || window.innerWidth < 576;
+	if (settings && settings.device.appTypeForce) {
+		if (settings.device.appTypeForce === 'mobile') {
+			isMobile = true;
+		} else if (settings.device.appTypeForce === 'desktop') {
+			isMobile = false;
+		}
+	}
 
 	// Get the <head> element
 	const head = document.getElementsByTagName('head')[0];

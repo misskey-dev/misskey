@@ -1,5 +1,6 @@
 <template>
 <div class="wojmldye">
+	<x-page class="page" v-if="user.pinnedPage" :page="user.pinnedPage" :key="user.pinnedPage.id" :show-title="!user.pinnedPage.hideTitleWhenPinned"/>
 	<mk-note-detail class="note" v-for="n in user.pinnedNotes" :key="n.id" :note="n" :compact="true"/>
 	<ui-container :body-togglable="true">
 		<template #header><fa :icon="['far', 'comments']"/>{{ $t('recent-notes') }}</template>
@@ -33,6 +34,7 @@ export default Vue.extend({
 	components: {
 		XNotes,
 		XPhotos,
+		XPage: () => import('../../../../common/views/components/page/page.vue').then(m => m.default),
 		XActivity: () => import('../../../../common/views/components/activity.vue').then(m => m.default)
 	},
 	props: ['user'],
@@ -53,6 +55,12 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .wojmldye
+	> .page
+		margin 0 0 8px 0
+
+		@media (min-width 500px)
+			margin 0 0 16px 0
+	
 	> .note
 		margin 0 0 8px 0
 

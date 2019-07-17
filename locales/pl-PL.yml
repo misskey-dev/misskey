@@ -65,6 +65,7 @@ common:
   favorites: "Moje ulubione"
   permissions:
     "read:drive": "Wyświetl dysk"
+    "read:messaging": "Zobacz konwersację"
     "write:votes": "Zagłosuj"
   empty-timeline-info:
     explore: "Poznaj"
@@ -72,6 +73,7 @@ common:
     hide-contents: "Ukryj zawartość"
     reply-placeholder: "Odpowiedź na ten wpis…"
     quote-placeholder: "Zacytuj ten wpis…"
+    quote-attached: "Z cytatem"
     submit: "Wpis"
     reply: "Odpowiedz"
     renote: "Udostępnij"
@@ -176,6 +178,8 @@ common:
     version: "Wersja:"
     do-update: "Sprawdź dostępność nowych aktualizacji"
     navbar-position-left: "Z lewej"
+    save: "Zapisz"
+    saved: "Zapisano"
   search: "Szukaj"
   delete: "Usuń"
   loading: "Ładowanie"
@@ -412,6 +416,8 @@ common/views/components/emoji-picker.vue:
   objects: "Rzeczy"
   symbols: "Symbole"
   flags: "Flagi"
+common/views/components/settings/app-type.vue:
+  info: "Musisz odświeżyć stronę, aby zmiany zostały uwzględnione."
 common/views/components/signin.vue:
   username: "Nazwa użytkownika"
   password: "Hasło"
@@ -512,6 +518,7 @@ common/views/components/profile-editor.vue:
   saved: "Pomyślnie zaktualizowano profil"
   uploading: "Wysyłanie"
   upload-failed: "Wysyłanie nie powiodło się"
+  unable-to-process: "Nie udało się ukończyć działania."
   email: "Ustawienia e-mail"
   email-address: "Adres e-mail"
   email-verified: "Twój adres e-mail został zweryfikowany."
@@ -606,6 +613,7 @@ desktop:
   uploading-avatar: "Wysyłanie awatara"
   avatar-updated: "Wysłano awatar"
   choose-avatar: "Wybierz awatar"
+  unable-to-process: "Nie udało się ukończyć działania."
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -664,6 +672,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Zmień nazwę"
     rename-folder: "Zmień nazwę katalogu"
     input-new-folder-name: "Wprowadź nową nazwę"
+    else-folders: "Inne"
 desktop/views/components/drive.vue:
   search: "Szukaj"
   empty-draghover: "Przeciągnij tutaj!"
@@ -783,6 +792,7 @@ common/views/components/drive-settings.vue:
   max: "Max"
   in-use: "użyto"
   stats: "Statystyki"
+  default-upload-folder-name: "Katalog(i)"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Wycisz / Zablokuj"
   mute: "Wycisz"
@@ -880,6 +890,7 @@ admin/views/instance.vue:
   save: "Zapisz"
   saved: "Zapisano"
   email: "Adres e-mail"
+  test-email: "Test"
 admin/views/charts.vue:
   notes: "Wpisy"
   users: "Użytkownicy"
@@ -901,6 +912,7 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
 admin/views/users.vue:
   user-not-found: "Nie znaleziono użytkownika"
+  username: "Nazwa użytkownika"
   users:
     title: "Użytkownicy"
     sort:
@@ -916,6 +928,9 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     add: "Zarejestruj się"
+  logs:
+    moderator: "Moderatorzy"
+    info: "Informacje"
 admin/views/emoji.vue:
   add-emoji:
     name: "Nazwa Emoji"
@@ -1186,6 +1201,8 @@ dev/views/new-app.vue:
   app-name: "Nazwa Aplikacji"
   authority: "Uprawnienia"
 pages:
+  pin-this-page: "Przypnij do profilu"
+  unpin-this-page: "Odepnij"
   like: "Lubię"
   title: "Tytuł"
   blocks:
@@ -1203,6 +1220,8 @@ pages:
       text: "Tytuł"
     _button:
       text: "Tytuł"
+    _radioButton:
+      title: "Tytuł"
   script:
     categories:
       random: "Losowy"

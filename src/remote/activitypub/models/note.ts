@@ -17,7 +17,7 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject, INote } from '../type';
+import { IObject, INote, getApIds, getOneApId, getApId, validPost } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
@@ -32,7 +32,7 @@ export function validateNote(object: any, uri: string) {
 		return new Error('invalid Note: object is null');
 	}
 
-	if (!['Note', 'Question', 'Article'].includes(object.type)) {
+	if (!validPost.includes(object.type)) {
 		return new Error(`invalid Note: invalied object type ${object.type}`);
 	}
 
@@ -40,7 +40,7 @@ export function validateNote(object: any, uri: string) {
 		return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${extractDbHost(object.id)}`);
 	}
 
-	if (object.attributedTo && extractDbHost(object.attributedTo) !== expectHost) {
+	if (object.attributedTo && extractDbHost(getOneApId(object.attributedTo)) !== expectHost) {
 		return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${extractDbHost(object.attributedTo)}`);
 	}
 
@@ -53,8 +53,7 @@ export function validateNote(object: any, uri: string) {
  * Misskeyに対象のNoteが登録されていればそれを返します。
  */
 export async function fetchNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
-	const uri = typeof value == 'string' ? value : value.id;
-	if (uri == null) throw new Error('missing uri');
+	const uri = getApId(value);
 
 	// URIがこのサーバーを指しているならデータベースからフェッチ
 	if (uri.startsWith(config.url + '/')) {
@@ -76,12 +75,12 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 /**
  * Noteを作成します。
  */
-export async function createNote(value: any, resolver?: Resolver, silent = false): Promise<Note | null> {
+export async function createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
 	if (resolver == null) resolver = new Resolver();
 
 	const object: any = await resolver.resolve(value);
 
-	const entryUri = value.id || value;
+	const entryUri = getApId(value);
 	const err = validateNote(object, entryUri);
 	if (err) {
 		logger.error(`${err.message}`, {
@@ -101,7 +100,7 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	logger.info(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
-	const actor = await resolvePerson(note.attributedTo, resolver) as IRemoteUser;
+	const actor = await resolvePerson(getOneApId(note.attributedTo), resolver) as IRemoteUser;
 
 	// 投稿者が凍結されていたらスキップ
 	if (actor.isSuspended) {
@@ -109,24 +108,24 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	}
 
 	//#region Visibility
-	note.to = note.to == null ? [] : typeof note.to == 'string' ? [note.to] : note.to;
-	note.cc = note.cc == null ? [] : typeof note.cc == 'string' ? [note.cc] : note.cc;
+	const to = getApIds(note.to);
+	const cc = getApIds(note.cc);
 
 	let visibility = 'public';
 	let visibleUsers: User[] = [];
-	if (!note.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
-		if (note.cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
+	if (!to.includes('https://www.w3.org/ns/activitystreams#Public')) {
+		if (cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
 			visibility = 'home';
-		} else if (note.to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
+		} else if (to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
 			visibility = 'followers';
 		} else {
 			visibility = 'specified';
-			visibleUsers = await Promise.all(note.to.map(uri => resolvePerson(uri, resolver)));
+			visibleUsers = await Promise.all(to.map(uri => resolvePerson(uri, resolver)));
 		}
 	}
 	//#endergion
 
-	const apMentions = await extractMentionedUsers(actor, note.to, note.cc, resolver);
+	const apMentions = await extractMentionedUsers(actor, to, cc, resolver);
 
 	const apHashtags = await extractHashtags(note.tag);
 
@@ -217,11 +216,11 @@ export async function createNote(value: any, resolver?: Resolver, silent = false
 	const apEmojis = emojis.map(emoji => emoji.name);
 
 	const questionUri = note._misskey_question;
-	const poll = await extractPollFromQuestion(note._misskey_question || note).catch(() => undefined);
+	const poll = await extractPollFromQuestion(note._misskey_question || note, resolver).catch(() => undefined);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
-		updatePerson(note.attributedTo);
+		if (actor.uri) updatePerson(actor.uri);
 	}
 
 	return await post(actor, {

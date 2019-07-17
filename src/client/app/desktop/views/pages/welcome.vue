@@ -186,7 +186,9 @@ export default Vue.extend({
 		const image = [
 			'image/jpeg',
 			'image/png',
-			'image/gif'
+			'image/gif',
+			'image/apng',
+			'image/vnd.mozilla.apng',
 		];
 
 		this.$root.api('notes/local-timeline', {

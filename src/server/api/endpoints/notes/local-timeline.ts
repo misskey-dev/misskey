@@ -9,7 +9,6 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { activeUsersChart } from '../../../../services/chart';
 import { Brackets } from 'typeorm';
-import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -64,11 +63,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'Note',
 		}
 	},

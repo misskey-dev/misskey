@@ -6,7 +6,6 @@ import define from '../../../define';
 import { apiLogger } from '../../../logger';
 import { ApiError } from '../../../error';
 import { DriveFiles } from '../../../../../models';
-import { types, bool } from '../../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -36,6 +35,14 @@ export const meta = {
 			}
 		},
 
+		name: {
+			validator: $.optional.nullable.str,
+			default: null as any,
+			desc: {
+				'ja-JP': 'ファイル名（拡張子があるなら含めて）'
+			}
+		},
+
 		isSensitive: {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
@@ -57,8 +64,8 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		ref: 'DriveFile',
 	},
 
@@ -73,7 +80,7 @@ export const meta = {
 
 export default define(meta, async (ps, user, app, file, cleanup) => {
 	// Get 'name' parameter
-	let name = file.originalname;
+	let name = ps.name || file.originalname;
 	if (name !== undefined && name !== null) {
 		name = name.trim();
 		if (name.length === 0) {

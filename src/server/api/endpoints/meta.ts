@@ -5,7 +5,6 @@ import define from '../define';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
-import { types, bool } from '../../../misc/schema';
 import { getConnection } from 'typeorm';
 import redis from '../../../db/redis';
 
@@ -29,40 +28,40 @@ export const meta = {
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		properties: {
 			version: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The version of Misskey of this instance.',
 				example: pkg.version
 			},
 			name: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The name of this instance.',
 			},
 			description: {
-				type: types.string,
-				optional: bool.false, nullable: bool.false,
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
 				description: 'The description of this instance.',
 			},
 			announcements: {
-				type: types.array,
-				optional: bool.false, nullable: bool.false,
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
 				items: {
-					type: types.object,
-					optional: bool.false, nullable: bool.false,
+					type: 'object' as const,
+					optional: false as const, nullable: false as const,
 					properties: {
 						title: {
-							type: types.string,
-							optional: bool.false, nullable: bool.false,
+							type: 'string' as const,
+							optional: false as const, nullable: false as const,
 							description: 'The title of the announcement.',
 						},
 						text: {
-							type: types.string,
-							optional: bool.false, nullable: bool.false,
+							type: 'string' as const,
+							optional: false as const, nullable: false as const,
 							description: 'The text of the announcement. (can be HTML)',
 						},
 					}
@@ -70,23 +69,23 @@ export const meta = {
 				description: 'The announcements of this instance.',
 			},
 			disableRegistration: {
-				type: types.boolean,
-				optional: bool.false, nullable: bool.false,
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
 				description: 'Whether disabled open registration.',
 			},
 			disableLocalTimeline: {
-				type: types.boolean,
-				optional: bool.false, nullable: bool.false,
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
 				description: 'Whether disabled LTL and STL.',
 			},
 			disableGlobalTimeline: {
-				type: types.boolean,
-				optional: bool.false, nullable: bool.false,
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
 				description: 'Whether disabled GTL.',
 			},
 			enableEmojiReaction: {
-				type: types.boolean,
-				optional: bool.false, nullable: bool.false,
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
 				description: 'Whether enabled emoji reaction.',
 			},
 		}
@@ -96,7 +95,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const instance = await fetchMeta(true);
 
-	const emojis = await Emojis.find({ where: { host: null }, cache: 3600000 }); // 1 hour
+	const emojis = await Emojis.find({ where: { host: null }, cache: { id: 'meta_emojis', milliseconds: 3600000 } }); // 1 hour
 
 	const response: any = {
 		maintainerName: instance.maintainerName,

@@ -43,8 +43,11 @@ import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
 import { UserProfile } from '../models/entities/user-profile';
+import { UserSecurityKey } from '../models/entities/user-security-key';
+import { AttestationChallenge } from '../models/entities/attestation-challenge';
 import { Page } from '../models/entities/page';
 import { PageLike } from '../models/entities/page-like';
+import { ModerationLog } from '../models/entities/moderation-log';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -80,6 +83,54 @@ class MyCustomLogger implements Logger {
 	}
 }
 
+export const entities = [
+	Meta,
+	Instance,
+	App,
+	AuthSession,
+	AccessToken,
+	User,
+	UserProfile,
+	UserKeypair,
+	UserPublickey,
+	UserList,
+	UserListJoining,
+	UserGroup,
+	UserGroupJoining,
+	UserGroupInvite,
+	UserNotePining,
+	UserSecurityKey,
+	AttestationChallenge,
+	Following,
+	FollowRequest,
+	Muting,
+	Blocking,
+	Note,
+	NoteFavorite,
+	NoteReaction,
+	NoteWatching,
+	NoteUnread,
+	Page,
+	PageLike,
+	Log,
+	DriveFile,
+	DriveFolder,
+	Poll,
+	PollVote,
+	Notification,
+	Emoji,
+	Hashtag,
+	SwSubscription,
+	AbuseUserReport,
+	RegistrationTicket,
+	MessagingMessage,
+	Signin,
+	ModerationLog,
+	ReversiGame,
+	ReversiMatching,
+	...charts as any
+];
+
 export function initDb(justBorrow = false, sync = false, log = false) {
 	try {
 		const conn = getConnection();
@@ -101,58 +152,13 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 			options: {
 				host: config.redis.host,
 				port: config.redis.port,
-				options:{
-					password: config.redis.pass,
-					prefix: config.redis.prefix,
-					db: config.redis.db || 0
-				}
+				password: config.redis.pass,
+				prefix: config.redis.prefix,
+				db: config.redis.db || 0
 			}
 		} : false,
 		logging: log,
 		logger: log ? new MyCustomLogger() : undefined,
-		entities: [
-			Meta,
-			Instance,
-			App,
-			AuthSession,
-			AccessToken,
-			User,
-			UserProfile,
-			UserKeypair,
-			UserPublickey,
-			UserList,
-			UserListJoining,
-			UserGroup,
-			UserGroupJoining,
-			UserGroupInvite,
-			UserNotePining,
-			Following,
-			FollowRequest,
-			Muting,
-			Blocking,
-			Note,
-			NoteFavorite,
-			NoteReaction,
-			NoteWatching,
-			NoteUnread,
-			Page,
-			PageLike,
-			Log,
-			DriveFile,
-			DriveFolder,
-			Poll,
-			PollVote,
-			Notification,
-			Emoji,
-			Hashtag,
-			SwSubscription,
-			AbuseUserReport,
-			RegistrationTicket,
-			MessagingMessage,
-			Signin,
-			ReversiGame,
-			ReversiMatching,
-			...charts as any
-		]
+		entities: entities
 	});
 }

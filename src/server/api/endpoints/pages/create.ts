@@ -2,7 +2,6 @@ import $ from 'cafy';
 import * as ms from 'ms';
 import define from '../../define';
 import { ID } from '../../../../misc/cafy-id';
-import { types, bool } from '../../../../misc/schema';
 import { Pages, DriveFiles } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
 import { Page } from '../../../../models/entities/page';
@@ -58,11 +57,16 @@ export const meta = {
 			validator: $.optional.bool,
 			default: false
 		},
+
+		hideTitleWhenPinned: {
+			validator: $.optional.bool,
+			default: false
+		},
 	},
 
 	res: {
-		type: types.object,
-		optional: bool.false, nullable: bool.false,
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
 		ref: 'Page',
 	},
 
@@ -101,6 +105,7 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 		visibility: 'public',
 		alignCenter: ps.alignCenter,
+		hideTitleWhenPinned: ps.hideTitleWhenPinned,
 		font: ps.font
 	}));
 

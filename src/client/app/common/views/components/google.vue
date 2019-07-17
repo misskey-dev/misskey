@@ -41,7 +41,6 @@ export default Vue.extend({
 		padding 10px
 		width 100%
 		height 40px
-		font-family sans-serif
 		font-size 16px
 		color var(--googleSearchFg)
 		background var(--googleSearchBg)

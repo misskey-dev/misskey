@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Hashtags } from '../../../../models';
-import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	desc: {
@@ -38,11 +37,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 		}
 	},
 };

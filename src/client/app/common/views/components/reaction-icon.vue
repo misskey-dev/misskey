@@ -15,8 +15,13 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			customEmojis: (this.$root.getMetaSync() || { emojis: [] }).emojis || []
+			customEmojis: []
 		};
+	},
+	created() {
+		this.$root.getMeta().then(meta => {
+			if (meta && meta.emojis) this.customEmojis = meta.emojis;
+		});
 	},
 	computed: {
 		str(): any {

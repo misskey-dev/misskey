@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '../../../../models';
-import { types, bool } from '../../../../misc/schema';
 
 export const meta = {
 	requireCredential: false,
@@ -48,11 +47,11 @@ export const meta = {
 	},
 
 	res: {
-		type: types.array,
-		optional: bool.false, nullable: bool.false,
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
 		items: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'User',
 		}
 	},
@@ -60,7 +59,7 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
-		.where(':tag = ANY(user.tags)', { tag: ps.tag });
+		.where(':tag = ANY(user.tags)', { tag: ps.tag.toLowerCase() });
 
 	const recent = new Date(Date.now() - (1000 * 60 * 60 * 24 * 5));
 

@@ -68,7 +68,7 @@ Build misskey with the following:
 *5.* Init DB
 ----------------------------------------------------------------
 ``` shell
-docker-compose run --rm web npm run init
+docker-compose run --rm web yarn run init
 ```
 
 *6.* That is it.

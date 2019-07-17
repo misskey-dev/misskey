@@ -1,7 +1,7 @@
 <template>
 <div class="syxhndwprovvuqhmyvveewmbqayniwkv" v-if="!fetching">
 	<div class="signed-in-as">
-		<mfm :text="$t('signed-in-as').replace('{}', myName)" :should-break="false" :plain-text="true" :custom-emojis="$store.state.i.emojis"/>
+		<mfm :text="$t('signed-in-as').replace('{}', myName)" :plain="true" :custom-emojis="$store.state.i.emojis"/>
 	</div>
 	<main>
 		<div class="banner" :style="bannerStyle"></div>

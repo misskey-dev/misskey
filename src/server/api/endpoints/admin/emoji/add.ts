@@ -3,6 +3,8 @@ import define from '../../../define';
 import { detectUrlMine } from '../../../../../misc/detect-url-mine';
 import { Emojis } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
+import { getConnection } from 'typeorm';
+import { insertModerationLog } from '../../../../../services/insert-moderation-log';
 
 export const meta = {
 	desc: {
@@ -30,7 +32,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	const type = await detectUrlMine(ps.url);
 
 	const emoji = await Emojis.save({
@@ -41,6 +43,12 @@ export default define(meta, async (ps) => {
 		aliases: ps.aliases,
 		url: ps.url,
 		type,
+	});
+
+	await getConnection().queryResultCache!.remove(['meta_emojis']);
+
+	insertModerationLog(me, 'addEmoji', {
+		emojiId: emoji.id
 	});
 
 	return {

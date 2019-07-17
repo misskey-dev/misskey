@@ -28,7 +28,7 @@
 				<div class="fields" v-if="user.fields">
 					<dl class="field" v-for="(field, i) in user.fields" :key="i">
 						<dt class="name">
-							<mfm :text="field.name" :should-break="false" :plain-text="true" :custom-emojis="user.emojis"/>
+							<mfm :text="field.name" :plain="true" :custom-emojis="user.emojis"/>
 						</dt>
 						<dd class="value">
 							<mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>

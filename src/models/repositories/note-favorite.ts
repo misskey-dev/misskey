@@ -2,7 +2,6 @@ import { EntityRepository, Repository } from 'typeorm';
 import { NoteFavorite } from '../entities/note-favorite';
 import { Notes } from '..';
 import { ensure } from '../../prelude/ensure';
-import { types, bool } from '../../misc/schema';
 
 @EntityRepository(NoteFavorite)
 export class NoteFavoriteRepository extends Repository<NoteFavorite> {
@@ -29,30 +28,30 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 }
 
 export const packedNoteFavoriteSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this favorite.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the favorite was created.'
 		},
 		note: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'Note',
 		},
 		noteId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 		},
 	},

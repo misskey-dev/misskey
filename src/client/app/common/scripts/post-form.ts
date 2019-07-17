@@ -8,6 +8,7 @@ import { host, url } from '../../config';
 import i18n from '../../i18n';
 import { erase, unique } from '../../../../prelude/array';
 import extractMentions from '../../../../misc/extract-mentions';
+import { formatTimeString } from '../../../../misc/format-time-string';
 
 export default (opts) => ({
 	i18n: i18n(),
@@ -151,9 +152,16 @@ export default (opts) => ({
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
+			if (this.reply.visibility === 'specified') {
+				this.$root.api('users/show', {
+					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$store.state.i.id && uid !== this.reply.userId)
+				}).then(users => {
+					this.visibleUsers.push(...users);
+				});
+			}
 		}
 
-		if (this.reply) {
+		if (this.reply && this.reply.userId !== this.$store.state.i.id) {
 			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
 				this.visibleUsers.push(user);
 			});
@@ -237,8 +245,8 @@ export default (opts) => ({
 			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
 		},
 
-		upload(file) {
-			(this.$refs.uploader as any).upload(file);
+		upload(file: File, name?: string) {
+			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
 		},
 
 		onChangeUploadings(uploads) {
@@ -327,10 +335,23 @@ export default (opts) => ({
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canPost) this.post();
 		},
 
-		async onPaste(e) {
-			for (const item of Array.from(e.clipboardData.items)) {
+		async onPaste(e: ClipboardEvent) {
+			for (const { item, i } of Array.from(e.clipboardData.items).map((item, i) => ({item, i}))) {
 				if (item.kind == 'file') {
-					this.upload(item.getAsFile());
+					const file = item.getAsFile();
+					const lio = file.name.lastIndexOf('.');
+					const ext = lio >= 0 ? file.name.slice(lio) : '';
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+					const name = this.$store.state.settings.pasteDialog
+						? await this.$root.dialog({
+								title: this.$t('@.post-form.enter-file-name'),
+								input: {
+									default: formatted
+								},
+								allowEmpty: false
+							}).then(({ canceled, result }) => canceled ? false : result)
+						: formatted;
+					if (name) this.upload(file, name);
 				}
 			}
 

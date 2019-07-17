@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 Vue.filter('bytes', (v, digits = 0) => {
 	if (v == null) return '?';
-	const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+	const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 	if (v == 0) return '0';
 	const isMinus = v < 0;
 	if (isMinus) v = -v;

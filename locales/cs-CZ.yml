@@ -101,7 +101,8 @@ common:
     submit: "Odeslat"
     reply: "Odpovědět"
     renote: "Renotovat"
-    attach-media-from-local: "Uplodovat soubor z vašeho zařízení"
+    posting: "Posílání"
+    attach-media-from-local: "Nahrát soubor z vašeho zařízení"
     insert-a-kao: "v('ω')v"
     create-poll: "Vytvořit anketu"
     text-remain: "zbývá ještě {} znaků"
@@ -260,6 +261,9 @@ common:
     disable-via-mobile: "Neoznačovat příspěvky jako „z mobilu“"
     load-raw-images: "Zobrazovat obrázky v původní kvalitě"
     load-remote-media: "Zobrazovat média ze vzdáleného serveru"
+    sync: "Synchronizace"
+    save: "Uložit"
+    saved: "Uloženo"
   search: "Hledání"
   delete: "Odstranit"
   loading: "Načítám..."
@@ -449,9 +453,13 @@ common/views/components/messaging.vue:
   you: "Vy"
   no-history: "Žádná historie"
   user: "Uživatel"
+  group: "Skupina"
+  start-with-user: "Zahájit konverzaci s uživatelem"
+  start-with-group: "Zahájit skupinovou konverzaci"
 common/views/components/messaging-room.vue:
   new-message: "Máte novou zprávu"
 common/views/components/messaging-room.form.vue:
+  input-message-here: "Sem zadejte zprávu"
   send: "Odeslat"
   attach-from-local: "Přiložit soubory z Vašeho zařízení"
 common/views/components/messaging-room.message.vue:
@@ -466,6 +474,7 @@ common/views/components/nav.vue:
   repository: "Úložiště"
   develop: "Vývojáři"
   feedback: "Zpětná vazba"
+  tos: "Podmínky užívání"
 common/views/components/note-menu.vue:
   mention: "Zmínění"
   detail: "Více"
@@ -534,6 +543,8 @@ common/views/components/emoji-picker.vue:
   objects: "Objekty"
   symbols: "Symboly"
   flags: "Vlajky"
+common/views/components/settings/app-type.vue:
+  info: "Pro aktivování změn musíte znovu načíst stránky."
 common/views/components/signin.vue:
   username: "Přezdívka"
   password: "Heslo"
@@ -636,6 +647,7 @@ common/views/components/profile-editor.vue:
   saved: "Profil byl úspěšně aktualizován"
   uploading: "Nahrávám"
   upload-failed: "Nahrávání selhalo"
+  unable-to-process: "Operace nemohla být dokončena."
   email: "Nastavení e-mailů"
   email-address: "Emailová adresa"
   email-verified: "Váš e-mail byl ověřen"
@@ -652,6 +664,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "Nebezpečná zóna"
   delete-account: "Smazat účet"
   account-deleted: "Váš účet byl smazán. Může chvilku trvat než zmizí všechna data."
+  metadata-content: "Obsah"
 common/views/components/user-list-editor.vue:
   users: "Uživatel"
   rename: "Přejmenovat seznam"
@@ -725,6 +738,7 @@ desktop:
   avatar: "Avatar"
   uploading-avatar: "Nahrál nový avatar"
   avatar-updated: "Vaše avatar byl aktualizován"
+  unable-to-process: "Operace nemohla být dokončena."
   invalid-filetype: "Tento formát souboru není podporován"
 desktop/views/components/activity.chart.vue:
   total: "Černá ... Celkem"
@@ -761,7 +775,7 @@ desktop/views/components/drive.file.vue:
     rename: "Přejmenovat"
     copy-url: "Kopírovat URL"
     download: "Stáhnout"
-    else-files: "Více..."
+    else-files: "Ostatní"
     set-as-avatar: "Nastavit jako avatar"
     set-as-banner: "Nastavit jako baner"
     open-in-app: "Otevřít v aplikaci"
@@ -779,6 +793,7 @@ desktop/views/components/drive.folder.vue:
     rename: "Přejmenovat"
     rename-folder: "Přejmenovat složku"
     input-new-folder-name: "Zadejte nové jméno"
+    else-folders: "Ostatní"
 desktop/views/components/drive.vue:
   empty-drive-description: "Klikněte pravým tlačítkem myši pro otevření menu, nebo sem přetáhněte soubor pro nahrání."
   empty-folder: "Tato složka je prázdná"
@@ -984,6 +999,7 @@ admin/views/instance.vue:
   smtp-auth: "Provést SMTP autentikaci"
   smtp-user: "SMTP uživatel"
   smtp-pass: "SMTP heslo"
+  test-email: "Test"
   serviceworker-config: "ServiceWorker"
   enable-serviceworker: "Povolit ServiceWorker"
   vapid-publickey: "VAPID veřejný klíč"
@@ -1031,6 +1047,8 @@ admin/views/users.vue:
   reset-password-confirm: "Opravdu chcete resetovat Vaše heslo?"
   password-updated: "Heslo je nyní \"{password}\""
   update-remote-user: "Aktualizovat informace o vzdáleném účtu"
+  username: "Přezdívka"
+  host: "Hostitel"
   users:
     title: "Uživatel"
     state:
@@ -1047,6 +1065,11 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     title: "Vytvořit moderátora"
+  logs:
+    title: "Logy"
+    moderator: "Moderátoři"
+    type: "Operace"
+    info: "Informace"
 admin/views/emoji.vue:
   add-emoji:
     title: "Přidat emoji"
@@ -1261,6 +1284,8 @@ deck/deck.user-column.vue:
 dev/views/new-app.vue:
   app-name-desc: "Jméno vaší aplikace"
 pages:
+  pin-this-page: "Připnout"
+  unpin-this-page: "Odepnout"
   like: "Lajk"
   title: "Titulek"
   blocks:
@@ -1282,6 +1307,8 @@ pages:
       _action:
         _dialog:
           content: "Obsah"
+    _radioButton:
+      title: "Titulek"
   script:
     categories:
       random: "Náhodně"

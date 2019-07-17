@@ -20,6 +20,9 @@
 		<template v-if="!hover"><fa :icon="['far', 'folder']" fixed-width/></template>
 		{{ folder.name }}
 	</p>
+	<p class="upload" v-if="$store.state.settings.uploadFolder == folder.id">
+		{{ $t('upload-folder') }}
+	</p>
 </div>
 </template>
 
@@ -73,6 +76,14 @@ export default Vue.extend({
 				text: this.$t('@.delete'),
 				icon: ['far', 'trash-alt'],
 				action: this.deleteFolder
+			}, null, {
+				type: 'nest',
+				text: this.$t('contextmenu.else-folders'),
+				menu: [{
+					type: 'item',
+					text: this.$t('contextmenu.set-as-upload-folder'),
+					action: this.setAsUploadFolder
+				}]
 			}], {
 				closed: () => {
 					this.isContextmenuShowing = false;
@@ -213,8 +224,37 @@ export default Vue.extend({
 		deleteFolder() {
 			this.$root.api('drive/folders/delete', {
 				folderId: this.folder.id
+			}).then(() => {
+				if (this.$store.state.settings.uploadFolder === this.folder.id) {
+					this.$store.dispatch('settings/set', {
+						key: 'uploadFolder',
+						value: null
+					});
+				}
+			}).catch(err => {
+				switch(err.id) {
+					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
+						this.$root.dialog({
+							type: 'error',
+							title: this.$t('unable-to-delete'),
+							text: this.$t('has-child-files-or-folders')
+						});
+						break;
+					default:
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('unable-to-delete')
+						});
+				}
 			});
-		}
+		},
+
+		setAsUploadFolder() {
+			this.$store.dispatch('settings/set', {
+				key: 'uploadFolder',
+				value: this.folder.id
+			});
+		},
 	}
 });
 </script>
@@ -263,5 +303,11 @@ export default Vue.extend({
 			margin-right 4px
 			margin-left 2px
 			text-align left
+
+	> .upload
+		margin 4px 4px
+		font-size 0.8em
+		text-align right
+		color var(--desktopDriveFolderFg)
 
 </style>

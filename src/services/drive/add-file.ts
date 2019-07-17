@@ -46,6 +46,8 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			if (type === 'image/jpeg') ext = '.jpg';
 			if (type === 'image/png') ext = '.png';
 			if (type === 'image/webp') ext = '.webp';
+			if (type === 'image/apng') ext = '.apng';
+			if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 		}
 
 		const baseUrl = meta.objectStorageBaseUrl
@@ -69,7 +71,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		];
 
 		if (alts.webpublic) {
-			webpublicKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid.v4()}.${alts.webpublic.ext}`;
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
@@ -77,7 +79,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		}
 
 		if (alts.thumbnail) {
-			thumbnailKey = `${meta.objectStoragePrefix}/${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid.v4()}.${alts.thumbnail.ext}`;
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -102,8 +104,8 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		return await DriveFiles.save(file);
 	} else { // use internal storage
 		const accessKey = uuid.v4();
-		const thumbnailAccessKey = uuid.v4();
-		const webpublicAccessKey = uuid.v4();
+		const thumbnailAccessKey = 'thumbnail-' + uuid.v4();
+		const webpublicAccessKey = 'webpublic-' + uuid.v4();
 
 		const url = InternalStorage.saveFromPath(accessKey, path);
 
@@ -181,6 +183,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			thumbnail = await convertToPng(path, 498, 280);
 		} else if (['image/gif'].includes(type)) {
 			thumbnail = await convertToGif(path);
+		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
+			thumbnail = await convertToApng(path);
 		} else if (type.startsWith('video/')) {
 			try {
 				thumbnail = await GenerateVideoThumbnail(path);
@@ -203,6 +207,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
  * Upload to ObjectStorage
  */
 async function upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+	if (type === 'image/apng') type = 'image/png';
+
 	const meta = await fetchMeta();
 
 	const minio = new Minio.Client({
@@ -356,7 +362,7 @@ export default async function(
 
 	let propPromises: Promise<void>[] = [];
 
-	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/webp'].includes(mime);
+	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime);
 
 	if (isImage) {
 		const img = sharp(path);

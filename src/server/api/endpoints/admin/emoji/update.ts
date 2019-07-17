@@ -3,6 +3,7 @@ import define from '../../../define';
 import { detectUrlMine } from '../../../../../misc/detect-url-mine';
 import { ID } from '../../../../../misc/cafy-id';
 import { Emojis } from '../../../../../models';
+import { getConnection } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -47,4 +48,6 @@ export default define(meta, async (ps) => {
 		url: ps.url,
 		type,
 	});
+
+	await getConnection().queryResultCache!.remove(['meta_emojis']);
 });

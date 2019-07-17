@@ -78,6 +78,7 @@ common:
   _settings:
     notification: "Notifikasjon"
     password: "Passord"
+    save: "Lagre"
   search: "Søk"
   delete: "Slett"
   loading: "Laster inn..."
@@ -286,6 +287,7 @@ common/views/components/api-settings.vue:
 common/views/components/drive-settings.vue:
   in-use: "brukt"
   stats: "Statistikk"
+  default-upload-folder-name: "Mappe(r)"
 common/views/components/mute-and-block.vue:
   save: "Lagre"
 desktop/views/components/settings.tags.vue:
@@ -344,12 +346,16 @@ admin/views/drive.vue:
     local: "Lokalt"
   delete: "Slett"
 admin/views/users.vue:
+  username: "Brukernavn"
   users:
     title: "Bruker"
     state:
       all: "Alle"
     origin:
       local: "Lokalt"
+admin/views/moderators.vue:
+  logs:
+    info: "Informasjon"
 admin/views/emoji.vue:
   add-emoji:
     add: "Legg til"
@@ -484,6 +490,7 @@ deck/deck.user-column.vue:
   followers: "Følgere"
   images: "Bilder"
 pages:
+  pin-this-page: "Fest til profilen din"
   like: "Lik"
   blocks:
     image: "Bilder"

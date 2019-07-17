@@ -3,7 +3,7 @@ import { Users } from '..';
 import { Blocking } from '../entities/blocking';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
-import { SchemaType, types, bool } from '../../misc/schema';
+import { SchemaType } from '../../misc/schema';
 
 export type PackedBlocking = SchemaType<typeof packedBlockingSchema>;
 
@@ -34,30 +34,30 @@ export class BlockingRepository extends Repository<Blocking> {
 }
 
 export const packedBlockingSchema = {
-	type: types.object,
-	optional: bool.false, nullable: bool.false,
+	type: 'object' as const,
+	optional: false as const, nullable: false as const,
 	properties: {
 		id: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 			description: 'The unique identifier for this blocking.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'date-time',
 			description: 'The date that the blocking was created.'
 		},
 		blockeeId: {
-			type: types.string,
-			optional: bool.false, nullable: bool.false,
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
 			format: 'id',
 		},
 		blockee: {
-			type: types.object,
-			optional: bool.false, nullable: bool.false,
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
 			ref: 'User',
 			description: 'The blockee.'
 		},

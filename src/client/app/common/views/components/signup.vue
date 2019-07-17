@@ -43,7 +43,7 @@
 			</i18n>
 		</ui-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<ui-button type="submit" :disabled="!(meta.ToSUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'">{{ $t('create') }}</ui-button>
+		<ui-button type="submit" :disabled=" submitting || !(meta.ToSUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'">{{ $t('create') }}</ui-button>
 	</template>
 </form>
 </template>
@@ -70,6 +70,7 @@ export default Vue.extend({
 			passwordStrength: '',
 			passwordRetypeState: null,
 			meta: {},
+			submitting: false,
 			ToSAgreement: false
 		}
 	},
@@ -145,6 +146,9 @@ export default Vue.extend({
 		},
 
 		onSubmit() {
+			if (this.submitting) return;
+			this.submitting = true;
+
 			this.$root.api('signup', {
 				username: this.username,
 				password: this.password,
@@ -159,6 +163,8 @@ export default Vue.extend({
 					location.href = '/';
 				});
 			}).catch(() => {
+				this.submitting = false;
+
 				this.$root.dialog({
 					type: 'error',
 					text: this.$t('some-error')

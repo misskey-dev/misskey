@@ -73,6 +73,9 @@ export default Vue.extend({
 							enabled: true
 						},
 					},
+					dataLabels: {
+						enabled: false
+					},
 					grid: {
 						clipMarkers: false,
 						padding: {
