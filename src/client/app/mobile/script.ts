@@ -54,7 +54,9 @@ init((launch, os) => {
 				const vm = this.$root.new(PostFormDialog, {
 					reply: o.reply,
 					mention: o.mention,
-					renote: o.renote
+					renote: o.renote,
+					initialText: o.initialText,
+					instant: o.instant
 				});
 				vm.$once('cancel', recover);
 				vm.$once('posted', recover);

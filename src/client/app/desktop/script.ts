@@ -63,7 +63,9 @@ init(async (launch, os) => {
 					this.$root.newAsync(() => import('./views/components/post-form-window.vue').then(m => m.default), {
 						reply: o.reply,
 						mention: o.mention,
-						animation: o.animation == null ? true : o.animation
+						animation: o.animation == null ? true : o.animation,
+						initialText: o.initialText,
+						instant: o.instant
 					}).then(vm => {
 						if (o.cb) vm.$once('closed', o.cb);
 					});
