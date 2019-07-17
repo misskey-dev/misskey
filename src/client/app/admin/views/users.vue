@@ -8,7 +8,7 @@
 			</ui-input>
 			<ui-button @click="showUser"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 
-			<div id="vHe7jfkvha" class="user" v-if="user" :key="user.id">
+			<div ref="user" class="user" v-if="user" :key="user.id">
 				<x-user :user="user"/>
 				<div class="actions">
 					<ui-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('update-remote-user') }}</ui-button>
@@ -172,7 +172,7 @@ export default Vue.extend({
 			this.$root.api('admin/show-user', { userId: userId }).then(info => {
 				this.user = info;
 				this.$nextTick(() => {
-					document.getElementById('vHe7jfkvha').scrollIntoView();
+					this.$refs.user.scrollIntoView();
 				});
 			});
 		},
@@ -337,7 +337,7 @@ export default Vue.extend({
 				offset: this.offset,
 				limit: this.limit + 1,
 				username: this.searchUsername,
-				host: this.searchHost
+				hostname: this.searchHost
 			}).then(users => {
 				if (users.length == this.limit + 1) {
 					users.pop();
