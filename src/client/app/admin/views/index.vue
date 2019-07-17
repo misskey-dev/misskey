@@ -2,7 +2,7 @@
 <div class="mk-admin" :class="{ isMobile }">
 	<header v-show="isMobile">
 		<button class="nav" @click="navOpend = true"><fa icon="bars"/></button>
-		<span>GroundpolisMyAdmin</span>
+		<span>Groundpolis Manager</span>
 	</header>
 	<div class="nav-backdrop"
 		v-if="navOpend && isMobile"
