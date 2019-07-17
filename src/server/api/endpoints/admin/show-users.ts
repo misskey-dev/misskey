@@ -49,6 +49,16 @@ export const meta = {
 				'remote',
 			]),
 			default: 'local'
+		},
+
+		username: {
+			validator: $.optional.str,
+			default: null
+		},
+
+		host: {
+			validator: $.optional.str,
+			default: null
 		}
 	}
 };
@@ -68,6 +78,14 @@ export default define(meta, async (ps, me) => {
 	switch (ps.origin) {
 		case 'local': query.andWhere('user.host IS NULL'); break;
 		case 'remote': query.andWhere('user.host IS NOT NULL'); break;
+	}
+
+	if (ps.username) {
+		query.andWhere('user.usernameLower like :q', { q: ps.username.toLowerCase() + '%' });
+	}
+
+	if (ps.host) {
+		query.andWhere('user.host like :q', { q: ps.host.toLowerCase() + '%' });
 	}
 
 	switch (ps.sort) {

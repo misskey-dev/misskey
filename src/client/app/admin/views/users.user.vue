@@ -1,5 +1,5 @@
 <template>
-<div class="kofvwchc">
+<div class="kofvwchc" @click="click(user.id)">
 	<div>
 		<a :href="user | userPage(null, true)">
 			<mk-avatar class="avatar" :user="user" :disable-link="true"/>
@@ -32,7 +32,7 @@ import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/users.vue'),
-	props: ['user'],
+	props: ['user', 'click'],
 	data() {
 		return {
 			faSnowflake, faMicrophoneSlash
