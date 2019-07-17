@@ -1,11 +1,11 @@
 <template>
-<div class="kofvwchc" @click="click(user.id)">
+<div class="kofvwchc">
 	<div>
 		<a :href="user | userPage(null, true)">
 			<mk-avatar class="avatar" :user="user" :disable-link="true"/>
 		</a>
 	</div>
-	<div>
+	<div @click="click(user.id)">
 		<header>
 			<b><mk-user-name :user="user"/></b>
 			<span class="username">@{{ user | acct }}</span>
@@ -80,4 +80,15 @@ export default Vue.extend({
 			> .is-suspended
 				margin 0 0 0 .5em
 				color #4dabf7
+
+	&:hover
+		color var(--primaryForeground)
+		background var(--primary)
+		text-decoration none
+		border-radius 3px
+
+	&:active
+		color var(--primaryForeground)
+		background var(--primaryDarken10)
+		border-radius 3px
 </style>

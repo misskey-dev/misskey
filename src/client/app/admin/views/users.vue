@@ -58,7 +58,7 @@
 				<ui-input v-model="searchUsername" type="text" spellcheck="false" @input="fetchUsers(true)">
 					<span>{{ $t('username') }}</span>
 				</ui-input>
-				<ui-input v-model="searchHost" type="text" spellcheck="false" @input="fetchUsers(true)" :readonly="origin === 'local'">
+				<ui-input v-model="searchHost" type="text" spellcheck="false" @input="fetchUsers(true)" :disabled="origin === 'local'">
 					<span>{{ $t('host') }}</span>
 				</ui-input>
 			</ui-horizon-group>
