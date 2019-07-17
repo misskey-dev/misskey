@@ -747,6 +747,8 @@ common/views/components/profile-editor.vue:
   danger-zone: "Cautious options"
   delete-account: "Remove the account"
   account-deleted: "The account has been deleted. It may take some time until all of the data disappears."
+  profile-metadata: "Profile metadata"
+  metadata-label: "Label"
   metadata-content: "Content"
 common/views/components/user-list-editor.vue:
   users: "User"
