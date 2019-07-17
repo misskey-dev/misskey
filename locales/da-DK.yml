@@ -706,6 +706,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "Risici"
   delete-account: "Slet kontoen"
   account-deleted: "Kontoen er slettet. Det kan vare lidt, inden alle data forsvinder."
+  metadata-content: "Indhold"
 common/views/components/user-list-editor.vue:
   users: "Bruger"
   rename: "Omdøb listen"
