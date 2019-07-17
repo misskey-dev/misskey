@@ -747,6 +747,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "위험한 설정"
   delete-account: "계정 삭제"
   account-deleted: "계정이 삭제되었습니다. 데이터가 사라질 때까지 시간이 걸릴 수 있습니다."
+  metadata-content: "내용"
 common/views/components/user-list-editor.vue:
   users: "사용자"
   rename: "리스트 이름 바꾸기"
