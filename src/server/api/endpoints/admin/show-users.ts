@@ -85,7 +85,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (ps.hostname) {
-		query.andWhere('lower(user.host) like :hostname', { hostname: '%' + ps.hostname.toLowerCase() + '%' });
+		query.andWhere('user.host like :hostname', { hostname: '%' + ps.hostname.toLowerCase() + '%' });
 	}
 
 	switch (ps.sort) {
