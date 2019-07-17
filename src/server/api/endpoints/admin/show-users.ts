@@ -56,7 +56,7 @@ export const meta = {
 			default: null
 		},
 
-		host: {
+		hostname: {
 			validator: $.optional.str,
 			default: null
 		}
@@ -81,11 +81,11 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (ps.username) {
-		query.andWhere('user.usernameLower like :q', { q: ps.username.toLowerCase() + '%' });
+		query.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' });
 	}
 
-	if (ps.host) {
-		query.andWhere('user.host like :q', { q: ps.host.toLowerCase() + '%' });
+	if (ps.hostname) {
+		query.andWhere('lower(user.host) like :hostname', { hostname: '%' + ps.hostname.toLowerCase() + '%' });
 	}
 
 	switch (ps.sort) {
