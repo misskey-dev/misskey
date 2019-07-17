@@ -1323,6 +1323,8 @@ admin/views/users.vue:
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   delete-all-files: "Supprimer tous les fichiers"
   delete-all-files-confirm: "Êtes vous surs de vouloir supprimer tous les fichiers ?"
+  username: "Nom d'utilisateur·rice"
+  host: "Hôte"
   users:
     title: "Utilisateur·rice·s"
     sort:
