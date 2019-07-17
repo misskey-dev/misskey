@@ -725,6 +725,7 @@ common/views/components/profile-editor.vue:
   saved: "Profile updated successfully"
   uploading: "Uploading"
   upload-failed: "Failed to upload"
+  unable-to-process: "The operation could not be completed."
   email: "Email settings"
   email-address: "Email Address"
   email-verified: "Your email has been verified."
@@ -853,6 +854,7 @@ desktop:
   uploading-avatar: "Uploading a new avatar"
   avatar-updated: "Successfully updated the avatar"
   choose-avatar: "Select an image for the avatar"
+  unable-to-process: "The operation could not be completed."
   invalid-filetype: "This filetype is not acceptable here"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
