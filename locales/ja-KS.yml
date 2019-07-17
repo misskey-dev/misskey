@@ -946,6 +946,8 @@ admin/views/users.vue:
   reset-password: "パスワードをリセット"
   password-updated: "パスワードは現在「{password} 」やで"
   suspend: "凍結"
+  username: "ユーザー名"
+  host: "ホスト"
   users:
     title: "ユーザー"
     state:
