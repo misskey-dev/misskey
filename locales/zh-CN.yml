@@ -725,6 +725,7 @@ common/views/components/profile-editor.vue:
   saved: "您的个人资料已保存"
   uploading: "正在上传"
   upload-failed: "上传失败"
+  unable-to-process: "无法完成操作"
   email: "邮件设置"
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
@@ -853,6 +854,7 @@ desktop:
   uploading-avatar: "上传一个新的头像"
   avatar-updated: "成功上传头像"
   choose-avatar: "选择作为头像的图片"
+  unable-to-process: "无法完成操作"
   invalid-filetype: "不接受此文件类型"
 desktop/views/components/activity.chart.vue:
   total: "黑 ... 总计"
