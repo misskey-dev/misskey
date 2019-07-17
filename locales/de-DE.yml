@@ -786,6 +786,7 @@ admin/views/drive.vue:
     local: "Lokal"
   delete: "Löschen"
 admin/views/users.vue:
+  username: "Benutzername"
   users:
     origin:
       local: "Lokal"
