@@ -1280,6 +1280,8 @@ admin/views/users.vue:
   remote-user-updated: "Informationen om den eksterne bruger er nu blevet opdateret."
   delete-all-files: "Slet alle filer"
   delete-all-files-confirm: "Er du sikker på, at alle filerne skal slettes?"
+  username: "Brugernavn"
+  host: "Vært"
   users:
     title: "Bruger"
     sort:
