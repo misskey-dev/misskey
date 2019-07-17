@@ -265,6 +265,29 @@ export default Vue.extend({
 						text: this.$t('saved')
 					});
 				}
+			}).catch(err => {
+				this.saving = false;
+				switch(err.id) {
+					case 'f419f9f8-2f4d-46b1-9fb4-49d3a2fd7191':
+						this.$root.dialog({
+							type: 'error',
+							title: this.$t('unable-to-process'),
+							text: this.$t('avatar-not-an-image')
+						});
+						break;
+					case '75aedb19-2afd-4e6d-87fc-67941256fa60':
+						this.$root.dialog({
+							type: 'error',
+							title: this.$t('unable-to-process'),
+							text: this.$t('banner-not-an-image')
+						});
+						break;
+					default:
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('unable-to-process')
+						});
+				}
 			});
 		},
 
