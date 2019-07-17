@@ -912,6 +912,7 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
 admin/views/users.vue:
   user-not-found: "Nie znaleziono użytkownika"
+  username: "Nazwa użytkownika"
   users:
     title: "Użytkownicy"
     sort:
