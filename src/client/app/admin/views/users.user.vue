@@ -44,7 +44,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .kofvwchc
 	display flex
-	padding 16px 0
+	padding 16px
 	border-top solid 1px var(--faceDivider)
 
 	> div:first-child
@@ -55,6 +55,7 @@ export default Vue.extend({
 
 	> div:last-child
 		flex 1
+		cursor: pointer
 		padding-left 16px
 
 		@media (max-width 500px)
