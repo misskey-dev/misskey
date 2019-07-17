@@ -705,6 +705,7 @@ common/views/components/profile-editor.vue:
   saved: "Profil mis à jour avec succès"
   uploading: "En cours d’envoi …"
   upload-failed: "Échec de l'envoi"
+  unable-to-process: "L'opération n'a pas pu être complétée"
   email: "Paramètres de messagerie"
   email-address: "Adresse de courrier électronique"
   email-verified: "L’adresse du courrier électronique a été vérifiée."
@@ -724,6 +725,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "Zone de danger"
   delete-account: "Supprimer le compte"
   account-deleted: "Le compte a été supprimé. Cela peut prendre un certain temps avant que toutes les données disparaissent."
+  metadata-content: "Contenu"
 common/views/components/user-list-editor.vue:
   users: "Utilisateur·rice"
   rename: "Renommer la liste"
@@ -832,6 +834,7 @@ desktop:
   uploading-avatar: "Téléversement du nouvel avatar"
   avatar-updated: "Mise à jour de l’avatar avec succès"
   choose-avatar: "Choisir un avatar"
+  unable-to-process: "L'opération n'a pas pu être complétée"
   invalid-filetype: "Ce format de fichier n’est pas pris en charge"
 desktop/views/components/activity.chart.vue:
   total: "Noirs ... Total"
@@ -1321,6 +1324,8 @@ admin/views/users.vue:
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   delete-all-files: "Supprimer tous les fichiers"
   delete-all-files-confirm: "Êtes vous surs de vouloir supprimer tous les fichiers ?"
+  username: "Nom d'utilisateur·rice"
+  host: "Hôte"
   users:
     title: "Utilisateur·rice·s"
     sort:

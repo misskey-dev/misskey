@@ -472,6 +472,7 @@ common/views/components/profile-editor.vue:
   saved: "プロフィールを保存したで"
   uploading: "アップロードしとります"
   upload-failed: "これアップロードでけへんわ"
+  unable-to-process: "あかん、無理やわ"
   email: "メール設定"
   email-address: "メールアドレス"
   email-verified: "このメールアドレスOKや！"
@@ -565,6 +566,7 @@ desktop:
   uploading-avatar: "新しいアバターをアップロードしとるで"
   avatar-updated: "アバターを更新したで"
   choose-avatar: "アバターにする画像選んでや"
+  unable-to-process: "あかん、無理やわ"
   invalid-filetype: "この形式のファイル無理やねん"
 desktop/views/components/activity.chart.vue:
   total: "黒いの ... 全部"
@@ -944,6 +946,8 @@ admin/views/users.vue:
   reset-password: "パスワードをリセット"
   password-updated: "パスワードは現在「{password} 」やで"
   suspend: "凍結"
+  username: "ユーザー名"
+  host: "ホスト"
   users:
     title: "ユーザー"
     state:
