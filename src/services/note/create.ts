@@ -102,6 +102,7 @@ type Option = {
 	apEmojis?: string[] | null;
 	uri?: string | null;
 	app?: App | null;
+	preview?: boolean;
 };
 
 export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
@@ -188,6 +189,8 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	const note = await insertNote(user, data, tags, emojis, mentionedUsers);
 
 	res(note);
+
+	if (data.preview) return;
 
 	// 統計を更新
 	notesChart.update(note, true);
@@ -388,6 +391,18 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 			username: u.username,
 			host: u.host
 		})));
+	}
+
+	if (data.preview) {
+		return Object.assign({
+			preview: true,
+			renoteCount: 0,
+			repliesCount: 0,
+			reactions: {},
+			score: 0,
+			mentions: [],
+			mentionedRemoteUsers: []
+		}, insert) as Note;
 	}
 
 	// 投稿を作成

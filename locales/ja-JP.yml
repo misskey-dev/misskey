@@ -1087,6 +1087,7 @@ desktop/views/components/post-form.vue:
   note-failed: "投稿に失敗しました"
   reply-failed: "返信に失敗しました"
   renote-failed: "Renoteに失敗しました"
+  preview: "プレビュー"
 
 desktop/views/components/post-form-window.vue:
   note: "新規投稿"
