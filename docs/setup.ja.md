@@ -53,7 +53,7 @@ adduser --disabled-password --disabled-login misskey
 
 5. Misskeyの依存パッケージをインストール
 
-	`yarn install`
+	`yarn install --prod=false`
 
 *4.* 設定ファイルを作成する
 ----------------------------------------------------------------
@@ -132,7 +132,7 @@ yarn run init
 ### Misskeyを最新バージョンにアップデートする方法:
 1. `git checkout master`
 2. `git pull`
-3. `yarn install`
+3. `yarn install --prod=false`
 4. `NODE_ENV=production yarn build`
 5. `yarn migrate`
 

@@ -51,7 +51,7 @@ Please install and setup these softwares:
 
 5. Install misskey dependencies.
 
-	`yarn`
+	`yarn install --prod=false`
 
 *4.* Configure Misskey
 ----------------------------------------------------------------
@@ -130,7 +130,7 @@ You can check if the service is running with `systemctl status misskey`.
 ### How to update your Misskey server to the latest version
 1. `git checkout master`
 2. `git pull`
-3. `yarn install`
+3. `yarn install --prod=false`
 4. `NODE_ENV=production yarn build`
 5. `yarn migrate`
 6. Restart your Misskey process to apply changes
@@ -138,7 +138,7 @@ You can check if the service is running with `systemctl status misskey`.
 
 If you encounter any problems with updating, please try the following:
 1. `yarn clean` or `yarn cleanall`
-2. Retry update (Don't forget `yarn install`
+2. Retry update (Don't forget `yarn install --prod=false`)
 
 ----------------------------------------------------------------
 
