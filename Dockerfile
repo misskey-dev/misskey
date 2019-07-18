@@ -23,9 +23,10 @@ RUN apk add --no-cache \
     zlib-dev
 
 COPY package.json ./
-RUN yarn install
+RUN yarn install --prod=false
 COPY . ./
 RUN yarn build
+RUN yarn install --prod
 
 FROM base AS runner
 
