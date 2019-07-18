@@ -30,6 +30,7 @@ export default Vue.extend({
 		border-radius 4px
 
 	>>> .quote
+		display block
 		margin 8px
 		padding 6px 0 6px 12px
 		color var(--mfmQuote)
