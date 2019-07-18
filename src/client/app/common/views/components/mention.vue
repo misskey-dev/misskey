@@ -6,7 +6,7 @@
 			<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }" v-if="(host != localHost) || $store.state.settings.showFullAcct">@{{ toUnicode(host) }}</span>
 		</span>
 	</router-link>
-	<a class="ldlomzub" :href="url" target="_blank" v-else>
+	<a class="ldlomzub" :href="url" target="_blank" rel="noopener" v-else>
 		<span class="main">
 			<span class="username">@{{ username }}</span>
 			<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }">@{{ toUnicode(host) }}</span>
