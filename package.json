@@ -1,11 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-<<<<<<< HEAD
-	"version": "11.23.3004",
-=======
 	"version": "11.25.1",
->>>>>>> upstream/develop
 	"codename": "daybreak",
 	"repository": {
 		"type": "git",

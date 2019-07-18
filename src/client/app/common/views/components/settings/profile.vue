@@ -304,11 +304,6 @@ export default Vue.extend({
 						text: this.$t('saved')
 					});
 				}
-<<<<<<< HEAD
-			}).catch(e => {
-				this.saving = false;
-				console.log(e);
-=======
 			}).catch(err => {
 				this.saving = false;
 				switch(err.id) {
@@ -332,7 +327,6 @@ export default Vue.extend({
 							text: this.$t('unable-to-process')
 						});
 				}
->>>>>>> upstream/develop
 			});
 		},
 
