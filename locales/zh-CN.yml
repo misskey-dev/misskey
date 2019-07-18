@@ -35,6 +35,7 @@ common:
   signout: "退出"
   reload-to-apply-the-setting: "必须重新加载页面以应用此设置。 确实要立即重新加载吗？"
   fetching-as-ap-object: "联合查询"
+  unfollow-confirm: "取消对{name}的关注？"
   got-it: "知道了"
   customization-tips:
     title: "自定义提示"
@@ -122,6 +123,7 @@ common:
     add-visible-user: "添加用户"
     cw-placeholder: "评论帖子(可选)"
     username-prompt: "输入用户名"
+    enter-file-name: "编辑文件名"
   weekday-short:
     sunday: "日"
     monday: "一"
@@ -188,6 +190,11 @@ common:
     remember-note-visibility: "记住帖子可见性"
     web-search-engine: "搜索引擎"
     web-search-engine-desc: "例如: https://www.google.com/?#q={{query}}"
+    paste: "粘贴"
+    pasted-file-name: "粘贴的文件名模板"
+    pasted-file-name-desc: "例: \"yyyy-MM-dd HH-mm-ss [{{number}}]\" → \"2018-03-20 21-30-24 1\""
+    paste-dialog: "粘贴时编辑文件名"
+    paste-dialog-desc: "粘贴时显示编辑文件名的对话框"
     keep-cw: "保留内容警告"
     keep-cw-desc: "在回复帖子时，如果原帖设置了内容警告，默认情况下回帖也会设置相同的内容警告。"
     i-like-sushi: "相比于布丁来说, 我更喜欢寿司。"
@@ -271,6 +278,8 @@ common:
     load-raw-images: "以原始质量显示附加图像"
     load-remote-media: "显示来自远程服务器的媒体"
     sync: "同步"
+    save: "保存"
+    saved: "已保存"
     home-profile: "定制首页数据"
     deck-profile: "定制Deck数据"
   search: "搜索"
@@ -523,6 +532,7 @@ common/views/components/note-menu.vue:
   delete: "删除"
   delete-confirm: "确定删除这个投稿吗?"
   remote: "显示原始投稿"
+  pin-limit-exceeded: "无法置顶更多了。"
 common/views/components/user-menu.vue:
   mention: "提到"
   mute: "屏蔽"
@@ -592,6 +602,12 @@ common/views/components/emoji-picker.vue:
   symbols: "符号"
   flags: "旗帜"
 common/views/components/settings/app-type.vue:
+  title: "模式"
+  intro: "您可以指定使用桌面版或移动版。"
+  choices:
+    auto: "自动选择"
+    desktop: "固定为桌面版"
+    mobile: "固定为移动版"
   info: "更改将在刷新页面后生效。"
 common/views/components/signin.vue:
   username: "用户名"
@@ -603,6 +619,8 @@ common/views/components/signin.vue:
   signin-with-github: "用 GitHub 登录"
   signin-with-discord: "用 Discord 登录"
   login-failed: "登录失败。请检查用户名和密码。"
+  tap-key: "点击安全密钥登录"
+  enter-2fa-code: "输入验证码"
 common/views/components/signup.vue:
   invitation-code: "邀请码"
   invitation-info: "如果您没有邀请码，请联系<a href=\"{}\">管理员</a>。"
@@ -707,6 +725,7 @@ common/views/components/profile-editor.vue:
   saved: "您的个人资料已保存"
   uploading: "正在上传"
   upload-failed: "上传失败"
+  unable-to-process: "无法完成操作"
   email: "邮件设置"
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
@@ -726,6 +745,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "危险选项"
   delete-account: "删除帐户"
   account-deleted: "帐户已被删除。 数据会在一段时间之后清除。"
+  metadata-content: "内容"
 common/views/components/user-list-editor.vue:
   users: "用户"
   rename: "重命名列表"
@@ -835,6 +855,7 @@ desktop:
   uploading-avatar: "上传一个新的头像"
   avatar-updated: "成功上传头像"
   choose-avatar: "选择作为头像的图片"
+  unable-to-process: "无法完成操作"
   invalid-filetype: "不接受此文件类型"
 desktop/views/components/activity.chart.vue:
   total: "黑 ... 总计"
@@ -885,9 +906,12 @@ desktop/views/components/drive.file.vue:
     copied: "已复制"
     copied-url-to-clipboard: "已复制链接到剪贴板"
 desktop/views/components/drive.folder.vue:
+  upload-folder: "默认上传文件夹"
   unable-to-process: "无法完成操作"
   circular-reference-detected: "目标文件夹是您要移动的文件夹的子文件夹。"
   unhandled-error: "未知错误"
+  unable-to-delete: "无法删除"
+  has-child-files-or-folders: "此文件夹不为空，无法删除。"
   contextmenu:
     move-to-this-folder: "移动到此文件夹"
     show-in-new-window: "在新窗口打开"
@@ -895,6 +919,7 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "重命名文件夹"
     input-new-folder-name: "请输入新文件名"
     else-folders: "其他"
+    set-as-upload-folder: "设置为默认上传文件夹"
 desktop/views/components/drive.vue:
   search: "搜索"
   empty-draghover: "放在这里！因为你知道我很可爱，对吗？"
@@ -1000,6 +1025,16 @@ desktop/views/components/settings.2fa.vue:
   success: "设置完成"
   failed: "设置失败, 请确保您的密钥是正确的。"
   info: "从下次登录Misskey时，您的设备上显示的令牌以及密码也是必需的。"
+  totp-header: "身份验证 App"
+  security-key-header: "安全密钥"
+  security-key: "为了增强安全性，您可以使用支持FIDO2的硬件安全密钥登录您的帐户。 登录时，您将需要注册安全密钥或身份验证应用。"
+  last-used: "最后使用："
+  activate-key: "单击以激活您的安全密钥"
+  security-key-name: "密钥名称"
+  register-security-key: "安全密钥注册完成"
+  something-went-wrong: "糟糕！安全密钥注册出现问题："
+  key-unregistered: "安全密钥已被删除。"
+  use-password-less-login: "使用免密码登录"
 common/views/components/media-image.vue:
   sensitive: "阅读注意"
   click-to-show: "点击查看"
@@ -1024,7 +1059,9 @@ common/views/components/drive-settings.vue:
   max: "容量"
   in-use: "已使用"
   stats: "统计"
+  default-upload-folder: "默认上传文件夹"
   default-upload-folder-name: "文件夹"
+  change-default-upload-folder: "更改文件夹"
 common/views/components/mute-and-block.vue:
   mute-and-block: "屏蔽/拉黑"
   mute: "屏蔽"
@@ -1114,6 +1151,9 @@ admin/views/index.vue:
   back-to-misskey: "返回 Misskey"
 admin/views/db.vue:
   tables: "表格"
+  vacuum: "VACUUM"
+  vacuum-info: "清理数据库。 保持数据完整并减少磁盘使用量。 此操作通常会自动定期执行。"
+  vacuum-exclamation: "运行VACUUM之后，数据库上的负载可能会持续一段时间，并且可能不响应用户操作。"
 admin/views/dashboard.vue:
   dashboard: "Dashboard"
   accounts: "账户"
@@ -1328,6 +1368,8 @@ admin/views/users.vue:
   remote-user-updated: "远程用户信息已更新"
   delete-all-files: "删除所有文件"
   delete-all-files-confirm: "删除所有文件吗？"
+  username: "用户名"
+  host: "主机名"
   users:
     title: "用户"
     sort:
@@ -1358,6 +1400,12 @@ admin/views/moderators.vue:
     added: "已注册版主。"
     remove: "取消"
     removed: "取消注册版主"
+  logs:
+    title: "登录"
+    moderator: "版主"
+    type: "操作"
+    at: "日期和时间"
+    info: "信息"
 admin/views/emoji.vue:
   add-emoji:
     title: "添加emoji"
@@ -1704,6 +1752,7 @@ deck/deck.user-column.vue:
   activity: "活动"
   timeline: "时间线"
   pinned-notes: "置顶帖"
+  pinned-page: "已置顶的页面"
 docs:
   edit-this-page-on-github: "发现错误或想要为文档做出贡献？"
   edit-this-page-on-github-link: "在GitHub上编辑这个页面。"
@@ -1758,6 +1807,7 @@ pages:
   url: "页面URL"
   summary: "页面摘要"
   align-center: "居中"
+  hide-title-when-pinned: "置顶时隐藏标题"
   font: "字体"
   fontSerif: "衬线字体"
   fontSansSerif: "无衬线字体"
@@ -1811,12 +1861,25 @@ pages:
       inc: "增加值"
     _button:
       text: "标题"
+      colored: "彩色"
       action: "按下按钮时的行为"
       _action:
         dialog: "显示对话框"
         _dialog:
           content: "内容"
         resetRandom: "随机值重置"
+        pushEvent: "发送事件"
+        _pushEvent:
+          event: "事件名称"
+          message: "按下时显示的消息"
+          variable: "发送的变量"
+          no-variable: "空"
+    radioButton: "选择项"
+    _radioButton:
+      name: "变量名"
+      title: "标题"
+      values: "使用换行区分的选择项"
+      default: "默认值"
   script:
     categories:
       flow: "控制"

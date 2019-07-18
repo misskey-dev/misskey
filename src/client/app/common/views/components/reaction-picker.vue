@@ -276,6 +276,7 @@ export default Vue.extend({
 			font-size 14px
 			color var(--popupFg)
 			border-bottom solid var(--lineWidth) var(--faceDivider)
+			line-height 20px
 
 		> .buttons
 			padding 4px 4px 8px 4px

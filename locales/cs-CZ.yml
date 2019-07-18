@@ -262,6 +262,8 @@ common:
     load-raw-images: "Zobrazovat obrázky v původní kvalitě"
     load-remote-media: "Zobrazovat média ze vzdáleného serveru"
     sync: "Synchronizace"
+    save: "Uložit"
+    saved: "Uloženo"
   search: "Hledání"
   delete: "Odstranit"
   loading: "Načítám..."
@@ -452,9 +454,12 @@ common/views/components/messaging.vue:
   no-history: "Žádná historie"
   user: "Uživatel"
   group: "Skupina"
+  start-with-user: "Zahájit konverzaci s uživatelem"
+  start-with-group: "Zahájit skupinovou konverzaci"
 common/views/components/messaging-room.vue:
   new-message: "Máte novou zprávu"
 common/views/components/messaging-room.form.vue:
+  input-message-here: "Sem zadejte zprávu"
   send: "Odeslat"
   attach-from-local: "Přiložit soubory z Vašeho zařízení"
 common/views/components/messaging-room.message.vue:
@@ -642,6 +647,7 @@ common/views/components/profile-editor.vue:
   saved: "Profil byl úspěšně aktualizován"
   uploading: "Nahrávám"
   upload-failed: "Nahrávání selhalo"
+  unable-to-process: "Operace nemohla být dokončena."
   email: "Nastavení e-mailů"
   email-address: "Emailová adresa"
   email-verified: "Váš e-mail byl ověřen"
@@ -658,6 +664,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "Nebezpečná zóna"
   delete-account: "Smazat účet"
   account-deleted: "Váš účet byl smazán. Může chvilku trvat než zmizí všechna data."
+  metadata-content: "Obsah"
 common/views/components/user-list-editor.vue:
   users: "Uživatel"
   rename: "Přejmenovat seznam"
@@ -731,6 +738,7 @@ desktop:
   avatar: "Avatar"
   uploading-avatar: "Nahrál nový avatar"
   avatar-updated: "Vaše avatar byl aktualizován"
+  unable-to-process: "Operace nemohla být dokončena."
   invalid-filetype: "Tento formát souboru není podporován"
 desktop/views/components/activity.chart.vue:
   total: "Černá ... Celkem"
@@ -1039,6 +1047,8 @@ admin/views/users.vue:
   reset-password-confirm: "Opravdu chcete resetovat Vaše heslo?"
   password-updated: "Heslo je nyní \"{password}\""
   update-remote-user: "Aktualizovat informace o vzdáleném účtu"
+  username: "Přezdívka"
+  host: "Hostitel"
   users:
     title: "Uživatel"
     state:
@@ -1055,6 +1065,11 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     title: "Vytvořit moderátora"
+  logs:
+    title: "Logy"
+    moderator: "Moderátoři"
+    type: "Operace"
+    info: "Informace"
 admin/views/emoji.vue:
   add-emoji:
     title: "Přidat emoji"
@@ -1292,6 +1307,8 @@ pages:
       _action:
         _dialog:
           content: "Obsah"
+    _radioButton:
+      title: "Titulek"
   script:
     categories:
       random: "Náhodně"

@@ -2,6 +2,9 @@ import * as Koa from 'koa';
 
 import config from '../../../config';
 import { ILocalUser } from '../../../models/entities/user';
+import { Signins } from '../../../models';
+import { genId } from '../../../misc/gen-id';
+import { publishMainStream } from '../../../services/stream';
 
 export default function(ctx: Koa.BaseContext, user: ILocalUser, redirect = false) {
 	if (redirect) {
@@ -24,4 +27,19 @@ export default function(ctx: Koa.BaseContext, user: ILocalUser, redirect = false
 		ctx.body = { i: user.token };
 		ctx.status = 200;
 	}
+
+	(async () => {
+		// Append signin history
+		const record = await Signins.save({
+			id: genId(),
+			createdAt: new Date(),
+			userId: user.id,
+			ip: ctx.ip,
+			headers: ctx.headers,
+			success: true
+		});
+
+		// Publish signin event
+		publishMainStream(user.id, 'signin', await Signins.pack(record));
+	})();
 }

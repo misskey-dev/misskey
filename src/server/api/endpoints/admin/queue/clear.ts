@@ -1,5 +1,6 @@
 import define from '../../../define';
 import { destroy } from '../../../../../queue';
+import { insertModerationLog } from '../../../../../services/insert-moderation-log';
 
 export const meta = {
 	tags: ['admin'],
@@ -10,8 +11,8 @@ export const meta = {
 	params: {}
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	destroy();
 
-	return;
+	insertModerationLog(me, 'clearQueue');
 });

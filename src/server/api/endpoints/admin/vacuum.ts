@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { getConnection } from 'typeorm';
+import { insertModerationLog } from '../../../../services/insert-moderation-log';
 
 export const meta = {
 	tags: ['admin'],
@@ -18,7 +19,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	const params: string[] = [];
 
 	if (ps.full) {
@@ -30,4 +31,6 @@ export default define(meta, async (ps) => {
 	}
 
 	getConnection().query('VACUUM ' + params.join(' '));
+
+	insertModerationLog(me, 'vacuum', ps);
 });

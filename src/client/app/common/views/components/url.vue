@@ -28,6 +28,7 @@ export default Vue.extend({
 			(this.url.substr(local.length) === '/') ||
 			this.url.substr(local.length).startsWith('/@') ||
 			this.url.substr(local.length).startsWith('/notes/') ||
+			this.url.substr(local.length).startsWith('/tags/') ||
 			this.url.substr(local.length).startsWith('/pages/'));
 		return {
 			local,

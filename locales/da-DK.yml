@@ -251,6 +251,8 @@ common:
     disable-via-mobile: "Marker aldrig posten som \"fra mobil\""
     load-raw-images: "Vis vedhæftede bilag i original kvalitet"
     load-remote-media: "Vis medie-materiale fra en ekstern server"
+    save: "Gem"
+    saved: "Gemt"
   search: "Søg"
   delete: "Slet"
   loading: "Henter"
@@ -684,6 +686,7 @@ common/views/components/profile-editor.vue:
   saved: "Profil er opdateret med succes"
   uploading: "Overfører"
   upload-failed: "Fejl ved overførsel"
+  unable-to-process: "Handlingen kunne ikke gennemføres."
   email: "Email indstillinger"
   email-address: "Email adresse"
   email-verified: "Din email er blevet bekræftet"
@@ -703,6 +706,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "Risici"
   delete-account: "Slet kontoen"
   account-deleted: "Kontoen er slettet. Det kan vare lidt, inden alle data forsvinder."
+  metadata-content: "Indhold"
 common/views/components/user-list-editor.vue:
   users: "Bruger"
   rename: "Omdøb listen"
@@ -809,6 +813,7 @@ desktop:
   uploading-avatar: "Overfør en ny avatar"
   avatar-updated: "Avatar er overført med succes"
   choose-avatar: "Vælg et billede til din avatar"
+  unable-to-process: "Handlingen kunne ikke gennemføres."
   invalid-filetype: "Denne filtype kan ikke benyttes her"
 desktop/views/components/activity.chart.vue:
   total: "Sort ... Total"
@@ -1276,6 +1281,8 @@ admin/views/users.vue:
   remote-user-updated: "Informationen om den eksterne bruger er nu blevet opdateret."
   delete-all-files: "Slet alle filer"
   delete-all-files-confirm: "Er du sikker på, at alle filerne skal slettes?"
+  username: "Brugernavn"
+  host: "Vært"
   users:
     title: "Bruger"
     sort:
@@ -1306,6 +1313,11 @@ admin/views/moderators.vue:
     added: "Redaktør er oprettet"
     remove: "Fjern"
     removed: "Redaktøren er nu fjernet"
+  logs:
+    title: "Logs"
+    moderator: "Redaktører"
+    type: "Drift"
+    info: "Information"
 admin/views/emoji.vue:
   add-emoji:
     title: "Tilføj emoji"
@@ -1715,6 +1727,10 @@ pages:
         _dialog:
           content: "Indhold"
         resetRandom: "Nulstil tilfældigt tal"
+    _radioButton:
+      name: "Variabel navn"
+      title: "Titel"
+      default: "Standard værdi"
   script:
     categories:
       flow: "Kontrol"

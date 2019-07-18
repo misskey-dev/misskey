@@ -7,9 +7,6 @@
 # Node.js
 /node_modules
 
-# yarn
-yarn.lock
-
 # config
 /.config/*
 !/.config/example.yml

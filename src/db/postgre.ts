@@ -47,6 +47,7 @@ import { UserSecurityKey } from '../models/entities/user-security-key';
 import { AttestationChallenge } from '../models/entities/attestation-challenge';
 import { Page } from '../models/entities/page';
 import { PageLike } from '../models/entities/page-like';
+import { ModerationLog } from '../models/entities/moderation-log';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -124,6 +125,7 @@ export const entities = [
 	RegistrationTicket,
 	MessagingMessage,
 	Signin,
+	ModerationLog,
 	ReversiGame,
 	ReversiMatching,
 	...charts as any

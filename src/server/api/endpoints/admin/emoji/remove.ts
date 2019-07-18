@@ -3,6 +3,7 @@ import define from '../../../define';
 import { ID } from '../../../../../misc/cafy-id';
 import { Emojis } from '../../../../../models';
 import { getConnection } from 'typeorm';
+import { insertModerationLog } from '../../../../../services/insert-moderation-log';
 
 export const meta = {
 	desc: {
@@ -21,7 +22,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	const emoji = await Emojis.findOne(ps.id);
 
 	if (emoji == null) throw new Error('emoji not found');
@@ -29,4 +30,8 @@ export default define(meta, async (ps) => {
 	await Emojis.delete(emoji.id);
 
 	await getConnection().queryResultCache!.remove(['meta_emojis']);
+
+	insertModerationLog(me, 'removeEmoji', {
+		emoji: emoji
+	});
 });

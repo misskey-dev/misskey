@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { getConnection } from 'typeorm';
 import { Meta } from '../../../../models/entities/meta';
+import { insertModerationLog } from '../../../../services/insert-moderation-log';
 
 export const meta = {
 	desc: {
@@ -401,7 +402,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	const set = {} as Partial<Meta>;
 
 	if (ps.announcements) {
@@ -653,4 +654,6 @@ export default define(meta, async (ps) => {
 			await transactionalEntityManager.save(Meta, set);
 		}
 	});
+
+	insertModerationLog(me, 'updateMeta');
 });
