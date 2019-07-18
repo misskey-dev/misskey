@@ -51,7 +51,7 @@ Installez les paquets suivants :
  
 5. Installez les dépendances de misskey.
 
-	`yarn install`
+	`yarn install --prod=false`
 
 *4.* Création du fichier de configuration
 ----------------------------------------------------------------
@@ -124,7 +124,7 @@ Vous pouvez vérifier si le service a démarré en utilisant la commande `system
 ### Méthode de mise à jour vers la plus récente version de Misskey
 1. `git checkout master`
 2. `git pull`
-3. `yarn install`
+3. `yarn install --prod=false`
 4. `NODE_ENV=production yarn build`
 5. `yarn migrate`
 
