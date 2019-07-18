@@ -432,7 +432,5 @@ export default Vue.extend({
 	> header
 		padding 8px 0px
 		font-weight bold
-	> div
-		padding-left 16px
 
 </style>
