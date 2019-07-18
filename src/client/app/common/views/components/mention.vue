@@ -1,17 +1,17 @@
 <template>
-	<router-link class="ldlomzub" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
-		<span class="me" v-if="isMe">{{ $t('@.you') }}</span>
-		<span class="main">
-			<span class="username">@{{ username }}</span>
-			<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }" v-if="(host != localHost) || $store.state.settings.showFullAcct">@{{ toUnicode(host) }}</span>
-		</span>
-	</router-link>
-	<a class="ldlomzub" :href="url" target="_blank" rel="noopener" v-else>
-		<span class="main">
-			<span class="username">@{{ username }}</span>
-			<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }">@{{ toUnicode(host) }}</span>
-		</span>
-	</a>
+<router-link class="ldlomzub" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
+	<span class="me" v-if="isMe">{{ $t('@.you') }}</span>
+	<span class="main">
+		<span class="username">@{{ username }}</span>
+		<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }" v-if="(host != localHost) || $store.state.settings.showFullAcct">@{{ toUnicode(host) }}</span>
+	</span>
+</router-link>
+<a class="ldlomzub" :href="url" target="_blank" rel="noopener" v-else>
+	<span class="main">
+		<span class="username">@{{ username }}</span>
+		<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }">@{{ toUnicode(host) }}</span>
+	</span>
+</a>
 </template>
 
 <script lang="ts">
