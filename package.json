@@ -27,7 +27,7 @@
 	},
 	"resolutions": {
 		"gulp-cssnano/cssnano/postcss-svgo/svgo/js-yaml": "^3.13.1",
-		"video-thumbnail-generator/lodash": "^4.17.13"
+		"lodash": "^4.17.13"
 	},
 	"dependencies": {
 		"@elastic/elasticsearch": "7.1.0",
@@ -237,7 +237,6 @@
 		"uuid": "3.3.2",
 		"v-animate-css": "0.0.3",
 		"v-debounce": "0.1.2",
-		"video-thumbnail-generator": "1.1.3",
 		"vue": "2.6.10",
 		"vue-color": "2.7.0",
 		"vue-content-loading": "1.6.0",
