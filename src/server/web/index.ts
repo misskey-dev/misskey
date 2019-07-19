@@ -156,11 +156,17 @@ router.get('/@:user', async (ctx, next) => {
 	if (user != null) {
 		const profile = await UserProfiles.findOne(user.id).then(ensure);
 		const meta = await fetchMeta();
+		const me = profile.fields
+			? profile.fields
+				.filter(filed => filed.value != null && filed.value.match(/^https?:/))
+				.map(field => field.value)
+			: [];
+
 		await ctx.render('user', {
-			user, profile,
+			user, profile, me,
 			instanceName: meta.name || 'Misskey'
 		});
-		ctx.set('Cache-Control', 'public, max-age=180');
+		ctx.set('Cache-Control', 'public, max-age=30');
 	} else {
 		// リモートユーザーなので
 		await next();

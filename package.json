@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <i@syuilo.com>",
-	"version": "11.25.1",
+	"version": "11.26.0",
 	"codename": "daybreak",
 	"repository": {
 		"type": "git",
@@ -37,7 +37,6 @@
 		"@fortawesome/free-solid-svg-icons": "5.9.0",
 		"@fortawesome/vue-fontawesome": "0.1.6",
 		"@koa/cors": "3.0.0",
-		"@typescript-eslint/parser": "1.11.0",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.5.15",
 		"@types/cbor": "2.0.0",
@@ -82,7 +81,7 @@
 		"@types/ratelimiter": "2.1.28",
 		"@types/redis": "2.8.13",
 		"@types/rename": "1.0.1",
-		"@types/request": "2.48.1",
+		"@types/request": "2.48.2",
 		"@types/request-promise-native": "1.0.16",
 		"@types/request-stats": "3.0.0",
 		"@types/rimraf": "2.0.2",
@@ -99,6 +98,7 @@
 		"@types/webpack-stream": "3.2.10",
 		"@types/websocket": "0.0.40",
 		"@types/ws": "6.0.1",
+		"@typescript-eslint/parser": "1.11.0",
 		"animejs": "3.0.1",
 		"apexcharts": "3.8.2",
 		"autobind-decorator": "2.4.0",

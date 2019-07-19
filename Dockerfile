@@ -23,9 +23,9 @@ RUN apk add --no-cache \
     zlib-dev
 
 COPY package.json ./
-RUN npm i
+RUN yarn install
 COPY . ./
-RUN npm run build
+RUN yarn build
 
 FROM base AS runner
 

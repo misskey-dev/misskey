@@ -712,7 +712,7 @@ common/views/components/profile-editor.vue:
   you-can-include-hashtags: "You can also include hashtags in your profile description."
   language: "Language"
   birthday: "Birthday"
-  avatar: "Icon"
+  avatar: "Avatar"
   banner: "Banner"
   is-cat: "This account is a Cat"
   is-bot: "This account is a Bot"
@@ -725,6 +725,9 @@ common/views/components/profile-editor.vue:
   saved: "Profile updated successfully"
   uploading: "Uploading"
   upload-failed: "Failed to upload"
+  unable-to-process: "The operation could not be completed."
+  avatar-not-an-image: "The file specified as an avatar is not an image"
+  banner-not-an-image: "The file specified as a banner is not an image"
   email: "Email settings"
   email-address: "Email Address"
   email-verified: "Your email has been verified."
@@ -744,6 +747,9 @@ common/views/components/profile-editor.vue:
   danger-zone: "Cautious options"
   delete-account: "Remove the account"
   account-deleted: "The account has been deleted. It may take some time until all of the data disappears."
+  profile-metadata: "Profile metadata"
+  metadata-label: "Label"
+  metadata-content: "Content"
 common/views/components/user-list-editor.vue:
   users: "User"
   rename: "Rename list"
@@ -853,6 +859,7 @@ desktop:
   uploading-avatar: "Uploading a new avatar"
   avatar-updated: "Successfully updated the avatar"
   choose-avatar: "Select an image for the avatar"
+  unable-to-process: "The operation could not be completed."
   invalid-filetype: "This filetype is not acceptable here"
 desktop/views/components/activity.chart.vue:
   total: "Black ... Total"
@@ -1365,6 +1372,8 @@ admin/views/users.vue:
   remote-user-updated: "The information regarding the remote user has been updated."
   delete-all-files: "Delete all files"
   delete-all-files-confirm: "Are you sure that you want to delete all files?"
+  username: "Username"
+  host: "Host"
   users:
     title: "Users"
     sort:

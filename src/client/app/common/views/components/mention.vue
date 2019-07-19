@@ -1,11 +1,17 @@
 <template>
-<router-link class="ldlomzub" :to="`/${ canonical }`" v-user-preview="canonical">
+<router-link class="ldlomzub" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
 	<span class="me" v-if="isMe">{{ $t('@.you') }}</span>
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }" v-if="(host != localHost) || $store.state.settings.showFullAcct">@{{ toUnicode(host) }}</span>
 	</span>
 </router-link>
+<a class="ldlomzub" :href="url" target="_blank" rel="noopener" v-else>
+	<span class="main">
+		<span class="username">@{{ username }}</span>
+		<span class="host" :class="{ fade: $store.state.settings.contrastedAcct }">@{{ toUnicode(host) }}</span>
+	</span>
+</a>
 </template>
 
 <script lang="ts">
@@ -32,6 +38,15 @@ export default Vue.extend({
 		};
 	},
 	computed: {
+		url(): string {
+			switch (this.host) {
+				case 'twitter.com':
+				case 'github.com':
+					return `https://${this.host}/${this.username}`;
+				default:
+					return `/${this.canonical}`;
+			}
+		},
 		canonical(): string {
 			return this.host === localHost ? `@${this.username}` : `@${this.username}@${toUnicode(this.host)}`;
 		},

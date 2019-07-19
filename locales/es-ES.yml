@@ -569,6 +569,7 @@ common/views/components/profile-editor.vue:
   saved: "Perfil actualizado con exito"
   uploading: "Subiendo"
   upload-failed: "Error al subir"
+  unable-to-process: "La operación no se puede llevar a cabo"
   email: "Preferencias de correo"
   email-address: "Correo electrónico"
   email-verified: "Tu cuenta de correo ha sido verificada."
@@ -671,6 +672,7 @@ desktop:
   uploading-avatar: "Cargando un nuevo avatar"
   avatar-updated: "Avatar actualizado"
   choose-avatar: "Escoge una imagen de avatar"
+  unable-to-process: "La operación no se puede llevar a cabo"
   invalid-filetype: "Este tipo de archivo no es compatible aquí"
 desktop/views/components/activity.chart.vue:
   total: "Negro ... Total"
@@ -964,6 +966,8 @@ admin/views/drive.vue:
   mark-as-sensitive: "Marcar como 'sensible'"
   unmark-as-sensitive: "Desmarcar como 'sensible'"
 admin/views/users.vue:
+  username: "Usuario"
+  host: "Host"
   users:
     state:
       all: "Todo"

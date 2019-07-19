@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { Users } from '../../../../models';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { doPostUnsuspend } from '../../../../services/unsuspend-user';
 
 export const meta = {
 	desc: {
@@ -40,4 +41,6 @@ export default define(meta, async (ps, me) => {
 	insertModerationLog(me, 'unsuspend', {
 		targetId: user.id,
 	});
+
+	doPostUnsuspend(user);
 });

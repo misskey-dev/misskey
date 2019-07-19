@@ -346,6 +346,7 @@ admin/views/drive.vue:
     local: "Lokalt"
   delete: "Slett"
 admin/views/users.vue:
+  username: "Brukernavn"
   users:
     title: "Bruker"
     state:
