@@ -46,7 +46,7 @@ export default Vue.extend({
 	props: ['data'],
 	data() {
 		return {
-			viewBoxX: 140,
+			viewBoxX: 147,
 			viewBoxY: 60,
 			zoom: 1,
 			pos: 0,

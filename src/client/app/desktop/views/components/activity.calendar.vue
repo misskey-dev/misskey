@@ -1,5 +1,5 @@
 <template>
-<svg :viewBox="`0 0 ${weeks} 7`">
+<svg :viewBox="`0 0 21 7`">
 	<rect v-for="record in data" class="day"
 		width="1" height="1"
 		:x="record.x" :y="record.date.weekday"
@@ -28,11 +28,6 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: ['data'],
-	data() {
-		return {
-			weeks: 21
-		};
-	},
 	created() {
 		for (const d of this.data) {
 			d.total = d.notes + d.replies + d.renotes;
@@ -43,9 +38,8 @@ export default Vue.extend({
 		const year = now.getFullYear();
 		const month = now.getMonth();
 		const day = now.getDate();
-		if (now.getDay() == 6) this.weeks = 20;
 
-		let x = this.weeks - 1;
+		let x = 20;
 		this.data.slice().forEach((d, i) => {
 			d.x = x;
 
