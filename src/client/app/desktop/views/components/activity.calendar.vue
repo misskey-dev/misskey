@@ -1,5 +1,5 @@
 <template>
-<svg :viewBox="`0 0 21 7`">
+<svg viewBox="0 0 21 7">
 	<rect v-for="record in data" class="day"
 		width="1" height="1"
 		:x="record.x" :y="record.date.weekday"
