@@ -109,28 +109,6 @@ router.get('/notes/:note/activity', async ctx => {
 	setResponseType(ctx);
 });
 
-// question
-router.get('/questions/:question', async (ctx, next) => {
-	const pollNote = await Notes.findOne({
-		id: ctx.params.question,
-		userHost: null,
-		visibility: In(['public', 'home']),
-		localOnly: false,
-		hasPoll: true
-	});
-
-	if (pollNote == null) {
-		ctx.status = 404;
-		return;
-	}
-
-	const user = await Users.findOne(pollNote.userId).then(ensure);
-	const poll = await Polls.findOne({ noteId: pollNote.id }).then(ensure);
-
-	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, pollNote, poll));
-	setResponseType(ctx);
-});
-
 // outbox
 router.get('/users/:user/outbox', Outbox);
 

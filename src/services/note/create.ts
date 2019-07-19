@@ -100,7 +100,6 @@ type Option = {
 	apMentions?: User[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
-	questionUri?: string | null;
 	uri?: string | null;
 	app?: App | null;
 };
