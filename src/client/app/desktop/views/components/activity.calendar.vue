@@ -1,11 +1,11 @@
 <template>
-<svg viewBox="0 0 21 7">
+<svg :viewBox="`0 0 ${weeks} 7`">
 	<rect v-for="record in data" class="day"
 		width="1" height="1"
 		:x="record.x" :y="record.date.weekday"
 		rx="1" ry="1"
 		fill="transparent">
-		<title>{{ record.date.year }}/{{ record.date.month }}/{{ record.date.day }}</title>
+		<title>{{ record.date.year }}/{{ record.date.month + 1 }}/{{ record.date.day }}</title>
 	</rect>
 	<rect v-for="record in data" class="day"
 		:width="record.v" :height="record.v"
@@ -28,6 +28,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: ['data'],
+	data() {
+		return {
+			weeks: 21
+		};
+	},
 	created() {
 		for (const d of this.data) {
 			d.total = d.notes + d.replies + d.renotes;
@@ -38,18 +43,19 @@ export default Vue.extend({
 		const year = now.getFullYear();
 		const month = now.getMonth();
 		const day = now.getDate();
+		if (now.getDay() == 6) this.weeks = 20;
 
-		let x = 0;
-		this.data.slice().reverse().forEach((d, i) => {
+		let x = this.weeks - 1;
+		this.data.slice().forEach((d, i) => {
 			d.x = x;
 
 			const date = new Date(year, month, day - i);
 			d.date = {
 				year: date.getFullYear(),
 				month: date.getMonth(),
-				day: date.getDate()
+				day: date.getDate(),
+				weekday: date.getDay()
 			};
-			d.date.weekday = (new Date(d.date.year, d.date.month - 1, d.date.day)).getDay();
 
 			d.v = peak == 0 ? 0 : d.total / (peak / 2);
 			if (d.v > 1) d.v = 1;
@@ -58,7 +64,7 @@ export default Vue.extend({
 			const cl = 15 + ((1 - d.v) * 80);
 			d.color = `hsl(${ch}, ${cs}%, ${cl}%)`;
 
-			if (d.date.weekday == 6) x++;
+			if (d.date.weekday == 0) x--;
 		});
 	}
 });
