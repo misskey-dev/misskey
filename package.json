@@ -27,7 +27,7 @@
 	},
 	"resolutions": {
 		"gulp-cssnano/cssnano/postcss-svgo/svgo/js-yaml": "^3.13.1",
-		"video-thumbnail-generator/lodash": "^4.17.13"
+		"lodash": "^4.17.13"
 	},
 	"dependencies": {
 		"@elastic/elasticsearch": "7.1.0",
@@ -128,6 +128,7 @@
 		"eventemitter3": "4.0.0",
 		"feed": "3.0.0",
 		"file-type": "12.0.1",
+		"fluent-ffmpeg": "2.1.2",
 		"fuckadblock": "3.2.1",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
@@ -237,7 +238,6 @@
 		"uuid": "3.3.2",
 		"v-animate-css": "0.0.3",
 		"v-debounce": "0.1.2",
-		"video-thumbnail-generator": "1.1.3",
 		"vue": "2.6.10",
 		"vue-color": "2.7.0",
 		"vue-content-loading": "1.6.0",
@@ -263,5 +263,8 @@
 		"websocket": "1.0.29",
 		"ws": "7.1.0",
 		"xev": "2.0.1"
+	},
+	"devDependencies": {
+		"@types/fluent-ffmpeg": "2.1.10"
 	}
 }
