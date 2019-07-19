@@ -72,7 +72,7 @@ export default define({
 		display block
 		z-index 1
 		margin 0
-		font-size 0.9em
+		font-size 0.8em
 		color var(--announcementsText)
 
 		&.fetching
