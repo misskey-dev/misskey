@@ -59,21 +59,19 @@ export default define({
 <style lang="stylus" scoped>
 .anltbovirfeutcigvwgmgxipejaeozxi-body
 	padding 10px
-	background var(--announcementsBg)
-
 
 	> h1
 		margin 0
-		font-size 0.95em
+		font-size 1em
 		font-weight normal
-		color var(--announcementsTitle)
+		color var(--text)
 
 	> p
 		display block
 		z-index 1
 		margin 0
 		font-size 0.8em
-		color var(--announcementsText)
+		color var(--text)
 
 		&.fetching
 			text-align center
