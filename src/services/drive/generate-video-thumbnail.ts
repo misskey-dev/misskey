@@ -20,7 +20,8 @@ export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 		.screenshot({
 			folder: outDir,
 			filename: 'output.png',
-			count: 1
+			count: 1,
+			timestamps: ['5%']
 		});
 	});
 
