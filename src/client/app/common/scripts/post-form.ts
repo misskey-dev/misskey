@@ -328,6 +328,7 @@ export default (opts) => ({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
+			this.quoteId = null;
 			this.$emit('change-attached-files', this.files);
 		},
 
@@ -357,7 +358,7 @@ export default (opts) => ({
 
 			const paste = e.clipboardData.getData('text');
 
-			if (paste.startsWith(url + '/notes/')) {
+			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
 				this.$root.dialog({
