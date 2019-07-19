@@ -40,7 +40,7 @@ export default Vue.extend({
 		const day = now.getDate();
 
 		let x = 20;
-		this.data.slice().forEach((d, i) => {
+		this.data = this.data.map((d, i) => {
 			d.x = x;
 
 			const date = new Date(year, month, day - i);
@@ -59,6 +59,8 @@ export default Vue.extend({
 			d.color = `hsl(${ch}, ${cs}%, ${cl}%)`;
 
 			if (d.date.weekday == 0) x--;
+
+			return d;
 		});
 	}
 });
