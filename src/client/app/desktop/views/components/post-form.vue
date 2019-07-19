@@ -6,18 +6,18 @@
 	@drop.stop="onDrop"
 >
 	<div class="content">
-		<div v-if="visibility == 'specified'" class="visibleUsers">
+		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
+			<b>{{ $t('@.post-form.recent-tags') }}:</b>
+			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('@.post-form.click-to-tagging')">#{{ tag }}</a>
+		</div>
+		<div class="with-quote" v-if="quoteId">{{ $t('@.post-form.quote-attached') }} <a @click="quoteId = null">[x]</a></div>
+		<div v-if="visibility === 'specified'" class="visibleUsers">
 			<span v-for="u in visibleUsers">
 				<mk-user-name :user="u"/><a @click="removeVisibleUser(u)">[x]</a>
 			</span>
 			<a @click="addVisibleUser">{{ $t('@.post-form.add-visible-user') }}</a>
 		</div>
-		<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
-			<b>{{ $t('@.post-form.recent-tags') }}:</b>
-			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('@.post-form.click-to-tagging')">#{{ tag }}</a>
-		</div>
-		<div class="with-quote" v-if="quoteId">{{ $t('@.post-form.quote-attached') }}</div>
-		<div class="local-only" v-if="localOnly == true">{{ $t('@.post-form.local-only-message') }}</div>
+		<div class="local-only" v-if="localOnly === true">{{ $t('@.post-form.local-only-message') }}</div>
 		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.cw-placeholder')" v-autocomplete="{ model: 'cw' }">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -190,14 +190,6 @@ export default Vue.extend({
 				border-radius 0 0 4px 4px
 				transition border-color .3s ease
 
-		> .visibleUsers
-			margin-bottom 8px
-			font-size 14px
-
-			> span
-				margin-right 16px
-				color var(--primary)
-
 		> .hashtags
 			margin 0 0 8px 0
 			overflow hidden
@@ -210,6 +202,18 @@ export default Vue.extend({
 			> *
 				margin-right 8px
 				white-space nowrap
+
+		> .with-quote
+			margin 0 0 8px 0
+			color var(--primary)
+
+		> .visibleUsers
+			margin-bottom 8px
+			font-size 14px
+
+			> span
+				margin-right 16px
+				color var(--primary)
 
 		> .local-only
 			margin 0 0 8px 0
