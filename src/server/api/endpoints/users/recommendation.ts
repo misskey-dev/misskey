@@ -55,7 +55,7 @@ export default define(meta, async (ps, me) => {
 		.where('following.followerId = :followerId', { followerId: me.id });
 
 	query
-		.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`)
+		.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`);
 
 	query.setParameters(followingQuery.getParameters());
 
