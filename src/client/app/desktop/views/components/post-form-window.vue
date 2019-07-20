@@ -10,7 +10,7 @@
 		</span>
 	</template>
 
-	<div class="mk-post-form-window--body">
+	<div class="mk-post-form-window--body" :style="{ maxHeight: `${maxHeight}px` }">
 		<mk-note-preview v-if="reply" class="notePreview" :note="reply"/>
 		<x-post-form ref="form"
 			:reply="reply"
@@ -59,6 +59,12 @@ export default Vue.extend({
 			files: [],
 			geo: null
 		};
+	},
+
+	computed: {
+		maxHeight() {
+			return window.innerHeight - 50;
+		},
 	},
 
 	mounted() {
