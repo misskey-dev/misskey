@@ -27,7 +27,7 @@
 			<footer>
 				<button @click="chooseFile"><fa icon="upload"/></button>
 				<button @click="chooseFileFromDrive"><fa icon="cloud"/></button>
-				<button @click="post" :disabled="posting" class="post">{{ $t('note') }}</button>
+				<button @click="post()" :disabled="posting" class="post">{{ $t('note') }}</button>
 			</footer>
 		</div>
 	</ui-container>

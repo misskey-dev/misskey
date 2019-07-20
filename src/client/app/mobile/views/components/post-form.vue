@@ -11,7 +11,7 @@
 			<div>
 				<span class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</span>
 				<span class="geo" v-if="geo"><fa icon="map-marker-alt"/></span>
-				<button class="submit" :disabled="!canPost" @click="post">{{ submitText }}</button>
+				<button class="submit" :disabled="!canPost" @click="post()">{{ submitText }}</button>
 			</div>
 		</header>
 		<div class="form">

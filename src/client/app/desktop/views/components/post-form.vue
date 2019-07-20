@@ -51,7 +51,7 @@
 			<ui-button inline :wait="posting" class="submit" :disabled="!canPost" @click="post(true)">
 				{{ posting ? $t('@.post-form.posting') : $t('preview') }}<mk-ellipsis v-if="posting"/>
 			</ui-button>
-			<ui-button inline primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
+			<ui-button inline primary :wait="posting" class="submit" :disabled="!canPost" @click="post()">
 				{{ posting ? $t('@.post-form.posting') : submitText }}<mk-ellipsis v-if="posting"/>
 			</ui-button>
 		</footer>
