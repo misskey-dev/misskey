@@ -89,6 +89,7 @@ common:
     "read:notifications": "Prohlížet oznámení"
     "write:notifications": "Pracovat s oznámeními"
     "read:reactions": "Prohlížet reakce"
+    "write:reactions": "Narabět s reakcemi"
     "write:votes": "Hlasovat"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
