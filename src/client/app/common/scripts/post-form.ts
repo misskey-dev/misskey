@@ -326,6 +326,7 @@ export default (opts) => ({
 		},
 
 		clear() {
+			this.preview = null;
 			this.text = '';
 			this.files = [];
 			this.poll = false;
@@ -484,10 +485,8 @@ export default (opts) => ({
 			}).then(data => {
 				if (preview) {
 					this.preview = data.createdNote;
-					this.preview.id = Math.random();
 					return;
 				}
-				this.preview = null;
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');

@@ -317,8 +317,6 @@ export default define(meta, async (ps, user, app) => {
 		geo: ps.geo
 	});
 
-	console.log(JSON.stringify(note, null, 2));
-
 	return {
 		createdNote: await Notes.pack(note, user)
 	};
