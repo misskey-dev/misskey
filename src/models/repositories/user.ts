@@ -148,6 +148,7 @@ export class UserRepository extends Repository<User> {
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
+				fields: profile!.fields,
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,

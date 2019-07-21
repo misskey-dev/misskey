@@ -518,6 +518,7 @@ common/views/components/profile-editor.vue:
   saved: "Pomyślnie zaktualizowano profil"
   uploading: "Wysyłanie"
   upload-failed: "Wysyłanie nie powiodło się"
+  unable-to-process: "Nie udało się ukończyć działania."
   email: "Ustawienia e-mail"
   email-address: "Adres e-mail"
   email-verified: "Twój adres e-mail został zweryfikowany."
@@ -612,6 +613,7 @@ desktop:
   uploading-avatar: "Wysyłanie awatara"
   avatar-updated: "Wysłano awatar"
   choose-avatar: "Wybierz awatar"
+  unable-to-process: "Nie udało się ukończyć działania."
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -910,6 +912,7 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
 admin/views/users.vue:
   user-not-found: "Nie znaleziono użytkownika"
+  username: "Nazwa użytkownika"
   users:
     title: "Użytkownicy"
     sort:

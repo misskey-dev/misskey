@@ -8,7 +8,7 @@
 			</ui-input>
 			<ui-button @click="showUser"><fa :icon="faSearch"/> {{ $t('lookup') }}</ui-button>
 
-			<div class="user" v-if="user">
+			<div ref="user" class="user" v-if="user" :key="user.id">
 				<x-user :user="user"/>
 				<div class="actions">
 					<ui-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('update-remote-user') }}</ui-button>
@@ -54,8 +54,16 @@
 					<option value="remote">{{ $t('users.origin.remote') }}</option>
 				</ui-select>
 			</ui-horizon-group>
+			<ui-horizon-group searchboxes>
+				<ui-input v-model="searchUsername" type="text" spellcheck="false" @input="fetchUsers(true)">
+					<span>{{ $t('username') }}</span>
+				</ui-input>
+				<ui-input v-model="searchHost" type="text" spellcheck="false" @input="fetchUsers(true)" :disabled="origin === 'local'">
+					<span>{{ $t('host') }}</span>
+				</ui-input>
+			</ui-horizon-group>
 			<sequential-entrance animation="entranceFromTop" delay="25">
-				<x-user v-for="user in users" :user='user' :key="user.id"/>
+				<x-user v-for="user in users" :key="user.id" :user='user' :click="showUserOnClick"/>
 			</sequential-entrance>
 			<ui-button v-if="existMore" @click="fetchUsers">{{ $t('@.load-more') }}</ui-button>
 		</section>
@@ -85,6 +93,8 @@ export default Vue.extend({
 			sort: '+createdAt',
 			state: 'all',
 			origin: 'local',
+			searchUsername: '',
+			searchHost: '',
 			limit: 10,
 			offset: 0,
 			users: [],
@@ -107,6 +117,7 @@ export default Vue.extend({
 		},
 
 		origin() {
+			if (this.origin === 'local') this.searchHost = '';
 			this.users = [];
 			this.offset = 0;
 			this.fetchUsers();
@@ -155,6 +166,15 @@ export default Vue.extend({
 				this.user = info;
 			});
 			this.target = '';
+		},
+
+		async showUserOnClick(userId: string) {
+			this.$root.api('admin/show-user', { userId: userId }).then(info => {
+				this.user = info;
+				this.$nextTick(() => {
+					this.$refs.user.scrollIntoView();
+				});
+			});
 		},
 
 		/** 処理対象ユーザーの情報を更新する */
@@ -308,13 +328,16 @@ export default Vue.extend({
 			return !confirm.canceled;
 		},
 
-		fetchUsers() {
+		fetchUsers(truncate?: boolean) {
+			if (truncate) this.offset = 0;
 			this.$root.api('admin/show-users', {
 				state: this.state,
 				origin: this.origin,
 				sort: this.sort,
 				offset: this.offset,
-				limit: this.limit + 1
+				limit: this.limit + 1,
+				username: this.searchUsername,
+				hostname: this.searchHost
 			}).then(users => {
 				if (users.length == this.limit + 1) {
 					users.pop();
@@ -322,7 +345,7 @@ export default Vue.extend({
 				} else {
 					this.existMore = false;
 				}
-				this.users = this.users.concat(users);
+				this.users = truncate ? users : this.users.concat(users);
 				this.offset += this.limit;
 			});
 		}

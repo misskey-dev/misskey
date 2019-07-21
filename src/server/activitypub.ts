@@ -11,10 +11,9 @@ import Outbox, { packActivity } from './activitypub/outbox';
 import Followers from './activitypub/followers';
 import Following from './activitypub/following';
 import Featured from './activitypub/featured';
-import renderQuestion from '../remote/activitypub/renderer/question';
 import { inbox as processInbox } from '../queue';
 import { isSelfHost } from '../misc/convert-host';
-import { Notes, Users, Emojis, UserKeypairs, Polls } from '../models';
+import { Notes, Users, Emojis, UserKeypairs } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In } from 'typeorm';
 import { ensure } from '../prelude/ensure';
@@ -106,28 +105,6 @@ router.get('/notes/:note/activity', async ctx => {
 
 	ctx.body = renderActivity(await packActivity(note));
 	ctx.set('Cache-Control', 'public, max-age=180');
-	setResponseType(ctx);
-});
-
-// question
-router.get('/questions/:question', async (ctx, next) => {
-	const pollNote = await Notes.findOne({
-		id: ctx.params.question,
-		userHost: null,
-		visibility: In(['public', 'home']),
-		localOnly: false,
-		hasPoll: true
-	});
-
-	if (pollNote == null) {
-		ctx.status = 404;
-		return;
-	}
-
-	const user = await Users.findOne(pollNote.userId).then(ensure);
-	const poll = await Polls.findOne({ noteId: pollNote.id }).then(ensure);
-
-	ctx.body = renderActivity(await renderQuestion(user as ILocalUser, pollNote, poll));
 	setResponseType(ctx);
 });
 

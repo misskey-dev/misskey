@@ -570,7 +570,7 @@ common/views/components/note-menu.vue:
   delete: "削除"
   delete-confirm: "この投稿を削除しますか？"
   delete-and-edit: "削除して編集"
-  delete-and-edit-confirm: "この投稿を削除してもう一度編集しますか？この投稿へのリアクション、リノート、返信は全て削除されます。"
+  delete-and-edit-confirm: "この投稿を削除してもう一度編集しますか？この投稿へのリアクション、リノート、返信も全て削除されます。"
   remote: "投稿元で見る"
   pin-limit-exceeded: "これ以上ピン留めできません。"
 
@@ -784,6 +784,9 @@ common/views/components/profile-editor.vue:
   saved: "プロフィールを保存しました"
   uploading: "アップロード中"
   upload-failed: "アップロードに失敗しました"
+  unable-to-process: "操作を完了できません"
+  avatar-not-an-image: "アイコンとして指定したファイルは画像ではありません"
+  banner-not-an-image: "バナーとして指定したファイルは画像ではありません"
   email: "メール設定"
   email-address: "メールアドレス"
   email-verified: "メールアドレスが確認されました"
@@ -803,6 +806,9 @@ common/views/components/profile-editor.vue:
   danger-zone: "危険な設定"
   delete-account: "アカウントを削除"
   account-deleted: "アカウントが削除されました。データが消えるまで時間がかかる場合があります。"
+  profile-metadata: "プロフィール補足情報"
+  metadata-label: "ラベル"
+  metadata-content: "内容"
 
 common/views/components/user-list-editor.vue:
   users: "ユーザー"
@@ -929,6 +935,7 @@ desktop:
   uploading-avatar: "新しいアバターをアップロードしています"
   avatar-updated: "アバターを更新しました"
   choose-avatar: "アバターにする画像を選択"
+  unable-to-process: "操作を完了できません"
   invalid-filetype: "この形式のファイルはサポートされていません"
 
 desktop/views/components/activity.chart.vue:
@@ -1500,6 +1507,8 @@ admin/views/users.vue:
   remote-user-updated: "リモートユーザー情報を更新しました"
   delete-all-files: "すべてのファイルを削除"
   delete-all-files-confirm: "すべてのファイルを削除しますか？"
+  username: "ユーザー名"
+  host: "ホスト"
   users:
     title: "ユーザー"
     sort:

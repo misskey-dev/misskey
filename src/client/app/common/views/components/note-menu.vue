@@ -73,13 +73,14 @@ export default Vue.extend({
 				text: this.$t('pin'),
 				action: () => this.togglePin(true)
 			} : undefined,
-			this.note.userId == this.$store.state.i.id ? {
-				icon: 'undo-alt',
-				text: this.$t('delete-and-edit'),
-				action: this.deleteAndEdit
-			} : undefined,
 			...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
-				null, {
+				null,
+				this.note.userId == this.$store.state.i.id ? {
+					icon: 'undo-alt',
+					text: this.$t('delete-and-edit'),
+					action: this.deleteAndEdit
+				} : undefined,
+				{
 					icon: ['far', 'trash-alt'],
 					text: this.$t('delete'),
 					action: this.del
@@ -172,8 +173,8 @@ export default Vue.extend({
 					this.destroyDom();
 				});
 				this.$post({
-					initialText: this.note.text,
-					instant: true
+					initialNote: this.note,
+					reply: this.note.reply,
 				});
 			});
 		},

@@ -725,6 +725,7 @@ common/views/components/profile-editor.vue:
   saved: "您的个人资料已保存"
   uploading: "正在上传"
   upload-failed: "上传失败"
+  unable-to-process: "无法完成操作"
   email: "邮件设置"
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
@@ -744,6 +745,7 @@ common/views/components/profile-editor.vue:
   danger-zone: "危险选项"
   delete-account: "删除帐户"
   account-deleted: "帐户已被删除。 数据会在一段时间之后清除。"
+  metadata-content: "内容"
 common/views/components/user-list-editor.vue:
   users: "用户"
   rename: "重命名列表"
@@ -853,6 +855,7 @@ desktop:
   uploading-avatar: "上传一个新的头像"
   avatar-updated: "成功上传头像"
   choose-avatar: "选择作为头像的图片"
+  unable-to-process: "无法完成操作"
   invalid-filetype: "不接受此文件类型"
 desktop/views/components/activity.chart.vue:
   total: "黑 ... 总计"
@@ -1365,6 +1368,8 @@ admin/views/users.vue:
   remote-user-updated: "远程用户信息已更新"
   delete-all-files: "删除所有文件"
   delete-all-files-confirm: "删除所有文件吗？"
+  username: "用户名"
+  host: "主机名"
   users:
     title: "用户"
     sort:

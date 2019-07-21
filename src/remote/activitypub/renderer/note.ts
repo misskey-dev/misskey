@@ -90,14 +90,11 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		poll = await Polls.findOne({ noteId: note.id });
 	}
 
-	let question: string | undefined;
 	if (poll) {
 		if (text == null) text = '';
 		const url = `${config.url}/notes/${note.id}`;
 		// TODO: i18n
 		text += `\n[リモートで結果を表示](${url})`;
-
-		question = `${config.url}/questions/${note.id}`;
 	}
 
 	let apText = text;
@@ -156,7 +153,6 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		content,
 		_misskey_content: text,
 		_misskey_quote: quote,
-		_misskey_question: question,
 		published: note.createdAt.toISOString(),
 		to,
 		cc,

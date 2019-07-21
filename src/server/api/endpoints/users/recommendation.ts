@@ -3,6 +3,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { Users, Followings } from '../../../../models';
 import { generateMuteQueryForUsers } from '../../common/generate-mute-query';
+import { generateBlockQueryForUsers } from '../../common/generate-block-query';
 
 export const meta = {
 	desc: {
@@ -47,6 +48,7 @@ export default define(meta, async (ps, me) => {
 		.orderBy('user.followersCount', 'DESC');
 
 	generateMuteQueryForUsers(query, me);
+	generateBlockQueryForUsers(query, me);
 
 	const followingQuery = Followings.createQueryBuilder('following')
 		.select('following.followeeId')

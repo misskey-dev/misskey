@@ -725,6 +725,9 @@ common/views/components/profile-editor.vue:
   saved: "프로필을 저장하였습니다"
   uploading: "업로드 중"
   upload-failed: "업로드에 실패하였습니다"
+  unable-to-process: "작업을 완료할 수 없습니다"
+  avatar-not-an-image: "아바타로 지정한 파일이 이미지 형식이 아닙니다"
+  banner-not-an-image: "배너로 지정한 파일이 이미지 형식이 아닙니다"
   email: "메일 설정"
   email-address: "메일 주소"
   email-verified: "매일 주소가 확인되었습니다"
@@ -744,6 +747,9 @@ common/views/components/profile-editor.vue:
   danger-zone: "위험한 설정"
   delete-account: "계정 삭제"
   account-deleted: "계정이 삭제되었습니다. 데이터가 사라질 때까지 시간이 걸릴 수 있습니다."
+  profile-metadata: "프로필 추가 정보"
+  metadata-label: "라벨"
+  metadata-content: "내용"
 common/views/components/user-list-editor.vue:
   users: "사용자"
   rename: "리스트 이름 바꾸기"
@@ -853,6 +859,7 @@ desktop:
   uploading-avatar: "새로운 아바타를 업로드하고 있습니다"
   avatar-updated: "아바타가 변경되었습니다"
   choose-avatar: "아바타 이미지를 선택"
+  unable-to-process: "작업을 완료할 수 없습니다"
   invalid-filetype: "이 형식의 파일은 지원되지 않습니다"
 desktop/views/components/activity.chart.vue:
   total: "검은색 ... 전체"
@@ -894,7 +901,7 @@ desktop/views/components/drive.file.vue:
     copy-url: "URL 복사"
     download: "다운로드"
     else-files: "기타"
-    set-as-avatar: "아이콘으로 설정"
+    set-as-avatar: "아바타로 설정"
     set-as-banner: "배너로 설정"
     open-in-app: "앱에서 열기"
     add-app: "앱 추가"
@@ -1365,6 +1372,8 @@ admin/views/users.vue:
   remote-user-updated: "원격 사용자 정보를 갱신하였습니다"
   delete-all-files: "모든 파일 삭제"
   delete-all-files-confirm: "모든 파일을 삭제하시겠습니까?"
+  username: "사용자명"
+  host: "관리자"
   users:
     title: "사용자"
     sort:

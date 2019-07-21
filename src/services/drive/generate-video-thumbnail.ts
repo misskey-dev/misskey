@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as tmp from 'tmp';
 import { IImage, convertToJpeg } from './image-processor';
-const ThumbnailGenerator = require('video-thumbnail-generator').default;
+import * as FFmpeg from 'fluent-ffmpeg';
 
 export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 	const [outDir, cleanup] = await new Promise<[string, any]>((res, rej) => {
@@ -11,14 +11,18 @@ export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 		});
 	});
 
-	const tg = new ThumbnailGenerator({
-		sourcePath: path,
-		thumbnailPath: outDir,
-	});
-
-	await tg.generateOneByPercent(5, {
-		size: '100%',
-		filename: 'output.png',
+	await new Promise((res, rej) => {
+		FFmpeg({
+			source: path
+		})
+		.on('end', res)
+		.on('error', rej)
+		.screenshot({
+			folder: outDir,
+			filename: 'output.png',
+			count: 1,
+			timestamps: ['5%']
+		});
 	});
 
 	const outPath = `${outDir}/output.png`;
@@ -26,7 +30,7 @@ export async function GenerateVideoThumbnail(path: string): Promise<IImage> {
 	const thumbnail = await convertToJpeg(outPath, 498, 280);
 
 	// cleanup
-	fs.unlinkSync(outPath);
+	await fs.promises.unlink(outPath);
 	cleanup();
 
 	return thumbnail;

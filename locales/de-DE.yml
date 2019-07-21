@@ -567,6 +567,7 @@ common/views/components/profile-editor.vue:
   avatar: "Avatar"
   banner: "Banner"
   save: "Speichern"
+  unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
   export: "Exportieren"
   import: "Importieren"
   export-targets:
@@ -600,6 +601,7 @@ common/views/widgets/memo.vue:
   save: "Speichern"
 desktop:
   banner: "Banner"
+  unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
 desktop/views/components/activity.chart.vue:
   total: "Schwarz ... komplett"
   notes: "Blau ... Hinweise"
@@ -784,6 +786,7 @@ admin/views/drive.vue:
     local: "Lokal"
   delete: "Löschen"
 admin/views/users.vue:
+  username: "Benutzername"
   users:
     origin:
       local: "Lokal"

@@ -83,6 +83,21 @@ export default ($root: any) => {
 			});
 
 			return i;
+		}).catch(err => {
+			switch (err.id) {
+				case '75aedb19-2afd-4e6d-87fc-67941256fa60':
+					$root.dialog({
+						type: 'error',
+						title: locale['desktop']['unable-to-process'],
+						text: locale['desktop']['invalid-filetype']
+					});
+					break;
+				default:
+					$root.dialog({
+						type: 'error',
+						text: locale['desktop']['unable-to-process']
+					});
+			}
 		});
 	};
 

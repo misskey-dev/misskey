@@ -17,16 +17,17 @@
 		<div class="form">
 			<mk-note-preview class="preview" v-if="reply" :note="reply"/>
 			<mk-note-preview class="preview" v-if="renote" :note="renote"/>
-			<div v-if="visibility == 'specified'" class="visibleUsers">
+			<div class="with-quote" v-if="quoteId">{{ $t('@.post-form.quote-attached') }} <a @click="quoteId = null">[x]</a></div>
+			<div v-if="visibility === 'specified'" class="visibleUsers">
 				<span v-for="u in visibleUsers">
 					<mk-user-name :user="u"/>
 					<a @click="removeVisibleUser(u)">[x]</a>
 				</span>
 				<a @click="addVisibleUser">+{{ $t('@.post-form.add-visible-user') }}</a>
 			</div>
+			<div class="local-only" v-if="localOnly === true">{{ $t('@.post-form.local-only-message') }}</div>
 			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.cw-placeholder')" v-autocomplete="{ model: 'cw' }">
 			<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @paste="onPaste"></textarea>
-			<div class="with-quote" v-if="quoteId">{{ $t('@.post-form.quote-attached') }}</div>
 			<x-post-form-attaches class="attaches" :files="files"/>
 			<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
@@ -140,6 +141,10 @@ export default Vue.extend({
 			> .preview
 				padding 16px
 
+			> .with-quote
+				margin 0 0 8px 0
+				color var(--primary)
+
 			> .visibleUsers
 				margin 5px
 				font-size 14px
@@ -147,6 +152,10 @@ export default Vue.extend({
 				> span
 					margin-right 16px
 					color var(--text)
+
+			> .local-only
+				margin 0 0 8px 0
+				color var(--primary)
 
 			> input
 				z-index 1

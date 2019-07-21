@@ -10,12 +10,13 @@
 		</span>
 	</template>
 
-	<div class="mk-post-form-window--body">
+	<div class="mk-post-form-window--body" :style="{ maxHeight: `${maxHeight}px` }">
 		<mk-note-preview v-if="reply" class="notePreview" :note="reply"/>
 		<x-post-form ref="form"
 			:reply="reply"
 			:mention="mention"
 			:initial-text="initialText"
+			:initial-note="initialNote"
 			:instant="instant"
 
 			@posted="onPosted"
@@ -60,6 +61,11 @@ export default Vue.extend({
 			required: false
 		},
 
+		initialNote: {
+			type: Object,
+			required: false
+		},
+
 		instant: {
 			type: Boolean,
 			required: false,
@@ -73,6 +79,12 @@ export default Vue.extend({
 			files: [],
 			geo: null
 		};
+	},
+
+	computed: {
+		maxHeight() {
+			return window.innerHeight - 50;
+		},
 	},
 
 	mounted() {

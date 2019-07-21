@@ -1,7 +1,6 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import { publishMainStream } from '../../../services/stream';
 import signin from '../common/signin';
 import config from '../../../config';
 import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '../../../models';
@@ -53,34 +52,30 @@ export default async (ctx: Koa.BaseContext) => {
 	// Compare password
 	const same = await bcrypt.compare(password, profile.password!);
 
-	async function fail(status?: number, failure?: {error: string}) {
+	async function fail(status?: number, failure?: { error: string }) {
 		// Append signin history
-		const record = await Signins.save({
+		await Signins.save({
 			id: genId(),
 			createdAt: new Date(),
 			userId: user.id,
 			ip: ctx.ip,
 			headers: ctx.headers,
-			success: !!(status || failure)
+			success: false
 		});
 
-		// Publish signin event
-		publishMainStream(user.id, 'signin', await Signins.pack(record));
-
-		if (status && failure) {
-			ctx.throw(status, failure);
-		}
+		ctx.throw(status || 500, failure || { error: 'someting happened' });
 	}
 
 	if (!profile.twoFactorEnabled) {
 		if (same) {
 			signin(ctx, user);
+			return;
 		} else {
 			await fail(403, {
 				error: 'incorrect password'
 			});
+			return;
 		}
-		return;
 	}
 
 	if (token) {
@@ -169,6 +164,7 @@ export default async (ctx: Koa.BaseContext) => {
 
 		if (isValid) {
 			signin(ctx, user);
+			return;
 		} else {
 			await fail(403, {
 				error: 'invalid challenge data'
@@ -191,6 +187,7 @@ export default async (ctx: Koa.BaseContext) => {
 			await fail(403, {
 				error: 'no keys found'
 			});
+			return;
 		}
 
 		// 32 byte challenge
@@ -219,6 +216,5 @@ export default async (ctx: Koa.BaseContext) => {
 		ctx.status = 200;
 		return;
 	}
-
-	await fail();
+	// never get here
 };

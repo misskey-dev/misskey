@@ -35,6 +35,10 @@ export default (opts) => ({
 			type: String,
 			required: false
 		},
+		initialNote: {
+			type: Object,
+			required: false
+		},
 		instant: {
 			type: Boolean,
 			required: false,
@@ -195,6 +199,28 @@ export default (opts) => ({
 					this.$emit('change-attached-files', this.files);
 				}
 			}
+			if (this.initialNote) {
+				// 削除して編集
+				const init = this.initialNote;
+				this.text = init.text ? init.text : '';
+				this.files = init.files;
+				this.cw = init.cw;
+				this.useCw = init.cw != null;
+				if (init.poll) {
+					this.poll = true;
+					this.$nextTick(() => {
+						(this.$refs.poll as any).set({
+							choices: init.poll.choices.map(c => c.text),
+							multiple: init.poll.multiple
+						});
+					});
+				}
+				// hack 位置情報投稿が動くようになったら適用する
+				this.geo = null;
+				this.visibility = init.visibility;
+				this.localOnly = init.localOnly;
+				this.quoteId = init.renote ? init.renote.id : null;
+			}
 
 			this.$nextTick(() => this.watch());
 		});
@@ -328,6 +354,7 @@ export default (opts) => ({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
+			this.quoteId = null;
 			this.$emit('change-attached-files', this.files);
 		},
 
@@ -357,7 +384,7 @@ export default (opts) => ({
 
 			const paste = e.clipboardData.getData('text');
 
-			if (paste.startsWith(url + '/notes/')) {
+			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
 				this.$root.dialog({
