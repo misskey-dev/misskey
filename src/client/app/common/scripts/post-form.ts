@@ -458,7 +458,7 @@ export default (opts) => ({
 		},
 
 		doPreview() {
-			this.preview = {
+			this.preview = this.canPost ? {
 				id: `${Math.random()}`,
 				createdAt: new Date().toISOString(),
 				userId: this.$store.state.i.id,
@@ -467,7 +467,7 @@ export default (opts) => ({
 				visibility: this.visibility,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				files: this.files || [],
-			};
+			} : null;
 		},
 
 		post() {
