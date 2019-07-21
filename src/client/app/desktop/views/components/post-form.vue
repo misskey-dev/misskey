@@ -29,9 +29,6 @@
 				<button class="emoji" @click="emoji" ref="emoji">
 					<fa :icon="['far', 'laugh']"/>
 				</button>
-				<button v-if="canPost" class="doPreview" @click="post(true)" :title="$t('preview')">
-					<fa :icon="['fa', 'eye']"/>
-				</button>
 				<x-post-form-attaches class="files" :class="{ with: poll }" :files="files"/>
 				<x-poll-editor class="poll-editor" v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			</div>
@@ -59,9 +56,6 @@
 		<div class="dropzone" v-if="draghover"></div>
 	</div>
 	<div v-if="preview" class="preview">
-		<button class="close" @click="preview = null">
-			<fa icon="times"/>
-		</button>
 		<mk-note class="note" :note="preview" :key="preview.id" :preview="true" />
 	</div>
 </div>
@@ -74,6 +68,15 @@ import form from '../../../common/scripts/post-form';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/post-form.vue'),
+
+	watch: {
+		text() {
+			this.doPreview();
+		},
+		files() {
+			this.doPreview();
+		},
+	},
 
 	mixins: [
 		form({
@@ -308,13 +311,6 @@ export default Vue.extend({
 		pointer-events none
 
 .preview
-	> .close
-		position absolute
-		top 0
-		right 0
-		z-index 1000
-		padding 4px 8px
-		color var(--primaryAlpha04)
 	> .note
 		border-top solid var(--lineWidth) var(--faceDivider)
 		background var(--desktopPostFormBg)

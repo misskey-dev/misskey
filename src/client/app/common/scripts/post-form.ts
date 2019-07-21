@@ -459,6 +459,19 @@ export default (opts) => ({
 			this.text += getFace();
 		},
 
+		doPreview() {
+			this.preview = {
+				id: `${Math.random()}`,
+				createdAt: new Date().toISOString(),
+				userId: this.$store.state.i.id,
+				user: this.$store.state.i,
+				text: this.text == '' ? undefined : this.text,
+				visibility: this.visibility,
+				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
+				files: this.files || [],
+			};
+		},
+
 		post(preview: boolean) {
 			this.posting = true;
 			const viaMobile = opts.mobile && !this.$store.state.settings.disableViaMobile;
