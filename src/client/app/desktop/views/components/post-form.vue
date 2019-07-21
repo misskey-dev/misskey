@@ -53,9 +53,10 @@
 		<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 		<div class="dropzone" v-if="draghover"></div>
 	</div>
-	<div v-if="preview" class="preview">
+	<details v-if="preview" class="preview" open="true">
+		<summary>{{ $t('@.post-form.preview') }}</summary>
 		<mk-note class="note" :note="preview" :key="preview.id" :preview="true" />
-	</div>
+	</details>
 </div>
 </template>
 
@@ -321,7 +322,14 @@ export default Vue.extend({
 		pointer-events none
 
 .preview
+	background var(--desktopPostFormBg)
+
+	> summary
+		padding 0px 16px 16px 20px
+		font-size 14px
+		color var(--text)
+
 	> .note
 		border-top solid var(--lineWidth) var(--faceDivider)
-		background var(--desktopPostFormBg)
+
 </style>

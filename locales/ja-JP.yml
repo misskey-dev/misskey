@@ -130,6 +130,7 @@ common:
     cw-placeholder: "内容への注釈 (オプション)"
     username-prompt: "ユーザー名を入力してください"
     enter-file-name: "ファイル名を編集"
+    preview: "プレビュー"
 
   weekday-short:
     sunday: "日"
