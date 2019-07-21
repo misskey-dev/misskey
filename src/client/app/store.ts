@@ -75,6 +75,7 @@ const defaultDeviceSettings = {
 	disableShowingAnimatedImages: false,
 	expandUsersPhotos: true,
 	expandUsersActivity: true,
+	showPostPreview: true,
 };
 
 export default (os: MiOS) => new Vuex.Store({

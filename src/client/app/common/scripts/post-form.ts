@@ -457,6 +457,10 @@ export default (opts) => ({
 			this.text += getFace();
 		},
 
+		togglePreview() {
+			this.$store.commit('device/set', { key: 'showPostPreview', value: this.$refs.preview.open });
+		},
+
 		doPreview() {
 			this.preview = this.canPost ? {
 				id: `${Math.random()}`,

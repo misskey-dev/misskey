@@ -53,7 +53,7 @@
 		<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 		<div class="dropzone" v-if="draghover"></div>
 	</div>
-	<details v-if="preview" class="preview" open="true">
+	<details v-if="preview" class="preview" ref="preview" :open="$store.state.device.showPostPreview" @toggle="togglePreview">
 		<summary>{{ $t('@.post-form.preview') }}</summary>
 		<mk-note class="note" :note="preview" :key="preview.id" :compact="true" :preview="true" />
 	</details>
