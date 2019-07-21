@@ -67,14 +67,19 @@ export const mfmLanguage = P.createLanguage({
 		return P.makeSuccess(i + match[0].length, createLeaf('blockCode', { code: match[2], lang: match[1] ? match[1].trim() : null }));
 	})),
 	inline: r => P.alt(
+		r.bigger,
 		r.big,
 		r.bold,
 		r.small,
 		r.italic,
 		r.strike,
 		r.motion,
+		r.xspin,
+		r.yspin,
+		r.blink,
 		r.spin,
 		r.jump,
+		r.vflip,
 		r.flip,
 		r.inlineCode,
 		r.mathInline,
@@ -85,6 +90,7 @@ export const mfmLanguage = P.createLanguage({
 		r.emoji,
 		r.text
 	),
+	bigger: r => P.regexp(/^\*\*\*\*([\s\S]+?)\*\*\*\*/, 1).map(x => createTree('bigger', r.inline.atLeast(1).tryParse(x), {})),
 	big: r => P.regexp(/^\*\*\*([\s\S]+?)\*\*\*/, 1).map(x => createTree('big', r.inline.atLeast(1).tryParse(x), {})),
 	bold: r => {
 		const asterisk = P.regexp(/\*\*([\s\S]+?)\*\*/, 1);
@@ -120,8 +126,30 @@ export const mfmLanguage = P.createLanguage({
 			});
 		}).map(x => createTree('spin', r.inline.atLeast(1).tryParse(x.content), { attr: x.attr }));
 	},
+	xspin: r => {
+		return P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^<xspin(\s[a-z]+?)?>(.+?)<\/xspin>/i);
+			if (!match) return P.makeFailure(i, 'not a xspin');
+			return P.makeSuccess(i + match[0].length, {
+				content: match[2], attr: match[1] ? match[1].trim() : null
+			});
+		}).map(x => createTree('xspin', r.inline.atLeast(1).tryParse(x.content), { attr: x.attr }));
+	},
+	yspin: r => {
+		return P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^<yspin(\s[a-z]+?)?>(.+?)<\/yspin>/i);
+			if (!match) return P.makeFailure(i, 'not a yspin');
+			return P.makeSuccess(i + match[0].length, {
+				content: match[2], attr: match[1] ? match[1].trim() : null
+			});
+		}).map(x => createTree('yspin', r.inline.atLeast(1).tryParse(x.content), { attr: x.attr }));
+	},
 	jump: r => P.regexp(/<jump>(.+?)<\/jump>/, 1).map(x => createTree('jump', r.inline.atLeast(1).tryParse(x), {})),
 	flip: r => P.regexp(/<flip>(.+?)<\/flip>/, 1).map(x => createTree('flip', r.inline.atLeast(1).tryParse(x), {})),
+	vflip: r => P.regexp(/<vflip>(.+?)<\/vflip>/, 1).map(x => createTree('vflip', r.inline.atLeast(1).tryParse(x), {})),
+	blink: r => P.regexp(/<blink>(.+?)<\/blink>/, 1).map(x => createTree('blink', r.inline.atLeast(1).tryParse(x), {})),
 	center: r => r.startOfLine.then(P.regexp(/<center>([\s\S]+?)<\/center>/, 1).map(x => createTree('center', r.inline.atLeast(1).tryParse(x), {}))),
 	inlineCode: () => P.regexp(/`([^´\n]+?)`/, 1).map(x => createLeaf('inlineCode', { code: x })),
 	mathBlock: r => r.startOfLine.then(P.regexp(/\\\[([\s\S]+?)\\\]/, 1).map(x => createLeaf('mathBlock', { formula: x.trim() }))),

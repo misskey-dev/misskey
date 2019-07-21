@@ -101,6 +101,21 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'bigger': {
+					bigCount++;
+					const isLong = sumTextsLength(token.children) > 15 || countNodesF(token.children) > 5;
+					const isMany = bigCount > 3;
+					return (createElement as any)('strong', {
+						attrs: {
+							style: `display: inline-block; font-size: ${ isMany ? '100%' : '300%' };`
+						},
+						directives: [this.$store.state.settings.disableAnimatedMfm || isLong || isMany ? {} : {
+							name: 'animate-css',
+							value: { classes: 'wobble', iteration: 'infinite' }
+						}]
+					}, genEl(token.children));
+				}
+
 				case 'small': {
 					return [createElement('small', {
 						attrs: {
@@ -150,6 +165,42 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'xspin': {
+					motionCount++;
+					const isLong = sumTextsLength(token.children) > 10 || countNodesF(token.children) > 5;
+					const isMany = motionCount > 5;
+					const direction =
+						token.node.props.attr == 'left' ? 'reverse' :
+						token.node.props.attr == 'alternate' ? 'alternate' :
+						'normal';
+					const style = (this.$store.state.settings.disableAnimatedMfm || isLong || isMany)
+						? ''
+						: `animation: xspin 1.5s linear infinite; animation-direction: ${direction};`;
+					return (createElement as any)('span', {
+						attrs: {
+							style: 'display: inline-block;' + style
+						},
+					}, genEl(token.children));
+				}
+
+				case 'yspin': {
+					motionCount++;
+					const isLong = sumTextsLength(token.children) > 10 || countNodesF(token.children) > 5;
+					const isMany = motionCount > 5;
+					const direction =
+						token.node.props.attr == 'left' ? 'reverse' :
+						token.node.props.attr == 'alternate' ? 'alternate' :
+						'normal';
+					const style = (this.$store.state.settings.disableAnimatedMfm || isLong || isMany)
+						? ''
+						: `animation: yspin 1.5s linear infinite; animation-direction: ${direction};`;
+					return (createElement as any)('span', {
+						attrs: {
+							style: 'display: inline-block;' + style
+						},
+					}, genEl(token.children));
+				}
+
 				case 'jump': {
 					motionCount++;
 					const isLong = sumTextsLength(token.children) > 30 || countNodesF(token.children) > 5;
@@ -161,10 +212,26 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'blink': {
+					return (createElement as any)('span', {
+						attrs: {
+							style: (this.$store.state.settings.disableAnimatedMfm) ? 'display: inline-block;' : 'display: inline-block; animation: blink 0.75s linear infinite;'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'flip': {
 					return (createElement as any)('span', {
 						attrs: {
 							style: 'display: inline-block; transform: scaleX(-1);'
+						},
+					}, genEl(token.children));
+				}
+
+				case 'vflip': {
+					return (createElement as any)('span', {
+						attrs: {
+							style: 'display: inline-block; transform: scaleY(-1);'
 						},
 					}, genEl(token.children));
 				}
