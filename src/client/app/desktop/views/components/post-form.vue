@@ -74,6 +74,9 @@ export default Vue.extend({
 		files() {
 			this.doPreview();
 		},
+		visibility() {
+			this.doPreview();
+		},
 	},
 
 	mixins: [
