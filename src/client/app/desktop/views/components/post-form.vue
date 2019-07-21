@@ -142,7 +142,7 @@ export default Vue.extend({
 			margin-bottom 8px
 
 		> .textarea
-			> .emoji, .doPreview
+			> .emoji
 				position absolute
 				top 0
 				right 0
@@ -158,10 +158,6 @@ export default Vue.extend({
 				&:active
 					color var(--primary)
 					opacity 1
-
-			> .doPreview
-				top 28px
-				right -1px
 
 			> textarea
 				margin 0
