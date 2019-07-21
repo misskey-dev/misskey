@@ -48,7 +48,7 @@ export default Vue.extend({
 		this.$root.api('charts/user/notes', {
 			userId: this.user.id,
 			span: 'day',
-			limit: 7 * 20
+			limit: 7 * 21
 		}).then(activity => {
 			this.activity = activity.diffs.normal.map((_, i) => ({
 				total: activity.diffs.normal[i] + activity.diffs.reply[i] + activity.diffs.renote[i],
