@@ -1,5 +1,6 @@
 # Visual Studio Code
 /.vscode
+!/.vscode/extensions.json
 
 # Intelij-IDEA
 /.idea
