@@ -45,7 +45,6 @@ export default (opts) => ({
 	data() {
 		return {
 			posting: false,
-			preview: null,
 			text: '',
 			files: [],
 			uploadings: [],
@@ -326,7 +325,6 @@ export default (opts) => ({
 		},
 
 		clear() {
-			this.preview = null;
 			this.text = '';
 			this.files = [];
 			this.poll = false;
@@ -472,11 +470,10 @@ export default (opts) => ({
 			};
 		},
 
-		post(preview: boolean) {
+		post() {
 			this.posting = true;
 			const viaMobile = opts.mobile && !this.$store.state.settings.disableViaMobile;
 			this.$root.api('notes/create', {
-				preview,
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
@@ -496,10 +493,6 @@ export default (opts) => ({
 				} : null,
 				viaMobile: viaMobile
 			}).then(data => {
-				if (preview) {
-					this.preview = data.createdNote;
-					return;
-				}
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
