@@ -29,6 +29,9 @@
 				<button class="emoji" @click="emoji" ref="emoji">
 					<fa :icon="['far', 'laugh']"/>
 				</button>
+				<button v-if="canPost" class="doPreview" @click="post(true)" :title="$t('preview')">
+					<fa :icon="['fa', 'eye']"/>
+				</button>
 				<x-post-form-attaches class="files" :class="{ with: poll }" :files="files"/>
 				<x-poll-editor class="poll-editor" v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 			</div>
@@ -48,9 +51,6 @@
 				<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
 			</button>
 			<div class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</div>
-			<ui-button inline :wait="posting" class="submit" :disabled="!canPost" @click="post(true)">
-				{{ posting ? $t('@.post-form.posting') : $t('preview') }}<mk-ellipsis v-if="posting"/>
-			</ui-button>
 			<ui-button inline primary :wait="posting" class="submit" :disabled="!canPost" @click="post()">
 				{{ posting ? $t('@.post-form.posting') : submitText }}<mk-ellipsis v-if="posting"/>
 			</ui-button>
@@ -141,7 +141,7 @@ export default Vue.extend({
 			margin-bottom 8px
 
 		> .textarea
-			> .emoji
+			> .emoji, .doPreview
 				position absolute
 				top 0
 				right 0
@@ -157,6 +157,10 @@ export default Vue.extend({
 				&:active
 					color var(--primary)
 					opacity 1
+
+			> .doPreview
+				top 28px
+				right -1px
 
 			> textarea
 				margin 0
