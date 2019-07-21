@@ -465,8 +465,13 @@ export default (opts) => ({
 				user: this.$store.state.i,
 				text: this.text == '' ? undefined : this.text,
 				visibility: this.visibility,
+				localOnly: this.localOnly,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				files: this.files || [],
+				replyId: this.reply ? this.reply.id : undefined,
+				reply: this.reply,
+				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
+				renote: this.renote,
 			} : null;
 		},
 

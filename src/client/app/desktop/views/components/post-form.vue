@@ -77,6 +77,9 @@ export default Vue.extend({
 		visibility() {
 			this.doPreview();
 		},
+		localOnly() {
+			this.doPreview();
+		},
 	},
 
 	mixins: [
