@@ -56,7 +56,8 @@ init((launch, os) => {
 					mention: o.mention,
 					renote: o.renote,
 					initialText: o.initialText,
-					instant: o.instant
+					instant: o.instant,
+					initialNote: o.initialNote,
 				});
 				vm.$once('cancel', recover);
 				vm.$once('posted', recover);

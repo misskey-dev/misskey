@@ -65,7 +65,8 @@ init(async (launch, os) => {
 						mention: o.mention,
 						animation: o.animation == null ? true : o.animation,
 						initialText: o.initialText,
-						instant: o.instant
+						instant: o.instant,
+						initialNote: o.initialNote,
 					}).then(vm => {
 						if (o.cb) vm.$once('closed', o.cb);
 					});

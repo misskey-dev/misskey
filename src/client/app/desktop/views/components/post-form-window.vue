@@ -16,6 +16,7 @@
 			:reply="reply"
 			:mention="mention"
 			:initial-text="initialText"
+			:initial-note="initialNote"
 			:instant="instant"
 
 			@posted="onPosted"
@@ -57,6 +58,11 @@ export default Vue.extend({
 
 		initialText: {
 			type: String,
+			required: false
+		},
+
+		initialNote: {
+			type: Object,
 			required: false
 		},
 

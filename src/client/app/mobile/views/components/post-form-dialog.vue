@@ -7,6 +7,7 @@
 			:renote="renote"
 			:mention="mention"
 			:initial-text="initialText"
+			:initial-note="initialNote"
 			:instant="instant"
 			@posted="onPosted"
 			@cancel="onCanceled"/>
@@ -39,6 +40,10 @@ export default Vue.extend({
 		},
 		initialText: {
 			type: String,
+			required: false
+		},
+		initialNote: {
+			type: Object,
 			required: false
 		},
 		instant: {
