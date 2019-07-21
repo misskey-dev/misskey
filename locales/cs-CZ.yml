@@ -89,6 +89,7 @@ common:
     "read:notifications": "Prohlížet oznámení"
     "write:notifications": "Pracovat s oznámeními"
     "read:reactions": "Prohlížet reakce"
+    "write:reactions": "Narabět s reakcemi"
     "write:votes": "Hlasovat"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
@@ -664,6 +665,8 @@ common/views/components/profile-editor.vue:
   danger-zone: "Nebezpečná zóna"
   delete-account: "Smazat účet"
   account-deleted: "Váš účet byl smazán. Může chvilku trvat než zmizí všechna data."
+  profile-metadata: "Metadata profilu"
+  metadata-label: "Popis"
   metadata-content: "Obsah"
 common/views/components/user-list-editor.vue:
   users: "Uživatel"
