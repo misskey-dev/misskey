@@ -14,7 +14,7 @@
 		</template>
 
 		<div class="mkw-html--body" :data-mobile="platform == 'mobile'">
-			<div v-if="!isSetting" v-html="props.html"></div>
+			<div class="body" v-if="!isSetting" v-html="props.html"></div>
 			<textarea v-else v-model="html" :placeholder="$t('placeholder-html')"></textarea>
 		</div>
 	</ui-container>
@@ -68,43 +68,33 @@ export default define({
 
 <style lang="stylus" scoped>
 .mkw-html
-	.mkw-html--body
-		.feed
-			padding 12px 16px
-			font-size 0.9em
-
-			> a
-				display block
-				padding 4px 0
-				color var(--text)
-				border-bottom dashed var(--lineWidth) var(--faceDivider)
-				white-space nowrap
-				text-overflow ellipsis
-				overflow hidden
-
-				&:last-child
-					border-bottom none
-
-		.fetching
-			margin 0
-			padding 16px
-			text-align center
-			color var(--text)
-
-			> [data-icon]
-				margin-right 4px
-
-		&[data-mobile]
-			background var(--face)
-
-			.feed
+		input[type=text]
+				margin 0
 				padding 0
+				font inherit
+				font-size 12px
+				line-height 32px
+				color var(--inputText)
+				background var(--face)
+				border 0
+				border-bottom solid var(--lineWidth) var(--faceDivider)
+				border-radius 0
+				outline none
+				box-shadow none
+	.mkw-html--body
+		> textarea
+			display block
+			width 100%
+			max-width 100%
+			min-width 100%
+			font-size 16px
+			height: 300px
+			padding 16px
+			color var(--inputText)
+			background var(--face)
+			border none
+			border-bottom solid var(--lineWidth) var(--faceDivider)
+			border-radius 0
 
-				> a
-					padding 8px 16px
-					border-bottom none
-
-					&:nth-child(even)
-						background rgba(#000, 0.05)
 
 </style>
