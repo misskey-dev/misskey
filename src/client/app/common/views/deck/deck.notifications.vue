@@ -94,22 +94,6 @@ export default Vue.extend({
 				id: notification.id
 			});
 
-			this.prepend(notification);
-		},
-
-		prepend(notification) {
-			if (this.isScrollTop()) {
-				// Prepend the notification
-				this.notifications.unshift(notification);
-
-				// オーバーフローしたら古い通知は捨てる
-				if (this.notifications.length >= displayLimit) {
-					this.notifications = this.notifications.slice(0, displayLimit);
-				}
-			} else {
-				this.queue.push(notification);
-			}
-
 			// サウンドを再生する
 			if (this.$store.state.device.enableSounds && this.$store.state.device.enableSoundsInNotifications) {
 				const sound = new Audio(`${config.url}/assets/piko.mp3`);
@@ -117,21 +101,6 @@ export default Vue.extend({
 				sound.play();
 			}
 		},
-
-		releaseQueue() {
-			for (const n of this.queue) {
-				this.prepend(n);
-			}
-			this.queue = [];
-		},
-
-		onTop() {
-			this.releaseQueue();
-		},
-
-		onBottom() {
-			this.fetchMoreNotifications();
-		}
 	}
 });
 </script>

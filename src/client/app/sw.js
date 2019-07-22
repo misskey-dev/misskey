@@ -4,6 +4,8 @@
 
 import composeNotification from './common/scripts/compose-notification';
 
+
+
 // インストールされたとき
 self.addEventListener('install', ev => {
 	console.info('installed');
