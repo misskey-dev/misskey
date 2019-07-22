@@ -7,12 +7,18 @@ Feature suggestions and bug reports are filed in https://github.com/syuilo/missk
 * Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
 * If you have multiple independent issues, please submit them separately.
 
+## Branches
+* **master** branch is tracking the latest release and used for production purposes.
+* **develop** branch is where we work for the next release.
+* **l10n_develop** branch is reserved for localization management.
+
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
 You can improve our translations with your Crowdin account.
-Changes you make in Crowdin will be merged into the develop branch by @syuilo.
+Your changes in Crowdin are automatically submitted as a PR (with the title "New Crowdin translations") to the repository.
+The owner [@syuilo](https://github.com/syuilo) merges the PR into the develop branch before the next release.
 
-If you cannot find the language you want to contribute with, please open an issue.
+If your language is not listed in Crowdin, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
@@ -33,7 +39,6 @@ Misskey uses CircleCI for executing automated tests.
 Configuration files are located in [`/.circleci`](/.circleci).
 
 ## FAQ
-
 ### How to resolve conflictions occurred at yarn.lock?
 
 Just execute `yarn` to fix it.
@@ -92,6 +97,8 @@ Good:
 ``` ts
 if (foo) bar;
 ```
+
+Make sure that the condition and the body statement are on the same line.
 
 ### Do not use `==` when it can simply be replaced with `===`.
 🥰
