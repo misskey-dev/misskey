@@ -167,9 +167,9 @@
 				<ui-switch v-model="enableSounds">{{ $t('@._settings.enable-sounds') }}
 					<template #desc>{{ $t('@._settings.enable-sounds-desc') }}</template>
 				</ui-switch>
-				<ui-switch :disabled="!enableSounds" v-model="enableSoundsInTimeline">{{ 'Timeline' }}
+				<ui-switch :disabled="!enableSounds" v-model="enableSoundsInTimeline">{{ $t('@._settings.enable-sounds-timeline') }}
 				</ui-switch>
-				<ui-switch :disabled="!enableSounds" v-model="enableSoundsInNotifications">{{ 'Notifications' }}
+				<ui-switch :disabled="!enableSounds" v-model="enableSoundsInNotifications">{{ $t('@._settings.enable-sounds-notifications') }}
 				</ui-switch>
 				<label>{{ $t('@._settings.volume') }}</label>
 				<input type="range"

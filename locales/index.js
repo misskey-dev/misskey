@@ -14,19 +14,9 @@ const merge = (...args) => args.reduce((a, c) => ({
 }), {});
 
 const languages = [
-	'cs-CZ',
-	'da-DK',
-	'de-DE',
 	'en-US',
-	'es-ES',
-	'fr-FR',
 	'ja-JP',
-	'ja-KS',
-	'ko-KR',
-	'nl-NL',
-	'pl-PL',
-	'zh-CN',
-	'zh-TW',
+	'ja-TM',
 ];
 
 const primaries = {
@@ -42,7 +32,7 @@ module.exports = Object.entries(locales)
 		const [lang] = k.split('-');
 		switch (k) {
 			case 'ja-JP': return v;
-			case 'ja-KS':
+			case 'ja-TM':
 			case 'en-US': return merge(locales['ja-JP'], v);
 			default: return merge(
 				locales['ja-JP'],

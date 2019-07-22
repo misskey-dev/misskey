@@ -248,6 +248,8 @@ common:
     sound: "Sound"
     enable-sounds: "Enable sounds"
     enable-sounds-desc: "Play a sound when you receive a post/message. This setting is stored in the browser."
+    enable-sounds-timeline: "Timeline"
+    enable-sounds-notifications: "Notifications"
     volume: "Volume"
     test: "Test"
     update: "Groundpolis Update"

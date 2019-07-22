@@ -38,7 +38,7 @@
 		<button class="drive" :title="$t('@.post-form.attach-media-from-drive')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
 		<button class="kao" :title="$t('@.post-form.insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
 		<button class="poll" :title="$t('@.post-form.create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
-		<button class="cw" :title="$t('@.post-form.hide-contents')" @click="useCw = !useCw"><fa :icon="['far', 'eye-slash']"/></button>
+		<button class="cw" :title="$t('@.post-form.hide-contents')" @click="useCw = !useCw"><fa :icon="useCw ? ['fas', 'eye'] : ['far', 'eye-slash']"/></button>
 		<button class="geo" :title="$t('@.post-form.attach-location-information')" @click="geo ? removeGeo() : setGeo()"><fa icon="map-marker-alt"/></button>
 		<button class="visibility" :title="$t('@.post-form.visibility')" @click="setVisibility" ref="visibilityButton">
 			<span v-if="visibility === 'public'"><fa icon="globe"/></span>
