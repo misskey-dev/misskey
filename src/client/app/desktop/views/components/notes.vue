@@ -103,6 +103,96 @@ export default Vue.extend({
 		focus() {
 			(this.$refs.notes as any).children[0].focus ? (this.$refs.notes as any).children[0].focus() : (this.$refs.notes as any).$el.children[0].focus();
 		},
+
+		onNoteUpdated(i, note) {
+			Vue.set((this as any).notes, i, note);
+		},
+
+		reload() {
+			this.queue = [];
+			this.notes = [];
+			this.init();
+		},
+
+		init() {
+			this.fetching = true;
+			this.makePromise().then(x => {
+				if (Array.isArray(x)) {
+					this.notes = x;
+				} else {
+					this.notes = x.notes;
+					this.cursor = x.cursor;
+				}
+				this.inited = true;
+				this.fetching = false;
+				this.$emit('inited');
+			}, e => {
+				this.fetching = false;
+			});
+		},
+
+		more() {
+			if (this.cursor == null || this.moreFetching) return;
+			this.moreFetching = true;
+			this.makePromise(this.cursor).then(x => {
+				this.notes = this.notes.concat(x.notes);
+				this.cursor = x.cursor;
+				this.moreFetching = false;
+			}, e => {
+				this.moreFetching = false;
+			});
+		},
+
+		prepend(note, silent = false) {
+			// 弾く
+			if (shouldMuteNote(this.$store.state.i, this.$store.state.settings, note)) return;
+
+			// タブが非表示またはスクロール位置が最上部ではないならタイトルで通知
+			if (document.hidden || !this.isScrollTop()) {
+				this.$store.commit('pushBehindNote', note);
+			}
+
+			if (this.isScrollTop()) {
+				// Prepend the note
+				this.notes.unshift(note);
+
+				// サウンドを再生する
+				if (this.$store.state.device.enableSounds && this.$store.state.device.enableSoundsInTimeline && !silent) {
+					const sound = new Audio(`${config.url}/assets/post.mp3`);
+					sound.volume = this.$store.state.device.soundVolume;
+					sound.play();
+				}
+
+				// オーバーフローしたら古い投稿は捨てる
+				if (this.notes.length >= displayLimit) {
+					this.notes = this.notes.slice(0, displayLimit);
+				}
+			} else {
+				this.queue.push(note);
+			}
+		},
+
+		append(note) {
+			this.notes.push(note);
+		},
+
+		releaseQueue() {
+			for (const n of this.queue) {
+				this.prepend(n, true);
+			}
+			this.queue = [];
+		},
+
+		onScroll() {
+			if (this.isScrollTop()) {
+				this.releaseQueue();
+			}
+
+			if (this.$store.state.settings.fetchOnScroll !== false) {
+				const current = window.scrollY + window.innerHeight;
+				if (current > document.body.offsetHeight - 8) this.more();
+			}
+		}
 	}
 });
 </script>

@@ -145,6 +145,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import getNoteSummary from '../../../../../misc/get-note-summary';
 import paging from '../../../common/scripts/paging';
+import * as config from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -193,6 +194,14 @@ export default Vue.extend({
 			});
 
 			this.prepend(notification);
+			this.notifications.unshift(notification);
+
+			// サウンドを再生する
+			if (this.$store.state.device.enableSounds && this.$store.state.device.enableSoundsInNotifications) {
+				const sound = new Audio(`${config.url}/assets/piko.mp3`);
+				sound.volume = this.$store.state.device.soundVolume;
+				sound.play();
+			}
 		}
 	}
 });

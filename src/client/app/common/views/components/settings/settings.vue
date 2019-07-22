@@ -167,6 +167,10 @@
 				<ui-switch v-model="enableSounds">{{ $t('@._settings.enable-sounds') }}
 					<template #desc>{{ $t('@._settings.enable-sounds-desc') }}</template>
 				</ui-switch>
+				<ui-switch :disabled="!enableSounds" v-model="enableSoundsInTimeline">{{ 'Timeline' }}
+				</ui-switch>
+				<ui-switch :disabled="!enableSounds" v-model="enableSoundsInNotifications">{{ 'Notifications' }}
+				</ui-switch>
 				<label>{{ $t('@._settings.volume') }}</label>
 				<input type="range"
 					v-model="soundVolume"
@@ -366,6 +370,16 @@ export default Vue.extend({
 		enableSounds: {
 			get() { return this.$store.state.device.enableSounds; },
 			set(value) { this.$store.commit('device/set', { key: 'enableSounds', value }); }
+		},
+
+		enableSoundsInTimeline: {
+			get() { return this.$store.state.device.enableSoundsInTimeline; },
+			set(value) { this.$store.commit('device/set', { key: 'enableSoundsInTimeline', value }); }
+		},
+
+		enableSoundsInNotifications: {
+			get() { return this.$store.state.device.enableSoundsInNotifications; },
+			set(value) { this.$store.commit('device/set', { key: 'enableSoundsInNotifications', value }); }
 		},
 
 		soundVolume: {
