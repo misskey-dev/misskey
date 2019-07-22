@@ -48,6 +48,7 @@ import { AttestationChallenge } from '../models/entities/attestation-challenge';
 import { Page } from '../models/entities/page';
 import { PageLike } from '../models/entities/page-like';
 import { ModerationLog } from '../models/entities/moderation-log';
+import { UsedUsername } from '../models/entities/used-username';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -100,6 +101,7 @@ export const entities = [
 	UserGroupInvite,
 	UserNotePining,
 	UserSecurityKey,
+	UsedUsername,
 	AttestationChallenge,
 	Following,
 	FollowRequest,

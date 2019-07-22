@@ -5,7 +5,7 @@ import generateUserToken from '../common/generate-native-user-token';
 import config from '../../../config';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
-import { Users, Signins, RegistrationTickets } from '../../../models';
+import { Users, Signins, RegistrationTickets, UsedUsernames } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 import { usersChart } from '../../../services/chart';
 import { User } from '../../../models/entities/user';
@@ -13,6 +13,7 @@ import { UserKeypair } from '../../../models/entities/user-keypair';
 import { toPunyNullable } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { getConnection } from 'typeorm';
+import { UsedUsername } from '../../../models/entities/used-username';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;
@@ -78,7 +79,14 @@ export default async (ctx: Koa.BaseContext) => {
 	// Generate secret
 	const secret = generateUserToken();
 
+	// Check username duplication
 	if (await Users.findOne({ usernameLower: username.toLowerCase(), host: null })) {
+		ctx.status = 400;
+		return;
+	}
+
+	// Check deleted username duplication
+	if (await UsedUsernames.findOne({ username: username.toLowerCase() })) {
 		ctx.status = 400;
 		return;
 	}
@@ -132,6 +140,10 @@ export default async (ctx: Koa.BaseContext) => {
 			autoAcceptFollowed: true,
 			autoWatch: false,
 			password: hash,
+		}));
+
+		await transactionalEntityManager.save(new UsedUsername({
+			username: username.toLowerCase(),
 		}));
 	});
 
