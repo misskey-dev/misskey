@@ -559,6 +559,8 @@ common/views/components/user-menu.vue:
   unsuspend: "Unsuspend"
   suspend-confirm: "Are you sure that you want to suspend this user?"
   unsuspend-confirm: "Are you sure that you want to unsuspend this user?"
+  update-remote-user: "Update information about remote user"
+  remote-user-updated: "The information regarding the remote user has been updated."
 common/views/components/poll.vue:
   vote-to: "Vote for '{}'"
   vote-count: "{} votes"
