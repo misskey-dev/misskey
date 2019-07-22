@@ -117,7 +117,7 @@ export default async (ctx: Koa.BaseContext) => {
 			host: null
 		});
 
-		if (exist) throw 'already registered';
+		if (exist) throw new Error(' the username is already used');
 
 		account = await transactionalEntityManager.save(new User({
 			id: genId(),
