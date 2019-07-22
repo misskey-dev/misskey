@@ -45,6 +45,7 @@ export default (opts) => ({
 
 	data() {
 		return {
+			preview: null,
 			posting: false,
 			text: '',
 			files: [],
