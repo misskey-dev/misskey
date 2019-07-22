@@ -143,6 +143,7 @@ export default async (ctx: Koa.BaseContext) => {
 		}));
 
 		await transactionalEntityManager.save(new UsedUsername({
+			createdAt: new Date(),
 			username: username.toLowerCase(),
 		}));
 	});
