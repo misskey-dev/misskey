@@ -138,7 +138,7 @@ export default Vue.extend({
 						opacity 0.5
 
 						> svg
-							width 24px
+							width 32px
 							height 48px
 							vertical-align top
 							fill var(--desktopHeaderFg)

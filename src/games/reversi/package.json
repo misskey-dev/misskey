@@ -1,7 +1,7 @@
 {
   "name": "misskey-reversi",
   "version": "0.0.5",
-  "description": "Groundpolis reversi engine",
+  "description": "Misskey reversi engine",
   "keywords": [
     "misskey"
   ],

@@ -178,8 +178,7 @@ export default Vue.extend({
 			text-align center
 
 			> svg
-				width 24px
-				height 82px
+				margin 16px
 				vertical-align top
 				fill #fff
 				opacity 0.7
