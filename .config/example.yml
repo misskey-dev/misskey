@@ -59,7 +59,7 @@ db:
   port: 5432
 
   # Database name
-  db: misskey
+  db: groundpolis
 
   # Auth
   user: example-misskey-user
