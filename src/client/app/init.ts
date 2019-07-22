@@ -127,6 +127,7 @@ import {
 	faHourglassHalf,
 	faGavel,
 	faUndoAlt,
+	faCode,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -260,6 +261,7 @@ library.add(
 	faHourglassHalf,
 	faGavel,
 	faUndoAlt,
+	faCode,
 
 	farBell,
 	farEnvelope,

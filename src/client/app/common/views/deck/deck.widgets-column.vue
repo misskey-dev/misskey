@@ -12,6 +12,7 @@
 					<option value="timemachine">{{ $t('@.widgets.timemachine') }}</option>
 					<option value="activity">{{ $t('@.widgets.activity') }}</option>
 					<option value="rss">{{ $t('@.widgets.rss') }}</option>
+					<option value="html">{{ $t('@.widgets.html') }}</option>
 					<option value="trends">{{ $t('@.widgets.trends') }}</option>
 					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
 					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>

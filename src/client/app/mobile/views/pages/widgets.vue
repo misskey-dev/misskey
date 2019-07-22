@@ -13,6 +13,7 @@
 					<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
 					<option value="activity">{{ $t('@.widgets.activity') }}</option>
 					<option value="rss">{{ $t('@.widgets.rss') }}</option>
+					<option value="html">{{ $t('@.widgets.html') }}</option>
 					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
 					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
 					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>

@@ -340,6 +340,7 @@ common:
     timemachine: "カレンダー(タイムマシン)"
     activity: "アクティビティ"
     rss: "RSSリーダー"
+    html: "HTMLウィジェット"
     memo: "付箋"
     trends: "トレンド"
     photo-stream: "フォトストリーム"
@@ -880,6 +881,11 @@ common/views/widgets/memo.vue:
   title: "付箋"
   memo: "ここに書いて！"
   save: "保存"
+
+common/views/widgets/html.vue:
+  placeholder-title: "ここにタイトルを書いてください"
+  placeholder-html: "ここにHTMLを書いてください"
+  title: "HTML ウィジェット"
 
 common/views/widgets/slideshow.vue:
   folder-customize-mode: "フォルダを指定するには、カスタマイズモードを終了してください"

@@ -323,6 +323,7 @@ common:
     timemachine: "Calendar (Time Machine)"
     activity: "Activity"
     rss: "RSS reader"
+    html: "HTML widget"
     memo: "Sticky note"
     trends: "Trends"
     photo-stream: "Photostream"
@@ -812,6 +813,10 @@ common/views/widgets/memo.vue:
   title: "Sticky note"
   memo: "Write here!"
   save: "Save"
+common/views/widgets/html.vue:
+  placeholder-title: "Write the title here"
+  placeholder-html: "Write the HTML here"
+  title: "HTML Widget"
 common/views/widgets/slideshow.vue:
   folder-customize-mode: "To specify a folder, please exit customization mode"
   folder: "Please click and specify a folder"
