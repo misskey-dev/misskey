@@ -95,6 +95,11 @@ export default define({
 			border none
 			border-bottom solid var(--lineWidth) var(--faceDivider)
 			border-radius 0
+		.body
+			display block
+			padding 16px
+			background #fafafa
+			color #202020
 
 
 </style>
