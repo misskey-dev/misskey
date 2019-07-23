@@ -129,7 +129,7 @@ export default Vue.extend({
 			await process().catch(e => {
 				this.$root.dialog({
 					type: 'error',
-					text: e.toString()
+					text: e.message
 				});
 			});
 		},
