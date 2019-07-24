@@ -134,6 +134,13 @@ export default (opts: Opts = {}) => ({
 		},
 
 		react(viaKeyboard = false) {
+			if (!this.$store.getters.isSignedIn) {
+				this.$root.dialog({
+					title: 'ログイン',
+					text: 'してね'
+				});
+			}
+
 			this.blur();
 			this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
