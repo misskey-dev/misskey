@@ -139,6 +139,7 @@ export default (opts: Opts = {}) => ({
 					title: 'ログイン',
 					text: 'してね'
 				});
+				return;
 			}
 
 			this.blur();
