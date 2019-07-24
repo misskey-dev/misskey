@@ -64,7 +64,7 @@ export default Vue.extend({
 			choices: ['', ''],
 			multiple: false,
 			expiration: 'infinite',
-			atDate: formatDateTimeString(addTimespan(new Date(), 1, 'day'), 'yyyy-MM-dd'),
+			atDate: formatDateTimeString(addTimespan(new Date(), 1, 'days'), 'yyyy-MM-dd'),
 			atTime: '00:00',
 			after: 0,
 			unit: 'second'
