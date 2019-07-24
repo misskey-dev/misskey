@@ -52,9 +52,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as moment from 'moment';
 import i18n from '../../../i18n';
 import { erase } from '../../../../../prelude/array';
+import { addTimespan } from '../../../../../prelude/time';
+import { formatDateTimeString } from '../../../../../misc/format-time-string';
+
 export default Vue.extend({
 	i18n: i18n('common/views/components/poll-editor.vue'),
 	data() {
@@ -62,7 +64,7 @@ export default Vue.extend({
 			choices: ['', ''],
 			multiple: false,
 			expiration: 'infinite',
-			atDate: moment().add(1, 'day').toISOString().split('T')[0],
+			atDate: formatDateTimeString(addTimespan(new Date(), 1, 'days'), 'yyyy-MM-dd'),
 			atTime: '00:00',
 			after: 0,
 			unit: 'second'
@@ -95,7 +97,7 @@ export default Vue.extend({
 
 		get() {
 			const at = () => {
-				return moment(`${this.atDate} ${this.atTime}`).valueOf();
+				return new Date(`${this.atDate} ${this.atTime}`).getTime();
 			};
 
 			const after = () => {
