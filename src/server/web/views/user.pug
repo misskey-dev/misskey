@@ -38,6 +38,6 @@ block meta
 		link(rel='alternate' href=profile.url type='text/html')
 
 block content
-	div#me
+	div#me(style={ display: 'none' })
 		each m in me
 			a(rel='me' href=`${m}`) #{m}
