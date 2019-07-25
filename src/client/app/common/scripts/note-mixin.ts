@@ -110,7 +110,6 @@ export default (opts: Opts = {}) => ({
 	methods: {
 		reply(viaKeyboard = false) {
 			pleaseLogin(this.$root);
-	
 			this.$root.$post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
