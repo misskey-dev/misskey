@@ -94,6 +94,8 @@ export default Vue.extend({
 				id: notification.id
 			});
 
+			this.prepend(notification);
+
 			// サウンドを再生する
 			if (this.$store.state.device.enableSounds && this.$store.state.device.enableSoundsInNotifications) {
 				const sound = new Audio(`${config.url}/assets/piko.mp3`);
