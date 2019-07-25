@@ -27,6 +27,35 @@
 	}
 }
 
+.marquee {
+  overflow: hidden;
+  position: relative;
+
+	.marquee-inner {
+		position: absolute;
+		top: 0;
+		white-space: nowrap;
+		animation-name: marquee;
+		animation-timing-function: linear;
+		animation-duration: 20s;
+		animation-iteration-count: infinite;
+
+		&.reverse {
+			animation-direction: reverse;
+		}
+		
+		&.alternate {
+			animation-direction: alternate;
+		}
+	}
+
+	&::after {
+		content: "";
+		white-space: nowrap;
+		display: inline-block;
+	}
+}
+
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
@@ -53,4 +82,10 @@
 	0% { opacity: 1; }
 	30% { opacity: 1; }
 	99% { opacity: 0; }
+}
+
+/** マーキーアニメーション */
+@keyframes marquee {
+    0% { left: 100%; transform: translate(0); }
+  100% { left: 0; transform: translate(-100%); }
 }
