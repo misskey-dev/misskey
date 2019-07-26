@@ -37,6 +37,17 @@ common:
   reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
   fetching-as-ap-object: "連合に照会中"
   unfollow-confirm: "{name}さんをフォロー解除しますか？"
+  notification-type: "通知の種類"
+  notification-types:
+    all: "すべて"
+    pollVote: "投票"
+    follow: "フォロー"
+    receiveFollowRequest: "フォローリクエスト"
+    reply: "返信"
+    quote: "引用"
+    renote: "Renote"
+    mention: "言及"
+    reaction: "リアクション"
 
   got-it: "わかった"
   customization-tips:
