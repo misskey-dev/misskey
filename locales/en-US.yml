@@ -1704,6 +1704,8 @@ mobile/views/pages/search.vue:
   not-found: "No posts were found for '{q}'"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifications"
 mobile/views/pages/settings.vue:
   signed-in-as: "Signed in as {}"
 mobile/views/pages/user.vue:
