@@ -36,6 +36,12 @@ common:
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
   fetching-as-ap-object: "연합에서 조회 중"
   unfollow-confirm: "{name} 님을 팔로우 해제하시겠습니까?"
+  notification-types:
+    all: "모두"
+    follow: "팔로잉"
+    reply: "답글 달기"
+    renote: "리노트"
+    reaction: "리액션"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
