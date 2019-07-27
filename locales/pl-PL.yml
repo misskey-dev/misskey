@@ -28,6 +28,12 @@ common:
   signin: "Zaloguj się"
   signup: "Rejestracja"
   signout: "Wyloguj się"
+  notification-types:
+    all: "Wszyscy"
+    follow: "Śledzeni"
+    reply: "Odpowiedz"
+    renote: "Udostępnij"
+    reaction: "Reakcja"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
