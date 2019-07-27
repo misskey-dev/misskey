@@ -2,7 +2,7 @@
 <div class="mkw-notifications">
 	<ui-container :show-header="!props.compact">
 		<template #header><fa :icon="['far', 'bell']"/>{{ props.type === 'all' ? $t('title') : $t('@.notification-types.' + props.type) }}</template>
-		<template #func><button :title="$t('title')" @click="settings"><fa icon="cog"/></button></template>
+		<template #func><button :title="$t('@.notification-type')" @click="settings"><fa icon="cog"/></button></template>
 
 		<mk-notifications :class="$style.notifications" :type="props.type === 'all' ? null : props.type"/>
 	</ui-container>
