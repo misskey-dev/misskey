@@ -27,6 +27,12 @@ common:
   load-more: "もっとあらへんのか！"
   enter-password: "パスワードを入れてや"
   2fa: "二段階認証"
+  notification-types:
+    all: "すべて"
+    follow: "フォロー"
+    reply: "返す"
+    renote: "Renote"
+    reaction: "リアクション"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
