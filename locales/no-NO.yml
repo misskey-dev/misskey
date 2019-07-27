@@ -11,6 +11,10 @@ common:
     rich-contents: "Innlegg"
     drive: "Disk"
   close: "Lukk"
+  notification-types:
+    all: "Alle"
+    follow: "Følger"
+    reply: "Svar"
   got-it: "Skjønner!"
   notification:
     file-uploaded: "Filen ble lastet opp!"
