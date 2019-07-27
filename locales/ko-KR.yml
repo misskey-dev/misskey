@@ -1704,6 +1704,8 @@ mobile/views/pages/search.vue:
   not-found: "\"{q}\" 와 일치하는 글을 찾을 수 없습니다."
 mobile/views/pages/selectdrive.vue:
   select-file: "파일 선택"
+mobile/views/pages/notifications.vue:
+  notifications: "알림"
 mobile/views/pages/settings.vue:
   signed-in-as: "{}(으)로 로그인"
 mobile/views/pages/user.vue:
