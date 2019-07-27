@@ -1,8 +1,7 @@
 import * as https from 'https';
 import { sign } from 'http-signature';
 import * as crypto from 'crypto';
-//import * as cache from 'lookup-dns-cache';
-const cache = require('lookup-dns-cache');
+import * as cache from 'lookup-dns-cache';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
