@@ -1270,6 +1270,8 @@ mobile/views/pages/search.vue:
   not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
 mobile/views/pages/selectdrive.vue:
   select-file: "Vybrat soubory"
+mobile/views/pages/notifications.vue:
+  notifications: "Oznámení"
 mobile/views/pages/user/home.vue:
   activity: "Aktivita"
   frequently-replied-users: "Častá zmínění"
