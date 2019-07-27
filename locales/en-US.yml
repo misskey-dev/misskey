@@ -543,6 +543,8 @@ common/views/components/note-menu.vue:
   unpin: "Unpin"
   delete: "Delete"
   delete-confirm: "Are you sure you want to delete this post?"
+  delete-and-edit: "Delete and Edit"
+  delete-and-edit-confirm: "Are you sure you want to delete this note and edit it? You will lose all reactions, renotes and replies to it."
   remote: "Show original note"
   pin-limit-exceeded: "You can't pin any more posts."
 common/views/components/user-menu.vue:
