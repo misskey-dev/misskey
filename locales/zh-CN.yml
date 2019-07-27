@@ -1704,6 +1704,8 @@ mobile/views/pages/search.vue:
   not-found: "没有找到有关于“{q}”的帖子"
 mobile/views/pages/selectdrive.vue:
   select-file: "选择文件"
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
 mobile/views/pages/settings.vue:
   signed-in-as: "以{}登录"
 mobile/views/pages/user.vue:
