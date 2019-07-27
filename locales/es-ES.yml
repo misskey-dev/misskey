@@ -1093,6 +1093,8 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Buscar"
+mobile/views/pages/notifications.vue:
+  notifications: "Notificaciones"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
 mobile/views/pages/user/home.photos.vue:
