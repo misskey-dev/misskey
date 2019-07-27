@@ -36,6 +36,12 @@ common:
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
   fetching-as-ap-object: "Inquiring to union"
   unfollow-confirm: "Do you want to unfollow {name}?"
+  notification-types:
+    all: "All"
+    follow: "Following"
+    reply: "Reply"
+    renote: "Renote"
+    reaction: "Reaction"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
