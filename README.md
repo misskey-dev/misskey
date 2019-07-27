@@ -5,7 +5,7 @@
 
 [Groundpolis](https://social.xeltica.work") は [Misskey](https://github.com/xeltica/groundpolis)をベースとしたマイクロブログサービスです。
 
-変更点
+オリジナル版との変更点
 --------
 
 - アドブロック対策を削除（うるせえしな）
@@ -19,6 +19,9 @@
   - `<vflip>縦反転</vflip>`
   - `****より大きい文字****`
   - `<blink>点滅</blink>`
+- 通知音が鳴る
+  - 設定でTL効果音と通知音の独立した設定ができる
+- プレビュー機能 (thanks for @mei23 )
 
 ---
 
