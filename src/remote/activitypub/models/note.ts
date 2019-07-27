@@ -299,7 +299,9 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 		});
 
 		if (exists) {
-			if ((tag.id != null && exists.uri == null)
+			if ((tag.updated != null && exists.updatedAt == null)
+				|| (tag.id != null && exists.uri == null)
+				|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
 				|| (tag.icon!.url !== exists.url)
 			) {
 				await Emojis.update({
