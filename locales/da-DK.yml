@@ -1612,6 +1612,8 @@ mobile/views/pages/search.vue:
   not-found: "Ingen poster fundet for \"{q}\""
 mobile/views/pages/selectdrive.vue:
   select-file: "Vælg fil(er)"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifikationer"
 mobile/views/pages/settings.vue:
   signed-in-as: "Logget ind som {}"
 mobile/views/pages/user.vue:
