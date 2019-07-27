@@ -47,6 +47,7 @@
 				<ui-switch v-model="disableAnimatedMfm">{{ $t('@._settings.disable-animated-mfm') }}</ui-switch>
 				<ui-switch v-model="disableShowingAnimatedImages">{{ $t('@._settings.disable-showing-animated-images') }}</ui-switch>
 				<ui-switch v-model="remainDeletedNote">{{ $t('@._settings.remain-deleted-note') }}</ui-switch>
+				<ui-switch v-model="enableMobileQuickNotificationView">{{ $t('@._settings.enable-quick-notification-view') }}</ui-switch>
 			</section>
 			<section>
 				<header>{{ $t('@._settings.line-width') }}</header>
@@ -530,6 +531,11 @@ export default Vue.extend({
 		mobileNotificationPosition: {
 			get() { return this.$store.state.device.mobileNotificationPosition; },
 			set(value) { this.$store.commit('device/set', { key: 'mobileNotificationPosition', value }); }
+		},
+
+		enableMobileQuickNotificationView: {
+			get() { return this.$store.state.device.enableMobileQuickNotificationView; },
+			set(value) { this.$store.commit('device/set', { key: 'enableMobileQuickNotificationView', value }); }
 		},
 
 		homeProfile: {

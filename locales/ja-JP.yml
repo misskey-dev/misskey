@@ -225,6 +225,7 @@ common:
     use-avatar-reversi-stones: "リバーシの石にアバターを使う"
     disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
     disable-showing-animated-images: "アニメーション画像を再生しない"
+    enable-quick-notification-view: "通知のクイックビューを有効にする"
     suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
     always-show-nsfw: "常に閲覧注意のメディアを表示する"
     always-mark-nsfw: "常にメディアを閲覧注意として投稿"
@@ -1893,6 +1894,9 @@ mobile/views/pages/search.vue:
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
+
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
 
 mobile/views/pages/settings.vue:
   signed-in-as: "{}としてサインイン中"
