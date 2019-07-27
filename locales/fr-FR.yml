@@ -35,6 +35,12 @@ common:
   signout: "Se déconnecter"
   reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
   unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
+  notification-types:
+    all: "Tout"
+    follow: "Abonnements"
+    reply: "Répondre"
+    renote: "Republier"
+    reaction: "Réaction"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
