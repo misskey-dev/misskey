@@ -1143,6 +1143,8 @@ mobile/views/pages/search.vue:
   search: "Szukaj"
 mobile/views/pages/selectdrive.vue:
   select-file: "Wybierz plik"
+mobile/views/pages/notifications.vue:
+  notifications: "Powiadomienia"
 mobile/views/pages/settings.vue:
   signed-in-as: "Zalogowany jako {}"
 mobile/views/pages/user.vue:
