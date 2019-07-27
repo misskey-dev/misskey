@@ -1649,6 +1649,8 @@ mobile/views/pages/search.vue:
   not-found: "Aucune publication trouvée pour « {q} »."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifications"
 mobile/views/pages/settings.vue:
   signed-in-as: "Connecté·e en tant que {}"
 mobile/views/pages/user.vue:
