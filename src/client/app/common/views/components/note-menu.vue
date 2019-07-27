@@ -74,7 +74,13 @@ export default Vue.extend({
 				action: () => this.togglePin(true)
 			} : undefined,
 			...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
-				null, {
+				null,
+				this.note.userId == this.$store.state.i.id ? {
+					icon: 'undo-alt',
+					text: this.$t('delete-and-edit'),
+					action: this.deleteAndEdit
+				} : undefined,
+				{
 					icon: ['far', 'trash-alt'],
 					text: this.$t('delete'),
 					action: this.del
@@ -150,6 +156,25 @@ export default Vue.extend({
 					noteId: this.note.id
 				}).then(() => {
 					this.destroyDom();
+				});
+			});
+		},
+
+		deleteAndEdit() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('delete-and-edit-confirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+				this.$root.api('notes/delete', {
+					noteId: this.note.id
+				}).then(() => {
+					this.destroyDom();
+				});
+				this.$post({
+					initialNote: this.note,
+					reply: this.note.reply,
 				});
 			});
 		},

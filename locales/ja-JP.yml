@@ -581,6 +581,8 @@ common/views/components/note-menu.vue:
   unpin: "ピン留め解除"
   delete: "削除"
   delete-confirm: "この投稿を削除しますか？"
+  delete-and-edit: "削除して編集"
+  delete-and-edit-confirm: "この投稿を削除してもう一度編集しますか？この投稿へのリアクション、リノート、返信も全て削除されます。"
   remote: "投稿元で見る"
   pin-limit-exceeded: "これ以上ピン留めできません。"
 

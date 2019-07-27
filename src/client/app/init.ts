@@ -125,7 +125,8 @@ import {
 	faMapMarker,
 	faRobot,
 	faHourglassHalf,
-	faGavel
+	faGavel,
+	faUndoAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -258,6 +259,7 @@ library.add(
 	faRobot,
 	faHourglassHalf,
 	faGavel,
+	faUndoAlt,
 
 	farBell,
 	farEnvelope,
