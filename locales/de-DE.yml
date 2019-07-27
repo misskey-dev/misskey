@@ -879,6 +879,8 @@ mobile/views/pages/note.vue:
   next: "Nächster Kommentar"
 mobile/views/pages/search.vue:
   search: "Suchen"
+mobile/views/pages/notifications.vue:
+  notifications: "Benachrichtigungen"
 mobile/views/pages/user/home.vue:
   activity: "Aktivität"
   keywords: "Schlagwörter"
