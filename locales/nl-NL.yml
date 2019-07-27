@@ -8,6 +8,11 @@ common:
     reaction: "Reactie"
   close: "Sluiten"
   enter-password: "Voer het wachtwoord in"
+  notification-types:
+    all: "Alle"
+    follow: "Volgend"
+    reply: "Beantwoorden"
+    reaction: "Reactie"
   time:
     unknown: "onbekend"
     future: "toekomstig"
