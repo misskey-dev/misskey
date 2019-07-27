@@ -22,7 +22,6 @@ export function getS3(meta: Meta) {
 	} as S3.ClientConfiguration;
 
 	if (meta.objectStorageUseSSL) {
-		console.log('useSSL');
 		conf.httpOptions!.agent = httpsAgent;
 	}
 
