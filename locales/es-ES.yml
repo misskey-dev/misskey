@@ -31,6 +31,10 @@ common:
   signin: "Iniciar sesión"
   signup: "¡Regístrate!"
   signout: "Cerrar sesión"
+  notification-types:
+    all: "Todo"
+    reply: "Responder"
+    renote: "Volver a publicar"
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
