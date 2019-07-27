@@ -34,6 +34,11 @@ common:
   signup: "Registrovat"
   signout: "Odhlásit"
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
+  notification-types:
+    all: "Všechny"
+    reply: "Odpovědět"
+    renote: "Renotovat"
+    reaction: "Reakce"
   got-it: "Rozumím!"
   customization-tips:
     title: "Tipy pro přizpůsobení"
