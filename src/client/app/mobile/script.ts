@@ -14,6 +14,7 @@ import MkIndex from './views/pages/index.vue';
 import MkSignup from './views/pages/signup.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
+import MkNotifications from './views/pages/notifications.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkNote from './views/pages/note.vue';
@@ -54,7 +55,10 @@ init((launch, os) => {
 				const vm = this.$root.new(PostFormDialog, {
 					reply: o.reply,
 					mention: o.mention,
-					renote: o.renote
+					renote: o.renote,
+					initialText: o.initialText,
+					instant: o.instant,
+					initialNote: o.initialNote,
 				});
 				vm.$once('cancel', recover);
 				vm.$once('posted', recover);
@@ -144,6 +148,7 @@ init((launch, os) => {
 			{ path: '/i/groups/:group', component: UI, props: route => ({ component: () => import('../common/views/pages/user-group-editor.vue').then(m => m.default), groupId: route.params.group }) },
 			{ path: '/i/follow-requests', name: 'follow-requests', component: UI, props: route => ({ component: () => import('../common/views/pages/follow-requests.vue').then(m => m.default) }) },
 			{ path: '/i/widgets', name: 'widgets', component: () => import('./views/pages/widgets.vue').then(m => m.default) },
+			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },
 			{ path: '/i/messaging/group/:group', component: MkMessagingRoom },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },

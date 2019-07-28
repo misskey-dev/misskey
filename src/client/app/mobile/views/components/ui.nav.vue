@@ -17,7 +17,8 @@
 				<div class="links">
 					<ul>
 						<li><router-link to="/" :data-active="$route.name == 'index'"><i><fa icon="home" fixed-width/></i>{{ $t('timeline') }}<i><fa icon="angle-right"/></i></router-link></li>
-						<li><p @click="showNotifications = true"><i><fa :icon="['far', 'bell']" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></p></li>
+						<li v-if="$store.state.device.enableMobileQuickNotificationView"><p @click="showNotifications = true"><i><fa :icon="faBell" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></p></li>
+						<li v-else><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><fa :icon="faBell" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']" fixed-width/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 						<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/follow-requests" :data-active="$route.name == 'follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/featured" :data-active="$route.name == 'featured'"><i><fa :icon="faNewspaper" fixed-width/></i>{{ $t('@.featured-notes') }}<i><fa icon="angle-right"/></i></router-link></li>
@@ -68,7 +69,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { lang } from '../../../config';
 import { faNewspaper, faHashtag, faHome, faColumns, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { faMoon, faSun, faStickyNote } from '@fortawesome/free-regular-svg-icons';
+import { faMoon, faSun, faStickyNote, faBell } from '@fortawesome/free-regular-svg-icons';
 import { search } from '../../../common/scripts/search';
 
 export default Vue.extend({
@@ -88,7 +89,7 @@ export default Vue.extend({
 			announcements: [],
 			searching: false,
 			showNotifications: false,
-			faNewspaper, faHashtag, faMoon, faSun, faHome, faColumns, faStickyNote, faUsers
+			faNewspaper, faHashtag, faMoon, faSun, faHome, faColumns, faStickyNote, faUsers, faBell,
 		};
 	},
 

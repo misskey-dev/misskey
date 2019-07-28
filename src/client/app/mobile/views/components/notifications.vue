@@ -9,7 +9,7 @@
 	<!-- トランジションを有効にするとなぜかメモリリークする -->
 	<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notifications" class="transition notifications" tag="div">
 		<template v-for="(notification, i) in _notifications">
-			<mk-notification :notification="notification" :key="notification.id"/>
+			<mk-notification :notification="notification" :key="notification.id" :class="{ wide: wide }"/>
 			<p class="date" :key="notification.id + '_date'" v-if="i != items.length - 1 && notification._date != _notifications[i + 1]._date">
 				<span><fa icon="angle-up"/>{{ notification._datetext }}</span>
 				<span><fa icon="angle-down"/>{{ _notifications[i + 1]._datetext }}</span>
@@ -37,8 +37,27 @@ export default Vue.extend({
 	i18n: i18n('mobile/views/components/notifications.vue'),
 
 	mixins: [
-		paging({}),
+		paging({
+			beforeInit: (self) => {
+				self.$emit('beforeInit');
+			},
+			onInited: (self) => {
+				self.$emit('inited');
+			}
+		}),
 	],
+
+	props: {
+		type: {
+			type: String,
+			required: false
+		},
+		wide: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	},
 
 	data() {
 		return {
@@ -46,6 +65,9 @@ export default Vue.extend({
 			pagination: {
 				endpoint: 'i/notifications',
 				limit: 15,
+				params: () => ({
+					includeTypes: this.type ? [this.type] : undefined
+				})
 			}
 		};
 	},
@@ -59,6 +81,12 @@ export default Vue.extend({
 				notification._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return notification;
 			});
+		}
+	},
+
+	watch: {
+		type() {
+			this.reload();
 		}
 	},
 
