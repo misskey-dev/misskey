@@ -1,10 +1,10 @@
-import * as Minio from 'minio';
 import { DriveFile } from '../../models/entities/drive-file';
 import { InternalStorage } from './internal-storage';
 import { DriveFiles, Instances, Notes } from '../../models';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { createDeleteObjectStorageFileJob } from '../../queue';
 import { fetchMeta } from '../../misc/fetch-meta';
+import { getS3 } from './s3';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
@@ -93,14 +93,10 @@ function postProcess(file: DriveFile, isExpired = false) {
 export async function deleteObjectStorageFile(key: string) {
 	const meta = await fetchMeta();
 
-	const minio = new Minio.Client({
-		endPoint: meta.objectStorageEndpoint!,
-		region: meta.objectStorageRegion ? meta.objectStorageRegion : undefined,
-		port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
-		useSSL: meta.objectStorageUseSSL,
-		accessKey: meta.objectStorageAccessKey!,
-		secretKey: meta.objectStorageSecretKey!,
-	});
+	const s3 = getS3(meta);
 
-	await minio.removeObject(meta.objectStorageBucket!, key);
+	await s3.deleteObject({
+		Bucket: meta.objectStorageBucket!,
+		Key: key
+	}).promise();
 }
