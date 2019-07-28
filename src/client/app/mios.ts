@@ -174,7 +174,7 @@ export default class MiOS extends EventEmitter {
 			// Init service worker
 			if (this.shouldRegisterSw) {
 				this.getMeta().then(data => {
-					this.registerSw(data.swPublickey);
+					if (data.swPublickey) this.registerSw(data.swPublickey);
 				});
 			}
 		};
@@ -291,7 +291,7 @@ export default class MiOS extends EventEmitter {
 	 * Register service worker
 	 */
 	@autobind
-	private registerSw(swPublickey) {
+	private registerSw(swPublickey: string) {
 		// Check whether service worker and push manager supported
 		const isSwSupported =
 			('serviceWorker' in navigator) && ('PushManager' in window);

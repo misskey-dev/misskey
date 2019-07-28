@@ -4,17 +4,15 @@
  * Tests located in test/chart
  */
 
-import * as moment from 'moment';
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '../../prelude/time';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
-
-const utc = moment.utc;
 
 export type Obj = { [key: string]: any };
 
@@ -131,8 +129,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static momentToTimestamp(x: moment.Moment): Log['date'] {
-		return x.unix();
+	private static dateToTimestamp(x: Date): Log['date'] {
+		return Math.floor(x.getTime() / 1000);
 	}
 
 	@autobind
@@ -215,12 +213,12 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private getCurrentDate(): [number, number, number, number] {
-		const now = moment().utc();
+		const now = new Date();
 
-		const y = now.year();
-		const m = now.month();
-		const d = now.date();
-		const h = now.hour();
+		const y = now.getUTCFullYear();
+		const m = now.getUTCMonth();
+		const d = now.getUTCDate();
+		const h = now.getUTCHours();
 
 		return [y, m, d, h];
 	}
@@ -242,14 +240,14 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const current =
-			span == 'day' ? utc([y, m, d]) :
-			span == 'hour' ? utc([y, m, d, h]) :
+			span == 'day' ? DateUTC([y, m, d]) :
+			span == 'hour' ? DateUTC([y, m, d, h]) :
 			null as never;
 
 		// 現在(今日または今のHour)のログ
 		const currentLog = await this.repository.findOne({
 			span: span,
-			date: Chart.momentToTimestamp(current),
+			date: Chart.dateToTimestamp(current),
 			...(group ? { group: group } : {})
 		});
 
@@ -290,7 +288,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			log = await this.repository.save({
 				group: group,
 				span: span,
-				date: Chart.momentToTimestamp(current),
+				date: Chart.dateToTimestamp(current),
 				...Chart.convertObjectToFlattenColumns(data)
 			});
 		} catch (e) {
@@ -358,8 +356,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const gt =
-			span == 'day' ? utc([y, m, d]).subtract(range, 'days') :
-			span == 'hour' ? utc([y, m, d, h]).subtract(range, 'hours') :
+			span == 'day' ? subtractTimespan(DateUTC([y, m, d]), range, 'days') :
+			span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range, 'hours') :
 			null as never;
 
 		// ログ取得
@@ -367,7 +365,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			where: {
 				group: group,
 				span: span,
-				date: MoreThanOrEqual(Chart.momentToTimestamp(gt))
+				date: MoreThanOrEqual(Chart.dateToTimestamp(gt))
 			},
 			order: {
 				date: -1
@@ -392,13 +390,13 @@ export default abstract class Chart<T extends Record<string, any>> {
 			}
 
 		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
-		} else if (!utc(logs[logs.length - 1].date * 1000).isSame(gt)) {
+		} else if (!isTimeSame(new Date(logs[logs.length - 1].date * 1000), gt)) {
 			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
 			// (隙間埋めできないため)
 			const outdatedLog = await this.repository.findOne({
 				group: group,
 				span: span,
-				date: LessThan(Chart.momentToTimestamp(gt))
+				date: LessThan(Chart.dateToTimestamp(gt))
 			}, {
 				order: {
 					date: -1
@@ -415,18 +413,18 @@ export default abstract class Chart<T extends Record<string, any>> {
 		// 整形
 		for (let i = (range - 1); i >= 0; i--) {
 			const current =
-				span == 'day' ? utc([y, m, d]).subtract(i, 'days') :
-				span == 'hour' ? utc([y, m, d, h]).subtract(i, 'hours') :
+				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'days') :
+				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hours') :
 				null as never;
 
-			const log = logs.find(l => utc(l.date * 1000).isSame(current));
+			const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));
 
 			if (log) {
 				const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
 				chart.unshift(data);
 			} else {
 				// 隙間埋め
-				const latest = logs.find(l => utc(l.date * 1000).isBefore(current));
+				const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
 				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
 				chart.unshift(this.getNewLog(data));
 			}
