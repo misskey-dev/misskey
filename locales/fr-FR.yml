@@ -1382,6 +1382,7 @@ admin/views/moderators.vue:
     title: "Journaux"
     moderator: "Modérateurs"
     type: "Actions"
+    at: "Date de modification"
     info: "Informations"
 admin/views/emoji.vue:
   add-emoji:
