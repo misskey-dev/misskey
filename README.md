@@ -5,20 +5,10 @@
 
 [Groundpolis](https://social.xeltica.work") は [Misskey](https://github.com/xeltica/groundpolis)をベースとしたマイクロブログサービスです。
 
-変更点
+オリジナル版との変更点
 --------
 
-- アドブロック対策を削除（うるせえしな）
-- 削除して編集機能 (そろそろマージされる)
-- ブランド名の変更 (Misskey -> Groundpolis)
-- 藍 -> シトリン
-- リモートユーザーのメニューに、管理者およびモデレーター限定で[リモート情報を更新]ボタン追加
-- mfm拡張
-  - `<xspin>X軸回転</xspin>`
-  - `<yspin>Y軸回転</yspin>`
-  - `<vflip>縦反転</vflip>`
-  - `****より大きい文字****`
-  - `<blink>点滅</blink>`
+[詳しくはこちら...](https://gist.github.com/Xeltica/94bdb9e5ac062983b2533b2c521bf27e)
 
 ---
 
