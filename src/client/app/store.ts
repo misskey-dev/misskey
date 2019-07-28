@@ -93,12 +93,7 @@ export default (os: MiOS) => new Vuex.Store({
 	getters: {
 		isSignedIn: state => state.i != null,
 
-		home: state => {
-			//追加されたかもしれないnullウィジェットの削除
-			state.settings.homeProfiles[state.device.homeProfile] = state.settings.homeProfiles[state.device.homeProfile].filter(w => w.name != null);
-
-			return state.settings.homeProfiles[state.device.homeProfile];
-		},
+		home: state =>  state.settings.homeProfiles[state.device.homeProfile],
 
 		mobileHome: state => state.settings.mobileHomeProfiles[state.device.mobileHomeProfile],
 
