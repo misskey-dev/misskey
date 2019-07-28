@@ -3,6 +3,7 @@ import { sum, unique } from '../../../../prelude/array';
 import shouldMuteNote from './should-mute-note';
 import MkNoteMenu from '../views/components/note-menu.vue';
 import MkReactionPicker from '../views/components/reaction-picker.vue';
+import pleaseLogin from './please-login';
 
 function focus(el, fn) {
 	const target = fn(el);
@@ -108,6 +109,7 @@ export default (opts: Opts = {}) => ({
 
 	methods: {
 		reply(viaKeyboard = false) {
+			pleaseLogin(this.$root);
 			this.$root.$post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
@@ -118,6 +120,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		renote(viaKeyboard = false) {
+			pleaseLogin(this.$root);
 			this.$root.$post({
 				renote: this.appearNote,
 				animation: !viaKeyboard,
@@ -134,6 +137,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		react(viaKeyboard = false) {
+			pleaseLogin(this.$root);
 			this.blur();
 			this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
@@ -159,6 +163,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		favorite() {
+			pleaseLogin(this.$root);
 			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
