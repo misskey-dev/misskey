@@ -159,6 +159,14 @@ export default Vue.extend({
 			username: null,
 			location: null,
 			description: null,
+			fieldName0: null,
+			fieldValue0: null,
+			fieldName1: null,
+			fieldValue1: null,
+			fieldName2: null,
+			fieldValue2: null,
+			fieldName3: null,
+			fieldValue3: null,
 			lang: null,
 			birthday: null,
 			avatarId: null,
@@ -210,16 +218,14 @@ export default Vue.extend({
 		this.carefulBot = this.$store.state.i.carefulBot;
 		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
 
-		if (this.$store.state.i.fields) {
-			this.fieldName0 = this.$store.state.i.fields[0].name;
-			this.fieldValue0 = this.$store.state.i.fields[0].value;
-			this.fieldName1 = this.$store.state.i.fields[1].name;
-			this.fieldValue1 = this.$store.state.i.fields[1].value;
-			this.fieldName2 = this.$store.state.i.fields[2].name;
-			this.fieldValue2 = this.$store.state.i.fields[2].value;
-			this.fieldName3 = this.$store.state.i.fields[3].name;
-			this.fieldValue3 = this.$store.state.i.fields[3].value;
-		}
+		this.fieldName0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].name : null;
+		this.fieldValue0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].value : null;
+		this.fieldName1 = this.$store.state.i.fields[1] ? this.$store.state.i.fields[1].name : null;
+		this.fieldValue1 = this.$store.state.i.fields[1] ? this.$store.state.i.fields[1].value : null;
+		this.fieldName2 = this.$store.state.i.fields[2] ? this.$store.state.i.fields[2].name : null;
+		this.fieldValue2 = this.$store.state.i.fields[2] ? this.$store.state.i.fields[2].value : null;
+		this.fieldName3 = this.$store.state.i.fields[3] ? this.$store.state.i.fields[3].name : null;
+		this.fieldValue3 = this.$store.state.i.fields[3] ? this.$store.state.i.fields[3].value : null;
 	},
 
 	methods: {
