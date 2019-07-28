@@ -93,7 +93,7 @@ export default (os: MiOS) => new Vuex.Store({
 	getters: {
 		isSignedIn: state => state.i != null,
 
-		home: state =>  state.settings.homeProfiles[state.device.homeProfile],
+		home: state => state.settings.homeProfiles[state.device.homeProfile],
 
 		mobileHome: state => state.settings.mobileHomeProfiles[state.device.mobileHomeProfile],
 
