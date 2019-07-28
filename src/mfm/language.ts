@@ -29,6 +29,7 @@ export const mfmLanguage = P.createLanguage({
 		r.blockCode,
 		r.mathBlock,
 		r.center,
+		r.marquee
 	),
 	startOfLine: () => P((input, i) => {
 		if (i == 0 || input[i] == '\n' || input[i - 1] == '\n') {
@@ -66,6 +67,16 @@ export const mfmLanguage = P.createLanguage({
 		if (!match) return P.makeFailure(i, 'not a blockCode');
 		return P.makeSuccess(i + match[0].length, createLeaf('blockCode', { code: match[2], lang: match[1] ? match[1].trim() : null }));
 	})),
+	marquee: r => {
+		return P((input, i) => {
+			const text = input.substr(i);
+			const match = text.match(/^<marquee(\s[a-z]+?)?>(.+?)<\/marquee>/i);
+			if (!match) return P.makeFailure(i, 'not a marquee');
+			return P.makeSuccess(i + match[0].length, {
+				content: match[2], attr: match[1] ? match[1].trim() : null
+			});
+		}).map(x => createTree('marquee', r.inline.atLeast(1).tryParse(x.content), { attr: x.attr }));
+	},
 	inline: r => P.alt(
 		r.bigger,
 		r.big,

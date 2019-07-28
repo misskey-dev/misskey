@@ -1197,6 +1197,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "ワードミュート"
   muted-words: "ミュートされたキーワード"
   muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  unmute-confirm: "このユーザーをミュート解除しますか？"
+  unblock-confirm: "このユーザーをブロック解除しますか？"
   save: "保存"
 
 common/views/components/password-settings.vue:
@@ -1717,6 +1719,7 @@ desktop/views/pages/user/user.header.vue:
   month: "月"
   day: "日"
   follows-you: "フォローされています"
+  happy-birthday: "本日誕生日です！"
 
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
@@ -1909,6 +1912,7 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "メディア"
   years-old: "{age}歳"
+  happy-birthday: "本日誕生日です！"
 
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"

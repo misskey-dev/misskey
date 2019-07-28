@@ -18,7 +18,7 @@
 			<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" class="follow"/>
 		</div>
 	</div>
-	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+	<mk-avatar class="avatar" :user="user" :show-image-on-click="true"/>
 	<div class="body">
 		<div class="description">
 			<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
@@ -37,7 +37,7 @@
 		</div>
 		<div class="info">
 			<span class="location" v-if="user.host === null && user.location"><fa icon="map-marker"/> {{ user.location }}</span>
-			<span class="birthday" v-if="user.host === null && user.birthday"><fa icon="birthday-cake"/> {{ user.birthday.replace('-', $t('year')).replace('-', $t('month')) + $t('day') }} ({{ $t('years-old', { age }) }})</span>
+			<span class="birthday" v-if="user.host === null && user.birthday"><fa icon="birthday-cake"/> {{ birthday }} ({{ $t('years-old', { age }) }})</span>
 		</div>
 		<div class="status">
 			<router-link :to="user | userPage()" class="notes-count"><b>{{ user.notesCount | number }}</b>{{ $t('posts') }}</router-link>
@@ -54,6 +54,7 @@ import i18n from '../../../../i18n';
 import * as age from 's-age';
 import XUserMenu from '../../../../common/views/components/user-menu.vue';
 import XIntegrations from '../../../../common/views/components/integrations.vue';
+import { isBirthday } from '../../../../../../misc/birthday';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/pages/user/user.header.vue'),
@@ -72,6 +73,18 @@ export default Vue.extend({
 
 		age(): number {
 			return age(this.user.birthday);
+		},
+
+		birthday() {
+			if (!this.user.birthday)
+				return null;
+
+			const b = this.user.birthday.split('-');
+			if (isBirthday(Number(b[1]), Number(b[2]))) {
+				return this.$t('happy-birthday');
+			} else {
+				return this.user.birthday.replace('-', this.$t('year')).replace('-', this.$t('month')) + this.$t('day');
+			}
 		}
 	},
 	mounted() {

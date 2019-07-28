@@ -1087,6 +1087,8 @@ common/views/components/mute-and-block.vue:
   muted-words: "Muted keywords"
   muted-words-description: "Separating with spaces results in AND specifications, and delimiting with line breaks results in OR specifications"
   save: "Save"
+  unmute-confirm: "Are you certain that you want to unmute this user?"
+  unblock-confirm: "Are you certain that you want to unblock this user?"
 common/views/components/password-settings.vue:
   reset: "Change password"
   enter-current-password: "Enter the current password"
@@ -1565,6 +1567,8 @@ desktop/views/pages/user/user.header.vue:
   month: "/"
   day: "-"
   follows-you: "Follows you"
+  happy-birthday: "Happy birthday!"
+
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
@@ -1720,6 +1724,7 @@ mobile/views/pages/user.vue:
   timeline: "Timeline"
   media: "Media"
   years-old: "{age} years old"
+  happy-birthday: "Happy birthday!"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"

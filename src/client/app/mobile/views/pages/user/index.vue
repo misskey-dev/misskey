@@ -11,7 +11,7 @@
 			<div class="body">
 				<div class="top">
 					<a class="avatar">
-						<img :src="avator" alt="avatar"/>
+						<img :src="avator" @click="showAvatar()" alt="avatar"/>
 					</a>
 					<button class="menu" ref="menu" @click="menu"><fa icon="ellipsis-h"/></button>
 					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
@@ -40,7 +40,7 @@
 						<fa icon="map-marker"/>{{ user.location }}
 					</p>
 					<p class="birthday" v-if="user.host === null && user.birthday">
-						<fa icon="birthday-cake"/>{{ user.birthday.replace('-', '年').replace('-', '月') + '日' }} ({{ $t('years-old', { age }) }})
+						<fa icon="birthday-cake"/>{{ birthday }} ({{ $t('years-old', { age }) }})
 					</p>
 				</div>
 				<div class="status">
@@ -88,6 +88,8 @@ import XUserMenu from '../../../../common/views/components/user-menu.vue';
 import XHome from './home.vue';
 import { getStaticImageUrl } from '../../../../common/scripts/get-static-image-url';
 import XIntegrations from '../../../../common/views/components/integrations.vue';
+import ImageViewer from '../../../../common/views/components/image-viewer.vue';
+import { isBirthday } from '../../../../../../misc/birthday';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/user.vue'),
@@ -117,6 +119,17 @@ export default Vue.extend({
 				backgroundColor: this.user.bannerColor,
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
+		},
+		birthday() {
+			if (!this.user.birthday)
+				return null;
+
+			const b = this.user.birthday.split('-');
+			if (isBirthday(Number(b[1]), Number(b[2]))) {
+				return this.$t('happy-birthday');
+			} else {
+				return this.user.birthday.replace('-', this.$t('year')).replace('-', this.$t('month')) + this.$t('day');
+			}
 		}
 	},
 	watch: {
@@ -144,6 +157,15 @@ export default Vue.extend({
 				user: this.user
 			});
 		},
+
+		showAvatar() {
+			this.$root.new(ImageViewer, {
+				image: {
+					name: this.user | this.user.username,
+					url: this.avator
+				}
+			});
+		}
 	}
 });
 </script>
