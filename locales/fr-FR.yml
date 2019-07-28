@@ -601,6 +601,7 @@ common/views/components/emoji-picker.vue:
   flags: "Drapeaux"
 common/views/components/settings/app-type.vue:
   title: "Mode"
+  intro: "Vous pouvez choisir, si vous voulez utiliser la disposition de bureau ou mobile."
   choices:
     auto: "Choisir la disposition automatiquement"
     desktop: "Toujours utiliser la disposition de bureau"
@@ -723,6 +724,8 @@ common/views/components/profile-editor.vue:
   uploading: "En cours d’envoi …"
   upload-failed: "Échec de l'envoi"
   unable-to-process: "L'opération n'a pas pu être complétée"
+  avatar-not-an-image: "Le fichier sélectionné pour votre avatar n'est pas une image"
+  banner-not-an-image: "Le fichier sélectionné pour votre bannière n'est pas une image"
   email: "Paramètres de messagerie"
   email-address: "Adresse de courrier électronique"
   email-verified: "L’adresse du courrier électronique a été vérifiée."
