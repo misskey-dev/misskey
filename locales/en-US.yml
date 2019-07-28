@@ -1565,6 +1565,8 @@ desktop/views/pages/user/user.header.vue:
   month: "/"
   day: "-"
   follows-you: "Follows you"
+  happy-birthday: "Happy birthday!"
+
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts and replies"
@@ -1720,6 +1722,7 @@ mobile/views/pages/user.vue:
   timeline: "Timeline"
   media: "Media"
   years-old: "{age} years old"
+  happy-birthday: "Happy birthday!"
 mobile/views/pages/user/home.vue:
   recent-notes: "Recent notes"
   images: "Images"

@@ -1717,6 +1717,7 @@ desktop/views/pages/user/user.header.vue:
   month: "月"
   day: "日"
   follows-you: "フォローされてるよ"
+  happy-birthday: "今日が誕生日だよ!"
 
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
@@ -1909,6 +1910,7 @@ mobile/views/pages/user.vue:
   timeline: "タイムライン"
   media: "メディア"
   years-old: "{age}歳"
+  happy-birthday: "今日が誕生日だよ!"
 
 mobile/views/pages/user/home.vue:
   recent-notes: "最近の投稿"
