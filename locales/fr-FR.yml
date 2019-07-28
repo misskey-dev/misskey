@@ -39,8 +39,10 @@ common:
   notification-types:
     all: "Tout"
     follow: "Abonnements"
+    receiveFollowRequest: "Demandes d’abonnements"
     reply: "Répondre"
     renote: "Republier"
+    mention: "Mentions"
     reaction: "Réaction"
   got-it: "J’ai compris !"
   customization-tips:
@@ -526,6 +528,7 @@ common/views/components/note-menu.vue:
   unpin: "Désépingler"
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
+  delete-and-edit: "Effacer et éditer"
   remote: "Afficher la note originale"
 common/views/components/user-menu.vue:
   mention: "Mention"
@@ -901,6 +904,7 @@ desktop/views/components/drive.folder.vue:
   unable-to-process: "L'opération n'a pas pu être complétée"
   circular-reference-detected: "Le dossier de destination est un sous-dossier du dossier que vous souhaitez déplacer."
   unhandled-error: "Erreur inconnue"
+  unable-to-delete: "Ne peut pas être supprimé"
   contextmenu:
     move-to-this-folder: "Déplacer dans ce dossier"
     show-in-new-window: "Ouvrir dans une nouvelle fenêtre"
@@ -1014,6 +1018,7 @@ desktop/views/components/settings.2fa.vue:
   success: "Sauvegarde des paramètres avec succès !"
   failed: "L’opération a échoué. Veuillez vous assurer que le jeton a été saisi correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
+  totp-header: "Application d'authentification"
   security-key-header: "Clé de sécurité"
   last-used: "Dernière utilisation :"
   activate-key: "Cliquez pour activer la clé de sécurité"
@@ -1045,6 +1050,7 @@ common/views/components/drive-settings.vue:
   max: "Maximale"
   in-use: "utilisé"
   stats: "Statistiques"
+  default-upload-folder: "Emplacement par défaut du dossier de transfert"
   default-upload-folder-name: "Dossier·s"
   change-default-upload-folder: "Changer de dossier"
 common/views/components/mute-and-block.vue:
