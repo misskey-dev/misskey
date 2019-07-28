@@ -404,6 +404,7 @@ common/views/components/games/reversi/reversi.room.vue:
   black-or-white: "Noirs/Blancs"
   black-is: "{} Noirs"
   rules: "Règles"
+  is-llotheo: "Celui ou celle qui a le moins de pièces gagne (Llotheo)"
   looped-map: "Carte en boucle"
   can-put-everywhere: "Peut poser partout"
   settings-of-the-bot: "Configuration du bot"
