@@ -67,6 +67,7 @@ export default (opts) => ({
 
 		async init() {
 			this.fetching = true;
+			if (opts.beforeInit) opts.beforeInit(this);
 			let params = typeof this.pagination.params === 'function' ? this.pagination.params(true) : this.pagination.params;
 			if (params && params.then) params = await params;
 			await this.$root.api(this.pagination.endpoint, {

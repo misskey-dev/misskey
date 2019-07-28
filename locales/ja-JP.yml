@@ -38,6 +38,17 @@ common:
   fetching-as-ap-object: "連合に照会中"
   unfollow-confirm: "{name}さんをフォロー解除しますか？"
   signin-required: "ログインしてください"
+  notification-type: "通知の種類"
+  notification-types:
+    all: "すべて"
+    pollVote: "投票"
+    follow: "フォロー"
+    receiveFollowRequest: "フォローリクエスト"
+    reply: "返信"
+    quote: "引用"
+    renote: "Renote"
+    mention: "言及"
+    reaction: "リアクション"
 
   got-it: "わかった"
   customization-tips:
@@ -215,6 +226,7 @@ common:
     use-avatar-reversi-stones: "リバーシの石にアバターを使う"
     disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
     disable-showing-animated-images: "アニメーション画像を再生しない"
+    enable-quick-notification-view: "通知のクイックビューを有効にする"
     suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
     always-show-nsfw: "常に閲覧注意のメディアを表示する"
     always-mark-nsfw: "常にメディアを閲覧注意として投稿"
@@ -570,6 +582,8 @@ common/views/components/note-menu.vue:
   unpin: "ピン留め解除"
   delete: "削除"
   delete-confirm: "この投稿を削除しますか？"
+  delete-and-edit: "削除して編集"
+  delete-and-edit-confirm: "この投稿を削除してもう一度編集しますか？この投稿へのリアクション、リノート、返信も全て削除されます。"
   remote: "投稿元で見る"
   pin-limit-exceeded: "これ以上ピン留めできません。"
 
@@ -1883,6 +1897,9 @@ mobile/views/pages/search.vue:
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
+
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
 
 mobile/views/pages/settings.vue:
   signed-in-as: "{}としてサインイン中"
