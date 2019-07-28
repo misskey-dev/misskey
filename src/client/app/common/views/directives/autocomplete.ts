@@ -112,7 +112,7 @@ class Autocomplete {
 
 		if (isEmoji && !opened) {
 			const emoji = text.substr(emojiIndex + 1);
-			if (!emoji.includes(' ')) {
+			if (emoji && !emoji.includes(' ')) {
 				this.open('emoji', emoji);
 				opened = true;
 			}
