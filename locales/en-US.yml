@@ -34,7 +34,7 @@ common:
   signup: "Sign up"
   signout: "Logout"
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
-  fetching-as-ap-object: "Inquiring to union"
+  fetching-as-ap-object: "Inquiring to fediverse"
   unfollow-confirm: "Do you want to unfollow {name}?"
   signin-required: "Please Log In"
   notification-type: "Notification Type"
@@ -633,7 +633,7 @@ common/views/components/signin.vue:
   signin-with-twitter: "Log in with Twitter"
   signin-with-github: "Sign in with GitHub"
   signin-with-discord: "Sign in with Discord"
-  login-failed: "Log in failed. Make sure you have entered your correct username and password."
+  login-failed: "Unable to log in. The username or password you entered is incorrect."
   tap-key: "Click on the Security Key to log in"
   enter-2fa-code: "Enter your verification code"
 common/views/components/signup.vue:
