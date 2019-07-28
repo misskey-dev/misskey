@@ -15,6 +15,10 @@
 		<x-post-form ref="form"
 			:reply="reply"
 			:mention="mention"
+			:initial-text="initialText"
+			:initial-note="initialNote"
+			:instant="instant"
+
 			@posted="onPosted"
 			@change-uploadings="onChangeUploadings"
 			@change-attached-files="onChangeFiles"
@@ -50,7 +54,23 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: true
-		}
+		},
+
+		initialText: {
+			type: String,
+			required: false
+		},
+
+		initialNote: {
+			type: Object,
+			required: false
+		},
+
+		instant: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	data() {

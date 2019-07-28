@@ -37,7 +37,5 @@ block meta
 	if profile.url
 		link(rel='alternate' href=profile.url type='text/html')
 
-block content
-	div#me
-		each m in me
-			a(rel='me' href=`${m}`) #{m}
+	each m in me
+		link(rel='me' href=`${m}`)

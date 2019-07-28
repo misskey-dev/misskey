@@ -100,6 +100,27 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .mk-notification
+
+	&.wide
+		> .notification
+			@media (min-width 350px)
+				font-size 14px
+
+			@media (min-width 500px)
+				font-size 16px
+
+			@media (min-width 600px)
+				padding 24px 32px
+
+			> .avatar
+				@media (min-width 500px)
+					width 42px
+					height 42px
+
+			> div
+				@media (min-width 500px)
+					width calc(100% - 42px)
+
 	> .notification
 		padding 16px
 		font-size 12px
