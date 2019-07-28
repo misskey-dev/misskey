@@ -1198,6 +1198,8 @@ common/views/components/mute-and-block.vue:
   muted-words: "ミュートされたキーワード"
   muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になるよ"
   save: "保存"
+  mute-confirm: "このユーザーをミュートする？"
+  block-confirm: "このユーザーをブロックする？"
 
 common/views/components/password-settings.vue:
   reset: "パスワードを変更する"
