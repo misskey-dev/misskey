@@ -912,6 +912,7 @@ desktop/views/components/drive.folder.vue:
   circular-reference-detected: "Le dossier de destination est un sous-dossier du dossier que vous souhaitez déplacer."
   unhandled-error: "Erreur inconnue"
   unable-to-delete: "Ne peut pas être supprimé"
+  has-child-files-or-folders: "Ce dossier n'est pas vide, il ne peut pas être supprimé"
   contextmenu:
     move-to-this-folder: "Déplacer dans ce dossier"
     show-in-new-window: "Ouvrir dans une nouvelle fenêtre"
