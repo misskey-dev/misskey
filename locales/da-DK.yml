@@ -35,6 +35,12 @@ common:
   signout: "Log ud"
   reload-to-apply-the-setting: "Denne indstilling slår først igennem, når du har genindlæst siden. Vil du genindlæse siden nu?"
   fetching-as-ap-object: "Tilladelse til sammenkobling"
+  notification-types:
+    all: "Alle"
+    follow: "Følger"
+    reply: "Svar"
+    renote: "Gen-postering"
+    reaction: "Reaktion"
   got-it: "Det er OK"
   customization-tips:
     title: "Tips om tilpasning"
@@ -1606,6 +1612,8 @@ mobile/views/pages/search.vue:
   not-found: "Ingen poster fundet for \"{q}\""
 mobile/views/pages/selectdrive.vue:
   select-file: "Vælg fil(er)"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifikationer"
 mobile/views/pages/settings.vue:
   signed-in-as: "Logget ind som {}"
 mobile/views/pages/user.vue:

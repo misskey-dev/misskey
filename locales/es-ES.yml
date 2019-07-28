@@ -31,6 +31,10 @@ common:
   signin: "Iniciar sesión"
   signup: "¡Regístrate!"
   signout: "Cerrar sesión"
+  notification-types:
+    all: "Todo"
+    reply: "Responder"
+    renote: "Volver a publicar"
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
@@ -1089,6 +1093,8 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Buscar"
+mobile/views/pages/notifications.vue:
+  notifications: "Notificaciones"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
 mobile/views/pages/user/home.photos.vue:

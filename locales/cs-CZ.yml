@@ -34,6 +34,11 @@ common:
   signup: "Registrovat"
   signout: "Odhlásit"
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
+  notification-types:
+    all: "Všechny"
+    reply: "Odpovědět"
+    renote: "Renotovat"
+    reaction: "Reakce"
   got-it: "Rozumím!"
   customization-tips:
     title: "Tipy pro přizpůsobení"
@@ -180,6 +185,7 @@ common:
     remember-note-visibility: "Zapamatovat viditelnost příspěvků"
     web-search-engine: "Webové vyhledávače"
     web-search-engine-desc: "Například: https://www.google.com/?#q={{query}}"
+    paste: "Vložit"
     keep-cw: "Zachovat varování o obsahu"
     keep-cw-desc: "Při odpovědi na příspěvek bude varování o obsahu nastaveno stejně jako původní příspěvek."
     i-like-sushi: "Mam radši sushi (než puding)"
@@ -1264,6 +1270,8 @@ mobile/views/pages/search.vue:
   not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
 mobile/views/pages/selectdrive.vue:
   select-file: "Vybrat soubory"
+mobile/views/pages/notifications.vue:
+  notifications: "Oznámení"
 mobile/views/pages/user/home.vue:
   activity: "Aktivita"
   frequently-replied-users: "Častá zmínění"

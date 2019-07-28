@@ -34,8 +34,20 @@ common:
   signup: "Sign up"
   signout: "Logout"
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
-  fetching-as-ap-object: "Inquiring to union"
+  fetching-as-ap-object: "Inquiring to fediverse"
   unfollow-confirm: "Do you want to unfollow {name}?"
+  signin-required: "Please Log In"
+  notification-type: "Notification Type"
+  notification-types:
+    all: "All"
+    pollVote: "Votes"
+    follow: "Following"
+    receiveFollowRequest: "Follow requests"
+    reply: "Reply"
+    quote: "Quote"
+    renote: "Renote"
+    mention: "Mentions"
+    reaction: "Reaction"
   got-it: "Got it!"
   customization-tips:
     title: "Customization tips"
@@ -202,6 +214,7 @@ common:
     use-avatar-reversi-stones: "Use avatar as a stone in reversi"
     disable-animated-mfm: "Disable animated texts in a post"
     disable-showing-animated-images: "Do not play animated images"
+    enable-quick-notification-view: "Enable Quick Notification View"
     suggest-recent-hashtags: "Show recent popular hashtags on the post form"
     always-show-nsfw: "Always show NSFW contents"
     always-mark-nsfw: "Always mark posts with media attachments as NSFW"
@@ -531,6 +544,8 @@ common/views/components/note-menu.vue:
   unpin: "Unpin"
   delete: "Delete"
   delete-confirm: "Are you sure you want to delete this post?"
+  delete-and-edit: "Delete and Edit"
+  delete-and-edit-confirm: "Are you sure you want to delete this note and edit it? You will lose all reactions, renotes and replies to it."
   remote: "Show original note"
   pin-limit-exceeded: "You can't pin any more posts."
 common/views/components/user-menu.vue:
@@ -618,7 +633,7 @@ common/views/components/signin.vue:
   signin-with-twitter: "Log in with Twitter"
   signin-with-github: "Sign in with GitHub"
   signin-with-discord: "Sign in with Discord"
-  login-failed: "Logging in has failed. Make sure you have entered the correct username and password."
+  login-failed: "Unable to log in. The username or password you entered is incorrect."
   tap-key: "Click on the Security Key to log in"
   enter-2fa-code: "Enter your verification code"
 common/views/components/signup.vue:
@@ -1698,6 +1713,8 @@ mobile/views/pages/search.vue:
   not-found: "No posts were found for '{q}'"
 mobile/views/pages/selectdrive.vue:
   select-file: "Choose files"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifications"
 mobile/views/pages/settings.vue:
   signed-in-as: "Signed in as {}"
 mobile/views/pages/user.vue:

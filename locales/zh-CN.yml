@@ -36,6 +36,12 @@ common:
   reload-to-apply-the-setting: "必须重新加载页面以应用此设置。 确实要立即重新加载吗？"
   fetching-as-ap-object: "联合查询"
   unfollow-confirm: "取消对{name}的关注？"
+  notification-types:
+    all: "所有"
+    follow: "关注中"
+    reply: "回复"
+    renote: "转推"
+    reaction: "回应"
   got-it: "知道了"
   customization-tips:
     title: "自定义提示"
@@ -726,6 +732,8 @@ common/views/components/profile-editor.vue:
   uploading: "正在上传"
   upload-failed: "上传失败"
   unable-to-process: "无法完成操作"
+  avatar-not-an-image: "选择的头像文件不是图片格式"
+  banner-not-an-image: "选择的横幅背景不是图片格式"
   email: "邮件设置"
   email-address: "电子邮件地址"
   email-verified: "电子邮件地址已验证"
@@ -745,6 +753,8 @@ common/views/components/profile-editor.vue:
   danger-zone: "危险选项"
   delete-account: "删除帐户"
   account-deleted: "帐户已被删除。 数据会在一段时间之后清除。"
+  profile-metadata: "个人资料补充信息"
+  metadata-label: "标签"
   metadata-content: "内容"
 common/views/components/user-list-editor.vue:
   users: "用户"
@@ -1694,6 +1704,8 @@ mobile/views/pages/search.vue:
   not-found: "没有找到有关于“{q}”的帖子"
 mobile/views/pages/selectdrive.vue:
   select-file: "选择文件"
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
 mobile/views/pages/settings.vue:
   signed-in-as: "以{}登录"
 mobile/views/pages/user.vue:

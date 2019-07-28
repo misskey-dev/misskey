@@ -27,6 +27,12 @@ common:
   load-more: "もっとあらへんのか！"
   enter-password: "パスワードを入れてや"
   2fa: "二段階認証"
+  notification-types:
+    all: "すべて"
+    follow: "フォロー"
+    reply: "返す"
+    renote: "Renote"
+    reaction: "リアクション"
   got-it: "ほい"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -1176,6 +1182,8 @@ mobile/views/pages/search.vue:
   not-found: "ワイは「{q}」なんて投稿知らんわ、無いんちゃう？知らんけど。"
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイル選んでや"
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
 mobile/views/pages/settings.vue:
   signed-in-as: "あんたは橋の下で拾った{}や！"
 mobile/views/pages/user.vue:

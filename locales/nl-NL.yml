@@ -8,6 +8,11 @@ common:
     reaction: "Reactie"
   close: "Sluiten"
   enter-password: "Voer het wachtwoord in"
+  notification-types:
+    all: "Alle"
+    follow: "Volgend"
+    reply: "Beantwoorden"
+    reaction: "Reactie"
   time:
     unknown: "onbekend"
     future: "toekomstig"
@@ -569,6 +574,8 @@ mobile/views/pages/search.vue:
   search: "Zoeken"
 mobile/views/pages/selectdrive.vue:
   select-file: "Kies een bestand"
+mobile/views/pages/notifications.vue:
+  notifications: "Meldingen"
 mobile/views/pages/settings.vue:
   signed-in-as: "Ingelogd als {}"
 mobile/views/pages/user.vue:

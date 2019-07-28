@@ -28,6 +28,12 @@ common:
   signin: "Zaloguj się"
   signup: "Rejestracja"
   signout: "Wyloguj się"
+  notification-types:
+    all: "Wszyscy"
+    follow: "Śledzeni"
+    reply: "Odpowiedz"
+    renote: "Udostępnij"
+    reaction: "Reakcja"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -1137,6 +1143,8 @@ mobile/views/pages/search.vue:
   search: "Szukaj"
 mobile/views/pages/selectdrive.vue:
   select-file: "Wybierz plik"
+mobile/views/pages/notifications.vue:
+  notifications: "Powiadomienia"
 mobile/views/pages/settings.vue:
   signed-in-as: "Zalogowany jako {}"
 mobile/views/pages/user.vue:

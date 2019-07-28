@@ -35,6 +35,9 @@ common:
   signout: "Ausloggen"
   reload-to-apply-the-setting: "Die Seite muss zum Übernehmen dieser Einstellung aktualisiert werden. Soll die Seite jetzt neu geladen werden?"
   fetching-as-ap-object: "Hole Daten…"
+  notification-types:
+    reply: "Antworten"
+    renote: "Anmerkung"
   got-it: "Verstanden!"
   customization-tips:
     title: "Anpassung-Tipps"
@@ -876,6 +879,8 @@ mobile/views/pages/note.vue:
   next: "Nächster Kommentar"
 mobile/views/pages/search.vue:
   search: "Suchen"
+mobile/views/pages/notifications.vue:
+  notifications: "Benachrichtigungen"
 mobile/views/pages/user/home.vue:
   activity: "Aktivität"
   keywords: "Schlagwörter"

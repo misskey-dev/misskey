@@ -11,6 +11,10 @@ common:
     rich-contents: "Innlegg"
     drive: "Disk"
   close: "Lukk"
+  notification-types:
+    all: "Alle"
+    follow: "Følger"
+    reply: "Svar"
   got-it: "Skjønner!"
   notification:
     file-uploaded: "Filen ble lastet opp!"
@@ -467,6 +471,8 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Søk"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifikasjon"
 mobile/views/pages/user.vue:
   following: "Følger"
   followers: "Følgere"

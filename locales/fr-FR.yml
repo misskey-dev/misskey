@@ -35,6 +35,18 @@ common:
   signout: "Se déconnecter"
   reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
   unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
+  signin-required: "Veuillez vous connecter"
+  notification-type: "Type de notification"
+  notification-types:
+    all: "Tout"
+    pollVote: "Sondage"
+    follow: "Abonnements"
+    receiveFollowRequest: "Demandes d’abonnements"
+    reply: "Répondre"
+    quote: "Cité par"
+    renote: "Republier"
+    mention: "Mentions"
+    reaction: "Réaction"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -392,6 +404,7 @@ common/views/components/games/reversi/reversi.room.vue:
   black-or-white: "Noirs/Blancs"
   black-is: "{} Noirs"
   rules: "Règles"
+  is-llotheo: "Celui ou celle qui a le moins de pièces gagne (Llotheo)"
   looped-map: "Carte en boucle"
   can-put-everywhere: "Peut poser partout"
   settings-of-the-bot: "Configuration du bot"
@@ -519,6 +532,7 @@ common/views/components/note-menu.vue:
   unpin: "Désépingler"
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
+  delete-and-edit: "Effacer et éditer"
   remote: "Afficher la note originale"
 common/views/components/user-menu.vue:
   mention: "Mention"
@@ -587,6 +601,7 @@ common/views/components/emoji-picker.vue:
   flags: "Drapeaux"
 common/views/components/settings/app-type.vue:
   title: "Mode"
+  intro: "Vous pouvez choisir, si vous voulez utiliser la disposition de bureau ou mobile."
   choices:
     auto: "Choisir la disposition automatiquement"
     desktop: "Toujours utiliser la disposition de bureau"
@@ -709,6 +724,8 @@ common/views/components/profile-editor.vue:
   uploading: "En cours d’envoi …"
   upload-failed: "Échec de l'envoi"
   unable-to-process: "L'opération n'a pas pu être complétée"
+  avatar-not-an-image: "Le fichier sélectionné pour votre avatar n'est pas une image"
+  banner-not-an-image: "Le fichier sélectionné pour votre bannière n'est pas une image"
   email: "Paramètres de messagerie"
   email-address: "Adresse de courrier électronique"
   email-verified: "L’adresse du courrier électronique a été vérifiée."
@@ -894,6 +911,8 @@ desktop/views/components/drive.folder.vue:
   unable-to-process: "L'opération n'a pas pu être complétée"
   circular-reference-detected: "Le dossier de destination est un sous-dossier du dossier que vous souhaitez déplacer."
   unhandled-error: "Erreur inconnue"
+  unable-to-delete: "Ne peut pas être supprimé"
+  has-child-files-or-folders: "Ce dossier n'est pas vide, il ne peut pas être supprimé"
   contextmenu:
     move-to-this-folder: "Déplacer dans ce dossier"
     show-in-new-window: "Ouvrir dans une nouvelle fenêtre"
@@ -1007,6 +1026,7 @@ desktop/views/components/settings.2fa.vue:
   success: "Sauvegarde des paramètres avec succès !"
   failed: "L’opération a échoué. Veuillez vous assurer que le jeton a été saisi correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
+  totp-header: "Application d'authentification"
   security-key-header: "Clé de sécurité"
   last-used: "Dernière utilisation :"
   activate-key: "Cliquez pour activer la clé de sécurité"
@@ -1038,6 +1058,7 @@ common/views/components/drive-settings.vue:
   max: "Maximale"
   in-use: "utilisé"
   stats: "Statistiques"
+  default-upload-folder: "Emplacement par défaut du dossier de transfert"
   default-upload-folder-name: "Dossier·s"
   change-default-upload-folder: "Changer de dossier"
 common/views/components/mute-and-block.vue:
@@ -1146,11 +1167,13 @@ admin/views/queue.vue:
     deliver: "Délivrées"
     inbox: "Reçues"
     db: "Base de données"
+    objectStorage: "Stockage d'objets"
   state: "État"
   states:
     active: "en cours"
     delayed: "Programmé"
     waiting: "En file d'attente"
+  result-is-truncated: "Le résultat est tronqué"
   other-queues: "Autres files d’attente"
 admin/views/logs.vue:
   logs: "Journaux"
@@ -1183,12 +1206,14 @@ admin/views/instance.vue:
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
   tos-url: "URL des conditions d'utilisation"
   repository-url: "URL du dépôt"
+  feedback-url: "URL pour les commentaires"
   maintainer-config: "Informations de l’administrateur"
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
   advanced-config: "Autres réglages"
   note-and-tl: "Notes et fils"
   drive-config: "Paramètres du lecteur"
+  use-object-storage: "Utiliser le stockage d'objets"
   object-storage-base-url: "URL"
   object-storage-prefix: "Préfixe"
   object-storage-endpoint: "Point de terminaison"
@@ -1366,6 +1391,7 @@ admin/views/moderators.vue:
     title: "Journaux"
     moderator: "Modérateurs"
     type: "Actions"
+    at: "Date de modification"
     info: "Informations"
 admin/views/emoji.vue:
   add-emoji:
@@ -1643,6 +1669,8 @@ mobile/views/pages/search.vue:
   not-found: "Aucune publication trouvée pour « {q} »."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifications"
 mobile/views/pages/settings.vue:
   signed-in-as: "Connecté·e en tant que {}"
 mobile/views/pages/user.vue:
