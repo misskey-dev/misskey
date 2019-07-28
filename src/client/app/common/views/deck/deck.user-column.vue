@@ -15,7 +15,7 @@
 			<div>
 				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
-				<mk-avatar class="avatar" :user="user" :disable-preview="true" :key="user.id"/>
+				<mk-avatar class="avatar" :user="user" :show-image-on-click="true" :key="user.id"/>
 				<router-link class="name" :to="user | userPage()">
 					<mk-user-name :user="user" :key="user.id"/>
 				</router-link>

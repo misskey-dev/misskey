@@ -18,7 +18,7 @@
 			<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" class="follow"/>
 		</div>
 	</div>
-	<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+	<mk-avatar class="avatar" :user="user" :show-image-on-click="true"/>
 	<div class="body">
 		<div class="description">
 			<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>

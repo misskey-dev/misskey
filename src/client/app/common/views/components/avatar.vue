@@ -1,5 +1,8 @@
 <template>
-	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick" v-once>
+	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-if="showImageOnClick" @click="showImage" v-once>
+		<span class="inner" :style="icon"></span>
+	</span>
+	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-else-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick" v-once>
 		<span class="inner" :style="icon"></span>
 	</span>
 	<span class="mk-avatar" :style="style" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick" v-once>
@@ -16,6 +19,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
+import ImageViewer from './image-viewer.vue';
 
 export default Vue.extend({
 	props: {
@@ -34,7 +38,11 @@ export default Vue.extend({
 		disablePreview: {
 			required: false,
 			default: false
-		}
+		},
+		showImageOnClick: {
+			required: false,
+			default: false
+		},
 	},
 	computed: {
 		lightmode(): boolean {
@@ -69,6 +77,15 @@ export default Vue.extend({
 	methods: {
 		onClick(e) {
 			this.$emit('click', e);
+		},
+		showImage(e) {
+			this.$emit('click', e);
+			this.$root.new(ImageViewer, {
+				image: {
+					name: this.user.name | this.user.username,
+					url: this.url
+				}
+			});
 		}
 	}
 });
