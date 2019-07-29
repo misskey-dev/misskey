@@ -2,7 +2,6 @@ import { Buffer } from 'buffer';
 import * as fs from 'fs';
 
 import * as crypto from 'crypto';
-import * as Minio from 'minio';
 import * as uuid from 'uuid';
 import * as sharp from 'sharp';
 
@@ -21,6 +20,8 @@ import { IRemoteUser, User } from '../../models/entities/user';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import * as S3 from 'aws-sdk/clients/s3';
+import { getS3 } from './s3';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -211,23 +212,21 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	const meta = await fetchMeta();
 
-	const minio = new Minio.Client({
-		endPoint: meta.objectStorageEndpoint!,
-		region: meta.objectStorageRegion ? meta.objectStorageRegion : undefined,
-		port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
-		useSSL: meta.objectStorageUseSSL,
-		accessKey: meta.objectStorageAccessKey!,
-		secretKey: meta.objectStorageSecretKey!,
-	});
+	const params = {
+		Bucket: meta.objectStorageBucket,
+		Key: key,
+		Body: stream,
+		ContentType: type,
+		CacheControl: 'max-age=31536000, immutable',
+	} as S3.PutObjectRequest;
 
-	const metadata = {
-		'Content-Type': type,
-		'Cache-Control': 'max-age=31536000, immutable'
-	} as Minio.ItemBucketMetadata;
+	if (filename) params.ContentDisposition = contentDisposition('inline', filename);
 
-	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
+	const s3 = getS3(meta);
 
-	await minio.putObject(meta.objectStorageBucket!, key, stream, undefined, metadata);
+	const upload = s3.upload(params);
+
+	await upload.promise();
 }
 
 async function deleteOldFile(user: IRemoteUser) {

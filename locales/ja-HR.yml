@@ -37,6 +37,18 @@ common:
   reload-to-apply-the-setting: "このせっていをはんえいするにはページをリロードするひつようがあります。今すぐリロードしますか？"
   fetching-as-ap-object: "れんごうにしょうかいちゅう"
   unfollow-confirm: "{name}さんをフォローかいじょしますか？"
+  signin-required: "ログインしてください"
+  notification-type: "つうちのしゅるい"
+  notification-types:
+    all: "すべて"
+    pollVote: "とうひょう"
+    follow: "フォロー"
+    receiveFollowRequest: "フォローリクエスト"
+    reply: "へんしん"
+    quote: "いんよう"
+    renote: "リノート"
+    mention: "メンション"
+    reaction: "リアクション"
 
   got-it: "OK"
   customization-tips:
@@ -215,6 +227,7 @@ common:
     use-avatar-reversi-stones: "リバーシのいしにアバターをつかう"
     disable-animated-mfm: "とうこうないのうごきのあるテキストをむこうにする"
     disable-showing-animated-images: "アニメーションがぞうをさいせいしない"
+    enable-quick-notification-view: "つうちのクイックビューをゆうこうにする"
     suggest-recent-hashtags: "さいきんのハッシュタグをとうこうフォームにみせる"
     always-show-nsfw: "つねにえつらんちゅういのメディアをみせる"
     always-mark-nsfw: "つねにメディアをえつらんちゅういとしてとうこう"
@@ -1899,6 +1912,9 @@ mobile/views/pages/search.vue:
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルをせんたく"
+
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
 
 mobile/views/pages/settings.vue:
   signed-in-as: "{}としてサインインちゅう"

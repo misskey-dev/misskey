@@ -302,6 +302,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			if ((tag.updated != null && exists.updatedAt == null)
 				|| (tag.id != null && exists.uri == null)
 				|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
+				|| (tag.icon!.url !== exists.url)
 			) {
 				await Emojis.update({
 					host,
@@ -309,7 +310,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 				}, {
 					uri: tag.id,
 					url: tag.icon!.url,
-					updatedAt: new Date(tag.updated!),
+					updatedAt: new Date(),
 				});
 
 				return await Emojis.findOne({
@@ -329,7 +330,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			name,
 			uri: tag.id,
 			url: tag.icon!.url,
-			updatedAt: tag.updated ? new Date(tag.updated) : undefined,
+			updatedAt: new Date(),
 			aliases: []
 		} as Partial<Emoji>);
 	}));

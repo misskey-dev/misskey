@@ -37,7 +37,18 @@ common:
   reload-to-apply-the-setting: "この設定を反映するにはページをリロードする必要があります。今すぐリロードしますか？"
   fetching-as-ap-object: "連合に照会中"
   unfollow-confirm: "{name}さんをフォロー解除しますか？"
-
+  signin-required: "ログインしてください"
+  notification-type: "通知の種類"
+  notification-types:
+    all: "すべて"
+    pollVote: "投票"
+    follow: "フォロー"
+    receiveFollowRequest: "フォローリクエスト"
+    reply: "返信"
+    quote: "引用"
+    renote: "リノート"
+    mention: "言及"
+    reaction: "リアクション"
   got-it: "OK"
   customization-tips:
     title: "カスタマイズのヒント"
@@ -112,7 +123,7 @@ common:
     quote-question: "引用として添付しますか？"
     submit: "投稿"
     reply: "返信"
-    renote: "Renote"
+    renote: "リノート"
     posting: "投稿中"
     attach-media-from-local: "PCからメディアを添付"
     attach-media-from-drive: "ドライブからメディアを添付"
@@ -215,6 +226,7 @@ common:
     use-avatar-reversi-stones: "リバーシの石にアバターを使う"
     disable-animated-mfm: "投稿内の動きのあるテキストを無効にする"
     disable-showing-animated-images: "アニメーション画像を再生しにゃい"
+    enable-quick-notification-view: "通知のクイックビューを有効にする"
     suggest-recent-hashtags: "最近のハッシュタグを投稿フォームに表示する"
     always-show-nsfw: "常に閲覧注意のメディアを表示する"
     always-mark-nsfw: "常にメディアを閲覧注意として投稿"
@@ -254,9 +266,9 @@ common:
     show-clock-on-header: "右上に時計を表示する"
     show-reply-target: "リプライ先を表示する"
     timeline: "タイムライン"
-    show-my-renotes: "自分の行ったRenoteをタイムラインに表示する"
-    show-renoted-my-notes: "自分の投稿のRenoteをタイムラインに表示する"
-    show-local-renotes: "ローカルの投稿のRenoteをタイムラインに表示する"
+    show-my-renotes: "自分の行ったリノートをタイムラインに表示する"
+    show-renoted-my-notes: "自分の投稿のリノートをタイムラインに表示する"
+    show-local-renotes: "ローカルの投稿のリノートをタイムラインに表示する"
     remain-deleted-note: "削除された投稿を表示し続ける"
     sound: "サウンド"
     enable-sounds: "サウンドを有効にする"
@@ -315,7 +327,7 @@ common:
   is-remote-user: "このユーザー情報は不正確にゃ可能性があります。"
   is-remote-post: "この投稿情報はコピーです。"
   view-on-remote: "正確にゃ情報を見る"
-  renoted-by: "{user}がRenote"
+  renoted-by: "{user}がリノート"
   no-notes: "投稿がありません"
   turn-on-darkmode: "ダークモード"
   turn-off-darkmode: "ライトモード"
@@ -1073,13 +1085,13 @@ desktop/views/components/note-detail.vue:
   private: "この投稿は非公開です"
   deleted: "この投稿は削除されました"
   location: "位置情報"
-  renote: "Renote"
+  renote: "リノート"
   add-reaction: "リアクション"
   undo-reaction: "リアクション解除"
 
 desktop/views/components/note.vue:
   reply: "返信"
-  renote: "Renote"
+  renote: "リノート"
   add-reaction: "リアクション"
   undo-reaction: "リアクション解除"
   detail: "詳細"
@@ -1096,10 +1108,10 @@ desktop/views/components/notifications.vue:
 desktop/views/components/post-form.vue:
   posted: "投稿しました！"
   replied: "返信しました！"
-  reposted: "Renoteしました！"
+  reposted: "リノートしました！"
   note-failed: "投稿に失敗しました"
   reply-failed: "返信に失敗しました"
-  renote-failed: "Renoteに失敗しました"
+  renote-failed: "リノートに失敗しました"
   preview: "プレビュー"
 
 desktop/views/components/post-form-window.vue:
@@ -1114,14 +1126,14 @@ desktop/views/components/progress-dialog.vue:
 desktop/views/components/renote-form.vue:
   quote: "引用する..."
   cancel: "キャンセル"
-  renote: "Renote"
-  renote-home: "Renote (Home)"
+  renote: "リノート"
+  renote-home: "リノート (ホーム)"
   reposting: "しています..."
-  success: "Renoteしました！"
-  failure: "Renoteに失敗しました"
+  success: "リノートしました！"
+  failure: "リノートに失敗しました"
 
 desktop/views/components/renote-form-window.vue:
-  title: "この投稿をRenoteしますか？"
+  title: "この投稿をリノートしますか？"
 
 desktop/views/pages/user-following-or-followers.vue:
   following: "{user}のフォロー"
@@ -1899,6 +1911,9 @@ mobile/views/pages/search.vue:
 
 mobile/views/pages/selectdrive.vue:
   select-file: "ファイルを選択"
+
+mobile/views/pages/notifications.vue:
+  notifications: "通知"
 
 mobile/views/pages/settings.vue:
   signed-in-as: "{}としてサインイン中"

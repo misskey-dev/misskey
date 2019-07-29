@@ -22,72 +22,95 @@ export default Vue.extend({
 	},
 	computed: {
 		items(): any[] {
-			return [{
-				icon: 'at',
-				text: this.$t('mention'),
-				action: this.mention
-			}, null, {
-				icon: 'info-circle',
-				text: this.$t('detail'),
-				action: this.detail
-			}, {
-				icon: faCopy,
-				text: this.$t('copy-content'),
-				action: this.copyContent
-			}, {
-				icon: 'link',
-				text: this.$t('copy-link'),
-				action: this.copyLink
-			}, this.note.uri ? {
-				icon: 'external-link-square-alt',
-				text: this.$t('remote'),
-				action: () => {
-					window.open(this.note.uri, '_blank');
-				}
-			} : undefined,
-			null,
-			this.isFavorited ? {
-				icon: 'star',
-				text: this.$t('unfavorite'),
-				action: () => this.toggleFavorite(false)
-			} : {
-				icon: 'star',
-				text: this.$t('favorite'),
-				action: () => this.toggleFavorite(true)
-			},
-			this.note.userId != this.$store.state.i.id ? this.isWatching ? {
-				icon: faEyeSlash,
-				text: this.$t('unwatch'),
-				action: () => this.toggleWatch(false)
-			} : {
-				icon: faEye,
-				text: this.$t('watch'),
-				action: () => this.toggleWatch(true)
-			} : undefined,
-			this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
-				icon: 'thumbtack',
-				text: this.$t('unpin'),
-				action: () => this.togglePin(false)
-			} : {
-				icon: 'thumbtack',
-				text: this.$t('pin'),
-				action: () => this.togglePin(true)
-			} : undefined,
-			...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
-				null,
-				this.note.userId == this.$store.state.i.id ? {
-					icon: 'undo-alt',
-					text: this.$t('delete-and-edit'),
-					action: this.deleteAndEdit
+			if (this.$store.getters.isSignedIn) {
+				return [{
+					icon: 'at',
+					text: this.$t('mention'),
+					action: this.mention
+				}, null, {
+					icon: 'info-circle',
+					text: this.$t('detail'),
+					action: this.detail
+				}, {
+					icon: faCopy,
+					text: this.$t('copy-content'),
+					action: this.copyContent
+				}, {
+					icon: 'link',
+					text: this.$t('copy-link'),
+					action: this.copyLink
+				}, this.note.uri ? {
+					icon: 'external-link-square-alt',
+					text: this.$t('remote'),
+					action: () => {
+						window.open(this.note.uri, '_blank');
+					}
 				} : undefined,
-				{
-					icon: ['far', 'trash-alt'],
-					text: this.$t('delete'),
-					action: this.del
-				}]
-				: []
-			)]
-			.filter(x => x !== undefined)
+				null,
+				this.isFavorited ? {
+					icon: 'star',
+					text: this.$t('unfavorite'),
+					action: () => this.toggleFavorite(false)
+				} : {
+					icon: 'star',
+					text: this.$t('favorite'),
+					action: () => this.toggleFavorite(true)
+				},
+				this.note.userId != this.$store.state.i.id ? this.isWatching ? {
+					icon: faEyeSlash,
+					text: this.$t('unwatch'),
+					action: () => this.toggleWatch(false)
+				} : {
+					icon: faEye,
+					text: this.$t('watch'),
+					action: () => this.toggleWatch(true)
+				} : undefined,
+				this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
+					icon: 'thumbtack',
+					text: this.$t('unpin'),
+					action: () => this.togglePin(false)
+				} : {
+					icon: 'thumbtack',
+					text: this.$t('pin'),
+					action: () => this.togglePin(true)
+				} : undefined,
+				...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
+					null,
+					this.note.userId == this.$store.state.i.id ? {
+						icon: 'undo-alt',
+						text: this.$t('delete-and-edit'),
+						action: this.deleteAndEdit
+					} : undefined,
+					{
+						icon: ['far', 'trash-alt'],
+						text: this.$t('delete'),
+						action: this.del
+					}]
+					: []
+				)]
+				.filter(x => x !== undefined);
+			} else {
+				return [{
+					icon: 'info-circle',
+					text: this.$t('detail'),
+					action: this.detail
+				}, {
+					icon: faCopy,
+					text: this.$t('copy-content'),
+					action: this.copyContent
+				}, {
+					icon: 'link',
+					text: this.$t('copy-link'),
+					action: this.copyLink
+				}, this.note.uri ? {
+					icon: 'external-link-square-alt',
+					text: this.$t('remote'),
+					action: () => {
+						window.open(this.note.uri, '_blank');
+					}
+				} : undefined]
+				.filter(x => x !== undefined);
+			}
 		}
 	},
 

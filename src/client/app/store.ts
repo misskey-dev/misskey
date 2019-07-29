@@ -78,6 +78,7 @@ const defaultDeviceSettings = {
 	expandUsersPhotos: true,
 	expandUsersActivity: true,
 	showPostPreview: true,
+	enableMobileQuickNotificationView: false,
 };
 
 export default (os: MiOS) => new Vuex.Store({

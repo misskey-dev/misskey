@@ -98,7 +98,7 @@ export default Vue.extend({
 		return {
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			userInputValue: null,
-			selectedValue: this.select ? this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
+			selectedValue: this.select ? this.select.default ? this.select.default : this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
 			canOk: true,
 			faTimesCircle, faQuestionCircle
 		};

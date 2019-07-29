@@ -1,17 +1,9 @@
 declare module 'lookup-dns-cache' {
-	type IPv4 = 4;
+	import { LookupOneOptions, LookupAllOptions, LookupOptions, LookupAddress } from 'dns'
 
-	type IPv6 = 6;
-
-	type Family = IPv4 | IPv6 | undefined;
-
-	interface IRunOptions {
-		family?: Family;
-		all?: boolean;
-	}
-
-	type RunCallback = (error: Error | null, address?: string | string[], family?: Family) => void;
-
-	export function lookup(hostname: string, options: IRunOptions | Family, callback: RunCallback): {} | undefined;
-	export function lookup(hostname: string, callback: RunCallback): {} | undefined;
+	function lookup(hostname: string, family: number, callback: (err: NodeJS.ErrnoException | null, address: string, family: number) => void): void;
+	function lookup(hostname: string, options: LookupOneOptions, callback: (err: NodeJS.ErrnoException | null, address: string, family: number) => void): void;
+	function lookup(hostname: string, options: LookupAllOptions, callback: (err: NodeJS.ErrnoException | null, addresses: LookupAddress[]) => void): void;
+	function lookup(hostname: string, options: LookupOptions, callback: (err: NodeJS.ErrnoException | null, address: string | LookupAddress[], family: number) => void): void;
+	function lookup(hostname: string, callback: (err: NodeJS.ErrnoException | null, address: string, family: number) => void): void;
 }

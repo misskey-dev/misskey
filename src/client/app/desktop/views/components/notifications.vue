@@ -154,6 +154,13 @@ export default Vue.extend({
 		paging({}),
 	],
 
+	props: {
+		type: {
+			type: String,
+			required: false
+		}
+	},
+
 	data() {
 		return {
 			connection: null,
@@ -161,6 +168,9 @@ export default Vue.extend({
 			pagination: {
 				endpoint: 'i/notifications',
 				limit: 10,
+				params: () => ({
+					includeTypes: this.type ? [this.type] : undefined
+				})
 			}
 		};
 	},
@@ -174,6 +184,12 @@ export default Vue.extend({
 				notification._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return notification;
 			});
+		}
+	},
+
+	watch: {
+		type() {
+			this.reload();
 		}
 	},
 
