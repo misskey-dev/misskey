@@ -1,0 +1,2282 @@
+meta:
+  lang: "にほんご"
+  divider: ""
+
+common:
+  misskey: "ふぇでぃばーすの⭐"
+  about-title: "ふぇでぃばーすの⭐."
+  about: "グランポリス -ぐらんぽりす- は、Misskey からフォークされた<b>ぶんさんマイクロブログサービス</b>です。 Twitter ににたような UI でおもいおもいのことばをはっしんできます。 Misskey はもちろん、 Mastodon, Preloma などのサービスにいるほかのサーバーのユーザーをフォローすることもできます。"
+  intro:
+    title: "グランポリスって？"
+    about: "グランポリスはオープンソースの<b>ぶんさんがたマイクロブログサービス</b>です。リッチでこうどにカスタマイズできるUI、とうこうへのリアクション、ファイルをいちげんかんりできるドライブなど、せんしんてきなきのうをそろえています。また、Fediverseとよばれるネットワークにせつぞくできるため、ほかのサービスともやりとりできます。たとえば、あなたがなにかとうこうすると、そのとうこうは グランポリス だけでなく Mastodon などのほかのサービスにもつたわります。ちょうどあるわくせいからほかのわくせいにでんぱをはっしんしているようすをイメージしてください。"
+    features: "とくちょう"
+    rich-contents: "とうこう"
+    rich-contents-desc: "じぶんのかんがえ、わだいのできごと、みんなときょうゆうしたいことについてはっしんしてください。ひつようであれば、さまざまなこうぶんをつかってとうこうをそうしょくしたり、すきながぞう、どうがなどのファイルやアンケートをてんぷすることもできます。"
+    reaction: "リアクション"
+    reaction-desc: "あなたのきもちをつたえるもっともかんたんなほうほうです。グランポリスは、ほかのユーザーのとうこうにさまざまなリアクションをつけることができます。いちどグランポリスのリアクションきのうをたいけんしてしまうと、もう「いいね」のがいねんしかそんざいしないSNSにはもどれなくなるかもしれません。"
+    ui: "インターフェース"
+    ui-desc: "どのようなUIがつかいやすいかはひとそれぞれです。だから、グランポリスはじゆうどのたかいUIをもっています。レイアウトやデザインをちょうせいしたり、カスタマイズかのうなさまざまなウィジェットをはいちしたりして、じぶんだけのホームを作ってください。"
+    drive: "ドライブ"
+    drive-desc: "いぜんとうこうしたことのあるがぞうをまたとうこうしたくなったことはありませんか？もしくは、アップロードしたファイルをフォルダわけしてせいりしたくなったことはありませんか？グランポリスのこんかんにくみまれたドライブきのうによってそれらがかいけつします。ファイルのきょうゆうもかんたんです。"
+    outro: "ほかにもグランポリスにしかないきのうはまだまだあるので、ぜひあなたじしんのめでたしかめてください。グランポリスはぶんさんがたSNSなので、このインスタンスがきにいらなければほかのインスタンスをためすこともできます。それでは、GLHF!"
+  adblock:
+    detected: "こうこくブロッカーをむこうにしてください"
+    warning: "<strong>グランポリスはこうこくをけいさいしていません</strong>が、こうこくをブロックするきのうがゆうこうだといちぶのきのうがりようできなかったり、ふぐあいがはっせいするばあいがあります。"
+  application-authorization: "アプリのれんけい"
+  close: "とじる"
+  do-not-copy-paste: "ここにコードをにゅうりょくしたりはりつけたりしないでください。アカウントがふせいりようされるかもしれないです。"
+  load-more: "もっとよみこむ"
+  enter-password: "パスワードをにゅうりょくしてください"
+  2fa: "にだんかいにんしょう"
+  customize-home: "ホームをカスタマイズ"
+  featured-notes: "ハイライト"
+  dark-mode: "ダークモード"
+  signin: "ログイン"
+  signup: "しんきとうろく"
+  signout: "ログアウト"
+  reload-to-apply-the-setting: "このせっていをはんえいするにはページをリロードするひつようがあります。今すぐリロードしますか？"
+  fetching-as-ap-object: "れんごうにしょうかいちゅう"
+  unfollow-confirm: "{name}さんをフォローかいじょしますか？"
+
+  got-it: "OK"
+  customization-tips:
+    title: "カスタマイズのヒント"
+    paragraph: "<p>ホームのカスタマイズでは、ウィジェットをついか/さくじょしたり、ドラッグ&ドロップしてならべかえたりすることができます。</p><p>いちぶのウィジェットは、<strong><strong>みぎ</strong>クリック</strong>することでひょうじをへんこうすることができます。</p><p>ウィジェットをさくじょするには、ヘッダーの<strong>「ごみばこ」</strong>とかかれたエリアにウィジェットをドラッグ&ドロップします。</p><p>カスタマイズをしゅうりょうするには、みぎうえの「かんりょう」をクリックします。</p>"
+    gotit: "Got it!"
+  notification:
+    file-uploaded: "ファイルがアップロードされました"
+    message-from: "{}さんからメッセージ:"
+    reversi-invited: "たいきょくのしょうたいがあります"
+    reversi-invited-by: "{}さんから"
+    notified-by: "{}さんから"
+    reply-from: "{}さんからへんしん:"
+    quoted-by: "{}さんがいんよう:"
+  time:
+    unknown: "なぞのじかん"
+    future: "みらい"
+    just_now: "たったいま"
+    seconds_ago: "{}びょうまえ"
+    minutes_ago: "{}ふんまえ"
+    hours_ago: "{}じかんまえ"
+    days_ago: "{}にちまえ"
+    weeks_ago: "{}しゅうかんまえ"
+    months_ago: "{}かげつまえ"
+    years_ago: "{}ねんまえ"
+  month-and-day: "{month}がつ {day}にち"
+
+  trash: "ごみばこ"
+  drive: "ドライブ"
+  pages: "ページ"
+  messaging: "トーク"
+  home: "ホーム"
+  deck: "デッキ"
+  timeline: "タイムライン"
+  explore: "みつける"
+  following: "フォローちゅう"
+  followers: "フォロワー"
+  favorites: "おきにいり"
+
+  permissions:
+    "read:account": "アカウントのじょうほうをみる"
+    "write:account": "アカウントのじょうほうをへんこうする"
+    "read:blocks": "ブロックをみる"
+    "write:blocks": "ブロックをそうさする"
+    "read:drive": "ドライブをみる"
+    "write:drive": "ドライブをそうさする"
+    "read:favorites": "おきにいりをみる"
+    "write:favorites": "おきにいりをそうさする"
+    "read:following": "フォローのじょうほうをみる"
+    "write:following": "フォロー・フォローかいじょする"
+    "read:messaging": "トークをみる"
+    "write:messaging": "トークをそうさする"
+    "read:mutes": "ミュートをみる"
+    "write:mutes": "ミュートをそうさする"
+    "write:notes": "とうこうをさくせい・さくじょする"
+    "read:notifications": "つうちをみる"
+    "write:notifications": "つうちをそうさする"
+    "read:reactions": "リアクションをみる"
+    "write:reactions": "リアクションをそうさする"
+    "write:votes": "とうひょうする"
+
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "ユーザーをフォローするととうこうがタイムラインにひょうじされます。"
+    explore: "ユーザーをたんさくする"
+
+  post-form:
+    attach-location-information: "いちじょうほうをてんぷする"
+    hide-contents: "ないようをかくす"
+    reply-placeholder: "このとうこうへのへんしん..."
+    quote-placeholder: "このとうこうをいんよう..."
+    option-quote-placeholder: "このとうこうをいんよう... (オプション)"
+    quote-attached: "いんようつき"
+    quote-question: "いんようとしててんぷしますか？"
+    submit: "とうこう"
+    reply: "へんしん"
+    renote: "リノート"
+    posting: "とうこうちゅう"
+    attach-media-from-local: "PCからメディアをてんぷ"
+    attach-media-from-drive: "ドライブからメディアをてんぷ"
+    insert-a-kao: "v('ω')v"
+    create-poll: "アンケートをさくせい"
+    text-remain: "のこり{}もじ"
+    recent-tags: "さいきん"
+    local-only-message: "このとうこうはローカルにのみこうかいされます"
+    click-to-tagging: "クリックでタグつけ"
+    visibility: "こうかいはんい"
+    geolocation-alert: "おつかいのたんまつはいちじょうほうにたいおうしていません"
+    error: "エラー"
+    enter-username: "ユーザー名をにゅうりょくしてください"
+    add-visible-user: "ユーザーをついか"
+    cw-placeholder: "ないようへのちゅうしゃく (オプション)"
+    username-prompt: "ユーザーめいをにゅうりょくしてください"
+    enter-file-name: "ファイルのなまえをへんしゅう"
+    preview: "プレビュー"
+
+  weekday-short:
+    sunday: "にち"
+    monday: "げつ"
+    tuesday: "か"
+    wednesday: "すい"
+    thursday: "もく"
+    friday: "きん"
+    saturday: "ど"
+
+  weekday:
+    sunday: "にちようび"
+    monday: "げつようび"
+    tuesday: "かようび"
+    wednesday: "すいようび"
+    thursday: "もくようび"
+    friday: "きんようび"
+    saturday: "どようび"
+
+  reactions:
+    like: "いいね"
+    love: "しゅき"
+    laugh: "わら"
+    hmm: "ふぅ～む"
+    surprise: "わお"
+    congrats: "おめでとう"
+    angry: "おこ"
+    confused: "こまこまのこまり"
+    rip: "しんだ"
+    pudding: "ぷりん"
+
+  note-visibility:
+    public: "こうかい"
+    home: "ホーム"
+    home-desc: "ホームタイムラインにのみこうかい"
+    followers: "フォロワー"
+    followers-desc: "じぶんのフォロワーにのみこうかい"
+    specified: "ダイレクト"
+    specified-desc: "していしたユーザーにのみこうかい"
+    local-public: "こうかい (ローカルのみ)"
+    local-home: "ホーム (ローカルのみ)"
+    local-followers: "フォロワー (ローカルのみ)"
+
+  note-placeholders:
+    a: "いまどうしてる？"
+    b: "なにかありましたか？"
+    c: "なにをおかんがえですか？"
+    d: "いいたいことは？"
+    e: "ここにかいてください"
+    f: "あなたがかくのを待っています..."
+
+  settings: "せってい"
+  _settings:
+    profile: "プロフィール"
+    notification: "つうち"
+    apps: "アプリ"
+    tags: "ハッシュタグ"
+    mute-and-block: "ミュート/ブロック"
+    blocking: "ブロック"
+    security: "セキュリティ"
+    signin: "ログインりれき"
+    password: "パスワード"
+    other: "そのた"
+    appearance: "デザイン"
+    behavior: "どうさ"
+    fetch-on-scroll: "スクロールでじどうよみこみ"
+    fetch-on-scroll-desc: "ページをしたまでスクロールしたときにじどうでついかのコンテンツをよみこみます。"
+    note-visibility: "とうこうのこうかいはんい"
+    default-note-visibility: "デフォルトのこうかいはんい"
+    remember-note-visibility: "とうこうのこうかいはんいをきおくする"
+    web-search-engine: "ウェブけんさくエンジン"
+    web-search-engine-desc: "れい: https://www.google.com/?#q={{query}}"
+    paste: "ペースト"
+    pasted-file-name: "ペーストされたファイルのなまえのテンプレート"
+    pasted-file-name-desc: "れい: \"yyyy-MM-dd HH-mm-ss [{{number}}]\" → \"2018-03-20 21-30-24 1\""
+    paste-dialog: "ペースト時にファイルのなまえをへんしゅう"
+    paste-dialog-desc: "ペーストじにファイルのなまえをへんしゅうするダイアログをみせるようにします。"
+    keep-cw: "CWほじ"
+    keep-cw-desc: "とうこうにリプライするさい、リプライもとのとうこうにCWがせっていされていたとき、デフォルトでおなじCWをせっていするようにします。"
+    i-like-sushi: "わたしは(プリンよりむしろ)すしがすき"
+    show-reversi-board-labels: "リバーシのボードのぎょうとれつのラベルをひょうじ"
+    use-avatar-reversi-stones: "リバーシのいしにアバターをつかう"
+    disable-animated-mfm: "とうこうないのうごきのあるテキストをむこうにする"
+    disable-showing-animated-images: "アニメーションがぞうをさいせいしない"
+    suggest-recent-hashtags: "さいきんのハッシュタグをとうこうフォームにみせる"
+    always-show-nsfw: "つねにえつらんちゅういのメディアをみせる"
+    always-mark-nsfw: "つねにメディアをえつらんちゅういとしてとうこう"
+    show-full-acct: "ユーザーめいのホストをしょうりゃくしない"
+    show-via: "viaをみせる"
+    reduce-motion: "UIのうごきをへらす"
+    this-setting-is-this-device-only: "このデバイスのみ"
+    use-os-default-emojis: "OSひょうじゅんのえもじをしよう"
+    line-width: "せんのふとさ"
+    line-width-thin: "ほそい"
+    line-width-normal: "ふつう"
+    line-width-thick: "ふとい"
+    font-size: "もじのおおきさ"
+    font-size-x-small: "ちいさい"
+    font-size-small: "すこしちいさい"
+    font-size-medium: "ふつう"
+    font-size-large: "すこしおおきい"
+    font-size-x-large: "おおきい"
+    deck-column-align: "デッキのカラムのはいち"
+    deck-column-align-center: "ちゅうおう"
+    deck-column-align-left: "みぎ"
+    deck-column-align-flexible: "フレキシブル"
+    deck-column-width: "デッキのカラムのはば"
+    deck-column-width-narrow: "せま"
+    deck-column-width-narrower: "ややせま"
+    deck-column-width-normal: "ふつう"
+    deck-column-width-wider: "ややひろし"
+    deck-column-width-wide: "ひろ"
+    use-shadow: "UIにかげをしよう"
+    rounded-corners: "UIのかくをまるめる"
+    circle-icons: "えんけいのアイコンをしよう"
+    contrasted-acct: "ユーザーめいにコントラストをつける"
+    wallpaper: "かべがみ"
+    choose-wallpaper: "かべがみをせんたく"
+    delete-wallpaper: "かべがみをさくじょ"
+    post-form-on-timeline: "タイムラインじょうぶにとうこうフォームをみせる"
+    show-clock-on-header: "みぎうえにとけいをみせる"
+    show-reply-target: "リプライさきをみせる"
+    timeline: "タイムライン"
+    show-my-renotes: "じぶんのいったリノートをタイムラインにみせる"
+    show-renoted-my-notes: "じぶんのとうこうのリノートをタイムラインにみせる"
+    show-local-renotes: "ローカルのとうこうのリノートをタイムラインにみせる"
+    remain-deleted-note: "さくじょされたとうこうをひょうじしつづける"
+    sound: "サウンド"
+    enable-sounds: "サウンドをゆうこうにする"
+    enable-sounds-timeline: "タイムライン"
+    enable-sounds-notifications: "つうち"
+    enable-sounds-desc: "とうこうやメッセージをそうじゅしんしたときなどにサウンドをさいせいします。このせっていはブラウザにきおくされます。"
+    volume: "ボリューム"
+    test: "テスト"
+    update: "グランポリス アップデート"
+    version: "バージョン:"
+    latest-version: "さいしんのバージョン:"
+    update-checking: "アップデートをかくにんちゅう"
+    do-update: "アップデートをかくにん"
+    update-settings: "しょうさいせってい"
+    no-updates: "りようかのうなこうしんはありません"
+    no-updates-desc: "おつかいのグランポリスはさいしんです。"
+    update-available: "あたらしいバージョンがりようかのうです"
+    update-available-desc: "ページをさいどよみこみするとこうしんがてきようされます。"
+    advanced-settings: "こうどなせってい"
+    debug-mode: "デバッグモードをゆうこうにする"
+    debug-mode-desc: "このせっていはブラウザにきおくされます。"
+    navbar-position: "ナビゲーションバーのいち"
+    navbar-position-top: "うえ"
+    navbar-position-left: "みぎ"
+    navbar-position-right: "みぎ"
+    i-am-under-limited-internet: "わたしはつうしんをせいげんされている"
+    post-style: "とうこうのひょうじスタイル"
+    post-style-standard: "ひょうじゅん"
+    post-style-smart: "スマート"
+    notification-position: "つうちのひょうじ"
+    notification-position-bottom: "した"
+    notification-position-top: "うえ"
+    disable-via-mobile: "「モバイルからのとうこう」フラグをつけない"
+    load-raw-images: "てんぷされたがぞうをきれいにみせる"
+    load-remote-media: "リモートサーバーのメディアをみせる"
+    sync: "どうき"
+    save: "ほぞん"
+    saved: "ほぞんしました"
+    home-profile: "ホームのプロファイル"
+    deck-profile: "デッキのプロファイル"
+
+  search: "けんさく"
+  delete: "さくじょ"
+  loading: "よみこみちゅう"
+  ok: "OK"
+  cancel: "キャンセル"
+  update-available-title: "こうしんがあります"
+  update-available: "グランポリスのあたらしいバージョンがあります({newer}。げんざい{current}をりようちゅう)。ページをさいどよみこみするとこうしんがてきようされます。"
+  my-token-regenerated: "あなたのトークンがこうしんされたのでサインアウトします。"
+  hide-password: "パスワードをかくす"
+  show-password: "パスワードをみせる"
+  enter-username: "ユーザー名をにゅうりょくしてください"
+
+  do-not-use-in-production: "これはかいはつビルドです。ほんばんかんきょうでしようしないでください。"
+  user-suspended: "このユーザーはとうけつされています。"
+  is-remote-user: "このユーザーじょうほうはただしくないかもしれないです。"
+  is-remote-post: "このとうこうじょうほうはコピーです。"
+  view-on-remote: "ただしいじょうほうをみる"
+  リノートd-by: "{user}がリノート"
+  no-notes: "とうこうがありません"
+  turn-on-darkmode: "ダークモード"
+  turn-off-darkmode: "ライトモード"
+
+  error:
+    title: "はっせいがはっせいしました"
+    retry: "やりなおす"
+
+  reversi:
+    drawn: "ひきわけ"
+    my-turn: "あなたのターンです"
+    opponent-turn: "あいてのターンです"
+    turn-of: "{name}のターンです"
+    past-turn-of: "{name}のターン"
+    won: "{name}のかち"
+    black: "くろ"
+    white: "しろ"
+    total: "ごうけい"
+    this-turn: "{count}ターンめ"
+
+  widgets:
+    analog-clock: "アナログどけい"
+    profile: "プロフィール"
+    calendar: "カレンダー"
+    timemachine: "カレンダー(タイムマシン)"
+    activity: "アクティビティ"
+    rss: "RSSリーダー"
+    html: "HTMLウィジェット"
+    memo: "ふせん"
+    trends: "トレンド"
+    photo-stream: "フォトストリーム"
+    posts-monitor: "とうこうチャート"
+    slideshow: "スライドショー"
+    version: "バージョン"
+    broadcast: "ブロードキャスト"
+    notifications: "つうち"
+    users: "おすすめユーザー"
+    polls: "アンケート"
+    post-form: "とうこうフォーム"
+    server: "サーバーじょうほう"
+    nav: "ナビゲーション"
+    tips: "ヒント"
+    hashtags: "ハッシュタグ"
+    queue: "キュー"
+
+  dev: "アプリのさくせいにしっぱいしました。さいどおためしください。"
+  ai-chan-kawaii: "シトリンかわいい"
+  you: "あなた"
+
+auth/views/form.vue:
+  share-access: "&lt;i&gt;{name}&lt;/i&gt;があなたのアカウントにアクセスすることをきょかしますか？"
+  permission-ask: "このアプリはつぎのけんげんをようきゅうしています:"
+  cancel: "キャンセル"
+  accept: "アクセスをきょか"
+
+auth/views/index.vue:
+  loading: "よみこみちゅう"
+  denied: "アプリケーションのれんけいをキャンセルしました。"
+  denied-paragraph: "このアプリがあなたのアカウントにアクセスすることはありません。"
+  already-authorized: "このアプリはすでにれんけいすみです"
+  allowed: "アプリケーションのれんけいをきょかしました"
+  callback-url: "アプリケーションにもどっています"
+  please-go-back: "アプリケーションにもどって、やっていってください。"
+  error: "セッションがそんざいしません。"
+  sign-in: "サインインしてください"
+
+common/views/pages/explore.vue:
+  pinned-users: "ピンどめされたユーザー"
+  popular-users: "にんきのユーザー"
+  recently-updated-users: "さいきんとうこうしたユーザー"
+  recently-registered-users: "しんきユーザー"
+  popular-tags: "にんきのタグ"
+  federated: "れんごう"
+  explore: "{host}をたんさく"
+  users-info: "げんざい{users}ユーザーがとうろくされています"
+
+common/views/components/url-preview.vue:
+  enable-player: "プレイヤーをひらく"
+  disable-player: "プレイヤーをとじる"
+
+common/views/components/user-list.vue:
+  no-users: "ユーザーがいません"
+
+common/views/components/games/reversi/reversi.vue:
+  matching:
+    waiting-for: "{}をまっています"
+    cancel: "キャンセル"
+
+common/views/components/games/reversi/reversi.game.vue:
+  surrender: "とうりょう"
+  surrendered: "とうりょうにより"
+  is-llotheo: "いしのすくないほうがかち(ロセオ)"
+  looped-map: "ループマップ"
+  can-put-everywhere: "どこでもおけるモード"
+
+common/views/components/games/reversi/reversi.index.vue:
+  title: "グランポリス リバーシ"
+  sub-title: "ほかのグランポリスユーザーとリバーシでたいせんしよう"
+  invite: "しょうたい"
+  rule: "あそびかた"
+  rule-desc: "リバーシは、あいてとこうごにいしをボードにおいて、あいてのいしをはさんでじぶんのいろにかえてゆき、さいしゅうてきにのこったいしがおおいほうがかちというボードゲームです。"
+  mode-invite: "しょうたい"
+  mode-invite-desc: "していしたユーザーとたいせんするモードです。"
+  invitations: "たいきょくのしょうたいがあります！"
+  my-games: "じぶんのたいきょく"
+  all-games: "みんなのたいきょく"
+  enter-username: "ユーザーめいをにゅうりょくしてください"
+  game-state:
+    ended: "しゅうりょう"
+    playing: "しんこうちゅう"
+
+common/views/components/games/reversi/reversi.room.vue:
+  settings-of-the-game: "ゲームのせってい"
+  choose-map: "マップをせんたく"
+  random: "ランダム"
+  black-or-white: "せんて/ごて"
+  black-is: "{}がくろ"
+  rules: "ルール"
+  is-llotheo: "いしのすくないほうがかち(ロセオ)"
+  looped-map: "ループマップ"
+  can-put-everywhere: "どこでもおけるモード"
+  settings-of-the-bot: "Botのせってい"
+  this-game-is-started-soon: "ゲームはすうびょうごにかいしされます"
+  waiting-for-other: "あいてのじゅんびがかんりょうするのをまっています"
+  waiting-for-me: "あなたのじゅんびがかんりょうするのをまっています"
+  waiting-for-both: "じゅんびちゅう"
+  cancel: "キャンセル"
+  ready: "じゅんびかんりょう"
+  cancel-ready: "じゅんびぞっこう"
+
+common/views/components/connect-failed.vue:
+  title: "サーバーにせつぞくできません"
+  description: "インターネットかいせんにはっせいがあるか、サーバーがダウンまたはメンテナンスしているかもしれないです。しばらくしてから{さいどおためし}ください。"
+  thanks: "いつもグランポリスをごりよういただきありがとうございます。"
+  troubleshoot: "トラブルシュート"
+
+common/views/components/connect-failed.troubleshooter.vue:
+  title: "トラブルシューティング"
+  network: "ネットワークせつぞく"
+  checking-network: "ネットワークせつぞくをかくにんちゅう"
+  internet: "インターネットせつぞく"
+  checking-internet: "インターネットせつぞくをかくにんちゅう"
+  server: "サーバーせつぞく"
+  checking-server: "サーバーせつぞくをかくにんちゅう"
+  finding: "はっせいをしらべています"
+  no-network: "ネットワークにせつぞくされていません"
+  no-network-desc: "おつかいのPCのネットワークせつぞくがせいじょうかかくにんしてください。"
+  no-internet: "インターネットにせつぞくされていません"
+  no-internet-desc: "ネットワークにはせつぞくされていますが、インターネットにはせつぞくされていないようです。おつかいのPCのインターネットせつぞくがせいじょうかかくにんしてください。"
+  no-server: "グランポリスのサーバーにせつぞくできません"
+  no-server-desc: "おつかいのPCのインターネットせつぞくはせいじょうですが、グランポリスのサーバーにはせつぞくできませんでした。サーバーがダウンまたはメンテナンスしているかのうせいがあるので、しばらくしてからさいどごアクセスください。"
+  success: "グランポリスのサーバーにせつぞくできました"
+  success-desc: "せいじょうにせつぞくできるようです。ページをさいどよみこみしてください。"
+  flush: "キャッシュのさくじょ"
+  set-version: "バージョンしてい"
+
+common/views/components/media-banner.vue:
+  sensitive: "えつらんちゅうい"
+  click-to-show: "クリックしてひょうじ"
+
+common/views/components/theme.vue:
+  theme: "テーマ"
+  light-theme: "ひダークモードじにしようするテーマ"
+  dark-theme: "ダークモードじにしようするテーマ"
+  light-themes: "あかるいテーマ"
+  dark-themes: "くらいテーマ"
+  install-a-theme: "テーマのインストール"
+  theme-code: "テーマコード"
+  install: "インストール"
+  installed: "「{}」をインストールしました"
+  create-a-theme: "テーマのさくせい"
+  save-created-theme: "テーマをほぞん"
+  primary-color: "プライマリ カラー"
+  secondary-color: "セカンダリ カラー"
+  text-color: "もじいろ"
+  base-theme: "ベーステーマ"
+  base-theme-light: "ライト"
+  base-theme-dark: "ダーク"
+  find-more-theme: "そのほかのテーマをさがす"
+  theme-name: "テーマめい"
+  preview-created-theme: "プレビュー"
+  invalid-theme: "テーマがただしくありません。"
+  already-installed: "すでにそのテーマはインストールされています。"
+  saved: "ほぞんしました"
+  manage-themes: "テーマのかんり"
+  builtin-themes: "ひょうじゅんテーマ"
+  my-themes: "マイテーマ"
+  installed-themes: "インストールされたテーマ"
+  select-theme: "テーマをせんたくしてください"
+  uninstall: "アンインストール"
+  uninstalled: "「{}」をアンインストールしました"
+  author: "さくしゃ"
+  desc: "せつめい"
+  export: "エクスポート"
+  import: "インポート"
+  import-by-code: "またはコードをペースト"
+  theme-name-required: "テーマめいはかならずひつようです。"
+
+common/views/components/cw-button.vue:
+  hide: "かくす"
+  show: "もっとみる"
+  chars: "{count}もじ"
+  files: "{count}ファイル"
+  poll: "アンケート"
+
+common/views/components/messaging.vue:
+  search-user: "ユーザーをさがす"
+  you: "あなた"
+  no-history: "りれきはありません"
+  user: "ユーザー"
+  group: "グループ"
+  start-with-user: "ユーザーとトークをかいし"
+  start-with-group: "グループとトークをかいし"
+  select-group: "グループをせんたくしてください"
+
+common/views/components/messaging-room.vue:
+  not-talked-user: "このユーザーとのかいわはありません"
+  not-talked-group: "このグループでのかいわはありません"
+  no-history: "これよりかこのりれきはありません"
+  new-message: "あたらしいメッセージがあります"
+  only-one-file-attached: "メッセージにてんぷできるファイルはひとつです"
+
+common/views/components/messaging-room.form.vue:
+  input-message-here: "ここにメッセージをにゅうりょく"
+  send: "そうしん"
+  attach-from-local: "PCからファイルをてんぷする"
+  attach-from-drive: "ドライブからファイルをてんぷする"
+  only-one-file-attached: "メッセージにてんぷできるファイルはひとつです"
+
+common/views/components/messaging-room.message.vue:
+  is-read: "きどく"
+  deleted: "このメッセージはさくじょされました"
+
+common/views/components/nav.vue:
+  about: "グランポリスについて"
+  stats: "とうけい"
+  status: "ステータス"
+  wiki: "Wiki"
+  donors: "ドナー"
+  repository: "リポジトリ"
+  develop: "かいはつしゃ"
+  feedback: "フィードバック"
+  tos: "りようきやく"
+
+common/views/components/note-menu.vue:
+  mention: "メンション"
+  detail: "しょうさい"
+  copy-content: "ないようをコピー"
+  copy-link: "リンクをコピー"
+  favorite: "おきにいり"
+  unfavorite: "おきにいりかいじょ"
+  watch: "ウォッチ"
+  unwatch: "ウォッチかいじょ"
+  pin: "ピンどめ"
+  unpin: "ピンどめかいじょ"
+  delete: "さくじょ"
+  delete-confirm: "このとうこうをさくじょしますか？"
+  delete-and-edit: "さくじょしてへんしゅう"
+  delete-and-edit-confirm: "このとうこうをさくじょしてもういちどへんしゅうしますか？このとうこうへのリアクション、リノート、へんしんもすべてさくじょされます。"
+  remote: "とうこうもとでみる"
+  pin-limit-exceeded: "これいじょうピンどめできません。"
+
+common/views/components/user-menu.vue:
+  mention: "メンション"
+  mute: "ミュート"
+  unmute: "ミュートかいじょ"
+  mute-confirm: "このユーザーをミュートしますか？"
+  unmute-confirm: "このユーザーをミュートかいじょしますか？"
+  block: "ブロック"
+  unblock: "ブロックかいじょ"
+  block-confirm: "このユーザーをブロックしますか？"
+  unblock-confirm: "このユーザーをブロックかいじょしますか？"
+  push-to-list: "リストについか"
+  select-list: "リストをせんたくしてください"
+  report-abuse: "スパムをほうこく"
+  report-abuse-detail: "どのようなめいわくこういをおこなっていますか？"
+  report-abuse-reported: "かんりしゃにほうこくされました。ごきょうりょくありがとうございました。"
+  silence: "サイレンス"
+  unsilence: "サイレンスかいじょ"
+  silence-confirm: "このユーザーをサイレンスしますか？"
+  unsilence-confirm: "このユーザーをサイレンスかいじょしますか？"
+  suspend: "とうけつ"
+  unsuspend: "とうけつかいじょ"
+  suspend-confirm: "このユーザーをとうけつしますか？"
+  unsuspend-confirm: "このユーザーをとうけつかいじょしますか？"
+  update-remote-user: "リモートユーザーじょうほうのこうしん"
+  remote-user-updated: "リモートユーザーじょうほうをこうしんしました"
+
+common/views/components/poll.vue:
+  vote-to: "「{}」にとうひょうする"
+  vote-count: "{}ひょう"
+  total-votes: "けい{}ひょう"
+  vote: "とうひょうする"
+  show-result: "けっかをみる"
+  voted: "とうひょうすみ"
+  closed: "しゅうりょうすみ"
+  remaining-days: "しゅうりょうまであと{d}ひ{h}じかん"
+  remaining-hours: "しゅうりょうまであと{h}じかん{m}ぶん"
+  remaining-minutes: "しゅうりょうまであと{m}ぶん{s}びょう"
+  remaining-seconds: "しゅうりょうまであと{s}びょう"
+
+common/views/components/poll-editor.vue:
+  no-only-one-choice: "アンケートには、せんたくあしがさいてい2つひつようです"
+  choice-n: "せんたくあし{}"
+  remove: "このせんたくあしをさくじょ"
+  add: "+せんたくあしをついか"
+  destroy: "アンケートをはき"
+  multiple: "ふくすうかいとうか"
+  expiration: "きげん"
+  infinite: "むきげん"
+  at: "にちじしてい"
+  after: "けいかしてい"
+  no-more: "これいじょうついかできません"
+  deadline-date: "きじつ"
+  deadline-time: "じかん"
+  interval: "きかん"
+  unit: "たんい"
+  second: "びょう"
+  minute: "ぶん"
+  hour: "じかん"
+  day: "ひ"
+
+common/views/components/reaction-picker.vue:
+  choose-reaction: "リアクションをせんたく"
+  input-reaction-placeholder: "またはえもじをにゅうりょく"
+
+common/views/components/emoji-picker.vue:
+  custom-emoji: "カスタムえもじ"
+  people: "ひと"
+  animals-and-nature: "どうぶつ&しぜん"
+  food-and-drink: "たべもの&のみもの"
+  activity: "アクティビティ"
+  travel-and-places: "ばしょ"
+  objects: "もの"
+  symbols: "きごう"
+  flags: "はた"
+
+common/views/components/settings/app-type.vue:
+  title: "モード"
+  intro: "デスクトップばんとモバイルばんのどちらをつかうかをしていできます。"
+  choices:
+    auto: "じどうでせんたく"
+    desktop: "デスクトップばんにこてい"
+    mobile: "モバイルばんにこてい"
+  info: "へんこうはページのさいどよみこみごにはんえいされます。"
+
+common/views/components/signin.vue:
+  username: "ユーザーめい"
+  password: "パスワード"
+  token: "トークン"
+  signing-in: "やってます..."
+  or: "または"
+  signin-with-twitter: "Twitterでログイン"
+  signin-with-github: "GitHubでログイン"
+  signin-with-discord: "Discordでログイン"
+  login-failed: "ログインできませんでした。ユーザーめいとパスワードをかくにんしてください。"
+  tap-key: "セキュリティキーをクリックしてログイン"
+  enter-2fa-code: "にんしょうコードをにゅうりょくしてください"
+
+common/views/components/signup.vue:
+  invitation-code: "しょうたいコード"
+  invitation-info: "しょうたいコードをおもちでないほうは、&lt;a href=\"{}\"&gt;かんりしゃ&lt;/a&gt;までごれんらくください。"
+  username: "ユーザーめい"
+  checking: "かくにんしています..."
+  available: "りようできます"
+  unavailable: "すでにりようされています"
+  error: "つうしんエラー"
+  invalid-format: "a~z、A~Z、0~9、_がつかえます"
+  too-short: "1もじいじょうでおねがいします！"
+  too-long: "20もじいないでおねがいします"
+  password: "パスワード"
+  password-placeholder: "8もじいじょうをすいしょうします"
+  weak-password: "よわいパスワード"
+  normal-password: "まあまあのパスワード"
+  strong-password: "つよいパスワード"
+  retype: "さいにゅうりょく"
+  retype-placeholder: "かくにんのためさいにゅうりょくしてください"
+  password-matched: "かくにんされました"
+  password-not-matched: "いっちしていません"
+  recaptcha: "にんしょう"
+  agree-to: "{0}にどういします。"
+  tos: "りようきやく"
+  create: "アカウントさくせい"
+  some-error: "なんらかのげんいんによりアカウントのさくせいにしっぱいしました。さいどおためしください。"
+
+common/views/components/special-message.vue:
+  new-year: "Happy New Year!"
+  christmas: "Merry Christmas!"
+
+common/views/components/stream-indicator.vue:
+  connecting: "せつぞくちゅう"
+  reconnecting: "さいせつぞくちゅう"
+  connected: "せつぞくかんりょう"
+
+common/views/components/notification-settings.vue:
+  title: "つうち"
+  mark-as-read-all-notifications: "すべてのつうちをきどくにする"
+  mark-as-read-all-unread-notes: "すべてのとうこうをきどくにする"
+  mark-as-read-all-talk-messages: "すべてのトークをきどくにする"
+  auto-watch: "とうこうのじどうウォッチ"
+  auto-watch-desc: "リアクションしたりへんしんしたりしたとうこうにかんするつうちをじどうてきにうけとるようにします。"
+
+common/views/components/integration-settings.vue:
+  title: "サービスれんけい"
+  connect: "せつぞくする"
+  disconnect: "せつだんする"
+  connected-to: "つぎのアカウントにせつぞくされています"
+
+common/views/components/github-setting.vue:
+  description: "おつかいのGitHubアカウントをおつかいのグランポリスアカウントにせつぞくしておくと、プロフィールでGitHubアカウントじょうほうがひょうじされるようになったり、GitHubをもちいたべんりなサインインをりようできるようになります。"
+  connected-to: "つぎのGitHubアカウントにせつぞくされています"
+  detail: "しょうさい..."
+  reconnect: "さいせつぞくする"
+  connect: "GitHubとせつぞくする"
+  disconnect: "せつだんする"
+
+common/views/components/discord-setting.vue:
+  description: "おつかいのDiscordアカウントをおつかいのグランポリスアカウントにせつぞくしておくと、プロフィールでDiscordアカウントじょうほうがひょうじされるようになったり、Discordをもちいたべんりなサインインをりようできるようになります。"
+  connected-to: "つぎのDiscordアカウントにせつぞくされています"
+  detail: "しょうさい..."
+  reconnect: "さいせつぞくする"
+  connect: "Discordとせつぞくする"
+  disconnect: "せつだんする"
+
+common/views/components/uploader.vue:
+  waiting: "たいきちゅう"
+
+common/views/components/visibility-chooser.vue:
+  public: "こうかい"
+  home: "ホーム"
+  home-desc: "ホームタイムラインにのみこうかい"
+  followers: "フォロワー"
+  followers-desc: "じぶんのフォロワーにのみこうかい"
+  specified: "ダイレクト"
+  specified-desc: "していしたユーザーにのみこうかい"
+  local-public: "こうかい (ローカルのみ)"
+  local-public-desc: "リモートへはこうかいしない"
+  local-home: "ホーム (ローカルのみ)"
+  local-followers: "フォロワー (ローカルのみ)"
+
+common/views/components/trends.vue:
+  count: "{}にんがとうこう"
+  empty: "トレンドなし"
+
+common/views/components/language-settings.vue:
+  title: "ひょうじげんご"
+  pick-language: "げんごをせんたく"
+  recommended: "すいしょう"
+  auto: "じどう"
+  specify-language: "げんごをしてい"
+  info: "へんこうはページのさいどよみこみごにはんえいされます。"
+
+common/views/components/profile-editor.vue:
+  title: "プロフィール"
+  name: "なまえ"
+  account: "アカウント"
+  location: "ばしょ"
+  description: "じこしょうかい"
+  you-can-include-hashtags: "ハッシュタグをふくめることができます。"
+  language: "げんご"
+  birthday: "たんじょうび"
+  avatar: "アイコン"
+  banner: "バナー"
+  is-cat: "このアカウントはCatです"
+  is-bot: "このアカウントはBotです"
+  is-locked: "フォローをしょうにんせいにする"
+  careful-bot: "Botからのフォローだけしょうにんせいにする"
+  auto-accept-followed: "フォローしているユーザーからのフォローをじどうしょうにんする"
+  advanced: "そのた"
+  privacy: "プライバシー"
+  save: "ほぞん"
+  saved: "プロフィールをほぞんしました"
+  uploading: "アップロードちゅう"
+  upload-failed: "アップロードにしっぱいしました"
+  unable-to-process: "そうさをかんりょうできません"
+  avatar-not-an-image: "アイコンとしてしていしたファイルはがぞうではありません"
+  banner-not-an-image: "バナーとしてしていしたファイルはがぞうではありません"
+  email: "メールせってい"
+  email-address: "メールアドレス"
+  email-verified: "メールアドレスがかくにんされました"
+  email-not-verified: "メールアドレスがかくにんされていません。メールボックスをごかくにんください。"
+  export: "エクスポート"
+  import: "インポート"
+  export-and-import: "エクスポートとインポート"
+  export-targets:
+    all-notes: "すべてのとうこうデータ"
+    following-list: "フォロー"
+    mute-list: "ミュート"
+    blocking-list: "ブロック"
+    user-lists: "リスト"
+  export-requested: "エクスポートをリクエストしました。これにはじかんがかかるばあいがあります。エクスポートがおわると、ドライブにファイルがついかされます。"
+  import-requested: "インポートをリクエストしました。これにはじかんがかかるばあいがあります。"
+  enter-password: "パスワードをにゅうりょくしてください"
+  danger-zone: "きけんなせってい"
+  delete-account: "アカウントをさくじょ"
+  account-deleted: "アカウントがさくじょされました。データがきえるまでじかんがかかるばあいがあります。"
+  profile-metadata: "プロフィールほそくじょうほう"
+  metadata-label: "ラベル"
+  metadata-content: "ないよう"
+
+common/views/components/user-list-editor.vue:
+  users: "ユーザー"
+  rename: "リストめいをへんこう"
+  delete: "リストをさくじょ"
+  remove-user: "このリストからさくじょ"
+  delete-are-you-sure: "リスト「$1」をさくじょしますか？"
+  deleted: "さくじょしました"
+  add-user: "ユーザーをついか"
+
+common/views/components/user-group-editor.vue:
+  users: "メンバー"
+  rename: "グループめいをへんこう"
+  delete: "グループをさくじょ"
+  transfer: "グループをわたす"
+  transfer-are-you-sure: "グループ「$1」を「@$2」さんにわたしますか？"
+  transferred: "グループをわたしました"
+  remove-user: "このグループからさくじょ"
+  delete-are-you-sure: "グループ「$1」をさくじょしますか？"
+  deleted: "さくじょしました"
+  invite: "しょうたい"
+  invited: "しょうたいをそうしんしました"
+
+common/views/components/user-lists.vue:
+  user-lists: "リスト"
+  create-list: "リストをさくせい"
+  list-name: "リストめい"
+
+common/views/components/user-groups.vue:
+  user-groups: "グループ"
+  create-group: "グループをさくせい"
+  group-name: "グループめい"
+  owned-groups: "じぶんのグループ"
+  joined-groups: "さんかしているグループ"
+  invites: "しょうたい"
+  accept-invite: "さんか"
+  reject-invite: "きょひ"
+
+common/views/widgets/broadcast.vue:
+  fetching: "かくにんちゅう"
+  no-broadcasts: "おしらせはありません"
+  have-a-nice-day: "よいいちにちを！"
+  next: "つぎ"
+
+common/views/widgets/calendar.vue:
+  year: "{}とし"
+  month: "{}つき"
+  day: "{}ひ"
+  today: "きょう:"
+  this-month: "こんげつ:"
+  this-year: "ことし:"
+
+common/views/widgets/photo-stream.vue:
+  title: "フォトストリーム"
+  no-photos: "しゃしんはありません"
+
+common/views/widgets/posts-monitor.vue:
+  title: "とうこうチャート"
+  toggle: "ひょうじをきりかえ"
+
+common/views/widgets/hashtags.vue:
+  title: "ハッシュタグ"
+
+common/views/widgets/server.vue:
+  title: "サーバーじょうほう"
+  toggle: "ひょうじを切り替え"
+
+common/views/widgets/memo.vue:
+  title: "ふせん"
+  memo: "ここにかいて！"
+  save: "ほぞん"
+
+common/views/widgets/html.vue:
+  placeholder-title: "ここにタイトルをかいてください"
+  placeholder-html: "ここにHTMLをかいてください"
+  title: "HTML ウィジェット"
+
+common/views/widgets/slideshow.vue:
+  folder-customize-mode: "フォルダをしていするには、カスタマイズモードをしゅうりょうしてください"
+  folder: "クリックしてフォルダをしていしてください"
+  no-image: "このフォルダにはがぞうがありません"
+
+common/views/widgets/tips.vue:
+  tips-line1: "&lt;kbd&gt;t&lt;/kbd&gt;でタイムラインにフォーカスできます"
+  tips-line2: "&lt;kbd&gt;p&lt;/kbd&gt;または&lt;kbd&gt;n&lt;/kbd&gt;でとうこうフォームをひらきます"
+  tips-line3: "とうこうフォームにはファイルをドラッグ&amp;ドロップできます"
+  tips-line4: "とうこうフォームにクリップボードにあるがぞうデータをペーストできます"
+  tips-line5: "ドライブにファイルをドラッグ&amp;ドロップしてアップロードできます"
+  tips-line6: "ドライブでファイルをドラッグしてフォルダいどうできます"
+  tips-line7: "ドライブでフォルダをドラッグしてフォルダいどうできます"
+  tips-line8: "ホームはせっていからカスタマイズできます"
+  tips-line9: "グランポリスはAGPLv3です"
+  tips-line10: "タイムマシンウィジェットをりようすると、かんたんにかこのタイムラインにさかのぼれます"
+  tips-line11: "とうこうの ... をクリックして、とうこうをユーザーページにピンどめできます"
+  tips-line13: "とうこうにてんぷしたファイルはすべてドライブにほぞんされます"
+  tips-line14: "ホームのカスタマイズちゅう、ウィジェットをみぎクリックしてデザインをへんこうできます"
+  tips-line17: "「**」でテキストをかこむと**きょうちょうひょうじ**されます"
+  tips-line19: "いくつかのウィンドウはブラウザのそとにきりはなすことができます"
+  tips-line20: "カレンダーウィジェットのパーセンテージは、けいかのわりあいをしめしています"
+  tips-line21: "APIをりようしてbotのかいはつなどもおこなえます"
+  tips-line23: "シトリンかわいいよシトリン"
+  tips-line24: "グランポリスはMisskeyからフォークされました"
+  tips-line25: "たいおうブラウザではグランポリスをひらいていなくてもつうちをうけとれます"
+
+common/views/pages/not-found.vue:
+  page-not-found: "ページがみつかりませんでした"
+
+common/views/pages/follow.vue:
+  signed-in-as: "{}としてサインインちゅう"
+  following: "フォローちゅう"
+  follow: "フォロー"
+  request-pending: "フォローきょかまち"
+  follow-processing: "フォローしょりちゅう"
+  follow-request: "フォローしんせい"
+
+common/views/pages/follow-requests.vue:
+  received-follow-requests: "フォローしんせい"
+  accept: "しょうにん"
+  reject: "きょひ"
+
+desktop:
+  banner-crop-title: "バナーとしてみせるぶぶんをせんたく"
+  banner: "バナー"
+  uploading-banner: "あたらしいバナーをアップロードしています"
+  banner-updated: "バナーをこうしんしました"
+  choose-banner: "バナーにするがぞうをせんたく"
+  avatar-crop-title: "アバターとしてみせるぶぶんをせんたく"
+  avatar: "アバター"
+  uploading-avatar: "あたらしいアバターをアップロードしています"
+  avatar-updated: "アバターをこうしんしました"
+  choose-avatar: "アバターにするがぞうをせんたく"
+  unable-to-process: "そうさをかんりょうできません"
+  invalid-filetype: "このけいしきのファイルはサポートされていません"
+
+desktop/views/components/activity.chart.vue:
+  total: "Black ... Total"
+  notes: "Blue ... Notes"
+  replies: "Red ... Replies"
+  リノートs: "Green ... リノートs"
+
+desktop/views/components/activity.vue:
+  title: "アクティビティ"
+  toggle: "ひょうじをきりかえ"
+
+desktop/views/components/calendar.vue:
+  title: "{year}とし {month}つき"
+  prev: "まえのつき"
+  next: "つぎのつき"
+  go: "クリックしてさかのぼる"
+
+desktop/views/components/choose-file-from-drive-window.vue:
+  chosen-files: "{count}ファイルせんたくちゅう"
+  upload: "PCからドライブにファイルをアップロード"
+  cancel: "キャンセル"
+  ok: "けってい"
+  choose-prompt: "ファイルをせんたく"
+
+desktop/views/components/choose-folder-from-drive-window.vue:
+  cancel: "キャンセル"
+  ok: "けってい"
+  choose-prompt: "フォルダをせんたく"
+
+desktop/views/components/crop-window.vue:
+  skip: "クロップをスキップ"
+  cancel: "キャンセル"
+  ok: "けってい"
+
+desktop/views/components/drive-window.vue:
+  used: "しようちゅう"
+
+desktop/views/components/drive.file.vue:
+  avatar: "アイコン"
+  banner: "バナー"
+  nsfw: "えつらんちゅうい"
+  contextmenu:
+    rename: "なまえをへんこう"
+    mark-as-sensitive: "えつらんちゅういにせってい"
+    unmark-as-sensitive: "えつらんちゅういをかいじょ"
+    copy-url: "URLをコピー"
+    download: "ダウンロード"
+    else-files: "そのた"
+    set-as-avatar: "アイコンにせってい"
+    set-as-banner: "バナーにせってい"
+    open-in-app: "アプリでひらく"
+    add-app: "アプリをついか"
+    rename-file: "ファイルのなまえのへんこう"
+    input-new-file-name: "あたらしいファイルのなまえをにゅうりょくしてください"
+    copied: "コピーかんりょう"
+    copied-url-to-clipboard: "URLをクリップボードにコピーしました"
+
+desktop/views/components/drive.folder.vue:
+  upload-folder: "きていアップロードさき"
+  unable-to-process: "そうさをかんりょうできません"
+  circular-reference-detected: "いどうさきのフォルダーは、いどうするフォルダーのサブフォルダーです。"
+  unhandled-error: "ふめいなエラー"
+  unable-to-delete: "さくじょできません"
+  has-child-files-or-folders: "このフォルダはからでないため、さくじょできません。"
+  contextmenu:
+    move-to-this-folder: "このフォルダへいどう"
+    show-in-new-window: "あたらしいウィンドウでひょうじ"
+    rename: "なまえをへんこう"
+    rename-folder: "フォルダめいのへんこう"
+    input-new-folder-name: "あたらしいフォルダめいをにゅうりょくしてください"
+    else-folders: "そのた"
+    set-as-upload-folder: "きていアップロードさきにせってい"
+
+desktop/views/components/drive.vue:
+  search: "けんさく"
+  empty-draghover: "ドロップですか？いいですよ、ボクはカワイイですからね"
+  empty-drive: "ドライブにはなにもありません。"
+  empty-drive-description: "みぎクリックして「ファイルをアップロード」をえらんだり、ファイルをドラッグ&amp;ドロップすることでもアップロードできます。"
+  empty-folder: "このフォルダーはそらです"
+  unable-to-process: "そうさをかんりょうできません"
+  circular-reference-detected: "いどうさきのフォルダーは、いどうするフォルダーのサブフォルダーです。"
+  unhandled-error: "ふめいなエラー"
+  url-upload: "URLアップロード"
+  url-of-file: "アップロードしたいファイルのURL"
+  url-upload-requested: "アップロードをリクエストしました"
+  may-take-time: "アップロードがかんりょうするまでじかんがかかるばあいがあります。"
+  create-folder: "フォルダーさくせい"
+  folder-name: "フォルダーめい"
+  contextmenu:
+    create-folder: "フォルダーをさくせい"
+    upload: "ファイルをアップロード"
+    url-upload: "URLからアップロード"
+
+desktop/views/components/media-video.vue:
+  sensitive: "えつらんちゅうい"
+  click-to-show: "クリックしてひょうじ"
+
+desktop/views/components/followers-window.vue:
+  followers: "{} のフォロワー"
+
+desktop/views/components/followers.vue:
+  empty: "フォロワーはいないようです。"
+
+desktop/views/components/following-window.vue:
+  following: "{} のフォロー"
+
+desktop/views/components/following.vue:
+  empty: "フォローちゅうのユーザーはいないようです。"
+
+desktop/views/components/game-window.vue:
+  game: "リバーシ"
+
+desktop/views/components/home.vue:
+  done: "かんりょう"
+  add-widget: "ウィジェットをついか:"
+  add: "ついか"
+
+desktop/views/input-dialog.vue:
+  cancel: "キャンセル"
+  ok: "けってい"
+
+desktop/views/components/note-detail.vue:
+  private: "このとうこうはひこうかいです"
+  deleted: "このとうこうはさくじょされました"
+  location: "いちじょうほう"
+  renote: "リノート"
+  add-reaction: "リアクション"
+  undo-reaction: "リアクションかいじょ"
+
+desktop/views/components/note.vue:
+  reply: "へんしん"
+  renote: "リノート"
+  add-reaction: "リアクション"
+  undo-reaction: "リアクションかいじょ"
+  detail: "しょうさい"
+  private: "このとうこうはひこうかいです"
+  deleted: "このとうこうはさくじょされました"
+
+desktop/views/components/notes.vue:
+  error: "よみこみにしっぱいしました。"
+  retry: "リトライ"
+
+desktop/views/components/notifications.vue:
+  empty: "ありません！"
+
+desktop/views/components/post-form.vue:
+  posted: "とうこうしました！"
+  replied: "へんしんしました！"
+  reposted: "リノートしました！"
+  note-failed: "とうこうにしっぱいしました"
+  reply-failed: "へんしんにしっぱいしました"
+  renote-failed: "リノートにしっぱいしました"
+  preview: "プレビュー"
+
+desktop/views/components/post-form-window.vue:
+  note: "しんきとうこう"
+  reply: "へんしん"
+  attaches: "てんぷ: {}メディア"
+  uploading-media: "{}このメディアをアップロードちゅう"
+
+desktop/views/components/progress-dialog.vue:
+  waiting: "たいきちゅう"
+
+desktop/views/components/renote-form.vue:
+  quote: "いんようする..."
+  cancel: "キャンセル"
+  renote: "リノート"
+  renote-home: "リノート (ホーム)"
+  reposting: "しています..."
+  success: "リノートしました！"
+  failure: "リノートにしっぱいしました"
+
+desktop/views/components/renote-form-window.vue:
+  title: "このとうこうをリノートしますか？"
+
+desktop/views/pages/user-following-or-followers.vue:
+  following: "{user}のフォロー"
+  followers: "{user}のフォロワー"
+
+desktop/views/components/settings.2fa.vue:
+  intro: "にだんかいにんしょうをせっていすると、サインインじにパスワードだけでなく、あらかじめとうろくしておいたぶつりてきなデバイス(たとえばあなたのスマートフォンなど)もひつようになり、よりセキュリティがこうじょうします。"
+  detail: "しょうさい..."
+  url: "https://www.google.co.jp/intl/ja/landing/2step/"
+  caution: "とうろくしたデバイスをふんしつするなどしたばあい、グランポリスにサインインできなくなりますのでごちゅういください。"
+  register: "デバイスをとうろくする"
+  already-registered: "すでにせっていはかんりょうしています。"
+  unregister: "せっていをかいじょ"
+  unregistered: "にだんかいにんしょうがむこうになりました。"
+  enter-password: "パスワードをにゅうりょくしてください"
+  authenticator: "まず、Google Authenticatorをおつかいのデバイスにインストールします:"
+  howtoinstall: "インストールほうほうはこちら"
+  token: "トークン"
+  scan: "つぎに、ひょうじされているQRコードをスキャンします:"
+  done: "おつかいのデバイスにひょうじされているトークンをにゅうりょくしてかんりょうします:"
+  submit: "かんりょう"
+  success: "せっていがかんりょうしました！"
+  failed: "せっていにしっぱいしました。トークンにあやまりがないかごかくにんください。"
+  info: "じかいサインインからは、どうようにパスワードにくわえてデバイスにひょうじされているトークンをにゅうりょくします。"
+  totp-header: "にんしょうアプリ"
+  security-key-header: "セキュリティキー"
+  security-key: "セキュリティをきょうかするために、FIDO2をサポートするハードウェアセキュリティキーをしようしてアカウントにログインできます。 サインインのさいは、とうろくされたセキュリティキーまたはにんしょうアプリがひつようになります。"
+  last-used: "さいごのしよう:"
+  activate-key: "クリックしてセキュリティキーをアクティベートしてください"
+  security-key-name: "キーめい"
+  register-security-key: "キーのとうろくをかんりょう"
+  something-went-wrong: "わー！ キーをとうろくするさいにはっせいがはっせいしました:"
+  key-unregistered: "キーがさくじょされました"
+  use-password-less-login: "パスワードなしのログインをしよう"
+
+common/views/components/media-image.vue:
+  sensitive: "えつらんちゅうい"
+  click-to-show: "クリックしてひょうじ"
+
+common/views/components/api-settings.vue:
+  intro: "APIをりようするには、じょうきのトークンを「i」というキーでパラメータにふかしてリクエストします。"
+  caution: "アカウントをふせいりようされるかのうせいがあるため、このトークンはだいさんしゃにおしえないでください(アプリなどにもにゅうりょくしないでください)。"
+  regeneration-of-token: "まんがいちこのトークンがもれたりそのかのうせいがあるばあいはトークンをさいせいせいできます。"
+  regenerate-token: "トークンをさいせいせい"
+  token: "Token:"
+  enter-password: "パスワードをにゅうりょくしてください"
+  console:
+    title: "APIコンソール"
+    endpoint: "エンドポイント"
+    parameter: "パラメータ"
+    credential-info: "「i」パラメータはじどうでふよされます。"
+    send: "そうしん"
+    sending: "おうとうまち"
+    response: "けっか"
+
+desktop/views/components/settings.apps.vue:
+  no-apps: "れんけいしているアプリケーションはありません"
+
+common/views/components/drive-settings.vue:
+  max: "ようりょう"
+  in-use: "しようちゅう"
+  stats: "とうけい"
+  default-upload-folder: "きていのアップロードさきフォルダ"
+  default-upload-folder-name: "フォルダ"
+  change-default-upload-folder: "フォルダをへんこう"
+
+common/views/components/mute-and-block.vue:
+  mute-and-block: "ミュートとブロック"
+  mute: "ミュート"
+  block: "ブロック"
+  no-muted-users: "ミュートしているユーザーはいません"
+  no-blocked-users: "ブロックしているユーザーはいません"
+  word-mute: "ワードミュート"
+  muted-words: "ミュートされたキーワード"
+  muted-words-description: "スペースでくぎるとANDしていになり、かいぎょうでくぎるとORしていになります"
+  unmute-confirm: "このユーザーをミュートかいじょしますか？"
+  unblock-confirm: "このユーザーをブロックかいじょしますか？"
+  save: "ほぞん"
+
+common/views/components/password-settings.vue:
+  reset: "パスワードをへんこうする"
+  enter-current-password: "げんざいのパスワードをにゅうりょくしてください"
+  enter-new-password: "あたらしいパスワードをにゅうりょくしてください"
+  enter-new-password-again: "もういちどあたらしいパスワードをにゅうりょくしてください"
+  not-match: "あたらしいパスワードがいっちしません"
+  changed: "パスワードをへんこうしました"
+  failed: "パスワードへんこうにしっぱいしました"
+
+common/views/components/post-form-attaches.vue:
+  attach-cancel: "てんぷとりけし"
+  mark-as-sensitive: "えつらんちゅういにせってい"
+  unmark-as-sensitive: "えつらんちゅういをかいじょ"
+
+desktop/views/components/sub-note-content.vue:
+  private: "このとうこうはひこうかいです"
+  deleted: "このとうこうはさくじょされました"
+  media-count: "{}つのメディア"
+  poll: "アンケート"
+
+desktop/views/components/settings.tags.vue:
+  title: "タグ"
+  query: "クエリ (しょうりゃくか)"
+  add: "ついか"
+  save: "ほぞん"
+
+desktop/views/components/timeline.vue:
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  global: "グローバル"
+  mentions: "あなたあて"
+  messages: "ダイレクトとうこう"
+  list: "リスト"
+  hashtag: "ハッシュタグ"
+  add-tag-timeline: "ハッシュタグをついか"
+  add-list: "リストをついか"
+  list-name: "リストめい"
+
+desktop/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
+  adjective: "さん"
+
+desktop/views/components/ui.header.account.vue:
+  profile: "プロフィール"
+  lists: "リスト"
+  groups: "グループ"
+  follow-requests: "フォローしんせい"
+  admin: "かんり"
+
+desktop/views/components/ui.header.nav.vue:
+  game: "ゲーム"
+
+desktop/views/components/ui.header.notifications.vue:
+  title: "つうち"
+
+desktop/views/components/ui.header.post.vue:
+  post: "しんきとうこう"
+
+desktop/views/components/ui.header.search.vue:
+  placeholder: "けんさく"
+
+desktop/views/components/user-preview.vue:
+  notes: "とうこう"
+  following: "フォロー"
+  followers: "フォロワー"
+
+desktop/views/components/users-list.vue:
+  all: "すべて"
+  iknow: "しりあい"
+  fetching: "よみこんでいます"
+
+desktop/views/components/users-list-item.vue:
+  followed: "フォローされています"
+
+desktop/views/components/window.vue:
+  popout: "ポップアウト"
+  close: "とじる"
+
+admin/views/index.vue:
+  dashboard: "ダッシュボード"
+  instance: "インスタンス"
+  emoji: "カスタムえもじ"
+  moderators: "モデレーター"
+  users: "ユーザー"
+  federation: "れんごう"
+  announcements: "おしらせ"
+  abuse: "スパムほうこく"
+  queue: "ジョブキュー"
+  logs: "ログ"
+  db: "データベース"
+  back-to-misskey: "グランポリスにもどる"
+
+admin/views/db.vue:
+  tables: "テーブル"
+  vacuum: "バキューム"
+  vacuum-info: "データベースのそうじをおこないます。データはそのままで、ディスクしようりょうをへらします。つうじょうこのそうさはじどうでていきてきにおこなわれます。"
+  vacuum-exclamation: "バキュームをおこなうと、しばらくのあいだデータベースのふかがたかくなり、ユーザーのそうさをうけつけなくなるばあいがあります。"
+
+admin/views/dashboard.vue:
+  dashboard: "ダッシュボード"
+  accounts: "アカウント"
+  notes: "とうこう"
+  drive: "ドライブ"
+  instances: "インスタンス"
+  this-instance: "このインスタンス"
+  federated: "れんごう"
+
+admin/views/queue.vue:
+  title: "キュー"
+  remove-all-jobs: "すべてのジョブをクリア"
+  jobs: "ジョブ"
+  queue: "キュー"
+  domains:
+    deliver: "はいそう"
+    inbox: "じゅしん"
+    db: "データベース"
+    objectStorage: "オブジェクトストレージ"
+  state: "じょうたい"
+  states:
+    active: "しょりちゅう"
+    delayed: "よやくすみ"
+    waiting: "じゅんばんまち"
+  result-is-truncated: "けっかはしょうりゃくされています"
+  other-queues: "そのほかのキュー"
+
+admin/views/logs.vue:
+  logs: "ログ"
+  domain: "ドメイン"
+  level: "レベル"
+  levels:
+    all: "すべて"
+    info: "じょうほう"
+    success: "せいこう"
+    warning: "けいこく"
+    error: "エラー"
+    debug: "デバッグ"
+  delete-all: "すべてさくじょ"
+
+admin/views/abuse.vue:
+  title: "スパムほうこく"
+  target: "たいしょう"
+  reporter: "ほうこくしゃ"
+  details: "しょうさい"
+  remove-report: "さくじょ"
+
+admin/views/instance.vue:
+  instance: "インスタンス"
+  instance-name: "インスタンスめい"
+  instance-description: "インスタンスのしょうかい"
+  host: "ホスト"
+  icon-url: "アイコンURL"
+  logo-url: "ロゴURL"
+  banner-url: "バナーがぞうURL"
+  error-image-url: "エラーがぞうURL"
+  languages: "インスタンスのたいしょうげんご"
+  languages-desc: "スペースでくぎってふくすうせっていできます。"
+  tos-url: "りようきやくURL"
+  repository-url: "リポジトリURL"
+  feedback-url: "フィードバックURL"
+  maintainer-config: "かんりしゃじょうほう"
+  maintainer-name: "かんりしゃな"
+  maintainer-email: "かんりしゃのれんらくさき"
+  advanced-config: "そのほかのせってい"
+  note-and-tl: "とうこうとタイムライン"
+  drive-config: "ドライブのせってい"
+  use-object-storage: "オブジェクトストレージをしようする"
+  object-storage-base-url: "URL"
+  object-storage-bucket: "バケットめい"
+  object-storage-prefix: "プレフィックス"
+  object-storage-endpoint: "エンドポイント"
+  object-storage-region: "リージョン"
+  object-storage-port: "ポート"
+  object-storage-access-key: "アクセスキー"
+  object-storage-secret-key: "シークレットキー"
+  object-storage-use-ssl: "SSLをしよう"
+  object-storage-s3-info: "Amazon S3をオブジェクトストレージとしてしようするばあいの「エンドポイント」と「リージョン」のせっていについては{0}をごかくにんください。"
+  object-storage-s3-info-here: "こちら"
+  object-storage-gcs-info: "Google Cloud Storageをオブジェクトストレージとしてしようするばあい、「エンドポイント」は storage.googleapis.com にせっていし、「リージョン」はくうらんにします。"
+  cache-remote-files: "リモートのファイルをキャッシュする"
+  cache-remote-files-desc: "このせっていをむこうにすると、リモートファイルをキャッシュせずちょくリンクするようになります。そのためサーバーのストレージをせつやくできますが、プライバシーせっていでちょくリンクをむこうにしているユーザーにはファイルがみえなくなったり、サムネイルがせいせいされないのでつうしんりょうがぞうかします。つうじょうはこのせっていをオンにしておくことをおすすめします。"
+  local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブようりょう"
+  remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブようりょう"
+  mb: "メガバイトたんい"
+  recaptcha-config: "reCAPTCHAのせってい"
+  recaptcha-info: "reCAPTCHAをゆうこうにするばあい、reCAPTCHAトークンをしゅとくするひつようがあります。https://www.google.com/recaptcha/intro/ にアクセスしてトークンをしゅとくしてください。"
+  recaptcha-info2: "v3はひたいおうです。v2をしようしてください。"
+  enable-recaptcha: "reCAPTCHAをゆうこうにする"
+  recaptcha-site-key: "サイトキー"
+  recaptcha-secret-key: "シークレットキー"
+  recaptcha-preview: "プレビュー"
+  hidden-tags: "ひひょうじハッシュタグ"
+  hidden-tags-info: "しゅうけいからじょがいするハッシュタグをかいぎょうでくぎってきじゅつします。"
+  external-service-integration-config: "がいぶサービスれんけい"
+  twitter-integration-config: "Twitterれんけいのせってい"
+  twitter-integration-info: "コールバックURLは {url} にせっていします。"
+  enable-twitter-integration: "Twitterれんけいをゆうこうにする"
+  twitter-integration-consumer-key: "Consumer key"
+  twitter-integration-consumer-secret: "Consumer secret"
+  github-integration-config: "GitHubれんけいのせってい"
+  github-integration-info: "コールバックURLは {url} にせっていします。"
+  enable-github-integration: "GitHubれんけいをゆうこうにする"
+  github-integration-client-id: "Client ID"
+  github-integration-client-secret: "Client Secret"
+  discord-integration-config: "Discordれんけいのせってい"
+  discord-integration-info: "コールバックURLは {url} にせっていします。"
+  enable-discord-integration: "Discordれんけいをゆうこうにする"
+  discord-integration-client-id: "Client ID"
+  discord-integration-client-secret: "Client Secret"
+  proxy-account-config: "プロキシアカウントのせってい"
+  proxy-account-info: "プロキシアカウントは、とくていのじょうけんかでユーザーのリモートフォローをだいこうするアカウントです。たとえば、ユーザーがリモートユーザーをリストにいれたとき、リストにいれられたユーザーをだれもフォローしていないとアクティビティがサーバーにはいたつされないため、かわりにプロキシアカウントがフォローするようにします。"
+  proxy-account-username: "プロキシアカウントのユーザーめい"
+  proxy-account-username-desc: "プロキシとしてしようするアカウントのユーザーめいをしていしてください。"
+  proxy-account-warn: "アカウントはじどうでつくられないため、そのユーザーめいのアカウントをあらかじめさくせいしておくひつようがあります。"
+  max-note-text-length: "とうこうのさいだいもじかず"
+  disable-registration: "ユーザーとうろくのうけつけをていしする"
+  disable-local-timeline: "ローカルタイムラインをむこうにする"
+  disable-global-timeline: "グローバルタイムラインをむこうにする"
+  disabling-timelines-info: "これらのタイムラインをむこうにしても、かんりしゃおよびモデレーターはひきつづきりようできます。"
+  enable-emoji-reaction: "リアクションにえもじをつかえるようにする"
+  use-star-for-reaction-fallback: "ふめいなリアクションのフォールバックに star をつかう"
+  invite: "しょうたい"
+  save: "ほぞん"
+  saved: "ほぞんしました"
+  pinned-users: "ピンどめユーザー"
+  pinned-users-info: "ピンどめしたいユーザーをかいぎょうでくぎってきじゅつします。"
+  email-config: "メールサーバーのせってい"
+  email-config-info: "メールアドレスかくにんやパスワードリセットのさいにつかわれます。"
+  enable-email: "メールはいしんをゆうこうにする"
+  email: "メールアドレス"
+  smtp-secure: "SMTPせつぞくにあんもくてきなSSL/TLSをしようする"
+  smtp-secure-info: "STARTTLSしようときはオフにします。"
+  smtp-host: "SMTPホスト"
+  smtp-port: "SMTPポート"
+  smtp-auth: "SMTPにんしょうをおこなう"
+  smtp-user: "SMTPユーザー"
+  smtp-pass: "SMTPパスワード"
+  test-email: "テスト"
+  serviceworker-config: "ServiceWorker"
+  enable-serviceworker: "ServiceWorkerをゆうこうにする"
+  serviceworker-info: "プッシュつうちをおこなうにはゆうこうするひつようがあります。"
+  vapid-publickey: "VAPIDこうかいかぎ"
+  vapid-privatekey: "VAPIDひみつかぎ"
+  vapid-info: "ServiceWorkerをゆうこうにするばあい、VAPIDキーペアをせいせいするひつようがあります。シェルでつぎのようにします:"
+
+admin/views/charts.vue:
+  title: "チャート"
+  per-day: "1にちごと"
+  per-hour: "1じかんごと"
+  federation: "フェデレーション"
+  notes: "とうこう"
+  users: "ユーザー"
+  drive: "ドライブ"
+  network: "ネットワーク"
+  charts:
+    federation-instances: "インスタンスのぞうげん"
+    federation-instances-total: "インスタンスのせきさん"
+    notes: "とうこうのぞうげん (とうごう)"
+    local-notes: "とうこうのぞうげん (ローカル)"
+    remote-notes: "とうこうのぞうげん (リモート)"
+    notes-total: "とうこうのせきさん"
+    users: "ユーザーのぞうげん"
+    users-total: "ユーザーのせきさん"
+    active-users: "アクティブユーザーすう"
+    drive: "ドライブしようりょうのぞうげん"
+    drive-total: "ドライブしようりょうのせきさん"
+    drive-files: "ドライブのファイルすうのぞうげん"
+    drive-files-total: "ドライブのファイルすうのせきさん"
+    network-requests: "リクエスト"
+    network-time: "おうとうじかん"
+    network-usage: "つうしんりょう"
+
+admin/views/drive.vue:
+  operation: "そうさ"
+  fileid-or-url: "ファイルIDまたはファイルURL"
+  file-not-found: "ファイルがみつかりません"
+  lookup: "しょうかい"
+  sort:
+    title: "ソート"
+    createdAtAsc: "アップロードにちじがふるいじゅん"
+    createdAtDesc: "アップロードにちじがあたらしいじゅん"
+    sizeAsc: "サイズがちいさいじゅん"
+    sizeDesc: "サイズがおおきいじゅん"
+  origin:
+    title: "オリジン"
+    combined: "ローカル+リモート"
+    local: "ローカル"
+    remote: "リモート"
+  delete: "さくじょ"
+  deleted: "さくじょしました"
+  mark-as-sensitive: "えつらんちゅういにせってい"
+  unmark-as-sensitive: "えつらんちゅういをかいじょ"
+  marked-as-sensitive: "えつらんちゅういにせっていしました"
+  unmarked-as-sensitive: "えつらんちゅういをかいじょしました"
+  clean-remote-files: "リモートファイルのキャッシュをさくじょ"
+  clean-remote-files-are-you-sure: "すべてのリモートファイルのキャッシュをさくじょしてもよろしいですか？"
+  clean-up: "クリーンアップ"
+
+admin/views/users.vue:
+  operation: "そうさ"
+  username-or-userid: "ユーザーめいまたはユーザーID"
+  user-not-found: "ユーザーがみつかりません"
+  lookup: "しょうかい"
+  reset-password: "パスワードをリセット"
+  reset-password-confirm: "パスワードをリセットしますか？"
+  password-updated: "パスワードはげんざい「{password}」です"
+  suspend: "とうけつ"
+  suspend-confirm: "とうけつしますか？"
+  suspended: "とうけつしました"
+  unsuspend: "とうけつのかいじょ"
+  unsuspend-confirm: "とうけつをかいじょしますか？"
+  unsuspended: "とうけつをかいじょしました"
+  make-silence: "サイレンス"
+  silence-confirm: "サイレンスしますか？"
+  unmake-silence: "サイレンスのかいじょ"
+  unsilence-confirm: "サイレンスをかいじょしますか？"
+  update-remote-user: "リモートユーザーじょうほうのこうしん"
+  remote-user-updated: "リモートユーザーじょうほうをこうしんしました"
+  delete-all-files: "すべてのファイルをさくじょ"
+  delete-all-files-confirm: "すべてのファイルをさくじょしますか？"
+  username: "ユーザーめい"
+  host: "ホスト"
+  users:
+    title: "ユーザー"
+    sort:
+      title: "ソート"
+      createdAtAsc: "とうろくにちじがふるいじゅん"
+      createdAtDesc: "とうろくにちじがあたらしいじゅん"
+      updatedAtAsc: "こうしんにちじがふるいじゅん"
+      updatedAtDesc: "こうしんにちじがあたらしいじゅん"
+    state:
+      title: "じょうたい"
+      all: "すべて"
+      admin: "かんりしゃ"
+      moderator: "モデレーター"
+      adminOrModerator: "かんりしゃ+モデレーター"
+      silenced: "サイレンスすみ"
+      suspended: "とうけつすみ"
+    origin:
+      title: "オリジン"
+      combined: "ローカル+リモート"
+      local: "ローカル"
+      remote: "リモート"
+    createdAt: "とうろくにちじ"
+    updatedAt: "こうしんにちじ"
+
+admin/views/moderators.vue:
+  add-moderator:
+    title: "モデレーターのとうろく"
+    add: "とうろく"
+    added: "モデレーターをとうろくしました"
+    remove: "かいじょ"
+    removed: "モデレーターとうろくをかいじょしました"
+  logs:
+    title: "ログ"
+    moderator: "モデレーター"
+    type: "そうさ"
+    at: "にちじ"
+    info: "じょうほう"
+
+admin/views/emoji.vue:
+  add-emoji:
+    title: "えもじのとうろく"
+    name: "えもじな"
+    name-desc: "a~z 0~9 _ のもじがつかえます。"
+    aliases: "エイリアス"
+    aliases-desc: "スペースでくぎってふくすうせっていできます。"
+    url: "えもじがぞうURL"
+    add: "ついか"
+    info: "50KBいかのPNGがぞうをおすすめします。"
+    added: "えもじをとうろくしました"
+  emojis:
+    title: "えもじいちらん"
+    update: "こうしん"
+    remove: "さくじょ"
+  updated: "こうしんしました"
+  remove-emoji:
+    are-you-sure: "「$1」をさくじょしますか？"
+    removed: "さくじょしました"
+
+admin/views/announcements.vue:
+  announcements: "おしらせ"
+  save: "ほぞん"
+  remove: "さくじょ"
+  add: "ついか"
+  title: "タイトル"
+  text: "ないよう"
+  saved: "ほぞんしました"
+  _remove:
+    are-you-sure: "「$1」をさくじょしますか？"
+    removed: "さくじょしました"
+
+admin/views/hashtags.vue:
+  hided-tags: "Hidden Tags"
+
+admin/views/federation.vue:
+  instance: "インスタンス"
+  host: "ホスト"
+  notes: "とうこう"
+  users: "ユーザー"
+  following: "フォローちゅう"
+  followers: "フォロワー"
+  caught-at: "とうろくにちじ"
+  status: "ステータス"
+  latest-request-sent-at: "ちょっきんのリクエストそうしん"
+  latest-request-received-at: "ちょっきんのリクエストじゅしん"
+  remove-all-following: "フォローをぜんかいじょ"
+  remove-all-following-info: "{host}からのフォローをすべてかいじょします。そのインスタンスがもうそんざいしなくなったばあいなどにじっこうしてください。"
+  delete-all-files: "ファイルをすべてさくじょ"
+  block: "ブロック"
+  marked-as-closed: "へいさされているとマーク"
+  lookup: "しょうかい"
+  instances: "れんごう"
+  instance-not-registered: "そのインスタンスはとうろくされていません"
+  sort: "ソート"
+  sorts:
+    caughtAtAsc: "とうろくにちじがふるいじゅん"
+    caughtAtDesc: "とうろくにちじがあたらしいじゅん"
+    lastCommunicatedAtAsc: "さいごにやりとりしたにちじがふるいじゅん"
+    lastCommunicatedAtDesc: "さいごにやりとりしたにちじがあたらしいじゅん"
+    notesAsc: "とうこうがすくないじゅん"
+    notesDesc: "とうこうがおおいじゅん"
+    usersAsc: "ユーザーがすくないじゅん"
+    usersDesc: "ユーザーがおおいじゅん"
+    followingAsc: "フォローがすくないじゅん"
+    followingDesc: "フォローがおおいじゅん"
+    followersAsc: "フォロワーがすくないじゅん"
+    followersDesc: "フォロワーがおおいじゅん"
+    driveUsageAsc: "ドライブしようりょうがすくないじゅん"
+    driveUsageDesc: "ドライブしようりょうがおおいじゅん"
+    driveFilesAsc: "ドライブのファイルすうがすくないじゅん"
+    driveFilesDesc: "ドライブのファイルかずがおおいじゅん"
+  state: "じょうたい"
+  states:
+    all: "すべて"
+    blocked: "ブロック"
+    not-responding: "おうとうなし"
+    marked-as-closed: "へいさとマークすみ"
+  result-is-truncated: "じょうい{n}けんをひょうじしています。"
+  charts: "チャート"
+  chart-srcs:
+    requests: "リクエスト"
+    users: "ユーザーのぞうげん"
+    users-total: "ユーザーのせきさん"
+    notes: "とうこうのぞうげん"
+    notes-total: "とうこうのせきさん"
+    ff: "フォロー/フォロワーのぞうげん"
+    ff-total: "フォロー/フォロワーのせきさん"
+    drive-usage: "ドライブしようりょうのぞうげん"
+    drive-usage-total: "ドライブしようりょうのせきさん"
+    drive-files: "ドライブファイルすうのぞうげん"
+    drive-files-total: "ドライブファイルすうのせきさん"
+  chart-spans:
+    hour: "1じかんごと"
+    day: "1にちごと"
+  blocked-hosts: "ブロック"
+  blocked-hosts-info: "ブロックしたいホストをかいぎょうでくぎってきじゅつします。"
+  save: "ほぞん"
+
+desktop/views/pages/welcome.vue:
+  about: "くわしく..."
+  timeline: "タイムライン"
+  announcements: "おしらせ"
+  photos: "さいきんのがぞう"
+  powered-by-misskey: "Powered by &lt;b&gt;グランポリス&lt;/b&gt;."
+  info: "じょうほう"
+
+desktop/views/pages/drive.vue:
+  title: "グランポリス Drive"
+
+desktop/views/pages/note.vue:
+  prev: "まえのとうこう"
+  next: "つぎのとうこう"
+
+desktop/views/pages/selectdrive.vue:
+  title: "ファイルをせんたくしてください"
+  ok: "けってい"
+  cancel: "キャンセル"
+  upload: "PCからドライブにファイルをアップロード"
+
+desktop/views/pages/search.vue:
+  not-available: "けんさくきのうはインスタンスのせっていでむこうになっています。"
+  not-found: "「{q}」にかんするとうこうはみつかりませんでした。"
+
+desktop/views/pages/tag.vue:
+  no-posts-found: "ハッシュタグ「{q}」がつけられたとうこうはみつかりませんでした。"
+
+desktop/views/pages/user-list.users.vue:
+  users: "ユーザー"
+  add-user: "ユーザーをついか"
+  username: "ユーザーめい"
+
+desktop/views/pages/user/user.followers-you-know.vue:
+  title: "しりあいのフォロワー"
+  loading: "よみこみちゅう"
+  no-users: "しりあいのフォロワーはいません"
+
+desktop/views/pages/user/user.friends.vue:
+  title: "よくはなｓユーザー"
+  loading: "よみこみちゅう"
+  no-users: "よくはなｓユーザーはいません"
+
+desktop/views/pages/user/user.photos.vue:
+  title: "フォト"
+  loading: "よみこみちゅう"
+  no-photos: "しゃしんはありません"
+
+desktop/views/pages/user/user.header.vue:
+  posts: "とうこう"
+  following: "フォロー"
+  followers: "フォロワー"
+  is-bot: "このアカウントはBotです"
+  no-description: "じこしょうかいはありません"
+  years-old: "{age}さい"
+  year: "ねん"
+  month: "がつ"
+  day: "にち"
+  follows-you: "フォローされています"
+  happy-birthday: "ほんじつたんじょうびです！"
+
+desktop/views/pages/user/user.timeline.vue:
+  default: "とうこう"
+  with-replies: "とうこうとへんしん"
+  with-media: "メディア"
+  my-posts: "わたしのとうこう"
+
+desktop/views/widgets/notifications.vue:
+  title: "つうち"
+
+desktop/views/widgets/polls.vue:
+  title: "アンケート"
+  refresh: "ほかをみる"
+  nothing: "ありません！"
+
+desktop/views/widgets/post-form.vue:
+  title: "とうこう"
+  note: "とうこう"
+  something-happened: "なんらかのじじょうでとうこうできませんでした。"
+
+desktop/views/widgets/profile.vue:
+  update-banner: "クリックでバナーへんしゅう"
+  update-avatar: "クリックでアバターへんしゅう"
+
+desktop/views/widgets/trends.vue:
+  title: "トレンド"
+  refresh: "ほかをみる"
+  nothing: "ありません！"
+
+desktop/views/widgets/users.vue:
+  title: "おすすめユーザー"
+  refresh: "ほかをみる"
+  no-one: "いません！"
+
+mobile/views/components/drive.vue:
+  used: "しようちゅう"
+  folder-count: "フォルダ"
+  count-separator: "、"
+  file-count: "ファイル"
+  nothing-in-drive: "ドライブにはなにもありません"
+  folder-is-empty: "このフォルダはそらです"
+  folder-name: "フォルダーめい"
+  here-is-root: "げんざいいるばしょはルートで、フォルダではありません。"
+  url-prompt: "アップロードしたいファイルのURL"
+  uploading: "アップロードをリクエストしました。アップロードがかんりょうするまでじかんがかかるばあいがあります。"
+  folder-name-cannot-empty: "フォルダめいをくうはくにすることはできません。"
+
+mobile/views/components/drive-file-chooser.vue:
+  select-file: "ファイルをせんたく"
+
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: "フォルダーをせんたく"
+
+mobile/views/components/drive.file.vue:
+  nsfw: "えつらんちゅうい"
+
+mobile/views/components/drive.file-detail.vue:
+  download: "ダウンロード"
+  rename: "なまえをへんこう"
+  move: "いどう"
+  hash: "ハッシュ (md5)"
+  exif: "EXIF"
+  nsfw: "えつらんちゅうい"
+  mark-as-sensitive: "えつらんちゅういにせってい"
+  unmark-as-sensitive: "えつらんちゅういをかいじょ"
+
+mobile/views/components/media-video.vue:
+  sensitive: "えつらんちゅうい"
+  click-to-show: "クリックしてひょうじ"
+
+common/views/components/follow-button.vue:
+  following: "フォローちゅう"
+  follow: "フォロー"
+  request-pending: "フォローきょかまち"
+  follow-processing: "フォローしょりちゅう"
+  follow-request: "フォローしんせい"
+
+mobile/views/components/note.vue:
+  private: "このとうこうはひこうかいです"
+  deleted: "このとうこうはさくじょされました"
+  location: "いちじょうほう"
+
+mobile/views/components/note-detail.vue:
+  reply: "へんしん"
+  reaction: "リアクション"
+  private: "このとうこうはひこうかいです"
+  deleted: "このとうこうはさくじょされました"
+  location: "いちじょうほう"
+
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "cat"
+
+mobile/views/components/notifications.vue:
+  empty: "ありません！"
+
+mobile/views/components/sub-note-content.vue:
+  private: "このとうこうはひこうかいです"
+  deleted: "このとうこうはさくじょされました"
+  media-count: "{}つのメディア"
+  poll: "アンケート"
+
+mobile/views/components/ui.header.vue:
+  welcome-back: "おかえりなさい、"
+  adjective: "さん"
+
+mobile/views/components/ui.nav.vue:
+  timeline: "タイムライン"
+  notifications: "つうち"
+  follow-requests: "フォローしんせい"
+  search: "けんさく"
+  user-lists: "リスト"
+  user-groups: "グループ"
+  widgets: "ウィジェット"
+  game: "ゲーム"
+  admin: "かんり"
+  about: "グランポリスについて"
+
+mobile/views/pages/drive.vue:
+  contextmenu:
+    upload: "ファイルをアップロード"
+    url-upload: "ファイルをURLでアップロード"
+    create-folder: "フォルダーをさくせい"
+    rename-folder: "フォルダーめいをへんこう"
+    move-folder: "このフォルダをいどう"
+    delete-folder: "このフォルダをさくじょ"
+
+mobile/views/pages/signup.vue:
+  lets-start: "📦 はじめましょう"
+
+mobile/views/pages/followers.vue:
+  followers-of: "{name}のフォロワー"
+
+mobile/views/pages/following.vue:
+  following-of: "{name}のフォロー"
+
+mobile/views/pages/home.vue:
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  global: "グローバル"
+  mentions: "あなたあて"
+  messages: "ダイレクトとうこう"
+
+mobile/views/pages/tag.vue:
+  no-posts-found: "ハッシュタグ「{q}」がつけられたとうこうはみつかりませんでした。"
+
+mobile/views/pages/widgets.vue:
+  dashboard: "ダッシュボード"
+  widgets-hints: "ウィジェットをついか/さくじょしたりならべかえたりできます。ウィジェットをいどうするには「」をドラッグします。ウィジェットをさくじょするには「x」をタップします。いくつかのウィジェットはタップすることでひょうじをへんこうできます。"
+  add-widget: "ついか"
+  customization-tips: "カスタマイズのヒント"
+
+mobile/views/pages/widgets/activity.vue:
+  activity: "アクティビティ"
+
+mobile/views/pages/share.vue:
+  share-with: "{name}できょうゆう"
+
+mobile/views/pages/note.vue:
+  title: "とうこう"
+  prev: "まえのとうこう"
+  next: "つぎのとうこう"
+
+mobile/views/pages/games/reversi.vue:
+  reversi: "リバーシ"
+
+mobile/views/pages/search.vue:
+  search: "けんさく"
+  not-found: "「{q}」にかんするとうこうはみつかりませんでした。"
+
+mobile/views/pages/selectdrive.vue:
+  select-file: "ファイルをせんたく"
+
+mobile/views/pages/settings.vue:
+  signed-in-as: "{}としてサインインちゅう"
+
+mobile/views/pages/user.vue:
+  follows-you: "フォローされています"
+  following: "フォロー"
+  followers: "フォロワー"
+  notes: "とうこう"
+  overview: "がいよう"
+  timeline: "タイムライン"
+  media: "メディア"
+  years-old: "{age}とし"
+  happy-birthday: "ほんじつたんじょうびです！"
+
+mobile/views/pages/user/home.vue:
+  recent-notes: "さいきんのとうこう"
+  images: "がぞう"
+  activity: "アクティビティ"
+  keywords: "キーワード"
+  domains: "ひんしゅつドメイン"
+  frequently-replied-users: "よくはなｓユーザー"
+  followers-you-know: "しりあいのフォロワー"
+  last-used-at: "さいしゅうログイン"
+
+mobile/views/pages/user/home.photos.vue:
+  no-photos: "しゃしんはありません"
+
+deck:
+  widgets: "ウィジェット"
+  home: "ホーム"
+  local: "ローカル"
+  hybrid: "ソーシャル"
+  hashtag: "ハッシュタグ"
+  global: "グローバル"
+  mentions: "あなたあて"
+  direct: "ダイレクトとうこう"
+  notifications: "つうち"
+  list: "リスト"
+  select-list: "リストをせんたくしてください"
+  swap-left: "みぎにいどう"
+  swap-right: "みぎにいどう"
+  swap-up: "うえにいどう"
+  swap-down: "したにいどう"
+  remove: "カラムをさくじょ"
+  add-column: "カラムをついか"
+  rename: "なまえをへんこう"
+  stack-left: "みぎにかさねる"
+  pop-right: "みぎにだす"
+  disabled-timeline:
+    title: "むこうかされたタイムライン"
+    description: "サーバーのうんえいしゃにより、このタイムラインはしようできないじょうたいにせっていされています。"
+
+deck/deck.tl-column.vue:
+  is-media-only: "メディアとうこうのみ"
+  edit: "オプション"
+
+deck/deck.user-column.vue:
+  follows-you: "フォローされています"
+  posts: "とうこう"
+  following: "フォロー"
+  followers: "フォロワー"
+  images: "がぞう"
+  activity: "アクティビティ"
+  timeline: "タイムライン"
+  pinned-notes: "ピンどめされたとうこう"
+  pinned-page: "ピンどめされたページ"
+
+docs:
+  edit-this-page-on-github: "まちがいやかいぜんてんをみつけましたか？"
+  edit-this-page-on-github-link: "このページをGitHubでへんしゅう"
+
+dev/views/index.vue:
+  manage-apps: "アプリのかんり"
+
+dev/views/apps.vue:
+  manage-apps: "アプリをかんり"
+  create-app: "アプリさくせい"
+  app-missing: "アプリなし"
+
+dev/views/new-app.vue:
+  new-app: "あたらしいアプリケーション"
+  new-app-info: "アプリケーションはAPIからでもさくせいできます。 (app/create)"
+  create-app: "アプリケーションのさくせい"
+  app-name: "アプリケーションめい"
+  app-name-placeholder: "ex) グランポリス for iOS"
+  app-name-desc: "あなたのアプリのめいしょう。"
+  app-overview: "アプリのがいよう"
+  app-overview-placeholder: " ex) グランポリス iOSクライアント。"
+  app-overview-desc: "あなたのアプリのかんたんなせつめいやしょうかい。"
+  callback-url: "コールバックURL (オプション)"
+  callback-url-placeholder: "ex) https://your.app.example.com/callback.php"
+  callback-url-desc: "ユーザーがにんしょうフォームでにんしょうしたさいにリダイレクトするURLをせっていできます。"
+  authority: "けんげん"
+  authority-desc: "ここでようきゅうしたきのうだけがAPIからアクセスできます。"
+  authority-warning: "アプリさくせいごもへんこうできますが、あらたなけんげんをふよするばあい、そのじてんでかんれんつけられているユーザーキーはすべてむこうになります。"
+
+pages:
+  new-page: "ページのさくせい"
+  edit-page: "ページのへんしゅう"
+  read-page: "ソースをひょうじちゅう"
+  page-created: "ページをさくせいしました"
+  page-updated: "ページをこうしんしました"
+  are-you-sure-delete: "このページをさくじょしますか？"
+  page-deleted: "ページをさくじょしました"
+  edit-this-page: "このページをへんしゅう"
+  pin-this-page: "ピンどめ"
+  unpin-this-page: "ピンどめかいじょ"
+  view-source: "ソースをひょうじ"
+  view-page: "ページをみる"
+  like: "いいね"
+  unlike: "いいねかいじょ"
+  liked-pages: "いいねしたページ"
+  my-pages: "じぶんのページ"
+  inspector: "インスペクター"
+  content: "ページブロック"
+  variables: "へんすう"
+  variables-info: "へんすうをつかうことでどうてきなページをさくせいできます。テキストないで &lt;b&gt;{ へんすうめい }&lt;/b&gt; とかくとそこにへんすうのねをうめこめます。たとえば &lt;b&gt;Hello { thing } world!&lt;/b&gt; というテキストで、へんすう(thing)のねが &lt;b&gt;ai&lt;/b&gt; だったばあい、テキストは &lt;b&gt;Hello ai world!&lt;/b&gt; になります。"
+  variables-info2: "へんすうのひょうか(ねをさんしゅつすること)はうえからしたにおこなわれるので、あるへんすうのなかでじぶんよりしたのへんすうをさんしょうすることはできません。たとえばうえから &lt;b&gt;A、B、C&lt;/b&gt; と3つのへんすうをていぎしたとき、&lt;b&gt;C&lt;/b&gt;のなかで&lt;b&gt;A&lt;/b&gt;や&lt;b&gt;B&lt;/b&gt;をさんしょうすることはできますが、&lt;b&gt;A&lt;/b&gt;のなかで&lt;b&gt;B&lt;/b&gt;や&lt;b&gt;C&lt;/b&gt;をさんしょうすることはできません。"
+  variables-info3: "ユーザーからのにゅうりょくをうけとるには、ページに「ユーザーにゅうりょく」ブロックをせっちし、「へんすうめい」ににゅうりょくをかくのうしたいへんすうめいをせっていします(へんすうはじどうでさくせいされます)。そのへんすうをつかってユーザーにゅうりょくにおうじたどうさをおこなえます。"
+  variables-info4: "かんすうをつかうと、ねのさんしゅつしょりをさいりようかのうなかたちにまとめることができます。かんすうをつくるには、「かんすう」タイプのへんすうをさくせいします。かんすうにはスロット(ひきすう)をせっていすることができ、スロットのねはかんすうないでへんすうとしてりようかのうです。また、AiScriptひょうじゅんでかんすうをひきすうにとるかんすう(たかしなかんすうとよばれます)もそんざいします。かんすうはあらかじめていぎしておくほかに、このようなたかしなかんすうのスロットにそくせきでセットすることもできます。"
+  more-details: "くわしいせつめい"
+  title: "タイトル"
+  url: "ページURL"
+  summary: "ページのようやく"
+  align-center: "ちゅうおうよせ"
+  hide-title-when-pinned: "ピンどめされているときにタイトルをひひょうじ"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  set-eye-catching-image: "アイキャッチがぞうをせってい"
+  remove-eye-catching-image: "アイキャッチがぞうをさくじょ"
+  choose-block: "ブロックをついか"
+  select-type: "しゅるいをせんたく"
+  enter-variable-name: "へんすうめいをきめてください"
+  the-variable-name-is-already-used: "そのへんすうめいはすでにつかわれています"
+  content-blocks: "コンテンツ"
+  input-blocks: "にゅうりょく"
+  special-blocks: "とくしゅ"
+  post-from-post-form: "このないようをとうこう"
+  posted-from-post-form: "とうこうしました"
+  blocks:
+    text: "テキスト"
+    textarea: "テキストエリア"
+    section: "セクション"
+    image: "がぞう"
+    button: "ボタン"
+
+    if: "もし"
+    _if:
+      variable: "へんすう"
+
+    post: "とうこうフォーム"
+    _post:
+      text: "ないよう"
+
+    textInput: "テキストにゅうりょく"
+    _textInput:
+      name: "へんすうめい"
+      text: "タイトル"
+      default: "デフォルトち"
+
+    textareaInput: "ふくすうぎょうテキストにゅうりょく"
+    _textareaInput:
+      name: "へんすうめい"
+      text: "タイトル"
+      default: "デフォルトち"
+
+    numberInput: "すうちにゅうりょく"
+    _numberInput:
+      name: "へんすうめい"
+      text: "タイトル"
+      default: "デフォルトち"
+
+    switch: "スイッチ"
+    _switch:
+      name: "へんすうめい"
+      text: "タイトル"
+      default: "デフォルトち"
+
+    counter: "カウンター"
+    _counter:
+      name: "へんすうめい"
+      text: "タイトル"
+      inc: "ぞうかち"
+
+    _button:
+      text: "タイトル"
+      colored: "いろつき"
+      action: "ボタンをおしたときのどうさ"
+      _action:
+        dialog: "ダイアログをみせる"
+        _dialog:
+          content: "ないよう"
+        resetRandom: "らんすうをリセット"
+        pushEvent: "イベントをそうしんさせる"
+        _pushEvent:
+          event: "イベントめい"
+          message: "おしたときにみせるメッセージ"
+          variable: "そうしんするへんすう"
+          no-variable: "なし"
+
+    radioButton: "せんたくあし"
+    _radioButton:
+      name: "へんすうめい"
+      title: "タイトル"
+      values: "かいぎょうでくぎったせんたくあし"
+      default: "デフォルトち"
+
+  script:
+    categories:
+      flow: "せいぎょ"
+      logical: "ろんりえんざん"
+      operation: "けいさん"
+      comparison: "ひかく"
+      random: "ランダム"
+      value: "ね"
+      fn: "かんすう"
+      text: "テキストそうさ"
+      convert: "へんかん"
+      list: "リスト"
+    blocks:
+      text: "テキスト"
+      multiLineText: "テキスト(ふくすうぎょう)"
+      textList: "テキストのリスト"
+      _textList:
+        info: "ひとつひとつをかいぎょうでくぎってください"
+      strLen: "テキストのながさ"
+      _strLen:
+        arg1: "テキスト"
+      strPick: "もじとりだし"
+      _strPick:
+        arg1: "テキスト"
+        arg2: "もじのいち"
+      strReplace: "テキストおきかえ"
+      _strReplace:
+        arg1: "テキスト"
+        arg2: "おきかえまえ"
+        arg3: "おきかえご"
+      strReverse: "テキストをはんてん"
+      _strReverse:
+        arg1: "テキスト"
+      join: "テキストをれんけつ"
+      _join:
+        arg1: "リスト"
+        arg2: "くぎり"
+      add: "+ たす"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "- ひく"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "× かける"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "÷ わる"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "÷ わったあまり"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      eq: "AとBがおなじ"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "AとBがことなる"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "AかつB"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "AまたはB"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "&lt; AがBよりちいさい"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "&gt; AがBよりおおきい"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "&lt;= AがBとおなじかちいさい"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: "&gt;= AがBとおなじかおおきい"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "ぶんき"
+      _if:
+        arg1: "もし"
+        arg2: "なら"
+        arg3: "そうでなければ"
+      not: "ひてい"
+      _not:
+        arg1: "ひてい"
+      random: "ランダム"
+      _random:
+        arg1: "かくりつ"
+      rannum: "らんすう"
+      _rannum:
+        arg1: "さいしょう"
+        arg2: "さいだい"
+      randomPick: "リストからランダムにせんたく"
+      _randomPick:
+        arg1: "リスト"
+      dailyRandom: "ランダム (ユーザーごとにひがわり)"
+      _dailyRandom:
+        arg1: "かくりつ"
+      dailyRannum: "らんすう (ユーザーごとにひがわり)"
+      _dailyRannum:
+        arg1: "さいしょう"
+        arg2: "さいだい"
+      dailyRandomPick: "リストからランダムにせんたく (ユーザーごとにひがわり)"
+      _dailyRandomPick:
+        arg1: "リスト"
+      seedRandom: "ランダム (シード)"
+      _seedRandom:
+        arg1: "シード"
+        arg2: "かくりつ"
+      seedRannum: "らんすう (シード)"
+      _seedRannum:
+        arg1: "シード"
+        arg2: "さいしょう"
+        arg3: "さいだい"
+      seedRandomPick: "リストからランダムにせんたく (シード)"
+      _seedRandomPick:
+        arg1: "シード"
+        arg2: "リスト"
+      DRPWPM: "かくりつつきリストからランダムにせんたく (ユーザーごとにひがわり)"
+      _DRPWPM:
+        arg1: "テキストのリスト"
+      pick: "リストからせんたく"
+      _pick:
+        arg1: "リスト"
+        arg2: "いち"
+      listLen: "リストのながさをしゅとく"
+      _listLen:
+        arg1: "リスト"
+      number: "すうち"
+      stringToNumber: "テキストをすうちに"
+      _stringToNumber:
+        arg1: "テキスト"
+      numberToString: "すうちをテキストに"
+      _numberToString:
+        arg1: "すうち"
+      splitStrByLine: "テキストをぎょうでぶんかつ"
+      _splitStrByLine:
+        arg1: "テキスト"
+      ref: "へんすう"
+      fn: "かんすう"
+      _fn:
+        slots: "スロット"
+        slots-info: "スロットひとつひとつをかいぎょうでくぎってください"
+        arg1: "しゅつりょく"
+      for: "くりかえし"
+      _for:
+        arg1: "かいすう"
+        arg2: "しょり"
+    typeError: "スロット{slot}は\"{expect}\"をうけつけますが、\"{actual}\"がいれられています！"
+    thereIsEmptySlot: "スロット{slot}がそらです！"
+    types:
+      string: "テキスト"
+      number: "すうち"
+      boolean: "フラグ"
+      array: "リスト"
+      stringArray: "テキストのリスト"
+    emptySlot: "そらのスロット"
+    enviromentVariables: "かんきょうへんすう"
+    pageVariables: "ページようそ"
+    argVariables: "にゅうりょくスロット"
