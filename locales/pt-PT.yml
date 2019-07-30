@@ -18,6 +18,8 @@ common:
   application-authorization: "Aplicativos autorizados"
   close: "Fechar"
   do-not-copy-paste: "Por favor, não digite ou copie o código aqui. A conta pode ser comprometida."
+  notification-types:
+    follow: "Seguindo"
   got-it: "Entendi!"
   customization-tips:
     title: "Dicas de personalização"

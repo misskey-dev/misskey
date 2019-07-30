@@ -43,12 +43,12 @@ export default define(meta, async (ps, me) => {
 	switch (ps.sort) {
 		case '+notes': query.orderBy('instance.notesCount', 'DESC'); break;
 		case '-notes': query.orderBy('instance.notesCount', 'ASC'); break;
-		case '+usersCount': query.orderBy('instance.usersCount', 'DESC'); break;
-		case '-usersCount': query.orderBy('instance.usersCount', 'ASC'); break;
-		case '+followingCount': query.orderBy('instance.followingCount', 'DESC'); break;
-		case '-followingCount': query.orderBy('instance.followingCount', 'ASC'); break;
-		case '+followersCount': query.orderBy('instance.followersCount', 'DESC'); break;
-		case '-followersCount': query.orderBy('instance.followersCount', 'ASC'); break;
+		case '+users': query.orderBy('instance.usersCount', 'DESC'); break;
+		case '-users': query.orderBy('instance.usersCount', 'ASC'); break;
+		case '+following': query.orderBy('instance.followingCount', 'DESC'); break;
+		case '-following': query.orderBy('instance.followingCount', 'ASC'); break;
+		case '+followers': query.orderBy('instance.followersCount', 'DESC'); break;
+		case '-followers': query.orderBy('instance.followersCount', 'ASC'); break;
 		case '+caughtAt': query.orderBy('instance.caughtAt', 'DESC'); break;
 		case '-caughtAt': query.orderBy('instance.caughtAt', 'ASC'); break;
 		case '+lastCommunicatedAt': query.orderBy('instance.lastCommunicatedAt', 'DESC'); break;

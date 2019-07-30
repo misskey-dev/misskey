@@ -35,6 +35,9 @@ common:
   signout: "Ausloggen"
   reload-to-apply-the-setting: "Die Seite muss zum Übernehmen dieser Einstellung aktualisiert werden. Soll die Seite jetzt neu geladen werden?"
   fetching-as-ap-object: "Hole Daten…"
+  notification-types:
+    reply: "Antworten"
+    renote: "Anmerkung"
   got-it: "Verstanden!"
   customization-tips:
     title: "Anpassung-Tipps"
@@ -248,6 +251,8 @@ common:
     disable-via-mobile: "Beitrag nicht als „vom Handy“ markieren"
     load-raw-images: "Anhänge in voller Größe laden"
     load-remote-media: "Zeige Inhalte von fremden Servern"
+    save: "Speichern"
+    saved: "Gespeichert"
   search: "Suche"
   delete: "Löschen"
   loading: "Laden"
@@ -565,6 +570,7 @@ common/views/components/profile-editor.vue:
   avatar: "Avatar"
   banner: "Banner"
   save: "Speichern"
+  unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
   export: "Exportieren"
   import: "Importieren"
   export-targets:
@@ -598,6 +604,7 @@ common/views/widgets/memo.vue:
   save: "Speichern"
 desktop:
   banner: "Banner"
+  unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
 desktop/views/components/activity.chart.vue:
   total: "Schwarz ... komplett"
   notes: "Blau ... Hinweise"
@@ -782,6 +789,7 @@ admin/views/drive.vue:
     local: "Lokal"
   delete: "Löschen"
 admin/views/users.vue:
+  username: "Benutzername"
   users:
     origin:
       local: "Lokal"
@@ -871,6 +879,8 @@ mobile/views/pages/note.vue:
   next: "Nächster Kommentar"
 mobile/views/pages/search.vue:
   search: "Suchen"
+mobile/views/pages/notifications.vue:
+  notifications: "Benachrichtigungen"
 mobile/views/pages/user/home.vue:
   activity: "Aktivität"
   keywords: "Schlagwörter"

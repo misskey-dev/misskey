@@ -36,6 +36,18 @@ common:
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
   fetching-as-ap-object: "연합에서 조회 중"
   unfollow-confirm: "{name} 님을 팔로우 해제하시겠습니까?"
+  signin-required: "로그인 해주세요"
+  notification-type: "알림의 종류"
+  notification-types:
+    all: "모두"
+    pollVote: "투표"
+    follow: "팔로잉"
+    receiveFollowRequest: "팔로우 요청"
+    reply: "답글 달기"
+    quote: "인용"
+    renote: "리노트"
+    mention: "멘션"
+    reaction: "리액션"
   got-it: "알겠습니다"
   customization-tips:
     title: "커스터마이징 도움말"
@@ -88,7 +100,7 @@ common:
     "read:mutes": "뮤트 보기"
     "write:mutes": "뮤트 수정"
     "write:notes": "글 작성, 삭제"
-    "read:notifications": "글 보기"
+    "read:notifications": "알림 보기"
     "write:notifications": "알림 수정"
     "read:reactions": "리액션 보기"
     "write:reactions": "리액션 수정"
@@ -202,6 +214,7 @@ common:
     use-avatar-reversi-stones: "리버시의 돌로 아바타를 사용"
     disable-animated-mfm: "글의 문자 애니메이션을 비활성화"
     disable-showing-animated-images: "움직이는 이미지를 자동으로 재생하지 않음"
+    enable-quick-notification-view: "알림의 빠른 보기를 사용합니다"
     suggest-recent-hashtags: "최근 해시태그를 글 작성란에 표시"
     always-show-nsfw: "항상 열람주의 미디어를 표시"
     always-mark-nsfw: "항상 미디어를 열람주의로 설정하여 게시"
@@ -278,6 +291,8 @@ common:
     load-raw-images: "첨부 이미지를 고품질로 표시"
     load-remote-media: "원격 서버의 미디어를 표시"
     sync: "동기화"
+    save: "저장"
+    saved: "저장하였습니다"
     home-profile: "홈 프로필"
     deck-profile: "덱 프로필"
   search: "검색"
@@ -529,6 +544,8 @@ common/views/components/note-menu.vue:
   unpin: "프로필에서 고정 해제"
   delete: "삭제"
   delete-confirm: "이 글을 삭제하시겠습니까?"
+  delete-and-edit: "삭제 후 편집"
+  delete-and-edit-confirm: "이 글을 삭제한 뒤 다시 편집하시겠습니까? 이 글에 대한 리액션, 리노트, 답글 또한 모두 삭제됩니다."
   remote: "글 원본 보기"
   pin-limit-exceeded: "더 이상 고정할 수 없습니다."
 common/views/components/user-menu.vue:
@@ -723,6 +740,9 @@ common/views/components/profile-editor.vue:
   saved: "프로필을 저장하였습니다"
   uploading: "업로드 중"
   upload-failed: "업로드에 실패하였습니다"
+  unable-to-process: "작업을 완료할 수 없습니다"
+  avatar-not-an-image: "아바타로 지정한 파일이 이미지 형식이 아닙니다"
+  banner-not-an-image: "배너로 지정한 파일이 이미지 형식이 아닙니다"
   email: "메일 설정"
   email-address: "메일 주소"
   email-verified: "매일 주소가 확인되었습니다"
@@ -742,6 +762,9 @@ common/views/components/profile-editor.vue:
   danger-zone: "위험한 설정"
   delete-account: "계정 삭제"
   account-deleted: "계정이 삭제되었습니다. 데이터가 사라질 때까지 시간이 걸릴 수 있습니다."
+  profile-metadata: "프로필 추가 정보"
+  metadata-label: "라벨"
+  metadata-content: "내용"
 common/views/components/user-list-editor.vue:
   users: "사용자"
   rename: "리스트 이름 바꾸기"
@@ -851,6 +874,7 @@ desktop:
   uploading-avatar: "새로운 아바타를 업로드하고 있습니다"
   avatar-updated: "아바타가 변경되었습니다"
   choose-avatar: "아바타 이미지를 선택"
+  unable-to-process: "작업을 완료할 수 없습니다"
   invalid-filetype: "이 형식의 파일은 지원되지 않습니다"
 desktop/views/components/activity.chart.vue:
   total: "검은색 ... 전체"
@@ -892,7 +916,7 @@ desktop/views/components/drive.file.vue:
     copy-url: "URL 복사"
     download: "다운로드"
     else-files: "기타"
-    set-as-avatar: "아이콘으로 설정"
+    set-as-avatar: "아바타로 설정"
     set-as-banner: "배너로 설정"
     open-in-app: "앱에서 열기"
     add-app: "앱 추가"
@@ -1363,6 +1387,8 @@ admin/views/users.vue:
   remote-user-updated: "원격 사용자 정보를 갱신하였습니다"
   delete-all-files: "모든 파일 삭제"
   delete-all-files-confirm: "모든 파일을 삭제하시겠습니까?"
+  username: "사용자명"
+  host: "관리자"
   users:
     title: "사용자"
     sort:
@@ -1393,6 +1419,12 @@ admin/views/moderators.vue:
     added: "모더레이터를 등록하였습니다"
     remove: "해제"
     removed: "모더레이터 등록을 해제했습니다"
+  logs:
+    title: "로그"
+    moderator: "모더레이터"
+    type: "작업"
+    at: "일시"
+    info: "정보"
 admin/views/emoji.vue:
   add-emoji:
     title: "이모지 등록"
@@ -1681,6 +1713,8 @@ mobile/views/pages/search.vue:
   not-found: "\"{q}\" 와 일치하는 글을 찾을 수 없습니다."
 mobile/views/pages/selectdrive.vue:
   select-file: "파일 선택"
+mobile/views/pages/notifications.vue:
+  notifications: "알림"
 mobile/views/pages/settings.vue:
   signed-in-as: "{}(으)로 로그인"
 mobile/views/pages/user.vue:

@@ -28,6 +28,12 @@ common:
   signin: "Zaloguj się"
   signup: "Rejestracja"
   signout: "Wyloguj się"
+  notification-types:
+    all: "Wszyscy"
+    follow: "Śledzeni"
+    reply: "Odpowiedz"
+    renote: "Udostępnij"
+    reaction: "Reakcja"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -178,6 +184,8 @@ common:
     version: "Wersja:"
     do-update: "Sprawdź dostępność nowych aktualizacji"
     navbar-position-left: "Z lewej"
+    save: "Zapisz"
+    saved: "Zapisano"
   search: "Szukaj"
   delete: "Usuń"
   loading: "Ładowanie"
@@ -516,6 +524,7 @@ common/views/components/profile-editor.vue:
   saved: "Pomyślnie zaktualizowano profil"
   uploading: "Wysyłanie"
   upload-failed: "Wysyłanie nie powiodło się"
+  unable-to-process: "Nie udało się ukończyć działania."
   email: "Ustawienia e-mail"
   email-address: "Adres e-mail"
   email-verified: "Twój adres e-mail został zweryfikowany."
@@ -610,6 +619,7 @@ desktop:
   uploading-avatar: "Wysyłanie awatara"
   avatar-updated: "Wysłano awatar"
   choose-avatar: "Wybierz awatar"
+  unable-to-process: "Nie udało się ukończyć działania."
 desktop/views/components/activity.chart.vue:
   total: "Czarny … Łącznie"
   notes: "Niebieski … Wpisy"
@@ -908,6 +918,7 @@ admin/views/drive.vue:
   unmark-as-sensitive: "Cofnij oznaczenie jako zawartość wrażliwą"
 admin/views/users.vue:
   user-not-found: "Nie znaleziono użytkownika"
+  username: "Nazwa użytkownika"
   users:
     title: "Użytkownicy"
     sort:
@@ -923,6 +934,9 @@ admin/views/users.vue:
 admin/views/moderators.vue:
   add-moderator:
     add: "Zarejestruj się"
+  logs:
+    moderator: "Moderatorzy"
+    info: "Informacje"
 admin/views/emoji.vue:
   add-emoji:
     name: "Nazwa Emoji"
@@ -1129,6 +1143,8 @@ mobile/views/pages/search.vue:
   search: "Szukaj"
 mobile/views/pages/selectdrive.vue:
   select-file: "Wybierz plik"
+mobile/views/pages/notifications.vue:
+  notifications: "Powiadomienia"
 mobile/views/pages/settings.vue:
   signed-in-as: "Zalogowany jako {}"
 mobile/views/pages/user.vue:

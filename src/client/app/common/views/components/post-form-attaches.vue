@@ -36,7 +36,7 @@ export default Vue.extend({
 			required: true
 		},
 		detachMediaFn: {
-			type: Object,
+			type: Function,
 			required: false
 		}
 	},

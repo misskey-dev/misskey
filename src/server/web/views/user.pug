@@ -36,3 +36,6 @@ block meta
 		link(rel='alternate' href=user.uri type='application/activity+json')
 	if profile.url
 		link(rel='alternate' href=profile.url type='text/html')
+
+	each m in me
+		link(rel='me' href=`${m}`)

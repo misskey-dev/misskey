@@ -35,6 +35,18 @@ common:
   signout: "Se déconnecter"
   reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
   unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
+  signin-required: "Veuillez vous connecter"
+  notification-type: "Type de notification"
+  notification-types:
+    all: "Tout"
+    pollVote: "Sondage"
+    follow: "Abonnements"
+    receiveFollowRequest: "Demandes d’abonnements"
+    reply: "Répondre"
+    quote: "Cité par"
+    renote: "Republier"
+    mention: "Mentions"
+    reaction: "Réaction"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -118,6 +130,7 @@ common:
     add-visible-user: "Ajouter un utilisateur"
     cw-placeholder: "Commenter le contenu (optionnel)"
     username-prompt: "Saisir un nom d'utilisateur"
+    enter-file-name: "Éditer le nom du fichier"
   weekday-short:
     sunday: "D"
     monday: "L"
@@ -184,6 +197,7 @@ common:
     remember-note-visibility: "Se souvenir du mode de visibilité de la publication"
     web-search-engine: "Moteur de recherche Web"
     web-search-engine-desc: "Exemple : https://www.google.com/?#q={{query}}"
+    paste: "Coller"
     keep-cw: "Maintenir l'avertissement de contenu"
     keep-cw-desc: "Lorsque vous répondez à un message, le même avertissement de contenu est reprit par défaut dans la réponse, le même que celui qui a été défini dans le message original."
     i-like-sushi: "Je préfère les sushis plutôt que le pudding"
@@ -267,6 +281,8 @@ common:
     load-raw-images: "Afficher les photos jointes dans leur qualité originale"
     load-remote-media: "Afficher les médias depuis le serveur distant"
     sync: "Synchroniser"
+    save: "Enregistrer"
+    saved: "enregistré"
   search: "Recherche"
   delete: "Supprimer"
   loading: "Chargement en cours …"
@@ -388,6 +404,7 @@ common/views/components/games/reversi/reversi.room.vue:
   black-or-white: "Noirs/Blancs"
   black-is: "{} Noirs"
   rules: "Règles"
+  is-llotheo: "Celui ou celle qui a le moins de pièces gagne (Llotheo)"
   looped-map: "Carte en boucle"
   can-put-everywhere: "Peut poser partout"
   settings-of-the-bot: "Configuration du bot"
@@ -515,6 +532,7 @@ common/views/components/note-menu.vue:
   unpin: "Désépingler"
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
+  delete-and-edit: "Effacer et éditer"
   remote: "Afficher la note originale"
 common/views/components/user-menu.vue:
   mention: "Mention"
@@ -555,6 +573,7 @@ common/views/components/poll-editor.vue:
   remove: "Supprimer ce choix"
   add: "+ Ajouter un choix"
   destroy: "Annuler ce sondage"
+  multiple: "Autoriser le multi-choix"
   expiration: "Valide jusqu'à"
   infinite: "Illimité"
   at: "Choisir une date et une durée"
@@ -581,6 +600,12 @@ common/views/components/emoji-picker.vue:
   symbols: "Symboles"
   flags: "Drapeaux"
 common/views/components/settings/app-type.vue:
+  title: "Mode"
+  intro: "Vous pouvez choisir, si vous voulez utiliser la disposition de bureau ou mobile."
+  choices:
+    auto: "Choisir la disposition automatiquement"
+    desktop: "Toujours utiliser la disposition de bureau"
+    mobile: "Toujours utiliser la disposition mobile"
   info: "Le rechargement de la page est requis afin d'appliquer les modifications."
 common/views/components/signin.vue:
   username: "Nom d'utilisateur·rice"
@@ -698,6 +723,9 @@ common/views/components/profile-editor.vue:
   saved: "Profil mis à jour avec succès"
   uploading: "En cours d’envoi …"
   upload-failed: "Échec de l'envoi"
+  unable-to-process: "L'opération n'a pas pu être complétée"
+  avatar-not-an-image: "Le fichier sélectionné pour votre avatar n'est pas une image"
+  banner-not-an-image: "Le fichier sélectionné pour votre bannière n'est pas une image"
   email: "Paramètres de messagerie"
   email-address: "Adresse de courrier électronique"
   email-verified: "L’adresse du courrier électronique a été vérifiée."
@@ -717,6 +745,9 @@ common/views/components/profile-editor.vue:
   danger-zone: "Zone de danger"
   delete-account: "Supprimer le compte"
   account-deleted: "Le compte a été supprimé. Cela peut prendre un certain temps avant que toutes les données disparaissent."
+  profile-metadata: "Métadonnées du profil"
+  metadata-label: "Étiquette"
+  metadata-content: "Contenu"
 common/views/components/user-list-editor.vue:
   users: "Utilisateur·rice"
   rename: "Renommer la liste"
@@ -825,6 +856,7 @@ desktop:
   uploading-avatar: "Téléversement du nouvel avatar"
   avatar-updated: "Mise à jour de l’avatar avec succès"
   choose-avatar: "Choisir un avatar"
+  unable-to-process: "L'opération n'a pas pu être complétée"
   invalid-filetype: "Ce format de fichier n’est pas pris en charge"
 desktop/views/components/activity.chart.vue:
   total: "Noirs ... Total"
@@ -875,9 +907,12 @@ desktop/views/components/drive.file.vue:
     copied: "Copié"
     copied-url-to-clipboard: "L'URL a été copiée dans le presse-papier"
 desktop/views/components/drive.folder.vue:
+  upload-folder: "Emplacement de téléversement par défaut"
   unable-to-process: "L'opération n'a pas pu être complétée"
   circular-reference-detected: "Le dossier de destination est un sous-dossier du dossier que vous souhaitez déplacer."
   unhandled-error: "Erreur inconnue"
+  unable-to-delete: "Ne peut pas être supprimé"
+  has-child-files-or-folders: "Ce dossier n'est pas vide, il ne peut pas être supprimé"
   contextmenu:
     move-to-this-folder: "Déplacer dans ce dossier"
     show-in-new-window: "Ouvrir dans une nouvelle fenêtre"
@@ -885,6 +920,7 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "Renommer le dossier"
     input-new-folder-name: "Entrer un nouveau nom"
     else-folders: "Avancé"
+    set-as-upload-folder: "Spécifier en tant que dossier de téléversement par défaut"
 desktop/views/components/drive.vue:
   search: "Rechercher"
   empty-draghover: "Drop Welcome!"
@@ -990,10 +1026,12 @@ desktop/views/components/settings.2fa.vue:
   success: "Sauvegarde des paramètres avec succès !"
   failed: "L’opération a échoué. Veuillez vous assurer que le jeton a été saisi correctement."
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
+  totp-header: "Application d'authentification"
   security-key-header: "Clé de sécurité"
   last-used: "Dernière utilisation :"
   activate-key: "Cliquez pour activer la clé de sécurité"
   security-key-name: "Nom de la clé"
+  something-went-wrong: "Oula ! Il y a eu un problème lors de l’enregistrement de la clé."
   key-unregistered: "La clé a été supprimée"
   use-password-less-login: "Utiliser une connexion sans mot de passe"
 common/views/components/media-image.vue:
@@ -1020,7 +1058,9 @@ common/views/components/drive-settings.vue:
   max: "Maximale"
   in-use: "utilisé"
   stats: "Statistiques"
+  default-upload-folder: "Emplacement par défaut du dossier de transfert"
   default-upload-folder-name: "Dossier·s"
+  change-default-upload-folder: "Changer de dossier"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Silencés / Bloqués"
   mute: "Mettre en sourdine"
@@ -1127,11 +1167,13 @@ admin/views/queue.vue:
     deliver: "Délivrées"
     inbox: "Reçues"
     db: "Base de données"
+    objectStorage: "Stockage d'objets"
   state: "État"
   states:
     active: "en cours"
     delayed: "Programmé"
     waiting: "En file d'attente"
+  result-is-truncated: "Le résultat est tronqué"
   other-queues: "Autres files d’attente"
 admin/views/logs.vue:
   logs: "Journaux"
@@ -1164,12 +1206,14 @@ admin/views/instance.vue:
   languages-desc: "Vous pouvez en définir plus d’une, séparées par des espaces."
   tos-url: "URL des conditions d'utilisation"
   repository-url: "URL du dépôt"
+  feedback-url: "URL pour les commentaires"
   maintainer-config: "Informations de l’administrateur"
   maintainer-name: "Nom de l’administrateur"
   maintainer-email: "Contact administratif"
   advanced-config: "Autres réglages"
   note-and-tl: "Notes et fils"
   drive-config: "Paramètres du lecteur"
+  use-object-storage: "Utiliser le stockage d'objets"
   object-storage-base-url: "URL"
   object-storage-prefix: "Préfixe"
   object-storage-endpoint: "Point de terminaison"
@@ -1311,6 +1355,8 @@ admin/views/users.vue:
   remote-user-updated: "Les informations de l’utilisateur·rice distant·e ont étés mis à jour"
   delete-all-files: "Supprimer tous les fichiers"
   delete-all-files-confirm: "Êtes vous surs de vouloir supprimer tous les fichiers ?"
+  username: "Nom d'utilisateur·rice"
+  host: "Hôte"
   users:
     title: "Utilisateur·rice·s"
     sort:
@@ -1341,6 +1387,12 @@ admin/views/moderators.vue:
     added: "Ajouté en tant que modérateur"
     remove: "Révoquer"
     removed: "Le modérateur a été révoqué"
+  logs:
+    title: "Journaux"
+    moderator: "Modérateurs"
+    type: "Actions"
+    at: "Date de modification"
+    info: "Informations"
 admin/views/emoji.vue:
   add-emoji:
     title: "Ajouter un émoji"
@@ -1617,6 +1669,8 @@ mobile/views/pages/search.vue:
   not-found: "Aucune publication trouvée pour « {q} »."
 mobile/views/pages/selectdrive.vue:
   select-file: "Choisissez un fichier"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifications"
 mobile/views/pages/settings.vue:
   signed-in-as: "Connecté·e en tant que {}"
 mobile/views/pages/user.vue:
@@ -1675,6 +1729,7 @@ deck/deck.user-column.vue:
   activity: "Activité"
   timeline: "Fil d’actualité"
   pinned-notes: "Notes épinglées"
+  pinned-page: "Page épinglée"
 docs:
   edit-this-page-on-github: "Vous avez trouvé une erreur ou vous voulez contribuer à la documentation ?"
   edit-this-page-on-github-link: "Éditez cette page sur GitHub !"
@@ -1790,6 +1845,7 @@ pages:
           message: "Message à afficher lorsque appuyé"
           variable: "Variable à envoyer"
           no-variable: "Aucune"
+    radioButton: "Choix"
     _radioButton:
       name: "Nom de la variable"
       title: "Titre"

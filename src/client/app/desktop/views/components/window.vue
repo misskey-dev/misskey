@@ -260,14 +260,14 @@ export default Vue.extend({
 				let moveLeft = me.clientX - moveBaseX;
 				let moveTop = me.clientY - moveBaseY;
 
-				// 上はみ出し
-				if (moveTop < 0) moveTop = 0;
+				// 下はみ出し
+				if (moveTop + windowHeight > browserHeight) moveTop = browserHeight - windowHeight;
 
 				// 左はみ出し
 				if (moveLeft < 0) moveLeft = 0;
 
-				// 下はみ出し
-				if (moveTop + windowHeight > browserHeight) moveTop = browserHeight - windowHeight;
+				// 上はみ出し
+				if (moveTop < 0) moveTop = 0;
 
 				// 右はみ出し
 				if (moveLeft + windowWidth > browserWidth) moveLeft = browserWidth - windowWidth;
@@ -442,10 +442,10 @@ export default Vue.extend({
 			const browserHeight = window.innerHeight;
 			const windowWidth = main.offsetWidth;
 			const windowHeight = main.offsetHeight;
-			if (position.left < 0) main.style.left = 0;
-			if (position.top < 0) main.style.top = 0;
-			if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';
-			if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px';
+			if (position.left < 0) main.style.left = 0;     // 左はみ出し
+			if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px';  // 下はみ出し
+			if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';    // 右はみ出し
+			if (position.top < 0) main.style.top = 0;       // 上はみ出し
 		}
 	}
 });

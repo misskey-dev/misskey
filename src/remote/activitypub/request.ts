@@ -1,8 +1,7 @@
-import { request } from 'https';
+import * as https from 'https';
 import { sign } from 'http-signature';
 import * as crypto from 'crypto';
-import { lookup, IRunOptions } from 'lookup-dns-cache';
-import * as promiseAny from 'promise-any';
+import * as cache from 'lookup-dns-cache';
 
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
@@ -12,8 +11,15 @@ import { UserKeypairs, Instances } from '../../models';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
+import * as httpsProxyAgent from 'https-proxy-agent';
 
 export const logger = apLogger.createSubLogger('deliver');
+
+const agent = config.proxy
+	? new httpsProxyAgent(config.proxy)
+	: new https.Agent({
+			lookup: cache.lookup,
+		});
 
 export default async (user: ILocalUser, url: string, object: any) => {
 	const timeout = 10 * 1000;
@@ -47,24 +53,20 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	sha256.update(data);
 	const hash = sha256.digest('base64');
 
-	const addr = await resolveAddr(hostname);
-	if (!addr) return;
-
 	const keypair = await UserKeypairs.findOne({
 		userId: user.id
 	}).then(ensure);
 
 	await new Promise((resolve, reject) => {
-		const req = request({
+		const req = https.request({
+			agent,
 			protocol,
-			hostname: addr,
-			setHost: false,
+			hostname,
 			port,
 			method: 'POST',
 			path: pathname + search,
 			timeout,
 			headers: {
-				'Host': host,
 				'User-Agent': config.userAgent,
 				'Content-Type': 'application/activity+json',
 				'Digest': `SHA-256=${hash}`
@@ -110,30 +112,3 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	});
 	//#endregion
 };
-
-/**
- * Resolve host (with cached, asynchrony)
- */
-async function resolveAddr(domain: string) {
-	const af = config.outgoingAddressFamily || 'ipv4';
-	const useV4 = af == 'ipv4' || af == 'dual';
-	const useV6 = af == 'ipv6' || af == 'dual';
-
-	const promises = [];
-
-	if (!useV4 && !useV6) throw 'No usable address family available';
-	if (useV4) promises.push(resolveAddrInner(domain, { family: 4 }));
-	if (useV6) promises.push(resolveAddrInner(domain, { family: 6 }));
-
-	// v4/v6で先に取得できた方を採用する
-	return await promiseAny(promises);
-}
-
-function resolveAddrInner(domain: string, options: IRunOptions = {}): Promise<string> {
-	return new Promise((res, rej) => {
-		lookup(domain, options, (error, address) => {
-			if (error) return rej(error);
-			return res(Array.isArray(address) ? address[0] : address);
-		});
-	});
-}

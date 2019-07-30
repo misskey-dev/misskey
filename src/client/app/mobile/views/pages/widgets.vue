@@ -98,12 +98,6 @@ export default Vue.extend({
 				id: 'g', data: {}
 			}]);
 		}
-
-		this.$watch('$store.getters.mobileHome', () => {
-			this.$store.dispatch('settings/updateMobileHomeProfile');
-		}, {
-			deep: true
-		});
 	},
 
 	mounted() {
@@ -128,6 +122,8 @@ export default Vue.extend({
 		},
 
 		addWidget() {
+			if(this.widgetAdderSelected == null) return;
+
 			this.$store.commit('addMobileHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),

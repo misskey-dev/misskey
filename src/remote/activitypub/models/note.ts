@@ -215,8 +215,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	const apEmojis = emojis.map(emoji => emoji.name);
 
-	const questionUri = note._misskey_question;
-	const poll = await extractPollFromQuestion(note._misskey_question || note, resolver).catch(() => undefined);
+	const poll = await extractPollFromQuestion(note, resolver).catch(() => undefined);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -239,7 +238,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		apMentions,
 		apHashtags,
 		apEmojis,
-		questionUri,
 		poll,
 		uri: note.id
 	}, silent);
@@ -304,6 +302,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			if ((tag.updated != null && exists.updatedAt == null)
 				|| (tag.id != null && exists.uri == null)
 				|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
+				|| (tag.icon!.url !== exists.url)
 			) {
 				await Emojis.update({
 					host,
@@ -311,7 +310,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 				}, {
 					uri: tag.id,
 					url: tag.icon!.url,
-					updatedAt: new Date(tag.updated!),
+					updatedAt: new Date(),
 				});
 
 				return await Emojis.findOne({
@@ -331,7 +330,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			name,
 			uri: tag.id,
 			url: tag.icon!.url,
-			updatedAt: tag.updated ? new Date(tag.updated) : undefined,
+			updatedAt: new Date(),
 			aliases: []
 		} as Partial<Emoji>);
 	}));

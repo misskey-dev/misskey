@@ -1,14 +1,12 @@
 # Visual Studio Code
 /.vscode
+!/.vscode/extensions.json
 
 # Intelij-IDEA
 /.idea
 
 # Node.js
 /node_modules
-
-# yarn
-yarn.lock
 
 # config
 /.config/*

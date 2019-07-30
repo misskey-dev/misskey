@@ -11,6 +11,10 @@ common:
     rich-contents: "Innlegg"
     drive: "Disk"
   close: "Lukk"
+  notification-types:
+    all: "Alle"
+    follow: "Følger"
+    reply: "Svar"
   got-it: "Skjønner!"
   notification:
     file-uploaded: "Filen ble lastet opp!"
@@ -78,6 +82,7 @@ common:
   _settings:
     notification: "Notifikasjon"
     password: "Passord"
+    save: "Lagre"
   search: "Søk"
   delete: "Slett"
   loading: "Laster inn..."
@@ -345,12 +350,16 @@ admin/views/drive.vue:
     local: "Lokalt"
   delete: "Slett"
 admin/views/users.vue:
+  username: "Brukernavn"
   users:
     title: "Bruker"
     state:
       all: "Alle"
     origin:
       local: "Lokalt"
+admin/views/moderators.vue:
+  logs:
+    info: "Informasjon"
 admin/views/emoji.vue:
   add-emoji:
     add: "Legg til"
@@ -462,6 +471,8 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Søk"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifikasjon"
 mobile/views/pages/user.vue:
   following: "Følger"
   followers: "Følgere"

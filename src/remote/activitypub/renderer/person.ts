@@ -21,12 +21,23 @@ export async function renderPerson(user: ILocalUser) {
 	]);
 
 	const attachment: {
-		type: string,
+		type: 'PropertyValue',
 		name: string,
 		value: string,
-		verified_at?: string,
 		identifier?: IIdentifier
 	}[] = [];
+
+	if (profile.fields) {
+		for (const field of profile.fields) {
+			attachment.push({
+				type: 'PropertyValue',
+				name: field.name,
+				value: (field.value != null && field.value.match(/^https?:/))
+					? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
+					: field.value
+			});
+		}
+	}
 
 	if (profile.twitter) {
 		attachment.push({

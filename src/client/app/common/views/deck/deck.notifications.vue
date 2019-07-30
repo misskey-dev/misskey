@@ -47,12 +47,22 @@ export default Vue.extend({
 		}),
 	],
 
+	props: {
+		type: {
+			type: String,
+			required: false
+		}
+	},
+
 	data() {
 		return {
 			connection: null,
 			pagination: {
 				endpoint: 'i/notifications',
 				limit: 20,
+				params: () => ({
+					includeTypes: this.type ? [this.type] : undefined
+				})
 			}
 		};
 	},
@@ -66,6 +76,12 @@ export default Vue.extend({
 				notification._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
 				return notification;
 			});
+		}
+	},
+
+	watch: {
+		type() {
+			this.reload();
 		}
 	},
 
