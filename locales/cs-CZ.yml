@@ -37,7 +37,8 @@ common:
   notification-types:
     all: "Všechny"
     pollVote: "Hlasy"
-    reply: "Odpovědět"
+    follow: "Sledovaní"
+    reply: "Odpovědi"
     quote: "Citace"
     renote: "Renotovat"
     mention: "Zmínky"
@@ -107,6 +108,7 @@ common:
     hide-contents: "Schovat obsah"
     reply-placeholder: "Odpovědět na tento příspěvek"
     quote-placeholder: "Citovat tento příspěvek"
+    quote-attached: "Přiložit citaci"
     submit: "Odeslat"
     reply: "Odpovědět"
     renote: "Renotovat"
