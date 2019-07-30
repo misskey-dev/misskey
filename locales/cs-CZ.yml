@@ -36,8 +36,11 @@ common:
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
   notification-types:
     all: "Všechny"
+    pollVote: "Hlasy"
     reply: "Odpovědět"
+    quote: "Citace"
     renote: "Renotovat"
+    mention: "Zmínky"
     reaction: "Reakce"
   got-it: "Rozumím!"
   customization-tips:
