@@ -36,7 +36,7 @@
 				<button class="drive" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
 				<button class="kao" @click="kao"><fa :icon="['far', 'smile']"/></button>
 				<button class="poll" @click="poll = true"><fa icon="chart-pie"/></button>
-				<button class="poll" @click="useCw = !useCw"><fa :icon="['far', 'eye-slash']"/></button>
+				<button class="poll" @click="useCw = !useCw"><fa :icon="useCw ? ['fas', 'eye'] : ['far', 'eye-slash']"/></button>
 				<button class="visibility" @click="setVisibility" ref="visibilityButton">
 					<span v-if="visibility === 'public'"><fa icon="globe"/></span>
 					<span v-if="visibility === 'home'"><fa icon="home"/></span>
