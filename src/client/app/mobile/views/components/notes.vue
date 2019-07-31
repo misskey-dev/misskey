@@ -35,7 +35,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import shouldMuteNote from '../../../common/scripts/should-mute-note';
 import paging from '../../../common/scripts/paging';
-import getNoteSummary from '../../../../../misc/get-note-summary';
+import { getSpeechName, getSpeechText } from '../../../../../misc/get-note-speech';
 
 const displayLimit = 30;
 
@@ -64,9 +64,14 @@ export default Vue.extend({
 				}
 
 				if (this.$store.state.device.enableSpeech && (note.cw || note.text) && !silent) {
-					const text = getNoteSummary(note)
-					const uttr = new SpeechSynthesisUtterance(text);
-					speechSynthesis.speak(uttr);
+					const name = getSpeechName(note);
+					const nameUttr = new SpeechSynthesisUtterance(name);
+					nameUttr.pitch = 2;
+					speechSynthesis.speak(nameUttr);
+
+					const text = getSpeechText(note);
+					const textUttr = new SpeechSynthesisUtterance(text);
+					speechSynthesis.speak(textUttr);
 				}
 			},
 
