@@ -46,6 +46,7 @@ common:
     reply: "回复"
     quote: "引用"
     renote: "转推"
+    mention: "提及"
     reaction: "回应"
   got-it: "知道了"
   customization-tips:
@@ -213,6 +214,7 @@ common:
     use-avatar-reversi-stones: "用头像作为黑白棋的棋子"
     disable-animated-mfm: "在帖子中禁用动画文本"
     disable-showing-animated-images: "不播放动画"
+    enable-quick-notification-view: "启用通知快速查看"
     suggest-recent-hashtags: "在帖子表单上显示最近流行的哈希标签"
     always-show-nsfw: "总是显示 NSFW 的内容"
     always-mark-nsfw: "总是用 NSFW 来标记附件"
@@ -542,6 +544,7 @@ common/views/components/note-menu.vue:
   unpin: "取消置顶"
   delete: "删除"
   delete-confirm: "确定删除这个投稿吗?"
+  delete-and-edit: "删除和编辑"
   remote: "显示原始投稿"
   pin-limit-exceeded: "无法置顶更多了。"
 common/views/components/user-menu.vue:
