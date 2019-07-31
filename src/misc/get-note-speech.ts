@@ -6,14 +6,14 @@ export const getSpeechName = (note: any): string => {
 
 export const getSpeechText = (note: any): string => {
 	if (note.deletedAt) {
-		return '';
+		return null;
 	}
 
 	if (note.isHidden) {
-		return '';
+		return null;
 	}
 
-	let text = note.cw != null ? note.cw : note.text ? note.text : '';
+	let text = note.cw != null ? note.cw : note.text ? note.text : null;
 	text = text.replace(/https?:\/\/.*/g, 'URL');
 	text = text.replace(/#([^\s\.,!\?'"#:\/\[\]]+)/g, () => `hashtag ${RegExp.$1}`);
 

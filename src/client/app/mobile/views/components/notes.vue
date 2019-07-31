@@ -63,15 +63,18 @@ export default Vue.extend({
 					self.$store.commit('pushBehindNote', note);
 				}
 
-				if (this.$store.state.device.enableSpeech && (note.cw || note.text) && !silent) {
+				if (self.$store.state.device.enableSpeech && (note.cw || note.text) && !silent) {
 					const name = getSpeechName(note);
 					const nameUttr = new SpeechSynthesisUtterance(name);
 					nameUttr.pitch = 2;
-					speechSynthesis.speak(nameUttr);
 
 					const text = getSpeechText(note);
 					const textUttr = new SpeechSynthesisUtterance(text);
-					speechSynthesis.speak(textUttr);
+
+					if (getSpeechText) {
+						speechSynthesis.speak(nameUttr);
+						speechSynthesis.speak(textUttr);
+					}
 				}
 			},
 
