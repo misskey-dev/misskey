@@ -63,8 +63,8 @@ export default Vue.extend({
 					self.$store.commit('pushBehindNote', note);
 				}
 
-				if (self.$store.state.device.enableSpeech && (note.cw || note.text)) {
-					const text = getNoteSummary(note).replace(/RE/g, 'reply').replace(/RN/g, 'renote');
+				if (this.$store.state.device.enableSpeech && (note.cw || note.text) && !silent) {
+					const text = getNoteSummary(note)
 					const uttr = new SpeechSynthesisUtterance(text);
 					speechSynthesis.speak(uttr);
 				}
