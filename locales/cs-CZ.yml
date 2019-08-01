@@ -36,8 +36,12 @@ common:
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
   notification-types:
     all: "Všechny"
-    reply: "Odpovědět"
+    pollVote: "Hlasy"
+    follow: "Sledovaní"
+    reply: "Odpovědi"
+    quote: "Citace"
     renote: "Renotovat"
+    mention: "Zmínky"
     reaction: "Reakce"
   got-it: "Rozumím!"
   customization-tips:
@@ -104,6 +108,7 @@ common:
     hide-contents: "Schovat obsah"
     reply-placeholder: "Odpovědět na tento příspěvek"
     quote-placeholder: "Citovat tento příspěvek"
+    quote-attached: "Přiložit citaci"
     submit: "Odeslat"
     reply: "Odpovědět"
     renote: "Renotovat"
