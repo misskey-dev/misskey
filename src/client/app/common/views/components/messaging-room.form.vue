@@ -6,7 +6,7 @@
 	<textarea
 		v-model="text"
 		ref="textarea"
-		@keypress="onKeypress"
+		@keydown="onKeypress"
 		@paste="onPaste"
 		:placeholder="$t('input-message-here')"
 		v-autocomplete="{ model: 'text' }"
@@ -150,7 +150,7 @@ export default Vue.extend({
 		},
 
 		onKeypress(e) {
-			if ((e.which == 10 || e.which == 13) && e.ctrlKey && this.canSend) {
+			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
 				this.send();
 			}
 		},
