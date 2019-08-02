@@ -19,7 +19,7 @@
 				<a @click="addVisibleUser">{{ $t('@.post-form.add-visible-user') }}</a>
 			</div>
 			<div class="local-only" v-if="localOnly === true">{{ $t('@.post-form.local-only-message') }}</div>
-			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.cw-placeholder')" v-autocomplete="{ model: 'cw' }">
+			<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.cw-placeholder')" v-autocomplete="{ model: 'cw' }" @keydown="onKeydown">
 			<div class="textarea">
 				<textarea :class="{ with: (files.length != 0 || poll) }"
 					ref="text" v-model="text" :disabled="posting"
