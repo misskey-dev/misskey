@@ -124,7 +124,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/11357794/923ce94cd8c44ba788ee931907881839/1.png?token-time=2145916800&token-hash=9nEQje_eMvUjq9a7L3uBqW-MQbS-rRMaMgd7UYVoFNM%3D" alt="mydarkstar" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/17866454" alt="sikyosyounin" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5881381/6235ca5d3fb04c8e95ef5b4ff2abcc18/3.png?token-time=2145916800&token-hash=KjfQL8nf3AIf6WqzLshBYAyX44piAqOAZiYXgZS_H6A%3D" alt="YUKIMOCHI" width="100"></td>
-<td><img src="https://c8.patreon.com/2/200/17463605" alt="Sampot" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/19356899/496b4681d33b4520bd7688e0fd19c04d/2.jpeg?token-time=2145916800&token-hash=_sTj3dUBOhn9qwiJ7F19Qd-yWWfUqJC_0jG1h0agEqQ%3D" alt="sheeta.s" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/osapon">osapon</a></td>
@@ -133,7 +132,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/mydarkstar">mydarkstar</a></td>
 <td><a href="https://www.patreon.com/user?u=17866454">sikyosyounin</a></td>
 <td><a href="https://www.patreon.com/yukimochi">YUKIMOCHI</a></td>
-<td><a href="https://www.patreon.com/user?u=17463605">Sampot</a></td>
 <td><a href="https://www.patreon.com/user?u=19356899">sheeta.s</a></td>
 </tr></table>
 <table><tr>
@@ -169,7 +167,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Fri, 02 Aug 2019 12:22:07 UTC
+**Last updated:** Fri, 02 Aug 2019 14:09:08 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
