@@ -35,10 +35,13 @@ common:
   signout: "Odhlásit"
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
+  signin-required: "Přihlašte se, prosím"
+  notification-type: "Typy oznámení"
   notification-types:
     all: "Všechny"
     pollVote: "Hlasy"
     follow: "Sledovaní"
+    receiveFollowRequest: "Žádost o sledování"
     reply: "Odpovědi"
     quote: "Citace"
     renote: "Renotovat"
