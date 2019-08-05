@@ -28,6 +28,7 @@ common:
   signin: "Zaloguj się"
   signup: "Rejestracja"
   signout: "Wyloguj się"
+  delete-confirm: "Czy na pewno chcesz usunąć ten wpis?"
   notification-types:
     all: "Wszyscy"
     follow: "Śledzeni"
