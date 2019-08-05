@@ -36,6 +36,7 @@ common:
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
   fetching-as-ap-object: "Inquiring to fediverse"
   unfollow-confirm: "Do you want to unfollow {name}?"
+  delete-confirm: "Are you sure you want to delete this post?"
   signin-required: "Please Log In"
   notification-type: "Notification Type"
   notification-types:
