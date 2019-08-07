@@ -546,7 +546,6 @@ common/views/components/note-menu.vue:
   delete: "删除"
   delete-confirm: "确定删除这个投稿吗?"
   delete-and-edit: "删除和编辑"
-  delete-and-edit-confirm: "要删除此帖并再次编辑吗？对此帖的所有回应，转推和回复也将被删除。"
   remote: "显示原始投稿"
   pin-limit-exceeded: "无法置顶更多了。"
 common/views/components/user-menu.vue:
