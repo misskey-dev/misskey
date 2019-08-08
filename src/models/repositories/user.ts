@@ -145,6 +145,8 @@ export class UserRepository extends Repository<User> {
 				bannerColor: user.bannerColor,
 				isLocked: user.isLocked,
 				isModerator: user.isModerator || falsy,
+				isSilenced: user.isSilenced || falsy,
+				isSuspended: user.isSuspended || falsy,
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
