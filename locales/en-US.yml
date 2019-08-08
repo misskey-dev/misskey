@@ -30,7 +30,7 @@ common:
   customize-home: "Customize home layout"
   featured-notes: "Featured notes"
   dark-mode: "Dark Mode"
-  signin: "Log In"
+  signin: "Login"
   signup: "Sign up"
   signout: "Logout"
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
