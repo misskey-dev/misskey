@@ -67,9 +67,9 @@ export class SonicDriver extends SearchClientBase {
 	}
 	public async disconnect() {
 		return await Promise.all([
-		       this._searchClient.close(),
-		       this._ingestClient.close(),
-	       ]);
+			this._searchClient.close(),
+			this._ingestClient.close(),
+		]);
 	}
 
 	public search(
