@@ -37,7 +37,7 @@ common:
   fetching-as-ap-object: "Inquiring to fediverse"
   unfollow-confirm: "Do you want to unfollow {name}?"
   delete-confirm: "Are you sure you want to delete this post?"
-  signin-required: "Please Log In"
+  signin-required: "Please login"
   notification-type: "Notification Type"
   notification-types:
     all: "All"
