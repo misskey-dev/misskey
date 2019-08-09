@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { NoteFavorite } from '../entities/note-favorite';
-import { Notes } from '..';
-import { ensure } from '../../prelude/ensure';
+import { NoteFavorite } from '~/models/entities/note-favorite';
+import { Notes } from '~/models';
+import { ensure } from '~/prelude/ensure';
 
 @EntityRepository(NoteFavorite)
 export class NoteFavoriteRepository extends Repository<NoteFavorite> {

@@ -2,10 +2,10 @@ import * as cluster from 'cluster';
 import * as os from 'os';
 import chalk from 'chalk';
 import * as dateformat from 'dateformat';
-import { program } from '../argv';
+import { program } from '~/argv';
 import { getRepository } from 'typeorm';
-import { Log } from '../models/entities/log';
-import { genId } from '../misc/gen-id';
+import { Log } from '~/models/entities/log';
+import { genId } from '~/misc/gen-id';
 
 type Domain = {
 	name: string;

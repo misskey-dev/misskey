@@ -1,7 +1,7 @@
-import { IRemoteUser } from '../../../../models/entities/user';
-import { ILike } from '../../type';
-import deleteReaction from '../../../../services/note/reaction/delete';
-import { Notes } from '../../../../models';
+import { IRemoteUser } from '~/models/entities/user';
+import { ILike } from '~/remote/activitypub/type';
+import deleteReaction from '~/services/note/reaction/delete';
+import { Notes } from '~/models';
 
 /**
  * Process Undo.Like activity

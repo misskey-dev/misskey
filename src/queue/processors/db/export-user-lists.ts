@@ -2,11 +2,11 @@ import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 
-import { queueLogger } from '../../logger';
-import addFile from '../../../services/drive/add-file';
+import { queueLogger } from '~/queue/logger';
+import addFile from '~/services/drive/add-file';
 import dateFormat = require('dateformat');
-import { getFullApAccount } from '../../../misc/convert-host';
-import { Users, UserLists, UserListJoinings } from '../../../models';
+import { getFullApAccount } from '~/misc/convert-host';
+import { Users, UserLists, UserListJoinings } from '~/models';
 import { In } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('export-user-lists');

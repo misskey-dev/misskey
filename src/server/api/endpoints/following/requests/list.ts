@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { FollowRequests } from '../../../../../models';
+import define from '~/server/api/define';
+import { FollowRequests } from '~/models';
 
 export const meta = {
 	desc: {

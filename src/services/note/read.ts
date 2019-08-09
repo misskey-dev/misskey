@@ -1,7 +1,7 @@
-import { publishMainStream } from '../stream';
-import { Note } from '../../models/entities/note';
-import { User } from '../../models/entities/user';
-import { NoteUnreads } from '../../models';
+import { publishMainStream } from '~/services/stream';
+import { Note } from '~/models/entities/note';
+import { User } from '~/models/entities/user';
+import { NoteUnreads } from '~/models';
 
 /**
  * Mark a note as read

@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { getRemoteUser } from '../../common/getters';
-import { updatePerson } from '../../../../remote/activitypub/models/person';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { getRemoteUser } from '~/server/api/common/getters';
+import { updatePerson } from '~/remote/activitypub/models/person';
 
 export const meta = {
 	desc: {

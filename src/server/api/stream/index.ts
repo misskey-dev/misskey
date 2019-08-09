@@ -1,14 +1,14 @@
 import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
-import { readNotification } from '../common/read-notification';
-import call from '../call';
-import readNote from '../../../services/note/read';
+import { readNotification } from '~/server/api/common/read-notification';
+import call from '~/server/api/call';
+import readNote from '~/services/note/read';
 import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
-import { User } from '../../../models/entities/user';
-import { App } from '../../../models/entities/app';
-import { Users, Followings, Mutings } from '../../../models';
+import { User } from '~/models/entities/user';
+import { App } from '~/models/entities/app';
+import { Users, Followings, Mutings } from '~/models';
 
 /**
  * Main stream connection

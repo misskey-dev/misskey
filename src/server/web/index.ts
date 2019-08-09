@@ -12,16 +12,16 @@ import * as views from 'koa-views';
 
 import docs from './docs';
 import packFeed from './feed';
-import { fetchMeta } from '../../misc/fetch-meta';
-import * as pkg from '../../../package.json';
-import { genOpenapiSpec } from '../api/openapi/gen-spec';
-import config from '../../config';
-import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
-import parseAcct from '../../misc/acct/parse';
-import getNoteSummary from '../../misc/get-note-summary';
-import { ensure } from '../../prelude/ensure';
+import { fetchMeta } from '~/misc/fetch-meta';
+import * as pkg from '~/package.json';
+import { genOpenapiSpec } from '~/server/api/openapi/gen-spec';
+import config from '~/config';
+import { Users, Notes, Emojis, UserProfiles, Pages } from '~/models';
+import parseAcct from '~/misc/acct/parse';
+import getNoteSummary from '~/misc/get-note-summary';
+import { ensure } from '~/prelude/ensure';
 import { getConnection } from 'typeorm';
-import redis from '../../db/redis';
+import redis from '~/db/redis';
 
 const client = `${__dirname}/../../client/`;
 

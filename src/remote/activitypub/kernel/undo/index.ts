@@ -1,10 +1,10 @@
-import { IRemoteUser } from '../../../../models/entities/user';
-import { IUndo, IFollow, IBlock, ILike } from '../../type';
+import { IRemoteUser } from '~/models/entities/user';
+import { IUndo, IFollow, IBlock, ILike } from '~/remote/activitypub/type';
 import unfollow from './follow';
 import unblock from './block';
 import undoLike from './like';
-import Resolver from '../../resolver';
-import { apLogger } from '../../logger';
+import Resolver from '~/remote/activitypub/resolver';
+import { apLogger } from '~/remote/activitypub/logger';
 
 const logger = apLogger;
 

@@ -1,7 +1,7 @@
-import { IRemoteUser } from '../../../../models/entities/user';
-import { IUpdate, IObject } from '../../type';
-import { apLogger } from '../../logger';
-import { updateQuestion } from '../../models/question';
+import { IRemoteUser } from '~/models/entities/user';
+import { IUpdate, IObject } from '~/remote/activitypub/type';
+import { apLogger } from '~/remote/activitypub/logger';
+import { updateQuestion } from '~/remote/activitypub/models/question';
 
 /**
  * Updateアクティビティを捌きます

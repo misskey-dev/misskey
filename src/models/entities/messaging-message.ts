@@ -1,7 +1,7 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { DriveFile } from './drive-file';
-import { id } from '../id';
+import { id } from '~/models/id';
 import { UserGroup } from './user-group';
 
 @Entity()

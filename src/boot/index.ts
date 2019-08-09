@@ -2,8 +2,8 @@ import * as cluster from 'cluster';
 import chalk from 'chalk';
 import Xev from 'xev';
 
-import Logger from '../services/logger';
-import { program } from '../argv';
+import Logger from '~/services/logger';
+import { program } from '~/argv';
 
 // for typeorm
 import 'reflect-metadata';

@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { DriveFile } from '../../../../../models/entities/drive-file';
-import { DriveFiles } from '../../../../../models';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { DriveFile } from '~/models/entities/drive-file';
+import { DriveFiles } from '~/models';
 
 export const meta = {
 	stability: 'stable',

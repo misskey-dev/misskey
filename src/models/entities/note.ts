@@ -2,7 +2,7 @@ import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typ
 import { User } from './user';
 import { App } from './app';
 import { DriveFile } from './drive-file';
-import { id } from '../id';
+import { id } from '~/models/id';
 
 @Entity()
 export class Note {

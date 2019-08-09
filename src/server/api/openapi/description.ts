@@ -1,8 +1,8 @@
-import config from '../../../config';
-import endpoints from '../endpoints';
-import * as locale from '../../../../locales/';
-import { fromEntries } from '../../../prelude/array';
-import { kinds as kindsList } from '../kinds';
+import config from '~/config';
+import endpoints from '~/server/api/endpoints';
+import * as locale from '%';
+import { fromEntries } from '~/prelude/array';
+import { kinds as kindsList } from '~/server/api/kinds';
 
 export interface IKindInfo {
 	endpoints: string[];

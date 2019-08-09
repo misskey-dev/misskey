@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
-import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
-import Channel from '../channel';
-import { fetchMeta } from '../../../../misc/fetch-meta';
-import { Notes } from '../../../../models';
-import { PackedNote } from '../../../../models/repositories/note';
+import shouldMuteThisNote from '~/misc/should-mute-this-note';
+import Channel from '~/server/api/stream/channel';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { Notes } from '~/models';
+import { PackedNote } from '~/models/repositories/note';
 
 export default class extends Channel {
 	public readonly chName = 'globalTimeline';

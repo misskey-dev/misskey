@@ -1,5 +1,5 @@
-import define from '../../define';
-import { createExportMuteJob } from '../../../../queue';
+import define from '~/server/api/define';
+import { createExportMuteJob } from '~/queue';
 import ms = require('ms');
 
 export const meta = {

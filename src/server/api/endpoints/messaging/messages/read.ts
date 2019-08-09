@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { MessagingMessages } from '../../../../../models';
-import { readUserMessagingMessage, readGroupMessagingMessage } from '../../../common/read-messaging-message';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { MessagingMessages } from '~/models';
+import { readUserMessagingMessage, readGroupMessagingMessage } from '~/server/api/common/read-messaging-message';
 
 export const meta = {
 	desc: {

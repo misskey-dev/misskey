@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import deleteNote from '../../../../services/note/delete';
-import define from '../../define';
+import { ID } from '~/misc/cafy-id';
+import deleteNote from '~/services/note/delete';
+import define from '~/server/api/define';
 import * as ms from 'ms';
-import { getNote } from '../../common/getters';
-import { ApiError } from '../../error';
-import { Notes } from '../../../../models';
+import { getNote } from '~/server/api/common/getters';
+import { ApiError } from '~/server/api/error';
+import { Notes } from '~/models';
 
 export const meta = {
 	desc: {

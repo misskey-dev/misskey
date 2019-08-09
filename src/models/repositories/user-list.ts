@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserList } from '../entities/user-list';
-import { ensure } from '../../prelude/ensure';
-import { UserListJoinings } from '..';
-import { SchemaType } from '../../misc/schema';
+import { UserList } from '~/models/entities/user-list';
+import { ensure } from '~/prelude/ensure';
+import { UserListJoinings } from '~/models';
+import { SchemaType } from '~/misc/schema';
 
 export type PackedUserList = SchemaType<typeof packedUserListSchema>;
 

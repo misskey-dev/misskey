@@ -1,5 +1,5 @@
-import define from '../define';
-import { Users } from '../../../models';
+import define from '~/server/api/define';
+import { Users } from '~/models';
 
 export const meta = {
 	stability: 'stable',

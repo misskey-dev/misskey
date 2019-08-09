@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import define from '../../../define';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
 import * as ms from 'ms';
-import deleteReaction from '../../../../../services/note/reaction/delete';
-import { getNote } from '../../../common/getters';
-import { ApiError } from '../../../error';
+import deleteReaction from '~/services/note/reaction/delete';
+import { getNote } from '~/server/api/common/getters';
+import { ApiError } from '~/server/api/error';
 
 export const meta = {
 	desc: {

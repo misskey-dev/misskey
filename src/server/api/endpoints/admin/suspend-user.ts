@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import deleteFollowing from '../../../../services/following/delete';
-import { Users, Followings } from '../../../../models';
-import { User } from '../../../../models/entities/user';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
-import { doPostSuspend } from '../../../../services/suspend-user';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import deleteFollowing from '~/services/following/delete';
+import { Users, Followings } from '~/models';
+import { User } from '~/models/entities/user';
+import { insertModerationLog } from '~/services/insert-moderation-log';
+import { doPostSuspend } from '~/services/suspend-user';
 
 export const meta = {
 	desc: {

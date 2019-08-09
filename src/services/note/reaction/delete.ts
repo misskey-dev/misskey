@@ -1,12 +1,12 @@
-import { publishNoteStream } from '../../stream';
-import renderLike from '../../../remote/activitypub/renderer/like';
-import renderUndo from '../../../remote/activitypub/renderer/undo';
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import { deliver } from '../../../queue';
-import { IdentifiableError } from '../../../misc/identifiable-error';
-import { User } from '../../../models/entities/user';
-import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, Notes } from '../../../models';
+import { publishNoteStream } from '~/services/stream';
+import renderLike from '~/remote/activitypub/renderer/like';
+import renderUndo from '~/remote/activitypub/renderer/undo';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import { deliver } from '~/queue';
+import { IdentifiableError } from '~/misc/identifiable-error';
+import { User } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
+import { NoteReactions, Users, Notes } from '~/models';
 
 export default async (user: User, note: Note) => {
 	// if already unreacted

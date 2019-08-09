@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { Notes } from '../../../../models';
-import { generateMuteQuery } from '../../common/generate-mute-query';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
+import { generateVisibilityQuery } from '~/server/api/common/generate-visibility-query';
+import { Notes } from '~/models';
+import { generateMuteQuery } from '~/server/api/common/generate-mute-query';
 import { Brackets } from 'typeorm';
 
 export const meta = {

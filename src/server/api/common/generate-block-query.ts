@@ -1,5 +1,5 @@
-import { User } from '../../../models/entities/user';
-import { Blockings } from '../../../models';
+import { User } from '~/models/entities/user';
+import { Blockings } from '~/models';
 import { SelectQueryBuilder } from 'typeorm';
 
 export function generateBlockQueryForUsers(q: SelectQueryBuilder<any>, me: User) {

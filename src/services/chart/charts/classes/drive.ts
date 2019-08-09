@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
-import { DriveFiles } from '../../../../models';
+import Chart, { Obj, DeepPartial } from '~/services/chart/core';
+import { SchemaType } from '~/misc/schema';
+import { DriveFiles } from '~/models';
 import { Not, IsNull } from 'typeorm';
-import { DriveFile } from '../../../../models/entities/drive-file';
-import { name, schema } from '../schemas/drive';
+import { DriveFile } from '~/models/entities/drive-file';
+import { name, schema } from '~/services/chart/charts/schemas/drive';
 
 type DriveLog = SchemaType<typeof schema>;
 

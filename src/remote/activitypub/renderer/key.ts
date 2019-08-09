@@ -1,6 +1,6 @@
-import config from '../../../config';
-import { ILocalUser } from '../../../models/entities/user';
-import { UserKeypair } from '../../../models/entities/user-keypair';
+import config from '~/config';
+import { ILocalUser } from '~/models/entities/user';
+import { UserKeypair } from '~/models/entities/user-keypair';
 
 export default (user: ILocalUser, key: UserKeypair) => ({
 	id: `${config.url}/users/${user.id}/publickey`,

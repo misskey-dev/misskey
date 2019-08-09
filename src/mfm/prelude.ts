@@ -1,5 +1,5 @@
-import { Tree } from '../prelude/tree';
-import * as T from '../prelude/tree';
+import { Tree } from '~/prelude/tree';
+import * as T from '~/prelude/tree';
 
 type Node<T, P> = { type: T, props: P };
 

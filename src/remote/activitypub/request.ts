@@ -3,14 +3,14 @@ import { sign } from 'http-signature';
 import * as crypto from 'crypto';
 import * as cache from 'lookup-dns-cache';
 
-import config from '../../config';
-import { ILocalUser } from '../../models/entities/user';
-import { publishApLogStream } from '../../services/stream';
+import config from '~/config';
+import { ILocalUser } from '~/models/entities/user';
+import { publishApLogStream } from '~/services/stream';
 import { apLogger } from './logger';
-import { UserKeypairs, Instances } from '../../models';
-import { fetchMeta } from '../../misc/fetch-meta';
-import { toPuny } from '../../misc/convert-host';
-import { ensure } from '../../prelude/ensure';
+import { UserKeypairs, Instances } from '~/models';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { toPuny } from '~/misc/convert-host';
+import { ensure } from '~/prelude/ensure';
 import * as httpsProxyAgent from 'https-proxy-agent';
 
 export const logger = apLogger.createSubLogger('deliver');

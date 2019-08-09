@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { ID } from '../../../../../misc/cafy-id';
-import { Emojis } from '../../../../../models';
+import define from '~/server/api/define';
+import { ID } from '~/misc/cafy-id';
+import { Emojis } from '~/models';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '../../../../../services/insert-moderation-log';
+import { insertModerationLog } from '~/services/insert-moderation-log';
 
 export const meta = {
 	desc: {

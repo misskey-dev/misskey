@@ -1,5 +1,5 @@
-import define from '../../define';
-import { createExportFollowingJob } from '../../../../queue';
+import define from '~/server/api/define';
+import { createExportFollowingJob } from '~/queue';
 import ms = require('ms');
 
 export const meta = {

@@ -1,14 +1,14 @@
-import { publishNoteStream } from '../stream';
-import renderDelete from '../../remote/activitypub/renderer/delete';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import { deliver } from '../../queue';
-import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import config from '../../config';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import { User } from '../../models/entities/user';
-import { Note } from '../../models/entities/note';
-import { Notes, Users, Followings, Instances } from '../../models';
-import { notesChart, perUserNotesChart, instanceChart } from '../chart';
+import { publishNoteStream } from '~/services/stream';
+import renderDelete from '~/remote/activitypub/renderer/delete';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import { deliver } from '~/queue';
+import renderTombstone from '~/remote/activitypub/renderer/tombstone';
+import config from '~/config';
+import { registerOrFetchInstanceDoc } from '~/services/register-or-fetch-instance-doc';
+import { User } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
+import { Notes, Users, Followings, Instances } from '~/models';
+import { notesChart, perUserNotesChart, instanceChart } from '~/services/chart';
 
 /**
  * 投稿を削除します。

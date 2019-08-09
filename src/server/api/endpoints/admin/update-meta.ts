@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../define';
+import define from '~/server/api/define';
 import { getConnection } from 'typeorm';
-import { Meta } from '../../../../models/entities/meta';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { Meta } from '~/models/entities/meta';
+import { insertModerationLog } from '~/services/insert-moderation-log';
 
 export const meta = {
 	desc: {

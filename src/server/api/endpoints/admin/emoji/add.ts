@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { detectUrlMine } from '../../../../../misc/detect-url-mine';
-import { Emojis } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import define from '~/server/api/define';
+import { detectUrlMine } from '~/misc/detect-url-mine';
+import { Emojis } from '~/models';
+import { genId } from '~/misc/gen-id';
 import { getConnection } from 'typeorm';
-import { insertModerationLog } from '../../../../../services/insert-moderation-log';
+import { insertModerationLog } from '~/services/insert-moderation-log';
 
 export const meta = {
 	desc: {

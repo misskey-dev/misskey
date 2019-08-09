@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { MessagingMessage } from '../entities/messaging-message';
-import { Users, DriveFiles, UserGroups } from '..';
-import { ensure } from '../../prelude/ensure';
-import { SchemaType } from '../../misc/schema';
+import { MessagingMessage } from '~/models/entities/messaging-message';
+import { Users, DriveFiles, UserGroups } from '~/models';
+import { ensure } from '~/prelude/ensure';
+import { SchemaType } from '~/misc/schema';
 
 export type PackedMessagingMessage = SchemaType<typeof packedMessagingMessageSchema>;
 

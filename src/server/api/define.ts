@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import { ILocalUser } from '../../models/entities/user';
+import { ILocalUser } from '~/models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
-import { App } from '../../models/entities/app';
-import { SchemaType } from '../../misc/schema';
+import { App } from '~/models/entities/app';
+import { SchemaType } from '~/misc/schema';
 
 type Params<T extends IEndpointMeta> = {
 	[P in keyof T['params']]: NonNullable<T['params']>[P]['transform'] extends Function

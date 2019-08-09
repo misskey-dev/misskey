@@ -1,6 +1,6 @@
 import { JoinColumn, ManyToOne, Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { User } from './user';
-import { id } from '../id';
+import { id } from '~/models/id';
 
 @Entity()
 export class DriveFolder {

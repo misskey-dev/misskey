@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import { addPinned } from '../../../../services/i/pin';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Users } from '../../../../models';
+import { ID } from '~/misc/cafy-id';
+import { addPinned } from '~/services/i/pin';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { Users } from '~/models';
 
 export const meta = {
 	stability: 'stable',

@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../define';
-import { generateMuteQuery } from '../../common/generate-mute-query';
-import { Notes } from '../../../../models';
+import define from '~/server/api/define';
+import { generateMuteQuery } from '~/server/api/common/generate-mute-query';
+import { Notes } from '~/models';
 
 export const meta = {
 	desc: {

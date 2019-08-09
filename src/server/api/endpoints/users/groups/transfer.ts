@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
-import { UserGroups, UserGroupJoinings } from '../../../../../models';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
+import { UserGroups, UserGroupJoinings } from '~/models';
 
 export const meta = {
 	desc: {

@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import define from '../define';
-import { ID } from '../../../misc/cafy-id';
-import { publishMainStream } from '../../../services/stream';
-import { Users, Pages } from '../../../models';
-import { ApiError } from '../error';
+import define from '~/server/api/define';
+import { ID } from '~/misc/cafy-id';
+import { publishMainStream } from '~/services/stream';
+import { Users, Pages } from '~/models';
+import { ApiError } from '~/server/api/error';
 
 export const meta = {
 	requireCredential: true,

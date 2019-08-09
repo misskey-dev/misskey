@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Channel from '../channel';
+import Channel from '~/server/api/stream/channel';
 
 export default class extends Channel {
 	public readonly chName = 'apLog';

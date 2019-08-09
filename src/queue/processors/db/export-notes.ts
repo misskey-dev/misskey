@@ -2,14 +2,14 @@ import * as Bull from 'bull';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 
-import { queueLogger } from '../../logger';
-import addFile from '../../../services/drive/add-file';
+import { queueLogger } from '~/queue/logger';
+import addFile from '~/services/drive/add-file';
 import dateFormat = require('dateformat');
-import { Users, Notes, Polls } from '../../../models';
+import { Users, Notes, Polls } from '~/models';
 import { MoreThan } from 'typeorm';
-import { Note } from '../../../models/entities/note';
-import { Poll } from '../../../models/entities/poll';
-import { ensure } from '../../../prelude/ensure';
+import { Note } from '~/models/entities/note';
+import { Poll } from '~/models/entities/poll';
+import { ensure } from '~/prelude/ensure';
 
 const logger = queueLogger.createSubLogger('export-notes');
 

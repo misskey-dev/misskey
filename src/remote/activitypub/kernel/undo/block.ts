@@ -1,9 +1,9 @@
-import config from '../../../../config';
-import { IBlock } from '../../type';
-import unblock from '../../../../services/blocking/delete';
-import { apLogger } from '../../logger';
-import { IRemoteUser } from '../../../../models/entities/user';
-import { Users } from '../../../../models';
+import config from '~/config';
+import { IBlock } from '~/remote/activitypub/type';
+import unblock from '~/services/blocking/delete';
+import { apLogger } from '~/remote/activitypub/logger';
+import { IRemoteUser } from '~/models/entities/user';
+import { Users } from '~/models';
 
 const logger = apLogger;
 

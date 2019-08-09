@@ -1,6 +1,6 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { User } from '../../user';
-import { id } from '../../../id';
+import { User } from '~/models/entities/user';
+import { id } from '~/models/id';
 
 @Entity()
 export class ReversiMatching {

@@ -1,20 +1,20 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import watch from '../../../../../services/note/watch';
-import { publishNoteStream } from '../../../../../services/stream';
-import { createNotification } from '../../../../../services/create-notification';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getNote } from '../../../common/getters';
-import { deliver } from '../../../../../queue';
-import { renderActivity } from '../../../../../remote/activitypub/renderer';
-import renderVote from '../../../../../remote/activitypub/renderer/vote';
-import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
-import { PollVotes, NoteWatchings, Users, Polls, UserProfiles } from '../../../../../models';
+import { ID } from '~/misc/cafy-id';
+import watch from '~/services/note/watch';
+import { publishNoteStream } from '~/services/stream';
+import { createNotification } from '~/services/create-notification';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getNote } from '~/server/api/common/getters';
+import { deliver } from '~/queue';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import renderVote from '~/remote/activitypub/renderer/vote';
+import { deliverQuestionUpdate } from '~/services/note/polls/update';
+import { PollVotes, NoteWatchings, Users, Polls, UserProfiles } from '~/models';
 import { Not } from 'typeorm';
-import { IRemoteUser } from '../../../../../models/entities/user';
-import { genId } from '../../../../../misc/gen-id';
-import { ensure } from '../../../../../prelude/ensure';
+import { IRemoteUser } from '~/models/entities/user';
+import { genId } from '~/misc/gen-id';
+import { ensure } from '~/prelude/ensure';
 
 export const meta = {
 	desc: {

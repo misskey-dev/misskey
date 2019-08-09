@@ -2,10 +2,10 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
-import config from '../../../../../config';
-import define from '../../../define';
-import { UserProfiles } from '../../../../../models';
-import { ensure } from '../../../../../prelude/ensure';
+import config from '~/config';
+import define from '~/server/api/define';
+import { UserProfiles } from '~/models';
+import { ensure } from '~/prelude/ensure';
 
 export const meta = {
 	requireCredential: true,

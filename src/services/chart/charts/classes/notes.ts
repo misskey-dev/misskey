@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
-import { Notes } from '../../../../models';
+import Chart, { Obj, DeepPartial } from '~/services/chart/core';
+import { SchemaType } from '~/misc/schema';
+import { Notes } from '~/models';
 import { Not, IsNull } from 'typeorm';
-import { Note } from '../../../../models/entities/note';
-import { name, schema } from '../schemas/notes';
+import { Note } from '~/models/entities/note';
+import { name, schema } from '~/services/chart/charts/schemas/notes';
 
 type NotesLog = SchemaType<typeof schema>;
 

@@ -1,9 +1,9 @@
 import * as Bull from 'bull';
-import request from '../../remote/activitypub/request';
-import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import Logger from '../../services/logger';
-import { Instances } from '../../models';
-import { instanceChart } from '../../services/chart';
+import request from '~/remote/activitypub/request';
+import { registerOrFetchInstanceDoc } from '~/services/register-or-fetch-instance-doc';
+import Logger from '~/services/logger';
+import { Instances } from '~/models';
+import { instanceChart } from '~/services/chart';
 
 const logger = new Logger('deliver');
 

@@ -1,20 +1,20 @@
-import { publishMainStream } from '../stream';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import renderFollow from '../../remote/activitypub/renderer/follow';
-import renderAccept from '../../remote/activitypub/renderer/accept';
-import renderReject from '../../remote/activitypub/renderer/reject';
-import { deliver } from '../../queue';
+import { publishMainStream } from '~/services/stream';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import renderFollow from '~/remote/activitypub/renderer/follow';
+import renderAccept from '~/remote/activitypub/renderer/accept';
+import renderReject from '~/remote/activitypub/renderer/reject';
+import { deliver } from '~/queue';
 import createFollowRequest from './requests/create';
-import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import Logger from '../logger';
-import { IdentifiableError } from '../../misc/identifiable-error';
-import { User } from '../../models/entities/user';
-import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '../../models';
-import { instanceChart, perUserFollowingChart } from '../chart';
-import { genId } from '../../misc/gen-id';
-import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { ensure } from '../../prelude/ensure';
+import { registerOrFetchInstanceDoc } from '~/services/register-or-fetch-instance-doc';
+import Logger from '~/services/logger';
+import { IdentifiableError } from '~/misc/identifiable-error';
+import { User } from '~/models/entities/user';
+import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '~/models';
+import { instanceChart, perUserFollowingChart } from '~/services/chart';
+import { genId } from '~/misc/gen-id';
+import { createNotification } from '~/services/create-notification';
+import { isDuplicateKeyValueError } from '~/misc/is-duplicate-key-value-error';
+import { ensure } from '~/prelude/ensure';
 
 const logger = new Logger('following/create');
 

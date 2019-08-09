@@ -1,8 +1,8 @@
-import Resolver from '../../resolver';
+import Resolver from '~/remote/activitypub/resolver';
 import deleteNote from './note';
-import { IRemoteUser } from '../../../../models/entities/user';
-import { IDelete, getApId, validPost } from '../../type';
-import { apLogger } from '../../logger';
+import { IRemoteUser } from '~/models/entities/user';
+import { IDelete, getApId, validPost } from '~/remote/activitypub/type';
+import { apLogger } from '~/remote/activitypub/logger';
 
 /**
  * 削除アクティビティを捌きます

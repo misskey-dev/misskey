@@ -6,7 +6,7 @@ import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 import { EventEmitter } from 'events';
-import config from '../../config';
+import config from '~/config';
 
 module.exports = (server: http.Server) => {
 	// Init websocket server

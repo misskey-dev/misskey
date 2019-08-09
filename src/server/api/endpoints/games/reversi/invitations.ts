@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { ReversiMatchings } from '../../../../../models';
+import define from '~/server/api/define';
+import { ReversiMatchings } from '~/models';
 
 export const meta = {
 	tags: ['games'],

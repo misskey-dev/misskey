@@ -1,9 +1,9 @@
 import * as ms from 'ms';
 import $ from 'cafy';
-import define from '../../define';
-import { Users, Followings } from '../../../../models';
-import { generateMuteQueryForUsers } from '../../common/generate-mute-query';
-import { generateBlockQueryForUsers } from '../../common/generate-block-query';
+import define from '~/server/api/define';
+import { Users, Followings } from '~/models';
+import { generateMuteQueryForUsers } from '~/server/api/common/generate-mute-query';
+import { generateBlockQueryForUsers } from '~/server/api/common/generate-block-query';
 
 export const meta = {
 	desc: {

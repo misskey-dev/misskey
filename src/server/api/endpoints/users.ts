@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../define';
-import { Users } from '../../../models';
-import { generateMuteQueryForUsers } from '../common/generate-mute-query';
+import define from '~/server/api/define';
+import { Users } from '~/models';
+import { generateMuteQueryForUsers } from '~/server/api/common/generate-mute-query';
 
 export const meta = {
 	tags: ['users'],

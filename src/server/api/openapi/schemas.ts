@@ -1,20 +1,20 @@
-import { packedUserSchema } from '../../../models/repositories/user';
-import { Schema } from '../../../misc/schema';
-import { packedNoteSchema } from '../../../models/repositories/note';
-import { packedUserListSchema } from '../../../models/repositories/user-list';
-import { packedAppSchema } from '../../../models/repositories/app';
-import { packedMessagingMessageSchema } from '../../../models/repositories/messaging-message';
-import { packedNotificationSchema } from '../../../models/repositories/notification';
-import { packedDriveFileSchema } from '../../../models/repositories/drive-file';
-import { packedDriveFolderSchema } from '../../../models/repositories/drive-folder';
-import { packedFollowingSchema } from '../../../models/repositories/following';
-import { packedMutingSchema } from '../../../models/repositories/muting';
-import { packedBlockingSchema } from '../../../models/repositories/blocking';
-import { packedNoteReactionSchema } from '../../../models/repositories/note-reaction';
-import { packedHashtagSchema } from '../../../models/repositories/hashtag';
-import { packedPageSchema } from '../../../models/repositories/page';
-import { packedUserGroupSchema } from '../../../models/repositories/user-group';
-import { packedNoteFavoriteSchema } from '../../../models/repositories/note-favorite';
+import { packedUserSchema } from '~/models/repositories/user';
+import { Schema } from '~/misc/schema';
+import { packedNoteSchema } from '~/models/repositories/note';
+import { packedUserListSchema } from '~/models/repositories/user-list';
+import { packedAppSchema } from '~/models/repositories/app';
+import { packedMessagingMessageSchema } from '~/models/repositories/messaging-message';
+import { packedNotificationSchema } from '~/models/repositories/notification';
+import { packedDriveFileSchema } from '~/models/repositories/drive-file';
+import { packedDriveFolderSchema } from '~/models/repositories/drive-folder';
+import { packedFollowingSchema } from '~/models/repositories/following';
+import { packedMutingSchema } from '~/models/repositories/muting';
+import { packedBlockingSchema } from '~/models/repositories/blocking';
+import { packedNoteReactionSchema } from '~/models/repositories/note-reaction';
+import { packedHashtagSchema } from '~/models/repositories/hashtag';
+import { packedPageSchema } from '~/models/repositories/page';
+import { packedUserGroupSchema } from '~/models/repositories/user-group';
+import { packedNoteFavoriteSchema } from '~/models/repositories/note-favorite';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;

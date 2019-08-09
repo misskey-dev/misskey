@@ -1,5 +1,5 @@
-import { Object } from '../type';
-import { IRemoteUser } from '../../../models/entities/user';
+import { Object } from '~/remote/activitypub/type';
+import { IRemoteUser } from '~/models/entities/user';
 import create from './create';
 import performDeleteActivity from './delete';
 import performUpdateActivity from './update';
@@ -12,7 +12,7 @@ import reject from './reject';
 import add from './add';
 import remove from './remove';
 import block from './block';
-import { apLogger } from '../logger';
+import { apLogger } from '~/remote/activitypub/logger';
 
 const self = async (actor: IRemoteUser, activity: Object): Promise<void> => {
 	if (actor.isSuspended) return;

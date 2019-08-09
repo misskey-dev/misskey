@@ -1,10 +1,10 @@
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
-import { Notifications, Mutings } from '../models';
-import { genId } from '../misc/gen-id';
-import { User } from '../models/entities/user';
-import { Note } from '../models/entities/note';
-import { Notification } from '../models/entities/notification';
+import { Notifications, Mutings } from '~/models';
+import { genId } from '~/misc/gen-id';
+import { User } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
+import { Notification } from '~/models/entities/notification';
 
 export async function createNotification(
 	notifieeId: User['id'],

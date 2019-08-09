@@ -1,7 +1,7 @@
 import { IsNull } from 'typeorm';
-import define from '../../../define';
-import { deleteFile } from '../../../../../services/drive/delete-file';
-import { DriveFiles } from '../../../../../models';
+import define from '~/server/api/define';
+import { deleteFile } from '~/services/drive/delete-file';
+import { DriveFiles } from '~/models';
 
 export const meta = {
 	tags: ['admin'],

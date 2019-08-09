@@ -1,11 +1,11 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { DriveFile } from '../entities/drive-file';
-import { Users, DriveFolders } from '..';
-import { User } from '../entities/user';
-import { toPuny } from '../../misc/convert-host';
-import { ensure } from '../../prelude/ensure';
-import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '../../misc/schema';
+import { DriveFile } from '~/models/entities/drive-file';
+import { Users, DriveFolders } from '~/models';
+import { User } from '~/models/entities/user';
+import { toPuny } from '~/misc/convert-host';
+import { ensure } from '~/prelude/ensure';
+import { awaitAll } from '~/prelude/await-all';
+import { SchemaType } from '~/misc/schema';
 
 export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
 

@@ -1,21 +1,21 @@
 import * as Router from 'koa-router';
-import config from '../../config';
+import config from '~/config';
 import $ from 'cafy';
-import { ID } from '../../misc/cafy-id';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
-import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
-import { setResponseType } from '../activitypub';
-import renderNote from '../../remote/activitypub/renderer/note';
-import renderCreate from '../../remote/activitypub/renderer/create';
-import renderAnnounce from '../../remote/activitypub/renderer/announce';
-import { countIf } from '../../prelude/array';
-import * as url from '../../prelude/url';
-import { Users, Notes } from '../../models';
-import { makePaginationQuery } from '../api/common/make-pagination-query';
+import { ID } from '~/misc/cafy-id';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import renderOrderedCollection from '~/remote/activitypub/renderer/ordered-collection';
+import renderOrderedCollectionPage from '~/remote/activitypub/renderer/ordered-collection-page';
+import { setResponseType } from '.';
+import renderNote from '~/remote/activitypub/renderer/note';
+import renderCreate from '~/remote/activitypub/renderer/create';
+import renderAnnounce from '~/remote/activitypub/renderer/announce';
+import { countIf } from '~/prelude/array';
+import * as url from '~/prelude/url';
+import { Users, Notes } from '~/models';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
 import { Brackets } from 'typeorm';
-import { Note } from '../../models/entities/note';
-import { ensure } from '../../prelude/ensure';
+import { Note } from '~/models/entities/note';
+import { ensure } from '~/prelude/ensure';
 
 export default async (ctx: Router.IRouterContext) => {
 	const userId = ctx.params.user;

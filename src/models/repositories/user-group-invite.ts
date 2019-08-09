@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserGroupInvite } from '../entities/user-group-invite';
-import { UserGroups } from '..';
-import { ensure } from '../../prelude/ensure';
+import { UserGroupInvite } from '~/models/entities/user-group-invite';
+import { UserGroups } from '~/models';
+import { ensure } from '~/prelude/ensure';
 
 @EntityRepository(UserGroupInvite)
 export class UserGroupInviteRepository extends Repository<UserGroupInvite> {

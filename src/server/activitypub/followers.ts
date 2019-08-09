@@ -1,14 +1,14 @@
 import * as Router from 'koa-router';
-import config from '../../config';
+import config from '~/config';
 import $ from 'cafy';
-import { ID } from '../../misc/cafy-id';
-import * as url from '../../prelude/url';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
-import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
-import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
-import { setResponseType } from '../activitypub';
-import { Users, Followings } from '../../models';
+import { ID } from '~/misc/cafy-id';
+import * as url from '~/prelude/url';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import renderOrderedCollection from '~/remote/activitypub/renderer/ordered-collection';
+import renderOrderedCollectionPage from '~/remote/activitypub/renderer/ordered-collection-page';
+import renderFollowUser from '~/remote/activitypub/renderer/follow-user';
+import { setResponseType } from '.';
+import { Users, Followings } from '~/models';
 import { LessThan } from 'typeorm';
 
 export default async (ctx: Router.IRouterContext) => {

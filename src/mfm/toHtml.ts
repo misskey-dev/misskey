@@ -1,8 +1,8 @@
 import { JSDOM } from 'jsdom';
-import config from '../config';
-import { intersperse } from '../prelude/array';
+import config from '~/config';
+import { intersperse } from '~/prelude/array';
 import { MfmForest, MfmTree } from './prelude';
-import { IMentionedRemoteUsers } from '../models/entities/note';
+import { IMentionedRemoteUsers } from '~/models/entities/note';
 
 export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
 	if (tokens == null) {

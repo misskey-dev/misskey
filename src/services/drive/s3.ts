@@ -1,6 +1,6 @@
 import * as S3 from 'aws-sdk/clients/s3';
-import config from '../../config';
-import { Meta } from '../../models/entities/meta';
+import config from '~/config';
+import { Meta } from '~/models/entities/meta';
 import * as httpsProxyAgent from 'https-proxy-agent';
 import * as agentkeepalive from 'agentkeepalive';
 

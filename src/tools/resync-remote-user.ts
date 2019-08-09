@@ -1,5 +1,5 @@
-import parseAcct from '../misc/acct/parse';
-import { resolveUser } from '../remote/resolve-user';
+import parseAcct from '~/misc/acct/parse';
+import { resolveUser } from '~/remote/resolve-user';
 
 async function main(acct: string): Promise<any> {
 	const { username, host } = parseAcct(acct);

@@ -4,14 +4,14 @@ import chalk from 'chalk';
 import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
 
-import Logger from '../services/logger';
-import loadConfig from '../config/load';
-import { Config } from '../config/types';
-import { lessThan } from '../prelude/array';
-import * as pkg from '../../package.json';
-import { program } from '../argv';
-import { showMachineInfo } from '../misc/show-machine-info';
-import { initDb } from '../db/postgre';
+import Logger from '~/services/logger';
+import loadConfig from '~/config/load';
+import { Config } from '~/config/types';
+import { lessThan } from '~/prelude/array';
+import * as pkg from '~/package.json';
+import { program } from '~/argv';
+import { showMachineInfo } from '~/misc/show-machine-info';
+import { initDb } from '~/db/postgre';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);

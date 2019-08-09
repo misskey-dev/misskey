@@ -1,6 +1,6 @@
-import { EmojiNode, MfmForest } from '../mfm/prelude';
-import { preorderF } from '../prelude/tree';
-import { unique } from '../prelude/array';
+import { EmojiNode, MfmForest } from '~/mfm/prelude';
+import { preorderF } from '~/prelude/tree';
+import { unique } from '~/prelude/array';
 
 export default function(mfmForest: MfmForest): string[] {
 	const emojiNodes = preorderF(mfmForest).filter(x => x.type === 'emoji') as EmojiNode[];

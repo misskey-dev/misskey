@@ -1,6 +1,6 @@
-import Resolver from '../../resolver';
-import { IRemoteUser } from '../../../../models/entities/user';
-import { createNote, fetchNote } from '../../models/note';
+import Resolver from '~/remote/activitypub/resolver';
+import { IRemoteUser } from '~/models/entities/user';
+import { createNote, fetchNote } from '~/remote/activitypub/models/note';
 
 /**
  * 投稿作成アクティビティを捌きます

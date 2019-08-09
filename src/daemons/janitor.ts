@@ -1,5 +1,5 @@
 const interval = 30 * 60 * 1000;
-import { AttestationChallenges } from '../models';
+import { AttestationChallenges } from '~/models';
 import { LessThan } from 'typeorm';
 
 /**

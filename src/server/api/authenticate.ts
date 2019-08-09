@@ -1,7 +1,7 @@
 import isNativeToken from './common/is-native-token';
-import { User } from '../../models/entities/user';
-import { App } from '../../models/entities/app';
-import { Users, AccessTokens, Apps } from '../../models';
+import { User } from '~/models/entities/user';
+import { App } from '~/models/entities/app';
+import { Users, AccessTokens, Apps } from '~/models';
 
 export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
 	if (token == null) {

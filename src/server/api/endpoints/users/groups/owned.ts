@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { UserGroups } from '../../../../../models';
+import define from '~/server/api/define';
+import { UserGroups } from '~/models';
 
 export const meta = {
 	desc: {

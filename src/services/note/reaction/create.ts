@@ -1,20 +1,20 @@
-import { publishNoteStream } from '../../stream';
-import watch from '../watch';
-import renderLike from '../../../remote/activitypub/renderer/like';
-import { deliver } from '../../../queue';
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import { IdentifiableError } from '../../../misc/identifiable-error';
-import { toDbReaction } from '../../../misc/reaction-lib';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import { User } from '../../../models/entities/user';
-import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';
+import { publishNoteStream } from '~/services/stream';
+import watch from '~/services/note/watch';
+import renderLike from '~/remote/activitypub/renderer/like';
+import { deliver } from '~/queue';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import { IdentifiableError } from '~/misc/identifiable-error';
+import { toDbReaction } from '~/misc/reaction-lib';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { User } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
+import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '~/models';
 import { Not } from 'typeorm';
-import { perUserReactionsChart } from '../../chart';
-import { genId } from '../../../misc/gen-id';
-import { NoteReaction } from '../../../models/entities/note-reaction';
-import { createNotification } from '../../create-notification';
-import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
+import { perUserReactionsChart } from '~/services/chart';
+import { genId } from '~/misc/gen-id';
+import { NoteReaction } from '~/models/entities/note-reaction';
+import { createNotification } from '~/services/create-notification';
+import { isDuplicateKeyValueError } from '~/misc/is-duplicate-key-value-error';
 
 export default async (user: User, note: Note, reaction?: string) => {
 	// Myself

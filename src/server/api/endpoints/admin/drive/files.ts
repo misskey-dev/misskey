@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { fallback } from '../../../../../prelude/symbol';
-import { DriveFiles } from '../../../../../models';
+import define from '~/server/api/define';
+import { fallback } from '~/prelude/symbol';
+import { DriveFiles } from '~/models';
 
 export const meta = {
 	tags: ['admin'],

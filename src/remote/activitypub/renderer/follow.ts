@@ -1,6 +1,6 @@
-import config from '../../../config';
-import { User } from '../../../models/entities/user';
-import { Users } from '../../../models';
+import config from '~/config';
+import { User } from '~/models/entities/user';
+import { Users } from '~/models';
 
 export default (follower: User, followee: User, requestId?: string) => {
 	const follow = {

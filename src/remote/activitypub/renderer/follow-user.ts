@@ -1,7 +1,7 @@
-import config from '../../../config';
-import { Users } from '../../../models';
-import { User } from '../../../models/entities/user';
-import { ensure } from '../../../prelude/ensure';
+import config from '~/config';
+import { Users } from '~/models';
+import { User } from '~/models/entities/user';
+import { ensure } from '~/prelude/ensure';
 
 /**
  * Convert (local|remote)(Follower|Followee)ID to URL

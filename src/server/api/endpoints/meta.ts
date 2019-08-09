@@ -1,12 +1,12 @@
 import $ from 'cafy';
 import * as os from 'os';
-import config from '../../../config';
-import define from '../define';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import * as pkg from '../../../../package.json';
-import { Emojis } from '../../../models';
+import config from '~/config';
+import define from '~/server/api/define';
+import { fetchMeta } from '~/misc/fetch-meta';
+import * as pkg from '~/package.json';
+import { Emojis } from '~/models';
 import { getConnection } from 'typeorm';
-import redis from '../../../db/redis';
+import redis from '~/db/redis';
 
 export const meta = {
 	stability: 'stable',

@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { App } from './app';
-import { id } from '../id';
+import { id } from '~/models/id';
 
 @Entity()
 export class AccessToken {

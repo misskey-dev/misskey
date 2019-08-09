@@ -1,5 +1,5 @@
-import define from '../../define';
-import { createExportNotesJob } from '../../../../queue';
+import define from '~/server/api/define';
+import { createExportNotesJob } from '~/queue';
 import ms = require('ms');
 
 export const meta = {

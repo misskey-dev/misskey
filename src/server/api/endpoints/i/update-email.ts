@@ -1,14 +1,14 @@
 import $ from 'cafy';
-import { publishMainStream } from '../../../../services/stream';
-import define from '../../define';
+import { publishMainStream } from '~/services/stream';
+import define from '~/server/api/define';
 import rndstr from 'rndstr';
-import config from '../../../../config';
+import config from '~/config';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
-import { Users, UserProfiles } from '../../../../models';
-import { ensure } from '../../../../prelude/ensure';
-import { sendEmail } from '../../../../services/send-email';
-import { ApiError } from '../../error';
+import { Users, UserProfiles } from '~/models';
+import { ensure } from '~/prelude/ensure';
+import { sendEmail } from '~/services/send-email';
+import { ApiError } from '~/server/api/error';
 
 export const meta = {
 	requireCredential: true,

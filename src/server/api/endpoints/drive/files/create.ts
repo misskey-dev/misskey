@@ -1,11 +1,11 @@
 import * as ms from 'ms';
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import create from '../../../../../services/drive/add-file';
-import define from '../../../define';
-import { apiLogger } from '../../../logger';
-import { ApiError } from '../../../error';
-import { DriveFiles } from '../../../../../models';
+import { ID } from '~/misc/cafy-id';
+import create from '~/services/drive/add-file';
+import define from '~/server/api/define';
+import { apiLogger } from '~/server/api/logger';
+import { ApiError } from '~/server/api/error';
+import { DriveFiles } from '~/models';
 
 export const meta = {
 	desc: {

@@ -1,9 +1,9 @@
-import renderUpdate from '../../remote/activitypub/renderer/update';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import { deliver } from '../../queue';
-import { Followings, Users } from '../../models';
-import { User } from '../../models/entities/user';
-import { renderPerson } from '../../remote/activitypub/renderer/person';
+import renderUpdate from '~/remote/activitypub/renderer/update';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import { deliver } from '~/queue';
+import { Followings, Users } from '~/models';
+import { User } from '~/models/entities/user';
+import { renderPerson } from '~/remote/activitypub/renderer/person';
 
 export async function publishToFollowers(userId: User['id']) {
 	const user = await Users.findOne(userId);

@@ -2,17 +2,17 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import { promisify } from 'util';
 import * as cbor from 'cbor';
-import define from '../../../define';
+import define from '~/server/api/define';
 import {
 	UserProfiles,
 	UserSecurityKeys,
 	AttestationChallenges,
 	Users
-} from '../../../../../models';
-import { ensure } from '../../../../../prelude/ensure';
-import config from '../../../../../config';
-import { procedures, hash } from '../../../2fa';
-import { publishMainStream } from '../../../../../services/stream';
+} from '~/models';
+import { ensure } from '~/prelude/ensure';
+import config from '~/config';
+import { procedures, hash } from '~/server/api/2fa';
+import { publishMainStream } from '~/services/stream';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 

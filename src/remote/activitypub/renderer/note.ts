@@ -2,15 +2,15 @@ import renderDocument from './document';
 import renderHashtag from './hashtag';
 import renderMention from './mention';
 import renderEmoji from './emoji';
-import config from '../../../config';
-import toHtml from '../misc/get-note-html';
-import { Note, IMentionedRemoteUsers } from '../../../models/entities/note';
-import { DriveFile } from '../../../models/entities/drive-file';
-import { DriveFiles, Notes, Users, Emojis, Polls } from '../../../models';
+import config from '~/config';
+import toHtml from '~/remote/activitypub/misc/get-note-html';
+import { Note, IMentionedRemoteUsers } from '~/models/entities/note';
+import { DriveFile } from '~/models/entities/drive-file';
+import { DriveFiles, Notes, Users, Emojis, Polls } from '~/models';
 import { In } from 'typeorm';
-import { Emoji } from '../../../models/entities/emoji';
-import { Poll } from '../../../models/entities/poll';
-import { ensure } from '../../../prelude/ensure';
+import { Emoji } from '~/models/entities/emoji';
+import { Poll } from '~/models/entities/poll';
+import { ensure } from '~/prelude/ensure';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
 	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 0

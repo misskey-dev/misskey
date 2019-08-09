@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { ID } from '../../../../../misc/cafy-id';
-import { convertLog } from '../../../../../services/chart/core';
-import { perUserFollowingChart } from '../../../../../services/chart';
+import define from '~/server/api/define';
+import { ID } from '~/misc/cafy-id';
+import { convertLog } from '~/services/chart/core';
+import { perUserFollowingChart } from '~/services/chart';
 
 export const meta = {
 	stability: 'stable',

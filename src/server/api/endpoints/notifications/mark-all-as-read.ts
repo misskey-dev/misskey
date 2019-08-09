@@ -1,6 +1,6 @@
-import { publishMainStream } from '../../../../services/stream';
-import define from '../../define';
-import { Notifications } from '../../../../models';
+import { publishMainStream } from '~/services/stream';
+import define from '~/server/api/define';
+import { Notifications } from '~/models';
 
 export const meta = {
 	desc: {

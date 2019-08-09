@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import { publishDriveStream } from '../../../../../services/stream';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { DriveFiles, DriveFolders } from '../../../../../models';
+import { ID } from '~/misc/cafy-id';
+import { publishDriveStream } from '~/services/stream';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { DriveFiles, DriveFolders } from '~/models';
 
 export const meta = {
 	desc: {

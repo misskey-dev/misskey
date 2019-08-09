@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import { readUserMessagingMessage, readGroupMessagingMessage } from '../../common/read-messaging-message';
-import Channel from '../channel';
-import { UserGroupJoinings } from '../../../../models';
+import { readUserMessagingMessage, readGroupMessagingMessage } from '~/server/api/common/read-messaging-message';
+import Channel from '~/server/api/stream/channel';
+import { UserGroupJoinings } from '~/models';
 
 export default class extends Channel {
 	public readonly chName = 'messaging';

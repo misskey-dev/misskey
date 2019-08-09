@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { MessagingMessages, UserGroups, UserGroupJoinings } from '../../../../models';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
+import { MessagingMessages, UserGroups, UserGroupJoinings } from '~/models';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
 import { Brackets } from 'typeorm';
-import { readUserMessagingMessage, readGroupMessagingMessage } from '../../common/read-messaging-message';
+import { readUserMessagingMessage, readGroupMessagingMessage } from '~/server/api/common/read-messaging-message';
 
 export const meta = {
 	desc: {

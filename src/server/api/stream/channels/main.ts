@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
-import Channel from '../channel';
-import { Mutings } from '../../../../models';
+import Channel from '~/server/api/stream/channel';
+import { Mutings } from '~/models';
 
 export default class extends Channel {
 	public readonly chName = 'main';

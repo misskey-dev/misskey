@@ -1,8 +1,8 @@
 import * as Bull from 'bull';
 
-import { queueLogger } from '../../logger';
-import { deleteFileSync } from '../../../services/drive/delete-file';
-import { DriveFiles } from '../../../models';
+import { queueLogger } from '~/queue/logger';
+import { deleteFileSync } from '~/services/drive/delete-file';
+import { DriveFiles } from '~/models';
 import { MoreThan, Not, IsNull } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('clean-remote-files');

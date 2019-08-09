@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import define from '../../../define';
-import { publishMessagingStream, publishGroupMessagingStream } from '../../../../../services/stream';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { publishMessagingStream, publishGroupMessagingStream } from '~/services/stream';
 import * as ms from 'ms';
-import { ApiError } from '../../../error';
-import { MessagingMessages } from '../../../../../models';
+import { ApiError } from '~/server/api/error';
+import { MessagingMessages } from '~/models';
 
 export const meta = {
 	stability: 'stable',

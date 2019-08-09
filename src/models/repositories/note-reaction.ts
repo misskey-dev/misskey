@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { NoteReaction } from '../entities/note-reaction';
-import { Users } from '..';
-import { ensure } from '../../prelude/ensure';
-import { SchemaType } from '../../misc/schema';
+import { NoteReaction } from '~/models/entities/note-reaction';
+import { Users } from '~/models';
+import { ensure } from '~/prelude/ensure';
+import { SchemaType } from '~/misc/schema';
 
 export type PackedNoteReaction = SchemaType<typeof packedNoteReactionSchema>;
 

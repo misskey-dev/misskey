@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../define';
-import { Hashtags } from '../../../../models';
+import define from '~/server/api/define';
+import { Hashtags } from '~/models';
 
 export const meta = {
 	desc: {

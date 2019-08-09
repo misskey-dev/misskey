@@ -1,5 +1,5 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
-import { id } from '../id';
+import { id } from '~/models/id';
 
 @Entity()
 @Index(['name', 'host'], { unique: true })

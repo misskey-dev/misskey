@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import * as ms from 'ms';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Pages, DriveFiles } from '../../../../models';
-import { ID } from '../../../../misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { Pages, DriveFiles } from '~/models';
+import { ID } from '~/misc/cafy-id';
 
 export const meta = {
 	desc: {

@@ -1,9 +1,9 @@
-import { DriveFile } from '../../models/entities/drive-file';
+import { DriveFile } from '~/models/entities/drive-file';
 import { InternalStorage } from './internal-storage';
-import { DriveFiles, Instances, Notes } from '../../models';
-import { driveChart, perUserDriveChart, instanceChart } from '../chart';
-import { createDeleteObjectStorageFileJob } from '../../queue';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { DriveFiles, Instances, Notes } from '~/models';
+import { driveChart, perUserDriveChart, instanceChart } from '~/services/chart';
+import { createDeleteObjectStorageFileJob } from '~/queue';
+import { fetchMeta } from '~/misc/fetch-meta';
 import { getS3 } from './s3';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {

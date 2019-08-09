@@ -6,11 +6,11 @@
 
 import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
-import Logger from '../logger';
-import { Schema } from '../../misc/schema';
+import Logger from '~/services/logger';
+import { Schema } from '~/misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '../../prelude/time';
+import { isDuplicateKeyValueError } from '~/misc/is-duplicate-key-value-error';
+import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '~/prelude/time';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 

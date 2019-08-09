@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { publishAdminStream } from '../../../../services/stream';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { AbuseUserReports, Users } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { publishAdminStream } from '~/services/stream';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
+import { AbuseUserReports, Users } from '~/models';
+import { genId } from '~/misc/gen-id';
 
 export const meta = {
 	desc: {

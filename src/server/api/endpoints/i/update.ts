@@ -1,19 +1,19 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import { publishMainStream } from '../../../../services/stream';
-import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
-import { publishToFollowers } from '../../../../services/i/update';
-import define from '../../define';
-import { parse, parsePlain } from '../../../../mfm/parse';
-import extractEmojis from '../../../../misc/extract-emojis';
-import extractHashtags from '../../../../misc/extract-hashtags';
+import { ID } from '~/misc/cafy-id';
+import { publishMainStream } from '~/services/stream';
+import acceptAllFollowRequests from '~/services/following/requests/accept-all';
+import { publishToFollowers } from '~/services/i/update';
+import define from '~/server/api/define';
+import { parse, parsePlain } from '~/mfm/parse';
+import extractEmojis from '~/misc/extract-emojis';
+import extractHashtags from '~/misc/extract-hashtags';
 import * as langmap from 'langmap';
-import { updateHashtag } from '../../../../services/update-hashtag';
-import { ApiError } from '../../error';
-import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
-import { User } from '../../../../models/entities/user';
-import { UserProfile } from '../../../../models/entities/user-profile';
-import { ensure } from '../../../../prelude/ensure';
+import { updateHashtag } from '~/services/update-hashtag';
+import { ApiError } from '~/server/api/error';
+import { Users, DriveFiles, UserProfiles, Pages } from '~/models';
+import { User } from '~/models/entities/user';
+import { UserProfile } from '~/models/entities/user-profile';
+import { ensure } from '~/prelude/ensure';
 
 export const meta = {
 	desc: {

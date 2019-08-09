@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Users, Followings } from '../../../../models';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { toPunyNullable } from '../../../../misc/convert-host';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { Users, Followings } from '~/models';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
+import { toPunyNullable } from '~/misc/convert-host';
 
 export const meta = {
 	desc: {

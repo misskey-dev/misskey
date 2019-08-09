@@ -1,6 +1,6 @@
 import { emojiRegex } from './emoji-regex';
 import { fetchMeta } from './fetch-meta';
-import { Emojis } from '../models';
+import { Emojis } from '~/models';
 
 const basic10: Record<string, string> = {
 	'👍': 'like',

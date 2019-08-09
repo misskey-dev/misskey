@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import define from '../../define';
-import { MessagingMessage } from '../../../../models/entities/messaging-message';
-import { MessagingMessages, Mutings, UserGroupJoinings } from '../../../../models';
+import define from '~/server/api/define';
+import { MessagingMessage } from '~/models/entities/messaging-message';
+import { MessagingMessages, Mutings, UserGroupJoinings } from '~/models';
 import { Brackets } from 'typeorm';
 
 export const meta = {

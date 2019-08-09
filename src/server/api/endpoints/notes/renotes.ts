@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { getNote } from '../../common/getters';
-import { ApiError } from '../../error';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { generateMuteQuery } from '../../common/generate-mute-query';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notes } from '../../../../models';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { getNote } from '~/server/api/common/getters';
+import { ApiError } from '~/server/api/error';
+import { generateVisibilityQuery } from '~/server/api/common/generate-visibility-query';
+import { generateMuteQuery } from '~/server/api/common/generate-mute-query';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
+import { Notes } from '~/models';
 
 export const meta = {
 	desc: {

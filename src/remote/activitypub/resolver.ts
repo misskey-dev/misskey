@@ -1,6 +1,6 @@
 import * as request from 'request-promise-native';
 import { IObject } from './type';
-import config from '../../config';
+import config from '~/config';
 
 export default class Resolver {
 	private history: Set<string>;

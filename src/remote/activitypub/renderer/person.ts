@@ -1,15 +1,15 @@
 import renderImage from './image';
 import renderKey from './key';
-import config from '../../../config';
-import { ILocalUser } from '../../../models/entities/user';
-import { toHtml } from '../../../mfm/toHtml';
-import { parse } from '../../../mfm/parse';
+import config from '~/config';
+import { ILocalUser } from '~/models/entities/user';
+import { toHtml } from '~/mfm/toHtml';
+import { parse } from '~/mfm/parse';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';
-import { IIdentifier } from '../models/identifier';
+import { IIdentifier } from '~/remote/activitypub/models/identifier';
 import renderHashtag from './hashtag';
-import { DriveFiles, UserProfiles, UserKeypairs } from '../../../models';
-import { ensure } from '../../../prelude/ensure';
+import { DriveFiles, UserProfiles, UserKeypairs } from '~/models';
+import { ensure } from '~/prelude/ensure';
 
 export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;

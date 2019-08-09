@@ -1,7 +1,7 @@
-import { publishMainStream } from '../../../services/stream';
-import { User } from '../../../models/entities/user';
-import { Notification } from '../../../models/entities/notification';
-import { Mutings, Notifications } from '../../../models';
+import { publishMainStream } from '~/services/stream';
+import { User } from '~/models/entities/user';
+import { Notification } from '~/models/entities/notification';
+import { Mutings, Notifications } from '~/models';
 import { In, Not } from 'typeorm';
 
 /**

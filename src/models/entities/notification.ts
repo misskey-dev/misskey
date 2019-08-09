@@ -1,6 +1,6 @@
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
 import { User } from './user';
-import { id } from '../id';
+import { id } from '~/models/id';
 import { Note } from './note';
 
 @Entity()

@@ -1,7 +1,7 @@
 import rndstr from 'rndstr';
-import define from '../../define';
-import { RegistrationTickets } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
+import define from '~/server/api/define';
+import { RegistrationTickets } from '~/models';
+import { genId } from '~/misc/gen-id';
 
 export const meta = {
 	desc: {

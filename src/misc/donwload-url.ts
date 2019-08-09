@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as request from 'request';
-import config from '../config';
+import config from '~/config';
 import chalk from 'chalk';
-import Logger from '../services/logger';
+import Logger from '~/services/logger';
 
 export async function downloadUrl(url: string, path: string) {
 	const logger = new Logger('download');

@@ -10,10 +10,10 @@ import ms = require('ms');
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as glob from 'glob';
-import config from '../../config';
-import { licenseHtml } from '../../misc/license';
-import { copyright } from '../../const.json';
-import * as locales from '../../../locales';
+import config from '~/config';
+import { licenseHtml } from '~/misc/license';
+import { copyright } from '~/const.json';
+import * as locales from '%';
 import * as nestedProperty from 'nested-property';
 
 function getLang(lang: string): string {

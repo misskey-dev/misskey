@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../define';
-import { Users, UsedUsernames } from '../../../../models';
+import define from '~/server/api/define';
+import { Users, UsedUsernames } from '~/models';
 
 export const meta = {
 	tags: ['users'],

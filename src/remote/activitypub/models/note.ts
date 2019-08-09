@@ -1,27 +1,27 @@
 import * as promiseLimit from 'promise-limit';
 
-import config from '../../../config';
-import Resolver from '../resolver';
-import post from '../../../services/note/create';
+import config from '~/config';
+import Resolver from '~/remote/activitypub/resolver';
+import post from '~/services/note/create';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
-import { IRemoteUser, User } from '../../../models/entities/user';
-import { fromHtml } from '../../../mfm/fromHtml';
+import { IRemoteUser, User } from '~/models/entities/user';
+import { fromHtml } from '~/mfm/fromHtml';
 import { ITag, extractHashtags } from './tag';
-import { unique, concat, difference } from '../../../prelude/array';
+import { unique, concat, difference } from '~/prelude/array';
 import { extractPollFromQuestion } from './question';
-import vote from '../../../services/note/polls/vote';
-import { apLogger } from '../logger';
-import { DriveFile } from '../../../models/entities/drive-file';
-import { deliverQuestionUpdate } from '../../../services/note/polls/update';
-import { extractDbHost, toPuny } from '../../../misc/convert-host';
-import { Notes, Emojis, Polls } from '../../../models';
-import { Note } from '../../../models/entities/note';
-import { IObject, INote, getApIds, getOneApId, getApId, validPost } from '../type';
-import { Emoji } from '../../../models/entities/emoji';
-import { genId } from '../../../misc/gen-id';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import { ensure } from '../../../prelude/ensure';
+import vote from '~/services/note/polls/vote';
+import { apLogger } from '~/remote/activitypub/logger';
+import { DriveFile } from '~/models/entities/drive-file';
+import { deliverQuestionUpdate } from '~/services/note/polls/update';
+import { extractDbHost, toPuny } from '~/misc/convert-host';
+import { Notes, Emojis, Polls } from '~/models';
+import { Note } from '~/models/entities/note';
+import { IObject, INote, getApIds, getOneApId, getApId, validPost } from '~/remote/activitypub/type';
+import { Emoji } from '~/models/entities/emoji';
+import { genId } from '~/misc/gen-id';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { ensure } from '~/prelude/ensure';
 
 const logger = apLogger;
 

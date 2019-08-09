@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import createReaction from '../../../../../services/note/reaction/create';
-import define from '../../../define';
-import { getNote } from '../../../common/getters';
-import { ApiError } from '../../../error';
+import { ID } from '~/misc/cafy-id';
+import createReaction from '~/services/note/reaction/create';
+import define from '~/server/api/define';
+import { getNote } from '~/server/api/common/getters';
+import { ApiError } from '~/server/api/error';
 
 export const meta = {
 	stability: 'stable',

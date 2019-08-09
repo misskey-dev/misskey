@@ -1,9 +1,9 @@
-import renderUpdate from '../../../remote/activitypub/renderer/update';
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import { deliver } from '../../../queue';
-import renderNote from '../../../remote/activitypub/renderer/note';
-import { Users, Notes, Followings } from '../../../models';
-import { Note } from '../../../models/entities/note';
+import renderUpdate from '~/remote/activitypub/renderer/update';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import { deliver } from '~/queue';
+import renderNote from '~/remote/activitypub/renderer/note';
+import { Users, Notes, Followings } from '~/models';
+import { Note } from '~/models/entities/note';
 
 export async function deliverQuestionUpdate(noteId: Note['id']) {
 	const note = await Notes.findOne(noteId);

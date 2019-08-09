@@ -1,12 +1,12 @@
-import Resolver from '../../resolver';
-import post from '../../../../services/note/create';
-import { IRemoteUser, User } from '../../../../models/entities/user';
-import { IAnnounce, INote, getApId, getApIds } from '../../type';
-import { fetchNote, resolveNote } from '../../models/note';
-import { resolvePerson } from '../../models/person';
-import { apLogger } from '../../logger';
-import { extractDbHost } from '../../../../misc/convert-host';
-import { fetchMeta } from '../../../../misc/fetch-meta';
+import Resolver from '~/remote/activitypub/resolver';
+import post from '~/services/note/create';
+import { IRemoteUser, User } from '~/models/entities/user';
+import { IAnnounce, INote, getApId, getApIds } from '~/remote/activitypub/type';
+import { fetchNote, resolveNote } from '~/remote/activitypub/models/note';
+import { resolvePerson } from '~/remote/activitypub/models/person';
+import { apLogger } from '~/remote/activitypub/logger';
+import { extractDbHost } from '~/misc/convert-host';
+import { fetchMeta } from '~/misc/fetch-meta';
 
 const logger = apLogger;
 

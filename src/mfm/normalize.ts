@@ -1,7 +1,7 @@
-import * as A from '../prelude/array';
-import * as S from '../prelude/string';
+import * as A from '~/prelude/array';
+import * as S from '~/prelude/string';
 import { MfmForest, MfmTree } from './prelude';
-import { createTree, createLeaf } from '../prelude/tree';
+import { createTree, createLeaf } from '~/prelude/tree';
 
 function isEmptyTextTree(t: MfmTree): boolean {
 	return t.node.type == 'text' && t.node.props.text === '';

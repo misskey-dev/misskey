@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { detectUrlMine } from '../../../../../misc/detect-url-mine';
-import { ID } from '../../../../../misc/cafy-id';
-import { Emojis } from '../../../../../models';
+import define from '~/server/api/define';
+import { detectUrlMine } from '~/misc/detect-url-mine';
+import { ID } from '~/misc/cafy-id';
+import { Emojis } from '~/models';
 import { getConnection } from 'typeorm';
 
 export const meta = {

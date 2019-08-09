@@ -1,6 +1,6 @@
-import define from '../define';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import { DriveFiles } from '../../../models';
+import define from '~/server/api/define';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { DriveFiles } from '~/models';
 
 export const meta = {
 	desc: {

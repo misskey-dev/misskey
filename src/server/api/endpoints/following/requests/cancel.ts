@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import cancelFollowRequest from '../../../../../services/following/requests/cancel';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
-import { Users } from '../../../../../models';
+import { ID } from '~/misc/cafy-id';
+import cancelFollowRequest from '~/services/following/requests/cancel';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
+import { Users } from '~/models';
 
 export const meta = {
 	desc: {

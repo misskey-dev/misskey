@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import Chart, { DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
-import { name, schema } from '../schemas/test-unique';
+import Chart, { DeepPartial } from '~/services/chart/core';
+import { SchemaType } from '~/misc/schema';
+import { name, schema } from '~/services/chart/charts/schemas/test-unique';
 
 type TestUniqueLog = SchemaType<typeof schema>;
 

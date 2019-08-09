@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
-import { pushUserToUserList } from '../../../../../services/user-list/push';
-import { UserLists, UserListJoinings } from '../../../../../models';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
+import { pushUserToUserList } from '~/services/user-list/push';
+import { UserLists, UserListJoinings } from '~/models';
 
 export const meta = {
 	desc: {

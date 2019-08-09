@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import Chart, { DeepPartial } from '../../core';
-import { User } from '../../../../models/entities/user';
-import { Note } from '../../../../models/entities/note';
-import { SchemaType } from '../../../../misc/schema';
-import { Users } from '../../../../models';
-import { name, schema } from '../schemas/per-user-reactions';
+import Chart, { DeepPartial } from '~/services/chart/core';
+import { User } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
+import { SchemaType } from '~/misc/schema';
+import { Users } from '~/models';
+import { name, schema } from '~/services/chart/charts/schemas/per-user-reactions';
 
 type PerUserReactionsLog = SchemaType<typeof schema>;
 

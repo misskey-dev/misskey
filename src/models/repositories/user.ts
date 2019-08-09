@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In } from 'typeorm';
-import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages } from '..';
-import { ensure } from '../../prelude/ensure';
-import config from '../../config';
-import { SchemaType } from '../../misc/schema';
-import { awaitAll } from '../../prelude/await-all';
+import { User, ILocalUser, IRemoteUser } from '~/models/entities/user';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages } from '~/models';
+import { ensure } from '~/prelude/ensure';
+import config from '~/config';
+import { SchemaType } from '~/misc/schema';
+import { awaitAll } from '~/prelude/await-all';
 
 export type PackedUser = SchemaType<typeof packedUserSchema>;
 

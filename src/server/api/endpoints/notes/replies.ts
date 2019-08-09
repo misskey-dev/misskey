@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { Notes } from '../../../../models';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { generateMuteQuery } from '../../common/generate-mute-query';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { Notes } from '~/models';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
+import { generateVisibilityQuery } from '~/server/api/common/generate-visibility-query';
+import { generateMuteQuery } from '~/server/api/common/generate-mute-query';
 
 export const meta = {
 	desc: {

@@ -1,8 +1,8 @@
-import { User } from '../models/entities/user';
-import { Hashtags, Users } from '../models';
+import { User } from '~/models/entities/user';
+import { Hashtags, Users } from '~/models';
 import { hashtagChart } from './chart';
-import { genId } from '../misc/gen-id';
-import { Hashtag } from '../models/entities/hashtag';
+import { genId } from '~/misc/gen-id';
+import { Hashtag } from '~/models/entities/hashtag';
 
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();

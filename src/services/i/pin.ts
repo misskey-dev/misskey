@@ -1,14 +1,14 @@
-import config from '../../config';
-import renderAdd from '../../remote/activitypub/renderer/add';
-import renderRemove from '../../remote/activitypub/renderer/remove';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import { deliver } from '../../queue';
-import { IdentifiableError } from '../../misc/identifiable-error';
-import { User, ILocalUser } from '../../models/entities/user';
-import { Note } from '../../models/entities/note';
-import { Notes, UserNotePinings, Users, Followings } from '../../models';
-import { UserNotePining } from '../../models/entities/user-note-pinings';
-import { genId } from '../../misc/gen-id';
+import config from '~/config';
+import renderAdd from '~/remote/activitypub/renderer/add';
+import renderRemove from '~/remote/activitypub/renderer/remove';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import { deliver } from '~/queue';
+import { IdentifiableError } from '~/misc/identifiable-error';
+import { User, ILocalUser } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
+import { Notes, UserNotePinings, Users, Followings } from '~/models';
+import { UserNotePining } from '~/models/entities/user-note-pinings';
+import { genId } from '~/misc/gen-id';
 
 /**
  * 指定した投稿をピン留めします

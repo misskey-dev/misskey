@@ -18,15 +18,15 @@ import * as slow from 'koa-slow';
 import activityPub from './activitypub';
 import nodeinfo from './nodeinfo';
 import wellKnown from './well-known';
-import config from '../config';
+import config from '~/config';
 import apiServer from './api';
-import { sum } from '../prelude/array';
-import Logger from '../services/logger';
-import { program } from '../argv';
-import { UserProfiles } from '../models';
-import { networkChart } from '../services/chart';
-import { genAvatar } from '../misc/gen-avatar';
-import { createTemp } from '../misc/create-temp';
+import { sum } from '~/prelude/array';
+import Logger from '~/services/logger';
+import { program } from '~/argv';
+import { UserProfiles } from '~/models';
+import { networkChart } from '~/services/chart';
+import { genAvatar } from '~/misc/gen-avatar';
+import { createTemp } from '~/misc/create-temp';
 
 export const serverLogger = new Logger('server', 'gray', false);
 

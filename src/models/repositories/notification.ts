@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users, Notes } from '..';
-import { Notification } from '../entities/notification';
-import { ensure } from '../../prelude/ensure';
-import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '../../misc/schema';
+import { Users, Notes } from '~/models';
+import { Notification } from '~/models/entities/notification';
+import { ensure } from '~/prelude/ensure';
+import { awaitAll } from '~/prelude/await-all';
+import { SchemaType } from '~/misc/schema';
 
 export type PackedNotification = SchemaType<typeof packedNotificationSchema>;
 

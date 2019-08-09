@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { Users } from '../../../../models';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
-import { doPostUnsuspend } from '../../../../services/unsuspend-user';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { Users } from '~/models';
+import { insertModerationLog } from '~/services/insert-moderation-log';
+import { doPostUnsuspend } from '~/services/unsuspend-user';
 
 export const meta = {
 	desc: {

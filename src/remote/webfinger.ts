@@ -1,6 +1,6 @@
-import config from '../config';
+import config from '~/config';
 import * as request from 'request-promise-native';
-import { query as urlQuery } from '../prelude/url';
+import { query as urlQuery } from '~/prelude/url';
 
 type ILink = {
 	href: string;

@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { Blockings } from '../../../../models';
-import { makePaginationQuery } from '../../common/make-pagination-query';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { Blockings } from '~/models';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
 
 export const meta = {
 	desc: {

@@ -1,10 +1,10 @@
-import { renderActivity } from '../../remote/activitypub/renderer';
-import renderBlock from '../../remote/activitypub/renderer/block';
-import renderUndo from '../../remote/activitypub/renderer/undo';
-import { deliver } from '../../queue';
-import Logger from '../logger';
-import { User } from '../../models/entities/user';
-import { Blockings, Users } from '../../models';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import renderBlock from '~/remote/activitypub/renderer/block';
+import renderUndo from '~/remote/activitypub/renderer/undo';
+import { deliver } from '~/queue';
+import Logger from '~/services/logger';
+import { User } from '~/models/entities/user';
+import { Blockings, Users } from '~/models';
 
 const logger = new Logger('blocking/delete');
 

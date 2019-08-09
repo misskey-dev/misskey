@@ -1,10 +1,10 @@
 import * as uuid from 'uuid';
 import $ from 'cafy';
-import config from '../../../../../config';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { Apps, AuthSessions } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import config from '~/config';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { Apps, AuthSessions } from '~/models';
+import { genId } from '~/misc/gen-id';
 
 export const meta = {
 	tags: ['auth'],

@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../define';
-import { Apps } from '../../../../models';
+import define from '~/server/api/define';
+import { Apps } from '~/models';
 
 export const meta = {
 	tags: ['account', 'app'],

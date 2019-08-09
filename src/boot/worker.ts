@@ -1,5 +1,5 @@
 import * as cluster from 'cluster';
-import { initDb } from '../db/postgre';
+import { initDb } from '~/db/postgre';
 
 /**
  * Init worker process

@@ -1,6 +1,6 @@
-import config from '../../../config';
-import { ILocalUser } from '../../../models/entities/user';
-import { Note } from '../../../models/entities/note';
+import config from '~/config';
+import { ILocalUser } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
 
 export default (user: ILocalUser, note: Note, reaction: string) => ({
 	type: 'Like',

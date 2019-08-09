@@ -1,8 +1,8 @@
-import { IRemoteUser } from '../../../models/entities/user';
-import { ILike } from '../type';
-import create from '../../../services/note/reaction/create';
-import { Notes } from '../../../models';
-import { apLogger } from '../logger';
+import { IRemoteUser } from '~/models/entities/user';
+import { ILike } from '~/remote/activitypub/type';
+import create from '~/services/note/reaction/create';
+import { Notes } from '~/models';
+import { apLogger } from '~/remote/activitypub/logger';
 
 export default async (actor: IRemoteUser, activity: ILike) => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;

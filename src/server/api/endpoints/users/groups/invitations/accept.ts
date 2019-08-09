@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../../../misc/cafy-id';
-import define from '../../../../define';
-import { ApiError } from '../../../../error';
-import { UserGroupJoinings, UserGroupInvites } from '../../../../../../models';
-import { genId } from '../../../../../../misc/gen-id';
-import { UserGroupJoining } from '../../../../../../models/entities/user-group-joining';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { UserGroupJoinings, UserGroupInvites } from '~/models';
+import { genId } from '~/misc/gen-id';
+import { UserGroupJoining } from '~/models/entities/user-group-joining';
 
 export const meta = {
 	desc: {

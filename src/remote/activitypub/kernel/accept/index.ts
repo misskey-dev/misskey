@@ -1,8 +1,8 @@
-import Resolver from '../../resolver';
-import { IRemoteUser } from '../../../../models/entities/user';
+import Resolver from '~/remote/activitypub/resolver';
+import { IRemoteUser } from '~/models/entities/user';
 import acceptFollow from './follow';
-import { IAccept, IFollow } from '../../type';
-import { apLogger } from '../../logger';
+import { IAccept, IFollow } from '~/remote/activitypub/type';
+import { apLogger } from '~/remote/activitypub/logger';
 
 const logger = apLogger;
 

@@ -1,9 +1,9 @@
 import * as Router from 'koa-router';
-import config from '../config';
-import { fetchMeta } from '../misc/fetch-meta';
-// import User from '../models/user';
-import { name as softwareName, version, repository } from '../../package.json';
-// import Note from '../models/note';
+import config from '~/config';
+import { fetchMeta } from '~/misc/fetch-meta';
+// import User from '~/models/user';
+import { name as softwareName, version, repository } from '~/package.json';
+// import Note from '~/models/note';
 
 const router = new Router();
 

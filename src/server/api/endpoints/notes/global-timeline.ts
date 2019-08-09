@@ -1,12 +1,12 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { fetchMeta } from '../../../../misc/fetch-meta';
-import { ApiError } from '../../error';
-import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notes } from '../../../../models';
-import { generateMuteQuery } from '../../common/generate-mute-query';
-import { activeUsersChart } from '../../../../services/chart';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { ApiError } from '~/server/api/error';
+import { makePaginationQuery } from '~/server/api/common/make-pagination-query';
+import { Notes } from '~/models';
+import { generateMuteQuery } from '~/server/api/common/generate-mute-query';
+import { activeUsersChart } from '~/services/chart';
 
 export const meta = {
 	desc: {

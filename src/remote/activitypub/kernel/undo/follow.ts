@@ -1,9 +1,9 @@
-import config from '../../../../config';
-import unfollow from '../../../../services/following/delete';
-import cancelRequest from '../../../../services/following/requests/cancel';
-import { IFollow } from '../../type';
-import { IRemoteUser } from '../../../../models/entities/user';
-import { Users, FollowRequests, Followings } from '../../../../models';
+import config from '~/config';
+import unfollow from '~/services/following/delete';
+import cancelRequest from '~/services/following/requests/cancel';
+import { IFollow } from '~/remote/activitypub/type';
+import { IRemoteUser } from '~/models/entities/user';
+import { Users, FollowRequests, Followings } from '~/models';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
 	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;

@@ -1,9 +1,9 @@
-import config from '../../../config';
-import Resolver from '../resolver';
-import { IObject, IQuestion, isQuestion,  } from '../type';
-import { apLogger } from '../logger';
-import { Notes, Polls } from '../../../models';
-import { IPoll } from '../../../models/entities/poll';
+import config from '~/config';
+import Resolver from '~/remote/activitypub/resolver';
+import { IObject, IQuestion, isQuestion } from '~/remote/activitypub/type';
+import { apLogger } from '~/remote/activitypub/logger';
+import { Notes, Polls } from '~/models';
+import { IPoll } from '~/models/entities/poll';
 
 export async function extractPollFromQuestion(source: string | IObject, resolver?: Resolver): Promise<IPoll> {
 	if (resolver == null) resolver = new Resolver();

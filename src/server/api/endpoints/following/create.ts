@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '~/misc/cafy-id';
 import * as ms from 'ms';
-import create from '../../../../services/following/create';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { getUser } from '../../common/getters';
-import { Followings, Users } from '../../../../models';
+import create from '~/services/following/create';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
+import { Followings, Users } from '~/models';
 
 export const meta = {
 	stability: 'stable',

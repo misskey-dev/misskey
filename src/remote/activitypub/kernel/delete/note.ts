@@ -1,7 +1,7 @@
-import { IRemoteUser } from '../../../../models/entities/user';
-import deleteNode from '../../../../services/note/delete';
-import { apLogger } from '../../logger';
-import { Notes } from '../../../../models';
+import { IRemoteUser } from '~/models/entities/user';
+import deleteNode from '~/services/note/delete';
+import { apLogger } from '~/remote/activitypub/logger';
+import { Notes } from '~/models';
 
 const logger = apLogger;
 

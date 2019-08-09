@@ -1,19 +1,19 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import { generateKeyPair } from 'crypto';
-import generateUserToken from '../common/generate-native-user-token';
-import config from '../../../config';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import generateUserToken from '~/server/api/common/generate-native-user-token';
+import config from '~/config';
+import { fetchMeta } from '~/misc/fetch-meta';
 import * as recaptcha from 'recaptcha-promise';
-import { Users, Signins, RegistrationTickets, UsedUsernames } from '../../../models';
-import { genId } from '../../../misc/gen-id';
-import { usersChart } from '../../../services/chart';
-import { User } from '../../../models/entities/user';
-import { UserKeypair } from '../../../models/entities/user-keypair';
-import { toPunyNullable } from '../../../misc/convert-host';
-import { UserProfile } from '../../../models/entities/user-profile';
+import { Users, Signins, RegistrationTickets, UsedUsernames } from '~/models';
+import { genId } from '~/misc/gen-id';
+import { usersChart } from '~/services/chart';
+import { User } from '~/models/entities/user';
+import { UserKeypair } from '~/models/entities/user-keypair';
+import { toPunyNullable } from '~/misc/convert-host';
+import { UserProfile } from '~/models/entities/user-profile';
 import { getConnection } from 'typeorm';
-import { UsedUsername } from '../../../models/entities/used-username';
+import { UsedUsername } from '~/models/entities/used-username';
 
 export default async (ctx: Koa.BaseContext) => {
 	const body = ctx.request.body as any;

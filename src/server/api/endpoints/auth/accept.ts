@@ -1,11 +1,11 @@
 import rndstr from 'rndstr';
 import * as crypto from 'crypto';
 import $ from 'cafy';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { AuthSessions, AccessTokens, Apps } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
-import { ensure } from '../../../../prelude/ensure';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { AuthSessions, AccessTokens, Apps } from '~/models';
+import { genId } from '~/misc/gen-id';
+import { ensure } from '~/prelude/ensure';
 
 export const meta = {
 	tags: ['auth'],

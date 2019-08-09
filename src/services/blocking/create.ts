@@ -1,14 +1,14 @@
-import { publishMainStream } from '../stream';
-import { renderActivity } from '../../remote/activitypub/renderer';
-import renderFollow from '../../remote/activitypub/renderer/follow';
-import renderUndo from '../../remote/activitypub/renderer/undo';
-import renderBlock from '../../remote/activitypub/renderer/block';
-import { deliver } from '../../queue';
-import renderReject from '../../remote/activitypub/renderer/reject';
-import { User } from '../../models/entities/user';
-import { Blockings, Users, FollowRequests, Followings } from '../../models';
-import { perUserFollowingChart } from '../chart';
-import { genId } from '../../misc/gen-id';
+import { publishMainStream } from '~/services/stream';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import renderFollow from '~/remote/activitypub/renderer/follow';
+import renderUndo from '~/remote/activitypub/renderer/undo';
+import renderBlock from '~/remote/activitypub/renderer/block';
+import { deliver } from '~/queue';
+import renderReject from '~/remote/activitypub/renderer/reject';
+import { User } from '~/models/entities/user';
+import { Blockings, Users, FollowRequests, Followings } from '~/models';
+import { perUserFollowingChart } from '~/services/chart';
+import { genId } from '~/misc/gen-id';
 
 export default async function(blocker: User, blockee: User) {
 	await Promise.all([

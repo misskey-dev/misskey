@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import * as speakeasy from 'speakeasy';
-import define from '../../../define';
-import { UserProfiles } from '../../../../../models';
-import { ensure } from '../../../../../prelude/ensure';
+import define from '~/server/api/define';
+import { UserProfiles } from '~/models';
+import { ensure } from '~/prelude/ensure';
 
 export const meta = {
 	requireCredential: true,

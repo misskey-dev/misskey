@@ -1,11 +1,11 @@
 import $ from 'cafy';
-import es from '../../../../db/elasticsearch';
-import define from '../../define';
-import { ApiError } from '../../error';
-import { Notes } from '../../../../models';
+import es from '~/db/elasticsearch';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { Notes } from '~/models';
 import { In } from 'typeorm';
-import { ID } from '../../../../misc/cafy-id';
-import config from '../../../../config';
+import { ID } from '~/misc/cafy-id';
+import config from '~/config';
 
 export const meta = {
 	desc: {

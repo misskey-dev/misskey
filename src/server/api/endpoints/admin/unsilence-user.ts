@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
-import define from '../../define';
-import { Users } from '../../../../models';
-import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { ID } from '~/misc/cafy-id';
+import define from '~/server/api/define';
+import { Users } from '~/models';
+import { insertModerationLog } from '~/services/insert-moderation-log';
 
 export const meta = {
 	desc: {

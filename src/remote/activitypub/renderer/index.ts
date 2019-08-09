@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '~/config';
 import * as uuid from 'uuid';
 
 export const renderActivity = (x: any) => {

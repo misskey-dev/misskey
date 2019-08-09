@@ -2,9 +2,9 @@ import * as Koa from 'koa';
 import * as send from 'koa-send';
 import * as rename from 'rename';
 import { serverLogger } from '..';
-import { contentDisposition } from '../../misc/content-disposition';
-import { DriveFiles } from '../../models';
-import { InternalStorage } from '../../services/drive/internal-storage';
+import { contentDisposition } from '~/misc/content-disposition';
+import { DriveFiles } from '~/models';
+import { InternalStorage } from '~/services/drive/internal-storage';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 

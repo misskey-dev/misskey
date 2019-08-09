@@ -1,18 +1,18 @@
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
-import { IRemoteUser } from '../../models/entities/user';
-import perform from '../../remote/activitypub/perform';
-import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
-import { publishApLogStream } from '../../services/stream';
-import Logger from '../../services/logger';
-import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
-import { Instances, Users, UserPublickeys } from '../../models';
-import { instanceChart } from '../../services/chart';
-import { UserPublickey } from '../../models/entities/user-publickey';
-import { fetchMeta } from '../../misc/fetch-meta';
-import { toPuny } from '../../misc/convert-host';
-import { validActor } from '../../remote/activitypub/type';
-import { ensure } from '../../prelude/ensure';
+import { IRemoteUser } from '~/models/entities/user';
+import perform from '~/remote/activitypub/perform';
+import { resolvePerson, updatePerson } from '~/remote/activitypub/models/person';
+import { publishApLogStream } from '~/services/stream';
+import Logger from '~/services/logger';
+import { registerOrFetchInstanceDoc } from '~/services/register-or-fetch-instance-doc';
+import { Instances, Users, UserPublickeys } from '~/models';
+import { instanceChart } from '~/services/chart';
+import { UserPublickey } from '~/models/entities/user-publickey';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { toPuny } from '~/misc/convert-host';
+import { validActor } from '~/remote/activitypub/type';
+import { ensure } from '~/prelude/ensure';
 
 const logger = new Logger('inbox');
 

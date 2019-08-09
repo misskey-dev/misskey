@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
-import acceptFollowRequest from '../../../../../services/following/requests/accept';
-import define from '../../../define';
-import { ApiError } from '../../../error';
-import { getUser } from '../../../common/getters';
+import { ID } from '~/misc/cafy-id';
+import acceptFollowRequest from '~/services/following/requests/accept';
+import define from '~/server/api/define';
+import { ApiError } from '~/server/api/error';
+import { getUser } from '~/server/api/common/getters';
 
 export const meta = {
 	desc: {

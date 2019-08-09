@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { UserLists } from '../../../../../models';
+import define from '~/server/api/define';
+import { UserLists } from '~/models';
 
 export const meta = {
 	desc: {

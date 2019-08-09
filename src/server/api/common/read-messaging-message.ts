@@ -1,12 +1,12 @@
-import { publishMainStream, publishGroupMessagingStream } from '../../../services/stream';
-import { publishMessagingStream } from '../../../services/stream';
-import { publishMessagingIndexStream } from '../../../services/stream';
-import { User } from '../../../models/entities/user';
-import { MessagingMessage } from '../../../models/entities/messaging-message';
-import { MessagingMessages, UserGroupJoinings, Users } from '../../../models';
+import { publishMainStream, publishGroupMessagingStream } from '~/services/stream';
+import { publishMessagingStream } from '~/services/stream';
+import { publishMessagingIndexStream } from '~/services/stream';
+import { User } from '~/models/entities/user';
+import { MessagingMessage } from '~/models/entities/messaging-message';
+import { MessagingMessages, UserGroupJoinings, Users } from '~/models';
 import { In } from 'typeorm';
-import { IdentifiableError } from '../../../misc/identifiable-error';
-import { UserGroup } from '../../../models/entities/user-group';
+import { IdentifiableError } from '~/misc/identifiable-error';
+import { UserGroup } from '~/models/entities/user-group';
 
 /**
  * Mark messages as read

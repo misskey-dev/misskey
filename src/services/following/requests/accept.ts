@@ -1,11 +1,11 @@
-import { renderActivity } from '../../../remote/activitypub/renderer';
-import renderFollow from '../../../remote/activitypub/renderer/follow';
-import renderAccept from '../../../remote/activitypub/renderer/accept';
-import { deliver } from '../../../queue';
-import { publishMainStream } from '../../stream';
-import { insertFollowingDoc } from '../create';
-import { User, ILocalUser } from '../../../models/entities/user';
-import { FollowRequests, Users } from '../../../models';
+import { renderActivity } from '~/remote/activitypub/renderer';
+import renderFollow from '~/remote/activitypub/renderer/follow';
+import renderAccept from '~/remote/activitypub/renderer/accept';
+import { deliver } from '~/queue';
+import { publishMainStream } from '~/services/stream';
+import { insertFollowingDoc } from '~/services/following/create';
+import { User, ILocalUser } from '~/models/entities/user';
+import { FollowRequests, Users } from '~/models';
 
 export default async function(followee: User, follower: User) {
 	const request = await FollowRequests.findOne({

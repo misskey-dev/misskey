@@ -1,6 +1,6 @@
-import { Note } from '../../../models/entities/note';
-import { toHtml } from '../../../mfm/toHtml';
-import { parse } from '../../../mfm/parse';
+import { Note } from '~/models/entities/note';
+import { toHtml } from '~/mfm/toHtml';
+import { parse } from '~/mfm/parse';
 
 export default function(note: Note) {
 	let html = toHtml(parse(note.text), JSON.parse(note.mentionedRemoteUsers));

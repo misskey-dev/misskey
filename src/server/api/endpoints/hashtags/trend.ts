@@ -1,7 +1,7 @@
-import define from '../../define';
-import { fetchMeta } from '../../../../misc/fetch-meta';
-import { Notes } from '../../../../models';
-import { Note } from '../../../../models/entities/note';
+import define from '~/server/api/define';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { Notes } from '~/models';
+import { Note } from '~/models/entities/note';
 
 /*
 トレンドに載るためには「『直近a分間のユニーク投稿数が今からa分前～今からb分前の間のユニーク投稿数のn倍以上』のハッシュタグの上位5位以内に入る」ことが必要

@@ -1,5 +1,5 @@
-import define from '../../../define';
-import { createCleanRemoteFilesJob } from '../../../../../queue';
+import define from '~/server/api/define';
+import { createCleanRemoteFilesJob } from '~/queue';
 
 export const meta = {
 	tags: ['admin'],

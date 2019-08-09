@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { DriveFiles } from '../../../../../models';
+import define from '~/server/api/define';
+import { DriveFiles } from '~/models';
 
 export const meta = {
 	desc: {

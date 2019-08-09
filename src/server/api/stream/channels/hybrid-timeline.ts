@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
-import Channel from '../channel';
-import { fetchMeta } from '../../../../misc/fetch-meta';
-import { Notes } from '../../../../models';
-import { PackedNote } from '../../../../models/repositories/note';
-import { PackedUser } from '../../../../models/repositories/user';
+import shouldMuteThisNote from '~/misc/should-mute-this-note';
+import Channel from '~/server/api/stream/channel';
+import { fetchMeta } from '~/misc/fetch-meta';
+import { Notes } from '~/models';
+import { PackedNote } from '~/models/repositories/note';
+import { PackedUser } from '~/models/repositories/user';
 
 export default class extends Channel {
 	public readonly chName = 'hybridTimeline';

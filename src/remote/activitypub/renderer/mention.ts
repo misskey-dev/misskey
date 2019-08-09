@@ -1,6 +1,6 @@
-import config from '../../../config';
-import { User, ILocalUser } from '../../../models/entities/user';
-import { Users } from '../../../models';
+import config from '~/config';
+import { User, ILocalUser } from '~/models/entities/user';
+import { Users } from '~/models';
 
 export default (mention: User) => ({
 	type: 'Mention',

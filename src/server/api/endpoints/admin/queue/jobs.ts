@@ -1,6 +1,6 @@
 import $ from 'cafy';
-import define from '../../../define';
-import { deliverQueue, inboxQueue } from '../../../../../queue';
+import define from '~/server/api/define';
+import { deliverQueue, inboxQueue } from '~/queue';
 
 export const meta = {
 	tags: ['admin'],

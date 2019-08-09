@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Xev from 'xev';
-import Channel from '../channel';
+import Channel from '~/server/api/stream/channel';
 
 const ev = new Xev();
 

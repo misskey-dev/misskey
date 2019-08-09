@@ -1,9 +1,9 @@
-import redis from '../db/redis';
-import { User } from '../models/entities/user';
-import { Note } from '../models/entities/note';
-import { UserList } from '../models/entities/user-list';
-import { ReversiGame } from '../models/entities/games/reversi/game';
-import { UserGroup } from '../models/entities/user-group';
+import redis from '~/db/redis';
+import { User } from '~/models/entities/user';
+import { Note } from '~/models/entities/note';
+import { UserList } from '~/models/entities/user-list';
+import { ReversiGame } from '~/models/entities/games/reversi/game';
+import { UserGroup } from '~/models/entities/user-group';
 
 class Publisher {
 	private publish = (channel: string, type: string | null, value?: any): void => {
