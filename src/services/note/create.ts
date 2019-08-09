@@ -434,7 +434,7 @@ function index(note: Note) {
 	if (note.text == null || config.elasticsearch == null) return;
 
 	es!.index({
-		index: 'misskey_note',
+		index: config.elasticsearch.index || 'misskey_note',
 		id: note.id.toString(),
 		body: {
 			text: note.text.toLowerCase(),
