@@ -25,6 +25,11 @@
 		"test": "gulp test",
 		"format": "gulp format"
 	},
+	"_moduleAliases": {
+		"package.json": "package.json",
+		"~": "built",
+		"$": "locales"
+	},
 	"resolutions": {
 		"gulp-cssnano/cssnano/postcss-svgo/svgo/js-yaml": "^3.13.1",
 		"lodash": "^4.17.13"
@@ -173,6 +178,7 @@
 		"lolex": "4.1.0",
 		"lookup-dns-cache": "2.1.0",
 		"mocha": "6.2.0",
+		"module-alias": "2.2.1",
 		"moji": "0.5.1",
 		"ms": "2.1.2",
 		"nested-property": "1.0.1",
