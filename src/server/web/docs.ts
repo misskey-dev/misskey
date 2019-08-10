@@ -13,7 +13,7 @@ import * as glob from 'glob';
 import config from '~/config';
 import { licenseHtml } from '~/misc/license';
 import { copyright } from '~/const.json';
-import * as locales from '%';
+import * as locales from '$';
 import * as nestedProperty from 'nested-property';
 
 function getLang(lang: string): string {

@@ -21,8 +21,9 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
+      "package.json": ["./package.json"],
       "~*": ["./src*"],
-      "%": ["./locales/"]
+      "$": ["./locales/"]
     },
     "typeRoots": [
       "node_modules/@types",

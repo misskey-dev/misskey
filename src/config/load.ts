@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
-import * as pkg from '~/package.json';
+import * as pkg from 'package.json';
 
 /**
  * Path of configuration directory

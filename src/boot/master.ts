@@ -8,7 +8,7 @@ import Logger from '~/services/logger';
 import loadConfig from '~/config/load';
 import { Config } from '~/config/types';
 import { lessThan } from '~/prelude/array';
-import * as pkg from '~/package.json';
+import * as pkg from 'package.json';
 import { program } from '~/argv';
 import { showMachineInfo } from '~/misc/show-machine-info';
 import { initDb } from '~/db/postgre';

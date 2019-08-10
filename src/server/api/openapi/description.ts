@@ -1,6 +1,6 @@
 import config from '~/config';
 import endpoints from '~/server/api/endpoints';
-import * as locale from '%';
+import * as locale from '$';
 import { fromEntries } from '~/prelude/array';
 import { kinds as kindsList } from '~/server/api/kinds';
 
