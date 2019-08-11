@@ -165,7 +165,9 @@ export default Vue.extend({
 	i18n: i18n(),
 
 	mixins: [
-		paging({}),
+		paging({
+			isContainer: true
+		}),
 	],
 
 	props: {
