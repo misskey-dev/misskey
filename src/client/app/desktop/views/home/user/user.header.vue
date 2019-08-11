@@ -5,7 +5,7 @@
 		<div class="fade"></div>
 		<div class="title">
 			<p class="name">
-				<mk-user-name :user="user"/>
+				<mk-user-name :user="user" :nowrap="false"/>
 			</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
