@@ -396,9 +396,11 @@ export default Vue.extend({
 			box-shadow 0 3px 0 0 var(--primary)
 
 		> .header
-			display flex
+			display inline-block
 			align-items center
 			overflow hidden
+			text-overflow ellipsis
+			white-space nowrap
 
 			[data-icon]
 				margin-right 8px
