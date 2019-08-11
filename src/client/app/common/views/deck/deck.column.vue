@@ -398,7 +398,6 @@ export default Vue.extend({
 		> .header
 			display flex
 			align-items center
-			width 100%
 			overflow hidden
 
 			[data-icon]
@@ -407,6 +406,9 @@ export default Vue.extend({
 		> .count
 			margin-left 4px
 			opacity 0.5
+		
+		> span:only-of-type
+			width 100%
 
 		> .toggleActive
 		> .menu
