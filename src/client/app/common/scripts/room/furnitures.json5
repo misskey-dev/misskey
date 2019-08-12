@@ -36,6 +36,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "pudding",
+		"place": "floor"
+	},
+	{
 		"id": "cardboard-box",
 		"place": "floor"
 	},
