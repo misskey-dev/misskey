@@ -43,12 +43,12 @@ class ElasticSearch extends SearchClientBase {
 
 		this._client.indices
 			.exists({
-				index: 'misskey_note'
+				index: config.elasticsearch.index || 'misskey_note'
 			})
 			.then(exist => {
 				if (!exist.body) {
 					this._client.indices.create({
-						index: 'misskey_note',
+						index: config.elasticsearch.index || 'misskey_note',
 						body: index
 					});
 				}
@@ -101,7 +101,7 @@ class ElasticSearch extends SearchClientBase {
 
 		return this._client
 			.search({
-				index: 'misskey_note',
+				index: config.elasticsearch.index || 'misskey_note',
 				body: {
 					size: limit,
 					from: offset,
@@ -120,12 +120,12 @@ class ElasticSearch extends SearchClientBase {
 			text: String(note.text).toLowerCase()
 		};
 
-		for (const [qualifierId, noteKey] of Object.entries(this.QUALIFIERS)) {
+		for (const [qualifierId: string, noteKey: string] of Object.entries(this.QUALIFIERS)) {
 			qualifierMap[qualifierId] = String(note[noteKey]);
 		}
 
 		return this._client.index({
-			index: 'misskey_note',
+			index: config.elasticsearch.index || 'misskey_note',
 			id: note.id.toString(),
 			body: qualifierMap
 		});

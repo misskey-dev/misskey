@@ -28,6 +28,7 @@ export type Source = {
 		host: string;
 		port: number;
 		pass: string;
+		index?: string;
 	};
 	sonic: {
 		host: string;

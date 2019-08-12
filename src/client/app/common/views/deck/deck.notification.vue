@@ -54,8 +54,8 @@
 		<div>
 			<header>
 				<fa icon="user-clock" class="icon"/>
-				<router-link :to="notification.user | userPage">
-					<mk-user-name :user="notification.user" class="name"/>
+				<router-link :to="notification.user | userPage" class="name">
+					<mk-user-name :user="notification.user"/>
 				</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -67,8 +67,8 @@
 		<div>
 			<header>
 				<fa icon="chart-pie" class="icon"/>
-				<router-link :to="notification.user | userPage">
-					<mk-user-name :user="notification.user" class="name"/>
+				<router-link :to="notification.user | userPage" class="name">
+					<mk-user-name :user="notification.user"/>
 				</router-link>
 				<mk-time :time="notification.createdAt"/>
 			</header>
@@ -166,6 +166,10 @@ export default Vue.extend({
 					font-style normal
 					display inline-block
 					margin-right 3px
+
+		&.reaction
+			> div > header
+				align-items normal
 
 		&.renote
 			> div > header [data-icon]

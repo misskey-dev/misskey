@@ -11,17 +11,16 @@
 		<component :is="!$store.state.device.reduceMotion ? 'transition-group' : 'div'" name="mk-notifications" class="transition" tag="div">
 			<template v-for="(notification, i) in _notifications">
 				<div class="notification" :class="notification.type" :key="notification.id">
-					<mk-time :time="notification.createdAt"/>
-
 					<template v-if="notification.type == 'reaction'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p>
-								<mk-reaction-icon :reaction="notification.reaction"/>
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
+							<header>
+								<mk-reaction-icon :reaction="notification.reaction" class="icon"/>
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id" class="name">
 									<mk-user-name :user="notification.user"/>
 								</router-link>
-							</p>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>
 									<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
@@ -33,11 +32,13 @@
 					<template v-if="notification.type == 'renote'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p><fa icon="retweet"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+							<header>
+								<fa icon="retweet" class="icon"/>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId" class="name">
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
-							</p>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
 								<fa icon="quote-left"/>
 									<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :custom-emojis="notification.note.renote.emojis"/>
@@ -49,11 +50,13 @@
 					<template v-if="notification.type == 'quote'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p><fa icon="quote-left"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+							<header>
+								<fa icon="quote-left" class="icon"/>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId" class="name">
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
-							</p>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 							</router-link>
@@ -63,33 +66,39 @@
 					<template v-if="notification.type == 'follow'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p><fa icon="user-plus"/>
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
+							<header>
+								<fa icon="user-plus" class="icon"/>
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id" class="name">
 									<mk-user-name :user="notification.user"/>
 								</router-link>
-							</p>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 						</div>
 					</template>
 
 					<template v-if="notification.type == 'receiveFollowRequest'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p><fa icon="user-clock"/>
-								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
+							<header>
+								<fa icon="user-clock" class="icon"/>
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id" class="name">
 									<mk-user-name :user="notification.user"/>
 								</router-link>
-							</p>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 						</div>
 					</template>
 
 					<template v-if="notification.type == 'reply'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p><fa icon="reply"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+							<header>
+								<fa icon="reply" class="icon"/>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId" class="name">
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
-							</p>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 							</router-link>
@@ -99,11 +108,13 @@
 					<template v-if="notification.type == 'mention'">
 						<mk-avatar class="avatar" :user="notification.note.user"/>
 						<div class="text">
-							<p><fa icon="at"/>
-								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId">
+							<header>
+								<fa icon="at" class="icon"/>
+								<router-link :to="notification.note.user | userPage" v-user-preview="notification.note.userId" class="name">
 									<mk-user-name :user="notification.note.user"/>
 								</router-link>
-							</p>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 							<router-link class="note-preview" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<mfm :text="getNoteSummary(notification.note)" :plain="true" :custom-emojis="notification.note.emojis"/>
 							</router-link>
@@ -113,9 +124,13 @@
 					<template v-if="notification.type == 'pollVote'">
 						<mk-avatar class="avatar" :user="notification.user"/>
 						<div class="text">
-							<p><fa icon="chart-pie"/><router-link :to="notification.user | userPage" v-user-preview="notification.user.id">
-								<mk-user-name :user="notification.user"/>
-							</router-link></p>
+							<header>
+								<fa icon="chart-pie" class="icon"/>
+								<router-link :to="notification.user | userPage" v-user-preview="notification.user.id" class="name">
+									<mk-user-name :user="notification.user"/>
+								</router-link>
+								<mk-time :time="notification.createdAt"/>
+							</header>
 							<router-link class="note-ref" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 								<fa icon="quote-left"/>
 									<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
@@ -150,7 +165,9 @@ export default Vue.extend({
 	i18n: i18n(),
 
 	mixins: [
-		paging({}),
+		paging({
+			isContainer: true
+		}),
 	],
 
 	props: {
@@ -241,15 +258,6 @@ export default Vue.extend({
 				&:last-child
 					border-bottom none
 
-				> .mk-time
-					display inline
-					position absolute
-					top 16px
-					right 12px
-					vertical-align top
-					color var(--noteHeaderInfo)
-					font-size small
-
 				&:after
 					content ""
 					display block
@@ -270,11 +278,22 @@ export default Vue.extend({
 					width calc(100% - 36px)
 					padding-left 8px
 
-					p
-						margin 0
+					> header
+						display flex
+						align-items baseline
+						white-space nowrap
 
-						[data-icon], .mk-reaction-icon
+						> .icon
 							margin-right 4px
+
+						> .name
+							overflow hidden
+							text-overflow ellipsis
+
+						> .mk-time
+							margin-left auto
+							color var(--noteHeaderInfo)
+							font-size 0.9em
 
 				.note-preview
 					color var(--noteText)
@@ -296,20 +315,24 @@ export default Vue.extend({
 						display inline-block
 						margin-right 3px
 
+				&.reaction
+					.text header
+						align-items normal
+
 				&.renote, &.quote
-					.text p [data-icon]
+					.text header [data-icon]
 						color #77B255
 
 				&.follow
-					.text p [data-icon]
+					.text header [data-icon]
 						color #53c7ce
 
 				&.receiveFollowRequest
-					.text p [data-icon]
+					.text header [data-icon]
 						color #888
 
 				&.reply, &.mention
-					.text p [data-icon]
+					.text header [data-icon]
 						color #555
 
 			> .date

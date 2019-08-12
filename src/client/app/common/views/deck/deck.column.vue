@@ -14,7 +14,7 @@
 			<template v-if="active"><fa icon="angle-up"/></template>
 			<template v-else><fa icon="angle-down"/></template>
 		</button>
-		<span><slot name="header"></slot></span>
+		<span class="header"><slot name="header"></slot></span>
 		<span class="count" v-if="count > 0">({{ count }})</span>
 		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu"><fa icon="caret-down"/></button>
 		<button v-else class="close" @click.stop="close"><fa icon="times"/></button>
@@ -395,13 +395,22 @@ export default Vue.extend({
 		&.indicate
 			box-shadow 0 3px 0 0 var(--primary)
 
-		> span
+		> .header
+			display inline-block
+			align-items center
+			overflow hidden
+			text-overflow ellipsis
+			white-space nowrap
+
 			[data-icon]
 				margin-right 8px
 
 		> .count
 			margin-left 4px
 			opacity 0.5
+		
+		> span:only-of-type
+			width 100%
 
 		> .toggleActive
 		> .menu
