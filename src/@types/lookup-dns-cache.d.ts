@@ -1,5 +1,5 @@
 declare module 'lookup-dns-cache' {
-	import { LookupOneOptions, LookupAllOptions, LookupOptions, LookupAddress } from 'dns'
+	import { LookupOneOptions, LookupAllOptions, LookupOptions, LookupAddress } from 'dns';
 
 	function lookup(hostname: string, family: number, callback: (err: NodeJS.ErrnoException | null, address: string, family: number) => void): void;
 	function lookup(hostname: string, options: LookupOneOptions, callback: (err: NodeJS.ErrnoException | null, address: string, family: number) => void): void;

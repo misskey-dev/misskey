@@ -106,7 +106,7 @@ export class SonicDriver extends SearchClientBase {
 				Object.entries(this.QUALIFIERS)
 					.map(
 						([qualifierId, qualifierValue]: [string, string]) =>
-							qualifierId + '-' + String(note[qualifierValue])
+							qualifierId + '-' + note[qualifierValue]
 					)
 					.concat(['default'])
 					.map((bucket: string) =>

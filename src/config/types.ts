@@ -29,6 +29,11 @@ export type Source = {
 		port: number;
 		pass: string;
 	};
+	sonic: {
+		host: string;
+		port: number;
+		pass: string;
+	};
 
 	autoAdmin?: boolean;
 
