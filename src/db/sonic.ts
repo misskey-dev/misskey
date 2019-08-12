@@ -1,7 +1,7 @@
 import * as Sonic from 'sonic-channel';
 import config from '../config';
-import {SearchClientBase} from './SearchClientBase';
-import {Note} from '../models/entities/note';
+import { SearchClientBase } from './SearchClientBase';
+import { Note } from '../models/entities/note';
 
 export class SonicDriver extends SearchClientBase {
 	public available = true;
@@ -33,8 +33,8 @@ export class SonicDriver extends SearchClientBase {
 				self._ingestReady = false;
 				self.emit('disconnected');
 			},
-			timeout() {},
-			retrying() {},
+			timeout() { },
+			retrying() { },
 			error(err: Error) {
 				self.emit('error', err);
 			}
@@ -51,8 +51,8 @@ export class SonicDriver extends SearchClientBase {
 				self._searchReady = false;
 				self.emit('disconnected');
 			},
-			timeout() {},
-			retrying() {},
+			timeout() { },
+			retrying() { },
 			error(err: Error) {
 				self.emit('error', err);
 			}
@@ -74,7 +74,7 @@ export class SonicDriver extends SearchClientBase {
 
 	public search(
 		content: string,
-		qualifiers: {userId?: string | null; userHost?: string | null} = {},
+		qualifiers: { userId?: string | null; userHost?: string | null } = {},
 		limit: number = 20,
 		offset?: number
 	) {
@@ -103,17 +103,11 @@ export class SonicDriver extends SearchClientBase {
 	public push(note: Note) {
 		const doIngest = () => {
 			return Promise.all(
-				Object.entries(this.QUALIFIERS)
-					.map(
-						([qualifierId, qualifierValue]: [string, string]) =>
-							qualifierId + '-' + note[qualifierValue]
-					)
-					.concat(['default'])
+				["userId-" + note.userId, "userHost-" + note.userHost, "default"]
 					.map((bucket: string) =>
 						this._ingestClient.push(
 							'misskey_note',
 							bucket,
-
 							note.id,
 							String(note.text).toLowerCase()
 						)
@@ -143,7 +137,7 @@ export class SonicDriver extends SearchClientBase {
 	}
 }
 
-function pickQualifier(qualifiers: {userId?: string | null; userHost?: string | null}) {
+function pickQualifier(qualifiers: { userId?: string | null; userHost?: string | null }) {
 	if (qualifiers.userId) return 'userId-' + qualifiers.userId;
 	else if (qualifiers.userHost) return 'userHost-' + qualifiers.userHost;
 	else return 'default';
@@ -151,8 +145,8 @@ function pickQualifier(qualifiers: {userId?: string | null; userHost?: string | 
 
 export default (config.sonic
 	? new SonicDriver({
-			host: config.sonic.host,
-			port: config.sonic.port,
-			auth: config.sonic.pass === null ? undefined : config.sonic.pass
+		host: config.sonic.host,
+		port: config.sonic.port,
+		auth: config.sonic.pass == undefined ? null : config.sonic.pass
 	})
 	: null);

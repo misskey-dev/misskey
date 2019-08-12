@@ -120,14 +120,13 @@ class ElasticSearch extends SearchClientBase {
 			text: String(note.text).toLowerCase()
 		};
 
-		for (const [qualifierId: string, noteKey: string] of Object.entries(this.QUALIFIERS)) {
-			qualifierMap[qualifierId] = String(note[noteKey]);
-		}
-
 		return this._client.index({
 			index: config.elasticsearch.index || 'misskey_note',
 			id: note.id.toString(),
-			body: qualifierMap
+			body: {
+				userId: note.userId,
+				userHost: note.userHost
+			}
 		});
 	}
 }

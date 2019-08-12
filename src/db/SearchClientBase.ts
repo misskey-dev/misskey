@@ -1,8 +1,3 @@
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 
-export class SearchClientBase extends EventEmitter {
-	public QUALIFIERS = {
-		userId: 'userId',
-		userHost: 'userHost'
-	};
-}
+export class SearchClientBase extends EventEmitter { }
