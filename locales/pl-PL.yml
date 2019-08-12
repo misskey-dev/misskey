@@ -38,6 +38,7 @@ common:
     reply: "Odpowiedz"
     quote: "Cytat"
     renote: "Udostępnij"
+    mention: "Wzmianki"
     reaction: "Reakcja"
   got-it: "Rozumiem!"
   customization-tips:
