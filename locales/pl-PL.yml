@@ -35,11 +35,11 @@ common:
     pollVote: "Głosy"
     follow: "Śledzeni"
     receiveFollowRequest: "Prośby o śledzenie"
-    reply: "Odpowiedz"
+    reply: "Odpowiedzi"
     quote: "Cytat"
     renote: "Udostępnij"
     mention: "Wzmianki"
-    reaction: "Reakcja"
+    reaction: "Reakcje"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
