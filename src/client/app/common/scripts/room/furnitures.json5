@@ -32,6 +32,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "pencil",
+		"place": "floor"
+	},
+	{
 		"id": "cardboard-box",
 		"place": "floor"
 	},
