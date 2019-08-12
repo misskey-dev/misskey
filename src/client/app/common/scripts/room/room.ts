@@ -405,6 +405,7 @@ export class Room {
 	public removeFurniture() {
 		const obj = this.selectedObject;
 		this.scene.remove(obj);
+		this.objects = this.objects.filter(object => object.name !== obj.name);
 		this.furnitures = this.furnitures.filter(furniture => furniture.id !== obj.name);
 		this.selectedObject = null;
 	}
