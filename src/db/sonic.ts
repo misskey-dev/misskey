@@ -5,6 +5,7 @@ import { Note } from '../models/entities/note';
 
 export class SonicDriver extends SearchClientBase {
 	public available = true;
+	public index = 'misskey_note';
 
 	public _ingestQueue: (() => Promise<void>)[] = [];
 	public _searchQueue: (() => Promise<void>)[] = [];
@@ -18,10 +19,11 @@ export class SonicDriver extends SearchClientBase {
 		host: string;
 		port: number;
 		auth: string | null;
-	}) {
+	}, index?: string) {
 		super();
 		// Bad!
 		const self = this;
+		this.index = index || 'misskey_note';
 		this._ingestClient = new Sonic.Ingest(connectionArgs).connect({
 			connected() {
 				// execute queue of queries
@@ -80,7 +82,7 @@ export class SonicDriver extends SearchClientBase {
 	) {
 		const doSearch = () =>
 			this._searchClient.query(
-				'misskey_note',
+				this.index,
 				pickQualifier(qualifiers),
 				content,
 				limit,
@@ -103,10 +105,10 @@ export class SonicDriver extends SearchClientBase {
 	public push(note: Note) {
 		const doIngest = () => {
 			return Promise.all(
-				["userId-" + note.userId, "userHost-" + note.userHost, "default"]
+				['userId-' + note.userId, 'userHost-' + note.userHost, 'default']
 					.map((bucket: string) =>
 						this._ingestClient.push(
-							'misskey_note',
+							this.index,
 							bucket,
 							note.id,
 							String(note.text).toLowerCase()
@@ -148,5 +150,5 @@ export default (config.sonic
 		host: config.sonic.host,
 		port: config.sonic.port,
 		auth: config.sonic.pass == undefined ? null : config.sonic.pass
-	})
+	}, config.sonic.index)
 	: null);

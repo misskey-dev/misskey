@@ -3,7 +3,7 @@ import config from '../config';
 import {SearchClientBase} from './SearchClientBase';
 import {Note} from '../models/entities/note';
 
-const index = {
+const indexData = {
 	settings: {
 		analysis: {
 			analyzer: {
@@ -33,8 +33,10 @@ const index = {
 };
 
 class ElasticSearch extends SearchClientBase {
-	constructor(address: string) {
+	public index = 'misskey_note';
+	constructor(address: string, index?: string) {
 		super();
+		this.index = index || 'misskey_note';
 		// Init ElasticSearch connection
 		this._client = new elasticsearch.Client({
 			node: address,
@@ -43,13 +45,13 @@ class ElasticSearch extends SearchClientBase {
 
 		this._client.indices
 			.exists({
-				index: config.elasticsearch.index || 'misskey_note'
+				index: this.index
 			})
 			.then(exist => {
 				if (!exist.body) {
 					this._client.indices.create({
-						index: config.elasticsearch.index || 'misskey_note',
-						body: index
+						index: this.index,
+						body: indexData
 					});
 				}
 			});
@@ -101,7 +103,7 @@ class ElasticSearch extends SearchClientBase {
 
 		return this._client
 			.search({
-				index: config.elasticsearch.index || 'misskey_note',
+				index: this.index,
 				body: {
 					size: limit,
 					from: offset,
@@ -116,14 +118,11 @@ class ElasticSearch extends SearchClientBase {
 	}
 
 	public push(note: Note) {
-		const qualifierMap = {
-			text: String(note.text).toLowerCase()
-		};
-
 		return this._client.index({
-			index: config.elasticsearch.index || 'misskey_note',
+			index: this.index,
 			id: note.id.toString(),
 			body: {
+				text: String(note.text).toLowerCase(),
 				userId: note.userId,
 				userHost: note.userHost
 			}
@@ -133,6 +132,7 @@ class ElasticSearch extends SearchClientBase {
 
 export default (config.elasticsearch
 	? new ElasticSearch(
-			`http://${config.elasticsearch.host}:${config.elasticsearch.port}`
+		`http://${config.elasticsearch.host}:${config.elasticsearch.port}`,
+		config.elasticsearch.index
 	)
 	: null);
