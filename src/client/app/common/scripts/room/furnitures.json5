@@ -1,0 +1,98 @@
+[
+	{
+		"id": "milk",
+		"place": "floor"
+	},
+	{
+		"id": "bed",
+		"place": "floor"
+	},
+	{
+		"id": "blacklowtable",
+		"place": "floor"
+	},
+	{
+		"id": "desk",
+		"place": "floor"
+	},
+	{
+		"id": "chair3",
+		"place": "floor"
+	},
+	{
+		"id": "pc",
+		"place": "floor"
+	},
+	{
+		"id": "plant",
+		"place": "floor"
+	},
+	{
+		"id": "eraser",
+		"place": "floor"
+	},
+	{
+		"id": "cardboard-box",
+		"place": "floor"
+	},
+	{
+		"id": "book",
+		"place": "floor"
+	},
+	{
+		"id": "piano",
+		"place": "floor"
+	},
+	{
+		"id": "facial-tissue",
+		"place": "floor"
+	},
+	{
+		"id": "corkboard",
+		"place": "wall"
+	},
+	{
+		"id": "mousepad",
+		"place": "floor"
+	},
+	{
+		"id": "monitor",
+		"place": "floor"
+	},
+	{
+		"id": "keyboard",
+		"place": "floor"
+	},
+	{
+		"id": "carpet",
+		"place": "floor"
+	},
+	{
+		"id": "mat",
+		"place": "floor"
+	},
+	{
+		"id": "color-box",
+		"place": "floor"
+	},
+	{
+		"id": "color-box2",
+		"place": "floor"
+	},
+	{
+		"id": "wall-clock",
+		"place": "wall"
+	},
+	{
+		"id": "cube",
+		"place": "floor"
+	},
+	{
+		"id": "photoframe",
+		"place": "wall"
+	},
+	{
+		"id": "photoframe2",
+		"place": "wall"
+	}
+]
