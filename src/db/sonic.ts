@@ -6,6 +6,7 @@ import { Note } from '../models/entities/note';
 export class SonicDriver extends SearchClientBase {
 	public available = true;
 	public index = 'misskey_note';
+	public locale = 'none';
 
 	public _ingestQueue: (() => Promise<void>)[] = [];
 	public _searchQueue: (() => Promise<void>)[] = [];
@@ -78,7 +79,8 @@ export class SonicDriver extends SearchClientBase {
 		content: string,
 		qualifiers: { userId?: string | null; userHost?: string | null } = {},
 		limit: number = 20,
-		offset?: number
+		offset?: number,
+		locale?: string
 	) {
 		const doSearch = () =>
 			this._searchClient.query(
@@ -86,7 +88,8 @@ export class SonicDriver extends SearchClientBase {
 				pickQualifier(qualifiers),
 				content,
 				limit,
-				offset
+				offset,
+				locale || this.locale,
 			);
 
 		if (this._searchReady) {
@@ -111,7 +114,8 @@ export class SonicDriver extends SearchClientBase {
 							this.index,
 							bucket,
 							note.id,
-							String(note.text).toLowerCase()
+							String(note.text).toLowerCase(),
+							this.locale
 						)
 					)
 			);
