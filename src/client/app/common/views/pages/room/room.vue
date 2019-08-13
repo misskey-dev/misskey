@@ -5,13 +5,11 @@
 		<input type="range" min="-2.5" max="2.5" step="0.01" v-model="selectedObjectPositionX"/>
 		<input type="range" min="-2.5" max="2.5" step="0.01" v-model="selectedObjectPositionZ"/>
 		<input type="range" min="0" max="1.5" step="0.01" v-model="selectedObjectPositionY"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationX"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationZ"/>
 		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationY"/>
 		<ui-button @click="room.removeFurniture()">{{ $t('remove') }}</ui-button>
 	</div>
 	<div class="menu">
-		<select v-model="selectedStoreItem" v-once>
+		<select v-model="selectedStoreItem">
 			<option v-for="item in storeItems" :value="item.id" :key="item.id">{{ $t('items.' + item.id) }}</option>
 		</select>
 		<ui-button @click="add()">{{ $t('add') }}</ui-button>

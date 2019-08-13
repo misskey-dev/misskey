@@ -55,7 +55,6 @@ export class Room {
 		this.renderer.autoClear = false;
 		this.renderer.setClearColor(new THREE.Color(0x051f2d));
 		this.renderer.shadowMap.enabled = this.graphicsQuality !== 'superLow';
-		this.renderer.shadowMap.cullFace = THREE.CullFaceBack;
 
 		this.canvas = this.renderer.domElement;
 		container.appendChild(this.renderer.domElement);
@@ -85,12 +84,12 @@ export class Room {
 
 			roomLight.position.set(0, 8, 0);
 			roomLight.castShadow = true;
-			roomLight.shadowBias = -0.0001;
-			roomLight.shadowMapWidth = shadowQuality;
-			roomLight.shadowMapHeight = shadowQuality;
-			roomLight.shadowCameraNear = 0.1;
-			roomLight.shadowCameraFar = 9;
-			roomLight.shadowCameraFov = 45;
+			roomLight.shadow.bias = -0.0001;
+			roomLight.shadow.mapSize.width = shadowQuality;
+			roomLight.shadow.mapSize.height = shadowQuality;
+			roomLight.shadow.camera.near = 0.1;
+			roomLight.shadow.camera.far = 9;
+			roomLight.shadow.camera.fov = 45;
 
 			this.scene.add(roomLight);
 			//#endregion
@@ -101,12 +100,12 @@ export class Room {
 
 		outLight.position.set(9, 3, -2);
 		outLight.castShadow = true;
-		outLight.shadowBias = -0.001; // アクネ、アーチファクト対策 その代わりピーターパンが発生する可能性がある
-		outLight.shadowMapWidth = shadowQuality;
-		outLight.shadowMapHeight = shadowQuality;
-		outLight.shadowCameraNear = 6;
-		outLight.shadowCameraFar = 15;
-		outLight.shadowCameraFov = 45;
+		outLight.shadow.bias = -0.001; // アクネ、アーチファクト対策 その代わりピーターパンが発生する可能性がある
+		outLight.shadow.mapSize.width = shadowQuality;
+		outLight.shadow.mapSize.height = shadowQuality;
+		outLight.shadow.camera.near = 6;
+		outLight.shadow.camera.far = 15;
+		outLight.shadow.camera.fov = 45;
 
 		this.scene.add(outLight);
 		//#endregion
