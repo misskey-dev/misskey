@@ -44,6 +44,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "cardboard-box2",
+		"place": "floor"
+	},
+	{
 		"id": "book",
 		"place": "floor"
 	},
