@@ -16,6 +16,14 @@
 		"place": "floor"
 	},
 	{
+		"id": "desk2",
+		"place": "floor"
+	},
+	{
+		"id": "chair",
+		"place": "floor"
+	},
+	{
 		"id": "chair3",
 		"place": "floor"
 	},
