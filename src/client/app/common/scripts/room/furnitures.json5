@@ -36,6 +36,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "plant2",
+		"place": "floor"
+	},
+	{
 		"id": "eraser",
 		"place": "floor"
 	},
