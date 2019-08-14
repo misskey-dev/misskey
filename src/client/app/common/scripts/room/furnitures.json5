@@ -28,6 +28,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "fan",
+		"place": "wall"
+	},
+	{
 		"id": "pc",
 		"place": "floor"
 	},

@@ -1,24 +1,25 @@
 import autobind from 'autobind-decorator';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
+//import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { Furniture } from './furniture';
-import { loadModel } from './load-model';
 import uuid = require('uuid');
 
 THREE.ImageUtils.crossOrigin = '';
 
 export class Room {
+	private clock: THREE.Clock;
 	private scene: THREE.Scene;
 	private renderer: THREE.WebGLRenderer;
 	private camera: THREE.OrthographicCamera;
 	private controls: OrbitControls;
 	private composer: EffectComposer;
+	private mixers: THREE.AnimationMixer[] = [];
 	private furnitures: Furniture[];
 	private graphicsQuality: 'superLow' | 'veryLow' | 'low' | 'medium' | 'high' | 'ultra';
 	private objects: THREE.Object3D[] = [];
@@ -38,6 +39,8 @@ export class Room {
 			0; // superLow
 
 		const isMyRoom = true;
+
+		this.clock = new THREE.Clock(true);
 
 		//#region Init a scene
 		this.scene = new THREE.Scene();
@@ -230,7 +233,7 @@ export class Room {
 
 		//#region Load furnitures
 		for (const furniture of furnitures) {
-			loadModel(furniture).then(obj => {
+			this.loadFurniture(furniture).then(obj => {
 				this.scene.add(obj.scene);
 				this.objects.push(obj.scene);
 			});
@@ -248,6 +251,9 @@ export class Room {
 	@autobind
 	private renderWithoutPostFXs() {
 		requestAnimationFrame(this.renderWithoutPostFXs);
+		for (const mixer of this.mixers) {
+			mixer.update(this.clock.getDelta());
+		}
 		this.controls.update();
 		this.renderer.render(this.scene, this.camera);
 	}
@@ -255,9 +261,44 @@ export class Room {
 	@autobind
 	private renderWithPostFXs() {
 		requestAnimationFrame(this.renderWithPostFXs);
+		for (const mixer of this.mixers) {
+			mixer.update(this.clock.getDelta());
+		}
 		this.controls.update();
 		this.renderer.clear();
 		this.composer.render();
+	}
+
+	@autobind
+	private loadFurniture(furniture: Furniture) {
+		return new Promise<GLTF>((res, rej) => {
+			const loader = new GLTFLoader();
+			loader.load(`/assets/furnitures/${furniture.type}/${furniture.type}.glb`, gltf => {
+				const model = gltf.scene;
+				if (gltf.animations.length > 0) { 
+					const mixer = new THREE.AnimationMixer(model);
+					this.mixers.push(mixer);
+					for (const clip of gltf.animations) {
+						console.log(clip);
+						mixer.clipAction(clip).play();
+					}
+				}
+				model.name = furniture.id;
+				model.position.x = furniture.position.x;
+				model.position.y = furniture.position.y;
+				model.position.z = furniture.position.z;
+				model.rotation.x = furniture.rotation.x;
+				model.rotation.y = furniture.rotation.y;
+				model.rotation.z = furniture.rotation.z;
+				model.traverse(child => {
+					if (child instanceof THREE.Mesh) {
+						child.castShadow = true;
+						child.receiveShadow = true;
+					}
+				});
+				res(gltf);
+			}, null, rej);
+		});
 	}
 
 	@autobind
@@ -394,7 +435,7 @@ export class Room {
 
 		this.furnitures.push(furniture);
 
-		loadModel(furniture).then(obj => {
+		this.loadFurniture(furniture).then(obj => {
 			this.scene.add(obj.scene);
 			this.objects.push(obj.scene);
 		});
