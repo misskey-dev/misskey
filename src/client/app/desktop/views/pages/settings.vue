@@ -13,6 +13,9 @@ export default Vue.extend({
 	components: {
 		XSettings: () => import('../components/settings.vue').then(m => m.default)
 	},
+	mounted() {
+		document.title = this.$root.instanceName;
+	},
 });
 </script>
 

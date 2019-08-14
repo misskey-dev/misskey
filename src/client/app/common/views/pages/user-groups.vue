@@ -62,6 +62,8 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		document.title = this.$root.instanceName;
+
 		this.$root.api('users/groups/owned').then(groups => {
 			this.ownedGroups = groups;
 		});
