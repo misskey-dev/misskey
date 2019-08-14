@@ -73,6 +73,14 @@ export class Room {
 		this.renderer.autoClear = false;
 		this.renderer.setClearColor(new THREE.Color(0x051f2d));
 		this.renderer.shadowMap.enabled = this.graphicsQuality !== 'superLow';
+		this.renderer.gammaOutput = true;
+		this.renderer.shadowMap.type =
+			this.graphicsQuality === 'ultra' ? THREE.PCFSoftShadowMap :
+			this.graphicsQuality === 'high' ? THREE.PCFSoftShadowMap :
+			this.graphicsQuality === 'medium' ? THREE.PCFShadowMap :
+			this.graphicsQuality === 'low' ? THREE.BasicShadowMap :
+			this.graphicsQuality === 'veryLow' ? THREE.BasicShadowMap :
+			THREE.BasicShadowMap; // superLow
 
 		this.canvas = this.renderer.domElement;
 		container.appendChild(this.renderer.domElement);
