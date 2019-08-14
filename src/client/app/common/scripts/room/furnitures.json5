@@ -8,7 +8,11 @@
 		"place": "floor"
 	},
 	{
-		"id": "blacklowtable",
+		"id": "low-table-black",
+		"place": "floor"
+	},
+	{
+		"id": "low-table-white",
 		"place": "floor"
 	},
 	{

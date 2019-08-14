@@ -8,7 +8,7 @@
 		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationX"/>
 		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationZ"/>
 		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationY"/>
-		<ui-button @click="room.removeFurniture()">{{ $t('remove') }}</ui-button>
+		<ui-button @click="remove()">{{ $t('remove') }}</ui-button>
 	</div>
 	<div class="menu">
 		<select v-model="selectedStoreItem">
@@ -112,6 +112,10 @@ export default Vue.extend({
 		add() {
 			if (this.selectedStoreItem == null) return;
 			room.addFurniture(this.selectedStoreItem);
+		},
+
+		remove() {
+			room.removeFurniture();
 		},
 
 		save() {
