@@ -283,6 +283,7 @@ router.get('*', async ctx => {
 	await ctx.render('base', {
 		img: meta.bannerUrl,
 		title: meta.name || 'Misskey',
+		instanceName: meta.name || 'Misskey',
 		desc: meta.description,
 		icon: meta.iconUrl
 	});
