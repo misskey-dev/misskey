@@ -504,6 +504,7 @@ common/views/components/note-menu.vue:
   unpin: "Odepnout"
   delete: "Odstranit"
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
+  delete-and-edit: "Smazat a upravit"
   remote: "Ukázat originální poznámku"
 common/views/components/user-menu.vue:
   mention: "Zmínění"
