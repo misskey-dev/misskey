@@ -68,6 +68,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "cardboard-box3",
+		"place": "floor"
+	},
+	{
 		"id": "book",
 		"place": "floor"
 	},
