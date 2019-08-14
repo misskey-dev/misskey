@@ -253,9 +253,13 @@ export class Room {
 	@autobind
 	private renderWithoutPostFXs() {
 		requestAnimationFrame(this.renderWithoutPostFXs);
+
+		// Update animations
+		const clock = this.clock.getDelta();
 		for (const mixer of this.mixers) {
-			mixer.update(this.clock.getDelta());
+			mixer.update(clock);
 		}
+
 		this.controls.update();
 		this.renderer.render(this.scene, this.camera);
 	}
@@ -263,9 +267,13 @@ export class Room {
 	@autobind
 	private renderWithPostFXs() {
 		requestAnimationFrame(this.renderWithPostFXs);
+
+		// Update animations
+		const clock = this.clock.getDelta();
 		for (const mixer of this.mixers) {
-			mixer.update(this.clock.getDelta());
+			mixer.update(clock);
 		}
+		
 		this.controls.update();
 		this.renderer.clear();
 		this.composer.render();
@@ -282,7 +290,6 @@ export class Room {
 				if (gltf.animations.length > 0) { 
 					const mixer = new THREE.AnimationMixer(model);
 					this.mixers.push(mixer);
-					console.log(this.mixers);
 					for (const clip of gltf.animations) {
 						mixer.clipAction(clip).play();
 					}

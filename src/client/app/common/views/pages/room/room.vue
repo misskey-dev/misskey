@@ -103,7 +103,7 @@ export default Vue.extend({
 			userId: user.id
 		});
 
-		room = new Room(user, roomInfo.furnitures, 'medium', this.$el, obj => {
+		room = new Room(user, roomInfo.furnitures, 'ultra', this.$el, obj => {
 			this.selectedObject = obj;
 		});
 	},

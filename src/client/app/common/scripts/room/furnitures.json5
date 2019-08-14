@@ -84,6 +84,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "moon",
+		"place": "floor"
+	},
+	{
 		"id": "corkboard",
 		"place": "wall"
 	},
