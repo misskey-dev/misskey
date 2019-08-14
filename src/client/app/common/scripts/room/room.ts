@@ -187,32 +187,30 @@ export class Room {
 		//#endregion
 
 		//#region Username
-		/*
 		const name = user.username;
 
-		const nameGeometry = new THREE.TextGeometry(name, {
-			size: 0.5,
-			height: 0,
-			curveSegments: 8,
-			font: 'helvetiker',
-			weight: 'normal',
-			style: 'normal',
-			bevelThickness: 0,
-			bevelSize: 0,
-			bevelEnabled: false
+		new THREE.FontLoader().load('/assets/fonts/helvetiker_regular.typeface.json', font => {
+			const nameGeometry = new THREE.TextGeometry(name, {
+				size: 0.5,
+				height: 0,
+				curveSegments: 8,
+				font: font,
+				bevelThickness: 0,
+				bevelSize: 0,
+				bevelEnabled: false
+			});
+	
+			const nameMaterial = new THREE.MeshLambertMaterial({
+				color: 0xffffff
+			});
+	
+			const nameObject = new THREE.Mesh(nameGeometry, nameMaterial);
+			nameObject.position.set(-3, 2.25, 1.25);
+			nameObject.rotation.y = Math.PI / 2;
+			nameObject.castShadow = false;
+	
+			this.scene.add(nameObject);
 		});
-
-		const nameMaterial = new THREE.MeshLambertMaterial({
-			color: 0xffffff
-		});
-
-		const nameObject = new THREE.Mesh(nameGeometry, nameMaterial);
-		nameObject.position.set(-3, 2.25, 1.25);
-		nameObject.rotation.y = Math.PI / 2;
-		nameObject.castShadow = false;
-
-		this.scene.add(nameObject);
-		*/
 		//#endregion
 		//#endregion
 
