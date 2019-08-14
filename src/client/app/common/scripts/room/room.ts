@@ -12,11 +12,17 @@ import uuid = require('uuid');
 
 THREE.ImageUtils.crossOrigin = '';
 
+type Options = {
+	graphicsQuality: Room['graphicsQuality'];
+	onChangeSelect: Room['onChangeSelect'];
+	useOrthographicCamera: boolean;
+};
+
 export class Room {
 	private clock: THREE.Clock;
 	private scene: THREE.Scene;
 	private renderer: THREE.WebGLRenderer;
-	private camera: THREE.OrthographicCamera;
+	private camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
 	private controls: OrbitControls;
 	private composer: EffectComposer;
 	private mixers: THREE.AnimationMixer[] = [];
@@ -27,17 +33,17 @@ export class Room {
 	private onChangeSelect: Function;
 	public canvas: HTMLCanvasElement;
 
-	constructor(user, furnitures: Room['furnitures'], graphicsQuality: Room['graphicsQuality'], container, onChangeSelect) {
+	constructor(user, furnitures: Room['furnitures'], container, options: Options) {
 		this.furnitures = furnitures;
-		this.graphicsQuality = graphicsQuality;
-		this.onChangeSelect = onChangeSelect;
+		this.graphicsQuality = options.graphicsQuality;
+		this.onChangeSelect = options.onChangeSelect;
 
 		const shadowQuality =
-			graphicsQuality === 'ultra' ? 16384 :
-			graphicsQuality === 'high' ? 8192 :
-			graphicsQuality === 'medium' ? 4096 :
-			graphicsQuality === 'low' ? 2048 :
-			graphicsQuality === 'veryLow' ? 1024 :
+			this.graphicsQuality === 'ultra' ? 16384 :
+			this.graphicsQuality === 'high' ? 8192 :
+			this.graphicsQuality === 'medium' ? 4096 :
+			this.graphicsQuality === 'low' ? 2048 :
+			this.graphicsQuality === 'veryLow' ? 1024 :
 			0; // superLow
 
 		const isMyRoom = true;
@@ -54,11 +60,11 @@ export class Room {
 		this.renderer = new THREE.WebGLRenderer({
 			antialias: false,
 			powerPreference:
-				graphicsQuality === 'ultra' ? 'high-performance' :
-				graphicsQuality === 'high' ? 'high-performance' :
-				graphicsQuality === 'medium' ? 'default' :
-				graphicsQuality === 'low' ? 'low-power' :
-				graphicsQuality === 'veryLow' ? 'low-power' :
+				this.graphicsQuality === 'ultra' ? 'high-performance' :
+				this.graphicsQuality === 'high' ? 'high-performance' :
+				this.graphicsQuality === 'medium' ? 'default' :
+				this.graphicsQuality === 'low' ? 'low-power' :
+				this.graphicsQuality === 'veryLow' ? 'low-power' :
 				'low-power' // superLow
 		});
 
@@ -73,14 +79,22 @@ export class Room {
 		//#endregion
 
 		//#region Init a camera
-		this.camera = new THREE.OrthographicCamera(
-			width / - 2, width / 2, height / 2, height / - 2, -10, 10);
+		this.camera = options.useOrthographicCamera
+			? new THREE.OrthographicCamera(
+				width / - 2, width / 2, height / 2, height / - 2, -10, 10)
+			: new THREE.PerspectiveCamera(45, width / height);
 
-		this.camera.zoom = 100;
-		this.camera.position.x = 2;
-		this.camera.position.y = 2;
-		this.camera.position.z = 2;
-		this.camera.updateProjectionMatrix();
+		if (options.useOrthographicCamera) {
+			this.camera.position.x = 2;
+			this.camera.position.y = 2;
+			this.camera.position.z = 2;
+			this.camera.zoom = 100;
+			this.camera.updateProjectionMatrix();
+		} else {
+			this.camera.position.x = 5;
+			this.camera.position.y = 2;
+			this.camera.position.z = 5;
+		}
 
 		this.scene.add(this.camera);
 		//#endregion

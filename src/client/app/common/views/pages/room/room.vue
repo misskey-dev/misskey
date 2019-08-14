@@ -103,8 +103,12 @@ export default Vue.extend({
 			userId: user.id
 		});
 
-		room = new Room(user, roomInfo.furnitures, 'ultra', this.$el, obj => {
-			this.selectedObject = obj;
+		room = new Room(user, roomInfo.furnitures, this.$el, {
+			graphicsQuality: 'ultra',
+			onChangeSelect: obj => {
+				this.selectedObject = obj;
+			},
+			useOrthographicCamera: true
 		});
 	},
 
