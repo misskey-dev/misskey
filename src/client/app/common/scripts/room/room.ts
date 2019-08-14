@@ -52,7 +52,14 @@ export class Room {
 
 		//#region Init a renderer
 		this.renderer = new THREE.WebGLRenderer({
-			antialias: false
+			antialias: false,
+			powerPreference:
+				graphicsQuality === 'ultra' ? 'high-performance' :
+				graphicsQuality === 'high' ? 'high-performance' :
+				graphicsQuality === 'medium' ? 'default' :
+				graphicsQuality === 'low' ? 'low-power' :
+				graphicsQuality === 'veryLow' ? 'low-power' :
+				'low-power' // superLow
 		});
 
 		this.renderer.setPixelRatio(window.devicePixelRatio);
