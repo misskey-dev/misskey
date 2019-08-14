@@ -28,7 +28,12 @@ export default class MiOS extends EventEmitter {
 	};
 
 	public get instanceName() {
-		return this.meta ? (this.meta.data.name || 'Misskey') : 'Misskey';
+		const siteName = document.querySelector('meta[property="og:site_name"]') as HTMLMetaElement;
+		if (siteName && siteName.content) {
+			return siteName.content;
+		}
+
+		return 'Misskey';
 	}
 
 	private isMetaFetching = false;
