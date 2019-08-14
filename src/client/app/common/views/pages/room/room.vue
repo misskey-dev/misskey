@@ -1,7 +1,7 @@
 <template>
 <div class="hveuntkp">
-	<div class="controller" v-if="room && room.selectedObject != null">
-		<x-preview :object="room.selectedObject"/>
+	<div class="controller" v-if="this.selectedObject != null">
+		<x-preview :object="this.selectedObject"/>
 		<input type="range" min="-2.5" max="2.5" step="0.01" v-model="selectedObjectPositionX"/>
 		<input type="range" min="-2.5" max="2.5" step="0.01" v-model="selectedObjectPositionZ"/>
 		<input type="range" min="0" max="1.5" step="0.01" v-model="selectedObjectPositionY"/>
@@ -28,6 +28,8 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import XPreview from './preview.vue';
 const storeItems = require('../../../scripts/room/furnitures.json5');
 
+let room;
+
 export default Vue.extend({
 	i18n: i18n(''),
 
@@ -46,7 +48,7 @@ export default Vue.extend({
 		return {
 			storeItems: storeItems,
 			selectedStoreItem: null,
-			room: null,
+			selectedObject: null,
 			selectedObjectPositionX: 0,
 			selectedObjectPositionY: 0,
 			selectedObjectPositionZ: 0,
@@ -58,37 +60,37 @@ export default Vue.extend({
 
 	watch: {
 		selectedObjectPositionX() {
-			this.room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
+			room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
 		},
 
 		selectedObjectPositionY() {
-			this.room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
+			room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
 		},
 
 		selectedObjectPositionZ() {
-			this.room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
+			room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
 		},
 
 		selectedObjectRotationX() {
-			this.room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
+			room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
 		},
 
 		selectedObjectRotationY() {
-			this.room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
+			room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
 		},
 
 		selectedObjectRotationZ() {
-			this.room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
+			room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
 		},
 
-		'room.selectedObject'() {
-			if (this.room.selectedObject == null) return;
-			this.selectedObjectPositionX = this.room.selectedObject.position.x;
-			this.selectedObjectPositionY = this.room.selectedObject.position.y;
-			this.selectedObjectPositionZ = this.room.selectedObject.position.z;
-			this.selectedObjectRotationX = this.room.selectedObject.rotation.x;
-			this.selectedObjectRotationY = this.room.selectedObject.rotation.y;
-			this.selectedObjectRotationZ = this.room.selectedObject.rotation.z;
+		selectedObject() {
+			if (this.selectedObject == null) return;
+			this.selectedObjectPositionX = this.selectedObject.position.x;
+			this.selectedObjectPositionY = this.selectedObject.position.y;
+			this.selectedObjectPositionZ = this.selectedObject.position.z;
+			this.selectedObjectRotationX = this.selectedObject.rotation.x;
+			this.selectedObjectRotationY = this.selectedObject.rotation.y;
+			this.selectedObjectRotationZ = this.selectedObject.rotation.z;
 		}
 	},
 
@@ -97,23 +99,25 @@ export default Vue.extend({
 			...parseAcct(this.acct)
 		});
 
-		const room = await this.$root.api('room/show', {
+		const roomInfo = await this.$root.api('room/show', {
 			userId: user.id
 		});
 
-		this.room = new Room(user, room.furnitures, 'medium', this.$el);
+		room = new Room(user, roomInfo.furnitures, 'medium', this.$el, obj => {
+			this.selectedObject = obj;
+		});
 	},
 
 	methods: {
 		add() {
 			if (this.selectedStoreItem == null) return;
-			this.room.addFurniture(this.selectedStoreItem);
+			room.addFurniture(this.selectedStoreItem);
 		},
 
 		save() {
 			this.$root.api('room/update', {
 				room: {
-					furnitures: this.room.getFurnitures()
+					furnitures: room.getFurnitures()
 				}
 			});
 		}

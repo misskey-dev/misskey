@@ -24,11 +24,13 @@ export class Room {
 	private graphicsQuality: 'superLow' | 'veryLow' | 'low' | 'medium' | 'high' | 'ultra';
 	private objects: THREE.Object3D[] = [];
 	private selectedObject: THREE.Object3D = null;
+	private onChangeSelect: Function;
 	public canvas: HTMLCanvasElement;
 
-	constructor(user, furnitures: Room['furnitures'], graphicsQuality: Room['graphicsQuality'], container) {
+	constructor(user, furnitures: Room['furnitures'], graphicsQuality: Room['graphicsQuality'], container, onChangeSelect) {
 		this.furnitures = furnitures;
 		this.graphicsQuality = graphicsQuality;
+		this.onChangeSelect = onChangeSelect;
 
 		const shadowQuality =
 			graphicsQuality === 'ultra' ? 16384 :
@@ -275,14 +277,17 @@ export class Room {
 			const loader = new GLTFLoader();
 			loader.load(`/assets/furnitures/${furniture.type}/${furniture.type}.glb`, gltf => {
 				const model = gltf.scene;
+
+				// Load animation
 				if (gltf.animations.length > 0) { 
 					const mixer = new THREE.AnimationMixer(model);
 					this.mixers.push(mixer);
+					console.log(this.mixers);
 					for (const clip of gltf.animations) {
-						console.log(clip);
 						mixer.clipAction(clip).play();
 					}
 				}
+
 				model.name = furniture.id;
 				model.position.x = furniture.position.x;
 				model.position.y = furniture.position.y;
@@ -296,6 +301,7 @@ export class Room {
 						child.receiveShadow = true;
 					}
 				});
+
 				res(gltf);
 			}, null, rej);
 		});
@@ -376,12 +382,14 @@ export class Room {
 			this.selectFurniture(selectedObj);
 		} else {
 			this.selectedObject = null;
+			this.onChangeSelect(null);
 		}
 	}
 
 	@autobind
 	private selectFurniture(obj: THREE.Object3D) {
 		this.selectedObject = obj;
+		this.onChangeSelect(obj);
 		obj.traverse(child => {
 			if (child instanceof THREE.Mesh) {
 				child.material.emissive.setHex(0xff0000);
@@ -448,6 +456,7 @@ export class Room {
 		this.objects = this.objects.filter(object => object.name !== obj.name);
 		this.furnitures = this.furnitures.filter(furniture => furniture.id !== obj.name);
 		this.selectedObject = null;
+		this.onChangeSelect(null);
 	}
 
 	@autobind
