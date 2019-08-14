@@ -80,6 +80,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "server",
+		"place": "floor"
+	},
+	{
 		"id": "corkboard",
 		"place": "wall"
 	},
