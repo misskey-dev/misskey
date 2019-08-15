@@ -9,6 +9,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { Furniture } from './furniture';
 import uuid = require('uuid');
+const furnitureDefs = require('./furnitures.json5');
 
 THREE.ImageUtils.crossOrigin = '';
 
@@ -308,6 +309,7 @@ export class Room {
 
 	@autobind
 	private loadFurniture(furniture: Furniture) {
+		const def = furnitureDefs.find(d => d.id === furniture.type);
 		return new Promise<GLTF>((res, rej) => {
 			const loader = new GLTFLoader();
 			loader.load(`/assets/furnitures/${furniture.type}/${furniture.type}.glb`, gltf => {
@@ -329,12 +331,43 @@ export class Room {
 				model.rotation.x = furniture.rotation.x;
 				model.rotation.y = furniture.rotation.y;
 				model.rotation.z = furniture.rotation.z;
-				model.traverse(child => {
-					if (child instanceof THREE.Mesh) {
-						child.castShadow = true;
-						child.receiveShadow = true;
-					}
-				});
+				if (def.texture) { // 動的テクスチャ
+					model.traverse(child => {
+						if (child instanceof THREE.Mesh) {
+							child.castShadow = true;
+							child.receiveShadow = true;
+							for (const t of Object.keys(def.texture)) {
+								if (child.userData && child.userData.name && child.userData.name === t) {
+									const prop = def.texture[t];
+									const val = furniture.props ? furniture.props[prop] : undefined;
+
+									if (val == null) continue;
+
+									const texture = new THREE.TextureLoader().load(val);
+									texture.wrapS = THREE.RepeatWrapping;
+									texture.wrapT = THREE.RepeatWrapping;
+									texture.anisotropy = 16;
+									texture.flipY = false;
+
+									child.material = new THREE.MeshPhongMaterial({
+										specular: 0x030303,
+										emissive: 0x111111,
+										map: texture,
+										side: THREE.DoubleSide,
+										alphaTest: 0.5
+									});
+								}
+							}
+						}
+					});
+				} else {
+					model.traverse(child => {
+						if (child instanceof THREE.Mesh) {
+							child.castShadow = true;
+							child.receiveShadow = true;
+						}
+					});
+				}
 
 				res(gltf);
 			}, null, rej);
@@ -467,6 +500,13 @@ export class Room {
 		furniture.rotation.x = x;
 		furniture.rotation.y = y;
 		furniture.rotation.z = z;
+	}
+
+	@autobind
+	public updateProp(key: string, value: any) {
+		const furniture = this.furnitures.find(furniture => furniture.id === this.selectedObject.name);
+		if (furniture.props == null) furniture.props = {};
+		furniture.props[key] = value;
 	}
 
 	@autobind

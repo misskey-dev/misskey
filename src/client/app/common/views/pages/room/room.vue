@@ -9,6 +9,12 @@
 		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationX"/>
 		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationZ"/>
 		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationY"/>
+		<div v-if="selectedFurnitureInfo.props">
+			<div v-for="k in Object.keys(selectedFurnitureInfo.props)">
+				<p>{{ k }}</p>
+				<ui-button @click="chooseImage(k)">{{ $t('chooseImage') }}</ui-button>
+			</div>
+		</div>
 		<ui-button @click="remove()">{{ $t('remove') }}</ui-button>
 	</div>
 	<div class="menu">
@@ -51,6 +57,7 @@ export default Vue.extend({
 			selectedStoreItem: null,
 			objectSelected: false,
 			selectedFurnitureName: null,
+			selectedFurnitureInfo: null,
 		};
 	},
 
@@ -64,11 +71,13 @@ export default Vue.extend({
 		});
 
 		room = new Room(user, roomInfo.furnitures, this.$el, {
-			graphicsQuality: 'low',
+			graphicsQuality: 'ultra',
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
 				if (obj) {
-					this.selectedFurnitureName = this.$t('furnitures.' + room.findFurnitureById(obj.name).type);
+					const f = room.findFurnitureById(obj.name);
+					this.selectedFurnitureName = this.$t('furnitures.' + f.type);
+					this.selectedFurnitureInfo = storeItems.find(x => x.id === f.type);
 					this.$nextTick(() => {
 						this.$refs.preview.selected(obj);
 						this.$refs.positionX.value = obj.position.x;
@@ -107,6 +116,14 @@ export default Vue.extend({
 				room: {
 					furnitures: room.getFurnitures()
 				}
+			});
+		},
+
+		chooseImage(key) {
+			this.$chooseDriveFile({
+				multiple: false
+			}).then(file => {
+				room.updateProp(key, file.thumbnailUrl);
 			});
 		}
 	}

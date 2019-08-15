@@ -11,4 +11,5 @@ export type Furniture = {
 		y: number;
 		z: number;
 	};
+	props?: Record<string, any>;
 };

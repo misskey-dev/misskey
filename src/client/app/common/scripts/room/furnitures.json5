@@ -1,154 +1,166 @@
 [
 	{
-		"id": "milk",
-		"place": "floor"
+		id: "milk",
+		place: "floor"
 	},
 	{
-		"id": "bed",
-		"place": "floor"
+		id: "bed",
+		place: "floor"
 	},
 	{
-		"id": "low-table-black",
-		"place": "floor"
+		id: "low-table-black",
+		place: "floor"
 	},
 	{
-		"id": "low-table-white",
-		"place": "floor"
+		id: "low-table-white",
+		place: "floor"
 	},
 	{
-		"id": "desk-black",
-		"place": "floor"
+		id: "desk-black",
+		place: "floor"
 	},
 	{
-		"id": "desk-brown",
-		"place": "floor"
+		id: "desk-brown",
+		place: "floor"
 	},
 	{
-		"id": "chair",
-		"place": "floor"
+		id: "chair",
+		place: "floor"
 	},
 	{
-		"id": "chair2",
-		"place": "floor"
+		id: "chair2",
+		place: "floor"
 	},
 	{
-		"id": "chair3",
-		"place": "floor"
+		id: "chair3",
+		place: "floor"
 	},
 	{
-		"id": "fan",
-		"place": "wall"
+		id: "fan",
+		place: "wall"
 	},
 	{
-		"id": "pc",
-		"place": "floor"
+		id: "pc",
+		place: "floor"
 	},
 	{
-		"id": "plant",
-		"place": "floor"
+		id: "plant",
+		place: "floor"
 	},
 	{
-		"id": "plant2",
-		"place": "floor"
+		id: "plant2",
+		place: "floor"
 	},
 	{
-		"id": "eraser",
-		"place": "floor"
+		id: "eraser",
+		place: "floor"
 	},
 	{
-		"id": "pencil",
-		"place": "floor"
+		id: "pencil",
+		place: "floor"
 	},
 	{
-		"id": "pudding",
-		"place": "floor"
+		id: "pudding",
+		place: "floor"
 	},
 	{
-		"id": "cardboard-box",
-		"place": "floor"
+		id: "cardboard-box",
+		place: "floor"
 	},
 	{
-		"id": "cardboard-box2",
-		"place": "floor"
+		id: "cardboard-box2",
+		place: "floor"
 	},
 	{
-		"id": "cardboard-box3",
-		"place": "floor"
+		id: "cardboard-box3",
+		place: "floor"
 	},
 	{
-		"id": "book",
-		"place": "floor"
+		id: "book",
+		place: "floor"
 	},
 	{
-		"id": "book2",
-		"place": "floor"
+		id: "book2",
+		place: "floor"
 	},
 	{
-		"id": "piano",
-		"place": "floor"
+		id: "piano",
+		place: "floor"
 	},
 	{
-		"id": "facial-tissue",
-		"place": "floor"
+		id: "facial-tissue",
+		place: "floor"
 	},
 	{
-		"id": "server",
-		"place": "floor"
+		id: "server",
+		place: "floor"
 	},
 	{
-		"id": "moon",
-		"place": "floor"
+		id: "moon",
+		place: "floor"
 	},
 	{
-		"id": "corkboard",
-		"place": "wall"
+		id: "corkboard",
+		place: "wall"
 	},
 	{
-		"id": "mousepad",
-		"place": "floor"
+		id: "mousepad",
+		place: "floor"
 	},
 	{
-		"id": "monitor",
-		"place": "floor"
+		id: "monitor",
+		place: "floor",
+		props: {
+			screen: 'image'
+		},
+		texture: {
+			Screen: 'screen'
+		},
 	},
 	{
-		"id": "keyboard",
-		"place": "floor"
+		id: "keyboard",
+		place: "floor"
 	},
 	{
-		"id": "carpet",
-		"place": "floor"
+		id: "carpet",
+		place: "floor"
 	},
 	{
-		"id": "mat",
-		"place": "floor"
+		id: "mat",
+		place: "floor"
 	},
 	{
-		"id": "color-box-brown",
-		"place": "floor"
+		id: "color-box-brown",
+		place: "floor"
 	},
 	{
-		"id": "color-box-white",
-		"place": "floor"
+		id: "color-box-white",
+		place: "floor"
 	},
 	{
-		"id": "wall-clock",
-		"place": "wall"
+		id: "wall-clock",
+		place: "wall"
 	},
 	{
-		"id": "cube",
-		"place": "floor"
+		id: "cube",
+		place: "floor"
 	},
 	{
-		"id": "photoframe",
-		"place": "wall"
+		id: "photoframe",
+		place: "wall",
+		props: {
+			photo: 'image'
+		},
+		texture: {
+			Photo: 'photo'
+		},
 	},
 	{
-		"id": "photoframe2",
-		"place": "wall"
+		id: "photoframe2",
+		place: "wall"
 	},
 	{
-		"id": "pinguin",
-		"place": "floor"
-	}
+		id: "pinguin",
+		place: "floor"
+	},
 ]

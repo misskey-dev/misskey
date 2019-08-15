@@ -22,6 +22,7 @@ export const meta = {
 						y: $.num,
 						z: $.num,
 					}),
+					props: $.optional.nullable.obj(),
 				}))
 			})
 		},
