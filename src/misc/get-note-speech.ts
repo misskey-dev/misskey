@@ -4,7 +4,7 @@ export const getSpeechName = (note: any): string => {
 	return '';
 };
 
-export const getSpeechText = (note: any): string => {
+export const getSpeechText = (note: any) => {
 	if (note.deletedAt) {
 		return null;
 	}
