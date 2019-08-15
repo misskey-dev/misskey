@@ -138,5 +138,9 @@
 	{
 		"id": "photoframe2",
 		"place": "wall"
+	},
+	{
+		"id": "pinguin",
+		"place": "floor"
 	}
 ]
