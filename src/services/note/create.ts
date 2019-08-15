@@ -165,7 +165,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
 	}
 
-	tags = tags.filter(tag => tag.length <= 100).splice(256);
+	tags = tags.filter(tag => tag.length <= 100).splice(255);
 
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
 		mentionedUsers.push(await Users.findOne(data.reply.userId).then(ensure));
