@@ -356,24 +356,23 @@ export class Room {
 		const intersects = raycaster.intersectObjects(this.objects, true);
 
 		for (const object of this.objects) {
+			if (this.isSelectedObject(object)) continue;
 			object.traverse(child => {
 				if (child instanceof THREE.Mesh) {
-					if (child.isActive == null || !child.isActive) {
-						child.material.emissive.setHex(0x000000);
-					}
+					(child.material as THREE.MeshStandardMaterial).emissive.setHex(0x000000);
 				}
 			});
 		}
 
 		if (intersects.length > 0) {
-			const INTERSECTED = intersects[0].object.parent;
-			INTERSECTED.traverse(child => {
-				if (child instanceof THREE.Mesh) {
-					if (child.isActive == null || !child.isActive) {
-						return child.material.emissive.setHex(0x191919);
+			const intersected = this.getRoot(intersects[0].object);
+			if (!this.isSelectedObject(intersected)) {
+				intersected.traverse(child => {
+					if (child instanceof THREE.Mesh) {
+						(child.material as THREE.MeshStandardMaterial).emissive.setHex(0x191919);
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 
@@ -396,27 +395,40 @@ export class Room {
 		for (const object of this.objects) {
 			object.traverse(child => {
 				if (child instanceof THREE.Mesh) {
-					child.material.emissive.setHex(0x000000);
-					child.isActive = false;
+					(child.material as THREE.MeshStandardMaterial).emissive.setHex(0x000000);
 				}
 			});
 		}
 
 		if (intersects.length > 0) {
-			let found = false;
-			let x = intersects[0].object.parent;
-			while (!found) {
-				if (x.parent.parent == null) {
-					found = true;
-				} else {
-					x = x.parent;
-				}
-			}
-			const selectedObj = x;
+			const selectedObj = this.getRoot(intersects[0].object);
 			this.selectFurniture(selectedObj);
 		} else {
 			this.selectedObject = null;
 			this.onChangeSelect(null);
+		}
+	}
+
+	@autobind
+	private getRoot(obj: THREE.Object3D): THREE.Object3D {
+		let found = false;
+		let x = obj.parent;
+		while (!found) {
+			if (x.parent.parent == null) {
+				found = true;
+			} else {
+				x = x.parent;
+			}
+		}
+		return x;
+	}
+
+	@autobind
+	private isSelectedObject(obj: THREE.Object3D): boolean {
+		if (this.selectedObject == null) {
+			return false;
+		} else {
+			return obj.name === this.selectedObject.name;
 		}
 	}
 
@@ -426,8 +438,7 @@ export class Room {
 		this.onChangeSelect(obj);
 		obj.traverse(child => {
 			if (child instanceof THREE.Mesh) {
-				child.material.emissive.setHex(0xff0000);
-				child.isActive = true;
+				(child.material as THREE.MeshStandardMaterial).emissive.setHex(0xff0000);
 			}
 		});
 	}
