@@ -190,14 +190,18 @@ export default Vue.extend({
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
+				const initial = Object.assign({}, this.note);
+				if (this.note.user.isCat && this.note.text) {
+					initial.text = initial.text.replace(/にゃ/g, 'な').replace(/ニャ/g, 'ナ').replace(/ﾆｬ/g, 'ﾅ');
+				}
+				this.$post({
+					initialNote: initial,
+					reply: this.note.reply,
+				});
 				this.$root.api('notes/delete', {
 					noteId: this.note.id
 				}).then(() => {
 					this.destroyDom();
-				});
-				this.$post({
-					initialNote: this.note,
-					reply: this.note.reply,
 				});
 			});
 		},
