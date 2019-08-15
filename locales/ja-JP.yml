@@ -276,6 +276,8 @@ common:
     enable-sounds-timeline: "タイムライン"
     enable-sounds-notifications: "通知"
     enable-sounds-desc: "投稿やメッセージを送受信したときなどにサウンドを再生します。この設定はブラウザに記憶されます。"
+    enable-speech: "読み上げを有効にする"
+    enable-speech-desc: "投稿が到着したときに読み上げます。この設定はブラウザに記憶されます。"
     volume: "ボリューム"
     test: "テスト"
     update: "Groundpolis Update"

@@ -181,6 +181,12 @@
 				/>
 				<ui-button @click="soundTest"><fa icon="volume-up"/> {{ $t('@._settings.test') }}</ui-button>
 			</section>
+
+			<section>
+				<ui-switch v-model="enableSpeech">{{ $t('@._settings.enable-speech') }}
+					<template #desc>{{ $t('@._settings.enable-speech-desc') }}</template>
+				</ui-switch>
+			</section>
 		</ui-card>
 
 		<x-language/>
@@ -381,6 +387,11 @@ export default Vue.extend({
 		enableSoundsInNotifications: {
 			get() { return this.$store.state.device.enableSoundsInNotifications; },
 			set(value) { this.$store.commit('device/set', { key: 'enableSoundsInNotifications', value }); }
+		},
+
+		enableSpeech: {
+			get() { return this.$store.state.device.enableSpeech; },
+			set(value) { this.$store.commit('device/set', { key: 'enableSpeech', value }); }
 		},
 
 		soundVolume: {

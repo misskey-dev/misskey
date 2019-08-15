@@ -40,6 +40,9 @@ import i18n from '../../../i18n';
 import * as config from '../../../config';
 import shouldMuteNote from '../../../common/scripts/should-mute-note';
 import paging from '../../../common/scripts/paging';
+import getNoteSummary from '../../../../../misc/get-note-summary';
+
+const displayLimit = 30;
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -72,6 +75,11 @@ export default Vue.extend({
 						sound.volume = self.$store.state.device.soundVolume;
 						sound.play();
 					}
+				}
+				if (this.$store.state.device.enableSpeech && (note.cw || note.text)) {
+					const text = getNoteSummary(note)
+					const uttr = new SpeechSynthesisUtterance(text);
+					speechSynthesis.speak(uttr);
 				}
 			},
 
