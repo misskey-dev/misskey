@@ -7,25 +7,11 @@ import Vue from 'vue';
 import * as THREE from 'three';
 
 export default Vue.extend({
-	props: {
-		object: {
-			required: true
-		}
-	},
-
 	data() {
 		return {
-			scene: null,
-			renderer: null,
-			camera: null,
-			objectBoundingBox: null
+			selected: null,
+			objectHeight: 0
 		};
-	},
-
-	watch: {
-		object() {
-			this.initObj();
-		}
 	},
 
 	mounted() {
@@ -34,83 +20,79 @@ export default Vue.extend({
 		const width = canvas.width;
 		const height = canvas.height;
 
-		this.scene = new THREE.Scene();
+		const scene = new THREE.Scene();
 
-		this.renderer = new THREE.WebGLRenderer({
+		const renderer = new THREE.WebGLRenderer({
 			canvas: canvas,
 			antialias: true,
 			alpha: true
 		});
-		this.renderer.setPixelRatio(window.devicePixelRatio);
-		this.renderer.setSize(width, height);
-		this.renderer.setClearColor(0x000000, 0);
-		this.renderer.autoClear = false;
-		this.renderer.shadowMap.enabled = true;
-		this.renderer.shadowMap.cullFace = THREE.CullFaceBack;
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(width, height);
+		renderer.setClearColor(0x000000, 0);
+		renderer.autoClear = false;
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.cullFace = THREE.CullFaceBack;
 
-		this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 100);
-		this.camera.zoom = 10;
-		this.camera.position.x = 0;
-		this.camera.position.y = 2;
-		this.camera.position.z = 0;
-		this.camera.updateProjectionMatrix();
-		this.scene.add(this.camera);
+		const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 100);
+		camera.zoom = 10;
+		camera.position.x = 0;
+		camera.position.y = 2;
+		camera.position.z = 0;
+		camera.updateProjectionMatrix();
+		scene.add(camera);
 
 		const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 		ambientLight.castShadow = false;
-		this.scene.add(ambientLight);
+		scene.add(ambientLight);
 
 		const light = new THREE.PointLight(0xffffff, 1, 100);
 		light.position.set(3, 3, 3);
-		this.scene.add(light);
+		scene.add(light);
 
 		const grid = new THREE.GridHelper(5, 16, 0x444444, 0x222222);
-		this.scene.add(grid);
+		scene.add(grid);
 
-		this.initObj();
+		const render = () => {
+			const timer = Date.now() * 0.0004;
+			requestAnimationFrame(render);
+			
+			camera.position.y = 2 + this.objectHeight / 2;
+			camera.position.z = Math.cos(timer) * 10;
+			camera.position.x = Math.sin(timer) * 10;
+			camera.lookAt(new THREE.Vector3(0, this.objectHeight / 2, 0));
+			renderer.render(scene, camera);
+		};
 
-		this.render();
-	},
+		this.selected = selected => {
+			const obj = selected.clone();
 
-	methods: {
-		initObj() {
 			// Remove current object
-			const current = this.scene.getObjectByName('obj');
+			const current = scene.getObjectByName('obj');
 			if (current != null) {
-				this.scene.remove(current);
+				scene.remove(current);
 			}
 
 			// Add new object
-			const previewObj = this.object.clone();
-			previewObj.name = 'obj';
-			previewObj.position.x = 0;
-			previewObj.position.y = 0;
-			previewObj.position.z = 0;
-			previewObj.rotation.x = 0;
-			previewObj.rotation.y = 0;
-			previewObj.rotation.z = 0;
-			previewObj.traverse(child => {
+			obj.name = 'obj';
+			obj.position.x = 0;
+			obj.position.y = 0;
+			obj.position.z = 0;
+			obj.rotation.x = 0;
+			obj.rotation.y = 0;
+			obj.rotation.z = 0;
+			obj.traverse(child => {
 				if (child instanceof THREE.Mesh) {
 					child.material = child.material.clone();
 					return child.material.emissive.setHex(0x000000);
 				}
 			});
-			this.objectBoundingBox = new THREE.Box3().setFromObject(previewObj);
-			this.scene.add(previewObj);
-		},
+			const objectBoundingBox = new THREE.Box3().setFromObject(obj);
+			this.objectHeight = objectBoundingBox.max.y - objectBoundingBox.min.y;
+			scene.add(obj);
+		};
 
-		render() {
-			const timer = Date.now() * 0.0004;
-			requestAnimationFrame(this.render);
-			if (this.object != null) {
-				const objectHeight = this.objectBoundingBox.max.y - this.objectBoundingBox.min.y;
-				this.camera.position.y = 2 + objectHeight / 2;
-				this.camera.position.z = Math.cos(timer) * 10;
-				this.camera.position.x = Math.sin(timer) * 10;
-				this.camera.lookAt(new THREE.Vector3(0, objectHeight / 2, 0));
-				this.renderer.render(this.scene, this.camera);
-			}
-		}
-	}
+		render();
+	},
 });
 </script>

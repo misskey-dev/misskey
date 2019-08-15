@@ -1,13 +1,13 @@
 <template>
 <div class="hveuntkp">
-	<div class="controller" v-if="this.selectedObject != null">
-		<x-preview :object="this.selectedObject"/>
-		<input type="range" min="-2.5" max="2.5" step="0.01" v-model="selectedObjectPositionX"/>
-		<input type="range" min="-2.5" max="2.5" step="0.01" v-model="selectedObjectPositionZ"/>
-		<input type="range" min="0" max="1.5" step="0.01" v-model="selectedObjectPositionY"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationX"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationZ"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" v-model="selectedObjectRotationY"/>
+	<div class="controller" v-if="objectSelected">
+		<x-preview ref="preview"/>
+		<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionX"/>
+		<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionZ"/>
+		<input type="range" min="0" max="1.5" step="0.01" @input="onPositionSliderChange()" ref="positionY"/>
+		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationX"/>
+		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationZ"/>
+		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationY"/>
 		<ui-button @click="remove()">{{ $t('remove') }}</ui-button>
 	</div>
 	<div class="menu">
@@ -48,50 +48,8 @@ export default Vue.extend({
 		return {
 			storeItems: storeItems,
 			selectedStoreItem: null,
-			selectedObject: null,
-			selectedObjectPositionX: 0,
-			selectedObjectPositionY: 0,
-			selectedObjectPositionZ: 0,
-			selectedObjectRotationX: 0,
-			selectedObjectRotationY: 0,
-			selectedObjectRotationZ: 0,
+			objectSelected: false,
 		};
-	},
-
-	watch: {
-		selectedObjectPositionX() {
-			room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
-		},
-
-		selectedObjectPositionY() {
-			room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
-		},
-
-		selectedObjectPositionZ() {
-			room.moveFurniture(parseFloat(this.selectedObjectPositionX, 10), parseFloat(this.selectedObjectPositionY, 10), parseFloat(this.selectedObjectPositionZ, 10));
-		},
-
-		selectedObjectRotationX() {
-			room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
-		},
-
-		selectedObjectRotationY() {
-			room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
-		},
-
-		selectedObjectRotationZ() {
-			room.rotateFurniture(parseFloat(this.selectedObjectRotationX, 10), parseFloat(this.selectedObjectRotationY, 10), parseFloat(this.selectedObjectRotationZ, 10));
-		},
-
-		selectedObject() {
-			if (this.selectedObject == null) return;
-			this.selectedObjectPositionX = this.selectedObject.position.x;
-			this.selectedObjectPositionY = this.selectedObject.position.y;
-			this.selectedObjectPositionZ = this.selectedObject.position.z;
-			this.selectedObjectRotationX = this.selectedObject.rotation.x;
-			this.selectedObjectRotationY = this.selectedObject.rotation.y;
-			this.selectedObjectRotationZ = this.selectedObject.rotation.z;
-		}
 	},
 
 	async mounted() {
@@ -104,15 +62,34 @@ export default Vue.extend({
 		});
 
 		room = new Room(user, roomInfo.furnitures, this.$el, {
-			graphicsQuality: 'ultra',
+			graphicsQuality: 'low',
 			onChangeSelect: obj => {
-				this.selectedObject = obj;
+				this.objectSelected = obj != null;
+				if (obj) {
+					this.$nextTick(() => {
+						this.$refs.preview.selected(obj);
+						this.$refs.positionX.value = obj.position.x;
+						this.$refs.positionY.value = obj.position.y;
+						this.$refs.positionZ.value = obj.position.z;
+						this.$refs.rotationX.value = obj.rotation.x;
+						this.$refs.rotationY.value = obj.rotation.y;
+						this.$refs.rotationZ.value = obj.rotation.z;
+					});
+				}
 			},
 			useOrthographicCamera: true
 		});
 	},
 
 	methods: {
+		onPositionSliderChange() {
+			room.moveFurniture(parseFloat(this.$refs.positionX.value, 10), parseFloat(this.$refs.positionY.value, 10), parseFloat(this.$refs.positionZ.value, 10));
+		},
+
+		onRotationSliderChange() {
+			room.rotateFurniture(parseFloat(this.$refs.rotationX.value, 10), parseFloat(this.$refs.rotationY.value, 10), parseFloat(this.$refs.rotationZ.value, 10));
+		},
+
 		add() {
 			if (this.selectedStoreItem == null) return;
 			room.addFurniture(this.selectedStoreItem);
