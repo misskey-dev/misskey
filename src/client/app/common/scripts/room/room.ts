@@ -185,7 +185,7 @@ export class Room {
 		//#region Avatar
 		const avatarUrl = user.avatarUrl;
 
-		const iconTexture = THREE.ImageUtils.loadTexture(avatarUrl);
+		const iconTexture = new THREE.TextureLoader().load(avatarUrl);
 		iconTexture.wrapS = THREE.RepeatWrapping;
 		iconTexture.wrapT = THREE.RepeatWrapping;
 		iconTexture.anisotropy = 16;
