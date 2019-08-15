@@ -1,6 +1,7 @@
 <template>
 <div class="hveuntkp">
 	<div class="controller" v-if="objectSelected">
+		<p class="name">{{ selectedFurnitureName }}</p>
 		<x-preview ref="preview"/>
 		<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionX"/>
 		<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionZ"/>
@@ -12,7 +13,7 @@
 	</div>
 	<div class="menu">
 		<select v-model="selectedStoreItem">
-			<option v-for="item in storeItems" :value="item.id" :key="item.id">{{ $t('items.' + item.id) }}</option>
+			<option v-for="item in storeItems" :value="item.id" :key="item.id">{{ $t('furnitures.' + item.id) }}</option>
 		</select>
 		<ui-button @click="add()">{{ $t('add') }}</ui-button>
 		<ui-button @click="save()">{{ $t('save') }}</ui-button>
@@ -28,10 +29,10 @@ import parseAcct from '../../../../../../misc/acct/parse';
 import XPreview from './preview.vue';
 const storeItems = require('../../../scripts/room/furnitures.json5');
 
-let room;
+let room: Room;
 
 export default Vue.extend({
-	i18n: i18n(''),
+	i18n: i18n('room'),
 
 	components: {
 		XPreview
@@ -49,6 +50,7 @@ export default Vue.extend({
 			storeItems: storeItems,
 			selectedStoreItem: null,
 			objectSelected: false,
+			selectedFurnitureName: null,
 		};
 	},
 
@@ -66,6 +68,7 @@ export default Vue.extend({
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
 				if (obj) {
+					this.selectedFurnitureName = this.$t('furnitures.' + room.findFurnitureById(obj.name).type);
 					this.$nextTick(() => {
 						this.$refs.preview.selected(obj);
 						this.$refs.positionX.value = obj.position.x;
@@ -123,6 +126,10 @@ export default Vue.extend({
 		top 16px
 		left 16px
 		width 256px
+
+		> .name
+			margin 0
+			color #fff
 
 	> .menu
 		top 16px

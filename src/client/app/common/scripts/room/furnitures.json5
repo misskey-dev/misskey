@@ -16,15 +16,19 @@
 		"place": "floor"
 	},
 	{
-		"id": "desk",
+		"id": "desk-black",
 		"place": "floor"
 	},
 	{
-		"id": "desk2",
+		"id": "desk-brown",
 		"place": "floor"
 	},
 	{
 		"id": "chair",
+		"place": "floor"
+	},
+	{
+		"id": "chair2",
 		"place": "floor"
 	},
 	{
@@ -120,11 +124,11 @@
 		"place": "floor"
 	},
 	{
-		"id": "color-box",
+		"id": "color-box-brown",
 		"place": "floor"
 	},
 	{
-		"id": "color-box2",
+		"id": "color-box-white",
 		"place": "floor"
 	},
 	{

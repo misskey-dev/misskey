@@ -508,4 +508,9 @@ export class Room {
 	public getFurnitures() {
 		return this.furnitures;
 	}
+
+	@autobind
+	public findFurnitureById(id: string) {
+		return this.furnitures.find(furniture => furniture.id === id);
+	}
 }
