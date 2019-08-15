@@ -76,8 +76,8 @@ export default Vue.extend({
 						sound.play();
 					}
 				}
-				if (this.$store.state.device.enableSpeech && (note.cw || note.text)) {
-					const text = getNoteSummary(note)
+				if (self.$store.state.device.enableSpeech && (note.cw || note.text)) {
+					const text = getNoteSummary(note).replace(/RE/g, 'reply').replace(/RN/g, 'renote');
 					const uttr = new SpeechSynthesisUtterance(text);
 					speechSynthesis.speak(uttr);
 				}
