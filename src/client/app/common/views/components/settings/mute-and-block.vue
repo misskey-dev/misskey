@@ -7,7 +7,9 @@
 		<ui-info v-if="!muteFetching && mute.length == 0">{{ $t('no-muted-users') }}</ui-info>
 		<div class="users" v-if="mute.length != 0">
 			<div class="user" v-for="user in mute" :key="user.id">
-				<a :href="user | userPage(null, true)"><p><b><mk-user-name :user="user"/></b> @{{ user | acct }}</p></a>
+				<router-link class="name" :to="user | userPage" v-user-preview="user.id">
+					<b><mk-user-name :user="user" :nowrap="false"/></b> @{{ user | acct }}
+				</router-link>
 				<span @click="unmute(user)">
 					<fa icon="times"/>
 				</span>
@@ -20,7 +22,9 @@
 		<ui-info v-if="!blockFetching && block.length == 0">{{ $t('no-blocked-users') }}</ui-info>
 		<div class="users" v-if="block.length != 0">
 			<div class="user" v-for="user in block" :key="user.id">
-				<a :href="user | userPage(null, true)"><p><b><mk-user-name :user="user"/></b> @{{ user | acct }}</p></a>
+				<router-link class="name" :to="user | userPage" v-user-preview="user.id">
+					<b><mk-user-name :user="user" :nowrap="false"/></b> @{{ user | acct }}
+				</router-link>
 				<span @click="unblock(user)">
 					<fa icon="times"/>
 				</span>
@@ -82,8 +86,9 @@ export default Vue.extend({
 				if (canceled) return;
 				this.$root.api('mute/delete', {
 					userId: user.id
+				}).then(() => {
+					this.updateMute();
 				});
-				this.updateMute();
 			});
 		},
 		unblock(user) {
@@ -95,8 +100,9 @@ export default Vue.extend({
 				if (canceled) return;
 				this.$root.api('blocking/delete', {
 					userId: user.id
+				}).then(() => {
+					this.updateBlock();
 				});
-				this.updateMute();
 			});
 		},
 		updateMute() {
@@ -118,18 +124,23 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-	.users 
-		.user
+	.users
+		> .user
 			display flex
 			align-items center
 			justify-content flex-end
-			a
-				color var(--face-text)
-			span 
+
+			&:hover
+				background-color var(--primary)
+
+			> a
+				color var(--faceText)
+				padding 6px
+				overflow auto
+
+			> span
 				margin-left auto
 				cursor pointer
-			span:hover
-				text-decoration underline
-
+				padding 6px
 </style>
 
