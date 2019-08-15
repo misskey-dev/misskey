@@ -4,3 +4,4 @@
 *.mqo -diff -text
 *.glb -diff -text
 *.blend -diff -text
+*.afdesign -diff -text

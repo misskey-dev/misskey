@@ -76,6 +76,10 @@
 		"place": "floor"
 	},
 	{
+		"id": "book2",
+		"place": "floor"
+	},
+	{
 		"id": "piano",
 		"place": "floor"
 	},
