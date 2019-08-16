@@ -166,6 +166,24 @@
 		},
 	},
 	{
+		id: "tv",
+		place: "floor",
+		props: {
+			screen: 'image'
+		},
+		texture: {
+			Screen: {
+				prop: 'screen',
+				uv: {
+					x: 0,
+					y: 434,
+					width: 1024,
+					height: 588,
+				},
+			},
+		},
+	},
+	{
 		id: "keyboard",
 		place: "floor"
 	},
