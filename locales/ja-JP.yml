@@ -2315,6 +2315,5 @@ room:
     mat: "マット"
     color-box: "カラーボックス"
     wall-clock: "壁掛け時計"
-    photoframe: "写真"
-    photoframe2: "写真2"
+    photoframe: "額縁"
     cube: "キューブ"
