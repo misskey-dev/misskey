@@ -343,7 +343,7 @@ export class Room {
 					model.traverse(child => {
 						if (!(child instanceof THREE.Mesh)) return;
 						for (const t of Object.keys(def.color)) {
-							if (!child.material || !child.material.name || child.material.name !== t) continue;
+							if (!child.material || !(child.material as THREE.MeshStandardMaterial).name || (child.material as THREE.MeshStandardMaterial).name !== t) continue;
 
 							const prop = def.color[t];
 							const val = furniture.props ? furniture.props[prop] : undefined;
