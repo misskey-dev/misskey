@@ -52,6 +52,9 @@ export default Vue.extend({
 			icon: faStickyNote
 		});
 	},
+	mounted() {
+		document.title = this.$root.instanceName;
+	},
 	methods: {
 		create() {
 			this.$router.push(`/i/pages/new`);

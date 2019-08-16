@@ -94,6 +94,8 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		document.title = this.$root.instanceName;
+
 		(this.$refs.tl as any).$once('loaded', () => {
 			this.$emit('loaded');
 		});
