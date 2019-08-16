@@ -257,18 +257,7 @@ export class Room {
 		//#endregion
 
 		//#region Init room
-		const loader = new GLTFLoader();
-		loader.load(`/assets/furnitures/room/room.glb`, gltf => {
-			gltf.scene.traverse(child => {
-				if (!(child instanceof THREE.Mesh)) return;
-				child.castShadow = true;
-				child.receiveShadow = true;
-			});
-			gltf.scene.position.set(0, 0, 0);
-			this.scene.add(gltf.scene);
-			this.roomObj = gltf.scene;
-			this.applyCarpetColor();
-		});
+		this.loadRoom();
 		//#endregion
 
 		//#region Load furnitures
@@ -318,11 +307,29 @@ export class Room {
 	}
 
 	@autobind
+	private loadRoom() {
+		const loader = new GLTFLoader();
+		loader.load(`/assets/room/rooms/${this.roomInfo.roomType}/${this.roomInfo.roomType}.glb`, gltf => {
+			gltf.scene.traverse(child => {
+				if (!(child instanceof THREE.Mesh)) return;
+				child.castShadow = true;
+				child.receiveShadow = true;
+			});
+			gltf.scene.position.set(0, 0, 0);
+			this.scene.add(gltf.scene);
+			this.roomObj = gltf.scene;
+			if (this.roomInfo.roomType === 'default') {
+				this.applyCarpetColor();
+			}
+		});
+	}
+
+	@autobind
 	private loadFurniture(furniture: Furniture) {
 		const def = furnitureDefs.find(d => d.id === furniture.type);
 		return new Promise<GLTF>((res, rej) => {
 			const loader = new GLTFLoader();
-			loader.load(`/assets/furnitures/${furniture.type}/${furniture.type}.glb`, gltf => {
+			loader.load(`/assets/room/furnitures/${furniture.type}/${furniture.type}.glb`, gltf => {
 				const model = gltf.scene;
 
 				// Load animation
@@ -620,6 +627,13 @@ export class Room {
 	public updateCarpetColor(color: string) {
 		this.roomInfo.carpetColor = color;
 		this.applyCarpetColor();
+	}
+
+	@autobind
+	public changeRoomType(type: string) {
+		this.roomInfo.roomType = type;
+		this.scene.remove(this.roomObj);
+		this.loadRoom();
 	}
 
 	@autobind

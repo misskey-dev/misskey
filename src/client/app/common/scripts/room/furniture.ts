@@ -1,4 +1,5 @@
 export type RoomInfo = {
+	roomType: string;
 	carpetColor: string;
 	furnitures: Furniture[];
 };

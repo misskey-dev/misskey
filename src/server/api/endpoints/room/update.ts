@@ -24,6 +24,7 @@ export const meta = {
 					}),
 					props: $.optional.nullable.obj(),
 				})),
+				roomType: $.str,
 				carpetColor: $.str
 			})
 		},

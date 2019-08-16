@@ -27,7 +27,13 @@
 			<option v-for="item in storeItems" :value="item.id" :key="item.id">{{ $t('furnitures.' + item.id) }}</option>
 		</select>
 		<ui-button @click="add()">{{ $t('add') }}</ui-button>
-		<input type="color" @change="updateCarpetColor($event)"/>
+		<div>
+			<select @change="updateRoomType($event)">
+				<option value="default">{{ $t('rooms.default') }}</option>
+				<option value="washitsu">{{ $t('rooms.washitsu') }}</option>
+			</select>
+			<input v-if="roomType === 'default'" type="color" @change="updateCarpetColor($event)"/>
+		</div>
 		<ui-button @click="save()">{{ $t('save') }}</ui-button>
 	</div>
 </div>
@@ -64,6 +70,7 @@ export default Vue.extend({
 			objectSelected: false,
 			selectedFurnitureName: null,
 			selectedFurnitureInfo: null,
+			roomType: null
 		};
 	},
 
@@ -76,8 +83,10 @@ export default Vue.extend({
 			userId: user.id
 		});
 
+		this.roomType = roomInfo.roomType;
+
 		room = new Room(user, roomInfo, this.$el, {
-			graphicsQuality: 'ultra',
+			graphicsQuality: 'superLow',
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
 				if (obj) {
@@ -139,7 +148,12 @@ export default Vue.extend({
 
 		updateCarpetColor(ev) {
 			room.updateCarpetColor(ev.target.value);
-		}
+		},
+
+		updateRoomType(ev) {
+			room.changeRoomType(ev.target.value);
+			this.roomType = ev.target.value;
+		},
 	}
 });
 </script>

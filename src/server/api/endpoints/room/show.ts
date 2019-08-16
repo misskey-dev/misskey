@@ -64,6 +64,18 @@ export default define(meta, async (ps, me) => {
 		profile.room.furnitures = [];
 	}
 
+	if (profile.room.roomType == null) {
+		const initialType = 'default';
+		await UserProfiles.update({ userId: user.id }, {
+			room: {
+				roomType: initialType as any,
+				...profile.room
+			}
+		});
+
+		profile.room.roomType = initialType;
+	}
+
 	if (profile.room.carpetColor == null) {
 		const initialColor = '#85CAF0';
 		await UserProfiles.update({ userId: user.id }, {
