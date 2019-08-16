@@ -340,67 +340,83 @@ export class Room {
 				});
 
 				if (def.color) { // カスタムカラー
-					model.traverse(child => {
-						if (!(child instanceof THREE.Mesh)) return;
-						for (const t of Object.keys(def.color)) {
-							if (!child.material || !(child.material as THREE.MeshStandardMaterial).name || (child.material as THREE.MeshStandardMaterial).name !== t) continue;
-
-							const prop = def.color[t];
-							const val = furniture.props ? furniture.props[prop] : undefined;
-
-							if (val == null) continue;
-
-							(child.material as THREE.MeshStandardMaterial).color.setHex(parseInt(val.substr(1), 16));
-						}
-					});
+					this.applyCustomColor(model);
 				}
 
 				if (def.texture) { // カスタムテクスチャ
-					model.traverse(child => {
-						if (!(child instanceof THREE.Mesh)) return;
-						for (const t of Object.keys(def.texture)) {
-							if (!child.userData || !child.userData.name || child.userData.name !== t) continue;
-
-							const prop = def.texture[t].prop;
-							const val = furniture.props ? furniture.props[prop] : undefined;
-
-							if (val == null) continue;
-
-							const canvas = document.createElement('canvas');
-							canvas.height = 1024;
-							canvas.width = 1024;
-
-							child.material = new THREE.MeshPhongMaterial({
-								specular: 0x030303,
-								emissive: 0x111111,
-								side: THREE.DoubleSide,
-								alphaTest: 0.5,
-							});
-
-							const img = new Image;
-							img.onload = () => {
-								const uvInfo = def.texture[t].uv;
-
-								const ctx = canvas.getContext('2d');
-								ctx.drawImage(img, 0, 0, img.width, img.height, uvInfo.x, uvInfo.y, uvInfo.width, uvInfo.height);
-
-								const texture = new THREE.Texture(canvas);
-								texture.wrapS = THREE.RepeatWrapping;
-								texture.wrapT = THREE.RepeatWrapping;
-								texture.anisotropy = 16;
-								texture.flipY = false;
-
-								(child.material as THREE.MeshPhongMaterial).map = texture;
-								(child.material as THREE.MeshPhongMaterial).needsUpdate = true;
-								(child.material as THREE.MeshPhongMaterial).map.needsUpdate = true;
-							};
-							img.src = val;
-						}
-					});
+					this.applyCustomTexture(model);
 				}
 
 				res(gltf);
 			}, null, rej);
+		});
+	}
+
+	@autobind
+	public applyCustomColor(model: THREE.Object3D) {
+		const furniture = this.furnitures.find(furniture => furniture.id === model.name);
+		const def = furnitureDefs.find(d => d.id === furniture.type);
+		if (def.color == null) return;
+		model.traverse(child => {
+			if (!(child instanceof THREE.Mesh)) return;
+			for (const t of Object.keys(def.color)) {
+				if (!child.material || !(child.material as THREE.MeshStandardMaterial).name || (child.material as THREE.MeshStandardMaterial).name !== t) continue;
+
+				const prop = def.color[t];
+				const val = furniture.props ? furniture.props[prop] : undefined;
+
+				if (val == null) continue;
+
+				(child.material as THREE.MeshStandardMaterial).color.setHex(parseInt(val.substr(1), 16));
+			}
+		});
+	}
+
+	@autobind
+	public applyCustomTexture(model: THREE.Object3D) {
+		const furniture = this.furnitures.find(furniture => furniture.id === model.name);
+		const def = furnitureDefs.find(d => d.id === furniture.type);
+		if (def.texture == null) return;
+		model.traverse(child => {
+			if (!(child instanceof THREE.Mesh)) return;
+			for (const t of Object.keys(def.texture)) {
+				if (!child.userData || !child.userData.name || child.userData.name !== t) continue;
+
+				const prop = def.texture[t].prop;
+				const val = furniture.props ? furniture.props[prop] : undefined;
+
+				if (val == null) continue;
+
+				const canvas = document.createElement('canvas');
+				canvas.height = 1024;
+				canvas.width = 1024;
+
+				child.material = new THREE.MeshPhongMaterial({
+					specular: 0x030303,
+					emissive: 0x111111,
+					side: THREE.DoubleSide,
+					alphaTest: 0.5,
+				});
+
+				const img = new Image;
+				img.onload = () => {
+					const uvInfo = def.texture[t].uv;
+
+					const ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0, img.width, img.height, uvInfo.x, uvInfo.y, uvInfo.width, uvInfo.height);
+
+					const texture = new THREE.Texture(canvas);
+					texture.wrapS = THREE.RepeatWrapping;
+					texture.wrapT = THREE.RepeatWrapping;
+					texture.anisotropy = 16;
+					texture.flipY = false;
+
+					(child.material as THREE.MeshPhongMaterial).map = texture;
+					(child.material as THREE.MeshPhongMaterial).needsUpdate = true;
+					(child.material as THREE.MeshPhongMaterial).map.needsUpdate = true;
+				};
+				img.src = val;
+			}
 		});
 	}
 
@@ -537,6 +553,8 @@ export class Room {
 		const furniture = this.furnitures.find(furniture => furniture.id === this.selectedObject.name);
 		if (furniture.props == null) furniture.props = {};
 		furniture.props[key] = value;
+		this.applyCustomColor(this.selectedObject);
+		this.applyCustomTexture(this.selectedObject);
 	}
 
 	@autobind
@@ -577,6 +595,11 @@ export class Room {
 	@autobind
 	public getFurnitures() {
 		return this.furnitures;
+	}
+
+	@autobind
+	public getSelectedObject() {
+		return this.selectedObject;
 	}
 
 	@autobind

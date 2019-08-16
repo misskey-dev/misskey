@@ -129,11 +129,13 @@ export default Vue.extend({
 				multiple: false
 			}).then(file => {
 				room.updateProp(key, file.thumbnailUrl);
+				this.$refs.preview.selected(room.getSelectedObject());
 			});
 		},
 
 		updateColor(key, ev) {
 			room.updateProp(key, ev.target.value);
+			this.$refs.preview.selected(room.getSelectedObject());
 		},
 	}
 });
