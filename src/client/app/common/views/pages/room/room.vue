@@ -12,7 +12,12 @@
 		<div v-if="selectedFurnitureInfo.props">
 			<div v-for="k in Object.keys(selectedFurnitureInfo.props)">
 				<p>{{ k }}</p>
-				<ui-button @click="chooseImage(k)">{{ $t('chooseImage') }}</ui-button>
+				<template v-if="selectedFurnitureInfo.props[k] === 'image'">
+					<ui-button @click="chooseImage(k)">{{ $t('chooseImage') }}</ui-button>
+				</template>
+				<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
+					<input type="color" @change="updateColor(k, $event)"/>
+				</template>
 			</div>
 		</div>
 		<ui-button @click="remove()">{{ $t('remove') }}</ui-button>
@@ -125,7 +130,11 @@ export default Vue.extend({
 			}).then(file => {
 				room.updateProp(key, file.thumbnailUrl);
 			});
-		}
+		},
+
+		updateColor(key, ev) {
+			room.updateProp(key, ev.target.value);
+		},
 	}
 });
 </script>

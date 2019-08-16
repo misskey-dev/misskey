@@ -36,20 +36,24 @@
 		place: "floor"
 	},
 	{
-		id: "low-table-black",
-		place: "floor"
+		id: "low-table",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Table: 'color'
+		}
 	},
 	{
-		id: "low-table-white",
-		place: "floor"
-	},
-	{
-		id: "desk-black",
-		place: "floor"
-	},
-	{
-		id: "desk-brown",
-		place: "floor"
+		id: "desk",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Board: 'color'
+		}
 	},
 	{
 		id: "chair",
@@ -166,12 +170,14 @@
 		place: "floor"
 	},
 	{
-		id: "color-box-brown",
-		place: "floor"
-	},
-	{
-		id: "color-box-white",
-		place: "floor"
+		id: "color-box",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			main: 'color'
+		}
 	},
 	{
 		id: "wall-clock",
@@ -179,13 +185,20 @@
 	},
 	{
 		id: "cube",
-		place: "floor"
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Cube: 'color'
+		}
 	},
 	{
 		id: "photoframe",
 		place: "wall",
 		props: {
-			photo: 'image'
+			photo: 'image',
+			color: 'color'
 		},
 		texture: {
 			Photo: {
@@ -198,10 +211,9 @@
 				},
 			},
 		},
-	},
-	{
-		id: "photoframe2",
-		place: "wall"
+		color: {
+			Frame: 'color'
+		}
 	},
 	{
 		id: "pinguin",
