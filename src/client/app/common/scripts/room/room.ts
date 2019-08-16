@@ -7,7 +7,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 //import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
-import { Furniture } from './furniture';
+import { Furniture, RoomInfo } from './furniture';
 import uuid = require('uuid');
 const furnitureDefs = require('./furnitures.json5');
 
@@ -27,15 +27,24 @@ export class Room {
 	private controls: OrbitControls;
 	private composer: EffectComposer;
 	private mixers: THREE.AnimationMixer[] = [];
-	private furnitures: Furniture[];
+	private roomInfo: RoomInfo;
 	private graphicsQuality: 'superLow' | 'veryLow' | 'low' | 'medium' | 'high' | 'ultra';
+	private roomObj: THREE.Object3D;
 	private objects: THREE.Object3D[] = [];
 	private selectedObject: THREE.Object3D = null;
 	private onChangeSelect: Function;
 	public canvas: HTMLCanvasElement;
 
-	constructor(user, furnitures: Room['furnitures'], container, options: Options) {
-		this.furnitures = furnitures;
+	private get furnitures(): Furniture[] {
+		return this.roomInfo.furnitures;
+	}
+
+	private set furnitures(furnitures: Furniture[]) {
+		this.roomInfo.furnitures = furnitures;
+	}
+
+	constructor(user, roomInfo: RoomInfo, container, options: Options) {
+		this.roomInfo = roomInfo;
 		this.graphicsQuality = options.graphicsQuality;
 		this.onChangeSelect = options.onChangeSelect;
 
@@ -251,18 +260,19 @@ export class Room {
 		const loader = new GLTFLoader();
 		loader.load(`/assets/furnitures/room/room.glb`, gltf => {
 			gltf.scene.traverse(child => {
-				if (child instanceof THREE.Mesh) {
-					child.castShadow = true;
-					child.receiveShadow = true;
-				}
+				if (!(child instanceof THREE.Mesh)) return;
+				child.castShadow = true;
+				child.receiveShadow = true;
 			});
 			gltf.scene.position.set(0, 0, 0);
 			this.scene.add(gltf.scene);
+			this.roomObj = gltf.scene;
+			this.applyCarpetColor();
 		});
 		//#endregion
 
 		//#region Load furnitures
-		for (const furniture of furnitures) {
+		for (const furniture of this.furnitures) {
 			this.loadFurniture(furniture).then(obj => {
 				this.scene.add(obj.scene);
 				this.objects.push(obj.scene);
@@ -349,6 +359,20 @@ export class Room {
 
 				res(gltf);
 			}, null, rej);
+		});
+	}
+
+	@autobind
+	private applyCarpetColor() {
+		this.roomObj.traverse(child => {
+			if (!(child instanceof THREE.Mesh)) return;
+			child.castShadow = true;
+			child.receiveShadow = true;
+
+			// Apply carpet color
+			if (child.material && (child.material as THREE.MeshStandardMaterial).name && (child.material as THREE.MeshStandardMaterial).name === 'Carpet') {
+				(child.material as THREE.MeshStandardMaterial).color.setHex(parseInt(this.roomInfo.carpetColor.substr(1), 16));
+			}
 		});
 	}
 
@@ -593,8 +617,14 @@ export class Room {
 	}
 
 	@autobind
-	public getFurnitures() {
-		return this.furnitures;
+	public updateCarpetColor(color: string) {
+		this.roomInfo.carpetColor = color;
+		this.applyCarpetColor();
+	}
+
+	@autobind
+	public getRoomInfo() {
+		return this.roomInfo;
 	}
 
 	@autobind

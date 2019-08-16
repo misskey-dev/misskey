@@ -27,6 +27,7 @@
 			<option v-for="item in storeItems" :value="item.id" :key="item.id">{{ $t('furnitures.' + item.id) }}</option>
 		</select>
 		<ui-button @click="add()">{{ $t('add') }}</ui-button>
+		<input type="color" @change="updateCarpetColor($event)"/>
 		<ui-button @click="save()">{{ $t('save') }}</ui-button>
 	</div>
 </div>
@@ -75,7 +76,7 @@ export default Vue.extend({
 			userId: user.id
 		});
 
-		room = new Room(user, roomInfo.furnitures, this.$el, {
+		room = new Room(user, roomInfo, this.$el, {
 			graphicsQuality: 'ultra',
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
@@ -118,9 +119,7 @@ export default Vue.extend({
 
 		save() {
 			this.$root.api('room/update', {
-				room: {
-					furnitures: room.getFurnitures()
-				}
+				room: room.getRoomInfo()
 			});
 		},
 
@@ -137,6 +136,10 @@ export default Vue.extend({
 			room.updateProp(key, ev.target.value);
 			this.$refs.preview.selected(room.getSelectedObject());
 		},
+
+		updateCarpetColor(ev) {
+			room.updateCarpetColor(ev.target.value);
+		}
 	}
 });
 </script>

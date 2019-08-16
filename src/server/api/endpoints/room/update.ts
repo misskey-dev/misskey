@@ -23,7 +23,8 @@ export const meta = {
 						z: $.num,
 					}),
 					props: $.optional.nullable.obj(),
-				}))
+				})),
+				carpetColor: $.str
 			})
 		},
 	},
@@ -31,7 +32,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	await UserProfiles.update({ userId: user.id }, {
-		room: ps.room
+		room: ps.room as any
 	});
 
 	const iObj = await Users.pack(user.id, user, {

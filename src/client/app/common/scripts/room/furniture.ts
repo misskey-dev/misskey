@@ -1,3 +1,8 @@
+export type RoomInfo = {
+	carpetColor: string;
+	furnitures: Furniture[];
+};
+
 export type Furniture = {
 	id: string; // 同じ家具が複数ある場合にそれぞれを識別するためのIDであり、家具IDではない
 	type: string; // こっちが家具ID(chairとか)

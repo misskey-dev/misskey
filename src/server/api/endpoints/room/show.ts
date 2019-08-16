@@ -53,16 +53,27 @@ export default define(meta, async (ps, me) => {
 
 	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
-	if (Object.keys(profile.room).length === 0) {
+	if (profile.room.furnitures == null) {
 		await UserProfiles.update({ userId: user.id }, {
 			room: {
-				furnitures: []
+				furnitures: [],
+				...profile.room
 			}
 		});
 
-		return {
-			furnitures: []
-		};
+		profile.room.furnitures = [];
+	}
+
+	if (profile.room.carpetColor == null) {
+		const initialColor = '#85CAF0';
+		await UserProfiles.update({ userId: user.id }, {
+			room: {
+				carpetColor: initialColor as any,
+				...profile.room
+			}
+		});
+
+		profile.room.carpetColor = initialColor;
 	}
 
 	return profile.room;
