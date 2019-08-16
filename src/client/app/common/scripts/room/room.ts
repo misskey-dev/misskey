@@ -331,32 +331,34 @@ export class Room {
 				model.rotation.x = furniture.rotation.x;
 				model.rotation.y = furniture.rotation.y;
 				model.rotation.z = furniture.rotation.z;
+				
 				if (def.texture) { // 動的テクスチャ
 					model.traverse(child => {
 						if (child instanceof THREE.Mesh) {
 							child.castShadow = true;
 							child.receiveShadow = true;
+
 							for (const t of Object.keys(def.texture)) {
-								if (child.userData && child.userData.name && child.userData.name === t) {
-									const prop = def.texture[t];
-									const val = furniture.props ? furniture.props[prop] : undefined;
+								if (!child.userData || !child.userData.name || child.userData.name !== t) continue;
 
-									if (val == null) continue;
+								const prop = def.texture[t];
+								const val = furniture.props ? furniture.props[prop] : undefined;
 
-									const texture = new THREE.TextureLoader().load(val);
-									texture.wrapS = THREE.RepeatWrapping;
-									texture.wrapT = THREE.RepeatWrapping;
-									texture.anisotropy = 16;
-									texture.flipY = false;
+								if (val == null) continue;
 
-									child.material = new THREE.MeshPhongMaterial({
-										specular: 0x030303,
-										emissive: 0x111111,
-										map: texture,
-										side: THREE.DoubleSide,
-										alphaTest: 0.5
-									});
-								}
+								const texture = new THREE.TextureLoader().load(val);
+								texture.wrapS = THREE.RepeatWrapping;
+								texture.wrapT = THREE.RepeatWrapping;
+								texture.anisotropy = 16;
+								texture.flipY = false;
+
+								child.material = new THREE.MeshPhongMaterial({
+									specular: 0x030303,
+									emissive: 0x111111,
+									map: texture,
+									side: THREE.DoubleSide,
+									alphaTest: 0.5
+								});
 							}
 						}
 					});
