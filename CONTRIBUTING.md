@@ -43,7 +43,7 @@ Currently, we accept only 3D models created with [Blender](https://www.blender.o
 
 * Use English for material, object and texture names
 * Use meter for unit of length
-* Your PR must include the Blender project files of your models (for later editing)
+* Your PR must include all source files of your models (for later editing)
 * Your PR must include the glTF files of your models
 
 You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
