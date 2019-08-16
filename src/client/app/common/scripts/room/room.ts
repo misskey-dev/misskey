@@ -361,10 +361,8 @@ export class Room {
 								const img = new Image;
 								img.onload = () => {
 									const uvInfo = def.texture[t].uv;
-									
+
 									const ctx = canvas.getContext('2d');
-									ctx.fillStyle = '#ff0000';
-									ctx.fillRect(0, 0, 1024, 1024);
 									ctx.drawImage(img, 0, 0, img.width, img.height, uvInfo.x, uvInfo.y, uvInfo.width, uvInfo.height);
 
 									const texture = new THREE.Texture(canvas);
