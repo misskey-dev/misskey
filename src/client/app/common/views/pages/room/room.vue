@@ -149,6 +149,7 @@ export default Vue.extend({
 		z-index 1
 		padding 16px
 		background rgba(0, 0, 0, 0.5)
+		color #fff
 
 	> .controller
 		top 16px
@@ -157,7 +158,6 @@ export default Vue.extend({
 
 		> .name
 			margin 0
-			color #fff
 
 	> .menu
 		top 16px
