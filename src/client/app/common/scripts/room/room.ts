@@ -331,34 +331,53 @@ export class Room {
 				model.rotation.x = furniture.rotation.x;
 				model.rotation.y = furniture.rotation.y;
 				model.rotation.z = furniture.rotation.z;
-				
+
 				if (def.texture) { // 動的テクスチャ
 					model.traverse(child => {
 						if (child instanceof THREE.Mesh) {
 							child.castShadow = true;
 							child.receiveShadow = true;
+							child.material.needsUpdate = true;
 
 							for (const t of Object.keys(def.texture)) {
 								if (!child.userData || !child.userData.name || child.userData.name !== t) continue;
 
-								const prop = def.texture[t];
+								const prop = def.texture[t].prop;
 								const val = furniture.props ? furniture.props[prop] : undefined;
 
 								if (val == null) continue;
 
-								const texture = new THREE.TextureLoader().load(val);
-								texture.wrapS = THREE.RepeatWrapping;
-								texture.wrapT = THREE.RepeatWrapping;
-								texture.anisotropy = 16;
-								texture.flipY = false;
+								const canvas = document.createElement('canvas');
+								canvas.height = 1024;
+								canvas.width = 1024;
 
 								child.material = new THREE.MeshPhongMaterial({
 									specular: 0x030303,
 									emissive: 0x111111,
-									map: texture,
 									side: THREE.DoubleSide,
-									alphaTest: 0.5
+									alphaTest: 0.5,
 								});
+
+								const img = new Image;
+								img.onload = () => {
+									const uvInfo = def.texture[t].uv;
+									
+									const ctx = canvas.getContext('2d');
+									ctx.fillStyle = '#ff0000';
+									ctx.fillRect(0, 0, 1024, 1024);
+									ctx.drawImage(img, 0, 0, img.width, img.height, uvInfo.x, uvInfo.y, uvInfo.width, uvInfo.height);
+
+									const texture = new THREE.Texture(canvas);
+									texture.wrapS = THREE.RepeatWrapping;
+									texture.wrapT = THREE.RepeatWrapping;
+									texture.anisotropy = 16;
+									texture.flipY = false;
+
+									(child.material as THREE.MeshPhongMaterial).map = texture;
+									(child.material as THREE.MeshPhongMaterial).needsUpdate = true;
+									(child.material as THREE.MeshPhongMaterial).map.needsUpdate = true;
+								};
+								img.src = val;
 							}
 						}
 					});

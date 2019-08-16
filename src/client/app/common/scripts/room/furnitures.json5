@@ -114,7 +114,15 @@
 			screen: 'image'
 		},
 		texture: {
-			Screen: 'screen'
+			Screen: {
+				prop: 'screen',
+				uv: {
+					x: 0,
+					y: 434,
+					width: 1024,
+					height: 588,
+				},
+			},
 		},
 	},
 	{
@@ -152,7 +160,15 @@
 			photo: 'image'
 		},
 		texture: {
-			Photo: 'photo'
+			Photo: {
+				prop: 'photo',
+				uv: {
+					x: 0,
+					y: 342,
+					width: 1024,
+					height: 683,
+				},
+			},
 		},
 	},
 	{
