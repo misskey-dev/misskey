@@ -16,7 +16,7 @@
 					<ui-button @click="chooseImage(k)">{{ $t('chooseImage') }}</ui-button>
 				</template>
 				<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
-					<input type="color" @change="updateColor(k, $event)"/>
+					<input type="color" :value="selectedFurnitureProps[k]" @change="updateColor(k, $event)"/>
 				</template>
 			</div>
 		</div>
@@ -70,6 +70,7 @@ export default Vue.extend({
 			objectSelected: false,
 			selectedFurnitureName: null,
 			selectedFurnitureInfo: null,
+			selectedFurnitureProps: null,
 			roomType: null
 		};
 	},
@@ -93,6 +94,7 @@ export default Vue.extend({
 					const f = room.findFurnitureById(obj.name);
 					this.selectedFurnitureName = this.$t('furnitures.' + f.type);
 					this.selectedFurnitureInfo = storeItems.find(x => x.id === f.type);
+					this.selectedFurnitureProps = f.props;
 					this.$nextTick(() => {
 						this.$refs.preview.selected(obj);
 						this.$refs.positionX.value = obj.position.x;
