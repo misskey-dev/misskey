@@ -361,6 +361,7 @@ export class Room {
 					child.material = new THREE.MeshLambertMaterial({
 						color: (child.material as THREE.MeshStandardMaterial).color,
 						map: (child.material as THREE.MeshStandardMaterial).map,
+						name: (child.material as THREE.MeshStandardMaterial).name,
 					});
 				});
 
