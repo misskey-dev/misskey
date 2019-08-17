@@ -314,6 +314,11 @@ export class Room {
 				if (!(child instanceof THREE.Mesh)) return;
 				child.castShadow = true;
 				child.receiveShadow = true;
+				child.material = new THREE.MeshLambertMaterial({
+					color: (child.material as THREE.MeshStandardMaterial).color,
+					map: (child.material as THREE.MeshStandardMaterial).map,
+					name: (child.material as THREE.MeshStandardMaterial).name,
+				});
 			});
 			gltf.scene.position.set(0, 0, 0);
 			this.scene.add(gltf.scene);
