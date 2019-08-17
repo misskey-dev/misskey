@@ -12,7 +12,7 @@ import { ITag, extractHashtags } from './tag';
 import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
-import { updateHashtag } from '../../../services/update-hashtag';
+import { updateUsertags } from '../../../services/update-hashtag';
 import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
@@ -194,8 +194,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	usersChart.update(user!, true);
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(user!, tag, true, true);
-	for (const tag of (user!.tags || []).filter(x => !tags.includes(x))) updateHashtag(user!, tag, true, false);
+	updateUsertags(user!, tags);
 
 	//#region アイコンとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<DriveFile | null>([
@@ -355,8 +354,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	});
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(exist, tag, true, true);
-	for (const tag of (exist.tags || []).filter(x => !tags.includes(x))) updateHashtag(exist, tag, true, false);
+	updateUsertags(exist, tags);
 
 	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 	await Followings.update({

@@ -8,7 +8,7 @@ import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '../../../../misc/extract-emojis';
 import extractHashtags from '../../../../misc/extract-hashtags';
 import * as langmap from 'langmap';
-import { updateHashtag } from '../../../../services/update-hashtag';
+import { updateUsertags } from '../../../../services/update-hashtag';
 import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
 import { User } from '../../../../models/entities/user';
@@ -264,8 +264,7 @@ export default define(meta, async (ps, user, app) => {
 	updates.tags = tags;
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(user, tag, true, true);
-	for (const tag of user.tags.filter(x => !tags.includes(x))) updateHashtag(user, tag, true, false);
+	updateUsertags(user, tags);
 	//#endregion
 
 	if (Object.keys(updates).length > 0) await Users.update(user.id, updates);

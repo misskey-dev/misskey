@@ -4,6 +4,22 @@ import { hashtagChart } from './chart';
 import { genId } from '../misc/gen-id';
 import { Hashtag } from '../models/entities/hashtag';
 
+export async function updateHashtags(user: User, tags: string[]) {
+	for (const tag of tags) {
+		await updateHashtag(user, tag);
+	}
+}
+
+export async function updateUsertags(user: User, tags: string[]) {
+	for (const tag of tags) {
+		await updateHashtag(user, tag, true, true);
+	}
+
+	for (const tag of (user.tags || []).filter(x => !tags.includes(x))) {
+		await updateHashtag(user, tag, true, false);
+	}
+}
+
 export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
 	tag = tag.toLowerCase();
 
