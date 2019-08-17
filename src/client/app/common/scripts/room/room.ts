@@ -43,6 +43,10 @@ export class Room {
 		this.roomInfo.furnitures = furnitures;
 	}
 
+	private get enableShadow() {
+		return this.graphicsQuality != 'superLow';
+	}
+
 	constructor(user, roomInfo: RoomInfo, container, options: Options) {
 		this.roomInfo = roomInfo;
 		this.graphicsQuality = options.graphicsQuality;
@@ -127,7 +131,7 @@ export class Room {
 			const roomLight = new THREE.SpotLight(0xffffff, 0.1);
 
 			roomLight.position.set(0, 8, 0);
-			roomLight.castShadow = true;
+			roomLight.castShadow = this.enableShadow;
 			roomLight.shadow.bias = -0.0001;
 			roomLight.shadow.mapSize.width = shadowQuality;
 			roomLight.shadow.mapSize.height = shadowQuality;
@@ -143,7 +147,7 @@ export class Room {
 		const outLight = new THREE.SpotLight(0xffffff, 0.4);
 
 		outLight.position.set(9, 3, -2);
-		outLight.castShadow = true;
+		outLight.castShadow = this.enableShadow;
 		outLight.shadow.bias = -0.001; // アクネ、アーチファクト対策 その代わりピーターパンが発生する可能性がある
 		outLight.shadow.mapSize.width = shadowQuality;
 		outLight.shadow.mapSize.height = shadowQuality;
@@ -312,8 +316,8 @@ export class Room {
 		loader.load(`/assets/room/rooms/${this.roomInfo.roomType}/${this.roomInfo.roomType}.glb`, gltf => {
 			gltf.scene.traverse(child => {
 				if (!(child instanceof THREE.Mesh)) return;
-				child.castShadow = true;
-				child.receiveShadow = true;
+				//child.castShadow = this.enableShadow;
+				child.receiveShadow = this.enableShadow;
 				child.material = new THREE.MeshLambertMaterial({
 					color: (child.material as THREE.MeshStandardMaterial).color,
 					map: (child.material as THREE.MeshStandardMaterial).map,
@@ -356,8 +360,8 @@ export class Room {
 
 				model.traverse(child => {
 					if (!(child instanceof THREE.Mesh)) return;
-					child.castShadow = true;
-					child.receiveShadow = true;
+					child.castShadow = this.enableShadow;
+					child.receiveShadow = this.enableShadow;
 					child.material = new THREE.MeshLambertMaterial({
 						color: (child.material as THREE.MeshStandardMaterial).color,
 						map: (child.material as THREE.MeshStandardMaterial).map,
@@ -382,10 +386,6 @@ export class Room {
 	private applyCarpetColor() {
 		this.roomObj.traverse(child => {
 			if (!(child instanceof THREE.Mesh)) return;
-			child.castShadow = true;
-			child.receiveShadow = true;
-
-			// Apply carpet color
 			if (child.material && (child.material as THREE.MeshStandardMaterial).name && (child.material as THREE.MeshStandardMaterial).name === 'Carpet') {
 				(child.material as THREE.MeshStandardMaterial).color.setHex(parseInt(this.roomInfo.carpetColor.substr(1), 16));
 			}
