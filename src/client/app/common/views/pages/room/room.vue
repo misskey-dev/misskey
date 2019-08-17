@@ -94,7 +94,9 @@ export default Vue.extend({
 					const f = room.findFurnitureById(obj.name);
 					this.selectedFurnitureName = this.$t('furnitures.' + f.type);
 					this.selectedFurnitureInfo = storeItems.find(x => x.id === f.type);
-					this.selectedFurnitureProps = JSON.parse(JSON.stringify(f.props)); // Disable reactivity
+					this.selectedFurnitureProps = f.props
+						? JSON.parse(JSON.stringify(f.props)) // Disable reactivity
+						: null;
 					this.$nextTick(() => {
 						this.$refs.preview.selected(obj);
 						this.$refs.positionX.value = obj.position.x;
