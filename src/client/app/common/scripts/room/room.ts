@@ -73,6 +73,8 @@ export class Room {
 		//#region Init a renderer
 		this.renderer = new THREE.WebGLRenderer({
 			antialias: false,
+			stencil: false,
+			alpha: false,
 			powerPreference:
 				this.graphicsQuality === 'ultra' ? 'high-performance' :
 				this.graphicsQuality === 'high' ? 'high-performance' :
@@ -86,7 +88,7 @@ export class Room {
 		this.renderer.setSize(width, height);
 		this.renderer.autoClear = false;
 		this.renderer.setClearColor(new THREE.Color(0x051f2d));
-		this.renderer.shadowMap.enabled = this.graphicsQuality !== 'superLow';
+		this.renderer.shadowMap.enabled = this.enableShadow;
 		this.renderer.gammaOutput = true;
 		this.renderer.shadowMap.type =
 			this.graphicsQuality === 'ultra' ? THREE.PCFSoftShadowMap :
