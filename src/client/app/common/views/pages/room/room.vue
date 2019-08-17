@@ -86,7 +86,7 @@ export default Vue.extend({
 		this.roomType = roomInfo.roomType;
 
 		room = new Room(user, roomInfo, this.$el, {
-			graphicsQuality: 'superLow',
+			graphicsQuality: 'medium',
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
 				if (obj) {
