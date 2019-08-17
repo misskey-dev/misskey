@@ -2283,6 +2283,13 @@ pages:
     argVariables: "入力スロット"
 
 room:
+  add: "置く"
+  remove: "しまう"
+  save: "保存"
+  chooseImage: "画像を選択"
+  rooms:
+    default: "デフォルト"
+    washitsu: "和室"
   furnitures:
     milk: "牛乳パック"
     bed: "ベッド"
@@ -2318,3 +2325,4 @@ room:
     photoframe: "額縁"
     cube: "キューブ"
     tv: "テレビ"
+    pinguin: "ピンギン"
