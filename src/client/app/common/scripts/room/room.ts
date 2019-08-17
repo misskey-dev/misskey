@@ -204,8 +204,7 @@ export class Room {
 		iconTexture.wrapT = THREE.RepeatWrapping;
 		iconTexture.anisotropy = 16;
 
-		const avatarMaterial = new THREE.MeshPhongMaterial({
-			specular: 0x030303,
+		const avatarMaterial = new THREE.MeshLambertMaterial({
 			emissive: 0x111111,
 			map: iconTexture,
 			side: THREE.DoubleSide,
@@ -431,8 +430,7 @@ export class Room {
 				canvas.height = 1024;
 				canvas.width = 1024;
 
-				child.material = new THREE.MeshPhongMaterial({
-					specular: 0x030303,
+				child.material = new THREE.MeshLambertMaterial({
 					emissive: 0x111111,
 					side: THREE.DoubleSide,
 					alphaTest: 0.5,
@@ -451,9 +449,9 @@ export class Room {
 					texture.anisotropy = 16;
 					texture.flipY = false;
 
-					(child.material as THREE.MeshPhongMaterial).map = texture;
-					(child.material as THREE.MeshPhongMaterial).needsUpdate = true;
-					(child.material as THREE.MeshPhongMaterial).map.needsUpdate = true;
+					(child.material as THREE.MeshLambertMaterial).map = texture;
+					(child.material as THREE.MeshLambertMaterial).needsUpdate = true;
+					(child.material as THREE.MeshLambertMaterial).map.needsUpdate = true;
 				};
 				img.src = val;
 			}
