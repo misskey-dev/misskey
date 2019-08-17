@@ -245,4 +245,8 @@
 		id: "pinguin",
 		place: "floor"
 	},
+	{
+		id: "rubik-cube",
+		place: "floor",
+	},
 ]
