@@ -4,31 +4,30 @@
 		<section>
 			<p class="name">{{ selectedFurnitureName }}</p>
 			<x-preview ref="preview"/>
-			<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionX"/>
-			<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionZ"/>
-			<input type="range" min="0" max="1.5" step="0.01" @input="onPositionSliderChange()" ref="positionY"/>
-			<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationX"/>
-			<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationZ"/>
-			<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationY"/>
-		</section>
-		<section v-if="selectedFurnitureInfo.props">
-			<div v-for="k in Object.keys(selectedFurnitureInfo.props)">
-				<p>{{ k }}</p>
-				<template v-if="selectedFurnitureInfo.props[k] === 'image'">
-					<ui-button @click="chooseImage(k)">{{ $t('chooseImage') }}</ui-button>
-				</template>
-				<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
-					<input type="color" :value="selectedFurnitureProps[k]" @change="updateColor(k, $event)"/>
-				</template>
-			</div>
+			<template v-if="selectedFurnitureInfo.props">
+				<div v-for="k in Object.keys(selectedFurnitureInfo.props)" :key="k">
+					<p>{{ k }}</p>
+					<template v-if="selectedFurnitureInfo.props[k] === 'image'">
+						<ui-button @click="chooseImage(k)">{{ $t('chooseImage') }}</ui-button>
+					</template>
+					<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
+						<input type="color" :value="selectedFurnitureProps[k]" @change="updateColor(k, $event)"/>
+					</template>
+				</div>
+			</template>
 		</section>
 		<section>
-			<ui-button @click="remove()">{{ $t('remove') }}</ui-button>
+			<ui-button @click="translate()" :primary="isTranslateMode"><fa :icon="faArrowsAlt"/> {{ $t('translate') }}</ui-button>
+			<ui-button @click="rotate()" :primary="isRotateMode"><fa :icon="faUndo"/> {{ $t('rotate') }}</ui-button>
+			<ui-button v-if="isTranslateMode || isRotateMode" @click="exit()"><fa :icon="faBan"/> {{ $t('exit') }}</ui-button>
+		</section>
+		<section>
+			<ui-button @click="remove()"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</ui-button>
 		</section>
 	</div>
 	<div class="menu">
 		<section>
-			<ui-button @click="add()">{{ $t('add-furniture') }}</ui-button>
+			<ui-button @click="add()"><fa :icon="faBoxOpen"/> {{ $t('add-furniture') }}</ui-button>
 		</section>
 		<section>
 			<ui-select :value="roomType" @input="updateRoomType($event)">
@@ -42,7 +41,7 @@
 			</label>
 		</section>
 		<section>
-			<ui-button primary @click="save()">{{ $t('save') }}</ui-button>
+			<ui-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
 		</section>
 	</div>
 </div>
@@ -55,6 +54,8 @@ import { Room } from '../../../scripts/room/room';
 import parseAcct from '../../../../../../misc/acct/parse';
 import XPreview from './preview.vue';
 const storeItems = require('../../../scripts/room/furnitures.json5');
+import { faBoxOpen, faUndo, faArrowsAlt, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 let room: Room;
 
@@ -79,7 +80,10 @@ export default Vue.extend({
 			selectedFurnitureInfo: null,
 			selectedFurnitureProps: null,
 			roomType: null,
-			carpetColor: null
+			carpetColor: null,
+			isTranslateMode: false,
+			isRotateMode: false,
+			faBoxOpen, faSave, faTrashAlt, faUndo, faArrowsAlt, faBan,
 		};
 	},
 
@@ -108,12 +112,6 @@ export default Vue.extend({
 						: null;
 					this.$nextTick(() => {
 						this.$refs.preview.selected(obj);
-						this.$refs.positionX.value = obj.position.x;
-						this.$refs.positionY.value = obj.position.y;
-						this.$refs.positionZ.value = obj.position.z;
-						this.$refs.rotationX.value = obj.rotation.x;
-						this.$refs.rotationY.value = obj.rotation.y;
-						this.$refs.rotationZ.value = obj.rotation.z;
 					});
 				}
 			},
@@ -122,14 +120,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onPositionSliderChange() {
-			room.moveFurniture(parseFloat(this.$refs.positionX.value, 10), parseFloat(this.$refs.positionY.value, 10), parseFloat(this.$refs.positionZ.value, 10));
-		},
-
-		onRotationSliderChange() {
-			room.rotateFurniture(parseFloat(this.$refs.rotationX.value, 10), parseFloat(this.$refs.rotationY.value, 10), parseFloat(this.$refs.rotationZ.value, 10));
-		},
-
 		async add() {
 			const { canceled, result: id } = await this.$root.dialog({
 				type: null,
@@ -178,6 +168,32 @@ export default Vue.extend({
 			room.changeRoomType(type);
 			this.roomType = type;
 		},
+
+		translate() {
+			if (this.isTranslateMode) {
+				this.exit();
+			} else {
+				this.isRotateMode = false;
+				this.isTranslateMode = true;
+				room.enterTransformMode('translate');
+			}
+		},
+
+		rotate() {
+			if (this.isRotateMode) {
+				this.exit();
+			} else {
+				this.isTranslateMode = false;
+				this.isRotateMode = true;
+				room.enterTransformMode('rotate');
+			}
+		},
+
+		exit() {
+			this.isTranslateMode = false;
+			this.isRotateMode = false;
+			room.exitTransformMode();
+		}
 	}
 });
 </script>

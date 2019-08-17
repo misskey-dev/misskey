@@ -7,6 +7,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 //import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { Furniture, RoomInfo } from './furniture';
 import uuid = require('uuid');
 const furnitureDefs = require('./furnitures.json5');
@@ -27,12 +28,14 @@ export class Room {
 	private controls: OrbitControls;
 	private composer: EffectComposer;
 	private mixers: THREE.AnimationMixer[] = [];
+	private furnitureControl: TransformControls;
 	private roomInfo: RoomInfo;
 	private graphicsQuality: 'cheep' | 'low' | 'medium' | 'high' | 'ultra';
 	private roomObj: THREE.Object3D;
 	private objects: THREE.Object3D[] = [];
 	private selectedObject: THREE.Object3D = null;
 	private onChangeSelect: Function;
+	private isTransformMode = false;
 	public canvas: HTMLCanvasElement;
 
 	private get furnitures(): Furniture[] {
@@ -51,18 +54,20 @@ export class Room {
 		return this.graphicsQuality !== 'cheep' && this.graphicsQuality !== 'low';
 	}
 
-	constructor(user, roomInfo: RoomInfo, container, options: Options) {
-		this.roomInfo = roomInfo;
-		this.graphicsQuality = options.graphicsQuality;
-		this.onChangeSelect = options.onChangeSelect;
-
-		const shadowQuality =
+	private get shadowQuality() {
+		return (
 			this.graphicsQuality === 'ultra' ? 16384 :
 			this.graphicsQuality === 'high' ? 8192 :
 			this.graphicsQuality === 'medium' ? 4096 :
 			this.graphicsQuality === 'low' ? 1024 :
-			0; // cheep
+			0); // cheep
+	}
 
+	constructor(user, roomInfo: RoomInfo, container, options: Options) {
+		this.roomInfo = roomInfo;
+		this.graphicsQuality = options.graphicsQuality;
+		this.onChangeSelect = options.onChangeSelect;
+	
 		const isMyRoom = true;
 
 		this.clock = new THREE.Clock(true);
@@ -136,8 +141,8 @@ export class Room {
 			roomLight.position.set(0, 8, 0);
 			roomLight.castShadow = this.enableShadow;
 			roomLight.shadow.bias = -0.0001;
-			roomLight.shadow.mapSize.width = shadowQuality;
-			roomLight.shadow.mapSize.height = shadowQuality;
+			roomLight.shadow.mapSize.width = this.shadowQuality;
+			roomLight.shadow.mapSize.height = this.shadowQuality;
 			roomLight.shadow.camera.near = 0.1;
 			roomLight.shadow.camera.far = 9;
 			roomLight.shadow.camera.fov = 45;
@@ -152,8 +157,8 @@ export class Room {
 		outLight.position.set(9, 3, -2);
 		outLight.castShadow = this.enableShadow;
 		outLight.shadow.bias = -0.001; // アクネ、アーチファクト対策 その代わりピーターパンが発生する可能性がある
-		outLight.shadow.mapSize.width = shadowQuality;
-		outLight.shadow.mapSize.height = shadowQuality;
+		outLight.shadow.mapSize.width = this.shadowQuality;
+		outLight.shadow.mapSize.height = this.shadowQuality;
 		outLight.shadow.camera.near = 6;
 		outLight.shadow.camera.far = 15;
 		outLight.shadow.camera.fov = 45;
@@ -254,6 +259,9 @@ export class Room {
 
 		//#region Interaction
 		if (isMyRoom) {
+			this.furnitureControl = new TransformControls(this.camera, this.renderer.domElement);
+			this.scene.add(this.furnitureControl);
+
 			// Hover highlight
 			this.renderer.domElement.onmousemove = this.onmousemove;
 
@@ -463,6 +471,8 @@ export class Room {
 
 	@autobind
 	private onmousemove(ev: MouseEvent) {
+		if (this.isTransformMode) return;
+
 		const rect = (ev.target as HTMLElement).getBoundingClientRect();
 		const x = (((ev.clientX * window.devicePixelRatio) - rect.left) / this.renderer.domElement.width) * 2 - 1;
 		const y = -(((ev.clientY * window.devicePixelRatio) - rect.top) / this.renderer.domElement.height) * 2 + 1;
@@ -498,6 +508,7 @@ export class Room {
 
 	@autobind
 	private onmousedown(ev: MouseEvent) {
+		if (this.isTransformMode) return;
 		if (ev.target !== this.renderer.domElement || ev.button !== 0) return;
 
 		const rect = (ev.target as HTMLElement).getBoundingClientRect();
@@ -564,29 +575,16 @@ export class Room {
 	}
 
 	@autobind
-	public moveFurniture(x: number, y: number, z: number) {
-		const obj = this.selectedObject;
-		obj.position.x = x;
-		obj.position.y = y;
-		obj.position.z = z;
-
-		const furniture = this.furnitures.find(furniture => furniture.id === obj.name);
-		furniture.position.x = x;
-		furniture.position.y = y;
-		furniture.position.z = z;
+	public enterTransformMode(type: 'translate' | 'rotate') {
+		this.isTransformMode = true;
+		this.furnitureControl.setMode(type);
+		this.furnitureControl.attach(this.selectedObject);
 	}
 
 	@autobind
-	public rotateFurniture(x: number, y: number, z: number) {
-		const obj = this.selectedObject;
-		obj.rotation.x = x;
-		obj.rotation.y = y;
-		obj.rotation.z = z;
-
-		const furniture = this.furnitures.find(furniture => furniture.id === obj.name);
-		furniture.rotation.x = x;
-		furniture.rotation.y = y;
-		furniture.rotation.z = z;
+	public exitTransformMode() {
+		this.isTransformMode = false;
+		this.furnitureControl.detach();
 	}
 
 	@autobind
@@ -648,6 +646,16 @@ export class Room {
 
 	@autobind
 	public getRoomInfo() {
+		for (const obj of this.objects) {
+			const furniture = this.furnitures.find(f => f.id === obj.name);
+			furniture.position.x = obj.position.x;
+			furniture.position.y = obj.position.y;
+			furniture.position.z = obj.position.z;
+			furniture.rotation.x = obj.rotation.x;
+			furniture.rotation.y = obj.rotation.y;
+			furniture.rotation.z = obj.rotation.z;
+		}
+
 		return this.roomInfo;
 	}
 
