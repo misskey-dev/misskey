@@ -28,11 +28,11 @@
 		</select>
 		<ui-button @click="add()">{{ $t('add') }}</ui-button>
 		<div>
-			<select @change="updateRoomType($event)">
+			<select :value="roomType" @change="updateRoomType($event)">
 				<option value="default">{{ $t('rooms.default') }}</option>
 				<option value="washitsu">{{ $t('rooms.washitsu') }}</option>
 			</select>
-			<input v-if="roomType === 'default'" type="color" @change="updateCarpetColor($event)"/>
+			<input v-if="roomType === 'default'" type="color" :value="carpetColor" @change="updateCarpetColor($event)"/>
 		</div>
 		<ui-button @click="save()">{{ $t('save') }}</ui-button>
 	</div>
@@ -71,7 +71,8 @@ export default Vue.extend({
 			selectedFurnitureName: null,
 			selectedFurnitureInfo: null,
 			selectedFurnitureProps: null,
-			roomType: null
+			roomType: null,
+			carpetColor: null
 		};
 	},
 
@@ -85,6 +86,7 @@ export default Vue.extend({
 		});
 
 		this.roomType = roomInfo.roomType;
+		this.carpetColor = roomInfo.carpetColor;
 
 		room = new Room(user, roomInfo, this.$el, {
 			graphicsQuality: 'medium',
@@ -152,6 +154,7 @@ export default Vue.extend({
 
 		updateCarpetColor(ev) {
 			room.updateCarpetColor(ev.target.value);
+			this.carpetColor = ev.target.value;
 		},
 
 		updateRoomType(ev) {
