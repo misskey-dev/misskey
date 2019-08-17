@@ -9,7 +9,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { Furniture, RoomInfo } from './furniture';
-import uuid = require('uuid');
+import { v1 as uuid } from 'uuid';
 const furnitureDefs = require('./furnitures.json5');
 
 THREE.ImageUtils.crossOrigin = '';
@@ -67,7 +67,7 @@ export class Room {
 		this.roomInfo = roomInfo;
 		this.graphicsQuality = options.graphicsQuality;
 		this.onChangeSelect = options.onChangeSelect;
-	
+
 		const isMyRoom = true;
 
 		this.clock = new THREE.Clock(true);
@@ -242,16 +242,16 @@ export class Room {
 				bevelSize: 0,
 				bevelEnabled: false
 			});
-	
+
 			const nameMaterial = new THREE.MeshLambertMaterial({
 				color: 0xffffff
 			});
-	
+
 			const nameObject = new THREE.Mesh(nameGeometry, nameMaterial);
 			nameObject.position.set(-3, 2.25, 1.25);
 			nameObject.rotation.y = Math.PI / 2;
 			nameObject.castShadow = false;
-	
+
 			this.scene.add(nameObject);
 		});
 		//#endregion
@@ -314,7 +314,7 @@ export class Room {
 		for (const mixer of this.mixers) {
 			mixer.update(clock);
 		}
-		
+
 		this.controls.update();
 		this.renderer.clear();
 		this.composer.render();
@@ -352,7 +352,7 @@ export class Room {
 				const model = gltf.scene;
 
 				// Load animation
-				if (gltf.animations.length > 0) { 
+				if (gltf.animations.length > 0) {
 					const mixer = new THREE.AnimationMixer(model);
 					this.mixers.push(mixer);
 					for (const clip of gltf.animations) {
@@ -447,7 +447,7 @@ export class Room {
 					alphaTest: 0.5,
 				});
 
-				const img = new Image;
+				const img = new Image();
 				img.onload = () => {
 					const uvInfo = def.texture[t].uv;
 
