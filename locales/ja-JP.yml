@@ -1260,6 +1260,7 @@ desktop/views/components/ui.header.account.vue:
   groups: "グループ"
   follow-requests: "フォロー申請"
   admin: "管理"
+  room: "ルーム"
 
 desktop/views/components/ui.header.nav.vue:
   game: "ゲーム"
