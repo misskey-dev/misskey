@@ -308,6 +308,16 @@ common:
     saved: "保存しました"
     home-profile: "ホームのプロファイル"
     deck-profile: "デッキのプロファイル"
+    room: "ルーム"
+    _room:
+      graphicsQuality: "グラフィックの品質"
+      _graphicsQuality:
+        ultra: "最高"
+        high: "高"
+        medium: "中"
+        low: "低"
+        cheep: "最低"
+      useOrthographicCamera: "平行投影カメラを使用"
 
   search: "検索"
   delete: "削除"

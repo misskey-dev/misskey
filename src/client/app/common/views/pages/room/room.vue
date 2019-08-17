@@ -96,7 +96,7 @@ export default Vue.extend({
 		this.carpetColor = roomInfo.carpetColor;
 
 		room = new Room(user, roomInfo, this.$el, {
-			graphicsQuality: 'medium',
+			graphicsQuality: this.$store.state.device.roomGraphicsQuality,
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
 				if (obj) {
@@ -117,7 +117,7 @@ export default Vue.extend({
 					});
 				}
 			},
-			useOrthographicCamera: true
+			useOrthographicCamera: this.$store.state.device.roomUseOrthographicCamera
 		});
 	},
 

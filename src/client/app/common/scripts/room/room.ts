@@ -28,7 +28,7 @@ export class Room {
 	private composer: EffectComposer;
 	private mixers: THREE.AnimationMixer[] = [];
 	private roomInfo: RoomInfo;
-	private graphicsQuality: 'superLow' | 'veryLow' | 'low' | 'medium' | 'high' | 'ultra';
+	private graphicsQuality: 'cheep' | 'low' | 'medium' | 'high' | 'ultra';
 	private roomObj: THREE.Object3D;
 	private objects: THREE.Object3D[] = [];
 	private selectedObject: THREE.Object3D = null;
@@ -44,7 +44,11 @@ export class Room {
 	}
 
 	private get enableShadow() {
-		return this.graphicsQuality != 'superLow';
+		return this.graphicsQuality != 'cheep';
+	}
+
+	private get usePostFXs() {
+		return this.graphicsQuality !== 'cheep' && this.graphicsQuality !== 'low';
 	}
 
 	constructor(user, roomInfo: RoomInfo, container, options: Options) {
@@ -56,9 +60,8 @@ export class Room {
 			this.graphicsQuality === 'ultra' ? 16384 :
 			this.graphicsQuality === 'high' ? 8192 :
 			this.graphicsQuality === 'medium' ? 4096 :
-			this.graphicsQuality === 'low' ? 2048 :
-			this.graphicsQuality === 'veryLow' ? 1024 :
-			0; // superLow
+			this.graphicsQuality === 'low' ? 1024 :
+			0; // cheep
 
 		const isMyRoom = true;
 
@@ -80,8 +83,7 @@ export class Room {
 				this.graphicsQuality === 'high' ? 'high-performance' :
 				this.graphicsQuality === 'medium' ? 'default' :
 				this.graphicsQuality === 'low' ? 'low-power' :
-				this.graphicsQuality === 'veryLow' ? 'low-power' :
-				'low-power' // superLow
+				'low-power' // cheep
 		});
 
 		this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -95,8 +97,7 @@ export class Room {
 			this.graphicsQuality === 'high' ? THREE.PCFSoftShadowMap :
 			this.graphicsQuality === 'medium' ? THREE.PCFShadowMap :
 			this.graphicsQuality === 'low' ? THREE.BasicShadowMap :
-			this.graphicsQuality === 'veryLow' ? THREE.BasicShadowMap :
-			THREE.BasicShadowMap; // superLow
+			THREE.BasicShadowMap; // cheep
 
 		this.canvas = this.renderer.domElement;
 		container.appendChild(this.renderer.domElement);
@@ -128,7 +129,7 @@ export class Room {
 		this.scene.add(ambientLight);
 		//#endregion
 
-		if (this.graphicsQuality !== 'superLow') {
+		if (this.graphicsQuality !== 'cheep') {
 			//#region Room light
 			const roomLight = new THREE.SpotLight(0xffffff, 0.1);
 
@@ -175,7 +176,7 @@ export class Room {
 		//#endregion
 
 		//#region POST FXs
-		if (this.graphicsQuality === 'superLow') {
+		if (!this.usePostFXs) {
 			this.composer = null;
 		} else {
 			const renderTarget = new THREE.WebGLRenderTarget(width, height, {
@@ -275,10 +276,10 @@ export class Room {
 		//#endregion
 
 		// Start render
-		if (this.graphicsQuality === 'superLow') {
-			this.renderWithoutPostFXs();
-		} else {
+		if (this.usePostFXs) {
 			this.renderWithPostFXs();
+		} else {
+			this.renderWithoutPostFXs();
 		}
 	}
 
