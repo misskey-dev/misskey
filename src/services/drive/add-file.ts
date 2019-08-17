@@ -460,7 +460,7 @@ export default async function(
 
 	logger.succ(`drive file has been created ${file.id}`);
 
-	DriveFiles.pack(file).then(packedFile => {
+	DriveFiles.pack(file, { self: true }).then(packedFile => {
 		// Publish driveFileCreated event
 		publishMainStream(user.id, 'driveFileCreated', packedFile);
 		publishDriveStream(user.id, 'fileCreated', packedFile);
