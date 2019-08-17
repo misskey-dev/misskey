@@ -420,7 +420,7 @@ export class Room {
 		model.traverse(child => {
 			if (!(child instanceof THREE.Mesh)) return;
 			for (const t of Object.keys(def.texture)) {
-				if (!child.userData || !child.userData.name || child.userData.name !== t) continue;
+				if (child.name !== t) continue;
 
 				const prop = def.texture[t].prop;
 				const val = furniture.props ? furniture.props[prop] : undefined;
