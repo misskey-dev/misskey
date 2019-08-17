@@ -25,11 +25,11 @@ export default Vue.extend({
 		const renderer = new THREE.WebGLRenderer({
 			canvas: canvas,
 			antialias: true,
-			alpha: true
+			alpha: false
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(width, height);
-		renderer.setClearColor(0x000000, 0);
+		renderer.setClearColor(0x000000);
 		renderer.autoClear = false;
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.cullFace = THREE.CullFaceBack;

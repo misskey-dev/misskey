@@ -1,15 +1,17 @@
 <template>
 <div class="hveuntkp">
 	<div class="controller" v-if="objectSelected">
-		<p class="name">{{ selectedFurnitureName }}</p>
-		<x-preview ref="preview"/>
-		<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionX"/>
-		<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionZ"/>
-		<input type="range" min="0" max="1.5" step="0.01" @input="onPositionSliderChange()" ref="positionY"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationX"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationZ"/>
-		<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationY"/>
-		<div v-if="selectedFurnitureInfo.props">
+		<section>
+			<p class="name">{{ selectedFurnitureName }}</p>
+			<x-preview ref="preview"/>
+			<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionX"/>
+			<input type="range" min="-2.5" max="2.5" step="0.01" @input="onPositionSliderChange()" ref="positionZ"/>
+			<input type="range" min="0" max="1.5" step="0.01" @input="onPositionSliderChange()" ref="positionY"/>
+			<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationX"/>
+			<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationZ"/>
+			<input type="range" min="-3.14" max="3.14" step="0.01" @input="onRotationSliderChange()" ref="rotationY"/>
+		</section>
+		<section v-if="selectedFurnitureInfo.props">
 			<div v-for="k in Object.keys(selectedFurnitureInfo.props)">
 				<p>{{ k }}</p>
 				<template v-if="selectedFurnitureInfo.props[k] === 'image'">
@@ -19,22 +21,29 @@
 					<input type="color" :value="selectedFurnitureProps[k]" @change="updateColor(k, $event)"/>
 				</template>
 			</div>
-		</div>
-		<ui-button @click="remove()">{{ $t('remove') }}</ui-button>
+		</section>
+		<section>
+			<ui-button @click="remove()">{{ $t('remove') }}</ui-button>
+		</section>
 	</div>
 	<div class="menu">
-		<select v-model="selectedStoreItem">
-			<option v-for="item in storeItems" :value="item.id" :key="item.id">{{ $t('furnitures.' + item.id) }}</option>
-		</select>
-		<ui-button @click="add()">{{ $t('add') }}</ui-button>
-		<div>
-			<select :value="roomType" @change="updateRoomType($event)">
+		<section>
+			<ui-button @click="add()">{{ $t('add-furniture') }}</ui-button>
+		</section>
+		<section>
+			<ui-select :value="roomType" @input="updateRoomType($event)">
+				<template #label>{{ $t('room-type') }}</template>
 				<option value="default">{{ $t('rooms.default') }}</option>
 				<option value="washitsu">{{ $t('rooms.washitsu') }}</option>
-			</select>
-			<input v-if="roomType === 'default'" type="color" :value="carpetColor" @change="updateCarpetColor($event)"/>
-		</div>
-		<ui-button @click="save()">{{ $t('save') }}</ui-button>
+			</ui-select>
+			<label v-if="roomType === 'default'">
+				<span>{{ $t('carpet-color') }}</span>
+				<input type="color" :value="carpetColor" @change="updateCarpetColor($event)"/>
+			</label>
+		</section>
+		<section>
+			<ui-button primary @click="save()">{{ $t('save') }}</ui-button>
+		</section>
 	</div>
 </div>
 </template>
@@ -65,8 +74,6 @@ export default Vue.extend({
 
 	data() {
 		return {
-			storeItems: storeItems,
-			selectedStoreItem: null,
 			objectSelected: false,
 			selectedFurnitureName: null,
 			selectedFurnitureInfo: null,
@@ -123,9 +130,19 @@ export default Vue.extend({
 			room.rotateFurniture(parseFloat(this.$refs.rotationX.value, 10), parseFloat(this.$refs.rotationY.value, 10), parseFloat(this.$refs.rotationZ.value, 10));
 		},
 
-		add() {
-			if (this.selectedStoreItem == null) return;
-			room.addFurniture(this.selectedStoreItem);
+		async add() {
+			const { canceled, result: id } = await this.$root.dialog({
+				type: null,
+				title: this.$t('add-furniture'),
+				select: {
+					items: storeItems.map(item => ({
+						value: item.id, text: this.$t('furnitures.' + item.id)
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			room.addFurniture(id);
 		},
 
 		remove() {
@@ -157,9 +174,9 @@ export default Vue.extend({
 			this.carpetColor = ev.target.value;
 		},
 
-		updateRoomType(ev) {
-			room.changeRoomType(ev.target.value);
-			this.roomType = ev.target.value;
+		updateRoomType(type) {
+			room.changeRoomType(type);
+			this.roomType = type;
 		},
 	}
 });
@@ -172,16 +189,29 @@ export default Vue.extend({
 		position fixed
 		z-index 1
 		padding 16px
-		background rgba(0, 0, 0, 0.5)
-		color #fff
+		background var(--face)
+		color var(--text)
+
+		> section
+			padding 16px 0
+
+			&:first-child
+				padding-top 0
+
+			&:last-child
+				padding-bottom 0
+
+			&:not(:last-child)
+				border-bottom solid 1px var(--faceDivider)
 
 	> .controller
 		top 16px
 		left 16px
 		width 256px
 
-		> .name
-			margin 0
+		> section
+			> .name
+				margin 0
 
 	> .menu
 		top 16px

@@ -2283,10 +2283,12 @@ pages:
     argVariables: "入力スロット"
 
 room:
-  add: "置く"
+  add-furniture: "家具を置く"
   remove: "しまう"
   save: "保存"
   chooseImage: "画像を選択"
+  room-type: "部屋のタイプ"
+  carpet-color: "床の色"
   rooms:
     default: "デフォルト"
     washitsu: "和室"
