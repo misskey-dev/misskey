@@ -353,7 +353,10 @@ export class Room {
 					if (!(child instanceof THREE.Mesh)) return;
 					child.castShadow = true;
 					child.receiveShadow = true;
-					(child.material as THREE.MeshStandardMaterial).metalness = 0;
+					child.material = new THREE.MeshLambertMaterial({
+						color: (child.material as THREE.MeshStandardMaterial).color,
+						map: (child.material as THREE.MeshStandardMaterial).map,
+					});
 				});
 
 				if (def.color) { // カスタムカラー
