@@ -323,19 +323,29 @@ export class Room {
 
 	@autobind
 	private loadRoom() {
-		const loader = new GLTFLoader();
-		loader.load(`/assets/room/rooms/${this.roomInfo.roomType}/${this.roomInfo.roomType}.glb`, gltf => {
+		new GLTFLoader().load(`/assets/room/rooms/${this.roomInfo.roomType}/${this.roomInfo.roomType}.glb`, gltf => {
 			gltf.scene.traverse(child => {
 				if (!(child instanceof THREE.Mesh)) return;
-				//child.castShadow = this.enableShadow;
+
 				child.receiveShadow = this.enableShadow;
+
 				child.material = new THREE.MeshLambertMaterial({
 					color: (child.material as THREE.MeshStandardMaterial).color,
 					map: (child.material as THREE.MeshStandardMaterial).map,
 					name: (child.material as THREE.MeshStandardMaterial).name,
 				});
+
+				if ((child.material as THREE.MeshLambertMaterial).map) {
+					(child.material as THREE.MeshLambertMaterial).map.minFilter = THREE.LinearMipMapLinearFilter;
+					(child.material as THREE.MeshLambertMaterial).map.magFilter = THREE.LinearMipMapLinearFilter;
+		
+					// 異方性フィルタリング
+					(child.material as THREE.MeshLambertMaterial).map.anisotropy = 8;
+				}
 			});
+
 			gltf.scene.position.set(0, 0, 0);
+
 			this.scene.add(gltf.scene);
 			this.roomObj = gltf.scene;
 			if (this.roomInfo.roomType === 'default') {
@@ -378,6 +388,14 @@ export class Room {
 						map: (child.material as THREE.MeshStandardMaterial).map,
 						name: (child.material as THREE.MeshStandardMaterial).name,
 					});
+
+					if ((child.material as THREE.MeshLambertMaterial).map) {
+						(child.material as THREE.MeshLambertMaterial).map.minFilter = THREE.LinearMipMapLinearFilter;
+						(child.material as THREE.MeshLambertMaterial).map.magFilter = THREE.LinearMipMapLinearFilter;
+			
+						// 異方性フィルタリング
+						(child.material as THREE.MeshLambertMaterial).map.anisotropy = 8;
+					}
 				});
 
 				if (def.color) { // カスタムカラー
