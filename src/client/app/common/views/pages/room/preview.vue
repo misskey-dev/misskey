@@ -1,0 +1,98 @@
+<template>
+<canvas width=224 height=128></canvas>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import * as THREE from 'three';
+
+export default Vue.extend({
+	data() {
+		return {
+			selected: null,
+			objectHeight: 0
+		};
+	},
+
+	mounted() {
+		const canvas = this.$el;
+
+		const width = canvas.width;
+		const height = canvas.height;
+
+		const scene = new THREE.Scene();
+
+		const renderer = new THREE.WebGLRenderer({
+			canvas: canvas,
+			antialias: true,
+			alpha: false
+		});
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(width, height);
+		renderer.setClearColor(0x000000);
+		renderer.autoClear = false;
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.cullFace = THREE.CullFaceBack;
+
+		const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 100);
+		camera.zoom = 10;
+		camera.position.x = 0;
+		camera.position.y = 2;
+		camera.position.z = 0;
+		camera.updateProjectionMatrix();
+		scene.add(camera);
+
+		const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+		ambientLight.castShadow = false;
+		scene.add(ambientLight);
+
+		const light = new THREE.PointLight(0xffffff, 1, 100);
+		light.position.set(3, 3, 3);
+		scene.add(light);
+
+		const grid = new THREE.GridHelper(5, 16, 0x444444, 0x222222);
+		scene.add(grid);
+
+		const render = () => {
+			const timer = Date.now() * 0.0004;
+			requestAnimationFrame(render);
+			
+			camera.position.y = 2 + this.objectHeight / 2;
+			camera.position.z = Math.cos(timer) * 10;
+			camera.position.x = Math.sin(timer) * 10;
+			camera.lookAt(new THREE.Vector3(0, this.objectHeight / 2, 0));
+			renderer.render(scene, camera);
+		};
+
+		this.selected = selected => {
+			const obj = selected.clone();
+
+			// Remove current object
+			const current = scene.getObjectByName('obj');
+			if (current != null) {
+				scene.remove(current);
+			}
+
+			// Add new object
+			obj.name = 'obj';
+			obj.position.x = 0;
+			obj.position.y = 0;
+			obj.position.z = 0;
+			obj.rotation.x = 0;
+			obj.rotation.y = 0;
+			obj.rotation.z = 0;
+			obj.traverse(child => {
+				if (child instanceof THREE.Mesh) {
+					child.material = child.material.clone();
+					return child.material.emissive.setHex(0x000000);
+				}
+			});
+			const objectBoundingBox = new THREE.Box3().setFromObject(obj);
+			this.objectHeight = objectBoundingBox.max.y - objectBoundingBox.min.y;
+			scene.add(obj);
+		};
+
+		render();
+	},
+});
+</script>

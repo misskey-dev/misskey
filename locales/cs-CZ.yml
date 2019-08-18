@@ -34,10 +34,14 @@ common:
   signup: "Registrovat"
   signout: "Odhlásit"
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
+  delete-confirm: "Opravdu chcete smazat tento příspěvek?"
+  signin-required: "Přihlašte se, prosím"
+  notification-type: "Typy oznámení"
   notification-types:
     all: "Všechny"
     pollVote: "Hlasy"
     follow: "Sledovaní"
+    receiveFollowRequest: "Žádost o sledování"
     reply: "Odpovědi"
     quote: "Citace"
     renote: "Renotovat"
@@ -500,6 +504,7 @@ common/views/components/note-menu.vue:
   unpin: "Odepnout"
   delete: "Odstranit"
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
+  delete-and-edit: "Smazat a upravit"
   remote: "Ukázat originální poznámku"
 common/views/components/user-menu.vue:
   mention: "Zmínění"
@@ -1345,3 +1350,8 @@ pages:
         arg1: "Seznamy"
     types:
       array: "Seznamy"
+room:
+  translate: "Přesunout"
+  save: "Uložit"
+  furnitures:
+    moon: "Po"

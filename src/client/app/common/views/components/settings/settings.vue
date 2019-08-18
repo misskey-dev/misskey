@@ -159,6 +159,19 @@
 					<template #desc>{{ $t('@._settings.paste-dialog-desc') }}</template>
 				</ui-switch>
 			</section>
+
+			<section>
+				<header>{{ $t('@._settings.room') }}</header>
+				<ui-select v-model="roomGraphicsQuality">
+					<template #label>{{ $t('@._settings._room.graphicsQuality') }}</template>
+					<option value="ultra">{{ $t('@._settings._room._graphicsQuality.ultra') }}</option>
+					<option value="high">{{ $t('@._settings._room._graphicsQuality.high') }}</option>
+					<option value="medium">{{ $t('@._settings._room._graphicsQuality.medium') }}</option>
+					<option value="low">{{ $t('@._settings._room._graphicsQuality.low') }}</option>
+					<option value="cheep">{{ $t('@._settings._room._graphicsQuality.cheep') }}</option>
+				</ui-select>
+				<ui-switch v-model="roomUseOrthographicCamera">{{ $t('@._settings._room.useOrthographicCamera') }}</ui-switch>
+			</section>
 		</ui-card>
 
 		<ui-card>
@@ -501,6 +514,16 @@ export default Vue.extend({
 		iLikeSushi: {
 			get() { return this.$store.state.settings.iLikeSushi; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'iLikeSushi', value }); }
+		},
+
+		roomUseOrthographicCamera: {
+			get() { return this.$store.state.device.roomUseOrthographicCamera; },
+			set(value) { this.$store.commit('device/set', { key: 'roomUseOrthographicCamera', value }); }
+		},
+
+		roomGraphicsQuality: {
+			get() { return this.$store.state.device.roomGraphicsQuality; },
+			set(value) { this.$store.commit('device/set', { key: 'roomGraphicsQuality', value }); }
 		},
 
 		games_reversi_showBoardLabels: {

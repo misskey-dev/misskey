@@ -99,7 +99,7 @@ import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-
 import i18n from '../../../../i18n';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { blockDefs } from '../../../../../../misc/aiscript/index';
 import { ASTypeChecker } from '../../../../../../misc/aiscript/type-checker';
 import { url } from '../../../../config';
@@ -201,7 +201,7 @@ export default Vue.extend({
 			this.variables = this.page.variables;
 			this.eyeCatchingImageId = this.page.eyeCatchingImageId;
 		} else {
-			const id = uuid.v4();
+			const id = uuid();
 			this.content = [{
 				id,
 				type: 'text',
@@ -292,7 +292,7 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 
-			const id = uuid.v4();
+			const id = uuid();
 			this.content.push({ id, type });
 		},
 
@@ -316,7 +316,7 @@ export default Vue.extend({
 				return;
 			}
 
-			const id = uuid.v4();
+			const id = uuid();
 			this.variables.push({ id, name, type: null });
 		},
 

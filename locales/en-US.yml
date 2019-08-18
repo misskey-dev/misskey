@@ -30,13 +30,14 @@ common:
   customize-home: "Customize home layout"
   featured-notes: "Featured notes"
   dark-mode: "Dark Mode"
-  signin: "Log In"
+  signin: "Login"
   signup: "Sign up"
   signout: "Logout"
   reload-to-apply-the-setting: "You'll need to reload the page to reflect this setting. Do you want to reload it now?"
   fetching-as-ap-object: "Inquiring to fediverse"
   unfollow-confirm: "Do you want to unfollow {name}?"
-  signin-required: "Please Log In"
+  delete-confirm: "Are you sure you want to delete this post?"
+  signin-required: "Please login"
   notification-type: "Notification Type"
   notification-types:
     all: "All"
@@ -2073,3 +2074,8 @@ pages:
     enviromentVariables: "Environment variable"
     pageVariables: "Page element"
     argVariables: "Input slot"
+room:
+  translate: "Move"
+  save: "Save"
+  furnitures:
+    moon: "M"

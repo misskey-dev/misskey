@@ -1,4 +1,4 @@
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import $ from 'cafy';
 import config from '../../../../../config';
 import define from '../../../define';
@@ -64,7 +64,7 @@ export default define(meta, async (ps) => {
 	}
 
 	// Generate token
-	const token = uuid.v4();
+	const token = uuid();
 
 	// Create session token document
 	const doc = await AuthSessions.save({

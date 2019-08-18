@@ -38,6 +38,15 @@ Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/intr
 Misskey uses CircleCI for executing automated tests.
 Configuration files are located in [`/.circleci`](/.circleci).
 
+## Adding MisskeyRoom items
+* Use English for material, object and texture names
+* Use meter for unit of length
+* Your PR should include all source files of your models (for later editing)
+* Your PR must include the glTF binary files (.glb) of your models
+
+If you have no experience on 3D modeling, we suggest to use the free 3DCG software [Blender](https://www.blender.org/).
+You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
+
 ## FAQ
 ### How to resolve conflictions occurred at yarn.lock?
 
