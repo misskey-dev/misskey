@@ -2074,3 +2074,8 @@ pages:
     enviromentVariables: "환경 변수"
     pageVariables: "페이지 요소"
     argVariables: "입력 슬롯"
+room:
+  translate: "이동"
+  save: "저장"
+  furnitures:
+    moon: "월"
