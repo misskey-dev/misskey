@@ -21,7 +21,7 @@ import i18n from '../../../i18n';
 import XColumnCore from './deck.column-core.vue';
 import Menu from '../../../common/views/components/menu.vue';
 
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('deck'),
