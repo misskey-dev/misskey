@@ -11,7 +11,7 @@
 						<ui-button @click="chooseImage(k)">{{ $t('chooseImage') }}</ui-button>
 					</template>
 					<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
-						<input type="color" :value="selectedFurnitureProps[k]" @change="updateColor(k, $event)"/>
+						<input type="color" :value="selectedFurnitureProps ? selectedFurnitureProps[k] : null" @change="updateColor(k, $event)"/>
 					</template>
 				</div>
 			</template>
