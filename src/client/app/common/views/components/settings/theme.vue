@@ -125,7 +125,7 @@ import Vue from 'vue';
 import i18n from '../../../../i18n';
 import { lightTheme, darkTheme, builtinThemes, applyTheme, Theme } from '../../../../theme';
 import { Chrome } from 'vue-color';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import * as tinycolor from 'tinycolor2';
 import * as JSON5 from 'json5';
 import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';

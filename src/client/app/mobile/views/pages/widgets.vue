@@ -54,7 +54,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as XDraggable from 'vuedraggable';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/widgets.vue'),

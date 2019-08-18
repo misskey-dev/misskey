@@ -58,7 +58,7 @@ import i18n from '../../../../i18n';
 import XContainer from './page-editor.container.vue';
 import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { isLiteralBlock, funcDefs, blockDefs } from '../../../../../../misc/aiscript/index';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('pages'),
@@ -143,7 +143,7 @@ export default Vue.extend({
 			this.warn = null;
 
 			if (this.value.type === 'fn') {
-				const id = uuid.v4();
+				const id = uuid();
 				this.value.value = {};
 				Vue.set(this.value.value, 'slots', []);
 				Vue.set(this.value.value, 'expression', { id, type: null });
@@ -156,7 +156,7 @@ export default Vue.extend({
 
 				const empties = [];
 				for (let i = 0; i < fn.value.slots.length; i++) {
-					const id = uuid.v4();
+					const id = uuid();
 					empties.push({ id, type: null });
 				}
 				Vue.set(this.value, 'args', empties);
@@ -167,7 +167,7 @@ export default Vue.extend({
 
 			const empties = [];
 			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {
-				const id = uuid.v4();
+				const id = uuid();
 				empties.push({ id, type: null });
 			}
 			Vue.set(this.value, 'args', empties);
