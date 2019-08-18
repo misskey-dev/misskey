@@ -1999,3 +1999,8 @@ pages:
     emptySlot: "Slot vide"
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
+room:
+  translate: "Déplacer"
+  save: "Enregistrer"
+  furnitures:
+    moon: "L"
