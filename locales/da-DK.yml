@@ -1910,3 +1910,8 @@ pages:
     enviromentVariables: "Miljø variabel"
     pageVariables: "Side element"
     argVariables: "Input slot"
+room:
+  translate: "Flyt"
+  save: "Gem"
+  furnitures:
+    moon: "Man"
