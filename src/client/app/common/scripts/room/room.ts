@@ -646,6 +646,7 @@ export class Room {
 
 	@autobind
 	public removeFurniture() {
+		this.exitTransformMode();
 		const obj = this.selectedObject;
 		this.scene.remove(obj);
 		this.objects = this.objects.filter(object => object.name !== obj.name);

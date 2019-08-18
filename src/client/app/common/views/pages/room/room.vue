@@ -136,6 +136,8 @@ export default Vue.extend({
 		},
 
 		remove() {
+			this.isTranslateMode = false;
+			this.isRotateMode = false;
 			room.removeFurniture();
 		},
 
