@@ -219,8 +219,7 @@ export class Room {
 		iconTexture.wrapT = THREE.RepeatWrapping;
 		iconTexture.anisotropy = 16;
 
-		const avatarMaterial = new THREE.MeshLambertMaterial({
-			emissive: 0x111111,
+		const avatarMaterial = new THREE.MeshBasicMaterial({
 			map: iconTexture,
 			side: THREE.DoubleSide,
 			alphaTest: 0.5
