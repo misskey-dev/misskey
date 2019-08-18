@@ -335,11 +335,10 @@ export class Room {
 					name: (child.material as THREE.MeshStandardMaterial).name,
 				});
 
-				if ((child.material as THREE.MeshLambertMaterial).map) {
+				// 異方性フィルタリング
+				if ((child.material as THREE.MeshLambertMaterial).map && this.graphicsQuality !== 'cheep') {
 					(child.material as THREE.MeshLambertMaterial).map.minFilter = THREE.LinearMipMapLinearFilter;
 					(child.material as THREE.MeshLambertMaterial).map.magFilter = THREE.LinearMipMapLinearFilter;
-		
-					// 異方性フィルタリング
 					(child.material as THREE.MeshLambertMaterial).map.anisotropy = 8;
 				}
 			});
@@ -389,11 +388,10 @@ export class Room {
 						name: (child.material as THREE.MeshStandardMaterial).name,
 					});
 
-					if ((child.material as THREE.MeshLambertMaterial).map) {
+					// 異方性フィルタリング
+					if ((child.material as THREE.MeshLambertMaterial).map && this.graphicsQuality !== 'cheep') {
 						(child.material as THREE.MeshLambertMaterial).map.minFilter = THREE.LinearMipMapLinearFilter;
 						(child.material as THREE.MeshLambertMaterial).map.magFilter = THREE.LinearMipMapLinearFilter;
-			
-						// 異方性フィルタリング
 						(child.material as THREE.MeshLambertMaterial).map.anisotropy = 8;
 					}
 				});
