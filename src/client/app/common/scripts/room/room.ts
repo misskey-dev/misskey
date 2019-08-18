@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-//import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
+import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { Furniture, RoomInfo } from './furniture';
@@ -198,7 +198,9 @@ export class Room {
 
 			this.composer = new EffectComposer(this.renderer, renderTarget);
 			this.composer.addPass(new RenderPass(this.scene, this.camera));
-			//this.composer.addPass(new BloomPass(0.5, 25, 128.0, 512));
+			if (this.graphicsQuality === 'ultra') {
+				this.composer.addPass(new BloomPass(0.25, 30, 128.0, 512));
+			}
 			this.composer.addPass(fxaa);
 		}
 		//#endregion
