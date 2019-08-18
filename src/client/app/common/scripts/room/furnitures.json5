@@ -193,7 +193,13 @@
 	},
 	{
 		id: "mat",
-		place: "floor"
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Mat: 'color'
+		}
 	},
 	{
 		id: "color-box",
