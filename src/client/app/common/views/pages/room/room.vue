@@ -25,7 +25,8 @@
 			<ui-button @click="remove()"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</ui-button>
 		</section>
 	</div>
-	<div class="menu">
+
+	<div class="menu" v-if="isMyRoom">
 		<section>
 			<ui-button @click="add()"><fa :icon="faBoxOpen"/> {{ $t('add-furniture') }}</ui-button>
 		</section>
@@ -83,6 +84,7 @@ export default Vue.extend({
 			carpetColor: null,
 			isTranslateMode: false,
 			isRotateMode: false,
+			isMyRoom: false,
 			faBoxOpen, faSave, faTrashAlt, faUndo, faArrowsAlt, faBan,
 		};
 	},
@@ -92,6 +94,8 @@ export default Vue.extend({
 			...parseAcct(this.acct)
 		});
 
+		this.isMyRoom = this.$store.getters.isSignedIn && this.$store.state.i.id === user.id;
+
 		const roomInfo = await this.$root.api('room/show', {
 			userId: user.id
 		});
@@ -99,7 +103,7 @@ export default Vue.extend({
 		this.roomType = roomInfo.roomType;
 		this.carpetColor = roomInfo.carpetColor;
 
-		room = new Room(user, this.$store.getters.isSignedIn && this.$store.state.i.id === user.id, roomInfo, this.$el, {
+		room = new Room(user, this.isMyRoom, roomInfo, this.$el, {
 			graphicsQuality: this.$store.state.device.roomGraphicsQuality,
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
