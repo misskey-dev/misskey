@@ -638,3 +638,7 @@ pages:
         arg1: "Lijsten"
     types:
       array: "Lijsten"
+room:
+  translate: "Verplaatsen"
+  furnitures:
+    moon: "M"
