@@ -1256,3 +1256,8 @@ pages:
         arg1: "Listy"
     types:
       array: "Listy"
+room:
+  translate: "Przenieś"
+  save: "Zapisz"
+  furnitures:
+    moon: "Pn"
