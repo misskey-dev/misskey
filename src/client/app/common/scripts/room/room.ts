@@ -21,6 +21,9 @@ type Options = {
 	useOrthographicCamera: boolean;
 };
 
+/**
+ * MisskeyRoom Core Engine
+ */
 export class Room {
 	private clock: THREE.Clock;
 	private scene: THREE.Scene;
@@ -450,6 +453,7 @@ export class Room {
 		const furniture = this.furnitures.find(furniture => furniture.id === model.name);
 		const def = furnitureDefs.find(d => d.id === furniture.type);
 		if (def.texture == null) return;
+
 		model.traverse(child => {
 			if (!(child instanceof THREE.Mesh)) return;
 			for (const t of Object.keys(def.texture)) {
@@ -520,13 +524,12 @@ export class Room {
 
 		if (intersects.length > 0) {
 			const intersected = this.getRoot(intersects[0].object);
-			if (!this.isSelectedObject(intersected)) {
-				intersected.traverse(child => {
-					if (child instanceof THREE.Mesh) {
-						(child.material as THREE.MeshStandardMaterial).emissive.setHex(0x191919);
-					}
-				});
-			}
+			if (this.isSelectedObject(intersected)) return;
+			intersected.traverse(child => {
+				if (child instanceof THREE.Mesh) {
+					(child.material as THREE.MeshStandardMaterial).emissive.setHex(0x191919);
+				}
+			});
 		}
 	}
 
