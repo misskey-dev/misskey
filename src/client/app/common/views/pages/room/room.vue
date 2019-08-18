@@ -57,6 +57,7 @@ import XPreview from './preview.vue';
 const storeItems = require('../../../scripts/room/furnitures.json5');
 import { faBoxOpen, faUndo, faArrowsAlt, faBan } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { query as urlQuery } from '../../../../../../prelude/url';
 
 let room: Room;
 
@@ -155,7 +156,7 @@ export default Vue.extend({
 			this.$chooseDriveFile({
 				multiple: false
 			}).then(file => {
-				room.updateProp(key, file.thumbnailUrl);
+				room.updateProp(key, `/proxy/?${urlQuery({ url: file.thumbnailUrl })}`);
 				this.$refs.preview.selected(room.getSelectedObject());
 			});
 		},
