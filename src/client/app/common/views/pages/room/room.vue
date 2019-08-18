@@ -124,6 +124,10 @@ export default Vue.extend({
 		});
 	},
 
+	beforeDestroy() {
+		room.destroy();
+	},
+
 	methods: {
 		async add() {
 			const { canceled, result: id } = await this.$root.dialog({

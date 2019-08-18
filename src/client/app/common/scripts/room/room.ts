@@ -37,6 +37,7 @@ export class Room {
 	private selectedObject: THREE.Object3D = null;
 	private onChangeSelect: Function;
 	private isTransformMode = false;
+	private renderFrameRequestId: number;
 	public canvas: HTMLCanvasElement;
 
 	private get furnitures(): Furniture[] {
@@ -299,7 +300,8 @@ export class Room {
 
 	@autobind
 	private renderWithoutPostFXs() {
-		requestAnimationFrame(this.renderWithoutPostFXs);
+		this.renderFrameRequestId =
+			window.requestAnimationFrame(this.renderWithoutPostFXs);
 
 		// Update animations
 		const clock = this.clock.getDelta();
@@ -313,7 +315,8 @@ export class Room {
 
 	@autobind
 	private renderWithPostFXs() {
-		requestAnimationFrame(this.renderWithPostFXs);
+		this.renderFrameRequestId =
+			window.requestAnimationFrame(this.renderWithPostFXs);
 
 		// Update animations
 		const clock = this.clock.getDelta();
@@ -687,5 +690,11 @@ export class Room {
 	@autobind
 	public findFurnitureById(id: string) {
 		return this.furnitures.find(furniture => furniture.id === id);
+	}
+
+	@autobind
+	public destroy() {
+		// Stop render loop
+		window.cancelAnimationFrame(this.renderFrameRequestId);
 	}
 }
