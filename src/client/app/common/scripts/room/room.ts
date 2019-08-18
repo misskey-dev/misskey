@@ -9,7 +9,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { Furniture, RoomInfo } from './furniture';
-import { v1 as uuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 const furnitureDefs = require('./furnitures.json5');
 
 THREE.ImageUtils.crossOrigin = '';
