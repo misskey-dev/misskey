@@ -210,7 +210,10 @@ export class Room {
 		//#region Avatar
 		const avatarUrl = user.avatarUrl;
 
-		const iconTexture = new THREE.TextureLoader().load(avatarUrl);
+		const textureLoader = new THREE.TextureLoader();
+		textureLoader.crossOrigin = 'anonymous';
+
+		const iconTexture = textureLoader.load(avatarUrl);
 		iconTexture.wrapS = THREE.RepeatWrapping;
 		iconTexture.wrapT = THREE.RepeatWrapping;
 		iconTexture.anisotropy = 16;
@@ -467,6 +470,7 @@ export class Room {
 				});
 
 				const img = new Image();
+				img.crossOrigin = 'anonymous';
 				img.onload = () => {
 					const uvInfo = def.texture[t].uv;
 
