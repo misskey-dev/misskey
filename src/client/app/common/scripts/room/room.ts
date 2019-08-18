@@ -38,7 +38,10 @@ export class Room {
 	private onChangeSelect: Function;
 	private isTransformMode = false;
 	private renderFrameRequestId: number;
-	public canvas: HTMLCanvasElement;
+
+	private get canvas(): HTMLCanvasElement {
+		return this.renderer.domElement;
+	}
 
 	private get furnitures(): Furniture[] {
 		return this.roomInfo.furnitures;
@@ -104,8 +107,7 @@ export class Room {
 			this.graphicsQuality === 'low' ? THREE.BasicShadowMap :
 			THREE.BasicShadowMap; // cheep
 
-		this.canvas = this.renderer.domElement;
-		container.appendChild(this.renderer.domElement);
+		container.appendChild(this.canvas);
 		//#endregion
 
 		//#region Init a camera
@@ -167,7 +169,7 @@ export class Room {
 		//#endregion
 
 		//#region Init a controller
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+		this.controls = new OrbitControls(this.camera, this.canvas);
 
 		this.controls.target.set(0, 1, 0);
 		this.controls.enableZoom = true;
@@ -266,14 +268,14 @@ export class Room {
 
 		//#region Interaction
 		if (isMyRoom) {
-			this.furnitureControl = new TransformControls(this.camera, this.renderer.domElement);
+			this.furnitureControl = new TransformControls(this.camera, this.canvas);
 			this.scene.add(this.furnitureControl);
 
 			// Hover highlight
-			this.renderer.domElement.onmousemove = this.onmousemove;
+			this.canvas.onmousemove = this.onmousemove;
 
 			// Click
-			this.renderer.domElement.onmousedown = this.onmousedown;
+			this.canvas.onmousedown = this.onmousedown;
 		}
 		//#endregion
 
@@ -496,8 +498,8 @@ export class Room {
 		if (this.isTransformMode) return;
 
 		const rect = (ev.target as HTMLElement).getBoundingClientRect();
-		const x = (((ev.clientX * window.devicePixelRatio) - rect.left) / this.renderer.domElement.width) * 2 - 1;
-		const y = -(((ev.clientY * window.devicePixelRatio) - rect.top) / this.renderer.domElement.height) * 2 + 1;
+		const x = (((ev.clientX * window.devicePixelRatio) - rect.left) / this.canvas.width) * 2 - 1;
+		const y = -(((ev.clientY * window.devicePixelRatio) - rect.top) / this.canvas.height) * 2 + 1;
 		const pos = new THREE.Vector2(x, y);
 
 		this.camera.updateMatrixWorld();
@@ -531,11 +533,11 @@ export class Room {
 	@autobind
 	private onmousedown(ev: MouseEvent) {
 		if (this.isTransformMode) return;
-		if (ev.target !== this.renderer.domElement || ev.button !== 0) return;
+		if (ev.target !== this.canvas || ev.button !== 0) return;
 
 		const rect = (ev.target as HTMLElement).getBoundingClientRect();
-		const x = (((ev.clientX * window.devicePixelRatio) - rect.left) / this.renderer.domElement.width) * 2 - 1;
-		const y = -(((ev.clientY * window.devicePixelRatio) - rect.top) / this.renderer.domElement.height) * 2 + 1;
+		const x = (((ev.clientX * window.devicePixelRatio) - rect.left) / this.canvas.width) * 2 - 1;
+		const y = -(((ev.clientY * window.devicePixelRatio) - rect.top) / this.canvas.height) * 2 + 1;
 		const pos = new THREE.Vector2(x, y);
 
 		this.camera.updateMatrixWorld();
