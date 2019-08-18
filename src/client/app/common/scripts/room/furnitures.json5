@@ -65,15 +65,25 @@
 	},
 	{
 		id: "chair",
-		place: "floor"
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Chair: 'color'
+		}
 	},
 	{
 		id: "chair2",
-		place: "floor"
-	},
-	{
-		id: "chair3",
-		place: "floor"
+		place: "floor",
+		props: {
+			color1: 'color',
+			color2: 'color'
+		},
+		color: {
+			Cushion: 'color1',
+			Leg: 'color2'
+		}
 	},
 	{
 		id: "fan",
@@ -117,7 +127,13 @@
 	},
 	{
 		id: "book",
-		place: "floor"
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Cover: 'color'
+		}
 	},
 	{
 		id: "book2",
@@ -145,7 +161,13 @@
 	},
 	{
 		id: "mousepad",
-		place: "floor"
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Pad: 'color'
+		}
 	},
 	{
 		id: "monitor",
@@ -188,8 +210,16 @@
 		place: "floor"
 	},
 	{
-		id: "carpet",
-		place: "floor"
+		id: "carpet-stripe",
+		place: "floor",
+		props: {
+			color1: 'color',
+			color2: 'color'
+		},
+		color: {
+			CarpetAreaA: 'color1',
+			CarpetAreaB: 'color2'
+		},
 	},
 	{
 		id: "mat",
