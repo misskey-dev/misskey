@@ -63,12 +63,10 @@ export class Room {
 			0); // cheep
 	}
 
-	constructor(user, roomInfo: RoomInfo, container, options: Options) {
+	constructor(user, isMyRoom, roomInfo: RoomInfo, container, options: Options) {
 		this.roomInfo = roomInfo;
 		this.graphicsQuality = options.graphicsQuality;
 		this.onChangeSelect = options.onChangeSelect;
-
-		const isMyRoom = true;
 
 		this.clock = new THREE.Clock(true);
 
@@ -171,12 +169,15 @@ export class Room {
 
 		this.controls.target.set(0, 1, 0);
 		this.controls.enableZoom = true;
-		this.controls.enablePan = false;
+		this.controls.enablePan = isMyRoom;
 		this.controls.minPolarAngle = 0;
 		this.controls.maxPolarAngle = Math.PI / 2;
 		this.controls.minAzimuthAngle = 0;
 		this.controls.maxAzimuthAngle = Math.PI / 2;
-		this.controls.mouseButtons.LEFT = 2;
+		this.controls.enableDamping = true;
+		this.controls.dampingFactor = 0.2;
+		this.controls.mouseButtons.LEFT = 1;
+		this.controls.mouseButtons.MIDDLE = 2;
 		this.controls.mouseButtons.RIGHT = 0;
 		//#endregion
 

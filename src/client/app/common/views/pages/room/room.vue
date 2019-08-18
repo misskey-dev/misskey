@@ -99,7 +99,7 @@ export default Vue.extend({
 		this.roomType = roomInfo.roomType;
 		this.carpetColor = roomInfo.carpetColor;
 
-		room = new Room(user, roomInfo, this.$el, {
+		room = new Room(user, this.$store.getters.isSignedIn && this.$store.state.i.id === user.id, roomInfo, this.$el, {
 			graphicsQuality: this.$store.state.device.roomGraphicsQuality,
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
