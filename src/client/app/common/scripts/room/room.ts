@@ -1,4 +1,5 @@
 import autobind from 'autobind-decorator';
+import { v4 as uuid } from 'uuid';
 import * as THREE from 'three';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -9,7 +10,7 @@ import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { Furniture, RoomInfo } from './furniture';
-import { v4 as uuid } from 'uuid';
+import { query as urlQuery } from '../../../../../prelude/url';
 const furnitureDefs = require('./furnitures.json5');
 
 THREE.ImageUtils.crossOrigin = '';
@@ -208,7 +209,7 @@ export class Room {
 
 		//#region Label
 		//#region Avatar
-		const avatarUrl = user.avatarUrl;
+		const avatarUrl = `/proxy/?${urlQuery({ url: user.avatarUrl })}`;
 
 		const textureLoader = new THREE.TextureLoader();
 		textureLoader.crossOrigin = 'anonymous';
