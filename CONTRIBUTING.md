@@ -44,7 +44,7 @@ Configuration files are located in [`/.circleci`](/.circleci).
 * Your PR should include all source files of your models (for later editing)
 * Your PR must include the glTF binary files (.glb) of your models
 
-If you have no experience on 3D modeling, we suggest a free 3DCG software [Blender](https://www.blender.org/).
+If you have no experience on 3D modeling, we suggest to use a free 3DCG software [Blender](https://www.blender.org/).
 You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
 
 ## FAQ
