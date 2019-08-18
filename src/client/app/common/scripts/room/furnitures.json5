@@ -255,4 +255,40 @@
 		id: "rubik-cube",
 		place: "floor",
 	},
+	{
+		id: "poster-h",
+		place: "wall",
+		props: {
+			picture: 'image'
+		},
+		texture: {
+			Poster: {
+				prop: 'picture',
+				uv: {
+					x: 0,
+					y: 277,
+					width: 1024,
+					height: 745,
+				},
+			},
+		},
+	},
+	{
+		id: "poster-v",
+		place: "wall",
+		props: {
+			picture: 'image'
+		},
+		texture: {
+			Poster: {
+				prop: 'picture',
+				uv: {
+					x: 0,
+					y: 0,
+					width: 745,
+					height: 1024,
+				},
+			},
+		},
+	},
 ]

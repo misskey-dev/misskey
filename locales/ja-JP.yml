@@ -2343,3 +2343,5 @@ room:
     tv: "テレビ"
     pinguin: "ピンギン"
     rubik-cube: "ルービックキューブ"
+    poster-h: "ポスター(横長)"
+    poster-v: "ポスター(縦長)"
