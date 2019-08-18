@@ -2074,3 +2074,8 @@ pages:
     enviromentVariables: "Environment variable"
     pageVariables: "Page element"
     argVariables: "Input slot"
+room:
+  translate: "Move"
+  save: "Save"
+  furnitures:
+    moon: "M"
