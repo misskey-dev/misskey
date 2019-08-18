@@ -2344,3 +2344,5 @@ room:
     rubik-cube: "ルービックキューブ"
     poster-h: "ポスター(横長)"
     poster-v: "ポスター(縦長)"
+    sofa: "ソファ"
+    spiral: "螺旋階段"
