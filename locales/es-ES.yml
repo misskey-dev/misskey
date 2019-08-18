@@ -31,6 +31,7 @@ common:
   signin: "Iniciar sesión"
   signup: "¡Regístrate!"
   signout: "Cerrar sesión"
+  delete-confirm: "¿Seguro que quieres borrar la publicación?"
   notification-types:
     all: "Todo"
     reply: "Responder"

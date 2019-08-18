@@ -36,6 +36,7 @@ common:
   reload-to-apply-the-setting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
   fetching-as-ap-object: "연합에서 조회 중"
   unfollow-confirm: "{name} 님을 팔로우 해제하시겠습니까?"
+  delete-confirm: "이 글을 삭제하시겠습니까?"
   signin-required: "로그인 해주세요"
   notification-type: "알림의 종류"
   notification-types:
@@ -2073,3 +2074,8 @@ pages:
     enviromentVariables: "환경 변수"
     pageVariables: "페이지 요소"
     argVariables: "입력 슬롯"
+room:
+  translate: "이동"
+  save: "저장"
+  furnitures:
+    moon: "월"

@@ -27,6 +27,7 @@ common:
   load-more: "もっとあらへんのか！"
   enter-password: "パスワードを入れてや"
   2fa: "二段階認証"
+  delete-confirm: "この投稿を削除してもええか？"
   notification-types:
     all: "すべて"
     follow: "フォロー"

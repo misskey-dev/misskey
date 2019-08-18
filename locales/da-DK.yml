@@ -35,6 +35,7 @@ common:
   signout: "Log ud"
   reload-to-apply-the-setting: "Denne indstilling slår først igennem, når du har genindlæst siden. Vil du genindlæse siden nu?"
   fetching-as-ap-object: "Tilladelse til sammenkobling"
+  delete-confirm: "Er du helt sikker på, at du vil slette denne post?"
   notification-types:
     all: "Alle"
     follow: "Følger"
@@ -1909,3 +1910,8 @@ pages:
     enviromentVariables: "Miljø variabel"
     pageVariables: "Side element"
     argVariables: "Input slot"
+room:
+  translate: "Flyt"
+  save: "Gem"
+  furnitures:
+    moon: "Man"

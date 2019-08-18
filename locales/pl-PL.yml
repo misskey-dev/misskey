@@ -28,12 +28,18 @@ common:
   signin: "Zaloguj się"
   signup: "Rejestracja"
   signout: "Wyloguj się"
+  delete-confirm: "Czy na pewno chcesz usunąć ten wpis?"
+  notification-type: "Typy powiadomień"
   notification-types:
     all: "Wszyscy"
+    pollVote: "Głosy"
     follow: "Śledzeni"
-    reply: "Odpowiedz"
+    receiveFollowRequest: "Prośby o śledzenie"
+    reply: "Odpowiedzi"
+    quote: "Cytat"
     renote: "Udostępnij"
-    reaction: "Reakcja"
+    mention: "Wzmianki"
+    reaction: "Reakcje"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -1250,3 +1256,8 @@ pages:
         arg1: "Listy"
     types:
       array: "Listy"
+room:
+  translate: "Przenieś"
+  save: "Zapisz"
+  furnitures:
+    moon: "Pn"

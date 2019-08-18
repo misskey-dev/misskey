@@ -35,6 +35,7 @@ common:
   signout: "Ausloggen"
   reload-to-apply-the-setting: "Die Seite muss zum Übernehmen dieser Einstellung aktualisiert werden. Soll die Seite jetzt neu geladen werden?"
   fetching-as-ap-object: "Hole Daten…"
+  delete-confirm: "Diesen Beitrag löschen?"
   notification-types:
     reply: "Antworten"
     renote: "Anmerkung"
@@ -945,3 +946,7 @@ pages:
         arg1: "Listen"
     types:
       array: "Listen"
+room:
+  save: "Speichern"
+  furnitures:
+    moon: "Mo"

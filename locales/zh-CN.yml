@@ -36,6 +36,7 @@ common:
   reload-to-apply-the-setting: "必须重新加载页面以应用此设置。 确实要立即重新加载吗？"
   fetching-as-ap-object: "联合查询"
   unfollow-confirm: "取消对{name}的关注？"
+  delete-confirm: "确定删除这个投稿吗?"
   signin-required: "请先登录"
   notification-type: "通知类型"
   notification-types:
@@ -2073,3 +2074,8 @@ pages:
     enviromentVariables: "环境变量"
     pageVariables: "页面元素"
     argVariables: "输入槽函数"
+room:
+  translate: "移动"
+  save: "保存"
+  furnitures:
+    moon: "一"

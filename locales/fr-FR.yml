@@ -35,6 +35,7 @@ common:
   signout: "Se déconnecter"
   reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
   unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
+  delete-confirm: "Supprimer cette publication ?"
   signin-required: "Veuillez vous connecter"
   notification-type: "Type de notification"
   notification-types:
@@ -1998,3 +1999,8 @@ pages:
     emptySlot: "Slot vide"
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
+room:
+  translate: "Déplacer"
+  save: "Enregistrer"
+  furnitures:
+    moon: "L"
