@@ -946,3 +946,7 @@ pages:
         arg1: "Listen"
     types:
       array: "Listen"
+room:
+  save: "Speichern"
+  furnitures:
+    moon: "Mo"
