@@ -1350,3 +1350,8 @@ pages:
         arg1: "Seznamy"
     types:
       array: "Seznamy"
+room:
+  translate: "Přesunout"
+  save: "Uložit"
+  furnitures:
+    moon: "Po"
