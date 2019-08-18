@@ -341,4 +341,14 @@
 			Step: 'color'
 		}
 	},
+	{
+		id: "bin",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Bin: 'color'
+		}
+	},
 ]
