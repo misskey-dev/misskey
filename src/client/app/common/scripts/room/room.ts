@@ -387,17 +387,13 @@ export class Room {
 					if (!(child instanceof THREE.Mesh)) return;
 					child.castShadow = this.enableShadow;
 					child.receiveShadow = this.enableShadow;
-					child.material = new THREE.MeshLambertMaterial({
-						color: (child.material as THREE.MeshStandardMaterial).color,
-						map: (child.material as THREE.MeshStandardMaterial).map,
-						name: (child.material as THREE.MeshStandardMaterial).name,
-					});
+					(child.material as THREE.MeshStandardMaterial).metalness = 0;
 
 					// 異方性フィルタリング
-					if ((child.material as THREE.MeshLambertMaterial).map && this.graphicsQuality !== 'cheep') {
-						(child.material as THREE.MeshLambertMaterial).map.minFilter = THREE.LinearMipMapLinearFilter;
-						(child.material as THREE.MeshLambertMaterial).map.magFilter = THREE.LinearMipMapLinearFilter;
-						(child.material as THREE.MeshLambertMaterial).map.anisotropy = 8;
+					if ((child.material as THREE.MeshStandardMaterial).map && this.graphicsQuality !== 'cheep') {
+						(child.material as THREE.MeshStandardMaterial).map.minFilter = THREE.LinearMipMapLinearFilter;
+						(child.material as THREE.MeshStandardMaterial).map.magFilter = THREE.LinearMipMapLinearFilter;
+						(child.material as THREE.MeshStandardMaterial).map.anisotropy = 8;
 					}
 				});
 
