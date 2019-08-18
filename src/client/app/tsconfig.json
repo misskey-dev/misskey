@@ -11,11 +11,17 @@
     "sourceMap": false,
     "target": "es2017",
     "module": "esnext",
+    "moduleResolution": "node",
     "removeComments": false,
     "noLib": false,
     "strict": true,
     "strictNullChecks": false,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "src/@types"
+    ]
   },
   "compileOnSave": false,
   "include": [

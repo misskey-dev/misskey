@@ -99,6 +99,12 @@ export class UserProfile {
 	})
 	public clientData: Record<string, any>;
 
+	@Column('jsonb', {
+		default: {},
+		comment: 'The room data of the User.'
+	})
+	public room: Record<string, any>;
+
 	@Column('boolean', {
 		default: false,
 	})

@@ -56,6 +56,13 @@
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
+				<li>
+					<router-link :to="`/@${ $store.state.i.username }/room`">
+						<i><fa :icon="faDoorOpen" fixed-width/></i>
+						<span>{{ $t('room') }}</span>
+						<i><fa icon="angle-right"/></i>
+					</router-link>
+				</li>
 			</ul>
 			<ul>
 				<li>
@@ -106,7 +113,7 @@ import i18n from '../../../i18n';
 // import MkSettingsWindow from './settings-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
-import { faHome, faColumns, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faColumns, faUsers, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { faMoon, faSun, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -114,7 +121,7 @@ export default Vue.extend({
 	data() {
 		return {
 			isOpen: false,
-			faHome, faColumns, faMoon, faSun, faStickyNote, faUsers
+			faHome, faColumns, faMoon, faSun, faStickyNote, faUsers, faDoorOpen
 		};
 	},
 	computed: {
