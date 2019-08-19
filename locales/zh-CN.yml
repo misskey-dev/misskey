@@ -2139,4 +2139,5 @@ room:
     poster-h: "海报(横向)"
     poster-v: "海报(纵向)"
     sofa: "沙发"
+    spiral: "螺旋楼梯"
     bin: "垃圾箱"
