@@ -43,6 +43,7 @@
 		</section>
 		<section>
 			<ui-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+			<ui-button primary @click="clear()"><fa :icon="faBroom"/> {{ $t('clear') }}</ui-button>
 		</section>
 	</div>
 </div>
@@ -55,7 +56,7 @@ import { Room } from '../../../scripts/room/room';
 import parseAcct from '../../../../../../misc/acct/parse';
 import XPreview from './preview.vue';
 const storeItems = require('../../../scripts/room/furnitures.json5');
-import { faBoxOpen, faUndo, faArrowsAlt, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faUndo, faArrowsAlt, faBan, faBroom } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { query as urlQuery } from '../../../../../../prelude/url';
 
@@ -86,7 +87,7 @@ export default Vue.extend({
 			isTranslateMode: false,
 			isRotateMode: false,
 			isMyRoom: false,
-			faBoxOpen, faSave, faTrashAlt, faUndo, faArrowsAlt, faBan,
+			faBoxOpen, faSave, faTrashAlt, faUndo, faArrowsAlt, faBan, faBroom,
 		};
 	},
 
@@ -153,6 +154,17 @@ export default Vue.extend({
 		save() {
 			this.$root.api('room/update', {
 				room: room.getRoomInfo()
+			});
+		},
+
+		clear() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('clear-confirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+				room.removeAllFurnitures();
 			});
 		},
 

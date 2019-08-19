@@ -697,6 +697,21 @@ export class Room {
 	}
 
 	/**
+	 * 全ての家具を部屋から削除します
+	 */
+	@autobind
+	public removeAllFurnitures() {
+		this.exitTransformMode();
+		for (const obj of this.objects) {
+			this.scene.remove(obj);
+		}
+		this.objects = [];
+		this.furnitures = [];
+		this.selectedObject = null;
+		this.onChangeSelect(null);
+	}
+
+	/**
 	 * 部屋の床の色を変更します
 	 * @param color 色
 	 */
