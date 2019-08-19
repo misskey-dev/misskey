@@ -2000,6 +2000,7 @@ pages:
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
 room:
+  add-furniture: "Placer des meubles"
   translate: "Déplacer"
   rotate: "Tourner"
   remove: "Enlever"
@@ -2011,6 +2012,7 @@ room:
     default: "Par défaut"
     washitsu: "Style japonnais"
   furnitures:
+    milk: "Lait en carton"
     bed: "Lit"
     low-table: "Table basse"
     desk: "Bureau"
@@ -2030,6 +2032,7 @@ room:
     piano: "Piano"
     server: "Serveurs"
     moon: "L"
+    corkboard: "Tableau en liège"
     mousepad: "Tapis de souris"
     monitor: "Écran"
     keyboard: "Clavier"
@@ -2040,4 +2043,9 @@ room:
     cube: "Cube"
     tv: "Téléviseur"
     pinguin: "Pingouin"
+    rubik-cube: "Cube de Rubik"
+    poster-h: "Affiche (horizontale)"
+    poster-v: "Affiche (verticale)"
+    sofa: "Canapé"
+    spiral: "Escaliers en spirale"
     bin: "Corbeille"
