@@ -2136,4 +2136,6 @@ room:
     rubik-cube: "Rubik's Cube"
     poster-h: "Poster (Horizontal)"
     poster-v: "Poster (Vertical)"
-    bin: "Trash"
+    sofa: "Sofa"
+    spiral: "Spiral Staircase"
+    bin: "Waste bin"
