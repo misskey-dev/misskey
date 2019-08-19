@@ -284,3 +284,7 @@ pages:
   blocks:
     image: "Imagens"
     post: "Formulário de publicação"
+room:
+  furnitures:
+    moon: "Lua"
+    bin: "Lixo"
