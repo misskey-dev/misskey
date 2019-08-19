@@ -2136,4 +2136,6 @@ room:
     rubik-cube: "루빅스 큐브"
     poster-h: "포스터 (가로)"
     poster-v: "포스터 (세로)"
+    sofa: "소파"
+    spiral: "나선형 계단"
     bin: "휴지통"
