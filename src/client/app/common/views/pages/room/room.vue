@@ -43,7 +43,7 @@
 		</section>
 		<section>
 			<ui-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
-			<ui-button primary @click="clear()"><fa :icon="faBroom"/> {{ $t('clear') }}</ui-button>
+			<ui-button @click="clear()"><fa :icon="faBroom"/> {{ $t('clear') }}</ui-button>
 		</section>
 	</div>
 </div>
