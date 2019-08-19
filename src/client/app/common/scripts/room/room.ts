@@ -102,7 +102,6 @@ export class Room {
 		this.renderer.autoClear = false;
 		this.renderer.setClearColor(new THREE.Color(0x051f2d));
 		this.renderer.shadowMap.enabled = this.enableShadow;
-		this.renderer.gammaOutput = true;
 		this.renderer.shadowMap.type =
 			this.graphicsQuality === 'ultra' ? THREE.PCFSoftShadowMap :
 			this.graphicsQuality === 'high' ? THREE.PCFSoftShadowMap :
