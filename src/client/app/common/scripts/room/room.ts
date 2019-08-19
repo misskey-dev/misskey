@@ -441,7 +441,7 @@ export class Room {
 	}
 
 	@autobind
-	public applyCustomColor(model: THREE.Object3D) {
+	private applyCustomColor(model: THREE.Object3D) {
 		const furniture = this.furnitures.find(furniture => furniture.id === model.name);
 		const def = furnitureDefs.find(d => d.id === furniture.type);
 		if (def.color == null) return;
@@ -465,7 +465,7 @@ export class Room {
 	}
 
 	@autobind
-	public applyCustomTexture(model: THREE.Object3D) {
+	private applyCustomTexture(model: THREE.Object3D) {
 		const furniture = this.furnitures.find(furniture => furniture.id === model.name);
 		const def = furnitureDefs.find(d => d.id === furniture.type);
 		if (def.texture == null) return;
@@ -619,6 +619,10 @@ export class Room {
 		});
 	}
 
+	/**
+	 * 家具の移動/回転モードにします
+	 * @param type 移動か回転か
+	 */
 	@autobind
 	public enterTransformMode(type: 'translate' | 'rotate') {
 		this.isTransformMode = true;
@@ -626,12 +630,20 @@ export class Room {
 		this.furnitureControl.attach(this.selectedObject);
 	}
 
+	/**
+	 * 家具の移動/回転モードを終了します
+	 */
 	@autobind
 	public exitTransformMode() {
 		this.isTransformMode = false;
 		this.furnitureControl.detach();
 	}
 
+	/**
+	 * 家具プロパティを更新します
+	 * @param key プロパティ名
+	 * @param value 値
+	 */
 	@autobind
 	public updateProp(key: string, value: any) {
 		const furniture = this.furnitures.find(furniture => furniture.id === this.selectedObject.name);
@@ -641,6 +653,10 @@ export class Room {
 		this.applyCustomTexture(this.selectedObject);
 	}
 
+	/**
+	 * 部屋に家具を追加します
+	 * @param type 家具の種類
+	 */
 	@autobind
 	public addFurniture(type: string) {
 		const furniture = {
@@ -666,6 +682,9 @@ export class Room {
 		});
 	}
 
+	/**
+	 * 現在選択されている家具を部屋から削除します
+	 */
 	@autobind
 	public removeFurniture() {
 		this.exitTransformMode();
@@ -677,12 +696,20 @@ export class Room {
 		this.onChangeSelect(null);
 	}
 
+	/**
+	 * 部屋の床の色を変更します
+	 * @param color 色
+	 */
 	@autobind
 	public updateCarpetColor(color: string) {
 		this.roomInfo.carpetColor = color;
 		this.applyCarpetColor();
 	}
 
+	/**
+	 * 部屋の種類を変更します
+	 * @param type 種類
+	 */
 	@autobind
 	public changeRoomType(type: string) {
 		this.roomInfo.roomType = type;
@@ -690,6 +717,9 @@ export class Room {
 		this.loadRoom();
 	}
 
+	/**
+	 * 部屋データを取得します
+	 */
 	@autobind
 	public getRoomInfo() {
 		for (const obj of this.objects) {
@@ -705,6 +735,9 @@ export class Room {
 		return this.roomInfo;
 	}
 
+	/**
+	 * 選択されている家具を取得します
+	 */
 	@autobind
 	public getSelectedObject() {
 		return this.selectedObject;
@@ -715,6 +748,9 @@ export class Room {
 		return this.furnitures.find(furniture => furniture.id === id);
 	}
 
+	/**
+	 * レンダリングを終了します
+	 */
 	@autobind
 	public destroy() {
 		// Stop render loop
