@@ -520,3 +520,9 @@ pages:
         arg1: "Lister"
     types:
       array: "Lister"
+room:
+  translate: "Flytt"
+  save: "Lagre"
+  furnitures:
+    moon: "Måne"
+    bin: "Papirkurv"
