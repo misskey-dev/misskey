@@ -1135,3 +1135,8 @@ pages:
         arg1: "Listas"
     types:
       array: "Listas"
+room:
+  save: "Guardar"
+  furnitures:
+    moon: "Luna"
+    bin: "Papelera"
