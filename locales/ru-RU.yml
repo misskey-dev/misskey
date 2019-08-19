@@ -168,3 +168,7 @@ pages:
       random: "Случайно"
     blocks:
       random: "Случайно"
+room:
+  furnitures:
+    moon: "Луна"
+    bin: "Мусорное ведро"

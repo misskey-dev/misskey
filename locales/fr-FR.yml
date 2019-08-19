@@ -2004,3 +2004,4 @@ room:
   save: "Enregistrer"
   furnitures:
     moon: "L"
+    bin: "Corbeille"

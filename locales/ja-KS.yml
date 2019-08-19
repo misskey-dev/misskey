@@ -1284,3 +1284,9 @@ pages:
         arg1: "リスト"
     types:
       array: "リスト"
+room:
+  translate: "移動"
+  save: "保存"
+  furnitures:
+    moon: "月"
+    bin: "ゴミ箱"

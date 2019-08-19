@@ -2300,6 +2300,8 @@ room:
   exit: "戻る"
   remove: "しまう"
   save: "保存"
+  clear: "片付け"
+  clear-confirm: "全ての家具をしまいますか？"
   chooseImage: "画像を選択"
   room-type: "部屋のタイプ"
   carpet-color: "床の色"

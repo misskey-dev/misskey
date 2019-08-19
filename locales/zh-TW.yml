@@ -88,3 +88,6 @@ admin/views/charts.vue:
   drive: "雲端硬碟"
 pages:
   like: "贊"
+room:
+  furnitures:
+    moon: "月"
