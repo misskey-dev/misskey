@@ -2092,6 +2092,7 @@ room:
   exit: "Deselect"
   remove: "Remove"
   save: "Save"
+  clear: "Remove All"
   chooseImage: "Select an image"
   room-type: "Room type"
   carpet-color: "Color of carpet"
