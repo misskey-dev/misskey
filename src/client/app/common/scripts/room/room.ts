@@ -343,7 +343,8 @@ export class Room {
 
 	@autobind
 	private loadRoom() {
-		new GLTFLoader().load(`/assets/room/rooms/${this.roomInfo.roomType}/${this.roomInfo.roomType}.glb`, gltf => {
+		const type = this.roomInfo.roomType;
+		new GLTFLoader().load(`/assets/room/rooms/${type}/${type}.glb`, gltf => {
 			gltf.scene.traverse(child => {
 				if (!(child instanceof THREE.Mesh)) return;
 
@@ -429,8 +430,12 @@ export class Room {
 	private applyCarpetColor() {
 		this.roomObj.traverse(child => {
 			if (!(child instanceof THREE.Mesh)) return;
-			if (child.material && (child.material as THREE.MeshStandardMaterial).name && (child.material as THREE.MeshStandardMaterial).name === 'Carpet') {
-				(child.material as THREE.MeshStandardMaterial).color.setHex(parseInt(this.roomInfo.carpetColor.substr(1), 16));
+			if (child.material &&
+				(child.material as THREE.MeshStandardMaterial).name &&
+				(child.material as THREE.MeshStandardMaterial).name === 'Carpet'
+			) {
+				const colorHex = parseInt(this.roomInfo.carpetColor.substr(1), 16);
+				(child.material as THREE.MeshStandardMaterial).color.setHex(colorHex);
 			}
 		});
 	}
@@ -443,14 +448,18 @@ export class Room {
 		model.traverse(child => {
 			if (!(child instanceof THREE.Mesh)) return;
 			for (const t of Object.keys(def.color)) {
-				if (!child.material || !(child.material as THREE.MeshStandardMaterial).name || (child.material as THREE.MeshStandardMaterial).name !== t) continue;
+				if (!child.material ||
+					!(child.material as THREE.MeshStandardMaterial).name ||
+					(child.material as THREE.MeshStandardMaterial).name !== t
+				) continue;
 
 				const prop = def.color[t];
 				const val = furniture.props ? furniture.props[prop] : undefined;
 
 				if (val == null) continue;
 
-				(child.material as THREE.MeshStandardMaterial).color.setHex(parseInt(val.substr(1), 16));
+				const colorHex = parseInt(val.substr(1), 16);
+				(child.material as THREE.MeshStandardMaterial).color.setHex(colorHex);
 			}
 		});
 	}
@@ -487,7 +496,9 @@ export class Room {
 					const uvInfo = def.texture[t].uv;
 
 					const ctx = canvas.getContext('2d');
-					ctx.drawImage(img, 0, 0, img.width, img.height, uvInfo.x, uvInfo.y, uvInfo.width, uvInfo.height);
+					ctx.drawImage(img,
+						0, 0, img.width, img.height,
+						uvInfo.x, uvInfo.y, uvInfo.width, uvInfo.height);
 
 					const texture = new THREE.Texture(canvas);
 					texture.wrapS = THREE.RepeatWrapping;
