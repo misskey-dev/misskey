@@ -157,18 +157,25 @@ export class Room {
 		}
 
 		//#region Out light
-		const outLight = new THREE.SpotLight(0xffffff, 0.4);
+		const outLight1 = new THREE.SpotLight(0xffffff, 0.4);
+		outLight1.position.set(9, 3, -2);
+		outLight1.castShadow = this.enableShadow;
+		outLight1.shadow.bias = -0.001; // アクネ、アーチファクト対策 その代わりピーターパンが発生する可能性がある
+		outLight1.shadow.mapSize.width = this.shadowQuality;
+		outLight1.shadow.mapSize.height = this.shadowQuality;
+		outLight1.shadow.camera.near = 6;
+		outLight1.shadow.camera.far = 15;
+		outLight1.shadow.camera.fov = 45;
+		this.scene.add(outLight1);
 
-		outLight.position.set(9, 3, -2);
-		outLight.castShadow = this.enableShadow;
-		outLight.shadow.bias = -0.001; // アクネ、アーチファクト対策 その代わりピーターパンが発生する可能性がある
-		outLight.shadow.mapSize.width = this.shadowQuality;
-		outLight.shadow.mapSize.height = this.shadowQuality;
-		outLight.shadow.camera.near = 6;
-		outLight.shadow.camera.far = 15;
-		outLight.shadow.camera.fov = 45;
-
-		this.scene.add(outLight);
+		const outLight2 = new THREE.SpotLight(0xffffff, 0.2);
+		outLight2.position.set(-2, 3, 9);
+		outLight2.castShadow = false;
+		outLight2.shadow.bias = -0.001; // アクネ、アーチファクト対策 その代わりピーターパンが発生する可能性がある
+		outLight2.shadow.camera.near = 6;
+		outLight2.shadow.camera.far = 15;
+		outLight2.shadow.camera.fov = 45;
+		this.scene.add(outLight2);
 		//#endregion
 
 		//#region Init a controller
