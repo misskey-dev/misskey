@@ -351,4 +351,8 @@
 			Bin: 'color'
 		}
 	},
+	{
+		id: "cup-noodle",
+		place: "floor"
+	}
 ]
