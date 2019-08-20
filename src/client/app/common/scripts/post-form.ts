@@ -153,6 +153,10 @@ export default (opts) => ({
 		// デフォルト公開範囲
 		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
+		if (this.reply && this.reply.localOnly) {
+			this.localOnly = true;
+		}
+
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
@@ -162,13 +166,13 @@ export default (opts) => ({
 				}).then(users => {
 					this.visibleUsers.push(...users);
 				});
-			}
-		}
 
-		if (this.reply && this.reply.userId !== this.$store.state.i.id) {
-			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
-				this.visibleUsers.push(user);
-			});
+				if (this.reply.userId !== this.$store.state.i.id) {
+					this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
+						this.visibleUsers.push(user);
+					});
+				}
+			}
 		}
 
 		// keep cw when reply
@@ -199,8 +203,9 @@ export default (opts) => ({
 					this.$emit('change-attached-files', this.files);
 				}
 			}
+
+			// 削除して編集
 			if (this.initialNote) {
-				// 削除して編集
 				const init = this.initialNote;
 				this.text = init.text ? init.text : '';
 				this.files = init.files;
@@ -318,7 +323,7 @@ export default (opts) => ({
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				currentVisibility: this.visibility
+				currentVisibility: this.localOnly ? `local-${this.visibility}` : this.visibility
 			});
 			w.$once('chosen', v => {
 				this.applyVisibility(v);

@@ -139,6 +139,7 @@ common:
     geolocation-alert: "お使いの端末は位置情報に対応していません"
     error: "エラー"
     enter-username: "ユーザー名を入力してください"
+    specified-recipient: "宛先"
     add-visible-user: "ユーザーを追加"
     cw-placeholder: "内容への注釈 (オプション)"
     username-prompt: "ユーザー名を入力してください"
