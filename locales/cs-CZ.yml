@@ -283,7 +283,7 @@ common:
     saved: "Uloženo"
     room: "Místnost"
     _room:
-      graphicsQuality: "Kvalita grafiky:"
+      graphicsQuality: "Kvalita grafiky"
       _graphicsQuality:
         ultra: "Nejvyšší"
         high: "Vysoká"
