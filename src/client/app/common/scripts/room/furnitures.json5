@@ -353,6 +353,6 @@
 	},
 	{
 		id: "cup-noodle",
-		place: "floor",
+		place: "floor"
 	}
 ]
