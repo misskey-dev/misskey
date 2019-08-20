@@ -5,6 +5,7 @@ import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { In } from 'typeorm';
 import { ID } from '../../../../misc/cafy-id';
+import config from '../../../../config';
 
 export const meta = {
 	desc: {
@@ -87,7 +88,7 @@ export default define(meta, async (ps, me) => {
 	: [];
 
 	const result = await es.search({
-		index: 'misskey_note',
+		index: config.elasticsearch.index || 'misskey_note',
 		body: {
 			size: ps.limit!,
 			from: ps.offset,

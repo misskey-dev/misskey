@@ -2,7 +2,7 @@ import { Buffer } from 'buffer';
 import * as fs from 'fs';
 
 import * as crypto from 'crypto';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
@@ -55,7 +55,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			|| `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
 
 		// for original
-		const key = `${meta.objectStoragePrefix}/${uuid.v4()}${ext}`;
+		const key = `${meta.objectStoragePrefix}/${uuid()}${ext}`;
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
@@ -72,7 +72,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		];
 
 		if (alts.webpublic) {
-			webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid()}.${alts.webpublic.ext}`;
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
@@ -80,7 +80,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		}
 
 		if (alts.thumbnail) {
-			thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid()}.${alts.thumbnail.ext}`;
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -104,9 +104,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 
 		return await DriveFiles.save(file);
 	} else { // use internal storage
-		const accessKey = uuid.v4();
-		const thumbnailAccessKey = 'thumbnail-' + uuid.v4();
-		const webpublicAccessKey = 'webpublic-' + uuid.v4();
+		const accessKey = uuid();
+		const thumbnailAccessKey = 'thumbnail-' + uuid();
+		const webpublicAccessKey = 'webpublic-' + uuid();
 
 		const url = InternalStorage.saveFromPath(accessKey, path);
 
@@ -460,7 +460,7 @@ export default async function(
 
 	logger.succ(`drive file has been created ${file.id}`);
 
-	DriveFiles.pack(file).then(packedFile => {
+	DriveFiles.pack(file, { self: true }).then(packedFile => {
 		// Publish driveFileCreated event
 		publishMainStream(user.id, 'driveFileCreated', packedFile);
 		publishDriveStream(user.id, 'fileCreated', packedFile);

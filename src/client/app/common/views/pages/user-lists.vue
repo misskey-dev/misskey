@@ -33,6 +33,8 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		document.title = this.$root.instanceName;
+		
 		this.$root.api('users/lists/list').then(lists => {
 			this.fetching = false;
 			this.lists = lists;

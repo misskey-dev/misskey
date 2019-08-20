@@ -38,11 +38,11 @@ const client = config.elasticsearch ? new elasticsearch.Client({
 
 if (client) {
 	client.indices.exists({
-		index: 'misskey_note'
+		index: config.elasticsearch.index || 'misskey_note',
 	}).then(exist => {
 		if (!exist.body) {
 			client.indices.create({
-				index: 'misskey_note',
+				index: config.elasticsearch.index || 'misskey_note',
 				body: index
 			});
 		}

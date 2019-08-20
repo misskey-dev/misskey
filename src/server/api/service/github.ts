@@ -5,7 +5,7 @@ import { OAuth2 } from 'oauth';
 import config from '../../../config';
 import { publishMainStream } from '../../../services/stream';
 import redis from '../../../db/redis';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import signin from '../common/signin';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';

@@ -164,7 +164,8 @@ router.get('/@:user', async (ctx, next) => {
 
 		await ctx.render('user', {
 			user, profile, me,
-			instanceName: meta.name || 'Groundpolis'
+			instanceName: meta.name || 'Groundpolis',
+			icon: meta.iconUrl
 		});
 		ctx.set('Cache-Control', 'public, max-age=30');
 	} else {
@@ -197,7 +198,8 @@ router.get('/notes/:note', async ctx => {
 		await ctx.render('note', {
 			note: _note,
 			summary: getNoteSummary(_note),
-			instanceName: meta.name || 'Groundpolis'
+			instanceName: meta.name || 'Groundpolis',
+			icon: meta.iconUrl
 		});
 
 		if (['public', 'home'].includes(note.visibility)) {
@@ -283,6 +285,7 @@ router.get('*', async ctx => {
 	await ctx.render('base', {
 		img: meta.bannerUrl,
 		title: meta.name || 'Groundpolis',
+		instanceName: meta.name || 'Groundpolis',
 		desc: meta.description,
 		icon: meta.iconUrl
 	});

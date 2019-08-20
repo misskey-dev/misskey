@@ -9,7 +9,7 @@ import watch from './watch';
 import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
 import config from '../../config';
-import { updateHashtag } from '../update-hashtag';
+import { updateHashtags } from '../update-hashtag';
 import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
@@ -202,7 +202,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(user, tag);
+	updateHashtags(user, tags);
 
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
@@ -434,7 +434,7 @@ function index(note: Note) {
 	if (note.text == null || config.elasticsearch == null) return;
 
 	es!.index({
-		index: 'misskey_note',
+		index: config.elasticsearch.index || 'misskey_note',
 		id: note.id.toString(),
 		body: {
 			text: note.text.toLowerCase(),

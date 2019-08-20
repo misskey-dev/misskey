@@ -1,11 +1,11 @@
 import config from '../../../config';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 export const renderActivity = (x: any) => {
 	if (x == null) return null;
 
 	if (x !== null && typeof x === 'object' && x.id == null) {
-		x.id = `${config.url}/${uuid.v4()}`;
+		x.id = `${config.url}/${uuid()}`;
 	}
 
 	return Object.assign({

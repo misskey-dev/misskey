@@ -4,7 +4,7 @@
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
-			<router-link class="name" :to="u | userPage"><mk-user-name :user="u"/></router-link>
+			<router-link class="name" :to="u | userPage"><mk-user-name :user="u" :nowrap="false"/></router-link>
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
 		<div class="description">

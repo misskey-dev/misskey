@@ -44,13 +44,21 @@ export default (opts) => ({
 				return window.scrollY <= 8;
 			};
 
-			window.addEventListener('scroll', this.onWindowScroll, { passive: true });
+			window.addEventListener('scroll', this.onScroll, { passive: true });
+		} else if (opts.isContainer) {
+			this.isScrollTop = () => {
+				return this.$el.scrollTop <= 8;
+			};
+
+			this.$el.addEventListener('scroll', this.onScroll, { passive: true });
 		}
 	},
 
 	beforeDestroy() {
 		if (opts.captureWindowScroll) {
-			window.removeEventListener('scroll', this.onWindowScroll);
+			window.removeEventListener('scroll', this.onScroll);
+		} else if (opts.isContainer) {
+			this.$el.removeEventListener('scroll', this.onScroll);
 		}
 	},
 
@@ -152,7 +160,7 @@ export default (opts) => ({
 			this.queue = [];
 		},
 
-		onWindowScroll() {
+		onScroll() {
 			if (this.isScrollTop()) {
 				this.onTop();
 			}
@@ -163,8 +171,10 @@ export default (opts) => ({
 				// http://d.hatena.ne.jp/favril/20091105/1257403319
 				if (this.$el.offsetHeight == 0) return;
 
-				const current = window.scrollY + window.innerHeight;
-				if (current > document.body.offsetHeight - 8) this.onBottom();
+				const bottomPosition = opts.isContainer ? this.$el.scrollHeight : document.body.offsetHeight;
+
+				const currentBottomPosition = opts.isContainer ? this.$el.scrollTop + this.$el.clientHeight : window.scrollY + window.innerHeight;
+				if (currentBottomPosition > (bottomPosition - 8)) this.onBottom();
 			}
 		},
 

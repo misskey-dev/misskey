@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../../../../i18n';
 import XContainer from '../page-editor.container.vue';
@@ -76,7 +76,7 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 
-			const id = uuid.v4();
+			const id = uuid();
 			this.value.children.push({ id, type });
 		},
 	}

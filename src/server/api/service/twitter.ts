@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import autwh from 'autwh';
 import redis from '../../../db/redis';
 import { publishMainStream } from '../../../services/stream';

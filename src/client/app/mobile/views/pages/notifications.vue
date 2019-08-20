@@ -25,6 +25,9 @@ export default Vue.extend({
 			faBell,
 		};
 	},
+	mounted() {
+		document.title = this.$root.instanceName;
+	},
 	methods: {
 		beforeInit() {
 			Progress.start();
