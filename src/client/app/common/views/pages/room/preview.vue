@@ -11,7 +11,7 @@ export default Vue.extend({
 		return {
 			selected: null,
 			objectHeight: 0,
-			orbitRadius: 1
+			orbitRadius: 5
 		};
 	},
 
@@ -58,7 +58,7 @@ export default Vue.extend({
 			const timer = Date.now() * 0.0004;
 			requestAnimationFrame(render);
 			
-			camera.position.y = 1 + this.objectHeight * 1.25;
+			camera.position.y = Math.sin(Math.PI / 6) * this.orbitRadius;
 			camera.position.z = Math.cos(timer) * this.orbitRadius;
 			camera.position.x = Math.sin(timer) * this.orbitRadius;
 			camera.lookAt(new THREE.Vector3(0, this.objectHeight / 2, 0));
@@ -93,9 +93,12 @@ export default Vue.extend({
 
 			const objectWidth = objectBoundingBox.max.x - objectBoundingBox.min.x;
 			const objectDepth = objectBoundingBox.max.z - objectBoundingBox.min.z;
-			const diagonalLength = Math.sqrt(objectWidth ** 2 + objectDepth ** 2);
 
-			this.orbitRadius = 2 * Math.max(diagonalLength, this.objectHeight) / Math.sin(camera.fov / 2);
+			const horizontal = Math.max(objectWidth, objectDepth) / camera.aspect;
+			const vertical = this.objectHeight * camera.aspect;
+
+			this.orbitRadius = Math.max(horizontal, vertical) * camera.zoom * 0.5 / Math.tan(camera.fov * 0.5 * (Math.PI / 180));
+		
 
 			scene.add(obj);
 		};
