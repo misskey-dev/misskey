@@ -58,7 +58,7 @@ export default Vue.extend({
 			const timer = Date.now() * 0.0004;
 			requestAnimationFrame(render);
 			
-			camera.position.y = Math.sin(Math.PI / 6) * this.orbitRadius;
+			camera.position.y = Math.sin(Math.PI / 6) * this.orbitRadius;	// Math.PI / 6 => 30deg
 			camera.position.z = Math.cos(timer) * this.orbitRadius;
 			camera.position.x = Math.sin(timer) * this.orbitRadius;
 			camera.lookAt(new THREE.Vector3(0, this.objectHeight / 2, 0));
@@ -95,10 +95,8 @@ export default Vue.extend({
 			const objectDepth = objectBoundingBox.max.z - objectBoundingBox.min.z;
 
 			const horizontal = Math.max(objectWidth, objectDepth) / camera.aspect;
-
-			this.orbitRadius = Math.max(horizontal, this.objectHeight) * camera.zoom * 0.5 / Math.tan(camera.fov * 0.5 * (Math.PI / 180));
+			this.orbitRadius = Math.max(horizontal, this.objectHeight) * camera.zoom * 0.625 / Math.tan(camera.fov * 0.5 * (Math.PI / 180));
 		
-
 			scene.add(obj);
 		};
 
