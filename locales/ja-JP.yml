@@ -2303,6 +2303,7 @@ room:
   saved: "保存しました"
   clear: "片付け"
   clear-confirm: "全ての家具をしまいますか？"
+  leave-confirm: "未保存の変更があります、移動しますか？"
   chooseImage: "画像を選択"
   room-type: "部屋のタイプ"
   carpet-color: "床の色"
