@@ -94,7 +94,7 @@ export default Vue.extend({
 			const objectWidth = objectBoundingBox.max.x - objectBoundingBox.min.x;
 			const objectDepth = objectBoundingBox.max.z - objectBoundingBox.min.z;
 
-			const horizontal = Math.max(objectWidth, objectDepth) / camera.aspect;
+			const horizontal = Math.sqrt(objectWidth ** 2 +  objectDepth ** 2) / camera.aspect;
 			this.orbitRadius = Math.max(horizontal, this.objectHeight) * camera.zoom * 0.625 / Math.tan(camera.fov * 0.5 * (Math.PI / 180));
 		
 			scene.add(obj);
