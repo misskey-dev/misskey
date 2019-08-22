@@ -381,5 +381,9 @@
 				},
 			},
 		},
+	},
+	{
+		id: 'energy-drink',
+		place: "floor",
 	}
 ]
