@@ -1364,6 +1364,7 @@ pages:
 room:
   translate: "Přesunout"
   save: "Uložit"
+  saved: "Uloženo"
   furnitures:
     moon: "Měsíc"
     bin: "Koš"
