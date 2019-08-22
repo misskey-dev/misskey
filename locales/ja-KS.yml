@@ -1287,6 +1287,7 @@ pages:
 room:
   translate: "移動"
   save: "保存"
+  saved: "保存したで！"
   furnitures:
     moon: "月"
     bin: "ゴミ箱"
