@@ -2095,6 +2095,7 @@ room:
   saved: "Saved"
   clear: "Remove All"
   clear-confirm: "Are you sure to remove all furnitures in your room?"
+  leave-confirm: "There are unsaved changes. Do you really want to leave?"
   chooseImage: "Select an image"
   room-type: "Room type"
   carpet-color: "Color of carpet"
