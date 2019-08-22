@@ -2092,6 +2092,7 @@ room:
   exit: "Deselect"
   remove: "Remove"
   save: "Save"
+  saved: "Saved"
   clear: "Remove All"
   clear-confirm: "Are you sure to remove all furnitures in your room?"
   chooseImage: "Select an image"
