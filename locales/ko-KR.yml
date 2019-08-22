@@ -2095,6 +2095,7 @@ room:
   saved: "저장하였습니다"
   clear: "모두 치우기"
   clear-confirm: "정말 방 안의 모든 가구를 치우시겠습니까?"
+  leave-confirm: "저장되지 않은 변경 사항이 있습니다. 정말 떠나시겠습니까?"
   chooseImage: "이미지 선택"
   room-type: "룸 종류"
   carpet-color: "바닥 색상"
