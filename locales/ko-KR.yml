@@ -2092,6 +2092,7 @@ room:
   exit: "선택 해제"
   remove: "치우기"
   save: "저장"
+  saved: "저장하였습니다"
   clear: "모두 치우기"
   clear-confirm: "정말 방 안의 모든 가구를 치우시겠습니까?"
   chooseImage: "이미지 선택"
