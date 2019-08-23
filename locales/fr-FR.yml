@@ -295,6 +295,7 @@ common:
         medium: "Moyenne"
         low: "Basse"
         cheep: "Minimale"
+      useOrthographicCamera: "Utiliser une caméra orthographique"
   search: "Recherche"
   delete: "Supprimer"
   loading: "Chargement en cours …"
