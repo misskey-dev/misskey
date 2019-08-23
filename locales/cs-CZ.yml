@@ -122,6 +122,7 @@ common:
     create-poll: "Vytvořit anketu"
     text-remain: "zbývá ještě {} znaků"
     recent-tags: "Nejnovější"
+    click-to-tagging: "Klikni pro otágování"
     visibility: "Viditelnost"
     geolocation-alert: "Vaše zařízení nedalo k dispozici lokaci"
     error: "Chyba"
