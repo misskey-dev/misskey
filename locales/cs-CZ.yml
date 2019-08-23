@@ -122,12 +122,14 @@ common:
     create-poll: "Vytvořit anketu"
     text-remain: "zbývá ještě {} znaků"
     recent-tags: "Nejnovější"
+    click-to-tagging: "Klikni pro otágování"
     visibility: "Viditelnost"
     geolocation-alert: "Vaše zařízení nedalo k dispozici lokaci"
     error: "Chyba"
     enter-username: "Zadejte své uživatelské jméno"
     add-visible-user: "Přidat uživatele"
     username-prompt: "Zadejte své uživatelské jméno"
+    enter-file-name: "Upravit název souboru"
   weekday-short:
     sunday: "Ne"
     monday: "Po"
@@ -280,6 +282,15 @@ common:
     sync: "Synchronizace"
     save: "Uložit"
     saved: "Uloženo"
+    room: "Místnost"
+    _room:
+      graphicsQuality: "Kvalita grafiky"
+      _graphicsQuality:
+        ultra: "Nejvyšší"
+        high: "Vysoká"
+        medium: "Střední"
+        low: "Nízká"
+        cheep: "Nejnižší"
   search: "Hledání"
   delete: "Odstranit"
   loading: "Načítám..."
@@ -937,6 +948,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "Seznamy"
   groups: "Skupiny"
   admin: "Administrace"
+  room: "Místnost"
 desktop/views/components/ui.header.nav.vue:
   game: "Hry"
 desktop/views/components/ui.header.notifications.vue:
@@ -1353,6 +1365,7 @@ pages:
 room:
   translate: "Přesunout"
   save: "Uložit"
+  saved: "Uloženo"
   furnitures:
-    moon: "Po"
+    moon: "Měsíc"
     bin: "Koš"

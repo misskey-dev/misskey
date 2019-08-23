@@ -1913,6 +1913,7 @@ pages:
 room:
   translate: "Flyt"
   save: "Gem"
+  saved: "Gemt"
   furnitures:
-    moon: "Man"
+    moon: "Måne"
     bin: "Skraldespand"

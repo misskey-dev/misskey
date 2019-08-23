@@ -1259,6 +1259,7 @@ pages:
 room:
   translate: "Przenieś"
   save: "Zapisz"
+  saved: "Zapisano"
   furnitures:
-    moon: "Pn"
+    moon: "Księżyc"
     bin: "Kosz"

@@ -948,6 +948,7 @@ pages:
       array: "Listen"
 room:
   save: "Speichern"
+  saved: "Gespeichert"
   furnitures:
-    moon: "Mo"
+    moon: "Mond"
     bin: "Papierkorb"

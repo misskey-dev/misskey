@@ -1137,6 +1137,7 @@ pages:
       array: "Listas"
 room:
   save: "Guardar"
+  saved: "Guardado"
   furnitures:
     moon: "Luna"
     bin: "Papelera"
