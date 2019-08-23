@@ -769,5 +769,8 @@ export class Room {
 	public destroy() {
 		// Stop render loop
 		window.cancelAnimationFrame(this.renderFrameRequestId);
+
+		this.controls.dispose();
+		this.scene.dispose();
 	}
 }

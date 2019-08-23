@@ -64,8 +64,7 @@ export default Vue.extend({
 	methods: {
 		onMousedown(e: MouseEvent) {
 			function distance(p, q) {
-				const sqrt = Math.sqrt, pow = Math.pow;
-				return sqrt(pow(p.x - q.x, 2) + pow(p.y - q.y, 2));
+				return Math.hypot(p.x - q.x, p.y - q.y);
 			}
 
 			function calcCircleScale(boxW, boxH, circleCenterX, circleCenterY) {
