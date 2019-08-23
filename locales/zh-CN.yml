@@ -2095,6 +2095,7 @@ room:
   saved: "已保存"
   clear: "清理"
   clear-confirm: "是否清除所有家具？"
+  leave-confirm: "有尚未保存的修改。是否离开？"
   chooseImage: "选择图片"
   room-type: "房间类型"
   carpet-color: "地板颜色"
@@ -2143,3 +2144,4 @@ room:
     spiral: "螺旋楼梯"
     bin: "垃圾箱"
     cup-noodle: "杯面"
+    energy-drink: "能量饮料"
