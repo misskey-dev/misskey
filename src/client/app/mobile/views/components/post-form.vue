@@ -46,7 +46,6 @@
 					<span v-if="visibility === 'home'"><fa icon="home"/></span>
 					<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 					<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-					<span v-if="localOnly === true"><fa icon="heart"/></span>
 				</button>
 			</footer>
 			<input ref="file" class="file" type="file" multiple="multiple" @change="onChangeFile"/>

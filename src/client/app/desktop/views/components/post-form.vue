@@ -48,7 +48,6 @@
 		<span v-if="visibility === 'home'"><fa icon="home"/></span>
 		<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 		<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-		<span v-if="localOnly === true"><fa icon="heart"/></span>
 	</button>
 	<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
 	<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
