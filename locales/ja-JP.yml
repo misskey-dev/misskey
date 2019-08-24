@@ -1363,7 +1363,7 @@ admin/views/instance.vue:
   instance-name: "インスタンス名"
   instance-description: "インスタンスの紹介"
   host: "ホスト"
-  icon-url: "アバターURL"
+  icon-url: "アイコンURL"
   logo-url: "ロゴURL"
   banner-url: "バナー画像URL"
   error-image-url: "エラー画像URL"
