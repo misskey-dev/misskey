@@ -36,7 +36,7 @@ export default Vue.extend({
 		//#region for Safari bug
 		if (this.$refs.grid) {
 			this.$refs.grid.style.height = this.$refs.grid.clientHeight ? `${this.$refs.grid.clientHeight}px`
-				: (this.$store.state.device.inDeckMode ? '128px' : this.$root.isMobile ? '173px' : '287px');
+				: this.$store.state.device.inDeckMode ? '128px' : this.$root.isMobile ? '173px' : '287px';
 		}
 		//#endregion
 	},
