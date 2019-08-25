@@ -207,7 +207,6 @@ common:
     deck-column-width-wide: "Sehr breit"
     use-shadow: "Nutze Schatten"
     rounded-corners: "Abgerundete Ecken"
-    circle-icons: "Kreisförmige Icons"
     contrasted-acct: "Nutzernamen kontrastreicher darstellen"
     wallpaper: "Hintergrund"
     choose-wallpaper: "Hintergrund auswählen"
@@ -568,7 +567,6 @@ common/views/components/visibility-chooser.vue:
 common/views/components/profile-editor.vue:
   title: "Dein Profil"
   name: "Name"
-  avatar: "Avatar"
   banner: "Banner"
   save: "Speichern"
   unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
@@ -634,13 +632,11 @@ desktop/views/components/crop-window.vue:
 desktop/views/components/drive-window.vue:
   used: "benutzt"
 desktop/views/components/drive.file.vue:
-  avatar: "Avatar"
   banner: "Banner"
   contextmenu:
     rename: "Umbenennen"
     copy-url: "URL kopieren"
     download: "Download"
-    set-as-avatar: "Als Avatar festlegen"
     set-as-banner: "Setze als Banner"
     open-in-app: "In der App öffnen"
     add-app: "App hinzufügen"
