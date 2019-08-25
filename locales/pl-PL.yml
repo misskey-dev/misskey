@@ -98,6 +98,7 @@ common:
     visibility: "Widoczność"
     error: "Błąd"
     enter-username: "Wprowadź nazwę użytkownika"
+    specified-recipient: "Adresat"
     add-visible-user: "Dodaj użytkownika"
     username-prompt: "Wprowadź nazwę użytkownika"
   weekday-short:
@@ -162,6 +163,7 @@ common:
     note-visibility: "Widoczność wpisów"
     remember-note-visibility: "Zapamiętaj widoczność wpisów"
     web-search-engine: "Wyszukiwarka internetowa"
+    paste: "Wklej"
     line-width: "Szerokości linii"
     line-width-thin: "Cienka"
     line-width-normal: "Normalna"
