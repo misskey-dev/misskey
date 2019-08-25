@@ -615,6 +615,7 @@ desktop/views/components/drive.file.vue:
     copy-url: "URLをコピー"
     download: "ダウンロード"
     else-files: "その他"
+    set-as-avatar: "アバターにする"
     set-as-banner: "バナーにする"
     open-in-app: "アプリで開く"
     add-app: "アプリ増やす"
