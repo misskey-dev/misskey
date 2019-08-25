@@ -127,6 +127,7 @@ common:
     geolocation-alert: "Vaše zařízení nedalo k dispozici lokaci"
     error: "Chyba"
     enter-username: "Zadejte své uživatelské jméno"
+    specified-recipient: "Pro"
     add-visible-user: "Přidat uživatele"
     username-prompt: "Zadejte své uživatelské jméno"
     enter-file-name: "Upravit název souboru"
