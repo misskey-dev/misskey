@@ -666,7 +666,6 @@ desktop/views/components/drive.file.vue:
     copy-url: "Skopiuj adres"
     download: "Pobierz"
     else-files: "Inne"
-    set-as-avatar: "Ustaw jako awatar"
     set-as-banner: "Ustaw jako baner"
     open-in-app: "Otwórz w aplikacji"
     add-app: "Dodaj aplikację"
