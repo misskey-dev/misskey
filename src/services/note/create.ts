@@ -357,6 +357,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		tags: tags.map(tag => tag.toLowerCase()),
 		emojis,
 		userId: user.id,
+		isSensitive: data.cw != null || (data.files ? data.files.some(file => file.isSensitive) : false),
 		viaMobile: data.viaMobile!,
 		localOnly: data.localOnly!,
 		geo: data.geo || null,

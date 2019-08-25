@@ -36,7 +36,7 @@ export const meta = {
 			validator: $.optional.bool,
 			default: false,
 			desc: {
-				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
+				'ja-JP': 'true にすると、NSFW指定されたコンテンツを除外します'
 			}
 		},
 
@@ -110,15 +110,10 @@ export default define(meta, async (ps, user) => {
 				qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
 			}
 		}));
+	}
 
-		if (ps.excludeNsfw) {
-			// v11 TODO
-			/*
-			query['_files.isSensitive'] = {
-				$ne: true
-			};
-			*/
-		}
+	if (ps.excludeNsfw) {
+		query.andWhere('note.isSensitive = FALSE');
 	}
 	//#endregion
 

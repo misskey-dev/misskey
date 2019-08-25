@@ -84,6 +84,12 @@ export class Note {
 	public user: User | null;
 
 	@Column('boolean', {
+		default: false,
+		comment: 'Whether the Note is NSFW.'
+	})
+	public isSensitive: boolean;
+
+	@Column('boolean', {
 		default: false
 	})
 	public viaMobile: boolean;
