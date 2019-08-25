@@ -202,6 +202,7 @@ common/views/components/visibility-chooser.vue:
 common/views/components/profile-editor.vue:
   title: "Je profiel"
   name: "Naam"
+  avatar: "Gebruikersafbeelding"
   banner: "Omslagfoto"
   unable-to-process: "De operatie kan niet worden voltooid."
   export-targets:
@@ -231,6 +232,7 @@ common/views/pages/follow.vue:
   follow: "Volgend"
 desktop:
   banner: "Omslagfoto"
+  avatar: "Gebruikersafbeelding"
   unable-to-process: "De operatie kan niet worden voltooid."
 desktop/views/components/activity.chart.vue:
   total: "Zwart ... totaal"
@@ -260,11 +262,13 @@ desktop/views/components/crop-window.vue:
 desktop/views/components/drive-window.vue:
   used: "gebruikt"
 desktop/views/components/drive.file.vue:
+  avatar: "Gebruikersafbeelding"
   banner: "Omslagfoto"
   contextmenu:
     rename: "Naam wijzigen"
     copy-url: "URL kopiëren"
     download: "Downloaden"
+    set-as-avatar: "Instellen als gebruikersafbeelding"
     set-as-banner: "Instellen als omslagfoto"
     open-in-app: "Openen in app"
     add-app: "App toevoegen"
