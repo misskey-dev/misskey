@@ -66,7 +66,7 @@ export const meta = {
 		avatarId: {
 			validator: $.optional.nullable.type(ID),
 			desc: {
-				'ja-JP': 'アイコンに設定する画像のドライブファイルID'
+				'ja-JP': 'アバターに設定する画像のドライブファイルID'
 			}
 		},
 
