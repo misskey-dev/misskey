@@ -754,7 +754,7 @@ common/views/components/profile-editor.vue:
   upload-failed: "Failed to upload"
   unable-to-process: "The operation could not be completed."
   avatar-not-an-image: "The file you specified as an avatar is not an image"
-  banner-not-an-image: "The file specified as a banner is not an image"
+  banner-not-an-image: "The file you specified as a banner is not an image"
   email: "Email settings"
   email-address: "Email Address"
   email-verified: "Your email has been verified."
