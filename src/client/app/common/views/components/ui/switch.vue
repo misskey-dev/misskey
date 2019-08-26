@@ -49,6 +49,7 @@ export default Vue.extend({
 	},
 	methods: {
 		toggle() {
+			if (this.disabled) return;
 			this.$emit('change', !this.checked);
 		}
 	}
