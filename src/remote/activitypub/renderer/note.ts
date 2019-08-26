@@ -158,7 +158,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		cc,
 		inReplyTo,
 		attachment: files.map(renderDocument),
-		sensitive: note.isSensitive || files.some(file => file.isSensitive),
+		sensitive: files.some(file => file.isSensitive),
 		tag,
 		...asPoll
 	};
