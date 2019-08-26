@@ -74,7 +74,7 @@ export const meta = {
 			validator: $.optional.bool,
 			default: true,
 			desc: {
-				'ja-JP': '自分の行ったRenoteを含めるかどうか'
+				'ja-JP': 'Renoteを含めるかどうか'
 			}
 		},
 
