@@ -78,22 +78,6 @@ export const meta = {
 			}
 		},
 
-		includeRenotedMyNotes: {
-			validator: $.optional.bool,
-			default: true,
-			desc: {
-				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
-			}
-		},
-
-		includeLocalRenotes: {
-			validator: $.optional.bool,
-			default: true,
-			desc: {
-				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
-			}
-		},
-
 		withFiles: {
 			validator: $.optional.bool,
 			default: false,
