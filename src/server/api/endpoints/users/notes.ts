@@ -179,7 +179,7 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.includeMyRenotes === false) {
 		query.andWhere(new Brackets(qb => {
-			if (me != null) qb.orWhere('note.userId != :meId', { meId: me.id });
+			qb.orWhere('note.userId != :userId', { userId: user.id });
 			qb.orWhere('note.renoteId IS NULL');
 			qb.orWhere('note.text IS NOT NULL');
 			qb.orWhere('note.fileIds != \'{}\'');
