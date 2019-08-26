@@ -137,7 +137,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.includeMyRenotes === false) {
 		query.andWhere(new Brackets(qb => {
-			if (user != null) qb.orWhere('note.userId != :meId', { meId: user.id });
+			qb.orWhere('note.userId != :meId', { meId: user.id });
 			qb.orWhere('note.renoteId IS NULL');
 			qb.orWhere('note.text IS NOT NULL');
 			qb.orWhere('note.fileIds != \'{}\'');
@@ -147,7 +147,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.includeRenotedMyNotes === false) {
 		query.andWhere(new Brackets(qb => {
-			if (user != null) qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
+			qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
 			qb.orWhere('note.renoteId IS NULL');
 			qb.orWhere('note.text IS NOT NULL');
 			qb.orWhere('note.fileIds != \'{}\'');
@@ -157,7 +157,7 @@ export default define(meta, async (ps, user) => {
 
 	if (ps.includeLocalRenotes === false) {
 		query.andWhere(new Brackets(qb => {
-			if (user != null) qb.orWhere('note.renoteUserHost IS NOT NULL');
+			qb.orWhere('note.renoteUserHost IS NOT NULL');
 			qb.orWhere('note.renoteId IS NULL');
 			qb.orWhere('note.text IS NOT NULL');
 			qb.orWhere('note.fileIds != \'{}\'');
