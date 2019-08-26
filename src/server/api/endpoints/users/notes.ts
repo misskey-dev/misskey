@@ -177,23 +177,15 @@ export default define(meta, async (ps, me) => {
 		query.andWhere('note.replyId IS NULL');
 	}
 
-	/* TODO
 	if (ps.includeMyRenotes === false) {
-		query.$and.push({
-			$or: [{
-				userId: { $ne: user.id }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
+		query.andWhere(new Brackets(qb => {
+			if (me != null) qb.orWhere('note.userId != :meId', { meId: me.id });
+			qb.orWhere('note.renoteId IS NULL');
+			qb.orWhere('note.text IS NOT NULL');
+			qb.orWhere('note.fileIds != \'{}\'');
+			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+		}));
 	}
-	*/
 
 	//#endregion
 
