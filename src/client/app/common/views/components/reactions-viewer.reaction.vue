@@ -26,6 +26,10 @@ export default Vue.extend({
 			type: Number,
 			required: true,
 		},
+		isInitial: {
+			type: Boolean,
+			required: true,
+		},
 		note: {
 			type: Object,
 			required: true,
@@ -40,6 +44,9 @@ export default Vue.extend({
 		isMe(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
 		},
+	},
+	mounted() {
+		if (!this.isInitial) this.anime();
 	},
 	watch: {
 		count() {
