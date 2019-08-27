@@ -46,7 +46,6 @@ export default define({
 
 		onChange() {
 			this.changed = true;
-			this.lastChanged = new Date();
 			clearTimeout(this.timeoutId);
 			this.timeoutId = setTimeout(this.saveMemo, 1000);
 		},
