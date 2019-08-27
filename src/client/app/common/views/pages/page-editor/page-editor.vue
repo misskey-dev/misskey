@@ -220,37 +220,41 @@ export default Vue.extend({
 
 	methods: {
 		save() {
+			const options = {
+				title: this.title.trim(),
+				name: this.name.trim(),
+				summary: this.summary,
+				font: this.font,
+				hideTitleWhenPinned: this.hideTitleWhenPinned,
+				alignCenter: this.alignCenter,
+				content: this.content,
+				variables: this.variables,
+				eyeCatchingImageId: this.eyeCatchingImageId,
+			};
+
 			if (this.pageId) {
-				this.$root.api('pages/update', {
-					pageId: this.pageId,
-					title: this.title.trim(),
-					name: this.name.trim(),
-					summary: this.summary,
-					font: this.font,
-					hideTitleWhenPinned: this.hideTitleWhenPinned,
-					alignCenter: this.alignCenter,
-					content: this.content,
-					variables: this.variables,
-					eyeCatchingImageId: this.eyeCatchingImageId,
-				}).then(page => {
+				options.pageId = this.pageId;
+			}
+
+			if (this.pageId) {
+				this.$root.api('pages/update', options)
+				.then(page => {
 					this.currentName = this.name.trim();
 					this.$root.dialog({
 						type: 'success',
 						text: this.$t('page-updated')
 					});
+				}).catch(err => {
+					if(err.id == 'uuid-for-name-already-exists'){
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('name-already-exists')
+						});
+					}
 				});
 			} else {
-				this.$root.api('pages/create', {
-					title: this.title.trim(),
-					name: this.name.trim(),
-					summary: this.summary,
-					font: this.font,
-					hideTitleWhenPinned: this.hideTitleWhenPinned,
-					alignCenter: this.alignCenter,
-					content: this.content,
-					variables: this.variables,
-					eyeCatchingImageId: this.eyeCatchingImageId,
-				}).then(page => {
+				this.$root.api('pages/create', options)
+				.then(page => {
 					this.pageId = page.id;
 					this.currentName = this.name.trim();
 					this.$root.dialog({
@@ -258,6 +262,13 @@ export default Vue.extend({
 						text: this.$t('page-created')
 					});
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
+				}).catch(err => {
+					if(err.id == 'uuid-for-name-already-exists'){
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('name-already-exists')
+						});
+					}
 				});
 			}
 		},
