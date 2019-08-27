@@ -234,9 +234,6 @@ export default Vue.extend({
 
 			if (this.pageId) {
 				options.pageId = this.pageId;
-			}
-
-			if (this.pageId) {
 				this.$root.api('pages/update', options)
 				.then(page => {
 					this.currentName = this.name.trim();
