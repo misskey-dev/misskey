@@ -44,7 +44,7 @@ export default Vue.extend({
 		return {
 			page: this.initialPage || 'profile',
 		};
-	}
+	},
 });
 </script>
 
