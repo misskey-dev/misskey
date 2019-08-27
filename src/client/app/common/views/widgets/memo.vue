@@ -26,7 +26,6 @@ export default define({
 		return {
 			text: null,
 			changed: false,
-			lastChanged: new Date(),
 			timeoutId: null
 		};
 	},
@@ -49,10 +48,7 @@ export default define({
 			this.changed = true;
 			this.lastChanged = new Date();
 			clearTimeout(this.timeoutId);
-			this.timeoutId = setTimeout(() => {
-				const elapsed = new Date() - this.lastChanged;
-				if (elapsed >= 1000) this.saveMemo();
-			}, 1000);
+			this.timeoutId = setTimeout(this.saveMemo, 1000);
 		},
 
 		saveMemo() {
