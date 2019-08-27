@@ -1,17 +1,17 @@
 <template>
 <div class="mk-settings">
 	<div class="nav" :class="{ inWindow }">
-		<p :class="{ active: page == 'profile' }" @mousedown="go('profile')"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</p>
-		<p :class="{ active: page == 'appearance' }" @mousedown="go('appearance')"><fa icon="palette" fixed-width/>{{ $t('@._settings.appearance') }}</p>
-		<p :class="{ active: page == 'behavior' }" @mousedown="go('behavior')"><fa icon="desktop" fixed-width/>{{ $t('@._settings.behavior') }}</p>
-		<p :class="{ active: page == 'notification' }" @mousedown="go('notification')"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('@._settings.notification') }}</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="go('drive')"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</p>
-		<p :class="{ active: page == 'hashtags' }" @mousedown="go('hashtags')"><fa icon="hashtag" fixed-width/>{{ $t('@._settings.tags') }}</p>
-		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="go('muteAndBlock')"><fa icon="ban" fixed-width/>{{ $t('@._settings.mute-and-block') }}</p>
-		<p :class="{ active: page == 'apps' }" @mousedown="go('apps')"><fa icon="puzzle-piece" fixed-width/>{{ $t('@._settings.apps') }}</p>
-		<p :class="{ active: page == 'security' }" @mousedown="go('security')"><fa icon="unlock-alt" fixed-width/>{{ $t('@._settings.security') }}</p>
-		<p :class="{ active: page == 'api' }" @mousedown="go('api')"><fa icon="key" fixed-width/>API</p>
-		<p :class="{ active: page == 'other' }" @mousedown="go('other')"><fa icon="cogs" fixed-width/>{{ $t('@._settings.other') }}</p>
+		<router-link to="/i/settings/profile" @click.native="page = 'profile'" :class="{ active: page == 'profile' }"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</router-link>
+		<router-link to="/i/settings/appearance" @click.native="page = 'appearance'" :class="{ active: page == 'appearance' }"><fa icon="palette" fixed-width/>{{ $t('@._settings.appearance') }}</router-link>
+		<router-link to="/i/settings/behavior" @click.native="page = 'behavior'" :class="{ active: page == 'behavior' }"><fa icon="desktop" fixed-width/>{{ $t('@._settings.behavior') }}</router-link>
+		<router-link to="/i/settings/notification" @click.native="page = 'notification'" :class="{ active: page == 'notification' }"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('@._settings.notification') }}</router-link>
+		<router-link to="/i/settings/drive" @click.native="page = 'drive'" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</router-link>
+		<router-link to="/i/settings/hashtags" @click.native="page = 'hashtags'" :class="{ active: page == 'hashtags' }"><fa icon="hashtag" fixed-width/>{{ $t('@._settings.tags') }}</router-link>
+		<router-link to="/i/settings/muteAndBlock" @click.native="page = 'muteAndBlock'" :class="{ active: page == 'muteAndBlock' }"><fa icon="ban" fixed-width/>{{ $t('@._settings.mute-and-block') }}</router-link>
+		<router-link to="/i/settings/apps" @click.native="page = 'apps'" :class="{ active: page == 'apps' }"><fa icon="puzzle-piece" fixed-width/>{{ $t('@._settings.apps') }}</router-link>
+		<router-link to="/i/settings/security" @click.native="page = 'security'" :class="{ active: page == 'security' }"><fa icon="unlock-alt" fixed-width/>{{ $t('@._settings.security') }}</router-link>
+		<router-link to="/i/settings/api" @click.native="page = 'api'" :class="{ active: page == 'api' }"><fa icon="key" fixed-width/>API</router-link>
+		<router-link to="/i/settings/other" @click.native="page = 'other'" :class="{ active: page == 'other' }"><fa icon="cogs" fixed-width/>{{ $t('@._settings.other') }}</router-link>
 	</div>
 	<div class="pages">
 		<x-settings :page="page"/>
@@ -44,12 +44,6 @@ export default Vue.extend({
 		return {
 			page: this.initialPage || 'profile',
 		};
-	},
-	methods: {
-		go(page: string) {
-			this.page = page;
-			this.$router.push(`/i/settings/${page}`);
-		}
 	}
 });
 </script>
@@ -69,7 +63,7 @@ export default Vue.extend({
 		z-index 1
 		font-size 15px
 
-		> p
+		> a
 			display block
 			padding 10px 16px
 			margin 0
