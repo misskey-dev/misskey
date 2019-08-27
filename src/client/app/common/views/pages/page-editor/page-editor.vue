@@ -245,7 +245,7 @@ export default Vue.extend({
 						text: this.$t('page-updated')
 					});
 				}).catch(err => {
-					if(err.id == 'uuid-for-name-already-exists'){
+					if(err.id == '4650348e-301c-499a-83c9-6aa988c66bc1'){
 						this.$root.dialog({
 							type: 'error',
 							text: this.$t('name-already-exists')
@@ -263,7 +263,7 @@ export default Vue.extend({
 					});
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
 				}).catch(err => {
-					if(err.id == 'uuid-for-name-already-exists'){
+					if(err.id == '4650348e-301c-499a-83c9-6aa988c66bc1'){
 						this.$root.dialog({
 							type: 'error',
 							text: this.$t('name-already-exists')
