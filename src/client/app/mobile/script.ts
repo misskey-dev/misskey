@@ -140,6 +140,7 @@ init((launch, os) => {
 		]),
 			{ path: '/signup', name: 'signup', component: MkSignup },
 			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
+			{ path: '/i/settings/:page', redirect: '/i/settings' },
 			{ path: '/i/favorites', name: 'favorites', component: UI, props: route => ({ component: () => import('../common/views/pages/favorites.vue').then(m => m.default), platform: 'mobile' }) },
 			{ path: '/i/pages', name: 'pages', component: UI, props: route => ({ component: () => import('../common/views/pages/pages.vue').then(m => m.default) }) },
 			{ path: '/i/lists', name: 'user-lists', component: UI, props: route => ({ component: () => import('../common/views/pages/user-lists.vue').then(m => m.default) }) },
