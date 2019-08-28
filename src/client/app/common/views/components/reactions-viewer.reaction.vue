@@ -49,8 +49,8 @@ export default Vue.extend({
 		if (!this.isInitial) this.anime();
 	},
 	watch: {
-		count() {
-			this.anime();
+		count(newCount, oldCount) {
+			if (oldCount < newCount) this.anime();
 		},
 	},
 	methods: {
