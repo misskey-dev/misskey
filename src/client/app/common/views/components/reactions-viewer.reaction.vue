@@ -82,6 +82,8 @@ export default Vue.extend({
 			if (document.hidden) return;
 
 			this.$nextTick(() => {
+				if (this.$refs.icon == null) return;
+
 				const rect = this.$refs.icon.$el.getBoundingClientRect();
 
 				const x = rect.left;
