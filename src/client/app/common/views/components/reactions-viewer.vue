@@ -14,7 +14,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			initialReactions: null as unknown as Set<string>
+			initialReactions: new Set(Object.keys(this.note.reactions))
 		};
 	},
 	props: {
@@ -22,9 +22,6 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
-	},
-	created() {
-		this.initialReactions = new Set(Object.keys(this.reactions));
 	},
 	computed: {
 		reactions(): any {
