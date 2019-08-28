@@ -1,17 +1,17 @@
 <template>
 <div class="mk-settings">
 	<div class="nav" :class="{ inWindow }">
-		<router-link to="/i/settings/profile" @click.native="page = 'profile'" active-class="active"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</router-link>
-		<router-link to="/i/settings/appearance" @click.native="page = 'appearance'" active-class="active"><fa icon="palette" fixed-width/>{{ $t('@._settings.appearance') }}</router-link>
-		<router-link to="/i/settings/behavior" @click.native="page = 'behavior'" active-class="active"><fa icon="desktop" fixed-width/>{{ $t('@._settings.behavior') }}</router-link>
-		<router-link to="/i/settings/notification" @click.native="page = 'notification'" active-class="active"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('@._settings.notification') }}</router-link>
-		<router-link to="/i/settings/drive" @click.native="page = 'drive'" active-class="active"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</router-link>
-		<router-link to="/i/settings/hashtags" @click.native="page = 'hashtags'" active-class="active"><fa icon="hashtag" fixed-width/>{{ $t('@._settings.tags') }}</router-link>
-		<router-link to="/i/settings/muteAndBlock" @click.native="page = 'muteAndBlock'" active-class="active"><fa icon="ban" fixed-width/>{{ $t('@._settings.mute-and-block') }}</router-link>
-		<router-link to="/i/settings/apps" @click.native="page = 'apps'" active-class="active"><fa icon="puzzle-piece" fixed-width/>{{ $t('@._settings.apps') }}</router-link>
-		<router-link to="/i/settings/security" @click.native="page = 'security'" active-class="active"><fa icon="unlock-alt" fixed-width/>{{ $t('@._settings.security') }}</router-link>
-		<router-link to="/i/settings/api" @click.native="page = 'api'" active-class="active"><fa icon="key" fixed-width/>API</router-link>
-		<router-link to="/i/settings/other" @click.native="page = 'other'" active-class="active"><fa icon="cogs" fixed-width/>{{ $t('@._settings.other') }}</router-link>
+		<router-link to="/i/settings/profile"  :class="{ active: page == 'profile' }"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</router-link>
+		<router-link to="/i/settings/appearance" active-class="active"><fa icon="palette" fixed-width/>{{ $t('@._settings.appearance') }}</router-link>
+		<router-link to="/i/settings/behavior" active-class="active"><fa icon="desktop" fixed-width/>{{ $t('@._settings.behavior') }}</router-link>
+		<router-link to="/i/settings/notification" active-class="active"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('@._settings.notification') }}</router-link>
+		<router-link to="/i/settings/drive" active-class="active"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</router-link>
+		<router-link to="/i/settings/hashtags" active-class="active"><fa icon="hashtag" fixed-width/>{{ $t('@._settings.tags') }}</router-link>
+		<router-link to="/i/settings/muteAndBlock" active-class="active"><fa icon="ban" fixed-width/>{{ $t('@._settings.mute-and-block') }}</router-link>
+		<router-link to="/i/settings/apps" active-class="active"><fa icon="puzzle-piece" fixed-width/>{{ $t('@._settings.apps') }}</router-link>
+		<router-link to="/i/settings/security" active-class="active"><fa icon="unlock-alt" fixed-width/>{{ $t('@._settings.security') }}</router-link>
+		<router-link to="/i/settings/api" active-class="active"><fa icon="key" fixed-width/>API</router-link>
+		<router-link to="/i/settings/other" active-class="active"><fa icon="cogs" fixed-width/>{{ $t('@._settings.other') }}</router-link>
 	</div>
 	<div class="pages">
 		<x-settings :page="page"/>
@@ -30,21 +30,17 @@ export default Vue.extend({
 		XSettings,
 	},
 	props: {
-		initialPage: {
+		page: {
 			type: String,
-			required: false
+			required: false,
+			default: 'profile'
 		},
 		inWindow: {
 			type: Boolean,
 			required: false,
 			default: true
 		}
-	},
-	data() {
-		return {
-			page: this.initialPage || 'profile',
-		};
-	},
+	}
 });
 </script>
 

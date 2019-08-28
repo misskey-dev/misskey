@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<main>
-		<x-settings :in-window="false" :initial-page="$route.params.page" />
+		<x-settings :in-window="false" :page="$route.params.page" />
 	</main>
 </mk-ui>
 </template>
