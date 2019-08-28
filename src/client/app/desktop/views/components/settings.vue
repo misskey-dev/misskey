@@ -1,7 +1,7 @@
 <template>
 <div class="mk-settings">
 	<div class="nav" :class="{ inWindow }">
-		<router-link to="/i/settings/profile" :class="{ active: page == 'profile' }"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</router-link>
+		<router-link to="/i/settings/profile" active-class="active"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</router-link>
 		<router-link to="/i/settings/appearance" active-class="active"><fa icon="palette" fixed-width/>{{ $t('@._settings.appearance') }}</router-link>
 		<router-link to="/i/settings/behavior" active-class="active"><fa icon="desktop" fixed-width/>{{ $t('@._settings.behavior') }}</router-link>
 		<router-link to="/i/settings/notification" active-class="active"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('@._settings.notification') }}</router-link>
@@ -32,8 +32,7 @@ export default Vue.extend({
 	props: {
 		page: {
 			type: String,
-			required: false,
-			default: 'profile'
+			required: true,
 		},
 		inWindow: {
 			type: Boolean,
