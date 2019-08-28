@@ -1818,6 +1818,7 @@ pages:
   read-page: "Viewing the source"
   page-created: "Created the page!"
   page-updated: "Updated the page"
+  name-already-exists: "The specified page name already exists"
   are-you-sure-delete: "Do you want to delete this page?"
   page-deleted: "The page has been deleted"
   edit-this-page: "Edit this page"
