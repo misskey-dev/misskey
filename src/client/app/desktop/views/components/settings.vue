@@ -40,7 +40,7 @@ export default Vue.extend({
 			required: false,
 			default: true
 		}
-	}
+	},
 });
 </script>
 
