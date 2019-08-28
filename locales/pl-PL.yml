@@ -101,6 +101,7 @@ common:
     specified-recipient: "Adresat"
     add-visible-user: "Dodaj użytkownika"
     username-prompt: "Wprowadź nazwę użytkownika"
+    enter-file-name: "Wprowadź nazwę pliku"
   weekday-short:
     sunday: "N"
     monday: "Pn"
