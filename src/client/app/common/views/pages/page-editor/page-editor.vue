@@ -222,7 +222,7 @@ export default Vue.extend({
 		save() {
 			const options = {
 				title: this.title.trim(),
-				name: this.name.trim(),
+				name: this.name == '' ? this.currentName : this.name.trim(),
 				summary: this.summary,
 				font: this.font,
 				hideTitleWhenPinned: this.hideTitleWhenPinned,
