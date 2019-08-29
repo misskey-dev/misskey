@@ -1818,6 +1818,7 @@ pages:
   read-page: "소스 표시중"
   page-created: "페이지를 만들었습니다"
   page-updated: "페이지를 수정했습니다"
+  name-already-exists: "지정한 페이지 URL은 이미 존재합니다"
   are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
   page-deleted: "페이지가 삭제되었습니다"
   edit-this-page: "이 페이지를 편집"
