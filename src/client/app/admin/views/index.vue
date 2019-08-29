@@ -243,7 +243,6 @@ export default Vue.extend({
 				display block
 				padding 10px 16px
 				margin 0
-				cursor pointer
 				user-select none
 				color #eee
 				transition margin-left 0.2s ease
