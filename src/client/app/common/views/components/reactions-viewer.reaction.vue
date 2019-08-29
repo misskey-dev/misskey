@@ -88,24 +88,29 @@ export default Vue.extend({
 			}
 		},
 		onMouseover() {
-			this.detailsTimeoutId = setTimeout(() => {
-				this.$root.api('notes/reactions', {
-					noteId: this.note.id
-				}).then((reactions: any[]) => {
-					const users = reactions.filter(x => x.type === this.reaction)
-						.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-						.map(x => x.user.username);
-
-					this.details = this.$root.new(XDetails, {
-						reaction: this.reaction,
-						users,
-						source: this.$refs.reaction
-					});
-				});
-			}, 300);
+			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
 		},
 		onMouseleave() {
 			clearTimeout(this.detailsTimeoutId);
+			this.closeDetails();
+		},
+		openDetails() {
+			this.$root.api('notes/reactions', {
+				noteId: this.note.id
+			}).then((reactions: any[]) => {
+				const users = reactions.filter(x => x.type === this.reaction)
+					.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+					.map(x => x.user.username);
+
+				this.closeDetails();
+				this.details = this.$root.new(XDetails, {
+					reaction: this.reaction,
+					users,
+					source: this.$refs.reaction
+				});
+			});
+		},
+		closeDetails() {
 			if (this.details != null) {
 				this.details.close();
 				this.details = null;
