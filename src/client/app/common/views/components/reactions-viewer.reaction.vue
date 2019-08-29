@@ -61,6 +61,7 @@ export default Vue.extend({
 	watch: {
 		count(newCount, oldCount) {
 			if (oldCount < newCount) this.anime();
+			if (this.details != null) this.openDetails();
 		},
 	},
 	methods: {
