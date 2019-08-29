@@ -45,6 +45,11 @@ export type Source = {
 
 	deliverJobConcurrency?: number;
 	inboxJobConcurrency?: number;
+
+	syslog: {
+		host: string;
+		port: number;
+	};
 };
 
 /**

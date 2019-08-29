@@ -219,6 +219,7 @@
 		"stylus": "0.54.5",
 		"stylus-loader": "3.0.2",
 		"summaly": "2.3.0",
+		"syslog-pro": "1.0.0",
 		"systeminformation": "4.14.4",
 		"syuilo-password-strength": "0.0.1",
 		"terser-webpack-plugin": "1.4.1",
