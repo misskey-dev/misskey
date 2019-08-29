@@ -18,7 +18,7 @@
 import Vue from 'vue';
 import Icon from './reaction-icon.vue';
 import anime from 'animejs';
-import XDetail from './reactions-viewer.details.vue';
+import XDetails from './reactions-viewer.details.vue';
 
 export default Vue.extend({
 	props: {
@@ -46,8 +46,8 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			detail: null,
-			detailTimeoutId: null
+			details: null,
+			detailsTimeoutId: null
 		};
 	},
 	computed: {
@@ -88,7 +88,7 @@ export default Vue.extend({
 			}
 		},
 		onMouseover() {
-			this.detailTimeoutId = setTimeout(() => {
+			this.detailsTimeoutId = setTimeout(() => {
 				this.$root.api('notes/reactions', {
 					noteId: this.note.id
 				}).then((reactions: any[]) => {
@@ -96,7 +96,7 @@ export default Vue.extend({
 						.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
 						.map(x => x.user.username);
 
-					this.detail = this.$root.new(XDetail, {
+					this.details = this.$root.new(XDetails, {
 						reaction: this.reaction,
 						users,
 						source: this.$refs.reaction
@@ -105,10 +105,10 @@ export default Vue.extend({
 			}, 300);
 		},
 		onMouseleave() {
-			clearTimeout(this.detailTimeoutId);
-			if (this.detail != null) {
-				this.detail.close();
-				this.detail = null;
+			clearTimeout(this.detailsTimeoutId);
+			if (this.details != null) {
+				this.details.close();
+				this.details = null;
 			}
 		},
 		anime() {
