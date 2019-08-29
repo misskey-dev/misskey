@@ -1,13 +1,15 @@
 <template>
 	<transition name="zoom-in-top">
 		<div class="buebdbiu" ref="popover" v-if="show">
-			<span v-if="users.length == 1">{{ users[0] }}</span>
-			<span v-if="users.length == 2">{{ users[0] }} and {{ users[1] }}</span>
-			<span v-if="3 <= users.length && users.length <= 10">{{ users.slice(0, users.length - 1).join(', ') }}, and {{ users[users.length - 1] }}</span>
-			<span v-if="11 <= users.length">{{ users.slice(0, 10).join(', ') }}, and {{ users.length - 10 }} more</span>
-			<span> reacted with </span>
-			<mk-reaction-icon :reaction="reaction" ref="icon"/>
-			<span>.</span>
+			<i18n path="few-users" v-if="users.length <= 10">
+				<span slot="users">{{ users.join(', ') }}</span>
+				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
+			</i18n>
+			<i18n path="many-users" v-if="10 < users.length">
+				<span slot="users">{{ users.slice(0, 10).join(', ') }}</span>
+				<span slot="ommited">{{ users.length - 10 }}</span>
+				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
+			</i18n>
 		</div>
 	</transition>
 </template>
