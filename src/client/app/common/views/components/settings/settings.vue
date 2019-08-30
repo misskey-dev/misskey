@@ -50,6 +50,15 @@
 				<ui-switch v-model="enableMobileQuickNotificationView">{{ $t('@._settings.enable-quick-notification-view') }}</ui-switch>
 			</section>
 			<section>
+				<header>Instance Ticker</header>
+				<p><small>Powered by <a href="https://wee.jp/">#InstanceTicker</a></small></p>
+				<ui-select v-model="tickerMode">
+					<option value="0">{{ $t('@._settings.instance-ticker-0') }}</option>
+					<option value="1">{{ $t('@._settings.instance-ticker-1') }}</option>
+					<option value="2">{{ $t('@._settings.instance-ticker-2') }}</option>
+				</ui-select>
+			</section>
+			<section>
 				<header>{{ $t('@._settings.line-width') }}</header>
 				<ui-radio v-model="lineWidth" :value="0.5">{{ $t('@._settings.line-width-thin') }}</ui-radio>
 				<ui-radio v-model="lineWidth" :value="1">{{ $t('@._settings.line-width-normal') }}</ui-radio>
@@ -353,8 +362,14 @@ export default Vue.extend({
 			pastedFileName : this.$store.state.settings.pastedFileName,
 			latestVersion: undefined,
 			checkingForUpdate: false,
+			tickerMode: localStorage.getItem('tickerMode') || '0',
 			faSave
 		};
+	},
+	watch: {
+		tickerMode(val) {
+			localStorage.setItem('tickerMode', val);
+		},
 	},
 	computed: {
 		useOsDefaultEmojis: {

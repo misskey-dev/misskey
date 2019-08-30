@@ -113,7 +113,7 @@
 	// 0 or undefined => don't use InstanceTicker
 	// 1 => InstanceTicker Type-0
 	// 2 => InstanceTicker Type-1
-	let tickerMode = localStorage.getItem('tickerEnable');
+	let tickerMode = localStorage.getItem('tickerMode');
 
 	if (tickerMode) {
 		const link = document.createElement('link');
