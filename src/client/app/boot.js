@@ -1,5 +1,5 @@
 /**
- * MISSKEY BOOT LOADER
+ * GROUNDPOLIS BOOT LOADER
  * (ENTRY POINT)
  */
 
@@ -107,6 +107,21 @@
 			'maximum-scale=1,' +
 			'user-scalable=no');
 		head.appendChild(meta);
+	}
+
+	// Load InstanceTicker
+	// 0 or undefined => don't use InstanceTicker
+	// 1 => InstanceTicker Type-0
+	// 2 => InstanceTicker Type-1
+	let tickerMode = localStorage.getItem('tickerEnable');
+
+	if (tickerMode) {
+		const link = document.createElement('link');
+		const type = tickerMode == 1 ? 0 : 1;
+		link.href = `https://wee.jp/csskey/${type}.css`;
+		link.type = 'text/css';
+		link.rel = 'stylesheet';
+		head.appendChild(link);
 	}
 
 	// Switch desktop or mobile version
