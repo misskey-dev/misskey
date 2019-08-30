@@ -42,7 +42,8 @@
 			</label>
 		</section>
 		<section>
-			<ui-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+			<ui-button :primary="changed" @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</ui-button>
+			<ui-button @click="clear()"><fa :icon="faBroom"/> {{ $t('clear') }}</ui-button>
 		</section>
 	</div>
 </div>
@@ -55,7 +56,7 @@ import { Room } from '../../../scripts/room/room';
 import parseAcct from '../../../../../../misc/acct/parse';
 import XPreview from './preview.vue';
 const storeItems = require('../../../scripts/room/furnitures.json5');
-import { faBoxOpen, faUndo, faArrowsAlt, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faUndo, faArrowsAlt, faBan, faBroom } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { query as urlQuery } from '../../../../../../prelude/url';
 
@@ -86,11 +87,14 @@ export default Vue.extend({
 			isTranslateMode: false,
 			isRotateMode: false,
 			isMyRoom: false,
-			faBoxOpen, faSave, faTrashAlt, faUndo, faArrowsAlt, faBan,
+			changed: false,
+			faBoxOpen, faSave, faTrashAlt, faUndo, faArrowsAlt, faBan, faBroom,
 		};
 	},
 
 	async mounted() {
+		window.addEventListener('beforeunload', this.beforeunload);
+
 		const user = await this.$root.api('users/show', {
 			...parseAcct(this.acct)
 		});
@@ -124,11 +128,37 @@ export default Vue.extend({
 		});
 	},
 
+	beforeRouteLeave(to, from, next) {
+		if (this.changed) {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('leave-confirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) {
+					next(false);
+				} else {
+					next();
+				}
+			});
+		} else {
+			next();
+		}
+	},
+
 	beforeDestroy() {
 		room.destroy();
+		window.removeEventListener('beforeunload', this.beforeunload);
 	},
 
 	methods: {
+		beforeunload(e: BeforeUnloadEvent) {
+			if (this.changed) {
+				e.preventDefault();
+				e.returnValue = '';
+			}
+		},
+
 		async add() {
 			const { canceled, result: id } = await this.$root.dialog({
 				type: null,
@@ -142,17 +172,42 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 			room.addFurniture(id);
+			this.changed = true;
 		},
 
 		remove() {
 			this.isTranslateMode = false;
 			this.isRotateMode = false;
 			room.removeFurniture();
+			this.changed = true;
 		},
 
 		save() {
 			this.$root.api('room/update', {
 				room: room.getRoomInfo()
+			}).then(() => {
+				this.changed = false;
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('saved')
+				});
+			}).catch((e: any) => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.message
+				});
+			});
+		},
+
+		clear() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('clear-confirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+				room.removeAllFurnitures();
+				this.changed = true;
 			});
 		},
 
@@ -162,22 +217,26 @@ export default Vue.extend({
 			}).then(file => {
 				room.updateProp(key, `/proxy/?${urlQuery({ url: file.thumbnailUrl })}`);
 				this.$refs.preview.selected(room.getSelectedObject());
+				this.changed = true;
 			});
 		},
 
 		updateColor(key, ev) {
 			room.updateProp(key, ev.target.value);
 			this.$refs.preview.selected(room.getSelectedObject());
+			this.changed = true;
 		},
 
 		updateCarpetColor(ev) {
 			room.updateCarpetColor(ev.target.value);
 			this.carpetColor = ev.target.value;
+			this.changed = true;
 		},
 
 		updateRoomType(type) {
 			room.changeRoomType(type);
 			this.roomType = type;
+			this.changed = true;
 		},
 
 		translate() {
@@ -188,6 +247,7 @@ export default Vue.extend({
 				this.isTranslateMode = true;
 				room.enterTransformMode('translate');
 			}
+			this.changed = true;
 		},
 
 		rotate() {
@@ -198,12 +258,14 @@ export default Vue.extend({
 				this.isRotateMode = true;
 				room.enterTransformMode('rotate');
 			}
+			this.changed = true;
 		},
 
 		exit() {
 			this.isTranslateMode = false;
 			this.isRotateMode = false;
 			room.exitTransformMode();
+			this.changed = true;
 		}
 	}
 });

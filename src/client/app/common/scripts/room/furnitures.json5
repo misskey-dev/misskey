@@ -279,7 +279,15 @@
 	},
 	{
 		id: "pinguin",
-		place: "floor"
+		place: "floor",
+		props: {
+			body: 'color',
+			belly: 'color'
+		},
+		color: {
+			Body: 'body',
+			Belly: 'belly',
+		}
 	},
 	{
 		id: "rubik-cube",
@@ -351,4 +359,39 @@
 			Bin: 'color'
 		}
 	},
+	{
+		id: "cup-noodle",
+		place: "floor"
+	},
+	{
+		id: "holo-display",
+		place: "floor",
+		props: {
+			image: 'image'
+		},
+		texture: {
+			Image_Front: {
+				prop: 'image',
+				uv: {
+					x: 0,
+					y: 0,
+					width: 1024,
+					height: 1024,
+				},
+			},
+			Image_Back: {
+				prop: 'image',
+				uv: {
+					x: 0,
+					y: 0,
+					width: 1024,
+					height: 1024,
+				},
+			},
+		},
+	},
+	{
+		id: 'energy-drink',
+		place: "floor",
+	}
 ]
