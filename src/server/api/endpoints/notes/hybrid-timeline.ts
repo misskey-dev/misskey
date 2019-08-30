@@ -130,59 +130,35 @@ export default define(meta, async (ps, user) => {
 	generateVisibilityQuery(query, user);
 	generateMuteQuery(query, user);
 
-	/* TODO
-	// MongoDBではトップレベルで否定ができないため、De Morganの法則を利用してクエリします。
-	// つまり、「『自分の投稿かつRenote』ではない」を「『自分の投稿ではない』または『Renoteではない』」と表現します。
-	// for details: https://en.wikipedia.org/wiki/De_Morgan%27s_laws
-
 	if (ps.includeMyRenotes === false) {
-		query.$and.push({
-			$or: [{
-				userId: { $ne: user.id }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
+		query.andWhere(new Brackets(qb => {
+			qb.orWhere('note.userId != :meId', { meId: user.id });
+			qb.orWhere('note.renoteId IS NULL');
+			qb.orWhere('note.text IS NOT NULL');
+			qb.orWhere('note.fileIds != \'{}\'');
+			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+		}));
 	}
 
 	if (ps.includeRenotedMyNotes === false) {
-		query.$and.push({
-			$or: [{
-				'_renote.userId': { $ne: user.id }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
+		query.andWhere(new Brackets(qb => {
+			qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
+			qb.orWhere('note.renoteId IS NULL');
+			qb.orWhere('note.text IS NOT NULL');
+			qb.orWhere('note.fileIds != \'{}\'');
+			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+		}));
 	}
 
 	if (ps.includeLocalRenotes === false) {
-		query.$and.push({
-			$or: [{
-				'_renote.user.host': { $ne: null }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
+		query.andWhere(new Brackets(qb => {
+			qb.orWhere('note.renoteUserHost IS NOT NULL');
+			qb.orWhere('note.renoteId IS NULL');
+			qb.orWhere('note.text IS NOT NULL');
+			qb.orWhere('note.fileIds != \'{}\'');
+			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+		}));
 	}
-	*/
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

@@ -227,13 +227,37 @@ export default Vue.extend({
 			margin 0 0 8px 0
 			color var(--primary)
 
-		> .visibleUsers
-			margin-bottom 8px
-			font-size 14px
+			> button
+				padding 4px 8px
+				color var(--primaryAlpha04)
 
-			> span
-				margin-right 16px
-				color var(--primary)
+				&:hover
+					color var(--primaryAlpha06)
+
+				&:active
+					color var(--primaryDarken30)
+
+		> .to-specified
+			margin 0 0 8px 0
+			color var(--primary)
+
+			> .visibleUsers
+				display inline
+				top -1px
+				font-size 14px
+
+				> span
+					margin-left 14px
+
+					> button
+						padding 4px 8px
+						color var(--primaryAlpha04)
+
+						&:hover
+							color var(--primaryAlpha06)
+
+						&:active
+							color var(--primaryDarken30)
 
 		> .local-only
 			margin 0 0 8px 0
