@@ -11,7 +11,8 @@
 	:title="image.name"
 	@click.prevent="onClick"
 >
-	<div v-if="image.type === 'image/gif'">GIF</div>
+	<div class="gif" v-if="image.type === 'image/gif'">GIF</div>
+	<div class="nsfwclose" v-if="image.isSensitive && !hide" @click.stop.prevent="hide = true"><fa icon="times"/></div>
 </a>
 </template>
 
@@ -78,7 +79,7 @@ export default Vue.extend({
 	background-size contain
 	background-repeat no-repeat
 
-	> div
+	> .gif
 		background-color var(--text)
 		border-radius 6px
 		color var(--secondary)
@@ -91,6 +92,25 @@ export default Vue.extend({
 		text-align center
 		top 12px
 		pointer-events none
+
+	> .nsfwclose
+		background-color var(--text)
+		border-radius 12px
+		color var(--secondary)
+		display inline-block
+		font-size 14px
+		font-weight bold
+		right 24px
+		top 12px
+		width 24px
+		height 24px
+		display flex
+		align-items center
+		justify-content center
+		opacity 0.5
+		text-align center
+		position absolute
+		cursor pointer
 
 .qjewsnkgzzxlxtzncydssfbgjibiehcy
 	display flex
