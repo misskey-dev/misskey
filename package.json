@@ -19,6 +19,7 @@
 		"migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
 		"migrateandstart": "npm run migrate && npm run start",
 		"build": "webpack && gulp build",
+		"bs": "npm run build && npm run start",
 		"webpack": "webpack",
 		"watch": "webpack --watch",
 		"gulp": "gulp build",
