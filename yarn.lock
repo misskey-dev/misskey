@@ -4401,6 +4401,11 @@ fined@^1.0.1:
     object.pick "^1.2.0"
     parse-filepath "^1.0.1"
 
+fireworks-canvas@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/fireworks-canvas/-/fireworks-canvas-2.3.2.tgz#d2f5851d17a021e9ae738bcc1d984d010a391eef"
+  integrity sha512-uAjea1ij8Mu5M49ob/juKnyD88v9FhuSbv9j4Wo4s5dL9WFLK1D2iDGTTVNO6EgW//PwFTx2oEiYkJUUVBVkLw==
+
 flagged-respawn@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/flagged-respawn/-/flagged-respawn-1.0.1.tgz#e7de6f1279ddd9ca9aac8a5971d618606b3aab41"
