@@ -83,6 +83,7 @@ common:
   home: "クラシック"
   deck: "デッキ"
   timeline: "タイムライン"
+  back-to-top: "トップへもどる"
   explore: "みつける"
   following: "フォローちゅう"
   followers: "フォロワー"
@@ -1266,6 +1267,7 @@ desktop/views/components/ui.header.account.vue:
 
 desktop/views/components/ui.header.nav.vue:
   game: "ゲーム"
+  app: "アプリ"
 
 desktop/views/components/ui.header.notifications.vue:
   title: "つうち"
@@ -1682,7 +1684,7 @@ desktop/views/pages/welcome.vue:
   info: "じょうほう"
 
 desktop/views/pages/drive.vue:
-  title: "グランポリス Drive"
+  title: "グランポリスドライブ"
 
 desktop/views/pages/note.vue:
   prev: "まえのとうこう"
@@ -1854,6 +1856,7 @@ mobile/views/components/ui.nav.vue:
   user-groups: "グループ"
   widgets: "ウィジェット"
   game: "ゲーム"
+  app: "アプリ"
   admin: "かんり"
   about: "グランポリスについて"
 

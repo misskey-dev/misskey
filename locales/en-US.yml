@@ -81,6 +81,7 @@ common:
   home: "Classic"
   deck: "Deck"
   timeline: "Timeline"
+  back-to-top: "Back to Top"
   explore: "Explore"
   following: "Following"
   followers: "Followers"
@@ -1164,6 +1165,7 @@ desktop/views/components/ui.header.account.vue:
   room: "Room"
 desktop/views/components/ui.header.nav.vue:
   game: "Games"
+  app: "Apps"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
 desktop/views/components/ui.header.post.vue:
@@ -1698,6 +1700,7 @@ mobile/views/components/ui.nav.vue:
   user-groups: "Groups"
   widgets: "Widgets"
   game: "Games"
+  app: "Apps"
   admin: "Admin"
   about: "About Groundpolis"
 mobile/views/pages/drive.vue:
