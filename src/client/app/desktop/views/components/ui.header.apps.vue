@@ -77,7 +77,7 @@ export default Vue.extend({
 				{
 					text: this.$t('customize'),
 					icon: faSlidersH,
-					callback: () => window.location.href('/?customize'),
+					callback: () => this.customize(),
 					badge: () => false,
 				},
 				{
@@ -105,6 +105,9 @@ export default Vue.extend({
 	methods: {
 		toggle() {
 			this.isOpen ? this.close() : this.open();
+		},
+		customize() {
+			location.href = '/?customize';
 		},
 		open() {
 			this.isOpen = true;
