@@ -220,7 +220,7 @@ export default Vue.extend({
 
 	methods: {
 		save() {
-			if(this.name == ''){
+			if (this.name.length == 0) {
 				this.name = this.currentName;
 			}
 
