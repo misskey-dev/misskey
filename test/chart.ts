@@ -362,8 +362,8 @@ describe('Chart', () => {
 			assert.deepStrictEqual(chartHours, {
 				foo: {
 					dec: [0, 0, 0],
-					inc: [1, 0, 0],
-					total: [1, 100, 0]
+					inc: [0, 1, 0],
+					total: [100, 1, 0]
 				},
 			});
 
