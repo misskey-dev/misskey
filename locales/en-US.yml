@@ -393,6 +393,7 @@ common/views/pages/explore.vue:
   users-info: "Currently, {users} users are registered here"
 common/views/components/reactions-viewer.details.vue:
   few-users: "{users} reacted with {reaction}"
+  many-users: "{users}, and {omitted} more reacted with {reaction}"
 common/views/components/url-preview.vue:
   enable-player: "Enable playback"
   disable-player: "Close the player"
