@@ -346,5 +346,34 @@ describe('Chart', () => {
 				},
 			});
 		}));
+
+		it('Can resync (2)', async(async () => {
+			await testChart.increment();
+
+			clock.tick('01:00:00');
+
+			testChart.total = 100;
+
+			await testChart.resync();
+
+			const chartHours = await testChart.getChart('hour', 3);
+			const chartDays = await testChart.getChart('day', 3);
+
+			assert.deepStrictEqual(chartHours, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [1, 0, 0],
+					total: [1, 100, 0]
+				},
+			});
+
+			assert.deepStrictEqual(chartDays, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [1, 0, 0],
+					total: [100, 0, 0]
+				},
+			});
+		}));
 	});
 });
