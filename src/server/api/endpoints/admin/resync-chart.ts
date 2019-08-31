@@ -1,5 +1,6 @@
 import define from '../../define';
 import { driveChart, notesChart, usersChart, instanceChart } from '../../../../services/chart';
+import { insertModerationLog } from '../../../../services/insert-moderation-log';
 
 export const meta = {
 	tags: ['admin'],
@@ -8,7 +9,9 @@ export const meta = {
 	requireModerator: true,
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
+	insertModerationLog(me, 'chartResync');
+
 	driveChart.resync();
 	notesChart.resync();
 	usersChart.resync();
