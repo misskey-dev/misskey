@@ -16,4 +16,6 @@ export default define(meta, async (ps, me) => {
 	notesChart.resync();
 	usersChart.resync();
 	instanceChart.resync();
+
+	// TODO: ユーザーごとのチャートもキューに入れて更新する
 });
