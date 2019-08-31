@@ -177,14 +177,14 @@ common:
 
   note-visibility:
     public: "こうかい"
-    home: "ホーム"
+    home: "みしゅうさい"
     home-desc: "ホームタイムラインにのみこうかい"
     followers: "フォロワー"
     followers-desc: "じぶんのフォロワーにのみこうかい"
     specified: "ダイレクト"
     specified-desc: "していしたユーザーにのみこうかい"
     local-public: "こうかい (ローカルのみ)"
-    local-home: "ホーム (ローカルのみ)"
+    local-home: "みしゅうさい (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
 
   note-placeholders:
@@ -759,7 +759,7 @@ common/views/components/uploader.vue:
 
 common/views/components/visibility-chooser.vue:
   public: "こうかい"
-  home: "ホーム"
+  home: "みしゅうさい"
   home-desc: "ホームタイムラインにのみこうかい"
   followers: "フォロワー"
   followers-desc: "じぶんのフォロワーにのみこうかい"
@@ -767,7 +767,7 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "していしたユーザーにのみこうかい"
   local-public: "こうかい (ローカルのみ)"
   local-public-desc: "リモートへはこうかいしない"
-  local-home: "ホーム (ローカルのみ)"
+  local-home: "みしゅうさい (ローカルのみ)"
   local-followers: "フォロワー (ローカルのみ)"
 
 common/views/components/trends.vue:

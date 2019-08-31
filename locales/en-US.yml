@@ -167,14 +167,14 @@ common:
     pudding: "Pudding"
   note-visibility:
     public: "Public"
-    home: "Home"
+    home: "Unlisted"
     home-desc: "Post to the home timeline only"
     followers: "Followers"
     followers-desc: "Post to followers only"
     specified: "Direct"
     specified-desc: "Post to specified users only"
     local-public: "Public (Only local)"
-    local-home: "Home (Only local)"
+    local-home: "Unlisted (Only local)"
     local-followers: "Followers (Only local)"
   note-placeholders:
     a: "What are you doing?"
@@ -720,7 +720,7 @@ common/views/components/uploader.vue:
   waiting: "Waiting"
 common/views/components/visibility-chooser.vue:
   public: "Public"
-  home: "Home"
+  home: "Unlisted"
   home-desc: "Post to Home only"
   followers: "Followers"
   followers-desc: "Post to Followers only"
@@ -728,7 +728,7 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "Post to specified users only"
   local-public: "Local (Public)"
   local-public-desc: "Do not publish to remote"
-  local-home: "Home (Only local)"
+  local-home: "Unlisted (Only local)"
   local-followers: "Followers (Only local)"
 common/views/components/trends.vue:
   count: "{} users mentioned"

@@ -177,14 +177,14 @@ common:
 
   note-visibility:
     public: "公開"
-    home: "ホーム"
+    home: "未収載"
     home-desc: "ホームタイムラインにのみ公開"
     followers: "フォロワー"
     followers-desc: "自分のフォロワーにのみ公開"
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
     local-public: "公開 (ローカルのみ)"
-    local-home: "ホーム (ローカルのみ)"
+    local-home: "未収載 (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
 
   note-placeholders:
@@ -759,7 +759,7 @@ common/views/components/uploader.vue:
 
 common/views/components/visibility-chooser.vue:
   public: "公開"
-  home: "ホーム"
+  home: "未収載"
   home-desc: "ホームタイムラインにのみ公開"
   followers: "フォロワー"
   followers-desc: "自分のフォロワーにのみ公開"
@@ -767,7 +767,7 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "指定したユーザーにのみ公開"
   local-public: "公開 (ローカルのみ)"
   local-public-desc: "リモートへは公開しない"
-  local-home: "ホーム (ローカルのみ)"
+  local-home: "未収載 (ローカルのみ)"
   local-followers: "フォロワー (ローカルのみ)"
 
 common/views/components/trends.vue:
