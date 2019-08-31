@@ -391,6 +391,9 @@ common/views/pages/explore.vue:
   federated: "연합"
   explore: "{host}을(를) 탐색"
   users-info: "현재 {users} 사용자가 등록되어 있습니다"
+common/views/components/reactions-viewer.details.vue:
+  few-users: "{users}님이 {reaction} 리액션"
+  many-users: "{users}님 외 {omitted}명이 {reaction} 리액션"
 common/views/components/url-preview.vue:
   enable-player: "플레이어 열기"
   disable-player: "플레이어 닫기"
