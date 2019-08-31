@@ -1285,7 +1285,17 @@ desktop/views/components/ui.header.account.vue:
 
 desktop/views/components/ui.header.nav.vue:
   game: "ゲーム"
+
+desktop/views/components/ui.header.apps.vue:
   app: "アプリ"
+  talk: "トーク"
+  drive: "ドライブ"
+  reversi: "リバーシ"
+  page: "ページ"
+  premium: "Premium"
+  mml: "MML"
+  room: "ルーム"
+  help: "ヘルプ"
 
 desktop/views/components/ui.header.notifications.vue:
   title: "通知"
@@ -1874,7 +1884,6 @@ mobile/views/components/ui.nav.vue:
   user-groups: "グループ"
   widgets: "ウィジェット"
   game: "ゲーム"
-  app: "アプリ"
   admin: "管理"
   about: "Groundpolisについて"
 

@@ -14,13 +14,6 @@
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
-				<li @click="drive">
-					<p>
-						<i><fa icon="cloud" fixed-width/></i>
-						<span>{{ $t('@.drive') }}</span>
-						<i><fa icon="angle-right"/></i>
-					</p>
-				</li>
 				<li>
 					<router-link to="/i/favorites">
 						<i><fa icon="star" fixed-width/></i>
@@ -42,24 +35,10 @@
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>
-				<li>
-					<router-link to="/i/pages">
-						<i><fa :icon="faStickyNote" fixed-width/></i>
-						<span>{{ $t('@.pages') }}</span>
-						<i><fa icon="angle-right"/></i>
-					</router-link>
-				</li>
 				<li v-if="($store.state.i.isLocked || $store.state.i.carefulBot)">
 					<router-link to="/i/follow-requests">
 						<i><fa :icon="['far', 'envelope']" fixed-width/></i>
 						<span>{{ $t('follow-requests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount">{{ $store.state.i.pendingReceivedFollowRequestsCount }}</i></span>
-						<i><fa icon="angle-right"/></i>
-					</router-link>
-				</li>
-				<li>
-					<router-link :to="`/@${ $store.state.i.username }/room`">
-						<i><fa :icon="faDoorOpen" fixed-width/></i>
-						<span>{{ $t('room') }}</span>
 						<i><fa icon="angle-right"/></i>
 					</router-link>
 				</li>

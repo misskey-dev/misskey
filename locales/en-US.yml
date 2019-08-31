@@ -1165,7 +1165,16 @@ desktop/views/components/ui.header.account.vue:
   room: "Room"
 desktop/views/components/ui.header.nav.vue:
   game: "Games"
+desktop/views/components/ui.header.apps.vue:
   app: "Apps"
+  talk: "Talk"
+  drive: "Drive"
+  reversi: "Reversi"
+  premium: "Premium"
+  mml: "MML"
+  page: "Pages"
+  room: "Room"
+  help: "Help"
 desktop/views/components/ui.header.notifications.vue:
   title: "Notifications"
 desktop/views/components/ui.header.post.vue:
@@ -1700,7 +1709,6 @@ mobile/views/components/ui.nav.vue:
   user-groups: "Groups"
   widgets: "Widgets"
   game: "Games"
-  app: "Apps"
   admin: "Admin"
   about: "About Groundpolis"
 mobile/views/pages/drive.vue:

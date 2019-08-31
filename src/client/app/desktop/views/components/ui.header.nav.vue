@@ -10,12 +10,8 @@
 		<li class="explore" :class="{ active: $route.name == 'explore' || $route.name == 'explore-tag' }">
 			<router-link to="/explore"><fa :icon="faHashtag"/><p>{{ $t('@.explore') }}</p></router-link>
 		</li>
-		<li class="game">
-			<a @click="game">
-				<fa icon="th"/>
-				<p>{{ $t('app') }}</p>
-				<template v-if="hasGameInvitations"><fa icon="circle"/></template>
-			</a>
+		<li class="apps">
+			<x-app-menu/>
 		</li>
 	</ul>
 </div>
@@ -24,43 +20,20 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import MkGameWindow from './game-window.vue';
+import XAppMenu from './ui.header.apps.vue';
 import { faNewspaper, faHashtag } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.nav.vue'),
+	components: {
+		XAppMenu,
+	}
 	data() {
 		return {
-			hasGameInvitations: false,
-			connection: null,
 			faNewspaper, faHashtag
 		};
 	},
-	mounted() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection = this.$root.stream.useSharedConnection('main');
-
-			this.connection.on('reversiInvited', this.onReversiInvited);
-			this.connection.on('reversiNoInvites', this.onReversiNoInvites);
-		}
-	},
-	beforeDestroy() {
-		if (this.$store.getters.isSignedIn) {
-			this.connection.dispose();
-		}
-	},
 	methods: {
-		onReversiInvited() {
-			this.hasGameInvitations = true;
-		},
-
-		onReversiNoInvites() {
-			this.hasGameInvitations = false;
-		},
-
-		game() {
-			this.$root.new(MkGameWindow);
-		},
 
 		goToTop() {
 			window.scrollTo({
