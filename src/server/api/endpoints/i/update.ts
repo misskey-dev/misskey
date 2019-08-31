@@ -138,7 +138,14 @@ export const meta = {
 			desc: {
 				'ja-JP': 'ピン留めするページID'
 			}
-		}
+		},
+
+		sex: {
+			validator: $.optional.str.or(['not-known', 'male', 'female', 'not-applicable']),
+			desc: {
+				'ja-JP': '性別'
+			}
+		},
 	},
 
 	errors: {
@@ -189,6 +196,7 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
+	if (ps.sex !== undefined) updates.sex = ps.sex as any;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot == 'boolean') profileUpdates.carefulBot = ps.carefulBot;

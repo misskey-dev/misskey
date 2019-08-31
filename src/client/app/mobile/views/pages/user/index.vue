@@ -42,6 +42,9 @@
 					<p class="birthday" v-if="user.host === null && user.birthday">
 						<fa icon="birthday-cake"/>{{ birthday }} ({{ $t('years-old', { age }) }})
 					</p>
+					<p class="sex" v-if="user.host === null && user.sex && user.sex !== 'not-known'">
+						<fa :icon="sexIcon"/> {{ $t(user.sex) }}
+					</p>
 				</div>
 				<div class="status">
 					<router-link :to="user | userPage()">
@@ -107,6 +110,9 @@ export default Vue.extend({
 	computed: {
 		age(): number {
 			return age(this.user.birthday);
+		},
+		sexIcon() {
+			return this.user.sex === 'male' ? 'mars' : this.user.sex === 'female' ? 'venus' : this.user.sex === 'not-applicable' ? 'genderless' : null;
 		},
 		avator(): string {
 			return this.$store.state.device.disableShowingAnimatedImages

@@ -129,6 +129,9 @@ import {
 	faUndoAlt,
 	faCode,
 	faTh,
+	faMars,
+	faVenus,
+	faGenderless,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -264,6 +267,9 @@ library.add(
 	faUndoAlt,
 	faCode,
 	faTh,
+	faMars,
+	faVenus,
+	faGenderless,
 
 	farBell,
 	farEnvelope,
