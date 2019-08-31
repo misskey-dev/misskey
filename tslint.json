@@ -4,6 +4,11 @@
 		"tslint:recommended",
 		"tslint-sonarts"
 	],
+	"linterOptions": {
+		"exclude": [
+			"./migration/*"
+		]
+	},
 	"jsRules": {},
 	"rules": {
 		"align": false,
