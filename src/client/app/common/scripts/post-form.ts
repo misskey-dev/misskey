@@ -164,7 +164,7 @@ export default (opts) => ({
 		}
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
+		if (this.reply && ['home', 'followers', 'specified', 'notes'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 			if (this.reply.visibility === 'specified') {
 				this.$root.api('users/show', {
