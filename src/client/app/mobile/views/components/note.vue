@@ -224,8 +224,6 @@ export default Vue.extend({
 						overflow-wrap break-word
 						color var(--noteText)
 						font-size calc(1em + var(--fontSize))
-						max-height 256px
-						overflow auto
 
 						> .reply
 							margin-right 8px
