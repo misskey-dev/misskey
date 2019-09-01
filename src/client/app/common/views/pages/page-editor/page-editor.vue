@@ -220,7 +220,6 @@ export default Vue.extend({
 
 	methods: {
 		save() {
-
 			const options = {
 				title: this.title.trim(),
 				name: this.name.trim(),
