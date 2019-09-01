@@ -232,7 +232,7 @@ export default Vue.extend({
 				eyeCatchingImageId: this.eyeCatchingImageId,
 			};
 
-			function onError(err) {
+			const onError = err => {
 				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
 					if (err.info.param == 'name') {
 						this.$root.dialog({
@@ -247,7 +247,7 @@ export default Vue.extend({
 						text: this.$t('name-already-exists')
 					});
 				}
-			}
+			};
 
 			if (this.pageId) {
 				options.pageId = this.pageId;
