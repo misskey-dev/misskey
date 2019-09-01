@@ -79,7 +79,7 @@ export const meta = {
 		nameAlreadyExists: {
 			message: 'Specified name already exists.',
 			code: 'NAME_ALREADY_EXISTS',
-			id: '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab'
+			id: '4650348e-301c-499a-83c9-6aa988c66bc1'
 		}
 	}
 };
