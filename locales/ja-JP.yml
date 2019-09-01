@@ -413,6 +413,10 @@ common/views/pages/explore.vue:
   explore: "{host}を探索"
   users-info: "現在{users}ユーザーが登録されています"
 
+common/views/components/reactions-viewer.details.vue:
+  few-users: "{users}が{reaction}をリアクション"
+  many-users: "{users}と他{omitted}人が{reaction}をリアクション"
+
 common/views/components/url-preview.vue:
   enable-player: "プレイヤーを開く"
   disable-player: "プレイヤーを閉じる"

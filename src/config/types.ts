@@ -34,6 +34,7 @@ export type Source = {
 	autoAdmin?: boolean;
 
 	proxy?: string;
+	proxySmtp?: string;
 
 	accesslog?: string;
 
@@ -45,6 +46,11 @@ export type Source = {
 
 	deliverJobConcurrency?: number;
 	inboxJobConcurrency?: number;
+
+	syslog: {
+		host: string;
+		port: number;
+	};
 };
 
 /**

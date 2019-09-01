@@ -127,6 +127,7 @@ common:
     geolocation-alert: "Vaše zařízení nedalo k dispozici lokaci"
     error: "Chyba"
     enter-username: "Zadejte své uživatelské jméno"
+    specified-recipient: "Pro"
     add-visible-user: "Přidat uživatele"
     username-prompt: "Zadejte své uživatelské jméno"
     enter-file-name: "Upravit název souboru"
@@ -234,7 +235,7 @@ common:
     deck-column-width-wide: "Široké"
     use-shadow: "Používat v rozhraní stíny"
     rounded-corners: "Zakulatit rohy v rozhraní"
-    circle-icons: "Používat kulaté ikony"
+    circle-icons: "Používat kulaté avatary"
     contrasted-acct: "Přidat uživatelskému účtu kontrast"
     wallpaper: "Obrázek na pozadí"
     choose-wallpaper: "Zvolit pozadí"
@@ -383,6 +384,7 @@ common/views/components/games/reversi/reversi.vue:
     cancel: "Zrušit"
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Vzdát se"
+  surrendered: "Vzdaním se"
   looped-map: "Zacyklená mapa"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
@@ -416,6 +418,7 @@ common/views/components/connect-failed.vue:
   title: "Nelze se připojit k serveru"
   description: "Nastal problém s Vaším připojením k internetu, nebo server není dostupný nebo zrovna probíhá údržba. Prosím {zkuste to znova} za pár minut."
   thanks: "Děkujeme že jste použili Misskey."
+  troubleshoot: "Odstranění problémů"
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Poradce při potížích"
   network: "Síťové připojení"
@@ -424,6 +427,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   checking-internet: "Ověřuji připojení k internetu."
   server: "Připojení k serveru"
   checking-server: "Spojuji se se serverem"
+  finding: "Vyšetřování problému"
+  no-network: "Žádné připojení k síti"
   no-network-desc: "Ujistěte se že jste připojeni k Internetu."
   no-internet: "Nejste připojeni k internetu"
   no-internet-desc: "Jste připojen k síti, ale zdá se že stále chybí připojení k Internetu. Prosím zkontrolujte Vaše připojení k Internetu."

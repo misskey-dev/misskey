@@ -5,6 +5,9 @@
 	@click="toggleReaction(reaction)"
 	v-if="count > 0"
 	v-particle="!isMe"
+	@mouseover="onMouseover"
+	@mouseleave="onMouseleave"
+	ref="reaction"
 >
 	<mk-reaction-icon :reaction="reaction" ref="icon"/>
 	<span>{{ count }}</span>
@@ -15,6 +18,7 @@
 import Vue from 'vue';
 import Icon from './reaction-icon.vue';
 import anime from 'animejs';
+import XDetails from './reactions-viewer.details.vue';
 
 export default Vue.extend({
 	props: {
@@ -40,6 +44,12 @@ export default Vue.extend({
 			default: true,
 		},
 	},
+	data() {
+		return {
+			details: null,
+			detailsTimeoutId: null
+		};
+	},
 	computed: {
 		isMe(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
@@ -51,6 +61,7 @@ export default Vue.extend({
 	watch: {
 		count(newCount, oldCount) {
 			if (oldCount < newCount) this.anime();
+			if (this.details != null) this.openDetails();
 		},
 	},
 	methods: {
@@ -75,6 +86,35 @@ export default Vue.extend({
 					noteId: this.note.id,
 					reaction: this.reaction
 				});
+			}
+		},
+		onMouseover() {
+			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
+		},
+		onMouseleave() {
+			clearTimeout(this.detailsTimeoutId);
+			this.closeDetails();
+		},
+		openDetails() {
+			this.$root.api('notes/reactions', {
+				noteId: this.note.id
+			}).then((reactions: any[]) => {
+				const users = reactions.filter(x => x.type === this.reaction)
+					.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+					.map(x => x.user.username);
+
+				this.closeDetails();
+				this.details = this.$root.new(XDetails, {
+					reaction: this.reaction,
+					users,
+					source: this.$refs.reaction
+				});
+			});
+		},
+		closeDetails() {
+			if (this.details != null) {
+				this.details.close();
+				this.details = null;
 			}
 		},
 		anime() {

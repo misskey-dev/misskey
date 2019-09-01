@@ -467,7 +467,7 @@ common/views/components/profile-editor.vue:
   description: "自己紹介"
   language: "言語"
   birthday: "誕生日"
-  avatar: "アイコン"
+  avatar: "アバター"
   banner: "バナー"
   is-cat: "このアカウントはCatやで"
   is-bot: "このアカウントはBotやで"
@@ -605,7 +605,7 @@ desktop/views/components/crop-window.vue:
 desktop/views/components/drive-window.vue:
   used: "使うとる"
 desktop/views/components/drive.file.vue:
-  avatar: "アイコン"
+  avatar: "アバター"
   banner: "バナー"
   nsfw: "見たらあかんで"
   contextmenu:
@@ -615,7 +615,7 @@ desktop/views/components/drive.file.vue:
     copy-url: "URLをコピー"
     download: "ダウンロード"
     else-files: "その他"
-    set-as-avatar: "アイコンにする"
+    set-as-avatar: "アバターにする"
     set-as-banner: "バナーにする"
     open-in-app: "アプリで開く"
     add-app: "アプリ増やす"
