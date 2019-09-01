@@ -398,8 +398,8 @@ export const packedUserSchema = {
 			description: 'Whether this account is a moderator.'
 		},
 		isVerified: {
-			type: types.boolean,
-			nullable: bool.false, optional: bool.true,
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 		},
 		isLocked: {
 			type: 'boolean' as const,

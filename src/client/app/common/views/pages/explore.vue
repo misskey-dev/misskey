@@ -64,12 +64,11 @@ export default Vue.extend({
 	data() {
 		return {
 			pinnedUsers: { endpoint: 'pinned-users' },
-			verifiedUsers: () => this.$root.api('users', {
+			verifiedUsers: { endpoint: 'users', limit: 10, params: {
 				state: 'verified',
 				origin: 'local',
 				sort: '+follower',
-				limit: 10
-			}),
+			} },
 			popularUsers: { endpoint: 'users', limit: 10, params: {
 				state: 'alive',
 				origin: 'local',
