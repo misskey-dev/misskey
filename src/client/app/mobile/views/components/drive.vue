@@ -244,13 +244,14 @@ export default Vue.extend({
 		},
 
 		goRoot(silent = false) {
-			if (this.folder || this.file) {
-				this.file = null;
-				this.folder = null;
-				this.hierarchyFolders = [];
-				this.$emit('move-root', silent);
-				this.fetch();
-			}
+			// すでにrootにいるなら何もしない
+			if (this.folder == null && this.file == null) return;
+			
+			this.file = null;
+			this.folder = null;
+			this.hierarchyFolders = [];
+			this.$emit('move-root', silent);
+			this.fetch();
 		},
 
 		fetch() {
