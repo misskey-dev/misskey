@@ -34,6 +34,7 @@ export type Source = {
 	autoAdmin?: boolean;
 
 	proxy?: string;
+	proxySmtp?: string;
 
 	accesslog?: string;
 
