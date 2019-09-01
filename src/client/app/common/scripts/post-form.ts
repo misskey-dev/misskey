@@ -44,7 +44,12 @@ export default (opts) => ({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		watchVisibility: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	data() {
@@ -152,7 +157,7 @@ export default (opts) => ({
 		}
 
 		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
+		this.applyVisibility((this.$store.state.settings.rememberNoteVisibility || this.$store.state.settings.useVisibilitySwitch) ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
 		if (this.reply && this.reply.localOnly) {
 			this.localOnly = true;
@@ -226,6 +231,14 @@ export default (opts) => ({
 				this.visibility = init.visibility;
 				this.localOnly = init.localOnly;
 				this.quoteId = init.renote ? init.renote.id : null;
+			}
+
+			if (this.watchVisibility) {
+				this.$store.subscribe((mutation, state) => {
+					if (mutation.type === 'device/setVisibility') {
+						this.applyVisibility(this.$store.state.device.visibility);
+					}
+				});
 			}
 
 			this.$nextTick(() => this.watch());
@@ -323,7 +336,7 @@ export default (opts) => ({
 
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton.$el,
+				source: this.$refs.visibilityButton.$el || this.$erfs.visibilityButton,
 				currentVisibility: this.localOnly ? `local-${this.visibility}` : this.visibility
 			});
 			w.$once('chosen', v => {

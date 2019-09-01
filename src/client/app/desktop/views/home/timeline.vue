@@ -1,6 +1,6 @@
 <template>
 <div class="pwbzawku">
-	<x-post-form class="form" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }" v-if="$store.state.settings.showPostFormOnTopOfTl"/>
+	<x-post-form class="form" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }" v-if="$store.state.settings.showPostFormOnTopOfTl" :watchVisibility="true"/>
 	<div class="main">
 		<component :is="src == 'list' ? 'mk-user-list-timeline' : 'x-core'" ref="tl" v-bind="options">
 			<header class="zahtxcqi">
@@ -107,7 +107,21 @@ export default Vue.extend({
 				src: this.src,
 				arg: this.src == 'list' ? this.list : this.tagTl
 			});
+			const settings = this.$store.state.settings;
+			if (settings.useVisibilitySwitch) {
+				switch (this.src) {
+					case 'home':    this.saveVisibility(settings.homeNoteVisibility); break;
+					case 'local':   this.saveVisibility(settings.localNoteVisibility); break;
+					case 'hybrid':  this.saveVisibility(settings.hybridNoteVisibility); break;
+					case 'globabl': this.saveVisibility(settings.globalNoteVisibility); break;
+				}
+			}
 		},
+
+		saveVisibility(visibility) {
+			const vis = visibility == 'default' ? this.$store.state.settings.defaultNoteVisibility : visibility;
+			this.$store.commit('device/setVisibility', vis);
+		}
 
 		focus() {
 			(this.$refs.tl as any).focus();
