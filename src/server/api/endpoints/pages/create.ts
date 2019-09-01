@@ -29,7 +29,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.str,
+			validator: $.str.min(1),
 		},
 
 		summary: {

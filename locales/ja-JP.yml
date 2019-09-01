@@ -2020,6 +2020,8 @@ pages:
   page-created: "ページを作成しました"
   page-updated: "ページを更新しました"
   name-already-exists: "指定されたページURLは既に存在しています"
+  title-invalid-name: "不正なページURLです"
+  text-invalid-name: "空白でないか確認してください"
   are-you-sure-delete: "このページを削除しますか？"
   page-deleted: "ページを削除しました"
   edit-this-page: "このページを編集"
