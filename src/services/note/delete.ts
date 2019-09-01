@@ -35,7 +35,7 @@ export default async function(user: User, note: Note, quiet = false) {
 
 		//#region ローカルの投稿なら削除アクティビティを配送
 		if (Users.isLocalUser(user)) {
-			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note.id}/activity`), user));
+			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
 
 			const queue: string[] = [];
 
