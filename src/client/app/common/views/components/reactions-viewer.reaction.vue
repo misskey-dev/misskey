@@ -47,7 +47,8 @@ export default Vue.extend({
 	data() {
 		return {
 			details: null,
-			detailsTimeoutId: null
+			detailsTimeoutId: null,
+			isHovering: false
 		};
 	},
 	computed: {
@@ -89,9 +90,11 @@ export default Vue.extend({
 			}
 		},
 		onMouseover() {
+			this.isHovering = true;
 			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
 		},
 		onMouseleave() {
+			this.isHovering = false;
 			clearTimeout(this.detailsTimeoutId);
 			this.closeDetails();
 		},
@@ -104,6 +107,7 @@ export default Vue.extend({
 					.map(x => x.user.username);
 
 				this.closeDetails();
+				if (!this.isHovering) return;
 				this.details = this.$root.new(XDetails, {
 					reaction: this.reaction,
 					users,
