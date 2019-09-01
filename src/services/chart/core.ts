@@ -65,7 +65,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	public schema: Schema;
 	protected repository: Repository<Log>;
 	protected abstract genNewLog(latest: T): DeepPartial<T>;
-	protected abstract async fetchActual(group?: string): Promise<DeepPartial<T>>;
+	protected abstract async fetchActual(group: string | null): Promise<DeepPartial<T>>;
 
 	@autobind
 	private static convertSchemaToFlatColumnDefinitions(schema: Schema) {
@@ -331,6 +331,24 @@ export default abstract class Chart<T extends Record<string, any>> {
 			await this.repository.createQueryBuilder()
 				.update()
 				.set(query)
+				.where('id = :id', { id: log.id })
+				.execute();
+		};
+
+		return Promise.all([
+			this.getCurrentLog('day', group).then(log => update(log)),
+			this.getCurrentLog('hour', group).then(log => update(log)),
+		]);
+	}
+
+	@autobind
+	public async resync(group: string | null = null): Promise<any> {
+		const data = await this.fetchActual(group);
+
+		const update = async (log: Log) => {
+			await this.repository.createQueryBuilder()
+				.update()
+				.set(Chart.convertObjectToFlattenColumns(data))
 				.where('id = :id', { id: log.id })
 				.execute();
 		};

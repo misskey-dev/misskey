@@ -1,17 +1,17 @@
 <template>
 <div class="mk-settings">
 	<div class="nav" :class="{ inWindow }">
-		<p :class="{ active: page == 'profile' }" @mousedown="page = 'profile'"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</p>
-		<p :class="{ active: page == 'appearance' }" @mousedown="page = 'appearance'"><fa icon="palette" fixed-width/>{{ $t('@._settings.appearance') }}</p>
-		<p :class="{ active: page == 'behavior' }" @mousedown="page = 'behavior'"><fa icon="desktop" fixed-width/>{{ $t('@._settings.behavior') }}</p>
-		<p :class="{ active: page == 'notification' }" @mousedown="page = 'notification'"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('@._settings.notification') }}</p>
-		<p :class="{ active: page == 'drive' }" @mousedown="page = 'drive'"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</p>
-		<p :class="{ active: page == 'hashtags' }" @mousedown="page = 'hashtags'"><fa icon="hashtag" fixed-width/>{{ $t('@._settings.tags') }}</p>
-		<p :class="{ active: page == 'muteAndBlock' }" @mousedown="page = 'muteAndBlock'"><fa icon="ban" fixed-width/>{{ $t('@._settings.mute-and-block') }}</p>
-		<p :class="{ active: page == 'apps' }" @mousedown="page = 'apps'"><fa icon="puzzle-piece" fixed-width/>{{ $t('@._settings.apps') }}</p>
-		<p :class="{ active: page == 'security' }" @mousedown="page = 'security'"><fa icon="unlock-alt" fixed-width/>{{ $t('@._settings.security') }}</p>
-		<p :class="{ active: page == 'api' }" @mousedown="page = 'api'"><fa icon="key" fixed-width/>API</p>
-		<p :class="{ active: page == 'other' }" @mousedown="page = 'other'"><fa icon="cogs" fixed-width/>{{ $t('@._settings.other') }}</p>
+		<router-link to="/i/settings/profile" active-class="active"><fa icon="user" fixed-width/>{{ $t('@._settings.profile') }}</router-link>
+		<router-link to="/i/settings/appearance" active-class="active"><fa icon="palette" fixed-width/>{{ $t('@._settings.appearance') }}</router-link>
+		<router-link to="/i/settings/behavior" active-class="active"><fa icon="desktop" fixed-width/>{{ $t('@._settings.behavior') }}</router-link>
+		<router-link to="/i/settings/notification" active-class="active"><fa :icon="['far', 'bell']" fixed-width/>{{ $t('@._settings.notification') }}</router-link>
+		<router-link to="/i/settings/drive" active-class="active"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</router-link>
+		<router-link to="/i/settings/hashtags" active-class="active"><fa icon="hashtag" fixed-width/>{{ $t('@._settings.tags') }}</router-link>
+		<router-link to="/i/settings/muteAndBlock" active-class="active"><fa icon="ban" fixed-width/>{{ $t('@._settings.mute-and-block') }}</router-link>
+		<router-link to="/i/settings/apps" active-class="active"><fa icon="puzzle-piece" fixed-width/>{{ $t('@._settings.apps') }}</router-link>
+		<router-link to="/i/settings/security" active-class="active"><fa icon="unlock-alt" fixed-width/>{{ $t('@._settings.security') }}</router-link>
+		<router-link to="/i/settings/api" active-class="active"><fa icon="key" fixed-width/>API</router-link>
+		<router-link to="/i/settings/other" active-class="active"><fa icon="cogs" fixed-width/>{{ $t('@._settings.other') }}</router-link>
 	</div>
 	<div class="pages">
 		<x-settings :page="page"/>
@@ -30,20 +30,15 @@ export default Vue.extend({
 		XSettings,
 	},
 	props: {
-		initialPage: {
+		page: {
 			type: String,
-			required: false
+			required: true,
 		},
 		inWindow: {
 			type: Boolean,
 			required: false,
 			default: true
 		}
-	},
-	data() {
-		return {
-			page: this.initialPage || 'profile',
-		};
 	},
 });
 </script>
@@ -63,7 +58,7 @@ export default Vue.extend({
 		z-index 1
 		font-size 15px
 
-		> p
+		> a
 			display block
 			padding 10px 16px
 			margin 0

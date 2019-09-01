@@ -116,8 +116,25 @@ autoAdmin: true
 # Whether disable HSTS
 #disableHsts: true
 
-# Clustering
+# Number of worker processes
 #clusterLimit: 1
+
+# Job concurrency per worker
+# deliverJobConcurrency: 128;
+# inboxJobConcurrency: 16;
 
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
+
+# Syslog option
+#syslog:
+#  host: localhost
+#  port: 514
+
+# Proxy for HTTP/HTTPS
+#proxy: http://127.0.0.1:3128
+
+# Proxy for SMTP/SMTPS
+#proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
+#proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4
+#proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
