@@ -92,7 +92,7 @@ export default (opts) => ({
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
 			return this.renote
-				? opts.mobile ? this.$t('@.post-form.option-quote-placeholder') : this.$t('@.post-form.quote-placeholder')
+				? this.$t('@.post-form.option-quote-placeholder')
 				: this.reply
 					? this.$t('@.post-form.reply-placeholder')
 					: x;
@@ -323,7 +323,7 @@ export default (opts) => ({
 
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton,
+				source: this.$refs.visibilityButton.$el,
 				currentVisibility: this.localOnly ? `local-${this.visibility}` : this.visibility
 			});
 			w.$once('chosen', v => {

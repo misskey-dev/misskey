@@ -39,15 +39,16 @@
 		<button class="kao" :title="$t('@.post-form.insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
 		<button class="poll" :title="$t('@.post-form.create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
 		<button class="cw" :title="$t('@.post-form.hide-contents')" @click="useCw = !useCw"><fa :icon="useCw ? ['fas', 'eye'] : ['far', 'eye-slash']"/></button>
-		<button class="visibility" :title="$t('@.post-form.visibility')" @click="setVisibility" ref="visibilityButton">
+		<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
+		<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
 			<span v-if="visibility === 'public'"><fa icon="globe"/></span>
 			<span v-if="visibility === 'home'"><fa icon="home"/></span>
 			<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 			<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-		</button>
-		<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
-		<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
 			{{ posting ? $t('@.post-form.posting') : submitText }}<mk-ellipsis v-if="posting"/>
+		</ui-button>
+		<ui-button primary class="visibility" :title="$t('@.post-form.visibility')" @click="setVisibility" ref="visibilityButton">
+			<fa icon="angle-down"/>
 		</ui-button>
 		<input ref="file" type="file" multiple="multiple" tabindex="-1" @change="onChangeFile"/>
 		<div class="dropzone" v-if="draghover"></div>
@@ -276,16 +277,28 @@ export default Vue.extend({
 		display block
 		position absolute
 		bottom 16px
-		right 16px
-		width 110px
+		right 62px
+		width 88px
 		height 40px
+		border-top-right-radius 0
+		border-bottom-right-radius 0
+
+	.visibility
+		display block
+		position absolute
+		right 16px
+		bottom 16px
+		width 45px
+		height 40px
+		border-top-left-radius 0
+		border-bottom-left-radius 0
 
 	> .text-count
 		pointer-events none
 		display block
 		position absolute
 		bottom 16px
-		right 138px
+		right 160px
 		margin 0
 		line-height 40px
 		color var(--primaryAlpha05)
@@ -299,7 +312,6 @@ export default Vue.extend({
 	> .poll
 	> .cw
 	> .geo
-	> .visibility
 		display inline-block
 		cursor pointer
 		padding 0

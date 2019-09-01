@@ -1,17 +1,7 @@
 <template>
 <div class="mk-renote-form">
 	<mk-note-preview class="preview" :note="note"/>
-	<template v-if="!quote">
-		<footer>
-			<a class="quote" v-if="!quote" @click="onQuote">{{ $t('quote') }}</a>
-			<ui-button class="button cancel" inline @click="cancel">{{ $t('cancel') }}</ui-button>
-			<ui-button class="button home" inline :primary="visibility != 'public'" @click="ok('home')"   :disabled="wait">{{ wait ? this.$t('reposting') : this.$t('renote-home') }}</ui-button>
-			<ui-button class="button ok"   inline :primary="visibility == 'public'" @click="ok('public')" :disabled="wait">{{ wait ? this.$t('reposting') : this.$t('renote') }}</ui-button>
-		</footer>
-	</template>
-	<template v-if="quote">
-		<x-post-form ref="form" :renote="note" @posted="onChildFormPosted"/>
-	</template>
+	<x-post-form ref="form" :renote="note" @posted="onChildFormPosted"/>
 </div>
 </template>
 
@@ -36,39 +26,10 @@ export default Vue.extend({
 	data() {
 		return {
 			wait: false,
-			quote: false,
-			visibility: this.$store.state.settings.defaultNoteVisibility
 		};
 	},
 
 	methods: {
-		ok(v: string) {
-			this.wait = true;
-			this.$root.api('notes/create', {
-				renoteId: this.note.id,
-				visibility: v || this.visibility
-			}).then(data => {
-				this.$emit('posted');
-				this.$notify(this.$t('success'));
-			}).catch(err => {
-				this.$notify(this.$t('failure'));
-			}).then(() => {
-				this.wait = false;
-			});
-		},
-
-		cancel() {
-			this.$emit('canceled');
-		},
-
-		onQuote() {
-			this.quote = true;
-
-			this.$nextTick(() => {
-				(this.$refs.form as any).focus();
-			});
-		},
-
 		onChildFormPosted() {
 			this.$emit('posted');
 		}
