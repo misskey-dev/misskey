@@ -207,7 +207,7 @@ common:
     deck-column-width-wide: "Sehr breit"
     use-shadow: "Nutze Schatten"
     rounded-corners: "Abgerundete Ecken"
-    circle-icons: "Kreisförmige Icons"
+    circle-icons: "Kreisförmige Avatar"
     contrasted-acct: "Nutzernamen kontrastreicher darstellen"
     wallpaper: "Hintergrund"
     choose-wallpaper: "Hintergrund auswählen"
@@ -605,6 +605,7 @@ common/views/widgets/memo.vue:
   save: "Speichern"
 desktop:
   banner: "Banner"
+  avatar: "Avatar"
   unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
 desktop/views/components/activity.chart.vue:
   total: "Schwarz ... komplett"
