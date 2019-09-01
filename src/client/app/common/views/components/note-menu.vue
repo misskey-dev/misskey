@@ -10,10 +10,11 @@ import i18n from '../../../i18n';
 import { url } from '../../../config';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
 import { faCopy, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/note-menu.vue'),
-	props: ['note', 'source'],
+	props: ['note', 'source', 'actualNote'],
 	data() {
 		return {
 			isFavorited: false,
@@ -77,7 +78,7 @@ export default Vue.extend({
 				...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
 					null,
 					this.note.userId == this.$store.state.i.id ? {
-						icon: 'undo-alt',
+						icon: faEdit,
 						text: this.$t('delete-and-edit'),
 						action: this.deleteAndEdit
 					} : undefined,
@@ -87,7 +88,13 @@ export default Vue.extend({
 						action: this.del
 					}]
 					: []
-				)]
+				),
+				...(this.actualNote && this.actualNote.renote ? [{
+					icon: 'undo-alt',
+					text: this.$t('undo-renote'),
+					action: this.undoRenote
+				}] : []),
+				]
 				.filter(x => x !== undefined);
 			} else {
 				return [{
@@ -205,6 +212,22 @@ export default Vue.extend({
 				});
 			});
 		},
+
+		undoRenote() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('undo-renote-confirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('notes/delete', {
+					noteId: this.actualNote.id
+				}).then(() => {
+					this.destroyDom();
+				});
+			});
+		}
 
 		toggleFavorite(favorite: boolean) {
 			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {

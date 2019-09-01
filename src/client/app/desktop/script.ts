@@ -9,7 +9,6 @@ import VueRouter from 'vue-router';
 import './style.styl';
 
 import init from '../init';
-import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import composeNotification from '../common/scripts/compose-notification';
 
 import MkHome from './views/home/home.vue';

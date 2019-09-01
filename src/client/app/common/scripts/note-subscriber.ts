@@ -61,6 +61,13 @@ export default prop => ({
 				}
 
 				this.connection.send('sn', data);
+
+				if (this.$_ns_isRenote) {
+					this.connection.send('sn', {
+						id: this.$_ns_note_.id,
+					});
+				}
+
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
@@ -70,6 +77,11 @@ export default prop => ({
 				this.connection.send('un', {
 					id: this.$_ns_target.id
 				});
+				if (this.$_ns_isRenote) {
+					this.connection.send('un', {
+						id: this.$_ns_note_.id,
+					});
+				}
 				if (withHandler) this.connection.off('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
@@ -81,7 +93,7 @@ export default prop => ({
 		onStreamNoteUpdated(data) {
 			const { type, id, body } = data;
 
-			if (id !== this.$_ns_target.id) return;
+			if (id !== this.$_ns_target.id && id !== this.$_ns_note_.id) return;
 
 			switch (type) {
 				case 'reacted': {
@@ -134,13 +146,14 @@ export default prop => ({
 				}
 
 				case 'deleted': {
-					Vue.set(this.$_ns_target, 'deletedAt', body.deletedAt);
-					Vue.set(this.$_ns_target, 'renote', null);
-					this.$_ns_target.text = null;
-					this.$_ns_target.fileIds = [];
-					this.$_ns_target.poll = null;
-					this.$_ns_target.geo = null;
-					this.$_ns_target.cw = null;
+					const target = id === this.$_ns_target.id ? this.$_ns_target : this.$_ns_note_;
+					Vue.set(target, 'deletedAt', body.deletedAt);
+					Vue.set(target, 'renote', null);
+					target.text = null;
+					target.fileIds = [];
+					target.poll = null;
+					target.geo = null;
+					target.cw = null;
 					break;
 				}
 			}
