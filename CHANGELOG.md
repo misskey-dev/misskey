@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-unreleased
+11.31.0 (2019/09/02)
 --------------------
 ### ✨Improvements
 * Syslogサポート
