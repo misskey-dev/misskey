@@ -391,6 +391,8 @@ common/views/pages/explore.vue:
   federated: "联合"
   explore: "查找{host}"
   users-info: "当前有{users}个注册用户"
+common/views/components/reactions-viewer.details.vue:
+  few-users: "{users}对{reaction}的回应"
 common/views/components/url-preview.vue:
   enable-player: "打开播放器"
   disable-player: "关闭播放器"
