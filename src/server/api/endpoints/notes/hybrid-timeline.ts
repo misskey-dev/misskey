@@ -122,7 +122,7 @@ export default define(meta, async (ps, user) => {
 			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere(new Brackets(qb => {
 			qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id })
-				.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+				.orWhere('((note.visibility = \'public\') OR (note.visibility = \'users\')) AND (note.userHost IS NULL)');
 		}))
 		.leftJoinAndSelect('note.user', 'user')
 		.setParameters(followingQuery.getParameters());

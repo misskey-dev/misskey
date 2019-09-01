@@ -134,6 +134,7 @@
 						<option value="home">{{ $t('@.note-visibility.home') }}</option>
 						<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
 						<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
+						<option value="users">{{ $t('@.note-visibility.users') }}</option>
 						<option value="local-public">{{ $t('@.note-visibility.local-public') }}</option>
 						<option value="local-home">{{ $t('@.note-visibility.local-home') }}</option>
 						<option value="local-followers">{{ $t('@.note-visibility.local-followers') }}</option>

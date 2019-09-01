@@ -186,6 +186,8 @@ common:
     local-public: "こうかい (ローカルのみ)"
     local-home: "みしゅうさい (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
+    users: "ログインユーザー"
+    users-desc: "ローカルのログインユーザーにのみこうかい"
 
   note-placeholders:
     a: "いまどうしてる？"
@@ -769,6 +771,8 @@ common/views/components/visibility-chooser.vue:
   local-public-desc: "リモートへはこうかいしない"
   local-home: "みしゅうさい (ローカルのみ)"
   local-followers: "フォロワー (ローカルのみ)"
+  users: "ログインユーザー"
+  users-desc: "ローカルのログインユーザーにのみこうかい"
 
 common/views/components/trends.vue:
   count: "{}にんがとうこう"

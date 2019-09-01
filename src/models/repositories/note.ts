@@ -64,6 +64,11 @@ export class NoteRepository extends Repository<Note> {
 			}
 		}
 
+		// visibility が users かつ自分が非ログインであれば非表示
+		if (packedNote.visibility == 'users' && meId == null) {
+			hide = true;
+		}
+
 		if (hide) {
 			packedNote.visibleUserIds = undefined;
 			packedNote.fileIds = [];

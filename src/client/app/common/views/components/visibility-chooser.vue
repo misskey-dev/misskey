@@ -36,6 +36,13 @@
 				<span>{{ $t('local-public-desc') }}</span>
 			</div>
 		</div>
+		<div @click="choose('users')" :class="{ active: v == 'users' }">
+			<div><fa icon="user-friends"/></div>
+			<div>
+				<span>{{ $t('users') }}</span>
+				<span>{{ $t('users-desc') }}</span>
+			</div>
+		</div>
 		<div @click="choose('local-home')" :class="{ active: v == 'local-home' }">
 			<div><fa icon="home"/></div>
 			<div>

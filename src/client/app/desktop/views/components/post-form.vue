@@ -45,6 +45,7 @@
 			<span v-if="visibility === 'home'"><fa icon="home"/></span>
 			<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
 			<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
+			<span v-if="visibility === 'users'"><fa icon="user-friends"/></span>
 			{{ posting ? $t('@.post-form.posting') : submitText }}<mk-ellipsis v-if="posting"/>
 		</ui-button>
 		<ui-button primary class="visibility" :title="$t('@.post-form.visibility')" @click="setVisibility" ref="visibilityButton">

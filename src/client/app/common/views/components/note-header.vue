@@ -19,8 +19,9 @@
 			<fa v-if="note.visibility == 'home'" icon="home"/>
 			<fa v-if="note.visibility == 'followers'" icon="unlock"/>
 			<fa v-if="note.visibility == 'specified'" icon="envelope"/>
+			<fa v-if="note.visibility == 'users'" icon="user-friends"/>
 		</span>
-		<span class="localOnly" v-if="note.localOnly == true"><fa icon="heart"/></span>
+		<span class="localOnly" v-if="note.localOnly == true && note.visibility != 'users'"><fa icon="heart"/></span>
 	</div>
 </header>
 </template>

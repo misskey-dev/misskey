@@ -113,9 +113,10 @@ export class Note {
 	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
+	 * user ... ログインしているユーザーのみ
 	 */
-	@Column('enum', { enum: ['public', 'home', 'followers', 'specified'] })
-	public visibility: 'public' | 'home' | 'followers' | 'specified';
+	@Column('enum', { enum: ['public', 'home', 'followers', 'specified', 'users'] })
+	public visibility: 'public' | 'home' | 'followers' | 'specified' | 'users';
 
 	@Index({ unique: true })
 	@Column('varchar', {

@@ -34,10 +34,10 @@ export class Poll {
 
 	//#region Denormalized fields
 	@Column('enum', {
-		enum: ['public', 'home', 'followers', 'specified'],
+		enum: ['public', 'home', 'followers', 'specified', 'users'],
 		comment: '[Denormalized]'
 	})
-	public noteVisibility: 'public' | 'home' | 'followers' | 'specified';
+	public noteVisibility: 'public' | 'home' | 'followers' | 'specified' | 'users';
 
 	@Index()
 	@Column({

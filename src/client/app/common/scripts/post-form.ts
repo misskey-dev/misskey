@@ -337,7 +337,7 @@ export default (opts) => ({
 				this.localOnly = true;
 				this.visibility = m[1];
 			} else {
-				this.localOnly = false;
+				this.localOnly = v === 'users';
 				this.visibility = v;
 			}
 		},

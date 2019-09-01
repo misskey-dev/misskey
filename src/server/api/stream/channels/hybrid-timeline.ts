@@ -26,7 +26,7 @@ export default class extends Channel {
 		if (!(
 			this.user!.id === note.userId ||
 			this.following.includes(note.userId) ||
-			((note.user as PackedUser).host == null && note.visibility === 'public')
+			((note.user as PackedUser).host == null && (note.visibility === 'public' || note.visibility === 'users'))
 		)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {

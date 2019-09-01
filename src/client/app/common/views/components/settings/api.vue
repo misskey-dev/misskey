@@ -46,7 +46,8 @@ export default Vue.extend({
 			body: '{}',
 			res: null,
 			sending: false,
-			endpoints: []
+			endpoints: [],
+			timeout: null,
 		};
 	},
 
@@ -83,20 +84,26 @@ export default Vue.extend({
 		},
 
 		onEndpointChange() {
-			this.$root.api('endpoint', { endpoint: this.endpoint }).then(endpoint => {
-				const body = {};
-				for (const p of endpoint.params) {
-					body[p.name] =
-						p.type === 'String' ? '' :
-						p.type === 'Number' ? 0 :
-						p.type === 'Boolean' ? false :
-						p.type === 'Array' ? [] :
-						p.type === 'Object' ? {} :
-						null;
-				}
-				this.body = JSON5.stringify(body, null, 2);
-			});
-		}
+			if (this.timeout !== null) {
+				clearTimeout(this.timeout);
+			}
+
+			this.timeout = setTimeout(() => {
+				this.$root.api('endpoint', { endpoint: this.endpoint }).then(endpoint => {
+					const body = {};
+					for (const p of endpoint.params) {
+						body[p.name] =
+							p.type === 'String' ? '' :
+							p.type === 'Number' ? 0 :
+							p.type === 'Boolean' ? false :
+							p.type === 'Array' ? [] :
+							p.type === 'Object' ? {} :
+							null;
+					}
+					this.body = JSON5.stringify(body, null, 2);
+				});
+			}, 1000);
+		},
 	}
 });
 </script>
