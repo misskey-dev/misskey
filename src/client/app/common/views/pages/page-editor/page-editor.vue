@@ -246,8 +246,8 @@ export default Vue.extend({
 						if(err.info.param == 'name') {
 							this.$root.dialog({
 								type: 'error',
-								title: this.$t('invalid-name-title'),
-								text: this.$t('invalid-name-text')
+								title: this.$t('title-invalid-name'),
+								text: this.$t('text-invalid-name')
 							});
 						}
 					} else if (err.id == '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab') {
@@ -272,8 +272,8 @@ export default Vue.extend({
 						if(err.info.param == 'name') {
 							this.$root.dialog({
 								type: 'error',
-								title: this.$t('invalid-name-title'),
-								text: this.$t('invalid-name-text')
+								title: this.$t('title-invalid-name'),
+								text: this.$t('text-invalid-name')
 							});
 						}
 					} else if(err.id == '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab'){
