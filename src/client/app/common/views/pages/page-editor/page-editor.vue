@@ -242,7 +242,15 @@ export default Vue.extend({
 						text: this.$t('page-updated')
 					});
 				}).catch(err => {
-					if(err.id == '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab'){
+					if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
+						if(err.info.param == 'name') {
+							this.$root.dialog({
+								type: 'error',
+								title: this.$t('invalid-name-title'),
+								text: this.$t('invalid-name-text')
+							});
+						}
+					} else if (err.id == '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab') {
 						this.$root.dialog({
 							type: 'error',
 							text: this.$t('name-already-exists')
@@ -260,7 +268,15 @@ export default Vue.extend({
 					});
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
 				}).catch(err => {
-					if(err.id == '4650348e-301c-499a-83c9-6aa988c66bc1'){
+					if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
+						if(err.info.param == 'name') {
+							this.$root.dialog({
+								type: 'error',
+								title: this.$t('invalid-name-title'),
+								text: this.$t('invalid-name-text')
+							});
+						}
+					} else if(err.id == '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab'){
 						this.$root.dialog({
 							type: 'error',
 							text: this.$t('name-already-exists')
