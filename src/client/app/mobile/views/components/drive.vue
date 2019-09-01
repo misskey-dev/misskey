@@ -163,8 +163,6 @@ export default Vue.extend({
 		},
 
 		cd(target, silent = false) {
-			this.file = null;
-
 			if (target == null) {
 				this.goRoot(silent);
 				return;
@@ -172,6 +170,7 @@ export default Vue.extend({
 				target = target.id;
 			}
 
+			this.file = null;
 			this.fetching = true;
 
 			this.$root.api('drive/folders/show', {

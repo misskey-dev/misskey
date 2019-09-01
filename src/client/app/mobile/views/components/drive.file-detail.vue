@@ -122,7 +122,7 @@ export default Vue.extend({
 			this.$root.api('drive/files/delete', {
 				fileId: this.file.id
 			}).then(() => {
-				this.browser.cd(this.file.folderId, true);
+				this.browser.cd(this.file.folderId);
 			});
 		},
 
