@@ -243,7 +243,7 @@ export default Vue.extend({
 					});
 				}).catch(err => {
 					if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
-						if(err.info.param == 'name') {
+						if (err.info.param == 'name') {
 							this.$root.dialog({
 								type: 'error',
 								title: this.$t('title-invalid-name'),
@@ -269,7 +269,7 @@ export default Vue.extend({
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
 				}).catch(err => {
 					if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
-						if(err.info.param == 'name') {
+						if (err.info.param == 'name') {
 							this.$root.dialog({
 								type: 'error',
 								title: this.$t('title-invalid-name'),
