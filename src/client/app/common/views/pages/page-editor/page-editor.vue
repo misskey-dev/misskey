@@ -234,19 +234,19 @@ export default Vue.extend({
 
 			function onError(err) {
 				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
-						if (err.info.param == 'name') {
-							this.$root.dialog({
-								type: 'error',
-								title: this.$t('title-invalid-name'),
-								text: this.$t('text-invalid-name')
-							});
-						}
-					} else if (err.code == 'NAME_ALREADY_EXISTS') {
+					if (err.info.param == 'name') {
 						this.$root.dialog({
 							type: 'error',
-							text: this.$t('name-already-exists')
+							title: this.$t('title-invalid-name'),
+							text: this.$t('text-invalid-name')
 						});
 					}
+				} else if (err.code == 'NAME_ALREADY_EXISTS') {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('name-already-exists')
+					});
+				}
 			}
 
 			if (this.pageId) {
@@ -258,9 +258,7 @@ export default Vue.extend({
 						type: 'success',
 						text: this.$t('page-updated')
 					});
-				}).catch(err => {
-					onError(err);
-				});
+				}).catch(onError);
 			} else {
 				this.$root.api('pages/create', options)
 				.then(page => {
@@ -271,9 +269,7 @@ export default Vue.extend({
 						text: this.$t('page-created')
 					});
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
-				}).catch(err => {
-					onError(err);
-				});
+				}).catch(onError);
 			}
 		},
 
