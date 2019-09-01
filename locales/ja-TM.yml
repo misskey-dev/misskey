@@ -83,6 +83,7 @@ common:
   home: "クラシック"
   deck: "デッキ"
   timeline: "タイムライン"
+  back-to-top: "トップへ戻る"
   explore: "みつける"
   following: "フォロー中"
   followers: "フォロワー"
@@ -118,8 +119,8 @@ common:
     attach-location-information: "位置情報を添付する"
     hide-contents: "内容を隠す"
     reply-placeholder: "この投稿への返信..."
-    quote-placeholder: "この投稿を引用..."
-    option-quote-placeholder: "この投稿を引用... (オプション)"
+    quote-placeholder: "コメントを追加..."
+    option-quote-placeholder: "コメントを追加... (任意)"
     quote-attached: "引用付き"
     quote-question: "引用として添付する？"
     submit: "投稿"
@@ -176,14 +177,14 @@ common:
 
   note-visibility:
     public: "公開"
-    home: "ホーム"
+    home: "未収載"
     home-desc: "ホームタイムラインにのみ公開"
     followers: "フォロワー"
     followers-desc: "自分のフォロワーにのみ公開"
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
     local-public: "公開 (ローカルのみ)"
-    local-home: "ホーム (ローカルのみ)"
+    local-home: "未収載 (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
 
   note-placeholders:
@@ -213,6 +214,13 @@ common:
     note-visibility: "投稿の公開範囲"
     default-note-visibility: "デフォルトの公開範囲"
     remember-note-visibility: "投稿の公開範囲を記憶する"
+    visibility-switch: "ビジビリティスイッチ"
+    visibility-switch-desc: "オンにすると、タイムラインを切り替えたときに、公開範囲を設定した値に自動で切り替えるよ。"
+    use-visibility-switch: "ビジビリティスイッチを使う"
+    visibility-switch-home: "ホーム"
+    visibility-switch-local: "ローカル"
+    visibility-switch-hybrid: "ホーム+ローカル"
+    visibility-switch-global:  "グローバル"
     web-search-engine: "ウェブ検索エンジン"
     web-search-engine-desc: "例: https://www.google.com/?#q={{query}}"
     paste: "ペースト"
@@ -758,7 +766,7 @@ common/views/components/uploader.vue:
 
 common/views/components/visibility-chooser.vue:
   public: "公開"
-  home: "ホーム"
+  home: "未収載"
   home-desc: "ホームタイムラインにのみ公開"
   followers: "フォロワー"
   followers-desc: "自分のフォロワーにのみ公開"
@@ -766,7 +774,7 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "指定したユーザーにのみ公開"
   local-public: "公開 (ローカルのみ)"
   local-public-desc: "リモートへは公開しない"
-  local-home: "ホーム (ローカルのみ)"
+  local-home: "未収載 (ローカルのみ)"
   local-followers: "フォロワー (ローカルのみ)"
 
 common/views/components/trends.vue:

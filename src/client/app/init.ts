@@ -128,6 +128,11 @@ import {
 	faGavel,
 	faUndoAlt,
 	faCode,
+	faTh,
+	faMars,
+	faVenus,
+	faGenderless,
+	faUserFriends,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -262,6 +267,11 @@ library.add(
 	faGavel,
 	faUndoAlt,
 	faCode,
+	faTh,
+	faMars,
+	faVenus,
+	faGenderless,
+	faUserFriends,
 
 	farBell,
 	farEnvelope,

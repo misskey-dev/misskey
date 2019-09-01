@@ -16,7 +16,6 @@
 				<div class="right">
 					<x-search/>
 					<x-account v-if="$store.getters.isSignedIn"/>
-					<x-messaging v-if="$store.getters.isSignedIn"/>
 					<x-notifications v-if="$store.getters.isSignedIn"/>
 					<x-post v-if="$store.getters.isSignedIn"/>
 					<x-clock v-if="$store.state.settings.showClockOnHeader" class="clock"/>

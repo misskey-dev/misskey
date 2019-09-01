@@ -39,7 +39,7 @@ export const meta = {
 
 	params: {
 		visibility: {
-			validator: $.optional.str.or(['public', 'home', 'followers', 'specified']),
+			validator: $.optional.str.or(['public', 'home', 'followers', 'specified', 'users']),
 			default: 'public',
 			desc: {
 				'ja-JP': '投稿の公開範囲'

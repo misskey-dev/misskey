@@ -116,6 +116,8 @@ export class UserRepository extends Repository<User> {
 			isAdmin: user.isAdmin || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
+			sex: user.sex,
+			isVerified: user.isVerified || falsy,
 
 			// カスタム絵文字添付
 			emojis: user.emojis.length > 0 ? Emojis.find({
@@ -394,6 +396,10 @@ export const packedUserSchema = {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
 			description: 'Whether this account is a moderator.'
+		},
+		isVerified: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
 		},
 		isLocked: {
 			type: 'boolean' as const,

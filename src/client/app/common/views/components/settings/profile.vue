@@ -28,6 +28,14 @@
 				<template #prefix><fa icon="birthday-cake"/></template>
 			</ui-input>
 
+			<ui-select v-model="sex">
+				<template #label>{{ $t('sex') }}</template>
+				<option value="not-known" >{{ $t("not-known") }}</option>
+				<option value="male" >{{ $t("male") }}</option>
+				<option value="female" >{{ $t("female") }}</option>
+				<option value="not-applicable" >{{ $t("not-applicable") }}</option>
+			</ui-select>
+
 			<ui-textarea v-model="description" :max="500">
 				<span>{{ $t('description') }}</span>
 				<template #desc>{{ $t('you-can-include-hashtags') }}</template>
@@ -168,6 +176,7 @@ export default Vue.extend({
 			fieldName3: null,
 			fieldValue3: null,
 			lang: null,
+			sex: 'not-known',
 			birthday: null,
 			avatarId: null,
 			bannerId: null,
@@ -209,6 +218,7 @@ export default Vue.extend({
 		this.location = this.$store.state.i.location;
 		this.description = this.$store.state.i.description;
 		this.lang = this.$store.state.i.lang;
+		this.sex = this.$store.state.i.sex;
 		this.birthday = this.$store.state.i.birthday;
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
@@ -292,6 +302,7 @@ export default Vue.extend({
 				avatarId: this.avatarId || undefined,
 				bannerId: this.bannerId || undefined,
 				fields,
+				sex: this.sex,
 				isCat: !!this.isCat,
 				isBot: !!this.isBot,
 				isLocked: !!this.isLocked,

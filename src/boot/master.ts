@@ -20,15 +20,19 @@ function greet() {
 	if (!program.quiet) {
 		//#region Groundpolis logo
 		const v = `v${pkg.version}`;
-		console.log('  _____ _         _           ');
-		console.log(' |     |_|___ ___| |_ ___ _ _ ');
-		console.log(' | | | | |_ -|_ -| \'_| -_| | |');
-		console.log(' |_|_|_|_|___|___|_,_|___|_  |');
+		// tslint:disable:quotemark
+		console.log("   ___                      _           _ _    ");
+		console.log("  / __|_ _ ___ _  _ _ _  __| |_ __  ___| (_)___");
+		console.log(" | (_ | '_/ _ \ || | ' \/ _` | '_ \/ _ \ | (_-<");
+		console.log("  \___|_| \___/\_,_|_||_\__,_| .__/\___/_|_/__/");
+		console.log("                             |_|               ");
+
 		console.log(' ' + chalk.gray(v) + ('                        |___|\n'.substr(v.length)));
 		//#endregion
 
-		console.log(' Groundpolis is maintained by @syuilo, @AyaMorisawa, @mei23, @acid-chicken, and @rinsuki.');
-		console.log(chalk.keyword('orange')(' If you like Groundpolis, please donate to support development. https://www.patreon.com/syuilo'));
+		console.log(' Groundpolis is maintained by @Xeltica.');
+		console.log(' Groundpolis is forked from Misskey maintained by @syuilo, @AyaMorisawa, @mei23, @acid-chicken, and @rinsuki.');
+		console.log(chalk.keyword('orange')(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
 
 		console.log('');
 		console.log(chalk`< ${os.hostname()} {gray (PID: ${process.pid.toString()})} >`);

@@ -89,10 +89,12 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
+	const cond = user != null ? 'note.visibility = \'public\' OR note.visibility = \'users\'' : 'note.visibility = \'public\'';
+
 	//#region Construct query
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
+		.andWhere(`(${cond}) AND (note.userHost IS NULL)`)
 		.leftJoinAndSelect('note.user', 'user');
 
 	if (user) generateVisibilityQuery(query, user);

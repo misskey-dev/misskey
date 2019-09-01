@@ -1,5 +1,5 @@
 <template>
-<div class="mk-ui-notification">
+<div class="mk-ui-notification" @click="clicked">
 	<p>{{ message }}</p>
 </div>
 </template>
@@ -10,26 +10,38 @@ import anime from 'animejs';
 
 export default Vue.extend({
 	props: ['message'],
+	data() {
+		return {
+			timeout: null,
+		}
+	},
+	methods: {
+		leave(duration: number) {
+			anime({
+					targets: this.$el,
+					opacity: 0,
+					translateY: -64,
+					duration,
+					easing: 'easeInBack',
+					complete: () => this.destroyDom()
+				});
+		},
+		clicked() {
+			clearTimeout(this.timeout);
+			this.leave(250);
+		}
+	},
 	mounted() {
 		this.$nextTick(() => {
 			anime({
 				targets: this.$el,
 				opacity: 1,
 				translateY: [-64, 0],
-				easing: 'easeOutElastic',
+				easing: 'easeOutBack',
 				duration: 500
 			});
 
-			setTimeout(() => {
-				anime({
-					targets: this.$el,
-					opacity: 0,
-					translateY: -64,
-					duration: 500,
-					easing: 'easeInElastic',
-					complete: () => this.destroyDom()
-				});
-			}, 5000);
+			this.timeout = setTimeout(() => this.leave(500), 5000);
 		});
 	}
 });
@@ -52,11 +64,12 @@ export default Vue.extend({
 	box-shadow 0 2px 4px var(--desktopNotificationShadow)
 	transform translateY(-64px)
 	opacity 0
-	pointer-events none
+	cursor pointer
 
 	> p
 		margin 0
 		line-height 64px
 		text-align center
+		user-select: none;
 
 </style>

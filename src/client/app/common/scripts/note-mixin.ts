@@ -195,6 +195,7 @@ export default (opts: Opts = {}) => ({
 			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
+				actualNote: this.note
 				animation: !viaKeyboard
 			}).$once('closed', this.focus);
 		},

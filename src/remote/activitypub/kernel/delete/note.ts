@@ -8,10 +8,11 @@ const logger = apLogger;
 export default async function(actor: IRemoteUser, uri: string): Promise<void> {
 	logger.info(`Deleting the Note: ${uri}`);
 
-	const note = await Notes.findOne({ uri });
+	let note = await Notes.findOne({ uri });
 
 	if (note == null) {
-		throw new Error('note not found');
+		note = await Notes.findOne( { uri: uri + '/activity' } );
+		if (note == null) throw new Error('note not found');
 	}
 
 	if (note.userId !== actor.id) {

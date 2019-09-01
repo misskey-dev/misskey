@@ -17,7 +17,8 @@ export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: User) {
 			// 公開投稿である
 			.where(new Brackets(qb => { qb
 				.where(`note.visibility = 'public'`)
-				.orWhere(`note.visibility = 'home'`);
+				.orWhere(`note.visibility = 'home'`)
+				.orWhere(`note.visibility = 'users'`);
 			}))
 			// または 自分自身
 			.orWhere('note.userId = :userId1', { userId1: me.id })

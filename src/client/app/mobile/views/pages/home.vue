@@ -153,6 +153,20 @@ export default Vue.extend({
 				src: this.src,
 				arg: this.src == 'list' ? this.list : this.tagTl
 			});
+			const settings = this.$store.state.settings;
+			if (settings.useVisibilitySwitch) {
+				switch (this.src) {
+					case 'home':    this.saveVisibility(settings.homeNoteVisibility); break;
+					case 'local':   this.saveVisibility(settings.localNoteVisibility); break;
+					case 'hybrid':  this.saveVisibility(settings.hybridNoteVisibility); break;
+					case 'globabl': this.saveVisibility(settings.globalNoteVisibility); break;
+				}
+			}
+		},
+
+		saveVisibility(visibility) {
+			const vis = visibility == 'default' ? this.$store.state.settings.defaultNoteVisibility : visibility;
+			this.$store.commit('device/setVisibility', vis);
 		},
 
 		warp() {

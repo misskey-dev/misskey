@@ -15,7 +15,7 @@ export default class extends Channel {
 	public async init(params: any) {
 		const meta = await fetchMeta();
 		if (meta.disableLocalTimeline) {
-			if (this.user == null || (!this.user.isAdmin && !this.user.isModerator)) return;
+			if (!this.user || (!this.user.isAdmin && !this.user.isModerator)) return;
 		}
 
 		// Subscribe events
@@ -26,6 +26,7 @@ export default class extends Channel {
 	private async onNote(note: PackedNote) {
 		if ((note.user as PackedUser).host !== null) return;
 		if (note.visibility === 'home') return;
+		if (!this.user && note.visibility === 'users') return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await Notes.pack(note.id, this.user, {

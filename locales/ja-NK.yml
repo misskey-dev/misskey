@@ -82,6 +82,7 @@ common:
   home: "クラシック"
   deck: "デッキ"
   timeline: "タイムライン"
+  back-to-top: "トップへ戻る"
   explore: "みつける"
   following: "フォロー中"
   followers: "フォロワー"
@@ -117,8 +118,8 @@ common:
     attach-location-information: "位置情報を添付する"
     hide-contents: "内容を隠す"
     reply-placeholder: "この投稿への返信..."
-    quote-placeholder: "この投稿を引用..."
-    option-quote-placeholder: "この投稿を引用... (オプション)"
+    quote-placeholder: "コメントを追加..."
+    option-quote-placeholder: "コメントを追加... (任意)"
     quote-attached: "引用付き"
     quote-question: "引用として添付しますか？"
     submit: "投稿"
@@ -175,14 +176,14 @@ common:
 
   note-visibility:
     public: "公開"
-    home: "ホーム"
+    home: "未収載"
     home-desc: "ホームタイムラインにのみ公開"
     followers: "フォロワー"
     followers-desc: "自分のフォロワーにのみ公開"
     specified: "ダイレクト"
     specified-desc: "指定したユーザーにのみ公開"
     local-public: "公開 (ローカルのみ)"
-    local-home: "ホーム (ローカルのみ)"
+    local-home: "未収載 (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
 
   note-placeholders:
@@ -757,7 +758,7 @@ common/views/components/uploader.vue:
 
 common/views/components/visibility-chooser.vue:
   public: "公開"
-  home: "ホーム"
+  home: "未収載"
   home-desc: "ホームタイムラインにのみ公開"
   followers: "フォロワー"
   followers-desc: "自分のフォロワーにのみ公開"
@@ -765,7 +766,7 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "指定したユーザーにのみ公開"
   local-public: "公開 (ローカルのみ)"
   local-public-desc: "リモートへは公開しにゃい"
-  local-home: "ホーム (ローカルのみ)"
+  local-home: "未収載 (ローカルのみ)"
   local-followers: "フォロワー (ローカルのみ)"
 
 common/views/components/trends.vue:

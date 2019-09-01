@@ -83,6 +83,7 @@ common:
   home: "クラシック"
   deck: "デッキ"
   timeline: "タイムライン"
+  back-to-top: "トップへもどる"
   explore: "みつける"
   following: "フォローちゅう"
   followers: "フォロワー"
@@ -118,8 +119,8 @@ common:
     attach-location-information: "いちじょうほうをてんぷする"
     hide-contents: "ないようをかくす"
     reply-placeholder: "このとうこうへのへんしん..."
-    quote-placeholder: "このとうこうをいんよう..."
-    option-quote-placeholder: "このとうこうをいんよう... (オプション)"
+    quote-placeholder: "コメントをついか..."
+    option-quote-placeholder: "コメントをついか... (オプション)"
     quote-attached: "いんようつき"
     quote-question: "いんようとしててんぷしますか？"
     submit: "とうこう"
@@ -176,15 +177,17 @@ common:
 
   note-visibility:
     public: "こうかい"
-    home: "ホーム"
+    home: "みしゅうさい"
     home-desc: "ホームタイムラインにのみこうかい"
     followers: "フォロワー"
     followers-desc: "じぶんのフォロワーにのみこうかい"
     specified: "ダイレクト"
     specified-desc: "していしたユーザーにのみこうかい"
     local-public: "こうかい (ローカルのみ)"
-    local-home: "ホーム (ローカルのみ)"
+    local-home: "みしゅうさい (ローカルのみ)"
     local-followers: "フォロワー (ローカルのみ)"
+    users: "ログインユーザー"
+    users-desc: "ローカルのログインユーザーにのみこうかい"
 
   note-placeholders:
     a: "いまどうしてる？"
@@ -213,6 +216,13 @@ common:
     note-visibility: "とうこうのこうかいはんい"
     default-note-visibility: "デフォルトのこうかいはんい"
     remember-note-visibility: "とうこうのこうかいはんいをきおくする"
+    visibility-switch: "ビジビリティスイッチ"
+    visibility-switch-desc: "オンにすると、タイムラインをきりかえたときに、こうかいはんいをせっていしたあたいにじどうできりかえます。"
+    use-visibility-switch: "ビジビリティスイッチをつかう"
+    visibility-switch-home: "ホーム"
+    visibility-switch-local: "ローカル"
+    visibility-switch-hybrid: "ホーム+ローカル"
+    visibility-switch-global:  "グローバル"
     web-search-engine: "ウェブけんさくエンジン"
     web-search-engine-desc: "れい: https://www.google.com/?#q={{query}}"
     paste: "ペースト"
@@ -758,7 +768,7 @@ common/views/components/uploader.vue:
 
 common/views/components/visibility-chooser.vue:
   public: "こうかい"
-  home: "ホーム"
+  home: "みしゅうさい"
   home-desc: "ホームタイムラインにのみこうかい"
   followers: "フォロワー"
   followers-desc: "じぶんのフォロワーにのみこうかい"
@@ -766,8 +776,10 @@ common/views/components/visibility-chooser.vue:
   specified-desc: "していしたユーザーにのみこうかい"
   local-public: "こうかい (ローカルのみ)"
   local-public-desc: "リモートへはこうかいしない"
-  local-home: "ホーム (ローカルのみ)"
+  local-home: "みしゅうさい (ローカルのみ)"
   local-followers: "フォロワー (ローカルのみ)"
+  users: "ログインユーザー"
+  users-desc: "ローカルのログインユーザーにのみこうかい"
 
 common/views/components/trends.vue:
   count: "{}にんがとうこう"
@@ -1682,7 +1694,7 @@ desktop/views/pages/welcome.vue:
   info: "じょうほう"
 
 desktop/views/pages/drive.vue:
-  title: "グランポリス Drive"
+  title: "グランポリスドライブ"
 
 desktop/views/pages/note.vue:
   prev: "まえのとうこう"

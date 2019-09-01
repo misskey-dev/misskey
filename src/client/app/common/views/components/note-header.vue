@@ -8,6 +8,7 @@
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="is-cat" v-if="note.user.isCat">cat</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
+	<span class="is-verified" v-if="note.user.isVerified" :title="$t('@.verified-user')"><fa icon="star"/></span>
 	<div class="info">
 		<span class="app" v-if="note.app && !mini && $store.state.settings.showVia">via <b>{{ note.app.name }}</b></span>
 		<span class="mobile" v-if="note.viaMobile"><fa icon="mobile-alt"/></span>
@@ -18,8 +19,9 @@
 			<fa v-if="note.visibility == 'home'" icon="home"/>
 			<fa v-if="note.visibility == 'followers'" icon="unlock"/>
 			<fa v-if="note.visibility == 'specified'" icon="envelope"/>
+			<fa v-if="note.visibility == 'users'" icon="user-friends"/>
 		</span>
-		<span class="localOnly" v-if="note.localOnly == true"><fa icon="heart"/></span>
+		<span class="localOnly" v-if="note.localOnly == true && note.visibility != 'users'"><fa icon="heart"/></span>
 	</div>
 </header>
 </template>
@@ -93,6 +95,10 @@ export default Vue.extend({
 		text-overflow ellipsis
 		color var(--noteHeaderAcct)
 		flex-shrink 2147483647
+
+	> .is-verified
+		margin 0 .5em 0 0
+		color #4dabf7
 
 	> .info
 		margin-left auto

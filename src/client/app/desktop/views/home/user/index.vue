@@ -7,9 +7,10 @@
 		<fa icon="exclamation-triangle"/> {{ $t('@.is-remote-user') }}<a :href="user.url" rel="nofollow noopener" target="_blank">{{ $t('@.view-on-remote') }}</a>
 	</div>
 	<div class="main">
-		<x-header class="header" :user="user"/>
+		<x-header class="header" :user="user" @birthday="hpb"/>
 		<router-view :user="user"></router-view>
 	</div>
+	<div class="fireworks" ref="fireworks"></div>
 </div>
 </template>
 
@@ -19,6 +20,7 @@ import i18n from '../../../../i18n';
 import parseAcct from '../../../../../../misc/acct/parse';
 import Progress from '../../../../common/scripts/loading';
 import XHeader from './user.header.vue';
+import * as FireworksCanvas from 'fireworks-canvas';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -28,7 +30,8 @@ export default Vue.extend({
 	data() {
 		return {
 			fetching: true,
-			user: null
+			user: null,
+			fireworks: null,
 		};
 	},
 	watch: {
@@ -47,11 +50,42 @@ export default Vue.extend({
 				Progress.done();
 			});
 		},
-
+		handleResize: function() {
+			// resizeのたびにこいつが発火するので、ここでやりたいことをやる
+			if (this.fireworks) {
+				this.fireworks.destroy();
+				this.summonFirework();
+			}
+		},
 		warp(date) {
 			(this.$refs.tl as any).warp(date);
+		},
+		// happy birthday
+		hpb() {
+			this.$nextTick(() => {
+				this.summonFirework();
+			});
+		},
+		summonFirework() {
+			const canvas = this.$refs.fireworks as HTMLElement;
+			this.fireworks = new FireworksCanvas(canvas, {
+					maxRockets: 3,
+					rocketSpawnInterval: 150,
+					numParticles: 100,
+					explosionMinHeight: 0.2,
+					explosionMaxHeight: 0.9,
+					explosionChance: 0.08,
+				});
+
+				this.fireworks.start();
 		}
-	}
+	},
+	mounted() {
+		window.addEventListener('resize', this.handleResize);
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
+	},
 });
 </script>
 
@@ -86,5 +120,12 @@ export default Vue.extend({
 	> .main
 		> .header
 			margin-bottom 16px
+	.fireworks
+		position fixed
+		pointer-events none
+		left 0
+		top 0
+		right 0
+		bottom 0
 
 </style>

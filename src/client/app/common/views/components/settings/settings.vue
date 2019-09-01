@@ -126,19 +126,45 @@
 
 			<section>
 				<header>{{ $t('@._settings.note-visibility') }}</header>
-				<ui-switch v-model="rememberNoteVisibility">{{ $t('@._settings.remember-note-visibility') }}</ui-switch>
+				<ui-switch v-model="rememberNoteVisibility">{{ $t('@._settings.remember-note-visibility') }}</ui-switch>				
 				<section>
 					<header>{{ $t('@._settings.default-note-visibility') }}</header>
 					<ui-select v-model="defaultNoteVisibility">
-						<option value="public">{{ $t('@.note-visibility.public') }}</option>
-						<option value="home">{{ $t('@.note-visibility.home') }}</option>
-						<option value="followers">{{ $t('@.note-visibility.followers') }}</option>
-						<option value="specified">{{ $t('@.note-visibility.specified') }}</option>
-						<option value="local-public">{{ $t('@.note-visibility.local-public') }}</option>
-						<option value="local-home">{{ $t('@.note-visibility.local-home') }}</option>
-						<option value="local-followers">{{ $t('@.note-visibility.local-followers') }}</option>
+						<option v-for="visibility in visibilities" :value="visibility" :key=visibility>{{ $t(`@.note-visibility.${visibility}`) }}</option>
 					</ui-select>
 				</section>
+			</section>
+
+			<section>
+				<header>{{ $t('@._settings.visibility-switch') }}</header>
+				<p>{{ $t('@._settings.visibility-switch-desc') }}</p>
+				<ui-switch v-model="useVisibilitySwitch">{{ $t('@._settings.use-visibility-switch') }}</ui-switch>
+				<template v-if="useVisibilitySwitch">
+					<!-- Home -->
+					<ui-select v-model="homeNoteVisibility">
+						<template #label>{{ $t('@._settings.visibility-switch-home') }}</template>
+						<option v-for="visibility in visibilities" :value="visibility" :key=visibility>{{ $t(`@.note-visibility.${visibility}`) }}</option>						
+						<option value="default">{{ $t('@._settings.default-note-visibility') }}</option>
+					</ui-select>
+					<!-- Local -->
+					<ui-select v-model="localNoteVisibility">
+						<template #label>{{ $t('@._settings.visibility-switch-local') }}</template>
+						<option v-for="visibility in visibilities" :value="visibility" :key=visibility>{{ $t(`@.note-visibility.${visibility}`) }}</option>
+						<option value="default">{{ $t('@._settings.default-note-visibility') }}</option>
+					</ui-select>					
+					<!-- Hybrid -->
+					<ui-select v-model="hybridNoteVisibility">
+						<template #label>{{ $t('@._settings.visibility-switch-hybrid') }}</template>
+						<option v-for="visibility in visibilities" :value="visibility" :key=visibility>{{ $t(`@.note-visibility.${visibility}`) }}</option>
+						<option value="default">{{ $t('@._settings.default-note-visibility') }}</option>
+					</ui-select>					
+					<!-- Global -->
+					<ui-select v-model="globalNoteVisibility">
+						<template #label>{{ $t('@._settings.visibility-switch-global') }}</template>
+						<option v-for="visibility in visibilities" :value="visibility" :key=visibility>{{ $t(`@.note-visibility.${visibility}`) }}</option>
+						<option value="default">{{ $t('@._settings.default-note-visibility') }}</option>
+					</ui-select>					
+				</template>
 			</section>
 
 			<section>
@@ -363,6 +389,16 @@ export default Vue.extend({
 			latestVersion: undefined,
 			checkingForUpdate: false,
 			tickerMode: localStorage.getItem('tickerMode') || '0',
+			visibilities: [
+				'public',
+				'home',
+				'followers',
+				'specified',
+				'users',
+				'local-public',
+				'local-home',
+				'local-followers',
+			],
 			faSave
 		};
 	},
@@ -480,6 +516,31 @@ export default Vue.extend({
 		defaultNoteVisibility: {
 			get() { return this.$store.state.settings.defaultNoteVisibility; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
+		},
+
+		useVisibilitySwitch: {
+			get() { return this.$store.state.settings.useVisibilitySwitch; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'useVisibilitySwitch', value }); }
+		},
+
+		homeNoteVisibility: {
+			get() { return this.$store.state.settings.homeNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'homeNoteVisibility', value }); }
+		},
+
+		localNoteVisibility: {
+			get() { return this.$store.state.settings.localNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'localNoteVisibility', value }); }
+		},
+
+		hybridNoteVisibility: {
+			get() { return this.$store.state.settings.hybridNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'hybridNoteVisibility', value }); }
+		},
+
+		globalNoteVisibility: {
+			get() { return this.$store.state.settings.globalNoteVisibility; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'globalNoteVisibility', value }); }
 		},
 
 		pasteDialog: {

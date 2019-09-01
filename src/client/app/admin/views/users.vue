@@ -14,6 +14,10 @@
 					<ui-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('update-remote-user') }}</ui-button>
 					<ui-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('reset-password') }}</ui-button>
 					<ui-horizon-group>
+						<ui-button @click="verifyUser" :disabled="verifying"><fa :icon="faCertificate"/> {{ $t('verify') }}</ui-button>
+						<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
+					</ui-horizon-group>
+					<ui-horizon-group>
 						<ui-button @click="silenceUser"><fa :icon="faMicrophoneSlash"/> {{ $t('make-silence') }}</ui-button>
 						<ui-button @click="unsilenceUser">{{ $t('unmake-silence') }}</ui-button>
 					</ui-horizon-group>
@@ -44,6 +48,7 @@
 					<option value="all">{{ $t('users.state.all') }}</option>
 					<option value="admin">{{ $t('users.state.admin') }}</option>
 					<option value="moderator">{{ $t('users.state.moderator') }}</option>
+					<option value="verified">{{ $t('users.state.verified') }}</option>
 					<option value="silenced">{{ $t('users.state.silenced') }}</option>
 					<option value="suspended">{{ $t('users.state.suspended') }}</option>
 				</ui-select>
@@ -75,7 +80,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import parseAcct from "../../../../misc/acct/parse";
-import { faUsers, faTerminal, faSearch, faKey, faSync, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { faCertificate, faUsers, faTerminal, faSearch, faKey, faSync, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XUser from './users.user.vue';
 
@@ -88,6 +93,8 @@ export default Vue.extend({
 		return {
 			user: null,
 			target: null,
+			verifying: false,
+			unverifying: false,
 			suspending: false,
 			unsuspending: false,
 			sort: '+createdAt',
@@ -99,7 +106,7 @@ export default Vue.extend({
 			offset: 0,
 			users: [],
 			existMore: false,
-			faTerminal, faUsers, faSnowflake, faSearch, faKey, faSync, faMicrophoneSlash, faTrashAlt
+			faTerminal, faCertificate, faUsers, faSnowflake, faSearch, faKey, faSync, faMicrophoneSlash, faTrashAlt
 		};
 	},
 
@@ -193,6 +200,56 @@ export default Vue.extend({
 					text: this.$t('password-updated', { password: res.password })
 				});
 			});
+		},
+
+		async verifyUser() {
+			if (!await this.getConfirmed(this.$t('verify-confirm'))) return;
+
+			this.verifying = true;
+
+			const process = async () => {
+				await this.$root.api('admin/verify-user', { userId: this.user.id });
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('verified')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
+
+			this.verifying = false;
+
+			this.refreshUser();
+		},
+
+		async unverifyUser() {
+			if (!await this.getConfirmed(this.$t('unverify-confirm'))) return;
+
+			this.unverifying = true;
+
+			const process = async () => {
+				await this.$root.api('admin/unverify-user', { userId: this.user.id });
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('unverified')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
+
+			this.unverifying = false;
+
+			this.refreshUser();
 		},
 
 		async silenceUser() {
