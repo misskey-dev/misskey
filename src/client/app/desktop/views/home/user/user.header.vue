@@ -86,6 +86,7 @@ export default Vue.extend({
 
 			const b = this.user.birthday.split('-');
 			if (isBirthday(Number(b[1]), Number(b[2]))) {
+				this.$emit('birthday');
 				return this.$t('happy-birthday');
 			} else {
 				return this.user.birthday.replace('-', this.$t('year')).replace('-', this.$t('month')) + this.$t('day');

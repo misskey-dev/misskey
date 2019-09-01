@@ -77,6 +77,7 @@
 			</template>
 			<router-view :user="user"></router-view>
 		</main>
+		<div class="fireworks" ref="fireworks"></div>
 	</div>
 </mk-ui>
 </template>
@@ -93,6 +94,7 @@ import { getStaticImageUrl } from '../../../../common/scripts/get-static-image-u
 import XIntegrations from '../../../../common/views/components/integrations.vue';
 import ImageViewer from '../../../../common/views/components/image-viewer.vue';
 import { isBirthday } from '../../../../../../misc/birthday';
+import * as FireworksCanvas from 'fireworks-canvas';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/user.vue'),
@@ -104,7 +106,8 @@ export default Vue.extend({
 		return {
 			fetching: true,
 			user: null,
-			page: this.$route.name == 'user' ? 'home' : null
+			page: this.$route.name == 'user' ? 'home' : null,
+			fireworks: null,
 		};
 	},
 	computed: {
@@ -132,6 +135,7 @@ export default Vue.extend({
 
 			const b = this.user.birthday.split('-');
 			if (isBirthday(Number(b[1]), Number(b[2]))) {
+				this.hpb();
 				return this.$t('happy-birthday');
 			} else {
 				return this.user.birthday.replace('-', this.$t('year')).replace('-', this.$t('month')) + this.$t('day');
@@ -171,8 +175,40 @@ export default Vue.extend({
 					url: this.avator
 				}
 			});
-		}
-	}
+		},
+		// happy birthday
+		hpb() {
+			this.$nextTick(() => {
+				this.summonFirework();
+			});
+		},
+		summonFirework() {
+			const canvas = this.$refs.fireworks as HTMLElement;
+			this.fireworks = new FireworksCanvas(canvas, {
+					maxRockets: 3,
+					rocketSpawnInterval: 150,
+					numParticles: 100,
+					explosionMinHeight: 0.2,
+					explosionMaxHeight: 0.9,
+					explosionChance: 0.08,
+				});
+
+				this.fireworks.start();
+		},
+		handleResize: function() {
+			// resizeのたびにこいつが発火するので、ここでやりたいことをやる
+			if (this.fireworks) {
+				this.fireworks.destroy();
+				this.summonFirework();
+			}
+		},
+	},
+	mounted() {
+		window.addEventListener('resize', this.handleResize);
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
+	},
 });
 </script>
 
@@ -374,4 +410,11 @@ export default Vue.extend({
 					color var(--primary)
 					border-color var(--primary)
 
+	.fireworks
+		position fixed
+		pointer-events none
+		left 0
+		top 0
+		right 0
+		bottom 0
 </style>
