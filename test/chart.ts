@@ -320,4 +320,60 @@ describe('Chart', () => {
 			});
 		}));
 	});
+
+	describe('Resync', () => {
+		it('Can resync', async(async () => {
+			testChart.total = 1;
+
+			await testChart.resync();
+
+			const chartHours = await testChart.getChart('hour', 3);
+			const chartDays = await testChart.getChart('day', 3);
+
+			assert.deepStrictEqual(chartHours, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [0, 0, 0],
+					total: [1, 0, 0]
+				},
+			});
+
+			assert.deepStrictEqual(chartDays, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [0, 0, 0],
+					total: [1, 0, 0]
+				},
+			});
+		}));
+
+		it('Can resync (2)', async(async () => {
+			await testChart.increment();
+
+			clock.tick('01:00:00');
+
+			testChart.total = 100;
+
+			await testChart.resync();
+
+			const chartHours = await testChart.getChart('hour', 3);
+			const chartDays = await testChart.getChart('day', 3);
+
+			assert.deepStrictEqual(chartHours, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [0, 1, 0],
+					total: [100, 1, 0]
+				},
+			});
+
+			assert.deepStrictEqual(chartDays, {
+				foo: {
+					dec: [0, 0, 0],
+					inc: [1, 0, 0],
+					total: [100, 0, 0]
+				},
+			});
+		}));
+	});
 });
