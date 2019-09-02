@@ -46,6 +46,10 @@ export default Vue.extend({
 		this.$nextTick(() => {
 			const popover = this.$refs.popover as any;
 
+			if (this.source == null) {
+				this.destroyDom();
+				return;
+			}
 			const rect = this.source.getBoundingClientRect();
 
 			const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
