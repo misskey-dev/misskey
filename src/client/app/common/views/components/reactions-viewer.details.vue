@@ -12,7 +12,7 @@
 			</i18n>
 			<i18n path="many-users" v-if="10 < users.length">
 				<span slot="users">{{ users.slice(0, 10).join(', ') }}</span>
-				<span slot="ommited">{{ users.length - 10 }}</span>
+				<span slot="ommited">{{ count - 10 }}</span>
 				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
 			</i18n>
 		</div>
@@ -32,6 +32,10 @@ export default Vue.extend({
 		},
 		users: {
 			type: Array,
+			required: true,
+		},
+		count: {
+			type: Number,
 			required: true,
 		},
 		source: {
