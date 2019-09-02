@@ -139,6 +139,7 @@ export default Vue.extend({
 					cursor pointer
 
 			> .content
+				max-width 100%
 
 				> .is-deleted
 					display block
@@ -155,6 +156,7 @@ export default Vue.extend({
 					padding 8px 16px
 					overflow hidden
 					overflow-wrap break-word
+					word-break break-word
 					font-size 1em
 					color rgba(#000, 0.8)
 

@@ -57,7 +57,8 @@ export default Vue.extend({
 		},
 		fit: {
 			type: String,
-			required: true
+			required: false,
+			default: 'cover'
 		},
 		detail: {
 			type: Boolean,

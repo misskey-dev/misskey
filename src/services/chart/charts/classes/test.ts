@@ -6,7 +6,7 @@ import { name, schema } from '../schemas/test';
 type TestLog = SchemaType<typeof schema>;
 
 export default class TestChart extends Chart<TestLog> {
-	private total = 0;
+	public total = 0; // publicにするのはテストのため
 
 	constructor() {
 		super(name, schema);

@@ -2,10 +2,10 @@
  * Tests of Maybe
  *
  * How to run the tests:
- * > mocha test/prelude/maybe.ts --require ts-node/register
+ * > npx mocha test/prelude/maybe.ts --require ts-node/register
  *
  * To specify test:
- * > mocha test/prelude/maybe.ts --require ts-node/register -g 'test name'
+ * > npx mocha test/prelude/maybe.ts --require ts-node/register -g 'test name'
  */
 
 import * as assert from 'assert';

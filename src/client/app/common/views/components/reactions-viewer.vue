@@ -1,6 +1,6 @@
 <template>
 <div class="mk-reactions-viewer" :class="{ isMe }">
-	<x-reaction v-for="(count, reaction) in reactions" :reaction="reaction" :count="count" :note="note" :key="reaction"/>
+	<x-reaction v-for="(count, reaction) in note.reactions" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note" :key="reaction"/>
 </div>
 </template>
 
@@ -12,6 +12,11 @@ export default Vue.extend({
 	components: {
 		XReaction
 	},
+	data() {
+		return {
+			initialReactions: new Set(Object.keys(this.note.reactions))
+		};
+	},
 	props: {
 		note: {
 			type: Object,
@@ -19,9 +24,6 @@ export default Vue.extend({
 		},
 	},
 	computed: {
-		reactions(): any {
-			return this.note.reactions;
-		},
 		isMe(): boolean {
 			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
 		},
