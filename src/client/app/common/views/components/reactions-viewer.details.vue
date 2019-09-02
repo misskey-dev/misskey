@@ -3,7 +3,10 @@
 		<div class="buebdbiu" ref="popover" v-if="show">
 			<i18n path="few-users" v-if="users.length <= 10">
 				<span slot="users">
-					<mk-user-name v-for="u in users" :user="u" :nowrap="false" :key="u.id"/>
+					<b v-for="u in users" :key="u.id" style="margin-right: 8px;">
+						<mk-avatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
+						<mk-user-name :user="u" :nowrap="false" style="line-height: 24px;"/>
+					</b>
 				</span>
 				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
 			</i18n>
