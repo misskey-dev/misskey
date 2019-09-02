@@ -101,7 +101,8 @@ export default Vue.extend({
 		openDetails() {
 			if (this.$root.isMobile) return;
 			this.$root.api('notes/reactions', {
-				noteId: this.note.id
+				noteId: this.note.id,
+				limit: 30
 			}).then((reactions: any[]) => {
 				const users = reactions.filter(x => x.type === this.reaction)
 					.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
