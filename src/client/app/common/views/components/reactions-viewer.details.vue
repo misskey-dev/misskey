@@ -3,7 +3,7 @@
 		<div class="buebdbiu" ref="popover" v-if="show">
 			<i18n path="few-users" v-if="users.length <= 10">
 				<span slot="users">
-					<mk-user-name v-for="u in users" :user="u" :key="u.id"/>
+					<mk-user-name v-for="u in users" :user="u" :nowrap="false" :key="u.id"/>
 				</span>
 				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
 			</i18n>
@@ -69,7 +69,6 @@ export default Vue.extend({
 	z-index 10000
 	display block
 	position absolute
-	min-width max-content
 	max-width 240px
 	font-size 0.8em
 	padding 5px 8px
