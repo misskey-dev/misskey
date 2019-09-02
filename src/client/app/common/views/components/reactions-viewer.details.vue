@@ -2,7 +2,9 @@
 	<transition name="zoom-in-top">
 		<div class="buebdbiu" ref="popover" v-if="show">
 			<i18n path="few-users" v-if="users.length <= 10">
-				<span slot="users">{{ users.join(', ') }}</span>
+				<span slot="users">
+					<mk-user-name v-for="u in users" :user="u" :key="u.id"/>
+				</span>
 				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
 			</i18n>
 			<i18n path="many-users" v-if="10 < users.length">
@@ -76,6 +78,8 @@ export default Vue.extend({
 	color var(--text)
 	border-radius 4px
 	box-shadow 0 var(--lineWidth) 4px rgba(#000, 0.25)
+	pointer-events none
+	transform-origin center -16px
 
 	&:before
 		content ""

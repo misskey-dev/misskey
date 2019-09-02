@@ -104,7 +104,7 @@ export default Vue.extend({
 			}).then((reactions: any[]) => {
 				const users = reactions.filter(x => x.type === this.reaction)
 					.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-					.map(x => x.user.username);
+					.map(x => x.user);
 
 				this.closeDetails();
 				if (!this.isHovering) return;
