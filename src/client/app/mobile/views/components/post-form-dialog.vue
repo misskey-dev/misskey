@@ -1,6 +1,9 @@
 <template>
-<div class="ulveipglmagnxfgvitaxyszerjwiqmwl">
-	<div class="bg" ref="bg"></div>
+<ui-modal
+	ref="modal"
+	:close-on-bg-click="false"
+	:close-anime-duration="300"
+	@before-close="onBeforeClose">
 	<div class="main" ref="main">
 		<x-post-form ref="form"
 			:reply="reply"
@@ -12,7 +15,7 @@
 			@posted="onPosted"
 			@cancel="onCanceled"/>
 	</div>
-</div>
+</ui-modal>
 </template>
 
 <script lang="ts">
@@ -55,14 +58,6 @@ export default Vue.extend({
 
 	mounted() {
 		this.$nextTick(() => {
-			(this.$refs.bg as any).style.pointerEvents = 'auto';
-			anime({
-				targets: this.$refs.bg,
-				opacity: 1,
-				duration: 100,
-				easing: 'linear'
-			});
-
 			anime({
 				targets: this.$refs.main,
 				opacity: 1,
@@ -78,24 +73,20 @@ export default Vue.extend({
 			this.$refs.form.focus();
 		},
 
-		close() {
-			(this.$refs.bg as any).style.pointerEvents = 'none';
-			anime({
-				targets: this.$refs.bg,
-				opacity: 0,
-				duration: 300,
-				easing: 'linear'
-			});
-
+		onBeforeClose() {
 			(this.$refs.main as any).style.pointerEvents = 'none';
+
 			anime({
 				targets: this.$refs.main,
 				opacity: 0,
 				translateY: 16,
 				duration: 300,
-				easing: 'easeOutQuad',
-				complete: () => this.destroyDom()
+				easing: 'easeOutQuad'
 			});
+		},
+
+		close() {
+			(this.$refs.modal as any).close();
 		},
 
 		onPosted() {
@@ -112,30 +103,18 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.ulveipglmagnxfgvitaxyszerjwiqmwl
-	> .bg
-		display block
-		position fixed
-		z-index 10000
-		top 0
-		left 0
-		width 100%
-		height 100%
-		background rgba(#000, 0.7)
-		opacity 0
-		pointer-events none
 
-	> .main
-		display block
-		position fixed
-		z-index 10000
-		top 0
-		left 0
-		right 0
-		height 100%
-		overflow auto
-		margin 0 auto 0 auto
-		opacity 0
-		transform translateY(-16px)
+.main
+	display block
+	position fixed
+	z-index 10000
+	top 0
+	left 0
+	right 0
+	height 100%
+	overflow auto
+	margin 0 auto 0 auto
+	opacity 0
+	transform translateY(-16px)
 
 </style>
