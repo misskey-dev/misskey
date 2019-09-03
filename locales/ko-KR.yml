@@ -1822,6 +1822,8 @@ pages:
   page-created: "페이지를 만들었습니다"
   page-updated: "페이지를 수정했습니다"
   name-already-exists: "지정한 페이지 URL은 이미 존재합니다"
+  title-invalid-name: "유효하지 않은 페이지 URL입니다"
+  text-invalid-name: "비어있지 않은지 확인해주세요"
   are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
   page-deleted: "페이지가 삭제되었습니다"
   edit-this-page: "이 페이지를 편집"
