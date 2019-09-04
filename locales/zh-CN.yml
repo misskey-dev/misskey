@@ -1822,6 +1822,8 @@ pages:
   page-created: "页面已创建"
   page-updated: "页面已更新"
   name-already-exists: "该页面URL已存在"
+  title-invalid-name: "无效的页面URL"
+  text-invalid-name: "请确认该项不为空"
   are-you-sure-delete: "是否删除此页面？"
   page-deleted: "该页面已被删除。"
   edit-this-page: "编辑此页面"
