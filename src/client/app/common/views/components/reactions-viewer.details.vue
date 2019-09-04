@@ -1,27 +1,27 @@
 <template>
-	<transition name="zoom-in-top">
-		<div class="buebdbiu" ref="popover" v-if="show">
-			<i18n path="few-users" v-if="users.length <= 10">
-				<span slot="users">
-					<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
-						<mk-avatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
-						<mk-user-name :user="u" :nowrap="false" style="line-height: 24px;"/>
-					</b>
-				</span>
-				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
-			</i18n>
-			<i18n path="many-users" v-if="10 < users.length">
-				<span slot="users">
-					<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
-						<mk-avatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
-						<mk-user-name :user="u" :nowrap="false" style="line-height: 24px;"/>
-					</b>
-				</span>
-				<span slot="ommited">{{ count - 10 }}</span>
-				<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
-			</i18n>
-		</div>
-	</transition>
+<transition name="zoom-in-top">
+	<div class="buebdbiu" ref="popover" v-if="show">
+		<i18n path="few-users" v-if="users.length <= 10">
+			<span slot="users">
+				<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
+					<mk-avatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
+					<mk-user-name :user="u" :nowrap="false" style="line-height: 24px;"/>
+				</b>
+			</span>
+			<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
+		</i18n>
+		<i18n path="many-users" v-if="10 < users.length">
+			<span slot="users">
+				<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
+					<mk-avatar :user="u" style="width: 24px; height: 24px; margin-right: 2px;"/>
+					<mk-user-name :user="u" :nowrap="false" style="line-height: 24px;"/>
+				</b>
+			</span>
+			<span slot="ommited">{{ count - 10 }}</span>
+			<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
+		</i18n>
+	</div>
+</transition>
 </template>
 
 <script lang="ts">
