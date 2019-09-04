@@ -139,7 +139,12 @@ export default define(meta, async (ps, me) => {
 		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
 		maxNoteTextLength: instance.maxNoteTextLength,
-		emojis: emojis,
+		emojis: emojis.map(e => ({
+			id: e.id,
+			aliases: e.aliases,
+			name: e.name,
+			url: e.url,
+		})),
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,

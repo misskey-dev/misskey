@@ -19,7 +19,8 @@ init(launch => {
 		mode: 'history',
 		base: '/admin/',
 		routes: [
-			{ path: '/', component: Index },
+			{ path: '/:page', component: Index },
+			{ path: '/', redirect: '/dashboard' },
 			{ path: '*', component: NotFound }
 		]
 	});

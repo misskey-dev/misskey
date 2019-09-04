@@ -1,6 +1,7 @@
 import * as nodemailer from 'nodemailer';
 import { fetchMeta } from '../misc/fetch-meta';
 import Logger from './logger';
+import config from '../config';
 
 export const logger = new Logger('email');
 
@@ -14,6 +15,7 @@ export async function sendEmail(to: string, subject: string, text: string) {
 		port: meta.smtpPort,
 		secure: meta.smtpSecure,
 		ignoreTLS: !enableAuth,
+		proxy: config.proxySmtp,
 		auth: enableAuth ? {
 			user: meta.smtpUser,
 			pass: meta.smtpPass

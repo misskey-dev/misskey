@@ -1,16 +1,16 @@
 <template>
-<prism :inline="inline" :language="lang || 'js'">{{ code }}</prism>
+<x-prism :inline="inline" :language="prismLang">{{ code }}</x-prism>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
-import Prism from 'vue-prism-component';
+import XPrism from 'vue-prism-component';
 
 export default Vue.extend({
 	components: {
-		Prism
+		XPrism
 	},
 	props: {
 		code: {
@@ -24,6 +24,12 @@ export default Vue.extend({
 		inline: {
 			type: Boolean,
 			required: false
+		}
+	},
+
+	computed: {
+		prismLang() {
+			return Prism.languages[this.lang] ? this.lang : 'js';
 		}
 	}
 });
