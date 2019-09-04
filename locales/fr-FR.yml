@@ -37,17 +37,17 @@ common:
   unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
   delete-confirm: "Supprimer cette publication ?"
   signin-required: "Veuillez vous connecter"
-  notification-type: "Type de notification"
+  notification-type: "Type de notifications"
   notification-types:
     all: "Tout"
-    pollVote: "Sondage"
+    pollVote: "Sondages"
     follow: "Abonnements"
     receiveFollowRequest: "Demandes d’abonnements"
-    reply: "Répondre"
+    reply: "Réponses"
     quote: "Cité par"
-    renote: "Republier"
+    renote: "Partages"
     mention: "Mentions"
-    reaction: "Réaction"
+    reaction: "Réactions"
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
@@ -548,7 +548,7 @@ common/views/components/note-menu.vue:
   unpin: "Désépingler"
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
-  delete-and-edit: "Effacer et éditer"
+  delete-and-edit: "Supprimer et réécrire"
   remote: "Afficher la note originale"
   pin-limit-exceeded: "Vous ne pouvez plus épingler davantage de publications."
 common/views/components/user-menu.vue:
@@ -604,7 +604,7 @@ common/views/components/poll-editor.vue:
   hour: "Heures"
   day: "D"
 common/views/components/reaction-picker.vue:
-  choose-reaction: "Choisissez votre réaction"
+  choose-reaction: "Envoyer une réaction"
   input-reaction-placeholder: "ou insérez un émoji"
 common/views/components/emoji-picker.vue:
   custom-emoji: "Émoji personnalisé"
@@ -982,8 +982,8 @@ desktop/views/components/note-detail.vue:
   deleted: "cette publication a été supprimée"
   location: "Géolocalisation"
   renote: "Republier"
-  add-reaction: "Ajouter votre reaction"
-  undo-reaction: "Inverser la réaction"
+  add-reaction: "Ajouter une réaction"
+  undo-reaction: "Annuler la réaction"
 desktop/views/components/note.vue:
   reply: "Répondre"
   renote: "Partager"
