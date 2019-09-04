@@ -8,7 +8,7 @@
 オリジナル版との変更点
 --------
 
-[詳しくはこちら...](https://gist.github.com/Xeltica/94bdb9e5ac062983b2533b2c521bf27e)
+[詳しくはこちら...](DIFFERENCE.md)
 
 ---
 

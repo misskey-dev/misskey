@@ -47,7 +47,8 @@ export default Vue.extend({
 	data() {
 		return {
 			details: null,
-			detailsTimeoutId: null
+			detailsTimeoutId: null,
+			isHovering: false
 		};
 	},
 	computed: {
@@ -89,24 +90,31 @@ export default Vue.extend({
 			}
 		},
 		onMouseover() {
+			this.isHovering = true;
 			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
 		},
 		onMouseleave() {
+			this.isHovering = false;
 			clearTimeout(this.detailsTimeoutId);
 			this.closeDetails();
 		},
 		openDetails() {
+			if (this.$root.isMobile) return;
 			this.$root.api('notes/reactions', {
-				noteId: this.note.id
+				noteId: this.note.id,
+				type: this.reaction,
+				limit: 11
 			}).then((reactions: any[]) => {
-				const users = reactions.filter(x => x.type === this.reaction)
+				const users = reactions
 					.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-					.map(x => x.user.username);
+					.map(x => x.user);
 
 				this.closeDetails();
+				if (!this.isHovering) return;
 				this.details = this.$root.new(XDetails, {
 					reaction: this.reaction,
 					users,
+					count: this.count,
 					source: this.$refs.reaction
 				});
 			});
@@ -168,6 +176,14 @@ export default Vue.extend({
 	padding 0 6px
 	border-radius 4px
 	cursor pointer
+
+	&, *
+		-webkit-touch-callout none
+		-webkit-user-select none
+		-khtml-user-select none
+		-moz-user-select none
+		-ms-user-select none
+		user-select none
 
 	*
 		user-select none
