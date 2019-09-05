@@ -1,5 +1,5 @@
 import config from '../../../config';
-import { User, ILocalUser } from '../../../models/entities/user';
+import { ILocalUser, User } from '../../../models/entities/user';
 import { Users } from '../../../models';
 
 export default (mention: User) => ({

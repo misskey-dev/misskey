@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import { Type, Block, funcDefs, envVarsDef, Variable, PageVar, isLiteralBlock } from '.';
+import { Block, envVarsDef, funcDefs, isLiteralBlock, PageVar, Type, Variable } from '.';
 
 type TypeError = {
 	arg: number;

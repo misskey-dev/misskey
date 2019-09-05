@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import { publishMainStream } from '../../../../services/stream';
 import generateUserToken from '../../common/generate-native-user-token';
 import define from '../../define';
-import { Users, UserProfiles } from '../../../../models';
+import { UserProfiles, Users } from '../../../../models';
 import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {

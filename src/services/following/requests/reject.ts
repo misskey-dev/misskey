@@ -3,8 +3,8 @@ import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
-import { User, ILocalUser } from '../../../models/entities/user';
-import { Users, FollowRequests } from '../../../models';
+import { ILocalUser, User } from '../../../models/entities/user';
+import { FollowRequests, Users } from '../../../models';
 
 export default async function(followee: User, follower: User) {
 	if (Users.isRemoteUser(follower)) {

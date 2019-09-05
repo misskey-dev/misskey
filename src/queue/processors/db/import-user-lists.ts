@@ -6,7 +6,7 @@ import { resolveUser } from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
 import { downloadTextFile } from '../../../misc/download-text-file';
 import { isSelfHost, toPuny } from '../../../misc/convert-host';
-import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
+import { DriveFiles, UserListJoinings, UserLists, Users } from '../../../models';
 import { genId } from '../../../misc/gen-id';
 
 const logger = queueLogger.createSubLogger('import-user-lists');

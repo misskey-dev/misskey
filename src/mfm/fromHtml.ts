@@ -1,4 +1,4 @@
-import { parseFragment, DefaultTreeDocumentFragment } from 'parse5';
+import { DefaultTreeDocumentFragment, parseFragment } from 'parse5';
 import { urlRegex } from './prelude';
 
 export function fromHtml(html: string): string {

@@ -5,9 +5,9 @@ import { Notes } from '../../../../models';
 import { PackedNote } from '../../../../models/repositories/note';
 
 export default class extends Channel {
-	public readonly chName = 'hashtag';
 	public static shouldShare = false;
 	public static requireCredential = false;
+	public readonly chName = 'hashtag';
 	private q: string[][];
 
 	@autobind
@@ -18,6 +18,12 @@ export default class extends Channel {
 
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
+	}
+
+	@autobind
+	public dispose() {
+		// Unsubscribe events
+		this.subscriber.off('notesStream', this.onNote);
 	}
 
 	@autobind
@@ -37,11 +43,5 @@ export default class extends Channel {
 		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
-	}
-
-	@autobind
-	public dispose() {
-		// Unsubscribe events
-		this.subscriber.off('notesStream', this.onNote);
 	}
 }

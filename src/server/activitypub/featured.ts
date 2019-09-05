@@ -4,7 +4,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import { setResponseType } from '../activitypub';
 import renderNote from '../../remote/activitypub/renderer/note';
-import { Users, Notes, UserNotePinings } from '../../models';
+import { Notes, UserNotePinings, Users } from '../../models';
 import { ensure } from '../../prelude/ensure';
 
 export default async (ctx: Router.IRouterContext) => {

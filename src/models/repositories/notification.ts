@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users, Notes } from '..';
+import { Notes, Users } from '..';
 import { Notification } from '../entities/notification';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';

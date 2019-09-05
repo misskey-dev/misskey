@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { DriveFolders, DriveFiles } from '..';
+import { DriveFiles, DriveFolders } from '..';
 import { DriveFolder } from '../entities/drive-folder';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';

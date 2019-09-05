@@ -3,7 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { publishDriveStream } from '../../../../../services/stream';
 import { ApiError } from '../../../error';
-import { DriveFolders, DriveFiles } from '../../../../../models';
+import { DriveFiles, DriveFolders } from '../../../../../models';
 
 export const meta = {
 	stability: 'stable',

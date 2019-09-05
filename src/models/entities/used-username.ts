@@ -1,4 +1,4 @@
-import { PrimaryColumn, Entity, Column } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class UsedUsername {

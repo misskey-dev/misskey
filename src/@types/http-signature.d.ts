@@ -1,5 +1,5 @@
 declare module 'http-signature' {
-	import { IncomingMessage, ClientRequest } from 'http';
+	import { ClientRequest, IncomingMessage } from 'http';
 
 	interface ISignature {
 		keyId: string;

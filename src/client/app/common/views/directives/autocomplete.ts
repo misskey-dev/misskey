@@ -27,14 +27,6 @@ class Autocomplete {
 	};
 	private opening: boolean;
 
-	private get text(): string {
-		return this.vm[this.opts.model];
-	}
-
-	private set text(text: string) {
-		this.vm[this.opts.model] = text;
-	}
-
 	/**
 	 * 対象のテキストエリアを与えてインスタンスを初期化します。
 	 */
@@ -50,6 +42,14 @@ class Autocomplete {
 		this.vm = vm;
 		this.opts = opts;
 		this.opening = false;
+	}
+
+	private get text(): string {
+		return this.vm[this.opts.model];
+	}
+
+	private set text(text: string) {
+		this.vm[this.opts.model] = text;
 	}
 
 	/**

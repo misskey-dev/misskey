@@ -11,16 +11,6 @@ export default class NetworkChart extends Chart<NetworkLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: NetworkLog): DeepPartial<NetworkLog> {
-		return {};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<NetworkLog>> {
-		return {};
-	}
-
-	@autobind
 	public async update(incomingRequests: number, time: number, incomingBytes: number, outgoingBytes: number) {
 		const inc: DeepPartial<NetworkLog> = {
 			incomingRequests: incomingRequests,
@@ -30,5 +20,15 @@ export default class NetworkChart extends Chart<NetworkLog> {
 		};
 
 		await this.inc(inc);
+	}
+
+	@autobind
+	protected genNewLog(latest: NetworkLog): DeepPartial<NetworkLog> {
+		return {};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<NetworkLog>> {
+		return {};
 	}
 }

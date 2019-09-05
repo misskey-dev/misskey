@@ -8,7 +8,7 @@ import { toDbReaction } from '../../../misc/reaction-lib';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';
+import { NoteReactions, Notes, NoteWatchings, UserProfiles, Users } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';

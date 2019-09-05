@@ -1,6 +1,6 @@
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
-import { Notifications, Mutings } from '../models';
+import { Mutings, Notifications } from '../models';
 import { genId } from '../misc/gen-id';
 import { User } from '../models/entities/user';
 import { Note } from '../models/entities/note';

@@ -1,7 +1,7 @@
 import * as ms from 'ms';
 import $ from 'cafy';
 import define from '../../define';
-import { Users, Followings } from '../../../../models';
+import { Followings, Users } from '../../../../models';
 import { generateMuteQueryForUsers } from '../../common/generate-mute-query';
 import { generateBlockQueryForUsers } from '../../common/generate-block-query';
 

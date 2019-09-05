@@ -8,7 +8,7 @@ import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-c
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
 import { setResponseType } from '../activitypub';
-import { Users, Followings } from '../../models';
+import { Followings, Users } from '../../models';
 import { LessThan } from 'typeorm';
 
 export default async (ctx: Router.IRouterContext) => {

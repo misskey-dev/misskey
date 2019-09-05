@@ -3,7 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
-import { Users, UserProfiles } from '../../../../models';
+import { UserProfiles, Users } from '../../../../models';
 
 export const meta = {
 	desc: {

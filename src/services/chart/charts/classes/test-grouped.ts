@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
+import Chart, { DeepPartial, Obj } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { name, schema } from '../schemas/test-grouped';
 
@@ -10,6 +10,21 @@ export default class TestGroupedChart extends Chart<TestGroupedLog> {
 
 	constructor() {
 		super(name, schema, true);
+	}
+
+	@autobind
+	public async increment(group: string) {
+		if (this.total[group] == null) this.total[group] = 0;
+
+		const update: Obj = {};
+
+		update.total = 1;
+		update.inc = 1;
+		this.total[group]++;
+
+		await this.inc({
+			foo: update
+		}, group);
 	}
 
 	@autobind
@@ -28,20 +43,5 @@ export default class TestGroupedChart extends Chart<TestGroupedLog> {
 				total: this.total[group],
 			},
 		};
-	}
-
-	@autobind
-	public async increment(group: string) {
-		if (this.total[group] == null) this.total[group] = 0;
-
-		const update: Obj = {};
-
-		update.total = 1;
-		update.inc = 1;
-		this.total[group]++;
-
-		await this.inc({
-			foo: update
-		}, group);
 	}
 }

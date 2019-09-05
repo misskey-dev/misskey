@@ -8,8 +8,8 @@ import MiOS from '../../mios';
  * Misskey stream connection
  */
 export default class Stream extends EventEmitter {
-	private stream: ReconnectingWebsocket;
 	public state: string;
+	private stream: ReconnectingWebsocket;
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
@@ -61,6 +61,28 @@ export default class Stream extends EventEmitter {
 	@autobind
 	public disconnectToChannel(connection: NonSharedConnection) {
 		this.nonSharedConnections = this.nonSharedConnections.filter(c => c !== connection);
+	}
+
+	/**
+	 * Send a message to connection
+	 */
+	@autobind
+	public send(typeOrPayload, payload?) {
+		const data = payload === undefined ? typeOrPayload : {
+			type: typeOrPayload,
+			body: payload
+		};
+
+		this.stream.send(JSON.stringify(data));
+	}
+
+	/**
+	 * Close this connection
+	 */
+	@autobind
+	public close() {
+		this.stream.removeEventListener('open', this.onOpen);
+		this.stream.removeEventListener('message', this.onMessage);
 	}
 
 	/**
@@ -118,35 +140,13 @@ export default class Stream extends EventEmitter {
 			this.emit(type, body);
 		}
 	}
-
-	/**
-	 * Send a message to connection
-	 */
-	@autobind
-	public send(typeOrPayload, payload?) {
-		const data = payload === undefined ? typeOrPayload : {
-			type: typeOrPayload,
-			body: payload
-		};
-
-		this.stream.send(JSON.stringify(data));
-	}
-
-	/**
-	 * Close this connection
-	 */
-	@autobind
-	public close() {
-		this.stream.removeEventListener('open', this.onOpen);
-		this.stream.removeEventListener('message', this.onMessage);
-	}
 }
 
 class Pool {
 	public channel: string;
 	public id: string;
-	protected stream: Stream;
 	public users = 0;
+	protected stream: Stream;
 	private disposeTimerId: any;
 	private isConnected = false;
 
@@ -157,11 +157,6 @@ class Pool {
 		this.id = Math.random().toString().substr(2, 8);
 
 		this.stream.on('_disconnected_', this.onStreamDisconnected);
-	}
-
-	@autobind
-	private onStreamDisconnected() {
-		this.isConnected = false;
 	}
 
 	@autobind
@@ -204,6 +199,11 @@ class Pool {
 	}
 
 	@autobind
+	private onStreamDisconnected() {
+		this.isConnected = false;
+	}
+
+	@autobind
 	private disconnect() {
 		this.stream.off('_disconnected_', this.onStreamDisconnected);
 		this.stream.send('disconnect', { id: this.id });
@@ -213,8 +213,8 @@ class Pool {
 
 abstract class Connection extends EventEmitter {
 	public channel: string;
-	protected stream: Stream;
 	public abstract id: string;
+	protected stream: Stream;
 
 	constructor(stream: Stream, channel: string) {
 		super();
@@ -241,15 +241,15 @@ abstract class Connection extends EventEmitter {
 class SharedConnection extends Connection {
 	private pool: Pool;
 
-	public get id(): string {
-		return this.pool.id;
-	}
-
 	constructor(stream: Stream, channel: string, pool: Pool) {
 		super(stream, channel);
 
 		this.pool = pool;
 		this.pool.inc();
+	}
+
+	public get id(): string {
+		return this.pool.id;
 	}
 
 	@autobind

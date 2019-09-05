@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '../entities/messaging-message';
-import { Users, DriveFiles, UserGroups } from '..';
+import { DriveFiles, UserGroups, Users } from '..';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 

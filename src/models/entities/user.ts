@@ -1,4 +1,4 @@
-import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
 

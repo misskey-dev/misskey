@@ -9,7 +9,7 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Logger from '../logger';
 import { IdentifiableError } from '../../misc/identifiable-error';
 import { User } from '../../models/entities/user';
-import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '../../models';
+import { Blockings, Followings, FollowRequests, Instances, UserProfiles, Users } from '../../models';
 import { instanceChart, perUserFollowingChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 import { createNotification } from '../create-notification';

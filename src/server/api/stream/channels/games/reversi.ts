@@ -4,9 +4,9 @@ import Channel from '../../channel';
 import { ReversiMatchings } from '../../../../../models';
 
 export default class extends Channel {
-	public readonly chName = 'gamesReversi';
 	public static shouldShare = true;
 	public static requireCredential = true;
+	public readonly chName = 'gamesReversi';
 
 	@autobind
 	public async init(params: any) {

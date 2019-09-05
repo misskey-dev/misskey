@@ -8,7 +8,7 @@ import channels from './channels';
 import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
 import { App } from '../../../models/entities/app';
-import { Users, Followings, Mutings } from '../../../models';
+import { Followings, Mutings, Users } from '../../../models';
 
 /**
  * Main stream connection
@@ -18,8 +18,8 @@ export default class Connection {
 	public following: User['id'][] = [];
 	public muting: User['id'][] = [];
 	public app: App;
-	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
+	private wsConnection: websocket.connection;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
 	private followingClock: NodeJS.Timer;
@@ -45,6 +45,69 @@ export default class Connection {
 			this.updateMuting();
 			this.mutingClock = setInterval(this.updateMuting, 5000);
 		}
+	}
+
+	/**
+	 * クライアントにメッセージ送信
+	 */
+	@autobind
+	public sendMessageToWs(type: string, payload: any) {
+		this.wsConnection.send(JSON.stringify({
+			type: type,
+			body: payload
+		}));
+	}
+
+	/**
+	 * チャンネルに接続
+	 */
+	@autobind
+	public connectChannel(id: string, params: any, channel: string, pong = false) {
+		if ((channels as any)[channel].requireCredential && this.user == null) {
+			return;
+		}
+
+		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
+		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
+			return;
+		}
+
+		const ch: Channel = new (channels as any)[channel](id, this);
+		this.channels.push(ch);
+		ch.init(params);
+
+		if (pong) {
+			this.sendMessageToWs('connected', {
+				id: id
+			});
+		}
+	}
+
+	/**
+	 * チャンネルから切断
+	 * @param id チャンネルコネクションID
+	 */
+	@autobind
+	public disconnectChannel(id: string) {
+		const channel = this.channels.find(c => c.id === id);
+
+		if (channel) {
+			if (channel.dispose) channel.dispose();
+			this.channels = this.channels.filter(c => c.id !== id);
+		}
+	}
+
+	/**
+	 * ストリームが切れたとき
+	 */
+	@autobind
+	public dispose() {
+		for (const c of this.channels.filter(c => c.dispose)) {
+			if (c.dispose) c.dispose();
+		}
+
+		if (this.followingClock) clearInterval(this.followingClock);
+		if (this.mutingClock) clearInterval(this.mutingClock);
 	}
 
 	/**
@@ -158,56 +221,6 @@ export default class Connection {
 	}
 
 	/**
-	 * クライアントにメッセージ送信
-	 */
-	@autobind
-	public sendMessageToWs(type: string, payload: any) {
-		this.wsConnection.send(JSON.stringify({
-			type: type,
-			body: payload
-		}));
-	}
-
-	/**
-	 * チャンネルに接続
-	 */
-	@autobind
-	public connectChannel(id: string, params: any, channel: string, pong = false) {
-		if ((channels as any)[channel].requireCredential && this.user == null) {
-			return;
-		}
-
-		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
-		if ((channels as any)[channel].shouldShare && this.channels.some(c => c.chName === channel)) {
-			return;
-		}
-
-		const ch: Channel = new (channels as any)[channel](id, this);
-		this.channels.push(ch);
-		ch.init(params);
-
-		if (pong) {
-			this.sendMessageToWs('connected', {
-				id: id
-			});
-		}
-	}
-
-	/**
-	 * チャンネルから切断
-	 * @param id チャンネルコネクションID
-	 */
-	@autobind
-	public disconnectChannel(id: string) {
-		const channel = this.channels.find(c => c.id === id);
-
-		if (channel) {
-			if (channel.dispose) channel.dispose();
-			this.channels = this.channels.filter(c => c.id !== id);
-		}
-	}
-
-	/**
 	 * チャンネルへメッセージ送信要求時
 	 * @param data メッセージ
 	 */
@@ -241,18 +254,5 @@ export default class Connection {
 		});
 
 		this.muting = mutings.map(x => x.muteeId);
-	}
-
-	/**
-	 * ストリームが切れたとき
-	 */
-	@autobind
-	public dispose() {
-		for (const c of this.channels.filter(c => c.dispose)) {
-			if (c.dispose) c.dispose();
-		}
-
-		if (this.followingClock) clearInterval(this.followingClock);
-		if (this.mutingClock) clearInterval(this.mutingClock);
 	}
 }

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import define from '../../define';
-import { Users, UserProfiles } from '../../../../models';
+import { UserProfiles, Users } from '../../../../models';
 import { ensure } from '../../../../prelude/ensure';
 import { doPostSuspend } from '../../../../services/suspend-user';
 
@@ -28,7 +28,8 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// 物理削除する前にDelete activityを送信する
-	await doPostSuspend(user).catch(e => {});
+	await doPostSuspend(user).catch(e => {
+	});
 
 	await Users.delete(user.id);
 });

@@ -4,7 +4,7 @@ import renderAccept from '../../../remote/activitypub/renderer/accept';
 import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
 import { insertFollowingDoc } from '../create';
-import { User, ILocalUser } from '../../../models/entities/user';
+import { ILocalUser, User } from '../../../models/entities/user';
 import { FollowRequests, Users } from '../../../models';
 
 export default async function(followee: User, follower: User) {

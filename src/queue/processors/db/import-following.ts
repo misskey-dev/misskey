@@ -6,7 +6,7 @@ import parseAcct from '../../../misc/acct/parse';
 import { resolveUser } from '../../../remote/resolve-user';
 import { downloadTextFile } from '../../../misc/download-text-file';
 import { isSelfHost, toPuny } from '../../../misc/convert-host';
-import { Users, DriveFiles } from '../../../models';
+import { DriveFiles, Users } from '../../../models';
 
 const logger = queueLogger.createSubLogger('import-following');
 

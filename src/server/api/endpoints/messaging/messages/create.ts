@@ -1,12 +1,16 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import { publishMainStream, publishGroupMessagingStream } from '../../../../../services/stream';
-import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../services/stream';
+import {
+	publishGroupMessagingStream,
+	publishMainStream,
+	publishMessagingIndexStream,
+	publishMessagingStream
+} from '../../../../../services/stream';
 import pushSw from '../../../../../services/push-notification';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { MessagingMessages, DriveFiles, Mutings, UserGroups, UserGroupJoinings } from '../../../../../models';
+import { DriveFiles, MessagingMessages, Mutings, UserGroupJoinings, UserGroups } from '../../../../../models';
 import { MessagingMessage } from '../../../../../models/entities/messaging-message';
 import { genId } from '../../../../../misc/gen-id';
 import { User } from '../../../../../models/entities/user';

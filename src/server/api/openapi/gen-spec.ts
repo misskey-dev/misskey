@@ -2,7 +2,7 @@ import endpoints from '../endpoints';
 import { Context } from 'cafy';
 import config from '../../../config';
 import { errors as basicErrors } from './errors';
-import { schemas, convertSchemaToOpenApiSchema } from './schemas';
+import { convertSchemaToOpenApiSchema, schemas } from './schemas';
 import { getDescription } from './description';
 
 export function genOpenapiSpec(lang = 'ja-JP') {

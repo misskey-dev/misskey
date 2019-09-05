@@ -185,6 +185,15 @@ declare module 'jsrsasign' {
 	//// BIG INTEGER TYPES (PARTIAL)
 
 	class BigInteger {
+		public static ZERO: BigInteger;
+		public static ONE: BigInteger;
+		public DB: number;
+		public DM: number;
+		public DV: number;
+		public FV: number;
+		public F1: number;
+		public F2: number;
+
 		constructor(a: null);
 
 		constructor(a: number, b: SecureRandom);
@@ -197,26 +206,6 @@ declare module 'jsrsasign' {
 
 		public am(i: number, x: number, w: number, j: number, c: number, n: number): number;
 
-		public DB: number;
-
-		public DM: number;
-
-		public DV: number;
-
-		public FV: number;
-
-		public F1: number;
-
-		public F2: number;
-
-		protected copyTo(r: Mutable<BigInteger>): void;
-
-		protected fromInt(x: number): void;
-
-		protected fromString(s: string, b: number): void;
-
-		protected clamp(): void;
-
 		public toString(b: number): string;
 
 		public negate(): BigInteger;
@@ -226,6 +215,18 @@ declare module 'jsrsasign' {
 		public compareTo(a: BigInteger): number;
 
 		public bitLength(): number;
+
+		public mod(a: BigInteger): BigInteger;
+
+		public modPowInt(e: number, m: BigInteger): BigInteger;
+
+		protected copyTo(r: Mutable<BigInteger>): void;
+
+		protected fromInt(x: number): void;
+
+		protected fromString(s: string, b: number): void;
+
+		protected clamp(): void;
 
 		protected dlShiftTo(n: number, r: Mutable<BigInteger>): void;
 
@@ -243,19 +244,11 @@ declare module 'jsrsasign' {
 
 		protected divRemTo(m: BigInteger, q: Mutable<BigInteger>, r: Mutable<BigInteger>): void;
 
-		public mod(a: BigInteger): BigInteger;
-
 		protected invDigit(): number;
 
 		protected isEven(): boolean;
 
 		protected exp(e: number, z: Classic | Montgomery): BigInteger;
-
-		public modPowInt(e: number, m: BigInteger): BigInteger;
-
-		public static ZERO: BigInteger;
-
-		public static ONE: BigInteger;
 	}
 
 	class Classic {
@@ -312,18 +305,26 @@ declare module 'jsrsasign' {
 
 	type PEMHeadAlgName = 'RSA' | 'EC' | 'DSA';
 
-	type GetKeyRSAParam = RSAKey | {
+	type GetKeyRSAParam =
+		RSAKey
+		| {
 		n: BigInteger;
 		e: number;
-	} | Record<'n' | 'e', HexString> | Record<'n' | 'e', HexString> & Record<'d' | 'p' | 'q' | 'dp' | 'dq' | 'co', HexString | null> | {
+	}
+		| Record<'n' | 'e', HexString>
+		| Record<'n' | 'e', HexString> & Record<'d' | 'p' | 'q' | 'dp' | 'dq' | 'co', HexString | null>
+		| {
 		n: BigInteger;
 		e: number;
 		d: BigInteger;
-	} | {
+	}
+		| {
 		kty: 'RSA';
-	} & Record<'n' | 'e', Base64URLString> | {
+	} & Record<'n' | 'e', Base64URLString>
+		| {
 		kty: 'RSA';
-	} & Record<'n' | 'e' | 'd' | 'p' | 'q' | 'dp' | 'dq' | 'qi', Base64URLString> | {
+	} & Record<'n' | 'e' | 'd' | 'p' | 'q' | 'dp' | 'dq' | 'qi', Base64URLString>
+		| {
 		kty: 'RSA';
 	} & Record<'n' | 'e' | 'd', Base64URLString>;
 
@@ -346,56 +347,15 @@ declare module 'jsrsasign' {
 		d: Base64URLString;
 	};
 
-	type GetKeyDSAParam = KJUR.crypto.DSA | Record<'p' | 'q' | 'g', BigInteger> & Record<'y', BigInteger | null> | Record<'p' | 'q' | 'g' | 'x', BigInteger> & Record<'y', BigInteger | null>;
+	type GetKeyDSAParam =
+		KJUR.crypto.DSA
+		| Record<'p' | 'q' | 'g', BigInteger> & Record<'y', BigInteger | null>
+		| Record<'p' | 'q' | 'g' | 'x', BigInteger> & Record<'y', BigInteger | null>;
 
 	type GetKeyParam = GetKeyRSAParam | GetKeyECDSAParam | GetKeyDSAParam | string;
 
 	class KEYUTIL {
 		public version: '1.0.0';
-
-		public parsePKCS5PEM(sPKCS5PEM: PEM): Partial<Record<'type' | 's', string>> & (Record<'cipher' | 'ivsalt', string> | Record<'cipher' | 'ivsalt', undefined>);
-
-		public getKeyAndUnusedIvByPasscodeAndIvsalt(algName: AlgName, passcode: string, ivsaltHex: HexString): Record<'keyhex' | 'ivhex', HexString>;
-
-		public decryptKeyB64(privateKeyB64: Base64String, sharedKeyAlgName: AlgName, sharedKeyHex: HexString, ivsaltHex: HexString): Base64String;
-
-		public getDecryptedKeyHex(sEncryptedPEM: PEM, passcode: string): HexString;
-
-		public getEncryptedPKCS5PEMFromPrvKeyHex(pemHeadAlg: PEMHeadAlgName, hPrvKey: string, passcode: string, sharedKeyAlgName?: AlgName | null, ivsaltHex?: HexString | null): PEM;
-
-		public parseHexOfEncryptedPKCS8(sHEX: HexString): {
-			ciphertext: ASN1V;
-			encryptionSchemeAlg: 'TripleDES';
-			encryptionSchemeIV: ASN1V;
-			pbkdf2Salt: ASN1V;
-			pbkdf2Iter: number;
-		};
-
-		public getPBKDF2KeyHexFromParam(info: ReturnType<this['parseHexOfEncryptedPKCS8']>, passcode: string): HexString;
-
-		private _getPlainPKCS8HexFromEncryptedPKCS8PEM(pkcs8PEM: PEM, passcode: string): HexString;
-
-		public getKeyFromEncryptedPKCS8PEM(prvKeyHex: HexString): ReturnType<this['getKeyFromPlainPrivatePKCS8Hex']>;
-
-		public parsePlainPrivatePKCS8Hex(pkcs8PrvHex: HexString): {
-			algparam: ASN1V | null;
-			algoid: ASN1V;
-			keyidx: Idx<ASN1V>;
-		};
-
-		public getKeyFromPlainPrivatePKCS8PEM(prvKeyHex: HexString): ReturnType<this['getKeyFromPlainPrivatePKCS8Hex']>;
-
-		public getKeyFromPlainPrivatePKCS8Hex(prvKeyHex: HexString): RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA;
-
-		private _getKeyFromPublicPKCS8Hex(h: HexString): RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA;
-
-		public parsePublicRawRSAKeyHex(pubRawRSAHex: HexString): Record<'n' | 'e', ASN1V>;
-
-		public parsePublicPKCS8Hex(pkcs8PubHex: HexString): {
-			algparam: ASN1V | Record<'p' | 'q' | 'g', ASN1V> | null;
-			algoid: ASN1V;
-			key: ASN1V;
-		};
 
 		public static getKey(param: GetKeyRSAParam): RSAKey;
 
@@ -435,13 +395,67 @@ declare module 'jsrsasign' {
 			x: Base64URLString;
 			y: Base64URLString;
 		};
+
+		public parsePKCS5PEM(sPKCS5PEM: PEM): Partial<Record<'type' | 's', string>> & (Record<'cipher' | 'ivsalt', string> | Record<'cipher' | 'ivsalt', undefined>);
+
+		public getKeyAndUnusedIvByPasscodeAndIvsalt(algName: AlgName, passcode: string, ivsaltHex: HexString): Record<'keyhex' | 'ivhex', HexString>;
+
+		public decryptKeyB64(privateKeyB64: Base64String, sharedKeyAlgName: AlgName, sharedKeyHex: HexString, ivsaltHex: HexString): Base64String;
+
+		public getDecryptedKeyHex(sEncryptedPEM: PEM, passcode: string): HexString;
+
+		public getEncryptedPKCS5PEMFromPrvKeyHex(pemHeadAlg: PEMHeadAlgName, hPrvKey: string, passcode: string, sharedKeyAlgName?: AlgName | null, ivsaltHex?: HexString | null): PEM;
+
+		public parseHexOfEncryptedPKCS8(sHEX: HexString): {
+			ciphertext: ASN1V;
+			encryptionSchemeAlg: 'TripleDES';
+			encryptionSchemeIV: ASN1V;
+			pbkdf2Salt: ASN1V;
+			pbkdf2Iter: number;
+		};
+
+		public getPBKDF2KeyHexFromParam(info: ReturnType<this['parseHexOfEncryptedPKCS8']>, passcode: string): HexString;
+
+		public getKeyFromEncryptedPKCS8PEM(prvKeyHex: HexString): ReturnType<this['getKeyFromPlainPrivatePKCS8Hex']>;
+
+		public parsePlainPrivatePKCS8Hex(pkcs8PrvHex: HexString): {
+			algparam: ASN1V | null;
+			algoid: ASN1V;
+			keyidx: Idx<ASN1V>;
+		};
+
+		public getKeyFromPlainPrivatePKCS8PEM(prvKeyHex: HexString): ReturnType<this['getKeyFromPlainPrivatePKCS8Hex']>;
+
+		public getKeyFromPlainPrivatePKCS8Hex(prvKeyHex: HexString): RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA;
+
+		public parsePublicRawRSAKeyHex(pubRawRSAHex: HexString): Record<'n' | 'e', ASN1V>;
+
+		public parsePublicPKCS8Hex(pkcs8PubHex: HexString): {
+			algparam: ASN1V | Record<'p' | 'q' | 'g', ASN1V> | null;
+			algoid: ASN1V;
+			key: ASN1V;
+		};
+
+		private _getPlainPKCS8HexFromEncryptedPKCS8PEM(pkcs8PEM: PEM, passcode: string): HexString;
+
+		private _getKeyFromPublicPKCS8Hex(h: HexString): RSAKey | KJUR.crypto.DSA | KJUR.crypto.ECDSA;
 	}
 
 	//// KJUR NAMESPACE (PARTIAL)
 
 	namespace KJUR {
 		namespace crypto {
-			type CurveName = 'secp128r1' | 'secp160k1' | 'secp160r1' | 'secp192k1' | 'secp192r1' | 'secp224r1' | 'secp256k1' | 'secp256r1' | 'secp384r1' | 'secp521r1';
+			type CurveName =
+				'secp128r1'
+				| 'secp160k1'
+				| 'secp160r1'
+				| 'secp192k1'
+				| 'secp192r1'
+				| 'secp224r1'
+				| 'secp256k1'
+				| 'secp256r1'
+				| 'secp384r1'
+				| 'secp521r1';
 
 			class DSA {
 				public p: BigInteger | null;
@@ -484,27 +498,34 @@ declare module 'jsrsasign' {
 			}
 
 			class ECDSA {
+				public p: BigInteger | null;
+				public q: BigInteger | null;
+				public g: BigInteger | null;
+				public y: BigInteger | null;
+				public x: BigInteger | null;
+				public type: 'EC';
+				public isPrivate: boolean;
+				public isPublic: boolean;
+
 				constructor(params?: {
 					curve?: CurveName;
 					prv?: HexString;
 					pub?: HexString;
 				});
 
-				public p: BigInteger | null;
+				public static parseSigHex(sigHex: HexString): Record<'r' | 's', BigInteger>;
 
-				public q: BigInteger | null;
+				public static parseSigHexInHexRS(sigHex: HexString): Record<'r' | 's', ASN1V>;
 
-				public g: BigInteger | null;
+				public static asn1SigToConcatSig(asn1Sig: HexString): HexString;
 
-				public y: BigInteger | null;
+				public static concatSigToASN1Sig(concatSig: HexString): ASN1TLV;
 
-				public x: BigInteger | null;
+				public static hexRSSigToASN1Sig(hR: HexString, hS: HexString): ASN1TLV;
 
-				public type: 'EC';
+				public static biRSSigToASN1Sig(biR: BigInteger, biS: BigInteger): ASN1TLV;
 
-				public isPrivate: boolean;
-
-				public isPublic: boolean;
+				public static getName(s: CurveName | HexString): 'secp256r1' | 'secp256k1' | 'secp384r1' | null;
 
 				public getBigRandom(limit: BigInteger): BigInteger;
 
@@ -535,20 +556,6 @@ declare module 'jsrsasign' {
 				public readPKCS8PubKeyHex(h: HexString): void;
 
 				public readCertPubKeyHex(h: HexString, nthPKI: number): void;
-
-				public static parseSigHex(sigHex: HexString): Record<'r' | 's', BigInteger>;
-
-				public static parseSigHexInHexRS(sigHex: HexString): Record<'r' | 's', ASN1V>;
-
-				public static asn1SigToConcatSig(asn1Sig: HexString): HexString;
-
-				public static concatSigToASN1Sig(concatSig: HexString): ASN1TLV;
-
-				public static hexRSSigToASN1Sig(hR: HexString, hS: HexString): ASN1TLV;
-
-				public static biRSSigToASN1Sig(biR: BigInteger, biS: BigInteger): ASN1TLV;
-
-				public static getName(s: CurveName | HexString): 'secp256r1' | 'secp256k1' | 'secp384r1' | null;
 			}
 
 			class Signature {
@@ -561,10 +568,6 @@ declare module 'jsrsasign' {
 					prvkeypem: PEM;
 					prvkeypas?: never;
 				} | {}));
-
-				private _setAlgNames(): void;
-
-				private _zeroPaddingOfSignature(hex: HexString, bitLength: number): HexString;
 
 				public setAlgAndProvider(alg: string, prov: string): void;
 
@@ -581,6 +584,10 @@ declare module 'jsrsasign' {
 				public signHex(hex: HexString): HexString;
 
 				public verify(hSigVal: string): boolean | 0;
+
+				private _setAlgNames(): void;
+
+				private _zeroPaddingOfSignature(hex: HexString, bitLength: number): HexString;
 			}
 		}
 	}
@@ -588,31 +595,22 @@ declare module 'jsrsasign' {
 	//// RSAKEY TYPES
 
 	class RSAKey {
+		public static SALT_LEN_HLEN: -1;
+		public static SALT_LEN_MAX: -2;
+		public static SALT_LEN_RECOVER: -2;
 		public n: BigInteger | null;
-
 		public e: number;
-
 		public d: BigInteger | null;
-
 		public p: BigInteger | null;
-
 		public q: BigInteger | null;
-
 		public dmp1: BigInteger | null;
-
 		public dmq1: BigInteger | null;
-
 		public coeff: BigInteger | null;
 
-		public type: 'RSA';
-
-		public isPrivate?: boolean;
-
-		public isPublic?: boolean;
-
 		//// RSA PUBLIC
-
-		protected doPublic(x: BigInteger): BigInteger;
+		public type: 'RSA';
+		public isPrivate?: boolean;
+		public isPublic?: boolean;
 
 		public setPublic(N: BigInteger, E: number): void;
 
@@ -620,13 +618,11 @@ declare module 'jsrsasign' {
 
 		public encrypt(text: string): HexString | null;
 
+		//// RSA PRIVATE
+
 		public encryptOAEP(text: string, hash?: string, hashLen?: number): HexString | null;
 
 		public encryptOAEP(text: string, hash?: (s: string) => string, hashLen?: number): HexString | null;
-
-		//// RSA PRIVATE
-
-		protected doPrivate(x: BigInteger): BigInteger;
 
 		public setPrivate(N: BigInteger, E: number, D: BigInteger): void;
 
@@ -678,11 +674,9 @@ declare module 'jsrsasign' {
 
 		public verifyWithMessageHashPSS(hHash: HexString, hSig: HexString, hashAlg: string, sLen: number): boolean;
 
-		public static SALT_LEN_HLEN: -1;
+		protected doPublic(x: BigInteger): BigInteger;
 
-		public static SALT_LEN_MAX: -2;
-
-		public static SALT_LEN_RECOVER: -2;
+		protected doPrivate(x: BigInteger): BigInteger;
 	}
 
 	/// RNG TYPES
@@ -716,6 +710,20 @@ declare module 'jsrsasign' {
 		public foffset: number;
 
 		public aExtInfo: null;
+
+		public static hex2dn(hex: HexString, idx?: Idx<HexString>): string;
+
+		public static hex2rdn(hex: HexString, idx?: Idx<HexString>): string;
+
+		public static hex2attrTypeValue(hex: HexString, idx?: Idx<HexString>): string;
+
+		public static getPublicKeyFromCertPEM(sCertPEM: PEM): RSAKey | KJUR.crypto.ECDSA | KJUR.crypto.DSA;
+
+		public static getPublicKeyInfoPropOfCertPEM(sCertPEM: PEM): {
+			algparam: ASN1V | null;
+			leyhex: ASN1V;
+			algoid: ASN1V;
+		};
 
 		public getVersion(): number;
 
@@ -785,19 +793,5 @@ declare module 'jsrsasign' {
 		public readCertHex(sCertHex: HexString): void;
 
 		public getInfo(): string;
-
-		public static hex2dn(hex: HexString, idx?: Idx<HexString>): string;
-
-		public static hex2rdn(hex: HexString, idx?: Idx<HexString>): string;
-
-		public static hex2attrTypeValue(hex: HexString, idx?: Idx<HexString>): string;
-
-		public static getPublicKeyFromCertPEM(sCertPEM: PEM): RSAKey | KJUR.crypto.ECDSA | KJUR.crypto.DSA;
-
-		public static getPublicKeyInfoPropOfCertPEM(sCertPEM: PEM): {
-			algparam: ASN1V | null;
-			leyhex: ASN1V;
-			algoid: ASN1V;
-		};
 	}
 }

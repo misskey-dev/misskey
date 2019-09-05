@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
+import Chart, { DeepPartial, Obj } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { DriveFiles } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
@@ -10,6 +10,23 @@ type PerUserDriveLog = SchemaType<typeof schema>;
 export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
 	constructor() {
 		super(name, schema, true);
+	}
+
+	@autobind
+	public async update(file: DriveFile, isAdditional: boolean) {
+		const update: Obj = {};
+
+		update.totalCount = isAdditional ? 1 : -1;
+		update.totalSize = isAdditional ? file.size : -file.size;
+		if (isAdditional) {
+			update.incCount = 1;
+			update.incSize = file.size;
+		} else {
+			update.decCount = 1;
+			update.decSize = file.size;
+		}
+
+		await this.inc(update, file.userId);
 	}
 
 	@autobind
@@ -31,22 +48,5 @@ export default class PerUserDriveChart extends Chart<PerUserDriveLog> {
 			totalCount: count,
 			totalSize: size,
 		};
-	}
-
-	@autobind
-	public async update(file: DriveFile, isAdditional: boolean) {
-		const update: Obj = {};
-
-		update.totalCount = isAdditional ? 1 : -1;
-		update.totalSize = isAdditional ? file.size : -file.size;
-		if (isAdditional) {
-			update.incCount = 1;
-			update.incSize = file.size;
-		} else {
-			update.decCount = 1;
-			update.decSize = file.size;
-		}
-
-		await this.inc(update, file.userId);
 	}
 }

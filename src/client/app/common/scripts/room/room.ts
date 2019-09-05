@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import { v4 as uuid } from 'uuid';
 import * as THREE from 'three';
-import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -41,35 +41,6 @@ export class Room {
 	private onChangeSelect: Function;
 	private isTransformMode = false;
 	private renderFrameRequestId: number;
-
-	private get canvas(): HTMLCanvasElement {
-		return this.renderer.domElement;
-	}
-
-	private get furnitures(): Furniture[] {
-		return this.roomInfo.furnitures;
-	}
-
-	private set furnitures(furnitures: Furniture[]) {
-		this.roomInfo.furnitures = furnitures;
-	}
-
-	private get enableShadow() {
-		return this.graphicsQuality != 'cheep';
-	}
-
-	private get usePostFXs() {
-		return this.graphicsQuality !== 'cheep' && this.graphicsQuality !== 'low';
-	}
-
-	private get shadowQuality() {
-		return (
-			this.graphicsQuality === 'ultra' ? 16384 :
-			this.graphicsQuality === 'high' ? 8192 :
-			this.graphicsQuality === 'medium' ? 4096 :
-			this.graphicsQuality === 'low' ? 1024 :
-			0); // cheep
-	}
 
 	constructor(user, isMyRoom, roomInfo: RoomInfo, container, options: Options) {
 		this.roomInfo = roomInfo;
@@ -307,6 +278,191 @@ export class Room {
 		} else {
 			this.renderWithoutPostFXs();
 		}
+	}
+
+	private get canvas(): HTMLCanvasElement {
+		return this.renderer.domElement;
+	}
+
+	private get furnitures(): Furniture[] {
+		return this.roomInfo.furnitures;
+	}
+
+	private set furnitures(furnitures: Furniture[]) {
+		this.roomInfo.furnitures = furnitures;
+	}
+
+	private get enableShadow() {
+		return this.graphicsQuality != 'cheep';
+	}
+
+	private get usePostFXs() {
+		return this.graphicsQuality !== 'cheep' && this.graphicsQuality !== 'low';
+	}
+
+	private get shadowQuality() {
+		return (
+			this.graphicsQuality === 'ultra' ? 16384 :
+				this.graphicsQuality === 'high' ? 8192 :
+					this.graphicsQuality === 'medium' ? 4096 :
+						this.graphicsQuality === 'low' ? 1024 :
+							0); // cheep
+	}
+
+	/**
+	 * 家具の移動/回転モードにします
+	 * @param type 移動か回転か
+	 */
+	@autobind
+	public enterTransformMode(type: 'translate' | 'rotate') {
+		this.isTransformMode = true;
+		this.furnitureControl.setMode(type);
+		this.furnitureControl.attach(this.selectedObject);
+	}
+
+	/**
+	 * 家具の移動/回転モードを終了します
+	 */
+	@autobind
+	public exitTransformMode() {
+		this.isTransformMode = false;
+		this.furnitureControl.detach();
+	}
+
+	/**
+	 * 家具プロパティを更新します
+	 * @param key プロパティ名
+	 * @param value 値
+	 */
+	@autobind
+	public updateProp(key: string, value: any) {
+		const furniture = this.furnitures.find(furniture => furniture.id === this.selectedObject.name);
+		if (furniture.props == null) furniture.props = {};
+		furniture.props[key] = value;
+		this.applyCustomColor(this.selectedObject);
+		this.applyCustomTexture(this.selectedObject);
+	}
+
+	/**
+	 * 部屋に家具を追加します
+	 * @param type 家具の種類
+	 */
+	@autobind
+	public addFurniture(type: string) {
+		const furniture = {
+			id: uuid(),
+			type: type,
+			position: {
+				x: 0,
+				y: 0,
+				z: 0,
+			},
+			rotation: {
+				x: 0,
+				y: 0,
+				z: 0,
+			},
+		};
+
+		this.furnitures.push(furniture);
+
+		this.loadFurniture(furniture).then(obj => {
+			this.scene.add(obj.scene);
+			this.objects.push(obj.scene);
+		});
+	}
+
+	/**
+	 * 現在選択されている家具を部屋から削除します
+	 */
+	@autobind
+	public removeFurniture() {
+		this.exitTransformMode();
+		const obj = this.selectedObject;
+		this.scene.remove(obj);
+		this.objects = this.objects.filter(object => object.name !== obj.name);
+		this.furnitures = this.furnitures.filter(furniture => furniture.id !== obj.name);
+		this.selectedObject = null;
+		this.onChangeSelect(null);
+	}
+
+	/**
+	 * 全ての家具を部屋から削除します
+	 */
+	@autobind
+	public removeAllFurnitures() {
+		this.exitTransformMode();
+		for (const obj of this.objects) {
+			this.scene.remove(obj);
+		}
+		this.objects = [];
+		this.furnitures = [];
+		this.selectedObject = null;
+		this.onChangeSelect(null);
+	}
+
+	/**
+	 * 部屋の床の色を変更します
+	 * @param color 色
+	 */
+	@autobind
+	public updateCarpetColor(color: string) {
+		this.roomInfo.carpetColor = color;
+		this.applyCarpetColor();
+	}
+
+	/**
+	 * 部屋の種類を変更します
+	 * @param type 種類
+	 */
+	@autobind
+	public changeRoomType(type: string) {
+		this.roomInfo.roomType = type;
+		this.scene.remove(this.roomObj);
+		this.loadRoom();
+	}
+
+	/**
+	 * 部屋データを取得します
+	 */
+	@autobind
+	public getRoomInfo() {
+		for (const obj of this.objects) {
+			const furniture = this.furnitures.find(f => f.id === obj.name);
+			furniture.position.x = obj.position.x;
+			furniture.position.y = obj.position.y;
+			furniture.position.z = obj.position.z;
+			furniture.rotation.x = obj.rotation.x;
+			furniture.rotation.y = obj.rotation.y;
+			furniture.rotation.z = obj.rotation.z;
+		}
+
+		return this.roomInfo;
+	}
+
+	/**
+	 * 選択されている家具を取得します
+	 */
+	@autobind
+	public getSelectedObject() {
+		return this.selectedObject;
+	}
+
+	@autobind
+	public findFurnitureById(id: string) {
+		return this.furnitures.find(furniture => furniture.id === id);
+	}
+
+	/**
+	 * レンダリングを終了します
+	 */
+	@autobind
+	public destroy() {
+		// Stop render loop
+		window.cancelAnimationFrame(this.renderFrameRequestId);
+
+		this.controls.dispose();
+		this.scene.dispose();
 	}
 
 	@autobind
@@ -616,161 +772,5 @@ export class Room {
 				(child.material as THREE.MeshStandardMaterial).emissive.setHex(0xff0000);
 			}
 		});
-	}
-
-	/**
-	 * 家具の移動/回転モードにします
-	 * @param type 移動か回転か
-	 */
-	@autobind
-	public enterTransformMode(type: 'translate' | 'rotate') {
-		this.isTransformMode = true;
-		this.furnitureControl.setMode(type);
-		this.furnitureControl.attach(this.selectedObject);
-	}
-
-	/**
-	 * 家具の移動/回転モードを終了します
-	 */
-	@autobind
-	public exitTransformMode() {
-		this.isTransformMode = false;
-		this.furnitureControl.detach();
-	}
-
-	/**
-	 * 家具プロパティを更新します
-	 * @param key プロパティ名
-	 * @param value 値
-	 */
-	@autobind
-	public updateProp(key: string, value: any) {
-		const furniture = this.furnitures.find(furniture => furniture.id === this.selectedObject.name);
-		if (furniture.props == null) furniture.props = {};
-		furniture.props[key] = value;
-		this.applyCustomColor(this.selectedObject);
-		this.applyCustomTexture(this.selectedObject);
-	}
-
-	/**
-	 * 部屋に家具を追加します
-	 * @param type 家具の種類
-	 */
-	@autobind
-	public addFurniture(type: string) {
-		const furniture = {
-			id: uuid(),
-			type: type,
-			position: {
-				x: 0,
-				y: 0,
-				z: 0,
-			},
-			rotation: {
-				x: 0,
-				y: 0,
-				z: 0,
-			},
-		};
-
-		this.furnitures.push(furniture);
-
-		this.loadFurniture(furniture).then(obj => {
-			this.scene.add(obj.scene);
-			this.objects.push(obj.scene);
-		});
-	}
-
-	/**
-	 * 現在選択されている家具を部屋から削除します
-	 */
-	@autobind
-	public removeFurniture() {
-		this.exitTransformMode();
-		const obj = this.selectedObject;
-		this.scene.remove(obj);
-		this.objects = this.objects.filter(object => object.name !== obj.name);
-		this.furnitures = this.furnitures.filter(furniture => furniture.id !== obj.name);
-		this.selectedObject = null;
-		this.onChangeSelect(null);
-	}
-
-	/**
-	 * 全ての家具を部屋から削除します
-	 */
-	@autobind
-	public removeAllFurnitures() {
-		this.exitTransformMode();
-		for (const obj of this.objects) {
-			this.scene.remove(obj);
-		}
-		this.objects = [];
-		this.furnitures = [];
-		this.selectedObject = null;
-		this.onChangeSelect(null);
-	}
-
-	/**
-	 * 部屋の床の色を変更します
-	 * @param color 色
-	 */
-	@autobind
-	public updateCarpetColor(color: string) {
-		this.roomInfo.carpetColor = color;
-		this.applyCarpetColor();
-	}
-
-	/**
-	 * 部屋の種類を変更します
-	 * @param type 種類
-	 */
-	@autobind
-	public changeRoomType(type: string) {
-		this.roomInfo.roomType = type;
-		this.scene.remove(this.roomObj);
-		this.loadRoom();
-	}
-
-	/**
-	 * 部屋データを取得します
-	 */
-	@autobind
-	public getRoomInfo() {
-		for (const obj of this.objects) {
-			const furniture = this.furnitures.find(f => f.id === obj.name);
-			furniture.position.x = obj.position.x;
-			furniture.position.y = obj.position.y;
-			furniture.position.z = obj.position.z;
-			furniture.rotation.x = obj.rotation.x;
-			furniture.rotation.y = obj.rotation.y;
-			furniture.rotation.z = obj.rotation.z;
-		}
-
-		return this.roomInfo;
-	}
-
-	/**
-	 * 選択されている家具を取得します
-	 */
-	@autobind
-	public getSelectedObject() {
-		return this.selectedObject;
-	}
-
-	@autobind
-	public findFurnitureById(id: string) {
-		return this.furnitures.find(furniture => furniture.id === id);
-	}
-
-	/**
-	 * レンダリングを終了します
-	 */
-	@autobind
-	public destroy() {
-		// Stop render loop
-		window.cancelAnimationFrame(this.renderFrameRequestId);
-
-		this.controls.dispose();
-		this.scene.dispose();
 	}
 }

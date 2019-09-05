@@ -6,7 +6,7 @@ import renderBlock from '../../remote/activitypub/renderer/block';
 import { deliver } from '../../queue';
 import renderReject from '../../remote/activitypub/renderer/reject';
 import { User } from '../../models/entities/user';
-import { Blockings, Users, FollowRequests, Followings } from '../../models';
+import { Blockings, Followings, FollowRequests, Users } from '../../models';
 import { perUserFollowingChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 

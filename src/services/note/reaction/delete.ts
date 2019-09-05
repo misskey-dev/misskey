@@ -6,7 +6,7 @@ import { deliver } from '../../../queue';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, Notes } from '../../../models';
+import { NoteReactions, Notes, Users } from '../../../models';
 
 export default async (user: User, note: Note) => {
 	// if already unreacted

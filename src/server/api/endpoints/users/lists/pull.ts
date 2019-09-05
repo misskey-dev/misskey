@@ -4,7 +4,7 @@ import { publishUserListStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { UserLists, UserListJoinings, Users } from '../../../../../models';
+import { UserListJoinings, UserLists, Users } from '../../../../../models';
 
 export const meta = {
 	desc: {

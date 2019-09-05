@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../define';
 import { ID } from '../../../misc/cafy-id';
 import { publishMainStream } from '../../../services/stream';
-import { Users, Pages } from '../../../models';
+import { Pages, Users } from '../../../models';
 import { ApiError } from '../error';
 
 export const meta = {

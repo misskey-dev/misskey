@@ -8,8 +8,8 @@ import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-c
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';
 import renderFollowUser from '../../remote/activitypub/renderer/follow-user';
 import { setResponseType } from '../activitypub';
-import { Users, Followings } from '../../models';
-import { LessThan, FindConditions } from 'typeorm';
+import { Followings, Users } from '../../models';
+import { FindConditions, LessThan } from 'typeorm';
 import { Following } from '../../models/entities/following';
 
 export default async (ctx: Router.IRouterContext) => {

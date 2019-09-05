@@ -3,9 +3,9 @@ import Channel from '../channel';
 import { Mutings } from '../../../../models';
 
 export default class extends Channel {
-	public readonly chName = 'main';
 	public static shouldShare = true;
 	public static requireCredential = true;
+	public readonly chName = 'main';
 
 	@autobind
 	public async init(params: any) {

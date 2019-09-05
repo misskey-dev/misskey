@@ -1,5 +1,5 @@
 import define from '../../define';
-import { driveChart, notesChart, usersChart, instanceChart } from '../../../../services/chart';
+import { driveChart, instanceChart, notesChart, usersChart } from '../../../../services/chart';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
 
 export const meta = {

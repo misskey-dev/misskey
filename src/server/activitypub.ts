@@ -13,7 +13,7 @@ import Following from './activitypub/following';
 import Featured from './activitypub/featured';
 import { inbox as processInbox } from '../queue';
 import { isSelfHost } from '../misc/convert-host';
-import { Notes, Users, Emojis, UserKeypairs } from '../models';
+import { Emojis, Notes, UserKeypairs, Users } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In } from 'typeorm';
 import { ensure } from '../prelude/ensure';

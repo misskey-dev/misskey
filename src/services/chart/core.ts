@@ -8,9 +8,9 @@ import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
-import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
+import { EntitySchema, getRepository, LessThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '../../prelude/time';
+import { DateUTC, isTimeBefore, isTimeSame, subtractTimespan } from '../../prelude/time';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
@@ -60,12 +60,68 @@ const camelToSnake = (str: string) => {
 export default abstract class Chart<T extends Record<string, any>> {
 	private static readonly columnPrefix = '___';
 	private static readonly columnDot = '_';
-
-	private name: string;
 	public schema: Schema;
 	protected repository: Repository<Log>;
-	protected abstract genNewLog(latest: T): DeepPartial<T>;
-	protected abstract async fetchActual(group: string | null): Promise<DeepPartial<T>>;
+	private name: string;
+
+	constructor(name: string, schema: Schema, grouped = false) {
+		this.name = name;
+		this.schema = schema;
+		const entity = Chart.schemaToEntity(name, schema);
+
+		const keys = ['span', 'date'];
+		if (grouped) keys.push('group');
+
+		entity.options.uniques = [{
+			columns: keys
+		}];
+
+		this.repository = getRepository<Log>(entity);
+	}
+
+	@autobind
+	public static schemaToEntity(name: string, schema: Schema): EntitySchema {
+		return new EntitySchema({
+			name: `__chart__${camelToSnake(name)}`,
+			columns: {
+				id: {
+					type: 'integer',
+					primary: true,
+					generated: true
+				},
+				date: {
+					type: 'integer',
+				},
+				group: {
+					type: 'varchar',
+					length: 128,
+					nullable: true
+				},
+				span: {
+					type: 'enum',
+					enum: ['hour', 'day']
+				},
+				unique: {
+					type: 'jsonb',
+					default: {}
+				},
+				...Chart.convertSchemaToFlatColumnDefinitions(schema)
+			},
+			indices: [{
+				columns: ['date']
+			}, {
+				columns: ['span']
+			}, {
+				columns: ['group']
+			}, {
+				columns: ['span', 'date']
+			}, {
+				columns: ['date', 'group']
+			}, {
+				columns: ['span', 'date', 'group']
+			}]
+		});
+	}
 
 	@autobind
 	private static convertSchemaToFlatColumnDefinitions(schema: Schema) {
@@ -134,62 +190,175 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public static schemaToEntity(name: string, schema: Schema): EntitySchema {
-		return new EntitySchema({
-			name: `__chart__${camelToSnake(name)}`,
-			columns: {
-				id: {
-					type: 'integer',
-					primary: true,
-					generated: true
-				},
-				date: {
-					type: 'integer',
-				},
-				group: {
-					type: 'varchar',
-					length: 128,
-					nullable: true
-				},
-				span: {
-					type: 'enum',
-					enum: ['hour', 'day']
-				},
-				unique: {
-					type: 'jsonb',
-					default: {}
-				},
-				...Chart.convertSchemaToFlatColumnDefinitions(schema)
-			},
-			indices: [{
-				columns: ['date']
-			}, {
-				columns: ['span']
-			}, {
-				columns: ['group']
-			}, {
-				columns: ['span', 'date']
-			}, {
-				columns: ['date', 'group']
-			}, {
-				columns: ['span', 'date', 'group']
-			}]
-		});
+	public async resync(group: string | null = null): Promise<any> {
+		const data = await this.fetchActual(group);
+
+		const update = async (log: Log) => {
+			await this.repository.createQueryBuilder()
+				.update()
+				.set(Chart.convertObjectToFlattenColumns(data))
+				.where('id = :id', { id: log.id })
+				.execute();
+		};
+
+		return Promise.all([
+			this.getCurrentLog('day', group).then(log => update(log)),
+			this.getCurrentLog('hour', group).then(log => update(log)),
+		]);
 	}
 
-	constructor(name: string, schema: Schema, grouped = false) {
-		this.name = name;
-		this.schema = schema;
-		const entity = Chart.schemaToEntity(name, schema);
+	@autobind
+	public async getChart(span: Span, range: number, group: string | null = null): Promise<ArrayValue<T>> {
+		const [y, m, d, h] = this.getCurrentDate();
 
-		const keys = ['span', 'date'];
-		if (grouped) keys.push('group');
+		const gt =
+			span == 'day' ? subtractTimespan(DateUTC([y, m, d]), range, 'days') :
+				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range, 'hours') :
+					null as never;
 
-		entity.options.uniques = [{
-			columns: keys
-		}];
+		// ログ取得
+		let logs = await this.repository.find({
+			where: {
+				group: group,
+				span: span,
+				date: MoreThanOrEqual(Chart.dateToTimestamp(gt))
+			},
+			order: {
+				date: -1
+			},
+		});
 
-		this.repository = getRepository<Log>(entity);
+		// 要求された範囲にログがひとつもなかったら
+		if (logs.length === 0) {
+			// もっとも新しいログを持ってくる
+			// (すくなくともひとつログが無いと隙間埋めできないため)
+			const recentLog = await this.repository.findOne({
+				group: group,
+				span: span
+			}, {
+				order: {
+					date: -1
+				},
+			});
+
+			if (recentLog) {
+				logs = [recentLog];
+			}
+
+			// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
+		} else if (!isTimeSame(new Date(logs[logs.length - 1].date * 1000), gt)) {
+			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
+			// (隙間埋めできないため)
+			const outdatedLog = await this.repository.findOne({
+				group: group,
+				span: span,
+				date: LessThan(Chart.dateToTimestamp(gt))
+			}, {
+				order: {
+					date: -1
+				},
+			});
+
+			if (outdatedLog) {
+				logs.push(outdatedLog);
+			}
+		}
+
+		const chart: T[] = [];
+
+		// 整形
+		for (let i = (range - 1); i >= 0; i--) {
+			const current =
+				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'days') :
+					span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hours') :
+						null as never;
+
+			const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));
+
+			if (log) {
+				const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
+				chart.unshift(data);
+			} else {
+				// 隙間埋め
+				const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
+				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
+				chart.unshift(this.getNewLog(data));
+			}
+		}
+
+		const res: ArrayValue<T> = {} as any;
+
+		/**
+		 * [{ foo: 1, bar: 5 }, { foo: 2, bar: 6 }, { foo: 3, bar: 7 }]
+		 * を
+		 * { foo: [1, 2, 3], bar: [5, 6, 7] }
+		 * にする
+		 */
+		const dive = (x: Obj, path?: string) => {
+			for (const [k, v] of Object.entries(x)) {
+				const p = path ? `${path}.${k}` : k;
+				if (typeof v == 'object') {
+					dive(v, p);
+				} else {
+					const values = chart.map(s => nestedProperty.get(s, p))
+						.map(v => parseInt(v, 10)); // TypeORMのバグ(？)で何故か数値カラムの値が文字列型になっているので数値に戻す
+					nestedProperty.set(res, p, values);
+				}
+			}
+		};
+
+		dive(chart[0]);
+
+		return res;
+	}
+
+	protected abstract genNewLog(latest: T): DeepPartial<T>;
+
+	protected abstract async fetchActual(group: string | null): Promise<DeepPartial<T>>;
+
+	@autobind
+	protected commit(query: Record<string, Function>, group: string | null = null, uniqueKey?: string, uniqueValue?: string): Promise<any> {
+		const update = async (log: Log) => {
+			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
+			if (
+				uniqueKey && log.unique &&
+				log.unique[uniqueKey] &&
+				log.unique[uniqueKey].includes(uniqueValue)
+			) return;
+
+			// ユニークインクリメントの指定のキーに値を追加
+			if (uniqueKey && log.unique) {
+				if (log.unique[uniqueKey]) {
+					const sql = `jsonb_set("unique", '{${uniqueKey}}', ("unique"->>'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
+					query['unique'] = () => sql;
+				} else {
+					const sql = `jsonb_set("unique", '{${uniqueKey}}', '["${uniqueValue}"]')`;
+					query['unique'] = () => sql;
+				}
+			}
+
+			// ログ更新
+			await this.repository.createQueryBuilder()
+				.update()
+				.set(query)
+				.where('id = :id', { id: log.id })
+				.execute();
+		};
+
+		return Promise.all([
+			this.getCurrentLog('day', group).then(log => update(log)),
+			this.getCurrentLog('hour', group).then(log => update(log)),
+		]);
+	}
+
+	@autobind
+	protected async inc(inc: DeepPartial<T>, group: string | null = null): Promise<void> {
+		await this.commit(Chart.convertQuery(inc as any), group);
+	}
+
+	@autobind
+	protected async incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string | null = null): Promise<void> {
+		await this.commit(Chart.convertQuery(inc as any), group, key, value);
 	}
 
 	@autobind
@@ -241,8 +410,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 		const current =
 			span == 'day' ? DateUTC([y, m, d]) :
-			span == 'hour' ? DateUTC([y, m, d, h]) :
-			null as never;
+				span == 'hour' ? DateUTC([y, m, d, h]) :
+					null as never;
 
 		// 現在(今日または今のHour)のログ
 		const currentLog = await this.repository.findOne({
@@ -304,174 +473,6 @@ export default abstract class Chart<T extends Record<string, any>> {
 		}
 
 		return log;
-	}
-
-	@autobind
-	protected commit(query: Record<string, Function>, group: string | null = null, uniqueKey?: string, uniqueValue?: string): Promise<any> {
-		const update = async (log: Log) => {
-			// ユニークインクリメントの場合、指定のキーに指定の値が既に存在していたら弾く
-			if (
-				uniqueKey && log.unique &&
-				log.unique[uniqueKey] &&
-				log.unique[uniqueKey].includes(uniqueValue)
-			) return;
-
-			// ユニークインクリメントの指定のキーに値を追加
-			if (uniqueKey && log.unique) {
-				if (log.unique[uniqueKey]) {
-					const sql = `jsonb_set("unique", '{${uniqueKey}}', ("unique"->>'${uniqueKey}')::jsonb || '["${uniqueValue}"]'::jsonb)`;
-					query['unique'] = () => sql;
-				} else {
-					const sql = `jsonb_set("unique", '{${uniqueKey}}', '["${uniqueValue}"]')`;
-					query['unique'] = () => sql;
-				}
-			}
-
-			// ログ更新
-			await this.repository.createQueryBuilder()
-				.update()
-				.set(query)
-				.where('id = :id', { id: log.id })
-				.execute();
-		};
-
-		return Promise.all([
-			this.getCurrentLog('day', group).then(log => update(log)),
-			this.getCurrentLog('hour', group).then(log => update(log)),
-		]);
-	}
-
-	@autobind
-	public async resync(group: string | null = null): Promise<any> {
-		const data = await this.fetchActual(group);
-
-		const update = async (log: Log) => {
-			await this.repository.createQueryBuilder()
-				.update()
-				.set(Chart.convertObjectToFlattenColumns(data))
-				.where('id = :id', { id: log.id })
-				.execute();
-		};
-
-		return Promise.all([
-			this.getCurrentLog('day', group).then(log => update(log)),
-			this.getCurrentLog('hour', group).then(log => update(log)),
-		]);
-	}
-
-	@autobind
-	protected async inc(inc: DeepPartial<T>, group: string | null = null): Promise<void> {
-		await this.commit(Chart.convertQuery(inc as any), group);
-	}
-
-	@autobind
-	protected async incIfUnique(inc: DeepPartial<T>, key: string, value: string, group: string | null = null): Promise<void> {
-		await this.commit(Chart.convertQuery(inc as any), group, key, value);
-	}
-
-	@autobind
-	public async getChart(span: Span, range: number, group: string | null = null): Promise<ArrayValue<T>> {
-		const [y, m, d, h] = this.getCurrentDate();
-
-		const gt =
-			span == 'day' ? subtractTimespan(DateUTC([y, m, d]), range, 'days') :
-			span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range, 'hours') :
-			null as never;
-
-		// ログ取得
-		let logs = await this.repository.find({
-			where: {
-				group: group,
-				span: span,
-				date: MoreThanOrEqual(Chart.dateToTimestamp(gt))
-			},
-			order: {
-				date: -1
-			},
-		});
-
-		// 要求された範囲にログがひとつもなかったら
-		if (logs.length === 0) {
-			// もっとも新しいログを持ってくる
-			// (すくなくともひとつログが無いと隙間埋めできないため)
-			const recentLog = await this.repository.findOne({
-				group: group,
-				span: span
-			}, {
-				order: {
-					date: -1
-				},
-			});
-
-			if (recentLog) {
-				logs = [recentLog];
-			}
-
-		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
-		} else if (!isTimeSame(new Date(logs[logs.length - 1].date * 1000), gt)) {
-			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
-			// (隙間埋めできないため)
-			const outdatedLog = await this.repository.findOne({
-				group: group,
-				span: span,
-				date: LessThan(Chart.dateToTimestamp(gt))
-			}, {
-				order: {
-					date: -1
-				},
-			});
-
-			if (outdatedLog) {
-				logs.push(outdatedLog);
-			}
-		}
-
-		const chart: T[] = [];
-
-		// 整形
-		for (let i = (range - 1); i >= 0; i--) {
-			const current =
-				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'days') :
-				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hours') :
-				null as never;
-
-			const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));
-
-			if (log) {
-				const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
-				chart.unshift(data);
-			} else {
-				// 隙間埋め
-				const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
-				const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
-				chart.unshift(this.getNewLog(data));
-			}
-		}
-
-		const res: ArrayValue<T> = {} as any;
-
-		/**
-		 * [{ foo: 1, bar: 5 }, { foo: 2, bar: 6 }, { foo: 3, bar: 7 }]
-		 * を
-		 * { foo: [1, 2, 3], bar: [5, 6, 7] }
-		 * にする
-		 */
-		const dive = (x: Obj, path?: string) => {
-			for (const [k, v] of Object.entries(x)) {
-				const p = path ? `${path}.${k}` : k;
-				if (typeof v == 'object') {
-					dive(v, p);
-				} else {
-					const values = chart.map(s => nestedProperty.get(s, p))
-						.map(v => parseInt(v, 10)); // TypeORMのバグ(？)で何故か数値カラムの値が文字列型になっているので数値に戻す
-					nestedProperty.set(res, p, values);
-				}
-			}
-		};
-
-		dive(chart[0]);
-
-		return res;
 	}
 }
 

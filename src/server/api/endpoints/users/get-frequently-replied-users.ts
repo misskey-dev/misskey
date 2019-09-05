@@ -4,7 +4,7 @@ import define from '../../define';
 import { maximum } from '../../../../prelude/array';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { Not, In, IsNull } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
 import { Notes, Users } from '../../../../models';
 
 export const meta = {

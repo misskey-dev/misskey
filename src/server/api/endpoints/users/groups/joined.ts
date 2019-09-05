@@ -1,6 +1,6 @@
 import define from '../../../define';
-import { UserGroups, UserGroupJoinings } from '../../../../../models';
-import { Not, In } from 'typeorm';
+import { UserGroupJoinings, UserGroups } from '../../../../../models';
+import { In, Not } from 'typeorm';
 
 export const meta = {
 	desc: {

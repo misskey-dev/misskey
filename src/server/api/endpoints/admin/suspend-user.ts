@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import deleteFollowing from '../../../../services/following/delete';
-import { Users, Followings } from '../../../../models';
+import { Followings, Users } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
 import { doPostSuspend } from '../../../../services/suspend-user';

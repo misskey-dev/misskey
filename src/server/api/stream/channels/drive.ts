@@ -2,9 +2,9 @@ import autobind from 'autobind-decorator';
 import Channel from '../channel';
 
 export default class extends Channel {
-	public readonly chName = 'drive';
 	public static shouldShare = true;
 	public static requireCredential = true;
+	public readonly chName = 'drive';
 
 	@autobind
 	public async init(params: any) {

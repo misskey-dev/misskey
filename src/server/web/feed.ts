@@ -1,7 +1,7 @@
 import { Feed } from 'feed';
 import config from '../../config';
 import { User } from '../../models/entities/user';
-import { Notes, DriveFiles, UserProfiles } from '../../models';
+import { DriveFiles, Notes, UserProfiles } from '../../models';
 import { In } from 'typeorm';
 import { ensure } from '../../prelude/ensure';
 

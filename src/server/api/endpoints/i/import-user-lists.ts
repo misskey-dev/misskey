@@ -2,9 +2,9 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { createImportUserListsJob } from '../../../../queue';
-import ms = require('ms');
 import { ApiError } from '../../error';
 import { DriveFiles } from '../../../../models';
+import ms = require('ms');
 
 export const meta = {
 	secure: true,

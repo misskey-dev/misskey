@@ -1,8 +1,8 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
+import Chart, { DeepPartial, Obj } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
 import { Followings, Users } from '../../../../models';
-import { Not, IsNull } from 'typeorm';
+import { IsNull, Not } from 'typeorm';
 import { User } from '../../../../models/entities/user';
 import { name, schema } from '../schemas/per-user-following';
 
@@ -11,6 +11,26 @@ type PerUserFollowingLog = SchemaType<typeof schema>;
 export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	constructor() {
 		super(name, schema, true);
+	}
+
+	@autobind
+	public async update(follower: User, followee: User, isFollow: boolean) {
+		const update: Obj = {};
+
+		update.total = isFollow ? 1 : -1;
+
+		if (isFollow) {
+			update.inc = 1;
+		} else {
+			update.dec = 1;
+		}
+
+		this.inc({
+			[Users.isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
+		}, follower.id);
+		this.inc({
+			[Users.isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
+		}, followee.id);
 	}
 
 	@autobind
@@ -67,25 +87,5 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 				}
 			}
 		};
-	}
-
-	@autobind
-	public async update(follower: User, followee: User, isFollow: boolean) {
-		const update: Obj = {};
-
-		update.total = isFollow ? 1 : -1;
-
-		if (isFollow) {
-			update.inc = 1;
-		} else {
-			update.dec = 1;
-		}
-
-		this.inc({
-			[Users.isLocalUser(follower) ? 'local' : 'remote']: { followings: update }
-		}, follower.id);
-		this.inc({
-			[Users.isLocalUser(followee) ? 'local' : 'remote']: { followers: update }
-		}, followee.id);
 	}
 }

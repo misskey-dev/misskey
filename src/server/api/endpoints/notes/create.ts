@@ -7,7 +7,7 @@ import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
 import { User } from '../../../../models/entities/user';
-import { Users, DriveFiles, Notes } from '../../../../models';
+import { DriveFiles, Notes, Users } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
 

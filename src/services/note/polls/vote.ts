@@ -2,12 +2,12 @@ import watch from '../../../services/note/watch';
 import { publishNoteStream } from '../../stream';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { PollVotes, Users, NoteWatchings, Polls, UserProfiles } from '../../../models';
+import { NoteWatchings, Polls, PollVotes, UserProfiles, Users } from '../../../models';
 import { Not } from 'typeorm';
 import { genId } from '../../../misc/gen-id';
 import { createNotification } from '../../create-notification';
 
-export default async function(user: User, note: Note, choice: number) {
+export default async function (user: User, note: Note, choice: number) {
 	const poll = await Polls.findOne(note.id);
 
 	if (poll == null) throw new Error('poll not found');

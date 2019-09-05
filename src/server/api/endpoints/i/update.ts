@@ -10,7 +10,7 @@ import extractHashtags from '../../../../misc/extract-hashtags';
 import * as langmap from 'langmap';
 import { updateUsertags } from '../../../../services/update-hashtag';
 import { ApiError } from '../../error';
-import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
+import { DriveFiles, Pages, UserProfiles, Users } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
 import { ensure } from '../../../../prelude/ensure';

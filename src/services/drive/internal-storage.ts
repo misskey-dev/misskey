@@ -22,6 +22,7 @@ export class InternalStorage {
 	}
 
 	public static del(key: string) {
-		fs.unlink(`${InternalStorage.path}/${key}`, () => {});
+		fs.unlink(`${InternalStorage.path}/${key}`, () => {
+		});
 	}
 }

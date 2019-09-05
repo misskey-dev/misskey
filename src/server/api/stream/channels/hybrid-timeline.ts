@@ -7,9 +7,9 @@ import { PackedNote } from '../../../../models/repositories/note';
 import { PackedUser } from '../../../../models/repositories/user';
 
 export default class extends Channel {
-	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
+	public readonly chName = 'hybridTimeline';
 
 	@autobind
 	public async init(params: any) {
@@ -18,6 +18,12 @@ export default class extends Channel {
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
+	}
+
+	@autobind
+	public dispose() {
+		// Unsubscribe events
+		this.subscriber.off('notesStream', this.onNote);
 	}
 
 	@autobind
@@ -50,17 +56,11 @@ export default class extends Channel {
 					detail: true
 				});
 			}
-	}
+		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
-	}
-
-	@autobind
-	public dispose() {
-		// Unsubscribe events
-		this.subscriber.off('notesStream', this.onNote);
 	}
 }

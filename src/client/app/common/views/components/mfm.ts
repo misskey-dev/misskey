@@ -9,7 +9,7 @@ import MkFormula from './formula.vue';
 import MkCode from './code.vue';
 import MkGoogle from './google.vue';
 import { host } from '../../../config';
-import { preorderF, countNodesF } from '../../../../../prelude/tree';
+import { countNodesF, preorderF } from '../../../../../prelude/tree';
 
 function sumTextsLength(ts: MfmForest): number {
 	const textNodes = preorderF(ts).filter(n => n.type === 'text');

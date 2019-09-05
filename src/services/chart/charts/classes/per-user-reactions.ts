@@ -14,6 +14,13 @@ export default class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
 	}
 
 	@autobind
+	public async update(user: User, note: Note) {
+		this.inc({
+			[Users.isLocalUser(user) ? 'local' : 'remote']: { count: 1 }
+		}, note.userId);
+	}
+
+	@autobind
 	protected genNewLog(latest: PerUserReactionsLog): DeepPartial<PerUserReactionsLog> {
 		return {};
 	}
@@ -21,12 +28,5 @@ export default class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
 	@autobind
 	protected async fetchActual(group: string): Promise<DeepPartial<PerUserReactionsLog>> {
 		return {};
-	}
-
-	@autobind
-	public async update(user: User, note: Note) {
-		this.inc({
-			[Users.isLocalUser(user) ? 'local' : 'remote']: { count: 1 }
-		}, note.userId);
 	}
 }

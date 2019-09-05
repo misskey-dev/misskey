@@ -13,7 +13,7 @@ const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): voi
 	ctx.status = 500;
 };
 
-export default async function(ctx: Koa.BaseContext) {
+export default async function (ctx: Koa.BaseContext) {
 	const key = ctx.params.key;
 
 	// Fetch drive file

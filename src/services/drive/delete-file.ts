@@ -1,7 +1,7 @@
 import { DriveFile } from '../../models/entities/drive-file';
 import { InternalStorage } from './internal-storage';
 import { DriveFiles, Instances, Notes } from '../../models';
-import { driveChart, perUserDriveChart, instanceChart } from '../chart';
+import { driveChart, instanceChart, perUserDriveChart } from '../chart';
 import { createDeleteObjectStorageFileJob } from '../../queue';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { getS3 } from './s3';

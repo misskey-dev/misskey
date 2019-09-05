@@ -1,6 +1,6 @@
 import config from '../../../config';
 import { Note } from '../../../models/entities/note';
-import { IRemoteUser, ILocalUser } from '../../../models/entities/user';
+import { ILocalUser, IRemoteUser } from '../../../models/entities/user';
 import { PollVote } from '../../../models/entities/poll-vote';
 import { Poll } from '../../../models/entities/poll';
 

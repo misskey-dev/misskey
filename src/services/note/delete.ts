@@ -7,8 +7,8 @@ import config from '../../config';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
-import { Notes, Users, Followings, Instances } from '../../models';
-import { notesChart, perUserNotesChart, instanceChart } from '../chart';
+import { Followings, Instances, Notes, Users } from '../../models';
+import { instanceChart, notesChart, perUserNotesChart } from '../chart';
 
 /**
  * 投稿を削除します。

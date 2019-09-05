@@ -4,7 +4,7 @@ import { EventEmitter } from 'eventemitter3';
 import { v4 as uuid } from 'uuid';
 
 import initStore from './store';
-import { apiUrl, version, locale } from './config';
+import { apiUrl, locale, version } from './config';
 import Progress from './common/scripts/loading';
 
 import Err from './common/views/components/connect-failed.vue';
@@ -19,6 +19,17 @@ let pending = 0;
  * Misskey Operating System
  */
 export default class MiOS extends EventEmitter {
+	public app: Vue;
+	public store: ReturnType<typeof initStore>;
+	/**
+	 * A connection manager of home stream
+	 */
+	public stream: Stream;
+	/**
+	 * ウィンドウシステム
+	 */
+	public windows = new WindowSystem();
+	public requests = [];
 	/**
 	 * Misskeyの /meta で取得できるメタ情報
 	 */
@@ -26,34 +37,7 @@ export default class MiOS extends EventEmitter {
 		data: { [x: string]: any };
 		chachedAt: Date;
 	};
-
-	public get instanceName() {
-		const siteName = document.querySelector('meta[property="og:site_name"]') as HTMLMetaElement;
-		if (siteName && siteName.content) {
-			return siteName.content;
-		}
-
-		return 'Misskey';
-	}
-
 	private isMetaFetching = false;
-
-	public app: Vue;
-
-	/**
-	 * Whether is debug mode
-	 */
-	public get debug() {
-		return this.store ? this.store.state.device.debug : false;
-	}
-
-	public store: ReturnType<typeof initStore>;
-
-	/**
-	 * A connection manager of home stream
-	 */
-	public stream: Stream;
-
 	/**
 	 * A registration of service worker
 	 */
@@ -63,11 +47,6 @@ export default class MiOS extends EventEmitter {
 	 * Whether should register ServiceWorker
 	 */
 	private shouldRegisterSw: boolean;
-
-	/**
-	 * ウィンドウシステム
-	 */
-	public windows = new WindowSystem();
 
 	/**
 	 * MiOSインスタンスを作成します
@@ -81,6 +60,22 @@ export default class MiOS extends EventEmitter {
 		if (this.debug) {
 			(window as any).os = this;
 		}
+	}
+
+	public get instanceName() {
+		const siteName = document.querySelector('meta[property="og:site_name"]') as HTMLMetaElement;
+		if (siteName && siteName.content) {
+			return siteName.content;
+		}
+
+		return 'Misskey';
+	}
+
+	/**
+	 * Whether is debug mode
+	 */
+	public get debug() {
+		return this.store ? this.store.state.device.debug : false;
 	}
 
 	@autobind
@@ -138,29 +133,29 @@ export default class MiOS extends EventEmitter {
 				})
 			})
 			// When success
-			.then(res => {
-				// When failed to authenticate user
-				if (res.status !== 200 && res.status < 500) {
-					return this.signout();
-				}
+				.then(res => {
+					// When failed to authenticate user
+					if (res.status !== 200 && res.status < 500) {
+						return this.signout();
+					}
 
-				// Parse response
-				res.json().then(i => {
-					me = i;
-					me.token = token;
-					done();
+					// Parse response
+					res.json().then(i => {
+						me = i;
+						me.token = token;
+						done();
+					});
+				})
+				// When failure
+				.catch(() => {
+					// Render the error screen
+					document.body.innerHTML = '<div id="err"></div>';
+					new Vue({
+						render: createEl => createEl(Err)
+					}).$mount('#err');
+
+					Progress.done();
 				});
-			})
-			// When failure
-			.catch(() => {
-				// Render the error screen
-				document.body.innerHTML = '<div id="err"></div>';
-				new Vue({
-					render: createEl => createEl(Err)
-				}).$mount('#err');
-
-				Progress.done();
-			});
 
 			function done() {
 				if (cb) cb(me);
@@ -214,6 +209,116 @@ export default class MiOS extends EventEmitter {
 				}
 			});
 		}
+	}
+
+	/**
+	 * Misskey APIにリクエストします
+	 * @param endpoint エンドポイント名
+	 * @param data パラメータ
+	 */
+	@autobind
+	public api(endpoint: string, data: { [x: string]: any } = {}, silent = false): Promise<{ [x: string]: any }> {
+		if (!silent) {
+			if (++pending === 1) {
+				spinner = document.createElement('div');
+				spinner.setAttribute('id', 'wait');
+				document.body.appendChild(spinner);
+			}
+		}
+
+		const onFinally = () => {
+			if (!silent) {
+				if (--pending === 0) spinner.parentNode.removeChild(spinner);
+			}
+		};
+
+		const promise = new Promise((resolve, reject) => {
+			// Append a credential
+			if (this.store.getters.isSignedIn) (data as any).i = this.store.state.i.token;
+
+			const req = {
+				id: uuid(),
+				date: new Date(),
+				name: endpoint,
+				data,
+				res: null,
+				status: null
+			};
+
+			if (this.debug) {
+				this.requests.push(req);
+			}
+
+			// Send request
+			fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
+				method: 'POST',
+				body: JSON.stringify(data),
+				credentials: endpoint === 'signin' ? 'include' : 'omit',
+				cache: 'no-cache'
+			}).then(async (res) => {
+				const body = res.status === 204 ? null : await res.json();
+
+				if (this.debug) {
+					req.status = res.status;
+					req.res = body;
+				}
+
+				if (res.status === 200) {
+					resolve(body);
+				} else if (res.status === 204) {
+					resolve();
+				} else {
+					reject(body.error);
+				}
+			}).catch(reject);
+		});
+
+		promise.then(onFinally, onFinally);
+
+		return promise;
+	}
+
+	/**
+	 * Misskeyのメタ情報を取得します
+	 */
+	@autobind
+	public getMetaSync() {
+		return this.meta ? this.meta.data : null;
+	}
+
+	/**
+	 * Misskeyのメタ情報を取得します
+	 * @param force キャッシュを無視するか否か
+	 */
+	@autobind
+	public getMeta(force = false) {
+		return new Promise<{ [x: string]: any }>(async (res, rej) => {
+			if (this.isMetaFetching) {
+				this.once('_meta_fetched_', () => {
+					res(this.meta.data);
+				});
+				return;
+			}
+
+			const expire = 1000 * 60; // 1min
+
+			// forceが有効, meta情報を保持していない or 期限切れ
+			if (force || this.meta == null || Date.now() - this.meta.chachedAt.getTime() > expire) {
+				this.isMetaFetching = true;
+				const meta = await this.api('meta', {
+					detail: false
+				});
+				this.meta = {
+					data: meta,
+					chachedAt: new Date()
+				};
+				this.isMetaFetching = false;
+				this.emit('_meta_fetched_');
+				res(meta);
+			} else {
+				res(this.meta.data);
+			}
+		});
 	}
 
 	@autobind
@@ -341,21 +446,21 @@ export default class MiOS extends EventEmitter {
 				});
 			})
 			// When subscribe failed
-			.catch(async (err: Error) => {
-				this.logError('[sw] Subscribe Error:', err);
+				.catch(async (err: Error) => {
+					this.logError('[sw] Subscribe Error:', err);
 
-				// 通知が許可されていなかったとき
-				if (err.name == 'NotAllowedError') {
-					this.logError('[sw] Subscribe failed due to notification not allowed');
-					return;
-				}
+					// 通知が許可されていなかったとき
+					if (err.name == 'NotAllowedError') {
+						this.logError('[sw] Subscribe failed due to notification not allowed');
+						return;
+					}
 
-				// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
-				// 既に存在していることが原因でエラーになった可能性があるので、
-				// そのサブスクリプションを解除しておく
-				const subscription = await this.swRegistration.pushManager.getSubscription();
-				if (subscription) subscription.unsubscribe();
-			});
+					// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
+					// 既に存在していることが原因でエラーになった可能性があるので、
+					// そのサブスクリプションを解除しておく
+					const subscription = await this.swRegistration.pushManager.getSubscription();
+					if (subscription) subscription.unsubscribe();
+				});
 		});
 
 		// The path of service worker script
@@ -368,118 +473,6 @@ export default class MiOS extends EventEmitter {
 		}).catch(err => {
 			// 登録失敗 :(
 			this.logError('[sw] Registration failed: ', err);
-		});
-	}
-
-	public requests = [];
-
-	/**
-	 * Misskey APIにリクエストします
-	 * @param endpoint エンドポイント名
-	 * @param data パラメータ
-	 */
-	@autobind
-	public api(endpoint: string, data: { [x: string]: any } = {}, silent = false): Promise<{ [x: string]: any }> {
-		if (!silent) {
-			if (++pending === 1) {
-				spinner = document.createElement('div');
-				spinner.setAttribute('id', 'wait');
-				document.body.appendChild(spinner);
-			}
-		}
-
-		const onFinally = () => {
-			if (!silent) {
-				if (--pending === 0) spinner.parentNode.removeChild(spinner);
-			}
-		};
-
-		const promise = new Promise((resolve, reject) => {
-			// Append a credential
-			if (this.store.getters.isSignedIn) (data as any).i = this.store.state.i.token;
-
-			const req = {
-				id: uuid(),
-				date: new Date(),
-				name: endpoint,
-				data,
-				res: null,
-				status: null
-			};
-
-			if (this.debug) {
-				this.requests.push(req);
-			}
-
-			// Send request
-			fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
-				method: 'POST',
-				body: JSON.stringify(data),
-				credentials: endpoint === 'signin' ? 'include' : 'omit',
-				cache: 'no-cache'
-			}).then(async (res) => {
-				const body = res.status === 204 ? null : await res.json();
-
-				if (this.debug) {
-					req.status = res.status;
-					req.res = body;
-				}
-
-				if (res.status === 200) {
-					resolve(body);
-				} else if (res.status === 204) {
-					resolve();
-				} else {
-					reject(body.error);
-				}
-			}).catch(reject);
-		});
-
-		promise.then(onFinally, onFinally);
-
-		return promise;
-	}
-
-	/**
-	 * Misskeyのメタ情報を取得します
-	 */
-	@autobind
-	public getMetaSync() {
-		return this.meta ? this.meta.data : null;
-	}
-
-	/**
-	 * Misskeyのメタ情報を取得します
-	 * @param force キャッシュを無視するか否か
-	 */
-	@autobind
-	public getMeta(force = false) {
-		return new Promise<{ [x: string]: any }>(async (res, rej) => {
-			if (this.isMetaFetching) {
-				this.once('_meta_fetched_', () => {
-					res(this.meta.data);
-				});
-				return;
-			}
-
-			const expire = 1000 * 60; // 1min
-
-			// forceが有効, meta情報を保持していない or 期限切れ
-			if (force || this.meta == null || Date.now() - this.meta.chachedAt.getTime() > expire) {
-				this.isMetaFetching = true;
-				const meta = await this.api('meta', {
-					detail: false
-				});
-				this.meta = {
-					data: meta,
-					chachedAt: new Date()
-				};
-				this.isMetaFetching = false;
-				this.emit('_meta_fetched_');
-				res(meta);
-			} else {
-				res(this.meta.data);
-			}
 		});
 	}
 }

@@ -4,10 +4,10 @@ import * as fs from 'fs';
 
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
-import dateFormat = require('dateformat');
 import { getFullApAccount } from '../../../misc/convert-host';
-import { Users, UserLists, UserListJoinings } from '../../../models';
+import { UserListJoinings, UserLists, Users } from '../../../models';
 import { In } from 'typeorm';
+import dateFormat = require('dateformat');
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 

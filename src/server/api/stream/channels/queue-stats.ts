@@ -5,18 +5,13 @@ import Channel from '../channel';
 const ev = new Xev();
 
 export default class extends Channel {
-	public readonly chName = 'queueStats';
 	public static shouldShare = true;
 	public static requireCredential = false;
+	public readonly chName = 'queueStats';
 
 	@autobind
 	public async init(params: any) {
 		ev.addListener('queueStats', this.onStats);
-	}
-
-	@autobind
-	private onStats(stats: any) {
-		this.send('stats', stats);
 	}
 
 	@autobind
@@ -37,5 +32,10 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		ev.removeListener('queueStats', this.onStats);
+	}
+
+	@autobind
+	private onStats(stats: any) {
+		this.send('stats', stats);
 	}
 }

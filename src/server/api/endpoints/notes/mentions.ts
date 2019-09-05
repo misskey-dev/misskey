@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import read from '../../../../services/note/read';
-import { Notes, Followings } from '../../../../models';
+import { Followings, Notes } from '../../../../models';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';

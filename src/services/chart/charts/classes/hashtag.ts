@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
+import Chart, { DeepPartial, Obj } from '../../core';
 import { User } from '../../../../models/entities/user';
 import { SchemaType } from '../../../../misc/schema';
 import { Users } from '../../../../models';
@@ -13,16 +13,6 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	protected genNewLog(latest: HashtagLog): DeepPartial<HashtagLog> {
-		return {};
-	}
-
-	@autobind
-	protected async fetchActual(): Promise<DeepPartial<HashtagLog>> {
-		return {};
-	}
-
-	@autobind
 	public async update(hashtag: string, user: User) {
 		const update: Obj = {
 			count: 1
@@ -31,5 +21,15 @@ export default class HashtagChart extends Chart<HashtagLog> {
 		await this.incIfUnique({
 			[Users.isLocalUser(user) ? 'local' : 'remote']: update
 		}, 'users', user.id, hashtag);
+	}
+
+	@autobind
+	protected genNewLog(latest: HashtagLog): DeepPartial<HashtagLog> {
+		return {};
+	}
+
+	@autobind
+	protected async fetchActual(): Promise<DeepPartial<HashtagLog>> {
+		return {};
 	}
 }

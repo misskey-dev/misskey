@@ -3,18 +3,26 @@ import * as promiseLimit from 'promise-limit';
 import config from '../../../config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
+import { IPerson, isCollection, isCollectionOrOrderedCollection } from '../type';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { fromHtml } from '../../../mfm/fromHtml';
-import { resolveNote, extractEmojis } from './note';
+import { extractEmojis, resolveNote } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
-import { ITag, extractHashtags } from './tag';
+import { extractHashtags, ITag } from './tag';
 import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateUsertags } from '../../../services/update-hashtag';
-import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
-import { User, IRemoteUser } from '../../../models/entities/user';
+import {
+	DriveFiles,
+	Followings,
+	Instances,
+	UserNotePinings,
+	UserProfiles,
+	UserPublickeys,
+	Users
+} from '../../../models';
+import { IRemoteUser, User } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
 import { UserNotePining } from '../../../models/entities/user-note-pinings';
 import { genId } from '../../../misc/gen-id';

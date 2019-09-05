@@ -2,9 +2,9 @@ import autobind from 'autobind-decorator';
 import Channel from '../channel';
 
 export default class extends Channel {
-	public readonly chName = 'apLog';
 	public static shouldShare = true;
 	public static requireCredential = false;
+	public readonly chName = 'apLog';
 
 	@autobind
 	public async init(params: any) {
@@ -13,13 +13,13 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onLog(log: any) {
-		this.send('log', log);
-	}
-
-	@autobind
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('apLog', this.onLog);
+	}
+
+	@autobind
+	private async onLog(log: any) {
+		this.send('log', log);
 	}
 }

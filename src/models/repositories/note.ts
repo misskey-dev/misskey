@@ -1,9 +1,9 @@
-import { EntityRepository, Repository, In } from 'typeorm';
+import { EntityRepository, In, Repository } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
-import { unique, concat } from '../../prelude/array';
+import { concat, unique } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
-import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
+import { Apps, DriveFiles, Emojis, Followings, NoteReactions, Polls, PollVotes, Users } from '..';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
@@ -14,66 +14,6 @@ export type PackedNote = SchemaType<typeof packedNoteSchema>;
 export class NoteRepository extends Repository<Note> {
 	public validateCw(x: string) {
 		return x.trim().length <= 100;
-	}
-
-	private async hideNote(packedNote: PackedNote, meId: User['id'] | null) {
-		let hide = false;
-
-		// visibility が specified かつ自分が指定されていなかったら非表示
-		if (packedNote.visibility === 'specified') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else {
-				// 指定されているかどうか
-				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
-
-				if (specified) {
-					hide = false;
-				} else {
-					hide = true;
-				}
-			}
-		}
-
-		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
-		if (packedNote.visibility == 'followers') {
-			if (meId == null) {
-				hide = true;
-			} else if (meId === packedNote.userId) {
-				hide = false;
-			} else if (packedNote.reply && (meId === (packedNote.reply as PackedNote).userId)) {
-				// 自分の投稿に対するリプライ
-				hide = false;
-			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
-				// 自分へのメンション
-				hide = false;
-			} else {
-				// フォロワーかどうか
-				const following = await Followings.findOne({
-					followeeId: packedNote.userId,
-					followerId: meId
-				});
-
-				if (following == null) {
-					hide = true;
-				} else {
-					hide = false;
-				}
-			}
-		}
-
-		if (hide) {
-			packedNote.visibleUserIds = undefined;
-			packedNote.fileIds = [];
-			packedNote.files = [];
-			packedNote.text = null;
-			packedNote.poll = undefined;
-			packedNote.cw = null;
-			packedNote.geo = undefined;
-			packedNote.isHidden = true;
-		}
 	}
 
 	public async pack(
@@ -214,6 +154,66 @@ export class NoteRepository extends Repository<Note> {
 		}
 	) {
 		return Promise.all(notes.map(n => this.pack(n, me, options)));
+	}
+
+	private async hideNote(packedNote: PackedNote, meId: User['id'] | null) {
+		let hide = false;
+
+		// visibility が specified かつ自分が指定されていなかったら非表示
+		if (packedNote.visibility === 'specified') {
+			if (meId == null) {
+				hide = true;
+			} else if (meId === packedNote.userId) {
+				hide = false;
+			} else {
+				// 指定されているかどうか
+				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
+
+				if (specified) {
+					hide = false;
+				} else {
+					hide = true;
+				}
+			}
+		}
+
+		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
+		if (packedNote.visibility == 'followers') {
+			if (meId == null) {
+				hide = true;
+			} else if (meId === packedNote.userId) {
+				hide = false;
+			} else if (packedNote.reply && (meId === (packedNote.reply as PackedNote).userId)) {
+				// 自分の投稿に対するリプライ
+				hide = false;
+			} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
+				// 自分へのメンション
+				hide = false;
+			} else {
+				// フォロワーかどうか
+				const following = await Followings.findOne({
+					followeeId: packedNote.userId,
+					followerId: meId
+				});
+
+				if (following == null) {
+					hide = true;
+				} else {
+					hide = false;
+				}
+			}
+		}
+
+		if (hide) {
+			packedNote.visibleUserIds = undefined;
+			packedNote.fileIds = [];
+			packedNote.files = [];
+			packedNote.text = null;
+			packedNote.poll = undefined;
+			packedNote.cw = null;
+			packedNote.geo = undefined;
+			packedNote.isHidden = true;
+		}
 	}
 }
 

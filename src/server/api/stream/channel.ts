@@ -5,11 +5,16 @@ import Connection from '.';
  * Stream channel
  */
 export default abstract class Channel {
-	protected connection: Connection;
-	public id: string;
-	public abstract readonly chName: string;
 	public static readonly shouldShare: boolean;
 	public static readonly requireCredential: boolean;
+	public id: string;
+	public abstract readonly chName: string;
+	protected connection: Connection;
+
+	constructor(id: string, connection: Connection) {
+		this.id = id;
+		this.connection = connection;
+	}
 
 	protected get user() {
 		return this.connection.user;
@@ -25,11 +30,6 @@ export default abstract class Channel {
 
 	protected get subscriber() {
 		return this.connection.subscriber;
-	}
-
-	constructor(id: string, connection: Connection) {
-		this.id = id;
-		this.connection = connection;
 	}
 
 	@autobind

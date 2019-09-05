@@ -6,7 +6,7 @@ import { deliver } from '../../queue';
 import Logger from '../logger';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import { User } from '../../models/entities/user';
-import { Followings, Users, Instances } from '../../models';
+import { Followings, Instances, Users } from '../../models';
 import { instanceChart, perUserFollowingChart } from '../chart';
 
 const logger = new Logger('following/delete');

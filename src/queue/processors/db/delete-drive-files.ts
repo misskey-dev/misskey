@@ -2,7 +2,7 @@ import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
 import { deleteFileSync } from '../../../services/drive/delete-file';
-import { Users, DriveFiles } from '../../../models';
+import { DriveFiles, Users } from '../../../models';
 import { MoreThan } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('delete-drive-files');

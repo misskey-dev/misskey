@@ -11,7 +11,7 @@ import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { countIf } from '../../prelude/array';
 import * as url from '../../prelude/url';
-import { Users, Notes } from '../../models';
+import { Notes, Users } from '../../models';
 import { makePaginationQuery } from '../api/common/make-pagination-query';
 import { Brackets } from 'typeorm';
 import { Note } from '../../models/entities/note';

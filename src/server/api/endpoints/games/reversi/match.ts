@@ -6,7 +6,7 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 import { genId } from '../../../../../misc/gen-id';
-import { ReversiMatchings, ReversiGames } from '../../../../../models';
+import { ReversiGames, ReversiMatchings } from '../../../../../models';
 import { ReversiGame } from '../../../../../models/entities/games/reversi/game';
 import { ReversiMatching } from '../../../../../models/entities/games/reversi/matching';
 

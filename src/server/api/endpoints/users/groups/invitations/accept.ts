@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../../../misc/cafy-id';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
-import { UserGroupJoinings, UserGroupInvites } from '../../../../../../models';
+import { UserGroupInvites, UserGroupJoinings } from '../../../../../../models';
 import { genId } from '../../../../../../misc/gen-id';
 import { UserGroupJoining } from '../../../../../../models/entities/user-group-joining';
 

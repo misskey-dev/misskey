@@ -1,5 +1,5 @@
 import { IRemoteUser } from '../../../../models/entities/user';
-import { IUpdate, IObject } from '../../type';
+import { IObject, IUpdate } from '../../type';
 import { apLogger } from '../../logger';
 import { updateQuestion } from '../../models/question';
 

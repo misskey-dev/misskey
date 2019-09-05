@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
-import { UserGroups, UserGroupJoinings } from '../../../../../models';
+import { UserGroupJoinings, UserGroups } from '../../../../../models';
 
 export const meta = {
 	desc: {

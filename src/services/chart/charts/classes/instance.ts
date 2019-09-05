@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
+import Chart, { DeepPartial, Obj } from '../../core';
 import { SchemaType } from '../../../../misc/schema';
-import { DriveFiles, Followings, Users, Notes } from '../../../../models';
+import { DriveFiles, Followings, Notes, Users } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { name, schema } from '../schemas/instance';
 import { Note } from '../../../../models/entities/note';
@@ -12,66 +12,6 @@ type InstanceLog = SchemaType<typeof schema>;
 export default class InstanceChart extends Chart<InstanceLog> {
 	constructor() {
 		super(name, schema);
-	}
-
-	@autobind
-	protected genNewLog(latest: InstanceLog): DeepPartial<InstanceLog> {
-		return {
-			notes: {
-				total: latest.notes.total,
-			},
-			users: {
-				total: latest.users.total,
-			},
-			following: {
-				total: latest.following.total,
-			},
-			followers: {
-				total: latest.followers.total,
-			},
-			drive: {
-				totalFiles: latest.drive.totalFiles,
-				totalUsage: latest.drive.totalUsage,
-			}
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<InstanceLog>> {
-		const [
-			notesCount,
-			usersCount,
-			followingCount,
-			followersCount,
-			driveFiles,
-			driveUsage,
-		] = await Promise.all([
-			Notes.count({ userHost: group }),
-			Users.count({ host: group }),
-			Followings.count({ followerHost: group }),
-			Followings.count({ followeeHost: group }),
-			DriveFiles.count({ userHost: group }),
-			DriveFiles.clacDriveUsageOfHost(group),
-		]);
-
-		return {
-			notes: {
-				total: notesCount,
-			},
-			users: {
-				total: usersCount,
-			},
-			following: {
-				total: followingCount,
-			},
-			followers: {
-				total: followersCount,
-			},
-			drive: {
-				totalFiles: driveFiles,
-				totalUsage: driveUsage,
-			}
-		};
 	}
 
 	@autobind
@@ -169,5 +109,65 @@ export default class InstanceChart extends Chart<InstanceLog> {
 		await this.inc({
 			drive: update
 		}, file.userHost);
+	}
+
+	@autobind
+	protected genNewLog(latest: InstanceLog): DeepPartial<InstanceLog> {
+		return {
+			notes: {
+				total: latest.notes.total,
+			},
+			users: {
+				total: latest.users.total,
+			},
+			following: {
+				total: latest.following.total,
+			},
+			followers: {
+				total: latest.followers.total,
+			},
+			drive: {
+				totalFiles: latest.drive.totalFiles,
+				totalUsage: latest.drive.totalUsage,
+			}
+		};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<InstanceLog>> {
+		const [
+			notesCount,
+			usersCount,
+			followingCount,
+			followersCount,
+			driveFiles,
+			driveUsage,
+		] = await Promise.all([
+			Notes.count({ userHost: group }),
+			Users.count({ host: group }),
+			Followings.count({ followerHost: group }),
+			Followings.count({ followeeHost: group }),
+			DriveFiles.count({ userHost: group }),
+			DriveFiles.clacDriveUsageOfHost(group),
+		]);
+
+		return {
+			notes: {
+				total: notesCount,
+			},
+			users: {
+				total: usersCount,
+			},
+			following: {
+				total: followingCount,
+			},
+			followers: {
+				total: followersCount,
+			},
+			drive: {
+				totalFiles: driveFiles,
+				totalUsage: driveUsage,
+			}
+		};
 	}
 }

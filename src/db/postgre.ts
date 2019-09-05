@@ -1,4 +1,4 @@
-import { createConnection, Logger, getConnection } from 'typeorm';
+import { createConnection, getConnection, Logger } from 'typeorm';
 import config from '../config';
 import { entities as charts } from '../services/chart/entities';
 import { dbLogger } from './logger';
@@ -53,12 +53,6 @@ import { UsedUsername } from '../models/entities/used-username';
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
 class MyCustomLogger implements Logger {
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
-			language: 'sql', ignoreIllegals: true,
-		});
-	}
-
 	public logQuery(query: string, parameters?: any[]) {
 		sqlLogger.info(this.highlight(query));
 	}
@@ -81,6 +75,12 @@ class MyCustomLogger implements Logger {
 
 	public logMigration(message: string) {
 		sqlLogger.info(message);
+	}
+
+	private highlight(sql: string) {
+		return highlight.highlight(sql, {
+			language: 'sql', ignoreIllegals: true,
+		});
 	}
 }
 
@@ -137,7 +137,8 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 	try {
 		const conn = getConnection();
 		return Promise.resolve(conn);
-	} catch (e) {}
+	} catch (e) {
+	}
 
 	return createConnection({
 		type: 'postgres',

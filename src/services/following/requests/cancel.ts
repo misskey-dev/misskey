@@ -4,8 +4,8 @@ import renderUndo from '../../../remote/activitypub/renderer/undo';
 import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
 import { IdentifiableError } from '../../../misc/identifiable-error';
-import { User, ILocalUser } from '../../../models/entities/user';
-import { Users, FollowRequests } from '../../../models';
+import { ILocalUser, User } from '../../../models/entities/user';
+import { FollowRequests, Users } from '../../../models';
 
 export default async function(followee: User, follower: User) {
 	if (Users.isRemoteUser(followee)) {

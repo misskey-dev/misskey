@@ -3,7 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { Notifications, Followings, Mutings } from '../../../../models';
+import { Followings, Mutings, Notifications } from '../../../../models';
 
 export const meta = {
 	desc: {

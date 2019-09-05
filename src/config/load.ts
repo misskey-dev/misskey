@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { Source, Mixin } from './types';
+import { Mixin, Source } from './types';
 import * as pkg from '../../package.json';
 
 /**

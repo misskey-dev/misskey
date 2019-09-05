@@ -1,6 +1,6 @@
 import { User } from '../../../models/entities/user';
 import { Mutings } from '../../../models';
-import { SelectQueryBuilder, Brackets } from 'typeorm';
+import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User) {
 	const mutingQuery = Mutings.createQueryBuilder('muting')

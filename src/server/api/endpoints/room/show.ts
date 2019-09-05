@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Users, UserProfiles } from '../../../../models';
+import { UserProfiles, Users } from '../../../../models';
 import { ID } from '../../../../misc/cafy-id';
 import { ensure } from '../../../../prelude/ensure';
 import { toPunyNullable } from '../../../../misc/convert-host';

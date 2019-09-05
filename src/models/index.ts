@@ -1,4 +1,4 @@
-import { getRepository, getCustomRepository } from 'typeorm';
+import { getCustomRepository, getRepository } from 'typeorm';
 import { Instance } from './entities/instance';
 import { Emoji } from './entities/emoji';
 import { Poll } from './entities/poll';

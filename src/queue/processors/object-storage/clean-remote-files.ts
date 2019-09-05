@@ -3,7 +3,7 @@ import * as Bull from 'bull';
 import { queueLogger } from '../../logger';
 import { deleteFileSync } from '../../../services/drive/delete-file';
 import { DriveFiles } from '../../../models';
-import { MoreThan, Not, IsNull } from 'typeorm';
+import { IsNull, MoreThan, Not } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('clean-remote-files');
 

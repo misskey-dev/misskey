@@ -3,7 +3,7 @@ import config from '../config';
 import { createPerson, updatePerson } from './activitypub/models/person';
 import { remoteLogger } from './logger';
 import chalk from 'chalk';
-import { User, IRemoteUser } from '../models/entities/user';
+import { IRemoteUser, User } from '../models/entities/user';
 import { Users } from '../models';
 import { toPuny } from '../misc/convert-host';
 

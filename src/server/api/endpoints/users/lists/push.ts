@@ -4,7 +4,7 @@ import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 import { pushUserToUserList } from '../../../../../services/user-list/push';
-import { UserLists, UserListJoinings } from '../../../../../models';
+import { UserListJoinings, UserLists } from '../../../../../models';
 
 export const meta = {
 	desc: {

@@ -1,6 +1,9 @@
-import { publishMainStream, publishGroupMessagingStream } from '../../../services/stream';
-import { publishMessagingStream } from '../../../services/stream';
-import { publishMessagingIndexStream } from '../../../services/stream';
+import {
+	publishGroupMessagingStream,
+	publishMainStream,
+	publishMessagingIndexStream,
+	publishMessagingStream
+} from '../../../services/stream';
 import { User } from '../../../models/entities/user';
 import { MessagingMessage } from '../../../models/entities/messaging-message';
 import { MessagingMessages, UserGroupJoinings, Users } from '../../../models';

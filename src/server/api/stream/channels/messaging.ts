@@ -1,13 +1,12 @@
 import autobind from 'autobind-decorator';
-import { readUserMessagingMessage, readGroupMessagingMessage } from '../../common/read-messaging-message';
+import { readGroupMessagingMessage, readUserMessagingMessage } from '../../common/read-messaging-message';
 import Channel from '../channel';
 import { UserGroupJoinings } from '../../../../models';
 
 export default class extends Channel {
-	public readonly chName = 'messaging';
 	public static shouldShare = false;
 	public static requireCredential = true;
-
+	public readonly chName = 'messaging';
 	private otherpartyId: string | null;
 	private groupId: string | null;
 

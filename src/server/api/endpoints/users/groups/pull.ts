@@ -3,7 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { UserGroups, UserGroupJoinings } from '../../../../../models';
+import { UserGroupJoinings, UserGroups } from '../../../../../models';
 
 export const meta = {
 	desc: {

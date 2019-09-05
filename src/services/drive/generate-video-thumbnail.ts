@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as tmp from 'tmp';
-import { IImage, convertToJpeg } from './image-processor';
+import { convertToJpeg, IImage } from './image-processor';
 import * as FFmpeg from 'fluent-ffmpeg';
 
 export async function GenerateVideoThumbnail(path: string): Promise<IImage> {

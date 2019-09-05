@@ -1,4 +1,4 @@
-import { count, concat } from '../../prelude/array';
+import { concat, count } from '../../prelude/array';
 
 // MISSKEY REVERSI ENGINE
 
@@ -100,6 +100,23 @@ export default class Reversi {
 		return count(WHITE, this.board);
 	}
 
+	/**
+	 * ゲームが終了したか否か
+	 */
+	public get isEnded(): boolean {
+		return this.turn === null;
+	}
+
+	/**
+	 * ゲームの勝者 (null = 引き分け)
+	 */
+	public get winner(): Color | null {
+		return this.isEnded ?
+			this.blackCount == this.whiteCount ? null :
+				this.opts.isLlotheo === this.blackCount > this.whiteCount ? WHITE : BLACK :
+			undefined as never;
+	}
+
 	public transformPosToXy(pos: number): number[] {
 		const x = pos % this.mapWidth;
 		const y = Math.floor(pos / this.mapWidth);
@@ -139,14 +156,6 @@ export default class Reversi {
 		});
 
 		this.calcTurn();
-	}
-
-	private calcTurn() {
-		// ターン計算
-		this.turn =
-			this.canPutSomewhere(!this.prevColor) ? !this.prevColor :
-			this.canPutSomewhere(this.prevColor!) ? this.prevColor :
-			null;
 	}
 
 	public undo() {
@@ -192,8 +201,8 @@ export default class Reversi {
 	public canPut(color: Color, pos: number): boolean {
 		return (
 			this.board[pos] !== null ? false : // 既に石が置いてある場所には打てない
-			this.opts.canPutEverywhere ? this.mapDataGet(pos) == 'empty' : // 挟んでなくても置けるモード
-			this.effects(color, pos).length !== 0); // 相手の石を1つでも反転させられるか
+				this.opts.canPutEverywhere ? this.mapDataGet(pos) == 'empty' : // 挟んでなくても置けるモード
+					this.effects(color, pos).length !== 0); // 相手の石を1つでも反転させられるか
 	}
 
 	/**
@@ -244,20 +253,11 @@ export default class Reversi {
 		return concat(diffVectors.map(effectsInLine));
 	}
 
-	/**
-	 * ゲームが終了したか否か
-	 */
-	public get isEnded(): boolean {
-		return this.turn === null;
-	}
-
-	/**
-	 * ゲームの勝者 (null = 引き分け)
-	 */
-	public get winner(): Color | null {
-		return this.isEnded ?
-			this.blackCount == this.whiteCount ? null :
-			this.opts.isLlotheo === this.blackCount > this.whiteCount ? WHITE : BLACK :
-			undefined as never;
+	private calcTurn() {
+		// ターン計算
+		this.turn =
+			this.canPutSomewhere(!this.prevColor) ? !this.prevColor :
+				this.canPutSomewhere(this.prevColor!) ? this.prevColor :
+					null;
 	}
 }

@@ -1,4 +1,4 @@
-import { MoreThanOrEqual, getRepository } from 'typeorm';
+import { getRepository, MoreThanOrEqual } from 'typeorm';
 import { Note } from '../models/entities/note';
 import { initDb } from '../db/postgre';
 

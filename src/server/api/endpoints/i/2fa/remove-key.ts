@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import define from '../../../define';
-import { UserProfiles, UserSecurityKeys, Users } from '../../../../../models';
+import { UserProfiles, Users, UserSecurityKeys } from '../../../../../models';
 import { ensure } from '../../../../../prelude/ensure';
 import { publishMainStream } from '../../../../../services/stream';
 

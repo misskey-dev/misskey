@@ -3,11 +3,11 @@ import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import signin from '../common/signin';
 import config from '../../../config';
-import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '../../../models';
+import { AttestationChallenges, Signins, UserProfiles, Users, UserSecurityKeys } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { genId } from '../../../misc/gen-id';
 import { ensure } from '../../../prelude/ensure';
-import { verifyLogin, hash } from '../2fa';
+import { hash, verifyLogin } from '../2fa';
 import { randomBytes } from 'crypto';
 
 export default async (ctx: Koa.BaseContext) => {

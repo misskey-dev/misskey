@@ -19,7 +19,7 @@ const jobs = {
 	importUserLists
 } as any;
 
-export default function(dbQueue: Bull.Queue) {
+export default function (dbQueue: Bull.Queue) {
 	for (const [k, v] of Object.entries(jobs)) {
 		dbQueue.process(k, v as any);
 	}

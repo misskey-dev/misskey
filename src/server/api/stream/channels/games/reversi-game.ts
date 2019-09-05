@@ -8,10 +8,9 @@ import { ReversiGame } from '../../../../../models/entities/games/reversi/game';
 import { ReversiGames } from '../../../../../models';
 
 export default class extends Channel {
-	public readonly chName = 'gamesReversiGame';
 	public static shouldShare = false;
 	public static requireCredential = false;
-
+	public readonly chName = 'gamesReversiGame';
 	private gameId: ReversiGame['id'] | null = null;
 
 	@autobind

@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import Chart, { Obj, DeepPartial } from '../../core';
+import Chart, { DeepPartial, Obj } from '../../core';
 import { User } from '../../../../models/entities/user';
 import { SchemaType } from '../../../../misc/schema';
 import { Notes } from '../../../../models';
@@ -11,24 +11,6 @@ type PerUserNotesLog = SchemaType<typeof schema>;
 export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	constructor() {
 		super(name, schema, true);
-	}
-
-	@autobind
-	protected genNewLog(latest: PerUserNotesLog): DeepPartial<PerUserNotesLog> {
-		return {
-			total: latest.total,
-		};
-	}
-
-	@autobind
-	protected async fetchActual(group: string): Promise<DeepPartial<PerUserNotesLog>> {
-		const [count] = await Promise.all([
-			Notes.count({ userId: group }),
-		]);
-
-		return {
-			total: count,
-		};
 	}
 
 	@autobind
@@ -54,5 +36,23 @@ export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 		}
 
 		await this.inc(update, user.id);
+	}
+
+	@autobind
+	protected genNewLog(latest: PerUserNotesLog): DeepPartial<PerUserNotesLog> {
+		return {
+			total: latest.total,
+		};
+	}
+
+	@autobind
+	protected async fetchActual(group: string): Promise<DeepPartial<PerUserNotesLog>> {
+		const [count] = await Promise.all([
+			Notes.count({ userId: group }),
+		]);
+
+		return {
+			total: count,
+		};
 	}
 }

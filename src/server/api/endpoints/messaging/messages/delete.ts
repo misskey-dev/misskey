@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import { publishMessagingStream, publishGroupMessagingStream } from '../../../../../services/stream';
+import { publishGroupMessagingStream, publishMessagingStream } from '../../../../../services/stream';
 import * as ms from 'ms';
 import { ApiError } from '../../../error';
 import { MessagingMessages } from '../../../../../models';

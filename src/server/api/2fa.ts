@@ -68,7 +68,7 @@ function verifyCertificateChain(certificates: string[]) {
 		const signatureHex = certificate.getSignatureValueHex();
 
 		// Verify against CA
-		const Signature = new jsrsasign.KJUR.crypto.Signature({alg: algorithm});
+		const Signature = new jsrsasign.KJUR.crypto.Signature({ alg: algorithm });
 		Signature.init(CACert);
 		Signature.updateHex(certStruct);
 		valid = valid && !!Signature.verify(signatureHex); // true if CA signed the certificate

@@ -11,6 +11,13 @@ export default class TestUniqueChart extends Chart<TestUniqueLog> {
 	}
 
 	@autobind
+	public async uniqueIncrement(key: string) {
+		await this.incIfUnique({
+			foo: 1
+		}, 'foos', key);
+	}
+
+	@autobind
 	protected genNewLog(latest: TestUniqueLog): DeepPartial<TestUniqueLog> {
 		return {};
 	}
@@ -18,12 +25,5 @@ export default class TestUniqueChart extends Chart<TestUniqueLog> {
 	@autobind
 	protected async fetchActual(): Promise<DeepPartial<TestUniqueLog>> {
 		return {};
-	}
-
-	@autobind
-	public async uniqueIncrement(key: string) {
-		await this.incIfUnique({
-			foo: 1
-		}, 'foos', key);
 	}
 }

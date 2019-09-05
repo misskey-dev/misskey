@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import post from '../../../../services/note/create';
 import { IRemoteUser, User } from '../../../../models/entities/user';
-import { IAnnounce, INote, getApId, getApIds } from '../../type';
+import { getApId, getApIds, IAnnounce, INote } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { resolvePerson } from '../../models/person';
 import { apLogger } from '../../logger';

@@ -8,7 +8,7 @@ import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
-import { DriveFiles, UserProfiles, UserKeypairs } from '../../../models';
+import { DriveFiles, UserKeypairs, UserProfiles } from '../../../models';
 import { ensure } from '../../../prelude/ensure';
 
 export async function renderPerson(user: ILocalUser) {

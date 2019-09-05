@@ -3,10 +3,10 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { MessagingMessages, UserGroups, UserGroupJoinings } from '../../../../models';
+import { MessagingMessages, UserGroupJoinings, UserGroups } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
-import { readUserMessagingMessage, readGroupMessagingMessage } from '../../common/read-messaging-message';
+import { readGroupMessagingMessage, readUserMessagingMessage } from '../../common/read-messaging-message';
 
 export const meta = {
 	desc: {

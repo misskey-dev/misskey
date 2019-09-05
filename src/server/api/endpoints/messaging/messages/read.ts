@@ -3,7 +3,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { MessagingMessages } from '../../../../../models';
-import { readUserMessagingMessage, readGroupMessagingMessage } from '../../../common/read-messaging-message';
+import { readGroupMessagingMessage, readUserMessagingMessage } from '../../../common/read-messaging-message';
 
 export const meta = {
 	desc: {

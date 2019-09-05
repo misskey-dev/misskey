@@ -1,7 +1,22 @@
 import $ from 'cafy';
-import { EntityRepository, Repository, In } from 'typeorm';
-import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages } from '..';
+import { EntityRepository, In, Repository } from 'typeorm';
+import { ILocalUser, IRemoteUser, User } from '../entities/user';
+import {
+	Blockings,
+	Emojis,
+	Followings,
+	FollowRequests,
+	MessagingMessages,
+	Mutings,
+	Notes,
+	NoteUnreads,
+	Notifications,
+	Pages,
+	UserGroupJoinings,
+	UserNotePinings,
+	UserProfiles,
+	UserSecurityKeys
+} from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
@@ -11,6 +26,15 @@ export type PackedUser = SchemaType<typeof packedUserSchema>;
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+	//#region Validators
+	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
+	public validateRemoteUsername = $.str.match(/^\w([\w-]*\w)?$/);
+	public validatePassword = $.str.min(1);
+	public validateName = $.str.min(1).max(50);
+	public validateDescription = $.str.min(1).max(500);
+	public validateLocation = $.str.min(1).max(50);
+	public validateBirthday = $.str.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
+
 	public async getRelation(me: User['id'], target: User['id']) {
 		const [following1, following2, followReq1, followReq2, toBlocking, fromBlocked, mute] = await Promise.all([
 			Followings.findOne({
@@ -249,15 +273,6 @@ export class UserRepository extends Repository<User> {
 	public isRemoteUser(user: User): user is IRemoteUser {
 		return !this.isLocalUser(user);
 	}
-
-	//#region Validators
-	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
-	public validateRemoteUsername = $.str.match(/^\w([\w-]*\w)?$/);
-	public validatePassword = $.str.min(1);
-	public validateName = $.str.min(1).max(50);
-	public validateDescription = $.str.min(1).max(500);
-	public validateLocation = $.str.min(1).max(50);
-	public validateBirthday = $.str.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/);
 	//#endregion
 }
 

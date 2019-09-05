@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
 

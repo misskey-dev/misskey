@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/entities/user';
 import createNote from './note';
-import { ICreate, getApId, validPost } from '../../type';
+import { getApId, ICreate, validPost } from '../../type';
 import { apLogger } from '../../logger';
 
 const logger = apLogger;

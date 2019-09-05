@@ -7,7 +7,7 @@ import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
 import { apLogger } from './logger';
-import { UserKeypairs, Instances } from '../../models';
+import { Instances, UserKeypairs } from '../../models';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';

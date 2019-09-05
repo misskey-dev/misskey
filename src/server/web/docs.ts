@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as showdown from 'showdown';
 import 'showdown-highlightjs-extension';
-import ms = require('ms');
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
 import * as glob from 'glob';
@@ -15,6 +14,7 @@ import { licenseHtml } from '../../misc/license';
 import { copyright } from '../../const.json';
 import * as locales from '../../../locales';
 import * as nestedProperty from 'nested-property';
+import ms = require('ms');
 
 function getLang(lang: string): string {
 	if (['en-US', 'ja-JP'].includes(lang)) {

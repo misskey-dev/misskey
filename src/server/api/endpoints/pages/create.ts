@@ -2,7 +2,7 @@ import $ from 'cafy';
 import * as ms from 'ms';
 import define from '../../define';
 import { ID } from '../../../../misc/cafy-id';
-import { Pages, DriveFiles } from '../../../../models';
+import { DriveFiles, Pages } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
 import { Page } from '../../../../models/entities/page';
 import { ApiError } from '../../error';

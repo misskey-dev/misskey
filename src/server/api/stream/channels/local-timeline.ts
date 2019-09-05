@@ -7,9 +7,9 @@ import { PackedNote } from '../../../../models/repositories/note';
 import { PackedUser } from '../../../../models/repositories/user';
 
 export default class extends Channel {
-	public readonly chName = 'localTimeline';
 	public static shouldShare = true;
 	public static requireCredential = false;
+	public readonly chName = 'localTimeline';
 
 	@autobind
 	public async init(params: any) {
@@ -20,6 +20,12 @@ export default class extends Channel {
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
+	}
+
+	@autobind
+	public dispose() {
+		// Unsubscribe events
+		this.subscriber.off('notesStream', this.onNote);
 	}
 
 	@autobind
@@ -54,11 +60,5 @@ export default class extends Channel {
 		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
-	}
-
-	@autobind
-	public dispose() {
-		// Unsubscribe events
-		this.subscriber.off('notesStream', this.onNote);
 	}
 }

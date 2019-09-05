@@ -3,7 +3,6 @@
  */
 
 import * as os from 'os';
-import ms = require('ms');
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import * as send from 'koa-send';
@@ -16,12 +15,13 @@ import { fetchMeta } from '../../misc/fetch-meta';
 import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
-import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
+import { Emojis, Notes, Pages, UserProfiles, Users } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
 import { getConnection } from 'typeorm';
 import redis from '../../db/redis';
+import ms = require('ms');
 
 const client = `${__dirname}/../../client/`;
 

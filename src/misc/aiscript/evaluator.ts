@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import * as seedrandom from 'seedrandom';
-import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
+import { Block, envVarsDef, funcDefs, isFnBlock, PageVar, Variable } from '.';
 
 type Fn = {
 	slots: string[];
@@ -64,14 +64,6 @@ export class ASEvaluator {
 	}
 
 	@autobind
-	private interpolate(str: string, scope: Scope) {
-		return str.replace(/{(.+?)}/g, match => {
-			const v = scope.getState(match.slice(1, -1).trim());
-			return v == null ? 'NULL' : v.toString();
-		});
-	}
-
-	@autobind
 	public evaluateVars(): Record<string, any> {
 		const values: Record<string, any> = {};
 
@@ -88,6 +80,14 @@ export class ASEvaluator {
 		}
 
 		return values;
+	}
+
+	@autobind
+	private interpolate(str: string, scope: Scope) {
+		return str.replace(/{(.+?)}/g, match => {
+			const v = scope.getState(match.slice(1, -1).trim());
+			return v == null ? 'NULL' : v.toString();
+		});
 	}
 
 	@autobind
@@ -230,8 +230,8 @@ class AiScriptError extends Error {
 }
 
 class Scope {
-	private layerdStates: Record<string, any>[];
 	public name: string;
+	private layerdStates: Record<string, any>[];
 
 	constructor(layerdStates: Scope['layerdStates'], name?: Scope['name']) {
 		this.layerdStates = layerdStates;

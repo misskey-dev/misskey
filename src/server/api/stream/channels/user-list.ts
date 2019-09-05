@@ -6,11 +6,11 @@ import { User } from '../../../../models/entities/user';
 import { PackedNote } from '../../../../models/repositories/note';
 
 export default class extends Channel {
-	public readonly chName = 'userList';
 	public static shouldShare = false;
 	public static requireCredential = false;
-	private listId: string;
+	public readonly chName = 'userList';
 	public listUsers: User['id'][] = [];
+	private listId: string;
 	private listUsersClock: NodeJS.Timer;
 
 	@autobind
@@ -24,6 +24,15 @@ export default class extends Channel {
 
 		this.updateListUsers();
 		this.listUsersClock = setInterval(this.updateListUsers, 5000);
+	}
+
+	@autobind
+	public dispose() {
+		// Unsubscribe events
+		this.subscriber.off(`userListStream:${this.listId}`, this.send);
+		this.subscriber.off('notesStream', this.onNote);
+
+		clearInterval(this.listUsersClock);
 	}
 
 	@autobind
@@ -69,14 +78,5 @@ export default class extends Channel {
 		if (shouldMuteThisNote(note, this.muting)) return;
 
 		this.send('note', note);
-	}
-
-	@autobind
-	public dispose() {
-		// Unsubscribe events
-		this.subscriber.off(`userListStream:${this.listId}`, this.send);
-		this.subscriber.off('notesStream', this.onNote);
-
-		clearInterval(this.listUsersClock);
 	}
 }
