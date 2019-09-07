@@ -6,7 +6,7 @@ export default (object: any, user: ILocalUser) => {
 		id: `${config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 		actor: `${config.url}/users/${user.id}`,
 		type: 'Update',
-		to: [ 'https://www.w3.org/ns/activitystreams#Public' ],
+		to: ['https://www.w3.org/ns/activitystreams#Public'],
 		object
 	} as any;
 

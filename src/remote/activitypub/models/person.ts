@@ -26,6 +26,7 @@ import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { ensure } from '../../../prelude/ensure';
+
 const logger = apLogger;
 
 /**

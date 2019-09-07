@@ -11,9 +11,9 @@ export function generateBlockQueryForUsers(q: SelectQueryBuilder<any>, me: User)
 		.select('blocking.blockerId')
 		.where('blocking.blockeeId = :blockeeId', { blockeeId: me.id });
 
-	q.andWhere(`user.id NOT IN (${ blockingQuery.getQuery() })`);
+	q.andWhere(`user.id NOT IN (${blockingQuery.getQuery()})`);
 	q.setParameters(blockingQuery.getParameters());
 
-	q.andWhere(`user.id NOT IN (${ blockedQuery.getQuery() })`);
+	q.andWhere(`user.id NOT IN (${blockedQuery.getQuery()})`);
 	q.setParameters(blockedQuery.getParameters());
 }

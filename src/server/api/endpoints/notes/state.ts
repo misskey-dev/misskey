@@ -30,15 +30,15 @@ export default define(meta, async (ps, user) => {
 	const [favorite, watching] = await Promise.all([
 		NoteFavorites.count({
 			where: {
-			userId: user.id,
-			noteId: ps.noteId
+				userId: user.id,
+				noteId: ps.noteId
 			},
 			take: 1
 		}),
 		NoteWatchings.count({
 			where: {
-			userId: user.id,
-			noteId: ps.noteId
+				userId: user.id,
+				noteId: ps.noteId
 			},
 			take: 1
 		})

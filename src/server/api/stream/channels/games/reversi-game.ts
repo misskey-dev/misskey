@@ -107,8 +107,8 @@ export default class extends Channel {
 		const set = game.user1Id === this.user.id ? {
 			form2: form
 		} : {
-				form1: form
-			};
+			form1: form
+		};
 
 		await ReversiGames.update(this.gameId!, set);
 

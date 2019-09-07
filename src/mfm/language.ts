@@ -64,7 +64,10 @@ export const mfmLanguage = P.createLanguage({
 		const text = input.substr(i);
 		const match = text.match(/^```(.+?)?\n([\s\S]+?)\n```(\n|$)/i);
 		if (!match) return P.makeFailure(i, 'not a blockCode');
-		return P.makeSuccess(i + match[0].length, createLeaf('blockCode', { code: match[2], lang: match[1] ? match[1].trim() : null }));
+		return P.makeSuccess(i + match[0].length, createLeaf('blockCode', {
+			code: match[2],
+			lang: match[1] ? match[1].trim() : null
+		}));
 	})),
 	inline: r => P.alt(
 		r.big,

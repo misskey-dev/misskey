@@ -14,8 +14,7 @@ export const meta = {
 
 	kind: 'write:account',
 
-	params: {
-	}
+	params: {}
 };
 
 export default define(meta, async (ps, user) => {

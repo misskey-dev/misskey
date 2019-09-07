@@ -215,6 +215,7 @@ export class Note {
 		comment: '[Denormalized]'
 	})
 	public renoteUserHost: string | null;
+
 	//#endregion
 
 	constructor(data: Partial<Note>) {

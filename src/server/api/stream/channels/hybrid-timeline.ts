@@ -50,7 +50,7 @@ export default class extends Channel {
 					detail: true
 				});
 			}
-	}
+		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (shouldMuteThisNote(note, this.muting)) return;

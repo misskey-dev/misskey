@@ -73,7 +73,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	if (ps.following) {
-		query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id });
+		query.andWhere(`((note.userId IN (${followingQuery.getQuery()})) OR (note.userId = :meId))`, { meId: user.id });
 		query.setParameters(followingQuery.getParameters());
 	}
 

@@ -10,8 +10,7 @@ export const meta = {
 
 	tags: ['meta'],
 
-	params: {
-	},
+	params: {},
 };
 
 export default define(meta, async () => {
@@ -22,16 +21,16 @@ export default define(meta, async () => {
 			WHERE nspname NOT IN ('pg_catalog', 'information_schema')
 				AND C.relkind <> 'i'
 				AND nspname !~ '^pg_toast';`)
-		.then(recs => {
-			const res = {} as Record<string, { count: number; size: number; }>;
-			for (const rec of recs) {
-				res[rec.table] = {
-					count: parseInt(rec.count, 10),
-					size: parseInt(rec.size, 10),
-				};
-			}
-			return res;
-		});
+			.then(recs => {
+				const res = {} as Record<string, { count: number; size: number; }>;
+				for (const rec of recs) {
+					res[rec.table] = {
+						count: parseInt(rec.count, 10),
+						size: parseInt(rec.size, 10),
+					};
+				}
+				return res;
+			});
 
 	return sizes;
 });

@@ -311,8 +311,8 @@ export default (opts) => ({
 					text: err.message
 				});
 			}, {
-					enableHighAccuracy: true
-				});
+				enableHighAccuracy: true
+			});
 		},
 
 		removeGeo() {

@@ -226,6 +226,7 @@ export class UserProfile {
 		comment: '[Denormalized]'
 	})
 	public userHost: string | null;
+
 	//#endregion
 
 	constructor(data: Partial<UserProfile>) {

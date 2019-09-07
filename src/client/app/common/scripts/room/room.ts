@@ -11,6 +11,7 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { Furniture, RoomInfo } from './furniture';
 import { query as urlQuery } from '../../../../../prelude/url';
+
 const furnitureDefs = require('./furnitures.json5');
 
 THREE.ImageUtils.crossOrigin = '';
@@ -115,7 +116,7 @@ export class Room {
 		//#region Init a camera
 		this.camera = options.useOrthographicCamera
 			? new THREE.OrthographicCamera(
-				width / - 2, width / 2, height / 2, height / - 2, -10, 10)
+				width / -2, width / 2, height / 2, height / -2, -10, 10)
 			: new THREE.PerspectiveCamera(45, width / height);
 
 		if (options.useOrthographicCamera) {

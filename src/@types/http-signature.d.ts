@@ -19,7 +19,7 @@ declare module 'http-signature' {
 		clockSkew?: number;
 	}
 
-	interface IParsedSignature  {
+	interface IParsedSignature {
 		scheme: string;
 		params: ISignature;
 		signingString: string;

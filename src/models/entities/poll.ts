@@ -52,6 +52,7 @@ export class Poll {
 		comment: '[Denormalized]'
 	})
 	public userHost: string | null;
+
 	//#endregion
 
 	constructor(data: Partial<Poll>) {

@@ -93,19 +93,19 @@ export default async (ctx: Koa.BaseContext) => {
 
 	const keyPair = await new Promise<string[]>((s, j) =>
 		generateKeyPair('rsa', {
-			modulusLength: 4096,
-			publicKeyEncoding: {
-				type: 'pkcs1',
-				format: 'pem'
-			},
-			privateKeyEncoding: {
-				type: 'pkcs1',
-				format: 'pem',
-				cipher: undefined,
-				passphrase: undefined
-			}
-		} as any, (e, publicKey, privateKey) =>
-			e ? j(e) : s([publicKey, privateKey])
+				modulusLength: 4096,
+				publicKeyEncoding: {
+					type: 'pkcs1',
+					format: 'pem'
+				},
+				privateKeyEncoding: {
+					type: 'pkcs1',
+					format: 'pem',
+					cipher: undefined,
+					passphrase: undefined
+				}
+			} as any, (e, publicKey, privateKey) =>
+				e ? j(e) : s([publicKey, privateKey])
 		));
 
 	let account!: User;

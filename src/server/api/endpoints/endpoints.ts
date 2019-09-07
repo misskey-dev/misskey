@@ -6,8 +6,7 @@ export const meta = {
 
 	tags: ['meta'],
 
-	params: {
-	},
+	params: {},
 };
 
 export default define(meta, async () => {

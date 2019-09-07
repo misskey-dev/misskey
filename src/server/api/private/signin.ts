@@ -142,7 +142,7 @@ export default async (ctx: Koa.BaseContext) => {
 				body.credentialId
 					.replace(/-/g, '+')
 					.replace(/_/g, '/'),
-					'base64'
+				'base64'
 			).toString('hex')
 		});
 

@@ -1,4 +1,5 @@
 import * as NProgress from 'nprogress';
+
 NProgress.configure({
 	trickleSpeed: 500,
 	showSpinner: false

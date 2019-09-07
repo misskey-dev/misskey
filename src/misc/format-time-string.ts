@@ -13,7 +13,7 @@ const defaultLocaleStringFormats: {[index: string]: string} = {
 function formatLocaleString(date: Date, format: string): string {
 	return format.replace(/\{\{(\w+)(:(\w+))?\}\}/g, (match: string, kind: string, unused?, option?: string) => {
 		if (['weekday', 'era', 'year', 'month', 'day', 'hour', 'minute', 'second', 'timeZoneName'].includes(kind)) {
-			return date.toLocaleString(window.navigator.language, {[kind]: option ? option : defaultLocaleStringFormats[kind]});
+			return date.toLocaleString(window.navigator.language, { [kind]: option ? option : defaultLocaleStringFormats[kind] });
 		} else {
 			return match;
 		}
@@ -24,8 +24,8 @@ export function formatDateTimeString(date: Date, format: string): string {
 	return format
 		.replace(/yyyy/g, date.getFullYear().toString())
 		.replace(/yy/g, date.getFullYear().toString().slice(-2))
-		.replace(/MMMM/g, date.toLocaleString(window.navigator.language, { month: 'long'}))
-		.replace(/MMM/g, date.toLocaleString(window.navigator.language, { month: 'short'}))
+		.replace(/MMMM/g, date.toLocaleString(window.navigator.language, { month: 'long' }))
+		.replace(/MMM/g, date.toLocaleString(window.navigator.language, { month: 'short' }))
 		.replace(/MM/g, (`0${date.getMonth() + 1}`).slice(-2))
 		.replace(/M/g, (date.getMonth() + 1).toString())
 		.replace(/dd/g, (`0${date.getDate()}`).slice(-2))

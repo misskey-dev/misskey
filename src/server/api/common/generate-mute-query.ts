@@ -30,7 +30,7 @@ export function generateMuteQueryForUsers(q: SelectQueryBuilder<any>, me: User) 
 		.where('muting.muterId = :muterId', { muterId: me.id });
 
 	q
-		.andWhere(`user.id NOT IN (${ mutingQuery.getQuery() })`);
+		.andWhere(`user.id NOT IN (${mutingQuery.getQuery()})`);
 
 	q.setParameters(mutingQuery.getParameters());
 }

@@ -17,7 +17,7 @@ const basic10: Record<string, string> = {
 
 export async function getFallbackReaction(): Promise<string> {
 	const meta = await fetchMeta();
-	return  meta.useStarForReactionFallback ? 'star' : 'like';
+	return meta.useStarForReactionFallback ? 'star' : 'like';
 }
 
 export async function toDbReaction(reaction?: string | null, enableEmoji = true): Promise<string> {
