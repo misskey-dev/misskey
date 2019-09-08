@@ -18,9 +18,6 @@ common:
     drive: "Drive"
     drive-desc: "Vous voulez poster une photo que vous avez déjà transférée ? Vous souhaitez organiser, nommer et créer un dossier pour vos fichiers téléversés ? Misskey Drive est la meilleure solution pour vous. Très facile de partager vos fichiers en ligne."
     outro: "Découvrez vous-même les fonctionnalités de Misskey. Étant donné que Misskey est un réseau social fédéré, vous pouvez essayer d’autres instances afin de trouver vos amis si la présente instance ne vous correspond pas. Bonne chance et amusez-vous bien !"
-  adblock:
-    detected: "Veuillez désactiver votre bloqueur de publicités"
-    warning: "<strong>Misskey n’utilise pas de publicités</strong>, mais quelques options peuvent être non disponibles ou fonctionneraient mal si un bloqueur de publicités est activé."
   application-authorization: "Autorisations de l’application"
   close: "Fermer"
   do-not-copy-paste: "Veuillez ne pas entrer ou coller le code ici. Le compte pourrait être compromis."
