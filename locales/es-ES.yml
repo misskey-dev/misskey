@@ -16,9 +16,6 @@ common:
     ui: "Interfaz"
     ui-desc: "No hay ninguna interfaz que le vaya bien a todos. Por eso, Misskey tiene una interfaz altamente personalizable para tus gustos. Puedes hacer tu página principal única editando la interfaz de tu timeline y moviendo varios widgets para conseguir hacer de este lugar uno propio."
     drive: "Drive"
-  adblock:
-    detected: "Por favor, desactive el bloqueador de publicidad."
-    warning: "<strong>Misskey no tiene anuncios publicitarios.</strong> Sin embargo, algunas características podrían no estar disponibles si el bloqueador de publicidad está habilitado."
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
   do-not-copy-paste: "Por favor no copies código aquí. Tu cuenta puede resultar comprometida."
