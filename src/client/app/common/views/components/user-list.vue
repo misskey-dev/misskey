@@ -18,7 +18,7 @@
 				<div class="description" v-if="user.description" :title="user.description">
 					<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :plain="true" :nowrap="true"/>
 				</div>
-				<mk-follow-button class="follow-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
+				<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 			</div>
 		</div>
 		<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
@@ -134,7 +134,7 @@ export default Vue.extend({
 				font-size 14px
 				padding-right 40px
 
-			> .follow-button
+			> .koudoku-button
 				position absolute
 				top 8px
 				right 0
