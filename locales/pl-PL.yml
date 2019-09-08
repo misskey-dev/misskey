@@ -14,9 +14,6 @@ common:
     ui: "Interfejs"
     drive: "Dysk"
     drive-desc: "Chcesz opublikować zdjęcie, które już przesłałeś? Chcesz uporządkować, nazwać i utworzyć folder dla przesłanych plików? Dysk Misskey to najlepsze rozwiązanie dla Ciebie. Bardzo łatwo udostępniać swoje pliki online."
-  adblock:
-    detected: "Spróbuj wyłączyć blokadę reklam."
-    warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
   application-authorization: "Współpraca aplikacji"
   close: "Zamknij"
   load-more: "Załaduj więcej"
