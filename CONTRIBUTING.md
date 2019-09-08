@@ -270,3 +270,7 @@ npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
 ```
 
 作成されたスクリプトは不必要な変更を含むため除去してください。
+
+## その他
+### HTMLのクラス名で follow という単語は使わない
+広告ブロッカーで誤ってブロックされる
