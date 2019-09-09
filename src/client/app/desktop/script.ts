@@ -9,7 +9,6 @@ import VueRouter from 'vue-router';
 import './style.styl';
 
 import init from '../init';
-import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import composeNotification from '../common/scripts/compose-notification';
 
 import MkHome from './views/home/home.vue';
@@ -202,13 +201,6 @@ init(async (launch, os) => {
 
 	// Launch the app
 	const [app, _] = launch(router);
-
-	if (os.store.getters.isSignedIn) {
-		/**
-		 * Fuck AD Block
-		 */
-		fuckAdBlock(app);
-	}
 
 	/**
 	 * Init Notification

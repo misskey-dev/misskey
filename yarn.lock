@@ -4554,11 +4554,6 @@ fsevents@^1.2.7:
     nan "^2.12.1"
     node-pre-gyp "^0.12.0"
 
-fuckadblock@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/fuckadblock/-/fuckadblock-3.2.1.tgz#17fa3237a5e15c86613406b911e608191a3e62e2"
-  integrity sha1-F/oyN6XhXIZhNAa5EeYIGRo+YuI=
-
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
