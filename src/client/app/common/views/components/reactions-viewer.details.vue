@@ -17,7 +17,7 @@
 					<mk-user-name :user="u" :nowrap="false" style="line-height: 24px;"/>
 				</b>
 			</span>
-			<span slot="ommited">{{ count - 10 }}</span>
+			<span slot="omitted">{{ count - 10 }}</span>
 			<mk-reaction-icon slot="reaction" :reaction="reaction" ref="icon" />
 		</i18n>
 	</div>
