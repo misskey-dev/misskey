@@ -18,9 +18,6 @@ common:
     drive: "Drive"
     drive-desc: "Wanna post a picture you have already uploaded? Wish to organize, name and create a folder for your uploaded files? Misskey Drive is the best solution for you. Very easy to share your files online."
     outro: "Check Misskey-unique features by seeing them with your own eyes! If you feel like this instance is not for you, try other instances, as Misskey is a decentralized SNS, so that you can easily find your mates. Then, GLHF!"
-  adblock:
-    detected: "Please disable ad blocker."
-    warning: "Some features may be unavailable or cause malfunctions if ad blocking features are enabled. <strong>Misskey is not running ads</strong>."
   application-authorization: "Application authorizations"
   close: "Close"
   do-not-copy-paste: "Please do not enter or paste the code here. Account may be compromised."
@@ -1822,6 +1819,8 @@ pages:
   page-created: "Created the page!"
   page-updated: "Updated the page"
   name-already-exists: "The specified page name already exists"
+  title-invalid-name: "The specified page URL is invalid"
+  text-invalid-name: "Check whether that is not a blank"
   are-you-sure-delete: "Do you want to delete this page?"
   page-deleted: "The page has been deleted"
   edit-this-page: "Edit this page"

@@ -18,9 +18,6 @@ common:
     drive: "Drev"
     drive-desc: "Vil du poste et billede, som du tidligere har uploadet? Har du brug for at navngive filer og organisere dem i mapper, som du selv har navngivet? Så er Misskey Drev den bedste løsning for dig. Den gør det så let som ingenting at dele dine filer online."
     outro: "Tjek Misskey's unikke funktioner ved at se dem med dine egne øjne. Hvis du kommer frem til, at den ene server ikke er noget for dig, så kan du prøve en anden. Misskey er et decentraliseret SNS, så du kan lettere finde frem til brugere, som du klikker med. God fornøjelse!"
-  adblock:
-    detected: "Her kan du deaktivere ad blocker."
-    warning: "Visse funktioner kan forsvinde eller medføre forstyrrelser, hvis ad blocking er aktiveret. <strong>Misskey kører ikke annoncer</strong>."
   application-authorization: "Adgangsstyring"
   close: "Luk"
   do-not-copy-paste: "Undgå venligst at skrive eller klistre kode ind her. I modsat fald kan din konto blive kompromitteret."
