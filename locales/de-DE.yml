@@ -18,9 +18,6 @@ common:
     drive: "Drive"
     drive-desc: "Du willst ein hochgeladenes Foto nochmal posten? Deine Dateien benennen und in Ordnern sortieren? Misskeys Drive ist der beste Ort dafür. Damit wird das Teilen zum Kinderspiel!"
     outro: "Probiere Misskey aus und entdecke Misskeys einzigartige Funktionen. Wenn dir diese Instanz nicht zusagt, nimm einfach eine andere. Dank Misskeys dezentralem System kannst du dich überall mit deinen Freunden verbinden. Also dann, GLHF!"
-  adblock:
-    detected: "Bitte deaktiviere den Werbeblocker."
-    warning: "<strong>Misskey hat keine Werbung.</strong> Allerdings können Werbeblocker für unerwartete Probleme und fehlende Funktionen sorgen."
   application-authorization: "Autorisierte Anwendungen"
   close: "Schließen"
   do-not-copy-paste: "Bitte keinen Code einfügen. Ihr Account könnte gefährdet werden."

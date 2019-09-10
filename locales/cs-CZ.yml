@@ -18,9 +18,6 @@ common:
     drive: "Disk"
     drive-desc: "Chcete sdílet obrázek, který jste již nahráli? Chcete vaše nahrané soubory organizovat, pojmenovávat a vytvářet pro ně složky? Misskey Disk je pro vás nejlepší řešení. Je velmi snadné sdílet vaše soubory online."
     outro: "Podívejte se na unikátní vlastnosti Misskey vlastníma očima! Pokud si myslíte, že tato instance není pro vás, zkuste jiné instance, neboť Misskey je decentralizovaná sociální síť, takže můžete snadno najít své přátele. Hodně štěstí a zábavy!"
-  adblock:
-    detected: "Prosím vypněte svůj blokovač reklam"
-    warning: "Některé vlastnosti mohou být nedostupné nebo mohou způsobovat chyby, pokud máte povolený blokovač reklam. <strong>Misskey nepoužívá reklamy</strong>."
   application-authorization: "Autorizované aplikace"
   close: "Zavřít"
   do-not-copy-paste: "Prosím nezadávejte ani nevkládejte sem kód. Váš účet může být kompromitován."
