@@ -2,7 +2,6 @@ import * as Router from 'koa-router';
 import config from '../config';
 import { fetchMeta } from '../misc/fetch-meta';
 // import User from '../models/user';
-import { name as softwareName, version, repository } from '../../package.json';
 // import Note from '../models/note';
 
 const router = new Router();
@@ -19,6 +18,8 @@ export const links = [/* (awaiting release) {
 }];
 
 const nodeinfo2 = async () => {
+	const meta = await fetchMeta(true);
+
 	const [
 		{
 			name,
@@ -47,7 +48,7 @@ const nodeinfo2 = async () => {
 		// localPosts,
 		// localComments
 	] = await Promise.all([
-		fetchMeta(true),
+		meta
 		// User.count({ host: null }),
 		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
 		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
@@ -57,9 +58,9 @@ const nodeinfo2 = async () => {
 
 	return {
 		software: {
-			name: softwareName,
-			version,
-			repository: repository.url
+			name: 'Misskey',
+			version: config.version,
+			repository: meta.repositoryUrl,
 		},
 		protocols: ['activitypub'],
 		services: {

@@ -13,7 +13,6 @@ import * as views from 'koa-views';
 import docs from './docs';
 import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
-import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
 import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
@@ -256,7 +255,7 @@ router.get('/info', async ctx => {
 		where: { host: null }
 	});
 	await ctx.render('info', {
-		version: pkg.version,
+		version: config.version,
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,

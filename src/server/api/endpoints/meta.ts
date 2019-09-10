@@ -3,7 +3,6 @@ import * as os from 'os';
 import config from '../../../config';
 import define from '../define';
 import { fetchMeta } from '../../../misc/fetch-meta';
-import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
 import { getConnection } from 'typeorm';
 import redis from '../../../db/redis';
@@ -35,7 +34,7 @@ export const meta = {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				description: 'The version of Misskey of this instance.',
-				example: pkg.version
+				example: config.version
 			},
 			name: {
 				type: 'string' as const,
@@ -101,7 +100,7 @@ export default define(meta, async (ps, me) => {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
 
-		version: pkg.version,
+		version: config.version,
 
 		name: instance.name,
 		uri: config.url,
