@@ -14,13 +14,14 @@
 		<header :style="bannerStyle">
 			<div>
 				<button class="menu" @click="menu" ref="menu"><fa icon="ellipsis-h"/></button>
-				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
+				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id && !blockedState" :user="user" class="follow" mini/>
 				<mk-avatar class="avatar" :user="user" :show-image-on-click="true" :key="user.id"/>
 				<router-link class="name" :to="user | userPage()">
 					<mk-user-name :user="user" :key="user.id" :nowrap="false"/>
 				</router-link>
 				<span class="acct">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
 				<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
+				<span class="blocked" v-if="blockedState">{{ blockedState }}</span>
 			</div>
 		</header>
 		<div class="info">
@@ -91,6 +92,11 @@ export default Vue.extend({
 				backgroundColor: this.user.bannerColor,
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
+		},
+		blockedState(): string | null {
+			return	this.user.isBlocked && this.user.isBlocking ? this.$t('blocked-each') :
+							this.user.isBlocked ? this.$t('blocked') :
+							this.user.isBlocking ? this.$t('blocking') : null;
 		},
 	},
 
@@ -186,6 +192,16 @@ export default Vue.extend({
 				display inline-block
 				font-size 12px
 				background rgba(0, 0, 0, 0.5)
+				opacity 0.7
+				margin-top: 2px
+				padding 4px
+				border-radius 4px
+
+			> .blocked
+				display inline-block
+				font-size 12px
+				color #ffc7c7
+				background rgba(255, 90, 90, 0.5)
 				opacity 0.7
 				margin-top: 2px
 				padding 4px

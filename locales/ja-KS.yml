@@ -1047,6 +1047,9 @@ desktop/views/pages/user/user.header.vue:
   month: "月"
   day: "日"
   follows-you: "フォローされとるで"
+  blocked: "ブロックされとるで"
+  blocking: "ブロックしとるで"
+  blocked-each: "相互ブロックや"
 desktop/views/pages/user/user.timeline.vue:
   default: "投稿"
   with-replies: "投稿と返信"
@@ -1186,6 +1189,9 @@ mobile/views/pages/settings.vue:
   signed-in-as: "あんたは橋の下で拾った{}や！"
 mobile/views/pages/user.vue:
   follows-you: "フォローされとるで"
+  blocked: "ブロックされとるで"
+  blocking: "ブロックしとるで"
+  blocked-each: "相互ブロックや"
   following: "フォロー"
   followers: "フォロワー"
   notes: "投稿"
@@ -1228,6 +1234,9 @@ deck/deck.tl-column.vue:
   edit: "オプション"
 deck/deck.user-column.vue:
   follows-you: "フォローされとるで"
+  blocked: "ブロックされとるで"
+  blocking: "ブロックしとるで"
+  blocked-each: "相互ブロックや"
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"

@@ -12,10 +12,11 @@
 				<span v-if="user.isBot" :title="$t('is-bot')"><fa icon="robot"/></span>
 			</div>
 		</div>
-		<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('follows-you') }}</span>
+		<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
+		<span class="blocked" v-if="blockedState">{{ blockedState }}</span>
 		<div class="actions" v-if="$store.getters.isSignedIn">
 			<button @click="menu" class="menu" ref="menu"><fa icon="ellipsis-h"/></button>
-			<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" class="follow"/>
+			<mk-follow-button v-if="$store.state.i.id != user.id && !blockedState" :user="user" :inline="true" :transparent="false" class="follow"/>
 		</div>
 	</div>
 	<mk-avatar class="avatar" :user="user" :show-image-on-click="true"/>
@@ -70,6 +71,12 @@ export default Vue.extend({
 				backgroundColor: this.user.bannerColor,
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
+		},
+
+		blockedState(): string | null {
+			return	this.user.isBlocked && this.user.isBlocking ? this.$t('blocked-each') :
+							this.user.isBlocked ? this.$t('blocked') :
+							this.user.isBlocking ? this.$t('blocking') : null;
 		},
 
 		age(): number {
@@ -173,6 +180,15 @@ export default Vue.extend({
 			padding 4px 6px
 			color #fff
 			background rgba(0, 0, 0, 0.7)
+			font-size 12px
+
+		> .blocked
+			position absolute
+			top 12px
+			left 12px
+			padding 4px 6px
+			color #ffc7c7
+			background rgba(255, 90, 90, 0.7)
 			font-size 12px
 
 		> .actions
