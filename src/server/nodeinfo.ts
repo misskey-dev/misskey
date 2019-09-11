@@ -18,37 +18,15 @@ export const links = [/* (awaiting release) {
 }];
 
 const nodeinfo2 = async () => {
-	const meta = await fetchMeta(true);
-
 	const [
-		{
-			name,
-			description,
-			maintainerName,
-			maintainerEmail,
-			langs,
-			ToSUrl,
-			repositoryUrl,
-			feedbackUrl,
-			announcements,
-			disableRegistration,
-			disableLocalTimeline,
-			disableGlobalTimeline,
-			enableRecaptcha,
-			maxNoteTextLength,
-			enableTwitterIntegration,
-			enableGithubIntegration,
-			enableDiscordIntegration,
-			enableEmail,
-			enableServiceWorker
-		},
+		meta,
 		// total,
 		// activeHalfyear,
 		// activeMonth,
 		// localPosts,
 		// localComments
 	] = await Promise.all([
-		meta
+		fetchMeta(true),
 		// User.count({ host: null }),
 		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 15552000000) } }),
 		// User.count({ host: null, updatedAt: { $gt: new Date(Date.now() - 2592000000) } }),
@@ -67,34 +45,34 @@ const nodeinfo2 = async () => {
 			inbound: [] as string[],
 			outbound: ['atom1.0', 'rss2.0']
 		},
-		openRegistrations: !disableRegistration,
+		openRegistrations: !meta.disableRegistration,
 		usage: {
 			users: {} // { total, activeHalfyear, activeMonth },
 			// localPosts,
 			// localComments
 		},
 		metadata: {
-			name,
-			description,
+			name: meta.name,
+			description: meta.description,
 			maintainer: {
-				name: maintainerName,
-				email: maintainerEmail
+				name: meta.maintainerName,
+				email: meta.maintainerEmail
 			},
-			langs,
-			ToSUrl,
-			repositoryUrl,
-			feedbackUrl,
-			announcements,
-			disableRegistration,
-			disableLocalTimeline,
-			disableGlobalTimeline,
-			enableRecaptcha,
-			maxNoteTextLength,
-			enableTwitterIntegration,
-			enableGithubIntegration,
-			enableDiscordIntegration,
-			enableEmail,
-			enableServiceWorker
+			langs: meta.langs,
+			ToSUrl: meta.ToSUrl,
+			repositoryUrl: meta.repositoryUrl,
+			feedbackUrl: meta.feedbackUrl,
+			announcements: meta.announcements,
+			disableRegistration: meta.disableRegistration,
+			disableLocalTimeline: meta.disableLocalTimeline,
+			disableGlobalTimeline: meta.disableGlobalTimeline,
+			enableRecaptcha: meta.enableRecaptcha,
+			maxNoteTextLength: meta.maxNoteTextLength,
+			enableTwitterIntegration: meta.enableTwitterIntegration,
+			enableGithubIntegration: meta.enableGithubIntegration,
+			enableDiscordIntegration: meta.enableDiscordIntegration,
+			enableEmail: meta.enableEmail,
+			enableServiceWorker: meta.enableServiceWorker
 		}
 	};
 };
