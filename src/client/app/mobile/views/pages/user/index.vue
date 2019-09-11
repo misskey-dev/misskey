@@ -14,12 +14,13 @@
 						<img :src="avator" @click="showAvatar()" alt="avatar"/>
 					</a>
 					<button class="menu" ref="menu" @click="menu"><fa icon="ellipsis-h"/></button>
-					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id" :user="user"/>
+					<mk-follow-button v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && !blockedState" :user="user"/>
 				</div>
 				<div class="title">
 					<h1><mk-user-name :user="user" :key="user.id" :nowrap="false"/></h1>
 					<span class="username"><mk-acct :user="user" :detail="true" :key="user.id"/></span>
 					<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
+					<span class="blocked" v-if="blockedState">{{ blockedState }}</span>
 				</div>
 				<div class="description">
 					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :key="user.id"/>
@@ -113,6 +114,11 @@ export default Vue.extend({
 	computed: {
 		age(): number {
 			return age(this.user.birthday);
+		},
+		blockedState(): string | null {
+			return	this.user.isBlocked && this.user.isBlocking ? this.$t('blocked-each') :
+							this.user.isBlocked ? this.$t('blocked') :
+							this.user.isBlocking ? this.$t('blocking') : null;
 		},
 		sexIcon() {
 			return this.user.sex === 'male' ? 'mars' : this.user.sex === 'female' ? 'venus' : this.user.sex === 'not-applicable' ? 'genderless' : null;
@@ -306,6 +312,14 @@ export default Vue.extend({
 					font-size 12px
 					color var(--mobileUserPageFollowedFg)
 					background var(--mobileUserPageFollowedBg)
+					border-radius 4px
+
+				> .blocked
+					margin-left 8px
+					padding 2px 4px
+					font-size 12px
+					color #ffc7c7
+					background rgba(255, 90, 90, 0.7)
 					border-radius 4px
 
 			> .description

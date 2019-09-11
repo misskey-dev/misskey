@@ -336,7 +336,7 @@ export default (opts) => ({
 
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton.$el || this.$erfs.visibilityButton,
+				source: this.$refs.visibilityButton.$el || this.$refs.visibilityButton,
 				currentVisibility: this.localOnly ? `local-${this.visibility}` : this.visibility
 			});
 			w.$once('chosen', v => {
