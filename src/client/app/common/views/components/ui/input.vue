@@ -7,7 +7,8 @@
 		</div>
 		<span class="label" ref="label"><slot></slot></span>
 		<span class="title" ref="title"><slot name="title"></slot></span>
-		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
+		<div class="prefix" ref="prefix" v-if="!invalid"><slot name="prefix"></slot></div>
+		<div class="prefix" ref="prefix" v-else><fa :icon="['fa', 'exclamation-circle']"/></div>
 		<template v-if="type != 'file'">
 			<input v-if="debounce" ref="input"
 				v-debounce="500"
@@ -158,6 +159,7 @@ export default Vue.extend({
 		return {
 			v: this.value,
 			focused: false,
+			invalid: false,
 			passwordStrength: '',
 			id: Math.random().toString()
 		};
@@ -200,6 +202,8 @@ export default Vue.extend({
 				this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
 				(this.$refs.passwordMetar as any).style.width = `${strength * 100}%`;
 			}
+
+			this.invalid = this.$refs.input.validity.badInput;
 		}
 	},
 	mounted() {
