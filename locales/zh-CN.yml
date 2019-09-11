@@ -18,9 +18,6 @@ common:
     drive: "网盘"
     drive-desc: "想要发布一张您已经上传过的照片吗？想要管理文件或为上传的文件创建文件夹吗？Misskey的网盘是一个最好的解决方案。"
     outro: "Misskey还有其他更多功能，请亲身体验一下吧。因为 Misskey 是一个分布式的 SNS，如果您感觉某个功能不适合自己，试试其他的吧。祝您玩得开心！"
-  adblock:
-    detected: "请关闭广告拦截器"
-    warning: "<strong>Misskey不会发布广告</strong>如果您启用广告拦截器, 可能会导致某些功能无法正常使用。"
   application-authorization: "应用程序授权"
   close: "关闭"
   do-not-copy-paste: "请不要在这里输入或粘贴代码。您帐户可能会受到损害。"
@@ -1822,6 +1819,8 @@ pages:
   page-created: "页面已创建"
   page-updated: "页面已更新"
   name-already-exists: "该页面URL已存在"
+  title-invalid-name: "无效的页面URL"
+  text-invalid-name: "请确认该项不为空"
   are-you-sure-delete: "是否删除此页面？"
   page-deleted: "该页面已被删除。"
   edit-this-page: "编辑此页面"

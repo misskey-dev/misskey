@@ -195,10 +195,7 @@ export default define(meta, async (ps, user) => {
 			const mute = await Mutings.find({
 				muterId: recipientUser.id,
 			});
-			const mutedUserIds = mute.map(m => m.muteeId.toString());
-			if (mutedUserIds.indexOf(user.id) != -1) {
-				return;
-			}
+			if (mute.map(m => m.muteeId).includes(user.id)) return;
 			//#endregion
 
 			publishMainStream(recipientUser.id, 'unreadMessagingMessage', messageObj);

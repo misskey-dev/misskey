@@ -18,9 +18,6 @@ common:
     drive: "드라이브"
     drive-desc: "이전에 올렸던 적 있는 이미지를 다시 올리고 싶을 때가 있지 않으신가요? 아니면 업로드했던 파일을 폴더로 정리하고 싶지 않으신가요? Misskey에 기본적으로 내장된 드라이브 기능으로 해결됩니다. 파일 공유도 쉽습니다."
     outro: "이외에도 Misskey에만 있는 기능이 아직도 더 있으니 부디 여러분 자신의 눈으로 확인해보시기 바랍니다. Misskey는 분산형 SNS라서 이 인스턴스가 마음에 들지 않으신다면 다른 인스턴스를 시도해보실 수도 있습니다. 그럼, GLHF!"
-  adblock:
-    detected: "광고 차단기를 해제하십시오"
-    warning: "<strong>Misskey는 광고를 게재하지 않습니다</strong>. 하지만 광고 차단 기능을 사용할 경우 일부 기능을 사용할 수 없거나 문제가 발생할 수 있습니다."
   application-authorization: "앱 연계"
   close: "닫기"
   do-not-copy-paste: "여기에 코드를 입력하거나 붙여넣지 마십시오. 계정이 무단으로 사용될 수 있습니다."
@@ -1822,6 +1819,8 @@ pages:
   page-created: "페이지를 만들었습니다"
   page-updated: "페이지를 수정했습니다"
   name-already-exists: "지정한 페이지 URL은 이미 존재합니다"
+  title-invalid-name: "유효하지 않은 페이지 URL입니다"
+  text-invalid-name: "비어있지 않은지 확인해주세요"
   are-you-sure-delete: "이 페이지를 삭제하시겠습니까?"
   page-deleted: "페이지가 삭제되었습니다"
   edit-this-page: "이 페이지를 편집"
