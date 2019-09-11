@@ -1793,6 +1793,9 @@ desktop/views/pages/user/user.header.vue:
   female: "女"
   not-applicable: "その他"
   follows-you: "フォローされています"
+  blocked: "ブロックされています"
+  blocking: "ブロックしています"
+  blocked-each: "相互ブロック"
   happy-birthday: "本日誕生日です！"
 
 desktop/views/pages/user/user.timeline.vue:
@@ -1982,6 +1985,9 @@ mobile/views/pages/settings.vue:
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされています"
+  blocked: "ブロックされています"
+  blocking: "ブロックしています"
+  blocked-each: "相互ブロック"
   following: "フォロー"
   followers: "フォロワー"
   male: "男"
@@ -2038,6 +2044,9 @@ deck/deck.tl-column.vue:
 
 deck/deck.user-column.vue:
   follows-you: "フォローされています"
+  blocked: "ブロックされています"
+  blocking: "ブロックしています"
+  blocked-each: "相互ブロック"
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"

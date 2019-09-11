@@ -1740,6 +1740,9 @@ desktop/views/pages/user/user.header.vue:
   month: "月"
   day: "日"
   follows-you: "フォローされてるよ"
+  blocked: "ブロックされてるよ"
+  blocking: "ブロックしてるよ"
+  blocked-each: "相互ブロックだよ"
   happy-birthday: "今日が誕生日だよ!"
 
 desktop/views/pages/user/user.timeline.vue:
@@ -1929,6 +1932,9 @@ mobile/views/pages/settings.vue:
 
 mobile/views/pages/user.vue:
   follows-you: "フォローされてるよ"
+  blocked: "ブロックされてるよ"
+  blocking: "ブロックしてるよ"
+  blocked-each: "相互ブロックだよ"
   following: "フォロー"
   followers: "フォロワー"
   notes: "投稿"
@@ -1982,6 +1988,9 @@ deck/deck.tl-column.vue:
 
 deck/deck.user-column.vue:
   follows-you: "フォローされてるよ"
+  blocked: "ブロックされてるよ"
+  blocking: "ブロックしてるよ"
+  blocked-each: "相互ブロックだよ"
   posts: "投稿"
   following: "フォロー"
   followers: "フォロワー"

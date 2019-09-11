@@ -1640,6 +1640,9 @@ desktop/views/pages/user/user.header.vue:
   female: "Female"
   not-applicable: "Not Applicable"
   follows-you: "Follows you"
+  blocked: "Blocked you"
+  blocking: "You blocked"
+  blocked-each: "Blocked each other"
   happy-birthday: "Happy birthday!"
 
 desktop/views/pages/user/user.timeline.vue:
@@ -1792,6 +1795,9 @@ mobile/views/pages/settings.vue:
   signed-in-as: "Signed in as {}"
 mobile/views/pages/user.vue:
   follows-you: "Follows you"
+  blocked: "Blocked you"
+  blocking: "You blocked"
+  blocked-each: "Blocked each other"
   male: "Male"
   female: "Female"
   not-applicable: "Not Applicable"
@@ -1843,6 +1849,9 @@ deck/deck.tl-column.vue:
   edit: "Options"
 deck/deck.user-column.vue:
   follows-you: "Follows you"
+  blocked: "Blocked you"
+  blocking: "You blocked"
+  blocked-each: "Blocked each other"
   posts: "Posts"
   following: "Following"
   followers: "Followers"
