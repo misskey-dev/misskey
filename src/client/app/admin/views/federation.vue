@@ -509,7 +509,7 @@ export default Vue.extend({
 
 		saveBlockedHosts() {
 			this.$root.api('admin/update-meta', {
-				blockedHosts: this.blockedHosts.split('\n')
+				blockedHosts: this.blockedHosts ? this.blockedHosts.split('\n') : []
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
