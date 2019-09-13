@@ -6,9 +6,11 @@
 			<div class="value" ref="passwordMetar"></div>
 		</div>
 		<span class="label" ref="label"><slot></slot></span>
-		<span class="title" ref="title"><slot name="title"></slot></span>
-		<div class="prefix" ref="prefix" v-if="!invalid"><slot name="prefix"></slot></div>
-		<div class="prefix" ref="prefix" v-else><fa :icon="['fa', 'exclamation-circle']"/></div>
+		<span class="title" ref="title">
+			<slot name="title"></slot>
+			<fa class="warning" v-if="invalid" :icon="['fa', 'exclamation-circle']"/>
+		</span>
+		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
 			<input v-if="debounce" ref="input"
 				v-debounce="500"
@@ -369,6 +371,10 @@ root(fill)
 			//will-change transform
 			transform-origin top left
 			transform scale(.75)
+
+			> .warning
+				margin-left 0.5em
+				color #fa0
 
 		> input
 			display block
