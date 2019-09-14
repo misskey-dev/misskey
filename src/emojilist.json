@@ -720,7 +720,7 @@
 {"category":"activity","char":"👾","name":"space_invader","keywords":["game","arcade","play"]},
 {"category":"activity","char":"🎯","name":"dart","keywords":["game","play","bar","target","bullseye"]},
 {"category":"activity","char":"🎲","name":"game_die","keywords":["dice","random","tabletop","play","luck"]},
-{"category":"activity","char":"♟","name":"chess_pawn","keywords":["expendable"]},
+{"category":"activity","char":"♟️","name":"chess_pawn","keywords":["expendable"]},
 {"category":"activity","char":"🎰","name":"slot_machine","keywords":["bet","gamble","vegas","fruit machine","luck","casino"]},
 {"category":"activity","char":"🧩","name":"jigsaw","keywords":["interlocking","puzzle","piece"]},
 {"category":"activity","char":"🎳","name":"bowling","keywords":["sports","fun","play"]},
