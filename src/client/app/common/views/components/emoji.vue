@@ -7,8 +7,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-// スクリプトサイズがデカい
-//import { lib } from 'emojilib';
 import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 import { twemojiSvgBase } from '../../../../../misc/twemoji-base';
 

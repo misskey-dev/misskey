@@ -54,6 +54,7 @@ gulp.task('build:copy:fonts', () =>
 gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:fonts', () =>
 	gulp.src([
 		'./src/const.json',
+		'./src/emojilist.json',
 		'./src/server/web/views/**/*',
 		'./src/**/assets/**/*',
 		'!./src/client/app/**/assets/**/*'
