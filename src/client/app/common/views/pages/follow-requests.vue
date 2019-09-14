@@ -9,7 +9,7 @@
 						<mk-user-name :user="req.follower"/>
 					</router-link>
 					<span>
-						<a @click="accept(req.follower)">{{ $t('accept') }}</a>|<a @click="reject(req.follower)">{{ $t('reject') }}</a>
+						<a @click="accept(req.follower)">{{ $t('accept') }}</a> | <a @click="reject(req.follower)">{{ $t('reject') }}</a>
 					</span>
 				</div>
 			</sequential-entrance>
@@ -70,5 +70,6 @@ export default Vue.extend({
 
 	> span
 		margin 0 0 0 auto
+		color var(--text)
 
 </style>
