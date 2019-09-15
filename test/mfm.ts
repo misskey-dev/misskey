@@ -640,7 +640,14 @@ describe('MFM', () => {
 				]);
 			});
 
-			it('ignore single Keycap Number Sign (U+0023 + U+FE0F + U+20E3)', () => {
+			it('ignore Keycap Number Sign (U+0023 + U+20E3)', () => {
+				const tokens = parse('#⃣');
+				assert.deepStrictEqual(tokens, [
+					leaf('emoji', { emoji: '#⃣' })
+				]);
+			});
+
+			it('ignore Keycap Number Sign (U+0023 + U+FE0F + U+20E3)', () => {
 				const tokens = parse('#️⃣');
 				assert.deepStrictEqual(tokens, [
 					leaf('emoji', { emoji: '#️⃣' })
