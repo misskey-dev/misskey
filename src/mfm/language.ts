@@ -167,8 +167,7 @@ export const mfmLanguage = P.createLanguage({
 			}
 			url = removeOrphanedBrackets(url);
 			while (url.endsWith('.') || url.endsWith(',')) {
-				if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
-				if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
+				url = url.substr(0, url.length - 1);
 			}
 			return P.makeSuccess(i + url.length, url);
 		}).map(x => createLeaf('url', { url: x }));
