@@ -33,6 +33,7 @@ export const meta = {
 		state: {
 			validator: $.optional.str.or([
 				'all',
+				'active',
 				'admin',
 				'moderator',
 				'adminOrModerator',
