@@ -15,7 +15,7 @@ acct = acct.replace(/^@/, '');
 
 // check args
 if (!acct.match(/^\w+@\w/)) {
-	throw `Invalied acct format. Valied format are user@host`;
+	throw `Invalid acct format. Valid format are user@host`;
 }
 
 console.log(`resync ${acct}`);
