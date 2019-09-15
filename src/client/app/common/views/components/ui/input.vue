@@ -372,11 +372,15 @@ root(fill)
 			//will-change transform
 			transform-origin top left
 			transform scale(.75)
+			white-space nowrap
+			width 133%
+			overflow hidden
+			text-overflow ellipsis
 
 			> .warning
 				margin-left 0.5em
 				margin-right 0.1em
-				color #fa0
+				color var(--infoWarnFg)
 
 		> input
 			display block
