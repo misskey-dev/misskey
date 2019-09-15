@@ -9,6 +9,7 @@
 		<span class="title" ref="title">
 			<slot name="title"></slot>
 			<fa class="warning" v-if="invalid" :icon="['fa', 'exclamation-circle']"/>
+			<span v-if="invalid">{{ $refs.input.validationMessage }}</span>
 		</span>
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
@@ -374,6 +375,7 @@ root(fill)
 
 			> .warning
 				margin-left 0.5em
+				margin-right 0.1em
 				color #fa0
 
 		> input
