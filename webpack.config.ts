@@ -129,7 +129,7 @@ module.exports = {
 			'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
 		}),
 		new WebpackOnBuildPlugin((stats: any) => {
-			fs.writeFileSync('./built/client/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
+			fs.writeFileSync('./built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
 
 			fs.mkdirSync('./built/client/assets/locales', { recursive: true });
 
