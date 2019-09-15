@@ -639,6 +639,13 @@ describe('MFM', () => {
 					text('/bar'),
 				]);
 			});
+
+			it('ignore single Keycap Number Sign (U+0023 + U+FE0F + U+20E3)', () => {
+				const tokens = parse('#️⃣');
+				assert.deepStrictEqual(tokens, [
+					leaf('emoji', { emoji: '#️⃣' })
+				]);
+			});
 		});
 
 		describe('quote', () => {
