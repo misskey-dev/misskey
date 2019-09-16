@@ -8,6 +8,8 @@ import composeNotification from './common/scripts/compose-notification';
 const version = _VERSION_
 const cacheName = `mk-cache-${version}`
 
+const apiUrl = `${location.origin}/api/`
+
 // インストールされたとき
 self.addEventListener('install', ev => {
 	console.info('installed');
@@ -39,7 +41,7 @@ self.addEventListener('activate', ev => {
 });
 
 self.addEventListener('fetch', ev => {
-	if (ev.request.method !== 'GET') return
+	if (ev.request.method !== 'GET' || ev.request.url.startsWith(apiUrl)) return
 	ev.respondWith(
 		caches.match(ev.request)
 			.then(response => {
