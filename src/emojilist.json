@@ -1,6 +1,4 @@
 [
-	{ "category": "symbols", "char": "💯", "name": "100", "keywords": ["score", "perfect", "numbers", "century", "exam", "quiz", "test", "pass", "hundred"] },
-	{ "category": "symbols", "char": "🔢", "name": "1234", "keywords": ["numbers", "blue-square"] },
 	{ "category": "people", "char": "😀", "name": "grinning", "keywords": ["face", "smile", "happy", "joy", ": D", "grin"] },
 	{ "category": "people", "char": "😬", "name": "grimacing", "keywords": ["face", "grimace", "teeth"] },
 	{ "category": "people", "char": "😁", "name": "grin", "keywords": ["face", "happy", "smile", "joy", "kawaii"] },
@@ -1111,6 +1109,8 @@
 	{ "category": "objects", "char": "🖌", "name": "paintbrush", "keywords": ["drawing", "creativity", "art"] },
 	{ "category": "objects", "char": "🔍", "name": "mag", "keywords": ["search", "zoom", "find", "detective"] },
 	{ "category": "objects", "char": "🔎", "name": "mag_right", "keywords": ["search", "zoom", "find", "detective"] },
+	{ "category": "symbols", "char": "💯", "name": "100", "keywords": ["score", "perfect", "numbers", "century", "exam", "quiz", "test", "pass", "hundred"] },
+	{ "category": "symbols", "char": "🔢", "name": "1234", "keywords": ["numbers", "blue-square"] },
 	{ "category": "symbols", "char": "❤️", "name": "heart", "keywords": ["love", "like", "affection", "valentines"] },
 	{ "category": "symbols", "char": "🧡", "name": "orange_heart", "keywords": ["love", "like", "affection", "valentines"] },
 	{ "category": "symbols", "char": "💛", "name": "yellow_heart", "keywords": ["love", "like", "affection", "valentines"] },
