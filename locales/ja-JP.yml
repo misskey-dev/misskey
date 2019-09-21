@@ -1547,6 +1547,7 @@ admin/views/users.vue:
     state:
       title: "状態"
       all: "すべて"
+      available: "利用可能"
       admin: "管理者"
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"

@@ -33,6 +33,7 @@ export const meta = {
 		state: {
 			validator: $.optional.str.or([
 				'all',
+				'available',
 				'admin',
 				'moderator',
 				'adminOrModerator',
@@ -67,6 +68,7 @@ export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user');
 
 	switch (ps.state) {
+		case 'available': query.where('user.isSuspended = FALSE'); break;
 		case 'admin': query.where('user.isAdmin = TRUE'); break;
 		case 'moderator': query.where('user.isModerator = TRUE'); break;
 		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR isModerator = TRUE'); break;
