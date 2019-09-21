@@ -4,7 +4,6 @@ import { takeWhile, cumulativeSum } from '../prelude/array';
 import parseAcct from '../misc/acct/parse';
 import { toUnicode } from 'punycode';
 import { emojiRegex } from '../misc/emoji-regex';
-import { length } from 'stringz';
 
 export function removeOrphanedBrackets(s: string): string {
 	const openBrackets = ['(', '「', '['];
@@ -149,7 +148,7 @@ export const mfmLanguage = P.createLanguage({
 		if (hashtag.match(/^(\u20e3|\ufe0f)/)) return P.makeFailure(i, 'not a hashtag');
 		if (hashtag.match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
 		if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a hashtag');
-		if (length(hashtag) > 50) return P.makeFailure(i, 'not a hashtag');
+		if (Array.from(hashtag || '').length > 128) return P.makeFailure(i, 'not a hashtag');
 		return P.makeSuccess(i + ('#' + hashtag).length, createLeaf('hashtag', { hashtag: hashtag }));
 	}),
 	url: () => {
