@@ -19,7 +19,7 @@
 			</div>
 			<div class="broadcast-right">
 				<p class="fetching" v-if="fetching">{{ $t('fetching') }}<mk-ellipsis/></p>
-				<h1 v-if="!fetching">{{ announcements.length == 0 ? $t('no-broadcasts') : announcements[i].title }}</h1>
+				<h1 v-if="!fetching" :data-multiple="announcements.length > 1">{{ announcements.length == 0 ? $t('no-broadcasts') : announcements[i].title }}</h1>
 				<div class="broadcast-nav" v-show="announcements && announcements.length > 1">
 					<span class="broadcast-page">{{ i + 1 }} / {{ announcements.length }}</span>
 					<a class="broadcast-next" @click="next">{{ $t('next') }} &gt;&gt;</a>
@@ -138,13 +138,15 @@ export default define({
 			font-weight normal
 			line-height 1.3em
 			color var(--announcementsTitle)
-			padding-bottom 2px
+
+			&:not([data-multiple])
+				padding-bottom 2px
 
 		> .broadcast-nav
 			font-size .7rem
 			line-height 1.3em
 			margin-left auto
-			padding-left 8px
+			padding 0 0 2px 8px
 			text-align right
 
 			> .broadcast-page
