@@ -138,6 +138,7 @@ export default define({
 			font-weight normal
 			line-height 1.3em
 			color var(--announcementsTitle)
+			padding-bottom 2px
 
 		> .broadcast-nav
 			font-size .7rem
