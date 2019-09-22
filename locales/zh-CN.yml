@@ -1413,6 +1413,7 @@ admin/views/users.vue:
     state:
       title: "状态"
       all: "全部"
+      available: "可用"
       admin: "管理员"
       moderator: "版主"
       adminOrModerator: "管理员+版主"
