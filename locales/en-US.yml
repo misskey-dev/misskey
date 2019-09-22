@@ -1413,6 +1413,7 @@ admin/views/users.vue:
     state:
       title: "Sort"
       all: "All"
+      available: "Available"
       admin: "Administrator"
       moderator: "Moderator"
       adminOrModerator: "Admin/Moderator"
