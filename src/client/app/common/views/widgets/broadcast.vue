@@ -61,9 +61,9 @@ export default define({
 	padding 10px
 
 	> h1
-		margin 0
+		margin 2px 0 8px 0
 		font-size 1em
-		font-weight normal
+		font-weight bold
 		color var(--text)
 
 	> p
