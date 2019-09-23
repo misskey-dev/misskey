@@ -49,7 +49,8 @@ router.get('/.well-known/nodeinfo', async ctx => {
 router.get(webFingerPath, async ctx => {
 	const fromId = (id: User['id']): Record<string, any> => ({
 		id,
-		host: null
+		host: null,
+		isSuspended: false
 	});
 
 	const generateQuery = (resource: string) =>
@@ -63,7 +64,8 @@ router.get(webFingerPath, async ctx => {
 	const fromAcct = (acct: Acct): Record<string, any> | number =>
 		!acct.host || acct.host === config.host.toLowerCase() ? {
 			usernameLower: acct.username,
-			host: null
+			host: null,
+			isSuspended: false
 		} : 422;
 
 	if (typeof ctx.query.resource !== 'string') {
