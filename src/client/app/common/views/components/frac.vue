@@ -36,6 +36,7 @@ export default Vue.extend({
 	},
 });
 </script>
+
 <style lang="stylus" scoped>
 .mk-frac
 	-webkit-font-feature-settings 'tnum'
