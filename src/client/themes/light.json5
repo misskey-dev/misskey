@@ -119,6 +119,8 @@
 		announcementsBg: '#f3f9ff',
 		announcementsTitle: '#4078c0',
 		announcementsText: '#57616f',
+		announcementsNextButtonBg: '#4078c0',
+		announcementsNextButtonText: '#f3f9ff',
 
 		googleSearchBg: '#fff',
 		googleSearchFg: '#55595c',

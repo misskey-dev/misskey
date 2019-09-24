@@ -22,7 +22,7 @@
 				<h1 v-if="!fetching" :data-multiple="announcements.length > 1">{{ announcements.length == 0 ? $t('no-broadcasts') : announcements[i].title }}</h1>
 				<div class="broadcast-nav" v-show="announcements && announcements.length > 1">
 					<span class="broadcast-page">{{ i + 1 }} / {{ announcements.length }}</span>
-					<a class="broadcast-next" @click="next">{{ $t('next') }} &gt;&gt;</a>
+					<button class="broadcast-next" @click="next">{{ $t('next') }} &gt;&gt;</button>
 				</div>
 				<p v-if="!fetching">
 					<mfm v-if="announcements.length != 0" :text="announcements[i].text" :key="i"/>
@@ -127,14 +127,11 @@ export default define({
 
 	> .broadcast-right
 		flex 1
-		display flex
-		flex-wrap wrap
-		align-items baseline
 		word-break break-word
 
 		> h1
 			margin 0
-			font-size 1em
+			font-size .975em
 			font-weight normal
 			line-height 1.3em
 			color var(--announcementsTitle)
@@ -143,10 +140,8 @@ export default define({
 				padding-bottom 2px
 
 		> .broadcast-nav
-			font-size .7rem
-			line-height 1.3em
-			margin-left auto
-			padding 0 0 2px 8px
+			font-size .8rem
+			padding 1px 0 2px
 			text-align right
 
 			> .broadcast-page
@@ -154,7 +149,16 @@ export default define({
 				color var(--announcementsTitle)
 
 			> .broadcast-next
-				word-wrap anywhere
+				display inline-block
+				margin 0
+				text-decoration none
+				padding 1px 2px
+				background var(--announcementsNextButtonBg)
+				color var(--announcementsNextButtonText)
+				outline none
+				border none
+				border-radius 4px
+				cursor pointer
 
 		> p
 			display block
