@@ -1383,6 +1383,7 @@ admin/views/users.vue:
     state:
       title: "État"
       all: "Tout"
+      available: "Disponible"
       admin: "Admin"
       moderator: "Modérateur"
       adminOrModerator: "Administrateur/Modérateur"
