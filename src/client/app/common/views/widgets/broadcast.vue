@@ -18,8 +18,8 @@
 				</div>
 				<div class="broadcast-nav" v-show="announcements && announcements.length > 1">
 					<div class="broadcast-page">{{ i + 1 }} / {{ announcements.length }}</div>
-					<ui-button class="broadcast-prev" @click="prev"><fa :icon="faAngleLeft"/></ui-button>
-					<ui-button class="broadcast-next" @click="next"><fa :icon="faAngleRight"/></ui-button>
+					<ui-button class="broadcast-prev" @click="prev" :title="$t('next')"><fa :icon="faAngleLeft"/></ui-button>
+					<ui-button class="broadcast-next" @click="next" :title="$t('prev')"><fa :icon="faAngleRight"/></ui-button>
 				</div>
 			</div>
 			<div class="broadcast-right">
