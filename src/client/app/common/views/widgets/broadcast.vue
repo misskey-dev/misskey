@@ -16,14 +16,15 @@
 						<path class="wave d" d="M29.18,1.06c-0.479-0.502-1.273-0.522-1.775-0.044c-0.016,0.015-0.029,0.029-0.045,0.044c-0.5,0.52-0.5,1.36,0,1.88 c1.361,1.4,2.041,3.24,2.041,5.08s-0.68,3.66-2.041,5.08c-0.5,0.52-0.5,1.36,0,1.88c0.509,0.508,1.332,0.508,1.841,0 c1.86-1.92,2.8-4.44,2.8-6.96C31.99,5.424,30.98,2.931,29.18,1.06z"></path>
 					</svg>
 				</div>
+				<div class="broadcast-nav" v-show="announcements && announcements.length > 1">
+					<div class="broadcast-page">{{ i + 1 }} / {{ announcements.length }}</div>
+					<ui-button class="broadcast-prev" @click="prev"><fa :icon="faAngleLeft"/></ui-button>
+					<ui-button class="broadcast-next" @click="next"><fa :icon="faAngleRight"/></ui-button>
+				</div>
 			</div>
 			<div class="broadcast-right">
 				<p class="fetching" v-if="fetching">{{ $t('fetching') }}<mk-ellipsis/></p>
-				<h1 v-if="!fetching" :data-multiple="announcements.length > 1">{{ announcements.length == 0 ? $t('no-broadcasts') : announcements[i].title }}</h1>
-				<div class="broadcast-nav" v-show="announcements && announcements.length > 1">
-					<span class="broadcast-page">{{ i + 1 }} / {{ announcements.length }}</span>
-					<button class="broadcast-next" @click="next">{{ $t('next') }} &gt;&gt;</button>
-				</div>
+				<h1 v-if="!fetching">{{ announcements.length == 0 ? $t('no-broadcasts') : announcements[i].title }}</h1>
 				<p v-if="!fetching">
 					<mfm v-if="announcements.length != 0" :text="announcements[i].text" :key="i"/>
 					<img v-if="announcements.length != 0 && announcements[i].image" :src="announcements[i].image" alt="" style="display: block; max-height: 130px; max-width: 100%;"/>
@@ -37,6 +38,7 @@
 
 <script lang="ts">
 import define from '../../../common/define-widget';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../../i18n';
 
 export default define({
@@ -50,7 +52,8 @@ export default define({
 		return {
 			i: 0,
 			fetching: true,
-			announcements: []
+			announcements: [],
+			faAngleLeft, faAngleRight
 		};
 	},
 	mounted() {
@@ -61,14 +64,21 @@ export default define({
 	},
 	methods: {
 		next() {
-			if (this.i == this.announcements.length - 1) {
+			if (this.i === this.announcements.length - 1) {
 				this.i = 0;
 			} else {
 				this.i++;
 			}
 		},
+		prev() {
+			if (this.i === 0) {
+				this.i = this.announcements.length - 1;
+			} else {
+				this.i--;
+			}
+		},
 		func() {
-			if (this.props.design == 1) {
+			if (this.props.design === 1) {
 				this.props.design = 0;
 			} else {
 				this.props.design++;
@@ -125,6 +135,46 @@ export default define({
 						10%
 							opacity 1
 
+		> .broadcast-nav
+			display flex
+			flex-wrap wrap
+			padding 1px 0 2px
+
+			> .broadcast-page
+				width 100%
+				color var(--announcementsTitle)
+				text-align center
+				font-size .8rem
+
+			> .broadcast-prev,
+			> .broadcast-next
+				flex 1
+				width 50%
+				display block
+				margin 0
+				padding 0
+				font-size .9rem
+				line-height 1.3em
+				color var(--link)
+				background transparent
+				cursor pointer
+
+				&:focus
+					&:after
+						top -1px
+						right -1px
+						bottom -1px
+						left -1px
+
+				&.round:focus:after
+						border-radius 5px
+
+			> .broadcast-prev
+				padding-right 3px
+
+			> .broadcast-next
+				padding-left 3px
+
 	> .broadcast-right
 		flex 1
 		word-break break-word
@@ -135,30 +185,7 @@ export default define({
 			font-weight normal
 			line-height 1.3em
 			color var(--announcementsTitle)
-
-			&:not([data-multiple])
-				padding-bottom 2px
-
-		> .broadcast-nav
-			font-size .8rem
-			padding 1px 0 2px
-			text-align right
-
-			> .broadcast-page
-				margin-right 8px
-				color var(--announcementsTitle)
-
-			> .broadcast-next
-				display inline-block
-				margin 0
-				text-decoration none
-				padding 1px 2px
-				background var(--announcementsNextButtonBg)
-				color var(--announcementsNextButtonText)
-				outline none
-				border none
-				border-radius 4px
-				cursor pointer
+			padding-bottom 2px
 
 		> p
 			display block

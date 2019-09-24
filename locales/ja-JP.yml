@@ -877,7 +877,6 @@ common/views/widgets/broadcast.vue:
   fetching: "確認中"
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
-  next: "次"
 
 common/views/widgets/calendar.vue:
   year: "{}年"
