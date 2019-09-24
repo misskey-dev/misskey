@@ -25,7 +25,6 @@
 		calendarSaturdayOrSunday: '#e0245e',
 		announcementsBg: '$secondary',
 		announcementsTitle: '$primary',
-		announcementsNextButtonBg: '$primary',
 		suspendedInfoBg: '$secondary',
 		suspendedInfoFg: '$primary',
 		remoteInfoBg: '$secondary',
