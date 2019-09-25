@@ -21,7 +21,11 @@ export async function performActivity(actor: IRemoteUser, activity: IObject) {
 		const resolver = new Resolver();
 		for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
 			const act = await resolver.resolve(item);
-			await performOneActivity(actor, act);
+			try {
+				await performOneActivity(actor, act);
+			} catch (e) {
+				apLogger.error(e);
+			}
 		}
 	} else {
 		await performOneActivity(actor, activity);
