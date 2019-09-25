@@ -26,6 +26,8 @@ import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { ensure } from '../../../prelude/ensure';
+import { toArray } from '../../../prelude/array';
+
 const logger = apLogger;
 
 /**
@@ -463,8 +465,7 @@ export async function updateFeatured(userId: User['id']) {
 
 	// Resolve to Object(may be Note) arrays
 	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
-	const items = await resolver.resolve(unresolvedItems);
-	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
+	const items = await Promise.all(toArray(unresolvedItems).map(x => resolver.resolve(x)));
 
 	// Resolve and regist Notes
 	const limit = promiseLimit<Note | null>(2);
