@@ -1,4 +1,5 @@
 export type obj = { [x: string]: any };
+export type ApObject = IObject | string | (IObject | string)[];
 
 export interface IObject {
 	'@context': string | obj | obj[];
@@ -6,9 +7,9 @@ export interface IObject {
 	id?: string;
 	summary?: string;
 	published?: string;
-	cc?: IObject | string | (IObject | string)[];
-	to?: IObject | string | (IObject | string)[];
-	attributedTo: IObject | string | (IObject | string)[];
+	cc?: ApObject;
+	to?: ApObject;
+	attributedTo: ApObject;
 	attachment?: any[];
 	inReplyTo?: any;
 	replies?: ICollection;
@@ -26,7 +27,7 @@ export interface IObject {
 /**
  * Get array of ActivityStreams Objects id
  */
-export function getApIds(value: IObject | string | (IObject | string)[] | undefined): string[] {
+export function getApIds(value: ApObject | undefined): string[] {
 	if (value == null) return [];
 	const array = Array.isArray(value) ? value : [value];
 	return array.map(x => getApId(x));
@@ -35,7 +36,7 @@ export function getApIds(value: IObject | string | (IObject | string)[] | undefi
 /**
  * Get first ActivityStreams Object id
  */
-export function getOneApId(value: IObject | string | (IObject | string)[]): string {
+export function getOneApId(value: ApObject): string {
 	const firstOne = Array.isArray(value) ? value[0] : value;
 	return getApId(firstOne);
 }
@@ -59,13 +60,13 @@ export interface IActivity extends IObject {
 export interface ICollection extends IObject {
 	type: 'Collection';
 	totalItems: number;
-	items: IObject | string | IObject[] | string[];
+	items: ApObject;
 }
 
 export interface IOrderedCollection extends IObject {
 	type: 'OrderedCollection';
 	totalItems: number;
-	orderedItems: IObject | string | IObject[] | string[];
+	orderedItems: ApObject;
 }
 
 export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'];
