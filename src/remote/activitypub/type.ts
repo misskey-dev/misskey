@@ -171,18 +171,15 @@ export interface IBlock extends IActivity {
 	type: 'Block';
 }
 
-export type Object =
-	ICollection |
-	IOrderedCollection |
-	ICreate |
-	IDelete |
-	IUpdate |
-	IUndo |
-	IFollow |
-	IAccept |
-	IReject |
-	IAdd |
-	IRemove |
-	ILike |
-	IAnnounce |
-	IBlock;
+export const isCreate = (object: IObject): object is ICreate => object.type === 'Create';
+export const isDelete = (object: IObject): object is IDelete => object.type === 'Delete';
+export const isUpdate = (object: IObject): object is IUpdate => object.type === 'Update';
+export const isUndo = (object: IObject): object is IUndo => object.type === 'Undo';
+export const isFollow = (object: IObject): object is IFollow => object.type === 'Follow';
+export const isAccept = (object: IObject): object is IAccept => object.type === 'Accept';
+export const isReject = (object: IObject): object is IReject => object.type === 'Reject';
+export const isAdd = (object: IObject): object is IAdd => object.type === 'Add';
+export const isRemove = (object: IObject): object is IRemove => object.type === 'Remove';
+export const isLike = (object: IObject): object is ILike => object.type === 'Like';
+export const isAnnounce = (object: IObject): object is IAnnounce => object.type === 'Announce';
+export const isBlock = (object: IObject): object is IBlock => object.type === 'Block';
