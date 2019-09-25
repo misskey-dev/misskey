@@ -17,7 +17,7 @@
 					</svg>
 				</div>
 				<div class="broadcast-nav" v-show="announcements && announcements.length > 1">
-					<div class="broadcast-page">{{ i + 1 }} / {{ announcements.length }}</div>
+					<mk-frac class="broadcast-page" :value="i + 1" :total="announcements.length"/>
 					<ui-button class="broadcast-prev" @click="prev" :title="$t('next')"><fa :icon="faAngleLeft"/></ui-button>
 					<ui-button class="broadcast-next" @click="next" :title="$t('prev')"><fa :icon="faAngleRight"/></ui-button>
 				</div>
@@ -144,7 +144,7 @@ export default define({
 				width 100%
 				color var(--announcementsTitle)
 				text-align center
-				font-size .8rem
+				font-size .6rem
 
 			> .broadcast-prev,
 			> .broadcast-next
