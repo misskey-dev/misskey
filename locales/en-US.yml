@@ -103,6 +103,7 @@ common:
     "read:reactions": "View reactions"
     "write:reactions": "Work with reactions"
     "write:votes": "Vote"
+    "read:pages": "View page"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Following users will show their posts in your timeline."
     explore: "Find users"
