@@ -14,9 +14,6 @@ common:
     ui: "Interfejs"
     drive: "Dysk"
     drive-desc: "Chcesz opublikować zdjęcie, które już przesłałeś? Chcesz uporządkować, nazwać i utworzyć folder dla przesłanych plików? Dysk Misskey to najlepsze rozwiązanie dla Ciebie. Bardzo łatwo udostępniać swoje pliki online."
-  adblock:
-    detected: "Spróbuj wyłączyć blokadę reklam."
-    warning: "<strong>Misskey nie zawiera reklam</strong>, ale część funkcji może nie działać prawidłowo z włączonym blokowaniem reklam."
   application-authorization: "Współpraca aplikacji"
   close: "Zamknij"
   load-more: "Załaduj więcej"
@@ -28,12 +25,18 @@ common:
   signin: "Zaloguj się"
   signup: "Rejestracja"
   signout: "Wyloguj się"
+  delete-confirm: "Czy na pewno chcesz usunąć ten wpis?"
+  notification-type: "Typy powiadomień"
   notification-types:
     all: "Wszyscy"
+    pollVote: "Głosy"
     follow: "Śledzeni"
-    reply: "Odpowiedz"
+    receiveFollowRequest: "Prośby o śledzenie"
+    reply: "Odpowiedzi"
+    quote: "Cytat"
     renote: "Udostępnij"
-    reaction: "Reakcja"
+    mention: "Wzmianki"
+    reaction: "Reakcje"
   got-it: "Rozumiem!"
   customization-tips:
     title: "Wskazówki o dostosowywaniu"
@@ -92,8 +95,10 @@ common:
     visibility: "Widoczność"
     error: "Błąd"
     enter-username: "Wprowadź nazwę użytkownika"
+    specified-recipient: "Adresat"
     add-visible-user: "Dodaj użytkownika"
     username-prompt: "Wprowadź nazwę użytkownika"
+    enter-file-name: "Wprowadź nazwę pliku"
   weekday-short:
     sunday: "N"
     monday: "Pn"
@@ -156,6 +161,7 @@ common:
     note-visibility: "Widoczność wpisów"
     remember-note-visibility: "Zapamiętaj widoczność wpisów"
     web-search-engine: "Wyszukiwarka internetowa"
+    paste: "Wklej"
     line-width: "Szerokości linii"
     line-width-thin: "Cienka"
     line-width-normal: "Normalna"
@@ -1250,3 +1256,10 @@ pages:
         arg1: "Listy"
     types:
       array: "Listy"
+room:
+  translate: "Przenieś"
+  save: "Zapisz"
+  saved: "Zapisano"
+  furnitures:
+    moon: "Księżyc"
+    bin: "Kosz"

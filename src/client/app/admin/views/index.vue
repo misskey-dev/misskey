@@ -18,18 +18,18 @@
 			<p class="name"><mk-user-name :user="$store.state.i"/></p>
 		</div>
 		<ul>
-			<li @click="nav('dashboard')" :class="{ active: page == 'dashboard' }"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</li>
-			<li @click="nav('instance')" :class="{ active: page == 'instance' }"><fa icon="cog" fixed-width/>{{ $t('instance') }}</li>
-			<li @click="nav('queue')" :class="{ active: page == 'queue' }"><fa :icon="faTasks" fixed-width/>{{ $t('queue') }}</li>
-			<li @click="nav('logs')" :class="{ active: page == 'logs' }"><fa :icon="faStream" fixed-width/>{{ $t('logs') }}</li>
-			<li @click="nav('db')" :class="{ active: page == 'db' }"><fa :icon="faDatabase" fixed-width/>{{ $t('db') }}</li>
-			<li @click="nav('moderators')" :class="{ active: page == 'moderators' }"><fa :icon="faHeadset" fixed-width/>{{ $t('moderators') }}</li>
-			<li @click="nav('users')" :class="{ active: page == 'users' }"><fa icon="users" fixed-width/>{{ $t('users') }}</li>
-			<li @click="nav('drive')" :class="{ active: page == 'drive' }"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</li>
-			<li @click="nav('federation')" :class="{ active: page == 'federation' }"><fa :icon="faGlobe" fixed-width/>{{ $t('federation') }}</li>
-			<li @click="nav('emoji')" :class="{ active: page == 'emoji' }"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</li>
-			<li @click="nav('announcements')" :class="{ active: page == 'announcements' }"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</li>
-			<li @click="nav('abuse')" :class="{ active: page == 'abuse' }"><fa :icon="faExclamationCircle" fixed-width/>{{ $t('abuse') }}</li>
+			<li><router-link to="/dashboard" active-class="active"><fa icon="home" fixed-width/>{{ $t('dashboard') }}</router-link></li>
+			<li><router-link to="/instance" active-class="active"><fa icon="cog" fixed-width/>{{ $t('instance') }}</router-link></li>
+			<li><router-link to="/queue" active-class="active"><fa :icon="faTasks" fixed-width/>{{ $t('queue') }}</router-link></li>
+			<li><router-link to="/logs" active-class="active"><fa :icon="faStream" fixed-width/>{{ $t('logs') }}</router-link></li>
+			<li><router-link to="/db" active-class="active"><fa :icon="faDatabase" fixed-width/>{{ $t('db') }}</router-link></li>
+			<li><router-link to="/moderators" active-class="active"><fa :icon="faHeadset" fixed-width/>{{ $t('moderators') }}</router-link></li>
+			<li><router-link to="/users" active-class="active"><fa icon="users" fixed-width/>{{ $t('users') }}</router-link></li>
+			<li><router-link to="/drive" active-class="active"><fa icon="cloud" fixed-width/>{{ $t('@.drive') }}</router-link></li>
+			<li><router-link to="/federation" active-class="active"><fa :icon="faGlobe" fixed-width/>{{ $t('federation') }}</router-link></li>
+			<li><router-link to="/emoji" active-class="active"><fa :icon="faGrin" fixed-width/>{{ $t('emoji') }}</router-link></li>
+			<li><router-link to="/announcements" active-class="active"><fa icon="broadcast-tower" fixed-width/>{{ $t('announcements') }}</router-link></li>
+			<li><router-link to="/abuse" active-class="active"><fa :icon="faExclamationCircle" fixed-width/>{{ $t('abuse') }}</router-link></li>
 		</ul>
 		<div class="back-to-misskey">
 			<a href="/"><fa :icon="faArrowLeft"/> {{ $t('back-to-misskey') }}</a>
@@ -102,7 +102,6 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			page: 'dashboard',
 			version,
 			isMobile,
 			navOpend: !isMobile,
@@ -116,9 +115,9 @@ export default Vue.extend({
 			faDatabase,
 		};
 	},
-	methods: {
-		nav(page: string) {
-			this.page = page;
+	computed: {
+		page() {
+			return this.$route.params.page;
 		}
 	}
 });
@@ -240,11 +239,10 @@ export default Vue.extend({
 			list-style none
 			font-size 15px
 
-			> li
+			> li > a
 				display block
 				padding 10px 16px
 				margin 0
-				cursor pointer
 				user-select none
 				color #eee
 				transition margin-left 0.2s ease

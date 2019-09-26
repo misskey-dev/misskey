@@ -145,9 +145,10 @@ export const mfmLanguage = P.createLanguage({
 		if (!match) return P.makeFailure(i, 'not a hashtag');
 		let hashtag = match[1];
 		hashtag = removeOrphanedBrackets(hashtag);
+		if (hashtag.match(/^(\u20e3|\ufe0f)/)) return P.makeFailure(i, 'not a hashtag');
 		if (hashtag.match(/^[0-9]+$/)) return P.makeFailure(i, 'not a hashtag');
 		if (input[i - 1] != null && input[i - 1].match(/[a-z0-9]/i)) return P.makeFailure(i, 'not a hashtag');
-		if (hashtag.length > 50) return P.makeFailure(i, 'not a hashtag');
+		if (Array.from(hashtag || '').length > 128) return P.makeFailure(i, 'not a hashtag');
 		return P.makeSuccess(i + ('#' + hashtag).length, createLeaf('hashtag', { hashtag: hashtag }));
 	}),
 	url: () => {
@@ -166,10 +167,7 @@ export const mfmLanguage = P.createLanguage({
 				url = match[0];
 			}
 			url = removeOrphanedBrackets(url);
-			while (url.endsWith('.') || url.endsWith(',')) {
-				if (url.endsWith('.')) url = url.substr(0, url.lastIndexOf('.'));
-				if (url.endsWith(',')) url = url.substr(0, url.lastIndexOf(','));
-			}
+			url = url.replace(/[.,]*$/, '');
 			return P.makeSuccess(i + url.length, url);
 		}).map(x => createLeaf('url', { url: x }));
 	},

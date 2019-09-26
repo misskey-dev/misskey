@@ -18,15 +18,13 @@ common:
     drive: "ドライブ"
     drive-desc: "「こないだの画像、どこやったかな……また投稿したいんやけど……」「さっきのファイルあのフォルダに直しといて」そんなこと言わんとって。Misskeyはもとからドライブ機能持っとるさかい、心配あらへん。ファイルの「わけわけ」したってな。"
     outro: "Misskeyの機能は無限大や！知らんけど。知らん言うとるやんけ、あんたが見に行けや！Misskeyは分散型SNSやから、ここがあかんくても他がある。阪神でもオリックスでもワイは応援するで！"
-  adblock:
-    detected: "広告ブロッカーを無効にしてや"
-    warning: "<strong>Misskeyは広告を掲載してへん</strong>けど、広告をブロックしはる機能がおると一部の機能が利用できんくなったり、不具合が発生するかも分からん。知らんけど。"
   application-authorization: "アプリの連携"
   close: "さいなら"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりせんといてください。アカウントが不正利用されるかも分からん。知らんけど。"
   load-more: "もっとあらへんのか！"
   enter-password: "パスワードを入れてや"
   2fa: "二段階認証"
+  delete-confirm: "この投稿を削除してもええか？"
   notification-types:
     all: "すべて"
     follow: "フォロー"
@@ -466,7 +464,7 @@ common/views/components/profile-editor.vue:
   description: "自己紹介"
   language: "言語"
   birthday: "誕生日"
-  avatar: "アイコン"
+  avatar: "アバター"
   banner: "バナー"
   is-cat: "このアカウントはCatやで"
   is-bot: "このアカウントはBotやで"
@@ -604,7 +602,7 @@ desktop/views/components/crop-window.vue:
 desktop/views/components/drive-window.vue:
   used: "使うとる"
 desktop/views/components/drive.file.vue:
-  avatar: "アイコン"
+  avatar: "アバター"
   banner: "バナー"
   nsfw: "見たらあかんで"
   contextmenu:
@@ -614,7 +612,7 @@ desktop/views/components/drive.file.vue:
     copy-url: "URLをコピー"
     download: "ダウンロード"
     else-files: "その他"
-    set-as-avatar: "アイコンにする"
+    set-as-avatar: "アバターにする"
     set-as-banner: "バナーにする"
     open-in-app: "アプリで開く"
     add-app: "アプリ増やす"
@@ -1283,3 +1281,10 @@ pages:
         arg1: "リスト"
     types:
       array: "リスト"
+room:
+  translate: "移動"
+  save: "保存"
+  saved: "保存したで！"
+  furnitures:
+    moon: "月"
+    bin: "ゴミ箱"

@@ -40,5 +40,5 @@ function genUrl(query: string) {
 		return `https://${hostname}/.well-known/webfinger?` + urlQuery({ resource: `acct:${query}` });
 	}
 
-	throw new Error(`Invalied query (${query})`);
+	throw new Error(`Invalid query (${query})`);
 }

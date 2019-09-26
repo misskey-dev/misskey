@@ -74,23 +74,7 @@ export const meta = {
 			validator: $.optional.bool,
 			default: true,
 			desc: {
-				'ja-JP': '自分の行ったRenoteを含めるかどうか'
-			}
-		},
-
-		includeRenotedMyNotes: {
-			validator: $.optional.bool,
-			default: true,
-			desc: {
-				'ja-JP': 'Renoteされた自分の投稿を含めるかどうか'
-			}
-		},
-
-		includeLocalRenotes: {
-			validator: $.optional.bool,
-			default: true,
-			desc: {
-				'ja-JP': 'Renoteされたローカルの投稿を含めるかどうか'
+				'ja-JP': 'Renoteを含めるかどうか'
 			}
 		},
 
@@ -166,10 +150,8 @@ export default define(meta, async (ps, me) => {
 		}));
 
 		if (ps.excludeNsfw) {
-			// v11 TODO
-			/*query['_files.isSensitive'] = {
-				$ne: true
-			};*/
+			query.andWhere('note.cw IS NULL');
+			query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
 		}
 	}
 
@@ -177,23 +159,15 @@ export default define(meta, async (ps, me) => {
 		query.andWhere('note.replyId IS NULL');
 	}
 
-	/* TODO
 	if (ps.includeMyRenotes === false) {
-		query.$and.push({
-			$or: [{
-				userId: { $ne: user.id }
-			}, {
-				renoteId: null
-			}, {
-				text: { $ne: null }
-			}, {
-				fileIds: { $ne: [] }
-			}, {
-				poll: { $ne: null }
-			}]
-		});
+		query.andWhere(new Brackets(qb => {
+			qb.orWhere('note.userId != :userId', { userId: user.id });
+			qb.orWhere('note.renoteId IS NULL');
+			qb.orWhere('note.text IS NOT NULL');
+			qb.orWhere('note.fileIds != \'{}\'');
+			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+		}));
 	}
-	*/
 
 	//#endregion
 

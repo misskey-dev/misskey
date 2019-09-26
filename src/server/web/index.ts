@@ -146,7 +146,7 @@ router.get('/@:user.json', async ctx => {
 
 //#region for crawlers
 // User
-router.get('/@:user', async (ctx, next) => {
+router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
 	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
@@ -164,7 +164,9 @@ router.get('/@:user', async (ctx, next) => {
 
 		await ctx.render('user', {
 			user, profile, me,
-			instanceName: meta.name || 'Misskey'
+			sub: ctx.params.sub,
+			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl
 		});
 		ctx.set('Cache-Control', 'public, max-age=30');
 	} else {
@@ -197,7 +199,8 @@ router.get('/notes/:note', async ctx => {
 		await ctx.render('note', {
 			note: _note,
 			summary: getNoteSummary(_note),
-			instanceName: meta.name || 'Misskey'
+			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl
 		});
 
 		if (['public', 'home'].includes(note.visibility)) {
@@ -283,6 +286,7 @@ router.get('*', async ctx => {
 	await ctx.render('base', {
 		img: meta.bannerUrl,
 		title: meta.name || 'Misskey',
+		instanceName: meta.name || 'Misskey',
 		desc: meta.description,
 		icon: meta.iconUrl
 	});

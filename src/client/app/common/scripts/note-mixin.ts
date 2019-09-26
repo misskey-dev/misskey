@@ -27,7 +27,8 @@ export default (opts: Opts = {}) => ({
 	data() {
 		return {
 			showContent: false,
-			hideThisNote: false
+			hideThisNote: false,
+			openingMenu: false
 		};
 	},
 
@@ -192,11 +193,16 @@ export default (opts: Opts = {}) => ({
 		},
 
 		menu(viaKeyboard = false) {
+			if (this.openingMenu) return;
+			this.openingMenu = true;
 			this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
 				animation: !viaKeyboard
-			}).$once('closed', this.focus);
+			}).$once('closed', () => {
+				this.openingMenu = false;
+				this.focus();
+			});
 		},
 
 		toggleShowContent() {

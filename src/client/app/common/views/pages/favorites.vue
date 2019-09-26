@@ -40,5 +40,9 @@ export default Vue.extend({
 			icon: faStar
 		});
 	},
+
+	mounted() {
+		document.title = this.$root.instanceName;
+	},
 });
 </script>

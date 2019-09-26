@@ -28,9 +28,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as emojilib from 'emojilib';
+import { emojilist } from '../../../../../misc/emojilist';
 import contains from '../../../common/scripts/contains';
-import { twemojiBase } from '../../../../../misc/twemoji-base';
+import { twemojiSvgBase } from '../../../../../misc/twemoji-base';
 import { getStaticImageUrl } from '../../../common/scripts/get-static-image-url';
 
 type EmojiDef = {
@@ -41,9 +41,7 @@ type EmojiDef = {
 	isCustomEmoji?: boolean;
 };
 
-const lib = Object.entries(emojilib.lib).filter((x: any) => {
-	return x[1].category != 'flags';
-});
+const lib = emojilist.filter(x => x.category !== 'flags');
 
 const char2file = (char: string) => {
 	let codes = Array.from(char).map(x => x.codePointAt(0).toString(16));
@@ -52,21 +50,21 @@ const char2file = (char: string) => {
 	return codes.join('-');
 };
 
-const emjdb: EmojiDef[] = lib.map((x: any) => ({
-	emoji: x[1].char,
-	name: x[0],
+const emjdb: EmojiDef[] = lib.map(x => ({
+	emoji: x.char,
+	name: x.name,
 	aliasOf: null,
-	url: `${twemojiBase}/2/svg/${char2file(x[1].char)}.svg`
+	url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
 }));
 
-for (const x of lib as any) {
-	if (x[1].keywords) {
-		for (const k of x[1].keywords) {
+for (const x of lib) {
+	if (x.keywords) {
+		for (const k of x.keywords) {
 			emjdb.push({
-				emoji: x[1].char,
+				emoji: x.char,
 				name: k,
-				aliasOf: x[0],
-				url: `${twemojiBase}/2/svg/${char2file(x[1].char)}.svg`
+				aliasOf: x.name,
+				url: `${twemojiSvgBase}/${char2file(x.char)}.svg`
 			});
 		}
 	}
@@ -85,7 +83,7 @@ export default Vue.extend({
 			hashtags: [],
 			emojis: [],
 			select: -1,
-			emojilib,
+			emojilist,
 			emojiDb: [] as EmojiDef[]
 		}
 	},

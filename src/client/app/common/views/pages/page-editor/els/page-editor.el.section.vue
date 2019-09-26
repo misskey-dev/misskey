@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../../../../i18n';
@@ -88,7 +88,7 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 
-			const id = uuid.v4();
+			const id = uuid();
 			this.value.children.push({ id, type });
 		},
 	}

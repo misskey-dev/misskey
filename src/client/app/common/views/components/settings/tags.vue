@@ -16,7 +16,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../../i18n';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/settings.tags.vue'),

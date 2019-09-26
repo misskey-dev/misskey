@@ -232,6 +232,7 @@ common/views/pages/follow.vue:
   follow: "Volgend"
 desktop:
   banner: "Omslagfoto"
+  avatar: "Gebruikersafbeelding"
   unable-to-process: "De operatie kan niet worden voltooid."
 desktop/views/components/activity.chart.vue:
   total: "Zwart ... totaal"
@@ -638,3 +639,7 @@ pages:
         arg1: "Lijsten"
     types:
       array: "Lijsten"
+room:
+  translate: "Verplaatsen"
+  furnitures:
+    moon: "Maan"

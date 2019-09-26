@@ -227,6 +227,7 @@ export default Vue.extend({
 		},
 
 		closed() {
+			this.$emit('closed');
 			this.$nextTick(() => {
 				this.destroyDom();
 			});

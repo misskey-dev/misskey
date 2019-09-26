@@ -18,9 +18,6 @@ common:
     drive: "Disk"
     drive-desc: "Chcete sdílet obrázek, který jste již nahráli? Chcete vaše nahrané soubory organizovat, pojmenovávat a vytvářet pro ně složky? Misskey Disk je pro vás nejlepší řešení. Je velmi snadné sdílet vaše soubory online."
     outro: "Podívejte se na unikátní vlastnosti Misskey vlastníma očima! Pokud si myslíte, že tato instance není pro vás, zkuste jiné instance, neboť Misskey je decentralizovaná sociální síť, takže můžete snadno najít své přátele. Hodně štěstí a zábavy!"
-  adblock:
-    detected: "Prosím vypněte svůj blokovač reklam"
-    warning: "Některé vlastnosti mohou být nedostupné nebo mohou způsobovat chyby, pokud máte povolený blokovač reklam. <strong>Misskey nepoužívá reklamy</strong>."
   application-authorization: "Autorizované aplikace"
   close: "Zavřít"
   do-not-copy-paste: "Prosím nezadávejte ani nevkládejte sem kód. Váš účet může být kompromitován."
@@ -34,10 +31,14 @@ common:
   signup: "Registrovat"
   signout: "Odhlásit"
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
+  delete-confirm: "Opravdu chcete smazat tento příspěvek?"
+  signin-required: "Přihlašte se, prosím"
+  notification-type: "Typy oznámení"
   notification-types:
     all: "Všechny"
     pollVote: "Hlasy"
     follow: "Sledovaní"
+    receiveFollowRequest: "Žádost o sledování"
     reply: "Odpovědi"
     quote: "Citace"
     renote: "Renotovat"
@@ -118,12 +119,15 @@ common:
     create-poll: "Vytvořit anketu"
     text-remain: "zbývá ještě {} znaků"
     recent-tags: "Nejnovější"
+    click-to-tagging: "Klikni pro otágování"
     visibility: "Viditelnost"
     geolocation-alert: "Vaše zařízení nedalo k dispozici lokaci"
     error: "Chyba"
     enter-username: "Zadejte své uživatelské jméno"
+    specified-recipient: "Pro"
     add-visible-user: "Přidat uživatele"
     username-prompt: "Zadejte své uživatelské jméno"
+    enter-file-name: "Upravit název souboru"
   weekday-short:
     sunday: "Ne"
     monday: "Po"
@@ -228,7 +232,7 @@ common:
     deck-column-width-wide: "Široké"
     use-shadow: "Používat v rozhraní stíny"
     rounded-corners: "Zakulatit rohy v rozhraní"
-    circle-icons: "Používat kulaté ikony"
+    circle-icons: "Používat kulaté avatary"
     contrasted-acct: "Přidat uživatelskému účtu kontrast"
     wallpaper: "Obrázek na pozadí"
     choose-wallpaper: "Zvolit pozadí"
@@ -276,6 +280,15 @@ common:
     sync: "Synchronizace"
     save: "Uložit"
     saved: "Uloženo"
+    room: "Místnost"
+    _room:
+      graphicsQuality: "Kvalita grafiky"
+      _graphicsQuality:
+        ultra: "Nejvyšší"
+        high: "Vysoká"
+        medium: "Střední"
+        low: "Nízká"
+        cheep: "Nejnižší"
   search: "Hledání"
   delete: "Odstranit"
   loading: "Načítám..."
@@ -368,6 +381,7 @@ common/views/components/games/reversi/reversi.vue:
     cancel: "Zrušit"
 common/views/components/games/reversi/reversi.game.vue:
   surrender: "Vzdát se"
+  surrendered: "Vzdaním se"
   looped-map: "Zacyklená mapa"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
@@ -401,6 +415,7 @@ common/views/components/connect-failed.vue:
   title: "Nelze se připojit k serveru"
   description: "Nastal problém s Vaším připojením k internetu, nebo server není dostupný nebo zrovna probíhá údržba. Prosím {zkuste to znova} za pár minut."
   thanks: "Děkujeme že jste použili Misskey."
+  troubleshoot: "Odstranění problémů"
 common/views/components/connect-failed.troubleshooter.vue:
   title: "Poradce při potížích"
   network: "Síťové připojení"
@@ -409,6 +424,8 @@ common/views/components/connect-failed.troubleshooter.vue:
   checking-internet: "Ověřuji připojení k internetu."
   server: "Připojení k serveru"
   checking-server: "Spojuji se se serverem"
+  finding: "Vyšetřování problému"
+  no-network: "Žádné připojení k síti"
   no-network-desc: "Ujistěte se že jste připojeni k Internetu."
   no-internet: "Nejste připojeni k internetu"
   no-internet-desc: "Jste připojen k síti, ale zdá se že stále chybí připojení k Internetu. Prosím zkontrolujte Vaše připojení k Internetu."
@@ -500,6 +517,7 @@ common/views/components/note-menu.vue:
   unpin: "Odepnout"
   delete: "Odstranit"
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
+  delete-and-edit: "Smazat a upravit"
   remote: "Ukázat originální poznámku"
 common/views/components/user-menu.vue:
   mention: "Zmínění"
@@ -932,6 +950,7 @@ desktop/views/components/ui.header.account.vue:
   lists: "Seznamy"
   groups: "Skupiny"
   admin: "Administrace"
+  room: "Místnost"
 desktop/views/components/ui.header.nav.vue:
   game: "Hry"
 desktop/views/components/ui.header.notifications.vue:
@@ -1345,3 +1364,10 @@ pages:
         arg1: "Seznamy"
     types:
       array: "Seznamy"
+room:
+  translate: "Přesunout"
+  save: "Uložit"
+  saved: "Uloženo"
+  furnitures:
+    moon: "Měsíc"
+    bin: "Koš"

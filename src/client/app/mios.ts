@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import initStore from './store';
 import { apiUrl, version, locale } from './config';
@@ -28,7 +28,12 @@ export default class MiOS extends EventEmitter {
 	};
 
 	public get instanceName() {
-		return this.meta ? (this.meta.data.name || 'Misskey') : 'Misskey';
+		const siteName = document.querySelector('meta[property="og:site_name"]') as HTMLMetaElement;
+		if (siteName && siteName.content) {
+			return siteName.content;
+		}
+
+		return 'Misskey';
 	}
 
 	private isMetaFetching = false;

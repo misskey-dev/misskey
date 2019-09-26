@@ -12,7 +12,7 @@ import { ITag, extractHashtags } from './tag';
 import { IIdentifier } from './identifier';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
-import { updateHashtag } from '../../../services/update-hashtag';
+import { updateUsertags } from '../../../services/update-hashtag';
 import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
@@ -26,6 +26,8 @@ import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { ensure } from '../../../prelude/ensure';
+import { toArray } from '../../../prelude/array';
+
 const logger = apLogger;
 
 /**
@@ -194,10 +196,9 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	usersChart.update(user!, true);
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(user!, tag, true, true);
-	for (const tag of (user!.tags || []).filter(x => !tags.includes(x))) updateHashtag(user!, tag, true, false);
+	updateUsertags(user!, tags);
 
-	//#region アイコンとヘッダー画像をフェッチ
+	//#region アバターとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<DriveFile | null>([
 		person.icon,
 		person.image
@@ -286,7 +287,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	logger.info(`Updating the Person: ${person.id}`);
 
-	// アイコンとヘッダー画像をフェッチ
+	// アバターとヘッダー画像をフェッチ
 	const [avatar, banner] = (await Promise.all<DriveFile | null>([
 		person.icon,
 		person.image
@@ -355,8 +356,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	});
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(exist, tag, true, true);
-	for (const tag of (exist.tags || []).filter(x => !tags.includes(x))) updateHashtag(exist, tag, true, false);
+	updateUsertags(exist, tags);
 
 	// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
 	await Followings.update({
@@ -465,8 +465,7 @@ export async function updateFeatured(userId: User['id']) {
 
 	// Resolve to Object(may be Note) arrays
 	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
-	const items = await resolver.resolve(unresolvedItems);
-	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
+	const items = await Promise.all(toArray(unresolvedItems).map(x => resolver.resolve(x)));
 
 	// Resolve and regist Notes
 	const limit = promiseLimit<Note | null>(2);

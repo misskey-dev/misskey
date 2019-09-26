@@ -38,6 +38,17 @@ Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/intr
 Misskey uses CircleCI for executing automated tests.
 Configuration files are located in [`/.circleci`](/.circleci).
 
+## Adding MisskeyRoom items
+* Use English for material, object and texture names.
+* Use meter for unit of length.
+* Your PR should include all source files (e.g. `.png`, `.blend`) of your models (for later editing).
+* Your PR must include the glTF binary files (`.glb`) of your models.
+* Add a locale key `room.furnitures.YOUR_ITEM` at [`/locales/ja-JP.yml`](/locales/ja-JP.yml).
+* Add a furniture definition at [`/src/client/app/common/scripts/room/furnitures.json5`](/src/client/app/common/scripts/room/furnitures.json5).
+
+If you have no experience on 3D modeling, we suggest to use the free 3DCG software [Blender](https://www.blender.org/).
+You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
+
 ## FAQ
 ### How to resolve conflictions occurred at yarn.lock?
 
@@ -259,3 +270,7 @@ npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
 ```
 
 作成されたスクリプトは不必要な変更を含むため除去してください。
+
+## その他
+### HTMLのクラス名で follow という単語は使わない
+広告ブロッカーで誤ってブロックされる

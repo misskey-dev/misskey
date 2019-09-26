@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { EntityRepository, Repository, In } from 'typeorm';
+import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages } from '..';
 import { ensure } from '../../prelude/ensure';
@@ -56,6 +56,10 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasUnreadMessagingMessage(userId: User['id']): Promise<boolean> {
+		const mute = await Mutings.find({
+			muterId: userId
+		});
+
 		const joinings = await UserGroupJoinings.find({ userId: userId });
 
 		const groupQs = Promise.all(joinings.map(j => MessagingMessages.createQueryBuilder('message')
@@ -66,11 +70,11 @@ export class UserRepository extends Repository<User> {
 			.getOne().then(x => x != null)));
 
 		const [withUser, withGroups] = await Promise.all([
-			// TODO: ミュートを考慮
 			MessagingMessages.count({
 				where: {
 					recipientId: userId,
-					isRead: false
+					isRead: false,
+					...(mute.length > 0 ? { userId: Not(In(mute.map(x => x.muteeId))) } : {}),
 				},
 				take: 1
 			}).then(count => count > 0),

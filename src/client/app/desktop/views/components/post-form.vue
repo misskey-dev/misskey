@@ -10,14 +10,18 @@
 			<b>{{ $t('@.post-form.recent-tags') }}:</b>
 			<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)" :title="$t('@.post-form.click-to-tagging')">#{{ tag }}</a>
 		</div>
-		<div class="with-quote" v-if="quoteId">{{ $t('@.post-form.quote-attached') }} <a @click="quoteId = null">[x]</a></div>
-		<div v-if="visibility === 'specified'" class="visibleUsers">
-			<span v-for="u in visibleUsers">
-				<mk-user-name :user="u"/><a @click="removeVisibleUser(u)">[x]</a>
-			</span>
-			<a @click="addVisibleUser">{{ $t('@.post-form.add-visible-user') }}</a>
+		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('@.post-form.quote-attached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
+		<div v-if="visibility === 'specified'" class="to-specified">
+			<fa icon="envelope"/> {{ $t('@.post-form.specified-recipient') }}
+			<div class="visibleUsers">
+				<span v-for="u in visibleUsers">
+					<mk-user-name :user="u"/>
+					<button @click="removeVisibleUser(u)"><fa icon="times"/></button>
+				</span>
+				<button @click="addVisibleUser">{{ $t('@.post-form.add-visible-user') }}</button>
+			</div>
 		</div>
-		<div class="local-only" v-if="localOnly === true">{{ $t('@.post-form.local-only-message') }}</div>
+		<div class="local-only" v-if="localOnly === true"><fa icon="heart"/> {{ $t('@.post-form.local-only-message') }}</div>
 		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('@.post-form.cw-placeholder')" v-autocomplete="{ model: 'cw' }">
 		<div class="textarea">
 			<textarea :class="{ with: (files.length != 0 || poll) }"
@@ -207,13 +211,37 @@ export default Vue.extend({
 			margin 0 0 8px 0
 			color var(--primary)
 
-		> .visibleUsers
-			margin-bottom 8px
-			font-size 14px
+			> button
+				padding 4px 8px
+				color var(--primaryAlpha04)
 
-			> span
-				margin-right 16px
-				color var(--primary)
+				&:hover
+					color var(--primaryAlpha06)
+
+				&:active
+					color var(--primaryDarken30)
+
+		> .to-specified
+			margin 0 0 8px 0
+			color var(--primary)
+
+			> .visibleUsers
+				display inline
+				top -1px
+				font-size 14px
+
+				> span
+					margin-left 14px
+
+					> button
+						padding 4px 8px
+						color var(--primaryAlpha04)
+
+						&:hover
+							color var(--primaryAlpha06)
+
+						&:active
+							color var(--primaryDarken30)
 
 		> .local-only
 			margin 0 0 8px 0
