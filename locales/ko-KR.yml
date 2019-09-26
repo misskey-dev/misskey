@@ -103,6 +103,7 @@ common:
     "read:reactions": "리액션 보기"
     "write:reactions": "리액션 수정"
     "write:votes": "투표하기"
+    "read:pages": "페이지 보기"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "사용자를 팔로우하면 글이 타임라인에 표시됩니다."
     explore: "사용자 탐색"
