@@ -146,7 +146,7 @@ router.get('/@:user.json', async ctx => {
 
 //#region for crawlers
 // User
-router.get('/@:user', async (ctx, next) => {
+router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
 	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
@@ -164,6 +164,7 @@ router.get('/@:user', async (ctx, next) => {
 
 		await ctx.render('user', {
 			user, profile, me,
+			sub: ctx.params.sub,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl
 		});

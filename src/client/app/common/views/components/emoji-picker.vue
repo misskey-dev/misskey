@@ -5,6 +5,7 @@
 			:title="category.text"
 			@click="go(category)"
 			:class="{ active: category.isActive }"
+			:key="category.text"
 		>
 			<fa :icon="category.icon" fixed-width/>
 		</button>
@@ -12,18 +13,19 @@
 	<div class="emojis">
 		<header><fa :icon="categories.find(x => x.isActive).icon" fixed-width/> {{ categories.find(x => x.isActive).text }}</header>
 		<div v-if="categories.find(x => x.isActive).name">
-			<button v-for="emoji in Object.entries(lib).filter(([k, v]) => v.category === categories.find(x => x.isActive).name)"
-				:title="emoji[0]"
-				@click="chosen(emoji[1].char)"
-				:key="emoji[0]"
+			<button v-for="emoji in emojilist.filter(e => e.category === categories.find(x => x.isActive).name)"
+				:title="emoji.name"
+				@click="chosen(emoji.char)"
+				:key="emoji.name"
 			>
-				<mk-emoji :emoji="emoji[1].char"/>
+				<mk-emoji :emoji="emoji.char"/>
 			</button>
 		</div>
 		<div v-else>
 			<button v-for="emoji in customEmojis"
 				:title="emoji.name"
 				@click="chosen(`:${emoji.name}:`)"
+				:key="emoji.name"
 			>
 				<img :src="emoji.url" :alt="emoji.name"/>
 			</button>
@@ -35,7 +37,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { lib } from 'emojilib';
+import { emojilist } from '../../../../../misc/emojilist';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag } from '@fortawesome/free-regular-svg-icons';
 
@@ -44,7 +46,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			lib,
+			emojilist,
 			customEmojis: [],
 			categories: [{
 				text: this.$t('custom-emoji'),

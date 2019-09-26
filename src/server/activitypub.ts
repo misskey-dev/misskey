@@ -146,7 +146,7 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
-async function userInfo(ctx: Router.IRouterContext, user: User) {
+async function userInfo(ctx: Router.IRouterContext, user: User | undefined) {
 	if (user == null) {
 		ctx.status = 404;
 		return;
@@ -165,7 +165,7 @@ router.get('/users/:user', async (ctx, next) => {
 	const user = await Users.findOne({
 		id: userId,
 		host: null
-	}).then(ensure);
+	});
 
 	await userInfo(ctx, user);
 });
@@ -176,7 +176,7 @@ router.get('/@:user', async (ctx, next) => {
 	const user = await Users.findOne({
 		usernameLower: ctx.params.user.toLowerCase(),
 		host: null
-	}).then(ensure);
+	});
 
 	await userInfo(ctx, user);
 });
