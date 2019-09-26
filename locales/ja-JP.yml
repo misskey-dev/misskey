@@ -107,6 +107,12 @@ common:
     "read:reactions": "リアクションを見る"
     "write:reactions": "リアクションを操作する"
     "write:votes": "投票する"
+    "read:pages": "ページを見る"
+    "write:pages": "ページを操作する"
+    "read:page-likes": "ページのいいねを見る"
+    "write:page-likes": "ページのいいねを操作する"
+    "read:user-groups": "ユーザーグループを見る"
+    "write:user-groups": "ユーザーグループを操作する"
 
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
