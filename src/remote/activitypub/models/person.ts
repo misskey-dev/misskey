@@ -134,7 +134,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 100);
 
 	const isBot = object.type == 'Service';
 
@@ -307,7 +307,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const { fields, services } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 100);
 
 	const updates = {
 		lastFetchedAt: new Date(),
