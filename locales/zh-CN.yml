@@ -103,6 +103,7 @@ common:
     "read:reactions": "查看回应"
     "write:reactions": "回应操作"
     "write:votes": "投票"
+    "read:pages": "查看页面"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
     explore: "查找用户"
