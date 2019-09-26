@@ -815,6 +815,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "공지사항이 없습니다"
   have-a-nice-day: "좋은 하루 되세요!"
   next: "다음"
+  prev: "이전"
 common/views/widgets/calendar.vue:
   year: "{}년"
   month: "{}월"
