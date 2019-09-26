@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as showdown from 'showdown';
 import 'showdown-highlightjs-extension';
 import ms = require('ms');
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import * as send from 'koa-send';
 import * as glob from 'glob';
 import config from '../../config';

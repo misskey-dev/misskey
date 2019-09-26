@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import config from '../../config';
 import $ from 'cafy';
 import { ID } from '../../misc/cafy-id';
@@ -17,7 +17,7 @@ import { Brackets } from 'typeorm';
 import { Note } from '../../models/entities/note';
 import { ensure } from '../../prelude/ensure';
 
-export default async (ctx: Router.IRouterContext) => {
+export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
 
 	// Get 'sinceId' parameter

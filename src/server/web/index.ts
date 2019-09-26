@@ -5,7 +5,7 @@
 import * as os from 'os';
 import ms = require('ms');
 import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';

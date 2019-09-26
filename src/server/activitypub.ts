@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import * as json from 'koa-json-body';
 import * as httpSignature from 'http-signature';
 
@@ -23,7 +23,7 @@ const router = new Router();
 
 //#region Routing
 
-function inbox(ctx: Router.IRouterContext) {
+function inbox(ctx: Router.RouterContext) {
 	let signature;
 
 	ctx.req.headers.authorization = `Signature ${ctx.req.headers.signature}`;
@@ -40,13 +40,13 @@ function inbox(ctx: Router.IRouterContext) {
 	ctx.status = 202;
 }
 
-function isActivityPubReq(ctx: Router.IRouterContext) {
+function isActivityPubReq(ctx: Router.RouterContext) {
 	ctx.response.vary('Accept');
 	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
 	return ['application/activity+json', 'application/ld+json'].includes(accepted as string);
 }
 
-export function setResponseType(ctx: Router.IRouterContext) {
+export function setResponseType(ctx: Router.RouterContext) {
 	const accpet = ctx.accepts('application/activity+json', 'application/ld+json');
 	if (accpet === 'application/ld+json') {
 		ctx.response.type = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -146,7 +146,7 @@ router.get('/users/:user/publickey', async ctx => {
 });
 
 // user
-async function userInfo(ctx: Router.IRouterContext, user: User | undefined) {
+async function userInfo(ctx: Router.RouterContext, user: User | undefined) {
 	if (user == null) {
 		ctx.status = 404;
 		return;
