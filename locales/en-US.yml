@@ -12,7 +12,7 @@ common:
     rich-contents: "Post"
     rich-contents-desc: "Just post your idea, hot topics, and anything you want to share. You may want to decorate your words, attach your favorite pictures, send files, including videos, or create a poll - those are some of the things you can do with Misskey!"
     reaction: "Reactions"
-    reaction-desc: "The easiest way to express your emotions. Misskey allows you to add various kinds of reactions to other's posts. The emotional experience on Misskey will never be on other SNSs, which are only able to push “likes”."
+    reaction-desc: "The easiest way to express your emotions. Misskey allows you to add various reactions to posts. Other SNSs only have a \"like\" reaction."
     ui: "Interface"
     ui-desc: "No single UI can suit everyone. Therefore, Misskey has a highly customizable UI for your tastes. You can make your home original by editing the layout of your timeline, and moving around selectable widgets that you can easily adjust to make this place your own."
     drive: "Drive"
@@ -815,6 +815,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "No announcements"
   have-a-nice-day: "Have a nice day!"
   next: "Next"
+  prev: "Previous"
 common/views/widgets/calendar.vue:
   year: "Year {}"
   month: "{},"
@@ -1413,6 +1414,7 @@ admin/views/users.vue:
     state:
       title: "Sort"
       all: "All"
+      available: "Available"
       admin: "Administrator"
       moderator: "Moderator"
       adminOrModerator: "Admin/Moderator"
