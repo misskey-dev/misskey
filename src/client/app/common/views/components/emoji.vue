@@ -39,12 +39,12 @@ export default Vue.extend({
 			url: null,
 			char: null,
 			customEmoji: null
-		}
+		};
 	},
 
 	computed: {
 		alt(): string {
-			return this.customEmoji ? `:${this.customEmoji.name}:` : this.char;
+			return this.customEmoji ? `:${this.customEmoji.name}:` : this.char ? this.char : `:${this.name}:`;
 		},
 
 		useOsDefaultEmojis(): boolean {
