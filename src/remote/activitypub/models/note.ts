@@ -34,7 +34,7 @@ export function validateNote(object: any, uri: string) {
 	}
 
 	if (!validPost.includes(object.type)) {
-		return new Error(`invalid Note: invalied object type ${object.type}`);
+		return new Error(`invalid Note: invalid object type ${object.type}`);
 	}
 
 	if (object.id && extractDbHost(object.id) !== expectHost) {

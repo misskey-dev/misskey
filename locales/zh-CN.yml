@@ -815,6 +815,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "没有公告"
   have-a-nice-day: "祝你有愉快的一天！"
   next: "下一个"
+  prev: "上一首"
 common/views/widgets/calendar.vue:
   year: "{}年"
   month: "{}月"
@@ -1413,6 +1414,7 @@ admin/views/users.vue:
     state:
       title: "状态"
       all: "全部"
+      available: "可用"
       admin: "管理员"
       moderator: "版主"
       adminOrModerator: "管理员+版主"

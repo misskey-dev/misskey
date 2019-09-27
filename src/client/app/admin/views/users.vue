@@ -46,6 +46,7 @@
 				<ui-select v-model="state">
 					<template #label>{{ $t('users.state.title') }}</template>
 					<option value="all">{{ $t('users.state.all') }}</option>
+					<option value="available">{{ $t('users.state.available') }}</option>
 					<option value="admin">{{ $t('users.state.admin') }}</option>
 					<option value="moderator">{{ $t('users.state.moderator') }}</option>
 					<option value="verified">{{ $t('users.state.verified') }}</option>

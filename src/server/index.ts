@@ -8,7 +8,7 @@ import * as http2 from 'http2';
 import * as https from 'https';
 import * as zlib from 'zlib';
 import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import * as mount from 'koa-mount';
 import * as compress from 'koa-compress';
 import * as koaLogger from 'koa-logger';

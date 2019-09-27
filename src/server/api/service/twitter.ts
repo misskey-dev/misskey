@@ -1,5 +1,5 @@
 import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import { v4 as uuid } from 'uuid';
 import autwh from 'autwh';
 import redis from '../../../db/redis';
