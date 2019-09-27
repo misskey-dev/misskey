@@ -1,6 +1,6 @@
 import Vue, { VNode } from 'vue';
 import { length } from 'stringz';
-import { MfmForest } from '../../../../../mfm/types';
+import { MfmForest } from '../../../../../mfm/prelude';
 import { parse, parsePlain } from '../../../../../mfm/parse';
 import MkUrl from './url.vue';
 import MkMention from './mention.vue';
@@ -48,14 +48,14 @@ export default Vue.component('misskey-flavored-markdown', {
 	},
 
 	render(createElement) {
-		if (this.text == null || this.text == '') return;
+		if (this.text == null || this.text == '') return createElement('span');
 
 		const ast = (this.plain ? parsePlain : parse)(this.text);
 
 		let bigCount = 0;
 		let motionCount = 0;
 
-		const genEl = (ast: MfmForest) => concat(ast.map((token): VNode[] => {
+		const genEl = (ast: MfmForest): VNode[] => concat(ast.map((token): VNode[] => {
 			switch (token.node.type) {
 				case 'text': {
 					const text = token.node.props.text.replace(/(\r\n|\n|\r)/g, '\n');
