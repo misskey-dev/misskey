@@ -105,7 +105,7 @@ common:
     "write:votes": "Vote"
     "read:pages": "View Pages"
     "write:pages": "Update Pages"
-    "read:page-likes": "View likes on Pages"
+    "read:page-likes": "View Likes on Pages"
     "write:page-likes": "Update Likes on Pages"
     "read:user-groups": "View User groups"
     "write:user-groups": "Edit User groups"
