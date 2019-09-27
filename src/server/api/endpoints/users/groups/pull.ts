@@ -74,5 +74,5 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Pull the user
-	await UserGroupJoinings.delete({ userId: user.id });
+	await UserGroupJoinings.delete({ userGroupId: userGroup.id, userId: user.id });
 });

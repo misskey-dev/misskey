@@ -1,7 +1,7 @@
-import { Object } from './type';
+import { IObject } from './type';
 import { IRemoteUser } from '../../models/entities/user';
-import kernel from './kernel';
+import { performActivity } from './kernel';
 
-export default async (actor: IRemoteUser, activity: Object): Promise<void> => {
-	await kernel(actor, activity);
+export default async (actor: IRemoteUser, activity: IObject): Promise<void> => {
+	await performActivity(actor, activity);
 };

@@ -240,7 +240,7 @@ class Autocomplete {
 			// キャレットを戻す
 			this.vm.$nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + (value.startsWith(':') ? value.length : 1);
+				const pos = trimmedBefore.length + value.length;
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		}

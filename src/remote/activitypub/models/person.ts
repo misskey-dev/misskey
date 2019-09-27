@@ -26,6 +26,8 @@ import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { ensure } from '../../../prelude/ensure';
+import { toArray } from '../../../prelude/array';
+
 const logger = apLogger;
 
 /**
@@ -132,7 +134,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
 	const isBot = object.type == 'Service';
 
@@ -305,7 +307,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const { fields, services } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
 	const updates = {
 		lastFetchedAt: new Date(),
@@ -463,8 +465,7 @@ export async function updateFeatured(userId: User['id']) {
 
 	// Resolve to Object(may be Note) arrays
 	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
-	const items = await resolver.resolve(unresolvedItems);
-	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
+	const items = await Promise.all(toArray(unresolvedItems).map(x => resolver.resolve(x)));
 
 	// Resolve and regist Notes
 	const limit = promiseLimit<Note | null>(2);

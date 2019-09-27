@@ -815,6 +815,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "공지사항이 없습니다"
   have-a-nice-day: "좋은 하루 되세요!"
   next: "다음"
+  prev: "이전"
 common/views/widgets/calendar.vue:
   year: "{}년"
   month: "{}월"
@@ -1401,7 +1402,7 @@ admin/views/users.vue:
   delete-all-files: "모든 파일 삭제"
   delete-all-files-confirm: "모든 파일을 삭제하시겠습니까?"
   username: "사용자명"
-  host: "관리자"
+  host: "호스트"
   users:
     title: "사용자"
     sort:
@@ -1413,6 +1414,7 @@ admin/views/users.vue:
     state:
       title: "상태"
       all: "모두"
+      available: "이용 가능"
       admin: "관리자"
       moderator: "모더레이터"
       adminOrModerator: "관리자+모더레이터"
@@ -2099,7 +2101,7 @@ room:
   saved: "저장하였습니다"
   clear: "모두 치우기"
   clear-confirm: "정말 방 안의 모든 가구를 치우시겠습니까?"
-  leave-confirm: "저장되지 않은 변경 사항이 있습니다. 정말 떠나시겠습니까?"
+  leave-confirm: "저장되지 않은 변경 사항이 있습니다. 정말 나가시겠습니까?"
   chooseImage: "이미지 선택"
   room-type: "룸 종류"
   carpet-color: "바닥 색상"

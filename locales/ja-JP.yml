@@ -108,6 +108,12 @@ common:
     "read:reactions": "リアクションを見る"
     "write:reactions": "リアクションを操作する"
     "write:votes": "投票する"
+    "read:pages": "ページを見る"
+    "write:pages": "ページを操作する"
+    "read:page-likes": "ページのいいねを見る"
+    "write:page-likes": "ページのいいねを操作する"
+    "read:user-groups": "ユーザーグループを見る"
+    "write:user-groups": "ユーザーグループを操作する"
 
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
@@ -910,6 +916,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
   next: "次"
+  prev: "前"
 
 common/views/widgets/calendar.vue:
   year: "{}年"
@@ -1604,6 +1611,7 @@ admin/views/users.vue:
     state:
       title: "状態"
       all: "すべて"
+      available: "利用可能"
       admin: "管理者"
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"

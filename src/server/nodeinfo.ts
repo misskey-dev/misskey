@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import config from '../config';
 import { fetchMeta } from '../misc/fetch-meta';
 // import User from '../models/user';
