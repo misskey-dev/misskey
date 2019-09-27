@@ -104,6 +104,10 @@ common:
     "write:reactions": "回应操作"
     "write:votes": "投票"
     "read:pages": "查看页面"
+    "write:pages": "页面操作"
+    "read:page-likes": "查看喜欢的页面"
+    "read:user-groups": "用户组查看"
+    "write:user-groups": "用户组操作"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "关注其他用户时，帖子将显示在时间线中。"
     explore: "查找用户"
