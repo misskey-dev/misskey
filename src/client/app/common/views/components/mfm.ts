@@ -375,14 +375,11 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'marquee': {
-					//const MkGoogle = () => import('./google.vue').then(m => m.default);
 					if (this.$store.state.settings.disableAnimatedMfm) {
 						return genEl(token.children);
 					}
 
-					return [createElement('div', { class: 'marquee' }, [
-						createElement('div', { class: 'marquee-inner' }, genEl(token.children)),
-					])];
+					return [createElement('marquee', { class: 'marquee' }, genEl(token.children))];
 				}
 
 				default: {
