@@ -1203,8 +1203,12 @@ desktop/views/components/ui.header.apps.vue:
   drive: "Drive"
   reversi: "Reversi"
   premium: "Premium"
+  bug-tracker: "Bug Tracker"
+  calendar: "Calendar"
+  wiki: "Wiki"
   mml: "MML"
   page: "Pages"
+  customize: "Customize"
   room: "Room"
   help: "Help"
 desktop/views/components/ui.header.notifications.vue:

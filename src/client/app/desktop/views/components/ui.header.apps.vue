@@ -5,7 +5,12 @@
 		<transition name="zoom-in-top">
 			<div class="grid" v-if="isOpen">
 				<div class="item" v-for="(item, index) in items" :disabled="item.disabled" @click="launch(item.callback)" :key="index">
-					<fa :icon="item.icon" class="icon fa-fw"/>
+					<fa-layer v-if="!!isCalendar" class="icon">
+						<fa :icon="item.icon" class="fa-fw"/>
+						<fa-text transform="shrink-13 up-1" style="font-weight:900" :value="month"/>
+						<fa-text transform="shrink-11 down-3" style="font-weight:900" :value="day"/>
+					</fa-layer>
+					<fa v-else :icon="item.icon" class="icon fa-fw"/>
 					<div class="text">{{ item.text }}</div>
 					<div class="badge" v-if="item.badge()"></div>
 				</div>
@@ -17,12 +22,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { faGamepad, faComments, faQuestionCircle, faCloud, faStickyNote, faDoorOpen, faCrown, faMusic, faSlidersH } from '@fortawesome/free-solid-svg-icons';
+import { faGamepad, faComments, faQuestionCircle, faCloud, faStickyNote, faDoorOpen, faCrown, faMusic, faSlidersH, faBug, faBook } from '@fortawesome/free-solid-svg-icons';
 import MkGameWindow from './game-window.vue';
 import MkMessagingWindow from './messaging-window.vue';
 import MkDriveWindow from './drive-window.vue';
 import contains from '../../../common/scripts/contains';
 import { url, lang } from '../../../config';
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/ui.header.apps.vue'),
@@ -69,6 +75,25 @@ export default Vue.extend({
 					disabled: true,
 				},
 				{
+					text: this.$t('bug-tracker'),
+					icon: faBug,
+					badge: () => false,
+					disabled: true,
+				},
+				{
+					text: this.$t('calendar'),
+					icon: faCalendar,
+					isCalendar: true,
+					badge: () => false,
+					disabled: true,
+				},
+				{
+					text: this.$t('wiki'),
+					icon: faBook,
+					badge: () => false,
+					disabled: true,
+				},
+				{
 					text: this.$t('premium'),
 					icon: faCrown,
 					badge: () => false,
@@ -86,8 +111,29 @@ export default Vue.extend({
 					callback: () => window.open(`${url}/docs/${lang}/about`, '_blank'),
 					badge: () => false,
 				},
-			]
+			],
 		};
+	},
+	computed: {
+		month() {
+			return [
+				'JAN',
+				'FEB',
+				'MAR',
+				'APR',
+				'MAY',
+				'JUN',
+				'JUL',
+				'AUG',
+				'SEP',
+				'OCT',
+				'NOV',
+				'DEC',
+			][new Date().getMonth()];
+		},
+		day() {
+			return new Date().getDate();
+		}
 	},
 	mounted() {
 		if (this.$store.getters.isSignedIn) {

@@ -25,7 +25,7 @@ if (localStorage.getItem('theme') == null) {
 
 //#region FontAwesome
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome';
 
 import {
 	faRetweet,
@@ -311,6 +311,8 @@ Vue.use(VueI18n);
 Vue.use(SequentialEntrance);
 
 Vue.component('fa', FontAwesomeIcon);
+Vue.component('fa-layer', FontAwesomeLayers);
+Vue.component('fa-text', FontAwesomeLayersText);
 
 // Register global directives
 require('./common/views/directives');
