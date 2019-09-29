@@ -21,7 +21,7 @@
 			<div v-if="visibility === 'specified'" class="to-specified">
 				<fa icon="envelope"/> {{ $t('@.post-form.specified-recipient') }}
 				<div class="visibleUsers">
-					<span v-for="u in visibleUsers">
+					<span v-for="u in visibleUsers" :key="u.id">
 						<mk-user-name :user="u"/>
 						<button @click="removeVisibleUser(u)"><fa icon="times"/></button>
 					</span>
@@ -37,7 +37,7 @@
 			<footer>
 				<button class="upload" @click="chooseFile"><fa icon="upload"/></button>
 				<button class="drive" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
-				<button class="kao" @click="kao"><fa :icon="['far', 'smile']"/></button>
+				<button class="kao" @click="kao"><fa :icon="['far', 'fish']"/></button>
 				<button class="poll" @click="poll = true"><fa icon="chart-pie"/></button>
 				<button class="poll" @click="useCw = !useCw"><fa :icon="useCw ? ['fas', 'eye'] : ['far', 'eye-slash']"/></button>
 				<button class="visibility" @click="setVisibility" ref="visibilityButton">
@@ -52,7 +52,7 @@
 		</div>
 	</div>
 	<div class="hashtags" v-if="recentHashtags.length > 0 && $store.state.settings.suggestRecentHashtags">
-		<a v-for="tag in recentHashtags.slice(0, 5)" @click="addTag(tag)">#{{ tag }}</a>
+		<a v-for="tag in recentHashtags.slice(0, 5)" :key="tag" @click="addTag(tag)">#{{ tag }}</a>
 	</div>
 </div>
 </template>

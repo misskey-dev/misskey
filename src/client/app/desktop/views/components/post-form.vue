@@ -36,7 +36,7 @@
 		<mk-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<button class="upload" :title="$t('@.post-form.attach-media-from-local')" @click="chooseFile"><fa icon="upload"/></button>
 		<button class="drive" :title="$t('@.post-form.attach-media-from-drive')" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
-		<button class="kao" :title="$t('@.post-form.insert-a-kao')" @click="kao"><fa :icon="['far', 'smile']"/></button>
+		<button class="kao" :title="$t('@.post-form.insert-a-kao')" @click="kao"><fa :icon="['far', 'fish']"/></button>
 		<button class="poll" :title="$t('@.post-form.create-poll')" @click="poll = !poll"><fa icon="chart-pie"/></button>
 		<button class="cw" :title="$t('@.post-form.hide-contents')" @click="useCw = !useCw"><fa :icon="useCw ? ['fas', 'eye'] : ['far', 'eye-slash']"/></button>
 		<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
