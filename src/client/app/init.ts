@@ -133,6 +133,7 @@ import {
 	faVenus,
 	faGenderless,
 	faUserFriends,
+	faFish,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -272,6 +273,7 @@ library.add(
 	faVenus,
 	faGenderless,
 	faUserFriends,
+	faFish,
 
 	farBell,
 	farEnvelope,
