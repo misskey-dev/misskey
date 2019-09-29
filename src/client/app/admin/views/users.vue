@@ -13,6 +13,10 @@
 				<div class="actions">
 					<ui-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('update-remote-user') }}</ui-button>
 					<ui-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('reset-password') }}</ui-button>
+					<ui-horizon-group v-if="user.host == null" >
+						<ui-button :disabled="changing" @click="markAsAdmin">{{ $t('mark-admin') }}</ui-button>
+						<ui-button :disabled="changing" @click="unmarkAsAdmin">{{ $t('unmark-admin') }}</ui-button>
+					</ui-horizon-group>
 					<ui-horizon-group>
 						<ui-button @click="verifyUser" :disabled="verifying"><fa :icon="faCertificate"/> {{ $t('verify') }}</ui-button>
 						<ui-button @click="unverifyUser" :disabled="unverifying">{{ $t('unverify') }}</ui-button>
@@ -107,6 +111,7 @@ export default Vue.extend({
 			offset: 0,
 			users: [],
 			existMore: false,
+			changing: false,
 			faTerminal, faCertificate, faUsers, faSnowflake, faSearch, faKey, faSync, faMicrophoneSlash, faTrashAlt
 		};
 	},
@@ -201,6 +206,48 @@ export default Vue.extend({
 					text: this.$t('password-updated', { password: res.password })
 				});
 			});
+		},
+
+		async markAsAdmin() {
+			this.changing = true;
+
+			const process = async () => {
+				await this.$root.api('admin/admins/add', { userId: this.user.id });
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('marked-admin')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.message
+				});
+			});
+
+			this.changing = false;
+		},
+
+		async unmarkAsAdmin() {
+			this.changing = true;
+
+			const process = async () => {
+				await this.$root.api('admin/admins/remove', { userId: this.user.id });
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('unmarked-admin')
+				});
+			};
+
+			await process().catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.message;
+				});
+			});
+
+			this.changing = false;
 		},
 
 		async verifyUser() {
