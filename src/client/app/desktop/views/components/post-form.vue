@@ -41,11 +41,13 @@
 		<button class="cw" :title="$t('@.post-form.hide-contents')" @click="useCw = !useCw"><fa :icon="useCw ? ['fas', 'eye'] : ['far', 'eye-slash']"/></button>
 		<p class="text-count" :class="{ over: trimmedLength(text) > maxNoteTextLength }">{{ maxNoteTextLength - trimmedLength(text) }}</p>
 		<ui-button primary :wait="posting" class="submit" :disabled="!canPost" @click="post">
-			<span v-if="visibility === 'public'"><fa icon="globe"/></span>
-			<span v-if="visibility === 'home'"><fa icon="home"/></span>
-			<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
-			<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
-			<span v-if="visibility === 'users'"><fa icon="user-friends"/></span>
+			<template v-show="!posting">
+				<span v-if="visibility === 'public'"><fa icon="globe"/></span>
+				<span v-if="visibility === 'home'"><fa icon="home"/></span>
+				<span v-if="visibility === 'followers'"><fa icon="unlock"/></span>
+				<span v-if="visibility === 'specified'"><fa icon="envelope"/></span>
+				<span v-if="visibility === 'users'"><fa icon="user-friends"/></span>
+			</template>
 			{{ posting ? $t('@.post-form.posting') : submitText }}<mk-ellipsis v-if="posting"/>
 		</ui-button>
 		<ui-button primary class="visibility" :title="$t('@.post-form.visibility')" @click="setVisibility" ref="visibilityButton">
@@ -279,7 +281,7 @@ export default Vue.extend({
 		position absolute
 		bottom 16px
 		right 62px
-		width 88px
+		width 96px
 		height 40px
 		border-top-right-radius 0
 		border-bottom-right-radius 0
@@ -299,7 +301,7 @@ export default Vue.extend({
 		display block
 		position absolute
 		bottom 16px
-		right 160px
+		right 176px
 		margin 0
 		line-height 40px
 		color var(--primaryAlpha05)
