@@ -29,6 +29,7 @@ export const mfmLanguage = P.createLanguage({
 		r.blockCode,
 		r.mathBlock,
 		r.center,
+		r.right,
 		r.marquee
 	),
 	startOfLine: () => P((input, i) => {
@@ -83,6 +84,8 @@ export const mfmLanguage = P.createLanguage({
 		r.bold,
 		r.small,
 		r.italic,
+		r.sup,
+		r.sub,
 		r.strike,
 		r.motion,
 		r.xspin,
@@ -120,6 +123,16 @@ export const mfmLanguage = P.createLanguage({
 		});
 
 		return P.alt(xml, underscore).map(x => createTree('italic', r.inline.atLeast(1).tryParse(x), {}));
+	},
+	sup: r => {
+		const paren = P.regexp(/\(\(\(([\s\S]+?)\)\)\)/, 1);
+		const xml = P.regexp(/<sup>(.+?)<\/sup>/, 1);
+		return P.alt(paren, xml).map(x => createTree('sup', r.inline.atLeast(1).tryParse(x), {}));
+	},
+	sub: r => {
+		const paren = P.regexp(/\(\(\(([\s\S]+?)\)\)\)/, 1);
+		const xml = P.regexp(/<sub>(.+?)<\/sub>/, 1);
+		return P.alt(paren, xml).map(x => createTree('sub', r.inline.atLeast(1).tryParse(x), {}));
 	},
 	strike: r => P.regexp(/~~([^\n~]+?)~~/, 1).map(x => createTree('strike', r.inline.atLeast(1).tryParse(x), {})),
 	motion: r => {
@@ -162,6 +175,7 @@ export const mfmLanguage = P.createLanguage({
 	vflip: r => P.regexp(/<vflip>(.+?)<\/vflip>/, 1).map(x => createTree('vflip', r.inline.atLeast(1).tryParse(x), {})),
 	blink: r => P.regexp(/<blink>(.+?)<\/blink>/, 1).map(x => createTree('blink', r.inline.atLeast(1).tryParse(x), {})),
 	center: r => r.startOfLine.then(P.regexp(/<center>([\s\S]+?)<\/center>/, 1).map(x => createTree('center', r.inline.atLeast(1).tryParse(x), {}))),
+	right: r => r.startOfLine.then(P.regexp(/<right>([\s\S]+?)<\/right>/, 1).map(x => createTree('right', r.inline.atLeast(1).tryParse(x), {}))),
 	inlineCode: () => P.regexp(/`([^´\n]+?)`/, 1).map(x => createLeaf('inlineCode', { code: x })),
 	mathBlock: r => r.startOfLine.then(P.regexp(/\\\[([\s\S]+?)\\\]/, 1).map(x => createLeaf('mathBlock', { formula: x.trim() }))),
 	mathInline: () => P.regexp(/\\\((.+?)\\\)/, 1).map(x => createLeaf('mathInline', { formula: x })),

@@ -86,6 +86,22 @@ export default Vue.component('misskey-flavored-markdown', {
 					}, genEl(token.children));
 				}
 
+				case 'sup': {
+					return (createElement as any)('sup', {
+						attrs: {
+							style: 'vertical-align: super; font-size: smaller;'
+						},
+					}, genEl(token.children));
+				}
+
+				case 'sub': {
+					return (createElement as any)('sub', {
+						attrs: {
+							style: 'vertical-align: sub; font-size: smaller;'
+						},
+					}, genEl(token.children));
+				}
+
 				case 'big': {
 					bigCount++;
 					const isLong = sumTextsLength(token.children) > 15 || countNodesF(token.children) > 5;
@@ -128,6 +144,14 @@ export default Vue.component('misskey-flavored-markdown', {
 					return [createElement('div', {
 						attrs: {
 							style: 'text-align:center;'
+						}
+					}, genEl(token.children))];
+				}
+
+				case 'right': {
+					return [createElement('div', {
+						attrs: {
+							style: 'text-align:right;'
 						}
 					}, genEl(token.children))];
 				}

@@ -54,7 +54,7 @@ export default Vue.extend({
 			return this.$store.getters.isSignedIn && (
 				`@${this.username}@${toUnicode(this.host)}` === `@${this.$store.state.i.username}@${toUnicode(localHost)}`.toLowerCase()
 			);
-		}
+		},
 	},
 	methods: {
 		toUnicode
