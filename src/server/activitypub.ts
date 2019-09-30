@@ -42,13 +42,13 @@ function inbox(ctx: Router.RouterContext) {
 
 function isActivityPubReq(ctx: Router.RouterContext) {
 	ctx.response.vary('Accept');
-	const accepted = (ctx.accepts('html', 'application/activity+json', 'application/ld+json') || '' as string).split(';')[0].trim();
-	return ['application/activity+json', 'application/ld+json'].includes(accepted);
+	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
+	return typeof accepted === 'string' && !accepted.match(/html/);
 }
 
 export function setResponseType(ctx: Router.RouterContext) {
-	const accept = ctx.accepts('application/activity+json', 'application/ld+json');
-	if ((accept as string || '').split(';')[0].trim() === 'application/ld+json') {
+	const accept = ctx.accepts('application/activity+json', 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
+	if (accept  === 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"') {
 		ctx.response.type = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
 	} else {
 		ctx.response.type = 'application/activity+json; charset=utf-8';
