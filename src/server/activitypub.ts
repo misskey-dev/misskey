@@ -42,8 +42,8 @@ function inbox(ctx: Router.RouterContext) {
 
 function isActivityPubReq(ctx: Router.RouterContext) {
 	ctx.response.vary('Accept');
-	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
-	return ['application/activity+json', 'application/ld+json'].includes(accepted as string);
+	const accepted = (ctx.accepts('html', 'application/activity+json', 'application/ld+json') || '' as string).split(';')[0].trim();
+	return ['application/activity+json', 'application/ld+json'].includes(accepted);
 }
 
 export function setResponseType(ctx: Router.RouterContext) {
