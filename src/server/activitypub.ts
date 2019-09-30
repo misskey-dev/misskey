@@ -48,7 +48,7 @@ function isActivityPubReq(ctx: Router.RouterContext) {
 
 export function setResponseType(ctx: Router.RouterContext) {
 	const accept = ctx.accepts('application/activity+json', 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
-	if (accept  === 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"') {
+	if (accept === 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"') {
 		ctx.response.type = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
 	} else {
 		ctx.response.type = 'application/activity+json; charset=utf-8';
