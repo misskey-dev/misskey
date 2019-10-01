@@ -781,6 +781,8 @@ common/views/widgets/memo.vue:
   save: "Uložit"
 common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
+common/views/widgets/tips.vue:
+  tips-line23: "Ai-chan kawaii!"
 common/views/pages/not-found.vue:
   page-not-found: "Stránka nenalezena"
 common/views/pages/follow.vue:
@@ -852,6 +854,7 @@ desktop/views/components/drive.folder.vue:
     input-new-folder-name: "Zadejte nové jméno"
     else-folders: "Ostatní"
 desktop/views/components/drive.vue:
+  search: "Vyhledávání"
   empty-drive-description: "Klikněte pravým tlačítkem myši pro otevření menu, nebo sem přetáhněte soubor pro nahrání."
   empty-folder: "Tato složka je prázdná"
   unable-to-process: "Operace nemohla být dokončena."
@@ -867,10 +870,13 @@ desktop/views/components/drive.vue:
     url-upload: "Nahrát z URL"
 desktop/views/components/media-video.vue:
   click-to-show: "Klikněte pro zobrazení"
+desktop/views/components/followers.vue:
+  empty: "Vypadá to že Vás nikdo nesleduje."
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
   done: "Hotovo"
+  add-widget: "Přidat widget:"
   add: "Přidat"
 desktop/views/input-dialog.vue:
   cancel: "Zrušit"
@@ -878,6 +884,7 @@ desktop/views/input-dialog.vue:
 desktop/views/components/note-detail.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
+  location: "Lokace"
   renote: "Renotovat"
   add-reaction: "Přidat reakci"
   undo-reaction: "Odebrat reakci"
@@ -892,6 +899,8 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "Načítání selhalo."
   retry: "Opakovat"
+desktop/views/components/notifications.vue:
+  empty: "Žádné nové notifikace!"
 desktop/views/components/post-form.vue:
   posted: "Odesláno!"
   replied: "Odpověděno!"
@@ -916,8 +925,26 @@ desktop/views/components/renote-form-window.vue:
 desktop/views/components/settings.2fa.vue:
   detail: "Více…"
   url: "https://www.google.cz/landing/2step/"
+  register: "Přidat zařízení"
+  already-registered: "Toto zařízení je již připojené"
+  unregister: "Odebrat"
+  enter-password: "Prosím zadejte heslo"
+  authenticator: "Nejprve musíte nainstalovat Google Authenticator na Vašem zařízení:"
+  howtoinstall: "Jak nainstalovat"
   token: "Token"
+  scan: "Poté naskenujte QR kód:"
+  done: "Prosím vložte kód zobrazený na Vašem zařízení:"
+  submit: "Uložit"
+  success: "Nastavení uloženo!"
+  failed: "Nepodařilo se spárovat. Prosím zkontrolujte správnost bezpečnostního kódu."
+  totp-header: "Ověřovací aplikace"
+  security-key-header: "Bezpečnostní klíč"
+  last-used: "Naposledy použito:"
+  activate-key: "Klikněte pro aktivaci bezpečnostního klíče"
+  security-key-name: "Název klíče"
+  key-unregistered: "Bezpečnostní klíč byl odstraněn"
 common/views/components/media-image.vue:
+  sensitive: "NSFW"
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/api-settings.vue:
   token: "Token:"
@@ -1231,6 +1258,9 @@ desktop/views/widgets/notifications.vue:
   title: "Oznámení"
 desktop/views/widgets/polls.vue:
   title: "Ankety"
+  nothing: "Žádné nové notifikace!"
+desktop/views/widgets/trends.vue:
+  nothing: "Žádné nové notifikace!"
 desktop/views/widgets/users.vue:
   title: "Doporučení uživatelé"
 mobile/views/components/drive.vue:
@@ -1273,6 +1303,8 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "kočka"
+mobile/views/components/notifications.vue:
+  empty: "Žádné nové notifikace!"
 mobile/views/components/sub-note-content.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
@@ -1316,6 +1348,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
+  search: "Vyhledávání"
   not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
 mobile/views/pages/selectdrive.vue:
   select-file: "Vybrat soubory"
