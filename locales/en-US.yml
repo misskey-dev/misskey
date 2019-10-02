@@ -1747,6 +1747,8 @@ mobile/views/components/ui.header.vue:
   adjective: "Sir"
 mobile/views/components/ui.nav.vue:
   timeline: "Timeline"
+  followings: "Following"
+  followers: "Followers"
   notifications: "Notifications"
   follow-requests: "Follow requests"
   search: "Search"

@@ -135,6 +135,7 @@ import {
 	faUserFriends,
 	faFish,
 	faComment,
+	faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -275,7 +276,8 @@ library.add(
 	faGenderless,
 	faUserFriends,
 	faFish,
-	faComment
+	faComment,
+	faQuestionCircle,
 
 	farBell,
 	farEnvelope,

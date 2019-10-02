@@ -13,29 +13,28 @@
 				<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
 					<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
 					<p class="name"><mk-user-name :user="$store.state.i"/></p>
+					<p class="acct"><mk-acct :user="$store.state.i"/></p>
+					<p class="ff">
+						<b>{{ $store.state.i.followingCount }}</b>フォロー&ensp;
+						<b>{{ $store.state.i.followersCount }}</b>フォロワー
+					</p>
 				</router-link>
 				<div class="links">
 					<ul>
-						<li><router-link to="/" :data-active="$route.name == 'index'"><i><fa icon="home" fixed-width/></i>{{ $t('timeline') }}<i><fa icon="angle-right"/></i></router-link></li>
-						<li v-if="$store.state.device.enableMobileQuickNotificationView"><p @click="showNotifications = true"><i><fa :icon="faBell" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></p></li>
-						<li v-else><router-link to="/i/notifications" :data-active="$route.name == 'notifications'"><i><fa :icon="faBell" fixed-width/></i>{{ $t('notifications') }}<i v-if="hasUnreadNotification" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-						<li><router-link to="/i/messaging" :data-active="$route.name == 'messaging'"><i><fa :icon="['far', 'comments']" fixed-width/></i>{{ $t('@.messaging') }}<i v-if="hasUnreadMessagingMessage" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-						<li v-if="$store.getters.isSignedIn && ($store.state.i.isLocked || $store.state.i.carefulBot)"><router-link to="/i/follow-requests" :data-active="$route.name == 'follow-requests'"><i><fa :icon="['far', 'envelope']" fixed-width/></i>{{ $t('follow-requests') }}<i v-if="$store.getters.isSignedIn && $store.state.i.pendingReceivedFollowRequestsCount" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-						<li><router-link to="/featured" :data-active="$route.name == 'featured'"><i><fa :icon="faNewspaper" fixed-width/></i>{{ $t('@.featured-notes') }}<i><fa icon="angle-right"/></i></router-link></li>
-						<li><router-link to="/explore" :data-active="$route.name == 'explore' || $route.name == 'explore-tag'"><i><fa :icon="faHashtag" fixed-width/></i>{{ $t('@.explore') }}<i><fa icon="angle-right"/></i></router-link></li>
-						<li><router-link to="/games/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
-					</ul>
-					<ul>
-						<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']" fixed-width/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
-						<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><i><fa icon="star" fixed-width/></i>{{ $t('@.favorites') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/lists" :data-active="$route.name == 'user-lists'"><i><fa icon="list" fixed-width/></i>{{ $t('user-lists') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/groups" :data-active="$route.name == 'user-groups'"><i><fa :icon="faUsers" fixed-width/></i>{{ $t('user-groups') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/i/favorites" :data-active="$route.name == 'favorites'"><i><fa icon="star" fixed-width/></i>{{ $t('@.favorites') }}<i><fa icon="angle-right"/></i></router-link></li>
+					</ul>
+					<ul>
 						<li><router-link to="/i/drive" :data-active="$route.name == 'drive'"><i><fa icon="cloud" fixed-width/></i>{{ $t('@.drive') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/i/widgets" :data-active="$route.name == 'widgets'"><i><fa :icon="['far', 'calendar-alt']" fixed-width/></i>{{ $t('widgets') }}<i><fa icon="angle-right"/></i></router-link></li>
+						<li><router-link to="/games/reversi" :data-active="$route.name == 'reversi'"><i><fa icon="gamepad" fixed-width/></i>{{ $t('game') }}<i v-if="hasGameInvitation" class="circle"><fa icon="circle"/></i><i><fa icon="angle-right"/></i></router-link></li>
 						<li><router-link to="/i/pages" :data-active="$route.name == 'pages'"><i><fa :icon="faStickyNote" fixed-width/></i>{{ $t('@.pages') }}<i><fa icon="angle-right"/></i></router-link></li>
 					</ul>
 					<ul>
 						<li><router-link to="/i/settings" :data-active="$route.name == 'settings'"><i><fa icon="cog" fixed-width/></i>{{ $t('@.settings') }}<i><fa icon="angle-right"/></i></router-link></li>
 						<li v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)"><a href="/admin"><i><fa icon="terminal" fixed-width/></i><span>{{ $t('admin') }}</span><i><fa icon="angle-right"/></i></a></li>
+						<li><a :href="aboutUrl" target=”_blank” rel=”noopener”><i><fa icon="question-circle" fixed-width/></i><span>{{ $t('about') }}</span><i><fa icon="angle-right"/></i></a></li>
 					</ul>
 					<ul>
 						<li @click="toggleDeckMode"><p><i><fa :icon="$store.state.device.inDeckMode ? faHome : faColumns" fixed-width/></i><span>{{ $store.state.device.inDeckMode ? $t('@.home') : $t('@.deck') }}</span></p></li>
@@ -49,7 +48,7 @@
 						<img v-if="announcement.image" :src="announcement.image" alt="" style="display: block; max-height: 120px; max-width: 100%;"/>
 					</article>
 				</div>
-				<a :href="aboutUrl"><p class="about">{{ $t('about') }}</p></a>
+				<p class="version">ver {{ version }} ({{ codename }})</p>
 			</div>
 			<div class="notifications" v-if="showNotifications">
 				<header>
@@ -70,6 +69,7 @@ import { lang } from '../../../config';
 import { faNewspaper, faHashtag, faHome, faColumns, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faMoon, faSun, faStickyNote, faBell } from '@fortawesome/free-regular-svg-icons';
 import { search } from '../../../common/scripts/search';
+import { version, codename } from '../../../config';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/ui.nav.vue'),
@@ -88,6 +88,7 @@ export default Vue.extend({
 			announcements: [],
 			searching: false,
 			showNotifications: false,
+			version, codename,
 			faNewspaper, faHashtag, faMoon, faSun, faHome, faColumns, faStickyNote, faUsers, faBell,
 		};
 	},
@@ -186,7 +187,7 @@ export default Vue.extend({
 		top 0
 		left 0
 		z-index 1026
-		width 240px
+		width 330px
 		height 100%
 		overflow auto
 		-webkit-overflow-scrolling touch
@@ -228,6 +229,7 @@ export default Vue.extend({
 				display block
 				margin 0
 				padding 16px
+				text-decoration none
 
 				.avatar
 					display inline
@@ -239,7 +241,23 @@ export default Vue.extend({
 					display block
 					margin 0 16px
 					position absolute
-					top 0
+					top -16px
+					left 80px
+					padding 0
+					width calc(100% - 112px)
+					color $color
+					font-weight bold
+					font-size 150%
+					line-height 96px
+					overflow hidden
+					text-overflow ellipsis
+					white-space nowrap
+	
+				.acct
+					display block
+					margin 0 16px
+					position absolute
+					top 16px
 					left 80px
 					padding 0
 					width calc(100% - 112px)
@@ -248,6 +266,18 @@ export default Vue.extend({
 					overflow hidden
 					text-overflow ellipsis
 					white-space nowrap
+
+				.ff
+					display block
+					color var(--faceTextButtonActive)
+					overflow hidden
+					text-overflow ellipsis
+					white-space nowrap
+
+					b
+						font-size 120%
+						color $color
+						margin-right 4px
 
 			ul
 				display block
@@ -320,6 +350,15 @@ export default Vue.extend({
 				font-size 0.8em
 				color $color
 				opacity 0.5
+
+p.version
+	display block
+	margin 16px 0
+	padding 0 12px
+	text-align center
+	font-size 0.9em
+	color var(--text)
+	opacity 0.8
 
 .nav-enter-active,
 .nav-leave-active {

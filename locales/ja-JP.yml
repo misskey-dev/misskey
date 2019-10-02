@@ -1927,6 +1927,8 @@ mobile/views/components/ui.header.vue:
 
 mobile/views/components/ui.nav.vue:
   timeline: "タイムライン"
+  followings: "フォロー"
+  followers: "フォロワー"
   notifications: "通知"
   follow-requests: "フォロー申請"
   search: "検索"
@@ -1935,7 +1937,7 @@ mobile/views/components/ui.nav.vue:
   widgets: "ウィジェット"
   game: "ゲーム"
   admin: "管理"
-  about: "Groundpolisについて"
+  about: "グランポリスについて"
 
 mobile/views/pages/drive.vue:
   contextmenu:
