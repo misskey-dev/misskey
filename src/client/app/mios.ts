@@ -4,7 +4,7 @@ import { EventEmitter } from 'eventemitter3';
 import { v4 as uuid } from 'uuid';
 
 import initStore from './store';
-import { apiUrl, version, locale } from './config';
+import { apiUrl, version, locale, env } from './config';
 import Progress from './common/scripts/loading';
 
 import Err from './common/views/components/connect-failed.vue';
@@ -177,10 +177,15 @@ export default class MiOS extends EventEmitter {
 			callback();
 
 			// Init service worker
-			if (this.shouldRegisterSw) {
+			// 本番でなければ Service Worker を登録しない
+			if (this.shouldRegisterSw && env !== 'production') {
 				this.getMeta().then(data => {
 					if (data.swPublickey) this.registerSw(data.swPublickey);
 				});
+			}
+			if (env !== 'production') {
+				// 本番でなければ既にある Service Worker にさようなら
+				navigator.serviceWorker.getRegistration().then(reg => reg.unregister());
 			}
 		};
 
