@@ -178,14 +178,10 @@ export default class MiOS extends EventEmitter {
 
 			// Init service worker
 			// 本番でなければ Service Worker を登録しない
-			if (this.shouldRegisterSw && env !== 'production') {
+			if (this.shouldRegisterSw) {
 				this.getMeta().then(data => {
 					if (data.swPublickey) this.registerSw(data.swPublickey);
 				});
-			}
-			if (env !== 'production') {
-				// 本番でなければ既にある Service Worker にさようなら
-				navigator.serviceWorker.getRegistration().then(reg => reg.unregister());
 			}
 		};
 
