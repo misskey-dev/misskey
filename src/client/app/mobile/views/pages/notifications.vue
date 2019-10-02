@@ -1,9 +1,6 @@
 <template>
-<mk-ui>
+<mk-ui :fabClickedAction="filter" fabIcon="cog">
 	<template #header><fa :icon="faBell"/> {{ $t('notifications') }}</template>
-	<template #func>
-		<button @click="filter()"><fa icon="cog"/></button>
-	</template>
 
 	<main>
 		<mk-notifications @before-init="beforeInit()" @inited="inited()" :type="type === 'all' ? null : type" :wide="true" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }"/>
