@@ -1,8 +1,7 @@
 <template>
-<mk-ui :displayPostButton="false">
+<mk-ui :fabClickedAction="startUser" fabIcon="comment">
 	<template #header><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ $t('@.messaging') }}</template>
 	<x-messaging @navigate="navigate" @navigateGroup="navigateGroup" :createButtonsVisible="false" :header-top="48"/>
-	<button class="message button" @click="startUser()"><fa icon="comment"/></button>
 </mk-ui>
 </template>
 

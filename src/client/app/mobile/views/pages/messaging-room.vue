@@ -1,5 +1,5 @@
 <template>
-<mk-ui :displayPostButton="false">
+<mk-ui :displayFab="false">
 	<template #header>
 		<button class="back" @click="$router.back()"><fa icon="arrow-left"/></button>
 		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span><mk-user-name :user="user"/></template>

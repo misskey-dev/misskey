@@ -10,7 +10,7 @@
 	</div>
 	<mk-stream-indicator v-if="$store.getters.isSignedIn"/>
 	<button class="nav button" v-if="$store.state.device.inDeckMode" @click="isDrawerOpening = !isDrawerOpening"><fa icon="bars"/><i v-if="indicate"><fa icon="circle"/></i></button>
-	<button class="post button" v-if="$store.state.device.inDeckMode || displayPostButton" @click="$post()"><fa icon="pencil-alt"/></button>
+	<button class="post button" v-if="displayFab" @click="fabClicked"><fa :icon="fabIcon"/></button>
 </div>
 </template>
 
@@ -30,10 +30,16 @@ export default Vue.extend({
 		title: {
 			type: String,
 		},
-		displayPostButton: {
+		fabClickedAction: {
+			type: Function
+		},
+		fabIcon: {
+			type: String,
+			default: 'pencil-alt'
+		},
+		displayFab: {
 			type: Boolean,
-			default: true,
-			required: false,
+			default: true
 		}
 	},
 
@@ -56,6 +62,10 @@ export default Vue.extend({
 
 		indicate(): boolean {
 			return this.hasUnreadNotification || this.hasUnreadMessagingMessage || this.hasGameInvitation;
+		},
+
+		fabClicked() {
+			return this.fabClickedAction || this.$post;
 		}
 	},
 

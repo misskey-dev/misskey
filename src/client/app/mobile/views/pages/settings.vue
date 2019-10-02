@@ -1,5 +1,5 @@
 <template>
-<mk-ui>
+<mk-ui :displayFab="false">
 	<template #header><span style="margin-right:4px;"><fa icon="cog"/></span>{{ $t('@.settings') }}</template>
 	<main>
 		<div class="signed-in-as" :class="{ shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">

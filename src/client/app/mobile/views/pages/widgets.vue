@@ -1,5 +1,5 @@
 <template>
-<mk-ui>
+<mk-ui :fabClickedAction="add" fabIcon="plus">
 	<template #header><span style="margin-right:4px;"><fa icon="home"/></span>{{ $t('dashboard') }}</template>
 	<template #func>
 		<button @click="customizing = !customizing"><fa icon="cog"/></button>
@@ -8,22 +8,7 @@
 		<template v-if="customizing">
 			<header>
 				<select v-model="widgetAdderSelected">
-					<option value="profile">{{ $t('@.widgets.profile') }}</option>
-					<option value="analog-clock">{{ $t('@.widgets.analog-clock') }}</option>
-					<option value="calendar">{{ $t('@.widgets.calendar') }}</option>
-					<option value="activity">{{ $t('@.widgets.activity') }}</option>
-					<option value="rss">{{ $t('@.widgets.rss') }}</option>
-					<option value="html">{{ $t('@.widgets.html') }}</option>
-					<option value="photo-stream">{{ $t('@.widgets.photo-stream') }}</option>
-					<option value="slideshow">{{ $t('@.widgets.slideshow') }}</option>
-					<option value="hashtags">{{ $t('@.widgets.hashtags') }}</option>
-					<option value="posts-monitor">{{ $t('@.widgets.posts-monitor') }}</option>
-					<option value="version">{{ $t('@.widgets.version') }}</option>
-					<option value="server">{{ $t('@.widgets.server') }}</option>
-					<option value="queue">{{ $t('@.widgets.queue') }}</option>
-					<option value="memo">{{ $t('@.widgets.memo') }}</option>
-					<option value="nav">{{ $t('@.widgets.nav') }}</option>
-					<option value="tips">{{ $t('@.widgets.tips') }}</option>
+					<option v-for="widget in widgetsList" :key="widget" :value="widget.type">{{ $t(widget.text) }}</option>
 				</select>
 				<button @click="addWidget">{{ $t('add-widget') }}</button>
 				<p><a @click="hint">{{ $t('customization-tips') }}</a></p>
@@ -67,7 +52,25 @@ export default Vue.extend({
 		return {
 			showNav: false,
 			customizing: false,
-			widgetAdderSelected: null
+			widgetAdderSelected: null,
+			widgetsList: [
+				{ type: 'profile', text: '@.widgets.profile' },
+				{ type: 'analog-clock', text: '@.widgets.analog-clock' },
+				{ type: 'calendar', text: '@.widgets.calendar' },
+				{ type: 'activity', text: '@.widgets.activity' },
+				{ type: 'rss', text: '@.widgets.rss' },
+				{ type: 'html', text: '@.widgets.html' },
+				{ type: 'photo-stream', text: '@.widgets.photo-stream' },
+				{ type: 'slideshow', text: '@.widgets.slideshow' },
+				{ type: 'hashtags', text: '@.widgets.hashtags' },
+				{ type: 'posts-monitor', text: '@.widgets.posts-monitor' },
+				{ type: 'version', text: '@.widgets.version' },
+				{ type: 'server', text: '@.widgets.server' },
+				{ type: 'queue', text: '@.widgets.queue' },
+				{ type: 'memo', text: '@.widgets.memo' },
+				{ type: 'nav', text: '@.widgets.nav' },
+				{ type: 'tips', text: '@.widgets.tips' },
+			],
 		};
 	},
 
@@ -124,9 +127,12 @@ export default Vue.extend({
 
 		addWidget() {
 			if(this.widgetAdderSelected == null) return;
+			this.addWidgetOf(this.widgetAdderSelected);
+		},
 
+		addWidgetOf(widgetType) {
 			this.$store.commit('addMobileHomeWidget', {
-				name: this.widgetAdderSelected,
+				name: widgetType,
 				id: uuid(),
 				data: {}
 			});
@@ -138,6 +144,23 @@ export default Vue.extend({
 
 		saveHome() {
 			this.$store.commit('setMobileHome', this.widgets);
+		},
+
+		add() {
+			this.$root.dialog({
+				title: this.$t('@.customize-home'),
+				type: null,
+				select: {
+					items: this.widgetsList.map(x => ({
+						value: x.type, text: this.$t(x.text)
+					}))
+					default: this.type,
+				},
+				showCancelButton: true
+			}).then(({ canceled, result: type }) => {
+				if (canceled) return;
+				this.addWidgetOf(type);
+			});
 		}
 	}
 });
