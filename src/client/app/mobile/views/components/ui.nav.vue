@@ -15,8 +15,8 @@
 					<p class="name"><mk-user-name :user="$store.state.i"/></p>
 					<p class="acct"><mk-acct :user="$store.state.i"/></p>
 					<p class="ff">
-						<b>{{ $store.state.i.followingCount }}</b>フォロー&ensp;
-						<b>{{ $store.state.i.followersCount }}</b>フォロワー
+						<b>{{ $store.state.i.followingCount }}</b>{{ $t('followings') }}&ensp;
+						<b>{{ $store.state.i.followersCount }}</b>{{ $t('followers') }}
 					</p>
 				</router-link>
 				<div class="links">
