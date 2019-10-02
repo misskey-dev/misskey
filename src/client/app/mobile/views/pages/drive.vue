@@ -1,11 +1,10 @@
 <template>
-<mk-ui>
+<mk-ui fabIcon="plus" :fabClickedAction="openContextMenu" ref="ui">
 	<template #header>
 		<template v-if="folder"><span style="margin-right:4px;"><fa :icon="['far', 'folder-open']"/></span>{{ folder.name }}</template>
 		<template v-if="file"><mk-file-type-icon data-icon :type="file.type" style="margin-right:4px;"/>{{ file.name }}</template>
 		<template v-if="!folder && !file"><span style="margin-right:4px;"><fa icon="cloud"/></span>{{ $t('@.drive') }}</template>
 	</template>
-	<template #func v-if="folder || (!folder && !file)"><button @click="openContextMenu" ref="contextSource"><fa icon="ellipsis-h"/></button></template>
 	<x-drive
 		ref="browser"
 		:init-folder="initFolder"
@@ -138,7 +137,7 @@ export default Vue.extend({
 					icon: faTrashAlt,
 					action: this.$refs.browser.deleteFolder
 				}] : [])],
-				source: this.$refs.contextSource,
+				source: this.$refs.ui.$refs.fab,
 			});
 		}
 	}

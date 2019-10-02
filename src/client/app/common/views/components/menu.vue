@@ -2,9 +2,9 @@
 <div class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :class="{ isMobile: $root.isMobile }">
 	<div class="backdrop" ref="backdrop" @click="close"></div>
 	<div class="popover" :class="{ bubble }" ref="popover">
-		<template v-for="item, i in items">
-			<div v-if="item === null"></div>
-			<button v-if="item" @click="clicked(item.action)" :tabindex="i">
+		<template v-for="(item, i) in items">
+			<div v-if="item === null" :key="i"></div>
+			<button v-if="item" @click="clicked(item.action)" :tabindex="i" :key="i">
 				<fa v-if="item.icon" :icon="item.icon"/>{{ item.text }}
 			</button>
 		</template>

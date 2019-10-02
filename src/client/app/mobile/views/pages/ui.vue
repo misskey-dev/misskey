@@ -1,5 +1,5 @@
 <template>
-<mk-ui>
+<mk-ui :displayFab="false">
 	<template #header><span style="margin-right:4px;" v-if="icon"><fa :icon="icon"/></span>{{ title }}</template>
 
 	<main>
