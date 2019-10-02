@@ -12,6 +12,7 @@
 	<mk-stream-indicator v-if="$store.getters.isSignedIn"/>
 	<button class="nav button" v-if="$store.state.device.inDeckMode" @click="isDrawerOpening = !isDrawerOpening"><fa icon="bars"/><i v-if="indicate"><fa icon="circle"/></i></button>
 	<button class="post button" ref="fab" v-if="displayFab" @click="fabClicked"><fa :icon="fabIcon"/></button>
+	<x-footer v-if="!$store.state.device.inDeckMode"/>
 </div>
 </template>
 
@@ -19,11 +20,13 @@
 import Vue from 'vue';
 import MkNotify from './notify.vue';
 import XHeader from './ui.header.vue';
+import XFooter from './ui.footer.vue';
 import XNav from './ui.nav.vue';
 
 export default Vue.extend({
 	components: {
 		XHeader,
+		XFooter,
 		XNav
 	},
 
@@ -124,7 +127,9 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .mk-ui
 	&:not(.deck)
-		padding-top 48px
+		padding 48px 0 64px 0
+		.button
+			bottom: 64px
 
 	> .button
 		position fixed
