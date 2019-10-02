@@ -14,15 +14,24 @@ const apiUrl = `${location.origin}/api/`;
 self.addEventListener('install', ev => {
 	console.info('installed');
 
+	const requests = [
+		"/",
+		`/assets/desktop.${version}.js`,
+		`/assets/mobile.${version}.js`,
+		"/assets/error.jpg"
+	];
+
   ev.waitUntil(
 		caches.open(cacheName)
 			.then(cache => {
-				return cache.addAll([
-					"/",
-					`/assets/desktop.${version}.js`,
-					`/assets/mobile.${version}.js`,
-					"/assets/error.jpg"
-				]);
+				if (_ENV_ === "production") {
+					// 本番ではキャッシュ
+					console.info("Registered caches.");
+					return cache.addAll(requests);
+				} else {
+					// 開発時はキャッシュしない & 既にあるキャッシュを殺す
+					return cache.delete(requests);
+				}
 			})
 			.then(() => self.skipWaiting())
   );
