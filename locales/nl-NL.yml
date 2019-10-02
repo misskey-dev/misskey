@@ -4,7 +4,9 @@ meta:
 common:
   misskey: "Deel alles met anderen die ook Misskey gebruiken."
   about-title: "Een ster van het fediverse"
+  about: "Bedankt voor het ontdekken van Misskey. Misskey is een <b>gedecentraliseerd microblogging platform</b> geboren op aarde. Omdat het bestaat binnen het Fediverse (een georganiseerd universum van verschillende sociale mediaplatformen), staat het verbonden met andere sociale medieplatformen. Neem een pauze van de stedelijke drukte, en duik in het nieuwe intenet?"
   intro:
+    title: "Wat is Misskey?"
     rich-contents: "Bericht"
     reaction: "Reactie"
   close: "Sluiten"
