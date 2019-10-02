@@ -22,7 +22,8 @@ import getNoteSummary from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
 import { getConnection } from 'typeorm';
 import redis from '../../db/redis';
-import { env } from 'gulp-util';
+
+const env = process.env.NODE_ENV;
 
 const client = `${__dirname}/../../client/`;
 
