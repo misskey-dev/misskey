@@ -1,5 +1,5 @@
 <template>
-<mk-ui>
+<mk-ui :displayBack="true">
 	<template #header><fa icon="search"/> {{ q }}</template>
 
 	<main>

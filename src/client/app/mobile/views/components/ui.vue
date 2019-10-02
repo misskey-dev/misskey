@@ -3,6 +3,7 @@
 	<x-header v-if="!$store.state.device.inDeckMode">
 		<template #func><slot name="func"></slot></template>
 		<slot name="header"></slot>
+		<button class="back" v-if="displayBack" @click="$router.back()"><fa icon="arrow-left"/></button>
 	</x-header>
 	<x-nav :is-open="isDrawerOpening"/>
 	<div class="content">
@@ -40,6 +41,10 @@ export default Vue.extend({
 		displayFab: {
 			type: Boolean,
 			default: true
+		},
+		displayBack: {
+			type: Boolean,
+			default: false
 		}
 	},
 
@@ -152,4 +157,11 @@ export default Vue.extend({
 			background var(--primary)
 			color var(--primaryForeground)
 
+.back {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	font-size: 18px;
+}
 </style>
