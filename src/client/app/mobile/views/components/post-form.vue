@@ -37,7 +37,7 @@
 			<footer>
 				<button class="upload" @click="chooseFile"><fa icon="upload"/></button>
 				<button class="drive" @click="chooseFileFromDrive"><fa icon="cloud"/></button>
-				<button class="kao" @click="kao"><fa :icon="['far', 'fish']"/></button>
+				<button class="kao" @click="kao"><fa :icon="['fas', 'fish']"/></button>
 				<button class="poll" @click="poll = true"><fa icon="chart-pie"/></button>
 				<button class="poll" @click="useCw = !useCw"><fa :icon="useCw ? ['fas', 'eye'] : ['far', 'eye-slash']"/></button>
 				<button class="visibility" @click="setVisibility" ref="visibilityButton">
