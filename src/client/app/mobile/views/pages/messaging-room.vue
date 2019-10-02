@@ -1,6 +1,7 @@
 <template>
 <mk-ui :displayPostButton="false">
 	<template #header>
+		<button class="back" @click="$router.back()"><fa icon="arrow-left"/></button>
 		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span><mk-user-name :user="user"/></template>
 		<template v-else-if="group"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ group.name }}</template>
 		<template v-else><mk-ellipsis/></template>
@@ -69,3 +70,13 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+.back {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	font-size: 18px;
+}
+</style>

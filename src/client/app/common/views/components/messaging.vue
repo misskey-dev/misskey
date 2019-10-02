@@ -8,6 +8,7 @@
 		<div class="result">
 			<ol class="users" v-if="result.length > 0" ref="searchResult">
 				<li v-for="(user, i) in result"
+					:key="i"
 					@keydown.enter="navigate(user)"
 					@keydown="onSearchResultKeydown(i)"
 					@click="navigate(user)"
@@ -49,7 +50,7 @@
 	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
 	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 	<ui-margin>
-		<ui-button @click="startUser()"><fa :icon="faUser"/> {{ $t('start-with-user') }}</ui-button>
+		<ui-button v-if="createButtonsVisible" @click="startUser()"><fa :icon="faUser"/> {{ $t('start-with-user') }}</ui-button>
 		<ui-button @click="startGroup()"><fa :icon="faUsers"/> {{ $t('start-with-group') }}</ui-button>
 	</ui-margin>
 </div>
@@ -71,6 +72,10 @@ export default Vue.extend({
 		headerTop: {
 			type: Number,
 			default: 0
+		},
+		createButtonsVisible: {
+			type: Boolean,
+			default: true
 		}
 	},
 	data() {
