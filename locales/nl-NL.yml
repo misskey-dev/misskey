@@ -3,6 +3,7 @@ meta:
   lang: "Nederlands"
 common:
   misskey: "Deel alles met anderen die ook Misskey gebruiken."
+  about-title: "Een ster van het fediverse"
   intro:
     rich-contents: "Bericht"
     reaction: "Reactie"
