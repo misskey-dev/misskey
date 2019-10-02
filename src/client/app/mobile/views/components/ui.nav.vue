@@ -2,13 +2,13 @@
 <div class="fquwcbxs">
 	<transition name="back">
 		<div class="backdrop"
-			v-if="isOpen"
+			v-show="isOpen"
 			@click="$parent.isDrawerOpening = false"
 			@touchstart="$parent.isDrawerOpening = false"
 		></div>
 	</transition>
 	<transition name="nav">
-		<div class="body" :class="{ notifications: showNotifications }" v-if="isOpen">
+		<div class="body" :class="{ notifications: showNotifications }" v-show="isOpen">
 			<div class="nav" v-show="!showNotifications">
 				<router-link class="me" v-if="$store.getters.isSignedIn" :to="`/@${$store.state.i.username}`">
 					<img class="avatar" :src="$store.state.i.avatarUrl" alt="avatar"/>
@@ -44,7 +44,7 @@
 					</ul>
 				</div>
 				<div class="announcements" v-if="announcements && announcements.length > 0">
-					<article v-for="announcement in announcements">
+					<article v-for="announcement in announcements" :key="announcement.id">
 						<span v-html="announcement.title" class="title"></span>
 						<div><mfm :text="announcement.text"/></div>
 						<img v-if="announcement.image" :src="announcement.image" alt="" style="display: block; max-height: 120px; max-width: 100%;"/>
@@ -179,6 +179,7 @@ export default Vue.extend({
 		z-index 1025
 		width 100%
 		height 100%
+		backdrop-filter blur(4px)
 		background var(--mobileNavBackdrop)
 
 	.body
