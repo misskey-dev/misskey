@@ -10,7 +10,7 @@
 	</div>
 	<mk-stream-indicator v-if="$store.getters.isSignedIn"/>
 	<button class="nav button" v-if="$store.state.device.inDeckMode" @click="isDrawerOpening = !isDrawerOpening"><fa icon="bars"/><i v-if="indicate"><fa icon="circle"/></i></button>
-	<button class="post button" v-if="$store.state.device.inDeckMode" @click="$post()"><fa icon="pencil-alt"/></button>
+	<button class="post button" v-if="$store.state.device.inDeckMode || displayPostButton" @click="$post()"><fa icon="pencil-alt"/></button>
 </div>
 </template>
 
@@ -26,7 +26,16 @@ export default Vue.extend({
 		XNav
 	},
 
-	props: ['title'],
+	props: {
+		title: {
+			type: String,
+		},
+		displayPostButton: {
+			type: Boolean,
+			default: true,
+			required: false,
+		}
+	},
 
 	data() {
 		return {

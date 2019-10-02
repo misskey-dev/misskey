@@ -1,5 +1,5 @@
 <template>
-<mk-ui>
+<mk-ui :displayPostButton="false">
 	<template #header>
 		<template v-if="user"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span><mk-user-name :user="user"/></template>
 		<template v-else-if="group"><span style="margin-right:4px;"><fa :icon="['far', 'comments']"/></span>{{ group.name }}</template>

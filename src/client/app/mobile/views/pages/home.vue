@@ -20,10 +20,6 @@
 		</span>
 	</template>
 
-	<template #func>
-		<button @click="fn"><fa icon="pencil-alt"/></button>
-	</template>
-
 	<main>
 		<div class="nav" v-if="showNav">
 			<div class="bg" @click="showNav = false"></div>
