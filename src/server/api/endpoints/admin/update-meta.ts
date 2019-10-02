@@ -3,6 +3,7 @@ import define from '../../define';
 import { getConnection } from 'typeorm';
 import { Meta } from '../../../../models/entities/meta';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
 
 export const meta = {
 	desc: {
@@ -121,7 +122,7 @@ export const meta = {
 		},
 
 		maxNoteTextLength: {
-			validator: $.optional.num.min(0),
+			validator: $.optional.num.min(0).max(DB_MAX_NOTE_TEXT_LENGTH),
 			desc: {
 				'ja-JP': '投稿の最大文字数'
 			}

@@ -7,6 +7,7 @@ import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
 import { getConnection } from 'typeorm';
 import redis from '../../../db/redis';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../misc/hard-limits';
 
 export const meta = {
 	stability: 'stable',
@@ -138,7 +139,7 @@ export default define(meta, async (ps, me) => {
 		bannerUrl: instance.bannerUrl,
 		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
-		maxNoteTextLength: instance.maxNoteTextLength,
+		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
 		emojis: emojis.map(e => ({
 			id: e.id,
 			aliases: e.aliases,
