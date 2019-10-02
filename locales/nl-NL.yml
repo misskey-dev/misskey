@@ -7,7 +7,10 @@ common:
   about: "Bedankt voor het ontdekken van Misskey. Misskey is een <b>gedecentraliseerd microblogging platform</b> geboren op aarde. Omdat het bestaat binnen het Fediverse (een georganiseerd universum van verschillende sociale mediaplatformen), staat het verbonden met andere sociale medieplatformen. Neem een pauze van de stedelijke drukte, en duik in het nieuwe intenet?"
   intro:
     title: "Wat is Misskey?"
+    about: "Misskey is een open source <b>gedecentraliseerd blogplatform</b>. Het heeft een gesofisticeerde, volledig aanpasbare gebruikersinterface, uitgebreide reactiemogelijkheden voor posts, gratis geïntegreerd bestandsoplagbeheer en andere geavanceerde mogelijkheden. Daarnaast staat Misskey verbonden aan een netwerksysteem genaam het \"Fediverse\", hiermee kunnen we communiceren met andere gebruikers op andere Snss. Dit betekent dat wanneer je iets post het niet enkel verstuurd wordt naar andere Misskey gebruikers, maar ook naar gebruikers op Mastodon en Pleroma. Stel je voor dat een planeet een radiosignaal verzendt naar een andere planeet als manier van communiceren."
+    features: "Kenmerken"
     rich-contents: "Bericht"
+    rich-contents-desc: "Post jouw idee, hot topic, wat je ook maar wil delen. Maak jouw teksten aantrekkelijk met je favoriete foto's, verzend bestanden, zelfs video's, of maak een poll. Dit zijn enkele van de mogelijkheden die Misskey aanbiedt!"
     reaction: "Reactie"
   close: "Sluiten"
   enter-password: "Voer het wachtwoord in"
