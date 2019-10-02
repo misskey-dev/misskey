@@ -7,13 +7,21 @@ common:
   about: "Bedankt voor het ontdekken van Misskey. Misskey is een <b>gedecentraliseerd microblogging platform</b> geboren op aarde. Omdat het bestaat binnen het Fediverse (een georganiseerd universum van verschillende sociale mediaplatformen), staat het verbonden met andere sociale medieplatformen. Neem een pauze van de stedelijke drukte, en duik in het nieuwe intenet?"
   intro:
     title: "Wat is Misskey?"
-    about: "Misskey is een open source <b>gedecentraliseerd blogplatform</b>. Het heeft een gesofisticeerde, volledig aanpasbare gebruikersinterface, uitgebreide reactiemogelijkheden voor posts, gratis geïntegreerd bestandsoplagbeheer en andere geavanceerde mogelijkheden. Daarnaast staat Misskey verbonden aan een netwerksysteem genaam het \"Fediverse\", hiermee kunnen we communiceren met andere gebruikers op andere Snss. Dit betekent dat wanneer je iets post het niet enkel verstuurd wordt naar andere Misskey gebruikers, maar ook naar gebruikers op Mastodon en Pleroma. Stel je voor dat een planeet een radiosignaal verzendt naar een andere planeet als manier van communiceren."
+    about: "Misskey is een open source <b>gedecentraliseerd blogplatform</b>. Het heeft een gesofisticeerde, volledig aanpasbare gebruikersinterface, uitgebreide reactiemogelijkheden voor posts, gratis geïntegreerd bestandsoplagbeheer en andere geavanceerde mogelijkheden. Daarnaast staat Misskey verbonden aan een netwerksysteem genaam het \"Fediverse\", hiermee kunnen we communiceren met andere gebruikers op andere SNSs. Dit betekent dat wanneer je iets post het niet enkel verstuurd wordt naar andere Misskey gebruikers, maar ook naar gebruikers op Mastodon en Pleroma. Stel je voor dat een planeet een radiosignaal verzendt naar een andere planeet als manier van communiceren."
     features: "Kenmerken"
     rich-contents: "Bericht"
     rich-contents-desc: "Post jouw idee, hot topic, wat je ook maar wil delen. Maak jouw teksten aantrekkelijk met je favoriete foto's, verzend bestanden, zelfs video's, of maak een poll. Dit zijn enkele van de mogelijkheden die Misskey aanbiedt!"
     reaction: "Reactie"
+    reaction-desc: "Dé makkelijkste manier om jouw gevoelens uit te drukken. Met Misskey kan je verschillende reacties toevoegen aan jouw posts. Andere SNSs hebben enkel maar een \"vind ik leuk\" reactie."
+    ui: "Interface"
+    ui-desc: "Niet één UI past nij iedereen. Daarom heeft Misskey een uitgebreide keuze om de UI naar jouw hand te zetten. Je kan jouw nieuwe thuis zo origineel maken als je zelf wil door jouw tijdslijn aan te passen door widgets te verplaatsen en hun look te veranderen. Zo maak je van Misskey jouw eigen stek."
+    drive: "Drive"
+    drive-desc: "Wil je een foto posten die je reeds het geüpload? Wens je georganiseerde map met zelfgekozen naam maken voor al jouw bestanden? De beste oplossing voor jou  is Misskey Drive. Dit maakt het supermakkelijk om jouw bestanden online te delen."
+  application-authorization: "Geauthoriseerde applicaties"
   close: "Sluiten"
+  load-more: "Laad meer resultaten"
   enter-password: "Voer het wachtwoord in"
+  2fa: "Tweestapsverificatie"
   notification-types:
     all: "Alle"
     follow: "Volgend"
@@ -30,6 +38,7 @@ common:
     weeks_ago: "{}week/weken geleden"
     months_ago: "{}maand(en) geleden"
     years_ago: "{}jaar geleden"
+  drive: "Drive"
   home: "Startpagina"
   timeline: "Tijdlijn"
   followers: "Volgers"
@@ -429,11 +438,13 @@ admin/views/index.vue:
   users: "Gebruiker"
 admin/views/dashboard.vue:
   notes: "Bericht"
+  drive: "Drive"
 admin/views/abuse.vue:
   remove-report: "Verwijderen"
 admin/views/charts.vue:
   notes: "Bericht"
   users: "Gebruiker"
+  drive: "Drive"
 admin/views/drive.vue:
   origin:
     local: "Lokaal"
