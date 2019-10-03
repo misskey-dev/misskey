@@ -2,8 +2,9 @@
 <div class="jxdyxsek">
 	<div class="body">
 		<header>
+			<h1><fa :icon="faCrop" />{{ title }}</h1>
 			<button class="close" @click="cancel"><fa icon="times"/></button>
-			<button class="menu" @click="skip()"><fa :icon="faFastForward"/>{{this.$t('skip')}}</button>
+			<button class="menu" @click="skip()"><fa :icon="faFastForward"/></button>
 			<button class="ok" @click="ok"><fa icon="check"/></button>
 		</header>
 		<vue-cropper class="cropper" ref="cropper"
