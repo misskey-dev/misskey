@@ -4,6 +4,7 @@
 	<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">
 		<mk-user-name :user="note.user"/>
 	</router-link>
+	<span class="is-premium" v-if="note.user.isPremium"><fa icon="crown"/></span>
 	<span class="is-admin" v-if="note.user.isAdmin">admin</span>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="is-cat" v-if="note.user.isCat">cat</span>
@@ -99,6 +100,10 @@ export default Vue.extend({
 	> .is-verified
 		margin 0 .5em 0 0
 		color #4dabf7
+
+	> .is-premium
+		margin 0 .5em 0 0
+		color #FFC107
 
 	> .info
 		margin-left auto

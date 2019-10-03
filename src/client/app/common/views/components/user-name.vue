@@ -1,5 +1,5 @@
 <template>
-<mfm :text="user.name || user.username" :plain="true" :nowrap="nowrap" :custom-emojis="user.emojis"/>
+<mfm :text="user.name || user.username" :class="{ premium: user.isPremium }" :plain="true" :nowrap="nowrap" :custom-emojis="user.emojis"/>
 </template>
 
 <script lang="ts">
@@ -18,3 +18,10 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="stylus" scoped>
+	.premium {
+		color #FFCA28
+		text-shadow 0 0 1px #000
+	}
+</style>
