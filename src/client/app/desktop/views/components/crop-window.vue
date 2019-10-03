@@ -23,7 +23,7 @@ import i18n from '../../../i18n';
 import VueCropper from 'vue-cropperjs';
 import 'cropperjs/dist/cropper.css';
 import * as url from '../../../../../prelude/url';
-import { faCrop } from '@fortawesome/free-solid-svg-icons'
+import { faCrop } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/crop-window.vue'),

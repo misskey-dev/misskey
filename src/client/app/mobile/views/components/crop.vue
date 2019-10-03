@@ -2,9 +2,8 @@
 <div class="jxdyxsek">
 	<div class="body">
 		<header>
-			<h1><fa :icon="faCrop" />{{ title }}</h1>
 			<button class="close" @click="cancel"><fa icon="times"/></button>
-			<button class="menu" @click="menu"><fa :icon="faEllipsisH"/></button>
+			<button class="menu" @click="skip()"><fa :icon="faFastForward"/>{{this.$t('skip')}}</button>
 			<button class="ok" @click="ok"><fa icon="check"/></button>
 		</header>
 		<vue-cropper class="cropper" ref="cropper"
@@ -21,9 +20,9 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import VueCropper from 'vue-cropperjs';
+import 'cropperjs/dist/cropper.css';
 import * as url from '../../../../../prelude/url';
-import { faEllipsisH, faCrop } from '@fortawesome/free-solid-svg-icons'
-import XMenu from '../../../common/views/components/menu.vue';
+import { faFastForward, faCrop } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/components/crop.vue'),
@@ -47,9 +46,9 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faEllipsisH,
+			faFastForward,
 			faCrop
-		}
+		};
 	},
 
 	computed: {
@@ -71,17 +70,6 @@ export default Vue.extend({
 			this.$emit('skipped');
 			this.destroyDom();
 		},
-
-		menu(ev: any) {
-			this.$root.new(XMenu, {
-				items: [{
-					type: 'item',
-					text: this.$t('skip'),
-					action: this.skip
-				}],
-				source: ev.currentTarget || ev.target
-			})
-		}
 
 		cancel() {
 			this.$emit('canceled');
@@ -124,27 +112,19 @@ export default Vue.extend({
 				> .count
 					margin-left 4px
 					opacity 0.5
-
-			> .close
+			> button
 				position absolute
 				top 0
-				left 0
 				line-height 42px
 				width 42px
+				font-size 16px
 
-			> .menu
-				position absolute
-				top 0
-				right 42px
-				line-height 42px
-				width 42px
-
-			> .ok
-				position absolute
-				top 0
-				right 0
-				line-height 42px
-				width 42px
+				&.close
+					left 0
+				&.menu
+					right 42px
+				&.ok
+					right 0
 
 		> .cropper
 			height calc(100% - 42px)
