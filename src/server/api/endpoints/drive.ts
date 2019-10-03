@@ -1,6 +1,7 @@
 import define from '../define';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { DriveFiles } from '../../../models';
+import { getDriveCapacity } from '../../../misc/get-drive-capacity';
 
 export const meta = {
 	desc: {
@@ -37,7 +38,7 @@ export default define(meta, async (ps, user) => {
 	const usage = await DriveFiles.clacDriveUsageOf(user);
 
 	return {
-		capacity: 1024 * 1024 * instance.localDriveCapacityMb,
+		capacity: 1024 * 1024 * getDriveCapacity(user, instance),
 		usage: usage
 	};
 });

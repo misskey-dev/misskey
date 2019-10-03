@@ -136,6 +136,14 @@ export const meta = {
 			}
 		},
 
+		premiumDriveCapacityMb: {
+			validator: $.optional.num.min(0),
+			desc: {
+				'ja-JP': 'プレミアムユーザーひとりあたりのドライブ容量 (メガバイト単位)',
+				'en-US': 'Drive capacity of a premium user (MB)'
+			}
+		},
+
 		remoteDriveCapacityMb: {
 			validator: $.optional.num.min(0),
 			desc: {
@@ -468,6 +476,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.localDriveCapacityMb !== undefined) {
 		set.localDriveCapacityMb = ps.localDriveCapacityMb;
+	}
+
+	if (ps.premiumDriveCapacityMb !== undefined) {
+		set.premiumDriveCapacityMb = ps.premiumDriveCapacityMb;
 	}
 
 	if (ps.remoteDriveCapacityMb !== undefined) {

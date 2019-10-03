@@ -1404,6 +1404,7 @@ admin/views/instance.vue:
   cache-remote-files: "リモートのファイルをキャッシュする"
   cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになるよ。そのためサーバーのストレージを節約できるんだけど、プライバシー設定で直リンクを無効にしてるユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加するよ。通常はこの設定をオンにしておくことをおすすめするよ。"
   local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
+  premium-drive-capacity-mb: "プレミアムユーザーひとりあたりのドライブ容量"
   remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
   mb: "メガバイト単位"
   recaptcha-config: "reCAPTCHAの設定"

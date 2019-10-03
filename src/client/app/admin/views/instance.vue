@@ -84,6 +84,7 @@
 		</section>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="localDriveCapacityMb" type="number">{{ $t('local-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
+			<ui-input v-model="premiumDriveCapacityMb" type="number">{{ $t('premium-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
 			<ui-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('remote-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
 		</section>
 		<section>
@@ -276,6 +277,7 @@ export default Vue.extend({
 			languages: null,
 			cacheRemoteFiles: false,
 			localDriveCapacityMb: null,
+			premiumDriveCapacityMb: null,
 			remoteDriveCapacityMb: null,
 			maxNoteTextLength: null,
 			enableRecaptcha: false,
@@ -340,6 +342,7 @@ export default Vue.extend({
 			this.languages = meta.langs.join(' ');
 			this.cacheRemoteFiles = meta.cacheRemoteFiles;
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
+			this.premiumDriveCapacityMb = meta.driveCapacityPerPremiumUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.maxNoteTextLength = meta.maxNoteTextLength;
 			this.enableRecaptcha = meta.enableRecaptcha;
@@ -464,6 +467,7 @@ export default Vue.extend({
 				langs: this.languages ? this.languages.split(' ') : [],
 				cacheRemoteFiles: this.cacheRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
+				premiumDriveCapacityMb: parseInt(this.premiumDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10),
 				enableRecaptcha: this.enableRecaptcha,
