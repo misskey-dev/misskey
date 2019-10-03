@@ -1,75 +1,75 @@
-# Contribution guide
-:v: Thanks for your contributions :v:
-
-[日本語版ガイド](CONTRIBUTING-JA.md)
+# コントリビューションの手引き
+:v: この度は、ご協力ありがとうございます :v:
 
 ## Issues
-Feature suggestions and bug reports are filed in https://github.com/xeltica/groundpolis/issues .
+Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
+機能の要望やバグ報告は https://github.com/xeltica/groundpolis/issues でお願いします
 
-* Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
-* If you have multiple independent issues, please submit them separately.
+* 重複を防ぐため、なるべく存在するissueがないか検索してください。もし既に同様の issue があれば、リアクションやコメントを追加して upvote してください。
+* もし複数の独立した issue があるならば、それぞれの issue は別々に作成してください。
 
-## Branches
-* **master** branch is tracking the latest release and used for production purposes.
-* **develop** branch is where we work for the next release.
+## ブランチ
+* **master** ブランチは、最新版の変更を含むブランチです。
+* **develop** ブランチは次期バージョンリリースのための作業ブランチです。
 
-## Internationalization (i18n)
-Misskey uses the Vue.js plugin [Vue I18n](https://github.com/kazupon/vue-i18n).
-Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/introduction.html .
 
-## Documentation
-* Documents for contributors are located in [`/docs`](/docs).
-* Documents for instance admins are located in [`/docs`](/docs).
-* Documents for end users are located in [`/src/docs`](/src/docs).
+## 国際化 (i18n)
+Misskey は [Vue I18n](https://github.com/kazupon/vue-i18n) という Vue.js 向けプラグインを使用しています。
+Vue I18n の文書は http://kazupon.github.io/vue-i18n/introduction.html にあります。
 
-## Test
-* Test codes are located in [`/test`](/test).
+## 文書
+* コントリビューター向けの文書は [`/docs`](/docs) にあります。
+* インスタンス管理者向けの文書は [`/docs`](/docs) にあります。
+* エンドユーザー向けの文書は [`/src/docs`](/src/docs) にあります。
 
-## Adding Groundpolis Room items
-* Use English for material, object and texture names.
-* Use meter for unit of length.
-* Your PR should include all source files (e.g. `.png`, `.blend`) of your models (for later editing).
-* Your PR must include the glTF binary files (`.glb`) of your models.
-* Add a locale key `room.furnitures.YOUR_ITEM` at [`/locales/ja-JP.yml`](/locales/ja-JP.yml).
-* Add a furniture definition at [`/src/client/app/common/scripts/room/furnitures.json5`](/src/client/app/common/scripts/room/furnitures.json5).
+## テスト
+* テストコードは [`/test`](/test) にあります。
 
-If you have no experience on 3D modeling, we suggest to use the free 3DCG software [Blender](https://www.blender.org/).
-You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
+## Groundpolis Room へのアイテム追加
+* マテリアル、オブジェクト、テクスチャなどの名前は英語で書いてください。
+* 長さの単位にはメートルを使用してください。
+* (今後編集するために) プルリクエストにはモデルを構成する全てのソースファイル( `.png`, `.blend` など)を含めてください。
+* プルリクエストにはモデルの glTF バイナリファイル (`.glb`)を含めなければなりません。
+* `room.furnitures.YOUR_ITEM` といったロケールキーを [`/locales/ja-JP.yml`](/locales/ja-JP.yml) に追加してください。
+* [`/src/client/app/common/scripts/room/furnitures.json5`](/src/client/app/common/scripts/room/furnitures.json5) に家具の定義を追加してください。
 
-## FAQ
-### How to resolve conflictions occurred at yarn.lock?
+3D モデル制作の経験をお持ちでなければ、我々はフリーの 3DCG ソフトウェア [Blender](https://www.blender.org/) をお勧めします。
+glTF 2.0 に関する資料は [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html) にあります。
 
-Just execute `yarn` to fix it.
+## よくある質問
+### yarn.lock で発生したコンフリクトはどうすれば良いですか？
+
+単純に `yarn` コマンドを実行してください。
 
 ## Glossary
 ### AP
-Stands for _**A**ctivity**P**ub_.
+_**A**ctivity**P**ub_ の略。
 
 ### MFM
-Stands for _**M**isskey **F**lavored **M**arkdown_.
+_**M**isskey **F**lavored **M**arkdown_ の略。
 
 ### Mk
-Stands for _**M**iss**k**ey_.
+_**M**iss**k**ey_ の略。
 
 ### SW
-Stands for _**S**ervice**W**orker_.
+_**S**ervice**W**orker_ の略。
 
 ### Nyaize
-Convert な(na) to にゃ(nya)
+「な」が「にゃ」ににゃりますにゃん。
 
 #### Denyaize
-Revert Nyaize
+Nyaize を元にもどすにゃん。
 
-## TypeScript Coding Style
-### Do not omit semicolons
-This is to avoid Automatic Semicolon Insertion (ASI) hazard.
+## TypeScript コーディング規約
+### セミコロンを省かない
+自動セミコロン挿入(ASI) ハザードを防ぐために。
 
-Ref:
+詳細:
 * https://www.ecma-international.org/ecma-262/#sec-automatic-semicolon-insertion
 * https://github.com/tc39/ecma262/pull/1062
 
-### Do not omit curly brackets
-Bad:
+### 基本的に括弧を省かない
+ダメ:
 ``` ts
 if (foo)
 	bar;
@@ -77,7 +77,7 @@ else
 	baz;
 ```
 
-Good:
+良い:
 ``` ts
 if (foo) {
 	bar;
@@ -86,62 +86,61 @@ if (foo) {
 }
 ```
 
-As a special case, you can omit the curly brackets if
+次のような特殊なケースにおいて、括弧を省いても構いません:
 
-* the body of the `if`-statement have only one statement and,
-* the `if`-statement does not have `else`-clause.
+* `if` ステートメントが 1 つのステートメントのみを持ち、
+* `else` を含まない場合
 
-Good:
+良い:
 ``` ts
 if (foo) bar;
 ```
+条件および、本体となるステートメントを同一行に記述してください。
 
-Make sure that the condition and the body statement are on the same line.
-
-### Do not use `==` when it can simply be replaced with `===`.
+### `===` が使える場合、 `==` を使わない
 🥰
 
-### Use only boolean (or null related) values in the condition of an `if`-statement.
-Bad:
+### 真偽値 (もしくは null 系) の値のみ `if` ステートメントの条件に使うこ
+ダメ:
 ``` ts
 if (foo.length)
 ```
 
-Good:
+良い:
 ``` ts
 if (foo.length > 0)
 ```
 
-### Do not use `export default`
-This is because the current language support does not work well with `export default`.
+### `export default` を使用しない
+現在の言語サポートが `export default` と相性が悪いので...
 
-Ref:
+参照:
 * https://basarat.gitbooks.io/typescript/docs/tips/defaultIsBad.html
 * https://gfx.hatenablog.com/entry/2017/11/24/135343
 
-Bad:
+ダメ:
 ``` ts
 export default function(foo: string): string {
 ```
 
-Good:
+良い:
 ``` ts
 export function something(foo: string): string {
 ```
 
-## Directory structure
+## ディレクトリ構造
 ```
-src ... Source code
-	@types ... Type definitions
-	prelude ... Independence utils for coding JavaScript without side effects
-	misc ... Independence utils for Misskey without side effects
-	service ... Common functions with side effects
-	queue ... Job queues and Jobs
-	server ... Web Server
-	client ... Client
+src ... ソースコード
+	@types ... 型定義
+	prelude ... 副作用のない JS コーディングのための独立したユーティリティ
+	misc ... 副作用のない Groundpolis のための独立したユーティリティ
+	service ... 副作用を含む共通の関数
+	queue ... ジョブキューとジョブ
+	server ... ウェブサーバー
+	client ... クライアント
 	mfm ... MFM
 
-test ... Test code
+test ... テストコード
 
 ```
 
@@ -251,13 +250,13 @@ const user = await Users.findOne(userId).then(ensure);
 // の糖衣構文のような扱いです
 ```
 
-### How to make Migration Code
+### Migration作成方法
 ```
-npx ts-node ./node_modules/typeorm/cli.js migration:generate -n "A name of changes"
+npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
 ```
 
-Please remove unnecessary codes in the generated scripts.
+作成されたスクリプトは不必要な変更を含むため除去してください。
 
-## Other
-### don't use a word `follow` in HTML class-name
-Adblockers blocks them accidentally...
+## その他
+### HTMLのクラス名で follow という単語は使わない
+広告ブロッカーで誤ってブロックされる
