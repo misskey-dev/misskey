@@ -25,8 +25,6 @@
 <script lang="ts">
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
-import updateAvatar from '../../api/update-avatar';
-import updateBanner from '../../api/update-banner';
 
 export default define({
 	name: 'profile',
@@ -45,10 +43,10 @@ export default define({
 			this.save();
 		},
 		updateAvatar() {
-			updateAvatar(this.$root)();
+			this.$updateAvatar(this.$root)();
 		},
 		updateBanner() {
-			updateBanner(this.$root)();
+			this.$updateBanner(this.$root)();
 		}
 	}
 });

@@ -409,6 +409,20 @@ common:
   ai-chan-kawaii: "シトリンかわいい"
   you: "あなた"
 
+  banner:
+    name: "バナー"
+    crop-title: "バナーのクロップ"
+    uploading: "新しいバナーをアップロードしています"
+    updated: "バナーを更新しました"
+    choose: "バナーにする画像を選択"
+  avatar:
+    name: "アバター"
+    crop-title: "アバターのクロップ"
+    uploading: "新しいアバターをアップロードしています"
+    updated: "アバターを更新しました"
+    choose: "アバターにする画像を選択"
+  invalid-filetype: "この形式のファイルはサポートされていません"
+
 auth/views/form.vue:
   share-access: "<i>{name}</i>があなたのアカウントにアクセスすることを許可しますか？"
   permission-ask: "このアプリは次の権限を要求しています:"
@@ -835,8 +849,8 @@ common/views/components/profile-editor.vue:
   you-can-include-hashtags: "ハッシュタグを含めることができます。"
   language: "言語"
   birthday: "誕生日"
-  avatar: "アバター"
-  banner: "バナー"
+  avatar: "アバターを変更"
+  banner: "バナーを変更"
   is-cat: "このアカウントはCatです"
   is-bot: "このアカウントはBotです"
   is-locked: "フォローを承認制にする"
@@ -1054,7 +1068,7 @@ desktop/views/components/drive.file.vue:
     unmark-as-sensitive: "閲覧注意を解除"
     copy-url: "URLをコピー"
     download: "ダウンロード"
-    else-files: "その他"
+    else-files: "その他..."
     set-as-avatar: "アバターに設定"
     set-as-banner: "バナーに設定"
     open-in-app: "アプリで開く"
@@ -1879,6 +1893,9 @@ mobile/views/components/drive.file-detail.vue:
   nsfw: "閲覧注意"
   mark-as-sensitive: "閲覧注意に設定"
   unmark-as-sensitive: "閲覧注意を解除"
+  delete: "削除"
+  set-as-avatar: "アバターにする"
+  set-as-banner: "バナーにする"
 
 mobile/views/components/media-video.vue:
   sensitive: "閲覧注意"
@@ -1939,6 +1956,13 @@ mobile/views/components/ui.nav.vue:
   game: "ゲーム"
   admin: "管理"
   about: "グランポリスについて"
+
+mobile/views/components/crop.vue:
+  skip: クロップをスキップ
+
+mobile/views/pages/user-lists.vue:
+  title: "リスト"
+  enter-list-name: "リスト名を入力してください"
 
 mobile/views/pages/drive.vue:
   contextmenu:

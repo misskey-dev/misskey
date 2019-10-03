@@ -1,32 +1,31 @@
 import { apiUrl, locale } from '../../config';
 import ProgressDialog from '../views/components/progress-dialog.vue';
 
-export default ($root: any) => {
-
+export default (self: any, ab: 'avatar' | 'banner') => {
 	const cropImage = file => new Promise(async (resolve, reject) => {
 		const CropWindow = await import('../views/components/crop-window.vue').then(x => x.default);
-		const w = $root.new(CropWindow, {
+		const w = self.$root.new(CropWindow, {
 			image: file,
-			title: locale['desktop']['banner-crop-title'],
-			aspectRatio: 16 / 9
+			title: locale['common'][ab]['crop-title'],
+			aspectRatio: ab === 'avatar' ? 1 : 16 / 9
 		});
 
 		w.$once('cropped', blob => {
 			const data = new FormData();
-			data.append('i', $root.$store.state.i.token);
+			data.append('i', self.$root.$store.state.i.token);
 			data.append('file', blob, file.name + '.cropped.png');
 
-			$root.api('drive/folders/find', {
-				name: locale['desktop']['banner']
-			}).then(bannerFolder => {
-				if (bannerFolder.length === 0) {
-					$root.api('drive/folders/create', {
-						name: locale['desktop']['banner']
+			self.$root.api('drive/folders/find', {
+				name: locale['common'][ab]['name']
+			}).then(folder => {
+				if (folder.length === 0) {
+					self.$root.api('drive/folders/create', {
+						name: locale['common'][ab]['name']
 					}).then(iconFolder => {
 						resolve(upload(data, iconFolder));
 					});
 				} else {
-					resolve(upload(data, bannerFolder[0]));
+					resolve(upload(data, folder[0]));
 				}
 			});
 		});
@@ -41,8 +40,8 @@ export default ($root: any) => {
 	});
 
 	const upload = (data, folder) => new Promise((resolve, reject) => {
-		const dialog = $root.new(ProgressDialog, {
-			title: locale['desktop']['uploading-banner']
+		const dialog = self.$root.new(ProgressDialog, {
+			title: locale['common'][ab]['uploading']
 		});
 		document.body.appendChild(dialog.$el);
 
@@ -64,21 +63,16 @@ export default ($root: any) => {
 		xhr.send(data);
 	});
 
-	const setBanner = file => {
-		return $root.api('i/update', {
-			bannerId: file.id
+	const setImage = file => {
+		return self.$root.api('i/update', {
+			[`${ab}Id`]: file.id
 		}).then(i => {
-			$root.$store.commit('updateIKeyValue', {
-				key: 'bannerId',
-				value: i.bannerId
-			});
-			$root.$store.commit('updateIKeyValue', {
-				key: 'bannerUrl',
-				value: i.bannerUrl
-			});
+			self.$store.commit('updateIKeyValue', { key: `${ab}Color`, value: i[`${ab}Color`] });
+			self.$store.commit('updateIKeyValue', { key: `${ab}Id`, value: i[`${ab}Id`] });
+			self.$store.commit('updateIKeyValue', { key: `${ab}Url`, value: i[`${ab}Url`] });
 
-			$root.dialog({
-				title: locale['desktop']['banner-updated'],
+			self.$root.dialog({
+				title: locale['common'][ab]['updated'],
 				text: null
 			});
 
@@ -101,18 +95,24 @@ export default ($root: any) => {
 		});
 	};
 
-	return (file = null) => {
+	return async (file = null) => {
 		const selectedFile = file
-			? Promise.resolve(file)
-			: $root.$chooseDriveFile({
+			? file
+			: await self.$root.$chooseDriveFile({
 				multiple: false,
-				type: 'image/*',
-				title: locale['desktop']['choose-banner']
+				title: locale['common'][ab]['choose']
 			});
 
-		return selectedFile
-			.then(cropImage)
-			.then(setBanner)
+		if (!selectedFile.type.startsWith('image/')) {
+			self.$root.dialog({
+				type: 'error',
+				title: locale['common']['invalid-filetype']
+			});
+			return;
+		}
+
+		return cropImage(selectedFile)
+			.then(setImage)
 			.catch(err => err && console.warn(err));
 	};
 };

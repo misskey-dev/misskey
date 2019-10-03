@@ -49,7 +49,7 @@ export default Vue.extend({
 	display block
 	margin 0
 	text-align center
-	color rgba(#000, 0.7)
+	color var(--text)
 
 .percentage
 	display block
