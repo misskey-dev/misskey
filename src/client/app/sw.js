@@ -15,21 +15,21 @@ self.addEventListener('install', ev => {
 	console.info('installed');
 
 	const requests = [
-		"/",
+		'/',
 		`/assets/desktop.${version}.js`,
 		`/assets/mobile.${version}.js`,
-		"/assets/error.jpg"
+		'/assets/error.jpg'
 	];
 
   ev.waitUntil(
 		caches.open(cacheName)
 			.then(cache => {
-				if (_ENV_ === "production") {
+				if (_ENV_ === 'production') {
 					// 本番ではキャッシュ
-					console.info("Registered caches.");
+					console.info('Registered caches.');
 					return cache.addAll(requests);
 				} else {
-					// 開発時はキャッシュしない & 既にあるキャッシュを殺す
+					// 開発時はキャッシュしない & 既にあるキャッシュを削除
 					return cache.delete(requests);
 				}
 			})
@@ -57,7 +57,7 @@ self.addEventListener('fetch', ev => {
 				return response || fetch(ev.request);
 			})
 			.catch(() => {
-				return caches.match("/");
+				return caches.match('/');
 			})
 	);
 });
