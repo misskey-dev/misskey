@@ -1,6 +1,6 @@
 <template>
 <div class="mk-connect-failed">
-	<img src="https://raw.githubusercontent.com/syuilo/misskey/develop/src/client/assets/error.jpg" alt=""/>
+	<img src="/assets/error.jpg" onerror="this.src='https://raw.githubusercontent.com/syuilo/misskey/develop/src/client/assets/error.jpg';" alt=""/>
 	<h1>{{ $t('title') }}</h1>
 	<p class="text">
 		<span>{{ this.$t('description').substr(0, this.$t('description').indexOf('{')) }}</span>
