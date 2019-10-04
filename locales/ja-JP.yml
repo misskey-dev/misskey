@@ -411,7 +411,7 @@ common/views/pages/explore.vue:
   popular-users: "人気のユーザー"
   recently-updated-users: "最近投稿したユーザー"
   recently-registered-users: "新規ユーザー"
-  recently-found-users: "新着ユーザー"
+  recently-discovered-users: "最近発見されたユーザー"
   popular-tags: "人気のタグ"
   federated: "連合"
   explore: "{host}を探索"

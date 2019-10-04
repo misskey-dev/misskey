@@ -44,7 +44,7 @@
 			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
 		</mk-user-list>
 		<mk-user-list :pagination="recentlyRegisteredUsersF" :expanded="false">
-			<fa :icon="faPlus" fixed-width/>{{ $t('recently-found-users') }}
+			<fa :icon="faRocket" fixed-width/>{{ $t('recently-discovered-users') }}
 		</mk-user-list>
 	</template>
 </div>
@@ -53,7 +53,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { faChartLine, faPlus, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -107,7 +107,7 @@ export default Vue.extend({
 			stats: null,
 			meta: null,
 			num: Vue.filter('number'),
-			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag
+			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket
 		};
 	},
 
