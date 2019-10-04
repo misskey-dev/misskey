@@ -40,18 +40,21 @@ function inbox(ctx: Router.RouterContext) {
 	ctx.status = 202;
 }
 
+const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
+const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
+
 function isActivityPubReq(ctx: Router.RouterContext) {
 	ctx.response.vary('Accept');
-	const accepted = ctx.accepts('html', 'application/activity+json', 'application/ld+json');
-	return ['application/activity+json', 'application/ld+json'].includes(accepted as string);
+	const accepted = ctx.accepts('html', ACTIVITY_JSON, LD_JSON);
+	return typeof accepted === 'string' && !accepted.match(/html/);
 }
 
 export function setResponseType(ctx: Router.RouterContext) {
-	const accept = ctx.accepts('application/activity+json', 'application/ld+json');
-	if (accept === 'application/ld+json') {
-		ctx.response.type = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
+	const accept = ctx.accepts(ACTIVITY_JSON, LD_JSON);
+	if (accept === LD_JSON) {
+		ctx.response.type = LD_JSON;
 	} else {
-		ctx.response.type = 'application/activity+json; charset=utf-8';
+		ctx.response.type = ACTIVITY_JSON;
 	}
 }
 
