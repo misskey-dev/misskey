@@ -11,7 +11,12 @@ import anime from 'animejs';
 
 export default Vue.extend({
 	props: ['image'],
+	data() {
+		return { closing: false }
+	},
 	mounted() {
+		window.history.pushState(null, '', null);
+		window.addEventListener('popstate', this.onPopState);
 		anime({
 			targets: this.$el,
 			opacity: 1,
@@ -19,14 +24,22 @@ export default Vue.extend({
 			easing: 'linear'
 		});
 	},
+	beforeDestroy() {
+		window.removeEventListener('popstate', this.onPopState);
+	},
 	methods: {
+		onPopState(e: PopStateEvent) {
+			this.destroyDom();
+		},
 		close() {
+			if (this.closing) return;
+			this.closing = true;
 			anime({
 				targets: this.$el,
 				opacity: 0,
 				duration: 100,
 				easing: 'linear',
-				complete: () => this.destroyDom()
+				complete: () => window.history.back()
 			});
 		}
 	}
