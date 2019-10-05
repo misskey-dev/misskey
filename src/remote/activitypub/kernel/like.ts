@@ -15,9 +15,10 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 
 	const note = await Notes.findOne(noteId);
 	if (note == null) {
-		apLogger.warn(`Like activity recivied, but no such note: ${id}`, { id });
+		apLogger.warn(`${activity.type} activity recivied, but no such note: ${id}`, { id });
 		return;
 	}
 
-	await create(actor, note, activity._misskey_reaction);
+	const reaction = activity.type === 'Dislike' ? '👎' : activity._misskey_reaction || activity.content || activity.name;
+	await create(actor, note, reaction);
 };

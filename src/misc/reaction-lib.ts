@@ -15,7 +15,9 @@ const basic10: Record<string, string> = {
 	'🍮': 'pudding',
 };
 
-export async function getFallbackReaction(): Promise<string> {
+export async function getFallbackReaction(reaction?: string | null): Promise<string> {
+	if (reaction === '👎') return reaction;
+
 	const meta = await fetchMeta();
 	return  meta.useStarForReactionFallback ? 'star' : 'like';
 }
@@ -26,7 +28,7 @@ export async function toDbReaction(reaction?: string | null, enableEmoji = true)
 	// 既存の文字列リアクションはそのまま
 	if (Object.values(basic10).includes(reaction)) return reaction;
 
-	if (!enableEmoji) return await getFallbackReaction();
+	if (!enableEmoji) return await getFallbackReaction(reaction);
 
 	// Unicode絵文字
 	const match = emojiRegex.exec(reaction);
