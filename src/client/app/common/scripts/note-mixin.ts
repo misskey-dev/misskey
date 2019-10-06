@@ -43,7 +43,7 @@ export default (opts: Opts = {}) => ({
 				'ctrl+q': this.renoteDirectly,
 				'up|k|shift+tab': this.focusBefore,
 				'down|j|tab': this.focusAfter,
-				'esc': this.blur,
+				//'esc': this.blur,
 				'm|o': () => this.menu(true),
 				's': this.toggleShowContent,
 				'1': () => this.reactDirectly('like'),
