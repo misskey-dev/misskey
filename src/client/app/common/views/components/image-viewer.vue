@@ -23,7 +23,6 @@ export default Vue.extend({
 		keymap(): any {
 			return {
 				'esc': this.close,
-				'backspace': this.close,
 			};
 		}
 	},
