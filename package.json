@@ -27,6 +27,7 @@
 	},
 	"resolutions": {
 		"gulp-cssnano/cssnano/postcss-svgo/svgo/js-yaml": "^3.13.1",
+		"https-proxy-agent": "^3.0.0",
 		"lodash": "^4.17.13"
 	},
 	"dependencies": {
@@ -146,7 +147,7 @@
 		"hard-source-webpack-plugin": "0.13.1",
 		"html-minifier": "4.0.0",
 		"http-signature": "1.2.0",
-		"https-proxy-agent": "2.2.2",
+		"https-proxy-agent": "3.0.0",
 		"insert-text-at-cursor": "0.3.0",
 		"is-root": "2.1.0",
 		"is-svg": "4.2.0",
