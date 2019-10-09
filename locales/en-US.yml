@@ -1300,7 +1300,7 @@ admin/views/instance.vue:
   discord-integration-client-id: "Client ID"
   discord-integration-client-secret: "Client Secret"
   proxy-account-config: "Proxy account"
-  proxy-account-info: "Proxy account can follow a remote user to deliver activities if no one in this instance follow him or her. When you add a remote user who is followed by nobody in this instance to your list, in order to get his or her data, proxy account follow him or her instead of your following."
+  proxy-account-info: "A proxy account is an account that acts as a remote follower for users under certain conditions. For example, when a user adds a remote user to the list, the activity will not be delivered to the server if no one is following that user, so the proxy account will follow instead."
   proxy-account-username: "Proxy account user name"
   proxy-account-username-desc: "Specify the user name of the account that is used as a proxy."
   proxy-account-warn: "You must make an account having this username before this action."
