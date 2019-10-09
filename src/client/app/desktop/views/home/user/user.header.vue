@@ -106,9 +106,12 @@ export default Vue.extend({
 		},
 
 		menu() {
-			this.$root.new(XUserMenu, {
+			const w = this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
 				user: this.user
+			});
+			this.$once('hook:beforeDestroy', () => {
+				w.destroyDom();
 			});
 		}
 	}

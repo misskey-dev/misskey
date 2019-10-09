@@ -328,6 +328,9 @@ export default (opts) => ({
 			w.$once('chosen', v => {
 				this.applyVisibility(v);
 			});
+			this.$once('hook:beforeDestroy', () => {
+				w.close();
+			});
 		},
 
 		applyVisibility(v: string) {
@@ -456,6 +459,9 @@ export default (opts) => ({
 			});
 			vm.$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);
+			});
+			this.$once('hook:beforeDestroy', () => {
+				vm.close();
 			});
 		},
 
