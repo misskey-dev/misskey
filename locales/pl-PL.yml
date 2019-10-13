@@ -157,6 +157,7 @@ common:
     other: "Inne"
     appearance: "Wygląd"
     behavior: "Zachowanie"
+    reactions: "Reakcja"
     fetch-on-scroll: "Automatycznie ładuj po przeciągnięciu w dół"
     note-visibility: "Widoczność wpisów"
     remember-note-visibility: "Zapamiętaj widoczność wpisów"
