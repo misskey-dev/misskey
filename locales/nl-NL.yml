@@ -107,6 +107,7 @@ common:
     profile: "Je profiel"
     notification: "Meldingen"
     password: "Wachtwoord"
+    reactions: "Reactie"
     deck-column-align-center: "Centreren"
     deck-column-align-left: "Links"
     timeline: "Tijdlijn"
