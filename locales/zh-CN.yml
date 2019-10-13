@@ -200,6 +200,7 @@ common:
     other: "其他"
     appearance: "设计"
     behavior: "行为"
+    reactions: "回应"
     fetch-on-scroll: "向下滚动时自动加载"
     fetch-on-scroll-desc: "向下滚动页面时，它会自动提取其他内容。"
     note-visibility: "帖子可见性"
