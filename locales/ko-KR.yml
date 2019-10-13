@@ -200,6 +200,7 @@ common:
     other: "기타"
     appearance: "디자인"
     behavior: "동작"
+    reactions: "리액션"
     fetch-on-scroll: "스크롤하여 자동으로 불러오기"
     fetch-on-scroll-desc: "페이지를 아래로 스크롤하였을 때 자동으로 추가 콘텐츠를 불러옵니다."
     note-visibility: "게시물의 공개 범위"
