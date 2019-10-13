@@ -212,6 +212,8 @@ common:
     other: "その他"
     appearance: "デザイン"
     behavior: "動作"
+    reactions: "リアクション"
+    reactions-description: "リアクションピッカーに表示するリアクションを改行で区切って設定します。"
     fetch-on-scroll: "スクロールで自動読み込み"
     fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
     note-visibility: "投稿の公開範囲"

@@ -41,6 +41,7 @@ const defaultSettings = {
 	uploadFolder: null,
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	pasteDialog: false,
+	reactions: ['like', 'love', 'laugh', 'hmm', 'surprise', 'congrats', 'angry', 'confused', 'rip', 'pudding']
 };
 
 const defaultDeviceSettings = {

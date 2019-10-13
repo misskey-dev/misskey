@@ -109,6 +109,13 @@
 			</section>
 
 			<section>
+				<header>{{ $t('@._settings.reactions') }}</header>
+				<ui-textarea v-model="reactions">
+					{{ $t('@._settings.reactions') }}<template #desc>{{ $t('@._settings.reactions-description') }}</template>
+				</ui-textarea>
+			</section>
+
+			<section>
 				<header>{{ $t('@._settings.timeline') }}</header>
 				<ui-switch v-model="showMyRenotes">{{ $t('@._settings.show-my-renotes') }}</ui-switch>
 				<ui-switch v-model="showRenotedMyNotes">{{ $t('@._settings.show-renoted-my-notes') }}</ui-switch>
@@ -405,6 +412,11 @@ export default Vue.extend({
 		disableViaMobile: {
 			get() { return this.$store.state.settings.disableViaMobile; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
+		},
+
+		reactions: {
+			get() { return this.$store.state.settings.reactions.join('\n'); },
+			set(value: string) { this.$store.dispatch('settings/set', { key: 'reactions', value: value.split('\n') }); }
 		},
 
 		useShadow: {
