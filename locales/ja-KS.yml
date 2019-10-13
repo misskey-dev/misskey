@@ -126,6 +126,7 @@ common:
     blocking: "ブロック"
     password: "パスワード"
     other: "その他"
+    reactions: "リアクション"
     timeline: "タイムライン"
     save: "保存"
     saved: "保存したで！"
