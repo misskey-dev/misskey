@@ -200,6 +200,7 @@ common:
     other: "Other"
     appearance: "Appearance"
     behavior: "Behavior"
+    reactions: "Reaction"
     fetch-on-scroll: "Endless loading on scroll"
     fetch-on-scroll-desc: "When you scroll down the page, it automatically fetches additional content."
     note-visibility: "Post visibility"
