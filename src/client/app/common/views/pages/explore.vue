@@ -1,15 +1,30 @@
 <template>
 <div>
-	<ui-container :show-header="false" v-if="meta && stats">
-		<div class="kpdsmpnk" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
-			<div>
-				<router-link to="/explore" class="title">{{ $t('explore', { host: meta.name || 'Misskey' }) }}</router-link>
-				<span>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</span>
-			</div>
-		</div>
-	</ui-container>
+	<div class="localfedi7" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
+		<header>{{ $t('explore', { host: meta.name }) }}</header>
+		<div>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</div>
+	</div>
 
-	<ui-container :body-togglable="true" :expanded="tag == null" ref="tags">
+	<template v-if="tag == null">
+		<mk-user-list :pagination="pinnedUsers" :expanded="false">
+			<fa :icon="faBookmark" fixed-width/>{{ $t('pinned-users') }}
+		</mk-user-list>
+		<mk-user-list :pagination="popularUsers" :expanded="false">
+			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
+		</mk-user-list>
+		<mk-user-list :pagination="recentlyUpdatedUsers" :expanded="false">
+			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
+		</mk-user-list>
+		<mk-user-list :pagination="recentlyRegisteredUsers" :expanded="false">
+			<fa :icon="faPlus" fixed-width/>{{ $t('recently-registered-users') }}
+		</mk-user-list>
+	</template>
+
+	<div class="localfedi7" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)` }">
+		<header>{{ $t('explore-fediverse') }}</header>
+	</div>
+
+	<ui-container :body-togglable="true" :expanded="false" ref="tags">
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
@@ -18,25 +33,18 @@
 		</div>
 	</ui-container>
 
-	<mk-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}-local`">
+	<mk-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
 	</mk-user-list>
-	<mk-user-list v-if="tag != null" :pagination="tagRemoteUsers" :key="`${tag}-remote`">
-		<fa :icon="faHashtag" fixed-width/>{{ tag }} ({{ $t('federated') }})
-	</mk-user-list>
-
 	<template v-if="tag == null">
-		<mk-user-list :pagination="pinnedUsers">
-			<fa :icon="faBookmark" fixed-width/>{{ $t('pinned-users') }}
-		</mk-user-list>
-		<mk-user-list :pagination="popularUsers">
+		<mk-user-list :pagination="popularUsersF" :expanded="false">
 			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
 		</mk-user-list>
-		<mk-user-list :pagination="recentlyUpdatedUsers">
+		<mk-user-list :pagination="recentlyUpdatedUsersF" :expanded="false">
 			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
 		</mk-user-list>
-		<mk-user-list :pagination="recentlyRegisteredUsers">
-			<fa :icon="faPlus" fixed-width/>{{ $t('recently-registered-users') }}
+		<mk-user-list :pagination="recentlyRegisteredUsersF" :expanded="false">
+			<fa :icon="faRocket" fixed-width/>{{ $t('recently-discovered-users') }}
 		</mk-user-list>
 	</template>
 </div>
@@ -45,7 +53,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { faChartLine, faPlus, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -55,6 +63,12 @@ export default Vue.extend({
 		tag: {
 			type: String,
 			required: false
+		}
+	},
+
+	inject: {
+		inNakedDeckColumn: {
+			default: false
 		}
 	},
 
@@ -75,12 +89,25 @@ export default Vue.extend({
 				state: 'alive',
 				sort: '+createdAt',
 			} },
+			popularUsersF: { endpoint: 'users', limit: 10, params: {
+				state: 'alive',
+				origin: 'combined',
+				sort: '+follower',
+			} },
+			recentlyUpdatedUsersF: { endpoint: 'users', limit: 10, params: {
+				origin: 'combined',
+				sort: '+updatedAt',
+			} },
+			recentlyRegisteredUsersF: { endpoint: 'users', limit: 10, params: {
+				origin: 'combined',
+				sort: '+createdAt',
+			} },
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
 			meta: null,
 			num: Vue.filter('number'),
-			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag
+			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket
 		};
 	},
 
@@ -91,21 +118,7 @@ export default Vue.extend({
 				limit: 30,
 				params: {
 					tag: this.tag,
-					state: 'alive',
-					origin: 'local',
-					sort: '+follower',
-				}
-			};
-		},
-
-		tagRemoteUsers(): any {
-			return {
-				endpoint: 'hashtags/users',
-				limit: 30,
-				params: {
-					tag: this.tag,
-					state: 'alive',
-					origin: 'remote',
+					origin: 'combined',
 					sort: '+follower',
 				}
 			};
@@ -152,6 +165,28 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+.localfedi7
+	overflow hidden
+	background var(--face)
+	color #fff
+	text-shadow 0 0 8px #000
+	border-radius 6px
+	padding 16px
+	margin-top 16px
+	margin-bottom 16px
+	height 80px
+	background-position 50%
+	background-size cover
+	> header
+		font-size 20px
+		font-weight bold
+	> div
+		font-size 14px
+		opacity 0.8
+
+.localfedi7:first-child
+	margin-top 0
+
 .vxjfqztj
 	padding 16px
 
@@ -160,35 +195,4 @@ export default Vue.extend({
 
 		&.local
 			font-weight bold
-
-.kpdsmpnk
-	min-height 100px
-	padding 16px
-	background-position center
-	background-size cover
-
-	&:before
-		content ""
-		display block
-		position absolute
-		top 0
-		left 0
-		width 100%
-		height 100%
-		background rgba(0, 0, 0, 0.3)
-
-	> div
-		color #fff
-		text-shadow 0 0 8px #00
-
-		> .title
-			display block
-			font-size 20px
-			font-weight bold
-			color inherit
-
-		> span
-			font-size 14px
-			opacity 0.8
-
 </style>
