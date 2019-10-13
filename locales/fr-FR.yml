@@ -99,6 +99,7 @@ common:
     "read:reactions": "Lire les réactions"
     "write:reactions": "Gérer vos réactions"
     "write:votes": "Vote"
+    "read:pages": "Afficher la page"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Les utilisateur·rice·s suivant·e·s afficheront leurs publications sur votre fil."
     explore: "Trouver des utilisateur·rice·s"
@@ -188,6 +189,7 @@ common:
     other: "Avancé"
     appearance: "Apparence"
     behavior: "Comportement"
+    reactions: "Réaction"
     fetch-on-scroll: "Chargement automatique lors du défilement"
     fetch-on-scroll-desc: "Chargement automatique du contenu lors du défilement de la page."
     note-visibility: "Visibilité de la publication"

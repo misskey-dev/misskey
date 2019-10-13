@@ -31,6 +31,7 @@ common:
   signup: "Registrovat"
   signout: "Odhlásit"
   reload-to-apply-the-setting: "Pro uplatnění tohoto nastavení musíte znovu načíst tuto stránku. Chcete ji načíst teď?"
+  fetching-as-ap-object: "Načítám data z Fediversu..."
   delete-confirm: "Opravdu chcete smazat tento příspěvek?"
   signin-required: "Přihlašte se, prosím"
   notification-type: "Typy oznámení"
@@ -101,6 +102,9 @@ common:
     "read:reactions": "Prohlížet reakce"
     "write:reactions": "Narabět s reakcemi"
     "write:votes": "Hlasovat"
+    "read:pages": "Zhlédnutí stránky"
+    "write:pages": "Upravit stránky"
+    "write:user-groups": "Upravit uživatelskou skupinu"
   empty-timeline-info:
     follow-users-to-make-your-timeline: "Poznámky sledujících se zobrazí ve vaší časové ose"
     explore: "Najít uživatele"
@@ -115,10 +119,12 @@ common:
     renote: "Renotovat"
     posting: "Posílání"
     attach-media-from-local: "Nahrát soubor z vašeho zařízení"
+    attach-media-from-drive: "Přiložit soubory z vašeho Drivu"
     insert-a-kao: "v('ω')v"
     create-poll: "Vytvořit anketu"
     text-remain: "zbývá ještě {} znaků"
     recent-tags: "Nejnovější"
+    local-only-message: "Publikovat zprávu pouze lokálně"
     click-to-tagging: "Klikni pro otágování"
     visibility: "Viditelnost"
     geolocation-alert: "Vaše zařízení nedalo k dispozici lokaci"
@@ -187,6 +193,7 @@ common:
     other: "Ostatní"
     appearance: "Vzhled"
     behavior: "Chování"
+    reactions: "Reakce"
     fetch-on-scroll: "Nekonečné načítaní posuvem"
     fetch-on-scroll-desc: "Pokud budete rolovat dolů po stránce, automaticky bude načten další obsah."
     note-visibility: "Viditelnost příspěvku"
@@ -195,6 +202,8 @@ common:
     web-search-engine: "Webové vyhledávače"
     web-search-engine-desc: "Například: https://www.google.com/?#q={{query}}"
     paste: "Vložit"
+    pasted-file-name-desc: "Například: \"rrrr-MM-dd HH-mm-ss [{{number}}]\" → \"2018-03-20 21-30-24 1\""
+    paste-dialog: "Upravit název vloženého souboru"
     keep-cw: "Zachovat varování o obsahu"
     keep-cw-desc: "Při odpovědi na příspěvek bude varování o obsahu nastaveno stejně jako původní příspěvek."
     i-like-sushi: "Mam radši sushi (než puding)"
@@ -383,6 +392,7 @@ common/views/components/games/reversi/reversi.game.vue:
   surrender: "Vzdát se"
   surrendered: "Vzdaním se"
   looped-map: "Zacyklená mapa"
+  can-put-everywhere: "Lze položit kamkoliv"
 common/views/components/games/reversi/reversi.index.vue:
   title: "Misskey Reversi"
   sub-title: "Hrajte Reversi s Vašimi kamarády!"
@@ -432,6 +442,7 @@ common/views/components/connect-failed.troubleshooter.vue:
   no-server: "Nelze se připojit k serveru Misskey"
   success: "Úspěšně se podařilo spojit s Misskey serverem"
   flush: "Vyčistit mezipaměť"
+  set-version: "Vyberte verzi"
 common/views/components/media-banner.vue:
   sensitive: "Choulostivý obsah"
   click-to-show: "Klikněte pro zobrazení"
@@ -485,6 +496,7 @@ common/views/components/messaging.vue:
   group: "Skupina"
   start-with-user: "Zahájit konverzaci s uživatelem"
   start-with-group: "Zahájit skupinovou konverzaci"
+  select-group: "Vybrat skupinu"
 common/views/components/messaging-room.vue:
   new-message: "Máte novou zprávu"
 common/views/components/messaging-room.form.vue:
@@ -556,6 +568,7 @@ common/views/components/poll-editor.vue:
   deadline-date: "Termín ukončení"
   deadline-time: "Doba trvání"
   interval: "Trvání"
+  unit: "Jednotka"
   second: "Sekunda"
   minute: "Minuta"
   hour: "Hodina"
@@ -574,6 +587,12 @@ common/views/components/emoji-picker.vue:
   symbols: "Symboly"
   flags: "Vlajky"
 common/views/components/settings/app-type.vue:
+  title: "Režim"
+  intro: "Můžete vybrat zdali chcete použít stolní, nebo mobilní vzhled."
+  choices:
+    auto: "Vybrat vzhled automaticky"
+    desktop: "Vždy použít stolní vzhled"
+    mobile: "Vždy použít mobilní vzhled"
   info: "Pro aktivování změn musíte znovu načíst stránky."
 common/views/components/signin.vue:
   username: "Přezdívka"
@@ -585,6 +604,7 @@ common/views/components/signin.vue:
   signin-with-github: "Přihlásit se pomocí účtu GitHub"
   signin-with-discord: "Přihlásit se pomocí účtu Discord"
   login-failed: "Nelze se přihlásit. Zkontrolujte prosím své uživatelské jméno a heslo."
+  enter-2fa-code: "Vložte Váš verifikační kód"
 common/views/components/signup.vue:
   invitation-code: "Kód pozvánky"
   invitation-info: "Pokud máte pozvánku, prosím kontaktujte <a href=\"{}\">administrátora</a>."
@@ -606,6 +626,7 @@ common/views/components/signup.vue:
   password-matched: "OK"
   password-not-matched: "Neshodují se"
   recaptcha: "Potvrzení"
+  agree-to: "Souhlasím s {0}."
   tos: "Podmínky užívání"
   create: "Vytvořit účet"
   some-error: "Pokus o vytvoření účtu selhal. Prosím zkuste to znovu."
@@ -622,8 +643,10 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-unread-notes: "Označit všechny příspěvky za přečtené"
   mark-as-read-all-talk-messages: "Označit všechny zprávy za přečtené"
 common/views/components/integration-settings.vue:
+  title: "Integrace"
   connect: "Připojit"
   disconnect: "Odpojit"
+  connected-to: "Jste připojen k tomuto GitHub účtu"
 common/views/components/github-setting.vue:
   description: "Jakmile spojíte Váš GitHub účet s Vaším Misskey účtem, uvidíte informace o Vašem GitHub účtu na Vašem profilu a budete se moci přihlásit skrze GitHub."
   connected-to: "Je připojen k tomuto GitHub účtu"
@@ -643,6 +666,8 @@ common/views/components/uploader.vue:
 common/views/components/visibility-chooser.vue:
   public: "Veřejné"
   home: "Domů"
+  home-desc: "Poslat pouze na domovskou časovou osu"
+  specified: "Přímá"
   specified-desc: "Poslat pouze zmíněným uživatelům"
   local-public: "Veřejná (pouze místní)"
   local-public-desc: "Nepublikovat na vzdálených serverech"
@@ -727,12 +752,14 @@ common/views/components/user-groups.vue:
   group-name: "Název skupiny"
   owned-groups: "Moje skupiny"
   invites: "Pozvat"
+  accept-invite: "Přidat se"
   reject-invite: "Odmítnout"
 common/views/widgets/broadcast.vue:
   fetching: "Načítám"
   no-broadcasts: "Žádná nová oznámení"
   have-a-nice-day: "Přejeme Vám příjemný den!"
   next: "Další"
+  prev: "Předchozí"
 common/views/widgets/calendar.vue:
   year: "Rok {}"
   month: "{},"
@@ -741,6 +768,7 @@ common/views/widgets/calendar.vue:
   this-month: "Měsíc:"
   this-year: "Rok:"
 common/views/widgets/photo-stream.vue:
+  title: "Foto stream"
   no-photos: "Žádné obrázky"
 common/views/widgets/posts-monitor.vue:
   title: "Grafy příspěvků"
@@ -756,6 +784,8 @@ common/views/widgets/memo.vue:
   save: "Uložit"
 common/views/widgets/slideshow.vue:
   no-image: "V této složce nebyly nalezeny žádné fotky."
+common/views/widgets/tips.vue:
+  tips-line23: "Ai-chan kawaii!"
 common/views/pages/not-found.vue:
   page-not-found: "Stránka nenalezena"
 common/views/pages/follow.vue:
@@ -827,6 +857,7 @@ desktop/views/components/drive.folder.vue:
     input-new-folder-name: "Zadejte nové jméno"
     else-folders: "Ostatní"
 desktop/views/components/drive.vue:
+  search: "Vyhledávání"
   empty-drive-description: "Klikněte pravým tlačítkem myši pro otevření menu, nebo sem přetáhněte soubor pro nahrání."
   empty-folder: "Tato složka je prázdná"
   unable-to-process: "Operace nemohla být dokončena."
@@ -842,10 +873,13 @@ desktop/views/components/drive.vue:
     url-upload: "Nahrát z URL"
 desktop/views/components/media-video.vue:
   click-to-show: "Klikněte pro zobrazení"
+desktop/views/components/followers.vue:
+  empty: "Vypadá to že Vás nikdo nesleduje."
 desktop/views/components/game-window.vue:
   game: "Reversi"
 desktop/views/components/home.vue:
   done: "Hotovo"
+  add-widget: "Přidat widget:"
   add: "Přidat"
 desktop/views/input-dialog.vue:
   cancel: "Zrušit"
@@ -853,6 +887,7 @@ desktop/views/input-dialog.vue:
 desktop/views/components/note-detail.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
+  location: "Lokace"
   renote: "Renotovat"
   add-reaction: "Přidat reakci"
   undo-reaction: "Odebrat reakci"
@@ -867,6 +902,8 @@ desktop/views/components/note.vue:
 desktop/views/components/notes.vue:
   error: "Načítání selhalo."
   retry: "Opakovat"
+desktop/views/components/notifications.vue:
+  empty: "Žádné nové notifikace!"
 desktop/views/components/post-form.vue:
   posted: "Odesláno!"
   replied: "Odpověděno!"
@@ -891,10 +928,29 @@ desktop/views/components/renote-form-window.vue:
 desktop/views/components/settings.2fa.vue:
   detail: "Více…"
   url: "https://www.google.cz/landing/2step/"
+  register: "Přidat zařízení"
+  already-registered: "Toto zařízení je již připojené"
+  unregister: "Odebrat"
+  enter-password: "Prosím zadejte heslo"
+  authenticator: "Nejprve musíte nainstalovat Google Authenticator na Vašem zařízení:"
+  howtoinstall: "Jak nainstalovat"
   token: "Token"
+  scan: "Poté naskenujte QR kód:"
+  done: "Prosím vložte kód zobrazený na Vašem zařízení:"
+  submit: "Uložit"
+  success: "Nastavení uloženo!"
+  failed: "Nepodařilo se spárovat. Prosím zkontrolujte správnost bezpečnostního kódu."
+  totp-header: "Ověřovací aplikace"
+  security-key-header: "Bezpečnostní klíč"
+  last-used: "Naposledy použito:"
+  activate-key: "Klikněte pro aktivaci bezpečnostního klíče"
+  security-key-name: "Název klíče"
+  key-unregistered: "Bezpečnostní klíč byl odstraněn"
 common/views/components/media-image.vue:
+  sensitive: "NSFW"
   click-to-show: "Klikněte pro zobrazení"
 common/views/components/api-settings.vue:
+  caution: "Nepoužívejte tento kód v žádné jiné aplikace nebo ho sdílejte s ostatními (jinak můžete ohrozit svojí bezpečnost)."
   token: "Token:"
   enter-password: "Prosím zadejte heslo"
   console:
@@ -976,20 +1032,48 @@ admin/views/index.vue:
   announcements: "Oznámení"
   queue: "Fronta úloh"
   logs: "Logy"
+  db: "Databáze"
   back-to-misskey: "Zpět na Misskey"
+admin/views/db.vue:
+  tables: "Tabulky"
+  vacuum: "Vysavač"
+  vacuum-info: "Uklidí databázi. Neohrozí data a sníží využití disku. Tohle se děje automaticky a opakovaně."
+  vacuum-exclamation: "Vysavač může dočasně přetížit databázi a dočasně omezit akce uživatelů."
 admin/views/dashboard.vue:
+  dashboard: "Kontrolní panel"
   accounts: "Účty"
   notes: "Poznámky"
   drive: "Disk"
   instances: "Instance"
   this-instance: "Tato instance"
   federated: "Z fedivesmíru"
+admin/views/queue.vue:
+  title: "Ve frontě"
+  remove-all-jobs: "Vyčistit frontu"
+  jobs: "Úkoly"
+  queue: "Ve frontě"
+  domains:
+    inbox: "Obdržené"
+    db: "Databáze"
+  states:
+    active: "V procesu"
+    delayed: "Naplánováno"
+    waiting: "Ve frontě"
+  result-is-truncated: "Zkrácený výsledek"
 admin/views/logs.vue:
   logs: "Logy"
+  domain: "Doména"
+  level: "Úroveň"
   levels:
+    all: "Vše"
     info: "Informace"
+    success: "Podařilo se"
+    warning: "Varování"
     error: "Chyba"
+    debug: "Debug"
+  delete-all: "Smazat vše"
 admin/views/abuse.vue:
+  target: "Cíl"
   details: "Popis"
   remove-report: "Odstranit"
 admin/views/instance.vue:
@@ -997,17 +1081,33 @@ admin/views/instance.vue:
   instance-name: "Název instance"
   instance-description: "Popis instance"
   host: "Hostitel"
+  icon-url: "URL ikonky"
+  logo-url: "URL loga"
   banner-url: "URL pro baner"
+  error-image-url: "URL pro chybový obrázek"
   languages: "Jazyk této instance"
   languages-desc: "Můžete nastavit více než jeden, oddělte mezerami."
+  tos-url: "URL pro smluvní podmínky"
+  repository-url: "URL adresa repositáře"
+  feedback-url: "URL pro zpětnou vazbu"
   maintainer-config: "Informace o administrátorovi"
   maintainer-name: "Jméno administrátora"
   maintainer-email: "Kontakt na administrátora"
+  advanced-config: "Další nastavení"
+  object-storage-base-url: "URL"
+  object-storage-prefix: "Předpona"
   object-storage-endpoint: "Endpoint"
+  object-storage-region: "Region"
+  object-storage-port: "Port"
+  object-storage-access-key: "Přístupový klíč"
+  object-storage-secret-key: "Tajný Klíč (Secret Key)"
+  object-storage-use-ssl: "Použít SSL"
+  object-storage-s3-info-here: "zde"
   mb: "V megabajtech"
   recaptcha-config: "nastavení služby reCAPTCHA"
   recaptcha-info: "reCAPTCHA token je povinný. Můžete jej získat na https://www.google.com/recaptcha/intro/"
   enable-recaptcha: "povolit reCAPTCHA"
+  recaptcha-secret-key: "Tajný Klíč (Secret Key)"
   recaptcha-preview: "Náhled"
   twitter-integration-config: "Nastavení spojení s Twitterem"
   twitter-integration-info: "The callback URL is set on {url}."
@@ -1206,6 +1306,9 @@ desktop/views/widgets/notifications.vue:
   title: "Oznámení"
 desktop/views/widgets/polls.vue:
   title: "Ankety"
+  nothing: "Žádné nové notifikace!"
+desktop/views/widgets/trends.vue:
+  nothing: "Žádné nové notifikace!"
 desktop/views/widgets/users.vue:
   title: "Doporučení uživatelé"
 mobile/views/components/drive.vue:
@@ -1248,6 +1351,8 @@ mobile/views/components/note-sub.vue:
   admin: "admin"
   bot: "bot"
   cat: "kočka"
+mobile/views/components/notifications.vue:
+  empty: "Žádné nové notifikace!"
 mobile/views/components/sub-note-content.vue:
   private: "Tento příspěvek je soukromý"
   deleted: "Tento příspěvek byl odstraněn"
@@ -1291,6 +1396,7 @@ mobile/views/pages/note.vue:
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
+  search: "Vyhledávání"
   not-found: "Pro '{q}' nebyly nalezeny žádné příspěvky."
 mobile/views/pages/selectdrive.vue:
   select-file: "Vybrat soubory"
