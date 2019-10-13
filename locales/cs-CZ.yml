@@ -193,6 +193,7 @@ common:
     other: "Ostatní"
     appearance: "Vzhled"
     behavior: "Chování"
+    reactions: "Reakce"
     fetch-on-scroll: "Nekonečné načítaní posuvem"
     fetch-on-scroll-desc: "Pokud budete rolovat dolů po stránce, automaticky bude načten další obsah."
     note-visibility: "Viditelnost příspěvku"
