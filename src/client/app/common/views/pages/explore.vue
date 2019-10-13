@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="localfedi7" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
-		<header>{{ $t('explore', { host: meta.name }) }}</header>
+		<header>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</header>
 		<div>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</div>
 	</div>
 
