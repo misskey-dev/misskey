@@ -394,6 +394,7 @@ common/views/pages/explore.vue:
   popular-tags: "热门标签"
   federated: "联合"
   explore: "查找{host}"
+  explore-fediverse: "探索Fediverse"
   users-info: "当前有{users}个注册用户"
 common/views/components/reactions-viewer.details.vue:
   few-users: "{users}作出了{reaction}的回应"
