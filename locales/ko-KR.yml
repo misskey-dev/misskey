@@ -392,9 +392,11 @@ common/views/pages/explore.vue:
   popular-users: "인기 사용자"
   recently-updated-users: "최근 게시한 사용자"
   recently-registered-users: "신규 사용자"
+  recently-discovered-users: "최근 발견된 유저"
   popular-tags: "인기 태그"
   federated: "연합"
   explore: "{host}을(를) 탐색"
+  explore-fediverse: "연합 우주를 탐색"
   users-info: "현재 {users} 사용자가 등록되어 있습니다"
 common/views/components/reactions-viewer.details.vue:
   few-users: "{users}님이 {reaction} 리액션"
