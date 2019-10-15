@@ -391,6 +391,7 @@ common/views/pages/explore.vue:
   popular-users: "热门用户"
   recently-updated-users: "活跃用户"
   recently-registered-users: "新用户"
+  recently-discovered-users: "最近发现的用户"
   popular-tags: "热门标签"
   federated: "联合"
   explore: "查找{host}"
