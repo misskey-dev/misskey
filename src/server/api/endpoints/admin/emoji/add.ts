@@ -35,6 +35,10 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const type = await detectUrlMine(ps.url);
 
+	const exists = await Emojis.findOne({ name });
+
+	if (exists != null) throw new Error('emoji exists');
+
 	const emoji = await Emojis.save({
 		id: genId(),
 		updatedAt: new Date(),
