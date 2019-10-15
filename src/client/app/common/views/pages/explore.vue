@@ -91,7 +91,7 @@ export default Vue.extend({
 			} },
 			popularUsersF: { endpoint: 'users', limit: 10, params: {
 				state: 'alive',
-				origin: 'combined',
+				origin: 'remote',
 				sort: '+follower',
 			} },
 			recentlyUpdatedUsersF: { endpoint: 'users', limit: 10, params: {
