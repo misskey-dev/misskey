@@ -38,7 +38,7 @@ export const meta = {
 		noSuchEmoji: {
 			message: 'No such emoji.',
 			code: 'NO_SUCH_EMOJI',
-			id: 'be83669b-773a-44b7-b1f8-e5e5170ac3c2'
+			id: '684dec9d-a8c2-4364-9aa8-456c49cb1dc8'
 		}
 	}
 };
