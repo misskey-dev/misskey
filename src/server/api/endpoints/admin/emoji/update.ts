@@ -4,6 +4,7 @@ import { detectUrlMine } from '../../../../../misc/detect-url-mine';
 import { ID } from '../../../../../misc/cafy-id';
 import { Emojis } from '../../../../../models';
 import { getConnection } from 'typeorm';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -31,13 +32,21 @@ export const meta = {
 		aliases: {
 			validator: $.arr($.str)
 		}
+	},
+
+	errors: {
+		noSuchEmoji: {
+			message: 'No such emoji.',
+			code: 'NO_SUCH_EMOJI',
+			id: 'be83669b-773a-44b7-b1f8-e5e5170ac3c2'
+		}
 	}
 };
 
 export default define(meta, async (ps) => {
 	const emoji = await Emojis.findOne(ps.id);
 
-	if (emoji == null) throw new Error('emoji not found');
+	if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
 	const type = await detectUrlMine(ps.url);
 
