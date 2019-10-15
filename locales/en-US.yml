@@ -395,6 +395,7 @@ common/views/pages/explore.vue:
   popular-tags: "Popular Tags"
   federated: "From the fediverse"
   explore: "Explore {host}"
+  explore-fediverse: "Explore Fediverse"
   users-info: "Currently, {users} users are registered here"
 common/views/components/reactions-viewer.details.vue:
   few-users: "{users} reacted with {reaction}"
