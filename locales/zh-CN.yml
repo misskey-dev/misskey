@@ -201,6 +201,7 @@ common:
     appearance: "设计"
     behavior: "行为"
     reactions: "回应"
+    reactions-description: "快速选择回应中的自定义表情符号，以换行符分隔。"
     fetch-on-scroll: "向下滚动时自动加载"
     fetch-on-scroll-desc: "向下滚动页面时，它会自动提取其他内容。"
     note-visibility: "帖子可见性"
