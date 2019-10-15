@@ -392,6 +392,7 @@ common/views/pages/explore.vue:
   popular-users: "Popular users"
   recently-updated-users: "Recently active users"
   recently-registered-users: "Users who joined recently"
+  recently-discovered-users: "Recently Discovered Users"
   popular-tags: "Popular Tags"
   federated: "From the fediverse"
   explore: "Explore {host}"
