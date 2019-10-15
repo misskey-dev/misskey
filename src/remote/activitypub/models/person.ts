@@ -150,7 +150,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				createdAt: new Date(),
 				lastFetchedAt: new Date(),
 				name: person.name,
-				isLocked: person.manuallyApprovesFollowers,
+				isLocked: !!person.manuallyApprovesFollowers,
 				username: person.preferredUsername,
 				usernameLower: person.preferredUsername.toLowerCase(),
 				host,
@@ -319,7 +319,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		tags,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
-		isLocked: person.manuallyApprovesFollowers,
+		isLocked: !!person.manuallyApprovesFollowers,
 	} as Partial<User>;
 
 	if (avatar) {
