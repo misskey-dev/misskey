@@ -675,7 +675,6 @@ common/views/components/reaction-picker.vue:
 common/views/components/emoji-picker.vue:
   recent-emoji: "最近使った絵文字"
   custom-emoji: "カスタム絵文字"
-  remote-emoji: "リモートカスタム絵文字"
   no-category: "カテゴリなし"
   people: "人"
   animals-and-nature: "動物&自然"
