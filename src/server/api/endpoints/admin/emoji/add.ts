@@ -26,6 +26,10 @@ export const meta = {
 			validator: $.str.min(1)
 		},
 
+		category: {
+			validator: $.optional.str
+		},
+
 		aliases: {
 			validator: $.optional.arr($.str.min(1)),
 			default: [] as string[]
@@ -52,6 +56,7 @@ export default define(meta, async (ps, me) => {
 		id: genId(),
 		updatedAt: new Date(),
 		name: ps.name,
+		category: ps.category,
 		host: null,
 		aliases: ps.aliases,
 		url: ps.url,

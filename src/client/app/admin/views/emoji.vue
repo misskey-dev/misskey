@@ -8,6 +8,9 @@
 					<span>{{ $t('add-emoji.name') }}</span>
 					<template #desc>{{ $t('add-emoji.name-desc') }}</template>
 				</ui-input>
+				<ui-input v-model="category">
+						<span>{{ $t('add-emoji.category') }}</span>
+				</ui-input>
 				<ui-input v-model="aliases">
 					<span>{{ $t('add-emoji.aliases') }}</span>
 					<template #desc>{{ $t('add-emoji.aliases-desc') }}</template>
@@ -24,7 +27,7 @@
 
 	<ui-card>
 		<template #title><fa :icon="faGrin"/> {{ $t('emojis.title') }}</template>
-		<section v-for="emoji in emojis" class="oryfrbft">
+		<section v-for="emoji in emojis" :key="emoji.name" class="oryfrbft">
 			<div>
 				<img :src="emoji.url" :alt="emoji.name" style="width: 64px;"/>
 			</div>
@@ -32,6 +35,9 @@
 				<ui-horizon-group>
 					<ui-input v-model="emoji.name">
 						<span>{{ $t('add-emoji.name') }}</span>
+					</ui-input>
+					<ui-input v-model="emoji.category">
+						<span>{{ $t('add-emoji.category') }}</span>
 					</ui-input>
 					<ui-input v-model="emoji.aliases">
 						<span>{{ $t('add-emoji.aliases') }}</span>
@@ -61,6 +67,7 @@ export default Vue.extend({
 	data() {
 		return {
 			name: '',
+			category: '',
 			url: '',
 			aliases: '',
 			emojis: [],
@@ -76,6 +83,7 @@ export default Vue.extend({
 		add() {
 			this.$root.api('admin/emoji/add', {
 				name: this.name,
+				category: this.category,
 				url: this.url,
 				aliases: this.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
@@ -94,7 +102,6 @@ export default Vue.extend({
 
 		fetchEmojis() {
 			this.$root.api('admin/emoji/list').then(emojis => {
-				emojis.reverse();
 				for (const e of emojis) {
 					e.aliases = (e.aliases || []).join(' ');
 				}
@@ -106,6 +113,7 @@ export default Vue.extend({
 			this.$root.api('admin/emoji/update', {
 				id: emoji.id,
 				name: emoji.name,
+				category: emoji.category,
 				url: emoji.url,
 				aliases: emoji.aliases.split(' ').filter(x => x.length > 0)
 			}).then(() => {
