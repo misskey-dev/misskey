@@ -8,8 +8,8 @@
 					<span>{{ $t('add-emoji.name') }}</span>
 					<template #desc>{{ $t('add-emoji.name-desc') }}</template>
 				</ui-input>
-				<ui-input v-model="category">
-						<span>{{ $t('add-emoji.category') }}</span>
+				<ui-input v-model="category" :datalist="categoryList">
+					<span>{{ $t('add-emoji.category') }}</span>
 				</ui-input>
 				<ui-input v-model="aliases">
 					<span>{{ $t('add-emoji.aliases') }}</span>
@@ -36,7 +36,7 @@
 					<ui-input v-model="emoji.name">
 						<span>{{ $t('add-emoji.name') }}</span>
 					</ui-input>
-					<ui-input v-model="emoji.category">
+					<ui-input v-model="emoji.category" :datalist="categoryList">
 						<span>{{ $t('add-emoji.category') }}</span>
 					</ui-input>
 					<ui-input v-model="emoji.aliases">
@@ -61,6 +61,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
+import { groupByX } from '../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/emoji.vue'),
@@ -77,6 +78,13 @@ export default Vue.extend({
 
 	mounted() {
 		this.fetchEmojis();
+	},
+
+	computed: {
+		categoryList() {
+			const grouped = groupByX(this.emojis, (x: any) => x.category || '');
+			return Object.keys(grouped).filter(x => x !== '');
+		}
 	},
 
 	methods: {
