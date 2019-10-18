@@ -3,6 +3,8 @@ import { sum, unique } from '../../../../prelude/array';
 import shouldMuteNote from './should-mute-note';
 import MkNoteMenu from '../views/components/note-menu.vue';
 import MkReactionPicker from '../views/components/reaction-picker.vue';
+import pleaseLogin from './please-login';
+import i18n from '../../i18n';
 
 function focus(el, fn) {
 	const target = fn(el);
@@ -20,10 +22,13 @@ type Opts = {
 };
 
 export default (opts: Opts = {}) => ({
+	i18n: i18n(),
+
 	data() {
 		return {
 			showContent: false,
-			hideThisNote: false
+			hideThisNote: false,
+			openingMenu: false
 		};
 	},
 
@@ -108,6 +113,7 @@ export default (opts: Opts = {}) => ({
 
 	methods: {
 		reply(viaKeyboard = false) {
+			pleaseLogin(this.$root);
 			this.$root.$post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
@@ -118,6 +124,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		renote(viaKeyboard = false) {
+			pleaseLogin(this.$root);
 			this.$root.$post({
 				renote: this.appearNote,
 				animation: !viaKeyboard,
@@ -134,13 +141,17 @@ export default (opts: Opts = {}) => ({
 		},
 
 		react(viaKeyboard = false) {
+			pleaseLogin(this.$root);
 			this.blur();
-			this.$root.new(MkReactionPicker, {
+			const w = this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.appearNote,
 				showFocus: viaKeyboard,
 				animation: !viaKeyboard
 			}).$once('closed', this.focus);
+			this.$once('hook:beforeDestroy', () => {
+				w.close();
+			});
 		},
 
 		reactDirectly(reaction) {
@@ -159,6 +170,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		favorite() {
+			pleaseLogin(this.$root);
 			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
@@ -170,17 +182,33 @@ export default (opts: Opts = {}) => ({
 		},
 
 		del() {
-			this.$root.api('notes/delete', {
-				noteId: this.appearNote.id
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('@.delete-confirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('notes/delete', {
+					noteId: this.appearNote.id
+				});
 			});
 		},
 
 		menu(viaKeyboard = false) {
-			this.$root.new(MkNoteMenu, {
+			if (this.openingMenu) return;
+			this.openingMenu = true;
+			const w = this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
 				animation: !viaKeyboard
-			}).$once('closed', this.focus);
+			}).$once('closed', () => {
+				this.openingMenu = false;
+				this.focus();
+			});
+			this.$once('hook:beforeDestroy', () => {
+				w.destroyDom();
+			});
 		},
 
 		toggleShowContent() {

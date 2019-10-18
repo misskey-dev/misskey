@@ -54,7 +54,7 @@
 import Vue from 'vue';
 import i18n from '../../../i18n';
 import * as XDraggable from 'vuedraggable';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 export default Vue.extend({
 	i18n: i18n('mobile/views/pages/widgets.vue'),
@@ -98,12 +98,6 @@ export default Vue.extend({
 				id: 'g', data: {}
 			}]);
 		}
-
-		this.$watch('$store.getters.mobileHome', () => {
-			this.$store.dispatch('settings/updateMobileHomeProfile');
-		}, {
-			deep: true
-		});
 	},
 
 	mounted() {
@@ -128,6 +122,8 @@ export default Vue.extend({
 		},
 
 		addWidget() {
+			if(this.widgetAdderSelected == null) return;
+
 			this.$store.commit('addMobileHomeWidget', {
 				name: this.widgetAdderSelected,
 				id: uuid(),

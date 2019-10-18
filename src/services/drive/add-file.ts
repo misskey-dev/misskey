@@ -2,8 +2,7 @@ import { Buffer } from 'buffer';
 import * as fs from 'fs';
 
 import * as crypto from 'crypto';
-import * as Minio from 'minio';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
@@ -21,6 +20,8 @@ import { IRemoteUser, User } from '../../models/entities/user';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { genId } from '../../misc/gen-id';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import * as S3 from 'aws-sdk/clients/s3';
+import { getS3 } from './s3';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -54,7 +55,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 			|| `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
 
 		// for original
-		const key = `${meta.objectStoragePrefix}/${uuid.v4()}${ext}`;
+		const key = `${meta.objectStoragePrefix}/${uuid()}${ext}`;
 		const url = `${ baseUrl }/${ key }`;
 
 		// for alts
@@ -71,7 +72,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		];
 
 		if (alts.webpublic) {
-			webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid.v4()}.${alts.webpublic.ext}`;
+			webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid()}.${alts.webpublic.ext}`;
 			webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 			logger.info(`uploading webpublic: ${webpublicKey}`);
@@ -79,7 +80,7 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 		}
 
 		if (alts.thumbnail) {
-			thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid.v4()}.${alts.thumbnail.ext}`;
+			thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid()}.${alts.thumbnail.ext}`;
 			thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 			logger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -103,9 +104,9 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
 
 		return await DriveFiles.save(file);
 	} else { // use internal storage
-		const accessKey = uuid.v4();
-		const thumbnailAccessKey = 'thumbnail-' + uuid.v4();
-		const webpublicAccessKey = 'webpublic-' + uuid.v4();
+		const accessKey = uuid();
+		const thumbnailAccessKey = 'thumbnail-' + uuid();
+		const webpublicAccessKey = 'webpublic-' + uuid();
 
 		const url = InternalStorage.saveFromPath(accessKey, path);
 
@@ -211,23 +212,21 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	const meta = await fetchMeta();
 
-	const minio = new Minio.Client({
-		endPoint: meta.objectStorageEndpoint!,
-		region: meta.objectStorageRegion ? meta.objectStorageRegion : undefined,
-		port: meta.objectStoragePort ? meta.objectStoragePort : undefined,
-		useSSL: meta.objectStorageUseSSL,
-		accessKey: meta.objectStorageAccessKey!,
-		secretKey: meta.objectStorageSecretKey!,
-	});
+	const params = {
+		Bucket: meta.objectStorageBucket,
+		Key: key,
+		Body: stream,
+		ContentType: type,
+		CacheControl: 'max-age=31536000, immutable',
+	} as S3.PutObjectRequest;
 
-	const metadata = {
-		'Content-Type': type,
-		'Cache-Control': 'max-age=31536000, immutable'
-	} as Minio.ItemBucketMetadata;
+	if (filename) params.ContentDisposition = contentDisposition('inline', filename);
 
-	if (filename) metadata['Content-Disposition'] = contentDisposition('inline', filename);
+	const s3 = getS3(meta);
 
-	await minio.putObject(meta.objectStorageBucket!, key, stream, undefined, metadata);
+	const upload = s3.upload(params);
+
+	await upload.promise();
 }
 
 async function deleteOldFile(user: IRemoteUser) {
@@ -461,7 +460,7 @@ export default async function(
 
 	logger.succ(`drive file has been created ${file.id}`);
 
-	DriveFiles.pack(file).then(packedFile => {
+	DriveFiles.pack(file, { self: true }).then(packedFile => {
 		// Publish driveFileCreated event
 		publishMainStream(user.id, 'driveFileCreated', packedFile);
 		publishDriveStream(user.id, 'fileCreated', packedFile);

@@ -7,12 +7,18 @@ Feature suggestions and bug reports are filed in https://github.com/syuilo/missk
 * Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
 * If you have multiple independent issues, please submit them separately.
 
+## Branches
+* **master** branch is tracking the latest release and used for production purposes.
+* **develop** branch is where we work for the next release.
+* **l10n_develop** branch is reserved for localization management.
+
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
 You can improve our translations with your Crowdin account.
-Changes you make in Crowdin will be merged into the develop branch by @syuilo.
+Your changes in Crowdin are automatically submitted as a PR (with the title "New Crowdin translations") to the repository.
+The owner [@syuilo](https://github.com/syuilo) merges the PR into the develop branch before the next release.
 
-If you cannot find the language you want to contribute with, please open an issue.
+If your language is not listed in Crowdin, please open an issue.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
@@ -32,8 +38,18 @@ Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/intr
 Misskey uses CircleCI for executing automated tests.
 Configuration files are located in [`/.circleci`](/.circleci).
 
-## FAQ
+## Adding MisskeyRoom items
+* Use English for material, object and texture names.
+* Use meter for unit of length.
+* Your PR should include all source files (e.g. `.png`, `.blend`) of your models (for later editing).
+* Your PR must include the glTF binary files (`.glb`) of your models.
+* Add a locale key `room.furnitures.YOUR_ITEM` at [`/locales/ja-JP.yml`](/locales/ja-JP.yml).
+* Add a furniture definition at [`/src/client/app/common/scripts/room/furnitures.json5`](/src/client/app/common/scripts/room/furnitures.json5).
 
+If you have no experience on 3D modeling, we suggest to use the free 3DCG software [Blender](https://www.blender.org/).
+You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
+
+## FAQ
 ### How to resolve conflictions occurred at yarn.lock?
 
 Just execute `yarn` to fix it.
@@ -92,6 +108,8 @@ Good:
 ``` ts
 if (foo) bar;
 ```
+
+Make sure that the condition and the body statement are on the same line.
 
 ### Do not use `==` when it can simply be replaced with `===`.
 🥰
@@ -252,3 +270,7 @@ npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前
 ```
 
 作成されたスクリプトは不必要な変更を含むため除去してください。
+
+## その他
+### HTMLのクラス名で follow という単語は使わない
+広告ブロッカーで誤ってブロックされる

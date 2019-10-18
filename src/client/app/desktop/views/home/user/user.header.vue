@@ -5,7 +5,7 @@
 		<div class="fade"></div>
 		<div class="title">
 			<p class="name">
-				<mk-user-name :user="user"/>
+				<mk-user-name :user="user" :nowrap="false"/>
 			</p>
 			<div>
 				<span class="username"><mk-acct :user="user" :detail="true" /></span>
@@ -106,9 +106,12 @@ export default Vue.extend({
 		},
 
 		menu() {
-			this.$root.new(XUserMenu, {
+			const w = this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
 				user: this.user
+			});
+			this.$once('hook:beforeDestroy', () => {
+				w.destroyDom();
 			});
 		}
 	}

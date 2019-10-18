@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import config from '../../config';
 import $ from 'cafy';
 import { ID } from '../../misc/cafy-id';
@@ -11,7 +11,7 @@ import { setResponseType } from '../activitypub';
 import { Users, Followings } from '../../models';
 import { LessThan } from 'typeorm';
 
-export default async (ctx: Router.IRouterContext) => {
+export default async (ctx: Router.RouterContext) => {
 	const userId = ctx.params.user;
 
 	// Get 'cursor' parameter

@@ -14,6 +14,7 @@ import MkIndex from './views/pages/index.vue';
 import MkSignup from './views/pages/signup.vue';
 import MkSelectDrive from './views/pages/selectdrive.vue';
 import MkDrive from './views/pages/drive.vue';
+import MkNotifications from './views/pages/notifications.vue';
 import MkMessaging from './views/pages/messaging.vue';
 import MkMessagingRoom from './views/pages/messaging-room.vue';
 import MkNote from './views/pages/note.vue';
@@ -54,7 +55,10 @@ init((launch, os) => {
 				const vm = this.$root.new(PostFormDialog, {
 					reply: o.reply,
 					mention: o.mention,
-					renote: o.renote
+					renote: o.renote,
+					initialText: o.initialText,
+					instant: o.instant,
+					initialNote: o.initialNote,
 				});
 				vm.$once('cancel', recover);
 				vm.$once('posted', recover);
@@ -136,6 +140,7 @@ init((launch, os) => {
 		]),
 			{ path: '/signup', name: 'signup', component: MkSignup },
 			{ path: '/i/settings', name: 'settings', component: () => import('./views/pages/settings.vue').then(m => m.default) },
+			{ path: '/i/settings/:page', redirect: '/i/settings' },
 			{ path: '/i/favorites', name: 'favorites', component: UI, props: route => ({ component: () => import('../common/views/pages/favorites.vue').then(m => m.default), platform: 'mobile' }) },
 			{ path: '/i/pages', name: 'pages', component: UI, props: route => ({ component: () => import('../common/views/pages/pages.vue').then(m => m.default) }) },
 			{ path: '/i/lists', name: 'user-lists', component: UI, props: route => ({ component: () => import('../common/views/pages/user-lists.vue').then(m => m.default) }) },
@@ -144,6 +149,7 @@ init((launch, os) => {
 			{ path: '/i/groups/:group', component: UI, props: route => ({ component: () => import('../common/views/pages/user-group-editor.vue').then(m => m.default), groupId: route.params.group }) },
 			{ path: '/i/follow-requests', name: 'follow-requests', component: UI, props: route => ({ component: () => import('../common/views/pages/follow-requests.vue').then(m => m.default) }) },
 			{ path: '/i/widgets', name: 'widgets', component: () => import('./views/pages/widgets.vue').then(m => m.default) },
+			{ path: '/i/notifications', name: 'notifications', component: MkNotifications },
 			{ path: '/i/messaging', name: 'messaging', component: MkMessaging },
 			{ path: '/i/messaging/group/:group', component: MkMessagingRoom },
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
@@ -166,6 +172,7 @@ init((launch, os) => {
 			]},
 			{ path: '/@:user/pages/:page', component: UI, props: route => ({ component: () => import('../common/views/pages/page.vue').then(m => m.default), pageName: route.params.page, username: route.params.user }) },
 			{ path: '/@:user/pages/:pageName/view-source', component: UI, props: route => ({ component: () => import('../common/views/pages/page-editor/page-editor.vue').then(m => m.default), initUser: route.params.user, initPageName: route.params.pageName }) },
+			{ path: '/@:acct/room', props: true, component: () => import('../common/views/pages/room/room.vue').then(m => m.default) },
 			{ path: '/notes/:note', component: MkNote },
 			{ path: '/authorize-follow', component: MkFollow },
 			{ path: '*', component: MkNotFound }

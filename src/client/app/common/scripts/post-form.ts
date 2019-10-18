@@ -35,6 +35,10 @@ export default (opts) => ({
 			type: String,
 			required: false
 		},
+		initialNote: {
+			type: Object,
+			required: false
+		},
 		instant: {
 			type: Boolean,
 			required: false,
@@ -149,6 +153,10 @@ export default (opts) => ({
 		// デフォルト公開範囲
 		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
 
+		if (this.reply && this.reply.localOnly) {
+			this.localOnly = true;
+		}
+
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
@@ -158,13 +166,13 @@ export default (opts) => ({
 				}).then(users => {
 					this.visibleUsers.push(...users);
 				});
-			}
-		}
 
-		if (this.reply && this.reply.userId !== this.$store.state.i.id) {
-			this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
-				this.visibleUsers.push(user);
-			});
+				if (this.reply.userId !== this.$store.state.i.id) {
+					this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
+						this.visibleUsers.push(user);
+					});
+				}
+			}
 		}
 
 		// keep cw when reply
@@ -194,6 +202,29 @@ export default (opts) => ({
 					}
 					this.$emit('change-attached-files', this.files);
 				}
+			}
+
+			// 削除して編集
+			if (this.initialNote) {
+				const init = this.initialNote;
+				this.text = init.text ? init.text : '';
+				this.files = init.files;
+				this.cw = init.cw;
+				this.useCw = init.cw != null;
+				if (init.poll) {
+					this.poll = true;
+					this.$nextTick(() => {
+						(this.$refs.poll as any).set({
+							choices: init.poll.choices.map(c => c.text),
+							multiple: init.poll.multiple
+						});
+					});
+				}
+				// hack 位置情報投稿が動くようになったら適用する
+				this.geo = null;
+				this.visibility = init.visibility;
+				this.localOnly = init.localOnly;
+				this.quoteId = init.renote ? init.renote.id : null;
 			}
 
 			this.$nextTick(() => this.watch());
@@ -292,10 +323,13 @@ export default (opts) => ({
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				currentVisibility: this.visibility
+				currentVisibility: this.localOnly ? `local-${this.visibility}` : this.visibility
 			});
 			w.$once('chosen', v => {
 				this.applyVisibility(v);
+			});
+			this.$once('hook:beforeDestroy', () => {
+				w.close();
 			});
 		},
 
@@ -328,6 +362,7 @@ export default (opts) => ({
 			this.text = '';
 			this.files = [];
 			this.poll = false;
+			this.quoteId = null;
 			this.$emit('change-attached-files', this.files);
 		},
 
@@ -357,7 +392,7 @@ export default (opts) => ({
 
 			const paste = e.clipboardData.getData('text');
 
-			if (paste.startsWith(url + '/notes/')) {
+			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
 				this.$root.dialog({
@@ -424,6 +459,9 @@ export default (opts) => ({
 			});
 			vm.$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);
+			});
+			this.$once('hook:beforeDestroy', () => {
+				vm.close();
 			});
 		},
 

@@ -22,6 +22,7 @@ module.exports = async (ctx: Koa.BaseContext) => {
 				url: ctx.query.url,
 				lang: ctx.query.lang || 'ja-JP'
 			},
+			forever: true,
 			json: true
 		}) : await summaly(ctx.query.url, {
 			followRedirects: false,

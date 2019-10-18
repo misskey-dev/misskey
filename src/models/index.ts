@@ -43,6 +43,7 @@ import { HashtagRepository } from './repositories/hashtag';
 import { PageRepository } from './repositories/page';
 import { PageLikeRepository } from './repositories/page-like';
 import { ModerationLogRepository } from './repositories/moderation-logs';
+import { UsedUsername } from './entities/used-username';
 
 export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
@@ -64,6 +65,7 @@ export const UserGroups = getCustomRepository(UserGroupRepository);
 export const UserGroupJoinings = getRepository(UserGroupJoining);
 export const UserGroupInvites = getCustomRepository(UserGroupInviteRepository);
 export const UserNotePinings = getRepository(UserNotePining);
+export const UsedUsernames = getRepository(UsedUsername);
 export const Followings = getCustomRepository(FollowingRepository);
 export const FollowRequests = getCustomRepository(FollowRequestRepository);
 export const Instances = getRepository(Instance);

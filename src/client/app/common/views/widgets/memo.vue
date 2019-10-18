@@ -25,7 +25,8 @@ export default define({
 	data() {
 		return {
 			text: null,
-			changed: false
+			changed: false,
+			timeoutId: null
 		};
 	},
 
@@ -45,6 +46,8 @@ export default define({
 
 		onChange() {
 			this.changed = true;
+			clearTimeout(this.timeoutId);
+			this.timeoutId = setTimeout(this.saveMemo, 1000);
 		},
 
 		saveMemo() {

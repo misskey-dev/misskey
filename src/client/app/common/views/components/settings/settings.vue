@@ -47,6 +47,7 @@
 				<ui-switch v-model="disableAnimatedMfm">{{ $t('@._settings.disable-animated-mfm') }}</ui-switch>
 				<ui-switch v-model="disableShowingAnimatedImages">{{ $t('@._settings.disable-showing-animated-images') }}</ui-switch>
 				<ui-switch v-model="remainDeletedNote">{{ $t('@._settings.remain-deleted-note') }}</ui-switch>
+				<ui-switch v-model="enableMobileQuickNotificationView">{{ $t('@._settings.enable-quick-notification-view') }}</ui-switch>
 			</section>
 			<section>
 				<header>{{ $t('@._settings.line-width') }}</header>
@@ -108,6 +109,13 @@
 			</section>
 
 			<section>
+				<header>{{ $t('@._settings.reactions') }}</header>
+				<ui-textarea v-model="reactions">
+					{{ $t('@._settings.reactions') }}<template #desc>{{ $t('@._settings.reactions-description') }}</template>
+				</ui-textarea>
+			</section>
+
+			<section>
 				<header>{{ $t('@._settings.timeline') }}</header>
 				<ui-switch v-model="showMyRenotes">{{ $t('@._settings.show-my-renotes') }}</ui-switch>
 				<ui-switch v-model="showRenotedMyNotes">{{ $t('@._settings.show-renoted-my-notes') }}</ui-switch>
@@ -157,6 +165,19 @@
 				<ui-switch v-model="pasteDialog">{{ $t('@._settings.paste-dialog') }}
 					<template #desc>{{ $t('@._settings.paste-dialog-desc') }}</template>
 				</ui-switch>
+			</section>
+
+			<section>
+				<header>{{ $t('@._settings.room') }}</header>
+				<ui-select v-model="roomGraphicsQuality">
+					<template #label>{{ $t('@._settings._room.graphicsQuality') }}</template>
+					<option value="ultra">{{ $t('@._settings._room._graphicsQuality.ultra') }}</option>
+					<option value="high">{{ $t('@._settings._room._graphicsQuality.high') }}</option>
+					<option value="medium">{{ $t('@._settings._room._graphicsQuality.medium') }}</option>
+					<option value="low">{{ $t('@._settings._room._graphicsQuality.low') }}</option>
+					<option value="cheep">{{ $t('@._settings._room._graphicsQuality.cheep') }}</option>
+				</ui-select>
+				<ui-switch v-model="roomUseOrthographicCamera">{{ $t('@._settings._room.useOrthographicCamera') }}</ui-switch>
 			</section>
 		</ui-card>
 
@@ -393,6 +414,11 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
 		},
 
+		reactions: {
+			get() { return this.$store.state.settings.reactions.join('\n'); },
+			set(value: string) { this.$store.dispatch('settings/set', { key: 'reactions', value: value.trim().split('\n') }); }
+		},
+
 		useShadow: {
 			get() { return this.$store.state.device.useShadow; },
 			set(value) { this.$store.commit('device/set', { key: 'useShadow', value }); }
@@ -502,6 +528,16 @@ export default Vue.extend({
 			set(value) { this.$store.dispatch('settings/set', { key: 'iLikeSushi', value }); }
 		},
 
+		roomUseOrthographicCamera: {
+			get() { return this.$store.state.device.roomUseOrthographicCamera; },
+			set(value) { this.$store.commit('device/set', { key: 'roomUseOrthographicCamera', value }); }
+		},
+
+		roomGraphicsQuality: {
+			get() { return this.$store.state.device.roomGraphicsQuality; },
+			set(value) { this.$store.commit('device/set', { key: 'roomGraphicsQuality', value }); }
+		},
+
 		games_reversi_showBoardLabels: {
 			get() { return this.$store.state.settings.gamesReversiShowBoardLabels; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'gamesReversiShowBoardLabels', value }); }
@@ -530,6 +566,11 @@ export default Vue.extend({
 		mobileNotificationPosition: {
 			get() { return this.$store.state.device.mobileNotificationPosition; },
 			set(value) { this.$store.commit('device/set', { key: 'mobileNotificationPosition', value }); }
+		},
+
+		enableMobileQuickNotificationView: {
+			get() { return this.$store.state.device.enableMobileQuickNotificationView; },
+			set(value) { this.$store.commit('device/set', { key: 'enableMobileQuickNotificationView', value }); }
 		},
 
 		homeProfile: {

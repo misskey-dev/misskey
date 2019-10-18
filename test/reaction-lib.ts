@@ -2,10 +2,10 @@
  * Tests of MFM
  *
  * How to run the tests:
- * > mocha test/reaction-lib.ts --require ts-node/register
+ * > npx mocha test/reaction-lib.ts --require ts-node/register
  *
  * To specify test:
- * > mocha test/reaction-lib.ts --require ts-node/register -g 'test name'
+ * > npx mocha test/reaction-lib.ts --require ts-node/register -g 'test name'
  *
  * If the tests not start, try set following enviroment variables:
  * TS_NODE_FILES=true and TS_NODE_TRANSPILE_ONLY=true

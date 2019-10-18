@@ -20,7 +20,7 @@ function formatLocaleString(date: Date, format: string): string {
 	});
 }
 
-function formatDateTimeString(date: Date, format: string): string {
+export function formatDateTimeString(date: Date, format: string): string {
 	return format
 		.replace(/yyyy/g, date.getFullYear().toString())
 		.replace(/yy/g, date.getFullYear().toString().slice(-2))

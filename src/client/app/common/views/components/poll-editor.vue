@@ -26,13 +26,19 @@
 				<option value="after">{{ $t('after') }}</option>
 			</ui-select>
 			<section v-if="expiration === 'at'">
-				<ui-input v-model="atDate" type="date">{{ $t('deadline-date') }}</ui-input>
-				<ui-input v-model="atTime" type="time">{{ $t('deadline-time') }}</ui-input>
+				<ui-input v-model="atDate" type="date">
+					<template #title>{{ $t('deadline-date') }}</template>
+				</ui-input>
+				<ui-input v-model="atTime" type="time">
+					<template #title>{{ $t('deadline-time') }}</template>
+				</ui-input>
 			</section>
 			<section v-if="expiration === 'after'">
-				<ui-input v-model="after" type="number">{{ $t('interval') }}</ui-input>
+				<ui-input v-model="after" type="number">
+					<template #title>{{ $t('interval') }}</template>
+				</ui-input>
 				<ui-select v-model="unit">
-					<template #label>{{ $t('unit') }}</template>
+					<template #title>{{ $t('unit') }}</template>
 					<option value="second">{{ $t('second') }}</option>
 					<option value="minute">{{ $t('minute') }}</option>
 					<option value="hour">{{ $t('hour') }}</option>
@@ -46,9 +52,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import * as moment from 'moment';
 import i18n from '../../../i18n';
 import { erase } from '../../../../../prelude/array';
+import { addTimespan } from '../../../../../prelude/time';
+import { formatDateTimeString } from '../../../../../misc/format-time-string';
+
 export default Vue.extend({
 	i18n: i18n('common/views/components/poll-editor.vue'),
 	data() {
@@ -56,7 +64,7 @@ export default Vue.extend({
 			choices: ['', ''],
 			multiple: false,
 			expiration: 'infinite',
-			atDate: moment().add(1, 'day').toISOString().split('T')[0],
+			atDate: formatDateTimeString(addTimespan(new Date(), 1, 'days'), 'yyyy-MM-dd'),
 			atTime: '00:00',
 			after: 0,
 			unit: 'second'
@@ -89,7 +97,7 @@ export default Vue.extend({
 
 		get() {
 			const at = () => {
-				return moment(`${this.atDate} ${this.atTime}`).valueOf();
+				return new Date(`${this.atDate} ${this.atTime}`).getTime();
 			};
 
 			const after = () => {

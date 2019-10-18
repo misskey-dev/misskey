@@ -1,7 +1,6 @@
 import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
-import { publishMainStream } from '../../../services/stream';
 import signin from '../common/signin';
 import config from '../../../config';
 import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '../../../models';

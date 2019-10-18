@@ -18,9 +18,6 @@ common:
     drive: "Drev"
     drive-desc: "Vil du poste et billede, som du tidligere har uploadet? Har du brug for at navngive filer og organisere dem i mapper, som du selv har navngivet? Så er Misskey Drev den bedste løsning for dig. Den gør det så let som ingenting at dele dine filer online."
     outro: "Tjek Misskey's unikke funktioner ved at se dem med dine egne øjne. Hvis du kommer frem til, at den ene server ikke er noget for dig, så kan du prøve en anden. Misskey er et decentraliseret SNS, så du kan lettere finde frem til brugere, som du klikker med. God fornøjelse!"
-  adblock:
-    detected: "Her kan du deaktivere ad blocker."
-    warning: "Visse funktioner kan forsvinde eller medføre forstyrrelser, hvis ad blocking er aktiveret. <strong>Misskey kører ikke annoncer</strong>."
   application-authorization: "Adgangsstyring"
   close: "Luk"
   do-not-copy-paste: "Undgå venligst at skrive eller klistre kode ind her. I modsat fald kan din konto blive kompromitteret."
@@ -35,6 +32,13 @@ common:
   signout: "Log ud"
   reload-to-apply-the-setting: "Denne indstilling slår først igennem, når du har genindlæst siden. Vil du genindlæse siden nu?"
   fetching-as-ap-object: "Tilladelse til sammenkobling"
+  delete-confirm: "Er du helt sikker på, at du vil slette denne post?"
+  notification-types:
+    all: "Alle"
+    follow: "Følger"
+    reply: "Svar"
+    renote: "Gen-postering"
+    reaction: "Reaktion"
   got-it: "Det er OK"
   customization-tips:
     title: "Tips om tilpasning"
@@ -162,6 +166,7 @@ common:
     other: "Andet"
     appearance: "Udseende"
     behavior: "Opførsel"
+    reactions: "Reaktion"
     fetch-on-scroll: "Uendeligt scroll"
     fetch-on-scroll-desc: "Når du scroller ned ad siden, hentes der automatisk nyt indhold ind"
     note-visibility: "Post synlighed"
@@ -206,7 +211,7 @@ common:
     deck-column-width-wide: "Bred"
     use-shadow: "Vis skygger"
     rounded-corners: "Vis afrundede hjørner"
-    circle-icons: "Anvend cykliske ikoner"
+    circle-icons: "Anvend cykliske avatar"
     contrasted-acct: "Tilføj kontrast til brugerkontoen"
     wallpaper: "Baggrundsbillede"
     choose-wallpaper: "Vælg en baggrund"
@@ -673,7 +678,7 @@ common/views/components/profile-editor.vue:
   you-can-include-hashtags: "Du må gerne bruge hashtags i din profil beskrivelse"
   language: "Sprog"
   birthday: "Fødselsdag"
-  avatar: "Ikon"
+  avatar: "Avatar"
   banner: "Banner"
   is-cat: "Denne konto er en Kat"
   is-bot: "Denne konto er en Bot"
@@ -1606,6 +1611,8 @@ mobile/views/pages/search.vue:
   not-found: "Ingen poster fundet for \"{q}\""
 mobile/views/pages/selectdrive.vue:
   select-file: "Vælg fil(er)"
+mobile/views/pages/notifications.vue:
+  notifications: "Notifikationer"
 mobile/views/pages/settings.vue:
   signed-in-as: "Logget ind som {}"
 mobile/views/pages/user.vue:
@@ -1901,3 +1908,10 @@ pages:
     enviromentVariables: "Miljø variabel"
     pageVariables: "Side element"
     argVariables: "Input slot"
+room:
+  translate: "Flyt"
+  save: "Gem"
+  saved: "Gemt"
+  furnitures:
+    moon: "Måne"
+    bin: "Skraldespand"

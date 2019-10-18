@@ -5,6 +5,7 @@ import { Emojis } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
 import { getConnection } from 'typeorm';
 import { insertModerationLog } from '../../../../../services/insert-moderation-log';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -29,11 +30,23 @@ export const meta = {
 			validator: $.optional.arr($.str.min(1)),
 			default: [] as string[]
 		}
+	},
+
+	errors: {
+		emojiAlredyExists: {
+			message: 'Emoji already exists.',
+			code: 'EMOJI_ALREADY_EXISTS',
+			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf'
+		}
 	}
 };
 
 export default define(meta, async (ps, me) => {
 	const type = await detectUrlMine(ps.url);
+
+	const exists = await Emojis.findOne({ name: ps.name });
+
+	if (exists != null) throw new ApiError(meta.errors.emojiAlredyExists);
 
 	const emoji = await Emojis.save({
 		id: genId(),

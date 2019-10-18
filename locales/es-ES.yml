@@ -16,9 +16,6 @@ common:
     ui: "Interfaz"
     ui-desc: "No hay ninguna interfaz que le vaya bien a todos. Por eso, Misskey tiene una interfaz altamente personalizable para tus gustos. Puedes hacer tu página principal única editando la interfaz de tu timeline y moviendo varios widgets para conseguir hacer de este lugar uno propio."
     drive: "Drive"
-  adblock:
-    detected: "Por favor, desactive el bloqueador de publicidad."
-    warning: "<strong>Misskey no tiene anuncios publicitarios.</strong> Sin embargo, algunas características podrían no estar disponibles si el bloqueador de publicidad está habilitado."
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
   do-not-copy-paste: "Por favor no copies código aquí. Tu cuenta puede resultar comprometida."
@@ -31,6 +28,11 @@ common:
   signin: "Iniciar sesión"
   signup: "¡Regístrate!"
   signout: "Cerrar sesión"
+  delete-confirm: "¿Seguro que quieres borrar la publicación?"
+  notification-types:
+    all: "Todo"
+    reply: "Responder"
+    renote: "Volver a publicar"
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
@@ -172,7 +174,7 @@ common:
     deck-column-width-wide: "Ancho"
     use-shadow: "Usar sombras en la Interfaz de Usuario"
     rounded-corners: "Esquinas redondeadas en la Interfaz de Usuario"
-    circle-icons: "Usar iconos circulares"
+    circle-icons: "Usar avatar circulares"
     contrasted-acct: "Añadir contraste al nombre de usuario"
     wallpaper: "Fondo de pantalla"
     choose-wallpaper: "Escoge un fondo de pantalla"
@@ -1089,6 +1091,8 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Buscar"
+mobile/views/pages/notifications.vue:
+  notifications: "Notificaciones"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
 mobile/views/pages/user/home.photos.vue:
@@ -1128,3 +1132,9 @@ pages:
         arg1: "Listas"
     types:
       array: "Listas"
+room:
+  save: "Guardar"
+  saved: "Guardado"
+  furnitures:
+    moon: "Luna"
+    bin: "Papelera"

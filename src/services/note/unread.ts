@@ -1,10 +1,13 @@
 import { Note } from '../../models/entities/note';
 import { publishMainStream } from '../stream';
 import { User } from '../../models/entities/user';
-import { Mutings, NoteUnreads } from '../../models';
+import { Mutings, NoteUnreads, Users } from '../../models';
 import { genId } from '../../misc/gen-id';
 
 export default async function(user: User, note: Note, isSpecified = false) {
+	// ローカルユーザーのみ
+	if (!Users.isLocalUser(user)) return;
+
 	//#region ミュートしているなら無視
 	const mute = await Mutings.find({
 		muterId: user.id

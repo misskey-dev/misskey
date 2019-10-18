@@ -71,7 +71,7 @@
 <script lang="ts">
 import define from '../../../common/define-widget';
 import i18n from '../../../i18n';
-import * as uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 export default define({
 	name: 'posts-monitor',

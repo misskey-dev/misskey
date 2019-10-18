@@ -4,6 +4,8 @@ import define from '../../define';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
 import { NoteReactions } from '../../../../models';
+import { DeepPartial } from 'typeorm';
+import { NoteReaction } from '../../../../models/entities/note-reaction';
 
 export const meta = {
 	desc: {
@@ -22,6 +24,10 @@ export const meta = {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'The ID of the target note'
 			}
+		},
+
+		type: {
+			validator: $.optional.nullable.str,
 		},
 
 		limit: {
@@ -70,7 +76,11 @@ export default define(meta, async (ps, user) => {
 
 	const query = {
 		noteId: note.id
-	};
+	} as DeepPartial<NoteReaction>;
+
+	if (ps.type) {
+		query.reaction = ps.type;
+	}
 
 	const reactions = await NoteReactions.find({
 		where: query,

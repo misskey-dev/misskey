@@ -9,7 +9,6 @@ import VueRouter from 'vue-router';
 import './style.styl';
 
 import init from '../init';
-import fuckAdBlock from '../common/scripts/fuck-ad-block';
 import composeNotification from '../common/scripts/compose-notification';
 
 import MkHome from './views/home/home.vue';
@@ -63,7 +62,10 @@ init(async (launch, os) => {
 					this.$root.newAsync(() => import('./views/components/post-form-window.vue').then(m => m.default), {
 						reply: o.reply,
 						mention: o.mention,
-						animation: o.animation == null ? true : o.animation
+						animation: o.animation == null ? true : o.animation,
+						initialText: o.initialText,
+						instant: o.instant,
+						initialNote: o.initialNote,
 					}).then(vm => {
 						if (o.cb) vm.$once('closed', o.cb);
 					});
@@ -182,8 +184,10 @@ init(async (launch, os) => {
 			{ path: '/i/messaging/:user', component: MkMessagingRoom },
 			{ path: '/i/drive', component: MkDrive },
 			{ path: '/i/drive/folder/:folder', component: MkDrive },
-			{ path: '/i/settings', component: MkSettings },
+			{ path: '/i/settings', redirect: '/i/settings/profile' },
+			{ path: '/i/settings/:page', component: MkSettings },
 			{ path: '/selectdrive', component: MkSelectDrive },
+			{ path: '/@:acct/room', props: true, component: () => import('../common/views/pages/room/room.vue').then(m => m.default) },
 			{ path: '/share', component: MkShare },
 			{ path: '/games/reversi/:game?', component: MkReversi },
 			{ path: '/authorize-follow', component: MkFollow },
@@ -197,13 +201,6 @@ init(async (launch, os) => {
 
 	// Launch the app
 	const [app, _] = launch(router);
-
-	if (os.store.getters.isSignedIn) {
-		/**
-		 * Fuck AD Block
-		 */
-		fuckAdBlock(app);
-	}
 
 	/**
 	 * Init Notification

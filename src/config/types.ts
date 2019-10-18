@@ -28,11 +28,13 @@ export type Source = {
 		host: string;
 		port: number;
 		pass: string;
+		index?: string;
 	};
 
 	autoAdmin?: boolean;
 
 	proxy?: string;
+	proxySmtp?: string;
 
 	accesslog?: string;
 
@@ -41,6 +43,14 @@ export type Source = {
 	id: string;
 
 	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
+
+	deliverJobConcurrency?: number;
+	inboxJobConcurrency?: number;
+
+	syslog: {
+		host: string;
+		port: number;
+	};
 };
 
 /**

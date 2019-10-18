@@ -22,6 +22,7 @@ import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { ensure } from '../../../prelude/ensure';
+import { getApLock } from '../../../misc/app-lock';
 
 const logger = apLogger;
 
@@ -33,7 +34,7 @@ export function validateNote(object: any, uri: string) {
 	}
 
 	if (!validPost.includes(object.type)) {
-		return new Error(`invalid Note: invalied object type ${object.type}`);
+		return new Error(`invalid Note: invalid object type ${object.type}`);
 	}
 
 	if (object.id && extractDbHost(object.id) !== expectHost) {
@@ -215,8 +216,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	const apEmojis = emojis.map(emoji => emoji.name);
 
-	const questionUri = note._misskey_question;
-	const poll = await extractPollFromQuestion(note._misskey_question || note, resolver).catch(() => undefined);
+	const poll = await extractPollFromQuestion(note, resolver).catch(() => undefined);
 
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
@@ -239,7 +239,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		apMentions,
 		apHashtags,
 		apEmojis,
-		questionUri,
 		poll,
 		uri: note.id
 	}, silent);
@@ -259,30 +258,24 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(extractDbHost(uri))) throw { statusCode: 451 };
 
-	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await fetchNote(uri);
+	const unlock = await getApLock(uri);
 
-	if (exist) {
-		return exist;
-	}
-	//#endregion
+	try {
+		//#region このサーバーに既に登録されていたらそれを返す
+		const exist = await fetchNote(uri);
 
-	// リモートサーバーからフェッチしてきて登録
-	// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
-	// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
-	return await createNote(uri, resolver, true).catch(e => {
-		if (e.name === 'duplicated') {
-			return fetchNote(uri).then(note => {
-				if (note == null) {
-					throw new Error('something happened');
-				} else {
-					return note;
-				}
-			});
-		} else {
-			throw e;
+		if (exist) {
+			return exist;
 		}
-	});
+		//#endregion
+
+		// リモートサーバーからフェッチしてきて登録
+		// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
+		// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
+		return await createNote(uri, resolver, true);
+	} finally {
+		unlock();
+	}
 }
 
 export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]> {
@@ -304,6 +297,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			if ((tag.updated != null && exists.updatedAt == null)
 				|| (tag.id != null && exists.uri == null)
 				|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
+				|| (tag.icon!.url !== exists.url)
 			) {
 				await Emojis.update({
 					host,
@@ -311,7 +305,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 				}, {
 					uri: tag.id,
 					url: tag.icon!.url,
-					updatedAt: new Date(tag.updated!),
+					updatedAt: new Date(),
 				});
 
 				return await Emojis.findOne({
@@ -331,7 +325,7 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			name,
 			uri: tag.id,
 			url: tag.icon!.url,
-			updatedAt: tag.updated ? new Date(tag.updated) : undefined,
+			updatedAt: new Date(),
 			aliases: []
 		} as Partial<Emoji>);
 	}));

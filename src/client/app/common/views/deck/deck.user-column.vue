@@ -17,7 +17,7 @@
 				<mk-follow-button v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" class="follow" mini/>
 				<mk-avatar class="avatar" :user="user" :disable-preview="true" :key="user.id"/>
 				<router-link class="name" :to="user | userPage()">
-					<mk-user-name :user="user" :key="user.id"/>
+					<mk-user-name :user="user" :key="user.id" :nowrap="false"/>
 				</router-link>
 				<span class="acct">@{{ user | acct }} <fa v-if="user.isLocked == true" class="locked" icon="lock" fixed-width/></span>
 				<span class="followed" v-if="user.isFollowed">{{ $t('follows-you') }}</span>
@@ -112,9 +112,12 @@ export default Vue.extend({
 		},
 
 		menu() {
-			this.$root.new(XUserMenu, {
+			const w = this.$root.new(XUserMenu, {
 				source: this.$refs.menu,
 				user: this.user
+			});
+			this.$once('hook:beforeDestroy', () => {
+				w.destroyDom();
 			});
 		}
 	}

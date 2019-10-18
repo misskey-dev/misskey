@@ -1,5 +1,5 @@
 <template>
-<mfm :text="user.name || user.username" :plain="true" :nowrap="true" :custom-emojis="user.emojis"/>
+<mfm :text="user.name || user.username" :plain="true" :nowrap="nowrap" :custom-emojis="user.emojis"/>
 </template>
 
 <script lang="ts">
@@ -10,7 +10,11 @@ export default Vue.extend({
 		user: {
 			type: Object,
 			required: true
-		}
+		},
+		nowrap: {
+			type: Boolean,
+			default: true
+		},
 	}
 });
 </script>

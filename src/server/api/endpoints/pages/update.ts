@@ -4,6 +4,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Pages, DriveFiles } from '../../../../models';
 import { ID } from '../../../../misc/cafy-id';
+import { Not } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -35,7 +36,7 @@ export const meta = {
 		},
 
 		name: {
-			validator: $.optional.str,
+			validator: $.str.min(1),
 		},
 
 		summary: {
@@ -85,6 +86,11 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'cfc23c7c-3887-490e-af30-0ed576703c82'
 		},
+		nameAlreadyExists: {
+			message: 'Specified name already exists.',
+			code: 'NAME_ALREADY_EXISTS',
+			id: '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab'
+		}
 	}
 };
 
@@ -108,6 +114,16 @@ export default define(meta, async (ps, user) => {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
 	}
+
+	await Pages.find({
+		id: Not(ps.pageId),
+		userId: user.id,
+		name: ps.name
+	}).then(result => {
+		if (result.length > 0) {
+			throw new ApiError(meta.errors.nameAlreadyExists);
+		}
+	});
 
 	await Pages.update(page.id, {
 		updatedAt: new Date(),

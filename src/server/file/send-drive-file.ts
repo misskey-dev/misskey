@@ -46,9 +46,7 @@ export default async function(ctx: Koa.BaseContext) {
 		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-web' })}`));
 		ctx.body = InternalStorage.read(key);
 	} else {
-		if ('download' in ctx.query) {
-			ctx.set('Content-Disposition', contentDisposition('attachment', `${file.name}`));
-		}
+		ctx.set('Content-Disposition', contentDisposition('inline', `${file.name}`));
 
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));

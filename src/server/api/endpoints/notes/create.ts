@@ -10,6 +10,7 @@ import { User } from '../../../../models/entities/user';
 import { Users, DriveFiles, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
 
 let maxNoteTextLength = 1000;
 
@@ -55,7 +56,9 @@ export const meta = {
 
 		text: {
 			validator: $.optional.nullable.str.pipe(text =>
-				length(text.trim()) <= maxNoteTextLength && text.trim() != ''
+				text.trim() != ''
+					&& length(text.trim()) <= maxNoteTextLength
+					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH	// DB limit
 			),
 			default: null as any,
 			desc: {

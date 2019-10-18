@@ -18,9 +18,6 @@ common:
     drive: "Drive"
     drive-desc: "Du willst ein hochgeladenes Foto nochmal posten? Deine Dateien benennen und in Ordnern sortieren? Misskeys Drive ist der beste Ort dafür. Damit wird das Teilen zum Kinderspiel!"
     outro: "Probiere Misskey aus und entdecke Misskeys einzigartige Funktionen. Wenn dir diese Instanz nicht zusagt, nimm einfach eine andere. Dank Misskeys dezentralem System kannst du dich überall mit deinen Freunden verbinden. Also dann, GLHF!"
-  adblock:
-    detected: "Bitte deaktiviere den Werbeblocker."
-    warning: "<strong>Misskey hat keine Werbung.</strong> Allerdings können Werbeblocker für unerwartete Probleme und fehlende Funktionen sorgen."
   application-authorization: "Autorisierte Anwendungen"
   close: "Schließen"
   do-not-copy-paste: "Bitte keinen Code einfügen. Ihr Account könnte gefährdet werden."
@@ -35,6 +32,10 @@ common:
   signout: "Ausloggen"
   reload-to-apply-the-setting: "Die Seite muss zum Übernehmen dieser Einstellung aktualisiert werden. Soll die Seite jetzt neu geladen werden?"
   fetching-as-ap-object: "Hole Daten…"
+  delete-confirm: "Diesen Beitrag löschen?"
+  notification-types:
+    reply: "Antworten"
+    renote: "Anmerkung"
   got-it: "Verstanden!"
   customization-tips:
     title: "Anpassung-Tipps"
@@ -203,7 +204,7 @@ common:
     deck-column-width-wide: "Sehr breit"
     use-shadow: "Nutze Schatten"
     rounded-corners: "Abgerundete Ecken"
-    circle-icons: "Kreisförmige Icons"
+    circle-icons: "Kreisförmige Avatar"
     contrasted-acct: "Nutzernamen kontrastreicher darstellen"
     wallpaper: "Hintergrund"
     choose-wallpaper: "Hintergrund auswählen"
@@ -601,6 +602,7 @@ common/views/widgets/memo.vue:
   save: "Speichern"
 desktop:
   banner: "Banner"
+  avatar: "Avatar"
   unable-to-process: "Der Vorgang konnte nicht abgeschlossen werden"
 desktop/views/components/activity.chart.vue:
   total: "Schwarz ... komplett"
@@ -876,6 +878,8 @@ mobile/views/pages/note.vue:
   next: "Nächster Kommentar"
 mobile/views/pages/search.vue:
   search: "Suchen"
+mobile/views/pages/notifications.vue:
+  notifications: "Benachrichtigungen"
 mobile/views/pages/user/home.vue:
   activity: "Aktivität"
   keywords: "Schlagwörter"
@@ -940,3 +944,9 @@ pages:
         arg1: "Listen"
     types:
       array: "Listen"
+room:
+  save: "Speichern"
+  saved: "Gespeichert"
+  furnitures:
+    moon: "Mond"
+    bin: "Papierkorb"

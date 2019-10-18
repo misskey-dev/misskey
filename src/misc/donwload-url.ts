@@ -29,6 +29,7 @@ export async function downloadUrl(url: string, path: string) {
 			url: new URL(url).href, // https://github.com/syuilo/misskey/issues/2637
 			proxy: config.proxy,
 			timeout: 10 * 1000,
+			forever: true,
 			headers: {
 				'User-Agent': config.userAgent
 			}

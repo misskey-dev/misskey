@@ -4,7 +4,7 @@
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
-			<router-link class="name" :to="u | userPage"><mk-user-name :user="u"/></router-link>
+			<router-link class="name" :to="u | userPage"><mk-user-name :user="u" :nowrap="false"/></router-link>
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
 		<div class="description">
@@ -21,7 +21,7 @@
 				<p>{{ $t('followers') }}</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
-		<mk-follow-button class="follow-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
+		<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
 	</template>
 </div>
 </template>
@@ -156,7 +156,7 @@ export default Vue.extend({
 				font-size 1em
 				color var(--primary)
 
-	> .follow-button
+	> .koudoku-button
 		position absolute
 		top 8px
 		right 8px

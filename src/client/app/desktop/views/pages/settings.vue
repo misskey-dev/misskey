@@ -1,7 +1,7 @@
 <template>
 <mk-ui>
 	<main>
-		<x-settings :in-window="false"/>
+		<x-settings :in-window="false" :page="$route.params.page" />
 	</main>
 </mk-ui>
 </template>
@@ -12,6 +12,9 @@ import Vue from 'vue';
 export default Vue.extend({
 	components: {
 		XSettings: () => import('../components/settings.vue').then(m => m.default)
+	},
+	mounted() {
+		document.title = this.$root.instanceName;
 	},
 });
 </script>

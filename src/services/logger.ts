@@ -6,6 +6,9 @@ import { program } from '../argv';
 import { getRepository } from 'typeorm';
 import { Log } from '../models/entities/log';
 import { genId } from '../misc/gen-id';
+import config from '../config';
+
+const SyslogPro = require('syslog-pro');
 
 type Domain = {
 	name: string;
@@ -18,6 +21,7 @@ export default class Logger {
 	private domain: Domain;
 	private parentLogger: Logger | null = null;
 	private store: boolean;
+	private syslogClient: any | null = null;
 
 	constructor(domain: string, color?: string, store = true) {
 		this.domain = {
@@ -25,6 +29,20 @@ export default class Logger {
 			color: color,
 		};
 		this.store = store;
+
+		if (config.syslog) {
+			this.syslogClient = new SyslogPro.RFC5424({
+				applacationName: 'Misskey',
+				timestamp: true,
+				encludeStructuredData: true,
+				color: true,
+				extendedColor: true,
+				server: {
+					target: config.syslog.host,
+					port: config.syslog.port,
+				}
+			});
+		}
 	}
 
 	public createSubLogger(domain: string, color?: string, store = true): Logger {
@@ -66,17 +84,29 @@ export default class Logger {
 		console.log(important ? chalk.bold(log) : log);
 
 		if (store) {
-			const Logs = getRepository(Log);
-			Logs.insert({
-				id: genId(),
-				createdAt: new Date(),
-				machine: os.hostname(),
-				worker: worker.toString(),
-				domain: [this.domain].concat(subDomains).map(d => d.name),
-				level: level,
-				message: message,
-				data: data,
-			} as Log);
+			if (this.syslogClient) {
+				const send =
+					level === 'error' ? this.syslogClient.error :
+					level === 'warning' ? this.syslogClient.warning :
+					level === 'success' ? this.syslogClient.info :
+					level === 'debug' ? this.syslogClient.info :
+					level === 'info' ? this.syslogClient.info :
+					null as never;
+
+				send(message);
+			} else {
+				const Logs = getRepository(Log);
+				Logs.insert({
+					id: genId(),
+					createdAt: new Date(),
+					machine: os.hostname(),
+					worker: worker.toString(),
+					domain: [this.domain].concat(subDomains).map(d => d.name),
+					level: level,
+					message: message,
+					data: data,
+				} as Log);
+			}
 		}
 	}
 
