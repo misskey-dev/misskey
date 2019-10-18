@@ -61,7 +61,7 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import { faGrin } from '@fortawesome/free-regular-svg-icons';
-import { groupByX } from '../../../../prelude/array';
+import { unique } from '../../../../prelude/array';
 
 export default Vue.extend({
 	i18n: i18n('admin/views/emoji.vue'),
@@ -82,8 +82,7 @@ export default Vue.extend({
 
 	computed: {
 		categoryList() {
-			const grouped = groupByX(this.emojis, (x: any) => x.category || '');
-			return Object.keys(grouped).filter(x => x !== '');
+			return unique(this.emojis.map((x: any) => x.category || '').filter((x: string) => x !== ''));
 		}
 	},
 
