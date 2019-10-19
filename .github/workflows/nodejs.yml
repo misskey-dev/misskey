@@ -20,6 +20,6 @@ jobs:
     - name: Install dependencies
       run: yarn install
     - name: Copy Configure
-      command: cp .circleci/misskey/*.yml .config
+      run: cp .circleci/misskey/*.yml .config
     - name: Build
       run: yarn build
