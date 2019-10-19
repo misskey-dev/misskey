@@ -9,5 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Pull previous build result (for cache)
+      run: docker pull misskey/misskey:latest
     - name: Build docker container
-      run: docker build -t misskey/misskey .
+      run: docker build --cache-from misskey/misskey:latest -t misskey/misskey .
