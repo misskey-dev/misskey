@@ -1,0 +1,13 @@
+name: Docker build
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build docker container
+      run: docker build -t misskey/misskey .
