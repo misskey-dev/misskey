@@ -32,7 +32,7 @@ const index = {
 
 // Init ElasticSearch connection
 const client = config.elasticsearch ? new elasticsearch.Client({
-	node: `http://${config.elasticsearch.host}:${config.elasticsearch.port}`,
+	node: `${config.elasticsearch.ssl ? 'https://' : 'http://'}${config.elasticsearch.host}:${config.elasticsearch.port}`,
 	pingTimeout: 30000
 }) : null;
 

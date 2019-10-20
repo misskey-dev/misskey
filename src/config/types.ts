@@ -29,6 +29,7 @@ export type Source = {
 		port: number;
 		pass: string;
 		index?: string;
+		ssl?: boolean;
 	};
 
 	autoAdmin?: boolean;
