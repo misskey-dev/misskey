@@ -12,7 +12,6 @@ const stylus = require('gulp-stylus');
 import * as uglifyComposer from 'gulp-uglify/composer';
 import * as rimraf from 'rimraf';
 import chalk from 'chalk';
-const imagemin = require('gulp-imagemin');
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
@@ -122,7 +121,6 @@ gulp.task('copy:client', () =>
 			'./src/client/assets/**/*',
 			'./src/client/app/*/assets/**/*'
 		])
-			.pipe(isProduction ? (imagemin as any)() : gutil.noop())
 			.pipe(rename(path => {
 				path.dirname = path.dirname!.replace('assets', '.');
 			}))
