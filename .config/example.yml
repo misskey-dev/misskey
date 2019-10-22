@@ -120,8 +120,8 @@ autoAdmin: true
 #clusterLimit: 1
 
 # Job concurrency per worker
-# deliverJobConcurrency: 128;
-# inboxJobConcurrency: 16;
+# deliverJobConcurrency: 128
+# inboxJobConcurrency: 16
 
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
