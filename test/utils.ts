@@ -18,7 +18,7 @@ export const request = async (endpoint: string, params: any, me?: any): Promise<
 	} : {};
 
 	try {
-		const res = await fetch('http://localhost:80/api' + endpoint, {
+		const res = await fetch('http://localhost:8080/api' + endpoint, {
 			method: 'POST',
 			body: JSON.stringify(Object.assign(auth, params))
 		});
@@ -66,7 +66,7 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 
 export const uploadFile = (user: any, path?: string): Promise<any> => new Promise((ok, rej) => {
 	req.post({
-		url: 'http://localhost:80/api/drive/files/create',
+		url: 'http://localhost:8080/api/drive/files/create',
 		formData: {
 			i: user.token,
 			file: fs.createReadStream(path || __dirname + '/resources/Lenna.png')
