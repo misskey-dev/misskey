@@ -18,34 +18,12 @@ import * as assert from 'assert';
 import * as lolex from 'lolex';
 import { async } from './utils';
 import { getConnection, createConnection } from 'typeorm';
+import { initDb } from '../src/db/postgre';
 const config = require('../built/config').default;
 const Chart = require('../built/services/chart/core').default;
 const _TestChart = require('../built/services/chart/charts/schemas/test');
 const _TestGroupedChart = require('../built/services/chart/charts/schemas/test-grouped');
 const _TestUniqueChart = require('../built/services/chart/charts/schemas/test-unique');
-
-function initDb() {
-	try {
-		const conn = getConnection();
-		return Promise.resolve(conn);
-	} catch (e) {}
-
-	return createConnection({
-		type: 'postgres',
-		host: config.db.host,
-		port: config.db.port,
-		username: config.db.user,
-		password: config.db.pass,
-		database: config.db.db,
-		synchronize: true,
-		dropSchema: true,
-		entities: [
-			Chart.schemaToEntity(_TestChart.name, _TestChart.schema),
-			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema),
-			Chart.schemaToEntity(_TestUniqueChart.name, _TestUniqueChart.schema)
-		]
-	});
-}
 
 describe('Chart', () => {
 	let testChart: any;
