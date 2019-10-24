@@ -368,9 +368,9 @@ describe('API visibility', () => {
 			assert.strictEqual(res.body.text, '@target x');
 		}));
 
-		it('[show] followers-mentionを非フォロワーがメンションされていても見れない', async(async () => {
+		it('[show] followers-mentionをメンションされていれば非フォロワーでも見れる', async(async () => {
 			const res = await show(folM.id, target);
-			assert.strictEqual(res.body.isHidden, true);
+			assert.strictEqual(res.body.text, '@target x');
 		}));
 
 		it('[show] followers-mentionをフォロワーが見れる', async(async () => {
