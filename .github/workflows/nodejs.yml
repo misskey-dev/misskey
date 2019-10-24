@@ -4,7 +4,7 @@ on:
   - pull_request
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,3 +23,5 @@ jobs:
       run: cp .circleci/misskey/*.yml .config
     - name: Build
       run: yarn build
+    - name: Test
+      run: yarn test
