@@ -107,7 +107,7 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProcess) => void, moreProcess: () => Promise<void> = async () => {}) {
 	return (done: (err?: Error) => any) => {
 		const p = childProcess.spawn('node', [__dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'ipc'],
+			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
 			env: { NODE_ENV: 'test', PATH: process.env.PATH }
 		});
 		callbackSpawnedProcess(p);
