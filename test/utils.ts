@@ -110,7 +110,7 @@ export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProce
 			stdio: ['inherit', 'inherit', 'ipc'],
 			env: { NODE_ENV: 'test', PATH: process.env.PATH }
 		});
-		callbackSpawnedProcess(p)
+		callbackSpawnedProcess(p);
 		p.on('message', message => {
 			if (message === 'ok') moreProcess().then(() => done()).catch(e => done(e));
 		});
