@@ -16,7 +16,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, uploadFile } from './utils';
+import { async, signup, request, post, uploadFile, launchServer } from './utils';
 import { Note } from '../src/models/entities/note';
 import { initDb } from '../src/db/postgre';
 
@@ -27,23 +27,12 @@ describe('Note', () => {
 	let alice: any;
 	let bob: any;
 
-	before(done => {
-		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
-		});
-		p.on('message', message => {
-			if (message === 'ok') {
-				(p.channel as any).onread = () => {};
-				initDb(true).then(async connection => {
-					Notes = connection.getRepository(Note);
-					alice = await signup({ username: 'alice' });
-					bob = await signup({ username: 'bob' });
-					done();
-				});
-			}
-		});
-	});
+	before(launchServer(g => p = g, async () => {
+		const connection = await initDb(true);
+		Notes = connection.getRepository(Note);
+		alice = await signup({ username: 'alice' });
+		bob = await signup({ username: 'bob' });
+	}));
 
 	after(() => {
 		p.kill();

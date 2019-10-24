@@ -16,7 +16,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, uploadFile } from './utils';
+import { async, signup, request, post, uploadFile, launchServer } from './utils';
 
 describe('users/notes', () => {
 	let p: childProcess.ChildProcess;
@@ -26,32 +26,20 @@ describe('users/notes', () => {
 	let pngNote: any;
 	let jpgPngNote: any;
 
-	before(done => {
-		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
+	before(launchServer(g => p = g, async () => {
+		alice = await signup({ username: 'alice' });
+		const jpg = await uploadFile(alice, __dirname + '/resources/Lenna.jpg');
+		const png = await uploadFile(alice, __dirname + '/resources/Lenna.png');
+		jpgNote = await post(alice, {
+			fileIds: [jpg.id]
 		});
-		p.on('message', async message => {
-			if (message === 'ok') {
-				(p.channel as any).onread = () => {};
-
-				alice = await signup({ username: 'alice' });
-				const jpg = await uploadFile(alice, __dirname + '/resources/Lenna.jpg');
-				const png = await uploadFile(alice, __dirname + '/resources/Lenna.png');
-				jpgNote = await post(alice, {
-					fileIds: [jpg.id]
-				});
-				pngNote = await post(alice, {
-					fileIds: [png.id]
-				});
-				jpgPngNote = await post(alice, {
-					fileIds: [jpg.id, png.id]
-				});
-
-				done();
-			}
+		pngNote = await post(alice, {
+			fileIds: [png.id]
 		});
-	});
+		jpgPngNote = await post(alice, {
+			fileIds: [jpg.id, png.id]
+		});
+	}));
 
 	after(() => {
 		p.kill();

@@ -16,20 +16,12 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post } from './utils';
+import { async, signup, request, post, launchServer } from './utils';
 
 describe('API visibility', () => {
 	let p: childProcess.ChildProcess;
 
-	before(done => {
-		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
-		});
-		p.on('message', message => {
-			if (message === 'ok') done();
-		});
-	});
+	before(launchServer(g => p = g));
 
 	after(() => {
 		p.kill();

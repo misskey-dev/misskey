@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as WebSocket from 'ws';
 const fetch = require('node-fetch');
 import * as req from 'request';
+import * as childProcess from 'child_process';
 
 export const async = (fn: Function) => (done: Function) => {
 	fn().then(() => {
@@ -101,4 +102,17 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 			}));
 		});
 	});
+}
+
+export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProcess) => void, moreProcess: () => Promise<void> = async () => {}) {
+	return (done: (err?: Error) => any) => {
+		const p = childProcess.spawn('node', [__dirname + '/../index.js'], {
+			stdio: ['inherit', 'inherit', 'ipc'],
+			env: { NODE_ENV: 'test', PATH: process.env.PATH }
+		});
+		callbackSpawnedProcess(p)
+		p.on('message', message => {
+			if (message === 'ok') moreProcess().then(() => done()).catch(e => done(e));
+		});
+	};
 }

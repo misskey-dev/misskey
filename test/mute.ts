@@ -16,7 +16,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, react, connectStream } from './utils';
+import { async, signup, request, post, react, connectStream, launchServer } from './utils';
 
 describe('Mute', () => {
 	let p: childProcess.ChildProcess;
@@ -26,21 +26,11 @@ describe('Mute', () => {
 	let bob: any;
 	let carol: any;
 
-	before(done => {
-		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH }
-		});
-		p.on('message', async message => {
-			if (message === 'ok') {
-				(p.channel as any).onread = () => {};
-				alice = await signup({ username: 'alice' });
-				bob = await signup({ username: 'bob' });
-				carol = await signup({ username: 'carol' });
-				done();
-			}
-		});
-	});
+	before(launchServer(g => p = g, async () => {
+		alice = await signup({ username: 'alice' });
+		bob = await signup({ username: 'bob' });
+		carol = await signup({ username: 'carol' });
+	}));
 
 	after(() => {
 		p.kill();
