@@ -29,7 +29,7 @@ describe('users/notes', () => {
 	before(done => {
 		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
 			stdio: ['inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test' }
+			env: { NODE_ENV: 'test', PATH: process.env.PATH }
 		});
 		p.on('message', async message => {
 			if (message === 'ok') {
