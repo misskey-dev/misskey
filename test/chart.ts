@@ -14,10 +14,10 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import * as lolex from 'lolex';
-import { async } from './utils';
-import { initDb } from '../src/db/postgre';
+// import * as assert from 'assert';
+// import * as lolex from 'lolex';
+// import { async } from './utils';
+// import { initDb } from '../src/db/postgre';
 
 // describe('Chart', () => {
 // 	let testChart: any;
