@@ -17,13 +17,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as lolex from 'lolex';
 import { async } from './utils';
-import { getConnection, createConnection } from 'typeorm';
 import { initDb } from '../src/db/postgre';
-const config = require('../built/config').default;
-const Chart = require('../built/services/chart/core').default;
-const _TestChart = require('../built/services/chart/charts/schemas/test');
-const _TestGroupedChart = require('../built/services/chart/charts/schemas/test-grouped');
-const _TestUniqueChart = require('../built/services/chart/charts/schemas/test-unique');
 
 describe('Chart', () => {
 	let testChart: any;
