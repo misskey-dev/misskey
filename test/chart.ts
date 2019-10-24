@@ -27,7 +27,7 @@ describe('Chart', () => {
 	let clock: lolex.InstalledClock<lolex.Clock>;
 
 	before(done => {
-		initDb().then(c => {
+		initDb(true).then(c => {
 			connection = c;
 			done();
 		});
