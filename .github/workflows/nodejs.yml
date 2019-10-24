@@ -14,6 +14,18 @@ jobs:
       matrix:
         node-version: [10.x, 12.x]
 
+    services:
+      postgres:
+        image: postgres:10-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: test-misskey
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node-version }}
@@ -28,14 +40,3 @@ jobs:
       run: yarn build
     - name: Test
       run: yarn test
-      services:
-        postgres:
-          image: postgres:10-alpine
-          ports:
-            - 5432:5432
-          env:
-            POSTGRES_DB: test-misskey
-        redis:
-          image: redis:alpine
-          ports:
-            - 6379:6379
