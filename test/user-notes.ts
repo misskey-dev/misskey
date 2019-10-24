@@ -66,8 +66,8 @@ describe('users/notes', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 2);
-		assert.strictEqual(res.body.some(note => note.id === jpgNote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === jpgPngNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === jpgNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
 	}));
 
 	it('ファイルタイプ指定 (jpg or png)', async(async () => {
@@ -79,8 +79,8 @@ describe('users/notes', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 3);
-		assert.strictEqual(res.body.some(note => note.id === jpgNote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === pngNote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === jpgPngNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === jpgNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === pngNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === jpgPngNote.id), true);
 	}));
 });

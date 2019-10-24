@@ -62,8 +62,8 @@ describe('Mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-		assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 	}));
 
 	it('ミュートしているユーザーからメンションされても、hasUnreadMentions が true にならない', async(async () => {
@@ -131,9 +131,9 @@ describe('Mute', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
-			assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
-			assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		}));
 
 		it('タイムラインにミュートしているユーザーの投稿のRenoteが含まれない', async(async () => {
@@ -147,9 +147,9 @@ describe('Mute', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
-			assert.strictEqual(res.body.some(note => note.id === aliceNote.id), true);
-			assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
-			assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === aliceNote.id), true);
+			assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
+			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		}));
 	});
 
@@ -163,8 +163,8 @@ describe('Mute', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
-			assert.strictEqual(res.body.some(notification => notification.userId === bob.id), true);
-			assert.strictEqual(res.body.some(notification => notification.userId === carol.id), false);
+			assert.strictEqual(res.body.some((notification: any) => notification.userId === bob.id), true);
+			assert.strictEqual(res.body.some((notification: any) => notification.userId === carol.id), false);
 		}));
 	});
 });
