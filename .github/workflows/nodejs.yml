@@ -28,3 +28,14 @@ jobs:
       run: yarn build
     - name: Test
       run: yarn test
+      services:
+        postgres:
+          image: postgres:10-alpine
+          ports:
+            - 5432:5432
+          env:
+            POSTGRES_DB: test-misskey
+        redis:
+          image: redis:alpine
+          ports:
+            - 6379:6379
