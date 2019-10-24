@@ -17,8 +17,8 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { connectStream, signup, request, post, launchServer } from './utils';
-import { Following } from '../built/models/entities/following';
-const initDb = require('../built/db/postgre.js').initDb;
+import { Following } from '../src/models/entities/following';
+import { initDb } from '../src/db/postgre';
 
 describe('Streaming', () => {
 	let p: childProcess.ChildProcess;
