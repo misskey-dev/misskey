@@ -12,7 +12,7 @@ import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
 
-let maxNoteTextLength = 1000;
+let maxNoteTextLength = 500;
 
 setInterval(() => {
 	fetchMeta().then(m => {
