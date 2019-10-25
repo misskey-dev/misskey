@@ -37,6 +37,8 @@ describe('API visibility', () => {
 		let other: any;
 		/** 非フォロワーでもリプライやメンションをされた人 */
 		let target: any;
+		/** specified mentionでmentionを飛ばされる人 */
+		let target2: any;
 
 		/** public-post */
 		let pub: any;
@@ -82,6 +84,7 @@ describe('API visibility', () => {
 			follower = await signup({ username: 'follower' });
 			other    = await signup({ username: 'other' });
 			target   = await signup({ username: 'target' });
+			target2  = await signup({ username: 'target2' });
 
 			// follow alice <= follower
 			await request('/following/create', { userId: alice.id }, follower);
@@ -103,7 +106,7 @@ describe('API visibility', () => {
 			pubM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'public' });
 			homeM = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'home' });
 			folM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'followers' });
-			speM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'specified' });
+			speM  = await post(alice, { text: '@target2 x', replyId: tgt.id, visibility: 'specified' });
 			//#endregion
 		});
 
@@ -391,16 +394,16 @@ describe('API visibility', () => {
 		// specified
 		it('[show] specified-mentionを自分が見れる', async(async () => {
 			const res = await show(speM.id, alice);
-			assert.strictEqual(res.body.text, '@target x');
+			assert.strictEqual(res.body.text, '@target2 x');
 		}));
 
 		it('[show] specified-mentionを指定ユーザーが見れる', async(async () => {
 			const res = await show(speM.id, target);
-			assert.strictEqual(res.body.text, '@target x');
+			assert.strictEqual(res.body.text, '@target2 x');
 		}));
 
 		it('[show] specified-mentionをされた人が指定されてなかったら見れない', async(async () => {
-			const res = await show(speM.id, target);
+			const res = await show(speM.id, target2);
 			assert.strictEqual(res.body.isHidden, true);
 		}));
 
