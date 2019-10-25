@@ -49,13 +49,11 @@ describe('Chart', () => {
 		clock = lolex.install({
 			now: new Date('2000-01-01 00:00:00')
 		});
-
-		connection.synchronize().then(done);
 	});
 
 	afterEach(done => {
 		clock.uninstall();
-		connection.dropDatabase().then(done);
+		connection.dropDatabase().then(() => connection.synchronize()).then(done);
 	});
 
 	it('Can updates', async(async () => {
