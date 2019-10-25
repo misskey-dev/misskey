@@ -26,15 +26,15 @@ import * as _TestUniqueChart from '../src/services/chart/charts/schemas/test-uni
 import { Connection, getConnection, createConnection } from 'typeorm';
 import config from '../src/config';
 import Chart from '../src/services/chart/core';
+import { initDb } from '../src/db/postgre';
 
-function initDb() {
+function initChartDb() {
 	try {
-		const conn = getConnection('__for_chart_testing');
+		const conn = getConnection();
 		return Promise.resolve(conn);
 	} catch (e) {}
 
 	return createConnection({
-		name: '__for_chart_testing',
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,
@@ -59,11 +59,16 @@ describe('Chart', () => {
 	let connection: Connection;
 
 	before(done => {
-		initDb().then(c => {
+		initChartDb().then(c => {
 			connection = c;
 			done();
 		});
 	});
+
+	after(async(async () => {
+		await connection.close();
+		await initDb(true, undefined, undefined, true);
+	}));
 
 	beforeEach(done => {
 		testChart = new TestChart();
