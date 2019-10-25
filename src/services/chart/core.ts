@@ -4,7 +4,7 @@
  * Tests located in test/chart
  */
 
-const nestedProperty = require('nested-property');
+import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
