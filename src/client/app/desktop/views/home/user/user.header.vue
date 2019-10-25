@@ -25,7 +25,7 @@
 			<p v-else class="empty">{{ $t('no-description') }}</p>
 			<x-integrations :user="user" style="margin-top:16px;"/>
 		</div>
-		<div class="fields" v-if="user.fields">
+		<div class="fields" v-if="user.fields" :key="user.id">
 			<dl class="field" v-for="(field, i) in user.fields" :key="i">
 				<dt class="name">
 					<mfm :text="field.name" :plain="true" :custom-emojis="user.emojis"/>
