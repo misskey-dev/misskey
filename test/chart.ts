@@ -17,11 +17,39 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as lolex from 'lolex';
 import { async } from './utils';
-import { initDb } from '../src/db/postgre';
 import TestChart from '../src/services/chart/charts/classes/test';
 import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
 import TestUniqueChart from '../src/services/chart/charts/classes/test-unique';
-import { Connection } from 'typeorm';
+import * as _TestChart from '../src/services/chart/charts/schemas/test';
+import * as _TestGroupedChart from '../src/services/chart/charts/schemas/test-grouped';
+import * as _TestUniqueChart from '../src/services/chart/charts/schemas/test-unique';
+import { Connection, getConnection, createConnection } from 'typeorm';
+import config from '../src/config';
+import Chart from '../src/services/chart/core';
+
+function initDb() {
+	try {
+		const conn = getConnection('__for_chart_testing');
+		return Promise.resolve(conn);
+	} catch (e) {}
+
+	return createConnection({
+		name: '__for_chart_testing',
+		type: 'postgres',
+		host: config.db.host,
+		port: config.db.port,
+		username: config.db.user,
+		password: config.db.pass,
+		database: config.db.db,
+		synchronize: true,
+		dropSchema: true,
+		entities: [
+			Chart.schemaToEntity(_TestChart.name, _TestChart.schema),
+			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema),
+			Chart.schemaToEntity(_TestUniqueChart.name, _TestUniqueChart.schema)
+		]
+	});
+}
 
 describe('Chart', () => {
 	let testChart: any;
@@ -31,7 +59,7 @@ describe('Chart', () => {
 	let connection: Connection;
 
 	before(done => {
-		initDb(true).then(c => {
+		initDb().then(c => {
 			connection = c;
 			done();
 		});
