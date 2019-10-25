@@ -32,7 +32,6 @@ describe('Chart', () => {
 
 	before(done => {
 		initDb(true).then(c => {
-			connection = c;
 			done();
 		});
 	});
