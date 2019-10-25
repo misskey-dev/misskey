@@ -6,6 +6,7 @@ db:
   db: test-misskey
   user: postgres
   pass: ''
+  disableCache: true
 redis:
   host: localhost
   port: 6379
