@@ -1,4 +1,5 @@
-import rndstr from 'rndstr';
+import rangestr from 'rangestr';
+import rndstr, { Options } from 'rndstr';
 import define from '../../define';
 import { RegistrationTickets } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
@@ -16,16 +17,26 @@ export const meta = {
 	params: {}
 };
 
-export default define(meta, async (ps) => {
-	const code = rndstr({ length: 5, chars: '0-9' });
+const options: Options = {
+	length: 8,
+	chars: ['2-9', 'A-H', 'J-N', 'P-Z'] // [0-9A-Z] w/o [01IO] (32 patterns)
+		.reduce<string[]>((a, c) => [a, rangestr(c)].flat(), []),
+};
+
+export default define(meta, async () => {
+	let code: string;
+
+	do {
+		code = rndstr(options);
+	} while (!RegistrationTickets.findOne({ code }));
 
 	await RegistrationTickets.save({
 		id: genId(),
 		createdAt: new Date(),
-		code: code
+		code,
 	});
 
 	return {
-		code: code
+		code,
 	};
 });

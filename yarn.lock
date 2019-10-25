@@ -8781,6 +8781,11 @@ rangestr@0.0.1:
   resolved "https://registry.yarnpkg.com/rangestr/-/rangestr-0.0.1.tgz#f72ff9246f10f2a7d7c16e14616f617be2c2635a"
   integrity sha1-9y/5JG8Q8qfXwW4UYW9he+LCY1o=
 
+rangestr@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/rangestr/-/rangestr-2.0.0.tgz#8a43afae6a203ffe7e46efe004b4f3011b40278b"
+  integrity sha1-ikOvrmogP/5+Ru/gBLTzARtAJ4s=
+
 ratelimiter@3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/ratelimiter/-/ratelimiter-3.3.1.tgz#51fa8f580ffd6c0316d2a19e4faf57ecc53bf22a"
