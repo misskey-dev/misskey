@@ -37,10 +37,6 @@ describe('Chart', () => {
 		});
 	});
 
-	after(done => {
-		connection.close().then(done);
-	});
-
 	beforeEach(done => {
 		testChart = new TestChart();
 		testGroupedChart = new TestGroupedChart();
