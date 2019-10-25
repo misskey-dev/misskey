@@ -19,20 +19,17 @@ import * as childProcess from 'child_process';
 import { connectStream, signup, request, post, launchServer } from './utils';
 import { Following } from '../src/models/entities/following';
 import { initDb } from '../src/db/postgre';
-import { Connection } from 'typeorm';
 
 describe('Streaming', () => {
 	let p: childProcess.ChildProcess;
 	let Followings: any;
-	let connection: Connection;
 
 	beforeEach(launchServer(g => p = g, async () => {
-		connection = await initDb(true);
+		const connection = await initDb(true);
 		Followings = connection.getRepository(Following);
 	}));
 
 	afterEach(() => {
-		connection.close();
 		p.kill();
 	});
 
