@@ -48,7 +48,10 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const type = await detectUrlMine(ps.url);
 
-	const exists = await Emojis.findOne({ name: ps.name });
+	const exists = await Emojis.findOne({
+		name: ps.name,
+		host: null
+	});
 
 	if (exists != null) throw new ApiError(meta.errors.emojiAlredyExists);
 
