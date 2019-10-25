@@ -21,7 +21,6 @@ import { initDb } from '../src/db/postgre';
 import TestChart from '../src/services/chart/charts/classes/test';
 import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
 import TestUniqueChart from '../src/services/chart/charts/classes/test-unique';
-import { Connection } from 'typeorm';
 
 describe('Chart', () => {
 	let testChart: any;
