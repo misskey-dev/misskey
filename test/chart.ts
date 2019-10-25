@@ -21,17 +21,24 @@ import { initDb } from '../src/db/postgre';
 import TestChart from '../src/services/chart/charts/classes/test';
 import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
 import TestUniqueChart from '../src/services/chart/charts/classes/test-unique';
+import { Connection } from 'typeorm';
 
 describe('Chart', () => {
 	let testChart: any;
 	let testGroupedChart: any;
 	let testUniqueChart: any;
 	let clock: lolex.InstalledClock<lolex.Clock>;
+	let connection: Connection;
 
 	before(done => {
 		initDb(true).then(c => {
+			connection = c;
 			done();
 		});
+	});
+
+	after(done => {
+		connection.close().then(done);
 	});
 
 	beforeEach(done => {
@@ -42,12 +49,13 @@ describe('Chart', () => {
 		clock = lolex.install({
 			now: new Date('2000-01-01 00:00:00')
 		});
-		done();
+
+		connection.synchronize().then(done);
 	});
 
 	afterEach(done => {
 		clock.uninstall();
-		done();
+		connection.dropDatabase().then(done);
 	});
 
 	it('Can updates', async(async () => {
