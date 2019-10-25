@@ -40,3 +40,5 @@ jobs:
       run: yarn build
     - name: Test
       run: yarn test
+      env:
+        TS_NODE_FILES: 'true'
