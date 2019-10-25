@@ -47,6 +47,7 @@ describe('Chart', () => {
 
 	afterEach(done => {
 		clock.uninstall();
+		done();
 	});
 
 	it('Can updates', async(async () => {
