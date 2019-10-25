@@ -37,10 +37,6 @@ describe('Chart', () => {
 		});
 	});
 
-	after(done => {
-		connection.close().then(done);
-	});
-
 	beforeEach(done => {
 		testChart = new TestChart();
 		testGroupedChart = new TestGroupedChart();
@@ -49,13 +45,10 @@ describe('Chart', () => {
 		clock = lolex.install({
 			now: new Date('2000-01-01 00:00:00')
 		});
-
-		connection.synchronize().then(done);
 	});
 
 	afterEach(done => {
 		clock.uninstall();
-		connection.dropDatabase().then(done);
 	});
 
 	it('Can updates', async(async () => {
