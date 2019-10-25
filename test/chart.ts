@@ -48,10 +48,11 @@ describe('Chart', () => {
 		done();
 	});
 
-	afterEach(done => {
+	afterEach(async(async () => {
 		clock.uninstall();
-		connection.dropDatabase().then(() => connection.synchronize()).then(done);
-	});
+		await connection.dropDatabase();
+		await connection.synchronize();
+	}));
 
 	it('Can updates', async(async () => {
 		await testChart.increment();
