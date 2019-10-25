@@ -18,12 +18,16 @@ import * as assert from 'assert';
 import * as lolex from 'lolex';
 import { async } from './utils';
 import { initDb } from '../src/db/postgre';
+import TestChart from '../src/services/chart/charts/classes/test';
+import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
+import TestUniqueChart from '../src/services/chart/charts/classes/test-unique';
+import { Connection } from 'typeorm';
 
 describe('Chart', () => {
 	let testChart: any;
 	let testGroupedChart: any;
 	let testUniqueChart: any;
-	let connection: any;
+	let connection: Connection;
 	let clock: lolex.InstalledClock<lolex.Clock>;
 
 	before(done => {
@@ -33,14 +37,13 @@ describe('Chart', () => {
 		});
 	});
 
+	after(done => {
+		connection.close().then(done);
+	});
+
 	beforeEach(done => {
-		const TestChart = require('../built/services/chart/charts/classes/test').default;
 		testChart = new TestChart();
-
-		const TestGroupedChart = require('../built/services/chart/charts/classes/test-grouped').default;
 		testGroupedChart = new TestGroupedChart();
-
-		const TestUniqueChart = require('../built/services/chart/charts/classes/test-unique').default;
 		testUniqueChart = new TestUniqueChart();
 
 		clock = lolex.install({
