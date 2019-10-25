@@ -1,4 +1,3 @@
-import rangestr from 'rangestr';
 import rndstr, { Options } from 'rndstr';
 import define from '../../define';
 import { RegistrationTickets } from '../../../../models';
@@ -19,8 +18,7 @@ export const meta = {
 
 const options: Options = {
 	length: 8,
-	chars: ['2-9', 'A-H', 'J-N', 'P-Z'] // [0-9A-Z] w/o [01IO] (32 patterns)
-		.reduce<string[]>((a, c) => [a, rangestr(c)].flat(), []),
+	chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
 };
 
 export default define(meta, async () => {
