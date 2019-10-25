@@ -84,6 +84,19 @@ export function groupOn<T, S>(f: (x: T) => S, xs: T[]): T[][] {
 	return groupBy((a, b) => f(a) === f(b), xs);
 }
 
+export function groupByX<T>(collections: T[], keySelector: (x: T) => string) {
+	return collections.reduce((obj: Record<string, T[]>, item: T) => {
+		const key = keySelector(item);
+		if (!obj.hasOwnProperty(key)) {
+			obj[key] = [];
+		}
+
+		obj[key].push(item);
+
+		return obj;
+	}, {});
+}
+
 /**
  * Compare two arrays by lexicographical order
  */
