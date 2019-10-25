@@ -2,10 +2,14 @@ import { User } from '../../../models/entities/user';
 import { Mutings } from '../../../models';
 import { SelectQueryBuilder, Brackets } from 'typeorm';
 
-export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User) {
+export function generateMuteQuery(q: SelectQueryBuilder<any>, me: User, exclude?: User) {
 	const mutingQuery = Mutings.createQueryBuilder('muting')
 		.select('muting.muteeId')
 		.where('muting.muterId = :muterId', { muterId: me.id });
+
+	if (exclude) {
+		mutingQuery.andWhere('muting.muteeId != :excludeId', { excludeId: exclude.id });
+	}
 
 	// 投稿の作者をミュートしていない かつ
 	// 投稿の返信先の作者をミュートしていない かつ

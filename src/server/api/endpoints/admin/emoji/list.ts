@@ -23,12 +23,19 @@ export const meta = {
 
 export default define(meta, async (ps) => {
 	const emojis = await Emojis.find({
-		host: toPunyNullable(ps.host)
+		where: {
+			host: toPunyNullable(ps.host)
+		},
+		order: {
+			category: 'ASC',
+			name: 'ASC'
+		}
 	});
 
 	return emojis.map(e => ({
 		id: e.id,
 		name: e.name,
+		category: e.category,
 		aliases: e.aliases,
 		host: e.host,
 		url: e.url

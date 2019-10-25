@@ -26,6 +26,10 @@ export const meta = {
 			validator: $.str.min(1)
 		},
 
+		category: {
+			validator: $.optional.str
+		},
+
 		aliases: {
 			validator: $.optional.arr($.str.min(1)),
 			default: [] as string[]
@@ -44,7 +48,10 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const type = await detectUrlMine(ps.url);
 
-	const exists = await Emojis.findOne({ name: ps.name });
+	const exists = await Emojis.findOne({
+		name: ps.name,
+		host: null
+	});
 
 	if (exists != null) throw new ApiError(meta.errors.emojiAlredyExists);
 
@@ -52,6 +59,7 @@ export default define(meta, async (ps, me) => {
 		id: genId(),
 		updatedAt: new Date(),
 		name: ps.name,
+		category: ps.category,
 		host: null,
 		aliases: ps.aliases,
 		url: ps.url,

@@ -1,5 +1,5 @@
 <template>
-<div class="dkjvrdxtkvqrwmhfickhndpmnncsgacq">
+<div class="dkjvrdxtkvqrwmhfickhndpmnncsgacq" v-hotkey.global="keymap">
 	<div class="bg" @click="close"></div>
 	<img :src="image.url" :alt="image.name" :title="image.name" @click="close"/>
 </div>
@@ -18,6 +18,13 @@ export default Vue.extend({
 			duration: 100,
 			easing: 'linear'
 		});
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'esc': this.close,
+			};
+		}
 	},
 	methods: {
 		close() {
