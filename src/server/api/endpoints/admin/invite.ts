@@ -17,14 +17,10 @@ export const meta = {
 };
 
 export default define(meta, async () => {
-	let code: string;
-
-	do {
-		code = rndstr({
-			length: 8,
-			chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
-		});
-	} while (await RegistrationTickets.findOne({ code }));
+	const code = rndstr({
+		length: 8,
+		chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
+	});
 
 	await RegistrationTickets.save({
 		id: genId(),
