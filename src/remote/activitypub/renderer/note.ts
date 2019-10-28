@@ -13,10 +13,6 @@ import { Poll } from '../../../models/entities/poll';
 import { ensure } from '../../../prelude/ensure';
 
 export default async function renderNote(note: Note, dive = true): Promise<any> {
-	const promisedFiles: Promise<DriveFile[]> = note.fileIds.length > 0
-		? DriveFiles.find({ id: In(note.fileIds) })
-		: Promise.resolve([]);
-
 	let inReplyTo;
 	let inReplyToNote: Note | undefined;
 
@@ -81,7 +77,7 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 	const hashtagTags = (note.tags || []).map(tag => renderHashtag(tag));
 	const mentionTags = mentionedUsers.map(u => renderMention(u));
 
-	const files = await promisedFiles;
+	const files = (await Promise.all((note.fileIds || []).map(x => DriveFiles.findOne(x)))).filter(x => x != null) as DriveFile[];
 
 	let text = note.text;
 	let poll: Poll | undefined;
