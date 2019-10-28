@@ -23,6 +23,7 @@ import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { ensure } from '../../../prelude/ensure';
 import { getApLock } from '../../../misc/app-lock';
+import { createMessage } from '../../../services/messages/create';
 
 const logger = apLogger;
 
@@ -221,6 +222,13 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	// ユーザーの情報が古かったらついでに更新しておく
 	if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 		if (actor.uri) updatePerson(actor.uri);
+	}
+
+	if (note._misskey_talk && visibility === 'specified') {
+		for (const recipient of visibleUsers) {
+			await createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null);
+			return null;
+		}
 	}
 
 	return await post(actor, {
