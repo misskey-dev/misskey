@@ -1,6 +1,12 @@
 <template>
-<div class="felqjxyj" :class="{ splash }">
-	<div class="bg" ref="bg" @click="onBgClick"></div>
+<ui-modal
+	ref="modal"
+	class="modal"
+	:class="{ splash }"
+	:close-anime-duration="300"
+	:close-on-bg-click="false"
+	@bg-click="onBgClick"
+	@before-close="onBeforeClose">
 	<div class="main" ref="main" :class="{ round: $store.state.device.roundedCorners }">
 		<template v-if="type == 'signin'">
 			<mk-signin/>
@@ -38,7 +44,7 @@
 			</ui-horizon-group>
 		</template>
 	</div>
-</div>
+</ui-modal>
 </template>
 
 <script lang="ts">
@@ -120,14 +126,6 @@ export default Vue.extend({
 		if (this.user) this.canOk = false;
 
 		this.$nextTick(() => {
-			(this.$refs.bg as any).style.pointerEvents = 'auto';
-			anime({
-				targets: this.$refs.bg,
-				opacity: 1,
-				duration: 100,
-				easing: 'linear'
-			});
-
 			anime({
 				targets: this.$refs.main,
 				opacity: 1,
@@ -170,31 +168,25 @@ export default Vue.extend({
 			this.close();
 		},
 
+		onBgClick() {
+			if (this.cancelableByBgClick) this.cancel();
+		}
+
 		close() {
+			this.$refs.modal.close();
+		},
+
+		onBeforeClose() {
 			this.$el.style.pointerEvents = 'none';
-			(this.$refs.bg as any).style.pointerEvents = 'none';
 			(this.$refs.main as any).style.pointerEvents = 'none';
 
-			anime({
-				targets: this.$refs.bg,
-				opacity: 0,
-				duration: 300,
-				easing: 'linear'
-			});
 			anime({
 				targets: this.$refs.main,
 				opacity: 0,
 				scale: 0.8,
 				duration: 300,
 				easing: 'cubicBezier(0, 0.5, 0.5, 1)',
-				complete: () => this.destroyDom()
 			});
-		},
-
-		onBgClick() {
-			if (this.cancelableByBgClick) {
-				this.cancel();
-			}
 		},
 
 		onInputKeydown(e) {
@@ -209,80 +201,63 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.felqjxyj
+.modal
 	display flex
 	align-items center
 	justify-content center
-	position fixed
-	z-index 30000
-	top 0
-	left 0
-	width 100%
-	height 100%
 
 	&.splash
 		> .main
 			min-width 0
 			width initial
 
-	> .bg
-		display block
-		position fixed
-		top 0
-		left 0
-		width 100%
-		height 100%
-		background rgba(#000, 0.7)
-		opacity 0
-		pointer-events none
+.main
+	display block
+	position fixed
+	margin auto
+	padding 32px
+	min-width 320px
+	max-width 480px
+	width calc(100% - 32px)
+	text-align center
+	background var(--face)
+	color var(--faceText)
+	opacity 0
 
-	> .main
-		display block
-		position fixed
-		margin auto
-		padding 32px
-		min-width 320px
-		max-width 480px
-		width calc(100% - 32px)
-		text-align center
-		background var(--face)
-		color var(--faceText)
-		opacity 0
+	&.round
+		border-radius 8px
 
-		&.round
-			border-radius 8px
+	> .icon
+		font-size 32px
 
-		> .icon
-			font-size 32px
+		&.success
+			color #85da5a
 
-			&.success
-				color #85da5a
+		&.error
+			color #ec4137
 
-			&.error
-				color #ec4137
+		&.warning
+			color #ecb637
 
-			&.warning
-				color #ecb637
+		> *
+			display block
+			margin 0 auto
 
-			> *
-				display block
-				margin 0 auto
-
-			& + header
-				margin-top 16px
-
-		> header
-			margin 0 0 8px 0
-			font-weight bold
-			font-size 20px
-
-			& + .body
-				margin-top 8px
-
-		> .body
-			margin 16px 0 0 0
-
-		> .buttons
+		& + header
 			margin-top 16px
+
+	> header
+		margin 0 0 8px 0
+		font-weight bold
+		font-size 20px
+
+		& + .body
+			margin-top 8px
+
+	> .body
+		margin 16px 0 0 0
+
+	> .buttons
+		margin-top 16px
 
 </style>
