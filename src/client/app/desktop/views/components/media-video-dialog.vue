@@ -1,5 +1,5 @@
 <template>
-<ui-modal>
+<ui-modal v-hotkey.global="keymap">
 	<video :src="video.url" :title="video.name" controls autoplay ref="video" @volumechange="volumechange" />
 </ui-modal>
 </template>
@@ -13,6 +13,13 @@ export default Vue.extend({
 		const videoTag = this.$refs.video as HTMLVideoElement;
 		if (this.start) videoTag.currentTime = this.start
 		videoTag.volume = this.$store.state.device.mediaVolume;
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'esc': this.close,
+			};
+		}
 	},
 	methods: {
 		close() {

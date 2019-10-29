@@ -176,6 +176,9 @@ root(fill)
 			color rgba(#000, 0.54)
 			pointer-events none
 
+			&:empty
+				display none
+
 			> *
 				display block
 				min-width 16px

@@ -4,16 +4,7 @@
 	<div class="popover" :class="{ isMobile: $root.isMobile }" ref="popover">
 		<p v-if="!$root.isMobile">{{ title }}</p>
 		<div class="buttons" ref="buttons" :class="{ showFocus }">
-			<button @click="react('like')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="1" :title="$t('@.reactions.like')" v-particle><mk-reaction-icon reaction="like"/></button>
-			<button @click="react('love')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="2" :title="$t('@.reactions.love')" v-particle><mk-reaction-icon reaction="love"/></button>
-			<button @click="react('laugh')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="3" :title="$t('@.reactions.laugh')" v-particle><mk-reaction-icon reaction="laugh"/></button>
-			<button @click="react('hmm')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="4" :title="$t('@.reactions.hmm')" v-particle><mk-reaction-icon reaction="hmm"/></button>
-			<button @click="react('surprise')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="5" :title="$t('@.reactions.surprise')" v-particle><mk-reaction-icon reaction="surprise"/></button>
-			<button @click="react('congrats')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="6" :title="$t('@.reactions.congrats')" v-particle><mk-reaction-icon reaction="congrats"/></button>
-			<button @click="react('angry')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="7" :title="$t('@.reactions.angry')" v-particle><mk-reaction-icon reaction="angry"/></button>
-			<button @click="react('confused')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="8" :title="$t('@.reactions.confused')" v-particle><mk-reaction-icon reaction="confused"/></button>
-			<button @click="react('rip')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="9" :title="$t('@.reactions.rip')" v-particle><mk-reaction-icon reaction="rip"/></button>
-			<button @click="react('pudding')" @mouseover="onMouseover" @mouseout="onMouseout" tabindex="10" :title="$t('@.reactions.pudding')" v-particle><mk-reaction-icon reaction="pudding"/></button>
+			<button v-for="(reaction, i) in $store.state.settings.reactions" :key="reaction" @click="react(reaction)" @mouseover="onMouseover" @mouseout="onMouseout" :tabindex="i + 1" :title="/^[a-z]+$/.test(reaction) ? $t('@.reactions.' + reaction) : reaction" v-particle><mk-reaction-icon :reaction="reaction"/></button>
 		</div>
 		<div v-if="enableEmojiReaction" class="text">
 			<input v-model="text" :placeholder="$t('input-reaction-placeholder')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">

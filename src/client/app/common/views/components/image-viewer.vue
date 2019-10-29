@@ -1,5 +1,5 @@
 <template>
-<ui-modal ref="modal">
+<ui-modal ref="modal" v-hotkey.global="keymap">
 	<img :src="image.url" :alt="image.name" :title="image.name" @click="close" />
 </ui-modal>
 </template>
@@ -9,6 +9,13 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: ['image'],
+	computed: {
+		keymap(): any {
+			return {
+				'esc': this.close,
+			};
+		}
+	},
 	methods: {
 		close() {
 			(this.$refs.modal as any).close();

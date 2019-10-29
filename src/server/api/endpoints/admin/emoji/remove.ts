@@ -4,6 +4,7 @@ import { ID } from '../../../../../misc/cafy-id';
 import { Emojis } from '../../../../../models';
 import { getConnection } from 'typeorm';
 import { insertModerationLog } from '../../../../../services/insert-moderation-log';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
@@ -19,13 +20,21 @@ export const meta = {
 		id: {
 			validator: $.type(ID)
 		}
+	},
+
+	errors: {
+		noSuchEmoji: {
+			message: 'No such emoji.',
+			code: 'NO_SUCH_EMOJI',
+			id: 'be83669b-773a-44b7-b1f8-e5e5170ac3c2'
+		}
 	}
 };
 
 export default define(meta, async (ps, me) => {
 	const emoji = await Emojis.findOne(ps.id);
 
-	if (emoji == null) throw new Error('emoji not found');
+	if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
 	await Emojis.delete(emoji.id);
 

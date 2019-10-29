@@ -257,7 +257,7 @@ export default define(meta, async (ps, user, app) => {
 	if (newDescription != null) {
 		const tokens = parse(newDescription);
 		emojis = emojis.concat(extractEmojis(tokens!));
-		tags = extractHashtags(tokens!).map(tag => tag.toLowerCase());
+		tags = extractHashtags(tokens!).map(tag => tag.toLowerCase()).splice(0, 32);
 	}
 
 	updates.emojis = emojis;

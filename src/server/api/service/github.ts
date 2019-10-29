@@ -1,5 +1,5 @@
 import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import * as request from 'request';
 import { OAuth2 } from 'oauth';
 import config from '../../../config';

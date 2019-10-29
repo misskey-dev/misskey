@@ -1,9 +1,9 @@
 <template>
 <div class="kedshtep" :class="{ naked, inNakedDeckColumn, shadow: $store.state.device.useShadow, round: $store.state.device.roundedCorners }">
-	<header v-if="showHeader">
+	<header v-if="showHeader" :class="{ bodyTogglable }" @click="toggleContent(!showBody)">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
-		<button v-if="bodyTogglable" @click="toggleContent(!showBody)">
+		<button v-if="bodyTogglable">
 			<template v-if="showBody"><fa icon="angle-up"/></template>
 			<template v-else><fa icon="angle-down"/></template>
 		</button>
@@ -47,6 +47,7 @@ export default Vue.extend({
 	},
 	methods: {
 		toggleContent(show: boolean) {
+			if (!this.bodyTogglable) return;
 			this.showBody = show;
 			this.$emit('toggle', show);
 		}
@@ -76,6 +77,9 @@ export default Vue.extend({
 
 		> header
 			background var(--faceHeader)
+
+			&.bodyTogglable
+				cursor pointer
 
 			> .title
 				z-index 1
@@ -119,6 +123,9 @@ export default Vue.extend({
 			font-size 12px
 			color var(--text)
 			background var(--deckColumnBg)
+
+			&.bodyTogglable
+				cursor pointer
 
 			> button
 				position absolute

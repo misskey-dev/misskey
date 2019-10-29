@@ -16,16 +16,19 @@ export const meta = {
 	params: {}
 };
 
-export default define(meta, async (ps) => {
-	const code = rndstr({ length: 5, chars: '0-9' });
+export default define(meta, async () => {
+	const code = rndstr({
+		length: 8,
+		chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
+	});
 
 	await RegistrationTickets.save({
 		id: genId(),
 		createdAt: new Date(),
-		code: code
+		code,
 	});
 
 	return {
-		code: code
+		code,
 	};
 });

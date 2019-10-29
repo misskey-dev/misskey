@@ -1,4 +1,5 @@
 export type obj = { [x: string]: any };
+export type ApObject = IObject | string | (IObject | string)[];
 
 export interface IObject {
 	'@context': string | obj | obj[];
@@ -6,9 +7,9 @@ export interface IObject {
 	id?: string;
 	summary?: string;
 	published?: string;
-	cc?: IObject | string | (IObject | string)[];
-	to?: IObject | string | (IObject | string)[];
-	attributedTo: IObject | string | (IObject | string)[];
+	cc?: ApObject;
+	to?: ApObject;
+	attributedTo: ApObject;
 	attachment?: any[];
 	inReplyTo?: any;
 	replies?: ICollection;
@@ -26,7 +27,7 @@ export interface IObject {
 /**
  * Get array of ActivityStreams Objects id
  */
-export function getApIds(value: IObject | string | (IObject | string)[] | undefined): string[] {
+export function getApIds(value: ApObject | undefined): string[] {
 	if (value == null) return [];
 	const array = Array.isArray(value) ? value : [value];
 	return array.map(x => getApId(x));
@@ -35,7 +36,7 @@ export function getApIds(value: IObject | string | (IObject | string)[] | undefi
 /**
  * Get first ActivityStreams Object id
  */
-export function getOneApId(value: IObject | string | (IObject | string)[]): string {
+export function getOneApId(value: ApObject): string {
 	const firstOne = Array.isArray(value) ? value[0] : value;
 	return getApId(firstOne);
 }
@@ -59,13 +60,13 @@ export interface IActivity extends IObject {
 export interface ICollection extends IObject {
 	type: 'Collection';
 	totalItems: number;
-	items: IObject | string | IObject[] | string[];
+	items: ApObject;
 }
 
 export interface IOrderedCollection extends IObject {
 	type: 'OrderedCollection';
 	totalItems: number;
-	orderedItems: IObject | string | IObject[] | string[];
+	orderedItems: ApObject;
 }
 
 export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'];
@@ -74,6 +75,7 @@ export interface INote extends IObject {
 	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
 	_misskey_content?: string;
 	_misskey_quote?: string;
+	_misskey_talk: boolean;
 }
 
 export interface IQuestion extends IObject {
@@ -99,17 +101,22 @@ export const validActor = ['Person', 'Service'];
 
 export interface IPerson extends IObject {
 	type: 'Person';
-	name: string;
-	preferredUsername: string;
-	manuallyApprovesFollowers: boolean;
-	inbox: string;
-	sharedInbox?: string;
-	publicKey: any;
-	followers: any;
-	following: any;
-	featured?: any;
-	outbox: any;
-	endpoints: any;
+	name?: string;
+	preferredUsername?: string;
+	manuallyApprovesFollowers?: boolean;
+	inbox?: string;
+	sharedInbox?: string;	// 後方互換性のため
+	publicKey: {
+		id: string;
+		publicKeyPem: string;
+	};
+	followers?: string | ICollection | IOrderedCollection;
+	following?: string | ICollection | IOrderedCollection;
+	featured?: string | IOrderedCollection;
+	outbox?: string | IOrderedCollection;
+	endpoints?: {
+		sharedInbox?: string;
+	};
 }
 
 export const isCollection = (object: IObject): object is ICollection =>
@@ -170,18 +177,15 @@ export interface IBlock extends IActivity {
 	type: 'Block';
 }
 
-export type Object =
-	ICollection |
-	IOrderedCollection |
-	ICreate |
-	IDelete |
-	IUpdate |
-	IUndo |
-	IFollow |
-	IAccept |
-	IReject |
-	IAdd |
-	IRemove |
-	ILike |
-	IAnnounce |
-	IBlock;
+export const isCreate = (object: IObject): object is ICreate => object.type === 'Create';
+export const isDelete = (object: IObject): object is IDelete => object.type === 'Delete';
+export const isUpdate = (object: IObject): object is IUpdate => object.type === 'Update';
+export const isUndo = (object: IObject): object is IUndo => object.type === 'Undo';
+export const isFollow = (object: IObject): object is IFollow => object.type === 'Follow';
+export const isAccept = (object: IObject): object is IAccept => object.type === 'Accept';
+export const isReject = (object: IObject): object is IReject => object.type === 'Reject';
+export const isAdd = (object: IObject): object is IAdd => object.type === 'Add';
+export const isRemove = (object: IObject): object is IRemove => object.type === 'Remove';
+export const isLike = (object: IObject): object is ILike => object.type === 'Like';
+export const isAnnounce = (object: IObject): object is IAnnounce => object.type === 'Announce';
+export const isBlock = (object: IObject): object is IBlock => object.type === 'Block';

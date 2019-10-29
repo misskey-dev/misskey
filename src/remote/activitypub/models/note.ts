@@ -22,6 +22,8 @@ import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { ensure } from '../../../prelude/ensure';
+import { getApLock } from '../../../misc/app-lock';
+import { createMessage } from '../../../services/messages/create';
 
 const logger = apLogger;
 
@@ -33,7 +35,7 @@ export function validateNote(object: any, uri: string) {
 	}
 
 	if (!validPost.includes(object.type)) {
-		return new Error(`invalid Note: invalied object type ${object.type}`);
+		return new Error(`invalid Note: invalid object type ${object.type}`);
 	}
 
 	if (object.id && extractDbHost(object.id) !== expectHost) {
@@ -222,6 +224,13 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		if (actor.uri) updatePerson(actor.uri);
 	}
 
+	if (note._misskey_talk && visibility === 'specified') {
+		for (const recipient of visibleUsers) {
+			await createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null);
+			return null;
+		}
+	}
+
 	return await post(actor, {
 		createdAt: note.published ? new Date(note.published) : null,
 		files,
@@ -257,30 +266,24 @@ export async function resolveNote(value: string | IObject, resolver?: Resolver):
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(extractDbHost(uri))) throw { statusCode: 451 };
 
-	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await fetchNote(uri);
+	const unlock = await getApLock(uri);
 
-	if (exist) {
-		return exist;
-	}
-	//#endregion
+	try {
+		//#region このサーバーに既に登録されていたらそれを返す
+		const exist = await fetchNote(uri);
 
-	// リモートサーバーからフェッチしてきて登録
-	// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
-	// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
-	return await createNote(uri, resolver, true).catch(e => {
-		if (e.name === 'duplicated') {
-			return fetchNote(uri).then(note => {
-				if (note == null) {
-					throw new Error('something happened');
-				} else {
-					return note;
-				}
-			});
-		} else {
-			throw e;
+		if (exist) {
+			return exist;
 		}
-	});
+		//#endregion
+
+		// リモートサーバーからフェッチしてきて登録
+		// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
+		// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
+		return await createNote(uri, resolver, true);
+	} finally {
+		unlock();
+	}
 }
 
 export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]> {

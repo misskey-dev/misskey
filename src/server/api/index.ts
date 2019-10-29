@@ -3,8 +3,8 @@
  */
 
 import * as Koa from 'koa';
-import * as Router from 'koa-router';
-import * as multer from 'koa-multer';
+import * as Router from '@koa/router';
+import * as multer from '@koa/multer';
 import * as bodyParser from 'koa-bodyparser';
 import * as cors from '@koa/cors';
 

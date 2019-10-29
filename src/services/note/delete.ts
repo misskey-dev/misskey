@@ -1,5 +1,7 @@
 import { publishNoteStream } from '../stream';
 import renderDelete from '../../remote/activitypub/renderer/delete';
+import renderAnnounce from '../../remote/activitypub/renderer/announce';
+import renderUndo from '../../remote/activitypub/renderer/undo';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
@@ -35,7 +37,17 @@ export default async function(user: User, note: Note, quiet = false) {
 
 		//#region ローカルの投稿なら削除アクティビティを配送
 		if (Users.isLocalUser(user)) {
-			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
+			let renote: Note | undefined;
+
+			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
+				renote = await Notes.findOne({
+					id: note.renoteId
+				});
+			}
+
+			const content = renderActivity(renote
+				? renderUndo(renderAnnounce(renote.uri || `${config.url}/notes/${renote.id}`, note), user)
+				: renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
 
 			const queue: string[] = [];
 

@@ -84,6 +84,19 @@ export function groupOn<T, S>(f: (x: T) => S, xs: T[]): T[][] {
 	return groupBy((a, b) => f(a) === f(b), xs);
 }
 
+export function groupByX<T>(collections: T[], keySelector: (x: T) => string) {
+	return collections.reduce((obj: Record<string, T[]>, item: T) => {
+		const key = keySelector(item);
+		if (!obj.hasOwnProperty(key)) {
+			obj[key] = [];
+		}
+
+		obj[key].push(item);
+
+		return obj;
+	}, {});
+}
+
 /**
  * Compare two arrays by lexicographical order
  */
@@ -119,4 +132,12 @@ export function cumulativeSum(xs: number[]): number[] {
 // Object.fromEntries()
 export function fromEntries(xs: [string, any][]): { [x: string]: any; } {
 	return xs.reduce((obj, [k, v]) => Object.assign(obj, { [k]: v }), {} as { [x: string]: any; });
+}
+
+export function toArray<T>(x: T | T[] | undefined): T[] {
+	return Array.isArray(x) ? x : x != null ? [x] : [];
+}
+
+export function toSingle<T>(x: T | T[] | undefined): T | undefined {
+	return Array.isArray(x) ? x[0] : x;
 }

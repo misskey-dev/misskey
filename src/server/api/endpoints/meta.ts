@@ -7,6 +7,7 @@ import * as pkg from '../../../../package.json';
 import { Emojis } from '../../../models';
 import { getConnection } from 'typeorm';
 import redis from '../../../db/redis';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../misc/hard-limits';
 
 export const meta = {
 	stability: 'stable',
@@ -95,7 +96,19 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const instance = await fetchMeta(true);
 
-	const emojis = await Emojis.find({ where: { host: null }, cache: { id: 'meta_emojis', milliseconds: 3600000 } }); // 1 hour
+	const emojis = await Emojis.find({
+		where: {
+			host: null
+		},
+		order: {
+			category: 'ASC',
+			name: 'ASC'
+		},
+		cache: {
+			id: 'meta_emojis',
+			milliseconds: 3600000	// 1 hour
+		}
+	});
 
 	const response: any = {
 		maintainerName: instance.maintainerName,
@@ -138,11 +151,12 @@ export default define(meta, async (ps, me) => {
 		bannerUrl: instance.bannerUrl,
 		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
-		maxNoteTextLength: instance.maxNoteTextLength,
+		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
 		emojis: emojis.map(e => ({
 			id: e.id,
 			aliases: e.aliases,
 			name: e.name,
+			category: e.category,
 			url: e.url,
 		})),
 		enableEmail: instance.enableEmail,

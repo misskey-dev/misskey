@@ -43,7 +43,7 @@ export default (opts: Opts = {}) => ({
 				'ctrl+q': this.renoteDirectly,
 				'up|k|shift+tab': this.focusBefore,
 				'down|j|tab': this.focusAfter,
-				'esc': this.blur,
+				//'esc': this.blur,
 				'm|o': () => this.menu(true),
 				's': this.toggleShowContent,
 				'1': () => this.reactDirectly('like'),
@@ -143,12 +143,15 @@ export default (opts: Opts = {}) => ({
 		react(viaKeyboard = false) {
 			pleaseLogin(this.$root);
 			this.blur();
-			this.$root.new(MkReactionPicker, {
+			const w = this.$root.new(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				note: this.appearNote,
 				showFocus: viaKeyboard,
 				animation: !viaKeyboard
 			}).$once('closed', this.focus);
+			this.$once('hook:beforeDestroy', () => {
+				w.close();
+			});
 		},
 
 		reactDirectly(reaction) {
@@ -195,13 +198,16 @@ export default (opts: Opts = {}) => ({
 		menu(viaKeyboard = false) {
 			if (this.openingMenu) return;
 			this.openingMenu = true;
-			this.$root.new(MkNoteMenu, {
+			const w = this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
 				note: this.appearNote,
 				animation: !viaKeyboard
 			}).$once('closed', () => {
 				this.openingMenu = false;
 				this.focus();
+			});
+			this.$once('hook:beforeDestroy', () => {
+				w.destroyDom();
 			});
 		},
 

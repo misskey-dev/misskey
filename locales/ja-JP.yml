@@ -19,9 +19,6 @@ common:
     drive: "ドライブ"
     drive-desc: "以前投稿したことのある画像をまた投稿したくなったことはありませんか？もしくは、アップロードしたファイルをフォルダ分けして整理したくなったことはありませんか？Misskeyの根幹に組み込まれたドライブ機能によってそれらが解決します。ファイルの共有も簡単です。"
     outro: "他にもMisskeyにしかない機能はまだまだあるので、ぜひあなた自身の目で確かめてください。Misskeyは分散型SNSなので、このインスタンスが気に入らなければ他のインスタンスを試すこともできます。それでは、GLHF!"
-  adblock:
-    detected: "広告ブロッカーを無効にしてください"
-    warning: "<strong>Misskeyは広告を掲載していません</strong>が、広告をブロックする機能が有効だと一部の機能が利用できなかったり、不具合が発生する場合があります。"
   application-authorization: "アプリの連携"
   close: "閉じる"
   do-not-copy-paste: "ここにコードを入力したり張り付けたりしないでください。アカウントが不正利用される可能性があります。"
@@ -110,6 +107,12 @@ common:
     "read:reactions": "リアクションを見る"
     "write:reactions": "リアクションを操作する"
     "write:votes": "投票する"
+    "read:pages": "ページを見る"
+    "write:pages": "ページを操作する"
+    "read:page-likes": "ページのいいねを見る"
+    "write:page-likes": "ページのいいねを操作する"
+    "read:user-groups": "ユーザーグループを見る"
+    "write:user-groups": "ユーザーグループを操作する"
 
   empty-timeline-info:
     follow-users-to-make-your-timeline: "ユーザーをフォローすると投稿がタイムラインに表示されます。"
@@ -209,6 +212,8 @@ common:
     other: "その他"
     appearance: "デザイン"
     behavior: "動作"
+    reactions: "リアクション"
+    reactions-description: "リアクションピッカーに表示するリアクションを改行で区切って設定します。"
     fetch-on-scroll: "スクロールで自動読み込み"
     fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
     note-visibility: "投稿の公開範囲"
@@ -408,9 +413,11 @@ common/views/pages/explore.vue:
   popular-users: "人気のユーザー"
   recently-updated-users: "最近投稿したユーザー"
   recently-registered-users: "新規ユーザー"
+  recently-discovered-users: "最近発見されたユーザー"
   popular-tags: "人気のタグ"
   federated: "連合"
   explore: "{host}を探索"
+  explore-fediverse: "Fediverseを探索"
   users-info: "現在{users}ユーザーが登録されています"
 
 common/views/components/reactions-viewer.details.vue:
@@ -666,7 +673,9 @@ common/views/components/reaction-picker.vue:
   input-reaction-placeholder: "または絵文字を入力"
 
 common/views/components/emoji-picker.vue:
+  recent-emoji: "最近使った絵文字"
   custom-emoji: "カスタム絵文字"
+  no-category: "カテゴリなし"
   people: "人"
   animals-and-nature: "動物&自然"
   food-and-drink: "食べ物&飲み物"
@@ -881,6 +890,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "お知らせはありません"
   have-a-nice-day: "良い一日を！"
   next: "次"
+  prev: "前"
 
 common/views/widgets/calendar.vue:
   year: "{}年"
@@ -1550,6 +1560,7 @@ admin/views/users.vue:
     state:
       title: "状態"
       all: "すべて"
+      available: "利用可能"
       admin: "管理者"
       moderator: "モデレーター"
       adminOrModerator: "管理者+モデレーター"
@@ -1582,6 +1593,7 @@ admin/views/emoji.vue:
     title: "絵文字の登録"
     name: "絵文字名"
     name-desc: "a~z 0~9 _ の文字が使えます。"
+    category: "カテゴリ"
     aliases: "エイリアス"
     aliases-desc: "スペースで区切って複数設定できます。"
     url: "絵文字画像URL"
