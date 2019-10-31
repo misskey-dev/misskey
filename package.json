@@ -22,7 +22,7 @@
 		"clean": "gulp clean",
 		"cleanall": "gulp cleanall",
 		"lint": "gulp lint",
-		"test": "gulp test",
+		"test": "TS_NODE_FILES=true gulp test",
 		"format": "gulp format"
 	},
 	"resolutions": {
