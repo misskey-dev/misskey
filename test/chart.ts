@@ -105,7 +105,6 @@ describe('Chart', () => {
 			},
 		});
 	}));
-
 	
 	it('Can updates (dec)', async(async () => {
 		await testChart.decrement();
