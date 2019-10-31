@@ -393,8 +393,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 				username: u.username,
 				host: u.host
 			} as IMentionedRemoteUsers[0];
-		}
-		));
+		}));
 	}
 
 	// 投稿を作成
