@@ -383,7 +383,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
 		insert.mentions = mentionedUsers.map(u => u.id);
-		const profiles = await UserProfiles.find({userId: In(insert.mentions)});
+		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
 		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
 			const profile = profiles.find(p => p.userId == u.id);
 			const url = profile != null ? profile.url : null;
