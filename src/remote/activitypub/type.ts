@@ -75,6 +75,7 @@ export interface INote extends IObject {
 	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
 	_misskey_content?: string;
 	_misskey_quote?: string;
+	_misskey_talk: boolean;
 }
 
 export interface IQuestion extends IObject {

@@ -16,11 +16,11 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
-import { Note } from '../../models/entities/note';
+import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, UserProfiles } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
-import { Not, getConnection } from 'typeorm';
+import { Not, getConnection, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
@@ -383,11 +383,17 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
 		insert.mentions = mentionedUsers.map(u => u.id);
-		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => ({
-			uri: (u as IRemoteUser).uri,
-			username: u.username,
-			host: u.host
-		})));
+		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
+		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
+			const profile = profiles.find(p => p.userId == u.id);
+			const url = profile != null ? profile.url : null;
+			return {
+				uri: u.uri,
+				url: url == null ? undefined : url,
+				username: u.username,
+				host: u.host
+			} as IMentionedRemoteUsers[0];
+		}));
 	}
 
 	// 投稿を作成

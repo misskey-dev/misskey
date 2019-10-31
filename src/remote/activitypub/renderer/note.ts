@@ -12,7 +12,7 @@ import { Emoji } from '../../../models/entities/emoji';
 import { Poll } from '../../../models/entities/poll';
 import { ensure } from '../../../prelude/ensure';
 
-export default async function renderNote(note: Note, dive = true): Promise<any> {
+export default async function renderNote(note: Note, dive = true, isTalk = false): Promise<any> {
 	const getPromisedFiles = async (ids: string[]) => {
 		if (!ids || ids.length === 0) return [];
 		const items = await DriveFiles.find({ id: In(ids) });
@@ -147,6 +147,10 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		}))
 	} : {};
 
+	const asTalk = isTalk ? {
+		_misskey_talk: true
+	} : {};
+
 	return {
 		id: `${config.url}/notes/${note.id}`,
 		type: 'Note',
@@ -162,7 +166,8 @@ export default async function renderNote(note: Note, dive = true): Promise<any> 
 		attachment: files.map(renderDocument),
 		sensitive: note.cw != null || files.some(file => file.isSensitive),
 		tag,
-		...asPoll
+		...asPoll,
+		...asTalk
 	};
 }
 
