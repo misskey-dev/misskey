@@ -136,7 +136,7 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 				default:
 					const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username === username && remoteUser.host === host);
 					a.href = remoteUserInfo ? remoteUserInfo.uri : `${config.url}/${acct}`;
-					a.className = 'mention';
+					a.className = 'u-url mention';
 					break;
 			}
 			a.textContent = acct;
