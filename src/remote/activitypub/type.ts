@@ -75,6 +75,7 @@ export interface INote extends IObject {
 	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
 	_misskey_content?: string;
 	_misskey_quote?: string;
+	_misskey_talk: boolean;
 }
 
 export interface IQuestion extends IObject {
@@ -100,17 +101,22 @@ export const validActor = ['Person', 'Service'];
 
 export interface IPerson extends IObject {
 	type: 'Person';
-	name: string;
-	preferredUsername: string;
-	manuallyApprovesFollowers: boolean;
-	inbox: string;
-	sharedInbox?: string;
-	publicKey: any;
-	followers: any;
-	following: any;
-	featured?: any;
-	outbox: any;
-	endpoints: any;
+	name?: string;
+	preferredUsername?: string;
+	manuallyApprovesFollowers?: boolean;
+	inbox?: string;
+	sharedInbox?: string;	// 後方互換性のため
+	publicKey: {
+		id: string;
+		publicKeyPem: string;
+	};
+	followers?: string | ICollection | IOrderedCollection;
+	following?: string | ICollection | IOrderedCollection;
+	featured?: string | IOrderedCollection;
+	outbox?: string | IOrderedCollection;
+	endpoints?: {
+		sharedInbox?: string;
+	};
 }
 
 export const isCollection = (object: IObject): object is ICollection =>

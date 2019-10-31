@@ -138,7 +138,7 @@ export default Vue.extend({
 			}
 			this.$root.api('users/search', {
 				query: this.q,
-				localOnly: true,
+				localOnly: false,
 				limit: 10,
 				detail: false
 			}).then(users => {
