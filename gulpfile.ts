@@ -96,7 +96,7 @@ gulp.task('cleanall', gulp.parallel('clean', cb =>
 ));
 
 gulp.task('build:client:script', () => {
-	const client = require('./built/client/meta.json');
+	const client = require('./built/meta.json');
 	return gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
 		.pipe(replace('ENV', JSON.stringify(env)))

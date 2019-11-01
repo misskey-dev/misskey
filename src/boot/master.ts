@@ -8,7 +8,6 @@ import Logger from '../services/logger';
 import loadConfig from '../config/load';
 import { Config } from '../config/types';
 import { lessThan } from '../prelude/array';
-import * as pkg from '../../package.json';
 import { program } from '../argv';
 import { showMachineInfo } from '../misc/show-machine-info';
 import { initDb } from '../db/postgre';
@@ -16,10 +15,10 @@ import { initDb } from '../db/postgre';
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
 
-function greet() {
+function greet(config: Config) {
 	if (!program.quiet) {
 		//#region Misskey logo
-		const v = `v${pkg.version}`;
+		const v = `v${config.version}`;
 		console.log('  _____ _         _           ');
 		console.log(' |     |_|___ ___| |_ ___ _ _ ');
 		console.log(' | | | | |_ -|_ -| \'_| -_| | |');
@@ -35,20 +34,20 @@ function greet() {
 	}
 
 	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${pkg.version}`, null, true);
+	bootLogger.info(`Misskey v${config.version}`, null, true);
 }
 
 /**
  * Init master process
  */
 export async function masterMain() {
-	greet();
-
 	let config!: Config;
 
 	try {
 		// initialize app
 		config = await init();
+
+		greet(config);
 
 		if (config.port == null || Number.isNaN(config.port)) {
 			bootLogger.error('The port is not configured. Please configure port.', null, true);
