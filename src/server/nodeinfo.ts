@@ -36,7 +36,7 @@ const nodeinfo2 = async () => {
 
 	return {
 		software: {
-			name: 'Misskey',
+			name: 'misskey',
 			version: config.version,
 			repository: meta.repositoryUrl,
 		},
