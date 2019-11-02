@@ -79,6 +79,8 @@ redis:
   host: localhost
   port: 6379
   #pass: example-pass
+  #prefix: example-prefix
+  #db: 1
 
 #   ┌─────────────────────────────┐
 #───┘ Elasticsearch configuration └─────────────────────────────
