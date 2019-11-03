@@ -11,6 +11,7 @@ import { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
 import { Notes, Users, Followings, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
+import { fetchNodeinfo } from '../fetch-nodeinfo';
 
 /**
  * 投稿を削除します。
@@ -76,6 +77,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			registerOrFetchInstanceDoc(user.host).then(i => {
 				Instances.decrement({ id: i.id }, 'notesCount', 1);
 				instanceChart.updateNote(i.host, note, false);
+				fetchNodeinfo(i);
 			});
 		}
 	}

@@ -15,7 +15,6 @@ export async function registerOrFetchInstanceDoc(host: string): Promise<Instance
 			host,
 			caughtAt: new Date(),
 			lastCommunicatedAt: new Date(),
-			system: null // TODO
 		});
 
 		federationChart.update(true);

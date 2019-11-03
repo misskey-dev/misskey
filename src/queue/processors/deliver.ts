@@ -4,6 +4,7 @@ import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-ins
 import Logger from '../../services/logger';
 import { Instances } from '../../models';
 import { instanceChart } from '../../services/chart';
+import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
 
 const logger = new Logger('deliver');
 
@@ -27,6 +28,8 @@ export default async (job: Bull.Job) => {
 				lastCommunicatedAt: new Date(),
 				isNotResponding: false
 			});
+
+			fetchNodeinfo(i);
 
 			instanceChart.requestSent(i.host, true);
 		});
