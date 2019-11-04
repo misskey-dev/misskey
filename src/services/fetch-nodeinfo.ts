@@ -63,7 +63,7 @@ export async function fetchNodeinfo(instance: Instance) {
 		const link = lnik2_1 || lnik2_0 || lnik1_0;
 
 		if (link == null) {
-			logger.info(`Skipped nodeinfo of ${instance.host}`);
+			await skip();
 			return;
 		}
 
