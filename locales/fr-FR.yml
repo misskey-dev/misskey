@@ -290,6 +290,7 @@ common:
     sync: "Synchroniser"
     save: "Enregistrer"
     saved: "enregistré"
+    preview: "Prévisualisation"
     home-profile: "Profil principal"
     deck-profile: "Profil deck"
     room: "Pièce"
