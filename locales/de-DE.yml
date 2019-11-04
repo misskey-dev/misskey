@@ -251,6 +251,7 @@ common:
     load-remote-media: "Zeige Inhalte von fremden Servern"
     save: "Speichern"
     saved: "Gespeichert"
+    preview: "Vorschau"
   search: "Suche"
   delete: "Löschen"
   loading: "Laden"
