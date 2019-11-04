@@ -300,6 +300,7 @@ common:
     sync: "同步"
     save: "保存"
     saved: "已保存"
+    preview: "预览"
     home-profile: "定制首页数据"
     deck-profile: "定制Deck数据"
     room: "房间"
