@@ -258,6 +258,7 @@ common:
     load-remote-media: "Vis medie-materiale fra en ekstern server"
     save: "Gem"
     saved: "Gemt"
+    preview: "Før-visning"
   search: "Søg"
   delete: "Slet"
   loading: "Henter"
