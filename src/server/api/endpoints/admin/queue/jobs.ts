@@ -32,9 +32,16 @@ export default define(meta, async (ps) => {
 
 	const jobs = await queue.getJobs([ps.state], 0, ps.limit!);
 
-	return jobs.map(job => ({
-		id: job.id,
-		data: job.data,
-		attempts: job.attemptsMade,
-	}));
+	return jobs.map(job => {
+		const data = job.data;
+		delete data.content;
+		delete data.user;
+		return {
+			id: job.id,
+			data,
+			attempts: job.attemptsMade,
+			maxAttempts: job.opts ? job.opts.attempts : 0,
+			timestamp: job.timestamp,
+		};
+	});
 });

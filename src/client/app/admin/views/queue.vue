@@ -56,6 +56,7 @@
 					<template v-if="domain === 'inbox'">
 						<span>{{ job.data.activity.id }}</span>
 					</template>
+					<span>{{ `(${job.attempts}/${job.maxAttempts}, ${Math.floor((jobsFetched - job.timestamp) / 1000 / 60)}min)` }}</span>
 				</div>
 			</sequential-entrance>
 			<ui-info v-if="jobs.length == jobsLimit">{{ $t('result-is-truncated', { n: jobsLimit }) }}</ui-info>
@@ -84,6 +85,7 @@ export default Vue.extend({
 			chartLimit: 200,
 			jobs: [],
 			jobsLimit: 50,
+			jobsFetched: Date.now(),
 			domain: 'deliver',
 			state: 'delayed',
 			faTasks, faPaperPlane, faInbox, faChartBar, faDatabase, faCloud
@@ -140,6 +142,7 @@ export default Vue.extend({
 				state: this.state,
 				limit: this.jobsLimit
 			}).then(jobs => {
+				this.jobsFetched = Date.now(),
 				this.jobs = jobs;
 			});
 		},
@@ -149,7 +152,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .xvvuvgsv
-	> b
-		margin-right 16px
+	margin-left -6px
+	> b, span
+		margin 0 6px
 
 </style>
