@@ -113,6 +113,10 @@
 				<ui-textarea v-model="reactions">
 					{{ $t('@._settings.reactions') }}<template #desc>{{ $t('@._settings.reactions-description') }}</template>
 				</ui-textarea>
+				<ui-horizon-group>
+					<ui-button @click="save('reactions', reactions.trim().split('\n'))" primary><fa :icon="faSave"/> {{ $t('@._settings.save') }}</ui-button>
+					<ui-button @click="previewReaction()" ref="reactionsPreviewButton"><fa :icon="faEye"/> {{ $t('@._settings.preview') }}</ui-button>
+				</ui-horizon-group>
 			</section>
 
 			<section>
@@ -311,11 +315,12 @@ import XApi from './api.vue';
 import XLanguage from './language.vue';
 import XAppType from './app-type.vue';
 import XNotification from './notification.vue';
+import MkReactionPicker from '../reaction-picker.vue';
 
 import { url, version } from '../../../../config';
 import checkForUpdate from '../../../scripts/check-for-update';
 import { formatTimeString } from '../../../../../../misc/format-time-string';
-import { faSave } from '@fortawesome/free-regular-svg-icons';
+import { faSave, faEye } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n(),
@@ -346,11 +351,12 @@ export default Vue.extend({
 		return {
 			meta: null,
 			version,
+			reactions: this.$store.state.settings.reactions.join('\n'),
 			webSearchEngine: this.$store.state.settings.webSearchEngine,
 			pastedFileName : this.$store.state.settings.pastedFileName,
 			latestVersion: undefined,
 			checkingForUpdate: false,
-			faSave
+			faSave, faEye
 		};
 	},
 	computed: {
@@ -412,11 +418,6 @@ export default Vue.extend({
 		disableViaMobile: {
 			get() { return this.$store.state.settings.disableViaMobile; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'disableViaMobile', value }); }
-		},
-
-		reactions: {
-			get() { return this.$store.state.settings.reactions.join('\n'); },
-			set(value: string) { this.$store.dispatch('settings/set', { key: 'reactions', value: value.trim().split('\n') }); }
 		},
 
 		useShadow: {
@@ -655,6 +656,16 @@ export default Vue.extend({
 		pastedFileNamePreview() {
 			return `${formatTimeString(new Date(), this.pastedFileName).replace(/{{number}}/g, `1`)}.png`
 		},
+		previewReaction() {
+			const picker = this.$root.new(MkReactionPicker, {
+				source: this.$refs.reactionsPreviewButton.$el,
+				reactions: this.reactions.trim().split('\n'),
+				showFocus: false,
+			});
+			picker.$once('chosen', reaction => {
+				picker.close();
+			});
+		}
 	}
 });
 </script>
