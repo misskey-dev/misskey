@@ -5,6 +5,8 @@ import Logger from '../../services/logger';
 import { Instances } from '../../models';
 import { instanceChart } from '../../services/chart';
 import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
+import { fetchMeta } from '../../misc/fetch-meta';
+import { toPuny } from '../../misc/convert-host';
 
 const logger = new Logger('deliver');
 
@@ -12,6 +14,25 @@ let latest: string | null = null;
 
 export default async (job: Bull.Job) => {
 	const { host } = new URL(job.data.to);
+
+	// ブロックしてたら中断
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(toPuny(host))) {
+		logger.info(`skip (blocked) ${job.data.to}`);
+		return;
+	}
+
+	// closedなら中断
+	const closedHosts = await Instances.find({
+		where: {
+			isMarkedAsClosed: true
+		},
+		cache: 60 * 1000
+	});
+	if (closedHosts.map(x => x.host).includes(toPuny(host))) {
+		logger.info(`skip (closed) ${job.data.to}`);
+		return;
+	}
 
 	try {
 		if (latest !== (latest = JSON.stringify(job.data.content, null, 2))) {
