@@ -193,6 +193,7 @@ common:
     navbar-position-left: "Z lewej"
     save: "Zapisz"
     saved: "Zapisano"
+    preview: "Pokaż podgląd"
   search: "Szukaj"
   delete: "Usuń"
   loading: "Ładowanie"
