@@ -20,39 +20,26 @@ export async function fetchNodeinfo(instance: Instance) {
 	logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 
 	try {
-		const skip = async () => {
-			logger.info(`Skipped nodeinfo of ${instance.host}`);
-			await Instances.update(instance.id, {
-				infoUpdatedAt: new Date(),
-			});
-		};
-
-		let wellknown: any;
-
-		try {
-			wellknown = await request({
-				url: 'https://' + instance.host + '/.well-known/nodeinfo',
-				proxy: config.proxy,
-				timeout: 1000 * 10,
-				forever: true,
-				headers: {
-					'User-Agent': config.userAgent,
-					Accept: 'application/json'
-				},
-				json: true
-			});
-		} catch (e) {
+		const wellknown = await request({
+			url: 'https://' + instance.host + '/.well-known/nodeinfo',
+			proxy: config.proxy,
+			timeout: 1000 * 10,
+			forever: true,
+			headers: {
+				'User-Agent': config.userAgent,
+				Accept: 'application/json, */*'
+			},
+			json: true
+		}).catch(e => {
 			if (e.statusCode === 404) {
-				await skip();
-				return;
+				throw 'No nodeinfo provided';
 			} else {
-				throw e;
+				throw e.statusCode || e.message;
 			}
-		}
+		});
 
 		if (wellknown.links == null || !Array.isArray(wellknown.links)) {
-			await skip();
-			return;
+			throw 'No wellknown links';
 		}
 
 		const links = wellknown.links as any[];
@@ -63,8 +50,7 @@ export async function fetchNodeinfo(instance: Instance) {
 		const link = lnik2_1 || lnik2_0 || lnik1_0;
 
 		if (link == null) {
-			await skip();
-			return;
+			throw 'No nodeinfo link provided';
 		}
 
 		const info = await request({
@@ -74,9 +60,11 @@ export async function fetchNodeinfo(instance: Instance) {
 			forever: true,
 			headers: {
 				'User-Agent': config.userAgent,
-				Accept: 'application/json'
+				Accept: 'application/json, */*'
 			},
 			json: true
+		}).catch(e => {
+			throw e.statusCode || e.message;
 		});
 
 		await Instances.update(instance.id, {
@@ -84,7 +72,6 @@ export async function fetchNodeinfo(instance: Instance) {
 			softwareName: info.software.name.toLowerCase(),
 			softwareVersion: info.software.version,
 			openRegistrations: info.openRegistrations,
-			metadata: info.metadata,
 			name: info.metadata ? (info.metadata.nodeName || info.metadata.name || null) : null,
 			description: info.metadata ? (info.metadata.nodeDescription || info.metadata.description || null) : null,
 			maintainerName: info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name || null) : null : null,
@@ -94,6 +81,10 @@ export async function fetchNodeinfo(instance: Instance) {
 		logger.succ(`Successfuly fetched nodeinfo of ${instance.host}`);
 	} catch (e) {
 		logger.error(`Failed to fetch nodeinfo of ${instance.host}: ${e}`);
+
+		await Instances.update(instance.id, {
+			infoUpdatedAt: new Date(),
+		});
 	} finally {
 		unlock();
 	}

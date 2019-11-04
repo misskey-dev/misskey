@@ -28,7 +28,6 @@ export class Instance {
 	/**
 	 * インスタンスのユーザー数
 	 */
-	@Index()
 	@Column('integer', {
 		default: 0,
 		comment: 'The count of the users of the Instance.'
@@ -38,7 +37,6 @@ export class Instance {
 	/**
 	 * インスタンスの投稿数
 	 */
-	@Index()
 	@Column('integer', {
 		default: 0,
 		comment: 'The count of the notes of the Instance.'
@@ -48,7 +46,6 @@ export class Instance {
 	/**
 	 * このインスタンスのユーザーからフォローされている、自インスタンスのユーザーの数
 	 */
-	@Index()
 	@Column('integer', {
 		default: 0,
 	})
@@ -57,7 +54,6 @@ export class Instance {
 	/**
 	 * このインスタンスのユーザーをフォローしている、自インスタンスのユーザーの数
 	 */
-	@Index()
 	@Column('integer', {
 		default: 0,
 	})
@@ -66,7 +62,6 @@ export class Instance {
 	/**
 	 * ドライブ使用量
 	 */
-	@Index()
 	@Column('bigint', {
 		default: 0,
 	})
@@ -75,7 +70,6 @@ export class Instance {
 	/**
 	 * ドライブのファイル数
 	 */
-	@Index()
 	@Column('integer', {
 		default: 0,
 	})
@@ -84,7 +78,6 @@ export class Instance {
 	/**
 	 * 直近のリクエスト送信日時
 	 */
-	@Index()
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})
@@ -101,7 +94,6 @@ export class Instance {
 	/**
 	 * 直近のリクエスト受信日時
 	 */
-	@Index()
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})
@@ -110,14 +102,12 @@ export class Instance {
 	/**
 	 * このインスタンスと最後にやり取りした日時
 	 */
-	@Index()
 	@Column('timestamp with time zone')
 	public lastCommunicatedAt: Date;
 
 	/**
 	 * このインスタンスと不通かどうか
 	 */
-	@Index()
 	@Column('boolean', {
 		default: false
 	})
@@ -126,20 +116,17 @@ export class Instance {
 	/**
 	 * このインスタンスが閉鎖済みとしてマークされているか
 	 */
-	@Index()
 	@Column('boolean', {
 		default: false
 	})
 	public isMarkedAsClosed: boolean;
 
-	@Index()
 	@Column('varchar', {
 		length: 64, nullable: true, default: null,
 		comment: 'The software of the Instance.'
 	})
 	public softwareName: string | null;
 
-	@Index()
 	@Column('varchar', {
 		length: 64, nullable: true, default: null,
 	})
@@ -149,11 +136,6 @@ export class Instance {
 		nullable: true, default: null,
 	})
 	public openRegistrations: boolean | null;
-
-	@Column('jsonb', {
-		nullable: true, default: null,
-	})
-	public metadata: Record<string, any> | null;
 
 	@Column('varchar', {
 		length: 256, nullable: true, default: null,
@@ -175,7 +157,6 @@ export class Instance {
 	})
 	public maintainerEmail: string | null;
 
-	@Index()
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})
