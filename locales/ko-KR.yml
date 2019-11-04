@@ -300,6 +300,7 @@ common:
     sync: "동기화"
     save: "저장"
     saved: "저장하였습니다"
+    preview: "미리보기"
     home-profile: "홈 프로필"
     deck-profile: "덱 프로필"
     room: "룸"
