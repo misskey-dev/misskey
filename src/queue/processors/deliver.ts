@@ -18,8 +18,7 @@ export default async (job: Bull.Job) => {
 	// ブロックしてたら中断
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(toPuny(host))) {
-		logger.info(`skip (blocked) ${job.data.to}`);
-		return;
+		return 'skip (blocked)';
 	}
 
 	// closedなら中断
@@ -30,8 +29,7 @@ export default async (job: Bull.Job) => {
 		cache: 60 * 1000
 	});
 	if (closedHosts.map(x => x.host).includes(toPuny(host))) {
-		logger.info(`skip (closed) ${job.data.to}`);
-		return;
+		return 'skip (closed)';
 	}
 
 	try {
@@ -69,8 +67,6 @@ export default async (job: Bull.Job) => {
 		});
 
 		if (res != null && res.hasOwnProperty('statusCode')) {
-			logger.warn(`deliver failed: ${res.statusCode} ${res.statusMessage} to=${job.data.to}`);
-
 			// 4xx
 			if (res.statusCode >= 400 && res.statusCode < 500) {
 				// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
@@ -82,7 +78,6 @@ export default async (job: Bull.Job) => {
 			throw `${res.statusCode} ${res.statusMessage}`;
 		} else {
 			// DNS error, socket error, timeout ...
-			logger.warn(`deliver failed: ${res} to=${job.data.to}`);
 			throw res;
 		}
 	}

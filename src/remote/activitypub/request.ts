@@ -6,12 +6,9 @@ import * as cache from 'lookup-dns-cache';
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { publishApLogStream } from '../../services/stream';
-import { apLogger } from './logger';
 import { UserKeypairs } from '../../models';
 import { ensure } from '../../prelude/ensure';
 import * as httpsProxyAgent from 'https-proxy-agent';
-
-export const logger = apLogger.createSubLogger('deliver');
 
 const agent = config.proxy
 	? new httpsProxyAgent(config.proxy)
@@ -23,8 +20,6 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	const timeout = 10 * 1000;
 
 	const { protocol, hostname, port, pathname, search } = new URL(url);
-
-	logger.info(`--> ${url}`);
 
 	const data = JSON.stringify(object);
 
@@ -52,10 +47,8 @@ export default async (user: ILocalUser, url: string, object: any) => {
 			}
 		}, res => {
 			if (res.statusCode! >= 400) {
-				logger.warn(`${url} --> ${res.statusCode}`);
 				reject(res);
 			} else {
-				logger.succ(`${url} --> ${res.statusCode}`);
 				resolve();
 			}
 		});
