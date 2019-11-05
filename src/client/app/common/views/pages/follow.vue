@@ -76,13 +76,15 @@ export default Vue.extend({
 				this.$root.api('ap/show', {
 					uri: acct
 				}).then((res: { type: string, object: any })  => {
-					if (res.type !== 'User') {
+					if (res.type === 'User') {
+						this.user = res.object;
+					} else if (res.type === 'Note') {
+						this.$router.replace(`/notes/${res.object.id}`);
+					} else {
 						this.$root.dialog({
 							type: 'error',
-							text: 'acct is not an user'
+							text: 'Not supported'
 						});
-					} else {
-						this.user = res.object;
 					}
 				}).catch((e: any) => {
 					this.$root.dialog({
