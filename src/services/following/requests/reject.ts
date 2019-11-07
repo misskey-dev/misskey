@@ -4,7 +4,7 @@ import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
 import { User, ILocalUser } from '../../../models/entities/user';
-import { Users, FollowRequests } from '../../../models';
+import { Users, FollowRequests, Followings } from '../../../models';
 
 export default async function(followee: User, follower: User) {
 	if (Users.isRemoteUser(follower)) {
@@ -18,6 +18,11 @@ export default async function(followee: User, follower: User) {
 	}
 
 	await FollowRequests.delete({
+		followeeId: followee.id,
+		followerId: follower.id
+	});
+
+	await Followings.delete({
 		followeeId: followee.id,
 		followerId: follower.id
 	});
