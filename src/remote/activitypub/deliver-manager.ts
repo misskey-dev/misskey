@@ -31,7 +31,7 @@ export default class DeliverManager {
 	/**
 	 * Constructor
 	 * @param actor Actor
-	 * @param activity Activity to send
+	 * @param activity Activity to deliver
 	 */
 	constructor(actor: ILocalUser, activity: any) {
 		this.actor = actor;
