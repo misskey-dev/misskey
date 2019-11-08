@@ -3,30 +3,30 @@ import { ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { deliver } from '../../queue';
 
 //#region types
-interface IQueue {
+interface IRecipe {
 	type: string;
 }
 
-interface IFollowersQueue extends IQueue {
+interface IFollowersRecipe extends IRecipe {
 	type: 'Followers';
 }
 
-interface IDirectQueue extends IQueue {
+interface IDirectRecipe extends IRecipe {
 	type: 'Direct';
 	to: IRemoteUser;
 }
 
-const isFollowers = (queue: any): queue is IFollowersQueue =>
-	queue.type === 'Followers';
+const isFollowers = (recipe: any): recipe is IFollowersRecipe =>
+	recipe.type === 'Followers';
 
-const isDirect = (queue: any): queue is IDirectQueue =>
-	queue.type === 'Direct';
+const isDirect = (recipe: any): recipe is IDirectRecipe =>
+	recipe.type === 'Direct';
 //#endregion
 
 export default class DeliverManager {
 	private actor: ILocalUser;
 	private activity: any;
-	private queues: IQueue[] = [];
+	private recipes: IRecipe[] = [];
 
 	/**
 	 * Constructor
@@ -39,35 +39,35 @@ export default class DeliverManager {
 	}
 
 	/**
-	 * Add queue for followers deliver
+	 * Add recipe for followers deliver
 	 */
-	public addFollowersQueue() {
+	public addFollowersRecipe() {
 		const deliver = {
 			type: 'Followers'
-		} as IFollowersQueue;
+		} as IFollowersRecipe;
 
-		this.addQueue(deliver);
+		this.addRecipe(deliver);
 	}
 
 	/**
-	 * Add queue for direct deliver
+	 * Add recipe for direct deliver
 	 * @param to To
 	 */
-	public addDirectQueue(to: IRemoteUser) {
-		const queue = {
+	public addDirectRecipe(to: IRemoteUser) {
+		const recipe = {
 			type: 'Direct',
 			to
-		} as IDirectQueue;
+		} as IDirectRecipe;
 
-		this.addQueue(queue);
+		this.addRecipe(recipe);
 	}
 
 	/**
-	 * Add queue
-	 * @param queue Queue
+	 * Add recipe
+	 * @param recipe Recipe
 	 */
-	public addQueue(queue: IQueue) {
-		this.queues.push(queue);
+	public addRecipe(recipe: IRecipe) {
+		this.recipes.push(recipe);
 	}
 
 	/**
@@ -79,8 +79,8 @@ export default class DeliverManager {
 		const inboxes: string[] = [];
 
 		// build inbox list
-		for (const queue of this.queues) {
-			if (isFollowers(queue)) {
+		for (const recipe of this.recipes) {
+			if (isFollowers(recipe)) {
 				// followers deliver
 				const followers = await Followings.find({
 					followeeId: this.actor.id
@@ -92,9 +92,9 @@ export default class DeliverManager {
 						if (!inboxes.includes(inbox)) inboxes.push(inbox);
 					}
 				}
-			} else if (isDirect(queue)) {
+			} else if (isDirect(recipe)) {
 				// direct deliver
-				const inbox = queue.to.inbox;
+				const inbox = recipe.to.inbox;
 				if (inbox && !inboxes.includes(inbox)) inboxes.push(inbox);
 			}
 		}
@@ -114,7 +114,7 @@ export default class DeliverManager {
  */
 export async function deliverToFollowers(actor: ILocalUser, activity: any) {
 	const deliverer = new DeliverManager(actor, activity);
-	deliverer.addFollowersQueue();
+	deliverer.addFollowersRecipe();
 	await deliverer.execute();
 }
 
@@ -125,7 +125,7 @@ export async function deliverToFollowers(actor: ILocalUser, activity: any) {
  */
 export async function deliverToUser(actor: ILocalUser, activity: any, to: IRemoteUser) {
 	const deliverer = new DeliverManager(actor, activity);
-	deliverer.addDirectQueue(to);
+	deliverer.addDirectRecipe(to);
 	await deliverer.execute();
 }
 //#endregion

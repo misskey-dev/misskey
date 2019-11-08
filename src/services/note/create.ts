@@ -300,28 +300,28 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 			// メンションされたリモートユーザーに配送
 			for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
-				dm.addDirectQueue(u as IRemoteUser);
+				dm.addDirectRecipe(u as IRemoteUser);
 			}
 
 			if (Users.isLocalUser(user)) {
 				// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 				if (data.reply && data.reply.userHost !== null) {
 					Users.findOne(data.reply.userId).then(ensure).then(u => {
-						dm.addDirectQueue(u as IRemoteUser);
+						dm.addDirectRecipe(u as IRemoteUser);
 					});
 				}
 
 				// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 				if (data.renote && data.renote.userHost !== null) {
 					Users.findOne(data.renote.userId).then(ensure).then(u => {
-						dm.addDirectQueue(u as IRemoteUser);
+						dm.addDirectRecipe(u as IRemoteUser);
 					});
 				}
 			}
 
 			// フォロワーに配送
 			if (['public', 'home', 'followers'].includes(note.visibility)) {
-				dm.addFollowersQueue();
+				dm.addFollowersRecipe();
 			}
 
 			dm.execute();
