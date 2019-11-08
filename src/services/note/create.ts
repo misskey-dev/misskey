@@ -294,37 +294,35 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 		//#region AP deliver
 		if (Users.isLocalUser(user)) {
-			const noteActivity = await renderNoteOrRenoteActivity(data, note);
+			(async () => {
+				const noteActivity = await renderNoteOrRenoteActivity(data, note);
 
-			const dm = new DeliverManager(user, noteActivity);
+				const dm = new DeliverManager(user, noteActivity);
 
-			// メンションされたリモートユーザーに配送
-			for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
-				dm.addDirectRecipe(u as IRemoteUser);
-			}
+				// メンションされたリモートユーザーに配送
+				for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
+					dm.addDirectRecipe(u as IRemoteUser);
+				}
 
-			if (Users.isLocalUser(user)) {
 				// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
 				if (data.reply && data.reply.userHost !== null) {
-					Users.findOne(data.reply.userId).then(ensure).then(u => {
-						dm.addDirectRecipe(u as IRemoteUser);
-					});
+					const u = await Users.findOne(data.reply.userId);
+					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
 				}
 
 				// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
 				if (data.renote && data.renote.userHost !== null) {
-					Users.findOne(data.renote.userId).then(ensure).then(u => {
-						dm.addDirectRecipe(u as IRemoteUser);
-					});
+					const u = await Users.findOne(data.renote.userId);
+					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
 				}
-			}
 
-			// フォロワーに配送
-			if (['public', 'home', 'followers'].includes(note.visibility)) {
-				dm.addFollowersRecipe();
-			}
+				// フォロワーに配送
+				if (['public', 'home', 'followers'].includes(note.visibility)) {
+					dm.addFollowersRecipe();
+				}
 
-			dm.execute();
+				dm.execute();
+			})();
 		}
 		//#endregion
 	}
