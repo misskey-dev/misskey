@@ -296,7 +296,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		if (Users.isLocalUser(user)) {
 			(async () => {
 				const noteActivity = await renderNoteOrRenoteActivity(data, note);
-
 				const dm = new DeliverManager(user, noteActivity);
 
 				// メンションされたリモートユーザーに配送
