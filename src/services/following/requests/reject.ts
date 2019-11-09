@@ -4,7 +4,8 @@ import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
 import { publishMainStream } from '../../stream';
 import { User, ILocalUser } from '../../../models/entities/user';
-import { Users, FollowRequests } from '../../../models';
+import { Users, FollowRequests, Followings } from '../../../models';
+import { decrementFollowing } from '../delete';
 
 export default async function(followee: User, follower: User) {
 	if (Users.isRemoteUser(follower)) {
@@ -17,10 +18,24 @@ export default async function(followee: User, follower: User) {
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
-	await FollowRequests.delete({
+	const request = await FollowRequests.findOne({
 		followeeId: followee.id,
 		followerId: follower.id
 	});
+
+	if (request) {
+		await FollowRequests.delete(request.id);
+	} else {
+		const following = await Followings.findOne({
+			followeeId: followee.id,
+			followerId: follower.id
+		});
+
+		if (following) {
+			await Followings.delete(following.id);
+			decrementFollowing(follower, followee);
+		}
+	}
 
 	Users.pack(followee, follower, {
 		detail: true
