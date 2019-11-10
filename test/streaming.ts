@@ -16,29 +16,18 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { connectStream, signup, request, post } from './utils';
-import { Following } from '../built/models/entities/following';
-const initDb = require('../built/db/postgre.js').initDb;
+import { connectStream, signup, request, post, launchServer } from './utils';
+import { Following } from '../src/models/entities/following';
+import { initDb } from '../src/db/postgre';
 
 describe('Streaming', () => {
 	let p: childProcess.ChildProcess;
 	let Followings: any;
 
-	beforeEach(done => {
-		p = childProcess.spawn('node', [__dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test' }
-		});
-		p.on('message', message => {
-			if (message === 'ok') {
-				(p.channel as any).onread = () => {};
-				initDb(true).then(async (connection: any) => {
-					Followings = connection.getRepository(Following);
-					done();
-				});
-			}
-		});
-	});
+	beforeEach(launchServer(g => p = g, async () => {
+		const connection = await initDb(true);
+		Followings = connection.getRepository(Following);
+	}));
 
 	afterEach(() => {
 		p.kill();

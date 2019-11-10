@@ -1,5 +1,5 @@
 url: 'http://misskey.local'
-port: 80
+port: 8080
 db:
   host: localhost
   port: 5432

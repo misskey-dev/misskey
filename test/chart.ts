@@ -17,14 +17,18 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as lolex from 'lolex';
 import { async } from './utils';
-import { getConnection, createConnection } from 'typeorm';
-const config = require('../built/config').default;
-const Chart = require('../built/services/chart/core').default;
-const _TestChart = require('../built/services/chart/charts/schemas/test');
-const _TestGroupedChart = require('../built/services/chart/charts/schemas/test-grouped');
-const _TestUniqueChart = require('../built/services/chart/charts/schemas/test-unique');
+import TestChart from '../src/services/chart/charts/classes/test';
+import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
+import TestUniqueChart from '../src/services/chart/charts/classes/test-unique';
+import * as _TestChart from '../src/services/chart/charts/schemas/test';
+import * as _TestGroupedChart from '../src/services/chart/charts/schemas/test-grouped';
+import * as _TestUniqueChart from '../src/services/chart/charts/schemas/test-unique';
+import { Connection, getConnection, createConnection } from 'typeorm';
+import config from '../src/config';
+import Chart from '../src/services/chart/core';
+import { initDb } from '../src/db/postgre';
 
-function initDb() {
+function initChartDb() {
 	try {
 		const conn = getConnection();
 		return Promise.resolve(conn);
@@ -51,37 +55,37 @@ describe('Chart', () => {
 	let testChart: any;
 	let testGroupedChart: any;
 	let testUniqueChart: any;
-	let connection: any;
 	let clock: lolex.InstalledClock<lolex.Clock>;
+	let connection: Connection;
 
 	before(done => {
-		initDb().then(c => {
+		initChartDb().then(c => {
 			connection = c;
 			done();
 		});
 	});
 
+	after(async(async () => {
+		await connection.close();
+		await initDb(true, undefined, undefined, true);
+	}));
+
 	beforeEach(done => {
-		const TestChart = require('../built/services/chart/charts/classes/test').default;
 		testChart = new TestChart();
-
-		const TestGroupedChart = require('../built/services/chart/charts/classes/test-grouped').default;
 		testGroupedChart = new TestGroupedChart();
-
-		const TestUniqueChart = require('../built/services/chart/charts/classes/test-unique').default;
 		testUniqueChart = new TestUniqueChart();
 
 		clock = lolex.install({
 			now: new Date('2000-01-01 00:00:00')
 		});
-
-		connection.synchronize().then(done);
+		done();
 	});
 
-	afterEach(done => {
+	afterEach(async(async () => {
 		clock.uninstall();
-		connection.dropDatabase().then(done);
-	});
+		await connection.dropDatabase();
+		await connection.synchronize();
+	}));
 
 	it('Can updates', async(async () => {
 		await testChart.increment();
