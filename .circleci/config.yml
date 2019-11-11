@@ -1,76 +1,12 @@
 version: 2.1
 
 executors:
-  default:
-    working_directory: /tmp/workspace
-    docker:
-      - image: misskey/ci:v11-node11
-      - image: circleci/redis:latest
-      - image: circleci/postgres:latest
   docker:
     working_directory: /tmp/workspace
     docker:
       - image: docker:latest
 
 jobs:
-  build:
-    executor: default
-    steps:
-      - checkout
-      - run:
-          name: Ensure yarn.lock
-          command: |
-            touch yarn.lock
-      - restore_cache:
-          name: Restore npm package caches
-          keys:
-            - yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
-            - yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-
-            - yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-
-            - yarn-v1-arch-{{ arch }}-
-            - yarn-v1-
-      - run:
-          name: Install Dependencies
-          command: |
-            yarn install
-      - run:
-          name: Configure
-          command: |
-            cp .circleci/misskey/default.yml .config
-            cp .circleci/misskey/test.yml .config
-      - run:
-          name: Build
-          command: |
-            yarn build
-            touch yarn.lock
-      - save_cache:
-          name: Cache npm packages
-          key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-  test:
-    parameters:
-      executor:
-        type: string
-        default: "default"
-    executor: <<parameters.executor>>
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Test
-          command: |
-            yarn test
-            touch yarn.lock
-      - save_cache:
-          name: Cache npm packages
-          key: yarn-v1-arch-{{ arch }}-env-{{ .Environment.variableName }}-package-{{ checksum "package.json" }}-lock-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules
   docker:
     parameters:
       with_deploy:
@@ -102,55 +38,8 @@ jobs:
 
 workflows:
   version: 2
-  nodejs:
-    jobs:
-      - hold:
-          name: manual-build-trigger
-          type: approval
-          filters:
-            branches:
-              ignore: master
-      - build:
-          name: manual-build
-          requires:
-            - manual-build-trigger
-          filters:
-            branches:
-              ignore: master
-      - build:
-          name: auto-build
-          filters:
-            branches:
-              only: master
-      - test:
-          name: manual-test
-          requires:
-            - manual-build
-          filters:
-            branches:
-              ignore: master
-      - test:
-          name: auto-test
-          requires:
-            - auto-build
-          filters:
-            branches:
-              only: master
   docker:
     jobs:
-      - hold:
-          name: manual-build-trigger
-          type: approval
-          filters:
-            branches:
-              ignore: master
-      - docker:
-          name: manual-build
-          requires:
-            - manual-build-trigger
-          filters:
-            branches:
-              ignore: master
       - docker:
           name: auto-build
           with_deploy: true
