@@ -400,6 +400,7 @@ common/views/components/games/reversi/reversi.index.vue:
   invite: "Pozvat"
   rule: "Jak hrát"
   mode-invite: "Pozvat"
+  invitations: "Jste pozvaní ke hře!"
   my-games: "Moje hra"
   all-games: "Všechny hry"
   enter-username: "Zadejte své uživatelské jméno"
