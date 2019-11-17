@@ -4,7 +4,6 @@ import config from '../../../config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId } from '../type';
-import { DriveFile } from '../../../models/entities/drive-file';
 import { fromHtml } from '../../../mfm/fromHtml';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
