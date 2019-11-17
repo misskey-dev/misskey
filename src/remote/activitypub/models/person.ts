@@ -212,7 +212,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const avatarId = avatar ? avatar.id : null;
 	const bannerId = banner ? banner.id : null;
-	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar) : null;
+	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar, true) : null;
 	const bannerUrl = banner ? DriveFiles.getPublicUrl(banner) : null;
 	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	const bannerColor = banner && banner.properties.avgColor ? banner.properties.avgColor : null;
@@ -326,7 +326,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	if (avatar) {
 		updates.avatarId = avatar.id;
-		updates.avatarUrl = DriveFiles.getPublicUrl(avatar);
+		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
 		updates.avatarColor = avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	}
 
