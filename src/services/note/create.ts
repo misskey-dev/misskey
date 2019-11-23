@@ -244,7 +244,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const nm = new NotificationManager(user, note);
 		const nmRelatedPromises = [];
 
-		createMentionedEvents(mentionedUsers, note, nm);
+		await createMentionedEvents(mentionedUsers, note, nm);
 
 		const profile = await UserProfiles.findOne(user.id).then(ensure);
 
