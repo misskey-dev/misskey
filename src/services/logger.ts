@@ -1,6 +1,6 @@
 import * as cluster from 'cluster';
 import * as os from 'os';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import * as dateformat from 'dateformat';
 import { program } from '../argv';
 import { getRepository } from 'typeorm';

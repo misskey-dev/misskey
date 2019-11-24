@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as webpack from 'webpack';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');

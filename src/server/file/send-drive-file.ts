@@ -8,12 +8,12 @@ import { InternalStorage } from '../../services/drive/internal-storage';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
-const commonReadableHandlerGenerator = (ctx: Koa.BaseContext) => (e: Error): void => {
+const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
 	serverLogger.error(e);
 	ctx.status = 500;
 };
 
-export default async function(ctx: Koa.BaseContext) {
+export default async function(ctx: Koa.Context) {
 	const key = ctx.params.key;
 
 	// Fetch drive file
