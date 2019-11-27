@@ -16,6 +16,8 @@ common:
     ui: "Interfaz"
     ui-desc: "No hay ninguna interfaz que le vaya bien a todos. Por eso, Misskey tiene una interfaz altamente personalizable para tus gustos. Puedes hacer tu página principal única editando la interfaz de tu timeline y moviendo varios widgets para conseguir hacer de este lugar uno propio."
     drive: "Drive"
+    drive-desc: "¿Quieres postear de nuevo la imagen que has posteado antes? Si es así, ¿Quieres separar y ordenar en carpetas los archivos que has subido? La característica Drive incorporada en la base de Misskey es la solución. Compartir archivos es simple."
+    outro: "Aún hay características que solamente están en Misskey, asegúrate de eso con tus propios ojos. Misskey es un servicio de red social distribuida, si no te gusta esta instancia, puedes probar otra instancia. Así que, ¡buena suerte!"
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
   do-not-copy-paste: "Por favor no copies código aquí. Tu cuenta puede resultar comprometida."
