@@ -49,6 +49,7 @@ common:
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
+    paragraph: "<p>Se puede personalizar el inicio agregando/quitando widgets, arrastrarlos, soltarlos y ordenarlos.</p><p>Haciendo <strong>Click <strong>derecho</strong></strong>, se puede modificar la muestra de un widget</p><p>Para quitar un widget, arrastre y suelte el widget en el area que dice <strong>\"Papelera\"</strong> en el cabezal</p><p>Para acabar de personalizar, haga click en \"Listo\" arriba a la derecha</p>"
     gotit: "¡Comprendido!"
   notification:
     file-uploaded: "Archivo cargado."
