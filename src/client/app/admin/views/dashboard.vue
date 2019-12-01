@@ -115,7 +115,6 @@ export default Vue.extend({
 			connection: null,
 			meta: null,
 			instances: [],
-			clock: null,
 			faDatabase
 		};
 	},
@@ -124,7 +123,6 @@ export default Vue.extend({
 		this.connection = this.$root.stream.useSharedConnection('serverStats');
 
 		this.updateStats();
-		this.clock = setInterval(this.updateStats, 3000);
 
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
@@ -145,7 +143,6 @@ export default Vue.extend({
 
 	beforeDestroy() {
 		this.connection.dispose();
-		clearInterval(this.clock);
 	},
 
 	methods: {
