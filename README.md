@@ -109,6 +109,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c8.patreon.com/2/200/776209" alt="Denshi" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/557245" alt="mkatze" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/23915207/25428766ecd745478e600b3d7f871eb2/1.png?token-time=2145916800&token-hash=urCLLA4KjJZX92Y1CxcBP4d8bVTHGkiaPnQZp-Tqz68%3D" alt="kabo2468y" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/8249688/4aacf36b6b244ab1bc6653591b6640df/1.png?token-time=2145916800&token-hash=fDmUDKfKvuHIqJsdOKumvVYCABAwGWglfcPgU21t3Dg%3D" alt="Aureole Ark" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/user?u=20010324">Nemo</a></td>
 <td><a href="https://www.patreon.com/weepjp">weepjp</a></td>
@@ -116,6 +117,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=776209">Denshi</a></td>
 <td><a href="https://www.patreon.com/user?u=557245">mkatze</a></td>
 <td><a href="https://www.patreon.com/user?u=23915207">kabo2468y</a></td>
+<td><a href="https://www.patreon.com/AureoleArk">Aureole Ark</a></td>
 </tr></table>
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5670915/ee175f0bfb6347ffa4ea101a8c097bff/1.jpg?token-time=2145916800&token-hash=mPLM9CA-riFHx-myr3bLZJuH2xBRHA9se5VbHhLIOuA%3D" alt="osapon" width="100"></td>
@@ -169,7 +171,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Mon, 25 Nov 2019 07:51:05 UTC
+**Last updated:** Sun, 01 Dec 2019 06:58:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
