@@ -70,7 +70,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere(`note.renoteId = :renoteId`, { renoteId: note.id })
 		.leftJoinAndSelect('note.user', 'user');
 
-	if (user) generateVisibilityQuery(query, user);
+	generateVisibilityQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
 	const renotes = await query.take(ps.limit!).getMany();
