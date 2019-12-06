@@ -7,13 +7,13 @@ import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
 const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
-const cssnano = require('gulp-cssnano');
 const stylus = require('gulp-stylus');
 import * as rimraf from 'rimraf';
 import * as chalk from 'chalk';
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
+const cleanCSS = require('gulp-clean-css');
 const terser = require('gulp-terser');
 
 const locales = require('./locales');
@@ -107,7 +107,7 @@ gulp.task('build:client:script', () => {
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/client/app/init.css')
 		.pipe(isProduction
-			? (cssnano as any)()
+			? cleanCSS()
 			: gutil.noop())
 		.pipe(gulp.dest('./built/client/assets/'))
 );
@@ -127,7 +127,7 @@ gulp.task('copy:client', () =>
 gulp.task('doc', () =>
 	gulp.src('./src/docs/**/*.styl')
 		.pipe(stylus())
-		.pipe((cssnano as any)())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('./built/docs/assets/'))
 );
 
