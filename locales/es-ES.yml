@@ -894,6 +894,7 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/timeline.vue:
   home: "Inicio"
   local: "Local"
+  hybrid: "Social"
   global: "Global"
   list: "Listas"
   hashtag: "Hashtags"
@@ -1032,6 +1033,8 @@ admin/views/federation.vue:
     day: "Por día"
   blocked-hosts: "Bloquear"
   save: "Guardar"
+desktop/views/pages/welcome.vue:
+  timeline: "Timeline"
 desktop/views/pages/selectdrive.vue:
   cancel: "Cancelar"
 desktop/views/pages/user-list.users.vue:
@@ -1046,6 +1049,11 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "lunes"
   day: "domingo"
+desktop/views/pages/user/user.timeline.vue:
+  default: "Posts"
+  with-replies: "Posts y respuestas"
+  with-media: "Multimedia"
+  my-posts: "Mis posts"
 desktop/views/widgets/notifications.vue:
   title: "Notificaciones"
 desktop/views/widgets/polls.vue:
@@ -1092,6 +1100,7 @@ mobile/views/components/ui.header.vue:
   welcome-back: "Bienvenido/a de vuelta,"
   adjective: "-san"
 mobile/views/components/ui.nav.vue:
+  timeline: "Timeline"
   notifications: "Notificaciones"
   follow-requests: "Solicitudes de seguimiento"
   search: "Buscar"
@@ -1106,6 +1115,7 @@ mobile/views/pages/drive.vue:
 mobile/views/pages/home.vue:
   home: "Inicio"
   local: "Local"
+  hybrid: "Social"
   global: "Global"
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
@@ -1119,6 +1129,8 @@ mobile/views/pages/search.vue:
   search: "Buscar"
 mobile/views/pages/notifications.vue:
   notifications: "Notificaciones"
+mobile/views/pages/user.vue:
+  timeline: "Timeline"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
 mobile/views/pages/user/home.photos.vue:
@@ -1126,6 +1138,7 @@ mobile/views/pages/user/home.photos.vue:
 deck:
   home: "Inicio"
   local: "Local"
+  hybrid: "Social"
   hashtag: "Etiquetas"
   global: "Global"
   notifications: "Notificaciones"
@@ -1133,6 +1146,7 @@ deck:
   rename: "Renombrar"
 deck/deck.user-column.vue:
   activity: "Actividad"
+  timeline: "Timeline"
 pages:
   pin-this-page: "Fijar en el perfil"
   like: "Me gusta"
