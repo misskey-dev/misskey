@@ -26,8 +26,6 @@ const router = new Router();
 function inbox(ctx: Router.RouterContext) {
 	let signature;
 
-	ctx.req.headers.authorization = `Signature ${ctx.req.headers.signature}`;
-
 	try {
 		signature = httpSignature.parseRequest(ctx.req, { 'headers': [] });
 	} catch (e) {

@@ -60,11 +60,6 @@ export default async (user: ILocalUser, url: string, object: any) => {
 			headers: ['date', 'host', 'digest']
 		});
 
-		// Signature: Signature ... => Signature: ...
-		let sig = req.getHeader('Signature')!.toString();
-		sig = sig.replace(/^Signature /, '');
-		req.setHeader('Signature', sig);
-
 		req.on('timeout', () => req.abort());
 
 		req.on('error', e => {
