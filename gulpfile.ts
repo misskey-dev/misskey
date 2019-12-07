@@ -3,7 +3,6 @@
  */
 
 import * as gulp from 'gulp';
-import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
 const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
@@ -19,8 +18,7 @@ const terser = require('gulp-terser');
 const locales = require('./locales');
 
 const env = process.env.NODE_ENV || 'development';
-const isProduction = env === 'production';
-const isDebug = !isProduction;
+const isDebug = env !== 'production';
 
 if (isDebug) {
 	console.warn(chalk.yellow.bold('WARNING! NODE_ENV is not "production".'));
@@ -98,17 +96,15 @@ gulp.task('build:client:script', () => {
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
 		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
-		.pipe(isProduction ? terser({
+		.pipe(terser({
 			toplevel: true
-		}) : gutil.noop())
+		}))
 		.pipe(gulp.dest('./built/client/assets/'));
 });
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/client/app/init.css')
-		.pipe(isProduction
-			? cleanCSS()
-			: gutil.noop())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('./built/client/assets/'))
 );
 
