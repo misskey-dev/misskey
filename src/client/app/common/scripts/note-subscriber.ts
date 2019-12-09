@@ -19,8 +19,8 @@ export default prop => ({
 				this.$_ns_note_.poll == null);
 		},
 
-		$_ns_target(): any {
-			return this.$_ns_isRenote ? this.$_ns_note_.renote : this.$_ns_note_;
+		$_ns_targets(): any {
+			return this.$_ns_isRenote ? [this.$_ns_note_, this.$_ns_note_.renote] : [this.$_ns_note_];
 		},
 	},
 
@@ -49,28 +49,32 @@ export default prop => ({
 	methods: {
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
-				const data = {
-					id: this.$_ns_target.id
-				} as any;
+				for (const note of this.$_ns_targets) {
+					const data = {
+						id: note.id
+					} as any;
 
-				if (
-					(this.$_ns_target.visibleUserIds || []).includes(this.$store.state.i.id) ||
-					(this.$_ns_target.mentions || []).includes(this.$store.state.i.id)
-				) {
-					data.read = true;
+					if (
+						(note.visibleUserIds || []).includes(this.$store.state.i.id) ||
+						(note.mentions || []).includes(this.$store.state.i.id)
+					) {
+						data.read = true;
+					}
+
+					this.connection.send('sn', data);
+					if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 				}
-
-				this.connection.send('sn', data);
-				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
 
 		decapture(withHandler = false) {
-			if (this.$store.getters.isSignedIn) {
-				this.connection.send('un', {
-					id: this.$_ns_target.id
-				});
-				if (withHandler) this.connection.off('noteUpdated', this.onStreamNoteUpdated);
+			for (const note of this.$_ns_targets) {
+				if (this.$store.getters.isSignedIn) {
+					this.connection.send('un', {
+						id: note.id
+					});
+					if (withHandler) this.connection.off('noteUpdated', this.onStreamNoteUpdated);
+				}
 			}
 		},
 
@@ -81,25 +85,26 @@ export default prop => ({
 		onStreamNoteUpdated(data) {
 			const { type, id, body } = data;
 
-			if (id !== this.$_ns_target.id) return;
+			const note = this.$_ns_targets.find(note => note.id === id);
+			if (!note) return;
 
 			switch (type) {
 				case 'reacted': {
 					const reaction = body.reaction;
 
-					if (this.$_ns_target.reactions == null) {
-						Vue.set(this.$_ns_target, 'reactions', {});
+					if (note.reactions == null) {
+						Vue.set(note, 'reactions', {});
 					}
 
-					if (this.$_ns_target.reactions[reaction] == null) {
-						Vue.set(this.$_ns_target.reactions, reaction, 0);
+					if (note.reactions[reaction] == null) {
+						Vue.set(note.reactions, reaction, 0);
 					}
 
 					// Increment the count
-					this.$_ns_target.reactions[reaction]++;
+					note.reactions[reaction]++;
 
 					if (body.userId == this.$store.state.i.id) {
-						Vue.set(this.$_ns_target, 'myReaction', reaction);
+						Vue.set(note, 'myReaction', reaction);
 					}
 					break;
 				}
@@ -107,40 +112,40 @@ export default prop => ({
 				case 'unreacted': {
 					const reaction = body.reaction;
 
-					if (this.$_ns_target.reactions == null) {
+					if (note.reactions == null) {
 						return;
 					}
 
-					if (this.$_ns_target.reactions[reaction] == null) {
+					if (note.reactions[reaction] == null) {
 						return;
 					}
 
 					// Decrement the count
-					if (this.$_ns_target.reactions[reaction] > 0) this.$_ns_target.reactions[reaction]--;
+					if (note.reactions[reaction] > 0) note.reactions[reaction]--;
 
 					if (body.userId == this.$store.state.i.id) {
-						Vue.set(this.$_ns_target, 'myReaction', null);
+						Vue.set(note, 'myReaction', null);
 					}
 					break;
 				}
 
 				case 'pollVoted': {
 					const choice = body.choice;
-					this.$_ns_target.poll.choices[choice].votes++;
+					note.poll.choices[choice].votes++;
 					if (body.userId == this.$store.state.i.id) {
-						Vue.set(this.$_ns_target.poll.choices[choice], 'isVoted', true);
+						Vue.set(note.poll.choices[choice], 'isVoted', true);
 					}
 					break;
 				}
 
 				case 'deleted': {
-					Vue.set(this.$_ns_target, 'deletedAt', body.deletedAt);
-					Vue.set(this.$_ns_target, 'renote', null);
-					this.$_ns_target.text = null;
-					this.$_ns_target.fileIds = [];
-					this.$_ns_target.poll = null;
-					this.$_ns_target.geo = null;
-					this.$_ns_target.cw = null;
+					Vue.set(note, 'deletedAt', body.deletedAt);
+					Vue.set(note, 'renote', null);
+					note.text = null;
+					note.fileIds = [];
+					note.poll = null;
+					note.geo = null;
+					note.cw = null;
 					break;
 				}
 			}

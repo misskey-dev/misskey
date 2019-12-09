@@ -9,7 +9,7 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import { url } from '../../../config';
 import copyToClipboard from '../../../common/scripts/copy-to-clipboard';
-import { faCopy, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { faCopy, faEye, faEyeSlash, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	i18n: i18n('common/views/components/note-menu.vue'),
@@ -39,11 +39,11 @@ export default Vue.extend({
 					icon: 'link',
 					text: this.$t('copy-link'),
 					action: this.copyLink
-				}, this.note.uri ? {
+				}, this.appearNote.uri ? {
 					icon: 'external-link-square-alt',
 					text: this.$t('remote'),
 					action: () => {
-						window.open(this.note.uri, '_blank');
+						window.open(this.appearNote.uri, '_blank');
 					}
 				} : undefined,
 				null,
@@ -56,7 +56,7 @@ export default Vue.extend({
 					text: this.$t('favorite'),
 					action: () => this.toggleFavorite(true)
 				},
-				this.note.userId != this.$store.state.i.id ? this.isWatching ? {
+				this.appearNote.userId != this.$store.state.i.id ? this.isWatching ? {
 					icon: faEyeSlash,
 					text: this.$t('unwatch'),
 					action: () => this.toggleWatch(false)
@@ -65,7 +65,7 @@ export default Vue.extend({
 					text: this.$t('watch'),
 					action: () => this.toggleWatch(true)
 				} : undefined,
-				this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
+				this.appearNote.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
 					icon: 'thumbtack',
 					text: this.$t('unpin'),
 					action: () => this.togglePin(false)
@@ -74,9 +74,16 @@ export default Vue.extend({
 					text: this.$t('pin'),
 					action: () => this.togglePin(true)
 				} : undefined,
-				...(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
-					null,
-					this.note.userId == this.$store.state.i.id ? {
+				(this.appearNote.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator)
+					|| this.isRenote && this.note.userId == this.$store.state.i.id
+				? null : undefined,
+				this.isRenote && this.note.userId == this.$store.state.i.id ? {
+					icon: faMinusSquare,
+					text: this.$t('unrenote'),
+					action: () => this.del(false)
+				} : undefined,
+				...(this.appearNote.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
+					this.appearNote.userId == this.$store.state.i.id ? {
 						icon: 'undo-alt',
 						text: this.$t('delete-and-edit'),
 						action: this.deleteAndEdit
@@ -102,21 +109,32 @@ export default Vue.extend({
 					icon: 'link',
 					text: this.$t('copy-link'),
 					action: this.copyLink
-				}, this.note.uri ? {
+				}, this.appearNote.uri ? {
 					icon: 'external-link-square-alt',
 					text: this.$t('remote'),
 					action: () => {
-						window.open(this.note.uri, '_blank');
+						window.open(this.appearNote.uri, '_blank');
 					}
 				} : undefined]
 				.filter(x => x !== undefined);
 			}
+		},
+
+		isRenote(): boolean {
+			return (this.note.renote &&
+				this.note.text == null &&
+				this.note.fileIds.length == 0 &&
+				this.note.poll == null);
+		},
+
+		appearNote(): any {
+			return this.isRenote ? this.note.renote : this.note;
 		}
 	},
 
 	created() {
 		this.$root.api('notes/state', {
-			noteId: this.note.id
+			noteId: this.appearNote.id
 		}).then(state => {
 			this.isFavorited = state.isFavorited;
 			this.isWatching = state.isWatching;
@@ -125,15 +143,15 @@ export default Vue.extend({
 
 	methods: {
 		mention() {
-			this.$post({ mention: this.note.user });
+			this.$post({ mention: this.appearNote.user });
 		},
 
 		detail() {
-			this.$router.push(`/notes/${this.note.id}`);
+			this.$router.push(`/notes/${this.appearNote.id}`);
 		},
 
 		copyContent() {
-			copyToClipboard(this.note.text);
+			copyToClipboard(this.appearNote.text);
 			this.$root.dialog({
 				type: 'success',
 				splash: true
@@ -141,7 +159,7 @@ export default Vue.extend({
 		},
 
 		copyLink() {
-			copyToClipboard(`${url}/notes/${this.note.id}`);
+			copyToClipboard(`${url}/notes/${this.appearNote.id}`);
 			this.$root.dialog({
 				type: 'success',
 				splash: true
@@ -150,7 +168,7 @@ export default Vue.extend({
 
 		togglePin(pin: boolean) {
 			this.$root.api(pin ? 'i/pin' : 'i/unpin', {
-				noteId: this.note.id
+				noteId: this.appearNote.id
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
@@ -167,16 +185,16 @@ export default Vue.extend({
 			});
 		},
 
-		del() {
+		del(appear: boolean = true) {
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('delete-confirm'),
+				text: appear ? this.$t('@.delete-confirm') : this.$t('@.unrenote-confirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
 				this.$root.api('notes/delete', {
-					noteId: this.note.id
+					noteId: this[appear ? 'appearNote' : 'note'].id
 				}).then(() => {
 					this.destroyDom();
 				});
@@ -191,20 +209,20 @@ export default Vue.extend({
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				this.$root.api('notes/delete', {
-					noteId: this.note.id
+					noteId: this.appearNote.id
 				}).then(() => {
 					this.destroyDom();
 				});
 				this.$post({
-					initialNote: this.note,
-					reply: this.note.reply,
+					initialNote: this.appearNote,
+					reply: this.appearNote.reply,
 				});
 			});
 		},
 
 		toggleFavorite(favorite: boolean) {
 			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
-				noteId: this.note.id
+				noteId: this.appearNote.id
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
@@ -216,7 +234,7 @@ export default Vue.extend({
 
 		toggleWatch(watch: boolean) {
 			this.$root.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
-				noteId: this.note.id
+				noteId: this.appearNote.id
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',

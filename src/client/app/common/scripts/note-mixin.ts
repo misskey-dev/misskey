@@ -71,12 +71,12 @@ export default (opts: Opts = {}) => ({
 		},
 
 		isMyNote(): boolean {
-			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
 		},
 
 		reactionsCount(): number {
 			return this.appearNote.reactions
-				? sum(Object.values(this.appearNote.reactions))
+				? sum(Object.values(this.note.reactions))
 				: 0;
 		},
 
@@ -187,15 +187,17 @@ export default (opts: Opts = {}) => ({
 		},
 
 		del() {
+			if (!(this.note.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator)) return;
+
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('@.delete-confirm'),
+				text: this.isRenote ? this.$t('@.unrenote-confirm') : this.$t('@.delete-confirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
 				this.$root.api('notes/delete', {
-					noteId: this.appearNote.id
+					noteId: this.note.id
 				});
 			});
 		},
@@ -205,7 +207,7 @@ export default (opts: Opts = {}) => ({
 			this.openingMenu = true;
 			const w = this.$root.new(MkNoteMenu, {
 				source: this.$refs.menuButton,
-				note: this.appearNote,
+				note: this.note,
 				animation: !viaKeyboard
 			}).$once('closed', () => {
 				this.openingMenu = false;
