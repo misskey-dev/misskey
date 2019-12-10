@@ -162,16 +162,8 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	// 引用
 	let quote: Note | undefined | null;
 
-	if (note._misskey_quote && typeof note._misskey_quote == 'string') {
-		quote = await resolveNote(note._misskey_quote).catch(e => {
-			// 4xxの場合は引用してないことにする
-			if (e.statusCode >= 400 && e.statusCode < 500) {
-				logger.warn(`Ignored quote target ${note.inReplyTo} - ${e.statusCode} `);
-				return null;
-			}
-			logger.warn(`Error in quote target ${note.inReplyTo} - ${e.statusCode || e}`);
-			throw e;
-		});
+	if (note._misskey_quote || note.quoteUrl) {
+		quote = await resolveNote((note._misskey_quote || note.quoteUrl)!).catch(() => null);
 	}
 
 	const cw = note.summary === '' ? null : note.summary;
