@@ -164,7 +164,10 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	if (note._misskey_quote || note.quoteUrl) {
 		const tryResolveNote = async (uri: string): Promise<{
-			status: 'ok' | 'permerror' | 'temperror';
+			status: 'ok';
+			res: Note | null;
+		} | {
+			status: 'permerror' | 'temperror';
 			res?: Note | null;
 		}> => {
 			if (typeof uri !== 'string' || !uri.match(/^https?:/)) return { status: 'permerror' };
