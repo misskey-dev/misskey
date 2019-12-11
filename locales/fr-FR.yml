@@ -96,6 +96,7 @@ common:
     "read:messaging": "Lire les conversations"
     "write:messaging": "Utiliser la messagerie"
     "read:mutes": "Voir les comptes masqués"
+    "write:mutes": "Gérer les comptes muets"
     "write:notes": "Créer ou supprimer des publications"
     "read:notifications": "Afficher les notifications"
     "write:notifications": "Gérer vos notifications"
