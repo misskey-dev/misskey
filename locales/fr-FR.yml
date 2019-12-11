@@ -1907,6 +1907,7 @@ pages:
       list: "Listes"
     blocks:
       text: "Texte"
+      multiLineText: "Texte (Multi-lignes)"
       textList: "Liste de texte"
       strLen: "Longueur du texte"
       _strLen:
@@ -1975,6 +1976,7 @@ pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Branche"
       _if:
         arg1: "Si"
         arg2: "donc"
@@ -1992,6 +1994,7 @@ pages:
       randomPick: "Choisir aléatoirement depuis la liste"
       _randomPick:
         arg1: "Listes"
+      dailyRandom: "Aléatoire (Quotidien pour chaque utilisateur)"
       _dailyRandom:
         arg1: "Probabilité"
       _dailyRannum:
@@ -2012,12 +2015,14 @@ pages:
       _seedRandomPick:
         arg1: "Graine"
         arg2: "Listes"
+      DRPWPM: "Sélection aléatoire à partir d'une liste pondérée (mise à jour quotidienne par utilisateur)"
       _DRPWPM:
         arg1: "Liste de texte"
       pick: "Sélectionner dans la liste"
       _pick:
         arg1: "Listes"
         arg2: "Position"
+      listLen: "Longueur de la liste"
       _listLen:
         arg1: "Listes"
       number: "Numérique"
@@ -2027,12 +2032,14 @@ pages:
       numberToString: "Chiffres en chaîne"
       _numberToString:
         arg1: "Numérique"
+      splitStrByLine: "Séparer le texte par lignes"
       _splitStrByLine:
         arg1: "Texte"
       ref: "Variables"
       fn: "Fonction"
       _fn:
         slots: "Emplacement"
+        slots-info: "Veuillez délimiter chaque emplacement par un saut de ligne"
         arg1: "Sortie"
       for: "Répéter"
       _for:
