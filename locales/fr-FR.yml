@@ -1064,6 +1064,7 @@ desktop/views/components/settings.2fa.vue:
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
   totp-header: "Application d'authentification"
   security-key-header: "Clé de sécurité"
+  security-key: "Pour plus de sécurité, vous pouvez vous connecter à votre compte à l'aide d'une clé de sécurité matérielle qui prend en charge FIDO2. Lorsque vous vous connecterez, vous aurez besoin de la clé de sécurité enregistrée ou d'une application d'authentification avec vous."
   last-used: "Dernière utilisation :"
   activate-key: "Cliquez pour activer la clé de sécurité"
   security-key-name: "Nom de la clé"
