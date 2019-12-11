@@ -168,7 +168,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 			res: Note | null;
 		} | {
 			status: 'permerror' | 'temperror';
-			res?: Note | null;
 		}> => {
 			if (typeof uri !== 'string' || !uri.match(/^https?:/)) return { status: 'permerror' };
 			try {
