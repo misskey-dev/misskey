@@ -3,27 +3,22 @@
  */
 
 import * as gulp from 'gulp';
-import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
 const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
-const cssnano = require('gulp-cssnano');
 const stylus = require('gulp-stylus');
-import * as uglifyComposer from 'gulp-uglify/composer';
 import * as rimraf from 'rimraf';
 import * as chalk from 'chalk';
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
-const uglifyes = require('uglify-es');
+const cleanCSS = require('gulp-clean-css');
+const terser = require('gulp-terser');
 
 const locales = require('./locales');
 
-const uglify = uglifyComposer(uglifyes, console);
-
 const env = process.env.NODE_ENV || 'development';
-const isProduction = env === 'production';
-const isDebug = !isProduction;
+const isDebug = env !== 'production';
 
 if (isDebug) {
 	console.warn(chalk.yellow.bold('WARNING! NODE_ENV is not "production".'));
@@ -101,17 +96,15 @@ gulp.task('build:client:script', () => {
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
 		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
-		.pipe(isProduction ? uglify({
+		.pipe(terser({
 			toplevel: true
-		} as any) : gutil.noop())
+		}))
 		.pipe(gulp.dest('./built/client/assets/'));
 });
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/client/app/init.css')
-		.pipe(isProduction
-			? (cssnano as any)()
-			: gutil.noop())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('./built/client/assets/'))
 );
 
@@ -130,7 +123,7 @@ gulp.task('copy:client', () =>
 gulp.task('doc', () =>
 	gulp.src('./src/docs/**/*.styl')
 		.pipe(stylus())
-		.pipe((cssnano as any)())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('./built/docs/assets/'))
 );
 
