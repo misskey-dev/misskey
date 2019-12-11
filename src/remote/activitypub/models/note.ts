@@ -189,7 +189,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 			}
 		};
 
-		const uris = unique([note._misskey_quote, note.quoteUrl].filter(x => typeof x === 'string') as string[]);
+		const uris = unique([note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
 		const results = await Promise.all(uris.map(uri => tryResolveNote(uri)));
 
 		quote = results.filter((x): x is { status: 'ok', res: Note | null } => x.status === 'ok').map(x => x.res).find(x => x);
