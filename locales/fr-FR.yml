@@ -49,6 +49,7 @@ common:
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
+    paragraph: "<p>La personnalisation de la page d'accueil vous permet d'ajouter/supprimer, glisser-déposer et réarranger les widgets.</p><p>Vous pouvez changer l'apparence de certain widget avec le <strong><strong>clic</strong>droit</strong>.</p><p>Pour supprimer un widget, faites glisser le widget sur <strong>la zone \"Corbeille\"</strong> dans l'en-tête.</p><p>Pour terminer la personnalisation, cliquez sur \"Terminé\" en haut à droite.</p>"
     gotit: "Compris !"
   notification:
     file-uploaded: "Le fichier a été téléversé !"
@@ -91,6 +92,7 @@ common:
     "read:favorites": "Afficher les favoris"
     "write:favorites": "Écrire des favoris"
     "read:following": "Voir les informations de l'abonné"
+    "write:following": "Suivre/Ne plus suivre"
     "read:messaging": "Lire les conversations"
     "write:messaging": "Utiliser la messagerie"
     "read:mutes": "Voir les comptes masqués"
