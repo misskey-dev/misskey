@@ -31,6 +31,7 @@ common:
   signup: "S'enregistrer"
   signout: "Se déconnecter"
   reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
+  fetching-as-ap-object: "Récupération depuis le fédiverse"
   unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
   delete-confirm: "Supprimer cette publication ?"
   signin-required: "Veuillez vous connecter"
