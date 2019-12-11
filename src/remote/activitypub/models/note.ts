@@ -192,7 +192,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		const uris = unique([note._misskey_quote, note.quoteUrl].filter(x => typeof x === 'string') as string[]);
 		const results = await Promise.all(uris.map(uri => tryResolveNote(uri)));
 
-		quote = results.filter(x => x.status === 'ok').map(x => x.res).find(x => x);
+		quote = results.filter((x): x is { status: 'ok', res: Note | null } => x.status === 'ok').map(x => x.res).find(x => x);
 		if (!quote) {
 			if (results.some(x => x.status === 'temperror')) {
 				throw 'quote resolve failed';
