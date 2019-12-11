@@ -218,6 +218,7 @@ common:
     use-avatar-reversi-stones: "Utiliser l’avatar comme pion dans Reversi"
     disable-animated-mfm: "Désactiver les textes animés dans les publications"
     disable-showing-animated-images: "Désactiver l'animation des images"
+    enable-quick-notification-view: "Activer l'affichage rapide des notifications"
     suggest-recent-hashtags: "Afficher les hashtags populaires dans le champs de saisie"
     always-show-nsfw: "Toujours afficher les contenus sensibles"
     always-mark-nsfw: "Toujours marquer les notes ayant des médias comme sensibles"
@@ -389,6 +390,7 @@ common/views/pages/explore.vue:
   popular-users: "Utilisateur·rice·s populaires"
   recently-updated-users: "Utilisateur·rice·s actif·ve·s récemment"
   recently-registered-users: "Les nouveaux inscrits"
+  recently-discovered-users: "Utilisateurs récemment découverts"
   popular-tags: "Mots-clés populaires"
   federated: "Du Fédiverse"
   explore: "Explorer {host}"
@@ -818,6 +820,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "Aucune annonce"
   have-a-nice-day: "Passez une bonne journée !"
   next: "Suivant"
+  prev: "Précédent"
 common/views/widgets/calendar.vue:
   year: "Année {}"
   month: "{},"
@@ -862,6 +865,7 @@ common/views/widgets/tips.vue:
   tips-line19: "Plusieurs fenêtres peuvent être détachées en dehors du navigateur."
   tips-line20: "Pourcentage sur le widget calendrier qui indique le pourcentage de temps passé"
   tips-line21: "Vous pouvez aussi utiliser l'API pour développer des Bots."
+  tips-line23: "Ai-chan kawaii!"
   tips-line24: "Misskey est fonctionnel depuis 2014"
   tips-line25: "Vous pouvez recevoir les notifications de Misskey dans un navigateur web compatible"
 common/views/pages/not-found.vue:
