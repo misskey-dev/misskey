@@ -1999,12 +1999,18 @@ pages:
         arg2: "Maximum"
       _dailyRandomPick:
         arg1: "Listes"
+      seedRandom: "Aléatoire (graine)"
       _seedRandom:
+        arg1: "Graine"
         arg2: "Probabilité"
+      seedRannum: "Nombre aléatoire (Graine)"
       _seedRannum:
+        arg1: "Graine"
         arg2: "Min"
         arg3: "Max"
+      seedRandomPick: "Sélection aléatoire dans une liste (Graine)"
       _seedRandomPick:
+        arg1: "Graine"
         arg2: "Listes"
       _DRPWPM:
         arg1: "Liste de texte"
@@ -2042,10 +2048,12 @@ pages:
     emptySlot: "Slot vide"
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
+    argVariables: "Entrée vide"
 room:
   add-furniture: "Placer des meubles"
   translate: "Déplacer"
   rotate: "Tourner"
+  exit: "Retour"
   remove: "Enlever"
   save: "Enregistrer"
   saved: "enregistré"
@@ -2071,6 +2079,7 @@ room:
     plant2: "Plante d’intérieur 2"
     eraser: "Gomme"
     pencil: "Crayon"
+    pudding: "Pudding"
     cardboard-box: "Boîte en carton"
     cardboard-box2: "Boîte en carton 2"
     cardboard-box3: "Boîte en carton 3"
@@ -2085,6 +2094,7 @@ room:
     monitor: "Écran"
     keyboard: "Clavier"
     carpet-stripe: "Tapis (zébré)"
+    mat: "Tapis"
     color-box: "Étagère"
     wall-clock: "Horloge murale"
     photoframe: "Cadre photo"
