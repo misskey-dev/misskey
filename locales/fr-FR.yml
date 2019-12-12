@@ -564,6 +564,7 @@ common/views/components/note-menu.vue:
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
   delete-and-edit: "Supprimer et réécrire"
+  delete-and-edit-confirm: "Êtes-vous sûr de vouloir effacer cette note et la modifier ? Vous perdrez toutes les réactions, renotes et réponses."
   remote: "Afficher la note originale"
   pin-limit-exceeded: "Vous ne pouvez plus épingler davantage de publications."
 common/views/components/user-menu.vue:
@@ -609,6 +610,7 @@ common/views/components/poll-editor.vue:
   expiration: "Valide jusqu'à"
   infinite: "Illimité"
   at: "Choisir une date et une durée"
+  after: "Choisir la durée"
   no-more: "Vous ne pouvez pas en ajouter davantage"
   deadline-date: "Date d’échéance"
   deadline-time: "Durée"
@@ -1290,6 +1292,7 @@ admin/views/instance.vue:
   discord-integration-client-id: "ID client"
   discord-integration-client-secret: "Secret client"
   proxy-account-config: "Compte proxy"
+  proxy-account-info: "Un compte proxy se comporte, dans certaines conditions, comme un·e abonné·e distant pour les utilisateurs d'autres instances.\nExemple : quand un·e utilisateur·rice distant·e est ajouté·e à une liste, ses publications ne serait pas visibles sur l'instance si personne ne le·la suit. Le compte proxy va donc le·la suivre pour que ses publications soient acheminées."
   proxy-account-username: "Nom d’utilisateur du compte proxy"
   proxy-account-username-desc: "Spécifiez le nom d’utilisateur du compte utilisé comme proxy."
   proxy-account-warn: "Avant d’entamer cette action, vous devez au préalable avoir créé un compte avec ce nom d’utilisateur."
@@ -1904,6 +1907,7 @@ pages:
       value: "Valeur"
       fn: "Fonction"
       text: "Actions texte"
+      convert: "Convertir"
       list: "Listes"
     blocks:
       text: "Texte"
@@ -1915,6 +1919,8 @@ pages:
       strPick: "Extraire un caractère"
       _strPick:
         arg1: "Texte"
+        arg2: "Position du joueur"
+      strReplace: "Remplacement de texte"
       _strReplace:
         arg1: "Texte"
         arg2: "Avant le remplacement"
