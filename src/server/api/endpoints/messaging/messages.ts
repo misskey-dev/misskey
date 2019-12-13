@@ -117,7 +117,7 @@ export default define(meta, async (ps, user) => {
 
 			// リモートユーザーとのメッセージだったら既読配信
 			if (Users.isLocalUser(user) && Users.isRemoteUser(recipient)) {
-				deliverReadActivity(user, recipient, messages.map(x => x.id));
+				deliverReadActivity(user, recipient, messages);
 			}
 		}
 
