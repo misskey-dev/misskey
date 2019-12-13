@@ -590,6 +590,7 @@ common/views/components/user-menu.vue:
   suspend: "Suspendre"
   unsuspend: "Ne plus suspendre"
   suspend-confirm: "Êtes-vous surs de vouloir suspendre cet·te utilisateur·rice ?"
+  unsuspend-confirm: "Êtes-vous sûr de vouloir débloquer cet utilisateur ?"
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
@@ -1192,6 +1193,8 @@ admin/views/index.vue:
   back-to-misskey: "Retour vers Misskey"
 admin/views/db.vue:
   tables: "Tables"
+  vacuum: "Vacuum"
+  vacuum-info: "Range la base de données. Conserve les données intactes et réduit l'utilisation du disque. Cela se fait généralement automatiquement et périodiquement."
 admin/views/dashboard.vue:
   dashboard: "Tableau de bord"
   accounts: "Comptes"
