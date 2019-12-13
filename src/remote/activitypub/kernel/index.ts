@@ -1,8 +1,9 @@
-import { IObject, isCreate, isDelete, isUpdate, isFollow, isAccept, isReject, isAdd, isRemove, isAnnounce, isLike, isUndo, isBlock, isCollectionOrOrderedCollection, isCollection  } from '../type';
+import { IObject, isCreate, isDelete, isUpdate, isRead, isFollow, isAccept, isReject, isAdd, isRemove, isAnnounce, isLike, isUndo, isBlock, isCollectionOrOrderedCollection, isCollection } from '../type';
 import { IRemoteUser } from '../../../models/entities/user';
 import create from './create';
 import performDeleteActivity from './delete';
 import performUpdateActivity from './update';
+import { performReadActivity } from './read';
 import follow from './follow';
 import undo from './undo';
 import like from './like';
@@ -41,6 +42,8 @@ async function performOneActivity(actor: IRemoteUser, activity: IObject): Promis
 		await performDeleteActivity(actor, activity);
 	} else if (isUpdate(activity)) {
 		await performUpdateActivity(actor, activity);
+	} else if (isRead(activity)) {
+		await performReadActivity(actor, activity);
 	} else if (isFollow(activity)) {
 		await follow(actor, activity);
 	} else if (isAccept(activity)) {
