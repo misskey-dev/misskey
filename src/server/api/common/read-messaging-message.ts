@@ -11,6 +11,7 @@ import { toArray } from '../../../prelude/array';
 import { renderReadActivity } from '../../../remote/activitypub/renderer/read';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
+import orderedCollection from '../../../remote/activitypub/renderer/ordered-collection';
 
 /**
  * Mark messages as read
@@ -107,9 +108,21 @@ export async function readGroupMessagingMessage(
 }
 
 export async function deliverReadActivity(user: ILocalUser, recipient: IRemoteUser, messages: MessagingMessage | MessagingMessage[]) {
-	for (const message of toArray(messages)) {
-		if (!message.uri) continue;
-		const content = renderActivity(renderReadActivity(user, message));
-		deliver(user, content, recipient.inbox);
+	console.log(JSON.stringify(messages));
+	messages = toArray(messages).filter(x => x.uri);
+	const contents = messages.map(x => renderReadActivity(user, x));
+	console.log(JSON.stringify(messages));
+	console.log(JSON.stringify(contents));
+
+	console.log(1);
+	if (contents.length > 1) {
+		console.log(2);
+		const collection = orderedCollection(null, contents.length, undefined, undefined, contents);
+		deliver(user, renderActivity(collection), recipient.inbox);
+	} else {
+		console.log(3);
+		for (const content of contents) {
+			deliver(user, renderActivity(content), recipient.inbox);
+		}
 	}
 }
