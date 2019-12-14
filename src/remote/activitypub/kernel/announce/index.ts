@@ -1,7 +1,7 @@
 import Resolver from '../../resolver';
 import { IRemoteUser } from '../../../../models/entities/user';
 import announceNote from './note';
-import { IAnnounce, validPost, getApId } from '../../type';
+import { IAnnounce, getApId } from '../../type';
 import { apLogger } from '../../logger';
 
 const logger = apLogger;
@@ -13,14 +13,7 @@ export default async (actor: IRemoteUser, activity: IAnnounce): Promise<void> =>
 
 	const resolver = new Resolver();
 
-	const object = await resolver.resolve(activity.object).catch(e => {
-		logger.error(`Resolution failed: ${e}`);
-		throw e;
-	});
+	const targetUri = getApId(activity.object);
 
-	if (validPost.includes(object.type)) {
-		announceNote(resolver, actor, activity, object);
-	} else {
-		logger.warn(`Unknown announce type: ${object.type}`);
-	}
+	announceNote(resolver, actor, activity, targetUri);
 };
