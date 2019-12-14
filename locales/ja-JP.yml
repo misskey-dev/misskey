@@ -1225,6 +1225,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "ワードミュート"
   muted-words: "ミュートされたキーワード"
   muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  unmute-confirm: "このユーザーをミュート解除しますか？"
+  unblock-confirm: "このユーザーをブロック解除しますか？"
   save: "保存"
 
 common/views/components/password-settings.vue:
