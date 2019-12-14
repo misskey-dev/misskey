@@ -1116,6 +1116,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "단어 뮤트"
   muted-words: "뮤트된 키워드"
   muted-words-description: "공백으로 구분하는 경우 AND로 지정되며, 줄바꿈으로 구분하는 경우 OR로 지정됩니다"
+  unmute-confirm: "이 사용자를 뮤트 해제하시겠습니까?"
+  unblock-confirm: "이 사용자를 차단 해제하시겠습니까?"
   save: "저장"
 common/views/components/password-settings.vue:
   reset: "비밀번호 변경"
