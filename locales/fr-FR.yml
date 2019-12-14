@@ -1112,6 +1112,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "Filtre de mots"
   muted-words: "Mots masqués"
   muted-words-description: "Description des mots mis en sourdine"
+  unmute-confirm: "Ne plus masquer cet utilisateur ?"
+  unblock-confirm: "Débloquer cet utilisateur ?"
   save: "Enregistrer"
 common/views/components/password-settings.vue:
   reset: "Modifier le mot de passe"
