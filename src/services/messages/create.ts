@@ -13,7 +13,7 @@ import renderCreate from '../../remote/activitypub/renderer/create';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 
-export async function createMessage(user: User, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | undefined, file: DriveFile | null) {
+export async function createMessage(user: User, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | undefined, file: DriveFile | null, uri?: string) {
 	const message = await MessagingMessages.save({
 		id: genId(),
 		createdAt: new Date(),
@@ -23,7 +23,8 @@ export async function createMessage(user: User, recipientUser: User | undefined,
 		text: text ? text.trim() : null,
 		userId: user.id,
 		isRead: false,
-		reads: [] as any[]
+		reads: [] as any[],
+		uri
 	} as MessagingMessage);
 
 	const messageObj = await MessagingMessages.pack(message);

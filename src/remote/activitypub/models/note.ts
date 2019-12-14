@@ -226,7 +226,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	if (note._misskey_talk && visibility === 'specified') {
 		for (const recipient of visibleUsers) {
-			await createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null);
+			await createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null, object.id);
 			return null;
 		}
 	}
