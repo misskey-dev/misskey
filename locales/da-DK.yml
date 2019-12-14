@@ -1019,6 +1019,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "Ordfilter"
   muted-words: "Frafiltrerede ord"
   muted-words-description: "Mellemrum mellem ord vil blive håndteret, som om der står AND i mellem ordene i søgningen (dvs. alle ord skal være til stede). Linjeskift mellem ord vil føre til, at der søges med OR mellem ordene (dvs. kun det ene af ordene behøver være til stede)."
+  unmute-confirm: "Er du sikker på, at du vil fjerne annulleringen af denne bruger?"
+  unblock-confirm: "Er du sikker på, at du vil fjerne blokeringen af denne bruger?"
   save: "Gem"
 common/views/components/password-settings.vue:
   reset: "Skift adgangskode"
