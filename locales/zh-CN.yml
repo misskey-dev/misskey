@@ -1116,6 +1116,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "文字屏蔽"
   muted-words: "屏蔽关键字"
   muted-words-description: "使用空格分隔会产生AND规范，并且使用换行符分隔会产生OR规范"
+  unmute-confirm: "取消屏蔽用户？"
+  unblock-confirm: "取消拉黑此用户？"
   save: "保存"
 common/views/components/password-settings.vue:
   reset: "更改密码"
