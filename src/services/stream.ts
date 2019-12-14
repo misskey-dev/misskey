@@ -4,6 +4,7 @@ import { Note } from '../models/entities/note';
 import { UserList } from '../models/entities/user-list';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 import { UserGroup } from '../models/entities/user-group';
+import config from '../config';
 
 class Publisher {
 	private publish = (channel: string, type: string | null, value?: any): void => {
@@ -11,7 +12,7 @@ class Publisher {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		redis.publish('misskey', JSON.stringify({
+		redis.publish(config.host, JSON.stringify({
 			channel: channel,
 			message: message
 		}));
