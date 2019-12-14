@@ -1116,6 +1116,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "Word mute"
   muted-words: "Muted keywords"
   muted-words-description: "Separating with spaces results in AND specifications, and delimiting with line breaks results in OR specifications"
+  unmute-confirm: "Are you certain that you want to unmute this user?"
+  unblock-confirm: "Are you certain that you want to unblock this user?"
   save: "Save"
 common/views/components/password-settings.vue:
   reset: "Change password"
