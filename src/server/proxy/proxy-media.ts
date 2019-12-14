@@ -6,7 +6,7 @@ import { createTemp } from '../../misc/create-temp';
 import { downloadUrl } from '../../misc/donwload-url';
 import { detectMine } from '../../misc/detect-mine';
 
-export async function proxyMedia(ctx: Koa.BaseContext) {
+export async function proxyMedia(ctx: Koa.Context) {
 	const url = 'url' in ctx.query ? ctx.query.url : 'https://' + ctx.params.url;
 
 	// Create temp file

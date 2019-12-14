@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere('note.replyId = :replyId', { replyId: ps.noteId })
 		.leftJoinAndSelect('note.user', 'user');
 
-	if (user) generateVisibilityQuery(query, user);
+	generateVisibilityQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
 	const timeline = await query.take(ps.limit!).getMany();

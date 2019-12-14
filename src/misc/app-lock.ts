@@ -20,3 +20,7 @@ const lock: (key: string, timeout?: number) => Promise<() => void>
 export function getApLock(uri: string, timeout = 30 * 1000) {
 	return lock(`ap-object:${uri}`, timeout);
 }
+
+export function getNodeinfoLock(host: string, timeout = 30 * 1000) {
+	return lock(`nodeinfo:${host}`, timeout);
+}

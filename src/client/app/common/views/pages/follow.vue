@@ -72,11 +72,42 @@ export default Vue.extend({
 			const acct = new URL(location.href).searchParams.get('acct');
 			this.fetching = true;
 			Progress.start();
-			this.$root.api('users/show', parseAcct(acct)).then(user => {
-				this.user = user;
-				this.fetching = false;
-				Progress.done();
-			});
+			if (acct.match(/^https?:/)) {
+				this.$root.api('ap/show', {
+					uri: acct
+				}).then((res: { type: string, object: any })  => {
+					if (res.type === 'User') {
+						this.user = res.object;
+					} else if (res.type === 'Note') {
+						this.$router.replace(`/notes/${res.object.id}`);
+					} else {
+						this.$root.dialog({
+							type: 'error',
+							text: 'Not supported'
+						});
+					}
+				}).catch((e: any) => {
+					this.$root.dialog({
+						type: 'error',
+						text: e.message
+					});
+				}).finally(() => {
+					this.fetching = false;
+					Progress.done();
+				});
+			} else {
+				this.$root.api('users/show', parseAcct(acct)).then((user: any) => {
+					this.user = user;
+				}).catch((e: any) => {
+					this.$root.dialog({
+						type: 'error',
+						text: e.message
+					});
+				}).finally(() => {
+					this.fetching = false;
+					Progress.done();
+				});
+			}
 		},
 
 		async onClick() {

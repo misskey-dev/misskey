@@ -1,6 +1,6 @@
 import es from '../../db/elasticsearch';
 import { publishMainStream, publishNotesStream } from '../stream';
-import { deliver } from '../../queue';
+import DeliverManager from '../../remote/activitypub/deliver-manager';
 import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
@@ -16,11 +16,11 @@ import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
-import { Note } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Followings, Notes, Instances, UserProfiles } from '../../models';
+import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
-import { Not, getConnection } from 'typeorm';
+import { Not, getConnection, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { genId } from '../../misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
@@ -244,13 +244,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const nm = new NotificationManager(user, note);
 		const nmRelatedPromises = [];
 
-		createMentionedEvents(mentionedUsers, note, nm);
-
-		const noteActivity = await renderNoteOrRenoteActivity(data, note);
-
-		if (Users.isLocalUser(user)) {
-			deliverNoteToMentionedRemoteUsers(mentionedUsers, user, noteActivity);
-		}
+		await createMentionedEvents(mentionedUsers, note, nm);
 
 		const profile = await UserProfiles.findOne(user.id).then(ensure);
 
@@ -294,11 +288,42 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			}
 		}
 
-		publish(user, note, data.reply, data.renote, noteActivity);
-
 		Promise.all(nmRelatedPromises).then(() => {
 			nm.deliver();
 		});
+
+		//#region AP deliver
+		if (Users.isLocalUser(user)) {
+			(async () => {
+				const noteActivity = await renderNoteOrRenoteActivity(data, note);
+				const dm = new DeliverManager(user, noteActivity);
+
+				// メンションされたリモートユーザーに配送
+				for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
+					dm.addDirectRecipe(u as IRemoteUser);
+				}
+
+				// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
+				if (data.reply && data.reply.userHost !== null) {
+					const u = await Users.findOne(data.reply.userId);
+					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
+				}
+
+				// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
+				if (data.renote && data.renote.userHost !== null) {
+					const u = await Users.findOne(data.renote.userId);
+					if (u && Users.isRemoteUser(u)) dm.addDirectRecipe(u);
+				}
+
+				// フォロワーに配送
+				if (['public', 'home', 'followers'].includes(note.visibility)) {
+					dm.addFollowersRecipe();
+				}
+
+				dm.execute();
+			})();
+		}
+		//#endregion
 	}
 
 	// Register to search database
@@ -318,29 +343,6 @@ async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 function incRenoteCount(renote: Note) {
 	Notes.increment({ id: renote.id }, 'renoteCount', 1);
 	Notes.increment({ id: renote.id }, 'score', 1);
-}
-
-async function publish(user: User, note: Note, reply: Note | null | undefined, renote: Note | null | undefined, noteActivity: any) {
-	if (Users.isLocalUser(user)) {
-		// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
-		if (reply && reply.userHost !== null) {
-			Users.findOne(reply.userId).then(ensure).then(u => {
-				deliver(user, noteActivity, u.inbox);
-			});
-		}
-
-		// 投稿がRenoteかつ投稿者がローカルユーザーかつRenote元の投稿の投稿者がリモートユーザーなら配送
-		if (renote && renote.userHost !== null) {
-			Users.findOne(renote.userId).then(ensure).then(u => {
-				deliver(user, noteActivity, u.inbox);
-			});
-		}
-	}
-
-	if (['public', 'home', 'followers'].includes(note.visibility)) {
-		// フォロワーに配信
-		publishToFollowers(note, user, noteActivity);
-	}
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
@@ -383,11 +385,17 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
 		insert.mentions = mentionedUsers.map(u => u.id);
-		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => ({
-			uri: (u as IRemoteUser).uri,
-			username: u.username,
-			host: u.host
-		})));
+		const profiles = await UserProfiles.find({ userId: In(insert.mentions) });
+		insert.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => Users.isRemoteUser(u)).map(u => {
+			const profile = profiles.find(p => p.userId == u.id);
+			const url = profile != null ? profile.url : null;
+			return {
+				uri: u.uri,
+				url: url == null ? undefined : url,
+				username: u.username,
+				host: u.host
+			} as IMentionedRemoteUsers[0];
+		}));
 	}
 
 	// 投稿を作成
@@ -463,34 +471,6 @@ async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: Notificati
 
 	for (const watcher of watchers) {
 		nm.push(watcher.userId, 'reply');
-	}
-}
-
-async function publishToFollowers(note: Note, user: User, noteActivity: any) {
-	const followers = await Followings.find({
-		followeeId: note.userId
-	});
-
-	const queue: string[] = [];
-
-	for (const following of followers) {
-		if (Followings.isRemoteFollower(following)) {
-			// フォロワーがリモートユーザーかつ投稿者がローカルユーザーなら投稿を配信
-			if (Users.isLocalUser(user)) {
-				const inbox = following.followerSharedInbox || following.followerInbox;
-				if (!queue.includes(inbox)) queue.push(inbox);
-			}
-		}
-	}
-
-	for (const inbox of queue) {
-		deliver(user as any, noteActivity, inbox);
-	}
-}
-
-function deliverNoteToMentionedRemoteUsers(mentionedUsers: User[], user: ILocalUser, noteActivity: any) {
-	for (const u of mentionedUsers.filter(u => Users.isRemoteUser(u))) {
-		deliver(user, noteActivity, (u as IRemoteUser).inbox);
 	}
 }
 

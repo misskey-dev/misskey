@@ -75,12 +75,15 @@ export interface INote extends IObject {
 	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
 	_misskey_content?: string;
 	_misskey_quote?: string;
+	quoteUrl?: string;
+	_misskey_talk: boolean;
 }
 
 export interface IQuestion extends IObject {
 	type: 'Note' | 'Question';
 	_misskey_content?: string;
 	_misskey_quote?: string;
+	quoteUrl?: string;
 	oneOf?: IQuestionChoice[];
 	anyOf?: IQuestionChoice[];
 	endTime?: Date;
@@ -100,17 +103,22 @@ export const validActor = ['Person', 'Service'];
 
 export interface IPerson extends IObject {
 	type: 'Person';
-	name: string;
-	preferredUsername: string;
-	manuallyApprovesFollowers: boolean;
-	inbox: string;
-	sharedInbox?: string;
-	publicKey: any;
-	followers: any;
-	following: any;
-	featured?: any;
-	outbox: any;
-	endpoints: any;
+	name?: string;
+	preferredUsername?: string;
+	manuallyApprovesFollowers?: boolean;
+	inbox?: string;
+	sharedInbox?: string;	// 後方互換性のため
+	publicKey: {
+		id: string;
+		publicKeyPem: string;
+	};
+	followers?: string | ICollection | IOrderedCollection;
+	following?: string | ICollection | IOrderedCollection;
+	featured?: string | IOrderedCollection;
+	outbox?: string | IOrderedCollection;
+	endpoints?: {
+		sharedInbox?: string;
+	};
 }
 
 export const isCollection = (object: IObject): object is ICollection =>
@@ -132,6 +140,10 @@ export interface IDelete extends IActivity {
 
 export interface IUpdate extends IActivity {
 	type: 'Update';
+}
+
+export interface IRead extends IActivity {
+	type: 'Read';
 }
 
 export interface IUndo extends IActivity {
@@ -174,6 +186,7 @@ export interface IBlock extends IActivity {
 export const isCreate = (object: IObject): object is ICreate => object.type === 'Create';
 export const isDelete = (object: IObject): object is IDelete => object.type === 'Delete';
 export const isUpdate = (object: IObject): object is IUpdate => object.type === 'Update';
+export const isRead = (object: IObject): object is IRead => object.type === 'Read';
 export const isUndo = (object: IObject): object is IUndo => object.type === 'Undo';
 export const isFollow = (object: IObject): object is IFollow => object.type === 'Follow';
 export const isAccept = (object: IObject): object is IAccept => object.type === 'Accept';

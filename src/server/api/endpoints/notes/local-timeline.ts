@@ -95,7 +95,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
 		.leftJoinAndSelect('note.user', 'user');
 
-	if (user) generateVisibilityQuery(query, user);
+	generateVisibilityQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
 	if (ps.withFiles) {

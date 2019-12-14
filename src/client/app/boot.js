@@ -72,13 +72,17 @@
 	//#region Fetch locale data
 	const cachedLocale = localStorage.getItem('locale');
 	const localeKey = localStorage.getItem('localeKey');
+	let localeData = null;
 
 	if (cachedLocale == null || localeKey != `${ver}.${lang}`) {
 		const locale = await fetch(`/assets/locales/${lang}.json?ver=${ver}`)
 			.then(response => response.json());
+		localeData = locale;
 
 		localStorage.setItem('locale', JSON.stringify(locale));
 		localStorage.setItem('localeKey', `${ver}.${lang}`);
+	} else {
+		localeData = JSON.parse(cachedLocale);
 	}
 	//#endregion
 
@@ -99,8 +103,7 @@
 	// If mobile, insert the viewport meta tag
 	if (isMobile) {
 		const viewport = document.getElementsByName("viewport").item(0);
-		viewport.setAttribute('content',
-			`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
+		viewport.content = `${viewport.content},minimum-scale=1,maximum-scale=1,user-scalable=no`;
 		head.appendChild(viewport);
 	}
 
@@ -113,9 +116,9 @@
 	// Note: 'async' make it possible to load the script asyncly.
 	//       'defer' make it possible to run the script when the dom loaded.
 	const script = document.createElement('script');
-	script.setAttribute('src', `/assets/${app}.${ver}.js`);
-	script.setAttribute('async', 'true');
-	script.setAttribute('defer', 'true');
+	script.src = `/assets/${app}.${ver}.js`;
+	script.async = true;
+	script.defer = true;
 	head.appendChild(script);
 
 	// 3秒経ってもスクリプトがロードされない場合はバージョンが古くて
@@ -138,10 +141,10 @@
 			localStorage.setItem('v', meta.version);
 
 			alert(
-				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
-				'\n\n' +
-				'New version of Misskey available. The page will be reloaded.');
-
+				localeData.common._settings["update-available"] +
+				'\n' +
+				localeData.common._settings["update-available-desc"]
+			);
 			refresh();
 		}
 	}, 3000);

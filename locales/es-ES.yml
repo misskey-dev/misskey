@@ -201,6 +201,7 @@ common:
     navbar-position-left: "Izquierda"
     save: "Guardar"
     saved: "Guardado"
+    preview: "Vista previa"
   search: "Buscar"
   delete: "eliminar"
   loading: "cargando"

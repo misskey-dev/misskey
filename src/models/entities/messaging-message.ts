@@ -64,6 +64,11 @@ export class MessagingMessage {
 	})
 	public isRead: boolean;
 
+	@Column('varchar', {
+		length: 512, nullable: true,
+	})
+	public uri: string | null;
+
 	@Column({
 		...id(),
 		array: true, default: '{}'

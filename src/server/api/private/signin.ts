@@ -10,7 +10,7 @@ import { ensure } from '../../../prelude/ensure';
 import { verifyLogin, hash } from '../2fa';
 import { randomBytes } from 'crypto';
 
-export default async (ctx: Koa.BaseContext) => {
+export default async (ctx: Koa.Context) => {
 	ctx.set('Access-Control-Allow-Origin', config.url);
 	ctx.set('Access-Control-Allow-Credentials', 'true');
 

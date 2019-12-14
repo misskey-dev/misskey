@@ -27,7 +27,7 @@
 			<div class="description">
 				<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :key="user.id"/>
 			</div>
-			<div class="fields" v-if="user.fields">
+			<div class="fields" v-if="user.fields" :key="user.id">
 				<dl class="field" v-for="(field, i) in user.fields" :key="i">
 					<dt class="name">
 						<mfm :text="field.name" :plain="true" :custom-emojis="user.emojis"/>

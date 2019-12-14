@@ -13,6 +13,7 @@ import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
 import { validActor } from '../../remote/activitypub/type';
 import { ensure } from '../../prelude/ensure';
+import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
 
 const logger = new Logger('inbox');
 
@@ -104,6 +105,8 @@ export default async (job: Bull.Job): Promise<void> => {
 			lastCommunicatedAt: new Date(),
 			isNotResponding: false
 		});
+
+		fetchNodeinfo(i);
 
 		instanceChart.requestReceived(i.host);
 	});

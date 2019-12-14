@@ -3,10 +3,10 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
-import { MessagingMessages, UserGroups, UserGroupJoinings } from '../../../../models';
+import { MessagingMessages, UserGroups, UserGroupJoinings, Users } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
-import { readUserMessagingMessage, readGroupMessagingMessage } from '../../common/read-messaging-message';
+import { readUserMessagingMessage, readGroupMessagingMessage, deliverReadActivity } from '../../common/read-messaging-message';
 
 export const meta = {
 	desc: {
@@ -114,6 +114,11 @@ export default define(meta, async (ps, user) => {
 		// Mark all as read
 		if (ps.markAsRead) {
 			readUserMessagingMessage(user.id, recipient.id, messages.filter(m => m.recipientId === user.id).map(x => x.id));
+
+			// リモートユーザーとのメッセージだったら既読配信
+			if (Users.isLocalUser(user) && Users.isRemoteUser(recipient)) {
+				deliverReadActivity(user, recipient, messages);
+			}
 		}
 
 		return await Promise.all(messages.map(message => MessagingMessages.pack(message, user, {

@@ -157,7 +157,7 @@ export function initDb(justBorrow = false, sync = false, log = false, forceRecre
 				host: config.redis.host,
 				port: config.redis.port,
 				password: config.redis.pass,
-				prefix: config.redis.prefix,
+				prefix: `${config.redis.prefix}:query:`,
 				db: config.redis.db || 0
 			}
 		} : false,
