@@ -107,6 +107,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12190916/fb7fa7983c14425f890369535b1506a4/3.png?token-time=2145916800&token-hash=oH_i7gJjNT7Ot6j9JiVwy7ZJIBqACVnzLqlz4YrDAZA%3D" alt="weepjp" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/605366/c9dc408fdcbf412fb183ca5b06235f8d/1.jpeg?token-time=2145916800&token-hash=oaqsjLqOFjWN5I9hm2epOaTXaEtKwQUy5OW-EpAz6-g%3D" alt="Jon Leibowitz" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/19045173/cb91c0f345c24d4ebfd05f19906d5e26/1.png?token-time=2145916800&token-hash=o_zKBytJs_AxHwSYw_5R8eD0eSJe3RoTR3kR3Q0syN0%3D" alt="kiritan" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/24430516/b1964ac5b9f746d2a12ff53dbc9aa40a/1.jpg?token-time=2145916800&token-hash=bmEiMGYpp3bS7hCCbymjGGsHBZM3AXuBOFO3Kro37PU%3D" alt="Eduardo Quiros" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/14215107/1cbe1912c26143919fa0faca16f12ce1/2.png?token-time=2145916800&token-hash=v0KzlXjyiq18u6aSxyy9qIUxSCAx-nnHlO7MzhSA6Mc%3D" alt="Nesakko" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/776209" alt="Denshi" width="100"></td>
 </tr><tr>
@@ -114,6 +115,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/weepjp">weepjp</a></td>
 <td><a href="https://www.patreon.com/jonleibowitz">Jon Leibowitz</a></td>
 <td><a href="https://www.patreon.com/user?u=19045173">kiritan</a></td>
+<td><a href="https://www.patreon.com/user?u=24430516">Eduardo Quiros</a></td>
 <td><a href="https://www.patreon.com/Nesakko">Nesakko</a></td>
 <td><a href="https://www.patreon.com/user?u=776209">Denshi</a></td>
 </tr></table>
@@ -177,7 +179,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/darkeyeos">Dark Eye</a></td>
 </tr></table>
 
-**Last updated:** Mon, 16 Dec 2019 09:06:06 UTC
+**Last updated:** Tue, 17 Dec 2019 15:58:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
