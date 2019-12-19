@@ -11,6 +11,7 @@ const assets = `${__dirname}/../../server/file/assets/`;
 const commonReadableHandlerGenerator = (ctx: Koa.Context) => (e: Error): void => {
 	serverLogger.error(e);
 	ctx.status = 500;
+	ctx.set('Cache-Control', 'max-age=300');
 };
 
 export default async function(ctx: Koa.Context) {
@@ -25,12 +26,14 @@ export default async function(ctx: Koa.Context) {
 
 	if (file == null) {
 		ctx.status = 404;
+		ctx.set('Cache-Control', 'max-age=86400');
 		await send(ctx as any, '/dummy.png', { root: assets });
 		return;
 	}
 
 	if (!file.storedInternal) {
 		ctx.status = 204;
+		ctx.set('Cache-Control', 'max-age=86400');
 		return;
 	}
 
@@ -38,19 +41,21 @@ export default async function(ctx: Koa.Context) {
 	const isWebpublic = file.webpublicAccessKey === key;
 
 	if (isThumbnail) {
+		ctx.body = InternalStorage.read(key);
 		ctx.set('Content-Type', 'image/jpeg');
+		ctx.set('Cache-Control', 'max-age=31536000, immutable');
 		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-thumb', extname: '.jpeg' })}`));
-		ctx.body = InternalStorage.read(key);
 	} else if (isWebpublic) {
-		ctx.set('Content-Type', file.type === 'image/apng' ? 'image/png' : file.type);
-		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-web' })}`));
 		ctx.body = InternalStorage.read(key);
+		ctx.set('Content-Type', file.type === 'image/apng' ? 'image/png' : file.type);
+		ctx.set('Cache-Control', 'max-age=31536000, immutable');
+		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-web' })}`));
 	} else {
-		ctx.set('Content-Disposition', contentDisposition('inline', `${file.name}`));
-
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
-		ctx.set('Content-Type', file.type);
 		ctx.body = readable;
+		ctx.set('Content-Type', file.type);
+		ctx.set('Cache-Control', 'max-age=31536000, immutable');
+		ctx.set('Content-Disposition', contentDisposition('inline', `${file.name}`));
 	}
 }
