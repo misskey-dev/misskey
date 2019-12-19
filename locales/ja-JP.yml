@@ -2200,6 +2200,9 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "少数を丸める"
+      _round:
+        arg1: "数"
       eq: "AとBが同じ"
       _eq:
         arg1: "A"
