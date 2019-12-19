@@ -24,7 +24,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 
 	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
 		let url = thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
-		if (file.src !== null && file.userHost !== null && config.mediaProxy !== null) {
+		if (file.src != null && file.userHost != null && config.mediaProxy != null) {
 			url = `${config.mediaProxy}/${thumbnail ? 'thumbnail' : ''}?url=${file.src}`;
 		}
 		return url;
