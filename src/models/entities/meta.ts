@@ -115,6 +115,11 @@ export class Meta {
 	})
 	public cacheRemoteFiles: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public proxyRemoteFiles: boolean;
+
 	@Column('varchar', {
 		length: 128,
 		nullable: true
