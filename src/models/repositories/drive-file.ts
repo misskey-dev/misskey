@@ -7,6 +7,7 @@ import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 import config from '../../config';
+import { query, appendQuery } from '../../prelude/url';
 
 export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
 
@@ -23,11 +24,38 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	}
 
 	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
-		let url = thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
+		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && config.mediaProxy != null) {
-			url = `${config.mediaProxy}/${thumbnail ? 'thumbnail' : ''}?url=${encodeURIComponent(file.uri)}`;
+			return appendQuery(config.mediaProxy, query({
+				url: file.uri,
+				thumbnail: thumbnail ? '1' : undefined
+			}));
 		}
-		return url;
+
+		// リモートかつ期限切れはローカルプロキシを試みる
+		if (file.uri != null && file.isLink) {
+			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
+
+			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
+				let ext = '';
+
+				if (file.name) {
+					[ext] = (file.name.match(/\.(\w+)$/) || ['']);
+				}
+
+				if (ext === '') {
+					if (file.type === 'image/jpeg') ext = '.jpg';
+					if (file.type === 'image/png') ext = '.png';
+					if (file.type === 'image/webp') ext = '.webp';
+					if (file.type === 'image/apng') ext = '.apng';
+					if (file.type === 'image/vnd.mozilla.apng') ext = '.apng';
+				}
+
+				return `/files/${key}/${key}${ext}`;
+			}
+		}
+
+		return thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
 	}
 
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
