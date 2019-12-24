@@ -153,6 +153,9 @@ export default Vue.extend({
 			@media (min-width 600px)
 				padding 32px 32px 22px
 
+			> header
+				margin-bottom 1px
+
 			> .avatar
 				@media (min-width 350px)
 					width 48px

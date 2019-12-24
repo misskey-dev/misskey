@@ -210,7 +210,7 @@ export default Vue.extend({
 			min-width 0
 
 			> .header
-				margin-bottom 4px
+				margin-bottom 2px
 
 			> .body
 
