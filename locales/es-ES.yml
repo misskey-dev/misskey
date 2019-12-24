@@ -107,6 +107,7 @@ common:
     "write:pages": "Administrar páginas"
     "read:page-likes": "Ver páginas que te gustan"
     "write:page-likes": "Administrar páginas que te gustan"
+    "read:user-groups": "Ver grupos de usuarios"
   post-form:
     reply: "Responder"
     renote: "Volver a publicar"
