@@ -1958,6 +1958,8 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      _round:
+        arg1: "Numérique"
       eq: "A et B sont équivalents"
       _eq:
         arg1: "A"
