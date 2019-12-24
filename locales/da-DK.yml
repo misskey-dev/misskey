@@ -1797,6 +1797,8 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      _round:
+        arg1: "Tal"
       eq: "A og B er ens"
       _eq:
         arg1: "A"
