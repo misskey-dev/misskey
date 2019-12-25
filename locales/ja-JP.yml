@@ -252,6 +252,7 @@ common:
     font-size-medium: "普通"
     font-size-large: "少し大きい"
     font-size-x-large: "大きい"
+    line-height: "行の高さ"
     deck-column-align: "デッキのカラムの配置"
     deck-column-align-center: "中央"
     deck-column-align-left: "左"

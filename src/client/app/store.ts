@@ -59,6 +59,7 @@ const defaultDeviceSettings = {
 	lightTheme: 'light',
 	lineWidth: 1,
 	fontSize: 0,
+	lineHeight: 1.5,
 	themes: [],
 	enableSounds: true,
 	soundVolume: 0.5,

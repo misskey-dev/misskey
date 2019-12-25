@@ -421,6 +421,15 @@ export default (callback: (launch: (router: VueRouter) => [Vue, MiOS], os: MiOS)
 			});
 			//#endregion
 
+			//#region lineHeight
+			document.documentElement.style.setProperty('--lineHeight', `${os.store.state.device.lineHeight}`);
+			os.store.watch(s => {
+				return s.device.lineHeight;
+			}, v => {
+				document.documentElement.style.setProperty('--lineHeight', `${os.store.state.device.lineHeight}`);
+			});
+			//#endregion
+
 			document.addEventListener('visibilitychange', () => {
 				if (!document.hidden) {
 					os.store.commit('clearBehindNotes');

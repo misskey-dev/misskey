@@ -63,6 +63,18 @@
 				<ui-radio v-model="fontSize" :value="1">{{ $t('@._settings.font-size-large') }}</ui-radio>
 				<ui-radio v-model="fontSize" :value="2">{{ $t('@._settings.font-size-x-large') }}</ui-radio>
 			</section>
+			<section>
+				<header>{{ $t('@._settings.line-height') }}</header>
+				<div style="display: flex">
+					<input type="range"
+						v-model="lineHeight"
+						min="1.2"
+						max="1.7"
+						step="0.05"
+					/>
+					<div>&nbsp;{{ lineHeight }}</div>
+				</div>
+			</section>
 			<section v-if="$root.isMobile">
 				<header>{{ $t('@._settings.post-style') }}</header>
 				<ui-radio v-model="postStyle" value="standard">{{ $t('@._settings.post-style-standard') }}</ui-radio>
@@ -438,6 +450,11 @@ export default Vue.extend({
 		fontSize: {
 			get() { return this.$store.state.device.fontSize; },
 			set(value) { this.$store.commit('device/set', { key: 'fontSize', value }); }
+		},
+
+		lineHeight: {
+			get() { return this.$store.state.device.lineHeight; },
+			set(value) { this.$store.commit('device/set', { key: 'lineHeight', value }); }
 		},
 
 		fetchOnScroll: {
