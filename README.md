@@ -167,7 +167,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5731881/4b6038e6cda34c04b83a5fcce3806a93/1.png?token-time=2145916800&token-hash=hBayGfOmQH3kRMdNnDe4oCZD_9fsJWSt29xXR3KRMVk%3D" alt="Nokotaro Takeda" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/23932002" alt="nenohi" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1.jpeg?token-time=2145916800&token-hash=vGe7wXGqmA8Q7m-kDNb6fyGdwk-Dxk4F-ut8ZZu51RM%3D" alt="Takashi Shibuya" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/193373/e24ddc808fdb4686b11160cbc3632d22/1.png?token-time=2145916800&token-hash=x22BP-t1vg-ZLxt2P4XeqC5rgNNMhBKGYOxm3Uk1M_E%3D" alt="Dark Eye" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/noellabo">noellabo</a></td>
 <td><a href="https://www.patreon.com/Corset">CG</a></td>
@@ -176,10 +175,9 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/takenoko">Nokotaro Takeda</a></td>
 <td><a href="https://www.patreon.com/user?u=23932002">nenohi</a></td>
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
-<td><a href="https://www.patreon.com/darkeyeos">Dark Eye</a></td>
 </tr></table>
 
-**Last updated:** Tue, 17 Dec 2019 15:58:06 UTC
+**Last updated:** Wed, 25 Dec 2019 21:54:05 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
