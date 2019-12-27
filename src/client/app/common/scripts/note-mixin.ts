@@ -71,7 +71,7 @@ export default (opts: Opts = {}) => ({
 		},
 
 		isMyNote(): boolean {
-			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
 		},
 
 		reactionsCount(): number {
