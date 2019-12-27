@@ -76,7 +76,7 @@ export default (opts: Opts = {}) => ({
 
 		reactionsCount(): number {
 			return this.appearNote.reactions
-				? sum(Object.values(this.note.reactions))
+				? sum(Object.values(this.appearNote.reactions))
 				: 0;
 		},
 
