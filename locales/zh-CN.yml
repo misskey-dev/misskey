@@ -364,7 +364,7 @@ common:
     notifications: "通知"
     users: "推荐用户"
     polls: "调查问卷"
-    post-form: "投稿形式"
+    post-form: "投稿窗口"
     server: "服务器信息"
     nav: "导航"
     tips: "提示"
@@ -1883,10 +1883,10 @@ pages:
     section: "章节"
     image: "图片"
     button: "按钮"
-    if: "如果"
+    if: "判断"
     _if:
       variable: "变量"
-    post: "投稿形式"
+    post: "投稿窗口"
     _post:
       text: "内容"
     textInput: "文本输入"
@@ -1992,6 +1992,7 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "四舍五入"
       _round:
         arg1: "数值"
       eq: "A和B相等"
