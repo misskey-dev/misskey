@@ -16,9 +16,6 @@ common:
     ui: "Interfaz"
     ui-desc: "No hay ninguna interfaz que le vaya bien a todos. Por eso, Misskey tiene una interfaz altamente personalizable para tus gustos. Puedes hacer tu página principal única editando la interfaz de tu timeline y moviendo varios widgets para conseguir hacer de este lugar uno propio."
     drive: "Drive"
-  adblock:
-    detected: "Por favor, desactive el bloqueador de publicidad."
-    warning: "<strong>Misskey no tiene anuncios publicitarios.</strong> Sin embargo, algunas características podrían no estar disponibles si el bloqueador de publicidad está habilitado."
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
   do-not-copy-paste: "Por favor no copies código aquí. Tu cuenta puede resultar comprometida."
@@ -177,7 +174,7 @@ common:
     deck-column-width-wide: "Ancho"
     use-shadow: "Usar sombras en la Interfaz de Usuario"
     rounded-corners: "Esquinas redondeadas en la Interfaz de Usuario"
-    circle-icons: "Usar iconos circulares"
+    circle-icons: "Usar avatar circulares"
     contrasted-acct: "Añadir contraste al nombre de usuario"
     wallpaper: "Fondo de pantalla"
     choose-wallpaper: "Escoge un fondo de pantalla"
@@ -204,6 +201,7 @@ common:
     navbar-position-left: "Izquierda"
     save: "Guardar"
     saved: "Guardado"
+    preview: "Vista previa"
   search: "Buscar"
   delete: "eliminar"
   loading: "cargando"
@@ -1137,6 +1135,7 @@ pages:
       array: "Listas"
 room:
   save: "Guardar"
+  saved: "Guardado"
   furnitures:
     moon: "Luna"
     bin: "Papelera"

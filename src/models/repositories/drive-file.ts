@@ -6,6 +6,7 @@ import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
+import config from '../../config';
 
 export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
 
@@ -22,7 +23,11 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	}
 
 	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
-		return thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
+		let url = thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
+		if (file.src !== null && file.userHost !== null && config.mediaProxy !== null) {
+			url = `${config.mediaProxy}/${thumbnail ? 'thumbnail' : ''}?url=${file.src}`;
+		}
+		return url;
 	}
 
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {

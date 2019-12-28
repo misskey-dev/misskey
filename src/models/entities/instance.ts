@@ -26,15 +26,6 @@ export class Instance {
 	public host: string;
 
 	/**
-	 * インスタンスのシステム (MastodonとかMisskeyとかPleromaとか)
-	 */
-	@Column('varchar', {
-		length: 64, nullable: true,
-		comment: 'The system of the Instance.'
-	})
-	public system: string | null;
-
-	/**
 	 * インスタンスのユーザー数
 	 */
 	@Column('integer', {
@@ -129,4 +120,45 @@ export class Instance {
 		default: false
 	})
 	public isMarkedAsClosed: boolean;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+		comment: 'The software of the Instance.'
+	})
+	public softwareName: string | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public softwareVersion: string | null;
+
+	@Column('boolean', {
+		nullable: true, default: null,
+	})
+	public openRegistrations: boolean | null;
+
+	@Column('varchar', {
+		length: 256, nullable: true, default: null,
+	})
+	public name: string | null;
+
+	@Column('varchar', {
+		length: 4096, nullable: true, default: null,
+	})
+	public description: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true, default: null,
+	})
+	public maintainerName: string | null;
+
+	@Column('varchar', {
+		length: 256, nullable: true, default: null,
+	})
+	public maintainerEmail: string | null;
+
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public infoUpdatedAt: Date | null;
 }

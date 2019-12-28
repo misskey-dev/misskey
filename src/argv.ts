@@ -1,8 +1,8 @@
 import * as program from 'commander';
-import * as pkg from '../package.json';
+import config from './config';
 
 program
-	.version(pkg.version)
+	.version(config.version)
 	.option('--no-daemons', 'Disable daemon processes (for debbuging)')
 	.option('--disable-clustering', 'Disable clustering')
 	.option('--only-server', 'Run server only (without job queue processing)')

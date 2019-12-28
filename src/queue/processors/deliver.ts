@@ -4,6 +4,9 @@ import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-ins
 import Logger from '../../services/logger';
 import { Instances } from '../../models';
 import { instanceChart } from '../../services/chart';
+import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
+import { fetchMeta } from '../../misc/fetch-meta';
+import { toPuny } from '../../misc/convert-host';
 
 const logger = new Logger('deliver');
 
@@ -11,6 +14,23 @@ let latest: string | null = null;
 
 export default async (job: Bull.Job) => {
 	const { host } = new URL(job.data.to);
+
+	// ブロックしてたら中断
+	const meta = await fetchMeta();
+	if (meta.blockedHosts.includes(toPuny(host))) {
+		return 'skip (blocked)';
+	}
+
+	// closedなら中断
+	const closedHosts = await Instances.find({
+		where: {
+			isMarkedAsClosed: true
+		},
+		cache: 60 * 1000
+	});
+	if (closedHosts.map(x => x.host).includes(toPuny(host))) {
+		return 'skip (closed)';
+	}
 
 	try {
 		if (latest !== (latest = JSON.stringify(job.data.content, null, 2))) {
@@ -27,6 +47,8 @@ export default async (job: Bull.Job) => {
 				lastCommunicatedAt: new Date(),
 				isNotResponding: false
 			});
+
+			fetchNodeinfo(i);
 
 			instanceChart.requestSent(i.host, true);
 		});
@@ -45,8 +67,6 @@ export default async (job: Bull.Job) => {
 		});
 
 		if (res != null && res.hasOwnProperty('statusCode')) {
-			logger.warn(`deliver failed: ${res.statusCode} ${res.statusMessage} to=${job.data.to}`);
-
 			// 4xx
 			if (res.statusCode >= 400 && res.statusCode < 500) {
 				// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
@@ -58,7 +78,6 @@ export default async (job: Bull.Job) => {
 			throw `${res.statusCode} ${res.statusMessage}`;
 		} else {
 			// DNS error, socket error, timeout ...
-			logger.warn(`deliver failed: ${res} to=${job.data.to}`);
 			throw res;
 		}
 	}

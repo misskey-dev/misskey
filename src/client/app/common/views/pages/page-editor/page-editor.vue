@@ -220,37 +220,48 @@ export default Vue.extend({
 
 	methods: {
 		save() {
+			const options = {
+				title: this.title.trim(),
+				name: this.name.trim(),
+				summary: this.summary,
+				font: this.font,
+				hideTitleWhenPinned: this.hideTitleWhenPinned,
+				alignCenter: this.alignCenter,
+				content: this.content,
+				variables: this.variables,
+				eyeCatchingImageId: this.eyeCatchingImageId,
+			};
+
+			const onError = err => {
+				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
+					if (err.info.param == 'name') {
+						this.$root.dialog({
+							type: 'error',
+							title: this.$t('title-invalid-name'),
+							text: this.$t('text-invalid-name')
+						});
+					}
+				} else if (err.code == 'NAME_ALREADY_EXISTS') {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('name-already-exists')
+					});
+				}
+			};
+
 			if (this.pageId) {
-				this.$root.api('pages/update', {
-					pageId: this.pageId,
-					title: this.title.trim(),
-					name: this.name.trim(),
-					summary: this.summary,
-					font: this.font,
-					hideTitleWhenPinned: this.hideTitleWhenPinned,
-					alignCenter: this.alignCenter,
-					content: this.content,
-					variables: this.variables,
-					eyeCatchingImageId: this.eyeCatchingImageId,
-				}).then(page => {
+				options.pageId = this.pageId;
+				this.$root.api('pages/update', options)
+				.then(page => {
 					this.currentName = this.name.trim();
 					this.$root.dialog({
 						type: 'success',
 						text: this.$t('page-updated')
 					});
-				});
+				}).catch(onError);
 			} else {
-				this.$root.api('pages/create', {
-					title: this.title.trim(),
-					name: this.name.trim(),
-					summary: this.summary,
-					font: this.font,
-					hideTitleWhenPinned: this.hideTitleWhenPinned,
-					alignCenter: this.alignCenter,
-					content: this.content,
-					variables: this.variables,
-					eyeCatchingImageId: this.eyeCatchingImageId,
-				}).then(page => {
+				this.$root.api('pages/create', options)
+				.then(page => {
 					this.pageId = page.id;
 					this.currentName = this.name.trim();
 					this.$root.dialog({
@@ -258,7 +269,7 @@ export default Vue.extend({
 						text: this.$t('page-created')
 					});
 					this.$router.push(`/i/pages/edit/${this.pageId}`);
-				});
+				}).catch(onError);
 			}
 		},
 

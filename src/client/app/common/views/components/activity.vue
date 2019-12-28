@@ -69,7 +69,7 @@ export default Vue.extend({
 				},
 				plotOptions: {
 					bar: {
-						columnWidth: '80%'
+						columnWidth: '2%'
 					}
 				},
 				dataLabels: {

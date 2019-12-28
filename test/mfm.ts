@@ -2,10 +2,10 @@
  * Tests of MFM
  *
  * How to run the tests:
- * > mocha test/mfm.ts --require ts-node/register
+ * > npx mocha test/mfm.ts --require ts-node/register
  *
  * To specify test:
- * > mocha test/mfm.ts --require ts-node/register -g 'test name'
+ * > npx mocha test/mfm.ts --require ts-node/register -g 'test name'
  *
  * If the tests not start, try set following enviroment variables:
  * TS_NODE_FILES=true and TS_NODE_TRANSPILE_ONLY=true
@@ -637,6 +637,20 @@ describe('MFM', () => {
 				assert.deepStrictEqual(tokens, [
 					leaf('hashtag', { hashtag: 'foo' }),
 					text('/bar'),
+				]);
+			});
+
+			it('ignore Keycap Number Sign (U+0023 + U+20E3)', () => {
+				const tokens = parse('#⃣');
+				assert.deepStrictEqual(tokens, [
+					leaf('emoji', { emoji: '#⃣' })
+				]);
+			});
+
+			it('ignore Keycap Number Sign (U+0023 + U+FE0F + U+20E3)', () => {
+				const tokens = parse('#️⃣');
+				assert.deepStrictEqual(tokens, [
+					leaf('emoji', { emoji: '#️⃣' })
 				]);
 			});
 		});

@@ -6,7 +6,10 @@
 			<div class="value" ref="passwordMetar"></div>
 		</div>
 		<span class="label" ref="label"><slot></slot></span>
-		<span class="title" ref="title"><slot name="title"></slot></span>
+		<span class="title" ref="title">
+			<slot name="title"></slot>
+			<span class="warning" v-if="invalid"><fa :icon="['fa', 'exclamation-circle']"/>{{ $refs.input.validationMessage }}</span>
+		</span>
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
 			<input v-if="debounce" ref="input"
@@ -158,6 +161,7 @@ export default Vue.extend({
 		return {
 			v: this.value,
 			focused: false,
+			invalid: false,
 			passwordStrength: '',
 			id: Math.random().toString()
 		};
@@ -200,6 +204,8 @@ export default Vue.extend({
 				this.passwordStrength = strength > 0.7 ? 'high' : strength > 0.3 ? 'medium' : 'low';
 				(this.$refs.passwordMetar as any).style.width = `${strength * 100}%`;
 			}
+
+			this.invalid = this.$refs.input.validity.badInput;
 		}
 	},
 	mounted() {
@@ -365,6 +371,17 @@ root(fill)
 			//will-change transform
 			transform-origin top left
 			transform scale(.75)
+			white-space nowrap
+			width 133%
+			overflow hidden
+			text-overflow ellipsis
+
+			> .warning
+				margin-left 0.5em
+				color var(--infoWarnFg)
+
+				> svg
+					margin-right 0.1em
 
 		> input
 			display block

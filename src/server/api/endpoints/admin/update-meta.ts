@@ -3,6 +3,7 @@ import define from '../../define';
 import { getConnection } from 'typeorm';
 import { Meta } from '../../../../models/entities/meta';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
 
 export const meta = {
 	desc: {
@@ -121,7 +122,7 @@ export const meta = {
 		},
 
 		maxNoteTextLength: {
-			validator: $.optional.num.min(0),
+			validator: $.optional.num.min(0).max(DB_MAX_NOTE_TEXT_LENGTH),
 			desc: {
 				'ja-JP': '投稿の最大文字数'
 			}
@@ -430,15 +431,15 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (Array.isArray(ps.pinnedUsers)) {
-		set.pinnedUsers = ps.pinnedUsers;
+		set.pinnedUsers = ps.pinnedUsers.filter(Boolean);
 	}
 
 	if (Array.isArray(ps.hiddenTags)) {
-		set.hiddenTags = ps.hiddenTags;
+		set.hiddenTags = ps.hiddenTags.filter(Boolean);
 	}
 
 	if (Array.isArray(ps.blockedHosts)) {
-		set.blockedHosts = ps.blockedHosts;
+		set.blockedHosts = ps.blockedHosts.filter(Boolean);
 	}
 
 	if (ps.mascotImageUrl !== undefined) {
@@ -501,8 +502,8 @@ export default define(meta, async (ps, me) => {
 		set.maintainerEmail = ps.maintainerEmail;
 	}
 
-	if (ps.langs !== undefined) {
-		set.langs = ps.langs;
+	if (Array.isArray(ps.langs)) {
+		set.langs = ps.langs.filter(Boolean);
 	}
 
 	if (ps.summalyProxy !== undefined) {

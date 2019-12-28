@@ -6,7 +6,7 @@ import { name, schema } from '../schemas/test';
 type TestLog = SchemaType<typeof schema>;
 
 export default class TestChart extends Chart<TestLog> {
-	private total = 0;
+	public total = 0; // publicにするのはテストのため
 
 	constructor() {
 		super(name, schema);
@@ -37,6 +37,19 @@ export default class TestChart extends Chart<TestLog> {
 		update.total = 1;
 		update.inc = 1;
 		this.total++;
+
+		await this.inc({
+			foo: update
+		});
+	}
+
+	@autobind
+	public async decrement() {
+		const update: Obj = {};
+
+		update.total = -1;
+		update.dec = 1;
+		this.total--;
 
 		await this.inc({
 			foo: update

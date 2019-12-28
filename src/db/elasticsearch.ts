@@ -132,7 +132,7 @@ class ElasticSearch extends SearchClientBase {
 
 export default (config.elasticsearch
 	? new ElasticSearch(
-		`http://${config.elasticsearch.host}:${config.elasticsearch.port}`,
+		`${config.elasticsearch.ssl ? 'https://' : 'http://'}${config.elasticsearch.host}:${config.elasticsearch.port}`,
 		config.elasticsearch.index
 	)
 	: null);

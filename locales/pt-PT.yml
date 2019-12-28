@@ -12,9 +12,7 @@ common:
     rich-contents: "Post"
     rich-contents-desc: "Apenas poste suas ideias, temas do momento e qualquer coisa que você queira compartilhar. Você pode querer decorar suas palavras, anexar suas imagens favoritas, enviar arquivos, inclusive vídeos ou criar uma enquete. Essas são as coisas que você pode fazer em Misskey."
     reaction: "Reações"
-  adblock:
-    detected: "Por favor, desative o bloqueador de anúncios."
-    warning: "Alguns recursos podem não estar disponíveis ou apresentar mal funcionamento se o bloqueio de anúncios estiver ativado. <strong>Misskey não está usando anúncios</strong>"
+    reaction-desc: "あなたの気持ちを伝える最も簡単な方法です。Misskeyは、他のユーザーの投稿に様々なリアクションを付けることができます。いちどMisskeyのリアクション機能を体験してしまうと、もう「いいね」の概念しか存在しないSNSには戻れなくなるかもしれません"
   application-authorization: "Aplicativos autorizados"
   close: "Fechar"
   do-not-copy-paste: "Por favor, não digite ou copie o código aqui. A conta pode ser comprometida."

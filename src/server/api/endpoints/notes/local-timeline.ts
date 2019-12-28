@@ -95,7 +95,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
 		.leftJoinAndSelect('note.user', 'user');
 
-	if (user) generateVisibilityQuery(query, user);
+	generateVisibilityQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
 	if (ps.withFiles) {
@@ -112,12 +112,8 @@ export default define(meta, async (ps, user) => {
 		}));
 
 		if (ps.excludeNsfw) {
-			// v11 TODO
-			/*
-			query['_files.isSensitive'] = {
-				$ne: true
-			};
-			*/
+			query.andWhere('note.cw IS NULL');
+			query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
 		}
 	}
 	//#endregion

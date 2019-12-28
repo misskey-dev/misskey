@@ -3,8 +3,7 @@ import * as promiseLimit from 'promise-limit';
 import config from '../../../config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IPerson } from '../type';
-import { DriveFile } from '../../../models/entities/drive-file';
+import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId } from '../type';
 import { fromHtml } from '../../../mfm/fromHtml';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
@@ -26,6 +25,9 @@ import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { ensure } from '../../../prelude/ensure';
+import { toArray } from '../../../prelude/array';
+import { fetchNodeinfo } from '../../../services/fetch-nodeinfo';
+
 const logger = apLogger;
 
 /**
@@ -132,7 +134,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
 	const isBot = object.type == 'Service';
 
@@ -148,13 +150,13 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				createdAt: new Date(),
 				lastFetchedAt: new Date(),
 				name: person.name,
-				isLocked: person.manuallyApprovesFollowers,
+				isLocked: !!person.manuallyApprovesFollowers,
 				username: person.preferredUsername,
-				usernameLower: person.preferredUsername.toLowerCase(),
+				usernameLower: person.preferredUsername!.toLowerCase(),
 				host,
 				inbox: person.inbox,
 				sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
-				featured: person.featured,
+				featured: person.featured ? getApId(person.featured) : undefined,
 				uri: person.id,
 				tags,
 				isBot,
@@ -189,6 +191,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	registerOrFetchInstanceDoc(host).then(i => {
 		Instances.increment({ id: i.id }, 'usersCount', 1);
 		instanceChart.newUser(i.host);
+		fetchNodeinfo(i);
 	});
 
 	usersChart.update(user!, true);
@@ -196,19 +199,19 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	// ハッシュタグ更新
 	updateUsertags(user!, tags);
 
-	//#region アイコンとヘッダー画像をフェッチ
-	const [avatar, banner] = (await Promise.all<DriveFile | null>([
+	//#region アバターとヘッダー画像をフェッチ
+	const [avatar, banner] = await Promise.all([
 		person.icon,
 		person.image
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
 			: resolveImage(user!, img).catch(() => null)
-	)));
+	));
 
 	const avatarId = avatar ? avatar.id : null;
 	const bannerId = banner ? banner.id : null;
-	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar) : null;
+	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar, true) : null;
 	const bannerUrl = banner ? DriveFiles.getPublicUrl(banner) : null;
 	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	const bannerColor = banner && banner.properties.avgColor ? banner.properties.avgColor : null;
@@ -285,15 +288,15 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	logger.info(`Updating the Person: ${person.id}`);
 
-	// アイコンとヘッダー画像をフェッチ
-	const [avatar, banner] = (await Promise.all<DriveFile | null>([
+	// アバターとヘッダー画像をフェッチ
+	const [avatar, banner] = await Promise.all([
 		person.icon,
 		person.image
 	].map(img =>
 		img == null
 			? Promise.resolve(null)
 			: resolveImage(exist, img).catch(() => null)
-	)));
+	));
 
 	// カスタム絵文字取得
 	const emojis = await extractEmojis(person.tag || [], exist.host).catch(e => {
@@ -305,7 +308,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const { fields, services } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase());
+	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
 	const updates = {
 		lastFetchedAt: new Date(),
@@ -317,12 +320,12 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		tags,
 		isBot: object.type == 'Service',
 		isCat: (person as any).isCat === true,
-		isLocked: person.manuallyApprovesFollowers,
+		isLocked: !!person.manuallyApprovesFollowers,
 	} as Partial<User>;
 
 	if (avatar) {
 		updates.avatarId = avatar.id;
-		updates.avatarUrl = DriveFiles.getPublicUrl(avatar);
+		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
 		updates.avatarColor = avatar.properties.avgColor ? avatar.properties.avgColor : null;
 	}
 
@@ -463,8 +466,7 @@ export async function updateFeatured(userId: User['id']) {
 
 	// Resolve to Object(may be Note) arrays
 	const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
-	const items = await resolver.resolve(unresolvedItems);
-	if (!Array.isArray(items)) throw new Error(`Collection items is not an array`);
+	const items = await Promise.all(toArray(unresolvedItems).map(x => resolver.resolve(x)));
 
 	// Resolve and regist Notes
 	const limit = promiseLimit<Note | null>(2);

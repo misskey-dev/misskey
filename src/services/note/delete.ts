@@ -1,14 +1,16 @@
 import { publishNoteStream } from '../stream';
 import renderDelete from '../../remote/activitypub/renderer/delete';
+import renderAnnounce from '../../remote/activitypub/renderer/announce';
+import renderUndo from '../../remote/activitypub/renderer/undo';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import { deliver } from '../../queue';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
 import config from '../../config';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
-import { Notes, Users, Followings, Instances } from '../../models';
+import { Notes, Users, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
+import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 
 /**
  * 投稿を削除します。
@@ -35,24 +37,19 @@ export default async function(user: User, note: Note, quiet = false) {
 
 		//#region ローカルの投稿なら削除アクティビティを配送
 		if (Users.isLocalUser(user)) {
-			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
+			let renote: Note | undefined;
 
-			const queue: string[] = [];
-
-			const followers = await Followings.find({
-				followeeId: note.userId
-			});
-
-			for (const following of followers) {
-				if (Followings.isRemoteFollower(following)) {
-					const inbox = following.followerSharedInbox || following.followerInbox;
-					if (!queue.includes(inbox)) queue.push(inbox);
-				}
+			if (note.renoteId && note.text == null && !note.hasPoll && (note.fileIds == null || note.fileIds.length == 0)) {
+				renote = await Notes.findOne({
+					id: note.renoteId
+				});
 			}
 
-			for (const inbox of queue) {
-				deliver(user as any, content, inbox);
-			}
+			const content = renderActivity(renote
+				? renderUndo(renderAnnounce(renote.uri || `${config.url}/notes/${renote.id}`, note), user)
+				: renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
+
+			deliverToFollowers(user, content);
 		}
 		//#endregion
 

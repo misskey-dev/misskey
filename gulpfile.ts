@@ -3,28 +3,22 @@
  */
 
 import * as gulp from 'gulp';
-import * as gutil from 'gulp-util';
 import * as ts from 'gulp-typescript';
 const sourcemaps = require('gulp-sourcemaps');
 import tslint from 'gulp-tslint';
-const cssnano = require('gulp-cssnano');
 const stylus = require('gulp-stylus');
-import * as uglifyComposer from 'gulp-uglify/composer';
 import * as rimraf from 'rimraf';
-import chalk from 'chalk';
-const imagemin = require('gulp-imagemin');
+import * as chalk from 'chalk';
 import * as rename from 'gulp-rename';
 import * as mocha from 'gulp-mocha';
 import * as replace from 'gulp-replace';
-const uglifyes = require('uglify-es');
+const cleanCSS = require('gulp-clean-css');
+const terser = require('gulp-terser');
 
 const locales = require('./locales');
 
-const uglify = uglifyComposer(uglifyes, console);
-
 const env = process.env.NODE_ENV || 'development';
-const isProduction = env === 'production';
-const isDebug = !isProduction;
+const isDebug = env !== 'production';
 
 if (isDebug) {
 	console.warn(chalk.yellow.bold('WARNING! NODE_ENV is not "production".'));
@@ -54,6 +48,7 @@ gulp.task('build:copy:fonts', () =>
 gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:fonts', () =>
 	gulp.src([
 		'./src/const.json',
+		'./src/emojilist.json',
 		'./src/server/web/views/**/*',
 		'./src/**/assets/**/*',
 		'!./src/client/app/**/assets/**/*'
@@ -96,22 +91,20 @@ gulp.task('cleanall', gulp.parallel('clean', cb =>
 ));
 
 gulp.task('build:client:script', () => {
-	const client = require('./built/client/meta.json');
+	const client = require('./built/meta.json');
 	return gulp.src(['./src/client/app/boot.js', './src/client/app/safe.js'])
 		.pipe(replace('VERSION', JSON.stringify(client.version)))
 		.pipe(replace('ENV', JSON.stringify(env)))
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
-		.pipe(isProduction ? uglify({
+		.pipe(terser({
 			toplevel: true
-		} as any) : gutil.noop())
+		}))
 		.pipe(gulp.dest('./built/client/assets/'));
 });
 
 gulp.task('build:client:styles', () =>
 	gulp.src('./src/client/app/init.css')
-		.pipe(isProduction
-			? (cssnano as any)()
-			: gutil.noop())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('./built/client/assets/'))
 );
 
@@ -121,7 +114,6 @@ gulp.task('copy:client', () =>
 			'./src/client/assets/**/*',
 			'./src/client/app/*/assets/**/*'
 		])
-			.pipe(isProduction ? (imagemin as any)() : gutil.noop())
 			.pipe(rename(path => {
 				path.dirname = path.dirname!.replace('assets', '.');
 			}))
@@ -131,7 +123,7 @@ gulp.task('copy:client', () =>
 gulp.task('doc', () =>
 	gulp.src('./src/docs/**/*.styl')
 		.pipe(stylus())
-		.pipe((cssnano as any)())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('./built/docs/assets/'))
 );
 

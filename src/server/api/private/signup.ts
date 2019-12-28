@@ -15,8 +15,8 @@ import { UserProfile } from '../../../models/entities/user-profile';
 import { getConnection } from 'typeorm';
 import { UsedUsername } from '../../../models/entities/used-username';
 
-export default async (ctx: Koa.BaseContext) => {
-	const body = ctx.request.body as any;
+export default async (ctx: Koa.Context) => {
+	const body = ctx.request.body;
 
 	const instance = await fetchMeta(true);
 

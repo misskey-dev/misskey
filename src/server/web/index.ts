@@ -5,7 +5,7 @@
 import * as os from 'os';
 import ms = require('ms');
 import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import * as Router from '@koa/router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
@@ -13,7 +13,6 @@ import * as views from 'koa-views';
 import docs from './docs';
 import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
-import * as pkg from '../../../package.json';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
 import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
@@ -146,7 +145,7 @@ router.get('/@:user.json', async ctx => {
 
 //#region for crawlers
 // User
-router.get('/@:user', async (ctx, next) => {
+router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
 	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
@@ -164,6 +163,7 @@ router.get('/@:user', async (ctx, next) => {
 
 		await ctx.render('user', {
 			user, profile, me,
+			sub: ctx.params.sub,
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl
 		});
@@ -256,7 +256,7 @@ router.get('/info', async ctx => {
 		where: { host: null }
 	});
 	await ctx.render('info', {
-		version: pkg.version,
+		version: config.version,
 		machine: os.hostname(),
 		os: os.platform(),
 		node: process.version,

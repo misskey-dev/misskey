@@ -29,6 +29,7 @@ export type Source = {
 		port: number;
 		pass: string;
 		index?: string;
+		ssl?: boolean;
 	};
 	sonic: {
 		host: string;
@@ -40,6 +41,7 @@ export type Source = {
 	autoAdmin?: boolean;
 
 	proxy?: string;
+	proxySmtp?: string;
 
 	accesslog?: string;
 
@@ -48,12 +50,23 @@ export type Source = {
 	id: string;
 
 	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
+
+	deliverJobConcurrency?: number;
+	inboxJobConcurrency?: number;
+
+	syslog: {
+		host: string;
+		port: number;
+	};
+
+	mediaProxy?: string;
 };
 
 /**
  * Misskeyが自動的に(ユーザーが設定した情報から推論して)設定する情報
  */
 export type Mixin = {
+	version: string;
 	host: string;
 	hostname: string;
 	scheme: string;
