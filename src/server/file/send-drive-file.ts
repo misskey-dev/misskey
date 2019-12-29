@@ -5,6 +5,7 @@ import { serverLogger } from '..';
 import { contentDisposition } from '../../misc/content-disposition';
 import { DriveFiles } from '../../models';
 import { InternalStorage } from '../../services/drive/internal-storage';
+import { detectMine } from '../../misc/detect-mine';
 
 const assets = `${__dirname}/../../server/file/assets/`;
 
@@ -40,22 +41,23 @@ export default async function(ctx: Koa.Context) {
 	const isThumbnail = file.thumbnailAccessKey === key;
 	const isWebpublic = file.webpublicAccessKey === key;
 
-	if (isThumbnail) {
+	if (isThumbnail || isWebpublic) {
+		const [mime, ext] = await detectMine(InternalStorage.resolvePath(key));
+		const filename = rename(file.name, {
+			suffix: isThumbnail ? '-thumb' : '-web',
+			extname: ext ? `.${ext}` : undefined
+		}).toString();
+
 		ctx.body = InternalStorage.read(key);
-		ctx.set('Content-Type', 'image/jpeg');
+		ctx.set('Content-Type', mime);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
-		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-thumb', extname: '.jpeg' })}`));
-	} else if (isWebpublic) {
-		ctx.body = InternalStorage.read(key);
-		ctx.set('Content-Type', file.type === 'image/apng' ? 'image/png' : file.type);
-		ctx.set('Cache-Control', 'max-age=31536000, immutable');
-		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-web' })}`));
+		ctx.set('Content-Disposition', contentDisposition('inline', filename));
 	} else {
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
 		ctx.body = readable;
 		ctx.set('Content-Type', file.type);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
-		ctx.set('Content-Disposition', contentDisposition('inline', `${file.name}`));
+		ctx.set('Content-Disposition', contentDisposition('inline', file.name));
 	}
 }
