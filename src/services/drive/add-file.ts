@@ -10,7 +10,7 @@ import { deleteFile } from './delete-file';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, convertToJpeg, convertToWebp, convertToPng, convertToGif, convertToApng } from './image-processor';
+import { IImage, convertToJpeg, convertToWebp, convertToPng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { detectMine } from '../../misc/detect-mine';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
@@ -159,12 +159,6 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				webpublic = await convertToWebp(path, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
 				webpublic = await convertToPng(path, 2048, 2048);
-			} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
-				webpublic = await convertToApng(path);
-			} else if (['image/gif'].includes(type)) {
-				webpublic = await convertToGif(path);
-			} else {
-				logger.info(`web image not created (not an image)`);
 			}
 		} catch (e) {
 			logger.warn(`web image not created (an error occured)`, e);
@@ -182,10 +176,6 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			thumbnail = await convertToJpeg(path, 498, 280);
 		} else if (['image/png'].includes(type)) {
 			thumbnail = await convertToPng(path, 498, 280);
-		} else if (['image/gif'].includes(type)) {
-			thumbnail = await convertToGif(path);
-		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
-			thumbnail = await convertToApng(path);
 		} else if (type.startsWith('video/')) {
 			try {
 				thumbnail = await GenerateVideoThumbnail(path);
@@ -422,8 +412,6 @@ export default async function(
 
 		if (isLink) {
 			file.url = url;
-			file.thumbnailUrl = url;
-			file.webpublicUrl = url;
 			// ローカルプロキシ用
 			file.accessKey = uuid();
 			file.thumbnailAccessKey = 'thumbnail-' + uuid();

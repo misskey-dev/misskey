@@ -74,29 +74,3 @@ export async function convertToPng(path: string, width: number, height: number):
 		type: 'image/png'
 	};
 }
-
-/**
- * Convert to GIF (Actually just NOP)
- */
-export async function convertToGif(path: string): Promise<IImage> {
-	const data = await fs.promises.readFile(path);
-
-	return {
-		data,
-		ext: 'gif',
-		type: 'image/gif'
-	};
-}
-
-/**
- * Convert to APNG (Actually just NOP)
- */
-export async function convertToApng(path: string): Promise<IImage> {
-	const data = await fs.promises.readFile(path);
-
-	return {
-		data,
-		ext: 'apng',
-		type: 'image/apng'
-	};
-}

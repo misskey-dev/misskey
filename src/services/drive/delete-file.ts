@@ -69,8 +69,8 @@ function postProcess(file: DriveFile, isExpired = false) {
 		DriveFiles.update(file.id, {
 			isLink: true,
 			url: file.uri,
-			thumbnailUrl: file.uri,
-			webpublicUrl: file.uri,
+			thumbnailUrl: null,
+			webpublicUrl: null,
 			size: 0,
 			// ローカルプロキシ用
 			accessKey: uuid(),
