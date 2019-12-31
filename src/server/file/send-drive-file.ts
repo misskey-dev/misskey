@@ -78,7 +78,7 @@ export default async function(ctx: Koa.Context) {
 
 				const image = await convertFile();
 				ctx.body = image.data;
-				ctx.set('Content-Type', file.type);
+				ctx.set('Content-Type', image.type);
 				ctx.set('Cache-Control', 'max-age=31536000, immutable');
 			} catch (e) {
 				serverLogger.error(e);
