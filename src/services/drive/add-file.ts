@@ -424,6 +424,10 @@ export default async function(
 			file.url = url;
 			file.thumbnailUrl = url;
 			file.webpublicUrl = url;
+			// ローカルプロキシ用
+			file.accessKey = uuid();
+			file.thumbnailAccessKey = 'thumbnail-' + uuid();
+			file.webpublicAccessKey = 'webpublic-' + uuid();
 		}
 	}
 
