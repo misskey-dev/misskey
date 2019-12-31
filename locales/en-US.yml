@@ -1281,6 +1281,7 @@ admin/views/instance.vue:
   cache-remote-files: "Cache remote files"
   cache-remote-files-desc: "If disabled, All remote files going to be linked to their origin server directly. This will be an effective solution to save your server storage. However, Since no thumbnail will be generated, It will make increasing data usage, and also may remote files are invisible to users who set direct-link disabled. It is recommended that this config set enabled or enabling the next config, 'Proxy remote files'."
   proxy-remote-files: "Proxy remote files"
+  proxy-remote-files-desc: "If enabled, Remote files that not stored locally or deleted by storage overusage will be proxied locally and also thumbnails will be generated."
   local-drive-capacity-mb: "Volume of Drive per user"
   remote-drive-capacity-mb: "Volume of Drive per remote user"
   mb: "In megabytes"
