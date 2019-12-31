@@ -1281,6 +1281,7 @@ admin/views/instance.vue:
   cache-remote-files: "원격 파일을 캐시"
   cache-remote-files-desc: "이 설정을 해지하면 원격 파일을 캐시하지 않고 해당 파일을 직접 링크하게 됩니다. 그에 따라 서버의 저장 공간을 절약할 수 있지만, 프라이버시 설정에서 직접 링크를 무효로 설정한 사용자에게는 파일이 보이지 않거나, 썸네일이 생성되지 않기 때문에 통신량이 증가합니다. 보통은 이 설정을 사용하거나 아래의 원격 파일 프록시를 설정하는 것을 추천합니다."
   proxy-remote-files: "원격 파일 프록시"
+  proxy-remote-files-desc: "이 설정을 사용하면, 저장되지 않았거나 용량 초과로 삭제된 원격 파일을 로컬에서 프록시하여 썸네일을 생성하게 됩니다."
   local-drive-capacity-mb: "로컬 사용자 한 명당 드라이브 용량"
   remote-drive-capacity-mb: "원격 사용자 한 명당 드라이브 용량"
   mb: "메가바이트 단위"
@@ -1993,6 +1994,7 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "소수점을 반올림"
       _round:
         arg1: "수치"
       eq: "A와 B가 동일"
