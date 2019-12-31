@@ -1994,6 +1994,7 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "Round decimal"
       _round:
         arg1: "Number"
       eq: "A and B are equal"
