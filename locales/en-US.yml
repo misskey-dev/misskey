@@ -1279,6 +1279,8 @@ admin/views/instance.vue:
   object-storage-s3-info-here: "here"
   object-storage-gcs-info: "If you are going to use Google Cloud Storage as Object Storage, Set the 'Endpoint' as storage.googleapis.com, and keep the 'Region' is blank."
   cache-remote-files: "Cache remote files"
+  cache-remote-files-desc: "Without this parameter, all remote files are linked to their host server directly. This will be an effective solution to save your server storage, however make remote files invisible to users who set direct-link disabled, since no thumbnail will be generated, increase traffic. It is recommended that this parameter set enabled or enabling the next parameter 'Proxy remote files'."
+  proxy-remote-files: "Proxy remote files"
   local-drive-capacity-mb: "Volume of Drive per user"
   remote-drive-capacity-mb: "Volume of Drive per remote user"
   mb: "In megabytes"
