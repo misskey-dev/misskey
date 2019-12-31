@@ -142,4 +142,4 @@ autoAdmin: true
 #proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
 
 # Media Proxy
-#mediaProxy: http://127.0.0.1:3000
+#mediaProxy: https://example.com/proxy

@@ -151,6 +151,13 @@ export const meta = {
 			}
 		},
 
+		proxyRemoteFiles: {
+			validator: $.optional.bool,
+			desc: {
+				'ja-JP': 'ローカルにないリモートのファイルをプロキシするか否か'
+			}
+		},
+
 		enableRecaptcha: {
 			validator: $.optional.bool,
 			desc: {
@@ -476,6 +483,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.cacheRemoteFiles !== undefined) {
 		set.cacheRemoteFiles = ps.cacheRemoteFiles;
+	}
+
+	if (ps.proxyRemoteFiles !== undefined) {
+		set.proxyRemoteFiles = ps.proxyRemoteFiles;
 	}
 
 	if (ps.enableRecaptcha !== undefined) {
