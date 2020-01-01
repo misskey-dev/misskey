@@ -158,7 +158,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			} else if (['image/webp'].includes(type)) {
 				webpublic = await convertToWebp(path, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
-				webpublic = await convertToPng(path, 498, 280);
+				webpublic = await convertToPng(path, 2048, 2048);
 			} else {
 				logger.info(`web image not created (not an required image)`);
 			}
