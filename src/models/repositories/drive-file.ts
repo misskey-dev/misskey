@@ -39,25 +39,13 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
-				let ext = '';
-
-				if (file.name) {
-					[ext] = (file.name.match(/\.(\w+)$/) || ['']);
-				}
-
-				if (ext === '') {
-					if (file.type === 'image/jpeg') ext = '.jpg';
-					if (file.type === 'image/png') ext = '.png';
-					if (file.type === 'image/webp') ext = '.webp';
-					if (file.type === 'image/apng') ext = '.apng';
-					if (file.type === 'image/vnd.mozilla.apng') ext = '.apng';
-				}
-
-				return `/files/${key}/${key}${ext}`;
+				return `/files/${key}`;
 			}
 		}
 
-		return thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
+		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/svg+xml'].includes(file.type);
+
+		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
 	}
 
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
