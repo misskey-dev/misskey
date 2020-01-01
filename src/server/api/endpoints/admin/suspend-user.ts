@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import deleteFollowing from '../../../../services/following/delete';
-import { Users, Followings } from '../../../../models';
+import { Users, Followings, Notifications } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
 import { doPostSuspend } from '../../../../services/suspend-user';
@@ -55,6 +55,7 @@ export default define(meta, async (ps, me) => {
 	(async () => {
 		await doPostSuspend(user).catch(e => {});
 		await unFollowAll(user).catch(e => {});
+		await readAllNotify(user).catch(e => {});
 	})();
 });
 
@@ -74,4 +75,13 @@ async function unFollowAll(follower: User) {
 
 		await deleteFollowing(follower, followee, true);
 	}
+}
+
+async function readAllNotify(notifier: User) {
+	await Notifications.update({
+		notifierId: notifier.id,
+		isRead: false,
+	}, {
+		isRead: true
+	});
 }

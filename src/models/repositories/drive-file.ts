@@ -39,21 +39,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
-				let ext = '';
-
-				if (file.name) {
-					[ext] = (file.name.match(/\.(\w+)$/) || ['']);
-				}
-
-				if (ext === '') {
-					if (file.type === 'image/jpeg') ext = '.jpg';
-					if (file.type === 'image/png') ext = '.png';
-					if (file.type === 'image/webp') ext = '.webp';
-					if (file.type === 'image/apng') ext = '.apng';
-					if (file.type === 'image/vnd.mozilla.apng') ext = '.apng';
-				}
-
-				return `/files/${key}/${key}${ext}`;
+				return `/files/${key}`;
 			}
 		}
 
