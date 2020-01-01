@@ -57,7 +57,11 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			}
 		}
 
-		return thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
+		if (thumbnail) {
+			if (file.type.startsWith('image/')) return file.thumbnailUrl || file.webpublicUrl || file.url || null;
+			return file.thumbnailUrl || file.webpublicUrl || null;
+		}
+		return file.webpublicUrl || file.url;
 	}
 
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {

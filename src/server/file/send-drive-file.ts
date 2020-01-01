@@ -9,7 +9,7 @@ import { DriveFiles } from '../../models';
 import { InternalStorage } from '../../services/drive/internal-storage';
 import { downloadUrl } from '../../misc/donwload-url';
 import { detectMine } from '../../misc/detect-mine';
-import { convertToJpeg, convertToPng, convertToGif, convertToApng } from '../../services/drive/image-processor';
+import { convertToJpeg, convertToPng } from '../../services/drive/image-processor';
 import { GenerateVideoThumbnail } from '../../services/drive/generate-video-thumbnail';
 
 const assets = `${__dirname}/../../server/file/assets/`;
@@ -58,12 +58,8 @@ export default async function(ctx: Koa.Context) {
 					if (isThumbnail) {
 						if (['image/jpeg', 'image/webp'].includes(type)) {
 							return await convertToJpeg(path, 498, 280);
-						} else if (['image/png', 'image/svg+xml'].includes(type)) {
+						} else if (['image/png'].includes(type)) {
 							return await convertToPng(path, 498, 280);
-						} else if (['image/gif'].includes(type)) {
-							return await convertToGif(path);
-						} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
-							return await convertToApng(path);
 						} else if (type.startsWith('video/')) {
 							return await GenerateVideoThumbnail(path);
 						}
@@ -100,7 +96,7 @@ export default async function(ctx: Koa.Context) {
 		ctx.set('Cache-Control', 'max-age=86400');
 		return;
 	}
-  
+
 	if (isThumbnail || isWebpublic) {
 		const [mime, ext] = await detectMine(InternalStorage.resolvePath(key));
 		const filename = rename(file.name, {
