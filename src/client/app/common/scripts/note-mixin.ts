@@ -191,7 +191,7 @@ export default (opts: Opts = {}) => ({
 
 			this.$root.dialog({
 				type: 'warning',
-				text: this.isRenote ? this.$t('@.unrenote-confirm') : this.$t('@.delete-confirm'),
+				text: this.isRenote ? this.$t('@.remove-renote-confirm') : this.$t('@.delete-confirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
