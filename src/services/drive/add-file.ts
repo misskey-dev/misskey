@@ -159,6 +159,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				webpublic = await convertToWebp(path, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
 				webpublic = await convertToPng(path, 2048, 2048);
+			} else {
+				logger.info(`web image not created (not an required image)`);
 			}
 		} catch (e) {
 			logger.warn(`web image not created (an error occured)`, e);
@@ -182,6 +184,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			} catch (e) {
 				logger.error(`GenerateVideoThumbnail failed: ${e}`);
 			}
+		} else {
+			logger.info(`thumbnail not created (not an required file)`);
 		}
 	} catch (e) {
 		logger.warn(`thumbnail not created (an error occured)`, e);
@@ -351,7 +355,7 @@ export default async function(
 
 	let propPromises: Promise<void>[] = [];
 
-	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime);
+	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime);
 
 	if (isImage) {
 		const img = sharp(path);
@@ -374,7 +378,7 @@ export default async function(
 			logger.debug('calculating average color...');
 
 			try {
-				const info = await (img as any).stats();
+				const info = await sharp(await img.flatten({background: '#fff'}).toBuffer()).stats();
 
 				const r = Math.round(info.channels[0].mean);
 				const g = Math.round(info.channels[1].mean);

@@ -1,5 +1,4 @@
 import * as sharp from 'sharp';
-import * as fs from 'fs';
 
 export type IImage = {
 	data: Buffer;
