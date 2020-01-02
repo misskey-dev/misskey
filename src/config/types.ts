@@ -24,14 +24,14 @@ export type Source = {
 		db?: number;
 		prefix?: string;
 	};
-	elasticsearch: {
+	elasticsearch?: {
 		host: string;
 		port: number;
 		pass: string;
 		index?: string;
 		ssl?: boolean;
 	};
-	sonic: {
+	sonic?: {
 		host: string;
 		port: number;
 		pass: string;
