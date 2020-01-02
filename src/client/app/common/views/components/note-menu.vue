@@ -79,7 +79,7 @@ export default Vue.extend({
 				? null : undefined,
 				this.isRenote && this.note.userId == this.$store.state.i.id ? {
 					icon: faMinusSquare,
-					text: this.$t('unrenote'),
+					text: this.$t('remove-renote'),
 					action: () => this.del(false)
 				} : undefined,
 				...(this.appearNote.userId == this.$store.state.i.id || this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? [
@@ -188,7 +188,7 @@ export default Vue.extend({
 		del(appear: boolean = true) {
 			this.$root.dialog({
 				type: 'warning',
-				text: appear ? this.$t('@.delete-confirm') : this.$t('@.unrenote-confirm'),
+				text: appear ? this.$t('@.delete-confirm') : this.$t('@.remove-renote-confirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
