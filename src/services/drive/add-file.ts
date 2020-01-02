@@ -160,7 +160,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			} else if (['image/png'].includes(type)) {
 				webpublic = await convertToPng(path, 2048, 2048);
 			} else {
-				logger.info(`web image not created (not an required image)`);
+				logger.debug(`web image not created (not an required image)`);
 			}
 		} catch (e) {
 			logger.warn(`web image not created (an error occured)`, e);
@@ -182,10 +182,10 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			try {
 				thumbnail = await GenerateVideoThumbnail(path);
 			} catch (e) {
-				logger.error(`GenerateVideoThumbnail failed: ${e}`);
+				logger.warn(`GenerateVideoThumbnail failed: ${e}`);
 			}
 		} else {
-			logger.info(`thumbnail not created (not an required file)`);
+			logger.debug(`thumbnail not created (not an required file)`);
 		}
 	} catch (e) {
 		logger.warn(`thumbnail not created (an error occured)`, e);
