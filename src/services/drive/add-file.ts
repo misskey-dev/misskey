@@ -159,6 +159,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				webpublic = await convertToWebp(path, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
 				webpublic = await convertToPng(path, 2048, 2048);
+			} else {
+				logger.debug(`web image not created (not an required image)`);
 			}
 		} catch (e) {
 			logger.warn(`web image not created (an error occured)`, e);
@@ -180,8 +182,10 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			try {
 				thumbnail = await GenerateVideoThumbnail(path);
 			} catch (e) {
-				logger.error(`GenerateVideoThumbnail failed: ${e}`);
+				logger.warn(`GenerateVideoThumbnail failed: ${e}`);
 			}
+		} else {
+			logger.debug(`thumbnail not created (not an required file)`);
 		}
 	} catch (e) {
 		logger.warn(`thumbnail not created (an error occured)`, e);
@@ -351,7 +355,7 @@ export default async function(
 
 	let propPromises: Promise<void>[] = [];
 
-	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime);
+	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime);
 
 	if (isImage) {
 		const img = sharp(path);
@@ -374,15 +378,21 @@ export default async function(
 			logger.debug('calculating average color...');
 
 			try {
-				const info = await (img as any).stats();
+				const info = await img.stats();
 
-				const r = Math.round(info.channels[0].mean);
-				const g = Math.round(info.channels[1].mean);
-				const b = Math.round(info.channels[2].mean);
+				if (info.isOpaque) {
+					const r = Math.round(info.channels[0].mean);
+					const g = Math.round(info.channels[1].mean);
+					const b = Math.round(info.channels[2].mean);
 
-				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
+					logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				properties['avgColor'] = `rgb(${r},${g},${b})`;
+					properties['avgColor'] = `rgb(${r},${g},${b})`;
+				} else {
+					logger.debug(`this image is not opaque so average color is 255, 255, 255`);
+
+					properties['avgColor'] = `rgb(255,255,255)`;
+				}
 			} catch (e) { }
 		};
 

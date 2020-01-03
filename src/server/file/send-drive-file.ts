@@ -9,7 +9,7 @@ import { DriveFiles } from '../../models';
 import { InternalStorage } from '../../services/drive/internal-storage';
 import { downloadUrl } from '../../misc/donwload-url';
 import { detectMine } from '../../misc/detect-mine';
-import { convertToJpeg, convertToPng, convertToGif, convertToApng } from '../../services/drive/image-processor';
+import { convertToJpeg, convertToPng } from '../../services/drive/image-processor';
 import { GenerateVideoThumbnail } from '../../services/drive/generate-video-thumbnail';
 
 const assets = `${__dirname}/../../server/file/assets/`;
@@ -60,10 +60,6 @@ export default async function(ctx: Koa.Context) {
 							return await convertToJpeg(path, 498, 280);
 						} else if (['image/png'].includes(type)) {
 							return await convertToPng(path, 498, 280);
-						} else if (['image/gif'].includes(type)) {
-							return await convertToGif(path);
-						} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
-							return await convertToApng(path);
 						} else if (type.startsWith('video/')) {
 							return await GenerateVideoThumbnail(path);
 						}
@@ -101,22 +97,23 @@ export default async function(ctx: Koa.Context) {
 		return;
 	}
 
-	if (isThumbnail) {
+	if (isThumbnail || isWebpublic) {
+		const [mime, ext] = await detectMine(InternalStorage.resolvePath(key));
+		const filename = rename(file.name, {
+			suffix: isThumbnail ? '-thumb' : '-web',
+			extname: ext ? `.${ext}` : undefined
+		}).toString();
+
 		ctx.body = InternalStorage.read(key);
-		ctx.set('Content-Type', 'image/jpeg');
+		ctx.set('Content-Type', mime);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
-		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-thumb', extname: '.jpeg' })}`));
-	} else if (isWebpublic) {
-		ctx.body = InternalStorage.read(key);
-		ctx.set('Content-Type', file.type === 'image/apng' ? 'image/png' : file.type);
-		ctx.set('Cache-Control', 'max-age=31536000, immutable');
-		ctx.set('Content-Disposition', contentDisposition('inline', `${rename(file.name, { suffix: '-web' })}`));
+		ctx.set('Content-Disposition', contentDisposition('inline', filename));
 	} else {
 		const readable = InternalStorage.read(file.accessKey!);
 		readable.on('error', commonReadableHandlerGenerator(ctx));
 		ctx.body = readable;
 		ctx.set('Content-Type', file.type);
 		ctx.set('Cache-Control', 'max-age=31536000, immutable');
-		ctx.set('Content-Disposition', contentDisposition('inline', `${file.name}`));
+		ctx.set('Content-Disposition', contentDisposition('inline', file.name));
 	}
 }
