@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { detectUrlMine } from '../../../../../misc/detect-url-mine';
+import { detectUrlMime } from '../../../../../misc/detect-url-mime';
 import { ID } from '../../../../../misc/cafy-id';
 import { Emojis } from '../../../../../models';
 import { getConnection } from 'typeorm';
@@ -52,7 +52,7 @@ export default define(meta, async (ps) => {
 
 	if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
-	const type = await detectUrlMine(ps.url);
+	const type = await detectUrlMime(ps.url);
 
 	await Emojis.update(emoji.id, {
 		updatedAt: new Date(),
