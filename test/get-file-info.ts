@@ -1,4 +1,3 @@
-// mocha test/get-file-info.ts --require ts-node/register
 /*
  * Tests for detection of file information
  *
@@ -142,7 +141,7 @@ describe('Get file info', () => {
 			size: 75933,
 			md5: '268c5dde99e17cf8fe09f1ab3f97df56',
 			type: {
-				mime: 'application/octet-stream',
+				mime: 'application/octet-stream',	// do not treat as image
 				ext: null
 			},
 			width: 25000,
