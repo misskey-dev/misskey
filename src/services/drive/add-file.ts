@@ -378,15 +378,21 @@ export default async function(
 			logger.debug('calculating average color...');
 
 			try {
-				const info = await sharp(await img.flatten({background: '#fff'}).toBuffer()).stats();
+				const info = await img.stats();
 
-				const r = Math.round(info.channels[0].mean);
-				const g = Math.round(info.channels[1].mean);
-				const b = Math.round(info.channels[2].mean);
+				if (info.isOpaque) {
+					const r = Math.round(info.channels[0].mean);
+					const g = Math.round(info.channels[1].mean);
+					const b = Math.round(info.channels[2].mean);
 
-				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
+					logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
 
-				properties['avgColor'] = `rgb(${r},${g},${b})`;
+					properties['avgColor'] = `rgb(${r},${g},${b})`;
+				} else {
+					logger.debug(`this image is not opaque so average color is 255, 255, 255`);
+
+					properties['avgColor'] = `rgb(255,255,255)`;
+				}
 			} catch (e) { }
 		};
 
