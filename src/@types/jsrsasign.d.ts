@@ -301,11 +301,11 @@ declare module 'jsrsasign' {
 	type EncryptDES = (dataHex: HexString, keyHex: HexString, ivHex: HexString) => HexString;
 
 	type AlgList = {
-		'AES-256-CBC': { 'proc': DecryptAES;  'eproc': EncryptAES;  keylen: 32; ivlen: 16; };
-		'AES-192-CBC': { 'proc': DecryptAES;  'eproc': EncryptAES;  keylen: 24; ivlen: 16; };
-		'AES-128-CBC': { 'proc': DecryptAES;  'eproc': EncryptAES;  keylen: 16; ivlen: 16; };
+		'AES-256-CBC':  { 'proc': DecryptAES;  'eproc': EncryptAES;  keylen: 32; ivlen: 16; };
+		'AES-192-CBC':  { 'proc': DecryptAES;  'eproc': EncryptAES;  keylen: 24; ivlen: 16; };
+		'AES-128-CBC':  { 'proc': DecryptAES;  'eproc': EncryptAES;  keylen: 16; ivlen: 16; };
 		'DES-EDE3-CBC': { 'proc': Decrypt3DES; 'eproc': Encrypt3DES; keylen: 24; ivlen: 8;  };
-		'DES-CBC': { 'proc': DecryptDES;  'eproc': EncryptDES;  keylen: 8;  ivlen: 8;  };
+		'DES-CBC':      { 'proc': DecryptDES;  'eproc': EncryptDES;  keylen: 8;  ivlen: 8;  };
 	};
 
 	type AlgName = keyof AlgList;
