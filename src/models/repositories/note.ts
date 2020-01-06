@@ -151,14 +151,14 @@ export class NoteRepository extends Repository<Note> {
 		async function populateEmojis(emojiNames: string[], noteUserHost: string | null, reactionNames: string[]) {
 			const where = [] as {}[];
 
-			if (emojiNames.length > 0) {
+			if (emojiNames?.length > 0) {
 				where.push({
 					name: In(emojiNames),
 					host: noteUserHost
 				});
 			}
 
-			if (reactionNames.length > 0) {
+			if (reactionNames?.length > 0) {
 				where.push({
 					name: In(reactionNames.map(x => x.replace(/:/g, ''))),
 					host: null
