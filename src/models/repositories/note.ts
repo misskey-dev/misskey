@@ -129,25 +129,6 @@ export class NoteRepository extends Repository<Note> {
 			};
 		}
 
-		async function populateMyReaction() {
-			const reaction = await NoteReactions.findOne({
-				userId: meId!,
-				noteId: note.id,
-			});
-
-			if (reaction) {
-				return reaction.reaction;
-			}
-
-			return undefined;
-		}
-
-		let text = note.text;
-
-		if (note.name && note.uri) {
-			text = `【${note.name}】\n${(note.text || '').trim()}\n${note.uri}`;
-		}
-
 		async function populateEmojis(emojiNames: string[], noteUserHost: string | null, reactionNames: string[]) {
 			const where = [] as {}[];
 
@@ -171,6 +152,25 @@ export class NoteRepository extends Repository<Note> {
 				where,
 				select: ['name', 'host', 'url', 'aliases']
 			});
+		}
+
+		async function populateMyReaction() {
+			const reaction = await NoteReactions.findOne({
+				userId: meId!,
+				noteId: note.id,
+			});
+
+			if (reaction) {
+				return reaction.reaction;
+			}
+
+			return undefined;
+		}
+
+		let text = note.text;
+
+		if (note.name && note.uri) {
+			text = `【${note.name}】\n${(note.text || '').trim()}\n${note.uri}`;
 		}
 
 		const packed = await awaitAll({
