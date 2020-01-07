@@ -364,7 +364,7 @@ common:
     notifications: "通知"
     users: "推荐用户"
     polls: "调查问卷"
-    post-form: "投稿形式"
+    post-form: "投稿窗口"
     server: "服务器信息"
     nav: "导航"
     tips: "提示"
@@ -1116,6 +1116,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "文字屏蔽"
   muted-words: "屏蔽关键字"
   muted-words-description: "使用空格分隔会产生AND规范，并且使用换行符分隔会产生OR规范"
+  unmute-confirm: "取消屏蔽用户？"
+  unblock-confirm: "取消拉黑此用户？"
   save: "保存"
 common/views/components/password-settings.vue:
   reset: "更改密码"
@@ -1277,7 +1279,7 @@ admin/views/instance.vue:
   object-storage-s3-info-here: "这里"
   object-storage-gcs-info: "将Google Cloud Storage用作对象存储时，请将“终端”设置为storage.googleapis.com，并将“区域”留空。"
   cache-remote-files: "远程文件缓存"
-  cache-remote-files-desc: "如果没有此参数，则所有远程文件都将直接链接到其主机服务器。 这将是保存服务器存储的有效解决方案，但是对于设置禁用直接链接的用户而言，远程文件不可见，因为不会生成缩略图，从而增加流量。 建议启用此参数集。"
+  proxy-remote-files: "代理远程文件"
   local-drive-capacity-mb: "每个用户的网盘空间"
   remote-drive-capacity-mb: "每个远程用户的网盘容量"
   mb: "以兆字节(Mbps)为单位"
@@ -1881,10 +1883,10 @@ pages:
     section: "章节"
     image: "图片"
     button: "按钮"
-    if: "如果"
+    if: "判断"
     _if:
       variable: "变量"
-    post: "投稿形式"
+    post: "投稿窗口"
     _post:
       text: "内容"
     textInput: "文本输入"
@@ -1990,6 +1992,9 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "四舍五入"
+      _round:
+        arg1: "数值"
       eq: "A和B相等"
       _eq:
         arg1: "A"
