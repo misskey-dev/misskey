@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import searchClient from '../../../../db/searchClient';
 import define from '../../define';
-import {ApiError} from '../../error';
-import {Notes} from '../../../../models';
-import {In} from 'typeorm';
-import {ID} from '../../../../misc/cafy-id';
+import { ApiError } from '../../error';
+import { Notes } from '../../../../models';
+import { In } from 'typeorm';
+import { ID } from '../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {

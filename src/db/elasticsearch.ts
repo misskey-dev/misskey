@@ -1,7 +1,7 @@
 import * as elasticsearch from '@elastic/elasticsearch';
 import config from '../config';
-import {SearchClientBase} from './SearchClientBase';
-import {Note} from '../models/entities/note';
+import { SearchClientBase } from './SearchClientBase';
+import { Note } from '../models/entities/note';
 
 const indexData = {
 	settings: {

@@ -1,10 +1,10 @@
 declare module 'sonic-channel' {
 	type ConnectionListeners = {
-		connected?: () => any,
-		disconnected?: () => any,
-		timeout?: () => any,
-		retrying?: () => any,
-		error?: (err: Error) => any,
+		connected?: () => void,
+		disconnected?: (err: Error | null) => void,
+		timeout?: () => void,
+		retrying?: () => void,
+		error?: (err: Error) => void,
 	};
 
 	type ConnectionParams = {
