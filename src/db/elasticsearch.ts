@@ -18,15 +18,15 @@ const indexData = {
 			text: {
 				type: 'text',
 				index: true,
-				analyzer: 'ngram'
+				analyzer: 'ngram',
 			},
 			userId: {
 				type: 'keyword',
-				index: true
+				index: true,
 			},
 			userHost: {
 				type: 'keyword',
-				index: true
+				index: true,
 			}
 		}
 	}
