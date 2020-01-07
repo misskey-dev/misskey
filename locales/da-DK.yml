@@ -1019,6 +1019,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "Ordfilter"
   muted-words: "Frafiltrerede ord"
   muted-words-description: "Mellemrum mellem ord vil blive håndteret, som om der står AND i mellem ordene i søgningen (dvs. alle ord skal være til stede). Linjeskift mellem ord vil føre til, at der søges med OR mellem ordene (dvs. kun det ene af ordene behøver være til stede)."
+  unmute-confirm: "Er du sikker på, at du vil fjerne annulleringen af denne bruger?"
+  unblock-confirm: "Er du sikker på, at du vil fjerne blokeringen af denne bruger?"
   save: "Gem"
 common/views/components/password-settings.vue:
   reset: "Skift adgangskode"
@@ -1154,7 +1156,6 @@ admin/views/instance.vue:
   object-storage-s3-info-here: "Her"
   object-storage-gcs-info: "Når du bruger Google Cloud Storage som eksternt lager, skal du indstille \"Terminal\" til storage.googleapis.com og forlade feltet \"Region\"."
   cache-remote-files: "Cache eksterne filer"
-  cache-remote-files-desc: "Hvis du deaktiverer denne indstilling, kan du linke direkte uden at gemme eksterne filer her. Dermed sparer du plads på din egen server. Til gengæld bliver linksene til de eksterne filer usynlige for brugere, som har deaktiveret direkte links, fordi der ikke vises miniature-billeder. Alt i alt anbefales det at aktivere denne indstilling."
   local-drive-capacity-mb: "Kapacitet på hver lokal brugers drev"
   remote-drive-capacity-mb: "Kapacitet på hver ekstern brugers drev"
   mb: "I megabytes (MB)"
@@ -1795,6 +1796,8 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      _round:
+        arg1: "Tal"
       eq: "A og B er ens"
       _eq:
         arg1: "A"
