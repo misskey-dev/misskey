@@ -84,7 +84,7 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 		width,
 		height,
 		avgColor,
-		warnings: warnings,
+		warnings,
 	};
 }
 
@@ -98,9 +98,7 @@ export async function detectType(path: string) {
 		return TYPE_OCTET_STREAM;
 	}
 
-	const readable = fs.createReadStream(path);
-	const type = (await fileType.stream(readable)).fileType;
-	readable.destroy();
+	const type = await fileType.fromFile(path);
 
 	if (type) {
 		// XMLはSVGかもしれない
