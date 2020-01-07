@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import checkSvg from '../misc/check-svg';
-const FileType = require('file-type')；
+const FileType = require('file-type');
 
 export async function detectMine(path: string) {
-	return new Promise<[string, string | null]>((res, rej) => {
+	return new Promise<[string, string | null]>(async (res, rej) => {
 		const readable = fs.createReadStream(path);
 		readable
 			.on('error', rej)
