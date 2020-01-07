@@ -3,13 +3,13 @@ import checkSvg from '../misc/check-svg';
 const FileType = require('file-type');
 
 export async function detectMine(path: string) {
-	return new Promise<[string, string | null]>(async (res, rej) => {
+	return new Promise<[string, string | null]>((res, rej) => {
 		const readable = fs.createReadStream(path);
 		readable
 			.on('error', rej)
 			.once('data', (buffer: Buffer) => {
 				readable.destroy();
-				const type = await FileType.fromBuffer(buffer);
+				const type = (async () => await FileType.fromBuffer(buffer))();
 				if (type) {
 					if (type.mime == 'application/xml' && checkSvg(path)) {
 						res(['image/svg+xml', 'svg']);
