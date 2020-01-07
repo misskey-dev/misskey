@@ -9,7 +9,7 @@ export async function detectMine(path: string) {
 			.on('error', rej)
 			.once('data', (buffer: Buffer) => {
 				readable.destroy();
-				const type = fileType(buffer);
+				const type = await FileType.fromBuffer(buffer);
 				if (type) {
 					if (type.mime == 'application/xml' && checkSvg(path)) {
 						res(['image/svg+xml', 'svg']);
