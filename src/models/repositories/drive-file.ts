@@ -6,6 +6,10 @@ import { toPuny } from '../../misc/convert-host';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
+import config from '../../config';
+import { query, appendQuery } from '../../prelude/url';
+import { Meta } from '../entities/meta';
+import { fetchMeta } from '../../misc/fetch-meta';
 
 export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
 
@@ -21,8 +25,27 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		);
 	}
 
-	public getPublicUrl(file: DriveFile, thumbnail = false): string | null {
-		return thumbnail ? (file.thumbnailUrl || file.webpublicUrl || null) : (file.webpublicUrl || file.url);
+	public getPublicUrl(file: DriveFile, thumbnail = false, meta?: Meta): string | null {
+		// リモートかつメディアプロキシ
+		if (file.uri != null && file.userHost != null && config.mediaProxy != null) {
+			return appendQuery(config.mediaProxy, query({
+				url: file.uri,
+				thumbnail: thumbnail ? '1' : undefined
+			}));
+		}
+
+		// リモートかつ期限切れはローカルプロキシを試みる
+		if (file.uri != null && file.isLink && meta && meta.proxyRemoteFiles) {
+			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
+
+			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
+				return `/files/${key}`;
+			}
+		}
+
+		const isImage = file.type && ['image/png', 'image/apng', 'image/gif', 'image/jpeg', 'image/webp', 'image/svg+xml'].includes(file.type);
+
+		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
 	}
 
 	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
@@ -82,6 +105,8 @@ export class DriveFileRepository extends Repository<DriveFile> {
 
 		const file = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
+		const meta = await fetchMeta();
+
 		return await awaitAll({
 			id: file.id,
 			createdAt: file.createdAt.toISOString(),
@@ -91,8 +116,8 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			size: file.size,
 			isSensitive: file.isSensitive,
 			properties: file.properties,
-			url: opts.self ? file.url : this.getPublicUrl(file, false),
-			thumbnailUrl: this.getPublicUrl(file, true),
+			url: opts.self ? file.url : this.getPublicUrl(file, false, meta),
+			thumbnailUrl: this.getPublicUrl(file, true, meta),
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
 				detail: true

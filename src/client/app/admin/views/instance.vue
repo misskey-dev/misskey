@@ -81,6 +81,7 @@
 		</section>
 		<section>
 			<ui-switch v-model="cacheRemoteFiles">{{ $t('cache-remote-files') }}<template #desc>{{ $t('cache-remote-files-desc') }}</template></ui-switch>
+			<ui-switch v-model="proxyRemoteFiles">{{ $t('proxy-remote-files') }}<template #desc>{{ $t('proxy-remote-files-desc') }}</template></ui-switch>
 		</section>
 		<section class="fit-top fit-bottom">
 			<ui-input v-model="localDriveCapacityMb" type="number">{{ $t('local-drive-capacity-mb') }}<template #suffix>MB</template><template #desc>{{ $t('mb') }}</template></ui-input>
@@ -275,6 +276,7 @@ export default Vue.extend({
 			description: null,
 			languages: null,
 			cacheRemoteFiles: false,
+			proxyRemoteFiles: false,
 			localDriveCapacityMb: null,
 			remoteDriveCapacityMb: null,
 			maxNoteTextLength: null,
@@ -339,6 +341,7 @@ export default Vue.extend({
 			this.description = meta.description;
 			this.languages = meta.langs.join(' ');
 			this.cacheRemoteFiles = meta.cacheRemoteFiles;
+			this.proxyRemoteFiles = meta.proxyRemoteFiles;
 			this.localDriveCapacityMb = meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = meta.driveCapacityPerRemoteUserMb;
 			this.maxNoteTextLength = meta.maxNoteTextLength;
@@ -463,6 +466,7 @@ export default Vue.extend({
 				description: this.description,
 				langs: this.languages ? this.languages.split(' ') : [],
 				cacheRemoteFiles: this.cacheRemoteFiles,
+				proxyRemoteFiles: this.proxyRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				maxNoteTextLength: parseInt(this.maxNoteTextLength, 10),

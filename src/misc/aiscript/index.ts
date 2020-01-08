@@ -24,6 +24,7 @@ import {
 	faExchangeAlt,
 	faRecycle,
 	faIndent,
+	faCalculator,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
@@ -59,6 +60,7 @@ export const funcDefs: Record<string, { in: any[]; out: any; category: string; i
 	multiply:        { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faTimes, },
 	divide:          { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faDivide, },
 	mod:             { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faDivide, },
+	round:           { in: ['number'],                     out: 'number',      category: 'operation',  icon: faCalculator, },
 	eq:              { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: faEquals, },
 	notEq:           { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: faNotEqual, },
 	gt:              { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: faGreaterThan, },

@@ -31,6 +31,7 @@ common:
   signup: "S'enregistrer"
   signout: "Se déconnecter"
   reload-to-apply-the-setting: "Le rechargement de la page est nécessaire pour appliquer ces paramètres. Désirez-vous la recharger maintenant ?"
+  fetching-as-ap-object: "Récupération depuis le fédiverse"
   unfollow-confirm: "Désirez-vous vous désabonner de {name} ?"
   delete-confirm: "Supprimer cette publication ?"
   signin-required: "Veuillez vous connecter"
@@ -48,6 +49,7 @@ common:
   got-it: "J’ai compris !"
   customization-tips:
     title: "Conseils de personnalisation"
+    paragraph: "<p>La personnalisation de la page d'accueil vous permet d'ajouter/supprimer, glisser-déposer et réarranger les widgets.</p><p>Vous pouvez changer l'apparence de certain widget avec le <strong><strong>clic</strong>droit</strong>.</p><p>Pour supprimer un widget, faites glisser le widget sur <strong>la zone \"Corbeille\"</strong> dans l'en-tête.</p><p>Pour terminer la personnalisation, cliquez sur \"Terminé\" en haut à droite.</p>"
     gotit: "Compris !"
   notification:
     file-uploaded: "Le fichier a été téléversé !"
@@ -90,9 +92,11 @@ common:
     "read:favorites": "Afficher les favoris"
     "write:favorites": "Écrire des favoris"
     "read:following": "Voir les informations de l'abonné"
+    "write:following": "Suivre/Ne plus suivre"
     "read:messaging": "Lire les conversations"
     "write:messaging": "Utiliser la messagerie"
     "read:mutes": "Voir les comptes masqués"
+    "write:mutes": "Gérer les comptes muets"
     "write:notes": "Créer ou supprimer des publications"
     "read:notifications": "Afficher les notifications"
     "write:notifications": "Gérer vos notifications"
@@ -115,6 +119,7 @@ common:
     quote-placeholder: "Citer cette note …"
     option-quote-placeholder: "Citer ce billet ... (Facultatif)"
     quote-attached: "Cité"
+    quote-question: "Souhaitez-vous ajoutez une citation ?"
     submit: "Publication"
     reply: "Répondre"
     renote: "Republier"
@@ -196,6 +201,7 @@ common:
     appearance: "Apparence"
     behavior: "Comportement"
     reactions: "Réaction"
+    reactions-description: "Personnaliser les émojis à afficher dans le sélecteur de réactions, délimités par les sauts de ligne."
     fetch-on-scroll: "Chargement automatique lors du défilement"
     fetch-on-scroll-desc: "Chargement automatique du contenu lors du défilement de la page."
     note-visibility: "Visibilité de la publication"
@@ -204,7 +210,9 @@ common:
     web-search-engine: "Moteur de recherche Web"
     web-search-engine-desc: "Exemple : https://www.google.com/?#q={{query}}"
     paste: "Coller"
+    pasted-file-name: "Modèle de nom de fichier collé"
     pasted-file-name-desc: "Exemple : \"yyyy-MM-dd HH-mm-ss [{{number}}]\" → \"2018-03-20 21-30-24 1\""
+    paste-dialog: "Modifier le nom du fichier collé"
     keep-cw: "Maintenir l'avertissement de contenu"
     keep-cw-desc: "Lorsque vous répondez à un message, le même avertissement de contenu est reprit par défaut dans la réponse, le même que celui qui a été défini dans le message original."
     i-like-sushi: "Je préfère les sushis plutôt que le pudding"
@@ -212,6 +220,7 @@ common:
     use-avatar-reversi-stones: "Utiliser l’avatar comme pion dans Reversi"
     disable-animated-mfm: "Désactiver les textes animés dans les publications"
     disable-showing-animated-images: "Désactiver l'animation des images"
+    enable-quick-notification-view: "Activer l'affichage rapide des notifications"
     suggest-recent-hashtags: "Afficher les hashtags populaires dans le champs de saisie"
     always-show-nsfw: "Toujours afficher les contenus sensibles"
     always-mark-nsfw: "Toujours marquer les notes ayant des médias comme sensibles"
@@ -383,6 +392,7 @@ common/views/pages/explore.vue:
   popular-users: "Utilisateur·rice·s populaires"
   recently-updated-users: "Utilisateur·rice·s actif·ve·s récemment"
   recently-registered-users: "Les nouveaux inscrits"
+  recently-discovered-users: "Utilisateurs récemment découverts"
   popular-tags: "Mots-clés populaires"
   federated: "Du Fédiverse"
   explore: "Explorer {host}"
@@ -556,6 +566,7 @@ common/views/components/note-menu.vue:
   delete: "Supprimer"
   delete-confirm: "Supprimer cette publication ?"
   delete-and-edit: "Supprimer et réécrire"
+  delete-and-edit-confirm: "Êtes-vous sûr de vouloir effacer cette note et la modifier ? Vous perdrez toutes les réactions, renotes et réponses."
   remote: "Afficher la note originale"
   pin-limit-exceeded: "Vous ne pouvez plus épingler davantage de publications."
 common/views/components/user-menu.vue:
@@ -579,6 +590,7 @@ common/views/components/user-menu.vue:
   suspend: "Suspendre"
   unsuspend: "Ne plus suspendre"
   suspend-confirm: "Êtes-vous surs de vouloir suspendre cet·te utilisateur·rice ?"
+  unsuspend-confirm: "Êtes-vous sûr de vouloir débloquer cet utilisateur ?"
 common/views/components/poll.vue:
   vote-to: "Voter pour '{}'"
   vote-count: "{} votes"
@@ -601,6 +613,7 @@ common/views/components/poll-editor.vue:
   expiration: "Valide jusqu'à"
   infinite: "Illimité"
   at: "Choisir une date et une durée"
+  after: "Choisir la durée"
   no-more: "Vous ne pouvez pas en ajouter davantage"
   deadline-date: "Date d’échéance"
   deadline-time: "Durée"
@@ -812,6 +825,7 @@ common/views/widgets/broadcast.vue:
   no-broadcasts: "Aucune annonce"
   have-a-nice-day: "Passez une bonne journée !"
   next: "Suivant"
+  prev: "Précédent"
 common/views/widgets/calendar.vue:
   year: "Année {}"
   month: "{},"
@@ -856,6 +870,7 @@ common/views/widgets/tips.vue:
   tips-line19: "Plusieurs fenêtres peuvent être détachées en dehors du navigateur."
   tips-line20: "Pourcentage sur le widget calendrier qui indique le pourcentage de temps passé"
   tips-line21: "Vous pouvez aussi utiliser l'API pour développer des Bots."
+  tips-line23: "Ai-chan kawaii!"
   tips-line24: "Misskey est fonctionnel depuis 2014"
   tips-line25: "Vous pouvez recevoir les notifications de Misskey dans un navigateur web compatible"
 common/views/pages/not-found.vue:
@@ -1054,6 +1069,7 @@ desktop/views/components/settings.2fa.vue:
   info: "À partir de maintenant, à chaque fois que vous vous connectez entrez votre mot de passe ainsi que le jeton généré sur votre appareil."
   totp-header: "Application d'authentification"
   security-key-header: "Clé de sécurité"
+  security-key: "Pour plus de sécurité, vous pouvez vous connecter à votre compte à l'aide d'une clé de sécurité matérielle qui prend en charge FIDO2. Lorsque vous vous connecterez, vous aurez besoin de la clé de sécurité enregistrée ou d'une application d'authentification avec vous."
   last-used: "Dernière utilisation :"
   activate-key: "Cliquez pour activer la clé de sécurité"
   security-key-name: "Nom de la clé"
@@ -1096,6 +1112,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "Filtre de mots"
   muted-words: "Mots masqués"
   muted-words-description: "Description des mots mis en sourdine"
+  unmute-confirm: "Ne plus masquer cet utilisateur ?"
+  unblock-confirm: "Débloquer cet utilisateur ?"
   save: "Enregistrer"
 common/views/components/password-settings.vue:
   reset: "Modifier le mot de passe"
@@ -1177,6 +1195,8 @@ admin/views/index.vue:
   back-to-misskey: "Retour vers Misskey"
 admin/views/db.vue:
   tables: "Tables"
+  vacuum: "Vacuum"
+  vacuum-info: "Range la base de données. Conserve les données intactes et réduit l'utilisation du disque. Cela se fait généralement automatiquement et périodiquement."
 admin/views/dashboard.vue:
   dashboard: "Tableau de bord"
   accounts: "Comptes"
@@ -1279,6 +1299,7 @@ admin/views/instance.vue:
   discord-integration-client-id: "ID client"
   discord-integration-client-secret: "Secret client"
   proxy-account-config: "Compte proxy"
+  proxy-account-info: "Un compte proxy se comporte, dans certaines conditions, comme un·e abonné·e distant pour les utilisateurs d'autres instances.\nExemple : quand un·e utilisateur·rice distant·e est ajouté·e à une liste, ses publications ne serait pas visibles sur l'instance si personne ne le·la suit. Le compte proxy va donc le·la suivre pour que ses publications soient acheminées."
   proxy-account-username: "Nom d’utilisateur du compte proxy"
   proxy-account-username-desc: "Spécifiez le nom d’utilisateur du compte utilisé comme proxy."
   proxy-account-warn: "Avant d’entamer cette action, vous devez au préalable avoir créé un compte avec ce nom d’utilisateur."
@@ -1500,6 +1521,7 @@ admin/views/federation.vue:
     notes: "Augmentation/diminution du nombre des notes"
     notes-total: "Nombre total des notes"
     ff: "Augmentation des abonné·e·s"
+    ff-total: "Nombre total d'abonnements"
     drive-usage: "Augmentation et diminution de la capacité stockage"
     drive-usage-total: "Utilisation totale du stockage"
     drive-files-total: "Nombre total des fichiers sur le Drive"
@@ -1893,9 +1915,11 @@ pages:
       value: "Valeur"
       fn: "Fonction"
       text: "Actions texte"
+      convert: "Convertir"
       list: "Listes"
     blocks:
       text: "Texte"
+      multiLineText: "Texte (Multi-lignes)"
       textList: "Liste de texte"
       strLen: "Longueur du texte"
       _strLen:
@@ -1903,6 +1927,8 @@ pages:
       strPick: "Extraire un caractère"
       _strPick:
         arg1: "Texte"
+        arg2: "Position du joueur"
+      strReplace: "Remplacement de texte"
       _strReplace:
         arg1: "Texte"
         arg2: "Avant le remplacement"
@@ -1932,6 +1958,8 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      _round:
+        arg1: "Numérique"
       eq: "A et B sont équivalents"
       _eq:
         arg1: "A"
@@ -1964,6 +1992,7 @@ pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Branche"
       _if:
         arg1: "Si"
         arg2: "donc"
@@ -1981,6 +2010,7 @@ pages:
       randomPick: "Choisir aléatoirement depuis la liste"
       _randomPick:
         arg1: "Listes"
+      dailyRandom: "Aléatoire (Quotidien pour chaque utilisateur)"
       _dailyRandom:
         arg1: "Probabilité"
       _dailyRannum:
@@ -1988,19 +2018,27 @@ pages:
         arg2: "Maximum"
       _dailyRandomPick:
         arg1: "Listes"
+      seedRandom: "Aléatoire (graine)"
       _seedRandom:
+        arg1: "Graine"
         arg2: "Probabilité"
+      seedRannum: "Nombre aléatoire (Graine)"
       _seedRannum:
+        arg1: "Graine"
         arg2: "Min"
         arg3: "Max"
+      seedRandomPick: "Sélection aléatoire dans une liste (Graine)"
       _seedRandomPick:
+        arg1: "Graine"
         arg2: "Listes"
+      DRPWPM: "Sélection aléatoire à partir d'une liste pondérée (mise à jour quotidienne par utilisateur)"
       _DRPWPM:
         arg1: "Liste de texte"
       pick: "Sélectionner dans la liste"
       _pick:
         arg1: "Listes"
         arg2: "Position"
+      listLen: "Longueur de la liste"
       _listLen:
         arg1: "Listes"
       number: "Numérique"
@@ -2010,12 +2048,14 @@ pages:
       numberToString: "Chiffres en chaîne"
       _numberToString:
         arg1: "Numérique"
+      splitStrByLine: "Séparer le texte par lignes"
       _splitStrByLine:
         arg1: "Texte"
       ref: "Variables"
       fn: "Fonction"
       _fn:
         slots: "Emplacement"
+        slots-info: "Veuillez délimiter chaque emplacement par un saut de ligne"
         arg1: "Sortie"
       for: "Répéter"
       _for:
@@ -2031,10 +2071,12 @@ pages:
     emptySlot: "Slot vide"
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
+    argVariables: "Entrée vide"
 room:
   add-furniture: "Placer des meubles"
   translate: "Déplacer"
   rotate: "Tourner"
+  exit: "Retour"
   remove: "Enlever"
   save: "Enregistrer"
   saved: "enregistré"
@@ -2060,6 +2102,7 @@ room:
     plant2: "Plante d’intérieur 2"
     eraser: "Gomme"
     pencil: "Crayon"
+    pudding: "Pudding"
     cardboard-box: "Boîte en carton"
     cardboard-box2: "Boîte en carton 2"
     cardboard-box3: "Boîte en carton 3"
@@ -2074,6 +2117,7 @@ room:
     monitor: "Écran"
     keyboard: "Clavier"
     carpet-stripe: "Tapis (zébré)"
+    mat: "Tapis"
     color-box: "Étagère"
     wall-clock: "Horloge murale"
     photoframe: "Cadre photo"

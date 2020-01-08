@@ -1,15 +1,15 @@
 import * as fs from 'fs';
-import fileType = require('file-type');
 import checkSvg from '../misc/check-svg';
+const FileType = require('file-type');
 
 export async function detectMine(path: string) {
 	return new Promise<[string, string | null]>((res, rej) => {
 		const readable = fs.createReadStream(path);
 		readable
 			.on('error', rej)
-			.once('data', (buffer: Buffer) => {
+			.once('data', async (buffer: Buffer) => {
 				readable.destroy();
-				const type = fileType(buffer);
+				const type = await FileType.fromBuffer(buffer);
 				if (type) {
 					if (type.mime == 'application/xml' && checkSvg(path)) {
 						res(['image/svg+xml', 'svg']);

@@ -52,6 +52,8 @@ export type Source = {
 		host: string;
 		port: number;
 	};
+
+	mediaProxy?: string;
 };
 
 /**
