@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as crypto from 'crypto';
 import * as fileType from 'file-type';
 import isSvg from 'is-svg';
-const probeImageSize = require('probe-image-size');
+import * as probeImageSize from 'probe-image-size';
 import * as sharp from 'sharp';
 
 export type FileInfo = {

@@ -2,10 +2,10 @@
  * Tests for detection of file information
  *
  * How to run the tests:
- * > npx mocha test/get-file-info.ts --require ts-node/register
+ * > TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register
  *
  * To specify test:
- * > npx mocha test/get-file-info.ts --require ts-node/register -g 'test name'
+ * > TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register -g 'test name'
  */
 
 import * as assert from 'assert';
