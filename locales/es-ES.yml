@@ -124,7 +124,7 @@ common:
     reply: "Responder"
     renote: "Volver a publicar"
     posting: "Publicando"
-    attach-media-from-local: "Agregar multimedia de tu dispositivo"
+    attach-media-from-local: "Agregar medios de tu dispositivo"
     attach-media-from-drive: "Añadir medios del drive"
     insert-a-kao: "v('ω')v"
     create-poll: "Crear una encuesta"
@@ -274,6 +274,7 @@ common:
     update-available-desc: "Las actualizaciones se aplicarán cuando la página se vuelva a cargar."
     advanced-settings: "Configuraciones avanzadas"
     navbar-position-left: "Izquierda"
+    load-remote-media: "Mostrar imágenes de servidores remotos"
     save: "Guardar"
     saved: "Guardado"
     preview: "Vista previa"
@@ -936,6 +937,7 @@ common/views/components/post-form-attaches.vue:
 desktop/views/components/sub-note-content.vue:
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
+  media-count: "{} archivos multimedia"
   poll: "Encuesta"
 desktop/views/components/settings.tags.vue:
   title: "Etiqueta"
@@ -1102,7 +1104,7 @@ desktop/views/pages/user/user.header.vue:
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts y respuestas"
-  with-media: "Multimedia"
+  with-media: "Medios"
   my-posts: "Mis posts"
 desktop/views/widgets/notifications.vue:
   title: "Notificaciones"
@@ -1145,6 +1147,7 @@ mobile/views/components/notifications.vue:
 mobile/views/components/sub-note-content.vue:
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
+  media-count: "{} archivos multimedia"
   poll: "Encuestas"
 mobile/views/components/ui.header.vue:
   welcome-back: "Bienvenido/a de vuelta,"
@@ -1181,6 +1184,7 @@ mobile/views/pages/notifications.vue:
   notifications: "Notificaciones"
 mobile/views/pages/user.vue:
   timeline: "Timeline"
+  media: "Medios"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
 mobile/views/pages/user/home.photos.vue:
@@ -1194,6 +1198,8 @@ deck:
   notifications: "Notificaciones"
   list: "Listas"
   rename: "Renombrar"
+deck/deck.tl-column.vue:
+  is-media-only: "Sólo medios"
 deck/deck.user-column.vue:
   activity: "Actividad"
   timeline: "Timeline"
