@@ -303,6 +303,16 @@ common:
     preview: "Vista previa"
     home-profile: "Perfil de inicio"
     deck-profile: "Perfil del deck"
+    room: "Cuartos"
+    _room:
+      graphicsQuality: "Calidad de gráficos"
+      _graphicsQuality:
+        ultra: "Máxima"
+        high: "Alta"
+        medium: "Mediana"
+        low: "Baja"
+        cheep: "Mínima"
+      useOrthographicCamera: "Usar cámara ortográfica"
   search: "Buscar"
   delete: "eliminar"
   loading: "cargando"
@@ -379,13 +389,19 @@ auth/views/index.vue:
   error: "Esta sesión no existe."
   sign-in: "Por favor inicia sesión."
 common/views/pages/explore.vue:
+  pinned-users: "Usuarios fijados"
   popular-users: "Usuarios populares"
   recently-updated-users: "Usuarios activos recientemente"
   recently-registered-users: "Usuarios que se han unido recientemente"
+  recently-discovered-users: "Usuarios recientemente descubiertos"
   popular-tags: "Etiquetas populares"
   federated: "Desde el fediverso"
   explore: "Explorar {host}"
+  explore-fediverse: "Explorar fediverso"
   users-info: "Actualmente hay {users} registrados aquí"
+common/views/components/reactions-viewer.details.vue:
+  few-users: "{users} reaccionó a {reaction}"
+  many-users: "{users} y {omitted} más reaccionaron a {reaction}"
 common/views/components/url-preview.vue:
   enable-player: "Activar reproducción"
   disable-player: "Cerrar el reproductor"
@@ -497,7 +513,9 @@ common/views/components/theme.vue:
   export: "Exportar"
   import: "Importar"
   import-by-code: "o pega el código"
+  theme-name-required: "Se requiere el nombre del tema"
 common/views/components/cw-button.vue:
+  hide: "Ocultar"
   show: "Mostrar"
   chars: "{count} letras"
   files: "{count} archivos"
@@ -506,14 +524,23 @@ common/views/components/messaging.vue:
   search-user: "Encuentra un usuario"
   you: "Tu"
   no-history: "Sin historial"
+  user: "Usuario"
+  group: "Grupo"
+  start-with-user: "Hablar con usuario"
+  start-with-group: "Hablar con grupo"
+  select-group: "Elija un grupo"
 common/views/components/messaging-room.vue:
+  not-talked-user: "No hay conversaciones con este usuario"
+  not-talked-group: "No hay conversaciones con este grupo"
   no-history: "El historial se ha acabado"
   new-message: "Nuevo mensaje"
+  only-one-file-attached: "Solo se puede añadir un archivo al mensaje"
 common/views/components/messaging-room.form.vue:
   input-message-here: "Escribe el mensaje aquí"
   send: "Enviar"
   attach-from-local: "Adjunta ficheros desde tu PC"
   attach-from-drive: "Adjunta ficheros desde tu disco"
+  only-one-file-attached: "Solo se puede añadir un archivo al mensaje"
 common/views/components/messaging-room.message.vue:
   is-read: "Leer"
   deleted: "El mensaje se ha borrado"
@@ -526,11 +553,14 @@ common/views/components/nav.vue:
   repository: "Repositorio"
   develop: "Desarrolladores"
   feedback: "Opiniones"
+  tos: "Términos de uso"
 common/views/components/note-menu.vue:
   mention: "Menciones"
   detail: "Detalles"
+  copy-content: "Copiar contenido"
   copy-link: "Copiar enlace"
   favorite: "Me gusta esta nota"
+  unfavorite: "Quitar de favoritos"
   pin: "Fijar en el perfil"
   delete: "Borrar"
   delete-confirm: "¿Seguro que quieres borrar la publicación?"
@@ -598,6 +628,7 @@ common/views/components/signup.vue:
   password-matched: "OK"
   password-not-matched: "Las contraseñas no son las mismas"
   recaptcha: "Verificar"
+  tos: "Términos de uso"
   create: "Crea una cuenta"
   some-error: "Por algún motivo no se ha podido crear la cuenta. Por favor inténtalo de nuevo."
 common/views/components/special-message.vue:
@@ -705,6 +736,7 @@ common/views/components/user-lists.vue:
   user-lists: "Listas"
   list-name: "Nombre de lista"
 common/views/components/user-groups.vue:
+  user-groups: "Grupo"
   invites: "Invitar"
 common/views/widgets/broadcast.vue:
   fetching: "Recuperando"
@@ -984,6 +1016,7 @@ desktop/views/components/ui.header.vue:
 desktop/views/components/ui.header.account.vue:
   profile: "Tu perfil"
   lists: "Listas"
+  groups: "Grupo"
   follow-requests: "Solicitudes de seguimiento"
   admin: "Admin"
   room: "Cuartos"
@@ -1186,6 +1219,7 @@ mobile/views/components/ui.nav.vue:
   follow-requests: "Solicitudes de seguimiento"
   search: "Buscar"
   user-lists: "Listas"
+  user-groups: "Grupo"
   game: "Juegos"
   admin: "Admin"
   about: "Sobre"
