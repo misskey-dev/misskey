@@ -887,6 +887,8 @@ common/views/pages/follow.vue:
   follow-request: "Solicitar suscripción"
 common/views/pages/follow-requests.vue:
   received-follow-requests: "Solicitudes de seguimiento"
+  accept: "Aceptar"
+  reject: "Rechazar"
 desktop:
   banner-crop-title: "Corta la parte que aparece como un banner"
   banner: "Banner"
@@ -914,6 +916,7 @@ desktop/views/components/calendar.vue:
   next: "Próximo mes"
   go: "Click para navegar"
 desktop/views/components/choose-file-from-drive-window.vue:
+  chosen-files: "{count} archivo(s) elegidos"
   upload: "Cargar archivos de tu dispositivo"
   cancel: "Cancelar"
   ok: "OK"
@@ -948,9 +951,12 @@ desktop/views/components/drive.file.vue:
     copied: "Copiado"
     copied-url-to-clipboard: "URL copiada al porta papeles"
 desktop/views/components/drive.folder.vue:
+  upload-folder: "Carpeta de subidas por defecto"
   unable-to-process: "La operación no se puede llevar a cabo"
   circular-reference-detected: "La carpeta de destino es una sub-carpeta de la carpeta que quieres mover."
   unhandled-error: "Error desconocido"
+  unable-to-delete: "No se puede borrar"
+  has-child-files-or-folders: "No se puede borrar esta carpeta. No está vacía."
   contextmenu:
     move-to-this-folder: "Mover a esta carpeta"
     show-in-new-window: "Abrir en una ventana nueva"
@@ -958,6 +964,7 @@ desktop/views/components/drive.folder.vue:
     rename-folder: "Renombrar carpeta"
     input-new-folder-name: "Escribe el nombre nuevo"
     else-folders: "Otros"
+    set-as-upload-folder: "Elegir carpeta de subidas por defecto"
 desktop/views/components/drive.vue:
   search: "Buscar"
   empty-draghover: "¡Saluda!"
@@ -1003,10 +1010,12 @@ desktop/views/components/note-detail.vue:
   location: "Localización"
   renote: "Republicar"
   add-reaction: "Agregar una reacción"
+  undo-reaction: "Quitar una reacción"
 desktop/views/components/note.vue:
   reply: "Responder"
   renote: "Volver a publicar"
   add-reaction: "Reacción"
+  undo-reaction: "Quitar una reacción"
   detail: "Detalles"
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
@@ -1043,6 +1052,7 @@ desktop/views/pages/user-following-or-followers.vue:
   following: "{user} sigue a"
   followers: "Seguidores de {user}"
 desktop/views/components/settings.2fa.vue:
+  intro: "Si elige la verificación de dos factores, no se necesitará una password sólo para loguearse, sino también un dispositivo físico previamente registrado (por ejemplo su smartphone) con el cual aumentará su seguridad"
   detail: "Ver detalles..."
   url: "https://www.google.com/landing/2step/"
   caution: "Si pierdes acceso al dispositivo, no podrás conectarte a Misskey."
