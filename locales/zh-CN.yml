@@ -1280,6 +1280,7 @@ admin/views/instance.vue:
   object-storage-gcs-info: "将Google Cloud Storage用作对象存储时，请将“终端”设置为storage.googleapis.com，并将“区域”留空。"
   cache-remote-files: "远程文件缓存"
   proxy-remote-files: "代理远程文件"
+  proxy-remote-files-desc: "启用此设置后，由于超出存储容量而导致未保存被删除的远程文件将被本地代理，并且会生成缩略图。"
   local-drive-capacity-mb: "每个用户的网盘空间"
   remote-drive-capacity-mb: "每个远程用户的网盘容量"
   mb: "以兆字节(Mbps)为单位"
