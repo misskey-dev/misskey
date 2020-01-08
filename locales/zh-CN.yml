@@ -1279,6 +1279,7 @@ admin/views/instance.vue:
   object-storage-s3-info-here: "这里"
   object-storage-gcs-info: "将Google Cloud Storage用作对象存储时，请将“终端”设置为storage.googleapis.com，并将“区域”留空。"
   cache-remote-files: "远程文件缓存"
+  cache-remote-files-desc: "禁用此设置将直接链接到远程文件而不进行缓存。 这样可以节省服务器存储空间，但会增加流量，因为在隐私设置中禁用了直接链接的用户将无法查看文件或生成缩略图。我们通常建议打开此设置或启用远程文件代理。"
   proxy-remote-files: "代理远程文件"
   proxy-remote-files-desc: "启用此设置后，由于超出存储容量而导致未保存被删除的远程文件将被本地代理，并且会生成缩略图。"
   local-drive-capacity-mb: "每个用户的网盘空间"
