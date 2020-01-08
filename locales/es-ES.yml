@@ -16,6 +16,8 @@ common:
     ui: "Interfaz"
     ui-desc: "No hay ninguna interfaz que le vaya bien a todos. Por eso, Misskey tiene una interfaz altamente personalizable para tus gustos. Puedes hacer tu página principal única editando la interfaz de tu timeline y moviendo varios widgets para conseguir hacer de este lugar uno propio."
     drive: "Drive"
+    drive-desc: "¿Quieres postear de nuevo la imagen que has posteado antes? Si es así, ¿Quieres separar y ordenar en carpetas los archivos que has subido? La característica Drive incorporada en la base de Misskey es la solución. Compartir archivos es simple."
+    outro: "Aún hay características que solamente están en Misskey, asegúrate de eso con tus propios ojos. Misskey es un servicio de red social distribuida, si no te gusta esta instancia, puedes probar otra instancia. Así que, ¡buena suerte!"
   application-authorization: "Autorizaciones de la aplicación."
   close: "Cerrar"
   do-not-copy-paste: "Por favor no copies código aquí. Tu cuenta puede resultar comprometida."
@@ -28,14 +30,26 @@ common:
   signin: "Iniciar sesión"
   signup: "¡Regístrate!"
   signout: "Cerrar sesión"
+  reload-to-apply-the-setting: "Para aplicar esta configuración, hay que recargar la página. ¿Quiere recargar ahora?"
+  fetching-as-ap-object: "Consultar en el fediverso"
+  unfollow-confirm: "¿Quiere dejar de seguir a {name}?"
   delete-confirm: "¿Seguro que quieres borrar la publicación?"
+  signin-required: "Inicie sesion"
+  notification-type: "Tipo de notificación"
   notification-types:
     all: "Todo"
+    pollVote: "Encuestas"
+    follow: "Seguimientos"
+    receiveFollowRequest: "Solicitudes de seguimiento"
     reply: "Responder"
+    quote: "Citas"
     renote: "Volver a publicar"
+    mention: "Menciones"
+    reaction: "Reacciones"
   got-it: "¡Listo!"
   customization-tips:
     title: "Consejos de personalización"
+    paragraph: "<p>Se puede personalizar el inicio agregando/quitando widgets, arrastrarlos, soltarlos y ordenarlos.</p><p>Haciendo <strong>Click <strong>derecho</strong></strong>, se puede modificar la muestra de un widget</p><p>Para quitar un widget, arrastre y suelte el widget en el area que dice <strong>\"Papelera\"</strong> en el cabezal</p><p>Para acabar de personalizar, haga click en \"Listo\" arriba a la derecha</p>"
     gotit: "¡Comprendido!"
   notification:
     file-uploaded: "Archivo cargado."
@@ -73,20 +87,42 @@ common:
     "write:account": "Editar información de la cuenta"
     "read:blocks": "Ver bloques"
     "write:blocks": "Editar bloques"
+    "read:drive": "Explorar el drive"
+    "write:drive": "Administrar el drive"
     "read:favorites": "Ver favoritos"
     "write:favorites": "Editar favoritos"
     "read:following": "Ver información de seguidor"
+    "write:following": "Seguir/Dejar de seguir"
     "read:messaging": "Ver conversación"
+    "write:messaging": "Administrar coversación"
     "read:mutes": "Ver silenciados"
+    "write:mutes": "Administrar silenciados"
     "write:notes": "Crear y eliminar articulos"
     "read:notifications": "Ver notificaciones"
+    "write:notifications": "Administrar notificaciones"
     "read:reactions": "Ver reacciones"
+    "write:reactions": "Administrar reacciones"
     "write:votes": "Vota"
+    "read:pages": "Ver páginas"
+    "write:pages": "Administrar páginas"
+    "read:page-likes": "Ver páginas que te gustan"
+    "write:page-likes": "Administrar páginas que te gustan"
+    "read:user-groups": "Ver grupos de usuarios"
+    "write:user-groups": "Administrar grupos de usuarios"
+  empty-timeline-info:
+    follow-users-to-make-your-timeline: "Seguir al usuario mostrará sus posts en la linea de tiempo"
+    explore: "Explorar usuarios"
   post-form:
     reply: "Responder"
     renote: "Volver a publicar"
+    attach-media-from-local: "Agregar medios de tu dispositivo"
+    insert-a-kao: "v('ω')v"
+    recent-tags: "Reciente"
+    error: "Error"
     enter-username: "Ingresar nombre de usuario"
+    add-visible-user: "Agregar usuario"
     username-prompt: "Ingresar nombre de usuario"
+    enter-file-name: "Editar nombre del archivo"
   weekday-short:
     sunday: "domingo"
     monday: "lunes"
@@ -141,15 +177,18 @@ common:
     mute-and-block: "Silenciar/Bloquear"
     blocking: "Bloquear"
     security: "Seguridad"
+    signin: "Historial de ingresos"
     password: "Contraseña"
     other: "Otros"
     appearance: "Diseño"
     behavior: "Comportamiento"
+    reactions: "Reacciones"
     fetch-on-scroll-desc: "Cuando te deslizas al final de la página nuevo contenido se carga automáticamente."
     note-visibility: "Visibilidad de la publicación"
     default-note-visibility: "Rango de publicación predeterminado"
     web-search-engine: "Buscador web"
     web-search-engine-desc: "Ejemplo: https://www.google.com/?#q={{query}}"
+    keep-cw: "Mantener CW"
     this-setting-is-this-device-only: "Solo para este dispositivo"
     use-os-default-emojis: "Usar los emoticonos estándar del sistema operativo"
     line-width: "Grosor de línea"
@@ -869,6 +908,7 @@ desktop/views/components/settings.tags.vue:
 desktop/views/components/timeline.vue:
   home: "Inicio"
   local: "Local"
+  hybrid: "Social"
   global: "Global"
   list: "Listas"
   hashtag: "Hashtags"
@@ -1007,6 +1047,8 @@ admin/views/federation.vue:
     day: "Por día"
   blocked-hosts: "Bloquear"
   save: "Guardar"
+desktop/views/pages/welcome.vue:
+  timeline: "Timeline"
 desktop/views/pages/selectdrive.vue:
   cancel: "Cancelar"
 desktop/views/pages/user-list.users.vue:
@@ -1021,6 +1063,11 @@ desktop/views/pages/user/user.photos.vue:
 desktop/views/pages/user/user.header.vue:
   month: "lunes"
   day: "domingo"
+desktop/views/pages/user/user.timeline.vue:
+  default: "Posts"
+  with-replies: "Posts y respuestas"
+  with-media: "Multimedia"
+  my-posts: "Mis posts"
 desktop/views/widgets/notifications.vue:
   title: "Notificaciones"
 desktop/views/widgets/polls.vue:
@@ -1067,6 +1114,7 @@ mobile/views/components/ui.header.vue:
   welcome-back: "Bienvenido/a de vuelta,"
   adjective: "-san"
 mobile/views/components/ui.nav.vue:
+  timeline: "Timeline"
   notifications: "Notificaciones"
   follow-requests: "Solicitudes de seguimiento"
   search: "Buscar"
@@ -1081,6 +1129,7 @@ mobile/views/pages/drive.vue:
 mobile/views/pages/home.vue:
   home: "Inicio"
   local: "Local"
+  hybrid: "Social"
   global: "Global"
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
@@ -1094,6 +1143,8 @@ mobile/views/pages/search.vue:
   search: "Buscar"
 mobile/views/pages/notifications.vue:
   notifications: "Notificaciones"
+mobile/views/pages/user.vue:
+  timeline: "Timeline"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
 mobile/views/pages/user/home.photos.vue:
@@ -1101,6 +1152,7 @@ mobile/views/pages/user/home.photos.vue:
 deck:
   home: "Inicio"
   local: "Local"
+  hybrid: "Social"
   hashtag: "Etiquetas"
   global: "Global"
   notifications: "Notificaciones"
@@ -1108,6 +1160,7 @@ deck:
   rename: "Renombrar"
 deck/deck.user-column.vue:
   activity: "Actividad"
+  timeline: "Timeline"
 pages:
   pin-this-page: "Fijar en el perfil"
   like: "Me gusta"
