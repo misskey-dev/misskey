@@ -139,9 +139,11 @@ export class NoteRepository extends Repository<Note> {
 				});
 			}
 
+			reactionNames = reactionNames?.filter(x => x.match(/^:[^:]+:$/)).map(x => x.replace(/:/g, ''));
+
 			if (reactionNames?.length > 0) {
 				where.push({
-					name: In(reactionNames.map(x => x.replace(/:/g, ''))),
+					name: In(reactionNames),
 					host: null
 				});
 			}
