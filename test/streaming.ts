@@ -318,7 +318,7 @@ describe('Streaming', () => {
 			}, 3000);
 		}));
 
-		it('フォローしているローカルユーザーのダイレクト投稿が流れる', () => new Promise(async done => {
+		it('フォローしているローカルユーザーのダイレクト投稿は流れない', () => new Promise(async done => {
 			const alice = await signup({ username: 'alice' });
 			const bob = await signup({ username: 'bob' });
 
@@ -327,12 +327,11 @@ describe('Streaming', () => {
 				userId: bob.id
 			}, alice);
 
+			let fired = false;
+
 			const ws = await connectStream(alice, 'localTimeline', ({ type, body }) => {
 				if (type == 'note') {
-					assert.deepStrictEqual(body.userId, bob.id);
-					assert.deepStrictEqual(body.text, 'foo');
-					ws.close();
-					done();
+					fired = true;
 				}
 			});
 
@@ -342,6 +341,12 @@ describe('Streaming', () => {
 				visibility: 'specified',
 				visibleUserIds: [alice.id]
 			});
+
+			setTimeout(() => {
+				assert.strictEqual(fired, false);
+				ws.close();
+				done();
+			}, 3000);
 		}));
 
 		it('フォローしていないローカルユーザーのフォロワー宛て投稿は流れない', () => new Promise(async done => {
