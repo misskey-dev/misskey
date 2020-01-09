@@ -340,7 +340,7 @@ export default async function(
 
 	const profile = await UserProfiles.findOne(user.id);
 
-	const folder = await await fetchFolder();
+	const folder = await fetchFolder();
 
 	let file = new DriveFile();
 	file.id = genId();
