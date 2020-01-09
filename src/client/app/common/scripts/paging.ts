@@ -82,14 +82,18 @@ export default (opts) => ({
 				limit: (this.pagination.limit || 10) + 1,
 				...params
 			}).then(x => {
-				if (x.length == (this.pagination.limit || 10) + 1) {
-					x.pop();
-					this.items = x;
-					this.more = true;
-				} else {
-					this.items = x;
+				if (this.pagination.forceDisableReadmore) {
 					this.more = false;
+				} else {
+					if (x.length == (this.pagination.limit || 10) + 1) {
+						x.pop();
+						this.more = true;
+					} else {
+						this.more = false;
+					}
 				}
+
+				this.items = x;
 				this.offset = x.length;
 				this.inited = true;
 				this.fetching = false;
