@@ -79,6 +79,8 @@ redis:
   host: localhost
   port: 6379
   #pass: example-pass
+  #prefix: example-prefix
+  #db: 1
 
 #   ┌─────────────────────────────┐
 #───┘ Elasticsearch configuration └─────────────────────────────
@@ -120,8 +122,8 @@ autoAdmin: true
 #clusterLimit: 1
 
 # Job concurrency per worker
-# deliverJobConcurrency: 128;
-# inboxJobConcurrency: 16;
+# deliverJobConcurrency: 128
+# inboxJobConcurrency: 16
 
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
@@ -138,3 +140,6 @@ autoAdmin: true
 #proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
 #proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4
 #proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
+
+# Media Proxy
+#mediaProxy: https://example.com/proxy

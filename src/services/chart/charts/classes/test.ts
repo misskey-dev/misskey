@@ -42,4 +42,17 @@ export default class TestChart extends Chart<TestLog> {
 			foo: update
 		});
 	}
+
+	@autobind
+	public async decrement() {
+		const update: Obj = {};
+
+		update.total = -1;
+		update.dec = 1;
+		this.total--;
+
+		await this.inc({
+			foo: update
+		});
+	}
 }

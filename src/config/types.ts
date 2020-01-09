@@ -29,6 +29,7 @@ export type Source = {
 		port: number;
 		pass: string;
 		index?: string;
+		ssl?: boolean;
 	};
 
 	autoAdmin?: boolean;
@@ -51,12 +52,15 @@ export type Source = {
 		host: string;
 		port: number;
 	};
+
+	mediaProxy?: string;
 };
 
 /**
  * Misskeyが自動的に(ユーザーが設定した情報から推論して)設定する情報
  */
 export type Mixin = {
+	version: string;
 	host: string;
 	hostname: string;
 	scheme: string;

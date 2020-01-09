@@ -47,6 +47,7 @@ import uiInfo from './ui/info.vue';
 import uiMargin from './ui/margin.vue';
 import uiHr from './ui/hr.vue';
 import uiPagination from './ui/pagination.vue';
+import uiModal from './ui/modal.vue';
 import formButton from './ui/form/button.vue';
 import formRadio from './ui/form/radio.vue';
 
@@ -97,5 +98,6 @@ Vue.component('ui-info', uiInfo);
 Vue.component('ui-margin', uiMargin);
 Vue.component('ui-hr', uiHr);
 Vue.component('ui-pagination', uiPagination);
+Vue.component('ui-modal', uiModal);
 Vue.component('form-button', formButton);
 Vue.component('form-radio', formRadio);

@@ -5,6 +5,7 @@ import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { createDeleteObjectStorageFileJob } from '../../queue';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { getS3 } from './s3';
+import { v4 as uuid } from 'uuid';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
@@ -68,8 +69,13 @@ function postProcess(file: DriveFile, isExpired = false) {
 		DriveFiles.update(file.id, {
 			isLink: true,
 			url: file.uri,
-			thumbnailUrl: file.uri,
-			webpublicUrl: file.uri
+			thumbnailUrl: null,
+			webpublicUrl: null,
+			size: 0,
+			// ローカルプロキシ用
+			accessKey: uuid(),
+			thumbnailAccessKey: 'thumbnail-' + uuid(),
+			webpublicAccessKey: 'webpublic-' + uuid(),
 		});
 	} else {
 		DriveFiles.delete(file.id);

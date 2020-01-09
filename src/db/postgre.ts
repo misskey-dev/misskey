@@ -133,11 +133,13 @@ export const entities = [
 	...charts as any
 ];
 
-export function initDb(justBorrow = false, sync = false, log = false) {
-	try {
-		const conn = getConnection();
-		return Promise.resolve(conn);
-	} catch (e) {}
+export function initDb(justBorrow = false, sync = false, log = false, forceRecreate = false) {
+	if (!forceRecreate) {
+		try {
+			const conn = getConnection();
+			return Promise.resolve(conn);
+		} catch (e) {}
+	}
 
 	return createConnection({
 		type: 'postgres',
@@ -155,7 +157,7 @@ export function initDb(justBorrow = false, sync = false, log = false) {
 				host: config.redis.host,
 				port: config.redis.port,
 				password: config.redis.pass,
-				prefix: config.redis.prefix,
+				prefix: `${config.redis.prefix}:query:`,
 				db: config.redis.db || 0
 			}
 		} : false,

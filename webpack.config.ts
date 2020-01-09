@@ -4,9 +4,9 @@
 
 import * as fs from 'fs';
 import * as webpack from 'webpack';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
-//const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -20,6 +20,7 @@ class WebpackOnBuildPlugin {
 }
 
 const isProduction = process.env.NODE_ENV == 'production';
+const useHardSource = process.env.MISSKEY_USE_HARD_SOURCE;
 
 const constants = require('./src/const.json');
 
@@ -113,7 +114,7 @@ module.exports = {
 		}]
 	},
 	plugins: [
-		//new HardSourceWebpackPlugin(),
+		...(useHardSource ? [new HardSourceWebpackPlugin()] : []),
 		new ProgressBarPlugin({
 			format: chalk`  {cyan.bold yes we can} {bold [}:bar{bold ]} {green.bold :percent} {gray (:current/:total)} :elapseds`,
 			clear: false
@@ -129,7 +130,7 @@ module.exports = {
 			'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development')
 		}),
 		new WebpackOnBuildPlugin((stats: any) => {
-			fs.writeFileSync('./built/client/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
+			fs.writeFileSync('./built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
 
 			fs.mkdirSync('./built/client/assets/locales', { recursive: true });
 

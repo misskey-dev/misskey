@@ -13,14 +13,10 @@ export default async (actor: IRemoteUser, activity: IAccept): Promise<void> => {
 
 	const resolver = new Resolver();
 
-	let object;
-
-	try {
-		object = await resolver.resolve(activity.object);
-	} catch (e) {
+	const object = await resolver.resolve(activity.object).catch(e => {
 		logger.error(`Resolution failed: ${e}`);
 		throw e;
-	}
+	});
 
 	switch (object.type) {
 	case 'Follow':

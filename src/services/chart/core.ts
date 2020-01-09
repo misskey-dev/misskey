@@ -122,7 +122,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 		for (const [k, v] of Object.entries(columns)) {
 			if (v > 0) query[k] = () => `"${k}" + ${v}`;
-			if (v < 0) query[k] = () => `"${k}" - ${v}`;
+			if (v < 0) query[k] = () => `"${k}" - ${Math.abs(v)}`;
 		}
 
 		return query;

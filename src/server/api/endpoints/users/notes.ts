@@ -133,8 +133,8 @@ export default define(meta, async (ps, me) => {
 		.andWhere('note.userId = :userId', { userId: user.id })
 		.leftJoinAndSelect('note.user', 'user');
 
-	if (me) generateVisibilityQuery(query, me);
-	if (me) generateMuteQuery(query, me);
+	generateVisibilityQuery(query, me);
+	if (me) generateMuteQuery(query, me, user);
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

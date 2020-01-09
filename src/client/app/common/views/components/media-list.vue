@@ -42,7 +42,7 @@ export default Vue.extend({
 	},
 	methods: {
 		previewable(file) {
-			return file.type.startsWith('video') || file.type.startsWith('image');
+			return (file.type.startsWith('video') || file.type.startsWith('image')) && file.thumbnailUrl;
 		}
 	}
 });

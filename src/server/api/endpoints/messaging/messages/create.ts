@@ -1,17 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import { publishMainStream, publishGroupMessagingStream } from '../../../../../services/stream';
-import { publishMessagingStream, publishMessagingIndexStream } from '../../../../../services/stream';
-import pushSw from '../../../../../services/push-notification';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { MessagingMessages, DriveFiles, Mutings, UserGroups, UserGroupJoinings } from '../../../../../models';
-import { MessagingMessage } from '../../../../../models/entities/messaging-message';
-import { genId } from '../../../../../misc/gen-id';
+import { MessagingMessages, DriveFiles, UserGroups, UserGroupJoinings } from '../../../../../models';
 import { User } from '../../../../../models/entities/user';
 import { UserGroup } from '../../../../../models/entities/user-group';
-import { Not } from 'typeorm';
+import { createMessage } from '../../../../../services/messages/create';
 
 export const meta = {
 	desc: {
@@ -147,68 +142,5 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.contentRequired);
 	}
 
-	const message = await MessagingMessages.save({
-		id: genId(),
-		createdAt: new Date(),
-		fileId: file ? file.id : null,
-		recipientId: recipientUser ? recipientUser.id : null,
-		groupId: recipientGroup ? recipientGroup.id : null,
-		text: ps.text ? ps.text.trim() : null,
-		userId: user.id,
-		isRead: false,
-		reads: [] as any[]
-	} as MessagingMessage);
-
-	const messageObj = await MessagingMessages.pack(message);
-
-	if (recipientUser) {
-		// 自分のストリーム
-		publishMessagingStream(message.userId, recipientUser.id, 'message', messageObj);
-		publishMessagingIndexStream(message.userId, 'message', messageObj);
-		publishMainStream(message.userId, 'messagingMessage', messageObj);
-
-		// 相手のストリーム
-		publishMessagingStream(recipientUser.id, message.userId, 'message', messageObj);
-		publishMessagingIndexStream(recipientUser.id, 'message', messageObj);
-		publishMainStream(recipientUser.id, 'messagingMessage', messageObj);
-	} else if (recipientGroup) {
-		// グループのストリーム
-		publishGroupMessagingStream(recipientGroup.id, 'message', messageObj);
-
-		// メンバーのストリーム
-		const joinings = await UserGroupJoinings.find({ userGroupId: recipientGroup.id });
-		for (const joining of joinings) {
-			publishMessagingIndexStream(joining.userId, 'message', messageObj);
-			publishMainStream(joining.userId, 'messagingMessage', messageObj);
-		}
-	}
-
-	// 2秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
-	setTimeout(async () => {
-		const freshMessage = await MessagingMessages.findOne(message.id);
-		if (freshMessage == null) return; // メッセージが削除されている場合もある
-
-		if (recipientUser) {
-			if (freshMessage.isRead) return; // 既読
-
-			//#region ただしミュートされているなら発行しない
-			const mute = await Mutings.find({
-				muterId: recipientUser.id,
-			});
-			if (mute.map(m => m.muteeId).includes(user.id)) return;
-			//#endregion
-
-			publishMainStream(recipientUser.id, 'unreadMessagingMessage', messageObj);
-			pushSw(recipientUser.id, 'unreadMessagingMessage', messageObj);
-		} else if (recipientGroup) {
-			const joinings = await UserGroupJoinings.find({ userGroupId: recipientGroup.id, userId: Not(user.id) });
-			for (const joining of joinings) {
-				if (freshMessage.reads.includes(joining.userId)) return; // 既読
-				publishMainStream(joining.userId, 'unreadMessagingMessage', messageObj);
-				pushSw(joining.userId, 'unreadMessagingMessage', messageObj);
-			}
-		}
-	}, 2000);
-
-	return messageObj;
+	return await createMessage(user, recipientUser, recipientGroup, ps.text, file);
 });

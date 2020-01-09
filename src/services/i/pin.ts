@@ -2,13 +2,13 @@ import config from '../../config';
 import renderAdd from '../../remote/activitypub/renderer/add';
 import renderRemove from '../../remote/activitypub/renderer/remove';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import { deliver } from '../../queue';
 import { IdentifiableError } from '../../misc/identifiable-error';
-import { User, ILocalUser } from '../../models/entities/user';
+import { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
-import { Notes, UserNotePinings, Users, Followings } from '../../models';
+import { Notes, UserNotePinings, Users } from '../../models';
 import { UserNotePining } from '../../models/entities/user-note-pinings';
 import { genId } from '../../misc/gen-id';
+import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 
 /**
  * 指定した投稿をピン留めします
@@ -82,36 +82,9 @@ export async function deliverPinnedChange(userId: User['id'], noteId: Note['id']
 
 	if (!Users.isLocalUser(user)) return;
 
-	const queue = await CreateRemoteInboxes(user);
-
-	if (queue.length < 1) return;
-
 	const target = `${config.url}/users/${user.id}/collections/featured`;
-
 	const item = `${config.url}/notes/${noteId}`;
 	const content = renderActivity(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
-	for (const inbox of queue) {
-		deliver(user, content, inbox);
-	}
-}
 
-/**
- * ローカルユーザーのリモートフォロワーのinboxリストを作成する
- * @param user ローカルユーザー
- */
-async function CreateRemoteInboxes(user: ILocalUser): Promise<string[]> {
-	const followers = await Followings.find({
-		followeeId: user.id
-	});
-
-	const queue: string[] = [];
-
-	for (const following of followers) {
-		if (Followings.isRemoteFollower(following)) {
-			const inbox = following.followerSharedInbox || following.followerInbox;
-			if (!queue.includes(inbox)) queue.push(inbox);
-		}
-	}
-
-	return queue;
+	deliverToFollowers(user, content);
 }

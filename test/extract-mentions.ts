@@ -5,7 +5,7 @@ import { parse } from '../src/mfm/parse';
 
 describe('Extract mentions', () => {
 	it('simple', () => {
-		const ast = parse('@foo @bar @baz');
+		const ast = parse('@foo @bar @baz')!;
 		const mentions = extractMentions(ast);
 		assert.deepStrictEqual(mentions, [{
 			username: 'foo',
@@ -26,7 +26,7 @@ describe('Extract mentions', () => {
 	});
 
 	it('nested', () => {
-		const ast = parse('@foo **@bar** @baz');
+		const ast = parse('@foo **@bar** @baz')!;
 		const mentions = extractMentions(ast);
 		assert.deepStrictEqual(mentions, [{
 			username: 'foo',

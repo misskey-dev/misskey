@@ -22,7 +22,7 @@ adduser --disabled-password --disabled-login misskey
 Installez les paquets suivants :
 
 #### Dépendences :package:
-* **[Node.js](https://nodejs.org/en/)** >= 11.7.0
+* **[Node.js](https://nodejs.org/en/)** >= 11.10.1
 * **[PostgreSQL](https://www.postgresql.org/)** >= 10
 * **[Redis](https://redis.io/)**
 

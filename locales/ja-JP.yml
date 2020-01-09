@@ -212,6 +212,8 @@ common:
     other: "その他"
     appearance: "デザイン"
     behavior: "動作"
+    reactions: "リアクション"
+    reactions-description: "リアクションピッカーに表示するリアクションを改行で区切って設定します。"
     fetch-on-scroll: "スクロールで自動読み込み"
     fetch-on-scroll-desc: "ページを下までスクロールしたときに自動で追加のコンテンツを読み込みます。"
     note-visibility: "投稿の公開範囲"
@@ -310,6 +312,7 @@ common:
     sync: "同期"
     save: "保存"
     saved: "保存しました"
+    preview: "プレビュー"
     home-profile: "ホームのプロファイル"
     deck-profile: "デッキのプロファイル"
     room: "ルーム"
@@ -411,9 +414,11 @@ common/views/pages/explore.vue:
   popular-users: "人気のユーザー"
   recently-updated-users: "最近投稿したユーザー"
   recently-registered-users: "新規ユーザー"
+  recently-discovered-users: "最近発見されたユーザー"
   popular-tags: "人気のタグ"
   federated: "連合"
   explore: "{host}を探索"
+  explore-fediverse: "Fediverseを探索"
   users-info: "現在{users}ユーザーが登録されています"
 
 common/views/components/reactions-viewer.details.vue:
@@ -669,7 +674,9 @@ common/views/components/reaction-picker.vue:
   input-reaction-placeholder: "または絵文字を入力"
 
 common/views/components/emoji-picker.vue:
+  recent-emoji: "最近使った絵文字"
   custom-emoji: "カスタム絵文字"
+  no-category: "カテゴリなし"
   people: "人"
   animals-and-nature: "動物&自然"
   food-and-drink: "食べ物&飲み物"
@@ -1218,6 +1225,8 @@ common/views/components/mute-and-block.vue:
   word-mute: "ワードミュート"
   muted-words: "ミュートされたキーワード"
   muted-words-description: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+  unmute-confirm: "このユーザーをミュート解除しますか？"
+  unblock-confirm: "このユーザーをブロック解除しますか？"
   save: "保存"
 
 common/views/components/password-settings.vue:
@@ -1401,7 +1410,9 @@ admin/views/instance.vue:
   object-storage-s3-info-here: "こちら"
   object-storage-gcs-info: "Google Cloud Storageをオブジェクトストレージとして使用する場合、「エンドポイント」は storage.googleapis.com に設定し、「リージョン」は空欄にします。"
   cache-remote-files: "リモートのファイルをキャッシュする"
-  cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにしておくことをおすすめします。"
+  cache-remote-files-desc: "この設定を無効にすると、リモートファイルをキャッシュせず直リンクするようになります。そのためサーバーのストレージを節約できますが、プライバシー設定で直リンクを無効にしているユーザーにはファイルが見えなくなったり、サムネイルが生成されないので通信量が増加します。通常はこの設定をオンにするか次のリモートファイルのプロキシを有効にすることをおすすめします。"
+  proxy-remote-files: "リモートのファイルをプロキシする"
+  proxy-remote-files-desc: "この設定を有効にすると、未保存または保存容量超過で削除されたリモートファイルをローカルでプロキシし、サムネイルも生成するようになります。"
   local-drive-capacity-mb: "ローカルユーザーひとりあたりのドライブ容量"
   remote-drive-capacity-mb: "リモートユーザーひとりあたりのドライブ容量"
   mb: "メガバイト単位"
@@ -1587,6 +1598,7 @@ admin/views/emoji.vue:
     title: "絵文字の登録"
     name: "絵文字名"
     name-desc: "a~z 0~9 _ の文字が使えます。"
+    category: "カテゴリ"
     aliases: "エイリアス"
     aliases-desc: "スペースで区切って複数設定できます。"
     url: "絵文字画像URL"
@@ -2190,6 +2202,9 @@ pages:
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "小数を丸める"
+      _round:
+        arg1: "数値"
       eq: "AとBが同じ"
       _eq:
         arg1: "A"

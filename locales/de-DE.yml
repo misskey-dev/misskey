@@ -251,6 +251,7 @@ common:
     load-remote-media: "Zeige Inhalte von fremden Servern"
     save: "Speichern"
     saved: "Gespeichert"
+    preview: "Vorschau"
   search: "Suche"
   delete: "Löschen"
   loading: "Laden"
@@ -743,6 +744,7 @@ common/views/components/drive-settings.vue:
   in-use: "benutzt"
   stats: "Statistiken"
 common/views/components/mute-and-block.vue:
+  unmute-confirm: "Stummschaltung für diesen Nutzer aufheben?"
   save: "Speichern"
 desktop/views/components/sub-note-content.vue:
   private: "Dieser Beitrag ist privat"

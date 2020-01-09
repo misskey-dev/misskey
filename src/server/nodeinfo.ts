@@ -2,7 +2,6 @@ import * as Router from '@koa/router';
 import config from '../config';
 import { fetchMeta } from '../misc/fetch-meta';
 // import User from '../models/user';
-import { name as softwareName, version, repository } from '../../package.json';
 // import Note from '../models/note';
 
 const router = new Router();
@@ -20,27 +19,7 @@ export const links = [/* (awaiting release) {
 
 const nodeinfo2 = async () => {
 	const [
-		{
-			name,
-			description,
-			maintainerName,
-			maintainerEmail,
-			langs,
-			ToSUrl,
-			repositoryUrl,
-			feedbackUrl,
-			announcements,
-			disableRegistration,
-			disableLocalTimeline,
-			disableGlobalTimeline,
-			enableRecaptcha,
-			maxNoteTextLength,
-			enableTwitterIntegration,
-			enableGithubIntegration,
-			enableDiscordIntegration,
-			enableEmail,
-			enableServiceWorker
-		},
+		meta,
 		// total,
 		// activeHalfyear,
 		// activeMonth,
@@ -57,43 +36,43 @@ const nodeinfo2 = async () => {
 
 	return {
 		software: {
-			name: softwareName,
-			version,
-			repository: repository.url
+			name: 'misskey',
+			version: config.version,
+			repository: meta.repositoryUrl,
 		},
 		protocols: ['activitypub'],
 		services: {
 			inbound: [] as string[],
 			outbound: ['atom1.0', 'rss2.0']
 		},
-		openRegistrations: !disableRegistration,
+		openRegistrations: !meta.disableRegistration,
 		usage: {
 			users: {} // { total, activeHalfyear, activeMonth },
 			// localPosts,
 			// localComments
 		},
 		metadata: {
-			name,
-			description,
+			nodeName: meta.name,
+			nodeDescription: meta.description,
 			maintainer: {
-				name: maintainerName,
-				email: maintainerEmail
+				name: meta.maintainerName,
+				email: meta.maintainerEmail
 			},
-			langs,
-			ToSUrl,
-			repositoryUrl,
-			feedbackUrl,
-			announcements,
-			disableRegistration,
-			disableLocalTimeline,
-			disableGlobalTimeline,
-			enableRecaptcha,
-			maxNoteTextLength,
-			enableTwitterIntegration,
-			enableGithubIntegration,
-			enableDiscordIntegration,
-			enableEmail,
-			enableServiceWorker
+			langs: meta.langs,
+			ToSUrl: meta.ToSUrl,
+			repositoryUrl: meta.repositoryUrl,
+			feedbackUrl: meta.feedbackUrl,
+			announcements: meta.announcements,
+			disableRegistration: meta.disableRegistration,
+			disableLocalTimeline: meta.disableLocalTimeline,
+			disableGlobalTimeline: meta.disableGlobalTimeline,
+			enableRecaptcha: meta.enableRecaptcha,
+			maxNoteTextLength: meta.maxNoteTextLength,
+			enableTwitterIntegration: meta.enableTwitterIntegration,
+			enableGithubIntegration: meta.enableGithubIntegration,
+			enableDiscordIntegration: meta.enableDiscordIntegration,
+			enableEmail: meta.enableEmail,
+			enableServiceWorker: meta.enableServiceWorker
 		}
 	};
 };

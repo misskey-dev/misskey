@@ -26,8 +26,6 @@ const router = new Router();
 function inbox(ctx: Router.RouterContext) {
 	let signature;
 
-	ctx.req.headers.authorization = `Signature ${ctx.req.headers.signature}`;
-
 	try {
 		signature = httpSignature.parseRequest(ctx.req, { 'headers': [] });
 	} catch (e) {
@@ -167,7 +165,8 @@ router.get('/users/:user', async (ctx, next) => {
 
 	const user = await Users.findOne({
 		id: userId,
-		host: null
+		host: null,
+		isSuspended: false
 	});
 
 	await userInfo(ctx, user);
@@ -178,7 +177,8 @@ router.get('/@:user', async (ctx, next) => {
 
 	const user = await Users.findOne({
 		usernameLower: ctx.params.user.toLowerCase(),
-		host: null
+		host: null,
+		isSuspended: false
 	});
 
 	await userInfo(ctx, user);

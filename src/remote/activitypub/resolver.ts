@@ -51,6 +51,13 @@ export default class Resolver {
 				Accept: 'application/activity+json, application/ld+json'
 			},
 			json: true
+		}).catch(e => {
+			const message = `${e.name}: ${e.message ? e.message.substr(0, 200) : undefined}, url=${value}`;
+			throw {
+				name: e.name,
+				statusCode: e.statusCode,
+				message,
+			};
 		});
 
 		if (object == null || (
