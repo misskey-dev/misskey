@@ -103,6 +103,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 ----------------------------------------------------------------
 <!-- PATREON_START -->
 <table><tr>
+<td><img src="https://c8.patreon.com/2/200/20832595" alt="Roujo" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/27956229" alt="Oliver Maximilian Seidel" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12190916/fb7fa7983c14425f890369535b1506a4/3.png?token-time=2145916800&token-hash=oH_i7gJjNT7Ot6j9JiVwy7ZJIBqACVnzLqlz4YrDAZA%3D" alt="weepjp" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/605366/c9dc408fdcbf412fb183ca5b06235f8d/1.jpeg?token-time=2145916800&token-hash=oaqsjLqOFjWN5I9hm2epOaTXaEtKwQUy5OW-EpAz6-g%3D" alt="Jon Leibowitz" width="100"></td>
@@ -110,8 +111,8 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/24430516/b1964ac5b9f746d2a12ff53dbc9aa40a/1.jpg?token-time=2145916800&token-hash=bmEiMGYpp3bS7hCCbymjGGsHBZM3AXuBOFO3Kro37PU%3D" alt="Eduardo Quiros" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/14215107/1cbe1912c26143919fa0faca16f12ce1/2.png?token-time=2145916800&token-hash=v0KzlXjyiq18u6aSxyy9qIUxSCAx-nnHlO7MzhSA6Mc%3D" alt="Nesakko" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/776209" alt="Denshi" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/3075183/c2ae575c604e420297f000ccc396e395/1.jpeg?token-time=2145916800&token-hash=O9qmPtpo6wWb0OuvnkEekhk_1WO2MTdytLr7ZgsAr80%3D" alt="Liaizon Wakest" width="100"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/user?u=20832595">Roujo</a></td>
 <td><a href="https://www.patreon.com/user?u=27956229">Oliver Maximilian Seidel</a></td>
 <td><a href="https://www.patreon.com/weepjp">weepjp</a></td>
 <td><a href="https://www.patreon.com/jonleibowitz">Jon Leibowitz</a></td>
@@ -119,9 +120,9 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=24430516">Eduardo Quiros</a></td>
 <td><a href="https://www.patreon.com/Nesakko">Nesakko</a></td>
 <td><a href="https://www.patreon.com/user?u=776209">Denshi</a></td>
-<td><a href="https://www.patreon.com/wakest">Liaizon Wakest</a></td>
 </tr></table>
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/3075183/c2ae575c604e420297f000ccc396e395/1.jpeg?token-time=2145916800&token-hash=O9qmPtpo6wWb0OuvnkEekhk_1WO2MTdytLr7ZgsAr80%3D" alt="Liaizon Wakest" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/557245" alt="mkatze" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/23915207/25428766ecd745478e600b3d7f871eb2/1.png?token-time=2145916800&token-hash=urCLLA4KjJZX92Y1CxcBP4d8bVTHGkiaPnQZp-Tqz68%3D" alt="kabo2468y" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/8249688/4aacf36b6b244ab1bc6653591b6640df/2.png?token-time=2145916800&token-hash=1ZEf2w6L34253cZXS_HlVevLEENWS9QqrnxGUAYblPo%3D" alt="AureoleArk" width="100"></td>
@@ -131,6 +132,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5788159/af42076ab3354bb49803cfba65f94bee/1.jpg?token-time=2145916800&token-hash=iSaxp_Yr2-ZiU2YVi9rcpZZj9mj3UvNSMrZr4CU4qtA%3D" alt="mewl hayabusa" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/11357794/923ce94cd8c44ba788ee931907881839/1.png?token-time=2145916800&token-hash=9nEQje_eMvUjq9a7L3uBqW-MQbS-rRMaMgd7UYVoFNM%3D" alt="mydarkstar" width="100"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/wakest">Liaizon Wakest</a></td>
 <td><a href="https://www.patreon.com/user?u=557245">mkatze</a></td>
 <td><a href="https://www.patreon.com/user?u=23915207">kabo2468y</a></td>
 <td><a href="https://www.patreon.com/AureoleArk">AureoleArk</a></td>
@@ -178,8 +180,11 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=23932002">nenohi</a></td>
 <td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
+<table><tr>
+</tr><tr>
+</tr></table>
 
-**Last updated:** Sun, 05 Jan 2020 05:37:07 UTC
+**Last updated:** Thu, 09 Jan 2020 05:39:07 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
