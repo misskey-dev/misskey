@@ -22,7 +22,7 @@
 		"clean": "gulp clean",
 		"cleanall": "gulp cleanall",
 		"lint": "gulp lint",
-		"test": "gulp test",
+		"test": "cross-env TS_NODE_FILES=true gulp test",
 		"format": "gulp format"
 	},
 	"resolutions": {
@@ -259,6 +259,7 @@
 		"xev": "2.0.1"
 	},
 	"devDependencies": {
-		"@types/fluent-ffmpeg": "2.1.12"
+		"@types/fluent-ffmpeg": "2.1.12",
+		"cross-env": "6.0.3"
 	}
 }
