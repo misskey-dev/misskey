@@ -133,11 +133,13 @@ export const entities = [
 	...charts as any
 ];
 
-export function initDb(justBorrow = false, sync = false, log = false) {
-	try {
-		const conn = getConnection();
-		return Promise.resolve(conn);
-	} catch (e) {}
+export function initDb(justBorrow = false, sync = false, log = false, forceRecreate = false) {
+	if (!forceRecreate) {
+		try {
+			const conn = getConnection();
+			return Promise.resolve(conn);
+		} catch (e) {}
+	}
 
 	return createConnection({
 		type: 'postgres',
