@@ -18,8 +18,8 @@ declare module 'probe-image-size' {
 	};
 
 	function probeImageSize(src: string | ReadStream, options?: ProbeOptions): Promise<ProbeResult>;
-	function probeImageSize(src: string | ReadStream, callback: (err?: Error, result?: ProbeResult): void;
-	function probeImageSize(src: string | ReadStream, options: ProbeOptions, callback: (err?: Error, result?: ProbeResult): void;
+	function probeImageSize(src: string | ReadStream, callback: (err?: Error, result?: ProbeResult) => void): void;
+	function probeImageSize(src: string | ReadStream, options: ProbeOptions, callback: (err?: Error, result?: ProbeResult) => void): void;
 
 	namespace probeImageSize {} // Hack
 
