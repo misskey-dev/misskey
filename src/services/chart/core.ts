@@ -272,13 +272,13 @@ export default abstract class Chart<T extends Record<string, any>> {
 				latest as Record<string, any>);
 
 			// 空ログデータを作成
-			data = await this.getNewLog(obj);
+			data = this.getNewLog(obj);
 		} else {
 			// ログが存在しなかったら
 			// (Misskeyインスタンスを建てて初めてのチャート更新時)
 
 			// 初期ログデータを作成
-			data = await this.getNewLog(null);
+			data = this.getNewLog(null);
 
 			logger.info(`${this.name}: Initial commit created`);
 		}
