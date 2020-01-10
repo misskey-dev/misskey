@@ -1274,6 +1274,7 @@ admin/views/instance.vue:
   object-storage-port: "Puerto"
   object-storage-access-key: "Clave de acceso"
   object-storage-secret-key: "Clave secreta"
+  object-storage-use-ssl: "Usar SSL"
   cache-remote-files: "Mantener en cache los archivos remotos"
   recaptcha-secret-key: "Clave secreta"
   recaptcha-preview: "Vista previa"
