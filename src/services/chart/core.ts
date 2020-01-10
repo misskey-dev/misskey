@@ -291,12 +291,15 @@ export default abstract class Chart<T extends Record<string, any>> {
 				date: Chart.dateToTimestamp(current),
 				...Chart.convertObjectToFlattenColumns(data)
 			});
+
+			logger.info(`${this.name}: New commit created`);
 		} catch (e) {
 			// duplicate key error
 			// 並列動作している他のチャートエンジンプロセスと処理が重なる場合がある
 			// その場合は再度最も新しいログを持ってくる
 			if (isDuplicateKeyValueError(e)) {
 				log = await this.getLatestLog(span, group) as Log;
+				logger.info(`${this.name}: Commit duplicated`);
 			} else {
 				logger.error(e);
 				throw e;
