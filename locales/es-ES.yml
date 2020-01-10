@@ -1052,7 +1052,7 @@ desktop/views/pages/user-following-or-followers.vue:
   following: "{user} sigue a"
   followers: "Seguidores de {user}"
 desktop/views/components/settings.2fa.vue:
-  intro: "Si elige la verificación de dos factores, no se necesitará una password sólo para loguearse, sino también un dispositivo físico previamente registrado (por ejemplo su smartphone) con el cual aumentará su seguridad"
+  intro: "Si elige la verificación de dos factores, no se necesitará una contraseña sólo para loguearse, sino también un dispositivo físico previamente registrado (por ejemplo su smartphone) con el cual aumentará su seguridad"
   detail: "Ver detalles..."
   url: "https://www.google.com/landing/2step/"
   caution: "Si pierdes acceso al dispositivo, no podrás conectarte a Misskey."
@@ -1079,7 +1079,7 @@ desktop/views/components/settings.2fa.vue:
   register-security-key: "Completar registro de la clave"
   something-went-wrong: "Oh! Ocurrió un problema al registrar la clave"
   key-unregistered: "La clave ha sido eliminada"
-  use-password-less-login: "Usar login sin password"
+  use-password-less-login: "Loguearse sin contraseña"
 common/views/components/media-image.vue:
   sensitive: "Este contenido no es apropiado para ver en el trabajo"
   click-to-show: "Click para mostrar"
@@ -1104,14 +1104,31 @@ common/views/components/drive-settings.vue:
   max: "Capacidad"
   in-use: "usado"
   stats: "Estadísticas"
+  default-upload-folder: "Carpeta de subida por defecto"
+  default-upload-folder-name: "Carpeta"
+  change-default-upload-folder: "Cambiar carpeta"
 common/views/components/mute-and-block.vue:
   mute-and-block: "Silenciar y bloquear"
   mute: "Silenciar"
   block: "Bloquear"
+  no-muted-users: "No hay usuarios silenciados"
+  no-blocked-users: "No hay usuarios bloqueados"
+  word-mute: "Silenciar palabras"
+  muted-words: "Palabras silenciadas"
+  muted-words-description: "Separar con espacios indica una declaracion And, separar con lineas nuevas indica una declaracion Or"
   unmute-confirm: "¿Quiere dejar de silenciar a este usuario?"
   unblock-confirm: "¿Quiere dejar de bloquear a este usuario?"
   save: "Guardar"
+common/views/components/password-settings.vue:
+  reset: "Cambiar contraseña"
+  enter-current-password: "Ingrese la contraseña actual"
+  enter-new-password: "Ingrese la contraseña nueva"
+  enter-new-password-again: "Reingrese la contraseña nueva"
+  not-match: "La contraseña nueva no coincide"
+  changed: "La contraseña fue cambiada"
+  failed: "Error al cambiar la contraseña"
 common/views/components/post-form-attaches.vue:
+  attach-cancel: "Quitar adjunto"
   mark-as-sensitive: "Marcar como 'sensible'"
   unmark-as-sensitive: "Desmarcar como 'sensible'"
 desktop/views/components/sub-note-content.vue:
@@ -1121,6 +1138,7 @@ desktop/views/components/sub-note-content.vue:
   poll: "Encuesta"
 desktop/views/components/settings.tags.vue:
   title: "Etiqueta"
+  query: "Consulta (opcional)"
   add: "Agregar"
   save: "Guardar"
 desktop/views/components/timeline.vue:
@@ -1128,8 +1146,12 @@ desktop/views/components/timeline.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+  mentions: "Menciones"
+  messages: "Mensajes directos"
   list: "Listas"
   hashtag: "Hashtags"
+  add-tag-timeline: "Agregar hashtag"
+  add-list: "Agregar lista"
   list-name: "Nombre de lista"
 desktop/views/components/ui.header.vue:
   welcome-back: "Bienvenido/a de vuelta,"
@@ -1155,6 +1177,8 @@ desktop/views/components/user-preview.vue:
   followers: "Seguidores"
 desktop/views/components/users-list.vue:
   all: "Todo"
+  iknow: "Conocidos"
+  fetching: "Cargando"
 desktop/views/components/window.vue:
   close: "Cerrar"
 admin/views/index.vue:
@@ -1205,6 +1229,7 @@ admin/views/instance.vue:
   invite: "Invitar"
   save: "Guardar"
   saved: "Guardado"
+  email-config-info: "Usado en caso de validación de correo electrónico y cambio de contraseña"
   email: "Correo electrónico"
   smtp-host: "Host SMTP"
   smtp-port: "Puerto SMTP"
@@ -1230,6 +1255,9 @@ admin/views/drive.vue:
   mark-as-sensitive: "Marcar como 'sensible'"
   unmark-as-sensitive: "Desmarcar como 'sensible'"
 admin/views/users.vue:
+  reset-password: "Cambiar Contraseña"
+  reset-password-confirm: "¿Quiere cambiar la contraseña?"
+  password-updated: "La contraseña ahora es \"{password}\""
   username: "Usuario"
   host: "Host"
   users:
@@ -1354,6 +1382,7 @@ mobile/views/pages/home.vue:
   local: "Local"
   hybrid: "Social"
   global: "Global"
+  mentions: "Menciones"
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
   add-widget: "Agregar"
@@ -1379,6 +1408,7 @@ deck:
   hybrid: "Social"
   hashtag: "Etiquetas"
   global: "Global"
+  mentions: "Menciones"
   notifications: "Notificaciones"
   list: "Listas"
   select-list: "Elija una lista"
