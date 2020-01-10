@@ -1293,6 +1293,7 @@ admin/views/instance.vue:
   recaptcha-secret-key: "Clave secreta"
   recaptcha-preview: "Vista previa"
   hidden-tags: "Hashtags ocultos"
+  hidden-tags-info: "Los hashtags excluidos se listan separados por una nueva linea"
   invite: "Invitar"
   save: "Guardar"
   saved: "Guardado"
