@@ -1179,17 +1179,28 @@ desktop/views/components/users-list.vue:
   all: "Todo"
   iknow: "Conocidos"
   fetching: "Cargando"
+desktop/views/components/users-list-item.vue:
+  followed: "Te sigue"
 desktop/views/components/window.vue:
+  popout: "Salir"
   close: "Cerrar"
 admin/views/index.vue:
   dashboard: "Panel de control"
   instance: "Instancia"
+  emoji: "Emojis personalizados"
   moderators: "Moderadores"
   users: "Usuarios"
   federation: "Federado"
+  announcements: "Anuncios"
+  abuse: "Reportar spam"
   queue: "Cola de trabajos"
   logs: "Registros"
+  db: "Base de datos"
   back-to-misskey: "Volver a Misskey"
+admin/views/db.vue:
+  tables: "Tablas"
+  vacuum: "Vaciar"
+  vacuum-info: "Limpia la base de datos. Así las tablas reducen el espacio usado. Generalmente esta operación se corre periódica y automáticamente"
 admin/views/dashboard.vue:
   dashboard: "Panel de Control"
   accounts: "Cuenta"
