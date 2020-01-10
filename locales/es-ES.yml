@@ -1085,6 +1085,7 @@ common/views/components/media-image.vue:
   click-to-show: "Click para mostrar"
 common/views/components/api-settings.vue:
   intro: "Para usar la API, incluya un parámetro con la clave \"i\" seguido del token mencionado"
+  caution: "Para que no haya posibilidades de que su cuenta sea usada incorrectamente, no revele este token a otros (Tampoco la ingrese en ninguna aplicación)."
   token: "Token:"
   enter-password: "Escribe una contraseña"
   console:
