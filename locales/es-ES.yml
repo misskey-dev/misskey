@@ -1315,6 +1315,7 @@ admin/views/instance.vue:
   proxy-account-config: "Configurar cuenta proxy"
   proxy-account-info: "La cuenta proxy es una cuenta que actúa en nombre de un seguidor remoto de usuarios bajo condiciones específicas. Por ejemplo, cuando un usuario agrega un usuario remoto a una lista, si nadie sigue al usuario agregado a la lista y para que la actividad no sea entregada al servidor, una cuenta proxy la sigue como sustituta."
   proxy-account-username: "Nombre de usuario de la cuenta proxy"
+  proxy-account-username-desc: "Elija el nombre de usuario de la cuenta usada como proxy"
   invite: "Invitar"
   save: "Guardar"
   saved: "Guardado"
