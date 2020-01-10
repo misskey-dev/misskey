@@ -1279,6 +1279,8 @@ admin/views/instance.vue:
   object-storage-s3-info-here: "Aquí"
   object-storage-gcs-info: "En caso de usar el almacenamiento de objetos de Google Cloud Storage, elija como \"endpoint\" storage.googleapis.com, y deje en blanco el campo \"region\""
   cache-remote-files: "Mantener en cache los archivos remotos"
+  cache-remote-files-desc: "Si esta configuración se deshabilita, los archivos remotos serán enlazados directamente sin cachearse. Con eso se puede ahorrar almacenamiento en el servidor, pero para los usuarios que deshabilitaron el enlace directo en la configuración de privacidad, no se podrán ver los archivos y aumentará el tráfico al no crear thumbnails. Generalmente se recomienda activar la configuración o activar la configuración de proxy de archivos remotos."
+  proxy-remote-files: "Proxy de archivos remotos"
   recaptcha-secret-key: "Clave secreta"
   recaptcha-preview: "Vista previa"
   invite: "Invitar"
