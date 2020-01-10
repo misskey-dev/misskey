@@ -700,6 +700,8 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-talk-messages: "将所有对话标为已读"
   auto-watch: "自动查看帖子"
   auto-watch-desc: "自动接收有关您做出回应或回复的帖子的通知。"
+common/views/components/instance.vue:
+  start: 开始
 common/views/components/integration-settings.vue:
   title: "服务合作"
   connect: "连接"
