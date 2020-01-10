@@ -1345,11 +1345,13 @@ admin/views/instance.vue:
   enable-serviceworker: "Activar ServiceWorker"
   serviceworker-info: "Para usar notificaciones push, se debe activar"
   vapid-publickey: "Clave pública VAPID"
+  vapid-privatekey: "Clave secreta VAPID"
 admin/views/charts.vue:
   title: "Gráficos"
   per-day: "Por día"
   per-hour: "Por hora"
   federation: "Federación"
+  notes: "Posts"
   users: "Usuarios"
   drive: "Drive"
   network: "Red"
