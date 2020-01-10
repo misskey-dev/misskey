@@ -1084,6 +1084,7 @@ common/views/components/media-image.vue:
   sensitive: "Este contenido no es apropiado para ver en el trabajo"
   click-to-show: "Click para mostrar"
 common/views/components/api-settings.vue:
+  intro: "Para usar la API, incluya un parámetro con la clave \"i\" seguido del token mencionado"
   token: "Token:"
   enter-password: "Escribe una contraseña"
   console:
