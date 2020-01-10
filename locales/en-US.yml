@@ -700,6 +700,8 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-talk-messages: "Mark all conversations as read"
   auto-watch: "Automatically watch out for posts"
   auto-watch-desc: "Automatically receive notifications about posts you react to, or respond to."
+common/views/components/instance.vue:
+  start: Begin
 common/views/components/integration-settings.vue:
   title: "Service cooperation"
   connect: "Connect"
