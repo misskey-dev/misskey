@@ -700,6 +700,8 @@ common/views/components/notification-settings.vue:
   mark-as-read-all-talk-messages: "모든 대화를 읽은 상태로 표시"
   auto-watch: "글 자동 감시"
   auto-watch-desc: "리액션, 답글, 게시물에 대한 알림을 자동으로 받을 수 있도록 합니다."
+common/views/components/instance.vue:
+  start: 시작하기
 common/views/components/integration-settings.vue:
   title: "서비스 연계"
   connect: "접속"
