@@ -1086,14 +1086,22 @@ common/views/components/media-image.vue:
 common/views/components/api-settings.vue:
   intro: "Para usar la API, incluya un parámetro con la clave \"i\" seguido del token mencionado"
   caution: "Para que no haya posibilidades de que su cuenta sea usada incorrectamente, no revele este token a otros (Tampoco la ingrese en ninguna aplicación)."
+  regeneration-of-token: "En caso posible de que el token fuera revelado, se puede regenerarlo."
+  regenerate-token: "Regenerar el token"
   token: "Token:"
   enter-password: "Escribe una contraseña"
   console:
     title: "Consola API"
+    endpoint: "Endpoint"
+    parameter: "Parametro"
+    credential-info: "El parametro \"i\" se asignará automáticamente"
     send: "Enviar"
+    sending: "Esperando una respuesta"
+    response: "Resultado"
 desktop/views/components/settings.apps.vue:
   no-apps: "No hay aplicaciones asociadas"
 common/views/components/drive-settings.vue:
+  max: "Capacidad"
   in-use: "usado"
   stats: "Estadísticas"
 common/views/components/mute-and-block.vue:
@@ -1191,6 +1199,7 @@ admin/views/instance.vue:
   maintainer-name: "Nombre del administrador"
   maintainer-email: "Contactar con el administrador"
   drive-config: "Ajustes del Drive"
+  object-storage-endpoint: "Endpoint"
   cache-remote-files: "Mantener en cache los archivos remotos"
   recaptcha-preview: "Vista previa"
   invite: "Invitar"
