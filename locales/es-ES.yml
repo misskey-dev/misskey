@@ -1832,6 +1832,7 @@ dev/views/new-app.vue:
   callback-url-placeholder: "ej) https://your.app.example.com/callback.php"
   callback-url-desc: "Se puede configurar una Url de redirección en caso de que un usuario se autenticara con el formulario de autenticación"
   authority: "Permisos"
+  authority-desc: "Sólo las funciones requeridas aquí pueden accederse desde la api"
 pages:
   pin-this-page: "Fijar en el perfil"
   unpin-this-page: "Desfijar del perfil"
