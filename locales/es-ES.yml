@@ -1824,6 +1824,7 @@ dev/views/new-app.vue:
   create-app: "Creando aplicación"
   app-name: "Nombre de la aplicación"
   app-name-placeholder: "ej) Misskey para iOS"
+  app-name-desc: "Nombre de su aplicación"
 pages:
   pin-this-page: "Fijar en el perfil"
   unpin-this-page: "Desfijar del perfil"
