@@ -1597,8 +1597,12 @@ desktop/views/pages/user/user.header.vue:
   posts: "Posts"
   following: "Siguiendo"
   followers: "Seguidores"
-  month: "lunes"
-  day: "domingo"
+  is-bot: "Esta cuenta es un bot"
+  no-description: "Sin descripción"
+  years-old: "{age} años"
+  year: "Año"
+  month: "Mes"
+  day: "Día"
   follows-you: "Te sigue"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
@@ -1609,12 +1613,32 @@ desktop/views/widgets/notifications.vue:
   title: "Notificaciones"
 desktop/views/widgets/polls.vue:
   title: "Encuestas"
-  nothing: "No hay notificaciones"
+  refresh: "Ver otras"
+  nothing: "No hay!"
+desktop/views/widgets/post-form.vue:
+  title: "Posts"
+  note: "Posts"
+  something-happened: "No se pudo postear por alguna circunstancia"
+desktop/views/widgets/profile.vue:
+  update-banner: "Click para editar banner"
+  update-avatar: "Click para editar avatar"
 desktop/views/widgets/trends.vue:
-  nothing: "No hay notificaciones"
+  title: "Tendencias"
+  refresh: "Ver otras"
+  nothing: "No hay!"
+desktop/views/widgets/users.vue:
+  title: "Usuarios recomendados"
+  refresh: "Ver otras"
+  no-one: "No hay!"
 mobile/views/components/drive.vue:
   used: "usado"
+  folder-count: "Carpetas"
+  count-separator: ","
+  file-count: "Archivos"
+  nothing-in-drive: "No hay nada en el drive"
+  folder-is-empty: "La carpeta está vacía"
   folder-name: "Nombre de la carpeta"
+  here-is-root: "Ahora está en la carpeta raiz, no dentro de otra carpeta"
   url-prompt: "URL del fichero que quieres subir"
 mobile/views/components/drive.file.vue:
   nsfw: "Este contenido no es apropiado para ver en el trabajo"
@@ -1683,6 +1707,7 @@ mobile/views/pages/widgets.vue:
 mobile/views/pages/widgets/activity.vue:
   activity: "Actividad"
 mobile/views/pages/note.vue:
+  title: "Posts"
   prev: "Post anterior"
   next: "Posts siguiente"
 mobile/views/pages/games/reversi.vue:
@@ -1694,8 +1719,11 @@ mobile/views/pages/notifications.vue:
   notifications: "Notificaciones"
 mobile/views/pages/user.vue:
   follows-you: "Te sigue"
+  following: "Siguiendo"
+  notes: "Posts"
   timeline: "Timeline"
   media: "Medios"
+  years-old: "{age} años"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
   frequently-replied-users: "Menciones frecuentes"
@@ -1717,6 +1745,8 @@ deck/deck.tl-column.vue:
   is-media-only: "Sólo medios"
 deck/deck.user-column.vue:
   follows-you: "Te sigue"
+  posts: "Posts"
+  following: "Siguiendo"
   activity: "Actividad"
   timeline: "Timeline"
 pages:
