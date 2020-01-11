@@ -1640,6 +1640,7 @@ mobile/views/components/drive.vue:
   folder-name: "Nombre de la carpeta"
   here-is-root: "Ahora está en la carpeta raiz, no dentro de otra carpeta"
   url-prompt: "URL del fichero que quieres subir"
+  uploading: "Se hizo un pedido de subida. Puede tomar un rato hasta que la subida termine"
 mobile/views/components/drive.file.vue:
   nsfw: "Este contenido no es apropiado para ver en el trabajo"
 mobile/views/components/drive.file-detail.vue:
