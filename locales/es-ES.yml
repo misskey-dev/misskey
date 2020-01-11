@@ -39,7 +39,7 @@ common:
   notification-types:
     all: "Todo"
     pollVote: "Encuestas"
-    follow: "Seguimientos"
+    follow: "Siguiendo"
     receiveFollowRequest: "Solicitudes de seguimiento"
     reply: "Responder"
     quote: "Citas"
@@ -1571,18 +1571,35 @@ desktop/views/pages/selectdrive.vue:
   title: "Seleccione un archivo"
   ok: "OK"
   cancel: "Cancelar"
+  upload: "Cargar archivos al drive"
+desktop/views/pages/search.vue:
+  not-available: "La función de búsqueda está deshabilitada en la configuración de la instancia"
+  not-found: "No se han encontrado posts relacionados a \"{q}\""
+desktop/views/pages/tag.vue:
+  no-posts-found: "No se han encontrado posts con el hashtag \"{q}\""
 desktop/views/pages/user-list.users.vue:
+  users: "Usuarios"
+  add-user: "Agregar usuario"
   username: "Usuario"
 desktop/views/pages/user/user.followers-you-know.vue:
+  title: "Seguidores conocidos"
   loading: "cargando"
+  no-users: "No hay seguidores conocidos"
 desktop/views/pages/user/user.friends.vue:
+  title: "Menciones frecuentes"
   loading: "cargando"
+  no-users: "No hay menciones frecuentes"
 desktop/views/pages/user/user.photos.vue:
+  title: "Fotos"
   loading: "cargando"
   no-photos: "No hay fotos."
 desktop/views/pages/user/user.header.vue:
+  posts: "Posts"
+  following: "Siguiendo"
+  followers: "Seguidores"
   month: "lunes"
   day: "domingo"
+  follows-you: "Te sigue"
 desktop/views/pages/user/user.timeline.vue:
   default: "Posts"
   with-replies: "Posts y respuestas"
@@ -1612,6 +1629,7 @@ mobile/views/components/media-video.vue:
   click-to-show: "Click para mostrar"
 common/views/components/follow-button.vue:
   following: "Siguiendo"
+  follow: "Seguir"
   request-pending: "Solicitud pendiente"
   follow-processing: "Solicitud en proceso"
   follow-request: "Solicitudes de seguimiento"
@@ -1648,12 +1666,16 @@ mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Subir fichero"
     create-folder: "Crear una carpeta"
+mobile/views/pages/following.vue:
+  following-of: "Seguir a {name}"
 mobile/views/pages/home.vue:
   home: "Inicio"
   local: "Local"
   hybrid: "Social"
   global: "Global"
   mentions: "Menciones"
+mobile/views/pages/tag.vue:
+  no-posts-found: "No se han encontrado posts con el hashtag \"{q}\""
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
   add-widget: "Agregar"
@@ -1667,13 +1689,17 @@ mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
   search: "Buscar"
+  not-found: "No se han encontrado posts relacionados a \"{q}\""
 mobile/views/pages/notifications.vue:
   notifications: "Notificaciones"
 mobile/views/pages/user.vue:
+  follows-you: "Te sigue"
   timeline: "Timeline"
   media: "Medios"
 mobile/views/pages/user/home.vue:
   activity: "Actividad"
+  frequently-replied-users: "Menciones frecuentes"
+  followers-you-know: "Seguidores conocidos"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "No hay fotos."
 deck:
@@ -1690,6 +1716,7 @@ deck:
 deck/deck.tl-column.vue:
   is-media-only: "Sólo medios"
 deck/deck.user-column.vue:
+  follows-you: "Te sigue"
   activity: "Actividad"
   timeline: "Timeline"
 pages:
