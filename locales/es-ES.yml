@@ -1448,28 +1448,62 @@ admin/views/users.vue:
     updatedAt: "Actualizado"
 admin/views/moderators.vue:
   add-moderator:
-    title: "Registro de moderadores"
-    add: "Registrar"
+    title: "Añadir moderadores"
+    add: "Añadir"
+    added: "El moderador fue añadido"
+    remove: "Quitar"
+    removed: "El moderador fue quitado"
   logs:
     title: "Registros"
     moderator: "Moderadores"
     type: "Operaciones"
+    at: "Fecha y hora"
+    info: "Información"
 admin/views/emoji.vue:
   add-emoji:
+    title: "Añadir emojis"
+    name: "Nombre del emoji"
+    name-desc: "se usan los caracteres a~z 0~9 _"
+    category: "Categoría"
+    aliases: "Alias"
+    aliases-desc: "Se pueden añadir más, separados por espacios"
+    url: "Url del emoji"
     add: "Agregar"
+    info: "Se recomiendan imágenes Png menores a 50KB"
+    added: "Emojis añadidos"
   emojis:
+    title: "Lista de emojis"
+    update: "Actualizar"
     remove: "eliminar"
+  updated: "Actualizados"
+  remove-emoji:
+    are-you-sure: "¿Desea borrar \"$1\"?"
+    removed: "Borrado"
 admin/views/announcements.vue:
+  announcements: "Anuncios"
   save: "Guardar"
   remove: "eliminar"
   add: "Agregar"
+  title: "Título"
+  text: "Contenido"
   saved: "Guardado"
+  _remove:
+    are-you-sure: "¿Desea borrar \"$1\"?"
+    removed: "Borrado"
+admin/views/hashtags.vue:
+  hided-tags: "Tags ocultos"
 admin/views/federation.vue:
   instance: "Instancia"
   host: "Host"
+  notes: "Posts"
+  users: "Usuarios"
   following: "Siguiendo"
+  followers: "Seguidores"
   caught-at: "Creado"
   status: "Estado"
+  latest-request-sent-at: "Tiempo del último pedido enviado"
+  latest-request-received-at: "Tiempo del último pedido recibido"
+  remove-all-following: "Quitar todos los seguimientos"
   block: "Bloquear"
   lookup: "Búsqueda"
   instances: "Federado"
@@ -1620,8 +1654,28 @@ pages:
   pin-this-page: "Fijar en el perfil"
   unpin-this-page: "Desfijar del perfil"
   like: "Me gusta"
+  title: "Título"
   blocks:
     post: "Formulario"
+    _post:
+      text: "Contenido"
+    _textInput:
+      text: "Título"
+    _textareaInput:
+      text: "Título"
+    _numberInput:
+      text: "Título"
+    _switch:
+      text: "Título"
+    _counter:
+      text: "Título"
+    _button:
+      text: "Título"
+      _action:
+        _dialog:
+          content: "Contenido"
+    _radioButton:
+      title: "Título"
   script:
     categories:
       random: "Aleatorio"
