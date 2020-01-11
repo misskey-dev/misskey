@@ -1898,21 +1898,38 @@ pages:
       name: "Nombre de variable"
       text: "Título"
       default: "Valor predeterminado"
+    textareaInput: "Entrada de texto en múltiples lineas"
     _textareaInput:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
+    numberInput: "Entrada numérica"
     _numberInput:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
+    switch: "Interruptor"
     _switch:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
+    counter: "Contador"
     _counter:
+      name: "Nombre de variable"
       text: "Título"
+      inc: "Aumentar cantidad"
     _button:
       text: "Título"
+      colored: "Color"
+      action: "Acción al presionar el botón"
       _action:
+        dialog: "Mostrar cuadro de diálogo"
         _dialog:
           content: "Contenido"
     _radioButton:
+      name: "Nombre de variable"
       title: "Título"
+      default: "Valor predeterminado"
   script:
     categories:
       random: "Aleatorio"
