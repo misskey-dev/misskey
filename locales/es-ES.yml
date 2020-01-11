@@ -1730,6 +1730,7 @@ mobile/views/pages/tag.vue:
   no-posts-found: "No se han encontrado posts con el hashtag \"{q}\""
 mobile/views/pages/widgets.vue:
   dashboard: "Panel de control"
+  widgets-hints: "Se pueden agregar/quitar/ordenar widgets. Para mover un widget, arrastre el \"三\". Para borrarlo, cliquear \"x\". Se puede modificar con un click como se muestran los widgets"
   add-widget: "Agregar"
   customization-tips: "Consejos de personalización"
 mobile/views/pages/widgets/activity.vue:
@@ -1779,10 +1780,22 @@ deck:
   hashtag: "Etiquetas"
   global: "Global"
   mentions: "Menciones"
+  direct: "Mensajes directos"
   notifications: "Notificaciones"
   list: "Listas"
   select-list: "Elija una lista"
+  swap-left: "Mover a la izquierda"
+  swap-right: "Mover a la derecha"
+  swap-up: "Mover arriba"
+  swap-down: "Mover abajo"
+  remove: "Borrar la columna"
+  add-column: "Añadir columna"
   rename: "Renombrar"
+  stack-left: "Apilar a la izquierda"
+  pop-right: "Sacar a la derecha"
+  disabled-timeline:
+    title: "Linea de tiempo desactivada"
+    description: "Esta linea de tiempo fue desactivada por el administrador del servidor"
 deck/deck.tl-column.vue:
   is-media-only: "Sólo medios"
 deck/deck.user-column.vue:
