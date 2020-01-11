@@ -1371,7 +1371,12 @@ admin/views/charts.vue:
     drive-files: "Variación de cantidad de archivos en el drive"
     drive-files-total: "Total de archivos en el drive"
     network-requests: "Consultas"
+    network-time: "Tiempo de Respuesta"
+    network-usage: "Tráfico"
 admin/views/drive.vue:
+  operation: "Operaciones"
+  fileid-or-url: "Id o Url del archivo"
+  file-not-found: "No se encuentra el archivo"
   sort:
     title: "Ordenar"
   origin:
