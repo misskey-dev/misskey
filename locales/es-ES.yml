@@ -1835,12 +1835,33 @@ dev/views/new-app.vue:
   authority-desc: "Sólo las funciones requeridas aquí pueden accederse desde la api"
   authority-warning: "Se puede modificar después de crear la app, pero al otorgarle permisos nuevos, las claves de usuario asociadas hasta ese entonces se invalidarán."
 pages:
+  new-page: "Crear página"
+  edit-page: "Editar página"
+  read-page: "Viendo la fuente"
+  page-created: "La página fue creada"
+  page-updated: "La página fue acctualizada"
+  name-already-exists: "La Url de la página seleccionada ya existe"
+  title-invalid-name: "Url inválida"
+  text-invalid-name: "Verifique que no tenga espacios en blanco"
+  are-you-sure-delete: "¿Quiere borrar esta página?"
+  page-deleted: "Página borrada"
+  edit-this-page: "Editar esta página"
   pin-this-page: "Fijar en el perfil"
   unpin-this-page: "Desfijar del perfil"
+  view-source: "Ver la fuente"
+  view-page: "Ver página"
   like: "Me gusta"
+  unlike: "Quitar me gusta"
+  liked-pages: "Páginas que me gustan"
+  my-pages: "Mis páginas"
+  inspector: "Inspector"
+  content: "Block de página"
+  variables: "Variables"
   title: "Título"
   blocks:
     image: "Imágenes"
+    _if:
+      variable: "Variables"
     post: "Formulario"
     _post:
       text: "Contenido"
@@ -1879,6 +1900,7 @@ pages:
         arg1: "Listas"
       _listLen:
         arg1: "Listas"
+      ref: "Variables"
     types:
       array: "Listas"
 room:
