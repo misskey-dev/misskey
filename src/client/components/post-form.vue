@@ -32,7 +32,7 @@
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
-			<button class="_button" @click="chooseFile"><fa :icon="faUpload"/></button>
+			<button class="_button" @click="chooseFileFrom"><fa :icon="faPhotoVideo"/></button>
 			<button class="_button" @click="poll = !poll"><fa :icon="faChartPie"/></button>
 			<button class="_button" @click="useCw = !useCw"><fa :icon="faEyeSlash"/></button>
 			<button class="_button" @click="setVisibility" ref="visibilityButton">
@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
@@ -58,6 +58,7 @@ import i18n from '../i18n';
 import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
+import XMenu from './menu.vue';
 import { parse } from '../../mfm/parse';
 import { host, url } from '../config';
 import { erase, unique } from '../../prelude/array';
@@ -124,7 +125,7 @@ export default Vue.extend({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaugh, faPlus
+			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaugh, faPlus, faPhotoVideo, faCloud, faLink
 		};
 	},
 
@@ -290,7 +291,29 @@ export default Vue.extend({
 			(this.$refs.text as any).focus();
 		},
 
-		chooseFile() {
+		chooseFileFrom(ev) {
+			this.$root.new(XMenu, {
+				items: [{
+					type: 'item',
+					text: this.$t('attachFile'),
+					icon: faUpload,
+					action: () => { this.chooseFileFromPc() }
+				}, {
+					type: 'item',
+					text: this.$t('attachFileFromDrive'),
+					icon: faCloud,
+					action: () => { this.chooseFileFromDrive() }
+				}, {
+					type: 'item',
+					text: this.$t('attachFileByUrl'),
+					icon: faLink,
+					action: () => { this.chooseFileFromUrl() }
+				}],
+				source: ev.currentTarget || ev.target
+			});
+		},
+
+		chooseFileFromPc() {
 			(this.$refs.file as any).click();
 		},
 

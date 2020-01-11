@@ -197,6 +197,9 @@ retypedNotMatch: "入力が一致しません。"
 currentPassword: "現在のパスワード"
 newPassword: "新しいパスワード"
 newPasswordRetype: "新しいパスワード(再入力)"
+attachFile: "ファイルを添付"
+attachFileFromDrive: "ドライブからファイルを添付"
+attachFileByUrl: "URLからファイルを添付"
 
 _cw:
   hide: "隠す"
