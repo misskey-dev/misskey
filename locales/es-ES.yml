@@ -1926,26 +1926,105 @@ pages:
         dialog: "Mostrar cuadro de diálogo"
         _dialog:
           content: "Contenido"
+        resetRandom: "Resetear número aleatorio"
+        pushEvent: "Enviar evento"
+        _pushEvent:
+          event: "Nombre del evento"
+          message: "Mensaje mostrado al apretar"
+          variable: "Variable a enviar"
+          no-variable: "Ninguna"
+    radioButton: "Botón de opción"
     _radioButton:
       name: "Nombre de variable"
       title: "Título"
+      values: "Opciones separadas por una nueva linea"
       default: "Valor predeterminado"
   script:
     categories:
+      flow: "Control"
+      logical: "Operación lógica"
+      operation: "Cálculo"
+      comparison: "Comparar"
       random: "Aleatorio"
+      value: "Valor"
+      fn: "función"
+      text: "Manejo de texto"
+      convert: "Conversion"
       list: "Listas"
     blocks:
       text: "Texto"
+      multiLineText: "Texto (multilinea)"
+      textList: "Lista de texto"
+      _textList:
+        info: "Separe cada texto con una linea nueva"
+      strLen: "Largo"
       _strLen:
         arg1: "Texto"
+      strPick: "Extraer caracteres"
       _strPick:
         arg1: "Texto"
+        arg2: "Posición del caracter"
+      strReplace: "Sustituir texto"
       _strReplace:
         arg1: "Texto"
+        arg2: "Antes de sustituir"
+        arg3: "Después de sustituir"
+      strReverse: "Invertir texto"
       _strReverse:
         arg1: "Texto"
+      join: "Concatenar texto"
       _join:
         arg1: "Listas"
+        arg2: "Separador"
+      add: "Suma"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "Resta"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "Multiplicación"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "Dicisión"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "Resto"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      round: "Redondear decimales"
+      _round:
+        arg1: "Número"
+      eq: "A y B son iguales"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A y B son distintos"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       random: "Aleatorio"
       _randomPick:
         arg1: "Listas"
@@ -1953,6 +2032,8 @@ pages:
         arg1: "Listas"
       _seedRandomPick:
         arg2: "Listas"
+      _DRPWPM:
+        arg1: "Lista de texto"
       _pick:
         arg1: "Listas"
       _listLen:
@@ -1962,9 +2043,11 @@ pages:
       _splitStrByLine:
         arg1: "Texto"
       ref: "Variables"
+      fn: "función"
     types:
       string: "Texto"
       array: "Listas"
+      stringArray: "Lista de texto"
 room:
   translate: "Mover"
   save: "Guardar"
