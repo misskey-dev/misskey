@@ -1857,6 +1857,7 @@ pages:
   inspector: "Inspector"
   content: "Block de página"
   variables: "Variables"
+  variables-info: "Se puede crear una página dinámica usando variables. Al escribir el <b>{ nombre de la variable }</b> dentro del texto, se puede embeber el valor de la variable allí. Por ejemplo, si en el texto <b>¡Hola { thing } mundo!</b> el valor de la variable (thing) es <b>ai</b>, el texto se vuelve <b>¡Hola ai mundo!</b>"
   title: "Título"
   blocks:
     image: "Imágenes"
