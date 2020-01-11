@@ -1346,6 +1346,7 @@ admin/views/instance.vue:
   serviceworker-info: "Para usar notificaciones push, se debe activar"
   vapid-publickey: "Clave pública VAPID"
   vapid-privatekey: "Clave secreta VAPID"
+  vapid-info: "En caso de activar el ServiceWorker, se necesita crear un par de claves VAPID. Esto se hace via consola"
 admin/views/charts.vue:
   title: "Gráficos"
   per-day: "Por día"
@@ -1355,6 +1356,21 @@ admin/views/charts.vue:
   users: "Usuarios"
   drive: "Drive"
   network: "Red"
+  charts:
+    federation-instances: "Variación de cantidad de instancias"
+    federation-instances-total: "Total de instancias"
+    notes: "Variación de cantidad de posts (combinado)"
+    local-notes: "Variación de cantidad de posts (locales)"
+    remote-notes: "Variación de cantidad de posts (remotos)"
+    notes-total: "Total de posts"
+    users: "Variación de cantidad de usuarios"
+    users-total: "Total de usuarios"
+    active-users: "Cantidad de usuarios activos"
+    drive: "Variación de cantidad del uso del drive"
+    drive-total: "Total del uso del drive"
+    drive-files: "Variación de cantidad de archivos en el drive"
+    drive-files-total: "Total de archivos en el drive"
+    network-requests: "Consultas"
 admin/views/drive.vue:
   sort:
     title: "Ordenar"
@@ -1402,6 +1418,13 @@ admin/views/federation.vue:
     all: "Todo"
     blocked: "Bloquear"
   charts: "Gráficos"
+  chart-srcs:
+    requests: "Consultas"
+    users: "Variación de cantidad de usuarios"
+    users-total: "Total de usuarios"
+    notes-total: "Total de posts"
+    drive-usage: "Variación de cantidad del uso del drive"
+    drive-usage-total: "Total del uso del drive"
   chart-spans:
     hour: "Por hora"
     day: "Por día"
