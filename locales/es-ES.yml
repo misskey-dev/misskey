@@ -1561,7 +1561,15 @@ desktop/views/pages/welcome.vue:
   announcements: "Anuncios"
   photos: "Imágenes recientes"
   powered-by-misskey: "Desarrollado por <b>Misskey</b>."
+  info: "Información"
+desktop/views/pages/drive.vue:
+  title: "Drive de Misskey"
+desktop/views/pages/note.vue:
+  prev: "Post anterior"
+  next: "Posts siguiente"
 desktop/views/pages/selectdrive.vue:
+  title: "Seleccione un archivo"
+  ok: "OK"
   cancel: "Cancelar"
 desktop/views/pages/user-list.users.vue:
   username: "Usuario"
@@ -1652,6 +1660,9 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Consejos de personalización"
 mobile/views/pages/widgets/activity.vue:
   activity: "Actividad"
+mobile/views/pages/note.vue:
+  prev: "Post anterior"
+  next: "Posts siguiente"
 mobile/views/pages/games/reversi.vue:
   reversi: "Reversi"
 mobile/views/pages/search.vue:
