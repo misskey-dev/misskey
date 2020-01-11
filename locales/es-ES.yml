@@ -1641,11 +1641,19 @@ mobile/views/components/drive.vue:
   here-is-root: "Ahora está en la carpeta raiz, no dentro de otra carpeta"
   url-prompt: "URL del fichero que quieres subir"
   uploading: "Se hizo un pedido de subida. Puede tomar un rato hasta que la subida termine"
+  folder-name-cannot-empty: "No se puede dejar el nombre de la carpeta en blanco"
+mobile/views/components/drive-file-chooser.vue:
+  select-file: "Elegir archivos"
+mobile/views/components/drive-folder-chooser.vue:
+  select-folder: "Elegir carpetas"
 mobile/views/components/drive.file.vue:
   nsfw: "Este contenido no es apropiado para ver en el trabajo"
 mobile/views/components/drive.file-detail.vue:
   download: "Descargar"
   rename: "Renombrar"
+  move: "Mover"
+  hash: "Hash (md5)"
+  exif: "EXIF"
   nsfw: "Este contenido no es apropiado para ver en el trabajo"
   mark-as-sensitive: "Marcar como 'sensible'"
   unmark-as-sensitive: "Desmarcar como 'sensible'"
@@ -1664,9 +1672,18 @@ mobile/views/components/note.vue:
   location: "Localización"
 mobile/views/components/note-detail.vue:
   reply: "Responder"
+  reaction: "Reacción"
   private: "Esta publicación es privada"
   deleted: "Esta publicación ha sido removida"
   location: "Localización"
+mobile/views/components/note-preview.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "gato"
+mobile/views/components/note-sub.vue:
+  admin: "admin"
+  bot: "bot"
+  cat: "gato"
 mobile/views/components/notifications.vue:
   empty: "No hay notificaciones"
 mobile/views/components/sub-note-content.vue:
@@ -1684,21 +1701,31 @@ mobile/views/components/ui.nav.vue:
   search: "Buscar"
   user-lists: "Listas"
   user-groups: "Grupo"
+  widgets: "Widgets"
   game: "Juegos"
   admin: "Admin"
   about: "Sobre"
 mobile/views/pages/drive.vue:
   contextmenu:
     upload: "Subir fichero"
+    url-upload: "Subir archivo por Url"
     create-folder: "Crear una carpeta"
+    rename-folder: "Renombrar carpeta"
+    move-folder: "Mover carpeta"
+    delete-folder: "Borrar carpeta"
+mobile/views/pages/signup.vue:
+  lets-start: "📦 Tu cuenta está lista"
+mobile/views/pages/followers.vue:
+  followers-of: "Seguidores de {name}"
 mobile/views/pages/following.vue:
-  following-of: "Seguir a {name}"
+  following-of: "Seguidos de {name}"
 mobile/views/pages/home.vue:
   home: "Inicio"
   local: "Local"
   hybrid: "Social"
   global: "Global"
   mentions: "Menciones"
+  messages: "Mensajes directos"
 mobile/views/pages/tag.vue:
   no-posts-found: "No se han encontrado posts con el hashtag \"{q}\""
 mobile/views/pages/widgets.vue:
@@ -1707,6 +1734,8 @@ mobile/views/pages/widgets.vue:
   customization-tips: "Consejos de personalización"
 mobile/views/pages/widgets/activity.vue:
   activity: "Actividad"
+mobile/views/pages/share.vue:
+  share-with: "Compartir con {name}"
 mobile/views/pages/note.vue:
   title: "Posts"
   prev: "Post anterior"
@@ -1716,22 +1745,34 @@ mobile/views/pages/games/reversi.vue:
 mobile/views/pages/search.vue:
   search: "Buscar"
   not-found: "No se han encontrado posts relacionados a \"{q}\""
+mobile/views/pages/selectdrive.vue:
+  select-file: "Elegir archivos"
 mobile/views/pages/notifications.vue:
   notifications: "Notificaciones"
+mobile/views/pages/settings.vue:
+  signed-in-as: "Logueado como {}"
 mobile/views/pages/user.vue:
   follows-you: "Te sigue"
   following: "Siguiendo"
+  followers: "Seguidores"
   notes: "Posts"
+  overview: "Resumen"
   timeline: "Timeline"
   media: "Medios"
   years-old: "{age} años"
 mobile/views/pages/user/home.vue:
+  recent-notes: "Posts recientes"
+  images: "Imágenes"
   activity: "Actividad"
+  keywords: "Palabras clave"
+  domains: "Dominios"
   frequently-replied-users: "Menciones frecuentes"
   followers-you-know: "Seguidores conocidos"
+  last-used-at: "Última sesión"
 mobile/views/pages/user/home.photos.vue:
   no-photos: "No hay fotos."
 deck:
+  widgets: "Widgets"
   home: "Inicio"
   local: "Local"
   hybrid: "Social"
@@ -1748,6 +1789,8 @@ deck/deck.user-column.vue:
   follows-you: "Te sigue"
   posts: "Posts"
   following: "Siguiendo"
+  followers: "Seguidores"
+  images: "Imágenes"
   activity: "Actividad"
   timeline: "Timeline"
 pages:
@@ -1756,6 +1799,7 @@ pages:
   like: "Me gusta"
   title: "Título"
   blocks:
+    image: "Imágenes"
     post: "Formulario"
     _post:
       text: "Contenido"
@@ -1797,6 +1841,7 @@ pages:
     types:
       array: "Listas"
 room:
+  translate: "Mover"
   save: "Guardar"
   saved: "Guardado"
   furnitures:
