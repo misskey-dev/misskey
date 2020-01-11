@@ -1798,6 +1798,7 @@ deck:
     description: "Esta linea de tiempo fue desactivada por el administrador del servidor"
 deck/deck.tl-column.vue:
   is-media-only: "Sólo medios"
+  edit: "Opciones"
 deck/deck.user-column.vue:
   follows-you: "Te sigue"
   posts: "Posts"
@@ -1806,6 +1807,8 @@ deck/deck.user-column.vue:
   images: "Imágenes"
   activity: "Actividad"
   timeline: "Timeline"
+  pinned-notes: "Posts fijados"
+  pinned-page: "Páginas fijadas"
 pages:
   pin-this-page: "Fijar en el perfil"
   unpin-this-page: "Desfijar del perfil"
