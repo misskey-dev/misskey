@@ -1870,15 +1870,34 @@ pages:
   font: "Fuente"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
+  set-eye-catching-image: "Elegir imagen llamativa"
+  remove-eye-catching-image: "Borrar imagen llamativa"
+  choose-block: "Agregar boque"
+  select-type: "Elegir tipo"
+  enter-variable-name: "Ingrese el nombre de la variable"
+  the-variable-name-is-already-used: "El nombre de la variable ya está en uso"
+  content-blocks: "Contenido"
+  input-blocks: "Entrada"
+  special-blocks: "Especial"
+  post-from-post-form: "Postear este contenido"
+  posted-from-post-form: "Posteado"
   blocks:
-    image: "Imágenes"
+    text: "Texto"
+    textarea: "Área de texto"
+    section: "Sección"
+    image: "Imágen"
+    button: "Botón"
+    if: "si"
     _if:
       variable: "Variables"
     post: "Formulario"
     _post:
       text: "Contenido"
+    textInput: "Entrada de texto"
     _textInput:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
     _textareaInput:
       text: "Título"
     _numberInput:
@@ -1899,6 +1918,15 @@ pages:
       random: "Aleatorio"
       list: "Listas"
     blocks:
+      text: "Texto"
+      _strLen:
+        arg1: "Texto"
+      _strPick:
+        arg1: "Texto"
+      _strReplace:
+        arg1: "Texto"
+      _strReverse:
+        arg1: "Texto"
       _join:
         arg1: "Listas"
       random: "Aleatorio"
@@ -1912,8 +1940,13 @@ pages:
         arg1: "Listas"
       _listLen:
         arg1: "Listas"
+      _stringToNumber:
+        arg1: "Texto"
+      _splitStrByLine:
+        arg1: "Texto"
       ref: "Variables"
     types:
+      string: "Texto"
       array: "Listas"
 room:
   translate: "Mover"
