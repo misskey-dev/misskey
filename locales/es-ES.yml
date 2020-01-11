@@ -1809,6 +1809,21 @@ deck/deck.user-column.vue:
   timeline: "Timeline"
   pinned-notes: "Posts fijados"
   pinned-page: "Páginas fijadas"
+docs:
+  edit-this-page-on-github: "¿Ha encontrado errores, o desea contribuir a la documentación?"
+  edit-this-page-on-github-link: "Editar esta página en Github"
+dev/views/index.vue:
+  manage-apps: "Administrar aplicaciones"
+dev/views/apps.vue:
+  manage-apps: "Administrar aplicaciones"
+  create-app: "Crear aplicación"
+  app-missing: "No hay aplicaciones"
+dev/views/new-app.vue:
+  new-app: "Aplicación nueva"
+  new-app-info: "Se pueden crear aplicaciones con la API. (app/crear)"
+  create-app: "Creando aplicación"
+  app-name: "Nombre de la aplicación"
+  app-name-placeholder: "ej) Misskey para iOS"
 pages:
   pin-this-page: "Fijar en el perfil"
   unpin-this-page: "Desfijar del perfil"
