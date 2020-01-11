@@ -88,7 +88,7 @@ Just `docker-compose up -d`. GLHF!
 7. `docker-compose stop && docker-compose up -d`
 
 ### How to execute [cli commands](manage.en.md):
-`docker-compose run --rm web node cli/mark-admin @example`
+`docker-compose run --rm web node built/tools/mark-admin @example`
 
 ----------------------------------------------------------------
 
