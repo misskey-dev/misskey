@@ -1833,6 +1833,7 @@ dev/views/new-app.vue:
   callback-url-desc: "Se puede configurar una Url de redirección en caso de que un usuario se autenticara con el formulario de autenticación"
   authority: "Permisos"
   authority-desc: "Sólo las funciones requeridas aquí pueden accederse desde la api"
+  authority-warning: "Se puede modificar después de crear la app, pero al otorgarle permisos nuevos, las claves de usuario asociadas hasta ese entonces se invalidarán."
 pages:
   pin-this-page: "Fijar en el perfil"
   unpin-this-page: "Desfijar del perfil"
