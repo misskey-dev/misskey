@@ -2007,21 +2007,27 @@ pages:
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A y B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A o B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "A es menor que B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "A es mayor que B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "A es menor o igual que B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: "A es mayor o igual que B"
       _gtEq:
         arg1: "A"
         arg2: "B"
