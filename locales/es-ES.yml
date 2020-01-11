@@ -1865,6 +1865,11 @@ pages:
   title: "Título"
   url: "Url de la página"
   summary: "Resumen de la página"
+  align-center: "Centrar"
+  hide-title-when-pinned: "Ocultar el título de la página al fijarse"
+  font: "Fuente"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
   blocks:
     image: "Imágenes"
     _if:
