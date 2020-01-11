@@ -2031,21 +2031,64 @@ pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Separar"
+      _if:
+        arg1: "Si"
+        arg2: "Entonces"
+        arg3: "Si no"
+      not: "Negación"
+      _not:
+        arg1: "Negación"
       random: "Aleatorio"
+      _random:
+        arg1: "probabilidad"
+      rannum: "Número aleatorio"
+      _rannum:
+        arg1: "Mínimo"
+        arg2: "Máximo"
+      randomPick: "Elegir aleatoriamente de la lista"
       _randomPick:
         arg1: "Listas"
+      dailyRandom: "Aleatorio (Diariamente para cada usuario)"
+      _dailyRandom:
+        arg1: "probabilidad"
+      dailyRannum: "Número aleatorio (Diariamente para cada usuario)"
+      _dailyRannum:
+        arg1: "Mínimo"
+        arg2: "Máximo"
+      dailyRandomPick: "Elegir aleatoriamente de la lista (Diariamente para cada usuario)"
       _dailyRandomPick:
         arg1: "Listas"
+      seedRandom: "Aleatorio (semilla)"
+      _seedRandom:
+        arg1: "Semilla"
+        arg2: "probabilidad"
+      seedRannum: "Número aleatorio (semilla)"
+      _seedRannum:
+        arg1: "Semilla"
+        arg2: "Mínimo"
+        arg3: "Máximo"
+      seedRandomPick: "Elegir aleatoriamente de la lista (semilla)"
       _seedRandomPick:
+        arg1: "Semilla"
         arg2: "Listas"
+      DRPWPM: "Elegir aleatoriamente de la lista ponderada (Diariamente para cada usuario)"
       _DRPWPM:
         arg1: "Lista de texto"
+      pick: "Elegir de la lista"
       _pick:
         arg1: "Listas"
+        arg2: "Posición"
+      listLen: "Largo de la lista"
       _listLen:
         arg1: "Listas"
+      number: "Número"
+      stringToNumber: "De texto a número"
       _stringToNumber:
         arg1: "Texto"
+      numberToString: "De número a texto"
+      _numberToString:
+        arg1: "Número"
       _splitStrByLine:
         arg1: "Texto"
       ref: "Variables"
