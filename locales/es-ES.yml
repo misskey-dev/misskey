@@ -1855,10 +1855,11 @@ pages:
   liked-pages: "Páginas que me gustan"
   my-pages: "Mis páginas"
   inspector: "Inspector"
-  content: "Block de página"
+  content: "Bloque de página"
   variables: "Variables"
   variables-info: "Se puede crear una página dinámica usando variables. Al escribir el <b>{ nombre de la variable }</b> dentro del texto, se puede embeber el valor de la variable allí. Por ejemplo, si en el texto <b>¡Hola { thing } mundo!</b> el valor de la variable (thing) es <b>ai</b>, el texto se vuelve <b>¡Hola ai mundo!</b>"
   variables-info2: "La evaluación de las variables (el cálculo de los valores) se hace de arriba a abajo, por eso una variable no puede referenciar a otra que esté debajo. Por ejemplo, cuando se definen las variables <b>A、B、C</b>, <b>C</b> puede referenciar a <b>A</b> o <b>B</b>, pero <b>A</b> no puede referenciar a <b>B</b> ni a <b>C</b>."
+  variables-info3: "Para recibir la entrada del usuario, agregue un bloque \"entrada de usuario\" en la página, y configure el nombre de las variables que desea almacenar en el campo \"nombre de variables\" (Las variables se crearán automáticamente). Se ejecutaran acciones en base a la entrada del usuario de esas variables."
   title: "Título"
   blocks:
     image: "Imágenes"
