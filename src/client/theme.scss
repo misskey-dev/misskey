@@ -1,0 +1,25 @@
+$primary: #86b300;
+$lightHtml: #fafafa;
+$darkHtml: #000;
+
+:root {
+	--bg: #fff;
+	--fg: #5c6a73;
+	--scrollbarHandle: rgba(0, 0, 0, 0.2);
+	--scrollbarHandleHover: rgba(0, 0, 0, 0.4);
+	--link: #94a029;
+	--hashtag: #ff9156;
+	--mention: #{$primary};
+	--modalBg: rgba(0, 0, 0, 0.3);
+	--divider: rgba(0, 0, 0, 0.1);
+	--radius: 8px;
+
+	@media (prefers-color-scheme: dark) {
+		--bg: #111213;
+		--fg: #c7d1d8;
+		--scrollbarHandle: rgba(255, 255, 255, 0.2);
+		--scrollbarHandleHover: rgba(255, 255, 255, 0.4);	
+		--modalBg: rgba(0, 0, 0, 0.5);
+		--divider: rgba(255, 255, 255, 0.1);
+	}
+}
