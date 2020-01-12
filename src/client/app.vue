@@ -1,12 +1,33 @@
 <template>
 <div class="mk-app">
-	<div class="header-bg"></div>
-	<nav v-if="true" ref="nav" class="nav">
-		<div class="menu">
-			<button class="item _button account" @click="openAccountMenu">
+	<header class="header">
+		<div class="body">
+			<button class="_button account" @click="openAccountMenu">
 				<mk-avatar :user="$store.state.i" class="avatar"/>
 				<span class="text"><mk-acct :user="$store.state.i"/></span>
 			</button>
+			<div class="title">
+				<transition name="header" mode="out-in" appear>
+					<div class="body" :key="pageKey">
+						<div class="default">
+							<portal-target name="avatar" slim/>
+							<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
+						</div>
+						<div class="custom">
+							<portal-target name="header" slim/>
+						</div>
+					</div>
+				</transition>
+			</div>
+			<div class="sub">
+				<fa :icon="faSearch"/>
+				<input type="search" class="search"/>
+				<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
+			</div>
+		</div>
+	</header>
+	<nav v-if="true" ref="nav" class="nav">
+		<div class="menu">
 			<router-link class="item" to="/" exact>
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 			</router-link>
@@ -41,15 +62,6 @@
 		</div>
 	</nav>
 	<main>
-		<header class="header">
-			<transition name="header" mode="out-in" appear>
-				<div class="body" :key="pageKey">
-					<portal-target name="avatar" slim/>
-					<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
-					<portal-target name="header" slim/>
-				</div>
-			</transition>
-		</header>
 		<div class="content">
 			<transition name="page" mode="out-in">
 				<router-view></router-view>
@@ -60,15 +72,8 @@
 			<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
 		</div>
 	</main>
-	<div class="side">
-		<div class="search-and-post">
-			<fa :icon="faSearch"/>
-			<input type="search" class="search"/>
-			<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
-		</div>
-		<div class="widgets">
-			<div class="widget">aaa</div>
-		</div>
+	<div class="widgets">
+		<div class="widget">aaa</div>
 	</div>
 	<div class="buttons">
 		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></button>
@@ -303,16 +308,62 @@ export default Vue.extend({
 	$max-width: 1300px;
 	$header-height: 60px;
 	$nav-width: 320px;
-	$side-width: 320px;
+	$widgets-width: 304px;
 	$ui-font-size: 1em;
+	$item-left-margin: 16px;
+	$avatar-size: 32px;
+	$avatar-margin: ($header-height - $avatar-size) / 2;
 	$nav-icon-only-threshold: 1200px;
 	$nav-hide-threshold: 700px;
 
-	display: flex;
-	max-width: $max-width;
-	margin: 0 auto;
+	min-height: 100vh;
+	box-sizing: border-box;
+	padding-top: $header-height;
 
-	> .header-bg {
+	&, > .header > .body {
+		display: flex;
+		max-width: $max-width;
+		margin: 0 auto;
+	}
+
+	> .nav, > .header > .body > .account {
+		flex: 1;
+		margin: 0 0 0 32px;
+		box-sizing: border-box;
+		width: 100%;
+		max-width: $nav-width;
+
+		@media (max-width: $nav-icon-only-threshold) {
+			width: initial;
+			flex-grow: 0;
+			margin: 0 0 0 16px;
+		}
+
+		@media (max-width: $nav-hide-threshold) {
+			display: none;
+		}
+	}
+
+	> main, > .header > .body > .title {
+		flex: 0 0 ($max-width - $nav-width - $widgets-width);
+		min-width: 0;
+
+		@media (max-width: $nav-icon-only-threshold) {
+			flex: 1;
+		}
+	}
+
+	> .widgets, > .header > .body > .sub {
+		flex: 0 0 $widgets-width;
+		margin: 0 16px 0 0;
+		box-sizing: border-box;
+
+		@media (max-width: 1000px) {
+			display: none;
+		}
+	}
+
+	> .header {
 		position: fixed;
 		z-index: 1000;
 		top: 0;
@@ -327,33 +378,129 @@ export default Vue.extend({
 		@media (prefers-color-scheme: dark) {
 			background-color: rgba(20, 20, 20, 0.75);
 		}
+
+		> .body {
+			> .account {
+				position: relative;
+				height: $header-height;
+				line-height: $header-height;
+				padding-left: (($header-height - $avatar-margin) + $item-left-margin);
+				text-align: left;
+				font-weight: bold;
+
+				> .avatar {
+					position: absolute;
+					width: $avatar-size;
+					height: $avatar-size;
+					top: $avatar-margin;
+					left: $item-left-margin;
+				}
+
+				@media (max-width: $nav-icon-only-threshold) {
+					> .text {
+						display: none;
+					}
+				}
+			}
+
+			> .title {
+				position: relative;
+				line-height: $header-height;
+				height: $header-height;
+
+				@media (max-width: 700px) {
+					text-align: center;
+				}
+
+				> .body {
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					height: $header-height;
+
+					> .default {
+						padding: 0 16px;
+
+						> .avatar {
+							$size: 32px;
+							display: inline-block;
+							width: $size;
+							height: $size;
+							vertical-align: bottom;
+							margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
+						}
+
+						> .title {
+							display: inline-block;
+							font-size: $ui-font-size;
+							margin: 0;
+							line-height: $header-height;
+
+							> [data-icon] {
+								margin-right: 8px;
+							}
+						}
+					}
+
+					> .custom {
+						position: absolute;
+						top: 0;
+						left: 0;
+						height: 100%;
+					}
+				}
+			}
+
+			> .sub {
+				$post-button-size: 42px;
+				$post-button-margin: (($header-height - $post-button-size) / 2);
+				position: relative;
+				height: $header-height;
+
+				> [data-icon] {
+					position: absolute;
+					top: 0;
+					left: 16px;
+					height: $header-height;
+					pointer-events: none;
+				}
+
+				> .search {
+					$margin: 8px;
+					width: calc(100% - #{$post-button-size + $post-button-margin + $margin});
+					box-sizing: border-box;
+					margin-right: $margin;
+					padding: 0 12px 0 42px;
+					font-size: 1rem;
+					line-height: 38px;
+					border: none;
+					border-radius: 38px;
+					color: var(--fg);
+					background: $lightHtml;
+
+					@media (prefers-color-scheme: dark) {
+						background: $darkHtml;
+					}
+
+					&:focus {
+						outline: none;
+					}
+				}
+
+				> .post {
+					width: $post-button-size;
+					height: $post-button-size;
+					margin: $post-button-margin 0 $post-button-margin $post-button-margin;
+					border-radius: 100%;
+				}
+			}
+		}
 	}
 
 	> .nav {
-		flex: 1;
-		z-index: 1001;
-		width: 100%;
-		max-width: $nav-width;
-		padding: 0 0 0 32px;
-		box-sizing: border-box;
-
-		@media (max-width: $nav-icon-only-threshold) {
-			width: initial;
-			flex-grow: 0;
-			padding: 0 0 0 16px;
-		}
-
-		@media (max-width: $nav-hide-threshold) {
-			display: none;
-		}
-
 		> .menu {
-			$avatar-size: 32px;
-			$avatar-margin: ($header-height - $avatar-size) / 2;
-			$item-left-margin: 16px;
-
 			position: sticky;
-			top: 0;
+			top: $header-height + 16px;
 
 			> .item {
 				display: block;
@@ -393,75 +540,10 @@ export default Vue.extend({
 					}
 				}
 			}
-
-			> .account {
-				height: $header-height;
-				line-height: $header-height;
-				padding-left: (($header-height - $avatar-margin) + $item-left-margin);
-				margin-bottom: 16px;
-				border-radius: 0;
-
-				> .avatar {
-					position: absolute;
-					width: $avatar-size;
-					height: $avatar-size;
-					top: $avatar-margin;
-					left: $item-left-margin;
-				}
-			}
 		}
 	}
 
 	> main {
-		flex: 0 0 ($max-width - $nav-width - $side-width);
-		min-width: 0;
-
-		@media (max-width: $nav-icon-only-threshold) {
-			flex: 1;
-		}
-
-		> .header {
-			position: sticky;
-			top: 0;
-			z-index: 1001;
-			width: 100%;
-			padding: 0 16px;
-			box-sizing: border-box;
-			line-height: $header-height;
-			height: $header-height;
-
-			@media (max-width: 700px) {
-				text-align: center;
-			}
-
-			> .body {
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				height: $header-height;
-		
-				> .avatar {
-					$size: 32px;
-					display: inline-block;
-					width: $size;
-					height: $size;
-					vertical-align: bottom;
-					margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
-				}
-
-				> .title {
-					display: inline-block;
-					font-size: $ui-font-size;
-					margin: 0;
-					line-height: $header-height;
-
-					> [data-icon] {
-						margin-right: 8px;
-					}
-				}
-			}
-		}
-
 		> .content {
 			padding: 16px;
 			box-sizing: border-box;
@@ -503,70 +585,13 @@ export default Vue.extend({
 		}
 	}
 
-	> .side {
-		flex: 0 0 $side-width;
-		padding: 0 16px 16px 0;
-		box-sizing: border-box;
+	> .widgets {
+		padding: 16px 0;
 
-		@media (max-width: 1000px) {
-			display: none;
-		}
-
-		> .search-and-post {
-			$post-button-size: 42px;
-			$post-button-margin: (($header-height - $post-button-size) / 2);
-
-			position: sticky;
-			top: 0;
-			right: 0;
-			z-index: 1001;
-			height: $header-height;
-			margin-bottom: 16px;
-
-			> [data-icon] {
-				position: absolute;
-				top: 0;
-				left: 16px;
-				height: $header-height;
-				pointer-events: none;
-			}
-
-			> .search {
-				$margin: 8px;
-				width: calc(100% - #{$post-button-size + $post-button-margin + $margin});
-				box-sizing: border-box;
-				margin-right: $margin;
-				padding: 0 12px 0 42px;
-				font-size: 1rem;
-				line-height: 38px;
-				border: none;
-				border-radius: 38px;
-				color: var(--fg);
-				background: $lightHtml;
-
-				@media (prefers-color-scheme: dark) {
-					background: $darkHtml;
-				}
-
-				&:focus {
-					outline: none;
-				}
-			}
-
-			> .post {
-				width: $post-button-size;
-				height: $post-button-size;
-				margin: $post-button-margin 0 $post-button-margin $post-button-margin;
-				border-radius: 100%;
-			}
-		}
-
-		> .widgets {
-			> * {
-				background: var(--bg);
-				padding: 32px;
-				border-radius: var(--radius);
-			}
+		> * {
+			background: var(--bg);
+			padding: 32px;
+			border-radius: var(--radius);
 		}
 	}
 

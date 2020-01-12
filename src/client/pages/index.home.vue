@@ -140,6 +140,7 @@ export default Vue.extend({
 
 ._kjvfvyph_ {
 	height: 100%;
+	padding: 0 16px;
 	font-weight: bold;
 }
 </style>
