@@ -603,11 +603,12 @@ export default Vue.extend({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			margin: 0 10px 8px 0;
+			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
 
 			@media (max-width: 450px) {
+				margin: 0 10px 8px 0;
 				width: 50px;
 				height: 50px;
 			}
