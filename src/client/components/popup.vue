@@ -4,7 +4,7 @@
 		<div class="bg" ref="bg" @click="close()" v-if="show"></div>
 	</transition>
 	<transition name="popup" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
-		<div class="content" ref="content" v-if="show" :style="{ width: width ? width + 'px' : 'auto' }"><slot></slot></div>
+		<div class="content" :class="{ fixed }" ref="content" v-if="show" :style="{ width: width ? width + 'px' : 'auto' }"><slot></slot></div>
 	</transition>
 </div>
 </template>
@@ -16,6 +16,10 @@ export default Vue.extend({
 	props: {
 		source: {
 			required: true
+		},
+		fixed: {
+			type: Boolean,
+			required: false
 		},
 		width: {
 			type: Number,
@@ -116,6 +120,10 @@ export default Vue.extend({
 		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 		overflow: hidden;
 		transform-origin: center top;
+
+		&.fixed {
+			position: fixed;
+		}
 	}
 }
 </style>

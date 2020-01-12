@@ -1,5 +1,5 @@
 <template>
-<x-popup :source="source" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
+<x-popup :source="source" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
 	<sequential-entrance class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :delay="15">
 		<template v-for="(item, i) in items">
 			<div v-if="item === null" class="divider" :key="i" :data-index="i"></div>
@@ -36,6 +36,10 @@ export default Vue.extend({
 		items: {
 			type: Array,
 			required: true
+		},
+		fixed: {
+			type: Boolean,
+			required: false
 		},
 		width: {
 			type: Number,

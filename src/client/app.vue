@@ -183,6 +183,7 @@ export default Vue.extend({
 					action: () => { this.addAcount() },
 					align: 'left',
 				}], ...accountItems],
+				fixed: true,
 				width: 240,
 				source: ev.currentTarget || ev.target,
 			});
