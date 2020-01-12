@@ -180,6 +180,7 @@
 		"portscanner": "2.2.0",
 		"postcss-loader": "3.0.0",
 		"prismjs": "1.18.0",
+		"probe-image-size": "5.0.0",
 		"progress-bar-webpack-plugin": "1.12.1",
 		"promise-limit": "2.7.0",
 		"promise-sequential": "1.1.1",
