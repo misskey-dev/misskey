@@ -200,6 +200,7 @@ newPasswordRetype: "新しいパスワード(再入力)"
 attachFile: "ファイルを添付"
 attachFileFromDrive: "ドライブからファイルを添付"
 attachFileByUrl: "URLからファイルを添付"
+more: "もっと！"
 
 _cw:
   hide: "隠す"

@@ -36,7 +36,7 @@
 				<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
 			</button>
 			<button class="item _button" @click="more()">
-				<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('showMore') }}</span>
+				<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
 			</button>
 		</div>
 	</nav>
