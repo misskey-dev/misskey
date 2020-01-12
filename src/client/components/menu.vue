@@ -1,7 +1,7 @@
 <template>
 <x-popup :source="source" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
 	<sequential-entrance class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :delay="15">
-		<template v-for="(item, i) in items">
+		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i" :data-index="i"></div>
 			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
