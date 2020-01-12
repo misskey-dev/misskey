@@ -69,6 +69,10 @@ export default Vue.extend({
 				top = 0;
 			}
 
+			if (left < 0) {
+				left = 0;
+			}
+
 			popover.style.left = left + 'px';
 			popover.style.top = top + 'px';
 		});
