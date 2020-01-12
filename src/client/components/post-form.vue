@@ -17,7 +17,7 @@
 		<x-note-preview class="preview" v-if="renote" :note="renote"/>
 		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('@.post-form.quote-attached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
-			{{ $t('recipient') }}
+			<span>{{ $t('recipient') }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers">
 					<mk-acct :user="u"/>

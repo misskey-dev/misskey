@@ -2,9 +2,7 @@
 <section class="mk-settings-page-reaction _section">
 	<div class="title"><fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
 	<div class="content">
-		<x-textarea v-model="reactions" style="margin-top: 16px;">
-			{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }}</template>
-		</x-textarea>
+		<x-textarea v-model="reactions" style="margin-top: 16px;">{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }}</template></x-textarea>
 	</div>
 	<div class="footer">
 		<x-button @click="save()" primary inline :disabled="!changed"><fa :icon="faSave"/> {{ $t('save') }}</x-button>

@@ -1,7 +1,14 @@
 <template>
 <div class="mk-home">
 	<portal to="header">
-		<button @click="choose" class="_button _kjvfvyph_">{{ $t('_timelines.' + src) }}<fa :icon="faAngleDown" style="margin-left: 8px;"/></button>
+		<button @click="choose" class="_button _kjvfvyph_">
+			<fa v-if="src === 'home'" :icon="faHome"/>
+			<fa v-if="src === 'local'" :icon="faComments"/>
+			<fa v-if="src === 'social'" :icon="faShareAlt"/>
+			<fa v-if="src === 'global'" :icon="faGlobe"/>
+			<span style="margin-left: 8px;">{{ $t('_timelines.' + src) }}</span>
+			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
+		</button>
 	</portal>
 	<x-home-timeline @before="before()" @after="after()"/>
 </div>
@@ -9,7 +16,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAngleDown, faHome, faShareAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XHomeTimeline from './index.home.timeline.vue';
@@ -26,7 +33,8 @@ export default Vue.extend({
 	data() {
 		return {
 			src: 'home',
-			faAngleDown
+			menuOpened: false,
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments
 		};
 	},
 	methods: {
@@ -37,6 +45,7 @@ export default Vue.extend({
 			Progress.done();
 		},
 		choose(ev) {
+			this.menuOpened = true;
 			this.$root.menu({
 				items: [{
 					type: 'item',
@@ -60,6 +69,8 @@ export default Vue.extend({
 					action: () => { this.setSrc('global') }
 				}],
 				source: ev.currentTarget || ev.target
+			}).then(() => {
+				this.menuOpened = false;
 			});
 		}
 	}
@@ -71,5 +82,6 @@ export default Vue.extend({
 
 ._kjvfvyph_ {
 	height: 100%;
+	font-weight: bold;
 }
 </style>

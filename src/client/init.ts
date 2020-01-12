@@ -162,7 +162,11 @@ os.init(async () => {
 				return p;
 			},
 			menu(opts) {
-				this.new(Menu, opts);
+				const vm = this.new(Menu, opts);
+				const p: any = new Promise((res) => {
+					vm.$once('closed', () => res());
+				});
+				return p;
 			},
 			post(opts, cb) {
 				const vm = this.new(PostFormDialog, opts);
