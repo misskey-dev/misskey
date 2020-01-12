@@ -34,8 +34,9 @@
 		<header class="header">
 			<transition name="header" mode="out-in" appear>
 				<div class="body" :key="pageKey">
-					<portal-target name="avatar" slim></portal-target>
-					<h1 class="title"><portal-target name="icon" slim></portal-target><portal-target name="title" slim></portal-target></h1>
+					<portal-target name="avatar" slim/>
+					<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
+					<portal-target name="header" slim/>
 				</div>
 			</transition>
 		</header>
@@ -360,6 +361,7 @@ export default Vue.extend({
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				height: $header-height;
 		
 				> .avatar {
 					$size: 32px;

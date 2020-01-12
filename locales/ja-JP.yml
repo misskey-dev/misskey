@@ -291,3 +291,9 @@ _instanceCharts:
   cacheSizeTotal: "キャッシュサイズの積算"
   files: "ファイル数の増減"
   filesTotal: "ファイル数の積算"
+
+_timelines:
+  home: "ホーム"
+  local: "ローカル"
+  social: "ソーシャル"
+  global: "グローバル"
