@@ -76,7 +76,6 @@ export default Vue.extend({
 		overflow: hidden;
 		text-overflow: ellipsis;
 		color: var(--noteHeaderAcct);
-		flex-shrink: 2147483647;
 	}
 
 	> .info {
