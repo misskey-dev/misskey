@@ -10,12 +10,14 @@
 			<router-link class="item" to="/" exact>
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 			</router-link>
-			<button class="item _button" @click="search()">
-				<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
-			</button>
-			<button class="item _button" @click="showLists = true">
-				<fa :icon="faListUl" fixed-width/><span class="text">{{ $t('lists') }}</span>
-			</button>
+			<router-link class="item" to="/notifications">
+				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
+				<i v-if="$store.state.i.hasUnreadNotifications"><fa :icon="faCircle"/></i>
+			</router-link>
+			<router-link class="item" to="/mentions">
+				<fa :icon="faAt" fixed-width/><span class="text">{{ $t('mentions') }}</span>
+				<i v-if="$store.state.i.hasUnreadMentions"><fa :icon="faCircle"/></i>
+			</router-link>
 			<router-link class="item" to="/messages">
 				<fa :icon="faEnvelope" fixed-width/><span class="text">{{ $t('messages') }}</span>
 				<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i>
@@ -30,6 +32,12 @@
 			<router-link class="item" to="/instance" v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
 				<fa :icon="faCog" fixed-width/><span class="text">{{ $t('instance') }}</span>
 			</router-link>
+			<button class="item _button" @click="search()">
+				<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
+			</button>
+			<button class="item _button" @click="more()">
+				<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('showMore') }}</span>
+			</button>
 		</div>
 	</nav>
 	<main>
@@ -97,7 +105,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import i18n from './i18n';
 import { host } from './config';
@@ -121,7 +129,7 @@ export default Vue.extend({
 			accounts: [],
 			lists: [],
 			connection: null,
-			faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
+			faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
 		};
 	},
 
