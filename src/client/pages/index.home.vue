@@ -13,7 +13,6 @@ import { faAngleDown, faHome, faShareAlt, faGlobe } from '@fortawesome/free-soli
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XHomeTimeline from './index.home.timeline.vue';
-import XMenu from '../components/menu.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -38,7 +37,7 @@ export default Vue.extend({
 			Progress.done();
 		},
 		choose(ev) {
-			this.$root.new(XMenu, {
+			this.$root.menu({
 				items: [{
 					type: 'item',
 					text: this.$t('_timelines.home'),

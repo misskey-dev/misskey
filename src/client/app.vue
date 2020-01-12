@@ -1,9 +1,9 @@
 <template>
 <div class="mk-app">
 	<div class="header-bg"></div>
-	<nav v-if="true" ref="nav">
+	<nav v-if="true" ref="nav" class="nav">
 		<div class="menu">
-			<button class="item _button account" @click="showAccounts = true">
+			<button class="item _button account" @click="openAccountMenu">
 				<mk-avatar :user="$store.state.i" class="avatar"/>
 				<span class="text"><mk-acct :user="$store.state.i"/></span>
 			</button>
@@ -18,16 +18,18 @@
 			</button>
 			<router-link class="item" to="/messages">
 				<fa :icon="faEnvelope" fixed-width/><span class="text">{{ $t('messages') }}</span>
-			<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
+				<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i>
+			</router-link>
 			<router-link class="item" to="/favorites">
 				<fa :icon="faStar" fixed-width/><span class="text">{{ $t('favorites') }}</span>
 			</router-link>
 			<router-link class="item" to="/follow-requests" v-if="$store.state.i.isLocked">
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
-			<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
-			<button class="item _button" v-if="$store.state.i.isAdmin" @click="showInstance = true">
+				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
+			</router-link>
+			<router-link class="item" to="/instance" v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
 				<fa :icon="faCog" fixed-width/><span class="text">{{ $t('instance') }}</span>
-			</button>
+			</router-link>
 		</div>
 	</nav>
 	<main>
@@ -66,6 +68,30 @@
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationsButton"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
+	<transition name="zoom-in-bottom">
+		<nav v-if="navOpen" ref="nav" class="popup-nav">
+			<template v-if="showLists">
+				<span v-if="lists.length === 0" style="opacity: 0.5; pointer-events: none;">{{ $t('noLists') }}</span>
+				<router-link v-for="list in lists" :to="`/lists/${ list.id }`" :key="list.id">{{ list.name }}</router-link>
+				<div></div>
+				<button class="_button" @click="createList()"><fa :icon="faPlus" fixed-width/>{{ $t('createList') }}</button>
+				<router-link to="/manage-lists"><fa :icon="faCog" fixed-width/>{{ $t('manageLists') }}</router-link>
+			</template>
+			<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
+			<div></div>
+			<button class="_button" @click="showLists = true"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</button>
+			<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
+			<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
+			<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
+			<div v-if="$store.state.i.isAdmin"></div>
+			<router-link v-if="$store.state.i.isAdmin || $store.state.i.isModerator" to="/instance"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</router-link>
+			<div></div>
+			<button class="_button" @click="openAccountMenu"><mk-avatar :user="$store.state.i" class="avatar"/><mk-user-name :user="$store.state.i"/></button>
+		</nav>
+	</transition>
+	<transition name="zoom-in-top">
+		<x-notifications v-if="notificationsOpen" class="notifications"/>
+	</transition>
 </div>
 </template>
 
@@ -88,6 +114,13 @@ export default Vue.extend({
 		return {
 			host: host,
 			pageKey: 0,
+			searching: false,
+			navOpen: false,
+			notificationsOpen: false,
+			showLists: false,
+			accounts: [],
+			lists: [],
+			connection: null,
 			faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
 		};
 	},
@@ -117,6 +150,41 @@ export default Vue.extend({
 				search(this, query).finally(() => {
 					this.searching = false;
 				});
+			});
+		},
+
+		async openAccountMenu(ev) {
+			const accounts = (await this.$root.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$store.state.i.id);
+
+			const accountItems = accounts.map(account => ({
+				type: 'user',
+				user: account,
+				align: 'left',
+				action: () => { this.switchAccount(account) }
+			}));
+
+			this.$root.menu({
+				items: [...[{
+					type: 'link',
+					text: this.$t('profile'),
+					to: `/@${ this.$store.state.i.username }`,
+					avatar: this.$store.state.i,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('settings'),
+					to: '/settings',
+					icon: faCog,
+					align: 'left',
+				}, null, {
+					type: 'item',
+					text: this.$t('addAcount'),
+					icon: faPlus,
+					action: () => { this.addAcount() },
+					align: 'left',
+				}], ...accountItems],
+				width: 240,
+				source: ev.currentTarget || ev.target,
 			});
 		},
 
@@ -252,7 +320,7 @@ export default Vue.extend({
 		}
 	}
 
-	> nav {
+	> .nav {
 		flex: 1;
 		z-index: 1001;
 		width: 100%;

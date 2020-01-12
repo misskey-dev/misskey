@@ -1,10 +1,20 @@
 <template>
-<x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
+<x-popup :source="source" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
 	<sequential-entrance class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :delay="15">
 		<template v-for="(item, i) in items">
-			<div v-if="item === null" :key="i" :data-index="i"></div>
-			<button v-if="item" @click="clicked(item.action)" :tabindex="i" class="_button" :key="i" :data-index="i">
-				<fa v-if="item.icon" :icon="item.icon"/>{{ item.text }}
+			<div v-if="item === null" class="divider" :key="i" :data-index="i"></div>
+			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
+				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
+				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+				<span>{{ item.text }}</span>
+			</router-link>
+			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
+				<mk-avatar :user="account" class="avatar"/><mk-user-name :user="account"/>
+			</button>
+			<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
+				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
+				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+				<span>{{ item.text }}</span>
 			</button>
 		</template>
 	</sequential-entrance>
@@ -26,6 +36,10 @@ export default Vue.extend({
 		items: {
 			type: Array,
 			required: true
+		},
+		width: {
+			type: Number,
+			required: false
 		}
 	},
 	methods: {
@@ -46,12 +60,14 @@ export default Vue.extend({
 .onchrpzrvnoruiaenfcqvccjfuupzzwv {
 	padding: 8px 0;
 
-	> button {
+	> .item {
 		display: block;
 		padding: 8px 16px;
 		width: 100%;
+		box-sizing: border-box;
 		white-space: nowrap;
-		font-size: 14px;
+		font-size: 0.9em;
+		text-align: center;
 
 		&:hover {
 			color: #fff;
@@ -66,10 +82,21 @@ export default Vue.extend({
 
 		> [data-icon] {
 			margin-right: 4px;
+			width: 20px;
+		}
+
+		> .avatar {
+			margin-right: 4px;
+			width: 20px;
+			height: 20px;
+		}
+
+		&.left {
+			text-align: left;
 		}
 	}
 
-	> div {
+	> .divider {
 		margin: 8px 0;
 		height: 1px;
 		background: var(--divider);

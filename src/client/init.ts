@@ -15,6 +15,7 @@ import MiOS from './mios';
 import { version, langs, instanceName } from './config';
 import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
+import Menu from './components/menu.vue';
 import { router } from './router';
 
 Vue.use(Vuex);
@@ -159,6 +160,9 @@ os.init(async () => {
 					vm.close();
 				};
 				return p;
+			},
+			menu(opts) {
+				this.new(Menu, opts);
 			},
 			post(opts, cb) {
 				const vm = this.new(PostFormDialog, opts);

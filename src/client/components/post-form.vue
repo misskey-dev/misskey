@@ -58,7 +58,6 @@ import i18n from '../i18n';
 import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
-import XMenu from './menu.vue';
 import { parse } from '../../mfm/parse';
 import { host, url } from '../config';
 import { erase, unique } from '../../prelude/array';
@@ -292,7 +291,7 @@ export default Vue.extend({
 		},
 
 		chooseFileFrom(ev) {
-			this.$root.new(XMenu, {
+			this.$root.menu({
 				items: [{
 					type: 'item',
 					text: this.$t('attachFile'),
