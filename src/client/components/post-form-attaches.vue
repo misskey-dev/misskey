@@ -82,17 +82,14 @@ export default Vue.extend({
 		showFileMenu(file, ev: MouseEvent) {
 			this.$root.menu({
 				items: [{
-					type: 'item',
 					text: this.$t('renameFile'),
 					icon: faICursor,
 					action: () => { this.rename(file) }
 				}, {
-					type: 'item',
 					text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
 					icon: file.isSensitive ? faEyeSlash : faEye,
 					action: () => { this.toggleSensitive(file) }
 				}, {
-					type: 'item',
 					text: this.$t('attachCancel'),
 					icon: faTimesCircle,
 					action: () => { this.detachMedia(file.id) }

@@ -335,6 +335,7 @@ export default Vue.extend({
 			border-radius: 0;
 			outline: none;
 			box-shadow: none;
+			box-sizing: border-box;
 
 			&[type='file'] {
 				display: none;

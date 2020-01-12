@@ -293,17 +293,14 @@ export default Vue.extend({
 		chooseFileFrom(ev) {
 			this.$root.menu({
 				items: [{
-					type: 'item',
 					text: this.$t('attachFile'),
 					icon: faUpload,
 					action: () => { this.chooseFileFromPc() }
 				}, {
-					type: 'item',
 					text: this.$t('attachFileFromDrive'),
 					icon: faCloud,
 					action: () => { this.chooseFileFromDrive() }
 				}, {
-					type: 'item',
 					text: this.$t('attachFileByUrl'),
 					icon: faLink,
 					action: () => { this.chooseFileFromUrl() }

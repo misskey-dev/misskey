@@ -11,10 +11,26 @@ export default Vue.extend({
 		XNotes
 	},
 
+	props: {
+		src: {
+			type: String,
+			required: true
+		},
+		tagTl: {
+			required: false
+		}
+	},
+
 	data() {
 		return {
 			connection: null,
 			pagination: null,
+			baseQuery: {
+				includeMyRenotes: this.$store.state.settings.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+			},
+			query: {},
 		};
 	},
 
@@ -27,19 +43,61 @@ export default Vue.extend({
 			(this.$refs.timeline as any).prepend(note);
 		};
 
-		const onChangeFollowing = () => {
-			this.fetch();
-		};
+		let endpoint;
 
-		this.connection = this.$root.stream.useSharedConnection('homeTimeline');
-		this.connection.on('note', prepend);
-		this.connection.on('follow', onChangeFollowing);
-		this.connection.on('unfollow', onChangeFollowing);
+		if (this.src == 'tag') {
+			endpoint = 'notes/search-by-tag';
+			this.query = {
+				query: this.tagTl.query
+			};
+			this.connection = this.$root.stream.connectToChannel('hashtag', { q: this.tagTl.query });
+			this.connection.on('note', prepend);
+		} else if (this.src == 'home') {
+			endpoint = 'notes/timeline';
+			const onChangeFollowing = () => {
+				this.fetch();
+			};
+			this.connection = this.$root.stream.useSharedConnection('homeTimeline');
+			this.connection.on('note', prepend);
+			this.connection.on('follow', onChangeFollowing);
+			this.connection.on('unfollow', onChangeFollowing);
+		} else if (this.src == 'local') {
+			endpoint = 'notes/local-timeline';
+			this.connection = this.$root.stream.useSharedConnection('localTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'social') {
+			endpoint = 'notes/hybrid-timeline';
+			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'global') {
+			endpoint = 'notes/global-timeline';
+			this.connection = this.$root.stream.useSharedConnection('globalTimeline');
+			this.connection.on('note', prepend);
+		} else if (this.src == 'mentions') {
+			endpoint = 'notes/mentions';
+			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection.on('mention', prepend);
+		} else if (this.src == 'messages') {
+			endpoint = 'notes/mentions';
+			this.query = {
+				visibility: 'specified'
+			};
+			const onNote = note => {
+				if (note.visibility == 'specified') {
+					prepend(note);
+				}
+			};
+			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection.on('mention', onNote);
+		}
 
 		this.pagination = {
-			endpoint: 'notes/timeline',
+			endpoint: endpoint,
 			limit: 10,
-			params: {}
+			params: init => ({
+				untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+				...this.baseQuery, ...this.query
+			})
 		};
 	}
 });
