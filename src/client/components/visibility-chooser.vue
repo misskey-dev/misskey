@@ -8,14 +8,21 @@
 				<span>{{ $t('_visibility.publicDescription') }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="1" key="1">
+		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="1" key="1">
+			<div><fa :icon="faHome"/></div>
+			<div>
+				<span>{{ $t('_visibility.home') }}</span>
+				<span>{{ $t('_visibility.homeDescription') }}</span>
+			</div>
+		</button>
+		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="2" key="2">
 			<div><fa :icon="faUnlock"/></div>
 			<div>
 				<span>{{ $t('_visibility.followers') }}</span>
 				<span>{{ $t('_visibility.followersDescription') }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="2" key="2">
+		<button class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="3" key="3">
 			<div><fa :icon="faEnvelope"/></div>
 			<div>
 				<span>{{ $t('_visibility.specified') }}</span>
@@ -28,7 +35,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faGlobe, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faUnlock, faHome } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../i18n';
 import XPopup from './popup.vue';
@@ -50,7 +57,7 @@ export default Vue.extend({
 	data() {
 		return {
 			v: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
-			faGlobe, faUnlock, faEnvelope
+			faGlobe, faUnlock, faEnvelope, faHome
 		}
 	},
 	methods: {

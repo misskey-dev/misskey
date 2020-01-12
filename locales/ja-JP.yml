@@ -234,6 +234,8 @@ _poll:
 _visibility:
   public: "パブリック"
   publicDescription: "全てのユーザーに公開"
+  home: "ホーム"
+  homeDescription: "ホームタイムラインのみに公開"
   followers: "フォロワー"
   followersDescription: "自分のフォロワーのみに公開"
   specified: "ダイレクト"
