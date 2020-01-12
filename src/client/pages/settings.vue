@@ -1,5 +1,8 @@
 <template>
 <div class="mk-settings-page">
+	<portal to="icon"><fa :icon="faCog"/></portal>
+	<portal to="title">{{ $t('settings') }}</portal>
+
 	<x-profile-setting/>
 	<x-privacy-setting/>
 	<x-reaction-setting/>
@@ -15,6 +18,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 import XProfileSetting from './settings.profile.vue';
 import XPrivacySetting from './settings.privacy.vue';
 import XImportExport from './settings.import-export.vue';
@@ -42,6 +46,12 @@ export default Vue.extend({
 		XMuteBlock,
 		XSecurity,
 		XButton,
+	},
+
+	data() {
+		return {
+			faCog
+		}
 	},
 });
 </script>

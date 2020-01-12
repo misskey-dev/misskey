@@ -35,7 +35,7 @@
 			<transition name="header" mode="out-in" appear>
 				<div class="body" :key="pageKey">
 					<portal-target name="avatar" slim></portal-target>
-					<h1 class="title"><portal-target name="title" slim></portal-target></h1>
+					<h1 class="title"><portal-target name="icon" slim></portal-target><portal-target name="title" slim></portal-target></h1>
 				</div>
 			</transition>
 		</header>
@@ -74,19 +74,10 @@ import { faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHom
 import { faBell, faEnvelope, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import i18n from './i18n';
 import { host } from './config';
+import { search } from './scripts/search';
 
 export default Vue.extend({
 	i18n,
-
-	metaInfo() {
-		return {
-			changed: meta => {
-				const title = meta.titleChunk.split('|');
-				this.title = title.shift().trim();
-				this.subTitle = title.join('|').trim();
-			}
-		};
-	},
 
 	components: {
 		XNotifications: () => import('./components/notifications.vue').then(m => m.default),
@@ -95,8 +86,6 @@ export default Vue.extend({
 	data() {
 		return {
 			host: host,
-			title: null,
-			subTitle: null,
 			pageKey: 0,
 			faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
 		};
@@ -104,8 +93,6 @@ export default Vue.extend({
 
 	watch:{
 		$route(to, from) {
-			this.title = null;
-			this.subTitle = null;
 			this.pageKey++;
 		}
 	},
@@ -388,6 +375,10 @@ export default Vue.extend({
 					font-size: $ui-font-size;
 					margin: 0;
 					line-height: $header-height;
+
+					> [data-icon] {
+						margin-right: 8px;
+					}
 				}
 			}
 		}
