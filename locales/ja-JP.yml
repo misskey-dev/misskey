@@ -202,6 +202,9 @@ attachFileFromDrive: "ドライブからファイルを添付"
 attachFileByUrl: "URLからファイルを添付"
 more: "もっと！"
 featured: "ハイライト"
+usernameOrUserId: "ユーザー名かユーザーID"
+noSuchUser: "ユーザーが見つかりません"
+lookup: "照会"
 
 _cw:
   hide: "隠す"
