@@ -81,6 +81,7 @@
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
+	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	<transition name="zoom-in-bottom">
 		<nav v-if="navOpen" ref="nav" class="popup-nav">
 			<template v-if="showLists">
@@ -344,6 +345,7 @@ export default Vue.extend({
 	$avatar-margin: ($header-height - $avatar-size) / 2;
 	$nav-icon-only-threshold: 1200px;
 	$nav-hide-threshold: 700px;
+	$side-hide-threshold: 1000px;
 
 	min-height: 100vh;
 	box-sizing: border-box;
@@ -387,7 +389,7 @@ export default Vue.extend({
 		margin: 0 16px 0 0;
 		box-sizing: border-box;
 
-		@media (max-width: 1000px) {
+		@media (max-width: $side-hide-threshold) {
 			display: none;
 		}
 	}
@@ -631,6 +633,27 @@ export default Vue.extend({
 			background: var(--bg);
 			padding: 32px;
 			border-radius: var(--radius);
+		}
+	}
+
+	> .post {
+		display: none;
+		position: fixed;
+		z-index: 1000;
+		bottom: 32px;
+		right: 32px;
+		width: 64px;
+		height: 64px;
+		border-radius: 100%;
+		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+		font-size: 22px;
+
+		@media (min-width: ($nav-hide-threshold + 1px)) {
+			display: block;
+		}
+
+		@media (min-width: ($side-hide-threshold + 1px)) {
+			display: none;
 		}
 	}
 
