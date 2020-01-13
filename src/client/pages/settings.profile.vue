@@ -50,6 +50,7 @@
 		</details>
 
 		<x-switch v-model="isBot">{{ $t('flagAsBot') }}</x-switch>
+		<x-switch v-model="isCat">{{ $t('flagAsCat') }}</x-switch>
 	</div>
 	<div class="_footer">
 		<x-button @click="save(true)" primary><fa :icon="faSave"/> {{ $t('save') }}</x-button>
@@ -94,6 +95,7 @@ export default Vue.extend({
 			avatarId: null,
 			bannerId: null,
 			isBot: false,
+			isCat: false,
 			saving: false,
 			avatarUploading: false,
 			bannerUploading: false,
@@ -107,6 +109,7 @@ export default Vue.extend({
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isBot = this.$store.state.i.isBot;
+		this.isCat = this.$store.state.i.isCat;
 
 		this.fieldName0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].name : null;
 		this.fieldValue0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].value : null;
@@ -186,6 +189,7 @@ export default Vue.extend({
 				bannerId: this.bannerId || undefined,
 				fields,
 				isBot: !!this.isBot,
+				isCat: !!this.isCat,
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;

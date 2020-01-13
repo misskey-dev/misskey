@@ -38,7 +38,7 @@ export default Vue.extend({
 	},
 	computed: {
 		cat(): boolean {
-			return this.user.isCat && this.$store.state.settings.circleIcons;
+			return this.user.isCat;
 		},
 		url(): string {
 			return this.$store.state.device.disableShowingAnimatedImages
@@ -71,8 +71,8 @@ export default Vue.extend({
 	display: inline-block;
 	vertical-align: bottom;
 	flex-shrink: 0;
-	overflow: hidden;
 	border-radius: 100%;
+	line-height: 16px;
 
 	&.cat {
 		&:before, &:after {
