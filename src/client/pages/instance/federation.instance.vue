@@ -1,5 +1,5 @@
 <template>
-<x-window @closed="() => { $emit('closed'); destroyDom(); }">
+<x-window @closed="() => { $emit('closed'); destroyDom(); }" :no-padding="true">
 	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
 		<div class="table info">

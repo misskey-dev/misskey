@@ -1,6 +1,6 @@
 <template>
 <x-window @closed="() => { $emit('closed'); destroyDom(); }" :avatar="user">
-	<template #header><mk-avatar :user="user"/><mk-user-name :user="user"/></template>
+	<template #header><mk-user-name :user="user"/></template>
 	<div class="vrcsvlkm">
 		<x-button @click="changePassword()">{{ $t('changePassword') }}</x-button>
 	</div>

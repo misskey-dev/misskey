@@ -1,6 +1,6 @@
 <template>
 <x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
-	<div class="ebkgoccj">
+	<div class="ebkgoccj" :class="{ noPadding }">
 		<div class="header">
 			<span class="title">
 				<mk-avatar :user="avatar" v-if="avatar" class="avatar"/>
@@ -32,6 +32,11 @@ export default Vue.extend({
 		avatar: {
 			type: Object,
 			required: false
+		},
+		noPadding: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 
@@ -65,6 +70,7 @@ export default Vue.extend({
 
 	> .header {
 		$height: 58px;
+		$height-narrow: 42px;
 		display: flex;
 		flex-shrink: 0;
 
@@ -73,8 +79,8 @@ export default Vue.extend({
 			width: $height;
 
 			@media (max-width: 500px) {
-				height: 42px;
-				width: 42px;
+				height: $height-narrow;
+				width: $height-narrow;
 			}
 		}
 
@@ -89,7 +95,7 @@ export default Vue.extend({
 			pointer-events: none;
 
 			@media (max-width: 500px) {
-				line-height: 42px;
+				line-height: $height-narrow;
 				padding-left: 16px;
 			}
 
@@ -98,12 +104,27 @@ export default Vue.extend({
 				height: $size;
 				width: $size;
 				margin: (($height - $size) / 2) 8px (($height - $size) / 2) 0;
+
+				@media (max-width: 500px) {
+					$size: 24px;
+					height: $size;
+					width: $size;
+					margin: (($height-narrow - $size) / 2) 8px (($height-narrow - $size) / 2) 0;
+				}
 			}
 		}
 	}
 
 	> .body {
 		overflow: auto;
+	}
+
+	&:not(.noPadding) > .body {
+		padding: 0 32px 32px 32px;
+
+		@media (max-width: 500px) {
+			padding: 0 16px 16px 16px;
+		}
 	}
 }
 </style>
