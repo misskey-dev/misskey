@@ -2,7 +2,7 @@
 <div class="mk-app">
 	<header class="header">
 		<div class="body">
-			<button class="_button account" @click="openAccountMenu">
+			<button class="_button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
 				<mk-avatar :user="$store.state.i" class="avatar"/>
 				<span class="text"><mk-acct :user="$store.state.i"/></span>
 			</button>
@@ -30,6 +30,9 @@
 		<div class="menu" v-if="$store.getters.isSignedIn">
 			<router-link class="item" to="/" exact>
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
+			</router-link>
+			<router-link class="item" to="/featured">
+				<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
 			</router-link>
 			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton">
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
@@ -111,7 +114,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud } from '@fortawesome/free-solid-svg-icons';
+import { faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import i18n from './i18n';
 import { host } from './config';
@@ -136,7 +139,7 @@ export default Vue.extend({
 			accounts: [],
 			lists: [],
 			connection: null,
-			faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
+			faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
 		};
 	},
 

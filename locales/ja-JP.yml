@@ -201,6 +201,7 @@ attachFile: "ファイルを添付"
 attachFileFromDrive: "ドライブからファイルを添付"
 attachFileByUrl: "URLからファイルを添付"
 more: "もっと！"
+featured: "ハイライト"
 
 _cw:
   hide: "隠す"
