@@ -116,12 +116,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import Chart from 'chart.js';
-import i18n from '../i18n';
+import i18n from '../../i18n';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
-import XModal from '../components/modal.vue';
-import MkUsersDialog from '../components/users-dialog.vue';
-import XSelect from '../components/ui/select.vue';
-import XSwitch from '../components/ui/switch.vue';
+import XModal from '../../components/modal.vue';
+import MkUsersDialog from '../../components/users-dialog.vue';
+import XSelect from '../../components/ui/select.vue';
+import XSwitch from '../../components/ui/switch.vue';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -453,7 +453,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
+@import '../../theme';
 
 .mk-instance-info {
 	width: 400px;

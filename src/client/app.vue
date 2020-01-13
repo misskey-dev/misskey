@@ -53,9 +53,9 @@
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
 				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
 			</router-link>
-			<router-link class="item" to="/instance" v-if="$store.state.i.isAdmin || $store.state.i.isModerator">
+			<button class="item _button" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu">
 				<fa :icon="faCog" fixed-width/><span class="text">{{ $t('instance') }}</span>
-			</router-link>
+			</button>
 			<button class="item _button" @click="search()">
 				<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
 			</button>
@@ -94,16 +94,29 @@
 				<button class="_button" @click="createList()"><fa :icon="faPlus" fixed-width/>{{ $t('createList') }}</button>
 				<router-link to="/manage-lists"><fa :icon="faCog" fixed-width/>{{ $t('manageLists') }}</router-link>
 			</template>
-			<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
-			<div></div>
-			<button class="_button" @click="showLists = true"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</button>
-			<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
-			<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
-			<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
-			<div v-if="$store.state.i.isAdmin"></div>
-			<router-link v-if="$store.state.i.isAdmin || $store.state.i.isModerator" to="/instance"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</router-link>
-			<div></div>
-			<button class="_button" @click="openAccountMenu"><mk-avatar :user="$store.state.i" class="avatar"/><mk-user-name :user="$store.state.i"/></button>
+			<template v-else-if="showInstance">
+				<router-link to="/instance/stats"><fa :icon="faChartBar" fixed-width/>{{ $t('statistics') }}</router-link>
+				<router-link to="/instance/emojis"><fa :icon="faLaugh" fixed-width/>{{ $t('customEmojis') }}</router-link>
+				<router-link to="/instance/users"><fa :icon="faUsers" fixed-width/>{{ $t('users') }}</router-link>
+				<router-link to="/instance/files"><fa :icon="faCloud" fixed-width/>{{ $t('files') }}</router-link>
+				<router-link to="/instance/monitor"><fa :icon="faTachometerAlt" fixed-width/>{{ $t('monitor') }}</router-link>
+				<router-link to="/instance/queue"><fa :icon="faExchangeAlt" fixed-width/>{{ $t('jobQueue') }}</router-link>
+				<router-link to="/federation"><fa :icon="faGlobe" fixed-width/>{{ $t('federation') }}</router-link>
+				<div></div>
+				<router-link to="/instance"><fa :icon="faCog" fixed-width/>{{ $t('general') }}</router-link>
+			</template>
+			<template v-else>
+				<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
+				<div></div>
+				<button class="_button" @click="showLists = true"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</button>
+				<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
+				<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
+				<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
+				<div v-if="$store.state.i.isAdmin"></div>
+				<router-link v-if="$store.state.i.isAdmin || $store.state.i.isModerator" to="/instance"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</router-link>
+				<div></div>
+				<button class="_button" @click="openAccountMenu"><mk-avatar :user="$store.state.i" class="avatar"/><mk-user-name :user="$store.state.i"/></button>
+			</template>
 		</nav>
 	</transition>
 	<transition name="zoom-in-top">
@@ -135,6 +148,7 @@ export default Vue.extend({
 			searching: false,
 			navOpen: false,
 			notificationsOpen: false,
+			showInstance: false,
 			showLists: false,
 			accounts: [],
 			lists: [],
@@ -219,6 +233,63 @@ export default Vue.extend({
 				source: ev.currentTarget || ev.target,
 			});
 		},
+
+		oepnInstanceMenu(ev) {
+			this.$root.menu({
+				items: [{
+					type: 'link',
+					text: this.$t('statistics'),
+					to: '/instance/stats',
+					icon: faChartBar,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('customEmojis'),
+					to: '/instance/emojis',
+					icon: faLaugh,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('users'),
+					to: '/instance/users',
+					icon: faUsers,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('files'),
+					to: '/instance/files',
+					icon: faCloud,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('monitor'),
+					to: '/instance/monitor',
+					icon: faTachometerAlt,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('jobQueue'),
+					to: '/instance/queue',
+					icon: faExchangeAlt,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('federation'),
+					to: '/instance/federation',
+					icon: faGlobe,
+					align: 'left',
+				}, null, {
+					type: 'link',
+					text: this.$t('general'),
+					to: '/instance',
+					icon: faCog,
+					align: 'left',
+				}],
+				fixed: true,
+				width: 200,
+				source: ev.currentTarget || ev.target,
+			});
+		}
 
 		async addAcount() {
 			this.navOpen = false;
@@ -481,6 +552,7 @@ export default Vue.extend({
 						top: 0;
 						left: 0;
 						height: 100%;
+						width: 100%;
 					}
 				}
 			}

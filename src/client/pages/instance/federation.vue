@@ -38,11 +38,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
-import XButton from '../components/ui/button.vue';
-import XInput from '../components/ui/input.vue';
-import XSelect from '../components/ui/select.vue';
-import XPagination from '../components/ui/pagination.vue';
+import i18n from '../../i18n';
+import XButton from '../../components/ui/button.vue';
+import XInput from '../../components/ui/input.vue';
+import XSelect from '../../components/ui/select.vue';
+import XPagination from '../../components/ui/pagination.vue';
 import MkInstanceInfo from './federation.instance.vue';
 
 export default Vue.extend({
