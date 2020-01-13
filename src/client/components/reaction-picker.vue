@@ -1,9 +1,20 @@
 <template>
 <x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
 	<div class="rdfaahpb">
-		<div class="buttons" ref="buttons" :class="{ showFocus }">
-			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="/^[a-z]+$/.test(reaction) ? $t('@.reactions.' + reaction) : reaction"><x-reaction-icon :reaction="reaction"/></button>
-		</div>
+		<transition-group
+			name="reaction-fade"
+			tag="div"
+			class="buttons"
+			ref="buttons"
+			:class="{ showFocus }"
+			:css="false"
+			@before-enter="beforeEnter"
+			@enter="enter"
+			mode="out-in"
+			appear
+		>
+			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :data-index="i" :tabindex="i + 1" :title="/^[a-z]+$/.test(reaction) ? $t('@.reactions.' + reaction) : reaction"><x-reaction-icon :reaction="reaction"/></button>
+		</transition-group>
 		<input class="text" v-model="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
 	</div>
 </x-popup>
@@ -68,7 +79,7 @@ export default Vue.extend({
 				'9': () => this.react(this.rs[8]),
 				'0': () => this.react(this.rs[9]),
 			};
-		}
+		},
 	},
 
 	watch: {
@@ -119,7 +130,21 @@ export default Vue.extend({
 
 		choose() {
 			this.$refs.buttons.childNodes[this.focus].click();
-		}
+		},
+
+		beforeEnter(el) {
+			el.style.opacity = 0;
+			el.style.transform = 'scale(0.7)';
+		},
+
+		enter(el, done) {
+			el.style.transition = [getComputedStyle(el).transition, 'transform 1s cubic-bezier(0.23, 1, 0.32, 1)', 'opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1)'].filter(x => x != '').join(',');
+			setTimeout(() => {
+				el.style.opacity = 1;
+				el.style.transform = 'scale(1)';
+				setTimeout(done, 1000);
+			}, 20 * el.dataset.index)
+		},
 	}
 });
 </script>
@@ -129,8 +154,8 @@ export default Vue.extend({
 
 .rdfaahpb {
 	> .buttons {
-		padding: 4px 4px 0 4px;
-		width: 208px;
+		padding: 6px 6px 0 6px;
+		width: 212px;
 		box-sizing: border-box;
 		text-align: center;
 
@@ -188,7 +213,7 @@ export default Vue.extend({
 	> .text {
 		width: 208px;
 		padding: 8px;
-		margin: 0 0 4px 0;
+		margin: 0 0 6px 0;
 		box-sizing: border-box;
 		text-align: center;
 		font-size: 16px;
