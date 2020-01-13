@@ -303,6 +303,12 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import './theme';
 
+@keyframes blink {
+	0% { opacity: 1; }
+	30% { opacity: 1; }
+	90% { opacity: 0; }
+}
+
 .header-enter-active, .header-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }
@@ -526,6 +532,7 @@ export default Vue.extend({
 			top: $header-height + 16px;
 
 			> .item {
+				position: relative;
 				display: block;
 				padding-left: $item-left-margin;
 				font-size: $ui-font-size;
@@ -542,6 +549,15 @@ export default Vue.extend({
 				> [data-icon] {
 					width: ($header-height - ($avatar-margin * 2));
 					margin-right: $avatar-margin;
+				}
+
+				> i {
+					position: absolute;
+					top: 0;
+					left: 8px;
+					color: $primary;
+					font-size: 8px;
+					animation: blink 1s infinite;
 				}
 
 				&:hover {
