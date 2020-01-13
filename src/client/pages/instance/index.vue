@@ -2,10 +2,14 @@
 <div v-if="meta" class="mk-instance-page">
 	<section class="_section info">
 		<div class="title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
-		<div class="content">
-			<b>Misskey v{{ version }}</b>
+		<div class="content table" v-if="stats">
+			<div><b>{{ $t('users') }}</b><span>{{ stats.originalUsersCount | number }}</span></div>
+			<div><b>{{ $t('notes') }}</b><span>{{ stats.originalNotesCount | number }}</span></div>
 		</div>
-		<div class="content deps" v-if="serverInfo">
+		<div class="content table">
+			<div><b>Misskey</b><span>v{{ version }}</span></div>
+		</div>
+		<div class="content table" v-if="serverInfo">
 			<div><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
 			<div><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
 			<div><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
@@ -78,6 +82,7 @@ export default Vue.extend({
 		return {
 			version,
 			meta: null,
+			stats: null,
 			serverInfo: null,
 			proxyAccount: null,
 			cacheRemoteFiles: false,
@@ -96,8 +101,12 @@ export default Vue.extend({
 			this.blockedHosts = meta.blockedHosts.join('\n');
 		});
 
-		this.$root.api('admin/server-info', {}).then(res => {
+		this.$root.api('admin/server-info').then(res => {
 			this.serverInfo = res;
+		});
+
+		this.$root.api('stats').then(res => {
+			this.stats = res;
 		});
 	},
 
@@ -127,7 +136,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-instance-page {
 	> .info {
-		> .deps {
+		> .table {
 			> div {
 				display: flex;
 
