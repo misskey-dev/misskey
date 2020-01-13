@@ -20,13 +20,11 @@ export async function getFallbackReaction(): Promise<string> {
 	return  meta.useStarForReactionFallback ? 'star' : 'like';
 }
 
-export async function toDbReaction(reaction?: string | null, enableEmoji = true): Promise<string> {
+export async function toDbReaction(reaction?: string | null): Promise<string> {
 	if (reaction == null) return await getFallbackReaction();
 
 	// 既存の文字列リアクションはそのまま
 	if (Object.values(basic10).includes(reaction)) return reaction;
-
-	if (!enableEmoji) return await getFallbackReaction();
 
 	// Unicode絵文字
 	const match = emojiRegex.exec(reaction);

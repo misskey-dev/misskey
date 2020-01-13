@@ -55,11 +55,6 @@ export class Meta {
 	public disableGlobalTimeline: boolean;
 
 	@Column('boolean', {
-		default: true,
-	})
-	public enableEmojiReaction: boolean;
-
-	@Column('boolean', {
 		default: false,
 	})
 	public useStarForReactionFallback: boolean;

@@ -83,11 +83,6 @@ export const meta = {
 				optional: false as const, nullable: false as const,
 				description: 'Whether disabled GTL.',
 			},
-			enableEmojiReaction: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: false as const,
-				description: 'Whether enabled emoji reaction.',
-			},
 		}
 	}
 };
@@ -124,22 +119,11 @@ export default define(meta, async (ps, me) => {
 		feedbackUrl: instance.feedbackUrl,
 
 		secure: config.https != null,
-		machine: os.hostname(),
-		os: os.platform(),
-		node: process.version,
-		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
-		redis: redis.server_info.redis_version,
-
-		cpu: {
-			model: os.cpus()[0].model,
-			cores: os.cpus().length
-		},
 
 		announcements: instance.announcements || [],
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,
-		enableEmojiReaction: instance.enableEmojiReaction,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,

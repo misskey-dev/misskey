@@ -59,7 +59,7 @@
 			<button class="item _button" @click="search()">
 				<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
 			</button>
-			<button class="item _button" @click="more()">
+			<button class="item _button" @click="more">
 				<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
 			</button>
 		</div>
@@ -128,7 +128,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faEnvelope, faLaugh } from '@fortawesome/free-regular-svg-icons';
+import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import i18n from './i18n';
 import { host } from './config';
 import { search } from './scripts/search';
@@ -289,7 +289,22 @@ export default Vue.extend({
 				width: 200,
 				source: ev.currentTarget || ev.target,
 			});
-		}
+		},
+
+		more(ev) {
+			this.$root.menu({
+				items: [{
+					type: 'link',
+					text: this.$t('messaging'),
+					to: '/messaging',
+					icon: faComments,
+					align: 'left',
+				}],
+				fixed: true,
+				width: 200,
+				source: ev.currentTarget || ev.target,
+			});
+		},
 
 		async addAcount() {
 			this.navOpen = false;
