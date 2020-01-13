@@ -1,5 +1,7 @@
 <template>
 <div class="mk-instance-emojis">
+	<portal to="icon"><fa :icon="faLaugh"/></portal>
+	<portal to="title">{{ $t('customEmojis') }}</portal>
 	<section class="_section local">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
 		<div class="_content">

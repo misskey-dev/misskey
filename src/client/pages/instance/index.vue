@@ -1,5 +1,8 @@
 <template>
 <div v-if="meta" class="mk-instance-page">
+	<portal to="icon"><fa :icon="faServer"/></portal>
+	<portal to="title">{{ $t('instance') }}</portal>
+
 	<section class="_section info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content table" v-if="stats">
@@ -53,7 +56,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XButton from '../../components/ui/button.vue';
 import XInput from '../../components/ui/input.vue';
@@ -88,7 +91,7 @@ export default Vue.extend({
 			cacheRemoteFiles: false,
 			remoteDriveCapacityMb: 0,
 			blockedHosts: '',
-			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave
+			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer
 		}
 	},
 
