@@ -834,5 +834,73 @@ export default Vue.extend({
 			height: 310px;
 		}
 	}
+
+	> .popup-nav {
+		position: fixed;
+		bottom: 96px + 16px;
+		left: 32px;
+		z-index: 10001;
+		max-width: 250px;
+		padding: 8px 0;
+		background: var(--bg);
+		border-radius: 4px;
+		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
+
+		@media (max-width: 500px) {
+			bottom: 92px;
+			left: 16px;
+		}
+
+		> div {
+			height: 1px;
+			width: 100%;
+			margin: 8px 0;
+			background: var(--divider);
+		}
+
+		> *:not(div) {
+			display: block;
+			position: relative;
+			padding: 8px 22px 8px 16px;
+			width: 100%;
+			box-sizing: border-box;
+			white-space: nowrap;
+			color: var(--fg);
+			text-align: left;
+			font-size: 14px;
+			line-height: 20px;
+
+			&:hover {
+				color: #fff;
+				background: $primary;
+				text-decoration: none;
+			}
+
+			&:active {
+				color: #fff;
+				background: darken($primary, 10);
+			}
+
+			> .avatar {
+				margin-right: 4px;
+				width: 20px;
+				height: 20px;
+			}
+
+			> [data-icon] {
+				margin-right: 4px;
+				width: 20px;
+			}
+
+			> i {
+				position: absolute;
+				top: 5px;
+				left: 13px;
+				color: $primary;
+				font-size: 12px;
+				animation: blink 1s infinite;
+			}
+		}
+	}
 }
 </style>
