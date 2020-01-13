@@ -246,6 +246,14 @@ a {
 		& + .content {
 			border-top: solid 1px var(--divider);
 		}
+
+		&.padHalf {
+			padding: 16px;
+
+			@media (max-width: 500px) {
+				padding: 8px;
+			}
+		}
 	}
 
 	> .footer {

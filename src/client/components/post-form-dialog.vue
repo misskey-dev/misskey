@@ -1,9 +1,9 @@
 <template>
 <div class="ulveipglmagnxfgvitaxyszerjwiqmwl">
 	<transition name="form-fade" appear>
-		<div class="bg" ref="bg" v-if="show"></div>
+		<div class="bg" ref="bg" v-if="show" @click="close()"></div>
 	</transition>
-	<div class="main" ref="main">
+	<div class="main" ref="main" @click.self="close()">
 		<transition name="form" appear
 			@after-leave="destroyDom"
 		>

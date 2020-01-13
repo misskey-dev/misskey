@@ -1,116 +1,111 @@
 <template>
-<x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
+<x-window @closed="() => { $emit('closed'); destroyDom(); }">
+	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
-		<div class="header">
-			<span>{{ instance.host }}</span>
-			<button class="_button" @click="$refs.modal.close()"><fa :icon="faTimes"/></button>
-		</div>
-		<div class="body">
-			<div class="table info">
-				<div class="row">
-					<div class="cell">
-						<div class="label">{{ $t('software') }}</div>
-						<div class="data">{{ instance.softwareName || '?' }}</div>
-					</div>
-					<div class="cell">
-						<div class="label">{{ $t('version') }}</div>
-						<div class="data">{{ instance.softwareVersion || '?' }}</div>
-					</div>
+		<div class="table info">
+			<div class="row">
+				<div class="cell">
+					<div class="label">{{ $t('software') }}</div>
+					<div class="data">{{ instance.softwareName || '?' }}</div>
+				</div>
+				<div class="cell">
+					<div class="label">{{ $t('version') }}</div>
+					<div class="data">{{ instance.softwareVersion || '?' }}</div>
 				</div>
 			</div>
-			<div class="table data">
-				<div class="row">
-					<div class="cell">
-						<div class="label"><fa :icon="faCrosshairs" fixed-width class="icon"/>{{ $t('registeredAt') }}</div>
-						<div class="data">{{ new Date(instance.registeredAt).toLocaleString() }} (<mk-time :time="instance.registeredAt"/>)</div>
-					</div>
+		</div>
+		<div class="table data">
+			<div class="row">
+				<div class="cell">
+					<div class="label"><fa :icon="faCrosshairs" fixed-width class="icon"/>{{ $t('registeredAt') }}</div>
+					<div class="data">{{ new Date(instance.registeredAt).toLocaleString() }} (<mk-time :time="instance.registeredAt"/>)</div>
 				</div>
-				<div class="row">
-					<div class="cell">
-						<div class="label"><fa :icon="faCloudDownloadAlt" fixed-width class="icon"/>{{ $t('following') }}</div>
-						<div class="data clickable" @click="showFollowing()">{{ instance.followingCount | number }}</div>
-					</div>
-					<div class="cell">
-						<div class="label"><fa :icon="faCloudUploadAlt" fixed-width class="icon"/>{{ $t('followers') }}</div>
-						<div class="data clickable" @click="showFollowers()">{{ instance.followersCount | number }}</div>
-					</div>
+			</div>
+			<div class="row">
+				<div class="cell">
+					<div class="label"><fa :icon="faCloudDownloadAlt" fixed-width class="icon"/>{{ $t('following') }}</div>
+					<div class="data clickable" @click="showFollowing()">{{ instance.followingCount | number }}</div>
 				</div>
-				<div class="row">
-					<div class="cell">
-						<div class="label"><fa :icon="faUsers" fixed-width class="icon"/>{{ $t('users') }}</div>
-						<div class="data clickable" @click="showUsers()">{{ instance.usersCount | number }}</div>
-					</div>
-					<div class="cell">
-						<div class="label"><fa :icon="faPencilAlt" fixed-width class="icon"/>{{ $t('notes') }}</div>
-						<div class="data">{{ instance.notesCount | number }}</div>
-					</div>
+				<div class="cell">
+					<div class="label"><fa :icon="faCloudUploadAlt" fixed-width class="icon"/>{{ $t('followers') }}</div>
+					<div class="data clickable" @click="showFollowers()">{{ instance.followersCount | number }}</div>
 				</div>
-				<div class="row">
-					<div class="cell">
-						<div class="label"><fa :icon="faFileImage" fixed-width class="icon"/>{{ $t('files') }}</div>
-						<div class="data">{{ instance.driveFiles | number }}</div>
-					</div>
-					<div class="cell">
-						<div class="label"><fa :icon="faDatabase" fixed-width class="icon"/>{{ $t('storageUsage') }}</div>
-						<div class="data">{{ instance.driveUsage | bytes }}</div>
-					</div>
+			</div>
+			<div class="row">
+				<div class="cell">
+					<div class="label"><fa :icon="faUsers" fixed-width class="icon"/>{{ $t('users') }}</div>
+					<div class="data clickable" @click="showUsers()">{{ instance.usersCount | number }}</div>
 				</div>
-				<div class="row">
-					<div class="cell">
-						<div class="label"><fa :icon="faLongArrowAltUp" fixed-width class="icon"/>{{ $t('latestRequestSentAt') }}</div>
-						<div class="data"><mk-time v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
-					</div>
-					<div class="cell">
-						<div class="label"><fa :icon="faTrafficLight" fixed-width class="icon"/>{{ $t('latestStatus') }}</div>
-						<div class="data">{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</div>
-					</div>
+				<div class="cell">
+					<div class="label"><fa :icon="faPencilAlt" fixed-width class="icon"/>{{ $t('notes') }}</div>
+					<div class="data">{{ instance.notesCount | number }}</div>
 				</div>
-				<div class="row">
-					<div class="cell">
-						<div class="label"><fa :icon="faLongArrowAltDown" fixed-width class="icon"/>{{ $t('latestRequestReceivedAt') }}</div>
-						<div class="data"><mk-time v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
-					</div>
+			</div>
+			<div class="row">
+				<div class="cell">
+					<div class="label"><fa :icon="faFileImage" fixed-width class="icon"/>{{ $t('files') }}</div>
+					<div class="data">{{ instance.driveFiles | number }}</div>
+				</div>
+				<div class="cell">
+					<div class="label"><fa :icon="faDatabase" fixed-width class="icon"/>{{ $t('storageUsage') }}</div>
+					<div class="data">{{ instance.driveUsage | bytes }}</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="cell">
+					<div class="label"><fa :icon="faLongArrowAltUp" fixed-width class="icon"/>{{ $t('latestRequestSentAt') }}</div>
+					<div class="data"><mk-time v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
+				</div>
+				<div class="cell">
+					<div class="label"><fa :icon="faTrafficLight" fixed-width class="icon"/>{{ $t('latestStatus') }}</div>
+					<div class="data">{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="cell">
+					<div class="label"><fa :icon="faLongArrowAltDown" fixed-width class="icon"/>{{ $t('latestRequestReceivedAt') }}</div>
+					<div class="data"><mk-time v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="chart">
+			<div class="header">
+				<span class="label">{{ $t('charts') }}</span>
+				<div class="selects">
+					<x-select v-model="chartSrc" style="margin: 0; flex: 1;">
+						<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
+						<option value="users">{{ $t('_instanceCharts.users') }}</option>
+						<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
+						<option value="notes">{{ $t('_instanceCharts.notes') }}</option>
+						<option value="notes-total">{{ $t('_instanceCharts.notesTotal') }}</option>
+						<option value="ff">{{ $t('_instanceCharts.ff') }}</option>
+						<option value="ff-total">{{ $t('_instanceCharts.ffTotal') }}</option>
+						<option value="drive-usage">{{ $t('_instanceCharts.cacheSize') }}</option>
+						<option value="drive-usage-total">{{ $t('_instanceCharts.cacheSizeTotal') }}</option>
+						<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
+						<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
+					</x-select>
+					<x-select v-model="chartSpan" style="margin: 0;">
+						<option value="hour">{{ $t('perHour') }}</option>
+						<option value="day">{{ $t('perDay') }}</option>
+					</x-select>
 				</div>
 			</div>
 			<div class="chart">
-				<div class="header">
-					<span class="label">{{ $t('charts') }}</span>
-					<div class="selects">
-						<x-select v-model="chartSrc" style="margin: 0; flex: 1;">
-							<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
-							<option value="users">{{ $t('_instanceCharts.users') }}</option>
-							<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
-							<option value="notes">{{ $t('_instanceCharts.notes') }}</option>
-							<option value="notes-total">{{ $t('_instanceCharts.notesTotal') }}</option>
-							<option value="ff">{{ $t('_instanceCharts.ff') }}</option>
-							<option value="ff-total">{{ $t('_instanceCharts.ffTotal') }}</option>
-							<option value="drive-usage">{{ $t('_instanceCharts.cacheSize') }}</option>
-							<option value="drive-usage-total">{{ $t('_instanceCharts.cacheSizeTotal') }}</option>
-							<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
-							<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
-						</x-select>
-						<x-select v-model="chartSpan" style="margin: 0;">
-							<option value="hour">{{ $t('perHour') }}</option>
-							<option value="day">{{ $t('perDay') }}</option>
-						</x-select>
-					</div>
-				</div>
-				<div class="chart">
-					<canvas ref="chart"></canvas>
-				</div>
+				<canvas ref="chart"></canvas>
 			</div>
-			<div class="operations">
-				<span class="label">{{ $t('operations') }}</span>
-				<x-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</x-switch>
-				<x-switch v-model="isBlocked" class="switch">{{ $t('blockThisInstance') }}</x-switch>
-			</div>
-			<details class="metadata">
-				<summary class="label">{{ $t('metadata') }}</summary>
-				<pre><code>{{ JSON.stringify(instance.metadata, null, 2) }}</code></pre>
-			</details>
 		</div>
+		<div class="operations">
+			<span class="label">{{ $t('operations') }}</span>
+			<x-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</x-switch>
+			<x-switch v-model="isBlocked" class="switch">{{ $t('blockThisInstance') }}</x-switch>
+		</div>
+		<details class="metadata">
+			<summary class="label">{{ $t('metadata') }}</summary>
+			<pre><code>{{ JSON.stringify(instance.metadata, null, 2) }}</code></pre>
+		</details>
 	</div>
-</x-modal>
+</x-window>
 </template>
 
 <script lang="ts">
@@ -118,7 +113,7 @@ import Vue from 'vue';
 import Chart from 'chart.js';
 import i18n from '../../i18n';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
-import XModal from '../../components/modal.vue';
+import XWindow from '../../components/window.vue';
 import MkUsersDialog from '../../components/users-dialog.vue';
 import XSelect from '../../components/ui/select.vue';
 import XSwitch from '../../components/ui/switch.vue';
@@ -138,7 +133,7 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XModal,
+		XWindow,
 		XSelect,
 		XSwitch,
 	},
@@ -456,169 +451,127 @@ export default Vue.extend({
 @import '../../theme';
 
 .mk-instance-info {
-	width: 400px;
-	height: 400px;
-	background: var(--bg);
-	border-radius: var(--radius);
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
+	overflow: auto;
 
-	@media (max-width: 500px) {
-		width: 350px;
-		height: 350px;
-	}
+	> .table {
+		padding: 0 32px;
 
-	> .header {
-		display: flex;
-		flex-shrink: 0;
-
-		> button {
-			height: 58px;
-			width: 58px;
-
-			@media (max-width: 500px) {
-				height: 42px;
-				width: 42px;
-			}
+		@media (max-width: 500px) {
+			padding: 0 16px;
 		}
 
-		> span {
-			flex: 1;
-			line-height: 58px;
-			padding-left: 32px;
-			font-weight: bold;
+		> .row {
+			display: flex;
 
-			@media (max-width: 500px) {
-				line-height: 42px;
-				padding-left: 16px;
+			&:not(:last-child) {
+				margin-bottom: 8px;
+			}
+
+			> .cell {
+				flex: 1;
+
+				> .label {
+					font-size: 80%;
+					opacity: 0.7;
+
+					> .icon {
+						margin-right: 4px;
+						display: none;
+					}
+				}
+
+				> .data.clickable {
+					color: $primary;
+					cursor: pointer;
+				}
 			}
 		}
 	}
 
-	> .body {
-		overflow: auto;
+	> .data {
+		margin-top: 16px;
+		padding-top: 16px;
+		border-top: solid 1px var(--divider);
 
-		> .table {
+		@media (max-width: 500px) {
+			margin-top: 8px;
+			padding-top: 8px;
+		}
+	}
+
+	> .chart {
+		margin-top: 16px;
+		padding-top: 16px;
+		border-top: solid 1px var(--divider);
+
+		@media (max-width: 500px) {
+			margin-top: 8px;
+			padding-top: 8px;
+		}
+
+		> .header {
 			padding: 0 32px;
 
 			@media (max-width: 500px) {
 				padding: 0 16px;
 			}
 
-			> .row {
-				display: flex;
-
-				&:not(:last-child) {
-					margin-bottom: 8px;
-				}
-
-				> .cell {
-					flex: 1;
-
-					> .label {
-						font-size: 80%;
-						opacity: 0.7;
-
-						> .icon {
-							margin-right: 4px;
-							display: none;
-						}
-					}
-
-					> .data.clickable {
-						color: $primary;
-						cursor: pointer;
-					}
-				}
+			> .label {
+				font-size: 80%;
+				opacity: 0.7;
 			}
-		}
 
-		> .data {
-			margin-top: 16px;
-			padding-top: 16px;
-			border-top: solid 1px var(--divider);
-
-			@media (max-width: 500px) {
-				margin-top: 8px;
-				padding-top: 8px;
+			> .selects {
+				display: flex;
 			}
 		}
 
 		> .chart {
-			margin-top: 16px;
-			padding-top: 16px;
-			border-top: solid 1px var(--divider);
+			padding: 0 16px;
 
 			@media (max-width: 500px) {
-				margin-top: 8px;
-				padding-top: 8px;
-			}
-
-			> .header {
-				padding: 0 32px;
-
-				@media (max-width: 500px) {
-					padding: 0 16px;
-				}
-
-				> .label {
-					font-size: 80%;
-					opacity: 0.7;
-				}
-
-				> .selects {
-					display: flex;
-				}
-			}
-
-			> .chart {
-				padding: 0 16px;
-
-				@media (max-width: 500px) {
-					padding: 0;
-				}
+				padding: 0;
 			}
 		}
+	}
 
-		> .operations {
-			padding: 16px 32px 16px 32px;
-			margin-top: 8px;
-			border-top: solid 1px var(--divider);
+	> .operations {
+		padding: 16px 32px 16px 32px;
+		margin-top: 8px;
+		border-top: solid 1px var(--divider);
 
-			@media (max-width: 500px) {
-				padding: 8px 16px 8px 16px;
-				margin-top: 0;
-			}
-
-			> .label {
-				font-size: 80%;
-				opacity: 0.7;
-			}
-
-			> .switch {
-				margin: 16px 0;
-			}
+		@media (max-width: 500px) {
+			padding: 8px 16px 8px 16px;
+			margin-top: 0;
 		}
 
-		> .metadata {
-			padding: 16px 32px 16px 32px;
-			border-top: solid 1px var(--divider);
+		> .label {
+			font-size: 80%;
+			opacity: 0.7;
+		}
 
-			@media (max-width: 500px) {
-				padding: 8px 16px 8px 16px;
-			}
+		> .switch {
+			margin: 16px 0;
+		}
+	}
 
-			> .label {
-				font-size: 80%;
-				opacity: 0.7;
-			}
+	> .metadata {
+		padding: 16px 32px 16px 32px;
+		border-top: solid 1px var(--divider);
 
-			> pre > code {
-				display: block;
-				max-height: 200px;
-				overflow: auto;
-			}
+		@media (max-width: 500px) {
+			padding: 8px 16px 8px 16px;
+		}
+
+		> .label {
+			font-size: 80%;
+			opacity: 0.7;
+		}
+
+		> pre > code {
+			display: block;
+			max-height: 200px;
+			overflow: auto;
 		}
 	}
 }
