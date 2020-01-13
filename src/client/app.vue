@@ -497,6 +497,7 @@ export default Vue.extend({
 					left: 16px;
 					height: $header-height;
 					pointer-events: none;
+					font-size: 16px;
 				}
 
 				> .search {
@@ -526,6 +527,7 @@ export default Vue.extend({
 					height: $post-button-size;
 					margin: $post-button-margin 0 $post-button-margin $post-button-margin;
 					border-radius: 100%;
+					font-size: 16px;
 				}
 			}
 		}

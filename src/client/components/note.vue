@@ -490,11 +490,10 @@ export default Vue.extend({
 
 .note {
 	position: relative;
-	font-size: 16px;
 	transition: box-shadow 0.1s ease;
 
 	@media (max-width: 500px) {
-		font-size: 14px;
+		font-size: 0.9em;
 	}
 
 	&:focus {
