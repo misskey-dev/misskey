@@ -1,7 +1,7 @@
 <template>
 <section class="mk-settings-page-mute-block _section">
-	<div class="title"><fa :icon="faBan"/> {{ $t('muteAndBlock') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faBan"/> {{ $t('muteAndBlock') }}</div>
+	<div class="_content">
 		<span>{{ $t('mutedUsers') }}</span>
 		<x-pagination :pagination="mutingPagination" class="muting">
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
@@ -14,7 +14,7 @@
 			</template>
 		</x-pagination>
 	</div>
-	<div class="content">
+	<div class="_content">
 		<span>{{ $t('blockedUsers') }}</span>
 		<x-pagination :pagination="blockingPagination" class="blocking">
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
@@ -63,7 +63,7 @@ export default Vue.extend({
 @import '../theme';
 
 .mk-settings-page-mute-block {
-	> .content {
+	> ._content {
 		max-height: 350px;
 		overflow: auto;
 

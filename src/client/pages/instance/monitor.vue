@@ -1,11 +1,11 @@
 <template>
 <div class="mk-instance-monitor">
 	<section class="_section">
-		<div class="title"><fa :icon="faMicrochip"/> {{ $t('cpuAndMemory') }}</div>
-		<div class="content" style="margin-top: -8px; margin-bottom: -12px;">
+		<div class="_title"><fa :icon="faMicrochip"/> {{ $t('cpuAndMemory') }}</div>
+		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<canvas ref="cpumem"></canvas>
 		</div>
-		<div class="content" v-if="serverInfo">
+		<div class="_content" v-if="serverInfo">
 			<div class="table">
 				<div class="row">
 					<div class="cell"><div class="label">CPU</div>{{ serverInfo.cpu.model }}</div>
@@ -19,11 +19,11 @@
 		</div>
 	</section>
 	<section class="_section">
-		<div class="title"><fa :icon="faHdd"/> {{ $t('disk') }}</div>
-		<div class="content" style="margin-top: -8px; margin-bottom: -12px;">
+		<div class="_title"><fa :icon="faHdd"/> {{ $t('disk') }}</div>
+		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<canvas ref="disk"></canvas>
 		</div>
-		<div class="content" v-if="serverInfo">
+		<div class="_content" v-if="serverInfo">
 			<div class="table">
 				<div class="row">
 					<div class="cell"><div class="label">Disk total</div>{{ serverInfo.fs.total | bytes }}</div>
@@ -34,11 +34,11 @@
 		</div>
 	</section>
 	<section class="_section">
-		<div class="title"><fa :icon="faExchangeAlt"/> {{ $t('network') }}</div>
-		<div class="content" style="margin-top: -8px; margin-bottom: -12px;">
+		<div class="_title"><fa :icon="faExchangeAlt"/> {{ $t('network') }}</div>
+		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<canvas ref="net"></canvas>
 		</div>
-		<div class="content" v-if="serverInfo">
+		<div class="_content" v-if="serverInfo">
 			<div class="table">
 				<div class="row">
 					<div class="cell"><div class="label">Interface</div>{{ serverInfo.net.interface }}</div>
@@ -349,7 +349,7 @@ export default Vue.extend({
 
 .mk-instance-monitor {
 	> section {
-		> .content {
+		> ._content {
 			> .table {
 				> .row {
 					display: flex;

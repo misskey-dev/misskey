@@ -1,8 +1,8 @@
 <template>
 <div class="mk-instance-stats">
 	<section class="_section">
-		<div class="title"><fa :icon="faChartBar"/> {{ $t('statistics') }}</div>
-		<div class="content" style="margin-top: -8px; margin-bottom: -12px;">
+		<div class="_title"><fa :icon="faChartBar"/> {{ $t('statistics') }}</div>
+		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<div class="selects" style="display: flex;">
 				<x-select v-model="chartSrc" style="margin: 0; flex: 1;">
 					<optgroup :label="$t('federation')">

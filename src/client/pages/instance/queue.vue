@@ -7,7 +7,7 @@
 		<template #title><fa :icon="faExchangeAlt"/> Out</template>
 	</x-queue>
 	<section class="_section">
-		<div class="content">
+		<div class="_content">
 			<x-button @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearQueue') }}</x-button>
 		</div>
 	</section>

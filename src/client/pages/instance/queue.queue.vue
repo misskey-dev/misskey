@@ -1,16 +1,16 @@
 <template>
 <section class="_section mk-queue-queue">
-	<div class="title"><slot name="title"></slot></div>
-	<div class="content status">
+	<div class="_title"><slot name="title"></slot></div>
+	<div class="_content status">
 		<div class="cell"><div class="label">Process</div>{{ activeSincePrevTick | number }}</div>
 		<div class="cell"><div class="label">Active</div>{{ active | number }}</div>
 		<div class="cell"><div class="label">Waiting</div>{{ waiting | number }}</div>
 		<div class="cell"><div class="label">Delayed</div>{{ delayed | number }}</div>
 	</div>
-	<div class="content" style="margin-bottom: -8px;">
+	<div class="_content" style="margin-bottom: -8px;">
 		<canvas ref="chart"></canvas>
 	</div>
-	<div class="content" style="max-height: 180px; overflow: auto;">
+	<div class="_content" style="max-height: 180px; overflow: auto;">
 		<sequential-entrance :delay="15" v-if="jobs.length > 0">
 			<div v-for="(job, i) in jobs" :key="job[0]" :data-index="i">
 				<span>{{ job[0] }}</span>

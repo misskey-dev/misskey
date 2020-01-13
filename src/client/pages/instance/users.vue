@@ -1,8 +1,8 @@
 <template>
 <div class="mk-instance-users">
 	<section class="_section lookup">
-		<div class="title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
-		<div class="content">
+		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
+		<div class="_content">
 			<x-input class="target" v-model="target" type="text" @enter="showUser()" style="margin-top: 0;">
 				<span>{{ $t('usernameOrUserId') }}</span>
 			</x-input>
@@ -11,10 +11,10 @@
 	</section>
 
 	<section class="_section users">
-		<div class="title"><fa :icon="faUsers"/> {{ $t('users') }}</div>
-		<div class="content padHalf">
+		<div class="_title"><fa :icon="faUsers"/> {{ $t('users') }}</div>
+		<div class="_content _list">
 			<x-pagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
-				<button class="user _button" v-for="(user, i) in items" :key="user.id" :data-index="i" @click="show(user)">
+				<button class="user _button _listItem" v-for="(user, i) in items" :key="user.id" :data-index="i" @click="show(user)">
 					<mk-avatar :user="user" class="avatar"/>
 					<div class="body">
 						<mk-user-name :user="user" class="name"/>
@@ -23,7 +23,7 @@
 				</button>
 			</x-pagination>
 		</div>
-		<div class="footer">
+		<div class="_footer">
 			<x-button inline primary @click="addUser()"><fa :icon="faPlus"/> {{ $t('addUser') }}</x-button>
 		</div>
 	</section>
@@ -152,7 +152,7 @@ export default Vue.extend({
 
 .mk-instance-users {
 	> .users {
-		> .content {
+		> ._content {
 			max-height: 300px;
 			overflow: auto;
 			
@@ -163,24 +163,6 @@ export default Vue.extend({
 					box-sizing: border-box;
 					text-align: left;
 					align-items: center;
-					padding: 8px 16px;
-					border-radius: var(--radius);
-
-					@media (max-width: 500px) {
-						padding: 8px;
-					}
-
-					&:hover {
-						background: rgba(0, 0, 0, 0.03);
-
-						@media (prefers-color-scheme: dark) {
-							background: rgba(255, 255, 255, 0.03);
-						}
-					}
-
-					> * {
-						pointer-events: none;
-					}
 
 					> .avatar {
 						width: 50px;

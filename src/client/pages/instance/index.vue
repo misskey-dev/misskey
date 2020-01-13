@@ -1,15 +1,15 @@
 <template>
 <div v-if="meta" class="mk-instance-page">
 	<section class="_section info">
-		<div class="title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
-		<div class="content table" v-if="stats">
+		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
+		<div class="_content table" v-if="stats">
 			<div><b>{{ $t('users') }}</b><span>{{ stats.originalUsersCount | number }}</span></div>
 			<div><b>{{ $t('notes') }}</b><span>{{ stats.originalNotesCount | number }}</span></div>
 		</div>
-		<div class="content table">
+		<div class="_content table">
 			<div><b>Misskey</b><span>v{{ version }}</span></div>
 		</div>
-		<div class="content table" v-if="serverInfo">
+		<div class="_content table" v-if="serverInfo">
 			<div><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
 			<div><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
 			<div><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
@@ -17,34 +17,34 @@
 	</section>
 
 	<section class="_section">
-		<div class="title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
-		<div class="content">
+		<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
+		<div class="_content">
 			<x-switch v-model="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></x-switch>
 			<x-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles" style="margin-bottom: 0;">{{ $t('remoteFilesCacheCapacityPerAccount') }}<template #suffix>MB</template></x-input>
 		</div>
-		<div class="footer">
+		<div class="_footer">
 			<x-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
 		</div>
 	</section>
 
 	<section class="_section">
-		<div class="title"><fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
-		<div class="content">
+		<div class="_title"><fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
+		<div class="_content">
 			<x-input v-model="proxyAccount" style="margin: 0;"><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></x-input>
 		</div>
-		<div class="footer">
+		<div class="_footer">
 			<x-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
 		</div>
 	</section>
 
 	<section class="_section">
-		<div class="title"><fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
-		<div class="content">
+		<div class="_title"><fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
+		<div class="_content">
 			<x-textarea v-model="blockedHosts" style="margin-top: 0;">
 				<template #desc>{{ $t('blockedInstancesDescription') }}</template>
 			</x-textarea>
 		</div>
-		<div class="footer">
+		<div class="_footer">
 			<x-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
 		</div>
 	</section>

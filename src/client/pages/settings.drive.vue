@@ -1,7 +1,7 @@
 <template>
 <section class="mk-settings-page-drive _section">
-	<div class="title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
+	<div class="_content">
 		<x-pagination :pagination="drivePagination" #default="{items}" class="drive" ref="drive">
 			<div class="file" v-for="(file, i) in items" :key="file.id" :data-index="i" @click="selected = file" :class="{ selected: selected && (selected.id === file.id) }">
 				<x-file-thumbnail class="thumbnail" :file="file" fit="cover"/>
@@ -25,7 +25,7 @@
 			</div>
 		</x-pagination>
 	</div>
-	<div class="footer">
+	<div class="_footer">
 		<x-button primary inline :disabled="selected == null" @click="download()"><fa :icon="faDownload"/> {{ $t('download') }}</x-button>
 		<x-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</x-button>
 	</div>
@@ -113,7 +113,7 @@ export default Vue.extend({
 @import '../theme';
 
 .mk-settings-page-drive {
-	> .content {
+	> ._content {
 		max-height: 350px;
 		overflow: auto;
 		

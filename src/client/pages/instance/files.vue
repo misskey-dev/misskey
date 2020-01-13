@@ -1,7 +1,7 @@
 <template>
 <section class="_section">
-	<div class="title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
+	<div class="_content">
 		<x-button primary @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearCachedFiles') }}</x-button>
 	</div>
 </section>

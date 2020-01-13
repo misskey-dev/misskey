@@ -1,7 +1,7 @@
 <template>
 <section class="mk-settings-page-security _section">
-	<div class="title"><fa :icon="faLock"/> {{ $t('security') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faLock"/> {{ $t('security') }}</div>
+	<div class="_content">
 		<x-button primary @click="change()">{{ $t('changePassword') }}</x-button>
 	</div>
 </section>

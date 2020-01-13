@@ -1,7 +1,7 @@
 <template>
 <section class="mk-settings-page-import-export _section">
-	<div class="title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
+	<div class="_content">
 		<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
 		<x-select v-model="exportTarget" style="margin-top: 0;">
 			<option value="notes">{{ $t('_exportOrImport.allNotes') }}</option>

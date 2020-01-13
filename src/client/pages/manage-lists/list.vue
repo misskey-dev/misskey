@@ -2,8 +2,8 @@
 <div class="mk-list-page">
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" :key="list.id" class="_section list">
-			<div class="title">{{ list.name }}</div>
-			<div class="content">
+			<div class="_title">{{ list.name }}</div>
+			<div class="_content">
 				<div class="users">
 					<div class="user" v-for="(user, i) in users" :key="user.id" :data-index="i">
 						<mk-avatar :user="user" class="avatar"/>
@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="footer">
+			<div class="_footer">
 				<x-button inline @click="renameList()">{{ $t('renameList') }}</x-button>
 				<x-button inline @click="deleteList()">{{ $t('deleteList') }}</x-button>
 			</div>
@@ -129,7 +129,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-list-page {
 	> .list {
-		> .content {
+		> ._content {
 			max-height: 400px;
 			overflow: auto;
 

@@ -1,7 +1,7 @@
 <template>
 <section class="mk-settings-page-privacy _section">
-	<div class="title"><fa :icon="faLock"/> {{ $t('privacy') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faLock"/> {{ $t('privacy') }}</div>
+	<div class="_content">
 		<x-switch v-model="isLocked" @change="save()">{{ $t('makeFollowManuallyApprove') }}</x-switch>
 		<x-select v-model="defaultNoteVisibility">
 			<template #label>{{ $t('defaultNoteVisibility') }}</template>

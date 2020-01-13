@@ -1,7 +1,7 @@
 <template>
 <section class="mk-settings-page-profile _section">
-	<div class="title"><fa :icon="faUser"/> {{ $t('profile') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faUser"/> {{ $t('profile') }}</div>
+	<div class="_content">
 		<x-input v-model="name" :max="30">
 			<span>{{ $t('_profile.name') }}</span>
 		</x-input>
@@ -51,7 +51,7 @@
 
 		<x-switch v-model="isBot">{{ $t('flagAsBot') }}</x-switch>
 	</div>
-	<div class="footer">
+	<div class="_footer">
 		<x-button @click="save(true)" primary><fa :icon="faSave"/> {{ $t('save') }}</x-button>
 	</div>
 </section>
@@ -213,7 +213,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-settings-page-profile {
-	> .content {
+	> ._content {
 		> *:first-child {
 			margin-top: 0;
 		}

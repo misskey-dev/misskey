@@ -1,8 +1,8 @@
 <template>
 <div class="mk-instance-emojis">
 	<section class="_section local">
-		<div class="title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
-		<div class="content">
+		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
+		<div class="_content">
 			<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
 			<x-pagination :pagination="pagination" class="emojis" ref="emojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
@@ -16,14 +16,14 @@
 				</template>
 			</x-pagination>
 		</div>
-		<div class="footer">
+		<div class="_footer">
 			<x-button inline primary @click="add()"><fa :icon="faPlus"/> {{ $t('addEmoji') }}</x-button>
 			<x-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</x-button>
 		</div>
 	</section>
 	<section class="_section remote">
-		<div class="title"><fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
-		<div class="content">
+		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
+		<div class="_content">
 			<x-input v-model="host" :debounce="true" style="margin-top: 0;"><span>{{ $t('host') }}</span></x-input>
 			<x-pagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
@@ -38,7 +38,7 @@
 				</template>
 			</x-pagination>
 		</div>
-		<div class="footer">
+		<div class="_footer">
 			<x-button inline primary :disabled="selectedRemote == null" @click="im()"><fa :icon="faPlus"/> {{ $t('import') }}</x-button>
 		</div>
 	</section>
@@ -181,7 +181,7 @@ export default Vue.extend({
 
 .mk-instance-emojis {
 	> .local {
-		> .content {
+		> ._content {
 			max-height: 300px;
 			overflow: auto;
 			
@@ -214,7 +214,7 @@ export default Vue.extend({
 	}
 
 	> .remote {
-		> .content {
+		> ._content {
 			max-height: 300px;
 			overflow: auto;
 			

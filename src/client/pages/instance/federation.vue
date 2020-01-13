@@ -1,8 +1,8 @@
 <template>
 <div class="mk-federation">
 	<section class="_section instances">
-		<div class="title"><fa :icon="faGlobe"/> {{ $t('instances') }}</div>
-		<div class="content">
+		<div class="_title"><fa :icon="faGlobe"/> {{ $t('instances') }}</div>
+		<div class="_content">
 			<div class="inputs" style="display: flex;">
 				<x-input v-model="host" :debounce="true" style="margin: 0; flex: 1;"><span>{{ $t('host') }}</span></x-input>
 				<x-select v-model="state" style="margin: 0;">
@@ -16,7 +16,7 @@
 				</x-select>
 			</div>
 		</div>
-		<div class="content">
+		<div class="_content">
 			<x-pagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
 				<div class="instance" v-for="(instance, i) in items" :key="instance.id" :data-index="i" @click="info(instance)">
 					<div class="host"><fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
@@ -115,7 +115,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-federation {
 	> .instances {
-		> .content {
+		> ._content {
 			> .instances {
 				> .instance {
 					cursor: pointer;

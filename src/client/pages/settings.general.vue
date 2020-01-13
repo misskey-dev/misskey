@@ -1,7 +1,7 @@
 <template>
 <section class="mk-settings-page-general _section">
-	<div class="title"><fa :icon="faCog"/> {{ $t('general') }}</div>
-	<div class="content">
+	<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
+	<div class="_content">
 		<x-input type="file" @change="onWallpaperChange" style="margin-top: 0;">
 			<span>{{ $t('wallpaper') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
