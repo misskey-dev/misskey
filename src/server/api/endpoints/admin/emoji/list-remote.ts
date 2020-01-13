@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { Emojis } from '../../../../../models';
+import { toPuny } from '../../../../../misc/convert-host';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
 import { ID } from '../../../../../misc/cafy-id';
 
@@ -15,6 +16,11 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
+		host: {
+			validator: $.optional.nullable.str,
+			default: null as any
+		},
+
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
@@ -31,8 +37,15 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const emojis = await makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
-		.andWhere(`emoji.host IS NULL`)
+	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId);
+
+	if (ps.host == null) {
+		q.andWhere(`emoji.host IS NOT NULL`);
+	} else {
+		q.andWhere(`emoji.host = :host`, { host: toPuny(ps.host) });
+	}
+
+	const emojis = await q
 		.orderBy('emoji.category', 'ASC')
 		.orderBy('emoji.name', 'ASC')
 		.take(ps.limit!)
