@@ -125,6 +125,7 @@ export default Vue.extend({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
+				this.$emit('closed');
 				this.destroyDom();
 			}).catch(e => {
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
@@ -147,6 +148,7 @@ export default Vue.extend({
 				this.$root.api('notes/delete', {
 					noteId: this.note.id
 				}).then(() => {
+					this.$emit('closed');
 					this.destroyDom();
 				});
 			});
@@ -160,6 +162,7 @@ export default Vue.extend({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
+				this.$emit('closed');
 				this.destroyDom();
 			});
 		},
