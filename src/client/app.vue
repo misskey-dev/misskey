@@ -26,8 +26,8 @@
 			</div>
 		</div>
 	</header>
-	<nav v-if="true" ref="nav" class="nav">
-		<div class="menu">
+	<nav ref="nav" class="nav">
+		<div class="menu" v-if="$store.getters.isSignedIn">
 			<router-link class="item" to="/" exact>
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 			</router-link>

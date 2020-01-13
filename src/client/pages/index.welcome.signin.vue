@@ -53,6 +53,10 @@ export default Vue.extend({
 			apiUrl,
 			host: toUnicode(host),
 			meta: null,
+			totpLogin: false,
+			credential: null,
+			challengeData: null,
+			queryingKey: false,
 			faLock
 		};
 	},
@@ -74,22 +78,92 @@ export default Vue.extend({
 			});
 		},
 
-		onSubmit() {
-			this.signing = true;
-
-			this.$root.api('signin', {
-				username: this.username,
-				password: this.password,
-			}).then(res => {
-				localStorage.setItem('i', res.token);
-				location.reload();
+		queryKey() {
+			this.queryingKey = true;
+			return navigator.credentials.get({
+				publicKey: {
+					challenge: Buffer.from(
+						this.challengeData.challenge
+							.replace(/\-/g, '+')
+							.replace(/_/g, '/'),
+							'base64'
+					),
+					allowCredentials: this.challengeData.securityKeys.map(key => ({
+						id: Buffer.from(key.id, 'hex'),
+						type: 'public-key',
+						transports: ['usb', 'ble', 'nfc']
+					})),
+					timeout: 60 * 1000
+				}
 			}).catch(() => {
+				this.queryingKey = false;
+				return Promise.reject(null);
+			}).then(credential => {
+				this.queryingKey = false;
+				this.signing = true;
+				return this.$root.api('signin', {
+					username: this.username,
+					password: this.password,
+					signature: hexifyAB(credential.response.signature),
+					authenticatorData: hexifyAB(credential.response.authenticatorData),
+					clientDataJSON: hexifyAB(credential.response.clientDataJSON),
+					credentialId: credential.id,
+					challengeId: this.challengeData.challengeId
+				});
+			}).then(res => {
+				localStorage.setItem('i', res.i);
+				location.reload();
+			}).catch(err => {
+				if (err === null) return;
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('loginFailed')
+					text: this.$t('login-failed')
 				});
 				this.signing = false;
 			});
+		},
+
+		onSubmit() {
+			this.signing = true;
+			if (!this.totpLogin && this.user && this.user.twoFactorEnabled) {
+				if (window.PublicKeyCredential && this.user.securityKeys) {
+					this.$root.api('signin', {
+						username: this.username,
+						password: this.password
+					}).then(res => {
+						this.totpLogin = true;
+						this.signing = false;
+						this.challengeData = res;
+						return this.queryKey();
+					}).catch(() => {
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('login-failed')
+						});
+						this.challengeData = null;
+						this.totpLogin = false;
+						this.signing = false;
+					});
+				} else {
+					this.totpLogin = true;
+					this.signing = false;
+				}
+			} else {
+				this.$root.api('signin', {
+					username: this.username,
+					password: this.password,
+					token: this.user && this.user.twoFactorEnabled ? this.token : undefined
+				}).then(res => {
+					localStorage.setItem('i', res.i);
+					location.reload();
+				}).catch(() => {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('loginFailed')
+					});
+					this.signing = false;
+				});
+			}
 		}
 	}
 });
