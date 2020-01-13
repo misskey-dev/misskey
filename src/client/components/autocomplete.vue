@@ -149,7 +149,7 @@ export default Vue.extend({
 
 		this.textarea.addEventListener('keydown', this.onKeydown);
 
-		for (const el of Array.from(document.querySelectorAll('body *'))) {
+		for (const el of Array.from(document.querySelectorAll('*'))) {
 			el.addEventListener('mousedown', this.onMousedown);
 		}
 
@@ -167,7 +167,7 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.textarea.removeEventListener('keydown', this.onKeydown);
 
-		for (const el of Array.from(document.querySelectorAll('body *'))) {
+		for (const el of Array.from(document.querySelectorAll('*'))) {
 			el.removeEventListener('mousedown', this.onMousedown);
 		}
 	},

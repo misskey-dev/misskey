@@ -31,7 +31,7 @@
 			<router-link class="item" to="/" exact>
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 			</router-link>
-			<button class="item _button" @click="notificationsOpen = !notificationsOpen">
+			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton">
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
 				<i v-if="$store.state.i.hasUnreadNotifications"><fa :icon="faCircle"/></i>
 			</button>
@@ -78,7 +78,7 @@
 	<div class="buttons">
 		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button home _button" :disabled="$route.path === '/'" @click="$router.push('/')"><fa :icon="faHome"/></button>
-		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationsButton"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
 	<transition name="zoom-in-bottom">
@@ -103,7 +103,7 @@
 		</nav>
 	</transition>
 	<transition name="zoom-in-top">
-		<x-notifications v-if="notificationsOpen" class="notifications"/>
+		<x-notifications v-if="notificationsOpen" class="notifications" ref="notifications"/>
 	</transition>
 </div>
 </template>
@@ -115,6 +115,7 @@ import { faBell, faEnvelope, faLaugh } from '@fortawesome/free-regular-svg-icons
 import i18n from './i18n';
 import { host } from './config';
 import { search } from './scripts/search';
+import contains from './scripts/contains';
 
 export default Vue.extend({
 	i18n,
@@ -142,6 +143,18 @@ export default Vue.extend({
 		$route(to, from) {
 			this.pageKey++;
 			this.notificationsOpen = false;
+		},
+
+		notificationsOpen(open) {
+			if (open) {
+				for (const el of Array.from(document.querySelectorAll('*'))) {
+					el.addEventListener('mousedown', this.onMousedown);
+				}
+			} else {
+				for (const el of Array.from(document.querySelectorAll('*'))) {
+					el.removeEventListener('mousedown', this.onMousedown);
+				}
+			}
 		}
 	},
 
@@ -273,6 +286,15 @@ export default Vue.extend({
 			this.$root.new(MkToast, {
 				notification
 			});
+		},
+
+		onMousedown(e) {
+			e.preventDefault();
+			if (!contains(this.$refs.notifications.$el, e.target) &&
+				!contains(this.$refs.notificationButton, e.target) &&
+				!contains(this.$refs.notificationButton2, e.target)
+				) this.notificationsOpen = false;
+			return false;
 		},
 	}
 });
