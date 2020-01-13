@@ -134,6 +134,7 @@ export default Vue.extend({
 			margin: 0;
 			padding: 16px;
 			width: 100%;
+			border-radius: var(--radius);
 
 			&:disabled {
 				opacity: 0.7;
