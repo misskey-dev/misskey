@@ -31,10 +31,10 @@
 			<router-link class="item" to="/" exact>
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 			</router-link>
-			<router-link class="item" to="/notifications">
+			<button class="item _button" @click="notificationsOpen = !notificationsOpen">
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
 				<i v-if="$store.state.i.hasUnreadNotifications"><fa :icon="faCircle"/></i>
-			</router-link>
+			</button>
 			<router-link class="item" to="/mentions">
 				<fa :icon="faAt" fixed-width/><span class="text">{{ $t('mentions') }}</span>
 				<i v-if="$store.state.i.hasUnreadMentions"><fa :icon="faCircle"/></i>
@@ -141,6 +141,7 @@ export default Vue.extend({
 	watch:{
 		$route(to, from) {
 			this.pageKey++;
+			this.notificationsOpen = false;
 		}
 	},
 
@@ -667,6 +668,32 @@ export default Vue.extend({
 					animation: blink 1s infinite;
 				}
 			}
+		}
+	}
+
+	> .notifications {
+		position: fixed;
+		top: 32px;
+		left: 0;
+		right: 0;
+		margin: 0 auto;
+		z-index: 10001;
+		width: 320px;
+		height: 350px;
+		background: rgba(255, 255, 255, 0.5);
+		-webkit-backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+		border-radius: 6px;
+		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
+		overflow: hidden;
+
+		@media (prefers-color-scheme: dark) {
+			background: rgba(0, 0, 0, 0.5);
+		}
+
+		@media (max-width: 500px) {
+			width: 290px;
+			height: 310px;
 		}
 	}
 }

@@ -1,40 +1,44 @@
 <template>
 <div class="mk-notification" :class="notification.type">
-	<mk-avatar class="avatar" :user="notification.user"/>
-	<div class="icon" :class="notification.type">
-		<fa :icon="faPlus" v-if="notification.type === 'follow'"/>
-		<fa :icon="faClock" v-if="notification.type === 'receiveFollowRequest'"/>
-		<fa :icon="faRetweet" v-if="notification.type === 'renote'"/>
-		<fa :icon="faReply" v-if="notification.type === 'reply'"/>
-		<fa :icon="faAt" v-if="notification.type === 'mention'"/>
-		<fa :icon="faQuoteLeft" v-if="notification.type === 'quote'"/>
-		<x-reaction-icon v-if="notification.type === 'reaction'" :reaction="notification.reaction" :no-style="true"/>
+	<div class="head">
+		<mk-avatar class="avatar" :user="notification.user"/>
+		<div class="icon" :class="notification.type">
+			<fa :icon="faPlus" v-if="notification.type === 'follow'"/>
+			<fa :icon="faClock" v-if="notification.type === 'receiveFollowRequest'"/>
+			<fa :icon="faRetweet" v-if="notification.type === 'renote'"/>
+			<fa :icon="faReply" v-if="notification.type === 'reply'"/>
+			<fa :icon="faAt" v-if="notification.type === 'mention'"/>
+			<fa :icon="faQuoteLeft" v-if="notification.type === 'quote'"/>
+			<x-reaction-icon v-if="notification.type === 'reaction'" :reaction="notification.reaction" :no-style="true"/>
+		</div>
 	</div>
-	<header>
-		<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
-		<mk-time :time="notification.createdAt" v-if="withTime"/>
-	</header>
-	<router-link v-if="notification.type === 'reaction'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-		<fa :icon="faQuoteLeft"/>
-		<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
-		<fa :icon="faQuoteRight"/>
-	</router-link>
-	<router-link v-if="notification.type === 'renote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
-		<fa :icon="faQuoteLeft"/>
-		<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :custom-emojis="notification.note.renote.emojis"/>
-		<fa :icon="faQuoteRight"/>
-	</router-link>
-	<router-link v-if="notification.type === 'reply'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-		<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
-	</router-link>
-	<router-link v-if="notification.type === 'mention'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-		<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
-	</router-link>
-	<router-link v-if="notification.type === 'quote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-		<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
-	</router-link>
-	<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}</span>
-	<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}</span>
+	<div class="tail">
+		<header>
+			<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
+			<mk-time :time="notification.createdAt" v-if="withTime"/>
+		</header>
+		<router-link v-if="notification.type === 'reaction'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<fa :icon="faQuoteLeft"/>
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+			<fa :icon="faQuoteRight"/>
+		</router-link>
+		<router-link v-if="notification.type === 'renote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
+			<fa :icon="faQuoteLeft"/>
+			<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :custom-emojis="notification.note.renote.emojis"/>
+			<fa :icon="faQuoteRight"/>
+		</router-link>
+		<router-link v-if="notification.type === 'reply'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+		</router-link>
+		<router-link v-if="notification.type === 'mention'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+		</router-link>
+		<router-link v-if="notification.type === 'quote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+		</router-link>
+		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}</span>
+		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}</span>
+	</div>
 </div>
 </template>
 
@@ -72,11 +76,16 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-notification {
 	position: relative;
-	height: 66px;
 	box-sizing: border-box;
-	padding: 12px;
-	font-size: 13px;
+	padding: 16px;
+	font-size: 0.9em;
 	overflow-wrap: break-word;
+	display: flex;
+
+	@media (max-width: 500px) {
+		padding: 12px;
+		font-size: 0.8em;
+	}
 
 	&:after {
 		content: "";
@@ -84,108 +93,111 @@ export default Vue.extend({
 		clear: both;
 	}
 
-	> .avatar {
-		display: block;
+	> .head {
+		position: relative;
+		flex-shrink: 0;
 		width: 42px;
 		height: 42px;
-		border-radius: 6px;
-	}
+		margin-right: 8px;
 
-	> .icon {
-		position: absolute;
-		z-index: 1;
-		top: 36px;
-		left: 36px;
-		width: 20px;
-		height: 20px;
-		box-sizing: border-box;
-		border-radius: 100%;
-		background: var(--bg);
-		box-shadow: 0 0 0 3px var(--bg);
-		font-size: 12px;
-
-		> * {
-			color: #fff;
+		> .avatar {
+			display: block;
 			width: 100%;
 			height: 100%;
+			border-radius: 6px;
 		}
 
-		&.follow {
-			padding: 3px;
-			background: #36aed2;
-		}
+		> .icon {
+			position: absolute;
+			z-index: 1;
+			bottom: -2px;
+			right: -2px;
+			width: 20px;
+			height: 20px;
+			box-sizing: border-box;
+			border-radius: 100%;
+			background: var(--bg);
+			box-shadow: 0 0 0 3px var(--bg);
+			font-size: 12px;
 
-		&.receiveFollowRequest {
-			padding: 3px;
-			background: #36aed2;
-		}
+			> * {
+				color: #fff;
+				width: 100%;
+				height: 100%;
+			}
 
-		&.retweet {
-			padding: 3px;
-			background: #36d298;
-		}
+			&.follow {
+				padding: 3px;
+				background: #36aed2;
+			}
 
-		&.quote {
-			padding: 3px;
-			background: #36d298;
-		}
+			&.receiveFollowRequest {
+				padding: 3px;
+				background: #36aed2;
+			}
 
-		&.reply {
-			padding: 3px;
-			background: #007aff;
-		}
+			&.retweet {
+				padding: 3px;
+				background: #36d298;
+			}
 
-		&.mention {
-			padding: 3px;
-			background: #88a6b7;
+			&.quote {
+				padding: 3px;
+				background: #36d298;
+			}
+
+			&.reply {
+				padding: 3px;
+				background: #007aff;
+			}
+
+			&.mention {
+				padding: 3px;
+				background: #88a6b7;
+			}
 		}
 	}
 
-	> header {
-		position: absolute;
-		top: 14px;
-		left: 62px;
-		display: flex;
-		align-items: baseline;
-		white-space: nowrap;
-		width: calc(100% - 76px);
-		line-height: 16px;
+	> .tail {
+		flex: 1;
+		min-width: 0;
 
-		> .name {
-			text-overflow: ellipsis;
+		> header {
+			display: flex;
+			align-items: baseline;
 			white-space: nowrap;
-			min-width: 0;
+
+			> .name {
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				min-width: 0;
+				overflow: hidden;
+			}
+
+			> .mk-time {
+				margin-left: auto;
+				font-size: 0.9em;
+			}
+		}
+
+		> .text {
+			white-space: nowrap;
 			overflow: hidden;
-		}
+			text-overflow: ellipsis;
 
-		> .mk-time {
-			margin-left: auto;
-			font-size: 0.9em;
-		}
-	}
+			> [data-icon] {
+				vertical-align: super;
+				font-size: 50%;
+				opacity: 0.5;
+			}
 
-	> .text {
-		position: absolute;
-		top: 33px;
-		left: 62px;
-		width: calc(100% - 76px);
-		line-height: 16px;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
+			> [data-icon]:first-child {
+				margin-right: 4px;
+			}
 
-		> [data-icon] {
-			vertical-align: super;
-			font-size: 50%;
-			opacity: 0.5;
-		}
-
-		> [data-icon]:first-child {
-			margin-right: 4px;
-		}
-
-		> [data-icon]:last-child {
-			margin-left: 4px;
+			> [data-icon]:last-child {
+				margin-left: 4px;
+			}
 		}
 	}
 }
