@@ -13,7 +13,7 @@ import XPagination from '../../components/ui/pagination.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('manageLists'),
+			title: this.$t('manageLists') as string,
 		};
 	},
 

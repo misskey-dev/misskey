@@ -27,7 +27,7 @@ import XPagination from '../components/ui/pagination.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('followRequests')
+			title: this.$t('followRequests') as string
 		};
 	},
 

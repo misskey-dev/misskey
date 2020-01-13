@@ -24,7 +24,7 @@ import XHomeTimeline from './index.home.timeline.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('timeline')
+			title: this.$t('timeline') as string
 		};
 	},
 

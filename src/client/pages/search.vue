@@ -10,7 +10,7 @@ import XNotes from '../components/notes.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('searchWith', { q: this.$route.query.q })
+			title: this.$t('searchWith', { q: this.$route.query.q }) as string
 		};
 	},
 

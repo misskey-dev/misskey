@@ -32,7 +32,7 @@ import XButton from '../components/ui/button.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('settings')
+			title: this.$t('settings') as string
 		};
 	},
 

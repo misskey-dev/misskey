@@ -15,7 +15,7 @@ import XNotes from '../components/notes.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('featured')
+			title: this.$t('featured') as string
 		};
 	},
 

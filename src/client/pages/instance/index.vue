@@ -63,7 +63,7 @@ export default Vue.extend({
 
 	metaInfo() {
 		return {
-			title: this.$t('instance')
+			title: this.$t('instance') as string
 		};
 	},
 

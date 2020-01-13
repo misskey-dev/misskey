@@ -50,7 +50,7 @@ export default Vue.extend({
 
 	metaInfo() {
 		return {
-			title: this.$t('federation')
+			title: this.$t('federation') as string
 		};
 	},
 

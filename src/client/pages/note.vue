@@ -19,7 +19,7 @@ export default Vue.extend({
 	i18n,
 	metaInfo() {
 		return {
-			title: this.$t('note')
+			title: this.$t('note') as string
 		};
 	},
 	components: {

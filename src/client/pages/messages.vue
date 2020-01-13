@@ -12,7 +12,7 @@ import XNotes from '../components/notes.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('messages')
+			title: this.$t('messages') as string
 		};
 	},
 
