@@ -171,7 +171,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-signin {
-	max-width: 420px;
 	box-sizing: border-box;
 	overflow: hidden;
 	padding: 32px;

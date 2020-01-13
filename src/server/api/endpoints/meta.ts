@@ -3,7 +3,7 @@ import * as os from 'os';
 import config from '../../../config';
 import define from '../define';
 import { fetchMeta } from '../../../misc/fetch-meta';
-import { Emojis } from '../../../models';
+import { Emojis, Users } from '../../../models';
 import { getConnection } from 'typeorm';
 import redis from '../../../db/redis';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../misc/hard-limits';
@@ -159,6 +159,7 @@ export default define(meta, async (ps, me) => {
 			category: e.category,
 			url: e.url,
 		})),
+		requireSetup: (await Users.count({})) === 0,
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,

@@ -73,7 +73,7 @@
 		</div>
 	</main>
 	<div class="widgets">
-		<div class="widget">aaa</div>
+		<div class="widget _panel">aaa</div>
 	</div>
 	<div class="buttons">
 		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></button>

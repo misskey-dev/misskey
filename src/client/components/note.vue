@@ -603,6 +603,8 @@ export default Vue.extend({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
+			position: sticky;
+			top: 72px;
 			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
