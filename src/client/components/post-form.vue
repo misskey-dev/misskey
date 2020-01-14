@@ -35,6 +35,8 @@
 			<button class="_button" @click="chooseFileFrom"><fa :icon="faPhotoVideo"/></button>
 			<button class="_button" @click="poll = !poll"><fa :icon="faChartPie"/></button>
 			<button class="_button" @click="useCw = !useCw"><fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="insertMention"><fa :icon="faAt"/></button>
+			<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
 			<button class="_button" @click="setVisibility" ref="visibilityButton">
 				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
@@ -49,8 +51,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
-import { faEyeSlash, faLaugh } from '@fortawesome/free-regular-svg-icons';
+import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt } from '@fortawesome/free-solid-svg-icons';
+import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
@@ -124,7 +126,7 @@ export default Vue.extend({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaugh, faPlus, faPhotoVideo, faCloud, faLink
+			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt
 		};
 	},
 
