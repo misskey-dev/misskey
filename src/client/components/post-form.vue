@@ -529,6 +529,14 @@ export default Vue.extend({
 
 		cancel() {
 			this.$emit('cancel');
+		},
+
+		insertMention() {
+
+		},
+
+		insertEmoji() {
+			
 		}
 	}
 });
