@@ -68,7 +68,7 @@ import i18n from '../i18n';
 import { emojilist } from '../../misc/emojilist';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory } from '@fortawesome/free-solid-svg-icons';
-import { faHeart, faFlag } from '@fortawesome/free-regular-svg-icons';
+import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import { groupByX } from '../../prelude/array';
 import XPopup from './popup.vue';
 
@@ -98,7 +98,7 @@ export default Vue.extend({
 			}, {
 				name: 'people',
 				text: this.$t('people'),
-				icon: ['far', 'laugh'],
+				icon: faLaugh,
 				isActive: false
 			}, {
 				name: 'animals_and_nature',

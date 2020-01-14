@@ -90,6 +90,7 @@ export default Vue.extend({
 		&.label {
 			pointer-events: none;
 			font-size: 0.7em;
+			padding-bottom: 4px;
 
 			> span {
 				opacity: 0.7;
