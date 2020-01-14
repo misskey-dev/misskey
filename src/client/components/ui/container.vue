@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, inNakedDeckColumn, hideHeader: !showHeader }">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader }">
 	<header v-if="showHeader" @click="() => showBody = !showBody">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -34,11 +34,6 @@ export default Vue.extend({
 			type: Boolean,
 			default: true
 		},
-	},
-	inject: {
-		inNakedDeckColumn: {
-			default: false
-		}
 	},
 	data() {
 		return {

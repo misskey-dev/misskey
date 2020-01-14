@@ -115,19 +115,6 @@ export default (os: MiOS) => new Vuex.Store({
 				set(state, x: { key: string; value: any }) {
 					nestedProperty.set(state, x.key, x.value);
 				},
-
-				addWidget(state, widget) {
-					state.settings.widgets.unshift(widget);
-					os.store.dispatch('updateWidgets');
-				},
-
-				updateWidget(state, x) {
-					const w = state.settings.widgets.find(w => w.id == x.id);
-					if (w) {
-						w.data = x.data;
-						os.store.dispatch('updateWidgets');
-					}
-				},
 			},
 
 			actions: {
@@ -146,6 +133,24 @@ export default (os: MiOS) => new Vuex.Store({
 							name: x.key,
 							value: x.value
 						});
+					}
+				},
+
+				setWidgets(ctx, widgets) {
+					ctx.state.widgets = widgets;
+					ctx.dispatch('updateWidgets');
+				},
+
+				addWidget(ctx, widget) {
+					ctx.state.widgets.unshift(widget);
+					ctx.dispatch('updateWidgets');
+				},
+
+				updateWidget(ctx, x) {
+					const w = ctx.state.widgets.find(w => w.id == x.id);
+					if (w) {
+						w.data = x.data;
+						ctx.dispatch('updateWidgets');
 					}
 				},
 

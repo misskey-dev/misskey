@@ -76,7 +76,7 @@
 		</div>
 	</main>
 	<div class="widgets">
-		<div class="widget _panel">aaa</div>
+		<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
 	</div>
 	<div class="buttons">
 		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></button>
@@ -158,6 +158,12 @@ export default Vue.extend({
 		};
 	},
 
+	computed: {
+		widgets(): any[] {
+			return this.$store.state.settings.widgets;
+		}
+	},
+
 	watch:{
 		$route(to, from) {
 			this.pageKey++;
@@ -174,6 +180,15 @@ export default Vue.extend({
 					el.removeEventListener('mousedown', this.onMousedown);
 				}
 			}
+		}
+	},
+
+	created() {
+		if (this.widgets.length === 0) {
+			this.$store.dispatch('settings/setWidgets', [{
+				name: 'memo',
+				id: 'a', data: {}
+			}]);
 		}
 	},
 
