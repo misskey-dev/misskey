@@ -26,6 +26,7 @@ Vue.component('fa', FontAwesomeIcon);
 
 require('./directives');
 require('./components');
+require('./widgets');
 require('./filters');
 
 Vue.mixin({

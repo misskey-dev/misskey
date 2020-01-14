@@ -51,6 +51,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .ukygtjoj {
+	position: relative;
 	overflow: hidden;
 
 	& + .ukygtjoj {

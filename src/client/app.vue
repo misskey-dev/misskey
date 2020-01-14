@@ -742,12 +742,6 @@ export default Vue.extend({
 
 	> .widgets {
 		padding: 16px 0;
-
-		> * {
-			background: var(--bg);
-			padding: 32px;
-			border-radius: var(--radius);
-		}
 	}
 
 	> .post {
