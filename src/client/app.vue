@@ -167,6 +167,7 @@ import i18n from './i18n';
 import { host } from './config';
 import { search } from './scripts/search';
 import contains from './scripts/contains';
+import MkToast from './components/toast.vue';
 
 export default Vue.extend({
 	i18n,
@@ -221,11 +222,16 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.widgets.length === 0) {
-			this.$store.dispatch('settings/setWidgets', [{
-				name: 'memo',
-				id: 'a', data: {}
-			}]);
+		if (this.$store.getters.isSignedIn) {
+			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection.on('notification', this.onNotification);
+
+			if (this.widgets.length === 0) {
+				this.$store.dispatch('settings/setWidgets', [{
+					name: 'memo',
+					id: 'a', data: {}
+				}]);
+			}
 		}
 	},
 
