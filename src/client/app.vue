@@ -37,7 +37,7 @@
 			</router-link>
 			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton">
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
-				<i v-if="$store.state.i.hasUnreadNotifications"><fa :icon="faCircle"/></i>
+				<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
 			</button>
 			<router-link class="item" to="/mentions">
 				<fa :icon="faAt" fixed-width/><span class="text">{{ $t('mentions') }}</span>
