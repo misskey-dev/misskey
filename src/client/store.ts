@@ -12,7 +12,9 @@ const defaultSettings = {
 	uploadFolder: null,
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	wallpaper: null,
-	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮']
+	memo: null,
+	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	widgets: []
 };
 
 const defaultDeviceSettings = {
@@ -113,6 +115,19 @@ export default (os: MiOS) => new Vuex.Store({
 				set(state, x: { key: string; value: any }) {
 					nestedProperty.set(state, x.key, x.value);
 				},
+
+				addWidget(state, widget) {
+					state.settings.widgets.unshift(widget);
+					os.store.dispatch('updateWidgets');
+				},
+
+				updateWidget(state, x) {
+					const w = state.settings.widgets.find(w => w.id == x.id);
+					if (w) {
+						w.data = x.data;
+						os.store.dispatch('updateWidgets');
+					}
+				},
 			},
 
 			actions: {
@@ -132,6 +147,18 @@ export default (os: MiOS) => new Vuex.Store({
 							value: x.value
 						});
 					}
+				},
+
+				updateWidgets(ctx) {
+					const widgets = ctx.state.widgets;
+					ctx.commit('set', {
+						key: 'widgets',
+						value: widgets
+					});
+					os.api('i/update-client-setting', {
+						name: 'widgets',
+						value: widgets
+					});
 				},
 			}
 		}
