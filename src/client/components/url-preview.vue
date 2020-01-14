@@ -173,9 +173,13 @@ export default Vue.extend({
 		position: relative;
 		display: block;
 		font-size: 14px;
-		border: solid 1px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 		border-radius: 4px;
 		overflow: hidden;
+
+		@media (prefers-color-scheme: dark) {
+			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+		}
 
 		&:hover {
 			text-decoration: none;
