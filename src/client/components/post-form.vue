@@ -700,18 +700,20 @@ export default Vue.extend({
 		}
 
 		> footer {
+			padding: 0 16px 16px 16px;
+
+			@media (max-width: 500px) {
+				padding: 0 8px 8px 8px;
+			}
+
 			> * {
 				display: inline-block;
 				padding: 0;
 				margin: 0;
 				font-size: 16px;
-				width: 64px;
-				height: 64px;
-
-				@media (max-width: 500px) {
-					width: 48px;
-					height: 48px;
-				}
+				width: 48px;
+				height: 48px;
+				border-radius: 6px;
 
 				&:hover {
 					background: rgba(0, 0, 0, 0.05);
