@@ -300,11 +300,11 @@ export default Vue.extend({
 					icon: faUpload,
 					action: () => { this.chooseFileFromPc() }
 				}, {
-					text: this.$t('attachFileFromDrive'),
+					text: this.$t('fromDrive'),
 					icon: faCloud,
 					action: () => { this.chooseFileFromDrive() }
 				}, {
-					text: this.$t('attachFileByUrl'),
+					text: this.$t('fromUrl'),
 					icon: faLink,
 					action: () => { this.chooseFileFromUrl() }
 				}],
