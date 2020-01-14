@@ -60,6 +60,7 @@ import i18n from '../i18n';
 import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
+import XEmojiPicker from './emoji-picker.vue';
 import { parse } from '../../mfm/parse';
 import { host, url } from '../config';
 import { erase, unique } from '../../prelude/array';
@@ -535,8 +536,10 @@ export default Vue.extend({
 
 		},
 
-		insertEmoji() {
-			
+		insertEmoji(ev) {
+			this.$root.new(XEmojiPicker, {
+				source: ev.currentTarget || ev.target
+			});
 		}
 	}
 });

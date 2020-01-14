@@ -23,6 +23,7 @@ const defaultDeviceSettings = {
 	alwaysShowNsfw: false,
 	useOsDefaultEmojis: false,
 	accounts: [],
+	recentEmojis: [],
 };
 
 export default (os: MiOS) => new Vuex.Store({
