@@ -74,7 +74,7 @@ export default Vue.extend({
 		remove(i) {
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('_remove.are-you-sure').replace('$1', this.announcements.find((_, j) => j == i).title),
+				text: this.$t('removeAreYouSure', { x: this.announcements.find((_, j) => j == i).title }),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
@@ -82,7 +82,7 @@ export default Vue.extend({
 				this.save(true);
 				this.$root.dialog({
 					type: 'success',
-					text: this.$t('_remove.removed')
+					text: this.$t('removed')
 				});
 			});
 		},
