@@ -459,23 +459,6 @@ export default Vue.extend({
 			//#endregion
 		},
 
-		async emoji() {
-			/*
-			const Picker = await import('../../desktop/views/components/emoji-picker-dialog.vue').then(m => m.default);
-			const button = this.$refs.emoji;
-			const rect = button.getBoundingClientRect();
-			const vm = this.$root.new(Picker, {
-				x: button.offsetWidth + rect.left + window.pageXOffset,
-				y: rect.top + window.pageYOffset
-			});
-			vm.$once('chosen', emoji => {
-				insertTextAtCursor(this.$refs.text, emoji);
-			});
-			this.$once('hook:beforeDestroy', () => {
-				vm.close();
-			});*/
-		},
-
 		saveDraft() {
 			if (this.instant) return;
 
@@ -533,7 +516,10 @@ export default Vue.extend({
 		},
 
 		insertMention() {
-
+			const vm = this.$root.new(MkUserSelect, {});
+			vm.$once('selected', user => {
+				insertTextAtCursor(this.$refs.text, user.host ? `@${user.username}@${user.host}` : `@${user.username}`);
+			});
 		},
 
 		insertEmoji(ev) {
