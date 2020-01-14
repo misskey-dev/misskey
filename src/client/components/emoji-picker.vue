@@ -170,6 +170,10 @@ export default Vue.extend({
 			recents.unshift(emoji)
 			this.$store.commit('device/set', { key: 'recentEmojis', value: recents.splice(0, 16) });
 			this.$emit('chosen', getKey(emoji));
+		},
+
+		close() {
+			this.$refs.popup.close();
 		}
 	}
 });

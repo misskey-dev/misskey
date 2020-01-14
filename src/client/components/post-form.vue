@@ -537,8 +537,11 @@ export default Vue.extend({
 		},
 
 		insertEmoji(ev) {
-			this.$root.new(XEmojiPicker, {
+			const vm = this.$root.new(XEmojiPicker, {
 				source: ev.currentTarget || ev.target
+			}).$once('chosen', emoji => {
+				insertTextAtCursor(this.$refs.text, emoji);
+				vm.close();
 			});
 		}
 	}
