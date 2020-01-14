@@ -1,11 +1,7 @@
 <template>
-<x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
-	<div class="mk-user-select">
-		<div class="header">
-			<button class="_button" @click="close()"><fa :icon="faTimes"/></button>
-			<span>{{ $t('selectUser') }}</span>
-			<button class="_button" :disabled="selected == null" @click="ok()"><fa :icon="faCheck"/></button>
-		</div>
+<x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
+	<template #header>{{ $t('selectUser') }}</template>
+	<div class="tbhwbxda">
 		<div class="inputs">
 			<x-input v-model="username" class="input" @input="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></x-input>
 			<x-input v-model="host" class="input" @input="search"><span>{{ $t('host') }}</span><template #prefix>@</template></x-input>
@@ -20,7 +16,7 @@
 			</div>
 		</div>
 	</div>
-</x-modal>
+</x-window>
 </template>
 
 <script lang="ts">
@@ -28,14 +24,14 @@ import Vue from 'vue';
 import i18n from '../i18n';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import XInput from './ui/input.vue';
-import XModal from './modal.vue';
+import XWindow from './window.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
 		XInput,
-		XModal,
+		XWindow,
 	},
 
 	props: {
@@ -65,7 +61,7 @@ export default Vue.extend({
 				this.users = [];
 				return;
 			}
-			this.$root.api('users/search', {
+			this.$root.api('users/search-by-username-and-host', {
 				username: this.username,
 				host: this.host,
 				limit: 10,
@@ -80,7 +76,7 @@ export default Vue.extend({
 		},
 
 		close() {
-			this.$refs.modal.close();
+			this.$refs.window.close();
 		},
 
 		ok() {
@@ -94,32 +90,14 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '../theme';
 
-.mk-user-select {
-	width: 350px;
-	height: 350px;
-	background: var(--bg);
-	border-radius: var(--radius);
-	overflow: hidden;
+.tbhwbxda {
 	display: flex;
 	flex-direction: column;
-
-	> .header {
-		display: flex;
-		flex-shrink: 0;
-
-		> button {
-			height: 42px;
-			width: 42px;
-		}
-
-		> span {
-			flex: 1;
-			line-height: 42px;
-		}
-	}
-
+	overflow: auto;
+	height: 100%;
+		
 	> .inputs {
-		padding: 8px 16px 16px 16px;
+		margin-top: 16px;
 
 		> .input {
 			display: inline-block;
@@ -171,6 +149,7 @@ export default Vue.extend({
 
 			> .body {
 				padding: 0 8px;
+				min-width: 0;
 
 				> .name {
 					display: block;

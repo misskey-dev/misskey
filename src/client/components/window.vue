@@ -2,11 +2,13 @@
 <x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
 	<div class="ebkgoccj" :class="{ noPadding }">
 		<div class="header">
+			<button class="_button" v-if="withOkButton" @click="close()"><fa :icon="faTimes"/></button>
 			<span class="title">
 				<mk-avatar :user="avatar" v-if="avatar" class="avatar"/>
 				<slot name="header"></slot>
 			</span>
-			<button class="_button" @click="$refs.modal.close()"><fa :icon="faTimes"/></button>
+			<button class="_button" v-if="!withOkButton" @click="close()"><fa :icon="faTimes"/></button>
+			<button class="_button" v-if="withOkButton" @click="() => { $emit('ok'); close(); }" :disabled="okButtonDisabled"><fa :icon="faCheck"/></button>
 		</div>
 		<div class="body">
 			<slot></slot>
@@ -33,6 +35,16 @@ export default Vue.extend({
 			type: Object,
 			required: false
 		},
+		withOkButton: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		okButtonDisabled: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 		noPadding: {
 			type: Boolean,
 			required: false,
@@ -47,6 +59,9 @@ export default Vue.extend({
 	},
 
 	methods: {
+		close() {
+			this.$refs.modal.close();
+		}
 	}
 });
 </script>
@@ -112,6 +127,10 @@ export default Vue.extend({
 					margin: (($height-narrow - $size) / 2) 8px (($height-narrow - $size) / 2) 0;
 				}
 			}
+		}
+
+		> button + .title {
+			padding-left: 0;
 		}
 	}
 
