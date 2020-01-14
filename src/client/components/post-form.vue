@@ -293,7 +293,10 @@ export default Vue.extend({
 		chooseFileFrom(ev) {
 			this.$root.menu({
 				items: [{
+					type: 'label',
 					text: this.$t('attachFile'),
+				}, {
+					text: this.$t('upload'),
 					icon: faUpload,
 					action: () => { this.chooseFileFromPc() }
 				}, {

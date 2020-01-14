@@ -3,6 +3,9 @@
 	<sequential-entrance class="onchrpzrvnoruiaenfcqvccjfuupzzwv" :delay="15">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i" :data-index="i"></div>
+			<span v-else-if="item.type === 'label'" class="label item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
+				<span>{{ item.text }}</span>
+			</span>
 			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
 				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
@@ -82,6 +85,15 @@ export default Vue.extend({
 		&:active {
 			color: #fff;
 			background: darken($primary, 10);
+		}
+
+		&.label {
+			pointer-events: none;
+			font-size: 0.8em;
+
+			> span {
+				opacity: 0.7;
+			}
 		}
 
 		> [data-icon] {
