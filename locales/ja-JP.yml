@@ -211,6 +211,7 @@ remove: "削除"
 removed: "削除しました"
 removeAreYouSure: "{x}を削除しますか？"
 saved: "保存しました"
+messaging: "トーク"
 
 _cw:
   hide: "隠す"
