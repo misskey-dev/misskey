@@ -119,7 +119,7 @@ export default Vue.extend({
 		},
 
 		async toggleMute() {
-			this.$root.api(this.user.isMuted ? 'muting/delete' : 'muting/create', {
+			this.$root.api(this.user.isMuted ? 'mute/delete' : 'mute/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = !this.user.isMuted;

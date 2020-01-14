@@ -46,7 +46,7 @@ export default Vue.extend({
 	data() {
 		return {
 			mutingPagination: {
-				endpoint: 'muting/list',
+				endpoint: 'mute/list',
 				limit: 10,
 			},
 			blockingPagination: {
