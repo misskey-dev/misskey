@@ -25,6 +25,7 @@ export const router = new VueRouter({
 		{ path: '/instance/queue', component: () => import('./pages/instance/queue.vue').then(m => m.default) },
 		{ path: '/instance/stats', component: () => import('./pages/instance/stats.vue').then(m => m.default) },
 		{ path: '/instance/federation', component: () => import('./pages/instance/federation.vue').then(m => m.default) },
+		{ path: '/instance/announcements', component: () => import('./pages/instance/announcements.vue').then(m => m.default) },
 		{ path: '/follow-requests', component: () => import('./pages/follow-requests.vue').then(m => m.default) },
 		{ path: '/manage-lists', component: () => import('./pages/manage-lists/index.vue').then(m => m.default) },
 		{ path: '/manage-lists/:list', component: () => import('./pages/manage-lists/list.vue').then(m => m.default) },

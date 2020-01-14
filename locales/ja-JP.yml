@@ -205,6 +205,12 @@ featured: "ハイライト"
 usernameOrUserId: "ユーザー名かユーザーID"
 noSuchUser: "ユーザーが見つかりません"
 lookup: "照会"
+announcements: "お知らせ"
+imageUrl: "画像URL"
+remove: "削除"
+removed: "削除しました"
+removeAreYouSure: "{x}を削除しますか？"
+saved: "保存しました"
 
 _cw:
   hide: "隠す"
