@@ -6,7 +6,7 @@
 	</div>
 	<div class="_footer">
 		<x-button @click="save()" primary inline :disabled="!changed"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
-		<x-button ref="previewButton" inline @click="preview()"><fa :icon="faEye"/> {{ $t('preview') }}</x-button>
+		<x-button inline @click="preview"><fa :icon="faEye"/> {{ $t('preview') }}</x-button>
 	</div>
 </section>
 </template>
@@ -47,9 +47,9 @@ export default Vue.extend({
 			this.changed = false;
 		},
 
-		preview() {
+		preview(ev) {
 			const picker = this.$root.new(MkReactionPicker, {
-				source: this.$refs.previewButton.$el,
+				source: ev.currentTarget || ev.target,
 				reactions: this.reactions.trim().split('\n'),
 				showFocus: false,
 			});

@@ -146,6 +146,11 @@ export default (os: MiOS) => new Vuex.Store({
 					ctx.dispatch('updateWidgets');
 				},
 
+				removeWidget(ctx, widget) {
+					ctx.state.widgets = ctx.state.widgets.filter(w => w.id != widget.id);
+					ctx.dispatch('updateWidgets');
+				},
+
 				updateWidget(ctx, x) {
 					const w = ctx.state.widgets.find(w => w.id == x.id);
 					if (w) {

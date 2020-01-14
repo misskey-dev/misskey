@@ -1,11 +1,11 @@
 <template>
 <div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader }">
-	<header v-if="showHeader" @click="() => showBody = !showBody">
+	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
-		<button v-if="bodyTogglable">
-			<template v-if="showBody"><fa icon="angle-up"/></template>
-			<template v-else><fa icon="angle-down"/></template>
+		<button v-if="bodyTogglable" @click="() => showBody = !showBody">
+			<template v-if="showBody"><fa :icon="faAngleUp"/></template>
+			<template v-else><fa :icon="faAngleDown"/></template>
 		</button>
 	</header>
 	<div v-show="showBody">
@@ -16,28 +16,35 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+
 export default Vue.extend({
 	props: {
 		showHeader: {
 			type: Boolean,
+			required: false,
 			default: true
 		},
 		naked: {
 			type: Boolean,
+			required: false,
 			default: false
 		},
 		bodyTogglable: {
 			type: Boolean,
+			required: false,
 			default: false
 		},
 		expanded: {
 			type: Boolean,
+			required: false,
 			default: true
 		},
 	},
 	data() {
 		return {
-			showBody: this.expanded
+			showBody: this.expanded,
+			faAngleUp, faAngleDown
 		};
 	},
 	methods: {
@@ -66,11 +73,11 @@ export default Vue.extend({
 	> header {
 		> .title {
 			margin: 0;
-			padding: 8px 10px;
-			font-size: 15px;
-			font-weight: normal;
-			color: var(--faceHeaderText);
-			background: var(--faceHeader);
+			padding: 12px 16px;
+
+			@media (max-width: 500px) {
+				padding: 8px 10px;
+			}
 
 			> [data-icon] {
 				margin-right: 6px;
@@ -89,13 +96,7 @@ export default Vue.extend({
 			padding: 0;
 			width: 42px;
 			height: 100%;
-			font-size: 15px;
-			color: var(--faceTextButton);
 		}
-	}
-
-	> div {
-		color: var(--fg);
 	}
 }
 </style>

@@ -51,7 +51,7 @@ export default function <T extends object>(data: {
 			},
 
 			save() {
-				this.$store.commit('updateWidget', this.widget);
+				this.$store.dispatch('settings/updateWidget', this.widget);
 			}
 		}
 	});

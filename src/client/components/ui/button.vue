@@ -3,7 +3,7 @@
 	:is="link ? 'a' : 'button'"
 	:class="{ inline, primary }"
 	:type="type"
-	@click="$emit('click')"
+	@click="$emit('click', $event)"
 	@mousedown="onMousedown"
 >
 	<div ref="ripples" class="ripples"></div>

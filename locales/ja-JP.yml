@@ -214,6 +214,11 @@ messaging: "トーク"
 upload: "アップロード"
 fromDrive: "ドライブから"
 fromUrl: "URLから"
+editWidgets: "ウィジェットを編集"
+exitEdit: "編集を終了"
+
+_widgets:
+  memo: "付箋"
 
 _cw:
   hide: "隠す"

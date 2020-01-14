@@ -26,6 +26,7 @@
 			</div>
 		</div>
 	</header>
+
 	<nav ref="nav" class="nav">
 		<div class="menu" v-if="$store.getters.isSignedIn">
 			<router-link class="item" to="/" exact>
@@ -64,6 +65,7 @@
 			</button>
 		</div>
 	</nav>
+
 	<main>
 		<div class="content">
 			<transition name="page" mode="out-in">
@@ -75,16 +77,44 @@
 			<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
 		</div>
 	</main>
+
 	<div class="widgets">
-		<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+		<template v-if="enableWidgets">
+			<template v-if="widgetsEditMode">
+				<x-button primary @click="addWidget"><fa :icon="faPlus"/></x-button>
+				<x-draggable
+					:list="widgets"
+					handle=".handle"
+					animation="150"
+					@sort="onWidgetSort"
+				>
+					<div v-for="widget in widgets" class="customize-container" :key="widget.id">
+						<header>
+							<span class="handle"><fa :icon="faBars"/></span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+						</header>
+						<div @click="widgetFunc(widget.id)">
+							<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+						</div>
+					</div>
+				</x-draggable>
+			</template>
+			<template v-else>
+				<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+			</template>
+			<button v-if="widgetsEditMode" class="_button" @click="widgetsEditMode = false">{{ $t('exitEdit') }}</button>
+			<button v-else class="_button" @click="widgetsEditMode = true">{{ $t('editWidgets') }}</button>
+		</template>
 	</div>
+
 	<div class="buttons">
 		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button home _button" :disabled="$route.path === '/'" @click="$router.push('/')"><fa :icon="faHome"/></button>
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
+
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
+
 	<transition name="zoom-in-bottom">
 		<nav v-if="navOpen" ref="nav" class="popup-nav">
 			<template v-if="showLists">
@@ -120,6 +150,7 @@
 			</template>
 		</nav>
 	</transition>
+
 	<transition name="zoom-in-top">
 		<x-notifications v-if="notificationsOpen" class="notifications" ref="notifications"/>
 	</transition>
@@ -130,6 +161,8 @@
 import Vue from 'vue';
 import { faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
+//import * as XDraggable from 'vuedraggable';
+import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
 import { host } from './config';
 import { search } from './scripts/search';
@@ -140,6 +173,8 @@ export default Vue.extend({
 
 	components: {
 		XNotifications: () => import('./components/notifications.vue').then(m => m.default),
+		XButton: () => import('./components/ui/button.vue').then(m => m.default),
+		XDraggable: () => import('vuedraggable'),
 	},
 
 	data() {
@@ -154,6 +189,8 @@ export default Vue.extend({
 			accounts: [],
 			lists: [],
 			connection: null,
+			widgetsEditMode: false,
+			enableWidgets: window.innerWidth >= 1000,
 			faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
 		};
 	},
@@ -408,6 +445,41 @@ export default Vue.extend({
 				) this.notificationsOpen = false;
 			return false;
 		},
+
+		widgetFunc(id) {
+			const w = this.$refs[id][0];
+			if (w.func) w.func();
+		},
+
+		onWidgetSort() {
+			this.saveHome();
+		},
+
+		addWidget(ev) {
+			const add = name => {
+				this.$store.dispatch('settings/addWidget', {
+					name,
+					id: uuid(),
+					data: {}
+				});
+			};
+
+			this.$root.menu({
+				items: [{
+					text: this.$t('_widgets.memo'),
+					action: () => { add('memo') }
+				}],
+				source: ev.currentTarget || ev.target,
+			});
+		},
+
+		removeWidget(widget) {
+			this.$store.dispatch('settings/removeWidget', widget);
+		},
+
+		saveHome() {
+			this.$store.dispatch('settings/setWidgets', this.widgets);
+		}
 	}
 });
 </script>
@@ -742,6 +814,40 @@ export default Vue.extend({
 
 	> .widgets {
 		padding: 16px 0;
+
+		> * {
+			margin-bottom: 16px;
+		}
+
+		.customize-container {
+			margin: 8px;
+			background: #fff;
+
+			> header {
+				line-height: 32px;
+				background: #eee;
+
+				> .handle {
+					padding: 0 8px;
+				}
+
+				> .remove {
+					position: absolute;
+					top: 0;
+					right: 0;
+					padding: 0 8px;
+					line-height: 32px;
+				}
+			}
+
+			> div {
+				padding: 8px;
+
+				> * {
+					pointer-events: none;
+				}
+			}
+		}
 	}
 
 	> .post {
