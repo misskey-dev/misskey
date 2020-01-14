@@ -79,7 +79,7 @@
 	</main>
 
 	<div class="widgets">
-		<template v-if="enableWidgets">
+		<template v-if="enableWidgets && $store.getters.isSignedIn">
 			<template v-if="widgetsEditMode">
 				<x-button primary @click="addWidget"><fa :icon="faPlus"/></x-button>
 				<x-draggable
