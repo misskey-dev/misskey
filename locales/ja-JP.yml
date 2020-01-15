@@ -216,6 +216,8 @@ fromDrive: "ドライブから"
 fromUrl: "URLから"
 editWidgets: "ウィジェットを編集"
 exitEdit: "編集を終了"
+explore: "みつける"
+games: "Misskey Games"
 
 _widgets:
   memo: "付箋"

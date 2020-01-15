@@ -35,20 +35,16 @@
 			<router-link class="item" to="/featured">
 				<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
 			</router-link>
+			<router-link class="item" to="/explore">
+				<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
+			</router-link>
 			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton">
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
 				<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
 			</button>
-			<router-link class="item" to="/mentions">
-				<fa :icon="faAt" fixed-width/><span class="text">{{ $t('mentions') }}</span>
-				<i v-if="$store.state.i.hasUnreadMentions"><fa :icon="faCircle"/></i>
-			</router-link>
-			<router-link class="item" to="/messages">
-				<fa :icon="faEnvelope" fixed-width/><span class="text">{{ $t('messages') }}</span>
-				<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i>
-			</router-link>
-			<router-link class="item" to="/favorites">
-				<fa :icon="faStar" fixed-width/><span class="text">{{ $t('favorites') }}</span>
+			<router-link class="item" to="/messaging">
+				<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
+				<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
 			</router-link>
 			<router-link class="item" to="/follow-requests" v-if="$store.state.i.isLocked">
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
@@ -62,6 +58,7 @@
 			</button>
 			<button class="item _button" @click="more">
 				<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
+				<i v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i>
 			</button>
 		</div>
 	</nav>
@@ -159,7 +156,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud } from '@fortawesome/free-solid-svg-icons';
+import { faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 //import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
@@ -192,7 +189,7 @@ export default Vue.extend({
 			connection: null,
 			widgetsEditMode: false,
 			enableWidgets: window.innerWidth >= 1000,
-			faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
+			faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
 		};
 	},
 
@@ -360,9 +357,27 @@ export default Vue.extend({
 			this.$root.menu({
 				items: [{
 					type: 'link',
-					text: this.$t('messaging'),
-					to: '/messaging',
-					icon: faComments,
+					text: this.$t('mentions'),
+					to: '/mentions',
+					icon: faAt,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('messages'),
+					to: '/messages',
+					icon: faEnvelope,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('favorites'),
+					to: '/favorites',
+					icon: faStar,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('games'),
+					to: '/games',
+					icon: faGamepad,
 					align: 'left',
 				}],
 				fixed: true,
