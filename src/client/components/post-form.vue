@@ -65,6 +65,7 @@ import { parse } from '../../mfm/parse';
 import { host, url } from '../config';
 import { erase, unique } from '../../prelude/array';
 import extractMentions from '../../misc/extract-mentions';
+import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
 
 export default Vue.extend({
@@ -518,7 +519,7 @@ export default Vue.extend({
 		insertMention() {
 			const vm = this.$root.new(MkUserSelect, {});
 			vm.$once('selected', user => {
-				insertTextAtCursor(this.$refs.text, user.host ? `@${user.username}@${user.host}` : `@${user.username}`);
+				insertTextAtCursor(this.$refs.text, getAcct(user) + ' ');
 			});
 		},
 

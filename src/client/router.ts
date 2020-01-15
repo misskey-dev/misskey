@@ -16,6 +16,8 @@ export const router = new VueRouter({
 		{ path: '/search', component: () => import('./pages/search.vue').then(m => m.default) },
 		{ path: '/favorites', component: () => import('./pages/favorites.vue').then(m => m.default) },
 		{ path: '/messages', component: () => import('./pages/messages.vue').then(m => m.default) },
+		{ path: '/messaging', name: 'messaging', component: () => import('./pages/messaging.vue').then(m => m.default) },
+		{ path: '/messaging/:user', component: () => import('./pages/messaging-room.vue').then(m => m.default) },
 		{ path: '/settings', component: () => import('./pages/settings.vue').then(m => m.default) },
 		{ path: '/instance', component: () => import('./pages/instance/index.vue').then(m => m.default) },
 		{ path: '/instance/emojis', component: () => import('./pages/instance/emojis.vue').then(m => m.default) },
