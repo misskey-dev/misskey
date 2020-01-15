@@ -233,6 +233,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-messaging-form {
+	position: relative;
+
 	> textarea {
 		cursor: auto;
 		display: block;

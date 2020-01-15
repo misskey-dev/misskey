@@ -84,13 +84,12 @@ export default Vue.extend({
 	$me-balloon-color: $primary;
 
 	position: relative;
-	padding: 10px 12px 10px 12px;
 	background-color: transparent;
 
 	> .avatar {
 		display: block;
 		position: absolute;
-		top: 10px;
+		top: 0;
 		width: 54px;
 		height: 54px;
 		border-radius: 8px;
@@ -236,7 +235,7 @@ export default Vue.extend({
 
 	&:not([data-is-me]) {
 		> .avatar {
-			left: 12px;
+			left: 0;
 		}
 
 		> .content {
@@ -274,7 +273,7 @@ export default Vue.extend({
 
 	&[data-is-me] {
 		> .avatar {
-			right: 12px;
+			right: 0;
 		}
 
 		> .content {

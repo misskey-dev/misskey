@@ -1,12 +1,9 @@
 <template>
 <div class="mk-notifications">
 	<div class="contents">
-		<sequential-entrance class="notifications">
-			<template v-for="(notification, i) in _notifications">
-				<x-notification :notification="notification" :key="notification.id" :with-time="true" class="notification" :data-index="i"/>
-				<x-date-separator class="date" :key="notification.id + '_date'" :data-index="i" v-if="i != items.length - 1 && notification._date != _notifications[i + 1]._date" :newer="notification.createdAt" :older="_notifications[i + 1].createdAt"/>
-			</template>
-		</sequential-entrance>
+		<x-list class="notifications" :items="items" v-slot="{ item: notification, i }">
+			<x-notification :notification="notification" :with-time="true" class="notification" :key="notification.id" :data-index="i"/>
+		</x-list>
 
 		<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
@@ -26,14 +23,14 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
-import XDateSeparator from './date-separator.vue';
+import XList from './date-separated-list.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
 		XNotification,
-		XDateSeparator,
+		XList,
 	},
 
 	mixins: [
@@ -64,16 +61,6 @@ export default Vue.extend({
 			},
 			faSpinner
 		};
-	},
-
-	computed: {
-		_notifications(): any[] {
-			return (this.items as any).map(notification => {
-				const date = new Date(notification.createdAt).getDate();
-				notification._date = date;
-				return notification;
-			});
-		}
 	},
 
 	watch: {
@@ -109,10 +96,14 @@ export default Vue.extend({
 	> .contents {
 		overflow: auto;
 		height: 100%;
+		padding: 8px 8px 0 8px;
 
 		> .notifications {
+			> /deep/ * {
+				margin-bottom: 8px;
+			}
+
 			> .notification {
-				margin: 8px;
 				background: var(--bg);
 				border-radius: 6px;
 				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

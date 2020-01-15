@@ -4,12 +4,9 @@
 
 	<mk-error v-if="error" @retry="init()"/>
 
-	<sequential-entrance class="notes">
-		<template v-for="(note, i) in _notes">
-			<x-note :note="note" :key="note.id" :data-index="i" :detail="detail"/>
-			<x-date-separator :key="note.id + '_date'" :data-index="i" v-if="i != items.length - 1 && note._date != _notes[i + 1]._date" :newer="note.createdAt" :older="_notes[i + 1].createdAt"/>
-		</template>
-	</sequential-entrance>
+	<x-list class="notes" :items="notes" v-slot="{ item: note, i }">
+		<x-note :note="note" :detail="detail" :key="note.id" :data-index="i"/>
+	</x-list>
 
 	<footer v-if="more">
 		<button @click="fetchMore()" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" class="_buttonPrimary">
@@ -26,7 +23,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
-import XDateSeparator from './date-separator.vue';
+import XList from './date-separated-list.vue';
 import getUserName from '../../misc/get-user-name';
 import getNoteSummary from '../../misc/get-note-summary';
 
@@ -34,7 +31,7 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XNote, XDateSeparator
+		XNote, XList
 	},
 
 	mixins: [
@@ -88,14 +85,6 @@ export default Vue.extend({
 		notes(): any[] {
 			return this.extract ? this.extract(this.items) : this.items;
 		},
-
-		_notes(): any[] {
-			return (this.notes as any).map(item => {
-				const date = new Date(item.createdAt).getDate();
-				item._date = date;
-				return item;
-			});
-		}
 	},
 });
 </script>
@@ -114,7 +103,7 @@ export default Vue.extend({
 	}
 
 	> .notes {
-		> * {
+		> /deep/ * {
 			margin-bottom: 16px;
 
 			@media (max-width: 500px) {

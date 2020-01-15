@@ -18,12 +18,9 @@
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
 			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('@.loading') : $t('@.load-more') }}
 		</button>
-		<template v-for="(message, i) in _messages">
-			<x-message :message="message" :key="message.id" :is-group="group != null"/>
-			<p class="date" v-if="i != messages.length - 1 && message._date != _messages[i + 1]._date">
-				<span>{{ _messages[i + 1]._datetext }}</span>
-			</p>
-		</template>
+		<x-list class="messages" :items="messages" v-slot="{ item: message, i }">
+			<x-message :message="message" :is-group="group != null" :key="message.id" :data-index="i"/>
+		</x-list>
 	</div>
 	<footer>
 		<transition name="fade">
@@ -40,6 +37,7 @@
 import Vue from 'vue';
 import { faArrowCircleDown, faFlag } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
+import XList from '../components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import { url } from '../config';
@@ -50,7 +48,8 @@ export default Vue.extend({
 
 	components: {
 		XMessage,
-		XForm
+		XForm,
+		XList,
 	},
 
 	data() {
@@ -69,16 +68,6 @@ export default Vue.extend({
 	},
 
 	computed: {
-		_messages(): any[] {
-			return (this.messages as any).map(message => {
-				const date = new Date(message.createdAt).getDate();
-				const month = new Date(message.createdAt).getMonth() + 1;
-				message._date = date;
-				message._datetext = this.$t('@.month-and-day').replace('{month}', month.toString()).replace('{day}', date.toString());
-				return message;
-			});
-		},
-
 		form(): any {
 			return this.$refs.form;
 		}
@@ -315,7 +304,6 @@ export default Vue.extend({
 			padding: 16px 8px 8px 8px;
 			text-align: center;
 			font-size: 0.8em;
-			color: var(--messagingRoomInfo);
 			opacity: 0.5;
 
 			[data-icon] {
@@ -363,40 +351,14 @@ export default Vue.extend({
 			}
 		}
 
-		> .date {
-			display: block;
-			margin: 8px 0;
-			text-align: center;
-
-			&:before {
-				content: '';
-				display: block;
-				position: absolute;
-				height: 1px;
-				width: 90%;
-				top: 16px;
-				left: 0;
-				right: 0;
-				margin: 0 auto;
-				background: var(--messagingRoomDateDividerLine);
-			}
-
-			> span {
-				display: inline-block;
-				margin: 0;
-				padding: 0 16px;
-				//font-weight bold;
-				line-height: 32px;
-				color: var(--messagingRoomDateDividerText);
-				background: var(--messagingRoomBg);
+		> .messages {
+			> /deep/ * {
+				margin-bottom: 16px;
 			}
 		}
 	}
 
 	> footer {
-		position: sticky;
-		z-index: 2;
-		bottom: 0;
 		width: 100%;
 		padding: 0;
 		background: var(--bg);
