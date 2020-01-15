@@ -293,9 +293,6 @@ export default Vue.extend({
 
 	> .body {
 		width: 100%;
-		max-width: 600px;
-		margin: 0 auto;
-		min-height: calc(100% - 103px);
 
 		> .init,
 		> .empty {
