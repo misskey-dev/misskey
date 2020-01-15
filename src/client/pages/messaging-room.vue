@@ -3,6 +3,14 @@
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
+	<template v-if="!fetching && user">
+		<portal to="title"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
+		<portal to="avatar"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
+	</template>
+	<template v-if="!fetching && group">
+		<portal to="title">{{ group.name }}</portal>
+	</template>
+
 	<div class="body">
 		<p class="init" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}</p>
 		<p class="empty" v-if="!fetching && messages.length == 0"><fa icon="info-circle"/>{{ user ? $t('not-talked-user') : $t('not-talked-group') }}</p>
@@ -293,7 +301,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-messaging-room {
-	background: var(--messagingRoomBg);
 
 	> .body {
 		width: 100%;
@@ -391,10 +398,8 @@ export default Vue.extend({
 		z-index: 2;
 		bottom: 0;
 		width: 100%;
-		max-width: 600px;
-		margin: 0 auto;
 		padding: 0;
-		background: var(--messagingRoomBg);
+		background: var(--bg);
 		background-clip: content-box;
 
 		> .new-message {

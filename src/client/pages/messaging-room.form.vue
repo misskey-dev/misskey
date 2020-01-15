@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging-form"
+<div class="mk-messaging-form _panel"
 	@dragover.stop="onDragover"
 	@drop.stop="onDrop"
 >
@@ -12,15 +12,15 @@
 		v-autocomplete="{ model: 'text' }"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<mk-uploader ref="uploader" @uploaded="onUploaded"/>
-	<button class="send" @click="send" :disabled="!canSend || sending" :title="$t('send')">
-		<template v-if="!sending"><fa icon="paper-plane"/></template><template v-if="sending"><fa icon="spinner .spin"/></template>
+	<x-uploader ref="uploader" @uploaded="onUploaded"/>
+	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$t('send')">
+		<template v-if="!sending"><fa :icon="faPaperPlane"/></template><template v-if="sending"><fa icon="spinner .spin"/></template>
 	</button>
-	<button class="attach-from-local" @click="chooseFile" :title="$t('attach-from-local')">
-		<fa icon="upload"/>
+	<button class="attach-from-local _button" @click="chooseFile" :title="$t('attach-from-local')">
+		<fa :icon="faUpload"/>
 	</button>
-	<button class="attach-from-drive" @click="chooseFileFromDrive" :title="$t('attach-from-drive')">
-		<fa :icon="['far', 'folder-open']"/>
+	<button class="attach-from-drive _button" @click="chooseFileFromDrive" :title="$t('attach-from-drive')">
+		<fa :icon="faCloud"/>
 	</button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>
@@ -28,12 +28,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faPaperPlane, faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import * as autosize from 'autosize';
 import { formatTimeString } from '../../misc/format-time-string';
 
 export default Vue.extend({
 	i18n,
+	components: {
+		XUploader: () => import('../components/uploader.vue').then(m => m.default),
+	},
 	props: {
 		user: {
 			type: Object,
@@ -48,7 +52,8 @@ export default Vue.extend({
 		return {
 			text: null,
 			file: null,
-			sending: false
+			sending: false,
+			faPaperPlane, faUpload, faCloud
 		};
 	},
 	computed: {
@@ -234,18 +239,17 @@ export default Vue.extend({
 		width: 100%;
 		min-width: 100%;
 		max-width: 100%;
-		height: 64px;
+		height: 80px;
 		margin: 0;
-		padding: 8px;
+		padding: 16px 16px 0 16px;
 		resize: none;
 		font-size: 1em;
-		color: var(--inputText);
 		outline: none;
 		border: none;
-		border-top: solid 1px var(--faceDivider);
 		border-radius: 0;
 		box-shadow: none;
 		background: transparent;
+		box-sizing: border-box;
 	}
 
 	> .file {
@@ -260,7 +264,7 @@ export default Vue.extend({
 		bottom: 0;
 		right: 0;
 		margin: 0;
-		padding: 10px 14px;
+		padding: 16px;
 		font-size: 1em;
 		color: #aaa;
 		transition: color 0.1s ease;
@@ -326,7 +330,7 @@ export default Vue.extend({
 	.attach-from-local,
 	.attach-from-drive {
 		margin: 0;
-		padding: 10px 14px;
+		padding: 16px;
 		font-size: 1em;
 		font-weight: normal;
 		text-decoration: none;

@@ -2,7 +2,7 @@
 <div class="thvuemwp" :data-is-me="isMe">
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
-		<div class="balloon" :data-no-text="message.text == null">
+		<div class="balloon _panel" :data-no-text="message.text == null">
 			<button class="delete-button" v-if="isMe" :title="$t('@.delete')" @click="del">
 				<img src="/assets/desktop/remove.png" alt="Delete"/>
 			</button>

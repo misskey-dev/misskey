@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faComments"/></portal>
 	<portal to="title">{{ $t('messaging') }}</portal>
 
-	<x-button @click="start()" primary><fa :icon="faPlus"/> {{ $t('startMessaging') }}</x-button>
+	<x-button @click="start()" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</x-button>
 
 	<div class="history" v-if="messages.length > 0">
 		<router-link v-for="message in messages"
@@ -143,7 +143,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-messaging
+.mk-messaging {
+
+	> .start {
+		margin: 0 auto 16px auto;
+	}
 
 	> .history {
 		> .message {
@@ -161,6 +165,7 @@ export default Vue.extend({
 				.avatar {
 					filter: saturate(200%);
 				}
+			}
 
 			&:active {
 			}
@@ -185,8 +190,6 @@ export default Vue.extend({
 			}
 
 			> div {
-				max-width: 500px;
-				margin: 0 auto;
 				padding: 20px 30px;
 
 				&:after {
