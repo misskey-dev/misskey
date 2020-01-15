@@ -85,15 +85,18 @@ export default Vue.extend({
 
 	position: relative;
 	background-color: transparent;
+	display: flex;
 
 	> .avatar {
 		display: block;
-		position: absolute;
-		top: 0;
 		width: 54px;
 		height: 54px;
-		border-radius: 8px;
 		transition: all 0.1s ease;
+
+		@media (max-width: 400px) {
+			width: 48px;
+			height: 48px;
+		}
 	}
 
 	> .content {
@@ -103,7 +106,6 @@ export default Vue.extend({
 			display: flex;
 			align-items: center;
 			padding: 0;
-			max-width: calc(100% - 16px);
 			min-height: 38px;
 			border-radius: 16px;
 
@@ -164,12 +166,20 @@ export default Vue.extend({
 				> .text {
 					display: block;
 					margin: 0;
-					padding: 8px 16px;
+					padding: 12px 18px;
 					overflow: hidden;
 					overflow-wrap: break-word;
 					word-break: break-word;
 					font-size: 1em;
 					color: rgba(#000, 0.8);
+
+					@media (max-width: 500px) {
+						padding: 8px 16px;
+					}
+
+					@media (max-width: 400px) {
+						font-size: 0.9em;
+					}
 
 					& + .file {
 						> a {
@@ -234,16 +244,13 @@ export default Vue.extend({
 	}
 
 	&:not([data-is-me]) {
-		> .avatar {
-			left: 0;
-		}
 
 		> .content {
-			padding-left: 66px;
+			padding-left: 16px;
+			padding-right: 32px;
 
 			> .balloon {
 				$color: var(--bg);
-				float: left;
 				background: $color;
 
 				&[data-no-text] {
@@ -272,15 +279,13 @@ export default Vue.extend({
 	}
 
 	&[data-is-me] {
-		> .avatar {
-			right: 0;
-		}
+		flex-direction: row-reverse;
 
 		> .content {
-			padding-right: 66px;
+			padding-right: 16px;
+			padding-left: 32px;
 
 			> .balloon {
-				float: right;
 				background: $me-balloon-color;
 
 				&[data-no-text] {
