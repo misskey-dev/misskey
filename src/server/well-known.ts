@@ -24,12 +24,15 @@ const webFingerPath = '/.well-known/webfinger';
 const jrd = 'application/jrd+json';
 const xrd = 'application/xrd+xml';
 
-router.use(allPath, (ctx, next) => (ctx.set({
-	'Access-Control-Allow-Headers': 'Accept',
-	'Access-Control-Allow-Methods': 'GET, OPTIONS',
-	'Access-Control-Allow-Origin': '*',
-	'Access-Control-Expose-Headers': 'Vary',
-}), next));
+router.use(allPath, async (ctx, next) => {
+	ctx.set({
+		'Access-Control-Allow-Headers': 'Accept',
+		'Access-Control-Allow-Methods': 'GET, OPTIONS',
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Expose-Headers': 'Vary',
+	});
+	await next();
+});
 
 router.options(allPath, async ctx => {
 	ctx.status = 204;
