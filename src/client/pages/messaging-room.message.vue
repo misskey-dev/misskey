@@ -1,5 +1,5 @@
 <template>
-<div class="message" :data-is-me="isMe">
+<div class="thvuemwp" :data-is-me="isMe">
 	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
 	<div class="content">
 		<div class="balloon" :data-no-text="message.text == null">
@@ -78,9 +78,12 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.message {
-	$me-balloon-color: var(--primary);
+@import '../theme';
 
+.thvuemwp {
+	$me-balloon-color: $primary;
+
+	position: relative;
 	padding: 10px 12px 10px 12px;
 	background-color: transparent;
 
@@ -97,6 +100,7 @@ export default Vue.extend({
 	> .content {
 
 		> .balloon {
+			position: relative;
 			display: flex;
 			align-items: center;
 			padding: 0;
@@ -239,7 +243,7 @@ export default Vue.extend({
 			padding-left: 66px;
 
 			> .balloon {
-				$color: var(--messagingRoomMessageBg);
+				$color: var(--bg);
 				float: left;
 				background: $color;
 
@@ -257,7 +261,7 @@ export default Vue.extend({
 
 				> .content {
 					> .text {
-						color: var(--messagingRoomMessageFg);
+						color: var(--fg);
 					}
 				}
 			}
