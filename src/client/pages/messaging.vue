@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faComments"/></portal>
 	<portal to="title">{{ $t('messaging') }}</portal>
 
-	<x-button @click="start()" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</x-button>
+	<x-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</x-button>
 
 	<div class="history" v-if="messages.length > 0">
 		<router-link v-for="message in messages"
@@ -41,6 +41,7 @@ import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg
 import i18n from '../i18n';
 import getAcct from '../../misc/acct/render';
 import XButton from '../components/ui/button.vue';
+import MkUserSelect from '../components/user-select.vue';
 
 export default Vue.extend({
 	i18n,
@@ -112,14 +113,23 @@ export default Vue.extend({
 			}
 		},
 
-		async startUser() {
-			const { result: user } = await this.$root.dialog({
-				user: {
-					local: true
-				}
+		start(ev) {
+			this.$root.menu({
+				items: [{
+					text: this.$t('withUser'),
+					action: () => { this.startUser() }
+				}, {
+					text: this.$t('withGroup'),
+					action: () => { this.startGroup() }
+				}],
+				source: ev.currentTarget || ev.target,
 			});
-			if (user == null) return;
-			this.navigate(user);
+		},
+
+		async startUser() {
+			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+				this.$router.push(`/messaging/${getAcct(user)}`);
+			});
 		},
 
 		async startGroup() {
