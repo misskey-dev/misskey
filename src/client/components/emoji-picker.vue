@@ -15,7 +15,7 @@
 
 		<div class="emojis">
 			<template v-if="categories[0].isActive">
-				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recent-emoji') }}</header>
+				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsedEmojis') }}</header>
 				<div class="list">
 					<button v-for="(emoji, i) in ($store.state.device.recentEmojis || [])"
 						class="_button"
@@ -44,7 +44,7 @@
 			</template>
 			<template v-else>
 				<div v-for="(key, i) in Object.keys(customEmojis)" :key="i">
-					<header class="sub">{{ key || $t('no-category') }}</header>
+					<header class="sub" v-if="key">{{ key }}</header>
 					<div class="list">
 						<button v-for="emoji in customEmojis[key]"
 							class="_button"
@@ -92,7 +92,7 @@ export default Vue.extend({
 			customEmojis: {},
 			faGlobe, faHistory,
 			categories: [{
-				text: this.$t('custom-emoji'),
+				text: this.$t('customEmoji'),
 				icon: faAsterisk,
 				isActive: true
 			}, {
@@ -217,14 +217,12 @@ export default Vue.extend({
 			left: 0;
 			z-index: 1;
 			padding: 8px;
-			background: var(--faceHeader);
-			color: var(--text);
+			background: var(--bg);
 			font-size: 12px;
 		}
 
 		header.sub {
 			padding: 4px 8px;
-			color: var(--text);
 			font-size: 12px;
 		}
 
