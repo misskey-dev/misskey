@@ -252,6 +252,7 @@ export default Vue.extend({
 		box-shadow: none;
 		background: transparent;
 		box-sizing: border-box;
+		color: var(--fg);
 	}
 
 	> .file {
