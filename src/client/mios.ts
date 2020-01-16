@@ -199,6 +199,12 @@ export default class MiOS extends EventEmitter {
 				});
 			});
 
+			main.on('unreadMessagingMessage', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadMessagingMessage: true
+				});
+			});
+
 			main.on('clientSettingUpdated', x => {
 				this.store.commit('settings/set', {
 					key: x.key,
