@@ -166,6 +166,11 @@ export default Vue.extend({
 			text-decoration: none;
 			background: var(--face);
 			border-bottom: solid 1px var(--faceDivider);
+			margin-bottom: 16px;
+
+			@media (max-width: 500px) {
+				margin-bottom: 8px;
+			}
 
 			* {
 				pointer-events: none;
