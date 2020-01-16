@@ -121,18 +121,6 @@
 				<button class="_button" @click="createList()"><fa :icon="faPlus" fixed-width/>{{ $t('createList') }}</button>
 				<router-link to="/manage-lists"><fa :icon="faCog" fixed-width/>{{ $t('manageLists') }}</router-link>
 			</template>
-			<template v-else-if="showInstance">
-				<router-link to="/instance/stats"><fa :icon="faChartBar" fixed-width/>{{ $t('statistics') }}</router-link>
-				<router-link to="/instance/emojis"><fa :icon="faLaugh" fixed-width/>{{ $t('customEmojis') }}</router-link>
-				<router-link to="/instance/users"><fa :icon="faUsers" fixed-width/>{{ $t('users') }}</router-link>
-				<router-link to="/instance/files"><fa :icon="faCloud" fixed-width/>{{ $t('files') }}</router-link>
-				<router-link to="/instance/monitor"><fa :icon="faTachometerAlt" fixed-width/>{{ $t('monitor') }}</router-link>
-				<router-link to="/instance/queue"><fa :icon="faExchangeAlt" fixed-width/>{{ $t('jobQueue') }}</router-link>
-				<router-link to="/instance/federation"><fa :icon="faGlobe" fixed-width/>{{ $t('federation') }}</router-link>
-				<router-link to="/instance/announcements"><fa :icon="faBroadcastTower" fixed-width/>{{ $t('announcements') }}</router-link>
-				<div></div>
-				<router-link to="/instance"><fa :icon="faCog" fixed-width/>{{ $t('general') }}</router-link>
-			</template>
 			<template v-else>
 				<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
 				<div></div>
@@ -143,7 +131,7 @@
 				<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
 				<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
 				<div v-if="$store.state.i.isAdmin"></div>
-				<router-link v-if="$store.state.i.isAdmin || $store.state.i.isModerator" to="/instance"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</router-link>
+				<button class="_button" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</button>
 				<div></div>
 				<button class="_button" @click="openAccountMenu"><mk-avatar :user="$store.state.i" class="avatar"/><mk-user-name :user="$store.state.i"/></button>
 			</template>
@@ -184,7 +172,6 @@ export default Vue.extend({
 			searching: false,
 			navOpen: false,
 			notificationsOpen: false,
-			showInstance: false,
 			showLists: false,
 			accounts: [],
 			lists: [],
