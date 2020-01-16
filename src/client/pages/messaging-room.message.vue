@@ -24,10 +24,10 @@
 		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
 		<footer>
 			<template v-if="isGroup">
-				<span class="read" v-if="message.reads.length > 0">{{ $t('is-read') }} {{ message.reads.length }}</span>
+				<span class="read" v-if="message.reads.length > 0">{{ $t('messageRead') }} {{ message.reads.length }}</span>
 			</template>
 			<template v-else>
-				<span class="read" v-if="isMe && message.isRead">{{ $t('is-read') }}</span>
+				<span class="read" v-if="isMe && message.isRead">{{ $t('messageRead') }}</span>
 			</template>
 			<mk-time :time="message.createdAt"/>
 			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
@@ -103,7 +103,7 @@ export default Vue.extend({
 
 		> .balloon {
 			position: relative;
-			display: flex;
+			display: inline-flex;
 			align-items: center;
 			padding: 0;
 			min-height: 38px;
@@ -284,9 +284,11 @@ export default Vue.extend({
 		> .content {
 			padding-right: 16px;
 			padding-left: 32px;
+			text-align: right;
 
 			> .balloon {
 				background: $me-balloon-color;
+				text-align: left;
 
 				&[data-no-text] {
 					background: transparent;

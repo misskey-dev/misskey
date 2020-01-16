@@ -218,6 +218,7 @@ editWidgets: "ウィジェットを編集"
 exitEdit: "編集を終了"
 explore: "みつける"
 games: "Misskey Games"
+messageRead: "既読"
 
 _widgets:
   memo: "付箋"
