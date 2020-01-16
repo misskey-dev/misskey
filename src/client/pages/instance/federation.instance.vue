@@ -18,7 +18,7 @@
 			<div class="row">
 				<div class="cell">
 					<div class="label"><fa :icon="faCrosshairs" fixed-width class="icon"/>{{ $t('registeredAt') }}</div>
-					<div class="data">{{ new Date(instance.registeredAt).toLocaleString() }} (<mk-time :time="instance.registeredAt"/>)</div>
+					<div class="data">{{ new Date(instance.caughtAt).toLocaleString() }} (<mk-time :time="instance.caughtAt"/>)</div>
 				</div>
 			</div>
 			<div class="row">
