@@ -5,12 +5,13 @@
 
 	<x-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</x-button>
 
-	<div class="history" v-if="messages.length > 0">
-		<router-link v-for="message in messages"
+	<sequential-entrance class="history" v-if="messages.length > 0" :delay="30">
+		<router-link v-for="(message, i) in messages"
 			class="message _panel"
 			:to="message.groupId ? `/messaging/group/${message.groupId}` : `/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 			:data-is-me="isMe(message)"
 			:data-is-read="message.groupId ? message.reads.includes($store.state.i.id) : message.isRead"
+			:data-index="i"
 			:key="message.id"
 		>
 			<div>
@@ -29,7 +30,7 @@
 				</div>
 			</div>
 		</router-link>
-	</div>
+	</sequential-entrance>
 	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
 	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
 </div>
