@@ -977,8 +977,8 @@ export default Vue.extend({
 		right: 0;
 		margin: 0 auto;
 		z-index: 10001;
-		width: 320px;
-		height: 350px;
+		width: 350px;
+		height: 400px;
 		background: rgba(255, 255, 255, 0.5);
 		-webkit-backdrop-filter: blur(12px);
 		backdrop-filter: blur(12px);
@@ -988,6 +988,11 @@ export default Vue.extend({
 
 		@media (prefers-color-scheme: dark) {
 			background: rgba(0, 0, 0, 0.5);
+		}
+
+		@media (max-width: 800px) {
+			width: 320px;
+			height: 350px;
 		}
 
 		@media (max-width: 500px) {
