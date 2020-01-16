@@ -1,8 +1,8 @@
 import MkUserPreview from '../components/user-preview.vue';
 
 export default {
-	bind(el, binding, vn) {
-		const self = el._userPreviewDirective_ = {} as any;
+	bind(el: HTMLElement, binding, vn) {
+		const self = (el as any)._userPreviewDirective_ = {} as any;
 
 		self.user = binding.value;
 		self.tag = null;

@@ -1,6 +1,6 @@
 <template>
 <transition name="popup" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
-	<div v-if="show" class="fxxzrfni" ref="content" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
+	<div v-if="show" class="fxxzrfni _panel" ref="content" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
@@ -21,7 +21,7 @@
 				<p>{{ $t('followers') }}</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
-		<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
+		<x-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
 	</div>
 </transition>
 </template>
@@ -30,9 +30,14 @@
 import Vue from 'vue';
 import i18n from '../i18n';
 import parseAcct from '../../misc/acct/parse';
+import XFollowButton from './follow-button.vue';
 
 export default Vue.extend({
 	i18n,
+
+	components: {
+		XFollowButton
+	},
 
 	props: {
 		user: {
@@ -69,8 +74,8 @@ export default Vue.extend({
 		}
 
 		const rect = this.source.getBoundingClientRect();
-		const x = rect.left + this.source.offsetWidth + window.pageXOffset;
-		const y = rect.top + window.pageYOffset;
+		const x = ((rect.left + (this.source.offsetWidth / 2)) - (300 / 2)) + window.pageXOffset;
+		const y = rect.top + this.source.offsetHeight + window.pageYOffset;
 
 		this.top = y;
 		this.left = x;
@@ -96,13 +101,8 @@ export default Vue.extend({
 
 .fxxzrfni {
 	position: absolute;
-	z-index: 2048;
-	margin-top: -8px;
-	width: 250px;
-	background: var(--bg);
-	background-clip: content-box;
-	border: solid 1px rgba(#000, 0.1);
-	border-radius: 4px;
+	z-index: 10000;
+	width: 300px;
 	overflow: hidden;
 
 	> .banner {
@@ -133,7 +133,7 @@ export default Vue.extend({
 			margin: 0;
 			font-weight: bold;
 			line-height: 16px;
-			color: var(--text);
+			word-break: break-all;
 		}
 
 		> .username {
@@ -148,7 +148,7 @@ export default Vue.extend({
 
 	> .description {
 		padding: 0 16px;
-		font-size: 0.7em;
+		font-size: 0.8em;
 		color: var(--text);
 	}
 
