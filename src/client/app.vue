@@ -104,7 +104,7 @@
 	</div>
 
 	<div class="buttons">
-		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount || $store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button home _button" :disabled="$route.path === '/'" @click="$router.push('/')"><fa :icon="faHome"/></button>
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
@@ -136,7 +136,9 @@
 			<template v-else>
 				<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
 				<div></div>
+				<router-link to="/featured"><fa :icon="faFireAlt" fixed-width/>{{ $t('featured') }}</router-link>
 				<button class="_button" @click="showLists = true"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</button>
+				<router-link to="/messaging"><fa :icon="faComments" fixed-width/>{{ $t('messaging') }}<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i></router-link>
 				<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
 				<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
 				<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
@@ -203,6 +205,7 @@ export default Vue.extend({
 		$route(to, from) {
 			this.pageKey++;
 			this.notificationsOpen = false;
+			this.navOpen = false;
 		},
 
 		notificationsOpen(open) {
@@ -1027,6 +1030,8 @@ export default Vue.extend({
 			text-align: left;
 			font-size: 14px;
 			line-height: 20px;
+			overflow: hidden;
+			text-overflow: ellipsis;
 
 			&:hover {
 				color: #fff;
