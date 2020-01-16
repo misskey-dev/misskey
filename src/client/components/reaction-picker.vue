@@ -84,7 +84,7 @@ export default Vue.extend({
 
 	watch: {
 		focus(i) {
-			this.$refs.buttons.children[i].focus();
+			this.$refs.buttons.children[i].elm.focus();
 		}
 	},
 
@@ -129,7 +129,7 @@ export default Vue.extend({
 		},
 
 		choose() {
-			this.$refs.buttons.childNodes[this.focus].click();
+			this.$refs.buttons.children[this.focus].elm.click();
 		},
 
 		beforeEnter(el) {
