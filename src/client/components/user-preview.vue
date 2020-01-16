@@ -101,7 +101,7 @@ export default Vue.extend({
 
 .fxxzrfni {
 	position: absolute;
-	z-index: 10000;
+	z-index: 11000;
 	width: 300px;
 	overflow: hidden;
 
