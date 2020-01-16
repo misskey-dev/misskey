@@ -164,8 +164,6 @@ export default Vue.extend({
 		> .message {
 			display: block;
 			text-decoration: none;
-			background: var(--face);
-			border-bottom: solid 1px var(--faceDivider);
 			margin-bottom: 16px;
 
 			@media (max-width: 500px) {
