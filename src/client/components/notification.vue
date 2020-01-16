@@ -19,22 +19,22 @@
 		</header>
 		<router-link v-if="notification.type === 'reaction'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 			<fa :icon="faQuoteLeft"/>
-			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.emojis"/>
 			<fa :icon="faQuoteRight"/>
 		</router-link>
 		<router-link v-if="notification.type === 'renote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
 			<fa :icon="faQuoteLeft"/>
-			<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :custom-emojis="notification.note.renote.emojis"/>
+			<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.renote.emojis"/>
 			<fa :icon="faQuoteRight"/>
 		</router-link>
 		<router-link v-if="notification.type === 'reply'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.emojis"/>
 		</router-link>
 		<router-link v-if="notification.type === 'mention'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.emojis"/>
 		</router-link>
 		<router-link v-if="notification.type === 'quote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
-			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.emojis"/>
 		</router-link>
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}</span>
 		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}</span>
@@ -62,7 +62,12 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false,
-		}
+		},
+		nowrap: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
 	},
 	data() {
 		return {
@@ -94,7 +99,8 @@ export default Vue.extend({
 	}
 
 	> .head {
-		position: relative;
+		position: sticky;
+		top: 0;
 		flex-shrink: 0;
 		width: 42px;
 		height: 42px;
