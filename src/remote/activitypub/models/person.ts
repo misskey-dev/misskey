@@ -138,6 +138,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const isBot = object.type == 'Service';
 
+	const isGroup = object.type == 'Group';
+
 	// Create user
 	let user: IRemoteUser;
 	try {
@@ -160,6 +162,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				uri: person.id,
 				tags,
 				isBot,
+				isGroup,
 				isCat: (person as any).isCat === true
 			})) as IRemoteUser;
 
@@ -319,6 +322,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		name: person.name,
 		tags,
 		isBot: object.type == 'Service',
+		isGroup: object.type == 'Group',
 		isCat: (person as any).isCat === true,
 		isLocked: !!person.manuallyApprovesFollowers,
 	} as Partial<User>;

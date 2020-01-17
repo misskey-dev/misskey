@@ -119,10 +119,10 @@ export default async function(follower: User, followee: User, requestId?: string
 	const followeeProfile = await UserProfiles.findOne(followee.id).then(ensure);
 
 	// フォロー対象が鍵アカウントである or
-	// フォロワーがBotであり、フォロー対象がBotからのフォローに慎重である or
+	// フォロワーがBotかGroupであり、フォロー対象がBotかGroupからのフォローに慎重である or
 	// フォロワーがローカルユーザーであり、フォロー対象がリモートユーザーである
 	// 上記のいずれかに当てはまる場合はすぐフォローせずにフォローリクエストを発行しておく
-	if (followee.isLocked || (followeeProfile.carefulBot && follower.isBot) || (Users.isLocalUser(follower) && Users.isRemoteUser(followee))) {
+	if (followee.isLocked || (followeeProfile.carefulBot && (follower.isBot || follower.isGroup)) || (Users.isLocalUser(follower) && Users.isRemoteUser(followee))) {
 		let autoAccept = false;
 
 		// 鍵アカウントであっても、既にフォローされていた場合はスルー

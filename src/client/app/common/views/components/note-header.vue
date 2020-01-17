@@ -6,6 +6,7 @@
 	</router-link>
 	<span class="is-admin" v-if="note.user.isAdmin">admin</span>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
+	<span class="is-group" v-if="note.user.isGroup">group</span>
 	<span class="is-cat" v-if="note.user.isCat">cat</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
 	<div class="info">
@@ -73,6 +74,7 @@ export default Vue.extend({
 
 	> .is-admin
 	> .is-bot
+	> .is-group
 	> .is-cat
 		flex-shrink 0
 		align-self center

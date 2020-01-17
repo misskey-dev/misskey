@@ -91,7 +91,7 @@ export async function renderPerson(user: ILocalUser) {
 	const keypair = await UserKeypairs.findOne(user.id).then(ensure);
 
 	return {
-		type: user.isBot ? 'Service' : 'Person',
+		type: user.isBot ? 'Service' : user.isGroup ? 'Group' : 'Person',
 		id,
 		inbox: `${id}/inbox`,
 		outbox: `${id}/outbox`,

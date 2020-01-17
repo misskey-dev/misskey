@@ -141,6 +141,12 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
+		comment: 'Whether the User is a group.'
+	})
+	public isGroup: boolean;
+
+	@Column('boolean', {
+		default: false,
 		comment: 'Whether the User is a cat.'
 	})
 	public isCat: boolean;

@@ -119,6 +119,7 @@ export class UserRepository extends Repository<User> {
 			avatarColor: user.avatarColor,
 			isAdmin: user.isAdmin || falsy,
 			isBot: user.isBot || falsy,
+			isGroup: user.isGroup || falsy,
 			isCat: user.isCat || falsy,
 
 			// カスタム絵文字添付
@@ -365,6 +366,11 @@ export const packedUserSchema = {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
 			description: 'Whether this account is a bot.'
+		},
+		isGroup: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+			description: 'Whether this account is a group.'
 		},
 		pinnedNoteIds: {
 			type: 'array' as const,
