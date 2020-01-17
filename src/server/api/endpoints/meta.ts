@@ -3,8 +3,8 @@ import * as os from 'os';
 import config from '../../../config';
 import define from '../define';
 import { fetchMeta } from '../../../misc/fetch-meta';
-import { Emojis, Users } from '../../../models';
-import { getConnection } from 'typeorm';
+import { Emojis, Users, Announcements, AnnouncementReads } from '../../../models';
+import { getConnection, Not, In } from 'typeorm';
 import redis from '../../../db/redis';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../misc/hard-limits';
 
@@ -104,6 +104,20 @@ export default define(meta, async (ps, me) => {
 		}
 	});
 
+	let announcements;
+
+	if (me) {
+		const reads = await AnnouncementReads.find({
+			userId: me.id
+		});
+
+		announcements = await Announcements.find({
+			id: Not(In(reads.map(read => read.id)))
+		});
+	} else {
+		announcements = await Announcements.find({});
+	}
+
 	const response: any = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
@@ -120,7 +134,7 @@ export default define(meta, async (ps, me) => {
 
 		secure: config.https != null,
 
-		announcements: instance.announcements || [],
+		announcements: announcements,
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads } from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
@@ -85,7 +85,15 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
-		// v12 TODO
+		const reads = await AnnouncementReads.find({
+			userId: userId
+		});
+
+		const count = await Announcements.count({
+			id: Not(In(reads.map(read => read.id)))
+		});
+
+		return count > 0;
 	}
 
 	public async pack(
