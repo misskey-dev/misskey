@@ -111,9 +111,9 @@ export default define(meta, async (ps, me) => {
 			userId: me.id
 		});
 
-		announcements = await Announcements.find({
+		announcements = await Announcements.find(reads.length > 0 ? {
 			id: Not(In(reads.map(read => read.id)))
-		});
+		} : {});
 	} else {
 		announcements = await Announcements.find({});
 	}

@@ -12,6 +12,12 @@ export class Announcement {
 	})
 	public createdAt: Date;
 
+	@Column('timestamp with time zone', {
+		comment: 'The updated date of the Announcement.',
+		nullable: true
+	})
+	public updatedAt: Date | null;
+
 	@Column('varchar', {
 		length: 8192, nullable: false
 	})

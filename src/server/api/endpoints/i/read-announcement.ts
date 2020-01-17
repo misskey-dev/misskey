@@ -3,7 +3,8 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { genId } from '../../../../misc/gen-id';
-import { AnnouncementReads, Announcements } from '../../../../models';
+import { AnnouncementReads, Announcements, Users } from '../../../../models';
+import { publishMainStream } from '../../../../services/stream';
 
 export const meta = {
 	tags: ['account'],
@@ -52,4 +53,8 @@ export default define(meta, async (ps, user) => {
 		announcementId: ps.announcementId,
 		userId: user.id,
 	});
+
+	if (!await Users.getHasUnreadAnnouncement(user.id)) {
+		publishMainStream(user.id, 'readAllAnnouncements');
+	}
 });

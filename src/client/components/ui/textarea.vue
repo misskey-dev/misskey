@@ -83,7 +83,6 @@ export default Vue.extend({
 	}
 
 	> .input {
-		padding: 12px;
 		position: relative;
 	
 		&:before {
@@ -141,7 +140,8 @@ export default Vue.extend({
 			min-width: 100%;
 			max-width: 100%;
 			min-height: 100px;
-			padding: 0;
+			padding: 12px;
+			box-sizing: border-box;
 			font: inherit;
 			font-weight: normal;
 			font-size: 16px;

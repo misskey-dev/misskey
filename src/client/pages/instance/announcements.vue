@@ -3,19 +3,19 @@
 	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
 	<portal to="title">{{ $t('announcements') }}</portal>
 	<section class="_section announcements">
-		<div class="_content announcement" v-for="(announcement, i) in announcements">
+		<div class="_content announcement" v-for="announcement in announcements">
 			<x-input v-model="announcement.title" style="margin-top: 0;">
 				<span>{{ $t('title') }}</span>
 			</x-input>
 			<x-textarea v-model="announcement.text">
 				<span>{{ $t('text') }}</span>
 			</x-textarea>
-			<x-input v-model="announcement.image">
+			<x-input v-model="announcement.imageUrl">
 				<span>{{ $t('imageUrl') }}</span>
 			</x-input>
 			<div class="buttons">
-				<x-button class="button" inline @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
-				<x-button class="button" inline @click="remove(i)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</x-button>
+				<x-button class="button" inline @click="save(announcement)"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
+				<x-button class="button" inline @click="remove(announcement)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</x-button>
 			</div>
 		</div>
 		<div class="_footer">
@@ -57,52 +57,59 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then(meta => {
-			this.announcements = meta.announcements;
+		this.$root.api('admin/announcements/list').then(announcements => {
+			this.announcements = announcements;
 		});
 	},
 
 	methods: {
 		add() {
 			this.announcements.unshift({
+				id: null,
 				title: '',
 				text: '',
-				image: null
+				imageUrl: null
 			});
 		},
 
-		remove(i) {
+		remove(announcement) {
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.announcements.find((_, j) => j == i).title }),
+				text: this.$t('removeAreYouSure', { x: announcement.title }),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
-				this.announcements = this.announcements.filter((_, j) => j !== i);
-				this.save(true);
-				this.$root.dialog({
-					type: 'success',
-					text: this.$t('removed')
-				});
+				this.announcements = this.announcements.filter(x => x != announcement);
+				this.$root.api('admin/announcements/delete', announcement);
 			});
 		},
 
-		save(silent) {
-			this.$root.api('admin/update-meta', {
-				announcements: this.announcements
-			}).then(() => {
-				if (!silent) {
+		save(announcement) {
+			if (announcement.id == null) {
+				this.$root.api('admin/announcements/create', announcement).then(() => {
 					this.$root.dialog({
 						type: 'success',
 						text: this.$t('saved')
 					});
-				}
-			}).catch(e => {
-				this.$root.dialog({
-					type: 'error',
-					text: e
+				}).catch(e => {
+					this.$root.dialog({
+						type: 'error',
+						text: e
+					});
 				});
-			});
+			} else {
+				this.$root.api('admin/announcements/update', announcement).then(() => {
+					this.$root.dialog({
+						type: 'success',
+						text: this.$t('saved')
+					});
+				}).catch(e => {
+					this.$root.dialog({
+						type: 'error',
+						text: e
+					});
+				});
+			}
 		}
 	}
 });

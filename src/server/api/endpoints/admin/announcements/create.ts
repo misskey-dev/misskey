@@ -26,6 +26,7 @@ export default define(meta, async (ps) => {
 	const announcement = await Announcements.save({
 		id: genId(),
 		createdAt: new Date(),
+		updatedAt: null,
 		title: ps.title,
 		text: ps.text,
 		imageUrl: ps.imageUrl,

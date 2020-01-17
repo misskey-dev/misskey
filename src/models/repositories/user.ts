@@ -89,9 +89,9 @@ export class UserRepository extends Repository<User> {
 			userId: userId
 		});
 
-		const count = await Announcements.count({
+		const count = await Announcements.count(reads.length > 0 ? {
 			id: Not(In(reads.map(read => read.id)))
-		});
+		} : {});
 
 		return count > 0;
 	}
