@@ -47,8 +47,8 @@ import { PageLikeRepository } from './repositories/page-like';
 import { ModerationLogRepository } from './repositories/moderation-logs';
 import { UsedUsername } from './entities/used-username';
 
-export const Announcements = getCustomRepository(Announcement);
-export const AnnouncementReads = getCustomRepository(AnnouncementRead);
+export const Announcements = getRepository(Announcement);
+export const AnnouncementReads = getRepository(AnnouncementRead);
 export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
 export const NoteFavorites = getCustomRepository(NoteFavoriteRepository);

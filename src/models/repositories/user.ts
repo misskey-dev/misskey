@@ -84,6 +84,10 @@ export class UserRepository extends Repository<User> {
 		return withUser || withGroups.some(x => x);
 	}
 
+	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
+		// v12 TODO
+	}
+
 	public async pack(
 		src: User['id'] | User,
 		me?: User['id'] | User | null | undefined,
@@ -193,6 +197,7 @@ export class UserRepository extends Repository<User> {
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
+				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
 				hasUnreadMessagingMessage: this.getHasUnreadMessagingMessage(user.id),
 				hasUnreadNotification: Notifications.count({
 					where: {
