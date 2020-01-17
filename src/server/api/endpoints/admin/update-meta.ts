@@ -16,13 +16,6 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
-		announcements: {
-			validator: $.optional.nullable.arr($.obj()),
-			desc: {
-				'ja-JP': 'お知らせ'
-			}
-		},
-
 		disableRegistration: {
 			validator: $.optional.nullable.bool,
 			desc: {
@@ -405,10 +398,6 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	const set = {} as Partial<Meta>;
-
-	if (ps.announcements) {
-		set.announcements = ps.announcements;
-	}
 
 	if (typeof ps.disableRegistration === 'boolean') {
 		set.disableRegistration = ps.disableRegistration;

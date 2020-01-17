@@ -34,11 +34,6 @@ export class Meta {
 	})
 	public maintainerEmail: string | null;
 
-	@Column('jsonb', {
-		default: [],
-	})
-	public announcements: Record<string, any>[];
-
 	@Column('boolean', {
 		default: false,
 	})

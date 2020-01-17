@@ -62,7 +62,6 @@ const nodeinfo2 = async () => {
 			ToSUrl: meta.ToSUrl,
 			repositoryUrl: meta.repositoryUrl,
 			feedbackUrl: meta.feedbackUrl,
-			announcements: meta.announcements,
 			disableRegistration: meta.disableRegistration,
 			disableLocalTimeline: meta.disableLocalTimeline,
 			disableGlobalTimeline: meta.disableGlobalTimeline,
