@@ -12,7 +12,7 @@
 				<span>{{ item.text }}</span>
 			</router-link>
 			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
-				<mk-avatar :user="account" class="avatar"/><mk-user-name :user="account"/>
+				<mk-avatar :user="item.user" class="avatar"/><mk-user-name :user="item.user"/>
 			</button>
 			<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
@@ -75,6 +75,8 @@ export default Vue.extend({
 		white-space: nowrap;
 		font-size: 0.9em;
 		text-align: center;
+		overflow: hidden;
+		text-overflow: ellipsis;
 
 		&:hover {
 			color: #fff;
