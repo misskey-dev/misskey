@@ -383,36 +383,7 @@ export default Vue.extend({
 		async addAcount() {
 			this.navOpen = false;
 
-			const { canceled: canceled1, result: username } = await this.$root.dialog({
-				title: this.$t('username'),
-				input: true
-			});
-			if (canceled1) return;
-
-			const { canceled: canceled2, result: password } = await this.$root.dialog({
-				title: this.$t('password'),
-				input: { type: 'password' }
-			});
-			if (canceled2) return;
-
-			this.$root.api('signin', {
-				username: username,
-				password: password,
-			}).then(res => {
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-				this.$store.commit('device/set', {
-					key: 'accounts',
-					value: this.$store.state.device.accounts.concat([{ id: res.id, token: res.token }])
-				});
-			}).catch(() => {
-				this.$root.dialog({
-					type: 'error',
-					text: this.$t('loginFailed')
-				});
-			});
+			this.$root.new(await import('./components/signin-dialog.vue').then(m => m.default));
 		},
 
 		async switchAccount(account) {

@@ -68,7 +68,7 @@ export default (os: MiOS) => new Vuex.Store({
 
 		switchAccount(ctx, i) {
 			ctx.commit('updateI', i);
-			ctx.dispatch('settings/merge', i.clientData);
+			ctx.commit('settings/init', i.clientData);
 			localStorage.setItem('i', i.token);
 		},
 
@@ -115,6 +115,16 @@ export default (os: MiOS) => new Vuex.Store({
 			mutations: {
 				set(state, x: { key: string; value: any }) {
 					nestedProperty.set(state, x.key, x.value);
+				},
+
+				init(state, x) {
+					for (const [key, value] of Object.entries(defaultSettings)) {
+						if (x[key]) {
+							state[key] = x[key];
+						} else {
+							state[key] = value;
+						}
+					}
 				},
 			},
 
