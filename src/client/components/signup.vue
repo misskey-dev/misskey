@@ -43,7 +43,7 @@
 			</i18n>
 		</x-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<x-button type="submit" :disabled=" submitting || !(meta.ToSUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('create') }}</x-button>
+		<x-button type="submit" :disabled=" submitting || !(meta.ToSUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('start') }}</x-button>
 	</template>
 </form>
 </template>

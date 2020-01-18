@@ -1,6 +1,6 @@
 <template>
 <div class="thvuemwp" :data-is-me="isMe">
-	<mk-avatar class="avatar" :user="message.user" target="_blank"/>
+	<mk-avatar class="avatar" :user="message.user"/>
 	<div class="content">
 		<div class="balloon _panel" :data-no-text="message.text == null">
 			<button class="delete-button" v-if="isMe" :title="$t('@.delete')" @click="del">

@@ -226,6 +226,7 @@ startMessaging: "トークを開始"
 nUsersRead: "{n}人が読みました"
 agreeTo: "{0}に同意"
 tos: "利用規約"
+start: "始める"
 
 _widgets:
   memo: "付箋"
