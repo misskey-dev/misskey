@@ -1,9 +1,6 @@
-import { Buffer } from 'buffer';
 import * as fs from 'fs';
 
-import * as crypto from 'crypto';
 import { v4 as uuid } from 'uuid';
-import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
 import { deleteFile } from './delete-file';
@@ -12,7 +9,7 @@ import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
 import { IImage, convertToJpeg, convertToWebp, convertToPng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
-import { detectMine } from '../../misc/detect-mine';
+import { getFileInfo } from '../../misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
 import { InternalStorage } from './internal-storage';
 import { DriveFile } from '../../models/entities/drive-file';
@@ -271,41 +268,16 @@ export default async function(
 	uri: string | null = null,
 	sensitive: boolean | null = null
 ): Promise<DriveFile> {
-	// Calc md5 hash
-	const calcHash = new Promise<string>((res, rej) => {
-		const readable = fs.createReadStream(path);
-		const hash = crypto.createHash('md5');
-		const chunks: Buffer[] = [];
-		readable
-			.on('error', rej)
-			.pipe(hash)
-			.on('error', rej)
-			.on('data', chunk => chunks.push(chunk))
-			.on('end', () => {
-				const buffer = Buffer.concat(chunks);
-				res(buffer.toString('hex'));
-			});
-	});
-
-	// Get file size
-	const getFileSize = new Promise<number>((res, rej) => {
-		fs.stat(path, (err, stats) => {
-			if (err) return rej(err);
-			res(stats.size);
-		});
-	});
-
-	const [hash, [mime, ext], size] = await Promise.all([calcHash, detectMine(path), getFileSize]);
-
-	logger.info(`hash: ${hash}, mime: ${mime}, ext: ${ext}, size: ${size}`);
+	const info = await getFileInfo(path);
+	logger.info(`${JSON.stringify(info)}`);
 
 	// detect name
-	const detectedName = name || (ext ? `untitled.${ext}` : 'untitled');
+	const detectedName = name || (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
 
 	if (!force) {
 		// Check if there is a file with the same hash
 		const much = await DriveFiles.findOne({
-			md5: hash,
+			md5: info.md5,
 			userId: user.id,
 		});
 
@@ -325,7 +297,7 @@ export default async function(
 		logger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
 		// If usage limit exceeded
-		if (usage + size > driveCapacity) {
+		if (usage + info.size > driveCapacity) {
 			if (Users.isLocalUser(user)) {
 				throw new Error('no-free-space');
 			} else {
@@ -351,57 +323,24 @@ export default async function(
 		return driveFolder;
 	};
 
-	const properties: {[key: string]: any} = {};
+	const properties: {
+		width?: number;
+		height?: number;
+		avgColor?: string;
+	} = {};
 
-	let propPromises: Promise<void>[] = [];
+	if (info.width) {
+		properties['width'] = info.width;
+		properties['height'] = info.height;
+	}
 
-	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp', 'image/svg+xml'].includes(mime);
-
-	if (isImage) {
-		const img = sharp(path);
-
-		// Calc width and height
-		const calcWh = async () => {
-			logger.debug('calculating image width and height...');
-
-			// Calculate width and height
-			const meta = await img.metadata();
-
-			logger.debug(`image width and height is calculated: ${meta.width}, ${meta.height}`);
-
-			properties['width'] = meta.width;
-			properties['height'] = meta.height;
-		};
-
-		// Calc average color
-		const calcAvg = async () => {
-			logger.debug('calculating average color...');
-
-			try {
-				const info = await img.stats();
-
-				if (info.isOpaque) {
-					const r = Math.round(info.channels[0].mean);
-					const g = Math.round(info.channels[1].mean);
-					const b = Math.round(info.channels[2].mean);
-
-					logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
-
-					properties['avgColor'] = `rgb(${r},${g},${b})`;
-				} else {
-					logger.debug(`this image is not opaque so average color is 255, 255, 255`);
-
-					properties['avgColor'] = `rgb(255,255,255)`;
-				}
-			} catch (e) { }
-		};
-
-		propPromises = [calcWh(), calcAvg()];
+	if (info.avgColor) {
+		properties['avgColor'] = `rgb(${info.avgColor.join(',')}`;
 	}
 
 	const profile = await UserProfiles.findOne(user.id);
 
-	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
+	const folder = await fetchFolder();
 
 	let file = new DriveFile();
 	file.id = genId();
@@ -436,9 +375,9 @@ export default async function(
 	if (isLink) {
 		try {
 			file.size = 0;
-			file.md5 = hash;
+			file.md5 = info.md5;
 			file.name = detectedName;
-			file.type = mime;
+			file.type = info.type.mime;
 			file.storedInternal = false;
 
 			file = await DriveFiles.save(file);
@@ -457,7 +396,7 @@ export default async function(
 			}
 		}
 	} else {
-		file = await (save(file, path, detectedName, mime, hash, size));
+		file = await (save(file, path, detectedName, info.type.mime, info.md5, info.size));
 	}
 
 	logger.succ(`drive file has been created ${file.id}`);
