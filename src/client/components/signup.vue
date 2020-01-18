@@ -57,13 +57,15 @@ import i18n from '../i18n';
 import { host, url } from '../config';
 import XButton from './ui/button.vue';
 import XInput from './ui/input.vue';
+import XSwitch from './ui/switch.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
 		XButton,
-		XInput
+		XInput,
+		XSwitch,
 	},
 
 	data() {
