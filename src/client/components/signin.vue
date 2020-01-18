@@ -11,7 +11,7 @@
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa icon="lock"/></template>
 		</x-input>
-		<x-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('@.signin') }}</x-button>
+		<x-button type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</x-button>
 		<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="['fab', 'twitter']"/> {{ $t('signin-with-twitter') }}</a></p>
 		<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="['fab', 'github']"/> {{ $t('signin-with-github') }}</a></p>
 		<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="['fab', 'discord']"/> {{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
@@ -36,7 +36,7 @@
 				<span>{{ $t('@.2fa') }}</span>
 				<template #prefix><fa icon="gavel"/></template>
 			</x-input>
-			<x-button type="submit" :disabled="signing">{{ signing ? $t('signing-in') : $t('@.signin') }}</x-button>
+			<x-button type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</x-button>
 		</div>
 	</div>
 </form>
@@ -46,8 +46,8 @@
 import Vue from 'vue';
 import { toUnicode } from 'punycode';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import XButton from '../components/ui/button.vue';
-import XInput from '../components/ui/input.vue';
+import XButton from './ui/button.vue';
+import XInput from './ui/input.vue';
 import i18n from '../i18n';
 import { apiUrl, host } from '../config';
 import { hexifyAB } from '../scripts/2fa';
@@ -196,10 +196,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .eppvobhk {
-	box-sizing: border-box;
-	overflow: hidden;
-	padding: 32px;
-
 	> .avatar {
 		margin: 0 auto 0 auto;
 		width: 64px;
@@ -208,14 +204,6 @@ export default Vue.extend({
 		background-position: center;
 		background-size: cover;
 		border-radius: 100%;
-	}
-
-	> div {
-		> footer {
-			> * {
-				margin: 0 auto;
-			}
-		}
 	}
 }
 </style>

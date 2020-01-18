@@ -2,20 +2,20 @@
 <div v-if="meta" class="mk-welcome">
 	<portal to="title">{{ instanceName }}</portal>
 	<x-setup v-if="meta.requireSetup"/>
-	<x-signin v-else/>
+	<x-entrance v-else/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import XSetup from './index.welcome.setup.vue';
-import XSignin from './index.welcome.signin.vue';
+import XEntrance from './index.welcome.entrance.vue';
 import { getInstanceName } from '../scripts/get-instance-name';
 
 export default Vue.extend({
 	components: {
 		XSetup,
-		XSignin,
+		XEntrance,
 	},
 
 	data() {

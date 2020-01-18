@@ -1,11 +1,10 @@
 <template>
-<div class="mk-signin">
+<div class="">
 	<div class="_panel">
-		<div class="desc">
-			<span class="desc" v-html="description || $t('@.about')"></span>
-		</div>
+		<div class="desc" v-html="description || $t('@.about')"></div>
+		<x-button @click="signin()">{{ $t('login') }}</x-button>
+		<x-button @click="signup()">{{ $t('signup') }}</x-button>
 	</div>
-	<x-signin class="signin _panel"/>
 </div>
 </template>
 
@@ -13,7 +12,9 @@
 import Vue from 'vue';
 import { toUnicode } from 'punycode';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import XSignin from '../components/signin.vue';
+import XSigninDialog from '../components/signin-dialog.vue';
+import XSignupDialog from '../components/signup-dialog.vue';
+import XButton from '../components/ui/button.vue';
 import i18n from '../i18n';
 import { host } from '../config';
 
@@ -21,7 +22,7 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XSignin,
+		XButton,
 	},
 
 	data() {
@@ -48,12 +49,17 @@ export default Vue.extend({
 	},
 
 	methods: {
-		
+		signin() {
+			this.$root.new(XSigninDialog);
+		},
+
+		signup() {
+			this.$root.new(XSignupDialog);
+		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.mk-signin {
-}
+
 </style>
