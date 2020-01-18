@@ -118,28 +118,19 @@
 
 	<transition name="zoom-in-bottom">
 		<nav v-if="navOpen" ref="nav" class="popup-nav">
-			<template v-if="showLists">
-				<span v-if="lists.length === 0" style="opacity: 0.5; pointer-events: none;">{{ $t('noLists') }}</span>
-				<router-link v-for="list in lists" :to="`/lists/${ list.id }`" :key="list.id">{{ list.name }}</router-link>
-				<div></div>
-				<button class="_button" @click="createList()"><fa :icon="faPlus" fixed-width/>{{ $t('createList') }}</button>
-				<router-link to="/manage-lists"><fa :icon="faCog" fixed-width/>{{ $t('manageLists') }}</router-link>
-			</template>
-			<template v-else>
-				<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
-				<div></div>
-				<router-link to="/announcements"><fa :icon="faBroadcastTower" fixed-width/>{{ $t('announcements') }}<i v-if="$store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></router-link>
-				<router-link to="/featured"><fa :icon="faFireAlt" fixed-width/>{{ $t('featured') }}</router-link>
-				<button class="_button" @click="showLists = true"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</button>
-				<router-link to="/messaging"><fa :icon="faComments" fixed-width/>{{ $t('messaging') }}<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i></router-link>
-				<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
-				<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
-				<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
-				<div v-if="$store.state.i.isAdmin"></div>
-				<button class="_button" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</button>
-				<div></div>
-				<button class="_button" @click="openAccountMenu"><mk-avatar :user="$store.state.i" class="avatar"/><mk-user-name :user="$store.state.i"/></button>
-			</template>
+			<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
+			<div></div>
+			<router-link to="/announcements"><fa :icon="faBroadcastTower" fixed-width/>{{ $t('announcements') }}<i v-if="$store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></router-link>
+			<router-link to="/featured"><fa :icon="faFireAlt" fixed-width/>{{ $t('featured') }}</router-link>
+			<router-link to="/lists"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</router-link>
+			<router-link to="/messaging"><fa :icon="faComments" fixed-width/>{{ $t('messaging') }}<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i></router-link>
+			<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
+			<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
+			<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
+			<div v-if="$store.state.i.isAdmin"></div>
+			<button class="_button" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</button>
+			<div></div>
+			<button class="_button" @click="openAccountMenu"><mk-avatar :user="$store.state.i" class="avatar"/><mk-user-name :user="$store.state.i"/></button>
 		</nav>
 	</transition>
 
@@ -176,7 +167,6 @@ export default Vue.extend({
 			searching: false,
 			navOpen: false,
 			notificationsOpen: false,
-			showLists: false,
 			accounts: [],
 			lists: [],
 			connection: null,
@@ -350,6 +340,12 @@ export default Vue.extend({
 		more(ev) {
 			this.$root.menu({
 				items: [{
+					type: 'link',
+					text: this.$t('lists'),
+					to: '/lists',
+					icon: faListUl,
+					align: 'left',
+				}, {
 					type: 'link',
 					text: this.$t('mentions'),
 					to: '/mentions',
