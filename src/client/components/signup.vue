@@ -22,7 +22,7 @@
 		</x-input>
 		<x-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword">
 			<span>{{ $t('password') }}</span>
-			<template #prefix><fa icon="lock"/></template>
+			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
 				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('weak-password') }}</p>
 				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('normal-password') }}</p>
@@ -31,7 +31,7 @@
 		</x-input>
 		<x-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
 			<span>{{ $t('password') }} ({{ $t('retype') }})</span>
-			<template #prefix><fa icon="lock"/></template>
+			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
 				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('password-matched') }}</p>
 				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('password-not-matched') }}</p>
@@ -50,6 +50,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
 import i18n from '../i18n';
@@ -78,7 +79,8 @@ export default Vue.extend({
 			passwordRetypeState: null,
 			meta: {},
 			submitting: false,
-			ToSAgreement: false
+			ToSAgreement: false,
+			faLock
 		}
 	},
 

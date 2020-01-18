@@ -9,7 +9,7 @@
 		</x-input>
 		<x-input v-model="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
 			<span>{{ $t('password') }}</span>
-			<template #prefix><fa icon="lock"/></template>
+			<template #prefix><fa :icon="faLock"/></template>
 		</x-input>
 		<x-button type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</x-button>
 		<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="['fab', 'twitter']"/> {{ $t('signin-with-twitter') }}</a></p>
@@ -30,7 +30,7 @@
 			<p style="margin-bottom:0;">{{ $t('enter-2fa-code') }}</p>
 			<x-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
 				<span>{{ $t('password') }}</span>
-				<template #prefix><fa icon="lock"/></template>
+				<template #prefix><fa :icon="faLock"/></template>
 			</x-input>
 			<x-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 				<span>{{ $t('@.2fa') }}</span>

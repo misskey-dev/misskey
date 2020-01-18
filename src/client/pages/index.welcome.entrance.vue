@@ -11,7 +11,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { toUnicode } from 'punycode';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
 import XSigninDialog from '../components/signin-dialog.vue';
 import XSignupDialog from '../components/signup-dialog.vue';
 import XButton from '../components/ui/button.vue';
