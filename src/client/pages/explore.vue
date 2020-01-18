@@ -27,14 +27,14 @@
 		<header>{{ $t('explore-fediverse') }}</header>
 	</div>
 
-	<ui-container :body-togglable="true" :expanded="false" ref="tags">
+	<x-container :body-togglable="true" :expanded="false" ref="tags">
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
 			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
 			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
 		</div>
-	</ui-container>
+	</x-container>
 
 	<x-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
@@ -170,17 +170,17 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .localfedi7 {
-	overflow: hidden;
-	background: var(--face);
 	color: #fff;
 	text-shadow: 0 0 8px #000;
-	border-radius: 6px;
 	padding: 16px;
-	margin-top: 16px;
-	margin-bottom: 16px;
 	height: 80px;
 	background-position: 50%;
 	background-size: cover;
+	margin-bottom: 16px;
+
+	@media (max-width: 500px) {
+		margin-bottom: 8px;
+	}
 
 	> header {
 		font-size: 20px;
@@ -191,10 +191,6 @@ export default Vue.extend({
 		font-size: 14px;
 		opacity: 0.8;
 	}
-}
-
-.localfedi7:first-child {
-	margin-top: 0;
 }
 
 .vxjfqztj {

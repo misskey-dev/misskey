@@ -63,6 +63,10 @@ export default Vue.extend({
 
 	& + .ukygtjoj {
 		margin-top: 16px;
+
+		@media (max-width: 500px) {
+			margin-top: 8px;
+		}
 	}
 
 	&.naked {
@@ -72,7 +76,7 @@ export default Vue.extend({
 
 	> header {
 		position: relative;
-		
+
 		> .title {
 			margin: 0;
 			padding: 12px 16px;
