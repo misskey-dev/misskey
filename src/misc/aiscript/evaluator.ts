@@ -195,7 +195,7 @@ export class ASEvaluator {
 				const r = seedrandom(`${day}:${block.id}`)() * totalFactor;
 				let stackedFactor = 0;
 				for (const x of xs) {
-					if (r >= stackedFactor && r <= x.factor) {
+					if (r >= stackedFactor && r <= stackedFactor + x.factor) {
 						return x.text;
 					} else {
 						stackedFactor += x.factor;
