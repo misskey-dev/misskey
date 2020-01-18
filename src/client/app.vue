@@ -128,6 +128,7 @@
 			<template v-else>
 				<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
 				<div></div>
+				<router-link to="/announcements"><fa :icon="faBroadcastTower" fixed-width/>{{ $t('announcements') }}<i v-if="$store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></router-link>
 				<router-link to="/featured"><fa :icon="faFireAlt" fixed-width/>{{ $t('featured') }}</router-link>
 				<button class="_button" @click="showLists = true"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</button>
 				<router-link to="/messaging"><fa :icon="faComments" fixed-width/>{{ $t('messaging') }}<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i></router-link>

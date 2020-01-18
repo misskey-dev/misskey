@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import { Announcements } from '../../../../../models';
+import { Announcements, AnnouncementReads } from '../../../../../models';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
 
 export const meta = {
@@ -30,6 +30,12 @@ export default define(meta, async (ps) => {
 	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
 
 	const announcements = await query.take(ps.limit!).getMany();
+
+	for (const announcement of announcements) {
+		(announcement as any).reads = await AnnouncementReads.count({
+			announcementId: announcement.id
+		});
+	}
 
 	return announcements;
 });

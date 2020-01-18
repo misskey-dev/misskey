@@ -90,7 +90,7 @@ export class UserRepository extends Repository<User> {
 		});
 
 		const count = await Announcements.count(reads.length > 0 ? {
-			id: Not(In(reads.map(read => read.id)))
+			id: Not(In(reads.map(read => read.announcementId)))
 		} : {});
 
 		return count > 0;

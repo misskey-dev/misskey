@@ -13,13 +13,14 @@
 			<x-input v-model="announcement.imageUrl">
 				<span>{{ $t('imageUrl') }}</span>
 			</x-input>
+			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">
-				<x-button class="button" inline @click="save(announcement)"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
+				<x-button class="button" inline @click="save(announcement)" primary><fa :icon="faSave"/> {{ $t('save') }}</x-button>
 				<x-button class="button" inline @click="remove(announcement)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</x-button>
 			</div>
 		</div>
 		<div class="_footer">
-			<x-button @click="add()"><fa :icon="faPlus"/> {{ $t('add') }}</x-button>
+			<x-button @click="add()" primary><fa :icon="faPlus"/> {{ $t('add') }}</x-button>
 		</div>
 	</section>
 </div>
