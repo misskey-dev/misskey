@@ -5,7 +5,7 @@
 
 	<x-pagination :pagination="pagination" #default="{items}" class="ruryvtyk" ref="list">
 		<section class="_section announcement" v-for="(announcement, i) in items" :key="announcement.id" :data-index="i">
-			<div class="_title">{{ announcement.title }}</div>
+			<div class="_title"><span v-if="!announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<mfm :text="announcement.text"/>
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl" alt=""/>
