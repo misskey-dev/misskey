@@ -224,6 +224,8 @@ recentUsedEmojis: "最近使用した絵文字"
 noMoreHistory: "これより過去の履歴はありません"
 startMessaging: "トークを開始"
 nUsersRead: "{n}人が読みました"
+agreeTo: "{0}に同意"
+tos: "利用規約"
 
 _widgets:
   memo: "付箋"

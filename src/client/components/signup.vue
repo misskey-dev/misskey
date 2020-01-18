@@ -38,7 +38,7 @@
 			</template>
 		</x-input>
 		<x-switch v-model="ToSAgreement" v-if="meta.ToSUrl">
-			<i18n path="agree-to">
+			<i18n path="agreeTo">
 				<a :href="meta.ToSUrl" target="_blank">{{ $t('tos') }}</a>
 			</i18n>
 		</x-switch>
