@@ -28,9 +28,12 @@
 	</header>
 
 	<nav ref="nav" class="nav">
-		<div class="menu" v-if="$store.getters.isSignedIn">
-			<router-link class="item" to="/" exact>
+		<div class="menu">
+			<router-link class="item" to="/" exact v-if="$store.getters.isSignedIn">
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
+			</router-link>
+			<router-link class="item" to="/" exact v-else>
+				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('home') }}</span>
 			</router-link>
 			<router-link class="item" to="/featured">
 				<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
@@ -38,23 +41,23 @@
 			<router-link class="item" to="/explore">
 				<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
 			</router-link>
-			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton">
+			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.getters.isSignedIn">
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
 				<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
 			</button>
-			<router-link class="item" to="/messaging">
+			<router-link class="item" to="/messaging" v-if="$store.getters.isSignedIn">
 				<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
 				<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
 			</router-link>
-			<router-link class="item" to="/follow-requests" v-if="$store.state.i.isLocked">
+			<router-link class="item" to="/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
 				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
 			</router-link>
 			<router-link class="item" to="/announcements">
 				<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
-				<i v-if="$store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
+				<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
 			</router-link>
-			<button class="item _button" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu">
+			<button class="item _button" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
 				<fa :icon="faCog" fixed-width/><span class="text">{{ $t('instance') }}</span>
 			</button>
 			<button class="item _button" @click="search()">
@@ -62,7 +65,7 @@
 			</button>
 			<button class="item _button" @click="more">
 				<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
-				<i v-if="$store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i>
+				<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
 			</button>
 		</div>
 	</nav>

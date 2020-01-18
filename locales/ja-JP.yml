@@ -227,6 +227,7 @@ nUsersRead: "{n}人が読みました"
 agreeTo: "{0}に同意"
 tos: "利用規約"
 start: "始める"
+home: "ホーム"
 
 _widgets:
   memo: "付箋"
