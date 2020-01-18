@@ -1,6 +1,6 @@
 <template>
-<div class="">
-	<div class="_panel">
+<div class="rsqzvsbo">
+	<div class="_panel about">
 		<div class="desc" v-html="description || $t('@.about')"></div>
 		<x-button @click="signin()">{{ $t('login') }}</x-button>
 		<x-button @click="signup()">{{ $t('signup') }}</x-button>
@@ -67,5 +67,15 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.rsqzvsbo {
+	> .about {
+		padding: 32px;
+		margin-bottom: 16px;
 
+		@media (max-width: 500px) {
+			padding: 16px;
+			margin-bottom: 8px;
+		}
+	}
+}
 </style>
