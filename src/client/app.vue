@@ -394,20 +394,6 @@ export default Vue.extend({
 			});
 		},
 
-		async createList() {
-			this.navOpen = false;
-			const { canceled, result: name } = await this.$root.dialog({
-				title: this.$t('enterListName'),
-				input: true
-			});
-			if (canceled) return;
-			await this.$root.api('users/lists/create', { name: name });
-			this.$root.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
-		},
-
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
 			this.$root.stream.send('readNotification', {
