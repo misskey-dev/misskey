@@ -139,7 +139,7 @@ export default Vue.extend({
 			width: 100%;
 			min-width: 100%;
 			max-width: 100%;
-			min-height: 100px;
+			min-height: 130px;
 			padding: 12px;
 			box-sizing: border-box;
 			font: inherit;
