@@ -208,6 +208,7 @@ a {
 
 ._panel {
 	@extend ._shadow;
+	position: relative;
 	background: var(--bg);
 	border-radius: var(--radius);
 }
