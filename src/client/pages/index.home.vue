@@ -6,11 +6,12 @@
 			<fa v-if="src === 'local'" :icon="faComments"/>
 			<fa v-if="src === 'social'" :icon="faShareAlt"/>
 			<fa v-if="src === 'global'" :icon="faGlobe"/>
-			<span style="margin-left: 8px;">{{ $t('_timelines.' + src) }}</span>
+			<fa v-if="src === 'list'" :icon="faListUl"/>
+			<span style="margin-left: 8px;">{{ src === 'list' ? list.name : $t('_timelines.' + src) }}</span>
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
-	<x-home-timeline :key="src" :src="src" @before="before()" @after="after()"/>
+	<x-home-timeline :key="src === 'list' ? `list:${list.id}` : src" :src="src" :list="list" @before="before()" @after="after()"/>
 </div>
 </template>
 
@@ -37,7 +38,7 @@ export default Vue.extend({
 			src: 'home',
 			list: null,
 			menuOpened: false,
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl
 		};
 	},
 

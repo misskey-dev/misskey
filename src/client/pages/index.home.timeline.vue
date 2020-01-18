@@ -16,6 +16,9 @@ export default Vue.extend({
 			type: String,
 			required: true
 		},
+		list: {
+			required: false
+		},
 		tagTl: {
 			required: false
 		}
@@ -41,6 +44,14 @@ export default Vue.extend({
 
 		const prepend = note => {
 			(this.$refs.timeline as any).prepend(note);
+		};
+
+		const onUserAdded = () => {
+			(this.$refs.timeline as any).reload();
+		};
+
+		const onUserRemoved = () => {
+			(this.$refs.timeline as any).reload();
 		};
 
 		let endpoint;
@@ -73,22 +84,17 @@ export default Vue.extend({
 			endpoint = 'notes/global-timeline';
 			this.connection = this.$root.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
-		} else if (this.src == 'mentions') {
-			endpoint = 'notes/mentions';
-			this.connection = this.$root.stream.useSharedConnection('main');
-			this.connection.on('mention', prepend);
-		} else if (this.src == 'messages') {
-			endpoint = 'notes/mentions';
+		} else if (this.src == 'list') {
+			endpoint = 'notes/user-list-timeline';
 			this.query = {
-				visibility: 'specified'
+				listId: this.list.id
 			};
-			const onNote = note => {
-				if (note.visibility == 'specified') {
-					prepend(note);
-				}
-			};
-			this.connection = this.$root.stream.useSharedConnection('main');
-			this.connection.on('mention', onNote);
+			this.connection = this.$root.stream.connectToChannel('userList', {
+				listId: this.list.id
+			});
+			this.connection.on('note', prepend);
+			this.connection.on('userAdded', onUserAdded);
+			this.connection.on('userRemoved', onUserRemoved);
 		}
 
 		this.pagination = {
