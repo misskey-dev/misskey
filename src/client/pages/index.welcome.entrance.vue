@@ -5,6 +5,7 @@
 		<x-button @click="signin()">{{ $t('login') }}</x-button>
 		<x-button @click="signup()">{{ $t('signup') }}</x-button>
 	</div>
+	<x-notes :pagination="featuredPagination"/>
 </div>
 </template>
 
@@ -14,6 +15,7 @@ import { toUnicode } from 'punycode';
 import XSigninDialog from '../components/signin-dialog.vue';
 import XSignupDialog from '../components/signup-dialog.vue';
 import XButton from '../components/ui/button.vue';
+import XNotes from '../components/notes.vue';
 import i18n from '../i18n';
 import { host } from '../config';
 
@@ -22,10 +24,15 @@ export default Vue.extend({
 
 	components: {
 		XButton,
+		XNotes,
 	},
 
 	data() {
 		return {
+			featuredPagination: {
+				endpoint: 'notes/featured',
+				limit: 10,
+			},
 			host: toUnicode(host),
 			meta: null,
 			description: '',
