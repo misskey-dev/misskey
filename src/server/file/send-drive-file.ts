@@ -98,7 +98,7 @@ export default async function(ctx: Koa.Context) {
 	}
 
 	if (isThumbnail || isWebpublic) {
-		const [mime, ext] = await detectMine(InternalStorage.resolvePath(key));
+		const { mime, ext } = await detectType(InternalStorage.resolvePath(key));
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
 			extname: ext ? `.${ext}` : undefined
