@@ -3,7 +3,7 @@
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
-		<button v-if="bodyTogglable" @click="() => showBody = !showBody">
+		<button class="_button" v-if="bodyTogglable" @click="() => showBody = !showBody">
 			<template v-if="showBody"><fa :icon="faAngleUp"/></template>
 			<template v-else><fa :icon="faAngleDown"/></template>
 		</button>
@@ -71,6 +71,8 @@ export default Vue.extend({
 	}
 
 	> header {
+		position: relative;
+		
 		> .title {
 			margin: 0;
 			padding: 12px 16px;

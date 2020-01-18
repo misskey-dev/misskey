@@ -3,27 +3,27 @@
 	<portal to="icon"><fa :icon="faHashtag"/></portal>
 	<portal to="title">{{ $t('explore') }}</portal>
 
-	<div class="localfedi7" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
+	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 		<header>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</header>
 		<div>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</div>
 	</div>
 
 	<template v-if="tag == null">
-		<mk-user-list :pagination="pinnedUsers" :expanded="false">
+		<x-user-list :pagination="pinnedUsers" :expanded="false">
 			<fa :icon="faBookmark" fixed-width/>{{ $t('pinned-users') }}
-		</mk-user-list>
-		<mk-user-list :pagination="popularUsers" :expanded="false">
+		</x-user-list>
+		<x-user-list :pagination="popularUsers" :expanded="false">
 			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
-		</mk-user-list>
-		<mk-user-list :pagination="recentlyUpdatedUsers" :expanded="false">
+		</x-user-list>
+		<x-user-list :pagination="recentlyUpdatedUsers" :expanded="false">
 			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
-		</mk-user-list>
-		<mk-user-list :pagination="recentlyRegisteredUsers" :expanded="false">
+		</x-user-list>
+		<x-user-list :pagination="recentlyRegisteredUsers" :expanded="false">
 			<fa :icon="faPlus" fixed-width/>{{ $t('recently-registered-users') }}
-		</mk-user-list>
+		</x-user-list>
 	</template>
 
-	<div class="localfedi7" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)` }">
+	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)` }">
 		<header>{{ $t('explore-fediverse') }}</header>
 	</div>
 
@@ -36,19 +36,19 @@
 		</div>
 	</ui-container>
 
-	<mk-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
+	<x-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}
-	</mk-user-list>
+	</x-user-list>
 	<template v-if="tag == null">
-		<mk-user-list :pagination="popularUsersF" :expanded="false">
+		<x-user-list :pagination="popularUsersF" :expanded="false">
 			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
-		</mk-user-list>
-		<mk-user-list :pagination="recentlyUpdatedUsersF" :expanded="false">
+		</x-user-list>
+		<x-user-list :pagination="recentlyUpdatedUsersF" :expanded="false">
 			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
-		</mk-user-list>
-		<mk-user-list :pagination="recentlyRegisteredUsersF" :expanded="false">
+		</x-user-list>
+		<x-user-list :pagination="recentlyRegisteredUsersF" :expanded="false">
 			<fa :icon="faRocket" fixed-width/>{{ $t('recently-discovered-users') }}
-		</mk-user-list>
+		</x-user-list>
 	</template>
 </div>
 </template>
@@ -58,6 +58,7 @@ import Vue from 'vue';
 import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../i18n';
+import XUserList from '../components/user-list.vue';
 
 export default Vue.extend({
 	i18n,
@@ -68,16 +69,14 @@ export default Vue.extend({
 		};
 	},
 
+	components: {
+		XUserList
+	},
+
 	props: {
 		tag: {
 			type: String,
 			required: false
-		}
-	},
-
-	inject: {
-		inNakedDeckColumn: {
-			default: false
 		}
 	},
 
