@@ -7,7 +7,17 @@
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="wallpaperUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
 		</x-input>
-		<x-button primary :disabled="$store.state.settings.wallpaper == null" @click="del()">{{ $t('removeWallpaper') }}</x-button>
+		<x-button primary :disabled="$store.state.settings.wallpaper == null" @click="delWallpaper()">{{ $t('removeWallpaper') }}</x-button>
+	</div>
+	<div class="_content">
+		<x-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
+			{{ $t('auto-watch') }}<template #desc>{{ $t('auto-watch-desc') }}</template>
+		</x-switch>
+	</div>
+	<div class="_content">
+		<x-button @click="readAllNotifications">{{ $t('mark-as-read-all-notifications') }}</x-button>
+		<x-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</x-button>
+		<x-button @click="readAllMessagingMessages">{{ $t('mark-as-read-all-talk-messages') }}</x-button>
 	</div>
 </section>
 </template>
@@ -17,6 +27,7 @@ import Vue from 'vue';
 import { faImage, faCog } from '@fortawesome/free-solid-svg-icons';
 import XInput from '../components/ui/input.vue';
 import XButton from '../components/ui/button.vue';
+import XSwitch from '../components/ui/switch.vue';
 import i18n from '../i18n';
 import { apiUrl } from '../config';
 
@@ -26,6 +37,7 @@ export default Vue.extend({
 	components: {
 		XInput,
 		XButton,
+		XSwitch,
 	},
 	
 	data() {
@@ -69,9 +81,27 @@ export default Vue.extend({
 			});
 		},
 
-		del() {
+		delWallpaper() {
 			this.wallpaper = null;
 			document.documentElement.style.backgroundImage = 'none';
+		},
+
+		onChangeAutoWatch(v) {
+			this.$root.api('i/update', {
+				autoWatch: v
+			});
+		},
+
+		readAllUnreadNotes() {
+			this.$root.api('i/read_all_unread_notes');
+		},
+
+		readAllMessagingMessages() {
+			this.$root.api('i/read_all_messaging_messages');
+		},
+
+		readAllNotifications() {
+			this.$root.api('notifications/mark_all_as_read');
 		}
 	}
 });

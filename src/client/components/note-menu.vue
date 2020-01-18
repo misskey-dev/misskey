@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faStar, faLink, faThumbtack, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../i18n';
 import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
@@ -51,6 +51,15 @@ export default Vue.extend({
 					text: this.$t('favorite'),
 					action: () => this.toggleFavorite(true)
 				},
+				this.note.userId != this.$store.state.i.id ? this.isWatching ? {
+					icon: faEyeSlash,
+					text: this.$t('unwatch'),
+					action: () => this.toggleWatch(false)
+				} : {
+					icon: faEye,
+					text: this.$t('watch'),
+					action: () => this.toggleWatch(true)
+				} : undefined,
 				this.note.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.note.id) ? {
 					icon: faThumbtack,
 					text: this.$t('unpin'),
@@ -163,6 +172,18 @@ export default Vue.extend({
 					iconOnly: true, autoClose: true
 				});
 				this.$emit('closed');
+				this.destroyDom();
+			});
+		},
+
+		toggleWatch(watch: boolean) {
+			this.$root.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
+				noteId: this.note.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
 				this.destroyDom();
 			});
 		},
