@@ -232,6 +232,9 @@ remoteUserCaution: "リモートユーザーのため、情報が不完全です
 viewOnRemote: "リモートで表示"
 activity: "アクティビティ"
 images: "画像"
+birthday: "誕生日"
+yearsOld: "{age}歳"
+registeredDate: "登録日"
 
 _widgets:
   memo: "付箋"

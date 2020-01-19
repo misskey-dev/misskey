@@ -17,6 +17,16 @@
 			<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
 		</x-textarea>
 
+		<x-input v-model="location">
+			<span>{{ $t('location') }}</span>
+			<template #prefix><fa :icon="faMapMarkerAlt"/></template>
+		</x-input>
+
+		<x-input v-model="birthday" type="date">
+			<template #title>{{ $t('birthday') }}</template>
+			<template #prefix><fa :icon="faBirthdayCake"/></template>
+		</x-input>
+
 		<x-input type="file" @change="onAvatarChange">
 			<span>{{ $t('_profile.avatar') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
@@ -60,7 +70,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faUnlockAlt, faCogs, faImage, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUnlockAlt, faCogs, faImage, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
 import XButton from '../components/ui/button.vue';
 import XInput from '../components/ui/input.vue';
@@ -84,6 +94,8 @@ export default Vue.extend({
 			host,
 			name: null,
 			description: null,
+			birthday: null,
+			location: null,
 			fieldName0: null,
 			fieldValue0: null,
 			fieldName1: null,
@@ -99,13 +111,15 @@ export default Vue.extend({
 			saving: false,
 			avatarUploading: false,
 			bannerUploading: false,
-			faSave, faUnlockAlt, faCogs, faImage, faUser
+			faSave, faUnlockAlt, faCogs, faImage, faUser, faMapMarkerAlt, faBirthdayCake
 		}
 	},
 
 	created() {
 		this.name = this.$store.state.i.name;
 		this.description = this.$store.state.i.description;
+		this.location = this.$store.state.i.location;
+		this.birthday = this.$store.state.i.birthday;
 		this.avatarId = this.$store.state.i.avatarId;
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isBot = this.$store.state.i.isBot;
@@ -185,6 +199,8 @@ export default Vue.extend({
 			this.$root.api('i/update', {
 				name: this.name || null,
 				description: this.description || null,
+				location: this.location || null,
+				birthday: this.birthday || null,
 				avatarId: this.avatarId || undefined,
 				bannerId: this.bannerId || undefined,
 				fields,

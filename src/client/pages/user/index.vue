@@ -38,6 +38,20 @@
 				<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 				<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
 			</div>
+			<div class="fields system">
+				<dl class="field" v-if="user.location">
+					<dt class="name"><fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
+					<dd class="value">{{ user.location }}</dd>
+				</dl>
+				<dl class="field" v-if="user.birthday">
+					<dt class="name"><fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
+					<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+				</dl>
+				<dl class="field">
+					<dt class="name"><fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
+					<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<mk-time :time="user.createdAt"/>)</dd>
+				</dl>
+			</div>
 			<div class="fields" v-if="user.fields.length > 0">
 				<dl class="field" v-for="(field, i) in user.fields" :key="i">
 					<dt class="name">
@@ -91,7 +105,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
+import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
 import XUserMenu from '../../components/user-menu.vue';
 import XNote from '../../components/note.vue';
@@ -121,7 +137,7 @@ export default Vue.extend({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage
+			faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
 		};
 	},
 
@@ -132,6 +148,10 @@ export default Vue.extend({
 				backgroundImage: `url(${ this.user.bannerUrl })`
 			};
 		},
+
+		age(): number {
+			return age(this.user.birthday);
+		}
 	},
 
 	watch: {
@@ -413,6 +433,9 @@ export default Vue.extend({
 					white-space: nowrap;
 					text-overflow: ellipsis;
 				}
+			}
+
+			&.system > .field > .name {
 			}
 		}
 
