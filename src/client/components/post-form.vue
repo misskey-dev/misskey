@@ -143,11 +143,21 @@ export default Vue.extend({
 		},
 
 		placeholder(): string {
+			const xs = [
+				this.$t('_postForm._placeholders.a'),
+				this.$t('_postForm._placeholders.b'),
+				this.$t('_postForm._placeholders.c'),
+				this.$t('_postForm._placeholders.d'),
+				this.$t('_postForm._placeholders.e'),
+				this.$t('_postForm._placeholders.f')
+			];
+			const x = xs[Math.floor(Math.random() * xs.length)];
+			
 			return this.renote
 				? this.$t('_postForm.quotePlaceholder')
 				: this.reply
 					? this.$t('_postForm.replyPlaceholder')
-					: this.$t('_postForm.placeholder');
+					: x;
 		},
 
 		submitText(): string {

@@ -298,10 +298,16 @@ _visibility:
   specifiedDescription: "指定したユーザーのみに公開"
 
 _postForm:
-  placeholder: "いまどうしてる？"
   replyPlaceholder: "この投稿に返信..."
   quotePlaceholder: "この投稿を引用..."
   post: "投稿"
+  _placeholders:
+    a: "いまどうしてる？"
+    b: "何かありましたか？"
+    c: "何をお考えですか？"
+    d: "言いたいことは？"
+    e: "ここに書いてください"
+    f: "あなたが書くのを待っています..."
 
 _profile:
   name: "名前"
