@@ -88,7 +88,7 @@
 	<div class="widgets">
 		<template v-if="enableWidgets && $store.getters.isSignedIn">
 			<template v-if="widgetsEditMode">
-				<x-button primary @click="addWidget"><fa :icon="faPlus"/></x-button>
+				<x-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></x-button>
 				<x-draggable
 					:list="widgets"
 					handle=".handle"
@@ -108,8 +108,8 @@
 			<template v-else>
 				<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
 			</template>
-			<button v-if="widgetsEditMode" class="_button" @click="widgetsEditMode = false">{{ $t('exitEdit') }}</button>
-			<button v-else class="_button" @click="widgetsEditMode = true">{{ $t('editWidgets') }}</button>
+			<button v-if="widgetsEditMode" class="_button edit" @click="widgetsEditMode = false">{{ $t('exitEdit') }}</button>
+			<button v-else class="_button edit" @click="widgetsEditMode = true">{{ $t('editWidgets') }}</button>
 		</template>
 	</div>
 
@@ -791,8 +791,18 @@ export default Vue.extend({
 			margin-bottom: 16px;
 		}
 
+		> .add {
+			margin: 0 auto;
+		}
+
+		> .edit {
+			display: block;
+			font-size: 0.9em;
+			margin: 0 auto;
+		}
+
 		.customize-container {
-			margin: 8px;
+			margin: 8px 0;
 			background: #fff;
 
 			> header {
