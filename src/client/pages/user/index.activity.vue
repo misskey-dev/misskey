@@ -17,7 +17,7 @@ export default Vue.extend({
 		limit: {
 			type: Number,
 			required: false,
-			default: 21
+			default: 30
 		}
 	},
 	data() {
@@ -69,7 +69,7 @@ export default Vue.extend({
 				},
 				plotOptions: {
 					bar: {
-						columnWidth: '80%'
+						columnWidth: '40%'
 					}
 				},
 				dataLabels: {
