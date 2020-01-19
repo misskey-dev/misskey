@@ -256,6 +256,7 @@ nsfw: "閲覧注意"
 
 _widgets:
   memo: "付箋"
+  notifications: "通知"
 
 _cw:
   hide: "隠す"
