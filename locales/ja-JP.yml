@@ -235,6 +235,7 @@ images: "画像"
 birthday: "誕生日"
 yearsOld: "{age}歳"
 registeredDate: "登録日"
+location: "場所"
 
 _widgets:
   memo: "付箋"
