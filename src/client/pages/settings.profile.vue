@@ -28,13 +28,13 @@
 		</x-input>
 
 		<x-input type="file" @change="onAvatarChange">
-			<span>{{ $t('_profile.avatar') }}</span>
+			<span>{{ $t('avatar') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
 		</x-input>
 
 		<x-input type="file" @change="onBannerChange">
-			<span>{{ $t('_profile.banner') }}</span>
+			<span>{{ $t('banner') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
 		</x-input>

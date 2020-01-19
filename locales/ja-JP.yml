@@ -250,6 +250,9 @@ emptyDrive: "ドライブは空です"
 emptyFolder: "フォルダーは空です"
 copyUrl: "URLをコピー"
 rename: "名前を変更"
+avatar: "アイコン"
+banner: "バナー"
+nsfw: "閲覧注意"
 
 _widgets:
   memo: "付箋"
@@ -305,8 +308,6 @@ _profile:
   username: "ユーザー名"
   description: "自己紹介"
   youCanIncludeHashtags: "ハッシュタグを含めることができます。"
-  avatar: "アイコン"
-  banner: "バナー"
   metadata: "補足情報"
   metadataLabel: "ラベル"
   metadataContent: "内容"
