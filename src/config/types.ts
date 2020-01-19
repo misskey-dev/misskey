@@ -47,6 +47,8 @@ export type Source = {
 
 	deliverJobConcurrency?: number;
 	inboxJobConcurrency?: number;
+	deliverJobPerSec?: number;
+	inboxJobPerSec?: number;
 
 	syslog: {
 		host: string;

@@ -125,6 +125,10 @@ autoAdmin: true
 # deliverJobConcurrency: 128
 # inboxJobConcurrency: 16
 
+# Job late limiter
+# deliverJobPerSec: 128
+# inboxJobPerSec: 16
+
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
 

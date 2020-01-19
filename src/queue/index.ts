@@ -13,7 +13,7 @@ import { queueLogger } from './logger';
 import { DriveFile } from '../models/entities/drive-file';
 import { getJobInfo } from './get-job-info';
 
-function initializeQueue(name: string) {
+function initializeQueue(name: string, limitPerSec = -1) {
 	return new Queue(name, {
 		redis: {
 			port: config.redis.port,
@@ -21,7 +21,11 @@ function initializeQueue(name: string) {
 			password: config.redis.pass,
 			db: config.redis.db || 0,
 		},
-		prefix: config.redis.prefix ? `${config.redis.prefix}:queue` : 'queue'
+		prefix: config.redis.prefix ? `${config.redis.prefix}:queue` : 'queue',
+		limiter: limitPerSec > 0 ? {
+			max: limitPerSec * 5,
+			duration: 5000
+		} : undefined
 	});
 }
 
@@ -33,8 +37,8 @@ function renderError(e: Error): any {
 	};
 }
 
-export const deliverQueue = initializeQueue('deliver');
-export const inboxQueue = initializeQueue('inbox');
+export const deliverQueue = initializeQueue('deliver', config.deliverJobPerSec || 128);
+export const inboxQueue = initializeQueue('inbox', config.inboxJobPerSec || 16);
 export const dbQueue = initializeQueue('db');
 export const objectStorageQueue = initializeQueue('objectStorage');
 
