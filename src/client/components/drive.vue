@@ -121,6 +121,12 @@ export default Vue.extend({
 		};
 	},
 
+	watch: {
+		folder() {
+			this.$emit('cd', this.folder);
+		}
+	},
+
 	mounted() {
 		this.connection = this.$root.stream.useSharedConnection('drive');
 
@@ -358,18 +364,6 @@ export default Vue.extend({
 					this.selectedFiles = [file];
 					this.$emit('change-selection', [file]);
 				}
-			}
-		},
-
-		newWindow(folder) {
-			if (document.body.clientWidth > 800) {
-				this.$root.new(MkDriveWindow, {
-					folder: folder
-				});
-			} else {
-				window.open(`${url}/i/drive/folder/${folder.id}`,
-					'drive_window',
-					'height=500, width=800');
 			}
 		},
 

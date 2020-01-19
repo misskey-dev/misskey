@@ -242,6 +242,10 @@ darkThemes: "暗いテーマ"
 drive: "ドライブ"
 selectFile: "ファイルを選択"
 selectFiles: "ファイルを選択"
+renameFolder: "フォルダー名を変更"
+createFolder: "フォルダーを作成"
+deleteFolder: "フォルダーを削除"
+addFile: "ファイルを追加"
 
 _widgets:
   memo: "付箋"

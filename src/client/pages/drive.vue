@@ -3,17 +3,18 @@
 	<portal to="header">
 		<button @click="menu" class="_button _jmoebdiw_">
 			<fa :icon="faCloud" style="margin-right: 8px;"/>
-			<span>{{ $t('drive') }}</span>
+			<span v-if="folder">{{ $t('drive') }} ({{ folder.name }})</span>
+			<span v-else>{{ $t('drive') }}</span>
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
-	<x-drive ref="drive"/>
+	<x-drive ref="drive" @cd="x => folder = x"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faCloud, faAngleDown, faAngleUp, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCloud, faAngleDown, faAngleUp, faFolderPlus, faUpload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import XDrive from '../components/drive.vue';
 
 export default Vue.extend({
@@ -30,6 +31,7 @@ export default Vue.extend({
 	data() {
 		return {
 			menuOpened: false,
+			folder: null,
 			faCloud, faAngleDown, faAngleUp
 		};
 	},
@@ -39,18 +41,28 @@ export default Vue.extend({
 			this.menuOpened = true;
 			this.$root.menu({
 				items: [{
+					text: this.$t('addFile'),
+					type: 'label'
+				}, {
 					text: this.$t('upload'),
-					icon: faFolderPlus,
+					icon: faUpload,
 					action: () => { this.$refs.drive.selectLocalFile(); }
 				}, {
+					text: this.$t('fromUrl'),
+					icon: faLink,
+					action: () => { this.$refs.drive.urlUpload(); }
+				}, null, {
+					text: this.folder ? this.folder.name : this.$t('drive'),
+					type: 'label'
+				}, this.folder ? {
 					text: this.$t('renameFolder'),
-					icon: faFolderPlus,
+					icon: faICursor,
 					action: () => { this.$refs.drive.renameFolder(); }
-				}, {
+				} : undefined, this.folder ? {
 					text: this.$t('deleteFolder'),
-					icon: faFolderPlus,
+					icon: faTrashAlt,
 					action: () => { this.$refs.drive.deleteFolder(); }
-				}, {
+				} : undefined, {
 					text: this.$t('createFolder'),
 					icon: faFolderPlus,
 					action: () => { this.$refs.drive.createFolder(); }
