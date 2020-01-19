@@ -39,6 +39,18 @@ export default Vue.extend({
 			this.menuOpened = true;
 			this.$root.menu({
 				items: [{
+					text: this.$t('upload'),
+					icon: faFolderPlus,
+					action: () => { this.$refs.drive.selectLocalFile(); }
+				}, {
+					text: this.$t('renameFolder'),
+					icon: faFolderPlus,
+					action: () => { this.$refs.drive.renameFolder(); }
+				}, {
+					text: this.$t('deleteFolder'),
+					icon: faFolderPlus,
+					action: () => { this.$refs.drive.deleteFolder(); }
+				}, {
 					text: this.$t('createFolder'),
 					icon: faFolderPlus,
 					action: () => { this.$refs.drive.createFolder(); }

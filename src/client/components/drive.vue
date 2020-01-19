@@ -46,7 +46,7 @@
 		</div>
 	</div>
 	<div class="dropzone" v-if="draghover"></div>
-	<mk-uploader ref="uploader" @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>
+	<x-uploader ref="uploader" @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" @change="onChangeFileInput"/>
 </div>
 </template>
@@ -58,6 +58,7 @@ import i18n from '../i18n';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
+import XUploader from './uploader.vue';
 import { url } from '../config';
 
 export default Vue.extend({
@@ -66,7 +67,8 @@ export default Vue.extend({
 	components: {
 		XNavFolder,
 		XFolder,
-		XFile
+		XFile,
+		XUploader,
 	},
 
 	props: {
@@ -555,8 +557,6 @@ export default Vue.extend({
 		width: 100%;
 		overflow: auto;
 		font-size: 0.9em;
-		color: var(--text);
-		background: var(--face);
 		box-shadow: 0 1px 0 rgba(#000, 0.05);
 
 		&, * {
@@ -648,6 +648,7 @@ export default Vue.extend({
 					flex-grow: 1;
 					width: 144px;
 					margin: 4px;
+					box-sizing: border-box;
 				}
 
 				> .padding {
