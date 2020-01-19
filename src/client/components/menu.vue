@@ -11,6 +11,10 @@
 				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 				<span>{{ item.text }}</span>
 			</router-link>
+			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
+				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
+				<span>{{ item.text }}</span>
+			</a>
 			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :class="{ left: item.align === 'left' }" :key="i" :data-index="i">
 				<mk-avatar :user="item.user" class="avatar"/><mk-user-name :user="item.user"/>
 			</button>

@@ -248,6 +248,8 @@ deleteFolder: "フォルダーを削除"
 addFile: "ファイルを追加"
 emptyDrive: "ドライブは空です"
 emptyFolder: "フォルダーは空です"
+copyUrl: "URLをコピー"
+rename: "名前を変更"
 
 _widgets:
   memo: "付箋"

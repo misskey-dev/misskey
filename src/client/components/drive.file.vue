@@ -82,29 +82,29 @@ export default Vue.extend({
 				this.$root.menu({
 					items: [{
 						type: 'item',
-						text: this.$t('contextmenu.rename'),
+						text: this.$t('rename'),
 						icon: 'i-cursor',
 						action: this.rename
 					}, {
 						type: 'item',
-						text: this.file.isSensitive ? this.$t('contextmenu.unmark-as-sensitive') : this.$t('contextmenu.mark-as-sensitive'),
+						text: this.file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
 						icon: this.file.isSensitive ? ['far', 'eye'] : ['far', 'eye-slash'],
 						action: this.toggleSensitive
 					}, null, {
 						type: 'item',
-						text: this.$t('contextmenu.copy-url'),
+						text: this.$t('copyUrl'),
 						icon: 'link',
 						action: this.copyUrl
 					}, {
-						type: 'link',
+						type: 'a',
 						href: this.file.url,
 						target: '_blank',
-						text: this.$t('contextmenu.download'),
+						text: this.$t('download'),
 						icon: 'download',
 						download: this.file.name
 					}, null, {
 						type: 'item',
-						text: this.$t('@.delete'),
+						text: this.$t('delete'),
 						icon: ['far', 'trash-alt'],
 						action: this.deleteFile
 					}, null, {
