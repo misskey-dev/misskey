@@ -31,11 +31,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../i18n';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 //import updateAvatar from '../api/update-avatar';
 //import updateBanner from '../api/update-banner';
 import XFileThumbnail from './drive-file-thumbnail.vue';
+import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n,
@@ -83,29 +85,29 @@ export default Vue.extend({
 					items: [{
 						type: 'item',
 						text: this.$t('rename'),
-						icon: 'i-cursor',
+						icon: faICursor,
 						action: this.rename
 					}, {
 						type: 'item',
 						text: this.file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
-						icon: this.file.isSensitive ? ['far', 'eye'] : ['far', 'eye-slash'],
+						icon: this.file.isSensitive ? faEye : faEyeSlash,
 						action: this.toggleSensitive
 					}, null, {
 						type: 'item',
 						text: this.$t('copyUrl'),
-						icon: 'link',
+						icon: faLink,
 						action: this.copyUrl
 					}, {
 						type: 'a',
 						href: this.file.url,
 						target: '_blank',
 						text: this.$t('download'),
-						icon: 'download',
+						icon: faDownload,
 						download: this.file.name
 					}, null, {
 						type: 'item',
 						text: this.$t('delete'),
-						icon: ['far', 'trash-alt'],
+						icon: faTrashAlt,
 						action: this.deleteFile
 					}, null, {
 						type: 'nest',
