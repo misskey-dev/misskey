@@ -3,6 +3,7 @@
 	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
 	
+	<div class="remote-caution _panel" v-if="user.host != null"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="user.url" rel="nofollow noopener" target="_blank">{{ $t('viewOnRemote') }}</a></div>
 	<transition name="zoom" mode="out-in" appear>
 		<div class="profile _panel" :key="user.id">
 			<div class="banner-container" :style="style">
@@ -78,7 +79,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faEllipsisH, faRobot, faLock, faBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import XUserTimeline from './index.timeline.vue';
 import XUserMenu from '../../components/user-menu.vue';
 import XNote from '../../components/note.vue';
@@ -104,7 +105,7 @@ export default Vue.extend({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faEllipsisH, faRobot, faLock, faBookmark
+			faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle
 		};
 	},
 
@@ -180,6 +181,20 @@ export default Vue.extend({
 @import '../../theme';
 
 .mk-user-page {
+	> .remote-caution {
+		padding: 16px;
+		margin-bottom: 16px;
+
+		@media (max-width: 500px) {
+			margin-bottom: 8px;
+		}
+
+		> a {
+			margin-left: 4px;
+			color: $primary;
+		}
+	}
+
 	> .profile {
 		position: relative;
 		margin-bottom: 16px;

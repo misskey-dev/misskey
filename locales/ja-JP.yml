@@ -228,6 +228,8 @@ agreeTo: "{0}に同意"
 tos: "利用規約"
 start: "始める"
 home: "ホーム"
+remoteUserCaution: "リモートユーザーのため、情報が不完全です。"
+viewOnRemote: "リモートで表示"
 
 _widgets:
   memo: "付箋"
