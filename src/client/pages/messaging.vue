@@ -226,20 +226,16 @@ export default Vue.extend({
 						overflow: hidden;
 						text-overflow: ellipsis;
 						font-size: 1em;
-						color: var(--noteHeaderName);
 						font-weight: bold;
 						transition: all 0.1s ease;
 					}
 
 					> .username {
 						margin: 0 8px;
-						color: var(--noteHeaderAcct);
 					}
 
 					> .mk-time {
 						margin: 0 0 0 auto;
-						color: var(--noteHeaderInfo);
-						font-size: 80%;
 					}
 				}
 
