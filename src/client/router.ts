@@ -20,6 +20,8 @@ export const router = new VueRouter({
 		{ path: '/messages', component: () => import('./pages/messages.vue').then(m => m.default) },
 		{ path: '/messaging', name: 'messaging', component: () => import('./pages/messaging.vue').then(m => m.default) },
 		{ path: '/messaging/:user', component: () => import('./pages/messaging-room.vue').then(m => m.default) },
+		{ path: '/drive', name: 'drive', component: () => import('./pages/drive.vue').then(m => m.default) },
+		{ path: '/drive/folder/:folder', component: () => import('./pages/drive.vue').then(m => m.default) },
 		{ path: '/settings', component: () => import('./pages/settings.vue').then(m => m.default) },
 		{ path: '/instance', component: () => import('./pages/instance/index.vue').then(m => m.default) },
 		{ path: '/instance/emojis', component: () => import('./pages/instance/emojis.vue').then(m => m.default) },

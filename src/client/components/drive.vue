@@ -1,30 +1,24 @@
 <template>
-<div class="mk-drive">
+<div class="yfudmmck">
 	<nav>
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<x-nav-folder :class="{ current: folder == null }"/>
 			<template v-for="folder in hierarchyFolders">
-				<span class="separator"><fa icon="angle-right"/></span>
+				<span class="separator"><fa :icon="faAngleRight"/></span>
 				<x-nav-folder :folder="folder" :key="folder.id"/>
 			</template>
-			<span class="separator" v-if="folder != null"><fa icon="angle-right"/></span>
+			<span class="separator" v-if="folder != null"><fa :icon="faAngleRight"/></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
-		<!--
-			TODO: #343
-			<input class="search" type="search" placeholder="&#xf002; %i18n:@search%"/>
-		-->
 	</nav>
 	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
-		@mousedown="onMousedown"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
 		@contextmenu.prevent.stop="onContextmenu"
 	>
-		<div class="selection" ref="selection"></div>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
 				<x-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
@@ -59,22 +53,22 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faCloudUploadAlt, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
-import MkDriveWindow from './drive-window.vue';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
-import contains from '../../../common/scripts/contains';
-import { url } from '../../../config';
-import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import { url } from '../config';
 
 export default Vue.extend({
-	i18n: i18n('desktop/views/components/drive.vue'),
+	i18n,
+
 	components: {
 		XNavFolder,
 		XFolder,
 		XFile
 	},
+
 	props: {
 		initFolder: {
 			type: Object,
@@ -90,6 +84,7 @@ export default Vue.extend({
 			default: false
 		}
 	},
+
 	data() {
 		return {
 			/**
@@ -118,9 +113,12 @@ export default Vue.extend({
 			 */
 			isDragSource: false,
 
-			fetching: true
+			fetching: true,
+
+			faAngleRight
 		};
 	},
+
 	mounted() {
 		this.connection = this.$root.stream.useSharedConnection('drive');
 
@@ -137,9 +135,11 @@ export default Vue.extend({
 			this.fetch();
 		}
 	},
+
 	beforeDestroy() {
 		this.connection.dispose();
 	},
+
 	methods: {
 		onContextmenu(e) {
 			this.$contextmenu(e, [{
@@ -200,53 +200,6 @@ export default Vue.extend({
 
 		onUploaderUploaded(file) {
 			this.addFile(file, true);
-		},
-
-		onMousedown(e): any {
-			if (contains(this.$refs.foldersContainer, e.target) || contains(this.$refs.filesContainer, e.target)) return true;
-
-			const main = this.$refs.main as any;
-			const selection = this.$refs.selection as any;
-
-			const rect = main.getBoundingClientRect();
-
-			const left = e.pageX + main.scrollLeft - rect.left - window.pageXOffset
-			const top = e.pageY + main.scrollTop - rect.top - window.pageYOffset
-
-			const move = e => {
-				selection.style.display = 'block';
-
-				const cursorX = e.pageX + main.scrollLeft - rect.left - window.pageXOffset;
-				const cursorY = e.pageY + main.scrollTop - rect.top - window.pageYOffset;
-				const w = cursorX - left;
-				const h = cursorY - top;
-
-				if (w > 0) {
-					selection.style.width = w + 'px';
-					selection.style.left = left + 'px';
-				} else {
-					selection.style.width = -w + 'px';
-					selection.style.left = cursorX + 'px';
-				}
-
-				if (h > 0) {
-					selection.style.height = h + 'px';
-					selection.style.top = top + 'px';
-				} else {
-					selection.style.height = -h + 'px';
-					selection.style.top = cursorY + 'px';
-				}
-			};
-
-			const up = e => {
-				document.documentElement.removeEventListener('mousemove', move);
-				document.documentElement.removeEventListener('mouseup', up);
-
-				selection.style.display = 'none';
-			};
-
-			document.documentElement.addEventListener('mousemove', move);
-			document.documentElement.addEventListener('mouseup', up);
 		},
 
 		onDragover(e): any {
@@ -594,198 +547,146 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" scoped>
-.mk-drive
-	> nav
-		display block
-		z-index 2
-		width 100%
-		overflow auto
-		font-size 0.9em
-		color var(--text)
-		background var(--face)
-		box-shadow 0 1px 0 rgba(#000, 0.05)
+<style lang="scss" scoped>
+.yfudmmck {
+	> nav {
+		display: block;
+		z-index: 2;
+		width: 100%;
+		overflow: auto;
+		font-size: 0.9em;
+		color: var(--text);
+		background: var(--face);
+		box-shadow: 0 1px 0 rgba(#000, 0.05);
 
-		&, *
-			user-select none
+		&, * {
+			user-select: none;
+		}
 
-		> .path
-			display inline-block
-			vertical-align bottom
-			margin 0
-			padding 0 8px
-			width calc(100% - 200px)
-			line-height 38px
-			white-space nowrap
+		> .path {
+			display: inline-block;
+			vertical-align: bottom;
+			margin: 0;
+			padding: 0 8px;
+			width: calc(100% - 200px);
+			line-height: 38px;
+			white-space: nowrap;
 
-			> *
-				display inline-block
-				margin 0
-				padding 0 8px
-				line-height 38px
-				cursor pointer
+			> * {
+				display: inline-block;
+				margin: 0;
+				padding: 0 8px;
+				line-height: 38px;
+				cursor: pointer;
 
-				*
-					pointer-events none
+				* {
+					pointer-events: none;
+				}
 
-				&:hover
-					text-decoration underline
+				&:hover {
+					text-decoration: underline;
+				}
 
-				&.current
-					font-weight bold
-					cursor default
+				&.current {
+					font-weight: bold;
+					cursor: default;
 
-					&:hover
-						text-decoration none
+					&:hover {
+						text-decoration: none;
+					}
+				}
 
-				&.separator
-					margin 0
-					padding 0
-					opacity 0.5
-					cursor default
+				&.separator {
+					margin: 0;
+					padding: 0;
+					opacity: 0.5;
+					cursor: default;
 
-					> [data-icon]
-						margin 0
+					> [data-icon] {
+						margin: 0;
+					}
+				}
+			}
+		}
+	}
 
-		> .search
-			display inline-block
-			vertical-align bottom
-			user-select text
-			cursor auto
-			margin 0
-			padding 0 18px
-			width 200px
-			font-size 1em
-			line-height 38px
-			background transparent
-			outline none
-			//border solid 1px #ddd
-			border none
-			border-radius 0
-			box-shadow none
-			transition color 0.5s ease, border 0.5s ease
-			font-family FontAwesome, sans-serif
+	> .main {
+		padding: 8px;
+		height: calc(100% - 38px);
+		overflow: auto;
+		background: var(--desktopDriveBg);
 
-			&[data-active='true']
-				background #fff
+		&, * {
+			user-select: none;
+		}
 
-			&::-webkit-input-placeholder,
-			&:-ms-input-placeholder,
-			&:-moz-placeholder
-				color $ui-control-foreground-color
+		&.fetching {
+			cursor: wait !important;
 
-	> .main
-		padding 8px
-		height calc(100% - 38px)
-		overflow auto
-		background var(--desktopDriveBg)
+			* {
+				pointer-events: none;
+			}
 
-		&, *
-			user-select none
+			> .contents {
+				opacity: 0.5;
+			}
+		}
 
-		&.fetching
-			cursor wait !important
+		&.uploading {
+			height: calc(100% - 38px - 100px);
+		}
 
-			*
-				pointer-events none
+		> .contents {
 
-			> .contents
-				opacity 0.5
+			> .folders,
+			> .files {
+				display: flex;
+				flex-wrap: wrap;
 
-		&.uploading
-			height calc(100% - 38px - 100px)
+				> .folder,
+				> .file {
+					flex-grow: 1;
+					width: 144px;
+					margin: 4px;
+				}
 
-		> .selection
-			display none
-			position absolute
-			z-index 128
-			top 0
-			left 0
-			border solid 1px var(--primary)
-			background var(--primaryAlpha05)
-			pointer-events none
-
-		> .contents
-
-			> .folders
-			> .files
-				display flex
-				flex-wrap wrap
-
-				> .folder
-				> .file
-					flex-grow 1
-					width 144px
-					margin 4px
-
-				> .padding
-					flex-grow 1
-					pointer-events none
-					width 144px + 8px // 8px is margin
-
-			> .empty
-				padding 16px
-				text-align center
-				color #999
-				pointer-events none
-
-				> p
-					margin 0
-
-		> .fetching
-			.spinner
-				margin 100px auto
-				width 40px
-				height 40px
-				text-align center
-
-				animation sk-rotate 2.0s infinite linear
-
-			.dot1, .dot2
-				width 60%
-				height 60%
-				display inline-block
-				position absolute
-				top 0
-				background-color rgba(#000, 0.3)
-				border-radius 100%
-
-				animation sk-bounce 2.0s infinite ease-in-out
-
-			.dot2
-				top auto
-				bottom 0
-				animation-delay -1.0s
-
-			@keyframes sk-rotate {
-				100% {
-					transform: rotate(360deg);
+				> .padding {
+					flex-grow: 1;
+					pointer-events: none;
+					width: 144px + 8px;
 				}
 			}
 
-			@keyframes sk-bounce {
-				0%, 100% {
-					transform: scale(0.0);
-				}
-				50% {
-					transform: scale(1.0);
+			> .empty {
+				padding: 16px;
+				text-align: center;
+				color: #999;
+				pointer-events: none;
+
+				> p {
+					margin: 0;
 				}
 			}
+		}
+	}
 
-	> .dropzone
-		position absolute
-		left 0
-		top 38px
-		width 100%
-		height calc(100% - 38px)
-		border dashed 2px var(--primaryAlpha05)
-		pointer-events none
+	> .dropzone {
+		position: absolute;
+		left: 0;
+		top: 38px;
+		width: 100%;
+		height: calc(100% - 38px);
+		border: dashed 2px var(--primaryAlpha05);
+		pointer-events: none;
+	}
 
-	> .mk-uploader
-		height 100px
-		padding 16px
+	> .mk-uploader {
+		height: 100px;
+		padding: 16px;
+	}
 
-	> input
-		display none
-
+	> input {
+		display: none;
+	}
+}
 </style>

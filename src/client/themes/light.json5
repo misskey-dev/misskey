@@ -33,6 +33,7 @@
 		buttonHoverBg: 'rgba(0, 0, 0, 0.1)',
 		inputBorder: '#dae0e4',
 		listItemHoverBg: 'rgba(0, 0, 0, 0.03)',
+		driveFolderBg: ':alpha<0.3<@primary',
 		bonzsgfz: ':alpha<0<@bg',
 		rfphjcus: 'rgba(0, 0, 0, 0.03)',
 		pcncwizz: ':darken<2<@panel',

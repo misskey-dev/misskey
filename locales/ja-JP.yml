@@ -239,6 +239,7 @@ location: "場所"
 theme: "テーマ"
 lightThemes: "明るいテーマ"
 darkThemes: "暗いテーマ"
+drive: "ドライブ"
 
 _widgets:
   memo: "付箋"

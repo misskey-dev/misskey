@@ -67,6 +67,7 @@ import { erase, unique } from '../../prelude/array';
 import extractMentions from '../../misc/extract-mentions';
 import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
+import { selectDriveFile } from '../scripts/select-drive-file';
 
 export default Vue.extend({
 	i18n,
@@ -318,6 +319,10 @@ export default Vue.extend({
 
 		chooseFileFromPc() {
 			(this.$refs.file as any).click();
+		},
+
+		chooseFileFromDrive() {
+			selectDriveFile(this.$root);
 		},
 
 		attachMedia(driveFile) {
