@@ -31,6 +31,7 @@ const app = new Koa();
 app.use(views(__dirname + '/views', {
 	extension: 'pug',
 	options: {
+		version: config.version,
 		config
 	}
 }));
