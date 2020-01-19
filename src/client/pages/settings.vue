@@ -13,6 +13,7 @@
 	<x-mute-block/>
 	<x-security/>
 
+	<x-button @click="cacheClear()" primary class="cacheClear">{{ $t('cacheClear') }}</x-button>
 	<x-button @click="$root.signout()" primary class="logout">{{ $t('logout') }}</x-button>
 </div>
 </template>
@@ -56,12 +57,31 @@ export default Vue.extend({
 			faCog
 		}
 	},
+
+	methods: {
+		cacheClear() {
+			// Clear cache (service worker)
+			try {
+				navigator.serviceWorker.controller.postMessage('clear');
+
+				navigator.serviceWorker.getRegistrations().then(registrations => {
+					for (const registration of registrations) registration.unregister();
+				});
+			} catch (e) {
+				console.error(e);
+			}
+
+			// Force reload
+			location.reload(true);
+		}
+	}
 });
 </script>
 
 <style lang="scss" scoped>
 .mk-settings-page {
-	> .logout {
+	> .logout,
+	> .cacheClear {
 		margin: 8px auto;
 	}
 }
