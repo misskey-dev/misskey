@@ -1,14 +1,14 @@
 <template>
-<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick" v-once>
+<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
 	<span class="inner" :style="icon"></span>
 </span>
-<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick" v-once>
+<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
 	<span class="inner" :style="icon"></span>
 </span>
-<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id" v-once>
+<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
 	<span class="inner" :style="icon"></span>
 </router-link>
-<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview" v-once>
+<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
 	<span class="inner" :style="icon"></span>
 </router-link>
 </template>
@@ -50,6 +50,11 @@ export default Vue.extend({
 				backgroundColor: this.user.avatarColor,
 				backgroundImage: `url(${this.url})`,
 			};
+		}
+	},
+	watch: {
+		'user.avatarColor'() {
+			this.$el.style.color = this.user.avatarColor;
 		}
 	},
 	mounted() {
