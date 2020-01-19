@@ -566,8 +566,6 @@ export default Vue.extend({
 		> .path {
 			display: inline-block;
 			vertical-align: bottom;
-			margin: 0;
-			padding: 0 8px;
 			width: calc(100% - 200px);
 			line-height: 38px;
 			white-space: nowrap;
@@ -611,10 +609,9 @@ export default Vue.extend({
 	}
 
 	> .main {
-		padding: 8px;
+		padding: 8px 0;
 		height: calc(100% - 38px);
 		overflow: auto;
-		background: var(--desktopDriveBg);
 
 		&, * {
 			user-select: none;
