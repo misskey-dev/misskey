@@ -69,6 +69,18 @@
 		<sequential-entrance class="pins">
 			<x-note v-for="(note, i) in user.pinnedNotes" class="note" :note="note" :key="note.id" :data-index="i" :detail="true" :pinned="true"/>
 		</sequential-entrance>
+		<x-container :body-togglable="true" class="content">
+			<template #header><fa :icon="faImage"/>{{ $t('images') }}</template>
+			<div>
+				<x-photos :user="user"/>
+			</div>
+		</x-container>
+		<x-container :body-togglable="true" class="content">
+			<template #header><fa :icon="faChartBar"/>{{ $t('activity') }}</template>
+			<div style="padding:8px;">
+				<x-activity :user="user"/>
+			</div>
+		</x-container>
 		<x-user-timeline :user="user"/>
 	</template>
 </div>
@@ -79,11 +91,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage } from '@fortawesome/free-solid-svg-icons';
 import XUserTimeline from './index.timeline.vue';
 import XUserMenu from '../../components/user-menu.vue';
 import XNote from '../../components/note.vue';
 import XFollowButton from '../../components/follow-button.vue';
+import XContainer from '../../components/ui/container.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 
@@ -92,6 +105,9 @@ export default Vue.extend({
 		XUserTimeline,
 		XNote,
 		XFollowButton,
+		XContainer,
+		XPhotos: () => import('./index.photos.vue').then(m => m.default),
+		XActivity: () => import('./index.activity.vue').then(m => m.default),
 	},
 
 	metaInfo() {
@@ -105,7 +121,7 @@ export default Vue.extend({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle
+			faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage
 		};
 	},
 
@@ -440,6 +456,14 @@ export default Vue.extend({
 			@media (max-width: 500px) {
 				margin-bottom: 8px;
 			}
+		}
+	}
+
+	> .content {
+		margin-bottom: 16px;
+
+		@media (max-width: 500px) {
+			margin-bottom: 8px;
 		}
 	}
 }

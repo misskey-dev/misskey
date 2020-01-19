@@ -230,6 +230,8 @@ start: "始める"
 home: "ホーム"
 remoteUserCaution: "リモートユーザーのため、情報が不完全です。"
 viewOnRemote: "リモートで表示"
+activity: "アクティビティ"
+images: "画像"
 
 _widgets:
   memo: "付箋"
