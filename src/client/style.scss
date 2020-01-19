@@ -1,6 +1,8 @@
 @charset "utf-8";
 
-@import 'theme';
+:root {
+	--radius: 8px;
+}
 
 * {
 	tap-highlight-color: transparent;
@@ -8,7 +10,7 @@
 }
 
 html {
-	background-color: $lightHtml;
+	background-color: var(--bg);
 	background-attachment: fixed;
 	background-size: cover;
 	background-position: center;
@@ -17,14 +19,14 @@ html {
 	overflow-y: scroll;
 
 	&, * {
-		scrollbar-color: var(--scrollbarHandle) var(--bg);
+		scrollbar-color: var(--scrollbarHandle) var(--panel);
 
 		&:hover {
-			scrollbar-color: var(--scrollbarHandleHover) var(--bg);
+			scrollbar-color: var(--scrollbarHandleHover) var(--panel);
 		}
 
 		&:active {
-			scrollbar-color: $primary var(--bg);
+			scrollbar-color: var(--primary) var(--panel);
 		}
 
 		&::-webkit-scrollbar {
@@ -33,7 +35,7 @@ html {
 		}
 
 		&::-webkit-scrollbar-track {
-			background: var(--bg);
+			background: var(--panel);
 		}
 
 		&::-webkit-scrollbar-thumb {
@@ -44,13 +46,15 @@ html {
 			}
 
 			&:active {
-				background: $primary;
+				background: var(--primary);
 			}
 		}
 	}
+}
 
-	@media (prefers-color-scheme: dark) {
-		background-color: $darkHtml;
+html.changing-theme {
+	&, * {
+		transition: background 1s ease !important;
 	}
 }
 
@@ -108,7 +112,7 @@ a {
 	z-index: 10000;
 
 	.bar {
-		background: $primary;
+		background: var(--primary);
 		position: fixed;
 		z-index: 10001;
 		top: 0;
@@ -123,7 +127,7 @@ a {
 		right: 0;
 		width: 100px;
 		height: 100%;
-		box-shadow: 0 0 10px $primary, 0 0 5px $primary;
+		box-shadow: 0 0 10px var(--primary), 0 0 5px var(--primary);
 		opacity: 1;
 		transform: rotate(3deg) translate(0px, -4px);
 	}
@@ -143,8 +147,8 @@ a {
 		height: 18px;
 		box-sizing: border-box;
 		border: solid 2px transparent;
-		border-top-color: $primary;
-		border-left-color: $primary;
+		border-top-color: var(--primary);
+		border-left-color: var(--primary);
 		border-radius: 50%;
 		animation: progress-spinner 400ms linear infinite;
 	}
@@ -183,14 +187,14 @@ a {
 ._buttonPrimary {
 	@extend ._button;
 	color: #fff;
-	background: $primary;
+	background: var(--primary);
 
 	&:not(:disabled):hover {
-		background: lighten($primary, 5%);
+		background: var(--jkhztclx);
 	}
 
 	&:not(:disabled):active {
-		background: darken($primary, 5%);
+		background: var(--zbqjwygh);
 	}
 }
 
@@ -209,7 +213,7 @@ a {
 ._panel {
 	@extend ._shadow;
 	position: relative;
-	background: var(--bg);
+	background: var(--panel);
 	border-radius: var(--radius);
 }
 
@@ -264,11 +268,7 @@ a {
 				}
 
 				&:hover {
-					background: rgba(0, 0, 0, 0.03);
-
-					@media (prefers-color-scheme: dark) {
-						background: rgba(255, 255, 255, 0.03);
-					}
+					background: var(--listItemHoverBg);
 				}
 
 				> * {

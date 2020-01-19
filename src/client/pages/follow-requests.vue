@@ -61,8 +61,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .mk-follow-requests {
 	> .user {
 		display: flex;

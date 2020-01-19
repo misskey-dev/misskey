@@ -146,8 +146,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .zmdxowus {
 	padding: 8px;
 

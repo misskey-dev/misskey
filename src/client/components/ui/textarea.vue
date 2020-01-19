@@ -72,8 +72,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .ui-textarea {
 	margin: 42px 0 32px 0;
 	position: relative;
@@ -94,13 +92,9 @@ export default Vue.extend({
 			left: 0;
 			right: 0;
 			background: none;
-			border: solid 1px #dae0e4;
+			border: solid 1px var(--inputBorder);
 			border-radius: 3px;
 			pointer-events: none;
-
-			@media (prefers-color-scheme: dark) {
-				border: solid 1px #959da2;
-			}
 		}
 
 		&:after {
@@ -112,7 +106,7 @@ export default Vue.extend({
 			left: 0;
 			right: 0;
 			background: none;
-			border: solid 2px $primary;
+			border: solid 2px var(--primary);
 			border-radius: 3px;
 			opacity: 0;
 			transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -175,7 +169,7 @@ export default Vue.extend({
 			}
 
 			> .label {
-				color: $primary;
+				color: var(--primary);
 			}
 		}
 	}

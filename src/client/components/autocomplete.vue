@@ -329,15 +329,13 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .mk-autocomplete {
 	position: fixed;
 	z-index: 65535;
 	max-width: 100%;
 	margin-top: calc(1em + 8px);
 	overflow: hidden;
-	background: var(--bg);
+	background: var(--panel);
 	border: solid 1px rgba(#000, 0.1);
 	border-radius: 4px;
 	transition: top 0.1s ease, left 0.1s ease;
@@ -370,15 +368,11 @@ export default Vue.extend({
 			}
 
 			&:hover {
-				background: rgba(0, 0, 0, 0.05);
-
-				@media (prefers-color-scheme: dark) {
-					background: rgba(255, 255, 255, 0.05);
-				}
+				background: var(--yrnqrguo);
 			}
 
 			&[data-selected='true'] {
-				background: $primary;
+				background: var(--primary);
 
 				&, * {
 					color: #fff !important;
@@ -386,7 +380,7 @@ export default Vue.extend({
 			}
 
 			&:active {
-				background: darken($primary, 10%);
+				background: var(--primaryDarken);
 
 				&, * {
 					color: #fff !important;

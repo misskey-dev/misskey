@@ -110,8 +110,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .mk-settings-page-drive {
 	> ._content {
 		max-height: 350px;
@@ -125,19 +123,9 @@ export default Vue.extend({
 				grid-column-gap: 10px;
 				cursor: pointer;
 
-				&:hover {
-					background: rgba(0, 0, 0, 0.05);
-					box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.05);
-
-					@media (prefers-color-scheme: dark) {
-						background: rgba(255, 255, 255, 0.05);
-						box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.05);
-					}
-				}
-
 				&.selected {
-					background: $primary;
-					box-shadow: 0 0 0 8px $primary;
+					background: var(--primary);
+					box-shadow: 0 0 0 8px var(--primary);
 					color: #fff;
 				}
 

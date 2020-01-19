@@ -24,6 +24,8 @@ const defaultDeviceSettings = {
 	useOsDefaultEmojis: false,
 	accounts: [],
 	recentEmojis: [],
+	themes: [],
+	theme: 'light',
 };
 
 export default (os: MiOS) => new Vuex.Store({

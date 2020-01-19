@@ -187,8 +187,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .mk-queue-queue {
 	> .status {
 		display: flex;

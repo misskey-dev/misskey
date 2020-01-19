@@ -59,13 +59,9 @@ export default Vue.extend({
 			line-height: 32px;
 			text-align: center;
 			font-size: 12px;
-			color: #fff;
 			border-radius: 64px;
-			background: rgba(0, 0, 0, 0.5);
-
-			@media (prefers-color-scheme: dark) {
-				background: rgba(255, 255, 255, 0.08);
-			}
+			background: var(--dateLabelBg);
+			color: var(--dateLabelFg);
 
 			> span {
 				&:first-child {

@@ -25,7 +25,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i>{{ $t('new-message') }}</button>
+				<button class="_buttonPrimary" @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i>{{ $t('new-message') }}</button>
 			</div>
 		</transition>
 		<x-form v-if="!fetching" :user="user" :group="group" ref="form"/>
@@ -357,9 +357,6 @@ export default Vue.extend({
 
 	> footer {
 		width: 100%;
-		padding: 0;
-		background: var(--bg);
-		background-clip: content-box;
 
 		> .new-message {
 			position: absolute;
@@ -372,20 +369,9 @@ export default Vue.extend({
 				display: inline-block;
 				margin: 0;
 				padding: 0 12px 0 30px;
-				cursor: pointer;
 				line-height: 32px;
 				font-size: 12px;
-				color: var(--primaryForeground);
-				background: var(--primary);
 				border-radius: 16px;
-
-				&:hover {
-					background: var(--primaryLighten10);
-				}
-
-				&:active {
-					background: var(--primaryDarken10);
-				}
 
 				> i {
 					position: absolute;

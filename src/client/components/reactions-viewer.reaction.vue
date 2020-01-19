@@ -136,8 +136,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .reaction {
 	display: inline-block;
 	height: 32px;
@@ -146,7 +144,7 @@ export default Vue.extend({
 	border-radius: 4px;
 
 	&.reacted {
-		background: $primary;
+		background: var(--primary);
 
 		> span {
 			color: #fff;

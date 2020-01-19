@@ -88,8 +88,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .tbhwbxda {
 	display: flex;
 	flex-direction: column;
@@ -117,23 +115,11 @@ export default Vue.extend({
 			font-size: 14px;
 
 			&:hover {
-				background: rgba(0, 0, 0, 0.05);
-
-				@media (prefers-color-scheme: dark) {
-					background: rgba(255, 255, 255, 0.05);
-				}
-			}
-
-			&:active {
-				background: rgba(0, 0, 0, 0.1);
-
-				@media (prefers-color-scheme: dark) {
-					background: rgba(255, 255, 255, 0.1);
-				}
+				background: var(--bwqtlupy);
 			}
 
 			&.selected {
-				background: $primary;
+				background: var(--primary);
 				color: #fff;
 			}
 

@@ -32,6 +32,13 @@ html
 		style
 			include ./../../../../built/client/assets/style.css
 		script(src='/assets/app.js' async defer)
+		script.
+			const theme = localStorage.getItem('theme');
+			if (theme) {
+				for (const [k, v] of Object.entries(JSON.parse(theme))) {
+					document.documentElement.style.setProperty(`--${k}`, v.toString());
+				}
+			}
 
 	body
 		noscript: p

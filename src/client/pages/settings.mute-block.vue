@@ -60,8 +60,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .mk-settings-page-mute-block {
 	> ._content {
 		max-height: 350px;

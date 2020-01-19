@@ -50,21 +50,12 @@ export default Vue.extend({
 	display: inline-block;
 	padding: 4px 8px;
 	font-size: 0.7em;
-	color: #fff;
-	background: #b1b9c1;
+	color: var(--cwFg);
+	background: var(--cwBg);
 	border-radius: 2px;
 
-	@media (prefers-color-scheme: dark) {
-		color: #393f4f;
-		background: #687390;
-	}
-
 	&:hover {
-		background: #bbc4ce;
-
-		@media (prefers-color-scheme: dark) {
-			background: #707b97;
-		}
+		background: var(--cwHoverBg);
 	}
 
 	> span {

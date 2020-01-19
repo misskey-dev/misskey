@@ -536,10 +536,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .gafaadew {
-	background: var(--bg);
+	background: var(--panel);
 	border-radius: var(--radius);
 	box-shadow: 0 0 2px rgba(#000, 0.1);
 
@@ -604,7 +602,7 @@ export default Vue.extend({
 
 		> .with-quote {
 			margin: 0 0 8px 0;
-			color: $primary;
+			color: var(--primary);
 
 			> button {
 				padding: 4px 8px;
@@ -639,11 +637,7 @@ export default Vue.extend({
 					margin-right: 14px;
 					padding: 8px 0 8px 8px;
 					border-radius: 8px;
-					background: rgba(0, 0, 0, 0.1);
-
-					@media (prefers-color-scheme: dark) {
-						background: rgba(255, 255, 255, 0.1);
-					}
+					background: var(--nwjktjjq);
 
 					> button {
 						padding: 4px 8px;
@@ -719,11 +713,7 @@ export default Vue.extend({
 				border-radius: 6px;
 
 				&:hover {
-					background: rgba(0, 0, 0, 0.05);
-
-					@media (prefers-color-scheme: dark) {
-						background: rgba(255, 255, 255, 0.05);
-					}
+					background: var(--geavgsxy);
 				}
 			}
 		}

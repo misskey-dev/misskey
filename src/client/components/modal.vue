@@ -31,8 +31,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .modal-enter-active, .modal-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }

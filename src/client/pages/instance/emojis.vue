@@ -179,8 +179,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .mk-instance-emojis {
 	> .local {
 		> ._content {
@@ -193,8 +191,8 @@ export default Vue.extend({
 					align-items: center;
 
 					&.selected {
-						background: $primary;
-						box-shadow: 0 0 0 8px $primary;
+						background: var(--primary);
+						box-shadow: 0 0 0 8px var(--primary);
 						color: #fff;
 					}
 
@@ -226,8 +224,8 @@ export default Vue.extend({
 					align-items: center;
 
 					&.selected {
-						background: $primary;
-						box-shadow: 0 0 0 8px $primary;
+						background: var(--primary);
+						box-shadow: 0 0 0 8px var(--primary);
 						color: #fff;
 					}
 

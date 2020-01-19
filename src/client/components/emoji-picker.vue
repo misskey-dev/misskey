@@ -180,8 +180,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .omfetrab {
 	width: 350px;
 
@@ -200,7 +198,7 @@ export default Vue.extend({
 			}
 
 			&.active {
-				color: $primary;
+				color: var(--primary);
 				transition: color 0s;
 			}
 		}
@@ -217,7 +215,7 @@ export default Vue.extend({
 			left: 0;
 			z-index: 1;
 			padding: 8px;
-			background: var(--bg);
+			background: var(--panel);
 			font-size: 12px;
 		}
 

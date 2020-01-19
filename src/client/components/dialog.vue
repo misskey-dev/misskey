@@ -203,8 +203,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .dialog-enter-active, .dialog-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
@@ -256,14 +254,14 @@ export default Vue.extend({
 		box-sizing: border-box;
 		width: calc(100% - 32px);
 		text-align: center;
-		background: var(--bg);
+		background: var(--panel);
 		border-radius: var(--radius);
 
 		> .icon {
 			font-size: 32px;
 
 			&.success {
-				color: $primary;
+				color: var(--primary);
 			}
 
 			&.error {

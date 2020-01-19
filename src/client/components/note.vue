@@ -486,8 +486,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .note {
 	position: relative;
 	transition: box-shadow 0.1s ease;
@@ -498,7 +496,7 @@ export default Vue.extend({
 
 	&:focus {
 		outline: none;
-		box-shadow: 0 0 0 3px rgba($primary, 0.3);
+		box-shadow: 0 0 0 3px var(--focus);
 	}
 
 	&:hover > .article > .main > .footer > .button {
@@ -680,11 +678,7 @@ export default Vue.extend({
 					}
 
 					&:hover {
-						color: darken(#5c6a73, 30%);
-
-						@media (prefers-color-scheme: dark) {
-							color: lighten(#c7d1d8, 30%);
-						}
+						color: var(--mkykhqkw);
 					}
 
 					> .count {
@@ -694,7 +688,7 @@ export default Vue.extend({
 					}
 
 					&.reacted {
-						color: $primary;
+						color: var(--primary);
 					}
 				}
 			}

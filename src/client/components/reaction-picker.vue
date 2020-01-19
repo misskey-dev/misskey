@@ -150,8 +150,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .rdfaahpb {
 	> .buttons {
 		padding: 6px 6px 0 6px;
@@ -176,7 +174,7 @@ export default Vue.extend({
 					right: 0;
 					bottom: 0;
 					left: 0;
-					border: 2px solid rgba($primary, 0.3);
+					border: 2px solid var(--focus);
 					border-radius: 4px;
 				}
 			}
@@ -204,7 +202,7 @@ export default Vue.extend({
 			}
 
 			&:active {
-				background: $primary;
+				background: var(--primary);
 				box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
 			}
 		}

@@ -17,6 +17,7 @@ import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
 import { router } from './router';
+import { applyTheme, lightTheme } from './theme';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
@@ -42,6 +43,10 @@ Vue.mixin({
 });
 
 console.info(`Misskey v${version}`);
+
+if (localStorage.getItem('theme') == null) {
+	applyTheme(lightTheme);
+}
 
 //#region Detect the user language
 let lang = null;

@@ -67,8 +67,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .rdfaahpc {
 	padding: 4px;
 
@@ -88,7 +86,7 @@ export default Vue.extend({
 		}
 
 		&:active {
-			background: $primary;
+			background: var(--primary);
 			box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
 		}
 	}

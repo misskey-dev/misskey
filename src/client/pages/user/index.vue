@@ -214,10 +214,9 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .mk-user-page {
 	> .remote-caution {
+		font-size: 0.8em;
 		padding: 16px;
 		margin-bottom: 16px;
 
@@ -227,7 +226,7 @@ export default Vue.extend({
 
 		> a {
 			margin-left: 4px;
-			color: $primary;
+			color: var(--primary);
 		}
 	}
 
@@ -453,7 +452,7 @@ export default Vue.extend({
 				text-align: center;
 
 				&.active {
-					color: $primary;
+					color: var(--primary);
 				}
 
 				&:hover {

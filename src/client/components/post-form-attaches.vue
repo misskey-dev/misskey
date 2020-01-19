@@ -102,8 +102,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .skeikyzd {
 	padding: 4px;
 	position: relative;

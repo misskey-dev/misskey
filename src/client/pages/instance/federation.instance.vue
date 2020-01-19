@@ -448,8 +448,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .mk-instance-info {
 	overflow: auto;
 
@@ -481,7 +479,7 @@ export default Vue.extend({
 				}
 
 				> .data.clickable {
-					color: $primary;
+					color: var(--primary);
 					cursor: pointer;
 				}
 			}

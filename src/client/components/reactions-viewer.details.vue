@@ -81,7 +81,7 @@ export default Vue.extend({
 	max-width: 240px;
 	font-size: 0.8em;
 	padding: 6px 8px;
-	background: var(--bg);
+	background: var(--panel);
 	text-align: center;
 	border-radius: 4px;
 	box-shadow: 0 2px 8px rgba(0,0,0,0.25);
@@ -110,7 +110,7 @@ export default Vue.extend({
 		left: 12px;
 		border-top: solid 14px transparent;
 		border-right: solid 14px transparent;
-		border-bottom: solid 14px var(--bg);
+		border-bottom: solid 14px var(--panel);
 		border-left: solid 14px transparent;
 	}
 }

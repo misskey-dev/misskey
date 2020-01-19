@@ -73,8 +73,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .gqyayizv {
 	width: 240px;
 	padding: 8px 0;
@@ -97,7 +95,7 @@ export default Vue.extend({
 
 		&.active {
 			color: #fff;
-			background: $primary;
+			background: var(--primary);
 		}
 
 		> *:first-child {

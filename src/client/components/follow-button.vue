@@ -103,15 +103,13 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .wfliddvnhxvyusikowhxozkyxyenqxqr {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
-	color: $primary;
+	color: var(--primary);
 	background: transparent;
-	border: solid 1px $primary;
+	border: solid 1px var(--primary);
 	padding: 0;
 	width: 31px;
 	height: 31px;
@@ -128,31 +126,31 @@ export default Vue.extend({
 			right: -5px;
 			bottom: -5px;
 			left: -5px;
-			border: 2px solid rgba($primary, 0.3);
+			border: 2px solid var(--focus);
 			border-radius: 100%;
 		}
 	}
 
 	&:hover {
-		background: mix($primary, #fff, 20);
+		//background: mix($primary, #fff, 20);
 	}
 
 	&:active {
-		background: mix($primary, #fff, 40);
+		//background: mix($primary, #fff, 40);
 	}
 
 	&.active {
 		color: #fff;
-		background: $primary;
+		background: var(--primary);
 
 		&:hover {
-			background: lighten($primary, 10%);
-			border-color: lighten($primary, 10%);
+			background: var(--primaryLighten);
+			border-color: var(--primaryLighten);
 		}
 
 		&:active {
-			background: darken($primary, 10%);
-			border-color: darken($primary, 10%);
+			background: var(--primaryDarken);
+			border-color: var(--primaryDarken);
 		}
 	}
 

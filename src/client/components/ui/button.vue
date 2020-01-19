@@ -98,8 +98,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .ui-button {
 	position: relative;
 	display: block;
@@ -111,40 +109,28 @@ export default Vue.extend({
 	line-height: 24px;
 	box-shadow: none;
 	text-decoration: none;
-	background: rgba(0, 0, 0, 0.05);
+	background: var(--buttonBg);
 	border-radius: 6px;
 	overflow: hidden;
 
 	&:not(:disabled):hover {
-		background: rgba(0, 0, 0, 0.1);
+		background: var(--buttonHoverBg);
 	}
 
 	&:not(:disabled):active {
-		background: rgba(0, 0, 0, 0.1);
-	}
-
-	@media (prefers-color-scheme: dark) {
-		background: rgba(255, 255, 255, 0.05);
-
-		&:not(:disabled):hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		&:not(:disabled):active {
-			background: rgba(255, 255, 255, 0.1);
-		}
+		background: var(--buttonHoverBg);
 	}
 
 	&.primary {
 		color: #fff;
-		background: $primary;
+		background: var(--primary);
 
 		&:not(:disabled):hover {
-			background: lighten($primary, 5%);
+			background: var(--jkhztclx);
 		}
 
 		&:not(:disabled):active {
-			background: lighten($primary, 5%);
+			background: var(--jkhztclx);
 		}
 	}
 

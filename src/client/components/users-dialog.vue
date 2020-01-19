@@ -73,12 +73,10 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .mk-users-dialog {
 	width: 350px;
 	height: 350px;
-	background: var(--bg);
+	background: var(--panel);
 	border-radius: var(--radius);
 	overflow: hidden;
 	display: flex;
@@ -127,22 +125,6 @@ export default Vue.extend({
 
 			@media (max-width: 500px) {
 				padding: 8px 16px;
-			}
-
-			&:hover {
-				background: rgba(0, 0, 0, 0.05);
-
-				@media (prefers-color-scheme: dark) {
-					background: rgba(255, 255, 255, 0.05);
-				}
-			}
-
-			&:active {
-				background: rgba(0, 0, 0, 0.1);
-
-				@media (prefers-color-scheme: dark) {
-					background: rgba(255, 255, 255, 0.1);
-				}
 			}
 
 			> * {

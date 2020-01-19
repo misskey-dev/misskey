@@ -1,0 +1,18 @@
+{
+	id: 'e9c8c01d-9c15-48d0-9b5c-3d00843b5b36',
+
+	name: 'Lavender',
+	author: 'sokuyuku',
+
+	base: 'light',
+
+	vars: {
+		primary: 'rgb(206, 147, 191)',
+	},
+
+	props: {
+		primary: 'rgb(206, 147, 191)',
+		bg: 'rgb(253, 242, 243)',
+		fg: 'rgb(161, 139, 146)',
+	},
+}

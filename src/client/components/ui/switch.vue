@@ -57,8 +57,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .ui-switch {
 	position: relative;
 	display: flex;
@@ -85,11 +83,11 @@ export default Vue.extend({
 
 	&.checked {
 		> .button {
-			background-color: rgba($primary, 0.4);
-			border-color: rgba($primary, 0.4);
+			background-color: var(--xxubwiul);
+			border-color: var(--xxubwiul);
 
 			> * {
-				background-color: $primary;
+				background-color: var(--primary);
 				transform: translateX(14px);
 			}
 		}
@@ -110,14 +108,10 @@ export default Vue.extend({
 		margin: 3px 0 0 0;
 		width: 34px;
 		height: 14px;
-		background: rgba(0, 0, 0, 0.25);
+		background: var(--nhzhphzx);
 		outline: none;
 		border-radius: 14px;
 		transition: inherit;
-
-		@media (prefers-color-scheme: dark) {
-			background: rgba(255, 255, 255, 0.15);
-		}
 
 		> * {
 			position: absolute;

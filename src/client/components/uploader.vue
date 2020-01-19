@@ -99,8 +99,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .mk-uploader {
   overflow: auto;
 }
@@ -190,7 +188,7 @@ export default Vue.extend({
   z-index: 2;
 }
 .mk-uploader > ol > li > progress::-webkit-progress-value {
-  background: $primary;
+  background: var(--primary);
 }
 .mk-uploader > ol > li > progress::-webkit-progress-bar {
   background: var(--primaryAlpha01);
@@ -199,7 +197,7 @@ export default Vue.extend({
   display: block;
   border: none;
   border-radius: 4px;
-  background: linear-gradient(45deg, var(--primaryLighten30) 25%, $primary 25%, $primary 50%, var(--primaryLighten30) 50%, var(--primaryLighten30) 75%, $primary 75%, $primary);
+  background: linear-gradient(45deg, var(--primaryLighten30) 25%, var(--primary) 25%, var(--primary) 50%, var(--primaryLighten30) 50%, var(--primaryLighten30) 75%, var(--primary) 75%, var(--primary));
   background-size: 32px 32px;
   animation: bg 1.5s linear infinite;
   grid-column: 2/3;

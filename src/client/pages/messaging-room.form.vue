@@ -277,7 +277,7 @@ export default Vue.extend({
 		}
 
 		&:active {
-			color: var(--primaryDarken10);
+			color: var(--primaryDarken);
 			transition: color 0s ease;
 		}
 	}
@@ -345,7 +345,7 @@ export default Vue.extend({
 		}
 
 		&:active {
-			color: var(--primaryDarken10);
+			color: var(--primaryDarken);
 			transition: color 0s ease;
 		}
 	}

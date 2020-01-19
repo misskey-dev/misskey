@@ -67,12 +67,10 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .ebkgoccj {
 	width: 400px;
 	height: 400px;
-	background: var(--bg);
+	background: var(--panel);
 	border-radius: var(--radius);
 	overflow: hidden;
 	display: flex;

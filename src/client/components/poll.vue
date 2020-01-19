@@ -99,8 +99,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .mk-poll {
 	> ul {
 		display: block;
@@ -133,7 +131,7 @@ export default Vue.extend({
 				top: 0;
 				left: 0;
 				height: 100%;
-				background: $primary;
+				background: var(--primary);
 				transition: width 1s ease;
 			}
 

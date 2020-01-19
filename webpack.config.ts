@@ -89,6 +89,9 @@ module.exports = {
 			test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
 			loader: 'url-loader'
 		}, {
+			test: /\.json5$/,
+			loader: 'json5-loader'
+		}, {
 			test: /\.ts$/,
 			exclude: /node_modules/,
 			use: [{

@@ -60,8 +60,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .mk-user-lists {
 	> .list {
 		display: flex;

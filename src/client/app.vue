@@ -456,8 +456,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import './theme';
-
 @keyframes blink {
 	0% { opacity: 1; }
 	30% { opacity: 1; }
@@ -555,14 +553,10 @@ export default Vue.extend({
 		left: 0;
 		height: $header-height;
 		width: 100%;
-		//background-color: var(--bg);
+		//background-color: var(--panel);
 		-webkit-backdrop-filter: blur(32px);
 		backdrop-filter: blur(32px);
-		background-color: rgba(255, 255, 255, 0.75);
-
-		@media (prefers-color-scheme: dark) {
-			background-color: rgba(20, 20, 20, 0.75);
-		}
+		background-color: var(--header);
 
 		> .body {
 			> .account {
@@ -663,11 +657,7 @@ export default Vue.extend({
 					border: none;
 					border-radius: 38px;
 					color: var(--fg);
-					background: $lightHtml;
-
-					@media (prefers-color-scheme: dark) {
-						background: $darkHtml;
-					}
+					background: var(--bg);
 
 					&:focus {
 						outline: none;
@@ -714,22 +704,18 @@ export default Vue.extend({
 					position: absolute;
 					top: 0;
 					left: 8px;
-					color: $primary;
+					color: var(--primary);
 					font-size: 8px;
 					animation: blink 1s infinite;
 				}
 
 				&:hover {
-					background: rgba(0, 0, 0, 0.03);
+					background: var(--rfphjcus);
 					text-decoration: none;
-
-					@media (prefers-color-scheme: dark) {
-						background: rgba(255, 255, 255, 0.03);
-					}
 				}
 
 				&.router-link-active {
-					color: $primary;
+					color: var(--primary);
 				}
 
 				@media (max-width: $nav-icon-only-threshold) {
@@ -850,11 +836,7 @@ export default Vue.extend({
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		background: linear-gradient(0deg, $lightHtml, rgba($lightHtml, 0));
-
-		@media (prefers-color-scheme: dark) {
-			background: linear-gradient(0deg, $darkHtml, rgba($darkHtml, 0));
-		}
+		background: linear-gradient(0deg, var(--bg), var(--bonzsgfz));
 
 		@media (max-width: 500px) {
 			padding: 0 16px 16px 16px;
@@ -894,22 +876,18 @@ export default Vue.extend({
 			}
 
 			&:not(.post) {
-				background: var(--bg);
+				background: var(--panel);
 				color: var(--fg);
 
 				&:hover {
-					background: #eee;
-
-					@media (prefers-color-scheme: dark) {
-						background: #1c1e1f;
-					}
+					background: var(--pcncwizz);
 				}
 
 				> i {
 					position: absolute;
 					top: 0;
 					left: 0;
-					color: $primary;
+					color: var(--primary);
 					font-size: 16px;
 					animation: blink 1s infinite;
 				}
@@ -926,16 +904,12 @@ export default Vue.extend({
 		z-index: 10001;
 		width: 350px;
 		height: 400px;
-		background: rgba(255, 255, 255, 0.5);
+		background: var(--vocsgcxy);
 		-webkit-backdrop-filter: blur(12px);
 		backdrop-filter: blur(12px);
 		border-radius: 6px;
 		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 		overflow: hidden;
-
-		@media (prefers-color-scheme: dark) {
-			background: rgba(0, 0, 0, 0.5);
-		}
 
 		@media (max-width: 800px) {
 			width: 320px;
@@ -955,7 +929,7 @@ export default Vue.extend({
 		z-index: 10001;
 		max-width: 250px;
 		padding: 8px 0;
-		background: var(--bg);
+		background: var(--panel);
 		border-radius: 4px;
 		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 
@@ -987,13 +961,13 @@ export default Vue.extend({
 
 			&:hover {
 				color: #fff;
-				background: $primary;
+				background: var(--primary);
 				text-decoration: none;
 			}
 
 			&:active {
 				color: #fff;
-				background: darken($primary, 10);
+				background: var(--primaryDarken);
 			}
 
 			> .avatar {
@@ -1011,7 +985,7 @@ export default Vue.extend({
 				position: absolute;
 				top: 5px;
 				left: 13px;
-				color: $primary;
+				color: var(--primary);
 				font-size: 12px;
 				animation: blink 1s infinite;
 			}

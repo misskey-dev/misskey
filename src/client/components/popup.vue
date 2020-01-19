@@ -88,8 +88,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .popup-enter-active, .popup-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
@@ -119,7 +117,7 @@ export default Vue.extend({
 	> .content {
 		position: absolute;
 		z-index: 10001;
-		background: var(--bg);
+		background: var(--panel);
 		border-radius: 4px;
 		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 		overflow: hidden;

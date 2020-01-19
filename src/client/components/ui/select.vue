@@ -73,8 +73,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../../theme';
-
 .ui-select {
 	position: relative;
 	margin: 32px 0;
@@ -103,11 +101,7 @@ export default Vue.extend({
 			left: 0;
 			right: 0;
 			height: 1px;
-			background: #dae0e4;
-
-			@media (prefers-color-scheme: dark) {
-				background: #959da2;
-			}
+			background: var(--inputBorder);
 		}
 
 		&:after {
@@ -118,7 +112,7 @@ export default Vue.extend({
 			left: 0;
 			right: 0;
 			height: 2px;
-			background: $primary;
+			background: var(--primary);
 			opacity: 0;
 			transform: scaleX(0.12);
 			transition: border 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -149,7 +143,7 @@ export default Vue.extend({
 			font-weight: normal;
 			font-size: 16px;
 			height: 32px;
-			background: var(--bg);
+			background: var(--panel);
 			border: none;
 			border-radius: 0;
 			outline: none;
@@ -207,7 +201,7 @@ export default Vue.extend({
 			}
 
 			> .label {
-				color: $primary;
+				color: var(--primary);
 			}
 		}
 	}

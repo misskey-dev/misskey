@@ -66,16 +66,11 @@ export default Vue.extend({
 		height: 100%;
 		-webkit-backdrop-filter: blur(12px);
 		backdrop-filter: blur(12px);
-		background-color: rgba(255, 255, 255, 0.5);
+		background-color: var(--toastBg);
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 		border-radius: 8px;
-		color: #0c0c0c;
+		color: var(--toastFg);
 		overflow: hidden;
-
-		@media (prefers-color-scheme: dark) {
-			background: rgba(0, 0, 0, 0.5);
-			color: #c7d1d8;
-		}
 	}
 }
 </style>

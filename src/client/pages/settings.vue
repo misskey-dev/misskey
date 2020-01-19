@@ -6,6 +6,7 @@
 	<x-profile-setting/>
 	<x-privacy-setting/>
 	<x-reaction-setting/>
+	<x-theme/>
 	<x-import-export/>
 	<x-drive/>
 	<x-general/>
@@ -27,6 +28,7 @@ import XGeneral from './settings.general.vue';
 import XReactionSetting from './settings.reaction.vue';
 import XMuteBlock from './settings.mute-block.vue';
 import XSecurity from './settings.security.vue';
+import XTheme from './settings.theme.vue';
 import XButton from '../components/ui/button.vue';
 
 export default Vue.extend({
@@ -45,6 +47,7 @@ export default Vue.extend({
 		XReactionSetting,
 		XMuteBlock,
 		XSecurity,
+		XTheme,
 		XButton,
 	},
 

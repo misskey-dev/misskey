@@ -62,8 +62,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .onchrpzrvnoruiaenfcqvccjfuupzzwv {
 	padding: 8px 0;
 
@@ -80,13 +78,13 @@ export default Vue.extend({
 
 		&:hover {
 			color: #fff;
-			background: $primary;
+			background: var(--primary);
 			text-decoration: none;
 		}
 
 		&:active {
 			color: #fff;
-			background: darken($primary, 10);
+			background: var(--primaryDarken);
 		}
 
 		&.label {

@@ -78,10 +78,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .thvuemwp {
-	$me-balloon-color: $primary;
+	$me-balloon-color: var(--primary);
 
 	position: relative;
 	background-color: transparent;
@@ -250,7 +248,7 @@ export default Vue.extend({
 			padding-right: 32px;
 
 			> .balloon {
-				$color: var(--bg);
+				$color: var(--panel);
 				background: $color;
 
 				&[data-no-text] {

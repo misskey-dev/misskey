@@ -137,8 +137,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '../theme';
-
 ._kjvfvyph_ {
 	height: 100%;
 	padding: 0 16px;

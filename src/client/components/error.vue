@@ -25,8 +25,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '../theme';
-
 .wjqjnyhzogztorhrdgcpqlkxhkmuetgj {
 	max-width: 350px;
 	margin: 0 auto;

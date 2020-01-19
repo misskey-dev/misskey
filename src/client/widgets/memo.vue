@@ -95,7 +95,7 @@ export default define({
 			margin: 0;
 			padding: 0 10px;
 			height: 28px;
-			color: var(--primaryForeground);
+			color: #fff;
 			background: var(--primary) !important;
 			outline: none;
 			border: none;
@@ -108,7 +108,7 @@ export default define({
 			}
 
 			&:active {
-				background: var(--primaryDarken10) !important;
+				background: var(--primaryDarken) !important;
 				transition: background 0s ease;
 			}
 
