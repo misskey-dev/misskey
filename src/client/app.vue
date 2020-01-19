@@ -223,7 +223,7 @@ export default Vue.extend({
 
 			if (this.widgets.length === 0) {
 				this.$store.dispatch('settings/setWidgets', [{
-					name: 'memo',
+					name: 'notifications',
 					id: 'a', data: {}
 				}]);
 			}
@@ -438,19 +438,22 @@ export default Vue.extend({
 		},
 
 		addWidget(ev) {
-			const add = name => {
-				this.$store.dispatch('settings/addWidget', {
-					name,
-					id: uuid(),
-					data: {}
-				});
-			};
+			const widgets = [
+				'memo',
+				'notifications',
+			];
 
 			this.$root.menu({
-				items: [{
-					text: this.$t('_widgets.memo'),
-					action: () => { add('memo') }
-				}],
+				items: widgets.map(widget => ({
+					text: this.$t('_widgets.' + widget),
+					action: () => {
+						this.$store.dispatch('settings/addWidget', {
+							name: widget,
+							id: uuid(),
+							data: {}
+						});
+					}
+				})),
 				source: ev.currentTarget || ev.target,
 			});
 		},
@@ -549,6 +552,7 @@ export default Vue.extend({
 
 	> .widgets, > .header > .body > .sub {
 		flex: 0 0 $widgets-width;
+		min-width: 0;
 		margin: 0 16px 0 0;
 		box-sizing: border-box;
 
@@ -792,6 +796,7 @@ export default Vue.extend({
 			background: #fff;
 
 			> header {
+				position: relative;
 				line-height: 32px;
 				background: #eee;
 
