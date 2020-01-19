@@ -1,6 +1,6 @@
 <template>
 <x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
-	<div class="ebkgoccj" :class="{ noPadding }">
+	<div class="ebkgoccj" :class="{ noPadding }" @keydown="onKeydown">
 		<div class="header">
 			<button class="_button" v-if="withOkButton" @click="close()"><fa :icon="faTimes"/></button>
 			<span class="title">
@@ -61,7 +61,15 @@ export default Vue.extend({
 	methods: {
 		close() {
 			this.$refs.modal.close();
-		}
+		},
+
+		onKeydown(e) {
+			if (e.which === 27) { // Esc
+				e.preventDefault();
+				e.stopPropagation();
+				this.close();
+			}
+		},
 	}
 });
 </script>

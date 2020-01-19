@@ -3,7 +3,7 @@
 	<transition name="form-fade" appear>
 		<div class="bg" ref="bg" v-if="show" @click="close()"></div>
 	</transition>
-	<div class="main" ref="main" @click.self="close()">
+	<div class="main" ref="main" @click.self="close()" @keydown="onKeydown">
 		<transition name="form" appear
 			@after-leave="destroyDom"
 		>
@@ -89,7 +89,15 @@ export default Vue.extend({
 		onCanceled() {
 			this.$emit('cancel');
 			this.close();
-		}
+		},
+
+		onKeydown(e) {
+			if (e.which === 27) { // Esc
+				e.preventDefault();
+				e.stopPropagation();
+				this.close();
+			}
+		},
 	}
 });
 </script>

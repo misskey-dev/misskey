@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app">
+<div class="mk-app" v-hotkey.global="keymap">
 	<header class="header">
 		<div class="body">
 			<button class="_button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
@@ -184,6 +184,13 @@ export default Vue.extend({
 	},
 
 	computed: {
+		keymap(): any {
+			return {
+				'p': this.post,
+				'n': this.post,
+			};
+		},
+
 		widgets(): any[] {
 			return this.$store.state.settings.widgets;
 		}
