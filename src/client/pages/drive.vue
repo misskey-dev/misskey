@@ -67,6 +67,7 @@ export default Vue.extend({
 					icon: faFolderPlus,
 					action: () => { this.$refs.drive.createFolder(); }
 				}],
+				noCenter: true,
 				source: ev.currentTarget || ev.target
 			}).then(() => {
 				this.menuOpened = false;

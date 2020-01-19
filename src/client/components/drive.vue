@@ -17,7 +17,6 @@
 		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
-		@contextmenu.prevent.stop="onContextmenu"
 	>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
@@ -154,25 +153,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onContextmenu(e) {
-			this.$contextmenu(e, [{
-				type: 'item',
-				text: this.$t('contextmenu.create-folder'),
-				icon: ['far', 'folder'],
-				action: this.createFolder
-			}, {
-				type: 'item',
-				text: this.$t('contextmenu.upload'),
-				icon: 'upload',
-				action: this.selectLocalFile
-			}, {
-				type: 'item',
-				text: this.$t('contextmenu.url-upload'),
-				icon: faCloudUploadAlt,
-				action: this.urlUpload
-			}]);
-		},
-
 		onStreamDriveFileCreated(file) {
 			this.addFile(file, true);
 		},

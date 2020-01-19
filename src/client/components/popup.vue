@@ -17,6 +17,10 @@ export default Vue.extend({
 		source: {
 			required: true
 		},
+		noCenter: {
+			type: Boolean,
+			required: false
+		},
 		fixed: {
 			type: Boolean,
 			required: false
@@ -42,7 +46,7 @@ export default Vue.extend({
 			let left;
 			let top;
 
-			if (this.$root.isMobile) {
+			if (this.$root.isMobile && !this.noCenter) {
 				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
 				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.source.offsetHeight / 2);
 				left = (x - (width / 2));

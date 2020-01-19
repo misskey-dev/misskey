@@ -123,6 +123,7 @@ export default Vue.extend({
 					text: this.$t('withGroup'),
 					action: () => { this.startGroup() }
 				}],
+				noCenter: true,
 				source: ev.currentTarget || ev.target,
 			});
 		},
