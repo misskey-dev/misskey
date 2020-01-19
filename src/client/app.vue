@@ -53,6 +53,9 @@
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
 				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
 			</router-link>
+			<router-link class="item" to="/drive">
+				<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
+			</router-link>
 			<router-link class="item" to="/announcements">
 				<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
 				<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
@@ -129,6 +132,7 @@
 			<router-link to="/messaging"><fa :icon="faComments" fixed-width/>{{ $t('messaging') }}<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i></router-link>
 			<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
 			<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
+			<router-link to="/drive"><fa :icon="faCloud" fixed-width/>{{ $t('drive') }}</router-link>
 			<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
 			<div v-if="$store.state.i.isAdmin"></div>
 			<button class="_button" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</button>
