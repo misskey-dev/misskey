@@ -14,7 +14,7 @@
 	</div>
 	<div class="tail">
 		<header>
-			<router-link class="name" :to="notification.user | userPage"><mk-user-name :user="notification.user"/></router-link>
+			<router-link class="name" :to="notification.user | userPage" v-user-preview="notification.user.id"><mk-user-name :user="notification.user"/></router-link>
 			<mk-time :time="notification.createdAt" v-if="withTime"/>
 		</header>
 		<router-link v-if="notification.type === 'reaction'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
