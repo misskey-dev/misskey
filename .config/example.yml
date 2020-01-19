@@ -125,7 +125,7 @@ autoAdmin: true
 # deliverJobConcurrency: 128
 # inboxJobConcurrency: 16
 
-# Job late limiter
+# Job rate limiter
 # deliverJobPerSec: 128
 # inboxJobPerSec: 16
 
