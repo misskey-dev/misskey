@@ -240,6 +240,8 @@ theme: "テーマ"
 lightThemes: "明るいテーマ"
 darkThemes: "暗いテーマ"
 drive: "ドライブ"
+selectFile: "ファイルを選択"
+selectFiles: "ファイルを選択"
 
 _widgets:
   memo: "付箋"

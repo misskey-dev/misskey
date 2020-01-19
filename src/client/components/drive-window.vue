@@ -1,8 +1,8 @@
 <template>
-<x-window @closed="() => { $emit('closed'); destroyDom(); }">
-	<template #header></template>
+<x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="selected.length === 0" @ok="ok()">
+	<template #header>{{ multiple ? $t('selectFiles') : $t('selectFile') }}<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ selected.length | number }})</span></template>
 	<div>
-		<x-drive/>
+		<x-drive :multiple="multiple" @change-selection="onChangeSelection"/>
 	</div>
 </x-window>
 </template>
@@ -22,9 +22,32 @@ export default Vue.extend({
 	},
 
 	props: {
+		type: {
+			type: String,
+			required: false,
+			default: undefined 
+		},
+		multiple: {
+			type: Boolean,
+			default: false
+		}
+	},
+
+	data() {
+		return {
+			selected: []
+		};
 	},
 
 	methods: {
+		ok() {
+			this.$emit('selected', this.selected);
+			this.$refs.window.close();
+		},
+
+		onChangeSelection(files) {
+			this.selected = files;
+		}
 	}
 });
 </script>

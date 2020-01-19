@@ -322,7 +322,11 @@ export default Vue.extend({
 		},
 
 		chooseFileFromDrive() {
-			selectDriveFile(this.$root);
+			selectDriveFile(this.$root, true).then(files => {
+				for (const file of files) {
+					this.attachMedia(file);
+				}
+			});
 		},
 
 		attachMedia(driveFile) {

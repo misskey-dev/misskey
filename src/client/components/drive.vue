@@ -557,7 +557,7 @@ export default Vue.extend({
 		width: 100%;
 		overflow: auto;
 		font-size: 0.9em;
-		box-shadow: 0 1px 0 rgba(#000, 0.05);
+		box-shadow: 0 1px 0 var(--divider);
 
 		&, * {
 			user-select: none;
