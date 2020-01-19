@@ -246,6 +246,8 @@ renameFolder: "フォルダー名を変更"
 createFolder: "フォルダーを作成"
 deleteFolder: "フォルダーを削除"
 addFile: "ファイルを追加"
+emptyDrive: "ドライブは空です"
+emptyFolder: "フォルダーは空です"
 
 _widgets:
   memo: "付箋"

@@ -27,15 +27,15 @@
 				<ui-button v-if="moreFolders">{{ $t('@.load-more') }}</ui-button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
-				<x-file v-for="file in files" :key="file.id" class="file" :file="file"/>
+				<x-file v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="selectMode"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
 				<ui-button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('@.load-more') }}</ui-button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
-				<p v-if="!draghover && folder == null"><strong>{{ $t('empty-drive') }}</strong><br/>{{ $t('empty-drive-description') }}</p>
-				<p v-if="!draghover && folder != null">{{ $t('empty-folder') }}</p>
+				<p v-if="!draghover && folder == null"><strong>{{ $t('emptyDrive') }}</strong><br/>{{ $t('empty-drive-description') }}</p>
+				<p v-if="!draghover && folder != null">{{ $t('emptyFolder') }}</p>
 			</div>
 		</div>
 		<div class="fetching" v-if="fetching">
@@ -59,7 +59,6 @@ import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import XUploader from './uploader.vue';
-import { url } from '../config';
 
 export default Vue.extend({
 	i18n,
@@ -79,10 +78,16 @@ export default Vue.extend({
 		type: {
 			type: String,
 			required: false,
-			default: undefined 
+			default: undefined
 		},
 		multiple: {
 			type: Boolean,
+			required: false,
+			default: false
+		},
+		selectMode: {
+			type: Boolean,
+			required: false,
 			default: false
 		}
 	},
@@ -560,7 +565,6 @@ export default Vue.extend({
 		> .path {
 			display: inline-block;
 			vertical-align: bottom;
-			width: calc(100% - 200px);
 			line-height: 38px;
 			white-space: nowrap;
 
@@ -604,7 +608,6 @@ export default Vue.extend({
 
 	> .main {
 		padding: 8px 0;
-		height: calc(100% - 38px);
 		overflow: auto;
 
 		&, * {
@@ -652,8 +655,8 @@ export default Vue.extend({
 			> .empty {
 				padding: 16px;
 				text-align: center;
-				color: #999;
 				pointer-events: none;
+				opacity: 0.5;
 
 				> p {
 					margin: 0;
@@ -668,7 +671,7 @@ export default Vue.extend({
 		top: 38px;
 		width: 100%;
 		height: calc(100% - 38px);
-		border: dashed 2px var(--primaryAlpha05);
+		border: dashed 2px var(--focus);
 		pointer-events: none;
 	}
 

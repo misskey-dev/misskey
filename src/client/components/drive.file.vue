@@ -44,6 +44,11 @@ export default Vue.extend({
 		file: {
 			type: Object,
 			required: true,
+		},
+		selectMode: {
+			type: Boolean,
+			required: false,
+			default: false,
 		}
 	},
 
@@ -70,63 +75,54 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onClick() {
-			this.browser.chooseFile(this.file);
-		},
-
-		onContextmenu(e) {
-			this.$contextmenu(e, [{
-				type: 'item',
-				text: this.$t('contextmenu.rename'),
-				icon: 'i-cursor',
-				action: this.rename
-			}, {
-				type: 'item',
-				text: this.file.isSensitive ? this.$t('contextmenu.unmark-as-sensitive') : this.$t('contextmenu.mark-as-sensitive'),
-				icon: this.file.isSensitive ? ['far', 'eye'] : ['far', 'eye-slash'],
-				action: this.toggleSensitive
-			}, null, {
-				type: 'item',
-				text: this.$t('contextmenu.copy-url'),
-				icon: 'link',
-				action: this.copyUrl
-			}, {
-				type: 'link',
-				href: this.file.url,
-				target: '_blank',
-				text: this.$t('contextmenu.download'),
-				icon: 'download',
-				download: this.file.name
-			}, null, {
-				type: 'item',
-				text: this.$t('@.delete'),
-				icon: ['far', 'trash-alt'],
-				action: this.deleteFile
-			}, null, {
-				type: 'nest',
-				text: this.$t('contextmenu.else-files'),
-				menu: [{
-					type: 'item',
-					text: this.$t('contextmenu.set-as-avatar'),
-					action: this.setAsAvatar
-				}, {
-					type: 'item',
-					text: this.$t('contextmenu.set-as-banner'),
-					action: this.setAsBanner
-				}]
-			}, /*{
-				type: 'nest',
-				text: this.$t('contextmenu.open-in-app'),
-				menu: [{
-					type: 'item',
-					text: '%i18n:@contextmenu.add-app%...',
-					action: this.addApp
-				}]
-			}*/], {
-				closed: () => {
-					this.isContextmenuShowing = false;
-				}
-			});
+		onClick(ev) {
+			if (this.selectMode) {
+				this.browser.chooseFile(this.file);
+			} else {
+				this.$root.menu({
+					items: [{
+						type: 'item',
+						text: this.$t('contextmenu.rename'),
+						icon: 'i-cursor',
+						action: this.rename
+					}, {
+						type: 'item',
+						text: this.file.isSensitive ? this.$t('contextmenu.unmark-as-sensitive') : this.$t('contextmenu.mark-as-sensitive'),
+						icon: this.file.isSensitive ? ['far', 'eye'] : ['far', 'eye-slash'],
+						action: this.toggleSensitive
+					}, null, {
+						type: 'item',
+						text: this.$t('contextmenu.copy-url'),
+						icon: 'link',
+						action: this.copyUrl
+					}, {
+						type: 'link',
+						href: this.file.url,
+						target: '_blank',
+						text: this.$t('contextmenu.download'),
+						icon: 'download',
+						download: this.file.name
+					}, null, {
+						type: 'item',
+						text: this.$t('@.delete'),
+						icon: ['far', 'trash-alt'],
+						action: this.deleteFile
+					}, null, {
+						type: 'nest',
+						text: this.$t('contextmenu.else-files'),
+						menu: [{
+							type: 'item',
+							text: this.$t('contextmenu.set-as-avatar'),
+							action: this.setAsAvatar
+						}, {
+							type: 'item',
+							text: this.$t('contextmenu.set-as-banner'),
+							action: this.setAsBanner
+						}]
+					}],
+					source: ev.currentTarget || ev.target,
+				});
+			}
 		},
 
 		onDragstart(e) {

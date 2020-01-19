@@ -1,6 +1,5 @@
 <template>
 <div class="rghtznwe"
-	:data-is-contextmenu-showing="isContextmenuShowing"
 	:data-draghover="draghover"
 	@click="onClick"
 	@mouseover="onMouseover"
@@ -12,7 +11,6 @@
 	draggable="true"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
-	@contextmenu.prevent.stop="onContextmenu"
 	:title="title"
 >
 	<p class="name">
@@ -46,7 +44,6 @@ export default Vue.extend({
 			hover: false,
 			draghover: false,
 			isDragging: false,
-			isContextmenuShowing: false,
 			faFolder, faFolderOpen
 		};
 	},
@@ -62,43 +59,6 @@ export default Vue.extend({
 	methods: {
 		onClick() {
 			this.browser.move(this.folder);
-		},
-
-		onContextmenu(e) {
-			this.isContextmenuShowing = true;
-			this.$contextmenu(e, [{
-				type: 'item',
-				text: this.$t('contextmenu.move-to-this-folder'),
-				icon: 'arrow-right',
-				action: this.go
-			}, {
-				type: 'item',
-				text: this.$t('contextmenu.show-in-new-window'),
-				icon: ['far', 'window-restore'],
-				action: this.newWindow
-			}, null, {
-				type: 'item',
-				text: this.$t('contextmenu.rename'),
-				icon: 'i-cursor',
-				action: this.rename
-			}, null, {
-				type: 'item',
-				text: this.$t('@.delete'),
-				icon: ['far', 'trash-alt'],
-				action: this.deleteFolder
-			}, null, {
-				type: 'nest',
-				text: this.$t('contextmenu.else-folders'),
-				menu: [{
-					type: 'item',
-					text: this.$t('contextmenu.set-as-upload-folder'),
-					action: this.setAsUploadFolder
-				}]
-			}], {
-				closed: () => {
-					this.isContextmenuShowing = false;
-				}
-			});
 		},
 
 		onMouseover() {
@@ -285,7 +245,6 @@ export default Vue.extend({
 		pointer-events: none;
 	}
 
-	&[data-is-contextmenu-showing],
 	&[data-draghover] {
 		&:after {
 			content: "";

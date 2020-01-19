@@ -2,7 +2,7 @@
 <x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="selected.length === 0" @ok="ok()">
 	<template #header>{{ multiple ? $t('selectFiles') : $t('selectFile') }}<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ selected.length | number }})</span></template>
 	<div>
-		<x-drive :multiple="multiple" @change-selection="onChangeSelection"/>
+		<x-drive :multiple="multiple" @change-selection="onChangeSelection" :select-mode="true"/>
 	</div>
 </x-window>
 </template>
