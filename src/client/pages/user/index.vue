@@ -10,9 +10,11 @@
 				<div class="fade"></div>
 				<div class="title">
 					<mk-user-name class="name" :user="user" :nowrap="true"/>
-					<div>
+					<div class="bottom">
 						<span class="username"><mk-acct :user="user" :detail="true" /></span>
-						<span v-if="user.isBot" :title="$t('is-bot')"><fa icon="robot"/></span>
+						<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
+						<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
+						<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 					</div>
 				</div>
 				<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
@@ -24,9 +26,11 @@
 			<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 			<div class="title">
 				<mk-user-name :user="user" :nowrap="false" class="name"/>
-				<div>
+				<div class="bottom">
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
-					<span v-if="user.isBot" :title="$t('is-bot')"><fa icon="robot"/></span>
+					<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
+					<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
+					<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 				</div>
 			</div>
 			<div class="description">
@@ -74,7 +78,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faRobot, faLock, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import XUserTimeline from './index.timeline.vue';
 import XUserMenu from '../../components/user-menu.vue';
 import XNote from '../../components/note.vue';
@@ -91,7 +95,7 @@ export default Vue.extend({
 
 	metaInfo() {
 		return {
-			title: this.user ? '@' + Vue.filter('acct')(this.user).replace('@', ' | ') : null
+			title: (this.user ? '@' + Vue.filter('acct')(this.user).replace('@', ' | ') : null) as string
 		};
 	},
 
@@ -100,7 +104,7 @@ export default Vue.extend({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faEllipsisH
+			faEllipsisH, faRobot, faLock, faBookmark
 		};
 	},
 
@@ -274,7 +278,7 @@ export default Vue.extend({
 					text-shadow: 0 0 8px #000;
 				}
 
-				> div {
+				> .bottom {
 					> * {
 						display: inline-block;
 						margin-right: 16px;
@@ -292,12 +296,20 @@ export default Vue.extend({
 		> .title {
 			display: none;
 			text-align: center;
-			padding: 50px 0 16px 0;
+			padding: 50px 8px 16px 8px;
 			font-weight: bold;
 			border-bottom: solid 1px var(--divider);
 
 			@media (max-width: 500px) {
 				display: block;
+			}
+
+			> .bottom {
+				> * {
+					display: inline-block;
+					margin-right: 8px;
+					opacity: 0.8;
+				}
 			}
 		}
 
