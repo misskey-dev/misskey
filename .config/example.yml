@@ -129,6 +129,10 @@ autoAdmin: true
 # deliverJobPerSec: 128
 # inboxJobPerSec: 16
 
+# Job attempts
+# deliverJobMaxAttempts: 12
+# inboxJobMaxAttempts: 8
+
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
 

@@ -49,6 +49,8 @@ export type Source = {
 	inboxJobConcurrency?: number;
 	deliverJobPerSec?: number;
 	inboxJobPerSec?: number;
+	deliverJobMaxAttempts?: number;
+	inboxJobMaxAttempts?: number;
 
 	syslog: {
 		host: string;

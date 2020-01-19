@@ -89,7 +89,7 @@ export function deliver(user: ILocalUser, content: any, to: any) {
 	};
 
 	return deliverQueue.add(data, {
-		attempts: 8,
+		attempts: config.deliverJobMaxAttempts || 12,
 		backoff: {
 			type: 'exponential',
 			delay: 60 * 1000
@@ -106,7 +106,7 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 	};
 
 	return inboxQueue.add(data, {
-		attempts: 8,
+		attempts: config.inboxJobMaxAttempts || 8,
 		backoff: {
 			type: 'exponential',
 			delay: 1000
