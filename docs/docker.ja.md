@@ -89,7 +89,7 @@ docker-compose run --rm web yarn run init
 
 ### cliコマンドを実行する方法:
 
-`docker-compose run --rm web node cli/mark-admin @example`
+`docker-compose run --rm web node built/tools/mark-admin @example`
 
 ----------------------------------------------------------------
 
