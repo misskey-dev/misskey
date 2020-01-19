@@ -17,13 +17,13 @@
 		<x-note-preview class="preview" v-if="renote" :note="renote"/>
 		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('@.post-form.quote-attached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
-			<span>{{ $t('recipient') }}</span>
+			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers">
 					<mk-acct :user="u"/>
 					<button class="_button" @click="removeVisibleUser(u)"><fa :icon="faTimes"/></button>
 				</span>
-				<button @click="addVisibleUser" class="_button"><fa :icon="faPlus"/></button>
+				<button @click="addVisibleUser" class="_buttonPrimary"><fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
 		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
@@ -641,6 +641,11 @@ export default Vue.extend({
 				display: inline;
 				top: -1px;
 				font-size: 14px;
+
+				> button {
+					padding: 4px;
+					border-radius: 8px;
+				}
 
 				> span {
 					margin-right: 14px;
