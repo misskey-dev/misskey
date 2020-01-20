@@ -86,13 +86,13 @@
 		<x-container :body-togglable="true" class="content">
 			<template #header><fa :icon="faImage"/>{{ $t('images') }}</template>
 			<div>
-				<x-photos :user="user"/>
+				<x-photos :user="user" :key="user.id"/>
 			</div>
 		</x-container>
 		<x-container :body-togglable="true" class="content">
 			<template #header><fa :icon="faChartBar"/>{{ $t('activity') }}</template>
 			<div style="padding:8px;">
-				<x-activity :user="user"/>
+				<x-activity :user="user" :key="user.id"/>
 			</div>
 		</x-container>
 		<x-user-timeline :user="user"/>
