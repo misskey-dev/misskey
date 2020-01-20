@@ -149,6 +149,12 @@ export default Vue.extend({
 				this.close();
 			}, 1000);
 		}
+
+		document.addEventListener('keydown', this.onKeydown);
+	},
+
+	beforeDestroy() {
+		document.removeEventListener('keydown', this.onKeydown);
 	},
 
 	methods: {
@@ -191,8 +197,14 @@ export default Vue.extend({
 			}
 		},
 
+		onKeydown(e) {
+			if (e.which === 27) { // ESC
+				this.cancel();
+			}
+		},
+
 		onInputKeydown(e) {
-			if (e.which == 13) { // Enter
+			if (e.which === 13) { // Enter
 				e.preventDefault();
 				e.stopPropagation();
 				this.ok();
