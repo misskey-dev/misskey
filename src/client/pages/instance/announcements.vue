@@ -2,6 +2,7 @@
 <div class="ztgjmzrw">
 	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
 	<portal to="title">{{ $t('announcements') }}</portal>
+	<x-button @click="add()" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</x-button>
 	<section class="_section announcements">
 		<div class="_content announcement" v-for="announcement in announcements">
 			<x-input v-model="announcement.title" style="margin-top: 0;">
@@ -18,9 +19,6 @@
 				<x-button class="button" inline @click="save(announcement)" primary><fa :icon="faSave"/> {{ $t('save') }}</x-button>
 				<x-button class="button" inline @click="remove(announcement)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</x-button>
 			</div>
-		</div>
-		<div class="_footer">
-			<x-button @click="add()" primary><fa :icon="faPlus"/> {{ $t('add') }}</x-button>
 		</div>
 	</section>
 </div>
