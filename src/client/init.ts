@@ -67,7 +67,7 @@ localStorage.setItem('lang', lang);
 
 // Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
-let isMobile = /mobile|iphone|ipad|android/.test(ua) || window.innerWidth <= 1024;
+let isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 // Get the <head> element
 const head = document.getElementsByTagName('head')[0];

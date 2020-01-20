@@ -1,11 +1,12 @@
 <template>
-<header class="bvonvjxbwzaiskogyhbwgyxvcgserpmu">
+<header class="kkwtjztg">
 	<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">
 		<mk-user-name :user="note.user"/>
 	</router-link>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
 	<div class="info">
+		<span class="mobile" v-if="note.viaMobile"><fa :icon="faMobileAlt"/></span>
 		<router-link class="created-at" :to="note | notePage">
 			<mk-time :time="note.createdAt"/>
 		</router-link>
@@ -20,7 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faHome, faUnlock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUnlock, faEnvelope, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	props: {
@@ -32,14 +33,14 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faHome, faUnlock, faEnvelope
+			faHome, faUnlock, faEnvelope, faMobileAlt
 		};
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.bvonvjxbwzaiskogyhbwgyxvcgserpmu {
+.kkwtjztg {
 	display: flex;
 	align-items: baseline;
 	white-space: nowrap;
@@ -84,6 +85,10 @@ export default Vue.extend({
 
 		> * {
 			color: var(--noteHeaderInfo);
+		}
+
+		> .mobile {
+			margin-right: 8px;
 		}
 
 		> .visibility {

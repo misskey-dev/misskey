@@ -515,6 +515,7 @@ export default Vue.extend({
 				cw: this.useCw ? this.cw || '' : undefined,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
+				viaMobile: this.$root.isMobile
 			}).then(data => {
 				this.clear();
 				this.deleteDraft();
