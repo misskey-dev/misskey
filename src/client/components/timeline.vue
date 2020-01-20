@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XNotes from '../components/notes.vue';
+import XNotes from './notes.vue';
 
 export default Vue.extend({
 	components: {

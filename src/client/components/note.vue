@@ -5,6 +5,7 @@
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
 	:class="{ renote: isRenote }"
 	v-hotkey="keymap"
+	v-size="[{ max: 500 }, { max: 450 }]"
 >
 	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
@@ -490,8 +491,24 @@ export default Vue.extend({
 	position: relative;
 	transition: box-shadow 0.1s ease;
 
-	@media (max-width: 500px) {
+	&.max-width_500px {
 		font-size: 0.9em;
+	}
+
+	&.max-width_450px {
+		> .renote {
+			padding: 8px 16px 0 16px;
+		}
+
+		> .article {
+			padding: 14px 16px 9px;
+
+			> .avatar {
+				margin: 0 10px 8px 0;
+				width: 50px;
+				height: 50px;
+			}
+		}
 	}
 
 	&:focus {
@@ -538,10 +555,6 @@ export default Vue.extend({
 		line-height: 28px;
 		white-space: pre;
 		color: #229e82;
-
-		@media (max-width: 450px) {
-			padding: 8px 16px 0 16px;
-		}
 
 		> .avatar {
 			flex-shrink: 0;
@@ -593,10 +606,6 @@ export default Vue.extend({
 		display: flex;
 		padding: 28px 32px 18px;
 
-		@media (max-width: 450px) {
-			padding: 14px 16px 9px;
-		}
-
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
@@ -605,12 +614,6 @@ export default Vue.extend({
 			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
-
-			@media (max-width: 450px) {
-				margin: 0 10px 8px 0;
-				width: 50px;
-				height: 50px;
-			}
 		}
 
 		> .main {

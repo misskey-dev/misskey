@@ -441,6 +441,7 @@ export default Vue.extend({
 			const widgets = [
 				'memo',
 				'notifications',
+				'timeline',
 			];
 
 			this.$root.menu({

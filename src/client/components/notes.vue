@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notes">
+<div class="mk-notes" v-size="[{ max: 500 }]">
 	<div class="empty" v-if="empty">{{ $t('noNotes') }}</div>
 
 	<mk-error v-if="error" @retry="init()"/>
@@ -105,8 +105,12 @@ export default Vue.extend({
 	> .notes {
 		> /deep/ * {
 			margin-bottom: 16px;
+		}
+	}
 
-			@media (max-width: 500px) {
+	&.max-width_500px {
+		> .notes {
+			> /deep/ * {
 				margin-bottom: 8px;
 			}
 		}

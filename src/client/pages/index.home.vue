@@ -11,7 +11,7 @@
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
-	<x-home-timeline :key="src === 'list' ? `list:${list.id}` : src" :src="src" :list="list" @before="before()" @after="after()"/>
+	<x-timeline :key="src === 'list' ? `list:${list.id}` : src" :src="src" :list="list" @before="before()" @after="after()"/>
 </div>
 </template>
 
@@ -20,7 +20,7 @@ import Vue from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
-import XHomeTimeline from './index.home.timeline.vue';
+import XTimeline from '../components/timeline.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -30,7 +30,7 @@ export default Vue.extend({
 	},
 
 	components: {
-		XHomeTimeline
+		XTimeline
 	},
 
 	data() {
