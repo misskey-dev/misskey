@@ -4,7 +4,7 @@
 
 	<mk-error v-if="error" @retry="init()"/>
 
-	<x-list class="notes" :items="notes" v-slot="{ item: note, i }">
+	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note, i }">
 		<x-note :note="note" :detail="detail" :key="note.id" :data-index="i"/>
 	</x-list>
 
@@ -86,6 +86,12 @@ export default Vue.extend({
 			return this.extract ? this.extract(this.items) : this.items;
 		},
 	},
+
+	methods: {
+		focus() {
+			this.$refs.notes.focus();
+		}
+	}
 });
 </script>
 

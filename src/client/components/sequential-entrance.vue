@@ -43,6 +43,9 @@ export default Vue.extend({
 				el.style.transform = 'translateY(64px)';
 				setTimeout(done, 700);
 			}, this.delay * el.dataset.index)
+		},
+		focus() {
+			this.$slots.default[0].elm.focus();
 		}
 	}
 });

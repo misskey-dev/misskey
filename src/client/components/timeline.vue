@@ -1,5 +1,5 @@
 <template>
-<x-notes ref="timeline" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
+<x-notes ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
 </template>
 
 <script lang="ts">
@@ -105,6 +105,12 @@ export default Vue.extend({
 				...this.baseQuery, ...this.query
 			})
 		};
+	},
+
+	methods: {
+		focus() {
+			this.$refs.tl.focus();
+		}
 	}
 });
 </script>

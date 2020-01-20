@@ -1,5 +1,5 @@
 <template>
-<div class="mk-home">
+<div class="mk-home" v-hotkey.global="keymap">
 	<portal to="header">
 		<button @click="choose" class="_button _kjvfvyph_">
 			<fa v-if="src === 'home'" :icon="faHome"/>
@@ -11,7 +11,7 @@
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
-	<x-timeline :key="src === 'list' ? `list:${list.id}` : src" :src="src" :list="list" @before="before()" @after="after()"/>
+	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src" :src="src" :list="list" @before="before()" @after="after()"/>
 </div>
 </template>
 
@@ -40,6 +40,14 @@ export default Vue.extend({
 			menuOpened: false,
 			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl
 		};
+	},
+
+	computed: {
+		keymap(): any {
+			return {
+				't': this.focus
+			};
+		}
 	},
 
 	watch: {
@@ -134,6 +142,10 @@ export default Vue.extend({
 				arg: this.src == 'list' ? this.list : this.tagTl
 			});
 		},
+
+		focus() {
+			(this.$refs.tl as any).focus();
+		}
 	}
 });
 </script>
