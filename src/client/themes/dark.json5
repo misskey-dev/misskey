@@ -50,5 +50,6 @@
 		jkhztclx: ':lighten<5<@primary',
 		zbqjwygh: ':darken<5<@primary',
 		xxubwiul: ':alpha<0.4<@primary',
+		aupeazdm: 'rgba(0, 0, 0, 0.3)',
 	},
 }

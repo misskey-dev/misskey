@@ -466,6 +466,7 @@ export default Vue.extend({
 				'memo',
 				'notifications',
 				'timeline',
+				'calendar',
 			];
 
 			this.$root.menu({
