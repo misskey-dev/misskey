@@ -24,7 +24,7 @@ export default Vue.extend({
 		text-overflow: ellipsis;
 	}
 
-	/deep/ .quote {
+	::v-deep .quote {
 		display: block;
 		margin: 8px;
 		padding: 6px 0 6px 12px;

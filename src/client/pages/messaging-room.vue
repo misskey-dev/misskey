@@ -349,7 +349,7 @@ export default Vue.extend({
 		}
 
 		> .messages {
-			> /deep/ * {
+			> ::v-deep * {
 				margin-bottom: 16px;
 			}
 		}
