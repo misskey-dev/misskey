@@ -8,7 +8,6 @@ import MkFormula from './formula.vue';
 import MkCode from './code.vue';
 import MkGoogle from './google.vue';
 import { host } from '../config';
-import { countNodesF } from '../../prelude/tree';
 
 export default Vue.component('misskey-flavored-markdown', {
 	props: {
@@ -46,9 +45,6 @@ export default Vue.component('misskey-flavored-markdown', {
 
 		const ast = (this.plain ? parsePlain : parse)(this.text);
 
-		let bigCount = 0;
-		let motionCount = 0;
-
 		const genEl = (ast: MfmForest) => concat(ast.map((token): VNode[] => {
 			switch (token.node.type) {
 				case 'text': {
@@ -81,7 +77,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'big': {
-					bigCount++;
 					return (createElement as any)('strong', {
 						attrs: {
 							style: `display: inline-block; font-size: 150% };`
@@ -110,7 +105,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'motion': {
-					motionCount++;
 					return (createElement as any)('span', {
 						attrs: {
 							style: 'display: inline-block;'
@@ -123,7 +117,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'spin': {
-					motionCount++;
 					const direction =
 						token.node.props.attr == 'left' ? 'reverse' :
 						token.node.props.attr == 'alternate' ? 'alternate' :
@@ -139,7 +132,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'jump': {
-					motionCount++;
 					return (createElement as any)('span', {
 						attrs: {
 							style: (this.$store.state.settings.disableAnimatedMfm) ? 'display: inline-block;' : 'display: inline-block; animation: jump 0.75s linear infinite;'

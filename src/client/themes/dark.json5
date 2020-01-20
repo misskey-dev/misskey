@@ -14,6 +14,7 @@
 		bg: '#000',
 		fg: '#c7d1d8',
 		panel: '#111213',
+		shadow: 'rgba(0, 0, 0, 0.1)',
 		header: 'rgba(20, 20, 20, 0.75)',
 		link: '#44a4c1',
 		hashtag: '#ff9156',

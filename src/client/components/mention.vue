@@ -64,6 +64,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .ldlomzub {
+	color: var(--mention);
+	
 	> .me {
 		pointer-events: none;
 		user-select: none;

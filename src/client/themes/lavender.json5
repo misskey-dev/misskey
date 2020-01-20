@@ -6,10 +6,6 @@
 
 	base: 'light',
 
-	vars: {
-		primary: 'rgb(206, 147, 191)',
-	},
-
 	props: {
 		primary: 'rgb(206, 147, 191)',
 		bg: 'rgb(253, 242, 243)',

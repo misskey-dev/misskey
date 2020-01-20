@@ -11,14 +11,14 @@ export type Theme = {
 
 export const lightTheme: Theme = require('./themes/light.json5');
 export const darkTheme: Theme = require('./themes/dark.json5');
-export const lavenderTheme: Theme = require('./themes/lavender.json5');
-export const halloweenTheme: Theme = require('./themes/halloween.json5');
 
 export const builtinThemes = [
 	lightTheme,
 	darkTheme,
-	lavenderTheme,
-	halloweenTheme,
+	require('./themes/lavender.json5'),
+	require('./themes/halloween.json5'),
+	require('./themes/garden.json5'),
+	require('./themes/nighttime.json5'),
 ];
 
 export function applyTheme(theme: Theme, persist = true) {
