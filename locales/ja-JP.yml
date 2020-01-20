@@ -257,6 +257,8 @@ disconnectedFromServer: "サーバーから切断されました"
 reloadConfirm: "リロードしますか？"
 watch: "ウォッチ"
 unwatch: "ウォッチ解除"
+accept: "許可"
+reject: "拒否"
 
 _widgets:
   memo: "付箋"

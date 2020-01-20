@@ -37,7 +37,7 @@
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.emojis"/>
 		</router-link>
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}</span>
-		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}</span>
+		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="!nowrap && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
 	</div>
 </div>
 </template>
@@ -72,9 +72,20 @@ export default Vue.extend({
 	data() {
 		return {
 			getNoteSummary,
+			followRequestDone: false,
 			faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock
 		};
 	},
+	methods: {
+		acceptFollowRequest() {
+			this.followRequestDone = true;
+			this.$root.api('following/requests/accept', { userId: this.notification.user.id });
+		},
+		rejectFollowRequest() {
+			this.followRequestDone = true;
+			this.$root.api('following/requests/reject', { userId: this.notification.user.id });
+		},
+	}
 });
 </script>
 

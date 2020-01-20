@@ -198,6 +198,15 @@ a {
 	}
 }
 
+._textButton {
+	@extend ._button;
+	color: var(--primary);
+
+	&:not(:disabled):hover {
+		text-decoration: underline;
+	}
+}
+
 ._shadow {
 	box-shadow: 0 8px 32px var(--shadow);
 

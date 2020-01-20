@@ -2,6 +2,7 @@ import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typ
 import { User } from './user';
 import { id } from '../id';
 import { Note } from './note';
+import { FollowRequest } from './follow-request';
 
 @Entity()
 export class Notification {
@@ -54,6 +55,7 @@ export class Notification {
 	 * quote - (自分または自分がWatchしている)投稿が引用Renoteされた
 	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
 	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
+	 * receiveFollowRequest - フォローリクエストされた
 	 */
 	@Column('varchar', {
 		length: 32,
@@ -81,6 +83,18 @@ export class Notification {
 	})
 	@JoinColumn()
 	public note: Note | null;
+
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public followRequestId: FollowRequest['id'] | null;
+
+	@ManyToOne(type => FollowRequest, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public followRequest: FollowRequest | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true
