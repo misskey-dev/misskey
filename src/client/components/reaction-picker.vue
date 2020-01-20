@@ -143,7 +143,7 @@ export default Vue.extend({
 				el.style.opacity = 1;
 				el.style.transform = 'scale(1)';
 				setTimeout(done, 1000);
-			}, 20 * el.dataset.index)
+			}, 0 * el.dataset.index)
 		},
 	}
 });
