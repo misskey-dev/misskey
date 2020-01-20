@@ -52,10 +52,12 @@ export default {
 
 		calc();
 
+		el._sizeResizeCb_ = calc;
+
 		window.addEventListener('resize', calc);
 	},
 
 	unbind(el, binding, vn) {
-		
+		window.removeEventListener('resize', el._sizeResizeCb_);
 	}
 };

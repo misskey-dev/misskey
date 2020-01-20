@@ -8,7 +8,7 @@
 		<a :href="url"></a>
 	</blockquote>
 </div>
-<div v-else class="mk-url-preview">
+<div v-else class="mk-url-preview" v-size="[{ max: 400 }, { max: 350 }]">
 	<transition name="zoom" mode="out-in">
 		<component :is="hasRoute ? 'router-link' : 'a'" :class="{ compact }" :[attr]="hasRoute ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
@@ -169,6 +169,69 @@ export default Vue.extend({
 }
 
 .mk-url-preview {
+	&.max-width_400px {
+		> a {
+			font-size: 12px;
+
+			> .thumbnail {
+				height: 80px;
+			}
+
+			> article {
+				padding: 12px;
+			}
+		}
+	}
+
+	&.max-width_350px {
+		> a {
+			font-size: 10px;
+
+			> .thumbnail {
+				height: 70px;
+			}
+
+			> article {
+				padding: 8px;
+
+				> header {
+					margin-bottom: 4px;
+				}
+
+				> footer {
+					margin-top: 4px;
+
+					> img {
+						width: 12px;
+						height: 12px;
+					}
+				}
+			}
+
+			&.compact {
+				> .thumbnail {
+					position: absolute;
+					width: 56px;
+					height: 100%;
+				}
+
+				> article {
+					left: 56px;
+					width: calc(100% - 56px);
+					padding: 4px;
+
+					> header {
+						margin-bottom: 2px;
+					}
+
+					> footer {
+						margin-top: 2px;
+					}
+				}
+			}
+		}
+	}
+
 	> a {
 		position: relative;
 		display: block;
@@ -250,78 +313,6 @@ export default Vue.extend({
 					font-size: 0.8em;
 					line-height: 16px;
 					vertical-align: top;
-				}
-			}
-		}
-
-		@media (max-width: 700px) {
-			> .thumbnail {
-				position: relative;
-				width: 100%;
-				height: 100px;
-
-				& + article {
-					left: 0;
-					width: 100%;
-				}
-			}
-		}
-
-		@media (max-width: 550px) {
-			font-size: 12px;
-
-			> .thumbnail {
-				height: 80px;
-			}
-
-			> article {
-				padding: 12px;
-			}
-		}
-
-		@media (max-width: 500px) {
-			font-size: 10px;
-
-			> .thumbnail {
-				height: 70px;
-			}
-
-			> article {
-				padding: 8px;
-
-				> header {
-					margin-bottom: 4px;
-				}
-
-				> footer {
-					margin-top: 4px;
-
-					> img {
-						width: 12px;
-						height: 12px;
-					}
-				}
-			}
-
-			&.compact {
-				> .thumbnail {
-					position: absolute;
-					width: 56px;
-					height: 100%;
-				}
-
-				> article {
-					left: 56px;
-					width: calc(100% - 56px);
-					padding: 4px;
-
-					> header {
-						margin-bottom: 2px;
-					}
-
-					> footer {
-						margin-top: 2px;
-					}
 				}
 			}
 		}
