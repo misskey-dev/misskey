@@ -99,7 +99,7 @@ export default Vue.extend({
 		padding: 8px 8px 0 8px;
 
 		> .notifications {
-			> /deep/ * {
+			> ::v-deep * {
 				margin-bottom: 8px;
 			}
 

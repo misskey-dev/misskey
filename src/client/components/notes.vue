@@ -103,14 +103,14 @@ export default Vue.extend({
 	}
 
 	> .notes {
-		> /deep/ * {
+		> ::v-deep * {
 			margin-bottom: 16px;
 		}
 	}
 
 	&.max-width_500px {
 		> .notes {
-			> /deep/ * {
+			> ::v-deep * {
 				margin-bottom: 8px;
 			}
 		}
