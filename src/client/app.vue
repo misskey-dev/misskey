@@ -21,7 +21,7 @@
 			</div>
 			<div class="sub">
 				<fa :icon="faSearch"/>
-				<input type="search" class="search"/>
+				<input type="search" class="search" :placeholder="$t('search')" v-model="searchQuery" v-autocomplete="{ model: 'searchQuery' }" :disabled="searchWait" @keypress="searchKeypress"/>
 				<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 			</div>
 		</div>
@@ -177,6 +177,8 @@ export default Vue.extend({
 			accounts: [],
 			lists: [],
 			connection: null,
+			searchQuery: '',
+			searchWait: false,
 			widgetsEditMode: false,
 			enableWidgets: window.innerWidth >= 1000,
 			faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
@@ -262,6 +264,16 @@ export default Vue.extend({
 					this.searching = false;
 				});
 			});
+		},
+
+		searchKeypress(e) {
+			if (e.keyCode == 13) {
+				this.searchWait = true;
+				search(this, this.searchQuery).finally(() => {
+					this.searchWait = false;
+					this.searchQuery = '';
+				});
+			}
 		},
 
 		async openAccountMenu(ev) {
