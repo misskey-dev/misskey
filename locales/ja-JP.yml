@@ -261,6 +261,10 @@ unwatch: "ウォッチ解除"
 _widgets:
   memo: "付箋"
   notifications: "通知"
+  timeline: "タイムライン"
+  calendar: "カレンダー"
+  trend: "トレンド"
+  clock: "時計"
 
 _cw:
   hide: "隠す"
