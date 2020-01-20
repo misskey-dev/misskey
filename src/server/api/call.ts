@@ -81,16 +81,16 @@ export default async (endpoint: string, user: User | null | undefined, app: App 
 				ep: ep.name,
 				ps: data,
 				e: {
-					message: e.message,
-					code: e.name,
-					stack: e.stack
+					message: e?.message,
+					code: e?.name,
+					stack: e?.stack
 				}
 			});
 			throw new ApiError(null, {
 				e: {
-					message: e.message,
-					code: e.name,
-					stack: e.stack
+					message: e?.message,
+					code: e?.name,
+					stack: e?.stack
 				}
 			});
 		}

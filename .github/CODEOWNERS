@@ -6,7 +6,6 @@
 /.github/                                       @syuilo @AyaMorisawa @acid-chicken
 /.vscode/                                       @acid-chicken
 /assets/                                        @syuilo # @tamaina
-/cli/                                           @syuilo
 /docs/                                          @syuilo
 /docs/*.en.md                                   @AyaMorisawa # @skid9000
 # /docs/*.fr.md                                 @BoFFire

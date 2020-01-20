@@ -91,21 +91,21 @@ export default async (ctx: Koa.Context) => {
 		return;
 	}
 
-	const keyPair = await new Promise<string[]>((s, j) =>
+	const keyPair = await new Promise<string[]>((res, rej) =>
 		generateKeyPair('rsa', {
 			modulusLength: 4096,
 			publicKeyEncoding: {
-				type: 'pkcs1',
+				type: 'spki',
 				format: 'pem'
 			},
 			privateKeyEncoding: {
-				type: 'pkcs1',
+				type: 'pkcs8',
 				format: 'pem',
 				cipher: undefined,
 				passphrase: undefined
 			}
-		} as any, (e, publicKey, privateKey) =>
-			e ? j(e) : s([publicKey, privateKey])
+		} as any, (err, publicKey, privateKey) =>
+			err ? rej(err) : res([publicKey, privateKey])
 		));
 
 	let account!: User;
