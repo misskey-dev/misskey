@@ -45,10 +45,20 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 		}
 	});
 
-	await FollowRequests.delete({
+	const req = await FollowRequests.findOne({
 		followeeId: followee.id,
 		followerId: follower.id
 	});
+
+	if (req) {
+		await FollowRequests.delete({
+			followeeId: followee.id,
+			followerId: follower.id
+		});
+
+		// 通知を作成
+		createNotification(follower.id, followee.id, 'followRequestAccepted');
+	}
 
 	if (alreadyFollowed) return;
 

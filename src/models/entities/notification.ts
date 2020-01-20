@@ -56,6 +56,7 @@ export class Notification {
 	 * reaction - (自分または自分がWatchしている)投稿にリアクションされた
 	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
 	 * receiveFollowRequest - フォローリクエストされた
+	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
 	 */
 	@Column('varchar', {
 		length: 32,

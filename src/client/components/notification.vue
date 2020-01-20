@@ -5,6 +5,7 @@
 		<div class="icon" :class="notification.type">
 			<fa :icon="faPlus" v-if="notification.type === 'follow'"/>
 			<fa :icon="faClock" v-if="notification.type === 'receiveFollowRequest'"/>
+			<fa :icon="faCheck" v-if="notification.type === 'followRequestAccepted'"/>
 			<fa :icon="faRetweet" v-if="notification.type === 'renote'"/>
 			<fa :icon="faReply" v-if="notification.type === 'reply'"/>
 			<fa :icon="faAt" v-if="notification.type === 'mention'"/>
@@ -37,6 +38,7 @@
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.emojis"/>
 		</router-link>
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}</span>
+		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
 		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="!nowrap && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
 	</div>
 </div>
@@ -44,7 +46,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import getNoteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
@@ -73,7 +75,7 @@ export default Vue.extend({
 		return {
 			getNoteSummary,
 			followRequestDone: false,
-			faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock
+			faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck
 		};
 	},
 	methods: {
@@ -144,12 +146,7 @@ export default Vue.extend({
 				height: 100%;
 			}
 
-			&.follow {
-				padding: 3px;
-				background: #36aed2;
-			}
-
-			&.receiveFollowRequest {
+			&.follow, &.followRequestAccepted, &.receiveFollowRequest {
 				padding: 3px;
 				background: #36aed2;
 			}
