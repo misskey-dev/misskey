@@ -5,7 +5,7 @@
 	:tabindex="appearNote.deletedAt == null ? '-1' : null"
 	:class="{ renote: isRenote }"
 	v-hotkey="keymap"
-	v-size="[{ max: 500 }, { max: 450 }]"
+	v-size="[{ max: 500 }, { max: 450 }, { max: 350 }, { max: 300 }]"
 >
 	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
@@ -511,6 +511,41 @@ export default Vue.extend({
 		}
 	}
 
+	&.max-width_350px {
+		> .article {
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 18px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.max-width_300px {
+		font-size: 0.825em;
+
+		> .article {
+			> .avatar {
+				width: 44px;
+				height: 44px;
+			}
+
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 12px;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	&:focus {
 		outline: none;
 		box-shadow: 0 0 0 3px var(--focus);
@@ -609,8 +644,8 @@ export default Vue.extend({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			position: sticky;
-			top: 72px;
+			//position: sticky;
+			//top: 72px;
 			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
