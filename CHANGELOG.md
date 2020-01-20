@@ -5,6 +5,7 @@ ChangeLog
 --------------------
 ### Breaking Chnages
 * お知らせがリセットされます。
+* notes/search APIのページングがoffsetではなくuntilId方式に
 
 ### ✨Improvements
 * Webクライアントを一新
