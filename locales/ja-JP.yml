@@ -255,6 +255,8 @@ banner: "バナー"
 nsfw: "閲覧注意"
 disconnectedFromServer: "サーバーから切断されました"
 reloadConfirm: "リロードしますか？"
+watch: "ウォッチ"
+unwatch: "ウォッチ解除"
 
 _widgets:
   memo: "付箋"
