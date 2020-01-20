@@ -554,7 +554,7 @@ export default Vue.extend({
 		padding: 16px 32px 8px 32px;
 		line-height: 28px;
 		white-space: pre;
-		color: #229e82;
+		color: var(--renote);
 
 		> .avatar {
 			flex-shrink: 0;
@@ -645,7 +645,7 @@ export default Vue.extend({
 						> .rp {
 							margin-left: 4px;
 							font-style: oblique;
-							color: #229e82;
+							color: var(--renote);
 						}
 					}
 
@@ -666,6 +666,12 @@ export default Vue.extend({
 
 					> .renote {
 						padding: 8px 0;
+
+						> * {
+							padding: 16px;
+							border: dashed 1px var(--renote);
+							border-radius: 8px;
+						}
 					}
 				}
 			}

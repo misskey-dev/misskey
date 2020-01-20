@@ -116,6 +116,7 @@ export default Vue.extend({
 					icon: faGlobe,
 					action: () => { this.setSrc('global') }
 				}, listItems.length > 0 ? null : undefined, ...listItems],
+				fixed: true,
 				noCenter: true,
 				source: ev.currentTarget || ev.target
 			}).then(() => {

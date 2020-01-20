@@ -67,6 +67,7 @@ export default Vue.extend({
 					icon: faFolderPlus,
 					action: () => { this.$refs.drive.createFolder(); }
 				}],
+				fixed: true,
 				noCenter: true,
 				source: ev.currentTarget || ev.target
 			}).then(() => {

@@ -12,5 +12,6 @@
 		panel: '#1f1d30',
 		bg: '#0f0e17',
 		fg: '#b1bee3',
+		renote: '@primary',
 	},
 }
