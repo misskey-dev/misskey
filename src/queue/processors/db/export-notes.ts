@@ -129,7 +129,6 @@ function serialize(note: Note, poll: Poll | null = null): any {
 		visibility: note.visibility,
 		visibleUserIds: note.visibleUserIds,
 		appId: note.appId,
-		geo: note.geo,
 		localOnly: note.localOnly
 	};
 }

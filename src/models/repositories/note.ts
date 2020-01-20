@@ -72,7 +72,6 @@ export class NoteRepository extends Repository<Note> {
 			packedNote.text = null;
 			packedNote.poll = undefined;
 			packedNote.cw = null;
-			packedNote.geo = undefined;
 			packedNote.isHidden = true;
 		}
 	}
@@ -357,9 +356,6 @@ export const packedNoteSchema = {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
 		},
-		geo: {
-			type: 'object' as const,
-			optional: true as const, nullable: true as const,
-		},
+
 	},
 };

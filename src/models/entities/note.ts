@@ -177,11 +177,6 @@ export class Note {
 	})
 	public hasPoll: boolean;
 
-	@Column('jsonb', {
-		nullable: true, default: null
-	})
-	public geo: any | null;
-
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {

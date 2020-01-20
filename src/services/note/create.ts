@@ -90,7 +90,6 @@ type Option = {
 	reply?: Note | null;
 	renote?: Note | null;
 	files?: DriveFile[] | null;
-	geo?: any | null;
 	poll?: IPoll | null;
 	viaMobile?: boolean | null;
 	localOnly?: boolean | null;
@@ -361,7 +360,6 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		userId: user.id,
 		viaMobile: data.viaMobile!,
 		localOnly: data.localOnly!,
-		geo: data.geo || null,
 		appId: data.app ? data.app.id : null,
 		visibility: data.visibility as any,
 		visibleUserIds: data.visibility == 'specified'
