@@ -228,6 +228,18 @@ export default Vue.extend({
 				}]);
 			}
 		}
+
+		this.$root.stream.on('_disconnected_', async () => {
+			const confirm = await this.$root.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				title: this.$t('disconnectedFromServer'),
+				text: this.$t('reloadConfirm'),
+			});
+			if (!confirm.canceled) {
+				location.reload();
+			}
+		});
 	},
 
 	methods: {

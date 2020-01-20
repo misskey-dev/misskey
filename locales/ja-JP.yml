@@ -253,6 +253,8 @@ rename: "名前を変更"
 avatar: "アイコン"
 banner: "バナー"
 nsfw: "閲覧注意"
+disconnectedFromServer: "サーバーから切断されました"
+reloadConfirm: "リロードしますか？"
 
 _widgets:
   memo: "付箋"
