@@ -76,6 +76,7 @@ export default Vue.extend({
 			flex: 1 1 33%;
 			width: 33%;
 			height: 90px;
+			box-sizing: border-box;
 			background-position: center center;
 			background-size: cover;
 			background-clip: content-box;
