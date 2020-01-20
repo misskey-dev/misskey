@@ -111,7 +111,7 @@ export default define(meta, async (ps, me) => {
 		uri: config.url,
 		description: instance.description,
 		langs: instance.langs,
-		ToSUrl: instance.ToSUrl,
+		tosUrl: instance.ToSUrl,
 		repositoryUrl: instance.repositoryUrl,
 		feedbackUrl: instance.feedbackUrl,
 

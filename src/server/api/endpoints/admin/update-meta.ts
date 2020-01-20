@@ -333,7 +333,7 @@ export const meta = {
 			}
 		},
 
-		ToSUrl: {
+		tosUrl: {
 			validator: $.optional.nullable.str,
 			desc: {
 				'ja-JP': '利用規約のURL'
@@ -579,8 +579,8 @@ export default define(meta, async (ps, me) => {
 		set.swPrivateKey = ps.swPrivateKey;
 	}
 
-	if (ps.ToSUrl !== undefined) {
-		set.ToSUrl = ps.ToSUrl;
+	if (ps.tosUrl !== undefined) {
+		set.ToSUrl = ps.tosUrl;
 	}
 
 	if (ps.repositoryUrl !== undefined) {

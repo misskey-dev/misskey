@@ -37,13 +37,13 @@
 				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('password-not-matched') }}</p>
 			</template>
 		</x-input>
-		<x-switch v-model="ToSAgreement" v-if="meta.ToSUrl">
+		<x-switch v-model="ToSAgreement" v-if="meta.tosUrl">
 			<i18n path="agreeTo">
-				<a :href="meta.ToSUrl" target="_blank">{{ $t('tos') }}</a>
+				<a :href="meta.tosUrl" target="_blank">{{ $t('tos') }}</a>
 			</i18n>
 		</x-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<x-button type="submit" :disabled=" submitting || !(meta.ToSUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('start') }}</x-button>
+		<x-button type="submit" :disabled=" submitting || !(meta.tosUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('start') }}</x-button>
 	</template>
 </form>
 </template>

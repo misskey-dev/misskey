@@ -20,6 +20,19 @@
 	</section>
 
 	<section class="_section">
+		<div class="_content">
+			<x-input v-model="name">{{ $t('instanceName') }}</x-input>
+			<x-textarea v-model="description">{{ $t('instanceDescription') }}</x-textarea>
+			<x-input v-model="tosUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('tosUrl') }}</x-input>
+			<x-input v-model="maintainerName">{{ $t('maintainerName') }}</x-input>
+			<x-input v-model="maintainerEmail" type="email"><template #icon><fa :icon="faEnvelope"/></template>{{ $t('maintainerEmail') }}</x-input>
+		</div>
+		<div class="_footer">
+			<x-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
+		</div>
+	</section>
+
+	<section class="_section">
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
 		<div class="_content">
 			<x-switch v-model="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></x-switch>
@@ -56,8 +69,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import XButton from '../../components/ui/button.vue';
 import XInput from '../../components/ui/input.vue';
 import XTextarea from '../../components/ui/textarea.vue';
@@ -91,13 +104,23 @@ export default Vue.extend({
 			cacheRemoteFiles: false,
 			remoteDriveCapacityMb: 0,
 			blockedHosts: '',
-			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer
+			maintainerName: null,
+			maintainerEmail: null,
+			name: null,
+			description: null,
+			tosUrl: null,
+			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope
 		}
 	},
 
 	created() {
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
+			this.name = this.meta.name;
+			this.description = this.meta.description;
+			this.tosUrl = this.meta.tosUrl;
+			this.maintainerName = this.meta.maintainerName;
+			this.maintainerEmail = this.meta.maintainerEmail;
 			this.proxyAccount = this.meta.proxyAccount;
 			this.cacheRemoteFiles = this.meta.cacheRemoteFiles;
 			this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
@@ -116,6 +139,11 @@ export default Vue.extend({
 	methods: {
 		save() {
 			this.$root.api('admin/update-meta', {
+				name: this.name,
+				description: this.description,
+				tosUrl: this.tosUrl,
+				maintainerName: this.maintainerName,
+				maintainerEmail: this.maintainerEmail,
 				proxyAccount: this.proxyAccount,
 				cacheRemoteFiles: this.cacheRemoteFiles,
 				remoteDriveCapacityMb: this.remoteDriveCapacityMb,

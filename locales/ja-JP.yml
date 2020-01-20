@@ -259,6 +259,11 @@ watch: "ウォッチ"
 unwatch: "ウォッチ解除"
 accept: "許可"
 reject: "拒否"
+instanceName: "インスタンス名"
+instanceDescription: "インスタンスの紹介"
+maintainerName: "管理者の名前"
+maintainerEmail: "管理者のメールアドレス"
+tosUrl: "インスタンス"
 
 _widgets:
   memo: "付箋"
