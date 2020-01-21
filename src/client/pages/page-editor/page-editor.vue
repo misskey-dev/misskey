@@ -106,7 +106,7 @@ import { url } from '../../../../config';
 import { collectPageVars } from '../../../scripts/collect-page-vars';
 
 export default Vue.extend({
-	i18n: i18n('pages'),
+	i18n,
 
 	components: {
 		XDraggable, XVariable, XBlocks
@@ -422,14 +422,14 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" scoped>
-.gwbmwxkm
+<style lang="scss" scoped>
+.gwbmwxkm {
 	margin-bottom: 16px;
 
-	> header
+	> header {
 		background: var(--faceHeader);
 
-		> .title
+		> .title {
 			z-index: 1;
 			margin: 0;
 			padding: 0 16px;
@@ -439,62 +439,81 @@ export default Vue.extend({
 			color: var(--faceHeaderText);
 			box-shadow: 0 var(--lineWidth) rgba(#000, 0.07);
 
-			> [data-icon]
+			> [data-icon] {
 				margin-right: 6px;
+			}
 
-			&:empty
+			&:empty {
 				display: none;
+			}
+		}
 
-		> .buttons
+		> .buttons {
 			position: absolute;
 			z-index: 2;
 			top: 0;
 			right: 0;
 
-			> button
+			> button {
 				padding: 0;
 				width: 42px;
 				font-size: 0.9em;
 				line-height: 42px;
 				color: var(--faceTextButton);
 
-				&:hover
+				&:hover {
 					color: var(--faceTextButtonHover);
+				}
 
-				&:active
+				&:active {
 					color: var(--faceTextButtonActive);
+				}
+			}
+		}
+	}
 
-	> section
+	> section {
 		padding: 0 32px 32px 32px;
 
-		@media (max-width 500px)
+		@media (max-width: 500px) {
 			padding: 0 16px 16px 16px;
+		}
 
-		> .view
+		> .view {
 			display: inline-block;
 			margin: 16px 0 0 0;
 			font-size: 14px;
+		}
 
-		> .content
+		> .content {
+			margin-bottom: 16px;
+		}
+
+		> .eyeCatch {
 			margin-bottom: 16px;
 
-		> .eyeCatch
-			margin-bottom: 16px;
-
-			> div
-				> img
+			> div {
+				> img {
 					max-width: 100%;
+				}
+			}
+		}
+	}
+}
 
-.qmuvgica
+.qmuvgica {
 	padding: 32px;
 
-	@media (max-width 500px)
+	@media (max-width: 500px) {
 		padding: 16px;
+	}
 
-	> .variables
+	> .variables {
 		margin-bottom: 16px;
+	}
 
-	> .add
+	> .add {
 		margin-bottom: 16px;
-
+	}
+}
 </style>
