@@ -112,13 +112,6 @@ export const meta = {
 			}
 		},
 
-		isGroup: {
-			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'Groupか否か'
-			}
-		},
-
 		isCat: {
 			validator: $.optional.bool,
 			desc: {
@@ -198,7 +191,6 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
-	if (typeof ps.isGroup == 'boolean') updates.isGroup = ps.isGroup;
 	if (typeof ps.carefulBot == 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 	if (typeof ps.autoAcceptFollowed == 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
