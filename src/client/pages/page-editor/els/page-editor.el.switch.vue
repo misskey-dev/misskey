@@ -1,11 +1,11 @@
 <template>
 <x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faBolt"/> {{ $t('blocks.switch') }}</template>
+	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.switch') }}</template>
 
 	<section class="kjuadyyj">
-		<ui-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('blocks._switch.name') }}</span></ui-input>
-		<ui-input v-model="value.text"><span>{{ $t('blocks._switch.text') }}</span></ui-input>
-		<ui-switch v-model="value.default"><span>{{ $t('blocks._switch.default') }}</span></ui-switch>
+		<ui-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._switch.name') }}</span></ui-input>
+		<ui-input v-model="value.text"><span>{{ $t('_pages.blocks._switch.text') }}</span></ui-input>
+		<ui-switch v-model="value.default"><span>{{ $t('_pages.blocks._switch.default') }}</span></ui-switch>
 	</section>
 </x-container>
 </template>

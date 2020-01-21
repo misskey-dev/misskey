@@ -1,9 +1,9 @@
 <template>
 <x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faPaperPlane"/> {{ $t('blocks.post') }}</template>
+	<template #header><fa :icon="faPaperPlane"/> {{ $t('_pages.blocks.post') }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
-		<mk-textarea v-model="value.text">{{ $t('blocks._post.text') }}</mk-textarea>
+		<mk-textarea v-model="value.text">{{ $t('_pages.blocks._post.text') }}</mk-textarea>
 	</section>
 </x-container>
 </template>

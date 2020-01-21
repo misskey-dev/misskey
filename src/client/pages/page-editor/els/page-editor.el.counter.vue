@@ -1,11 +1,11 @@
 <template>
 <x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.numberInput') }}</template>
+	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.counter') }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
-		<mk-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._numberInput.name') }}</span></mk-input>
-		<mk-input v-model="value.text"><span>{{ $t('_pages.blocks._numberInput.text') }}</span></mk-input>
-		<mk-input v-model="value.default" type="number"><span>{{ $t('_pages.blocks._numberInput.default') }}</span></mk-input>
+		<mk-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._counter.name') }}</span></mk-input>
+		<mk-input v-model="value.text"><span>{{ $t('_pages.blocks._counter.text') }}</span></mk-input>
+		<mk-input v-model="value.inc" type="number"><span>{{ $t('_pages.blocks._counter.inc') }}</span></mk-input>
 	</section>
 </x-container>
 </template>

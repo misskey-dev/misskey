@@ -8,7 +8,7 @@
 	</template>
 
 	<section v-if="value.type === null" class="pbglfege" @click="changeType()">
-		{{ $t('script.emptySlot') }}
+		{{ $t('_pages.script.emptySlot') }}
 	</section>
 	<section v-else-if="value.type === 'text'" class="tbwccoaw">
 		<input v-model="value.value"/>
@@ -17,7 +17,7 @@
 		<textarea v-model="value.value"></textarea>
 	</section>
 	<section v-else-if="value.type === 'textList'" class="tbwccoaw">
-		<textarea v-model="value.value" :placeholder="$t('script.blocks._textList.info')"></textarea>
+		<textarea v-model="value.value" :placeholder="$t('_pages.script.blocks._textList.info')"></textarea>
 	</section>
 	<section v-else-if="value.type === 'number'" class="tbwccoaw">
 		<input v-model="value.value" type="number"/>
@@ -25,21 +25,21 @@
 	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
 			<option v-for="v in aiScript.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
-			<optgroup :label="$t('script.argVariables')">
+			<optgroup :label="$t('_pages.script.argVariables')">
 				<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
 			</optgroup>
-			<optgroup :label="$t('script.pageVariables')">
+			<optgroup :label="$t('_pages.script.pageVariables')">
 				<option v-for="v in aiScript.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
-			<optgroup :label="$t('script.enviromentVariables')">
+			<optgroup :label="$t('_pages.script.enviromentVariables')">
 				<option v-for="v in aiScript.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
 		<mk-textarea v-model="slots">
-			<span>{{ $t('script.blocks._fn.slots') }}</span>
-			<template #desc>{{ $t('script.blocks._fn.slots-info') }}</template>
+			<span>{{ $t('_pages.script.blocks._fn.slots') }}</span>
+			<template #desc>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</mk-textarea>
 		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :fn-slots="value.value.slots" :name="name"/>
 	</section>

@@ -349,27 +349,27 @@ export default Vue.extend({
 			return [{
 				label: this.$t('content-blocks'),
 				items: [
-					{ value: 'section', text: this.$t('blocks.section') },
-					{ value: 'text', text: this.$t('blocks.text') },
-					{ value: 'image', text: this.$t('blocks.image') },
-					{ value: 'textarea', text: this.$t('blocks.textarea') },
+					{ value: 'section', text: this.$t('_pages.blocks.section') },
+					{ value: 'text', text: this.$t('_pages.blocks.text') },
+					{ value: 'image', text: this.$t('_pages.blocks.image') },
+					{ value: 'textarea', text: this.$t('_pages.blocks.textarea') },
 				]
 			}, {
 				label: this.$t('input-blocks'),
 				items: [
-					{ value: 'button', text: this.$t('blocks.button') },
-					{ value: 'radioButton', text: this.$t('blocks.radioButton') },
-					{ value: 'textInput', text: this.$t('blocks.textInput') },
-					{ value: 'textareaInput', text: this.$t('blocks.textareaInput') },
-					{ value: 'numberInput', text: this.$t('blocks.numberInput') },
-					{ value: 'switch', text: this.$t('blocks.switch') },
-					{ value: 'counter', text: this.$t('blocks.counter') }
+					{ value: 'button', text: this.$t('_pages.blocks.button') },
+					{ value: 'radioButton', text: this.$t('_pages.blocks.radioButton') },
+					{ value: 'textInput', text: this.$t('_pages.blocks.textInput') },
+					{ value: 'textareaInput', text: this.$t('_pages.blocks.textareaInput') },
+					{ value: 'numberInput', text: this.$t('_pages.blocks.numberInput') },
+					{ value: 'switch', text: this.$t('_pages.blocks.switch') },
+					{ value: 'counter', text: this.$t('_pages.blocks.counter') }
 				]
 			}, {
 				label: this.$t('special-blocks'),
 				items: [
-					{ value: 'if', text: this.$t('blocks.if') },
-					{ value: 'post', text: this.$t('blocks.post') }
+					{ value: 'if', text: this.$t('_pages.blocks.if') },
+					{ value: 'post', text: this.$t('_pages.blocks.post') }
 				]
 			}];
 		},

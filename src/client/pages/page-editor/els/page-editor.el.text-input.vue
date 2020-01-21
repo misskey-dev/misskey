@@ -1,11 +1,11 @@
 <template>
 <x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faBolt"/> {{ $t('blocks.textInput') }}</template>
+	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.textInput') }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
-		<ui-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('blocks._textInput.name') }}</span></ui-input>
-		<ui-input v-model="value.text"><span>{{ $t('blocks._textInput.text') }}</span></ui-input>
-		<ui-input v-model="value.default" type="text"><span>{{ $t('blocks._textInput.default') }}</span></ui-input>
+		<ui-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._textInput.name') }}</span></ui-input>
+		<ui-input v-model="value.text"><span>{{ $t('_pages.blocks._textInput.text') }}</span></ui-input>
+		<ui-input v-model="value.default" type="text"><span>{{ $t('_pages.blocks._textInput.default') }}</span></ui-input>
 	</section>
 </x-container>
 </template>
