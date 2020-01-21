@@ -3,7 +3,7 @@
 	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
 	
-	<div class="remote-caution _panel" v-if="user.host != null"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="user.url" rel="nofollow noopener" target="_blank">{{ $t('viewOnRemote') }}</a></div>
+	<div class="remote-caution _panel" v-if="user.host != null"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="user.url" rel="nofollow noopener" target="_blank">{{ $t('showOnRemote') }}</a></div>
 	<transition name="zoom" mode="out-in" appear>
 		<div class="profile _panel" :key="user.id">
 			<div class="banner-container" :style="style">
