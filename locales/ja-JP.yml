@@ -389,3 +389,295 @@ _timelines:
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
+
+_pages:
+  new-page: "ページの作成"
+  edit-page: "ページの編集"
+  read-page: "ソースを表示中"
+  page-created: "ページを作成しました"
+  page-updated: "ページを更新しました"
+  name-already-exists: "指定されたページURLは既に存在しています"
+  title-invalid-name: "不正なページURLです"
+  text-invalid-name: "空白でないか確認してください"
+  are-you-sure-delete: "このページを削除しますか？"
+  page-deleted: "ページを削除しました"
+  edit-this-page: "このページを編集"
+  pin-this-page: "ピン留め"
+  unpin-this-page: "ピン留め解除"
+  view-source: "ソースを表示"
+  view-page: "ページを見る"
+  like: "いいね"
+  unlike: "いいね解除"
+  liked-pages: "いいねしたページ"
+  my-pages: "自分のページ"
+  inspector: "インスペクター"
+  content: "ページブロック"
+  variables: "変数"
+  variables-info: "変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。"
+  variables-info2: "変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。"
+  variables-info3: "ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。"
+  variables-info4: "関数を使うと、値の算出処理を再利用可能な形にまとめることができます。関数を作るには、「関数」タイプの変数を作成します。関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、AiScript標準で関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。"
+  more-details: "詳しい説明"
+  title: "タイトル"
+  url: "ページURL"
+  summary: "ページの要約"
+  align-center: "中央寄せ"
+  hide-title-when-pinned: "ピン留めされているときにタイトルを非表示"
+  font: "フォント"
+  fontSerif: "セリフ"
+  fontSansSerif: "サンセリフ"
+  set-eye-catching-image: "アイキャッチ画像を設定"
+  remove-eye-catching-image: "アイキャッチ画像を削除"
+  choose-block: "ブロックを追加"
+  select-type: "種類を選択"
+  enter-variable-name: "変数名を決めてください"
+  the-variable-name-is-already-used: "その変数名は既に使われています"
+  content-blocks: "コンテンツ"
+  input-blocks: "入力"
+  special-blocks: "特殊"
+  post-from-post-form: "この内容を投稿"
+  posted-from-post-form: "投稿しました"
+  blocks:
+    text: "テキスト"
+    textarea: "テキストエリア"
+    section: "セクション"
+    image: "画像"
+    button: "ボタン"
+
+    if: "もし"
+    _if:
+      variable: "変数"
+
+    post: "投稿フォーム"
+    _post:
+      text: "内容"
+
+    textInput: "テキスト入力"
+    _textInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    textareaInput: "複数行テキスト入力"
+    _textareaInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    numberInput: "数値入力"
+    _numberInput:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    switch: "スイッチ"
+    _switch:
+      name: "変数名"
+      text: "タイトル"
+      default: "デフォルト値"
+
+    counter: "カウンター"
+    _counter:
+      name: "変数名"
+      text: "タイトル"
+      inc: "増加値"
+
+    _button:
+      text: "タイトル"
+      colored: "色付き"
+      action: "ボタンを押したときの動作"
+      _action:
+        dialog: "ダイアログを表示する"
+        _dialog:
+          content: "内容"
+        resetRandom: "乱数をリセット"
+        pushEvent: "イベントを送信させる"
+        _pushEvent:
+          event: "イベント名"
+          message: "押したときに表示するメッセージ"
+          variable: "送信する変数"
+          no-variable: "なし"
+
+    radioButton: "選択肢"
+    _radioButton:
+      name: "変数名"
+      title: "タイトル"
+      values: "改行で区切った選択肢"
+      default: "デフォルト値"
+
+  script:
+    categories:
+      flow: "制御"
+      logical: "論理演算"
+      operation: "計算"
+      comparison: "比較"
+      random: "ランダム"
+      value: "値"
+      fn: "関数"
+      text: "テキスト操作"
+      convert: "変換"
+      list: "リスト"
+    blocks:
+      text: "テキスト"
+      multiLineText: "テキスト(複数行)"
+      textList: "テキストのリスト"
+      _textList:
+        info: "ひとつひとつを改行で区切ってください"
+      strLen: "テキストの長さ"
+      _strLen:
+        arg1: "テキスト"
+      strPick: "文字取り出し"
+      _strPick:
+        arg1: "テキスト"
+        arg2: "文字の位置"
+      strReplace: "テキスト置き換え"
+      _strReplace:
+        arg1: "テキスト"
+        arg2: "置き換え前"
+        arg3: "置き換え後"
+      strReverse: "テキストを反転"
+      _strReverse:
+        arg1: "テキスト"
+      join: "テキストを連結"
+      _join:
+        arg1: "リスト"
+        arg2: "区切り"
+      add: "足す"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "引く"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "掛ける"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "割る"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "割った余り"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      round: "小数を丸める"
+      _round:
+        arg1: "数値"
+      eq: "AとBが同じ"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "AとBが異なる"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "AかつB"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "AまたはB"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< AがBより小さい"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> AがBより大きい"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= AがBと同じか小さい"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= AがBと同じか大きい"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "分岐"
+      _if:
+        arg1: "もし"
+        arg2: "なら"
+        arg3: "そうでなければ"
+      not: "否定"
+      _not:
+        arg1: "否定"
+      random: "ランダム"
+      _random:
+        arg1: "確率"
+      rannum: "乱数"
+      _rannum:
+        arg1: "最小"
+        arg2: "最大"
+      randomPick: "リストからランダムに選択"
+      _randomPick:
+        arg1: "リスト"
+      dailyRandom: "ランダム (ユーザーごとに日替わり)"
+      _dailyRandom:
+        arg1: "確率"
+      dailyRannum: "乱数 (ユーザーごとに日替わり)"
+      _dailyRannum:
+        arg1: "最小"
+        arg2: "最大"
+      dailyRandomPick: "リストからランダムに選択 (ユーザーごとに日替わり)"
+      _dailyRandomPick:
+        arg1: "リスト"
+      seedRandom: "ランダム (シード)"
+      _seedRandom:
+        arg1: "シード"
+        arg2: "確率"
+      seedRannum: "乱数 (シード)"
+      _seedRannum:
+        arg1: "シード"
+        arg2: "最小"
+        arg3: "最大"
+      seedRandomPick: "リストからランダムに選択 (シード)"
+      _seedRandomPick:
+        arg1: "シード"
+        arg2: "リスト"
+      DRPWPM: "確率付きリストからランダムに選択 (ユーザーごとに日替わり)"
+      _DRPWPM:
+        arg1: "テキストのリスト"
+      pick: "リストから選択"
+      _pick:
+        arg1: "リスト"
+        arg2: "位置"
+      listLen: "リストの長さを取得"
+      _listLen:
+        arg1: "リスト"
+      number: "数値"
+      stringToNumber: "テキストを数値に"
+      _stringToNumber:
+        arg1: "テキスト"
+      numberToString: "数値をテキストに"
+      _numberToString:
+        arg1: "数値"
+      splitStrByLine: "テキストを行で分割"
+      _splitStrByLine:
+        arg1: "テキスト"
+      ref: "変数"
+      fn: "関数"
+      _fn:
+        slots: "スロット"
+        slots-info: "スロットひとつひとつを改行で区切ってください"
+        arg1: "出力"
+      for: "繰り返し"
+      _for:
+        arg1: "回数"
+        arg2: "処理"
+    typeError: "スロット{slot}は\"{expect}\"を受け付けますが、\"{actual}\"が入れられています！"
+    thereIsEmptySlot: "スロット{slot}が空です！"
+    types:
+      string: "テキスト"
+      number: "数値"
+      boolean: "フラグ"
+      array: "リスト"
+      stringArray: "テキストのリスト"
+    emptySlot: "空のスロット"
+    enviromentVariables: "環境変数"
+    pageVariables: "ページ要素"
+    argVariables: "入力スロット"
+    

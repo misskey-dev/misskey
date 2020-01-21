@@ -2,7 +2,7 @@
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
 	"version": "12.0.0-alpha.2",
-	"codename": "daybreak",
+	"codename": "indigo",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/syuilo/misskey.git"

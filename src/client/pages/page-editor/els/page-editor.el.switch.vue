@@ -1,11 +1,11 @@
 <template>
 <x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faBolt"/> {{ $t('blocks.textareaInput') }}</template>
+	<template #header><fa :icon="faBolt"/> {{ $t('blocks.switch') }}</template>
 
-	<section style="padding: 0 16px 16px 16px;">
-		<mk-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('blocks._textareaInput.name') }}</span></mk-input>
-		<mk-input v-model="value.text"><span>{{ $t('blocks._textareaInput.text') }}</span></mk-input>
-		<mk-textarea v-model="value.default"><span>{{ $t('blocks._textareaInput.default') }}</span></mk-textarea>
+	<section class="kjuadyyj">
+		<ui-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('blocks._switch.name') }}</span></ui-input>
+		<ui-input v-model="value.text"><span>{{ $t('blocks._switch.text') }}</span></ui-input>
+		<ui-switch v-model="value.default"><span>{{ $t('blocks._switch.default') }}</span></ui-switch>
 	</section>
 </x-container>
 </template>
@@ -15,14 +15,14 @@ import Vue from 'vue';
 import { faBolt, faMagic } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
-import MkTextarea from '../../../components/ui/textarea.vue';
+import MkSwitch from '../../../components/ui/switch.vue';
 import MkInput from '../../../components/ui/input.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XContainer, MkTextarea, MkInput
+		XContainer, MkSwitch, MkInput
 	},
 
 	props: {
@@ -42,3 +42,9 @@ export default Vue.extend({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.kjuadyyj {
+	padding: 0 16px 16px 16px;
+}
+</style>
