@@ -94,7 +94,7 @@ export const meta = {
 		carefulBot: {
 			validator: $.optional.bool,
 			desc: {
-				'ja-JP': 'BotとGroupからのフォローを承認制にするか'
+				'ja-JP': 'Botからのフォローを承認制にするか'
 			}
 		},
 

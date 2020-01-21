@@ -819,7 +819,7 @@ common/views/components/profile-editor.vue:
   is-bot: "このアカウントはBotです"
   is-group: "このアカウントはGroupです"
   is-locked: "フォローを承認制にする"
-  careful-bot: "BotとGroupからのフォローだけ承認制にする"
+  careful-bot: "Botからのフォローだけ承認制にする"
   auto-accept-followed: "フォローしているユーザーからのフォローを自動承認する"
   advanced: "その他"
   privacy: "プライバシー"
