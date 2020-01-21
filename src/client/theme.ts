@@ -20,6 +20,7 @@ export const builtinThemes = [
 	require('./themes/garden.json5'),
 	require('./themes/nighttime.json5'),
 	require('./themes/elegant.json5'),
+	require('./themes/rainy.json5'),
 ];
 
 export function applyTheme(theme: Theme, persist = true) {
