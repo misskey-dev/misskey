@@ -318,19 +318,6 @@ a {
 	transform: scaleY(0);
 }
 
-.zoom-in-bottom-enter-active,
-.zoom-in-bottom-leave-active {
-	opacity: 1;
-	transform: scaleY(1);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-	transform-origin: center bottom;
-}
-.zoom-in-bottom-enter,
-.zoom-in-bottom-leave-active {
-	opacity: 0;
-	transform: scaleY(0);
-}
-
 @keyframes progress-spinner {
 	0% {
 		transform: rotate(0deg);

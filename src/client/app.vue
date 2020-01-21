@@ -61,7 +61,7 @@
 				<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
 			</router-link>
 			<button class="item _button" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
-				<fa :icon="faCog" fixed-width/><span class="text">{{ $t('instance') }}</span>
+				<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
 			</button>
 			<button class="item _button" @click="search()">
 				<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
@@ -114,32 +114,13 @@
 	</div>
 
 	<div class="buttons">
-		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="() => { navOpen = !navOpen; notificationsOpen = false; }" ref="navButton"><fa :icon="navOpen ? faTimes : faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="showNav" ref="navButton"><fa :icon="faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button home _button" :disabled="$route.path === '/'" @click="$router.push('/')"><fa :icon="faHome"/></button>
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
 
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
-
-	<transition name="zoom-in-bottom">
-		<nav v-if="navOpen" ref="nav" class="popup-nav">
-			<button class="_button" @click="search()"><fa :icon="faSearch" fixed-width/>{{ $t('search') }}</button>
-			<div></div>
-			<router-link to="/announcements"><fa :icon="faBroadcastTower" fixed-width/>{{ $t('announcements') }}<i v-if="$store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></router-link>
-			<router-link to="/featured"><fa :icon="faFireAlt" fixed-width/>{{ $t('featured') }}</router-link>
-			<router-link to="/lists"><fa :icon="faListUl" fixed-width/>{{ $t('lists') }}</router-link>
-			<router-link to="/messaging"><fa :icon="faComments" fixed-width/>{{ $t('messaging') }}<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i></router-link>
-			<router-link to="/messages"><fa :icon="faEnvelope" fixed-width/>{{ $t('messages') }}<i v-if="$store.state.i.hasUnreadSpecifiedNotes"><fa :icon="faCircle"/></i></router-link>
-			<router-link to="/favorites"><fa :icon="faStar" fixed-width/>{{ $t('favorites') }}</router-link>
-			<router-link to="/drive"><fa :icon="faCloud" fixed-width/>{{ $t('drive') }}</router-link>
-			<router-link to="/follow-requests" v-if="$store.state.i.isLocked"><fa :icon="faUserClock" fixed-width/>{{ $t('followRequests') }}<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i></router-link>
-			<div v-if="$store.state.i.isAdmin"></div>
-			<button class="_button" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu"><fa :icon="faCog" fixed-width/>{{ $t('instance') }}</button>
-			<div></div>
-			<button class="_button" @click="openAccountMenu"><mk-avatar :user="$store.state.i" class="avatar"/><mk-user-name :user="$store.state.i"/></button>
-		</nav>
-	</transition>
 
 	<transition name="zoom-in-top">
 		<x-notifications v-if="notificationsOpen" class="notifications" ref="notifications"/>
@@ -149,7 +130,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad } from '@fortawesome/free-solid-svg-icons';
+import { faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
@@ -172,7 +153,6 @@ export default Vue.extend({
 			host: host,
 			pageKey: 0,
 			searching: false,
-			navOpen: false,
 			notificationsOpen: false,
 			accounts: [],
 			lists: [],
@@ -181,7 +161,7 @@ export default Vue.extend({
 			searchWait: false,
 			widgetsEditMode: false,
 			enableWidgets: window.innerWidth >= 1000,
-			faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud
+			faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
 		};
 	},
 
@@ -250,7 +230,6 @@ export default Vue.extend({
 		},
 
 		search() {
-			this.navOpen = false;
 			if (this.searching) return;
 
 			this.$root.dialog({
@@ -274,6 +253,72 @@ export default Vue.extend({
 					this.searchQuery = '';
 				});
 			}
+		},
+
+		showNav(ev) {
+			this.$root.menu({
+				items: [{
+					text: this.$t('search'),
+					icon: faSearch,
+					action: this.search,
+					align: 'left',
+				}, null, this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? {
+					text: this.$t('instance'),
+					icon: faServer,
+					action: () => this.oepnInstanceMenu(ev),
+					align: 'left',
+				} : undefined, {
+					type: 'link',
+					text: this.$t('announcements'),
+					to: '/announcements',
+					icon: faBroadcastTower,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('featured'),
+					to: '/featured',
+					icon: faFireAlt,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('explore'),
+					to: '/explore',
+					icon: faHashtag,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('messaging'),
+					to: '/messaging',
+					icon: faComments,
+					align: 'left',
+				}, this.$store.state.i.isLocked ? {
+					type: 'link',
+					text: this.$t('followRequests'),
+					to: '/follow-requests',
+					icon: faUserClock,
+					align: 'left',
+				} : undefined, {
+					type: 'link',
+					text: this.$t('drive'),
+					to: '/drive',
+					icon: faCloud,
+					align: 'left',
+				}, {
+					type: 'link',
+					text: this.$t('favorites'),
+					to: '/favorites',
+					icon: faStar,
+					align: 'left',
+				}, null, {
+					type: 'user',
+					user: this.$store.state.i,
+					action: () => this.openAccountMenu(ev),
+					align: 'left',
+				}],
+				fixed: true,
+				width: 200,
+				source: ev.currentTarget || ev.target,
+			});
 		},
 
 		async openAccountMenu(ev) {
@@ -415,13 +460,10 @@ export default Vue.extend({
 		},
 
 		async addAcount() {
-			this.navOpen = false;
-
 			this.$root.new(await import('./components/signin-dialog.vue').then(m => m.default));
 		},
 
 		async switchAccount(account) {
-			this.navOpen = false;
 			const token = this.$store.state.device.accounts.find(x => x.id === account.id).token;
 			this.$root.api('i', {}, token).then(i => {
 				this.$store.dispatch('switchAccount', {
@@ -971,76 +1013,6 @@ export default Vue.extend({
 		@media (max-width: 500px) {
 			width: 290px;
 			height: 310px;
-		}
-	}
-
-	> .popup-nav {
-		position: fixed;
-		bottom: 96px + 16px;
-		left: 32px;
-		z-index: 10001;
-		max-width: 250px;
-		padding: 8px 0;
-		background: var(--panel);
-		border-radius: 4px;
-		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
-
-		@media (max-width: 500px) {
-			bottom: 92px;
-			left: 16px;
-		}
-
-		> div {
-			height: 1px;
-			width: 100%;
-			margin: 8px 0;
-			background: var(--divider);
-		}
-
-		> *:not(div) {
-			display: block;
-			position: relative;
-			padding: 8px 22px 8px 16px;
-			width: 100%;
-			box-sizing: border-box;
-			white-space: nowrap;
-			color: var(--fg);
-			text-align: left;
-			font-size: 14px;
-			line-height: 20px;
-			overflow: hidden;
-			text-overflow: ellipsis;
-
-			&:hover {
-				color: #fff;
-				background: var(--primary);
-				text-decoration: none;
-			}
-
-			&:active {
-				color: #fff;
-				background: var(--primaryDarken);
-			}
-
-			> .avatar {
-				margin-right: 4px;
-				width: 20px;
-				height: 20px;
-			}
-
-			> [data-icon] {
-				margin-right: 4px;
-				width: 20px;
-			}
-
-			> i {
-				position: absolute;
-				top: 5px;
-				left: 13px;
-				color: var(--primary);
-				font-size: 12px;
-				animation: blink 1s infinite;
-			}
 		}
 	}
 }
