@@ -19,6 +19,7 @@ export const builtinThemes = [
 	require('./themes/halloween.json5'),
 	require('./themes/garden.json5'),
 	require('./themes/nighttime.json5'),
+	require('./themes/elegant.json5'),
 ];
 
 export function applyTheme(theme: Theme, persist = true) {
