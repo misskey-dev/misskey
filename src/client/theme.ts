@@ -18,9 +18,11 @@ export const builtinThemes = [
 	require('./themes/lavender.json5'),
 	require('./themes/halloween.json5'),
 	require('./themes/garden.json5'),
-	require('./themes/nighttime.json5'),
+	require('./themes/mauve.json5'),
 	require('./themes/elegant.json5'),
 	require('./themes/rainy.json5'),
+	require('./themes/urban.json5'),
+	require('./themes/cafe.json5'),
 ];
 
 export function applyTheme(theme: Theme, persist = true) {

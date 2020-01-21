@@ -1,0 +1,20 @@
+{
+	id: '0ff48d43-aab3-46e7-ab12-8492110d2e2b',
+
+	name: 'Cafe',
+	author: 'syuilo',
+
+	base: 'light',
+
+	props: {
+		primary: 'rgb(234, 154, 82)',
+		bg: '#DDD9D1',
+		fg: 'rgb(149, 143, 139)',
+		panel: '#EEECE8',
+		renote: '@primary',
+		link: '@primary',
+		mention: '@primary',
+		hashtag: '@primary',
+		inputBorder: 'rgba(0, 0, 0, 0.1)',
+	},
+}
