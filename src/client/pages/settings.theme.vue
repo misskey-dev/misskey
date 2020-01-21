@@ -2,7 +2,7 @@
 <section class="mk-settings-page-theme _section">
 	<div class="_title"><fa :icon="faPalette"/> {{ $t('theme') }}</div>
 	<div class="_content">
-		<x-select v-model="theme" :placeholder="$t('theme')">
+		<mk-select v-model="theme" :placeholder="$t('theme')">
 			<template #label>{{ $t('theme') }}</template>
 			<optgroup :label="$t('lightThemes')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -10,7 +10,7 @@
 			<optgroup :label="$t('darkThemes')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
-		</x-select>
+		</mk-select>
 	</div>
 </section>
 </template>
@@ -18,9 +18,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
-import XInput from '../components/ui/input.vue';
-import XButton from '../components/ui/button.vue';
-import XSelect from '../components/ui/select.vue';
+import MkInput from '../components/ui/input.vue';
+import MkButton from '../components/ui/button.vue';
+import MkSelect from '../components/ui/select.vue';
 import i18n from '../i18n';
 import { Theme, builtinThemes, applyTheme } from '../theme';
 
@@ -28,9 +28,9 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XInput,
-		XButton,
-		XSelect,
+		MkInput,
+		MkButton,
+		MkSelect,
 	},
 	
 	data() {

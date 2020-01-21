@@ -2,68 +2,68 @@
 <section class="mk-settings-page-profile _section">
 	<div class="_title"><fa :icon="faUser"/> {{ $t('profile') }}</div>
 	<div class="_content">
-		<x-input v-model="name" :max="30">
+		<mk-input v-model="name" :max="30">
 			<span>{{ $t('_profile.name') }}</span>
-		</x-input>
+		</mk-input>
 
-		<x-input :value="$store.state.i.username" readonly>
+		<mk-input :value="$store.state.i.username" readonly>
 			<span>{{ $t('_profile.username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
-		</x-input>
+		</mk-input>
 
-		<x-textarea v-model="description" :max="500">
+		<mk-textarea v-model="description" :max="500">
 			<span>{{ $t('_profile.description') }}</span>
 			<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
-		</x-textarea>
+		</mk-textarea>
 
-		<x-input v-model="location">
+		<mk-input v-model="location">
 			<span>{{ $t('location') }}</span>
 			<template #prefix><fa :icon="faMapMarkerAlt"/></template>
-		</x-input>
+		</mk-input>
 
-		<x-input v-model="birthday" type="date">
+		<mk-input v-model="birthday" type="date">
 			<template #title>{{ $t('birthday') }}</template>
 			<template #prefix><fa :icon="faBirthdayCake"/></template>
-		</x-input>
+		</mk-input>
 
-		<x-input type="file" @change="onAvatarChange">
+		<mk-input type="file" @change="onAvatarChange">
 			<span>{{ $t('avatar') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
-		</x-input>
+		</mk-input>
 
-		<x-input type="file" @change="onBannerChange">
+		<mk-input type="file" @change="onBannerChange">
 			<span>{{ $t('banner') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
-		</x-input>
+		</mk-input>
 
 		<details class="fields">
 			<summary>{{ $t('_profile.metadata') }}</summary>
 			<div class="row">
-				<x-input v-model="fieldName0">{{ $t('_profile.metadataLabel') }}</x-input>
-				<x-input v-model="fieldValue0">{{ $t('_profile.metadataContent') }}</x-input>
+				<mk-input v-model="fieldName0">{{ $t('_profile.metadataLabel') }}</mk-input>
+				<mk-input v-model="fieldValue0">{{ $t('_profile.metadataContent') }}</mk-input>
 			</div>
 			<div class="row">
-				<x-input v-model="fieldName1">{{ $t('_profile.metadataLabel') }}</x-input>
-				<x-input v-model="fieldValue1">{{ $t('_profile.metadataContent') }}</x-input>
+				<mk-input v-model="fieldName1">{{ $t('_profile.metadataLabel') }}</mk-input>
+				<mk-input v-model="fieldValue1">{{ $t('_profile.metadataContent') }}</mk-input>
 			</div>
 			<div class="row">
-				<x-input v-model="fieldName2">{{ $t('_profile.metadataLabel') }}</x-input>
-				<x-input v-model="fieldValue2">{{ $t('_profile.metadataContent') }}</x-input>
+				<mk-input v-model="fieldName2">{{ $t('_profile.metadataLabel') }}</mk-input>
+				<mk-input v-model="fieldValue2">{{ $t('_profile.metadataContent') }}</mk-input>
 			</div>
 			<div class="row">
-				<x-input v-model="fieldName3">{{ $t('_profile.metadataLabel') }}</x-input>
-				<x-input v-model="fieldValue3">{{ $t('_profile.metadataContent') }}</x-input>
+				<mk-input v-model="fieldName3">{{ $t('_profile.metadataLabel') }}</mk-input>
+				<mk-input v-model="fieldValue3">{{ $t('_profile.metadataContent') }}</mk-input>
 			</div>
 		</details>
 
-		<x-switch v-model="isBot">{{ $t('flagAsBot') }}</x-switch>
-		<x-switch v-model="isCat">{{ $t('flagAsCat') }}</x-switch>
+		<mk-switch v-model="isBot">{{ $t('flagAsBot') }}</mk-switch>
+		<mk-switch v-model="isCat">{{ $t('flagAsCat') }}</mk-switch>
 	</div>
 	<div class="_footer">
-		<x-button @click="save(true)" primary><fa :icon="faSave"/> {{ $t('save') }}</x-button>
+		<mk-button @click="save(true)" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 	</div>
 </section>
 </template>
@@ -72,10 +72,10 @@
 import Vue from 'vue';
 import { faUnlockAlt, faCogs, faImage, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import XButton from '../components/ui/button.vue';
-import XInput from '../components/ui/input.vue';
-import XTextarea from '../components/ui/textarea.vue';
-import XSwitch from '../components/ui/switch.vue';
+import MkButton from '../components/ui/button.vue';
+import MkInput from '../components/ui/input.vue';
+import MkTextarea from '../components/ui/textarea.vue';
+import MkSwitch from '../components/ui/switch.vue';
 import i18n from '../i18n';
 import { apiUrl, host } from '../config';
 
@@ -83,10 +83,10 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton,
-		XInput,
-		XTextarea,
-		XSwitch,
+		MkButton,
+		MkInput,
+		MkTextarea,
+		MkSwitch,
 	},
 	
 	data() {

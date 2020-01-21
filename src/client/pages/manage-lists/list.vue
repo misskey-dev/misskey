@@ -18,8 +18,8 @@
 				</div>
 			</div>
 			<div class="_footer">
-				<x-button inline @click="renameList()">{{ $t('renameList') }}</x-button>
-				<x-button inline @click="deleteList()">{{ $t('deleteList') }}</x-button>
+				<mk-button inline @click="renameList()">{{ $t('renameList') }}</mk-button>
+				<mk-button inline @click="deleteList()">{{ $t('deleteList') }}</mk-button>
 			</div>
 		</div>
 	</transition>
@@ -31,7 +31,7 @@ import Vue from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
 import Progress from '../../scripts/loading';
-import XButton from '../../components/ui/button.vue';
+import MkButton from '../../components/ui/button.vue';
 
 export default Vue.extend({
 	i18n,
@@ -43,7 +43,7 @@ export default Vue.extend({
 	},
 
 	components: {
-		XButton
+		MkButton
 	},
 
 	data() {

@@ -1,16 +1,16 @@
 <template>
 <div>
-	<x-button class="llumlmnx" @click="click()">{{ script.interpolate(value.text) }}</x-button>
+	<mk-button class="llumlmnx" @click="click()">{{ script.interpolate(value.text) }}</mk-button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import XButton from '../ui/button.vue';
+import MkButton from '../ui/button.vue';
 
 export default Vue.extend({
 	components: {
-		XButton
+		MkButton
 	},
 	props: {
 		value: {

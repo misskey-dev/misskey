@@ -4,8 +4,8 @@
 		<div class="_title"><fa :icon="faGlobe"/> {{ $t('instances') }}</div>
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
-				<x-input v-model="host" :debounce="true" style="margin: 0; flex: 1;"><span>{{ $t('host') }}</span></x-input>
-				<x-select v-model="state" style="margin: 0;">
+				<mk-input v-model="host" :debounce="true" style="margin: 0; flex: 1;"><span>{{ $t('host') }}</span></mk-input>
+				<mk-select v-model="state" style="margin: 0;">
 					<option value="all">{{ $t('all') }}</option>
 					<option value="federating">{{ $t('federating') }}</option>
 					<option value="subscribing">{{ $t('subscribing') }}</option>
@@ -13,11 +13,11 @@
 					<option value="suspended">{{ $t('suspended') }}</option>
 					<option value="blocked">{{ $t('blocked') }}</option>
 					<option value="notResponding">{{ $t('notResponding') }}</option>
-				</x-select>
+				</mk-select>
 			</div>
 		</div>
 		<div class="_content">
-			<x-pagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
+			<mk-pagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
 				<div class="instance" v-for="(instance, i) in items" :key="instance.id" :data-index="i" @click="info(instance)">
 					<div class="host"><fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
 					<div class="status">
@@ -29,7 +29,7 @@
 						<span class="latestStatus"><fa :icon="faTrafficLight" class="icon"/>{{ instance.latestStatus || '-' }}</span>
 					</div>
 				</div>
-			</x-pagination>
+			</mk-pagination>
 		</div>
 	</section>
 </div>
@@ -39,10 +39,10 @@
 import Vue from 'vue';
 import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
-import XButton from '../../components/ui/button.vue';
-import XInput from '../../components/ui/input.vue';
-import XSelect from '../../components/ui/select.vue';
-import XPagination from '../../components/ui/pagination.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkInput from '../../components/ui/input.vue';
+import MkSelect from '../../components/ui/select.vue';
+import MkPagination from '../../components/ui/pagination.vue';
 import MkInstanceInfo from './federation.instance.vue';
 
 export default Vue.extend({
@@ -55,10 +55,10 @@ export default Vue.extend({
 	},
 
 	components: {
-		XButton,
-		XInput,
-		XSelect,
-		XPagination,
+		MkButton,
+		MkInput,
+		MkSelect,
+		MkPagination,
 	},
 
 	data() {

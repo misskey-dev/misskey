@@ -72,7 +72,7 @@
 			<div class="header">
 				<span class="label">{{ $t('charts') }}</span>
 				<div class="selects">
-					<x-select v-model="chartSrc" style="margin: 0; flex: 1;">
+					<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
 						<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
 						<option value="users">{{ $t('_instanceCharts.users') }}</option>
 						<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
@@ -84,11 +84,11 @@
 						<option value="drive-usage-total">{{ $t('_instanceCharts.cacheSizeTotal') }}</option>
 						<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
 						<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
-					</x-select>
-					<x-select v-model="chartSpan" style="margin: 0;">
+					</mk-select>
+					<mk-select v-model="chartSpan" style="margin: 0;">
 						<option value="hour">{{ $t('perHour') }}</option>
 						<option value="day">{{ $t('perDay') }}</option>
-					</x-select>
+					</mk-select>
 				</div>
 			</div>
 			<div class="chart">
@@ -97,8 +97,8 @@
 		</div>
 		<div class="operations">
 			<span class="label">{{ $t('operations') }}</span>
-			<x-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</x-switch>
-			<x-switch v-model="isBlocked" class="switch">{{ $t('blockThisInstance') }}</x-switch>
+			<mk-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
+			<mk-switch v-model="isBlocked" class="switch">{{ $t('blockThisInstance') }}</mk-switch>
 		</div>
 		<details class="metadata">
 			<summary class="label">{{ $t('metadata') }}</summary>
@@ -115,8 +115,8 @@ import i18n from '../../i18n';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '../../components/window.vue';
 import MkUsersDialog from '../../components/users-dialog.vue';
-import XSelect from '../../components/ui/select.vue';
-import XSwitch from '../../components/ui/switch.vue';
+import MkSelect from '../../components/ui/select.vue';
+import MkSwitch from '../../components/ui/switch.vue';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -134,8 +134,8 @@ export default Vue.extend({
 
 	components: {
 		XWindow,
-		XSelect,
-		XSwitch,
+		MkSelect,
+		MkSwitch,
 	},
 
 	props: {

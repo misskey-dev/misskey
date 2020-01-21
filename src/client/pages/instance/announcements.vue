@@ -2,22 +2,22 @@
 <div class="ztgjmzrw">
 	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
 	<portal to="title">{{ $t('announcements') }}</portal>
-	<x-button @click="add()" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</x-button>
+	<mk-button @click="add()" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 	<section class="_section announcements">
 		<div class="_content announcement" v-for="announcement in announcements">
-			<x-input v-model="announcement.title" style="margin-top: 0;">
+			<mk-input v-model="announcement.title" style="margin-top: 0;">
 				<span>{{ $t('title') }}</span>
-			</x-input>
-			<x-textarea v-model="announcement.text">
+			</mk-input>
+			<mk-textarea v-model="announcement.text">
 				<span>{{ $t('text') }}</span>
-			</x-textarea>
-			<x-input v-model="announcement.imageUrl">
+			</mk-textarea>
+			<mk-input v-model="announcement.imageUrl">
 				<span>{{ $t('imageUrl') }}</span>
-			</x-input>
+			</mk-input>
 			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">
-				<x-button class="button" inline @click="save(announcement)" primary><fa :icon="faSave"/> {{ $t('save') }}</x-button>
-				<x-button class="button" inline @click="remove(announcement)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</x-button>
+				<mk-button class="button" inline @click="save(announcement)" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+				<mk-button class="button" inline @click="remove(announcement)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</mk-button>
 			</div>
 		</div>
 	</section>
@@ -29,9 +29,9 @@ import Vue from 'vue';
 import { faBroadcastTower, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../i18n';
-import XButton from '../../components/ui/button.vue';
-import XInput from '../../components/ui/input.vue';
-import XTextarea from '../../components/ui/textarea.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkInput from '../../components/ui/input.vue';
+import MkTextarea from '../../components/ui/textarea.vue';
 
 export default Vue.extend({
 	i18n,
@@ -43,9 +43,9 @@ export default Vue.extend({
 	},
 
 	components: {
-		XButton,
-		XInput,
-		XTextarea,
+		MkButton,
+		MkInput,
+		MkTextarea,
 	},
 
 	data() {

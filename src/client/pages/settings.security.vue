@@ -2,7 +2,7 @@
 <section class="mk-settings-page-security _section">
 	<div class="_title"><fa :icon="faLock"/> {{ $t('security') }}</div>
 	<div class="_content">
-		<x-button primary @click="change()">{{ $t('changePassword') }}</x-button>
+		<mk-button primary @click="change()">{{ $t('changePassword') }}</mk-button>
 	</div>
 </section>
 </template>
@@ -10,14 +10,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import XButton from '../components/ui/button.vue';
+import MkButton from '../components/ui/button.vue';
 import i18n from '../i18n';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton,
+		MkButton,
 	},
 	
 	data() {

@@ -1,5 +1,5 @@
 <template>
-<x-container :body-togglable="true" :expanded="expanded">
+<mk-container :body-togglable="true" :expanded="expanded">
 	<template #header><slot></slot></template>
 
 	<mk-error v-if="error" @retry="init()"/>
@@ -25,21 +25,21 @@
 			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('@.loading') : $t('@.load-more') }}
 		</button>
 	</div>
-</x-container>
+</mk-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
-import XContainer from './ui/container.vue';
+import MkContainer from './ui/container.vue';
 import XFollowButton from './follow-button.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XContainer,
+		MkContainer,
 		XFollowButton,
 	},
 

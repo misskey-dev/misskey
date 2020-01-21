@@ -6,7 +6,7 @@
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
 		<div class="_content">
 			<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
-			<x-pagination :pagination="pagination" class="emojis" ref="emojis">
+			<mk-pagination :pagination="pagination" class="emojis" ref="emojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" :data-index="i" @click="selected = emoji" :class="{ selected: selected && (selected.id === emoji.id) }">
@@ -16,18 +16,18 @@
 						</div>
 					</div>
 				</template>
-			</x-pagination>
+			</mk-pagination>
 		</div>
 		<div class="_footer">
-			<x-button inline primary @click="add()"><fa :icon="faPlus"/> {{ $t('addEmoji') }}</x-button>
-			<x-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</x-button>
+			<mk-button inline primary @click="add()"><fa :icon="faPlus"/> {{ $t('addEmoji') }}</mk-button>
+			<mk-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</mk-button>
 		</div>
 	</section>
 	<section class="_section remote">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
 		<div class="_content">
-			<x-input v-model="host" :debounce="true" style="margin-top: 0;"><span>{{ $t('host') }}</span></x-input>
-			<x-pagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
+			<mk-input v-model="host" :debounce="true" style="margin-top: 0;"><span>{{ $t('host') }}</span></mk-input>
+			<mk-pagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" :data-index="i" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
@@ -38,10 +38,10 @@
 						</div>
 					</div>
 				</template>
-			</x-pagination>
+			</mk-pagination>
 		</div>
 		<div class="_footer">
-			<x-button inline primary :disabled="selectedRemote == null" @click="im()"><fa :icon="faPlus"/> {{ $t('import') }}</x-button>
+			<mk-button inline primary :disabled="selectedRemote == null" @click="im()"><fa :icon="faPlus"/> {{ $t('import') }}</mk-button>
 		</div>
 	</section>
 </div>
@@ -51,9 +51,9 @@
 import Vue from 'vue';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
-import XButton from '../../components/ui/button.vue';
-import XInput from '../../components/ui/input.vue';
-import XPagination from '../../components/ui/pagination.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkInput from '../../components/ui/input.vue';
+import MkPagination from '../../components/ui/pagination.vue';
 import { apiUrl } from '../../config';
 
 export default Vue.extend({
@@ -64,9 +64,9 @@ export default Vue.extend({
 	},
 
 	components: {
-		XButton,
-		XInput,
-		XPagination,
+		MkButton,
+		MkInput,
+		MkPagination,
 	},
 
 	data() {

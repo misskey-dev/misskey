@@ -1,5 +1,5 @@
 <template>
-<x-pagination :pagination="pagination" #default="{items}" class="mk-follow-requests" ref="list">
+<mk-pagination :pagination="pagination" #default="{items}" class="mk-follow-requests" ref="list">
 	<div class="user _panel" v-for="(req, i) in items" :key="req.id" :data-index="i">
 		<mk-avatar class="avatar" :user="req.follower"/>
 		<div class="body">
@@ -16,13 +16,13 @@
 			</div>
 		</div>
 	</div>
-</x-pagination>
+</mk-pagination>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import XPagination from '../components/ui/pagination.vue';
+import MkPagination from '../components/ui/pagination.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -32,7 +32,7 @@ export default Vue.extend({
 	},
 
 	components: {
-		XPagination
+		MkPagination
 	},
 
 	data() {

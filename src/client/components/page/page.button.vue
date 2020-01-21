@@ -6,11 +6,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XButton from '../ui/button.vue';
+import MkButton from '../ui/button.vue';
 
 export default Vue.extend({
 	components: {
-		XButton
+		MkButton
 	},
 	props: {
 		value: {

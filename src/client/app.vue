@@ -88,7 +88,7 @@
 	<div class="widgets">
 		<template v-if="enableWidgets && $store.getters.isSignedIn">
 			<template v-if="widgetsEditMode">
-				<x-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></x-button>
+				<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
 				<x-draggable
 					:list="widgets"
 					handle=".handle"
@@ -163,7 +163,7 @@ export default Vue.extend({
 
 	components: {
 		XNotifications: () => import('./components/notifications.vue').then(m => m.default),
-		XButton: () => import('./components/ui/button.vue').then(m => m.default),
+		MkButton: () => import('./components/ui/button.vue').then(m => m.default),
 		XDraggable: () => import('vuedraggable'),
 	},
 

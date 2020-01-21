@@ -1,12 +1,12 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
-		<x-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<mk-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
 			<span>{{ $t('invitation-code') }}</span>
 			<template #prefix><fa icon="id-card-alt"/></template>
 			<template #desc v-html="this.$t('invitation-info').replace('{}', 'mailto:' + meta.maintainerEmail)"></template>
-		</x-input>
-		<x-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
+		</mk-input>
+		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
@@ -19,8 +19,8 @@
 				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-short') }}</span>
 				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('too-long') }}</span>
 			</template>
-		</x-input>
-		<x-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword">
+		</mk-input>
+		<mk-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword">
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
@@ -28,22 +28,22 @@
 				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('normal-password') }}</p>
 				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('strong-password') }}</p>
 			</template>
-		</x-input>
-		<x-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
+		</mk-input>
+		<mk-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
 			<span>{{ $t('password') }} ({{ $t('retype') }})</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
 				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa icon="check" fixed-width/> {{ $t('password-matched') }}</p>
 				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa icon="exclamation-triangle" fixed-width/> {{ $t('password-not-matched') }}</p>
 			</template>
-		</x-input>
-		<x-switch v-model="ToSAgreement" v-if="meta.tosUrl">
+		</mk-input>
+		<mk-switch v-model="ToSAgreement" v-if="meta.tosUrl">
 			<i18n path="agreeTo">
 				<a :href="meta.tosUrl" target="_blank">{{ $t('tos') }}</a>
 			</i18n>
-		</x-switch>
+		</mk-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<x-button type="submit" :disabled=" submitting || !(meta.tosUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('start') }}</x-button>
+		<mk-button type="submit" :disabled=" submitting || !(meta.tosUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('start') }}</mk-button>
 	</template>
 </form>
 </template>
@@ -55,17 +55,17 @@ const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
 import i18n from '../i18n';
 import { host, url } from '../config';
-import XButton from './ui/button.vue';
-import XInput from './ui/input.vue';
-import XSwitch from './ui/switch.vue';
+import MkButton from './ui/button.vue';
+import MkInput from './ui/input.vue';
+import MkSwitch from './ui/switch.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton,
-		XInput,
-		XSwitch,
+		MkButton,
+		MkInput,
+		MkSwitch,
 	},
 
 	data() {

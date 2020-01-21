@@ -1,16 +1,16 @@
 <template>
 <div>
-	<x-input class="kudkigyw" v-model="v" type="text">{{ script.interpolate(value.text) }}</x-input>
+	<mk-input class="kudkigyw" v-model="v" type="text">{{ script.interpolate(value.text) }}</mk-input>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import XInput from '../ui/input.vue';
+import MkInput from '../ui/input.vue';
 
 export default Vue.extend({
 	components: {
-		XInput
+		MkInput
 	},
 	props: {
 		value: {

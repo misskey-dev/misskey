@@ -1,14 +1,14 @@
 <template>
-<x-textarea :value="text" readonly></x-textarea>
+<mk-textarea :value="text" readonly></mk-textarea>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import XTextarea from '../ui/textarea.vue';
+import MkTextarea from '../ui/textarea.vue';
 
 export default Vue.extend({
 	components: {
-		XTextarea
+		MkTextarea
 	},
 	props: {
 		value: {

@@ -13,46 +13,46 @@
 		<section>
 			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</router-link>
 
-			<ui-input v-model="title">
+			<mk-input v-model="title">
 				<span>{{ $t('title') }}</span>
-			</ui-input>
+			</mk-input>
 
 			<template v-if="showOptions">
-				<ui-input v-model="summary">
+				<mk-input v-model="summary">
 					<span>{{ $t('summary') }}</span>
-				</ui-input>
+				</mk-input>
 
-				<ui-input v-model="name">
+				<mk-input v-model="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<span>{{ $t('url') }}</span>
-				</ui-input>
+				</mk-input>
 
-				<ui-switch v-model="alignCenter">{{ $t('align-center') }}</ui-switch>
+				<mk-switch v-model="alignCenter">{{ $t('align-center') }}</mk-switch>
 
-				<ui-select v-model="font">
+				<mk-select v-model="font">
 					<template #label>{{ $t('font') }}</template>
 					<option value="serif">{{ $t('fontSerif') }}</option>
 					<option value="sans-serif">{{ $t('fontSansSerif') }}</option>
-				</ui-select>
+				</mk-select>
 
-				<ui-switch v-model="hideTitleWhenPinned">{{ $t('hide-title-when-pinned') }}</ui-switch>
+				<mk-switch v-model="hideTitleWhenPinned">{{ $t('hide-title-when-pinned') }}</mk-switch>
 
 				<div class="eyeCatch">
-					<ui-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catching-image') }}</ui-button>
+					<mk-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catching-image') }}</mk-button>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-						<ui-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catching-image') }}</ui-button>
+						<mk-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catching-image') }}</mk-button>
 					</div>
 				</div>
 			</template>
 
 			<x-blocks class="content" v-model="content" :ai-script="aiScript"/>
 
-			<ui-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></ui-button>
+			<mk-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
 		</section>
 	</div>
 
-	<ui-container :body-togglable="true">
+	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faMagic"/> {{ $t('variables') }}</template>
 		<div class="qmuvgica">
 			<x-draggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
@@ -69,25 +69,25 @@
 				/>
 			</x-draggable>
 
-			<ui-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></ui-button>
+			<mk-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
 
-			<ui-info><span v-html="$t('variables-info')"></span><a @click="() => moreDetails = true" style="display:block;">{{ $t('more-details') }}</a></ui-info>
+			<x-info><span v-html="$t('variables-info')"></span><a @click="() => moreDetails = true" style="display:block;">{{ $t('more-details') }}</a></x-info>
 
 			<template v-if="moreDetails">
-				<ui-info><span v-html="$t('variables-info2')"></span></ui-info>
-				<ui-info><span v-html="$t('variables-info3')"></span></ui-info>
-				<ui-info><span v-html="$t('variables-info4')"></span></ui-info>
+				<x-info><span v-html="$t('variables-info2')"></span></x-info>
+				<x-info><span v-html="$t('variables-info3')"></span></x-info>
+				<x-info><span v-html="$t('variables-info4')"></span></x-info>
 			</template>
 		</div>
-	</ui-container>
+	</mk-container>
 
-	<ui-container :body-togglable="true" :expanded="false">
+	<mk-container :body-togglable="true" :expanded="false">
 		<template #header><fa :icon="faCode"/> {{ $t('inspector') }}</template>
 		<div style="padding:0 32px 32px 32px;">
-			<ui-textarea :value="JSON.stringify(content, null, 2)" readonly tall>{{ $t('content') }}</ui-textarea>
-			<ui-textarea :value="JSON.stringify(variables, null, 2)" readonly tall>{{ $t('variables') }}</ui-textarea>
+			<mk-textarea :value="JSON.stringify(content, null, 2)" readonly tall>{{ $t('content') }}</mk-textarea>
+			<mk-textarea :value="JSON.stringify(variables, null, 2)" readonly tall>{{ $t('variables') }}</mk-textarea>
 		</div>
-	</ui-container>
+	</mk-container>
 </div>
 </template>
 
@@ -96,20 +96,25 @@ import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../../../i18n';
+import { v4 as uuid } from 'uuid';
+import i18n from '../../i18n';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import { v4 as uuid } from 'uuid';
-import { blockDefs } from '../../../../../../misc/aiscript/index';
-import { ASTypeChecker } from '../../../../../../misc/aiscript/type-checker';
-import { url } from '../../../../config';
-import { collectPageVars } from '../../../scripts/collect-page-vars';
+import MkTextarea from '../../components/ui/textarea.vue';
+import MkContainer from '../../components/ui/container.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkSelect from '../../components/ui/select.vue';
+import MkSwitch from '../../components/ui/switch.vue';
+import { blockDefs } from '../../scripts/aiscript/index';
+import { ASTypeChecker } from '../../scripts/aiscript/type-checker';
+import { url } from '../../config';
+import { collectPageVars } from '../../scripts/collect-page-vars';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XDraggable, XVariable, XBlocks
+		XDraggable, XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch
 	},
 
 	props: {

@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faComments"/></portal>
 	<portal to="title">{{ $t('messaging') }}</portal>
 
-	<x-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</x-button>
+	<mk-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</mk-button>
 
 	<sequential-entrance class="history" v-if="messages.length > 0" :delay="30">
 		<router-link v-for="(message, i) in messages"
@@ -41,14 +41,14 @@ import Vue from 'vue';
 import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import getAcct from '../../misc/acct/render';
-import XButton from '../components/ui/button.vue';
+import MkButton from '../components/ui/button.vue';
 import MkUserSelect from '../components/user-select.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton
+		MkButton
 	},
 
 	data() {

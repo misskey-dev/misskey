@@ -1,7 +1,7 @@
 <template>
 <div class="wjqjnyhzogztorhrdgcpqlkxhkmuetgj _panel">
 	<p><fa :icon="faExclamationTriangle"/> {{ $t('error') }}</p>
-	<x-button @click="() => $emit('retry')" class="button">{{ $t('retry') }}</x-button>
+	<mk-button @click="() => $emit('retry')" class="button">{{ $t('retry') }}</mk-button>
 </div>
 </template>
 
@@ -9,12 +9,12 @@
 import Vue from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
-import XButton from './ui/button.vue';
+import MkButton from './ui/button.vue';
 
 export default Vue.extend({
 	i18n,
 	components: {
-		XButton,
+		MkButton,
 	},
 	data() {
 		return {

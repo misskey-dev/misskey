@@ -2,22 +2,22 @@
 <section class="mk-settings-page-general _section">
 	<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 	<div class="_content">
-		<x-input type="file" @change="onWallpaperChange" style="margin-top: 0;">
+		<mk-input type="file" @change="onWallpaperChange" style="margin-top: 0;">
 			<span>{{ $t('wallpaper') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="wallpaperUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
-		</x-input>
-		<x-button primary :disabled="$store.state.settings.wallpaper == null" @click="delWallpaper()">{{ $t('removeWallpaper') }}</x-button>
+		</mk-input>
+		<mk-button primary :disabled="$store.state.settings.wallpaper == null" @click="delWallpaper()">{{ $t('removeWallpaper') }}</mk-button>
 	</div>
 	<div class="_content">
-		<x-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
+		<mk-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
 			{{ $t('auto-watch') }}<template #desc>{{ $t('auto-watch-desc') }}</template>
-		</x-switch>
+		</mk-switch>
 	</div>
 	<div class="_content">
-		<x-button @click="readAllNotifications">{{ $t('mark-as-read-all-notifications') }}</x-button>
-		<x-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</x-button>
-		<x-button @click="readAllMessagingMessages">{{ $t('mark-as-read-all-talk-messages') }}</x-button>
+		<mk-button @click="readAllNotifications">{{ $t('mark-as-read-all-notifications') }}</mk-button>
+		<mk-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</mk-button>
+		<mk-button @click="readAllMessagingMessages">{{ $t('mark-as-read-all-talk-messages') }}</mk-button>
 	</div>
 </section>
 </template>
@@ -25,9 +25,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faImage, faCog } from '@fortawesome/free-solid-svg-icons';
-import XInput from '../components/ui/input.vue';
-import XButton from '../components/ui/button.vue';
-import XSwitch from '../components/ui/switch.vue';
+import MkInput from '../components/ui/input.vue';
+import MkButton from '../components/ui/button.vue';
+import MkSwitch from '../components/ui/switch.vue';
 import i18n from '../i18n';
 import { apiUrl } from '../config';
 
@@ -35,9 +35,9 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XInput,
-		XButton,
-		XSwitch,
+		MkInput,
+		MkButton,
+		MkSwitch,
 	},
 	
 	data() {

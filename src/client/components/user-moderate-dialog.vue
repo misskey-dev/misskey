@@ -2,7 +2,7 @@
 <x-window @closed="() => { $emit('closed'); destroyDom(); }" :avatar="user">
 	<template #header><mk-user-name :user="user"/></template>
 	<div class="vrcsvlkm">
-		<x-button @click="changePassword()">{{ $t('changePassword') }}</x-button>
+		<mk-button @click="changePassword()">{{ $t('changePassword') }}</mk-button>
 	</div>
 </x-window>
 </template>
@@ -10,14 +10,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../i18n';
-import XButton from './ui/button.vue';
+import MkButton from './ui/button.vue';
 import XWindow from './window.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton,
+		MkButton,
 		XWindow,
 	},
 

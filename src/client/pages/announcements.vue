@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
 	<portal to="title">{{ $t('announcements') }}</portal>
 
-	<x-pagination :pagination="pagination" #default="{items}" class="ruryvtyk" ref="list">
+	<mk-pagination :pagination="pagination" #default="{items}" class="ruryvtyk" ref="list">
 		<section class="_section announcement" v-for="(announcement, i) in items" :key="announcement.id" :data-index="i">
 			<div class="_title"><span v-if="$store.getters.isSignedIn && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
@@ -11,10 +11,10 @@
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl" alt=""/>
 			</div>
 			<div class="_footer" v-if="$store.getters.isSignedIn && !announcement.isRead">
-				<x-button @click="read(announcement)" primary><fa :icon="faCheck"/> {{ $t('gotIt') }}</x-button>
+				<mk-button @click="read(announcement)" primary><fa :icon="faCheck"/> {{ $t('gotIt') }}</mk-button>
 			</div>
 		</section>
-	</x-pagination>
+	</mk-pagination>
 </div>
 </template>
 
@@ -22,8 +22,8 @@
 import Vue from 'vue';
 import { faCheck, faBroadcastTower } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
-import XPagination from '../components/ui/pagination.vue';
-import XButton from '../components/ui/button.vue';
+import MkPagination from '../components/ui/pagination.vue';
+import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
 	i18n,
@@ -35,8 +35,8 @@ export default Vue.extend({
 	},
 
 	components: {
-		XPagination,
-		XButton
+		MkPagination,
+		MkButton
 	},
 
 	data() {

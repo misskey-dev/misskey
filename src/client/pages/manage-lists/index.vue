@@ -3,21 +3,21 @@
 	<portal to="icon"><fa :icon="faListUl"/></portal>
 	<portal to="title">{{ $t('manageLists') }}</portal>
 
-	<x-button @click="createList" primary class="start"><fa :icon="faPlus"/> {{ $t('createList') }}</x-button>
+	<mk-button @click="createList" primary class="start"><fa :icon="faPlus"/> {{ $t('createList') }}</mk-button>
 
-	<x-pagination :pagination="pagination" #default="{items}" class="mk-user-lists" ref="lists">
+	<mk-pagination :pagination="pagination" #default="{items}" class="mk-user-lists" ref="lists">
 		<div class="list _panel" v-for="(list, i) in items" :key="list.id" :data-index="i">
 			<router-link :to="`/lists/${ list.id }`">{{ list.name }}</router-link>
 		</div>
-	</x-pagination>
+	</mk-pagination>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { faListUl } from '@fortawesome/free-solid-svg-icons';
-import XPagination from '../../components/ui/pagination.vue';
-import XButton from '../../components/ui/button.vue';
+import MkPagination from '../../components/ui/pagination.vue';
+import MkButton from '../../components/ui/button.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -27,8 +27,8 @@ export default Vue.extend({
 	},
 
 	components: {
-		XPagination,
-		XButton,
+		MkPagination,
+		MkButton,
 	},
 
 	data() {

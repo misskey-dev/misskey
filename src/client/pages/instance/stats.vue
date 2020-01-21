@@ -4,7 +4,7 @@
 		<div class="_title"><fa :icon="faChartBar"/> {{ $t('statistics') }}</div>
 		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<div class="selects" style="display: flex;">
-				<x-select v-model="chartSrc" style="margin: 0; flex: 1;">
+				<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
 					<optgroup :label="$t('federation')">
 						<option value="federation-instances">{{ $t('_charts.federationInstancesIncDec') }}</option>
 						<option value="federation-instances-total">{{ $t('_charts.federationInstancesTotal') }}</option>
@@ -25,11 +25,11 @@
 						<option value="drive">{{ $t('_charts.storageUsageIncDec') }}</option>
 						<option value="drive-total">{{ $t('_charts.storageUsageTotal') }}</option>
 					</optgroup>
-				</x-select>
-				<x-select v-model="chartSpan" style="margin: 0;">
+				</mk-select>
+				<mk-select v-model="chartSpan" style="margin: 0;">
 					<option value="hour">{{ $t('perHour') }}</option>
 					<option value="day">{{ $t('perDay') }}</option>
-				</x-select>
+				</mk-select>
 			</div>
 			<canvas ref="chart"></canvas>
 		</div>
@@ -42,7 +42,7 @@ import Vue from 'vue';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import i18n from '../../i18n';
-import XSelect from '../../components/ui/select.vue';
+import MkSelect from '../../components/ui/select.vue';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -65,7 +65,7 @@ export default Vue.extend({
 	},
 
 	components: {
-		XSelect
+		MkSelect
 	},
 
 	data() {

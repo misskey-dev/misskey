@@ -5,43 +5,43 @@
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
-			<x-input class="input" :value="choice" @input="onInput(i, $event)">
+			<mk-input class="input" :value="choice" @input="onInput(i, $event)">
 				<span>{{ $t('_poll.choiceN', { n: i + 1 }) }}</span>
-			</x-input>
+			</mk-input>
 			<button @click="remove(i)" class="_button">
 				<fa :icon="faTimes"/>
 			</button>
 		</li>
 	</ul>
-	<x-button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</x-button>
-	<x-button class="add" v-else disabled>{{ $t('_poll.noMore') }}</x-button>
+	<mk-button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</mk-button>
+	<mk-button class="add" v-else disabled>{{ $t('_poll.noMore') }}</mk-button>
 	<section>
-		<x-switch v-model="multiple">{{ $t('_poll.canMultipleVote') }}</x-switch>
+		<mk-switch v-model="multiple">{{ $t('_poll.canMultipleVote') }}</mk-switch>
 		<div>
-			<x-select v-model="expiration">
+			<mk-select v-model="expiration">
 				<template #label>{{ $t('_poll.expiration') }}</template>
 				<option value="infinite">{{ $t('_poll.infinite') }}</option>
 				<option value="at">{{ $t('_poll.at') }}</option>
 				<option value="after">{{ $t('_poll.after') }}</option>
-			</x-select>
+			</mk-select>
 			<section v-if="expiration === 'at'">
-				<x-input v-model="atDate" type="date">
+				<mk-input v-model="atDate" type="date">
 					<span>{{ $t('_poll.deadlineDate') }}</span>
-				</x-input>
-				<x-input v-model="atTime" type="time">
+				</mk-input>
+				<mk-input v-model="atTime" type="time">
 					<span>{{ $t('_poll.deadlineTime') }}</span>
-				</x-input>
+				</mk-input>
 			</section>
 			<section v-if="expiration === 'after'">
-				<x-input v-model="after" type="number">
+				<mk-input v-model="after" type="number">
 					<span>{{ $t('_poll.duration') }}</span>
-				</x-input>
-				<x-select v-model="unit">
+				</mk-input>
+				<mk-select v-model="unit">
 					<option value="second">{{ $t('_time.second') }}</option>
 					<option value="minute">{{ $t('_time.minute') }}</option>
 					<option value="hour">{{ $t('_time.hour') }}</option>
 					<option value="day">{{ $t('_time.day') }}</option>
-				</x-select>
+				</mk-select>
 			</section>
 		</div>
 	</section>
@@ -55,18 +55,18 @@ import i18n from '../i18n';
 import { erase } from '../../prelude/array';
 import { addTimespan } from '../../prelude/time';
 import { formatDateTimeString } from '../../misc/format-time-string';
-import XInput from './ui/input.vue';
-import XSelect from './ui/select.vue';
-import XSwitch from './ui/switch.vue';
-import XButton from './ui/button.vue';
+import MkInput from './ui/input.vue';
+import MkSelect from './ui/select.vue';
+import MkSwitch from './ui/switch.vue';
+import MkButton from './ui/button.vue';
 
 export default Vue.extend({
 	i18n,
 	components: {
-		XInput,
-		XSelect,
-		XSwitch,
-		XButton,
+		MkInput,
+		MkSelect,
+		MkSwitch,
+		MkButton,
 	},
 	data() {
 		return {

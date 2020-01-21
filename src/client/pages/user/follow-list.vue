@@ -1,5 +1,5 @@
 <template>
-<x-pagination :pagination="pagination" #default="{items}" class="mk-following-or-followers" ref="list">
+<mk-pagination :pagination="pagination" #default="{items}" class="mk-following-or-followers" ref="list">
 	<div class="user _panel" v-for="(user, i) in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" :data-index="i">
 		<mk-avatar class="avatar" :user="user"/>
 		<div class="body">
@@ -13,7 +13,7 @@
 			<x-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
 	</div>
-</x-pagination>
+</mk-pagination>
 </template>
 
 <script lang="ts">
@@ -21,13 +21,13 @@ import Vue from 'vue';
 import parseAcct from '../../../misc/acct/parse';
 import i18n from '../../i18n';
 import XFollowButton from '../../components/follow-button.vue';
-import XPagination from '../../components/ui/pagination.vue';
+import MkPagination from '../../components/ui/pagination.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XPagination,
+		MkPagination,
 		XFollowButton,
 	},
 

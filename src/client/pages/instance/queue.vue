@@ -8,7 +8,7 @@
 	</x-queue>
 	<section class="_section">
 		<div class="_content">
-			<x-button @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearQueue') }}</x-button>
+			<mk-button @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearQueue') }}</mk-button>
 		</div>
 	</section>
 </div>
@@ -19,7 +19,7 @@ import Vue from 'vue';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../i18n';
-import XButton from '../../components/ui/button.vue';
+import MkButton from '../../components/ui/button.vue';
 import XQueue from './queue.queue.vue';
 
 export default Vue.extend({
@@ -32,7 +32,7 @@ export default Vue.extend({
 	},
 
 	components: {
-		XButton,
+		MkButton,
 		XQueue,
 	},
 

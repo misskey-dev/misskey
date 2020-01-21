@@ -83,18 +83,18 @@
 		<sequential-entrance class="pins">
 			<x-note v-for="(note, i) in user.pinnedNotes" class="note" :note="note" :key="note.id" :data-index="i" :detail="true" :pinned="true"/>
 		</sequential-entrance>
-		<x-container :body-togglable="true" class="content">
+		<mk-container :body-togglable="true" class="content">
 			<template #header><fa :icon="faImage"/>{{ $t('images') }}</template>
 			<div>
 				<x-photos :user="user" :key="user.id"/>
 			</div>
-		</x-container>
-		<x-container :body-togglable="true" class="content">
+		</mk-container>
+		<mk-container :body-togglable="true" class="content">
 			<template #header><fa :icon="faChartBar"/>{{ $t('activity') }}</template>
 			<div style="padding:8px;">
 				<x-activity :user="user" :key="user.id"/>
 			</div>
-		</x-container>
+		</mk-container>
 		<x-user-timeline :user="user"/>
 	</template>
 </div>
@@ -112,7 +112,7 @@ import XUserTimeline from './index.timeline.vue';
 import XUserMenu from '../../components/user-menu.vue';
 import XNote from '../../components/note.vue';
 import XFollowButton from '../../components/follow-button.vue';
-import XContainer from '../../components/ui/container.vue';
+import MkContainer from '../../components/ui/container.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 
@@ -121,7 +121,7 @@ export default Vue.extend({
 		XUserTimeline,
 		XNote,
 		XFollowButton,
-		XContainer,
+		MkContainer,
 		XPhotos: () => import('./index.photos.vue').then(m => m.default),
 		XActivity: () => import('./index.activity.vue').then(m => m.default),
 	},

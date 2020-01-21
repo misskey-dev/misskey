@@ -1,19 +1,19 @@
 <template>
 <div class="mkw-memo">
-	<x-container :show-header="!props.compact">
+	<mk-container :show-header="!props.compact">
 		<template #header><fa :icon="faStickyNote"/>{{ $t('title') }}</template>
 
 		<div class="mkw-memo--body">
 			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
 			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
 		</div>
-	</x-container>
+	</mk-container>
 </div>
 </template>
 
 <script lang="ts">
 import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
-import XContainer from '../components/ui/container.vue';
+import MkContainer from '../components/ui/container.vue';
 import define from './define';
 import i18n from '../i18n';
 
@@ -26,7 +26,7 @@ export default define({
 	i18n,
 	
 	components: {
-		XContainer
+		MkContainer
 	},
 
 	data() {

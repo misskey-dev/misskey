@@ -2,11 +2,11 @@
 <section class="mk-settings-page-reaction _section">
 	<div class="_title"><fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
 	<div class="_content">
-		<x-textarea v-model="reactions" style="margin-top: 16px;">{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }}</template></x-textarea>
+		<mk-textarea v-model="reactions" style="margin-top: 16px;">{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }}</template></mk-textarea>
 	</div>
 	<div class="_footer">
-		<x-button @click="save()" primary inline :disabled="!changed"><fa :icon="faSave"/> {{ $t('save') }}</x-button>
-		<x-button inline @click="preview"><fa :icon="faEye"/> {{ $t('preview') }}</x-button>
+		<mk-button @click="save()" primary inline :disabled="!changed"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		<mk-button inline @click="preview"><fa :icon="faEye"/> {{ $t('preview') }}</mk-button>
 	</div>
 </section>
 </template>
@@ -14,8 +14,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
-import XTextarea from '../components/ui/textarea.vue';
-import XButton from '../components/ui/button.vue';
+import MkTextarea from '../components/ui/textarea.vue';
+import MkButton from '../components/ui/button.vue';
 import MkReactionPicker from '../components/reaction-picker.vue';
 import i18n from '../i18n';
 
@@ -23,8 +23,8 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XTextarea,
-		XButton,
+		MkTextarea,
+		MkButton,
 	},
 	
 	data() {

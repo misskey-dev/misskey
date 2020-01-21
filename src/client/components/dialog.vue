@@ -23,9 +23,9 @@
 				<header v-if="title" v-html="title"></header>
 				<header v-if="title == null && user">{{ $t('enterUsername') }}</header>
 				<div class="body" v-if="text" v-html="text"></div>
-				<x-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></x-input>
-				<x-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></x-input>
-				<x-select v-if="select" v-model="selectedValue" autofocus>
+				<mk-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></mk-input>
+				<mk-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></mk-input>
+				<mk-select v-if="select" v-model="selectedValue" autofocus>
 					<template v-if="select.items">
 						<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 					</template>
@@ -34,13 +34,13 @@
 							<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
 						</optgroup>
 					</template>
-				</x-select>
+				</mk-select>
 				<div class="buttons" v-if="!iconOnly && (showOkButton || showCancelButton) && !actions">
-					<x-button inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user" :disabled="!canOk">{{ (showCancelButton || input || select || user) ? $t('ok') : $t('gotIt') }}</x-button>
-					<x-button inline @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('cancel') }}</x-button>
+					<mk-button inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user" :disabled="!canOk">{{ (showCancelButton || input || select || user) ? $t('ok') : $t('gotIt') }}</mk-button>
+					<mk-button inline @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('cancel') }}</mk-button>
 				</div>
 				<div class="buttons" v-if="actions">
-					<x-button v-for="action in actions" inline @click="() => { action.callback(); close(); }" :primary="action.primary" :key="action.text">{{ action.text }}</x-button>
+					<mk-button v-for="action in actions" inline @click="() => { action.callback(); close(); }" :primary="action.primary" :key="action.text">{{ action.text }}</mk-button>
 				</div>
 			</template>
 		</div>
@@ -52,9 +52,9 @@
 import Vue from 'vue';
 import { faSpinner, faInfoCircle, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import XButton from './ui/button.vue';
-import XInput from './ui/input.vue';
-import XSelect from './ui/select.vue';
+import MkButton from './ui/button.vue';
+import MkInput from './ui/input.vue';
+import MkSelect from './ui/select.vue';
 import parseAcct from '../../misc/acct/parse';
 import i18n from '../i18n';
 
@@ -62,9 +62,9 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton,
-		XInput,
-		XSelect,
+		MkButton,
+		MkInput,
+		MkSelect,
 	},
 
 	props: {

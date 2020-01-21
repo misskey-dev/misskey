@@ -2,7 +2,7 @@
 <section class="mk-settings-page-drive _section">
 	<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
 	<div class="_content">
-		<x-pagination :pagination="drivePagination" #default="{items}" class="drive" ref="drive">
+		<mk-pagination :pagination="drivePagination" #default="{items}" class="drive" ref="drive">
 			<div class="file" v-for="(file, i) in items" :key="file.id" :data-index="i" @click="selected = file" :class="{ selected: selected && (selected.id === file.id) }">
 				<x-file-thumbnail class="thumbnail" :file="file" fit="cover"/>
 				<div class="body">
@@ -23,11 +23,11 @@
 					</footer>
 				</div>
 			</div>
-		</x-pagination>
+		</mk-pagination>
 	</div>
 	<div class="_footer">
-		<x-button primary inline :disabled="selected == null" @click="download()"><fa :icon="faDownload"/> {{ $t('download') }}</x-button>
-		<x-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</x-button>
+		<mk-button primary inline :disabled="selected == null" @click="download()"><fa :icon="faDownload"/> {{ $t('download') }}</mk-button>
+		<mk-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</mk-button>
 	</div>
 </section>
 </template>
@@ -38,8 +38,8 @@ import { faCloud, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XFileTypeIcon from '../components/file-type-icon.vue';
 import XFileThumbnail from '../components/drive-file-thumbnail.vue';
-import XButton from '../components/ui/button.vue';
-import XPagination from '../components/ui/pagination.vue';
+import MkButton from '../components/ui/button.vue';
+import MkPagination from '../components/ui/pagination.vue';
 import i18n from '../i18n';
 
 export default Vue.extend({
@@ -48,8 +48,8 @@ export default Vue.extend({
 	components: {
 		XFileTypeIcon,
 		XFileThumbnail,
-		XPagination,
-		XButton,
+		MkPagination,
+		MkButton,
 	},
 
 	data() {

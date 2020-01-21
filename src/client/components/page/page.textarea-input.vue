@@ -1,16 +1,16 @@
 <template>
 <div>
-	<x-textarea v-model="v">{{ script.interpolate(value.text) }}</x-textarea>
+	<mk-textarea v-model="v">{{ script.interpolate(value.text) }}</mk-textarea>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import XTextarea from '../ui/textarea.vue';
+import MkTextarea from '../ui/textarea.vue';
 
 export default Vue.extend({
 	components: {
-		XTextarea
+		MkTextarea
 	},
 	props: {
 		value: {

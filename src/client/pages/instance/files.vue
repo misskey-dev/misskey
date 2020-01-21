@@ -2,7 +2,7 @@
 <section class="_section">
 	<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
 	<div class="_content">
-		<x-button primary @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearCachedFiles') }}</x-button>
+		<mk-button primary @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearCachedFiles') }}</mk-button>
 	</div>
 </section>
 </template>
@@ -11,8 +11,8 @@
 import Vue from 'vue';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import XButton from '../../components/ui/button.vue';
-import XPagination from '../../components/ui/pagination.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkPagination from '../../components/ui/pagination.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -22,8 +22,8 @@ export default Vue.extend({
 	},
 
 	components: {
-		XButton,
-		XPagination,
+		MkButton,
+		MkPagination,
 	},
 
 	data() {

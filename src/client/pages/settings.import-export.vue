@@ -3,15 +3,15 @@
 	<div class="_title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
 	<div class="_content">
 		<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
-		<x-select v-model="exportTarget" style="margin-top: 0;">
+		<mk-select v-model="exportTarget" style="margin-top: 0;">
 			<option value="notes">{{ $t('_exportOrImport.allNotes') }}</option>
 			<option value="following">{{ $t('_exportOrImport.followingList') }}</option>
 			<option value="user-lists">{{ $t('_exportOrImport.userLists') }}</option>
 			<option value="mute">{{ $t('_exportOrImport.muteList') }}</option>
 			<option value="blocking">{{ $t('_exportOrImport.blockingList') }}</option>
-		</x-select>
-		<x-button inline @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</x-button>
-		<x-button inline @click="doImport()" :disabled="!['following', 'user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</x-button>
+		</mk-select>
+		<mk-button inline @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</mk-button>
+		<mk-button inline @click="doImport()" :disabled="!['following', 'user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</mk-button>
 	</div>
 </section>
 </template>
@@ -19,8 +19,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faDownload, faUpload, faBoxes } from '@fortawesome/free-solid-svg-icons';
-import XButton from '../components/ui/button.vue';
-import XSelect from '../components/ui/select.vue';
+import MkButton from '../components/ui/button.vue';
+import MkSelect from '../components/ui/select.vue';
 import i18n from '../i18n';
 import { apiUrl } from '../config';
 
@@ -28,8 +28,8 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton,
-		XSelect,
+		MkButton,
+		MkSelect,
 	},
 
 	data() {

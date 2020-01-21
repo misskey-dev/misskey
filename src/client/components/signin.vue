@@ -2,16 +2,16 @@
 <form class="eppvobhk" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
 	<div class="normal-signin" v-if="!totpLogin">
-		<x-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
+		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
-		</x-input>
-		<x-input v-model="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
+		</mk-input>
+		<mk-input v-model="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
-		</x-input>
-		<x-button type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</x-button>
+		</mk-input>
+		<mk-button type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>
 		<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="['fab', 'twitter']"/> {{ $t('signin-with-twitter') }}</a></p>
 		<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="['fab', 'github']"/> {{ $t('signin-with-github') }}</a></p>
 		<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="['fab', 'discord']"/> {{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
@@ -19,24 +19,24 @@
 	<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 		<div v-if="user && user.securityKeys" class="twofa-group tap-group">
 			<p>{{ $t('tap-key') }}</p>
-			<x-button @click="queryKey" v-if="!queryingKey">
+			<mk-button @click="queryKey" v-if="!queryingKey">
 				{{ $t('@.error.retry') }}
-			</x-button>
+			</mk-button>
 		</div>
 		<div class="or-hr" v-if="user && user.securityKeys">
 			<p class="or-msg">{{ $t('or') }}</p>
 		</div>
 		<div class="twofa-group totp-group">
 			<p style="margin-bottom:0;">{{ $t('enter-2fa-code') }}</p>
-			<x-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
+			<mk-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
 				<span>{{ $t('password') }}</span>
 				<template #prefix><fa :icon="faLock"/></template>
-			</x-input>
-			<x-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
+			</mk-input>
+			<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 				<span>{{ $t('@.2fa') }}</span>
 				<template #prefix><fa icon="gavel"/></template>
-			</x-input>
-			<x-button type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</x-button>
+			</mk-input>
+			<mk-button type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>
 		</div>
 	</div>
 </form>
@@ -46,8 +46,8 @@
 import Vue from 'vue';
 import { toUnicode } from 'punycode';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import XButton from './ui/button.vue';
-import XInput from './ui/input.vue';
+import MkButton from './ui/button.vue';
+import MkInput from './ui/input.vue';
 import i18n from '../i18n';
 import { apiUrl, host } from '../config';
 import { hexifyAB } from '../scripts/2fa';
@@ -56,8 +56,8 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XButton,
-		XInput,
+		MkButton,
+		MkInput,
 	},
 
 	props: {

@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-timeline">
-	<x-container :show-header="!props.compact">
+	<mk-container :show-header="!props.compact">
 		<template #header>
 			<button @click="choose" class="_button">
 				<fa v-if="props.src === 'home'" :icon="faHome"/>
@@ -16,14 +16,14 @@
 		<div style="height: 300px; padding: 8px; overflow: auto; background: var(--bg);">
 			<x-timeline :key="props.src === 'list' ? `list:${props.list.id}` : props.src" :src="props.src" :list="props.list"/>
 		</div>
-	</x-container>
+	</mk-container>
 </div>
 </template>
 
 <script lang="ts">
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
-import XContainer from '../components/ui/container.vue';
+import MkContainer from '../components/ui/container.vue';
 import XTimeline from '../components/timeline.vue';
 import define from './define';
 import i18n from '../i18n';
@@ -39,7 +39,7 @@ export default define({
 	i18n,
 	
 	components: {
-		XContainer,
+		MkContainer,
 		XTimeline,
 	},
 

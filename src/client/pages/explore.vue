@@ -27,14 +27,14 @@
 		<header>{{ $t('explore-fediverse') }}</header>
 	</div>
 
-	<x-container :body-togglable="true" :expanded="false" ref="tags">
+	<mk-container :body-togglable="true" :expanded="false" ref="tags">
 		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
 
 		<div class="vxjfqztj">
 			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
 			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
 		</div>
-	</x-container>
+	</mk-container>
 
 	<x-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
 		<fa :icon="faHashtag" fixed-width/>{{ tag }}

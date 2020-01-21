@@ -3,17 +3,17 @@
 	<section class="_section lookup">
 		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">
-			<x-input class="target" v-model="target" type="text" @enter="showUser()" style="margin-top: 0;">
+			<mk-input class="target" v-model="target" type="text" @enter="showUser()" style="margin-top: 0;">
 				<span>{{ $t('usernameOrUserId') }}</span>
-			</x-input>
-			<x-button @click="showUser()" primary><fa :icon="faSearch"/> {{ $t('lookup') }}</x-button>
+			</mk-input>
+			<mk-button @click="showUser()" primary><fa :icon="faSearch"/> {{ $t('lookup') }}</mk-button>
 		</div>
 	</section>
 
 	<section class="_section users">
 		<div class="_title"><fa :icon="faUsers"/> {{ $t('users') }}</div>
 		<div class="_content _list">
-			<x-pagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
+			<mk-pagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
 				<button class="user _button _listItem" v-for="(user, i) in items" :key="user.id" :data-index="i" @click="show(user)">
 					<mk-avatar :user="user" class="avatar"/>
 					<div class="body">
@@ -21,10 +21,10 @@
 						<mk-acct :user="user" class="acct"/>
 					</div>
 				</button>
-			</x-pagination>
+			</mk-pagination>
 		</div>
 		<div class="_footer">
-			<x-button inline primary @click="addUser()"><fa :icon="faPlus"/> {{ $t('addUser') }}</x-button>
+			<mk-button inline primary @click="addUser()"><fa :icon="faPlus"/> {{ $t('addUser') }}</mk-button>
 		</div>
 	</section>
 </div>
@@ -34,9 +34,9 @@
 import Vue from 'vue';
 import { faPlus, faUsers, faSearch } from '@fortawesome/free-solid-svg-icons';
 import parseAcct from '../../../misc/acct/parse';
-import XButton from '../../components/ui/button.vue';
-import XInput from '../../components/ui/input.vue';
-import XPagination from '../../components/ui/pagination.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkInput from '../../components/ui/input.vue';
+import MkPagination from '../../components/ui/pagination.vue';
 import MkUserModerateDialog from '../../components/user-moderate-dialog.vue';
 
 export default Vue.extend({
@@ -47,9 +47,9 @@ export default Vue.extend({
 	},
 
 	components: {
-		XButton,
-		XInput,
-		XPagination,
+		MkButton,
+		MkInput,
+		MkPagination,
 	},
 
 	data() {

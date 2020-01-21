@@ -3,8 +3,8 @@
 	<template #header>{{ $t('selectUser') }}</template>
 	<div class="tbhwbxda">
 		<div class="inputs">
-			<x-input v-model="username" class="input" @input="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></x-input>
-			<x-input v-model="host" class="input" @input="search"><span>{{ $t('host') }}</span><template #prefix>@</template></x-input>
+			<mk-input v-model="username" class="input" @input="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></mk-input>
+			<mk-input v-model="host" class="input" @input="search"><span>{{ $t('host') }}</span><template #prefix>@</template></mk-input>
 		</div>
 		<div class="users">
 			<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
@@ -23,14 +23,14 @@
 import Vue from 'vue';
 import i18n from '../i18n';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
-import XInput from './ui/input.vue';
+import MkInput from './ui/input.vue';
 import XWindow from './window.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XInput,
+		MkInput,
 		XWindow,
 	},
 

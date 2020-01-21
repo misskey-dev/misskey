@@ -3,17 +3,17 @@
 	<h1>Welcome to Misskey!</h1>
 	<div>
 		<p>{{ $t('intro') }}</p>
-		<x-input v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
+		<mk-input v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
-		</x-input>
-		<x-input v-model="password" type="password">
+		</mk-input>
+		<mk-input v-model="password" type="password">
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
-		</x-input>
+		</mk-input>
 		<footer>
-			<x-button primary type="submit" :disabled="submitting">{{ submitting ? $t('processing') : $t('done') }}<mk-ellipsis v-if="submitting"/></x-button>
+			<mk-button primary type="submit" :disabled="submitting">{{ submitting ? $t('processing') : $t('done') }}<mk-ellipsis v-if="submitting"/></mk-button>
 		</footer>
 	</div>
 </form>
@@ -22,8 +22,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import XButton from '../components/ui/button.vue';
-import XInput from '../components/ui/input.vue';
+import MkButton from '../components/ui/button.vue';
+import MkInput from '../components/ui/input.vue';
 import { host } from '../config';
 import i18n from '../i18n';
 
@@ -31,8 +31,8 @@ export default Vue.extend({
 	i18n,
 	
 	components: {
-		XButton,
-		XInput,
+		MkButton,
+		MkInput,
 	},
 
 	data() {

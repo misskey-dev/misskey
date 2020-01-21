@@ -1,21 +1,21 @@
 <template>
 <div class="ngbfujlo">
-	<x-textarea class="textarea" :value="text" readonly></x-textarea>
-	<x-button primary @click="post()" :disabled="posting || posted">{{ posted ? $t('posted-from-post-form') : $t('post-from-post-form') }}</x-button>
+	<mk-textarea class="textarea" :value="text" readonly></mk-textarea>
+	<mk-button primary @click="post()" :disabled="posting || posted">{{ posted ? $t('posted-from-post-form') : $t('post-from-post-form') }}</mk-button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../i18n';
-import XTextarea from '../ui/textarea.vue';
-import XButton from '../ui/button.vue';
+import MkTextarea from '../ui/textarea.vue';
+import MkButton from '../ui/button.vue';
 
 export default Vue.extend({
 	i18n,
 	components: {
-		XTextarea,
-		XButton,
+		MkTextarea,
+		MkButton,
 	},
 	props: {
 		value: {

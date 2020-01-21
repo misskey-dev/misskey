@@ -3,7 +3,7 @@
 	<div class="_title"><fa :icon="faBan"/> {{ $t('muteAndBlock') }}</div>
 	<div class="_content">
 		<span>{{ $t('mutedUsers') }}</span>
-		<x-pagination :pagination="mutingPagination" class="muting">
+		<mk-pagination :pagination="mutingPagination" class="muting">
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
 				<div class="user" v-for="(mute, i) in items" :key="mute.id" :data-index="i">
@@ -12,11 +12,11 @@
 					</router-link>
 				</div>
 			</template>
-		</x-pagination>
+		</mk-pagination>
 	</div>
 	<div class="_content">
 		<span>{{ $t('blockedUsers') }}</span>
-		<x-pagination :pagination="blockingPagination" class="blocking">
+		<mk-pagination :pagination="blockingPagination" class="blocking">
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
 				<div class="user" v-for="(block, i) in items" :key="block.id" :data-index="i">
@@ -25,7 +25,7 @@
 					</router-link>
 				</div>
 			</template>
-		</x-pagination>
+		</mk-pagination>
 	</div>
 </section>
 </template>
@@ -33,14 +33,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
-import XPagination from '../components/ui/pagination.vue';
+import MkPagination from '../components/ui/pagination.vue';
 import i18n from '../i18n';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XPagination,
+		MkPagination,
 	},
 
 	data() {

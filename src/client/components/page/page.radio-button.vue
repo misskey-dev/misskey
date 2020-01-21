@@ -1,17 +1,17 @@
 <template>
 <div>
 	<div>{{ script.interpolate(value.title) }}</div>
-	<x-radio v-for="x in value.values" v-model="v" :value="x" :key="x">{{ x }}</x-radio>
+	<mk-radio v-for="x in value.values" v-model="v" :value="x" :key="x">{{ x }}</mk-radio>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import XRadio from '../ui/radio.vue';
+import MkRadio from '../ui/radio.vue';
 
 export default Vue.extend({
 	components: {
-		XRadio
+		MkRadio
 	},
 	props: {
 		value: {
