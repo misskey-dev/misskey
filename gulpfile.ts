@@ -12,6 +12,7 @@ const sass = require('gulp-dart-sass');
 const fiber = require('fibers');
 
 const locales = require('./locales');
+const meta = require('./package.json');
 
 gulp.task('build:ts', () => {
 	const tsProject = ts.createProject('./tsconfig.json');
@@ -31,7 +32,7 @@ gulp.task('build:copy:locales', cb => {
 	fs.mkdirSync('./built/client/assets/locales', { recursive: true });
 
 	for (const [lang, locale] of Object.entries(locales)) {
-		fs.writeFileSync(`./built/client/assets/locales/${lang}.json`, JSON.stringify(locale), 'utf-8');
+		fs.writeFileSync(`./built/client/assets/locales/${lang}.${meta.version}.json`, JSON.stringify(locale), 'utf-8');
 	}
 
 	cb();
