@@ -1,5 +1,5 @@
 <template>
-<sequential-entrance class="sqadhkmv" ref="list">
+<sequential-entrance class="sqadhkmv" ref="list" :direction="direction">
 	<template v-for="(item, i) in items">
 		<slot :item="item" :i="i"></slot>
 		<div class="separator" :key="item.id + '_date'" :data-index="i" v-if="i != items.length - 1 && new Date(item.createdAt).getDate() != new Date(items[i + 1].createdAt).getDate()">
@@ -25,6 +25,10 @@ export default Vue.extend({
 			type: Array,
 			required: true,
 		},
+		direction: {
+			type: String,
+			required: false
+		}
 	},
 
 	data() {
