@@ -8,6 +8,9 @@
 			</button>
 			<div class="title">
 				<transition name="header" mode="out-in" appear>
+					<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
+				</transition>
+				<transition name="header" mode="out-in" appear>
 					<div class="body" :key="pageKey">
 						<div class="default">
 							<portal-target name="avatar" slim/>
@@ -130,7 +133,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
@@ -161,7 +164,8 @@ export default Vue.extend({
 			searchWait: false,
 			widgetsEditMode: false,
 			enableWidgets: window.innerWidth >= 1000,
-			faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
+			canBack: false,
+			faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
 		};
 	},
 
@@ -182,7 +186,7 @@ export default Vue.extend({
 		$route(to, from) {
 			this.pageKey++;
 			this.notificationsOpen = false;
-			this.navOpen = false;
+			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
 
 		notificationsOpen(open) {
@@ -225,6 +229,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		back() {
+			window.history.back();
+		},
+
 		post() {
 			this.$root.post();
 		},
@@ -654,9 +662,15 @@ export default Vue.extend({
 				position: relative;
 				line-height: $header-height;
 				height: $header-height;
+				text-align: center;
 
-				@media (max-width: 700px) {
-					text-align: center;
+				> .back {
+					position: absolute;
+					z-index: 1;
+					top: 0;
+					left: 0;
+					height: $header-height;
+					width: $header-height;
 				}
 
 				> .body {
@@ -666,7 +680,7 @@ export default Vue.extend({
 					height: $header-height;
 
 					> .default {
-						padding: 0 16px;
+						padding: 0 $header-height;
 
 						> .avatar {
 							$size: 32px;

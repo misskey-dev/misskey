@@ -109,6 +109,7 @@ export default Vue.extend({
 			serverInfo: null,
 			proxyAccount: null,
 			cacheRemoteFiles: false,
+			proxyRemoteFiles: false,
 			localDriveCapacityMb: 0,
 			remoteDriveCapacityMb: 0,
 			blockedHosts: '',
@@ -137,6 +138,7 @@ export default Vue.extend({
 			this.enableGlobalTimeline = !meta.disableGlobalTimeline;
 			this.proxyAccount = this.meta.proxyAccount;
 			this.cacheRemoteFiles = this.meta.cacheRemoteFiles;
+			this.proxyRemoteFiles = this.meta.proxyRemoteFiles;
 			this.localDriveCapacityMb = this.meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
 			this.blockedHosts = meta.blockedHosts.join('\n');
@@ -164,6 +166,7 @@ export default Vue.extend({
 				disableGlobalTimeline: !this.enableGlobalTimeline,
 				proxyAccount: this.proxyAccount,
 				cacheRemoteFiles: this.cacheRemoteFiles,
+				proxyRemoteFiles: this.proxyRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				blockedHosts: this.blockedHosts.split('\n') || []
