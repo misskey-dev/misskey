@@ -59,14 +59,26 @@ export default Vue.extend({
 				top = y;
 			}
 
-			if (left + width - window.pageXOffset > window.innerWidth) {
-				left = window.innerWidth - width + window.pageXOffset;
-				popover.style.transformOrigin = 'center';
-			}
+			if (this.fixed) {
+				if (left + width > window.innerWidth) {
+					left = window.innerWidth - width;
+					popover.style.transformOrigin = 'center';
+				}
 
-			if (top + height - window.pageYOffset > window.innerHeight) {
-				top = window.innerHeight - height + window.pageYOffset;
-				popover.style.transformOrigin = 'center';
+				if (top + height > window.innerHeight) {
+					top = window.innerHeight - height;
+					popover.style.transformOrigin = 'center';
+				}
+			} else {
+				if (left + width - window.pageXOffset > window.innerWidth) {
+					left = window.innerWidth - width + window.pageXOffset;
+					popover.style.transformOrigin = 'center';
+				}
+
+				if (top + height - window.pageYOffset > window.innerHeight) {
+					top = window.innerHeight - height + window.pageYOffset;
+					popover.style.transformOrigin = 'center';
+				}
 			}
 
 			if (top < 0) {
