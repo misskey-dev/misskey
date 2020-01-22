@@ -43,15 +43,15 @@ export default Vue.extend({
 		});
 
 		const prepend = note => {
-			(this.$refs.timeline as any).prepend(note);
+			(this.$refs.tl as any).prepend(note);
 		};
 
 		const onUserAdded = () => {
-			(this.$refs.timeline as any).reload();
+			(this.$refs.tl as any).reload();
 		};
 
 		const onUserRemoved = () => {
-			(this.$refs.timeline as any).reload();
+			(this.$refs.tl as any).reload();
 		};
 
 		let endpoint;
