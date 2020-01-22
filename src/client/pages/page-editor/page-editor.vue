@@ -4,9 +4,9 @@
 		<header>
 			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('read-page') : pageId ? $t('edit-page') : $t('new-page') }}</div>
 			<div class="buttons">
-				<button @click="del()" v-if="!readonly"><fa :icon="faTrashAlt"/></button>
-				<button @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
-				<button @click="save()" v-if="!readonly"><fa :icon="faSave"/></button>
+				<button class="_button" @click="del()" v-if="!readonly"><fa :icon="faTrashAlt"/></button>
+				<button class="_button" @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
+				<button class="_button" @click="save()" v-if="!readonly"><fa :icon="faSave"/></button>
 			</div>
 		</header>
 
@@ -105,6 +105,7 @@ import MkContainer from '../../components/ui/container.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
+import MkInput from '../../components/ui/input.vue';
 import { blockDefs } from '../../scripts/aiscript/index';
 import { ASTypeChecker } from '../../scripts/aiscript/type-checker';
 import { url } from '../../config';
@@ -114,7 +115,7 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XDraggable, XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch
+		XDraggable, XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput
 	},
 
 	props: {
@@ -464,15 +465,6 @@ export default Vue.extend({
 				width: 42px;
 				font-size: 0.9em;
 				line-height: 42px;
-				color: var(--faceTextButton);
-
-				&:hover {
-					color: var(--faceTextButtonHover);
-				}
-
-				&:active {
-					color: var(--faceTextButtonActive);
-				}
 			}
 		}
 	}

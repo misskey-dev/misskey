@@ -4,13 +4,13 @@
 		<div class="title"><slot name="header"></slot></div>
 		<div class="buttons">
 			<slot name="func"></slot>
-			<button v-if="removable" @click="remove()">
+			<button v-if="removable" @click="remove()" class="_button">
 				<fa :icon="faTrashAlt"/>
 			</button>
-			<button v-if="draggable" class="drag-handle">
+			<button v-if="draggable" class="drag-handle _button">
 				<fa :icon="faBars"/>
 			</button>
-			<button @click="toggleContent(!showBody)">
+			<button @click="toggleContent(!showBody)" class="_button">
 				<template v-if="showBody"><fa icon="angle-up"/></template>
 				<template v-else><fa icon="angle-down"/></template>
 			</button>
@@ -75,6 +75,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .cpjygsrt {
+	position: relative;
 	overflow: hidden;
 	background: var(--face);
 	border: solid 2px var(--pageBlockBorder);
@@ -127,15 +128,6 @@ export default Vue.extend({
 				width: 42px;
 				font-size: 0.9em;
 				line-height: 42px;
-				color: var(--faceTextButton);
-
-				&:hover {
-					color: var(--faceTextButtonHover);
-				}
-
-				&:active {
-					color: var(--faceTextButtonActive);
-				}
 			}
 
 			.drag-handle {
