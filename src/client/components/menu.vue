@@ -1,6 +1,6 @@
 <template>
 <x-popup :source="source" :no-center="noCenter" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
-	<sequential-entrance class="rrevdjwt" :class="{ left: align === 'left' }" :delay="15">
+	<sequential-entrance class="rrevdjwt" :class="{ left: align === 'left' }" :delay="15" :direction="direction">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i" :data-index="i"></div>
 			<span v-else-if="item.type === 'label'" class="label item" :key="i" :data-index="i">
@@ -64,7 +64,11 @@ export default Vue.extend({
 		width: {
 			type: Number,
 			required: false
-		}
+		},
+		direction: {
+			type: String,
+			required: false
+		},
 	},
 	data() {
 		return {

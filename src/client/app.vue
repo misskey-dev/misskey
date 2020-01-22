@@ -308,6 +308,7 @@ export default Vue.extend({
 					user: this.$store.state.i,
 					action: () => this.openAccountMenu(ev),
 				}],
+				direction: 'up',
 				align: 'left',
 				fixed: true,
 				width: 200,

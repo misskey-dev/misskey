@@ -22,12 +22,17 @@ export default Vue.extend({
 			type: Number,
 			required: false,
 			default: 40
+		},
+		direction: {
+			type: String,
+			required: false,
+			default: 'down'
 		}
 	},
 	methods: {
 		beforeEnter(el) {
 			el.style.opacity = 0;
-			el.style.transform = 'translateY(-64px)';
+			el.style.transform = this.direction === 'down' ? 'translateY(-64px)' : 'translateY(64px)';
 		},
 		enter(el, done) {
 			el.style.transition = [getComputedStyle(el).transition, 'transform 0.7s cubic-bezier(0.23, 1, 0.32, 1)', 'opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1)'].filter(x => x != '').join(',');
@@ -40,7 +45,7 @@ export default Vue.extend({
 		leave(el, done) {
 			setTimeout(() => {
 				el.style.opacity = 0;
-				el.style.transform = 'translateY(64px)';
+				el.style.transform = this.direction === 'down' ? 'translateY(64px)' : 'translateY(-64px)';
 				setTimeout(done, 700);
 			}, this.delay * el.dataset.index)
 		},
