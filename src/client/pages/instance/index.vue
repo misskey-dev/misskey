@@ -23,6 +23,8 @@
 		<div class="_content">
 			<mk-input v-model="name" style="margin-top: 8px;">{{ $t('instanceName') }}</mk-input>
 			<mk-textarea v-model="description">{{ $t('instanceDescription') }}</mk-textarea>
+			<mk-input v-model="iconUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('iconUrl') }}</mk-input>
+			<mk-input v-model="bannerUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('bannerUrl') }}</mk-input>
 			<mk-input v-model="tosUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('tosUrl') }}</mk-input>
 			<mk-input v-model="maintainerName">{{ $t('maintainerName') }}</mk-input>
 			<mk-input v-model="maintainerEmail" type="email"><template #icon><fa :icon="faEnvelope"/></template>{{ $t('maintainerEmail') }}</mk-input>
@@ -118,6 +120,8 @@ export default Vue.extend({
 			name: null,
 			description: null,
 			tosUrl: null,
+			bannerUrl: null,
+			iconUrl: null,
 			enableRegistration: false,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
@@ -131,6 +135,8 @@ export default Vue.extend({
 			this.name = this.meta.name;
 			this.description = this.meta.description;
 			this.tosUrl = this.meta.tosUrl;
+			this.bannerUrl = meta.bannerUrl;
+			this.iconUrl = meta.iconUrl;
 			this.maintainerName = this.meta.maintainerName;
 			this.maintainerEmail = this.meta.maintainerEmail;
 			this.enableRegistration = !meta.disableRegistration;
@@ -159,6 +165,8 @@ export default Vue.extend({
 				name: this.name,
 				description: this.description,
 				tosUrl: this.tosUrl,
+				bannerUrl: this.bannerUrl,
+				iconUrl: this.iconUrl,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
 				disableRegistration: !this.enableRegistration,
