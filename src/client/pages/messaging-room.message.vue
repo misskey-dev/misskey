@@ -98,6 +98,7 @@ export default Vue.extend({
 	}
 
 	> .content {
+		min-width: 0;
 
 		> .balloon {
 			position: relative;
@@ -106,6 +107,7 @@ export default Vue.extend({
 			padding: 0;
 			min-height: 38px;
 			border-radius: 16px;
+			max-width: 100%;
 
 			&:before {
 				content: "";
