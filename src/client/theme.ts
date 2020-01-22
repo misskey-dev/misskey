@@ -25,10 +25,14 @@ export const builtinThemes = [
 	require('./themes/cafe.json5'),
 ];
 
+let timeout = null;
+
 export function applyTheme(theme: Theme, persist = true) {
+	if (timeout) clearTimeout(timeout);
+
 	document.documentElement.classList.add('changing-theme');
 
-	setTimeout(() => {
+	timeout = setTimeout(() => {
 		document.documentElement.classList.remove('changing-theme');
 	}, 1000);
 
