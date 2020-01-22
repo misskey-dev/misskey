@@ -16,8 +16,9 @@ _time:
   hour: "時間"
   day: "日"
 
+introMisskey: ""
+aboutMisskey: ""
 monthAndDay: "{month}月 {day}日"
-
 search: "検索"
 notifications: "通知"
 username: "ユーザー名"

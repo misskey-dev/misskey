@@ -1,6 +1,6 @@
 <template>
 <div>
-	<ui-button class="kudkigyw" @click="click()" :primary="value.primary">{{ script.interpolate(value.text) }}</ui-button>
+	<mk-button class="kudkigyw" @click="click()" :primary="value.primary">{{ script.interpolate(value.text) }}</mk-button>
 </div>
 </template>
 

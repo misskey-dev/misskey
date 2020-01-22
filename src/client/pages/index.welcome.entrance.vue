@@ -1,9 +1,11 @@
 <template>
 <div class="rsqzvsbo">
 	<div class="_panel about">
-		<div class="desc" v-html="description || $t('@.about')"></div>
-		<mk-button @click="signin()">{{ $t('login') }}</mk-button>
-		<mk-button @click="signup()">{{ $t('signup') }}</mk-button>
+		<div class="banner" :style="{ backgroundImage: `url(${ banner })` }"></div>
+		<h1 class="name" v-html="name || host"></h1>
+		<div class="desc" v-html="description || $t('introMisskey')"></div>
+		<mk-button @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</mk-button>
+		<mk-button @click="signin()" style="display: inline-block;">{{ $t('login') }}</mk-button>
 	</div>
 	<x-notes :pagination="featuredPagination"/>
 </div>
@@ -35,7 +37,9 @@ export default Vue.extend({
 			},
 			host: toUnicode(host),
 			meta: null,
-			description: '',
+			name: null,
+			description: null,
+			banner: null,
 			announcements: [],
 		};
 	},
@@ -75,6 +79,11 @@ export default Vue.extend({
 		@media (max-width: 500px) {
 			padding: 16px;
 			margin-bottom: 8px;
+		}
+
+		> .banner {
+			height: 100px;
+			background-size: cover;
 		}
 	}
 }

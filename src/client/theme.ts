@@ -42,6 +42,13 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	const props = compile(_theme);
 
+	for (const tag of document.head.children) {
+		if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
+			tag.setAttribute('content', props['primary']);
+			break;
+		}
+	}
+
 	for (const [k, v] of Object.entries(props)) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}

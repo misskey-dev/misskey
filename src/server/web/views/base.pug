@@ -37,6 +37,14 @@ html
 			if (theme) {
 				for (const [k, v] of Object.entries(JSON.parse(theme))) {
 					document.documentElement.style.setProperty(`--${k}`, v.toString());
+					if (k === 'primary') {
+						for (const tag of document.head.children) {
+							if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
+								tag.setAttribute('content', v);
+								break;
+							}
+						}
+					}
 				}
 			}
 
