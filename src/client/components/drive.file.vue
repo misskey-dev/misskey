@@ -197,7 +197,14 @@ export default Vue.extend({
 			alert('not implemented yet');
 		},
 
-		deleteFile() {
+		async deleteFile() {
+			const { canceled } = await this.$root.dialog({
+				type: 'warning',
+				text: this.$t('driveFileDeleteConfirm', { name: this.file.name }),
+				showCancelButton: true
+			});
+			if (canceled) return;
+
 			this.$root.api('drive/files/delete', {
 				fileId: this.file.id
 			});

@@ -96,7 +96,7 @@ export default Vue.extend({
 		async del() {
 			const { canceled } = await this.$root.dialog({
 				type: 'warning',
-				text: this.$t('fileDeleteConfirm', { name: this.selected.name }),
+				text: this.$t('driveFileDeleteConfirm', { name: this.selected.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
