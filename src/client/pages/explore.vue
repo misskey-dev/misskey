@@ -140,10 +140,6 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$emit('init', {
-			title: this.$t('@.explore'),
-			icon: faHashtag
-		});
 		this.$root.api('hashtags/list', {
 			sort: '+attachedLocalUsers',
 			attachedToLocalUserOnly: true,

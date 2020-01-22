@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer } from '@fortawesome/free-solid-svg-icons';
+import { faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
@@ -299,10 +299,10 @@ export default Vue.extend({
 					to: '/drive',
 					icon: faCloud,
 				}, {
-					type: 'link',
-					text: this.$t('favorites'),
-					to: '/favorites',
-					icon: faStar,
+					text: this.$t('more'),
+					icon: faEllipsisH,
+					action: () => this.more(ev),
+					indicate: this.$store.state.i.hasUnreadMentions || this.$store.state.i.hasUnreadSpecifiedNotes
 				}, null, {
 					type: 'user',
 					user: this.$store.state.i,
@@ -426,6 +426,11 @@ export default Vue.extend({
 					text: this.$t('favorites'),
 					to: '/favorites',
 					icon: faStar,
+				}, {
+					type: 'link',
+					text: this.$t('pages'),
+					to: '/pages',
+					icon: faFileAlt,
 				}, {
 					type: 'link',
 					text: this.$t('games'),

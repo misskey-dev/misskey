@@ -270,6 +270,7 @@ today: "今日"
 dayX: "{day}日"
 monthX: "{month}月"
 yearX: "{year}年"
+pages: "ページ"
 
 _weekday:
   sunday: "日曜日"
