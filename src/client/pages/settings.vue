@@ -12,6 +12,7 @@
 	<x-general/>
 	<x-mute-block/>
 	<x-security/>
+	<x-integration/>
 
 	<mk-button @click="cacheClear()" primary class="cacheClear">{{ $t('cacheClear') }}</mk-button>
 	<mk-button @click="$root.signout()" primary class="logout">{{ $t('logout') }}</mk-button>
@@ -30,6 +31,7 @@ import XReactionSetting from './settings.reaction.vue';
 import XMuteBlock from './settings.mute-block.vue';
 import XSecurity from './settings.security.vue';
 import XTheme from './settings.theme.vue';
+import XIntegration from './settings.integration.vue';
 import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
@@ -49,6 +51,7 @@ export default Vue.extend({
 		XMuteBlock,
 		XSecurity,
 		XTheme,
+		XIntegration,
 		MkButton,
 	},
 

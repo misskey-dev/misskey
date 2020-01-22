@@ -271,6 +271,9 @@ dayX: "{day}日"
 monthX: "{month}月"
 yearX: "{year}年"
 pages: "ページ"
+integration: "連携"
+connectSerice: "接続する"
+disconnectSerice: "切断する"
 
 _weekday:
   sunday: "日曜日"
