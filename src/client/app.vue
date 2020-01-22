@@ -56,7 +56,7 @@
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
 				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
 			</router-link>
-			<router-link class="item" to="/drive">
+			<router-link class="item" to="/drive" v-if="$store.getters.isSignedIn">
 				<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
 			</router-link>
 			<router-link class="item" to="/announcements">
