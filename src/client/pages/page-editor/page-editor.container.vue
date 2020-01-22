@@ -11,8 +11,8 @@
 				<fa :icon="faBars"/>
 			</button>
 			<button @click="toggleContent(!showBody)" class="_button">
-				<template v-if="showBody"><fa icon="angle-up"/></template>
-				<template v-else><fa icon="angle-down"/></template>
+				<template v-if="showBody"><fa :icon="faAngleUp"/></template>
+				<template v-else><fa :icon="faAngleDown"/></template>
 			</button>
 		</div>
 	</header>
@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../i18n';
 
@@ -58,7 +58,7 @@ export default Vue.extend({
 	data() {
 		return {
 			showBody: this.expanded,
-			faTrashAlt, faBars
+			faTrashAlt, faBars, faAngleUp, faAngleDown
 		};
 	},
 	methods: {
@@ -77,12 +77,12 @@ export default Vue.extend({
 .cpjygsrt {
 	position: relative;
 	overflow: hidden;
-	background: var(--face);
-	border: solid 2px var(--pageBlockBorder);
+	background: var(--panel);
+	border: solid 2px var(--jvhmlskx);
 	border-radius: 6px;
 
 	&:hover {
-		border: solid 2px var(--pageBlockBorderHover);
+		border: solid 2px var(--yakfpmhl);
 	}
 
 	&.warn {
@@ -105,7 +105,6 @@ export default Vue.extend({
 			line-height: 42px;
 			font-size: 0.9em;
 			font-weight: bold;
-			color: var(--faceHeaderText);
 			box-shadow: 0 1px rgba(#000, 0.07);
 
 			> [data-icon] {

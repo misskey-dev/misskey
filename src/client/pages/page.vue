@@ -1,10 +1,14 @@
 <template>
-<x-page v-if="page" :page="page" :key="page.id" :show-footer="true"/>
+<div class="xcukqgmh _panel">
+	<portal to="avatar" v-if="page"><mk-avatar class="avatar" :user="page.user" :disable-preview="true"/></portal>
+	<portal to="title" v-if="page">{{ page.title || page.name }}</portal>
+
+	<x-page v-if="page" :page="page" :key="page.id" :show-footer="true"/>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XPage from '../components/page/page.vue';
 
 export default Vue.extend({
@@ -57,3 +61,9 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.xcukqgmh {
+
+}
+</style>
