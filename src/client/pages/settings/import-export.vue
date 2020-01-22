@@ -19,10 +19,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faDownload, faUpload, faBoxes } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../components/ui/button.vue';
-import MkSelect from '../components/ui/select.vue';
-import i18n from '../i18n';
-import { apiUrl } from '../config';
+import MkButton from '../../components/ui/button.vue';
+import MkSelect from '../../components/ui/select.vue';
+import i18n from '../../i18n';
+import { apiUrl } from '../../config';
 
 export default Vue.extend({
 	i18n,

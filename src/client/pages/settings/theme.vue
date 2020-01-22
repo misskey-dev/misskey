@@ -18,11 +18,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faPalette } from '@fortawesome/free-solid-svg-icons';
-import MkInput from '../components/ui/input.vue';
-import MkButton from '../components/ui/button.vue';
-import MkSelect from '../components/ui/select.vue';
-import i18n from '../i18n';
-import { Theme, builtinThemes, applyTheme } from '../theme';
+import MkInput from '../../components/ui/input.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkSelect from '../../components/ui/select.vue';
+import i18n from '../../i18n';
+import { Theme, builtinThemes, applyTheme } from '../../theme';
 
 export default Vue.extend({
 	i18n,

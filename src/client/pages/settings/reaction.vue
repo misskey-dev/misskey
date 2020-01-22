@@ -14,10 +14,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
-import MkTextarea from '../components/ui/textarea.vue';
-import MkButton from '../components/ui/button.vue';
-import MkReactionPicker from '../components/reaction-picker.vue';
-import i18n from '../i18n';
+import MkTextarea from '../../components/ui/textarea.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkReactionPicker from '../../components/reaction-picker.vue';
+import i18n from '../../i18n';
 
 export default Vue.extend({
 	i18n,

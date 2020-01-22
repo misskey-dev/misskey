@@ -22,17 +22,17 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
-import XProfileSetting from './settings.profile.vue';
-import XPrivacySetting from './settings.privacy.vue';
-import XImportExport from './settings.import-export.vue';
-import XDrive from './settings.drive.vue';
-import XGeneral from './settings.general.vue';
-import XReactionSetting from './settings.reaction.vue';
-import XMuteBlock from './settings.mute-block.vue';
-import XSecurity from './settings.security.vue';
-import XTheme from './settings.theme.vue';
-import XIntegration from './settings.integration.vue';
-import MkButton from '../components/ui/button.vue';
+import XProfileSetting from './profile.vue';
+import XPrivacySetting from './privacy.vue';
+import XImportExport from './import-export.vue';
+import XDrive from './drive.vue';
+import XGeneral from './general.vue';
+import XReactionSetting from './reaction.vue';
+import XMuteBlock from './mute-block.vue';
+import XSecurity from './security.vue';
+import XTheme from './theme.vue';
+import XIntegration from './integration.vue';
+import MkButton from '../../components/ui/button.vue';
 
 export default Vue.extend({
 	metaInfo() {

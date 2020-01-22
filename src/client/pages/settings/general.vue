@@ -25,11 +25,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faImage, faCog } from '@fortawesome/free-solid-svg-icons';
-import MkInput from '../components/ui/input.vue';
-import MkButton from '../components/ui/button.vue';
-import MkSwitch from '../components/ui/switch.vue';
-import i18n from '../i18n';
-import { apiUrl } from '../config';
+import MkInput from '../../components/ui/input.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkSwitch from '../../components/ui/switch.vue';
+import i18n from '../../i18n';
+import { apiUrl } from '../../config';
 
 export default Vue.extend({
 	i18n,

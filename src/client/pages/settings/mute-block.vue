@@ -33,8 +33,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../components/ui/pagination.vue';
-import i18n from '../i18n';
+import MkPagination from '../../components/ui/pagination.vue';
+import i18n from '../../i18n';
 
 export default Vue.extend({
 	i18n,

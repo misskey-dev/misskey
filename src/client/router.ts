@@ -27,7 +27,7 @@ export const router = new VueRouter({
 		{ path: '/pages', name: 'pages', component: () => import('./pages/pages.vue').then(m => m.default) },
 		{ path: '/pages/new', component: () => import('./pages/page-editor/page-editor.vue').then(m => m.default) },
 		{ path: '/pages/edit/:pageId', component: () => import('./pages/page-editor/page-editor.vue').then(m => m.default), props: route => ({ initPageId: route.params.pageId }) },
-		{ path: '/settings', component: () => import('./pages/settings.vue').then(m => m.default) },
+		{ path: '/settings', component: () => import('./pages/settings/index.vue').then(m => m.default) },
 		{ path: '/instance', component: () => import('./pages/instance/index.vue').then(m => m.default) },
 		{ path: '/instance/emojis', component: () => import('./pages/instance/emojis.vue').then(m => m.default) },
 		{ path: '/instance/users', component: () => import('./pages/instance/users.vue').then(m => m.default) },

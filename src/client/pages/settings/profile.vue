@@ -72,12 +72,12 @@
 import Vue from 'vue';
 import { faUnlockAlt, faCogs, faImage, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../components/ui/button.vue';
-import MkInput from '../components/ui/input.vue';
-import MkTextarea from '../components/ui/textarea.vue';
-import MkSwitch from '../components/ui/switch.vue';
-import i18n from '../i18n';
-import { apiUrl, host } from '../config';
+import MkButton from '../../components/ui/button.vue';
+import MkInput from '../../components/ui/input.vue';
+import MkTextarea from '../../components/ui/textarea.vue';
+import MkSwitch from '../../components/ui/switch.vue';
+import i18n from '../../i18n';
+import { apiUrl, host } from '../../config';
 
 export default Vue.extend({
 	i18n,

@@ -36,11 +36,11 @@
 import Vue from 'vue';
 import { faCloud, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import XFileTypeIcon from '../components/file-type-icon.vue';
-import XFileThumbnail from '../components/drive-file-thumbnail.vue';
-import MkButton from '../components/ui/button.vue';
-import MkPagination from '../components/ui/pagination.vue';
-import i18n from '../i18n';
+import XFileTypeIcon from '../../components/file-type-icon.vue';
+import XFileThumbnail from '../../components/drive-file-thumbnail.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkPagination from '../../components/ui/pagination.vue';
+import i18n from '../../i18n';
 
 export default Vue.extend({
 	i18n,

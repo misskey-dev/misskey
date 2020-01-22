@@ -21,11 +21,16 @@
 
 	<section class="_section">
 		<div class="_content">
-			<mk-input v-model="name">{{ $t('instanceName') }}</mk-input>
+			<mk-input v-model="name" style="margin-top: 8px;">{{ $t('instanceName') }}</mk-input>
 			<mk-textarea v-model="description">{{ $t('instanceDescription') }}</mk-textarea>
 			<mk-input v-model="tosUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('tosUrl') }}</mk-input>
 			<mk-input v-model="maintainerName">{{ $t('maintainerName') }}</mk-input>
 			<mk-input v-model="maintainerEmail" type="email"><template #icon><fa :icon="faEnvelope"/></template>{{ $t('maintainerEmail') }}</mk-input>
+			<mk-switch v-model="enableLocalTimeline">{{ $t('enableLocalTimeline') }}</mk-switch>
+			<mk-switch v-model="enableGlobalTimeline">{{ $t('enableGlobalTimeline') }}</mk-switch>
+			<mk-info>{{ $t('disablingTimelinesInfo') }}</mk-info>
+			<mk-switch v-model="enableRegistration">{{ $t('enableRegistration') }}</mk-switch>
+			<mk-button v-if="!enableRegistration" @click="invite">{{ $t('invite') }}</mk-button>
 		</div>
 		<div class="_footer">
 			<mk-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
@@ -36,7 +41,9 @@
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
 		<div class="_content">
 			<mk-switch v-model="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></mk-switch>
-			<mk-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles" style="margin-bottom: 0;">{{ $t('remoteFilesCacheCapacityPerAccount') }}<template #suffix>MB</template></mk-input>
+			<mk-switch v-model="proxyRemoteFiles">{{ $t('proxyRemoteFiles') }}<template #desc>{{ $t('proxyRemoteFilesDescription') }}</template></mk-switch>
+			<mk-input v-model="localDriveCapacityMb" type="number">{{ $t('driveCapacityPerLocalAccount') }}<template #suffix>MB</template><template #desc>{{ $t('inMb') }}</template></mk-input>
+			<mk-input v-model="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles" style="margin-bottom: 0;">{{ $t('driveCapacityPerRemoteAccount') }}<template #suffix>MB</template><template #desc>{{ $t('inMb') }}</template></mk-input>
 		</div>
 		<div class="_footer">
 			<mk-button primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
@@ -102,6 +109,7 @@ export default Vue.extend({
 			serverInfo: null,
 			proxyAccount: null,
 			cacheRemoteFiles: false,
+			localDriveCapacityMb: 0,
 			remoteDriveCapacityMb: 0,
 			blockedHosts: '',
 			maintainerName: null,
@@ -109,6 +117,9 @@ export default Vue.extend({
 			name: null,
 			description: null,
 			tosUrl: null,
+			enableRegistration: false,
+			enableLocalTimeline: false,
+			enableGlobalTimeline: false,
 			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope
 		}
 	},
@@ -121,8 +132,12 @@ export default Vue.extend({
 			this.tosUrl = this.meta.tosUrl;
 			this.maintainerName = this.meta.maintainerName;
 			this.maintainerEmail = this.meta.maintainerEmail;
+			this.enableRegistration = !meta.disableRegistration;
+			this.enableLocalTimeline = !meta.disableLocalTimeline;
+			this.enableGlobalTimeline = !meta.disableGlobalTimeline;
 			this.proxyAccount = this.meta.proxyAccount;
 			this.cacheRemoteFiles = this.meta.cacheRemoteFiles;
+			this.localDriveCapacityMb = this.meta.driveCapacityPerLocalUserMb;
 			this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
 			this.blockedHosts = meta.blockedHosts.join('\n');
 		});
@@ -144,9 +159,13 @@ export default Vue.extend({
 				tosUrl: this.tosUrl,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
+				disableRegistration: !this.enableRegistration,
+				disableLocalTimeline: !this.enableLocalTimeline,
+				disableGlobalTimeline: !this.enableGlobalTimeline,
 				proxyAccount: this.proxyAccount,
 				cacheRemoteFiles: this.cacheRemoteFiles,
-				remoteDriveCapacityMb: this.remoteDriveCapacityMb,
+				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
+				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				blockedHosts: this.blockedHosts.split('\n') || []
 			}).then(() => {
 				this.$root.dialog({
