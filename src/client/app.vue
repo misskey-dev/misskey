@@ -1,37 +1,34 @@
 <template>
 <div class="mk-app" v-hotkey.global="keymap">
 	<header class="header">
-		<div class="body">
-			<button class="_button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
-				<mk-avatar :user="$store.state.i" class="avatar"/>
-				<span class="text"><mk-acct :user="$store.state.i"/></span>
-			</button>
-			<div class="title">
-				<transition name="header" mode="out-in" appear>
-					<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
-				</transition>
-				<transition name="header" mode="out-in" appear>
-					<div class="body" :key="pageKey">
-						<div class="default">
-							<portal-target name="avatar" slim/>
-							<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
-						</div>
-						<div class="custom">
-							<portal-target name="header" slim/>
-						</div>
+		<div class="title" ref="title">
+			<transition name="header" mode="out-in" appear>
+				<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
+			</transition>
+			<transition name="header" mode="out-in" appear>
+				<div class="body" :key="pageKey">
+					<div class="default">
+						<portal-target name="avatar" slim/>
+						<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
 					</div>
-				</transition>
-			</div>
-			<div class="sub">
-				<fa :icon="faSearch"/>
-				<input type="search" class="search" :placeholder="$t('search')" v-model="searchQuery" v-autocomplete="{ model: 'searchQuery' }" :disabled="searchWait" @keypress="searchKeypress"/>
-				<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
-			</div>
+					<div class="custom">
+						<portal-target name="header" slim/>
+					</div>
+				</div>
+			</transition>
+		</div>
+		<div class="sub">
+			<fa :icon="faSearch"/>
+			<input type="search" class="search" :placeholder="$t('search')" v-model="searchQuery" v-autocomplete="{ model: 'searchQuery' }" :disabled="searchWait" @keypress="searchKeypress"/>
+			<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 		</div>
 	</header>
 
-	<nav ref="nav" class="nav">
-		<div class="menu">
+	<nav class="nav" ref="nav">
+		<div>
+			<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
+				<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
+			</button>
 			<router-link class="item" to="/" exact v-if="$store.getters.isSignedIn">
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 			</router-link>
@@ -76,44 +73,49 @@
 		</div>
 	</nav>
 
-	<main>
-		<div class="content">
-			<transition name="page" mode="out-in">
-				<router-view></router-view>
-			</transition>
-		</div>
-		<div class="powerd-by" :class="{ visible: !$store.getters.isSignedIn }">
-			<b><router-link to="/">{{ host }}</router-link></b>
-			<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
-		</div>
-	</main>
+	<div class="contents">
+		<main ref="main">
+			<div class="content">
+				<transition name="page" mode="out-in">
+					<router-view></router-view>
+				</transition>
+			</div>
+			<div class="powerd-by" :class="{ visible: !$store.getters.isSignedIn }">
+				<b><router-link to="/">{{ host }}</router-link></b>
+				<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
+			</div>
+		</main>
 
-	<div class="widgets">
-		<template v-if="enableWidgets && $store.getters.isSignedIn">
-			<template v-if="widgetsEditMode">
-				<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
-				<x-draggable
-					:list="widgets"
-					handle=".handle"
-					animation="150"
-					@sort="onWidgetSort"
-				>
-					<div v-for="widget in widgets" class="customize-container" :key="widget.id">
-						<header>
-							<span class="handle"><fa :icon="faBars"/></span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
-						</header>
-						<div @click="widgetFunc(widget.id)">
-							<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
-						</div>
-					</div>
-				</x-draggable>
-			</template>
-			<template v-else>
-				<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
-			</template>
-			<button v-if="widgetsEditMode" class="_button edit" @click="widgetsEditMode = false">{{ $t('exitEdit') }}</button>
-			<button v-else class="_button edit" @click="widgetsEditMode = true">{{ $t('editWidgets') }}</button>
-		</template>
+		<div class="widgets">
+			<div ref="widgets" :class="{ edit: widgetsEditMode }">
+				<template v-if="enableWidgets && $store.getters.isSignedIn">
+					<template v-if="widgetsEditMode">
+						<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
+						<x-draggable
+							:list="widgets"
+							handle=".handle"
+							animation="150"
+							class="sortable"
+							@sort="onWidgetSort"
+						>
+							<div v-for="widget in widgets" class="customize-container" :key="widget.id">
+								<header>
+									<span class="handle"><fa :icon="faBars"/></span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+								</header>
+								<div @click="widgetFunc(widget.id)">
+									<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+								</div>
+							</div>
+						</x-draggable>
+					</template>
+					<template v-else>
+						<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+					</template>
+					<button ref="widgetsEditButton" v-if="widgetsEditMode" class="_button edit" @click="widgetsEditMode = false">{{ $t('exitEdit') }}</button>
+					<button ref="widgetsEditButton" v-else class="_button edit" @click="widgetsEditMode = true">{{ $t('editWidgets') }}</button>
+				</template>
+			</div>
+		</div>
 	</div>
 
 	<div class="buttons">
@@ -163,7 +165,7 @@ export default Vue.extend({
 			searchQuery: '',
 			searchWait: false,
 			widgetsEditMode: false,
-			enableWidgets: window.innerWidth >= 1000,
+			enableWidgets: window.innerWidth >= 1100,
 			canBack: false,
 			faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
 		};
@@ -226,6 +228,18 @@ export default Vue.extend({
 				location.reload();
 			}
 		});
+
+		setInterval(() => {
+			this.$refs.title.style.left = (this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth) + 'px';
+		}, 1000);
+
+		// https://stackoverflow.com/questions/33891709/when-flexbox-items-wrap-in-column-mode-container-does-not-grow-its-width
+		if (this.enableWidgets) {
+			setInterval(() => {
+				const width = this.$refs.widgetsEditButton.offsetLeft + 300;
+				this.$refs.widgets.style.width = width + 'px';
+			}, 1000);
+		}
 	},
 
 	methods: {
@@ -562,17 +576,14 @@ export default Vue.extend({
 }
 
 .mk-app {
-	$max-width: 1300px;
 	$header-height: 60px;
-	$nav-width: 320px;
-	$widgets-width: 304px;
+	$nav-width: 250px;
+	$nav-icon-only-width: 64px;
+	$main-width: 700px;
 	$ui-font-size: 1em;
-	$item-left-margin: 16px;
-	$avatar-size: 32px;
-	$avatar-margin: ($header-height - $avatar-size) / 2;
-	$nav-icon-only-threshold: 1200px;
+	$nav-icon-only-threshold: 1300px;
 	$nav-hide-threshold: 700px;
-	$side-hide-threshold: 1000px;
+	$side-hide-threshold: 1100px;
 
 	min-height: 100vh;
 	box-sizing: border-box;
@@ -580,227 +591,243 @@ export default Vue.extend({
 
 	&, > .header > .body {
 		display: flex;
-		max-width: $max-width;
 		margin: 0 auto;
-	}
-
-	> .nav, > .header > .body > .account {
-		flex: 1;
-		margin: 0 0 0 32px;
-		box-sizing: border-box;
-		width: 100%;
-		max-width: $nav-width;
-
-		@media (max-width: $nav-icon-only-threshold) {
-			width: initial;
-			flex-grow: 0;
-			margin: 0 0 0 16px;
-		}
-
-		@media (max-width: $nav-hide-threshold) {
-			display: none;
-		}
-	}
-
-	> main, > .header > .body > .title {
-		flex: 0 0 ($max-width - $nav-width - $widgets-width);
-		min-width: 0;
-
-		@media (max-width: $nav-icon-only-threshold) {
-			flex: 1;
-		}
-	}
-
-	> .widgets, > .header > .body > .sub {
-		flex: 0 0 $widgets-width;
-		min-width: 0;
-		margin: 0 16px 0 0;
-		box-sizing: border-box;
-
-		@media (max-width: $side-hide-threshold) {
-			display: none;
-		}
 	}
 
 	> .header {
 		position: fixed;
 		z-index: 1000;
 		top: 0;
-		left: 0;
+		right: 0;
 		height: $header-height;
-		width: 100%;
+		width: calc(100% - #{$nav-width});
 		//background-color: var(--panel);
 		-webkit-backdrop-filter: blur(32px);
 		backdrop-filter: blur(32px);
 		background-color: var(--header);
 
-		> .body {
-			> .account {
-				position: relative;
+		@media (max-width: $nav-icon-only-threshold) {
+			width: calc(100% - #{$nav-icon-only-width});
+		}
+
+		@media (max-width: $nav-hide-threshold) {
+			width: 100%;
+		}
+
+		> .title {
+			position: relative;
+			line-height: $header-height;
+			height: $header-height;
+			max-width: $main-width;
+			text-align: center;
+
+			> .back {
+				position: absolute;
+				z-index: 1;
+				top: 0;
+				left: 0;
 				height: $header-height;
-				line-height: $header-height;
-				padding-left: (($header-height - $avatar-margin) + $item-left-margin);
-				text-align: left;
-				font-weight: bold;
-
-				> .avatar {
-					position: absolute;
-					width: $avatar-size;
-					height: $avatar-size;
-					top: $avatar-margin;
-					left: $item-left-margin;
-				}
-
-				@media (max-width: $nav-icon-only-threshold) {
-					> .text {
-						display: none;
-					}
-				}
+				width: $header-height;
 			}
 
-			> .title {
-				position: relative;
-				line-height: $header-height;
+			> .body {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 				height: $header-height;
-				text-align: center;
 
-				> .back {
+				> .default {
+					padding: 0 $header-height;
+
+					> .avatar {
+						$size: 32px;
+						display: inline-block;
+						width: $size;
+						height: $size;
+						vertical-align: bottom;
+						margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
+					}
+
+					> .title {
+						display: inline-block;
+						font-size: $ui-font-size;
+						margin: 0;
+						line-height: $header-height;
+
+						> [data-icon] {
+							margin-right: 8px;
+						}
+					}
+				}
+
+				> .custom {
 					position: absolute;
-					z-index: 1;
 					top: 0;
 					left: 0;
-					height: $header-height;
-					width: $header-height;
+					height: 100%;
+					width: 100%;
 				}
+			}
+		}
 
-				> .body {
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					height: $header-height;
+		> .sub {
+			$post-button-size: 42px;
+			$post-button-margin: (($header-height - $post-button-size) / 2);
+			position: absolute;
+			top: 0;
+			right: 0;
+			height: $header-height;
 
-					> .default {
-						padding: 0 $header-height;
+			@media (max-width: $side-hide-threshold) {
+				display: none;
+			}
 
-						> .avatar {
-							$size: 32px;
-							display: inline-block;
-							width: $size;
-							height: $size;
-							vertical-align: bottom;
-							margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
-						}
+			> [data-icon] {
+				position: absolute;
+				top: 0;
+				left: 16px;
+				height: $header-height;
+				pointer-events: none;
+				font-size: 16px;
+			}
 
-						> .title {
-							display: inline-block;
-							font-size: $ui-font-size;
-							margin: 0;
-							line-height: $header-height;
+			> .search {
+				$margin: 8px;
+				width: calc(100% - #{$post-button-size + $post-button-margin + $margin});
+				box-sizing: border-box;
+				margin-right: $margin;
+				padding: 0 12px 0 42px;
+				font-size: 1rem;
+				line-height: 38px;
+				border: none;
+				border-radius: 38px;
+				color: var(--fg);
+				background: var(--bg);
 
-							> [data-icon] {
-								margin-right: 8px;
-							}
-						}
-					}
-
-					> .custom {
-						position: absolute;
-						top: 0;
-						left: 0;
-						height: 100%;
-						width: 100%;
-					}
+				&:focus {
+					outline: none;
 				}
 			}
 
-			> .sub {
-				$post-button-size: 42px;
-				$post-button-margin: (($header-height - $post-button-size) / 2);
-				position: relative;
-				height: $header-height;
-
-				> [data-icon] {
-					position: absolute;
-					top: 0;
-					left: 16px;
-					height: $header-height;
-					pointer-events: none;
-					font-size: 16px;
-				}
-
-				> .search {
-					$margin: 8px;
-					width: calc(100% - #{$post-button-size + $post-button-margin + $margin});
-					box-sizing: border-box;
-					margin-right: $margin;
-					padding: 0 12px 0 42px;
-					font-size: 1rem;
-					line-height: 38px;
-					border: none;
-					border-radius: 38px;
-					color: var(--fg);
-					background: var(--bg);
-
-					&:focus {
-						outline: none;
-					}
-				}
-
-				> .post {
-					width: $post-button-size;
-					height: $post-button-size;
-					margin: $post-button-margin 0 $post-button-margin $post-button-margin;
-					border-radius: 100%;
-					font-size: 16px;
-				}
+			> .post {
+				width: $post-button-size;
+				height: $post-button-size;
+				margin: $post-button-margin 0 $post-button-margin $post-button-margin;
+				border-radius: 100%;
+				font-size: 16px;
 			}
 		}
 	}
 
 	> .nav {
-		> .menu {
-			position: sticky;
-			top: $header-height + 16px;
+		$avatar-size: 32px;
+		$avatar-margin: ($header-height - $avatar-size) / 2;
+
+		flex: 0 0 $nav-width;
+		width: $nav-width;
+		box-sizing: border-box;
+
+		@media (max-width: $nav-icon-only-threshold) {
+			flex: 0 0 $nav-icon-only-width;
+			width: $nav-icon-only-width;
+		}
+
+		@media (max-width: $nav-hide-threshold) {
+			display: none;
+		}
+
+		> div {
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 1001;
+			width: $nav-width;
+			height: 100vh;
+			padding-top: 16px;
+			box-sizing: border-box;
+			background: var(--navBg);
+
+			@media (max-width: $nav-icon-only-threshold) {
+				width: $nav-icon-only-width;
+			}
 
 			> .item {
 				position: relative;
 				display: block;
-				padding-left: $item-left-margin;
+				padding-left: 28px;
 				font-size: $ui-font-size;
 				font-weight: bold;
-				line-height: 3em;
+				line-height: 3.2em;
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;
 				width: 100%;
 				text-align: left;
 				box-sizing: border-box;
-				border-radius: 8px;
-		
+				color: var(--navFg);
+
+				&:not(.router-link-active) {
+					opacity: 0.85;
+
+					&:hover {
+						opacity: 1;
+
+						> [data-icon] {
+							opacity: 1;
+						}
+					}
+
+					> [data-icon] {
+						opacity: 0.85;
+					}
+				}
+
 				> [data-icon] {
 					width: ($header-height - ($avatar-margin * 2));
+				}
+		
+				> [data-icon],
+				> .avatar {
 					margin-right: $avatar-margin;
+				}
+
+				> .avatar {
+					width: $avatar-size;
+					height: $avatar-size;
+					vertical-align: middle;
 				}
 
 				> i {
 					position: absolute;
 					top: 0;
-					left: 8px;
-					color: var(--primary);
+					left: 16px;
+					color: var(--navIndicator);
 					font-size: 8px;
 					animation: blink 1s infinite;
 				}
 
 				&:hover {
-					background: var(--rfphjcus);
 					text-decoration: none;
 				}
 
 				&.router-link-active {
-					color: var(--primary);
+					color: var(--navActive);
 				}
 
 				@media (max-width: $nav-icon-only-threshold) {
+					padding-left: 0;
+					width: 100%;
+					text-align: center;
+
+					> [data-icon],
+					> .avatar {
+						margin-right: 0;
+					}
+
+					> i {
+						left: 8px;
+					}
+
 					> .text {
 						display: none;
 					}
@@ -809,92 +836,122 @@ export default Vue.extend({
 		}
 	}
 
-	> main {
-		> .content {
-			padding: 16px;
-			box-sizing: border-box;
+	> .contents {
+		display: flex;
+		margin: 0 auto;
 
-			@media (max-width: 500px) {
-				padding: 8px;
-			}
-		}
+		> main {
+			width: $main-width;
 
-		> .powerd-by {
-			font-size: 14px;
-			text-align: center;
-			margin: 32px 0;
-			visibility: hidden;
-
-			&.visible {
-				visibility: visible;
-			}
-
-			&:not(.visible) {
-				@media (min-width: 850px) {
-					display: none;
-				}
-			}
-
-			@media (max-width: 500px) {
-				margin-top: 16px;
-			}
-
-			> small {
-				display: block;
-				margin-top: 8px;
-				opacity: 0.5;
+			> .content {
+				padding: 16px;
+				box-sizing: border-box;
 
 				@media (max-width: 500px) {
-					margin-top: 4px;
+					padding: 8px;
+				}
+			}
+
+			> .powerd-by {
+				font-size: 14px;
+				text-align: center;
+				margin: 32px 0;
+				visibility: hidden;
+
+				&.visible {
+					visibility: visible;
+				}
+
+				&:not(.visible) {
+					@media (min-width: 850px) {
+						display: none;
+					}
+				}
+
+				@media (max-width: 500px) {
+					margin-top: 16px;
+				}
+
+				> small {
+					display: block;
+					margin-top: 8px;
+					opacity: 0.5;
+
+					@media (max-width: 500px) {
+						margin-top: 4px;
+					}
 				}
 			}
 		}
-	}
 
-	> .widgets {
-		padding: 16px 0;
+		> .widgets {
+			box-sizing: border-box;
 
-		> * {
-			margin-bottom: 16px;
-		}
-
-		> .add {
-			margin: 0 auto;
-		}
-
-		> .edit {
-			display: block;
-			font-size: 0.9em;
-			margin: 0 auto;
-		}
-
-		.customize-container {
-			margin: 8px 0;
-			background: #fff;
-
-			> header {
-				position: relative;
-				line-height: 32px;
-				background: #eee;
-
-				> .handle {
-					padding: 0 8px;
-				}
-
-				> .remove {
-					position: absolute;
-					top: 0;
-					right: 0;
-					padding: 0 8px;
-					line-height: 32px;
-				}
+			@media (max-width: $side-hide-threshold) {
+				display: none;
 			}
 
 			> div {
-				padding: 8px;
+				position: sticky;
+				top: $header-height + 16px;
+				height: calc(100vh - #{$header-height} - 16px);
+
+				&.edit {
+					overflow: auto;
+					width: auto !important;
+				}
+
+				&:not(.edit) {
+					display: inline-flex;
+					flex-wrap: wrap;
+					flex-direction: column;
+					place-content: flex-start;
+				}
 
 				> * {
-					pointer-events: none;
+					margin: 0 16px 16px 0;
+					width: 300px;
+				}
+
+				> .add {
+					margin: 0 auto;
+				}
+
+				> .edit {
+					display: block;
+					font-size: 0.9em;
+					margin: 0 auto;
+				}
+
+				.customize-container {
+					margin: 8px 0;
+					background: #fff;
+
+					> header {
+						position: relative;
+						line-height: 32px;
+						background: #eee;
+
+						> .handle {
+							padding: 0 8px;
+						}
+
+						> .remove {
+							position: absolute;
+							top: 0;
+							right: 0;
+							padding: 0 8px;
+							line-height: 32px;
+						}
+					}
+
+					> div {
+						padding: 8px;
+
+						> * {
+							pointer-events: none;
+						}
+					}
 				}
 			}
 		}
