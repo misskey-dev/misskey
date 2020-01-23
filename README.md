@@ -165,7 +165,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/3.png?token-time=2145916800&token-hash=FTm3WVom4dJ9NwWMU4OpCL_8Yc13WiwEbKrDPyTZTPs%3D" alt="natalie" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5923936/2a743cbfbff946c2af3f09026047c0da/2.png?token-time=2145916800&token-hash=h6yphW1qnM0n_NOWaf8qtszMRLXEwIxfk5beu4RxdT0%3D" alt="noellabo" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/2384390/5681180e1efb46a8b28e0e8d4c8b9037/1.jpg?token-time=2145916800&token-hash=SJcMy-Q1BcS940-LFUVOMfR7-5SgrzsEQGhYb3yowFk%3D" alt="CG" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/18072312/98e894d960314fa7bc236a72a39488fe/1.jpg?token-time=2145916800&token-hash=7bkMqTwHPRsJPGAq42PYdDXDZBVGLqdgr1ZmBxX8GFQ%3D" alt="Hekovic" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/18072312/98e894d960314fa7bc236a72a39488fe/1.jpe?token-time=2145916800&token-hash=qA8j97lIZNc-74AuZ0p4F3ms6sKPeKjtNt2vEuwpsyo%3D" alt="Hekovic" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1.jpeg?token-time=2145916800&token-hash=L55UhJ0rcuNAH3w_ryeeGN4hC6taoOixyAhraEi0bzw%3D" alt="dansup" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5731881/4b6038e6cda34c04b83a5fcce3806a93/1.png?token-time=2145916800&token-hash=hBayGfOmQH3kRMdNnDe4oCZD_9fsJWSt29xXR3KRMVk%3D" alt="Nokotaro Takeda" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/23932002" alt="nenohi" width="100"></td>
@@ -184,7 +184,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr><tr>
 </tr></table>
 
-**Last updated:** Thu, 23 Jan 2020 08:22:07 UTC
+**Last updated:** Thu, 23 Jan 2020 17:00:08 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
