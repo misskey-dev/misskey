@@ -757,7 +757,7 @@ export default Vue.extend({
 				padding-left: 32px;
 				font-size: $ui-font-size;
 				font-weight: bold;
-				line-height: 3.2em;
+				line-height: 3.2rem;
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;
@@ -818,6 +818,8 @@ export default Vue.extend({
 					padding-left: 0;
 					width: 100%;
 					text-align: center;
+					font-size: $ui-font-size * 1.2;
+					line-height: 3.4rem;
 
 					> [data-icon],
 					> .avatar {
