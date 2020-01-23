@@ -578,7 +578,7 @@ export default Vue.extend({
 .mk-app {
 	$header-height: 60px;
 	$nav-width: 250px;
-	$nav-icon-only-width: 64px;
+	$nav-icon-only-width: 70px;
 	$main-width: 700px;
 	$ui-font-size: 1em;
 	$nav-icon-only-threshold: 1300px;
@@ -675,7 +675,7 @@ export default Vue.extend({
 			$post-button-margin: (($header-height - $post-button-size) / 2);
 			position: absolute;
 			top: 0;
-			right: 0;
+			right: 16px;
 			height: $header-height;
 
 			@media (max-width: $side-hide-threshold) {
@@ -754,7 +754,7 @@ export default Vue.extend({
 			> .item {
 				position: relative;
 				display: block;
-				padding-left: 28px;
+				padding-left: 32px;
 				font-size: $ui-font-size;
 				font-weight: bold;
 				line-height: 3.2em;
@@ -800,7 +800,7 @@ export default Vue.extend({
 				> i {
 					position: absolute;
 					top: 0;
-					left: 16px;
+					left: 20px;
 					color: var(--navIndicator);
 					font-size: 8px;
 					animation: blink 1s infinite;
@@ -825,7 +825,7 @@ export default Vue.extend({
 					}
 
 					> i {
-						left: 8px;
+						left: 10px;
 					}
 
 					> .text {
@@ -839,9 +839,15 @@ export default Vue.extend({
 	> .contents {
 		display: flex;
 		margin: 0 auto;
+		min-width: 0;
 
 		> main {
 			width: $main-width;
+			min-width: $main-width;
+
+			@media (max-width: $side-hide-threshold) {
+				min-width: 0;
+			}
 
 			> .content {
 				padding: 16px;
