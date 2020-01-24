@@ -1,7 +1,7 @@
 <template>
 <div>
 	<mk-container :show-header="!props.compact">
-		<template #header><fa :icon="faStickyNote"/>{{ $t('title') }}</template>
+		<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
 
 		<div class="otgbylcu">
 			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>

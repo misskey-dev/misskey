@@ -1,7 +1,7 @@
 <template>
 <div>
 	<mk-container :show-header="!props.compact">
-		<template #header><fa :icon="faHashtag"/>{{ $t('title') }}</template>
+		<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
 
 		<div class="wbrkwala">
 			<transition-group tag="div" name="chart">
