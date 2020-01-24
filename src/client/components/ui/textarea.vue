@@ -8,11 +8,12 @@
 			:readonly="readonly"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
-			@input="$emit('input', $event.target.value)"
+			@input="onInput"
 			@focus="focused = true"
 			@blur="focused = false"
 		></textarea>
 	</div>
+	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
 	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
@@ -51,11 +52,15 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		save: {
+			type: Function,
+			required: false,
+		},
 	},
 	data() {
 		return {
 			focused: false,
-			passwordStrength: ''
+			changed: false,
 		}
 	},
 	computed: {
@@ -66,6 +71,10 @@ export default Vue.extend({
 	methods: {
 		focus() {
 			this.$refs.input.focus();
+		},
+		onInput(ev) {
+			this.changed = true;
+			this.$emit('input', ev.target.value);
 		}
 	}
 });
@@ -146,6 +155,11 @@ export default Vue.extend({
 			box-shadow: none;
 			color: var(--fg);
 		}
+	}
+
+	> .save {
+		margin: 6px 0 0 0;
+		font-size: 13px;
 	}
 
 	> .desc {

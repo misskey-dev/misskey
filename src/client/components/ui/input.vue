@@ -5,7 +5,7 @@
 		<span class="label" ref="label"><slot></slot></span>
 		<span class="title" ref="title">
 			<slot name="title"></slot>
-			<span class="warning" v-if="invalid"><fa :icon="['fa', 'exclamation-circle']"/>{{ $refs.input.validationMessage }}</span>
+			<span class="warning" v-if="invalid"><fa :icon="faExclamationCircle"/>{{ $refs.input.validationMessage }}</span>
 		</span>
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<template v-if="type != 'file'">
@@ -23,7 +23,7 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
-				@change="$emit('change', $event)"
+				@input="onInput"
 				:list="id"
 			>
 			<input v-else ref="input"
@@ -39,7 +39,7 @@
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
-				@change="$emit('change', $event)"
+				@input="onInput"
 				:list="id"
 			>
 			<datalist :id="id" v-if="datalist">
@@ -61,6 +61,7 @@
 		</template>
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
+	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
 	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>
@@ -68,6 +69,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import debounce from 'v-debounce';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	directives: {
@@ -124,20 +126,26 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		save: {
+			type: Function,
+			required: false,
+		},
 	},
 	data() {
 		return {
 			v: this.value,
 			focused: false,
 			invalid: false,
-			id: Math.random().toString()
+			changed: false,
+			id: Math.random().toString(),
+			faExclamationCircle
 		};
 	},
 	computed: {
 		filled(): boolean {
 			return this.v !== '' && this.v != null;
 		},
-		filePlaceholder(): string {
+		filePlaceholder(): string | null {
 			if (this.type != 'file') return null;
 			if (this.v == null) return null;
 
@@ -217,6 +225,10 @@ export default Vue.extend({
 			this.v = Array.from((this.$refs.file as any).files);
 			this.$emit('input', this.v);
 			this.$emit('change', this.v);
+		},
+		onInput(ev) {
+			this.changed = true;
+			this.$emit('change', ev);
 		}
 	}
 });
@@ -370,6 +382,11 @@ export default Vue.extend({
 			right: 0;
 			padding-left: 4px;
 		}
+	}
+
+	> .save {
+		margin: 6px 0 0 0;
+		font-size: 13px;
 	}
 
 	> .desc {
