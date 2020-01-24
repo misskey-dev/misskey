@@ -290,6 +290,10 @@ bannerUrl: "バナー画像のURL"
 basicInfo: "基本情報"
 pinnedUsers: "ピン留めユーザー"
 pinnedUsersDescription: "「みつける」ページなどにピン留めしたいユーザーを改行で区切って記述します。"
+recaptcha: "reCAPTCHA"
+enableRecaptcha: "reCAPTCHAを有効にする"
+recaptchaSiteKey: "サイトキー"
+recaptchaSecretKey: "シークレットキー"
 
 _weekday:
   sunday: "日曜日"

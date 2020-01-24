@@ -36,6 +36,26 @@
 	</section>
 
 	<section class="_section">
+		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
+		<div class="_content">
+			<mk-switch v-model="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
+			<template v-if="enableRecaptcha">
+				<ui-info>{{ $t('recaptcha-info') }}</ui-info>
+				<ui-info warn>{{ $t('recaptcha-info2') }}</ui-info>
+				<mk-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSiteKey') }}</mk-input>
+				<mk-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSecretKey') }}</mk-input>
+			</template>
+		</div>
+		<div class="_content" v-if="enableRecaptcha && recaptchaSiteKey">
+			<header>{{ $t('preview') }}</header>
+			<div ref="recaptcha" style="margin: 16px 0 0 0;" :key="recaptchaSiteKey"></div>
+		</div>
+		<div class="_footer">
+			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		</div>
+	</section>
+
+	<section class="_section">
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="pinnedUsers" style="margin-top: 0;">
@@ -102,7 +122,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
@@ -150,7 +170,10 @@ export default Vue.extend({
 			enableRegistration: false,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
-			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser
+			enableRecaptcha: false,
+			recaptchaSiteKey: null,
+			recaptchaSecretKey: null,
+			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey
 		}
 	},
 
@@ -167,6 +190,9 @@ export default Vue.extend({
 			this.enableRegistration = !this.meta.disableRegistration;
 			this.enableLocalTimeline = !this.meta.disableLocalTimeline;
 			this.enableGlobalTimeline = !this.meta.disableGlobalTimeline;
+			this.enableRecaptcha = this.meta.enableRecaptcha;
+			this.recaptchaSiteKey = this.meta.recaptchaSiteKey;
+			this.recaptchaSecretKey = this.meta.recaptchaSecretKey;
 			this.proxyAccount = this.meta.proxyAccount;
 			this.cacheRemoteFiles = this.meta.cacheRemoteFiles;
 			this.proxyRemoteFiles = this.meta.proxyRemoteFiles;
@@ -198,6 +224,9 @@ export default Vue.extend({
 				disableRegistration: !this.enableRegistration,
 				disableLocalTimeline: !this.enableLocalTimeline,
 				disableGlobalTimeline: !this.enableGlobalTimeline,
+				enableRecaptcha: this.enableRecaptcha,
+				recaptchaSiteKey: this.recaptchaSiteKey,
+				recaptchaSecretKey: this.recaptchaSecretKey,
 				proxyAccount: this.proxyAccount,
 				cacheRemoteFiles: this.cacheRemoteFiles,
 				proxyRemoteFiles: this.proxyRemoteFiles,
