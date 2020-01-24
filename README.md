@@ -184,7 +184,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 </tr><tr>
 </tr></table>
 
-**Last updated:** Thu, 09 Jan 2020 05:39:07 UTC
+**Last updated:** Thu, 23 Jan 2020 17:00:08 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
