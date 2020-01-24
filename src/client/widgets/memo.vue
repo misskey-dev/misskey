@@ -1,9 +1,9 @@
 <template>
-<div class="mkw-memo">
+<div>
 	<mk-container :show-header="!props.compact">
 		<template #header><fa :icon="faStickyNote"/>{{ $t('title') }}</template>
 
-		<div class="mkw-memo--body">
+		<div class="otgbylcu">
 			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
 			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
 		</div>
@@ -70,52 +70,50 @@ export default define({
 </script>
 
 <style lang="scss" scoped>
-.mkw-memo {
-	.mkw-memo--body {
-		padding-bottom: 28px + 16px;
+.otgbylcu {
+	padding-bottom: 28px + 16px;
 
-		> textarea {
-			display: block;
-			width: 100%;
-			max-width: 100%;
-			min-width: 100%;
-			padding: 16px;
-			color: var(--inputText);
-			background: var(--face);
-			border: none;
-			border-bottom: solid var(--lineWidth) var(--faceDivider);
-			border-radius: 0;
+	> textarea {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		min-width: 100%;
+		padding: 16px;
+		color: var(--inputText);
+		background: var(--face);
+		border: none;
+		border-bottom: solid var(--lineWidth) var(--faceDivider);
+		border-radius: 0;
+	}
+
+	> button {
+		display: block;
+		position: absolute;
+		bottom: 8px;
+		right: 8px;
+		margin: 0;
+		padding: 0 10px;
+		height: 28px;
+		color: #fff;
+		background: var(--primary) !important;
+		outline: none;
+		border: none;
+		border-radius: 4px;
+		transition: background 0.1s ease;
+		cursor: pointer;
+
+		&:hover {
+			background: var(--primaryLighten10) !important;
 		}
 
-		> button {
-			display: block;
-			position: absolute;
-			bottom: 8px;
-			right: 8px;
-			margin: 0;
-			padding: 0 10px;
-			height: 28px;
-			color: #fff;
-			background: var(--primary) !important;
-			outline: none;
-			border: none;
-			border-radius: 4px;
-			transition: background 0.1s ease;
-			cursor: pointer;
+		&:active {
+			background: var(--primaryDarken) !important;
+			transition: background 0s ease;
+		}
 
-			&:hover {
-				background: var(--primaryLighten10) !important;
-			}
-
-			&:active {
-				background: var(--primaryDarken) !important;
-				transition: background 0s ease;
-			}
-
-			&:disabled {
-				opacity: 0.7;
-				cursor: default;
-			}
+		&:disabled {
+			opacity: 0.7;
+			cursor: default;
 		}
 	}
 }

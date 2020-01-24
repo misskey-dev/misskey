@@ -516,6 +516,7 @@ export default Vue.extend({
 				'notifications',
 				'timeline',
 				'calendar',
+				'rss',
 			];
 
 			this.$root.menu({
