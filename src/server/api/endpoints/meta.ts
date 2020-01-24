@@ -164,7 +164,7 @@ export default define(meta, async (ps, me) => {
 		};
 	}
 
-	if (me && (me.isAdmin || me.isModerator)) {
+	if (me && me.isAdmin) {
 		response.useStarForReactionFallback = instance.useStarForReactionFallback;
 		response.pinnedUsers = instance.pinnedUsers;
 		response.hiddenTags = instance.hiddenTags;
