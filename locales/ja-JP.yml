@@ -16,7 +16,7 @@ _time:
   hour: "時間"
   day: "日"
 
-introMisskey: ""
+introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
 aboutMisskey: ""
 monthAndDay: "{month}月 {day}日"
 search: "検索"
