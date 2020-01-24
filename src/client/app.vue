@@ -578,7 +578,7 @@ export default Vue.extend({
 .mk-app {
 	$header-height: 60px;
 	$nav-width: 250px;
-	$nav-icon-only-width: 70px;
+	$nav-icon-only-width: 74px;
 	$main-width: 700px;
 	$ui-font-size: 1em;
 	$nav-icon-only-threshold: 1300px;
@@ -819,7 +819,7 @@ export default Vue.extend({
 					width: 100%;
 					text-align: center;
 					font-size: $ui-font-size * 1.2;
-					line-height: 3.4rem;
+					line-height: 3.5rem;
 
 					> [data-icon],
 					> .avatar {
