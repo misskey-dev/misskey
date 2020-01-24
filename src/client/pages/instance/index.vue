@@ -40,8 +40,8 @@
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
 			<template v-if="enableRecaptcha">
-				<ui-info>{{ $t('recaptcha-info') }}</ui-info>
-				<ui-info warn>{{ $t('recaptcha-info2') }}</ui-info>
+				<mk-info>{{ $t('recaptcha-info') }}</mk-info>
+				<mk-info warn>{{ $t('recaptcha-info2') }}</mk-info>
 				<mk-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSecretKey') }}</mk-input>
 			</template>
@@ -102,6 +102,40 @@
 		</div>
 	</section>
 
+	<section class="_section">
+		<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
+		<div class="_content">
+			<header><fa :icon="faTwitter"/> {{ $t('twitter-integration-config') }}</header>
+			<mk-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</mk-switch>
+			<template v-if="enableTwitterIntegration">
+				<mk-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitter-integration-consumer-key') }}</mk-input>
+				<mk-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitter-integration-consumer-secret') }}</mk-input>
+				<mk-info>{{ $t('twitter-integration-info', { url: `${url}/api/tw/cb` }) }}</mk-info>
+			</template>
+		</div>
+		<div class="_content">
+			<header><fa :icon="faGithub"/> {{ $t('github-integration-config') }}</header>
+			<mk-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</mk-switch>
+			<template v-if="enableGithubIntegration">
+				<mk-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('github-integration-client-id') }}</mk-input>
+				<mk-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('github-integration-client-secret') }}</mk-input>
+				<mk-info>{{ $t('github-integration-info', { url: `${url}/api/gh/cb` }) }}</mk-info>
+			</template>
+		</div>
+		<div class="_content">
+			<header><fa :icon="faDiscord"/> {{ $t('discord-integration-config') }}</header>
+			<mk-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</mk-switch>
+			<template v-if="enableDiscordIntegration">
+				<mk-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discord-integration-client-id') }}</mk-input>
+				<mk-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discord-integration-client-secret') }}</mk-input>
+				<mk-info>{{ $t('discord-integration-info', { url: `${url}/api/dc/cb` }) }}</mk-info>
+			</template>
+		</div>
+		<div class="_footer">
+			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		</div>
+	</section>
+
 	<section class="_section info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content table" v-if="stats">
@@ -122,8 +156,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
+import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
@@ -173,7 +208,16 @@ export default Vue.extend({
 			enableRecaptcha: false,
 			recaptchaSiteKey: null,
 			recaptchaSecretKey: null,
-			faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey
+			enableTwitterIntegration: false,
+			twitterConsumerKey: null,
+			twitterConsumerSecret: null,
+			enableGithubIntegration: false,
+			githubClientId: null,
+			githubClientSecret: null,
+			enableDiscordIntegration: false,
+			discordClientId: null,
+			discordClientSecret: null,
+			faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey
 		}
 	},
 
@@ -200,6 +244,15 @@ export default Vue.extend({
 			this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
 			this.blockedHosts = this.meta.blockedHosts.join('\n');
 			this.pinnedUsers = this.meta.pinnedUsers.join('\n');
+			this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
+			this.twitterConsumerKey = this.meta.twitterConsumerKey;
+			this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
+			this.enableGithubIntegration = this.meta.enableGithubIntegration;
+			this.githubClientId = this.meta.githubClientId;
+			this.githubClientSecret = this.meta.githubClientSecret;
+			this.enableDiscordIntegration = this.meta.enableDiscordIntegration;
+			this.discordClientId = this.meta.discordClientId;
+			this.discordClientSecret = this.meta.discordClientSecret;
 		});
 
 		this.$root.api('admin/server-info').then(res => {
@@ -233,7 +286,16 @@ export default Vue.extend({
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				blockedHosts: this.blockedHosts.split('\n') || [],
-				pinnedUsers: this.pinnedUsers ? this.pinnedUsers.split('\n') : [],,
+				pinnedUsers: this.pinnedUsers ? this.pinnedUsers.split('\n') : [],
+				enableTwitterIntegration: this.enableTwitterIntegration,
+				twitterConsumerKey: this.twitterConsumerKey,
+				twitterConsumerSecret: this.twitterConsumerSecret,
+				enableGithubIntegration: this.enableGithubIntegration,
+				githubClientId: this.githubClientId,
+				githubClientSecret: this.githubClientSecret,
+				enableDiscordIntegration: this.enableDiscordIntegration,
+				discordClientId: this.discordClientId,
+				discordClientSecret: this.discordClientSecret,
 			}).then(() => {
 				if (withDialog) {
 					this.$root.dialog({
