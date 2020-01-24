@@ -41,13 +41,13 @@
 			<span>{{ $t('_pages.script.blocks._fn.slots') }}</span>
 			<template #desc>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</mk-textarea>
-		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :fn-slots="value.value.slots" :name="name"/>
+		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :fn-slots="value.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="value.type.startsWith('fn:')" class="" style="padding:16px;">
 		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="aiScript.getVarByName(value.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :fn-slots="fnSlots" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`_pages.script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :fn-slots="fnSlots" :key="i"/>
 	</section>
 </x-container>
 </template>
@@ -118,7 +118,7 @@ export default Vue.extend({
 		typeText(): any {
 			if (this.value.type === null) return null;
 			if (this.value.type.startsWith('fn:')) return this.value.type.split(':')[1];
-			return this.$t(`script.blocks.${this.value.type}`);
+			return this.$t(`_pages.script.blocks.${this.value.type}`);
 		},
 	},
 

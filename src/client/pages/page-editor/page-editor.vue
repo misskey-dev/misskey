@@ -385,7 +385,7 @@ export default Vue.extend({
 				if (category) {
 					category.items.push({
 						value: block.type,
-						text: this.$t(`script.blocks.${block.type}`)
+						text: this.$t(`_pages.script.blocks.${block.type}`)
 					});
 				} else {
 					list.push({
@@ -393,7 +393,7 @@ export default Vue.extend({
 						label: this.$t(`script.categories.${block.category}`),
 						items: [{
 							value: block.type,
-							text: this.$t(`script.blocks.${block.type}`)
+							text: this.$t(`_pages.script.blocks.${block.type}`)
 						}]
 					});
 				}
