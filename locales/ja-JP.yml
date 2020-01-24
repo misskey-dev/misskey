@@ -299,7 +299,7 @@ _widgets:
   notifications: "通知"
   timeline: "タイムライン"
   calendar: "カレンダー"
-  trend: "トレンド"
+  trends: "トレンド"
   clock: "時計"
 
 _cw:

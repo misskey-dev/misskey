@@ -517,6 +517,7 @@ export default Vue.extend({
 				'timeline',
 				'calendar',
 				'rss',
+				'trends',
 			];
 
 			this.$root.menu({
