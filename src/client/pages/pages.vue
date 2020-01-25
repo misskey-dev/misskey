@@ -51,7 +51,7 @@ export default Vue.extend({
 	},
 	methods: {
 		create() {
-			this.$router.push(`/pages/new`);
+			this.$router.push(`/my/pages/new`);
 		}
 	}
 });

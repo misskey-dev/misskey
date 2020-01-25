@@ -36,7 +36,7 @@ export default Vue.extend({
 			}
 		}, this.$store.state.i.id != this.user.id ? {
 			type: 'link',
-			to: `/messaging/${getAcct(this.user)}`,
+			to: `/my/messaging/${getAcct(this.user)}`,
 			icon: faComments,
 			text: this.$t('startMessaging'),
 		} : undefined, null, {
@@ -70,7 +70,7 @@ export default Vue.extend({
 				icon: faPencilAlt,
 				text: this.$t('editProfile'),
 				action: () => {
-					this.$router.push('/settings');
+					this.$router.push('/my/settings');
 				}
 			}]);
 		}

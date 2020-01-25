@@ -11,7 +11,7 @@
 	<footer v-if="showFooter">
 		<small>@{{ page.user.username }}</small>
 		<template v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId">
-			<router-link :to="`/i/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
+			<router-link :to="`/my/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
 			<a v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)">{{ $t('unpin-this-page') }}</a>
 			<a v-else @click="pin(true)">{{ $t('pin-this-page') }}</a>
 		</template>

@@ -19,7 +19,7 @@ export default Vue.extend({
 		list: {
 			required: false
 		},
-		tagTl: {
+		antenna: {
 			required: false
 		}
 	},
@@ -56,12 +56,14 @@ export default Vue.extend({
 
 		let endpoint;
 
-		if (this.src == 'tag') {
-			endpoint = 'notes/search-by-tag';
+		if (this.src == 'antenna') {
+			endpoint = 'antennas/notes';
 			this.query = {
-				query: this.tagTl.query
+				antennaId: this.antenna.id
 			};
-			this.connection = this.$root.stream.connectToChannel('hashtag', { q: this.tagTl.query });
+			this.connection = this.$root.stream.connectToChannel('antenna', {
+				antennaId: this.antenna.id
+			});
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
 			endpoint = 'notes/timeline';

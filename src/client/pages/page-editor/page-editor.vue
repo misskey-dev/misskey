@@ -274,7 +274,7 @@ export default Vue.extend({
 						type: 'success',
 						text: this.$t('page-created')
 					});
-					this.$router.push(`/i/pages/edit/${this.pageId}`);
+					this.$router.push(`/my/pages/edit/${this.pageId}`);
 				}).catch(onError);
 			}
 		},
@@ -293,7 +293,7 @@ export default Vue.extend({
 						type: 'success',
 						text: this.$t('page-deleted')
 					});
-					this.$router.push(`/i/pages`);
+					this.$router.push(`/my/pages`);
 				});
 			});
 		},

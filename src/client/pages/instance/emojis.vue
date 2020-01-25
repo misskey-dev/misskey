@@ -146,7 +146,7 @@ export default Vue.extend({
 		async del() {
 			const { canceled } = await this.$root.dialog({
 				type: 'warning',
-				text: this.$t('emojiDeleteConfirm', { name: this.selected.name }),
+				text: this.$t('removeAreYouSure', { x: this.selected.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;

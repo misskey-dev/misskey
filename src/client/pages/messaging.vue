@@ -8,7 +8,7 @@
 	<sequential-entrance class="history" v-if="messages.length > 0" :delay="30">
 		<router-link v-for="(message, i) in messages"
 			class="message _panel"
-			:to="message.groupId ? `/messaging/group/${message.groupId}` : `/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 			:data-is-me="isMe(message)"
 			:data-is-read="message.groupId ? message.reads.includes($store.state.i.id) : message.isRead"
 			:data-index="i"
@@ -130,7 +130,7 @@ export default Vue.extend({
 
 		async startUser() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$router.push(`/messaging/${getAcct(user)}`);
+				this.$router.push(`/my/messaging/${getAcct(user)}`);
 			});
 		},
 

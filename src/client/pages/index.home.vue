@@ -7,17 +7,18 @@
 			<fa v-if="src === 'social'" :icon="faShareAlt"/>
 			<fa v-if="src === 'global'" :icon="faGlobe"/>
 			<fa v-if="src === 'list'" :icon="faListUl"/>
-			<span style="margin-left: 8px;">{{ src === 'list' ? list.name : $t('_timelines.' + src) }}</span>
+			<fa v-if="src === 'antenna'" :icon="faSatellite"/>
+			<span style="margin-left: 8px;">{{ src === 'list' ? list.name : src === 'antenna' ? antenna.name : $t('_timelines.' + src) }}</span>
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
-	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src" :src="src" :list="list" @before="before()" @after="after()"/>
+	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" @before="before()" @after="after()"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
@@ -37,8 +38,9 @@ export default Vue.extend({
 		return {
 			src: 'home',
 			list: null,
+			antenna: null,
 			menuOpened: false,
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite
 		};
 	},
 
@@ -58,9 +60,9 @@ export default Vue.extend({
 		list(x) {
 			this.showNav = false;
 			this.saveSrc();
-			if (x != null) this.tagTl = null;
+			if (x != null) this.antenna = null;
 		},
-		tagTl(x) {
+		antenna(x) {
 			this.showNav = false;
 			this.saveSrc();
 			if (x != null) this.list = null;
@@ -78,10 +80,10 @@ export default Vue.extend({
 		});
 		if (this.$store.state.device.tl) {
 			this.src = this.$store.state.device.tl.src;
-			if (this.src == 'list') {
+			if (this.src === 'list') {
 				this.list = this.$store.state.device.tl.arg;
-			} else if (this.src == 'tag') {
-				this.tagTl = this.$store.state.device.tl.arg;
+			} else if (this.src === 'antenna') {
+				this.antenna = this.$store.state.device.tl.arg;
 			}
 		}
 	},

@@ -112,15 +112,14 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 
-			this.$root.api('users/lists/delete', {
+			await this.$root.api('users/lists/delete', {
 				listId: this.list.id
-			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-				this.$router.push('/manage-lists');
 			});
+			this.$root.dialog({
+				type: 'success',
+				iconOnly: true, autoClose: true
+			});
+			this.$router.push('/my/lists');
 		}
 	}
 });

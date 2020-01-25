@@ -45,15 +45,15 @@
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
 				<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
 			</button>
-			<router-link class="item" to="/messaging" v-if="$store.getters.isSignedIn">
+			<router-link class="item" to="/my/messaging" v-if="$store.getters.isSignedIn">
 				<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
 				<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
 			</router-link>
-			<router-link class="item" to="/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
+			<router-link class="item" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
 				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
 			</router-link>
-			<router-link class="item" to="/drive" v-if="$store.getters.isSignedIn">
+			<router-link class="item" to="/my/drive" v-if="$store.getters.isSignedIn">
 				<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
 			</router-link>
 			<router-link class="item" to="/announcements">
@@ -135,7 +135,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt, faSatellite } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
@@ -306,19 +306,19 @@ export default Vue.extend({
 				}, {
 					type: 'link',
 					text: this.$t('messaging'),
-					to: '/messaging',
+					to: '/my/messaging',
 					icon: faComments,
 					indicate: this.$store.state.i.hasUnreadMessagingMessage,
 				}, this.$store.state.i.isLocked ? {
 					type: 'link',
 					text: this.$t('followRequests'),
-					to: '/follow-requests',
+					to: '/my/follow-requests',
 					icon: faUserClock,
 					indicate: this.$store.state.i.pendingReceivedFollowRequestsCount > 0,
 				} : undefined, {
 					type: 'link',
 					text: this.$t('drive'),
-					to: '/drive',
+					to: '/my/drive',
 					icon: faCloud,
 				}, {
 					text: this.$t('more'),
@@ -356,7 +356,7 @@ export default Vue.extend({
 				}, {
 					type: 'link',
 					text: this.$t('settings'),
-					to: '/settings',
+					to: '/my/settings',
 					icon: faCog,
 				}, null, {
 					type: 'item',
@@ -431,8 +431,13 @@ export default Vue.extend({
 				items: [{
 					type: 'link',
 					text: this.$t('lists'),
-					to: '/lists',
+					to: '/my/lists',
 					icon: faListUl,
+				}, {
+					type: 'link',
+					text: this.$t('antennas'),
+					to: '/my/antennas',
+					icon: faSatellite,
 				}, {
 					type: 'link',
 					text: this.$t('mentions'),
@@ -441,17 +446,17 @@ export default Vue.extend({
 				}, {
 					type: 'link',
 					text: this.$t('messages'),
-					to: '/messages',
+					to: '/my/messages',
 					icon: faEnvelope,
 				}, {
 					type: 'link',
 					text: this.$t('favorites'),
-					to: '/favorites',
+					to: '/my/favorites',
 					icon: faStar,
 				}, {
 					type: 'link',
 					text: this.$t('pages'),
-					to: '/pages',
+					to: '/my/pages',
 					icon: faFileAlt,
 				}, {
 					type: 'link',
