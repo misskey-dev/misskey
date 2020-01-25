@@ -8,20 +8,21 @@
 				<fa v-if="props.src === 'social'" :icon="faShareAlt"/>
 				<fa v-if="props.src === 'global'" :icon="faGlobe"/>
 				<fa v-if="props.src === 'list'" :icon="faListUl"/>
-				<span style="margin-left: 8px;">{{ props.src === 'list' ? props.list.name : $t('_timelines.' + props.src) }}</span>
+				<fa v-if="props.src === 'antenna'" :icon="faSatellite"/>
+				<span style="margin-left: 8px;">{{ props.src === 'list' ? props.list.name : props.src === 'antenna' ? props.antenna.name : $t('_timelines.' + props.src) }}</span>
 				<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 			</button>
 		</template>
 
 		<div style="height: 300px; padding: 8px; overflow: auto; background: var(--bg);">
-			<x-timeline :key="props.src === 'list' ? `list:${props.list.id}` : props.src" :src="props.src" :list="props.list"/>
+			<x-timeline :key="props.src === 'list' ? `list:${props.list.id}` : props.src === 'antenna' ? `antenna:${props.antenna.id}` : props.src" :src="props.src" :list="props.list" :antenna="props.antenna"/>
 		</div>
 	</mk-container>
 </div>
 </template>
 
 <script lang="ts">
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XTimeline from '../components/timeline.vue';
@@ -46,7 +47,7 @@ export default define({
 	data() {
 		return {
 			menuOpened: false,
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite
 		};
 	},
 
@@ -58,7 +59,18 @@ export default define({
 
 		async choose(ev) {
 			this.menuOpened = true;
-			const lists = await this.$root.api('users/lists/list');
+			const [antennas, lists] = await Promise.all([
+				this.$root.api('antennas/list'),
+				this.$root.api('users/lists/list')
+			]);
+			const antennaItems = antennas.map(antenna => ({
+				text: antenna.name,
+				icon: faSatellite,
+				action: () => {
+					this.props.antenna = antenna;
+					this.setSrc('antenna');
+				}
+			}));
 			const listItems = lists.map(list => ({
 				text: list.name,
 				icon: faListUl,
@@ -84,7 +96,7 @@ export default define({
 					text: this.$t('_timelines.global'),
 					icon: faGlobe,
 					action: () => { this.setSrc('global') }
-				}, listItems.length > 0 ? null : undefined, ...listItems],
+				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems],
 				noCenter: true,
 				source: ev.currentTarget || ev.target
 			}).then(() => {
