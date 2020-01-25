@@ -29,38 +29,38 @@
 			<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
 				<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
 			</button>
-			<router-link class="item" to="/" exact v-if="$store.getters.isSignedIn">
+			<router-link class="item" active-class="active" to="/" exact v-if="$store.getters.isSignedIn">
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 			</router-link>
-			<router-link class="item" to="/" exact v-else>
+			<router-link class="item" active-class="active" to="/" exact v-else>
 				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('home') }}</span>
 			</router-link>
-			<router-link class="item" to="/featured">
+			<router-link class="item" active-class="active" to="/featured">
 				<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
 			</router-link>
-			<router-link class="item" to="/explore">
+			<router-link class="item" active-class="active" to="/explore">
 				<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
 			</router-link>
 			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.getters.isSignedIn">
 				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
 				<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
 			</button>
-			<router-link class="item" to="/my/messaging" v-if="$store.getters.isSignedIn">
+			<router-link class="item" active-class="active" to="/my/messaging" v-if="$store.getters.isSignedIn">
 				<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
 				<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
 			</router-link>
-			<router-link class="item" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
+			<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
 				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
 				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
 			</router-link>
-			<router-link class="item" to="/my/drive" v-if="$store.getters.isSignedIn">
+			<router-link class="item" active-class="active" to="/my/drive" v-if="$store.getters.isSignedIn">
 				<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
 			</router-link>
-			<router-link class="item" to="/announcements">
+			<router-link class="item" active-class="active" to="/announcements">
 				<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
 				<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
 			</router-link>
-			<button class="item _button" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
+			<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
 				<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
 			</button>
 			<button class="item _button" @click="search()">
@@ -773,7 +773,7 @@ export default Vue.extend({
 				box-sizing: border-box;
 				color: var(--navFg);
 
-				&:not(.router-link-active) {
+				&:not(.active) {
 					opacity: 0.85;
 
 					&:hover {
@@ -817,7 +817,7 @@ export default Vue.extend({
 					text-decoration: none;
 				}
 
-				&.router-link-active {
+				&.active {
 					color: var(--navActive);
 				}
 
