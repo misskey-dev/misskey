@@ -15,9 +15,11 @@
 			<span>{{ $t('antennaKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
 		</mk-textarea>
+		<mk-switch v-model="withFile">{{ $t('withFileAntenna') }}</mk-switch>
+		<mk-switch v-model="notify">{{ $t('notifyAntenna') }}</mk-switch>
 	</div>
 	<div class="_footer">
-		<mk-button inline @click="saveAntenna()">{{ $t('save') }}</mk-button>
+		<mk-button inline @click="saveAntenna()" primary>{{ $t('save') }}</mk-button>
 		<mk-button inline @click="deleteAntenna()" v-if="antenna.id != null">{{ $t('delete') }}</mk-button>
 	</div>
 </div>
@@ -31,12 +33,13 @@ import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
+import MkSwitch from '../../components/ui/switch.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		MkButton, MkInput, MkTextarea, MkSelect
+		MkButton, MkInput, MkTextarea, MkSelect, MkSwitch
 	},
 
 	props: {
@@ -78,7 +81,7 @@ export default Vue.extend({
 				this.$emit('created');
 			} else {
 				await this.$root.api('antennas/update', {
-					antennaId: this.$route.params.antenna,
+					antennaId: this.antenna.id,
 					name: this.name,
 					src: this.src,
 					withFile: this.withFile,

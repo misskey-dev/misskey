@@ -300,6 +300,8 @@ homeTimeline: "ホームタイムライン"
 userList: "ユーザーリスト"
 antennaKeywords: "受信キーワード"
 antennaKeywordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+notifyAntenna: "新しい投稿を通知する"
+withFileAntenna: "ファイルが添付された投稿のみ"
 
 _weekday:
   sunday: "日曜日"
