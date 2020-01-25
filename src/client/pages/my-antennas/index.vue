@@ -50,8 +50,10 @@ export default Vue.extend({
 		create() {
 			this.draft = {
 				name: '',
-				src: 'home',
-				keywords: []
+				src: 'all',
+				keywords: [],
+				withFile: false,
+				notify: false
 			};
 		},
 

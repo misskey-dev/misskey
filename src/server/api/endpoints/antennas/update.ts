@@ -32,6 +32,10 @@ export const meta = {
 			validator: $.arr($.arr($.str))
 		},
 
+		withFile: {
+			validator: $.bool
+		},
+
 		notify: {
 			validator: $.bool
 		}
@@ -81,6 +85,7 @@ export default define(meta, async (ps, user) => {
 		src: ps.src,
 		userListId: userList ? userList.id : null,
 		keywords: ps.keywords,
+		withFile: ps.withFile,
 		notify: ps.notify,
 	});
 

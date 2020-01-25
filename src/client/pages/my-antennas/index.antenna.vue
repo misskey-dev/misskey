@@ -51,6 +51,8 @@ export default Vue.extend({
 			name: '',
 			src: '',
 			keywords: '',
+			withFile: false,
+			notify: false,
 			faTimes
 		};
 	},
@@ -59,6 +61,8 @@ export default Vue.extend({
 		this.name = this.antenna.name;
 		this.src = this.antenna.src;
 		this.keywords = this.antenna.keywords.map(x => x.join(' ')).join('\n');
+		this.withFile = this.antenna.withFile;
+		this.notify = this.antenna.notify;
 	},
 
 	methods: {
@@ -67,6 +71,8 @@ export default Vue.extend({
 				await this.$root.api('antennas/create', {
 					name: this.name,
 					src: this.src,
+					withFile: this.withFile,
+					notify: this.notify,
 					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
 				});
 				this.$emit('created');
@@ -75,6 +81,8 @@ export default Vue.extend({
 					antennaId: this.$route.params.antenna,
 					name: this.name,
 					src: this.src,
+					withFile: this.withFile,
+					notify: this.notify,
 					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
 				});
 			}
