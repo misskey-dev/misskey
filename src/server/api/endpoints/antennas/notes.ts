@@ -15,6 +15,10 @@ export const meta = {
 	kind: 'read:account',
 
 	params: {
+		antennaId: {
+			validator: $.type(ID),
+		},
+
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
@@ -31,7 +35,7 @@ export const meta = {
 
 	errors: {
 		noSuchAntenna: {
-			message: 'No such list.',
+			message: 'No such antenna.',
 			code: 'NO_SUCH_ANTENNA',
 			id: '850926e0-fd3b-49b6-b69a-b28a5dbd82fe'
 		}

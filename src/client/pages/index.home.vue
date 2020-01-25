@@ -76,7 +76,7 @@ export default Vue.extend({
 			) && this.src === 'global') this.src = 'local';
 			if (!(
 				this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
-			) && ['local', 'hybrid'].includes(this.src)) this.src = 'home';
+			) && ['local', 'social'].includes(this.src)) this.src = 'home';
 		});
 		if (this.$store.state.device.tl) {
 			this.src = this.$store.state.device.tl.src;
@@ -99,7 +99,18 @@ export default Vue.extend({
 
 		async choose(ev) {
 			this.menuOpened = true;
-			const lists = await this.$root.api('users/lists/list');
+			const [antennas, lists] = await Promise.all([
+				this.$root.api('antennas/list'),
+				this.$root.api('users/lists/list')
+			]);
+			const antennaItems = antennas.map(antenna => ({
+				text: antenna.name,
+				icon: faSatellite,
+				action: () => {
+					this.antenna = antenna;
+					this.setSrc('antenna');
+				}
+			}));
 			const listItems = lists.map(list => ({
 				text: list.name,
 				icon: faListUl,
@@ -125,7 +136,7 @@ export default Vue.extend({
 					text: this.$t('_timelines.global'),
 					icon: faGlobe,
 					action: () => { this.setSrc('global') }
-				}, listItems.length > 0 ? null : undefined, ...listItems],
+				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems],
 				fixed: true,
 				noCenter: true,
 				source: ev.currentTarget || ev.target
@@ -141,7 +152,7 @@ export default Vue.extend({
 		saveSrc() {
 			this.$store.commit('device/setTl', {
 				src: this.src,
-				arg: this.src == 'list' ? this.list : this.tagTl
+				arg: this.src == 'list' ? this.list : this.antenna
 			});
 		},
 

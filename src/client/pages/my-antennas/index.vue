@@ -8,9 +8,7 @@
 	<x-antenna v-if="draft" :antenna="draft" @created="onAntennaCreated"/>
 
 	<mk-pagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-		<div class="antenna _panel" v-for="(antenna, i) in items" :key="antenna.id" :data-index="i">
-			<x-antenna :antenna="antenna" @created="onAntennaDeleted"/>
-		</div>
+		<x-antenna v-for="(antenna, i) in items" :key="antenna.id" :data-index="i" :antenna="antenna" @created="onAntennaDeleted"/>
 	</mk-pagination>
 </div>
 </template>
@@ -73,13 +71,6 @@ export default Vue.extend({
 .ieepwinx {
 	> .add {
 		margin: 0 auto 16px auto;
-	}
-
-	> .antennas {
-		> .antenna {
-			display: flex;
-			padding: 16px;
-		}
 	}
 }
 </style>
