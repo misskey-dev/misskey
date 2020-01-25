@@ -1,12 +1,19 @@
 <template>
 <div class="shaynizk _section">
-	<div class="_title">{{ antenna.name }}</div>
+	<div class="_title">{{ name }}</div>
 	<div class="_content">
-		<mk-input v-model="announcement.title" style="margin-top: 8px;">
+		<mk-input v-model="name" style="margin-top: 8px;">
 			<span>{{ $t('name') }}</span>
 		</mk-input>
-		<mk-textarea v-model="announcement.text">
-			<span>{{ $t('text') }}</span>
+		<mk-select v-model="src">
+			<template #label>{{ $t('antennaSource') }}</template>
+			<option value="all">{{ $t('all') }}</option>
+			<option value="home">{{ $t('homeTimeline') }}</option>
+			<option value="list">{{ $t('userList') }}</option>
+		</mk-select>
+		<mk-textarea v-model="keywords">
+			<span>{{ $t('antennaKeywords') }}</span>
+			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
 		</mk-textarea>
 	</div>
 	<div class="_footer">
@@ -21,12 +28,15 @@ import Vue from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
+import MkInput from '../../components/ui/input.vue';
+import MkTextarea from '../../components/ui/textarea.vue';
+import MkSelect from '../../components/ui/select.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		MkButton
+		MkButton, MkInput, MkTextarea, MkSelect
 	},
 
 	props: {
@@ -38,21 +48,34 @@ export default Vue.extend({
 
 	data() {
 		return {
+			name: '',
+			src: '',
+			keywords: '',
 			faTimes
 		};
+	},
+
+	created() {
+		this.name = this.antenna.name;
+		this.src = this.antenna.src;
+		this.keywords = this.antenna.keywords.map(x => x.join(' ')).join('\n');
 	},
 
 	methods: {
 		async saveAntenna() {
 			if (this.antenna.id == null) {
 				await this.$root.api('antennas/create', {
-					name: name
+					name: this.name,
+					src: this.src,
+					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
 				});
 				this.$emit('created');
 			} else {
 				await this.$root.api('antennas/update', {
 					antennaId: this.$route.params.antenna,
-					name: name
+					name: this.name,
+					src: this.src,
+					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
 				});
 			}
 

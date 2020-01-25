@@ -1,10 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { Antennas, Notes } from '../../../../models';
+import { Antennas, Notes, AntennaNotes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['account', 'notes', 'antennas'],

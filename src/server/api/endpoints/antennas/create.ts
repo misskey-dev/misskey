@@ -1,8 +1,9 @@
 import $ from 'cafy';
 import define from '../../define';
 import { genId } from '../../../../misc/gen-id';
-import { Antennas } from '../../../../models';
+import { Antennas, UserLists } from '../../../../models';
 import { ID } from '../../../../misc/cafy-id';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['antennas'],
@@ -21,7 +22,7 @@ export const meta = {
 		},
 
 		userListId: {
-			validator: $.type(ID),
+			validator: $.nullable.optional.type(ID),
 		},
 
 		keywords: {
