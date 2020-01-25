@@ -753,6 +753,7 @@ export default Vue.extend({
 			padding-top: 16px;
 			box-sizing: border-box;
 			background: var(--navBg);
+			border-right: solid 1px var(--divider);
 
 			@media (max-width: $nav-icon-only-threshold) {
 				width: $nav-icon-only-width;
