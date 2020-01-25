@@ -7,6 +7,7 @@ import notesStats from './notes-stats';
 import serverStats from './server-stats';
 import queueStats from './queue-stats';
 import userList from './user-list';
+import antenna from './antenna';
 import messaging from './messaging';
 import messagingIndex from './messaging-index';
 import drive from './drive';
@@ -26,6 +27,7 @@ export default {
 	serverStats,
 	queueStats,
 	userList,
+	antenna,
 	messaging,
 	messagingIndex,
 	drive,

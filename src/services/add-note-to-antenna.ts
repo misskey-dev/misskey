@@ -4,6 +4,7 @@ import { AntennaNotes, Mutings, Notes } from '../models';
 import { genId } from '../misc/gen-id';
 import shouldMuteThisNote from '../misc/should-mute-this-note';
 import { ensure } from '../prelude/ensure';
+import { publishAntennaStream } from './stream';
 
 export async function addNoteToAntenna(antenna: Antenna, note: Note) {
 	AntennaNotes.save({
@@ -11,6 +12,8 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note) {
 		antennaId: antenna.id,
 		noteId: note.id,
 	});
+
+	publishAntennaStream(antenna.id, 'note', note);
 
 	if (antenna.notify) {
 		const mutings = await Mutings.find({
