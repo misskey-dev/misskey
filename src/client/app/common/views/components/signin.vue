@@ -107,7 +107,7 @@ export default Vue.extend({
 					allowCredentials: this.challengeData.securityKeys.map(key => ({
 						id: Buffer.from(key.id, 'hex'),
 						type: 'public-key',
-						transports: ['usb', 'ble', 'nfc']
+						transports: ['usb', 'nfc', 'ble', 'internal']
 					})),
 					timeout: 60 * 1000
 				}
