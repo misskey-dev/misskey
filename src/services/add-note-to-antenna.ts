@@ -1,6 +1,6 @@
 import { Antenna } from '../models/entities/antenna';
 import { Note } from '../models/entities/note';
-import { AntennaNotes, Mutings, Notes, Antennas } from '../models';
+import { AntennaNotes, Mutings, Notes } from '../models';
 import { genId } from '../misc/gen-id';
 import shouldMuteThisNote from '../misc/should-mute-this-note';
 import { ensure } from '../prelude/ensure';
@@ -11,6 +11,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note) {
 		id: genId(),
 		antennaId: antenna.id,
 		noteId: note.id,
+		read: !antenna.notify,
 	});
 
 	publishAntennaStream(antenna.id, 'note', note);
@@ -38,15 +39,10 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note) {
 			return;
 		}
 
-		await Antennas.update(antenna.id, {
-			hasNewNote: true
-		});
-
 		// 2秒経っても既読にならなかったら通知
 		setTimeout(async () => {
-			const fresh = await Antennas.findOne(antenna.id);
-			if (fresh == null) return; // 既に削除されているかもしれない
-			if (!fresh.hasNewNote) {
+			const unread = await AntennaNotes.findOne({ antennaId: antenna.id, read: false });
+			if (unread) {
 				publishMainStream(antenna.userId, 'unreadAntenna', antenna);
 			}
 		}, 2000);

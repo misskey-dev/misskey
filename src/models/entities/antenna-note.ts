@@ -34,4 +34,10 @@ export class AntennaNote {
 	})
 	@JoinColumn()
 	public antenna: Antenna | null;
+
+	@Index()
+	@Column('boolean', {
+		default: false
+	})
+	public read: boolean;
 }

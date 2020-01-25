@@ -270,18 +270,7 @@ export default Vue.extend({
 	methods: {
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
-				const data = {
-					id: this.appearNote.id
-				} as any;
-
-				if (
-					(this.appearNote.visibleUserIds || []).includes(this.$store.state.i.id) ||
-					(this.appearNote.mentions || []).includes(this.$store.state.i.id)
-				) {
-					data.read = true;
-				}
-
-				this.connection.send('sn', data);
+				this.connection.send('sn', { id: this.appearNote.id });
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},

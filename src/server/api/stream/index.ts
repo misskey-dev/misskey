@@ -120,7 +120,7 @@ export default class Connection {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 		}
 
-		if (payload.read && this.user) {
+		if (this.user) {
 			readNote(this.user.id, payload.id);
 		}
 	}

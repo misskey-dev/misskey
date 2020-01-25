@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Antenna } from '../entities/antenna';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
+import { AntennaNotes } from '..';
 
 export type PackedAntenna = SchemaType<typeof packedAntennaSchema>;
 
@@ -12,10 +13,17 @@ export class AntennaRepository extends Repository<Antenna> {
 	): Promise<PackedAntenna> {
 		const antenna = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
+		const hasUnreadNote = (await AntennaNotes.findOne({ antennaId: antenna.id, read: false })) != null;
+
 		return {
 			id: antenna.id,
 			createdAt: antenna.createdAt.toISOString(),
 			name: antenna.name,
+			keywords: antenna.keywords,
+			src: antenna.src,
+			notify: antenna.notify,
+			withFile: antenna.withFile,
+			hasUnreadNote
 		};
 	}
 }

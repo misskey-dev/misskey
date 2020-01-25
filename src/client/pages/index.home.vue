@@ -2,6 +2,7 @@
 <div class="mk-home" v-hotkey.global="keymap">
 	<portal to="header">
 		<button @click="choose" class="_button _kjvfvyph_">
+			<i><fa v-if="$store.state.i.hasUnreadAntenna" :icon="faCircle"/></i>
 			<fa v-if="src === 'home'" :icon="faHome"/>
 			<fa v-if="src === 'local'" :icon="faComments"/>
 			<fa v-if="src === 'social'" :icon="faShareAlt"/>
@@ -18,7 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
@@ -40,7 +41,7 @@ export default Vue.extend({
 			list: null,
 			antenna: null,
 			menuOpened: false,
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faCircle
 		};
 	},
 
@@ -106,6 +107,7 @@ export default Vue.extend({
 			const antennaItems = antennas.map(antenna => ({
 				text: antenna.name,
 				icon: faSatellite,
+				indicate: antenna.hasUnreadNote,
 				action: () => {
 					this.antenna = antenna;
 					this.setSrc('antenna');
@@ -164,9 +166,25 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+@keyframes blink {
+	0% { opacity: 1; }
+	30% { opacity: 1; }
+	90% { opacity: 0; }
+}
+
 ._kjvfvyph_ {
+	position: relative;
 	height: 100%;
 	padding: 0 16px;
 	font-weight: bold;
+
+	> i {
+		position: absolute;
+		top: 16px;
+		right: 8px;
+		color: var(--primary);
+		font-size: 12px;
+		animation: blink 1s infinite;
+	}
 }
 </style>

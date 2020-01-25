@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes } from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
@@ -94,6 +94,17 @@ export class UserRepository extends Repository<User> {
 		} : {});
 
 		return count > 0;
+	}
+
+	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
+		const antennas = await Antennas.find({ userId });
+		
+		const unread = antennas.length > 0 ? await AntennaNotes.findOne({
+			antennaId: In(antennas.map(x => x.id)),
+			read: false
+		}) : null;
+
+		return unread != null;
 	}
 
 	public async pack(
@@ -206,6 +217,7 @@ export class UserRepository extends Repository<User> {
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
 				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
+				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
 				hasUnreadMessagingMessage: this.getHasUnreadMessagingMessage(user.id),
 				hasUnreadNotification: Notifications.count({
 					where: {

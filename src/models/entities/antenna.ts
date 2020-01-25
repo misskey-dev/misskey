@@ -62,9 +62,4 @@ export class Antenna {
 
 	@Column('boolean')
 	public notify: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public hasNewNote: boolean;
 }

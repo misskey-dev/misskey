@@ -205,6 +205,18 @@ export default class MiOS extends EventEmitter {
 				});
 			});
 
+			main.on('readAllAntennas', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadAntenna: false
+				});
+			});
+
+			main.on('unreadAntenna', () => {
+				this.store.dispatch('mergeMe', {
+					hasUnreadAntenna: true
+				});
+			});
+
 			main.on('readAllAnnouncements', () => {
 				this.store.dispatch('mergeMe', {
 					hasUnreadAnnouncement: false
