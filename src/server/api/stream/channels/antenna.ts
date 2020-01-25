@@ -2,7 +2,6 @@ import autobind from 'autobind-decorator';
 import Channel from '../channel';
 import { Notes } from '../../../../models';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
-import { PackedNote } from '../../../../models/repositories/note';
 
 export default class extends Channel {
 	public readonly chName = 'antenna';
@@ -21,9 +20,9 @@ export default class extends Channel {
 	@autobind
 	private async onEvent(data: any) {
 		const { type, body } = data;
-		
+
 		if (type === 'note') {
-			const note = await Notes.pack(body, this.user, { detail: true });
+			const note = await Notes.pack(body.id, this.user, { detail: true });
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (shouldMuteThisNote(note, this.muting)) return;
