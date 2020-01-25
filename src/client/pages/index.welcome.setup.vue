@@ -71,7 +71,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-setup {
-	max-width: 470px;
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: hidden;
@@ -81,8 +80,7 @@ export default Vue.extend({
 		font-size: 1.5em;
 		text-align: center;
 		padding: 32px;
-		-webkit-backdrop-filter: blur(8px);
-		backdrop-filter: blur(8px);
+		background: var(--primary);
 		color: #fff;
 	}
 
