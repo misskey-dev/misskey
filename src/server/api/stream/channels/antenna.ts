@@ -19,16 +19,18 @@ export default class extends Channel {
 	}
 
 	@autobind
-	private async onEvent(key: string, value: any) {
-		if (key === 'note') {
-			const note = await Notes.pack(value, this.user, { detail: true });
+	private async onEvent(data: any) {
+		const { type, body } = data;
+		
+		if (type === 'note') {
+			const note = await Notes.pack(body, this.user, { detail: true });
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (shouldMuteThisNote(note, this.muting)) return;
 
 			this.send('note', note);
 		} else {
-			this.send(key, value);
+			this.send(type, body);
 		}
 	}
 
