@@ -17,7 +17,7 @@ export default class extends Channel {
 	public async init(params: any) {
 		this.listId = params.listId as string;
 
-		// Check owner and existence
+		// Check existence and owner
 		const list = await UserLists.findOne({
 			id: this.listId,
 			userId: this.user!.id
