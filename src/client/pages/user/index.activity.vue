@@ -17,7 +17,7 @@ export default Vue.extend({
 		limit: {
 			type: Number,
 			required: false,
-			default: 30
+			default: 40
 		}
 	},
 	data() {
