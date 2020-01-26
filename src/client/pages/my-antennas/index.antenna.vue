@@ -14,7 +14,7 @@
 		</mk-select>
 		<mk-textarea v-model="users" v-if="src === 'users'">
 			<span>{{ $t('users') }}</span>
-			<template #desc>{{ $t('antennaUsersDescription') }}</template>
+			<template #desc>{{ $t('antennaUsersDescription') }} <button class="_textButton" @click="addUser">{{ $t('addUser') }}</button></template>
 		</mk-textarea>
 		<mk-textarea v-model="keywords">
 			<span>{{ $t('antennaKeywords') }}</span>
@@ -40,6 +40,8 @@ import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
+import MkUserSelect from '../../components/user-select.vue';
+import getAcct from '../../../misc/acct/render';
 
 export default Vue.extend({
 	i18n,
@@ -127,6 +129,14 @@ export default Vue.extend({
 				iconOnly: true, autoClose: true
 			});
 			this.$emit('deleted');
+		},
+
+		addUser() {
+			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+				this.users = this.users.trim();
+				this.users += '\n@' + getAcct(user);
+				this.users = this.users.trim();
+			});
 		}
 	}
 });
