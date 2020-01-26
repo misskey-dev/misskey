@@ -56,6 +56,23 @@
 	</section>
 
 	<section class="_section">
+		<div class="_title"><fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
+		<div class="_content">
+			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworker-info') }}</template></mk-switch>
+			<template v-if="enableServiceWorker">
+				<mk-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></mk-info>
+				<mk-horizon-group inputs class="fit-bottom">
+					<mk-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapid-publickey') }}</mk-input>
+					<mk-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapid-privatekey') }}</mk-input>
+				</mk-horizon-group>
+			</template>
+		</div>
+		<div class="_footer">
+			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		</div>
+	</section>
+
+	<section class="_section">
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="pinnedUsers" style="margin-top: 0;">
@@ -156,7 +173,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from '../../components/ui/button.vue';
@@ -208,6 +225,9 @@ export default Vue.extend({
 			enableRecaptcha: false,
 			recaptchaSiteKey: null,
 			recaptchaSecretKey: null,
+			enableServiceWorker: false,
+			swPublicKey: null,
+			swPrivateKey: null,
 			enableTwitterIntegration: false,
 			twitterConsumerKey: null,
 			twitterConsumerSecret: null,
@@ -217,7 +237,7 @@ export default Vue.extend({
 			enableDiscordIntegration: false,
 			discordClientId: null,
 			discordClientSecret: null,
-			faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey
+			faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt
 		}
 	},
 
@@ -244,6 +264,9 @@ export default Vue.extend({
 			this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
 			this.blockedHosts = this.meta.blockedHosts.join('\n');
 			this.pinnedUsers = this.meta.pinnedUsers.join('\n');
+			this.enableServiceWorker = this.meta.enableServiceWorker;
+			this.swPublicKey = this.meta.swPublickey;
+			this.swPrivateKey = this.meta.swPrivateKey;
 			this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
 			this.twitterConsumerKey = this.meta.twitterConsumerKey;
 			this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
@@ -287,6 +310,9 @@ export default Vue.extend({
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				blockedHosts: this.blockedHosts.split('\n') || [],
 				pinnedUsers: this.pinnedUsers ? this.pinnedUsers.split('\n') : [],
+				enableServiceWorker: this.enableServiceWorker,
+				swPublicKey: this.swPublicKey,
+				swPrivateKey: this.swPrivateKey,
 				enableTwitterIntegration: this.enableTwitterIntegration,
 				twitterConsumerKey: this.twitterConsumerKey,
 				twitterConsumerSecret: this.twitterConsumerSecret,
