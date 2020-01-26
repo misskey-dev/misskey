@@ -1,15 +1,9 @@
 <template>
 <section class="mk-settings-page-profile _section">
-	<div class="_title"><fa :icon="faUser"/> {{ $t('profile') }}</div>
+	<div class="_title"><fa :icon="faUser"/> {{ $t('profile') }}<small style="display: block; font-weight: normal; opacity: 0.6;">@{{ $store.state.i.username }}@{{ host }}</small></div>
 	<div class="_content">
 		<mk-input v-model="name" :max="30">
 			<span>{{ $t('_profile.name') }}</span>
-		</mk-input>
-
-		<mk-input :value="$store.state.i.username" readonly>
-			<span>{{ $t('_profile.username') }}</span>
-			<template #prefix>@</template>
-			<template #suffix>@{{ host }}</template>
 		</mk-input>
 
 		<mk-textarea v-model="description" :max="500">
