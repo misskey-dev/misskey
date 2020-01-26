@@ -217,7 +217,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		const followers = followings.map(f => f.followerId);
 		
 		for (const antenna of antennas) {
-			checkHitAntenna(antenna, note, followers).then(hit => {
+			checkHitAntenna(antenna, note, user, followers).then(hit => {
 				if (hit) {
 					addNoteToAntenna(antenna, note);
 				}

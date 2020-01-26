@@ -18,7 +18,7 @@ export const meta = {
 		},
 
 		src: {
-			validator: $.str.or(['home', 'all', 'list'])
+			validator: $.str.or(['home', 'all', 'users', 'list'])
 		},
 
 		userListId: {
@@ -27,6 +27,14 @@ export const meta = {
 
 		keywords: {
 			validator: $.arr($.arr($.str))
+		},
+
+		users: {
+			validator: $.arr($.str)
+		},
+
+		caseSensitive: {
+			validator: $.bool
 		},
 
 		withFile: {
@@ -69,6 +77,8 @@ export default define(meta, async (ps, user) => {
 		src: ps.src,
 		userListId: userList ? userList.id : null,
 		keywords: ps.keywords,
+		users: ps.users,
+		caseSensitive: ps.caseSensitive,
 		withFile: ps.withFile,
 		notify: ps.notify,
 	});

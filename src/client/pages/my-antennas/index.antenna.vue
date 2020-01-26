@@ -7,27 +7,33 @@
 		</mk-input>
 		<mk-select v-model="src">
 			<template #label>{{ $t('antennaSource') }}</template>
-			<option value="all">{{ $t('all') }}</option>
-			<option value="home">{{ $t('homeTimeline') }}</option>
-			<option value="list">{{ $t('userList') }}</option>
+			<option value="all">{{ $t('_antennaSources.all') }}</option>
+			<option value="home">{{ $t('_antennaSources.homeTimeline') }}</option>
+			<option value="users">{{ $t('_antennaSources.users') }}</option>
+			<option value="list">{{ $t('_antennaSources.userList') }}</option>
 		</mk-select>
+		<mk-textarea v-model="users" v-if="src === 'users'">
+			<span>{{ $t('users') }}</span>
+			<template #desc>{{ $t('antennaUsersDescription') }}</template>
+		</mk-textarea>
 		<mk-textarea v-model="keywords">
 			<span>{{ $t('antennaKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
 		</mk-textarea>
+		<mk-switch v-model="caseSensitive">{{ $t('caseSensitive') }}</mk-switch>
 		<mk-switch v-model="withFile">{{ $t('withFileAntenna') }}</mk-switch>
 		<mk-switch v-model="notify">{{ $t('notifyAntenna') }}</mk-switch>
 	</div>
 	<div class="_footer">
-		<mk-button inline @click="saveAntenna()" primary>{{ $t('save') }}</mk-button>
-		<mk-button inline @click="deleteAntenna()" v-if="antenna.id != null">{{ $t('delete') }}</mk-button>
+		<mk-button inline @click="saveAntenna()" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		<mk-button inline @click="deleteAntenna()" v-if="antenna.id != null"><fa :icon="faTrash"/> {{ $t('delete') }}</mk-button>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
@@ -53,17 +59,21 @@ export default Vue.extend({
 		return {
 			name: '',
 			src: '',
+			users: '',
 			keywords: '',
+			caseSensitive: false,
 			withFile: false,
 			notify: false,
-			faTimes
+			faSave, faTrash
 		};
 	},
 
 	created() {
 		this.name = this.antenna.name;
 		this.src = this.antenna.src;
+		this.users = this.antenna.users.join('\n');
 		this.keywords = this.antenna.keywords.map(x => x.join(' ')).join('\n');
+		this.caseSensitive = this.antenna.caseSensitive;
 		this.withFile = this.antenna.withFile;
 		this.notify = this.antenna.notify;
 	},
@@ -76,6 +86,8 @@ export default Vue.extend({
 					src: this.src,
 					withFile: this.withFile,
 					notify: this.notify,
+					caseSensitive: this.caseSensitive,
+					users: this.users.trim().split('\n').map(x => x.trim()),
 					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
 				});
 				this.$emit('created');
@@ -86,6 +98,8 @@ export default Vue.extend({
 					src: this.src,
 					withFile: this.withFile,
 					notify: this.notify,
+					caseSensitive: this.caseSensitive,
+					users: this.users.trim().split('\n').map(x => x.trim()),
 					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
 				});
 			}

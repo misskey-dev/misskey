@@ -296,14 +296,20 @@ antennas: "アンテナ"
 manageAntennas: "アンテナの管理"
 name: "名前"
 antennaSource: "受信対象"
-homeTimeline: "ホームタイムライン"
-userList: "ユーザーリスト"
 antennaKeywords: "受信キーワード"
 antennaKeywordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
 notifyAntenna: "新しい投稿を通知する"
 withFileAntenna: "ファイルが添付された投稿のみ"
 serviceworker: "ServiceWorker"
 enableServiceworker: "ServiceWorkerを有効にする"
+antennaUsersDescription: "ユーザー名を改行で区切って指定します"
+caseSensitive: "大文字小文字を区別する"
+
+_antennaSources:
+  all: "全ての投稿"
+  homeTimeline: "フォローしているユーザーの投稿"
+  users: "指定した一人または複数のユーザーの投稿"
+  userList: "指定したリストのユーザーの投稿"
 
 _weekday:
   sunday: "日曜日"

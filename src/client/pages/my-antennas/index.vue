@@ -49,7 +49,9 @@ export default Vue.extend({
 			this.draft = {
 				name: '',
 				src: 'all',
+				users: [],
 				keywords: [],
+				caseSensitive: false,
 				withFile: false,
 				notify: false
 			};

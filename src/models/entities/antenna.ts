@@ -32,8 +32,8 @@ export class Antenna {
 	})
 	public name: string;
 
-	@Column('enum', { enum: ['home', 'all', 'list'] })
-	public src: 'home' | 'all' | 'list';
+	@Column('enum', { enum: ['home', 'all', 'users', 'list'] })
+	public src: 'home' | 'all' | 'users' | 'list';
 
 	@Column({
 		...id(),
@@ -47,10 +47,21 @@ export class Antenna {
 	@JoinColumn()
 	public userList: UserList | null;
 
+	@Column('varchar', {
+		length: 1024, array: true,
+		default: '{}'
+	})
+	public users: string[];
+
 	@Column('jsonb', {
 		default: []
 	})
 	public keywords: string[][];
+
+	@Column('boolean', {
+		default: false
+	})
+	public caseSensitive: boolean;
 
 	@Column('boolean')
 	public withFile: boolean;
