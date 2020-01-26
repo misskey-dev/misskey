@@ -105,7 +105,7 @@ export default Vue.extend({
 			if (canceled) return;
 
 			await this.$root.api('antennas/delete', {
-				antennaId: this.$route.params.antenna
+				antennaId: this.antenna.id,
 			});
 
 			this.$root.dialog({
