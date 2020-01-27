@@ -13,7 +13,7 @@
 			<div class="body">
 				<div class="name">
 					<router-link class="name" :to="user | userPage" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
-					<p class="username">@{{ user | acct }}</p>
+					<span class="username"><mk-acct :user="user"/></span>
 				</div>
 				<div class="description" v-if="user.description" :title="user.description">
 					<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :plain="true" :nowrap="true"/>
@@ -94,36 +94,21 @@ export default Vue.extend({
 		}
 
 		> .body {
-			display: flex;
 			width: calc(100% - 54px);
 
 			> .name {
-				width: 45%;
-
 				> .name {
-					margin: 0;
-					font-size: 16px;
-					line-height: 24px;
+					margin-right: 8px;
 				}
 
 				> .username {
-					display: block;
-					margin: 0;
-					font-size: 15px;
-					line-height: 16px;
 					opacity: 0.7;
 				}
 			}
 
 			> .description {
-				width: 55%;
-				line-height: 42px;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
 				opacity: 0.7;
-				font-size: 14px;
-				padding-right: 40px;
+				font-size: 90%;
 			}
 
 			> .koudoku-button {

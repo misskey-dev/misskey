@@ -1,5 +1,8 @@
 <template>
 <div class="mk-instance-users">
+	<portal to="icon"><fa :icon="faUsers"/></portal>
+	<portal to="title">{{ $t('users') }}</portal>
+
 	<section class="_section lookup">
 		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">

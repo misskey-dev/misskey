@@ -313,8 +313,6 @@ withFiles: "ファイル付き"
 silence: "サイレンス"
 silenceConfirm: "サイレンスしますか？"
 unsilenceConfirm: "サイレンス解除しますか？"
-suspendConfirm: "凍結しますか？"
-unsuspendConfirm: "凍結解除しますか？"
 
 _antennaSources:
   all: "全ての投稿"
