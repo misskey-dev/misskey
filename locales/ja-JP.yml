@@ -306,6 +306,7 @@ serviceworker: "ServiceWorker"
 enableServiceworker: "ServiceWorkerを有効にする"
 antennaUsersDescription: "ユーザー名を改行で区切って指定します"
 caseSensitive: "大文字小文字を区別する"
+connectedTo: "次のアカウントに接続されています"
 
 _antennaSources:
   all: "全ての投稿"

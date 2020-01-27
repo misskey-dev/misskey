@@ -3,21 +3,21 @@
 	<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 	<div class="_content" v-if="enableTwitterIntegration">
 		<header><fa :icon="faTwitter"/> Twitter</header>
-		<p v-if="$store.state.i.twitter">{{ $t('connected-to') }}: <a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
+		<p v-if="$store.state.i.twitter">{{ $t('connectedTo') }}: <a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
 		<mk-button v-if="$store.state.i.twitter" @click="disconnectTwitter">{{ $t('disconnectSerice') }}</mk-button>
 		<mk-button v-else @click="connectTwitter">{{ $t('connectSerice') }}</mk-button>
 	</div>
 
 	<div class="_content" v-if="enableDiscordIntegration">
 		<header><fa :icon="faDiscord"/> Discord</header>
-		<p v-if="$store.state.i.discord">{{ $t('connected-to') }}: <a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
+		<p v-if="$store.state.i.discord">{{ $t('connectedTo') }}: <a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
 		<mk-button v-if="$store.state.i.discord" @click="disconnectDiscord">{{ $t('disconnectSerice') }}</mk-button>
 		<mk-button v-else @click="connectDiscord">{{ $t('connectSerice') }}</mk-button>
 	</div>
 
 	<div class="_content" v-if="enableGithubIntegration">
 		<header><fa :icon="faGithub"/> GitHub</header>
-		<p v-if="$store.state.i.github">{{ $t('connected-to') }}: <a :href="`https://github.com/${$store.state.i.github.login}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.github.login }}</a></p>
+		<p v-if="$store.state.i.github">{{ $t('connectedTo') }}: <a :href="`https://github.com/${$store.state.i.github.login}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.github.login }}</a></p>
 		<mk-button v-if="$store.state.i.github" @click="disconnectGithub">{{ $t('disconnectSerice') }}</mk-button>
 		<mk-button v-else @click="connectGithub">{{ $t('connectSerice') }}</mk-button>
 	</div>
