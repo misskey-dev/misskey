@@ -24,6 +24,7 @@ export class AntennaRepository extends Repository<Antenna> {
 			users: antenna.users,
 			caseSensitive: antenna.caseSensitive,
 			notify: antenna.notify,
+			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
 			hasUnreadNote
 		};

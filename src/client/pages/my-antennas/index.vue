@@ -51,6 +51,7 @@ export default Vue.extend({
 				src: 'all',
 				users: [],
 				keywords: [],
+				withReplies: false,
 				caseSensitive: false,
 				withFile: false,
 				notify: false

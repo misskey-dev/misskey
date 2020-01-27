@@ -63,6 +63,11 @@ export class Antenna {
 	})
 	public caseSensitive: boolean;
 
+	@Column('boolean', {
+		default: false
+	})
+	public withReplies: boolean;
+
 	@Column('boolean')
 	public withFile: boolean;
 

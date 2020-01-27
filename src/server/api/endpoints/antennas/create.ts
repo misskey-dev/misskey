@@ -37,6 +37,10 @@ export const meta = {
 			validator: $.bool
 		},
 
+		withReplies: {
+			validator: $.bool
+		},
+
 		withFile: {
 			validator: $.bool
 		},
@@ -79,6 +83,7 @@ export default define(meta, async (ps, user) => {
 		keywords: ps.keywords,
 		users: ps.users,
 		caseSensitive: ps.caseSensitive,
+		withReplies: ps.withReplies,
 		withFile: ps.withFile,
 		notify: ps.notify,
 	});

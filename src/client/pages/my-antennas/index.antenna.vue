@@ -16,6 +16,7 @@
 			<span>{{ $t('users') }}</span>
 			<template #desc>{{ $t('antennaUsersDescription') }} <button class="_textButton" @click="addUser">{{ $t('addUser') }}</button></template>
 		</mk-textarea>
+		<mk-switch v-model="withReplies">{{ $t('withReplies') }}</mk-switch>
 		<mk-textarea v-model="keywords">
 			<span>{{ $t('antennaKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
@@ -64,6 +65,7 @@ export default Vue.extend({
 			users: '',
 			keywords: '',
 			caseSensitive: false,
+			withReplies: false,
 			withFile: false,
 			notify: false,
 			faSave, faTrash
@@ -76,6 +78,7 @@ export default Vue.extend({
 		this.users = this.antenna.users.join('\n');
 		this.keywords = this.antenna.keywords.map(x => x.join(' ')).join('\n');
 		this.caseSensitive = this.antenna.caseSensitive;
+		this.withReplies = this.antenna.withReplies;
 		this.withFile = this.antenna.withFile;
 		this.notify = this.antenna.notify;
 	},
@@ -86,6 +89,7 @@ export default Vue.extend({
 				await this.$root.api('antennas/create', {
 					name: this.name,
 					src: this.src,
+					withReplies: this.withReplies,
 					withFile: this.withFile,
 					notify: this.notify,
 					caseSensitive: this.caseSensitive,
@@ -98,6 +102,7 @@ export default Vue.extend({
 					antennaId: this.antenna.id,
 					name: this.name,
 					src: this.src,
+					withReplies: this.withReplies,
 					withFile: this.withFile,
 					notify: this.notify,
 					caseSensitive: this.caseSensitive,

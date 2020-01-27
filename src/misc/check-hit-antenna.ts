@@ -12,6 +12,8 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 		if (!followers.includes(antenna.userId)) return false;
 	}
 
+	if (!antenna.withReplies && note.replyId != null) return false;
+
 	if (antenna.src === 'home') {
 		if (!followers.includes(antenna.userId)) return false;
 	} else if (antenna.src === 'list') {
