@@ -17,6 +17,7 @@ export const router = new VueRouter({
 		{ path: '/announcements', component: () => import('./pages/announcements.vue').then(m => m.default) },
 		{ path: '/featured', component: () => import('./pages/featured.vue').then(m => m.default) },
 		{ path: '/explore', component: () => import('./pages/explore.vue').then(m => m.default) },
+		{ path: '/explore/tags/:tag', props: true, component: () => import('./pages/explore.vue').then(m => m.default) },
 		{ path: '/search', component: () => import('./pages/search.vue').then(m => m.default) },
 		{ path: '/my/favorites', component: () => import('./pages/favorites.vue').then(m => m.default) },
 		{ path: '/my/messages', component: () => import('./pages/messages.vue').then(m => m.default) },

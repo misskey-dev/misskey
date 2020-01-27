@@ -59,6 +59,7 @@ import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-soli
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../i18n';
 import XUserList from '../components/user-list.vue';
+import MkContainer from '../components/ui/container.vue';
 
 export default Vue.extend({
 	i18n,
@@ -70,7 +71,8 @@ export default Vue.extend({
 	},
 
 	components: {
-		XUserList
+		XUserList,
+		MkContainer,
 	},
 
 	props: {
