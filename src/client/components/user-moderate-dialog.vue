@@ -3,6 +3,8 @@
 	<template #header><mk-user-name :user="user"/></template>
 	<div class="vrcsvlkm">
 		<mk-button @click="changePassword()">{{ $t('changePassword') }}</mk-button>
+		<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
+		<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
 	</div>
 </x-window>
 </template>
@@ -11,6 +13,7 @@
 import Vue from 'vue';
 import i18n from '../i18n';
 import MkButton from './ui/button.vue';
+import MkSwitch from './ui/switch.vue';
 import XWindow from './window.vue';
 
 export default Vue.extend({
@@ -18,6 +21,7 @@ export default Vue.extend({
 
 	components: {
 		MkButton,
+		MkSwitch,
 		XWindow,
 	},
 
@@ -30,6 +34,8 @@ export default Vue.extend({
 
 	data() {
 		return {
+			silenced: this.user.isSilenced,
+			suspended: this.user.isSuspended,
 		};
 	},
 
@@ -64,6 +70,32 @@ export default Vue.extend({
 			}).finally(() => {
 				dialog.close();
 			});
+		},
+
+		async toggleSilence() {
+			const confirm = await this.$root.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				text: this.silenced ? this.$t('silenceConfirm') : this.$t('unsilenceConfirm'),
+			});
+			if (confirm.canceled) {
+				this.silenced = !this.silenced;
+			} else {
+				this.$root.api(this.silenced ? 'admin/silence-user' : 'admin/unsilence-user', { userId: this.user.id });
+			}
+		},
+
+		async toggleSuspend() {
+			const confirm = await this.$root.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				text: this.suspended ? this.$t('suspendConfirm') : this.$t('unsuspendConfirm'),
+			});
+			if (confirm.canceled) {
+				this.suspended = !this.suspended;
+			} else {
+				this.$root.api(this.silenced ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
+			}
 		}
 	}
 });

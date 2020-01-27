@@ -8,6 +8,9 @@
 			</mk-input>
 			<mk-button @click="showUser()" primary><fa :icon="faSearch"/> {{ $t('lookup') }}</mk-button>
 		</div>
+		<div class="_footer">
+			<mk-button inline primary @click="search()"><fa :icon="faSearch"/> {{ $t('search') }}</mk-button>
+		</div>
 	</section>
 
 	<section class="_section users">
@@ -38,6 +41,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkPagination from '../../components/ui/pagination.vue';
 import MkUserModerateDialog from '../../components/user-moderate-dialog.vue';
+import MkUserSelect from '../../components/user-select.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -138,9 +142,18 @@ export default Vue.extend({
 			});
 		},
 
-		show(user) {
+		async show(user, info) {
+			if (info == null) info = await this.$root.api('admin/show-user', { userId: user.id });
 			this.$root.new(MkUserModerateDialog, {
-				user
+				user: { ...user, ...info }
+			});
+		},
+
+		search() {
+			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+				this.$root.api('admin/show-user', { userId: user.id }).then(info => {
+					this.show(user, info);
+				});
 			});
 		}
 	}
