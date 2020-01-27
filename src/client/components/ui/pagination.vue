@@ -1,5 +1,5 @@
 <template>
-<sequential-entrance class="ui-pagination" :class="{ autoMargin }">
+<sequential-entrance class="cxiknjgy" :class="{ autoMargin }">
 	<slot :items="items"></slot>
 	<div class="empty" v-if="empty" key="_empty_">
 		<slot name="empty"></slot>
@@ -47,7 +47,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ui-pagination {
+.cxiknjgy {
 	&.autoMargin > *:not(:last-child) {
 		margin-bottom: 16px;
 

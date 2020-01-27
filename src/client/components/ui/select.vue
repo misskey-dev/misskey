@@ -1,5 +1,5 @@
 <template>
-<div class="ui-select" :class="{ focused, disabled, filled, inline }">
+<div class="eiipwacr" :class="{ focused, disabled, filled, inline }">
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
 	<div class="input" @click="focus">
 		<span class="label" ref="label"><slot name="label"></slot></span>
@@ -73,7 +73,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ui-select {
+.eiipwacr {
 	position: relative;
 	margin: 32px 0;
 

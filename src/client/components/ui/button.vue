@@ -1,5 +1,5 @@
 <template>
-<component class="ui-button _button"
+<component class="bghgjjyj _button"
 	:is="link ? 'a' : 'button'"
 	:class="{ inline, primary }"
 	:type="type"
@@ -98,7 +98,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ui-button {
+.bghgjjyj {
 	position: relative;
 	display: block;
 	min-width: 100px;
@@ -152,11 +152,11 @@ export default Vue.extend({
 		}
 	}
 
-	&.inline + .ui-button {
+	&.inline + .bghgjjyj {
 		margin-left: 8px;
 	}
 
-	&:not(.inline) + .ui-button {
+	&:not(.inline) + .bghgjjyj {
 		margin-top: 16px;
 	}
 

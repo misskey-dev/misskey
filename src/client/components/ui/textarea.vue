@@ -1,5 +1,5 @@
 <template>
-<div class="ui-textarea" :class="{ focused, filled, tall, pre }">
+<div class="adhpbeos" :class="{ focused, filled, tall, pre }">
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
 		<textarea ref="input"
@@ -81,7 +81,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ui-textarea {
+.adhpbeos {
 	margin: 42px 0 32px 0;
 	position: relative;
 

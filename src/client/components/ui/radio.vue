@@ -1,6 +1,6 @@
 <template>
 <div
-	class="ui-radio"
+	class="novjtctn"
 	:class="{ disabled, checked }"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
@@ -49,7 +49,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ui-radio {
+.novjtctn {
 	display: inline-block;
 	margin: 0 32px 0 0;
 	cursor: pointer;

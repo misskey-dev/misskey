@@ -23,13 +23,13 @@
 				<x-folder v-for="folder in folders" :key="folder.id" class="folder" :folder="folder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<ui-button v-if="moreFolders">{{ $t('@.load-more') }}</ui-button>
+				<mk-button v-if="moreFolders">{{ $t('@.load-more') }}</mk-button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="selectMode"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="n in 16"></div>
-				<ui-button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('@.load-more') }}</ui-button>
+				<mk-button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('@.load-more') }}</mk-button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
@@ -52,12 +52,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faCloudUploadAlt, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import XUploader from './uploader.vue';
+import MkButton from './ui/button.vue';
 
 export default Vue.extend({
 	i18n,
@@ -67,6 +68,7 @@ export default Vue.extend({
 		XFolder,
 		XFile,
 		XUploader,
+		MkButton,
 	},
 
 	props: {

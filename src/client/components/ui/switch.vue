@@ -1,6 +1,6 @@
 <template>
 <div
-	class="ui-switch"
+	class="ziffeoms"
 	:class="{ disabled, checked }"
 	role="switch"
 	:aria-checked="checked"
@@ -57,7 +57,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ui-switch {
+.ziffeoms {
 	position: relative;
 	display: flex;
 	margin: 32px 0;

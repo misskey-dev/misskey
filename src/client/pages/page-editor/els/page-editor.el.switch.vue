@@ -5,7 +5,7 @@
 	<section class="kjuadyyj">
 		<mk-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._switch.name') }}</span></mk-input>
 		<mk-input v-model="value.text"><span>{{ $t('_pages.blocks._switch.text') }}</span></mk-input>
-		<ui-switch v-model="value.default"><span>{{ $t('_pages.blocks._switch.default') }}</span></ui-switch>
+		<mk-switch v-model="value.default"><span>{{ $t('_pages.blocks._switch.default') }}</span></mk-switch>
 	</section>
 </x-container>
 </template>
