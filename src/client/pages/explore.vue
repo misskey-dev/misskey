@@ -10,16 +10,16 @@
 
 	<template v-if="tag == null">
 		<x-user-list :pagination="pinnedUsers" :expanded="false">
-			<fa :icon="faBookmark" fixed-width/>{{ $t('pinned-users') }}
+			<fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}
 		</x-user-list>
 		<x-user-list :pagination="popularUsers" :expanded="false">
-			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
+			<fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
 		</x-user-list>
 		<x-user-list :pagination="recentlyUpdatedUsers" :expanded="false">
-			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
+			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
 		</x-user-list>
 		<x-user-list :pagination="recentlyRegisteredUsers" :expanded="false">
-			<fa :icon="faPlus" fixed-width/>{{ $t('recently-registered-users') }}
+			<fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}
 		</x-user-list>
 	</template>
 
@@ -41,13 +41,13 @@
 	</x-user-list>
 	<template v-if="tag == null">
 		<x-user-list :pagination="popularUsersF" :expanded="false">
-			<fa :icon="faChartLine" fixed-width/>{{ $t('popular-users') }}
+			<fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
 		</x-user-list>
 		<x-user-list :pagination="recentlyUpdatedUsersF" :expanded="false">
-			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recently-updated-users') }}
+			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
 		</x-user-list>
 		<x-user-list :pagination="recentlyRegisteredUsersF" :expanded="false">
-			<fa :icon="faRocket" fixed-width/>{{ $t('recently-discovered-users') }}
+			<fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}
 		</x-user-list>
 	</template>
 </div>

@@ -313,6 +313,10 @@ withFiles: "ファイル付き"
 silence: "サイレンス"
 silenceConfirm: "サイレンスしますか？"
 unsilenceConfirm: "サイレンス解除しますか？"
+popularUsers: "人気のユーザー"
+recentlyUpdatedUsers: "最近投稿したユーザー"
+recentlyRegisteredUsers: "最近登録したユーザー"
+recentlyDiscoveredUsers: "最近発見されたユーザー"
 
 _antennaSources:
   all: "全ての投稿"
