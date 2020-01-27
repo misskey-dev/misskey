@@ -1,5 +1,12 @@
 <template>
-<x-notes ref="timeline" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
+<div class="kjeftjfm">
+	<div class="with">
+		<button class="_button" @click="with_ = null" :class="{ active: with_ === null }">{{ $t('notes') }}</button>
+		<button class="_button" @click="with_ = 'replies'" :class="{ active: with_ === 'replies' }">{{ $t('notesAndReplies') }}</button>
+		<button class="_button" @click="with_ = 'files'" :class="{ active: with_ === 'files' }">{{ $t('withFiles') }}</button>
+	</div>
+	<x-notes ref="timeline" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
+</div>
 </template>
 
 <script lang="ts">
@@ -16,28 +23,29 @@ export default Vue.extend({
 			type: Object,
 			required: true,
 		},
-		withMedia: {
-			type: Boolean,
-			required: false,
-			default: false
-		}
 	},
 
 	watch: {
 		user() {
 			this.$refs.timeline.reload();
-		}
+		},
+
+		with_() {
+			this.$refs.timeline.reload();
+		},
 	},
 
 	data() {
 		return {
 			date: null,
+			with_: null,
 			pagination: {
 				endpoint: 'users/notes',
 				limit: 10,
 				params: init => ({
 					userId: this.user.id,
-					withFiles: this.withMedia,
+					includeReplies: this.with_ === 'replies',
+					withFiles: this.with_ === 'files',
 					untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
 				})
 			}
@@ -45,3 +53,20 @@ export default Vue.extend({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.kjeftjfm {
+	> .with {
+		display: flex;
+
+		> button {
+			flex: 1;
+			padding: 8px;
+
+			&.active {
+				color: var(--primary);
+			}
+		}
+	}
+}
+</style>
