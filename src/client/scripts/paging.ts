@@ -54,10 +54,10 @@ export default (opts) => ({
 			if (params && params.then) params = await params;
 			const endpoint = typeof this.pagination.endpoint === 'function' ? this.pagination.endpoint() : this.pagination.endpoint;
 			await this.$root.api(endpoint, {
-				limit: (this.pagination.limit || 10) + 1,
+				limit: this.pagination.noPaging ? (this.pagination.limit || 10) : (this.pagination.limit || 10) + 1,
 				...params
 			}).then(x => {
-				if (x.length == (this.pagination.limit || 10) + 1) {
+				if (!this.pagination.noPaging && (x.length === (this.pagination.limit || 10) + 1)) {
 					x.pop();
 					this.items = x;
 					this.more = true;
@@ -90,7 +90,7 @@ export default (opts) => ({
 				}),
 				...params
 			}).then(x => {
-				if (x.length == (this.pagination.limit || 10) + 1) {
+				if (x.length === (this.pagination.limit || 10) + 1) {
 					x.pop();
 					this.items = this.items.concat(x);
 					this.more = true;

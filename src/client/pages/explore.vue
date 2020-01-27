@@ -85,30 +85,30 @@ export default Vue.extend({
 	data() {
 		return {
 			pinnedUsers: { endpoint: 'pinned-users' },
-			popularUsers: { endpoint: 'users', limit: 10, params: {
+			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				state: 'alive',
 				origin: 'local',
 				sort: '+follower',
 			} },
-			recentlyUpdatedUsers: { endpoint: 'users', limit: 10, params: {
+			recentlyUpdatedUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				origin: 'local',
 				sort: '+updatedAt',
 			} },
-			recentlyRegisteredUsers: { endpoint: 'users', limit: 10, params: {
+			recentlyRegisteredUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				origin: 'local',
 				state: 'alive',
 				sort: '+createdAt',
 			} },
-			popularUsersF: { endpoint: 'users', limit: 10, params: {
+			popularUsersF: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				state: 'alive',
 				origin: 'remote',
 				sort: '+follower',
 			} },
-			recentlyUpdatedUsersF: { endpoint: 'users', limit: 10, params: {
+			recentlyUpdatedUsersF: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				origin: 'combined',
 				sort: '+updatedAt',
 			} },
-			recentlyRegisteredUsersF: { endpoint: 'users', limit: 10, params: {
+			recentlyRegisteredUsersF: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				origin: 'combined',
 				sort: '+createdAt',
 			} },
