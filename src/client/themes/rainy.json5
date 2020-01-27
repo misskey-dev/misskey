@@ -7,9 +7,9 @@
 	base: 'light',
 
 	props: {
-		primary: 'rgb(147, 199, 206)',
+		accent: 'rgb(147, 199, 206)',
 		bg: 'rgb(220, 229, 232)',
 		fg: 'rgb(139, 153, 161)',
-		renote: '@primary',
+		renote: '@accent',
 	},
 }

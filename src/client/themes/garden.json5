@@ -7,10 +7,10 @@
 	base: 'light',
 
 	props: {
-		primary: 'rgb(147, 206, 188)',
+		accent: 'rgb(147, 206, 188)',
 		bg: 'rgb(253, 245, 242)',
 		fg: 'rgb(161, 147, 139)',
-		renote: '@primary',
+		renote: '@accent',
 		hashtag: 'rgb(226, 152, 48)',
 		link: '#aac12c',
 	},

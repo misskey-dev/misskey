@@ -95,7 +95,7 @@ export default define({
 		padding: 0 10px;
 		height: 28px;
 		color: #fff;
-		background: var(--primary) !important;
+		background: var(--accent) !important;
 		outline: none;
 		border: none;
 		border-radius: 4px;
@@ -103,11 +103,11 @@ export default define({
 		cursor: pointer;
 
 		&:hover {
-			background: var(--primaryLighten10) !important;
+			background: var(--accentLighten10) !important;
 		}
 
 		&:active {
-			background: var(--primaryDarken) !important;
+			background: var(--accentDarken) !important;
 			transition: background 0s ease;
 		}
 

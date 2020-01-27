@@ -198,7 +198,7 @@ export default Vue.extend({
 			}
 
 			&.active {
-				color: var(--primary);
+				color: var(--accent);
 				transition: color 0s;
 			}
 		}

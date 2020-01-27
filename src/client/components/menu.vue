@@ -116,13 +116,13 @@ export default Vue.extend({
 
 		&:hover {
 			color: #fff;
-			background: var(--primary);
+			background: var(--accent);
 			text-decoration: none;
 		}
 
 		&:active {
 			color: #fff;
-			background: var(--primaryDarken);
+			background: var(--accentDarken);
 		}
 
 		&.label {
@@ -150,7 +150,7 @@ export default Vue.extend({
 			position: absolute;
 			top: 5px;
 			left: 13px;
-			color: var(--primary);
+			color: var(--accent);
 			font-size: 12px;
 			animation: blink 1s infinite;
 		}

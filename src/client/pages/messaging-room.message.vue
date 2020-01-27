@@ -79,7 +79,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .thvuemwp {
-	$me-balloon-color: var(--primary);
+	$me-balloon-color: var(--accent);
 
 	position: relative;
 	background-color: transparent;

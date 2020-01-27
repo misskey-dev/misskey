@@ -123,7 +123,7 @@ export default Vue.extend({
 
 	&.primary {
 		color: #fff;
-		background: var(--primary);
+		background: var(--accent);
 
 		&:not(:disabled):hover {
 			background: var(--jkhztclx);
@@ -147,7 +147,7 @@ export default Vue.extend({
 			right: -5px;
 			bottom: -5px;
 			left: -5px;
-			border: 2px solid var(--primaryAlpha03);
+			border: 2px solid var(--accentAlpha03);
 			border-radius: 10px;
 		}
 	}

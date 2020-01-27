@@ -119,7 +119,7 @@ export default Vue.extend({
 			}
 
 			&.selected {
-				background: var(--primary);
+				background: var(--accent);
 				color: #fff;
 			}
 

@@ -124,8 +124,8 @@ export default Vue.extend({
 				cursor: pointer;
 
 				&.selected {
-					background: var(--primary);
-					box-shadow: 0 0 0 8px var(--primary);
+					background: var(--accent);
+					box-shadow: 0 0 0 8px var(--accent);
 					color: #fff;
 				}
 

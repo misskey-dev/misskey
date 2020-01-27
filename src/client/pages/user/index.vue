@@ -226,7 +226,7 @@ export default Vue.extend({
 
 		> a {
 			margin-left: 4px;
-			color: var(--primary);
+			color: var(--accent);
 		}
 	}
 
@@ -452,7 +452,7 @@ export default Vue.extend({
 				text-align: center;
 
 				&.active {
-					color: var(--primary);
+					color: var(--accent);
 				}
 
 				&:hover {

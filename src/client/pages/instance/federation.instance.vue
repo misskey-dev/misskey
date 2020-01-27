@@ -479,7 +479,7 @@ export default Vue.extend({
 				}
 
 				> .data.clickable {
-					color: var(--primary);
+					color: var(--accent);
 					cursor: pointer;
 				}
 			}

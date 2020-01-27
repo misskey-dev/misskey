@@ -117,7 +117,7 @@ export default Vue.extend({
   padding: 0;
   height: 36px;
   width: 100%;
-  box-shadow: 0 -1px 0 var(--primaryAlpha01);
+  box-shadow: 0 -1px 0 var(--accentAlpha01);
   border-top: solid 8px transparent;
   grid-template-columns: 36px calc(100% - 44px);
   grid-template-rows: 1fr 8px;
@@ -146,7 +146,7 @@ export default Vue.extend({
   padding: 0 8px 0 0;
   margin: 0;
   font-size: 0.8em;
-  color: var(--primaryAlpha07);
+  color: var(--accentAlpha07);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -163,16 +163,16 @@ export default Vue.extend({
   flex-shrink: 0;
 }
 .mk-uploader > ol > li > .top > .status > .initing {
-  color: var(--primaryAlpha05);
+  color: var(--accentAlpha05);
 }
 .mk-uploader > ol > li > .top > .status > .kb {
-  color: var(--primaryAlpha05);
+  color: var(--accentAlpha05);
 }
 .mk-uploader > ol > li > .top > .status > .percentage {
   display: inline-block;
   width: 48px;
   text-align: right;
-  color: var(--primaryAlpha07);
+  color: var(--accentAlpha07);
 }
 .mk-uploader > ol > li > .top > .status > .percentage:after {
   content: '%';
@@ -188,16 +188,16 @@ export default Vue.extend({
   z-index: 2;
 }
 .mk-uploader > ol > li > progress::-webkit-progress-value {
-  background: var(--primary);
+  background: var(--accent);
 }
 .mk-uploader > ol > li > progress::-webkit-progress-bar {
-  background: var(--primaryAlpha01);
+  background: var(--accentAlpha01);
 }
 .mk-uploader > ol > li > .progress {
   display: block;
   border: none;
   border-radius: 4px;
-  background: linear-gradient(45deg, var(--primaryLighten30) 25%, var(--primary) 25%, var(--primary) 50%, var(--primaryLighten30) 50%, var(--primaryLighten30) 75%, var(--primary) 75%, var(--primary));
+  background: linear-gradient(45deg, var(--accentLighten30) 25%, var(--accent) 25%, var(--accent) 50%, var(--accentLighten30) 50%, var(--accentLighten30) 75%, var(--accent) 75%, var(--accent));
   background-size: 32px 32px;
   animation: bg 1.5s linear infinite;
   grid-column: 2/3;

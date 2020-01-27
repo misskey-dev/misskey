@@ -95,7 +95,7 @@ export default Vue.extend({
 
 		&.active {
 			color: #fff;
-			background: var(--primary);
+			background: var(--accent);
 		}
 
 		> *:first-child {

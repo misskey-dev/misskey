@@ -64,7 +64,7 @@ export default Vue.extend({
 			padding: 8px;
 
 			&.active {
-				color: var(--primary);
+				color: var(--accent);
 			}
 		}
 	}

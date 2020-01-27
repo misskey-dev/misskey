@@ -8,11 +8,11 @@
 	base: 'dark',
 
 	props: {
-		primary: 'rgb(187, 146, 45)',
+		accent: 'rgb(187, 146, 45)',
 		panel: 'rgb(76, 33, 33)',
 		bg: 'rgb(53, 21, 21)',
 		fg: 'rgb(216, 210, 199)',
 		header: 'rgba(76, 45, 33, 0.75)',
-		renote: '@primary',
+		renote: '@accent',
 	},
 }

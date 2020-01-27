@@ -721,7 +721,7 @@ export default Vue.extend({
 					}
 
 					&.reacted {
-						color: var(--primary);
+						color: var(--accent);
 					}
 				}
 			}

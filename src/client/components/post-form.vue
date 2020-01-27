@@ -622,18 +622,18 @@ export default Vue.extend({
 
 		> .with-quote {
 			margin: 0 0 8px 0;
-			color: var(--primary);
+			color: var(--accent);
 
 			> button {
 				padding: 4px 8px;
-				color: var(--primaryAlpha04);
+				color: var(--accentAlpha04);
 
 				&:hover {
-					color: var(--primaryAlpha06);
+					color: var(--accentAlpha06);
 				}
 
 				&:active {
-					color: var(--primaryDarken30);
+					color: var(--accentDarken30);
 				}
 			}
 		}

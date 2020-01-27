@@ -273,7 +273,7 @@ export default Vue.extend({
 			font-size: 32px;
 
 			&.success {
-				color: var(--primary);
+				color: var(--accent);
 			}
 
 			&.error {

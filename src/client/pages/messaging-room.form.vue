@@ -273,11 +273,11 @@ export default Vue.extend({
 		transition: color 0.1s ease;
 
 		&:hover {
-			color: var(--primary);
+			color: var(--accent);
 		}
 
 		&:active {
-			color: var(--primaryDarken);
+			color: var(--accentDarken);
 			transition: color 0s ease;
 		}
 	}
@@ -341,11 +341,11 @@ export default Vue.extend({
 		transition: color 0.1s ease;
 
 		&:hover {
-			color: var(--primary);
+			color: var(--accent);
 		}
 
 		&:active {
-			color: var(--primaryDarken);
+			color: var(--accentDarken);
 			transition: color 0s ease;
 		}
 	}

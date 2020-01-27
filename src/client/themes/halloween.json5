@@ -8,10 +8,10 @@
 	base: 'dark',
 
 	props: {
-		primary: '#d67036',
+		accent: '#d67036',
 		panel: '#1f1d30',
 		bg: '#0f0e17',
 		fg: '#b1bee3',
-		renote: '@primary',
+		renote: '@accent',
 	},
 }

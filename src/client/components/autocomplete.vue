@@ -372,7 +372,7 @@ export default Vue.extend({
 			}
 
 			&[data-selected='true'] {
-				background: var(--primary);
+				background: var(--accent);
 
 				&, * {
 					color: #fff !important;
@@ -380,7 +380,7 @@ export default Vue.extend({
 			}
 
 			&:active {
-				background: var(--primaryDarken);
+				background: var(--accentDarken);
 
 				&, * {
 					color: #fff !important;

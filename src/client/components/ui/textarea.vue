@@ -115,7 +115,7 @@ export default Vue.extend({
 			left: 0;
 			right: 0;
 			background: none;
-			border: solid 2px var(--primary);
+			border: solid 2px var(--accent);
 			border-radius: 3px;
 			opacity: 0;
 			transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -183,7 +183,7 @@ export default Vue.extend({
 			}
 
 			> .label {
-				color: var(--primary);
+				color: var(--accent);
 			}
 		}
 	}

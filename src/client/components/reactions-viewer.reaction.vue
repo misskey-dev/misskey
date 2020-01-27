@@ -144,7 +144,7 @@ export default Vue.extend({
 	border-radius: 4px;
 
 	&.reacted {
-		background: var(--primary);
+		background: var(--accent);
 
 		> span {
 			color: #fff;

@@ -167,7 +167,7 @@ export default Vue.extend({
 
 			> span {
 				font-size: 1em;
-				color: var(--primary);
+				color: var(--accent);
 			}
 		}
 	}

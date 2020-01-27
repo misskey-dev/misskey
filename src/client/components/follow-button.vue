@@ -107,9 +107,9 @@ export default Vue.extend({
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
-	color: var(--primary);
+	color: var(--accent);
 	background: transparent;
-	border: solid 1px var(--primary);
+	border: solid 1px var(--accent);
 	padding: 0;
 	width: 31px;
 	height: 31px;
@@ -141,16 +141,16 @@ export default Vue.extend({
 
 	&.active {
 		color: #fff;
-		background: var(--primary);
+		background: var(--accent);
 
 		&:hover {
-			background: var(--primaryLighten);
-			border-color: var(--primaryLighten);
+			background: var(--accentLighten);
+			border-color: var(--accentLighten);
 		}
 
 		&:active {
-			background: var(--primaryDarken);
-			border-color: var(--primaryDarken);
+			background: var(--accentDarken);
+			border-color: var(--accentDarken);
 		}
 	}
 

@@ -87,7 +87,7 @@ export default Vue.extend({
 			border-color: var(--xxubwiul);
 
 			> * {
-				background-color: var(--primary);
+				background-color: var(--accent);
 				transform: translateX(14px);
 			}
 		}

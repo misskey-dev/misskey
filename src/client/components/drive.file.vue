@@ -261,14 +261,14 @@ export default Vue.extend({
 	}
 
 	&[data-is-selected] {
-		background: var(--primary);
+		background: var(--accent);
 
 		&:hover {
-			background: var(--primaryLighten);
+			background: var(--accentLighten);
 		}
 
 		&:active {
-			background: var(--primaryDarken);
+			background: var(--accentDarken);
 		}
 
 		> .label {

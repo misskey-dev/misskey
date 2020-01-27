@@ -86,7 +86,7 @@ export default Vue.extend({
 		}
 
 		&:active {
-			background: var(--primary);
+			background: var(--accent);
 			box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
 		}
 	}

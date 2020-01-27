@@ -80,7 +80,7 @@ export default Vue.extend({
 		font-size: 1.5em;
 		text-align: center;
 		padding: 32px;
-		background: var(--primary);
+		background: var(--accent);
 		color: #fff;
 	}
 

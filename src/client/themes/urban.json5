@@ -7,12 +7,12 @@
 	base: 'dark',
 
 	props: {
-		primary: 'rgb(212, 104, 48)',
+		accent: 'rgb(212, 104, 48)',
 		panel: 'rgb(38, 44, 53)',
 		bg: 'rgb(26, 29, 33)',
 		fg: 'rgb(199, 209, 216)',
 		shadow: 'rgba(0, 0, 0, 0.2)',
 		header: 'rgba(51, 64, 72, 0.75)',
-		renote: '@primary',
+		renote: '@accent',
 	},
 }
