@@ -25,15 +25,15 @@
 				<option value="after">{{ $t('_poll.after') }}</option>
 			</mk-select>
 			<section v-if="expiration === 'at'">
-				<mk-input v-model="atDate" type="date">
+				<mk-input v-model="atDate" type="date" class="input">
 					<span>{{ $t('_poll.deadlineDate') }}</span>
 				</mk-input>
-				<mk-input v-model="atTime" type="time">
+				<mk-input v-model="atTime" type="time" class="input">
 					<span>{{ $t('_poll.deadlineTime') }}</span>
 				</mk-input>
 			</section>
 			<section v-if="expiration === 'after'">
-				<mk-input v-model="after" type="number">
+				<mk-input v-model="after" type="number" class="input">
 					<span>{{ $t('_poll.duration') }}</span>
 				</mk-input>
 				<mk-select v-model="unit">
@@ -207,7 +207,7 @@ export default Vue.extend({
 						margin-right: 16px;
 					}
 
-					> .ui-input {
+					> .input {
 						flex: 1 0 auto;
 					}
 				}

@@ -1,5 +1,5 @@
 <template>
-<div class="ui-input" :class="{ focused, filled, inline, disabled }">
+<div class="juejbjww" :class="{ focused, filled, inline, disabled }">
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
@@ -235,7 +235,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ui-input {
+.juejbjww {
 	position: relative;
 	margin: 32px 0;
 
