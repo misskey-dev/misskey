@@ -76,7 +76,7 @@
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="pinnedUsers" style="margin-top: 0;">
-				<template #desc>{{ $t('pinnedUsersDescription') }}</template>
+				<template #desc>{{ $t('pinnedUsersDescription') }} <button class="_textButton" @click="addPinUser">{{ $t('addUser') }}</button></template>
 			</mk-textarea>
 		</div>
 		<div class="_footer">
@@ -181,8 +181,10 @@ import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkInfo from '../../components/ui/info.vue';
+import MkUserSelect from '../../components/user-select.vue';
 import { version } from '../../config';
 import i18n from '../../i18n';
+import getAcct from '../../../misc/acct/render';
 
 export default Vue.extend({
 	i18n,
@@ -290,6 +292,14 @@ export default Vue.extend({
 	},
 
 	methods: {
+		addPinUser() {
+			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+				this.pinnedUsers = this.pinnedUsers.trim();
+				this.pinnedUsers += '\n@' + getAcct(user);
+				this.pinnedUsers = this.pinnedUsers.trim();
+			});
+		},
+
 		save(withDialog = false) {
 			this.$root.api('admin/update-meta', {
 				name: this.name,
