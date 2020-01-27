@@ -4,8 +4,8 @@
 	<portal to="title">{{ $t('explore') }}</portal>
 
 	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
-		<header>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</header>
-		<div>{{ $t('users-info', { users: num(stats.originalUsersCount) }) }}</div>
+		<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
+		<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
 	</div>
 
 	<template v-if="tag == null">
@@ -24,11 +24,11 @@
 	</template>
 
 	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
-		<header>{{ $t('explore-fediverse') }}</header>
+		<header><span>{{ $t('exploreFediverse') }}</span></header>
 	</div>
 
 	<mk-container :body-togglable="true" :expanded="false" ref="tags">
-		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popular-tags') }}</template>
+		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popularTags') }}</template>
 
 		<div class="vxjfqztj">
 			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
@@ -167,12 +167,23 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .localfedi7 {
 	color: #fff;
-	text-shadow: 0 0 8px #000;
 	padding: 16px;
 	height: 80px;
 	background-position: 50%;
 	background-size: cover;
 	margin-bottom: var(--margin);
+
+	> * {
+		&:not(:last-child) {
+			margin-bottom: 8px;
+		}
+
+		> span {
+			display: inline-block;
+			padding: 6px 8px;
+			background: rgba(0, 0, 0, 0.7);
+		}
+	}
 
 	> header {
 		font-size: 20px;
