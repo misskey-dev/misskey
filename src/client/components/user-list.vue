@@ -15,11 +15,12 @@
 					<router-link class="name" :to="user | userPage" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
 					<span class="username"><mk-acct :user="user"/></span>
 				</div>
-				<div class="description" v-if="user.description" :title="user.description">
-					<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :plain="true" :nowrap="true"/>
+				<div class="description">
+					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<span v-else class="empty">{{ $t('noAccountDescription') }}</span>
 				</div>
-				<x-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 			</div>
+			<x-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
 		<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
 			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('@.loading') : $t('@.load-more') }}
@@ -94,9 +95,11 @@ export default Vue.extend({
 		}
 
 		> .body {
-			width: calc(100% - 54px);
+			flex: 1;
 
 			> .name {
+				font-weight: bold;
+						
 				> .name {
 					margin-right: 8px;
 				}
@@ -107,15 +110,16 @@ export default Vue.extend({
 			}
 
 			> .description {
-				opacity: 0.7;
 				font-size: 90%;
-			}
 
-			> .koudoku-button {
-				position: absolute;
-				top: 8px;
-				right: 0;
+				> .empty {
+					opacity: 0.7;
+				}
 			}
+		}
+
+		> .koudoku-button {
+			flex-shrink: 0;
 		}
 	}
 
