@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faEnvelope"/></portal>
-	<portal to="title">{{ $t('messages') }}</portal>
+	<portal to="title">{{ $t('directNotes') }}</portal>
 	<x-notes :pagination="pagination" :detail="true" @before="before()" @after="after()"/>
 </div>
 </template>
@@ -15,7 +15,7 @@ import XNotes from '../components/notes.vue';
 export default Vue.extend({
 	metaInfo() {
 		return {
-			title: this.$t('messages') as string
+			title: this.$t('directNotes') as string
 		};
 	},
 

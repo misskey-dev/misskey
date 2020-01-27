@@ -446,7 +446,7 @@ export default Vue.extend({
 					indicate: this.$store.state.i.hasUnreadMentions
 				}, {
 					type: 'link',
-					text: this.$t('messages'),
+					text: this.$t('directNotes'),
 					to: '/my/messages',
 					icon: faEnvelope,
 					indicate: this.$store.state.i.hasUnreadSpecifiedNotes
