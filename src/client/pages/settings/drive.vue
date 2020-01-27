@@ -1,6 +1,6 @@
 <template>
 <section class="mk-settings-page-drive _section">
-	<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
+	<div class="_title"><fa :icon="faCloud"/> {{ $t('drive') }}</div>
 	<div class="_content">
 		<mk-pagination :pagination="drivePagination" #default="{items}" class="drive" ref="drive">
 			<div class="file" v-for="(file, i) in items" :key="file.id" :data-index="i" @click="selected = file" :class="{ selected: selected && (selected.id === file.id) }">

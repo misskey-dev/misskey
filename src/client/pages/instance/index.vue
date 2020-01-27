@@ -180,6 +180,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSwitch from '../../components/ui/switch.vue';
+import MkInfo from '../../components/ui/info.vue';
 import { version } from '../../config';
 import i18n from '../../i18n';
 
@@ -197,6 +198,7 @@ export default Vue.extend({
 		MkInput,
 		MkTextarea,
 		MkSwitch,
+		MkInfo,
 	},
 
 	data() {
