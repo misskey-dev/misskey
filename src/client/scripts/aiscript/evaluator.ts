@@ -1,6 +1,7 @@
 import autobind from 'autobind-decorator';
 import * as seedrandom from 'seedrandom';
 import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
+import { version } from '../../config';
 
 type Fn = {
 	slots: string[];
@@ -16,7 +17,7 @@ export class ASEvaluator {
 	private envVars: Record<keyof typeof envVarsDef, any>;
 
 	private opts: {
-		randomSeed: string; user?: any; visitor?: any; page?: any; url?: string; version: string;
+		randomSeed: string; user?: any; visitor?: any; page?: any; url?: string;
 	};
 
 	constructor(variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
@@ -28,7 +29,7 @@ export class ASEvaluator {
 
 		this.envVars = {
 			AI: 'kawaii',
-			VERSION: opts.version,
+			VERSION: version,
 			URL: opts.page ? `${opts.url}/@${opts.page.user.username}/pages/${opts.page.name}` : '',
 			LOGIN: opts.visitor != null,
 			NAME: opts.visitor ? opts.visitor.name || opts.visitor.username : '',
