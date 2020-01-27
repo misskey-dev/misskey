@@ -2,6 +2,14 @@
 
 :root {
 	--radius: 8px;
+	--marginFull: 16px;
+	--marginHalf: 8px;
+
+	--margin: var(--marginFull);
+
+	@media (max-width: 500px) {
+		--margin: var(--marginHalf);
+	}
 }
 
 * {
@@ -230,11 +238,7 @@ a {
 	@extend ._panel;
 
 	& + ._section {
-		margin-top: 16px;
-
-		@media (max-width: 500px) {
-			margin-top: 8px;
-		}
+		margin-top: var(--margin);
 	}
 
 	> ._title {

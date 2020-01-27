@@ -23,7 +23,7 @@
 		</x-user-list>
 	</template>
 
-	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)` }">
+	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
 		<header>{{ $t('explore-fediverse') }}</header>
 	</div>
 
@@ -172,11 +172,7 @@ export default Vue.extend({
 	height: 80px;
 	background-position: 50%;
 	background-size: cover;
-	margin-bottom: 16px;
-
-	@media (max-width: 500px) {
-		margin-bottom: 8px;
-	}
+	margin-bottom: var(--margin);
 
 	> header {
 		font-size: 20px;

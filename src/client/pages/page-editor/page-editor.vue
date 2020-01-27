@@ -430,7 +430,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .gwbmwxkm {
-	margin-bottom: 16px;
+	margin-bottom: var(--margin);
 
 	> header {
 		background: var(--faceHeader);

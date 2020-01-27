@@ -62,11 +62,7 @@ export default Vue.extend({
 	overflow: hidden;
 
 	& + .ukygtjoj {
-		margin-top: 16px;
-
-		@media (max-width: 500px) {
-			margin-top: 8px;
-		}
+		margin-top: var(--margin);
 	}
 
 	&.naked {

@@ -76,11 +76,7 @@ export default Vue.extend({
 .rsqzvsbo {
 	> .about {
 		overflow: hidden;
-		margin-bottom: 16px;
-
-		@media (max-width: 500px) {
-			margin-bottom: 8px;
-		}
+		margin-bottom: var(--margin);
 
 		> .banner {
 			height: 170px;

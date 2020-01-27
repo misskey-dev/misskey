@@ -911,8 +911,8 @@ export default Vue.extend({
 
 			> div {
 				position: sticky;
-				top: $header-height + 16px;
-				height: calc(100vh - #{$header-height} - 16px);
+				top: calc(#{$header-height} + var(--margin));
+				height: calc(100vh - #{$header-height} - var(--margin));
 
 				&.edit {
 					overflow: auto;
@@ -927,7 +927,7 @@ export default Vue.extend({
 				}
 
 				> * {
-					margin: 0 16px 16px 0;
+					margin: 0 var(--margin) var(--margin) 0;
 					width: 300px;
 				}
 

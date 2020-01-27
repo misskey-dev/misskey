@@ -218,11 +218,7 @@ export default Vue.extend({
 	> .remote-caution {
 		font-size: 0.8em;
 		padding: 16px;
-		margin-bottom: 16px;
-
-		@media (max-width: 500px) {
-			margin-bottom: 8px;
-		}
+		margin-bottom: var(--margin);
 
 		> a {
 			margin-left: 4px;
@@ -232,12 +228,8 @@ export default Vue.extend({
 
 	> .profile {
 		position: relative;
-		margin-bottom: 16px;
+		margin-bottom: var(--margin);
 		overflow: hidden;
-
-		@media (max-width: 500px) {
-			margin-bottom: 8px;
-		}
 
 		> .banner-container {
 			position: relative;
@@ -473,20 +465,12 @@ export default Vue.extend({
 
 	> .pins {
 		> .note {
-			margin-bottom: 16px;
-
-			@media (max-width: 500px) {
-				margin-bottom: 8px;
-			}
+			margin-bottom: var(--margin);
 		}
 	}
 
 	> .content {
-		margin-bottom: 16px;
-
-		@media (max-width: 500px) {
-			margin-bottom: 8px;
-		}
+		margin-bottom: var(--margin);
 	}
 }
 </style>
