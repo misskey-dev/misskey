@@ -20,6 +20,7 @@ export const router = new VueRouter({
 		{ path: '/search', component: () => import('./pages/search.vue').then(m => m.default) },
 		{ path: '/my/favorites', component: () => import('./pages/favorites.vue').then(m => m.default) },
 		{ path: '/my/messages', component: () => import('./pages/messages.vue').then(m => m.default) },
+		{ path: '/my/mentions', component: () => import('./pages/mentions.vue').then(m => m.default) },
 		{ path: '/my/messaging', name: 'messaging', component: () => import('./pages/messaging.vue').then(m => m.default) },
 		{ path: '/my/messaging/:user', component: () => import('./pages/messaging-room.vue').then(m => m.default) },
 		{ path: '/my/drive', name: 'drive', component: () => import('./pages/drive.vue').then(m => m.default) },

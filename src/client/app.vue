@@ -441,7 +441,7 @@ export default Vue.extend({
 				}, {
 					type: 'link',
 					text: this.$t('mentions'),
-					to: '/mentions',
+					to: '/my/mentions',
 					icon: faAt,
 				}, {
 					type: 'link',
