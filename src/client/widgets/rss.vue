@@ -5,7 +5,7 @@
 		<template #func><button class="_button" @click="setting"><fa :icon="faCog"/></button></template>
 
 		<div class="ekmkgxbj">
-			<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+			<mk-loading v-if="fetching"/>
 			<div class="feed" v-else>
 				<a v-for="item in items" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 			</div>
@@ -80,7 +80,7 @@ export default define({
 
 <style lang="scss" scoped>
 .ekmkgxbj {
-	.feed {
+	> .feed {
 		padding: 0;
 		font-size: 0.9em;
 
@@ -95,17 +95,6 @@ export default define({
 			&:nth-child(even) {
 				background: rgba(#000, 0.05);
 			}
-		}
-	}
-
-	.fetching {
-		margin: 0;
-		padding: 16px;
-		text-align: center;
-		color: var(--text);
-
-		> [data-icon] {
-			margin-right: 4px;
 		}
 	}
 }

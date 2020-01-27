@@ -37,12 +37,7 @@
 				<p v-if="!draghover && folder != null">{{ $t('emptyFolder') }}</p>
 			</div>
 		</div>
-		<div class="fetching" v-if="fetching">
-			<div class="spinner">
-				<div class="dot1"></div>
-				<div class="dot2"></div>
-			</div>
-		</div>
+		<mk-loading v-if="fetching"/>
 	</div>
 	<div class="dropzone" v-if="draghover"></div>
 	<x-uploader ref="uploader" @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>

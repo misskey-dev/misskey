@@ -1,6 +1,6 @@
 <template>
 <div class="ujigsodd">
-	<p class="initializing" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<mk-loading v-if="fetching"/>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<a v-for="(image, i) in images" :key="i"
 			class="img"
@@ -85,7 +85,6 @@ export default Vue.extend({
 		}
 	}
 
-	> .initializing,
 	> .empty {
 		margin: 0;
 		padding: 16px;

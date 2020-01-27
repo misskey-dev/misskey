@@ -12,7 +12,7 @@
 	</template>
 
 	<div class="body">
-		<p class="init" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}</p>
+		<mk-loading v-if="fetching"/>
 		<p class="empty" v-if="!fetching && messages.length == 0"><fa icon="info-circle"/>{{ user ? $t('not-talked-user') : $t('not-talked-group') }}</p>
 		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
 		<button class="more" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
@@ -294,7 +294,6 @@ export default Vue.extend({
 	> .body {
 		width: 100%;
 
-		> .init,
 		> .empty {
 			width: 100%;
 			margin: 0;

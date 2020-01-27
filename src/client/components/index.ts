@@ -8,6 +8,7 @@ import userName from './user-name.vue';
 import ellipsis from './ellipsis.vue';
 import time from './time.vue';
 import url from './url.vue';
+import loading from './loading.vue';
 import SequentialEntrance from './sequential-entrance.vue';
 import error from './error.vue';
 
@@ -19,5 +20,6 @@ Vue.component('mk-user-name', userName);
 Vue.component('mk-ellipsis', ellipsis);
 Vue.component('mk-time', time);
 Vue.component('mk-url', url);
+Vue.component('mk-loading', loading);
 Vue.component('mk-error', error);
 Vue.component('sequential-entrance', SequentialEntrance);
