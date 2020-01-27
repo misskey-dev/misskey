@@ -3,6 +3,9 @@
 	<div class="_title"><fa :icon="faLock"/> {{ $t('privacy') }}</div>
 	<div class="_content">
 		<mk-switch v-model="isLocked" @change="save()">{{ $t('makeFollowManuallyApprove') }}</mk-switch>
+		<mk-switch v-model="autoAcceptFollowed" :disabled="!isLocked" @change="save()">{{ $t('autoAcceptFollowed') }}</mk-switch>
+	</div>
+	<div class="_content">
 		<mk-select v-model="defaultNoteVisibility">
 			<template #label>{{ $t('defaultNoteVisibility') }}</template>
 			<option value="public">{{ $t('_visibility.public') }}</option>
@@ -32,6 +35,7 @@ export default Vue.extend({
 	data() {
 		return {
 			isLocked: false,
+			autoAcceptFollowed: false,
 			faLock
 		}
 	},
@@ -50,18 +54,16 @@ export default Vue.extend({
 
 	created() {
 		this.isLocked = this.$store.state.i.isLocked;
+		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
 	},
 
 	methods: {
 		save() {
 			this.$root.api('i/update', {
 				isLocked: !!this.isLocked,
+				autoAcceptFollowed: !!this.autoAcceptFollowed,
 			});
 		}
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>
