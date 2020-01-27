@@ -443,11 +443,13 @@ export default Vue.extend({
 					text: this.$t('mentions'),
 					to: '/my/mentions',
 					icon: faAt,
+					indicate: this.$store.state.i.hasUnreadMentions
 				}, {
 					type: 'link',
 					text: this.$t('messages'),
 					to: '/my/messages',
 					icon: faEnvelope,
+					indicate: this.$store.state.i.hasUnreadSpecifiedNotes
 				}, {
 					type: 'link',
 					text: this.$t('favorites'),
