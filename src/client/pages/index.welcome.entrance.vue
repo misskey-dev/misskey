@@ -36,6 +36,7 @@ export default Vue.extend({
 			featuredPagination: {
 				endpoint: 'notes/featured',
 				limit: 10,
+				noPaging: true,
 			},
 			host: toUnicode(host),
 			meta: null,

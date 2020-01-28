@@ -27,7 +27,8 @@ export default Vue.extend({
 		return {
 			pagination: {
 				endpoint: 'notes/featured',
-				limit: 29,
+				limit: 30,
+				noPaging: true,
 			},
 			faFireAlt
 		};
