@@ -49,6 +49,7 @@ export default Vue.extend({
 			this.draft = {
 				name: '',
 				src: 'all',
+				userListId: null,
 				users: [],
 				keywords: [],
 				withReplies: false,

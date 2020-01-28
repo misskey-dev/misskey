@@ -12,6 +12,10 @@
 			<option value="users">{{ $t('_antennaSources.users') }}</option>
 			<option value="list">{{ $t('_antennaSources.userList') }}</option>
 		</mk-select>
+		<mk-select v-model="userListId" v-if="src === 'list'">
+			<template #label>{{ $t('userList') }}</template>
+			<option v-for="list in userLists" :value="list.id" :key="list.id">{{ list.name }}</option>
+		</mk-select>
 		<mk-textarea v-model="users" v-if="src === 'users'">
 			<span>{{ $t('users') }}</span>
 			<template #desc>{{ $t('antennaUsersDescription') }} <button class="_textButton" @click="addUser">{{ $t('addUser') }}</button></template>
@@ -62,19 +66,30 @@ export default Vue.extend({
 		return {
 			name: '',
 			src: '',
+			userListId: null,
 			users: '',
 			keywords: '',
 			caseSensitive: false,
 			withReplies: false,
 			withFile: false,
 			notify: false,
+			userLists: null,
 			faSave, faTrash
 		};
+	},
+
+	watch: {
+		async src() {
+			if (this.src === 'list' && this.userLists === null) {
+				this.userLists = await this.$root.api('users/lists/list');
+			}
+		}
 	},
 
 	created() {
 		this.name = this.antenna.name;
 		this.src = this.antenna.src;
+		this.userListId = this.antenna.userListId;
 		this.users = this.antenna.users.join('\n');
 		this.keywords = this.antenna.keywords.map(x => x.join(' ')).join('\n');
 		this.caseSensitive = this.antenna.caseSensitive;
@@ -89,6 +104,7 @@ export default Vue.extend({
 				await this.$root.api('antennas/create', {
 					name: this.name,
 					src: this.src,
+					userListId: this.userListId,
 					withReplies: this.withReplies,
 					withFile: this.withFile,
 					notify: this.notify,
@@ -102,6 +118,7 @@ export default Vue.extend({
 					antennaId: this.antenna.id,
 					name: this.name,
 					src: this.src,
+					userListId: this.userListId,
 					withReplies: this.withReplies,
 					withFile: this.withFile,
 					notify: this.notify,
