@@ -66,10 +66,6 @@ class Publisher {
 		this.publish('notesStream', null, note);
 	}
 
-	public publishApLogStream = (log: any): void => {
-		this.publish('apLog', null, log);
-	}
-
 	public publishAdminStream = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -90,5 +86,4 @@ export const publishGroupMessagingStream = publisher.publishGroupMessagingStream
 export const publishMessagingIndexStream = publisher.publishMessagingIndexStream;
 export const publishReversiStream = publisher.publishReversiStream;
 export const publishReversiGameStream = publisher.publishReversiGameStream;
-export const publishApLogStream = publisher.publishApLogStream;
 export const publishAdminStream = publisher.publishAdminStream;
