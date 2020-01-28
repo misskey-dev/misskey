@@ -450,6 +450,7 @@ _charts:
   federationInstancesTotal: "連合の合計"
   usersIncDec: "ユーザーの増減"
   usersTotal: "ユーザーの合計"
+  activeUsers: "アクティブユーザー数"
   notesIncDec: "投稿の増減"
   localNotesIncDec: "ローカルの投稿の増減"
   remoteNotesIncDec: "リモートの投稿の増減"

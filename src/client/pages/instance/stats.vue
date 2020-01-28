@@ -12,6 +12,7 @@
 					<optgroup :label="$t('users')">
 						<option value="users">{{ $t('_charts.usersIncDec') }}</option>
 						<option value="users-total">{{ $t('_charts.usersTotal') }}</option>
+						<option value="active-users">{{ $t('_charts.activeUsers') }}</option>
 					</optgroup>
 					<optgroup :label="$t('notes')">
 						<option value="notes">{{ $t('_charts.notesIncDec') }}</option>
@@ -19,7 +20,7 @@
 						<option value="remote-notes">{{ $t('_charts.remoteNotesIncDec') }}</option>
 						<option value="notes-total">{{ $t('_charts.notesTotal') }}</option>
 					</optgroup>
-					<optgroup :label="$t('files')">
+					<optgroup :label="$t('drive')">
 						<option value="drive-files">{{ $t('_charts.filesIncDec') }}</option>
 						<option value="drive-files-total">{{ $t('_charts.filesTotal') }}</option>
 						<option value="drive">{{ $t('_charts.storageUsageIncDec') }}</option>
@@ -87,6 +88,7 @@ export default Vue.extend({
 				case 'federation-instances-total': return this.federationInstancesChart(true);
 				case 'users': return this.usersChart(false);
 				case 'users-total': return this.usersChart(true);
+				case 'active-users': return this.activeUsersChart();
 				case 'notes': return this.notesChart('combined');
 				case 'local-notes': return this.notesChart('local');
 				case 'remote-notes': return this.notesChart('remote');
@@ -124,11 +126,13 @@ export default Vue.extend({
 		const [perHour, perDay] = await Promise.all([Promise.all([
 			this.$root.api('charts/federation', { limit: chartLimit, span: 'hour' }),
 			this.$root.api('charts/users', { limit: chartLimit, span: 'hour' }),
+			this.$root.api('charts/active-users', { limit: chartLimit, span: 'hour' }),
 			this.$root.api('charts/notes', { limit: chartLimit, span: 'hour' }),
 			this.$root.api('charts/drive', { limit: chartLimit, span: 'hour' }),
 		]), Promise.all([
 			this.$root.api('charts/federation', { limit: chartLimit, span: 'day' }),
 			this.$root.api('charts/users', { limit: chartLimit, span: 'day' }),
+			this.$root.api('charts/active-users', { limit: chartLimit, span: 'day' }),
 			this.$root.api('charts/notes', { limit: chartLimit, span: 'day' }),
 			this.$root.api('charts/drive', { limit: chartLimit, span: 'day' }),
 		])]);
@@ -137,14 +141,16 @@ export default Vue.extend({
 			perHour: {
 				federation: perHour[0],
 				users: perHour[1],
-				notes: perHour[2],
-				drive: perHour[3],
+				activeUsers: perHour[2],
+				notes: perHour[3],
+				drive: perHour[4],
 			},
 			perDay: {
 				federation: perDay[0],
 				users: perDay[1],
-				notes: perDay[2],
-				drive: perDay[3],
+				activeUsers: perDay[2],
+				notes: perDay[3],
+				drive: perDay[4],
 			}
 		};
 
