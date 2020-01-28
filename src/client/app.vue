@@ -614,6 +614,7 @@ export default Vue.extend({
 		-webkit-backdrop-filter: blur(32px);
 		backdrop-filter: blur(32px);
 		background-color: var(--header);
+		border-bottom: solid 1px var(--divider);
 
 		@media (max-width: $nav-icon-only-threshold) {
 			width: calc(100% - #{$nav-icon-only-width});
