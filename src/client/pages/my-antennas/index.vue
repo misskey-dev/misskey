@@ -5,7 +5,7 @@
 
 	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('createAntenna') }}</mk-button>
 
-	<x-antenna v-if="draft" :antenna="draft" @created="onAntennaCreated"/>
+	<x-antenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
 	<mk-pagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
 		<x-antenna v-for="(antenna, i) in items" :key="antenna.id" :data-index="i" :antenna="antenna" @created="onAntennaDeleted"/>
