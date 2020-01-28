@@ -219,7 +219,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		for (const antenna of antennas) {
 			checkHitAntenna(antenna, note, user, followers).then(hit => {
 				if (hit) {
-					addNoteToAntenna(antenna, note);
+					addNoteToAntenna(antenna, note, user);
 				}
 			});
 		}

@@ -1,7 +1,7 @@
 <template>
 <div class="shaynizk _section">
-	<div class="_title">{{ name }}</div>
-	<div class="_content">
+	<div class="_title" v-if="antenna.name">{{ antenna.name }}</div>
+	<div class="_content body">
 		<mk-input v-model="name" style="margin-top: 8px;">
 			<span>{{ $t('name') }}</span>
 		</mk-input>
@@ -149,5 +149,9 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .shaynizk {
+	> .body {
+		max-height: 250px;
+		overflow: auto;
+	}
 }
 </style>

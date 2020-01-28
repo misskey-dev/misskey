@@ -153,7 +153,7 @@ export default Vue.extend({
 	}
 
 	&.inline + .bghgjjyj {
-		margin-left: 8px;
+		margin-left: 12px;
 	}
 
 	&:not(.inline) + .bghgjjyj {

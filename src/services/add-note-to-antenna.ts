@@ -5,18 +5,22 @@ import { genId } from '../misc/gen-id';
 import shouldMuteThisNote from '../misc/should-mute-this-note';
 import { ensure } from '../prelude/ensure';
 import { publishAntennaStream, publishMainStream } from './stream';
+import { User } from '../models/entities/user';
 
-export async function addNoteToAntenna(antenna: Antenna, note: Note) {
+export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: User) {
+	// 通知しない設定になっているか、自分自身の投稿なら既読にする
+	const read = !antenna.notify || (antenna.userId === noteUser.id);
+
 	AntennaNotes.save({
 		id: genId(),
 		antennaId: antenna.id,
 		noteId: note.id,
-		read: !antenna.notify,
+		read: read,
 	});
 
 	publishAntennaStream(antenna.id, 'note', note);
 
-	if (antenna.notify) {
+	if (!read) {
 		const mutings = await Mutings.find({
 			where: {
 				muterId: antenna.userId
