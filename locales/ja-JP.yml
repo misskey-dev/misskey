@@ -320,6 +320,7 @@ recentlyDiscoveredUsers: "最近発見されたユーザー"
 exploreUsersCount: "{count}のユーザーがいます"
 exploreFediverse: "Fediverseを探索"
 popularTags: "人気のタグ"
+userList: "リスト"
 
 _permissions:
   "read:account": "アカウントの情報を見る"
