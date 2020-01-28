@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div v-if="$store.getters.isSignedIn">
-		<p class="fetching" v-if="fetching">{{ $t('loading') }}<mk-ellipsis/></p>
+		<mk-loading v-if="fetching"/>
 		<x-form
 			class="form"
 			ref="form"
