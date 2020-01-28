@@ -45,6 +45,7 @@ export const router = new VueRouter({
 		{ path: '/instance/announcements', component: () => import('./pages/instance/announcements.vue').then(m => m.default) },
 		{ path: '/notes/:note', name: 'note', component: () => import('./pages/note.vue').then(m => m.default) },
 		{ path: '/tags/:tag', component: () => import('./pages/tag.vue').then(m => m.default) },
+		{ path: '/auth/:token', component: () => import('./pages/auth.vue').then(m => m.default) },
 		{ path: '/authorize-follow', component: () => import('./pages/follow.vue').then(m => m.default) },
 		/*{ path: '*', component: MkNotFound }*/
 	]
