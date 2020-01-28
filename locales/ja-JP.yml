@@ -351,6 +351,7 @@ _permissions:
 
 _auth:
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"
+  permissionAsk: "このアプリは次の権限を要求しています"
 
 _antennaSources:
   all: "全ての投稿"
