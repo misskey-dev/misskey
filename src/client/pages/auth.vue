@@ -1,32 +1,32 @@
 <template>
-<div>
-	<div v-if="$store.getters.isSignedIn">
-		<mk-loading v-if="fetching"/>
-		<x-form
-			class="form"
-			ref="form"
-			v-if="state == 'waiting'"
-			:session="session"
-			@denied="state = 'denied'"
-			@accepted="accepted"
-		/>
-		<div class="denied" v-if="state == 'denied'">
-			<h1>{{ $t('denied') }}</h1>
-			<p>{{ $t('denied-paragraph') }}</p>
-		</div>
-		<div class="accepted" v-if="state == 'accepted'">
-			<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
-			<p v-if="session.app.callbackUrl">{{ $t('callback-url') }}<mk-ellipsis/></p>
-			<p v-if="!session.app.callbackUrl">{{ $t('please-go-back') }}</p>
-		</div>
-		<div class="error" v-if="state == 'fetch-session-error'">
-			<p>{{ $t('error') }}</p>
-		</div>
+<div class="_panel" v-if="$store.getters.isSignedIn && fetching">
+	<mk-loading/>
+</div>
+<div v-else-if="$store.getters.isSignedIn">
+	<x-form
+		class="form"
+		ref="form"
+		v-if="state == 'waiting'"
+		:session="session"
+		@denied="state = 'denied'"
+		@accepted="accepted"
+	/>
+	<div class="denied _panel" v-if="state == 'denied'">
+		<h1>{{ $t('denied') }}</h1>
+		<p>{{ $t('denied-paragraph') }}</p>
 	</div>
-	<div class="signin" v-if="!$store.getters.isSignedIn">
-		<h1>{{ $t('sign-in') }}</h1>
-		<mk-signin/>
+	<div class="accepted _panel" v-if="state == 'accepted'">
+		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
+		<p v-if="session.app.callbackUrl">{{ $t('callback-url') }}<mk-ellipsis/></p>
+		<p v-if="!session.app.callbackUrl">{{ $t('please-go-back') }}</p>
 	</div>
+	<div class="error _panel" v-if="state == 'fetch-session-error'">
+		<p>{{ $t('error') }}</p>
+	</div>
+</div>
+<div class="signin" v-else>
+	<h1>{{ $t('sign-in') }}</h1>
+	<mk-signin/>
 </div>
 </template>
 

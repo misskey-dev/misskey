@@ -1,37 +1,36 @@
 <template>
-<div>
-	<header>
-		<h1 v-html="$t('share-access', { name })"></h1>
-		<img :src="app.iconUrl"/>
-	</header>
-	<div class="app">
-		<section>
-			<h2>{{ app.name }}</h2>
-			<p class="id">{{ app.id }}</p>
-			<p class="description">{{ app.description }}</p>
-		</section>
-		<section>
-			<h2>{{ $t('permission-ask') }}</h2>
-			<ul>
-				<template v-for="p in app.permission">
-					<li :key="p">{{ $t(`@.permissions.${p}`) }}</li>
-				</template>
-			</ul>
-		</section>
+<section class="_section">
+	<div class="_title">{{ $t('_auth.shareAccess', { name: app.name }) }}</div>
+	<div class="_content">
+		<h2>{{ app.name }}</h2>
+		<p class="id">{{ app.id }}</p>
+		<p class="description">{{ app.description }}</p>
 	</div>
-	<div class="action">
-		<button @click="cancel">{{ $t('cancel') }}</button>
-		<button @click="accept">{{ $t('accept') }}</button>
+	<div class="_content">
+		<h2>{{ $t('_auth.permissionAsk') }}</h2>
+		<ul>
+			<template v-for="p in app.permission">
+				<li :key="p">{{ $t(`_permissions.${p}`) }}</li>
+			</template>
+		</ul>
 	</div>
-</div>
+	<div class="_footer">
+		<mk-button @click="cancel">{{ $t('cancel') }}</mk-button>
+		<mk-button @click="accept" primary>{{ $t('accept') }}</mk-button>
+	</div>
+</section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../i18n';
+import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
 	i18n,
+	components: {
+		MkButton
+	},
 	props: ['session'],
 	computed: {
 		name(): string {

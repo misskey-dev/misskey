@@ -12,6 +12,7 @@
 	<x-general/>
 	<x-mute-block/>
 	<x-security/>
+	<x-2fa/>
 	<x-integration/>
 
 	<mk-button @click="cacheClear()" primary class="cacheClear">{{ $t('cacheClear') }}</mk-button>
@@ -31,6 +32,7 @@ import XReactionSetting from './reaction.vue';
 import XMuteBlock from './mute-block.vue';
 import XSecurity from './security.vue';
 import XTheme from './theme.vue';
+import X2fa from './2fa.vue';
 import XIntegration from './integration.vue';
 import MkButton from '../../components/ui/button.vue';
 
@@ -51,6 +53,7 @@ export default Vue.extend({
 		XMuteBlock,
 		XSecurity,
 		XTheme,
+		X2fa,
 		XIntegration,
 		MkButton,
 	},
