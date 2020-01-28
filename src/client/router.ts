@@ -15,6 +15,7 @@ export const router = new VueRouter({
 		{ path: '/@:user/pages/:page', component: () => import('./pages/page.vue').then(m => m.default), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: () => import('./pages/page-editor/page-editor.vue').then(m => m.default), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/announcements', component: () => import('./pages/announcements.vue').then(m => m.default) },
+		{ path: '/about', component: () => import('./pages/about.vue').then(m => m.default) },
 		{ path: '/featured', component: () => import('./pages/featured.vue').then(m => m.default) },
 		{ path: '/explore', component: () => import('./pages/explore.vue').then(m => m.default) },
 		{ path: '/explore/tags/:tag', props: true, component: () => import('./pages/explore.vue').then(m => m.default) },

@@ -135,7 +135,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt, faSatellite } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt, faSatellite, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
@@ -428,7 +428,7 @@ export default Vue.extend({
 
 		more(ev) {
 			this.$root.menu({
-				items: [{
+				items: [...(this.$store.getters.isSignedIn ? [{
 					type: 'link',
 					text: this.$t('lists'),
 					to: '/my/lists',
@@ -465,6 +465,11 @@ export default Vue.extend({
 					text: this.$t('games'),
 					to: '/games',
 					icon: faGamepad,
+				}, null] : []), {
+					type: 'link',
+					text: this.$t('about'),
+					to: '/about',
+					icon: faInfoCircle,
 				}],
 				align: 'left',
 				fixed: true,

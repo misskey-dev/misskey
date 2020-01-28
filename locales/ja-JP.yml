@@ -17,7 +17,6 @@ _time:
   day: "日"
 
 introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
-aboutMisskey: ""
 monthAndDay: "{month}月 {day}日"
 search: "検索"
 notifications: "通知"
@@ -321,6 +320,11 @@ exploreUsersCount: "{count}のユーザーがいます"
 exploreFediverse: "Fediverseを探索"
 popularTags: "人気のタグ"
 userList: "リスト"
+about: "情報"
+aboutMisskey: "Misskeyについて"
+aboutMisskeyText: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"
+misskeyMembers: "現在以下のメンバーによって開発・メンテナンスされています:"
+misskeySource: "ソースコードはここで公開されています:"
 
 _permissions:
   "read:account": "アカウントの情報を見る"
