@@ -33,8 +33,6 @@ export const meta = {
 export default define(meta, async (ps) => {
 	const emojis = await makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
 		.andWhere(`emoji.host IS NULL`)
-		.orderBy('emoji.category', 'ASC')
-		.orderBy('emoji.name', 'ASC')
 		.take(ps.limit!)
 		.getMany();
 
