@@ -27,13 +27,13 @@
 			<p class="or-msg">{{ $t('or') }}</p>
 		</div>
 		<div class="twofa-group totp-group">
-			<p style="margin-bottom:0;">{{ $t('enter-2fa-code') }}</p>
+			<p style="margin-bottom:0;">{{ $t('twoStepAuthentication') }}</p>
 			<mk-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
 				<span>{{ $t('password') }}</span>
 				<template #prefix><fa :icon="faLock"/></template>
 			</mk-input>
 			<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
-				<span>{{ $t('2fa') }}</span>
+				<span>{{ $t('token') }}</span>
 				<template #prefix><fa :icon="faGavel"/></template>
 			</mk-input>
 			<mk-button type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>
