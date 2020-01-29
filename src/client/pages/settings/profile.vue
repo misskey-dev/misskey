@@ -1,7 +1,11 @@
 <template>
-<section class="mk-settings-page-profile _section">
+<section class="llvierxe _section">
 	<div class="_title"><fa :icon="faUser"/> {{ $t('profile') }}<small style="display: block; font-weight: normal; opacity: 0.6;">@{{ $store.state.i.username }}@{{ host }}</small></div>
 	<div class="_content">
+		<div class="header" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
+			<mk-avatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
+		</div>
+	
 		<mk-input v-model="name" :max="30">
 			<span>{{ $t('_profile.name') }}</span>
 		</mk-input>
@@ -19,18 +23,6 @@
 		<mk-input v-model="birthday" type="date">
 			<template #title>{{ $t('birthday') }}</template>
 			<template #prefix><fa :icon="faBirthdayCake"/></template>
-		</mk-input>
-
-		<mk-input type="file" @change="onAvatarChange">
-			<span>{{ $t('avatar') }}</span>
-			<template #icon><fa :icon="faImage"/></template>
-			<template #desc v-if="avatarUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
-		</mk-input>
-
-		<mk-input type="file" @change="onBannerChange">
-			<span>{{ $t('banner') }}</span>
-			<template #icon><fa :icon="faImage"/></template>
-			<template #desc v-if="bannerUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
 		</mk-input>
 
 		<details class="fields">
@@ -64,14 +56,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faUnlockAlt, faCogs, faImage, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
+import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import i18n from '../../i18n';
-import { apiUrl, host } from '../../config';
+import { host } from '../../config';
+import { selectFile } from '../../scripts/select-file';
 
 export default Vue.extend({
 	i18n,
@@ -103,9 +96,7 @@ export default Vue.extend({
 			isBot: false,
 			isCat: false,
 			saving: false,
-			avatarUploading: false,
-			bannerUploading: false,
-			faSave, faUnlockAlt, faCogs, faImage, faUser, faMapMarkerAlt, faBirthdayCake
+			faSave, faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake
 		}
 	},
 
@@ -130,52 +121,18 @@ export default Vue.extend({
 	},
 
 	methods: {
-		onAvatarChange([file]) {
-			this.avatarUploading = true;
-
-			const data = new FormData();
-			data.append('file', file);
-			data.append('i', this.$store.state.i.token);
-
-			fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: data
-			})
-			.then(response => response.json())
-			.then(f => {
-				this.avatarId = f.id;
-				this.avatarUploading = false;
-			})
-			.catch(e => {
-				this.avatarUploading = false;
-					this.$root.dialog({
-					type: 'error',
-					text: e
+		changeAvatar(e) {
+			selectFile(this, e.currentTarget || e.target, this.$t('avatar')).then(file => {
+				this.$root.api('i/update', {
+					avatarId: file.id,
 				});
 			});
 		},
 
-		onBannerChange([file]) {
-			this.bannerUploading = true;
-
-			const data = new FormData();
-			data.append('file', file);
-			data.append('i', this.$store.state.i.token);
-
-			fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: data
-			})
-			.then(response => response.json())
-			.then(f => {
-				this.bannerId = f.id;
-				this.bannerUploading = false;
-			})
-			.catch(e => {
-				this.bannerUploading = false;
-				this.$root.dialog({
-					type: 'error',
-					text: e
+		changeBanner(e) {
+			selectFile(this, e.currentTarget || e.target, this.$t('banner')).then(file => {
+				this.$root.api('i/update', {
+					bannerId: file.id,
 				});
 			});
 		},
@@ -226,10 +183,31 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-settings-page-profile {
+.llvierxe {
 	> ._content {
-		> *:first-child {
-			margin-top: 0;
+		> .header {
+			position: relative;
+			height: 150px;
+			overflow: hidden;
+			background-size: cover;
+			background-position: center;
+			border-radius: 5px;
+			border: solid 1px var(--divider);
+			box-sizing: border-box;
+			cursor: pointer;
+
+			> .avatar {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				display: block;
+				width: 72px;
+				height: 72px;
+				margin: auto;
+				cursor: pointer;
+			}
 		}
 
 		> .fields {
