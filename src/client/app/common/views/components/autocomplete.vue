@@ -73,7 +73,42 @@ for (const x of lib) {
 emjdb.sort((a, b) => a.name.length - b.name.length);
 
 export default Vue.extend({
-	props: ['type', 'q', 'textarea', 'complete', 'close', 'x', 'y'],
+	props: {
+		type: {
+			type: String,
+			required: true,
+		},
+
+		q: {
+			type: String,
+			required: true,
+		},
+
+		textarea: {
+			type: Object,
+			required: true,
+		},
+
+		complete: {
+			type: Function,
+			required: true,
+		},
+
+		close: {
+			type: Function,
+			required: true,
+		},
+
+		x: {
+			type: Number,
+			required: true,
+		},
+
+		y: {
+			type: Number,
+			required: true,
+		},
+	},
 
 	data() {
 		return {

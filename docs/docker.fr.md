@@ -55,7 +55,7 @@ Utilisez la commande `docker-compose up -d`. GLHF!
 7. `docker-compose stop && docker-compose up -d`
 
 ### Comment exécuter des [commandes](manage.fr.md)
-`docker-compose run --rm web node cli/mark-admin @example`
+`docker-compose run --rm web node built/tools/mark-admin @example`
 
 ### Configuration d'ElasticSearch (pour la fonction de recherche)
 *1.* Préparation de l'environnement

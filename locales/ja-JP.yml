@@ -751,6 +751,9 @@ common/views/components/notification-settings.vue:
   auto-watch: "投稿の自動ウォッチ"
   auto-watch-desc: "リアクションしたり返信したりした投稿に関する通知を自動的に受け取るようにします。"
 
+common/views/components/instance.vue:
+  start: 始める
+
 common/views/components/integration-settings.vue:
   title: "サービス連携"
   connect: "接続する"

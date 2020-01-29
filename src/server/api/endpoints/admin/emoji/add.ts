@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { detectUrlMine } from '../../../../../misc/detect-url-mine';
+import { detectUrlMime } from '../../../../../misc/detect-url-mime';
 import { Emojis } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
 import { getConnection } from 'typeorm';
@@ -46,7 +46,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const type = await detectUrlMine(ps.url);
+	const type = await detectUrlMime(ps.url);
 
 	const exists = await Emojis.findOne({
 		name: ps.name,

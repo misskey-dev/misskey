@@ -8,7 +8,7 @@ import { contentDisposition } from '../../misc/content-disposition';
 import { DriveFiles } from '../../models';
 import { InternalStorage } from '../../services/drive/internal-storage';
 import { downloadUrl } from '../../misc/donwload-url';
-import { detectMine } from '../../misc/detect-mine';
+import { detectType } from '../../misc/get-file-info';
 import { convertToJpeg, convertToPng } from '../../services/drive/image-processor';
 import { GenerateVideoThumbnail } from '../../services/drive/generate-video-thumbnail';
 
@@ -52,15 +52,15 @@ export default async function(ctx: Koa.Context) {
 			try {
 				await downloadUrl(file.uri, path);
 
-				const [type, ext] = await detectMine(path);
+				const { mime, ext } = await detectType(path);
 
 				const convertFile = async () => {
 					if (isThumbnail) {
-						if (['image/jpeg', 'image/webp'].includes(type)) {
+						if (['image/jpeg', 'image/webp'].includes(mime)) {
 							return await convertToJpeg(path, 498, 280);
-						} else if (['image/png'].includes(type)) {
+						} else if (['image/png'].includes(mime)) {
 							return await convertToPng(path, 498, 280);
-						} else if (type.startsWith('video/')) {
+						} else if (mime.startsWith('video/')) {
 							return await GenerateVideoThumbnail(path);
 						}
 					}
@@ -68,7 +68,7 @@ export default async function(ctx: Koa.Context) {
 					return {
 						data: fs.readFileSync(path),
 						ext,
-						type,
+						type: mime,
 					};
 				};
 
@@ -98,7 +98,7 @@ export default async function(ctx: Koa.Context) {
 	}
 
 	if (isThumbnail || isWebpublic) {
-		const [mime, ext] = await detectMine(InternalStorage.resolvePath(key));
+		const { mime, ext } = await detectType(InternalStorage.resolvePath(key));
 		const filename = rename(file.name, {
 			suffix: isThumbnail ? '-thumb' : '-web',
 			extname: ext ? `.${ext}` : undefined
