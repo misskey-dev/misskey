@@ -328,6 +328,7 @@ misskeySource: "ソースコードはここで公開されています:"
 administrator: "管理者"
 token: "トークン"
 twoStepAuthentication: "二段階認証"
+moderator: "モデレーター"
 
 _2fa:
   registerDevice: "デバイスを登録"
