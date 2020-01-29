@@ -291,6 +291,30 @@ export default Vue.extend({
 		});
 	},
 
+	mounted() {
+		const renderRecaptchaPreview = () => {
+			if (!(window as any).grecaptcha) return;
+			if (!this.$refs.recaptcha) return;
+			if (!this.recaptchaSiteKey) return;
+			(window as any).grecaptcha.render(this.$refs.recaptcha, {
+				sitekey: this.recaptchaSiteKey
+			});
+		};
+		window.onRecaotchaLoad = () => {
+			renderRecaptchaPreview();
+		};
+		const head = document.getElementsByTagName('head')[0];
+		const script = document.createElement('script');
+		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js?onload=onRecaotchaLoad');
+		head.appendChild(script);
+		this.$watch('enableRecaptcha', () => {
+			renderRecaptchaPreview();
+		});
+		this.$watch('recaptchaSiteKey', () => {
+			renderRecaptchaPreview();
+		});
+	},
+
 	methods: {
 		addPinUser() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
