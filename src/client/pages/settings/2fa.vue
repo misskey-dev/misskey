@@ -156,7 +156,7 @@ export default Vue.extend({
 			}).catch(e => {
 				this.$root.dialog({
 					type: 'error',
-					text: e
+					iconOnly: true, autoClose: true
 				});
 			});
 		},

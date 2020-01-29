@@ -1,6 +1,6 @@
 <template>
 <section class="_section">
-	<div class="_title"><fa :icon="faLock"/> {{ $t('security') }}</div>
+	<div class="_title"><fa :icon="faLock"/> {{ $t('password') }}</div>
 	<div class="_content">
 		<mk-button primary @click="change()">{{ $t('changePassword') }}</mk-button>
 	</div>
