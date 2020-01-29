@@ -329,6 +329,7 @@ administrator: "管理者"
 token: "トークン"
 twoStepAuthentication: "二段階認証"
 moderator: "モデレーター"
+nUsersMentioned: "{n}人が投稿"
 
 _2fa:
   registerDevice: "デバイスを登録"
