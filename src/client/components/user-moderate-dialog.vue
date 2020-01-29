@@ -3,6 +3,7 @@
 	<template #header><mk-user-name :user="user"/></template>
 	<div class="vrcsvlkm">
 		<mk-button @click="changePassword()">{{ $t('changePassword') }}</mk-button>
+		<mk-switch v-if="$store.state.i.isAdmin" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
 		<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
 		<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
 	</div>
@@ -34,6 +35,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			moderator: this.user.isModerator,
 			silenced: this.user.isSilenced,
 			suspended: this.user.isSuspended,
 		};
@@ -94,8 +96,12 @@ export default Vue.extend({
 			if (confirm.canceled) {
 				this.suspended = !this.suspended;
 			} else {
-				this.$root.api(this.silenced ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
+				this.$root.api(this.suspended ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
 			}
+		},
+
+		async toggleModerator() {
+			this.$root.api(this.moderator ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: this.user.id });
 		}
 	}
 });
