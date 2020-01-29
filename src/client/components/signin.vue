@@ -32,7 +32,7 @@
 				<span>{{ $t('password') }}</span>
 				<template #prefix><fa :icon="faLock"/></template>
 			</mk-input>
-			<mk-input v-model="token" type="number" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
+			<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 				<span>{{ $t('token') }}</span>
 				<template #prefix><fa :icon="faGavel"/></template>
 			</mk-input>

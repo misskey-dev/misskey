@@ -64,7 +64,7 @@
 				</li>
 				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
 				<li>{{ $t('_2fa.step3') }}<br>
-					<mk-input v-model="token" type="number" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</mk-input>
+					<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</mk-input>
 					<mk-button primary @click="submit">{{ $t('done') }}</mk-button>
 				</li>
 			</ol>
