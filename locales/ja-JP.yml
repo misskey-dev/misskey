@@ -326,6 +326,15 @@ aboutMisskeyText: "Misskeyはsyuiloによって2014年から開発されてい�
 misskeyMembers: "現在以下のメンバーによって開発・メンテナンスされています:"
 misskeySource: "ソースコードはここで公開されています:"
 administrator: "管理者"
+token: "トークン"
+twoStepAuthentication: "二段階認証"
+
+_2fa:
+  registerDevice: "デバイスを登録"
+  step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
+  step2: "次に、表示されているQRコードをアプリでスキャンします。"
+  step3: "アプリに表示されているトークンを入力して完了です。"
+  step4: "これからログインするときも、同じようにトークンを入力します。"
 
 _permissions:
   "read:account": "アカウントの情報を見る"

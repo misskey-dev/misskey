@@ -1,75 +1,82 @@
 <template>
 <section class="_section">
-	<p style="margin-top:0;">{{ $t('intro') }}<a :href="$t('url')" target="_blank">{{ $t('detail') }}</a></p>
-	<mk-info warn>{{ $t('caution') }}</mk-info>
-	<p v-if="!data && !$store.state.i.twoFactorEnabled"><mk-button @click="register">{{ $t('register') }}</mk-button></p>
-	<template v-if="$store.state.i.twoFactorEnabled">
-		<h2 class="heading">{{ $t('totp-header') }}</h2>
-		<p>{{ $t('already-registered') }}</p>
-		<mk-button @click="unregister">{{ $t('unregister') }}</mk-button>
+	<div class="_title"><fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
+	<div class="_content">
+		<p v-if="!data && !$store.state.i.twoFactorEnabled"><mk-button @click="register">{{ $t('_2fa.registerDevice') }}</mk-button></p>
+		<template v-if="$store.state.i.twoFactorEnabled">
+			<h2 class="heading">{{ $t('totp-header') }}</h2>
+			<p>{{ $t('already-registered') }}</p>
+			<mk-button @click="unregister">{{ $t('unregister') }}</mk-button>
 
-		<template v-if="supportsCredentials">
-			<hr class="totp-method-sep">
+			<template v-if="supportsCredentials">
+				<hr class="totp-method-sep">
 
-			<h2 class="heading">{{ $t('security-key-header') }}</h2>
-			<p>{{ $t('security-key') }}</p>
-			<div class="key-list">
-				<div class="key" v-for="key in $store.state.i.securityKeysList">
-					<h3>
-						{{ key.name }}
-					</h3>
-					<div class="last-used">
-						{{ $t('last-used') }}
-						<mk-time :time="key.lastUsed"/>
-					</div>
-					<mk-button @click="unregisterKey(key)">
-						{{ $t('unregister') }}
-					</mk-button>
-				</div>
-			</div>
-
-			<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">
-				{{ $t('use-password-less-login') }}
-			</mk-switch>
-
-			<mk-info warn v-if="registration && registration.error">{{ $t('something-went-wrong') }} {{ registration.error }}</mk-info>
-			<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('register') }}</mk-button>
-
-			<ol v-if="registration && !registration.error">
-				<li v-if="registration.stage >= 0">
-					{{ $t('activate-key') }}
-					<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 0" />
-				</li>
-				<li v-if="registration.stage >= 1">
-					<mk-form :disabled="registration.stage != 1 || registration.saving">
-						<mk-input v-model="keyName" :max="30">
-							<span>{{ $t('security-key-name') }}</span>
-						</mk-input>
-						<mk-button @click="registerKey" :disabled="this.keyName.length == 0">
-							{{ $t('register-security-key') }}
+				<h2 class="heading">{{ $t('security-key-header') }}</h2>
+				<p>{{ $t('security-key') }}</p>
+				<div class="key-list">
+					<div class="key" v-for="key in $store.state.i.securityKeysList">
+						<h3>
+							{{ key.name }}
+						</h3>
+						<div class="last-used">
+							{{ $t('last-used') }}
+							<mk-time :time="key.lastUsed"/>
+						</div>
+						<mk-button @click="unregisterKey(key)">
+							{{ $t('unregister') }}
 						</mk-button>
-						<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
-					</mk-form>
+					</div>
+				</div>
+
+				<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">
+					{{ $t('use-password-less-login') }}
+				</mk-switch>
+
+				<mk-info warn v-if="registration && registration.error">{{ $t('something-went-wrong') }} {{ registration.error }}</mk-info>
+				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('register') }}</mk-button>
+
+				<ol v-if="registration && !registration.error">
+					<li v-if="registration.stage >= 0">
+						{{ $t('activate-key') }}
+						<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 0" />
+					</li>
+					<li v-if="registration.stage >= 1">
+						<mk-form :disabled="registration.stage != 1 || registration.saving">
+							<mk-input v-model="keyName" :max="30">
+								<span>{{ $t('security-key-name') }}</span>
+							</mk-input>
+							<mk-button @click="registerKey" :disabled="this.keyName.length == 0">
+								{{ $t('register-security-key') }}
+							</mk-button>
+							<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
+						</mk-form>
+					</li>
+				</ol>
+			</template>
+		</template>
+		<div v-if="data && !$store.state.i.twoFactorEnabled">
+			<ol style="margin: 0; padding: 0 0 0 1em;">
+				<li>
+					<i18n path="_2fa.step1" tag="span">
+						<a href="https://authy.com/" rel="noopener" target="_blank" place="a">Authy</a>
+						<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" place="b">Google Authenticator</a>
+					</i18n>
+				</li>
+				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
+				<li>{{ $t('_2fa.step3') }}<br>
+					<mk-input v-model="token">{{ $t('token') }}</mk-input>
+					<mk-button primary @click="submit">{{ $t('done') }}</mk-button>
 				</li>
 			</ol>
-		</template>
-	</template>
-	<div v-if="data && !$store.state.i.twoFactorEnabled">
-		<ol>
-			<li>{{ $t('authenticator') }}<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank">{{ $t('howtoinstall') }}</a></li>
-			<li>{{ $t('scan') }}<br><img :src="data.qr"></li>
-			<li>{{ $t('done') }}<br>
-				<mk-input v-model="token">{{ $t('token') }}</mk-input>
-				<mk-button primary @click="submit">{{ $t('submit') }}</mk-button>
-			</li>
-		</ol>
-		<mk-info>{{ $t('info') }}</mk-info>
+			<mk-info>{{ $t('_2fa.step4') }}</mk-info>
+		</div>
 	</div>
 </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
 import { hostname } from '../../config';
 import { hexifyAB } from '../../scripts/2fa';
@@ -93,7 +100,8 @@ export default Vue.extend({
 			usePasswordLessLogin: this.$store.state.i.usePasswordLessLogin,
 			registration: null,
 			keyName: '',
-			token: null
+			token: null,
+			faLock
 		};
 	},
 	methods: {
@@ -127,7 +135,10 @@ export default Vue.extend({
 					this.usePasswordLessLogin = false;
 					this.updatePasswordLessLogin();
 				}).then(() => {
-					this.$notify(this.$t('unregistered'));
+					this.$root.dialog({
+						type: 'success',
+						iconOnly: true, autoClose: true
+					});
 					this.$store.state.i.twoFactorEnabled = false;
 				});
 			});
@@ -137,10 +148,16 @@ export default Vue.extend({
 			this.$root.api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
-				this.$notify(this.$t('success'));
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
 				this.$store.state.i.twoFactorEnabled = true;
-			}).catch(() => {
-				this.$notify(this.$t('failed'));
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
 			});
 		},
 
@@ -156,7 +173,10 @@ export default Vue.extend({
 			}).then(key => {
 				this.registration = null;
 				key.lastUsed = new Date();
-				this.$notify(this.$t('success'));
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
 			})
 		},
 
@@ -175,7 +195,10 @@ export default Vue.extend({
 					this.usePasswordLessLogin = false;
 					this.updatePasswordLessLogin();
 				}).then(() => {
-					this.$notify(this.$t('key-unregistered'));
+					this.$root.dialog({
+						type: 'success',
+						iconOnly: true, autoClose: true
+					});
 				});
 			});
 		},

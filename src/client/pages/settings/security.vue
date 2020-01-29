@@ -1,5 +1,5 @@
 <template>
-<section class="mk-settings-page-security _section">
+<section class="_section">
 	<div class="_title"><fa :icon="faLock"/> {{ $t('security') }}</div>
 	<div class="_content">
 		<mk-button primary @click="change()">{{ $t('changePassword') }}</mk-button>
@@ -85,7 +85,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>
