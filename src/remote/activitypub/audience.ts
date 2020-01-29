@@ -1,4 +1,3 @@
-//import { IRemoteUser, IUser } from '../../models/user';
 import { ApObject, getApIds } from './type';
 import Resolver from './resolver';
 import { resolvePerson } from './models/person';
