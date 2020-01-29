@@ -9,7 +9,7 @@
 			<div>{{ meta.description }}</div>
 		</div>
 		<div class="_content table">
-			<div><b>{{ $t('maintainer') }}</b><span>{{ meta.maintainerName }}</span></div>
+			<div><b>{{ $t('administrator') }}</b><span>{{ meta.maintainerName }}</span></div>
 			<div><b></b><span>{{ meta.maintainerEmail }}</span></div>
 		</div>
 		<div class="_content table" v-if="stats">
