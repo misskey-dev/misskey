@@ -17,6 +17,7 @@ export default {
 		};
 
 		const show = () => {
+			if (!document.body.contains(el)) return;
 			if (self.tag) return;
 
 			self.tag = new MkUserPreview({
