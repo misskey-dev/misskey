@@ -1,27 +1,6 @@
 <template>
-<div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }">
-	<header v-if="showTitle">
-		<div class="title">{{ page.title }}</div>
-	</header>
-
-	<div v-if="script">
-		<x-block v-for="child in page.content" :value="child" @input="v => updateBlock(v)" :page="page" :script="script" :key="child.id" :h="2"/>
-	</div>
-
-	<footer v-if="showFooter">
-		<small>@{{ page.user.username }}</small>
-		<template v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId">
-			<router-link :to="`/my/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
-			<a v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)">{{ $t('unpin-this-page') }}</a>
-			<a v-else @click="pin(true)">{{ $t('pin-this-page') }}</a>
-		</template>
-		<router-link :to="`./${page.name}/view-source`">{{ $t('view-source') }}</router-link>
-		<div class="like">
-			<button @click="unlike()" v-if="page.isLiked" :title="$t('unlike')"><fa :icon="faHeartS"/></button>
-			<button @click="like()" v-else :title="$t('like')"><fa :icon="faHeart"/></button>
-			<span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span>
-		</div>
-	</footer>
+<div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }" v-if="script">
+	<x-block v-for="child in page.content" :value="child" @input="v => updateBlock(v)" :page="page" :script="script" :key="child.id" :h="2"/>
 </div>
 </template>
 
@@ -77,16 +56,6 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
-		showTitle: {
-			type: Boolean,
-			required: false,
-			default: true
-		},
-		showFooter: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
 	},
 
 	data() {
@@ -113,35 +82,6 @@ export default Vue.extend({
 		getPageVars() {
 			return collectPageVars(this.page.content);
 		},
-
-		like() {
-			this.$root.api('pages/like', {
-				pageId: this.page.id,
-			}).then(() => {
-				this.page.isLiked = true;
-				this.page.likedCount++;
-			});
-		},
-
-		unlike() {
-			this.$root.api('pages/unlike', {
-				pageId: this.page.id,
-			}).then(() => {
-				this.page.isLiked = false;
-				this.page.likedCount--;
-			});
-		},
-
-		pin(pin) {
-			this.$root.api('i/update', {
-				pinnedPageId: pin ? this.page.id : null,
-			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					splash: true
-				});
-			});
-		}
 	}
 });
 </script>
