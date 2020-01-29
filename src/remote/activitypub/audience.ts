@@ -13,7 +13,7 @@ type AudienceInfo = {
 	visibleUsers: User[],
 };
 
-export async function parseAudience(actor: IRemoteUser, to: ApObject | undefined, cc: ApObject | undefined, resolver?: Resolver): Promise<AudienceInfo> {
+export async function parseAudience(actor: IRemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
 	const toGroups = groupingAudience(getApIds(to), actor);
 	const ccGroups = groupingAudience(getApIds(cc), actor);
 
