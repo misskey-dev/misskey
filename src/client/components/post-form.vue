@@ -60,7 +60,6 @@ import i18n from '../i18n';
 import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
-import XEmojiPicker from './emoji-picker.vue';
 import { parse } from '../../mfm/parse';
 import { host, url } from '../config';
 import { erase, unique } from '../../prelude/array';
@@ -543,8 +542,8 @@ export default Vue.extend({
 			});
 		},
 
-		insertEmoji(ev) {
-			const vm = this.$root.new(XEmojiPicker, {
+		async insertEmoji(ev) {
+			const vm = this.$root.new(await import('./emoji-picker.vue').then(m => m.default), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);
