@@ -39,6 +39,7 @@
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
+						<router-link class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><fa :icon="faReply"/></router-link>
 						<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
@@ -658,13 +659,13 @@ export default Vue.extend({
 				}
 
 				> .content {
-
 					> .text {
-						display: block;
-						margin: 0;
-						padding: 0;
 						overflow-wrap: break-word;
-						font-size: 1em;
+
+						> .reply {
+							color: var(--accent);
+							margin-right: 0.5em;
+						}
 
 						> .rp {
 							margin-left: 4px;
@@ -675,13 +676,6 @@ export default Vue.extend({
 
 					> .url-preview {
 						margin-top: 8px;
-					}
-
-					> .files {
-						> img {
-							display: block;
-							max-width: 100%;
-						}
 					}
 
 					> .mk-poll {
