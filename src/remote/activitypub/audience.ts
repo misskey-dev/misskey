@@ -22,7 +22,7 @@ export async function parseAudience(actor: IRemoteUser, to?: ApObject, cc?: ApOb
 	const limit = promiseLimit<User | null>(2);
 	const mentionedUsers = (await Promise.all(
 		others.map(id => limit(() => resolvePerson(id, resolver).catch(() => null)))
-	)).filter(x => x != null) as User[];
+	)).filter((x): x is User => x != null);
 
 	if (toGroups.public.length > 0) {
 		return {
