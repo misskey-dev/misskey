@@ -19,7 +19,7 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 	});
 
 	if (validPost.includes(object.type)) {
-		createNote(resolver, actor, object);
+		createNote(resolver, actor, object, false, activity);
 	} else {
 		logger.warn(`Unknown type: ${object.type}`);
 	}
