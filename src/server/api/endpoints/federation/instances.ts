@@ -9,6 +9,10 @@ export const meta = {
 	requireCredential: false,
 
 	params: {
+		host: {
+			validator: $.optional.nullable.str,
+		},
+
 		blocked: {
 			validator: $.optional.nullable.bool,
 		},
@@ -17,7 +21,19 @@ export const meta = {
 			validator: $.optional.nullable.bool,
 		},
 
-		markedAsClosed: {
+		suspended: {
+			validator: $.optional.nullable.bool,
+		},
+
+		federating: {
+			validator: $.optional.nullable.bool,
+		},
+
+		subscribing: {
+			validator: $.optional.nullable.bool,
+		},
+
+		publishing: {
 			validator: $.optional.nullable.bool,
 		},
 
@@ -41,6 +57,8 @@ export default define(meta, async (ps, me) => {
 	const query = Instances.createQueryBuilder('instance');
 
 	switch (ps.sort) {
+		case '+pubSub': query.orderBy('instance.followingCount', 'DESC').orderBy('instance.followersCount', 'DESC'); break;
+		case '-pubSub': query.orderBy('instance.followingCount', 'ASC').orderBy('instance.followersCount', 'ASC'); break;
 		case '+notes': query.orderBy('instance.notesCount', 'DESC'); break;
 		case '-notes': query.orderBy('instance.notesCount', 'ASC'); break;
 		case '+users': query.orderBy('instance.usersCount', 'DESC'); break;
@@ -78,12 +96,40 @@ export default define(meta, async (ps, me) => {
 		}
 	}
 
-	if (typeof ps.markedAsClosed === 'boolean') {
-		if (ps.markedAsClosed) {
-			query.andWhere('instance.isMarkedAsClosed = TRUE');
+	if (typeof ps.suspended === 'boolean') {
+		if (ps.suspended) {
+			query.andWhere('instance.isSuspended = TRUE');
 		} else {
-			query.andWhere('instance.isMarkedAsClosed = FALSE');
+			query.andWhere('instance.isSuspended = FALSE');
 		}
+	}
+
+	if (typeof ps.federating === 'boolean') {
+		if (ps.federating) {
+			query.andWhere('((instance.followingCount > 0) OR (instance.followersCount > 0))');
+		} else {
+			query.andWhere('((instance.followingCount = 0) AND (instance.followersCount = 0))');
+		}
+	}
+
+	if (typeof ps.subscribing === 'boolean') {
+		if (ps.subscribing) {
+			query.andWhere('instance.followersCount > 0');
+		} else {
+			query.andWhere('instance.followersCount = 0');
+		}
+	}
+
+	if (typeof ps.publishing === 'boolean') {
+		if (ps.publishing) {
+			query.andWhere('instance.followingCount > 0');
+		} else {
+			query.andWhere('instance.followingCount = 0');
+		}
+	}
+
+	if (ps.host) {
+		query.andWhere('instance.host like :host', { host: '%' + ps.host.toLowerCase() + '%' })
 	}
 
 	const instances = await query.take(ps.limit!).skip(ps.offset).getMany();

@@ -70,7 +70,7 @@ export const packedNotificationSchema = {
 		type: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			enum: ['follow', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote'],
+			enum: ['follow', 'followRequestAccepted', 'receiveFollowRequest', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote'],
 			description: 'The type of the notification.'
 		},
 		userId: {

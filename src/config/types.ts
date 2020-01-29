@@ -32,8 +32,6 @@ export type Source = {
 		ssl?: boolean;
 	};
 
-	autoAdmin?: boolean;
-
 	proxy?: string;
 	proxySmtp?: string;
 

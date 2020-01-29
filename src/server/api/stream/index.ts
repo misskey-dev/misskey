@@ -9,6 +9,7 @@ import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
 import { App } from '../../../models/entities/app';
 import { Users, Followings, Mutings } from '../../../models';
+import { ApiError } from '../error';
 
 /**
  * Main stream connection
@@ -83,8 +84,16 @@ export default class Connection {
 		// 呼び出し
 		call(endpoint, user, this.app, payload.data).then(res => {
 			this.sendMessageToWs(`api:${payload.id}`, { res });
-		}).catch(e => {
-			this.sendMessageToWs(`api:${payload.id}`, { e });
+		}).catch((e: ApiError) => {
+			this.sendMessageToWs(`api:${payload.id}`, {
+				error: {
+					message: e.message,
+					code: e.code,
+					id: e.id,
+					kind: e.kind,
+					...(e.info ? { info: e.info } : {})
+				}
+			});
 		});
 	}
 
@@ -111,7 +120,7 @@ export default class Connection {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 		}
 
-		if (payload.read && this.user) {
+		if (this.user) {
 			readNote(this.user.id, payload.id);
 		}
 	}

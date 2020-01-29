@@ -17,7 +17,7 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles } from '../../models';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
@@ -28,6 +28,8 @@ import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 import { ensure } from '../../prelude/ensure';
+import { checkHitAntenna } from '../../misc/check-hit-antenna';
+import { addNoteToAntenna } from '../add-note-to-antenna';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -90,7 +92,6 @@ type Option = {
 	reply?: Note | null;
 	renote?: Note | null;
 	files?: DriveFile[] | null;
-	geo?: any | null;
 	poll?: IPoll | null;
 	viaMobile?: boolean | null;
 	localOnly?: boolean | null;
@@ -206,6 +207,23 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
+
+	// Antenna
+	Antennas.find().then(async antennas => {
+		const followings = await Followings.createQueryBuilder('following')
+			.andWhere(`following.followeeId = :userId`, { userId: note.userId })
+			.getMany();
+
+		const followers = followings.map(f => f.followerId);
+		
+		for (const antenna of antennas) {
+			checkHitAntenna(antenna, note, user, followers).then(hit => {
+				if (hit) {
+					addNoteToAntenna(antenna, note, user);
+				}
+			});
+		}
+	});
 
 	if (data.reply) {
 		saveReply(data.reply, note);
@@ -361,8 +379,6 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		userId: user.id,
 		viaMobile: data.viaMobile!,
 		localOnly: data.localOnly!,
-		geo: data.geo || null,
-		appId: data.app ? data.app.id : null,
 		visibility: data.visibility as any,
 		visibleUserIds: data.visibility == 'specified'
 			? data.visibleUsers

@@ -15,12 +15,17 @@ export const meta = {
 
 	params: {
 		limit: {
-			validator: $.optional.num.range(1, 30),
+			validator: $.optional.num.range(1, 100),
 			default: 10,
 			desc: {
 				'ja-JP': '最大数'
 			}
-		}
+		},
+
+		offset: {
+			validator: $.optional.num.min(0),
+			default: 0
+		},
 	},
 
 	res: {
@@ -35,6 +40,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	const max = 30;
 	const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
 	const query = Notes.createQueryBuilder('note')
@@ -46,7 +52,14 @@ export default define(meta, async (ps, user) => {
 
 	if (user) generateMuteQuery(query, user);
 
-	const notes = await query.orderBy('note.score', 'DESC').take(ps.limit!).getMany();
+	let notes = await query
+		.orderBy('note.score', 'DESC')
+		.take(max)
+		.getMany();
+
+	notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+	notes = notes.slice(ps.offset, ps.offset + ps.limit);
 
 	return await Notes.packMany(notes, user);
 });
