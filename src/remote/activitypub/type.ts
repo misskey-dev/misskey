@@ -69,10 +69,10 @@ export interface IOrderedCollection extends IObject {
 	orderedItems: ApObject;
 }
 
-export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'];
+export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video', 'Event'];
 
-export interface INote extends IObject {
-	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
+export interface IPost extends IObject {
+	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video' | 'Event';
 	_misskey_content?: string;
 	_misskey_quote?: string;
 	quoteUrl?: string;
