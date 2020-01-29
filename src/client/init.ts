@@ -46,6 +46,12 @@ Vue.mixin({
 
 console.info(`Misskey v${version}`);
 
+// v11互換性のため
+if (localStorage.getItem('kyoppie') === 'yuppie') {
+	localStorage.clear();
+	location.reload(true);
+}
+
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }
@@ -110,7 +116,7 @@ html.setAttribute('lang', lang);
 
 // iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
 try {
-	localStorage.setItem('kyoppie', 'yuppie');
+	localStorage.setItem('foo', 'bar');
 } catch (e) {
 	Storage.prototype.setItem = () => { }; // noop
 }
