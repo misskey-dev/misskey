@@ -5,10 +5,10 @@ import Resolver from '../resolver';
 import post from '../../../services/note/create';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
-import { IRemoteUser, User } from '../../../models/entities/user';
+import { IRemoteUser } from '../../../models/entities/user';
 import { fromHtml } from '../../../mfm/fromHtml';
 import { ITag, extractHashtags } from './tag';
-import { unique, concat, difference } from '../../../prelude/array';
+import { unique } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
 import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
@@ -17,13 +17,14 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject, INote, getApIds, getOneApId, getApId, validPost } from '../type';
+import { IObject, INote, getOneApId, getApId, validPost } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { ensure } from '../../../prelude/ensure';
 import { getApLock } from '../../../misc/app-lock';
 import { createMessage } from '../../../services/messages/create';
+import { parseAudience } from '../audience';
 
 const logger = apLogger;
 
@@ -109,25 +110,10 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		throw new Error('actor has been suspended');
 	}
 
-	//#region Visibility
-	const to = getApIds(note.to);
-	const cc = getApIds(note.cc);
-
-	let visibility = 'public';
-	let visibleUsers: User[] = [];
-	if (!to.includes('https://www.w3.org/ns/activitystreams#Public')) {
-		if (cc.includes('https://www.w3.org/ns/activitystreams#Public')) {
-			visibility = 'home';
-		} else if (to.includes(`${actor.uri}/followers`)) {	// TODO: person.followerと照合するべき？
-			visibility = 'followers';
-		} else {
-			visibility = 'specified';
-			visibleUsers = await Promise.all(to.map(uri => resolvePerson(uri, resolver)));
-		}
-	}
-	//#endergion
-
-	const apMentions = await extractMentionedUsers(actor, to, cc, resolver);
+	const noteAudience = await parseAudience(actor, note.to, note.cc);
+	const visibility = noteAudience.visibility;
+	const visibleUsers = noteAudience.visibleUsers;
+	const apMentions = noteAudience.mentionedUsers;
 
 	const apHashtags = await extractHashtags(note.tag);
 
@@ -363,16 +349,4 @@ export async function extractEmojis(tags: ITag[], host: string): Promise<Emoji[]
 			aliases: []
 		} as Partial<Emoji>);
 	}));
-}
-
-async function extractMentionedUsers(actor: IRemoteUser, to: string[], cc: string[], resolver: Resolver) {
-	const ignoreUris = ['https://www.w3.org/ns/activitystreams#Public', `${actor.uri}/followers`];
-	const uris = difference(unique(concat([to || [], cc || []])), ignoreUris);
-
-	const limit = promiseLimit<User | null>(2);
-	const users = await Promise.all(
-		uris.map(uri => limit(() => resolvePerson(uri, resolver).catch(() => null)) as Promise<User | null>)
-	);
-
-	return users.filter(x => x != null) as User[];
 }
