@@ -55,10 +55,14 @@ export default (os: MiOS) => new Vuex.Store({
 		login(ctx, i) {
 			ctx.commit('updateI', i);
 			ctx.dispatch('settings/merge', i.clientData);
-			if (!ctx.state.device.accounts.some(x => x.id === i.id)) {
+			ctx.dispatch('addAcount', { id: i.id, i: localStorage.getItem('i') });
+		},
+
+		addAcount(ctx, info) {
+			if (!ctx.state.device.accounts.some(x => x.id === info.id)) {
 				ctx.commit('device/set', {
 					key: 'accounts',
-					value: ctx.state.device.accounts.concat([{ id: i.id, token: localStorage.getItem('i') }])
+					value: ctx.state.device.accounts.concat([{ id: info.id, token: info.i }])
 				});
 			}
 		},

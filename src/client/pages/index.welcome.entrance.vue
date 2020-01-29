@@ -63,7 +63,9 @@ export default Vue.extend({
 
 	methods: {
 		signin() {
-			this.$root.new(XSigninDialog);
+			this.$root.new(XSigninDialog, {
+				autoSet: true
+			});
 		},
 
 		signup() {

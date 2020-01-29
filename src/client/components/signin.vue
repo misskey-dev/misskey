@@ -33,8 +33,8 @@
 				<template #prefix><fa :icon="faLock"/></template>
 			</mk-input>
 			<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
-				<span>{{ $t('@.2fa') }}</span>
-				<template #prefix><fa icon="gavel"/></template>
+				<span>{{ $t('2fa') }}</span>
+				<template #prefix><fa :icon="faGavel"/></template>
 			</mk-input>
 			<mk-button type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>
 		</div>
@@ -45,7 +45,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { toUnicode } from 'punycode';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faGavel } from '@fortawesome/free-solid-svg-icons';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import i18n from '../i18n';
@@ -65,6 +65,11 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: true
+		},
+		autoSet: {
+			type: Boolean,
+			required: false,
+			default: false,
 		}
 	},
 
@@ -82,7 +87,7 @@ export default Vue.extend({
 			credential: null,
 			challengeData: null,
 			queryingKey: false,
-			faLock
+			faLock, faGavel
 		};
 	},
 
@@ -90,6 +95,13 @@ export default Vue.extend({
 		this.$root.getMeta().then(meta => {
 			this.meta = meta;
 		});
+
+		if (this.autoSet) {
+			this.$once('login', res => {
+				localStorage.setItem('i', res.i);
+				location.reload();
+			});
+		}
 	},
 
 	methods: {
@@ -136,8 +148,7 @@ export default Vue.extend({
 					challengeId: this.challengeData.challengeId
 				});
 			}).then(res => {
-				localStorage.setItem('i', res.i);
-				location.reload();
+				this.$emit('login', res);
 			}).catch(err => {
 				if (err === null) return;
 				this.$root.dialog({
@@ -179,8 +190,7 @@ export default Vue.extend({
 					password: this.password,
 					token: this.user && this.user.twoFactorEnabled ? this.token : undefined
 				}).then(res => {
-					localStorage.setItem('i', res.i);
-					location.reload();
+					this.$emit('login', res);
 				}).catch(() => {
 					this.$root.dialog({
 						type: 'error',
