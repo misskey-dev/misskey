@@ -58,11 +58,11 @@ export class Notification {
 	 * receiveFollowRequest - フォローリクエストされた
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
 	 */
-	@Column('varchar', {
-		length: 32,
+	@Column('enum', {
+		enum: ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest', 'followRequestAccepted'],
 		comment: 'The type of the Notification.'
 	})
-	public type: string;
+	public type: 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollVote' | 'receiveFollowRequest' | 'followRequestAccepted';
 
 	/**
 	 * 通知が読まれたかどうか
