@@ -35,7 +35,7 @@
 				<a href="https://github.com/rinsuki" target="_blank">@rinsuki</a>
 			</span>
 			<div style="margin-top: 1em;">{{ $t('misskeySource') }}</div>
-			<a href="https://github.com/syuilo/misskey" target="_blank" style="color: var(--accent);">https://github.com/syuilo/misskey</a>
+			<a href="https://github.com/syuilo/misskey" target="_blank" style="color: var(--link);">https://github.com/syuilo/misskey</a>
 		</div>
 	</section>
 </div>
@@ -96,7 +96,7 @@ export default Vue.extend({
 		> ._content {
 			> .members {
 				> a {
-					color: var(--accent);
+					color: var(--link);
 					margin-right: 0.5em;
 				}
 			}
