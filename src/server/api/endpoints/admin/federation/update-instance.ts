@@ -14,7 +14,7 @@ export const meta = {
 			validator: $.str
 		},
 
-		isClosed: {
+		isSuspended: {
 			validator: $.bool
 		},
 	}
@@ -28,6 +28,6 @@ export default define(meta, async (ps, me) => {
 	}
 
 	Instances.update({ host: toPuny(ps.host) }, {
-		isMarkedAsClosed: ps.isClosed
+		isSuspended: ps.isSuspended
 	});
 });
