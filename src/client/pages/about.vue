@@ -6,7 +6,11 @@
 	<section class="_section info" v-if="meta">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content" v-if="meta.description">
-			<div><b>Misskey</b><span>v{{ version }}</span></div>
+			<div>{{ meta.description }}</div>
+		</div>
+		<div class="_content table">
+			<div><b>{{ $t('maintainer') }}</b><span>{{ meta.maintainerName }}</span></div>
+			<div><b></b><span>{{ meta.maintainerEmail }}</span></div>
 		</div>
 		<div class="_content table" v-if="stats">
 			<div><b>{{ $t('users') }}</b><span>{{ stats.originalUsersCount | number }}</span></div>
