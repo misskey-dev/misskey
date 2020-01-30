@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-notifications" :style="heightStyle">
+<div class="mkw-notifications" :style="`flex-basis: calc(${basis}% - var(--margin)); height: ${previewHeight}px;`">
 	<mk-container :show-header="!props.compact" class="container">
 		<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
 
@@ -16,7 +16,9 @@ import MkContainer from '../components/ui/container.vue';
 import XNotifications from '../components/notifications.vue';
 import define from './define';
 import i18n from '../i18n';
-import { heightStyle } from './flex';
+
+const basisSteps = [25, 50, 75, 100]
+const previewHeights = [200, 300, 400, 500]
 
 export default define({
 	name: 'notifications',
@@ -39,8 +41,12 @@ export default define({
 	},
 
 	computed: {
-		heightStyle(): string {
-			return heightStyle(this.props.basisStep)
+		basis(): number {
+			return basisSteps[this.props.basisStep] || 25
+		},
+
+		previewHeight(): number {
+			return previewHeights[this.props.basisStep] || 200
 		}
 	},
 
@@ -79,7 +85,6 @@ export default define({
 	.tl {
 		height: 100%;
 		background: var(--bg);
-		// box-sizing: border-box;
 	}
 }
 </style>

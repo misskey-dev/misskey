@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-timeline" :style="heightStyle">
+<div class="mkw-timeline" :style="`flex-basis: calc(${basis}% - var(--margin)); height: ${previewHeight}px;`">
 	<mk-container :show-header="!props.compact" class="container">
 		<template #header>
 			<button @click="choose" class="_button">
@@ -28,7 +28,9 @@ import MkContainer from '../components/ui/container.vue';
 import XTimeline from '../components/timeline.vue';
 import define from './define';
 import i18n from '../i18n';
-import { heightStyle } from './flex';
+
+const basisSteps = [25, 50, 75, 100]
+const previewHeights = [200, 300, 400, 500]
 
 export default define({
 	name: 'timeline',
@@ -54,8 +56,12 @@ export default define({
 	},
 
 	computed: {
-		heightStyle(): string {
-			return heightStyle(this.props.basisStep)
+		basis(): number {
+			return basisSteps[this.props.basisStep] || 25
+		},
+
+		previewHeight(): number {
+			return previewHeights[this.props.basisStep] || 200
 		}
 	},
 
