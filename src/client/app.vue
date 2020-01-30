@@ -229,6 +229,7 @@ export default Vue.extend({
 					if (!canceled) {
 						location.reload();
 					}
+					this.disconnectedDialog = null;
 				});
 			}
 		});
