@@ -36,6 +36,8 @@
 			</span>
 			<div style="margin-top: 1em;">{{ $t('misskeySource') }}</div>
 			<a href="https://github.com/syuilo/misskey" target="_blank" style="color: var(--link);">https://github.com/syuilo/misskey</a>
+			<div style="margin-top: 1em;">{{ $t('misskeyDonate') }}</div>
+			<a href="https://www.patreon.com/syuilo" target="_blank" style="color: var(--link);">https://www.patreon.com/syuilo</a>
 		</div>
 	</section>
 </div>
