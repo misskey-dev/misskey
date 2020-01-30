@@ -72,6 +72,7 @@ import { hexifyAB } from '../../scripts/2fa';
 import MkButton from '../../components/ui/button.vue';
 import MkInfo from '../../components/ui/info.vue';
 import MkInput from '../../components/ui/input.vue';
+import MkSwitch from '../../components/ui/switch.vue';
 
 function stringifyAB(buffer) {
 	return String.fromCharCode.apply(null, new Uint8Array(buffer));
@@ -80,7 +81,7 @@ function stringifyAB(buffer) {
 export default Vue.extend({
 	i18n,
 	components: {
-		MkButton, MkInfo, MkInput
+		MkButton, MkInfo, MkInput, MkSwitch
 	},
 	data() {
 		return {
