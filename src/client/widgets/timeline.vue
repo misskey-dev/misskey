@@ -136,6 +136,7 @@ export default define({
 .mkw-timeline {
 	flex-grow: 1;
 	flex-shrink: 0;
+	min-height: 0; // https://www.gwtcenter.com/min-height-required-on-firefox-flexbox
 
 	.container {
 		display: flex;
