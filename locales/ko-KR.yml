@@ -1,1 +1,19 @@
 ---
+_ago:
+  unknown: "알 수 없음"
+  future: "미래"
+  justNow: "방금 전"
+  secondsAgo: "{n}초 전"
+  minutesAgo: "{n}분 전"
+  hoursAgo: "{n}시간 전"
+  daysAgo: "{n}일 전"
+  weeksAgo: "{n}주 전"
+  monthsAgo: "{n}개월 전"
+  yearsAgo: "{n}년 전"
+_time:
+  second: "초"
+  minute: "분"
+  hour: "시간"
+  day: "일"
+_poll:
+  deadlineTime: "시간"
