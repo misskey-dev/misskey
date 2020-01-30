@@ -23,6 +23,10 @@ export const builtinThemes = [
 	require('./themes/rainy.json5'),
 	require('./themes/urban.json5'),
 	require('./themes/cafe.json5'),
+	require('./themes/chocolate.json5'),
+	require('./themes/danboard.json5'),
+	require('./themes/military.json5'),
+	require('./themes/tweetdeck.json5'),
 ];
 
 let timeout = null;
