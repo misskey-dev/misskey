@@ -59,7 +59,7 @@ Misskey v12では、クライアントが設計し直され、全く新しいUI�
 * AP: deliver/inbox 処理にインスタンス全体で流量制限をかけられるように
 * AP: deliverのリトライ期間を長めにして、回数を変更できるように
 * AP: Actorの鍵とkeyIdのフォーマットの変更
-  * 投稿する度にMastodonから3つずつリクエストが飛んできてしまう問題が解決し、双方の負荷が減って MastodonへのAP 配信所要時間が1/4~1/5に
+	* 投稿する度にMastodonから3つずつリクエストが飛んできてしまう問題が解決し、双方の負荷が減って MastodonへのAP 配信所要時間が1/4~1/5に
 	* PixelFedへの配信ができるように
 * AP: PixelFedのハッシュタグをハッシュタグ扱いできるように
 * 他多数
@@ -78,6 +78,7 @@ Misskey v12では、クライアントが設計し直され、全く新しいUI�
 * ファイルと画像認識処理の改善
 * カスタム絵文字リアクションでないものは絵文字クエリをしないように
 * TypeError: Cannot read property 'stack' of undefined が出ることがある問題を修正
+* AP: audience (visibility) パースの修正
 * Pages: VERSION 変数が常に null な問題を修正
 * Pages: DRPWPMが最初のしか出てこない問題を修正
 
