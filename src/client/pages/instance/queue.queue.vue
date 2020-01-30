@@ -1,5 +1,5 @@
 <template>
-<section class="_section mk-queue-queue">
+<section class="_card mk-queue-queue">
 	<div class="_title"><slot name="title"></slot></div>
 	<div class="_content status">
 		<div class="cell"><div class="label">Process</div>{{ activeSincePrevTick | number }}</div>

@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faServer"/></portal>
 	<portal to="title">{{ $t('instance') }}</portal>
 
-	<section class="_section info">
+	<section class="_card info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
 			<mk-input v-model="name" style="margin-top: 8px;">{{ $t('instanceName') }}</mk-input>
@@ -19,7 +19,7 @@
 		</div>
 	</section>
 
-	<section class="_section info">
+	<section class="_card info">
 		<div class="_content">
 			<mk-switch v-model="enableLocalTimeline" @change="save()">{{ $t('enableLocalTimeline') }}</mk-switch>
 			<mk-switch v-model="enableGlobalTimeline" @change="save()">{{ $t('enableGlobalTimeline') }}</mk-switch>
@@ -27,7 +27,7 @@
 		</div>
 	</section>
 
-	<section class="_section info">
+	<section class="_card info">
 		<div class="_title"><fa :icon="faUser"/> {{ $t('registration') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableRegistration" @change="save()">{{ $t('enableRegistration') }}</mk-switch>
@@ -35,7 +35,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
@@ -55,7 +55,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworker-info') }}</template></mk-switch>
@@ -72,7 +72,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="pinnedUsers" style="margin-top: 0;">
@@ -84,7 +84,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
 		<div class="_content">
 			<mk-switch v-model="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></mk-switch>
@@ -97,7 +97,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
 			<mk-input v-model="proxyAccount" style="margin: 0;"><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></mk-input>
@@ -107,7 +107,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="blockedHosts" style="margin-top: 0;">
@@ -119,7 +119,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
 			<header><fa :icon="faTwitter"/> {{ $t('twitter-integration-config') }}</header>
@@ -153,7 +153,7 @@
 		</div>
 	</section>
 
-	<section class="_section info">
+	<section class="_card info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content table" v-if="stats">
 			<div><b>{{ $t('users') }}</b><span>{{ stats.originalUsersCount | number }}</span></div>

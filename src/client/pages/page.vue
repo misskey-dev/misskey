@@ -3,7 +3,7 @@
 	<portal to="avatar" v-if="page"><mk-avatar class="avatar" :user="page.user" :disable-preview="true"/></portal>
 	<portal to="title" v-if="page">{{ page.title || page.name }}</portal>
 
-	<div class="_section" v-if="page" :key="page.id">
+	<div class="_card" v-if="page" :key="page.id">
 		<div class="_title">{{ page.title }}</div>
 		<div class="_content">
 			<x-page :page="page"/>

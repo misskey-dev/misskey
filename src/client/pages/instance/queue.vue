@@ -6,7 +6,7 @@
 	<x-queue :connection="connection" domain="deliver">
 		<template #title><fa :icon="faExchangeAlt"/> Out</template>
 	</x-queue>
-	<section class="_section">
+	<section class="_card">
 		<div class="_content">
 			<mk-button @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearQueue') }}</mk-button>
 		</div>

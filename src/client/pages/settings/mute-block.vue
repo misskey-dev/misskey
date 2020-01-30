@@ -1,5 +1,5 @@
 <template>
-<section class="mk-settings-page-mute-block _section">
+<section class="rrfwjxfl _card">
 	<div class="_title"><fa :icon="faBan"/> {{ $t('muteAndBlock') }}</div>
 	<div class="_content">
 		<span>{{ $t('mutedUsers') }}</span>
@@ -60,7 +60,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-settings-page-mute-block {
+.rrfwjxfl {
 	> ._content {
 		max-height: 350px;
 		overflow: auto;

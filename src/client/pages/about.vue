@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faInfoCircle"/></portal>
 	<portal to="title">{{ $t('about') }}</portal>
 
-	<section class="_section info" v-if="meta">
+	<section class="_card info" v-if="meta">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content" v-if="meta.description">
 			<div>{{ meta.description }}</div>
@@ -21,7 +21,7 @@
 		</div>
 	</section>
 
-	<section class="_section aboutMisskey">
+	<section class="_card aboutMisskey">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('aboutMisskey') }}</div>
 		<div class="_content">
 			<div style="margin-bottom: 1em;">{{ $t('aboutMisskeyText') }}</div>

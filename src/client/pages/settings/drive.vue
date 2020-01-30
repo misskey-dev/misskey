@@ -1,5 +1,5 @@
 <template>
-<section class="mk-settings-page-drive _section">
+<section class="uawsfosz _card">
 	<div class="_title"><fa :icon="faCloud"/> {{ $t('drive') }}</div>
 	<div class="_content">
 		<mk-pagination :pagination="drivePagination" #default="{items}" class="drive" ref="drive">
@@ -110,7 +110,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-settings-page-drive {
+.uawsfosz {
 	> ._content {
 		max-height: 350px;
 		overflow: auto;

@@ -1,5 +1,5 @@
 <template>
-<section class="mk-settings-page-general _section">
+<section class="_card">
 	<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 	<div class="_content">
 		<mk-input type="file" @change="onWallpaperChange" style="margin-top: 0;">

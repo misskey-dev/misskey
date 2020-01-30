@@ -1,6 +1,6 @@
 <template>
 <div class="mk-instance-stats">
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faChartBar"/> {{ $t('statistics') }}</div>
 		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<div class="selects" style="display: flex;">

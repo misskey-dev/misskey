@@ -1,5 +1,5 @@
 <template>
-<section class="mk-settings-page-reaction _section">
+<section class="_card">
 	<div class="_title"><fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
 	<div class="_content">
 		<mk-textarea v-model="reactions" style="margin-top: 16px;">{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }}</template></mk-textarea>

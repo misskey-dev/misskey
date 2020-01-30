@@ -1,6 +1,6 @@
 <template>
 <div class="mk-instance-monitor">
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faMicrochip"/> {{ $t('cpuAndMemory') }}</div>
 		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<canvas ref="cpumem"></canvas>
@@ -18,7 +18,7 @@
 			</div>
 		</div>
 	</section>
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faHdd"/> {{ $t('disk') }}</div>
 		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<canvas ref="disk"></canvas>
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 	</section>
-	<section class="_section">
+	<section class="_card">
 		<div class="_title"><fa :icon="faExchangeAlt"/> {{ $t('network') }}</div>
 		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 			<canvas ref="net"></canvas>

@@ -1,5 +1,5 @@
 <template>
-<section class="mk-settings-page-import-export _section">
+<section class="_card">
 	<div class="_title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
 	<div class="_content">
 		<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>

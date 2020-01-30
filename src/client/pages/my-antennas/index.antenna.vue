@@ -1,5 +1,5 @@
 <template>
-<div class="shaynizk _section">
+<div class="shaynizk _card">
 	<div class="_title" v-if="antenna.name">{{ antenna.name }}</div>
 	<div class="_content body">
 		<mk-input v-model="name" style="margin-top: 8px;">

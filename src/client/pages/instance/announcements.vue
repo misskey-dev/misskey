@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
 	<portal to="title">{{ $t('announcements') }}</portal>
 	<mk-button @click="add()" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
-	<section class="_section announcements">
+	<section class="_card announcements">
 		<div class="_content announcement" v-for="announcement in announcements">
 			<mk-input v-model="announcement.title" style="margin-top: 8px;">
 				<span>{{ $t('title') }}</span>

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-list-page">
 	<transition name="zoom" mode="out-in">
-		<div v-if="list" :key="list.id" class="_section list">
+		<div v-if="list" :key="list.id" class="_card list">
 			<div class="_title">{{ list.name }}</div>
 			<div class="_content">
 				<div class="users">

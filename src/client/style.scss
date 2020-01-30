@@ -234,10 +234,10 @@ a {
 	border-radius: var(--radius);
 }
 
-._section {
+._card {
 	@extend ._panel;
 
-	& + ._section {
+	& + ._card {
 		margin-top: var(--margin);
 	}
 

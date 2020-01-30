@@ -1,6 +1,6 @@
 <template>
 <div class="mk-federation">
-	<section class="_section instances">
+	<section class="_card instances">
 		<div class="_title"><fa :icon="faGlobe"/> {{ $t('instances') }}</div>
 		<div class="_content">
 			<div class="inputs" style="display: flex;">

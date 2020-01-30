@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faUsers"/></portal>
 	<portal to="title">{{ $t('users') }}</portal>
 
-	<section class="_section lookup">
+	<section class="_card lookup">
 		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">
 			<mk-input class="target" v-model="target" type="text" @enter="showUser()" style="margin-top: 0;">
@@ -16,7 +16,7 @@
 		</div>
 	</section>
 
-	<section class="_section users">
+	<section class="_card users">
 		<div class="_title"><fa :icon="faUsers"/> {{ $t('users') }}</div>
 		<div class="_content _list">
 			<mk-pagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">

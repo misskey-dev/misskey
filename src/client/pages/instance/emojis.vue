@@ -2,7 +2,7 @@
 <div class="mk-instance-emojis">
 	<portal to="icon"><fa :icon="faLaugh"/></portal>
 	<portal to="title">{{ $t('customEmojis') }}</portal>
-	<section class="_section local">
+	<section class="_card local">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
 		<div class="_content">
 			<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
@@ -23,7 +23,7 @@
 			<mk-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</mk-button>
 		</div>
 	</section>
-	<section class="_section remote">
+	<section class="_card remote">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
 		<div class="_content">
 			<mk-input v-model="host" :debounce="true" style="margin-top: 0;"><span>{{ $t('host') }}</span></mk-input>
