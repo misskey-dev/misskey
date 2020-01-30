@@ -336,6 +336,8 @@ registerSecurityKey: "セキュリティキーを登録する"
 lastUsed: "最後の使用"
 unregister: "登録を解除"
 passwordLessLogin: "パスワード無しログイン"
+resetPassword: "パスワードをリセット"
+newPasswordIs: "新しいパスワードは「{password}」です"
 
 _2fa:
   registerDevice: "デバイスを登録"

@@ -2,7 +2,7 @@
 <x-window @closed="() => { $emit('closed'); destroyDom(); }" :avatar="user">
 	<template #header><mk-user-name :user="user"/></template>
 	<div class="vrcsvlkm">
-		<mk-button @click="changePassword()">{{ $t('changePassword') }}</mk-button>
+		<mk-button @click="resetPassword()" primary>{{ $t('resetPassword') }}</mk-button>
 		<mk-switch v-if="$store.state.i.isAdmin" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
 		<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
 		<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
@@ -42,27 +42,18 @@ export default Vue.extend({
 	},
 
 	methods: {
-		async changePassword() {
-			const { canceled: canceled, result: newPassword } = await this.$root.dialog({
-				title: this.$t('newPassword'),
-				input: {
-					type: 'password'
-				}
-			});
-			if (canceled) return;
-
+		async resetPassword() {
 			const dialog = this.$root.dialog({
 				type: 'waiting',
 				iconOnly: true
 			});
 			
-			this.$root.api('admin/change-password', {
+			this.$root.api('admin/reset-password', {
 				userId: this.user.id,
-				newPassword
-			}).then(() => {
+			}).then(({ password }) => {
 				this.$root.dialog({
 					type: 'success',
-					iconOnly: true, autoClose: true
+					text: this.$t('newPasswordIs', { password })
 				});
 			}).catch(e => {
 				this.$root.dialog({
