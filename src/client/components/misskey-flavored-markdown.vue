@@ -28,8 +28,9 @@ export default Vue.extend({
 		display: block;
 		margin: 8px;
 		padding: 6px 0 6px 12px;
-		color: var(--mfmQuote);
-		border-left: solid 3px var(--mfmQuoteLine);
+		color: var(--fg);
+		border-left: solid 3px var(--fg);
+		opacity: 0.7;
 	}
 }
 </style>
