@@ -42,6 +42,17 @@ ChangeLog
 * リモートのカスタム絵文字をコピーしてくる機能を追加
 * 自分の送ったフォローリクエストが承認されたときの通知を追加
 * ハイライト投稿の並びを人気順ではなく投稿日時順に
+* AIDのノイズがあまりよくないのを改善
+* WebAuthNで internal というタイプもあるようなのでそれも使えるように
+* Allow CORS requests in /.well-known/* routes
+* AP: Eventタイプのアクティビティをサポート
+* AP: GroupとOrganizationを正規のActorとして受け付けるように
+* AP: deliver/inbox 処理にインスタンス全体で流量制限をかけられるように
+* AP: deliverのリトライ期間を長めにして、回数を変更できるように
+* AP: Actorの鍵とkeyIdのフォーマットの変更
+  * 投稿する度にMastodonから3つずつリクエストが飛んできてしまう問題が解決し、双方の負荷が減って MastodonへのAP 配信所要時間が1/4~1/5に
+	* PixelFedへの配信ができるように
+* AP: PixelFedのハッシュタグをハッシュタグ扱いできるように
 * 他多数
 
 ### 🐛Fixes
@@ -53,7 +64,13 @@ ChangeLog
 * 設定画面で、アバターを更新してもアバターの画像がその場で更新されない問題を修正
 * 投稿詳細/ユーザー詳細 画面でadminや公式アカウントマークが表示されない問題を修正
 * APIのリクエスト方法(websocket/HTTP)によって返ってくるエラーの内容に違いがある問題を修正
+* ストリーミングのuserListチャンネルで存在しないリストでもsubscribeできて、リストのIDがわかれば他人のリストでもsubscribeできる問題を修正
+* Redis subscriberで認証ができないのを修正
+* ファイルと画像認識処理の改善
+* カスタム絵文字リアクションでないものは絵文字クエリをしないように
+* TypeError: Cannot read property 'stack' of undefined が出ることがある問題を修正
 * Pages: VERSION 変数が常に null な問題を修正
+* Pages: DRPWPMが最初のしか出てこない問題を修正
 
 11.37.1 (2020/01/07)
 --------------------
