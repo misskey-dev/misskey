@@ -841,7 +841,7 @@ export default Vue.extend({
 					width: 100%;
 					text-align: center;
 					font-size: $ui-font-size * 1.2;
-					line-height: 3.5rem;
+					line-height: 3.7rem;
 
 					> [data-icon],
 					> .avatar {
