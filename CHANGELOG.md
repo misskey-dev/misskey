@@ -3,7 +3,7 @@ ChangeLog
 
 12.0.0 indigo (unreleased)
 --------------------
-### Breaking Chnages
+### Breaking Changes
 * お知らせがリセットされます。
 * 通知がリセットされます。
 * インスタンスの閉鎖情報がリセットされます。
