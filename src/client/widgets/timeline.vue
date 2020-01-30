@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-timeline" :style="`flex-basis: ${basis}%; height: ${previewHeight}px;`">
+<div class="mkw-timeline" :style="`flex-basis: calc(${basis}% - var(--margin)); height: ${previewHeight}px;`">
 	<mk-container :show-header="!props.compact" class="container">
 		<template #header>
 			<button @click="choose" class="_button">
@@ -61,7 +61,7 @@ export default define({
 		},
 
 		previewHeight(): number {
-			return previewHeights[this.props.basisStep] || 300
+			return previewHeights[this.props.basisStep] || 200
 		}
 	},
 
