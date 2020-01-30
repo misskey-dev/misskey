@@ -929,7 +929,7 @@ export default Vue.extend({
 			> div {
 				position: sticky;
 				top: calc(#{$header-height} + var(--margin));
-				height: calc(100vh - #{$header-height} - var(--margin) * 2);
+				height: calc(100vh - #{$header-height} - var(--margin));
 
 				&.edit {
 					overflow: auto;
