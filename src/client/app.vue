@@ -167,6 +167,7 @@ export default Vue.extend({
 			widgetsEditMode: false,
 			enableWidgets: window.innerWidth >= 1100,
 			canBack: false,
+			disconnectedDialog: null as Promise<void> | null,
 			faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
 		};
 	},
@@ -217,15 +218,19 @@ export default Vue.extend({
 			}
 		}
 
-		this.$root.stream.on('_disconnected_', async () => {
-			const confirm = await this.$root.dialog({
-				type: 'warning',
-				showCancelButton: true,
-				title: this.$t('disconnectedFromServer'),
-				text: this.$t('reloadConfirm'),
-			});
-			if (!confirm.canceled) {
-				location.reload();
+		this.$root.stream.on('_disconnected_', () => {
+			if (!this.disconnectedDialog) {
+				this.disconnectedDialog = this.$root.dialog({
+					type: 'warning',
+					showCancelButton: true,
+					title: this.$t('disconnectedFromServer'),
+					text: this.$t('reloadConfirm'),
+				}).then(({ canceled }) => {
+					if (!canceled) {
+						location.reload();
+					}
+					this.disconnectedDialog = null;
+				});
 			}
 		});
 
