@@ -5,6 +5,8 @@
 	</router-link>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="username"><mk-acct :user="note.user"/></span>
+	<span class="admin" v-if="note.user.isAdmin"><fa :icon="faBookmark"/></span>
+	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><fa :icon="farBookmark"/></span>
 	<div class="info">
 		<span class="mobile" v-if="note.viaMobile"><fa :icon="faMobileAlt"/></span>
 		<router-link class="created-at" :to="note | notePage">
@@ -21,7 +23,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faHome, faUnlock, faEnvelope, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
 	props: {
@@ -33,7 +36,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faHome, faUnlock, faEnvelope, faMobileAlt
+			faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, farBookmark
 		};
 	}
 });
@@ -67,8 +70,7 @@ export default Vue.extend({
 		margin: 0 .5em 0 0;
 		padding: 1px 6px;
 		font-size: 80%;
-		color: var(--noteHeaderBadgeFg);
-		background: var(--noteHeaderBadgeBg);
+		border: solid 1px var(--divider);
 		border-radius: 3px;
 	}
 

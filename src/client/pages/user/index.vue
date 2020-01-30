@@ -14,6 +14,7 @@
 					<div class="bottom">
 						<span class="username"><mk-acct :user="user" :detail="true" /></span>
 						<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
+						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')"><fa :icon="farBookmark"/></span>
 						<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
 						<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 					</div>
@@ -30,6 +31,7 @@
 				<div class="bottom">
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
 					<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
+					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')"><fa :icon="farBookmark"/></span>
 					<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
 					<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 				</div>
@@ -106,7 +108,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
-import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
+import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
 import XUserMenu from '../../components/user-menu.vue';
@@ -137,7 +139,7 @@ export default Vue.extend({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
+			faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faExclamationTriangle, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
 		};
 	},
 

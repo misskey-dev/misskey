@@ -159,6 +159,7 @@ export class UserRepository extends Repository<User> {
 			avatarUrl: user.avatarUrl ? user.avatarUrl : config.url + '/avatar/' + user.id,
 			avatarColor: user.avatarColor,
 			isAdmin: user.isAdmin || falsy,
+			isModerator: user.isModerator || falsy,
 			isBot: user.isBot || falsy,
 			isCat: user.isCat || falsy,
 
