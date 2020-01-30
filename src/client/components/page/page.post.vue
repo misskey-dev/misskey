@@ -1,7 +1,7 @@
 <template>
 <div class="ngbfujlo">
-	<mk-textarea class="textarea" :value="text" readonly></mk-textarea>
-	<mk-button primary @click="post()" :disabled="posting || posted">{{ posted ? $t('posted-from-post-form') : $t('post-from-post-form') }}</mk-button>
+	<mk-textarea :value="text" readonly style="margin: 0;"></mk-textarea>
+	<mk-button class="button" primary @click="post()" :disabled="posting || posted">{{ posted ? $t('posted') : $t('post') }}</mk-button>
 </div>
 </template>
 
@@ -59,16 +59,19 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .ngbfujlo {
-	padding: 0 32px 32px 32px;
-	border: solid 2px var(--divider);
+	padding: 32px;
 	border-radius: 6px;
+	box-shadow: 0 2px 8px var(--shadow);
+
+	> .button {
+		margin-top: 32px;
+	}
 
 	@media (max-width: 600px) {
-		padding: 0 16px 16px 16px;
+		padding: 16px;
 
-		> .textarea {
+		> .button {
 			margin-top: 16px;
-			margin-bottom: 16px;
 		}
 	}
 }

@@ -2,7 +2,7 @@
 <div>
 	<div class="gwbmwxkm _panel">
 		<header>
-			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('read-page') : pageId ? $t('edit-page') : $t('new-page') }}</div>
+			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('readPage') : pageId ? $t('editPage') : $t('newPage') }}</div>
 			<div class="buttons">
 				<button class="_button" @click="del()" v-if="!readonly"><fa :icon="faTrashAlt"/></button>
 				<button class="_button" @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
@@ -27,7 +27,7 @@
 					<span>{{ $t('url') }}</span>
 				</mk-input>
 
-				<mk-switch v-model="alignCenter">{{ $t('align-center') }}</mk-switch>
+				<mk-switch v-model="alignCenter">{{ $t('alignCenter') }}</mk-switch>
 
 				<mk-select v-model="font">
 					<template #label>{{ $t('font') }}</template>
@@ -301,7 +301,7 @@ export default Vue.extend({
 		async add() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: this.$t('choose-block'),
+				title: this.$t('chooseBlock'),
 				select: {
 					groupedItems: this.getPageBlockList()
 				},
@@ -315,7 +315,7 @@ export default Vue.extend({
 
 		async addVariable() {
 			let { canceled, result: name } = await this.$root.dialog({
-				title: this.$t('enter-variable-name'),
+				title: this.$t('enterVariableName'),
 				input: {
 					type: 'text',
 				},

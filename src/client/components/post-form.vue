@@ -164,7 +164,7 @@ export default Vue.extend({
 				? this.$t('renote')
 				: this.reply
 					? this.$t('reply')
-					: this.$t('_postForm.post');
+					: this.$t('post');
 		},
 
 		canPost(): boolean {

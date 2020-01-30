@@ -11,14 +11,14 @@
 		<div class="_footer">
 			<small>@{{ page.user.username }}</small>
 			<template v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId">
-				<router-link :to="`/my/pages/edit/${page.id}`">{{ $t('edit-this-page') }}</router-link>
-				<a v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)">{{ $t('unpin-this-page') }}</a>
-				<a v-else @click="pin(true)">{{ $t('pin-this-page') }}</a>
+				<router-link :to="`/my/pages/edit/${page.id}`">{{ $t('_pages.editThisPage') }}</router-link>
+				<a v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)">{{ $t('unpin') }}</a>
+				<a v-else @click="pin(true)">{{ $t('pin') }}</a>
 			</template>
-			<router-link :to="`./${page.name}/view-source`">{{ $t('view-source') }}</router-link>
+			<router-link :to="`./${page.name}/view-source`">{{ $t('_pages.viewSource') }}</router-link>
 			<div class="like">
-				<button @click="unlike()" v-if="page.isLiked" :title="$t('unlike')"><fa :icon="faHeartS"/></button>
-				<button @click="like()" v-else :title="$t('like')"><fa :icon="faHeart"/></button>
+				<button @click="unlike()" v-if="page.isLiked" :title="$t('_pages.unlike')"><fa :icon="faHeartS"/></button>
+				<button @click="like()" v-else :title="$t('_pages.like')"><fa :icon="faHeart"/></button>
 				<span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span>
 			</div>
 		</div>
