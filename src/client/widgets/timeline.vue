@@ -1,6 +1,6 @@
 <template>
-<div class="mkw-timeline">
-	<mk-container :show-header="!props.compact">
+<div class="mkw-timeline" :style="`flex-basis: ${basis}%; height: ${previewHeight}px;`">
+	<mk-container :show-header="!props.compact" class="container">
 		<template #header>
 			<button @click="choose" class="_button">
 				<fa v-if="props.src === 'home'" :icon="faHome"/>
@@ -14,7 +14,7 @@
 			</button>
 		</template>
 
-		<div style="height: 300px; padding: 8px; overflow: auto; background: var(--bg);">
+		<div class="tl">
 			<x-timeline :key="props.src === 'list' ? `list:${props.list.id}` : props.src === 'antenna' ? `antenna:${props.antenna.id}` : props.src" :src="props.src" :list="props.list" :antenna="props.antenna"/>
 		</div>
 	</mk-container>
@@ -29,12 +29,16 @@ import XTimeline from '../components/timeline.vue';
 import define from './define';
 import i18n from '../i18n';
 
+const basisSteps = [25, 50, 75, 100]
+const previewHeights = [200, 300, 400, 500]
+
 export default define({
 	name: 'timeline',
 	props: () => ({
 		src: 'home',
 		list: null,
-		compact: false
+		compact: false,
+		basisStep: 0
 	})
 }).extend({
 	i18n,
@@ -51,9 +55,25 @@ export default define({
 		};
 	},
 
+	computed: {
+		basis(): number {
+			return basisSteps[this.props.basisStep] || 25
+		},
+
+		previewHeight(): number {
+			return previewHeights[this.props.basisStep] || 300
+		}
+	},
+
 	methods: {
 		func() {
-			this.props.compact = !this.props.compact;
+			if (this.props.basisStep === basisSteps.length - 1) {
+				this.props.basisStep = 0
+				this.props.compact = !this.props.compact;
+			} else {
+				this.props.basisStep += 1
+			}
+
 			this.save();
 		},
 
@@ -111,3 +131,28 @@ export default define({
 	}
 });
 </script>
+
+<style lang="scss">
+.mkw-timeline {
+	flex-grow: 1;
+	flex-shrink: 0;
+
+	.container {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+
+		> div {
+			overflow: auto;
+			flex-grow: 1;
+		}
+	}
+
+	.tl {
+		height: 100%;
+		padding: 8px;
+		background: var(--bg);
+		box-sizing: border-box;
+	}
+}
+</style>
