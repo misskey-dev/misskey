@@ -19,5 +19,5 @@ export default async (actor: IRemoteUser, activity: ILike) => {
 		return;
 	}
 
-	await create(actor, note, activity._misskey_reaction);
+	await create(actor, note, activity._misskey_reaction || activity.content || activity.name);
 };
