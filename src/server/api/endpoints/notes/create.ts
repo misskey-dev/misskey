@@ -113,23 +113,6 @@ export const meta = {
 			}
 		},
 
-		geo: {
-			validator: $.optional.nullable.obj({
-				coordinates: $.arr().length(2)
-					.item(0, $.num.range(-180, 180))
-					.item(1, $.num.range(-90, 90)),
-				altitude: $.nullable.num,
-				accuracy: $.nullable.num,
-				altitudeAccuracy: $.nullable.num,
-				heading: $.nullable.num.range(0, 360),
-				speed: $.nullable.num
-			}).strict(),
-			desc: {
-				'ja-JP': '位置情報'
-			},
-			ref: 'geo'
-		},
-
 		fileIds: {
 			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			desc: {
@@ -308,7 +291,6 @@ export default define(meta, async (ps, user, app) => {
 		apMentions: ps.noExtractMentions ? [] : undefined,
 		apHashtags: ps.noExtractHashtags ? [] : undefined,
 		apEmojis: ps.noExtractEmojis ? [] : undefined,
-		geo: ps.geo
 	});
 
 	return {

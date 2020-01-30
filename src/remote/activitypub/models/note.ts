@@ -96,7 +96,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		throw new Error('invalid note');
 	}
 
-	const note: INote = object;
+	const note: IPost = object;
 
 	logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
@@ -267,7 +267,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		text,
 		viaMobile: false,
 		localOnly: false,
-		geo: undefined,
 		visibility,
 		visibleUsers,
 		apMentions,

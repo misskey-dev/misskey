@@ -77,7 +77,6 @@ export async function masterMain() {
 
 	if (!program.noDaemons) {
 		require('../daemons/server-stats').default();
-		require('../daemons/notes-stats').default();
 		require('../daemons/queue-stats').default();
 		require('../daemons/janitor').default();
 	}

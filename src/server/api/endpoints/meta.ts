@@ -1,11 +1,8 @@
 import $ from 'cafy';
-import * as os from 'os';
 import config from '../../../config';
 import define from '../define';
 import { fetchMeta } from '../../../misc/fetch-meta';
-import { Emojis } from '../../../models';
-import { getConnection } from 'typeorm';
-import redis from '../../../db/redis';
+import { Emojis, Users } from '../../../models';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../misc/hard-limits';
 
 export const meta = {
@@ -83,11 +80,6 @@ export const meta = {
 				optional: false as const, nullable: false as const,
 				description: 'Whether disabled GTL.',
 			},
-			enableEmojiReaction: {
-				type: 'boolean' as const,
-				optional: false as const, nullable: false as const,
-				description: 'Whether enabled emoji reaction.',
-			},
 		}
 	}
 };
@@ -119,27 +111,15 @@ export default define(meta, async (ps, me) => {
 		uri: config.url,
 		description: instance.description,
 		langs: instance.langs,
-		ToSUrl: instance.ToSUrl,
+		tosUrl: instance.ToSUrl,
 		repositoryUrl: instance.repositoryUrl,
 		feedbackUrl: instance.feedbackUrl,
 
 		secure: config.https != null,
-		machine: os.hostname(),
-		os: os.platform(),
-		node: process.version,
-		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
-		redis: redis.server_info.redis_version,
 
-		cpu: {
-			model: os.cpus()[0].model,
-			cores: os.cpus().length
-		},
-
-		announcements: instance.announcements || [],
 		disableRegistration: instance.disableRegistration,
 		disableLocalTimeline: instance.disableLocalTimeline,
 		disableGlobalTimeline: instance.disableGlobalTimeline,
-		enableEmojiReaction: instance.enableEmojiReaction,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
@@ -159,6 +139,7 @@ export default define(meta, async (ps, me) => {
 			category: e.category,
 			url: e.url,
 		})),
+		requireSetup: (await Users.count({})) === 0,
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,
@@ -183,7 +164,7 @@ export default define(meta, async (ps, me) => {
 		};
 	}
 
-	if (me && (me.isAdmin || me.isModerator)) {
+	if (me && me.isAdmin) {
 		response.useStarForReactionFallback = instance.useStarForReactionFallback;
 		response.pinnedUsers = instance.pinnedUsers;
 		response.hiddenTags = instance.hiddenTags;

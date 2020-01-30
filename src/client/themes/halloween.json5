@@ -7,15 +7,11 @@
 
 	base: 'dark',
 
-	vars: {
-		primary: '#d67036',
-		secondary: '#1f1d30',
-		text: '#b1bee3',
-	},
-
 	props: {
-		renoteGradient: '#5d2d1a',
-		renoteText: '#ff6c00',
-		quoteBorder: '#c3631c',
+		accent: '#d67036',
+		panel: '#1f1d30',
+		bg: '#0f0e17',
+		fg: '#b1bee3',
+		renote: '@accent',
 	},
 }

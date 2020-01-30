@@ -21,15 +21,15 @@ export default async (job: Bull.Job) => {
 		return 'skip (blocked)';
 	}
 
-	// closedなら中断
-	const closedHosts = await Instances.find({
+	// isSuspendedなら中断
+	const suspendedHosts = await Instances.find({
 		where: {
-			isMarkedAsClosed: true
+			isSuspended: true
 		},
 		cache: 60 * 1000
 	});
-	if (closedHosts.map(x => x.host).includes(toPuny(host))) {
-		return 'skip (closed)';
+	if (suspendedHosts.map(x => x.host).includes(toPuny(host))) {
+		return 'skip (suspended)';
 	}
 
 	try {

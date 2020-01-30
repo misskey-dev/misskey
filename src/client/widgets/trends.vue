@@ -1,0 +1,124 @@
+<template>
+<div>
+	<mk-container :show-header="!props.compact">
+		<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
+
+		<div class="wbrkwala">
+			<transition-group tag="div" name="chart">
+				<div v-for="stat in stats" :key="stat.tag">
+					<div class="tag">
+						<router-link :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+						<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
+					</div>
+					<x-chart class="chart" :src="stat.chart"/>
+				</div>
+			</transition-group>
+		</div>
+	</mk-container>
+</div>
+</template>
+
+<script lang="ts">
+import { faHashtag } from '@fortawesome/free-solid-svg-icons';
+import MkContainer from '../components/ui/container.vue';
+import define from './define';
+import i18n from '../i18n';
+import XChart from './trends.chart.vue';
+
+export default define({
+	name: 'hashtags',
+	props: () => ({
+		compact: false
+	})
+}).extend({
+	i18n,
+	components: {
+		MkContainer, XChart
+	},
+	data() {
+		return {
+			stats: [],
+			fetching: true,
+			faHashtag
+		};
+	},
+	mounted() {
+		this.fetch();
+		this.clock = setInterval(this.fetch, 1000 * 60);
+	},
+	beforeDestroy() {
+		clearInterval(this.clock);
+	},
+	methods: {
+		func() {
+			this.props.compact = !this.props.compact;
+			this.save();
+		},
+		fetch() {
+			this.$root.api('hashtags/trend').then(stats => {
+				this.stats = stats;
+				this.fetching = false;
+			});
+		}
+	}
+});
+</script>
+
+<style lang="scss" scoped>
+.wbrkwala {
+	> .fetching,
+	> .empty {
+		margin: 0;
+		padding: 16px;
+		text-align: center;
+		color: var(--text);
+		opacity: 0.7;
+
+		> [data-icon] {
+			margin-right: 4px;
+		}
+	}
+
+	> div {
+		.chart-move {
+			transition: transform 1s ease;
+		}
+
+		> div {
+			display: flex;
+			align-items: center;
+			padding: 14px 16px;
+
+			&:not(:last-child) {
+				border-bottom: solid 1px var(--divider);
+			}
+
+			> .tag {
+				flex: 1;
+				overflow: hidden;
+				font-size: 14px;
+				color: var(--fg);
+
+				> a {
+					display: block;
+					width: 100%;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					color: inherit;
+				}
+
+				> p {
+					margin: 0;
+					font-size: 75%;
+					opacity: 0.7;
+				}
+			}
+
+			> .chart {
+				height: 30px;
+			}
+		}
+	}
+}
+</style>

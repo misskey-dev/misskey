@@ -58,18 +58,6 @@ export class Note {
 	})
 	public cw: string | null;
 
-	@Column({
-		...id(),
-		nullable: true
-	})
-	public appId: App['id'] | null;
-
-	@ManyToOne(type => App, {
-		onDelete: 'SET NULL'
-	})
-	@JoinColumn()
-	public app: App | null;
-
 	@Index()
 	@Column({
 		...id(),
@@ -176,11 +164,6 @@ export class Note {
 		default: false
 	})
 	public hasPoll: boolean;
-
-	@Column('jsonb', {
-		nullable: true, default: null
-	})
-	public geo: any | null;
 
 	//#region Denormalized fields
 	@Index()

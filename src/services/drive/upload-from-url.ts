@@ -11,7 +11,7 @@ const logger = driveLogger.createSubLogger('downloader');
 
 export default async (
 	url: string,
-	user: User,
+	user: User | null,
 	folderId: DriveFolder['id'] | null = null,
 	uri: string | null = null,
 	sensitive = false,

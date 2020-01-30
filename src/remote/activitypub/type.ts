@@ -69,10 +69,10 @@ export interface IOrderedCollection extends IObject {
 	orderedItems: ApObject;
 }
 
-export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video'];
+export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video', 'Event'];
 
-export interface INote extends IObject {
-	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
+export interface IPost extends IObject {
+	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video' | 'Event';
 	_misskey_content?: string;
 	_misskey_quote?: string;
 	quoteUrl?: string;
@@ -99,7 +99,7 @@ interface IQuestionChoice {
 	_misskey_votes?: number;
 }
 
-export const validActor = ['Person', 'Service'];
+export const validActor = ['Person', 'Service', 'Group', 'Organization'];
 
 export interface IPerson extends IObject {
 	type: 'Person';
@@ -171,7 +171,7 @@ export interface IRemove extends IActivity {
 }
 
 export interface ILike extends IActivity {
-	type: 'Like';
+	type: 'Like' | 'EmojiReaction';
 	_misskey_reaction?: string;
 }
 
@@ -193,6 +193,6 @@ export const isAccept = (object: IObject): object is IAccept => object.type === 
 export const isReject = (object: IObject): object is IReject => object.type === 'Reject';
 export const isAdd = (object: IObject): object is IAdd => object.type === 'Add';
 export const isRemove = (object: IObject): object is IRemove => object.type === 'Remove';
-export const isLike = (object: IObject): object is ILike => object.type === 'Like';
+export const isLike = (object: IObject): object is ILike => object.type === 'Like' || object.type === 'EmojiReaction';
 export const isAnnounce = (object: IObject): object is IAnnounce => object.type === 'Announce';
 export const isBlock = (object: IObject): object is IBlock => object.type === 'Block';
