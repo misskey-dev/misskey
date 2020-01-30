@@ -532,7 +532,7 @@ _pages:
   title: "タイトル"
   url: "ページURL"
   summary: "ページの要約"
-  align-center: "中央寄せ"
+  alignCenter: "中央寄せ"
   hide-title-when-pinned: "ピン留めされているときにタイトルを非表示"
   font: "フォント"
   fontSerif: "セリフ"
