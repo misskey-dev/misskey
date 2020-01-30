@@ -11,26 +11,17 @@
 			<template v-if="supportsCredentials">
 				<hr class="totp-method-sep">
 
-				<h2 class="heading">{{ $t('security-key-header') }}</h2>
-				<p>{{ $t('security-key') }}</p>
+				<h2 class="heading">{{ $t('securityKey') }}</h2>
+				<p>{{ $t('_2fa.securityKeyInfo') }}</p>
 				<div class="key-list">
 					<div class="key" v-for="key in $store.state.i.securityKeysList">
-						<h3>
-							{{ key.name }}
-						</h3>
-						<div class="last-used">
-							{{ $t('last-used') }}
-							<mk-time :time="key.lastUsed"/>
-						</div>
-						<mk-button @click="unregisterKey(key)">
-							{{ $t('unregister') }}
-						</mk-button>
+						<h3>{{ key.name }}</h3>
+						<div class="last-used">{{ $t('lastUsed') }}<mk-time :time="key.lastUsed"/></div>
+						<mk-button @click="unregisterKey(key)">{{ $t('unregister') }}</mk-button>
 					</div>
 				</div>
 
-				<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">
-					{{ $t('use-password-less-login') }}
-				</mk-switch>
+				<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
 
 				<mk-info warn v-if="registration && registration.error">{{ $t('something-went-wrong') }} {{ registration.error }}</mk-info>
 				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('register') }}</mk-button>
@@ -43,11 +34,9 @@
 					<li v-if="registration.stage >= 1">
 						<mk-form :disabled="registration.stage != 1 || registration.saving">
 							<mk-input v-model="keyName" :max="30">
-								<span>{{ $t('security-key-name') }}</span>
+								<span>{{ $t('securityKeyName') }}</span>
 							</mk-input>
-							<mk-button @click="registerKey" :disabled="this.keyName.length == 0">
-								{{ $t('register-security-key') }}
-							</mk-button>
+							<mk-button @click="registerKey" :disabled="keyName.length == 0">{{ $t('registerSecurityKey') }}</mk-button>
 							<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
 						</mk-form>
 					</li>

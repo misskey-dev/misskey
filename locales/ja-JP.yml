@@ -330,6 +330,12 @@ token: "トークン"
 twoStepAuthentication: "二段階認証"
 moderator: "モデレーター"
 nUsersMentioned: "{n}人が投稿"
+securityKey: "セキュリティキー"
+securityKeyName: "キーの名前"
+registerSecurityKey: "セキュリティキーを登録する"
+lastUsed: "最後の使用"
+unregister: "登録を解除"
+passwordLessLogin: "パスワード無しログイン"
 
 _2fa:
   registerDevice: "デバイスを登録"
@@ -337,6 +343,7 @@ _2fa:
   step2: "次に、表示されているQRコードをアプリでスキャンします。"
   step3: "アプリに表示されているトークンを入力して完了です。"
   step4: "これからログインするときも、同じようにトークンを入力します。"
+  securityKeyInfo: "FIDO2をサポートするハードウェアセキュリティキーを使用してログインするように設定できます。"
 
 _permissions:
   "read:account": "アカウントの情報を見る"
