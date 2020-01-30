@@ -74,6 +74,11 @@ export default Vue.extend({
 		border-radius: 3px;
 	}
 
+	> .admin,
+	> .moderator {
+		margin-right: 0.5em;
+	}
+
 	> .username {
 		margin: 0 .5em 0 0;
 		overflow: hidden;
