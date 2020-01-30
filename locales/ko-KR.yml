@@ -23,6 +23,7 @@ username: "유저명"
 password: "비밀번호"
 fetchingAsApObject: "연합에서 조회 중"
 ok: "OK"
+gotIt: "알겠어요"
 cancel: "취소"
 enterUsername: "유저명 입력"
 renotedBy: "{user}님이 리노트"
@@ -50,7 +51,10 @@ copyContent: "내용 복사"
 copyLink: "링크 복사"
 delete: "삭제"
 addToList: "리스트에 추가"
+sendMessage: "메시지 보내기"
 copyUsername: "유저명 복사"
+reply: "답글"
+loadMore: "더 보기"
 unmarkAsSensitive: "열람주의 해제"
 enterFileName: "파일명을 입력"
 mute: "뮤트"
@@ -98,16 +102,38 @@ remoteUserCaution: "리모트 유저이기 때문에, 정보가 정확하지 않
 driveCapacityPerLocalAccount: "로컬 유저 한 명당 드라이브 용량"
 driveCapacityPerRemoteAccount: "리모트 유저 한 명당 드라이브 용량"
 pinnedUsers: "고정된 유저"
+pinnedUsersDescription: "「발견하기」페이지 등에 고정하고 싶은 유저를 한 줄에 한 명씩 적습니다."
+antennaUsersDescription: "유저명을 한 줄에 한 명씩 적습니다"
+popularUsers: "인기 유저"
+recentlyUpdatedUsers: "최근 활동한 유저"
+recentlyRegisteredUsers: "최근 가입한 유저"
+recentlyDiscoveredUsers: "최근 발견한 유저"
+exploreUsersCount: "{count}명의 유저가 있습니다"
+_permissions:
+  "read:user-groups": "유저 그룹 조회"
+  "write:user-groups": "유저 그룹 변경"
+_antennaSources:
+  homeTimeline: "팔로우중인 유저의 게시물"
+  users: "지정한 유저(들)의 게시물"
+  userList: "지정한 리스트에 속한 유저의 게시물"
 _widgets:
   notifications: "알림"
   timeline: "타임라인"
+_cw:
+  show: "더 보기"
 _poll:
   deadlineTime: "시간"
+_visibility:
+  publicDescription: "모든 유저에게 공개"
+  specifiedDescription: "지정한 유저에게만 공개"
 _profile:
   username: "유저명"
 _exportOrImport:
   muteList: "뮤트"
   blockingList: "차단"
-_pages:
-  pin-this-page: "프로필에 고정"
-  unpin-this-page: "프로필에서 고정 해제"
+_charts:
+  usersIncDec: "유저 증감"
+  usersTotal: "유저 합계"
+  activeUsers: "활성 유저 수"
+_instanceCharts:
+  users: "유저 증감"
