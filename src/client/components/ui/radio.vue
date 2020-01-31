@@ -66,10 +66,10 @@ export default Vue.extend({
 
 	&.checked {
 		> .button {
-			border-color: var(--radioActive);
+			border-color: var(--accent);
 
 			&:after {
-				background-color: var(--radioActive);
+				background-color: var(--accent);
 				transform: scale(1);
 				opacity: 1;
 			}
