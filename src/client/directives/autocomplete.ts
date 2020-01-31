@@ -99,6 +99,9 @@ class Autocomplete {
 			if (username != '' && username.match(/^[a-zA-Z0-9_]+$/)) {
 				this.open('user', username);
 				opened = true;
+			} else if (username === '') {
+				this.open('user', null);
+				opened = true;
 			}
 		}
 
@@ -126,7 +129,7 @@ class Autocomplete {
 	/**
 	 * サジェストを提示します。
 	 */
-	private async open(type, q) {
+	private async open(type: string, q: string) {
 		if (type != this.currentType) {
 			this.close();
 		}
@@ -144,6 +147,7 @@ class Autocomplete {
 		//#endregion
 
 		if (this.suggestion) {
+			// TODO: Vueの警告が出るのでなんとかする
 			this.suggestion.x = x;
 			this.suggestion.y = y;
 			this.suggestion.q = q;

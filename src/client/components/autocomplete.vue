@@ -1,13 +1,14 @@
 <template>
-<div class="mk-autocomplete" @contextmenu.prevent="() => {}">
-	<ol class="users" ref="suggests" v-if="users.length > 0">
-		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1">
+<div class="swhvrteh" @contextmenu.prevent="() => {}">
+	<ol class="users" ref="suggests" v-if="type === 'user'">
+		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1" class="user">
 			<img class="avatar" :src="user.avatarUrl" alt=""/>
 			<span class="name">
 				<mk-user-name :user="user" :key="user.id"/>
 			</span>
 			<span class="username">@{{ user | acct }}</span>
 		</li>
+		<li @click="chooseUser()" @keydown="onKeydown" tabindex="-1" class="choose">{{ $t('selectUser') }}</li>
 	</ol>
 	<ol class="hashtags" ref="suggests" v-if="hashtags.length > 0">
 		<li v-for="hashtag in hashtags" @click="complete(type, hashtag)" @keydown="onKeydown" tabindex="-1">
@@ -32,6 +33,7 @@ import { emojilist } from '../../misc/emojilist';
 import contains from '../scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
+import MkUserSelect from './user-select.vue';
 
 type EmojiDef = {
 	emoji: string;
@@ -73,7 +75,42 @@ for (const x of lib) {
 emjdb.sort((a, b) => a.name.length - b.name.length);
 
 export default Vue.extend({
-	props: ['type', 'q', 'textarea', 'complete', 'close', 'x', 'y'],
+	props: {
+		type: {
+			type: String,
+			required: true,
+		},
+
+		q: {
+			type: String,
+			required: false,
+		},
+
+		textarea: {
+			type: HTMLTextAreaElement,
+			required: true,
+		},
+
+		complete: {
+			type: Function,
+			required: true,
+		},
+
+		close: {
+			type: Function,
+			required: true,
+		},
+
+		x: {
+			type: Number,
+			required: true,
+		},
+
+		y: {
+			type: Number,
+			required: true,
+		},
+	},
 
 	data() {
 		return {
@@ -99,24 +136,12 @@ export default Vue.extend({
 	},
 
 	updated() {
-		//#region 位置調整
-		if (this.x + this.$el.offsetWidth > window.innerWidth) {
-			this.$el.style.left = (window.innerWidth - this.$el.offsetWidth) + 'px';
-		} else {
-			this.$el.style.left = this.x + 'px';
-		}
-
-		if (this.y + this.$el.offsetHeight > window.innerHeight) {
-			this.$el.style.top = (this.y - this.$el.offsetHeight) + 'px';
-			this.$el.style.marginTop = '0';
-		} else {
-			this.$el.style.top = this.y + 'px';
-			this.$el.style.marginTop = 'calc(1em + 8px)';
-		}
-		//#endregion
+		this.setPosition();
 	},
 
 	mounted() {
+		this.setPosition();
+
 		//#region Construct Emoji DB
 		const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
 		const emojiDefinitions: EmojiDef[] = [];
@@ -149,7 +174,7 @@ export default Vue.extend({
 
 		this.textarea.addEventListener('keydown', this.onKeydown);
 
-		for (const el of Array.from(document.querySelectorAll('*'))) {
+		for (const el of Array.from(document.querySelectorAll('body *'))) {
 			el.addEventListener('mousedown', this.onMousedown);
 		}
 
@@ -167,12 +192,28 @@ export default Vue.extend({
 	beforeDestroy() {
 		this.textarea.removeEventListener('keydown', this.onKeydown);
 
-		for (const el of Array.from(document.querySelectorAll('*'))) {
+		for (const el of Array.from(document.querySelectorAll('body *'))) {
 			el.removeEventListener('mousedown', this.onMousedown);
 		}
 	},
 
 	methods: {
+		setPosition() {
+			if (this.x + this.$el.offsetWidth > window.innerWidth) {
+				this.$el.style.left = (window.innerWidth - this.$el.offsetWidth) + 'px';
+			} else {
+				this.$el.style.left = this.x + 'px';
+			}
+
+			if (this.y + this.$el.offsetHeight > window.innerHeight) {
+				this.$el.style.top = (this.y - this.$el.offsetHeight) + 'px';
+				this.$el.style.marginTop = '0';
+			} else {
+				this.$el.style.top = this.y + 'px';
+				this.$el.style.marginTop = 'calc(1em + 8px)';
+			}
+		},
+
 		exec() {
 			this.select = -1;
 			if (this.$refs.suggests) {
@@ -182,6 +223,12 @@ export default Vue.extend({
 			}
 
 			if (this.type == 'user') {
+				if (this.q == null) {
+					this.users = [];
+					this.fetching = false;
+					return;
+				}
+
 				const cacheKey = `autocomplete:user:${this.q}`;
 				const cache = sessionStorage.getItem(cacheKey);
 				if (cache) {
@@ -323,13 +370,21 @@ export default Vue.extend({
 
 			this.items[this.select].setAttribute('data-selected', 'true');
 			(this.items[this.select] as any).focus();
+		},
+
+		chooseUser() {
+			this.close();
+			const vm = this.$root.new(MkUserSelect, {});
+			vm.$once('selected', user => {
+				this.complete('user', user);
+			});
 		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.mk-autocomplete {
+.swhvrteh {
 	position: fixed;
 	z-index: 65535;
 	max-width: 100%;
@@ -402,18 +457,6 @@ export default Vue.extend({
 
 		.name {
 			margin: 0 8px 0 0;
-			color: var(--autocompleteItemText);
-		}
-
-		.username {
-			color: var(--autocompleteItemTextSub);
-		}
-	}
-
-	> .hashtags > li {
-
-		.name {
-			color: var(--autocompleteItemText);
 		}
 	}
 
@@ -430,13 +473,8 @@ export default Vue.extend({
 			}
 		}
 
-		.name {
-			color: var(--autocompleteItemText);
-		}
-
 		.alias {
 			margin: 0 0 0 8px;
-			color: var(--autocompleteItemTextSub);
 		}
 	}
 }
