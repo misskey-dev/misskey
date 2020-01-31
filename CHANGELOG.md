@@ -89,6 +89,9 @@ Misskey v12では、クライアントが設計し直され、全く新しいUI�
 * TypeError: Cannot read property 'stack' of undefined が出ることがある問題を修正
 * AP: audience (visibility) パースの修正
 * Pages: VERSION 変数が常に null な問題を修正
+* Pages: MY_NOTES_COUNT 変数が常に null な問題を修正
+* Pages: MY_FOLLOWERS_COUNT 変数が常に null な問題を修正
+* Pages: MY_FOLLOWING_COUNT 変数が常に null な問題を修正
 * Pages: DRPWPMが最初のしか出てこない問題を修正
 
 11.37.1 (2020/01/07)
