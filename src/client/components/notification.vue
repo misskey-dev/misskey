@@ -37,7 +37,7 @@
 		<router-link v-if="notification.type === 'quote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="nowrap" :custom-emojis="notification.note.emojis"/>
 		</router-link>
-		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}</span>
+		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="!nowrap"><mk-follow-button :user="notification.user"/></div></span>
 		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
 		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="!nowrap && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
 	</div>
@@ -50,10 +50,13 @@ import { faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck } 
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import getNoteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
+import MkFollowButton from './follow-button.vue';
+import i18n from '../i18n';
 
 export default Vue.extend({
+	i18n,
 	components: {
-		XReactionIcon
+		XReactionIcon, MkFollowButton
 	},
 	props: {
 		notification: {

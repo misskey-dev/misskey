@@ -20,7 +20,7 @@
 					<span v-else class="empty">{{ $t('noAccountDescription') }}</span>
 				</div>
 			</div>
-			<x-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
+			<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
 		<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
 			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('@.loading') : $t('@.load-more') }}
@@ -34,14 +34,14 @@ import Vue from 'vue';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import MkContainer from './ui/container.vue';
-import XFollowButton from './follow-button.vue';
+import MkFollowButton from './follow-button.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
 		MkContainer,
-		XFollowButton,
+		MkFollowButton,
 	},
 
 	mixins: [

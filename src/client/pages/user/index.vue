@@ -22,7 +22,7 @@
 				<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
 				<div class="actions" v-if="$store.getters.isSignedIn">
 					<button @click="menu" class="menu _button" ref="menu"><fa :icon="faEllipsisH"/></button>
-					<x-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" class="koudoku"/>
+					<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" class="koudoku"/>
 				</div>
 			</div>
 			<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
@@ -113,7 +113,7 @@ import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
 import XUserMenu from '../../components/user-menu.vue';
 import XNote from '../../components/note.vue';
-import XFollowButton from '../../components/follow-button.vue';
+import MkFollowButton from '../../components/follow-button.vue';
 import MkContainer from '../../components/ui/container.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
@@ -122,7 +122,7 @@ export default Vue.extend({
 	components: {
 		XUserTimeline,
 		XNote,
-		XFollowButton,
+		MkFollowButton,
 		MkContainer,
 		XPhotos: () => import('./index.photos.vue').then(m => m.default),
 		XActivity: () => import('./index.activity.vue').then(m => m.default),

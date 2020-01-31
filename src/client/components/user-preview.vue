@@ -21,7 +21,7 @@
 				<p>{{ $t('followers') }}</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
-		<x-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
+		<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>
 	</div>
 </transition>
 </template>
@@ -30,13 +30,13 @@
 import Vue from 'vue';
 import i18n from '../i18n';
 import parseAcct from '../../misc/acct/parse';
-import XFollowButton from './follow-button.vue';
+import MkFollowButton from './follow-button.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XFollowButton
+		MkFollowButton
 	},
 
 	props: {
