@@ -3,6 +3,7 @@
 	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full }"
 	@click="onClick"
 	:disabled="wait"
+	v-if="isFollowing != null"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
@@ -55,6 +56,18 @@ export default Vue.extend({
 			connection: null,
 			faSpinner, faPlus, faMinus, faHourglassHalf
 		};
+	},
+
+	created() {
+		// 渡されたユーザー情報が不完全な場合
+		if (this.user.isFollowing == null) {
+			this.$root.api('users/show', {
+				userId: this.user.id
+			}).then(u => {
+				this.isFollowing = u.isFollowing;
+				this.hasPendingFollowRequestFromYou = u.hasPendingFollowRequestFromYou;
+			});
+		}
 	},
 
 	mounted() {
