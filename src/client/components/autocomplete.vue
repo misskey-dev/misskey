@@ -378,6 +378,9 @@ export default Vue.extend({
 			vm.$once('selected', user => {
 				this.complete('user', user);
 			});
+			vm.$once('closed', () => {
+				this.textarea.focus();
+			});
 		}
 	}
 });
