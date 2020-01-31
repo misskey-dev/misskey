@@ -75,6 +75,12 @@ manageLists: "Manage lists"
 error: "Something happened :("
 retry: "Retry"
 follow: "Following"
+renote: "Renote"
+you: "You"
+clickToShow: "Click to show"
+reaction: "Reaction"
+reactionSettingDescription: "Customize reaction picker emojis (delimited by line breaks)"
+rememberNoteVisibility: "Remember note visibility"
 renameFile: "Rename file"
 attachCancel: "Cancel attachment"
 markAsSensitive: "Mark as sensitive"
@@ -126,7 +132,18 @@ charts: "Charts"
 perHour: "per Hour"
 perDay: "per Day"
 stopActivityDelivery: "Stop Activity delivery"
+preview: "Preview"
 remove: "Delete"
+messageRead: "Read"
+noMoreHistory: "There is no further history"
+nUsersRead: "{n}users read"
+home: "Home"
+thisYear: "Year"
+thisMonth: "Month"
+today: "Today"
+inMb: "In megabytes"
+recaptcha: "reCAPTCHA"
+enableRecaptcha: "Enable reCAPTCHA"
 userList: "Lists"
 post: "Notes"
 _widgets:
@@ -137,6 +154,7 @@ _cw:
 _poll:
   deadlineTime: "h"
 _visibility:
+  home: "Home"
   followers: "Followers"
 _profile:
   username: "Username"
@@ -145,6 +163,8 @@ _exportOrImport:
   muteList: "Mute"
   blockingList: "Block"
   userLists: "Lists"
+_timelines:
+  home: "Home"
 _pages:
   script:
     categories:
