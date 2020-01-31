@@ -135,6 +135,7 @@ export default Vue.extend({
 
 	&.full {
 		padding: 0 8px 0 12px;
+		font-size: 14px;
 	}
 
 	&:not(.full) {
@@ -184,7 +185,7 @@ export default Vue.extend({
 	}
 
 	> span {
-		margin-right: 8px;
+		margin-right: 6px;
 	}
 }
 </style>
