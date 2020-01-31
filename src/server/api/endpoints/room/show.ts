@@ -54,7 +54,7 @@ export default define(meta, async (ps, me) => {
 	const profile = await UserProfiles.findOne(user.id).then(ensure);
 
 	if (profile.room.furnitures == null) {
-		await UserProfiles.update({ userId: user.id }, {
+		await UserProfiles.update(user.id, {
 			room: {
 				furnitures: [],
 				...profile.room
@@ -66,7 +66,7 @@ export default define(meta, async (ps, me) => {
 
 	if (profile.room.roomType == null) {
 		const initialType = 'default';
-		await UserProfiles.update({ userId: user.id }, {
+		await UserProfiles.update(user.id, {
 			room: {
 				roomType: initialType as any,
 				...profile.room
@@ -78,7 +78,7 @@ export default define(meta, async (ps, me) => {
 
 	if (profile.room.carpetColor == null) {
 		const initialColor = '#85CAF0';
-		await UserProfiles.update({ userId: user.id }, {
+		await UserProfiles.update(user.id, {
 			room: {
 				carpetColor: initialColor as any,
 				...profile.room

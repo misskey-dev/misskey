@@ -1,24 +1,25 @@
 <template>
 <section class="_card" v-if="enableTwitterIntegration || enableDiscordIntegration || enableGithubIntegration">
 	<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
+
 	<div class="_content" v-if="enableTwitterIntegration">
 		<header><fa :icon="faTwitter"/> Twitter</header>
-		<p v-if="$store.state.i.twitter">{{ $t('connectedTo') }}: <a :href="`https://twitter.com/${$store.state.i.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.twitter.screenName }}</a></p>
-		<mk-button v-if="$store.state.i.twitter" @click="disconnectTwitter">{{ $t('disconnectSerice') }}</mk-button>
+		<p v-if="integrations.twitter">{{ $t('connectedTo') }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
+		<mk-button v-if="integrations.twitter" @click="disconnectTwitter">{{ $t('disconnectSerice') }}</mk-button>
 		<mk-button v-else @click="connectTwitter">{{ $t('connectSerice') }}</mk-button>
 	</div>
 
 	<div class="_content" v-if="enableDiscordIntegration">
 		<header><fa :icon="faDiscord"/> Discord</header>
-		<p v-if="$store.state.i.discord">{{ $t('connectedTo') }}: <a :href="`https://discordapp.com/users/${$store.state.i.discord.id}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.discord.username }}#{{ $store.state.i.discord.discriminator }}</a></p>
-		<mk-button v-if="$store.state.i.discord" @click="disconnectDiscord">{{ $t('disconnectSerice') }}</mk-button>
+		<p v-if="integrations.discord">{{ $t('connectedTo') }}: <a :href="`https://discordapp.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
+		<mk-button v-if="integrations.discord" @click="disconnectDiscord">{{ $t('disconnectSerice') }}</mk-button>
 		<mk-button v-else @click="connectDiscord">{{ $t('connectSerice') }}</mk-button>
 	</div>
 
 	<div class="_content" v-if="enableGithubIntegration">
 		<header><fa :icon="faGithub"/> GitHub</header>
-		<p v-if="$store.state.i.github">{{ $t('connectedTo') }}: <a :href="`https://github.com/${$store.state.i.github.login}`" rel="nofollow noopener" target="_blank">@{{ $store.state.i.github.login }}</a></p>
-		<mk-button v-if="$store.state.i.github" @click="disconnectGithub">{{ $t('disconnectSerice') }}</mk-button>
+		<p v-if="integrations.github">{{ $t('connectedTo') }}: <a :href="`https://github.com/${integrations.github.login}`" rel="nofollow noopener" target="_blank">@{{ integrations.github.login }}</a></p>
+		<mk-button v-if="integrations.github" @click="disconnectGithub">{{ $t('disconnectSerice') }}</mk-button>
 		<mk-button v-else @click="connectGithub">{{ $t('connectSerice') }}</mk-button>
 	</div>
 </section>
@@ -52,6 +53,12 @@ export default Vue.extend({
 		};
 	},
 
+	computed: {
+		integrations() {
+			return this.$store.state.i.integrations;
+		}
+	},
+
 	created() {
 		this.$root.getMeta().then(meta => {
 			this.enableTwitterIntegration = meta.enableTwitterIntegration;
@@ -66,14 +73,14 @@ export default Vue.extend({
 			` domain=${document.location.hostname}; max-age=31536000;` +
 			(document.location.protocol.startsWith('https') ? ' secure' : '');
 		}
-		this.$watch('$store.state.i', () => {
-			if (this.$store.state.i.twitter) {
+		this.$watch('integrations', () => {
+			if (this.integrations.twitter) {
 				if (this.twitterForm) this.twitterForm.close();
 			}
-			if (this.$store.state.i.discord) {
+			if (this.integrations.discord) {
 				if (this.discordForm) this.discordForm.close();
 			}
-			if (this.$store.state.i.github) {
+			if (this.integrations.github) {
 				if (this.githubForm) this.githubForm.close();
 			}
 		}, {

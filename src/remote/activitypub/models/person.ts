@@ -306,7 +306,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const emojiNames = emojis.map(emoji => emoji.name);
 
-	const { fields, services } = analyzeAttachments(person.attachment || []);
+	const { fields } = analyzeAttachments(person.attachment || []);
 
 	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
@@ -347,13 +347,6 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		url: person.url,
 		fields,
 		description: person.summary ? fromHtml(person.summary) : null,
-		twitterUserId: services.twitter ? services.twitter.userId : null,
-		twitterScreenName: services.twitter ? services.twitter.screenName : null,
-		githubId: services.github ? services.github.id : null,
-		githubLogin: services.github ? services.github.login : null,
-		discordId: services.discord ? services.discord.id : null,
-		discordUsername: services.discord ? services.discord.username : null,
-		discordDiscriminator: services.discord ? services.discord.discriminator : null,
 	});
 
 	// ハッシュタグ更新

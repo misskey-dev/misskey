@@ -268,7 +268,7 @@ export default define(meta, async (ps, user, app) => {
 	//#endregion
 
 	if (Object.keys(updates).length > 0) await Users.update(user.id, updates);
-	if (Object.keys(profileUpdates).length > 0) await UserProfiles.update({ userId: user.id }, profileUpdates);
+	if (Object.keys(profileUpdates).length > 0) await UserProfiles.update(user.id, profileUpdates);
 
 	const iObj = await Users.pack(user.id, user, {
 		detail: true,

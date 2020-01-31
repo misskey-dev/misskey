@@ -32,7 +32,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	await UserProfiles.update({ userId: user.id }, {
+	await UserProfiles.update(user.id, {
 		room: ps.room as any
 	});
 

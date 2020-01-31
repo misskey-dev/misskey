@@ -34,7 +34,7 @@ export default define(meta, async (ps, user) => {
 		length: 32
 	});
 
-	await UserProfiles.update({ userId: user.id }, {
+	await UserProfiles.update(user.id, {
 		twoFactorTempSecret: secret.base32
 	});
 

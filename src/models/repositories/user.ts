@@ -213,19 +213,6 @@ export class UserRepository extends Repository<User> {
 						userId: user.id
 					}).then(result => result >= 1)
 					: false,
-				twitter: profile!.twitter ? {
-					id: profile!.twitterUserId,
-					screenName: profile!.twitterScreenName
-				} : null,
-				github: profile!.github ? {
-					id: profile!.githubId,
-					login: profile!.githubLogin
-				} : null,
-				discord: profile!.discord ? {
-					id: profile!.discordId,
-					username: profile!.discordUsername,
-					discriminator: profile!.discordDiscriminator
-				} : null,
 			} : {}),
 
 			...(opts.detail && meId === user.id ? {
@@ -242,6 +229,7 @@ export class UserRepository extends Repository<User> {
 				pendingReceivedFollowRequestsCount: FollowRequests.count({
 					followeeId: user.id
 				}),
+				integrations: profile?.integrations,
 			} : {}),
 
 			...(opts.includeSecrets ? {
