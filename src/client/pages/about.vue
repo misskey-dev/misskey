@@ -39,6 +39,28 @@
 			<div style="margin-top: 1em;">{{ $t('misskeyDonate') }}</div>
 			<a href="https://www.patreon.com/syuilo" target="_blank" style="color: var(--link);">https://www.patreon.com/syuilo</a>
 		</div>
+		<div class="_content">
+			<span><mfm text="<motion>❤</motion>"/> {{ $t('patrons') }}</span>
+			<ul>
+				<li>Gargron</li>
+				<li>Satsuki Yanagi</li>
+				<li>noellabo</li>
+				<li>naga_rus</li>
+				<li>Melilot</li>
+				<li>AureoleArk</li>
+				<li>Peter G.</li>
+				<li>motcha</li>
+				<li>Atsuko Tominaga</li>
+				<li>dansup</li>
+				<li>Nokotaro Takeda</li>
+				<li>YUKIMOCHI</li>
+				<li>nanami kan</li>
+				<li>Hekovic</li>
+				<li>wara</li>
+				<li>Takashi Shibuya</li>
+				<li>Noizeman</li>
+			</ul>
+		</div>
 	</section>
 </div>
 </template>
