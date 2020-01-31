@@ -60,6 +60,7 @@
 				<li>Takashi Shibuya</li>
 				<li>Noizeman</li>
 			</ul>
+			<span>{{ $t('morePatrons') }}</span>
 		</div>
 	</section>
 </div>
