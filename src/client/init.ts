@@ -48,7 +48,9 @@ console.info(`Misskey v${version}`);
 
 // v11互換性のため
 if (localStorage.getItem('kyoppie') === 'yuppie') {
+	const i = localStorage.getItem('i');
 	localStorage.clear();
+	localStorage.setItem('i', i);
 	location.reload(true);
 }
 
