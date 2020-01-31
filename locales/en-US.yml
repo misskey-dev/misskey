@@ -51,6 +51,30 @@ copyContent: "Copy contents"
 copyLink: "Copy link"
 delete: "Delete"
 addToList: "Add to list"
+sendMessage: "Send a message"
+copyUsername: "Copy username"
+reply: "Reply"
+loadMore: "Load more"
+youGotNewFollower: "Followed you"
+receiveFollowRequest: "Follow request received"
+mentions: "Mentions"
+directNotes: "Direct notes"
+importAndExport: "Import / Export"
+import: "Import"
+export: "Export"
+files: "Files"
+download: "Download"
+lists: "Lists"
+noLists: "No lists"
+notes: "Notes"
+following: "Following"
+followers: "Followers"
+followsYou: "Follows you"
+createList: "Create list"
+manageLists: "Manage lists"
+error: "Something happened :("
+retry: "Retry"
+follow: "Following"
 renameFile: "Rename file"
 attachCancel: "Cancel attachment"
 markAsSensitive: "Mark as sensitive"
@@ -103,13 +127,40 @@ perHour: "per Hour"
 perDay: "per Day"
 stopActivityDelivery: "Stop Activity delivery"
 remove: "Delete"
+userList: "Lists"
+post: "Notes"
 _widgets:
   notifications: "Notifications"
   timeline: "Timeline"
+_cw:
+  show: "Load more"
 _poll:
   deadlineTime: "h"
+_visibility:
+  followers: "Followers"
 _profile:
   username: "Username"
 _exportOrImport:
+  followingList: "Following"
   muteList: "Mute"
   blockingList: "Block"
+  userLists: "Lists"
+_pages:
+  script:
+    categories:
+      list: "Lists"
+    blocks:
+      _join:
+        arg1: "Lists"
+      _randomPick:
+        arg1: "Lists"
+      _dailyRandomPick:
+        arg1: "Lists"
+      _seedRandomPick:
+        arg2: "Lists"
+      _pick:
+        arg1: "Lists"
+      _listLen:
+        arg1: "Lists"
+    types:
+      array: "Lists"
