@@ -1,1 +1,19 @@
 ---
+_ago:
+  unknown: "unknown"
+  future: "future"
+  justNow: "now"
+  secondsAgo: "{n}s ago"
+  minutesAgo: "{n}m ago"
+  hoursAgo: "{n}h ago"
+  daysAgo: "{n}d ago"
+  weeksAgo: "{n}week(s) ago"
+  monthsAgo: "{n}month(s) ago"
+  yearsAgo: "{n}year(s) ago"
+_time:
+  second: "s"
+  minute: "m"
+  hour: "h"
+  day: "d"
+_poll:
+  deadlineTime: "h"
