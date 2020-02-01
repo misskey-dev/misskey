@@ -361,13 +361,57 @@ _permissions:
   "read:drive": "Ver el drive"
   "write:drive": "Administrar drive"
   "read:favorites": "Ver favoritos"
+  "write:favorites": "Addministrar favoritos"
+  "read:following": "Ver información de seguidor"
+  "write:following": "Seguir o dejar de seguir"
+  "read:messaging": "Ver conversación"
+  "write:messaging": "Administrar coversación"
+  "read:mutes": "Ver usuarios silenciados"
+  "write:mutes": "Administrar usuarios silenciados"
+  "write:notes": "Crear o borrar notas"
+  "read:notifications": "Ver notificaciones"
+  "write:notifications": "Administrar notificaciones"
+  "read:reactions": "Ver reacciones"
+  "write:reactions": "Administrar reacciones"
+  "write:votes": "Votar"
+  "read:pages": "Ver páginas"
+  "write:pages": "Administrar páginas"
+  "read:page-likes": "Ver páginas que te gustan"
+  "write:page-likes": "Administrar páginas que te gustan"
+  "read:user-groups": "Ver grupos de usuarios"
+  "write:user-groups": "Administrar grupos de usuarios"
+_auth:
+  shareAccess: "¿Desea permitir el acceso a la cuenta \"{name}\"?"
+  permissionAsk: "Esta aplicación requiere los siguientes permisos"
+_antennaSources:
+  all: "Todas las notas"
+  homeTimeline: "Notas de los usuarios que sigues"
+  users: "Solo notas de determinados usuarios"
+  userList: "Solo notas de usuarios de una lista"
+_weekday:
+  sunday: "Domingo"
+  monday: "Lunes"
+  tuesday: "Martes"
+  wednesday: "Miércoles"
+  thursday: "Jueves"
+  friday: "Viernes"
+  saturday: "Sábado"
 _widgets:
+  memo: "Nota adhesiva"
   notifications: "Notificaciones"
   timeline: "Linea de tiempo"
+  calendar: "Calendario"
+  trends: "Tendencias"
+  clock: "Reloj"
 _cw:
+  hide: "Ocultar"
   show: "Ver más"
+  chars: "{count} caracteres"
+  files: "{count} archivos"
+  poll: "Encuesta"
 _poll:
   deadlineTime: "Horas"
+  vote: "Votar"
 _visibility:
   home: "Inicio"
   followers: "Seguidores"
@@ -375,6 +419,7 @@ _profile:
   name: "Nombre"
   username: "Nombre de usuario"
 _exportOrImport:
+  allNotes: "Todas las notas"
   followingList: "Sigue"
   muteList: "Silenciar"
   blockingList: "Bloquear"
@@ -382,6 +427,7 @@ _exportOrImport:
 _timelines:
   home: "Inicio"
 _pages:
+  viewPage: "Ver páginas"
   blocks:
     image: "Imágenes"
   script:
