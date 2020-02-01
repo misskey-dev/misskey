@@ -306,9 +306,26 @@ _2fa:
 _permissions:
   "read:account": "View your account information"
   "write:account": "Edit your account information"
-  "read:blocks": "View your block list"
-  "write:blocks": "Edit your block list"
-  "read:drive": "Access your drive files"
+  "read:blocks": "View the list of people you blocked"
+  "write:blocks": "Edit the list of people you blocked"
+  "read:drive": "Access your drive files and folders"
+  "write:drive": "Edit or delete your drive files and folders"
+  "read:favorites": "View your favorites list"
+  "write:favorites": "Edit your favorites list"
+  "read:following": "View your following information"
+  "write:following": "Follow or unfollow other accounts"
+  "read:messaging": "View your talks"
+  "write:messaging": "Start or delete your talks"
+  "read:mutes": "View the list of people you muted"
+  "write:mutes": "Edit the list of people you muted"
+  "write:notes": "Compose and delete notes"
+  "read:notifications": "View notifications"
+  "write:notifications": "Work with notifications"
+  "read:reactions": "View reactions"
+  "write:reactions": "Edit reactions"
+  "write:votes": "Vote on a poll"
+  "read:pages": "View your pages"
+  "write:pages": "Edit or delete your pages"
 _widgets:
   notifications: "Notifications"
   timeline: "Timeline"
@@ -316,21 +333,48 @@ _cw:
   show: "Load more"
 _poll:
   deadlineTime: "h"
+  vote: "Vote on a poll"
 _visibility:
   home: "Home"
   followers: "Followers"
+_postForm:
+  replyPlaceholder: "Reply to this note"
+  quotePlaceholder: "Quote this post..."
+  _placeholders:
+    a: "What are you up to?"
+    b: "What's happening around you?"
+    c: "What's on your mind?"
+    d: "What do you want to say?"
+    e: "Start writing..."
+    f: "Waiting for you to write..."
 _profile:
+  name: "Name"
   username: "Username"
+  description: "Bio"
+  youCanIncludeHashtags: "You can also include hashtags in your bio."
+  metadata: "Other information"
+  metadataLabel: "Label"
+  metadataContent: "Content"
 _exportOrImport:
+  allNotes: "All notes"
   followingList: "Following"
   muteList: "Mute"
   blockingList: "Block"
   userLists: "Lists"
+_charts:
+  federationInstancesIncDec: "Difference in # of federating instances"
 _timelines:
   home: "Home"
 _pages:
+  viewPage: "View your pages"
   blocks:
     image: "Images"
+    _post:
+      text: "Content"
+    _button:
+      _action:
+        _dialog:
+          content: "Content"
   script:
     categories:
       list: "Lists"
