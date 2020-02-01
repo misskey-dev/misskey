@@ -363,24 +363,98 @@ _exportOrImport:
   userLists: "Lists"
 _charts:
   federationInstancesIncDec: "Difference in # of federating instances"
+  federationInstancesTotal: "Total # of federating instances"
+  usersIncDec: "Difference in # of users"
+  usersTotal: "Total # of users"
+  activeUsers: "Active users"
+  notesIncDec: "Difference in # of notes"
+  localNotesIncDec: "Total # of local notes"
+  remoteNotesIncDec: "Difference in # of remote notes"
+  notesTotal: "Total # of notes"
+  filesIncDec: "Difference in # of files"
+  filesTotal: "Total # of files"
+  storageUsageIncDec: "Difference in storage use"
+  storageUsageTotal: "Total storage usage"
+_instanceCharts:
+  requests: "Requests"
+  users: "Difference in # of users"
+  usersTotal: "Total # of users"
+  notes: "Difference in # of notes"
+  notesTotal: "Total # of notes"
+  ff: "Difference in # of followers"
+  ffTotal: "Total # of followers"
+  cacheSize: "Difference in cache size"
+  cacheSizeTotal: "Total accumulated cache"
+  files: "Difference in # of files"
+  filesTotal: "Total # of files"
 _timelines:
   home: "Home"
+  local: "Local"
+  social: "Social"
+  global: "Global"
 _pages:
+  newPage: "Create a page"
+  editPage: "Edit this page"
+  readPage: "Source view activated"
+  page-created: "Successfully created a page!"
+  page-updated: "Successfully updated the page!"
+  name-already-exists: "Specified page URL already exists."
+  title-invalid-name: "The specified page URL is invalid."
+  text-invalid-name: "Please double-check if it is not empty."
+  editThisPage: "Edit this page"
   viewPage: "View your pages"
   blocks:
     image: "Images"
     _post:
       text: "Content"
+    _numberInput:
+      default: "Default value"
+    switch: "Switch"
+    _switch:
+      name: "Variable name"
+      text: "Title"
+      default: "Default value"
+    counter: "Counter"
+    _counter:
+      name: "Variable name"
+      text: "Title"
+      inc: "Increase by"
     _button:
+      text: "Title"
+      colored: "Colored"
+      action: "Operation when the button is pressed"
       _action:
+        dialog: "Show a dialog"
         _dialog:
           content: "Content"
+        resetRandom: "Reset the random seed"
+        pushEvent: "Send an event"
+        _pushEvent:
+          event: "Event name"
+          message: "Message to display when activated"
+          variable: "Variable to send"
+          no-variable: "None"
+    radioButton: "Choice"
+    _radioButton:
+      name: "Variable name"
+      title: "Title"
+      values: "List of choices (separated by line breaks)"
+      default: "Default value"
   script:
     categories:
+      flow: "Flow control"
+      logical: "Logical operation"
+      operation: "Computation"
+      comparison: "Comparison"
+      random: "Random"
+      value: "Values"
+      fn: "Functions"
+      text: "Text operations"
       list: "Lists"
     blocks:
       _join:
         arg1: "Lists"
+      random: "Random"
       _randomPick:
         arg1: "Lists"
       _dailyRandomPick:
@@ -391,5 +465,6 @@ _pages:
         arg1: "Lists"
       _listLen:
         arg1: "Lists"
+      fn: "Functions"
     types:
       array: "Lists"
