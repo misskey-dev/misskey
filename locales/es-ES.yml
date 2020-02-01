@@ -51,6 +51,44 @@ copyContent: "Copiar contenido"
 copyLink: "Copiar enlace"
 delete: "Borrar"
 addToList: "Agregar a lista"
+sendMessage: "Énviar mensaje"
+copyUsername: "Copiar nombre de usuario"
+reply: "Responder"
+loadMore: "Ver más"
+youGotNewFollower: "te ha seguido"
+receiveFollowRequest: "Recibiste una solicitud de seguimiento"
+followRequestAccepted: "La solicitud de seguimiento fue aceptada"
+mentions: "Menciones"
+directNotes: "Notas directas"
+importAndExport: "Importar y Exportar"
+import: "Importar"
+export: "Exportar"
+files: "Archivos"
+download: "Descargar"
+driveFileDeleteConfirm: "¿Desea borrar el archivo \"{name}\"? Las notas que tengan este archivo como adjunto serán eliminadas"
+unfollowConfirm: "¿Desea dejar de seguir a {name}?"
+exportRequested: "Se ha solicitado la exportación. Puede tomar un tiempo. Cuando termine la exportación, se añadirá en el drive"
+importRequested: "Se ha solicitado la importación. Puede tomar un tiempo."
+lists: "Listas"
+noLists: "No tiene listas"
+notes: "Notas"
+following: "Sigue"
+followers: "Seguidores"
+followsYou: "Te sigue"
+createList: "Crear lista"
+manageLists: "Administrar listas"
+error: "Ocurrió un problema"
+retry: "Reintentar"
+enterListName: "Ingrese nombre de lista"
+renameList: "Renombrar lista"
+deleteList: "Borrar lista"
+privacy: "Privacidad"
+makeFollowManuallyApprove: "Aprobar manualmente las solicitudes de seguimiento"
+defaultNoteVisibility: "Visibilidad por defecto"
+follow: "Sigue"
+followRequest: "Solicitud de seguimiento"
+followRequests: "Solicitudes de seguimiento"
+unfollow: "Dejar de seguir"
 renameFile: "Renombrar archivo"
 attachCancel: "Quitar adjunto"
 markAsSensitive: "Marcar como sensible"
@@ -156,20 +194,45 @@ avatar: "Avatar"
 withFileAntenna: "Solo notas con adjuntos"
 serviceworker: "ServiceWorker"
 enableServiceworker: "Activar ServiceWorker"
+userList: "Listas"
+post: "Notas"
 _widgets:
   notifications: "Notificaciones"
   timeline: "Linea de tiempo"
+_cw:
+  show: "Ver más"
 _poll:
   deadlineTime: "Horas"
 _visibility:
   home: "Inicio"
+  followers: "Seguidores"
 _profile:
   username: "Nombre de usuario"
 _exportOrImport:
+  followingList: "Sigue"
   muteList: "Silenciar"
   blockingList: "Bloquear"
+  userLists: "Listas"
 _timelines:
   home: "Inicio"
 _pages:
   blocks:
     image: "Imágenes"
+  script:
+    categories:
+      list: "Listas"
+    blocks:
+      _join:
+        arg1: "Listas"
+      _randomPick:
+        arg1: "Listas"
+      _dailyRandomPick:
+        arg1: "Listas"
+      _seedRandomPick:
+        arg2: "Listas"
+      _pick:
+        arg1: "Listas"
+      _listLen:
+        arg1: "Listas"
+    types:
+      array: "Listas"
