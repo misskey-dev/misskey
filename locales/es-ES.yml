@@ -130,13 +130,25 @@ nUsersRead: "Leído por {n} personas"
 agreeTo: "De acuerdo con {0}"
 tos: "Términos de uso"
 start: "Comenzar"
+home: "Inicio"
+remoteUserCaution: "Para el usuario remoto, la información está incompleta"
+activity: "Actividad"
+images: "Imágenes"
+birthday: "Fecha de nacimiento"
 _widgets:
   notifications: "Notificaciones"
   timeline: "Linea de tiempo"
 _poll:
   deadlineTime: "Horas"
+_visibility:
+  home: "Inicio"
 _profile:
   username: "Nombre de usuario"
 _exportOrImport:
   muteList: "Silenciar"
   blockingList: "Bloquear"
+_timelines:
+  home: "Inicio"
+_pages:
+  blocks:
+    image: "Imágenes"
