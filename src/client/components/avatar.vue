@@ -1,14 +1,14 @@
 <template>
-<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
+<span class="eiwwqkts" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
 	<span class="inner" :style="icon"></span>
 </span>
-<span class="mk-avatar" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
+<span class="eiwwqkts" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
 	<span class="inner" :style="icon"></span>
 </span>
-<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
+<router-link class="eiwwqkts" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
 	<span class="inner" :style="icon"></span>
 </router-link>
-<router-link class="mk-avatar" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
+<router-link class="eiwwqkts" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
 	<span class="inner" :style="icon"></span>
 </router-link>
 </template>
@@ -71,7 +71,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-avatar {
+.eiwwqkts {
 	position: relative;
 	display: inline-block;
 	vertical-align: bottom;
