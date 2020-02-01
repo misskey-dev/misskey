@@ -454,11 +454,34 @@ _pages:
   editThisPage: "Edit this page"
   viewSource: "View source"
   viewPage: "View your pages"
+  like: "Like"
+  unlike: "Undo like"
+  liked-pages: "Liked pages"
+  my-pages: "My pages"
+  inspector: "Inspector"
+  content: "Page block"
+  variables: "Variables"
+  variables-info: "You can make your page more interactive by using variables. If you write down <b>{ variable name }</b> in the text, you can embed the value of the variable. For example, source text <b>Hello { thing } world!</b> with <b> ai </b> as the value of variable 'thing' will result in the text being <b>Hello ai world!</b>."
+  variables-info2: "Because the evaluation of variables are performed from top to bottom, the variable cannot refer to another variables which appear on later lines. For example, when defining three variables <b>A</b>, <b>B</b> and <b>C</b>, variable <b>C</b> <i>can</i> refer to variables <b>A</b> and <b>B</b> in its expression. However, variable <b>A</b> <i>cannot</i> refer to variables <b>B</b> or <b>C</b> in its expression."
+  variables-info3: "To get an input from user, insert \"user input\" block with your desired variable name (that variable will be declared automatically). You could then use that variable to perform actions on your page."
+  variables-info4: "Functions make it easier to perform repetitive tasks. To create a function, declare a variable of \"Function\" type. A function can have a slot (argument/parameter) which can be used inside the function as a variable. Thanks to AiScript specification, you can also use function itself as a parameter for other functions. (Search \"callback functions\" on google for more details)."
+  more-details: "More information"
+  title: "Title"
+  url: "Page URL"
+  summary: "Page summary"
+  alignCenter: "Center align"
   blocks:
     image: "Images"
+    _if:
+      variable: "Variables"
     _post:
       text: "Content"
+    _textInput:
+      text: "Title"
+    _textareaInput:
+      text: "Title"
     _numberInput:
+      text: "Title"
       default: "Default value"
     switch: "Switch"
     _switch:
