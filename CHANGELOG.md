@@ -92,6 +92,7 @@ Misskey v12では、クライアントが設計し直され、全く新しいUI�
 * Redis subscriberで認証ができないのを修正
 * ファイルと画像認識処理の改善
 * カスタム絵文字リアクションでないものは絵文字クエリをしないように
+* トレンドで非公開な投稿のハッシュタグを集計しないように
 * TypeError: Cannot read property 'stack' of undefined が出ることがある問題を修正
 * AP: audience (visibility) パースの修正
 * Pages: VERSION 変数が常に null な問題を修正
