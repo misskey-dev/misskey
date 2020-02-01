@@ -184,6 +184,7 @@ export default Vue.extend({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
+				this.$emit('closed');
 				this.destroyDom();
 			});
 		},
