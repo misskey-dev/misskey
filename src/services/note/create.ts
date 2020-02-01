@@ -238,7 +238,9 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	}
 
 	// ハッシュタグ更新
-	for (const tag of tags) updateHashtag(user, tag);
+	if (data.visibility == 'public' || data.visibility == 'home') {
+		for (const tag of tags) updateHashtag(user, tag);
+	}
 
 	// ファイルが添付されていた場合ドライブのファイルの「このファイルが添付された投稿一覧」プロパティにこの投稿を追加
 	if (data.files) {
