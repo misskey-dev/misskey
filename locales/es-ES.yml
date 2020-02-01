@@ -706,37 +706,68 @@ _pages:
       randomPick: "Elegir aleatoriamente de la lista"
       _randomPick:
         arg1: "Listas"
+      dailyRandom: "Aleatorio (Diariamente para cada usuario)"
       _dailyRandom:
         arg1: "probabilidad"
+      dailyRannum: "Número aleatorio (Diariamente para cada usuario)"
       _dailyRannum:
         arg1: "Mínimo"
         arg2: "Máximo"
+      dailyRandomPick: "Elegir aleatoriamente de la lista (Diariamente para cada usuario)"
       _dailyRandomPick:
         arg1: "Listas"
+      seedRandom: "Aleatorio (semilla)"
       _seedRandom:
+        arg1: "Semilla"
         arg2: "probabilidad"
+      seedRannum: "Número aleatorio (semilla)"
       _seedRannum:
+        arg1: "Semilla"
         arg2: "Mínimo"
         arg3: "Máximo"
+      seedRandomPick: "Elegir aleatoriamente de la lista (semilla)"
       _seedRandomPick:
+        arg1: "Semilla"
         arg2: "Listas"
+      DRPWPM: "Elegir aleatoriamente de la lista ponderada (Diariamente para cada usuario)"
       _DRPWPM:
         arg1: "Lista de texto"
+      pick: "Elegir de la lista"
       _pick:
         arg1: "Listas"
+        arg2: "Posición"
+      listLen: "Obtener largo de la lista"
       _listLen:
         arg1: "Listas"
       number: "Número"
+      stringToNumber: "De texto a número"
       _stringToNumber:
         arg1: "Texto"
+      numberToString: "De número a texto"
       _numberToString:
         arg1: "Número"
+      splitStrByLine: "Separar texto en lineas"
       _splitStrByLine:
         arg1: "Texto"
       ref: "Variables"
       fn: "funciones"
+      _fn:
+        slots: "Slots"
+        slots-info: "Separe cada uno de los slots con una linea nueva"
+        arg1: "Salida"
+      for: "Repetir"
+      _for:
+        arg1: "Cantidad de repeticiones"
+        arg2: "Acción"
+    typeError: "El slot {slot} acepta el tipo {expect} pero fue ingresado el tipo {actual}"
+    thereIsEmptySlot: "El slot {slot} está vacío"
     types:
       string: "Texto"
       number: "Número"
+      boolean: "Booleano"
       array: "Listas"
       stringArray: "Lista de texto"
+    emptySlot: "Slot vacío"
+    enviromentVariables: "Variables de entorno"
+    pageVariables: "Items de la página"
+    argVariables: "Slot de entrada"
