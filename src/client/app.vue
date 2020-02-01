@@ -77,7 +77,9 @@
 		<main ref="main">
 			<div class="content">
 				<transition name="page" mode="out-in">
-					<router-view></router-view>
+					<keep-alive :include="['index']">
+						<router-view></router-view>
+					</keep-alive>
 				</transition>
 			</div>
 			<div class="powerd-by" :class="{ visible: !$store.getters.isSignedIn }">

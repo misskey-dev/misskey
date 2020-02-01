@@ -7,6 +7,8 @@ import Vue from 'vue';
 import Home from './index.home.vue';
 
 export default Vue.extend({
+	name: 'index',
+
 	components: {
 		Home,
 		Welcome: () => import('./index.welcome.vue').then(m => m.default),
