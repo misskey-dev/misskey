@@ -238,7 +238,7 @@ export default async (user: IUser, data: Option, silent = false) => new Promise<
 	}
 
 	// ハッシュタグ更新
-	if (data.visibility == 'public' || data.visibility == 'home') {
+	if (data.visibility === 'public' || data.visibility === 'home') {
 		for (const tag of tags) updateHashtag(user, tag);
 	}
 
