@@ -203,7 +203,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// ハッシュタグ更新
-	if (data.visibility == 'public' || data.visibility == 'home') {
+	if (data.visibility === 'public' || data.visibility === 'home') {
 		updateHashtags(user, tags);
 	}
 
