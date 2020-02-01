@@ -205,6 +205,7 @@ export default Vue.extend({
 				height: 72px;
 				margin: auto;
 				cursor: pointer;
+				box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
 			}
 		}
 
