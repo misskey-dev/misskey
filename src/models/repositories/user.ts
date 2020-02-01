@@ -229,7 +229,7 @@ export class UserRepository extends Repository<User> {
 				pendingReceivedFollowRequestsCount: FollowRequests.count({
 					followeeId: user.id
 				}),
-				integrations: profile?.integrations,
+				integrations: profile!.integrations,
 			} : {}),
 
 			...(opts.includeSecrets ? {
