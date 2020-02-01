@@ -410,26 +410,75 @@ _cw:
   files: "{count} archivos"
   poll: "Encuesta"
 _poll:
+  noOnlyOneChoice: "Se necesitan al menos 2 opciones"
+  choiceN: "Opción {n}"
+  noMore: "No se pueden agregar más"
+  canMultipleVote: "Permitir más de una respuesta"
+  expiration: "Termina el"
+  infinite: "Sin límite de tiempo"
+  at: "Elegir fecha y hora"
+  after: "Elegir lapso de tiempo"
+  deadlineDate: "Fecha de fin"
   deadlineTime: "Horas"
+  duration: "Duración"
+  votesCount: "{n} votos"
+  totalVotes: "Total {n} votos"
   vote: "Votar"
+  showResult: "Ver resultado"
+  voted: "Votado"
+  closed: "Cerrada"
+  remainingDays: "Quedan {d} días y {h} horas para que finalice"
+  remainingHours: "Quedan {h} horas y {m} minutos para que finalice"
+  remainingMinutes: "Quedan {m} minutos y {s} segundos para que finalice"
+  remainingSeconds: "Quedan {s} segundos para que finalice"
 _visibility:
+  public: "Público"
+  publicDescription: "Visible para todos los usuarios"
   home: "Inicio"
+  homeDescription: "Visible sólo en la linea de tiempo de inicio"
   followers: "Seguidores"
+  followersDescription: "Visible sólo para tus seguidores"
+  specified: "Mensaje directo"
+  specifiedDescription: "Visible sólo para los usuarios elegidos"
+_postForm:
+  replyPlaceholder: "Responder a esta nota"
+  quotePlaceholder: "Citar esta nota"
+  _placeholders:
+    a: "¿Qué haces?"
+    b: "¿Te pasó algo?"
+    c: "¿Qué estás pensando?"
+    d: "¿Algo que quieras decir?"
+    e: "Escribe aquí"
+    f: "Esperando a que escribas algo..."
 _profile:
   name: "Nombre"
   username: "Nombre de usuario"
+  description: "Descripción"
+  youCanIncludeHashtags: "Puedes añadir hashtags"
+  metadata: "Información adicional"
+  metadataLabel: "Etiqueta"
+  metadataContent: "Contenido"
 _exportOrImport:
   allNotes: "Todas las notas"
-  followingList: "Sigue"
-  muteList: "Silenciar"
-  blockingList: "Bloquear"
+  followingList: "Siguiendo"
+  muteList: "Silenciados"
+  blockingList: "Bloqueados"
   userLists: "Listas"
+_charts:
+  federationInstancesIncDec: "Variación de instancias federando"
+  federationInstancesTotal: "Total de instancias federando"
 _timelines:
   home: "Inicio"
 _pages:
   viewPage: "Ver páginas"
   blocks:
     image: "Imágenes"
+    _post:
+      text: "Contenido"
+    _button:
+      _action:
+        _dialog:
+          content: "Contenido"
   script:
     categories:
       list: "Listas"
