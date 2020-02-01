@@ -50,6 +50,7 @@ export const router = new VueRouter({
 		{ path: '/authorize-follow', component: () => import('./pages/follow.vue').then(m => m.default) },
 		/*{ path: '*', component: MkNotFound }*/
 	],
+	// なんかバギー
 	scrollBehavior(to, from, savedPosition) {
 		if (savedPosition) {
 			return savedPosition;
