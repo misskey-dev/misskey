@@ -697,29 +697,77 @@ _pages:
       _not:
         arg1: "부정"
       random: "랜덤"
+      _random:
+        arg1: "확률"
+      rannum: "난수"
+      _rannum:
+        arg1: "최솟값"
+        arg2: "최댓값"
+      randomPick: "목록에서 임의로 선택"
       _randomPick:
         arg1: "리스트"
+      dailyRandom: "랜덤 (하루동안 결과 유지)"
+      _dailyRandom:
+        arg1: "확률"
+      dailyRannum: "난수 (하루동안 결과 유지)"
+      _dailyRannum:
+        arg1: "최솟값"
+        arg2: "최댓값"
+      dailyRandomPick: "목록에서 임의로 선택 (하루동안 결과 유지)"
       _dailyRandomPick:
         arg1: "리스트"
+      seedRandom: "무작위 (시드)"
+      _seedRandom:
+        arg1: "시드"
+        arg2: "확률"
+      seedRannum: "난수 (시드)"
+      _seedRannum:
+        arg1: "시드"
+        arg2: "최솟값"
+        arg3: "최댓값"
+      seedRandomPick: "목록에서 무작위로 선택 (시드)"
       _seedRandomPick:
+        arg1: "시드"
         arg2: "리스트"
+      DRPWPM: "확률형 목록에서 임의로 선택 (하루동안 결과 유지)"
       _DRPWPM:
         arg1: "텍스트 목록"
+      pick: "목록에서 선택"
       _pick:
         arg1: "리스트"
+        arg2: "위치"
+      listLen: "리스트의 길이 가져오기"
       _listLen:
         arg1: "리스트"
       number: "수치"
+      stringToNumber: "텍스트를 수치로"
       _stringToNumber:
         arg1: "텍스트"
+      numberToString: "수치를 텍스트로"
       _numberToString:
         arg1: "수치"
+      splitStrByLine: "텍스트를 행 단위로 분할"
       _splitStrByLine:
         arg1: "텍스트"
       ref: "변수"
       fn: "함수"
+      _fn:
+        slots: "슬롯"
+        slots-info: "각 슬롯을 줄바꿈으로 구분하여 주세요"
+        arg1: "출력"
+      for: "반복"
+      _for:
+        arg1: "횟수"
+        arg2: "처리"
+    typeError: "슬롯 {slot}은 \"{expect}\"를 사용할 수 있지만 \"{actual}이 들어있습니다!"
+    thereIsEmptySlot: "슬롯 {slot}이(가) 비었습니다!"
     types:
       string: "텍스트"
       number: "수치"
+      boolean: "플래그"
       array: "리스트"
       stringArray: "텍스트 목록"
+    emptySlot: "빈 슬롯"
+    enviromentVariables: "환경 변수"
+    pageVariables: "페이지 요소"
+    argVariables: "입력 슬롯"
