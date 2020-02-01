@@ -1,3 +1,4 @@
+import { Brackets } from 'typeorm';
 import define from '../../define';
 import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
