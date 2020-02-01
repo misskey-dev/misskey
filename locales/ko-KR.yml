@@ -617,10 +617,10 @@ _pages:
       strLen: "텍스트의 길이"
       _strLen:
         arg1: "텍스트"
-      strPick: "텍스트 추출"
+      strPick: "문자 추출"
       _strPick:
         arg1: "텍스트"
-        arg2: "텍스트 위치"
+        arg2: "문자 위치"
       strReplace: "텍스트 대체"
       _strReplace:
         arg1: "텍스트"
