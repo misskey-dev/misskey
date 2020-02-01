@@ -50,7 +50,9 @@ export const router = new VueRouter({
 		{ path: '/authorize-follow', component: () => import('./pages/follow.vue').then(m => m.default) },
 		/*{ path: '*', component: MkNotFound }*/
 	],
-	// なんかバギー
+	// なんかHacky
+	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
+	// setTimeout しないと、アニメーション(トランジション)の関係でうまく動かない
 	scrollBehavior(to, from, savedPosition) {
 		setTimeout(() => {
 			if (savedPosition) {
