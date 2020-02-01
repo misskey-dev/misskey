@@ -51,6 +51,11 @@ export default {
 			clearTimeout(self.hideTimer);
 			self.hideTimer = setTimeout(self.close, 500);
 		});
+
+		el.addEventListener('click', () => {
+			clearTimeout(self.showTimer);
+			self.close();
+		});
 	},
 
 	unbind(el, binding, vn) {
