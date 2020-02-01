@@ -1,8 +1,8 @@
 ---
 _ago:
-  unknown: "unknown"
-  future: "future"
-  justNow: "now"
+  unknown: "Unknown"
+  future: "Future"
+  justNow: "Just now"
   secondsAgo: "{n}s ago"
   minutesAgo: "{n}m ago"
   hoursAgo: "{n}h ago"
@@ -21,7 +21,7 @@ search: "Search"
 notifications: "Notifications"
 username: "Username"
 password: "Password"
-fetchingAsApObject: "Inquiring to fediverse"
+fetchingAsApObject: "Fetching from Fediverse..."
 ok: "OK"
 gotIt: "Got it!"
 cancel: "Cancel"
@@ -433,9 +433,13 @@ _poll:
   remainingSeconds: "{s} seconds remaining"
 _visibility:
   public: "Public"
-  publicDescription: "Can be seen by all users"
+  publicDescription: "Your note will appear on global timeline"
   home: "Home"
+  homeDescription: "Post to home timeline only"
   followers: "Followers"
+  followersDescription: "Post to followers only"
+  specified: "Direct"
+  specifiedDescription: "Post to specified users only"
 _postForm:
   replyPlaceholder: "Reply to this note"
   quotePlaceholder: "Quote this post..."
@@ -629,10 +633,75 @@ _pages:
       _join:
         arg1: "Lists"
         arg2: "Separator"
+      add: "Add"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "Substract"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "Multiply"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "Divide"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "Remainder"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      round: "Round decimal"
+      _round:
+        arg1: "Number"
+      eq: "A and B are equal"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A and B are different"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A AND B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A OR B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< A is less than B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> A is larger than B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A is less than or equal to B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A is more than or equal to B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "Branch"
       _if:
         arg1: "If"
+        arg2: "If true"
+        arg3: "If false"
+      not: "NOT"
+      _not:
+        arg1: "NOT"
       random: "Random"
+      _random:
+        arg1: "Probability"
+      rannum: "Random number"
       _rannum:
+        arg1: "Minimum value"
         arg2: "Maximum value"
       randomPick: "Randomly choose from list"
       _randomPick:
