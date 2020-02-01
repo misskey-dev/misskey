@@ -536,35 +536,83 @@ _pages:
   content-blocks: "Contenido"
   input-blocks: "Entrada"
   special-blocks: "Especial"
+  post-from-post-form: "Postear este contenido"
+  posted-from-post-form: "Posteado"
   blocks:
-    image: "Imágenes"
+    text: "Texto"
+    textarea: "Área de texto"
+    section: "Sección"
+    image: "Imagen"
+    button: "Botón"
+    if: "si"
     _if:
-      variable: "Variables"
+      variable: "Variable"
+    post: "Formulario"
     _post:
       text: "Contenido"
+    textInput: "Entrada de texto"
     _textInput:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
+    textareaInput: "Entrada de texto en múltiples lineas"
     _textareaInput:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
+    numberInput: "Entrada numérica"
     _numberInput:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
+    switch: "Interruptor"
     _switch:
+      name: "Nombre de variable"
       text: "Título"
+      default: "Valor predeterminado"
+    counter: "Contador"
     _counter:
+      name: "Nombre de variable"
       text: "Título"
+      inc: "Aumentar cantidad"
     _button:
       text: "Título"
+      colored: "Color"
+      action: "Acción al presionar el botón"
       _action:
+        dialog: "Mostrar cuadro de diálogo"
         _dialog:
           content: "Contenido"
+        resetRandom: "Resetear número aleatorio"
+        pushEvent: "Enviar evento"
+        _pushEvent:
+          event: "Nombre del evento"
+          message: "Mensaje mostrado al apretar"
+          variable: "Variable a enviar"
+          no-variable: "Ninguna"
+    radioButton: "Botón de opción"
     _radioButton:
+      name: "Nombre de variable"
       title: "Título"
+      values: "Opciones separadas por una nueva linea"
+      default: "Valor predeterminado"
   script:
     categories:
       list: "Listas"
     blocks:
+      text: "Texto"
+      _strLen:
+        arg1: "Texto"
+      _strPick:
+        arg1: "Texto"
+      _strReplace:
+        arg1: "Texto"
+      _strReverse:
+        arg1: "Texto"
       _join:
         arg1: "Listas"
+      _if:
+        arg1: "si"
       _randomPick:
         arg1: "Listas"
       _dailyRandomPick:
@@ -575,6 +623,11 @@ _pages:
         arg1: "Listas"
       _listLen:
         arg1: "Listas"
+      _stringToNumber:
+        arg1: "Texto"
+      _splitStrByLine:
+        arg1: "Texto"
       ref: "Variables"
     types:
+      string: "Texto"
       array: "Listas"
