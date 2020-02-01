@@ -52,10 +52,13 @@ export const router = new VueRouter({
 	],
 	// なんかバギー
 	scrollBehavior(to, from, savedPosition) {
-		if (savedPosition) {
-			return savedPosition;
-		} else {
-			return { x: 0, y: 0 };
-		}
+		setTimeout(() => {
+			if (savedPosition) {
+				window.scroll({ top: savedPosition.y, behavior: 'instant' });
+			} else {
+				window.scroll({ top: 0, behavior: 'instant' });
+			}
+		}, 1000);
+		return;
 	}
 });
