@@ -22,6 +22,9 @@ export default define(meta, async (ps) => {
 			createdAt: {
 				$gt: new Date(Date.now() - span)
 			},
+			visibility: {
+				$in: ['public', 'home']
+			},
 			tagsLower: {
 				$exists: true,
 				$ne: []
