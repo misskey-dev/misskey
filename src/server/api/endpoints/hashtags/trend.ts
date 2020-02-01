@@ -31,6 +31,9 @@ export default define(meta, async () => {
 			createdAt: {
 				$gt: new Date(Date.now() - rangeA)
 			},
+			visibility: {
+				$in: ['public', 'home']
+			},
 			tagsLower: {
 				$exists: true,
 				$ne: []
@@ -79,6 +82,9 @@ export default define(meta, async () => {
 	const hotsPromises = limitedTags.map(async tag => {
 		const passedCount = (await Note.distinct('userId', {
 			tagsLower: tag.name,
+			visibility: {
+				$in: ['public', 'home']
+			},
 			createdAt: {
 				$lt: new Date(Date.now() - rangeA),
 				$gt: new Date(Date.now() - rangeB)
@@ -120,6 +126,9 @@ export default define(meta, async () => {
 	for (let i = 0; i < range; i++) {
 		countPromises.push(Promise.all(hots.map(tag => Note.distinct('userId', {
 			tagsLower: tag,
+			visibility: {
+				$in: ['public', 'home']
+			},
 			createdAt: {
 				$lt: new Date(Date.now() - (interval * i)),
 				$gt: new Date(Date.now() - (interval * (i + 1)))
@@ -131,6 +140,9 @@ export default define(meta, async () => {
 
 	const totalCounts: any = await Promise.all(hots.map(tag => Note.distinct('userId', {
 		tagsLower: tag,
+		visibility: {
+			$in: ['public', 'home']
+		},
 		createdAt: {
 			$gt: new Date(Date.now() - (interval * range))
 		}
