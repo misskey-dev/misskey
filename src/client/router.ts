@@ -60,7 +60,7 @@ export const router = new VueRouter({
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });
 			}
-		}, 1000);
+		}, 600);
 		return;
 	}
 });
