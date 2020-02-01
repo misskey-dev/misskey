@@ -89,7 +89,7 @@ export default Vue.extend({
 		width: 20px;
 		height: 20px;
 		background: none;
-		border: solid 2px var(--inputLabel);
+		border: solid 2px var(--inputBorder);
 		border-radius: 100%;
 		transition: inherit;
 
