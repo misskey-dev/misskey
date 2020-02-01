@@ -297,6 +297,11 @@ enableRecaptcha: "reCAPTCHA 활성화"
 recaptchaSiteKey: "사이트 키"
 recaptchaSecretKey: "시크릿 키"
 antennas: "안테나"
+manageAntennas: "안테나 관리"
+name: "이름"
+antennaSource: "안테나 소스"
+antennaKeywords: "안테나 키워드"
+antennaKeywordsDescription: "공백으로 구분하는 경우 AND, 줄바꿈으로 구분하는 경우 OR로 지정됩니다"
 antennaUsersDescription: "유저명을 한 줄에 한 명씩 적습니다"
 popularUsers: "인기 유저"
 recentlyUpdatedUsers: "최근 활동한 유저"
@@ -494,19 +499,112 @@ _pages:
       flow: "흐름 제어"
       logical: "논리 연산"
       operation: "계산"
+      comparison: "비교"
+      random: "랜덤"
+      value: "값"
+      fn: "함수"
+      text: "텍스트 조작"
+      convert: "변환"
       list: "리스트"
     blocks:
+      text: "텍스트"
+      multiLineText: "텍스트 (여러 줄)"
+      textList: "텍스트 목록"
+      _textList:
+        info: "각각을 줄바꿈으로 구분해주세요"
+      strLen: "텍스트의 길이"
+      _strLen:
+        arg1: "텍스트"
+      strPick: "텍스트 추출"
+      _strPick:
+        arg1: "텍스트"
+        arg2: "텍스트 위치"
+      strReplace: "텍스트 대체"
+      _strReplace:
+        arg1: "텍스트"
+        arg2: "대체될 텍스트"
+        arg3: "대체할 텍스트"
+      strReverse: "텍스트 뒤집기"
+      _strReverse:
+        arg1: "텍스트"
+      join: "텍스트 합치기"
       _join:
         arg1: "리스트"
+        arg2: "구분자"
+      add: "더하기"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "빼기"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "곱하기"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "나누기"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "나눈 나머지"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      round: "소수점을 반올림"
+      _round:
+        arg1: "수치"
+      eq: "A와 B가 동일"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A와 B가 다름"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A와 B가 둘 다 참"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A, B중 하나 이상이 참"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< A가 B보다 작음"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> A가 B보다 큼"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A가 B보다 작거나 같음"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A가 B보다 크거나 같음"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "분기"
+      random: "랜덤"
       _randomPick:
         arg1: "리스트"
       _dailyRandomPick:
         arg1: "리스트"
       _seedRandomPick:
         arg2: "리스트"
+      _DRPWPM:
+        arg1: "텍스트 목록"
       _pick:
         arg1: "리스트"
       _listLen:
         arg1: "리스트"
+      number: "수치"
+      _numberToString:
+        arg1: "수치"
+      fn: "함수"
     types:
+      number: "수치"
       array: "리스트"
+      stringArray: "텍스트 목록"
