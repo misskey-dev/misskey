@@ -1,0 +1,222 @@
+<template>
+<div class="mk-notification" :class="notification.type">
+	<div class="head">
+		<mk-avatar class="avatar" :user="notification.user"/>
+		<div class="icon" :class="notification.type">
+			<fa :icon="faPlus" v-if="notification.type === 'follow'"/>
+			<fa :icon="faClock" v-if="notification.type === 'receiveFollowRequest'"/>
+			<fa :icon="faCheck" v-if="notification.type === 'followRequestAccepted'"/>
+			<fa :icon="faRetweet" v-if="notification.type === 'renote'"/>
+			<fa :icon="faReply" v-if="notification.type === 'reply'"/>
+			<fa :icon="faAt" v-if="notification.type === 'mention'"/>
+			<fa :icon="faQuoteLeft" v-if="notification.type === 'quote'"/>
+			<x-reaction-icon v-if="notification.type === 'reaction'" :reaction="notification.reaction" :no-style="true"/>
+		</div>
+	</div>
+	<div class="tail">
+		<header>
+			<router-link class="name" :to="notification.user | userPage" v-user-preview="notification.user.id"><mk-user-name :user="notification.user"/></router-link>
+			<mk-time :time="notification.createdAt" v-if="withTime"/>
+		</header>
+		<router-link v-if="notification.type === 'reaction'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<fa :icon="faQuoteLeft"/>
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<fa :icon="faQuoteRight"/>
+		</router-link>
+		<router-link v-if="notification.type === 'renote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
+			<fa :icon="faQuoteLeft"/>
+			<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.renote.emojis"/>
+			<fa :icon="faQuoteRight"/>
+		</router-link>
+		<router-link v-if="notification.type === 'reply'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+		</router-link>
+		<router-link v-if="notification.type === 'mention'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+		</router-link>
+		<router-link v-if="notification.type === 'quote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+		</router-link>
+		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="full"><mk-follow-button :user="notification.user" :full="true"/></div></span>
+		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
+		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
+	</div>
+</div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import { faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faClock } from '@fortawesome/free-regular-svg-icons';
+import getNoteSummary from '../../misc/get-note-summary';
+import XReactionIcon from './reaction-icon.vue';
+import MkFollowButton from './follow-button.vue';
+import i18n from '../i18n';
+
+export default Vue.extend({
+	i18n,
+	components: {
+		XReactionIcon, MkFollowButton
+	},
+	props: {
+		notification: {
+			type: Object,
+			required: true,
+		},
+		withTime: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		full: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+	},
+	data() {
+		return {
+			getNoteSummary,
+			followRequestDone: false,
+			faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck
+		};
+	},
+	methods: {
+		acceptFollowRequest() {
+			this.followRequestDone = true;
+			this.$root.api('following/requests/accept', { userId: this.notification.user.id });
+		},
+		rejectFollowRequest() {
+			this.followRequestDone = true;
+			this.$root.api('following/requests/reject', { userId: this.notification.user.id });
+		},
+	}
+});
+</script>
+
+<style lang="scss" scoped>
+.mk-notification {
+	position: relative;
+	box-sizing: border-box;
+	padding: 16px;
+	font-size: 0.9em;
+	overflow-wrap: break-word;
+	display: flex;
+
+	@media (max-width: 500px) {
+		padding: 12px;
+		font-size: 0.8em;
+	}
+
+	&:after {
+		content: "";
+		display: block;
+		clear: both;
+	}
+
+	> .head {
+		position: sticky;
+		top: 0;
+		flex-shrink: 0;
+		width: 42px;
+		height: 42px;
+		margin-right: 8px;
+
+		> .avatar {
+			display: block;
+			width: 100%;
+			height: 100%;
+			border-radius: 6px;
+		}
+
+		> .icon {
+			position: absolute;
+			z-index: 1;
+			bottom: -2px;
+			right: -2px;
+			width: 20px;
+			height: 20px;
+			box-sizing: border-box;
+			border-radius: 100%;
+			background: var(--panel);
+			box-shadow: 0 0 0 3px var(--panel);
+			font-size: 12px;
+			pointer-events: none;
+
+			> * {
+				color: #fff;
+				width: 100%;
+				height: 100%;
+			}
+
+			&.follow, &.followRequestAccepted, &.receiveFollowRequest {
+				padding: 3px;
+				background: #36aed2;
+			}
+
+			&.retweet {
+				padding: 3px;
+				background: #36d298;
+			}
+
+			&.quote {
+				padding: 3px;
+				background: #36d298;
+			}
+
+			&.reply {
+				padding: 3px;
+				background: #007aff;
+			}
+
+			&.mention {
+				padding: 3px;
+				background: #88a6b7;
+			}
+		}
+	}
+
+	> .tail {
+		flex: 1;
+		min-width: 0;
+
+		> header {
+			display: flex;
+			align-items: baseline;
+			white-space: nowrap;
+
+			> .name {
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				min-width: 0;
+				overflow: hidden;
+			}
+
+			> .mk-time {
+				margin-left: auto;
+				font-size: 0.9em;
+			}
+		}
+
+		> .text {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			> [data-icon] {
+				vertical-align: super;
+				font-size: 50%;
+				opacity: 0.5;
+			}
+
+			> [data-icon]:first-child {
+				margin-right: 4px;
+			}
+
+			> [data-icon]:last-child {
+				margin-left: 4px;
+			}
+		}
+	}
+}
+</style>

@@ -19,9 +19,24 @@ const XRD = (...x: { element: string, value?: string, attributes?: Record<string
 		typeof value === 'string' ? `>${escapeValue(value)}</${element}` : '/'
 	}>`).reduce((a, c) => a + c, '')}</XRD>`;
 
+const allPath = '/.well-known/*';
 const webFingerPath = '/.well-known/webfinger';
 const jrd = 'application/jrd+json';
 const xrd = 'application/xrd+xml';
+
+router.use(allPath, async (ctx, next) => {
+	ctx.set({
+		'Access-Control-Allow-Headers': 'Accept',
+		'Access-Control-Allow-Methods': 'GET, OPTIONS',
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Expose-Headers': 'Vary',
+	});
+	await next();
+});
+
+router.options(allPath, async ctx => {
+	ctx.status = 204;
+});
 
 router.get('/.well-known/host-meta', async ctx => {
 	ctx.set('Content-Type', xrd);
@@ -49,7 +64,8 @@ router.get('/.well-known/nodeinfo', async ctx => {
 router.get(webFingerPath, async ctx => {
 	const fromId = (id: User['id']): Record<string, any> => ({
 		id,
-		host: null
+		host: null,
+		isSuspended: false
 	});
 
 	const generateQuery = (resource: string) =>
@@ -63,7 +79,8 @@ router.get(webFingerPath, async ctx => {
 	const fromAcct = (acct: Acct): Record<string, any> | number =>
 		!acct.host || acct.host === config.host.toLowerCase() ? {
 			usernameLower: acct.username,
-			host: null
+			host: null,
+			isSuspended: false
 		} : 422;
 
 	if (typeof ctx.query.resource !== 'string') {
@@ -121,7 +138,7 @@ router.get(webFingerPath, async ctx => {
 });
 
 // Return 404 for other .well-known
-router.all('/.well-known/*', async ctx => {
+router.all(allPath, async ctx => {
 	ctx.status = 404;
 });
 

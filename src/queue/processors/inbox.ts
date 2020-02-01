@@ -3,7 +3,6 @@ import * as httpSignature from 'http-signature';
 import { IRemoteUser } from '../../models/entities/user';
 import perform from '../../remote/activitypub/perform';
 import { resolvePerson, updatePerson } from '../../remote/activitypub/models/person';
-import { publishApLogStream } from '../../services/stream';
 import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
 import { Instances, Users, UserPublickeys } from '../../models';
@@ -88,15 +87,6 @@ export default async (job: Bull.Job): Promise<void> => {
 		logger.error('signature verification failed');
 		return;
 	}
-
-	//#region Log
-	publishApLogStream({
-		direction: 'in',
-		activity: activity.type,
-		host: user.host,
-		actor: user.username
-	});
-	//#endregion
 
 	// Update stats
 	registerOrFetchInstanceDoc(user.host).then(i => {

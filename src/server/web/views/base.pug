@@ -10,10 +10,10 @@ html
 		meta(charset='utf-8')
 		meta(name='application-name' content='Misskey')
 		meta(name='referrer' content='origin')
-		meta(name='theme-color' content='#105779')
+		meta(name='theme-color' content='#86b300')
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
-		link(rel='icon' href= icon || '/favicon.ico')
+		link(rel='icon' href= icon || '/favicon.png')
 		link(rel='apple-touch-icon' href= icon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
 
@@ -30,12 +30,23 @@ html
 			meta(property='og:image' content=img)
 
 		style
-			include ./../../../../built/client/assets/init.css
-		script
-			include ./../../../../built/client/assets/boot.js
-
-		script
-			include ./../../../../built/client/assets/safe.js
+			include ./../../../../built/client/assets/style.css
+		script(src=`/assets/app.${version}.js` async defer)
+		script.
+			const theme = localStorage.getItem('theme');
+			if (theme) {
+				for (const [k, v] of Object.entries(JSON.parse(theme))) {
+					document.documentElement.style.setProperty(`--${k}`, v.toString());
+					if (k === 'accent') {
+						for (const tag of document.head.children) {
+							if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
+								tag.setAttribute('content', v);
+								break;
+							}
+						}
+					}
+				}
+			}
 
 	body
 		noscript: p

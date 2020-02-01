@@ -1,21 +1,15 @@
 {
-	id: '2058b33e-5127-4e63-ae67-a900f3a11723',
+	id: '2d7d1479-acb8-4e2e-85bb-565a2d8e6966',
 
 	name: 'Rainy',
 	author: 'syuilo',
-	desc: 'It\'s a rainy day.',
 
 	base: 'light',
 
-	vars: {
-		primary: 'rgb(100, 184, 193)',
-		secondary: 'rgb(228, 234, 234)',
-		text: 'rgb(85, 94, 92)',
-	},
-
 	props: {
-		renoteGradient: '#bcd0d0',
-		renoteText: '$primary',
-		quoteBorder: '$primary',
+		accent: 'rgb(147, 199, 206)',
+		bg: 'rgb(220, 229, 232)',
+		fg: 'rgb(139, 153, 161)',
+		renote: '@accent',
 	},
 }

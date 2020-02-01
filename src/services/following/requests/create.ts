@@ -25,7 +25,7 @@ export default async function(follower: User, followee: User, requestId?: string
 	if (blocking != null) throw new Error('blocking');
 	if (blocked != null) throw new Error('blocked');
 
-	await FollowRequests.save({
+	const followRequest = await FollowRequests.save({
 		id: genId(),
 		createdAt: new Date(),
 		followerId: follower.id,
@@ -50,7 +50,9 @@ export default async function(follower: User, followee: User, requestId?: string
 		}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 
 		// 通知を作成
-		createNotification(followee.id, follower.id, 'receiveFollowRequest');
+		createNotification(followee.id, follower.id, 'receiveFollowRequest', {
+			followRequestId: followRequest.id
+		});
 	}
 
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {

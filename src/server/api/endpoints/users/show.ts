@@ -66,13 +66,18 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	let user;
 
+	const isAdminOrModerator = me && (me.isAdmin || me.isModerator);
+
 	if (ps.userIds) {
 		if (ps.userIds.length === 0) {
 			return [];
 		}
 
-		const users = await Users.find({
+		const users = await Users.find(isAdminOrModerator ? {
 			id: In(ps.userIds)
+		} : {
+			id: In(ps.userIds),
+			isSuspended: false
 		});
 
 		return await Promise.all(users.map(u => Users.pack(u, me, {
@@ -93,7 +98,7 @@ export default define(meta, async (ps, me) => {
 			user = await Users.findOne(q);
 		}
 
-		if (user == null) {
+		if (user == null || (!isAdminOrModerator && user.isSuspended)) {
 			throw new ApiError(meta.errors.noSuchUser);
 		}
 

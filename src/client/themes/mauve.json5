@@ -1,20 +1,18 @@
 {
-	id: '252b2caf-86c2-4c3f-a73f-e1fc1cfa5298',
+	id: '6846bcbe-afbe-487c-bece-77e8cfc4ab8a',
 
 	name: 'Mauve',
-	author: 'とわこ',
+	author: 'syuilo',
 
 	base: 'dark',
 
-	vars: {
-		primary: 'rgb(133, 88, 150)',
-		secondary: 'rgb(54, 43, 59)',
-		text: 'rgb(229, 223, 231)',
-	},
-
 	props: {
-		renoteGradient: '#54415d',
-		renoteText: '$primary',
-		quoteBorder: '$primary',
+		accent: 'rgb(133, 88, 150)',
+		panel: 'rgb(54, 43, 59)',
+		bg: '#201A23',
+		fg: 'rgb(229, 223, 231)',
+		shadow: 'rgba(0, 0, 0, 0.2)',
+		header: 'rgba(87, 70, 97, 0.5)',
+		renote: '@accent',
 	},
 }

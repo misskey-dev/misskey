@@ -5,7 +5,6 @@ import { deliver } from '../../../queue';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
-import { fetchMeta } from '../../../misc/fetch-meta';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';
@@ -22,8 +21,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
 	}
 
-	const meta = await fetchMeta();
-	reaction = await toDbReaction(reaction, meta.enableEmojiReaction);
+	reaction = await toDbReaction(reaction);
 
 	// Create reaction
 	await NoteReactions.save({

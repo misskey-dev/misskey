@@ -1,18 +1,15 @@
-import { Buffer } from 'buffer';
 import * as fs from 'fs';
 
-import * as crypto from 'crypto';
 import { v4 as uuid } from 'uuid';
-import * as sharp from 'sharp';
 
 import { publishMainStream, publishDriveStream } from '../stream';
 import { deleteFile } from './delete-file';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, convertToJpeg, convertToWebp, convertToPng, convertToGif, convertToApng } from './image-processor';
+import { IImage, convertToJpeg, convertToWebp, convertToPng } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
-import { detectMine } from '../../misc/detect-mine';
+import { getFileInfo } from '../../misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
 import { InternalStorage } from './internal-storage';
 import { DriveFile } from '../../models/entities/drive-file';
@@ -159,12 +156,8 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 				webpublic = await convertToWebp(path, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
 				webpublic = await convertToPng(path, 2048, 2048);
-			} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
-				webpublic = await convertToApng(path);
-			} else if (['image/gif'].includes(type)) {
-				webpublic = await convertToGif(path);
 			} else {
-				logger.info(`web image not created (not an image)`);
+				logger.debug(`web image not created (not an required image)`);
 			}
 		} catch (e) {
 			logger.warn(`web image not created (an error occured)`, e);
@@ -182,16 +175,14 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 			thumbnail = await convertToJpeg(path, 498, 280);
 		} else if (['image/png'].includes(type)) {
 			thumbnail = await convertToPng(path, 498, 280);
-		} else if (['image/gif'].includes(type)) {
-			thumbnail = await convertToGif(path);
-		} else if (['image/apng', 'image/vnd.mozilla.apng'].includes(type)) {
-			thumbnail = await convertToApng(path);
 		} else if (type.startsWith('video/')) {
 			try {
 				thumbnail = await GenerateVideoThumbnail(path);
 			} catch (e) {
-				logger.error(`GenerateVideoThumbnail failed: ${e}`);
+				logger.warn(`GenerateVideoThumbnail failed: ${e}`);
 			}
+		} else {
+			logger.debug(`thumbnail not created (not an required file)`);
 		}
 	} catch (e) {
 		logger.warn(`thumbnail not created (an error occured)`, e);
@@ -266,7 +257,7 @@ async function deleteOldFile(user: IRemoteUser) {
  * @return Created drive file
  */
 export default async function(
-	user: User,
+	user: User | null,
 	path: string,
 	name: string | null = null,
 	comment: string | null = null,
@@ -277,41 +268,16 @@ export default async function(
 	uri: string | null = null,
 	sensitive: boolean | null = null
 ): Promise<DriveFile> {
-	// Calc md5 hash
-	const calcHash = new Promise<string>((res, rej) => {
-		const readable = fs.createReadStream(path);
-		const hash = crypto.createHash('md5');
-		const chunks: Buffer[] = [];
-		readable
-			.on('error', rej)
-			.pipe(hash)
-			.on('error', rej)
-			.on('data', chunk => chunks.push(chunk))
-			.on('end', () => {
-				const buffer = Buffer.concat(chunks);
-				res(buffer.toString('hex'));
-			});
-	});
-
-	// Get file size
-	const getFileSize = new Promise<number>((res, rej) => {
-		fs.stat(path, (err, stats) => {
-			if (err) return rej(err);
-			res(stats.size);
-		});
-	});
-
-	const [hash, [mime, ext], size] = await Promise.all([calcHash, detectMine(path), getFileSize]);
-
-	logger.info(`hash: ${hash}, mime: ${mime}, ext: ${ext}, size: ${size}`);
+	const info = await getFileInfo(path);
+	logger.info(`${JSON.stringify(info)}`);
 
 	// detect name
-	const detectedName = name || (ext ? `untitled.${ext}` : 'untitled');
+	const detectedName = name || (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
 
-	if (!force) {
+	if (user && !force) {
 		// Check if there is a file with the same hash
 		const much = await DriveFiles.findOne({
-			md5: hash,
+			md5: info.md5,
 			userId: user.id,
 		});
 
@@ -322,7 +288,7 @@ export default async function(
 	}
 
 	//#region Check drive usage
-	if (!isLink) {
+	if (user && !isLink) {
 		const usage = await DriveFiles.clacDriveUsageOf(user);
 
 		const instance = await fetchMeta();
@@ -331,7 +297,7 @@ export default async function(
 		logger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
 
 		// If usage limit exceeded
-		if (usage + size > driveCapacity) {
+		if (usage + info.size > driveCapacity) {
 			if (Users.isLocalUser(user)) {
 				throw new Error('no-free-space');
 			} else {
@@ -349,7 +315,7 @@ export default async function(
 
 		const driveFolder = await DriveFolders.findOne({
 			id: folderId,
-			userId: user.id
+			userId: user ? user.id : null
 		});
 
 		if (driveFolder == null) throw new Error('folder-not-found');
@@ -357,73 +323,50 @@ export default async function(
 		return driveFolder;
 	};
 
-	const properties: {[key: string]: any} = {};
+	const properties: {
+		width?: number;
+		height?: number;
+		avgColor?: string;
+	} = {};
 
-	let propPromises: Promise<void>[] = [];
-
-	const isImage = ['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime);
-
-	if (isImage) {
-		const img = sharp(path);
-
-		// Calc width and height
-		const calcWh = async () => {
-			logger.debug('calculating image width and height...');
-
-			// Calculate width and height
-			const meta = await img.metadata();
-
-			logger.debug(`image width and height is calculated: ${meta.width}, ${meta.height}`);
-
-			properties['width'] = meta.width;
-			properties['height'] = meta.height;
-		};
-
-		// Calc average color
-		const calcAvg = async () => {
-			logger.debug('calculating average color...');
-
-			try {
-				const info = await (img as any).stats();
-
-				const r = Math.round(info.channels[0].mean);
-				const g = Math.round(info.channels[1].mean);
-				const b = Math.round(info.channels[2].mean);
-
-				logger.debug(`average color is calculated: ${r}, ${g}, ${b}`);
-
-				properties['avgColor'] = `rgb(${r},${g},${b})`;
-			} catch (e) { }
-		};
-
-		propPromises = [calcWh(), calcAvg()];
+	if (info.width) {
+		properties['width'] = info.width;
+		properties['height'] = info.height;
 	}
 
-	const profile = await UserProfiles.findOne(user.id);
+	if (info.avgColor) {
+		properties['avgColor'] = `rgb(${info.avgColor.join(',')}`;
+	}
 
-	const [folder] = await Promise.all([fetchFolder(), Promise.all(propPromises)]);
+	const profile = user ? await UserProfiles.findOne(user.id) : null;
+
+	const folder = await fetchFolder();
 
 	let file = new DriveFile();
 	file.id = genId();
 	file.createdAt = new Date();
-	file.userId = user.id;
-	file.userHost = user.host;
+	file.userId = user ? user.id : null;
+	file.userHost = user ? user.host : null;
 	file.folderId = folder !== null ? folder.id : null;
 	file.comment = comment;
 	file.properties = properties;
 	file.isLink = isLink;
-	file.isSensitive = Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
-		(sensitive !== null && sensitive !== undefined)
-			? sensitive
-			: false;
+	file.isSensitive = user
+		? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
+			(sensitive !== null && sensitive !== undefined)
+				? sensitive
+				: false
+		: false;
 
 	if (url !== null) {
 		file.src = url;
 
 		if (isLink) {
 			file.url = url;
-			file.thumbnailUrl = url;
-			file.webpublicUrl = url;
+			// ローカルプロキシ用
+			file.accessKey = uuid();
+			file.thumbnailAccessKey = 'thumbnail-' + uuid();
+			file.webpublicAccessKey = 'webpublic-' + uuid();
 		}
 	}
 
@@ -434,9 +377,9 @@ export default async function(
 	if (isLink) {
 		try {
 			file.size = 0;
-			file.md5 = hash;
+			file.md5 = info.md5;
 			file.name = detectedName;
-			file.type = mime;
+			file.type = info.type.mime;
 			file.storedInternal = false;
 
 			file = await DriveFiles.save(file);
@@ -447,7 +390,7 @@ export default async function(
 
 				file = await DriveFiles.findOne({
 					uri: file.uri,
-					userId: user.id
+					userId: user ? user.id : null
 				}) as DriveFile;
 			} else {
 				logger.error(e);
@@ -455,16 +398,18 @@ export default async function(
 			}
 		}
 	} else {
-		file = await (save(file, path, detectedName, mime, hash, size));
+		file = await (save(file, path, detectedName, info.type.mime, info.md5, info.size));
 	}
 
 	logger.succ(`drive file has been created ${file.id}`);
 
-	DriveFiles.pack(file, { self: true }).then(packedFile => {
-		// Publish driveFileCreated event
-		publishMainStream(user.id, 'driveFileCreated', packedFile);
-		publishDriveStream(user.id, 'fileCreated', packedFile);
-	});
+	if (user) {
+		DriveFiles.pack(file, { self: true }).then(packedFile => {
+			// Publish driveFileCreated event
+			publishMainStream(user.id, 'driveFileCreated', packedFile);
+			publishDriveStream(user.id, 'fileCreated', packedFile);
+		});
+	}
 
 	// 統計を更新
 	driveChart.update(file, true);

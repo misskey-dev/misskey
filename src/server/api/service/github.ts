@@ -46,13 +46,12 @@ router.get('/disconnect/github', async ctx => {
 		token: userToken
 	}).then(ensure);
 
-	await UserProfiles.update({
-		userId: user.id
-	}, {
-		github: false,
-		githubAccessToken: null,
-		githubId: null,
-		githubLogin: null,
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
+
+	delete profile.integrations.github;
+
+	await UserProfiles.update(user.id, {
+		integrations: profile.integrations,
 	});
 
 	ctx.body = `GitHubの連携を解除しました :v:`;
@@ -193,7 +192,7 @@ router.get('/gh/cb', async ctx => {
 		}
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where('"githubId" = :id', { id: id })
+			.where('"integrations"->"github"->"id" = :id', { id: id })
 			.andWhere('"userHost" IS NULL')
 			.getOne();
 
@@ -260,11 +259,17 @@ router.get('/gh/cb', async ctx => {
 			token: userToken
 		}).then(ensure);
 
-		await UserProfiles.update({ userId: user.id }, {
-			github: true,
-			githubAccessToken: accessToken,
-			githubId: id,
-			githubLogin: login,
+		const profile = await UserProfiles.findOne(user.id).then(ensure);
+
+		await UserProfiles.update(user.id, {
+			integrations: {
+				...profile.integrations,
+				github: {
+					accessToken: accessToken,
+					id: id,
+					login: login,
+				}
+			}
 		});
 
 		ctx.body = `GitHub: @${login} を、Misskey: @${user.username} に接続しました！`;

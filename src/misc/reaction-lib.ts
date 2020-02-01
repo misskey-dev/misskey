@@ -2,31 +2,29 @@ import { emojiRegex } from './emoji-regex';
 import { fetchMeta } from './fetch-meta';
 import { Emojis } from '../models';
 
-const basic10: Record<string, string> = {
-	'👍': 'like',
-	'❤': 'love',	// ここに記述する場合は異体字セレクタを入れない
-	'😆': 'laugh',
-	'🤔': 'hmm',
-	'😮': 'surprise',
-	'🎉': 'congrats',
-	'💢': 'angry',
-	'😥': 'confused',
-	'😇': 'rip',
-	'🍮': 'pudding',
+const legacy10: Record<string, string> = {
+	'like':     '👍',
+	'love':     '❤', // ここに記述する場合は異体字セレクタを入れない
+	'laugh':    '😆',
+	'hmm':      '🤔',
+	'surprise': '😮',
+	'congrats': '🎉',
+	'angry':    '💢',
+	'confused': '😥',
+	'rip':      '😇',
+	'pudding':  '🍮',
 };
 
 export async function getFallbackReaction(): Promise<string> {
 	const meta = await fetchMeta();
-	return  meta.useStarForReactionFallback ? 'star' : 'like';
+	return meta.useStarForReactionFallback ? '⭐' : '👍';
 }
 
-export async function toDbReaction(reaction?: string | null, enableEmoji = true): Promise<string> {
+export async function toDbReaction(reaction?: string | null): Promise<string> {
 	if (reaction == null) return await getFallbackReaction();
 
-	// 既存の文字列リアクションはそのまま
-	if (Object.values(basic10).includes(reaction)) return reaction;
-
-	if (!enableEmoji) return await getFallbackReaction();
+	// 文字列タイプのリアクションを絵文字に変換
+	if (Object.keys(legacy10).includes(reaction)) return legacy10[reaction];
 
 	// Unicode絵文字
 	const match = emojiRegex.exec(reaction);
@@ -34,17 +32,8 @@ export async function toDbReaction(reaction?: string | null, enableEmoji = true)
 		// 合字を含む1つの絵文字
 		const unicode = match[0];
 
-		// 異体字セレクタ除去後の絵文字
-		const normalized = unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
-
-		// Unicodeプリンは寿司化不能とするため文字列化しない
-		if (normalized === '🍮') return normalized;
-
-		// プリン以外の既存のリアクションは文字列化する
-		if (basic10[normalized]) return basic10[normalized];
-
-		// それ以外はUnicodeのまま
-		return normalized;
+		// 異体字セレクタ除去
+		return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
 	}
 
 	const custom = reaction.match(/^:([\w+-]+):$/);
@@ -58,4 +47,9 @@ export async function toDbReaction(reaction?: string | null, enableEmoji = true)
 	}
 
 	return await getFallbackReaction();
+}
+
+export function convertLegacyReaction(reaction: string): string {
+	if (Object.keys(legacy10).includes(reaction)) return legacy10[reaction];
+	return reaction;
 }

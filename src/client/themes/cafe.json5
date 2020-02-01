@@ -6,16 +6,15 @@
 
 	base: 'light',
 
-	vars: {
-		primary: 'rgb(234, 154, 82)',
-		secondary: 'rgb(238, 236, 232)',
-		text: 'rgb(149, 143, 139)',
-	},
-
 	props: {
-		renoteGradient: '#ffe1c7',
-		renoteText: '$primary',
-		quoteBorder: '$primary',
-		mfmMention: '#56907b',
+		accent: 'rgb(234, 154, 82)',
+		bg: '#DDD9D1',
+		fg: 'rgb(149, 143, 139)',
+		panel: '#EEECE8',
+		renote: '@accent',
+		link: '@accent',
+		mention: '@accent',
+		hashtag: '@accent',
+		inputBorder: 'rgba(0, 0, 0, 0.1)',
 	},
 }

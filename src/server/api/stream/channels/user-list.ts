@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
-import { Notes, UserListJoinings } from '../../../../models';
+import { Notes, UserListJoinings, UserLists } from '../../../../models';
 import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
 import { User } from '../../../../models/entities/user';
 import { PackedNote } from '../../../../models/repositories/note';
@@ -16,6 +16,13 @@ export default class extends Channel {
 	@autobind
 	public async init(params: any) {
 		this.listId = params.listId as string;
+
+		// Check existence and owner
+		const list = await UserLists.findOne({
+			id: this.listId,
+			userId: this.user!.id
+		});
+		if (!list) return;
 
 		// Subscribe stream
 		this.subscriber.on(`userListStream:${this.listId}`, this.send);

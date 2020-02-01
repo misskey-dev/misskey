@@ -1,2 +1,0 @@
-// nope
-export default {};

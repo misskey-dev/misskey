@@ -1,13 +1,12 @@
 url: 'http://misskey.local'
-port: 80
-mongodb:
+port: 8080
+db:
   host: localhost
-  port: 27017
+  port: 5432
   db: test-misskey
-  user: admin
+  user: postgres
   pass: ''
-# __REDIS__
 redis:
   host: localhost
   port: 6379
-  pass: ''
+id: aid

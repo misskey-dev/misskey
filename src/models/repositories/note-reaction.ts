@@ -3,6 +3,7 @@ import { NoteReaction } from '../entities/note-reaction';
 import { Users } from '..';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
+import { convertLegacyReaction } from '../../misc/reaction-lib';
 
 export type PackedNoteReaction = SchemaType<typeof packedNoteReactionSchema>;
 
@@ -18,7 +19,7 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 			id: reaction.id,
 			createdAt: reaction.createdAt.toISOString(),
 			user: await Users.pack(reaction.userId, me),
-			type: reaction.reaction,
+			type: convertLegacyReaction(reaction.reaction),
 		};
 	}
 }

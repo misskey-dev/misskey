@@ -49,7 +49,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.incorrectPassword);
 	}
 
-	await UserProfiles.update({ userId: user.id }, {
+	await UserProfiles.update(user.id, {
 		email: ps.email,
 		emailVerified: false,
 		emailVerifyCode: null
@@ -66,7 +66,7 @@ export default define(meta, async (ps, user) => {
 	if (ps.email != null) {
 		const code = rndstr('a-z0-9', 16);
 
-		await UserProfiles.update({ userId: user.id }, {
+		await UserProfiles.update(user.id, {
 			emailVerifyCode: code
 		});
 

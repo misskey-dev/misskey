@@ -65,7 +65,7 @@ export class PageRepository extends Repository<Page> {
 			createdAt: page.createdAt.toISOString(),
 			updatedAt: page.updatedAt.toISOString(),
 			userId: page.userId,
-			user: Users.pack(page.user || page.userId),
+			user: Users.pack(page.user || page.userId, me), // { detail: true } すると無限ループするので注意
 			content: page.content,
 			variables: page.variables,
 			title: page.title,

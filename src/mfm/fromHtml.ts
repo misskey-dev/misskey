@@ -36,7 +36,8 @@ export function fromHtml(html: string): string {
 				const txt = getText(node);
 				const rel = node.attrs.find((x: any) => x.name == 'rel');
 				const href = node.attrs.find((x: any) => x.name == 'href');
-				const isHashtag = rel && rel.value.match('tag') !== null;
+				const _class = node.attrs.find((x: any) => x.name == 'class');
+				const isHashtag = rel?.value?.match('tag') || _class?.value?.match('hashtag');
 
 				// ハッシュタグ / hrefがない / txtがURL
 				if (isHashtag || !href || href.value == txt) {

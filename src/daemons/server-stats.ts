@@ -1,39 +1,41 @@
-import * as os from 'os';
-import * as sysUtils from 'systeminformation';
-import * as diskusage from 'diskusage';
-import * as Deque from 'double-ended-queue';
+import * as si from 'systeminformation';
 import Xev from 'xev';
 import * as osUtils from 'os-utils';
 
 const ev = new Xev();
 
-const interval = 1000;
+const interval = 2000;
 
 /**
  * Report server stats regularly
  */
 export default function() {
-	const log = new Deque<any>();
+	const log = [] as any[];
 
 	ev.on('requestServerStatsLog', x => {
-		ev.emit(`serverStatsLog:${x.id}`, log.toArray().slice(0, x.length || 50));
+		ev.emit(`serverStatsLog:${x.id}`, log.slice(0, x.length || 50));
 	});
 
 	async function tick() {
 		const cpu = await cpuUsage();
-		const usedmem = await usedMem();
-		const totalmem = await totalMem();
-		const disk = await diskusage.check(os.platform() == 'win32' ? 'c:' : '/');
+		const memStats = await mem();
+		const netStats = await net();
+		const fsStats = await fs();
 
 		const stats = {
-			cpu_usage: cpu,
+			cpu: cpu,
 			mem: {
-				total: totalmem,
-				used: usedmem
+				used: memStats.used,
+				active: memStats.active,
 			},
-			disk,
-			os_uptime: os.uptime(),
-			process_uptime: process.uptime()
+			net: {
+				rx: Math.max(0, netStats.rx_sec),
+				tx: Math.max(0, netStats.tx_sec),
+			},
+			fs: {
+				r: Math.max(0, fsStats.rIO_sec),
+				w: Math.max(0, fsStats.wIO_sec),
+			}
 		};
 		ev.emit('serverStats', stats);
 		log.unshift(stats);
@@ -54,14 +56,21 @@ function cpuUsage() {
 	});
 }
 
-// MEMORY(excl buffer + cache) STAT
-async function usedMem() {
-	const data = await sysUtils.mem();
-	return data.active;
+// MEMORY STAT
+async function mem() {
+	const data = await si.mem();
+	return data;
 }
 
-// TOTAL MEMORY STAT
-async function totalMem() {
-	const data = await sysUtils.mem();
-	return data.total;
+// NETWORK STAT
+async function net() {
+	const iface = await si.networkInterfaceDefault();
+	const data = await si.networkStats(iface);
+	return data[0];
+}
+
+// FS STAT
+async function fs() {
+	const data = await si.disksIO().catch(() => ({ rIO_sec: 0, wIO_sec: 0 }));
+	return data;
 }

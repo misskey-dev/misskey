@@ -39,45 +39,6 @@ export async function renderPerson(user: ILocalUser) {
 		}
 	}
 
-	if (profile.twitter) {
-		attachment.push({
-			type: 'PropertyValue',
-			name: 'Twitter',
-			value: `<a href="https://twitter.com/intent/user?user_id=${profile.twitterUserId}" rel="me nofollow noopener" target="_blank"><span>@${profile.twitterScreenName}</span></a>`,
-			identifier: {
-				type: 'PropertyValue',
-				name: 'misskey:authentication:twitter',
-				value: `${profile.twitterUserId}@${profile.twitterScreenName}`
-			}
-		});
-	}
-
-	if (profile.github) {
-		attachment.push({
-			type: 'PropertyValue',
-			name: 'GitHub',
-			value: `<a href="https://github.com/${profile.githubLogin}" rel="me nofollow noopener" target="_blank"><span>@${profile.githubLogin}</span></a>`,
-			identifier: {
-				type: 'PropertyValue',
-				name: 'misskey:authentication:github',
-				value: `${profile.githubId}@${profile.githubLogin}`
-			}
-		});
-	}
-
-	if (profile.discord) {
-		attachment.push({
-			type: 'PropertyValue',
-			name: 'Discord',
-			value: `<a href="https://discordapp.com/users/${profile.discordId}" rel="me nofollow noopener" target="_blank"><span>${profile.discordUsername}#${profile.discordDiscriminator}</span></a>`,
-			identifier: {
-				type: 'PropertyValue',
-				name: 'misskey:authentication:discord',
-				value: `${profile.discordId}@${profile.discordUsername}#${profile.discordDiscriminator}`
-			}
-		});
-	}
-
 	const emojis = await getEmojis(user.emojis);
 	const apemojis = emojis.map(emoji => renderEmoji(emoji));
 
@@ -108,7 +69,7 @@ export async function renderPerson(user: ILocalUser) {
 		image: banner ? renderImage(banner) : null,
 		tag,
 		manuallyApprovesFollowers: user.isLocked,
-		publicKey: renderKey(user, keypair),
+		publicKey: renderKey(user, keypair, `#main-key`),
 		isCat: user.isCat,
 		attachment: attachment.length ? attachment : undefined
 	};

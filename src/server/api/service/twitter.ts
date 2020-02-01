@@ -45,14 +45,12 @@ router.get('/disconnect/twitter', async ctx => {
 		token: userToken
 	}).then(ensure);
 
-	await UserProfiles.update({
-		userId: user.id
-	}, {
-		twitter: false,
-		twitterAccessToken: null,
-		twitterAccessTokenSecret: null,
-		twitterUserId: null,
-		twitterScreenName: null,
+	const profile = await UserProfiles.findOne(user.id).then(ensure);
+
+	delete profile.integrations.twitter;
+
+	await UserProfiles.update(user.id, {
+		integrations: profile.integrations,
 	});
 
 	ctx.body = `Twitterの連携を解除しました :v:`;
@@ -141,7 +139,7 @@ router.get('/tw/cb', async ctx => {
 		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where('"twitterUserId" = :id', { id: result.userId })
+			.where('"integrations"->"twitter"->"userId" = :id', { id: result.userId })
 			.andWhere('"userHost" IS NULL')
 			.getOne();
 
@@ -174,12 +172,18 @@ router.get('/tw/cb', async ctx => {
 			token: userToken
 		}).then(ensure);
 
-		await UserProfiles.update({ userId: user.id }, {
-			twitter: true,
-			twitterAccessToken: result.accessToken,
-			twitterAccessTokenSecret: result.accessTokenSecret,
-			twitterUserId: result.userId,
-			twitterScreenName: result.screenName,
+		const profile = await UserProfiles.findOne(user.id).then(ensure);
+
+		await UserProfiles.update(user.id, {
+			integrations: {
+				...profile.integrations,
+				twitter: {
+					accessToken: result.accessToken,
+					accessTokenSecret: result.accessTokenSecret,
+					userId: result.userId,
+					screenName: result.screenName,
+				}
+			},
 		});
 
 		ctx.body = `Twitter: @${result.screenName} を、Misskey: @${user.username} に接続しました！`;

@@ -26,7 +26,7 @@ export default define(meta, async (ps, user) => {
 		throw new Error('incorrect password');
 	}
 
-	await UserProfiles.update({ userId: user.id }, {
+	await UserProfiles.update(user.id, {
 		twoFactorSecret: null,
 		twoFactorEnabled: false
 	});

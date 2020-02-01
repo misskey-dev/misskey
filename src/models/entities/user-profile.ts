@@ -137,87 +137,10 @@ export class UserProfile {
 	@JoinColumn()
 	public pinnedPage: Page | null;
 
-	//#region Linking
-	@Column('boolean', {
-		default: false,
+	@Column('jsonb', {
+		default: {}
 	})
-	public twitter: boolean;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public twitterAccessToken: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public twitterAccessTokenSecret: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public twitterUserId: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public twitterScreenName: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public github: boolean;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public githubAccessToken: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public githubId: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public githubLogin: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public discord: boolean;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public discordAccessToken: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public discordRefreshToken: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public discordExpiresDate: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public discordId: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public discordUsername: string | null;
-
-	@Column('varchar', {
-		length: 64, nullable: true, default: null,
-	})
-	public discordDiscriminator: string | null;
-	//#endregion
+	public integrations: Record<string, any>;
 
 	//#region Denormalized fields
 	@Index()

@@ -120,10 +120,6 @@ id: 'aid'
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
 
-# If enabled:
-#  The first account created is automatically marked as Admin.
-autoAdmin: true
-
 # Whether disable HSTS
 #disableHsts: true
 
@@ -133,6 +129,14 @@ autoAdmin: true
 # Job concurrency per worker
 # deliverJobConcurrency: 128
 # inboxJobConcurrency: 16
+
+# Job rate limiter
+# deliverJobPerSec: 128
+# inboxJobPerSec: 16
+
+# Job attempts
+# deliverJobMaxAttempts: 12
+# inboxJobMaxAttempts: 8
 
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
@@ -151,4 +155,4 @@ autoAdmin: true
 #proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
 
 # Media Proxy
-#mediaProxy: http://127.0.0.1:3000
+#mediaProxy: https://example.com/proxy
