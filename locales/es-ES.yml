@@ -1,1 +1,6 @@
 ---
+_ago:
+  unknown: "Desconocido"
+  future: "Futuro"
+  justNow: "Recién ahora"
+  secondsAgo: "Hace {n} segundos"
