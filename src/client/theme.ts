@@ -25,7 +25,7 @@ export const builtinThemes = [
 	require('./themes/cafe.json5'),
 	require('./themes/chocolate.json5'),
 	require('./themes/danboard.json5'),
-	require('./themes/military.json5'),
+	require('./themes/olive.json5'),
 	require('./themes/tweetdeck.json5'),
 ];
 
