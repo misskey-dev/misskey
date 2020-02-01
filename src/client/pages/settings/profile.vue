@@ -152,8 +152,6 @@ export default Vue.extend({
 				description: this.description || null,
 				location: this.location || null,
 				birthday: this.birthday || null,
-				avatarId: this.avatarId || undefined,
-				bannerId: this.bannerId || undefined,
 				fields,
 				isBot: !!this.isBot,
 				isCat: !!this.isCat,
