@@ -1,6 +1,6 @@
 <template>
 <div class="mk-home" v-hotkey.global="keymap">
-	<portal to="header">
+	<portal to="header" v-if="showTitle">
 		<button @click="choose" class="_button _kjvfvyph_">
 			<i><fa v-if="$store.state.i.hasUnreadAntenna" :icon="faCircle"/></i>
 			<fa v-if="src === 'home'" :icon="faHome"/>
@@ -33,6 +33,13 @@ export default Vue.extend({
 
 	components: {
 		XTimeline
+	},
+
+	props: {
+		showTitle: {
+			type: Boolean,
+			required: true
+		}
 	},
 
 	data() {
