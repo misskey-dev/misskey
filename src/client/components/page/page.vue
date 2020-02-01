@@ -69,7 +69,6 @@ export default Vue.extend({
 		const pageVars = this.getPageVars();
 		this.script = new Script(this.page, new ASEvaluator(this.page.variables, pageVars, {
 			randomSeed: Math.random(),
-			user: this.page.user,
 			visitor: this.$store.state.i,
 			page: this.page,
 			url: url

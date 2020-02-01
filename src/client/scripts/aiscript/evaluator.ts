@@ -17,7 +17,7 @@ export class ASEvaluator {
 	private envVars: Record<keyof typeof envVarsDef, any>;
 
 	private opts: {
-		randomSeed: string; user?: any; visitor?: any; page?: any; url?: string;
+		randomSeed: string; visitor?: any; page?: any; url?: string;
 	};
 
 	constructor(variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
@@ -39,9 +39,6 @@ export class ASEvaluator {
 			FOLLOWERS_COUNT: opts.visitor ? opts.visitor.followersCount : 0,
 			FOLLOWING_COUNT: opts.visitor ? opts.visitor.followingCount : 0,
 			IS_CAT: opts.visitor ? opts.visitor.isCat : false,
-			MY_NOTES_COUNT: opts.user ? opts.user.notesCount : 0,
-			MY_FOLLOWERS_COUNT: opts.user ? opts.user.followersCount : 0,
-			MY_FOLLOWING_COUNT: opts.user ? opts.user.followingCount : 0,
 			SEED: opts.randomSeed ? opts.randomSeed : '',
 			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
 			NULL: null
