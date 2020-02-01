@@ -75,6 +75,8 @@ cacheRemoteFiles: "Mantener en cache los archivos remotos"
 cacheRemoteFilesDescription: "Si desactiva esta configuración, Los archivos remotos se cargarán desde el link directo sin usar la caché. Con eso se puede ahorrar almacenamiento del servidor, pero eso aumentará el tráfico al no crear miniaturas."
 flagAsBot: "Esta cuenta es un bot"
 flagAsCat: "Esta cuenta es un gato"
+autoAcceptFollowed: "Aceptar automáticamente las solicitudes de seguimiento de los usuarios que sigues"
+addAcount: "Añadir cuenta"
 instances: "Instancia"
 remove: "Borrar"
 _widgets:
