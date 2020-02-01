@@ -193,17 +193,6 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 **Last updated:** Fri, 31 Jan 2020 09:11:11 UTC
 <!-- PATREON_END -->
 
-:four_leaf_clover: Copyright
-----------------------------------------------------------------
-> Copyright (c) 2014-2020 syuilo
-
-Misskey is open-source software licensed under the [GNU AGPLv3](LICENSE).
-
-[![][agpl-3.0-badge]][AGPL-3.0]
-
-[agpl-3.0]:           https://www.gnu.org/licenses/agpl-3.0.en.html
-[agpl-3.0-badge]:     https://img.shields.io/badge/license-AGPL--3.0-444444.svg?style=for-the-badge
-
 [backer-url]: #backers
 [backer-badge]: https://opencollective.com/misskey/backers/badge.svg
 [backers-image]: https://opencollective.com/misskey/backers.svg
