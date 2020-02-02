@@ -98,7 +98,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 	if (Users.isLocalUser(user) && !note.localOnly) {
 		const content = renderActivity(renderLike(user, note, reaction));
 		const dm = new DeliverManager(user, content);
-		dm.addDirectRecipe(note.user as IRemoteUser);
+		if (note.userHost !== null) dm.addDirectRecipe(note.user as IRemoteUser);
 		dm.addFollowersRecipe();
 		dm.execute();
 	}
