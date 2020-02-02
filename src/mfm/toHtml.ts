@@ -87,7 +87,7 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 		},
 
 		emoji(token) {
-			return doc.createTextNode(token.node.props.emoji ? token.node.props.emoji : `:${token.node.props.name}:`);
+			return doc.createTextNode(token.node.props.emoji ? token.node.props.emoji : `​:${token.node.props.name}:​`);
 		},
 
 		hashtag(token) {
