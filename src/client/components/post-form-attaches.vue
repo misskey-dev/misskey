@@ -130,7 +130,6 @@ export default Vue.extend({
 				height: 100%;
 				z-index: 1;
 				color: var(--fg);
-				// pointer-events: none;
 			}
 
 			> .sensitive {
@@ -143,7 +142,6 @@ export default Vue.extend({
 				z-index: 2;
 				background: rgba(17, 17, 17, .7);
 				color: #fff;
-				// pointer-events: none;
 
 				> .icon {
 					margin: auto;
