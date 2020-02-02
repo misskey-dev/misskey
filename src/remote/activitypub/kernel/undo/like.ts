@@ -1,21 +1,17 @@
 import { IRemoteUser } from '../../../../models/entities/user';
-import { ILike } from '../../type';
+import { ILike, getApId } from '../../type';
 import deleteReaction from '../../../../services/note/reaction/delete';
-import { Notes } from '../../../../models';
+import { fetchNote } from '../../models/note';
 
 /**
  * Process Undo.Like activity
  */
-export default async (actor: IRemoteUser, activity: ILike): Promise<void> => {
-	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
-	if (id == null) throw new Error('missing id');
+export default async (actor: IRemoteUser, activity: ILike) => {
+	const targetUri = getApId(activity.object);
 
-	const noteId = id.split('/').pop();
-
-	const note = await Notes.findOne(noteId);
-	if (note == null) {
-		throw new Error('note not found');
-	}
+	const note = await fetchNote(targetUri);
+	if (!note) return `skip: target note not found ${targetUri}`;
 
 	await deleteReaction(actor, note);
+	return `ok`;
 };

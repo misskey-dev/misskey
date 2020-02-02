@@ -1,23 +1,14 @@
 import { IRemoteUser } from '../../../models/entities/user';
-import { ILike } from '../type';
+import { ILike, getApId } from '../type';
 import create from '../../../services/note/reaction/create';
-import { Notes } from '../../../models';
-import { apLogger } from '../logger';
+import { fetchNote } from '../models/note';
 
 export default async (actor: IRemoteUser, activity: ILike) => {
-	const id = typeof activity.object == 'string' ? activity.object : activity.object.id;
-	if (id == null) throw new Error('missing id');
+	const targetUri = getApId(activity.object);
 
-	// Transform:
-	// https://misskey.ex/notes/xxxx to
-	// xxxx
-	const noteId = id.split('/').pop();
-
-	const note = await Notes.findOne(noteId);
-	if (note == null) {
-		apLogger.warn(`Like activity recivied, but no such note: ${id}`, { id });
-		return;
-	}
+	const note = await fetchNote(targetUri);
+	if (!note) return `skip: target note not found ${targetUri}`;
 
 	await create(actor, note, activity._misskey_reaction || activity.content || activity.name);
+	return `ok`;
 };
