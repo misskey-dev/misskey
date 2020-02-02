@@ -42,7 +42,10 @@ export default async (user: User, note: Note) => {
 	if (Users.isLocalUser(user) && !note.localOnly) {
 		const content = renderActivity(renderUndo(renderLike(user, note, exist.reaction), user));
 		const dm = new DeliverManager(user, content);
-		if (note.userHost !== null) dm.addDirectRecipe(note.user as IRemoteUser);
+		if (note.userHost !== null) {
+			const reactee = await Users.findOne(note.userId)
+			dm.addDirectRecipe(reactee as IRemoteUser);
+		}
 		dm.addFollowersRecipe();
 		dm.execute();
 	}
