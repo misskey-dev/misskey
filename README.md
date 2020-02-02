@@ -170,7 +170,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/3.png?token-time=2145916800&token-hash=FTm3WVom4dJ9NwWMU4OpCL_8Yc13WiwEbKrDPyTZTPs%3D" alt="natalie" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5923936/2a743cbfbff946c2af3f09026047c0da/2.png?token-time=2145916800&token-hash=h6yphW1qnM0n_NOWaf8qtszMRLXEwIxfk5beu4RxdT0%3D" alt="noellabo" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/2384390/5681180e1efb46a8b28e0e8d4c8b9037/1.jpg?token-time=2145916800&token-hash=SJcMy-Q1BcS940-LFUVOMfR7-5SgrzsEQGhYb3yowFk%3D" alt="CG" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/18072312/98e894d960314fa7bc236a72a39488fe/1.jpe?token-time=2145916800&token-hash=qA8j97lIZNc-74AuZ0p4F3ms6sKPeKjtNt2vEuwpsyo%3D" alt="Hekovic" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/18072312/98e894d960314fa7bc236a72a39488fe/1.jpg?token-time=2145916800&token-hash=7bkMqTwHPRsJPGAq42PYdDXDZBVGLqdgr1ZmBxX8GFQ%3D" alt="Hekovic" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/24641572/b4fd175424814f15b0ca9178d2d2d2e4/1.png?token-time=2145916800&token-hash=e2fyqdbuJbpCckHcwux7rbuW6OPkKdERcus0u2wIEWU%3D" alt="uroco @99" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1.jpeg?token-time=2145916800&token-hash=L55UhJ0rcuNAH3w_ryeeGN4hC6taoOixyAhraEi0bzw%3D" alt="dansup" width="100"></td>
 </tr><tr>
@@ -185,14 +185,12 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <table><tr>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5731881/4b6038e6cda34c04b83a5fcce3806a93/1.png?token-time=2145916800&token-hash=hBayGfOmQH3kRMdNnDe4oCZD_9fsJWSt29xXR3KRMVk%3D" alt="Nokotaro Takeda" width="100"></td>
 <td><img src="https://c8.patreon.com/2/200/23932002" alt="nenohi" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/12531784/93a45137841849329ba692da92ac7c60/1.jpeg?token-time=2145916800&token-hash=vGe7wXGqmA8Q7m-kDNb6fyGdwk-Dxk4F-ut8ZZu51RM%3D" alt="Takashi Shibuya" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/takenoko">Nokotaro Takeda</a></td>
 <td><a href="https://www.patreon.com/user?u=23932002">nenohi</a></td>
-<td><a href="https://www.patreon.com/user?u=12531784">Takashi Shibuya</a></td>
 </tr></table>
 
-**Last updated:** Sat, 01 Feb 2020 16:05:10 UTC
+**Last updated:** Sun, 02 Feb 2020 16:34:12 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
