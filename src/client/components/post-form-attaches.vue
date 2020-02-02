@@ -1,6 +1,6 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
-	<x-draggable class="files" :list="files" animation="150">
+	<x-draggable class="files" :list="files" animation="150" :delay="100" :delayOnTouchOnly="true">
 		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
 			<x-file-thumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<div class="sensitive" v-if="file.isSensitive">
@@ -41,6 +41,8 @@ export default Vue.extend({
 
 	data() {
 		return {
+			menu: null as Promise<null> | null,
+
 			faExclamationTriangle
 		};
 	},
@@ -80,22 +82,24 @@ export default Vue.extend({
 			});
 		},
 		showFileMenu(file, ev: MouseEvent) {
-			this.$root.menu({
-				items: [{
-					text: this.$t('renameFile'),
-					icon: faICursor,
-					action: () => { this.rename(file) }
-				}, {
-					text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
-					icon: file.isSensitive ? faEyeSlash : faEye,
-					action: () => { this.toggleSensitive(file) }
-				}, {
-					text: this.$t('attachCancel'),
-					icon: faTimesCircle,
-					action: () => { this.detachMedia(file.id) }
-				}],
-				source: ev.currentTarget || ev.target
-			});
+			if (!this.menu) {
+				this.menu = this.$root.menu({
+					items: [{
+						text: this.$t('renameFile'),
+						icon: faICursor,
+						action: () => { this.rename(file) }
+					}, {
+						text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
+						icon: file.isSensitive ? faEyeSlash : faEye,
+						action: () => { this.toggleSensitive(file) }
+					}, {
+						text: this.$t('attachCancel'),
+						icon: faTimesCircle,
+						action: () => { this.detachMedia(file.id) }
+					}],
+					source: ev.currentTarget || ev.target
+				}).then(() => this.menu = null);
+			}
 		}
 	}
 });
@@ -126,6 +130,7 @@ export default Vue.extend({
 				height: 100%;
 				z-index: 1;
 				color: var(--fg);
+				// pointer-events: none;
 			}
 
 			> .sensitive {
@@ -138,6 +143,7 @@ export default Vue.extend({
 				z-index: 2;
 				background: rgba(17, 17, 17, .7);
 				color: #fff;
+				// pointer-events: none;
 
 				> .icon {
 					margin: auto;
