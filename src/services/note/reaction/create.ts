@@ -11,9 +11,9 @@ import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
-import { NoteReaction } from '../../../models/entities/note-reaction';
 import { createNotification } from '../../create-notification';
 import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
+import deleteReaction from './delete';
 
 export default async (user: User, note: Note, reaction?: string) => {
 	// Myself
@@ -24,20 +24,29 @@ export default async (user: User, note: Note, reaction?: string) => {
 	reaction = await toDbReaction(reaction);
 
 	// Create reaction
-	await NoteReactions.save({
-		id: genId(),
-		createdAt: new Date(),
-		noteId: note.id,
-		userId: user.id,
-		reaction
-	} as NoteReaction).catch(e => {
+	try {
+		await NoteReactions.save({
+			id: genId(),
+			createdAt: new Date(),
+			noteId: note.id,
+			userId: user.id,
+			reaction
+		});
+	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
-			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298', 'already reacted');
+			await deleteReaction(user, note);
+			await NoteReactions.save({
+				id: genId(),
+				createdAt: new Date(),
+				noteId: note.id,
+				userId: user.id,
+				reaction
+			});
+		} else {
+			throw e;
 		}
-
-		throw e;
-	});
+	}
 
 	// Increment reactions count
 	const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
