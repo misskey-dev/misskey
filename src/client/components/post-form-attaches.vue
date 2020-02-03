@@ -82,24 +82,23 @@ export default Vue.extend({
 			});
 		},
 		showFileMenu(file, ev: MouseEvent) {
-			if (!this.menu) {
-				this.menu = this.$root.menu({
-					items: [{
-						text: this.$t('renameFile'),
-						icon: faICursor,
-						action: () => { this.rename(file) }
-					}, {
-						text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
-						icon: file.isSensitive ? faEyeSlash : faEye,
-						action: () => { this.toggleSensitive(file) }
-					}, {
-						text: this.$t('attachCancel'),
-						icon: faTimesCircle,
-						action: () => { this.detachMedia(file.id) }
-					}],
-					source: ev.currentTarget || ev.target
-				}).then(() => this.menu = null);
-			}
+			if (this.menu) return;
+			this.menu = this.$root.menu({
+				items: [{
+					text: this.$t('renameFile'),
+					icon: faICursor,
+					action: () => { this.rename(file) }
+				}, {
+					text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
+					icon: file.isSensitive ? faEyeSlash : faEye,
+					action: () => { this.toggleSensitive(file) }
+				}, {
+					text: this.$t('attachCancel'),
+					icon: faTimesCircle,
+					action: () => { this.detachMedia(file.id) }
+				}],
+				source: ev.currentTarget || ev.target
+			}).then(() => this.menu = null);
 		}
 	}
 });
