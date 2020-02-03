@@ -12,7 +12,6 @@ import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
 import { createNotification } from '../../create-notification';
-import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
 import deleteReaction from './delete';
 
 export default async (user: User, note: Note, reaction?: string) => {
@@ -23,30 +22,29 @@ export default async (user: User, note: Note, reaction?: string) => {
 
 	reaction = await toDbReaction(reaction);
 
-	// Create reaction
-	try {
-		await NoteReactions.save({
-			id: genId(),
-			createdAt: new Date(),
-			noteId: note.id,
-			userId: user.id,
-			reaction
-		});
-	} catch (e) {
-		// duplicate key error
-		if (isDuplicateKeyValueError(e)) {
+	const exist = await NoteReactions.findOne({
+		noteId: note.id,
+		userId: user.id,
+	});
+
+	if (exist) {
+		if (exist.reaction !== reaction) {
+			// 別のリアクションがすでにされていたら置き換える
 			await deleteReaction(user, note);
-			await NoteReactions.save({
-				id: genId(),
-				createdAt: new Date(),
-				noteId: note.id,
-				userId: user.id,
-				reaction
-			});
 		} else {
-			throw e;
+			// 同じリアクションがすでにされていたら何もしない
+			return;
 		}
 	}
+
+	// Create reaction
+	await NoteReactions.save({
+		id: genId(),
+		createdAt: new Date(),
+		noteId: note.id,
+		userId: user.id,
+		reaction
+	});
 
 	// Increment reactions count
 	const sql = `jsonb_set("reactions", '{${reaction}}', (COALESCE("reactions"->>'${reaction}', '0')::int + 1)::text::jsonb)`;
