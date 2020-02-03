@@ -251,7 +251,7 @@ export default Vue.extend({
 
 	methods: {
 		back() {
-			window.history.back();
+			if (this.canBack) window.history.back();
 		},
 
 		post() {
@@ -814,7 +814,7 @@ export default Vue.extend({
 				> [data-icon] {
 					width: ($header-height - ($avatar-margin * 2));
 				}
-		
+
 				> [data-icon],
 				> .avatar {
 					margin-right: $avatar-margin;
