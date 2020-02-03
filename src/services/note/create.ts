@@ -203,7 +203,9 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// ハッシュタグ更新
-	updateHashtags(user, tags);
+	if (data.visibility === 'public' || data.visibility === 'home') {
+		updateHashtags(user, tags);
+	}
 
 	// Increment notes count (user)
 	incNotesCountOfUser(user);

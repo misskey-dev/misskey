@@ -32,5 +32,9 @@ export default Vue.extend({
 		border-left: solid 3px var(--fg);
 		opacity: 0.7;
 	}
+
+	::v-deep pre {
+		font-size: 0.8em;
+	}
 }
 </style>

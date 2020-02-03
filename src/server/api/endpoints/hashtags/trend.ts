@@ -1,3 +1,4 @@
+import { Brackets } from 'typeorm';
 import define from '../../define';
 import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
@@ -59,6 +60,10 @@ export default define(meta, async () => {
 
 	const tagNotes = await Notes.createQueryBuilder('note')
 		.where(`note.createdAt > :date`, { date: new Date(now.getTime() - rangeA) })
+		.andWhere(new Brackets(qb => { qb
+			.where(`note.visibility = 'public'`)
+			.orWhere(`note.visibility = 'home'`);
+		}))
 		.andWhere(`note.tags != '{}'`)
 		.select(['note.tags', 'note.userId'])
 		.cache(60000) // 1 min
