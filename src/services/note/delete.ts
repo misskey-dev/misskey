@@ -81,7 +81,7 @@ async function findCascadingNotes(note: Note) {
 
 	const recursive = async (noteId: string) => {
 		const query = Notes.createQueryBuilder('note')
-			.where('note.replyId = := noteId', { noteId })
+			.where('note.replyId = :noteId', { noteId })
 			.leftJoinAndSelect('note.user', 'user');
 		const replies = await query.getMany();
 		for (const reply of replies) {
