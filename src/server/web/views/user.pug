@@ -19,6 +19,9 @@ block og
 	meta(property='og:image'       content= img)
 
 block meta
+	if user.url
+		meta(rel="canonical" href=user.url)
+
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)
 
