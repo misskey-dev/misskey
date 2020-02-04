@@ -104,6 +104,7 @@ v12ではいくつかインスタンスにとって破壊的な変更があり�
   * URLまでnyaizeされている問題を修正
   * ハッシュタグまでnyaizeされている問題を修正
 	* 他
+* 投稿フォームでCWが下書きに保存されない問題を修正
 * TypeError: Cannot read property 'stack' of undefined が出ることがある問題を修正
 * AP: カスタム絵文字を連続して書くと他のサービスでカスタム絵文字と認識されない問題を修正
 * AP: audience (visibility) パースの修正

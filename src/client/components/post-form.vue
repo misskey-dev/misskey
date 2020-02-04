@@ -26,8 +26,8 @@
 				<button @click="addVisibleUser" class="_buttonPrimary"><fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
-		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
+		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
+		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<x-post-form-attaches class="attaches" :files="files"/>
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
@@ -250,6 +250,8 @@ export default Vue.extend({
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 				if (draft) {
 					this.text = draft.data.text;
+					this.useCw = draft.data.useCw;
+					this.cw = draft.data.cw;
 					this.files = (draft.data.files || []).filter(e => e);
 					if (draft.data.poll) {
 						this.poll = true;
@@ -257,7 +259,6 @@ export default Vue.extend({
 							(this.$refs.poll as any).set(draft.data.poll);
 						});
 					}
-					this.$emit('change-attached-files', this.files);
 				}
 			}
 
@@ -288,6 +289,8 @@ export default Vue.extend({
 	methods: {
 		watch() {
 			this.$watch('text', () => this.saveDraft());
+			this.$watch('useCw', () => this.saveDraft());
+			this.$watch('cw', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
 			this.$watch('files', () => this.saveDraft());
 		},
@@ -400,7 +403,6 @@ export default Vue.extend({
 			this.files = [];
 			this.poll = false;
 			this.quoteId = null;
-			this.$emit('change-attached-files', this.files);
 		},
 
 		onKeydown(e) {
@@ -472,7 +474,6 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.files.push(file);
-				this.$emit('change-attached-files', this.files);
 				e.preventDefault();
 			}
 			//#endregion
@@ -487,6 +488,8 @@ export default Vue.extend({
 				updatedAt: new Date(),
 				data: {
 					text: this.text,
+					useCw: this.useCw,
+					cw: this.cw,
 					files: this.files,
 					poll: this.poll && this.$refs.poll ? (this.$refs.poll as any).get() : undefined
 				}
@@ -670,12 +673,8 @@ export default Vue.extend({
 			}
 		}
 
-		> input {
-			z-index: 1;
-		}
-
-		> input,
-		> textarea {
+		> .cw,
+		> .text {
 			display: block;
 			box-sizing: border-box;
 			padding: 0 24px;
@@ -701,13 +700,23 @@ export default Vue.extend({
 			}
 		}
 
-		> textarea {
+		> .cw {
+			z-index: 1;
+			padding-bottom: 8px;
+			border-bottom: solid 1px var(--divider);
+		}
+
+		> .text {
 			max-width: 100%;
 			min-width: 100%;
 			min-height: 90px;
 
 			@media (max-width: 500px) {
 				min-height: 80px;
+			}
+
+			&.withCw {
+				padding-top: 8px;
 			}
 		}
 
