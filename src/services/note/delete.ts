@@ -80,19 +80,16 @@ async function findCascadingNotes(note: Note) {
 	const cascadingNotes: Note[] = [];
 
 	const recursive = async (noteId: string) => {
-		const replies = await Notes.find({ replyId: noteId });
+		const query = Notes.createQueryBuilder('note')
+			.where('note.replyId = := noteId', { noteId })
+			.leftJoinAndSelect('note.user', 'user');
+		const replies = await query.getMany();
 		for (const reply of replies) {
 			cascadingNotes.push(reply);
 			await recursive(reply.id);
 		}
 	};
 	await recursive(note.id);
-
-	for (const cascadingNote of cascadingNotes) {
-		const user = await Users.findOne({ id: cascadingNote.userId });
-		if (user)
-			cascadingNote.user = user;
-	}
 
 	return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
 }
