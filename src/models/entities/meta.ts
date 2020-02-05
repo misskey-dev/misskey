@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class Meta {
@@ -110,11 +112,17 @@ export class Meta {
 	})
 	public proxyRemoteFiles: boolean;
 
-	@Column('varchar', {
-		length: 128,
-		nullable: true
+	@Column({
+		...id(),
+		nullable: true,
 	})
-	public proxyAccount: string | null;
+	public proxyAccountId: User['id'] | null;
+
+	@ManyToOne(type => User, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public proxyAccount: User | null;
 
 	@Column('boolean', {
 		default: false,

@@ -22,7 +22,9 @@ export async function pushUserToUserList(target: User, list: UserList) {
 	// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 	if (Users.isRemoteUser(target)) {
 		const proxy = await fetchProxyAccount();
-		const content = renderActivity(renderFollow(proxy, target));
-		deliver(proxy, content, target.inbox);
+		if (proxy) {
+			const content = renderActivity(renderFollow(proxy, target));
+			deliver(proxy, content, target.inbox);
+		}
 	}
 }
