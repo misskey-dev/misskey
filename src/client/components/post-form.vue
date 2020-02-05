@@ -43,6 +43,7 @@
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
 				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
 			</button>
+			<button class="_button" @click="localOnly = !localOnly" :class="{ active: localOnly }"><fa :icon="faBiohazard"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>
@@ -51,7 +52,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
@@ -122,13 +123,14 @@ export default Vue.extend({
 			pollExpiration: [],
 			useCw: false,
 			cw: null,
+			localOnly: false,
 			visibility: 'public',
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt
+			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
 		};
 	},
 
@@ -515,6 +517,7 @@ export default Vue.extend({
 				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
+				localOnly: this.localOnly,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
 				viaMobile: this.$root.isMobile
@@ -736,7 +739,7 @@ export default Vue.extend({
 				padding: 0 8px 8px 8px;
 			}
 
-			> * {
+			> button {
 				display: inline-block;
 				padding: 0;
 				margin: 0;
@@ -747,6 +750,10 @@ export default Vue.extend({
 
 				&:hover {
 					background: var(--geavgsxy);
+				}
+
+				&.active {
+					color: var(--accent);
 				}
 			}
 		}
