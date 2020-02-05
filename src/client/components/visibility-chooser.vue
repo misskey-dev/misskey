@@ -1,28 +1,28 @@
 <template>
 <x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
 	<sequential-entrance class="gqyayizv" :delay="30">
-		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="0" key="0">
+		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
 			<div><fa :icon="faGlobe"/></div>
 			<div>
 				<span>{{ $t('_visibility.public') }}</span>
 				<span>{{ $t('_visibility.publicDescription') }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="1" key="1">
+		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="2" key="home">
 			<div><fa :icon="faHome"/></div>
 			<div>
 				<span>{{ $t('_visibility.home') }}</span>
 				<span>{{ $t('_visibility.homeDescription') }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="2" key="2">
+		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="3" key="followers">
 			<div><fa :icon="faUnlock"/></div>
 			<div>
 				<span>{{ $t('_visibility.followers') }}</span>
 				<span>{{ $t('_visibility.followersDescription') }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="3" key="3">
+		<button class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
 			<div><fa :icon="faEnvelope"/></div>
 			<div>
 				<span>{{ $t('_visibility.specified') }}</span>
