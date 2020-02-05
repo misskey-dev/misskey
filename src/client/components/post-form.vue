@@ -262,6 +262,8 @@ export default Vue.extend({
 					this.text = draft.data.text;
 					this.useCw = draft.data.useCw;
 					this.cw = draft.data.cw;
+					this.applyVisibility(draft.data.visibility);
+					this.localOnly = draft.data.localOnly;
 					this.files = (draft.data.files || []).filter(e => e);
 					if (draft.data.poll) {
 						this.poll = true;
@@ -303,6 +305,8 @@ export default Vue.extend({
 			this.$watch('cw', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
 			this.$watch('files', () => this.saveDraft());
+			this.$watch('visibility', () => this.saveDraft());
+			this.$watch('localOnly', () => this.saveDraft());
 		},
 
 		trimmedLength(text: string) {
@@ -501,6 +505,8 @@ export default Vue.extend({
 					text: this.text,
 					useCw: this.useCw,
 					cw: this.cw,
+					visibility: this.visibility,
+					localOnly: this.localOnly,
 					files: this.files,
 					poll: this.poll && this.$refs.poll ? (this.$refs.poll as any).get() : undefined
 				}
