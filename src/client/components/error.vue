@@ -1,5 +1,5 @@
 <template>
-<div class="wjqjnyhzogztorhrdgcpqlkxhkmuetgj _panel">
+<div class="mjndxjcg _panel">
 	<p><fa :icon="faExclamationTriangle"/> {{ $t('error') }}</p>
 	<mk-button @click="() => $emit('retry')" class="button">{{ $t('retry') }}</mk-button>
 </div>
@@ -25,7 +25,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.wjqjnyhzogztorhrdgcpqlkxhkmuetgj {
+.mjndxjcg {
 	max-width: 350px;
 	margin: 0 auto;
 	padding: 32px;
