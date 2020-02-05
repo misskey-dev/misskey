@@ -26,13 +26,12 @@ function exclude(text: string): [string, Record<string, string>] {
 		return randomstr;
 	}
 	const replaced = text
+		.replace(/```(.+?)?\n([\s\S]+?)```(\n|$)/gm, match => substitute(match)) // code block
+		.replace(/`([^`\n]+?)`/g, match => substitute(match)) // inline code
 		.replace(/(https?:\/\/.*?)(?= |$)/gm, match => substitute(match)) // URL
 		.replace(/:([a-z0-9_+-]+):/gim, match => substitute(match)) // emoji
 		.replace(/#([^\s.,!?'"#:\/\[\]【】]+)/gm, match => substitute(match)) // hashtag
 		.replace(/@\w([\w-]*\w)?(?:@[\w.\-]+\w)?/gm, match => substitute(match)) // mention
-		.replace(/<\/?[a-zA-Z]*?>/g, match => substitute(match)) // <jump>, <motion>, etc.
-		.replace(/`([^`\n]+?)`/g, match => substitute(match)) // inline code
-		.replace(/```(.+?)?\n([\s\S]+?)```(\n|$)/gm, match => substitute(match)); // code block
 	return [replaced, map];
 }
 
