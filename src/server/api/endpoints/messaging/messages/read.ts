@@ -37,9 +37,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const message = await MessagingMessages.findOne({
-		id: ps.messageId,
-	});
+	const message = await MessagingMessages.findOne(ps.messageId);
 
 	if (message == null) {
 		throw new ApiError(meta.errors.noSuchMessage);
