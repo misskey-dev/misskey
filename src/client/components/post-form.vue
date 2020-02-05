@@ -9,6 +9,12 @@
 		<button class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
 		<div>
 			<span class="text-count" :class="{ over: trimmedLength(text) > 500 }">{{ 500 - trimmedLength(text) }}</span>
+			<button class="_button visibility" @click="setVisibility" ref="visibilityButton">
+				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
+				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
+				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
+				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
+			</button>
 			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}</button>
 		</div>
 	</header>
@@ -37,12 +43,6 @@
 			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }"><fa :icon="faEyeSlash"/></button>
 			<button class="_button" @click="insertMention"><fa :icon="faAt"/></button>
 			<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
-			<button class="_button" @click="setVisibility" ref="visibilityButton">
-				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
-				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
-				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
-				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
-			</button>
 			<button class="_button" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }"><fa :icon="faBiohazard"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
@@ -614,8 +614,14 @@ export default Vue.extend({
 				}
 			}
 
+			> .visibility {
+				height: 34px;
+				width: 34px;
+				margin: 0 8px;
+			}
+
 			> .submit {
-				margin: 16px;
+				margin: 16px 16px 16px 0;
 				padding: 0 16px;
 				line-height: 34px;
 				vertical-align: bottom;
