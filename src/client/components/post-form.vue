@@ -177,6 +177,12 @@ export default Vue.extend({
 		}
 	},
 
+	watch: {
+		localOnly() {
+			this.$store.commit('device/setLocalOnly', this.localOnly);
+		}
+	},
+
 	mounted() {
 		if (this.initialText) {
 			this.text = this.initialText;
@@ -209,7 +215,9 @@ export default Vue.extend({
 		}
 
 		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.visibility : this.$store.state.settings.defaultNoteVisibility);
+
+		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.localOnly : false;
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {

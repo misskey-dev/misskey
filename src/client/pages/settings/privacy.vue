@@ -6,13 +6,13 @@
 		<mk-switch v-model="autoAcceptFollowed" :disabled="!isLocked" @change="save()">{{ $t('autoAcceptFollowed') }}</mk-switch>
 	</div>
 	<div class="_content">
-		<mk-select v-model="defaultNoteVisibility" style="margin-top: 8px;">
+		<mk-switch v-model="rememberNoteVisibility" @change="save()">{{ $t('rememberNoteVisibility') }}</mk-switch>
+		<mk-select v-model="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
 			<template #label>{{ $t('defaultNoteVisibility') }}</template>
 			<option value="public">{{ $t('_visibility.public') }}</option>
 			<option value="followers">{{ $t('_visibility.followers') }}</option>
 			<option value="specified">{{ $t('_visibility.specified') }}</option>
 		</mk-select>
-		<mk-switch v-model="rememberNoteVisibility" @change="save()">{{ $t('rememberNoteVisibility') }}</mk-switch>
 	</div>
 </section>
 </template>
