@@ -33,12 +33,12 @@ block meta
 
 	if !sub
 		if user.uri
-			meta(rel="canonical" href=user.uri)
 		if !user.host
 			link(rel='alternate' href=`${config.url}/users/${user.id}` type='application/activity+json')
 		if user.uri
 			link(rel='alternate' href=user.uri type='application/activity+json')
 		if profile.url
+			link(rel="canonical" href=profile.url)
 			link(rel='alternate' href=profile.url type='text/html')
 
 	each m in me

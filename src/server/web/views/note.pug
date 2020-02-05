@@ -19,18 +19,12 @@ block og
 	meta(property='og:image'       content= user.avatarUrl)
 
 block meta
-	if note.uri
-		meta(rel="canonical" href=note.uri)
 
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)
 	meta(name='misskey:note-id' content=note.id)
 
 	meta(name='twitter:card' content='summary')
-
-	// todo
-	if user.host
-		meta(name='robots' content='noindex')
 
 	if user.twitter
 		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
@@ -43,4 +37,5 @@ block meta
 	if !user.host
 		link(rel='alternate' href=url type='application/activity+json')
 	if note.uri
+		link(rel="canonical" href=note.uri)
 		link(rel='alternate' href=note.uri type='application/activity+json')
