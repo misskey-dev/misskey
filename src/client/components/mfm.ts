@@ -79,7 +79,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'big': {
 					return (createElement as any)('strong', {
 						attrs: {
-							style: `display: inline-block; font-size: 150% };`
+							style: `display: inline-block; font-size: 150%;`
 						},
 						directives: [this.$store.state.settings.disableAnimatedMfm ? {} : {
 							name: 'animate-css',
