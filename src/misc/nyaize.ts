@@ -32,13 +32,15 @@ function exclude(text: string): [string, Record<string, string>] {
 		.replace(/(https?:\/\/.*?)(?= |$)/gm, match => substitute(match)) // URL
 		.replace(/:([a-z0-9_+-]+):/gim, match => substitute(match)) // emoji
 		.replace(/#([^\s.,!?'"#:\/\[\]【】]+)/gm, match => substitute(match)) // hashtag
-		.replace(/@\w([\w-]*\w)?(?:@[\w.\-]+\w)?/gm, match => substitute(match)) // mention
+		.replace(/@\w([\w-]*\w)?(?:@[\w.\-]+\w)?/gm, match => substitute(match)); // mention
 	return [replaced, map];
 }
 
-function replaceExceptions(text: string, map: Record<string, string>): string {	
-	for(const rule in map)
-		if(Object.prototype.hasOwnProperty.call(map, rule))
+function replaceExceptions(text: string, map: Record<string, string>): string {
+	for (const rule in map) {
+		if (Object.prototype.hasOwnProperty.call(map, rule)) {
 			text = text.replace(rule, map[rule]);
+		}
+	}
 	return text;
 }
