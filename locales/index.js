@@ -14,19 +14,19 @@ const merge = (...args) => args.reduce((a, c) => ({
 }), {});
 
 const languages = [
-	/*'cs-CZ',
-	'da-DK',
-	'de-DE',
+	//'cs-CZ',
+	//'da-DK',
+	//'de-DE',
 	'en-US',
 	'es-ES',
-	'fr-FR',*/
+	//'fr-FR',
 	'ja-JP',
-	/*'ja-KS',
+	//'ja-KS',
 	'ko-KR',
-	'nl-NL',
-	'pl-PL',
-	'zh-CN',
-	'zh-TW',*/
+	//'nl-NL',
+	//'pl-PL',
+	//'zh-CN',
+	//'zh-TW',
 ];
 
 const primaries = {

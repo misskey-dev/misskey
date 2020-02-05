@@ -26,15 +26,15 @@
 				<button @click="addVisibleUser" class="_buttonPrimary"><fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
-		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
+		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
+		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<x-post-form-attaches class="attaches" :files="files"/>
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom"><fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="poll = !poll"><fa :icon="faChartPie"/></button>
-			<button class="_button" @click="useCw = !useCw"><fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="poll = !poll" :class="{ active: poll }"><fa :icon="faChartPie"/></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }"><fa :icon="faEyeSlash"/></button>
 			<button class="_button" @click="insertMention"><fa :icon="faAt"/></button>
 			<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
 			<button class="_button" @click="setVisibility" ref="visibilityButton">
@@ -43,6 +43,7 @@
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
 				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
 			</button>
+			<button class="_button" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }"><fa :icon="faBiohazard"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>
@@ -51,7 +52,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
@@ -122,13 +123,14 @@ export default Vue.extend({
 			pollExpiration: [],
 			useCw: false,
 			cw: null,
+			localOnly: false,
 			visibility: 'public',
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt
+			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
 		};
 	},
 
@@ -175,6 +177,12 @@ export default Vue.extend({
 		}
 	},
 
+	watch: {
+		localOnly() {
+			this.$store.commit('device/setLocalOnly', this.localOnly);
+		}
+	},
+
 	mounted() {
 		if (this.initialText) {
 			this.text = this.initialText;
@@ -207,7 +215,9 @@ export default Vue.extend({
 		}
 
 		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.visibility : this.$store.state.settings.defaultNoteVisibility);
+
+		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.localOnly : false;
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
@@ -250,6 +260,10 @@ export default Vue.extend({
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 				if (draft) {
 					this.text = draft.data.text;
+					this.useCw = draft.data.useCw;
+					this.cw = draft.data.cw;
+					this.applyVisibility(draft.data.visibility);
+					this.localOnly = draft.data.localOnly;
 					this.files = (draft.data.files || []).filter(e => e);
 					if (draft.data.poll) {
 						this.poll = true;
@@ -257,7 +271,6 @@ export default Vue.extend({
 							(this.$refs.poll as any).set(draft.data.poll);
 						});
 					}
-					this.$emit('change-attached-files', this.files);
 				}
 			}
 
@@ -288,8 +301,12 @@ export default Vue.extend({
 	methods: {
 		watch() {
 			this.$watch('text', () => this.saveDraft());
+			this.$watch('useCw', () => this.saveDraft());
+			this.$watch('cw', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
 			this.$watch('files', () => this.saveDraft());
+			this.$watch('visibility', () => this.saveDraft());
+			this.$watch('localOnly', () => this.saveDraft());
 		},
 
 		trimmedLength(text: string) {
@@ -381,6 +398,7 @@ export default Vue.extend({
 		},
 
 		applyVisibility(v: string) {
+			if (!['public', 'home', 'followers', 'specified'].includes(v)) v = 'public'; // v11互換性のため
 			this.visibility = v;
 		},
 
@@ -400,7 +418,6 @@ export default Vue.extend({
 			this.files = [];
 			this.poll = false;
 			this.quoteId = null;
-			this.$emit('change-attached-files', this.files);
 		},
 
 		onKeydown(e) {
@@ -472,7 +489,6 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.files.push(file);
-				this.$emit('change-attached-files', this.files);
 				e.preventDefault();
 			}
 			//#endregion
@@ -487,6 +503,10 @@ export default Vue.extend({
 				updatedAt: new Date(),
 				data: {
 					text: this.text,
+					useCw: this.useCw,
+					cw: this.cw,
+					visibility: this.visibility,
+					localOnly: this.localOnly,
 					files: this.files,
 					poll: this.poll && this.$refs.poll ? (this.$refs.poll as any).get() : undefined
 				}
@@ -512,6 +532,7 @@ export default Vue.extend({
 				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
+				localOnly: this.localOnly,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
 				viaMobile: this.$root.isMobile
@@ -670,12 +691,8 @@ export default Vue.extend({
 			}
 		}
 
-		> input {
-			z-index: 1;
-		}
-
-		> input,
-		> textarea {
+		> .cw,
+		> .text {
 			display: block;
 			box-sizing: border-box;
 			padding: 0 24px;
@@ -701,13 +718,23 @@ export default Vue.extend({
 			}
 		}
 
-		> textarea {
+		> .cw {
+			z-index: 1;
+			padding-bottom: 8px;
+			border-bottom: solid 1px var(--divider);
+		}
+
+		> .text {
 			max-width: 100%;
 			min-width: 100%;
 			min-height: 90px;
 
 			@media (max-width: 500px) {
 				min-height: 80px;
+			}
+
+			&.withCw {
+				padding-top: 8px;
 			}
 		}
 
@@ -727,7 +754,7 @@ export default Vue.extend({
 				padding: 0 8px 8px 8px;
 			}
 
-			> * {
+			> button {
 				display: inline-block;
 				padding: 0;
 				margin: 0;
@@ -738,6 +765,10 @@ export default Vue.extend({
 
 				&:hover {
 					background: var(--geavgsxy);
+				}
+
+				&.active {
+					color: var(--accent);
 				}
 			}
 		}

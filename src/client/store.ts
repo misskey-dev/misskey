@@ -24,6 +24,8 @@ const defaultDeviceSettings = {
 	useOsDefaultEmojis: false,
 	accounts: [],
 	recentEmojis: [],
+	visibility: 'public',
+	localOnly: false,
 	themes: [],
 	theme: 'light',
 };
@@ -109,6 +111,10 @@ export default (os: MiOS) => new Vuex.Store({
 
 				setVisibility(state, visibility) {
 					state.visibility = visibility;
+				},
+
+				setLocalOnly(state, localOnly) {
+					state.localOnly = localOnly;
 				},
 			}
 		},

@@ -100,10 +100,8 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
-			<mk-input v-model="proxyAccount" style="margin: 0;"><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></mk-input>
-		</div>
-		<div class="_footer">
-			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+			<mk-input :value="proxyAccount ? proxyAccount.username : null" style="margin: 0;" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></mk-input>
+			<mk-button primary @click="chooseProxyAccount">{{ $t('chooseProxyAccount') }}</mk-button>
 		</div>
 	</section>
 
@@ -210,6 +208,7 @@ export default Vue.extend({
 			stats: null,
 			serverInfo: null,
 			proxyAccount: null,
+			proxyAccountId: null,
 			cacheRemoteFiles: false,
 			proxyRemoteFiles: false,
 			localDriveCapacityMb: 0,
@@ -261,7 +260,7 @@ export default Vue.extend({
 			this.enableRecaptcha = this.meta.enableRecaptcha;
 			this.recaptchaSiteKey = this.meta.recaptchaSiteKey;
 			this.recaptchaSecretKey = this.meta.recaptchaSecretKey;
-			this.proxyAccount = this.meta.proxyAccount;
+			this.proxyAccountId = this.meta.proxyAccountId;
 			this.cacheRemoteFiles = this.meta.cacheRemoteFiles;
 			this.proxyRemoteFiles = this.meta.proxyRemoteFiles;
 			this.localDriveCapacityMb = this.meta.driveCapacityPerLocalUserMb;
@@ -280,6 +279,12 @@ export default Vue.extend({
 			this.enableDiscordIntegration = this.meta.enableDiscordIntegration;
 			this.discordClientId = this.meta.discordClientId;
 			this.discordClientSecret = this.meta.discordClientSecret;
+
+			if (this.proxyAccountId) {
+				this.$root.api('users/show', { userId: this.proxyAccountId }).then(proxyAccount => {
+					this.proxyAccount = proxyAccount;
+				});
+			}
 		});
 
 		this.$root.api('admin/server-info').then(res => {
@@ -324,6 +329,14 @@ export default Vue.extend({
 			});
 		},
 
+		chooseProxyAccount() {
+			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+				this.proxyAccount = user;
+				this.proxyAccountId = user.id;
+				this.save(true);
+			});
+		},
+
 		save(withDialog = false) {
 			this.$root.api('admin/update-meta', {
 				name: this.name,
@@ -339,7 +352,7 @@ export default Vue.extend({
 				enableRecaptcha: this.enableRecaptcha,
 				recaptchaSiteKey: this.recaptchaSiteKey,
 				recaptchaSecretKey: this.recaptchaSecretKey,
-				proxyAccount: this.proxyAccount,
+				proxyAccountId: this.proxyAccountId,
 				cacheRemoteFiles: this.cacheRemoteFiles,
 				proxyRemoteFiles: this.proxyRemoteFiles,
 				localDriveCapacityMb: parseInt(this.localDriveCapacityMb, 10),
