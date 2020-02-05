@@ -2,7 +2,6 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { unique, concat } from '../../prelude/array';
-import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
@@ -214,10 +213,6 @@ export class NoteRepository extends Repository<Note> {
 				} : {})
 			} : {})
 		});
-
-		if (packed.user.isCat && packed.text) {
-			packed.text = nyaize(packed.text);
-		}
 
 		if (!opts.skipHide) {
 			await this.hideNote(packed, meId);

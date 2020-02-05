@@ -8,6 +8,7 @@ import MkFormula from './formula.vue';
 import MkCode from './code.vue';
 import MkGoogle from './google.vue';
 import { host } from '../config';
+import { nyaize } from '../../misc/nyaize';
 
 export default Vue.component('misskey-flavored-markdown', {
 	props: {
@@ -48,7 +49,11 @@ export default Vue.component('misskey-flavored-markdown', {
 		const genEl = (ast: MfmForest) => concat(ast.map((token): VNode[] => {
 			switch (token.node.type) {
 				case 'text': {
-					const text = token.node.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+					let text = token.node.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+
+					if (this.author?.isCat) {
+						text = nyaize(text);
+					}
 
 					if (!this.plain) {
 						const x = text.split('\n')
