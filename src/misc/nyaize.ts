@@ -10,7 +10,8 @@ export function nyaize(text: string): string {
 		// ko-KR
 		.replace(/[나-낳]/g, match => String.fromCharCode(
 			match.charCodeAt(0)! + '냐'.charCodeAt(0) - '나'.charCodeAt(0)
-		)).replace(/(다$)|(다(?=\.))|(다(?= ))|(다(?=!))|(다(?=\?))/gm, '다냥')
+		))
+		.replace(/(다$)|(다(?=\.))|(다(?= ))|(다(?=!))|(다(?=\?))/gm, '다냥')
 		.replace(/(야(?=\?))|(야$)|(야(?= ))/gm, '냥');
 	return replaceExceptions(nyaized, exclusionMap);
 }
