@@ -28,9 +28,6 @@ v12ではいくつかインスタンスにとって破壊的な変更があり�
 * ノートに位置情報を添付できる機能を廃止
 * ノートに何のアプリから投稿したかという情報を含めるのを廃止
 * Meta APIでサーバー内部の情報(マシン名、CPU情報など)を含めるのを廃止
-* Pages: MY_NOTES_COUNT 変数を廃止
-* Pages: MY_FOLLOWERS_COUNT 変数を廃止
-* Pages: MY_FOLLOWING_COUNT 変数を廃止
 
 ### ✨Improvements
 * Webクライアントを一新
@@ -111,6 +108,9 @@ v12ではいくつかインスタンスにとって破壊的な変更があり�
 * AP: inboxの最小リトライ間隔 1秒→1分
 * Pages: VERSION 変数が常に null な問題を修正
 * Pages: DRPWPMが最初のしか出てこない問題を修正
+* Pages: MY_NOTES_COUNT 変数が機能していなかったので削除
+* Pages: MY_FOLLOWERS_COUNT 変数が機能していなかったので削除
+* Pages: MY_FOLLOWING_COUNT 変数が機能していなかったので削除
 
 11.37.1 (2020/01/07)
 --------------------
