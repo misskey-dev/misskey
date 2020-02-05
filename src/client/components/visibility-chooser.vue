@@ -56,7 +56,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			v: this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
+			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
 			faGlobe, faUnlock, faEnvelope, faHome
 		}
 	},
