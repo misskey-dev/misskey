@@ -100,9 +100,9 @@
 							class="sortable"
 							@sort="onWidgetSort"
 						>
-							<div v-for="widget in widgets" class="customize-container" :key="widget.id">
+							<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
 								<header>
-									<span class="handle"><fa :icon="faBars"/></span>{{ widget.name }}<button class="remove" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+									<span class="handle"><fa :icon="faBars"/></span>{{ widget.name }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
 								</header>
 								<div @click="widgetFunc(widget.id)">
 									<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
@@ -965,10 +965,10 @@ export default Vue.extend({
 					> header {
 						position: relative;
 						line-height: 32px;
-						background: #eee;
 
 						> .handle {
 							padding: 0 8px;
+							cursor: move;
 						}
 
 						> .remove {
