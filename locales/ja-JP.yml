@@ -348,6 +348,7 @@ resetPassword: "パスワードをリセット"
 newPasswordIs: "新しいパスワードは「{password}」です"
 post: "投稿"
 posted: "投稿しました"
+autoReloadWhenDisconnected: "サーバー切断時に自動リロード"
 
 _2fa:
   registerDevice: "デバイスを登録"

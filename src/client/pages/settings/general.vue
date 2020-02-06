@@ -10,6 +10,9 @@
 		<mk-button primary :disabled="$store.state.settings.wallpaper == null" @click="delWallpaper()">{{ $t('removeWallpaper') }}</mk-button>
 	</div>
 	<div class="_content">
+		<mk-switch v-model="autoReload">
+			{{ $t('autoReloadWhenDisconnected') }}
+		</mk-switch>
 		<mk-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
 			{{ $t('auto-watch') }}<template #desc>{{ $t('auto-watch-desc') }}</template>
 		</mk-switch>
@@ -51,6 +54,11 @@ export default Vue.extend({
 		wallpaper: {
 			get() { return this.$store.state.settings.wallpaper; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'wallpaper', value }); }
+		},
+
+		autoReload: {
+			get() { return this.$store.state.device.autoReload; },
+			set(value) { this.$store.commit('device/set', { key: 'autoReload', value }); }
 		},
 	},
 

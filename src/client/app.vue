@@ -222,6 +222,10 @@ export default Vue.extend({
 
 		this.$root.stream.on('_disconnected_', () => {
 			if (!this.disconnectedDialog) {
+				if (this.$store.state.device.autoReload) {
+					location.reload();
+					return;
+				}
 				this.disconnectedDialog = this.$root.dialog({
 					type: 'warning',
 					showCancelButton: true,

@@ -22,6 +22,7 @@ const defaultDeviceSettings = {
 	loadRawImages: false,
 	alwaysShowNsfw: false,
 	useOsDefaultEmojis: false,
+	autoReload: false,
 	accounts: [],
 	recentEmojis: [],
 	visibility: 'public',
