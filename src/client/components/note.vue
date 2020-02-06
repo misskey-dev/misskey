@@ -275,8 +275,14 @@ export default Vue.extend({
 	methods: {
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
-				this.connection.send('sn', { id: this.appearNote.id });
-				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
+				if (document.body.contains(this.$el)) {
+					this.connection.send('sn', { id: this.appearNote.id });
+					if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
+				} else {
+					this.$once('hook:activated', () => {
+						this.capture(withHandler);
+					});
+				}
 			}
 		},
 
