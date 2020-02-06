@@ -18,6 +18,7 @@ self.addEventListener('install', ev => {
 		caches.open(cacheName)
 			.then(cache => {
 				return cache.addAll([
+					'/',
 					'/assets/error.jpg'
 				]);
 			})
