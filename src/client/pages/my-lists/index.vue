@@ -7,7 +7,7 @@
 
 	<mk-pagination :pagination="pagination" #default="{items}" class="lists" ref="list">
 		<div class="list _panel" v-for="(list, i) in items" :key="list.id">
-			<router-link :to="`/lists/${ list.id }`">{{ list.name }}</router-link>
+			<router-link :to="`/my/lists/${ list.id }`">{{ list.name }}</router-link>
 		</div>
 	</mk-pagination>
 </div>
