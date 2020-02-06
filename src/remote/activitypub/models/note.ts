@@ -15,7 +15,7 @@ import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
-import { Notes, Emojis, Polls } from '../../../models';
+import { Notes, Emojis, Polls, MessagingMessages } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject, getOneApId, getApId, validPost, ICreate, isCreate, IPost } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
@@ -129,6 +129,8 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		}
 	}
 
+	let isTalk = note._misskey_talk && visibility === 'specified';
+
 	const apHashtags = await extractHashtags(note.tag);
 
 	// 添付ファイル
@@ -153,7 +155,18 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 			} else {
 				return x;
 			}
-		}).catch(e => {
+		}).catch(async e => {
+			// トークだったらinReplyToのエラーは無視
+			const uri = getApId(note.inReplyTo);
+			if (uri.startsWith(config.url + '/')) {
+				const id = uri.split('/').pop();
+				const talk = await MessagingMessages.findOne(id);
+				if (talk) {
+					isTalk = true;
+					return null;
+				}
+			}
+
 			logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${e.statusCode || e}`);
 			throw e;
 		})
@@ -250,7 +263,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		if (actor.uri) updatePerson(actor.uri);
 	}
 
-	if (note._misskey_talk && visibility === 'specified') {
+	if (isTalk) {
 		for (const recipient of visibleUsers) {
 			await createMessage(actor, recipient, undefined, text || undefined, (files && files.length > 0) ? files[0] : null, object.id);
 			return null;
