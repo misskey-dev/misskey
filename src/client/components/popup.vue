@@ -1,9 +1,9 @@
 <template>
 <div class="mk-popup">
-	<transition name="bg-fade" appear>
+	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
 		<div class="bg" ref="bg" @click="close()" v-if="show"></div>
 	</transition>
-	<transition name="popup" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
+	<transition :name="$store.state.device.animation ? 'popup' : ''" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
 		<div class="content" :class="{ fixed }" ref="content" v-if="show" :style="{ width: width ? width + 'px' : 'auto' }"><slot></slot></div>
 	</transition>
 </div>

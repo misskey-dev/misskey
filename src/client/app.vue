@@ -2,10 +2,10 @@
 <div class="mk-app" v-hotkey.global="keymap">
 	<header class="header">
 		<div class="title" ref="title">
-			<transition name="header" mode="out-in" appear>
+			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
 				<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
 			</transition>
-			<transition name="header" mode="out-in" appear>
+			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
 				<div class="body" :key="pageKey">
 					<div class="default">
 						<portal-target name="avatar" slim/>
@@ -76,7 +76,7 @@
 	<div class="contents">
 		<main ref="main">
 			<div class="content">
-				<transition name="page" mode="out-in" @enter="onTransition">
+				<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 					<keep-alive :include="['index']">
 						<router-view></router-view>
 					</keep-alive>

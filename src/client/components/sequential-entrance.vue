@@ -1,5 +1,5 @@
 <template>
-<transition-group
+<transition-group v-if="$store.state.device.animation"
 	name="staggered-fade"
 	tag="div"
 	:css="false"
@@ -11,6 +11,9 @@
 >
 	<slot></slot>
 </transition-group>
+<div v-else>
+	<slot></slot>
+</div>
 </template>
 
 <script lang="ts">

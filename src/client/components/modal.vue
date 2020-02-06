@@ -1,9 +1,9 @@
 <template>
 <div class="mk-modal">
-	<transition name="bg-fade" appear>
+	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
 		<div class="bg" ref="bg" v-if="show" @click="close()"></div>
 	</transition>
-	<transition name="modal" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
+	<transition :name="$store.state.device.animation ? 'modal' : ''" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
 		<div class="content" ref="content" v-if="show" @click.self="close()"><slot></slot></div>
 	</transition>
 </div>

@@ -29,6 +29,7 @@ const defaultDeviceSettings = {
 	localOnly: false,
 	themes: [],
 	theme: 'light',
+	animation: true,
 };
 
 export default (os: MiOS) => new Vuex.Store({

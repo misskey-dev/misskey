@@ -22,6 +22,11 @@
 		<mk-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</mk-button>
 		<mk-button @click="readAllMessagingMessages">{{ $t('mark-as-read-all-talk-messages') }}</mk-button>
 	</div>
+	<div class="_content">
+		<mk-switch v-model="reduceAnimation">
+			{{ $t('reduceUiAnimation') }}
+		</mk-switch>
+	</div>
 </section>
 </template>
 
@@ -59,6 +64,11 @@ export default Vue.extend({
 		autoReload: {
 			get() { return this.$store.state.device.autoReload; },
 			set(value) { this.$store.commit('device/set', { key: 'autoReload', value }); }
+		},
+
+		reduceAnimation: {
+			get() { return !this.$store.state.device.animation; },
+			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
 		},
 	},
 
