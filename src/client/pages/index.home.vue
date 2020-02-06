@@ -173,12 +173,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@keyframes blink {
-	0% { opacity: 1; }
-	30% { opacity: 1; }
-	90% { opacity: 0; }
-}
-
 ._kjvfvyph_ {
 	position: relative;
 	height: 100%;

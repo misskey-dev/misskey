@@ -572,12 +572,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@keyframes blink {
-	0% { opacity: 1; }
-	30% { opacity: 1; }
-	90% { opacity: 0; }
-}
-
 .header-enter-active, .header-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }

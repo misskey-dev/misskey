@@ -88,12 +88,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@keyframes blink {
-	0% { opacity: 1; }
-	30% { opacity: 1; }
-	90% { opacity: 0; }
-}
-
 .rrevdjwt {
 	padding: 8px 0;
 
