@@ -1,8 +1,8 @@
 <template>
 <div
 	class="note _panel"
-	v-show="appearNote.deletedAt == null && !hideThisNote"
-	:tabindex="appearNote.deletedAt == null ? '-1' : null"
+	v-show="!isDeleted && !hideThisNote"
+	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
 	v-hotkey="keymap"
 	v-size="[{ max: 500 }, { max: 450 }, { max: 350 }, { max: 300 }]"
@@ -19,7 +19,7 @@
 			</router-link>
 		</i18n>
 		<div class="info">
-			<mk-time :time="note.createdAt"/>
+			<button class="_button time" @click="showRenoteMenu"><mk-time :time="note.createdAt"/></button>
 			<span class="visibility" v-if="note.visibility != 'public'">
 				<fa v-if="note.visibility == 'home'" :icon="faHome"/>
 				<fa v-if="note.visibility == 'followers'" :icon="faUnlock"/>
@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
 import i18n from '../i18n';
@@ -190,6 +190,10 @@ export default Vue.extend({
 
 		appearNote(): any {
 			return this.isRenote ? this.note.renote : this.note;
+		},
+
+		isDeleted(): boolean {
+			return this.appearNote.deletedAt != null || this.note.deletedAt != null;
 		},
 
 		isMyNote(): boolean {
@@ -453,6 +457,23 @@ export default Vue.extend({
 			});
 		},
 
+		showRenoteMenu(ev) {
+			if (!this.isMyNote) return;
+			this.$root.menu({
+				items: [{
+					text: this.$t('unrenote'),
+					icon: faTrashAlt,
+					action: () => {
+						this.$root.api('notes/delete', {
+							noteId: this.note.id
+						});
+						Vue.set(this.note, 'deletedAt', new Date());
+					}
+				}],
+				source: ev.currentTarget || ev.target,
+			});
+		},
+
 		toggleShowContent() {
 			this.showContent = !this.showContent;
 		},
@@ -609,8 +630,9 @@ export default Vue.extend({
 			margin-left: auto;
 			font-size: 0.9em;
 
-			> .mk-time {
+			> .time {
 				flex-shrink: 0;
+				color: inherit;
 			}
 
 			> .visibility {

@@ -1,8 +1,8 @@
 <template>
 <x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
 	<div class="rdfaahpc">
-		<button class="_button" @click="renote()"><fa :icon="faRetweet"/></button>
 		<button class="_button" @click="quote()"><fa :icon="faQuoteRight"/></button>
+		<button class="_button" @click="renote()"><fa :icon="faRetweet"/></button>
 	</div>
 </x-popup>
 </template>
