@@ -2,26 +2,26 @@
 <x-popup :source="source" :no-center="noCenter" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
 	<sequential-entrance class="rrevdjwt" :class="{ left: align === 'left' }" :delay="15" :direction="direction">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
-			<div v-if="item === null" class="divider" :key="i" :data-index="i"></div>
-			<span v-else-if="item.type === 'label'" class="label item" :key="i" :data-index="i">
+			<div v-if="item === null" class="divider" :key="i"></div>
+			<span v-else-if="item.type === 'label'" class="label item" :key="i">
 				<span>{{ item.text }}</span>
 			</span>
-			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
 				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 				<span>{{ item.text }}</span>
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</router-link>
-			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
 				<span>{{ item.text }}</span>
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</a>
-			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
 				<mk-avatar :user="item.user" class="avatar"/><mk-user-name :user="item.user"/>
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</button>
-			<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
 				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 				<span>{{ item.text }}</span>

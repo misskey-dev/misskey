@@ -9,7 +9,7 @@
 			<mk-pagination :pagination="pagination" class="emojis" ref="emojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
-					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" :data-index="i" @click="selected = emoji" :class="{ selected: selected && (selected.id === emoji.id) }">
+					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selected = emoji" :class="{ selected: selected && (selected.id === emoji.id) }">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
 						<div class="body">
 							<span class="name">{{ emoji.name }}</span>
@@ -30,7 +30,7 @@
 			<mk-pagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
-					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" :data-index="i" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
+					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
 						<div class="body">
 							<span class="name">{{ emoji.name }}</span>

@@ -1,8 +1,8 @@
 <template>
-<sequential-entrance class="sqadhkmv" ref="list" :direction="direction">
+<sequential-entrance class="sqadhkmv" ref="list" :direction="direction" :reversed="reversed">
 	<template v-for="(item, i) in items">
 		<slot :item="item" :i="i"></slot>
-		<div class="separator" :key="item.id + '_date'" :data-index="i" v-if="i != items.length - 1 && new Date(item.createdAt).getDate() != new Date(items[i + 1].createdAt).getDate()">
+		<div class="separator" :key="item.id + '_date'" v-if="i != items.length - 1 && new Date(item.createdAt).getDate() != new Date(items[i + 1].createdAt).getDate()">
 			<p class="date">
 				<span><fa class="icon" :icon="faAngleUp"/>{{ getDateText(item.createdAt) }}</span>
 				<span>{{ getDateText(items[i + 1].createdAt) }}<fa class="icon" :icon="faAngleDown"/></span>
@@ -28,6 +28,11 @@ export default Vue.extend({
 		direction: {
 			type: String,
 			required: false
+		},
+		reversed: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 

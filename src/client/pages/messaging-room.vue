@@ -18,8 +18,8 @@
 		<button class="more _button" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
 			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('@.loading') : $t('@.load-more') }}
 		</button>
-		<x-list class="messages" :items="messages" v-slot="{ item: message, i }" direction="up">
-			<x-message :message="message" :is-group="group != null" :key="message.id" :data-index="messages.length - i"/>
+		<x-list class="messages" :items="messages" v-slot="{ item: message, i }" direction="up" reversed>
+			<x-message :message="message" :is-group="group != null" :key="message.id"/>
 		</x-list>
 	</div>
 	<footer>

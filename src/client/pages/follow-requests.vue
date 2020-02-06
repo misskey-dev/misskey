@@ -1,6 +1,6 @@
 <template>
 <mk-pagination :pagination="pagination" #default="{items}" class="mk-follow-requests" ref="list">
-	<div class="user _panel" v-for="(req, i) in items" :key="req.id" :data-index="i">
+	<div class="user _panel" v-for="(req, i) in items" :key="req.id">
 		<mk-avatar class="avatar" :user="req.follower"/>
 		<div class="body">
 			<div class="name">

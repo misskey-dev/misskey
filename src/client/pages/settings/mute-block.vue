@@ -6,7 +6,7 @@
 		<mk-pagination :pagination="mutingPagination" class="muting">
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
-				<div class="user" v-for="(mute, i) in items" :key="mute.id" :data-index="i">
+				<div class="user" v-for="(mute, i) in items" :key="mute.id">
 					<router-link class="name" :to="mute.mutee | userPage">
 						<mk-acct :user="mute.mutee"/>
 					</router-link>
@@ -19,7 +19,7 @@
 		<mk-pagination :pagination="blockingPagination" class="blocking">
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
-				<div class="user" v-for="(block, i) in items" :key="block.id" :data-index="i">
+				<div class="user" v-for="(block, i) in items" :key="block.id">
 					<router-link class="name" :to="block.blockee | userPage">
 						<mk-acct :user="block.blockee"/>
 					</router-link>

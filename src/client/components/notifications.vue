@@ -2,7 +2,7 @@
 <div class="mk-notifications">
 	<div class="contents">
 		<x-list class="notifications" :items="items" v-slot="{ item: notification, i }">
-			<x-notification :notification="notification" :with-time="true" :full="true" class="notification" :key="notification.id" :data-index="i"/>
+			<x-notification :notification="notification" :with-time="true" :full="true" class="notification" :key="notification.id"/>
 		</x-list>
 
 		<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">

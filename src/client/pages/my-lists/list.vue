@@ -5,7 +5,7 @@
 			<div class="_title">{{ list.name }}</div>
 			<div class="_content">
 				<div class="users">
-					<div class="user" v-for="(user, i) in users" :key="user.id" :data-index="i">
+					<div class="user" v-for="(user, i) in users" :key="user.id">
 						<mk-avatar :user="user" class="avatar"/>
 						<div class="body">
 							<mk-user-name :user="user" class="name"/>

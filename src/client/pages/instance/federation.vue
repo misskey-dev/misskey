@@ -18,7 +18,7 @@
 		</div>
 		<div class="_content">
 			<mk-pagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
-				<div class="instance" v-for="(instance, i) in items" :key="instance.id" :data-index="i" @click="info(instance)">
+				<div class="instance" v-for="(instance, i) in items" :key="instance.id" @click="info(instance)">
 					<div class="host"><fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
 					<div class="status">
 						<span class="sub" v-if="instance.followersCount > 0"><fa :icon="faCaretDown" class="icon"/>Sub</span>

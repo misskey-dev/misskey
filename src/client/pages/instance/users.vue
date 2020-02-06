@@ -20,7 +20,7 @@
 		<div class="_title"><fa :icon="faUsers"/> {{ $t('users') }}</div>
 		<div class="_content _list">
 			<mk-pagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
-				<button class="user _button _listItem" v-for="(user, i) in items" :key="user.id" :data-index="i" @click="show(user)">
+				<button class="user _button _listItem" v-for="(user, i) in items" :key="user.id" @click="show(user)">
 					<mk-avatar :user="user" class="avatar"/>
 					<div class="body">
 						<mk-user-name :user="user" class="name"/>
