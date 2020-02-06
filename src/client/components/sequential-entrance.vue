@@ -65,11 +65,9 @@ export default Vue.extend({
 			this.index++;
 		},
 		leave(el, done) {
-			setTimeout(() => {
-				el.style.opacity = 0;
-				el.style.transform = this.direction === 'down' ? 'translateY(64px)' : 'translateY(-64px)';
-				setTimeout(done, 700);
-			}, this.delay * el.dataset.index)
+			el.style.opacity = 0;
+			el.style.transform = this.direction === 'down' ? 'translateY(64px)' : 'translateY(-64px)';
+			setTimeout(done, 700);
 		},
 		focus() {
 			this.$slots.default[0].elm.focus();
