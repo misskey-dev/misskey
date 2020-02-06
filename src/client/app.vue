@@ -102,7 +102,7 @@
 						>
 							<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
 								<header>
-									<span class="handle"><fa :icon="faBars"/></span>{{ widget.name }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+									<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
 								</header>
 								<div @click="widgetFunc(widget.id)">
 									<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
