@@ -269,10 +269,11 @@ export default Vue.extend({
 				position: absolute;
 				top: 12px;
 				left: 12px;
-				padding: 4px 6px;
+				padding: 4px 8px;
 				color: #fff;
 				background: rgba(0, 0, 0, 0.7);
-				font-size: 12px;
+				font-size: 0.7em;
+				border-radius: 6px;
 			}
 
 			> .actions {
