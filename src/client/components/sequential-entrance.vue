@@ -34,40 +34,30 @@ export default Vue.extend({
 			default: false
 		}
 	},
-	data() {
-		return {
-			currentChildren: [] as Node[],
-			index: 0
-		};
-	},
+	i: 0,
 	methods: {
-		updateChildren() {
-			this.currentChildren = this.$slots.default!.filter(n => n.elm != null).map(n => n.elm!);
-		},
 		beforeEnter(el) {
 			el.style.opacity = 0;
 			el.style.transform = this.direction === 'down' ? 'translateY(-64px)' : 'translateY(64px)';
+			let index = this.$options.i;
+			const delay = this.delay * index;
+			el.style.transition = [getComputedStyle(el).transition, `transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`, `opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`].filter(x => x != '').join(',');
+			this.$options.i++;
 		},
 		enter(el, done) {
-			let index = this.index;
-			// TODO
-			//if (this.reversed) index = ...;
-			//console.log(index);
-			el.style.transition = [getComputedStyle(el).transition, 'transform 0.7s cubic-bezier(0.23, 1, 0.32, 1)', 'opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1)'].filter(x => x != '').join(',');
 			setTimeout(() => {
 				el.style.opacity = 1;
 				el.style.transform = 'translateY(0px)';
-				setTimeout(() => {
+				el.addEventListener('transitionend', () => {
+					el.style.transition = '';
+					this.$options.i--;
 					done();
-					this.index--;
-				}, 700);
-			}, this.delay * index)
-			this.index++;
+				}, { once: true });
+			});
 		},
-		leave(el, done) {
+		leave(el) {
 			el.style.opacity = 0;
 			el.style.transform = this.direction === 'down' ? 'translateY(64px)' : 'translateY(-64px)';
-			setTimeout(done, 700);
 		},
 		focus() {
 			this.$slots.default[0].elm.focus();
