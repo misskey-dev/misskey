@@ -413,6 +413,7 @@ _widgets:
   calendar: "カレンダー"
   trends: "トレンド"
   clock: "時計"
+  rss: "RSSリーダー"
 
 _cw:
   hide: "隠す"
