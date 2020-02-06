@@ -8,6 +8,7 @@ unreleaed
 * Renote メニューが自分の投稿のRenoteでない限り表示されない問題を修正
 * MFM jump, spin, title が効かない問題を修正
 * AP: Likeで正しいActivity IDを提示するように修正
+* AP: Misskey以外からのトークの返信が受け取れないのを修正
 
 12.0.0 indigo (2020/02/06)
 --------------------
