@@ -4,7 +4,7 @@
 	<portal to="title">{{ title }}</portal>
 	<main class="_card">
 		<div class="_content">
-			<div v-html="body"/>
+			<div v-html="body" class="qyqbqfal"></div>
 		</div>
 	</main>
 </div>
@@ -14,8 +14,11 @@
 import Vue from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
+import { url, lang } from '../config';
 
-const markdown = MarkdownIt();
+const markdown = MarkdownIt({
+	html: true
+});
 
 export default Vue.extend({
 	metaInfo() {
@@ -24,12 +27,19 @@ export default Vue.extend({
 		};
 	},
 
-	components: {
+	props: {
+		doc: {
+			type: String,
+			required: true
+		}
 	},
 
 	watch: {
-		markdown() {
-			this.updateText();
+		doc: {
+			handler() {
+				this.fetchDoc();
+			},
+			immediate: true,
 		}
 	},
 
@@ -38,32 +48,23 @@ export default Vue.extend({
 			faFileAlt,
 			title: '',
 			body: '',
-			markdown: `# ぽぺ
-ぽぺ **ぽぺ** _ぽぺーーーーーっ！_ \`ぽぺ\`
-
-\`\`\`
-export default class Pope extends PopeBase
-{
-	public Pope() {
-		return 'ぽぺ';
-	}
-}
-\`\`\``,
+			markdown: '',
 		}
 	},
 
-	created() {
-		this.updateText()
-	},
-
 	methods: {
-		updateText() {
-			// markdown の全容をパースする
-			const parsed = markdown.parse(this.markdown, {});
-			if (parsed.length === 0)
-				return;
+		fetchDoc() {
+			fetch(`${url}/assets/docs/${this.doc}.${lang}.md`).then(res => res.text()).then(md => {
+				this.parse(md);
+			});
+		},
 
-			const buf = [ ...parsed ]
+		parse(md: string) {
+			// markdown の全容をパースする
+			const parsed = markdown.parse(md, {});
+			if (parsed.length === 0) return;
+
+			const buf = [...parsed];
 			const headingTokens = [];
 			let headingStart = 0;
 
@@ -81,7 +82,7 @@ export default class Pope extends PopeBase
 			}
 
 			// 抽出した見出しを除く部分をbodyとして抽出する
-			const bodyTokens = [ ...parsed ]
+			const bodyTokens = [...parsed];
 			bodyTokens.splice(headingStart, headingTokens.length + 2);
 
 			// 各々レンダーする
@@ -91,3 +92,43 @@ export default class Pope extends PopeBase
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.qyqbqfal {
+	> *:first-child {
+		margin-top: 0;
+	}
+
+	> *:last-child {
+		margin-bottom: 0;
+	}
+
+	::v-deep h2 {
+		font-size: 1.25em;
+		padding: 0 0 0.5em 0;
+		border-bottom: solid 1px var(--divider);
+	}
+
+	::v-deep table {
+		width: 100%;
+		max-width: 100%;
+		overflow: auto;
+	}
+
+	::v-deep kbd.group {
+		display: inline-block;
+		padding: 2px;
+		border: 1px solid var(--divider);
+		border-radius: 4px;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	}
+
+	::v-deep kbd.key {
+		display: inline-block;
+		padding: 6px 8px;
+		border: solid 1px var(--divider);
+		border-radius: 4px;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	}
+}
+</style>

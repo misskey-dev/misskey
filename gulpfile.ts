@@ -74,9 +74,17 @@ gulp.task('copy:client', () =>
 			.pipe(gulp.dest('./built/client/assets/'))
 );
 
+gulp.task('copy:docs', () =>
+		gulp.src([
+			'./src/docs/**/*',
+		])
+		.pipe(gulp.dest('./built/client/assets/docs/'))
+);
+
 gulp.task('build:client', gulp.parallel(
 	'build:client:styles',
-	'copy:client'
+	'copy:client',
+	'copy:docs'
 ));
 
 gulp.task('build', gulp.parallel(

@@ -179,6 +179,7 @@ export default Vue.extend({
 			return {
 				'p': this.post,
 				'n': this.post,
+				'h|/': this.help
 			};
 		},
 
@@ -254,6 +255,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		help() {
+			this.$router.push('/docs/keyboard-shortcut');
+		},
+		
 		back() {
 			if (this.canBack) window.history.back();
 		},
