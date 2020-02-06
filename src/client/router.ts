@@ -6,6 +6,8 @@ Vue.use(VueRouter);
 
 const page = (path: string) => () => import(`./pages/${path}.vue`).then(m => m.default);
 
+let indexScrollPos = 0;
+
 export const router = new VueRouter({
 	mode: 'history',
 	routes: [
@@ -55,13 +57,19 @@ export const router = new VueRouter({
 	// なんかHacky
 	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
 	// setTimeout しないと、アニメーション(トランジション)の関係でうまく動かない
-	scrollBehavior(to, from, savedPosition) {
+	scrollBehavior(to) {
 		window._scroll = () => { // さらにHacky
-			if (savedPosition) {
-				window.scroll({ top: savedPosition.y, behavior: 'instant' });
+			if (to.name === 'index') {
+				window.scroll({ top: indexScrollPos, behavior: 'instant' });
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });
 			}
 		};
+	}
+});
+
+router.afterEach((to, from) => {
+	if (from.name === 'index') {
+		indexScrollPos = window.scrollY;
 	}
 });
