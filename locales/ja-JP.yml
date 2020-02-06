@@ -351,6 +351,7 @@ posted: "投稿しました"
 autoReloadWhenDisconnected: "サーバー切断時に自動リロード"
 autoNoteWatch: "ノートの自動ウォッチ"
 reduceUiAnimation: "UIのアニメーションを減らす"
+share: "共有"
 
 _2fa:
   registerDevice: "デバイスを登録"

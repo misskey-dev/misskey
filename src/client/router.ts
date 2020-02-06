@@ -52,6 +52,7 @@ export const router = new VueRouter({
 		{ path: '/tags/:tag', component: page('tag') },
 		{ path: '/auth/:token', component: page('auth') },
 		{ path: '/authorize-follow', component: page('follow') },
+		{ path: '/share', component: page('share') },
 		/*{ path: '*', component: MkNotFound }*/
 	],
 	// なんかHacky
