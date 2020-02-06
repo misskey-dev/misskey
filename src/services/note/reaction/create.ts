@@ -1,6 +1,6 @@
 import { publishNoteStream } from '../../stream';
 import watch from '../watch';
-import renderLike from '../../../remote/activitypub/renderer/like';
+import { renderLike } from '../../../remote/activitypub/renderer/like';
 import DeliverManager from '../../../remote/activitypub/deliver-manager';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { IdentifiableError } from '../../../misc/identifiable-error';
@@ -38,7 +38,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 	}
 
 	// Create reaction
-	await NoteReactions.save({
+	const inserted = await NoteReactions.save({
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,
@@ -94,7 +94,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 
 	//#region 配信
 	if (Users.isLocalUser(user) && !note.localOnly) {
-		const content = renderActivity(renderLike(user, note, reaction));
+		const content = renderActivity(renderLike(inserted, note));
 		const dm = new DeliverManager(user, content);
 		if (note.userHost !== null) {
 			const reactee = await Users.findOne(note.userId)

@@ -1,10 +1,12 @@
 import config from '../../../config';
-import { ILocalUser } from '../../../models/entities/user';
+import { NoteReaction } from '../../../models/entities/note-reaction';
 import { Note } from '../../../models/entities/note';
 
-export default (user: ILocalUser, note: Note, reaction: string) => ({
+export const renderLike = (noteReaction: NoteReaction, note: Note) => ({
 	type: 'Like',
-	actor: `${config.url}/users/${user.id}`,
-	object: note.uri ? note.uri : `${config.url}/notes/${note.id}`,
-	_misskey_reaction: reaction
+	id: `${config.url}/likes/${noteReaction.id}`,
+	actor: `${config.url}/users/${noteReaction.userId}`,
+	object: note.uri ? note.uri : `${config.url}/notes/${noteReaction.noteId}`,
+	content: noteReaction.reaction,
+	_misskey_reaction: noteReaction.reaction
 });

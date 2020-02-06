@@ -13,10 +13,11 @@ import Following from './activitypub/following';
 import Featured from './activitypub/featured';
 import { inbox as processInbox } from '../queue';
 import { isSelfHost } from '../misc/convert-host';
-import { Notes, Users, Emojis, UserKeypairs } from '../models';
+import { Notes, Users, Emojis, UserKeypairs, NoteReactions } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In } from 'typeorm';
 import { ensure } from '../prelude/ensure';
+import { renderLike } from '../remote/activitypub/renderer/like';
 
 // Init router
 const router = new Router();
@@ -198,6 +199,27 @@ router.get('/emojis/:emoji', async ctx => {
 	}
 
 	ctx.body = renderActivity(await renderEmoji(emoji));
+	ctx.set('Cache-Control', 'public, max-age=180');
+	setResponseType(ctx);
+});
+
+// like
+router.get('/likes/:like', async ctx => {
+	const reaction = await NoteReactions.findOne(ctx.params.like);
+
+	if (reaction == null) {
+		ctx.status = 404;
+		return;
+	}
+
+	const note = await Notes.findOne(reaction.noteId);
+
+	if (note == null) {
+		ctx.status = 404;
+		return;
+	}
+
+	ctx.body = renderActivity(await renderLike(reaction, note));
 	ctx.set('Cache-Control', 'public, max-age=180');
 	setResponseType(ctx);
 });

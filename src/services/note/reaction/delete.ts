@@ -1,5 +1,5 @@
 import { publishNoteStream } from '../../stream';
-import renderLike from '../../../remote/activitypub/renderer/like';
+import { renderLike } from '../../../remote/activitypub/renderer/like';
 import renderUndo from '../../../remote/activitypub/renderer/undo';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import DeliverManager from '../../../remote/activitypub/deliver-manager';
@@ -40,7 +40,7 @@ export default async (user: User, note: Note) => {
 
 	//#region 配信
 	if (Users.isLocalUser(user) && !note.localOnly) {
-		const content = renderActivity(renderUndo(renderLike(user, note, exist.reaction), user));
+		const content = renderActivity(renderUndo(renderLike(exist, note), user));
 		const dm = new DeliverManager(user, content);
 		if (note.userHost !== null) {
 			const reactee = await Users.findOne(note.userId)
