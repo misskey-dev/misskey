@@ -5,7 +5,7 @@
 >
 	<textarea
 		v-model="text"
-		ref="textarea"
+		ref="text"
 		@keypress="onKeypress"
 		@paste="onPaste"
 		:placeholder="$t('input-message-here')"
@@ -16,22 +16,20 @@
 	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$t('send')">
 		<template v-if="!sending"><fa :icon="faPaperPlane"/></template><template v-if="sending"><fa icon="spinner .spin"/></template>
 	</button>
-	<button class="attach-from-local _button" @click="chooseFile" :title="$t('attach-from-local')">
-		<fa :icon="faUpload"/>
-	</button>
-	<button class="attach-from-drive _button" @click="chooseFileFromDrive" :title="$t('attach-from-drive')">
-		<fa :icon="faCloud"/>
-	</button>
+	<button class="_button" @click="chooseFile"><fa :icon="faPhotoVideo"/></button>
+	<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPaperPlane, faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
+import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
+import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
+import i18n from '../i18n';
 import { formatTimeString } from '../../misc/format-time-string';
+import { selectFile } from '../scripts/select-file';
 
 export default Vue.extend({
 	i18n,
@@ -53,7 +51,7 @@ export default Vue.extend({
 			text: null,
 			file: null,
 			sending: false,
-			faPaperPlane, faUpload, faCloud
+			faPaperPlane, faPhotoVideo, faLaughSquint
 		};
 	},
 	computed: {
@@ -80,7 +78,7 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		autosize(this.$refs.textarea);
+		autosize(this.$refs.text);
 
 		// 書きかけの投稿を復元
 		const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[this.draftId];
@@ -160,14 +158,8 @@ export default Vue.extend({
 			}
 		},
 
-		chooseFile() {
-			(this.$refs.file as any).click();
-		},
-
-		chooseFileFromDrive() {
-			this.$chooseDriveFile({
-				multiple: false
-			}).then(file => {
+		chooseFile(e) {
+			selectFile(this, e.currentTarget || e.target, this.$t('selectFile'), false).then(file => {
 				this.file = file;
 			});
 		},
@@ -227,6 +219,15 @@ export default Vue.extend({
 
 			localStorage.setItem('message_drafts', JSON.stringify(data));
 		},
+
+		async insertEmoji(ev) {
+			const vm = this.$root.new(await import('../components/emoji-picker.vue').then(m => m.default), {
+				source: ev.currentTarget || ev.target
+			}).$once('chosen', emoji => {
+				insertTextAtCursor(this.$refs.text, emoji);
+				vm.close();
+			});
+		}
 	}
 });
 </script>
@@ -330,8 +331,7 @@ export default Vue.extend({
 		}
 	}
 
-	.attach-from-local,
-	.attach-from-drive {
+	._button {
 		margin: 0;
 		padding: 16px;
 		font-size: 1em;
