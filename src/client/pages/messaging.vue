@@ -32,7 +32,7 @@
 		</router-link>
 	</sequential-entrance>
 	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
-	<p class="fetching" v-if="fetching"><fa icon="spinner" pulse fixed-width/>{{ $t('@.loading') }}<mk-ellipsis/></p>
+	<mk-loading v-if="fetching"/>
 </div>
 </template>
 
@@ -280,17 +280,6 @@ export default Vue.extend({
 		text-align: center;
 		color: #999;
 		font-weight: 500;
-	}
-
-	> .fetching {
-		margin: 0;
-		padding: 16px;
-		text-align: center;
-		color: var(--text);
-
-		> [data-icon] {
-			margin-right: 4px;
-		}
 	}
 
 	@media (max-width: 400px) {
