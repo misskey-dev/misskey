@@ -352,6 +352,8 @@ autoReloadWhenDisconnected: "サーバー切断時に自動リロード"
 autoNoteWatch: "ノートの自動ウォッチ"
 reduceUiAnimation: "UIのアニメーションを減らす"
 share: "共有"
+notFound: "見つかりません"
+notFoundDescription: "指定されたURLに該当するページはありませんでした。"
 
 _2fa:
   registerDevice: "デバイスを登録"

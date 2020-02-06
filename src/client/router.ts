@@ -53,7 +53,7 @@ export const router = new VueRouter({
 		{ path: '/auth/:token', component: page('auth') },
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
-		/*{ path: '*', component: MkNotFound }*/
+		{ path: '*', component: page('not-found') }
 	],
 	// なんかHacky
 	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
