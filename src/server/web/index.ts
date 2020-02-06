@@ -10,7 +10,6 @@ import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
 
-import docs from './docs';
 import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
@@ -84,7 +83,6 @@ router.get('/robots.txt', async ctx => {
 //#endregion
 
 // Docs
-router.use('/docs', docs.routes());
 router.get('/api-doc', async ctx => {
 	await send(ctx as any, '/assets/redoc.html', {
 		root: client
