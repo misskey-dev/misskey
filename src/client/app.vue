@@ -76,7 +76,7 @@
 	<div class="contents">
 		<main ref="main">
 			<div class="content">
-				<transition name="page" mode="out-in">
+				<transition name="page" mode="out-in" @enter="onTransition">
 					<keep-alive :include="['index']">
 						<router-view></router-view>
 					</keep-alive>
@@ -256,6 +256,10 @@ export default Vue.extend({
 	methods: {
 		back() {
 			if (this.canBack) window.history.back();
+		},
+
+		onTransition() {
+			if (window._scroll) window._scroll();
 		},
 
 		post() {

@@ -56,13 +56,12 @@ export const router = new VueRouter({
 	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
 	// setTimeout しないと、アニメーション(トランジション)の関係でうまく動かない
 	scrollBehavior(to, from, savedPosition) {
-		setTimeout(() => {
+		window._scroll = () => { // さらにHacky
 			if (savedPosition) {
 				window.scroll({ top: savedPosition.y, behavior: 'instant' });
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });
 			}
-		}, 600);
-		return;
+		};
 	}
 });
