@@ -338,17 +338,25 @@ export default Vue.extend({
 		},
 
 		deleteFolder(folder) {
-			this.$root.dialog({
-				type: 'warning',
-				title: this.$t('deleteFolderConfirm'),
-				showCancelButton: true
-			}).then(({ canceled, result: name }) => {
-				if (canceled) return;
-				this.$root.api('drive/folders/delete', {
-					folderId: folder.id
-				}).then(() => {
-					this.move(folder.parentId);
-				});
+			this.$root.api('drive/folders/delete', {
+				folderId: folder.id
+			}).then(() => {
+				this.move(folder.parentId);
+			}).catch(err => {
+				switch(err.id) {
+					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
+						this.$root.dialog({
+							type: 'error',
+							title: this.$t('unable-to-delete'),
+							text: this.$t('has-child-files-or-folders')
+						});
+						break;
+					default:
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('unable-to-delete')
+						});
+					}
 			});
 		},
 
