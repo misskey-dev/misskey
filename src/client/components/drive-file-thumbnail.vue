@@ -133,6 +133,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .zdjebgpv {
 	display: flex;
+	position: relative;
 
 	> img,
 	> .icon {
