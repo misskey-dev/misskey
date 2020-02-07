@@ -18,9 +18,9 @@
 		</mk-switch>
 	</div>
 	<div class="_content">
-		<mk-button @click="readAllNotifications">{{ $t('mark-as-read-all-notifications') }}</mk-button>
-		<mk-button @click="readAllUnreadNotes">{{ $t('mark-as-read-all-unread-notes') }}</mk-button>
-		<mk-button @click="readAllMessagingMessages">{{ $t('mark-as-read-all-talk-messages') }}</mk-button>
+		<mk-button @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</mk-button>
+		<mk-button @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</mk-button>
+		<mk-button @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</mk-button>
 	</div>
 	<div class="_content">
 		<mk-switch v-model="reduceAnimation">
