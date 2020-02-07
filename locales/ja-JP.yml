@@ -360,6 +360,8 @@ markAsReadAllNotifications: "すべての通知を既読にする"
 markAsReadAllUnreadNotes: "すべての投稿を既読にする"
 markAsReadAllTalkMessages: "すべてのトークを既読にする"
 help: "ヘルプ"
+inputMessageHere: "ここにメッセージを入力"
+close: "閉じる"
 
 _2fa:
   totpHeader: "認証アプリ"

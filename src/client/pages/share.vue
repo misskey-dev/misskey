@@ -7,7 +7,8 @@
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
 			<div>{{ text }}</div>
-			<mk-button @click="post()">{{ $t('post') }}</mk-button>
+			<mk-button @click="post()" v-if="!posted">{{ $t('post') }}</mk-button>
+			<mk-button primary @click="close()" v-else>{{ $t('close') }}</mk-button>
 		</div>
 		<div class="_footer" v-if="url">{{ url }}</div>
 	</section>
@@ -39,6 +40,8 @@ export default Vue.extend({
 			title: null,
 			text: null,
 			url: null,
+			posted: false,
+
 			faShareAlt
 		}
 	},
@@ -64,9 +67,15 @@ export default Vue.extend({
 				instant: true,
 				initialText: text.trim()
 			}).$once('posted', () => {
-				alert('a');
-				window.close();
+				this.posted = true;
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
 			});
+		},
+		close() {
+			window.close()
 		}
 	}
 });
