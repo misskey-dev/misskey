@@ -1,3 +1,0 @@
-# Misskeyについて
-
-MisskeyはミニブログSNSです。
