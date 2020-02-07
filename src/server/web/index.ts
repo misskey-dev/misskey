@@ -3,12 +3,15 @@
  */
 
 import * as os from 'os';
+import * as fs from 'fs';
 import ms = require('ms');
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import * as send from 'koa-send';
 import * as favicon from 'koa-favicon';
 import * as views from 'koa-views';
+import * as glob from 'glob';
+import * as MarkdownIt from 'markdown-it';
 
 import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
@@ -20,6 +23,11 @@ import getNoteSummary from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
 import { getConnection } from 'typeorm';
 import redis from '../../db/redis';
+import locales = require('../../../locales');
+
+const markdown = MarkdownIt({
+	html: true
+});
 
 const client = `${__dirname}/../../client/`;
 
@@ -98,7 +106,39 @@ router.get('/api.json', async ctx => {
 
 router.get('/docs.json', async ctx => {
 	const lang = ctx.query.lang;
-	// TODO: glob mds and extract title
+	if (!Object.keys(locales).includes(lang)) {
+		ctx.body = [];
+		return;
+	}
+	const paths = glob.sync(__dirname + `/../../../src/docs/*.${lang}.md`);
+	const docs: { path: string; title: string; }[] = [];
+	for (const path of paths) {
+		const md = fs.readFileSync(path, { encoding: 'utf8' });
+		const parsed = markdown.parse(md, {});
+		if (parsed.length === 0) return;
+
+		const buf = [...parsed];
+		const headingTokens = [];
+
+		// もっとも上にある見出しを抽出する
+		while (buf[0].type !== 'heading_open') {
+			buf.shift();
+		}
+		buf.shift();
+		while (buf[0].type as string !== 'heading_close') {
+			const token = buf.shift();
+			if (token) {
+				headingTokens.push(token);
+			}
+		}
+
+		docs.push({
+			path: path.split('/').pop()!.split('.')[0],
+			title: markdown.renderer.render(headingTokens, {}, {})
+		});
+	}
+
+	ctx.body = docs;
 });
 
 const getFeed = async (acct: string) => {

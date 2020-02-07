@@ -4,6 +4,11 @@
 	<portal to="title">{{ $t('help') }}</portal>
 	<main class="_card">
 		<div class="_content">
+			<ul>
+				<li v-for="doc in docs" :key="doc.path">
+					<router-link :to="`/docs/${doc.path}`">{{ doc.title }}</router-link>
+				</li>
+			</ul>
 		</div>
 	</main>
 </div>
@@ -12,6 +17,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { url, lang } from '../config';
 
 export default Vue.extend({
 	metaInfo() {
@@ -22,8 +28,15 @@ export default Vue.extend({
 
 	data() {
 		return {
+			docs: [],
 			faQuestionCircle
 		}
+	},
+
+	created() {
+		fetch(`${url}/docs.json?lang=${lang}`).then(res => res.json()).then(docs => {
+			this.docs = docs;
+		});
 	},
 });
 </script>
