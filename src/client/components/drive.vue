@@ -321,9 +321,9 @@ export default Vue.extend({
 
 		renameFolder(folder) {
 			this.$root.dialog({
-				title: this.$t('rename-folder'),
+				title: this.$t('contextmenu.rename-folder'),
 				input: {
-					placeholder: this.$t('folder-name'),
+					placeholder: this.$t('contextmenu.input-new-folder-name'),
 					default: folder.name
 				}
 			}).then(({ canceled, result: name }) => {
@@ -332,6 +332,7 @@ export default Vue.extend({
 					folderId: folder.id,
 					name: name
 				}).then(folder => {
+					// FIXME: 画面を更新するために自分自身に移動
 					this.move(folder);
 				});
 			});
@@ -341,6 +342,7 @@ export default Vue.extend({
 			this.$root.api('drive/folders/delete', {
 				folderId: folder.id
 			}).then(() => {
+				// 削除時に親フォルダに移動
 				this.move(folder.parentId);
 			}).catch(err => {
 				switch(err.id) {
