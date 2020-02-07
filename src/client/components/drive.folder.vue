@@ -19,7 +19,7 @@
 		{{ folder.name }}
 	</p>
 	<p class="upload" v-if="$store.state.settings.uploadFolder == folder.id">
-		{{ $t('upload-folder') }}
+		{{ $t('uploadFolder') }}
 	</p>
 </div>
 </template>
