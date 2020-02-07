@@ -1,1 +1,5 @@
 ---
+_ago:
+  unknown: "未知"
+  future: "未来"
+  justNow: "最近"
