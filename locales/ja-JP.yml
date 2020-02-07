@@ -354,6 +354,7 @@ reduceUiAnimation: "UIのアニメーションを減らす"
 share: "共有"
 notFound: "見つかりません"
 notFoundDescription: "指定されたURLに該当するページはありませんでした。"
+help: "ヘルプ"
 
 _2fa:
   registerDevice: "デバイスを登録"

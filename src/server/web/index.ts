@@ -96,6 +96,11 @@ router.get('/api.json', async ctx => {
 	ctx.body = genOpenapiSpec();
 });
 
+router.get('/docs.json', async ctx => {
+	const lang = ctx.query.lang;
+	// TODO: glob mds and extract title
+});
+
 const getFeed = async (acct: string) => {
 	const { username, host } = parseAcct(acct);
 	const user = await Users.findOne({
