@@ -192,6 +192,36 @@ name: "名称"
 userList: "列表"
 lastUsed: "最后使用："
 unregister: "删除账户"
+post: "投稿"
+posted: "已投稿"
+share: "分享"
+help: "帮助"
+_permissions:
+  "read:blocks": "查看黑名单"
+  "write:blocks": "编辑黑名单"
+  "read:drive": "查看网盘"
+  "write:drive": "管理网盘文件"
+  "read:favorites": "查看收藏夹"
+  "write:favorites": "编辑收藏夹"
+  "read:following": "查看关注信息"
+  "write:following": "关注/取消关注"
+  "read:messaging": "查看对话"
+  "write:messaging": "对话操作"
+  "read:mutes": "查看屏蔽列表"
+  "write:mutes": "编辑屏蔽列表"
+  "read:notifications": "查看通知"
+  "write:notifications": "管理通知"
+  "read:reactions": "查看回应"
+  "write:reactions": "回应操作"
+  "write:votes": "投票"
+  "read:pages": "查看页面"
+  "write:pages": "操作页面"
+  "read:page-likes": "查看喜欢的页面"
+  "write:page-likes": "操作喜欢的页面"
+  "read:user-groups": "查看用户组"
+  "write:user-groups": "操作用户组"
+_auth:
+  permissionAsk: "这个应用程序需要以下权限"
 _widgets:
   notifications: "通知"
   timeline: "时间线"
@@ -199,6 +229,7 @@ _cw:
   show: "查看更多"
 _poll:
   deadlineTime: "小时"
+  vote: "投票"
 _visibility:
   followers: "关注者"
 _profile:
@@ -210,6 +241,7 @@ _exportOrImport:
   blockingList: "屏蔽"
   userLists: "列表"
 _pages:
+  viewPage: "查看页面"
   blocks:
     image: "图片"
   script:
