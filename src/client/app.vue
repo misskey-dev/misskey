@@ -137,7 +137,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt, faSatellite, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt, faSatellite, faInfoCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
@@ -488,6 +488,11 @@ export default Vue.extend({
 					to: '/games',
 					icon: faGamepad,
 				}, null] : []), {
+					type: 'link',
+					text: this.$t('help'),
+					to: '/docs',
+					icon: faQuestionCircle,
+				}, {
 					type: 'link',
 					text: this.$t('about'),
 					to: '/about',
