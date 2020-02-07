@@ -364,7 +364,7 @@ _2fa:
   totpHeader: "認証アプリ"
   alreadyRegistered: "既に設定は完了しています。"
   registerDevice: "デバイスを登録"
-  registerDevice: "キーを登録"
+  registerKey: "キーを登録"
   step1: "まず、{a}や{b}などの認証アプリをお使いのデバイスにインストールします。"
   step2: "次に、表示されているQRコードをアプリでスキャンします。"
   step3: "アプリに表示されているトークンを入力して完了です。"
