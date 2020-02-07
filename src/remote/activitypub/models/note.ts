@@ -82,7 +82,6 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	if (resolver == null) resolver = new Resolver();
 
 	const object: any = await resolver.resolve(value);
-	if (object && !object.attributedTo) object.attributedTo = activity?.actor;
 
 	const entryUri = getApId(value);
 	const err = validateNote(object, entryUri);

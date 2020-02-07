@@ -11,6 +11,10 @@ export default async (actor: IRemoteUser, activity: ICreate): Promise<void> => {
 
 	logger.info(`Create: ${uri}`);
 
+	if (typeof activity.object === 'object' && !activity.object.attributedTo) {
+		activity.object.attributedTo = activity.actor;
+	}
+
 	const resolver = new Resolver();
 
 	const object = await resolver.resolve(activity.object).catch(e => {
