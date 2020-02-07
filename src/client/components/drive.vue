@@ -319,6 +319,21 @@ export default Vue.extend({
 			});
 		},
 
+		deleteFolder(folder) {
+			this.$root.dialog({
+				type: 'warning',
+				title: this.$t('deleteFolderConfirm'),
+				showCancelButton: true
+			}).then(({ canceled, result: name }) => {
+				if (canceled) return;
+				this.$root.api('drive/folders/delete', {
+					folderId: folder.id
+				}).then(() => {
+					this.move(folder.parentId);
+				});
+			});
+		},
+
 		onChangeFileInput() {
 			for (const file of Array.from((this.$refs.fileInput as any).files)) {
 				this.upload(file, this.folder);

@@ -61,7 +61,7 @@ export default Vue.extend({
 				} : undefined, this.folder ? {
 					text: this.$t('deleteFolder'),
 					icon: faTrashAlt,
-					action: () => { this.$refs.drive.deleteFolder(); }
+					action: () => { this.$refs.drive.deleteFolder(this.folder); }
 				} : undefined, {
 					text: this.$t('createFolder'),
 					icon: faFolderPlus,
