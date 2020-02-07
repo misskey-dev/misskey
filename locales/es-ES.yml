@@ -27,7 +27,6 @@ gotIt: "Entendido"
 cancel: "Cancelar"
 enterUsername: "Introduce el nombre de usuario"
 renotedBy: "Renotado por {user}"
-noNotes: No hay notas
 noNotifications: "No hay notificaciones"
 instance: "Instancia"
 settings: "Configuración"
