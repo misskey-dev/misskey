@@ -248,6 +248,8 @@ export default Vue.extend({
 		// https://stackoverflow.com/questions/33891709/when-flexbox-items-wrap-in-column-mode-container-does-not-grow-its-width
 		if (this.enableWidgets) {
 			setInterval(() => {
+				if (!this.$refs.widgetsEditButton) return;
+
 				const width = this.$refs.widgetsEditButton.offsetLeft + 300;
 				this.$refs.widgets.style.width = width + 'px';
 			}, 1000);
@@ -258,7 +260,7 @@ export default Vue.extend({
 		help() {
 			this.$router.push('/docs/keyboard-shortcut');
 		},
-		
+
 		back() {
 			if (this.canBack) window.history.back();
 		},
