@@ -57,7 +57,7 @@ export default Vue.extend({
 				}, this.folder ? {
 					text: this.$t('renameFolder'),
 					icon: faICursor,
-					action: () => { this.$refs.drive.renameFolder(); }
+					action: () => { this.$refs.drive.renameFolder(this.folder); }
 				} : undefined, this.folder ? {
 					text: this.$t('deleteFolder'),
 					icon: faTrashAlt,

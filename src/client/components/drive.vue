@@ -319,6 +319,24 @@ export default Vue.extend({
 			});
 		},
 
+		renameFolder(folder) {
+			this.$root.dialog({
+				title: this.$t('rename-folder'),
+				input: {
+					placeholder: this.$t('folder-name'),
+					default: folder.name
+				}
+			}).then(({ canceled, result: name }) => {
+				if (canceled) return;
+				this.$root.api('drive/folders/update', {
+					folderId: folder.id,
+					name: name
+				}).then(folder => {
+					this.move(folder);
+				});
+			});
+		},
+
 		deleteFolder(folder) {
 			this.$root.dialog({
 				type: 'warning',
