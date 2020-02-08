@@ -27,6 +27,7 @@ gotIt: "Got it!"
 cancel: "Cancel"
 enterUsername: "Enter username"
 renotedBy: "Renoted by {user}"
+noNotes: "No notes"
 noNotifications: "No notifications"
 instance: "Instance"
 settings: "Settings"
@@ -354,6 +355,12 @@ notFound: "Not found"
 notFoundDescription: "There was no page corresponding to the specified URL."
 uploadFolder: "Default Upload location"
 cacheClear: "Clear cache"
+markAsReadAllNotifications: "Mark all notifications as read"
+markAsReadAllUnreadNotes: "Mark all posts as read"
+markAsReadAllTalkMessages: "Mark all conversations as read"
+help: "Help"
+inputMessageHere: "Enter message here"
+close: "Close"
 _2fa:
   registerDevice: "Register a new device"
   step1: "First, install an authentication app (such as {a} or {b}) on your device."
@@ -375,6 +382,7 @@ _permissions:
   "write:messaging": "Start or delete your talks"
   "read:mutes": "View the list of people you muted"
   "write:mutes": "Edit the list of people you muted"
+  "write:notes": "Post or Delete the Notes"
   "read:notifications": "View notifications"
   "write:notifications": "Work with notifications"
   "read:reactions": "View reactions"
@@ -389,6 +397,8 @@ _permissions:
 _auth:
   shareAccess: "Would you like to authorize \"{name}\" to access this account?"
   permissionAsk: "This application requires following permissions:"
+_antennaSources:
+  all: "All Posts"
 _weekday:
   sunday: "Sunday"
   monday: "Monday"
@@ -404,6 +414,7 @@ _widgets:
   calendar: "Calendar"
   trends: "Trending"
   clock: "Clock"
+  rss: "RSS reader"
 _cw:
   hide: "Hide"
   show: "Load more"
@@ -458,6 +469,7 @@ _profile:
   metadataLabel: "Label"
   metadataContent: "Content"
 _exportOrImport:
+  allNotes: "All Posts"
   followingList: "Following"
   muteList: "Mute"
   blockingList: "Block"
