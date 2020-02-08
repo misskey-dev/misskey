@@ -71,6 +71,7 @@ exportRequested: "내보내기를 요청하였습니다. 이 작업은 시간이
 importRequested: "가져오기를 요청하였습니다. 이 작업에는 시간이 걸릴 수 있습니다."
 lists: "리스트"
 noLists: "리스트가 없습니다"
+note: "노트"
 notes: "노트"
 following: "팔로잉"
 followers: "팔로워"
