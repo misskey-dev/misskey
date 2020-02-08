@@ -345,7 +345,6 @@ _2fa:
   step2: "Then, scan the QR code on the screen."
   step3: "Enter the token provided by your app to finish setup."
   step4: "From now, any login attempt will ask for your login token."
-  securityKeyInfo: "You can set up a hardware security key (must support FIDO2) to further secure your login."
 _permissions:
   "read:account": "View your account information"
   "write:account": "Edit your account information"
