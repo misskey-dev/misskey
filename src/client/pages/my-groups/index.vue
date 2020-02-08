@@ -10,6 +10,7 @@
 		<mk-pagination :pagination="ownedPagination" #default="{items}" ref="owned">
 			<div class="_frame" v-for="group in items" :key="group.id">
 				<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
+				<div class="_content"><mk-avatars :user-ids="group.userIds"/></div>
 			</div>
 		</mk-pagination>
 	</mk-container>
@@ -19,7 +20,7 @@
 		<mk-pagination :pagination="invitePagination" #default="{items}">
 			<div class="_frame" v-for="invite in items" :key="invite.id">
 				<div class="_title">{{ invite.group.name }}</div>
-				<div class="_content"><x-avatars :user-ids="invite.group.userIds"/></div>
+				<div class="_content"><mk-avatars :user-ids="invite.group.userIds"/></div>
 				<div class="_footer">
 					<mk-button @click="acceptInvite(invite)" primary inline><fa :icon="faCheck"/> {{ $t('accept') }}</mk-button>
 					<mk-button @click="rejectInvite(invite)" primary inline><fa :icon="faBan"/> {{ $t('reject') }}</mk-button>
@@ -33,6 +34,7 @@
 		<mk-pagination :pagination="joinedPagination" #default="{items}">
 			<div class="_frame" v-for="group in items" :key="group.id">
 				<div class="_title">{{ group.name }}</div>
+				<div class="_content"><mk-avatars :user-ids="group.userIds"/></div>
 			</div>
 		</mk-pagination>
 	</mk-container>
@@ -45,6 +47,7 @@ import { faUsers, faPlus, faEnvelopeOpenText } from '@fortawesome/free-solid-svg
 import MkPagination from '../../components/ui/pagination.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkContainer from '../../components/ui/container.vue';
+import MkAvatars from '../../components/avatars.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -57,6 +60,7 @@ export default Vue.extend({
 		MkPagination,
 		MkButton,
 		MkContainer,
+		MkAvatars,
 	},
 
 	data() {
