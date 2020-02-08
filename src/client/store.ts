@@ -9,6 +9,7 @@ const defaultSettings = {
 	showFullAcct: false,
 	rememberNoteVisibility: false,
 	defaultNoteVisibility: 'public',
+	defaultNoteLocalOnly: false,
 	uploadFolder: null,
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	wallpaper: null,

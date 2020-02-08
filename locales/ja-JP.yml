@@ -349,6 +349,7 @@ post: "投稿"
 posted: "投稿しました"
 autoReloadWhenDisconnected: "サーバー切断時に自動リロード"
 autoNoteWatch: "ノートの自動ウォッチ"
+autoNoteWatchDescription: "あなたがリアクションしたり返信したりした他のユーザーのノートに関する通知を受け取るようにします。"
 reduceUiAnimation: "UIのアニメーションを減らす"
 share: "共有"
 notFound: "見つかりません"
@@ -475,6 +476,7 @@ _visibility:
   followersDescription: "自分のフォロワーのみに公開"
   specified: "ダイレクト"
   specifiedDescription: "指定したユーザーのみに公開"
+  localOnly: "ローカルのみ"
 
 _postForm:
   replyPlaceholder: "このノートに返信..."
