@@ -13,6 +13,11 @@ export const meta = {
 			default: 10
 		},
 
+		withUnreads: {
+			validator: $.optional.boolean,
+			default: false
+		},
+
 		sinceId: {
 			validator: $.optional.type(ID),
 		},
@@ -38,5 +43,5 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	return announcements;
+	return ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements;
 });

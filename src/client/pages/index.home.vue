@@ -13,16 +13,34 @@
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
+	<section class="_card announcements" v-if="$store.getters.isSignedIn && announcements.length > 0">
+		<div class="_title">{{ currentAnnouncement.title }}</div>
+		<div class="_content">
+			<mfm :text="currentAnnouncement.text"/>
+			<img v-if="currentAnnouncement.imageUrl" :src="currentAnnouncement.imageUrl" alt=""/>
+		</div>
+		<div class="_footer navigation">
+			<button class="arrow" @click="currentAnnouncementIndex--" :disabled="currentAnnouncementIndex == 0">
+				<fa :icon="faChevronLeft"/>
+			</button>
+			<span>{{ currentAnnouncementIndex + 1 }} / {{ announcements.length }}</span>
+			<button class="arrow" @click="currentAnnouncementIndex++" :disabled="currentAnnouncementIndex == announcements.length - 1">
+				<fa :icon="faChevronRight"/>
+			</button>
+			<mk-button class="ok" @click="read(currentAnnouncement)" primary><fa :icon="faCheck"/> {{ $t('gotIt') }}</mk-button>
+		</div>
+	</section>
 	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" @before="before()" @after="after()"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faCircle, faChevronLeft, faChevronRight, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
+import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -32,7 +50,8 @@ export default Vue.extend({
 	},
 
 	components: {
-		XTimeline
+		XTimeline,
+		MkButton,
 	},
 
 	props: {
@@ -48,7 +67,9 @@ export default Vue.extend({
 			list: null,
 			antenna: null,
 			menuOpened: false,
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faCircle
+			announcements: [] as any[],
+			currentAnnouncementIndex: 0,
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faCircle, faChevronLeft, faChevronRight, faCheck
 		};
 	},
 
@@ -57,6 +78,17 @@ export default Vue.extend({
 			return {
 				't': this.focus
 			};
+		},
+		currentAnnouncement() {
+			if (this.announcements.length > 0) {
+				if (this.currentAnnouncementIndex < 0)
+					this.currentAnnouncementIndex = 0;
+				if (this.currentAnnouncementIndex >= this.announcements.length)
+					this.currentAnnouncementIndex = this.announcements.length - 1;
+				
+				return this.announcements[this.currentAnnouncementIndex];
+			}
+			return null;
 		}
 	},
 
@@ -95,6 +127,12 @@ export default Vue.extend({
 			}
 		}
 	},
+
+	activated() {
+		this.$root.api('announcements', { limit: 100, withUnreads: true }).then((a: any) => {
+			this.announcements = a
+		});
+	}
 
 	methods: {
 		before() {
@@ -167,12 +205,52 @@ export default Vue.extend({
 
 		focus() {
 			(this.$refs.tl as any).focus();
-		}
+		},
+
+		read(announcement: any) {
+			this.announcements = this.announcements.filter(a => a != announcement)
+			this.$root.api('i/read-announcement', { announcementId: announcement.id });
+		},
 	}
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
+.announcements {
+	margin-bottom: 8px;
+
+	> ._content {
+		> img {
+			display: block;
+			max-height: 300px;
+			max-width: 100%;
+		}
+	}
+
+	> .navigation {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		font-size: 18px;
+
+		> .arrow {
+			color: var(--fg);
+			background: none;
+			border: none;
+			font-size: inherit;
+
+			&:disabled {
+				opacity: 0.6;
+			}
+		}
+
+		> .ok {
+			margin-left: auto;
+		}
+	}
+}
+
 ._kjvfvyph_ {
 	position: relative;
 	height: 100%;
