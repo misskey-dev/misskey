@@ -27,17 +27,17 @@
 			<div style="margin-bottom: 1em;">{{ $t('aboutMisskeyText') }}</div>
 			<div>{{ $t('misskeyMembers') }}</div>
 			<span class="members">
-				<a href="https://github.com/syuilo" target="_blank">@syuilo</a>
-				<a href="https://github.com/AyaMorisawa" target="_blank">@AyaMorisawa</a>
-				<a href="https://github.com/mei23" target="_blank">@mei23</a>
-				<a href="https://github.com/acid-chicken" target="_blank">@acid-chicken</a>
-				<a href="https://github.com/tamaina" target="_blank">@tamaina</a>
-				<a href="https://github.com/rinsuki" target="_blank">@rinsuki</a>
+				<a href="https://github.com/syuilo" target="_blank" class="_link">@syuilo</a>
+				<a href="https://github.com/AyaMorisawa" target="_blank" class="_link">@AyaMorisawa</a>
+				<a href="https://github.com/mei23" target="_blank" class="_link">@mei23</a>
+				<a href="https://github.com/acid-chicken" target="_blank" class="_link">@acid-chicken</a>
+				<a href="https://github.com/tamaina" target="_blank" class="_link">@tamaina</a>
+				<a href="https://github.com/rinsuki" target="_blank" class="_link">@rinsuki</a>
 			</span>
 			<div style="margin-top: 1em;">{{ $t('misskeySource') }}</div>
-			<a href="https://github.com/syuilo/misskey" target="_blank" style="color: var(--link);">https://github.com/syuilo/misskey</a>
+			<mk-url url="https://github.com/syuilo/misskey"/>
 			<div style="margin-top: 1em;">{{ $t('misskeyDonate') }}</div>
-			<a href="https://www.patreon.com/syuilo" target="_blank" style="color: var(--link);">https://www.patreon.com/syuilo</a>
+			<mk-url url="https://www.patreon.com/syuilo"/>
 		</div>
 		<div class="_content">
 			<span><mfm text="<motion>❤</motion>"/> {{ $t('patrons') }}</span>
@@ -121,7 +121,6 @@ export default Vue.extend({
 		> ._content {
 			> .members {
 				> a {
-					color: var(--link);
 					margin-right: 0.5em;
 				}
 			}

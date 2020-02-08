@@ -301,6 +301,37 @@ a {
 	}
 }
 
+._frame {
+	position: relative;
+	border: solid 1px var(--divider);
+	border-radius: var(--radius);
+	margin: var(--marginHalf);
+
+	> ._title {
+		margin: 0;
+		padding: 16px;
+		border-bottom: solid 1px var(--divider);
+		font-weight: bold;
+	}
+
+	> ._content {
+		padding: 16px;
+
+		& + ._content {
+			border-top: solid 1px var(--divider);
+		}
+	}
+
+	> ._footer {
+		border-top: solid 1px var(--divider);
+		padding: 16px;
+	}
+}
+
+._link {
+	color: var(--link);
+}
+
 .zoom-enter-active, .zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }

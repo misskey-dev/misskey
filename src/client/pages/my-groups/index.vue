@@ -8,8 +8,8 @@
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faUsers"/> {{ $t('ownedGroups') }}</template>
 		<mk-pagination :pagination="ownedPagination" #default="{items}" ref="owned">
-			<div class="" v-for="group in items" :key="group.id">
-				<router-link :to="`/my/groups/${ group.id }`">{{ group.name }}</router-link>
+			<div class="_frame" v-for="group in items" :key="group.id">
+				<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
 			</div>
 		</mk-pagination>
 	</mk-container>
@@ -17,13 +17,13 @@
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
 		<mk-pagination :pagination="invitePagination" #default="{items}">
-			<div class="" v-for="invite in items" :key="invite.id">
-				<div class="name">{{ invite.group.name }}</div>
-				<x-avatars :user-ids="invite.group.userIds" style="margin-top:8px;"/>
-				<ui-horizon-group>
-					<ui-button @click="acceptInvite(invite)"><fa :icon="faCheck"/> {{ $t('accept') }}</ui-button>
-					<ui-button @click="rejectInvite(invite)"><fa :icon="faBan"/> {{ $t('reject') }}</ui-button>
-				</ui-horizon-group>
+			<div class="_frame" v-for="invite in items" :key="invite.id">
+				<div class="_title">{{ invite.group.name }}</div>
+				<div class="_content"><x-avatars :user-ids="invite.group.userIds"/></div>
+				<div class="_footer">
+					<mk-button @click="acceptInvite(invite)" primary inline><fa :icon="faCheck"/> {{ $t('accept') }}</mk-button>
+					<mk-button @click="rejectInvite(invite)" primary inline><fa :icon="faBan"/> {{ $t('reject') }}</mk-button>
+				</div>
 			</div>
 		</mk-pagination>
 	</mk-container>
@@ -31,8 +31,8 @@
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faUsers"/> {{ $t('joinedGroups') }}</template>
 		<mk-pagination :pagination="joinedPagination" #default="{items}">
-			<div class="" v-for="group in items" :key="group.id">
-				<div>{{ group.name }}</div>
+			<div class="_frame" v-for="group in items" :key="group.id">
+				<div class="_title">{{ group.name }}</div>
 			</div>
 		</mk-pagination>
 	</mk-container>

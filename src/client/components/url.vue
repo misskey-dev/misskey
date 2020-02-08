@@ -1,5 +1,5 @@
 <template>
-<component :is="hasRoute ? 'router-link' : 'a'" class="mk-url" :[attr]="hasRoute ? url.substr(local.length) : url" :rel="rel" :target="target">
+<component :is="hasRoute ? 'router-link' : 'a'" class="ieqqeuvs _link" :[attr]="hasRoute ? url.substr(local.length) : url" :rel="rel" :target="target">
 	<template v-if="!self">
 		<span class="schema">{{ schema }}//</span>
 		<span class="hostname">{{ hostname }}</span>
@@ -58,7 +58,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-url {
+.ieqqeuvs {
 	word-break: break-all;
 
 	> .icon {

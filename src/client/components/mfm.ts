@@ -154,21 +154,17 @@ export default Vue.component('misskey-flavored-markdown', {
 							url: token.node.props.url,
 							rel: 'nofollow noopener',
 						},
-						attrs: {
-							style: 'color:var(--link);'
-						}
 					})];
 				}
 
 				case 'link': {
 					return [createElement('a', {
 						attrs: {
-							class: 'link',
+							class: 'link _link',
 							href: token.node.props.url,
 							rel: 'nofollow noopener',
 							target: '_blank',
 							title: token.node.props.url,
-							style: 'color:var(--link);'
 						}
 					}, genEl(token.children))];
 				}
