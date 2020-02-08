@@ -1,19 +1,19 @@
 <template>
-<div class="mk-list-page">
-	<portal to="icon"><fa :icon="faListUl"/></portal>
-	<portal to="title">{{ list.name }}</portal>
+<div class="mk-group-page">
+	<portal to="icon"><fa :icon="faUsers"/></portal>
+	<portal to="title">{{ group.name }}</portal>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="list" class="_card">
+		<div v-if="group" class="_card">
 			<div class="_content">
-				<mk-button inline @click="renameList()">{{ $t('rename') }}</mk-button>
-				<mk-button inline @click="deleteList()">{{ $t('delete') }}</mk-button>
+				<mk-button inline @click="renameGroup()">{{ $t('rename') }}</mk-button>
+				<mk-button inline @click="deleteGroup()">{{ $t('delete') }}</mk-button>
 			</div>
 		</div>
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="list" class="_card members">
+		<div v-if="group" class="_card members">
 			<div class="_title">{{ $t('members') }}</div>
 			<div class="_content">
 				<div class="users">
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div class="_footer">
-				<mk-button inline @click="addUser()">{{ $t('addUser') }}</mk-button>
+				<mk-button inline @click="invite()">{{ $t('invite') }}</mk-button>
 			</div>
 		</div>
 	</transition>
@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
 import Progress from '../../scripts/loading';
 import MkButton from '../../components/ui/button.vue';
@@ -50,7 +50,7 @@ export default Vue.extend({
 
 	metaInfo() {
 		return {
-			title: this.list ? `${this.list.name} | ${this.$t('manageLists')}` : this.$t('manageLists')
+			title: this.group ? `${this.group.name} | ${this.$t('manageGroups')}` : this.$t('manageGroups')
 		};
 	},
 
@@ -60,9 +60,9 @@ export default Vue.extend({
 
 	data() {
 		return {
-			list: null,
+			group: null,
 			users: [],
-			faTimes, faListUl
+			faTimes, faUsers
 		};
 	},
 
@@ -77,12 +77,12 @@ export default Vue.extend({
 	methods: {
 		fetch() {
 			Progress.start();
-			this.$root.api('users/lists/show', {
-				listId: this.$route.params.list
-			}).then(list => {
-				this.list = list;
+			this.$root.api('users/groups/show', {
+				groupId: this.$route.params.group
+			}).then(group => {
+				this.group = group;
 				this.$root.api('users/show', {
-					userIds: this.list.userIds
+					userIds: this.group.userIds
 				}).then(users => {
 					this.users = users;
 					Progress.done();
@@ -90,13 +90,12 @@ export default Vue.extend({
 			});
 		},
 
-		addUser() {
+		invite() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$root.api('users/lists/push', {
-					listId: this.list.id,
+				this.$root.api('users/groups/invite', {
+					groupId: this.group.id,
 					userId: user.id
 				}).then(() => {
-					this.users.push(user);
 					this.$root.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
@@ -111,54 +110,54 @@ export default Vue.extend({
 		},
 
 		removeUser(user) {
-			this.$root.api('users/lists/pull', {
-				listId: this.list.id,
+			this.$root.api('users/groups/pull', {
+				groupId: this.group.id,
 				userId: user.id
 			}).then(() => {
 				this.users = this.users.filter(x => x.id !== user.id);
 			});
 		},
 
-		async renameList() {
+		async renameGroup() {
 			const { canceled, result: name } = await this.$root.dialog({
-				title: this.$t('enterListName'),
+				title: this.$t('groupName'),
 				input: {
-					default: this.list.name
+					default: this.group.name
 				}
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/lists/update', {
-				listId: this.list.id,
+			await this.$root.api('users/groups/update', {
+				groupId: this.group.id,
 				name: name
 			});
 
-			this.list.name = name;
+			this.group.name = name;
 		},
 
-		async deleteList() {
+		async deleteGroup() {
 			const { canceled } = await this.$root.dialog({
 				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.list.name }),
+				text: this.$t('removeAreYouSure', { x: this.group.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/lists/delete', {
-				listId: this.list.id
+			await this.$root.api('users/groups/delete', {
+				groupId: this.group.id
 			});
 			this.$root.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
-			this.$router.push('/my/lists');
+			this.$router.push('/my/groups');
 		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.mk-list-page {
+.mk-group-page {
 	> .members {
 		> ._content {
 			max-height: 400px;

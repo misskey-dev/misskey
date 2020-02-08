@@ -62,7 +62,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .qkcjvfiv {
 	> .add {
-		margin: 0 auto 16px auto;
+		margin: 0 auto var(--margin) auto;
 	}
 
 	> .lists {

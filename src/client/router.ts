@@ -40,6 +40,8 @@ export const router = new VueRouter({
 		{ path: '/my/follow-requests', component: page('follow-requests') },
 		{ path: '/my/lists', component: page('my-lists/index') },
 		{ path: '/my/lists/:list', component: page('my-lists/list') },
+		{ path: '/my/groups', component: page('my-groups/index') },
+		{ path: '/my/groups/:group', component: page('my-groups/group') },
 		{ path: '/my/antennas', component: page('my-antennas/index') },
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/instance/emojis', component: page('instance/emojis') },

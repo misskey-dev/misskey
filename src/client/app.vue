@@ -411,6 +411,11 @@ export default Vue.extend({
 					icon: faListUl,
 				}, {
 					type: 'link',
+					text: this.$t('groups'),
+					to: '/my/groups',
+					icon: faUsers,
+				}, {
+					type: 'link',
 					text: this.$t('antennas'),
 					to: '/my/antennas',
 					icon: faSatellite,
