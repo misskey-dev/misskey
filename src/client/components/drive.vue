@@ -319,6 +319,49 @@ export default Vue.extend({
 			});
 		},
 
+		renameFolder(folder) {
+			this.$root.dialog({
+				title: this.$t('contextmenu.rename-folder'),
+				input: {
+					placeholder: this.$t('contextmenu.input-new-folder-name'),
+					default: folder.name
+				}
+			}).then(({ canceled, result: name }) => {
+				if (canceled) return;
+				this.$root.api('drive/folders/update', {
+					folderId: folder.id,
+					name: name
+				}).then(folder => {
+					// FIXME: 画面を更新するために自分自身に移動
+					this.move(folder);
+				});
+			});
+		},
+
+		deleteFolder(folder) {
+			this.$root.api('drive/folders/delete', {
+				folderId: folder.id
+			}).then(() => {
+				// 削除時に親フォルダに移動
+				this.move(folder.parentId);
+			}).catch(err => {
+				switch(err.id) {
+					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
+						this.$root.dialog({
+							type: 'error',
+							title: this.$t('unable-to-delete'),
+							text: this.$t('has-child-files-or-folders')
+						});
+						break;
+					default:
+						this.$root.dialog({
+							type: 'error',
+							text: this.$t('unable-to-delete')
+						});
+					}
+			});
+		},
+
 		onChangeFileInput() {
 			for (const file of Array.from((this.$refs.fileInput as any).files)) {
 				this.upload(file, this.folder);

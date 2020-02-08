@@ -57,11 +57,11 @@ export default Vue.extend({
 				}, this.folder ? {
 					text: this.$t('renameFolder'),
 					icon: faICursor,
-					action: () => { this.$refs.drive.renameFolder(); }
+					action: () => { this.$refs.drive.renameFolder(this.folder); }
 				} : undefined, this.folder ? {
 					text: this.$t('deleteFolder'),
 					icon: faTrashAlt,
-					action: () => { this.$refs.drive.deleteFolder(); }
+					action: () => { this.$refs.drive.deleteFolder(this.folder); }
 				} : undefined, {
 					text: this.$t('createFolder'),
 					icon: faFolderPlus,
