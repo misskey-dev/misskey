@@ -359,6 +359,8 @@ markAsReadAllTalkMessages: "Mark all conversations as read"
 help: "Help"
 inputMessageHere: "Enter message here"
 close: "Close"
+groups: "Groups"
+createGroup: "Create a group"
 invites: "Invite"
 _2fa:
   registerDevice: "Register a new device"
