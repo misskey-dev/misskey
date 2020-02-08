@@ -268,17 +268,95 @@ _pages:
     categories:
       list: "列表"
     blocks:
+      _textList:
+        info: "请使用换行符分隔每行"
+      strLen: "文本长度"
+      _strLen:
+        arg1: "文本"
       _join:
         arg1: "列表"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A大于等于B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
+      if: "分支"
+      _if:
+        arg1: "如果"
+        arg2: "如果"
+        arg3: "否则"
+      not: "否"
+      _not:
+        arg1: "否"
+      random: "随机"
+      _random:
+        arg1: "概率"
+      rannum: "随机数"
+      _rannum:
+        arg1: "最小值"
+        arg2: "最大值"
+      randomPick: "从列表中随机选择"
       _randomPick:
         arg1: "列表"
+      dailyRandom: "随机(每个用户每日)"
+      _dailyRandom:
+        arg1: "概率"
+      dailyRannum: "随机数(每个用户每日)"
+      _dailyRannum:
+        arg1: "最小值"
+        arg2: "最大值"
+      dailyRandomPick: "从列表中随机选择(每个用户每日)"
       _dailyRandomPick:
         arg1: "列表"
+      seedRandom: "随机 (种子)"
+      _seedRandom:
+        arg1: "种子"
+        arg2: "概率"
+      seedRannum: "随机数(种子)"
+      _seedRannum:
+        arg1: "种子"
+        arg2: "最小值"
+        arg3: "最大值"
+      seedRandomPick: "从列表中随机选择 (种子)"
       _seedRandomPick:
+        arg1: "种子"
         arg2: "列表"
+      DRPWPM: "从概率列表中随机选择(每用户每天)"
+      _DRPWPM:
+        arg1: "文本列表"
+      pick: "从列表中选择"
       _pick:
         arg1: "列表"
+        arg2: "位置"
+      listLen: "获取列表长度"
       _listLen:
         arg1: "列表"
+      number: "数值"
+      stringToNumber: "文本到数字"
+      _stringToNumber:
+        arg1: "文本"
+      numberToString: "数字到文本"
+      _numberToString:
+        arg1: "数值"
+      splitStrByLine: "将文本按行拆分"
+      _splitStrByLine:
+        arg1: "文本"
+      ref: "变量"
+      fn: "函数"
+      _fn:
+        arg1: "输出"
+      for: "重复"
+      _for:
+        arg1: "次数"
+        arg2: "处理"
     types:
+      string: "文字"
+      number: "数值"
+      boolean: "Flag"
       array: "列表"
+      stringArray: "文本列表"
+    enviromentVariables: "环境变量"
+    pageVariables: "页面元素"
+    argVariables: "输入变量"
