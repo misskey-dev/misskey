@@ -71,6 +71,7 @@ exportRequested: "Se ha solicitado la exportación. Puede tomar un tiempo. Cuand
 importRequested: "Se ha solicitado la importación. Puede tomar un tiempo."
 lists: "Listas"
 noLists: "No tiene listas"
+note: "Notas"
 notes: "Notas"
 following: "Sigue"
 followers: "Seguidores"
