@@ -368,6 +368,7 @@ invite: "招待"
 invites: "招待"
 groupName: "グループ名"
 members: "メンバー"
+transfer: "譲渡"
 
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"

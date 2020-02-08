@@ -7,6 +7,7 @@
 		<div v-if="group" class="_card">
 			<div class="_content">
 				<mk-button inline @click="renameGroup()">{{ $t('rename') }}</mk-button>
+				<mk-button inline @click="transfer()">{{ $t('transfer') }}</mk-button>
 				<mk-button inline @click="deleteGroup()">{{ $t('delete') }}</mk-button>
 			</div>
 		</div>
@@ -133,6 +134,25 @@ export default Vue.extend({
 			});
 
 			this.group.name = name;
+		},
+
+		transfer() {
+			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+				this.$root.api('users/groups/transfer', {
+					groupId: this.group.id,
+					userId: user.id
+				}).then(() => {
+					this.$root.dialog({
+						type: 'success',
+						iconOnly: true, autoClose: true
+					});
+				}).catch(e => {
+					this.$root.dialog({
+						type: 'error',
+						text: e
+					});
+				});
+			});
 		},
 
 		async deleteGroup() {
