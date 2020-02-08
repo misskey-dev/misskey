@@ -269,11 +269,20 @@ patrons: "支持者"
 administrator: "管理员"
 token: "令牌"
 twoStepAuthentication: "两步验证"
+moderator: "版主"
+nUsersMentioned: "{n} 被提到"
+securityKey: "安全密钥"
+securityKeyName: "密钥名称"
 lastUsed: "最后使用："
 unregister: "删除账户"
+resetPassword: "重置密码"
+newPasswordIs: "新的密码是「{password}」"
 post: "投稿"
 posted: "已投稿"
+autoReloadWhenDisconnected: "断开连接时自动重新加载"
+reduceUiAnimation: "减少UI动画"
 share: "分享"
+notFound: "未找到"
 uploadFolder: "默认上传文件夹"
 cacheClear: "清空缓存"
 markAsReadAllNotifications: "将所有通知标为已读"
@@ -292,6 +301,7 @@ members: "成员"
 transfer: "转让"
 _2fa:
   alreadyRegistered: "此设备已被注册"
+  registerDevice: "注册设备"
   registerKey: "注册密钥"
 _permissions:
   "read:account": "查看账户信息"
@@ -378,6 +388,14 @@ _exportOrImport:
   muteList: "屏蔽"
   blockingList: "屏蔽"
   userLists: "列表"
+_charts:
+  usersIncDec: "用户数量：增加/减少"
+_instanceCharts:
+  users: "用户数量：增加/减少"
+  usersTotal: "用户总数"
+  ff: "关注/被关注：数量变化"
+  ffTotal: "关注/被关注：总数"
+  cacheSize: "缓存大小：增加/减少"
 _timelines:
   home: "首页"
   local: "本地"
@@ -430,20 +448,43 @@ _pages:
     image: "图片"
     _if:
       variable: "变量"
+    post: "投稿窗口"
     _textInput:
+      name: "变量名"
       text: "标题"
+      default: "默认值"
+    textareaInput: "多行文本输入"
     _textareaInput:
+      name: "变量名"
       text: "标题"
+      default: "默认值"
+    numberInput: "输入数值"
     _numberInput:
+      name: "变量名"
       text: "标题"
+      default: "默认值"
+    switch: "开关"
     _switch:
+      name: "变量名"
       text: "标题"
+      default: "默认值"
+    counter: "计数器"
     _counter:
+      name: "变量名"
       text: "标题"
+      inc: "增加值"
     _button:
       text: "标题"
+      colored: "彩色"
+      action: "按下按钮时的行为"
+      _action:
+        dialog: "显示对话框"
+        _dialog:
+          content: "内容"
     _radioButton:
+      name: "变量名"
       title: "标题"
+      default: "默认值"
   script:
     categories:
       list: "列表"
