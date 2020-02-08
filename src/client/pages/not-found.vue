@@ -1,11 +1,13 @@
 <template>
-<div class="">
+<div class="ipledcug">
 	<portal to="icon"><fa :icon="faExclamationTriangle"/></portal>
 	<portal to="title">{{ $t('notFound') }}</portal>
 
 	<section class="_card">
-		<div class="_title"><fa :icon="faExclamationTriangle"/> {{ $t('notFound') }}</div>
-		<div class="_content">{{ $t('notFoundDescription') }}</div>
+		<div class="_content">
+			<img src="https://xn--931a.moe/assets/not-found.jpg" alt=""/>
+			<div>{{ $t('notFoundDescription') }}</div>
+		</div>
 	</section>
 </div>
 </template>
@@ -33,4 +35,18 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.ipledcug {
+	> ._card {
+		> ._content {
+			text-align: center;
+					
+			> img {
+				vertical-align: bottom;
+				height: 150px;
+				margin-bottom: 16px;
+				border-radius: 16px;
+			}
+		}
+	}
+}
 </style>
