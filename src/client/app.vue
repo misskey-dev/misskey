@@ -206,6 +206,7 @@ export default Vue.extend({
 		$route(to, from) {
 			this.pageKey++;
 			this.notificationsOpen = false;
+			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
 
