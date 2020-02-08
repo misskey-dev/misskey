@@ -345,7 +345,6 @@ _2fa:
   step2: "그 후, 표시되어 있는 QR코드를 앱으로 스캔합니다."
   step3: "앱에 표시된 토큰을 입력하시면 완료됩니다."
   step4: "다음 로그인부터는 토큰을 입력해야 합니다."
-  securityKeyInfo: "FIDO2를 지원하는 하드웨어 보안 키를 사용하여 로그인하도록 설정할 수 있습니다."
 _permissions:
   "read:account": "계정 정보 보기"
   "write:account": "계정 정보 변경"
