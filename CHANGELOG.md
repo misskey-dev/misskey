@@ -1,10 +1,11 @@
 ChangeLog
 =========
 
-unreleased
+12.4.0 (2020/02/09)
 --------------------
 ### ✨Improvements
 * ローカルのみをデフォルトで操作できるように
+* キーボード操作を改善
 * AP: Create ActivityでattributedToの補完とaudienceのコピーを行うように
 
 ### 🐛Fixes
