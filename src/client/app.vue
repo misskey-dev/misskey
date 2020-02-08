@@ -75,8 +75,8 @@
 
 	<div class="contents">
 		<main ref="main">
-			<div class="content" :class="{ backward: isBack, forward: !isBack }">
-				<transition :name="$store.state.device.animation ? isIndexRelatedNavigate ? 'index' : 'page' : ''" mode="out-in" @enter="onTransition">
+			<div class="content">
+				<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 					<keep-alive :include="['index']">
 						<router-view></router-view>
 					</keep-alive>
@@ -169,8 +169,6 @@ export default Vue.extend({
 			widgetsEditMode: false,
 			enableWidgets: window.innerWidth >= 1100,
 			canBack: false,
-			isBack: false,
-			isIndexRelatedNavigate: false,
 			disconnectedDialog: null as Promise<void> | null,
 			faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
 		};
@@ -211,12 +209,6 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$router.beforeEach((to, from, next) => {
-			this.isBack = to.name === 'index';
-			this.isIndexRelatedNavigate = to.name === 'index' || from.name === 'index';
-			next();
-		});
-	
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
@@ -612,6 +604,18 @@ export default Vue.extend({
 	transform: scale(0.9);
 }
 
+.page-enter-active, .page-leave-active {
+	transition: opacity 0.5s, transform 0.5s !important;
+}
+.page-enter {
+	opacity: 0;
+	transform: translateY(-32px);
+}
+.page-leave-to {
+	opacity: 0;
+	transform: translateY(32px);
+}
+
 .mk-app {
 	$header-height: 60px;
 	$nav-width: 250px;
@@ -896,31 +900,6 @@ export default Vue.extend({
 
 				@media (max-width: 500px) {
 					padding: 8px;
-				}
-
-				::v-deep .index-enter-active, ::v-deep .index-leave-active,
-				::v-deep .page-enter-active, ::v-deep .page-leave-active {
-					transition: opacity 0.5s, transform 0.5s !important;
-				}
-
-				&.forward ::v-deep .page-enter {
-					opacity: 0;
-					transform: translateY(-32px);
-				}
-				&.forward ::v-deep .page-leave-to {
-					opacity: 0;
-					transform: translateY(32px);
-				}
-
-				&.forward ::v-deep .index-enter,
-				&.backward ::v-deep .index-leave-to {
-					opacity: 0;
-					transform: translateX(32px);
-				}
-				&.forward ::v-deep .index-leave-to,
-				&.backward ::v-deep .index-enter {
-					opacity: 0;
-					transform: translateX(-32px);
 				}
 			}
 
