@@ -375,6 +375,7 @@ _2fa:
   step2: "Then, scan the QR code on the screen."
   step3: "Enter the token provided by your app to finish setup."
   step4: "From now, any login attempt will ask for your login token."
+  securityKeyInfo: "You can setup WebAuthN authentication to further secure the log-in process with not only hardware security key which supports FIDO2, but also fingerprint or PIN authentication on your device."
 _permissions:
   "read:account": "View your account information"
   "write:account": "Edit your account information"
