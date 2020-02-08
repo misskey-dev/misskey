@@ -83,7 +83,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faTrashAlt, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
 import i18n from '../i18n';
@@ -95,20 +96,11 @@ import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
 import XUrlPreview from './url-preview.vue';
-import MkNoteMenu from './note-menu.vue';
 import MkReactionPicker from './reaction-picker.vue';
 import pleaseLogin from '../scripts/please-login';
-
-function focus(el, fn) {
-	const target = fn(el);
-	if (target) {
-		if (target.hasAttribute('tabindex')) {
-			target.focus();
-		} else {
-			focus(target, fn);
-		}
-	}
-}
+import { focusPrev, focusNext } from '../scripts/focus';
+import { url } from '../config';
+import copyToClipboard from '../scripts/copy-to-clipboard';
 
 export default Vue.extend({
 	i18n,
@@ -148,7 +140,6 @@ export default Vue.extend({
 			replies: [],
 			showContent: false,
 			hideThisNote: false,
-			openingMenu: false,
 			faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
 		};
 	},
@@ -375,7 +366,7 @@ export default Vue.extend({
 			});
 		},
 
-		renote() {
+		renote(viaKeyboard = false) {
 			pleaseLogin(this.$root);
 			this.blur();
 			this.$root.menu({
@@ -397,6 +388,7 @@ export default Vue.extend({
 					}
 				}]
 				source: this.$refs.renoteButton,
+				viaKeyboard
 			}).then(this.focus);
 		},
 
@@ -465,17 +457,111 @@ export default Vue.extend({
 			});
 		},
 
-		menu(viaKeyboard = false) {
-			if (this.openingMenu) return;
-			this.openingMenu = true;
-			const w = this.$root.new(MkNoteMenu, {
-				source: this.$refs.menuButton,
-				note: this.appearNote,
-				animation: !viaKeyboard
-			}).$once('closed', () => {
-				this.openingMenu = false;
-				this.focus();
+		toggleFavorite(favorite: boolean) {
+			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
+				noteId: this.appearNote.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
 			});
+		},
+
+		toggleWatch(watch: boolean) {
+			this.$root.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
+				noteId: this.appearNote.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			});
+		},
+
+		async menu(viaKeyboard = false) {
+			let menu;
+			if (this.$store.getters.isSignedIn) {
+				const state = await this.$root.api('notes/state', {
+					noteId: this.appearNote.id
+				});
+				menu = [{
+					icon: faCopy,
+					text: this.$t('copyContent'),
+					action: this.copyContent
+				}, {
+					icon: faLink,
+					text: this.$t('copyLink'),
+					action: this.copyLink
+				}, this.appearNote.uri ? {
+					icon: faExternalLinkSquareAlt,
+					text: this.$t('showOnRemote'),
+					action: () => {
+						window.open(this.appearNote.uri, '_blank');
+					}
+				} : undefined,
+				null,
+				state.isFavorited ? {
+					icon: faStar,
+					text: this.$t('unfavorite'),
+					action: () => this.toggleFavorite(false)
+				} : {
+					icon: faStar,
+					text: this.$t('favorite'),
+					action: () => this.toggleFavorite(true)
+				},
+				this.appearNote.userId != this.$store.state.i.id ? state.isWatching ? {
+					icon: faEyeSlash,
+					text: this.$t('unwatch'),
+					action: () => this.toggleWatch(false)
+				} : {
+					icon: faEye,
+					text: this.$t('watch'),
+					action: () => this.toggleWatch(true)
+				} : undefined,
+				this.appearNote.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
+					icon: faThumbtack,
+					text: this.$t('unpin'),
+					action: () => this.togglePin(false)
+				} : {
+					icon: faThumbtack,
+					text: this.$t('pin'),
+					action: () => this.togglePin(true)
+				} : undefined,
+				...(this.appearNote.userId == this.$store.state.i.id ? [
+					null,
+					{
+						icon: faTrashAlt,
+						text: this.$t('delete'),
+						action: this.del
+					}]
+					: []
+				)]
+				.filter(x => x !== undefined);
+			} else {
+				menu = [{
+					icon: faCopy,
+					text: this.$t('copyContent'),
+					action: this.copyContent
+				}, {
+					icon: faLink,
+					text: this.$t('copyLink'),
+					action: this.copyLink
+				}, this.appearNote.uri ? {
+					icon: faExternalLinkSquareAlt,
+					text: this.$t('showOnRemote'),
+					action: () => {
+						window.open(this.appearNote.uri, '_blank');
+					}
+				} : undefined]
+				.filter(x => x !== undefined);
+			}
+
+			this.$root.menu({
+				items: menu,
+				source: this.$refs.menuButton,
+				viaKeyboard
+			}).then(this.focus);
 		},
 
 		showRenoteMenu(ev) {
@@ -492,11 +578,46 @@ export default Vue.extend({
 					}
 				}],
 				source: ev.currentTarget || ev.target,
+				viaKeyboard: viaKeyboard
 			});
 		},
 
 		toggleShowContent() {
 			this.showContent = !this.showContent;
+		},
+
+		copyContent() {
+			copyToClipboard(this.appearNote.text);
+			this.$root.dialog({
+				type: 'success',
+				iconOnly: true, autoClose: true
+			});
+		},
+
+		copyLink() {
+			copyToClipboard(`${url}/notes/${this.appearNote.id}`);
+			this.$root.dialog({
+				type: 'success',
+				iconOnly: true, autoClose: true
+			});
+		},
+
+		togglePin(pin: boolean) {
+			this.$root.api(pin ? 'i/pin' : 'i/unpin', {
+				noteId: this.appearNote.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			}).catch(e => {
+				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('pinLimitExceeded')
+					});
+				}
+			});
 		},
 
 		focus() {
@@ -508,11 +629,11 @@ export default Vue.extend({
 		},
 
 		focusBefore() {
-			focus(this.$el, e => e.previousElementSibling);
+			focusPrev(this.$el);
 		},
 
 		focusAfter() {
-			focus(this.$el, e => e.nextElementSibling);
+			focusNext(this.$el);
 		}
 	}
 });

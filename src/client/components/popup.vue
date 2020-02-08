@@ -1,5 +1,5 @@
 <template>
-<div class="mk-popup">
+<div class="mk-popup" v-hotkey.global="keymap">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
 		<div class="bg" ref="bg" @click="close()" v-if="show"></div>
 	</transition>
@@ -34,6 +34,13 @@ export default Vue.extend({
 		return {
 			show: true,
 		};
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'esc': this.close,
+			};
+		},
 	},
 	mounted() {
 		this.$nextTick(() => {
@@ -96,8 +103,8 @@ export default Vue.extend({
 	methods: {
 		close() {
 			this.show = false;
-			(this.$refs.bg as any).style.pointerEvents = 'none';
-			(this.$refs.content as any).style.pointerEvents = 'none';
+			if (this.$refs.bg) (this.$refs.bg as any).style.pointerEvents = 'none';
+			if (this.$refs.content) (this.$refs.content as any).style.pointerEvents = 'none';
 		}
 	}
 });
