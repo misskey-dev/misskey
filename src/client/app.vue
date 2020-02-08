@@ -256,6 +256,7 @@ export default Vue.extend({
 		});
 
 		setInterval(() => {
+			if (this.showNav) return; // TODO: トランジション中も false になるので、これだけでは不十分
 			this.$refs.title.style.left = (this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth) + 'px';
 		}, 1000);
 
