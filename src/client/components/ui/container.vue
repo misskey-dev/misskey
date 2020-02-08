@@ -8,9 +8,18 @@
 			<template v-else><fa :icon="faAngleDown"/></template>
 		</button>
 	</header>
-	<div v-show="showBody">
-		<slot></slot>
-	</div>
+	<transition name="container-toggle"
+		@before-enter="beforeEnter"
+		@enter="enter"
+		@after-enter="afterEnter"
+		@before-leave="beforeLeave"
+		@leave="leave"
+		@after-leave="afterLeave"
+	>
+		<div v-show="showBody">
+			<slot></slot>
+		</div>
+	</transition>
 </div>
 </template>
 
@@ -51,12 +60,45 @@ export default Vue.extend({
 		toggleContent(show: boolean) {
 			if (!this.bodyTogglable) return;
 			this.showBody = show;
-		}
+		},
+
+		beforeEnter(el) {
+			el.style.height = '0';
+		},
+		enter(el) {
+			setTimeout(() => {
+				el.style.height = el.scrollHeight + 'px';
+			}, 10); // HACKY: Vueのバグか知らないけどこうしないと動作しない
+		},
+		afterEnter(el) {
+			el.style.height = 'auto';
+		},
+		beforeLeave(el) {
+			el.style.height = el.scrollHeight + 'px';
+		},
+		leave(el) {
+			setTimeout(() => {
+				el.style.height = '0';
+			}, 10); // HACKY: Vueのバグか知らないけどこうしないと動作しない
+		},
+		afterLeave(el) {
+			el.style.height = 'auto';
+		},
 	}
 });
 </script>
 
 <style lang="scss" scoped>
+.container-toggle-enter-active, .container-toggle-leave-active {
+	transition: opacity 0.5s, height 0.5s !important;
+}
+.container-toggle-enter {
+	opacity: 0;
+}
+.container-toggle-leave-to {
+	opacity: 0;
+}
+
 .ukygtjoj {
 	position: relative;
 	overflow: hidden;
@@ -72,6 +114,7 @@ export default Vue.extend({
 
 	> header {
 		position: relative;
+		box-shadow: 0 1px 0 0 var(--divider);
 
 		> .title {
 			margin: 0;
