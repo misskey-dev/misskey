@@ -9,10 +9,8 @@
 		</button>
 	</header>
 	<transition name="container-toggle"
-		@before-enter="beforeEnter"
 		@enter="enter"
 		@after-enter="afterEnter"
-		@before-leave="beforeLeave"
 		@leave="leave"
 		@after-leave="afterLeave"
 	>
@@ -62,27 +60,23 @@ export default Vue.extend({
 			this.showBody = show;
 		},
 
-		beforeEnter(el) {
-			el.style.height = '0';
-		},
 		enter(el) {
-			setTimeout(() => {
-				el.style.height = el.scrollHeight + 'px';
-			}, 10); // HACKY: Vueのバグか知らないけどこうしないと動作しない
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = 0;
+			el.offsetHeight; // reflow
+			el.style.height = elementHeight + 'px';
 		},
 		afterEnter(el) {
-			el.style.height = 'auto';
-		},
-		beforeLeave(el) {
-			el.style.height = el.scrollHeight + 'px';
+			el.style.height = null;
 		},
 		leave(el) {
-			setTimeout(() => {
-				el.style.height = '0';
-			}, 10); // HACKY: Vueのバグか知らないけどこうしないと動作しない
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = elementHeight + 'px';
+			el.offsetHeight; // reflow
+			el.style.height = 0;
 		},
 		afterLeave(el) {
-			el.style.height = 'auto';
+			el.style.height = null;
 		},
 	}
 });
@@ -90,6 +84,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .container-toggle-enter-active, .container-toggle-leave-active {
+	overflow-y: hidden;
 	transition: opacity 0.5s, height 0.5s !important;
 }
 .container-toggle-enter {

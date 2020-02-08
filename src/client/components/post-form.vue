@@ -15,7 +15,7 @@
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
 				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
 			</button>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}</button>
+			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
 		</div>
 	</header>
 	<div class="form">
@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard } from '@fortawesome/free-solid-svg-icons';
+import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
@@ -130,7 +130,7 @@ export default Vue.extend({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
+			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
 		};
 	},
 
@@ -163,10 +163,10 @@ export default Vue.extend({
 
 		submitText(): string {
 			return this.renote
-				? this.$t('renote')
+				? this.$t('quote')
 				: this.reply
 					? this.$t('reply')
-					: this.$t('post');
+					: this.$t('note');
 		},
 
 		canPost(): boolean {
@@ -622,8 +622,9 @@ export default Vue.extend({
 
 			> .submit {
 				margin: 16px 16px 16px 0;
-				padding: 0 16px;
+				padding: 0 12px;
 				line-height: 34px;
+				font-weight: bold;
 				vertical-align: bottom;
 				border-radius: 4px;
 
@@ -633,6 +634,10 @@ export default Vue.extend({
 
 				&:disabled {
 					opacity: 0.7;
+				}
+
+				> [data-icon] {
+					margin-left: 6px;
 				}
 			}
 		}

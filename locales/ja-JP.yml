@@ -72,6 +72,7 @@ exportRequested: "エクスポートをリクエストしました。これに�
 importRequested: "インポートをリクエストしました。これには時間がかかる場合があります。"
 lists: "リスト"
 noLists: "リストはありません"
+note: "ノート"
 notes: "ノート"
 following: "フォロー"
 followers: "フォロワー"

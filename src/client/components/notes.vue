@@ -1,6 +1,9 @@
 <template>
 <div class="mk-notes" v-size="[{ max: 500 }]">
-	<div class="empty" v-if="empty">{{ $t('noNotes') }}</div>
+	<div class="empty _panel" v-if="empty">
+		<img src="https://xn--931a.moe/assets/info.jpg" alt=""/>
+		<div>{{ $t('noNotes') }}</div>
+	</div>
 
 	<mk-error v-if="error" @retry="init()"/>
 
@@ -24,8 +27,6 @@ import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
-import getUserName from '../../misc/get-user-name';
-import getNoteSummary from '../../misc/get-note-summary';
 
 export default Vue.extend({
 	i18n,
@@ -85,14 +86,15 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-notes {
 	> .empty {
-		margin: 0 auto;
 		padding: 32px;
 		text-align: center;
-		background: rgba(0, 0, 0, 0.3);
-		color: #fff;
-		-webkit-backdrop-filter: blur(16px);
-		backdrop-filter: blur(16px);
-		border-radius: 6px;
+
+		> img {
+			vertical-align: bottom;
+			height: 128px;
+			margin-bottom: 16px;
+			border-radius: 16px;
+		}
 	}
 
 	> .notes {

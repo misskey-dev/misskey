@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faSatellite"/></portal>
 	<portal to="title">{{ $t('manageAntennas') }}</portal>
 
-	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('createAntenna') }}</mk-button>
+	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 
 	<x-antenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
