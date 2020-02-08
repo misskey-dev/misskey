@@ -697,6 +697,8 @@ export default Vue.extend({
 		> .sub {
 			$post-button-size: 42px;
 			$post-button-margin: (($header-height - $post-button-size) / 2);
+			display: flex;
+			align-items: center;
 			position: absolute;
 			top: 0;
 			right: 16px;
@@ -736,7 +738,7 @@ export default Vue.extend({
 			> .post {
 				width: $post-button-size;
 				height: $post-button-size;
-				margin: $post-button-margin 0 $post-button-margin $post-button-margin;
+				margin-left: $post-button-margin;
 				border-radius: 100%;
 				font-size: 16px;
 			}
