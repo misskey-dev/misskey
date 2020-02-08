@@ -117,10 +117,12 @@ export default Vue.extend({
 		start(ev) {
 			this.$root.menu({
 				items: [{
-					text: this.$t('withUser'),
+					text: this.$t('messagingWithUser'),
+					icon: faUser,
 					action: () => { this.startUser() }
 				}, {
-					text: this.$t('withGroup'),
+					text: this.$t('messagingWithGroup'),
+					icon: faUsers,
 					action: () => { this.startGroup() }
 				}],
 				noCenter: true,
@@ -139,7 +141,7 @@ export default Vue.extend({
 			const groups2 = await this.$root.api('users/groups/joined');
 			const { canceled, result: group } = await this.$root.dialog({
 				type: null,
-				title: this.$t('select-group'),
+				title: this.$t('group'),
 				select: {
 					items: groups1.concat(groups2).map(group => ({
 						value: group, text: group.name
