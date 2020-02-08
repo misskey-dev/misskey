@@ -196,6 +196,7 @@ post: "投稿"
 posted: "已投稿"
 share: "分享"
 help: "帮助"
+invites: "邀请"
 _permissions:
   "read:blocks": "查看黑名单"
   "write:blocks": "编辑黑名单"
