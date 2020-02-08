@@ -398,8 +398,7 @@ export default Vue.extend({
 		},
 
 		applyVisibility(v: string) {
-			if (!['public', 'home', 'followers', 'specified'].includes(v)) v = 'public'; // v11互換性のため
-			this.visibility = v;
+			this.visibility = ['public', 'home', 'followers', 'specified'].includes(v) ? v : 'public';
 		},
 
 		addVisibleUser() {
