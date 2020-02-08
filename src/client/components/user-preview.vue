@@ -84,7 +84,7 @@ export default Vue.extend({
 	methods: {
 		close() {
 			this.show = false;
-			(this.$refs.content as any).style.pointerEvents = 'none';
+			if (this.$refs.content) (this.$refs.content as any).style.pointerEvents = 'none';
 		}
 	}
 });
