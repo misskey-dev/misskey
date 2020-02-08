@@ -17,7 +17,7 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls, MessagingMessages } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject, getOneApId, getApId, validPost, ICreate, isCreate, IPost } from '../type';
+import { IObject, getOneApId, getApId, validPost, IPost } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
@@ -78,7 +78,7 @@ export async function fetchNote(value: string | IObject, resolver?: Resolver): P
 /**
  * Noteを作成します。
  */
-export async function createNote(value: string | IObject, resolver?: Resolver, silent = false, activity?: ICreate): Promise<Note | null> {
+export async function createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
 	if (resolver == null) resolver = new Resolver();
 
 	const object: any = await resolver.resolve(value);
@@ -112,18 +112,12 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	const noteAudience = await parseAudience(actor, note.to, note.cc);
 	let visibility = noteAudience.visibility;
-	let visibleUsers = noteAudience.visibleUsers;
-	let apMentions = noteAudience.mentionedUsers;
+	const visibleUsers = noteAudience.visibleUsers;
+	const apMentions = noteAudience.mentionedUsers;
 
 	// Audience (to, cc) が指定されてなかった場合
 	if (visibility === 'specified' && visibleUsers.length === 0) {
-		if (activity && isCreate(activity)) {
-			// Create 起因ならば Activity を見る
-			const activityAudience = await parseAudience(actor, activity.to, activity.cc);
-			visibility = activityAudience.visibility;
-			visibleUsers = activityAudience.visibleUsers;
-			apMentions = activityAudience.mentionedUsers;
-		} else if (typeof value === 'string') {	// 入力がstringならばresolverでGETが発生している
+		if (typeof value === 'string') {	// 入力がstringならばresolverでGETが発生している
 			// こちらから匿名GET出来たものならばpublic
 			visibility = 'public';
 		}

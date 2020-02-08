@@ -15,7 +15,7 @@ export default async function(resolver: Resolver, actor: IRemoteUser, note: IObj
 	try {
 		const exist = await fetchNote(note);
 		if (exist == null) {
-			await createNote(note, resolver, silent, activity);
+			await createNote(note, resolver, silent);
 		}
 	} finally {
 		unlock();
