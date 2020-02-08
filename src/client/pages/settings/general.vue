@@ -14,7 +14,7 @@
 			{{ $t('autoReloadWhenDisconnected') }}
 		</mk-switch>
 		<mk-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
-			{{ $t('autoNoteWatch') }}<template #desc>{{ $t('auto-watch-desc') }}</template>
+			{{ $t('autoNoteWatch') }}<template #desc>{{ $t('autoNoteWatchDescription') }}</template>
 		</mk-switch>
 	</div>
 	<div class="_content">
