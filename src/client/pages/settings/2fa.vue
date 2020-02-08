@@ -4,8 +4,8 @@
 	<div class="_content">
 		<p v-if="!data && !$store.state.i.twoFactorEnabled"><mk-button @click="register">{{ $t('_2fa.registerDevice') }}</mk-button></p>
 		<template v-if="$store.state.i.twoFactorEnabled">
-			<h2 class="heading">{{ $t('totp-header') }}</h2>
-			<p>{{ $t('already-registered') }}</p>
+			<h2 class="heading">{{ $t('_2fa.totpHeader') }}</h2>
+			<p>{{ $t('_2fa.alreadyRegistered') }}</p>
 			<mk-button @click="unregister">{{ $t('unregister') }}</mk-button>
 
 			<template v-if="supportsCredentials">
@@ -24,7 +24,7 @@
 				<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
 
 				<mk-info warn v-if="registration && registration.error">{{ $t('something-went-wrong') }} {{ registration.error }}</mk-info>
-				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('register') }}</mk-button>
+				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</mk-button>
 
 				<ol v-if="registration && !registration.error">
 					<li v-if="registration.stage >= 0">
