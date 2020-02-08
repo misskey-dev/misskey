@@ -368,6 +368,7 @@ groupName: "Group name"
 members: "Members"
 transfer: "Transfer"
 _2fa:
+  alreadyRegistered: "You have already registered 2-factor authentication device."
   registerDevice: "Register a new device"
   registerKey: "Register a new Security Key"
   step1: "First, install an authentication app (such as {a} or {b}) on your device."
