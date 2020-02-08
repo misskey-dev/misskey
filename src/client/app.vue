@@ -817,22 +817,6 @@ export default Vue.extend({
 				box-sizing: border-box;
 				color: var(--navFg);
 
-				&:not(.active) {
-					opacity: 0.85;
-
-					&:hover {
-						opacity: 1;
-
-						> [data-icon] {
-							opacity: 1;
-						}
-					}
-
-					> [data-icon] {
-						opacity: 0.85;
-					}
-				}
-
 				> [data-icon] {
 					width: ($header-height - ($avatar-margin * 2));
 				}
