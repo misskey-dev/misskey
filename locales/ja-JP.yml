@@ -364,7 +364,6 @@ inputMessageHere: "ここにメッセージを入力"
 close: "閉じる"
 
 _2fa:
-  totpHeader: "認証アプリ"
   alreadyRegistered: "既に設定は完了しています。"
   registerDevice: "デバイスを登録"
   registerKey: "キーを登録"

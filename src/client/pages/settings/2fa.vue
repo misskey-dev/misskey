@@ -4,7 +4,6 @@
 	<div class="_content">
 		<p v-if="!data && !$store.state.i.twoFactorEnabled"><mk-button @click="register">{{ $t('_2fa.registerDevice') }}</mk-button></p>
 		<template v-if="$store.state.i.twoFactorEnabled">
-			<h2 class="heading">{{ $t('_2fa.totpHeader') }}</h2>
 			<p>{{ $t('_2fa.alreadyRegistered') }}</p>
 			<mk-button @click="unregister">{{ $t('unregister') }}</mk-button>
 
