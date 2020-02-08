@@ -134,7 +134,7 @@ export default Vue.extend({
 		position: absolute;
 		z-index: 10001;
 		background: var(--panel);
-		border-radius: 4px;
+		border-radius: 8px;
 		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 		overflow: hidden;
 		transform-origin: center top;
