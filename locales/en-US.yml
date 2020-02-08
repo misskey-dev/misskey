@@ -71,6 +71,7 @@ exportRequested: "You have requested an export. This may take a while. After the
 importRequested: "You requested an import. This may take a while."
 lists: "Lists"
 noLists: "You don't have any lists"
+note: "Notes"
 notes: "Notes"
 following: "Following"
 followers: "Followers"
