@@ -217,7 +217,7 @@ export default Vue.extend({
 		// デフォルト公開範囲
 		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.visibility : this.$store.state.settings.defaultNoteVisibility);
 
-		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.localOnly : false;
+		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {

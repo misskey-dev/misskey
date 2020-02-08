@@ -10,9 +10,11 @@
 		<mk-select v-model="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
 			<template #label>{{ $t('defaultNoteVisibility') }}</template>
 			<option value="public">{{ $t('_visibility.public') }}</option>
+			<option value="home">{{ $t('_visibility.home') }}</option>
 			<option value="followers">{{ $t('_visibility.followers') }}</option>
 			<option value="specified">{{ $t('_visibility.specified') }}</option>
 		</mk-select>
+		<mk-switch v-model="defaultNoteLocalOnly" v-if="!rememberNoteVisibility">{{ $t('_visibility.localOnly') }}</mk-switch>
 	</div>
 </section>
 </template>
@@ -44,6 +46,11 @@ export default Vue.extend({
 		defaultNoteVisibility: {
 			get() { return this.$store.state.settings.defaultNoteVisibility; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
+		},
+
+		defaultNoteLocalOnly: {
+			get() { return this.$store.state.settings.defaultNoteLocalOnly; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteLocalOnly', value }); }
 		},
 
 		rememberNoteVisibility: {

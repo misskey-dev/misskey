@@ -474,6 +474,7 @@ _visibility:
   followersDescription: "自分のフォロワーのみに公開"
   specified: "ダイレクト"
   specifiedDescription: "指定したユーザーのみに公開"
+  localOnly: "ローカルのみ"
 
 _postForm:
   replyPlaceholder: "このノートに返信..."
