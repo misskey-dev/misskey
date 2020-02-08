@@ -17,7 +17,7 @@
 
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
-		<mk-pagination :pagination="invitePagination" #default="{items}">
+		<mk-pagination :pagination="invitePagination" #default="{items}" ref="invites">
 			<div class="_frame" v-for="invite in items" :key="invite.id">
 				<div class="_title">{{ invite.group.name }}</div>
 				<div class="_content"><mk-avatars :user-ids="invite.group.userIds"/></div>
@@ -31,7 +31,7 @@
 
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faUsers"/> {{ $t('joinedGroups') }}</template>
-		<mk-pagination :pagination="joinedPagination" #default="{items}">
+		<mk-pagination :pagination="joinedPagination" #default="{items}" ref="joined">
 			<div class="_frame" v-for="group in items" :key="group.id">
 				<div class="_title">{{ group.name }}</div>
 				<div class="_content"><mk-avatars :user-ids="group.userIds"/></div>
@@ -95,6 +95,25 @@ export default Vue.extend({
 				iconOnly: true, autoClose: true
 			});
 		},
+		acceptInvite(invite) {
+			this.$root.api('users/groups/invitations/accept', {
+				inviteId: invite.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+				this.$refs.invites.reload();
+				this.$refs.joined.reload();
+			});
+		},
+		rejectInvite(invite) {
+			this.$root.api('users/groups/invitations/reject', {
+				inviteId: invite.id
+			}).then(() => {
+				this.$refs.invites.reload();
+			});
+		}
 	}
 });
 </script>
