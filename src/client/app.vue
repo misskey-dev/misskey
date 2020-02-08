@@ -719,7 +719,7 @@ export default Vue.extend({
 				$margin: 8px;
 				width: calc(100% - #{$post-button-size + $post-button-margin + $margin});
 				box-sizing: border-box;
-				margin-right: $margin;
+				margin: 11px $margin 0 0;
 				padding: 0 12px 0 42px;
 				font-size: 1rem;
 				line-height: 38px;
