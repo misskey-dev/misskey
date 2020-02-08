@@ -398,7 +398,7 @@ _auth:
   shareAccess: "Would you like to authorize \"{name}\" to access this account?"
   permissionAsk: "This application requires following permissions:"
 _antennaSources:
-  all: "All Posts"
+  all: "All notes"
 _weekday:
   sunday: "Sunday"
   monday: "Monday"
@@ -469,7 +469,7 @@ _profile:
   metadataLabel: "Label"
   metadataContent: "Content"
 _exportOrImport:
-  allNotes: "All Posts"
+  allNotes: "All notes"
   followingList: "Following"
   muteList: "Mute"
   blockingList: "Block"
