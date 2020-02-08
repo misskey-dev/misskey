@@ -24,57 +24,67 @@
 		</div>
 	</header>
 
-	<nav class="nav" ref="nav">
-		<div>
-			<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
-				<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
-			</button>
-			<div class="divider"></div>
-			<router-link class="item" active-class="active" to="/" exact v-if="$store.getters.isSignedIn">
-				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
-			</router-link>
-			<router-link class="item" active-class="active" to="/" exact v-else>
-				<fa :icon="faHome" fixed-width/><span class="text">{{ $t('home') }}</span>
-			</router-link>
-			<button class="item _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.getters.isSignedIn">
-				<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
-				<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
-			</button>
-			<router-link class="item" active-class="active" to="/my/messaging" v-if="$store.getters.isSignedIn">
-				<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
-				<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
-			</router-link>
-			<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
-				<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
-				<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
-			</router-link>
-			<router-link class="item" active-class="active" to="/my/drive" v-if="$store.getters.isSignedIn">
-				<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
-			</router-link>
-			<div class="divider"></div>
-			<router-link class="item" active-class="active" to="/featured">
-				<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
-			</router-link>
-			<router-link class="item" active-class="active" to="/explore">
-				<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
-			</router-link>
-			<router-link class="item" active-class="active" to="/announcements">
-				<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
-				<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
-			</router-link>
-			<button class="item _button" @click="search()">
-				<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
-			</button>
-			<div class="divider"></div>
-			<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
-				<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
-			</button>
-			<button class="item _button" @click="more">
-				<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
-				<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
-			</button>
-		</div>
-	</nav>
+	<transition name="nav-back">
+		<div class="nav-back"
+			v-if="showNav"
+			@click="showNav = false"
+			@touchstart="showNav = false"
+		></div>
+	</transition>
+
+	<transition name="nav">
+		<nav class="nav" ref="nav" v-show="showNav">
+			<div>
+				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
+					<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
+				</button>
+				<div class="divider"></div>
+				<router-link class="item index" active-class="active" to="/" exact v-if="$store.getters.isSignedIn">
+					<fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
+				</router-link>
+				<router-link class="item index" active-class="active" to="/" exact v-else>
+					<fa :icon="faHome" fixed-width/><span class="text">{{ $t('home') }}</span>
+				</router-link>
+				<button class="item _button notifications" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.getters.isSignedIn">
+					<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
+					<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
+				</button>
+				<router-link class="item" active-class="active" to="/my/messaging" v-if="$store.getters.isSignedIn">
+					<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
+					<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
+				</router-link>
+				<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
+					<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
+					<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
+				</router-link>
+				<router-link class="item" active-class="active" to="/my/drive" v-if="$store.getters.isSignedIn">
+					<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
+				</router-link>
+				<div class="divider"></div>
+				<router-link class="item" active-class="active" to="/featured">
+					<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
+				</router-link>
+				<router-link class="item" active-class="active" to="/explore">
+					<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
+				</router-link>
+				<router-link class="item" active-class="active" to="/announcements">
+					<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
+					<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
+				</router-link>
+				<button class="item _button" @click="search()">
+					<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
+				</button>
+				<div class="divider"></div>
+				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
+					<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
+				</button>
+				<button class="item _button" @click="more">
+					<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
+					<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
+				</button>
+			</div>
+		</nav>
+	</transition>
 
 	<div class="contents">
 		<main ref="main">
@@ -124,7 +134,7 @@
 	</div>
 
 	<div class="buttons">
-		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="showNav" ref="navButton"><fa :icon="faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button home _button" :disabled="$route.path === '/'" @click="$router.push('/')"><fa :icon="faHome"/></button>
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
@@ -162,6 +172,7 @@ export default Vue.extend({
 		return {
 			host: host,
 			pageKey: 0,
+			showNav: false,
 			searching: false,
 			notificationsOpen: false,
 			accounts: [],
@@ -300,67 +311,6 @@ export default Vue.extend({
 					this.searchQuery = '';
 				});
 			}
-		},
-
-		showNav(ev) {
-			this.$root.menu({
-				items: [{
-					text: this.$t('search'),
-					icon: faSearch,
-					action: this.search,
-				}, null, this.$store.state.i.isAdmin || this.$store.state.i.isModerator ? {
-					text: this.$t('instance'),
-					icon: faServer,
-					action: () => this.oepnInstanceMenu(ev),
-				} : undefined, {
-					type: 'link',
-					text: this.$t('announcements'),
-					to: '/announcements',
-					icon: faBroadcastTower,
-					indicate: this.$store.state.i.hasUnreadAnnouncement,
-				}, {
-					type: 'link',
-					text: this.$t('featured'),
-					to: '/featured',
-					icon: faFireAlt,
-				}, {
-					type: 'link',
-					text: this.$t('explore'),
-					to: '/explore',
-					icon: faHashtag,
-				}, {
-					type: 'link',
-					text: this.$t('messaging'),
-					to: '/my/messaging',
-					icon: faComments,
-					indicate: this.$store.state.i.hasUnreadMessagingMessage,
-				}, this.$store.state.i.isLocked ? {
-					type: 'link',
-					text: this.$t('followRequests'),
-					to: '/my/follow-requests',
-					icon: faUserClock,
-					indicate: this.$store.state.i.pendingReceivedFollowRequestsCount > 0,
-				} : undefined, {
-					type: 'link',
-					text: this.$t('drive'),
-					to: '/my/drive',
-					icon: faCloud,
-				}, {
-					text: this.$t('more'),
-					icon: faEllipsisH,
-					action: () => this.more(ev),
-					indicate: this.$store.state.i.hasUnreadMentions || this.$store.state.i.hasUnreadSpecifiedNotes
-				}, null, {
-					type: 'user',
-					user: this.$store.state.i,
-					action: () => this.openAccountMenu(ev),
-				}],
-				direction: 'up',
-				align: 'left',
-				fixed: true,
-				width: 200,
-				source: ev.currentTarget || ev.target,
-			});
 		},
 
 		async openAccountMenu(ev) {
@@ -619,6 +569,28 @@ export default Vue.extend({
 	transform: translateY(32px);
 }
 
+.nav-enter-active,
+.nav-leave-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.nav-enter,
+.nav-leave-active {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
+.nav-back-enter-active,
+.nav-back-leave-active {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.nav-back-enter,
+.nav-back-leave-active {
+	opacity: 0;
+}
+
 .mk-app {
 	$header-height: 60px;
 	$nav-width: 250px;
@@ -764,6 +736,16 @@ export default Vue.extend({
 		}
 	}
 
+	> .nav-back {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 1001;
+		width: 100%;
+		height: 100%;
+		background: var(--modalBg);
+	}
+
 	> .nav {
 		$avatar-size: 32px;
 		$avatar-margin: ($header-height - $avatar-size) / 2;
@@ -778,7 +760,14 @@ export default Vue.extend({
 		}
 
 		@media (max-width: $nav-hide-threshold) {
-			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 1001;
+		}
+
+		@media (min-width: $nav-hide-threshold + 1px) {
+			display: block !important;
 		}
 
 		> div {
@@ -799,7 +788,7 @@ export default Vue.extend({
 				border-top: solid 1px var(--divider);
 			}
 
-			@media (max-width: $nav-icon-only-threshold) {
+			@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
 				width: $nav-icon-only-width;
 				padding: 8px 0;
 
@@ -813,7 +802,6 @@ export default Vue.extend({
 				display: block;
 				padding-left: 32px;
 				font-size: $ui-font-size;
-				font-weight: bold;
 				line-height: 3.2rem;
 				text-overflow: ellipsis;
 				overflow: hidden;
@@ -871,7 +859,7 @@ export default Vue.extend({
 					color: var(--navActive);
 				}
 
-				@media (max-width: $nav-icon-only-threshold) {
+				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
 					padding-left: 0;
 					width: 100%;
 					text-align: center;
@@ -890,6 +878,13 @@ export default Vue.extend({
 					> .text {
 						display: none;
 					}
+				}
+			}
+
+			@media (max-width: $nav-hide-threshold) {
+				> .index,
+				> .notifications {
+					display: none;
 				}
 			}
 		}
