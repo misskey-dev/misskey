@@ -372,6 +372,10 @@ members: "멤버"
 transfer: "양도"
 messagingWithUser: "유저와 대화하기"
 messagingWithGroup: "그룹끼리 대화하기"
+enable: "사용"
+next: "다음"
+_tutorial:
+  title: "Misskey의 사용 방법"
 _2fa:
   alreadyRegistered: "이미 설정이 완료되었습니다."
   registerDevice: "디바이스 등록"
