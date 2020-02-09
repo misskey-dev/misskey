@@ -13,23 +13,63 @@
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
-	<section class="_card announcements" v-if="$store.getters.isSignedIn && announcements.length > 0">
-		<div class="_title">{{ currentAnnouncement.title }}</div>
-		<div class="_content">
-			<mfm :text="currentAnnouncement.text"/>
-			<img v-if="currentAnnouncement.imageUrl" :src="currentAnnouncement.imageUrl" alt=""/>
+
+	<section class="_card tutorial" v-if="tutorial != -1">
+		<div class="_title">{{ $t('_tutorial.title') }}</div>
+		<div class="_content" v-if="tutorial === 0">
+			<div>{{ $t('_tutorial.step1_1') }}</div>
+			<div>{{ $t('_tutorial.step1_2') }}</div>
+			<div>{{ $t('_tutorial.step1_3') }}</div>
+		</div>
+		<div class="_content" v-else-if="tutorial === 1">
+			<div>{{ $t('_tutorial.step2_1') }}</div>
+			<div>{{ $t('_tutorial.step2_2') }}</div>
+			<router-link class="_link" to="/my/settings">{{ $t('editProfile') }}</router-link>
+		</div>
+		<div class="_content" v-else-if="tutorial === 2">
+			<div>{{ $t('_tutorial.step3_1') }}</div>
+			<div>{{ $t('_tutorial.step3_2') }}</div>
+			<div>{{ $t('_tutorial.step3_3') }}</div>
+			<small>{{ $t('_tutorial.step3_4') }}</small>
+		</div>
+		<div class="_content" v-else-if="tutorial === 3">
+			<div>{{ $t('_tutorial.step4_1') }}</div>
+			<div>{{ $t('_tutorial.step4_2') }}</div>
+		</div>
+		<div class="_content" v-else-if="tutorial === 4">
+			<div>{{ $t('_tutorial.step5_1') }}</div>
+			<i18n path="_tutorial.step5_2" tag="div">
+				<router-link class="_link" place="featured" to="/featured">{{ $t('featured') }}</router-link>
+				<router-link class="_link" place="explore" to="/explore">{{ $t('explore') }}</router-link>
+			</i18n>
+			<div>{{ $t('_tutorial.step5_3') }}</div>
+			<small>{{ $t('_tutorial.step5_4') }}</small>
+		</div>
+		<div class="_content" v-else-if="tutorial === 5">
+			<div>{{ $t('_tutorial.step6_1') }}</div>
+			<div>{{ $t('_tutorial.step6_2') }}</div>
+			<div>{{ $t('_tutorial.step6_3') }}</div>
+		</div>
+		<div class="_content" v-else-if="tutorial === 6">
+			<div>{{ $t('_tutorial.step7_1') }}</div>
+			<i18n path="_tutorial.step7_2" tag="div">
+				<router-link class="_link" place="help" to="/docs">{{ $t('help') }}</router-link>
+			</i18n>
+			<div>{{ $t('_tutorial.step7_3') }}</div>
 		</div>
 		<div class="_footer navigation">
-			<button class="arrow" @click="currentAnnouncementIndex--" :disabled="currentAnnouncementIndex == 0">
+			<button class="arrow" @click="tutorial--" :disabled="tutorial === 0">
 				<fa :icon="faChevronLeft"/>
 			</button>
-			<span>{{ currentAnnouncementIndex + 1 }} / {{ announcements.length }}</span>
-			<button class="arrow" @click="currentAnnouncementIndex++" :disabled="currentAnnouncementIndex == announcements.length - 1">
+			<span>{{ tutorial + 1 }} / 7</span>
+			<button class="arrow" @click="tutorial++" :disabled="tutorial === 6">
 				<fa :icon="faChevronRight"/>
 			</button>
-			<mk-button class="ok" @click="read(currentAnnouncement)" primary><fa :icon="faCheck"/> {{ $t('gotIt') }}</mk-button>
+			<mk-button class="ok" @click="tutorial = -1" primary v-if="tutorial === 6"><fa :icon="faCheck"/> {{ $t('gotIt') }}</mk-button>
+			<mk-button class="ok" @click="tutorial++" primary v-else><fa :icon="faCheck"/> {{ $t('next') }}</mk-button>
 		</div>
 	</section>
+
 	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" @before="before()" @after="after()"/>
 </div>
 </template>
@@ -79,17 +119,10 @@ export default Vue.extend({
 				't': this.focus
 			};
 		},
-		currentAnnouncement() {
-			if (this.announcements.length > 0) {
-				if (this.currentAnnouncementIndex < 0)
-					this.currentAnnouncementIndex = 0;
-				if (this.currentAnnouncementIndex >= this.announcements.length)
-					this.currentAnnouncementIndex = this.announcements.length - 1;
-				
-				return this.announcements[this.currentAnnouncementIndex];
-			}
-			return null;
-		}
+		tutorial: {
+			get() { return this.$store.state.settings.tutorial || 0; },
+			set(value) { this.$store.dispatch('settings/set', { key: 'tutorial', value }); }
+		},
 	},
 
 	watch: {
@@ -216,37 +249,36 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.mk-home {
+	.tutorial {
+		margin-bottom: var(--margin);
 
-.announcements {
-	margin-bottom: 8px;
-
-	> ._content {
-		> img {
-			display: block;
-			max-height: 300px;
-			max-width: 100%;
-		}
-	}
-
-	> .navigation {
-		display: flex;
-		flex-direction: row;
-		align-items: baseline;
-		font-size: 18px;
-
-		> .arrow {
-			color: var(--fg);
-			background: none;
-			border: none;
-			font-size: inherit;
-
-			&:disabled {
-				opacity: 0.6;
+		> ._content {
+			> small {
+				opacity: 0.7;
 			}
 		}
 
-		> .ok {
-			margin-left: auto;
+		> .navigation {
+			display: flex;
+			flex-direction: row;
+			align-items: baseline;
+			font-size: 18px;
+
+			> .arrow {
+				color: var(--fg);
+				background: none;
+				border: none;
+				font-size: inherit;
+
+				&:disabled {
+					opacity: 0.6;
+				}
+			}
+
+			> .ok {
+				margin-left: auto;
+			}
 		}
 	}
 }

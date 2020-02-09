@@ -5,6 +5,7 @@ import * as nestedProperty from 'nested-property';
 import MiOS from './mios';
 
 const defaultSettings = {
+	tutorial: 0,
 	keepCw: false,
 	showFullAcct: false,
 	rememberNoteVisibility: false,
