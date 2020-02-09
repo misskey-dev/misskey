@@ -22,7 +22,16 @@ import { toUnicode as decodePunycode } from 'punycode';
 import { url as local } from '../config';
 
 export default Vue.extend({
-	props: ['url', 'rel'],
+	props: {
+		url: {
+			type: String,
+			required: true,
+		},
+		rel: {
+			type: String,
+			required: false,
+		}
+	},
 	data() {
 		const isSelf = this.url.startsWith(local);
 		const hasRoute = isSelf && (
@@ -32,12 +41,12 @@ export default Vue.extend({
 			this.url.substr(local.length).startsWith('/tags/'));
 		return {
 			local,
-			schema: null,
-			hostname: null,
-			port: null,
-			pathname: null,
-			query: null,
-			hash: null,
+			schema: null as string | null,
+			hostname: null as string | null,
+			port: null as string | null,
+			pathname: null as string | null,
+			query: null as string | null,
+			hash: null as string | null,
 			self: isSelf,
 			hasRoute: hasRoute,
 			attr: hasRoute ? 'to' : 'href',
