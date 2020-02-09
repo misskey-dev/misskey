@@ -234,8 +234,14 @@ export default Vue.extend({
 
 			if (this.widgets.length === 0) {
 				this.$store.dispatch('settings/setWidgets', [{
-					name: 'notifications',
+					name: 'calendar',
 					id: 'a', data: {}
+				}, {
+					name: 'notifications',
+					id: 'b', data: {}
+				}, {
+					name: 'trends',
+					id: 'c', data: {}
 				}]);
 			}
 		}
