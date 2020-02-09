@@ -379,6 +379,8 @@ _tutorial:
   title: "Cómo usar Misskey"
   step1_1: "Bienvenido"
   step1_2: "Esta imagen se llama \"Linea de tiempo\" y muestra en orden cronológico las \"notas\" tuyas y de la gente que \"sigues\""
+  step1_3: "Si no estás escribiendo ninguna nota y no estás siguiendo a nadie, es esperable que no se muestre nada en la linea de tiempo"
+  step2_1: "Antes de crear notas y seguir a alguien, primero vamos a crear tu perfil"
 _2fa:
   registerDevice: "Registrar dispositivo"
   step1: "Primero, instale en su dispositivo la aplicación de autenticación {a} o {b} u otra."
