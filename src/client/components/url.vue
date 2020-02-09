@@ -83,15 +83,6 @@ export default Vue.extend({
 				}
 			}).$mount();
 
-			this.preview.$on('mouseover', () => {
-				clearTimeout(this.hideTimer);
-			});
-
-			this.preview.$on('mouseleave', () => {
-				clearTimeout(this.showTimer);
-				this.hideTimer = setTimeout(this.closePreview, 500);
-			});
-
 			document.body.appendChild(this.preview.$el);
 		},
 		closePreview() {

@@ -1,5 +1,5 @@
 <template>
-<div class="fgmtyycl _panel" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
+<div class="fgmtyycl _panel" :style="{ top: top + 'px', left: left + 'px' }">
 	<x-url-preview :url="url"/>
 </div>
 </template>
