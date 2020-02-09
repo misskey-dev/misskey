@@ -56,14 +56,14 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
+			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
 			faGlobe, faUnlock, faEnvelope, faHome
 		}
 	},
 	methods: {
 		choose(visibility) {
 			if (this.$store.state.settings.rememberNoteVisibility) {
-				this.$store.commit('device/setVisibility', visibility);
+				this.$store.commit('deviceUser/setVisibility', visibility);
 			}
 			this.$emit('chosen', visibility);
 			this.destroyDom();

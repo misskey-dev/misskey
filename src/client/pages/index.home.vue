@@ -91,13 +91,12 @@ export default Vue.extend({
 				this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
 			) && ['local', 'social'].includes(this.src)) this.src = 'home';
 		});
-		if (this.$store.state.device.tl) {
-			this.src = this.$store.state.device.tl.src;
-			if (this.src === 'list') {
-				this.list = this.$store.state.device.tl.arg;
-			} else if (this.src === 'antenna') {
-				this.antenna = this.$store.state.device.tl.arg;
-			}
+
+		this.src = this.$store.state.deviceUser.tl.src;
+		if (this.src === 'list') {
+			this.list = this.$store.state.deviceUser.tl.arg;
+		} else if (this.src === 'antenna') {
+			this.antenna = this.$store.state.deviceUser.tl.arg;
 		}
 	},
 
@@ -164,7 +163,7 @@ export default Vue.extend({
 		},
 
 		saveSrc() {
-			this.$store.commit('device/setTl', {
+			this.$store.commit('deviceUser/setTl', {
 				src: this.src,
 				arg: this.src == 'list' ? this.list : this.antenna
 			});

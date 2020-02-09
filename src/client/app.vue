@@ -202,7 +202,7 @@ export default Vue.extend({
 		},
 
 		widgets(): any[] {
-			return this.$store.state.settings.widgets;
+			return this.$store.state.deviceUser.widgets;
 		}
 	},
 
@@ -233,7 +233,7 @@ export default Vue.extend({
 			this.connection.on('notification', this.onNotification);
 
 			if (this.widgets.length === 0) {
-				this.$store.dispatch('settings/setWidgets', [{
+				this.$store.commit('deviceUser/setWidgets', [{
 					name: 'calendar',
 					id: 'a', data: {}
 				}, {
@@ -504,8 +504,9 @@ export default Vue.extend({
 				this.$store.dispatch('switchAccount', {
 					...i,
 					token: token
+				}).then(() => {
+					location.reload();
 				});
-				location.reload();
 			});
 		},
 
@@ -552,7 +553,7 @@ export default Vue.extend({
 				items: widgets.map(widget => ({
 					text: this.$t('_widgets.' + widget),
 					action: () => {
-						this.$store.dispatch('settings/addWidget', {
+						this.$store.commit('deviceUser/addWidget', {
 							name: widget,
 							id: uuid(),
 							data: {}
@@ -564,11 +565,11 @@ export default Vue.extend({
 		},
 
 		removeWidget(widget) {
-			this.$store.dispatch('settings/removeWidget', widget);
+			this.$store.commit('deviceUser/removeWidget', widget);
 		},
 
 		saveHome() {
-			this.$store.dispatch('settings/setWidgets', this.widgets);
+			this.$store.commit('deviceUser/setWidgets', this.widgets);
 		}
 	}
 });

@@ -16,7 +16,15 @@ const defaultSettings = {
 	wallpaper: null,
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	widgets: []
+};
+
+const defaultDeviceUserSettings = {
+	visibility: 'public',
+	localOnly: false,
+	widgets: [],
+	tl: {
+		src: 'home'
+	},
 };
 
 const defaultDeviceSettings = {
@@ -27,16 +35,19 @@ const defaultDeviceSettings = {
 	autoReload: false,
 	accounts: [],
 	recentEmojis: [],
-	visibility: 'public',
-	localOnly: false,
 	themes: [],
 	theme: 'light',
 	animation: true,
+	userData: {},
 };
+
+function copy(data) {
+	return JSON.parse(JSON.stringify(data));
+}
 
 export default (os: MiOS) => new Vuex.Store({
 	plugins: [createPersistedState({
-		paths: ['i', 'device', 'settings']
+		paths: ['i', 'device', 'deviceUser', 'settings']
 	})],
 
 	state: {
@@ -58,10 +69,11 @@ export default (os: MiOS) => new Vuex.Store({
 	},
 
 	actions: {
-		login(ctx, i) {
+		async login(ctx, i) {
 			ctx.commit('updateI', i);
-			ctx.dispatch('settings/merge', i.clientData);
-			ctx.dispatch('addAcount', { id: i.id, i: localStorage.getItem('i') });
+			ctx.commit('settings/init', i.clientData);
+			ctx.commit('deviceUser/init', ctx.state.device.userData[i.id] || {});
+			await ctx.dispatch('addAcount', { id: i.id, i: localStorage.getItem('i') });
 		},
 
 		addAcount(ctx, info) {
@@ -74,14 +86,17 @@ export default (os: MiOS) => new Vuex.Store({
 		},
 
 		logout(ctx) {
+			ctx.commit('device/setUserData', { userId: ctx.state.i.id, data: ctx.state.deviceUser });
 			ctx.commit('updateI', null);
+			ctx.commit('settings/init', {});
+			ctx.commit('deviceUser/init', {});
 			localStorage.removeItem('i');
 		},
 
-		switchAccount(ctx, i) {
-			ctx.commit('updateI', i);
-			ctx.commit('settings/init', i.clientData);
+		async switchAccount(ctx, i) {
+			ctx.commit('device/setUserData', { userId: ctx.state.i.id, data: ctx.state.deviceUser });
 			localStorage.setItem('i', i.token);
+			await ctx.dispatch('login', i);
 		},
 
 		mergeMe(ctx, me) {
@@ -90,7 +105,7 @@ export default (os: MiOS) => new Vuex.Store({
 			}
 
 			if (me.clientData) {
-				ctx.dispatch('settings/merge', me.clientData);
+				ctx.commit('settings/init', me.clientData);
 			}
 		},
 	},
@@ -102,6 +117,32 @@ export default (os: MiOS) => new Vuex.Store({
 			state: defaultDeviceSettings,
 
 			mutations: {
+				set(state, x: { key: string; value: any }) {
+					state[x.key] = x.value;
+				},
+
+				setUserData(state, x: { userId: string; data: any }) {
+					state.userData[x.userId] = copy(x.data);
+				},
+			}
+		},
+
+		deviceUser: {
+			namespaced: true,
+
+			state: defaultDeviceUserSettings,
+
+			mutations: {
+				init(state, x) {
+					for (const [key, value] of Object.entries(defaultDeviceUserSettings)) {
+						if (x[key]) {
+							state[key] = x[key];
+						} else {
+							state[key] = value;
+						}
+					}
+				},
+
 				set(state, x: { key: string; value: any }) {
 					state[x.key] = x.value;
 				},
@@ -119,6 +160,25 @@ export default (os: MiOS) => new Vuex.Store({
 
 				setLocalOnly(state, localOnly) {
 					state.localOnly = localOnly;
+				},
+
+				setWidgets(state, widgets) {
+					state.widgets = widgets;
+				},
+
+				addWidget(state, widget) {
+					state.widgets.unshift(widget);
+				},
+
+				removeWidget(state, widget) {
+					state.widgets = state.widgets.filter(w => w.id != widget.id);
+				},
+
+				updateWidget(state, x) {
+					const w = state.widgets.find(w => w.id == x.id);
+					if (w) {
+						w.data = x.data;
+					}
 				},
 			}
 		},
@@ -145,13 +205,6 @@ export default (os: MiOS) => new Vuex.Store({
 			},
 
 			actions: {
-				merge(ctx, settings) {
-					if (settings == null) return;
-					for (const [key, value] of Object.entries(settings)) {
-						ctx.commit('set', { key, value });
-					}
-				},
-
 				set(ctx, x) {
 					ctx.commit('set', x);
 
@@ -161,41 +214,6 @@ export default (os: MiOS) => new Vuex.Store({
 							value: x.value
 						});
 					}
-				},
-
-				setWidgets(ctx, widgets) {
-					ctx.state.widgets = widgets;
-					ctx.dispatch('updateWidgets');
-				},
-
-				addWidget(ctx, widget) {
-					ctx.state.widgets.unshift(widget);
-					ctx.dispatch('updateWidgets');
-				},
-
-				removeWidget(ctx, widget) {
-					ctx.state.widgets = ctx.state.widgets.filter(w => w.id != widget.id);
-					ctx.dispatch('updateWidgets');
-				},
-
-				updateWidget(ctx, x) {
-					const w = ctx.state.widgets.find(w => w.id == x.id);
-					if (w) {
-						w.data = x.data;
-						ctx.dispatch('updateWidgets');
-					}
-				},
-
-				updateWidgets(ctx) {
-					const widgets = ctx.state.widgets;
-					ctx.commit('set', {
-						key: 'widgets',
-						value: widgets
-					});
-					os.api('i/update-client-setting', {
-						name: 'widgets',
-						value: widgets
-					});
 				},
 			}
 		}
