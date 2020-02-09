@@ -254,7 +254,7 @@ export default Vue.extend({
 
 	> .input {
 		position: relative;
-		
+
 		&:before {
 			content: '';
 			display: block;
@@ -327,14 +327,16 @@ export default Vue.extend({
 		}
 
 		> input {
+			$height: 32px;
 			display: block;
+			height: $height;
 			width: 100%;
 			margin: 0;
 			padding: 0;
 			font: inherit;
 			font-weight: normal;
 			font-size: 16px;
-			line-height: 32px;
+			line-height: $height;
 			color: var(--inputText);
 			background: transparent;
 			border: none;

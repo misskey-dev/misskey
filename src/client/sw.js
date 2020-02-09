@@ -18,7 +18,7 @@ self.addEventListener('install', ev => {
 		caches.open(cacheName)
 			.then(cache => {
 				return cache.addAll([
-					'/'
+					`/?v=${version}`
 				]);
 			})
 			.then(() => self.skipWaiting())
@@ -45,7 +45,7 @@ self.addEventListener('fetch', ev => {
 				return response || fetch(ev.request);
 			})
 			.catch(() => {
-				return caches.match('/');
+				return caches.match(`/?v=${version}`);
 			})
 	);
 });
