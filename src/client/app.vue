@@ -257,11 +257,6 @@ export default Vue.extend({
 			}
 		});
 
-		setInterval(() => {
-			if (this.showNav) return; // TODO: トランジション中も false になるので、これだけでは不十分
-			this.$refs.title.style.left = (this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth) + 'px';
-		}, 1000);
-
 		// https://stackoverflow.com/questions/33891709/when-flexbox-items-wrap-in-column-mode-container-does-not-grow-its-width
 		if (this.enableWidgets) {
 			setInterval(() => {
@@ -271,6 +266,16 @@ export default Vue.extend({
 				this.$refs.widgets.style.width = width + 'px';
 			}, 1000);
 		}
+	},
+
+	mounted() {
+		const adjustTitlePosition = () => {
+			this.$refs.title.style.left = (this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth) + 'px';
+		};
+
+		adjustTitlePosition();
+
+		window.addEventListener('resize', adjustTitlePosition);
 	},
 
 	methods: {
