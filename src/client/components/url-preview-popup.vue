@@ -1,6 +1,6 @@
 <template>
 <div class="fgmtyycl _panel" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
-	<x-url-preview :url="url" style="width: 600px;"/>
+	<x-url-preview :url="url"/>
 </div>
 </template>
 
@@ -49,7 +49,8 @@ export default Vue.extend({
 .fgmtyycl {
 	position: absolute;
 	z-index: 11000;
-	//width: 300px;
+	width: 500px;
 	overflow: hidden;
+	pointer-events: none;
 }
 </style>
