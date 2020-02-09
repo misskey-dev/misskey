@@ -376,6 +376,7 @@ messagingWithGroup: "グループでチャット"
 enable: "有効にする"
 next: "次"
 retype: "再入力"
+noteOf: "{user}のノート"
 
 _tutorial:
   title: "Misskeyの使い方"
