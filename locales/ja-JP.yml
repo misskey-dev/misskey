@@ -377,6 +377,7 @@ enable: "有効にする"
 next: "次"
 retype: "再入力"
 noteOf: "{user}のノート"
+inviteToGroup: "グループに招待"
 
 _tutorial:
   title: "Misskeyの使い方"
