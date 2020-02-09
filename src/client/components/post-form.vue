@@ -153,7 +153,7 @@ export default Vue.extend({
 				this.$t('_postForm._placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
-			
+
 			return this.renote
 				? this.$t('_postForm.quotePlaceholder')
 				: this.reply
@@ -713,7 +713,7 @@ export default Vue.extend({
 			border-radius: 0;
 			background: transparent;
 			color: var(--fg);
-			font-family: initial;
+			font-family: inherit;
 
 			@media (max-width: 500px) {
 				padding: 0 16px;

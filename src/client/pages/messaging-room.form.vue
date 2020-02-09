@@ -247,6 +247,7 @@ export default Vue.extend({
 		padding: 16px 16px 0 16px;
 		resize: none;
 		font-size: 1em;
+		font-family: inherit;
 		outline: none;
 		border: none;
 		border-radius: 0;
