@@ -377,6 +377,7 @@ next: "다음"
 retype: "다시 입력"
 _tutorial:
   title: "Misskey의 사용 방법"
+  step1_1: "환영합니다!"
 _2fa:
   alreadyRegistered: "이미 설정이 완료되었습니다."
   registerDevice: "디바이스 등록"
