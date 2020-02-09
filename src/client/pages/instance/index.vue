@@ -60,7 +60,7 @@
 		<div class="_content">
 			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></mk-switch>
 			<template v-if="enableServiceWorker">
-				<mk-info>{{ $t('vapidInfo') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></mk-info>
+				<mk-info>{{ $t('vapidInfo') }}<br><code>npx web-push generate-vapid-keys</code></mk-info>
 				<mk-horizon-group inputs class="fit-bottom">
 					<mk-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapidPublickey') }}</mk-input>
 					<mk-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapidPrivatekey') }}</mk-input>
