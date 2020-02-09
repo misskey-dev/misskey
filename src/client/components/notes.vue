@@ -1,6 +1,6 @@
 <template>
 <div class="mk-notes" v-size="[{ max: 500 }]">
-	<div class="empty _panel" v-if="empty">
+	<div class="empty" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" alt=""/>
 		<div>{{ $t('noNotes') }}</div>
 	</div>

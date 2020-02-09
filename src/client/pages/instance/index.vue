@@ -120,30 +120,30 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
-			<header><fa :icon="faTwitter"/> {{ $t('twitter-integration-config') }}</header>
-			<mk-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</mk-switch>
+			<header><fa :icon="faTwitter"/> Twitter</header>
+			<mk-switch v-model="enableTwitterIntegration">{{ $t('enable') }}</mk-switch>
 			<template v-if="enableTwitterIntegration">
-				<mk-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitter-integration-consumer-key') }}</mk-input>
-				<mk-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitter-integration-consumer-secret') }}</mk-input>
-				<mk-info>{{ $t('twitter-integration-info', { url: `${url}/api/tw/cb` }) }}</mk-info>
+				<mk-info>Callback URL: {{ `${url}/api/tw/cb` }}</mk-info>
+				<mk-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>Consumer Key</mk-input>
+				<mk-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>Consumer Secret</mk-input>
 			</template>
 		</div>
 		<div class="_content">
-			<header><fa :icon="faGithub"/> {{ $t('github-integration-config') }}</header>
-			<mk-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</mk-switch>
+			<header><fa :icon="faGithub"/> GitHub</header>
+			<mk-switch v-model="enableGithubIntegration">{{ $t('enable') }}</mk-switch>
 			<template v-if="enableGithubIntegration">
-				<mk-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('github-integration-client-id') }}</mk-input>
-				<mk-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('github-integration-client-secret') }}</mk-input>
-				<mk-info>{{ $t('github-integration-info', { url: `${url}/api/gh/cb` }) }}</mk-info>
+				<mk-info>Callback URL: {{ `${url}/api/gh/cb` }}</mk-info>
+				<mk-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>Client ID</mk-input>
+				<mk-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>Client Secret</mk-input>
 			</template>
 		</div>
 		<div class="_content">
-			<header><fa :icon="faDiscord"/> {{ $t('discord-integration-config') }}</header>
-			<mk-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</mk-switch>
+			<header><fa :icon="faDiscord"/> Discord</header>
+			<mk-switch v-model="enableDiscordIntegration">{{ $t('enable') }}</mk-switch>
 			<template v-if="enableDiscordIntegration">
-				<mk-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discord-integration-client-id') }}</mk-input>
-				<mk-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discord-integration-client-secret') }}</mk-input>
-				<mk-info>{{ $t('discord-integration-info', { url: `${url}/api/dc/cb` }) }}</mk-info>
+				<mk-info>Callback URL: {{ `${url}/api/dc/cb` }}</mk-info>
+				<mk-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>Client ID</mk-input>
+				<mk-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>Client Secret</mk-input>
 			</template>
 		</div>
 		<div class="_footer">
@@ -180,7 +180,7 @@ import MkTextarea from '../../components/ui/textarea.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkInfo from '../../components/ui/info.vue';
 import MkUserSelect from '../../components/user-select.vue';
-import { version } from '../../config';
+import { version, url } from '../../config';
 import i18n from '../../i18n';
 import getAcct from '../../../misc/acct/render';
 
@@ -204,6 +204,7 @@ export default Vue.extend({
 	data() {
 		return {
 			version,
+			url,
 			meta: null,
 			stats: null,
 			serverInfo: null,

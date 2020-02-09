@@ -193,6 +193,7 @@ export default Vue.extend({
 			return {
 				'p': this.post,
 				'n': this.post,
+				's': this.search,
 				'h|/': this.help
 			};
 		},

@@ -373,6 +373,7 @@ members: "メンバー"
 transfer: "譲渡"
 messagingWithUser: "ユーザーとチャット"
 messagingWithGroup: "グループでチャット"
+enable: "有効にする"
 
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"
