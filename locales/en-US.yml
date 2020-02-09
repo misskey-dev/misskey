@@ -374,6 +374,7 @@ messagingWithUser: "Messaging with other user"
 messagingWithGroup: "Messaging within group"
 enable: "Enable"
 next: "Next"
+retype: "Enter again"
 _tutorial:
   title: "How to use Misskey"
   step1_1: "Welcome!"
