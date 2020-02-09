@@ -1,5 +1,8 @@
 <template>
-<component :is="hasRoute ? 'router-link' : 'a'" class="ieqqeuvs _link" :[attr]="hasRoute ? url.substr(local.length) : url" :rel="rel" :target="target">
+<component :is="hasRoute ? 'router-link' : 'a'" class="ieqqeuvs _link" :[attr]="hasRoute ? url.substr(local.length) : url" :rel="rel" :target="target"
+	@mouseover="onMouseover"
+	@mouseleave="onMouseleave"
+>
 	<template v-if="!self">
 		<span class="schema">{{ schema }}//</span>
 		<span class="hostname">{{ hostname }}</span>
@@ -20,6 +23,7 @@ import Vue from 'vue';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode as decodePunycode } from 'punycode';
 import { url as local } from '../config';
+import XUrlPreview from './url-preview-popup.vue';
 
 export default Vue.extend({
 	props: {
@@ -51,6 +55,9 @@ export default Vue.extend({
 			hasRoute: hasRoute,
 			attr: hasRoute ? 'to' : 'href',
 			target: hasRoute ? null : '_blank',
+			showTimer: null,
+			hideTimer: null,
+			preview: null,
 			faExternalLinkSquareAlt
 		};
 	},
@@ -62,6 +69,47 @@ export default Vue.extend({
 		this.pathname = decodeURIComponent(url.pathname);
 		this.query = decodeURIComponent(url.search);
 		this.hash = decodeURIComponent(url.hash);
+	},
+	methods: {
+		showPreview() {
+			if (!document.body.contains(this.$el)) return;
+			if (this.preview) return;
+
+			this.preview = new XUrlPreview({
+				parent: this,
+				propsData: {
+					url: this.url,
+					source: this.$el
+				}
+			}).$mount();
+
+			this.preview.$on('mouseover', () => {
+				clearTimeout(this.hideTimer);
+			});
+
+			this.preview.$on('mouseleave', () => {
+				clearTimeout(this.showTimer);
+				this.hideTimer = setTimeout(this.closePreview, 500);
+			});
+
+			document.body.appendChild(this.preview.$el);
+		},
+		closePreview() {
+			if (this.preview) {
+				this.preview.destroyDom();
+				this.preview = null;
+			}
+		},
+		onMouseover() {
+			clearTimeout(this.showTimer);
+			clearTimeout(this.hideTimer);
+			this.showTimer = setTimeout(this.showPreview, 500);
+		},
+		onMouseleave() {
+			clearTimeout(this.showTimer);
+			clearTimeout(this.hideTimer);
+			this.hideTimer = setTimeout(this.closePreview, 500);
+		}
 	}
 });
 </script>
