@@ -1,0 +1,94 @@
+<template>
+<component :is="hasRoute ? 'router-link' : 'a'" class="xlcxczvw _link" :[attr]="hasRoute ? url.substr(local.length) : url" :rel="rel" :target="target"
+	@mouseover="onMouseover"
+	@mouseleave="onMouseleave"
+	:title="url"
+>
+	<slot></slot>
+	<fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
+</component>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
+import { url as local } from '../config';
+import XUrlPreview from './url-preview-popup.vue';
+
+export default Vue.extend({
+	props: {
+		url: {
+			type: String,
+			required: true,
+		},
+		rel: {
+			type: String,
+			required: false,
+		}
+	},
+	data() {
+		const isSelf = this.url.startsWith(local);
+		const hasRoute = isSelf && (
+			(this.url.substr(local.length) === '/') ||
+			this.url.substr(local.length).startsWith('/@') ||
+			this.url.substr(local.length).startsWith('/notes/') ||
+			this.url.substr(local.length).startsWith('/tags/'));
+		return {
+			local,
+			self: isSelf,
+			hasRoute: hasRoute,
+			attr: hasRoute ? 'to' : 'href',
+			target: hasRoute ? null : '_blank',
+			showTimer: null,
+			hideTimer: null,
+			preview: null,
+			faExternalLinkSquareAlt
+		};
+	},
+	methods: {
+		showPreview() {
+			if (!document.body.contains(this.$el)) return;
+			if (this.preview) return;
+
+			this.preview = new XUrlPreview({
+				parent: this,
+				propsData: {
+					url: this.url,
+					source: this.$el
+				}
+			}).$mount();
+
+			document.body.appendChild(this.preview.$el);
+		},
+		closePreview() {
+			if (this.preview) {
+				this.preview.destroyDom();
+				this.preview = null;
+			}
+		},
+		onMouseover() {
+			clearTimeout(this.showTimer);
+			clearTimeout(this.hideTimer);
+			this.showTimer = setTimeout(this.showPreview, 500);
+		},
+		onMouseleave() {
+			clearTimeout(this.showTimer);
+			clearTimeout(this.hideTimer);
+			this.hideTimer = setTimeout(this.closePreview, 500);
+		}
+	}
+});
+</script>
+
+<style lang="scss" scoped>
+.xlcxczvw {
+	word-break: break-all;
+
+	> .icon {
+		padding-left: 2px;
+		font-size: .9em;
+		font-weight: 400;
+		font-style: normal;
+	}
+}
+</style>
