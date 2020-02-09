@@ -107,8 +107,6 @@ export default Vue.extend({
 			list: null,
 			antenna: null,
 			menuOpened: false,
-			announcements: [] as any[],
-			currentAnnouncementIndex: 0,
 			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faCircle, faChevronLeft, faChevronRight, faCheck
 		};
 	},
@@ -160,12 +158,6 @@ export default Vue.extend({
 			}
 		}
 	},
-
-	activated() {
-		this.$root.api('announcements', { limit: 100, withUnreads: true }).then((a: any) => {
-			this.announcements = a
-		});
-	}
 
 	methods: {
 		before() {
@@ -238,12 +230,7 @@ export default Vue.extend({
 
 		focus() {
 			(this.$refs.tl as any).focus();
-		},
-
-		read(announcement: any) {
-			this.announcements = this.announcements.filter(a => a != announcement)
-			this.$root.api('i/read-announcement', { announcementId: announcement.id });
-		},
+		}
 	}
 });
 </script>
