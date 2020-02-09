@@ -19,7 +19,7 @@
 			</router-link>
 		</i18n>
 		<div class="info">
-			<button class="_button time" @click="showRenoteMenu"><mk-time :time="note.createdAt"/></button>
+			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime"><mk-time :time="note.createdAt"/></button>
 			<span class="visibility" v-if="note.visibility != 'public'">
 				<fa v-if="note.visibility == 'home'" :icon="faHome"/>
 				<fa v-if="note.visibility == 'followers'" :icon="faUnlock"/>
@@ -558,7 +558,7 @@ export default Vue.extend({
 			}).then(this.focus);
 		},
 
-		showRenoteMenu(ev) {
+		showRenoteMenu(viaKeyboard = false) {
 			if (!this.$store.getters.isSignedIn || (this.$store.state.i.id !== this.note.userId)) return;
 			this.$root.menu({
 				items: [{
@@ -571,7 +571,7 @@ export default Vue.extend({
 						Vue.set(this.note, 'deletedAt', new Date());
 					}
 				}],
-				source: ev.currentTarget || ev.target,
+				source: this.$refs.renoteTime,
 				viaKeyboard: viaKeyboard
 			});
 		},
