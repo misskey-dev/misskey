@@ -40,8 +40,8 @@
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
 			<template v-if="enableRecaptcha">
-				<mk-info>{{ $t('recaptcha-info') }}</mk-info>
-				<mk-info warn>{{ $t('recaptcha-info2') }}</mk-info>
+				<mk-info>{{ $t('recaptchaInfo') }}</mk-info>
+				<mk-info warn>{{ $t('recaptchaInfo2') }}</mk-info>
 				<mk-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSecretKey') }}</mk-input>
 			</template>
@@ -58,12 +58,12 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworker-info') }}</template></mk-switch>
+			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></mk-switch>
 			<template v-if="enableServiceWorker">
-				<mk-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></mk-info>
+				<mk-info>{{ $t('vapidInfo') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></mk-info>
 				<mk-horizon-group inputs class="fit-bottom">
-					<mk-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapid-publickey') }}</mk-input>
-					<mk-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapid-privatekey') }}</mk-input>
+					<mk-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapidPublickey') }}</mk-input>
+					<mk-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapidPrivatekey') }}</mk-input>
 				</mk-horizon-group>
 			</template>
 		</div>
@@ -120,30 +120,30 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
-			<header><fa :icon="faTwitter"/> {{ $t('twitter-integration-config') }}</header>
-			<mk-switch v-model="enableTwitterIntegration">{{ $t('enable-twitter-integration') }}</mk-switch>
+			<header><fa :icon="faTwitter"/> {{ $t('twitterIntegrationConfig') }}</header>
+			<mk-switch v-model="enableTwitterIntegration">{{ $t('enableTwitterIntegration') }}</mk-switch>
 			<template v-if="enableTwitterIntegration">
-				<mk-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitter-integration-consumer-key') }}</mk-input>
-				<mk-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitter-integration-consumer-secret') }}</mk-input>
-				<mk-info>{{ $t('twitter-integration-info', { url: `${url}/api/tw/cb` }) }}</mk-info>
+				<mk-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitterIntegrationConsumerKey') }}</mk-input>
+				<mk-input v-model="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('twitterIntegrationConsumerSecret') }}</mk-input>
+				<mk-info>{{ $t('integrationUrlInfo', { url: `${url}/api/tw/cb` }) }}</mk-info>
 			</template>
 		</div>
 		<div class="_content">
-			<header><fa :icon="faGithub"/> {{ $t('github-integration-config') }}</header>
-			<mk-switch v-model="enableGithubIntegration">{{ $t('enable-github-integration') }}</mk-switch>
+			<header><fa :icon="faGithub"/> {{ $t('githubIntegrationConfig') }}</header>
+			<mk-switch v-model="enableGithubIntegration">{{ $t('enableGithubIntegration') }}</mk-switch>
 			<template v-if="enableGithubIntegration">
-				<mk-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('github-integration-client-id') }}</mk-input>
-				<mk-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('github-integration-client-secret') }}</mk-input>
-				<mk-info>{{ $t('github-integration-info', { url: `${url}/api/gh/cb` }) }}</mk-info>
+				<mk-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('githubIntegrationClientId') }}</mk-input>
+				<mk-input v-model="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('githubIntegrationClientSecret') }}</mk-input>
+				<mk-info>{{ $t('integrationUrlInfo', { url: `${url}/api/gh/cb` }) }}</mk-info>
 			</template>
 		</div>
 		<div class="_content">
-			<header><fa :icon="faDiscord"/> {{ $t('discord-integration-config') }}</header>
-			<mk-switch v-model="enableDiscordIntegration">{{ $t('enable-discord-integration') }}</mk-switch>
+			<header><fa :icon="faDiscord"/> {{ $t('discordIntegrationConfig') }}</header>
+			<mk-switch v-model="enableDiscordIntegration">{{ $t('enableDiscordIntegration') }}</mk-switch>
 			<template v-if="enableDiscordIntegration">
-				<mk-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discord-integration-client-id') }}</mk-input>
-				<mk-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discord-integration-client-secret') }}</mk-input>
-				<mk-info>{{ $t('discord-integration-info', { url: `${url}/api/dc/cb` }) }}</mk-info>
+				<mk-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discordIntegrationClientId') }}</mk-input>
+				<mk-input v-model="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>{{ $t('discordIntegrationClientSecret') }}</mk-input>
+				<mk-info>{{ $t('integrationUrlInfo', { url: `${url}/api/dc/cb` }) }}</mk-info>
 			</template>
 		</div>
 		<div class="_footer">
