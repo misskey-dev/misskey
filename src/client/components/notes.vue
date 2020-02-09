@@ -7,7 +7,7 @@
 
 	<mk-error v-if="error" @retry="init()"/>
 
-	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note, i }">
+	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note }">
 		<x-note :note="note" :detail="detail" :key="note.id"/>
 	</x-list>
 
