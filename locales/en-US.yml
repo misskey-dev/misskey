@@ -372,6 +372,10 @@ members: "Members"
 transfer: "Transfer"
 messagingWithUser: "Messaging with other user"
 messagingWithGroup: "Messaging within group"
+enable: "Enable"
+next: "Next"
+_tutorial:
+  title: "How to use Misskey"
 _2fa:
   alreadyRegistered: "You have already registered 2-factor authentication device."
   registerDevice: "Register a new device"
