@@ -838,7 +838,8 @@ export default Vue.extend({
 				padding: 8px 0;
 
 				> .divider {
-					margin: 8px 0;
+					margin: 8px auto;
+					width: calc(100% - 32px);
 				}
 			}
 
