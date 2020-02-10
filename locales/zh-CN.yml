@@ -71,6 +71,8 @@ exportRequested: "导出请求已提交。可能需要花一些时间。导出�
 importRequested: "导入请求已提交。这可能需要花一点时间。"
 lists: "列表"
 noLists: "列表为空"
+note: "帖子"
+notes: "帖子"
 following: "关注中"
 followers: "关注者"
 followsYou: "关注了你"
@@ -500,11 +502,13 @@ _pages:
   blocks:
     text: "文本"
     image: "图片"
+    if: "如果"
     _if:
       variable: "变量"
     post: "投稿窗口"
     _post:
       text: "内容"
+    textInput: "文本输入"
     _textInput:
       name: "变量名"
       text: "标题"
@@ -537,6 +541,7 @@ _pages:
         dialog: "显示对话框"
         _dialog:
           content: "内容"
+        resetRandom: "重置随机值"
         pushEvent: "发送事件"
         _pushEvent:
           event: "事件名称"
@@ -710,12 +715,14 @@ _pages:
       _for:
         arg1: "次数"
         arg2: "处理"
+    thereIsEmptySlot: "槽函数{slot}为空！"
     types:
       string: "文字"
       number: "数值"
       boolean: "Flag"
       array: "列表"
       stringArray: "文本列表"
+    emptySlot: "空白槽函数"
     enviromentVariables: "环境变量"
     pageVariables: "页面元素"
     argVariables: "输入变量"
