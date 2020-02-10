@@ -1,30 +1,47 @@
 <template>
 <div class="yxspomdl">
-	<fa :icon="faSpinner" pulse fixed-width class="icon"/>
+	<div class="ring"></div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	data() {
-		return {
-			faSpinner
-		};
-	},
 });
 </script>
 
 <style lang="scss" scoped>
+@keyframes ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 .yxspomdl {
 	padding: 32px;
 	text-align: center;
 
-	> .icon {
-		font-size: 32px;
-		opacity: 0.5;
+	> .ring {
+		display: inline-block;
+		width: 80px;
+		height: 80px;
+		opacity: 0.7;
+	}
+
+	> .ring:after {
+		content: " ";
+		display: block;
+		width: 64px;
+		height: 64px;
+		margin: 8px;
+		border-radius: 50%;
+		border: solid 6px;
+		border-color: var(--fg) transparent transparent transparent;
+		animation: ring 0.5s linear infinite;
 	}
 }
 </style>
