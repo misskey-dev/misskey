@@ -62,7 +62,9 @@ export default Vue.extend({
 		},
 
 		signup() {
-			this.$root.new(XSignupDialog);
+			this.$root.new(XSignupDialog, {
+				autoSet: true
+			});
 		}
 	}
 });

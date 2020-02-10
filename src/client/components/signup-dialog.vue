@@ -1,7 +1,7 @@
 <template>
-<x-window @closed="() => { $emit('closed'); destroyDom(); }">
+<x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }">
 	<template #header>{{ $t('signup') }}</template>
-	<x-signup/>
+	<x-signup :auto-set="autoSet" @signup="onSignup"/>
 </x-window>
 </template>
 
@@ -18,5 +18,20 @@ export default Vue.extend({
 		XSignup,
 		XWindow,
 	},
+
+	props: {
+		autoSet: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
+	},
+
+	methods: {
+		onSignup(res) {
+			this.$emit('signup', res);
+			this.$refs.window.close();
+		}
+	}
 });
 </script>
