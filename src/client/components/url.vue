@@ -1,5 +1,5 @@
 <template>
-<component :is="hasRoute ? 'router-link' : 'a'" class="ieqqeuvs _link" :[attr]="hasRoute ? url.substr(local.length) : url" :rel="rel" :target="target"
+<component :is="self ? 'router-link' : 'a'" class="ieqqeuvs _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
 >
@@ -37,12 +37,7 @@ export default Vue.extend({
 		}
 	},
 	data() {
-		const isSelf = this.url.startsWith(local);
-		const hasRoute = isSelf && (
-			(this.url.substr(local.length) === '/') ||
-			this.url.substr(local.length).startsWith('/@') ||
-			this.url.substr(local.length).startsWith('/notes/') ||
-			this.url.substr(local.length).startsWith('/tags/'));
+		const self = this.url.startsWith(local);
 		return {
 			local,
 			schema: null as string | null,
@@ -51,10 +46,9 @@ export default Vue.extend({
 			pathname: null as string | null,
 			query: null as string | null,
 			hash: null as string | null,
-			self: isSelf,
-			hasRoute: hasRoute,
-			attr: hasRoute ? 'to' : 'href',
-			target: hasRoute ? null : '_blank',
+			self: self,
+			attr: self ? 'to' : 'href',
+			target: self ? null : '_blank',
 			showTimer: null,
 			hideTimer: null,
 			preview: null,

@@ -10,7 +10,7 @@
 </div>
 <div v-else class="mk-url-preview" v-size="[{ max: 400 }, { max: 350 }]">
 	<transition name="zoom" mode="out-in">
-		<component :is="hasRoute ? 'router-link' : 'a'" :class="{ compact }" :[attr]="hasRoute ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
+		<component :is="self ? 'router-link' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
 				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enable-player')"><fa :icon="faPlayCircle"/></button>
 			</div>
@@ -58,12 +58,7 @@ export default Vue.extend({
 	},
 
 	data() {
-		const isSelf = this.url.startsWith(local);
-		const hasRoute =
-			(this.url.substr(local.length) === '/') ||
-			this.url.substr(local.length).startsWith('/@') ||
-			this.url.substr(local.length).startsWith('/notes/') ||
-			this.url.substr(local.length).startsWith('/tags/');
+		const self = this.url.startsWith(local);
 		return {
 			local,
 			fetching: true,
@@ -79,10 +74,9 @@ export default Vue.extend({
 			},
 			tweetUrl: null,
 			playerEnabled: false,
-			self: isSelf,
-			hasRoute: hasRoute,
-			attr: hasRoute ? 'to' : 'href',
-			target: hasRoute ? null : '_blank',
+			self: self,
+			attr: self ? 'to' : 'href',
+			target: self ? null : '_blank',
 			faPlayCircle
 		};
 	},
