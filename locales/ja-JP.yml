@@ -376,6 +376,7 @@ next: "次"
 retype: "再入力"
 noteOf: "{user}のノート"
 inviteToGroup: "グループに招待"
+maxNoteTextLength: "ノートの文字数制限"
 
 _tutorial:
   title: "Misskeyの使い方"

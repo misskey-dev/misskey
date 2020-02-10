@@ -143,7 +143,7 @@ export default Vue.extend({
 		this.setPosition();
 
 		//#region Construct Emoji DB
-		const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
+		const customEmojis = this.$store.state.instance.meta.emojis;
 		const emojiDefinitions: EmojiDef[] = [];
 
 		for (const x of customEmojis) {

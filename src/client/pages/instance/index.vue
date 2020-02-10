@@ -21,6 +21,9 @@
 
 	<section class="_card info">
 		<div class="_content">
+			<mk-input v-model="maxNoteTextLength" type="number" :save="() => save()" style="margin:0;"><template #icon><fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</mk-input>
+		</div>
+		<div class="_content">
 			<mk-switch v-model="enableLocalTimeline" @change="save()">{{ $t('enableLocalTimeline') }}</mk-switch>
 			<mk-switch v-model="enableGlobalTimeline" @change="save()">{{ $t('enableGlobalTimeline') }}</mk-switch>
 			<mk-info>{{ $t('disablingTimelinesInfo') }}</mk-info>
@@ -171,7 +174,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from '../../components/ui/button.vue';
@@ -205,7 +208,6 @@ export default Vue.extend({
 		return {
 			version,
 			url,
-			meta: null,
 			stats: null,
 			serverInfo: null,
 			proxyAccount: null,
@@ -223,6 +225,7 @@ export default Vue.extend({
 			tosUrl: null,
 			bannerUrl: null,
 			iconUrl: null,
+			maxNoteTextLength: 0,
 			enableRegistration: false,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
@@ -241,52 +244,56 @@ export default Vue.extend({
 			enableDiscordIntegration: false,
 			discordClientId: null,
 			discordClientSecret: null,
-			faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt
+			faPencilAlt, faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt
 		}
 	},
 
-	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-			this.name = this.meta.name;
-			this.description = this.meta.description;
-			this.tosUrl = this.meta.tosUrl;
-			this.bannerUrl = this.meta.bannerUrl;
-			this.iconUrl = this.meta.iconUrl;
-			this.maintainerName = this.meta.maintainerName;
-			this.maintainerEmail = this.meta.maintainerEmail;
-			this.enableRegistration = !this.meta.disableRegistration;
-			this.enableLocalTimeline = !this.meta.disableLocalTimeline;
-			this.enableGlobalTimeline = !this.meta.disableGlobalTimeline;
-			this.enableRecaptcha = this.meta.enableRecaptcha;
-			this.recaptchaSiteKey = this.meta.recaptchaSiteKey;
-			this.recaptchaSecretKey = this.meta.recaptchaSecretKey;
-			this.proxyAccountId = this.meta.proxyAccountId;
-			this.cacheRemoteFiles = this.meta.cacheRemoteFiles;
-			this.proxyRemoteFiles = this.meta.proxyRemoteFiles;
-			this.localDriveCapacityMb = this.meta.driveCapacityPerLocalUserMb;
-			this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
-			this.blockedHosts = this.meta.blockedHosts.join('\n');
-			this.pinnedUsers = this.meta.pinnedUsers.join('\n');
-			this.enableServiceWorker = this.meta.enableServiceWorker;
-			this.swPublicKey = this.meta.swPublickey;
-			this.swPrivateKey = this.meta.swPrivateKey;
-			this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
-			this.twitterConsumerKey = this.meta.twitterConsumerKey;
-			this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
-			this.enableGithubIntegration = this.meta.enableGithubIntegration;
-			this.githubClientId = this.meta.githubClientId;
-			this.githubClientSecret = this.meta.githubClientSecret;
-			this.enableDiscordIntegration = this.meta.enableDiscordIntegration;
-			this.discordClientId = this.meta.discordClientId;
-			this.discordClientSecret = this.meta.discordClientSecret;
+	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+	},
 
-			if (this.proxyAccountId) {
-				this.$root.api('users/show', { userId: this.proxyAccountId }).then(proxyAccount => {
-					this.proxyAccount = proxyAccount;
-				});
-			}
-		});
+	created() {
+		this.name = this.meta.name;
+		this.description = this.meta.description;
+		this.tosUrl = this.meta.tosUrl;
+		this.bannerUrl = this.meta.bannerUrl;
+		this.iconUrl = this.meta.iconUrl;
+		this.maintainerName = this.meta.maintainerName;
+		this.maintainerEmail = this.meta.maintainerEmail;
+		this.maxNoteTextLength = this.meta.maxNoteTextLength;
+		this.enableRegistration = !this.meta.disableRegistration;
+		this.enableLocalTimeline = !this.meta.disableLocalTimeline;
+		this.enableGlobalTimeline = !this.meta.disableGlobalTimeline;
+		this.enableRecaptcha = this.meta.enableRecaptcha;
+		this.recaptchaSiteKey = this.meta.recaptchaSiteKey;
+		this.recaptchaSecretKey = this.meta.recaptchaSecretKey;
+		this.proxyAccountId = this.meta.proxyAccountId;
+		this.cacheRemoteFiles = this.meta.cacheRemoteFiles;
+		this.proxyRemoteFiles = this.meta.proxyRemoteFiles;
+		this.localDriveCapacityMb = this.meta.driveCapacityPerLocalUserMb;
+		this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
+		this.blockedHosts = this.meta.blockedHosts.join('\n');
+		this.pinnedUsers = this.meta.pinnedUsers.join('\n');
+		this.enableServiceWorker = this.meta.enableServiceWorker;
+		this.swPublicKey = this.meta.swPublickey;
+		this.swPrivateKey = this.meta.swPrivateKey;
+		this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
+		this.twitterConsumerKey = this.meta.twitterConsumerKey;
+		this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
+		this.enableGithubIntegration = this.meta.enableGithubIntegration;
+		this.githubClientId = this.meta.githubClientId;
+		this.githubClientSecret = this.meta.githubClientSecret;
+		this.enableDiscordIntegration = this.meta.enableDiscordIntegration;
+		this.discordClientId = this.meta.discordClientId;
+		this.discordClientSecret = this.meta.discordClientSecret;
+
+		if (this.proxyAccountId) {
+			this.$root.api('users/show', { userId: this.proxyAccountId }).then(proxyAccount => {
+				this.proxyAccount = proxyAccount;
+			});
+		}
 
 		this.$root.api('admin/server-info').then(res => {
 			this.serverInfo = res;
@@ -347,6 +354,7 @@ export default Vue.extend({
 				iconUrl: this.iconUrl,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
+				maxNoteTextLength: this.maxNoteTextLength,
 				disableRegistration: !this.enableRegistration,
 				disableLocalTimeline: !this.enableLocalTimeline,
 				disableGlobalTimeline: !this.enableGlobalTimeline,
@@ -373,6 +381,7 @@ export default Vue.extend({
 				discordClientId: this.discordClientId,
 				discordClientSecret: this.discordClientSecret,
 			}).then(() => {
+				this.$store.dispatch('instance/fetch');
 				if (withDialog) {
 					this.$root.dialog({
 						type: 'success',

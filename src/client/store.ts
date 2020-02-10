@@ -41,13 +41,13 @@ const defaultDeviceSettings = {
 	userData: {},
 };
 
-function copy(data) {
+function copy<T>(data: T): T {
 	return JSON.parse(JSON.stringify(data));
 }
 
 export default (os: MiOS) => new Vuex.Store({
 	plugins: [createPersistedState({
-		paths: ['i', 'device', 'deviceUser', 'settings']
+		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
 	})],
 
 	state: {
@@ -111,6 +111,30 @@ export default (os: MiOS) => new Vuex.Store({
 	},
 
 	modules: {
+		instance: {
+			namespaced: true,
+
+			state: {
+				meta: null
+			},
+
+			mutations: {
+				set(state, meta) {
+					state.meta = meta;
+				},
+			},
+
+			actions: {
+				async fetch(ctx) {
+					const meta = await os.api('meta', {
+						detail: false
+					});
+
+					ctx.commit('set', meta);
+				}
+			}
+		},
+
 		device: {
 			namespaced: true,
 

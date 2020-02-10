@@ -17,16 +17,6 @@ let pending = 0;
  * Misskey Operating System
  */
 export default class MiOS extends EventEmitter {
-	/**
-	 * Misskeyの /meta で取得できるメタ情報
-	 */
-	private meta: {
-		data: { [x: string]: any };
-		chachedAt: Date;
-	};
-
-	private isMetaFetching = false;
-
 	public app: Vue;
 
 	public store: ReturnType<typeof initStore>;
@@ -88,7 +78,7 @@ export default class MiOS extends EventEmitter {
 			// When failure
 			.catch(() => {
 				// Render the error screen
-				document.body.innerHTML = '<div id="err">Error</div>';
+				document.body.innerHTML = '<div id="err">Oops!</div>';
 
 				Progress.done();
 			});
@@ -107,9 +97,9 @@ export default class MiOS extends EventEmitter {
 			// Finish init
 			callback();
 
-			// Init service worker
-			this.getMeta().then(data => {
-				if (data.swPublickey) this.registerSw(data.swPublickey);
+			this.store.dispatch('instance/fetch').then(() => {
+				// Init service worker
+				if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
 			});
 		};
 
@@ -349,49 +339,6 @@ export default class MiOS extends EventEmitter {
 		promise.then(onFinally, onFinally);
 
 		return promise;
-	}
-
-	/**
-	 * Misskeyのメタ情報を取得します
-	 */
-	@autobind
-	public getMetaSync() {
-		return this.meta ? this.meta.data : null;
-	}
-
-	/**
-	 * Misskeyのメタ情報を取得します
-	 * @param force キャッシュを無視するか否か
-	 */
-	@autobind
-	public getMeta(force = false) {
-		return new Promise<{ [x: string]: any }>(async (res, rej) => {
-			if (this.isMetaFetching) {
-				this.once('_meta_fetched_', () => {
-					res(this.meta.data);
-				});
-				return;
-			}
-
-			const expire = 1000 * 60; // 1min
-
-			// forceが有効, meta情報を保持していない or 期限切れ
-			if (force || this.meta == null || Date.now() - this.meta.chachedAt.getTime() > expire) {
-				this.isMetaFetching = true;
-				const meta = await this.api('meta', {
-					detail: false
-				});
-				this.meta = {
-					data: meta,
-					chachedAt: new Date()
-				};
-				this.isMetaFetching = false;
-				this.emit('_meta_fetched_');
-				res(meta);
-			} else {
-				res(this.meta.data);
-			}
-		});
 	}
 }
 

@@ -157,8 +157,6 @@ os.init(async () => {
 		},
 		methods: {
 			api: os.api,
-			getMeta: os.getMeta,
-			getMetaSync: os.getMetaSync,
 			signout: os.signout,
 			new(vm, props) {
 				const x = new vm({

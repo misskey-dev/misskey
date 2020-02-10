@@ -79,7 +79,6 @@ export default Vue.extend({
 			usernameState: null,
 			passwordStrength: '',
 			passwordRetypeState: null,
-			meta: {},
 			submitting: false,
 			ToSAgreement: false,
 			faLock, faExclamationTriangle, faSpinner, faCheck
@@ -87,18 +86,16 @@ export default Vue.extend({
 	},
 
 	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+		
 		shouldShowProfileUrl(): boolean {
 			return (this.username != '' &&
 				this.usernameState != 'invalid-format' &&
 				this.usernameState != 'min-range' &&
 				this.usernameState != 'max-range');
 		}
-	},
-
-	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-		});
 	},
 
 	mounted() {

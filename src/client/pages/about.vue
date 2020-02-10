@@ -84,18 +84,19 @@ export default Vue.extend({
 	data() {
 		return {
 			version,
-			meta: null,
 			stats: null,
 			serverInfo: null,
 			faInfoCircle
 		}
 	},
 
-	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-		});
+	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+	},
 
+	created() {
 		this.$root.api('stats').then(res => {
 			this.stats = res;
 		});

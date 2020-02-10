@@ -234,7 +234,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
 					return [createElement('mk-emoji', {
 						key: Math.random(),
 						attrs: {
@@ -242,7 +241,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							name: token.node.props.name
 						},
 						props: {
-							customEmojis: this.customEmojis || customEmojis,
+							customEmojis: this.customEmojis,
 							normal: this.plain
 						}
 					})];

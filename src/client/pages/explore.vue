@@ -115,13 +115,15 @@ export default Vue.extend({
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
-			meta: null,
 			num: Vue.filter('number'),
 			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket
 		};
 	},
 
 	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
 		tagUsers(): any {
 			return {
 				endpoint: 'hashtags/users',
@@ -158,9 +160,6 @@ export default Vue.extend({
 		});
 		this.$root.api('stats').then(stats => {
 			this.stats = stats;
-		});
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
 		});
 	},
 });
