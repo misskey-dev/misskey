@@ -9,7 +9,7 @@ import MiOS from '../mios';
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
-	public state: string;
+	public state: 'initializing' | 'reconnecting' | 'connected';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
