@@ -45,6 +45,9 @@ export default class MiOS extends EventEmitter {
 	public async init(callback) {
 		this.store = initStore(this);
 
+		// meta取得
+		this.store.dispatch('instance/fetch');
+
 		// ユーザーをフェッチしてコールバックする
 		const fetchme = (token, cb) => {
 			let me = null;
