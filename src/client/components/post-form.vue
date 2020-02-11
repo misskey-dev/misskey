@@ -610,6 +610,7 @@ export default Vue.extend({
 			right: 0;
 
 			> .text-count {
+				opacity: 0.7;
 				line-height: 66px;
 
 				@media (max-width: 500px) {
