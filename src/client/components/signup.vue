@@ -3,8 +3,7 @@
 	<template v-if="meta">
 		<mk-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
 			<span>{{ $t('invitationCode') }}</span>
-			<template #prefix><fa icon="id-card-alt"/></template>
-			<template #desc v-html="this.$t('invitationInfo').replace('{}', 'mailto:' + meta.maintainerEmail)"></template>
+			<template #prefix><fa :icon="faKey"/></template>
 		</mk-input>
 		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
 			<span>{{ $t('username') }}</span>
@@ -50,7 +49,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faLock, faExclamationTriangle, faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
 import i18n from '../i18n';
@@ -81,7 +80,7 @@ export default Vue.extend({
 			passwordRetypeState: null,
 			submitting: false,
 			ToSAgreement: false,
-			faLock, faExclamationTriangle, faSpinner, faCheck
+			faLock, faExclamationTriangle, faSpinner, faCheck, faKey
 		}
 	},
 
