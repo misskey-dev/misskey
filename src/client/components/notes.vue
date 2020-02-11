@@ -11,28 +11,28 @@
 		<x-note :note="note" :detail="detail" :key="note.id"/>
 	</x-list>
 
-	<footer v-if="more">
-		<button @click="fetchMore()" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" class="_buttonPrimary">
+	<footer class="more" v-if="more">
+		<mk-button class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()" primary>
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
-		</button>
+			<template v-if="moreFetching"><mk-loading inline/></template>
+		</mk-button>
 	</footer>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
+import MkButton from './ui/button.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XNote, XList
+		XNote, XList, MkButton
 	},
 
 	mixins: [
@@ -61,12 +61,6 @@ export default Vue.extend({
 		extract: {
 			required: false
 		}
-	},
-
-	data() {
-		return {
-			faSpinner
-		};
 	},
 
 	computed: {
@@ -113,23 +107,11 @@ export default Vue.extend({
 		}
 	}
 
-	> footer {
-		text-align: center;
-
-		&:empty {
-			display: none;
-		}
-
-		> button {
-			margin: 0;
-			padding: 16px;
-			width: 100%;
-			border-radius: var(--radius);
-
-			&:disabled {
-				opacity: 0.7;
-			}
-		}
+	> .more > .button {
+		margin-left: auto;
+		margin-right: auto;
+		height: 48px;
+		width: 100%;
 	}
 }
 </style>
