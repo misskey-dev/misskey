@@ -52,7 +52,7 @@ export default Vue.extend({
 			this.$options.i++;
 		},
 		enter(el, done) {
-			setTimeout(() => {
+			setTimeout(() => { // 必要
 				el.style.opacity = 1;
 				el.style.transform = 'translateY(0px)';
 
