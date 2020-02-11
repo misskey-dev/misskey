@@ -27,20 +27,19 @@ export default Vue.extend({
 
 	> .ring {
 		display: inline-block;
-		width: 80px;
-		height: 80px;
 		opacity: 0.7;
+		vertical-align: middle;
 	}
 
 	> .ring:after {
 		content: " ";
 		display: block;
-		width: 64px;
-		height: 64px;
-		margin: 8px;
+		box-sizing: border-box;
+		width: 48px;
+		height: 48px;
 		border-radius: 50%;
-		border: solid 6px;
-		border-color: var(--fg) transparent transparent transparent;
+		border: solid 4px;
+		border-color: currentColor transparent transparent transparent;
 		animation: ring 0.5s linear infinite;
 	}
 }
