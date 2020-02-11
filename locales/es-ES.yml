@@ -384,6 +384,10 @@ _tutorial:
   step2_1: "Antes de crear notas y seguir a alguien, primero vamos a crear tu perfil"
   step2_2: "Si provees información sobre quien eres, será más fácil para que otros usuarios te sigan"
   step3_1: "¿Has podido crear tu perfil sin problemas?"
+  step3_2: "Con esto, prueba hacer una nota. Aprieta el botón con forma de lápiz que está arriba de la imagen y abre el formulario."
+  step3_3: "Si has escrito el contenido, aprieta el botón que está arriba a la derecha del formulario para postear."
+  step3_4: "¿No se te ocurre un contenido? Prueba con decir \"Empecé a usar Misskey\""
+  step4_1: "¿Has posteado?"
 _2fa:
   registerDevice: "Registrar dispositivo"
   step1: "Primero, instale en su dispositivo la aplicación de autenticación {a} o {b} u otra."
