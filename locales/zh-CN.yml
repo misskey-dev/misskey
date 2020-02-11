@@ -1,4 +1,5 @@
 ---
+_lang_: "中文(简体)"
 introMisskey: "欢迎！Misskey是一个开源的分散型SNS服务。\n通过「帖子」来分享现在发生的事情吧！📡\n「反应」功能，可以让你快速的对大家的「帖子」来表达感情👍\n一起来探索新的世界吧！🚀"
 monthAndDay: "{month}月 {day}日"
 search: "搜索"
