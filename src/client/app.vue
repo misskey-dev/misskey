@@ -267,7 +267,7 @@ export default Vue.extend({
 					}
 					this.disconnectedDialog = null;
 				});
-			}, 70)
+			}, 150)
 		});
 	},
 
