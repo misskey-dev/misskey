@@ -49,7 +49,9 @@ export default Vue.extend({
 			this.$options.i++;
 
 			setTimeout(() => {
-				el.style.transition = '';
+				el.style.transition = null;
+				el.style.transform = null;
+				el.style.opacity = null;
 				this.$options.i--;
 			}, delay + 710);
 		},
