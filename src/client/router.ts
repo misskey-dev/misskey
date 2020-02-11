@@ -62,11 +62,16 @@ export const router = new VueRouter({
 	],
 	// なんかHacky
 	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
-	// setTimeout しないと、アニメーション(トランジション)の関係でうまく動かない
 	scrollBehavior(to) {
 		window._scroll = () => { // さらにHacky
 			if (to.name === 'index') {
 				window.scroll({ top: indexScrollPos, behavior: 'instant' });
+				const i = setInterval(() => {
+					window.scroll({ top: indexScrollPos, behavior: 'instant' });
+				}, 10);
+				setTimeout(() => {
+					clearInterval(i);
+				}, 500);
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });
 			}
