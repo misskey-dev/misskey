@@ -388,6 +388,8 @@ _tutorial:
   step3_3: "Si has escrito el contenido, aprieta el botón que está arriba a la derecha del formulario para postear."
   step3_4: "¿No se te ocurre un contenido? Prueba con decir \"Empecé a usar Misskey\""
   step4_1: "¿Has posteado?"
+  step4_2: "Si tu nota puede verse en la linea de tiempo, fue todo un éxito."
+  step5_1: "Luego, ponte a seguir a otra gente y haz que tu linea de tiempo esté más animada."
 _2fa:
   registerDevice: "Registrar dispositivo"
   step1: "Primero, instale en su dispositivo la aplicación de autenticación {a} o {b} u otra."
