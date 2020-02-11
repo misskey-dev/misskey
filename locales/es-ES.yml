@@ -407,6 +407,7 @@ _2fa:
   step2: "Luego, escanee con la aplicación el código QR mostrado en pantalla."
   step3: "Para terminar, ingrese el token mostrado en la aplicación."
   step4: "Ahora cuando inicie sesión, ingrese el mismo token"
+  securityKeyInfo: "Se puede configurar el inicio de sesión usando una clave de seguridad de hardware que soporte FIDO2 o con un certificado de huella digital o con un PIN"
 _permissions:
   "read:account": "Ver información de la cuenta"
   "write:account": "Editar información de la cuenta"
