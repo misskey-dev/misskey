@@ -748,10 +748,9 @@ export default Vue.extend({
 				position: relative;
 
 				> input {
-					$margin: 8px;
-					width: 200px;
+					width: 210px;
 					box-sizing: border-box;
-					margin-right: $margin;
+					margin-right: 8px;
 					padding: 0 12px 0 42px;
 					font-size: 1rem;
 					line-height: 38px;
