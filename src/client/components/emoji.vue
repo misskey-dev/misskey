@@ -55,38 +55,35 @@ export default Vue.extend({
 
 		useOsDefaultEmojis(): boolean {
 			return this.$store.state.device.useOsDefaultEmojis && !this.isReaction;
+		},
+
+		ce() {
+			let ce = [];
+			if (this.customEmojis) ce = ce.concat(this.customEmojis);
+			if (this.$store.state.instance.meta && this.$store.state.instance.meta.emojis) ce = ce.concat(this.$store.state.instance.meta.emojis);
+			return ce;
 		}
 	},
 
 	watch: {
-		customEmojis() {
-			if (this.name) {
-				const customEmoji = this.customEmojis.find(x => x.name == this.name);
-				if (customEmoji) {
-					this.customEmoji = customEmoji;
-					this.url = this.$store.state.device.disableShowingAnimatedImages
-						? getStaticImageUrl(customEmoji.url)
-						: customEmoji.url;
+		ce: {
+			handler() {
+				if (this.name) {
+					const customEmoji = this.ce.find(x => x.name == this.name);
+					if (customEmoji) {
+						this.customEmoji = customEmoji;
+						this.url = this.$store.state.device.disableShowingAnimatedImages
+							? getStaticImageUrl(customEmoji.url)
+							: customEmoji.url;
+					}
 				}
-			}
+			},
+			immediate: true
 		},
 	},
 
 	created() {
-		if (this.name) {
-			const customEmoji = this.customEmojis.find(x => x.name == this.name);
-			if (customEmoji) {
-				this.customEmoji = customEmoji;
-				this.url = this.$store.state.device.disableShowingAnimatedImages
-					? getStaticImageUrl(customEmoji.url)
-					: customEmoji.url;
-			} else {
-				//const emoji = lib[this.name];
-				//if (emoji) {
-				//	this.char = emoji.char;
-				//}
-			}
-		} else {
+		if (!this.name) {
 			this.char = this.emoji;
 		}
 

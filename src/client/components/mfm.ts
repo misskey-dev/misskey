@@ -2,6 +2,7 @@ import Vue, { VNode } from 'vue';
 import { MfmForest } from '../../mfm/types';
 import { parse, parsePlain } from '../../mfm/parse';
 import MkUrl from './url.vue';
+import MkLink from './link.vue';
 import MkMention from './mention.vue';
 import { concat } from '../../prelude/array';
 import MkFormula from './formula.vue';
@@ -158,14 +159,12 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'link': {
-					return [createElement('a', {
-						attrs: {
-							class: 'link _link',
-							href: token.node.props.url,
+					return [createElement(MkLink, {
+						key: Math.random(),
+						props: {
+							url: token.node.props.url,
 							rel: 'nofollow noopener',
-							target: '_blank',
-							title: token.node.props.url,
-						}
+						},
 					}, genEl(token.children))];
 				}
 
@@ -235,7 +234,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
 					return [createElement('mk-emoji', {
 						key: Math.random(),
 						attrs: {
@@ -243,7 +241,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							name: token.node.props.name
 						},
 						props: {
-							customEmojis: this.customEmojis || customEmojis,
+							customEmojis: this.customEmojis,
 							normal: this.plain
 						}
 					})];

@@ -1,19 +1,10 @@
 <template>
-<component :is="self ? 'router-link' : 'a'" class="ieqqeuvs _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
+<component :is="self ? 'router-link' : 'a'" class="xlcxczvw _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
+	:title="url"
 >
-	<template v-if="!self">
-		<span class="schema">{{ schema }}//</span>
-		<span class="hostname">{{ hostname }}</span>
-		<span class="port" v-if="port != ''">:{{ port }}</span>
-	</template>
-	<template v-if="pathname === '/' && self">
-		<span class="self">{{ hostname }}</span>
-	</template>
-	<span class="pathname" v-if="pathname != ''">{{ self ? pathname.substr(1) : pathname }}</span>
-	<span class="query">{{ query }}</span>
-	<span class="hash">{{ hash }}</span>
+	<slot></slot>
 	<fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
 </component>
 </template>
@@ -21,7 +12,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
-import { toUnicode as decodePunycode } from 'punycode';
 import { url as local } from '../config';
 import XUrlPreview from './url-preview-popup.vue';
 
@@ -40,12 +30,6 @@ export default Vue.extend({
 		const self = this.url.startsWith(local);
 		return {
 			local,
-			schema: null as string | null,
-			hostname: null as string | null,
-			port: null as string | null,
-			pathname: null as string | null,
-			query: null as string | null,
-			hash: null as string | null,
 			self: self,
 			attr: self ? 'to' : 'href',
 			target: self ? null : '_blank',
@@ -54,15 +38,6 @@ export default Vue.extend({
 			preview: null,
 			faExternalLinkSquareAlt
 		};
-	},
-	created() {
-		const url = new URL(this.url);
-		this.schema = url.protocol;
-		this.hostname = decodePunycode(url.hostname);
-		this.port = url.port;
-		this.pathname = decodeURIComponent(url.pathname);
-		this.query = decodeURIComponent(url.search);
-		this.hash = decodeURIComponent(url.hash);
 	},
 	methods: {
 		showPreview() {
@@ -100,7 +75,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ieqqeuvs {
+.xlcxczvw {
 	word-break: break-all;
 
 	> .icon {
@@ -108,30 +83,6 @@ export default Vue.extend({
 		font-size: .9em;
 		font-weight: 400;
 		font-style: normal;
-	}
-
-	> .self {
-		font-weight: bold;
-	}
-
-	> .schema {
-		opacity: 0.5;
-	}
-
-	> .hostname {
-		font-weight: bold;
-	}
-
-	> .pathname {
-		opacity: 0.8;
-	}
-
-	> .query {
-		opacity: 0.5;
-	}
-
-	> .hash {
-		font-style: italic;
 	}
 }
 </style>

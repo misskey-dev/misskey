@@ -89,6 +89,8 @@ body {
 		width: 64px;
 		height: 64px;
 		animation: ini 0.6s infinite linear;
+		color: var(--accent);
+		fill: currentColor;
 	}
 }
 
@@ -196,6 +198,7 @@ a {
 	@extend ._button;
 	color: #fff;
 	background: var(--accent);
+	box-shadow: 0 6px 16px var(--accentShadow);
 
 	&:not(:disabled):hover {
 		background: var(--jkhztclx);
@@ -385,7 +388,7 @@ a {
 }
 
 @keyframes blink {
-	0% { opacity: 1; }
-	30% { opacity: 1; }
-	90% { opacity: 0; }
+	0% { opacity: 1; transform: scale(1); }
+	30% { opacity: 1; transform: scale(1); }
+	90% { opacity: 0; transform: scale(0.5); }
 }

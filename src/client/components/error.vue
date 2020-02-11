@@ -45,6 +45,8 @@ export default Vue.extend({
 		height: 150px;
 		margin-bottom: 16px;
 		border-radius: 16px;
+		pointer-events: none;
+		user-select: none;
 	}
 }
 </style>

@@ -150,7 +150,7 @@ export default Vue.extend({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			this.navigateGroup(group);
+			this.$router.push(`/my/messaging/group/${group.id}`);
 		}
 	}
 });

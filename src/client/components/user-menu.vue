@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../i18n';
 import XMenu from './menu.vue';
@@ -43,7 +43,11 @@ export default Vue.extend({
 			icon: faListUl,
 			text: this.$t('addToList'),
 			action: this.pushList
-		}] as any;
+		}, this.$store.state.i.id != this.user.id ? {
+			icon: faUsers,
+			text: this.$t('inviteToGroup'),
+			action: this.inviteGroup
+		} : undefined] as any;
 
 		if (this.$store.getters.isSignedIn && this.$store.state.i.id != this.user.id) {
 			menu = menu.concat([null, {
@@ -104,6 +108,42 @@ export default Vue.extend({
 			if (canceled) return;
 			this.$root.api('users/lists/push', {
 				listId: listId,
+				userId: this.user.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
+		async inviteGroup() {
+			const groups = await this.$root.api('users/groups/owned');
+			if (groups.length === 0) {
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('youHaveNoGroups')
+				});
+				return;
+			}
+			const { canceled, result: groupId } = await this.$root.dialog({
+				type: null,
+				title: this.$t('group'),
+				select: {
+					items: groups.map(group => ({
+						value: group.id, text: group.name
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			this.$root.api('users/groups/invite', {
+				groupId: groupId,
 				userId: this.user.id
 			}).then(() => {
 				this.$root.dialog({

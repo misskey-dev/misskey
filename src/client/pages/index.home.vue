@@ -13,6 +13,9 @@
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
+
+	<x-tutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
+
 	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" @before="before()" @after="after()"/>
 </div>
 </template>
@@ -23,6 +26,7 @@ import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatell
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
+import XTutorial from './index.home.tutorial.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -32,7 +36,8 @@ export default Vue.extend({
 	},
 
 	components: {
-		XTimeline
+		XTimeline,
+		XTutorial,
 	},
 
 	props: {
@@ -57,7 +62,7 @@ export default Vue.extend({
 			return {
 				't': this.focus
 			};
-		}
+		},
 	},
 
 	watch: {
@@ -78,21 +83,11 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then((meta: Record<string, any>) => {
-			if (!(
-				this.enableGlobalTimeline = !meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
-			) && this.src === 'global') this.src = 'local';
-			if (!(
-				this.enableLocalTimeline = !meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin
-			) && ['local', 'social'].includes(this.src)) this.src = 'home';
-		});
-		if (this.$store.state.device.tl) {
-			this.src = this.$store.state.device.tl.src;
-			if (this.src === 'list') {
-				this.list = this.$store.state.device.tl.arg;
-			} else if (this.src === 'antenna') {
-				this.antenna = this.$store.state.device.tl.arg;
-			}
+		this.src = this.$store.state.deviceUser.tl.src;
+		if (this.src === 'list') {
+			this.list = this.$store.state.deviceUser.tl.arg;
+		} else if (this.src === 'antenna') {
+			this.antenna = this.$store.state.deviceUser.tl.arg;
 		}
 	},
 
@@ -159,7 +154,7 @@ export default Vue.extend({
 		},
 
 		saveSrc() {
-			this.$store.commit('device/setTl', {
+			this.$store.commit('deviceUser/setTl', {
 				src: this.src,
 				arg: this.src == 'list' ? this.list : this.antenna
 			});
@@ -172,7 +167,13 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.mk-home {
+	> .tutorial {
+		margin-bottom: var(--margin);
+	}
+}
+
 ._kjvfvyph_ {
 	position: relative;
 	height: 100%;

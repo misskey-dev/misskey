@@ -231,7 +231,6 @@ export default Vue.extend({
 			display: block;
 			margin: 2px 0 0 0;
 			font-size: 10px;
-			color: var(--messagingRoomMessageInfo);
 
 			> .read {
 				margin: 0 8px;
@@ -288,6 +287,7 @@ export default Vue.extend({
 
 			> .balloon {
 				background: $me-balloon-color;
+				box-shadow: 0 6px 16px var(--accentShadow);
 				text-align: left;
 
 				&[data-no-text] {

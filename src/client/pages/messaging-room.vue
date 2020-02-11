@@ -8,6 +8,7 @@
 		<portal to="avatar"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
 	</template>
 	<template v-if="!fetching && group">
+		<portal to="icon"><fa :icon="faUsers"/></portal>
 		<portal to="title">{{ group.name }}</portal>
 	</template>
 
@@ -35,7 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faArrowCircleDown, faFlag } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleDown, faFlag, faUsers } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import XList from '../components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
@@ -63,7 +64,7 @@ export default Vue.extend({
 			connection: null,
 			showIndicator: false,
 			timer: null,
-			faArrowCircleDown, faFlag
+			faArrowCircleDown, faFlag, faUsers
 		};
 	},
 

@@ -327,8 +327,8 @@ const override = (source: string, target: string, depth: number = 0) =>
 router.get('/othello', async ctx => ctx.redirect(override(ctx.URL.pathname, 'games/reversi', 1)));
 router.get('/reversi', async ctx => ctx.redirect(override(ctx.URL.pathname, 'games')));
 
-router.get('/flash', async ctx => {
-	await ctx.render('flash');
+router.get('/flush', async ctx => {
+	await ctx.render('flush');
 });
 
 // Render base html for all requests

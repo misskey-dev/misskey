@@ -247,6 +247,7 @@ export default Vue.extend({
 		padding: 16px 16px 0 16px;
 		resize: none;
 		font-size: 1em;
+		font-family: inherit;
 		outline: none;
 		border: none;
 		border-radius: 0;
@@ -270,12 +271,8 @@ export default Vue.extend({
 		margin: 0;
 		padding: 16px;
 		font-size: 1em;
-		color: #aaa;
 		transition: color 0.1s ease;
-
-		&:hover {
-			color: var(--accent);
-		}
+		color: var(--accent);
 
 		&:active {
 			color: var(--accentDarken);
@@ -337,7 +334,6 @@ export default Vue.extend({
 		font-size: 1em;
 		font-weight: normal;
 		text-decoration: none;
-		color: #aaa;
 		transition: color 0.1s ease;
 
 		&:hover {

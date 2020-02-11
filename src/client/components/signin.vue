@@ -82,7 +82,6 @@ export default Vue.extend({
 			token: '',
 			apiUrl,
 			host: toUnicode(host),
-			meta: null,
 			totpLogin: false,
 			credential: null,
 			challengeData: null,
@@ -91,11 +90,13 @@ export default Vue.extend({
 		};
 	},
 
-	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-		});
+	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+	},
 
+	created() {
 		if (this.autoSet) {
 			this.$once('login', res => {
 				localStorage.setItem('i', res.i);

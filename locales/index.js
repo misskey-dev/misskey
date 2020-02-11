@@ -25,7 +25,7 @@ const languages = [
 	'ko-KR',
 	//'nl-NL',
 	//'pl-PL',
-	//'zh-CN',
+	'zh-CN',
 	//'zh-TW',
 ];
 

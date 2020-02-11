@@ -31,6 +31,7 @@ export const router = new VueRouter({
 		{ path: '/my/mentions', component: page('mentions') },
 		{ path: '/my/messaging', name: 'messaging', component: page('messaging') },
 		{ path: '/my/messaging/:user', component: page('messaging-room') },
+		{ path: '/my/messaging/group/:group', component: page('messaging-room') },
 		{ path: '/my/drive', name: 'drive', component: page('drive') },
 		{ path: '/my/drive/folder/:folder', component: page('drive') },
 		{ path: '/my/pages', name: 'pages', component: page('pages') },

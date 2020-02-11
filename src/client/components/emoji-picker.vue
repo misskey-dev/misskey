@@ -140,7 +140,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		let local = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
+		let local = this.$store.state.instance.meta.emojis;
 		local = groupByX(local, (x: any) => x.category || '');
 		this.customEmojis = local;
 	},

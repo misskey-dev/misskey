@@ -56,15 +56,17 @@ export default Vue.extend({
 	computed: {
 		integrations() {
 			return this.$store.state.i.integrations;
-		}
+		},
+		
+		meta() {
+			return this.$store.state.instance.meta;
+		},
 	},
 
 	created() {
-		this.$root.getMeta().then(meta => {
-			this.enableTwitterIntegration = meta.enableTwitterIntegration;
-			this.enableDiscordIntegration = meta.enableDiscordIntegration;
-			this.enableGithubIntegration = meta.enableGithubIntegration;
-		});
+		this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
+		this.enableDiscordIntegration = this.meta.enableDiscordIntegration;
+		this.enableGithubIntegration = this.meta.enableGithubIntegration;
 	},
 
 	mounted() {

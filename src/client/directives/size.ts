@@ -1,3 +1,5 @@
+import { ResizeObserver } from '@juggle/resize-observer';
+
 export default {
 	inserted(el, binding, vn) {
 		const query = binding.value;
@@ -52,13 +54,16 @@ export default {
 
 		calc();
 
-		el._sizeResizeCb_ = calc;
+		const ro = new ResizeObserver((entries, observer) => {
+			calc();
+		});
+		
+		ro.observe(el);
 
-		window.addEventListener('resize', calc);
-		vn.context.$on('hook:activated', calc);
+		el._ro_ = ro;
 	},
 
 	unbind(el, binding, vn) {
-		window.removeEventListener('resize', el._sizeResizeCb_);
+		el._ro_.unobserve(el);
 	}
 };

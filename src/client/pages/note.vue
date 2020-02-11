@@ -1,5 +1,8 @@
 <template>
 <div class="mk-note-page">
+	<portal to="avatar" v-if="note"><mk-avatar class="avatar" :user="note.user" :disable-preview="true"/></portal>
+	<portal to="title" v-if="note">{{ $t('noteOf', { user: note.user.name }) }}</portal>
+
 	<transition name="zoom" mode="out-in">
 		<x-note v-if="note" :note="note" :key="note.id" :detail="true"/>
 		<div v-else-if="error">

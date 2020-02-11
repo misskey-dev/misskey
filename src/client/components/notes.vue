@@ -1,13 +1,13 @@
 <template>
 <div class="mk-notes" v-size="[{ max: 500 }]">
-	<div class="empty _panel" v-if="empty">
+	<div class="empty" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" alt=""/>
 		<div>{{ $t('noNotes') }}</div>
 	</div>
 
 	<mk-error v-if="error" @retry="init()"/>
 
-	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note, i }">
+	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note }">
 		<x-note :note="note" :detail="detail" :key="note.id"/>
 	</x-list>
 
@@ -94,6 +94,8 @@ export default Vue.extend({
 			height: 128px;
 			margin-bottom: 16px;
 			border-radius: 16px;
+			pointer-events: none;
+			user-select: none;
 		}
 	}
 

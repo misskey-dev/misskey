@@ -8,7 +8,7 @@
 	<header>
 		<button class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
 		<div>
-			<span class="text-count" :class="{ over: trimmedLength(text) > 500 }">{{ 500 - trimmedLength(text) }}</span>
+			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
 			<button class="_button visibility" @click="setVisibility" ref="visibilityButton">
 				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
@@ -153,7 +153,7 @@ export default Vue.extend({
 				this.$t('_postForm._placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
-			
+
 			return this.renote
 				? this.$t('_postForm.quotePlaceholder')
 				: this.reply
@@ -172,14 +172,18 @@ export default Vue.extend({
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= 500) &&
+				(length(this.text.trim()) <= this.max) &&
 				(!this.poll || this.pollChoices.length >= 2);
+		},
+
+		max(): number {
+			return this.$store.state.instance.meta ? this.$store.state.instance.meta.maxNoteTextLength : 1000;
 		}
 	},
 
 	watch: {
 		localOnly() {
-			this.$store.commit('device/setLocalOnly', this.localOnly);
+			this.$store.commit('deviceUser/setLocalOnly', this.localOnly);
 		}
 	},
 
@@ -215,9 +219,9 @@ export default Vue.extend({
 		}
 
 		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.visibility : this.$store.state.settings.defaultNoteVisibility);
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$store.state.settings.defaultNoteVisibility);
 
-		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.device.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
+		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
@@ -713,7 +717,7 @@ export default Vue.extend({
 			border-radius: 0;
 			background: transparent;
 			color: var(--fg);
-			font-family: initial;
+			font-family: inherit;
 
 			@media (max-width: 500px) {
 				padding: 0 16px;

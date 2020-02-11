@@ -98,7 +98,7 @@
 		<div class="operations">
 			<span class="label">{{ $t('operations') }}</span>
 			<mk-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
-			<mk-switch v-model="isBlocked" class="switch">{{ $t('blockThisInstance') }}</mk-switch>
+			<mk-switch :value="isBlocked" class="switch" @change="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
 		</div>
 		<details class="metadata">
 			<summary class="label">{{ $t('metadata') }}</summary>
@@ -147,9 +147,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			meta: null,
-			isSuspended: false,
-			isBlocked: false,
+			isSuspended: this.instance.isSuspended,
 			now: null,
 			chart: null,
 			chartInstance: null,
@@ -184,6 +182,14 @@ export default Vue.extend({
 				null;
 
 			return stats;
+		},
+
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+
+		isBlocked() {
+			return this.meta && this.meta.blockedHosts.includes(this.instance.host);
 		}
 	},
 
@@ -192,12 +198,6 @@ export default Vue.extend({
 			this.$root.api('admin/federation/update-instance', {
 				host: this.instance.host,
 				isSuspended: this.isSuspended
-			});
-		},
-
-		isBlocked() {
-			this.$root.api('admin/update-meta', {
-				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
 			});
 		},
 
@@ -210,13 +210,7 @@ export default Vue.extend({
 		}
 	},
 
-	async created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-			this.isSuspended = this.instance.isSuspended;
-			this.isBlocked = this.meta.blockedHosts.includes(this.instance.host);
-		});
-	
+	async created() {	
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([
@@ -235,6 +229,12 @@ export default Vue.extend({
 	},
 
 	methods: {
+		changeBlock(e) {
+			this.$root.api('admin/update-meta', {
+				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
+			});
+		},
+
 		setSrc(src) {
 			this.chartSrc = src;
 		},

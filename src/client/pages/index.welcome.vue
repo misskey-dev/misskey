@@ -20,15 +20,14 @@ export default Vue.extend({
 
 	data() {
 		return {
-			meta: null,
 			instanceName: getInstanceName(),
 		}
 	},
 
-	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-		});
-	}
+	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+	},
 });
 </script>

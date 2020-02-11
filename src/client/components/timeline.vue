@@ -27,6 +27,7 @@ export default Vue.extend({
 	data() {
 		return {
 			connection: null,
+			connection2: null,
 			pagination: null,
 			baseQuery: {
 				includeMyRenotes: this.$store.state.settings.showMyRenotes,
@@ -40,6 +41,7 @@ export default Vue.extend({
 	created() {
 		this.$once('hook:beforeDestroy', () => {
 			this.connection.dispose();
+			if (this.connection2) this.connection2.dispose();
 		});
 
 		const prepend = note => {
@@ -52,6 +54,12 @@ export default Vue.extend({
 
 		const onUserRemoved = () => {
 			(this.$refs.tl as any).reload();
+		};
+
+		const onChangeFollowing = () => {
+			if (!this.$refs.tl.backed) {
+				this.$refs.tl.reload();
+			}
 		};
 
 		let endpoint;
@@ -67,13 +75,12 @@ export default Vue.extend({
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
 			endpoint = 'notes/timeline';
-			const onChangeFollowing = () => {
-				this.fetch();
-			};
 			this.connection = this.$root.stream.useSharedConnection('homeTimeline');
 			this.connection.on('note', prepend);
-			this.connection.on('follow', onChangeFollowing);
-			this.connection.on('unfollow', onChangeFollowing);
+
+			this.connection2 = this.$root.stream.useSharedConnection('main');
+			this.connection2.on('follow', onChangeFollowing);
+			this.connection2.on('unfollow', onChangeFollowing);
 		} else if (this.src == 'local') {
 			endpoint = 'notes/local-timeline';
 			this.connection = this.$root.stream.useSharedConnection('localTimeline');

@@ -8,7 +8,8 @@ export default (opts) => ({
 			fetching: true,
 			moreFetching: false,
 			inited: false,
-			more: false
+			more: false,
+			backed: false,
 		};
 	},
 
@@ -78,6 +79,7 @@ export default (opts) => ({
 		async fetchMore() {
 			if (!this.more || this.moreFetching || this.items.length === 0) return;
 			this.moreFetching = true;
+			this.backed = true;
 			let params = typeof this.pagination.params === 'function' ? this.pagination.params(false) : this.pagination.params;
 			if (params && params.then) params = await params;
 			const endpoint = typeof this.pagination.endpoint === 'function' ? this.pagination.endpoint() : this.pagination.endpoint;
