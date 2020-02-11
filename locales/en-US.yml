@@ -375,6 +375,7 @@ next: "Next"
 retype: "Enter again"
 noteOf: "{user}'s notes"
 inviteToGroup: "Invite to group"
+maxNoteTextLength: "Character limit of the note"
 _tutorial:
   title: "How to use Misskey"
   step1_1: "Welcome!"
