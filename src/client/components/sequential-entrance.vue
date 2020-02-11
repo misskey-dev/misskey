@@ -59,13 +59,12 @@ export default Vue.extend({
 			if (document.hidden) {
 				el.style.opacity = 1;
 				el.style.transform = 'translateY(0px)';
-				return;
-			};
-
-			setTimeout(() => { // 必要
-				el.style.opacity = 1;
-				el.style.transform = 'translateY(0px)';
-			});
+			} else {
+				setTimeout(() => { // 必要
+					el.style.opacity = 1;
+					el.style.transform = 'translateY(0px)';
+				});
+			}
 		},
 		leave(el) {
 			el.style.opacity = 0;
