@@ -117,7 +117,7 @@ export default (opts) => ({
 			this.items.unshift(item);
 
 			if (this.isScrollTop()) {
-				// オーバーフローしたら古い投稿は捨てる
+				// オーバーフローしたら古いアイテムは捨てる
 				if (this.items.length >= opts.displayLimit) {
 					this.items = this.items.slice(0, opts.displayLimit);
 					this.more = true;
