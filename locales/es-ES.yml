@@ -400,7 +400,9 @@ _tutorial:
   step7_2: "Si quieres conocer más sobre Misskey, prueba con la sección {help}."
   step7_3: "Así, disfruta de Misskey 🚀"
 _2fa:
+  alreadyRegistered: "Ya has completado la configuración."
   registerDevice: "Registrar dispositivo"
+  registerKey: "Registrar clave"
   step1: "Primero, instale en su dispositivo la aplicación de autenticación {a} o {b} u otra."
   step2: "Luego, escanee con la aplicación el código QR mostrado en pantalla."
   step3: "Para terminar, ingrese el token mostrado en la aplicación."
@@ -416,6 +418,8 @@ _permissions:
   "write:favorites": "Addministrar favoritos"
   "read:following": "Ver información de seguidor"
   "write:following": "Seguir o dejar de seguir"
+  "read:messaging": "Ver chat"
+  "write:messaging": "Administrar chat"
   "read:mutes": "Ver usuarios silenciados"
   "write:mutes": "Administrar usuarios silenciados"
   "write:notes": "Crear/borrar notas"
@@ -491,6 +495,7 @@ _visibility:
   followersDescription: "Visible sólo para tus seguidores"
   specified: "Mensaje directo"
   specifiedDescription: "Visible sólo para los usuarios elegidos"
+  localOnly: "Solo local"
 _postForm:
   replyPlaceholder: "Responder a esta nota"
   quotePlaceholder: "Citar esta nota"
