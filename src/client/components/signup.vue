@@ -12,8 +12,8 @@
 			<template #suffix>@{{ host }}</template>
 			<template #desc>
 				<span v-if="usernameState == 'wait'" style="color:#999"><fa :icon="faSpinner" pulse fixed-width/> {{ $t('checking') }}</span>
-				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('usernameAvailable') }}</span>
-				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('usernameUnavailable') }}</span>
+				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('available') }}</span>
+				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('unavailable') }}</span>
 				<span v-if="usernameState == 'error'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('error') }}</span>
 				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('usernameInvalidFormat') }}</span>
 				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('usernameTooShort') }}</span>
