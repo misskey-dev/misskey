@@ -6,7 +6,7 @@
 	<section class="_card info" v-if="meta">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content" v-if="meta.description">
-			<div>{{ meta.description }}</div>
+			<div v-html="meta.description"></div>
 		</div>
 		<div class="_content table">
 			<div><b>{{ $t('administrator') }}</b><span>{{ meta.maintainerName }}</span></div>
