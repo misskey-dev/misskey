@@ -1,4 +1,5 @@
 ---
+_lang_: "English"
 introMisskey: "Welcome! Misskey is an open source distributed microblogging service.\nCreate \"notes\" to share what's happening or to tell everyone about you📡\nThen send \"reactions\" to respond quickly to everyone's notes👍\nLet's explore a new world🚀"
 monthAndDay: "{month}/{day}"
 search: "Search"
@@ -383,6 +384,7 @@ passwordNotMatched: "Doesn't match"
 signinWith: "Sign in with {x}"
 tapSecurityKey: "Tap your security key"
 or: "Or"
+uiLanguage: "UI display language"
 _ago:
   unknown: "Unknown"
   future: "Future"
