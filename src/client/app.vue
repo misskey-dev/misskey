@@ -228,6 +228,7 @@ export default Vue.extend({
 	},
 
 	created() {
+		this.$store.dispatch('instance/fetch');
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
