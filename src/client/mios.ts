@@ -42,7 +42,16 @@ export default class MiOS extends EventEmitter {
 	 * @param callback A function that call when initialized
 	 */
 	@autobind
-	public async init(callback) {
+	public async init(_callback) {
+		const callback = () => {
+			_callback();
+
+			this.store.dispatch('instance/fetch').then(() => {
+				// Init service worker
+				if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
+			});
+		};
+
 		this.store = initStore(this);
 
 		// ユーザーをフェッチしてコールバックする
@@ -96,11 +105,6 @@ export default class MiOS extends EventEmitter {
 
 			// Finish init
 			callback();
-
-			this.store.dispatch('instance/fetch').then(() => {
-				// Init service worker
-				if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
-			});
 		};
 
 		// キャッシュがあったとき
