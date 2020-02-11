@@ -14,10 +14,10 @@
 
 	<div class="body">
 		<mk-loading v-if="fetching"/>
-		<p class="empty" v-if="!fetching && messages.length == 0"><fa icon="info-circle"/>{{ user ? $t('not-talked-user') : $t('not-talked-group') }}</p>
+		<p class="empty" v-if="!fetching && messages.length == 0"><fa icon="info-circle"/>{{ user ? $t('notTalkedUser') : $t('notTalkedGroup') }}</p>
 		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
 		<button class="more _button" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('@.loading') : $t('@.load-more') }}
+			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
 		</button>
 		<x-list class="messages" :items="messages" v-slot="{ item: message, i }" direction="up" reversed>
 			<x-message :message="message" :is-group="group != null" :key="message.id"/>
@@ -26,7 +26,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button class="_buttonPrimary" @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i>{{ $t('new-message') }}</button>
+				<button class="_buttonPrimary" @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
 			</div>
 		</transition>
 		<x-form v-if="!fetching" :user="user" :group="group" ref="form"/>
@@ -139,7 +139,7 @@ export default Vue.extend({
 			} else if (e.dataTransfer.files.length > 1) {
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('only-one-file-attached')
+					text: this.$t('onlyOneFileCanBeAttached')
 				});
 				return;
 			}
