@@ -278,7 +278,7 @@ export default Vue.extend({
 				const lastChild = this.$refs.widgets.children[this.$refs.widgets.children.length - 1];
 				if (lastChild == null) return;
 
-				const width = lastChild.offsetLeft + 300;
+				const width = lastChild.offsetLeft + 300 + 16;
 				this.$refs.widgets.style.width = width + 'px';
 			};
 			setInterval(adjustWidgetsWidth, 1000);
