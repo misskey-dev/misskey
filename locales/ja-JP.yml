@@ -1,20 +1,4 @@
-_ago:
-  unknown: "謎"
-  future: "未来"
-  justNow: "たった今"
-  secondsAgo: "{n}秒前"
-  minutesAgo: "{n}分前"
-  hoursAgo: "{n}時間前"
-  daysAgo: "{n}日前"
-  weeksAgo: "{n}週間前"
-  monthsAgo: "{n}ヶ月前"
-  yearsAgo: "{n}年前"
-
-_time:
-  second: "秒"
-  minute: "分"
-  hour: "時間"
-  day: "日"
+_lang_: "日本語"
 
 introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
 monthAndDay: "{month}月 {day}日"
@@ -400,6 +384,25 @@ passwordNotMatched: "一致していません"
 signinWith: "{x}でログイン"
 tapSecurityKey: "セキュリティーキーにタッチ"
 or: "もしくは"
+uiLanguage: "UIの表示言語"
+
+_ago:
+  unknown: "謎"
+  future: "未来"
+  justNow: "たった今"
+  secondsAgo: "{n}秒前"
+  minutesAgo: "{n}分前"
+  hoursAgo: "{n}時間前"
+  daysAgo: "{n}日前"
+  weeksAgo: "{n}週間前"
+  monthsAgo: "{n}ヶ月前"
+  yearsAgo: "{n}年前"
+
+_time:
+  second: "秒"
+  minute: "分"
+  hour: "時間"
+  day: "日"
 
 _tutorial:
   title: "Misskeyの使い方"

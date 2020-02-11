@@ -61,20 +61,22 @@ if (localStorage.getItem('theme') == null) {
 }
 
 //#region Detect the user language
-let lang = null;
+let lang = localStorage.getItem('lang');
 
-if (langs.map(x => x[0]).includes(navigator.language)) {
-	lang = navigator.language;
-} else {
-	lang = langs.map(x => x[0]).find(x => x.split('-')[0] == navigator.language);
+if (lang == null) {
+	if (langs.map(x => x[0]).includes(navigator.language)) {
+		lang = navigator.language;
+	} else {
+		lang = langs.map(x => x[0]).find(x => x.split('-')[0] == navigator.language);
 
-	if (lang == null) {
-		// Fallback
-		lang = 'en-US';
+		if (lang == null) {
+			// Fallback
+			lang = 'en-US';
+		}
 	}
-}
 
-localStorage.setItem('lang', lang);
+	localStorage.setItem('lang', lang);
+}
 //#endregion
 
 // Detect the user agent

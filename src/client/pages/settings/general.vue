@@ -27,6 +27,13 @@
 			{{ $t('reduceUiAnimation') }}
 		</mk-switch>
 	</div>
+	<div class="_content">
+		<mk-select v-model="lang">
+			<template #label>{{ $t('uiLanguage') }}</template>
+
+			<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+		</mk-select>
+	</div>
 </section>
 </template>
 
@@ -36,8 +43,9 @@ import { faImage, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
+import MkSelect from '../../components/ui/select.vue';
 import i18n from '../../i18n';
-import { apiUrl } from '../../config';
+import { apiUrl, langs } from '../../config';
 
 export default Vue.extend({
 	i18n,
@@ -46,10 +54,13 @@ export default Vue.extend({
 		MkInput,
 		MkButton,
 		MkSwitch,
+		MkSelect,
 	},
 	
 	data() {
 		return {
+			langs,
+			lang: localStorage.getItem('lang'),
 			wallpaperUploading: false,
 			faImage, faCog
 		}
@@ -70,6 +81,14 @@ export default Vue.extend({
 			get() { return !this.$store.state.device.animation; },
 			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
 		},
+	},
+
+	watch: {
+		lang() {
+			localStorage.setItem('lang', this.lang);
+			localStorage.removeItem('locale');
+			location.reload();
+		}
 	},
 
 	methods: {
