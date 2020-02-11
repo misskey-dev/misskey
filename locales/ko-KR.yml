@@ -375,6 +375,7 @@ next: "다음"
 retype: "다시 입력"
 noteOf: "{user}의 노트"
 inviteToGroup: "그룹에 초대하기"
+maxNoteTextLength: "노트의 문자 수 제한"
 _tutorial:
   title: "Misskey의 사용 방법"
   step1_1: "환영합니다!"
