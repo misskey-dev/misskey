@@ -40,10 +40,14 @@ export default Vue.extend({
 	i: 0,
 	methods: {
 		beforeEnter(el) {
+			if (document.hidden) {
+				this.$options.i++;
+				return;
+			}			
+
 			el.style.opacity = 0;
 			el.style.transform = this.direction === 'down' ? 'translateY(-64px)' : 'translateY(64px)';
-			let index = this.$options.i;
-			const delay = this.delay * index;
+			const delay = this.delay * this.$options.i;
 			el.style.transition = [getComputedStyle(el).transition, `transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`, `opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`].filter(x => x != '').join(',');
 			this.$options.i++;
 		},
@@ -51,12 +55,18 @@ export default Vue.extend({
 			setTimeout(() => {
 				el.style.opacity = 1;
 				el.style.transform = 'translateY(0px)';
+
+				if (document.hidden) {
+					this.$options.i--;
+					return done();
+				}			
+
 				el.addEventListener('transitionend', () => {
 					el.style.transition = '';
 					this.$options.i--;
 					done();
 				}, { once: true });
-			});
+			})
 		},
 		leave(el) {
 			el.style.opacity = 0;
