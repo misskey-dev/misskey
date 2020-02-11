@@ -397,7 +397,7 @@ strongPassword: "Strong password"
 passwordMatched: "Matched"
 passwordNotMatched: "Doesn't match"
 signinWith: "Sign in with {x}"
-tapSecurityKey: "Tap the security key"
+tapSecurityKey: "Tap your security key"
 or: "Or"
 _tutorial:
   title: "How to use Misskey"
