@@ -13,7 +13,7 @@
 			mode="out-in"
 			appear
 		>
-			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="/^[a-z]+$/.test(reaction) ? $t('@.reactions.' + reaction) : reaction"><x-reaction-icon :reaction="reaction"/></button>
+			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction"><x-reaction-icon :reaction="reaction"/></button>
 		</transition-group>
 		<input class="text" v-model="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
 	</div>
