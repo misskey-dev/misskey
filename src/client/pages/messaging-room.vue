@@ -14,7 +14,7 @@
 
 	<div class="body">
 		<mk-loading v-if="fetching"/>
-		<p class="empty" v-if="!fetching && messages.length == 0"><fa icon="info-circle"/>{{ user ? $t('notTalkedUser') : $t('notTalkedGroup') }}</p>
+		<p class="empty" v-if="!fetching && messages.length == 0"><fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
 		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
 		<button class="more _button" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
 			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faArrowCircleDown, faFlag, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import XList from '../components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
@@ -64,7 +64,7 @@ export default Vue.extend({
 			connection: null,
 			showIndicator: false,
 			timer: null,
-			faArrowCircleDown, faFlag, faUsers
+			faArrowCircleDown, faFlag, faUsers, faInfoCircle
 		};
 	},
 
