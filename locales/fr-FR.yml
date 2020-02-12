@@ -48,12 +48,46 @@ import: "Importer"
 export: "Exporter"
 files: "Fichier·s"
 download: "Télécharger"
+driveFileDeleteConfirm: "Êtes-vous sûr·e de vouloir supprimer le fichier \"{name}\" ? Les notes avec ce fichier joint seront aussi supprimées."
+unfollowConfirm: "Êtes-vous sûr·e ne plus vouloir suivre {name} ?"
+exportRequested: "Vous avez demandé une exportation. Cela pourrait prendre un peu de temps. Une fois l'exportation terminée, le fichier résultant sera ajouté dans le Drive."
+importRequested: "Vous avez initié un import. Cela pourrait prendre un peu de temps."
+lists: "Listes"
+noLists: "Aucune liste"
+following: "Abonnements"
+followers: "Abonné·e·s"
+follow: "Abonnements"
 instances: "Instance"
 remove: "Supprimer"
+userList: "Listes"
 _widgets:
   notifications: "Notifications"
   timeline: "Fil d'actualité"
 _cw:
   show: "Voir plus"
+_visibility:
+  followers: "Abonné·e·s"
 _profile:
   username: "Nom d'utilisateur·rice"
+_exportOrImport:
+  followingList: "Abonnements"
+  userLists: "Listes"
+_pages:
+  script:
+    categories:
+      list: "Listes"
+    blocks:
+      _join:
+        arg1: "Listes"
+      _randomPick:
+        arg1: "Listes"
+      _dailyRandomPick:
+        arg1: "Listes"
+      _seedRandomPick:
+        arg2: "Listes"
+      _pick:
+        arg1: "Listes"
+      _listLen:
+        arg1: "Listes"
+    types:
+      array: "Listes"
