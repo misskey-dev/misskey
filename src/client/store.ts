@@ -31,7 +31,7 @@ const defaultDeviceSettings = {
 	lang: null,
 	loadRawImages: false,
 	alwaysShowNsfw: false,
-	useOsDefaultEmojis: false,
+	useOsNativeEmojis: false,
 	autoReload: false,
 	accounts: [],
 	recentEmojis: [],

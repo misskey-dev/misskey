@@ -388,6 +388,7 @@ or: "もしくは"
 uiLanguage: "UIの表示言語"
 groupInvited: "グループに招待されました"
 aboutX: "{x}について"
+useOsNativeEmojis: "OSネイティブの絵文字を使用"
 
 _ago:
   unknown: "謎"

@@ -1,7 +1,7 @@
 <template>
 <img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt"/>
-<img v-else-if="char && !useOsDefaultEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt"/>
-<span v-else-if="char && useOsDefaultEmojis">{{ char }}</span>
+<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt"/>
+<span v-else-if="char && useOsNativeEmojis">{{ char }}</span>
 <span v-else>:{{ name }}:</span>
 </template>
 
@@ -53,8 +53,8 @@ export default Vue.extend({
 			return this.customEmoji ? `:${this.customEmoji.name}:` : this.char;
 		},
 
-		useOsDefaultEmojis(): boolean {
-			return this.$store.state.device.useOsDefaultEmojis && !this.isReaction;
+		useOsNativeEmojis(): boolean {
+			return this.$store.state.device.useOsNativeEmojis && !this.isReaction;
 		},
 
 		ce() {

@@ -23,8 +23,10 @@
 		<mk-button @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</mk-button>
 	</div>
 	<div class="_content">
-		<mk-switch v-model="reduceAnimation">
-			{{ $t('reduceUiAnimation') }}
+		<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
+		<mk-switch v-model="useOsNativeEmojis">
+			{{ $t('useOsNativeEmojis') }}
+			<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 		</mk-switch>
 	</div>
 	<div class="_content">
@@ -80,6 +82,11 @@ export default Vue.extend({
 		reduceAnimation: {
 			get() { return !this.$store.state.device.animation; },
 			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
+		},
+
+		useOsNativeEmojis: {
+			get() { return this.$store.state.device.useOsNativeEmojis; },
+			set(value) { this.$store.commit('device/set', { key: 'useOsNativeEmojis', value }); }
 		},
 	},
 
