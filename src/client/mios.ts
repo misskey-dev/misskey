@@ -42,9 +42,9 @@ export default class MiOS extends EventEmitter {
 	 * @param callback A function that call when initialized
 	 */
 	@autobind
-	public async init(_callback) {
-		const callback = () => {
-			_callback();
+	public async init(callback) {
+		const finish = () => {
+			callback();
 
 			this.store.dispatch('instance/fetch').then(() => {
 				// Init service worker
@@ -104,7 +104,7 @@ export default class MiOS extends EventEmitter {
 			this.initStream();
 
 			// Finish init
-			callback();
+			finish();
 		};
 
 		// キャッシュがあったとき
@@ -133,7 +133,7 @@ export default class MiOS extends EventEmitter {
 					this.initStream();
 
 					// Finish init
-					callback();
+					finish();
 				}
 			});
 		}
