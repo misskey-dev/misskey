@@ -386,6 +386,8 @@ tapSecurityKey: "Tap your security key"
 or: "Or"
 uiLanguage: "UI display language"
 groupInvited: "Invited to group"
+aboutX: "About {x}"
+useOsNativeEmojis: "Use the OS native Emojis"
 _ago:
   unknown: "Unknown"
   future: "Future"
