@@ -157,7 +157,7 @@ import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regul
 import { ResizeObserver } from '@juggle/resize-observer';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
-import { host } from './config';
+import { host, instanceName } from './config';
 import { search } from './scripts/search';
 import contains from './scripts/contains';
 import MkToast from './components/toast.vue';
@@ -481,8 +481,13 @@ export default Vue.extend({
 					icon: faQuestionCircle,
 				}, {
 					type: 'link',
-					text: this.$t('about'),
+					text: this.$t('aboutX', { x: instanceName || host }),
 					to: '/about',
+					icon: faInfoCircle,
+				}, {
+					type: 'link',
+					text: this.$t('aboutMisskey'),
+					to: '/about-misskey',
 					icon: faInfoCircle,
 				}],
 				align: 'left',

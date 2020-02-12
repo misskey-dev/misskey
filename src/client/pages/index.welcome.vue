@@ -10,7 +10,7 @@
 import Vue from 'vue';
 import XSetup from './index.welcome.setup.vue';
 import XEntrance from './index.welcome.entrance.vue';
-import { getInstanceName } from '../scripts/get-instance-name';
+import { instanceName } from '../config';
 
 export default Vue.extend({
 	components: {
@@ -20,7 +20,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			instanceName: getInstanceName(),
+			instanceName: instanceName || 'Misskey',
 		}
 	},
 

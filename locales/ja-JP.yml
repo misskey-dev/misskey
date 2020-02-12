@@ -387,6 +387,7 @@ tapSecurityKey: "セキュリティーキーにタッチ"
 or: "もしくは"
 uiLanguage: "UIの表示言語"
 groupInvited: "グループに招待されました"
+aboutX: "{x}について"
 
 _ago:
   unknown: "謎"

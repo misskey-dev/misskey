@@ -20,6 +20,7 @@ export const router = new VueRouter({
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/announcements', component: page('announcements') },
 		{ path: '/about', component: page('about') },
+		{ path: '/about-misskey', component: page('about-misskey') },
 		{ path: '/featured', component: page('featured') },
 		{ path: '/docs', component: page('docs') },
 		{ path: '/docs/:doc', component: page('doc'), props: true },

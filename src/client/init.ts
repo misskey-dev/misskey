@@ -149,7 +149,7 @@ os.init(async () => {
 		store: os.store,
 		metaInfo: {
 			title: null,
-			titleTemplate: title => title ? `${title} | ${instanceName}` : instanceName
+			titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
 		},
 		data() {
 			return {
