@@ -597,16 +597,31 @@ _pages:
     post: "Formulaire à publier"
     _post:
       text: "Contenu"
+    textInput: "Entrée de textuelle"
     _textInput:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
+    textareaInput: "Entrée de textuelle multiligne"
     _textareaInput:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
+    numberInput: "Entrée numérique"
     _numberInput:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
+    switch: "Basculer"
     _switch:
+      name: "Nom de la variable"
       text: "Titre"
+      default: "Valeur par défaut"
+    counter: "Compteur"
     _counter:
+      name: "Nom de la variable"
       text: "Titre"
+      inc: "Augmenter le chiffre"
     _button:
       text: "Titre"
       colored: "Coloré"
@@ -669,36 +684,50 @@ _pages:
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "Soustraire"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "Multiplier par"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "Diviser par"
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "Reste"
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "Décimal rond"
+      _round:
+        arg1: "Numérique"
+      eq: "A et B sont équivalents"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A et B sont différents"
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A et B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A ou B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "A est plus petit que B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "A est supérieur à B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "A est plus petit ou égal à B"
       _ltEq:
         arg1: "A"
         arg2: "B"
@@ -710,23 +739,45 @@ _pages:
       random: "Aléatoire"
       _randomPick:
         arg1: "Listes"
+      _dailyRannum:
+        arg2: "Maximum"
+      dailyRandomPick: "Sélectionné au hasard dans la liste (quotidiennement pour chaque utilisateur)"
       _dailyRandomPick:
         arg1: "Listes"
+      seedRandom: "Aléatoire (graine)"
+      _seedRandom:
+        arg1: "Graine"
+        arg2: "Probabilité"
+      seedRannum: "Nombre aléatoire (Graine)"
+      _seedRannum:
+        arg1: "Graine"
+        arg2: "Minimum"
+        arg3: "Maximum"
+      seedRandomPick: "Sélectionné au hasard dans la liste (graine)"
       _seedRandomPick:
+        arg1: "Graine"
         arg2: "Listes"
+      DRPWPM: "Sélectionné au hasard dans une liste de probabilités (quotidiennement pour chaque utilisateur)"
       _DRPWPM:
         arg1: "Liste de texte"
+      pick: "Sélectionner dans la liste"
       _pick:
         arg1: "Listes"
+        arg2: "Position"
+      listLen: "Longueur de la liste"
       _listLen:
         arg1: "Listes"
+      number: "Numérique"
       _stringToNumber:
         arg1: "Texte"
+      _numberToString:
+        arg1: "Numérique"
       _splitStrByLine:
         arg1: "Texte"
       ref: "Variables"
       fn: "Fonction"
     types:
       string: "Texte"
+      number: "Numérique"
       array: "Listes"
       stringArray: "Liste de texte"
