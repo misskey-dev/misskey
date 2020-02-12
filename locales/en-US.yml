@@ -385,6 +385,7 @@ signinWith: "Sign in with {x}"
 tapSecurityKey: "Tap your security key"
 or: "Or"
 uiLanguage: "UI display language"
+groupInvited: "Invited to group"
 _ago:
   unknown: "Unknown"
   future: "Future"
