@@ -731,17 +731,36 @@ _pages:
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: "A est supérieur ou égal à B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Branche"
       _if:
         arg1: "Si"
+        arg2: "Si"
+        arg3: "Sinon"
+      not: "Nier"
+      _not:
+        arg1: "Nier"
       random: "Aléatoire"
+      _random:
+        arg1: "Probabilité"
+      rannum: "Nombre aléatoire"
+      _rannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
+      randomPick: "Sélectionner au hasard dans la liste"
       _randomPick:
         arg1: "Listes"
+      dailyRandom: "Aléatoire (Quotidien pour chaque utilisateur)"
+      _dailyRandom:
+        arg1: "Probabilité"
+      dailyRannum: "Numéros aléatoires (Quotidien pour chaque utilisateur)"
       _dailyRannum:
+        arg1: "Minimum"
         arg2: "Maximum"
-      dailyRandomPick: "Sélectionné au hasard dans la liste (quotidiennement pour chaque utilisateur)"
+      dailyRandomPick: "Sélectionné au hasard dans la liste (Quotidien pour chaque utilisateur)"
       _dailyRandomPick:
         arg1: "Listes"
       seedRandom: "Aléatoire (graine)"
@@ -757,7 +776,7 @@ _pages:
       _seedRandomPick:
         arg1: "Graine"
         arg2: "Listes"
-      DRPWPM: "Sélectionné au hasard dans une liste de probabilités (quotidiennement pour chaque utilisateur)"
+      DRPWPM: "Sélectionné au hasard dans une liste de probabilités (Quotidien pour chaque utilisateur)"
       _DRPWPM:
         arg1: "Liste de texte"
       pick: "Sélectionner dans la liste"
@@ -768,16 +787,32 @@ _pages:
       _listLen:
         arg1: "Listes"
       number: "Numérique"
+      stringToNumber: "Convertir du texte en numérique"
       _stringToNumber:
         arg1: "Texte"
+      numberToString: "Convertir du numérique en texte"
       _numberToString:
         arg1: "Numérique"
+      splitStrByLine: "Séparer le texte par lignes"
       _splitStrByLine:
         arg1: "Texte"
       ref: "Variables"
       fn: "Fonction"
+      _fn:
+        slots: "Emplacement"
+        slots-info: "Veuillez délimiter chaque emplacement par un saut de ligne"
+        arg1: "Sortie"
+      for: "Répéter"
+      _for:
+        arg1: "Compter"
+        arg2: "Action"
+    thereIsEmptySlot: "Emplacement {slot} est vide !"
     types:
       string: "Texte"
       number: "Numérique"
+      boolean: "Marqueur"
       array: "Listes"
       stringArray: "Liste de texte"
+    emptySlot: "Emplacement vide"
+    enviromentVariables: "Variables d'environnement"
+    pageVariables: "Élément de page"
