@@ -36,6 +36,8 @@
 			</span>
 			<div style="margin-top: 1em;">{{ $t('misskeySource') }}</div>
 			<mk-url url="https://github.com/syuilo/misskey"/>
+			<div style="margin-top: 1em;">{{ $t('misskeyTranslation') }}</div>
+			<mk-url url="https://crowdin.com/project/misskey"/>
 			<div style="margin-top: 1em;">{{ $t('misskeyDonate') }}</div>
 			<mk-url url="https://www.patreon.com/syuilo"/>
 		</div>
