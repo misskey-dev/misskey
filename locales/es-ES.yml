@@ -1,6 +1,6 @@
 ---
 _lang_: "Español"
-introMisskey: "¡Bienvenido/a! Misskey es un servicio de microblogging descentralizado de código abierto. Escribe \"notas\" para compartir lo que te ocurre ahora o para contar sobre ti a todos. 📡\nCon la función de \"reacciones\", puedes también añadir una reacción rápida a las notas de todos.👍\nExplora un nuevo mundo.🚀"
+introMisskey: "¡Bienvenido/a! Misskey es un servicio de microblogging descentralizado de código abierto.\nEscribe \"notas\" para compartir lo que te ocurre ahora o para contar sobre ti a todos 📡\nCon la función de \"reacciones\", puedes también añadir una reacción rápida a las notas de todos 👍\nExplora un nuevo mundo 🚀"
 monthAndDay: "{day}/{month}"
 search: "Buscar"
 notifications: "Notificaciones"
