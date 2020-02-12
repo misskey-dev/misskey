@@ -381,9 +381,23 @@ _ago:
   justNow: "à l’instant"
   secondsAgo: "Il y a {n}s"
   minutesAgo: "Il y a {n}min"
+  hoursAgo: "Il y a {n} heures"
+  daysAgo: "Il y a {n} jours"
+  weeksAgo: "Il y a {n} semaines"
+  monthsAgo: "Il y a {n} mois"
+  yearsAgo: "Il y a {n} ans"
+_time:
+  second: "s"
+  minute: "min"
+  hour: "h"
+  day: "j"
+_tutorial:
+  title: "Comment utiliser Misskey"
 _2fa:
+  alreadyRegistered: "Cette étape à déjà été complétée"
   registerDevice: "S’inscrire l'appareil"
   registerKey: "S’inscrire la clé"
+  step1: "Tout d'abord, installez une application d'authentification, telle que {a} ou {b}, sur votre appareil."
 _permissions:
   "write:blocks": "Écrire des blocs"
   "read:drive": "Parcourir le Drive"
@@ -433,9 +447,25 @@ _widgets:
   clock: "Horloge"
   rss: "Lecteur de flux RSS"
 _cw:
+  hide: "Masquer"
   show: "Voir plus"
+  chars: "{count} caractères"
   files: "{count} fichiers"
+  poll: "Sondage"
 _poll:
+  noOnlyOneChoice: "Au moins 2 réponses nécéssaires"
+  choiceN: "Choix {n}"
+  noMore: "Vous ne pouvez pas en ajouter davantage"
+  canMultipleVote: "Autoriser le multi-choix"
+  expiration: "Fin du sondage"
+  infinite: "Illimité"
+  at: "Choisir une date"
+  after: "Chosir une durée"
+  deadlineDate: "Date de fin"
+  deadlineTime: "Heure de fin"
+  duration: "Durée"
+  votesCount: "{n} votes"
+  totalVotes: "{n} votes au total"
   vote: "Voter"
 _visibility:
   home: "Principal"
@@ -462,6 +492,9 @@ _instanceCharts:
   filesTotal: "Somme du nombre de fichiers accumulés"
 _timelines:
   home: "Principal"
+  local: "Local"
+  social: "Social"
+  global: "Global"
 _pages:
   viewPage: "Afficher la page"
   blocks:
