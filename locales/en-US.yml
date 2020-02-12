@@ -1,6 +1,6 @@
 ---
 _lang_: "English"
-introMisskey: "Welcome! Misskey is an open source distributed microblogging service.\nCreate \"notes\" to share what's happening or to tell everyone about you📡\nThen send \"reactions\" to respond quickly to everyone's notes👍\nLet's explore a new world🚀"
+introMisskey: "Welcome! Misskey is an open source and also decentralized microblogging service.\nWrite the \"notes\" to share what is happening now, or send out your own words to everyone 📡\nWith the \"reactions\", you can add your feelings to everyone's notes faster than anyone 👍\nLet's explore the new world 🚀"
 monthAndDay: "{month}/{day}"
 search: "Search"
 notifications: "Notifications"
