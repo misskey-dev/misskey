@@ -167,7 +167,7 @@ done: "Terminé"
 processing: "Traitement en cours"
 preview: "Prévisualisation"
 noCustomEmojis: "Il a pas d’émoji"
-customEmojisOfRemote: "Émojis d'instants"
+customEmojisOfRemote: "Émojis l'instance distante"
 noJobs: "Il n'y a aucune tâche planifiée"
 federating: "En cours de fédération"
 blocked: "Bloqué"
@@ -507,6 +507,8 @@ _profile:
   description: "À propos de moi"
   youCanIncludeHashtags: "Vous pouvez également inclure des hashtags."
   metadata: "Informations complémentaires"
+  metadataLabel: "Étiquette"
+  metadataContent: "Contenu"
 _exportOrImport:
   allNotes: "Toutes les notes"
   followingList: "Abonnements"
@@ -514,11 +516,27 @@ _exportOrImport:
   blockingList: "Bloquer"
   userLists: "Listes"
 _charts:
+  federationInstancesIncDec: "Variation du nombre d'instances"
+  federationInstancesTotal: "Nombre d'instances au total"
+  usersIncDec: "Variation du nombre d'utilisateur·rice·s"
+  usersTotal: "Nombre d'utilsateur·rice·s au total"
+  activeUsers: "Utilisateur·rice·s actif·ve·s"
+  notesIncDec: "Variation du nombre d'notes"
+  localNotesIncDec: "Variation du nombre de local notes"
+  notesTotal: "Nombre d'notes au total"
   filesIncDec: "Variation du nombre de fichiers"
   filesTotal: "Nombre de fichiers au total"
+  storageUsageIncDec: "Variation de l'utilisation du stockage"
+  storageUsageTotal: "Utilisation totale du stockage"
 _instanceCharts:
+  requests: "Requêtes"
+  users: "Variation du nombre d'utilisateur·rice·s"
+  usersTotal: "Nombre total des utilisateur·rice·s"
+  notes: "Variation du nombre d'notes"
   ff: "Augmentation des abonné·e·s"
   ffTotal: "Somme du nombre d'abonnements"
+  cacheSize: "Variation de la taille du cache"
+  cacheSizeTotal: "Somme de la taille du cache accumulé"
   files: "Variation du nombre de fichiers"
   filesTotal: "Somme du nombre de fichiers accumulés"
 _timelines:
@@ -527,9 +545,28 @@ _timelines:
   social: "Social"
   global: "Global"
 _pages:
+  newPage: "Créer une page"
+  editPage: "Modifier une page"
+  readPage: "Voir la source"
+  page-created: "Page a été créée !"
+  page-updated: "A mis à jour la page"
+  name-already-exists: "Une page portant le même nom existe déjà"
+  title-invalid-name: "L’URL de la page spécifiée n’est pas valide"
+  text-invalid-name: "Assurez-vous qu'il n'est pas vide"
+  editThisPage: "Éditer cette page"
+  viewSource: "Afficher la source"
   viewPage: "Afficher la page"
+  like: "Favori"
+  unlike: "Je n’favoris pas"
+  liked-pages: "Pages favoris"
   blocks:
     image: "Images"
+    _post:
+      text: "Contenu"
+    _button:
+      _action:
+        _dialog:
+          content: "Contenu"
   script:
     categories:
       list: "Listes"
