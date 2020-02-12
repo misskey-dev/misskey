@@ -522,7 +522,8 @@ _charts:
   usersTotal: "Nombre d'utilsateur·rice·s au total"
   activeUsers: "Utilisateur·rice·s actif·ve·s"
   notesIncDec: "Variation du nombre d'notes"
-  localNotesIncDec: "Variation du nombre de local notes"
+  localNotesIncDec: "Variation du nombre de notes local"
+  remoteNotesIncDec: "Variation du nombre d’notes distant"
   notesTotal: "Nombre d'notes au total"
   filesIncDec: "Variation du nombre de fichiers"
   filesTotal: "Nombre de fichiers au total"
@@ -531,10 +532,11 @@ _charts:
 _instanceCharts:
   requests: "Requêtes"
   users: "Variation du nombre d'utilisateur·rice·s"
-  usersTotal: "Nombre total des utilisateur·rice·s"
+  usersTotal: "Somme du nombre d'utilisateur·rice·s accumulés"
   notes: "Variation du nombre d'notes"
-  ff: "Augmentation des abonné·e·s"
-  ffTotal: "Somme du nombre d'abonnements"
+  notesTotal: "Somme du nombre d’notes accumulés"
+  ff: "Variation des abonné·e·s"
+  ffTotal: "Somme du nombre d'abonnements accumulés"
   cacheSize: "Variation de la taille du cache"
   cacheSizeTotal: "Somme de la taille du cache accumulé"
   files: "Variation du nombre de fichiers"
@@ -559,20 +561,75 @@ _pages:
   like: "Favori"
   unlike: "Je n’favoris pas"
   liked-pages: "Pages favoris"
+  my-pages: "Mes pages"
+  inspector: "Inspecteur"
+  content: "Bloc de page"
+  variables: "Variables"
+  more-details: "Description"
+  title: "Titre"
+  url: "URL de page"
+  summary: "Résumé de page"
+  alignCenter: "Centrée"
+  hide-title-when-pinned: "Masquer le titre de la page lorsque celle-ci est épinglée au profil"
+  font: "Police de caractères"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  set-eye-catching-image: "Définir une image attirante"
+  remove-eye-catching-image: "Supprimer une image attirante"
+  chooseBlock: "Ajouter un bloc"
+  selectType: "Choisir un type"
+  enterVariableName: "Veuillez entrer un nom de variable"
+  the-variable-name-is-already-used: "Cette variable est déjà utilisée"
+  content-blocks: "Contenu"
+  input-blocks: "Entrée"
+  special-blocks: "Spécial"
+  post-from-post-form: "Publier ce contenu"
+  posted-from-post-form: "Publié !"
   blocks:
+    text: "Texte"
+    textarea: "Zone de texte"
+    section: "Section"
     image: "Images"
+    button: "Bouton"
+    if: "Si"
+    _if:
+      variable: "Variables"
     _post:
       text: "Contenu"
+    _textInput:
+      text: "Titre"
+    _textareaInput:
+      text: "Titre"
+    _numberInput:
+      text: "Titre"
+    _switch:
+      text: "Titre"
+    _counter:
+      text: "Titre"
     _button:
+      text: "Titre"
       _action:
         _dialog:
           content: "Contenu"
+    _radioButton:
+      title: "Titre"
   script:
     categories:
       list: "Listes"
     blocks:
+      text: "Texte"
+      _strLen:
+        arg1: "Texte"
+      _strPick:
+        arg1: "Texte"
+      _strReplace:
+        arg1: "Texte"
+      _strReverse:
+        arg1: "Texte"
       _join:
         arg1: "Listes"
+      _if:
+        arg1: "Si"
       _randomPick:
         arg1: "Listes"
       _dailyRandomPick:
@@ -583,5 +640,11 @@ _pages:
         arg1: "Listes"
       _listLen:
         arg1: "Listes"
+      _stringToNumber:
+        arg1: "Texte"
+      _splitStrByLine:
+        arg1: "Texte"
+      ref: "Variables"
     types:
+      string: "Texte"
       array: "Listes"
