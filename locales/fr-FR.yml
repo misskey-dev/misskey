@@ -594,6 +594,7 @@ _pages:
     if: "Si"
     _if:
       variable: "Variables"
+    post: "Formulaire à publier"
     _post:
       text: "Contenu"
     _textInput:
@@ -608,34 +609,113 @@ _pages:
       text: "Titre"
     _button:
       text: "Titre"
+      colored: "Coloré"
+      action: "L'opération lorsque le bouton sera pressé"
       _action:
+        dialog: "Afficher une fenêtre de dialogue"
         _dialog:
           content: "Contenu"
+        resetRandom: "Réinitialiser le nombre aléatoire"
+        pushEvent: "Envoyer un évènement"
+        _pushEvent:
+          event: "Nom de l'évènement"
+          message: "Message à afficher lorsque appuyé"
+          variable: "Variable à envoyer"
+          no-variable: "Rien"
+    radioButton: "Choix"
     _radioButton:
+      name: "Nom de la variable"
       title: "Titre"
+      values: "Choix séparés par des sauts de ligne"
+      default: "Valeur par défaut"
   script:
     categories:
+      flow: "Contrôle"
+      logical: "Opération logique"
+      operation: "Calculer"
+      comparison: "Comparer"
+      random: "Aléatoire"
+      value: "Valeur"
+      fn: "Fonction"
+      text: "Manipulation de texte"
+      convert: "Convertir"
       list: "Listes"
     blocks:
       text: "Texte"
+      multiLineText: "Texte (Multi-lignes)"
+      textList: "Liste de texte"
+      _textList:
+        info: "Veuillez séparer chacun avec une nouvelle ligne"
+      strLen: "Longueur d'un texte"
       _strLen:
         arg1: "Texte"
+      strPick: "Extraire un caractère"
       _strPick:
         arg1: "Texte"
+        arg2: "Position du joueur"
+      strReplace: "Remplacement de texte"
       _strReplace:
         arg1: "Texte"
+        arg2: "Avant le remplacement"
+        arg3: "Après le remplacement"
+      strReverse: "Inverser le texte"
       _strReverse:
         arg1: "Texte"
+      join: "Concaténer du texte"
       _join:
         arg1: "Listes"
+        arg2: "Séparateur"
+      add: "Ajouter"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       _if:
         arg1: "Si"
+      random: "Aléatoire"
       _randomPick:
         arg1: "Listes"
       _dailyRandomPick:
         arg1: "Listes"
       _seedRandomPick:
         arg2: "Listes"
+      _DRPWPM:
+        arg1: "Liste de texte"
       _pick:
         arg1: "Listes"
       _listLen:
@@ -645,6 +725,8 @@ _pages:
       _splitStrByLine:
         arg1: "Texte"
       ref: "Variables"
+      fn: "Fonction"
     types:
       string: "Texte"
       array: "Listes"
+      stringArray: "Liste de texte"
