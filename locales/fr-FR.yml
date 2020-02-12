@@ -224,11 +224,16 @@ darkThemes: "Thème sombre"
 drive: "Drive"
 selectFile: "Choisir le fichier"
 selectFiles: "Choisir le fichiers"
+addFile: "Ajoutez un fichier"
 emptyDrive: "Le Drive est vide"
 nsfw: "Contenu sensible"
+proxyRemoteFiles: "Proxy fichiers distants"
 driveCapacityPerLocalAccount: "Volume du Drive par utilisateur local"
 driveCapacityPerRemoteAccount: "Volume du Drive par utilisateur distant"
+withFileAntenna: "Notes uniquement avec fichiers joints"
+withFiles: "Avec fichiers joints"
 userList: "Listes"
+onlyOneFileCanBeAttached: "Vous ne pouvez joindre qu'un seul fichier au message"
 _permissions:
   "read:drive": "Parcourir le Drive"
   "write:drive": "Écrire sur le Drive"
@@ -241,6 +246,7 @@ _widgets:
   timeline: "Fil d'actualité"
 _cw:
   show: "Voir plus"
+  files: "{count} fichiers"
 _visibility:
   home: "Principal"
   followers: "Abonné·e·s"
@@ -251,9 +257,14 @@ _exportOrImport:
   muteList: "Mettre en sourdine"
   blockingList: "Bloquer"
   userLists: "Listes"
+_charts:
+  filesIncDec: "Variation du nombre de fichiers"
+  filesTotal: "Nombre de fichiers au total"
 _instanceCharts:
   ff: "Augmentation des abonné·e·s"
   ffTotal: "Somme du nombre d'abonnements"
+  files: "Variation du nombre de fichiers"
+  filesTotal: "Somme du nombre de fichiers accumulés"
 _timelines:
   home: "Principal"
 _pages:
