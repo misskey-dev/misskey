@@ -1,5 +1,6 @@
 ---
 _lang_: "Français"
+introMisskey: "Bienvenue! Misskey est un service de microblogage décentralisé open source.\nÉcrivez des «notes» pour partager ce qui vous arrive maintenant ou pour parler de vous à tout le monde 📡\nAvec la fonction «réactions», vous pouvez également ajouter une réaction rapide aux notes de chacun 👍\nExplorez un nouveau monde 🚀"
 monthAndDay: "{day}/{month}"
 search: "Rechercher"
 notifications: "Notifications"
@@ -375,6 +376,9 @@ signinWith: "Connectez-vous avec {x}"
 tapSecurityKey: "Touchez la clé de sécurité"
 or: "OU"
 uiLanguage: "Langue d'affichage de l'interface"
+groupInvited: "Invité au groupe"
+aboutX: "À propos de {x}"
+useOsNativeEmojis: "Utilisez les emojis natifs de la plateforme"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
@@ -393,6 +397,7 @@ _time:
   day: "j"
 _tutorial:
   title: "Comment utiliser Misskey"
+  step1_1: "Bienvenue,"
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
   registerDevice: "S’inscrire l'appareil"
