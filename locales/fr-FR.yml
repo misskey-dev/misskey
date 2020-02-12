@@ -806,6 +806,7 @@ _pages:
       _for:
         arg1: "Compter"
         arg2: "Action"
+    typeError: "Le slot {slot} accepte \"{expect}\" mais a \"{actual}\" !"
     thereIsEmptySlot: "Slot {slot} est vide !"
     types:
       string: "Texte"
@@ -816,3 +817,4 @@ _pages:
     emptySlot: "Slot vide"
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
+    argVariables: "Entrée slot"
