@@ -198,7 +198,7 @@ removeAreYouSure: "Supprimer «{x}» ?"
 saved: "Enregistré"
 messaging: "Messagerie"
 upload: "Téléchargez"
-fromDrive: "Depuis le lecteur"
+fromDrive: "Depuis le Drive"
 fromUrl: "De l'URL"
 explore: "Découvrir"
 games: "Jeux de Misskey"
@@ -209,9 +209,29 @@ startMessaging: "Commencez à écrire un message"
 nUsersRead: "{n} personnes ont lu"
 agreeTo: "D'accord {0}"
 tos: "Conditions d'utilisation"
+start: "Commencer"
+home: "Principal"
+remoteUserCaution: "Les informations sont incomplètes en raison de l'utilisateur distant."
+activity: "Activités"
+images: "Images"
+birthday: "Date de naissance"
+yearsOld: "{age} ans"
+registeredDate: "Date de création"
+location: "Localisation"
+theme: "Thème"
+lightThemes: "Thème lumineux"
+darkThemes: "Thème sombre"
+drive: "Drive"
+selectFile: "Choisir le fichier"
+selectFiles: "Choisir le fichiers"
+emptyDrive: "Le Drive est vide"
 nsfw: "Contenu sensible"
+driveCapacityPerLocalAccount: "Volume du Drive par utilisateur local"
+driveCapacityPerRemoteAccount: "Volume du Drive par utilisateur distant"
 userList: "Listes"
 _permissions:
+  "read:drive": "Parcourir le Drive"
+  "write:drive": "Écrire sur le Drive"
   "read:following": "Voir les informations de l'abonné"
   "write:following": "Abonnements/Se désabonner"
 _antennaSources:
@@ -222,6 +242,7 @@ _widgets:
 _cw:
   show: "Voir plus"
 _visibility:
+  home: "Principal"
   followers: "Abonné·e·s"
 _profile:
   username: "Nom d'utilisateur·rice"
@@ -233,7 +254,11 @@ _exportOrImport:
 _instanceCharts:
   ff: "Augmentation des abonné·e·s"
   ffTotal: "Somme du nombre d'abonnements"
+_timelines:
+  home: "Principal"
 _pages:
+  blocks:
+    image: "Images"
   script:
     categories:
       list: "Listes"
