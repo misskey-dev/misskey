@@ -330,7 +330,7 @@ uploadFolder: "Emplacement de téléversement par défaut"
 cacheClear: "Vider le cache"
 markAsReadAllNotifications: "Marquer toutes les notifications comme lues"
 markAsReadAllUnreadNotes: "Marquer toutes les notes comme lues"
-markAsReadAllTalkMessages: "Marquer tous les discutez comme lus"
+markAsReadAllTalkMessages: "Marquer toutes les discutez comme lues"
 help: "Aide"
 inputMessageHere: "Tapez ici votre message"
 close: "Fermer"
@@ -806,6 +806,7 @@ _pages:
       _for:
         arg1: "Compter"
         arg2: "Action"
+    typeError: "Le slot {slot} accepte \"{expect}\" mais a \"{actual}\" !"
     thereIsEmptySlot: "Slot {slot} est vide !"
     types:
       string: "Texte"
@@ -816,3 +817,4 @@ _pages:
     emptySlot: "Slot vide"
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
+    argVariables: "Entrée slot"
