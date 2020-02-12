@@ -385,6 +385,7 @@ signinWith: "{x}でログイン"
 tapSecurityKey: "セキュリティーキーにタッチ"
 or: "もしくは"
 uiLanguage: "UIの表示言語"
+groupInvited: "グループに招待されました"
 
 _ago:
   unknown: "謎"

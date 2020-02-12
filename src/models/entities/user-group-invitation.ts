@@ -5,12 +5,12 @@ import { id } from '../id';
 
 @Entity()
 @Index(['userId', 'userGroupId'], { unique: true })
-export class UserGroupInvite {
+export class UserGroupInvitation {
 	@PrimaryColumn(id())
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the UserGroupInvite.'
+		comment: 'The created date of the UserGroupInvitation.'
 	})
 	public createdAt: Date;
 
