@@ -390,6 +390,7 @@ useOsNativeEmojis: "Utilisez les emojis natifs de la plateforme"
 noGroups: "Pas de groupes"
 joinOrCreateGroup: "Soyez invité à rejoindre les groupes ou vous pouvez créer votre propre groupe."
 noHistory: "Pas d'historique"
+disableAnimatedMfm: "Désactiver MFM qui a des animations"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
