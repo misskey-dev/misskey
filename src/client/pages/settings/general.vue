@@ -2,7 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 	<div class="_content">
-		<mk-input type="file" @change="onWallpaperChange" style="margin-top: 0;">
+		<mk-input type="file" @change="onWallpaperChange">
 			<span>{{ $t('wallpaper') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="wallpaperUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
@@ -23,6 +23,7 @@
 		<mk-button @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</mk-button>
 	</div>
 	<div class="_content">
+		<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
 		<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
 		<mk-switch v-model="useOsNativeEmojis">
 			{{ $t('useOsNativeEmojis') }}
@@ -82,6 +83,11 @@ export default Vue.extend({
 		reduceAnimation: {
 			get() { return !this.$store.state.device.animation; },
 			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
+		},
+
+		disableAnimatedMfm: {
+			get() { return !this.$store.state.device.animatedMfm; },
+			set(value) { this.$store.commit('device/set', { key: 'animatedMfm', value: !value }); }
 		},
 
 		useOsNativeEmojis: {

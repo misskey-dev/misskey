@@ -1,8 +1,8 @@
-import { faUpload, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { selectDriveFile } from './select-drive-file';
 import { apiUrl } from '../config';
 
-export function selectFile(component: any, src: any, label: string, multiple = false) {
+export function selectFile(component: any, src: any, label: string | null, multiple = false) {
 	return new Promise((res, rej) => {
 		const chooseFileFromPc = () => {
 			const input = document.createElement('input');
@@ -56,10 +56,10 @@ export function selectFile(component: any, src: any, label: string, multiple = f
 		};
 
 		component.$root.menu({
-			items: [{
+			items: [label ? {
 				text: label,
 				type: 'label'
-			}, {
+			} : undefined, {
 				text: component.$t('upload'),
 				icon: faUpload,
 				action: chooseFileFromPc

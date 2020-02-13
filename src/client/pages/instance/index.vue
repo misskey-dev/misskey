@@ -6,7 +6,7 @@
 	<section class="_card info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
-			<mk-input v-model="name" style="margin-top: 8px;">{{ $t('instanceName') }}</mk-input>
+			<mk-input v-model="name">{{ $t('instanceName') }}</mk-input>
 			<mk-textarea v-model="description">{{ $t('instanceDescription') }}</mk-textarea>
 			<mk-input v-model="iconUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('iconUrl') }}</mk-input>
 			<mk-input v-model="bannerUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('bannerUrl') }}</mk-input>
@@ -78,7 +78,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
-			<mk-textarea v-model="pinnedUsers" style="margin-top: 0;">
+			<mk-textarea v-model="pinnedUsers">
 				<template #desc>{{ $t('pinnedUsersDescription') }} <button class="_textButton" @click="addPinUser">{{ $t('addUser') }}</button></template>
 			</mk-textarea>
 		</div>
@@ -111,7 +111,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
 		<div class="_content">
-			<mk-textarea v-model="blockedHosts" style="margin-top: 0;">
+			<mk-textarea v-model="blockedHosts">
 				<template #desc>{{ $t('blockedInstancesDescription') }}</template>
 			</mk-textarea>
 		</div>

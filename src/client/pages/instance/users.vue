@@ -6,7 +6,7 @@
 	<section class="_card lookup">
 		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">
-			<mk-input class="target" v-model="target" type="text" @enter="showUser()" style="margin-top: 0;">
+			<mk-input class="target" v-model="target" type="text" @enter="showUser()">
 				<span>{{ $t('usernameOrUserId') }}</span>
 			</mk-input>
 			<mk-button @click="showUser()" primary><fa :icon="faSearch"/> {{ $t('lookup') }}</mk-button>

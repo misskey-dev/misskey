@@ -38,6 +38,7 @@ const defaultDeviceSettings = {
 	themes: [],
 	theme: 'light',
 	animation: true,
+	animatedMfm: true,
 	userData: {},
 };
 
