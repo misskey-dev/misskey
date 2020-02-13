@@ -125,6 +125,7 @@ export default Vue.extend({
 
 	> .item {
 		display: block;
+		position: relative;
 		padding: 8px 16px;
 		width: 100%;
 		box-sizing: border-box;
