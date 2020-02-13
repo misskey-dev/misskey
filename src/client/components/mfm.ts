@@ -82,10 +82,10 @@ export default Vue.component('misskey-flavored-markdown', {
 						attrs: {
 							style: `display: inline-block; font-size: 150%;`
 						},
-						directives: [this.$store.state.settings.disableAnimatedMfm ? {} : {
+						directives: [this.$store.state.device.animatedMfm ? {
 							name: 'animate-css',
 							value: { classes: 'tada', iteration: 'infinite' }
-						}]
+						}: {}]
 					}, genEl(token.children));
 				}
 
@@ -110,10 +110,10 @@ export default Vue.component('misskey-flavored-markdown', {
 						attrs: {
 							style: 'display: inline-block;'
 						},
-						directives: [this.$store.state.settings.disableAnimatedMfm ? {} : {
+						directives: [this.$store.state.device.animatedMfm ? {
 							name: 'animate-css',
 							value: { classes: 'rubberBand', iteration: 'infinite' }
-						}]
+						} : {}]
 					}, genEl(token.children));
 				}
 
@@ -122,9 +122,8 @@ export default Vue.component('misskey-flavored-markdown', {
 						token.node.props.attr == 'left' ? 'reverse' :
 						token.node.props.attr == 'alternate' ? 'alternate' :
 						'normal';
-					const style = (this.$store.state.settings.disableAnimatedMfm)
-						? ''
-						: `animation: spin 1.5s linear infinite; animation-direction: ${direction};`;
+					const style = this.$store.state.device.animatedMfm
+						? `animation: spin 1.5s linear infinite; animation-direction: ${direction};` : '';
 					return (createElement as any)('span', {
 						attrs: {
 							style: 'display: inline-block;' + style
@@ -135,7 +134,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'jump': {
 					return (createElement as any)('span', {
 						attrs: {
-							style: (this.$store.state.settings.disableAnimatedMfm) ? 'display: inline-block;' : 'display: inline-block; animation: jump 0.75s linear infinite;'
+							style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: jump 0.75s linear infinite;' : 'display: inline-block;'
 						},
 					}, genEl(token.children));
 				}

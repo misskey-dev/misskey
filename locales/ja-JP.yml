@@ -392,6 +392,7 @@ useOsNativeEmojis: "OSネイティブの絵文字を使用"
 noGroups: "グループがありません"
 joinOrCreateGroup: "既存のグループに招待してもらうか、新しくグループを作成してください。"
 noHistory: "履歴はありません"
+disableAnimatedMfm: "動きのあるMFMを無効にする"
 
 _ago:
   unknown: "謎"
