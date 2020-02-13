@@ -390,6 +390,7 @@ groupInvited: "Invited to group"
 aboutX: "About {x}"
 useOsNativeEmojis: "Use the OS native Emojis"
 noGroups: "No groups"
+joinOrCreateGroup: "Get invited to join the group or you can create your own group."
 noHistory: "No history items"
 _ago:
   unknown: "Unknown"
