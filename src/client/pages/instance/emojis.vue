@@ -36,7 +36,7 @@
 	<section class="_card remote">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
 		<div class="_content">
-			<mk-input v-model="host" :debounce="true" style="margin-top: 0;"><span>{{ $t('host') }}</span></mk-input>
+			<mk-input v-model="host" :debounce="true"><span>{{ $t('host') }}</span></mk-input>
 			<mk-pagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">

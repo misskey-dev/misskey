@@ -2,7 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
 	<div class="_content">
-		<mk-textarea v-model="reactions" style="margin-top: 16px;">{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }}</template></mk-textarea>
+		<mk-textarea v-model="reactions">{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }}</template></mk-textarea>
 	</div>
 	<div class="_footer">
 		<mk-button @click="save()" primary inline :disabled="!changed"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>

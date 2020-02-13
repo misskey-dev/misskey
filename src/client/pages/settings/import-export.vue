@@ -2,8 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
 	<div class="_content">
-		<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
-		<mk-select v-model="exportTarget" style="margin-top: 0;">
+		<mk-select v-model="exportTarget">
 			<option value="notes">{{ $t('_exportOrImport.allNotes') }}</option>
 			<option value="following">{{ $t('_exportOrImport.followingList') }}</option>
 			<option value="user-lists">{{ $t('_exportOrImport.userLists') }}</option>
@@ -13,6 +12,7 @@
 		<mk-button inline @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</mk-button>
 		<mk-button inline @click="doImport()" :disabled="!['following', 'user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</mk-button>
 	</div>
+	<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
 </section>
 </template>
 

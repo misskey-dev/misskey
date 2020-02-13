@@ -2,7 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 	<div class="_content">
-		<mk-input type="file" @change="onWallpaperChange" style="margin-top: 0;">
+		<mk-input type="file" @change="onWallpaperChange">
 			<span>{{ $t('wallpaper') }}</span>
 			<template #icon><fa :icon="faImage"/></template>
 			<template #desc v-if="wallpaperUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
