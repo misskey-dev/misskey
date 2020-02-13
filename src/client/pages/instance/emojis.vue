@@ -2,10 +2,10 @@
 <div class="mk-instance-emojis">
 	<portal to="icon"><fa :icon="faLaugh"/></portal>
 	<portal to="title">{{ $t('customEmojis') }}</portal>
+
 	<section class="_card local">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
 		<div class="_content">
-			<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
 			<mk-pagination :pagination="pagination" class="emojis" ref="emojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
@@ -13,14 +13,24 @@
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
 						<div class="body">
 							<span class="name">{{ emoji.name }}</span>
+							<span class="info">
+								<b class="category">{{ emoji.category }}</b>
+								<span class="aliases">{{ emoji.aliases.join(' ') }}</span>
+							</span>
 						</div>
 					</div>
 				</template>
 			</mk-pagination>
 		</div>
-		<div class="_footer">
-			<mk-button inline primary @click="add()"><fa :icon="faPlus"/> {{ $t('addEmoji') }}</mk-button>
+		<div class="_content" v-if="selected">
+			<mk-input v-model="name"><span>{{ $t('name') }}</span></mk-input>
+			<mk-input v-model="category"><span>{{ $t('category') }}</span></mk-input>
+			<mk-input v-model="aliases"><span>{{ $t('tags') }}</span></mk-input>
+			<mk-button inline primary @click="update"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 			<mk-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</mk-button>
+		</div>
+		<div class="_footer">
+			<mk-button inline primary @click="add"><fa :icon="faPlus"/> {{ $t('addEmoji') }}</mk-button>
 		</div>
 	</section>
 	<section class="_card remote">
@@ -34,7 +44,7 @@
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
 						<div class="body">
 							<span class="name">{{ emoji.name }}</span>
-							<span class="host">{{ emoji.host }}</span>
+							<span class="info">{{ emoji.host }}</span>
 						</div>
 					</div>
 				</template>
@@ -49,12 +59,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkPagination from '../../components/ui/pagination.vue';
-import { apiUrl } from '../../config';
+import { selectFile } from '../../scripts/select-file';
 
 export default Vue.extend({
 	metaInfo() {
@@ -71,9 +81,11 @@ export default Vue.extend({
 
 	data() {
 		return {
-			name: null,
 			selected: null,
 			selectedRemote: null,
+			name: null,
+			category: null,
+			aliases: null,
 			host: '',
 			pagination: {
 				endpoint: 'admin/emoji/list',
@@ -86,52 +98,38 @@ export default Vue.extend({
 					host: this.host ? this.host : null
 				})
 			},
-			faTrashAlt, faPlus, faLaugh
+			faTrashAlt, faPlus, faLaugh, faSave
 		}
 	},
 
 	watch: {
 		host() {
 			this.$refs.remoteEmojis.reload();
+		},
+
+		selected() {
+			this.name = this.selected ? this.selected.name : null;
+			this.category = this.selected ? this.selected.category : null;
+			this.aliases = this.selected ? this.selected.aliases.join(' ') : null;
 		}
 	},
 
 	methods: {
-		async add() {
-			const { canceled: canceled, result: name } = await this.$root.dialog({
-				title: this.$t('emojiName'),
-				input: true
-			});
-			if (canceled) return;
-
-			this.name = name;
-
-			(this.$refs.file as any).click();
-		},
-
-		onChangeFile() {
-			const [file] = Array.from((this.$refs.file as any).files);
-			if (file == null) return;
-			
-			const data = new FormData();
-			data.append('file', file);
-			data.append('name', this.name);
-			data.append('i', this.$store.state.i.token);
+		async add(e) {
+			const files = await selectFile(this, e.currentTarget || e.target, null, true);
 
 			const dialog = this.$root.dialog({
 				type: 'waiting',
-				text: this.$t('uploading') + '...',
+				text: this.$t('doing') + '...',
 				showOkButton: false,
 				showCancelButton: false,
 				cancelableByBgClick: false
 			});
-
-			fetch(apiUrl + '/admin/emoji/add', {
-				method: 'POST',
-				body: data
-			})
-			.then(response => response.json())
-			.then(f => {
+			
+			Promise.all(files.map(file => this.$root.api('admin/emoji/add', {
+				fileId: file.id,
+			})))
+			.then(() => {
 				this.$refs.emojis.reload();
 				this.$root.dialog({
 					type: 'success',
@@ -141,6 +139,22 @@ export default Vue.extend({
 			.finally(() => {
 				dialog.close();
 			});
+		},
+
+		async update() {
+			await this.$root.api('admin/emoji/update', {
+				id: this.selected.id,
+				name: this.name,
+				category: this.category,
+				aliases: this.aliases.split(' '),
+			});
+
+			this.$root.dialog({
+				type: 'success',
+				iconOnly: true, autoClose: true
+			});
+
+			this.$refs.emojis.reload();
 		},
 
 		async del() {
@@ -207,6 +221,18 @@ export default Vue.extend({
 						> .name {
 							display: block;
 						}
+
+						> .info {
+							opacity: 0.5;
+
+							> .category {
+								margin-right: 16px;
+							}
+
+							> .aliases {
+								font-style: oblique;
+							}
+						}
 					}
 				}
 			}
@@ -241,7 +267,7 @@ export default Vue.extend({
 							display: block;
 						}
 
-						> .host {
+						> .info {
 							opacity: 0.5;
 						}
 					}
