@@ -392,6 +392,7 @@ useOsNativeEmojis: "Use the OS native Emojis"
 noGroups: "No groups"
 joinOrCreateGroup: "Get invited to join the groups or you can create your own group."
 noHistory: "No history items"
+disableAnimatedMfm: "Disable MFM which has animations"
 _ago:
   unknown: "Unknown"
   future: "Future"
