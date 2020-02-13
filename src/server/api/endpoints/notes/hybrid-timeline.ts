@@ -124,6 +124,18 @@ export default define(meta, async (ps, user) => {
 			qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: user.id })
 				.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
 		}))
+		.andWhere(new Brackets(qb => { qb
+			.where(`note.replyId IS NULL`) // 返信ではない
+			.orWhere('note.replyUserId = :meId', { meId: user.id }) // 返信だけど自分のノートへの返信
+			.orWhere(new Brackets(qb => { qb // 返信だけど自分の行った返信
+				.where(`note.replyId IS NOT NULL`)
+				.andWhere('note.userId = :meId', { meId: user.id });
+			}))
+			.orWhere(new Brackets(qb => { qb // 返信だけど投稿者自身への返信
+				.where(`note.replyId IS NOT NULL`)
+				.andWhere('note.replyUserId = note.userId', { meId: user.id });
+			}));
+		}))
 		.leftJoinAndSelect('note.user', 'user')
 		.setParameters(followingQuery.getParameters());
 
