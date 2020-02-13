@@ -139,6 +139,14 @@ export default Vue.extend({
 		async startGroup() {
 			const groups1 = await this.$root.api('users/groups/owned');
 			const groups2 = await this.$root.api('users/groups/joined');
+			if (groups1.length === 0 && groups2.length === 0) {
+				this.$root.dialog({
+					type: 'warning',
+					title: this.$t('noGroups'),
+					text: this.$t('joinOrCreateGroup'),
+				});
+				return;
+			}
 			const { canceled, result: group } = await this.$root.dialog({
 				type: null,
 				title: this.$t('group'),
