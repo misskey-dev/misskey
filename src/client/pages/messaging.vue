@@ -31,7 +31,7 @@
 			</div>
 		</router-link>
 	</sequential-entrance>
-	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
+	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('noHistory') }}</p>
 	<mk-loading v-if="fetching"/>
 </div>
 </template>
