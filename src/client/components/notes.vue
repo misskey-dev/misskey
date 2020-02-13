@@ -1,7 +1,7 @@
 <template>
 <div class="mk-notes" v-size="[{ max: 500 }]">
 	<div class="empty" v-if="empty">
-		<img src="https://xn--931a.moe/assets/info.png" alt=""/>
+		<img src="https://xn--931a.moe/assets/info.png" alt="" class="_ghost"/>
 		<div>{{ $t('noNotes') }}</div>
 	</div>
 
@@ -88,8 +88,6 @@ export default Vue.extend({
 			height: 128px;
 			margin-bottom: 16px;
 			border-radius: 16px;
-			pointer-events: none;
-			user-select: none;
 		}
 	}
 

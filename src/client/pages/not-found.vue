@@ -5,7 +5,7 @@
 
 	<section class="_card">
 		<div class="_content">
-			<img src="https://xn--931a.moe/assets/not-found.png" alt=""/>
+			<img src="https://xn--931a.moe/assets/not-found.png" alt="" class="_ghost"/>
 			<div>{{ $t('notFoundDescription') }}</div>
 		</div>
 	</section>
@@ -45,8 +45,6 @@ export default Vue.extend({
 				height: 150px;
 				margin-bottom: 16px;
 				border-radius: 16px;
-				pointer-events: none;
-				user-select: none;
 			}
 		}
 	}

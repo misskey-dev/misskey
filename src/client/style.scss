@@ -164,6 +164,19 @@ a {
 	}
 }
 
+._noSelect {
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+}
+
+._ghost {
+	&, * {
+		@extend ._noSelect;
+		pointer-events: none;
+	}
+}
+
 ._button {
 	appearance: none;
 	padding: 0;
@@ -175,9 +188,7 @@ a {
 	font-size: 1em;
 
 	&, * {
-		user-select: none;
-		-webkit-user-select: none;
-		-webkit-touch-callout: none;
+		@extend ._noSelect;
 	}
 
 	* {
