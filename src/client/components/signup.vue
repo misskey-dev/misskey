@@ -107,10 +107,6 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-		});
-
 		if (this.autoSet) {
 			this.$once('signup', res => {
 				localStorage.setItem('i', res.i);
