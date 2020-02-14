@@ -348,7 +348,7 @@ export default Vue.extend({
 			const accountItems = accounts.map(account => ({
 				type: 'user',
 				user: account,
-				action: () => { this.switchAccount(account) }
+				action: () => { this.switchAccount(account); }
 			}));
 
 			this.$root.menu({
@@ -536,6 +536,11 @@ export default Vue.extend({
 		},
 
 		switchAccountWithToken(token: string) {
+			this.$root.dialog({
+				type: 'waiting',
+				iconOnly: true
+			});
+			
 			this.$root.api('i', {}, token).then((i: any) => {
 				this.$store.dispatch('switchAccount', {
 					...i,
