@@ -540,7 +540,7 @@ export default Vue.extend({
 				type: 'waiting',
 				iconOnly: true
 			});
-			
+
 			this.$root.api('i', {}, token).then((i: any) => {
 				this.$store.dispatch('switchAccount', {
 					...i,
@@ -786,7 +786,7 @@ export default Vue.extend({
 				position: relative;
 
 				> input {
-					width: 210px;
+					width: 220px;
 					box-sizing: border-box;
 					margin-right: 8px;
 					padding: 0 12px 0 42px;
