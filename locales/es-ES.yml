@@ -396,6 +396,10 @@ disableAnimatedMfm: "Deshabilitar MFM que tiene animaciones"
 doing: "Voy en camino"
 category: "Categoría"
 tags: "Etiqueta"
+docSource: "Fuente de este documento"
+createAccount: "Crear cuenta"
+existingAcount: "Cuentas existentes"
+regenerate: "Regenerar"
 _ago:
   unknown: "Desconocido"
   future: "Futuro"
@@ -479,6 +483,7 @@ _antennaSources:
   homeTimeline: "Notas de los usuarios que sigues"
   users: "Notas de un usuario o varios"
   userList: "Notas de los usuarios de una lista"
+  userGroup: "Notas de los usuarios de una grupo"
 _weekday:
   sunday: "Domingo"
   monday: "Lunes"
