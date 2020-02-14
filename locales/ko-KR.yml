@@ -400,6 +400,7 @@ docSource: "이 문서의 소스"
 createAccount: "계정 만들기"
 existingAcount: "기존 계정"
 regenerate: "다시 생성"
+fontSize: "글자 크기"
 _ago:
   unknown: "알 수 없음"
   future: "미래"
