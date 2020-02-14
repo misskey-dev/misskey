@@ -588,6 +588,8 @@ _pages:
   content: "Bloc de page"
   variables: "Variables"
   variables-info: "Vous pouvez créer une page dynamique à l'aide de variables. En tapant le <b>{nom de variable}</b> dans le texte, vous pouvez y incorporer la valeur de la variable. Par exemple, si dans le texte <b>Bonjour {chose} monde!</b> la valeur de la variable (chose) est <b>ai</b>, le texte devient est <b>Bonjour ai monde!</b>."
+  variables-info2: "L'évaluation des variables (le calcul des valeurs) se fait de haut en bas, donc l'variable ne peut pas se référer à une autre qui est en dessous. Par exemple, lorsque les variables <b>A、B、C</b> sont définies, <b>C</b> peut faire référence à <b>A</b> ou <b>B</b>, mais <b>A</b> ne peut pas faire référence à <b>B</b> ou <b>C</b>."
+  variables-info3: "Pour recevoir une entrée utilisateur, ajoutez un bloc \"Entrée\" sur la page et définissez le nom des variables que vous souhaitez stocker dans le champ \"Nom de la variable\" (les variables seront créées automatiquement). Les actions seront exécutées en fonction de l'entrée utilisateur de ces variables."
   more-details: "Description"
   title: "Titre"
   url: "URL de page"
