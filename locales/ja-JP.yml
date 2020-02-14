@@ -397,6 +397,7 @@ doing: "やっています"
 category: "カテゴリ"
 tags: "タグ"
 docSource: "このドキュメントのソース"
+createAccount: "アカウントを作成"
 
 _ago:
   unknown: "謎"

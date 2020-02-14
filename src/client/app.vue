@@ -364,10 +364,15 @@ export default Vue.extend({
 					icon: faCog,
 				}, null, {
 					type: 'item',
-					text: this.$t('addAcount'),
 					icon: faPlus,
+					text: this.$t('addAcount'),
 					action: () => { this.addAcount() },
-				}], ...accountItems],
+				}, {
+					type: 'item',
+					icon: faPlus,
+					text: this.$t('createAccount'),
+					action: () => { this.createAccount() },
+				}, null, ...accountItems, ]],
 				align: 'left',
 				fixed: true,
 				width: 240,
@@ -507,9 +512,20 @@ export default Vue.extend({
 			});
 		},
 
-		async switchAccount(account) {
-			const token = this.$store.state.device.accounts.find(x => x.id === account.id).token;
-			this.$root.api('i', {}, token).then(i => {
+		async createAccount() {
+			this.$root.new(await import('./components/signup-dialog.vue').then(m => m.default)).$once('signup', res => {
+				this.$store.dispatch('addAcount', res);
+				this.switchAccountWithToken(res.i);
+			});
+		},
+
+		async switchAccount(account: any) {
+			const token = this.$store.state.device.accounts.find((x: any) => x.id === account.id).token;
+			this.switchAccountWithToken(token);
+		},
+
+		switchAccountWithToken(token: string) {
+			this.$root.api('i', {}, token).then((i: any) => {
 				this.$store.dispatch('switchAccount', {
 					...i,
 					token: token
