@@ -399,6 +399,7 @@ tags: "Étiquettes"
 docSource: "Source de ce document"
 createAccount: "Créer compte"
 existingAcount: "Comptes existants"
+regenerate: "Régénérer"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
