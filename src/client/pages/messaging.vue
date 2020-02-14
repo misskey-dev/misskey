@@ -300,16 +300,6 @@ export default Vue.extend({
 	}
 
 	@media (max-width: 400px) {
-		> .search {
-			> .result {
-				> .users {
-					> li {
-						padding: 8px 16px;
-					}
-				}
-			}
-		}
-
 		> .history {
 			> .message {
 				&:not([data-is-me]):not([data-is-read]) {
@@ -321,7 +311,7 @@ export default Vue.extend({
 
 				> div {
 					padding: 16px;
-					font-size: 14px;
+					font-size: 0.9em;
 
 					> .avatar {
 						margin: 0 12px 0 0;

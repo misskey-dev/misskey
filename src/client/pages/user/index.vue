@@ -380,7 +380,7 @@ export default Vue.extend({
 
 		> .description {
 			padding: 24px 24px 24px 154px;
-			font-size: 15px;
+			font-size: 0.95em;
 
 			@media (max-width: 500px) {
 				padding: 16px;
@@ -395,7 +395,7 @@ export default Vue.extend({
 
 		> .fields {
 			padding: 24px;
-			font-size: 14px;
+			font-size: 0.9em;
 			border-top: solid 1px var(--divider);
 
 			@media (max-width: 500px) {
