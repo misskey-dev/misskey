@@ -25,6 +25,7 @@
 				<input type="search" :placeholder="$t('search')" v-model="searchQuery" v-autocomplete="{ model: 'searchQuery' }" :disabled="searchWait" @keypress="searchKeypress"/>
 			</div>
 			<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
+			<x-clock v-if="isDesktop" class="clock"/>
 		</div>
 	</header>
 
@@ -107,7 +108,7 @@
 
 		<div class="widgets">
 			<div ref="widgets" :class="{ edit: widgetsEditMode }">
-				<template v-if="enableWidgets && $store.getters.isSignedIn">
+				<template v-if="isDesktop && $store.getters.isSignedIn">
 					<template v-if="widgetsEditMode">
 						<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
 						<x-draggable
@@ -166,6 +167,7 @@ export default Vue.extend({
 	i18n,
 
 	components: {
+		XClock: () => import('./components/header-clock.vue').then(m => m.default),
 		XNotifications: () => import('./components/notifications.vue').then(m => m.default),
 		MkButton: () => import('./components/ui/button.vue').then(m => m.default),
 		XDraggable: () => import('vuedraggable'),
@@ -184,7 +186,7 @@ export default Vue.extend({
 			searchQuery: '',
 			searchWait: false,
 			widgetsEditMode: false,
-			enableWidgets: window.innerWidth >= 1100,
+			isDesktop: window.innerWidth >= 1100,
 			canBack: false,
 			disconnectedDialog: null as Promise<void> | null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
@@ -273,7 +275,7 @@ export default Vue.extend({
 
 	mounted() {
 		// https://stackoverflow.com/questions/33891709/when-flexbox-items-wrap-in-column-mode-container-does-not-grow-its-width
-		if (this.enableWidgets) {
+		if (this.isDesktop) {
 			const adjustWidgetsWidth = () => {
 				const lastChild = this.$refs.widgets.children[this.$refs.widgets.children.length - 1];
 				if (lastChild == null) return;
@@ -818,6 +820,10 @@ export default Vue.extend({
 				margin-left: $post-button-margin;
 				border-radius: 100%;
 				font-size: 16px;
+			}
+
+			> .clock {
+				margin-left: 8px;
 			}
 		}
 	}
