@@ -12,15 +12,15 @@
 			<template #prefix><fa :icon="faLock"/></template>
 		</mk-input>
 		<mk-button type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>
-		<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="['fab', 'twitter']"/> {{ $t('signin-with-twitter') }}</a></p>
-		<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="['fab', 'github']"/> {{ $t('signin-with-github') }}</a></p>
-		<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="['fab', 'discord']"/> {{ $t('signin-with-discord') /* TODO: Make these layouts better */ }}</a></p>
+		<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="faTwitter"/> {{ $t('signinWith', { x: 'Twitter' }) }}</a></p>
+		<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="faGithub"/> {{ $t('signinWith', { x: 'GitHub' }) }}</a></p>
+		<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="faDiscord"/> {{ $t('signinWith', { x: 'Discord' }) }}</a></p>
 	</div>
 	<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 		<div v-if="user && user.securityKeys" class="twofa-group tap-group">
-			<p>{{ $t('tap-key') }}</p>
+			<p>{{ $t('tapSecurityKey') }}</p>
 			<mk-button @click="queryKey" v-if="!queryingKey">
-				{{ $t('@.error.retry') }}
+				{{ $t('retry') }}
 			</mk-button>
 		</div>
 		<div class="or-hr" v-if="user && user.securityKeys">
@@ -46,6 +46,7 @@
 import Vue from 'vue';
 import { toUnicode } from 'punycode';
 import { faLock, faGavel } from '@fortawesome/free-solid-svg-icons';
+import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import i18n from '../i18n';
@@ -86,7 +87,7 @@ export default Vue.extend({
 			credential: null,
 			challengeData: null,
 			queryingKey: false,
-			faLock, faGavel
+			faLock, faGavel, faTwitter, faDiscord, faGithub
 		};
 	},
 

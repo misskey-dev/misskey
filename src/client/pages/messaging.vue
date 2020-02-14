@@ -31,7 +31,10 @@
 			</div>
 		</router-link>
 	</sequential-entrance>
-	<p class="no-history" v-if="!fetching && messages.length == 0">{{ $t('no-history') }}</p>
+	<div class="no-history" v-if="!fetching && messages.length == 0">
+		<img src="https://xn--931a.moe/assets/info.png" alt="" class="_ghost"/>
+		<div>{{ $t('noHistory') }}</div>
+	</div>
 	<mk-loading v-if="fetching"/>
 </div>
 </template>
@@ -139,6 +142,14 @@ export default Vue.extend({
 		async startGroup() {
 			const groups1 = await this.$root.api('users/groups/owned');
 			const groups2 = await this.$root.api('users/groups/joined');
+			if (groups1.length === 0 && groups2.length === 0) {
+				this.$root.dialog({
+					type: 'warning',
+					title: this.$t('noGroups'),
+					text: this.$t('joinOrCreateGroup'),
+				});
+				return;
+			}
 			const { canceled, result: group } = await this.$root.dialog({
 				type: null,
 				title: this.$t('group'),
@@ -277,11 +288,15 @@ export default Vue.extend({
 	}
 
 	> .no-history {
-		margin: 0;
-		padding: 2em 1em;
+		padding: 32px;
 		text-align: center;
-		color: #999;
-		font-weight: 500;
+
+		> img {
+			vertical-align: bottom;
+			height: 128px;
+			margin-bottom: 16px;
+			border-radius: 16px;
+		}
 	}
 
 	@media (max-width: 400px) {

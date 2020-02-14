@@ -157,7 +157,7 @@ import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regul
 import { ResizeObserver } from '@juggle/resize-observer';
 import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
-import { host } from './config';
+import { host, instanceName } from './config';
 import { search } from './scripts/search';
 import contains from './scripts/contains';
 import MkToast from './components/toast.vue';
@@ -247,11 +247,15 @@ export default Vue.extend({
 		}
 
 		this.$root.stream.on('_disconnected_', () => {
-			if (!this.disconnectedDialog) {
-				if (this.$store.state.device.autoReload) {
-					location.reload();
-					return;
-				}
+			if (this.disconnectedDialog) return;
+			if (this.$store.state.device.autoReload) {
+				location.reload();
+				return;
+			}
+
+			setTimeout(() => {
+				if (this.$root.stream.state !== 'reconnecting') return;
+
 				this.disconnectedDialog = this.$root.dialog({
 					type: 'warning',
 					showCancelButton: true,
@@ -263,7 +267,7 @@ export default Vue.extend({
 					}
 					this.disconnectedDialog = null;
 				});
-			}
+			}, 150)
 		});
 	},
 
@@ -274,7 +278,7 @@ export default Vue.extend({
 				const lastChild = this.$refs.widgets.children[this.$refs.widgets.children.length - 1];
 				if (lastChild == null) return;
 
-				const width = lastChild.offsetLeft + 300;
+				const width = lastChild.offsetLeft + 300 + 16;
 				this.$refs.widgets.style.width = width + 'px';
 			};
 			setInterval(adjustWidgetsWidth, 1000);
@@ -289,7 +293,7 @@ export default Vue.extend({
 		const ro = new ResizeObserver((entries, observer) => {
 			adjustTitlePosition();
 		});
-		
+
 		ro.observe(this.$refs.contents);
 
 		window.addEventListener('resize', adjustTitlePosition);
@@ -482,8 +486,13 @@ export default Vue.extend({
 					icon: faQuestionCircle,
 				}, {
 					type: 'link',
-					text: this.$t('about'),
+					text: this.$t('aboutX', { x: instanceName || host }),
 					to: '/about',
+					icon: faInfoCircle,
+				}, {
+					type: 'link',
+					text: this.$t('aboutMisskey'),
+					to: '/about-misskey',
 					icon: faInfoCircle,
 				}],
 				align: 'left',
@@ -563,6 +572,7 @@ export default Vue.extend({
 				'calendar',
 				'rss',
 				'trends',
+				'clock'
 			];
 
 			this.$root.menu({
@@ -760,10 +770,9 @@ export default Vue.extend({
 				position: relative;
 
 				> input {
-					$margin: 8px;
-					width: 200px;
+					width: 210px;
 					box-sizing: border-box;
-					margin-right: $margin;
+					margin-right: 8px;
 					padding: 0 12px 0 42px;
 					font-size: 1rem;
 					line-height: 38px;

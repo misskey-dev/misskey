@@ -48,7 +48,7 @@ export default Vue.extend({
 				ago >= 10       ? this.$t('_ago.secondsAgo', { n: (~~(ago % 60)).toString() }) :
 				ago >= -1       ? this.$t('_ago.justNow') :
 				ago <  -1       ? this.$t('_ago.future') :
-				this.$t('@.time.unknown'));
+				this.$t('_ago.unknown'));
 		}
 	},
 	created() {

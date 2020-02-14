@@ -3,8 +3,8 @@
 	<mk-avatar class="avatar" :user="message.user"/>
 	<div class="content">
 		<div class="balloon _panel" :data-no-text="message.text == null">
-			<button class="delete-button" v-if="isMe" :title="$t('@.delete')" @click="del">
-				<img src="/assets/desktop/remove.png" alt="Delete"/>
+			<button class="delete-button" v-if="isMe" :title="$t('delete')" @click="del">
+				<img src="/assets/remove.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
 				<mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>

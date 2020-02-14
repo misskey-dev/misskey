@@ -1,7 +1,7 @@
 <template>
 <div class="mk-notes" v-size="[{ max: 500 }]">
 	<div class="empty" v-if="empty">
-		<img src="https://xn--931a.moe/assets/info.jpg" alt=""/>
+		<img src="https://xn--931a.moe/assets/info.png" alt="" class="_ghost"/>
 		<div>{{ $t('noNotes') }}</div>
 	</div>
 
@@ -11,28 +11,28 @@
 		<x-note :note="note" :detail="detail" :key="note.id"/>
 	</x-list>
 
-	<footer v-if="more">
-		<button @click="fetchMore()" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" class="_buttonPrimary">
+	<footer class="more" v-if="more">
+		<mk-button class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()" primary>
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
-		</button>
+			<template v-if="moreFetching"><mk-loading inline/></template>
+		</mk-button>
 	</footer>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
+import MkButton from './ui/button.vue';
 
 export default Vue.extend({
 	i18n,
 
 	components: {
-		XNote, XList
+		XNote, XList, MkButton
 	},
 
 	mixins: [
@@ -63,12 +63,6 @@ export default Vue.extend({
 		}
 	},
 
-	data() {
-		return {
-			faSpinner
-		};
-	},
-
 	computed: {
 		notes(): any[] {
 			return this.extract ? this.extract(this.items) : this.items;
@@ -94,8 +88,6 @@ export default Vue.extend({
 			height: 128px;
 			margin-bottom: 16px;
 			border-radius: 16px;
-			pointer-events: none;
-			user-select: none;
 		}
 	}
 
@@ -113,23 +105,11 @@ export default Vue.extend({
 		}
 	}
 
-	> footer {
-		text-align: center;
-
-		&:empty {
-			display: none;
-		}
-
-		> button {
-			margin: 0;
-			padding: 16px;
-			width: 100%;
-			border-radius: var(--radius);
-
-			&:disabled {
-				opacity: 0.7;
-			}
-		}
+	> .more > .button {
+		margin-left: auto;
+		margin-right: auto;
+		height: 48px;
+		width: 100%;
 	}
 }
 </style>

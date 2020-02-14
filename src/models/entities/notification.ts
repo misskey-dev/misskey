@@ -3,6 +3,7 @@ import { User } from './user';
 import { id } from '../id';
 import { Note } from './note';
 import { FollowRequest } from './follow-request';
+import { UserGroupInvitation } from './user-group-invitation';
 
 @Entity()
 export class Notification {
@@ -57,12 +58,13 @@ export class Notification {
 	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
 	 * receiveFollowRequest - フォローリクエストされた
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
+	 * groupInvited - グループに招待された
 	 */
 	@Column('enum', {
-		enum: ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest', 'followRequestAccepted'],
+		enum: ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited'],
 		comment: 'The type of the Notification.'
 	})
-	public type: 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollVote' | 'receiveFollowRequest' | 'followRequestAccepted';
+	public type: 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollVote' | 'receiveFollowRequest' | 'followRequestAccepted' | 'groupInvited';
 
 	/**
 	 * 通知が読まれたかどうか
@@ -96,6 +98,18 @@ export class Notification {
 	})
 	@JoinColumn()
 	public followRequest: FollowRequest | null;
+
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public userGroupInvitationId: UserGroupInvitation['id'] | null;
+
+	@ManyToOne(type => UserGroupInvitation, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public userGroupInvitation: UserGroupInvitation | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true

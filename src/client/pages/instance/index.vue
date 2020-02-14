@@ -6,7 +6,7 @@
 	<section class="_card info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
-			<mk-input v-model="name" style="margin-top: 8px;">{{ $t('instanceName') }}</mk-input>
+			<mk-input v-model="name">{{ $t('instanceName') }}</mk-input>
 			<mk-textarea v-model="description">{{ $t('instanceDescription') }}</mk-textarea>
 			<mk-input v-model="iconUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('iconUrl') }}</mk-input>
 			<mk-input v-model="bannerUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('bannerUrl') }}</mk-input>
@@ -43,8 +43,8 @@
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
 			<template v-if="enableRecaptcha">
-				<mk-info>{{ $t('recaptcha-info') }}</mk-info>
-				<mk-info warn>{{ $t('recaptcha-info2') }}</mk-info>
+				<mk-info>{{ $t('recaptchaInfo') }}</mk-info>
+				<mk-info warn>{{ $t('recaptchaInfo2') }}</mk-info>
 				<mk-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSecretKey') }}</mk-input>
 			</template>
@@ -61,12 +61,12 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworker-info') }}</template></mk-switch>
+			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></mk-switch>
 			<template v-if="enableServiceWorker">
-				<mk-info>{{ $t('vapid-info') }}<br><code>npm i web-push -g<br>web-push generate-vapid-keys</code></mk-info>
+				<mk-info>{{ $t('vapidInfo') }}<br><code>npx web-push generate-vapid-keys</code></mk-info>
 				<mk-horizon-group inputs class="fit-bottom">
-					<mk-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapid-publickey') }}</mk-input>
-					<mk-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>{{ $t('vapid-privatekey') }}</mk-input>
+					<mk-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>Public key</mk-input>
+					<mk-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>Private key</mk-input>
 				</mk-horizon-group>
 			</template>
 		</div>
@@ -78,7 +78,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
-			<mk-textarea v-model="pinnedUsers" style="margin-top: 0;">
+			<mk-textarea v-model="pinnedUsers">
 				<template #desc>{{ $t('pinnedUsersDescription') }} <button class="_textButton" @click="addPinUser">{{ $t('addUser') }}</button></template>
 			</mk-textarea>
 		</div>
@@ -111,7 +111,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
 		<div class="_content">
-			<mk-textarea v-model="blockedHosts" style="margin-top: 0;">
+			<mk-textarea v-model="blockedHosts">
 				<template #desc>{{ $t('blockedInstancesDescription') }}</template>
 			</mk-textarea>
 		</div>

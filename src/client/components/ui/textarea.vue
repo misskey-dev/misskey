@@ -85,6 +85,10 @@ export default Vue.extend({
 	margin: 42px 0 32px 0;
 	position: relative;
 
+	&:first-child {
+		margin-top: 16px;
+	}
+
 	&:last-child {
 		margin-bottom: 0;
 	}

@@ -21,7 +21,7 @@
 	<div class="form">
 		<x-note-preview class="preview" v-if="reply" :note="reply"/>
 		<x-note-preview class="preview" v-if="renote" :note="renote"/>
-		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('@.post-form.quote-attached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
+		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('quoteAttached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
 			<div class="visibleUsers">
@@ -445,7 +445,7 @@ export default Vue.extend({
 
 				this.$root.dialog({
 					type: 'info',
-					text: this.$t('@.post-form.quote-question'),
+					text: this.$t('quoteQuestion'),
 					showCancelButton: true
 				}).then(({ canceled }) => {
 					if (canceled) {
@@ -610,6 +610,7 @@ export default Vue.extend({
 			right: 0;
 
 			> .text-count {
+				opacity: 0.7;
 				line-height: 66px;
 
 				@media (max-width: 500px) {

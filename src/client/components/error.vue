@@ -1,6 +1,6 @@
 <template>
 <div class="mjndxjcg _panel">
-	<img src="https://xn--931a.moe/assets/error.jpg" alt=""/>
+	<img src="https://xn--931a.moe/assets/error.png" alt="" class="_ghost"/>
 	<p><fa :icon="faExclamationTriangle"/> {{ $t('error') }}</p>
 	<mk-button @click="() => $emit('retry')" class="button">{{ $t('retry') }}</mk-button>
 </div>
@@ -45,8 +45,6 @@ export default Vue.extend({
 		height: 150px;
 		margin-bottom: 16px;
 		border-radius: 16px;
-		pointer-events: none;
-		user-select: none;
 	}
 }
 </style>

@@ -23,7 +23,7 @@
 			<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
 		<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
-			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('@.loading') : $t('@.load-more') }}
+			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
 		</button>
 	</div>
 </mk-container>

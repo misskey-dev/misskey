@@ -1,15 +1,45 @@
 import Vue from 'vue';
 
+function getScrollContainer(el: Element | null): Element | null {
+	if (el == null || el.tagName === 'BODY') return null;
+	const style = window.getComputedStyle(el);
+	if (style.getPropertyValue('overflow') === 'auto') {
+		return el;
+	} else {
+		return getScrollContainer(el.parentElement);
+	}
+}
+
+function getScrollPosition(el: Element | null): number {
+	const container = getScrollContainer(el);
+	return container == null ? window.scrollY : container.scrollTop;
+}
+
+function onScrollTop(el, cb) {
+	const container = getScrollContainer(el) || window;
+	const onScroll = ev => {
+		if (!document.body.contains(el)) return;
+		const pos = getScrollPosition(el);
+		if (pos === 0) {
+			cb();
+			container.removeEventListener('scroll', onscroll);
+		}
+	};
+	container.addEventListener('scroll', onScroll, { passive: true });
+}
+
 export default (opts) => ({
 	data() {
 		return {
 			items: [],
+			queue: [],
 			offset: 0,
 			fetching: true,
 			moreFetching: false,
 			inited: false,
 			more: false,
 			backed: false,
+			isBackTop: false,
 		};
 	},
 
@@ -32,13 +62,17 @@ export default (opts) => ({
 	created() {
 		opts.displayLimit = opts.displayLimit || 30;
 		this.init();
+
+		this.$on('hook:activated', () => {
+			this.isBackTop = false;
+		});
+
+		this.$on('hook:deactivated', () => {
+			this.isBackTop = window.scrollY === 0;
+		});
 	},
 
 	methods: {
-		isScrollTop() {
-			return window.scrollY <= 8;
-		},
-
 		updateItem(i, item) {
 			Vue.set((this as any).items, i, item);
 		},
@@ -107,21 +141,26 @@ export default (opts) => ({
 			});
 		},
 
-		prepend(item, silent = false) {
-			if (opts.onPrepend) {
-				const cancel = opts.onPrepend(this, item, silent);
-				if (cancel) return;
-			}
+		prepend(item) {
+			const isTop = this.isBackTop || (document.body.contains(this.$el) && (getScrollPosition(this.$el) === 0));
 
-			// Prepend the item
-			this.items.unshift(item);
+			if (isTop) {
+				// Prepend the item
+				this.items.unshift(item);
 
-			if (this.isScrollTop()) {
-				// オーバーフローしたら古い投稿は捨てる
+				// オーバーフローしたら古いアイテムは捨てる
 				if (this.items.length >= opts.displayLimit) {
 					this.items = this.items.slice(0, opts.displayLimit);
 					this.more = true;
 				}
+			} else {
+				this.queue.push(item);
+				onScrollTop(this.$el, () => {
+					for (const item of this.queue) {
+						this.prepend(item);
+					}
+					this.queue = [];
+				});
 			}
 		},
 

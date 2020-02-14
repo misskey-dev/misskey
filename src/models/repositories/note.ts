@@ -1,9 +1,8 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
-import { unique, concat } from '../../prelude/array';
 import { nyaize } from '../../misc/nyaize';
-import { Emojis, Users, Apps, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
+import { Emojis, Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';

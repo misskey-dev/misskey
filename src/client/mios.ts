@@ -43,6 +43,15 @@ export default class MiOS extends EventEmitter {
 	 */
 	@autobind
 	public async init(callback) {
+		const finish = () => {
+			callback();
+
+			this.store.dispatch('instance/fetch').then(() => {
+				// Init service worker
+				if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
+			});
+		};
+
 		this.store = initStore(this);
 
 		// ユーザーをフェッチしてコールバックする
@@ -50,7 +59,7 @@ export default class MiOS extends EventEmitter {
 			let me = null;
 
 			// Return when not signed in
-			if (token == null) {
+			if (token == null || token === 'null') {
 				return done();
 			}
 
@@ -95,12 +104,7 @@ export default class MiOS extends EventEmitter {
 			this.initStream();
 
 			// Finish init
-			callback();
-
-			this.store.dispatch('instance/fetch').then(() => {
-				// Init service worker
-				if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
-			});
+			finish();
 		};
 
 		// キャッシュがあったとき
@@ -129,7 +133,7 @@ export default class MiOS extends EventEmitter {
 					this.initStream();
 
 					// Finish init
-					callback();
+					finish();
 				}
 			});
 		}

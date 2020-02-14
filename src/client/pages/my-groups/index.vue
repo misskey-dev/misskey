@@ -17,13 +17,13 @@
 
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
-		<mk-pagination :pagination="invitePagination" #default="{items}" ref="invites">
-			<div class="_frame" v-for="invite in items" :key="invite.id">
-				<div class="_title">{{ invite.group.name }}</div>
-				<div class="_content"><mk-avatars :user-ids="invite.group.userIds"/></div>
+		<mk-pagination :pagination="invitationPagination" #default="{items}" ref="invitations">
+			<div class="_frame" v-for="invitation in items" :key="invitation.id">
+				<div class="_title">{{ invitation.group.name }}</div>
+				<div class="_content"><mk-avatars :user-ids="invitation.group.userIds"/></div>
 				<div class="_footer">
-					<mk-button @click="acceptInvite(invite)" primary inline><fa :icon="faCheck"/> {{ $t('accept') }}</mk-button>
-					<mk-button @click="rejectInvite(invite)" primary inline><fa :icon="faBan"/> {{ $t('reject') }}</mk-button>
+					<mk-button @click="acceptInvite(invitation)" primary inline><fa :icon="faCheck"/> {{ $t('accept') }}</mk-button>
+					<mk-button @click="rejectInvite(invitation)" primary inline><fa :icon="faBan"/> {{ $t('reject') }}</mk-button>
 				</div>
 			</div>
 		</mk-pagination>
@@ -73,7 +73,7 @@ export default Vue.extend({
 				endpoint: 'users/groups/joined',
 				limit: 10,
 			},
-			invitePagination: {
+			invitationPagination: {
 				endpoint: 'i/user-group-invites',
 				limit: 10,
 			},
@@ -95,23 +95,23 @@ export default Vue.extend({
 				iconOnly: true, autoClose: true
 			});
 		},
-		acceptInvite(invite) {
+		acceptInvite(invitation) {
 			this.$root.api('users/groups/invitations/accept', {
-				inviteId: invite.id
+				invitationId: invitation.id
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
-				this.$refs.invites.reload();
+				this.$refs.invitations.reload();
 				this.$refs.joined.reload();
 			});
 		},
-		rejectInvite(invite) {
+		rejectInvite(invitation) {
 			this.$root.api('users/groups/invitations/reject', {
-				inviteId: invite.id
+				invitationId: invitation.id
 			}).then(() => {
-				this.$refs.invites.reload();
+				this.$refs.invitations.reload();
 			});
 		}
 	}

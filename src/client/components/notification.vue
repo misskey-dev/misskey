@@ -6,6 +6,7 @@
 			<fa :icon="faPlus" v-if="notification.type === 'follow'"/>
 			<fa :icon="faClock" v-if="notification.type === 'receiveFollowRequest'"/>
 			<fa :icon="faCheck" v-if="notification.type === 'followRequestAccepted'"/>
+			<fa :icon="faIdCardAlt" v-if="notification.type === 'groupInvited'"/>
 			<fa :icon="faRetweet" v-if="notification.type === 'renote'"/>
 			<fa :icon="faReply" v-if="notification.type === 'reply'"/>
 			<fa :icon="faAt" v-if="notification.type === 'mention'"/>
@@ -40,13 +41,14 @@
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="full"><mk-follow-button :user="notification.user" :full="true"/></div></span>
 		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
 		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
+		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ $t('groupInvited') }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ $t('reject') }}</button></div></span>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import getNoteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
@@ -78,7 +80,8 @@ export default Vue.extend({
 		return {
 			getNoteSummary,
 			followRequestDone: false,
-			faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck
+			groupInviteDone: false,
+			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck
 		};
 	},
 	methods: {
@@ -89,6 +92,18 @@ export default Vue.extend({
 		rejectFollowRequest() {
 			this.followRequestDone = true;
 			this.$root.api('following/requests/reject', { userId: this.notification.user.id });
+		},
+		acceptGroupInvitation() {
+			this.groupInviteDone = true;
+			this.$root.api('users/groups/invitations/accept', { invitationId: this.notification.invitation.id });
+			this.$root.dialog({
+				type: 'success',
+				iconOnly: true, autoClose: true
+			});
+		},
+		rejectGroupInvitation() {
+			this.groupInviteDone = true;
+			this.$root.api('users/groups/invitations/reject', { invitationId: this.notification.invitation.id });
 		},
 	}
 });
@@ -149,7 +164,7 @@ export default Vue.extend({
 				height: 100%;
 			}
 
-			&.follow, &.followRequestAccepted, &.receiveFollowRequest {
+			&.follow, &.followRequestAccepted, &.receiveFollowRequest, &.groupInvited {
 				padding: 3px;
 				background: #36aed2;
 			}

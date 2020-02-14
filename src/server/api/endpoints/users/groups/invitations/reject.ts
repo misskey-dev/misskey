@@ -2,12 +2,12 @@ import $ from 'cafy';
 import { ID } from '../../../../../../misc/cafy-id';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
-import { UserGroupInvites } from '../../../../../../models';
+import { UserGroupInvitations } from '../../../../../../models';
 
 export const meta = {
 	desc: {
 		'ja-JP': 'ユーザーグループへの招待を拒否します。',
-		'en-US': 'Reject invite of a user group.'
+		'en-US': 'Reject invitation of a user group.'
 	},
 
 	tags: ['groups', 'users'],
@@ -17,11 +17,11 @@ export const meta = {
 	kind: 'write:user-groups',
 
 	params: {
-		inviteId: {
+		invitationId: {
 			validator: $.type(ID),
 			desc: {
 				'ja-JP': '招待ID',
-				'en-US': 'The invite ID'
+				'en-US': 'The invitation ID'
 			}
 		},
 	},
@@ -37,17 +37,17 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch the invitation
-	const invite = await UserGroupInvites.findOne({
-		id: ps.inviteId,
+	const invitation = await UserGroupInvitations.findOne({
+		id: ps.invitationId,
 	});
 
-	if (invite == null) {
+	if (invitation == null) {
 		throw new ApiError(meta.errors.noSuchInvitation);
 	}
 
-	if (invite.userId !== user.id) {
+	if (invitation.userId !== user.id) {
 		throw new ApiError(meta.errors.noSuchInvitation);
 	}
 
-	await UserGroupInvites.delete(invite.id);
+	await UserGroupInvitations.delete(invitation.id);
 });

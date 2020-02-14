@@ -1,5 +1,5 @@
 <template>
-<div class="yxspomdl">
+<div class="yxspomdl" :class="{ inline }">
 	<div class="ring"></div>
 </div>
 </template>
@@ -8,6 +8,13 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+	props: {
+		inline: {
+			type: Boolean,
+			required: false,
+			default: false
+		}
+	}
 });
 </script>
 
@@ -25,22 +32,31 @@ export default Vue.extend({
 	padding: 32px;
 	text-align: center;
 
+	&.inline {
+		display: inline;
+		padding: 0;
+
+		> .ring:after {
+			width: 32px;
+			height: 32px;
+		}
+	}
+
 	> .ring {
 		display: inline-block;
-		width: 80px;
-		height: 80px;
 		opacity: 0.7;
+		vertical-align: middle;
 	}
 
 	> .ring:after {
 		content: " ";
 		display: block;
-		width: 64px;
-		height: 64px;
-		margin: 8px;
+		box-sizing: border-box;
+		width: 48px;
+		height: 48px;
 		border-radius: 50%;
-		border: solid 6px;
-		border-color: var(--fg) transparent transparent transparent;
+		border: solid 4px;
+		border-color: currentColor transparent transparent transparent;
 		animation: ring 0.5s linear infinite;
 	}
 }

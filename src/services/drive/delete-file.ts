@@ -1,11 +1,17 @@
 import { DriveFile } from '../../models/entities/drive-file';
 import { InternalStorage } from './internal-storage';
-import { DriveFiles, Instances, Notes } from '../../models';
+import { DriveFiles, Instances, Notes, Users } from '../../models';
 import { driveChart, perUserDriveChart, instanceChart } from '../chart';
 import { createDeleteObjectStorageFileJob } from '../../queue';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { getS3 } from './s3';
 import { v4 as uuid } from 'uuid';
+import { Note } from '../../models/entities/note';
+import { renderActivity } from '../../remote/activitypub/renderer';
+import renderDelete from '../../remote/activitypub/renderer/delete';
+import renderTombstone from '../../remote/activitypub/renderer/tombstone';
+import config from '../../config';
+import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
@@ -63,7 +69,7 @@ export async function deleteFileSync(file: DriveFile, isExpired = false) {
 	postProcess(file, isExpired);
 }
 
-function postProcess(file: DriveFile, isExpired = false) {
+async function postProcess(file: DriveFile, isExpired = false) {
 	// リモートファイル期限切れ削除後は直リンクにする
 	if (isExpired && file.userHost !== null && file.uri != null) {
 		DriveFiles.update(file.id, {
@@ -81,8 +87,23 @@ function postProcess(file: DriveFile, isExpired = false) {
 		DriveFiles.delete(file.id);
 
 		// TODO: トランザクション
+		const relatedNotes = await findRelatedNotes(file.id);
+		for (const relatedNote of relatedNotes) { // for each note with deleted driveFile
+			const cascadingNotes = (await findCascadingNotes(relatedNote)).filter(note => !note.localOnly);
+			for (const cascadingNote of cascadingNotes) { // for each notes subject to cascade deletion
+				if (!cascadingNote.user) continue;
+				if (!Users.isLocalUser(cascadingNote.user)) continue;
+				const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
+				deliverToFollowers(cascadingNote.user, content); // federate delete msg
+			}
+			if (!relatedNote.user) continue;
+			if (Users.isLocalUser(relatedNote.user)) {
+				const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${relatedNote.id}`), relatedNote.user));
+				deliverToFollowers(relatedNote.user, content);
+			}
+		}
 		Notes.createQueryBuilder().delete()
-			.where(':id = ANY(fileIds)', { id: file.id })
+			.where(':id = ANY("fileIds")', { id: file.id })
 			.execute();
 	}
 
@@ -105,4 +126,33 @@ export async function deleteObjectStorageFile(key: string) {
 		Bucket: meta.objectStorageBucket!,
 		Key: key
 	}).promise();
+}
+
+async function findRelatedNotes(fileId: string) {
+	// NOTE: When running raw query, TypeORM converts field name to lowercase. Wrap in quotes to prevent conversion.
+	const relatedNotes = await Notes.createQueryBuilder('note').where(':id = ANY("fileIds")', { id: fileId }).getMany();
+	for (const relatedNote of relatedNotes) {
+		const user = await Users.findOne({ id: relatedNote.userId });
+		if (user)
+			relatedNote.user = user;
+	}
+	return relatedNotes;
+}
+
+async function findCascadingNotes(note: Note) {
+	const cascadingNotes: Note[] = [];
+
+	const recursive = async (noteId: string) => {
+		const query = Notes.createQueryBuilder('note')
+			.where('note.replyId = :noteId', { noteId })
+			.leftJoinAndSelect('note.user', 'user');
+		const replies = await query.getMany();
+		for (const reply of replies) {
+			cascadingNotes.push(reply);
+			await recursive(reply.id);
+		}
+	};
+	await recursive(note.id);
+
+	return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
 }

@@ -100,7 +100,7 @@ export default Vue.extend({
 					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
 					const name = this.$store.state.settings.pasteDialog
 						? await this.$root.dialog({
-							title: this.$t('@.post-form.enter-file-name'),
+							title: this.$t('enterFileName'),
 							input: {
 								default: formatted
 							},

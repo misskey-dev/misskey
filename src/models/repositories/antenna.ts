@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Antenna } from '../entities/antenna';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
-import { AntennaNotes } from '..';
+import { AntennaNotes, UserGroupJoinings } from '..';
 
 export type PackedAntenna = SchemaType<typeof packedAntennaSchema>;
 
@@ -14,6 +14,7 @@ export class AntennaRepository extends Repository<Antenna> {
 		const antenna = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
 		const hasUnreadNote = (await AntennaNotes.findOne({ antennaId: antenna.id, read: false })) != null;
+		const userGroupJoining = antenna.userGroupJoiningId ? await UserGroupJoinings.findOne(antenna.userGroupJoiningId) : null;
 
 		return {
 			id: antenna.id,
@@ -22,6 +23,7 @@ export class AntennaRepository extends Repository<Antenna> {
 			keywords: antenna.keywords,
 			src: antenna.src,
 			userListId: antenna.userListId,
+			userGroupId: userGroupJoining ? userGroupJoining.userGroupId : null,
 			users: antenna.users,
 			caseSensitive: antenna.caseSensitive,
 			notify: antenna.notify,

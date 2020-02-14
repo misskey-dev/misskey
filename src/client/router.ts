@@ -20,6 +20,7 @@ export const router = new VueRouter({
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/announcements', component: page('announcements') },
 		{ path: '/about', component: page('about') },
+		{ path: '/about-misskey', component: page('about-misskey') },
 		{ path: '/featured', component: page('featured') },
 		{ path: '/docs', component: page('docs') },
 		{ path: '/docs/:doc', component: page('doc'), props: true },
@@ -62,11 +63,16 @@ export const router = new VueRouter({
 	],
 	// なんかHacky
 	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
-	// setTimeout しないと、アニメーション(トランジション)の関係でうまく動かない
 	scrollBehavior(to) {
 		window._scroll = () => { // さらにHacky
 			if (to.name === 'index') {
 				window.scroll({ top: indexScrollPos, behavior: 'instant' });
+				const i = setInterval(() => {
+					window.scroll({ top: indexScrollPos, behavior: 'instant' });
+				}, 10);
+				setTimeout(() => {
+					clearInterval(i);
+				}, 500);
 			} else {
 				window.scroll({ top: 0, behavior: 'instant' });
 			}
