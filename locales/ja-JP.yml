@@ -399,6 +399,7 @@ tags: "タグ"
 docSource: "このドキュメントのソース"
 createAccount: "アカウントを作成"
 existingAcount: "既存のアカウント"
+regenerate: "再生成"
 
 _ago:
   unknown: "謎"

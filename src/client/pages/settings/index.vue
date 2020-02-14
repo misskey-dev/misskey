@@ -14,6 +14,7 @@
 	<x-security/>
 	<x-2fa/>
 	<x-integration/>
+	<x-api/>
 
 	<mk-button @click="cacheClear()" primary class="cacheClear">{{ $t('cacheClear') }}</mk-button>
 	<mk-button @click="$root.signout()" primary class="logout">{{ $t('logout') }}</mk-button>
@@ -34,6 +35,7 @@ import XSecurity from './security.vue';
 import XTheme from './theme.vue';
 import X2fa from './2fa.vue';
 import XIntegration from './integration.vue';
+import XApi from './api.vue';
 import MkButton from '../../components/ui/button.vue';
 
 export default Vue.extend({
@@ -55,6 +57,7 @@ export default Vue.extend({
 		XTheme,
 		X2fa,
 		XIntegration,
+		XApi,
 		MkButton,
 	},
 
