@@ -48,6 +48,11 @@ html
 				}
 			}
 
+			const fontSize = localStorage.getItem('fontSize');
+			if (fontSize) {
+				document.documentElement.classList.add('f-' + fontSize);
+			}
+
 	body
 		noscript: p
 			| JavaScriptを有効にしてください

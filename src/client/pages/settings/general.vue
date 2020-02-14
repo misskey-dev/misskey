@@ -37,6 +37,13 @@
 			<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 		</mk-select>
 	</div>
+	<div class="_content">
+		<div>{{ $t('fontSize') }}</div>
+		<mk-radio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></mk-radio>
+		<mk-radio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></mk-radio>
+		<mk-radio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></mk-radio>
+		<mk-radio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></mk-radio>
+	</div>
 </section>
 </template>
 
@@ -47,6 +54,7 @@ import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkSelect from '../../components/ui/select.vue';
+import MkRadio from '../../components/ui/radio.vue';
 import i18n from '../../i18n';
 import { apiUrl, langs } from '../../config';
 
@@ -58,12 +66,14 @@ export default Vue.extend({
 		MkButton,
 		MkSwitch,
 		MkSelect,
+		MkRadio,
 	},
 	
 	data() {
 		return {
 			langs,
 			lang: localStorage.getItem('lang'),
+			fontSize: localStorage.getItem('fontSize'),
 			wallpaperUploading: false,
 			faImage, faCog
 		}
@@ -100,6 +110,15 @@ export default Vue.extend({
 		lang() {
 			localStorage.setItem('lang', this.lang);
 			localStorage.removeItem('locale');
+			location.reload();
+		},
+
+		fontSize() {
+			if (this.fontSize == null) {
+				localStorage.removeItem('fontSize');
+			} else {
+				localStorage.setItem('fontSize', this.fontSize);
+			}
 			location.reload();
 		}
 	},
