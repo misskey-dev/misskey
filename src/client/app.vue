@@ -293,7 +293,7 @@ export default Vue.extend({
 		const ro = new ResizeObserver((entries, observer) => {
 			adjustTitlePosition();
 		});
-		
+
 		ro.observe(this.$refs.contents);
 
 		window.addEventListener('resize', adjustTitlePosition);
@@ -556,6 +556,7 @@ export default Vue.extend({
 				'calendar',
 				'rss',
 				'trends',
+				'analog-clock'
 			];
 
 			this.$root.menu({
