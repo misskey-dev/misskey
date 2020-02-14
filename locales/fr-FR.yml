@@ -587,6 +587,7 @@ _pages:
   inspector: "Inspecteur"
   content: "Bloc de page"
   variables: "Variables"
+  variables-info: "Vous pouvez créer une page dynamique à l'aide de variables. En tapant le <b>{nom de variable}</b> dans le texte, vous pouvez y incorporer la valeur de la variable. Par exemple, si dans le texte <b>Bonjour {chose} monde!</b> la valeur de la variable (chose) est <b>ai</b>, le texte devient est <b>Bonjour ai monde!</b>."
   more-details: "Description"
   title: "Titre"
   url: "URL de page"
