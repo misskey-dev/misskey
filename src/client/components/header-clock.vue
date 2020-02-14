@@ -66,8 +66,10 @@ export default Vue.extend({
 
 	> .header {
 		padding: 0 12px;
+		padding-top: 4px;
 		text-align: center;
 		font-size: 12px;
+		font-family: Lucida Console, Courier, monospace;
 
 		&:hover + .content {
 			opacity: 1;
@@ -90,7 +92,6 @@ export default Vue.extend({
 		position: absolute;
 		top: auto;
 		right: 0;
-		z-index: 3;
 		margin: 16px 0 0 0;
 		padding: 16px;
 		width: 230px;
