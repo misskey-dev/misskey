@@ -4,10 +4,11 @@
 		<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
 
 		<div class="wbrkwala">
-			<transition-group tag="div" name="chart">
+			<mk-loading v-if="fetching"/>
+			<transition-group tag="div" name="chart" class="tags" v-else>
 				<div v-for="stat in stats" :key="stat.tag">
 					<div class="tag">
-						<router-link :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+						<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
 						<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
 					</div>
 					<x-chart class="chart" :src="stat.chart"/>
@@ -66,20 +67,10 @@ export default define({
 
 <style lang="scss" scoped>
 .wbrkwala {
-	> .fetching,
-	> .empty {
-		margin: 0;
-		padding: 16px;
-		text-align: center;
-		color: var(--text);
-		opacity: 0.7;
+	height: (62px + 1px) + (62px + 1px) + (62px + 1px) + (62px + 1px) + 62px;
+	overflow: hidden;
 
-		> [data-icon] {
-			margin-right: 4px;
-		}
-	}
-
-	> div {
+	> .tags {
 		.chart-move {
 			transition: transform 1s ease;
 		}
@@ -96,22 +87,23 @@ export default define({
 			> .tag {
 				flex: 1;
 				overflow: hidden;
-				font-size: 14px;
+				font-size: 0.9em;
 				color: var(--fg);
 
-				> a {
+				> .a {
 					display: block;
 					width: 100%;
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					color: inherit;
+					line-height: 18px;
 				}
 
 				> p {
 					margin: 0;
 					font-size: 75%;
 					opacity: 0.7;
+					line-height: 16px;
 				}
 			}
 
