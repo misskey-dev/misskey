@@ -24,7 +24,7 @@
 		</div>
 		<div class="_content" v-if="selected">
 			<mk-input v-model="name"><span>{{ $t('name') }}</span></mk-input>
-			<mk-input v-model="category"><span>{{ $t('category') }}</span></mk-input>
+			<mk-input v-model="category" :datalist="categories"><span>{{ $t('category') }}</span></mk-input>
 			<mk-input v-model="aliases"><span>{{ $t('tags') }}</span></mk-input>
 			<mk-button inline primary @click="update"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 			<mk-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</mk-button>
@@ -65,6 +65,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkPagination from '../../components/ui/pagination.vue';
 import { selectFile } from '../../scripts/select-file';
+import { unique } from '../../../prelude/array';
 
 export default Vue.extend({
 	metaInfo() {
@@ -99,6 +100,16 @@ export default Vue.extend({
 				})
 			},
 			faTrashAlt, faPlus, faLaugh, faSave
+		}
+	},
+
+	computed: {
+		categories() {
+			if (this.$store.state.instance.meta) {
+				return unique(this.$store.state.instance.meta.emojis.map((x: any) => x.category || '').filter((x: string) => x !== ''));
+			} else {
+				return [];
+			}
 		}
 	},
 
