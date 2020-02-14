@@ -1,27 +1,40 @@
 <template>
-<mk-pagination :pagination="pagination" #default="{items}" class="mk-follow-requests" ref="list">
-	<div class="user _panel" v-for="(req, i) in items" :key="req.id">
-		<mk-avatar class="avatar" :user="req.follower"/>
-		<div class="body">
-			<div class="name">
-				<router-link class="name" :to="req.follower | userPage" v-user-preview="req.follower.id"><mk-user-name :user="req.follower"/></router-link>
-				<p class="acct">@{{ req.follower | acct }}</p>
+<div>
+	<portal to="icon"><fa :icon="faUserClock"/></portal>
+	<portal to="title">{{ $t('followRequests') }}</portal>
+
+	<mk-pagination :pagination="pagination" class="mk-follow-requests" ref="list">
+		<template #empty>
+			<div class="tkdrhpxr">
+				<img src="https://xn--931a.moe/assets/info.png" alt="" class="_ghost"/>
+				<div>{{ $t('noFollowRequests') }}</div>
 			</div>
-			<div class="description" v-if="req.follower.description" :title="req.follower.description">
-				<mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$store.state.i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+		</template>
+		<template #default="{items}">
+			<div class="user _panel" v-for="req in items" :key="req.id">
+				<mk-avatar class="avatar" :user="req.follower"/>
+				<div class="body">
+					<div class="name">
+						<router-link class="name" :to="req.follower | userPage" v-user-preview="req.follower.id"><mk-user-name :user="req.follower"/></router-link>
+						<p class="acct">@{{ req.follower | acct }}</p>
+					</div>
+					<div class="description" v-if="req.follower.description" :title="req.follower.description">
+						<mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$store.state.i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+					</div>
+					<div class="actions">
+						<button class="_button" @click="accept(req.follower)"><fa :icon="faCheck"/></button>
+						<button class="_button" @click="reject(req.follower)"><fa :icon="faTimes"/></button>
+					</div>
+				</div>
 			</div>
-			<div class="actions">
-				<button class="_button" @click="accept(req.follower)"><fa :icon="faCheck"/></button>
-				<button class="_button" @click="reject(req.follower)"><fa :icon="faTimes"/></button>
-			</div>
-		</div>
-	</div>
-</mk-pagination>
+		</template>
+	</mk-pagination>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUserClock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '../components/ui/pagination.vue';
 
 export default Vue.extend({
@@ -41,7 +54,7 @@ export default Vue.extend({
 				endpoint: 'following/requests/list',
 				limit: 10,
 			},
-			faCheck, faTimes
+			faCheck, faTimes, faUserClock
 		};
 	},
 
@@ -62,6 +75,18 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-follow-requests {
+	.tkdrhpxr {
+		padding: 32px;
+		text-align: center;
+
+		> img {
+			vertical-align: bottom;
+			height: 128px;
+			margin-bottom: 16px;
+			border-radius: 16px;
+		}
+	}
+
 	> .user {
 		display: flex;
 		padding: 16px;

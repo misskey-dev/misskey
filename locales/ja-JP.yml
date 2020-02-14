@@ -401,6 +401,7 @@ createAccount: "アカウントを作成"
 existingAcount: "既存のアカウント"
 regenerate: "再生成"
 fontSize: "フォントサイズ"
+noFollowRequests: "フォロー申請はありません"
 
 _ago:
   unknown: "謎"

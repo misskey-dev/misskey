@@ -58,12 +58,12 @@
 					<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
 					<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
 				</router-link>
+				<router-link class="item" active-class="active" to="/my/drive" v-if="$store.getters.isSignedIn">
+					<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
+				</router-link>
 				<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
 					<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
 					<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
-				</router-link>
-				<router-link class="item" active-class="active" to="/my/drive" v-if="$store.getters.isSignedIn">
-					<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
 				</router-link>
 				<div class="divider"></div>
 				<router-link class="item" active-class="active" to="/featured">
