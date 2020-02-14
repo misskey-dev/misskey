@@ -396,6 +396,7 @@ disableAnimatedMfm: "動きのあるMFMを無効にする"
 doing: "やっています"
 category: "カテゴリ"
 tags: "タグ"
+docSource: "このドキュメントのソース"
 
 _ago:
   unknown: "謎"
