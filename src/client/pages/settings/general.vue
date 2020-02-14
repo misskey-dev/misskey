@@ -2,12 +2,8 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 	<div class="_content">
-		<mk-input type="file" @change="onWallpaperChange">
-			<span>{{ $t('wallpaper') }}</span>
-			<template #icon><fa :icon="faImage"/></template>
-			<template #desc v-if="wallpaperUploading">{{ $t('uploading') }}<mk-ellipsis/></template>
-		</mk-input>
-		<mk-button primary :disabled="$store.state.settings.wallpaper == null" @click="delWallpaper()">{{ $t('removeWallpaper') }}</mk-button>
+		<mk-button primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</mk-button>
+		<mk-button primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</mk-button>
 	</div>
 	<div class="_content">
 		<mk-switch v-model="autoReload">
@@ -56,7 +52,8 @@ import MkSwitch from '../../components/ui/switch.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkRadio from '../../components/ui/radio.vue';
 import i18n from '../../i18n';
-import { apiUrl, langs } from '../../config';
+import { langs } from '../../config';
+import { selectFile } from '../../scripts/select-file';
 
 export default Vue.extend({
 	i18n,
@@ -74,17 +71,12 @@ export default Vue.extend({
 			langs,
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
-			wallpaperUploading: false,
+			wallpaper: localStorage.getItem('wallpaper'),
 			faImage, faCog
 		}
 	},
 
 	computed: {
-		wallpaper: {
-			get() { return this.$store.state.settings.wallpaper; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'wallpaper', value }); }
-		},
-
 		autoReload: {
 			get() { return this.$store.state.device.autoReload; },
 			set(value) { this.$store.commit('device/set', { key: 'autoReload', value }); }
@@ -120,39 +112,23 @@ export default Vue.extend({
 				localStorage.setItem('fontSize', this.fontSize);
 			}
 			location.reload();
+		},
+
+		wallpaper() {
+			if (this.wallpaper == null) {
+				localStorage.removeItem('wallpaper');
+			} else {
+				localStorage.setItem('wallpaper', this.wallpaper);
+			}
+			location.reload();
 		}
 	},
 
 	methods: {
-		onWallpaperChange([file]) {
-			this.wallpaperUploading = true;
-
-			const data = new FormData();
-			data.append('file', file);
-			data.append('i', this.$store.state.i.token);
-
-			fetch(apiUrl + '/drive/files/create', {
-				method: 'POST',
-				body: data
-			})
-			.then(response => response.json())
-			.then(f => {
-				this.wallpaper = f.url;
-				this.wallpaperUploading = false;
-				document.documentElement.style.backgroundImage = `url(${this.$store.state.settings.wallpaper})`;
-			})
-			.catch(e => {
-				this.wallpaperUploading = false;
-				this.$root.dialog({
-					type: 'error',
-					text: e
-				});
+		setWallpaper(e) {
+			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
+				this.wallpaper = file.url;
 			});
-		},
-
-		delWallpaper() {
-			this.wallpaper = null;
-			document.documentElement.style.backgroundImage = 'none';
 		},
 
 		onChangeAutoWatch(v) {

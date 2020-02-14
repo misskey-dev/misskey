@@ -136,8 +136,6 @@ document.body.innerHTML = '<div id="app"></div>';
 const os = new MiOS();
 
 os.init(async () => {
-	if (os.store.state.settings.wallpaper) document.documentElement.style.backgroundImage = `url(${os.store.state.settings.wallpaper})`;
-
 	if ('Notification' in window && os.store.getters.isSignedIn) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {

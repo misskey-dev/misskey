@@ -53,6 +53,11 @@ html
 				document.documentElement.classList.add('f-' + fontSize);
 			}
 
+			const wallpaper = localStorage.getItem('wallpaper');
+			if (wallpaper) {
+				document.documentElement.style.backgroundImage = `url(${wallpaper})`;
+			}
+
 	body
 		noscript: p
 			| JavaScriptを有効にしてください

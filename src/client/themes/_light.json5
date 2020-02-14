@@ -46,6 +46,7 @@
 		inputBorder: '#dae0e4',
 		listItemHoverBg: 'rgba(0, 0, 0, 0.03)',
 		driveFolderBg: ':alpha<0.3<@accent',
+		wallpaperOverlay: 'rgba(255, 255, 255, 0.5)',
 		bonzsgfz: ':alpha<0<@bg',
 		pcncwizz: ':darken<2<@panel',
 		vocsgcxy: 'rgba(255, 255, 255, 0.5)',

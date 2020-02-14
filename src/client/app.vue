@@ -91,7 +91,7 @@
 		</nav>
 	</transition>
 
-	<div class="contents" ref="contents">
+	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<main ref="main">
 			<div class="content">
 				<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
@@ -189,6 +189,7 @@ export default Vue.extend({
 			isDesktop: window.innerWidth >= 1100,
 			canBack: false,
 			disconnectedDialog: null as Promise<void> | null,
+			wallpaper: localStorage.getItem('wallpaper') != null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
 		};
 	},
@@ -971,6 +972,10 @@ export default Vue.extend({
 		display: flex;
 		margin: 0 auto;
 		min-width: 0;
+
+		&.wallpaper {
+			background: var(--wallpaperOverlay);
+		}
 
 		> main {
 			width: $main-width;

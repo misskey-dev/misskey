@@ -13,7 +13,6 @@ const defaultSettings = {
 	defaultNoteLocalOnly: false,
 	uploadFolder: null,
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
-	wallpaper: null,
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 };
