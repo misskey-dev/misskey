@@ -396,6 +396,9 @@ disableAnimatedMfm: "움직임이 있는 MFM을 비활성화"
 doing: "잠시만요"
 category: "카테고리"
 tags: "태그"
+docSource: "이 문서의 소스"
+createAccount: "계정 만들기"
+existingAcount: "기존 계정"
 _ago:
   unknown: "알 수 없음"
   future: "미래"
@@ -479,6 +482,7 @@ _antennaSources:
   homeTimeline: "팔로우중인 유저의 노트"
   users: "지정한 한 명 혹은 여러 명의 유저의 노트"
   userList: "지정한 리스트에 속한 유저의 노트"
+  userGroup: "지정한 그룹에 속한 유저의 노트"
 _weekday:
   sunday: "일요일"
   monday: "월요일"
