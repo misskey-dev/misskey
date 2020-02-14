@@ -863,7 +863,7 @@ export default Vue.extend({
 					}
 
 					&:hover {
-						color: var(--mkykhqkw);
+						color: var(--fgHighlighted);
 					}
 
 					> .count {
