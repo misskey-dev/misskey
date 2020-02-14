@@ -131,6 +131,7 @@ export default Vue.extend({
 		box-sizing: border-box;
 		white-space: nowrap;
 		font-size: 0.9em;
+		line-height: 20px;
 		text-align: center;
 		overflow: hidden;
 		text-overflow: ellipsis;
