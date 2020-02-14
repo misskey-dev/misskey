@@ -51,6 +51,7 @@ export default Vue.extend({
 			target: self ? null : '_blank',
 			showTimer: null,
 			hideTimer: null,
+			checkTimer: null,
 			preview: null,
 			faExternalLinkSquareAlt
 		};
@@ -78,9 +79,14 @@ export default Vue.extend({
 			}).$mount();
 
 			document.body.appendChild(this.preview.$el);
+
+			this.checkTimer = setInterval(() => {
+				if (!document.body.contains(this.$el)) this.closePreview();
+			}, 1000);
 		},
 		closePreview() {
 			if (this.preview) {
+				clearInterval(this.checkTimer);
 				this.preview.destroyDom();
 				this.preview = null;
 			}
