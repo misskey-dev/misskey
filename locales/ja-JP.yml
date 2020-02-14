@@ -398,6 +398,7 @@ category: "カテゴリ"
 tags: "タグ"
 docSource: "このドキュメントのソース"
 createAccount: "アカウントを作成"
+existingAcount: "既存のアカウント"
 
 _ago:
   unknown: "謎"

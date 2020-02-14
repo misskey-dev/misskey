@@ -362,17 +362,28 @@ export default Vue.extend({
 					text: this.$t('settings'),
 					to: '/my/settings',
 					icon: faCog,
-				}, null, {
+				}, null, ...accountItems, {
 					type: 'item',
 					icon: faPlus,
 					text: this.$t('addAcount'),
-					action: () => { this.addAcount() },
-				}, {
-					type: 'item',
-					icon: faPlus,
-					text: this.$t('createAccount'),
-					action: () => { this.createAccount() },
-				}, null, ...accountItems, ]],
+					action: () => {
+						this.$root.menu({
+							items: [{
+								type: 'item',
+								text: this.$t('existingAcount'),
+								action: () => { this.addAcount(); },
+							}, {
+								type: 'item',
+								text: this.$t('createAccount'),
+								action: () => { this.createAccount(); },
+							}],
+							align: 'left',
+							fixed: true,
+							width: 240,
+							source: ev.currentTarget || ev.target,
+						});
+					},
+				}]],
 				align: 'left',
 				fixed: true,
 				width: 240,
