@@ -50,6 +50,7 @@ export default Vue.extend({
 				name: '',
 				src: 'all',
 				userListId: null,
+				userGroupId: null,
 				users: [],
 				keywords: [],
 				withReplies: false,

@@ -4,6 +4,7 @@ ChangeLog
 unreleased
 -------------------
 ### ✨Improvements
+* アンテナの受信ソースにグループを指定できるように
 * 時計ウィジェットを追加
 
 ### 🐛Fixes

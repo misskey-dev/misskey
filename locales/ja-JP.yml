@@ -487,6 +487,7 @@ _antennaSources:
   homeTimeline: "フォローしているユーザーのノート"
   users: "指定した一人または複数のユーザーのノート"
   userList: "指定したリストのユーザーのノート"
+  userGroup: "指定したグループのユーザーのノート"
 
 _weekday:
   sunday: "日曜日"

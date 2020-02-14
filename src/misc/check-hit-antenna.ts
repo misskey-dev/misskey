@@ -1,9 +1,10 @@
 import { Antenna } from '../models/entities/antenna';
 import { Note } from '../models/entities/note';
 import { User } from '../models/entities/user';
-import { UserListJoinings } from '../models';
+import { UserListJoinings, UserGroupJoinings } from '../models';
 import parseAcct from './acct/parse';
 import { getFullApAccount } from './convert-host';
+import { ensure } from '../prelude/ensure';
 
 export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: User, followers: User['id'][]): Promise<boolean> {
 	if (note.visibility === 'specified') return false;
@@ -22,6 +23,14 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 		})).map(x => x.userId);
 
 		if (!listUsers.includes(note.userId)) return false;
+	} else if (antenna.src === 'group') {
+		const joining = await UserGroupJoinings.findOne(antenna.userGroupJoiningId!).then(ensure);
+
+		const groupUsers = (await UserGroupJoinings.find({
+			userGroupId: joining.userGroupId
+		})).map(x => x.userId);
+
+		if (!groupUsers.includes(note.userId)) return false;
 	} else if (antenna.src === 'users') {
 		const accts = antenna.users.map(x => {
 			const { username, host } = parseAcct(x);

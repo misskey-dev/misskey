@@ -2,6 +2,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { User } from './user';
 import { id } from '../id';
 import { UserList } from './user-list';
+import { UserGroupJoining } from './user-group-joining';
 
 @Entity()
 export class Antenna {
@@ -32,8 +33,8 @@ export class Antenna {
 	})
 	public name: string;
 
-	@Column('enum', { enum: ['home', 'all', 'users', 'list'] })
-	public src: 'home' | 'all' | 'users' | 'list';
+	@Column('enum', { enum: ['home', 'all', 'users', 'list', 'group'] })
+	public src: 'home' | 'all' | 'users' | 'list' | 'group';
 
 	@Column({
 		...id(),
@@ -46,6 +47,18 @@ export class Antenna {
 	})
 	@JoinColumn()
 	public userList: UserList | null;
+
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public userGroupJoiningId: UserGroupJoining['id'] | null;
+
+	@ManyToOne(type => UserGroupJoining, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public userGroupJoining: UserGroupJoining | null;
 
 	@Column('varchar', {
 		length: 1024, array: true,
