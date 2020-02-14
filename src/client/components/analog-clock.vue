@@ -1,10 +1,11 @@
 <template>
-<svg class="mk-analog-clock" viewBox="0 0 10 10" preserveAspectRatio="none">
-	<circle v-for="angle, i in graduations"
+<svg class="mbcofsoe" viewBox="0 0 10 10" preserveAspectRatio="none">
+	<circle v-for="(angle, i) in graduations"
 					:cx="5 + (Math.sin(angle) * (5 - graduationsPadding))"
 					:cy="5 - (Math.cos(angle) * (5 - graduationsPadding))"
 					:r="i % 5 == 0 ? 0.125 : 0.05"
-					:fill="i % 5 == 0 ? majorGraduationColor : minorGraduationColor"/>
+					:fill="i % 5 == 0 ? majorGraduationColor : minorGraduationColor"
+					:key="i"/>
 
 	<line
 		:x1="5 - (Math.sin(sAngle) * (sHandLengthRatio * handsTailLength))"
@@ -38,10 +39,6 @@ import * as tinycolor from 'tinycolor2';
 
 export default Vue.extend({
 	props: {
-		dark: {
-			type: Boolean,
-			default: false
-		},
 		smooth: {
 			type: Boolean,
 			default: false
@@ -63,6 +60,10 @@ export default Vue.extend({
 	},
 
 	computed: {
+		dark(): boolean {
+			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--bg')).isDark();
+		},
+	
 		majorGraduationColor(): string {
 			return this.dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
 		},
@@ -74,14 +75,14 @@ export default Vue.extend({
 			return this.dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
 		},
 		mHandColor(): string {
-			return this.dark ? '#fff' : '#777';
+			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--fg')).toHexString();
 		},
 		hHandColor(): string {
-			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--primary')).toHexString();
+			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent')).toHexString();
 		},
 
 		ms(): number {
-			return this.now.getMilliseconds() * this.smooth;
+			return this.now.getMilliseconds() * (this.smooth ? 1 : 0);
 		},
 		s(): number {
 			return this.now.getSeconds();
@@ -137,7 +138,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-analog-clock {
+.mbcofsoe {
 	display: block;
 }
 </style>

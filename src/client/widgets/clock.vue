@@ -1,8 +1,8 @@
 <template>
-<div class="mkw-clock">
+<div>
 	<mk-container :naked="props.style % 2 === 0" :show-header="false">
-		<div class="mkw-analog-clock--body">
-			<mk-analog-clock :dark="$store.state.device.darkmode" :smooth="props.style < 2"/>
+		<div class="vubelbmv">
+			<mk-analog-clock class="clock" :smooth="props.style < 2"/>
 		</div>
 	</mk-container>
 </div>
@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import define from './define';
-
 import MkContainer from '../components/ui/container.vue';
 import MkAnalogClock from '../components/analog-clock.vue';
 
@@ -34,9 +33,12 @@ export default define({
 </script>
 
 <style lang="scss" scoped>
-.mkw-analog-clock {
-	.mkw-analog-clock--body {
-		padding: 8px;
+.vubelbmv {
+	padding: 8px;
+
+	> .clock {
+		height: 150px;
+		margin: auto;
 	}
 }
 </style>
