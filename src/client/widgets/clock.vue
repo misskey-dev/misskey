@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-analog-clock">
+<div class="mkw-clock">
 	<mk-container :naked="props.style % 2 === 0" :show-header="false">
 		<div class="mkw-analog-clock--body">
 			<mk-analog-clock :dark="$store.state.device.darkmode" :smooth="props.style < 2"/>
@@ -15,7 +15,7 @@ import MkContainer from '../components/ui/container.vue';
 import MkAnalogClock from '../components/analog-clock.vue';
 
 export default define({
-	name: 'analog-clock',
+	name: 'clock',
 	props: () => ({
 		style: 0
 	})

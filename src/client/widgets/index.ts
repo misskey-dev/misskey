@@ -6,4 +6,4 @@ Vue.component('mkw-timeline', () => import('./timeline.vue').then(m => m.default
 Vue.component('mkw-calendar', () => import('./calendar.vue').then(m => m.default));
 Vue.component('mkw-rss', () => import('./rss.vue').then(m => m.default));
 Vue.component('mkw-trends', () => import('./trends.vue').then(m => m.default));
-Vue.component('mkw-analog-clock', () => import('./analog-clock.vue').then(m => m.default));
+Vue.component('mkw-clock', () => import('./clock.vue').then(m => m.default));
