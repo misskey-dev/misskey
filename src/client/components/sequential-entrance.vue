@@ -45,7 +45,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .staggered-move {
-	transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1) !important;
+	transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 
 .uupnnhew[data-direction="up"] {
@@ -65,7 +65,7 @@ export default Vue.extend({
 .uupnnhew[data-reversed="true"] {
 	@for $i from 1 through 30 {
 		.staggered-enter-active:nth-last-child(#{$i}) {
-			transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1) (15ms * ($i - 1));
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) (15ms * ($i - 1)), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1) (15ms * ($i - 1));
 		}
 	}
 }
@@ -73,7 +73,7 @@ export default Vue.extend({
 .uupnnhew[data-reversed="false"] {
 	@for $i from 1 through 30 {
 		.staggered-enter-active:nth-child(#{$i}) {
-			transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1) (15ms * ($i - 1));
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) (15ms * ($i - 1)), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1) (15ms * ($i - 1));
 		}
 	}
 }
