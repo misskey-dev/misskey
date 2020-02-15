@@ -9,7 +9,7 @@
 	</div>
 	<details v-if="note.files.length > 0">
 		<summary>({{ $t('withNFiles', { n: note.files.length }) }})</summary>
-		<x-media-list :media-list="note.files" :width="width"/>
+		<x-media-list :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ $t('poll') }}</summary>
@@ -39,7 +39,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			width: 0,
+			i: this.$refs.i,
 
 			faReply
 		};

@@ -33,8 +33,9 @@ export default Vue.extend({
 		raw: {
 			default: false
 		},
-		width: {
-			type: Number
+		// specify the parent element
+		parentElement: {
+			type: Object
 		}
 	},
 	data() {
@@ -43,31 +44,32 @@ export default Vue.extend({
 		}
 	},
 	mounted() {
-		// for Safari bug
-		if (this.$refs.gridOuter.clientHeight) {
-			this.gridInnerStyle = { height: `${this.$refs.gridOuter.clientHeight}px` }
-		}
-	}
+		this.size();
+		window.addEventListener('resize', this.size);
+		this.$on('resize', this.size);
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.size);
+	},
 	methods: {
 		previewable(file) {
 			return file.type.startsWith('video') || file.type.startsWith('image');
-		}
-	},
-	watch: {
-		width(width) {
+		},
+		size() {
 			// for Safari bug
 			if (this.$refs.gridOuter) {
-				let height = 287
+				let height = 287;
+				const parent = this.$props.parentElement || this.$parent.$el;
 
-				if (width) {
-					height = width * 9 / 16;
-				} else if (this.$refs.gridOuter.clientHeight) {
+				if (this.$refs.gridOuter.clientHeight) {
 					height = this.$refs.gridOuter.clientHeight;
+				} else if (parent) {
+					height = parent.getBoundingClientRect().width * 9 / 16;
 				}
 
-				this.gridInnerStyle = { height: `${height}px` }
+				this.gridInnerStyle = { height: `${height}px` };
 			} else {
-				this.gridInnerStyle = {}
+				this.gridInnerStyle = {};
 			}
 		}
 	}
