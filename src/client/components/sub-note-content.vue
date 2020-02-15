@@ -45,7 +45,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.width = this.$refs.i.getBoundingClientRect().width
+		this.width = this.$refs.i.getBoundingClientRect().width;
 	}
 });
 </script>
