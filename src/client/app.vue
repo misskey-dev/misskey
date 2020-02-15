@@ -163,6 +163,8 @@ import { search } from './scripts/search';
 import contains from './scripts/contains';
 import MkToast from './components/toast.vue';
 
+const DESKTOP_THRESHOLD = 1100;
+
 export default Vue.extend({
 	i18n,
 
@@ -186,7 +188,7 @@ export default Vue.extend({
 			searchQuery: '',
 			searchWait: false,
 			widgetsEditMode: false,
-			isDesktop: window.innerWidth >= 1100,
+			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
 			disconnectedDialog: null as Promise<void> | null,
 			wallpaper: localStorage.getItem('wallpaper') != null,
@@ -227,6 +229,10 @@ export default Vue.extend({
 					el.removeEventListener('mousedown', this.onMousedown);
 				}
 			}
+		},
+
+		isDesktop() {
+			if (this.isDesktop) this.adjustWidgetsWidth();
 		}
 	},
 
@@ -275,17 +281,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		// https://stackoverflow.com/questions/33891709/when-flexbox-items-wrap-in-column-mode-container-does-not-grow-its-width
-		if (this.isDesktop) {
-			const adjustWidgetsWidth = () => {
-				const lastChild = this.$refs.widgets.children[this.$refs.widgets.children.length - 1];
-				if (lastChild == null) return;
-
-				const width = lastChild.offsetLeft + 300 + 16;
-				this.$refs.widgets.style.width = width + 'px';
-			};
-			setInterval(adjustWidgetsWidth, 1000);
-		}
+		if (this.isDesktop) this.adjustWidgetsWidth();
 
 		const adjustTitlePosition = () => {
 			this.$refs.title.style.left = (this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth) + 'px';
@@ -299,10 +295,29 @@ export default Vue.extend({
 
 		ro.observe(this.$refs.contents);
 
-		window.addEventListener('resize', adjustTitlePosition);
+		window.addEventListener('resize', adjustTitlePosition, { passive: true });
+
+		if (!this.isDesktop) {
+			window.addEventListener('resize', () => {
+				if (window.innerWidth >= DESKTOP_THRESHOLD) this.isDesktop = true;
+			}, { passive: true });
+		}
 	},
 
 	methods: {
+		adjustWidgetsWidth() {
+			// https://stackoverflow.com/questions/33891709/when-flexbox-items-wrap-in-column-mode-container-does-not-grow-its-width
+			const adjust = () => {
+				const lastChild = this.$refs.widgets.children[this.$refs.widgets.children.length - 1];
+				if (lastChild == null) return;
+
+				const width = lastChild.offsetLeft + 300 + 16;
+				this.$refs.widgets.style.width = width + 'px';
+			};
+			setInterval(adjust, 1000);
+			setTimeout(adjust, 100);
+		},
+
 		help() {
 			this.$router.push('/docs/keyboard-shortcut');
 		},
