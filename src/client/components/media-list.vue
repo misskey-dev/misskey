@@ -3,8 +3,8 @@
 	<template v-for="media in mediaList.filter(media => !previewable(media))">
 		<x-banner :media="media" :key="media.id"/>
 	</template>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
-		<div :data-count="mediaList.filter(media => previewable(media)).length" ref="grid">
+	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container" ref="gridOuter">
+		<div :data-count="mediaList.filter(media => previewable(media)).length" :style="gridHeight !== null ? { height: `${gridHeight}px` } : {}">
 			<template v-for="media in mediaList">
 				<x-video :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
 				<x-image :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
@@ -32,16 +32,39 @@ export default Vue.extend({
 		},
 		raw: {
 			default: false
+		},
+		width: {
+			type: Number
 		}
 	},
-	mounted() {
+	computed: {
+		gridHeight() {
+			if (this.$refs.gridOuter) {
+				if (this.$props.width) {
+					return this.$props.width * 9 / 16;
+				} else if (this.$refs.gridOuter.clientHeight) {
+					return this.$refs.gridOuter.clientHeight;
+				}
+				return 287;
+			}
+
+			return null;
+		}
+	},
+	/*mounted() {
+		console.log(this.$props.width)
 		//#region for Safari bug
-		if (this.$refs.grid) {
-			this.$refs.grid.style.height = this.$refs.grid.clientHeight ? `${this.$refs.grid.clientHeight}px`
-				: '287px';
+		if (this.$refs.gridOuter) {
+			if (this.$props.width) {
+				this.$refs.gridInner.style.height = `${this.$props.width * 9 / 16}px`
+			} else if (this.$refs.gridOuter.clientHeight) {
+				this.$refs.gridInner.style.height = `${this.$refs.gridOuter.clientHeight}px`
+			} else {
+				this.$refs.gridInner.style.height = '287px';
+			}
 		}
 		//#endregion
-	},
+	},*/
 	methods: {
 		previewable(file) {
 			return file.type.startsWith('video') || file.type.startsWith('image');

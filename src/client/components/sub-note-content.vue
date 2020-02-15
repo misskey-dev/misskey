@@ -1,5 +1,5 @@
 <template>
-<div class="wrmlmaau">
+<div class="wrmlmaau" ref="i">
 	<div class="body">
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
@@ -9,7 +9,7 @@
 	</div>
 	<details v-if="note.files.length > 0">
 		<summary>({{ $t('withNFiles', { n: note.files.length }) }})</summary>
-		<x-media-list :media-list="note.files"/>
+		<x-media-list :media-list="note.files" :width="width"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ $t('poll') }}</summary>
@@ -39,8 +39,13 @@ export default Vue.extend({
 	},
 	data() {
 		return {
+			width: 0,
+
 			faReply
 		};
+	},
+	mounted() {
+		this.width = this.$refs.i.getBoundingClientRect().width
 	}
 });
 </script>
