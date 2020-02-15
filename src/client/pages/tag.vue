@@ -1,9 +1,15 @@
 <template>
-<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+<div>
+	<portal to="icon"><fa :icon="faHashtag"/></portal>
+	<portal to="title">{{ $route.params.tag }}</portal>
+
+	<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../scripts/loading';
 import XNotes from '../components/notes.vue';
 
@@ -26,7 +32,8 @@ export default Vue.extend({
 				params: () => ({
 					tag: this.$route.params.tag,
 				})
-			}
+			},
+			faHashtag
 		};
 	},
 
