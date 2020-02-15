@@ -45,6 +45,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		// for Safari bug
 		this.width = this.$refs.i.getBoundingClientRect().width;
 	}
 });

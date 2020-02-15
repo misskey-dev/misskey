@@ -4,7 +4,7 @@
 		<x-banner :media="media" :key="media.id"/>
 	</template>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container" ref="gridOuter">
-		<div :data-count="mediaList.filter(media => previewable(media)).length" :style="gridHeight !== null ? { height: `${gridHeight}px` } : {}">
+		<div :data-count="mediaList.filter(media => previewable(media)).length" :style="gridInnerStyle">
 			<template v-for="media in mediaList">
 				<x-video :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
 				<x-image :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
@@ -37,37 +37,38 @@ export default Vue.extend({
 			type: Number
 		}
 	},
-	computed: {
-		gridHeight() {
-			if (this.$refs.gridOuter) {
-				if (this.$props.width) {
-					return this.$props.width * 9 / 16;
-				} else if (this.$refs.gridOuter.clientHeight) {
-					return this.$refs.gridOuter.clientHeight;
-				}
-				return 287;
-			}
-
-			return null;
+	data() {
+		return {
+			gridInnerStyle: {}
 		}
 	},
-	/*mounted() {
-		console.log(this.$props.width)
-		//#region for Safari bug
-		if (this.$refs.gridOuter) {
-			if (this.$props.width) {
-				this.$refs.gridInner.style.height = `${this.$props.width * 9 / 16}px`
-			} else if (this.$refs.gridOuter.clientHeight) {
-				this.$refs.gridInner.style.height = `${this.$refs.gridOuter.clientHeight}px`
-			} else {
-				this.$refs.gridInner.style.height = '287px';
-			}
+	mounted() {
+		// for Safari bug
+		if (this.$refs.gridOuter.clientHeight) {
+			this.gridInnerStyle = { height: `${this.$refs.gridOuter.clientHeight}px` }
 		}
-		//#endregion
-	},*/
+	}
 	methods: {
 		previewable(file) {
 			return file.type.startsWith('video') || file.type.startsWith('image');
+		}
+	},
+	watch: {
+		width(width) {
+			// for Safari bug
+			if (this.$refs.gridOuter) {
+				let height = 287
+
+				if (width) {
+					height = width * 9 / 16;
+				} else if (this.$refs.gridOuter.clientHeight) {
+					height = this.$refs.gridOuter.clientHeight;
+				}
+
+				this.gridInnerStyle = { height: `${height}px` }
+			} else {
+				this.gridInnerStyle = {}
+			}
 		}
 	}
 });
