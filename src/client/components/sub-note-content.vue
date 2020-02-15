@@ -1,5 +1,5 @@
 <template>
-<div class="wrmlmaau" ref="i">
+<div class="wrmlmaau">
 	<div class="body">
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
@@ -39,14 +39,8 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			i: this.$refs.i,
-
 			faReply
 		};
-	},
-	mounted() {
-		// for Safari bug
-		this.width = this.$refs.i.getBoundingClientRect().width;
 	}
 });
 </script>
