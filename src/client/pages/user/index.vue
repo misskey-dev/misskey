@@ -250,6 +250,7 @@ export default Vue.extend({
 				background-size: cover;
 				background-position: center;
 				box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
+				will-change: background-position;
 			}
 
 			> .fade {
