@@ -227,7 +227,6 @@ export default class MiOS extends EventEmitter {
 			// トークンが再生成されたとき
 			// このままではMisskeyが利用できないので強制的にサインアウトさせる
 			main.on('myTokenRegenerated', () => {
-				alert(locale['common']['my-token-regenerated']);
 				this.signout();
 			});
 		}

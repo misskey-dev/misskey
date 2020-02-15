@@ -63,7 +63,7 @@
 				</router-link>
 				<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
 					<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
-					<i v-if="$store.state.i.pendingReceivedFollowRequestsCount"><fa :icon="faCircle"/></i>
+					<i v-if="$store.state.i.hasPendingReceivedFollowRequest"><fa :icon="faCircle"/></i>
 				</router-link>
 				<div class="divider"></div>
 				<router-link class="item" active-class="active" to="/featured">
@@ -137,7 +137,7 @@
 	</div>
 
 	<div class="buttons">
-		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.pendingReceivedFollowRequestsCount || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="$store.state.i.hasUnreadSpecifiedNotes || $store.state.i.hasPendingReceivedFollowRequest || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button home _button" :disabled="$route.path === '/'" @click="$router.push('/')"><fa :icon="faHome"/></button>
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
