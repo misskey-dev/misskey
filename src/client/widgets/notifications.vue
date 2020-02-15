@@ -83,7 +83,6 @@ export default define({
 	}
 
 	.tl {
-		height: 100%;
 		background: var(--bg);
 	}
 }
