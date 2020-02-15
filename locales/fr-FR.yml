@@ -401,6 +401,7 @@ createAccount: "Créer compte"
 existingAcount: "Comptes existants"
 regenerate: "Régénérer"
 fontSize: "Taille de la police"
+noFollowRequests: "Vous n'avez aucune demandes d'abonnement en attente"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
