@@ -7,7 +7,7 @@ import { SwSubscriptions } from '../../../../models';
 export const meta = {
 	tags: ['account'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	params: {
 		endpoint: {

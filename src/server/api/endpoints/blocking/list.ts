@@ -12,7 +12,7 @@ export const meta = {
 
 	tags: ['blocking', 'account'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:blocks',
 

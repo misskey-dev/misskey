@@ -6,7 +6,7 @@ import { AuthSessions } from '../../../../../models';
 export const meta = {
 	tags: ['auth'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		token: {

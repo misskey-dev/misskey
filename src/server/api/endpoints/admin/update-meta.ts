@@ -13,7 +13,7 @@ export const meta = {
 
 	tags: ['admin'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 	requireAdmin: true,
 
 	params: {

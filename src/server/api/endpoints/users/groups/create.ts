@@ -13,7 +13,7 @@ export const meta = {
 
 	tags: ['groups'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:user-groups',
 

@@ -8,7 +8,7 @@ import { ApiError } from '../../error';
 export const meta = {
 	tags: ['antennas'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 

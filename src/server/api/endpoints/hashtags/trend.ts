@@ -21,7 +21,7 @@ const max = 5;
 export const meta = {
 	tags: ['hashtags'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	res: {
 		type: 'array' as const,

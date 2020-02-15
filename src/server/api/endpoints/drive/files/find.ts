@@ -4,7 +4,7 @@ import define from '../../../define';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	tags: ['drive'],
 

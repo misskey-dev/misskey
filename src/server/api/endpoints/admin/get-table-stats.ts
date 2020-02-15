@@ -2,7 +2,7 @@ import define from '../../define';
 import { getConnection } from 'typeorm';
 
 export const meta = {
-	requireCredential: false,
+	requireCredential: false as const,
 
 	desc: {
 		'en-US': 'Get table stats'

@@ -4,7 +4,7 @@ import ms = require('ms');
 
 export const meta = {
 	secure: true,
-	requireCredential: true,
+	requireCredential: true as const,
 	limit: {
 		duration: ms('1min'),
 		max: 1,

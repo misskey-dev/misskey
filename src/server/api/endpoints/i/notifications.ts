@@ -13,7 +13,7 @@ export const meta = {
 
 	tags: ['account', 'notifications'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:notifications',
 

@@ -11,7 +11,7 @@ import { hash } from '../../../2fa';
 const randomBytes = promisify(crypto.randomBytes);
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	secure: true,
 

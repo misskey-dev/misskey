@@ -15,7 +15,7 @@ export const meta = {
 
 	tags: ['mute', 'users'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:mutes',
 

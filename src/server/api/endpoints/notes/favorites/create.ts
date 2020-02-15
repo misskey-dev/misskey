@@ -16,7 +16,7 @@ export const meta = {
 
 	tags: ['notes', 'favorites'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:favorites',
 

@@ -10,7 +10,7 @@ export const meta = {
 
 	tags: ['account', 'messaging'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 

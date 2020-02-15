@@ -8,7 +8,7 @@ import { unique } from '../../../../prelude/array';
 export const meta = {
 	tags: ['app'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	desc: {
 		'ja-JP': 'アプリを作成します。',

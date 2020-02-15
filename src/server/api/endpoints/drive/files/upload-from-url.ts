@@ -17,7 +17,7 @@ export const meta = {
 		max: 60
 	},
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:drive',
 

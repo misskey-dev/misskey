@@ -5,7 +5,7 @@ import define from '../../define';
 import redis from '../../../../db/redis';
 
 export const meta = {
-	requireCredential: false,
+	requireCredential: false as const,
 
 	desc: {
 	},

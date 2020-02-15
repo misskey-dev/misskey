@@ -7,7 +7,7 @@ import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
 export const meta = {
 	tags: ['antennas'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 

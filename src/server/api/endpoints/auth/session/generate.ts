@@ -9,7 +9,7 @@ import { genId } from '../../../../../misc/gen-id';
 export const meta = {
 	tags: ['auth'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	desc: {
 		'ja-JP': 'アプリを認証するためのトークンを作成します。',

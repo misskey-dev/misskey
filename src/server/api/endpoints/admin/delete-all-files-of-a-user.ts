@@ -7,7 +7,7 @@ import { ID } from '../../../../misc/cafy-id';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 	requireModerator: true,
 
 	params: {
