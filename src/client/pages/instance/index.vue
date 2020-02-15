@@ -43,8 +43,6 @@
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
 			<template v-if="enableRecaptcha">
-				<mk-info>{{ $t('recaptchaInfo') }}</mk-info>
-				<mk-info warn>{{ $t('recaptchaInfo2') }}</mk-info>
 				<mk-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSecretKey') }}</mk-input>
 			</template>
@@ -63,7 +61,6 @@
 		<div class="_content">
 			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></mk-switch>
 			<template v-if="enableServiceWorker">
-				<mk-info>{{ $t('vapidInfo') }}<br><code>npx web-push generate-vapid-keys</code></mk-info>
 				<mk-horizon-group inputs class="fit-bottom">
 					<mk-input v-model="swPublicKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>Public key</mk-input>
 					<mk-input v-model="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><fa :icon="faKey"/></template>Private key</mk-input>
