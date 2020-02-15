@@ -401,6 +401,7 @@ createAccount: "Create account"
 existingAcount: "Existing accounts"
 regenerate: "Regenerate"
 fontSize: "Font size"
+noFollowRequests: "You don't have any pending follow requests"
 _ago:
   unknown: "Unknown"
   future: "Future"
