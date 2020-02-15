@@ -79,10 +79,7 @@ export default define({
 			display: flex;
 			align-items: center;
 			padding: 14px 16px;
-
-			&:not(:last-child) {
-				border-bottom: solid 1px var(--divider);
-			}
+			border-bottom: solid 1px var(--divider);
 
 			> .tag {
 				flex: 1;
