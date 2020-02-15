@@ -47,6 +47,7 @@
 		listItemHoverBg: 'rgba(255, 255, 255, 0.03)',
 		driveFolderBg: ':alpha<0.3<@accent',
 		wallpaperOverlay: 'rgba(0, 0, 0, 0.5)',
+		badge: '#31b1ce',
 		bonzsgfz: ':alpha<0<@bg',
 		pcncwizz: ':darken<2<@panel',
 		vocsgcxy: 'rgba(0, 0, 0, 0.5)',

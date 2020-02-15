@@ -13,8 +13,8 @@
 					<mk-user-name class="name" :user="user" :nowrap="true"/>
 					<div class="bottom">
 						<span class="username"><mk-acct :user="user" :detail="true" /></span>
-						<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
-						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')"><fa :icon="farBookmark"/></span>
+						<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
+						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
 						<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
 						<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 					</div>
@@ -30,8 +30,8 @@
 				<mk-user-name :user="user" :nowrap="false" class="name"/>
 				<div class="bottom">
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
-					<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
-					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')"><fa :icon="farBookmark"/></span>
+					<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
+					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
 					<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
 					<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 				</div>
