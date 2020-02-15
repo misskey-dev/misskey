@@ -7,7 +7,7 @@
 			<span class="hhnn">{{ hh }}<span :style="{ visibility: now.getSeconds() % 2 == 0 ? 'visible' : 'hidden' }">:</span>{{ nn }}</span>
 		</time>
 	</div>
-	<div class="content _panel">
+	<div class="content _panel _ghost">
 		<mk-clock/>
 	</div>
 </div>
