@@ -117,13 +117,18 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
-	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
+	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home' && data.renote.userId !== user.id) {
 		return rej('Renote target is not public or home');
 	}
 
 	// Renote対象がpublicではないならhomeにする
 	if (data.renote && data.renote.visibility != 'public' && data.visibility == 'public') {
 		data.visibility = 'home';
+	}
+
+	// Renote対象がfollowersならfollowersにする
+	if (data.renote && data.renote.visibility === 'followers') {
+		data.visibility = 'followers';
 	}
 
 	// 返信対象がpublicではないならhomeにする
