@@ -1,9 +1,9 @@
 <template>
 <div class="mk-dialog" :class="{ iconOnly }">
-	<transition name="bg-fade" appear>
+	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
 		<div class="bg" ref="bg" @click="onBgClick" v-if="show"></div>
 	</transition>
-	<transition name="dialog" appear @after-leave="() => { destroyDom(); }">
+	<transition :name="$store.state.device.animation ? 'dialog' : ''" appear @after-leave="() => { destroyDom(); }">
 		<div class="main" ref="main" v-if="show">
 			<template v-if="type == 'signin'">
 				<mk-signin/>

@@ -3,7 +3,7 @@
 	<portal to="avatar" v-if="note"><mk-avatar class="avatar" :user="note.user" :disable-preview="true"/></portal>
 	<portal to="title" v-if="note">{{ $t('noteOf', { user: note.user.name }) }}</portal>
 
-	<transition name="zoom" mode="out-in">
+	<transition :name="$store.state.device.animation ? 'zoom' : ''" mode="out-in">
 		<div v-if="note">
 			<mk-button v-if="hasNext && !showNext" @click="showNext = true" primary style="margin: 0 auto var(--margin) auto;"><fa :icon="faChevronUp"/></mk-button>
 			<x-notes v-if="showNext" ref="next" :pagination="next"/>
