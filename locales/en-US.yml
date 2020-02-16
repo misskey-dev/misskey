@@ -410,6 +410,8 @@ total: "Total"
 weekOverWeekChanges: "Weekly"
 dayOverDayChanges: "Daily"
 accessibility: "Accessibility"
+clinetSettings: "Client Settings"
+accountSettings: "Account Settings"
 _ago:
   unknown: "Unknown"
   future: "Future"
