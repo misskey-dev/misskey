@@ -384,17 +384,14 @@ export default Vue.extend({
 					to: '/my/settings',
 					icon: faCog,
 				}, null, ...accountItems, {
-					type: 'item',
 					icon: faPlus,
 					text: this.$t('addAcount'),
 					action: () => {
 						this.$root.menu({
 							items: [{
-								type: 'item',
 								text: this.$t('existingAcount'),
 								action: () => { this.addAcount(); },
 							}, {
-								type: 'item',
 								text: this.$t('createAccount'),
 								action: () => { this.createAccount(); },
 							}],

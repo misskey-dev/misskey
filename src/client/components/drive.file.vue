@@ -83,17 +83,14 @@ export default Vue.extend({
 			} else {
 				this.$root.menu({
 					items: [{
-						type: 'item',
 						text: this.$t('rename'),
 						icon: faICursor,
 						action: this.rename
 					}, {
-						type: 'item',
 						text: this.file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
 						icon: this.file.isSensitive ? faEye : faEyeSlash,
 						action: this.toggleSensitive
 					}, null, {
-						type: 'item',
 						text: this.$t('copyUrl'),
 						icon: faLink,
 						action: this.copyUrl
@@ -105,7 +102,6 @@ export default Vue.extend({
 						icon: faDownload,
 						download: this.file.name
 					}, null, {
-						type: 'item',
 						text: this.$t('delete'),
 						icon: faTrashAlt,
 						action: this.deleteFile
@@ -113,11 +109,9 @@ export default Vue.extend({
 						type: 'nest',
 						text: this.$t('contextmenu.else-files'),
 						menu: [{
-							type: 'item',
 							text: this.$t('contextmenu.set-as-avatar'),
 							action: this.setAsAvatar
 						}, {
-							type: 'item',
 							text: this.$t('contextmenu.set-as-banner'),
 							action: this.setAsBanner
 						}]
