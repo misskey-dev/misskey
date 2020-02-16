@@ -941,6 +941,7 @@ export default Vue.extend({
 
 				&:hover {
 					text-decoration: none;
+					color: var(--navHoverFg);
 				}
 
 				&.active {

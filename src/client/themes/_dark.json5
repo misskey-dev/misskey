@@ -20,6 +20,7 @@
 		header: 'rgba(20, 20, 20, 0.75)',
 		navBg: '@panel',
 		navFg: '@fg',
+		navHoverFg: ':lighten<17<@fg',
 		navActive: '@accent',
 		navIndicator: '@accent',
 		link: '#44a4c1',
