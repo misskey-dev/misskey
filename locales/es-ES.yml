@@ -400,6 +400,8 @@ docSource: "Fuente de este documento"
 createAccount: "Crear cuenta"
 existingAcount: "Cuentas existentes"
 regenerate: "Regenerar"
+fontSize: "Tamaño de la letra"
+noFollowRequests: "No hay solicitudes de seguimiento"
 _ago:
   unknown: "Desconocido"
   future: "Futuro"
