@@ -408,6 +408,7 @@ local: "Local"
 remote: "Remoto"
 total: "Total"
 weekOverWeekChanges: "Cambios semanales"
+dayOverDayChanges: "Cambios diarios"
 _ago:
   unknown: "Desconocido"
   future: "Futuro"
