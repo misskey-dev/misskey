@@ -196,10 +196,6 @@ export default Vue.extend({
 				: 0;
 		},
 
-		title(): string {
-			return '';
-		},
-
 		urls(): string[] {
 			if (this.appearNote.text) {
 				const ast = parse(this.appearNote.text);
