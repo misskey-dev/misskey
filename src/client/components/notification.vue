@@ -169,7 +169,7 @@ export default Vue.extend({
 				background: #36aed2;
 			}
 
-			&.retweet {
+			&.renote {
 				padding: 3px;
 				background: #36d298;
 			}
