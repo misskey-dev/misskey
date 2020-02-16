@@ -403,6 +403,7 @@ regenerate: "다시 생성"
 fontSize: "글자 크기"
 noFollowRequests: "처리되지 않은 팔로우 요청이 없습니다"
 openImageInNewTab: "새 탭에서 이미지 열기"
+local: "로컬"
 _ago:
   unknown: "알 수 없음"
   future: "미래"
