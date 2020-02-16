@@ -77,22 +77,18 @@ export default Vue.extend({
 	> .admin,
 	> .moderator {
 		margin-right: 0.5em;
+		color: var(--badge);
 	}
 
 	> .username {
 		margin: 0 .5em 0 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		color: var(--noteHeaderAcct);
 	}
 
 	> .info {
 		margin-left: auto;
 		font-size: 0.9em;
-
-		> * {
-			color: var(--noteHeaderInfo);
-		}
 
 		> .mobile {
 			margin-right: 8px;

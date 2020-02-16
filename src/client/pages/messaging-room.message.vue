@@ -230,7 +230,7 @@ export default Vue.extend({
 		> footer {
 			display: block;
 			margin: 2px 0 0 0;
-			font-size: 10px;
+			font-size: 0.65em;
 
 			> .read {
 				margin: 0 8px;

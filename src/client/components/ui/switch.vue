@@ -129,7 +129,6 @@ export default Vue.extend({
 	> .label {
 		margin-left: 8px;
 		display: block;
-		font-size: 16px;
 		cursor: pointer;
 		transition: inherit;
 		color: var(--fg);

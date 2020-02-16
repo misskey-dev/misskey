@@ -13,7 +13,7 @@ import { ReversiMatching } from '../../../../../models/entities/games/reversi/ma
 export const meta = {
 	tags: ['games'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	params: {
 		userId: {

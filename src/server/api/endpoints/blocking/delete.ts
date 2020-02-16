@@ -22,7 +22,7 @@ export const meta = {
 		max: 100
 	},
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:blocks',
 

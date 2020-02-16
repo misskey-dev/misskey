@@ -3,7 +3,7 @@ import define from '../../define';
 import { Users } from '../../../../models';
 
 export const meta = {
-	requireCredential: false,
+	requireCredential: false as const,
 
 	tags: ['hashtags', 'users'],
 

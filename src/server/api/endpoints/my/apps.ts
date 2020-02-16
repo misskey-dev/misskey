@@ -10,7 +10,7 @@ export const meta = {
 		'en-US': 'Get my apps'
 	},
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	params: {
 		limit: {

@@ -13,8 +13,8 @@
 					<mk-user-name class="name" :user="user" :nowrap="true"/>
 					<div class="bottom">
 						<span class="username"><mk-acct :user="user" :detail="true" /></span>
-						<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
-						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')"><fa :icon="farBookmark"/></span>
+						<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
+						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
 						<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
 						<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 					</div>
@@ -30,8 +30,8 @@
 				<mk-user-name :user="user" :nowrap="false" class="name"/>
 				<div class="bottom">
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
-					<span v-if="user.isAdmin" :title="$t('isAdmin')"><fa :icon="faBookmark"/></span>
-					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')"><fa :icon="farBookmark"/></span>
+					<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
+					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
 					<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
 					<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 				</div>
@@ -250,6 +250,7 @@ export default Vue.extend({
 				background-size: cover;
 				background-position: center;
 				box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
+				will-change: background-position;
 			}
 
 			> .fade {
@@ -380,7 +381,7 @@ export default Vue.extend({
 
 		> .description {
 			padding: 24px 24px 24px 154px;
-			font-size: 15px;
+			font-size: 0.95em;
 
 			@media (max-width: 500px) {
 				padding: 16px;
@@ -395,7 +396,7 @@ export default Vue.extend({
 
 		> .fields {
 			padding: 24px;
-			font-size: 14px;
+			font-size: 0.9em;
 			border-top: solid 1px var(--divider);
 
 			@media (max-width: 500px) {

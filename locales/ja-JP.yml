@@ -396,6 +396,12 @@ disableAnimatedMfm: "動きのあるMFMを無効にする"
 doing: "やっています"
 category: "カテゴリ"
 tags: "タグ"
+docSource: "このドキュメントのソース"
+createAccount: "アカウントを作成"
+existingAcount: "既存のアカウント"
+regenerate: "再生成"
+fontSize: "フォントサイズ"
+noFollowRequests: "フォロー申請はありません"
 
 _ago:
   unknown: "謎"
@@ -486,6 +492,7 @@ _antennaSources:
   homeTimeline: "フォローしているユーザーのノート"
   users: "指定した一人または複数のユーザーのノート"
   userList: "指定したリストのユーザーのノート"
+  userGroup: "指定したグループのユーザーのノート"
 
 _weekday:
   sunday: "日曜日"

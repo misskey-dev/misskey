@@ -15,7 +15,7 @@ export const meta = {
 
 	tags: ['meta'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		detail: {

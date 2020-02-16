@@ -16,7 +16,7 @@ export function kinds() {
 					endpoints: [],
 					descs: fromEntries(
 						Object.keys(locale)
-							.map(l => [l, locale[l].common.permissions[k] as string] as [string, string])
+							.map(l => [l, locale[l]._permissions[k] as string] as [string, string])
 						) as { [x: string]: string; }
 				}] as [ string, IKindInfo ])
 			) as { [x: string]: IKindInfo; };

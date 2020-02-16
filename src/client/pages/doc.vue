@@ -3,8 +3,12 @@
 	<portal to="icon"><fa :icon="faFileAlt"/></portal>
 	<portal to="title">{{ title }}</portal>
 	<main class="_card">
+		<div class="_title"><fa :icon="faFileAlt"/> {{ title }}</div>
 		<div class="_content">
 			<div v-html="body" class="qyqbqfal"></div>
+		</div>
+		<div class="_footer">
+			<mk-link :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $t('docSource') }}</mk-link>
 		</div>
 	</main>
 </div>
@@ -14,17 +18,25 @@
 import Vue from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
+import i18n from '../i18n';
 import { url, lang } from '../config';
+import MkLink from '../components/link.vue';
 
 const markdown = MarkdownIt({
 	html: true
 });
 
 export default Vue.extend({
+	i18n,
+
 	metaInfo() {
 		return {
 			title: this.title,
 		};
+	},
+
+	components: {
+		MkLink
 	},
 
 	props: {

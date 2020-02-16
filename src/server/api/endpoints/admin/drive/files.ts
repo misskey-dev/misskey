@@ -6,7 +6,7 @@ import { DriveFiles } from '../../../../../models';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 	requireModerator: true,
 
 	params: {

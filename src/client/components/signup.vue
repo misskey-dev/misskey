@@ -84,6 +84,14 @@ export default Vue.extend({
 		}
 	},
 
+	props: {
+		autoSet: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
+	},
+
 	computed: {
 		meta() {
 			return this.$store.state.instance.meta;
@@ -94,6 +102,15 @@ export default Vue.extend({
 				this.usernameState != 'invalid-format' &&
 				this.usernameState != 'min-range' &&
 				this.usernameState != 'max-range');
+		}
+	},
+
+	created() {
+		if (this.autoSet) {
+			this.$once('signup', res => {
+				localStorage.setItem('i', res.i);
+				location.reload();
+			});
 		}
 	},
 
@@ -166,8 +183,7 @@ export default Vue.extend({
 					username: this.username,
 					password: this.password
 				}).then(res => {
-					localStorage.setItem('i', res.i);
-					location.href = '/';
+					this.$emit('signup', res);
 				});
 			}).catch(() => {
 				this.submitting = false;

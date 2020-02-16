@@ -5,7 +5,7 @@ import { Announcements, AnnouncementReads } from '../../../models';
 import { makePaginationQuery } from '../common/make-pagination-query';
 
 export const meta = {
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		limit: {

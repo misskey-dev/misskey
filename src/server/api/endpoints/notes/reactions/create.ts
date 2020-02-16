@@ -15,7 +15,7 @@ export const meta = {
 
 	tags: ['reactions', 'notes'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:reactions',
 

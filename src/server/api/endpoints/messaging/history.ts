@@ -12,7 +12,7 @@ export const meta = {
 
 	tags: ['messaging'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:messaging',
 

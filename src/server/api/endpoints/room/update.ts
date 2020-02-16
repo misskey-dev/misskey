@@ -4,7 +4,7 @@ import define from '../../define';
 import { Users, UserProfiles } from '../../../../models';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	params: {
 		room: {

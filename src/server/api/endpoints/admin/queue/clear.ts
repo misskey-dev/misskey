@@ -5,7 +5,7 @@ import { insertModerationLog } from '../../../../../services/insert-moderation-l
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 	requireModerator: true,
 
 	params: {}

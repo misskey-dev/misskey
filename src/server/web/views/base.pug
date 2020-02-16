@@ -13,9 +13,12 @@ html
 		meta(name='theme-color' content='#86b300')
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
-		link(rel='icon' href= icon || '/favicon.png')
+		link(rel='icon' href= icon || '/favicon.ico')
 		link(rel='apple-touch-icon' href= icon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
+		link(rel='prefetch' href='https://xn--931a.moe/assets/info.png')
+		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.png')
+		link(rel='prefetch' href='https://xn--931a.moe/assets/error.png')
 
 		title
 			block title
@@ -46,6 +49,16 @@ html
 						}
 					}
 				}
+			}
+
+			const fontSize = localStorage.getItem('fontSize');
+			if (fontSize) {
+				document.documentElement.classList.add('f-' + fontSize);
+			}
+
+			const wallpaper = localStorage.getItem('wallpaper');
+			if (wallpaper) {
+				document.documentElement.style.backgroundImage = `url(${wallpaper})`;
 			}
 
 	body

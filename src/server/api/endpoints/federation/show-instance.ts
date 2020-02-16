@@ -6,7 +6,7 @@ import { toPuny } from '../../../../misc/convert-host';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		host: {

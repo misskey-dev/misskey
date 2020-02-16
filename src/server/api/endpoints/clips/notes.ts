@@ -9,7 +9,7 @@ import { generateMuteQuery } from '../../common/generate-mute-query';
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:account',
 

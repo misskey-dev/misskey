@@ -7,7 +7,7 @@ import { Antennas } from '../../../../models';
 export const meta = {
 	tags: ['antennas', 'account'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:account',
 

@@ -132,7 +132,7 @@ export default define({
 		> p {
 			margin: 0;
 			line-height: 18px;
-			font-size: 14px;
+			font-size: 0.9em;
 
 			> span {
 				margin: 0 4px;
@@ -142,7 +142,7 @@ export default define({
 		> .day {
 			margin: 10px 0;
 			line-height: 32px;
-			font-size: 28px;
+			font-size: 1.75em;
 		}
 	}
 
@@ -162,7 +162,7 @@ export default define({
 
 			> p {
 				margin: 0 0 2px 0;
-				font-size: 12px;
+				font-size: 0.75em;
 				line-height: 18px;
 				opacity: 0.8;
 

@@ -17,7 +17,7 @@ import { publishMainStream } from '../../../../../services/stream';
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	secure: true,
 

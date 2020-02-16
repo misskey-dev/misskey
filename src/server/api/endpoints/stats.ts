@@ -3,7 +3,7 @@ import { Notes, Users } from '../../../models';
 import { federationChart, driveChart } from '../../../services/chart';
 
 export const meta = {
-	requireCredential: false,
+	requireCredential: false as const,
 
 	desc: {
 		'en-US': 'Get the instance\'s statistics'

@@ -14,7 +14,7 @@ export const meta = {
 
 	tags: ['lists', 'users'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 

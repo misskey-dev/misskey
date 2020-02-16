@@ -16,7 +16,7 @@ export const meta = {
 
 	tags: ['notes', 'lists'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	params: {
 		listId: {

@@ -6,7 +6,7 @@ import { Clips } from '../../../../models';
 export const meta = {
 	tags: ['clips'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 

@@ -4,7 +4,7 @@ import { ReversiMatchings } from '../../../../../../models';
 export const meta = {
 	tags: ['games'],
 
-	requireCredential: true
+	requireCredential: true as const
 };
 
 export default define(meta, async (ps, user) => {

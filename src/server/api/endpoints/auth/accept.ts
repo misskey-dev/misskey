@@ -10,7 +10,7 @@ import { ensure } from '../../../../prelude/ensure';
 export const meta = {
 	tags: ['auth'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	secure: true,
 

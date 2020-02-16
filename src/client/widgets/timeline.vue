@@ -150,7 +150,6 @@ export default define({
 	}
 
 	.tl {
-		height: 100%;
 		padding: 8px;
 		background: var(--bg);
 		box-sizing: border-box;

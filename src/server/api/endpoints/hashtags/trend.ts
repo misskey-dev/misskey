@@ -11,7 +11,7 @@ import { Note } from '../../../../models/entities/note';
 ..が理想だけどPostgreSQLでどうするのか分からないので単に「直近Aの内に投稿されたユニーク投稿数が多いハッシュタグ」で妥協する
 */
 
-const rangeA = 1000 * 60 * 30; // 30分
+const rangeA = 1000 * 60 * 60; // 60分
 //const rangeB = 1000 * 60 * 120; // 2時間
 //const coefficient = 1.25; // 「n倍」の部分
 //const requiredUsers = 3; // 最低何人がそのタグを投稿している必要があるか
@@ -21,7 +21,7 @@ const max = 5;
 export const meta = {
 	tags: ['hashtags'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	res: {
 		type: 'array' as const,
@@ -123,16 +123,16 @@ export default define(meta, async () => {
 	}
 
 	const countsLog = await Promise.all(countPromises);
+	//#endregion
 
 	const totalCounts = await Promise.all(hots.map(tag => Notes.createQueryBuilder('note')
 		.select('count(distinct note.userId)')
 		.where(':tag = ANY(note.tags)', { tag: tag })
-		.andWhere('note.createdAt > :gt', { gt: new Date(now.getTime() - (interval * range)) })
-		.cache(60000) // 1 min
+		.andWhere('note.createdAt > :gt', { gt: new Date(now.getTime() - rangeA) })
+		.cache(60000 * 60) // 60 min
 		.getRawOne()
 		.then(x => parseInt(x.count, 10))
 	));
-	//#endregion
 
 	const stats = hots.map((tag, i) => ({
 		tag,

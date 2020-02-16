@@ -19,7 +19,7 @@ export const meta = {
 		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。'
 	},
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		uri: {

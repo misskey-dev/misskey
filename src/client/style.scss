@@ -58,6 +58,18 @@ html {
 			}
 		}
 	}
+
+	&.f-small {
+		font-size: 0.9em;
+	}
+
+	&.f-large {
+		font-size: 1.1em;
+	}
+
+	&.f-veryLarge {
+		font-size: 1.2em;
+	}
 }
 
 html.changing-theme {

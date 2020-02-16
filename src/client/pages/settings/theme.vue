@@ -35,7 +35,6 @@ export default Vue.extend({
 	
 	data() {
 		return {
-			wallpaperUploading: false,
 			faPalette
 		}
 	},
