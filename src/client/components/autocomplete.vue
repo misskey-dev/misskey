@@ -2,7 +2,7 @@
 <div class="swhvrteh" @contextmenu.prevent="() => {}">
 	<ol class="users" ref="suggests" v-if="type === 'user'">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1" class="user">
-			<img class="avatar" :src="user.avatarUrl" alt=""/>
+			<img class="avatar" :src="user.avatarUrl"/>
 			<span class="name">
 				<mk-user-name :user="user" :key="user.id"/>
 			</span>

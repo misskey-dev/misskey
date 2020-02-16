@@ -1,6 +1,6 @@
 <template>
 <div class="lzyxtsnt">
-	<img v-if="image" :src="image.url" alt=""/>
+	<img v-if="image" :src="image.url"/>
 </div>
 </template>
 
