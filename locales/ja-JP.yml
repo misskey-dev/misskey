@@ -403,6 +403,12 @@ regenerate: "再生成"
 fontSize: "フォントサイズ"
 noFollowRequests: "フォロー申請はありません"
 openImageInNewTab: "画像を新しいタブで開く"
+dashboard: "ダッシュボード"
+local: "ローカル"
+remote: "リモート"
+total: "合計"
+weekOverWeekChanges: "前週比"
+dayOverDayChanges: "前日比"
 
 _ago:
   unknown: "謎"

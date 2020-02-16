@@ -12,14 +12,12 @@
 			<div><b>{{ $t('administrator') }}</b><span>{{ meta.maintainerName }}</span></div>
 			<div><b></b><span>{{ meta.maintainerEmail }}</span></div>
 		</div>
-		<div class="_content table" v-if="stats">
-			<div><b>{{ $t('users') }}</b><span>{{ stats.originalUsersCount | number }}</span></div>
-			<div><b>{{ $t('notes') }}</b><span>{{ stats.originalNotesCount | number }}</span></div>
-		</div>
 		<div class="_content table">
 			<div><b>Misskey</b><span>v{{ version }}</span></div>
 		</div>
 	</section>
+
+	<mk-instance-stats style="margin-top: var(--margin);"/>
 </div>
 </template>
 
@@ -28,6 +26,7 @@ import Vue from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { version } from '../config';
 import i18n from '../i18n';
+import MkInstanceStats from '../components/instance-stats.vue';
 
 export default Vue.extend({
 	i18n,
@@ -38,10 +37,13 @@ export default Vue.extend({
 		};
 	},
 
+	components: {
+		MkInstanceStats
+	},
+
 	data() {
 		return {
 			version,
-			stats: null,
 			serverInfo: null,
 			faInfoCircle
 		}
@@ -51,12 +53,6 @@ export default Vue.extend({
 		meta() {
 			return this.$store.state.instance.meta;
 		},
-	},
-
-	created() {
-		this.$root.api('stats').then(res => {
-			this.stats = res;
-		});
 	},
 });
 </script>

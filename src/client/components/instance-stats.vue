@@ -1,8 +1,91 @@
 <template>
-<div class="mk-instance-stats">
+<div class="zbcjwnqg">
+	<div class="stats" v-if="info">
+		<div class="_panel">
+			<div>
+				<b><fa :icon="faUser"/>{{ $t('users') }}</b>
+				<small>{{ $t('local') }}</small>
+			</div>
+			<div>
+				<dl class="total">
+					<dt>{{ $t('total') }}</dt>
+					<dd>{{ info.originalUsersCount | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: usersLocalDoD > 0 }">
+					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dd>{{ usersLocalDoD | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: usersLocalWoW > 0 }">
+					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dd>{{ usersLocalWoW | number }}</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="_panel">
+			<div>
+				<b><fa :icon="faUser"/>{{ $t('users') }}</b>
+				<small>{{ $t('remote') }}</small>
+			</div>
+			<div>
+				<dl class="total">
+					<dt>{{ $t('total') }}</dt>
+					<dd>{{ (info.usersCount - info.originalUsersCount) | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: usersRemoteDoD > 0 }">
+					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dd>{{ usersRemoteDoD | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: usersRemoteWoW > 0 }">
+					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dd>{{ usersRemoteWoW | number }}</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="_panel">
+			<div>
+				<b><fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
+				<small>{{ $t('local') }}</small>
+			</div>
+			<div>
+				<dl class="total">
+					<dt>{{ $t('total') }}</dt>
+					<dd>{{ info.originalNotesCount | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: notesLocalDoD > 0 }">
+					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dd>{{ notesLocalDoD | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: notesLocalWoW > 0 }">
+					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dd>{{ notesLocalWoW | number }}</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="_panel">
+			<div>
+				<b><fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
+				<small>{{ $t('remote') }}</small>
+			</div>
+			<div>
+				<dl class="total">
+					<dt>{{ $t('total') }}</dt>
+					<dd>{{ (info.notesCount - info.originalNotesCount) | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: notesRemoteDoD > 0 }">
+					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dd>{{ notesRemoteDoD | number }}</dd>
+				</dl>
+				<dl class="diff" :class="{ inc: notesRemoteWoW > 0 }">
+					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dd>{{ notesRemoteWoW | number }}</dd>
+				</dl>
+			</div>
+		</div>
+	</div>
+
 	<section class="_card">
 		<div class="_title"><fa :icon="faChartBar"/> {{ $t('statistics') }}</div>
-		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
+		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">
 				<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
 					<optgroup :label="$t('federation')">
@@ -40,10 +123,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faUser, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
-import i18n from '../../i18n';
-import MkSelect from '../../components/ui/select.vue';
+import i18n from '../i18n';
+import MkSelect from './ui/select.vue';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -59,24 +142,27 @@ const alpha = (hex, a) => {
 export default Vue.extend({
 	i18n,
 
-	metaInfo() {
-		return {
-			title: `${this.$t('statistics')} | ${this.$t('instance')}`
-		};
-	},
-
 	components: {
 		MkSelect
 	},
 
 	data() {
 		return {
+			info: null,
+			notesLocalWoW: 0,
+			notesLocalDoD: 0,
+			notesRemoteWoW: 0,
+			notesRemoteDoD: 0,
+			usersLocalWoW: 0,
+			usersLocalDoD: 0,
+			usersRemoteWoW: 0,
+			usersRemoteDoD: 0,
 			now: null,
 			chart: null,
 			chartInstance: null,
 			chartSrc: 'notes',
 			chartSpan: 'hour',
-			faChartBar
+			faChartBar, faUser, faPencilAlt
 		}
 	},
 
@@ -121,6 +207,8 @@ export default Vue.extend({
 	},
 
 	async created() {
+		this.info = await this.$root.api('stats');
+
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([Promise.all([
@@ -153,6 +241,15 @@ export default Vue.extend({
 				drive: perDay[4],
 			}
 		};
+
+		this.notesLocalWoW = this.info.originalNotesCount - chart.perDay.notes.local.total[7];
+		this.notesLocalDoD = this.info.originalNotesCount - chart.perDay.notes.local.total[1];
+		this.notesRemoteWoW = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[7];
+		this.notesRemoteDoD = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[1];
+		this.usersLocalWoW = this.info.usersCount - chart.perDay.users.local.total[7];
+		this.usersLocalDoD = this.info.usersCount - chart.perDay.users.local.total[1];
+		this.usersRemoteWoW = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[7];
+		this.usersRemoteDoD = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[1];
 
 		this.chart = chart;
 
@@ -489,3 +586,80 @@ export default Vue.extend({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.zbcjwnqg {
+	> .stats {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		margin: calc(0px - var(--margin) / 2);
+		margin-bottom: calc(var(--margin) / 2);
+
+		> div {
+			display: flex;
+			flex: 1 0 213px;
+			margin: calc(var(--margin) / 2);
+			box-sizing: border-box;
+			padding: 16px 20px;
+
+			> div {
+				width: 50%;
+
+				&:first-child {
+					> b {
+						display: block;
+
+						> [data-icon] {
+							width: 16px;
+							margin-right: 8px;
+						}
+					}
+
+					> small {
+						margin-left: 16px + 8px;
+						opacity: 0.7;
+					}
+				}
+
+				&:last-child {
+					> dl {
+						display: flex;
+						margin: 0;
+						line-height: 1.5em;
+
+						> dt,
+						> dd {
+							width: 50%;
+							margin: 0;
+						}
+
+						> dt {
+							text-overflow: ellipsis;
+							overflow: hidden;
+							white-space: nowrap;
+						}
+
+						&.total {
+							> dt,
+							> dd {
+								font-weight: bold;
+							}
+						}
+
+						&.diff.inc {
+							> dd {
+								color: #82c11c;
+
+								&:before {
+									content: "+";
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+</style>

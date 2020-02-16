@@ -413,9 +413,14 @@ export default Vue.extend({
 			this.$root.menu({
 				items: [{
 					type: 'link',
-					text: this.$t('statistics'),
-					to: '/instance/stats',
-					icon: faChartBar,
+					text: this.$t('dashboard'),
+					to: '/instance',
+					icon: faTachometerAlt,
+				}, null, {
+					type: 'link',
+					text: this.$t('settings'),
+					to: '/instance/settings',
+					icon: faCog,
 				}, {
 					type: 'link',
 					text: this.$t('customEmojis'),
@@ -433,11 +438,6 @@ export default Vue.extend({
 					icon: faCloud,
 				}, {
 					type: 'link',
-					text: this.$t('monitor'),
-					to: '/instance/monitor',
-					icon: faTachometerAlt,
-				}, {
-					type: 'link',
 					text: this.$t('jobQueue'),
 					to: '/instance/queue',
 					icon: faExchangeAlt,
@@ -451,11 +451,6 @@ export default Vue.extend({
 					text: this.$t('announcements'),
 					to: '/instance/announcements',
 					icon: faBroadcastTower,
-				}, null, {
-					type: 'link',
-					text: this.$t('general'),
-					to: '/instance',
-					icon: faCog,
 				}],
 				align: 'left',
 				fixed: true,
