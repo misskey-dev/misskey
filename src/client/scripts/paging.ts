@@ -28,6 +28,8 @@ function onScrollTop(el, cb) {
 	container.addEventListener('scroll', onScroll, { passive: true });
 }
 
+const SECOND_FETCH_LIMIT = 30;
+
 export default (opts) => ({
 	data() {
 		return {
@@ -118,7 +120,7 @@ export default (opts) => ({
 			if (params && params.then) params = await params;
 			const endpoint = typeof this.pagination.endpoint === 'function' ? this.pagination.endpoint() : this.pagination.endpoint;
 			await this.$root.api(endpoint, {
-				limit: (this.pagination.limit || 10) + 1,
+				limit: SECOND_FETCH_LIMIT + 1,
 				...(this.pagination.offsetMode ? {
 					offset: this.offset,
 				} : {
@@ -126,7 +128,7 @@ export default (opts) => ({
 				}),
 				...params
 			}).then(x => {
-				if (x.length === (this.pagination.limit || 10) + 1) {
+				if (x.length === SECOND_FETCH_LIMIT + 1) {
 					x.pop();
 					this.items = this.items.concat(x);
 					this.more = true;
