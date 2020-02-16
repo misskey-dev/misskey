@@ -55,15 +55,17 @@ export default Vue.extend({
 			handsTailLength: 0.7,
 			hHandLengthRatio: 0.75,
 			mHandLengthRatio: 1,
-			sHandLengthRatio: 1
+			sHandLengthRatio: 1,
+
+			computedStyle: getComputedStyle(document.documentElement)
 		};
 	},
 
 	computed: {
 		dark(): boolean {
-			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--bg')).isDark();
+			return tinycolor(this.computedStyle.getPropertyValue('--bg')).isDark();
 		},
-	
+
 		majorGraduationColor(): string {
 			return this.dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
 		},
@@ -75,10 +77,10 @@ export default Vue.extend({
 			return this.dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
 		},
 		mHandColor(): string {
-			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--fg')).toHexString();
+			return tinycolor(this.computedStyle.getPropertyValue('--fg')).toHexString();
 		},
 		hHandColor(): string {
-			return tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--accent')).toHexString();
+			return tinycolor(this.computedStyle.getPropertyValue('--accent')).toHexString();
 		},
 
 		ms(): number {
@@ -123,6 +125,14 @@ export default Vue.extend({
 			}
 		};
 		update();
+
+		this.$store.subscribe((mutation, state) => {
+			if (mutation.type !== 'device/set') return;
+
+			if (mutation?.payload?.key !== 'theme') return;
+
+			this.computedStyle = getComputedStyle(document.documentElement);
+		});
 	},
 
 	beforeDestroy() {
