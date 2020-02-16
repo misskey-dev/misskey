@@ -407,6 +407,8 @@ dashboard: "Dashboard"
 local: "Local"
 remote: "Remote"
 total: "Total"
+weekOverWeekChanges: "Weekly changes"
+dayOverDayChanges: "Daily changes"
 _ago:
   unknown: "Unknown"
   future: "Future"
