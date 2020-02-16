@@ -407,7 +407,7 @@ dashboard: "Tableau de bord"
 local: "Local"
 remote: "Distant"
 total: "Total"
-weekOverWeekChanges: "Changements hebdomadaires"
+weekOverWeekChanges: "Diff hebdo"
 dayOverDayChanges: "Changements quotidiens"
 accessibility: "Accessibilité"
 _ago:
