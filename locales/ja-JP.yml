@@ -410,6 +410,8 @@ total: "合計"
 weekOverWeekChanges: "前週比"
 dayOverDayChanges: "前日比"
 accessibility: "アクセシビリティ"
+clinetSettings: "クライアント設定"
+accountSettings: "アカウント設定"
 
 _ago:
   unknown: "謎"

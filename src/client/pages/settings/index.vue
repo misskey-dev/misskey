@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faCog"/></portal>
-	<portal to="title">{{ $t('settings') }}</portal>
+	<portal to="title">{{ $t('clinetSettings') }}</portal>
 
 	<x-theme/>
 
