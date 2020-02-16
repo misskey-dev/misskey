@@ -87,6 +87,9 @@
 					<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
 					<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
 				</button>
+				<router-link class="item" active-class="active" to="/settings">
+					<fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
+				</router-link>
 			</div>
 		</nav>
 	</transition>
@@ -881,6 +884,7 @@ export default Vue.extend({
 			width: $nav-width;
 			height: 100vh;
 			padding: 16px 0;
+			padding-bottom: calc(3.7rem + 24px);
 			box-sizing: border-box;
 			overflow: auto;
 			background: var(--navBg);
@@ -894,6 +898,7 @@ export default Vue.extend({
 			@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
 				width: $nav-icon-only-width;
 				padding: 8px 0;
+				padding-bottom: calc(3.7rem + 24px);
 
 				> .divider {
 					margin: 8px auto;
@@ -946,6 +951,17 @@ export default Vue.extend({
 
 				&.active {
 					color: var(--navActive);
+				}
+
+				&:last-child {
+					position: fixed;
+					bottom: 0;
+					width: inherit;
+					padding-top: 8px;
+					padding-bottom: 8px;
+					background: var(--navBg);
+					border-top: solid 1px var(--divider);
+					border-right: solid 1px var(--divider);
 				}
 
 				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {

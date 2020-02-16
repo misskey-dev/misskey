@@ -12,6 +12,10 @@
 			</optgroup>
 		</mk-select>
 	</div>
+	<div class="_content">
+		<mk-button primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</mk-button>
+		<mk-button primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</mk-button>
+	</div>
 </section>
 </template>
 
@@ -23,6 +27,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import i18n from '../../i18n';
 import { Theme, builtinThemes, applyTheme } from '../../theme';
+import { selectFile } from '../../scripts/select-file';
 
 export default Vue.extend({
 	i18n,
@@ -35,6 +40,7 @@ export default Vue.extend({
 	
 	data() {
 		return {
+			wallpaper: localStorage.getItem('wallpaper'),
 			faPalette
 		}
 	},
@@ -65,11 +71,25 @@ export default Vue.extend({
 	watch: {
 		theme() {
 			applyTheme(this.themes.find(x => x.id === this.theme));
+		},
+
+		
+		wallpaper() {
+			if (this.wallpaper == null) {
+				localStorage.removeItem('wallpaper');
+			} else {
+				localStorage.setItem('wallpaper', this.wallpaper);
+			}
+			location.reload();
 		}
 	},
 
 	methods: {
-
+		setWallpaper(e) {
+			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
+				this.wallpaper = file.url;
+			});
+		},
 	}
 });
 </script>

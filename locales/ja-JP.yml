@@ -409,6 +409,7 @@ remote: "リモート"
 total: "合計"
 weekOverWeekChanges: "前週比"
 dayOverDayChanges: "前日比"
+accessibility: "アクセシビリティ"
 
 _ago:
   unknown: "謎"

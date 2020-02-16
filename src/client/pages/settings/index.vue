@@ -1,44 +1,61 @@
 <template>
-<div class="mk-settings-page">
+<div>
 	<portal to="icon"><fa :icon="faCog"/></portal>
 	<portal to="title">{{ $t('settings') }}</portal>
 
-	<x-profile-setting/>
-	<x-privacy-setting/>
-	<x-reaction-setting/>
 	<x-theme/>
-	<x-import-export/>
-	<x-drive/>
-	<x-general/>
-	<x-mute-block/>
-	<x-security/>
-	<x-2fa/>
-	<x-integration/>
-	<x-api/>
 
-	<mk-button @click="cacheClear()" primary class="cacheClear">{{ $t('cacheClear') }}</mk-button>
-	<mk-button @click="$root.signout()" primary class="logout">{{ $t('logout') }}</mk-button>
+	<section class="_card">
+		<div class="_title"><fa :icon="faCog"/> {{ $t('accessibility') }}</div>
+		<div class="_content">
+			<mk-switch v-model="autoReload">
+				{{ $t('autoReloadWhenDisconnected') }}
+			</mk-switch>
+		</div>
+		<div class="_content">
+			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
+			<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
+			<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
+			<mk-switch v-model="useOsNativeEmojis">
+				{{ $t('useOsNativeEmojis') }}
+				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
+			</mk-switch>
+		</div>
+		<div class="_content">
+			<mk-select v-model="lang">
+				<template #label>{{ $t('uiLanguage') }}</template>
+
+				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+			</mk-select>
+		</div>
+		<div class="_content">
+			<div>{{ $t('fontSize') }}</div>
+			<mk-radio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></mk-radio>
+		</div>
+	</section>
+
+	<mk-button @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</mk-button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
-import XProfileSetting from './profile.vue';
-import XPrivacySetting from './privacy.vue';
-import XImportExport from './import-export.vue';
-import XDrive from './drive.vue';
-import XGeneral from './general.vue';
-import XReactionSetting from './reaction.vue';
-import XMuteBlock from './mute-block.vue';
-import XSecurity from './security.vue';
-import XTheme from './theme.vue';
-import X2fa from './2fa.vue';
-import XIntegration from './integration.vue';
-import XApi from './api.vue';
+import { faImage, faCog } from '@fortawesome/free-solid-svg-icons';
+import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
+import MkSwitch from '../../components/ui/switch.vue';
+import MkSelect from '../../components/ui/select.vue';
+import MkRadio from '../../components/ui/radio.vue';
+import XTheme from './theme.vue';
+import i18n from '../../i18n';
+import { langs } from '../../config';
 
 export default Vue.extend({
+	i18n,
+
 	metaInfo() {
 		return {
 			title: this.$t('settings') as string
@@ -46,25 +63,65 @@ export default Vue.extend({
 	},
 
 	components: {
-		XProfileSetting,
-		XPrivacySetting,
-		XImportExport,
-		XDrive,
-		XGeneral,
-		XReactionSetting,
-		XMuteBlock,
-		XSecurity,
 		XTheme,
-		X2fa,
-		XIntegration,
-		XApi,
+		MkInput,
 		MkButton,
+		MkSwitch,
+		MkSelect,
+		MkRadio,
 	},
 
 	data() {
 		return {
-			faCog
+			langs,
+			lang: localStorage.getItem('lang'),
+			fontSize: localStorage.getItem('fontSize'),
+			faImage, faCog
 		}
+	},
+
+	computed: {
+		autoReload: {
+			get() { return this.$store.state.device.autoReload; },
+			set(value) { this.$store.commit('device/set', { key: 'autoReload', value }); }
+		},
+
+		reduceAnimation: {
+			get() { return !this.$store.state.device.animation; },
+			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
+		},
+
+		disableAnimatedMfm: {
+			get() { return !this.$store.state.device.animatedMfm; },
+			set(value) { this.$store.commit('device/set', { key: 'animatedMfm', value: !value }); }
+		},
+
+		useOsNativeEmojis: {
+			get() { return this.$store.state.device.useOsNativeEmojis; },
+			set(value) { this.$store.commit('device/set', { key: 'useOsNativeEmojis', value }); }
+		},
+
+		imageNewTab: {
+			get() { return this.$store.state.device.imageNewTab; },
+			set(value) { this.$store.commit('device/set', { key: 'imageNewTab', value }); }
+		},
+	},
+
+	watch: {
+		lang() {
+			localStorage.setItem('lang', this.lang);
+			localStorage.removeItem('locale');
+			location.reload();
+		},
+
+		fontSize() {
+			if (this.fontSize == null) {
+				localStorage.removeItem('fontSize');
+			} else {
+				localStorage.setItem('fontSize', this.fontSize);
+			}
+			location.reload();
+		},
 	},
 
 	methods: {
@@ -86,12 +143,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.mk-settings-page {
-	> .logout,
-	> .cacheClear {
-		margin: 8px auto;
-	}
-}
-</style>
