@@ -246,8 +246,8 @@ export default Vue.extend({
 		this.notesLocalDoD = this.info.originalNotesCount - chart.perDay.notes.local.total[1];
 		this.notesRemoteWoW = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[7];
 		this.notesRemoteDoD = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[1];
-		this.usersLocalWoW = this.info.usersCount - chart.perDay.users.local.total[7];
-		this.usersLocalDoD = this.info.usersCount - chart.perDay.users.local.total[1];
+		this.usersLocalWoW = this.info.originalUsersCount - chart.perDay.users.local.total[7];
+		this.usersLocalDoD = this.info.originalUsersCount - chart.perDay.users.local.total[1];
 		this.usersRemoteWoW = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[7];
 		this.usersRemoteDoD = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[1];
 
