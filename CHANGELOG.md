@@ -4,6 +4,7 @@ ChangeLog
 unreleased
 -------------------
 ### ✨Improvements
+* 投稿詳細ページで前後の投稿を見れるように
 * 自分のfollowersノートはRenoteできるように
 * フォロー申請ページの調整
 * 壁紙設定の強化

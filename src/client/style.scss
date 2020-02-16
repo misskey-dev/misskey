@@ -128,6 +128,13 @@ a {
 	}
 }
 
+hr {
+	margin: var(--margin) 0 var(--margin) 0;
+	border: none;
+	height: 1px;
+	background: var(--divider);
+}
+
 #nprogress {
 	pointer-events: none;
 	position: absolute;
