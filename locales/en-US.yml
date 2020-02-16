@@ -403,6 +403,7 @@ regenerate: "Regenerate"
 fontSize: "Font size"
 noFollowRequests: "You don't have any pending follow requests"
 openImageInNewTab: "Open image in new tab"
+local: "Local"
 _ago:
   unknown: "Unknown"
   future: "Future"
