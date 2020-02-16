@@ -409,6 +409,7 @@ remote: "리모트"
 total: "합계"
 weekOverWeekChanges: "지난 주 대비"
 dayOverDayChanges: "어제 대비"
+accessibility: "접근성"
 _ago:
   unknown: "알 수 없음"
   future: "미래"
