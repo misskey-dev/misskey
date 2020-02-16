@@ -402,6 +402,7 @@ existingAcount: "Cuentas existentes"
 regenerate: "Regenerar"
 fontSize: "Tamaño de la letra"
 noFollowRequests: "No hay solicitudes de seguimiento"
+openImageInNewTab: "Abrir imagen en nueva pestaña"
 _ago:
   unknown: "Desconocido"
   future: "Futuro"
