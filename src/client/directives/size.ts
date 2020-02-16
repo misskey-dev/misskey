@@ -54,6 +54,8 @@ export default {
 
 		calc();
 
+		vn.context.$on('hook:activated', calc);
+
 		const ro = new ResizeObserver((entries, observer) => {
 			calc();
 		});
