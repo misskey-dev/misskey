@@ -380,7 +380,7 @@ export default Vue.extend({
 					avatar: this.$store.state.i,
 				}, {
 					type: 'link',
-					text: this.$t('settings'),
+					text: this.$t('accountSettings'),
 					to: '/my/settings',
 					icon: faCog,
 				}, null, ...accountItems, {
