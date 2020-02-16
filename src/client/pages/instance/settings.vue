@@ -1,5 +1,5 @@
 <template>
-<div v-if="meta" class="yihovjtf">
+<div v-if="meta">
 	<portal to="icon"><fa :icon="faCog"/></portal>
 	<portal to="title">{{ $t('settings') }}</portal>
 
@@ -150,22 +150,6 @@
 			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 		</div>
 	</section>
-
-	<section class="_card info">
-		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
-		<div class="_content table" v-if="stats">
-			<div><b>{{ $t('users') }}</b><span>{{ stats.originalUsersCount | number }}</span></div>
-			<div><b>{{ $t('notes') }}</b><span>{{ stats.originalNotesCount | number }}</span></div>
-		</div>
-		<div class="_content table">
-			<div><b>Misskey</b><span>v{{ version }}</span></div>
-		</div>
-		<div class="_content table" v-if="serverInfo">
-			<div><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
-			<div><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
-			<div><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
-		</div>
-	</section>
 </div>
 </template>
 
@@ -180,7 +164,7 @@ import MkTextarea from '../../components/ui/textarea.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkInfo from '../../components/ui/info.vue';
 import MkUserSelect from '../../components/user-select.vue';
-import { version, url } from '../../config';
+import { url } from '../../config';
 import i18n from '../../i18n';
 import getAcct from '../../../misc/acct/render';
 
@@ -203,10 +187,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			version,
 			url,
-			stats: null,
-			serverInfo: null,
 			proxyAccount: null,
 			proxyAccountId: null,
 			cacheRemoteFiles: false,
@@ -291,14 +272,6 @@ export default Vue.extend({
 				this.proxyAccount = proxyAccount;
 			});
 		}
-
-		this.$root.api('admin/server-info').then(res => {
-			this.serverInfo = res;
-		});
-
-		this.$root.api('stats').then(res => {
-			this.stats = res;
-		});
 	},
 
 	mounted() {
@@ -395,19 +368,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.yihovjtf {
-	> .info {
-		> .table {
-			> div {
-				display: flex;
-
-				> * {
-					flex: 1;
-				}
-			}
-		}
-	}
-}
-</style>

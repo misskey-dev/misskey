@@ -51,6 +51,17 @@
 			</div>
 		</div>
 	</section>
+
+	<section class="_card info">
+		<div class="_content table">
+			<div><b>Misskey</b><span>v{{ version }}</span></div>
+		</div>
+		<div class="_content table" v-if="serverInfo">
+			<div><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
+			<div><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
+			<div><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
+		</div>
+	</section>
 </div>
 </template>
 
@@ -405,6 +416,18 @@ export default Vue.extend({
 							}
 						}
 					}
+				}
+			}
+		}
+	}
+
+	> .info {
+		> .table {
+			> div {
+				display: flex;
+
+				> * {
+					flex: 1;
 				}
 			}
 		}
