@@ -243,6 +243,10 @@ export default Vue.extend({
 		margin-top: 8px;
 	}
 
+	&:not(.inline):last-child {
+		margin-bottom: 8px;
+	}
+
 	> .icon {
 		position: absolute;
 		top: 0;
