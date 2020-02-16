@@ -184,7 +184,7 @@ export default Vue.extend({
 		position: absolute;
 		top: 16px;
 		right: 8px;
-		color: var(--accent);
+		color: var(--indicator);
 		font-size: 12px;
 		animation: blink 1s infinite;
 	}

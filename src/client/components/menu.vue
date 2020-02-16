@@ -176,7 +176,7 @@ export default Vue.extend({
 			position: absolute;
 			top: 5px;
 			left: 13px;
-			color: var(--accent);
+			color: var(--indicator);
 			font-size: 12px;
 			animation: blink 1s infinite;
 		}

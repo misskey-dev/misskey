@@ -16,6 +16,7 @@
 		fg: '#c7d1d8',
 		fgHighlighted: ':lighten<3<@fg',
 		html: '@bg',
+		indicator: '@accent',
 		panel: '#111213',
 		shadow: 'rgba(0, 0, 0, 0.1)',
 		header: 'rgba(20, 20, 20, 0.75)',
