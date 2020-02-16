@@ -131,7 +131,9 @@ export default Vue.extend({
 
 			if (mutation?.payload?.key !== 'theme') return;
 
-			this.computedStyle = getComputedStyle(document.documentElement);
+			setTimeout(() => {
+				this.computedStyle = getComputedStyle(document.documentElement);
+			}, 250);
 		});
 	},
 
