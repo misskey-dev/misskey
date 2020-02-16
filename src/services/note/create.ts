@@ -112,17 +112,17 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	if (data.localOnly == null) data.localOnly = false;
 
 	// サイレンス
-	if (user.isSilenced && data.visibility == 'public') {
+	if (user.isSilenced && data.visibility === 'public') {
 		data.visibility = 'home';
 	}
 
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
-	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home' && data.renote.userId !== user.id) {
+	if (data.renote && data.renote.visibility !== 'public' && data.renote.visibility !== 'home' && data.renote.userId !== user.id) {
 		return rej('Renote target is not public or home');
 	}
 
 	// Renote対象がpublicではないならhomeにする
-	if (data.renote && data.renote.visibility != 'public' && data.visibility == 'public') {
+	if (data.renote && data.renote.visibility !== 'public' && data.visibility === 'public') {
 		data.visibility = 'home';
 	}
 
@@ -132,7 +132,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// 返信対象がpublicではないならhomeにする
-	if (data.reply && data.reply.visibility != 'public' && data.visibility == 'public') {
+	if (data.reply && data.reply.visibility !== 'public' && data.visibility === 'public') {
 		data.visibility = 'home';
 	}
 
