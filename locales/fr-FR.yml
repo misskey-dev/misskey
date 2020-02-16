@@ -409,6 +409,7 @@ remote: "Distant"
 total: "Total"
 weekOverWeekChanges: "Changements hebdomadaires"
 dayOverDayChanges: "Changements quotidiens"
+accessibility: "Accessibilité"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
