@@ -20,6 +20,7 @@ import Vue from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
+import ImageViewer from './image-viewer.vue';
 
 export default Vue.extend({
 	i18n,
@@ -60,7 +61,16 @@ export default Vue.extend({
 	},
 	methods: {
 		onClick() {
-			window.open(this.image.url, '_blank');
+			if (this.$store.state.device.imageNewTab) {
+				window.open(this.image.url, '_blank');
+			} else {
+				const viewer = this.$root.new(ImageViewer, {
+					image: this.image
+				});
+				this.$once('hook:beforeDestroy', () => {
+					viewer.close();
+				});
+			}
 		}
 	}
 });

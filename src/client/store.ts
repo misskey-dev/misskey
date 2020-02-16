@@ -38,6 +38,7 @@ const defaultDeviceSettings = {
 	theme: 'light',
 	animation: true,
 	animatedMfm: true,
+	imageNewTab: false,
 	userData: {},
 };
 

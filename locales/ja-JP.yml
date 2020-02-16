@@ -402,6 +402,7 @@ existingAcount: "既存のアカウント"
 regenerate: "再生成"
 fontSize: "フォントサイズ"
 noFollowRequests: "フォロー申請はありません"
+openImageInNewTab: "画像を新しいタブで開く"
 
 _ago:
   unknown: "謎"

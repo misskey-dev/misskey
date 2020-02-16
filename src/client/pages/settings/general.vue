@@ -19,6 +19,7 @@
 		<mk-button @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</mk-button>
 	</div>
 	<div class="_content">
+		<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
 		<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
 		<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
 		<mk-switch v-model="useOsNativeEmojis">
@@ -95,6 +96,11 @@ export default Vue.extend({
 		useOsNativeEmojis: {
 			get() { return this.$store.state.device.useOsNativeEmojis; },
 			set(value) { this.$store.commit('device/set', { key: 'useOsNativeEmojis', value }); }
+		},
+
+		imageNewTab: {
+			get() { return this.$store.state.device.imageNewTab; },
+			set(value) { this.$store.commit('device/set', { key: 'imageNewTab', value }); }
 		},
 	},
 

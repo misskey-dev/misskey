@@ -1,5 +1,5 @@
 <template>
-<div class="mk-modal">
+<div class="mk-modal" v-hotkey.global="keymap">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
 		<div class="bg" ref="bg" v-if="show" @click="close()"></div>
 	</transition>
@@ -19,6 +19,13 @@ export default Vue.extend({
 		return {
 			show: true,
 		};
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'esc': this.close,
+			};
+		},
 	},
 	methods: {
 		close() {
