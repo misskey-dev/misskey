@@ -350,6 +350,7 @@ retype: "重新输入"
 noteOf: "{user}的帖子"
 inviteToGroup: "群组邀请"
 maxNoteTextLength: "帖子的字数限制"
+local: "本地"
 _ago:
   unknown: "未知"
   future: "未来"
