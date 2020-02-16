@@ -403,6 +403,7 @@ regenerate: "Régénérer"
 fontSize: "Taille de la police"
 noFollowRequests: "Vous n'avez aucune demandes d'abonnement en attente"
 openImageInNewTab: "Ouvrir l'image dans un nouvel onglet"
+local: "Local"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
