@@ -33,7 +33,7 @@ export default define(meta, async (ps) => {
 	}
 
 	if (user.isAdmin) {
-		throw new Error('cannot mark as moderator while admin');
+		throw new Error('cannot mark as moderator if admin user');
 	}
 
 	await Users.update(user.id, {
