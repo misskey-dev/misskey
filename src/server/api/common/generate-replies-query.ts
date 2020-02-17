@@ -1,7 +1,7 @@
 import { User } from '../../../models/entities/user';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
-export function generateRepliesQuery(q: SelectQueryBuilder<any>, me?: User) {
+export function generateRepliesQuery(q: SelectQueryBuilder<any>, me?: User | null) {
 	if (me == null) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.replyId IS NULL`) // 返信ではない
