@@ -280,7 +280,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			// 初期ログデータを作成
 			data = this.getNewLog(null);
 
-			logger.info(`${this.name}: Initial commit created`);
+			logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): Initial commit created`);
 		}
 
 		try {
@@ -292,14 +292,14 @@ export default abstract class Chart<T extends Record<string, any>> {
 				...Chart.convertObjectToFlattenColumns(data)
 			});
 
-			logger.info(`${this.name}: New commit created`);
+			logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): New commit created`);
 		} catch (e) {
 			// duplicate key error
 			// 並列動作している他のチャートエンジンプロセスと処理が重なる場合がある
 			// その場合は再度最も新しいログを持ってくる
 			if (isDuplicateKeyValueError(e)) {
 				log = await this.getLatestLog(span, group) as Log;
-				logger.info(`${this.name}: Commit duplicated`);
+				logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): Commit duplicated`);
 			} else {
 				logger.error(e);
 				throw e;
