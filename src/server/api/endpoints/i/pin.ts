@@ -6,8 +6,6 @@ import { ApiError } from '../../error';
 import { Users } from '../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定した投稿をピン留めします。'
 	},

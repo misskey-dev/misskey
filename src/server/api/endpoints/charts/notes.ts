@@ -4,8 +4,6 @@ import { convertLog } from '../../../../services/chart/core';
 import { notesChart } from '../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '投稿のチャートを取得します。'
 	},

@@ -4,8 +4,6 @@ import { convertLog } from '../../../../services/chart/core';
 import { hashtagChart } from '../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ハッシュタグごとのチャートを取得します。'
 	},

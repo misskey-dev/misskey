@@ -4,8 +4,6 @@ import { convertLog } from '../../../../services/chart/core';
 import { federationChart } from '../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'フェデレーションのチャートを取得します。'
 	},

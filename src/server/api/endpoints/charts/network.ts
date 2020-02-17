@@ -4,8 +4,6 @@ import { convertLog } from '../../../../services/chart/core';
 import { networkChart } from '../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ネットワークのチャートを取得します。'
 	},

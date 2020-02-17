@@ -6,8 +6,6 @@ import { ApiError } from '../../../error';
 import { DriveFolders } from '../../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したドライブのフォルダの情報を更新します。',
 		'en-US': 'Update specified folder of drive.'

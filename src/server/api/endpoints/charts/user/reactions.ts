@@ -5,8 +5,6 @@ import { convertLog } from '../../../../../services/chart/core';
 import { perUserReactionsChart } from '../../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ユーザーごとの被リアクション数のチャートを取得します。'
 	},

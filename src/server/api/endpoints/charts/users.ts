@@ -4,8 +4,6 @@ import { convertLog } from '../../../../services/chart/core';
 import { usersChart } from '../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ユーザーのチャートを取得します。'
 	},

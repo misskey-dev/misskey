@@ -8,8 +8,6 @@ import { getUser } from '../../common/getters';
 import { Followings, Users } from '../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したユーザーをフォローします。',
 		'en-US': 'Follow a user.'

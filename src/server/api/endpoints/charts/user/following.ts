@@ -5,8 +5,6 @@ import { convertLog } from '../../../../../services/chart/core';
 import { perUserFollowingChart } from '../../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ユーザーごとのフォロー/フォロワーのチャートを取得します。'
 	},

@@ -7,8 +7,6 @@ import { ApiError } from '../../../error';
 import { MessagingMessages } from '../../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したトークメッセージを削除します。',
 		'en-US': 'Delete a message.'

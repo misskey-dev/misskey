@@ -6,8 +6,6 @@ import { ApiError } from '../../../error';
 import { DriveFolders, DriveFiles } from '../../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したドライブのフォルダを削除します。',
 		'en-US': 'Delete specified folder of drive.'

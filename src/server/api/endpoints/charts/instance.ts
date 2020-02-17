@@ -4,8 +4,6 @@ import { convertLog } from '../../../../services/chart/core';
 import { instanceChart } from '../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'インスタンスごとのチャートを取得します。'
 	},

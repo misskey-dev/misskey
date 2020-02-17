@@ -7,8 +7,6 @@ import { ApiError } from '../../../error';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ドライブのファイルを削除します。',
 		'en-US': 'Delete a file of drive.'

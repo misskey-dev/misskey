@@ -5,8 +5,6 @@ import { convertLog } from '../../../../../services/chart/core';
 import { perUserNotesChart } from '../../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ユーザーごとの投稿のチャートを取得します。'
 	},

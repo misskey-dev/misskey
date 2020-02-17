@@ -8,8 +8,6 @@ import { getUser } from '../../common/getters';
 import { Blockings, NoteWatchings, Users } from '../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したユーザーをブロックします。',
 		'en-US': 'Block a user.'

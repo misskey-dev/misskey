@@ -4,8 +4,6 @@ import { convertLog } from '../../../../services/chart/core';
 import { activeUsersChart } from '../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'アクティブユーザーのチャートを取得します。'
 	},

@@ -6,8 +6,6 @@ import { DriveFile } from '../../../../../models/entities/drive-file';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したドライブのファイルの情報を取得します。',
 		'en-US': 'Get specified file of drive.'

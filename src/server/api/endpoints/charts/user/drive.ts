@@ -5,8 +5,6 @@ import { convertLog } from '../../../../../services/chart/core';
 import { perUserDriveChart } from '../../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ユーザーごとのドライブのチャートを取得します。'
 	},

@@ -4,8 +4,6 @@ import define from '../../define';
 import { NoteFavorites, NoteWatchings } from '../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定した投稿の状態を取得します。',
 		'en-US': 'Get state of a note.'

@@ -6,8 +6,6 @@ import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定した投稿を取得します。',
 		'en-US': 'Get a note.'
