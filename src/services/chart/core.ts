@@ -275,7 +275,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			data = this.getNewLog(obj);
 		} else {
 			// ログが存在しなかったら
-			// (Misskeyインスタンスを建てて初めてのチャート更新時)
+			// (Misskeyインスタンスを建てて初めてのチャート更新時など)
 
 			// 初期ログデータを作成
 			data = this.getNewLog(null);
