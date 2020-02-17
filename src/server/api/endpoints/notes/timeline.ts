@@ -8,6 +8,7 @@ import { generateMuteQuery } from '../../common/generate-mute-query';
 import { activeUsersChart } from '../../../../services/chart';
 import { Brackets } from 'typeorm';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
+import { injectPromo } from '../../common/inject-promo';
 
 export const meta = {
 	desc: {
@@ -154,6 +155,8 @@ export default define(meta, async (ps, user) => {
 	//#endregion
 
 	const timeline = await query.take(ps.limit!).getMany();
+
+	await injectPromo(user, timeline);
 
 	process.nextTick(() => {
 		if (user) {

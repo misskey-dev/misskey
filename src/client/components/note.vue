@@ -10,6 +10,7 @@
 	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
 	<div class="pinned" v-if="pinned"><fa :icon="faThumbtack"/> {{ $t('pinnedNote') }}</div>
+	<div class="pinned" v-if="appearNote._prInjectionId_"><fa :icon="faBullhorn"/> {{ $t('promotion') }}</div>
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa :icon="faRetweet"/>
@@ -83,7 +84,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
+import { faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
@@ -140,7 +141,7 @@ export default Vue.extend({
 			replies: [],
 			showContent: false,
 			hideThisNote: false,
-			faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
+			faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
 		};
 	},
 
@@ -522,6 +523,15 @@ export default Vue.extend({
 					text: this.$t('pin'),
 					action: () => this.togglePin(true)
 				} : undefined,
+				...(this.$store.state.i.isModerator || this.$store.state.i.isAdmin ? [
+					null,
+					{
+						icon: faBullhorn,
+						text: this.$t('promote'),
+						action: this.promote
+					}]
+					: []
+				),
 				...(this.appearNote.userId == this.$store.state.i.id ? [
 					null,
 					{
@@ -611,6 +621,30 @@ export default Vue.extend({
 						text: this.$t('pinLimitExceeded')
 					});
 				}
+			});
+		},
+
+		async promote() {
+			const { canceled, result: days } = await this.$root.dialog({
+				title: this.$t('numberOfDays'),
+				input: { type: 'number' }
+			});
+
+			if (canceled) return;
+
+			this.$root.api('admin/promo/create', {
+				noteId: this.appearNote.id,
+				expiresAt: Date.now() + (86400000 * days)
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
 			});
 		},
 

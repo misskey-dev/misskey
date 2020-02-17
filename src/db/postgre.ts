@@ -55,6 +55,8 @@ import { Clip } from '../models/entities/clip';
 import { ClipNote } from '../models/entities/clip-note';
 import { Antenna } from '../models/entities/antenna';
 import { AntennaNote } from '../models/entities/antenna-note';
+import { PromoNote } from '../models/entities/promo-note';
+import { PromoRead } from '../models/entities/promo-read';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -140,6 +142,8 @@ export const entities = [
 	ClipNote,
 	Antenna,
 	AntennaNote,
+	PromoNote,
+	PromoRead,
 	ReversiGame,
 	ReversiMatching,
 	...charts as any

@@ -412,6 +412,9 @@ dayOverDayChanges: "前日比"
 accessibility: "アクセシビリティ"
 clinetSettings: "クライアント設定"
 accountSettings: "アカウント設定"
+promotion: "プロモーション"
+promote: "プロモート"
+numberOfDays: "日数"
 
 _ago:
   unknown: "謎"

@@ -50,6 +50,8 @@ import { ClipRepository } from './repositories/clip';
 import { ClipNote } from './entities/clip-note';
 import { AntennaRepository } from './repositories/antenna';
 import { AntennaNote } from './entities/antenna-note';
+import { PromoNote } from './entities/promo-note';
+import { PromoRead } from './entities/promo-read';
 
 export const Announcements = getRepository(Announcement);
 export const AnnouncementReads = getRepository(AnnouncementRead);
@@ -102,3 +104,5 @@ export const Clips = getCustomRepository(ClipRepository);
 export const ClipNotes = getRepository(ClipNote);
 export const Antennas = getCustomRepository(AntennaRepository);
 export const AntennaNotes = getRepository(AntennaNote);
+export const PromoNotes = getRepository(PromoNote);
+export const PromoReads = getRepository(PromoRead);
