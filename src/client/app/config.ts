@@ -6,11 +6,13 @@ declare const _ENV_: string;
 
 const address = new URL(location.href);
 
+export const instanceHost = location.pathname.split("/")[1]
+
 export const host = address.host;
 export const hostname = address.hostname;
-export const url = address.origin;
-export const apiUrl = url + '/api';
-export const wsUrl = url.replace('http://', 'ws://').replace('https://', 'wss://') + '/streaming';
+export const url = address.origin+"/" + instanceHost;
+export const apiUrl = `https://${instanceHost}/api`;
+export const wsUrl = `wss://${instanceHost}/streaming`;
 export const lang = localStorage.getItem('lang') || window.lang; // windowは後方互換性のため
 export const langs = _LANGS_;
 export const locale = JSON.parse(localStorage.getItem('locale'));
