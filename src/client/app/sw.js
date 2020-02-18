@@ -40,18 +40,18 @@ self.addEventListener('activate', ev => {
 	);
 });
 
-self.addEventListener('fetch', ev => {
-	if (ev.request.method !== 'GET' || ev.request.url.startsWith(apiUrl)) return;
-	ev.respondWith(
-		caches.match(ev.request)
-			.then(response => {
-				return response || fetch(ev.request);
-			})
-			.catch(() => {
-				return caches.match("/");
-			})
-	);
-});
+// self.addEventListener('fetch', ev => {
+// 	if (ev.request.method !== 'GET' || ev.request.url.startsWith(apiUrl)) return;
+// 	ev.respondWith(
+// 		caches.match(ev.request)
+// 			.then(response => {
+// 				return response || fetch(ev.request);
+// 			})
+// 			.catch(() => {
+// 				return caches.match("/");
+// 			})
+// 	);
+// });
 
 // プッシュ通知を受け取ったとき
 self.addEventListener('push', ev => {
