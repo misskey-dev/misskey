@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notification" :class="notification.type">
+<div class="mk-notification" :class="notification.type" v-size="[{ max: 500 }, { max: 600 }]">
 	<div class="head">
 		<mk-avatar class="avatar" :user="notification.user"/>
 		<div class="icon" :class="notification.type">
@@ -113,12 +113,17 @@ export default Vue.extend({
 .mk-notification {
 	position: relative;
 	box-sizing: border-box;
-	padding: 16px;
+	padding: 28px 32px;
 	font-size: 0.9em;
 	overflow-wrap: break-word;
 	display: flex;
 
-	@media (max-width: 500px) {
+	&.max-width_600px {
+		padding: 16px;
+		font-size: 0.9em;
+	}
+
+	&.max-width_500px {
 		padding: 12px;
 		font-size: 0.8em;
 	}
