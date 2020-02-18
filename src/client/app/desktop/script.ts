@@ -29,7 +29,7 @@ import MkChooseFolderFromDriveWindow from './views/components/choose-folder-from
 import MkHomeTimeline from './views/home/timeline.vue';
 import Notification from './views/components/ui-notification.vue';
 
-import { url } from '../config';
+import { url, instanceHost } from '../config';
 import MiOS from '../mios';
 
 /**
@@ -129,6 +129,7 @@ init(async (launch, os) => {
 	// Init router
 	const router = new VueRouter({
 		mode: 'history',
+		base: `/${instanceHost}/`,
 		routes: [
 			os.store.state.device.inDeckMode
 				? { path: '/', name: 'index', component: () => import('../common/views/deck/deck.vue').then(m => m.default), children: [
