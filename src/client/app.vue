@@ -606,7 +606,8 @@ export default Vue.extend({
 				'calendar',
 				'rss',
 				'trends',
-				'clock'
+				'clock',
+				'activity',
 			];
 
 			this.$root.menu({
