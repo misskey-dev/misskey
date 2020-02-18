@@ -412,6 +412,8 @@ dayOverDayChanges: "Daily"
 accessibility: "Accessibility"
 clinetSettings: "Client Settings"
 accountSettings: "Account Settings"
+numberOfDays: "Amount of days"
+hideThisNote: "Hide this note"
 _ago:
   unknown: "Unknown"
   future: "Future"
@@ -513,6 +515,7 @@ _widgets:
   clock: "Clock"
   rss: "RSS reader"
   activity: "Activity"
+  photos: "Photos"
 _cw:
   hide: "Hide"
   show: "Load more"
