@@ -1,36 +1,38 @@
 import { version as current } from '../../config';
 
 export default async function($root: any, force = false, silent = false) {
-	const meta = await $root.getMeta(force);
-	const newer = meta.version;
+	return null; // サーバーのバージョンなんて気にすんな
 
-	if (newer != current) {
-		localStorage.setItem('should-refresh', 'true');
-		localStorage.setItem('v', newer);
+	// const meta = await $root.getMeta(force);
+	// const newer = meta.version;
 
-		// Clear cache (service worker)
-		try {
-			if (navigator.serviceWorker.controller) {
-				navigator.serviceWorker.controller.postMessage('clear');
-			}
+	// if (newer != current) {
+	// 	localStorage.setItem('should-refresh', 'true');
+	// 	localStorage.setItem('v', newer);
 
-			const registrations = await navigator.serviceWorker.getRegistrations();
-			for (const registration of registrations) {
-				registration.unregister();
-			}
-		} catch (e) {
-			console.error(e);
-		}
+	// 	// Clear cache (service worker)
+	// 	try {
+	// 		if (navigator.serviceWorker.controller) {
+	// 			navigator.serviceWorker.controller.postMessage('clear');
+	// 		}
 
-		/*if (!silent) {
-			$root.dialog({
-				title: $root.$t('@.update-available-title'),
-				text: $root.$t('@.update-available', { newer, current })
-			});
-		}*/
+	// 		const registrations = await navigator.serviceWorker.getRegistrations();
+	// 		for (const registration of registrations) {
+	// 			registration.unregister();
+	// 		}
+	// 	} catch (e) {
+	// 		console.error(e);
+	// 	}
 
-		return newer;
-	} else {
-		return null;
-	}
+	// 	/*if (!silent) {
+	// 		$root.dialog({
+	// 			title: $root.$t('@.update-available-title'),
+	// 			text: $root.$t('@.update-available', { newer, current })
+	// 		});
+	// 	}*/
+
+	// 	return newer;
+	// } else {
+	// 	return null;
+	// }
 }
