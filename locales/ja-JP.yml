@@ -421,7 +421,7 @@ objectStorage: "オブジェクトストレージ"
 useObjectStorage: "オブジェクトストレージを使用"
 serverLogs: "サーバーログ"
 deleteAll: "全て削除"
-showFixedPostForm: "タイムライン上部に投稿画面を表示する"
+showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
 
 _ago:
   unknown: "謎"

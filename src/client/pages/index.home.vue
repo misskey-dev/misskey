@@ -16,9 +16,7 @@
 
 	<x-tutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
-	<div style="position: relative" v-if="$store.state.device.showFixedPostForm">
-		<x-post-form class="post-form" fixed />
-	</div>
+	<x-post-form class="post-form _panel" fixed v-if="$store.state.device.showFixedPostForm"/>
 	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" @before="before()" @after="after()"/>
 </div>
 </template>
@@ -177,10 +175,11 @@ export default Vue.extend({
 	> .tutorial {
 		margin-bottom: var(--margin);
 	}
-}
 
-.post-form {
-	margin-bottom: var(--margin);
+	> .post-form {
+		position: relative;
+		margin-bottom: var(--margin);
+	}
 }
 
 ._kjvfvyph_ {

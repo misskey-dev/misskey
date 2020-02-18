@@ -587,7 +587,6 @@ export default Vue.extend({
 .gafaadew {
 	background: var(--panel);
 	border-radius: var(--radius);
-	box-shadow: 0 0 2px rgba(#000, 0.1);
 
 	> header {
 		z-index: 1000;
@@ -658,7 +657,6 @@ export default Vue.extend({
 
 		&.fixed {
 			max-width: unset;
-			margin: 0 32px;
 		}
 
 		> .preview {
