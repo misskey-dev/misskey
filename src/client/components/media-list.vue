@@ -46,7 +46,6 @@ export default Vue.extend({
 	mounted() {
 		this.size();
 		window.addEventListener('resize', this.size);
-		this.$on('resize', this.size);
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.size);
