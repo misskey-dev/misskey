@@ -417,6 +417,8 @@ promote: "プロモート"
 numberOfDays: "日数"
 hideThisNote: "このノートを非表示"
 showFeaturedNotesInTimeline: "タイムラインにおすすめのノートを表示する"
+objectStorage: "オブジェクトストレージ"
+useObjectStorage: "オブジェクトストレージを使用"
 
 _ago:
   unknown: "謎"
