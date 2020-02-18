@@ -414,7 +414,7 @@ clinetSettings: "클라이언트 설정"
 accountSettings: "계정 설정"
 promotion: "프로모션"
 promote: "프로모션하기"
-numberOfDays: "일"
+numberOfDays: "며칠동안"
 hideThisNote: "이 노트를 숨기기"
 showFeaturedNotesInTimeline: "타임라인에 추천 노트를 표시"
 _ago:
