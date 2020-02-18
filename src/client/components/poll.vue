@@ -112,8 +112,7 @@ export default Vue.extend({
 			margin: 4px 0;
 			padding: 4px 8px;
 			width: 100%;
-			color: var(--pollChoiceText);
-			border: solid 1px var(--pollChoiceBorder);
+			border: solid 1px var(--divider);
 			border-radius: 4px;
 			overflow: hidden;
 			cursor: pointer;
