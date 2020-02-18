@@ -417,6 +417,8 @@ promote: "프로모션하기"
 numberOfDays: "며칠동안"
 hideThisNote: "이 노트를 숨기기"
 showFeaturedNotesInTimeline: "타임라인에 추천 노트를 표시"
+objectStorage: "오브젝트 스토리지"
+useObjectStorage: "오브젝트 스토리지를 사용"
 _ago:
   unknown: "알 수 없음"
   future: "미래"
