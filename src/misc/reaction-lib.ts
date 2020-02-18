@@ -20,6 +20,28 @@ export async function getFallbackReaction(): Promise<string> {
 	return meta.useStarForReactionFallback ? '⭐' : '👍';
 }
 
+export function convertLegacyReactions(reactions: Record<string, number>) {
+	const _reactions = {} as Record<string, number>;
+
+	for (const reaction of Object.keys(reactions)) {
+		if (Object.keys(legacy10).includes(reaction)) {
+			if (_reactions[legacy10[reaction]]) {
+				_reactions[legacy10[reaction]] += reactions[reaction];
+			} else {
+				_reactions[legacy10[reaction]] = reactions[reaction];
+			}
+		} else {
+			if (_reactions[reaction]) {
+				_reactions[reaction] += reactions[reaction];
+			} else {
+				_reactions[reaction] = reactions[reaction];
+			}
+		}
+	}
+
+	return _reactions;
+}
+
 export async function toDbReaction(reaction?: string | null): Promise<string> {
 	if (reaction == null) return await getFallbackReaction();
 
