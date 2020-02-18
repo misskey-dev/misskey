@@ -180,7 +180,7 @@ export default Vue.extend({
 }
 
 .post-form {
-	margin-bottom: 8px;
+	margin-bottom: var(--margin);
 }
 
 ._kjvfvyph_ {
