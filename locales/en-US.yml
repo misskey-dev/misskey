@@ -512,6 +512,7 @@ _widgets:
   trends: "Trending"
   clock: "Clock"
   rss: "RSS reader"
+  activity: "Activity"
 _cw:
   hide: "Hide"
   show: "Load more"
