@@ -6,6 +6,7 @@ import * as nestedProperty from 'nested-property';
 import MiOS from './mios';
 import { erase } from '../../prelude/array';
 import getNoteSummary from '../../misc/get-note-summary';
+import { instanceHost } from './config';
 
 const defaultSettings = {
 	keepCw: false,
@@ -85,7 +86,12 @@ const defaultDeviceSettings = {
 
 export default (os: MiOS) => new Vuex.Store({
 	plugins: [createPersistedState({
-		paths: ['i', 'device', 'settings']
+		paths: ['i', 'device', 'settings'],
+		storage: {
+			getItem: (k) => localStorage.getItem(`${k}:${instanceHost}`),
+			setItem: (k, v) => localStorage.setItem(`${k}:${instanceHost}`, v),
+			removeItem: (k) => localStorage.removeItem(`${k}:${instanceHost}`),
+		}
 	})],
 
 	state: {

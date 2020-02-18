@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<script src="/static-assets/sha256.min.js"></script>
+<script>
+	(async () => {
+		const r = /^#domain=([a-z0-9\.]+?)\?token=([a-z0-9-]+)$/
+		const result = r.exec(location.hash)
+		if (result == null) {
+			document.write("ERROR: なんかパラメータがおかしいです。。。")
+			throw "パラメータがだめぽ"
+		}
+		const [_, domain, token] = result
+		if (localStorage.getItem("allowed-by-user:" + domain) == null) {
+			document.write("ERROR: このドメインは許可されてません。。。")
+			throw "ドメインがだめぽ"
+		}
+		const appSecret = localStorage.getItem(`appSecret:${domain}`)
+		if (appSecret == null) {
+			document.write("ERROR: 認証情報がブラウザに保存されてませんでした。もう一度やりなおしてください。ごめんね〜")
+			throw "認証情報なかった。。。"
+		}
+		try {
+			const { accessToken } = await fetch(`https://${domain}/api/auth/session/userkey`, {
+				method: "POST",
+				body: JSON.stringify({
+					appSecret,
+					token,
+				}),
+				headers: {
+					"content-type": "application/json"
+				}
+			}).then(r => r.json())
+			const hash = sha256.create()
+			hash.update(accessToken)
+			hash.update(appSecret)
+			localStorage.setItem(`i:${domain}`, hash.hex())
+			location.href = `/${domain}/`
+		} catch(e) {
+			document.write("ERROR: なんかしんだ。。。コンソール見てね")
+			console.error(e)
+		}
+	})()
+</script>
