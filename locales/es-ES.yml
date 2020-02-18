@@ -416,6 +416,9 @@ promotion: "Promovido"
 promote: "Promover"
 numberOfDays: "Cantidad de dias"
 hideThisNote: "Ocultar esta nota"
+showFeaturedNotesInTimeline: "Mostrar notas destacadas en la línea de tiempo"
+objectStorage: "Almacenamiento de objetos"
+useObjectStorage: "Usar almacenamiento de objetos"
 _ago:
   unknown: "Desconocido"
   future: "Futuro"
@@ -517,6 +520,7 @@ _widgets:
   clock: "Reloj"
   rss: "Lector RSS"
   activity: "Actividad"
+  photos: "Fotos"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
