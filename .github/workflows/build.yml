@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: yarn install
     - name: Build
-      run: yarn build
+      run: NODE_ENV=production yarn build
     - uses: actions/checkout@v2
       with:
         ref: v11-front-build-result
