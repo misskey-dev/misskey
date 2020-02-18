@@ -84,6 +84,7 @@ export default define({
 
 	.tl {
 		background: var(--bg);
+		padding: 8px;
 	}
 }
 </style>
