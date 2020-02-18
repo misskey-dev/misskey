@@ -50,21 +50,27 @@
 				<router-link class="item index" active-class="active" to="/" exact v-else>
 					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
 				</router-link>
-				<button class="item _button notifications" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.getters.isSignedIn">
-					<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
-					<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
-				</button>
-				<router-link class="item" active-class="active" to="/my/messaging" v-if="$store.getters.isSignedIn">
-					<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
-					<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
-				</router-link>
-				<router-link class="item" active-class="active" to="/my/drive" v-if="$store.getters.isSignedIn">
-					<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
-				</router-link>
-				<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.getters.isSignedIn && $store.state.i.isLocked">
-					<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
-					<i v-if="$store.state.i.hasPendingReceivedFollowRequest"><fa :icon="faCircle"/></i>
-				</router-link>
+				<template v-if="$store.getters.isSignedIn">
+					<button class="item _button notifications" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.state.device.useNotificationsPopup">
+						<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
+						<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
+					</button>
+					<router-link class="item notifications" active-class="active" to="/my/notifications" ref="notificationButton" v-else>
+						<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
+						<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
+					</router-link>
+					<router-link class="item" active-class="active" to="/my/messaging">
+						<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
+						<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
+					</router-link>
+					<router-link class="item" active-class="active" to="/my/drive">
+						<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
+					</router-link>
+					<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.state.i.isLocked">
+						<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
+						<i v-if="$store.state.i.hasPendingReceivedFollowRequest"><fa :icon="faCircle"/></i>
+					</router-link>
+				</template>
 				<div class="divider"></div>
 				<router-link class="item" active-class="active" to="/featured">
 					<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
@@ -143,7 +149,8 @@
 		<button class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadSpecifiedNotes || $store.state.i.hasPendingReceivedFollowRequest || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement)"><fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><fa :icon="faHome"/></button>
-		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn && $store.state.device.useNotificationsPopup" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn && !$store.state.device.useNotificationsPopup" class="button notifications _button" @click="$router.push('/my/notifications')" ref="notificationButton2"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
 
@@ -1206,15 +1213,17 @@ export default Vue.extend({
 		left: 0;
 		right: 0;
 		margin: 0 auto;
+		padding: 8px 8px 0 8px;
 		z-index: 10001;
 		width: 350px;
 		height: 400px;
+		box-sizing: border-box;
 		background: var(--vocsgcxy);
 		-webkit-backdrop-filter: blur(12px);
 		backdrop-filter: blur(12px);
 		border-radius: 6px;
 		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
-		overflow: hidden;
+		overflow: auto;
 
 		@media (max-width: 800px) {
 			width: 320px;

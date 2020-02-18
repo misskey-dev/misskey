@@ -423,6 +423,7 @@ serverLogs: "サーバーログ"
 deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
 newNoteRecived: "新しいノートがあります"
+useNotificationsPopup: "通知一覧をポップアップで表示"
 
 _ago:
   unknown: "謎"

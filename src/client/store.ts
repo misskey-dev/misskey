@@ -40,6 +40,7 @@ const defaultDeviceSettings = {
 	animatedMfm: true,
 	imageNewTab: false,
 	showFixedPostForm: false,
+	useNotificationsPopup: true,
 	userData: {},
 };
 

@@ -20,7 +20,8 @@
 				{{ $t('useOsNativeEmojis') }}
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</mk-switch>
-			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>			
+			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
+			<mk-switch v-model="useNotificationsPopup">{{ $t('useNotificationsPopup') }}</mk-switch>
 		</div>
 		<div class="_content">
 			<mk-select v-model="lang">
@@ -110,6 +111,11 @@ export default Vue.extend({
 		showFixedPostForm: {
 			get() { return this.$store.state.device.showFixedPostForm; },
 			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
+		},
+
+		useNotificationsPopup: {
+			get() { return this.$store.state.device.useNotificationsPopup; },
+			set(value) { this.$store.commit('device/set', { key: 'useNotificationsPopup', value }); }
 		},
 	},
 

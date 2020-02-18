@@ -27,6 +27,7 @@ export const router = new VueRouter({
 		{ path: '/explore', component: page('explore') },
 		{ path: '/explore/tags/:tag', props: true, component: page('explore') },
 		{ path: '/search', component: page('search') },
+		{ path: '/my/notifications', component: page('notifications') },
 		{ path: '/my/favorites', component: page('favorites') },
 		{ path: '/my/messages', component: page('messages') },
 		{ path: '/my/mentions', component: page('mentions') },
