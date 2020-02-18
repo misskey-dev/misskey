@@ -102,7 +102,7 @@ export default Vue.extend({
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
-					splash: true
+					iconOnly: true, autoClose: true
 				});
 			});
 		}
