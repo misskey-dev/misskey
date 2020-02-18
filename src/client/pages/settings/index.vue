@@ -20,6 +20,7 @@
 				{{ $t('useOsNativeEmojis') }}
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</mk-switch>
+			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>			
 		</div>
 		<div class="_content">
 			<mk-select v-model="lang">
@@ -104,6 +105,11 @@ export default Vue.extend({
 		imageNewTab: {
 			get() { return this.$store.state.device.imageNewTab; },
 			set(value) { this.$store.commit('device/set', { key: 'imageNewTab', value }); }
+		},
+
+		showFixedPostForm: {
+			get() { return this.$store.state.device.showFixedPostForm; },
+			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
 		},
 	},
 

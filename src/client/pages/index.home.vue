@@ -16,6 +16,9 @@
 
 	<x-tutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
+	<div style="position: relative" v-if="$store.state.device.showFixedPostForm">
+		<x-post-form class="post-form" fixed />
+	</div>
 	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" @before="before()" @after="after()"/>
 </div>
 </template>
@@ -27,6 +30,7 @@ import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
 import XTutorial from './index.home.tutorial.vue';
+import XPostForm from '../components/post-form.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -38,6 +42,7 @@ export default Vue.extend({
 	components: {
 		XTimeline,
 		XTutorial,
+		XPostForm,
 	},
 
 	props: {
@@ -172,6 +177,10 @@ export default Vue.extend({
 	> .tutorial {
 		margin-bottom: var(--margin);
 	}
+}
+
+.post-form {
+	margin-bottom: 8px;
 }
 
 ._kjvfvyph_ {
