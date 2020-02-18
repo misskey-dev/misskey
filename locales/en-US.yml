@@ -417,6 +417,8 @@ promote: "Promote"
 numberOfDays: "Amount of days"
 hideThisNote: "Hide this note"
 showFeaturedNotesInTimeline: "Show Featured notes in Timeline"
+objectStorage: "Object Storage"
+useObjectStorage: "Use object storage"
 _ago:
   unknown: "Unknown"
   future: "Future"
